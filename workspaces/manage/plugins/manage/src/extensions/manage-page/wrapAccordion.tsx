@@ -23,8 +23,6 @@ import {
   useCurrentTab,
 } from '@backstage-community/plugin-manage-react';
 
-// changing the API of ManageTabsImpl to inject the accordion settings and
-// wrapping there.
 export function wrapAccordion(props: {
   element: React.ReactNode;
   accordion: ManageContentWidgetAccordion;

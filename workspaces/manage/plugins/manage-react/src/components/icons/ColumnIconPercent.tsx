@@ -85,23 +85,15 @@ export function ColumnIconPercent(props: ColumnIconPercentProps) {
         <Box style={{ alignContent: 'center', cursor: 'default' }}>{inner}</Box>
         {progressStyle === 'linear' && props.showPercent && (
           <Box
-            style={{
-              minWidth: progressStyle === 'linear' ? '2rem' : undefined,
-              alignContent: 'center',
-              textAlign: 'right',
-              cursor: 'default',
-            }}
+            style={{ cursor: 'default' }}
+            alignItems="center"
+            minWidth={progressStyle === 'linear' ? '2rem' : undefined}
+            textAlign="right"
           >
             <Text variant="body-small">{Math.round(percent)}%</Text>
           </Box>
         )}
-        <Box
-          style={{
-            alignContent: 'center',
-          }}
-        >
-          {after}
-        </Box>
+        <Box alignContent="center">{after}</Box>
       </Flex>
     ) : (
       inner

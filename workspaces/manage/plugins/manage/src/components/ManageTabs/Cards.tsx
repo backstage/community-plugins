@@ -24,7 +24,7 @@ export function Cards({ children }: { children?: ReactElement[] }) {
   }
 
   return (
-    <Flex direction="row" align="stretch" gap="3" mb="3">
+    <Flex align="stretch" mb="4">
       {children.map((card, i) => (
         <Box key={card.key ?? `card-${i}`}>{card}</Box>
       ))}

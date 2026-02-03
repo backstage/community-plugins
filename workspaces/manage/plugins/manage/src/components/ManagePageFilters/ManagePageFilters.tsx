@@ -18,9 +18,9 @@ import { useCallback } from 'react';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch, { SwitchProps } from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
 
 import { HeaderLabel } from '@backstage/core-components';
+import { Text } from '@backstage/ui';
 
 import { useManagePageCombined } from './useFilters';
 
@@ -64,9 +64,7 @@ export function ManagePageFilters({
                 color={switchColor}
               />
             }
-            label={
-              <Typography style={{ userSelect: 'none' }}>Combine</Typography>
-            }
+            label={<Text style={{ userSelect: 'none' }}>Combine</Text>}
           />
         </FormGroup>
       }

@@ -18,7 +18,7 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 
 import { Entity } from '@backstage/catalog-model';
 import { HeaderLabel } from '@backstage/core-components';
-import { Skeleton } from '@backstage/ui';
+import { Button, Skeleton, Text } from '@backstage/ui';
 
 import {
   ManageEntityCardWidgetBlueprint,
@@ -35,7 +35,6 @@ import { useTheme } from '@material-ui/core';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
 
 function Foo({
   name,
@@ -193,6 +192,7 @@ const testWidget1 = ManageEntityCardWidgetBlueprint.make({
         title: 'Some widget',
         subtitle: 'This is a subtitle',
         content: <div>Example widget for the Manage page</div>,
+        action: <Button variant="primary">Action</Button>,
       }),
     }),
 });
@@ -237,9 +237,7 @@ const label = ManageHeaderLabelBlueprint.make({
               <FormControlLabel
                 control={<Switch name="manage-page-combined" color="primary" />}
                 label={
-                  <Typography sx={{ userSelect: 'none' }}>
-                    This does nothing
-                  </Typography>
+                  <Text style={{ userSelect: 'none' }}>This does nothing</Text>
                 }
               />
             </FormGroup>

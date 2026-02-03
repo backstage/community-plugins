@@ -149,7 +149,7 @@ export function ManageTechInsightsCards(props: ManageTechInsightsCardsProps) {
   );
 
   const grid = (
-    <Flex mt="1" gap="3">
+    <Flex mt="1">
       {checksWithColors.map(({ check, progress, color }) => (
         <GaugeCard
           progress={progress}

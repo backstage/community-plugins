@@ -30,18 +30,17 @@ export function CardWidget(props: CardWidgetProps) {
     <Card style={{ height: '100%' }}>
       {(props.title || props.subtitle || props.action) && (
         <CardHeader>
-          <Flex>
-            <Box style={{ width: '100%' }}>
+          <Flex justify="between">
+            <Flex direction="column" gap="0">
               {props.title && (
                 <Text variant="title-x-small">{props.title}</Text>
               )}
-              {props.title && props.subtitle && <br />}
               {props.subtitle && (
                 <Text variant="body-small" color="secondary">
                   {props.subtitle}
                 </Text>
               )}
-            </Box>
+            </Flex>
             <Box>{props.action}</Box>
           </Flex>
         </CardHeader>

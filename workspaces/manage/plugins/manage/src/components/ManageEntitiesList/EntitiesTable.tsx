@@ -30,6 +30,7 @@ import {
   Text,
   Grid,
   Box,
+  Flex,
 } from '@backstage/ui';
 import { TableOptions as MuiTableOptions } from '@backstage/core-components';
 import {
@@ -97,16 +98,17 @@ export function EntitiesTable(props: EntitiesTableProps) {
           marginBottom: 'calc(0px - var(--bui-space-1))',
         }}
       >
-        <EntityRefLink entityRef={entity} hideIcon={!!kind} />
-        <br />
-        <Text variant="body-x-small">
-          <EntityRefLink
-            title={entity.metadata.name}
-            hideIcon
-            entityRef={entity}
-            color="textSecondary"
-          />
-        </Text>
+        <Flex direction="column" gap="0">
+          <EntityRefLink entityRef={entity} hideIcon={!!kind} />
+          <Text variant="body-x-small">
+            <EntityRefLink
+              title={entity.metadata.name}
+              hideIcon
+              entityRef={entity}
+              color="textSecondary"
+            />
+          </Text>
+        </Flex>
       </Box>
     );
   }

@@ -25,14 +25,13 @@ export function SettingsCard({ setting }: { setting: Setting }) {
   return (
     <Card>
       <CardHeader>
-        <Flex>
-          <Box style={{ width: '100%' }}>
+        <Flex justify="between">
+          <Flex direction="column" gap="0">
             <Text variant="title-small">{setting.title}</Text>
-            <br />
             {setting.subtitle && (
               <Text variant="body-small">{setting.subtitle}</Text>
             )}
-          </Box>
+          </Flex>
           <Box>{setting.action}</Box>
         </Flex>
       </CardHeader>

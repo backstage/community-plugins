@@ -41,7 +41,7 @@ export function DefaultSettings({
   );
 
   return (
-    <Grid.Root columns="1" gap="3">
+    <Grid.Root columns="1">
       <Grid.Item>
         <TabOrderCard />
       </Grid.Item>
