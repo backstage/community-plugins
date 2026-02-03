@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 // HomePage for app-next replicating legacy Home announcements showcase
-import { AnnouncementsCard } from '@backstage-community/plugin-announcements';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -22,6 +21,9 @@ import CardContent from '@mui/material/CardContent';
 import MuiLink from '@mui/material/Link';
 import { Content, Header, SupportButton } from '@backstage/core-components';
 import { Link as RouterLink } from 'react-router-dom';
+
+// eslint-disable-next-line @backstage/no-relative-monorepo-imports
+import { AnnouncementsCard } from '../../../../../plugins/announcements/src/alpha/components';
 
 export const HomePage = () => {
   return (
@@ -106,17 +108,10 @@ export const HomePage = () => {
               </CardContent>
             </Card>
           </Grid>
+
           <Grid item>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Announcements Card</Typography>
-                <Typography variant="body2" paragraph>
-                  A compact overview suitable for dashboards or entity pages.
-                  You can tweak size and filtering in the future roadmap.
-                </Typography>
-                <AnnouncementsCard max={2} />
-              </CardContent>
-            </Card>
+            <Typography variant="h6">Announcements Card</Typography>
+            <AnnouncementsCard max={3} />
           </Grid>
         </Grid>
       </Content>
