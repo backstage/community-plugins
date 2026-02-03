@@ -121,8 +121,13 @@ export class PluginPermissionMetadataCollector {
       });
   }
 
-  private static permissionFactory: ReaderFactory = () => {
-    return [{ reader: new FetchUrlReader(), predicate: (_url: URL) => true }];
+  private static permissionFactory: ReaderFactory = ({ config }) => {
+    return [
+      {
+        reader: FetchUrlReader.fromConfig(config),
+        predicate: (_url: URL) => true,
+      },
+    ];
   };
 
   private async getPluginMetaData(
