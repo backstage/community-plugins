@@ -14,6 +14,13 @@ export const EntityVaultCard: () => JSX_2.Element;
 // @public
 export function isVaultAvailable(entity: Entity): boolean;
 
+// @public
+export type ListSecretsResponse = {
+  secrets: VaultSecret[];
+  vaultUrl?: string;
+  createUrl?: string;
+};
+
 // @public (undocumented)
 export const VAULT_SECRET_PATH_ANNOTATION = 'vault.io/secrets-path';
 
@@ -24,7 +31,7 @@ export interface VaultApi {
     options?: {
       secretEngine?: string;
     },
-  ): Promise<VaultSecret[]>;
+  ): Promise<ListSecretsResponse>;
 }
 
 // @public (undocumented)
