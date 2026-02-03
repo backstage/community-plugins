@@ -44,6 +44,7 @@ To get started, first you need a running instance of Vault. You can follow [this
      token: <VAULT_TOKEN>
      secretEngine: 'customSecretEngine' # Optional. By default it uses 'secrets'. Can be overwritten by the annotation of the entity
      kvVersion: <kv-version> # Optional. The K/V version that your instance is using. The available options are '1' or '2'
+     secretSuffix: 'config' # Optional. Suffix to append to the secret path when creating new secrets (e.g., 'config')
    ```
 
 4. Get a `VAULT_TOKEN` with **LIST** permissions, as it's enough for the plugin. You can check [this tutorial](https://learn.hashicorp.com/tutorials/vault/tokens) for more info.
@@ -95,6 +96,20 @@ metadata:
   # ...
   annotations:
     vault.io/secrets-path: path/to/secrets
+    vault.io/secrets-engine: customSecretEngine # Optional. By default it uses the 'secretEngine' value from your app-config.
+```
+
+### Multiple Secret Paths
+
+You can also specify multiple secret paths separated by commas. Each path will be displayed in the Vault table:
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  # ...
+  annotations:
+    vault.io/secrets-path: path/to/secrets,another/path,third/path
     vault.io/secrets-engine: customSecretEngine # Optional. By default it uses the 'secretEngine' value from your app-config.
 ```
 

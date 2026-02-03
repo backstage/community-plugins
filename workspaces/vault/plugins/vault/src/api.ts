@@ -39,12 +39,22 @@ export type VaultSecret = {
 };
 
 /**
+ * Response from listSecrets API call
+ * @public
+ */
+export type ListSecretsResponse = {
+  secrets: VaultSecret[];
+  vaultUrl?: string;
+  createUrl?: string;
+};
+
+/**
  * Interface for the VaultApi.
  * @public
  */
 export interface VaultApi {
   /**
-   * Returns a list of secrets used to show in a table.
+   * Returns a list of secrets used to show in a table along with vault URLs.
    * @param secretPath - The path where the secrets are stored in Vault
    * @param options - Additional options to be passed to the Vault API, allows to override vault default settings in app config file
    */
@@ -53,7 +63,7 @@ export interface VaultApi {
     options?: {
       secretEngine?: string;
     },
-  ): Promise<VaultSecret[]>;
+  ): Promise<ListSecretsResponse>;
 }
 
 /**
@@ -101,17 +111,22 @@ export class VaultClient implements VaultApi {
     options?: {
       secretEngine?: string;
     },
-  ): Promise<VaultSecret[]> {
+  ): Promise<ListSecretsResponse> {
     const query: { [key in string]: any } = {};
     const { secretEngine } = options || {};
     if (secretEngine) {
       query.engine = secretEngine;
     }
 
-    const result = await this.callApi<{ items: VaultSecret[] }>(
-      `v1/secrets/${encodeURIComponent(secretPath)}`,
-      query,
-    );
-    return result.items;
+    const result = await this.callApi<{
+      items: VaultSecret[];
+      vaultUrl?: string;
+      createUrl?: string;
+    }>(`v1/secrets/${encodeURIComponent(secretPath)}`, query);
+    return {
+      secrets: result.items,
+      vaultUrl: result.vaultUrl,
+      createUrl: result.createUrl,
+    };
   }
 }

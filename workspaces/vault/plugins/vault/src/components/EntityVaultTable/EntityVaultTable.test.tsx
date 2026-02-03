@@ -24,13 +24,18 @@ import { ComponentEntity } from '@backstage/catalog-model';
 import { renderInTestApp } from '@backstage/test-utils';
 import { EntityVaultTable } from './EntityVaultTable';
 import { ApiProvider, UrlPatternDiscovery } from '@backstage/core-app-api';
-import { VaultSecret, vaultApiRef, VaultClient } from '../../api';
+import {
+  VaultSecret,
+  vaultApiRef,
+  VaultClient,
+  ListSecretsResponse,
+} from '../../api';
 import { rest } from 'msw';
 
 describe('EntityVaultTable', () => {
   let vaultClient: VaultClient;
   let apis: TestApiRegistry;
-  let listSecretsSpy: jest.SpyInstance<Promise<VaultSecret[]>>;
+  let listSecretsSpy: jest.SpyInstance<Promise<ListSecretsResponse>>;
 
   const server = setupServer();
   setupRequestMockHandlers(server);
@@ -91,7 +96,7 @@ describe('EntityVaultTable', () => {
         if (path === 'test/success') {
           return res(ctx.json(mockSecretsResult));
         } else if (path === 'test/empty') {
-          return res(ctx.json([]));
+          return res(ctx.json({ items: [] }));
         }
         return res(ctx.status(400));
       }),
@@ -147,10 +152,11 @@ describe('EntityVaultTable', () => {
       </ApiProvider>,
     );
 
-    expect(rendered.getByText(/No secrets found/)).toBeInTheDocument();
+    expect(rendered.getByText(/No secrets/)).toBeInTheDocument();
+    expect(rendered.getByText(/create one/)).toBeInTheDocument();
   });
 
-  it('should surface an appropriate error when the Vault API responds unsuccessfully', async () => {
+  it('should show create link when the Vault API responds unsuccessfully', async () => {
     setupHandlers();
     const rendered = await renderInTestApp(
       <ApiProvider apis={apis}>
@@ -158,10 +164,8 @@ describe('EntityVaultTable', () => {
       </ApiProvider>,
     );
 
-    expect(
-      rendered.getByText(
-        /Unexpected error while fetching secrets from path \'test\/error\'\: Request failed with 400 Bad Request/,
-      ),
-    ).toBeInTheDocument();
+    // When there's an error, the component catches it and shows the create link
+    expect(rendered.getByText(/No secrets/)).toBeInTheDocument();
+    expect(rendered.getByText(/create one/)).toBeInTheDocument();
   });
 });
