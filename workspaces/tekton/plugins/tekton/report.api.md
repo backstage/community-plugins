@@ -30,8 +30,8 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'clusterSelector.label': 'Cluster';
     readonly 'tableExpandCollapse.collapseAll': 'Collapse all';
     readonly 'tableExpandCollapse.expandAll': 'Expand all';
-    readonly 'pipelineVisualization.noTasksDescription': 'This Pipeline Run has no tasks to visualize';
     readonly 'pipelineVisualization.emptyState.description': 'No Pipeline Run to visualize';
+    readonly 'pipelineVisualization.noTasksDescription': 'This Pipeline Run has no tasks to visualize';
     readonly 'pipelineVisualization.stepList.finallyTaskTitle': 'Finally Task';
     readonly 'pipelineRunList.title': 'Pipeline Runs';
     readonly 'pipelineRunList.noPipelineRuns': 'No Pipeline Runs found';

@@ -48,15 +48,15 @@ export function getTranslations(locale: string): ServicenowMessages {
     case 'en':
       return servicenowMessages;
     case 'fr':
-      return transform(servicenowFr.messages as unknown as FlatMessages);
+      return transform(servicenowFr.messages);
     case 'de':
-      return transform(servicenowDe.messages as unknown as FlatMessages);
+      return transform(servicenowDe.messages);
     case 'es':
-      return transform(servicenowEs.messages as unknown as FlatMessages);
+      return transform(servicenowEs.messages);
     case 'it':
-      return transform(servicenowIt.messages as unknown as FlatMessages);
+      return transform(servicenowIt.messages);
     case 'ja':
-      return transform(servicenowJa.messages as unknown as FlatMessages);
+      return transform(servicenowJa.messages);
     default:
       return servicenowMessages;
   }

@@ -16,19 +16,17 @@
 
 // These translation files are not exported by the package, so relative imports are necessary for e2e tests
 /* eslint-disable @backstage/no-relative-monorepo-imports */
-import { nexusRepositoryManagerMessages } from '../../src/translations/ref.js';
-import nexusTranslationDe from '../../src/translations/de.js';
-import nexusTranslationFr from '../../src/translations/fr.js';
-import nexusTranslationEs from '../../src/translations/es.js';
-import nexusTranslationIt from '../../src/translations/it.js';
-import nexusTranslationJa from '../../src/translations/ja.js';
+import { argocdMessages } from '../../src/translations/ref.js';
+import argocdTranslationFr from '../../src/translations/fr.js';
+import argocdTranslationIt from '../../src/translations/it.js';
+import argocdTranslationJa from '../../src/translations/ja.js';
 /* eslint-enable @backstage/no-relative-monorepo-imports */
 
-export type NexusMessages = typeof nexusRepositoryManagerMessages;
+export type ArgoCDMessages = typeof argocdMessages;
 
 type FlatMessages = Record<string, string>;
 
-function transform(messages: FlatMessages): NexusMessages {
+function transform(messages: FlatMessages): ArgoCDMessages {
   const result = Object.keys(messages).reduce((res, key) => {
     const path = key.split('.');
     const lastIndex = path.length - 1;
@@ -40,25 +38,27 @@ function transform(messages: FlatMessages): NexusMessages {
     return res;
   }, {} as Record<string, unknown>);
 
-  return result as NexusMessages;
+  return result as ArgoCDMessages;
 }
 
-export function getTranslations(locale: string): NexusMessages {
-  switch (locale) {
+/** Normalize BCP 47 locale (e.g. ja-JP) to base language code (e.g. ja) for lookup. */
+function toBaseLocale(locale: string): string {
+  return locale.split('-')[0];
+}
+
+export function getTranslations(locale: string): ArgoCDMessages {
+  const base = toBaseLocale(locale);
+  switch (base) {
     case 'en':
-      return nexusRepositoryManagerMessages;
+      return argocdMessages;
     case 'fr':
-      return transform(nexusTranslationFr.messages);
-    case 'de':
-      return transform(nexusTranslationDe.messages);
-    case 'es':
-      return transform(nexusTranslationEs.messages);
+      return transform(argocdTranslationFr.messages);
     case 'it':
-      return transform(nexusTranslationIt.messages);
+      return transform(argocdTranslationIt.messages);
     case 'ja':
-      return transform(nexusTranslationJa.messages);
+      return transform(argocdTranslationJa.messages);
     default:
-      return nexusRepositoryManagerMessages;
+      return argocdMessages;
   }
 }
 
@@ -77,4 +77,12 @@ export function replaceTemplate(
     result = result.replaceAll(`{{${key}}}`, String(value));
   }
   return result;
+}
+
+/**
+ * Convert a translation template to a regex pattern for aria snapshot matching
+ * Replaces {{placeholder}} with regex patterns
+ */
+export function templateToPattern(template: string): string {
+  return template.replaceAll(/\{\{[^}]+\}\}/g, '\\d+%?');
 }

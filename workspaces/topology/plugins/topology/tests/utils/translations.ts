@@ -21,6 +21,7 @@ import topologyTranslationDe from '../../src/translations/de.js';
 import topologyTranslationFr from '../../src/translations/fr.js';
 import topologyTranslationEs from '../../src/translations/es.js';
 import topologyTranslationIt from '../../src/translations/it.js';
+import topologyTranslationJa from '../../src/translations/ja.js';
 /* eslint-enable @backstage/no-relative-monorepo-imports */
 
 export type TopologyMessages = typeof topologyMessages;
@@ -42,26 +43,25 @@ function transform(messages: FlatMessages): TopologyMessages {
   return result as TopologyMessages;
 }
 
+function toBaseLocale(locale: string): string {
+  return locale.split('-')[0];
+}
+
 export function getTranslations(locale: string): TopologyMessages {
-  switch (locale) {
+  const base = toBaseLocale(locale);
+  switch (base) {
     case 'en':
       return topologyMessages;
     case 'fr':
-      return transform(
-        topologyTranslationFr.messages as unknown as FlatMessages,
-      );
+      return transform(topologyTranslationFr.messages);
     case 'de':
-      return transform(
-        topologyTranslationDe.messages as unknown as FlatMessages,
-      );
+      return transform(topologyTranslationDe.messages);
     case 'es':
-      return transform(
-        topologyTranslationEs.messages as unknown as FlatMessages,
-      );
+      return transform(topologyTranslationEs.messages);
     case 'it':
-      return transform(
-        topologyTranslationIt.messages as unknown as FlatMessages,
-      );
+      return transform(topologyTranslationIt.messages);
+    case 'ja':
+      return transform(topologyTranslationJa.messages);
     default:
       return topologyMessages;
   }
