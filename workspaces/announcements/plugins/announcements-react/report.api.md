@@ -123,11 +123,6 @@ export type AnnouncementsClientOptions = {
 };
 
 // @public
-export type AnnouncementsOptions = {
-  dependencies?: any[];
-};
-
-// @public
 export type AnnouncementsPermissionsResult = {
   create: {
     loading: boolean;
@@ -323,10 +318,7 @@ export type CreateTagRequest = {
 };
 
 // @public
-export const useAnnouncements: (
-  props: AnnouncementsFilters,
-  options?: AnnouncementsOptions,
-) => {
+export const useAnnouncements: (props: AnnouncementsFilters) => {
   announcements: AnnouncementsList;
   loading: boolean;
   error: Error | undefined;
