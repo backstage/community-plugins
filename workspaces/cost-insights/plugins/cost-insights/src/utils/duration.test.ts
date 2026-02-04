@@ -16,9 +16,11 @@
 
 import { Duration } from '../types';
 import {
+  exclusiveEndDateOf,
   inclusiveEndDateOf,
   inclusiveStartDateOf,
   quarterEndDate,
+  intervalsOf,
 } from './duration';
 
 const lastCompleteBillingDate = '2020-06-05';
@@ -45,5 +47,78 @@ describe.each`
 `('quarterEndDate', ({ inclusiveEndDate, expectedQuarterEndDate }) => {
   it(`calculates quarter end date correctly from inclusive end date ${inclusiveEndDate}`, () => {
     expect(quarterEndDate(inclusiveEndDate)).toBe(expectedQuarterEndDate);
+  });
+});
+
+describe('Custom date range support', () => {
+  const customDateRange = { start: '2020-01-01', end: '2020-01-31' };
+  const billingDate = '2020-06-05';
+
+  it('Should calculate start date for custom range', () => {
+    const startDate = inclusiveStartDateOf(
+      Duration.CUSTOM,
+      billingDate,
+      customDateRange,
+    );
+    // For a 31-day period, the comparison period should start 31 days before the start
+    expect(startDate).toBe('2019-12-01');
+  });
+
+  it('Should calculate end date for custom range', () => {
+    const endDate = exclusiveEndDateOf(
+      Duration.CUSTOM,
+      billingDate,
+      customDateRange,
+    );
+    // Exclusive end date should be one day after the inclusive end
+    expect(endDate).toBe('2020-02-01');
+  });
+
+  it('Should calculate inclusive end date for custom range', () => {
+    const endDate = inclusiveEndDateOf(
+      Duration.CUSTOM,
+      billingDate,
+      customDateRange,
+    );
+    expect(endDate).toBe('2020-01-31');
+  });
+
+  it('Should generate correct intervals for custom range', () => {
+    const intervals = intervalsOf(
+      Duration.CUSTOM,
+      billingDate,
+      2,
+      customDateRange,
+    );
+    // Should generate R2/P15D/2020-02-01 format (31 days / 2 = 15 days floor)
+    expect(intervals).toBe('R2/P15D/2020-02-01');
+  });
+
+  it('Should throw error for CUSTOM without customDateRange', () => {
+    expect(() => inclusiveStartDateOf(Duration.CUSTOM, billingDate)).toThrow(
+      'CUSTOM duration requires customDateRange parameter',
+    );
+  });
+
+  it('Should be backward compatible with standard durations', () => {
+    // All standard durations should work without customDateRange
+    expect(() =>
+      inclusiveStartDateOf(Duration.P30D, billingDate),
+    ).not.toThrow();
+    expect(() =>
+      inclusiveStartDateOf(Duration.P90D, billingDate),
+    ).not.toThrow();
+    expect(() => inclusiveStartDateOf(Duration.P3M, billingDate)).not.toThrow();
+  });
+
+  it('Should ignore customDateRange for standard durations', () => {
+    // Standard durations should ignore customDateRange parameter
+    const withoutCustom = inclusiveStartDateOf(Duration.P30D, billingDate);
+    const withCustom = inclusiveStartDateOf(
+      Duration.P30D,
+      billingDate,
+      customDateRange,
+    );
+    expect(withoutCustom).toBe(withCustom);
   });
 });

@@ -149,3 +149,68 @@ describe.each`
     expect(await screen.findByText(expected)).toBeInTheDocument();
   });
 });
+
+describe('<CostOverviewLegend /> with custom date range', () => {
+  it('should handle CUSTOM duration with custom date range without errors', async () => {
+    const customDateRange = { start: '2020-01-01', end: '2020-01-31' };
+
+    await renderInTestApp(
+      <MockConfigProvider>
+        <MockCurrencyProvider>
+          <MockBillingDateProvider lastCompleteBillingDate="2020-09-01">
+            <MockFilterProvider
+              duration="CUSTOM"
+              customDateRange={customDateRange}
+            >
+              <CostOverviewLegend
+                metric={{
+                  kind: 'msc',
+                  name: 'MSC',
+                  default: false,
+                }}
+                metricData={{
+                  id: 'msc',
+                  format: 'number',
+                  change: {
+                    ratio: 0.1,
+                    amount: 100,
+                  },
+                  aggregation: [
+                    {
+                      date: '2020-01-01',
+                      amount: 1000,
+                    },
+                    {
+                      date: '2020-01-15',
+                      amount: 1100,
+                    },
+                  ],
+                }}
+                dailyCostData={{
+                  id: 'mock-id',
+                  change: {
+                    ratio: 0.05,
+                    amount: 50,
+                  },
+                  aggregation: [
+                    {
+                      date: '2020-01-01',
+                      amount: 1000,
+                    },
+                    {
+                      date: '2020-01-15',
+                      amount: 1050,
+                    },
+                  ],
+                }}
+              />
+            </MockFilterProvider>
+          </MockBillingDateProvider>
+        </MockCurrencyProvider>
+      </MockConfigProvider>,
+    );
+
+    expect(await screen.findByText('Cost Trend')).toBeInTheDocument();
+    expect(await screen.findByText('MSC Trend')).toBeInTheDocument();
+  });
+});

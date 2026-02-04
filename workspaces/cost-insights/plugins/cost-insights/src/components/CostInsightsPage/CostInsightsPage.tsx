@@ -132,6 +132,8 @@ export const CostInsightsPage = () => {
           const intervals = intervalsOf(
             pageFilters.duration,
             lastCompleteBillingDate,
+            2,
+            pageFilters.customDateRange,
           );
           const [
             fetchedProjects,

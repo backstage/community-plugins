@@ -62,12 +62,14 @@ export type ProductInsightsChartProps = {
   billingDate: string;
   entity: Entity;
   duration: Duration;
+  customDateRange?: { start: string; end: string };
 };
 
 export const ProductInsightsChart = ({
   billingDate,
   entity,
   duration,
+  customDateRange,
 }: ProductInsightsChartProps) => {
   const classes = useStyles();
   const layoutClasses = useLayoutStyles();
@@ -95,8 +97,8 @@ export const ProductInsightsChart = ({
   const resources = entities.map(resourceOf);
 
   const options: Partial<BarChartLegendOptions> = {
-    previousName: formatPeriod(duration, billingDate, false),
-    currentName: formatPeriod(duration, billingDate, true),
+    previousName: formatPeriod(duration, billingDate, false, customDateRange),
+    currentName: formatPeriod(duration, billingDate, true, customDateRange),
   };
 
   const onMouseMove: (...args: any[]) => void = (
@@ -208,7 +210,11 @@ export const ProductInsightsChart = ({
         <LegendItem
           title={choose(['Cost Savings', 'Cost Excess'], entity.change)}
         >
-          <CostGrowth change={entity.change} duration={duration} />
+          <CostGrowth
+            change={entity.change}
+            duration={duration}
+            customDateRange={customDateRange}
+          />
         </LegendItem>
       </BarChartLegend>
       <BarChart

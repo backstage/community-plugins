@@ -66,7 +66,7 @@ export const CostOverviewBreakdownChart = ({
   const classes = useStyles(theme);
   const { baseCurrency } = useConfig();
   const lastCompleteBillingDate = useLastCompleteBillingDate();
-  const { duration } = useFilters(mapFiltersToProps);
+  const { duration, customDateRange } = useFilters(mapFiltersToProps);
   const [isExpanded, setExpanded] = useState(false);
 
   if (!costBreakdown) {
@@ -83,6 +83,7 @@ export const CostOverviewBreakdownChart = ({
     flattenedAggregation,
     duration,
     lastCompleteBillingDate,
+    customDateRange,
   );
   const currentPeriodTotal = totalCost - previousPeriodTotal;
   const canExpand = costBreakdown.length >= 8;
@@ -216,8 +217,18 @@ export const CostOverviewBreakdownChart = ({
   };
 
   const options: Partial<BarChartLegendOptions> = {
-    previousName: formatPeriod(duration, lastCompleteBillingDate, false),
-    currentName: formatPeriod(duration, lastCompleteBillingDate, true),
+    previousName: formatPeriod(
+      duration,
+      lastCompleteBillingDate,
+      false,
+      customDateRange,
+    ),
+    currentName: formatPeriod(
+      duration,
+      lastCompleteBillingDate,
+      true,
+      customDateRange,
+    ),
     hideMarker: true,
   };
 

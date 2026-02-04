@@ -18,7 +18,10 @@ import { Maybe } from '@backstage-community/plugin-cost-insights-common';
 import { MapFiltersToProps } from '../../hooks/useFilters';
 
 type CostOverviewFilterProps = PageFilters & {
-  setDuration: (duration: Duration) => void;
+  setDuration: (
+    duration: Duration,
+    customDateRange?: { start: string; end: string },
+  ) => void;
   setProject: (project: Maybe<string>) => void;
   setMetric: (metric: Maybe<string>) => void;
 };
@@ -29,10 +32,14 @@ export const mapFiltersToProps: MapFiltersToProps<CostOverviewFilterProps> = ({
 }) => ({
   ...pageFilters,
   project: pageFilters.project || 'all',
-  setDuration: (duration: Duration) =>
+  setDuration: (
+    duration: Duration,
+    customDateRange?: { start: string; end: string },
+  ) =>
     setPageFilters({
       ...pageFilters,
       duration,
+      customDateRange,
     }),
   setProject: (project: Maybe<string>) =>
     setPageFilters({

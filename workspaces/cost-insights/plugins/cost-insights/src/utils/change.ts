@@ -58,6 +58,7 @@ export function getComparedChange(
   metricData: MetricData,
   duration: Duration,
   lastCompleteBillingDate: string, // YYYY-MM-DD,
+  customDateRange?: { start: string; end: string },
 ): ChangeStatistic {
   const dailyCostRatio = dailyCost.change?.ratio;
   const metricDataRatio = metricData.change?.ratio;
@@ -65,6 +66,7 @@ export function getComparedChange(
     dailyCost.aggregation,
     duration,
     lastCompleteBillingDate,
+    customDateRange,
   );
 
   // if either ratio cannot be calculated, no compared ratio can be calculated
@@ -84,9 +86,21 @@ export function getPreviousPeriodTotalCost(
   aggregation: DateAggregation[],
   duration: Duration,
   inclusiveEndDate: string,
+  customDateRange?: { start: string; end: string },
 ): number {
-  const luxonDuration = LuxonDuration.fromISO(duration);
-  const startDate = inclusiveStartDateOf(duration, inclusiveEndDate);
+  const luxonDuration =
+    duration === Duration.CUSTOM && customDateRange
+      ? LuxonDuration.fromMillis(
+          DateTime.fromISO(customDateRange.end).diff(
+            DateTime.fromISO(customDateRange.start),
+          ).milliseconds,
+        )
+      : LuxonDuration.fromISO(duration);
+  const startDate = inclusiveStartDateOf(
+    duration,
+    inclusiveEndDate,
+    customDateRange,
+  );
   const nextPeriodStart = DateTime.fromISO(startDate).plus(luxonDuration);
   // Add up costs that incurred before the start of the next period.
   return aggregation.reduce((acc, costByDate) => {

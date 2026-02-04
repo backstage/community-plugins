@@ -82,6 +82,61 @@ describe.each`
   });
 });
 
+describe('formatPeriod with custom date range', () => {
+  it('Correctly formats custom duration with 15 days total (shows 7 and 8 days)', () => {
+    const customDateRange = { start: '2020-10-01', end: '2020-10-15' };
+    // 15 days total: floor(15/2) = 7 first, 15-7 = 8 last
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-10-01', false, customDateRange),
+    ).toBe('First 7 Days');
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-10-15', true, customDateRange),
+    ).toBe('Last 8 Days');
+  });
+
+  it('Correctly formats custom duration with 30 days total (shows 15 and 15 days)', () => {
+    const customDateRange = { start: '2020-09-01', end: '2020-09-30' };
+    // 30 days total: floor(30/2) = 15 first, 30-15 = 15 last
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-09-01', false, customDateRange),
+    ).toBe('First 15 Days');
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-09-30', true, customDateRange),
+    ).toBe('Last 15 Days');
+  });
+
+  it('Correctly formats custom duration with 31 days total (shows 15 and 16 days)', () => {
+    const customDateRange = { start: '2020-01-01', end: '2020-01-31' };
+    // 31 days total: floor(31/2) = 15 first, 31-15 = 16 last
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-01-01', false, customDateRange),
+    ).toBe('First 15 Days');
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-01-31', true, customDateRange),
+    ).toBe('Last 16 Days');
+  });
+
+  it('Correctly formats custom duration with 1 day total', () => {
+    const customDateRange = { start: '2020-10-01', end: '2020-10-01' };
+    // 1 day total: floor(1/2) = 0 first, 1-0 = 1 last
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-10-01', false, customDateRange),
+    ).toBe('First 0 Days');
+    expect(
+      formatPeriod(Duration.CUSTOM, '2020-10-01', true, customDateRange),
+    ).toBe('Last 1 Days');
+  });
+
+  it('Fallback to date format when no customDateRange provided', () => {
+    expect(formatPeriod(Duration.CUSTOM, '2020-10-01', false)).toBe(
+      'Oct 01, 2020',
+    );
+    expect(formatPeriod(Duration.CUSTOM, '2020-10-15', true)).toBe(
+      'Oct 15, 2020',
+    );
+  });
+});
+
 describe.each`
   ratio             | expected
   ${0.0}            | ${'0%'}

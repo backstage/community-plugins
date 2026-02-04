@@ -20,6 +20,8 @@
  * it's September 15, P3M represents costs for Q2 and P30D represents August 16 -
  * September 15.
  *
+ * CUSTOM is used when a user selects a custom date range via the date picker.
+ *
  * @public
  */
 export enum Duration {
@@ -27,4 +29,5 @@ export enum Duration {
   P30D = 'P30D',
   P90D = 'P90D',
   P3M = 'P3M',
+  CUSTOM = 'CUSTOM',
 }
