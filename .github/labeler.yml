@@ -199,9 +199,6 @@ workspace/mend:
 workspace/microsoft-calendar:
   - "Workspace\\s*microsoft-calendar"
 
-workspace/mta:
-  - "Workspace\\s*mta"
-
 workspace/multi-source-security-viewer:
   - "Workspace\\s*multi-source-security-viewer"
 
