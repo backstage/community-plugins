@@ -263,6 +263,8 @@ createDevApp()
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
           [argoCDInstanceApiRef, new MockArgoCDInstanceApiClient()],
+          [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
       >
         <EntityProvider entity={mockEntity}>
