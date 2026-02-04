@@ -16,6 +16,7 @@
 
 import { screen } from '@testing-library/react';
 import { renderInTestApp } from '@backstage/test-utils';
+import { Duration } from '../../types';
 import { CostOverviewLegend } from './CostOverviewLegend';
 import {
   MockBillingDateProvider,
@@ -159,8 +160,13 @@ describe('<CostOverviewLegend /> with custom date range', () => {
         <MockCurrencyProvider>
           <MockBillingDateProvider lastCompleteBillingDate="2020-09-01">
             <MockFilterProvider
-              duration="CUSTOM"
-              customDateRange={customDateRange}
+              pageFilters={{
+                group: 'tech',
+                project: null,
+                duration: Duration.CUSTOM,
+                metric: null,
+                customDateRange: customDateRange,
+              }}
             >
               <CostOverviewLegend
                 metric={{

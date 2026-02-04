@@ -18,7 +18,7 @@ import { PropsWithChildren } from 'react';
 import Box from '@material-ui/core/Box';
 import { useTheme } from '@material-ui/core/styles';
 import { LegendItem } from '../LegendItem';
-import { CostInsightsTheme, Duration } from '../../types';
+import { CostInsightsTheme } from '../../types';
 import {
   MetricData,
   Maybe,
