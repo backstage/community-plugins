@@ -21,7 +21,10 @@ import { findAlways } from '../../utils/assert';
 
 type ProductInsightsCardFilterProps = PageFilters & {
   product: ProductPeriod;
-  setProduct: (duration: Duration) => void;
+  setProduct: (
+    duration: Duration,
+    customDateRange?: { start: string; end: string },
+  ) => void;
 };
 
 type ProductInsightsCardLoadingProps = {
@@ -34,10 +37,15 @@ export const mapFiltersToProps =
   ({ pageFilters, productFilters, setProductFilters }) => ({
     ...pageFilters,
     product: findAlways(productFilters, p => p.productType === product),
-    setProduct: (duration: Duration) =>
+    setProduct: (
+      duration: Duration,
+      customDateRange?: { start: string; end: string },
+    ) =>
       setProductFilters(
         productFilters.map(period =>
-          period.productType === product ? { ...period, duration } : period,
+          period.productType === product
+            ? { ...period, duration, customDateRange }
+            : period,
         ),
       ),
   });
