@@ -30,7 +30,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { DEFAULT_DATE_FORMAT, CostInsightsTheme } from '../../types';
+import { DEFAULT_DATE_FORMAT, CostInsightsTheme, Duration } from '../../types';
 import { Cost } from '@backstage-community/plugin-cost-insights-common';
 import {
   BarChartLegend,
@@ -232,12 +232,18 @@ export const CostOverviewBreakdownChart = ({
     hideMarker: true,
   };
 
+  // For custom date ranges, only show total cost (no previous/current split)
+  const legendCostStart =
+    duration === Duration.CUSTOM ? 0 : previousPeriodTotal;
+  const legendCostEnd =
+    duration === Duration.CUSTOM ? totalCost : currentPeriodTotal;
+
   return (
     <Box display="flex" flexDirection="column">
       <Box display="flex" flexDirection="row">
         <BarChartLegend
-          costStart={previousPeriodTotal}
-          costEnd={currentPeriodTotal}
+          costStart={legendCostStart}
+          costEnd={legendCostEnd}
           options={options}
         />
       </Box>

@@ -43,7 +43,7 @@ describe('aggregationFor', () => {
     expect(aggregation.length).toBeGreaterThan(0);
   });
 
-  it('should handle custom date range intervals (8 days)', () => {
+  it('should handle custom date range intervals (8 days) without comparison mode', () => {
     // This tests the fix for the "Exhaustiveness check failed: P8D" error
     const customDateRange = { start: '2020-01-01', end: '2020-01-08' };
     const intervals = intervalsOf(
@@ -51,10 +51,11 @@ describe('aggregationFor', () => {
       '2020-09-01',
       2,
       customDateRange,
+      false, // no comparison mode
     );
 
-    // intervals should be "R2/P4D/2020-01-09" (8 days / 2 = 4 days floor)
-    expect(intervals).toContain('P4D');
+    // intervals should be "R2/P8D/2020-01-09" (full 8 days, not split)
+    expect(intervals).toContain('P8D');
 
     // This should not throw "Exhaustiveness check failed"
     const aggregation = aggregationFor(intervals, 1000);
@@ -63,19 +64,58 @@ describe('aggregationFor', () => {
     expect(aggregation.length).toBeGreaterThan(0);
   });
 
-  it('should handle custom date range intervals (31 days)', () => {
+  it('should handle custom date range intervals (8 days) with comparison mode', () => {
+    const customDateRange = { start: '2020-01-01', end: '2020-01-08' };
+    const intervals = intervalsOf(
+      Duration.CUSTOM,
+      '2020-09-01',
+      2,
+      customDateRange,
+      true, // comparison mode
+    );
+
+    // intervals should be "R2/P4D/2020-01-09" (8 days / 2 = 4 days floor)
+    expect(intervals).toContain('P4D');
+
+    const aggregation = aggregationFor(intervals, 1000);
+
+    expect(aggregation).toBeDefined();
+    expect(aggregation.length).toBeGreaterThan(0);
+  });
+
+  it('should handle custom date range intervals (31 days) without comparison mode', () => {
     const customDateRange = { start: '2020-01-01', end: '2020-01-31' };
     const intervals = intervalsOf(
       Duration.CUSTOM,
       '2020-09-01',
       2,
       customDateRange,
+      false, // no comparison mode
+    );
+
+    // intervals should be "R2/P31D/2020-02-01" (full 31 days, not split)
+    expect(intervals).toContain('P31D');
+
+    // This should work without throwing exhaustiveness errors
+    const aggregation = aggregationFor(intervals, 1000);
+
+    expect(aggregation).toBeDefined();
+    expect(aggregation.length).toBeGreaterThan(0);
+  });
+
+  it('should handle custom date range intervals (31 days) with comparison mode', () => {
+    const customDateRange = { start: '2020-01-01', end: '2020-01-31' };
+    const intervals = intervalsOf(
+      Duration.CUSTOM,
+      '2020-09-01',
+      2,
+      customDateRange,
+      true, // comparison mode
     );
 
     // intervals should be "R2/P15D/2020-02-01" (31 days / 2 = 15 days floor)
     expect(intervals).toContain('P15D');
 
-    // This should work without throwing exhaustiveness errors
     const aggregation = aggregationFor(intervals, 1000);
 
     expect(aggregation).toBeDefined();

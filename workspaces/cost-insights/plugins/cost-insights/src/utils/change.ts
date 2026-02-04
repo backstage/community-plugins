@@ -87,7 +87,13 @@ export function getPreviousPeriodTotalCost(
   duration: Duration,
   inclusiveEndDate: string,
   customDateRange?: { start: string; end: string },
+  comparisonMode: boolean = false,
 ): number {
+  // For custom date ranges in non-comparison mode, we don't show a previous period
+  if (duration === Duration.CUSTOM && !comparisonMode) {
+    return 0;
+  }
+
   const luxonDuration =
     duration === Duration.CUSTOM && customDateRange
       ? LuxonDuration.fromMillis(
@@ -100,6 +106,7 @@ export function getPreviousPeriodTotalCost(
     duration,
     inclusiveEndDate,
     customDateRange,
+    comparisonMode,
   );
   const nextPeriodStart = DateTime.fromISO(startDate).plus(luxonDuration);
   // Add up costs that incurred before the start of the next period.

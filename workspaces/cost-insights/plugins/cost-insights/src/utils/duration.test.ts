@@ -54,13 +54,25 @@ describe('Custom date range support', () => {
   const customDateRange = { start: '2020-01-01', end: '2020-01-31' };
   const billingDate = '2020-06-05';
 
-  it('Should calculate start date for custom range', () => {
+  it('Should calculate start date for custom range without comparison mode', () => {
     const startDate = inclusiveStartDateOf(
       Duration.CUSTOM,
       billingDate,
       customDateRange,
+      false,
     );
-    // For a 31-day period, the comparison period should start 31 days before the start
+    // Without comparison mode, return the start date as-is
+    expect(startDate).toBe('2020-01-01');
+  });
+
+  it('Should calculate start date for custom range with comparison mode', () => {
+    const startDate = inclusiveStartDateOf(
+      Duration.CUSTOM,
+      billingDate,
+      customDateRange,
+      true,
+    );
+    // With comparison mode, create a comparison period (31 days before start)
     expect(startDate).toBe('2019-12-01');
   });
 
@@ -83,14 +95,27 @@ describe('Custom date range support', () => {
     expect(endDate).toBe('2020-01-31');
   });
 
-  it('Should generate correct intervals for custom range', () => {
+  it('Should generate correct intervals for custom range without comparison mode', () => {
     const intervals = intervalsOf(
       Duration.CUSTOM,
       billingDate,
       2,
       customDateRange,
+      false,
     );
-    // Should generate R2/P15D/2020-02-01 format (31 days / 2 = 15 days floor)
+    // Without comparison mode, use the full 31 days
+    expect(intervals).toBe('R2/P31D/2020-02-01');
+  });
+
+  it('Should generate correct intervals for custom range with comparison mode', () => {
+    const intervals = intervalsOf(
+      Duration.CUSTOM,
+      billingDate,
+      2,
+      customDateRange,
+      true,
+    );
+    // With comparison mode, split into 15-day periods (floor of 31/2)
     expect(intervals).toBe('R2/P15D/2020-02-01');
   });
 

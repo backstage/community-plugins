@@ -97,8 +97,20 @@ export const ProductInsightsChart = ({
   const resources = entities.map(resourceOf);
 
   const options: Partial<BarChartLegendOptions> = {
-    previousName: formatPeriod(duration, billingDate, false, customDateRange),
-    currentName: formatPeriod(duration, billingDate, true, customDateRange),
+    previousName: formatPeriod(
+      duration,
+      billingDate,
+      false,
+      customDateRange,
+      true,
+    ),
+    currentName: formatPeriod(
+      duration,
+      billingDate,
+      true,
+      customDateRange,
+      true,
+    ),
   };
 
   const onMouseMove: (...args: any[]) => void = (

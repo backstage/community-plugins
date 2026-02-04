@@ -134,6 +134,7 @@ export const CostInsightsPage = () => {
             lastCompleteBillingDate,
             2,
             pageFilters.customDateRange,
+            false, // Don't use comparison mode for the main cost overview graph
           );
           const [
             fetchedProjects,

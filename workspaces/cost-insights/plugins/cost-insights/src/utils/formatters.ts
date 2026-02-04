@@ -148,6 +148,7 @@ export function formatPeriod(
   date: string,
   isEndDate: boolean,
   customDateRange?: { start: string; end: string },
+  comparisonMode: boolean = false,
 ) {
   switch (duration) {
     case Duration.P3M:
@@ -157,13 +158,19 @@ export function formatPeriod(
           : inclusiveStartDateOf(duration, date, customDateRange),
       );
     case Duration.CUSTOM:
-      // For custom durations, display as "First X Days" vs "Last X Days"
-      if (customDateRange) {
+      // For custom durations in non-comparison mode, display the full date range
+      if (customDateRange && !comparisonMode) {
         const startDate = DateTime.fromISO(customDateRange.start);
         const endDate = DateTime.fromISO(customDateRange.end);
-        // Calculate total days in the custom range (inclusive)
+        return `${startDate.toFormat('MMM dd')} - ${endDate.toFormat(
+          'MMM dd, yyyy',
+        )}`;
+      }
+      // For comparison mode, display as "First X Days" vs "Last X Days"
+      if (customDateRange && comparisonMode) {
+        const startDate = DateTime.fromISO(customDateRange.start);
+        const endDate = DateTime.fromISO(customDateRange.end);
         const totalDays = Math.round(endDate.diff(startDate, 'days').days) + 1;
-        // Split periods: first gets floor division, last gets remainder
         const firstPeriodDays = Math.floor(totalDays / 2);
         const lastPeriodDays = totalDays - firstPeriodDays;
         const periodDays = isEndDate ? lastPeriodDays : firstPeriodDays;

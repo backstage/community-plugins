@@ -88,6 +88,7 @@ export const ProductInsights = ({
           lastCompleteBillingDate,
           2,
           customDateRange,
+          true, // Use comparison mode for ProductInsights to split periods
         ),
       });
     },

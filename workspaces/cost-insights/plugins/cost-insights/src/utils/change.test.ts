@@ -85,4 +85,44 @@ describe('getPreviousPeriodTotalCost', () => {
       ),
     ).toEqual(96_600);
   });
+
+  it('Returns 0 for custom date ranges without comparison mode (no previous period)', () => {
+    const mockGroupDailyCost: Cost = {
+      id: 'test-group',
+      aggregation: MockAggregatedDailyCosts,
+      change: changeOf(MockAggregatedDailyCosts),
+      trendline: trendlineOf(MockAggregatedDailyCosts),
+    };
+    const inclusiveEndDate = '2020-09-30';
+    const customDateRange = { start: '2020-09-01', end: '2020-09-30' };
+    expect(
+      getPreviousPeriodTotalCost(
+        mockGroupDailyCost.aggregation,
+        Duration.CUSTOM,
+        inclusiveEndDate,
+        customDateRange,
+        false, // comparisonMode = false
+      ),
+    ).toEqual(0);
+  });
+
+  it('Returns previous period cost for custom date ranges with comparison mode', () => {
+    const mockGroupDailyCost: Cost = {
+      id: 'test-group',
+      aggregation: MockAggregatedDailyCosts,
+      change: changeOf(MockAggregatedDailyCosts),
+      trendline: trendlineOf(MockAggregatedDailyCosts),
+    };
+    const inclusiveEndDate = '2020-09-30';
+    const customDateRange = { start: '2020-09-01', end: '2020-09-30' };
+    const result = getPreviousPeriodTotalCost(
+      mockGroupDailyCost.aggregation,
+      Duration.CUSTOM,
+      inclusiveEndDate,
+      customDateRange,
+      true, // comparisonMode = true
+    );
+    // With comparison mode, it should calculate a previous period
+    expect(result).toBeGreaterThan(0);
+  });
 });

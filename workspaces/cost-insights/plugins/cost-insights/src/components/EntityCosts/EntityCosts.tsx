@@ -80,6 +80,7 @@ export const EntityCostsCard = () => {
           lastCompleteBillingDate,
           2,
           pageFilters.customDateRange,
+          false, // Don't use comparison mode for entity costs
         );
 
         const fetchedDailyCost = await client.getCatalogEntityDailyCost!(
