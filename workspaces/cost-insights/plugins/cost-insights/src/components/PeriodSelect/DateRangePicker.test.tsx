@@ -203,8 +203,8 @@ describe('<DateRangePicker />', () => {
 
     await waitFor(() => screen.getByText('Custom Date Range'));
 
-    // Verify the UI communicates that end date defaults to today
-    expect(screen.getByText('Defaults to today')).toBeInTheDocument();
+    // Verify the UI communicates that end date defaults to yesterday
+    expect(screen.getByText('Defaults to yesterday')).toBeInTheDocument();
     const endDateLabels = screen.getAllByText('End Date (optional)');
     expect(endDateLabels.length).toBeGreaterThan(0);
   });

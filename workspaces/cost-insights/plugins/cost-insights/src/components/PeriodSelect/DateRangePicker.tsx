@@ -246,7 +246,7 @@ export const DateRangePicker = ({
                     textField: {
                       size: 'small',
                       variant: 'outlined',
-                      helperText: endDate ? '' : 'Defaults to today',
+                      helperText: endDate ? '' : 'Defaults to yesterday',
                     },
                   }}
                 />
