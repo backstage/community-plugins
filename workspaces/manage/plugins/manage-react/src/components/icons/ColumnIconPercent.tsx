@@ -16,9 +16,8 @@
 
 import { ReactNode } from 'react';
 
-import { Flex, Text } from '@backstage/ui';
+import { Box, Flex, Text } from '@backstage/ui';
 
-import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 
 import { LinearProgress } from '../LinearProgress';
@@ -85,15 +84,17 @@ export function ColumnIconPercent(props: ColumnIconPercentProps) {
         <Box style={{ alignContent: 'center', cursor: 'default' }}>{inner}</Box>
         {progressStyle === 'linear' && props.showPercent && (
           <Box
-            style={{ cursor: 'default' }}
-            alignItems="center"
+            style={{
+              cursor: 'default',
+              alignItems: 'center',
+              textAlign: 'right',
+            }}
             minWidth={progressStyle === 'linear' ? '2rem' : undefined}
-            textAlign="right"
           >
             <Text variant="body-small">{Math.round(percent)}%</Text>
           </Box>
         )}
-        <Box alignContent="center">{after}</Box>
+        <Box style={{ alignContent: 'center' }}>{after}</Box>
       </Flex>
     ) : (
       inner
