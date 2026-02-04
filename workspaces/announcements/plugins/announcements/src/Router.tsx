@@ -31,9 +31,15 @@ import { compatWrapper } from '@backstage/core-compat-api';
 
 type RouterProps = {
   title?: string;
+  /**
+   * @deprecated Filter by category using URL state (e.g. ?category=...). This option will be removed.
+   */
   category?: string;
   hideStartAt?: boolean;
   markdownRenderer?: MarkdownRendererTypeProps;
+  /**
+   * @deprecated Inactive announcement are hidden by default. This option will be removed.
+   */
   defaultInactive?: boolean;
 };
 
@@ -61,10 +67,7 @@ export const Router = (props: RouterProps) => {
         path="/admin"
         element={
           <RequirePermission permission={announcementCreatePermission}>
-            <AnnouncementsAdminPage
-              title={props.title}
-              defaultInactive={props.defaultInactive}
-            />
+            <AnnouncementsAdminPage title={props.title} />
           </RequirePermission>
         }
       >
@@ -72,7 +75,7 @@ export const Router = (props: RouterProps) => {
           path=""
           element={
             <AnnouncementsContent
-              formDefaults={{ defaultInactive: props.defaultInactive }}
+              formDefaults={{ defaultInactive: props.defaultInactive ?? true }}
             />
           }
         />

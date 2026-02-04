@@ -27,9 +27,15 @@ export const announcementsPage = PageBlueprint.makeWithOverrides({
   config: {
     schema: {
       title: z => z.string().optional(),
+      /**
+       * @deprecated Filter by category using URL state (e.g. ?category=...). This option will be removed.
+       */
       category: z => z.string().optional(),
       hideStartAt: z => z.boolean().optional(),
       markdownRenderer: z => z.enum(['backstage', 'md-editor']).optional(),
+      /**
+       * @deprecated Inactive announcement are hidden by default. This option will be removed.
+       */
       defaultInactive: z => z.boolean().optional(),
     },
   },
