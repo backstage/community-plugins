@@ -14704,7 +14704,7 @@ __metadata:
     "@backstage/plugin-search-backend-node": "npm:^1.4.0"
     "@backstage/plugin-techdocs-backend": "npm:^2.1.4"
     app: "link:../app"
-    better-sqlite3: "npm:^9.0.0"
+    better-sqlite3: "npm:^12.0.0"
     node-gyp: "npm:^10.0.0"
     pg: "npm:^8.11.3"
   languageName: unknown
@@ -14878,17 +14878,6 @@ __metadata:
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.1"
   checksum: 10/2662e321237624d5813a7b97528dfc11fc5110b068d57f4096de82d7136e7e4a4b722a2a4266ddfb5095070712fd3d2542f6212ccb68e2d3eb2042498269e1cf
-  languageName: node
-  linkType: hard
-
-"better-sqlite3@npm:^9.0.0":
-  version: 9.6.0
-  resolution: "better-sqlite3@npm:9.6.0"
-  dependencies:
-    bindings: "npm:^1.5.0"
-    node-gyp: "npm:latest"
-    prebuild-install: "npm:^7.1.1"
-  checksum: 10/06b3d95221071a06c2e22a9746d9b7049c0bce7962e5e3290ccf088fffbf4d4d52868f0d98b8ae2565fe33b1adab89823145f23c6f6eb63ecc4fc1b883f9082c
   languageName: node
   linkType: hard
 
