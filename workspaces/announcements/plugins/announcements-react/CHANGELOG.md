@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.21.0
+
+### Minor Changes
+
+- 57c349e: `AnnouncementsOptions` has been dropped as an optional arg for the `useAnnouncements` hook in favor of handling state and dependencies internally.
+
 ## 0.20.0
 
 ### Minor Changes
