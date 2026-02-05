@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { compatWrapper } from '@backstage/core-compat-api';
 import { AppRootElementBlueprint } from '@backstage/frontend-plugin-api';
-import { NewAnnouncementBanner } from '../components/NewAnnouncementBanner';
+import { NewAnnouncementBanner } from './components/announcements';
 
 /**
  * @alpha
@@ -25,7 +24,7 @@ export const announcementsBanner = AppRootElementBlueprint.makeWithOverrides({
   name: 'banner',
   config: {
     schema: {
-      variant: z => z.enum(['block', 'floating']).default('floating'),
+      // TODO: Document schema, or remove it if not needed
       max: z => z.number().optional(),
       category: z => z.string().optional(),
       active: z => z.boolean().optional(),
@@ -35,7 +34,7 @@ export const announcementsBanner = AppRootElementBlueprint.makeWithOverrides({
   },
   factory: (originalFactory, { config }) => {
     return originalFactory({
-      element: compatWrapper(<NewAnnouncementBanner {...config} />),
+      element: <NewAnnouncementBanner {...config} />,
     });
   },
 });

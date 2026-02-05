@@ -15,3 +15,4 @@
  */
 export * from './AnnouncementsPage';
 export * from './ViewAnnouncementPage';
+export * from './NewAnnouncementBanner';
