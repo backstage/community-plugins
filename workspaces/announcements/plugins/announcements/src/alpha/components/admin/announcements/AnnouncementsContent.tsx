@@ -46,7 +46,9 @@ import { announcementViewRouteRef } from '../../../../routes';
 export type AnnouncementsContentProps = {
   /** default form values when creating a new announcement */
   formDefaults: {
-    /** sets active switch form input to false by default when creating a new announcement */
+    /**
+     * @deprecated Inactive announcement are hidden by default. This option will be removed.
+     */
     defaultInactive?: boolean;
   };
 };

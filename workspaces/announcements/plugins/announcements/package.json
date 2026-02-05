@@ -72,7 +72,7 @@
     "@mui/material": "^5.15.6",
     "@remixicon/react": "^4.7.0",
     "@types/react": "^17.0.0 || ^18.0.0",
-    "@uiw/react-md-editor": "^4.0.8",
+    "@uiw/react-md-editor": "^4.0.11",
     "luxon": "^3.2.0",
     "react-use": "^17.2.4",
     "slugify": "1.6.6"

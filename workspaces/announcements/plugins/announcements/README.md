@@ -73,6 +73,37 @@ app:
     - nav-item:announcements
 ```
 
+### Configure extension params (New Frontend System)
+
+You can pass params for the new frontend system by adding a `config` block to the relevant extension in `app-config.yaml`.
+
+Announcements page params:
+
+```yaml
+app:
+  extensions:
+    - page:announcements:
+        config:
+          title: Company announcements
+          hideStartAt: true
+          markdownRenderer: md-editor
+```
+
+Banner params:
+
+```yaml
+app:
+  extensions:
+    - announcements/banner:
+        config:
+          variant: floating
+          max: 2
+          category: updates
+          active: true
+          current: true
+          tags: ['security', 'platform']
+```
+
 The entity card will only appear on components & systems by default, but you can override that
 behavior by passing a filter into the card extension like so:
 
@@ -92,13 +123,15 @@ app:
 
 ## Customization
 
-### Defaulting new announcements to inactive
+### Defaulting new announcements to inactive (deprecated)
 
 It is possible to set the initial value of the `active` switch, displayed in the new announcement form, as false by passing a `defaultInactive` prop to the `AnnouncementsPage`.
 
 ```ts
 <AnnouncementsPage defaultInactive />
 ```
+
+Note: `defaultInactive` is deprecated. The create form defaults to active and this option will be removed.
 
 ### Overriding the AnnouncementCard
 
@@ -129,6 +162,10 @@ Example
 ```tsx
 <AnnouncementsPage category="conferences" />
 ```
+
+Note: The `category` prop is deprecated. Prefer using URL state like
+`/announcements?category=conferences` to filter the page instead. The `tags` prop
+remains supported.
 
 ### Overriding the AnnouncementCreateButton
 
