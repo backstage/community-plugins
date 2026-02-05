@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-/**
- * @alpha
- * Translation resources for the RBAC plugin
- */
-export * from './translations';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import apis from './apis';
+import rbacNavItem from './navItems';
+import rbacPage from './pages';
+import { rootRouteRef } from '../routes';
+
+export default createFrontendPlugin({
+  pluginId: 'rbac',
+  info: { packageJson: () => import('../../package.json') },
+  extensions: [...apis, rbacPage, rbacNavItem],
+  routes: {
+    root: rootRouteRef,
+  },
+});

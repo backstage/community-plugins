@@ -48,6 +48,7 @@ export const rbacMessages = {
   },
   errors: {
     notFound: 'Not Found',
+    notAllowed: 'Insufficient permissions to access this page',
     unauthorized: 'Unauthorized to create role',
     rbacDisabled: 'Enable the RBAC backend plugin to use this feature.',
     rbacDisabledInfo:
