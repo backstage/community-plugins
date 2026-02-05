@@ -72,6 +72,8 @@ export type Announcement = {
   sendNotification?: boolean;
   /** Timestamp when the announcement was last updated */
   updated_at: string;
+  /** Optional catalog entity references this announcement is linked to */
+  entity_refs?: string[];
 };
 
 /**
@@ -112,6 +114,8 @@ export type AnnouncementsFilters = {
   current?: boolean;
   /** Whether the notification is enabled */
   sendNotification?: boolean;
+  /** Filter by catalog entity reference (single value for filtering) */
+  entity_ref?: string;
 };
 
 /**
