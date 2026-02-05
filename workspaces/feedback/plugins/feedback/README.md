@@ -38,6 +38,18 @@ It is dedicated to simplifying the process of gathering and managing user feedba
 
 ### Plugin Setup
 
+## New Frontend / Hybrid Migration Notice
+
+The Feedback plugin currently has limited support for the new
+Backstage frontend and hybrid migration setups.
+
+The following steps are **legacy frontend only**:
+
+- Adding routes in `App.tsx` using `FlatRoutes`
+- Registering components directly in `AppRouter`
+
+## The backend configuration and catalog annotations remain the same for both legacy and new frontend setups.
+
 1. Install the plugin in your environment
 
    ```bash
