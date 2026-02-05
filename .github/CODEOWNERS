@@ -86,7 +86,7 @@ yarn.lock                                                               @backsta
 /workspaces/nexus-repository-manager                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jessicajhee @jrichter1 @HusneShabbir @karthikjeeyar 
 /workspaces/nomad                                                       @backstage/community-plugins-maintainers
 /workspaces/noop                                                        @backstage/community-plugins-maintainers
-/workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @karthikjeeyar @logonoff
+/workspaces/npm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @karthikjeeyar @logonoff
 /workspaces/ocm                                                         @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff @lokanandaprabhu @rohitkrai03 @dzemanov
 /workspaces/octopus-deploy                                              @backstage/community-plugins-maintainers  @jmezach
 /workspaces/opencost                                                    @backstage/community-plugins-maintainers
@@ -95,7 +95,7 @@ yarn.lock                                                               @backsta
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
 /workspaces/puppetdb                                                    @backstage/community-plugins-maintainers
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar 
-/workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @divyanshiGupta @PatAKnight @dzemanov @jrichter1 @HusneShabbir @karthikjeeyar @rohitkrai03 
+/workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @debsmita1 @divyanshiGupta @PatAKnight @dzemanov @jrichter1 @HusneShabbir @karthikjeeyar @rohitkrai03
 /workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
