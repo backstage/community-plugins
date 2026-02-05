@@ -58,6 +58,15 @@ export const searchModuleConfluenceCollator = createBackendModule({
           ? ['default']
           : confluenceConfigs.keys();
 
+        if (isSingleInstance) {
+          logger.warn(
+            'DEPRECATION WARNING: The single-instance Confluence configuration format is deprecated. ' +
+              'Please migrate to the multi-instance format by nesting your config under a named key. ' +
+              'Example: confluence.default.baseUrl instead of confluence.baseUrl. ' +
+              'See the plugin README for more details.',
+          );
+        }
+
         for (const instanceKey of instanceKeys) {
           const actualInstanceKey = isSingleInstance ? 'default' : instanceKey;
           const collatorKey =
@@ -66,7 +75,10 @@ export const searchModuleConfluenceCollator = createBackendModule({
               : `confluence${actualInstanceKey
                   .charAt(0)
                   .toUpperCase()}${actualInstanceKey.slice(1)}`;
-          // (removed duplicate collatorKey declaration)
+
+          const instanceConfig = isSingleInstance
+            ? confluenceConfigs
+            : confluenceConfigs.getConfig(instanceKey);
 
           const schedulePath = `search.collators.${collatorKey}.schedule`;
           const schedule = config.has(schedulePath)
@@ -76,9 +88,9 @@ export const searchModuleConfluenceCollator = createBackendModule({
             : defaultSchedule;
 
           logger.info(
-            `Indexing Confluence instance: "${confluenceConfigs
-              .getConfig(actualInstanceKey)
-              .getString('baseUrl')}"`,
+            `Indexing Confluence instance with baseUrl: "${instanceConfig.getString(
+              'baseUrl',
+            )}"`,
           );
           logger.info(
             `Confluence indexing schedule ${JSON.stringify(schedule)}`,
