@@ -1,5 +1,19 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.7.0
+
+### Minor Changes
+
+- e6dbf70: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- e6dbf70: updated the permissionFactory to use the `FetchUrlReader.fromConfig`
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+- Updated dependencies [e6dbf70]
+  - @backstage-community/plugin-rbac-common@1.23.0
+  - @backstage-community/plugin-rbac-node@1.17.0
+
 ## 7.6.1
 
 ### Patch Changes
