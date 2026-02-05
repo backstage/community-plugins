@@ -1440,8 +1440,8 @@ __metadata:
     qs: "npm:6.14.1"
     supertest: "npm:7.1.4"
     typeorm-adapter: "npm:^1.6.1"
-    zod: "npm:^3.22.4"
-    zod-to-json-schema: "npm:^3.24.5"
+    zod: "npm:^3.25.76"
+    zod-to-json-schema: "npm:^3.25.1"
   languageName: unknown
   linkType: soft
 
@@ -1480,6 +1480,7 @@ __metadata:
     "@backstage/core-components": "npm:^0.18.6"
     "@backstage/core-plugin-api": "npm:^1.12.2"
     "@backstage/dev-utils": "npm:^1.1.19"
+    "@backstage/frontend-plugin-api": "npm:^0.13.3"
     "@backstage/plugin-catalog": "npm:^1.32.2"
     "@backstage/plugin-catalog-common": "npm:^1.1.7"
     "@backstage/plugin-permission-common": "npm:^0.9.5"
@@ -1783,7 +1784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.35.3":
+"@backstage/cli@npm:^0.35.2, @backstage/cli@npm:^0.35.3":
   version: 0.35.3
   resolution: "@backstage/cli@npm:0.35.3"
   dependencies:
@@ -2184,7 +2185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-defaults@npm:^0.3.6":
+"@backstage/frontend-defaults@npm:^0.3.5, @backstage/frontend-defaults@npm:^0.3.6":
   version: 0.3.6
   resolution: "@backstage/frontend-defaults@npm:0.3.6"
   dependencies:
@@ -7660,6 +7661,17 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 10/115e8ceeec6bc69dff2048b35c0ab4f8bbee12d8bb6c1f4af758604586d802b6e669dcb02dda61d078de42c2b4ddce41b3d9e726d7daa6b4b850f4adbf7333ff
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:^1.32.3":
+  version: 1.58.1
+  resolution: "@playwright/test@npm:1.58.1"
+  dependencies:
+    playwright: "npm:1.58.1"
+  bin:
+    playwright: cli.js
+  checksum: 10/c561923c8f485ec9f0740c3377d400151594df6c1a97a52d89ea82d1fb0fcb10a9564b8f7711587caf8abc1583cb5990f76fa69b7e56181b14b5531ed644f512
   languageName: node
   linkType: hard
 
@@ -14070,6 +14082,36 @@ __metadata:
   checksum: 10/15a87564a6e0702a5fd1bc5e77ecbf9d0b2a8a5115eb20b1561562c451bca5c22f704bb2498a3072b2b31fa44f0c34eab2e8120aa6051ce2ce8bcae5709eafae
   languageName: node
   linkType: hard
+
+"app-next@workspace:packages/app-next":
+  version: 0.0.0-use.local
+  resolution: "app-next@workspace:packages/app-next"
+  dependencies:
+    "@backstage-community/plugin-rbac": "workspace:^"
+    "@backstage/cli": "npm:^0.35.2"
+    "@backstage/core-compat-api": "npm:^0.5.6"
+    "@backstage/core-components": "npm:^0.18.5"
+    "@backstage/core-plugin-api": "npm:^1.12.1"
+    "@backstage/frontend-defaults": "npm:^0.3.5"
+    "@backstage/frontend-plugin-api": "npm:^0.13.3"
+    "@backstage/plugin-app": "npm:^0.3.5"
+    "@backstage/plugin-app-react": "npm:^0.1.0"
+    "@backstage/plugin-catalog": "npm:^1.32.2"
+    "@backstage/plugin-search": "npm:^1.5.3"
+    "@backstage/plugin-user-settings": "npm:^0.8.31"
+    "@backstage/ui": "npm:^0.11.0"
+    "@material-ui/core": "npm:^4.12.2"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@playwright/test": "npm:^1.32.3"
+    "@testing-library/jest-dom": "npm:^6.0.0"
+    "@testing-library/react": "npm:^14.0.0"
+    "@types/react-dom": "npm:*"
+    react: "npm:^18.0.2"
+    react-dom: "npm:^18.0.2"
+    react-router: "npm:^6.3.0"
+    react-router-dom: "npm:^6.3.0"
+  languageName: unknown
+  linkType: soft
 
 "app-root-path@npm:^3.1.0":
   version: 3.1.0
@@ -26163,6 +26205,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"playwright-core@npm:1.58.1":
+  version: 1.58.1
+  resolution: "playwright-core@npm:1.58.1"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/1b627b93798644e2802321866037e222b08ec5975e6bfc0b2a8ca40d7196366834dd3f1e16dc63856d3e7e0b673c3d0f71fd5f1ac5f3c8e6610bedef4fbc31cf
+  languageName: node
+  linkType: hard
+
 "playwright@npm:1.57.0":
   version: 1.57.0
   resolution: "playwright@npm:1.57.0"
@@ -26175,6 +26226,21 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10/241559210f98ef11b6bd6413f2d29da7ef67c7865b72053192f0d164fab9e0d3bd47913b3351d5de6433a8aff2d8424d4b8bd668df420bf4dda7ae9fcd37b942
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.58.1":
+  version: 1.58.1
+  resolution: "playwright@npm:1.58.1"
+  dependencies:
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.58.1"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 10/63cf0a858e30d19beef17ec952be427083f3863d1302d53b56f4870972c0083797039a81f909840a903becdbf44285d0940fa74e6c011cfaa4b2bb3448c10536
   languageName: node
   linkType: hard
 
@@ -32689,7 +32755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-to-json-schema@npm:^3.24.5, zod-to-json-schema@npm:^3.25.1":
+"zod-to-json-schema@npm:^3.25.1":
   version: 3.25.1
   resolution: "zod-to-json-schema@npm:3.25.1"
   peerDependencies:
@@ -32716,7 +32782,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.22.4, zod@npm:^3.25.76":
+"zod@npm:^3.22.4":
+  version: 3.23.8
+  resolution: "zod@npm:3.23.8"
+  checksum: 10/846fd73e1af0def79c19d510ea9e4a795544a67d5b34b7e1c4d0425bf6bfd1c719446d94cdfa1721c1987d891321d61f779e8236fde517dc0e524aa851a6eff1
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.25.76":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995

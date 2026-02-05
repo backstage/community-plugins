@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  useTranslationRef,
-  TranslationFunction,
-} from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../alpha/translations';
 
-/**
- * @alpha
- */
-export const useTranslation = (): {
-  t: TranslationFunction<typeof rbacTranslationRef.T>;
-} => useTranslationRef(rbacTranslationRef);
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import apis from './apis';
+import rbacNavItem from './navItems';
+import rbacPage from './pages';
+import { rootRouteRef } from '../routes';
+
+export default createFrontendPlugin({
+  pluginId: 'rbac',
+  info: { packageJson: () => import('../../package.json') },
+  extensions: [...apis, rbacPage, rbacNavItem],
+  routes: {
+    root: rootRouteRef,
+  },
+});

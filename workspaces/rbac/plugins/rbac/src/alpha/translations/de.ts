@@ -41,6 +41,8 @@ const rbacTranslationDe = createTranslationMessages({
     'toolbar.warning.noteText':
       'Selbst nach dem Importieren von Benutzern/Gruppen in den Katalog und dem Anwenden der oben genannten Berechtigungen, wenn die Erstellen/Bearbeiten-Schaltfläche weiterhin deaktiviert ist, wenden Sie sich bitte an Ihren Administrator, da Sie möglicherweise bedingt vom Zugriff auf die Erstellen/Bearbeiten-Schaltfläche eingeschränkt sind.',
     'errors.notFound': 'Nicht gefunden',
+    'errors.notAllowed':
+      'Unzureichende Berechtigungen zum Zugriff auf diese Seite',
     'errors.unauthorized': 'Nicht berechtigt, Rolle zu erstellen',
     'errors.rbacDisabled':
       'Aktivieren Sie das RBAC-Backend-Plugin, um diese Funktion zu verwenden.',

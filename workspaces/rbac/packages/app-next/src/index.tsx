@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  useTranslationRef,
-  TranslationFunction,
-} from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../alpha/translations';
 
-/**
- * @alpha
- */
-export const useTranslation = (): {
-  t: TranslationFunction<typeof rbacTranslationRef.T>;
-} => useTranslationRef(rbacTranslationRef);
+import '@backstage/cli/asset-types';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import '@backstage/ui/css/styles.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(App.createRoot());

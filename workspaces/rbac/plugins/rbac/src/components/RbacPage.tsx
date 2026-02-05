@@ -42,7 +42,7 @@ export const RbacPage = ({ useHeader = true }: { useHeader?: boolean }) => {
         </Content>
       </Page>
     ) : (
-      <ErrorPage statusMessage={t('errors.notFound')} />
+      <ErrorPage status="403" statusMessage={t('errors.notAllowed')} />
     );
   }
   return <Progress />;
