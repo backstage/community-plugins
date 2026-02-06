@@ -1572,6 +1572,8 @@ __metadata:
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/types": "backstage:^"
     "@material-ui/core": "npm:^4.9.13"
