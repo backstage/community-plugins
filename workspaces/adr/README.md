@@ -1,10 +1,14 @@
-# [Backstage](https://backstage.io)
+# ADR
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins related to Architecture Decision Records (ADR).
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+[adr](plugins/adr)
+[adr-backend](plugins/adr-backend)
+[adr-common](plugins/adr-common)
+[search-backend-module-adr](plugins/search-backend-module-adr)
+
+## About this workspace
+
+These plugins help teams document and discover architectural decisions in a structured way.
