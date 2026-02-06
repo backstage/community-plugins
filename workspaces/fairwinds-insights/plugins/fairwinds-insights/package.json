@@ -1,0 +1,78 @@
+{
+  "name": "@backstage-community/plugin-fairwinds-insights",
+  "version": "0.0.1",
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "fairwinds-insights",
+    "pluginPackages": [
+      "@backstage-community/plugin-fairwinds-insights",
+      "@backstage-community/plugin-fairwinds-insights-backend",
+      "@backstage-community/plugin-fairwinds-insights-common"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/fairwinds-insights/plugins/fairwinds-insights"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-fairwinds-insights-common": "workspace:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-auth-react": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/theme": "backstage:^",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "5.18.0",
+    "@mui/material": "5.18.0",
+    "@mui/styles": "5.18.0",
+    "@mui/utils": "5.17.1",
+    "@mui/x-charts": "7.29.1",
+    "react-use": "^17.3.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-app-api": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/react": "^18.3.3",
+    "msw": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "configSchema": "config.d.ts"
+}
