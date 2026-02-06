@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ErrorPanel, Progress, WarningPanel } from '@backstage/core-components';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { ocmEntityReadPermission } from '@backstage-community/plugin-ocm-common';
@@ -24,14 +25,17 @@ import { TableCardFromData } from '../TableCardFromData';
  * @public
  */
 export const ClusterAvailableResourceCard = (): any => {
-  const { data } = useCluster();
+  const { loading, data, error } = useCluster();
 
-  if (!data) {
-    return null;
+  if (loading) {
+    return <Progress />;
+  }
+  if (error) {
+    return <ErrorPanel error={error} />;
   }
 
-  if (!('availableResources' in data!)) {
-    return null;
+  if (!data || !('availableResources' in data)) {
+    return <WarningPanel severity="error" title="No cluster data available" />;
   }
 
   const nameMap = new Map<string, string>([
