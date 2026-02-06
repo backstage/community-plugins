@@ -54,5 +54,21 @@ export default defineConfig({
         locale: 'fr',
       },
     },
+    {
+      name: 'it',
+      testDir: 'plugins/nexus-repository-manager/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      testDir: 'plugins/nexus-repository-manager/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'ja',
+      },
+    },
   ],
 });

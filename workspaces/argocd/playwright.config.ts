@@ -35,4 +35,38 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   outputDir: 'node_modules/.cache/e2e-test-results',
+  projects: [
+    {
+      name: 'en',
+      testDir: './plugins/argocd/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'en',
+      },
+    },
+    {
+      name: 'fr',
+      testDir: './plugins/argocd/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'fr',
+      },
+    },
+    {
+      name: 'it',
+      testDir: './plugins/argocd/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      testDir: './plugins/argocd/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'ja',
+      },
+    },
+  ],
 });
