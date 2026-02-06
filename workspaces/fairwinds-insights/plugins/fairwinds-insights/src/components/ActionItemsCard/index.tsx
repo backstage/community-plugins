@@ -338,7 +338,7 @@ export const ActionItemsCard = () => {
                         >
                           {col.label}
                           {orderBy === col.id ? (
-                            <Box component="span" sx={visuallyHidden}>
+                            <Box component="span" sx={{ ...visuallyHidden }}>
                               {order === 'desc'
                                 ? 'sorted descending'
                                 : 'sorted ascending'}
