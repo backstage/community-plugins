@@ -1,5 +1,19 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { ReactElement, useState } from 'react';
-import { makeStyles } from '@mui/styles';
 import { StatisticsBarScrap } from './internal/StatisticsBarScrap';
 import { StatisticsBarSegment } from './internal/StatisticsBarSegment';
 import { StatisticsBarProps } from './statisticsBar.types';
@@ -8,45 +22,10 @@ import {
   getTotalFindingsByEngine,
 } from './statisticsBar.helpers';
 
-const useStyles = makeStyles(() => ({
-  container: {
-    backgroundColor: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: '4px',
-    border: '1px solid #dfdfdf',
-  },
-  header: {
-    padding: '1rem',
-    fontSize: '16px',
-    fontWeight: 600,
-  },
-  content: {
-    width: '100%',
-  },
-  barContainer: {
-    display: 'flex',
-    gap: '1rem',
-    flexDirection: 'column',
-  },
-  barScrapContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    rowGap: '0.5rem',
-  },
-  barSegmentContainer: {
-    display: 'flex',
-    borderRadius: '4px',
-    overflow: 'hidden',
-  },
-}));
-
 export const StatisticsBar = ({
   statistics,
   type,
 }: StatisticsBarProps): ReactElement => {
-  const classes = useStyles({});
-
   const getStatistics = {
     default: getTotalFindings,
     engine: getTotalFindingsByEngine,
@@ -63,9 +42,21 @@ export const StatisticsBar = ({
   }));
 
   return (
-    <div className={classes.content}>
-      <div className={classes.barContainer}>
-        <div className={classes.barSegmentContainer}>
+    <div style={{ width: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: '0.75rem',
+          flexDirection: 'column',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            borderRadius: '4px',
+            overflow: 'hidden',
+          }}
+        >
           {!!total ? (
             extendedData.map(item => (
               <StatisticsBarSegment
@@ -81,7 +72,13 @@ export const StatisticsBar = ({
             <StatisticsBarSegment percentage={100} isHovered={false} />
           )}
         </div>
-        <div className={classes.barScrapContainer}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.25rem',
+          }}
+        >
           {extendedData.map(item => (
             <StatisticsBarScrap
               key={item.key}
