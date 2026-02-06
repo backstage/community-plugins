@@ -406,19 +406,21 @@ export class AnnouncementsDatabase {
   async insertAnnouncement(
     announcement: AnnouncementUpsert,
   ): Promise<AnnouncementModel> {
-    await this.db<DbAnnouncement>(announcementsTable).insert(
-      announcementUpsertToDB(announcement),
-    );
-
-    // Insert entity relationships if present
-    if (announcement.entityRefs && announcement.entityRefs.length > 0) {
-      await this.db('announcement_entities').insert(
-        announcement.entityRefs.map(entity_ref => ({
-          announcement_id: announcement.id,
-          entity_ref,
-        })),
+    await this.db.transaction(async trx => {
+      await trx<DbAnnouncement>(announcementsTable).insert(
+        announcementUpsertToDB(announcement),
       );
-    }
+
+      // Insert entity relationships if present
+      if (announcement.entityRefs && announcement.entityRefs.length > 0) {
+        await trx('announcement_entities').insert(
+          announcement.entityRefs.map(entity_ref => ({
+            announcement_id: announcement.id,
+            entity_ref,
+          })),
+        );
+      }
+    });
 
     const newAnnouncement = await this.announcementByID(announcement.id);
 
@@ -432,23 +434,25 @@ export class AnnouncementsDatabase {
   async updateAnnouncement(
     announcement: AnnouncementUpsert,
   ): Promise<AnnouncementModel> {
-    await this.db<DbAnnouncement>(announcementsTable)
-      .where('id', announcement.id)
-      .update(announcementUpsertToDB(announcement));
+    await this.db.transaction(async trx => {
+      await trx<DbAnnouncement>(announcementsTable)
+        .where('id', announcement.id)
+        .update(announcementUpsertToDB(announcement));
 
-    // Update entity relationships: delete all existing and insert new ones
-    await this.db('announcement_entities')
-      .where('announcement_id', announcement.id)
-      .delete();
+      // Update entity relationships: delete all existing and insert new ones
+      await trx('announcement_entities')
+        .where('announcement_id', announcement.id)
+        .delete();
 
-    if (announcement.entityRefs && announcement.entityRefs.length > 0) {
-      await this.db('announcement_entities').insert(
-        announcement.entityRefs.map(entity_ref => ({
-          announcement_id: announcement.id,
-          entity_ref,
-        })),
-      );
-    }
+      if (announcement.entityRefs && announcement.entityRefs.length > 0) {
+        await trx('announcement_entities').insert(
+          announcement.entityRefs.map(entity_ref => ({
+            announcement_id: announcement.id,
+            entity_ref,
+          })),
+        );
+      }
+    });
 
     const updatedAnnouncement = await this.announcementByID(announcement.id);
 
