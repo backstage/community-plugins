@@ -2,4 +2,4 @@
 '@backstage-community/plugin-tech-insights-maturity': patch
 ---
 
-Update README
+Fixes a typo in the package import in the README example.
