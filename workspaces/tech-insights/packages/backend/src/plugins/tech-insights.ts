@@ -21,45 +21,45 @@ import {
   FactRetrieverContext,
 } from '@backstage-community/plugin-tech-insights-node';
 
-export const checks = [
-  {
-    id: 'groupOwnerCheck',
-    type: JSON_RULE_ENGINE_CHECK_TYPE,
-    name: 'Group Owner Check',
-    description:
-      'Verifies that a Group has been set as the owner for this entity',
-    factIds: ['entityOwnershipFactRetriever'],
-    rule: {
-      conditions: {
-        all: [
-          {
-            fact: 'hasGroupOwner',
-            operator: 'equal',
-            value: true,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'apiDefinitionCheck',
-    type: JSON_RULE_ENGINE_CHECK_TYPE,
-    name: 'API definition Check',
-    description: 'Verifies that a API has a definition set',
-    factIds: ['apiDefinitionFactRetriever'],
-    rule: {
-      conditions: {
-        all: [
-          {
-            fact: 'hasDefinition',
-            operator: 'equal',
-            value: true,
-          },
-        ],
-      },
-    },
-  },
-];
+// export const checks = [
+//   {
+//     id: 'groupOwnerCheck',
+//     type: JSON_RULE_ENGINE_CHECK_TYPE,
+//     name: 'Group Owner Check',
+//     description:
+//       'Verifies that a Group has been set as the owner for this entity',
+//     factIds: ['entityOwnershipFactRetriever'],
+//     rule: {
+//       conditions: {
+//         all: [
+//           {
+//             fact: 'hasGroupOwner',
+//             operator: 'equal',
+//             value: true,
+//           },
+//         ],
+//       },
+//     },
+//   },
+//   {
+//     id: 'apiDefinitionCheck',
+//     type: JSON_RULE_ENGINE_CHECK_TYPE,
+//     name: 'API definition Check',
+//     description: 'Verifies that a API has a definition set',
+//     factIds: ['apiDefinitionFactRetriever'],
+//     rule: {
+//       conditions: {
+//         all: [
+//           {
+//             fact: 'hasDefinition',
+//             operator: 'equal',
+//             value: true,
+//           },
+//         ],
+//       },
+//     },
+//   },
+// ];
 
 export const apiDefinitionFactRetriever: FactRetriever = {
   id: 'apiDefinitionFactRetriever',
@@ -96,6 +96,47 @@ export const apiDefinitionFactRetriever: FactRetriever = {
           hasDefinition:
             (entity as ApiEntityV1alpha1).spec?.definition &&
             (entity as ApiEntityV1alpha1).spec?.definition.length > 0,
+        },
+      };
+    });
+  },
+};
+
+export const myFactRetriever: FactRetriever = {
+  id: 'myFactRetriever', // unique identifier of the fact retriever
+  version: '0.1.1', // SemVer version number of this fact retriever schema. This should be incremented if the implementation changes
+  entityFilter: [{ kind: 'component' }], // EntityFilter to be used in the future (creating checks, graphs etc.) to figure out which entities this fact retrieves data for.
+  schema: {
+    // Name/identifier of an individual fact that this retriever returns
+    examplenumberfact: {
+      type: 'integer', // Type of the fact
+      description: 'A fact of a number', // Description of the fact
+    },
+  },
+  handler: async ({ discovery, auth }: FactRetrieverContext) => {
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await auth.getOwnServiceCredentials(),
+      targetPluginId: 'catalog',
+    });
+
+    const catalogClient = new CatalogClient({
+      discoveryApi: discovery,
+    });
+    const entities = await catalogClient.getEntities(
+      {
+        filter: [{ kind: 'component' }],
+      },
+      { token },
+    );
+    return entities.items.map(it => {
+      return {
+        entity: {
+          namespace: it.metadata.namespace!,
+          kind: it.kind,
+          name: it.metadata.name,
+        },
+        facts: {
+          examplenumberfact: 2,
         },
       };
     });

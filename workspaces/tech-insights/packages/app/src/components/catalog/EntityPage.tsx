@@ -67,7 +67,10 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-import { EntityTechInsightsScorecardCard } from '@backstage-community/plugin-tech-insights';
+import {
+  EntityTechInsightsScorecardCard,
+  EntityTechInsightsScorecardContent,
+} from '@backstage-community/plugin-tech-insights';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -198,6 +201,10 @@ const websiteEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/tech-insights" title="Tech Insights">
+      <EntityTechInsightsScorecardContent title="Content" />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
     </EntityLayout.Route>
@@ -275,6 +282,10 @@ const apiPage = (
           </Grid>
         </Grid>
       </Grid>
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/tech-insights" title="Tech Insights">
+      <EntityTechInsightsScorecardContent title="Content" />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/definition" title="Definition">

@@ -15,17 +15,12 @@
  */
 
 import { createBackend } from '@backstage/backend-defaults';
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { techInsightsFactRetrieversExtensionPoint } from '@backstage-community/plugin-tech-insights-node';
 import {
-  coreServices,
-  createBackendModule,
-} from '@backstage/backend-plugin-api';
-import {
-  techInsightsFactCheckerFactoryExtensionPoint,
-  techInsightsFactRetrieversExtensionPoint,
-} from '@backstage-community/plugin-tech-insights-node';
-import { JsonRulesEngineFactCheckerFactory } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { apiDefinitionFactRetriever, checks } from './plugins/tech-insights';
+  apiDefinitionFactRetriever,
+  myFactRetriever,
+} from './plugins/tech-insights';
 
 const backend = createBackend();
 
@@ -57,41 +52,25 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 
 // This will register JsonRulesEngineFactCheckerFactory by configuration and overwrite all programmatically registration
-// backend.add(import('@backstage-community/plugin-tech-insights-backend-module-jsonfc'));
+backend.add(
+  import('@backstage-community/plugin-tech-insights-backend-module-jsonfc'),
+);
 
 // This will programmatically register JsonRulesEngineFactCheckerFactory
 backend.add(
   createBackendModule({
     pluginId: 'tech-insights',
-    moduleId: 'json-rules-engine-fact-checker-factory',
-    register(env) {
-      env.registerInit({
+    moduleId: 'my-fact-retriever',
+    register(reg) {
+      reg.registerInit({
         deps: {
-          logger: coreServices.logger,
-          catalog: catalogServiceRef,
-          auth: coreServices.auth,
-          techInsightsFactCheckerFactory:
-            techInsightsFactCheckerFactoryExtensionPoint,
-          techInsightsFactRetrievers: techInsightsFactRetrieversExtensionPoint,
+          providers: techInsightsFactRetrieversExtensionPoint,
         },
-        async init({
-          logger,
-          catalog,
-          auth,
-          techInsightsFactCheckerFactory,
-          techInsightsFactRetrievers,
-        }) {
-          techInsightsFactRetrievers.addFactRetrievers({
-            apiDefinitionFactRetriever: apiDefinitionFactRetriever,
+        async init({ providers }) {
+          providers.addFactRetrievers({
+            apiDefinitionFactRetriever,
+            myFactRetriever,
           });
-          techInsightsFactCheckerFactory.setFactCheckerFactory(
-            new JsonRulesEngineFactCheckerFactory({
-              logger: logger,
-              checks: checks,
-              catalog: catalog,
-              auth: auth,
-            }),
-          );
         },
       });
     },
