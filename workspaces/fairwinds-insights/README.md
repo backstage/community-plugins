@@ -31,3 +31,17 @@ yarn install && yarn start
 - [fairwinds-insights](./plugins/fairwinds-insights/README): Frontend plugin that provides the UI components and functionality.
 - [fairwinds-insights-common](./plugins/fairwinds-insights-common/README): A common library containing shared types, permissions, and constants.
 - [fairwinds-insights-backend](./plugins/fairwinds-insights-backend/README): Backend plugin that provides the API integration and database interactions.
+
+## Screenshots
+
+| Action items (table)                                 | Action items (top graph)                                      | MTD costs                          |
+| ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------- |
+| ![Action items table](./docs/action_items_table.png) | ![Action items top graphs](./docs/action_items_top_graph.png) | ![MTD costs](./docs/MTD_costs.png) |
+
+| Resource history — CPU                                   | Resource history — Memory                                      | Resource history — Pod count                                         |
+| -------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| ![Resource history CPU](./docs/resource_history_cpu.png) | ![Resource history memory](./docs/resource_history_memory.png) | ![Resource history pod count](./docs/resource_history_pod_count.png) |
+
+| Vulnerabilities Summary                        |
+| ---------------------------------------------- |
+| ![Vulnerabilities](./docs/vulnerabilities.png) |
