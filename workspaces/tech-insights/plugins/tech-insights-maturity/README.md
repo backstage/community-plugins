@@ -91,7 +91,7 @@ Note: This only applies to entities of Kind: 'System', 'Domain', or 'Group'
 ```tsx
 // packages/app/src/components/catalog/EntityPage.tsx
 
-import { EntityMaturitySummaryContent } from '@backstage-community/plugin-tech-insight-maturity';
+import { EntityMaturitySummaryContent } from '@backstage-community/plugin-tech-insights-maturity';
 
 const systemEntityPage = (
   <EntityLayoutWrapper>
