@@ -14,7 +14,8 @@
     "pluginPackages": [
       "@backstage-community/plugin-argocd",
       "@backstage-community/plugin-argocd-backend",
-      "@backstage-community/plugin-argocd-common"
+      "@backstage-community/plugin-argocd-common",
+      "@backstage-community/plugin-argocd-node"
     ]
   },
   "exports": {
