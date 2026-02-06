@@ -100,7 +100,7 @@ export const AnnouncementForm = ({
     initialData.on_behalf_of || '',
   );
   const [selectedEntity, setSelectedEntity] = useState(
-    initialData.entity_refs?.[0] || '',
+    initialData.entityRefs?.[0] || '',
   );
   const [showCreateCategoryDialog, setShowCreateCategoryDialog] =
     useState(false);
@@ -211,7 +211,7 @@ export const AnnouncementForm = ({
       tags: formTags?.map(tag => tag.slug),
       publisher: userIdentity.userEntityRef,
       on_behalf_of: onBehalfOfSelectedTeam,
-      entity_refs: selectedEntity ? [selectedEntity] : undefined,
+      entityRefs: selectedEntity ? [selectedEntity] : undefined,
     };
 
     try {

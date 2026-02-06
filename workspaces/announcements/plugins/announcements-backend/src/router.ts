@@ -57,7 +57,7 @@ interface AnnouncementRequest {
   sendNotification: boolean;
   on_behalf_of?: string;
   tags?: string[];
-  entity_refs?: string[];
+  entityRefs?: string[];
 }
 
 interface CategoryRequest {
@@ -77,7 +77,7 @@ type GetAnnouncementsQueryParams = {
   order?: 'asc' | 'desc';
   current?: boolean;
   tags?: string[];
-  entity_ref?: string;
+  entityRef?: string;
 };
 
 export async function createRouter(
@@ -145,7 +145,7 @@ export async function createRouter(
           order = 'desc',
           current,
           tags,
-          entity_ref,
+          entityRef,
         },
       } = req;
 
@@ -163,7 +163,7 @@ export async function createRouter(
           order: ['asc', 'desc'].includes(order) ? order : 'desc',
           current,
           tags: tagsFilter,
-          entity_ref,
+          entityRef,
         },
       );
       await auditorEvent.success();
@@ -357,7 +357,7 @@ export async function createRouter(
           start_at,
           until_date,
           on_behalf_of,
-          entity_refs,
+          entityRefs,
           tags,
         },
       } = req;
@@ -397,7 +397,7 @@ export async function createRouter(
             start_at: DateTime.fromISO(start_at),
             until_date: until_date ? DateTime.fromISO(until_date) : undefined,
             on_behalf_of,
-            entity_refs,
+            entityRefs,
             tags: validatedTags,
           },
         });

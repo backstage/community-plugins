@@ -46,7 +46,7 @@ backend.add(import('@backstage-community/plugin-announcements-backend'));
 curl http://localhost:7007/api/announcements/announcements
 
 # get announcements for a specific entity
-curl http://localhost:7007/api/announcements/announcements?entity_ref=component:default/my-service
+curl http://localhost:7007/api/announcements/announcements?entityRef=component:default/my-service
 
 # get all categories
 curl http://localhost:7007/api/categories
@@ -65,7 +65,7 @@ return data;
 
 // get announcements for a specific entity
 const response = await fetch(
-  'http://localhost:7007/api/announcements/announcements?entity_ref=component:default/my-service',
+  'http://localhost:7007/api/announcements/announcements?entityRef=component:default/my-service',
 );
 const data = await response.json();
 return data;

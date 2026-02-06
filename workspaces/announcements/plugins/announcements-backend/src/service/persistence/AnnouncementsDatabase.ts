@@ -44,7 +44,7 @@ type AnnouncementUpsert = Omit<
  */
 type DbAnnouncement = Omit<
   Announcement,
-  'category' | 'tags' | 'start_at' | 'until_date' | 'entity_refs'
+  'category' | 'tags' | 'start_at' | 'until_date' | 'entityRefs'
 > & {
   category?: string;
   tags?: string | string[];
@@ -172,7 +172,7 @@ const DBToAnnouncementWithCategory = (
       : null,
     updated_at: timestampToDateTime(announcementDb.updated_at),
     on_behalf_of: announcementDb.on_behalf_of,
-    entity_refs: [],
+    entityRefs: [],
   };
 };
 
@@ -195,7 +195,7 @@ export class AnnouncementsDatabase {
       sortBy = 'created_at',
       order = 'desc',
       current,
-      entity_ref,
+      entityRef,
     } = request;
 
     const filterBase = <TRecord extends {}, TResult>(
@@ -207,13 +207,13 @@ export class AnnouncementsDatabase {
       if (active) {
         qb.where('active', active);
       }
-      if (entity_ref) {
+      if (entityRef) {
         // Filter by entity using join table
         qb.innerJoin(
           'announcement_entities',
           'announcements.id',
           'announcement_entities.announcement_id',
-        ).where('announcement_entities.entity_ref', entity_ref);
+        ).where('announcement_entities.entity_ref', entityRef);
       }
       if (current) {
         const today = DateTime.now().toISO();
@@ -277,7 +277,7 @@ export class AnnouncementsDatabase {
             .whereIn('announcement_id', announcementIds)
         : [];
 
-    // Build a map of announcement_id -> entity_refs[]
+    // Build a map of announcement_id -> entityRefs[]
     const entityRefMap = new Map<string, string[]>();
     entityRefs.forEach(row => {
       if (!entityRefMap.has(row.announcement_id)) {
@@ -318,12 +318,12 @@ export class AnnouncementsDatabase {
         return {
           ...announcement,
           tags: updatedTags,
-          entity_refs: entityRefMap.get(announcement.id) || [],
+          entityRefs: entityRefMap.get(announcement.id) || [],
         };
       }
       return {
         ...announcement,
-        entity_refs: entityRefMap.get(announcement.id) || [],
+        entityRefs: entityRefMap.get(announcement.id) || [],
       };
     });
 
@@ -379,7 +379,7 @@ export class AnnouncementsDatabase {
       .select('entity_ref')
       .where('announcement_id', id);
 
-    announcementBase.entity_refs = entityRefs.map(row => row.entity_ref);
+    announcementBase.entityRefs = entityRefs.map(row => row.entity_ref);
 
     if (announcementBase.tags && announcementBase.tags.length > 0) {
       const tagSlugs = announcementBase.tags.map(t => t.slug);
@@ -411,9 +411,9 @@ export class AnnouncementsDatabase {
     );
 
     // Insert entity relationships if present
-    if (announcement.entity_refs && announcement.entity_refs.length > 0) {
+    if (announcement.entityRefs && announcement.entityRefs.length > 0) {
       await this.db('announcement_entities').insert(
-        announcement.entity_refs.map(entity_ref => ({
+        announcement.entityRefs.map(entity_ref => ({
           announcement_id: announcement.id,
           entity_ref,
         })),
@@ -441,9 +441,9 @@ export class AnnouncementsDatabase {
       .where('announcement_id', announcement.id)
       .delete();
 
-    if (announcement.entity_refs && announcement.entity_refs.length > 0) {
+    if (announcement.entityRefs && announcement.entityRefs.length > 0) {
       await this.db('announcement_entities').insert(
-        announcement.entity_refs.map(entity_ref => ({
+        announcement.entityRefs.map(entity_ref => ({
           announcement_id: announcement.id,
           entity_ref,
         })),

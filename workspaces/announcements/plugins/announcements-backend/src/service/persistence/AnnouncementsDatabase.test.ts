@@ -86,7 +86,7 @@ describe('AnnouncementsDatabase', () => {
       until_date: null,
       on_behalf_of: 'group:default/team-a',
       updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-      entity_refs: [],
+      entityRefs: [],
     });
   });
 
@@ -121,7 +121,7 @@ describe('AnnouncementsDatabase', () => {
       until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
       updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-      entity_refs: [],
+      entityRefs: [],
     });
   });
 
@@ -159,7 +159,7 @@ describe('AnnouncementsDatabase', () => {
           until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
           updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-          entity_refs: [],
+          entityRefs: [],
         },
       ],
     });
@@ -215,7 +215,7 @@ describe('AnnouncementsDatabase', () => {
           until_date: timestampToDateTime('2025-03-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
           updated_at: timestampToDateTime(time.toISO()),
-          entity_refs: [],
+          entityRefs: [],
         },
       ],
     });
@@ -337,7 +337,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
           {
             id: 'id',
@@ -356,7 +356,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -412,7 +412,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -496,7 +496,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -580,7 +580,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
           {
             id: 'id2',
@@ -596,7 +596,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -653,7 +653,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-19T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
           {
             id: 'id1',
@@ -669,7 +669,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -726,7 +726,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
           {
             id: 'id2',
@@ -742,7 +742,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -799,7 +799,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
           {
             id: 'id1',
@@ -815,7 +815,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-25T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
@@ -872,7 +872,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2025-10-27T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
           {
             id: 'id1',
@@ -888,15 +888,15 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2025-10-25T15:28:08.539Z'),
-            entity_refs: [],
+            entityRefs: [],
           },
         ],
       });
     });
   });
 
-  describe('entity_ref queries', () => {
-    it('should filter announcements by entity_ref', async () => {
+  describe('entityRef queries', () => {
+    it('should filter announcements by entityRef', async () => {
       await store.insertAnnouncement({
         id: 'id1',
         publisher: 'publisher1',
@@ -909,7 +909,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       await store.insertAnnouncement({
@@ -924,7 +924,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-b'],
+        entityRefs: ['component:default/service-b'],
       });
 
       await store.insertAnnouncement({
@@ -942,7 +942,7 @@ describe('AnnouncementsDatabase', () => {
       });
 
       const announcements = await store.announcements({
-        entity_ref: 'component:default/service-a',
+        entityRef: 'component:default/service-a',
       });
 
       expect(announcements).toEqual({
@@ -962,13 +962,13 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: ['component:default/service-a'],
+            entityRefs: ['component:default/service-a'],
           },
         ],
       });
     });
 
-    it('should return empty results when entity_ref has no matches', async () => {
+    it('should return empty results when entityRef has no matches', async () => {
       await store.insertAnnouncement({
         id: 'id1',
         publisher: 'publisher1',
@@ -981,11 +981,11 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       const announcements = await store.announcements({
-        entity_ref: 'component:default/nonexistent',
+        entityRef: 'component:default/nonexistent',
       });
 
       expect(announcements).toEqual({
@@ -994,7 +994,7 @@ describe('AnnouncementsDatabase', () => {
       });
     });
 
-    it('should combine entity_ref filter with other filters', async () => {
+    it('should combine entityRef filter with other filters', async () => {
       await store.insertAnnouncement({
         id: 'id1',
         publisher: 'publisher1',
@@ -1007,7 +1007,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       await store.insertAnnouncement({
@@ -1022,11 +1022,11 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       const announcements = await store.announcements({
-        entity_ref: 'component:default/service-a',
+        entityRef: 'component:default/service-a',
         active: true,
       });
 
@@ -1047,13 +1047,13 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-            entity_refs: ['component:default/service-a'],
+            entityRefs: ['component:default/service-a'],
           },
         ],
       });
     });
 
-    it('should populate entity_refs for multiple announcements', async () => {
+    it('should populate entityRefs for multiple announcements', async () => {
       await store.insertAnnouncement({
         id: 'id1',
         publisher: 'publisher1',
@@ -1066,7 +1066,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: [
+        entityRefs: [
           'component:default/service-a',
           'component:default/service-b',
         ],
@@ -1089,16 +1089,16 @@ describe('AnnouncementsDatabase', () => {
       const announcements = await store.announcements({});
 
       expect(announcements.count).toBe(2);
-      expect(announcements.results[1].entity_refs).toEqual([
+      expect(announcements.results[1].entityRefs).toEqual([
         'component:default/service-a',
         'component:default/service-b',
       ]);
-      expect(announcements.results[0].entity_refs).toEqual([]);
+      expect(announcements.results[0].entityRefs).toEqual([]);
     });
   });
 
-  describe('entity_refs operations', () => {
-    it('should return announcement with entity_refs by id', async () => {
+  describe('entityRefs operations', () => {
+    it('should return announcement with entityRefs by id', async () => {
       await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1111,7 +1111,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       const announcement = await store.announcementByID('id');
@@ -1130,11 +1130,11 @@ describe('AnnouncementsDatabase', () => {
         until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
     });
 
-    it('should return announcement with multiple entity_refs by id', async () => {
+    it('should return announcement with multiple entityRefs by id', async () => {
       await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1147,7 +1147,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: [
+        entityRefs: [
           'component:default/service-a',
           'component:default/service-b',
           'system:default/system-a',
@@ -1156,14 +1156,14 @@ describe('AnnouncementsDatabase', () => {
 
       const announcement = await store.announcementByID('id');
 
-      expect(announcement?.entity_refs).toEqual([
+      expect(announcement?.entityRefs).toEqual([
         'component:default/service-a',
         'component:default/service-b',
         'system:default/system-a',
       ]);
     });
 
-    it('should return announcement with empty entity_refs by id', async () => {
+    it('should return announcement with empty entityRefs by id', async () => {
       await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1180,10 +1180,10 @@ describe('AnnouncementsDatabase', () => {
 
       const announcement = await store.announcementByID('id');
 
-      expect(announcement?.entity_refs).toEqual([]);
+      expect(announcement?.entityRefs).toEqual([]);
     });
 
-    it('should insert announcement with entity_refs', async () => {
+    it('should insert announcement with entityRefs', async () => {
       const inserted = await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1196,16 +1196,16 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
-      expect(inserted.entity_refs).toEqual(['component:default/service-a']);
+      expect(inserted.entityRefs).toEqual(['component:default/service-a']);
 
       const fromDb = await store.announcementByID('id');
-      expect(fromDb?.entity_refs).toEqual(['component:default/service-a']);
+      expect(fromDb?.entityRefs).toEqual(['component:default/service-a']);
     });
 
-    it('should insert announcement with multiple entity_refs', async () => {
+    it('should insert announcement with multiple entityRefs', async () => {
       const inserted = await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1218,19 +1218,19 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: [
+        entityRefs: [
           'component:default/service-a',
           'component:default/service-b',
         ],
       });
 
-      expect(inserted.entity_refs).toEqual([
+      expect(inserted.entityRefs).toEqual([
         'component:default/service-a',
         'component:default/service-b',
       ]);
     });
 
-    it('should insert announcement without entity_refs', async () => {
+    it('should insert announcement without entityRefs', async () => {
       const inserted = await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1245,10 +1245,10 @@ describe('AnnouncementsDatabase', () => {
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
       });
 
-      expect(inserted.entity_refs).toEqual([]);
+      expect(inserted.entityRefs).toEqual([]);
     });
 
-    it('should update announcement to add entity_refs', async () => {
+    it('should update announcement to add entityRefs', async () => {
       await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1275,13 +1275,13 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
-      expect(updated.entity_refs).toEqual(['component:default/service-a']);
+      expect(updated.entityRefs).toEqual(['component:default/service-a']);
     });
 
-    it('should update announcement to change entity_refs', async () => {
+    it('should update announcement to change entityRefs', async () => {
       await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1294,7 +1294,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       const updated = await store.updateAnnouncement({
@@ -1309,25 +1309,25 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: [
+        entityRefs: [
           'component:default/service-b',
           'component:default/service-c',
         ],
       });
 
-      expect(updated.entity_refs).toEqual([
+      expect(updated.entityRefs).toEqual([
         'component:default/service-b',
         'component:default/service-c',
       ]);
 
       const fromDb = await store.announcementByID('id');
-      expect(fromDb?.entity_refs).toEqual([
+      expect(fromDb?.entityRefs).toEqual([
         'component:default/service-b',
         'component:default/service-c',
       ]);
     });
 
-    it('should update announcement to remove entity_refs', async () => {
+    it('should update announcement to remove entityRefs', async () => {
       await store.insertAnnouncement({
         id: 'id',
         publisher: 'publisher',
@@ -1340,7 +1340,7 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: ['component:default/service-a'],
+        entityRefs: ['component:default/service-a'],
       });
 
       const updated = await store.updateAnnouncement({
@@ -1355,13 +1355,13 @@ describe('AnnouncementsDatabase', () => {
         until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
         on_behalf_of: 'group:default/team-a',
         updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
-        entity_refs: [],
+        entityRefs: [],
       });
 
-      expect(updated.entity_refs).toEqual([]);
+      expect(updated.entityRefs).toEqual([]);
 
       const fromDb = await store.announcementByID('id');
-      expect(fromDb?.entity_refs).toEqual([]);
+      expect(fromDb?.entityRefs).toEqual([]);
     });
   });
 });
