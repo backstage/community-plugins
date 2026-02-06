@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali
 
+## 1.49.1
+
+### Patch Changes
+
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+
 ## 1.49.0
 
 ### Minor Changes
