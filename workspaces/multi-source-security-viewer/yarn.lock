@@ -1420,17 +1420,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-azure-devops-common@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@backstage-community/plugin-azure-devops-common@npm:0.17.0"
-  dependencies:
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/plugin-catalog-common": "npm:^1.1.7"
-    "@backstage/plugin-permission-common": "npm:^0.9.3"
-  checksum: 10/52dbd28f271e085bd8599a24b7316738afb9be4b143279b8d081e822e8ccdd515139db833958d1188e2975b63d2973612898e1252bb68b8f72ebb433a09da128
-  languageName: node
-  linkType: hard
-
 "@backstage-community/plugin-azure-devops-common@npm:^0.19.0":
   version: 0.19.0
   resolution: "@backstage-community/plugin-azure-devops-common@npm:0.19.0"
@@ -1575,7 +1564,7 @@ __metadata:
     "@backstage/plugin-permission-node": "npm:^0.10.7"
     "@backstage/types": "npm:^1.2.2"
     "@types/express": "npm:^4.17.6"
-    "@types/supertest": "npm:^2.0.12"
+    "@types/supertest": "npm:^6.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     supertest: "npm:^6.2.4"
@@ -13887,7 +13876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
+"@types/superagent@npm:^8.1.0":
   version: 8.1.9
   resolution: "@types/superagent@npm:8.1.9"
   dependencies:
@@ -13899,12 +13888,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.12":
-  version: 2.0.16
-  resolution: "@types/supertest@npm:2.0.16"
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
   dependencies:
-    "@types/superagent": "npm:*"
-  checksum: 10/2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
   languageName: node
   linkType: hard
 

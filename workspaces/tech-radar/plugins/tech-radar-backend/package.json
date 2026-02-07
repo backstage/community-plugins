@@ -49,7 +49,7 @@
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@types/express": "*",
-    "@types/supertest": "^2.0.12",
+    "@types/supertest": "^6.0.0",
     "msw": "^2.3.1",
     "supertest": "^7.0.0"
   },
