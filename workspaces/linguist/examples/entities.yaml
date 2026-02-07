@@ -13,7 +13,7 @@ kind: Component
 metadata:
   name: example-website
   annotations:
-    backstage.io/linguist: https://github.com/awanlin/community-plugins/tree/main/workspaces/linguist
+    backstage.io/linguist: https://github.com/microsoft/mcp
 spec:
   type: website
   lifecycle: experimental

@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { InfoCard, Progress } from '@backstage/core-components';
+import {
+  Box,
+  Text,
+  TooltipTrigger,
+  Tooltip,
+  TagGroup,
+  Tag,
+  Flex,
+  Card,
+  CardHeader,
+  CardBody,
+} from '@backstage/ui';
+import { Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
@@ -28,38 +34,10 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { useLanguages } from '../../hooks';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { linguistTranslationRef } from '../../translation';
-
-const useStyles = makeStyles(theme => ({
-  infoCard: {
-    marginBottom: theme.spacing(3),
-  },
-  barContainer: {
-    height: theme.spacing(2),
-    marginBottom: theme.spacing(3),
-    borderRadius: '4px',
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
-  },
-  bar: {
-    height: '100%',
-    position: 'relative',
-  },
-  languageDot: {
-    width: '10px',
-    height: '10px',
-    borderRadius: '50%',
-    marginRight: theme.spacing(1),
-    display: 'inline-block',
-  },
-  label: {
-    color: 'inherit',
-  },
-}));
+import classes from './LinguistCard.module.css';
 
 export const LinguistCard = () => {
   const { t } = useTranslationRef(linguistTranslationRef);
-  const classes = useStyles();
-  const theme = useTheme();
   const { entity } = useEntity();
   const { items, loading, error } = useLanguages(entity);
   let barWidth = 0;
@@ -72,13 +50,18 @@ export const LinguistCard = () => {
 
   if (items && items.languageCount === 0 && items.totalBytes === 0) {
     return (
-      <InfoCard title={t('entityCard.title')} className={classes.infoCard}>
-        <Grid container spacing={3}>
-          <Box p={2}>
-            <Typography>{t('entityCard.noData')}</Typography>
+      <Card className={classes.infoCard}>
+        <CardHeader>
+          <Text as="h3" variant="body-large" weight="bold">
+            {t('entityCard.title')}
+          </Text>
+        </CardHeader>
+        <CardBody>
+          <Box>
+            <Text>{t('entityCard.noData')}</Text>
           </Box>
-        </Grid>
-      </InfoCard>
+        </CardBody>
+      </Card>
     );
   }
 
@@ -88,62 +71,59 @@ export const LinguistCard = () => {
   const processedDate = items?.processedDate;
 
   return breakdown && processedDate ? (
-    <InfoCard title={t('entityCard.title')} className={classes.infoCard}>
-      <Box className={classes.barContainer}>
-        {breakdown.map((language, index: number) => {
-          barWidth = barWidth + language.percentage;
-          return (
-            <Tooltip
-              title={language.name}
-              placement="bottom-end"
-              key={slugify(language.name, { lower: true })}
-            >
-              <Box
-                className={classes.bar}
-                key={slugify(language.name, { lower: true })}
-                style={{
-                  marginTop: index === 0 ? '0' : `-16px`,
-                  zIndex: Object.keys(breakdown).length - index,
-                  backgroundColor:
-                    language.color?.toString() ||
-                    theme.palette.background.default,
-                  width: `${barWidth}%`,
-                }}
-              />
-            </Tooltip>
-          );
-        })}
-      </Box>
-      <Tooltip
-        title={`Generated ${DateTime.fromISO(processedDate).toRelative()}`}
-      >
-        <Box>
-          {breakdown.map(languages => (
-            <Chip
-              classes={{
-                label: classes.label,
-              }}
-              label={
-                <Box>
-                  <Box
-                    component="span"
-                    className={classes.languageDot}
-                    style={{
-                      backgroundColor:
-                        languages?.color?.toString() ||
-                        theme.palette.background.default,
-                    }}
-                  />
-                  {languages.name} - {languages.percentage}%
-                </Box>
-              }
-              variant="outlined"
-              key={slugify(languages.name, { lower: true })}
-            />
-          ))}
+    <Card className={classes.infoCard}>
+      <CardHeader>
+        <Text as="h3" variant="body-large" weight="bold">
+          {t('entityCard.title')}
+        </Text>
+      </CardHeader>
+      <CardBody>
+        <Box className={classes.barContainer}>
+          {breakdown.map((language, index: number) => {
+            barWidth = barWidth + language.percentage;
+            return (
+              <TooltipTrigger key={slugify(language.name, { lower: true })}>
+                <Box
+                  className={classes.bar}
+                  style={{
+                    marginTop:
+                      index === 0 ? '0' : `calc(-1 * var(--bui-space-2))`,
+                    zIndex: Object.keys(breakdown).length - index,
+                    backgroundColor:
+                      language.color?.toString() || 'var(--bui-bg-surface-0)',
+                    width: `${barWidth}%`,
+                  }}
+                />
+                <Tooltip placement="top">{language.name}</Tooltip>
+              </TooltipTrigger>
+            );
+          })}
         </Box>
-      </Tooltip>
-    </InfoCard>
+
+        <Flex direction="row" gap="2" style={{ flexWrap: 'wrap' }}>
+          <TagGroup>
+            {breakdown.map(languages => (
+              <Tag key={slugify(languages.name, { lower: true })}>
+                <Box
+                  as="span"
+                  className={classes.languageDot}
+                  style={{
+                    backgroundColor:
+                      languages?.color?.toString() || 'var(--bui-bg-surface-0)',
+                  }}
+                />
+                {languages.name} - {languages.percentage}%
+              </Tag>
+            ))}
+          </TagGroup>
+        </Flex>
+      </CardBody>
+      <CardHeader>
+        <Text as="p" variant="body-small" color="secondary">
+          Generated {DateTime.fromISO(processedDate).toRelative()}
+        </Text>
+      </CardHeader>
+    </Card>
   ) : (
     <></>
   );

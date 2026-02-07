@@ -29,20 +29,20 @@ import {
   EntityLayout,
   EntitySwitch,
 } from '@backstage/plugin-catalog';
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 
 const SampleEntityPage = ({ children }: PropsWithChildren<{}>) => (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={12}>
+      <Grid.Root columns="12" gap="3">
+        <Grid.Item colSpan="12">
           <EntityAboutCard variant="gridItem" />
-        </Grid>
+        </Grid.Item>
         {children}
-        <Grid item xs={12}>
+        <Grid.Item colSpan="12">
           <EntityHasSubcomponentsCard variant="gridItem" />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -63,9 +63,9 @@ createDevApp()
       <SampleEntityPage>
         <EntitySwitch>
           <EntitySwitch.Case if={isLinguistAvailable}>
-            <Grid item md={12}>
+            <Grid.Item colSpan="12">
               <EntityLinguistCard />
-            </Grid>
+            </Grid.Item>
           </EntitySwitch.Case>
         </EntitySwitch>
       </SampleEntityPage>
