@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { upperFirst } from 'lodash';
 
 import {
-  Table as TableRoot,
+  Table,
   useTable,
-  TableHeader,
-  Column,
-  TableBody,
-  Row,
   Cell,
-  TablePagination,
   Text,
-  Grid,
   Box,
   Flex,
+  ColumnConfig,
 } from '@backstage/ui';
 import { TableOptions as MuiTableOptions } from '@backstage/core-components';
 import {
@@ -52,6 +47,7 @@ import {
 } from './table-settings';
 import { ColumnInfo, TableRow } from './types';
 import { LifecycleIcon } from './LifecycleIcon';
+import styles from './EntitiesTable.module.css';
 
 /** @public */
 export interface TableOptions {
@@ -92,12 +88,7 @@ export function EntitiesTable(props: EntitiesTableProps) {
 
   function TitleCell({ tableRow: { entity } }: { tableRow: TableRow }) {
     return (
-      <Box
-        style={{
-          marginTop: 'calc(0px - var(--bui-space-1))',
-          marginBottom: 'calc(0px - var(--bui-space-1))',
-        }}
-      >
+      <Box className={styles.manageEntitiesTableTitleCell}>
         <Flex direction="column" gap="0">
           <EntityRefLink entityRef={entity} hideIcon={!!kind} />
           <Text variant="body-x-small">
@@ -114,6 +105,7 @@ export function EntitiesTable(props: EntitiesTableProps) {
   }
 
   addColumn({
+    header: true,
     id: kind ? kind : 'name',
     title: kind ? upperFirst(kind) : 'Name',
     render: data => <TitleCell tableRow={data} />,
@@ -178,68 +170,45 @@ export function EntitiesTable(props: EntitiesTableProps) {
       kind ? pluralizeKind(kind) : 'entities'
     } are owned by you, or groups you belong to`;
 
-  const [offset, setOffset] = useState(0);
-
-  // Reset offset on tab switch
-  useEffect(() => {
-    setOffset(0);
-  }, [kind, starred]);
-
-  const { data: paginatedData, paginationProps } = useTable({
+  const { tableProps, reload } = useTable({
+    mode: 'complete',
     data,
-    pagination: {
-      onNextPage() {
-        setOffset(offset + pageSize);
-      },
-      onPreviousPage() {
-        setOffset(offset - pageSize);
-      },
-      onPageSizeChange(newPageSize) {
-        setPageSize(newPageSize);
-      },
+    paginationOptions: {
       pageSize,
-      // TODO: Enable this when supported, e.g if
-      //       https://github.com/backstage/backstage/pull/32219 is merged.
-      // pageSizeOptions,
-      offset,
+      onPageSizeChange(size) {
+        setPageSize(size);
+      },
       showPageSizeOptions: paging,
+      pageSizeOptions,
     },
   });
 
+  // Reset offset on tab switch by reloading the table (it implicitly resets the
+  // offset to 0)
+  useEffect(() => {
+    reload();
+  }, [kind, starred, reload]);
+
+  const tableColumns: ColumnConfig<TableRow>[] = buiColumns.map(col => ({
+    id: col.id,
+    label: col.title,
+    isRowHeader: col.header,
+    cell: item => <Cell>{col.render(item)}</Cell>,
+  }));
+
   const table = (
     <>
-      <Grid.Root columns="1" gap="0">
-        <Grid.Item>
-          <Text variant="title-small">{tableTitle}</Text>
-          <br />
-          <Text variant="body-small" color="secondary">
-            {tableSubtitle}
-          </Text>
-        </Grid.Item>
-      </Grid.Root>
-      <Box width="100%" style={{ overflowX: 'auto' }}>
-        <TableRoot style={{ minWidth: '100%', tableLayout: 'auto' }}>
-          <TableHeader>
-            {buiColumns.map((col, index) => (
-              <Column isRowHeader key={`col-${index}`}>
-                {col.title}
-              </Column>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {paginatedData?.map(item => (
-              <Row key={item.id}>
-                {buiColumns.map((col, index) => (
-                  <Cell key={`cell-${item.id}-${index}`}>
-                    {col.render(item)}
-                  </Cell>
-                ))}
-              </Row>
-            ))}
-          </TableBody>
-        </TableRoot>
-      </Box>
-      <TablePagination {...paginationProps} />
+      <Flex direction="column" gap="0">
+        <Text variant="title-small">{tableTitle}</Text>
+        <Text variant="body-small" color="secondary">
+          {tableSubtitle}
+        </Text>
+      </Flex>
+      <Table
+        className={styles.manageEntitiesTable}
+        columnConfig={tableColumns}
+        {...tableProps}
+      />
     </>
   );
 
