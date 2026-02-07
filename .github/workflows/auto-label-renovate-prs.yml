@@ -1,0 +1,39 @@
+name: Auto-label aged Renovate PRs
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run daily at 6 AM UTC
+    - cron: '0 6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  label-aged-prs:
+    name: Label aged Renovate PRs as force-merge
+    runs-on: ubuntu-latest
+    if: github.repository == 'backstage/community-plugins'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@5c7944e73c4c2a096b17a9cb74d65b6c2bbafbde # v2.9.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Label aged Renovate PRs
+        run: node ./scripts/ci/label-aged-renovate-prs.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
