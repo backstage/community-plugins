@@ -1,5 +1,11 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.1.7
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+
 ## 2.1.6
 
 ### Patch Changes
