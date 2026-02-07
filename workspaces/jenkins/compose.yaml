@@ -6,7 +6,7 @@ services:
       - 8080:8080
       - 50000:50000
   jenkins-2.525-jdk21:
-    image: docker.io/jenkins/jenkins:2.543-jdk21
+    image: docker.io/jenkins/jenkins:2.549-jdk21
     ports:
       - 8081:8080
       - 50001:50000
