@@ -54,7 +54,6 @@
     "@backstage-community/plugin-linguist-common": "workspace:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-compat-api": "backstage:^",
-    "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",

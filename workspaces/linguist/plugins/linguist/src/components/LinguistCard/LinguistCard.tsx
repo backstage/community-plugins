@@ -25,8 +25,8 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Skeleton,
 } from '@backstage/ui';
-import { Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
@@ -43,7 +43,18 @@ export const LinguistCard = () => {
   let barWidth = 0;
 
   if (loading) {
-    return <Progress />;
+    return (
+      <Card className={classes.infoCard}>
+        <CardHeader>
+          <Skeleton width="100%" height={24} />
+        </CardHeader>
+        <CardBody>
+          <Box>
+            <Skeleton width="100%" height={64} />
+          </Box>
+        </CardBody>
+      </Card>
+    );
   } else if (error) {
     return <Alert severity="error">{error.message}</Alert>;
   }
