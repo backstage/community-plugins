@@ -23,8 +23,12 @@ export const ErrorGraph = ({ sentryIssue }: { sentryIssue: SentryIssue }) => {
       ? sentryIssue.stats['14d']
       : sentryIssue.stats['24h'];
 
+  if (!data || data.length === 0) {
+    return null;
+  }
+
   return (
-    <Sparklines data={data?.map(([, val]) => val)} svgHeight={48} margin={4}>
+    <Sparklines data={data.map(([, val]) => val)} svgHeight={48} margin={4}>
       <SparklinesBars />
     </Sparklines>
   );
