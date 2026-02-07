@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,3 @@
  */
 
 export { n8nPlugin as default } from './plugin';
-export { createRouter } from './service/router';
-export type { RouterOptions } from './service/router';
-export { N8nApi } from './service/n8nApi';
-export type {
-  N8nWorkflow,
-  N8nExecution,
-  N8nWorkflowListResponse,
-  N8nExecutionListResponse,
-} from './types';

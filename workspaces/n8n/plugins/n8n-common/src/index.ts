@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './apis';
-export * from './entityCards';
-export * from './entityContent';
+
+/**
+ * Common types and utilities for the n8n plugins
+ *
+ * @packageDocumentation
+ */
+
+export * from './types';

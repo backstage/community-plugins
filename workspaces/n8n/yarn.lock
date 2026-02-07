@@ -1354,6 +1354,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-n8n-backend@workspace:plugins/n8n-backend"
   dependencies:
+    "@backstage-community/plugin-n8n-common": "workspace:^"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/backend-test-utils": "backstage:^"
@@ -1370,10 +1371,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-n8n-common@workspace:^, @backstage-community/plugin-n8n-common@workspace:plugins/n8n-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-n8n-common@workspace:plugins/n8n-common"
+  dependencies:
+    "@backstage/cli": "backstage:^"
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-n8n@workspace:plugins/n8n":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-n8n@workspace:plugins/n8n"
   dependencies:
+    "@backstage-community/plugin-n8n-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-compat-api": "backstage:^"

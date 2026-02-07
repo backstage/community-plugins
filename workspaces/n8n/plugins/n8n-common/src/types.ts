@@ -14,19 +14,36 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
-import type { N8nWorkflow, N8nExecution } from './types';
-
 /** @public */
-export interface N8nApi {
-  getWorkflows(): Promise<N8nWorkflow[]>;
-  getWorkflow(workflowId: string): Promise<N8nWorkflow>;
-  getExecutions(workflowId: string, limit?: number): Promise<N8nExecution[]>;
-  activateWorkflow(workflowId: string): Promise<N8nWorkflow>;
-  deactivateWorkflow(workflowId: string): Promise<N8nWorkflow>;
+export interface N8nWorkflow {
+  id: string;
+  name: string;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  tags?: Array<{ id: string; name: string }>;
 }
 
 /** @public */
-export const n8nApiRef = createApiRef<N8nApi>({
-  id: 'plugin.n8n.service',
-});
+export interface N8nExecution {
+  id: string;
+  finished: boolean;
+  mode: string;
+  startedAt: string;
+  stoppedAt: string;
+  workflowId: string;
+  status: 'success' | 'error' | 'running' | 'waiting' | 'unknown';
+  workflowName?: string;
+}
+
+/** @public */
+export interface N8nWorkflowListResponse {
+  data: N8nWorkflow[];
+  nextCursor?: string;
+}
+
+/** @public */
+export interface N8nExecutionListResponse {
+  data: N8nExecution[];
+  nextCursor?: string;
+}

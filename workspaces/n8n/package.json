@@ -20,7 +20,7 @@
     "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "build:api-reports": "yarn build:api-reports:only --tsc",
-    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --allow-warnings plugins/n8n --validate-release-tags",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --allow-warnings plugins/n8n plugins/n8n-backend plugins/n8n-common --validate-release-tags",
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },

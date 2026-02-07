@@ -7,7 +7,8 @@
     "pluginId": "n8n",
     "pluginPackages": [
       "@backstage-community/plugin-n8n",
-      "@backstage-community/plugin-n8n-backend"
+      "@backstage-community/plugin-n8n-backend",
+      "@backstage-community/plugin-n8n-common"
     ]
   },
   "publishConfig": {
@@ -57,6 +58,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage-community/plugin-n8n-common": "workspace:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
