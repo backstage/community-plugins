@@ -19,6 +19,7 @@ import { useEffect, useMemo } from 'react';
 import { upperFirst } from 'lodash';
 
 import {
+  Alert,
   Table,
   useTable,
   Cell,
@@ -195,6 +196,16 @@ export function EntitiesTable(props: EntitiesTableProps) {
     isRowHeader: col.header,
     cell: item => <Cell>{col.render(item)}</Cell>,
   }));
+
+  if (data.length === 0) {
+    return (
+      <Alert
+        status="info"
+        icon
+        title="You and your team(s) don't own any entities"
+      />
+    );
+  }
 
   const table = (
     <>
