@@ -27,6 +27,26 @@ import { Options } from '@material-table/core';
 import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  titleContainer: {
+    color: theme.palette.text.primary,
+    alignItems: 'center',
+  },
+  select: {
+    color: theme.palette.text.primary,
+    '& .MuiSelect-icon': {
+      color: theme.palette.text.secondary,
+    },
+  },
+  formControl: {
+    marginLeft: theme.spacing(1),
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.text.secondary,
+    },
+  },
+}));
 
 const ONE_DAY_IN_MILLIS = 86400000;
 const SEVEN_DAYS_IN_MILLIS = ONE_DAY_IN_MILLIS * 7;
@@ -76,6 +96,7 @@ type SentryIssuesTableProps = {
 
 const SentryIssuesTable = (props: SentryIssuesTableProps) => {
   const { sentryIssues, statsFor, tableOptions } = props;
+  const classes = useStyles();
   const [selected, setSelected] = useState(ONE_DAY_IN_MILLIS);
 
   const filterByDate = useCallback(
@@ -110,11 +131,23 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
         columns={columns}
         options={tableOptions}
         title={
-          <Grid data-testid="sentry-issues-grid" container>
+          <Grid
+            data-testid="sentry-issues-grid"
+            container
+            className={classes.titleContainer}
+          >
             <Grid item>Sentry Issues</Grid>
             <Grid item>
-              <FormControl variant="outlined" size="small">
-                <Select value={selected} onChange={handleFilterChange}>
+              <FormControl
+                variant="outlined"
+                size="small"
+                className={classes.formControl}
+              >
+                <Select
+                  value={selected}
+                  onChange={handleFilterChange}
+                  className={classes.select}
+                >
                   <MenuItem value={ONE_DAY_IN_MILLIS}>24H</MenuItem>
                   <MenuItem value={SEVEN_DAYS_IN_MILLIS}>7D</MenuItem>
                   <MenuItem value={FOURTEEN_DAYS_IN_MILLIS}>14D</MenuItem>
