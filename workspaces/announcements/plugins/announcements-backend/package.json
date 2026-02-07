@@ -57,7 +57,7 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
-    "@types/supertest": "^2.0.15",
+    "@types/supertest": "^6.0.0",
     "supertest": "^7.0.0"
   },
   "files": [
