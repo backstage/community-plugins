@@ -13,39 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics';
-import {
-  ApiBlueprint,
-  configApiRef,
-  createFrontendModule,
-  githubAuthApiRef,
-} from '@backstage/frontend-plugin-api';
-import { CicdStatisticsApiGithub } from './api';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { cicdStatisticsGithubApi } from './alpha/index';
 
 /**
  * @alpha
  */
-export const cicdStatisticsGithubExtension = ApiBlueprint.make({
-  name: 'cicd-statistics-github-api',
-  params: defineParams =>
-    defineParams({
-      api: cicdStatisticsApiRef,
-      deps: {
-        githubAuthApi: githubAuthApiRef,
-        configApi: configApiRef,
-      },
-      factory: ({ githubAuthApi, configApi }) => {
-        return new CicdStatisticsApiGithub(githubAuthApi, configApi);
-      },
-    }),
-});
-
-/**
- * @alpha
- */
-const cicdStatisticsExtensionOverrides = createFrontendModule({
+export default createFrontendModule({
   pluginId: 'cicd-statistics',
-  extensions: [cicdStatisticsGithubExtension],
+  extensions: [cicdStatisticsGithubApi],
 });
-
-export default cicdStatisticsExtensionOverrides;
