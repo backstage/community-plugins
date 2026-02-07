@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-plugin-n8n
+  title: '@backstage-community/plugin-n8n'
+  description: A Backstage frontend plugin for n8n workflow automation
+spec:
+  lifecycle: experimental
+  type: backstage-frontend-plugin
+  owner: maintainers
