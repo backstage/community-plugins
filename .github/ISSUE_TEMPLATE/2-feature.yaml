@@ -57,12 +57,7 @@ body:
         - gcalendar
         - gcp-projects
         - git-release-manager
-        - github-actions
-        - github-deployments
-        - github-discussions
-        - github-issues
-        - github-pull-requests-board
-        - gitops-profiles
+        - github
         - gocd
         - grafana
         - graphiql
