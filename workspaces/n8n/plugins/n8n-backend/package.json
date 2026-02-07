@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-n8n-backend",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "A Backstage backend plugin that integrates towards n8n workflow automation",
   "backstage": {
     "role": "backend-plugin",
