@@ -62,10 +62,10 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-graph": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@material-ui/icons": "^4.11.3",
+    "@backstage/ui": "^0.10.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.16",
-    "@mui/styles": "^5",
+    "lodash": "^4.17.21",
     "react-use": "^17.5.0"
   },
   "peerDependencies": {
@@ -78,6 +78,7 @@
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@backstage/types": "backstage:^",
+    "@types/lodash": "^4.17.23",
     "@types/react": "^18.3.27"
   },
   "files": [

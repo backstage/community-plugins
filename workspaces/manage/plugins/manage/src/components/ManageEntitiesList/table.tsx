@@ -13,84 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useCallback, useMemo, useRef } from 'react';
 
-import Tooltip from '@mui/material/Tooltip';
-import { capitalize } from '@mui/material/utils';
-import BusinessIcon from '@mui/icons-material/Business';
-import ScatterPlotIcon from '@mui/icons-material/ScatterPlot';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-
-import { Table, TableOptions, TableColumn } from '@backstage/core-components';
-import {
-  Entity,
-  parseEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
-import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { TableOptions as MuiTableOptions } from '@backstage/core-components';
 
 import {
   KindStarred,
-  ManageColumnModule,
   useOwnedEntities,
-  useCurrentKindTitle,
-  pluralizeKind,
 } from '@backstage-community/plugin-manage-react';
 
-import {
-  ManageColumnSimple,
-  isManageColumnSimple,
-  simplifyColumns,
-} from './utils';
-import { ReRender } from './ReRender';
-import {
-  defaultPageSize,
-  EntitiesTablePageSizeProvider,
-  useEntitesTablePageSize,
-  useSetEntitesTablePageSize,
-} from './table-settings';
+import { EntitiesTablePageSizeProvider } from './table-settings';
+import { TableColumn, TableRow } from './types';
+import { EntitiesTable } from './EntitiesTable';
+import { useResolveColumns } from './useResolveColumns';
 
 /** @public */
-export type TableRow = {
-  entity: Entity;
-  id?: string;
-};
-
-function Lifecycle(props: { entity: Entity }) {
-  const lifecycle = props.entity.spec?.lifecycle ?? '';
-
-  if (lifecycle === 'production') {
-    return (
-      <Tooltip title="Production">
-        <BusinessIcon style={{ fontSize: 'inherit' }} />
-      </Tooltip>
-    );
-  } else if (lifecycle === 'experimental') {
-    return (
-      <Tooltip title="Experimental">
-        <ScatterPlotIcon style={{ fontSize: 'inherit' }} />
-      </Tooltip>
-    );
-  } else if (lifecycle === 'deprecated') {
-    return (
-      <Tooltip title="Deprecated">
-        <DeleteOutlineIcon style={{ fontSize: 'inherit' }} />
-      </Tooltip>
-    );
-  }
-
-  return <></>;
+export interface TableOptions {
+  pageSizeOptions?: number[];
+  paging?: boolean;
 }
 
 /** @public */
-type Column = ManageColumnSimple | ManageColumnModule;
-
-export { type Column as TableColumn };
-
-/** @public */
 export interface ManageEntitiesTableProps {
-  columns?: Column[];
-  options?: TableOptions<TableRow>;
+  columns?: TableColumn[];
+  options?: MuiTableOptions<TableRow> | TableOptions;
   title?: string;
   subtitle?: string;
 }
@@ -106,194 +51,17 @@ export interface ManageEntitiesTableSpecificProps
   starred?: boolean;
 }
 
-const defaultPageSizeOptions = [defaultPageSize, 25, 50, 100];
+function useTableData({
+  kind,
+  starred,
+  subtitle,
+}: ManageEntitiesTableSpecificProps) {
+  const kindEntities = useOwnedEntities(kind);
+  const starredEntities = useOwnedEntities(KindStarred);
 
-function ManageEntitiesTableInner(
-  props: ManageEntitiesTableSpecificProps & { entities: Entity[] },
-) {
-  const { kind, options, entities, title, subtitle } = props;
-
-  const defaultColumns: TableColumn<TableRow>[] = useMemo(
-    () => [
-      ...(kind === undefined
-        ? [
-            {
-              title: 'Kind',
-              render(data) {
-                return data.entity.kind;
-              },
-            } satisfies TableColumn<TableRow>,
-          ]
-        : []),
-      {
-        title: kind ? capitalize(kind) : 'Name',
-        render(data, _type) {
-          return (
-            <>
-              <EntityRefLink
-                title={data.entity.metadata.name}
-                hideIcon
-                entityRef={data.entity}
-              />
-            </>
-          );
-        },
-      } satisfies TableColumn<TableRow>,
-      {
-        title: 'Title',
-        render(data, _type) {
-          return (
-            <>
-              <Lifecycle entity={data.entity} />
-              <EntityRefLink entityRef={data.entity} />
-            </>
-          );
-        },
-      },
-      ...(kind === 'component'
-        ? [
-            {
-              title: 'Type',
-              render(data) {
-                return data.entity.spec?.type;
-              },
-            } satisfies TableColumn<TableRow>,
-          ]
-        : []),
-      {
-        title: 'Owner',
-        render(data, _type) {
-          if (data.entity.spec?.owner) {
-            const owner = parseEntityRef(`${data.entity.spec.owner}`, {
-              defaultKind: 'group',
-            });
-            return <EntityRefLink entityRef={owner} />;
-          }
-          return <></>;
-        },
-      },
-    ],
-    [kind],
-  );
-
-  const simpleColsRef = useRef<{
-    renderers: Map<Column, TableColumn<TableRow>>;
-  }>({} as any);
-  simpleColsRef.current.renderers ??= new Map();
-
-  const setOnce = useCallback((col: ManageColumnSimple) => {
-    let tableColumn = simpleColsRef.current.renderers.get(col);
-    if (!tableColumn) {
-      tableColumn = {
-        title: col.title,
-        id: col.id,
-        render(data) {
-          return <col.component entity={data.entity} />;
-        },
-      };
-      simpleColsRef.current.renderers.set(col, tableColumn);
-    }
-    return tableColumn;
-  }, []);
-
-  const extraColumns = (props.columns ?? []).flatMap(
-    (col): TableColumn<TableRow> | TableColumn<TableRow>[] =>
-      isManageColumnSimple(col)
-        ? setOnce(col)
-        : simplifyColumns(col)
-            .getColumns(entities)
-            .map(innerCol => innerCol),
-  );
-
-  const columns: TableColumn<TableRow>[] = [...defaultColumns, ...extraColumns];
-
-  const data: TableRow[] = useMemo(
-    () =>
-      entities.map(entity => ({
-        entity,
-        id: stringifyEntityRef(entity),
-      })),
-    [entities],
-  );
-
-  const pageSizeOptions = options?.pageSizeOptions ?? defaultPageSizeOptions;
-  const pageSize = useEntitesTablePageSize() ?? defaultPageSize;
-  const setPageSize = useSetEntitesTablePageSize();
-  const paging = options?.paging ?? pageSizeOptions[0] < data.length;
-
-  const customOptions: TableOptions<TableRow> = {
-    pageSize,
-    pageSizeOptions,
-    paging,
-  };
-
-  const kindTitle = useCurrentKindTitle();
-  const tableTitle = title ?? `Your ${kindTitle}`;
-  const tableSubtitle =
-    subtitle ??
-    `These ${
-      kind ? pluralizeKind(kind) : 'entities'
-    } are owned by you, or groups you belong to`;
-
-  const onPageChange = useCallback(
-    (_: number, newPageSize: number) => {
-      if (pageSize !== newPageSize) {
-        setPageSize(newPageSize);
-      }
-    },
-    [pageSize, setPageSize],
-  );
-
-  const table = (
-    <Table
-      title={tableTitle}
-      subtitle={tableSubtitle}
-      columns={columns}
-      data={data}
-      options={{
-        padding: 'dense',
-        search: false,
-        paginationPosition: 'top',
-        showFirstLastPageButtons: true,
-        emptyRowsWhenPaging: false,
-        ...options,
-        ...customOptions,
-      }}
-      onPageChange={onPageChange}
-    />
-  );
-
-  return table;
-}
-
-function ManageEntitiesOwned(props: ManageEntitiesTableSpecificProps) {
-  const entities = useOwnedEntities(props.kind);
-
-  return (
-    <EntitiesTablePageSizeProvider>
-      <ManageEntitiesTableInner
-        columns={props.columns}
-        kind={props.kind}
-        options={props.options}
-        entities={entities}
-      />
-    </EntitiesTablePageSizeProvider>
-  );
-}
-
-function ManageEntitiesStarred(props: ManageEntitiesTableSpecificProps) {
-  const entities = useOwnedEntities(KindStarred);
-
-  return (
-    <EntitiesTablePageSizeProvider>
-      <ManageEntitiesTableInner
-        columns={props.columns}
-        options={props.options}
-        entities={entities}
-        subtitle=""
-      />
-    </EntitiesTablePageSizeProvider>
-  );
+  return starred
+    ? { entities: starredEntities, subtitle: '', kind: undefined }
+    : { entities: kindEntities, subtitle, kind };
 }
 
 /**
@@ -303,23 +71,25 @@ function ManageEntitiesStarred(props: ManageEntitiesTableSpecificProps) {
  * @public
  */
 export function ManageEntitiesTable(props: ManageEntitiesTableSpecificProps) {
-  const { starred } = props;
+  const { entities, subtitle, kind } = useTableData(props);
+
+  const { resolveColumnsElement, columns } = useResolveColumns(
+    entities,
+    props.columns,
+  );
 
   return (
-    <ReRender uniq={`cols-${props.columns?.length}-${props.kind}`}>
-      {starred ? (
-        <ManageEntitiesStarred
-          columns={props.columns}
-          kind={props.kind}
+    <>
+      {resolveColumnsElement}
+      <EntitiesTablePageSizeProvider>
+        <EntitiesTable
+          columns={columns}
           options={props.options}
+          kind={kind}
+          entities={entities}
+          subtitle={subtitle}
         />
-      ) : (
-        <ManageEntitiesOwned
-          columns={props.columns}
-          kind={props.kind}
-          options={props.options}
-        />
-      )}
-    </ReRender>
+      </EntitiesTablePageSizeProvider>
+    </>
   );
 }

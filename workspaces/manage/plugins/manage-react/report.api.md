@@ -9,7 +9,6 @@ import { ApiHolder } from '@backstage/frontend-plugin-api';
 import { ApiRef } from '@backstage/core-plugin-api';
 import { ApiRef as ApiRef_2 } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { CircularProgressProps } from '@mui/material/CircularProgress';
 import { ComponentProps } from 'react';
 import type { ComponentType } from 'react';
 import { Config } from '@backstage/config';
@@ -45,6 +44,31 @@ export interface ApiFactoryOptions {
 // @public
 export function arrayify<T>(t: T | T[] | Iterable<T> | undefined): T[];
 
+// @public (undocumented)
+export function CardWidget(props: CardWidgetProps): JSX_2.Element;
+
+// @public (undocumented)
+export interface CardWidgetOptions {
+  // (undocumented)
+  apis: ApiHolder;
+  // (undocumented)
+  entities: Entity[];
+  // (undocumented)
+  owners: Owners;
+}
+
+// @public (undocumented)
+export interface CardWidgetProps {
+  // (undocumented)
+  action?: React.ReactNode;
+  // (undocumented)
+  content: React.ReactNode;
+  // (undocumented)
+  subtitle?: string;
+  // (undocumented)
+  title?: string;
+}
+
 // @public
 export function ColumnIconError(props: ColumnIconErrorProps): JSX_2.Element;
 
@@ -67,13 +91,15 @@ export function ColumnIconPercent(props: ColumnIconPercentProps): JSX_2.Element;
 
 // @public
 export interface ColumnIconPercentProps {
-  // (undocumented)
-  color?: ProgressColor;
-  // (undocumented)
+  after?: ReactNode;
+  color?: string;
   percent: number;
-  // (undocumented)
-  title?: string;
+  showPercent?: boolean;
+  title?: ReactNode;
 }
+
+// @public
+export function ColumnSkeleton(): JSX_2.Element;
 
 // @public
 export function createManageApiFactory(options?: ApiFactoryOptions): ApiFactory<
@@ -131,6 +157,8 @@ export class DefaultManageApi implements ManageApi {
   getProviders: () => readonly ManageProvider[];
   // (undocumented)
   readonly kindOrder: readonly string[];
+  // (undocumented)
+  readonly progressStyle: 'linear' | 'circular';
 }
 
 // @public (undocumented)
@@ -150,7 +178,7 @@ export interface DefaultManageApiOptions {
 // @public (undocumented)
 export const GaugeCard: ManageGaugeCard;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export type GaugeCardProps = Pick<
   ComponentProps<typeof GaugeCard_2>,
   'size' | 'alignGauge' | 'variant' | 'description' | 'subheader'
@@ -205,6 +233,7 @@ export interface ManageApi {
   getProviders(): Iterable<ManageProvider>;
   // @deprecated
   readonly kindOrder: readonly string[];
+  readonly progressStyle: 'linear' | 'circular';
 }
 
 // @public (undocumented)
@@ -226,6 +255,43 @@ export const manageApiExtension: OverridableExtensionDefinition<{
 
 // @public
 export const manageApiRef: ApiRef_2<ManageApi>;
+
+// @public (undocumented)
+export type ManageCardLoader = (
+  options: CardWidgetOptions,
+) => Promise<ManageCardLoaderResult>;
+
+// @public (undocumented)
+export type ManageCardLoaderResult = {
+  title?: string;
+  subtitle?: string;
+  action?: React.ReactNode;
+  content: React.ReactNode;
+};
+
+// @public (undocumented)
+export type ManageCardRef =
+  | {
+      element: JSX.Element;
+    }
+  | {
+      card: ManageCardLoader;
+    };
+
+// @public (undocumented)
+export const manageCardRef: ConfigurableExtensionDataRef<
+  ManageCardRef,
+  'manage.card.ref',
+  {}
+>;
+
+// @public
+export interface ManageCardWidgetParams {
+  attachTo?: string[];
+  card?: ManageCardLoader;
+  condition?: ManageCondition;
+  loader?: () => Promise<JSX.Element>;
+}
 
 // @public (undocumented)
 export interface ManageColumn {
@@ -309,6 +375,8 @@ export interface ManageContentWidgetAccordion {
   // (undocumented)
   show: boolean | Record<string, boolean>;
   // (undocumented)
+  showTitle: boolean;
+  // (undocumented)
   title: ManageContentWidgetAccordionTitle;
 }
 
@@ -326,13 +394,8 @@ export interface ManageDynamicConfig {
 // @public
 export const ManageEntityCardWidgetBlueprint: ExtensionBlueprint<{
   kind: 'manage-card-widget';
-  params: {
-    attachTo?: string[];
-    condition?: ManageCondition;
-    loader: () => Promise<JSX.Element>;
-  };
+  params: ManageCardWidgetParams;
   output:
-    | ExtensionDataRef<JSX_3.Element, 'core.reactElement', {}>
     | ExtensionDataRef<ManageCondition, 'manage.condition.ref', {}>
     | ExtensionDataRef<
         {
@@ -340,7 +403,8 @@ export const ManageEntityCardWidgetBlueprint: ExtensionBlueprint<{
         },
         'manage.attachTo.ref',
         {}
-      >;
+      >
+    | ExtensionDataRef<ManageCardRef, 'manage.card.ref', {}>;
   inputs: {};
   config: {
     attachTo: string[] | undefined;
@@ -349,6 +413,7 @@ export const ManageEntityCardWidgetBlueprint: ExtensionBlueprint<{
     attachTo?: string[] | undefined;
   };
   dataRefs: {
+    card: ConfigurableExtensionDataRef<ManageCardRef, 'manage.card.ref', {}>;
     attachTo: ConfigurableExtensionDataRef<
       {
         attachTo: string[] | undefined;
@@ -359,11 +424,6 @@ export const ManageEntityCardWidgetBlueprint: ExtensionBlueprint<{
     condition: ConfigurableExtensionDataRef<
       ManageCondition,
       'manage.condition.ref',
-      {}
-    >;
-    element: ConfigurableExtensionDataRef<
-      JSX_3.Element,
-      'core.reactElement',
       {}
     >;
   };
@@ -483,6 +543,7 @@ export const ManageEntityContentWidgetBlueprint: ExtensionBlueprint<{
       perKind?: boolean;
       key?: string;
     };
+    showTitle?: boolean;
     attachTo?: string[];
     condition?: ManageCondition;
     loader: () => Promise<JSX.Element>;
@@ -508,12 +569,14 @@ export const ManageEntityContentWidgetBlueprint: ExtensionBlueprint<{
     inAccordion: boolean | Record<string, boolean> | undefined;
     accordionDefaultExpanded: boolean | undefined;
     accordionPerKind: boolean | undefined;
+    showTitle: boolean | undefined;
   };
   configInput: {
     attachTo?: string[] | undefined;
     inAccordion?: boolean | Record<string, boolean> | undefined;
     accordionDefaultExpanded?: boolean | undefined;
     accordionPerKind?: boolean | undefined;
+    showTitle?: boolean | undefined;
   };
   dataRefs: {
     accordion: ConfigurableExtensionDataRef<
@@ -546,8 +609,11 @@ export function ManageGaugeCard(props: ManageGaugeCardProps): JSX_2.Element;
 
 // @public (undocumented)
 export interface ManageGaugeCardProps {
+  color?: string;
+  // @deprecated
   gaugeCardProps?: GaugeCardProps;
-  getColor: GaugePropsGetColor;
+  // @deprecated
+  getColor?: GaugePropsGetColor;
   progress: number;
   title: ReactNode;
 }
@@ -570,11 +636,13 @@ export interface ManageGaugeGridProps {
     | 'wrap'
     | 'zeroMinWidth'
   >;
-  getColor: (percent: number) => string;
+  // @deprecated
+  getColor?: (percent: number) => string;
   items: {
     title: ReactNode;
     description?: ReactNode;
     progress: number;
+    color?: string;
   }[];
   noBottomMargin?: boolean;
 }
@@ -840,8 +908,15 @@ export function pluralizeKind(kind: string): string;
 // @public (undocumented)
 export function Progress(): JSX_2.Element;
 
-// @public (undocumented)
-export type ProgressColor = Extract<CircularProgressProps['color'], string>;
+// @public @deprecated (undocumented)
+export type ProgressColor =
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'success';
 
 // @public
 export interface ReorderableTabsProps {
@@ -931,6 +1006,9 @@ export function useOwnersAndEntities(): {
   entities: Entity[];
 };
 
+// @public @deprecated
+export function useParseColor(): (color: string) => string;
+
 // @public
 export function usePosition(
   element: Element | undefined,
@@ -959,6 +1037,9 @@ export interface UsePositionResult {
   // (undocumented)
   element: UsePositionElementPosition;
 }
+
+// @public
+export function useProgressStyle(): 'linear' | 'circular';
 
 // @public (undocumented)
 export interface UserSettingsContextResult<T extends JsonValue> {

@@ -66,6 +66,8 @@ export class DefaultManageApi implements ManageApi {
 
   readonly #providers: ManageProvider[] = [];
 
+  readonly progressStyle: 'linear' | 'circular';
+
   public constructor({
     configApi,
     discoveryApi,
@@ -82,6 +84,15 @@ export class DefaultManageApi implements ManageApi {
     this.#providers = Array.from(providers ?? [])
       .map(provider => provider.getProvider?.())
       .filter((v): v is NonNullable<typeof v> => !!v);
+
+    const progressStyle =
+      configApi.getOptionalString('manage.progressStyle') ?? 'circular';
+
+    if (progressStyle === 'linear' || progressStyle === 'circular') {
+      this.progressStyle = progressStyle;
+    } else {
+      this.progressStyle = 'circular';
+    }
   }
 
   getProviders = (): readonly ManageProvider[] => {

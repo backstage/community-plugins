@@ -26,4 +26,5 @@ export type {
   ManageContentWidgetAccordionTitle,
 } from './content-widget-blueprint';
 export { ManageEntityContentWidgetBlueprint } from './content-widget-blueprint';
+export type { ManageCardWidgetParams } from './card-widget-blueprint';
 export { ManageEntityCardWidgetBlueprint } from './card-widget-blueprint';

@@ -14,7 +14,6 @@ import { GridOwnProps } from '@mui/material/Grid';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import type { ManageColumnModule } from '@backstage-community/plugin-manage-react';
 import type { ManageModuleApi } from '@backstage-community/plugin-manage-react';
-import { ProgressColor } from '@backstage-community/plugin-manage-react';
 import { PropsWithChildren } from 'react';
 import type { ReactNode } from 'react';
 
@@ -36,7 +35,7 @@ export default _default;
 // @public @deprecated
 export interface DefaultManageApiOptions {
   checkFilter?: (check: Check) => boolean;
-  getPercentColor?: (percent: number) => ProgressColor;
+  getPercentColor?: (percent: number) => string;
   mapTitle?: ManageTechInsightsMapTitle;
 }
 
@@ -46,7 +45,7 @@ export class DefaultManageTechInsightsApi implements ManageTechInsights {
   // (undocumented)
   readonly checkFilter: (check: Check) => boolean;
   // (undocumented)
-  readonly getPercentColor: (percent: number) => ProgressColor;
+  readonly getPercentColor: (percent: number) => string;
   // (undocumented)
   getProvider: () => typeof ManageProviderTechInsights;
   // (undocumented)
@@ -61,7 +60,7 @@ export function ManageProviderTechInsights(
 // @public
 export interface ManageTechInsights extends ManageModuleApi {
   checkFilter: (check: Check) => boolean;
-  getPercentColor: (percent: number) => ProgressColor;
+  getPercentColor: (percent: number) => string;
   mapTitle: ManageTechInsightsMapTitle;
 }
 
@@ -94,7 +93,7 @@ export function ManageTechInsightsCards(
 
 // @public
 export interface ManageTechInsightsCardsProps {
-  // (undocumented)
+  // @deprecated (undocumented)
   containerProps?: Pick<
     GridOwnProps,
     | 'classes'
@@ -107,7 +106,7 @@ export interface ManageTechInsightsCardsProps {
     | 'wrap'
     | 'zeroMinWidth'
   >;
-  // (undocumented)
+  // @deprecated (undocumented)
   gaugeCardProps?: GaugeCardProps;
   inAccordion?: boolean;
   mapTitle?: ManageTechInsightsMapTitle;
@@ -124,7 +123,7 @@ export interface ManageTechInsightsConfig {
   columnsCheckFilter?:
     | ((check: Check) => boolean)
     | Record<string, (check: Check) => boolean>;
-  getPercentColor?: (percent: number) => ProgressColor;
+  getPercentColor?: (percent: number) => string;
   mapTitle?: ManageTechInsightsMapTitle;
   showEmpty?: boolean | Record<string, boolean>;
 }
@@ -138,7 +137,7 @@ export interface ManageTechInsightsContextConfig {
     | ((check: Check) => boolean)
     | Record<string, (check: Check) => boolean>;
   // (undocumented)
-  getPercentColor?: (percent: number) => ProgressColor;
+  getPercentColor?: (percent: number) => string;
   // (undocumented)
   mapTitle?: ManageTechInsightsMapTitle;
   // (undocumented)

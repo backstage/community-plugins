@@ -16,12 +16,14 @@
 
 import { ReactElement, ReactNode, useMemo } from 'react';
 
-import { capitalize } from '@mui/material/utils';
-import { makeStyles } from '@mui/styles';
-import Alert from '@mui/material/Alert';
-import Grid from '@mui/material/Grid';
+import { upperFirst } from 'lodash';
 
-import { RoutedTabs, TableOptions } from '@backstage/core-components';
+import Alert from '@mui/material/Alert';
+
+import {
+  RoutedTabs,
+  TableOptions as MuiTableOptions,
+} from '@backstage/core-components';
 
 import {
   CurrentKindProvider,
@@ -36,21 +38,14 @@ import {
   TableColumn,
   TableRow,
   ManageEntitiesTable,
+  TableOptions,
 } from '../ManageEntitiesList';
 import { useManagePageCombined } from '../ManagePageFilters';
 import { MANAGE_KIND_COMMON, SubRouteTab } from './types';
 import { Settings, Setting } from '../Settings';
 import { TabsOrderProvider, useTabsOrder } from '../TabsOrder';
 import { renderArray } from '../../utils/renderArray';
-
-const useStyles = makeStyles(theme => ({
-  cardsHolder: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
-}));
+import { Cards } from './Cards';
 
 /**
  * Options for configuring how an entity kind is displayed.
@@ -83,7 +78,7 @@ export interface ManageKindOptions {
   /**
    * Table options for the entity table.
    */
-  tableOptions?: TableOptions<TableRow>;
+  tableOptions?: MuiTableOptions<TableRow> | TableOptions;
 }
 
 /** @public */
@@ -169,7 +164,7 @@ export function ManageTabsImpl(props: ManageTabsProps) {
   );
 }
 
-export function ManageTabsInner(props: ManageTabsProps) {
+function ManageTabsInner(props: ManageTabsProps) {
   const {
     combined,
     commonColumns = [],
@@ -275,6 +270,7 @@ export function ManageTabsInner(props: ManageTabsProps) {
       return [];
     }
 
+    const cards = arrayify(starred.cards);
     const header = arrayify(starred.header);
     const footer = arrayify(starred.footer);
     const kindColumns = arrayify(starred.columns ?? allKindsColumns);
@@ -287,6 +283,7 @@ export function ManageTabsInner(props: ManageTabsProps) {
         children: (
           <CurrentKindProvider starred>
             {makeGenericTable({
+              cards,
               columns: allColumns,
               tableOptions: starred.tableOptions,
               starred: true,
@@ -345,7 +342,7 @@ export function ManageTabsInner(props: ManageTabsProps) {
 
         return {
           path: kind,
-          title: capitalize(pluralizeKind(rawKind)),
+          title: upperFirst(pluralizeKind(rawKind)),
           children: makeTable(kind),
         };
       });
@@ -367,30 +364,6 @@ export function ManageTabsInner(props: ManageTabsProps) {
         key="manage-routed-tabs"
       />
     </>
-  );
-}
-
-function Cards({ children }: { children?: ReactElement[] }) {
-  const { cardsHolder } = useStyles();
-
-  if (!children || (Array.isArray(children) && children.length === 0)) {
-    return null;
-  }
-
-  return (
-    <Grid
-      container
-      spacing={0}
-      sx={{ gap: 2 }}
-      className={cardsHolder}
-      alignItems="stretch"
-    >
-      {children.map((card, i) => (
-        <Grid item key={card.key ?? `card-${i}`}>
-          {card}
-        </Grid>
-      ))}
-    </Grid>
   );
 }
 

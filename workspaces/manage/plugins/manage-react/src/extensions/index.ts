@@ -20,10 +20,14 @@ export type {
   ManageConditionOptions,
   ManageCondition,
   ManageConfig,
+  ManageCardLoader,
+  ManageCardRef,
+  ManageCardLoaderResult,
 } from './data-refs';
-export { manageConfigDataRef } from './data-refs';
+export { manageConfigDataRef, manageCardRef } from './data-refs';
 
 export type {
+  ManageCardWidgetParams,
   ManageContentWidgetAccordion,
   ManageContentWidgetAccordionTitle,
   ManageTabFullHeight,
@@ -38,3 +42,5 @@ export {
   ManageEntityContentWidgetBlueprint,
   ManageEntityCardWidgetBlueprint,
 } from './blueprints';
+
+export type { CardWidgetOptions } from './types';

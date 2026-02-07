@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { ProgressColor } from '@backstage-community/plugin-manage-react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 
 import { ManageTechInsightsMapTitle } from '../../title';
@@ -53,7 +52,7 @@ export interface ManageTechInsightsConfig {
   /**
    * Function to deduce what color to use of percentage gauges.
    */
-  getPercentColor?: (percent: number) => ProgressColor;
+  getPercentColor?: (percent: number) => string;
 
   /**
    * The mapping of checks to titles for the `ManageTechInsightsCards` and

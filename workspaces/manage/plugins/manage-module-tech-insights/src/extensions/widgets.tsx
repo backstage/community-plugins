@@ -14,7 +14,33 @@
  * limitations under the License.
  */
 
-import { ManageEntityContentWidgetBlueprint } from '@backstage-community/plugin-manage-react';
+import { Box } from '@backstage/ui';
+
+import {
+  ManageEntityCardWidgetBlueprint,
+  ManageEntityContentWidgetBlueprint,
+} from '@backstage-community/plugin-manage-react';
+
+export const manageTechInsightsCardWidgetsGrid =
+  ManageEntityCardWidgetBlueprint.makeWithOverrides({
+    name: 'grid',
+    factory(originalFactory) {
+      return originalFactory(defineParams =>
+        defineParams({
+          card: () =>
+            import('../components/Grid').then(m => ({
+              title: 'Tech Insights',
+              content: (
+                <Box style={{ maxWidth: 800 }}>
+                  <m.ManageTechInsightsGrid inAccordion={false} />
+                </Box>
+              ),
+            })),
+          attachTo: [],
+        }),
+      );
+    },
+  });
 
 export const manageTechInsightsCards =
   ManageEntityContentWidgetBlueprint.makeWithOverrides({
@@ -28,6 +54,7 @@ export const manageTechInsightsCards =
             key: 'tech-insights',
             show: true,
           },
+          showTitle: true,
           loader: () =>
             import('../components/Cards').then(m => (
               <m.ManageTechInsightsCards inAccordion={false} />
@@ -50,6 +77,7 @@ export const manageTechInsightsGrid =
             key: 'tech-insights',
             show: false,
           },
+          showTitle: true,
           loader: () =>
             import('../components/Grid').then(m => (
               <m.ManageTechInsightsGrid inAccordion={false} />

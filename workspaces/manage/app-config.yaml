@@ -26,6 +26,10 @@ app:
         config:
           attachTo:
             - system
+    - manage-card-widget:tech-insights/grid:
+        config:
+          attachTo:
+            - $starred
     - manage-column:tech-insights/checks:
         config:
           attachTo:
@@ -41,6 +45,7 @@ manage:
   subtitle: Things I own and work with
   showStarred: true
   enableWholeOrganization: true
+  progressStyle: linear
   order:
     tabs:
       - entities

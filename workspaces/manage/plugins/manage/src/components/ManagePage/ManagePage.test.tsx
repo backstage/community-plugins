@@ -59,6 +59,7 @@ describe('ManagePage', () => {
         ownedEntities: [],
       }),
       kindOrder: [],
+      progressStyle: 'circular',
     };
 
     const apis = [
@@ -115,6 +116,7 @@ describe('ManagePage', () => {
         ],
       }),
       kindOrder: [],
+      progressStyle: 'circular',
     };
 
     const apis = [
