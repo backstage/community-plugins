@@ -188,15 +188,12 @@ When patching an older release, follow the steps below to ensure the correct wor
 
    In **GitHub > Repo > Settings > Branches**, add a rule for the requested `workspace/${workspace}` branch and apply these settings:
 
-   - ☑ Require pull request before merging
-     - ☑ Require approvals
-     - ☑ Dismiss stale approvals when new commits are pushed
-     - ☑ Require review from Code Owners
-   - ☑ Require status checks to pass before merging
    - ☑ Restrict who can push: **CODEOWNERS for the workspace**
    - ☑ Restrict pushes that create matching branches
    - ☑ Allow force pushes
      - ☑ Specify who can force push: **CODEOWNERS for the workspace**
+
+   The workflow requires that pull requests targeting the `workspace/${workspace}` branch be opened from a branch within the `backstage/community-plugins` repository. Therefore, in addition to the `workspace/${workspace}` branch, a corresponding branch must also be created with the same branch protection settings described above.
 
    </details>
 
