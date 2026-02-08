@@ -1,5 +1,11 @@
 # @backstage-community/plugin-splunk-on-call
 
+## 0.19.0
+
+### Minor Changes
+
+- 08de926: Migrate splunk plugin to the new frontend system
+
 ## 0.18.0
 
 ### Minor Changes
