@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.26.0
+
+### Minor Changes
+
+- 5bb714f: Updated readme to add a clarification for readme-path annotation.
+
 ## 0.25.0
 
 ### Minor Changes
