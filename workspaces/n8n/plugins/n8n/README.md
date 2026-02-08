@@ -4,13 +4,27 @@ Website: [https://n8n.io/](https://n8n.io/)
 
 A Backstage frontend plugin that provides components to view and manage [n8n](https://n8n.io/) workflows directly from entity pages.
 
+## Screenshots
+
+### Entity Content Tab
+
+The full n8n tab shows an overview dashboard with workflow statistics, a workflows table with tags and status, and a combined execution history.
+
+![Entity Content](docs/n8n-entity-content.png)
+
+### Entity Overview Card
+
+The overview card shows the latest execution status for the primary workflow, fitting alongside other cards on the entity overview page.
+
+![Entity Overview](docs/n8n-entity-overview.png)
+
 ## Features
 
-- View all workflows associated with an entity
-- See the latest execution status for each workflow
-- View execution history with status, duration, and timestamps
-- Activate and deactivate workflows
-- Overview card showing the latest execution status
+- Dashboard with overview cards (workflow count, active workflows, success rate, error count)
+- View all workflows associated with an entity with tags and status
+- Combined execution history across all workflows with status, duration, and timestamps
+- Activate and deactivate workflows directly from Backstage
+- Overview card showing the latest execution status with colored status indicator
 
 ## Setup
 

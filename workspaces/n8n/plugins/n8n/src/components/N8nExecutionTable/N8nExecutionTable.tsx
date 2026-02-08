@@ -25,7 +25,12 @@ import {
   Table,
   TableColumn,
 } from '@backstage/core-components';
-import { useExecutions } from '../../hooks/useExecutions';
+import { useApi } from '@backstage/core-plugin-api';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import SyncIcon from '@material-ui/icons/Sync';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
+import { n8nApiRef } from '../../api';
 import type { N8nExecution } from '../../api/types';
 
 function formatDuration(startedAt: string, stoppedAt: string): string {
@@ -39,28 +44,63 @@ function formatDuration(startedAt: string, stoppedAt: string): string {
   return `${Math.round(durationMs / 60000)}m`;
 }
 
-function ExecutionStatusIcon(props: { status: N8nExecution['status'] }) {
+function formatRelativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) return 'just now';
+  if (minutes === 1) return '1 minute ago';
+  if (minutes < 60) return `${minutes} minutes ago`;
+  if (hours === 1) return '1 hour ago';
+  if (hours < 24) return `${hours} hours ago`;
+  if (days === 1) return '1 day ago';
+  if (days < 30) return `${days} days ago`;
+  return new Date(dateStr).toLocaleDateString();
+}
+
+function ExecutionStatus(props: { status: N8nExecution['status'] }) {
   switch (props.status) {
     case 'success':
-      return <StatusOK />;
+      return <StatusOK>Success</StatusOK>;
     case 'error':
-      return <StatusError />;
+      return <StatusError>Error</StatusError>;
     case 'running':
-      return <StatusRunning />;
+      return <StatusRunning>Running</StatusRunning>;
     case 'waiting':
-      return <StatusPending />;
+      return <StatusPending>Waiting</StatusPending>;
     default:
-      return <StatusAborted />;
+      return <StatusAborted>Unknown</StatusAborted>;
   }
 }
 
 /** @public */
 export const N8nExecutionTable = (props: {
-  workflowId: string;
+  workflowIds: string[];
   limit?: number;
 }) => {
-  const { workflowId, limit } = props;
-  const { executions, loading, error } = useExecutions(workflowId, limit);
+  const { workflowIds, limit = 20 } = props;
+  const api = useApi(n8nApiRef);
+
+  const {
+    value: executions = [],
+    loading,
+    error,
+    retry,
+  } = useAsyncRetry(async () => {
+    if (workflowIds.length === 0) return [];
+    const results = await Promise.all(
+      workflowIds.map(id => api.getExecutions(id, limit)),
+    );
+    return results
+      .flat()
+      .sort(
+        (a, b) =>
+          new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
+      );
+  }, [workflowIds.join(','), limit]);
 
   if (loading) {
     return <Progress />;
@@ -70,25 +110,43 @@ export const N8nExecutionTable = (props: {
     return <ResponseErrorPanel error={error} />;
   }
 
+  const showWorkflowColumn = workflowIds.length > 1;
+
   const columns: TableColumn<N8nExecution>[] = [
     {
       title: 'ID',
       field: 'id',
-      width: '100px',
+      width: '80px',
     },
     {
       title: 'Status',
       field: 'status',
-      render: (row: N8nExecution) => (
-        <ExecutionStatusIcon status={row.status} />
-      ),
-      width: '80px',
+      render: (row: N8nExecution) => <ExecutionStatus status={row.status} />,
+      width: '130px',
     },
+    ...(showWorkflowColumn
+      ? [
+          {
+            title: 'Workflow',
+            field: 'workflowName' as const,
+            render: (row: N8nExecution) => row.workflowName ?? row.workflowId,
+          },
+        ]
+      : []),
     {
       title: 'Started',
       field: 'startedAt',
+      defaultSort: 'desc' as const,
       render: (row: N8nExecution) =>
-        row.startedAt ? new Date(row.startedAt).toLocaleString() : '-',
+        row.startedAt ? (
+          <Tooltip title={new Date(row.startedAt).toLocaleString()}>
+            <Typography variant="body2" component="span">
+              {formatRelativeTime(row.startedAt)}
+            </Typography>
+          </Tooltip>
+        ) : (
+          '-'
+        ),
     },
     {
       title: 'Duration',
@@ -109,6 +167,14 @@ export const N8nExecutionTable = (props: {
       title="Executions"
       data={executions}
       columns={columns}
+      actions={[
+        {
+          icon: () => <SyncIcon />,
+          tooltip: 'Refresh executions',
+          isFreeAction: true,
+          onClick: () => retry(),
+        },
+      ]}
       options={{
         padding: 'dense',
         paging: executions.length > 20,

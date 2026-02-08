@@ -22,14 +22,34 @@ import {
   TableColumn,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import SyncIcon from '@material-ui/icons/Sync';
 import { n8nApiRef } from '../../api';
 import { useWorkflows } from '../../hooks/useWorkflows';
 import type { N8nWorkflow } from '../../api/types';
+
+function formatRelativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) return 'just now';
+  if (minutes === 1) return '1 minute ago';
+  if (minutes < 60) return `${minutes} minutes ago`;
+  if (hours === 1) return '1 hour ago';
+  if (hours < 24) return `${hours} hours ago`;
+  if (days === 1) return '1 day ago';
+  if (days < 30) return `${days} days ago`;
+  return new Date(dateStr).toLocaleDateString();
+}
 
 /** @public */
 export const N8nWorkflowsTable = () => {
@@ -84,9 +104,34 @@ export const N8nWorkflowsTable = () => {
       width: '120px',
     },
     {
+      title: 'Tags',
+      sorting: false,
+      render: (row: N8nWorkflow) =>
+        row.tags && row.tags.length > 0 ? (
+          <Box display="flex" flexWrap="wrap" style={{ gap: 4 }}>
+            {row.tags.map(tag => (
+              <Chip
+                key={tag.id}
+                label={tag.name}
+                size="small"
+                variant="outlined"
+              />
+            ))}
+          </Box>
+        ) : (
+          '-'
+        ),
+    },
+    {
       title: 'Updated',
       field: 'updatedAt',
-      render: (row: N8nWorkflow) => new Date(row.updatedAt).toLocaleString(),
+      render: (row: N8nWorkflow) => (
+        <Tooltip title={new Date(row.updatedAt).toLocaleString()}>
+          <Typography variant="body2" component="span">
+            {formatRelativeTime(row.updatedAt)}
+          </Typography>
+        </Tooltip>
+      ),
     },
     {
       title: 'Actions',
@@ -113,6 +158,14 @@ export const N8nWorkflowsTable = () => {
       title="n8n Workflows"
       data={workflows}
       columns={columns}
+      actions={[
+        {
+          icon: () => <SyncIcon />,
+          tooltip: 'Refresh workflows',
+          isFreeAction: true,
+          onClick: () => retry(),
+        },
+      ]}
       options={{
         padding: 'dense',
         paging: workflows.length > 20,

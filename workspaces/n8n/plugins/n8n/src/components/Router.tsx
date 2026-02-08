@@ -21,6 +21,7 @@ import {
 } from '@backstage/plugin-catalog-react';
 import Grid from '@material-ui/core/Grid';
 import { N8N_ANNOTATION } from '../constants';
+import { N8nOverviewCards } from './N8nOverviewCards/N8nOverviewCards';
 import { N8nWorkflowsTable } from './N8nWorkflowsTable/N8nWorkflowsTable';
 import { N8nExecutionTable } from './N8nExecutionTable/N8nExecutionTable';
 
@@ -44,13 +45,14 @@ export const Router = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
+        <N8nOverviewCards />
+      </Grid>
+      <Grid item xs={12}>
         <N8nWorkflowsTable />
       </Grid>
-      {workflowIds.map(workflowId => (
-        <Grid item xs={12} key={workflowId}>
-          <N8nExecutionTable workflowId={workflowId} />
-        </Grid>
-      ))}
+      <Grid item xs={12}>
+        <N8nExecutionTable workflowIds={workflowIds} />
+      </Grid>
     </Grid>
   );
 };
