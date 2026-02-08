@@ -20,7 +20,7 @@ import {
   FetchApi,
 } from '@backstage/frontend-plugin-api';
 import { QueryEvaluator } from './query';
-import { Alert, Dashboard } from './types';
+import { Alert, Dashboard, GrafanaHost } from './types';
 
 /**
  * Interface for the Grafana API
@@ -30,13 +30,23 @@ export interface GrafanaApi {
   /**
    * Returns the found dashboards in Grafana with the defined query
    * @param query - The query used to list the dashboards
+   * @param sourceId - Optional identifier for the Grafana instance to query
    */
-  listDashboards(query: string): Promise<Dashboard[]>;
+  listDashboards(query: string, sourceId?: string): Promise<Dashboard[]>;
   /**
    * Returns a list of alerts found in Grafana that have any of the defined alert selectors
    * @param selectors - One or multiple alert selectors
+   * @param sourceId - Optional identifier for the Grafana instance to query
    */
-  alertsForSelector(selectors: string | string[]): Promise<Alert[]>;
+  alertsForSelector(
+    selectors: string | string[],
+    sourceId?: string,
+  ): Promise<Alert[]>;
+  /**
+   * Returns whether a specific Grafana instance uses unified alerting
+   * @param sourceId - Optional identifier for the Grafana instance to check
+   */
+  isUnifiedAlerting(sourceId?: string): boolean;
 }
 
 interface AggregatedAlertState {
@@ -96,30 +106,18 @@ export const grafanaApiRef = createApiRef<GrafanaApi>({
   id: 'plugin.grafana.service',
 });
 
-export type Options = {
+/**
+ * Options for creating a GrafanaApiClient
+ * @public
+ */
+export type GrafanaApiClientOptions = {
   discoveryApi: DiscoveryApi;
   fetchApi: FetchApi;
 
   /**
-   * Domain used by users to access Grafana web UI.
-   * Example: https://monitoring.my-company.com/
+   * List of Grafana host configurations
    */
-  domain: string;
-
-  /**
-   * Path to use for requests via the proxy, defaults to /grafana/api
-   */
-  proxyPath?: string;
-
-  /**
-   * Limit value to pass in Grafana Dashboard search query.
-   */
-  grafanaDashboardSearchLimit?: number;
-
-  /**
-   * Max pages of Grafana Dashboard search query to fetch.
-   */
-  grafanaDashboardMaxPages?: number;
+  hosts: GrafanaHost[];
 };
 
 const DEFAULT_PROXY_PATH = '/grafana/api';
@@ -141,17 +139,23 @@ class Client {
   private readonly grafanaDashboardSearchLimit: number;
   private readonly grafanaDashboardMaxPages: number;
 
-  constructor(opts: Options) {
-    this.discoveryApi = opts.discoveryApi;
-    this.fetchApi = opts.fetchApi;
-    this.proxyPath = opts.proxyPath ?? DEFAULT_PROXY_PATH;
+  constructor(
+    discoveryApi: DiscoveryApi,
+    fetchApi: FetchApi,
+    proxyPath: string,
+    grafanaDashboardSearchLimit?: number,
+    grafanaDashboardMaxPages?: number,
+  ) {
+    this.discoveryApi = discoveryApi;
+    this.fetchApi = fetchApi;
+    this.proxyPath = proxyPath;
     this.queryEvaluator = new QueryEvaluator();
     this.grafanaDashboardSearchLimit = Math.min(
-      opts.grafanaDashboardSearchLimit ?? DEFAULT_DASHBOARDS_LIMIT,
+      grafanaDashboardSearchLimit ?? DEFAULT_DASHBOARDS_LIMIT,
       UPSTREAM_DASHBOARDS_LIMIT_MAX,
     );
     this.grafanaDashboardMaxPages =
-      opts.grafanaDashboardMaxPages ?? DEFAULT_PAGES_LIMIT;
+      grafanaDashboardMaxPages ?? DEFAULT_PAGES_LIMIT;
   }
 
   public async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
@@ -247,21 +251,87 @@ class Client {
   }
 }
 
+interface ClientHost {
+  host: GrafanaHost;
+  client: Client;
+}
+
+function initClients(opts: GrafanaApiClientOptions): Map<string, ClientHost> {
+  const clients = new Map<string, ClientHost>();
+  for (const host of opts.hosts) {
+    clients.set(host.id, {
+      host,
+      client: new Client(
+        opts.discoveryApi,
+        opts.fetchApi,
+        host.proxyPath ?? DEFAULT_PROXY_PATH,
+        host.grafanaDashboardSearchLimit,
+        host.grafanaDashboardMaxPages,
+      ),
+    });
+  }
+  return clients;
+}
+
+/**
+ * Grafana API client that supports multiple Grafana instances
+ * @public
+ */
 export class GrafanaApiClient implements GrafanaApi {
-  private readonly domain: string;
-  private readonly client: Client;
+  private readonly clients: Map<string, ClientHost>;
 
-  constructor(opts: Options) {
-    this.domain = opts.domain;
-    this.client = new Client(opts);
+  constructor(opts: GrafanaApiClientOptions) {
+    this.clients = initClients(opts);
   }
 
-  async listDashboards(query: string): Promise<Dashboard[]> {
-    return this.client.listDashboards(this.domain, query);
+  private resolveClientHost(sourceId?: string): ClientHost {
+    const id = sourceId || 'default';
+    const clientHost = this.clients.get(id);
+    if (clientHost) {
+      return clientHost;
+    }
+
+    // If no exact match and no sourceId was specified, fall back to first host
+    if (!sourceId) {
+      const first = this.clients.values().next();
+      if (!first.done) {
+        return first.value;
+      }
+    }
+
+    const available = Array.from(this.clients.keys()).join(', ');
+    throw new Error(
+      `Grafana instance "${id}" not found. Available instances: ${available}`,
+    );
   }
 
-  async alertsForSelector(dashboardTag: string): Promise<Alert[]> {
-    const response = await this.client.fetch<GrafanaAlert[]>(
+  /** {@inheritDoc GrafanaApi.isUnifiedAlerting} */
+  isUnifiedAlerting(sourceId?: string): boolean {
+    const { host } = this.resolveClientHost(sourceId);
+    return host.unifiedAlerting ?? false;
+  }
+
+  /** {@inheritDoc GrafanaApi.listDashboards} */
+  async listDashboards(query: string, sourceId?: string): Promise<Dashboard[]> {
+    const { host, client } = this.resolveClientHost(sourceId);
+    return client.listDashboards(host.domain, query);
+  }
+
+  /** {@inheritDoc GrafanaApi.alertsForSelector} */
+  async alertsForSelector(
+    selectors: string | string[],
+    sourceId?: string,
+  ): Promise<Alert[]> {
+    const { host, client } = this.resolveClientHost(sourceId);
+
+    if (host.unifiedAlerting) {
+      return this.unifiedAlertsForSelector(host, client, selectors);
+    }
+
+    // Legacy alerting
+    const dashboardTag =
+      typeof selectors === 'string' ? selectors : selectors[0];
+    const response = await client.fetch<GrafanaAlert[]>(
       `/api/alerts?dashboardTag=${dashboardTag}`,
     );
 
@@ -269,25 +339,15 @@ export class GrafanaApiClient implements GrafanaApi {
       name: alert.name,
       state: alert.state,
       matchingSelector: dashboardTag,
-      url: `${this.domain}${alert.url}?panelId=${alert.panelId}&fullscreen&refresh=30s`,
+      url: `${host.domain}${alert.url}?panelId=${alert.panelId}&fullscreen&refresh=30s`,
     }));
   }
-}
 
-export class UnifiedAlertingGrafanaApiClient implements GrafanaApi {
-  private readonly domain: string;
-  private readonly client: Client;
-
-  constructor(opts: Options) {
-    this.domain = opts.domain;
-    this.client = new Client(opts);
-  }
-
-  async listDashboards(query: string): Promise<Dashboard[]> {
-    return this.client.listDashboards(this.domain, query);
-  }
-
-  async alertsForSelector(selectors: string | string[]): Promise<Alert[]> {
+  private async unifiedAlertsForSelector(
+    host: GrafanaHost,
+    client: Client,
+    selectors: string | string[],
+  ): Promise<Alert[]> {
     let labelSelectors: string[] = [];
     if (typeof selectors === 'string') {
       labelSelectors = [selectors];
@@ -295,14 +355,14 @@ export class UnifiedAlertingGrafanaApiClient implements GrafanaApi {
       labelSelectors = selectors;
     }
 
-    const rulesResponse = await this.client.fetch<
+    const rulesResponse = await client.fetch<
       Record<string, AlertRuleGroupConfig[]>
     >('/api/ruler/grafana/api/v1/rules');
     const rules = Object.values(rulesResponse)
       .flat()
       .map(ruleGroup => ruleGroup.rules)
       .flat();
-    const alertsResponse = await this.client.fetch<AlertsData>(
+    const alertsResponse = await client.fetch<AlertsData>(
       '/api/prometheus/grafana/api/v1/alerts',
     );
 
@@ -360,7 +420,7 @@ export class UnifiedAlertingGrafanaApiClient implements GrafanaApi {
 
           return {
             name: rule.grafana_alert.title,
-            url: `${this.domain}/alerting/grafana/${rule.grafana_alert.uid}/view`,
+            url: `${host.domain}/alerting/grafana/${rule.grafana_alert.uid}/view`,
             matchingSelector: selector,
             state: this.getState(
               aggregatedAlertStates,
