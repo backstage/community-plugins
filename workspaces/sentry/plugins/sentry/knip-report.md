@@ -1,8 +1,8 @@
 # Knip report
 
-## Unused devDependencies (2)
+## Unused devDependencies (1)
 
-| Name                 | Location     | Severity |
-| :------------------- | :----------- | :------- |
-| @testing-library/dom | package.json | error    |
-| canvas               | package.json | error    |
+| Name                 | Location          | Severity |
+| :------------------- | :---------------- | :------- |
+| @testing-library/dom | package.json:77:6 | error    |
+
