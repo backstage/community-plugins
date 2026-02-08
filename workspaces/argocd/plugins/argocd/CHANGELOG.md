@@ -1,5 +1,12 @@
 # @backstage-community/plugin-argocd
 
+## 2.4.5
+
+### Patch Changes
+
+- Updated dependencies [4818f35]
+  - @backstage-community/plugin-argocd-common@1.12.2
+
 ## 2.4.4
 
 ### Patch Changes

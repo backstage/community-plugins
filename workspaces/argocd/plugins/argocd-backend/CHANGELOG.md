@@ -1,5 +1,13 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.0.3
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- Updated dependencies [4818f35]
+  - @backstage-community/plugin-argocd-common@1.12.2
+
 ## 1.0.2
 
 ### Patch Changes
