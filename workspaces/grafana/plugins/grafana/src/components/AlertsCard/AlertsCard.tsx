@@ -17,6 +17,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import {
   Progress,
+  ResponseErrorPanel,
   TableColumn,
   Table,
   StatusOK,
@@ -34,7 +35,6 @@ import {
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import { Alert } from '@material-ui/lab';
 import { AlertsCardOpts, Alert as GrafanaAlert } from '../../types';
 import {
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
@@ -137,7 +137,7 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <ResponseErrorPanel error={error} />;
   }
 
   return <AlertsTable alerts={value || []} opts={opts} />;

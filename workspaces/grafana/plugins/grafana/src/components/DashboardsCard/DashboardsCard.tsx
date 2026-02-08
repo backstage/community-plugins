@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { Progress, TableColumn, Table, Link } from '@backstage/core-components';
+import {
+  Progress,
+  ResponseErrorPanel,
+  TableColumn,
+  Table,
+  Link,
+} from '@backstage/core-components';
 import { Entity } from '@backstage/catalog-model';
 import {
   MissingAnnotationEmptyState,
@@ -23,9 +29,6 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import Alert from '@material-ui/lab/Alert';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
 import { Dashboard, DashboardCardOpts } from '../../types';
 import {
   dashboardSelectorFromEntity,
@@ -64,13 +67,13 @@ export const DashboardsTable = ({
   ];
 
   const titleElm = (
-    <Tooltip
-      title={`Note: only dashboard with the "${dashboardSelectorFromEntity(
+    <span
+      title={`Note: only dashboards with the "${dashboardSelectorFromEntity(
         entity,
       )}" selector are displayed.`}
     >
-      <Typography variant="h5">{opts.title || 'Dashboards'}</Typography>
-    </Tooltip>
+      {opts.title || 'Dashboards'}
+    </span>
   );
 
   return (
@@ -112,7 +115,7 @@ const Dashboards = ({
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <ResponseErrorPanel error={error} />;
   }
 
   return (
