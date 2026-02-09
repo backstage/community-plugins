@@ -19,6 +19,9 @@ export interface Config {
    */
   splunkOnCall?: {
     /**
+     * Base REST endpoint used for incident actions. Can be an absolute URL or
+     * a proxy path (for example, `/splunk-on-call-events`).
+     *
      * @visibility frontend
      */
     eventsRestEndpoint?: string;

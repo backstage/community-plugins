@@ -20,6 +20,7 @@ import {
   createRouteRef,
   discoveryApiRef,
   configApiRef,
+  fetchApiRef,
   createRoutableExtension,
   createComponentExtension,
 } from '@backstage/core-plugin-api';
@@ -32,9 +33,13 @@ export const splunkOnCallPlugin = createPlugin({
   apis: [
     createApiFactory({
       api: splunkOnCallApiRef,
-      deps: { discoveryApi: discoveryApiRef, configApi: configApiRef },
-      factory: ({ configApi, discoveryApi }) =>
-        SplunkOnCallClient.fromConfig(configApi, discoveryApi),
+      deps: {
+        discoveryApi: discoveryApiRef,
+        configApi: configApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ configApi, discoveryApi, fetchApi }) =>
+        SplunkOnCallClient.fromConfig(configApi, discoveryApi, fetchApi),
     }),
   ],
   routes: {
