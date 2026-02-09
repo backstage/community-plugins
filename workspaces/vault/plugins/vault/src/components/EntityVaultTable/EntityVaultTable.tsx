@@ -16,6 +16,7 @@
 import { Entity } from '@backstage/catalog-model';
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Edit from '@material-ui/icons/Edit';
 import Visibility from '@material-ui/icons/Visibility';
@@ -152,6 +153,14 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
         emptyRowsWhenPaging: false,
         search: false,
       }}
+      emptyContent={
+        <Box style={{ textAlign: 'center', padding: '15px' }}>
+          <Typography variant="body1">
+            No secrets found for {entity.metadata.name} in{' '}
+            {secretPaths.join(', ')}
+          </Typography>
+        </Box>
+      }
     />
   );
 };
