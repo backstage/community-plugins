@@ -46,13 +46,14 @@ No separate router wiring is needed; the plugin registers its routes on the shar
 
 All endpoints that take an entity require the query parameter `entityRef`. The backend looks up the entity in the catalog and uses its app-groups (from `insights.fairwinds.com/app-groups` or spec) to call the Insights API. Responses may include an `insightsUrl` linking to the corresponding Fairwinds Insights UI.
 
-| Method | Path                                                      | Description                                                                                      |
-| ------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| GET    | `/vulnerabilities?entityRef=...`                          | Vulnerability summaries and top lists (by title, severity, package).                             |
-| GET    | `/action-items?entityRef=...&page=0&pageSize=25&...`      | Paginated action items list (supports `orderBy`, `Search`, `ReportType`, `Fixed`, `Resolution`). |
-| GET    | `/action-item-filters?entityRef=...&Field=ReportType&...` | Filter options for action items (e.g. `ReportType` values).                                      |
-| GET    | `/action-items/top?entityRef=...`                         | Top action items aggregated by severity, title, namespace, resource (for charts).                |
-| GET    | `/costs-mtd-summary?entityRef=...`                        | Current and previous month-to-date cost from resources-total-costs.                              |
+| Method | Path                                                         | Description                                                                                                                     |
+| ------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/vulnerabilities?entityRef=...`                             | Vulnerability summaries and top lists (by title, severity, package).                                                            |
+| GET    | `/action-items?entityRef=...&page=0&pageSize=25&...`         | Paginated action items list (supports `orderBy`, `Search`, `ReportType`, `Fixed`, `Resolution`).                                |
+| GET    | `/action-item-filters?entityRef=...&Field=ReportType&...`    | Filter options for action items (e.g. `ReportType` values).                                                                     |
+| GET    | `/action-items/top?entityRef=...`                            | Top action items aggregated by severity, title, namespace, resource (for charts).                                               |
+| GET    | `/costs-mtd-summary?entityRef=...`                           | Current and previous month-to-date cost from resources-total-costs.                                                             |
+| GET    | `/resources-summary-timeseries?entityRef=...&datePreset=30d` | Aggregated pod count, CPU, and memory timeseries for resource history cards (supports presets e.g. `7d`, `30d`, `365d`, `mtd`). |
 
 ## Entity requirement
 
@@ -65,4 +66,4 @@ If no app-groups are found for the given `entityRef`, the backend returns `404` 
 
 ## Caching
 
-The plugin uses an in-memory cache with TTL controlled by `fairwindsInsights.cacheTTL` (default 300 seconds). Cached data includes `vulnerabilities`, `action-items/top`, and `costs-mtd-summary`.
+The plugin uses an in-memory cache with TTL controlled by `fairwindsInsights.cacheTTL` (default 300 seconds). Cached data includes `vulnerabilities`, `action-items`, `action-item-filters`, `action-items/top`, `costs-mtd-summary`, and `resources-summary-timeseries`.

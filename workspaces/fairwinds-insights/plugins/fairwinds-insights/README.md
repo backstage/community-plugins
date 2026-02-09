@@ -49,6 +49,9 @@ import {
   ActionItemsTopCard,
   MTDCostOverviewCard,
   VulnerabilitiesCard,
+  ResourcesHistoryPodCountCard,
+  ResourcesHistoryCPUCard,
+  ResourcesHistoryMemoryCard,
 } from '@backstage-community/plugin-fairwinds-insights';
 
 // In your overview content (e.g. overviewContent or defaultEntityPage):
@@ -65,6 +68,15 @@ import {
   </Grid>
   <Grid item md={12} xs={12}>
     <ActionItemsCard />
+  </Grid>
+  <Grid item md={12} xs={12}>
+    <ResourcesHistoryPodCountCard />
+  </Grid>
+  <Grid item md={12} xs={12}>
+    <ResourcesHistoryCPUCard />
+  </Grid>
+  <Grid item md={12} xs={12}>
+    <ResourcesHistoryMemoryCard />
   </Grid>
 </Grid>;
 ```
@@ -86,6 +98,9 @@ In case of multiple app groups, use comma-separated values.
 - **MTDCostOverviewCard** – month-to-date cost overview.
 - **ActionItemsTopCard** – top action items (e.g. by namespace/resource/severity/title).
 - **ActionItemsCard** – full action items list (table with filters).
+- **ResourcesHistoryPodCountCard** – resource history: pod count over time.
+- **ResourcesHistoryCPUCard** – resource history: CPU usage over time.
+- **ResourcesHistoryMemoryCard** – resource history: memory usage over time.
 
 All of them use `useFairwindsInsightsApi()` and the backend route `fairwinds-insights`; without the backend plugin and proper config, the cards will not load data.
 

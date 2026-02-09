@@ -1,17 +1,17 @@
-# GitHub Fairwinds Insights
+# Fairwinds Insights (Backstage)
 
-This workspace contains plugins for integrating GitHub Fairwinds Insights with Backstage, complete with metrics and insights for members of your organization or enterprise.
+This workspace contains plugins for integrating [Fairwinds Insights](https://www.fairwinds.com/fairwinds-insights) with Backstage, with metrics and insights for your organization.
 
 ## Start dev environment
 
-Create `app-config.local.yaml` with Fairwinds Insights configuration
+Create `app-config.local.yaml` with Fairwinds Insights configuration:
 
 ```yaml
 fairwindsInsights:
   apiUrl: ${FAIRWINDS_INSIGHTS_URL}
   organization: ${FAIRWINDS_INSIGHTS_ORGANIZATION}
-  apiKey: ${FAIRWINDS_INSIGHTS_ORGANIZATION_TOKEN}
-  cacheTTL: ${FAIRWINDS_INSIGHTS_ORGANIZATION_TOKEN}
+  apiKey: ${FAIRWINDS_INSIGHTS_API_KEY}
+  cacheTTL: 300 # optional; seconds (default 300)
 ```
 
 To start the app, run:
@@ -28,9 +28,9 @@ yarn install && yarn start
 
 ## Plugins
 
-- [fairwinds-insights](./plugins/fairwinds-insights/README): Frontend plugin that provides the UI components and functionality.
-- [fairwinds-insights-common](./plugins/fairwinds-insights-common/README): A common library containing shared types, permissions, and constants.
-- [fairwinds-insights-backend](./plugins/fairwinds-insights-backend/README): Backend plugin that provides the API integration and database interactions.
+- [fairwinds-insights](./plugins/fairwinds-insights/README.md): Frontend plugin that provides the UI components and functionality.
+- [fairwinds-insights-common](./plugins/fairwinds-insights-common/README.md): Shared types, permissions, and constants.
+- [fairwinds-insights-backend](./plugins/fairwinds-insights-backend/README.md): Backend plugin that provides the API integration and proxies to the Fairwinds Insights API.
 
 ## Screenshots
 
