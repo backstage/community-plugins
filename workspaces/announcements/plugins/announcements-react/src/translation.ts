@@ -29,7 +29,9 @@ export const announcementsTranslationRef = createTranslationRef({
       startAt: 'Announcement start date',
       untilDate: 'Announcement end date',
       onBehalfOf: 'On behalf of',
-      entity: 'Entity',
+      entity: 'Link to entity',
+      entityPlaceholder: 'Select an entity',
+      entitySearchPlaceholder: 'Search entities...',
       categoryInput: {
         create: 'Create',
         label: 'Category',

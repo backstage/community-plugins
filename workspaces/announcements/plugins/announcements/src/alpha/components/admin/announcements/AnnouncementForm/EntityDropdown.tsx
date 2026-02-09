@@ -91,7 +91,8 @@ export default function EntityDropdown({
       name="entity"
       label={t('announcementForm.entity')}
       searchable
-      placeholder={t('announcementForm.entity')}
+      placeholder={t('announcementForm.entityPlaceholder')}
+      searchPlaceholder={t('announcementForm.entitySearchPlaceholder')}
       value={selectedEntity || null}
       onChange={handleChange}
       options={selectOptions}
