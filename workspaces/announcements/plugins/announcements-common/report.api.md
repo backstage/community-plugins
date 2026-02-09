@@ -21,6 +21,7 @@ export type Announcement = {
   tags?: Tag[];
   sendNotification?: boolean;
   updated_at: string;
+  entityRefs?: string[];
 };
 
 // @public
@@ -48,6 +49,7 @@ export type AnnouncementsFilters = {
   order?: 'asc' | 'desc';
   current?: boolean;
   sendNotification?: boolean;
+  entityRef?: string;
 };
 
 // @public

@@ -201,6 +201,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.startAt': 'Announcement start date';
     readonly 'announcementForm.untilDate': 'Announcement end date';
     readonly 'announcementForm.onBehalfOf': 'On behalf of';
+    readonly 'announcementForm.entity': 'Entity';
     readonly 'announcementForm.tagsLabel': 'Tags';
     readonly 'announcementForm.categoryInput.label': 'Category';
     readonly 'announcementForm.categoryInput.create': 'Create';
