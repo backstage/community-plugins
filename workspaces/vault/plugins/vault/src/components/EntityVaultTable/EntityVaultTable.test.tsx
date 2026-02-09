@@ -168,4 +168,57 @@ describe('EntityVaultTable', () => {
     expect(rendered.getByText(/No secrets/)).toBeInTheDocument();
     expect(rendered.getByText(/create one/)).toBeInTheDocument();
   });
+
+  it('should render secrets from multiple secret paths', async () => {
+    const multiPathEntity = {
+      ...entityOk,
+      metadata: {
+        ...entityOk.metadata,
+        annotations: {
+          'vault.io/secrets-path': 'test/success,test/extra',
+        },
+      },
+    };
+
+    const mockExtraSecrets = {
+      items: [
+        {
+          name: 'secret::three',
+          path: 'test/extra',
+          editUrl: `${mockBaseUrl}/ui/vault/secrets/secrets/edit/test/extra/secret::three`,
+          showUrl: `${mockBaseUrl}/ui/vault/secrets/secrets/show/test/extra/secret::three`,
+        },
+      ],
+    };
+
+    server.use(
+      rest.get(`${mockBaseUrl}/v1/secrets/:path`, (req, res, ctx) => {
+        const { path } = req.params;
+        if (path === 'test/success') {
+          return res(ctx.json(mockSecretsResult));
+        } else if (path === 'test/extra') {
+          return res(ctx.json(mockExtraSecrets));
+        }
+        return res(ctx.status(400));
+      }),
+    );
+
+    const rendered = await renderInTestApp(
+      <ApiProvider apis={apis}>
+        <EntityVaultTable entity={multiPathEntity} />
+      </ApiProvider>,
+    );
+
+    expect(await rendered.findAllByText(/secret::one/)).toBeDefined();
+    expect(await rendered.findAllByText(/secret::two/)).toBeDefined();
+    expect(await rendered.findAllByText(/secret::three/)).toBeDefined();
+
+    expect(listSecretsSpy).toHaveBeenCalledWith('test/success', {
+      secretEngine: undefined,
+    });
+    expect(listSecretsSpy).toHaveBeenCalledWith('test/extra', {
+      secretEngine: undefined,
+    });
+    expect(listSecretsSpy).toHaveBeenCalledTimes(2);
+  });
 });
