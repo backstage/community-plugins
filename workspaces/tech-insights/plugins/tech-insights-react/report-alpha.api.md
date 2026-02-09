@@ -27,7 +27,7 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
       >
     | ExtensionDataRef<
         EntityPredicate,
-        'tech-insights-scorecard.filter',
+        'tech-insights-scorecard.entity-filter',
         {
           optional: true;
         }
@@ -38,13 +38,13 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
     description: string | undefined;
     checkIds: string[] | undefined;
     dense: boolean | undefined;
-    filter: Record<string, unknown> | undefined;
+    entityFilter: Record<string, unknown> | undefined;
   };
   configInput: {
-    filter?: Record<string, unknown> | undefined;
     title?: string | undefined;
     description?: string | undefined;
     dense?: boolean | undefined;
+    entityFilter?: Record<string, unknown> | undefined;
     checkIds?: string[] | undefined;
   };
   dataRefs: {
@@ -59,9 +59,9 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
       'tech-insights-scorecard.props',
       {}
     >;
-    filter: ConfigurableExtensionDataRef<
+    entityFilter: ConfigurableExtensionDataRef<
       EntityPredicate,
-      'tech-insights-scorecard.filter',
+      'tech-insights-scorecard.entity-filter',
       {}
     >;
   };
@@ -73,7 +73,7 @@ export type TechInsightsScorecardBlueprintParams = {
   description?: string;
   checkIds?: string[];
   dense?: boolean;
-  filter?: EntityPredicate;
+  entityFilter?: EntityPredicate;
   checkFilter?: (check: Check) => boolean;
 };
 

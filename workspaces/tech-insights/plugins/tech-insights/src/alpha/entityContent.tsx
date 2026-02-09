@@ -36,7 +36,7 @@ export const entityTechInsightsContent =
     inputs: {
       scorecards: createExtensionInput([
         TechInsightsScorecardBlueprint.dataRefs.props,
-        TechInsightsScorecardBlueprint.dataRefs.filter.optional(),
+        TechInsightsScorecardBlueprint.dataRefs.entityFilter.optional(),
       ]),
     },
     factory(originalFactory, { inputs, config }) {
@@ -50,16 +50,16 @@ export const entityTechInsightsContent =
             );
 
             const scorecards = inputs.scorecards.map(scorecard => {
-              const filter = scorecard.get(
-                TechInsightsScorecardBlueprint.dataRefs.filter,
+              const entityFilter = scorecard.get(
+                TechInsightsScorecardBlueprint.dataRefs.entityFilter,
               );
 
               return {
                 props: scorecard.get(
                   TechInsightsScorecardBlueprint.dataRefs.props,
                 ),
-                filter: filter
-                  ? entityPredicateToFilterFunction(filter)
+                entityFilter: entityFilter
+                  ? entityPredicateToFilterFunction(entityFilter)
                   : () => true,
               };
             });
@@ -79,7 +79,7 @@ export const entityTechInsightsContent =
               const { entity } = useEntity();
 
               const matchingScorecards = scorecards.filter(s =>
-                s.filter(entity),
+                s.entityFilter(entity),
               );
 
               return (

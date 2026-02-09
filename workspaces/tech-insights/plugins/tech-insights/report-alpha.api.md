@@ -147,7 +147,7 @@ const techInsightsPlugin: OverridableFrontendPlugin<
             >
           | ConfigurableExtensionDataRef<
               EntityPredicate,
-              'tech-insights-scorecard.filter',
+              'tech-insights-scorecard.entity-filter',
               {
                 optional: true;
               }

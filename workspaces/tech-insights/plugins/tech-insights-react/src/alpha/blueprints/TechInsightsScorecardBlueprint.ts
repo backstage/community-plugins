@@ -41,8 +41,8 @@ export const techInsightsScorecardExtensionData = {
   /**
    * A filter to determine if a scorecard should be shown for an entity.
    */
-  filter: createExtensionDataRef<EntityPredicate>().with({
-    id: 'tech-insights-scorecard.filter',
+  entityFilter: createExtensionDataRef<EntityPredicate>().with({
+    id: 'tech-insights-scorecard.entity-filter',
   }),
 };
 
@@ -54,7 +54,7 @@ export type TechInsightsScorecardBlueprintParams = {
   description?: string;
   checkIds?: string[];
   dense?: boolean;
-  filter?: EntityPredicate;
+  entityFilter?: EntityPredicate;
   checkFilter?: (check: Check) => boolean;
 };
 
@@ -69,7 +69,7 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
   },
   dataRefs: {
     props: techInsightsScorecardExtensionData.props,
-    filter: techInsightsScorecardExtensionData.filter,
+    entityFilter: techInsightsScorecardExtensionData.entityFilter,
   },
   config: {
     schema: {
@@ -77,12 +77,12 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
       description: z => z.string().optional(),
       checkIds: z => z.array(z.string()).optional(),
       dense: z => z.boolean().optional(),
-      filter: z => z.record(z.unknown()).optional(),
+      entityFilter: z => z.record(z.unknown()).optional(),
     },
   },
   output: [
     techInsightsScorecardExtensionData.props,
-    techInsightsScorecardExtensionData.filter.optional(),
+    techInsightsScorecardExtensionData.entityFilter.optional(),
   ],
   *factory(params: TechInsightsScorecardBlueprintParams, { config }) {
     yield techInsightsScorecardExtensionData.props({
@@ -93,10 +93,11 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
       checkFilter: params.checkFilter,
     });
 
-    const filter =
-      (config.filter as EntityPredicate | undefined) ?? params.filter;
-    if (filter) {
-      yield techInsightsScorecardExtensionData.filter(filter);
+    const entityFilter =
+      (config.entityFilter as EntityPredicate | undefined) ??
+      params.entityFilter;
+    if (entityFilter) {
+      yield techInsightsScorecardExtensionData.entityFilter(entityFilter);
     }
   },
 });
