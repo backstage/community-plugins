@@ -4,4 +4,4 @@
 '@backstage-community/plugin-vault': minor
 ---
 
-add support for multiple secrets paths
+Added support for multiple secrets paths
