@@ -92,6 +92,7 @@ const CPU_SERIES = [
   },
 ];
 
+/** @public */
 export const ResourcesHistoryCPUCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();

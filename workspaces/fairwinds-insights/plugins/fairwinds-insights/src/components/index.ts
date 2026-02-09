@@ -14,10 +14,38 @@
  * limitations under the License.
  */
 
+/**
+ * The Vulnerabilities Card.
+ *
+ * @public */
 export { VulnerabilitiesCard } from './VulnerabilitiesCard';
+/**
+ * The MTD Cost Overview Card.
+ *
+ * @public */
 export { MTDCostOverviewCard } from './MTDCostOverviewCard';
+/**
+ * The Action Items Card.
+ *
+ * @public */
 export { ActionItemsCard } from './ActionItemsCard';
+/**
+ * The Action Items Top Card.
+ *
+ * @public */
 export { ActionItemsTopCard } from './ActionItemsTopCard';
+/**
+ * The Resources History Pod Count Card.
+ *
+ * @public */
 export { ResourcesHistoryPodCountCard } from './ResourcesHistoryPodCountCard';
+/**
+ * The Resources History CPU Card.
+ *
+ * @public */
 export { ResourcesHistoryCPUCard } from './ResourcesHistoryCPUCard';
+/**
+ * The Resources History Memory Card.
+ *
+ * @public */
 export { ResourcesHistoryMemoryCard } from './ResourcesHistoryMemoryCard';

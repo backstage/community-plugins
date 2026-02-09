@@ -13,5 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Fairwinds Insights backend plugin for Backstage.
+ *
+ * @packageDocumentation
+ */
+
+/**
+ * The Fairwinds Insights plugin.
+ *
+ * @public */
 export { fairwindsInsightsPlugin } from './plugin';
+/**
+ * The Fairwinds Insights plugin.
+ *
+ * @public */
 export { fairwindsInsightsPlugin as default } from './plugin';

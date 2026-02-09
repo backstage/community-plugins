@@ -81,6 +81,7 @@ function toTitleCase(str: string): string {
     .join(' ');
 }
 
+/** @public */
 export const ActionItemsTopCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();

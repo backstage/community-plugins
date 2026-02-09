@@ -4,32 +4,11 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { Config } from '@backstage/config';
-import { DatabaseService } from '@backstage/backend-plugin-api';
-import express from 'express';
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { SchedulerService } from '@backstage/backend-plugin-api';
-import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 
-// @public
+// @public (undocumented)
 const fairwindsInsightsPlugin: BackendFeature;
 export default fairwindsInsightsPlugin;
+export { fairwindsInsightsPlugin };
 
-// @public
-export function createRouterFromConfig(
-  routerOptions: RouterOptions,
-): Promise<express.Router>;
-
-// @public
-export interface PluginOptions {
-  schedule?: SchedulerServiceTaskScheduleDefinition;
-}
-
-// @public
-export interface RouterOptions {
-  config: Config;
-  database: DatabaseService;
-  logger: LoggerService;
-  scheduler: SchedulerService;
-}
+// (No @packageDocumentation comment for this package)
 ```

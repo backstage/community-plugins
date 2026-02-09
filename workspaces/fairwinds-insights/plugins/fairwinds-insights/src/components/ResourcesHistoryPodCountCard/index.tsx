@@ -47,6 +47,7 @@ function formatChartDate(isoDate: string): string {
   return `${m}/${day}`;
 }
 
+/** @public */
 export const ResourcesHistoryPodCountCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();

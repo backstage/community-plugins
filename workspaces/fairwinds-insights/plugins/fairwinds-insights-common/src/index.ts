@@ -14,4 +14,10 @@
  * limitations under the License.
  */
 
+/**
+ * Common types and utilities for the Fairwinds Insights plugin.
+ *
+ * @packageDocumentation
+ */
+
 export * from './types';

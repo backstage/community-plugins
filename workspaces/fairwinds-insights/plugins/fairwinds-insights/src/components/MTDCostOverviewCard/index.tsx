@@ -40,6 +40,7 @@ const formatCurrency = (amount: number) =>
     minimumFractionDigits: 2,
   }).format(amount);
 
+/** @public */
 export const MTDCostOverviewCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();

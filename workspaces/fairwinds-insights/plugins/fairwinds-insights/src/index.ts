@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * Fairwinds Insights plugin for Backstage.
+ *
+ * @packageDocumentation
+ */
+
+/** @public */
 export {
   fairwindsInsightsPlugin,
   fairwindsInsightsPlugin as plugin,

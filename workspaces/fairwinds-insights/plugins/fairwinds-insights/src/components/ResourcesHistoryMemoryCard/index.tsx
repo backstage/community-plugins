@@ -92,6 +92,7 @@ const MEMORY_SERIES = [
   },
 ];
 
+/** @public */
 export const ResourcesHistoryMemoryCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();

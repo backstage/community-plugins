@@ -20,6 +20,10 @@ import {
 import { createRouter } from './service/router';
 import { CatalogClient } from '@backstage/catalog-client';
 
+/**
+ * The Fairwinds Insights backend plugin.
+ *
+ * @public */
 export const fairwindsInsightsPlugin = createBackendPlugin({
   pluginId: 'fairwinds-insights',
   register(env) {

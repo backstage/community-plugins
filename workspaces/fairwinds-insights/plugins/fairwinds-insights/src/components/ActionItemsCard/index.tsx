@@ -94,6 +94,7 @@ const defaultColumnVisibility: Record<string, boolean> = Object.fromEntries(
   TABLE_COLUMNS.map(c => [c.id, c.defaultVisible]),
 );
 
+/** @public */
 export const ActionItemsCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();

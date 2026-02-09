@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * Common types and utilities for the Fairwinds Insights Backstage plugin.
+ *
+ * @packageDocumentation
+ */
+
+/** @public */
 export const SEVERITY_COLORS: Record<string, string> = {
   CRITICAL: '#B65050',
   HIGH: '#D7743F',
@@ -21,6 +28,7 @@ export const SEVERITY_COLORS: Record<string, string> = {
   LOW: '#654D96',
 };
 
+/** @public */
 export function severityNumericToLabel(value: number): string {
   if (Number.isNaN(value)) return 'LOW';
   if (value >= 0.9) return 'CRITICAL';
@@ -29,6 +37,7 @@ export function severityNumericToLabel(value: number): string {
   return 'LOW';
 }
 
+/** @public */
 export interface ActionItemRow {
   id: string;
   title: string;
@@ -43,18 +52,22 @@ export interface ActionItemRow {
   annotations: string;
 }
 
+/** @public */
 export interface ActionItemsListResponse {
   data: ActionItemRow[];
   total: number;
   insightsUrl?: string;
 }
 
+/** @public */
 export interface ActionItemFiltersResponse {
   ReportType: string[];
 }
 
+/** @public */
 export type VulnerabilitySeverity = 'Critical' | 'High' | 'Medium' | 'Low';
 
+/** @public */
 export interface Vulnerability {
   id: string;
   severity: VulnerabilitySeverity;
@@ -69,11 +82,13 @@ export interface Vulnerability {
   link?: string;
 }
 
+/** @public */
 export interface VulnerabilitySummary {
   severity: VulnerabilitySeverity;
   count: number;
 }
 
+/** @public */
 export interface VulnerabilityTopItem {
   title: string;
   severity: VulnerabilitySeverity;
@@ -81,6 +96,7 @@ export interface VulnerabilityTopItem {
   affectedResources: number;
 }
 
+/** @public */
 export interface ActionItem {
   id: string;
   type: string;
@@ -99,16 +115,19 @@ export interface ActionItem {
   link?: string;
 }
 
+/** @public */
 export interface ActionItemSummary {
   severity: VulnerabilitySeverity;
   count: number;
 }
 
+/** @public */
 export interface ActionItemTopItem {
   severity: VulnerabilitySeverity;
   count: number;
 }
 
+/** @public */
 export interface FairwindsInsightsApiConfig {
   apiUrl: string;
   apiKey: string;
@@ -116,11 +135,13 @@ export interface FairwindsInsightsApiConfig {
   cacheTTL: number;
 }
 
+/** @public */
 export interface VulnerabilitiesTopItem {
   count: number;
   title: string;
 }
 
+/** @public */
 export interface VulnerabilitiesResponse {
   topByTitle: VulnerabilitiesTopItem[];
   topBySeverity: VulnerabilitiesTopItem[];
@@ -130,6 +151,7 @@ export interface VulnerabilitiesResponse {
   insightsUrl?: string;
 }
 
+/** @public */
 export interface ActionItemsResponse {
   summaries: ActionItemSummary[];
   top: ActionItemTopItem[];
@@ -138,11 +160,13 @@ export interface ActionItemsResponse {
   insightsUrl?: string;
 }
 
+/** @public */
 export interface ActionItemsTopItem {
   count: number;
   title: string;
 }
 
+/** @public */
 export interface ActionItemsTopResponse {
   topBySeverity: ActionItemsTopItem[];
   topByTitle: ActionItemsTopItem[];
@@ -151,6 +175,7 @@ export interface ActionItemsTopResponse {
   insightsUrl?: string;
 }
 
+/** @public */
 export interface ResourcesTotalCostsResponse {
   costRecommendationCPU: number;
   costRecommendationMemory: number;
@@ -170,12 +195,14 @@ export interface ResourcesTotalCostsResponse {
   totalUsageCost: number;
 }
 
+/** @public */
 export interface CostsMtdResponse {
   currentMtd: ResourcesTotalCostsResponse;
   previousMtd: ResourcesTotalCostsResponse;
   insightsUrl?: string;
 }
 
+/** @public */
 export type ResourcesSummaryTimeseriesDatePreset =
   | '7d'
   | '30d'
@@ -187,6 +214,7 @@ export type ResourcesSummaryTimeseriesDatePreset =
   | 'last_year'
   | 'ytd';
 
+/** @public */
 export interface ResourcesSummaryTimeseriesMetricSeries {
   minUsage: (number | null)[];
   avgUsage: (number | null)[];
@@ -197,6 +225,7 @@ export interface ResourcesSummaryTimeseriesMetricSeries {
   actualRequests: (number | null)[];
 }
 
+/** @public */
 export interface ResourcesSummaryTimeseriesResponse {
   dates: string[];
   podCount: { avg: (number | null)[] };
@@ -205,6 +234,7 @@ export interface ResourcesSummaryTimeseriesResponse {
   insightsUrl?: string;
 }
 
+/** @public */
 export const RESOURCES_SUMMARY_TIMESERIES_DATE_PRESETS: ReadonlyArray<{
   value: ResourcesSummaryTimeseriesDatePreset;
   label: string;

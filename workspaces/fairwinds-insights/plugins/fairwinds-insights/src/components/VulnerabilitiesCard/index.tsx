@@ -63,6 +63,7 @@ function toTitleCase(str: string): string {
     .join(' ');
 }
 
+/** @public */
 export const VulnerabilitiesCard = () => {
   const { entity } = useEntity();
   const api = useFairwindsInsightsApi();
