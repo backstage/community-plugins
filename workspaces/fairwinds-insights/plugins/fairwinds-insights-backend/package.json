@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@backstage-community/plugin-fairwinds-insights-common": "workspace:^",
-    "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
@@ -61,7 +60,6 @@
     "@backstage/cli": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
-    "@types/express": "^4.17.6",
     "@types/node-fetch": "^2.6.11"
   },
   "configSchema": "config.d.ts",
