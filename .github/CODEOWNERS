@@ -95,7 +95,7 @@ yarn.lock                                                               @backsta
 /workspaces/playlist                                                    @backstage/community-plugins-maintainers  @kuangp
 /workspaces/puppetdb                                                    @backstage/community-plugins-maintainers
 /workspaces/quay                                                        @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar 
-/workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @debsmita1 @divyanshiGupta @PatAKnight @dzemanov @jrichter1 @HusneShabbir @karthikjeeyar @rohitkrai03
+/workspaces/rbac                                                        @backstage/community-plugins-maintainers  @AndrienkoAleksandr @christoph-jerolimov @debsmita1 @divyanshiGupta @PatAKnight @dzemanov @jrichter1 @HusneShabbir @karthikjeeyar @rohitkrai03 @djanickova
 /workspaces/repo-tools                                                  @backstage/community-plugins-maintainers
 /workspaces/report-portal                                               @backstage/community-plugins-maintainers  @yashoswalyo @deshmukhmayur @riginoommen
 /workspaces/rollbar                                                     @backstage/community-plugins-maintainers  @andrewthauer
