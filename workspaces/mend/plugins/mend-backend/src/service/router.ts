@@ -246,7 +246,7 @@ export async function createRouter(
       if (!data.length) {
         response.status(404).json({
           message:
-            'Results for this repository are either unavailable on Mend or cannot be accessed.',
+            'Results for this repository are either unavailable on Mend or can not be accessed.',
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });

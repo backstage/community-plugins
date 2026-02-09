@@ -15,6 +15,7 @@
  */
 import type { ReactNode } from 'react';
 import { MTableToolbar } from '@material-table/core';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
@@ -33,7 +34,18 @@ export const TableToolbar = ({
 }: TableToolbarProps) => {
   // Provide default values to avoid defaultProps warning from MTableToolbar
   const toolbarProps = {
-    searchFieldStyle: {},
+    searchFieldStyle: {
+      '& .MuiInputAdornment-root': {
+        marginRight: 0,
+      },
+      '& .MuiIconButton-root': {
+        padding: '8px',
+        '&:hover': {
+          transform: 'none',
+          backgroundColor: 'transparent',
+        },
+      },
+    },
     searchFieldVariant: 'standard' as const,
     ...toolbar,
   };
@@ -55,7 +67,23 @@ export const TableToolbar = ({
             marginLeft: 'auto',
           }}
         >
-          <MTableToolbar {...toolbarProps} />
+          <Box
+            sx={{
+              '& .MuiInputAdornment-root': {
+                marginRight: '0 !important',
+              },
+              '& .MuiIconButton-root, & button[class*="MuiIconButton-root"]': {
+                padding: '8px !important',
+                transform: 'none !important',
+                '&:hover': {
+                  transform: 'none !important',
+                  backgroundColor: 'transparent !important',
+                },
+              },
+            }}
+          >
+            <MTableToolbar {...toolbarProps} />
+          </Box>
         </Grid>
       </Grid>
       <Grid xs={12}>{children}</Grid>

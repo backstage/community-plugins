@@ -116,7 +116,7 @@ export const ProjectTableLanguages = ({
         </div>
       }
     >
-      <div style={{ width: '310px' }}>
+      <div style={{ width: '310px', padding: '9px 0' }}>
         <div
           ref={languagesNode}
           style={{
