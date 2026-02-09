@@ -72,6 +72,20 @@ splunkOnCall:
   eventsRestEndpoint: <SPLUNK_ON_CALL_REST_ENDPOINT>
 ```
 
+You can also point `eventsRestEndpoint` at the Backstage proxy by using a relative path. This keeps the REST endpoint off the frontend and allows the proxy to enforce auth policies:
+
+```yaml
+splunkOnCall:
+  eventsRestEndpoint: /splunk-on-call-events
+```
+
+```yaml
+proxy:
+  '/splunk-on-call-events':
+    target: https://alert.victorops.com/integrations/generic/20131114/alert
+    allowedMethods: ['POST']
+```
+
 In order to make the API calls, you need to provide a new proxy config which will redirect to the Splunk On-Call API endpoint and add authentication information in the headers:
 
 ```yaml
@@ -87,7 +101,7 @@ proxy:
 
 In addition, to make certain API calls (trigger-resolve-acknowledge an incident) you need to add the `PATCH` method to the backend `cors` methods list: `[GET, POST, PUT, DELETE, PATCH]`.
 
-**WARNING**: In current implementation, the Splunk OnCall plugin requires the `/splunk-on-call` proxy endpoint be exposed by the Backstage backend as an unprotected endpoint, in effect enabling Splunk OnCall API access using the configured `SPLUNK_ON_CALL_API_KEY` for any user or process with access to the `/splunk-on-call` Backstage backend endpoint. See below for further configuration options enabling protection of this endpoint. If you regard this as problematic, consider using the plugin in `readOnly` mode (`<EntitySplunkOnCallCard readOnly />`) using the following proxy configuration:
+**NOTE**: The Splunk On-Call frontend uses Backstage's authenticated fetch, so you can keep the `/splunk-on-call` proxy endpoint protected by your backend auth policy. If you only want read-only access, you can also restrict the proxy to `GET` using the following configuration:
 
 ```yaml
 proxy:
