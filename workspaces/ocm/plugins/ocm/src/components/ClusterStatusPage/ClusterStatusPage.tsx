@@ -17,24 +17,23 @@ import type { FC, PropsWithChildren, ReactNode } from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { Entity } from '@backstage/catalog-model';
 import {
-  CodeSnippet,
   Content,
+  ErrorPanel,
   Header,
   Page,
   StatusAborted,
   StatusError,
   StatusOK,
   Table,
-  WarningPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
-import { HomePageCompanyLogo } from '@backstage/plugin-home';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 
-import { Chip, CircularProgress, Grid, makeStyles } from '@material-ui/core';
+import { Box, Chip, CircularProgress } from '@material-ui/core';
 
 import {
   ClusterNodesStatus,
@@ -46,22 +45,6 @@ import { OcmApiRef } from '../../api';
 import { ClusterStatusRowData } from '../../types';
 import { Status, Update } from '../common';
 import { columns } from './tableHeading';
-
-const useStylesTwo = makeStyles({
-  container: {
-    width: '100%',
-  },
-});
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    margin: theme.spacing(5, 0),
-    '& > svg': {
-      width: 'auto',
-      height: 150,
-    },
-  },
-}));
 
 const NodeChip = ({
   count,
@@ -107,7 +90,6 @@ const NodeChips = ({ nodes }: { nodes: ClusterNodesStatus[] }) => {
 const CatalogClusters = () => {
   const catalogApi = useApi(catalogApiRef);
   const ocmApi = useApi(OcmApiRef);
-  const classes = useStylesTwo();
 
   const [{ value: clusterEntities, loading, error }, refresh] = useAsyncFn(
     async () => {
@@ -121,17 +103,21 @@ const CatalogClusters = () => {
         throw new Error(clusters.error.message);
       }
 
-      const clusterEntityMappings = clusterResourceEntities.items.map(
-        entity => {
-          const cluster = (clusters as ClusterOverview[]).find(
-            cd => cd.name === entity.metadata.name,
-          );
-          return {
-            cluster: cluster!,
-            entity: entity,
-          };
-        },
-      );
+      const clusterEntityMappings: Array<{
+        cluster: ClusterOverview;
+        entity: Entity;
+      }> = [];
+      clusterResourceEntities.items.forEach(entity => {
+        const cluster = (clusters as ClusterOverview[]).find(
+          cd => cd.name === entity.metadata.name,
+        );
+        if (cluster) {
+          clusterEntityMappings.push({
+            cluster,
+            entity,
+          });
+        }
+      });
       return clusterEntityMappings;
     },
     [catalogApi],
@@ -141,14 +127,20 @@ const CatalogClusters = () => {
 
   if (error) {
     return (
-      <WarningPanel severity="error" title="Could not fetch clusters from Hub.">
-        <CodeSnippet language="text" text={error.toString()} />
-      </WarningPanel>
+      <ErrorPanel
+        title="Could not fetch clusters from Hub."
+        error={error}
+        defaultExpanded
+      />
     );
   }
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
   }
 
   const data: ClusterStatusRowData[] = clusterEntities
@@ -175,34 +167,28 @@ const CatalogClusters = () => {
     : [];
 
   return (
-    <div className={classes.container}>
-      <Table
-        options={{ paging: false }}
-        data={data}
-        columns={columns}
-        title="All"
-      />
-    </div>
+    <Table
+      options={{ paging: false }}
+      data={data}
+      columns={columns}
+      title="All"
+    />
   );
 };
 
 export const ClusterStatusPage = ({ logo }: { logo?: ReactNode }) => {
-  const { container } = useStyles();
-
   return (
     <SearchContextProvider>
       <RequirePermission permission={ocmClusterReadPermission}>
         <Page themeId="clusters">
           <Header title="Your Managed Clusters" />
           <Content>
-            <Grid container justifyContent="center" spacing={6}>
-              {logo && (
-                <HomePageCompanyLogo className={container} logo={logo} />
-              )}
-              <Grid container item xs={12} justifyContent="center">
-                <CatalogClusters />
-              </Grid>
-            </Grid>
+            {logo && (
+              <Box sx={{ textAlign: 'center', maxHeight: 150, mt: 5, mb: 5 }}>
+                {logo}
+              </Box>
+            )}
+            <CatalogClusters />
           </Content>
         </Page>
       </RequirePermission>

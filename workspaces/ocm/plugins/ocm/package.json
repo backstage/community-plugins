@@ -39,7 +39,6 @@
     "@backstage/core-plugin-api": "^1.12.2",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-react": "^1.21.6",
-    "@backstage/plugin-home": "^0.9.1",
     "@backstage/plugin-permission-react": "^0.4.39",
     "@backstage/plugin-search-react": "^1.10.2",
     "@backstage/theme": "^0.7.1",
