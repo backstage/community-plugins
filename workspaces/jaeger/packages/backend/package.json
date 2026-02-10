@@ -22,31 +22,23 @@
   },
   "dependencies": {
     "@backstage/backend-defaults": "backstage:^",
-    "@backstage/config": "backstage:^",
     "@backstage/plugin-app-backend": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
-    "@backstage/plugin-auth-node": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
     "@backstage/plugin-catalog-backend-module-logs": "backstage:^",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "backstage:^",
     "@backstage/plugin-kubernetes-backend": "backstage:^",
     "@backstage/plugin-permission-backend": "backstage:^",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "backstage:^",
-    "@backstage/plugin-permission-common": "backstage:^",
-    "@backstage/plugin-permission-node": "backstage:^",
     "@backstage/plugin-proxy-backend": "backstage:^",
     "@backstage/plugin-scaffolder-backend": "backstage:^",
     "@backstage/plugin-search-backend": "backstage:^",
     "@backstage/plugin-search-backend-module-catalog": "backstage:^",
     "@backstage/plugin-search-backend-module-pg": "backstage:^",
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^",
-    "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
-    "app": "link:../app",
-    "better-sqlite3": "^12.0.0",
-    "node-gyp": "^10.0.0",
-    "pg": "^8.11.3"
+    "better-sqlite3": "^12.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"
