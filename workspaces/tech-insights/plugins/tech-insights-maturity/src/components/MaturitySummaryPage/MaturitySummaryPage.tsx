@@ -15,7 +15,7 @@
  */
 import useAsyncRetry from 'react-use/lib/useAsync';
 
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
 import { EmptyState, Progress } from '@backstage/core-components';
 import Alert from '@mui/material/Alert';
@@ -24,10 +24,17 @@ import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
 import { MaturitySummaryTable } from '../MaturitySummaryTable';
 import { getSubEntityFilter } from '../../helpers/utils';
 import { maturityApiRef } from '../../api';
+import { MaturityScorePage } from '../MaturityScorePage';
 
 export const MaturitySummaryPage = () => {
   const { entity } = useEntity();
   const { entities } = useRelatedEntities(entity, getSubEntityFilter(entity));
+
+  const configApi = useApi(configApiRef);
+  const enableCompoundEntityCheck =
+    configApi.getOptionalBoolean(
+      'techInsights.maturity.enableCompoundEntityCheck',
+    ) ?? false;
 
   const api = useApi(maturityApiRef);
   const { value, loading, error } = useAsyncRetry(
@@ -41,6 +48,19 @@ export const MaturitySummaryPage = () => {
     return <Alert severity="error">{error.message}</Alert>;
   } else if (!value) {
     return <EmptyState missing="info" title="No information to display" />;
+  }
+
+  if (enableCompoundEntityCheck) {
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <MaturityScorePage />
+        </Grid>
+        <Grid item xs={12}>
+          {entities && <MaturitySummaryTable entities={entities} />}
+        </Grid>
+      </Grid>
+    );
   }
 
   return (
