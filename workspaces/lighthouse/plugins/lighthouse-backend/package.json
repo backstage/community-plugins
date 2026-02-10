@@ -52,8 +52,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
-    "@backstage/types": "backstage:^",
-    "winston": "^3.2.1"
+    "@backstage/types": "backstage:^"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "backstage:^",
