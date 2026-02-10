@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-manage-node",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "license": "Apache-2.0",
   "description": "Node.js library for the manage plugin",
   "main": "src/index.ts",

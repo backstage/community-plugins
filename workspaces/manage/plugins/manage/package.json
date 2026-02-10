@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-manage",
   "description": "Manage plugin - Shows a Manage page relevant to the user",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "manage",
