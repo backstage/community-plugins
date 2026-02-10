@@ -5,10 +5,8 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public
 const fairwindsInsightsPlugin: BackendFeature;
 export default fairwindsInsightsPlugin;
 export { fairwindsInsightsPlugin };
-
-// (No @packageDocumentation comment for this package)
 ```

@@ -31,6 +31,4 @@ export const ResourcesHistoryPodCountCard: () => JSX_2.Element;
 
 // @public (undocumented)
 export const VulnerabilitiesCard: () => JSX_2.Element;
-
-// (No @packageDocumentation comment for this package)
 ```

@@ -319,6 +319,4 @@ export interface VulnerabilityTopItem {
   // (undocumented)
   title: string;
 }
-
-// (No @packageDocumentation comment for this package)
 ```
