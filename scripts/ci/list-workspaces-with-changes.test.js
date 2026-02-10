@@ -35,9 +35,7 @@ describe('list-workspaces-with-changes', () => {
     });
   });
   const mockAppendFile = mock.fn();
-  const mockReadFile = mock.fn(() =>
-    Promise.resolve(JSON.stringify({ engines: { node: '20 || 22' } })),
-  );
+  const mockReadFile = mock.fn();
   const mockStat = mock.fn(filename =>
     Promise.resolve(expectedWorkspaces.includes(filename.split('/')[1])),
   );
@@ -53,13 +51,11 @@ describe('list-workspaces-with-changes', () => {
       },
     });
 
-    mock.module('fs', {
+    mock.module('fs/promises', {
       namedExports: {
-        promises: {
-          appendFile: mockAppendFile,
-          readFile: mockReadFile,
-          stat: mockStat,
-        },
+        appendFile: mockAppendFile,
+        readFile: mockReadFile,
+        stat: mockStat,
       },
     });
   });
@@ -83,6 +79,9 @@ describe('list-workspaces-with-changes', () => {
           // required by script
           GITHUB_OUTPUT,
         });
+        mockReadFile.mock.mockImplementation(async () =>
+          JSON.stringify({ engines: { node: '20 || 22' } }),
+        );
 
         ({ main: listWorkspacesWithChanges } = await import(
           `./list-workspaces-with-changes.js?bust-cache=${index}`
@@ -144,6 +143,25 @@ describe('list-workspaces-with-changes', () => {
           { workspace, nodeVersion: '20.x' },
           { workspace, nodeVersion: '22.x' },
         ]);
+
+        assert.equal(mockAppendFile.mock.callCount(), 2);
+        assert.deepEqual(mockAppendFile.mock.calls[1].arguments, [
+          GITHUB_OUTPUT,
+          `workspace_node_matrix=${JSON.stringify(expectedOutput)}\n`,
+        ]);
+      });
+
+      it('should append changed workspace node versions that do not start with numbers', async () => {
+        const nodeVersion = '>=24';
+        mockReadFile.mock.mockImplementation(async () =>
+          JSON.stringify({ engines: { node: nodeVersion } }),
+        );
+
+        await listWorkspacesWithChanges();
+        const expectedOutput = expectedWorkspaces.map(workspace => ({
+          workspace,
+          nodeVersion,
+        }));
 
         assert.equal(mockAppendFile.mock.callCount(), 2);
         assert.deepEqual(mockAppendFile.mock.calls[1].arguments, [
