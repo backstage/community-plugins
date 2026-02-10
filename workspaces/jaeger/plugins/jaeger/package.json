@@ -42,7 +42,6 @@
     "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "4.0.0-alpha.61",
     "pretty-ms": "^9.0.0",
     "react-use": "^17.2.4"
   },
@@ -51,13 +50,8 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
-    "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.0.0",
-    "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
