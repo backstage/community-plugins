@@ -38,7 +38,7 @@ describe('App', () => {
     };
 
     const { default: app } = await import('./App');
-    const rendered = await renderWithEffects(app);
+    const rendered = await renderWithEffects(app.createRoot());
     expect(rendered.baseElement).toBeInTheDocument();
   });
 });
