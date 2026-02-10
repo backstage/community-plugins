@@ -18,7 +18,6 @@ import {
   CompoundEntityRef,
   Entity,
   getCompoundEntityRef,
-  isComponentEntity,
   RELATION_HAS_PART,
   RELATION_OWNER_OF,
   RELATION_PARENT_OF,
@@ -115,14 +114,9 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   private async getCheckResults(
     entity: Entity,
   ): Promise<MaturityCheckResult[]> {
-    if (isComponentEntity(entity)) {
-      return (await this.runChecks(
-        getCompoundEntityRef(entity),
-      )) as MaturityCheckResult[];
-    }
-
-    const entities = await this.getRelatedComponents(entity);
-    return await this.getGroupCheckResults(entities);
+    return (await this.runChecks(
+      getCompoundEntityRef(entity),
+    )) as MaturityCheckResult[];
   }
 
   private async getBulkCheckResults(entities: CompoundEntityRef[]) {
@@ -140,27 +134,6 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
         };
       }),
     );
-  }
-
-  private async getGroupCheckResults(
-    entities: CompoundEntityRef[],
-  ): Promise<MaturityCheckResult[]> {
-    /**
-     * Passing an empty array into techInsightsClient.runBulkChecks()
-     * now causes checks to run across the entire catalog.
-     * We don't want to run checks here if no entities were provided.
-     */
-    if (entities.length === 0) {
-      return [];
-    }
-
-    const results: MaturityCheckResult[] = [];
-    const bulkResponse = await this.runBulkChecks(entities);
-    for (const response of bulkResponse) {
-      Array.prototype.push.apply(results, response.results);
-    }
-
-    return results;
   }
 
   private async getRelatedComponents(
