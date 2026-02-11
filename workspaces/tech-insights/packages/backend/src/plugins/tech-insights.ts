@@ -101,3 +101,42 @@ export const apiDefinitionFactRetriever: FactRetriever = {
     });
   },
 };
+
+export const myFactRetriever: FactRetriever = {
+  id: 'documentation-number-factretriever', // unique identifier of the fact retriever
+  version: '0.1.1', // SemVer version number of this fact retriever schema. This should be incremented if the implementation changes
+  schema: {
+    // Name/identifier of an individual fact that this retriever returns
+    examplenumberfact: {
+      type: 'integer', // Type of the fact
+      description: 'A fact of a number', // Description of the fact
+    },
+  },
+  handler: async ({ discovery, auth }: FactRetrieverContext) => {
+    const { token } = await auth.getPluginRequestToken({
+      onBehalfOf: await auth.getOwnServiceCredentials(),
+      targetPluginId: 'catalog',
+    });
+    const catalogClient = new CatalogClient({
+      discoveryApi: discovery,
+    });
+    const entities = await catalogClient.getEntities({ filter: {} }, { token });
+
+    return entities.items.map((entity: Entity) => {
+      return {
+        // Entity information that this fact relates to
+        entity: {
+          namespace: entity.metadata.namespace ?? 'default',
+          kind: entity.kind,
+          name: entity.metadata.name,
+        },
+
+        // All facts that this retriever returns
+        facts: {
+          examplenumberfact: 2,
+        },
+        // (optional) timestamp to use as a Luxon DateTime object
+      };
+    });
+  },
+};

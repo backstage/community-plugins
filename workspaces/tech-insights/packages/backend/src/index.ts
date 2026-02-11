@@ -23,9 +23,11 @@ import {
   techInsightsFactCheckerFactoryExtensionPoint,
   techInsightsFactRetrieversExtensionPoint,
 } from '@backstage-community/plugin-tech-insights-node';
-import { JsonRulesEngineFactCheckerFactory } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { apiDefinitionFactRetriever, checks } from './plugins/tech-insights';
+import {
+  apiDefinitionFactRetriever,
+  myFactRetriever,
+} from './plugins/tech-insights';
 
 const backend = createBackend();
 
@@ -55,15 +57,14 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
 // Tech insights
 backend.add(import('@backstage-community/plugin-tech-insights-backend'));
+backend.add(
+  import('@backstage-community/plugin-tech-insights-backend-module-jsonfc'),
+);
 
-// This will register JsonRulesEngineFactCheckerFactory by configuration and overwrite all programmatically registration
-// backend.add(import('@backstage-community/plugin-tech-insights-backend-module-jsonfc'));
-
-// This will programmatically register JsonRulesEngineFactCheckerFactory
 backend.add(
   createBackendModule({
     pluginId: 'tech-insights',
-    moduleId: 'json-rules-engine-fact-checker-factory',
+    moduleId: 'my-fact-retriever-module',
     register(env) {
       env.registerInit({
         deps: {
@@ -74,24 +75,11 @@ backend.add(
             techInsightsFactCheckerFactoryExtensionPoint,
           techInsightsFactRetrievers: techInsightsFactRetrieversExtensionPoint,
         },
-        async init({
-          logger,
-          catalog,
-          auth,
-          techInsightsFactCheckerFactory,
-          techInsightsFactRetrievers,
-        }) {
+        async init({ techInsightsFactRetrievers }) {
           techInsightsFactRetrievers.addFactRetrievers({
-            apiDefinitionFactRetriever: apiDefinitionFactRetriever,
+            apiDefinitionFactRetriever,
+            'documentation-number-factretriever': myFactRetriever,
           });
-          techInsightsFactCheckerFactory.setFactCheckerFactory(
-            new JsonRulesEngineFactCheckerFactory({
-              logger: logger,
-              checks: checks,
-              catalog: catalog,
-              auth: auth,
-            }),
-          );
         },
       });
     },

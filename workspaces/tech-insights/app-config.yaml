@@ -75,18 +75,47 @@ techInsights:
     apiDefinitionFactRetriever:
       cadence: '*/15 * * * *'
       lifecycle: { timeToLive: { weeks: 2 } }
+    documentation-number-factretriever:
+      cadence: '*/1 * * * *'   # Every 1 minute
+      lifecycle:
+        timeToLive: { days: 2 }
+
 #  See packages/backend/src/index.ts for programmatically registration
-#  factChecker:
-#    checks:
-#      groupOwnerCheck:
-#        type: json-rules-engine
-#        name: Group Owner Check
-#        description: Verifies that a group has been set as the spec.owner for this entity
-#        factIds:
-#          - entityOwnershipFactRetriever
-#        rule:
-#          conditions:
-#            all:
-#              - fact: hasGroupOwner
-#                operator: equal
-#                value: true
+  factChecker:
+    checks:
+      groupOwnerCheck:
+        type: json-rules-engine
+        name: Group Owner Check
+        description: Verifies that a group has been set as the spec.owner for this entity
+        factIds:
+          - entityOwnershipFactRetriever
+        rule:
+          conditions:
+            all:
+              - fact: hasGroupOwner
+                operator: equal
+                value: true
+      apiDefinitionCheck:
+        type: json-rules-engine
+        name: API definition Check
+        description: Verifies that a API has a definition set
+        factIds:
+          - apiDefinitionFactRetriever
+        rule:
+          conditions:
+            all:
+              - fact: hasDefinition
+                operator: equal
+                value: true
+      myCustomCheck:
+        type: json-rules-engine
+        name: 'Documentation Number Check'
+        description: 'Checks that there is at least one documented component in the catalog'
+        factIds:
+          - documentation-number-factretriever
+        rule:
+          conditions:
+            all:
+              - fact: examplenumberfact
+                operator: greaterThan
+                value: 0
