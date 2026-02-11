@@ -26,6 +26,13 @@ export const VAULT_SECRET_PATH_ANNOTATION = 'vault.io/secrets-path';
 
 // @public
 export interface VaultApi {
+  // (undocumented)
+  getCreateUrl(
+    secretPath: string,
+    options?: {
+      secretEngine?: string;
+    },
+  ): Promise<string | undefined>;
   listSecrets(
     secretPath: string,
     options?: {
