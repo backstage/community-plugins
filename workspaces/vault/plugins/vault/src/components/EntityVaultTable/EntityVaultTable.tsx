@@ -61,12 +61,16 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
           .listSecrets(path, { secretEngine })
           .catch(() => ({
             secrets: [],
-            createUrl: undefined,
           }));
+
+        let createUrl: string | undefined = undefined;
+        if (response.secrets.length === 0) {
+          createUrl = await vaultApi.getCreateUrl?.(path, { secretEngine });
+        }
         return {
           path,
           secrets: response.secrets,
-          createUrl: response.createUrl,
+          createUrl,
         };
       }),
     );

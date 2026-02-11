@@ -64,6 +64,13 @@ export interface VaultApi {
       secretEngine?: string;
     },
   ): Promise<ListSecretsResponse>;
+
+  getCreateUrl(
+    secretPath: string,
+    options?: {
+      secretEngine?: string;
+    },
+  ): Promise<string>;
 }
 
 /**
@@ -128,5 +135,33 @@ export class VaultClient implements VaultApi {
       vaultUrl: result.vaultUrl,
       createUrl: result.createUrl,
     };
+  }
+
+  /**
+   * Returns the createUrl for a secret path using the dedicated backend route.
+   */
+  async getCreateUrl(
+    secretPath: string,
+    options?: { secretEngine?: string },
+  ): Promise<string | undefined> {
+    const query: { [key in string]: any } = {};
+    const { secretEngine } = options || {};
+    if (secretEngine) {
+      query.engine = secretEngine;
+    }
+    const apiUrl = `${await this.discoveryApi.getBaseUrl('vault')}`;
+    const response = await this.fetchApi.fetch(
+      `${apiUrl}/v1/secrets/${encodeURIComponent(
+        secretPath,
+      )}/create-url?${new URLSearchParams(query).toString()}`,
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+      },
+    );
+    if (!response.ok) return undefined;
+    const data = await response.json();
+    return data.createUrl;
   }
 }
