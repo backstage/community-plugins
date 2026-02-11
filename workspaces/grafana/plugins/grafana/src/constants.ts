@@ -38,10 +38,10 @@ export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
   'grafana/overview-dashboard';
 
 /**
- * Grafana source ID annotation for selecting which Grafana instance to use
+ * Grafana host ID annotation for selecting which Grafana instance to use
  * @public
  */
-export const GRAFANA_ANNOTATION_SOURCE_ID = 'grafana/source-id';
+export const GRAFANA_ANNOTATION_HOST_ID = 'grafana/host-id';
 
 /**
  * Returns if the dashboard selector annotation for an entity is set
@@ -97,8 +97,8 @@ export const overviewDashboardFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD] ?? '';
 
 /**
- * Returns the source ID annotation for an entity, identifying which Grafana instance to use
+ * Returns the host ID annotation for an entity, identifying which Grafana instance to use
  * @public
  */
-export const sourceIdFromEntity = (entity: Entity) =>
-  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_SOURCE_ID];
+export const hostIdFromEntity = (entity: Entity) =>
+  entity?.metadata.annotations?.[GRAFANA_ANNOTATION_HOST_ID];

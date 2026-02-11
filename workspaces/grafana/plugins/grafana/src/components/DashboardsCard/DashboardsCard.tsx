@@ -31,7 +31,7 @@ import {
   dashboardSelectorFromEntity,
   GRAFANA_ANNOTATION_DASHBOARD_SELECTOR,
   isDashboardSelectorAvailable,
-  sourceIdFromEntity,
+  hostIdFromEntity,
 } from '../../constants';
 
 export const DashboardsTable = ({
@@ -103,7 +103,7 @@ const Dashboards = ({
   const { value, loading, error } = useAsync(async () => {
     const dashboards = await grafanaApi.listDashboards(
       dashboardSelectorFromEntity(entity),
-      sourceIdFromEntity(entity),
+      hostIdFromEntity(entity),
     );
     if (opts?.additionalDashboards) {
       dashboards.push(...opts.additionalDashboards(entity));

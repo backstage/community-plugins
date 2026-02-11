@@ -50,12 +50,12 @@ The `EntityGrafanaAlertsCard` component will then display alerts matching the gi
 
 ### Multiple Grafana instances
 
-If you have [multiple Grafana instances configured](setup.md#multiple-instances-configuration), add the `grafana/source-id` annotation to select which instance to query:
+If you have [multiple Grafana instances configured](setup.md#multiple-instances-configuration), add the `grafana/host-id` annotation to select which instance to query:
 
 ```yaml
 annotations:
   grafana/alert-label-selector: 'service=my-service'
-  grafana/source-id: production
+  grafana/host-id: production
 ```
 
 ## With Grafana Legacy Alerting enabled

@@ -13,14 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { readHosts, GrafanaConfigApi } from './config';
+import { ConfigApi } from '@backstage/core-plugin-api';
+import { readHosts } from './config';
 
-function createMockConfigApi(config: Record<string, any>): GrafanaConfigApi {
+function createMockConfigApi(config: Record<string, any>): ConfigApi {
   return {
+    has: (key: string) => key in config,
+    keys: () => Object.keys(config),
+    get: (key?: string) => {
+      if (key === undefined) return config;
+      if (!(key in config))
+        throw new Error(`Missing required config: ${key}`);
+      return config[key];
+    },
+    getOptional: (key?: string) => {
+      if (key === undefined) return config;
+      return config[key];
+    },
+    getString: (key: string) => {
+      if (!(key in config))
+        throw new Error(`Missing required config: ${key}`);
+      return config[key] as string;
+    },
     getOptionalString: (key: string) => config[key] as string | undefined,
-    getOptionalBoolean: (key: string) => config[key] as boolean | undefined,
+    getNumber: (key: string) => {
+      if (!(key in config))
+        throw new Error(`Missing required config: ${key}`);
+      return config[key] as number;
+    },
     getOptionalNumber: (key: string) => config[key] as number | undefined,
-    getOptional: (key: string) => config[key],
+    getBoolean: (key: string) => {
+      if (!(key in config))
+        throw new Error(`Missing required config: ${key}`);
+      return config[key] as boolean;
+    },
+    getOptionalBoolean: (key: string) => config[key] as boolean | undefined,
+    getConfig: (key: string) => createMockConfigApi(config[key] ?? {}),
+    getOptionalConfig: (key: string) =>
+      key in config ? createMockConfigApi(config[key]) : undefined,
+    getConfigArray: (key: string) =>
+      (config[key] ?? []).map((c: any) => createMockConfigApi(c)),
+    getOptionalConfigArray: (key: string) =>
+      key in config
+        ? (config[key] as any[]).map((c: any) => createMockConfigApi(c))
+        : undefined,
+    getStringArray: (key: string) => config[key] as string[],
+    getOptionalStringArray: (key: string) =>
+      config[key] as string[] | undefined,
   };
 }
 
@@ -52,8 +91,6 @@ describe('readHosts', () => {
       'grafana.domain': 'https://grafana.example.com',
       'grafana.proxyPath': '/grafana/api',
       'grafana.unifiedAlerting': true,
-      'grafana.grafanaDashboardSearchLimit': 2000,
-      'grafana.grafanaDashboardMaxPages': 3,
     });
 
     const hosts = readHosts(configApi);
@@ -63,12 +100,11 @@ describe('readHosts', () => {
       domain: 'https://grafana.example.com',
       proxyPath: '/grafana/api',
       unifiedAlerting: true,
-      grafanaDashboardSearchLimit: 2000,
-      grafanaDashboardMaxPages: 3,
     });
   });
 
-  it('appends default host when both domain and hosts are set', () => {
+  it('ignores domain and warns when both domain and hosts are set', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const configApi = createMockConfigApi({
       'grafana.domain': 'https://grafana.example.com',
       'grafana.hosts': [
@@ -81,9 +117,12 @@ describe('readHosts', () => {
     });
 
     const hosts = readHosts(configApi);
-    expect(hosts).toHaveLength(2);
+    expect(hosts).toHaveLength(1);
     expect(hosts[0].id).toBe('prod');
-    expect(hosts[1].id).toBe('default');
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('will be ignored in favor of `grafana.hosts`'),
+    );
+    warnSpy.mockRestore();
   });
 
   it('throws when neither domain nor hosts is defined', () => {

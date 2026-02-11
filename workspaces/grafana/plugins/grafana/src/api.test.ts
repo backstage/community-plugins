@@ -92,7 +92,7 @@ describe('GrafanaApiClient', () => {
   });
 
   describe('host resolution', () => {
-    it('falls back to default host when no sourceId is provided', () => {
+    it('falls back to default host when no hostId is provided', () => {
       const client = new GrafanaApiClient({
         discoveryApi: mockDiscoveryApi,
         fetchApi: mockFetchApi,
@@ -108,7 +108,7 @@ describe('GrafanaApiClient', () => {
       expect(client.isUnifiedAlerting()).toBe(true);
     });
 
-    it('falls back to first host when no default and no sourceId', () => {
+    it('falls back to first host when no default and no hostId', () => {
       const client = new GrafanaApiClient({
         discoveryApi: mockDiscoveryApi,
         fetchApi: mockFetchApi,
@@ -121,11 +121,11 @@ describe('GrafanaApiClient', () => {
         ],
       });
 
-      // No sourceId, no 'default' host, should fall back to first
+      // No hostId, no 'default' host, should fall back to first
       expect(client.isUnifiedAlerting()).toBe(true);
     });
 
-    it('throws when sourceId does not match any host', () => {
+    it('throws when hostId does not match any host', () => {
       const client = new GrafanaApiClient({
         discoveryApi: mockDiscoveryApi,
         fetchApi: mockFetchApi,

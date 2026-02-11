@@ -30,23 +30,23 @@ export interface GrafanaApi {
   /**
    * Returns the found dashboards in Grafana with the defined query
    * @param query - The query used to list the dashboards
-   * @param sourceId - Optional identifier for the Grafana instance to query
+   * @param hostId - Optional identifier for the Grafana instance to query
    */
-  listDashboards(query: string, sourceId?: string): Promise<Dashboard[]>;
+  listDashboards(query: string, hostId?: string): Promise<Dashboard[]>;
   /**
    * Returns a list of alerts found in Grafana that have any of the defined alert selectors
    * @param selectors - One or multiple alert selectors
-   * @param sourceId - Optional identifier for the Grafana instance to query
+   * @param hostId - Optional identifier for the Grafana instance to query
    */
   alertsForSelector(
     selectors: string | string[],
-    sourceId?: string,
+    hostId?: string,
   ): Promise<Alert[]>;
   /**
    * Returns whether a specific Grafana instance uses unified alerting
-   * @param sourceId - Optional identifier for the Grafana instance to check
+   * @param hostId - Optional identifier for the Grafana instance to check
    */
-  isUnifiedAlerting(sourceId?: string): boolean;
+  isUnifiedAlerting(hostId?: string): boolean;
 }
 
 interface AggregatedAlertState {
@@ -118,6 +118,16 @@ export type GrafanaApiClientOptions = {
    * List of Grafana host configurations
    */
   hosts: GrafanaHost[];
+
+  /**
+   * @deprecated Limit value to pass in Grafana Dashboard search query.
+   */
+  grafanaDashboardSearchLimit?: number;
+
+  /**
+   * @deprecated Max pages of Grafana Dashboard search query to fetch.
+   */
+  grafanaDashboardMaxPages?: number;
 };
 
 const DEFAULT_PROXY_PATH = '/grafana/api';
@@ -265,8 +275,8 @@ function initClients(opts: GrafanaApiClientOptions): Map<string, ClientHost> {
         opts.discoveryApi,
         opts.fetchApi,
         host.proxyPath ?? DEFAULT_PROXY_PATH,
-        host.grafanaDashboardSearchLimit,
-        host.grafanaDashboardMaxPages,
+        opts.grafanaDashboardSearchLimit,
+        opts.grafanaDashboardMaxPages,
       ),
     });
   }
@@ -275,7 +285,6 @@ function initClients(opts: GrafanaApiClientOptions): Map<string, ClientHost> {
 
 /**
  * Grafana API client that supports multiple Grafana instances
- * @public
  */
 export class GrafanaApiClient implements GrafanaApi {
   private readonly clients: Map<string, ClientHost>;
@@ -284,15 +293,15 @@ export class GrafanaApiClient implements GrafanaApi {
     this.clients = initClients(opts);
   }
 
-  private resolveClientHost(sourceId?: string): ClientHost {
-    const id = sourceId || 'default';
+  private resolveClientHost(hostId?: string): ClientHost {
+    const id = hostId || 'default';
     const clientHost = this.clients.get(id);
     if (clientHost) {
       return clientHost;
     }
 
-    // If no exact match and no sourceId was specified, fall back to first host
-    if (!sourceId) {
+    // If no exact match and no hostId was specified, fall back to first host
+    if (!hostId) {
       const first = this.clients.values().next();
       if (!first.done) {
         return first.value;
@@ -306,23 +315,23 @@ export class GrafanaApiClient implements GrafanaApi {
   }
 
   /** {@inheritDoc GrafanaApi.isUnifiedAlerting} */
-  isUnifiedAlerting(sourceId?: string): boolean {
-    const { host } = this.resolveClientHost(sourceId);
+  isUnifiedAlerting(hostId?: string): boolean {
+    const { host } = this.resolveClientHost(hostId);
     return host.unifiedAlerting ?? false;
   }
 
   /** {@inheritDoc GrafanaApi.listDashboards} */
-  async listDashboards(query: string, sourceId?: string): Promise<Dashboard[]> {
-    const { host, client } = this.resolveClientHost(sourceId);
+  async listDashboards(query: string, hostId?: string): Promise<Dashboard[]> {
+    const { host, client } = this.resolveClientHost(hostId);
     return client.listDashboards(host.domain, query);
   }
 
   /** {@inheritDoc GrafanaApi.alertsForSelector} */
   async alertsForSelector(
     selectors: string | string[],
-    sourceId?: string,
+    hostId?: string,
   ): Promise<Alert[]> {
-    const { host, client } = this.resolveClientHost(sourceId);
+    const { host, client } = this.resolveClientHost(hostId);
 
     if (host.unifiedAlerting) {
       return this.unifiedAlertsForSelector(host, client, selectors);

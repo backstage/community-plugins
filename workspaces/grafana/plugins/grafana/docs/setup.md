@@ -72,9 +72,9 @@ grafana:
       unifiedAlerting: false
 ```
 
-Each host entry supports the same options as the single instance configuration (`domain`, `proxyPath`, `unifiedAlerting`, `grafanaDashboardSearchLimit`, `grafanaDashboardMaxPages`), plus a required `id` field that uniquely identifies the instance.
+Each host entry supports `domain`, `proxyPath`, and `unifiedAlerting`, plus a required `id` field that uniquely identifies the instance.
 
-To associate an entity with a specific Grafana instance, add the `grafana/source-id` annotation to your entity's `catalog-info.yaml`:
+To associate an entity with a specific Grafana instance, add the `grafana/host-id` annotation to your entity's `catalog-info.yaml`:
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -82,14 +82,14 @@ kind: Component
 metadata:
   name: my-service
   annotations:
-    grafana/source-id: production
+    grafana/host-id: production
     grafana/dashboard-selector: my-service
     grafana/alert-label-selector: service=my-service
 ```
 
-If the `grafana/source-id` annotation is not set, the plugin will use the first configured host (or the `default` host created from the legacy `domain` config).
+If the `grafana/host-id` annotation is not set, the plugin will use the first configured host (or the `default` host created from the legacy `domain` config).
 
-Note: the single instance (`domain`) and multiple instances (`hosts`) configurations can coexist. When both are defined, the single instance is added as a host with `id: default`.
+Note: if both `domain` and `hosts` are defined, the `domain` value will be ignored and a warning will be logged.
 
 ## Expose the plugin
 

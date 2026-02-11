@@ -37,14 +37,6 @@ export interface GrafanaHost {
    * Whether this instance uses unified alerting
    */
   unifiedAlerting?: boolean;
-  /**
-   * Limit value for dashboard search queries
-   */
-  grafanaDashboardSearchLimit?: number;
-  /**
-   * Max pages of dashboard search queries to fetch
-   */
-  grafanaDashboardMaxPages?: number;
 }
 
 /**

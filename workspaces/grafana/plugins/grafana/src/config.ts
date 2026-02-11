@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
+import { ConfigApi } from '@backstage/core-plugin-api';
 import { GrafanaHost } from './types';
-
-/**
- * Minimal config API interface needed to read Grafana host configuration.
- */
-export interface GrafanaConfigApi {
-  getOptionalString: (key: string) => string | undefined;
-  getOptionalBoolean: (key: string) => boolean | undefined;
-  getOptionalNumber: (key: string) => number | undefined;
-  getOptional: (key: string) => any;
-}
 
 /**
  * Reads and validates Grafana host configurations from the app config.
  * Supports both the legacy single-instance `grafana.domain` config
  * and the multi-instance `grafana.hosts` array config.
  */
-export function readHosts(configApi: GrafanaConfigApi): GrafanaHost[] {
+export function readHosts(configApi: ConfigApi): GrafanaHost[] {
   const hostsConfig: GrafanaHost[] =
     configApi.getOptional('grafana.hosts') ?? [];
   const domain = configApi.getOptionalString('grafana.domain');
@@ -51,20 +42,21 @@ export function readHosts(configApi: GrafanaConfigApi): GrafanaHost[] {
     }
   }
 
-  // Backwards compatibility: if legacy domain is set, add it as the 'default' host
-  if (domain) {
+  // Backwards compatibility: if legacy domain is set and no hosts are configured,
+  // add it as the 'default' host
+  if (domain && hostsConfig.length === 0) {
     hostsConfig.push({
       id: 'default',
       domain,
       proxyPath: configApi.getOptionalString('grafana.proxyPath'),
       unifiedAlerting: configApi.getOptionalBoolean('grafana.unifiedAlerting'),
-      grafanaDashboardSearchLimit: configApi.getOptionalNumber(
-        'grafana.grafanaDashboardSearchLimit',
-      ),
-      grafanaDashboardMaxPages: configApi.getOptionalNumber(
-        'grafana.grafanaDashboardMaxPages',
-      ),
     });
+  } else if (domain && hostsConfig.length > 0) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      'Both `grafana.domain` and `grafana.hosts` are defined in app-config.yaml. ' +
+        'The `grafana.domain` value will be ignored in favor of `grafana.hosts`.',
+    );
   }
 
   // Validate unique proxy paths when multiple hosts are configured

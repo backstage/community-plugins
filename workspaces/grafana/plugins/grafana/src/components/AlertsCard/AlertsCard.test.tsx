@@ -43,7 +43,7 @@ describe('AlertsCard', () => {
       isUnifiedAlerting,
     };
 
-    // Entity with source-id and alert-label-selector (unified alerting)
+    // Entity with host-id and alert-label-selector (unified alerting)
     const entity = {
       apiVersion: 'backstage.io/v1alpha1' as const,
       kind: 'Component',
@@ -52,7 +52,7 @@ describe('AlertsCard', () => {
         annotations: {
           'grafana/alert-label-selector': 'service=test-service',
           'grafana/dashboard-selector': 'test-tag',
-          'grafana/source-id': 'production',
+          'grafana/host-id': 'production',
         },
       },
       spec: { type: 'service', owner: 'team', lifecycle: 'production' },
@@ -67,7 +67,7 @@ describe('AlertsCard', () => {
     );
 
     await waitFor(() => {
-      // isUnifiedAlerting should be called with the entity's source-id
+      // isUnifiedAlerting should be called with the entity's host-id
       expect(isUnifiedAlerting).toHaveBeenCalledWith('production');
     });
 
@@ -98,7 +98,7 @@ describe('AlertsCard', () => {
         annotations: {
           'grafana/alert-label-selector': 'service=test-service',
           'grafana/dashboard-selector': 'test-tag',
-          'grafana/source-id': 'staging',
+          'grafana/host-id': 'staging',
         },
       },
       spec: { type: 'service', owner: 'team', lifecycle: 'production' },
@@ -122,7 +122,7 @@ describe('AlertsCard', () => {
     });
   });
 
-  it('works without source-id annotation (falls back to undefined)', async () => {
+  it('works without host-id annotation (falls back to undefined)', async () => {
     const alertsForSelector = jest.fn().mockResolvedValue([]);
     const isUnifiedAlerting = jest.fn().mockReturnValue(false);
 
