@@ -1601,6 +1601,7 @@ describe('Policy checks for conditional policies', () => {
       mockClientKnex,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockAuthService,
+      [],
     );
   });
 
@@ -2199,6 +2200,7 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
+    [],
   );
   clearAuditorMock();
   return permissionPolicy;

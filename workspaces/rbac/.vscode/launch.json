@@ -9,6 +9,16 @@
       "args": ["package", "test", "${relativeFile}"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-    }
+    },
+        {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug backend",
+      "program": "${workspaceRoot}/node_modules/.bin/backstage-cli",
+      "args": ["repo", "start"],
+      "console": "integratedTerminal",
+      // "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}"
+    },
   ]
 }

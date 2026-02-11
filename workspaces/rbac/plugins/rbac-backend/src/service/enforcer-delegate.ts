@@ -18,6 +18,7 @@ import { Knex } from 'knex';
 
 import EventEmitter from 'events';
 
+import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
 import {
   RoleMetadataDao,
@@ -675,6 +676,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     resourceType: string,
     action: string,
     roles: string[],
+    defaultPermissions?: RoleBasedPolicy[],
   ): Promise<boolean> {
     const model = newModelFromString(MODEL);
     let policies: string[][] = [];
@@ -698,6 +700,13 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         policy =>
           policy[0].startsWith('user:') || policy[0].startsWith('group:'),
       );
+    }
+
+    if (defaultPermissions && defaultPermissions.length > 0) {
+      const casbinPolicies = defaultPermissions
+        .filter(p => p.permission === resourceType && p.policy === action)
+        .map(p => [p.entityReference!, p.permission!, p.policy!, p.effect!]);
+      policies.push(...casbinPolicies);
     }
 
     const roleManager = this.enforcer.getRoleManager();
