@@ -259,6 +259,8 @@ describe('REST policies API', () => {
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+      undefined,
+      [],
     );
     const router = await server.serve();
     app = express().use(router);
@@ -3830,6 +3832,8 @@ describe('REST policies API', () => {
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
         extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+        undefined,
+        [],
         [providerMock],
       );
       const router = await server.serve();

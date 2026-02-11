@@ -143,6 +143,8 @@ export class PoliciesServer {
     private readonly roleMetadata: RoleMetadataStorage,
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly pluginIdProvider: ExtendablePluginIdProvider,
+    private readonly defaultRole: Role | undefined,
+    private readonly defaultPolicies: RoleBasedPolicy[],
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
@@ -216,6 +218,7 @@ export class PoliciesServer {
         }
 
         const body = await this.transformPolicyArray(...policies);
+        body.push(...this.defaultPolicies);
         // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
         body.map(policy => {
           if (
@@ -256,6 +259,13 @@ export class PoliciesServer {
         });
 
         const entityRef = this.getEntityReference(request);
+
+        const isDefaultRole =
+          this.defaultRole && entityRef === this.defaultRole.name;
+        if (isDefaultRole) {
+          response.json(this.defaultPolicies);
+          return;
+        }
 
         const policy = matchedRoleName.includes(entityRef)
           ? await this.enforcer.getFilteredPolicy(0, entityRef)
@@ -464,6 +474,10 @@ export class PoliciesServer {
         const roles = await this.enforcer.getGroupingPolicy();
         const body = await this.transformRoleArray(conditionsFilter, ...roles);
 
+        if (this.defaultRole) {
+          body.push(this.defaultRole);
+        }
+
         response.json(body);
       },
     );
@@ -490,7 +504,10 @@ export class PoliciesServer {
           roleEntityRef,
         );
 
-        const body = await this.transformRoleArray(conditionsFilter, ...role);
+        let body = await this.transformRoleArray(conditionsFilter, ...role);
+        if (body.length === 0 && this.defaultRole?.name === roleEntityRef) {
+          body = [this.defaultRole];
+        }
         if (body.length !== 0) {
           response.json(body);
         } else {

@@ -30,6 +30,7 @@ const rbacTranslationEs = createTranslationMessages({
     'table.headers.usersAndGroups': 'Usuarios y grupos',
     'table.headers.accessiblePlugins': 'Plugins accesibles',
     'table.headers.actions': 'Acciones',
+    'table.defaultRoleUsersAndGroups': 'Todos los usuarios y todos los grupos',
     'table.emptyContent': 'No se encontraron registros',
     'table.labelRowsSelect': 'Filas',
     'toolbar.createButton': 'Crear',
@@ -60,6 +61,7 @@ const rbacTranslationEs = createTranslationMessages({
     'errors.createRole': 'No se puede crear el rol.',
     'errors.editRole': 'No se puede editar el rol.',
     'errors.deleteRole': 'No se puede eliminar el rol.',
+    'errors.defaultRoleReadOnly': 'El rol predeterminado es de solo lectura.',
     'errors.roleCreatedSuccess':
       'El rol fue creado exitosamente pero no se pudieron agregar las políticas de permisos al rol.',
     'errors.roleCreatedConditionsSuccess':

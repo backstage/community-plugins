@@ -46,7 +46,9 @@ export function useActionPermissionTooltip({
   if (isLoading) {
     tooltipText = t('common.checkingPermissions');
   } else if (disable) {
-    tooltipText = t('common.unauthorizedTo' as any, { action: actionText });
+    tooltipText =
+      fallbackTooltip ??
+      t('common.unauthorizedTo' as any, { action: actionText });
   } else {
     tooltipText =
       fallbackTooltip ??

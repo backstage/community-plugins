@@ -60,11 +60,9 @@ export class PluginPermissionMetadataCollector {
   private readonly pluginIdProvider: ExtendablePluginIdProvider;
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
-  private readonly urlReader: UrlReaderService;
 
   constructor({
     deps,
-    optional,
   }: {
     deps: {
       discovery: DiscoveryService;
@@ -72,21 +70,11 @@ export class PluginPermissionMetadataCollector {
       logger: LoggerService;
       config: Config;
     };
-    optional?: {
-      urlReader?: UrlReaderService;
-    };
   }) {
-    const { discovery, logger, config, pluginIdProvider } = deps;
+    const { discovery, logger, pluginIdProvider } = deps;
     this.discovery = discovery;
     this.pluginIdProvider = pluginIdProvider;
     this.logger = logger;
-    this.urlReader =
-      optional?.urlReader ??
-      UrlReaders.default({
-        config,
-        logger,
-        factories: [PluginPermissionMetadataCollector.permissionFactory],
-      });
   }
 
   async getPluginConditionRules(
@@ -120,15 +108,6 @@ export class PluginPermissionMetadataCollector {
         };
       });
   }
-
-  private static permissionFactory: ReaderFactory = ({ config }) => {
-    return [
-      {
-        reader: FetchUrlReader.fromConfig(config),
-        predicate: (_url: URL) => true,
-      },
-    ];
-  };
 
   private async getPluginMetaData(
     auth: AuthService,
@@ -181,11 +160,17 @@ export class PluginPermissionMetadataCollector {
       const baseEndpoint = await this.discovery.getBaseUrl(pluginId);
       const wellKnownURL = `${baseEndpoint}/.well-known/backstage/permissions/metadata`;
 
-      const permResp = await this.urlReader.readUrl(wellKnownURL, { token });
-      const permMetaDataRaw = (await permResp.buffer()).toString();
+      const response = await fetch(wellKnownURL, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch metadata for ${pluginId}: ${response.status}`,
+        );
+      }
 
       try {
-        permMetaData = JSON.parse(permMetaDataRaw);
+        permMetaData = await response.json();
       } catch (err) {
         // workaround for https://issues.redhat.com/browse/RHIDP-1456
         return undefined;

@@ -35,6 +35,8 @@ const rbacTranslationFr = createTranslationMessages({
     'table.headers.usersAndGroups': 'Utilisateurs et groupes',
     'table.headers.accessiblePlugins': 'Plugins accessibles',
     'table.headers.actions': 'Actes',
+    'table.defaultRoleUsersAndGroups':
+      'Tous les utilisateurs et tous les groupes',
     'table.emptyContent': 'Aucun enregistrement trouvé',
     'toolbar.createButton': 'Créer',
     'toolbar.warning.title': 'Impossible de créer le rôle.',
@@ -69,6 +71,7 @@ const rbacTranslationFr = createTranslationMessages({
     'errors.createRole': 'Impossible de créer le rôle.',
     'errors.editRole': 'Impossible de modifier le rôle.',
     'errors.deleteRole': 'Impossible de supprimer le rôle.',
+    'errors.defaultRoleReadOnly': 'Le rôle par défaut est en lecture seule.',
     'errors.roleCreatedSuccess':
       "Le rôle a été créé avec succès, mais il n'a pas été possible d'ajouter des stratégies d'autorisation au rôle.",
     'errors.roleCreatedConditionsSuccess':

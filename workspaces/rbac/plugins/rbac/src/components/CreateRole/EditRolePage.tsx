@@ -76,6 +76,9 @@ export const EditRolePage = () => {
       <ErrorPage status={roleError.name} statusMessage={roleError.message} />
     );
   }
+  if (role?.metadata?.isDefault) {
+    return <ErrorPage statusMessage={t('errors.defaultRoleReadOnly')} />;
+  }
   if (!canReadUsersAndGroups) {
     return <ErrorPage statusMessage={t('errors.unauthorized')} />;
   }

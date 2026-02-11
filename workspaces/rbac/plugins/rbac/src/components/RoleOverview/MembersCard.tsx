@@ -80,6 +80,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     [data, searchText, locale, columns],
   );
 
+  if (membersInfo.isDefaultRole) {
+    return null;
+  }
+
   return (
     <Box>
       {!loading && error && (
