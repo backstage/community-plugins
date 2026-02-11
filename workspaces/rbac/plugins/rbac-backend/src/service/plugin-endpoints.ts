@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  FetchUrlReader,
-  ReaderFactory,
-  UrlReaders,
-} from '@backstage/backend-defaults/urlReader';
+
 import type {
   AuthService,
   DiscoveryService,
   LoggerService,
-  UrlReaderService,
 } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
 import { isError } from '@backstage/errors';

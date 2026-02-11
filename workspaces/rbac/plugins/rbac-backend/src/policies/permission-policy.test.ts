@@ -35,7 +35,10 @@ import {
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 
-import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import type {
+  RoleBasedPolicy,
+  RoleMetadata,
+} from '@backstage-community/plugin-rbac-common';
 
 import { resolve } from 'path';
 
@@ -2106,7 +2109,14 @@ function newConfigWithDefaultRole(
   };
 
   if (defaultRole !== undefined) {
-    rbacConfig.defaultRole = defaultRole;
+    rbacConfig.defaultPermissions = {
+      defaultRole,
+      basicPermissions: [
+        { permission: 'catalog.entity.read', action: 'read' },
+        { permission: 'catalog-entity', action: 'read' },
+        { permission: 'catalog.entity.create', action: 'create' },
+      ],
+    };
   }
 
   return mockServices.rootConfig({
@@ -2188,6 +2198,7 @@ async function newPermissionPolicy(
   config: Config,
   enfDelegate: EnforcerDelegate,
   roleMock?: RoleMetadataStorage,
+  defaultPolicies: RoleBasedPolicy[] = [],
 ): Promise<RBACPermissionPolicy> {
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
@@ -2200,7 +2211,7 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    [],
+    defaultPolicies,
   );
   clearAuditorMock();
   return permissionPolicy;
@@ -2209,6 +2220,27 @@ async function newPermissionPolicy(
 describe('Default Role Tests', () => {
   let enfDelegate: EnforcerDelegate;
   let policy: RBACPermissionPolicy;
+
+  const defaultRolePolicies: RoleBasedPolicy[] = [
+    {
+      entityReference: 'role:default/viewer',
+      permission: 'catalog.entity.read',
+      policy: 'read',
+      effect: 'allow',
+    },
+    {
+      entityReference: 'role:default/viewer',
+      permission: 'catalog-entity',
+      policy: 'read',
+      effect: 'allow',
+    },
+    {
+      entityReference: 'role:default/viewer',
+      permission: 'catalog.entity.create',
+      policy: 'use',
+      effect: 'allow',
+    },
+  ];
 
   describe('when defaultRole is configured', () => {
     beforeEach(async () => {
@@ -2230,7 +2262,12 @@ describe('Default Role Tests', () => {
         'allow',
       ]);
 
-      policy = await newPermissionPolicy(config, enfDelegate);
+      policy = await newPermissionPolicy(
+        config,
+        enfDelegate,
+        undefined,
+        defaultRolePolicies,
+      );
     });
 
     it('should add default role to user roles when user has no explicit roles', async () => {
