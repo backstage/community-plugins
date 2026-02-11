@@ -69,7 +69,7 @@ describe('EntityVaultTable', () => {
 
   const entityOk = entity('test/success');
   const entityOkWithEngine = entity('test/success', 'kv');
-  const entityEmpty = entity('test/empty');
+  const entityEmpty = entity('test/path');
   const entityNotOk = entity('test/error');
 
   const mockSecretsResult: { items: VaultSecret[] } = {
@@ -100,6 +100,20 @@ describe('EntityVaultTable', () => {
         }
         return res(ctx.status(400));
       }),
+      rest.get(
+        `${mockBaseUrl}/v1/secrets/:path/create-url`,
+        (req, res, ctx) => {
+          const { path } = req.params;
+          if (path === 'test/path') {
+            return res(
+              ctx.json({
+                createUrl: `${mockBaseUrl}/ui/vault/secrets/secrets/create?initialKey=test/path`,
+              }),
+            );
+          }
+          return res(ctx.status(400));
+        },
+      ),
     );
   };
 
