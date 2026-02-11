@@ -1,5 +1,19 @@
 # @backstage-community/plugin-manage-backend
 
+## 1.6.0
+
+### Minor Changes
+
+- 334c2e0: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- Updated dependencies [334c2e0]
+  - @backstage-community/plugin-manage-common@1.5.0
+  - @backstage-community/plugin-manage-node@1.6.0
+
 ## 1.5.1
 
 ### Patch Changes
