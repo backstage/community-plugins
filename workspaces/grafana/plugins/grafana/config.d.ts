@@ -38,12 +38,14 @@ export interface Config {
 
     /**
      * Limit value to pass in Grafana Dashboard search query.
+     * @deprecated Use server-side filtering instead. See https://github.com/backstage/community-plugins/pull/3909
      * @visibility frontend
      */
     grafanaDashboardSearchLimit?: number;
 
     /**
      * Max pages of Grafana Dashboard search query to fetch.
+     * @deprecated Use server-side filtering instead. See https://github.com/backstage/community-plugins/pull/3909
      * @visibility frontend
      */
     grafanaDashboardMaxPages?: number;
@@ -56,7 +58,7 @@ export interface Config {
     hosts?: Array<{
       /**
        * Unique identifier for this Grafana instance.
-       * Used in the `grafana/source-id` entity annotation.
+       * Used in the `grafana/host-id` entity annotation.
        * @visibility frontend
        */
       id: string;
@@ -80,18 +82,6 @@ export interface Config {
        * @visibility frontend
        */
       unifiedAlerting?: boolean;
-
-      /**
-       * Limit value to pass in Grafana Dashboard search query for this instance.
-       * @visibility frontend
-       */
-      grafanaDashboardSearchLimit?: number;
-
-      /**
-       * Max pages of Grafana Dashboard search query to fetch for this instance.
-       * @visibility frontend
-       */
-      grafanaDashboardMaxPages?: number;
     }>;
   };
 }

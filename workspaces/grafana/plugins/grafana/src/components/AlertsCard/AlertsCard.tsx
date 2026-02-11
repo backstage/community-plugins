@@ -43,7 +43,7 @@ import {
   alertSelectorFromEntity,
   GRAFANA_ANNOTATION_DASHBOARD_SELECTOR,
   dashboardSelectorFromEntity,
-  sourceIdFromEntity,
+  hostIdFromEntity,
 } from '../../constants';
 
 const AlertStatusBadge = ({ alert }: { alert: GrafanaAlert }) => {
@@ -124,14 +124,14 @@ export const AlertsTable = ({
 
 const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   const grafanaApi = useApi(grafanaApiRef);
-  const sourceId = sourceIdFromEntity(entity);
-  const unifiedAlertingEnabled = grafanaApi.isUnifiedAlerting(sourceId);
+  const hostId = hostIdFromEntity(entity);
+  const unifiedAlertingEnabled = grafanaApi.isUnifiedAlerting(hostId);
   const alertSelector = unifiedAlertingEnabled
     ? alertSelectorFromEntity(entity)
     : dashboardSelectorFromEntity(entity);
 
   const { value, loading, error } = useAsync(
-    async () => await grafanaApi.alertsForSelector(alertSelector, sourceId),
+    async () => await grafanaApi.alertsForSelector(alertSelector, hostId),
   );
 
   if (loading) {
@@ -146,8 +146,8 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
 export const AlertsCard = (opts?: AlertsCardOpts) => {
   const { entity } = useEntity();
   const grafanaApi = useApi(grafanaApiRef);
-  const sourceId = sourceIdFromEntity(entity);
-  const unifiedAlertingEnabled = grafanaApi.isUnifiedAlerting(sourceId);
+  const hostId = hostIdFromEntity(entity);
+  const unifiedAlertingEnabled = grafanaApi.isUnifiedAlerting(hostId);
 
   if (!unifiedAlertingEnabled && !isDashboardSelectorAvailable(entity)) {
     return (

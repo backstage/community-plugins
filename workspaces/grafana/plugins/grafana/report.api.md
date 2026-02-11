@@ -89,27 +89,16 @@ export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
   'grafana/overview-dashboard';
 
 // @public
-export const GRAFANA_ANNOTATION_SOURCE_ID = 'grafana/source-id';
+export const GRAFANA_ANNOTATION_HOST_ID = 'grafana/host-id';
 
 // @public
 export interface GrafanaApi {
   alertsForSelector(
     selectors: string | string[],
-    sourceId?: string,
+    hostId?: string,
   ): Promise<Alert[]>;
-  isUnifiedAlerting(sourceId?: string): boolean;
-  listDashboards(query: string, sourceId?: string): Promise<Dashboard[]>;
-}
-
-// @public
-export class GrafanaApiClient implements GrafanaApi {
-  constructor(opts: GrafanaApiClientOptions);
-  alertsForSelector(
-    selectors: string | string[],
-    sourceId?: string,
-  ): Promise<Alert[]>;
-  isUnifiedAlerting(sourceId?: string): boolean;
-  listDashboards(query: string, sourceId?: string): Promise<Dashboard[]>;
+  isUnifiedAlerting(hostId?: string): boolean;
+  listDashboards(query: string, hostId?: string): Promise<Dashboard[]>;
 }
 
 // @public
@@ -117,6 +106,10 @@ export type GrafanaApiClientOptions = {
   discoveryApi: DiscoveryApi;
   fetchApi: FetchApi;
   hosts: GrafanaHost[];
+  /** @deprecated */
+  grafanaDashboardSearchLimit?: number;
+  /** @deprecated */
+  grafanaDashboardMaxPages?: number;
 };
 
 // @public
@@ -125,8 +118,6 @@ export const grafanaApiRef: ApiRef<GrafanaApi>;
 // @public
 export interface GrafanaHost {
   domain: string;
-  grafanaDashboardMaxPages?: number;
-  grafanaDashboardSearchLimit?: number;
   id: string;
   proxyPath?: string;
   unifiedAlerting?: boolean;
@@ -150,7 +141,7 @@ export const isOverviewDashboardAvailable: (entity: Entity) => boolean;
 export const overviewDashboardFromEntity: (entity: Entity) => string;
 
 // @public
-export const sourceIdFromEntity: (entity: Entity) => string | undefined;
+export const hostIdFromEntity: (entity: Entity) => string | undefined;
 
 // (No @packageDocumentation comment for this package)
 ```

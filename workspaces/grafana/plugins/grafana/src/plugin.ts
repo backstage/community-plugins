@@ -46,6 +46,12 @@ export const grafanaPlugin = createPlugin({
           discoveryApi,
           fetchApi,
           hosts,
+          grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardSearchLimit',
+          ),
+          grafanaDashboardMaxPages: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardMaxPages',
+          ),
         });
       },
     }),

@@ -43,6 +43,12 @@ export const grafanaApiExtension = ApiBlueprint.make({
           fetchApi,
           discoveryApi,
           hosts,
+          grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardSearchLimit',
+          ),
+          grafanaDashboardMaxPages: configApi.getOptionalNumber(
+            'grafana.grafanaDashboardMaxPages',
+          ),
         });
       },
     }),

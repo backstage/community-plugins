@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { alertSelectorFromEntity, sourceIdFromEntity } from './constants';
+import { alertSelectorFromEntity, hostIdFromEntity } from './constants';
 
 describe('constants', () => {
-  describe('sourceIdFromEntity', () => {
-    it('returns source-id when annotation is present', () => {
+  describe('hostIdFromEntity', () => {
+    it('returns host-id when annotation is present', () => {
       const entity = {
         metadata: {
           name: 'test',
-          annotations: { 'grafana/source-id': 'production' },
+          annotations: { 'grafana/host-id': 'production' },
         },
         apiVersion: 'backstage.io/v1alpha1',
         kind: 'Component',
       };
-      expect(sourceIdFromEntity(entity as any)).toBe('production');
+      expect(hostIdFromEntity(entity as any)).toBe('production');
     });
 
     it('returns undefined when annotation is missing', () => {
@@ -35,7 +35,7 @@ describe('constants', () => {
         apiVersion: 'backstage.io/v1alpha1',
         kind: 'Component',
       };
-      expect(sourceIdFromEntity(entity as any)).toBeUndefined();
+      expect(hostIdFromEntity(entity as any)).toBeUndefined();
     });
 
     it('returns undefined when no annotations object', () => {
@@ -44,7 +44,7 @@ describe('constants', () => {
         apiVersion: 'backstage.io/v1alpha1',
         kind: 'Component',
       };
-      expect(sourceIdFromEntity(entity as any)).toBeUndefined();
+      expect(hostIdFromEntity(entity as any)).toBeUndefined();
     });
   });
 

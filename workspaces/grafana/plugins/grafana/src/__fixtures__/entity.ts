@@ -17,7 +17,7 @@ import {
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
   GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD,
   GRAFANA_ANNOTATION_DASHBOARD_SELECTOR,
-  GRAFANA_ANNOTATION_SOURCE_ID,
+  GRAFANA_ANNOTATION_HOST_ID,
 } from '../constants';
 
 export const sampleEntity = {
@@ -42,7 +42,7 @@ export const sampleEntity = {
   },
 };
 
-export const sampleEntityWithSourceId = {
+export const sampleEntityWithHostId = {
   entity: {
     apiVersion: 'backstage.io/v1alpha1',
     kind: 'Component',
@@ -51,7 +51,7 @@ export const sampleEntityWithSourceId = {
       annotations: {
         [GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR]: 'service=awesome-service',
         [GRAFANA_ANNOTATION_DASHBOARD_SELECTOR]: 'awesome-service',
-        [GRAFANA_ANNOTATION_SOURCE_ID]: 'production',
+        [GRAFANA_ANNOTATION_HOST_ID]: 'production',
       },
     },
     spec: {
