@@ -1,5 +1,18 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.13.0
+
+### Minor Changes
+
+- 0e8efcd: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 30425e7: Updated dependency `@backstage-community/plugin-jenkins` to `^0.28.0`.
+- 7c6e7b4: Updated dependency `@backstage-community/plugin-github-actions` to `^0.20.0`.
+- Updated dependencies [0e8efcd]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.11.0
+
 ## 0.12.2
 
 ### Patch Changes
