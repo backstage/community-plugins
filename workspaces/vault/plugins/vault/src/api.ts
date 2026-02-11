@@ -70,7 +70,7 @@ export interface VaultApi {
     options?: {
       secretEngine?: string;
     },
-  ): Promise<string>;
+  ): Promise<string | undefined>;
 }
 
 /**
