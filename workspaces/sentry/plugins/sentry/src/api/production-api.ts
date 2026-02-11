@@ -17,6 +17,7 @@
 import { SentryIssue } from './sentry-issue';
 import { SentryApi } from './sentry-api';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
+import { ResponseError } from '@backstage/errors';
 import { Entity } from '@backstage/catalog-model';
 import { getProjectSlug, getOrganization } from './annotations';
 
@@ -54,8 +55,8 @@ export class ProductionSentryApi implements SentryApi {
       authOpts,
     );
 
-    if (response.status >= 400 && response.status < 600) {
-      throw new Error('Failed fetching Sentry issues');
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
     }
 
     return (await response.json()) as SentryIssue[];
