@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-azure-devops": "^0.25.0",
-    "@backstage-community/plugin-github-actions": "^0.19.0",
+    "@backstage-community/plugin-github-actions": "^0.20.0",
     "@backstage-community/plugin-jenkins": "^0.26.0",
     "@backstage-community/plugin-multi-source-security-viewer": "workspace:^",
     "@backstage/app-defaults": "^1.7.3",
