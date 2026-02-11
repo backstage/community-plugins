@@ -100,9 +100,11 @@ export const argocdTranslationRef: TranslationRef<
     readonly 'deploymentSummary.deploymentSummary.tableTitle': string;
     readonly 'deploymentSummary.deploymentSummary.columns.syncStatus': string;
     readonly 'deploymentSummary.deploymentSummary.columns.healthStatus': string;
+    readonly 'deploymentSummary.deploymentSummary.columns.namespace': string;
     readonly 'deploymentSummary.deploymentSummary.columns.revision': string;
     readonly 'deploymentSummary.deploymentSummary.columns.instance': string;
     readonly 'deploymentSummary.deploymentSummary.columns.server': string;
+    readonly 'deploymentSummary.deploymentSummary.columns.application': string;
     readonly 'deploymentSummary.deploymentSummary.columns.lastDeployed': string;
   }
 >;
