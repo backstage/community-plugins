@@ -44,9 +44,14 @@ export class AzureStorageBuilder {
 
     logger.info('Initializing Azure Storage backend');
 
-    if (!config.has('azureStorage')) {
+    if (
+      !config.has('azureStorage') &&
+      !config.has('integrations.azureBlobStorage')
+    ) {
       logger.warn('Failed to initialize Azure Storage Backend');
-      throw new NotFoundError('azureStorage config mission!!');
+      throw new NotFoundError(
+        'Azure Storage config missing. Provide either integrations.azureBlobStorage or azureStorage.blobContainers',
+      );
     }
 
     this.azureStorageProvider =

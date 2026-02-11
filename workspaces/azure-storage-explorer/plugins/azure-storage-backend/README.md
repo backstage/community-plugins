@@ -88,13 +88,39 @@ index c4736a5..5822302 100644
 
 ## Configuration
 
-Setup Azure Storage accounts in `app-config.yaml`
+The plugin supports two configuration formats:
+
+### OSS Integration Format (Recommended)
+
+Use the standard Backstage integration format (see [Azure Blob Storage Integration docs](https://backstage.io/docs/integrations/azure-blobStorage/locations/)):
+
+```yaml
+integrations:
+  azureBlobStorage:
+    - accountName: ${AZURE_ACCOUNT_NAME}
+      accountKey: ${AZURE_ACCOUNT_KEY} # Account key authentication
+      allowedContainers: ['container1', 'container2'] # Optional: filter containers
+    - accountName: ${AZURE_ACCOUNT_NAME_2}
+      sasToken: ${AZURE_SAS_TOKEN} # SAS token authentication
+    - accountName: ${AZURE_ACCOUNT_NAME_3}
+      connectionString: ${AZURE_CONNECTION_STRING} # Connection string authentication
+    - accountName: ${AZURE_ACCOUNT_NAME_4}
+      aadCredential: # Azure AD authentication
+        tenantId: ${AZURE_TENANT_ID}
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+      allowedContainers: ['secure-container'] # Optional: filter containers
+```
+
+### Legacy Format (Deprecated)
+
+The legacy custom format is still supported for backward compatibility:
 
 ```yaml
 azureStorage:
   blobContainers:
     - accountName: 'storageAccount'
-      allowedContainers: ['container1', 'container2'] # this is optional field to filter out the containers
+      allowedContainers: ['container1', 'container2'] # Optional: filter containers
       authType: accessToken
       auth:
         accessToken: 'STORAGE ACCOUNT ACCESS TOKEN'
@@ -106,14 +132,28 @@ azureStorage:
         clientSecret: 'AZURE CLIENT SECRET'
 ```
 
+**Note:** If both formats are present, the legacy format takes precedence.
+
 ## Authenticating Storage Account
 
-This Plugin provides 2 types of authentication on your storage account.
+This plugin supports multiple authentication methods:
 
-### accessToken
+### Account Key (OSS: `accountKey`, Legacy: `accessToken`)
 
-When you create a storage account, Azure generates two 512-bit storage account access keys for that account. You can use this access keys to authenticate the Azure storage account ["More Info..."](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&bc=%2Fazure%2Fstorage%2Fblobs%2Fbreadcrumb%2Ftoc.json&tabs=azure-portal)
+Azure storage account access keys provide full access to the storage account. [More Info...](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage)
 
-### clientToken
+### SAS Token (OSS only: `sasToken`)
 
-This method uses the RBAC authentication but only to Azure App Client. ["More info..."](https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access?tabs=portal)
+Shared Access Signature tokens provide delegated access with specific permissions. [More Info...](https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview)
+
+### Connection String (OSS only: `connectionString`)
+
+Full connection string including credentials and endpoint information.
+
+### Azure AD Credentials (OSS: `aadCredential`, Legacy: `clientToken`)
+
+RBAC authentication using Azure App Client credentials. [More Info...](https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access)
+
+## Filtering Containers
+
+Use the `allowedContainers` field to restrict which containers are accessible through the plugin. This is useful for security and to limit the scope of exposed data.

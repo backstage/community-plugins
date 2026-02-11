@@ -15,68 +15,67 @@
  */
 import { Config } from '@backstage/config';
 import { AzureSorageConfig } from './AzureStorageConfig';
+import { BlobServiceClient } from '@azure/storage-blob';
 import {
-  BlobServiceClient,
-  StorageSharedKeyCredential,
-} from '@azure/storage-blob';
-import { ClientSecretCredential } from '@azure/identity';
+  DefaultAzureCredentialsManager,
+  ScmIntegrations,
+} from '@backstage/integration';
 
 import { formatBytes } from '../utils/formatBytes';
 import { NotFoundError } from '@backstage/errors';
+import { ExtendedAzureBlobStorageConfig } from './types';
 
 export class AzureStorageProvider {
   private azureStorageConfig: AzureSorageConfig;
-  constructor(config: AzureSorageConfig) {
+  private credentialsManager: DefaultAzureCredentialsManager;
+
+  constructor(config: AzureSorageConfig, rootConfig: Config) {
     this.azureStorageConfig = config;
+    const integrations = ScmIntegrations.fromConfig(rootConfig);
+    this.credentialsManager =
+      DefaultAzureCredentialsManager.fromIntegrations(integrations);
   }
 
   static fromConfig(config: Config): AzureStorageProvider {
-    return new AzureStorageProvider(AzureSorageConfig.fromConfig(config));
+    return new AzureStorageProvider(
+      AzureSorageConfig.fromConfig(config),
+      config,
+    );
   }
 
   listAccounts() {
-    const accountList = [];
-    for (const account of this.azureStorageConfig.blobContainers) {
-      accountList.push(account.accountName);
-    }
-    return accountList;
+    return this.azureStorageConfig.integrations.map(i => i.accountName);
   }
 
-  protected getblobServiceClient(storageAccount: string) {
-    let credentialProvider;
-    for (const account of this.azureStorageConfig.blobContainers) {
-      if (account.accountName === storageAccount) {
-        if (account.authType === 'accessToken') {
-          credentialProvider = new StorageSharedKeyCredential(
-            storageAccount,
-            account.auth.getString('accessToken'),
-          );
-        } else if (account.authType === 'clientToken') {
-          credentialProvider = new ClientSecretCredential(
-            account.auth.getString('tenantId'),
-            account.auth.getString('clientId'),
-            account.auth.getString('clientSecret'),
-          );
-        } else {
-          throw new NotFoundError('No valid auth provider');
-        }
-      }
-    }
-    return new BlobServiceClient(
-      `https://${storageAccount}.blob.core.windows.net`,
-      credentialProvider,
+  protected async getblobServiceClient(storageAccount: string) {
+    const integration = this.findIntegration(storageAccount);
+    const credential = await this.credentialsManager.getCredentials(
+      storageAccount,
     );
+
+    const url = `https://${storageAccount}.${integration.host}`;
+    return new BlobServiceClient(url, credential);
+  }
+
+  private findIntegration(accountName: string): ExtendedAzureBlobStorageConfig {
+    const integration = this.azureStorageConfig.integrations.find(
+      i => i.accountName === accountName,
+    );
+    if (!integration) {
+      throw new NotFoundError(
+        `No integration found for account: ${accountName}`,
+      );
+    }
+    return integration;
   }
 
   private getAllowedContainers(account: string): string[] {
-    const acc = this.azureStorageConfig.blobContainers.find(
-      a => a.accountName === account,
-    );
-    return acc?.allowedContainers ?? [];
+    const integration = this.findIntegration(account);
+    return integration.allowedContainers ?? [];
   }
 
   async listContainers(storageAccount: string) {
-    const blobServiceClient = this.getblobServiceClient(storageAccount);
+    const blobServiceClient = await this.getblobServiceClient(storageAccount);
     const allowed = this.getAllowedContainers(storageAccount);
     const contianerList = [];
     for await (const container of blobServiceClient.listContainers()) {
@@ -92,7 +91,7 @@ export class AzureStorageProvider {
     containerName: string,
     prefix: any,
   ) {
-    const blobServiceClient = this.getblobServiceClient(storageAccount);
+    const blobServiceClient = await this.getblobServiceClient(storageAccount);
     const containerClient = blobServiceClient.getContainerClient(containerName);
     const items = containerClient.listBlobsByHierarchy('/', {
       prefix: prefix === undefined ? '' : prefix,
@@ -132,7 +131,7 @@ export class AzureStorageProvider {
     blobName: string,
     prefix: any,
   ) {
-    const blobServiceClient = this.getblobServiceClient(storageAccount);
+    const blobServiceClient = await this.getblobServiceClient(storageAccount);
     const containerClient = blobServiceClient.getContainerClient(containerName);
     const blobClient = containerClient.getBlobClient(
       prefix ? prefix + blobName : blobName,

@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Config } from '@backstage/config';
+import { AzureBlobStorageIntegrationConfig } from '@backstage/integration';
 
-export type BlobContainer = {
-  accountName: string;
-  authType: string;
-  auth: Config;
+/**
+ * Extended Azure Blob Storage configuration with allowedContainers support
+ * @public
+ */
+export interface ExtendedAzureBlobStorageConfig
+  extends AzureBlobStorageIntegrationConfig {
+  /**
+   * Optional list of container names to expose. If not specified, all containers are accessible.
+   */
   allowedContainers?: string[];
-};
+}

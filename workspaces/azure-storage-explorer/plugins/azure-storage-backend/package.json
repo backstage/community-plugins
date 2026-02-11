@@ -44,6 +44,7 @@
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/integration": "backstage:^",
     "@types/express": "*",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0"
