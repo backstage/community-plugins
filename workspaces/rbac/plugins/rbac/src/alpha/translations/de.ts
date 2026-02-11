@@ -35,6 +35,7 @@ const rbacTranslationDe = createTranslationMessages({
     'table.headers.usersAndGroups': 'Benutzer und Gruppen',
     'table.headers.accessiblePlugins': 'Barrierefreie Plugins',
     'table.headers.actions': 'Aktionen',
+    'table.defaultRoleUsersAndGroups': 'Alle Benutzer und alle Gruppen',
     'table.emptyContent': 'Keine Datensätze gefunden',
     'toolbar.createButton': 'Erstellen',
     'toolbar.warning.title': 'Rolle konnte nicht erstellt werden.',
@@ -67,6 +68,7 @@ const rbacTranslationDe = createTranslationMessages({
     'errors.createRole': 'Die Rolle kann nicht erstellt werden.',
     'errors.editRole': 'Die Rolle kann nicht bearbeitet werden.',
     'errors.deleteRole': 'Die Rolle kann nicht gelöscht werden.',
+    'errors.defaultRoleReadOnly': 'Standardrolle ist schreibgeschützt.',
     'errors.roleCreatedSuccess':
       'Die Rolle wurde erfolgreich erstellt, es können jedoch keine Berechtigungsrichtlinien zur Rolle hinzugefügt werden.',
     'errors.roleCreatedConditionsSuccess':
