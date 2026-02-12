@@ -184,6 +184,7 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'table.headers.usersAndGroups': string;
     readonly 'table.headers.accessiblePlugins': string;
     readonly 'table.headers.actions': string;
+    readonly 'table.defaultRoleUsersAndGroups': string;
     readonly 'table.emptyContent': string;
     readonly 'page.title': string;
     readonly 'page.createRole': string;
@@ -210,6 +211,7 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'errors.fetchConditions': string;
     readonly 'errors.fetchUsersAndGroups': string;
     readonly 'errors.deleteRole': string;
+    readonly 'errors.defaultRoleReadOnly': string;
     readonly 'errors.roleCreatedSuccess': string;
     readonly 'errors.roleCreatedConditionsSuccess': string;
     readonly 'roleForm.titles.createRole': string;
