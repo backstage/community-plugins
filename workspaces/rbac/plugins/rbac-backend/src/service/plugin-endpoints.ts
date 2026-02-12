@@ -60,7 +60,6 @@ export class PluginPermissionMetadataCollector {
   private readonly pluginIdProvider: ExtendablePluginIdProvider;
   private readonly discovery: DiscoveryService;
   private readonly logger: LoggerService;
-  private readonly urlReader: UrlReaderService;
 
   constructor({
     deps,
