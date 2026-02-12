@@ -178,6 +178,19 @@ export class VaultBuilder {
       res.json({ status: 'ok' });
     });
 
+    router.get('/v1/secrets/:path/create-url', (req, res) => {
+      const { path } = req.params;
+      const { engine } = req.query;
+      if (typeof path !== 'string') {
+        throw new InputError(`Invalid path: ${path}`);
+      }
+      if (engine && typeof engine !== 'string') {
+        throw new InputError(`Invalid engine: ${engine}`);
+      }
+      const createUrl = vaultApi.getCreateSecretUrl(path, engine);
+      res.json({ createUrl });
+    });
+
     router.get('/v1/secrets/:path', async (req, res) => {
       const { path } = req.params;
       const { engine } = req.query;
@@ -192,7 +205,8 @@ export class VaultBuilder {
       const secrets = await vaultApi.listSecrets(path, {
         secretEngine: engine,
       });
-      res.json({ items: secrets });
+      const vaultUrl = vaultApi.getFrontendSecretsUrl();
+      res.json({ items: secrets, vaultUrl });
     });
 
     router.use(MiddlewareFactory.create(this.env).error());

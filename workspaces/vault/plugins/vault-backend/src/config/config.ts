@@ -87,6 +87,11 @@ export interface VaultConfig {
    * The version of the K/V API. Defaults to `2`.
    */
   kvVersion: number;
+
+  /**
+   * Optional suffix to append to the secret path when creating new secrets (e.g., '/config').
+   */
+  secretSuffix?: string;
 }
 
 /**
@@ -142,5 +147,6 @@ export function getVaultConfig(config: Config): VaultConfig {
     token: tokenCfg,
     kvVersion: config.getOptionalNumber('vault.kvVersion') ?? 2,
     secretEngine: config.getOptionalString('vault.secretEngine') ?? 'secrets',
+    secretSuffix: config.getOptionalString('vault.secretSuffix'),
   };
 }

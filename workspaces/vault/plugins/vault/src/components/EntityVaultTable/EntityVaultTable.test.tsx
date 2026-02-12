@@ -24,13 +24,18 @@ import { ComponentEntity } from '@backstage/catalog-model';
 import { renderInTestApp } from '@backstage/test-utils';
 import { EntityVaultTable } from './EntityVaultTable';
 import { ApiProvider, UrlPatternDiscovery } from '@backstage/core-app-api';
-import { VaultSecret, vaultApiRef, VaultClient } from '../../api';
+import {
+  VaultSecret,
+  vaultApiRef,
+  VaultClient,
+  ListSecretsResponse,
+} from '../../api';
 import { rest } from 'msw';
 
 describe('EntityVaultTable', () => {
   let vaultClient: VaultClient;
   let apis: TestApiRegistry;
-  let listSecretsSpy: jest.SpyInstance<Promise<VaultSecret[]>>;
+  let listSecretsSpy: jest.SpyInstance<Promise<ListSecretsResponse>>;
 
   const server = setupServer();
   setupRequestMockHandlers(server);
@@ -64,7 +69,7 @@ describe('EntityVaultTable', () => {
 
   const entityOk = entity('test/success');
   const entityOkWithEngine = entity('test/success', 'kv');
-  const entityEmpty = entity('test/empty');
+  const entityEmpty = entity('test/path');
   const entityNotOk = entity('test/error');
 
   const mockSecretsResult: { items: VaultSecret[] } = {
@@ -91,10 +96,24 @@ describe('EntityVaultTable', () => {
         if (path === 'test/success') {
           return res(ctx.json(mockSecretsResult));
         } else if (path === 'test/empty') {
-          return res(ctx.json([]));
+          return res(ctx.json({ items: [] }));
         }
         return res(ctx.status(400));
       }),
+      rest.get(
+        `${mockBaseUrl}/v1/secrets/:path/create-url`,
+        (req, res, ctx) => {
+          const { path } = req.params;
+          if (path === 'test/path') {
+            return res(
+              ctx.json({
+                createUrl: `${mockBaseUrl}/ui/vault/secrets/secrets/create?initialKey=test/path`,
+              }),
+            );
+          }
+          return res(ctx.status(400));
+        },
+      ),
     );
   };
 
@@ -147,10 +166,11 @@ describe('EntityVaultTable', () => {
       </ApiProvider>,
     );
 
-    expect(rendered.getByText(/No secrets found/)).toBeInTheDocument();
+    expect(rendered.getByText(/No secrets/)).toBeInTheDocument();
+    expect(rendered.getByText(/create one/)).toBeInTheDocument();
   });
 
-  it('should surface an appropriate error when the Vault API responds unsuccessfully', async () => {
+  it('should show create link when the Vault API responds unsuccessfully', async () => {
     setupHandlers();
     const rendered = await renderInTestApp(
       <ApiProvider apis={apis}>
@@ -158,10 +178,61 @@ describe('EntityVaultTable', () => {
       </ApiProvider>,
     );
 
-    expect(
-      rendered.getByText(
-        /Unexpected error while fetching secrets from path \'test\/error\'\: Request failed with 400 Bad Request/,
-      ),
-    ).toBeInTheDocument();
+    // When there's an error, the component catches it and shows the create link
+    expect(rendered.getByText(/No secrets/)).toBeInTheDocument();
+    expect(rendered.getByText(/create one/)).toBeInTheDocument();
+  });
+
+  it('should render secrets from multiple secret paths', async () => {
+    const multiPathEntity = {
+      ...entityOk,
+      metadata: {
+        ...entityOk.metadata,
+        annotations: {
+          'vault.io/secrets-path': 'test/success,test/extra',
+        },
+      },
+    };
+
+    const mockExtraSecrets = {
+      items: [
+        {
+          name: 'secret::three',
+          path: 'test/extra',
+          editUrl: `${mockBaseUrl}/ui/vault/secrets/secrets/edit/test/extra/secret::three`,
+          showUrl: `${mockBaseUrl}/ui/vault/secrets/secrets/show/test/extra/secret::three`,
+        },
+      ],
+    };
+
+    server.use(
+      rest.get(`${mockBaseUrl}/v1/secrets/:path`, (req, res, ctx) => {
+        const { path } = req.params;
+        if (path === 'test/success') {
+          return res(ctx.json(mockSecretsResult));
+        } else if (path === 'test/extra') {
+          return res(ctx.json(mockExtraSecrets));
+        }
+        return res(ctx.status(400));
+      }),
+    );
+
+    const rendered = await renderInTestApp(
+      <ApiProvider apis={apis}>
+        <EntityVaultTable entity={multiPathEntity} />
+      </ApiProvider>,
+    );
+
+    expect(await rendered.findAllByText(/secret::one/)).toBeDefined();
+    expect(await rendered.findAllByText(/secret::two/)).toBeDefined();
+    expect(await rendered.findAllByText(/secret::three/)).toBeDefined();
+
+    expect(listSecretsSpy).toHaveBeenCalledWith('test/success', {
+      secretEngine: undefined,
+    });
+    expect(listSecretsSpy).toHaveBeenCalledWith('test/extra', {
+      secretEngine: undefined,
+    });
+    expect(listSecretsSpy).toHaveBeenCalledTimes(2);
   });
 });

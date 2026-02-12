@@ -7,6 +7,7 @@ import { ExtensionPoint } from '@backstage/backend-plugin-api';
 
 // @public
 export interface VaultApi {
+  getCreateSecretUrl(secretPath: string, secretEngine?: string): string;
   getFrontendSecretsUrl(): string;
   listSecrets(
     secretPath: string,

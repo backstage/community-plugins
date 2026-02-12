@@ -68,6 +68,13 @@ export interface VaultApi {
   getFrontendSecretsUrl(): string;
 
   /**
+   * Returns the URL to create a new secret in the Vault UI.
+   * @param secretPath - The path where the secret will be created
+   * @param secretEngine - The secret engine to use
+   */
+  getCreateSecretUrl(secretPath: string, secretEngine?: string): string;
+
+  /**
    * Returns a list of secrets used to show in a table.
    * @param secretPath - The path where the secrets are stored in Vault
    * @param options - Additional options to be passed to the Vault API, allows to override vault default settings in app config file
@@ -170,6 +177,17 @@ export class VaultClient implements VaultApi {
 
   getFrontendSecretsUrl(): string {
     return `${this.vaultConfig.baseUrl}/ui/vault/secrets/${this.vaultConfig.secretEngine}`;
+  }
+
+  getCreateSecretUrl(secretPath: string, secretEngine?: string): string {
+    const vaultUrl = this.vaultConfig.publicUrl || this.vaultConfig.baseUrl;
+    const mount = secretEngine || this.vaultConfig.secretEngine;
+    const pathWithSuffix = this.vaultConfig.secretSuffix
+      ? `${secretPath}/${this.vaultConfig.secretSuffix}`
+      : secretPath;
+    return `${vaultUrl}/ui/vault/secrets/${encodeURIComponent(
+      mount,
+    )}/kv/create?initialKey=${encodeURIComponent(pathWithSuffix)}`;
   }
 
   async listSecrets(

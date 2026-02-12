@@ -90,5 +90,10 @@ export interface Config {
      * different schedule is set, this will be used instead.
      * */
     schedule?: SchedulerServiceTaskScheduleDefinitionConfig | boolean;
+
+    /**
+     * Optional suffix to append to the secret path when creating new secrets (e.g., '/config').
+     */
+    secretSuffix?: string;
   };
 }

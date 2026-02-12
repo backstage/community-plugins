@@ -39,12 +39,22 @@ export type VaultSecret = {
 };
 
 /**
+ * Response from listSecrets API call
+ * @public
+ */
+export type ListSecretsResponse = {
+  secrets: VaultSecret[];
+  vaultUrl?: string;
+  createUrl?: string;
+};
+
+/**
  * Interface for the VaultApi.
  * @public
  */
 export interface VaultApi {
   /**
-   * Returns a list of secrets used to show in a table.
+   * Returns a list of secrets used to show in a table along with vault URLs.
    * @param secretPath - The path where the secrets are stored in Vault
    * @param options - Additional options to be passed to the Vault API, allows to override vault default settings in app config file
    */
@@ -53,7 +63,14 @@ export interface VaultApi {
     options?: {
       secretEngine?: string;
     },
-  ): Promise<VaultSecret[]>;
+  ): Promise<ListSecretsResponse>;
+
+  getCreateUrl(
+    secretPath: string,
+    options?: {
+      secretEngine?: string;
+    },
+  ): Promise<string | undefined>;
 }
 
 /**
@@ -101,17 +118,50 @@ export class VaultClient implements VaultApi {
     options?: {
       secretEngine?: string;
     },
-  ): Promise<VaultSecret[]> {
+  ): Promise<ListSecretsResponse> {
     const query: { [key in string]: any } = {};
     const { secretEngine } = options || {};
     if (secretEngine) {
       query.engine = secretEngine;
     }
 
-    const result = await this.callApi<{ items: VaultSecret[] }>(
-      `v1/secrets/${encodeURIComponent(secretPath)}`,
-      query,
+    const result = await this.callApi<{
+      items: VaultSecret[];
+      vaultUrl?: string;
+      createUrl?: string;
+    }>(`v1/secrets/${encodeURIComponent(secretPath)}`, query);
+    return {
+      secrets: result.items,
+      vaultUrl: result.vaultUrl,
+      createUrl: result.createUrl,
+    };
+  }
+
+  /**
+   * Returns the createUrl for a secret path using the dedicated backend route.
+   */
+  async getCreateUrl(
+    secretPath: string,
+    options?: { secretEngine?: string },
+  ): Promise<string | undefined> {
+    const query: { [key in string]: any } = {};
+    const { secretEngine } = options || {};
+    if (secretEngine) {
+      query.engine = secretEngine;
+    }
+    const apiUrl = `${await this.discoveryApi.getBaseUrl('vault')}`;
+    const response = await this.fetchApi.fetch(
+      `${apiUrl}/v1/secrets/${encodeURIComponent(
+        secretPath,
+      )}/create-url?${new URLSearchParams(query).toString()}`,
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+      },
     );
-    return result.items;
+    if (!response.ok) return undefined;
+    const data = await response.json();
+    return data.createUrl;
   }
 }
