@@ -16,7 +16,8 @@
     "pluginPackages": [
       "@backstage-community/plugin-argocd",
       "@backstage-community/plugin-argocd-backend",
-      "@backstage-community/plugin-argocd-common"
+      "@backstage-community/plugin-argocd-common",
+      "@backstage-community/plugin-argocd-node"
     ]
   },
   "scripts": {
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-argocd-common": "workspace:^",
+    "@backstage-community/plugin-argocd-node": "workspace:^",
     "@backstage/backend-defaults": "^0.13.1",
     "@backstage/backend-plugin-api": "^1.5.0",
     "@backstage/config": "^1.3.6",

@@ -15,7 +15,7 @@
  */
 import { ArgoCDService } from './ArgoCDService';
 import { RevisionInfo } from '@backstage-community/plugin-argocd-common';
-import { mockApplications, mockConfig } from '../__data__/mockdata';
+import { mockApplications, mockConfig } from './__data__/mockdata';
 import { mockServices } from '@backstage/backend-test-utils';
 
 const mockLogger = mockServices.logger.mock();
@@ -667,6 +667,209 @@ describe('ArgoCDService', () => {
       ).rejects.toThrow(
         "Failed to retrieve ArgoCD Applications from Instance 'test-instance' with name 'nonexistent-app' : Request to https://argocd.example.com/api/v1/applications?name=nonexistent-app failed with 500 Internal Server Error",
       );
+    });
+  });
+
+  describe('createArgoResources', () => {
+    const createResourcesInput = {
+      appName: 'test-app',
+      instanceName: 'test-instance',
+      namespace: 'test-namespace',
+      repoUrl: 'https://github.com/test/repo',
+      path: 'kubernetes/manifests',
+      label: 'test-label',
+      projectName: 'test-project',
+    };
+
+    const expectedProjectPayload = {
+      project: {
+        metadata: {
+          name: 'test-project',
+          resourceVersion: undefined,
+          finalizers: ['resources-finalizer.argocd.argoproj.io'],
+        },
+        spec: {
+          destinations: [
+            {
+              namespace: 'test-namespace',
+              server: 'https://kubernetes.default.svc',
+            },
+          ],
+          sourceRepos: ['https://github.com/test/repo'],
+        },
+      },
+    };
+
+    const expectedApplicationPayload = {
+      metadata: {
+        name: 'test-app',
+        labels: { backstage: 'test-label' },
+        finalizers: ['resources-finalizers.argocd.argoproj.io'],
+        resourceVersion: undefined,
+      },
+      spec: {
+        destination: {
+          namespace: 'test-namespace',
+          server: 'https://kubernetes.default.svc',
+        },
+        project: 'test-project',
+        revisionHistoryLimit: 10,
+        source: {
+          path: 'kubernetes/manifests',
+          repoURL: 'https://github.com/test/repo',
+        },
+        syncPolicy: {
+          automated: {
+            enabled: true,
+            prune: true,
+            selfHeal: true,
+            allowEmpty: true,
+          },
+          retry: {
+            backoff: {
+              duration: '5s',
+              factor: 2,
+              maxDuration: '5m',
+            },
+            limit: 10,
+          },
+          syncOptions: ['CreateNamespace=false', 'FailOnSharedResource=true'],
+        },
+      },
+    };
+
+    it('should create ArgoCD project and application successfully', async () => {
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => expectedProjectPayload,
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => expectedApplicationPayload,
+        });
+
+      const result = await service.createArgoResources(createResourcesInput);
+
+      expect(result).toEqual({
+        applicationUrl:
+          'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
+      });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      // Verify project creation
+      expect(fetchMock).toHaveBeenNthCalledWith(
+        1,
+        'https://argocd.example.com/api/v1/projects',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer test-token',
+          },
+          body: JSON.stringify(expectedProjectPayload),
+        },
+      );
+
+      // Verify application creation
+      expect(fetchMock).toHaveBeenNthCalledWith(
+        2,
+        'https://argocd.example.com/api/v1/applications',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer test-token',
+          },
+          body: JSON.stringify(expectedApplicationPayload),
+        },
+      );
+    });
+
+    it('should use appName as projectName when projectName is not provided', async () => {
+      const inputWithoutProjectName = {
+        ...createResourcesInput,
+        projectName: '',
+      };
+
+      const expectedPayloadWithAppName = {
+        ...expectedProjectPayload,
+        project: {
+          ...expectedProjectPayload.project,
+          metadata: {
+            ...expectedProjectPayload.project.metadata,
+            name: 'test-app',
+          },
+        },
+      };
+
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => expectedPayloadWithAppName,
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => expectedApplicationPayload,
+        });
+
+      const result = await service.createArgoResources(inputWithoutProjectName);
+
+      expect(result).toEqual({
+        applicationUrl:
+          'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
+      });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle instance not found error', async () => {
+      await expect(
+        service.createArgoResources({
+          ...createResourcesInput,
+          instanceName: 'non-existent-instance',
+        }),
+      ).rejects.toThrow(
+        "Failed to create ArgoCD Resource from Instance 'non-existent-instance' with appName 'test-app' with namespace 'test-namespace' with repoUrl 'https://github.com/test/repo' with path 'kubernetes/manifests' with label 'test-label' with projectName 'test-project' : ArgoCD Instance non-existent-instance not found",
+      );
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'ArgoCD Instance non-existent-instance not found',
+      );
+    });
+
+    it('should handle project creation error', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: false,
+        statusText: 'Conflict',
+        status: 409,
+      });
+
+      await expect(
+        service.createArgoResources(createResourcesInput),
+      ).rejects.toThrow(
+        "Failed to create ArgoCD Resource from Instance 'test-instance'",
+      );
+    });
+
+    it('should handle application creation error', async () => {
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => expectedProjectPayload,
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          statusText: 'Bad Request',
+          status: 400,
+        });
+
+      await expect(
+        service.createArgoResources(createResourcesInput),
+      ).rejects.toThrow(
+        "Failed to create ArgoCD Resource from Instance 'test-instance'",
+      );
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
     });
   });
 });

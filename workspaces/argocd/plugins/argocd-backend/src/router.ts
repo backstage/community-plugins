@@ -22,7 +22,7 @@ import {
 import express from 'express';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import Router from 'express-promise-router';
-import { ArgoCDService } from './services/ArgoCDService';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 import { argocdViewPermission } from '@backstage-community/plugin-argocd-common';
 
 interface RouterOptions {

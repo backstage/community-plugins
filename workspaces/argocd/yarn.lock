@@ -1766,6 +1766,7 @@ __metadata:
   resolution: "@backstage-community/plugin-argocd-backend@workspace:plugins/argocd-backend"
   dependencies:
     "@backstage-community/plugin-argocd-common": "workspace:^"
+    "@backstage-community/plugin-argocd-node": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.13.1"
     "@backstage/backend-plugin-api": "npm:^1.5.0"
     "@backstage/backend-test-utils": "npm:^1.10.0"
@@ -1789,6 +1790,20 @@ __metadata:
     "@backstage/cli": "npm:^0.34.5"
     "@backstage/plugin-permission-common": "npm:^0.9.3"
     "@kubernetes/client-node": "npm:^1.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@backstage-community/plugin-argocd-node@workspace:^, @backstage-community/plugin-argocd-node@workspace:plugins/argocd-node":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-argocd-node@workspace:plugins/argocd-node"
+  dependencies:
+    "@backstage-community/plugin-argocd-common": "workspace:^"
+    "@backstage/backend-plugin-api": "npm:^1.5.0"
+    "@backstage/backend-test-utils": "npm:^1.10.0"
+    "@backstage/cli": "npm:^0.34.5"
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/errors": "npm:^1.2.7"
+    undici: "npm:^7.3.0"
   languageName: unknown
   linkType: soft
 
