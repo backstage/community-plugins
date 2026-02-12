@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// import {
-//   FetchUrlReader,
-//   ReaderFactory,
-//   // UrlReaders,
-// } from '@backstage/backend-defaults/urlReader';
 import type {
   AuthService,
   DiscoveryService,
   LoggerService,
-  // UrlReaderService,
 } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
 import { isError } from '@backstage/errors';
@@ -63,7 +57,6 @@ export class PluginPermissionMetadataCollector {
 
   constructor({
     deps,
-    // optional,
   }: {
     deps: {
       discovery: DiscoveryService;
@@ -71,21 +64,11 @@ export class PluginPermissionMetadataCollector {
       logger: LoggerService;
       config: Config;
     };
-    // optional?: {
-    //   urlReader?: UrlReaderService;
-    // };
   }) {
     const { discovery, logger, pluginIdProvider } = deps;
     this.discovery = discovery;
     this.pluginIdProvider = pluginIdProvider;
     this.logger = logger;
-    // this.urlReader =
-    //   optional?.urlReader ??
-    //   UrlReaders.default({
-    //     config,
-    //     logger,
-    //     factories: [PluginPermissionMetadataCollector.permissionFactory],
-    //   });
   }
 
   async getPluginConditionRules(
@@ -119,15 +102,6 @@ export class PluginPermissionMetadataCollector {
         };
       });
   }
-
-  // private static permissionFactory: ReaderFactory = ({ config }) => {
-  //   return [
-  //     {
-  //       reader: FetchUrlReader.fromConfig(config),
-  //       predicate: (_url: URL) => true,
-  //     },
-  //   ];
-  // };
 
   private async getPluginMetaData(
     auth: AuthService,
