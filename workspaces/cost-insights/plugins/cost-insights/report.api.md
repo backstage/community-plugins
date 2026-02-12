@@ -271,6 +271,10 @@ export type CostGrowthIndicatorProps = TypographyProps & {
 export type CostGrowthProps = {
   change: ChangeStatistic_2;
   duration: Duration;
+  customDateRange?: {
+    start: string;
+    end: string;
+  };
 };
 
 // @public (undocumented)
@@ -404,6 +408,8 @@ export const DEFAULT_DATE_FORMAT = 'yyyy-LL-dd';
 // @public
 export enum Duration {
   // (undocumented)
+  CUSTOM = 'CUSTOM',
+  // (undocumented)
   P30D = 'P30D',
   // (undocumented)
   P3M = 'P3M',
@@ -529,6 +535,11 @@ export type MockCurrencyProviderProps = PropsWithChildren<
 // @public (undocumented)
 export interface PageFilters {
   // (undocumented)
+  customDateRange?: {
+    start: string;
+    end: string;
+  };
+  // (undocumented)
   duration: Duration;
   // (undocumented)
   group: Maybe_2<string>;
@@ -554,6 +565,11 @@ export type ProductInsightsOptions = {
 
 // @public (undocumented)
 export interface ProductPeriod {
+  // (undocumented)
+  customDateRange?: {
+    start: string;
+    end: string;
+  };
   // (undocumented)
   duration: Duration;
   // (undocumented)

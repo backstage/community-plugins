@@ -16,7 +16,11 @@
 import { Currency, CurrencyType, Duration } from '../types';
 import { assertNever } from './assert';
 
-export const rateOf = (cost: number, duration: Duration) => {
+export const rateOf = (
+  cost: number,
+  duration: Duration,
+  customDays?: number,
+) => {
   switch (duration) {
     case Duration.P30D:
       return cost / 12;
@@ -24,6 +28,15 @@ export const rateOf = (cost: number, duration: Duration) => {
     case Duration.P90D:
     case Duration.P3M:
       return cost / 4;
+    case Duration.CUSTOM:
+      // For custom durations, calculate rate based on number of days
+      // Assuming cost is annual, calculate proportional rate
+      if (customDays) {
+        // Annual cost divided by days in year, multiplied by custom period days
+        return (cost / 365) * customDays;
+      }
+      // Fallback: return the cost as-is (rate of 1)
+      return cost;
     default:
       return assertNever(duration);
   }

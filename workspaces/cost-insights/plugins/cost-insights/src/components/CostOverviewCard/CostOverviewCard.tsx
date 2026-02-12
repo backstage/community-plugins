@@ -27,7 +27,7 @@ import { CostOverviewChart } from './CostOverviewChart';
 import { CostOverviewBreakdownChart } from './CostOverviewBreakdownChart';
 import { CostOverviewHeader } from './CostOverviewHeader';
 import { MetricSelect } from '../MetricSelect';
-import { PeriodSelect } from '../PeriodSelect';
+import { DateRangePicker } from '../PeriodSelect';
 import { useConfig, useFilters } from '../../hooks';
 import { mapFiltersToProps } from './selector';
 import { DefaultNavigation } from '../../utils/navigation';
@@ -116,7 +116,11 @@ export const CostOverviewCard = ({
       <CardContent>
         {dailyCostData.groupedCosts && <OverviewTabs />}
         <CostOverviewHeader title={tabs[safeTabIndex].title}>
-          <PeriodSelect duration={filters.duration} onSelect={setDuration} />
+          <DateRangePicker
+            duration={filters.duration}
+            onSelect={setDuration}
+            customDateRange={filters.customDateRange}
+          />
         </CostOverviewHeader>
         <Divider />
         <Box ml={2} my={1} display="flex" flexDirection="column">

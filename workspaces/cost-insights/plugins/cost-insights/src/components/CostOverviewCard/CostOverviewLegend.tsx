@@ -43,7 +43,7 @@ export const CostOverviewLegend = ({
   metricData,
 }: PropsWithChildren<CostOverviewLegendProps>) => {
   const theme = useTheme<CostInsightsTheme>();
-  const { duration } = useFilters(mapFiltersToProps);
+  const { duration, customDateRange } = useFilters(mapFiltersToProps);
   const lastCompleteBillingDate = useLastCompleteBillingDate();
 
   const comparedChange = metricData
@@ -52,6 +52,7 @@ export const CostOverviewLegend = ({
         metricData,
         duration,
         lastCompleteBillingDate,
+        customDateRange,
       )
     : null;
 
@@ -77,7 +78,11 @@ export const CostOverviewLegend = ({
           <LegendItem
             title={choose(['Your Savings', 'Your Excess'], comparedChange)}
           >
-            <CostGrowth change={comparedChange} duration={duration} />
+            <CostGrowth
+              change={comparedChange}
+              duration={duration}
+              customDateRange={customDateRange}
+            />
           </LegendItem>
         </>
       )}

@@ -35,19 +35,43 @@ import {
 type IntervalFields = {
   duration: Duration;
   endDate: string;
+  customDateRange?: { start: string; end: string };
 };
 
 function parseIntervals(intervals: string): IntervalFields {
   const match = intervals.match(
-    /\/(?<duration>P\d+[DM])\/(?<date>\d{4}-\d{2}-\d{2})/,
+    /R(?<repeats>\d+)\/P(?<days>\d+)[DM]\/(?<date>\d{4}-\d{2}-\d{2})/,
   );
-  if (Object.keys(match?.groups || {}).length !== 2) {
+  if (Object.keys(match?.groups || {}).length !== 3) {
     throw new Error(`Invalid intervals: ${intervals}`);
   }
-  const { duration, date } = match!.groups!;
+  const { days, date } = match!.groups!;
+  const dayCount = parseInt(days, 10);
+
+  // Try to match standard durations
+  const endDate = date;
+  if (dayCount === 7) {
+    return { duration: Duration.P7D, endDate };
+  } else if (dayCount === 30) {
+    return { duration: Duration.P30D, endDate };
+  } else if (dayCount === 90) {
+    return { duration: Duration.P90D, endDate };
+  }
+
+  // For custom durations (non-standard day counts), return CUSTOM with customDateRange
+  const endDateObj = DateTime.fromISO(endDate);
+  // endDate is exclusive, so subtract the full dayCount to get the inclusive start date
+  const startDate = endDateObj
+    .minus({ days: dayCount })
+    .toFormat(DEFAULT_DATE_FORMAT);
+
   return {
-    duration: duration as Duration,
-    endDate: date,
+    duration: Duration.CUSTOM,
+    endDate,
+    customDateRange: {
+      start: startDate,
+      end: endDateObj.minus({ days: 1 }).toFormat(DEFAULT_DATE_FORMAT),
+    },
   };
 }
 
@@ -55,10 +79,21 @@ export function aggregationFor(
   intervals: string,
   baseline: number,
 ): DateAggregation[] {
-  const { duration, endDate } = parseIntervals(intervals);
-  const inclusiveEndDate = inclusiveEndDateOf(duration, endDate);
+  const { duration, endDate, customDateRange } = parseIntervals(intervals);
+  const inclusiveEndDate = inclusiveEndDateOf(
+    duration,
+    endDate,
+    customDateRange,
+  );
+
+  // For custom ranges, use the actual selected range, not the comparison period
+  const startDate =
+    duration === Duration.CUSTOM && customDateRange
+      ? customDateRange.start
+      : inclusiveStartDateOf(duration, inclusiveEndDate, customDateRange);
+
   const days = DateTime.fromISO(endDate).diff(
-    DateTime.fromISO(inclusiveStartDateOf(duration, inclusiveEndDate)),
+    DateTime.fromISO(startDate),
     'days',
   ).days;
 
@@ -73,9 +108,7 @@ export function aggregationFor(
   return [...Array(days).keys()].reduce(
     (values: DateAggregation[], i: number): DateAggregation[] => {
       const last = values.length ? values[values.length - 1].amount : baseline;
-      const date = DateTime.fromISO(
-        inclusiveStartDateOf(duration, inclusiveEndDate),
-      )
+      const date = DateTime.fromISO(startDate)
         .plus({ days: i })
         .toFormat(DEFAULT_DATE_FORMAT);
       const amount = Math.max(0, last + nextDelta());

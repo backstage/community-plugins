@@ -25,6 +25,10 @@ export interface PageFilters {
   project: Maybe<string>;
   duration: Duration;
   metric: string | null;
+  customDateRange?: {
+    start: string; // ISO date format YYYY-MM-DD
+    end: string; // ISO date format YYYY-MM-DD
+  };
 }
 
 /**
@@ -38,4 +42,8 @@ export type ProductFilters = Array<ProductPeriod>;
 export interface ProductPeriod {
   duration: Duration;
   productType: string;
+  customDateRange?: {
+    start: string; // ISO date format YYYY-MM-DD
+    end: string; // ISO date format YYYY-MM-DD
+  };
 }
