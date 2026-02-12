@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.17.1
+
+### Patch Changes
+
+- 26fee66: Removed unused "pg-format" dependency
+
 ## 3.17.0
 
 ### Minor Changes
