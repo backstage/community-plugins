@@ -175,6 +175,8 @@ const argocdTranslationFr = createTranslationMessages({
     'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue':
       'défaut',
     'deploymentSummary.deploymentSummary.tableTitle': 'Résumé du déploiement',
+    'deploymentSummary.deploymentSummary.columns.application': 'Application',
+    'deploymentSummary.deploymentSummary.columns.namespace': 'Espace de noms',
     'deploymentSummary.deploymentSummary.columns.instance': 'Exemple',
     'deploymentSummary.deploymentSummary.columns.server': 'Serveur',
     'deploymentSummary.deploymentSummary.columns.revision': 'Révision',

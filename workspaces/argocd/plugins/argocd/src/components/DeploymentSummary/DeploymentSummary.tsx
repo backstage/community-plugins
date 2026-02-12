@@ -37,7 +37,7 @@ import {
   isAppHelmChartType,
 } from '../../utils/utils';
 import AppSyncStatus from '../AppStatus/AppSyncStatus';
-import { AppHealthIcon } from '../AppStatus/StatusIcons';
+import AppHealthStatus from '../AppStatus/AppHealthStatus';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const DeploymentSummary = () => {
@@ -75,6 +75,8 @@ const DeploymentSummary = () => {
   // Translated text
   const tableTitle = t('deploymentSummary.deploymentSummary.tableTitle');
   const columnTitles = {
+    application: t('deploymentSummary.deploymentSummary.columns.application'),
+    namespace: t('deploymentSummary.deploymentSummary.columns.namespace'),
     instance: t('deploymentSummary.deploymentSummary.columns.instance'),
     server: t('deploymentSummary.deploymentSummary.columns.server'),
     revision: t('deploymentSummary.deploymentSummary.columns.revision'),
@@ -85,7 +87,7 @@ const DeploymentSummary = () => {
 
   const columns: TableColumn<Application>[] = [
     {
-      title: 'ArgoCD App',
+      title: `${columnTitles.application}`,
       field: 'name',
       render: (row: Application): ReactNode =>
         getBaseUrl(row) ? (
@@ -100,7 +102,7 @@ const DeploymentSummary = () => {
         ),
     },
     {
-      title: 'Namespace',
+      title: `${columnTitles.namespace}`,
       field: 'namespace',
       render: (row: Application): ReactNode => {
         return <>{row.spec.destination.namespace}</>;
@@ -196,12 +198,7 @@ const DeploymentSummary = () => {
           healthStatusOrder.indexOf(b?.status?.health?.status)
         );
       },
-      render: (row: Application): ReactNode => (
-        <>
-          <AppHealthIcon status={row.status.health.status as HealthStatus} />{' '}
-          {row?.status?.health?.status}
-        </>
-      ),
+      render: (row: Application): ReactNode => <AppHealthStatus app={row} />,
     },
   ];
 

@@ -15,19 +15,33 @@
  */
 import type { FC } from 'react';
 
-import { AppHealthIcon } from '../../../AppStatus/StatusIcons';
 import { HealthStatus } from '@backstage-community/plugin-argocd-common';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+
+import { AppHealthIcon } from '../../../AppStatus/StatusIcons';
+import { argocdTranslationRef } from '../../../../translations/ref';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 interface ResourceHealthStatusProps {
   healthStatus: string;
 }
 
+const getHealthStatusTranslation = (
+  status: HealthStatus,
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+) => {
+  return t(`appStatus.appHealthStatus.${status}`);
+};
+
 export const ResourceHealthStatus: FC<ResourceHealthStatusProps> = ({
   healthStatus,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <AppHealthIcon status={healthStatus as HealthStatus} /> {healthStatus}
+      <AppHealthIcon status={healthStatus as HealthStatus} />{' '}
+      {getHealthStatusTranslation(healthStatus as HealthStatus, t)}
     </>
   );
 };
