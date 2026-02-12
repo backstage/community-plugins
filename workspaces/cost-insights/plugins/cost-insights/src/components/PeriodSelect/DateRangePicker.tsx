@@ -215,6 +215,7 @@ export const DateRangePicker = ({
                 value={startDate}
                 onChange={newValue => setStartDate(newValue)}
                 format="yyyy-MM-dd"
+                variant="inline"
                 inputVariant="outlined"
                 size="small"
               />
@@ -226,6 +227,7 @@ export const DateRangePicker = ({
                 onChange={newValue => setEndDate(newValue)}
                 minDate={startDate || undefined}
                 format="yyyy-MM-dd"
+                variant="inline"
                 inputVariant="outlined"
                 size="small"
                 helperText={endDate ? '' : 'Defaults to yesterday'}
