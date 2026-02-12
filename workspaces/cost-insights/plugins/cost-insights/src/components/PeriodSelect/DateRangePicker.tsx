@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers/MuiPickersUtilsProvider';
+import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
+import LuxonUtils from '@date-io/luxon';
 import { DateTime } from 'luxon';
 import { Duration } from '../../types';
 import { formatLastTwoLookaheadQuarters } from '../../utils/formatters';
@@ -110,21 +109,9 @@ export const DateRangePicker = ({
   customDateRange,
 }: DateRangePickerProps) => {
   const classes = useStyles();
-  const backstageTheme = useTheme();
   const lastCompleteBillingDate = useLastCompleteBillingDate();
   const optionsOrDefault =
     options ?? getDefaultOptions(lastCompleteBillingDate);
-
-  // Create a MUI v5 theme that respects Backstage's dark/light mode
-  const muiV5Theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: backstageTheme.palette.type === 'dark' ? 'dark' : 'light',
-        },
-      }),
-    [backstageTheme.palette.type],
-  );
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [startDate, setStartDate] = useState<DateTime | null>(
@@ -173,103 +160,95 @@ export const DateRangePicker = ({
   };
 
   return (
-    <ThemeProvider theme={muiV5Theme}>
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
-        <Button
-          className={classes.button}
-          variant="outlined"
-          startIcon={<CalendarTodayIcon />}
-          onClick={handleClick}
-          data-testid="period-select"
-        >
-          {getDisplayLabel()}
-        </Button>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-        >
-          <Box className={classes.popover}>
-            <div className={classes.presetSection}>
-              <Typography variant="subtitle2" gutterBottom>
-                Quick Select
-              </Typography>
-              <Box display="flex" flexWrap="wrap">
-                {optionsOrDefault.map(option => (
-                  <Chip
-                    key={option.value}
-                    label={option.label}
-                    onClick={() => handlePresetSelect(option.value)}
-                    color={duration === option.value ? 'primary' : 'default'}
-                    className={classes.presetChip}
-                    data-testid={`period-preset-${option.value}`}
-                  />
-                ))}
-              </Box>
-            </div>
-
-            <Divider />
-
-            <div className={classes.datePickersSection}>
-              <Typography variant="subtitle2" gutterBottom>
-                Custom Date Range
-              </Typography>
-              <Box className={classes.datePickerWrapper}>
-                <DatePicker
-                  label="Start Date"
-                  value={startDate}
-                  onChange={newValue => setStartDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                      variant: 'outlined',
-                    },
-                  }}
+    <MuiPickersUtilsProvider utils={LuxonUtils}>
+      <Button
+        className={classes.button}
+        variant="outlined"
+        startIcon={<CalendarTodayIcon />}
+        onClick={handleClick}
+        data-testid="period-select"
+      >
+        {getDisplayLabel()}
+      </Button>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <Box className={classes.popover}>
+          <div className={classes.presetSection}>
+            <Typography variant="subtitle2" gutterBottom>
+              Quick Select
+            </Typography>
+            <Box display="flex" flexWrap="wrap">
+              {optionsOrDefault.map(option => (
+                <Chip
+                  key={option.value}
+                  label={option.label}
+                  onClick={() => handlePresetSelect(option.value)}
+                  color={duration === option.value ? 'primary' : 'default'}
+                  className={classes.presetChip}
+                  data-testid={`period-preset-${option.value}`}
                 />
-              </Box>
-              <Box className={classes.datePickerWrapper}>
-                <DatePicker
-                  label="End Date (optional)"
-                  value={endDate}
-                  onChange={newValue => setEndDate(newValue)}
-                  minDate={startDate || undefined}
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                      variant: 'outlined',
-                      helperText: endDate ? '' : 'Defaults to yesterday',
-                    },
-                  }}
-                />
-              </Box>
-              <Box className={classes.actionButtons}>
-                <Button onClick={handleClose} size="small">
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCustomApply}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  disabled={!startDate}
-                  data-testid="apply-custom-range"
-                >
-                  Apply
-                </Button>
-              </Box>
-            </div>
-          </Box>
-        </Popover>
-      </LocalizationProvider>
-    </ThemeProvider>
+              ))}
+            </Box>
+          </div>
+
+          <Divider />
+
+          <div className={classes.datePickersSection}>
+            <Typography variant="subtitle2" gutterBottom>
+              Custom Date Range
+            </Typography>
+            <Box className={classes.datePickerWrapper}>
+              <KeyboardDatePicker
+                label="Start Date"
+                value={startDate}
+                onChange={newValue => setStartDate(newValue)}
+                format="yyyy-MM-dd"
+                inputVariant="outlined"
+                size="small"
+              />
+            </Box>
+            <Box className={classes.datePickerWrapper}>
+              <KeyboardDatePicker
+                label="End Date (optional)"
+                value={endDate}
+                onChange={newValue => setEndDate(newValue)}
+                minDate={startDate || undefined}
+                format="yyyy-MM-dd"
+                inputVariant="outlined"
+                size="small"
+                helperText={endDate ? '' : 'Defaults to yesterday'}
+              />
+            </Box>
+            <Box className={classes.actionButtons}>
+              <Button onClick={handleClose} size="small">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleCustomApply}
+                variant="contained"
+                color="primary"
+                size="small"
+                disabled={!startDate}
+                data-testid="apply-custom-range"
+              >
+                Apply
+              </Button>
+            </Box>
+          </div>
+        </Box>
+      </Popover>
+    </MuiPickersUtilsProvider>
   );
 };
