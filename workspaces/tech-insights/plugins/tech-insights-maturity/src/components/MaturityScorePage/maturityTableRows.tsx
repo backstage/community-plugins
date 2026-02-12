@@ -152,7 +152,7 @@ const MaturityCheckTableRow = ({
                         <MenuBookIcon color="primary" />
                       </Tooltip>
                       <Typography>
-                        {checkResult.check.links?.map((link, index) => (
+                        {checkResult.check.links.map((link, index) => (
                           <React.Fragment key={link.url}>
                             {index > 0 && ', '}
                             <Link to={link.url}>{link.title}</Link>
