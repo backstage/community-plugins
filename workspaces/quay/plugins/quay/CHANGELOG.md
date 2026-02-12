@@ -1,5 +1,13 @@
 # @backstage-community/plugin-quay
 
+## 1.30.1
+
+### Patch Changes
+
+- f4d1bd1: Removed unused dependencies
+- Updated dependencies [f4d1bd1]
+  - @backstage-community/plugin-quay-common@1.17.1
+
 ## 1.30.0
 
 ### Minor Changes
