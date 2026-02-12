@@ -181,11 +181,17 @@ export class PluginPermissionMetadataCollector {
       const baseEndpoint = await this.discovery.getBaseUrl(pluginId);
       const wellKnownURL = `${baseEndpoint}/.well-known/backstage/permissions/metadata`;
 
-      const permResp = await this.urlReader.readUrl(wellKnownURL, { token });
-      const permMetaDataRaw = (await permResp.buffer()).toString();
+      const response = await fetch(wellKnownURL, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch metadata for ${pluginId}: ${response.status}`,
+        );
+      }
 
       try {
-        permMetaData = JSON.parse(permMetaDataRaw);
+        permMetaData = await response.json();
       } catch (err) {
         // workaround for https://issues.redhat.com/browse/RHIDP-1456
         return undefined;
