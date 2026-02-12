@@ -83,7 +83,7 @@ async function ensureNoPoliciesForDefaultRole(
 /**
  * Returns the default role object and its permission policies from configuration.
  * Validates that no role with the same name exists and no policies are stored for it.
- * Returns undefined when no default role or basicPermissions are configured.
+ * Returns undefined when default permissions are not configured.
  */
 export async function getDefaultRoleAndPolicies(
   config: Config,
@@ -106,9 +106,10 @@ export async function getDefaultRoleAndPolicies(
   const basicPermissions = config.getOptionalConfigArray(
     'permission.rbac.defaultPermissions.basicPermissions',
   );
-
-  if (!basicPermissions) {
-    return undefined;
+  if (!basicPermissions || basicPermissions.length === 0) {
+    throw new Error(
+      `The default role '${defaultRoleRef}' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.`,
+    );
   }
 
   await ensureNoExistingRoleForDefaultRole(defaultRoleRef, roleMetadataStorage);
