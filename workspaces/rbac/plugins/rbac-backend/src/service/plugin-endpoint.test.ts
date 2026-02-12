@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// import type { UrlReaderServiceReadUrlResponse } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
-// import { NotFoundError } from '@backstage/errors';
+import { NotFoundError } from '@backstage/errors';
 
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { policyEntityPermissions } from '@backstage-community/plugin-rbac-common';
@@ -30,8 +29,24 @@ describe('plugin-endpoint', () => {
     },
   });
 
+  const fetchMock = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    fetchMock.mockReset();
+    global.fetch = fetchMock as any;
+  });
+
+  afterAll(() => {
+    // clean up global pollution
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (global as any).fetch;
+  });
+
   describe('Test list plugin policies', () => {
     it('should return empty plugin policies list', async () => {
+      fetchMock.mockRejectedValueOnce(new NotFoundError());
+
       const collector = new PluginPermissionMetadataCollector({
         deps: {
           discovery: mockPluginEndpointDiscovery,
@@ -49,17 +64,21 @@ describe('plugin-endpoint', () => {
     });
 
     it('should return non empty plugin policies list with resourced permission', async () => {
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async () => {
-      //     return {
-      //       buffer: async () => {
-      //         return Buffer.from(
-      //           '{"permissions":[{"type":"resource","name":"catalog.entity.read","attributes":{"action":"read"},"resourceType":"catalog-entity"}]}',
-      //         );
-      //       },
-      //     } as UrlReaderServiceReadUrlResponse;
-      //   },
-      // });
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => {
+          return {
+            permissions: [
+              {
+                type: 'resource',
+                name: 'catalog.entity.read',
+                attributes: { action: 'read' },
+                resourceType: 'catalog-entity',
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -69,7 +88,6 @@ describe('plugin-endpoint', () => {
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const policiesMetadata = await collector.getPluginPolicies(
         mockServices.auth(),
@@ -87,17 +105,20 @@ describe('plugin-endpoint', () => {
     });
 
     it('should return non empty plugin policies list with non resourced permission', async () => {
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async () => {
-      //     return {
-      //       buffer: async () => {
-      //         return Buffer.from(
-      //           '{"permissions":[{"type":"basic","name":"catalog.entity.create","attributes":{"action":"create"}}]}',
-      //         );
-      //       },
-      //     } as UrlReaderServiceReadUrlResponse;
-      //   },
-      // });
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => {
+          return {
+            permissions: [
+              {
+                type: 'basic',
+                name: 'catalog.entity.create',
+                attributes: { action: 'create' },
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -107,7 +128,6 @@ describe('plugin-endpoint', () => {
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const policiesMetadata = await collector.getPluginPolicies(
         mockServices.auth(),
@@ -128,23 +148,30 @@ describe('plugin-endpoint', () => {
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['catalog', 'unknown-plugin-id']);
 
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async (wellKnownURL: string) => {
-      //     if (
-      //       wellKnownURL ===
-      //       'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
-      //     ) {
-      //       return {
-      //         buffer: async () => {
-      //           return Buffer.from(
-      //             '{"permissions":[{"type":"resource","resourceType":"catalog-entity","name":"catalog.entity.read","attributes":{"action":"read"}}]}',
-      //           );
-      //         },
-      //       } as UrlReaderServiceReadUrlResponse;
-      //     }
-      //     throw new NotFoundError();
-      //   },
-      // });
+      fetchMock.mockImplementation(async (wellKnownURL: string) => {
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              return {
+                permissions: [
+                  {
+                    type: 'resource',
+                    resourceType: 'catalog-entity',
+                    name: 'catalog.entity.read',
+                    attributes: { action: 'read' },
+                  },
+                ],
+              };
+            },
+          } as any;
+        }
+
+        throw new NotFoundError();
+      });
 
       const logger = mockServices.logger.mock();
       const errorSpy = jest.spyOn(logger, 'warn').mockClear();
@@ -156,7 +183,6 @@ describe('plugin-endpoint', () => {
           logger,
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const policiesMetadata = await collector.getPluginPolicies(
         mockServices.auth(),
@@ -173,7 +199,9 @@ describe('plugin-endpoint', () => {
       ]);
 
       expect(errorSpy).toHaveBeenCalledWith(
-        'No permission metadata found for unknown-plugin-id. NotFoundError',
+        expect.stringContaining(
+          'No permission metadata found for unknown-plugin-id. NotFoundError',
+        ),
       );
     });
 
@@ -182,23 +210,30 @@ describe('plugin-endpoint', () => {
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockResolvedValueOnce(['scaffolder', 'catalog']);
 
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async (wellKnownURL: string) => {
-      //     if (
-      //       wellKnownURL ===
-      //       'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
-      //     ) {
-      //       return {
-      //         buffer: async () => {
-      //           return Buffer.from(
-      //             '{"permissions":[{"type":"resource","resourceType":"scaffolder-template","name":"scaffolder.template.parameter.read","attributes":{"action":"read"}}]}',
-      //           );
-      //         },
-      //       } as UrlReaderServiceReadUrlResponse;
-      //     }
-      //     throw new Error('Unexpected error');
-      //   },
-      // });
+      fetchMock.mockImplementation(async (wellKnownURL: string) => {
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              return {
+                permissions: [
+                  {
+                    type: 'resource',
+                    resourceType: 'scaffolder-template',
+                    name: 'scaffolder.template.parameter.read',
+                    attributes: { action: 'read' },
+                  },
+                ],
+              };
+            },
+          } as any;
+        }
+
+        throw new Error('Unexpected error');
+      });
 
       const logger = mockServices.logger.mock();
       const errorSpy = jest.spyOn(logger, 'error').mockClear();
@@ -210,7 +245,6 @@ describe('plugin-endpoint', () => {
           logger,
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
 
       const policiesMetadata = await collector.getPluginPolicies(
@@ -236,47 +270,54 @@ describe('plugin-endpoint', () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['scaffolder', 'catalog']);
+      fetchMock.mockImplementation(async (wellKnownURL: string) => {
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              return {
+                permissions: [
+                  {
+                    type: 'resource',
+                    resourceType: 'scaffolder-template',
+                    name: 'scaffolder.template.parameter.read',
+                    attributes: { action: 'read' },
+                  },
+                ],
+              };
+            },
+          } as any;
+        }
 
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async (wellKnownURL: string) => {
-      //     if (
-      //       wellKnownURL ===
-      //       'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
-      //     ) {
-      //       return {
-      //         buffer: async () => {
-      //           return Buffer.from(
-      //             '{"permissions":[{"type":"resource","resourceType":"scaffolder-template","name":"scaffolder.template.parameter.read","attributes":{"action":"read"}}]}',
-      //           );
-      //         },
-      //       } as UrlReaderServiceReadUrlResponse;
-      //     } else if (
-      //       wellKnownURL ===
-      //       'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
-      //     ) {
-      //       return {
-      //         buffer: async () => {
-      //           return Buffer.from('non json data');
-      //         },
-      //       } as UrlReaderServiceReadUrlResponse;
-      //     }
-      //     throw new Error('Unexpected error');
-      //   },
-      // });
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              throw new Error('invalid json');
+            },
+          } as any;
+        }
 
-      const errorSpy = jest
-        .spyOn(mockServices.logger.mock(), 'error')
-        .mockClear();
+        throw new Error('Unexpected error');
+      });
+
+      const logger = mockServices.logger.mock();
+      const errorSpy = jest.spyOn(logger, 'error').mockClear();
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
           discovery: mockPluginEndpointDiscovery,
           pluginIdProvider:
             extendablePluginIdProviderMock as ExtendablePluginIdProvider,
-          logger: mockServices.logger.mock(),
+          logger,
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const policiesMetadata = await collector.getPluginPolicies(
         mockServices.auth(),
@@ -324,17 +365,32 @@ describe('plugin-endpoint', () => {
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['catalog']);
 
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async () => {
-      //     return {
-      //       buffer: async () => {
-      //         return Buffer.from(
-      //           '{"rules": [{"description":"Allow entities with the specified label","name":"HAS_LABEL","paramsSchema":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"label":{"description":"Name of the label to match on","type":"string"}},"required":["label"],"type":"object"},"resourceType":"catalog-entity"}]}',
-      //         );
-      //       },
-      //     } as UrlReaderServiceReadUrlResponse;
-      //   },
-      // });
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => {
+          return {
+            rules: [
+              {
+                description: 'Allow entities with the specified label',
+                name: 'HAS_LABEL',
+                paramsSchema: {
+                  $schema: 'http://json-schema.org/draft-07/schema#',
+                  additionalProperties: false,
+                  properties: {
+                    label: {
+                      description: 'Name of the label to match on',
+                      type: 'string',
+                    },
+                  },
+                  required: ['label'],
+                  type: 'object',
+                },
+                resourceType: 'catalog-entity',
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -344,7 +400,6 @@ describe('plugin-endpoint', () => {
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const conditionRulesMetadata = await collector.getPluginConditionRules(
         mockServices.auth(),
@@ -380,17 +435,40 @@ describe('plugin-endpoint', () => {
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValueOnce(['catalog']);
 
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async () => {
-      //     return {
-      //       buffer: async () => {
-      //         return Buffer.from(
-      //           '{"permissions":[{"type":"resource","name":"catalog.entity.read","attributes":{"action":"read"},"resourceType":"catalog-entity"}], "rules": [{"description":"Allow entities with the specified label","name":"HAS_LABEL","paramsSchema":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"label":{"description":"Name of the label to match on","type":"string"}},"required":["label"],"type":"object"},"resourceType":"catalog-entity"}]}',
-      //         );
-      //       },
-      //     } as UrlReaderServiceReadUrlResponse;
-      //   },
-      // });
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => {
+          return {
+            permissions: [
+              {
+                type: 'resource',
+                name: 'catalog.entity.read',
+                attributes: { action: 'read' },
+                resourceType: 'catalog-entity',
+              },
+            ],
+            rules: [
+              {
+                description: 'Allow entities with the specified label',
+                name: 'HAS_LABEL',
+                paramsSchema: {
+                  $schema: 'http://json-schema.org/draft-07/schema#',
+                  additionalProperties: false,
+                  properties: {
+                    label: {
+                      description: 'Name of the label to match on',
+                      type: 'string',
+                    },
+                  },
+                  required: ['label'],
+                  type: 'object',
+                },
+                resourceType: 'catalog-entity',
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -400,7 +478,6 @@ describe('plugin-endpoint', () => {
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const metadata = await collector.getMetadataByPluginId(
         'catalog',
