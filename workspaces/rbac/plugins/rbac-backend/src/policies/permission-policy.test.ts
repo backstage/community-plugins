@@ -54,6 +54,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
+import { DefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
@@ -1604,7 +1605,7 @@ describe('Policy checks for conditional policies', () => {
       mockClientKnex,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockAuthService,
-      [],
+      undefined,
     );
   });
 
@@ -2200,6 +2201,26 @@ async function newPermissionPolicy(
   roleMock?: RoleMetadataStorage,
   defaultPolicies: RoleBasedPolicy[] = [],
 ): Promise<RBACPermissionPolicy> {
+  const defaultRoleRef = defaultPolicies[0]?.entityReference;
+  const defaultRoleAndPolicies: DefaultRoleAndPolicies | undefined =
+    defaultPolicies.length > 0 && defaultRoleRef
+      ? {
+          role: {
+            name: defaultRoleRef,
+            memberReferences: [],
+            metadata: {
+              source: 'configuration',
+              isDefault: true,
+              description:
+                'Role with default permissions for all users and groups.',
+              modifiedBy: 'permission-policy-test',
+              lastModified: new Date().toUTCString(),
+            },
+          },
+          policies: defaultPolicies,
+        }
+      : undefined;
+
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
@@ -2211,7 +2232,7 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    defaultPolicies,
+    defaultRoleAndPolicies,
   );
   clearAuditorMock();
   return permissionPolicy;

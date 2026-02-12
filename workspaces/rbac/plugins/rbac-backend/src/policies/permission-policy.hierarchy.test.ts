@@ -1115,7 +1115,7 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    [],
+    undefined,
   );
   clearAuditorMock();
   return permissionPolicy;
