@@ -26,7 +26,8 @@
     "pluginPackages": [
       "@backstage-community/plugin-azure-storage-explorer",
       "@backstage-community/plugin-azure-storage-explorer-backend"
-    ]
+    ],
+    "configSchema": "config.d.ts"
   },
   "scripts": {
     "start": "backstage-cli package start",
@@ -58,6 +59,7 @@
     "supertest": "^7.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ]
 }
