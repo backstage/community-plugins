@@ -45,9 +45,11 @@ export interface Config {
           }
         | {
             /**
-             * Client token (when authType is 'clientToken')
+             * Azure AD credentials (when authType is 'clientToken')
              */
-            clientToken: string;
+            clientId: string;
+            tenantId: string;
+            clientSecret: string;
           };
 
       /**
