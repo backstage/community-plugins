@@ -45,6 +45,7 @@ const rbacTranslationIt = createTranslationMessages({
     'toolbar.warning.noteText':
       "Anche dopo aver inserito utenti/gruppi nel catalogo e applicato le autorizzazioni precedenti, se il pulsante Crea/Modifica è ancora disabilitato, contattare l'amministratore poiché potrebbero essere presenti limitazioni condizionali all'accesso al pulsante Crea/Modifica.",
     'errors.notFound': 'Non trovato',
+    'errors.notAllowed': 'Permessi insufficienti per accedere a questa pagina',
     'errors.unauthorized': 'Nessuna autorizzazione a creare un ruolo',
     'errors.rbacDisabled':
       'Abilitare il plugin backend RBAC per utilizzare questa funzionalità.',

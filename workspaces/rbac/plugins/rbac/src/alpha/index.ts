@@ -13,15 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  useTranslationRef,
-  TranslationFunction,
-} from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../alpha/translations';
 
-/**
- * @alpha
- */
-export const useTranslation = (): {
-  t: TranslationFunction<typeof rbacTranslationRef.T>;
-} => useTranslationRef(rbacTranslationRef);
+export { default } from './plugin';
+
+export * from './translations';

@@ -45,6 +45,7 @@ const rbacTranslationJa = createTranslationMessages({
     'toolbar.warning.noteText':
       'カタログにユーザー/グループを取り込み、上記の権限を適用した後でも作成/編集ボタンが無効な場合は、管理者に問い合わせてください。作成/編集ボタンへのアクセスが条件付きで制限されている可能性があります。',
     'errors.notFound': '見つかりません',
+    'errors.notAllowed': 'このページにアクセスする権限が不足しています',
     'errors.unauthorized': 'ロールを作成する権限がありません',
     'errors.rbacDisabled':
       'この機能を使用するには、RBAC バックエンドプラグインを有効にしてください。',

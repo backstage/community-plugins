@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2020 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  useTranslationRef,
-  TranslationFunction,
-} from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../alpha/translations';
 
-/**
- * @alpha
- */
-export const useTranslation = (): {
-  t: TranslationFunction<typeof rbacTranslationRef.T>;
-} => useTranslationRef(rbacTranslationRef);
+import { rbacTranslationsModule } from './translations';
+import { navModule } from './nav';
+
+export { rbacTranslationsModule, navModule };

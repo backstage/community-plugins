@@ -16,12 +16,12 @@
 
 // These translation files are not exported by the package, so relative imports are necessary for e2e tests
 /* eslint-disable @backstage/no-relative-monorepo-imports */
-import { rbacMessages } from '../../src/translations/ref.js';
-import rbacTranslationDe from '../../src/translations/de.js';
-import rbacTranslationFr from '../../src/translations/fr.js';
-import rbacTranslationEs from '../../src/translations/es.js';
-import rbacTranslationIt from '../../src/translations/it.js';
-import rbacTranslationJa from '../../src/translations/ja.js';
+import { rbacMessages } from '../../src/alpha/translations/ref.js';
+import rbacTranslationDe from '../../src/alpha/translations/de.js';
+import rbacTranslationFr from '../../src/alpha/translations/fr.js';
+import rbacTranslationEs from '../../src/alpha/translations/es.js';
+import rbacTranslationIt from '../../src/alpha/translations/it.js';
+import rbacTranslationJa from '../../src/alpha/translations/ja.js';
 /* eslint-enable @backstage/no-relative-monorepo-imports */
 
 export type RbacMessages = typeof rbacMessages;

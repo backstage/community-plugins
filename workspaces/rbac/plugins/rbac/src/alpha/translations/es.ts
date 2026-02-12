@@ -41,6 +41,7 @@ const rbacTranslationEs = createTranslationMessages({
     'toolbar.warning.noteText':
       'Incluso después de ingerir usuarios/grupos en el catálogo y aplicar los permisos mencionados anteriormente, si el botón crear/editar sigue deshabilitado, por favor contacta a tu administrador ya que podrías estar condicionalmente restringido de acceder al botón crear/editar.',
     'errors.notFound': 'No encontrado',
+    'errors.notAllowed': 'Permisos insuficientes para acceder a esta página',
     'errors.unauthorized': 'No autorizado para crear un rol',
     'errors.rbacDisabled':
       'Habilita el plugin backend RBAC para usar esta funcionalidad.',

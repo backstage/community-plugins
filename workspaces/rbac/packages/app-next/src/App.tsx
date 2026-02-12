@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * @alpha
- * Translation resources for the RBAC plugin
- */
-export * from './translations';
+import { createApp } from '@backstage/frontend-defaults';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import rbacPlugin from '@backstage-community/plugin-rbac/alpha';
+import { navModule, rbacTranslationsModule } from './modules';
+
+export default createApp({
+  features: [catalogPlugin, rbacPlugin, navModule, rbacTranslationsModule],
+});
