@@ -1179,6 +1179,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^3.3.2"
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.18"
     "@backstage/plugin-catalog-node": "npm:^1.20.1"
+    "@backstage/types": "npm:^1.2.2"
     "@keycloak/keycloak-admin-client": "npm:26.3.4"
     "@opentelemetry/api": "npm:^1.9.0"
     "@types/lodash": "npm:4.17.23"
@@ -1188,7 +1189,6 @@ __metadata:
     lodash: "npm:^4.17.21"
     open-cli: "npm:^8.0.0"
     p-limit: "npm:^6.1.0"
-    pg-format: "npm:^1.0.4"
     uuid: "npm:^9.0.1"
   languageName: unknown
   linkType: soft
