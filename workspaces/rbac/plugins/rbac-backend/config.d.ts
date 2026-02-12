@@ -72,9 +72,32 @@ export interface Config {
        */
       policyDecisionPrecedence?: 'basic' | 'conditional';
       /**
-       * The default role to assign to all authenticated users.
+       * Configuration for assigning a default role with permissions
+       * to all authenticated users.
        */
-      defaultRole?: string;
+      defaultPermissions?: {
+        /**
+         * The default role to assign to all authenticated users.
+         */
+        defaultRole: string;
+        /**
+         * The list of baseline basic permissions assigned to the default role.
+         */
+        basicPermissions: Array<{
+          /**
+           * Permission name or resource type, for example `catalog.entity.read` or `catalog-entity`.
+           */
+          permission: string;
+          /**
+           * Action for the permission. Defaults to `use` when omitted.
+           */
+          action?: 'create' | 'read' | 'update' | 'delete' | 'use';
+          /**
+           * Permission effect. Defaults to `allow` when omitted.
+           */
+          effect?: 'allow' | 'deny';
+        }>;
+      };
     };
   };
 }
