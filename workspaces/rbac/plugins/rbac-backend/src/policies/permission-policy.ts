@@ -57,6 +57,7 @@ import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
 import { YamlConditinalPoliciesFileWatcher } from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
+import { DefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
@@ -74,7 +75,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
     auth: AuthService,
-    defaultPolicies: RoleBasedPolicy[],
+    defPerm?: DefaultRoleAndPolicies,
   ): Promise<RBACPermissionPolicy> {
     const superUserList: string[] = [];
     const adminUsers = configApi.getOptionalConfigArray(
@@ -87,10 +88,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
     const policiesFile = configApi.getOptionalString(
       'permission.rbac.policies-csv-file',
-    );
-
-    const defaultRole = configApi.getOptionalString(
-      'permission.rbac.defaultPermissions.defaultRole',
     );
 
     const allowReload =
@@ -170,8 +167,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       conditionalStorage,
       preferPermissionPolicy,
       superUserList,
-      defaultRole,
-      defaultPolicies,
+      defPerm,
     );
   }
 
@@ -181,13 +177,12 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
     superUserList?: string[],
-    defaultRole?: string,
-    defaultPermissions?: RoleBasedPolicy[],
+    defPerm?: DefaultRoleAndPolicies,
   ) {
     this.superUserList = superUserList;
     this.preferPermissionPolicy = preferPermissionPolicy;
-    this.defaultRole = defaultRole;
-    this.defaultPermissions = defaultPermissions || [];
+    this.defaultRole = defPerm?.role.name;
+    this.defaultPermissions = defPerm?.policies || [];
   }
 
   async handle(

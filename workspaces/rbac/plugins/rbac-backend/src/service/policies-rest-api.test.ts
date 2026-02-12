@@ -260,7 +260,6 @@ describe('REST policies API', () => {
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
       undefined,
-      [],
     );
     const router = await server.serve();
     app = express().use(router);
