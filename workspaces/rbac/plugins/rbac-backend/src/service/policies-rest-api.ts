@@ -144,7 +144,7 @@ export class PoliciesServer {
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly pluginIdProvider: ExtendablePluginIdProvider,
     private readonly defaultRole: Role | undefined,
-    private readonly defaultPolicies: RoleBasedPolicy[],
+    private readonly defaultPolicies: RoleBasedPolicy[] = [],
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 

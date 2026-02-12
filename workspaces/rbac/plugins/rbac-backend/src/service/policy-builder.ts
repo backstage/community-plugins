@@ -185,8 +185,6 @@ export class PolicyBuilder {
       roleMetadataStorage,
       enforcerDelegate,
     );
-    const defaultPolicies = defaultRoleAndPolicies?.policies ?? [];
-
     const isPluginEnabled = env.config.getOptionalBoolean('permission.enabled');
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
@@ -201,7 +199,7 @@ export class PolicyBuilder {
         databaseClient,
         pluginPermMetaData,
         env.auth,
-        defaultPolicies,
+        defaultRoleAndPolicies,
       );
       env.policy.setPolicy(policy);
     } else {
@@ -231,7 +229,7 @@ export class PolicyBuilder {
       extraPluginsIdStorage,
       extendablePluginIdProvider,
       defaultRoleAndPolicies?.role,
-      defaultPolicies,
+      defaultRoleAndPolicies?.policies,
       rbacProviders,
     );
     return server.serve();
