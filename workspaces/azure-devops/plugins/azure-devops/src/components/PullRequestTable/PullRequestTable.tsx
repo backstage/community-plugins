@@ -23,6 +23,7 @@ import {
   Flex,
   Link,
   SearchField,
+  Skeleton,
   Table,
   Text,
   useTable,
@@ -232,7 +233,35 @@ export const PullRequestTable = ({ defaultLimit }: PullRequestTableProps) => {
         </Flex>
       </CardHeader>
       <CardBody>
-        <Table columnConfig={columns} {...tableProps} loading={loading} />
+        {loading && (
+          <Flex direction="column" gap="3" style={{ width: '100%' }}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Flex
+                key={index}
+                gap="4"
+                align="center"
+                style={{ width: '100%' }}
+              >
+                <Skeleton width="8%" height={24} />
+                <Skeleton width="30%" height={24} />
+                <Skeleton width="15%" height={24} />
+                <Skeleton width="15%" height={24} />
+                <Skeleton width="18%" height={24} />
+                <Skeleton width="14%" height={24} />
+              </Flex>
+            ))}
+          </Flex>
+        )}
+        {!loading && (!items || items.length === 0) && (
+          <Flex p="4" style={{ textAlign: 'center' }}>
+            <Text as="p" variant="body-large">
+              No pull requests found
+            </Text>
+          </Flex>
+        )}
+        {!loading && items && items.length > 0 && (
+          <Table columnConfig={columns} {...tableProps} />
+        )}
       </CardBody>
     </Card>
   );

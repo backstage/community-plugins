@@ -23,6 +23,7 @@ import {
   Flex,
   Link,
   SearchField,
+  Skeleton,
   Table,
   Text,
   useTable,
@@ -75,7 +76,7 @@ const columns: ColumnConfig<GitTagWithId>[] = [
 export const GitTagTable = () => {
   const { entity } = useEntity();
 
-  const { items, error } = useGitTags(entity);
+  const { items, loading, error } = useGitTags(entity);
 
   // Transform items to include id property required by BUI Table
   const tableData = useMemo(
@@ -154,7 +155,32 @@ export const GitTagTable = () => {
         </Flex>
       </CardHeader>
       <CardBody>
-        <Table columnConfig={columns} {...tableProps} />
+        {loading && (
+          <Flex direction="column" gap="3" style={{ width: '100%' }}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Flex
+                key={index}
+                gap="4"
+                align="center"
+                style={{ width: '100%' }}
+              >
+                <Skeleton width="30%" height={24} />
+                <Skeleton width="40%" height={24} />
+                <Skeleton width="30%" height={24} />
+              </Flex>
+            ))}
+          </Flex>
+        )}
+        {!loading && (!items || items.length === 0) && (
+          <Flex p="4" style={{ textAlign: 'center' }}>
+            <Text as="p" variant="body-large">
+              No git tags found
+            </Text>
+          </Flex>
+        )}
+        {!loading && items && items.length > 0 && (
+          <Table columnConfig={columns} {...tableProps} />
+        )}
       </CardBody>
     </Card>
   );
