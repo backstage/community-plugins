@@ -1432,6 +1432,7 @@ __metadata:
     "@backstage/plugin-search-common": "backstage:^"
     "@backstage/plugin-search-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@testing-library/dom": "npm:^10.0.0"
