@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-
+import { ToggleButtonGroup, ToggleButton } from '@backstage/ui';
 import { PullRequestStatus } from '@backstage-community/plugin-azure-devops-common';
 
 export const PullRequestStatusButtonGroup = ({
@@ -27,31 +25,27 @@ export const PullRequestStatusButtonGroup = ({
   setStatus: (pullRequestStatus: PullRequestStatus) => void;
 }) => {
   return (
-    <ButtonGroup aria-label="outlined button group">
-      <Button
-        color={status === PullRequestStatus.Active ? 'primary' : 'default'}
-        onClick={() => {
-          setStatus(PullRequestStatus.Active);
-        }}
-      >
+    <ToggleButtonGroup
+      aria-label="Pull request status filter"
+      selectionMode="single"
+      disallowEmptySelection
+      selectedKeys={[status.toString()]}
+      onSelectionChange={keys => {
+        const selectedKey = Array.from(keys)[0];
+        if (selectedKey) {
+          setStatus(parseInt(selectedKey.toString(), 10) as PullRequestStatus);
+        }
+      }}
+    >
+      <ToggleButton id={PullRequestStatus.Active.toString()}>
         Active
-      </Button>
-      <Button
-        color={status === PullRequestStatus.Completed ? 'primary' : 'default'}
-        onClick={() => {
-          setStatus(PullRequestStatus.Completed);
-        }}
-      >
+      </ToggleButton>
+      <ToggleButton id={PullRequestStatus.Completed.toString()}>
         Completed
-      </Button>
-      <Button
-        color={status === PullRequestStatus.Abandoned ? 'primary' : 'default'}
-        onClick={() => {
-          setStatus(PullRequestStatus.Abandoned);
-        }}
-      >
+      </ToggleButton>
+      <ToggleButton id={PullRequestStatus.Abandoned.toString()}>
         Abandoned
-      </Button>
-    </ButtonGroup>
+      </ToggleButton>
+    </ToggleButtonGroup>
   );
 };
