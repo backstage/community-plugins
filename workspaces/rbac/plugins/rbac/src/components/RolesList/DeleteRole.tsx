@@ -60,7 +60,6 @@ const DeleteRole = ({
           data-testid={testIdText}
           aria-label={t('common.delete')}
           disabled={disable}
-          title={tooltip ?? t('common.deleteRole')}
           sx={{
             p: 1,
             borderRadius: '50%',

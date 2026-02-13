@@ -61,7 +61,6 @@ const EditRole = ({
           data-testid={testIdText}
           aria-label={t('common.update')}
           disabled={disable}
-          title={tooltip ?? t('common.editRole')}
           sx={{
             p: 1,
             borderRadius: '50%',
