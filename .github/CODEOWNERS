@@ -56,11 +56,14 @@ yarn.lock                                                               @backsta
 /workspaces/gcalendar                                                   @backstage/community-plugins-maintainers
 /workspaces/gcp-projects                                                @backstage/community-plugins-maintainers
 /workspaces/git-release-manager                                         @backstage/community-plugins-maintainers  @erikengervall
-/workspaces/github-actions                                              @backstage/community-plugins-maintainers
-/workspaces/github-deployments                                          @backstage/community-plugins-maintainers
-/workspaces/github-discussions                                          @backstage/community-plugins-maintainers  @minkimcello @taras
-/workspaces/github-issues                                               @backstage/community-plugins-maintainers
-/workspaces/github-pull-requests-board                                  @backstage/community-plugins-maintainers  @gregorytalita
+/workspaces/github                                                      @backstage/community-plugins-maintainers
+/workspaces/github/plugins/github-actions                               @backstage/community-plugins-maintainers
+/workspaces/github/plugins/github-deployments                           @backstage/community-plugins-maintainers
+/workspaces/github/plugins/github-discussions                           @backstage/community-plugins-maintainers  @minkimcello @taras
+/workspaces/github/plugins/github-discussions-common                    @backstage/community-plugins-maintainers  @minkimcello @taras
+/workspaces/github/plugins/search-backend-module-github-discussions     @backstage/community-plugins-maintainers  @minkimcello @taras
+/workspaces/github/plugins/github-issues                                @backstage/community-plugins-maintainers
+/workspaces/github/plugins/github-pull-requests-board                   @backstage/community-plugins-maintainers  @gregorytalita
 /workspaces/gitops-profiles                                             @backstage/community-plugins-maintainers
 /workspaces/gocd                                                        @backstage/community-plugins-maintainers
 /workspaces/grafana                                                     @backstage/community-plugins-maintainers
