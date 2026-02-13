@@ -1603,6 +1603,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/types": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-table/exporters": "npm:^1.2.19"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
@@ -3532,9 +3533,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.11.0":
-  version: 0.11.1
-  resolution: "@backstage/ui@npm:0.11.1"
+"@backstage/ui@backstage:^::backstage=1.47.2&npm=0.11.2, @backstage/ui@npm:^0.11.0, @backstage/ui@npm:^0.11.2":
+  version: 0.11.2
+  resolution: "@backstage/ui@npm:0.11.2"
   dependencies:
     "@backstage/version-bridge": "npm:^1.0.11"
     "@remixicon/react": "npm:^4.6.0"
@@ -3549,7 +3550,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/7343621ebcef22ead8b4fed717afaee567a17eed01a3de3e57db210b30031a75375faa5486f275a004064f42341de4f847fbcbca03e9360e747e3efd8c95a722
+  checksum: 10/d3aea803533a276cf27f52d24e261cdf396db09f4e9321e8d199b32c6e00ffaf969d6aeabf7533e2db739b58834f315f1f0153974953400c631c8957aed74275
   languageName: node
   linkType: hard
 
