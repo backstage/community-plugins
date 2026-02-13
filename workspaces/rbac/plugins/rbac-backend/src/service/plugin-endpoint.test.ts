@@ -45,6 +45,8 @@ describe('plugin-endpoint', () => {
 
   describe('Test list plugin policies', () => {
     it('should return empty plugin policies list', async () => {
+      // asserts that when a plugin’s well-known endpoint is missing (404)
+      // the collector returns an empty policies list instead of throwing.
       fetchMock.mockRejectedValueOnce(new NotFoundError());
 
       const collector = new PluginPermissionMetadataCollector({
@@ -519,12 +521,6 @@ describe('plugin-endpoint', () => {
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockReturnValue(['permission']);
 
-      // const mockUrlReaderService = mockServices.urlReader.mock({
-      //   readUrl: async (_wellKnownURL: string) => {
-      //     throw new Error('Unexpected error');
-      //   },
-      // });
-
       const collector = new PluginPermissionMetadataCollector({
         deps: {
           discovery: mockPluginEndpointDiscovery,
@@ -533,7 +529,6 @@ describe('plugin-endpoint', () => {
           logger: mockServices.logger.mock(),
           config: mockServices.rootConfig(),
         },
-        // optional: { urlReader: mockUrlReaderService },
       });
       const metadata = await collector.getMetadataByPluginId(
         'permission',
