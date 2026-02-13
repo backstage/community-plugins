@@ -36,7 +36,11 @@ type MembersCardProps = {
 };
 
 const getRefreshIcon = () => <CachedIcon />;
-const getEditIcon = (isAllowed: boolean, roleName: string) => {
+const getEditIcon = (
+  isAllowed: boolean,
+  roleName: string,
+  tooltip?: string,
+) => {
   const { kind, name, namespace } = parseEntityRef(roleName);
 
   return (
@@ -45,6 +49,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
       canEdit={isAllowed}
       roleName={roleName}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${1}`}
+      tooltip={tooltip}
     />
   );
 };

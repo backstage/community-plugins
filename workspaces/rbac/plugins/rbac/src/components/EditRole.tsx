@@ -53,22 +53,24 @@ const EditRole = ({
 
   return (
     <Tooltip title={tooltipText}>
-      <IconButton
-        onClick={() => {
-          navigate(to ?? `../role/${kind}/${namespace}/${name}`);
-        }}
-        data-testid={testIdText}
-        aria-label={t('common.update')}
-        disabled={disable}
-        title={tooltip ?? t('common.editRole')}
-        sx={{
-          p: 1,
-          borderRadius: '50%',
-          '&:hover': { borderRadius: '50%' },
-        }}
-      >
-        <EditIcon />
-      </IconButton>
+      <span style={{ display: 'inline-flex' }}>
+        <IconButton
+          onClick={() => {
+            navigate(to ?? `../role/${kind}/${namespace}/${name}`);
+          }}
+          data-testid={testIdText}
+          aria-label={t('common.update')}
+          disabled={disable}
+          title={tooltip ?? t('common.editRole')}
+          sx={{
+            p: 1,
+            borderRadius: '50%',
+            '&:hover': { borderRadius: '50%' },
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };
