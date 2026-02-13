@@ -1215,7 +1215,7 @@ __metadata:
     "@backstage/plugin-search-backend-module-stack-overflow-collator": "backstage:^"
     "@types/node-fetch": "npm:^2.5.12"
     node-fetch: "npm:^2.6.7"
-    qs: "npm:^6.9.4"
+    qs: "npm:^6.14.2"
     winston: "npm:^3.2.1"
   languageName: unknown
   linkType: soft
@@ -1249,7 +1249,7 @@ __metadata:
     cross-fetch: "npm:^4.0.0"
     lodash: "npm:^4.17.21"
     msw: "npm:^1.0.0"
-    qs: "npm:^6.9.4"
+    qs: "npm:^6.14.2"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
@@ -18493,6 +18493,15 @@ __metadata:
   dependencies:
     side-channel: "npm:^1.1.0"
   checksum: 10/34b5ab00a910df432d55180ef39c1d1375e550f098b5ec153b41787f1a6a6d7e5f9495593c3b112b77dbc6709d0ae18e55b82847a4c2bbbb0de1e8ccbb1794c5
+  languageName: node
+  linkType: hard
+
+"qs@npm:^6.14.2":
+  version: 6.14.2
+  resolution: "qs@npm:6.14.2"
+  dependencies:
+    side-channel: "npm:^1.1.0"
+  checksum: 10/682933a85bb4b7bd0d66e13c0a40d9e612b5e4bcc2cb9238f711a9368cd22d91654097a74fff93551e58146db282c56ac094957dfdc60ce64ea72c3c9d7779ac
   languageName: node
   linkType: hard
 

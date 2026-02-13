@@ -45,7 +45,7 @@
   "dependencies": {
     "@backstage/plugin-search-backend-module-stack-overflow-collator": "backstage:^",
     "node-fetch": "^2.6.7",
-    "qs": "^6.9.4",
+    "qs": "^6.14.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {
