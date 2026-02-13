@@ -14,76 +14,148 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
 import {
+  Card,
+  CardHeader,
+  CardBody,
+  Cell,
+  CellText,
+  Flex,
   Link,
-  ResponseErrorPanel,
+  SearchField,
   Table,
-  TableColumn,
-} from '@backstage/core-components';
+  Text,
+  useTable,
+  type ColumnConfig,
+} from '@backstage/ui';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 
 import { AzureGitTagsIcon } from '../AzureGitTagsIcon';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGitTags } from '../../hooks/useGitTags';
+import { useEffect, useMemo } from 'react';
 
-const columns: TableColumn[] = [
+type GitTagWithId = GitTag & { id: string };
+
+const columns: ColumnConfig<GitTagWithId>[] = [
   {
-    title: 'Tag',
-    field: 'name',
-    highlight: false,
-    defaultSort: 'desc',
-    width: 'auto',
-    render: (row: Partial<GitTag>) => (
-      <Box display="flex" alignItems="center">
-        <Link to={row.link ?? ''}>{row.name}</Link>
-      </Box>
+    id: 'name',
+    label: 'Tag',
+    isRowHeader: true,
+    isSortable: true,
+    cell: (row: GitTagWithId) => (
+      <Cell>
+        <Flex align="center">
+          <Link href={row.link ?? ''}>{row.name}</Link>
+        </Flex>
+      </Cell>
     ),
   },
   {
-    title: 'Commit',
-    field: 'peeledObjectId',
-    width: 'auto',
-    render: (row: Partial<GitTag>) => (
-      <Box display="flex" alignItems="center">
-        <Link to={row.commitLink ?? ''}>{row.peeledObjectId}</Link>
-      </Box>
+    id: 'peeledObjectId',
+    label: 'Commit',
+    isSortable: true,
+    cell: (row: GitTagWithId) => (
+      <Cell>
+        <Flex align="center">
+          <Link href={row.commitLink ?? ''}>{row.peeledObjectId}</Link>
+        </Flex>
+      </Cell>
     ),
   },
   {
-    title: 'Created By',
-    field: 'createdBy',
-    width: 'auto',
+    id: 'createdBy',
+    label: 'Created By',
+    isSortable: true,
+    cell: (row: GitTagWithId) => <CellText title={row.createdBy ?? '-'} />,
   },
 ];
 
 export const GitTagTable = () => {
   const { entity } = useEntity();
 
-  const { items, loading, error } = useGitTags(entity);
+  const { items, error } = useGitTags(entity);
+
+  // Transform items to include id property required by BUI Table
+  const tableData = useMemo(
+    () =>
+      (items ?? []).map((item, index) => ({
+        ...item,
+        id: item.objectId ?? item.name ?? `tag-${index}`,
+      })),
+    [items],
+  );
+
+  const { tableProps, reload, search } = useTable({
+    mode: 'complete',
+    getData: () => tableData,
+    searchFn: (data, query) => {
+      if (!query) return data;
+      const lowerQuery = query.toLowerCase();
+      return data.filter(
+        item =>
+          item.name?.toLowerCase().includes(lowerQuery) ||
+          item.peeledObjectId?.toLowerCase().includes(lowerQuery) ||
+          item.createdBy?.toLowerCase().includes(lowerQuery),
+      );
+    },
+    sortFn: (data, sort) => {
+      if (!sort) return data;
+
+      return [...data].sort((a, b) => {
+        const aValue = a[sort.column as keyof GitTagWithId];
+        const bValue = b[sort.column as keyof GitTagWithId];
+
+        // Handle null/undefined values
+        if (!aValue && !bValue) return 0;
+        if (!aValue) return sort.direction === 'ascending' ? 1 : -1;
+        if (!bValue) return sort.direction === 'ascending' ? -1 : 1;
+
+        // Compare values
+        const comparison = String(aValue).localeCompare(String(bValue));
+        return sort.direction === 'ascending' ? comparison : -comparison;
+      });
+    },
+    initialSort: { column: 'name', direction: 'descending' },
+  });
+
+  useEffect(() => {
+    reload();
+  }, [tableData, reload]);
 
   if (error) {
     return <ResponseErrorPanel error={error} />;
   }
 
   return (
-    <Table
-      isLoading={loading}
-      columns={columns}
-      options={{
-        search: true,
-        paging: true,
-        pageSize: 5,
-        showEmptyDataSourceMessage: !loading,
-      }}
-      title={
-        <Box display="flex" alignItems="center">
-          <AzureGitTagsIcon style={{ fontSize: 30 }} />
-          <Box mr={1} />
-          Azure Repos - Git Tags ({items ? items.length : 0})
-        </Box>
-      }
-      data={items ?? []}
-    />
+    <Card>
+      <CardHeader>
+        <Flex align="center" justify="between" gap="small">
+          <Flex align="center" gap="small">
+            <AzureGitTagsIcon style={{ fontSize: 30 }} />
+            <Text
+              variant="title-small"
+              weight="bold"
+              style={{ paddingLeft: '5px' }}
+            >
+              Azure Repos - Git Tags ({items ? items.length : 0})
+            </Text>
+          </Flex>
+          <Flex justify="end" style={{ flex: '0 0 25%', minWidth: '200px' }}>
+            <SearchField
+              placeholder="Search tags..."
+              value={search.value}
+              onChange={search.onChange}
+              aria-label="Search git tags"
+              style={{ width: '100%' }}
+            />
+          </Flex>
+        </Flex>
+      </CardHeader>
+      <CardBody>
+        <Table columnConfig={columns} {...tableProps} />
+      </CardBody>
+    </Card>
   );
 };
