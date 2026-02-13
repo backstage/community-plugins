@@ -1,5 +1,12 @@
 # @backstage-community/plugin-multi-source-security-viewer-backend
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [0e8efcd]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.11.0
+
 ## 0.2.1
 
 ### Patch Changes
