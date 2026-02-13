@@ -60,6 +60,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
   const [searchText, setSearchText] = useState<string>();
 
+  const editTooltip = canReadUsersAndGroups
+    ? t('common.edit')
+    : t('common.unauthorizedToEdit');
+
   const actions = [
     {
       icon: getRefreshIcon,
@@ -71,10 +75,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
       },
     },
     {
-      icon: () => getEditIcon(canReadUsersAndGroups, roleName),
-      tooltip: canReadUsersAndGroups
-        ? t('common.edit')
-        : t('common.unauthorizedToEdit'),
+      icon: () => getEditIcon(canReadUsersAndGroups, roleName, editTooltip),
       isFreeAction: true,
       onClick: () => {},
     },
