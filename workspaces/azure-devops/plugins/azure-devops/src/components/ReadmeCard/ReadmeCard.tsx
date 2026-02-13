@@ -113,7 +113,7 @@ export const ReadmeCard = (props: Props) => {
         <CardFooter>
           <Link href={value.url} target="_blank" rel="noopener noreferrer">
             <Button variant="tertiary" size="small">
-              Readme
+              View in Azure DevOps
             </Button>
           </Link>
         </CardFooter>
