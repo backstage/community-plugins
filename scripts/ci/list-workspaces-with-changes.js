@@ -52,7 +52,12 @@ export async function main() {
   if (!process.env.GITHUB_OUTPUT) {
     throw new Error('GITHUB_OUTPUT environment variable not set');
   }
-  const repoRoot = resolvePath(url.fileURLToPath(import.meta.url), '..', '..');
+  const repoRoot = resolvePath(
+    url.fileURLToPath(import.meta.url),
+    '..',
+    '..',
+    '..',
+  );
   process.chdir(repoRoot);
 
   const diff = await runPlain(
