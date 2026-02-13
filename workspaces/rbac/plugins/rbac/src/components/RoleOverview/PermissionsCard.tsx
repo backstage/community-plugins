@@ -38,7 +38,11 @@ type PermissionsCardProps = {
 };
 
 const getRefreshIcon = () => <CachedIcon />;
-const getEditIcon = (isAllowed: boolean, roleName: string) => {
+const getEditIcon = (
+  isAllowed: boolean,
+  roleName: string,
+  tooltip?: string,
+) => {
   const { kind, name, namespace } = parseEntityRef(roleName);
 
   return (
@@ -47,6 +51,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
       canEdit={isAllowed}
       roleName={roleName}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${2}`}
+      tooltip={tooltip}
     />
   );
 };
@@ -105,8 +110,11 @@ export const PermissionsCard = ({
     },
     {
       icon: () =>
-        getEditIcon(!isDefaultRole && canReadUsersAndGroups, entityReference),
-      tooltip: editTooltip,
+        getEditIcon(
+          !isDefaultRole && canReadUsersAndGroups,
+          entityReference,
+          editTooltip,
+        ),
       isFreeAction: true,
       onClick: () => {},
     },

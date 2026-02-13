@@ -54,20 +54,22 @@ const DeleteRole = ({
 
   return (
     <Tooltip title={tooltipText}>
-      <IconButton
-        onClick={() => openDialog(roleName)}
-        data-testid={testIdText}
-        aria-label={t('common.delete')}
-        disabled={disable}
-        title={tooltip ?? t('common.deleteRole')}
-        sx={{
-          p: 1,
-          borderRadius: '50%',
-          '&:hover': { borderRadius: '50%' },
-        }}
-      >
-        <Delete />
-      </IconButton>
+      <span style={{ display: 'inline-flex' }}>
+        <IconButton
+          onClick={() => openDialog(roleName)}
+          data-testid={testIdText}
+          aria-label={t('common.delete')}
+          disabled={disable}
+          title={tooltip ?? t('common.deleteRole')}
+          sx={{
+            p: 1,
+            borderRadius: '50%',
+            '&:hover': { borderRadius: '50%' },
+          }}
+        >
+          <Delete />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };
