@@ -17,6 +17,7 @@ import {
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
   GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD,
   GRAFANA_ANNOTATION_DASHBOARD_SELECTOR,
+  GRAFANA_ANNOTATION_HOST_ID,
 } from '../constants';
 
 export const sampleEntity = {
@@ -35,6 +36,26 @@ export const sampleEntity = {
     },
     spec: {
       lifecycle: 'experimental',
+      type: 'service',
+      owner: 'cncf',
+    },
+  },
+};
+
+export const sampleEntityWithHostId = {
+  entity: {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'awesome-service-prod',
+      annotations: {
+        [GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR]: 'service=awesome-service',
+        [GRAFANA_ANNOTATION_DASHBOARD_SELECTOR]: 'awesome-service',
+        [GRAFANA_ANNOTATION_HOST_ID]: 'production',
+      },
+    },
+    spec: {
+      lifecycle: 'production',
       type: 'service',
       owner: 'cncf',
     },

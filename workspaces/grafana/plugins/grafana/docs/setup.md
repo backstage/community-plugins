@@ -10,6 +10,8 @@ Configure the plugin in `app-config.yaml`. The proxy endpoint described below wi
 to authenticate with Grafana without exposing your API key to users.
 [Create an API key](https://grafana.com/docs/grafana/latest/http_api/auth/#create-api-token) if you don't already have one. `Viewer` access will be enough.
 
+## Single instance configuration
+
 ```yaml
 # app-config.yaml
 proxy:
@@ -41,6 +43,55 @@ Integrators with 1000-5000 Grafana dashboards should prefer raising the
 `grafanaDashboardSearchLimit` setting before raising
 `grafanaDashboardMaxPages`; as Grafana caches the underlying dashboard listing
 endpoint heavily.
+
+## Multiple instances configuration
+
+If your organization has multiple Grafana instances, you can configure them all under the `hosts` key:
+
+```yaml
+# app-config.yaml
+proxy:
+  '/grafana/production/api':
+    target: https://grafana-prod.host/
+    headers:
+      Authorization: Bearer ${GRAFANA_PROD_TOKEN}
+  '/grafana/staging/api':
+    target: https://grafana-staging.host/
+    headers:
+      Authorization: Bearer ${GRAFANA_STAGING_TOKEN}
+
+grafana:
+  hosts:
+    - id: production
+      domain: https://monitoring-prod.company.com
+      proxyPath: /grafana/production/api
+      unifiedAlerting: true
+    - id: staging
+      domain: https://monitoring-staging.company.com
+      proxyPath: /grafana/staging/api
+      unifiedAlerting: false
+```
+
+Each host entry supports `domain`, `proxyPath`, and `unifiedAlerting`, plus a required `id` field that uniquely identifies the instance.
+
+To associate an entity with a specific Grafana instance, add the `grafana/host-id` annotation to your entity's `catalog-info.yaml`:
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-service
+  annotations:
+    grafana/host-id: production
+    grafana/dashboard-selector: my-service
+    grafana/alert-label-selector: service=my-service
+```
+
+If the `grafana/host-id` annotation is not set, the plugin will use the first configured host (or the `default` host created from the legacy `domain` config).
+
+Note: if both `domain` and `hosts` are defined, the `domain` value will be ignored and a warning will be logged.
+
+## Expose the plugin
 
 Expose the plugin to Backstage:
 

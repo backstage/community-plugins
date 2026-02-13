@@ -19,9 +19,10 @@ export interface Config {
     /**
      * Domain used by users to access Grafana web UI.
      * Example: https://monitoring.eu.my-company.com/
+     * Either `domain` or `hosts` must be defined.
      * @visibility frontend
      */
-    domain: string;
+    domain?: string;
 
     /**
      * Path to use for requests via the proxy, defaults to /grafana/api
@@ -37,14 +38,50 @@ export interface Config {
 
     /**
      * Limit value to pass in Grafana Dashboard search query.
+     * @deprecated Use server-side filtering instead. See https://github.com/backstage/community-plugins/pull/3909
      * @visibility frontend
      */
     grafanaDashboardSearchLimit?: number;
 
     /**
      * Max pages of Grafana Dashboard search query to fetch.
+     * @deprecated Use server-side filtering instead. See https://github.com/backstage/community-plugins/pull/3909
      * @visibility frontend
      */
     grafanaDashboardMaxPages?: number;
+
+    /**
+     * List of Grafana instances to connect to.
+     * Either `domain` or `hosts` must be defined.
+     * @visibility frontend
+     */
+    hosts?: Array<{
+      /**
+       * Unique identifier for this Grafana instance.
+       * Used in the `grafana/host-id` entity annotation.
+       * @visibility frontend
+       */
+      id: string;
+
+      /**
+       * Domain used by users to access this Grafana instance.
+       * Example: https://monitoring.eu.my-company.com/
+       * @visibility frontend
+       */
+      domain: string;
+
+      /**
+       * Path to use for requests via the proxy for this instance.
+       * Defaults to /grafana/api
+       * @visibility frontend
+       */
+      proxyPath?: string;
+
+      /**
+       * Is this Grafana instance using unified alerting?
+       * @visibility frontend
+       */
+      unifiedAlerting?: boolean;
+    }>;
   };
 }

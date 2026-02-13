@@ -13,9 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { alertSelectorFromEntity } from './constants';
+import { alertSelectorFromEntity, hostIdFromEntity } from './constants';
 
 describe('constants', () => {
+  describe('hostIdFromEntity', () => {
+    it('returns host-id when annotation is present', () => {
+      const entity = {
+        metadata: {
+          name: 'test',
+          annotations: { 'grafana/host-id': 'production' },
+        },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+      };
+      expect(hostIdFromEntity(entity as any)).toBe('production');
+    });
+
+    it('returns undefined when annotation is missing', () => {
+      const entity = {
+        metadata: { name: 'test', annotations: {} },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+      };
+      expect(hostIdFromEntity(entity as any)).toBeUndefined();
+    });
+
+    it('returns undefined when no annotations object', () => {
+      const entity = {
+        metadata: { name: 'test' },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+      };
+      expect(hostIdFromEntity(entity as any)).toBeUndefined();
+    });
+  });
+
   it('retrieve alert-label-selector array', async () => {
     const entityMock = {
       metadata: {
