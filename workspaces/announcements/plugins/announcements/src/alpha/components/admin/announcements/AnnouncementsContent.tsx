@@ -22,18 +22,15 @@ import {
   useAnnouncementsTranslation,
   useAnnouncements,
   useAnnouncementsPermissions,
-  useCategories,
 } from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
-  Category,
   announcementCreatePermission,
 } from '@backstage-community/plugin-announcements-common';
 import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { Box, Grid, Flex, Button } from '@backstage/ui';
-import slugify from 'slugify';
 
 import {
   useDeleteConfirmationDialogState,
@@ -49,7 +46,9 @@ import { announcementViewRouteRef } from '../../../../routes';
 export type AnnouncementsContentProps = {
   /** default form values when creating a new announcement */
   formDefaults: {
-    /** sets active switch form input to false by default when creating a new announcement */
+    /**
+     * @deprecated Inactive announcement are hidden by default. This option will be removed.
+     */
     defaultInactive?: boolean;
   };
 };
@@ -86,7 +85,6 @@ export const AnnouncementsContent = ({
   const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
-  const { categories } = useCategories();
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
@@ -121,35 +119,13 @@ export const AnnouncementsContent = ({
   };
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
-    const { category } = request;
-
-    const slugs = categories.map((c: Category) => c.slug);
-    let alertMsg = t('admin.announcementsContent.alertMessage') as string;
-
     try {
-      if (category) {
-        const categorySlug = slugify(category, {
-          lower: true,
-        });
+      await announcementsApi.createAnnouncement(request);
 
-        if (slugs.indexOf(categorySlug) === -1) {
-          alertMsg = alertMsg.replace('.', '');
-          alertMsg = `${alertMsg} ${t(
-            'admin.announcementsContent.alertMessageWithNewCategory',
-          )} ${category}.`;
-
-          await announcementsApi.createCategory({
-            title: category,
-          });
-        }
-      }
-
-      await announcementsApi.createAnnouncement({
-        ...request,
-        category: request.category?.toLocaleLowerCase('en-US'),
+      alertApi.post({
+        message: t('admin.announcementsContent.alertMessage'),
+        severity: 'success',
       });
-
-      alertApi.post({ message: alertMsg, severity: 'success' });
 
       setShowCreateAnnouncementForm(false);
       refresh();
@@ -163,31 +139,12 @@ export const AnnouncementsContent = ({
       return;
     }
 
-    const { category } = request;
-
-    const slugs = categories.map((c: Category) => c.slug);
-    let updateMsg = t('editAnnouncementPage.updatedMessage') as string;
-
     try {
-      if (category) {
-        const categorySlug = slugify(category, {
-          lower: true,
-        });
-
-        if (slugs.indexOf(categorySlug) === -1) {
-          updateMsg = updateMsg.replace('.', '');
-          updateMsg = `${updateMsg} ${t(
-            'editAnnouncementPage.updatedMessageWithNewCategory',
-          )} ${category}.`;
-
-          await announcementsApi.createCategory({
-            title: category,
-          });
-        }
-      }
-
       await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
-      alertApi.post({ message: updateMsg, severity: 'success' });
+      alertApi.post({
+        message: t('editAnnouncementPage.updatedMessage'),
+        severity: 'success',
+      });
 
       setEditingAnnouncementId(null);
       refresh();

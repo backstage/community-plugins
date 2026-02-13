@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-cicd-statistics-module-github",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "CI/CD Statistics plugin module; Github CICD",
   "backstage": {
     "role": "frontend-plugin-module",
@@ -58,6 +58,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/integration": "backstage:^",
+    "@backstage/integration-react": "backstage:^",
     "@octokit/rest": "^21.1.1",
     "p-limit": "^3.1.0"
   },

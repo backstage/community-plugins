@@ -1,5 +1,18 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.12.2
+
+### Patch Changes
+
+- 4b2575b: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.19.0`.
+
+## 0.12.1
+
+### Patch Changes
+
+- fcd0d52: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.24.0`.
+- 202c077: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.25.0`.
+
 ## 0.12.0
 
 ### Minor Changes

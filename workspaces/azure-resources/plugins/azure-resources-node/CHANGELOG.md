@@ -1,5 +1,18 @@
 # @backstage-community/plugin-azure-resources-node
 
+## 0.8.0
+
+### Minor Changes
+
+- 2fe4de4: **deprecation:**
+
+  - The `azure-resources` configuration key is now deprecated in favor of `azureResources` (camelCase)
+  - The `azure-resources` config key will be removed in an up coming release.
+
+### Patch Changes
+
+- 2fe4de4: Fixed configuration schemas (`config.d.ts`).
+
 ## 0.7.0
 
 ### Minor Changes

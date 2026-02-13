@@ -23,12 +23,13 @@ import {
   FetchBuildsOptions,
   Stage,
 } from '@backstage-community/plugin-cicd-statistics';
-import { ConfigApi, OAuthApi } from '@backstage/core-plugin-api';
+import { ConfigApi } from '@backstage/core-plugin-api';
 import limiterFactory from 'p-limit';
 import { Entity, getEntitySourceLocation } from '@backstage/catalog-model';
 import { jobToStages, workflowToBuild } from './utils';
 
 import { readGithubIntegrationConfigs } from '@backstage/integration';
+import { ScmAuthApi } from '@backstage/integration-react';
 import { Octokit } from '@octokit/rest';
 
 /** @public */
@@ -38,16 +39,16 @@ export const getProjectNameFromEntity = (entity: Entity) =>
   entity?.metadata.annotations?.[GITHUB_ACTIONS_ANNOTATION] ?? '';
 
 /**
- * This type represents a initialized github client with octokit
+ * This type represents an initialized github client with octokit
  *
  * @public
  */
 export type GithubClient = {
-  /* the actual API of octokit */
-  api: InstanceType<typeof Octokit>;
-  /* the owner the repository, retrieved from the entity source location  */
+  /* the octokit instance for making GitHub API calls */
+  octokit: InstanceType<typeof Octokit>;
+  /* the owner of the repository, retrieved from the entity source location */
   owner: string;
-  /* the repository name, retrieved from the entity source location  */
+  /* the repository name, retrieved from the entity source location */
   repo: string;
 };
 
@@ -57,36 +58,46 @@ export type GithubClient = {
  * @public
  */
 export class CicdStatisticsApiGithub implements CicdStatisticsApi {
-  readonly #githubAuthApi: OAuthApi;
-  readonly #cicdDefaults: Partial<CicdDefaults>;
-  readonly configApi: ConfigApi;
+  private readonly scmAuthApi: ScmAuthApi;
+  private readonly configApi: ConfigApi;
+  private readonly cicdDefaults: Partial<CicdDefaults>;
 
-  constructor(
-    githubAuthApi: OAuthApi,
-    configApi: ConfigApi,
-    cicdDefaults: Partial<CicdDefaults> = {},
-  ) {
-    this.#githubAuthApi = githubAuthApi;
-    this.#cicdDefaults = cicdDefaults;
-    this.configApi = configApi;
+  constructor(options: {
+    scmAuthApi: ScmAuthApi;
+    configApi: ConfigApi;
+    cicdDefaults?: Partial<CicdDefaults>;
+  }) {
+    this.scmAuthApi = options.scmAuthApi;
+    this.configApi = options.configApi;
+    this.cicdDefaults = options.cicdDefaults ?? {};
   }
 
-  public async createGithubApi(
-    entity: Entity,
-    scopes: string[],
-  ): Promise<GithubClient> {
-    const entityInfo = getEntitySourceLocation(entity);
-    const [owner, repo] = getProjectNameFromEntity(entity).split('/');
-    const url = new URL(entityInfo.target);
-    const oauthToken = await this.#githubAuthApi.getAccessToken(scopes);
-
+  private async getOctokit(hostname: string = 'github.com'): Promise<Octokit> {
+    const { token } = await this.scmAuthApi.getCredentials({
+      url: `https://${hostname}/`,
+      additionalScope: {
+        customScopes: {
+          github: ['repo'],
+        },
+      },
+    });
     const configs = readGithubIntegrationConfigs(
       this.configApi.getOptionalConfigArray('integrations.github') ?? [],
     );
-    const githubIntegrationConfig = configs.find(v => v.host === url.hostname);
+    const githubIntegrationConfig = configs.find(v => v.host === hostname);
     const baseUrl = githubIntegrationConfig?.apiBaseUrl;
+    return new Octokit({ auth: token, baseUrl });
+  }
+
+  public async createGithubClient(entity: Entity): Promise<GithubClient> {
+    const entityInfo = getEntitySourceLocation(entity);
+    const [owner, repo] = getProjectNameFromEntity(entity).split('/');
+    const url = new URL(entityInfo.target);
+    const hostname = url.hostname;
+
+    const octokit = await this.getOctokit(hostname);
     return {
-      api: new Octokit({ auth: oauthToken, baseUrl }),
+      octokit,
       owner,
       repo,
     };
@@ -142,18 +153,16 @@ export class CicdStatisticsApiGithub implements CicdStatisticsApi {
       filterStatus = ['all'],
       filterType = 'all',
     } = options;
-    const { api, owner, repo } = await this.createGithubApi(entity, [
-      'read_api',
-    ]);
+    const { octokit, owner, repo } = await this.createGithubClient(entity);
     updateProgress(0, 0, 0);
 
     const branch =
       filterType === 'master'
-        ? await CicdStatisticsApiGithub.getDefaultBranch(api, owner, repo)
+        ? await CicdStatisticsApiGithub.getDefaultBranch(octokit, owner, repo)
         : undefined;
 
-    const workflowsRuns = await api.paginate(
-      api.actions.listWorkflowRunsForRepo,
+    const workflowsRuns = await octokit.paginate(
+      octokit.actions.listWorkflowRunsForRepo,
       {
         owner,
         repo,
@@ -168,10 +177,15 @@ export class CicdStatisticsApiGithub implements CicdStatisticsApi {
     const builds = workflowsRuns.map(async build => ({
       ...build,
       duration: await limiter(() =>
-        CicdStatisticsApiGithub.getDurationOfBuild(api, owner, repo, build),
+        CicdStatisticsApiGithub.getDurationOfBuild(octokit, owner, repo, build),
       ),
       stages: await limiter(() =>
-        CicdStatisticsApiGithub.updateBuildWithStages(api, owner, repo, build),
+        CicdStatisticsApiGithub.updateBuildWithStages(
+          octokit,
+          owner,
+          repo,
+          build,
+        ),
       ),
     }));
     const promisedBuilds = (await Promise.all(builds)).filter(b =>
@@ -194,7 +208,7 @@ export class CicdStatisticsApiGithub implements CicdStatisticsApi {
         'enqueued',
         'scheduled',
       ] as const,
-      defaults: this.#cicdDefaults,
+      defaults: this.cicdDefaults,
     };
   }
 }

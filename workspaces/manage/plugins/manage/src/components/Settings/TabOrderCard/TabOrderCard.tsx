@@ -15,15 +15,15 @@
  */
 import { useCallback, useMemo } from 'react';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import ResetIcon from '@mui/icons-material/RestartAlt';
+
+import { Box, Button } from '@backstage/ui';
 
 import { ReorderableTabs } from '@backstage-community/plugin-manage-react';
 
 import { useSetTabsOrder, useRemoveTabsOrder } from '../../TabsOrder';
 import { useSettings } from '../SettingsProvider';
 import { SettingsCard } from '../SettingsCard/SettingsCard';
-
 /**
  * The TabOrder card that is displayed in the default settings page.
  *
@@ -50,7 +50,12 @@ export function TabOrderCard() {
         title: 'Tab order',
         subtitle: 'Reorder the tabs to your liking by dragging them',
         action: (
-          <Button aria-label="reset" onClick={onReset}>
+          <Button
+            aria-label="reset"
+            variant="secondary"
+            iconStart={<ResetIcon />}
+            onClick={onReset}
+          >
             Reset
           </Button>
         ),

@@ -6,11 +6,14 @@
 import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { Check } from '@backstage-community/plugin-tech-insights-common';
+import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -78,20 +81,24 @@ const techInsightsPlugin: OverridableFrontendPlugin<
         type?: EntityCardType;
       };
     }>;
-    'entity-content:tech-insights/scorecards': OverridableExtensionDefinition<{
-      kind: 'entity-content';
-      name: 'scorecards';
+    'entity-content:tech-insights/scorecards-content': OverridableExtensionDefinition<{
       config: {
+        description: string | undefined;
+        checkIds: string[] | undefined;
+        dense: boolean | undefined;
         path: string | undefined;
         title: string | undefined;
         filter: EntityPredicate | undefined;
         group: string | false | undefined;
       };
       configInput: {
+        description?: string | undefined;
+        dense?: boolean | undefined;
+        checkIds?: string[] | undefined;
         filter?: EntityPredicate | undefined;
-        title?: string | undefined;
-        path?: string | undefined;
-        group?: string | false | undefined;
+        title?: string | undefined | undefined;
+        path?: string | undefined | undefined;
+        group?: string | false | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -125,7 +132,34 @@ const techInsightsPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {};
+      inputs: {
+        scorecards: ExtensionInput<
+          | ConfigurableExtensionDataRef<
+              {
+                title?: string;
+                description?: string;
+                checkIds?: string[];
+                dense?: boolean;
+                checkFilter?: (check: Check) => boolean;
+              },
+              'tech-insights-scorecard.props',
+              {}
+            >
+          | ConfigurableExtensionDataRef<
+              EntityPredicate,
+              'tech-insights-scorecard.entity-filter',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+          }
+        >;
+      };
+      kind: 'entity-content';
+      name: 'scorecards-content';
       params: {
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;

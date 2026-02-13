@@ -60,6 +60,7 @@ import {
   prodApplication,
 } from './__data__';
 import { mockArgoResources } from './__data__/argoRolloutsObjects';
+import { argocdTranslations } from '../src/translations';
 
 const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -233,6 +234,8 @@ class MockKubernetesClient implements KubernetesApi {
 
 createDevApp()
   .registerPlugin(argocdPlugin)
+  .setAvailableLanguages(['en', 'fr', 'it', 'ja'])
+  .addTranslationResource(argocdTranslations)
   .addPage({
     element: (
       <TestApiProvider
@@ -263,6 +266,8 @@ createDevApp()
           [configApiRef, new ConfigReader(mockArgocdConfig)],
           [argoCDApiRef, new MockArgoCDApiClient()],
           [argoCDInstanceApiRef, new MockArgoCDInstanceApiClient()],
+          [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
       >
         <EntityProvider entity={mockEntity}>

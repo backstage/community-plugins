@@ -123,11 +123,6 @@ export type AnnouncementsClientOptions = {
 };
 
 // @public
-export type AnnouncementsOptions = {
-  dependencies?: any[];
-};
-
-// @public
 export type AnnouncementsPermissionsResult = {
   create: {
     loading: boolean;
@@ -250,6 +245,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsTimeline.error': 'Error';
     readonly 'announcementsTimeline.noAnnouncements': 'No announcements';
     readonly 'categoriesForm.submit': 'Submit';
+    readonly 'categoriesForm.errors.alreadyExists': 'A category with this name already exists.';
     readonly 'categoriesForm.newCategory': 'New category';
     readonly 'categoriesForm.editCategory': 'Edit category';
     readonly 'categoriesForm.titleLabel': 'Title';
@@ -322,10 +318,7 @@ export type CreateTagRequest = {
 };
 
 // @public
-export const useAnnouncements: (
-  props: AnnouncementsFilters,
-  options?: AnnouncementsOptions,
-) => {
+export const useAnnouncements: (props: AnnouncementsFilters) => {
   announcements: AnnouncementsList;
   loading: boolean;
   error: Error | undefined;

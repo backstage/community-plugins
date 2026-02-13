@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd-common
 
+## 1.12.2
+
+### Patch Changes
+
+- 4818f35: Updated the `repository.url` value to just be an HTTP URL in the `package.json` file following the common convention in this repo.
+
 ## 1.12.1
 
 ### Patch Changes

@@ -177,6 +177,8 @@ const argocdTranslationIt = createTranslationMessages({
       'predefinito',
     'deploymentSummary.deploymentSummary.tableTitle':
       'Riepilogo della distribuzione',
+    'deploymentSummary.deploymentSummary.columns.application': 'Applicazione',
+    'deploymentSummary.deploymentSummary.columns.namespace': 'Spazio dei nomi',
     'deploymentSummary.deploymentSummary.columns.instance': 'Istanza',
     'deploymentSummary.deploymentSummary.columns.server': 'Server',
     'deploymentSummary.deploymentSummary.columns.revision': 'Revisione',

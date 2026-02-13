@@ -100,6 +100,9 @@ export const announcementsTranslationRef = createTranslationRef({
       editCategory: 'Edit category',
       titleLabel: 'Title',
       submit: 'Submit',
+      errors: {
+        alreadyExists: 'A category with this name already exists.',
+      },
     },
     categoriesTable: {
       categoryDeleted: 'Category deleted.',

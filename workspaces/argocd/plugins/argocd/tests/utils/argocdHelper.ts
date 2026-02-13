@@ -63,4 +63,12 @@ export class Common {
     await this.clickButton('Enter');
     await this.waitForSideBarVisible();
   }
+
+  async switchToLocale(locale: string): Promise<void> {
+    if (locale !== 'en') {
+      const localeString = locale === 'ja' ? '日本語' : locale;
+      await this.page.getByRole('button', { name: 'Language' }).click();
+      await this.page.getByRole('menuitem', { name: localeString }).click();
+    }
+  }
 }

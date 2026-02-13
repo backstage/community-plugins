@@ -17,7 +17,11 @@
 import { manageTechInsightsApi } from './api';
 import { manageTechInsightsColumns } from './columns';
 import { manageTechInsightsProvider } from './provider';
-import { manageTechInsightsCards, manageTechInsightsGrid } from './widgets';
+import {
+  manageTechInsightsCardWidgetsGrid,
+  manageTechInsightsCards,
+  manageTechInsightsGrid,
+} from './widgets';
 
 export { ManageTechInsightsBlueprint } from './blueprints';
 export type { ManageTechInsightsConfig } from './blueprints';
@@ -26,6 +30,7 @@ export default [
   manageTechInsightsApi,
   manageTechInsightsColumns,
   manageTechInsightsProvider,
+  manageTechInsightsCardWidgetsGrid,
   manageTechInsightsCards,
   manageTechInsightsGrid,
 ];

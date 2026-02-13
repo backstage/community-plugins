@@ -34,8 +34,8 @@ export const AnnouncementsFilters = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { categories } = useCategories();
-  const { tags } = useTags();
+  const { categories, loading: categoriesLoading } = useCategories();
+  const { tags, loading: tagsLoading } = useTags();
 
   const handleCategoryChange = (category: Category | null) => {
     const newParams = new URLSearchParams(searchParams);
@@ -94,7 +94,9 @@ export const AnnouncementsFilters = () => {
             categories?.find(c => c.slug === searchParams.get('category')) ??
             undefined
           }
+          categories={categories}
           setCategory={handleCategoryChange}
+          isLoading={categoriesLoading}
           hideLabel
         />
 
@@ -103,6 +105,8 @@ export const AnnouncementsFilters = () => {
             selectedTagsFromUrl.length > 0 ? selectedTagsFromUrl : undefined
           }
           setTags={handleTagsChange}
+          tags={tags}
+          isLoading={tagsLoading}
           hideLabel
         />
       </Flex>

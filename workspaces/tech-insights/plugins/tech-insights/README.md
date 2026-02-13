@@ -25,6 +25,39 @@ If you are using Backstage's [new frontend system](https://backstage.io/docs/fro
 - Entity content for displaying scorecards on entity pages
 - Entity cards for displaying scorecards in entity overview
 
+#### Creating custom scorecards with TechInsightsScorecardBlueprint
+
+The `TechInsightsScorecardBlueprint` allows you to create custom scorecard content that can be filtered to specific entities. This is useful when you want different scorecards to appear for different entity types or based on entity metadata. The `filter` parameter uses the same entity predicate format as other Backstage entity filters, allowing you to match on `kind`, `metadata`, `spec` fields, and more.
+
+```ts
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech-insights-react/alpha';
+
+// In this example, all API entities would get the first scorecard, but only the production APIs would get the second scorecard.
+const techInsightsModule = createFrontendModule({
+  pluginId: 'tech-insights',
+  extensions: [
+    TechInsightsScorecardBlueprint.make({
+      name: 'apis',
+      params: {
+        filter: { kind: 'api' },
+        title: 'API Scorecard',
+        description: 'Checks specific to API entities',
+        checkIds: ['apiDefinitionCheck'],
+      },
+    }),
+    TechInsightsScorecardBlueprint.make({
+      name: 'production-apis',
+      params: {
+        filter: { kind: 'api', 'spec.lifecycle': 'production' },
+        title: 'Production API Scorecard',
+        checkIds: ['groupOwnerCheck', 'productionReadinessCheck'],
+      },
+    }),
+  ],
+});
+```
+
 ### Integrating with the Legacy Frontend System
 
 The following sections describe how to integrate the plugin with the legacy frontend system.

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tekton-react",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "Apache-2.0",
   "description": "Web library for the tekton plugin",
   "main": "src/index.ts",
@@ -35,7 +35,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-plugin-api": "^1.12.1",
+    "@backstage/core-plugin-api": "^1.12.2",
     "@kubernetes/client-node": "1.4.0",
     "@material-ui/core": "^4.9.13"
   },
@@ -43,7 +43,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.1",
+    "@backstage/cli": "^0.35.3",
     "@backstage/test-utils": "^1.7.14",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",

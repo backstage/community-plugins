@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.6.5
+
+### Patch Changes
+
+- Updated dependencies [1a5b5e4]
+  - @backstage-community/plugin-tech-insights-react@1.4.0
+
+## 0.6.4
+
+### Patch Changes
+
+- cf9caca: Fixes a typo in the package import in the README example.
+
 ## 0.6.3
 
 ### Patch Changes

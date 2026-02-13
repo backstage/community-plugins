@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { CategoriesContent } from './CategoriesContent';
+export { CreateCategoryDialog } from './CreateCategoryDialog';

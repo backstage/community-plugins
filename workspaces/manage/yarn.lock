@@ -1720,7 +1720,7 @@ __metadata:
     "@backstage/errors": "backstage:^"
     "@backstage/plugin-catalog-node": "backstage:^"
     "@types/express": "npm:^4.17.25"
-    "@types/supertest": "npm:^2.0.16"
+    "@types/supertest": "npm:^6.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     supertest: "npm:^7.0.0"
@@ -1751,6 +1751,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
+    "@backstage/ui": "npm:^0.10.0"
     "@mui/material": "npm:^5.15.16"
     "@mui/styles": "npm:^5"
     "@types/react": "npm:^18.3.27"
@@ -1784,9 +1785,11 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/types": "backstage:^"
+    "@backstage/ui": "npm:^0.10.0"
     "@dnd-kit/core": "npm:^6.3.1"
     "@dnd-kit/modifiers": "npm:^9.0.0"
     "@dnd-kit/sortable": "npm:^10.0.0"
+    "@material-ui/core": "npm:^4.12.4"
     "@mui/icons-material": "npm:^5.16.7"
     "@mui/material": "npm:^5.15.16"
     "@mui/styles": "npm:^5"
@@ -1819,11 +1822,12 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/types": "backstage:^"
-    "@material-ui/icons": "npm:^4.11.3"
+    "@backstage/ui": "npm:^0.10.0"
     "@mui/icons-material": "npm:^5.16.7"
     "@mui/material": "npm:^5.15.16"
-    "@mui/styles": "npm:^5"
+    "@types/lodash": "npm:^4.17.23"
     "@types/react": "npm:^18.3.27"
+    lodash: "npm:^4.17.21"
     react-use: "npm:^17.5.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -4125,7 +4129,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@backstage:^::backstage=1.47.1&npm=0.11.1, @backstage/ui@npm:^0.11.0, @backstage/ui@npm:^0.11.1":
+"@backstage/ui@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@backstage/ui@npm:0.10.0"
+  dependencies:
+    "@remixicon/react": "npm:^4.6.0"
+    "@tanstack/react-table": "npm:^8.21.3"
+    clsx: "npm:^2.1.1"
+    react-aria-components: "npm:^1.13.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/f7189fdf792e034e3215cf6687f628cf6556037ebb5b9b78726820f9af791c5573c35b3f11000a46655ebe547c1412d0fa51ed595dcb902f739331d266677aee
+  languageName: node
+  linkType: hard
+
+"@backstage/ui@npm:^0.11.0":
   version: 0.11.1
   resolution: "@backstage/ui@npm:0.11.1"
   dependencies:
@@ -13479,6 +13503,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.17.23":
+  version: 4.17.23
+  resolution: "@types/lodash@npm:4.17.23"
+  checksum: 10/05935534a44aadef67c2158b2fb4a042a226970088106a40ddc67e4f063783149fe5cf02279d7dd4a1e72c98d9189b9430face659645dbf77270f8c4c3e387f5
+  languageName: node
+  linkType: hard
+
 "@types/long@npm:^4.0.0":
   version: 4.0.2
   resolution: "@types/long@npm:4.0.2"
@@ -13868,7 +13899,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
+"@types/superagent@npm:^8.1.0":
   version: 8.1.9
   resolution: "@types/superagent@npm:8.1.9"
   dependencies:
@@ -13880,12 +13911,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.16":
-  version: 2.0.16
-  resolution: "@types/supertest@npm:2.0.16"
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
   dependencies:
-    "@types/superagent": "npm:*"
-  checksum: 10/2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
   languageName: node
   linkType: hard
 
@@ -14820,7 +14852,7 @@ __metadata:
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
-    "@backstage/ui": "backstage:^"
+    "@backstage/ui": "npm:^0.10.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@mui/material": "npm:^5.15.16"
@@ -14879,7 +14911,7 @@ __metadata:
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
-    "@backstage/ui": "backstage:^"
+    "@backstage/ui": "npm:^0.10.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@playwright/test": "npm:^1.32.3"
@@ -24189,9 +24221,9 @@ __metadata:
   linkType: hard
 
 "lodash-es@npm:^4.17.21":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 10/03f39878ea1e42b3199bd3f478150ab723f93cc8730ad86fec1f2804f4a07c6e30deaac73cad53a88e9c3db33348bb8ceeb274552390e7a75d7849021c02df43
+  version: 4.17.23
+  resolution: "lodash-es@npm:4.17.23"
+  checksum: 10/1feae200df22eb0bd93ca86d485e77784b8a9fb1d13e91b66e9baa7a7e5e04be088c12a7e20c2250fc0bd3db1bc0ef0affc7d9e3810b6af2455a3c6bf6dde59e
   languageName: node
   linkType: hard
 

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.17.1
+
+### Patch Changes
+
+- cdebdf7: Fixed an issue causing the confluence collator to fail when using the legacy config format.
+
 ## 0.17.0
 
 ### Minor Changes

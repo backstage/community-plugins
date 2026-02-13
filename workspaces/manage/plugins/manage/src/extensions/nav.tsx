@@ -17,7 +17,8 @@
 import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 
-import ManageIcon from '@material-ui/icons/Ballot';
+import ManageIcon from '@mui/icons-material/Ballot';
+
 import { rootRouteRef } from '../routes';
 
 export const navItem = NavItemBlueprint.make({

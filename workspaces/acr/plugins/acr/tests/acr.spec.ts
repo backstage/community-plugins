@@ -36,7 +36,7 @@ test.describe('ACR plugin', () => {
       () => globalThis.navigator.language,
     );
     translations = getTranslations(currentLocale);
-    await common.switchToLocale(page, currentLocale);
+    await common.switchToLocale(currentLocale);
   });
 
   test.afterAll(async ({ browser }) => {

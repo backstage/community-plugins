@@ -15,9 +15,8 @@
  */
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TestApiProvider, renderInTestApp } from '@backstage/test-utils';
+import { renderInTestApp } from '@backstage/test-utils';
 import { Tag } from '@backstage-community/plugin-announcements-common';
-import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
 import { TagsSelectInput } from './TagsSelectInput';
 
 const mockTags: Tag[] = [
@@ -26,12 +25,6 @@ const mockTags: Tag[] = [
   { slug: 'aws', title: 'AWS' },
   { slug: 'gcp', title: 'GCP' },
 ];
-
-const createMockAnnouncementsApi = (tags: Tag[] = mockTags) => ({
-  tags: jest.fn().mockResolvedValue(tags),
-  announcements: jest.fn(),
-  categories: jest.fn(),
-});
 
 const renderTagsSelectInput = async (
   props: {
@@ -50,24 +43,15 @@ const renderTagsSelectInput = async (
     loading = false,
   } = props;
 
-  const mockApi = createMockAnnouncementsApi(tags);
-  if (loading) {
-    mockApi.tags = jest.fn().mockImplementation(
-      () => new Promise(() => {}), // Never resolves to simulate loading
-    );
-  }
-
   await renderInTestApp(
-    <TestApiProvider apis={[[announcementsApiRef, mockApi]]}>
-      <TagsSelectInput
-        initialTags={initialTags}
-        setTags={setTags}
-        hideLabel={hideLabel}
-      />
-    </TestApiProvider>,
+    <TagsSelectInput
+      initialTags={initialTags}
+      setTags={setTags}
+      tags={tags}
+      isLoading={loading}
+      hideLabel={hideLabel}
+    />,
   );
-
-  return mockApi;
 };
 
 describe('TagsSelectInput', () => {

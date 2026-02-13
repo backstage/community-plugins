@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.17.1
+
+### Patch Changes
+
+- a82af01: Fixed bug in Shortcuts where 'Use Current Page' did not preserve query parameters.
+
 ## 0.17.0
 
 ### Minor Changes

@@ -13,31 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import { makeStyles } from '@mui/styles';
-import Box from '@mui/material/Box';
-import Grid, { GridOwnProps } from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import { GridOwnProps } from '@mui/material/Grid';
+
+import { Box, Grid, TagGroup, Tag, Text } from '@backstage/ui';
+import { useParseColor } from '../../hooks';
+import { LinearProgress } from '../LinearProgress';
 
 const useStyles = makeStyles(theme => ({
-  gridRootWithoutBottomMargin: {
-    marginBottom: 0,
-  },
-  gridItem: {
-    overflow: 'visible',
-  },
-  box: {
-    lineHeight: 0,
-    borderRadius: theme.shape.borderRadius,
-    borderWidth: 1,
-    borderLeftWidth: 3,
-    borderStyle: 'solid',
-    borderColor: theme.palette.divider,
-    backgroundColor: theme.palette.background.paper,
-    // boxShadow: theme.shadows[2],
-  },
   percentText: {
+    fontSize: 'var(--bui-font-size-2)',
+    cursor: 'default',
     color: theme.palette.text.secondary,
   },
 }));
@@ -75,12 +63,19 @@ export interface ManageGaugeGridProps {
      * A number between 0 and 1 defining the progress (0% - 100%)
      */
     progress: number;
+
+    /**
+     * The color of the progress indicator.
+     */
+    color?: string;
   }[];
 
   /**
    * Function which turns a progress number (between 0 and 1) into a color
+   *
+   * @deprecated Use ManageGaugeGridProps.items[].color instead
    */
-  getColor: (percent: number) => string;
+  getColor?: (percent: number) => string;
 
   /**
    * Optionally disable the bottom margin of the grid
@@ -90,43 +85,55 @@ export interface ManageGaugeGridProps {
 
 /** @public */
 export function ManageGaugeGrid(props: ManageGaugeGridProps) {
-  const { containerProps, items, getColor, noBottomMargin } = props;
+  const { items, getColor, noBottomMargin } = props;
 
-  const { gridRootWithoutBottomMargin, gridItem, box, percentText } =
-    useStyles();
+  const { percentText } = useStyles();
 
-  const content = (
-    <Grid
-      spacing={0}
-      sx={{ gap: 2 }}
-      marginBottom={2}
-      {...containerProps}
-      className={noBottomMargin ? gridRootWithoutBottomMargin : undefined}
-      container
-    >
-      {items.map(({ title, progress }, i) => {
-        const value = progress * 100;
-        const color = getColor(progress);
+  const parseColor = useParseColor();
 
-        return (
-          <Grid item key={i} padding={0} className={gridItem}>
-            <div className={box} style={{ borderLeftColor: color }}>
-              <Grid container spacing={0} sx={{ gap: 2 }} padding={1}>
-                <Grid item>
-                  <Typography variant="body2" className={percentText}>
-                    {Math.round(value)}%
-                  </Typography>
-                </Grid>
-                <Grid item alignContent="center">
-                  {title}
-                </Grid>
-              </Grid>
-            </div>
-          </Grid>
-        );
-      })}
-    </Grid>
+  const getProgressColor = useCallback(
+    (item: ManageGaugeGridProps['items'][number]) =>
+      parseColor(item.color ?? getColor?.(item.progress) ?? 'primary'),
+    [getColor, parseColor],
   );
 
-  return <Box>{content}</Box>;
+  const tagGroupItems = items.map((item, i) => ({
+    ...item,
+    id: `${i}-${item.title}`,
+  }));
+
+  const buiContent = (
+    <TagGroup
+      aria-label="Values"
+      key={tagGroupItems.map(item => item.id).join('$$')}
+      items={tagGroupItems}
+    >
+      {item => {
+        const value = item.progress * 100;
+        const color = getProgressColor(item);
+
+        return (
+          <Tag size="medium" style={{ borderLeftColor: color }}>
+            <Grid.Root columns="1" gap="0">
+              <Grid.Item
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 'var(--bui-space-1)',
+                }}
+              >
+                <Text className={percentText}>{Math.round(value)}%</Text>{' '}
+                {item.title}
+              </Grid.Item>
+              <Grid.Item>
+                <LinearProgress color={color} value={value} />
+              </Grid.Item>
+            </Grid.Root>
+          </Tag>
+        );
+      }}
+    </TagGroup>
+  );
+
+  return <Box mb={noBottomMargin ? undefined : '2'}>{buiContent}</Box>;
 }

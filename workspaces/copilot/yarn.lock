@@ -1364,7 +1364,7 @@ __metadata:
     "@octokit/rest": "npm:20.1.2"
     "@types/express": "npm:*"
     "@types/node-fetch": "npm:^2.6.11"
-    "@types/supertest": "npm:^2.0.8"
+    "@types/supertest": "npm:^6.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     knex: "npm:^3.0.0"
@@ -12270,23 +12270,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
-  version: 8.1.7
-  resolution: "@types/superagent@npm:8.1.7"
+"@types/superagent@npm:^8.1.0":
+  version: 8.1.9
+  resolution: "@types/superagent@npm:8.1.9"
   dependencies:
     "@types/cookiejar": "npm:^2.1.5"
     "@types/methods": "npm:^1.1.4"
     "@types/node": "npm:*"
-  checksum: 10/40e34f3c6d928a9d08736998f6851ac7c604583272ace8983e90875bcc64ba7783a7092c1423951b15bd5d3968defd3559c79834ca01b61143756cf2883b8131
+    form-data: "npm:^4.0.0"
+  checksum: 10/6d9687b0bc3d693b900ef76000b02437a70879c3219b28606879c086d786bb1e48429813e72e32dd0aafc94c053a78a2aa8be67c45bc8e6b968ca62d6d5cc554
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.8":
-  version: 2.0.16
-  resolution: "@types/supertest@npm:2.0.16"
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
   dependencies:
-    "@types/superagent": "npm:*"
-  checksum: 10/2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
   languageName: node
   linkType: hard
 

@@ -27,9 +27,9 @@ const bookmarksEntityContent = EntityContentBlueprint.make({
     loader:
       /* istanbul ignore next: very difficult to test this in Jest */
       async () =>
-        import(
-          './components/EntityBookmarksContent/EntityBookmarksContent'
-        ).then(m => compatWrapper(<m.EntityBookmarksContent />)),
+        import('./components/EntityBookmarksContent/EntityBookmarksContent').then(
+          m => compatWrapper(<m.EntityBookmarksContent />),
+        ),
   },
 });
 

@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-mcp-chat",
   "description": "A Backstage plugin that provides a chat interface for interacting with the MCP Servers.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",

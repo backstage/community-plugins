@@ -48,18 +48,15 @@ export const AnnouncementsGrid = ({
     setPage(value);
   };
 
-  const { announcements, loading, error } = useAnnouncements(
-    {
-      max: maxPerPage,
-      page,
-      category,
-      tags,
-      active,
-      sortBy,
-      order,
-    },
-    { dependencies: [maxPerPage, page, category, tags] },
-  );
+  const { announcements, loading, error } = useAnnouncements({
+    max: maxPerPage,
+    page,
+    category,
+    tags,
+    active,
+    sortBy,
+    order,
+  });
 
   if (error) {
     return (

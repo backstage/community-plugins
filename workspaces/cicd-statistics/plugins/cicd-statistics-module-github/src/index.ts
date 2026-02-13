@@ -14,5 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * A Backstage plugin that provides GitHub CI/CD statistics
+ *
+ * @packageDocumentation
+ */
+
 export { CicdStatisticsApiGithub } from './api';
 export type { GithubClient } from './api';

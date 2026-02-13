@@ -26,14 +26,12 @@ import { NavContentBlueprint } from '@backstage/plugin-app-react';
 import { SidebarLogo } from './SidebarLogo';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import AdminPanelSettingsIcon from '@material-ui/icons/SupervisorAccount';
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 import {
   UserSettingsSignInAvatar,
   Settings as SidebarSettings,
 } from '@backstage/plugin-user-settings';
-import { SidebarSearchModal } from '@backstage/plugin-search';
 
 export const SidebarContent = NavContentBlueprint.make({
   params: {
@@ -43,15 +41,7 @@ export const SidebarContent = NavContentBlueprint.make({
           <SidebarLogo />
           <SidebarDivider />
           <SidebarItem icon={HomeIcon} to="/" text="Home" />
-          <SidebarItem
-            icon={AdminPanelSettingsIcon}
-            to="announcements/admin"
-            text="Admin"
-          />
 
-          <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-            <SidebarSearchModal />
-          </SidebarGroup>
           <SidebarGroup label="Menu" icon={<MenuIcon />}>
             <SidebarScrollWrapper>
               {/* Items in this group will be scrollable if they run out of space */}
@@ -59,11 +49,15 @@ export const SidebarContent = NavContentBlueprint.make({
                 <SidebarItem {...item} key={index} />
               ))}
             </SidebarScrollWrapper>
-
-            <NotificationsSidebarItem />
           </SidebarGroup>
           <SidebarSpace />
           <SidebarDivider />
+          <SidebarItem
+            icon={AdminPanelSettingsIcon}
+            to="announcements/admin"
+            text="AnnouncementsAdmin"
+          />
+          <NotificationsSidebarItem />
           <SidebarGroup
             label="Settings"
             icon={<UserSettingsSignInAvatar />}

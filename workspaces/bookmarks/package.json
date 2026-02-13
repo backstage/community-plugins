@@ -16,6 +16,8 @@
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
+    "test:e2e": "playwright test",
+    "test:e2e-ui": "playwright test --ui",
     "test:all": "backstage-cli repo test --coverage",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/master",
@@ -31,11 +33,16 @@
     ]
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.29.8",
+    "@playwright/test": "^1.58.1",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
     "node-gyp": "^11.4.2",
+    "playwright-core": "^1.58.1",
     "prettier": "^3.6.2",
     "typescript": "~5.9.3"
   },

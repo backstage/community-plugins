@@ -11,7 +11,8 @@ This is an extension module to the `cicd-statistics` plugin, providing a `CicdSt
 
 ```tsx
 // packages/app/src/apis.ts
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
+import { scmAuthApiRef } from '@backstage/integration-react';
 
 import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics';
 import { CicdStatisticsApiGithub } from '@backstage-community/plugin-cicd-statistics-module-github';
@@ -20,11 +21,11 @@ export const apis: AnyApiFactory[] = [
   createApiFactory({
     api: cicdStatisticsApiRef,
     deps: {
-      githubAuthApi: githubAuthApiRef,
+      scmAuthApi: scmAuthApiRef,
       configApi: configApiRef,
     },
-    factory: ({ githubAuthApi, configApi }) => {
-      return new CicdStatisticsApiGithub(githubAuthApi, configApi);
+    factory: ({ scmAuthApi, configApi }) => {
+      return new CicdStatisticsApiGithub({ scmAuthApi, configApi });
     },
   }),
 ];

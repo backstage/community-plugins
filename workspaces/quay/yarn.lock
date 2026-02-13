@@ -1385,11 +1385,9 @@ __metadata:
     "@backstage/backend-plugin-api": "npm:^1.6.2"
     "@backstage/cli": "npm:^0.35.3"
     "@backstage/config": "npm:^1.3.6"
-    "@backstage/plugin-catalog-node": "npm:^1.20.1"
     "@backstage/plugin-permission-common": "npm:^0.9.5"
-    "@backstage/plugin-permission-node": "npm:^0.10.9"
     "@types/express": "npm:^4.17.6"
-    "@types/supertest": "npm:^2.0.12"
+    "@types/supertest": "npm:^6.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     supertest: "npm:^7.0.0"
@@ -1402,10 +1400,6 @@ __metadata:
   dependencies:
     "@backstage/cli": "npm:^0.35.3"
     "@backstage/plugin-permission-common": "npm:^0.9.5"
-    "@types/react": "npm:^18.2.58"
-    react: "npm:^17.0.0 || ^18.0.0"
-    react-dom: "npm:^17.0.0 || ^18.0.0"
-    react-router-dom: "npm:^6.0.0"
   peerDependencies:
     "@backstage/plugin-permission-common": ^0.9.5
     react: ^17.0.0 || ^18.0.0
@@ -1420,11 +1414,9 @@ __metadata:
     "@backstage-community/plugin-quay-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.35.3"
-    "@backstage/core-app-api": "npm:^1.19.4"
     "@backstage/core-components": "npm:^0.18.6"
     "@backstage/core-plugin-api": "npm:^1.12.2"
     "@backstage/dev-utils": "npm:^1.1.19"
-    "@backstage/plugin-catalog-common": "npm:^1.1.7"
     "@backstage/plugin-catalog-react": "npm:^1.21.6"
     "@backstage/plugin-permission-react": "npm:^0.4.39"
     "@backstage/test-utils": "npm:^1.7.14"
@@ -13167,7 +13159,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
+"@types/superagent@npm:^8.1.0":
   version: 8.1.9
   resolution: "@types/superagent@npm:8.1.9"
   dependencies:
@@ -13179,12 +13171,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.12":
-  version: 2.0.16
-  resolution: "@types/supertest@npm:2.0.16"
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
   dependencies:
-    "@types/superagent": "npm:*"
-  checksum: 10/2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
   languageName: node
   linkType: hard
 

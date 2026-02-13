@@ -48,15 +48,15 @@ export function getTranslations(locale: string): NexusMessages {
     case 'en':
       return nexusRepositoryManagerMessages;
     case 'fr':
-      return transform(nexusTranslationFr.messages as unknown as FlatMessages);
+      return transform(nexusTranslationFr.messages);
     case 'de':
-      return transform(nexusTranslationDe.messages as unknown as FlatMessages);
+      return transform(nexusTranslationDe.messages);
     case 'es':
-      return transform(nexusTranslationEs.messages as unknown as FlatMessages);
+      return transform(nexusTranslationEs.messages);
     case 'it':
-      return transform(nexusTranslationIt.messages as unknown as FlatMessages);
+      return transform(nexusTranslationIt.messages);
     case 'ja':
-      return transform(nexusTranslationJa.messages as unknown as FlatMessages);
+      return transform(nexusTranslationJa.messages);
     default:
       return nexusRepositoryManagerMessages;
   }

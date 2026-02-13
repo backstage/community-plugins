@@ -1,5 +1,24 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.21.0
+
+### Minor Changes
+
+- 57c349e: `AnnouncementsOptions` has been dropped as an optional arg for the `useAnnouncements` hook in favor of handling state and dependencies internally.
+
+## 0.20.0
+
+### Minor Changes
+
+- 99b4b52: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 44a0337: Add translation support for error message when trying to create a category that already exists
+- 6f6d4c8: Add missing translation for "Send notification" in the announcement form
+- Updated dependencies [99b4b52]
+  - @backstage-community/plugin-announcements-common@0.17.0
+
 ## 0.19.0
 
 ### Minor Changes

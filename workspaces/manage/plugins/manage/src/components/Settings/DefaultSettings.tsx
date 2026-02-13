@@ -16,7 +16,7 @@
 
 import { useMemo } from 'react';
 
-import Grid from '@mui/material/Grid';
+import { Grid } from '@backstage/ui';
 
 import { TabOrderCard } from './TabOrderCard';
 import { KindOrderCard } from './KindOrderCard';
@@ -41,18 +41,18 @@ export function DefaultSettings({
   );
 
   return (
-    <Grid container spacing={0} sx={{ gap: 3 }} direction="column">
-      <Grid item>
+    <Grid.Root columns="1">
+      <Grid.Item>
         <TabOrderCard />
-      </Grid>
-      <Grid item>
+      </Grid.Item>
+      <Grid.Item>
         <KindOrderCard />
-      </Grid>
+      </Grid.Item>
       {settings.map(setting => (
-        <Grid item key={setting.node?.spec?.id ?? setting.title}>
+        <Grid.Item key={setting.node?.spec?.id ?? setting.title}>
           <SettingsCard setting={setting} />
-        </Grid>
+        </Grid.Item>
       ))}
-    </Grid>
+    </Grid.Root>
   );
 }

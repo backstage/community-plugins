@@ -15,6 +15,7 @@ If you have questions or feedback regarding Community Plugins, you can visit the
     - [Forking the Repository](#forking-the-repository)
     - [Developing Plugins in Workspaces](#developing-plugins-in-workspaces)
   - [Coding Guidelines](#coding-guidelines)
+  - [AI Use Policy and Guidelines](#ai-use-policy-and-guidelines)
   - [Versioning](#versioning)
   - [Creating Changesets](#creating-changesets)
   - [Release](#release)
@@ -89,6 +90,10 @@ To keep the codebase consistent and maintainable, we have some cross workspace t
 
 - `yarn`: is the package manager used for all workspaces. We will regularly update the yarn version to keep up with the latest features and bug fixes. This version is managed in the root `package.json` and `.yarnrc.yml` files and should not be locked to a different version in any workspace. Updating the yarn version could imply changes on all the `yarn.lock` files.
 - `prettier`: All code is formatted with `prettier` using the configuration in the repo. If possible we recommend configuring your editor to format automatically, but you can also use the `yarn prettier --write <file>` command to format files.
+
+## AI Use Policy and Guidelines
+
+The Community Plugins repo follows the same [AI Use Policy and Guidelines as the upstream Backstage project](https://github.com/backstage/backstage/blob/master/CONTRIBUTING.md#ai-use-policy-and-guidelines). Please be sure to read and follow them.
 
 ## Versioning
 

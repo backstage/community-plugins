@@ -22,15 +22,6 @@ import {
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 
 /**
- * Options for the useAnnouncements hook
- *
- * @public
- */
-export type AnnouncementsOptions = {
-  dependencies?: any[];
-};
-
-/**
  * Hook to retrieve list of announcements.
  *
  * @returns A list of announcements and loading state
@@ -39,7 +30,6 @@ export type AnnouncementsOptions = {
  */
 export const useAnnouncements = (
   props: AnnouncementsFilters,
-  options?: AnnouncementsOptions,
 ): {
   announcements: AnnouncementsList;
   loading: boolean;
@@ -53,9 +43,22 @@ export const useAnnouncements = (
     loading,
     error,
     retry,
-  } = useAsyncRetry(async () => {
-    return await api.announcements(props);
-  }, [api, ...(options?.dependencies ?? [])]);
+  } = useAsyncRetry(
+    async () => api.announcements(props),
+    [
+      api,
+      props.max,
+      props.offset,
+      props.category,
+      props.page,
+      props.active,
+      props.sortBy,
+      props.order,
+      props.current,
+      props.sendNotification,
+      Array.isArray(props.tags) ? props.tags.join(',') : undefined,
+    ],
+  );
 
   return {
     announcements: announcementsList ?? { count: 0, results: [] },

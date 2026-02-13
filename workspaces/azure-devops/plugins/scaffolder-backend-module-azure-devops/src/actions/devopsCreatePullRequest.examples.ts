@@ -60,4 +60,28 @@ export const examples: TemplateExample[] = [
       ],
     }),
   },
+  {
+    description:
+      'Create Pull Request and associate a work item. Setting merge strategy to Squash',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'createAzureDevOpsPullRequest',
+          action: 'azure:pr:create',
+          name: 'Create Azure DevOps Pull Request with Squash Merge Strategy',
+          input: {
+            organization: 'org',
+            repository: 'repo',
+            title: 'My PR',
+            description: 'This is a PR created by the Scaffolder',
+            repoName: 'my-repo',
+            project: 'my-project',
+            autoComplete: true,
+            mergeStrategy: 'Squash',
+            workItemId: 12345,
+          },
+        },
+      ],
+    }),
+  },
 ];

@@ -34,11 +34,15 @@ describe('BookmarkViewerFrame', () => {
   it('shows loading spinner when iframe is loading', async () => {
     process.env.NODE_ENV = 'production';
     mockUseIsIframeLoading.mockReturnValue(true);
-    await renderInTestApp(<BookmarkViewerFrame src="https://example.com" />);
+    await renderInTestApp(
+      <BookmarkViewerFrame title="hello" src="https://example.com" />,
+    );
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
     const iframe = screen.getByTestId(TEST_IDS.BookmarkViewerFrame.iframe);
     expect(iframe).toHaveStyle('visibility: hidden');
     expect(iframe).toHaveAttribute('src', 'https://example.com');
+    expect(iframe).toHaveAttribute('aria-label', 'hello');
+    expect(iframe).toHaveAttribute('tabIndex', '0');
     expect(
       screen.queryByText('bookmarkViewerFrame.devModeWarning'),
     ).not.toBeInTheDocument();
