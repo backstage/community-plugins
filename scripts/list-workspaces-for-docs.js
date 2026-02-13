@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,16 +31,12 @@ async function main(args) {
 
   const backendFeatureReports = [];
 
-  // Get `CODEOWNERS` entries
   const codeownersPath = resolve(rootPath, '.github', 'CODEOWNERS');
   const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
 
-  // Get workspaces
   const workspaces = await listWorkspaces();
 
-  // Loop through workspaces
   for (const workspace of workspaces) {
-    // Find the owner by looking up the workspace in the `CODEOWNERS` file
     const owners = codeOwnerEntries
       .filter(c => c.pattern === `/workspaces/${workspace}`)
       .map(o => o.owners)
@@ -69,7 +65,6 @@ async function main(args) {
     const currentWorkspacePath = resolve(workspacePath, workspace);
     const { packages } = await getPackages(currentWorkspacePath);
 
-    // Loop through packages in each workspace
     for (const pkg of packages) {
       if (pkg.packageJson.private) {
         continue;
@@ -90,12 +85,36 @@ async function main(args) {
     }
   }
 
-  const table = args.includes('--table');
+  const table = arrayToTable(backendFeatureReports);
 
-  if (table) {
-    console.log(arrayToTable(backendFeatureReports));
-  } else {
-    console.log(backendFeatureReports);
+  // --- AUTO-UPDATE LOGIC ---
+  const targetFile = resolve(rootPath, 'docs', 'README.md');
+  const startMarker = '';
+  const endMarker = '';
+
+  try {
+    const fileContent = await fs.readFile(targetFile, 'utf8');
+    const markerRegex = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`);
+
+    if (!markerRegex.test(fileContent)) {
+      console.error(`Error: Could not find markers in ${targetFile}`);
+      console.error(`Please ensure '${startMarker}' and '${endMarker}' are present.`);
+      process.exit(1);
+    }
+
+    const newContent = fileContent.replace(
+      markerRegex,
+      `${startMarker}\n${table}\n${endMarker}`
+    );
+
+    await fs.writeFile(targetFile, newContent);
+    console.log(`Successfully updated workspaces table in docs/README.md`);
+
+  } catch (error) {
+    // JS-safe error handling (no TypeScript syntax)
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Failed to update documentation: ${message}`);
+    process.exit(1);
   }
 }
 
