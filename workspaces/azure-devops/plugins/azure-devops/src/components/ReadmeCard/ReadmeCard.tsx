@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
 import {
-  InfoCard,
-  Progress,
+  Box,
+  Button,
+  Link,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Skeleton,
+  Text,
+  Flex,
+} from '@backstage/ui';
+import {
   MarkdownContent,
   EmptyState,
   ErrorPanel,
@@ -27,27 +34,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 import { useReadme } from '../../hooks';
-
-const useStyles = makeStyles(theme => ({
-  readMe: {
-    overflowY: 'auto',
-    paddingRight: theme.spacing(1),
-    '&::-webkit-scrollbar-track': {
-      backgroundColor: '#F5F5F5',
-      borderRadius: '5px',
-    },
-    '&::-webkit-scrollbar': {
-      width: '5px',
-      backgroundColor: '#F5F5F5',
-      borderRadius: '5px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      border: '1px solid #555555',
-      backgroundColor: '#555',
-      borderRadius: '4px',
-    },
-  },
-}));
+import classes from './ReadmeCard.module.css';
 
 type Props = {
   maxHeight?: number;
@@ -69,13 +56,13 @@ const ReadmeCardError = ({ error }: ErrorProps) => {
         missing="field"
         description="You can add a README to your entity by following the Azure DevOps documentation."
         action={
-          <Button
-            variant="contained"
-            color="primary"
+          <Link
             href="https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Read more
-          </Button>
+            <Button variant="primary">Read more</Button>
+          </Link>
         }
       />
     );
@@ -84,27 +71,53 @@ const ReadmeCardError = ({ error }: ErrorProps) => {
 };
 
 export const ReadmeCard = (props: Props) => {
-  const classes = useStyles();
   const { entity } = useEntity();
   const { loading, error, item: value } = useReadme(entity);
 
   if (loading) {
-    return <Progress />;
+    return (
+      <Card>
+        <CardHeader>
+          <Text variant="title-small" weight="bold">
+            Readme
+          </Text>
+        </CardHeader>
+        <CardBody>
+          <Flex direction="column" gap="4">
+            <Skeleton width="100%" height={24} />
+            <Skeleton width="100%" height={24} />
+            <Skeleton width="80%" height={24} />
+            <Skeleton width="100%" height={24} />
+            <Skeleton width="90%" height={24} />
+          </Flex>
+        </CardBody>
+      </Card>
+    );
   } else if (error) {
     return <ReadmeCardError error={error} />;
   }
 
   return (
-    <InfoCard
-      title="Readme"
-      deepLink={{
-        link: value!.url,
-        title: 'Readme',
-      }}
-    >
-      <Box className={classes.readMe} sx={{ maxHeight: props.maxHeight }}>
-        <MarkdownContent content={value?.content ?? ''} />
-      </Box>
-    </InfoCard>
+    <Card>
+      <CardHeader>
+        <Text variant="title-small" weight="bold">
+          Readme
+        </Text>
+      </CardHeader>
+      <CardBody className={classes.cardBody}>
+        <Box className={classes.readMe} style={{ maxHeight: props.maxHeight }}>
+          <MarkdownContent content={value?.content ?? ''} />
+        </Box>
+      </CardBody>
+      {value?.url && (
+        <CardFooter>
+          <Link href={value.url} target="_blank" rel="noopener noreferrer">
+            <Button variant="tertiary" size="small">
+              Readme
+            </Button>
+          </Link>
+        </CardFooter>
+      )}
+    </Card>
   );
 };
