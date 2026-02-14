@@ -30,8 +30,8 @@ const entity = {
   kind: 'Component',
   metadata: {
     namespace: 'default',
-    name: 'bingaux-sources',
-    title: 'Bingaux Sources',
+    name: 'mock-name',
+    title: 'Mock Title',
     tags: ['python', 'csharp'],
   },
   spec: {
