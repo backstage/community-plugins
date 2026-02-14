@@ -2958,10 +2958,10 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-scaffolder-backend@npm:~3.0.1":
-  version: 3.0.1
-  resolution: "@backstage/plugin-scaffolder-backend@npm:3.0.1"
+  version: 3.0.2
+  resolution: "@backstage/plugin-scaffolder-backend@npm:3.0.2"
   dependencies:
-    "@backstage/backend-defaults": "npm:^0.13.1"
+    "@backstage/backend-defaults": "npm:^0.13.2"
     "@backstage/backend-openapi-utils": "npm:^0.6.3"
     "@backstage/backend-plugin-api": "npm:^1.5.0"
     "@backstage/catalog-model": "npm:^1.7.6"
@@ -3012,7 +3012,7 @@ __metadata:
     zen-observable: "npm:^0.10.0"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.20.4"
-  checksum: 10/0eca34b40c3aa77520e3d2c98a95f4ff42fdb095abc2269414521819d0bae4c24c1d82d19892d8c0aa0cf27faf4396ba795e9d07f5cf23340a769665f8d12e90
+  checksum: 10/0aeec306603ef42f7bc82a145b80ed28873370f9e448fdb234597de52a00684a05023106bf3e14c92fb6e4e6fb1affbd61dbe734b3c3a717c9cca567fb8ce893
   languageName: node
   linkType: hard
 
