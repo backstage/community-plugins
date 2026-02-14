@@ -71,7 +71,7 @@
     "@backstage/plugin-catalog": "^1.32.1",
     "@backstage/test-utils": "^1.7.14",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/react": "^18",
     "msw": "^1.0.0",
