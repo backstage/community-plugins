@@ -54,6 +54,7 @@ import { CategorySelectInput, TagsSelectInput } from '../../../shared';
 import { CreateCategoryDialog } from '../../categories';
 import { CreateTagDialog } from '../../tags';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
+import EntityDropdown from './EntityDropdown';
 
 import MuiTextField from '@mui/material/TextField';
 
@@ -97,6 +98,9 @@ export const AnnouncementForm = ({
   const [loading, setLoading] = useState(false);
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
     initialData.on_behalf_of || '',
+  );
+  const [selectedEntity, setSelectedEntity] = useState(
+    initialData.entityRefs?.[0] || '',
   );
   const [showCreateCategoryDialog, setShowCreateCategoryDialog] =
     useState(false);
@@ -207,6 +211,7 @@ export const AnnouncementForm = ({
       tags: formTags?.map(tag => tag.slug),
       publisher: userIdentity.userEntityRef,
       on_behalf_of: onBehalfOfSelectedTeam,
+      entityRefs: selectedEntity ? [selectedEntity] : undefined,
     };
 
     try {
@@ -288,6 +293,13 @@ export const AnnouncementForm = ({
                 <OnBehalfTeamDropdown
                   selectedTeam={onBehalfOfSelectedTeam}
                   onChange={setOnBehalfOfSelectedTeam}
+                />
+              </Grid.Item>
+
+              <Grid.Item colSpan={{ xs: '12', md: '4' }}>
+                <EntityDropdown
+                  selectedEntity={selectedEntity}
+                  onChange={setSelectedEntity}
                 />
               </Grid.Item>
 

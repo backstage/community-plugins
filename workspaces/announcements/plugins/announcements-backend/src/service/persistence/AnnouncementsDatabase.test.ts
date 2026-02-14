@@ -44,6 +44,7 @@ describe('AnnouncementsDatabase', () => {
   });
 
   afterEach(async () => {
+    await testDbClient('announcement_entities').delete();
     await testDbClient('announcements').delete();
   });
 
@@ -85,6 +86,7 @@ describe('AnnouncementsDatabase', () => {
       until_date: null,
       on_behalf_of: 'group:default/team-a',
       updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+      entityRefs: [],
     });
   });
 
@@ -119,6 +121,7 @@ describe('AnnouncementsDatabase', () => {
       until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
       on_behalf_of: 'group:default/team-a',
       updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+      entityRefs: [],
     });
   });
 
@@ -156,6 +159,7 @@ describe('AnnouncementsDatabase', () => {
           until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
           updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+          entityRefs: [],
         },
       ],
     });
@@ -211,6 +215,7 @@ describe('AnnouncementsDatabase', () => {
           until_date: timestampToDateTime('2025-03-18T13:00:00.708Z'),
           on_behalf_of: 'group:default/team-a',
           updated_at: timestampToDateTime(time.toISO()),
+          entityRefs: [],
         },
       ],
     });
@@ -332,6 +337,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
           {
             id: 'id',
@@ -350,6 +356,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -405,6 +412,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -488,6 +496,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -571,6 +580,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
           {
             id: 'id2',
@@ -586,6 +596,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -642,6 +653,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-19T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
+            entityRefs: [],
           },
           {
             id: 'id1',
@@ -657,6 +669,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -713,6 +726,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
           {
             id: 'id2',
@@ -728,6 +742,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-27T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -784,6 +799,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: [],
           },
           {
             id: 'id1',
@@ -799,6 +815,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2023-10-25T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
@@ -855,6 +872,7 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2025-10-27T15:28:08.539Z'),
+            entityRefs: [],
           },
           {
             id: 'id1',
@@ -870,9 +888,480 @@ describe('AnnouncementsDatabase', () => {
             until_date: timestampToDateTime('2025-02-17T13:00:00.708Z'),
             on_behalf_of: 'group:default/team-a',
             updated_at: timestampToDateTime('2025-10-25T15:28:08.539Z'),
+            entityRefs: [],
           },
         ],
       });
+    });
+  });
+
+  describe('entityRef queries', () => {
+    it('should filter announcements by entityRef', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-b'],
+      });
+
+      await store.insertAnnouncement({
+        id: 'id3',
+        publisher: 'publisher3',
+        title: 'title3',
+        excerpt: 'excerpt3',
+        body: 'body3',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      });
+
+      const announcements = await store.announcements({
+        entityRef: 'component:default/service-a',
+      });
+
+      expect(announcements).toEqual({
+        count: 1,
+        results: [
+          {
+            id: 'id1',
+            publisher: 'publisher1',
+            title: 'title1',
+            excerpt: 'excerpt1',
+            body: 'body1',
+            category: undefined,
+            tags: [],
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
+            on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: ['component:default/service-a'],
+          },
+        ],
+      });
+    });
+
+    it('should return empty results when entityRef has no matches', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const announcements = await store.announcements({
+        entityRef: 'component:default/nonexistent',
+      });
+
+      expect(announcements).toEqual({
+        count: 0,
+        results: [],
+      });
+    });
+
+    it('should combine entityRef filter with other filters', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: false,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const announcements = await store.announcements({
+        entityRef: 'component:default/service-a',
+        active: true,
+      });
+
+      expect(announcements).toEqual({
+        count: 1,
+        results: [
+          {
+            id: 'id1',
+            publisher: 'publisher1',
+            title: 'title1',
+            excerpt: 'excerpt1',
+            body: 'body1',
+            category: undefined,
+            tags: [],
+            created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            active: 1,
+            start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+            until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
+            on_behalf_of: 'group:default/team-a',
+            updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+            entityRefs: ['component:default/service-a'],
+          },
+        ],
+      });
+    });
+
+    it('should populate entityRefs for multiple announcements', async () => {
+      await store.insertAnnouncement({
+        id: 'id1',
+        publisher: 'publisher1',
+        title: 'title1',
+        excerpt: 'excerpt1',
+        body: 'body1',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: [
+          'component:default/service-a',
+          'component:default/service-b',
+        ],
+      });
+
+      await store.insertAnnouncement({
+        id: 'id2',
+        publisher: 'publisher2',
+        title: 'title2',
+        excerpt: 'excerpt2',
+        body: 'body2',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      });
+
+      const announcements = await store.announcements({});
+
+      expect(announcements.count).toBe(2);
+      expect(announcements.results[1].entityRefs).toEqual([
+        'component:default/service-a',
+        'component:default/service-b',
+      ]);
+      expect(announcements.results[0].entityRefs).toEqual([]);
+    });
+  });
+
+  describe('entityRefs operations', () => {
+    it('should return announcement with entityRefs by id', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const announcement = await store.announcementByID('id');
+
+      expect(announcement).toEqual({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        category: undefined,
+        tags: [],
+        created_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+        active: 1,
+        start_at: timestampToDateTime('2025-01-18T13:00:00.708Z'),
+        until_date: timestampToDateTime('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: timestampToDateTime('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+    });
+
+    it('should return announcement with multiple entityRefs by id', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: [
+          'component:default/service-a',
+          'component:default/service-b',
+          'system:default/system-a',
+        ],
+      });
+
+      const announcement = await store.announcementByID('id');
+
+      expect(announcement?.entityRefs).toEqual([
+        'component:default/service-a',
+        'component:default/service-b',
+        'system:default/system-a',
+      ]);
+    });
+
+    it('should return announcement with empty entityRefs by id', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      });
+
+      const announcement = await store.announcementByID('id');
+
+      expect(announcement?.entityRefs).toEqual([]);
+    });
+
+    it('should insert announcement with entityRefs', async () => {
+      const inserted = await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      expect(inserted.entityRefs).toEqual(['component:default/service-a']);
+
+      const fromDb = await store.announcementByID('id');
+      expect(fromDb?.entityRefs).toEqual(['component:default/service-a']);
+    });
+
+    it('should insert announcement with multiple entityRefs', async () => {
+      const inserted = await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: [
+          'component:default/service-a',
+          'component:default/service-b',
+        ],
+      });
+
+      expect(inserted.entityRefs).toEqual([
+        'component:default/service-a',
+        'component:default/service-b',
+      ]);
+    });
+
+    it('should insert announcement without entityRefs', async () => {
+      const inserted = await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      });
+
+      expect(inserted.entityRefs).toEqual([]);
+    });
+
+    it('should update announcement to add entityRefs', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+      });
+
+      const updated = await store.updateAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      expect(updated.entityRefs).toEqual(['component:default/service-a']);
+    });
+
+    it('should update announcement to change entityRefs', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const updated = await store.updateAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: [
+          'component:default/service-b',
+          'component:default/service-c',
+        ],
+      });
+
+      expect(updated.entityRefs).toEqual([
+        'component:default/service-b',
+        'component:default/service-c',
+      ]);
+
+      const fromDb = await store.announcementByID('id');
+      expect(fromDb?.entityRefs).toEqual([
+        'component:default/service-b',
+        'component:default/service-c',
+      ]);
+    });
+
+    it('should update announcement to remove entityRefs', async () => {
+      await store.insertAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const updated = await store.updateAnnouncement({
+        id: 'id',
+        publisher: 'publisher',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        created_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        active: true,
+        start_at: DateTime.fromISO('2025-01-18T13:00:00.708Z'),
+        until_date: DateTime.fromISO('2025-02-18T13:00:00.708Z'),
+        on_behalf_of: 'group:default/team-a',
+        updated_at: DateTime.fromISO('2023-10-26T15:28:08.539Z'),
+        entityRefs: [],
+      });
+
+      expect(updated.entityRefs).toEqual([]);
+
+      const fromDb = await store.announcementByID('id');
+      expect(fromDb?.entityRefs).toEqual([]);
     });
   });
 });

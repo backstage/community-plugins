@@ -1223,4 +1223,13 @@ We'd love to hear what other templates would be useful. Drop suggestions in #dev
       active: true,
     },
   ]);
+
+  // Seed announcement-entity relationships
+  await knex('announcement_entities').del();
+  await knex('announcement_entities').insert([
+    {
+      announcement_id: '17',
+      entity_ref: 'component:default/ci-runner',
+    },
+  ]);
 };
