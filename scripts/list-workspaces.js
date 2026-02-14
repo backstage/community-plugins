@@ -16,10 +16,9 @@
  */
 
 import fs from 'node:fs/promises';
-import { join, resolve, sep } from 'path';
+import { basename, join, resolve, sep } from 'path';
 import * as url from 'url';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
 
 /**
@@ -29,15 +28,22 @@ const EXCLUDED_WORKSPACES = ['noop', 'repo-tools'];
  *                             excluding workspaces listed in EXCLUDED_WORKSPACES.
  * @throws {Error} If there are filesystem errors reading the directory
  */
-export async function listWorkspaces() {
-  const workspacePath = resolve(__dirname, '..', 'workspaces');
+export async function listWorkspaces(settings = { fullPath: false }) {
+  const workspacePath = resolve(
+    url.fileURLToPath(import.meta.url),
+    '..',
+    'workspaces',
+  );
 
   return (
     Array.fromAsync(
       fs.glob(join(workspacePath, '*', sep), {
         exclude: EXCLUDED_WORKSPACES.map(name => join(workspacePath, name)),
       }),
-      workspace => workspace.replace(`${workspacePath}/`, ''),
+      settings?.fullPath === false
+        ? workspace => basename(workspace)
+        : // no work to do here
+          undefined,
     )
       // glob returns an unordered list of results (for perf reasons)
       .then(workspaces => workspaces.sort())
