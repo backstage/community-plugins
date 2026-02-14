@@ -106,7 +106,7 @@ describe('HomePagePullRequestsTable', () => {
 
   // Map the response stub data to PullRequest objects and add buildStatus
   const mockPullRequests: PullRequest[] = bitbucketApiMapper
-    .mapPullRequests(pullRequestsResponseStub)
+    .mapServerPullRequests(pullRequestsResponseStub)
     .map(pr => ({
       ...pr,
       buildStatus: 'SUCCESSFUL' as const,

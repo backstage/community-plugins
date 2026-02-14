@@ -16,6 +16,12 @@
 export interface Config {
   bitbucket?: {
     /**
+     * BitBucket type
+     * @visibility frontend
+     * @default server
+     */
+    type?: 'server' | 'cloud';
+    /**
      * Proxy path for BitBucket API requests
      * @visibility frontend
      */
