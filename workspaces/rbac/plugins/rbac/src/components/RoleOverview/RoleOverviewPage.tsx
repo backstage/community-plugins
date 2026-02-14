@@ -72,6 +72,7 @@ export const RoleOverviewPage = () => {
                 <PermissionsCard
                   entityReference={`${roleKind}:${roleNamespace}/${roleName}`}
                   canReadUsersAndGroups={membersInfo.canReadUsersAndGroups}
+                  isDefaultRole={membersInfo.isDefaultRole}
                 />
               </Grid>
             </Grid>

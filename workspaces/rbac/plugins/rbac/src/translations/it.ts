@@ -35,6 +35,7 @@ const rbacTranslationIt = createTranslationMessages({
     'table.headers.usersAndGroups': 'Utenti e gruppi',
     'table.headers.accessiblePlugins': 'Plugin accessibili',
     'table.headers.actions': 'Azioni',
+    'table.defaultRoleUsersAndGroups': 'Tutti gli utenti e tutti i gruppi',
     'table.emptyContent': 'Nessun record trovato',
     'toolbar.createButton': 'Crea',
     'toolbar.warning.title': 'Impossibile creare il ruolo.',
@@ -68,6 +69,7 @@ const rbacTranslationIt = createTranslationMessages({
     'errors.createRole': 'Impossibile creare il ruolo.',
     'errors.editRole': 'Impossibile modificare il ruolo.',
     'errors.deleteRole': 'Impossibile eliminare il ruolo.',
+    'errors.defaultRoleReadOnly': 'Il ruolo predefinito è in sola lettura.',
     'errors.roleCreatedSuccess':
       'Il ruolo è stato creato correttamente ma non è possibile aggiungere criteri di autorizzazione al ruolo.',
     'errors.roleCreatedConditionsSuccess':

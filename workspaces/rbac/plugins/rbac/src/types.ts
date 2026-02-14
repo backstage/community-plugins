@@ -36,6 +36,8 @@ export type RolesData = {
     edit: { allowed: boolean };
   };
   accessiblePlugins: string[];
+  /** When true, this role is the default role for all users and groups. */
+  isDefault?: boolean;
 };
 
 export type MembersData = {

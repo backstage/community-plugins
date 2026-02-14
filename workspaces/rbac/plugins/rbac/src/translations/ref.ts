@@ -32,6 +32,7 @@ export const rbacMessages = {
       accessiblePlugins: 'Accessible plugins',
       actions: 'Actions',
     },
+    defaultRoleUsersAndGroups: 'All users and all groups',
     emptyContent: 'No records found',
   },
   toolbar: {
@@ -66,6 +67,7 @@ export const rbacMessages = {
     createRole: 'Unable to create role.',
     editRole: 'Unable to edit the role.',
     deleteRole: 'Unable to delete the role.',
+    defaultRoleReadOnly: 'Default role is read-only.',
     roleCreatedSuccess:
       'Role was created successfully but unable to add permission policies to the role.',
     roleCreatedConditionsSuccess:

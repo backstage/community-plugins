@@ -46,6 +46,10 @@ export type RoleMetadata = {
   lastModified?: string;
   createdAt?: string;
   owner?: string;
+  /**
+   * When true, this role is the default role applied to all users and groups.
+   */
+  isDefault?: boolean;
 };
 
 /**

@@ -35,7 +35,10 @@ import {
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 
-import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import type {
+  RoleBasedPolicy,
+  RoleMetadata,
+} from '@backstage-community/plugin-rbac-common';
 
 import { resolve } from 'path';
 
@@ -51,6 +54,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
+import { DefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
@@ -1601,6 +1605,7 @@ describe('Policy checks for conditional policies', () => {
       mockClientKnex,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockAuthService,
+      undefined,
     );
   });
 
@@ -2080,6 +2085,56 @@ function newConfig(
   });
 }
 
+function newConfigWithDefaultRole(
+  defaultRole?: string,
+  permFile?: string,
+  users?: Array<{ name: string }>,
+  superUsers?: Array<{ name: string }>,
+): Config {
+  const testUsers = [
+    {
+      name: 'user:default/guest',
+    },
+    {
+      name: 'group:default/guests',
+    },
+  ];
+
+  const rbacConfig: any = {
+    'policies-csv-file': permFile || csvPermFile,
+    policyFileReload: false,
+    admin: {
+      users: users || testUsers,
+      superUsers: superUsers,
+    },
+  };
+
+  if (defaultRole !== undefined) {
+    rbacConfig.defaultPermissions = {
+      defaultRole,
+      basicPermissions: [
+        { permission: 'catalog.entity.read', action: 'read' },
+        { permission: 'catalog-entity', action: 'read' },
+        { permission: 'catalog.entity.create', action: 'create' },
+      ],
+    };
+  }
+
+  return mockServices.rootConfig({
+    data: {
+      permission: {
+        rbac: rbacConfig,
+      },
+      backend: {
+        database: {
+          client: 'better-sqlite3',
+          connection: ':memory:',
+        },
+      },
+    },
+  });
+}
+
 async function newAdapter(config: Config): Promise<Adapter> {
   return await new CasbinDBAdapterFactory(
     config,
@@ -2144,7 +2199,28 @@ async function newPermissionPolicy(
   config: Config,
   enfDelegate: EnforcerDelegate,
   roleMock?: RoleMetadataStorage,
+  defaultPolicies: RoleBasedPolicy[] = [],
 ): Promise<RBACPermissionPolicy> {
+  const defaultRoleRef = defaultPolicies[0]?.entityReference;
+  const defaultRoleAndPolicies: DefaultRoleAndPolicies | undefined =
+    defaultPolicies.length > 0 && defaultRoleRef
+      ? {
+          role: {
+            name: defaultRoleRef,
+            memberReferences: [],
+            metadata: {
+              source: 'configuration',
+              isDefault: true,
+              description:
+                'Role with default permissions for all users and groups.',
+              modifiedBy: 'permission-policy-test',
+              lastModified: new Date().toUTCString(),
+            },
+          },
+          policies: defaultPolicies,
+        }
+      : undefined;
+
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
@@ -2156,7 +2232,198 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
+    defaultRoleAndPolicies,
   );
   clearAuditorMock();
   return permissionPolicy;
 }
+
+describe('Default Role Tests', () => {
+  let enfDelegate: EnforcerDelegate;
+  let policy: RBACPermissionPolicy;
+
+  const defaultRolePolicies: RoleBasedPolicy[] = [
+    {
+      entityReference: 'role:default/viewer',
+      permission: 'catalog.entity.read',
+      policy: 'read',
+      effect: 'allow',
+    },
+    {
+      entityReference: 'role:default/viewer',
+      permission: 'catalog-entity',
+      policy: 'read',
+      effect: 'allow',
+    },
+    {
+      entityReference: 'role:default/viewer',
+      permission: 'catalog.entity.create',
+      policy: 'use',
+      effect: 'allow',
+    },
+  ];
+
+  describe('when defaultRole is configured', () => {
+    beforeEach(async () => {
+      const config = newConfigWithDefaultRole('role:default/viewer');
+      const adapter = await newAdapter(config);
+      enfDelegate = await newEnforcerDelegate(adapter, config);
+
+      // Add some permissions for the default role
+      await enfDelegate.addPolicy([
+        'role:default/viewer',
+        'catalog.entity.read',
+        'read',
+        'allow',
+      ]);
+      await enfDelegate.addPolicy([
+        'role:default/viewer',
+        'catalog-entity',
+        'read',
+        'allow',
+      ]);
+
+      policy = await newPermissionPolicy(
+        config,
+        enfDelegate,
+        undefined,
+        defaultRolePolicies,
+      );
+    });
+
+    it('should add default role to user roles when user has no explicit roles', async () => {
+      // Create a user with no explicit roles assigned
+      const decision = await policy.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.read',
+          'catalog-entity',
+          'read',
+        ),
+        newPolicyQueryUser('user:default/noroles'),
+      );
+
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/noroles',
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+        AuthorizeResult.ALLOW,
+      );
+    });
+
+    it('should add default role to user roles when user has existing roles but not the default one', async () => {
+      // Add user to another role first
+      await enfDelegate.addGroupingPolicy(
+        ['user:default/hasrole', 'role:default/custom'],
+        {
+          source: 'rest',
+          roleEntityRef: 'role:default/custom',
+          modifiedBy: 'test',
+        },
+      );
+
+      const decision = await policy.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.read',
+          'catalog-entity',
+          'read',
+        ),
+        newPolicyQueryUser('user:default/hasrole'),
+      );
+
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/hasrole',
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+        AuthorizeResult.ALLOW,
+      );
+    });
+
+    it('should not duplicate default role when user already has it assigned explicitly', async () => {
+      // Add user to the default role explicitly
+      await enfDelegate.addGroupingPolicy(
+        ['user:default/alreadyhas', 'role:default/viewer'],
+        {
+          source: 'rest',
+          roleEntityRef: 'role:default/viewer',
+          modifiedBy: 'test',
+        },
+      );
+
+      const decision = await policy.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.read',
+          'catalog-entity',
+          'read',
+        ),
+        newPolicyQueryUser('user:default/alreadyhas'),
+      );
+
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/alreadyhas',
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+        AuthorizeResult.ALLOW,
+      );
+    });
+
+    it('should work with basic permissions when default role is applied', async () => {
+      // Add a basic permission for the default role
+      await enfDelegate.addPolicy([
+        'role:default/viewer',
+        'catalog.entity.create',
+        'use',
+        'allow',
+      ]);
+
+      const decision = await policy.handle(
+        newPolicyQueryWithBasicPermission('catalog.entity.create'),
+        newPolicyQueryUser('user:default/basictest'),
+      );
+
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/basictest',
+        'catalog.entity.create',
+        undefined,
+        'use',
+        AuthorizeResult.ALLOW,
+      );
+    });
+  });
+
+  describe('when defaultRole is not configured', () => {
+    beforeEach(async () => {
+      const config = newConfig(); // No default role
+      const adapter = await newAdapter(config);
+      enfDelegate = await newEnforcerDelegate(adapter, config);
+      policy = await newPermissionPolicy(config, enfDelegate);
+    });
+
+    it('should not add any default role when none is configured', async () => {
+      const decision = await policy.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.read',
+          'catalog-entity',
+          'read',
+        ),
+        newPolicyQueryUser('user:default/nodefault'),
+      );
+
+      // Should deny since no permissions are granted and no default role
+      expect(decision.result).toBe(AuthorizeResult.DENY);
+      expectAuditorLogForPermission(
+        'user:default/nodefault',
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+        AuthorizeResult.DENY,
+      );
+    });
+  });
+});

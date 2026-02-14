@@ -36,6 +36,7 @@ import type {
   RBACProvider,
 } from '@backstage-community/plugin-rbac-node';
 
+import { getDefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import { migrate } from '../database/migration';
@@ -179,23 +180,28 @@ export class PolicyBuilder {
       },
     });
 
+    const defaultRoleAndPolicies = await getDefaultRoleAndPolicies(
+      env.config,
+      roleMetadataStorage,
+      enforcerDelegate,
+    );
     const isPluginEnabled = env.config.getOptionalBoolean('permission.enabled');
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
-      env.policy.setPolicy(
-        await RBACPermissionPolicy.build(
-          env.logger,
-          env.auditor,
-          env.config,
-          conditionStorage,
-          enforcerDelegate,
-          roleMetadataStorage,
-          databaseClient,
-          pluginPermMetaData,
-          env.auth,
-        ),
+      const policy = await RBACPermissionPolicy.build(
+        env.logger,
+        env.auditor,
+        env.config,
+        conditionStorage,
+        enforcerDelegate,
+        roleMetadataStorage,
+        databaseClient,
+        pluginPermMetaData,
+        env.auth,
+        defaultRoleAndPolicies,
       );
+      env.policy.setPolicy(policy);
     } else {
       env.logger.warn(
         'RBAC backend plugin was disabled by application config permission.enabled: false',
@@ -222,6 +228,8 @@ export class PolicyBuilder {
       roleMetadataStorage,
       extraPluginsIdStorage,
       extendablePluginIdProvider,
+      defaultRoleAndPolicies?.role,
+      defaultRoleAndPolicies?.policies,
       rbacProviders,
     );
     return server.serve();

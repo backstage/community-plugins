@@ -127,6 +127,7 @@ export type RoleMetadata = {
     lastModified?: string;
     createdAt?: string;
     owner?: string;
+    isDefault?: boolean;
 };
 
 // @public
