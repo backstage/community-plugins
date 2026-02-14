@@ -390,7 +390,7 @@ __metadata:
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@testing-library/jest-dom": "npm:6.9.1"
-    "@types/node": "npm:22.19.7"
+    "@types/node": "npm:22.19.11"
     cross-fetch: "npm:4.1.0"
     msw: "npm:1.3.5"
   peerDependencies:
@@ -440,7 +440,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:14.3.1"
     "@testing-library/user-event": "npm:14.6.1"
-    "@types/node": "npm:22.19.7"
+    "@types/node": "npm:22.19.11"
     "@types/react": "npm:18.3.27"
     cross-fetch: "npm:4.1.0"
     msw: "npm:1.3.5"
@@ -7118,12 +7118,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.19.7":
-  version: 22.19.7
-  resolution: "@types/node@npm:22.19.7"
+"@types/node@npm:*, @types/node@npm:22.19.11":
+  version: 22.19.11
+  resolution: "@types/node@npm:22.19.11"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/0a5c9cc3bdd2a2d8105735b136e280a2dec90136679adfe82faa7e4de375dcc6b4cebaa6b2de35cc6b37e5e135cdc9486373d574782a4ca22f5eeab299111aa6
+  checksum: 10/bb899551432ce2bf3e1a175d58802f25dfb6a96e574ce1f0056d55d0ce48513961976ee3621215565142a8ad99a2464d9c384fa53ccba0650def031d218800f7
   languageName: node
   linkType: hard
 

@@ -84,7 +84,7 @@
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@types/lodash": "^4.14.151",
-    "@types/node": "22.19.7",
+    "@types/node": "22.19.11",
     "@types/react": "^18.2.58",
     "@types/react-copy-to-clipboard": "5.0.7",
     "@types/react-dom": "^18.2.19",
