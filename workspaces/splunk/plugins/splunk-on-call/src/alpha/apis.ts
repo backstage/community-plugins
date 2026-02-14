@@ -17,6 +17,7 @@ import {
   ApiBlueprint,
   configApiRef,
   discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/frontend-plugin-api';
 import { SplunkOnCallClient, splunkOnCallApiRef } from '../api';
 
@@ -31,8 +32,9 @@ export const splunkOnCallApi = ApiBlueprint.make({
       deps: {
         discoveryApi: discoveryApiRef,
         configApi: configApiRef,
+        fetchApi: fetchApiRef,
       },
-      factory: ({ configApi, discoveryApi }) =>
-        SplunkOnCallClient.fromConfig(configApi, discoveryApi),
+      factory: ({ configApi, discoveryApi, fetchApi }) =>
+        SplunkOnCallClient.fromConfig(configApi, discoveryApi, fetchApi),
     }),
 });

@@ -34,13 +34,17 @@ import {
   ListRoutingKeyResponse,
 } from './types';
 import {
-  createApiRef,
-  DiscoveryApi,
   ConfigApi,
-} from '@backstage/core-plugin-api';
+  DiscoveryApi,
+  FetchApi,
+  createApiRef,
+} from '@backstage/frontend-plugin-api';
 
 /** @public */
 export class UnauthorizedError extends Error {}
+
+/** @public */
+export class MissingEventsRestEndpointError extends Error {}
 
 /** @public */
 export const splunkOnCallApiRef = createApiRef<SplunkOnCallApi>({
@@ -49,12 +53,17 @@ export const splunkOnCallApiRef = createApiRef<SplunkOnCallApi>({
 
 /** @public */
 export class SplunkOnCallClient implements SplunkOnCallApi {
-  static fromConfig(configApi: ConfigApi, discoveryApi: DiscoveryApi) {
+  static fromConfig(
+    configApi: ConfigApi,
+    discoveryApi: DiscoveryApi,
+    fetchApi: FetchApi,
+  ) {
     const eventsRestEndpoint: string | null =
       configApi.getOptionalString('splunkOnCall.eventsRestEndpoint') || null;
     return new SplunkOnCallClient({
       eventsRestEndpoint,
       discoveryApi,
+      fetchApi,
     });
   }
   constructor(private readonly config: ClientApiConfig) {}
@@ -143,7 +152,13 @@ export class SplunkOnCallClient implements SplunkOnCallApi {
       body,
     };
 
-    const url = `${this.config.eventsRestEndpoint}/${routingKey}`;
+    const eventsRestEndpoint = await this.getEventsRestEndpoint();
+    if (!eventsRestEndpoint) {
+      throw new MissingEventsRestEndpointError(
+        'Splunk On-Call REST endpoint is not configured.',
+      );
+    }
+    const url = `${eventsRestEndpoint}/${routingKey}`;
 
     return this.request(url, request);
   }
@@ -164,7 +179,7 @@ export class SplunkOnCallClient implements SplunkOnCallApi {
     url: string,
     options: RequestOptions,
   ): Promise<Response> {
-    const response = await fetch(url, options);
+    const response = await this.config.fetchApi.fetch(url, options);
     if (response.status === 403) {
       throw new UnauthorizedError();
     }
@@ -175,5 +190,18 @@ export class SplunkOnCallClient implements SplunkOnCallApi {
       throw new Error(message);
     }
     return response;
+  }
+
+  private async getEventsRestEndpoint(): Promise<string | null> {
+    if (!this.config.eventsRestEndpoint) {
+      return null;
+    }
+
+    if (this.config.eventsRestEndpoint.startsWith('/')) {
+      const proxyBase = await this.config.discoveryApi.getBaseUrl('proxy');
+      return `${proxyBase}${this.config.eventsRestEndpoint}`;
+    }
+
+    return this.config.eventsRestEndpoint;
   }
 }
