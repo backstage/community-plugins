@@ -1,5 +1,13 @@
 # @backstage-community/plugin-jenkins
 
+## 0.28.1
+
+### Patch Changes
+
+- fc25522: remove unused dependencies
+- Updated dependencies [fc25522]
+  - @backstage-community/plugin-jenkins-common@0.16.1
+
 ## 0.28.0
 
 ### Minor Changes
