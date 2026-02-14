@@ -4,7 +4,7 @@ Website: [https://n8n.io/](https://n8n.io/)
 
 A Backstage frontend plugin that provides components to view and manage [n8n](https://n8n.io/) workflows directly from entity pages.
 
-## Screenshots
+## Features
 
 ### Entity Content Tab
 
