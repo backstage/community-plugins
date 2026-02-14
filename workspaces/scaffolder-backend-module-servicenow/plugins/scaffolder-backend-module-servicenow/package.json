@@ -52,7 +52,7 @@
     "@backstage/config": "^1.3.6",
     "@backstage/plugin-scaffolder-node-test-utils": "^0.3.7",
     "@backstage/types": "^1.2.2",
-    "@hey-api/openapi-ts": "0.90.9",
+    "@hey-api/openapi-ts": "0.92.3",
     "@types/node-fetch": "2.6.13",
     "msw": "1.3.5"
   },
