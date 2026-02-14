@@ -57,6 +57,7 @@ body:
         - gcp-projects
         - git-release-manager
         - github
+        - gitops-profiles
         - gocd
         - grafana
         - graphiql
