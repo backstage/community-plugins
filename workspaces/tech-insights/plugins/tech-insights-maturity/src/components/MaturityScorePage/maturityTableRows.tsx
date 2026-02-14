@@ -145,19 +145,22 @@ const MaturityCheckTableRow = ({
                     </Typography>
                   </Stack>
                 )}
-                <Stack spacing={1} direction="row">
-                  <Tooltip title="Reference: Consult the documentation linked here for more background info.">
-                    <MenuBookIcon color="primary" />
-                  </Tooltip>
-                  <Typography>
-                    {checkResult.check.links?.map((link, index) => (
-                      <React.Fragment key={link.url}>
-                        {index > 0 && ', '}
-                        <Link to={link.url}>{link.title}</Link>
-                      </React.Fragment>
-                    ))}
-                  </Typography>
-                </Stack>
+                {checkResult.check.links &&
+                  checkResult.check.links.length > 0 && (
+                    <Stack spacing={1} direction="row">
+                      <Tooltip title="Reference: Consult the documentation linked here for more background info.">
+                        <MenuBookIcon color="primary" />
+                      </Tooltip>
+                      <Typography>
+                        {checkResult.check.links.map((link, index) => (
+                          <React.Fragment key={link.url}>
+                            {index > 0 && ', '}
+                            <Link to={link.url}>{link.title}</Link>
+                          </React.Fragment>
+                        ))}
+                      </Typography>
+                    </Stack>
+                  )}
               </Stack>
             </Grid>
             <Grid item xs={3}>
