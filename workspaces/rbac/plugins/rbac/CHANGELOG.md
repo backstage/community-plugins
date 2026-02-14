@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.48.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
 ## 1.48.0
 
 ### Minor Changes
