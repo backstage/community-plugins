@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault
 
+## 0.17.0
+
+### Minor Changes
+
+- 7ad5206: Added support for multiple secrets paths
+
 ## 0.16.0
 
 ### Minor Changes
