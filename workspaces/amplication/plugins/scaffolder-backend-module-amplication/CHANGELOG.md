@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-amplication
 
+## 0.4.1
+
+### Patch Changes
+
+- dd669f9: Updated dependency `@backstage/plugin-scaffolder-node` to `^0.11.0`.
+
 ## 0.4.0
 
 ### Minor Changes
