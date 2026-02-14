@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stack-overflow-backend
 
+## 0.15.1
+
+### Patch Changes
+
+- fc67402: Updated dependency `qs` to `^6.14.2`.
+
 ## 0.15.0
 
 ### Minor Changes
