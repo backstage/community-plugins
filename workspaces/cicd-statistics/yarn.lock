@@ -1411,7 +1411,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@gitbeaker/browser": "npm:^35.6.0"
-    "@gitbeaker/core": "npm:^35.6.0"
+    "@gitbeaker/core": "npm:^43.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0"
     "@types/react-dom": "npm:^18.2.19"
     p-limit: "npm:^3.1.0"
@@ -4020,7 +4020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gitbeaker/core@npm:^35.6.0, @gitbeaker/core@npm:^35.8.1":
+"@gitbeaker/core@npm:^35.8.1":
   version: 35.8.1
   resolution: "@gitbeaker/core@npm:35.8.1"
   dependencies:
@@ -4034,6 +4034,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gitbeaker/core@npm:^43.0.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/core@npm:43.8.0"
+  dependencies:
+    "@gitbeaker/requester-utils": "npm:^43.8.0"
+    qs: "npm:^6.14.0"
+    xcase: "npm:^2.0.1"
+  checksum: 10/1c935ffec246c854d7d543cc4ccb97271c322ea506c02ccf60774bffd42462c36cd3324d6876082da706d25e444878f76714746b1fbd77c202b0e3766ef5f4ae
+  languageName: node
+  linkType: hard
+
 "@gitbeaker/requester-utils@npm:^35.8.1":
   version: 35.8.1
   resolution: "@gitbeaker/requester-utils@npm:35.8.1"
@@ -4042,6 +4053,18 @@ __metadata:
     qs: "npm:^6.10.1"
     xcase: "npm:^2.0.1"
   checksum: 10/f939216443682303b80b72fa59158cf3fb4a95d31251bb0b4cffa83bd0e0ad0e949645aaaa08fe4dfcd7d06ea5a1547e5688c02b608e8bc76b1e12286935c265
+  languageName: node
+  linkType: hard
+
+"@gitbeaker/requester-utils@npm:^43.8.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/requester-utils@npm:43.8.0"
+  dependencies:
+    picomatch-browser: "npm:^2.2.6"
+    qs: "npm:^6.14.0"
+    rate-limiter-flexible: "npm:^8.0.1"
+    xcase: "npm:^2.0.1"
+  checksum: 10/529685994676068a18f4bf6329252c66a62c1ef160f6e9d4b3a916330189cc1628fb30c983625d38295cef2999438e14ecb611fcd8a484b7c479b6dcf29f7679
   languageName: node
   linkType: hard
 
@@ -23395,6 +23418,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picomatch-browser@npm:^2.2.6":
+  version: 2.2.6
+  resolution: "picomatch-browser@npm:2.2.6"
+  checksum: 10/0136abee4bbef256e9b6b20676873807e11cc6d04d52d4cd4e9e5c7b48b0888e67f224873eb7eaba6da2a5356647e5aa9a2ef62ad98a675c7940344bfae0238e
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
@@ -24384,6 +24414,13 @@ __metadata:
   peerDependencies:
     express-rate-limit: ">= 6"
   checksum: 10/c36c50cfca992cbd14c97c08bb01c7d1d340d27b5fa1a2c1154275fec0b59c187eb6fb207da3d035c7c87e7629c92324cd53074f854dbb16548faf94f5a41351
+  languageName: node
+  linkType: hard
+
+"rate-limiter-flexible@npm:^8.0.1":
+  version: 8.3.0
+  resolution: "rate-limiter-flexible@npm:8.3.0"
+  checksum: 10/9c8d7a3224e3a57fdf7da721dabdb4942eb7dd7b5f3aa4cd57e2185928d5842855a8dc2e1db5e0403987d369972d0567e98aade2c2daa71436ebdae704e5a8ff
   languageName: node
   linkType: hard
 
