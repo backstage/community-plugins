@@ -1,10 +1,11 @@
-# [Backstage](https://backstage.io)
+# Apollo Explorer
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins related to Apollo GraphQL Explorer.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [apollo-explorer](./plugins/apollo-explorer/README.md): Embed Apollo Explorer inside Backstage.
+
+## About this workspace
+
+These plugins help teams explore and debug GraphQL APIs.
