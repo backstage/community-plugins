@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.24.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
 ## 1.24.0
 
 ### Minor Changes
