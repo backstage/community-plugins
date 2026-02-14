@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.21.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
 ## 1.21.0
 
 ### Minor Changes
