@@ -70,7 +70,7 @@
     "@backstage/plugin-catalog": "^1.32.2",
     "@backstage/test-utils": "^1.7.14",
     "@backstage/ui": "^0.11.2",
-    "@hey-api/openapi-ts": "0.90.9",
+    "@hey-api/openapi-ts": "0.92.3",
     "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "14.3.1",
