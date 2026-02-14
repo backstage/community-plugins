@@ -31810,14 +31810,14 @@ __metadata:
   linkType: hard
 
 "vm2@npm:^3.10.0":
-  version: 3.10.0
-  resolution: "vm2@npm:3.10.0"
+  version: 3.10.4
+  resolution: "vm2@npm:3.10.4"
   dependencies:
     acorn: "npm:^8.14.1"
     acorn-walk: "npm:^8.3.4"
   bin:
     vm2: bin/vm2
-  checksum: 10/ba8000037f2bed73aef6271a6a65a5db1c5d40046b920bc495a871fbeb3869908628e4e50feb1ec005bb43a17bd04fcf90638cff7db29ff2cb8070d879e61f18
+  checksum: 10/8ccf47bf3a4045c31c664eb4172a3cd82c47e419b727ee0ccd7e0caa8af77ce7ecae77788146005f70ba9d50525f4d847be484cde28046e2363847f8a889c42f
   languageName: node
   linkType: hard
 
