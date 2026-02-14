@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^",
-    "@backstage/backend-defaults": "^0.14.0",
+    "@backstage/backend-defaults": "^0.15.0",
     "@backstage/backend-plugin-api": "^1.6.0",
     "@backstage/catalog-client": "^1.12.1",
     "@backstage/errors": "^1.2.7",
