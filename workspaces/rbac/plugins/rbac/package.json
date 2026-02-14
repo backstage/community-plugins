@@ -83,7 +83,7 @@
     "@playwright/test": "^1.56.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^15.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/react-hooks": "8.0.1",
     "@testing-library/user-event": "14.6.1",
     "@types/autosuggest-highlight": "3.2.3",

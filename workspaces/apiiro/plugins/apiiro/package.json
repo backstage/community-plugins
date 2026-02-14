@@ -63,7 +63,7 @@
     "@backstage/test-utils": "^1.7.12",
     "@tanstack/eslint-plugin-query": "^5.91.0",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/react": "^19.2.2",
     "msw": "^1.0.0",

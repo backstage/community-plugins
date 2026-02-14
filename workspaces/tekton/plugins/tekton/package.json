@@ -87,7 +87,7 @@
     "@backstage/test-utils": "^1.7.14",
     "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "14.3.1",
+    "@testing-library/react": "16.3.2",
     "@types/dagre": "^0.7.52",
     "@types/lodash": "4.17.23",
     "cross-fetch": "4.1.0"

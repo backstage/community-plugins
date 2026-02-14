@@ -89,7 +89,7 @@
     "@backstage/plugin-signals": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.3.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.1",
     "@types/luxon": "^3.3.3",
     "react": "^17.0.0 || ^18.0.0",
