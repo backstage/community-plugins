@@ -140,6 +140,7 @@ const commonStatus = {
 export const mockApplication: Application = {
   metadata: {
     ...commonMetadata,
+    uid: '0516f659-52b9-4922-9820-3ebc472676fd',
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     name: 'quarkus-app-dev',
   },
@@ -150,6 +151,7 @@ export const mockApplication: Application = {
 export const mockQuarkusApplication: Application = {
   metadata: {
     ...commonMetadata,
+    uid: '1fe7988e-b825-4ac2-8712-870f685f9d97',
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     name: 'quarkus-app',
   },
@@ -217,6 +219,7 @@ const preProdHelmParameters = {
 export const preProdApplication: Application = {
   metadata: {
     ...commonMetadata,
+    uid: '2b81dff6-dee5-48c5-838d-70954885a054',
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     name: 'quarkus-app-preprod',
   },
@@ -312,6 +315,7 @@ const prodHelmParameters = {
 };
 export const prodApplication: Application = {
   metadata: {
+    uid: '37991ba3-1fac-4d3a-b00c-38b2fef98a78',
     creationTimestamp: new Date('2024-04-22T05:39:23Z'),
     labels: {
       'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
@@ -408,7 +412,7 @@ export const multiSourceArgoApp = {
   metadata: {
     name: 'demo',
     namespace: 'argocd',
-    uid: 'abcd1234-5678-90ef-ghij-klmnopqrstuv',
+    uid: '4bcd1234-5678-90ef-ghij-klmnopqrstuv',
     resourceVersion: '405389',
     generation: 408,
     creationTimestamp: new Date('2025-02-20T16:39:18Z'),

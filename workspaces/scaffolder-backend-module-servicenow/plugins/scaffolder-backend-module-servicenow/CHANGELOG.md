@@ -1,4 +1,14 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-servicenow
+
+## 2.13.0
+
+### Minor Changes
+
+- a0ed4e7: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- d567697: Updated dependency `@hey-api/openapi-ts` to `0.90.9`.
 
 ## 2.12.0
 

@@ -31,7 +31,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import Tooltip from '@material-ui/core/Tooltip';
-import StatusFilter from '../components/StatusFilter';
+import StatusFilter, { PullRequestState } from '../components/StatusFilter';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 const GetElapsedTime = ({ start }: { start: number }) =>
@@ -79,7 +79,7 @@ const PullRequestDetailPanel = ({ rowData }: { rowData: PullRequest }) => (
 
 const PullRequestList: FC = () => {
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
-  const [stateFilter, setStateFilter] = useState<string>('All');
+  const [stateFilter, setStateFilter] = useState<PullRequestState>('ALL');
   const [loading, setLoading] = useState(true);
   const { entity } = useEntity();
   const project = isBitbucketSlugSet(entity);
@@ -90,11 +90,7 @@ const PullRequestList: FC = () => {
   useEffect(() => {
     setLoading(true);
     bitbucketApi
-      .fetchPullRequestListForRepo(
-        projectName,
-        repoName,
-        stateFilter !== 'All' ? stateFilter : undefined,
-      )
+      .fetchPullRequestListForRepo(projectName, repoName, stateFilter)
       .then(data => {
         setPullRequests(data);
         setLoading(false);
@@ -166,7 +162,7 @@ const PullRequestList: FC = () => {
           <Box mr={1} />
           Bitbucket Pull Requests
           <Box position="absolute" right={320} top={20}>
-            <StatusFilter onFilterChange={setStateFilter} />
+            <StatusFilter onFilterChange={value => setStateFilter(value)} />
           </Box>
         </Box>
       }

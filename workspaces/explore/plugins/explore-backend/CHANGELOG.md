@@ -1,5 +1,17 @@
 # @backstage-community/plugin-explore-backend
 
+## 0.14.0
+
+### Minor Changes
+
+- 30af12d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [30af12d]
+  - @backstage-community/plugin-explore-common@0.12.0
+  - @backstage-community/plugin-explore-node@0.13.0
+
 ## 0.13.0
 
 ### Minor Changes

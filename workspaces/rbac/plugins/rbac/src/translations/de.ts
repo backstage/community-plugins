@@ -205,6 +205,8 @@ const rbacTranslationDe = createTranslationMessages({
     'permissionPolicies.resourceTypeTooltip': 'Ressourcentyp: {{resourceType}}',
     'permissionPolicies.advancedPermissionsTooltip':
       'Verwenden Sie erweiterte angepasste Berechtigungen, um Zugriff auf bestimmte Teile des ausgewählten Ressourcentyps zu gewähren.',
+    'permissionPolicies.noAdvancedPermissionsTooltip':
+      'Erweiterte Anpassung wird für diesen Ressourcentyp nicht unterstützt.',
     'permissionPolicies.pluginsSelected': '{{count}} Plugins',
     'permissionPolicies.noPluginsSelected': 'Keine Plugins ausgewählt',
     'permissionPolicies.search': 'Suchen',

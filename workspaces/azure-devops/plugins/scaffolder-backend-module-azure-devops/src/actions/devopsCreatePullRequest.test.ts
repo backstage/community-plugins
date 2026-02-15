@@ -18,6 +18,7 @@ import { createAzureDevopsCreatePullRequestAction } from './devopsCreatePullRequ
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 import { ScmIntegrations } from '@backstage/integration';
 import { ConfigReader } from '@backstage/config';
+import { GitPullRequestMergeStrategy } from 'azure-devops-node-api/interfaces/GitInterfaces';
 
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
@@ -169,5 +170,89 @@ describe('createAzureDevopsCreatePullRequestAction', () => {
     await expect(action.handler(ctx)).rejects.toThrow(
       /No pull request ID returned/,
     );
+  });
+
+  it('uses provided mergeStrategy when valid', async () => {
+    getCredentialsMock.mockResolvedValue({ token: 'tok' });
+    createADOPullRequest.mockResolvedValue({
+      pullRequestId: 10,
+      createdBy: { id: 'user1' },
+    });
+    const ctx = createMockActionContext({
+      workspacePath,
+      input: {
+        title: 'PR',
+        repoName: 'repo',
+        project: 'proj',
+        token: 'tok',
+        autoComplete: true,
+        mergeStrategy: 'Squash',
+      },
+    });
+
+    await action.handler(ctx);
+
+    expect(updateADOPullRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        gitPullRequestToUpdate: expect.objectContaining({
+          completionOptions: expect.objectContaining({
+            mergeStrategy: GitPullRequestMergeStrategy.Squash,
+          }),
+        }),
+        pullRequestId: 10,
+      }),
+    );
+  });
+
+  it('defaults to RebaseMerge when mergeStrategy is not provided', async () => {
+    getCredentialsMock.mockResolvedValue({ token: 'tok' });
+    createADOPullRequest.mockResolvedValue({
+      pullRequestId: 11,
+      createdBy: { id: 'user2' },
+    });
+    const ctx = createMockActionContext({
+      workspacePath,
+      input: {
+        title: 'PR',
+        repoName: 'repo',
+        project: 'proj',
+        token: 'tok',
+        autoComplete: true,
+      },
+    });
+
+    await action.handler(ctx);
+
+    expect(updateADOPullRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        gitPullRequestToUpdate: expect.objectContaining({
+          completionOptions: expect.objectContaining({
+            mergeStrategy: GitPullRequestMergeStrategy.RebaseMerge,
+          }),
+        }),
+        pullRequestId: 11,
+      }),
+    );
+  });
+
+  it('throws when mergeStrategy is invalid', async () => {
+    getCredentialsMock.mockResolvedValue({ token: 'tok' });
+    createADOPullRequest.mockResolvedValue({
+      pullRequestId: 12,
+      createdBy: { id: 'user3' },
+    });
+    const ctx = createMockActionContext({
+      workspacePath,
+      input: {
+        title: 'PR',
+        repoName: 'repo',
+        project: 'proj',
+        token: 'tok',
+        autoComplete: true,
+        mergeStrategy: 'InvalidStrategy',
+      },
+    });
+
+    await expect(action.handler(ctx)).rejects.toThrow(/Invalid mergeStrategy/);
   });
 });

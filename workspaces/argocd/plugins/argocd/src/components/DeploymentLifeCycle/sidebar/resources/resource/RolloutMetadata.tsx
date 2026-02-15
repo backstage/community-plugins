@@ -25,7 +25,9 @@ import { useTranslation } from '../../../../../hooks/useTranslation';
 const RolloutMetadata = ({ resource }: { resource: Resource }) => {
   const { rollouts } = useArgoResources();
   const rollout = rollouts.find(
-    r => r.metadata.name === resource?.name,
+    r =>
+      r.metadata.name === resource?.name &&
+      r.metadata.namespace === resource?.namespace,
   ) as RolloutUI;
 
   const rolloutStrategy = rollout?.spec?.strategy?.canary

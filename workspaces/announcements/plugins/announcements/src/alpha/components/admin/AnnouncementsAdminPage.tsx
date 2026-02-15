@@ -23,9 +23,8 @@ import {
   rootRouteRef,
 } from '../../../routes';
 
-export type AnnouncementsAdminPageProps = {
+type AnnouncementsAdminPageProps = {
   title?: string;
-  defaultInactive?: boolean;
 };
 
 export function AnnouncementsAdminPage(props: AnnouncementsAdminPageProps) {

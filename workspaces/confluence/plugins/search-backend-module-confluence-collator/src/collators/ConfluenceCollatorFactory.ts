@@ -188,7 +188,7 @@ export class ConfluenceCollatorFactory implements DocumentCollatorFactory {
     if (rootConf.has(instanceKey)) {
       conf = rootConf.getConfig(instanceKey);
     } else if (rootConf.has('baseUrl')) {
-      // single-instance shape, use rootConf directly
+      // single-instance shape (deprecated), use rootConf directly
       conf = rootConf;
     } else {
       // Neither the named instance nor a single-instance config exists -> will throw below when trying to read required values

@@ -135,12 +135,20 @@ const _default: OverridableFrontendPlugin<
       };
     }>;
     'page:announcements': OverridableExtensionDefinition<{
-      kind: 'page';
-      name: undefined;
       config: {
+        title: string | undefined;
+        category: string | undefined;
+        hideStartAt: boolean | undefined;
+        markdownRenderer: 'backstage' | 'md-editor' | undefined;
+        defaultInactive: boolean | undefined;
         path: string | undefined;
       };
       configInput: {
+        title?: string | undefined;
+        category?: string | undefined;
+        defaultInactive?: boolean | undefined;
+        hideStartAt?: boolean | undefined;
+        markdownRenderer?: 'backstage' | 'md-editor' | undefined;
         path?: string | undefined;
       };
       output:
@@ -154,6 +162,8 @@ const _default: OverridableFrontendPlugin<
             }
           >;
       inputs: {};
+      kind: 'page';
+      name: undefined;
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
@@ -161,9 +171,9 @@ const _default: OverridableFrontendPlugin<
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
       };
     }>;
-    'search-filter-result-type:announcements': OverridableExtensionDefinition<{
+    'search-filter-result-type:announcements/announcements-results-type': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
-      name: undefined;
+      name: 'announcements-results-type';
       config: {};
       configInput: {};
       output: ExtensionDataRef<

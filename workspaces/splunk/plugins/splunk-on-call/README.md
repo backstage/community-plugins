@@ -44,6 +44,12 @@ const overviewContent = (
     </EntitySwitch>
 ```
 
+### New frontend system
+
+If you are using the new frontend system, import the plugin from
+`@backstage-community/plugin-splunk-on-call/alpha` and add the
+`splunkOnCallPage` and `entitySplunkOnCallCard` extensions to your app.
+
 ### `readOnly` mode
 
 To suppress the rendering of the actionable create-acknowledge-resolve incident buttons and UI controls, the `EntitySplunkOnCallCard` can also be instantiated in `readOnly` mode:

@@ -1698,7 +1698,7 @@ __metadata:
     "@backstage/plugin-auth-node": "npm:^0.6.6"
     "@backstage/plugin-catalog-node": "npm:^1.18.0"
     "@types/express": "npm:*"
-    "@types/supertest": "npm:^2.0.12"
+    "@types/supertest": "npm:^6.0.0"
     dotenv: "npm:^17.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
@@ -3615,8 +3615,8 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-scaffolder-node@npm:^0.11.0, @backstage/plugin-scaffolder-node@npm:^0.11.1":
-  version: 0.11.1
-  resolution: "@backstage/plugin-scaffolder-node@npm:0.11.1"
+  version: 0.11.2
+  resolution: "@backstage/plugin-scaffolder-node@npm:0.11.2"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.4.3"
     "@backstage/catalog-model": "npm:^1.7.5"
@@ -3638,7 +3638,7 @@ __metadata:
     winston-transport: "npm:^4.7.0"
     zod: "npm:^3.22.4"
     zod-to-json-schema: "npm:^3.20.4"
-  checksum: 10/803c6cddda7e6fec003ebf956ffb3e5aec0ad4707864019d4efd5bfa4357c108134490353b8241bebb8e3426a0720a8d4dd8eaa0878e592170847818603e513e
+  checksum: 10/5b89de9d0ccf081a0acbd319bd2833903d9079edbd61ee41da2bd2f93cdca29b466a5e8ad924696912a43fe0a74887500eb2020ad5422b1add75459520e19627
   languageName: node
   linkType: hard
 
@@ -11960,7 +11960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
+"@types/superagent@npm:^8.1.0":
   version: 8.1.9
   resolution: "@types/superagent@npm:8.1.9"
   dependencies:
@@ -11972,12 +11972,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^2.0.12":
-  version: 2.0.16
-  resolution: "@types/supertest@npm:2.0.16"
+"@types/supertest@npm:^6.0.0":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
   dependencies:
-    "@types/superagent": "npm:*"
-  checksum: 10/2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
   languageName: node
   linkType: hard
 

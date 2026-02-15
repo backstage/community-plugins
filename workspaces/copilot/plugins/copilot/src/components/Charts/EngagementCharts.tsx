@@ -39,6 +39,7 @@ export const EngagementCharts = ({
   metricsByTeam,
   seats,
   seatsByTeam,
+  showOverall = true,
 }: PropsWithChildren<EngagementChartsProps>) => {
   // Helper function to create chart content
   const createChartContent = (
@@ -51,6 +52,7 @@ export const EngagementCharts = ({
       title,
       metricKey,
       team,
+      showOverall,
     );
 
     return (
@@ -82,8 +84,14 @@ export const EngagementCharts = ({
     seatsByTeam,
     'Total Assigned Seats',
     team,
+    showOverall,
   );
-  const seatsUnusedSeries = createUnusedSeatSeries(seats, seatsByTeam, team);
+  const seatsUnusedSeries = createUnusedSeatSeries(
+    seats,
+    seatsByTeam,
+    team,
+    showOverall,
+  );
 
   return (
     <MainBox>

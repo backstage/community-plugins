@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube",
-  "version": "0.22.2",
+  "version": "0.23.0",
   "description": "",
   "backstage": {
     "role": "frontend-plugin",

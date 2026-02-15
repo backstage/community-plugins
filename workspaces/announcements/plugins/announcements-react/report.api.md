@@ -123,11 +123,6 @@ export type AnnouncementsClientOptions = {
 };
 
 // @public
-export type AnnouncementsOptions = {
-  dependencies?: any[];
-};
-
-// @public
 export type AnnouncementsPermissionsResult = {
   create: {
     loading: boolean;
@@ -169,7 +164,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'admin.announcementsContent.announcements': 'Announcements';
     readonly 'admin.announcementsContent.noAnnouncementsFound': 'No announcements found';
     readonly 'admin.announcementsContent.cancelButton': 'Cancel';
-    readonly 'admin.announcementsContent.createButton': 'Create Announcement';
+    readonly 'admin.announcementsContent.createButton': 'Create announcement';
     readonly 'admin.announcementsContent.alertMessage': 'Announcement created.';
     readonly 'admin.announcementsContent.alertMessageWithNewCategory': 'with new category';
     readonly 'admin.announcementsContent.deletedMessage': 'Announcement deleted.';
@@ -200,6 +195,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
     readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.sendNotification': 'Send Notification';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
@@ -249,6 +245,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsTimeline.error': 'Error';
     readonly 'announcementsTimeline.noAnnouncements': 'No announcements';
     readonly 'categoriesForm.submit': 'Submit';
+    readonly 'categoriesForm.errors.alreadyExists': 'A category with this name already exists.';
     readonly 'categoriesForm.newCategory': 'New category';
     readonly 'categoriesForm.editCategory': 'Edit category';
     readonly 'categoriesForm.titleLabel': 'Title';
@@ -321,10 +318,7 @@ export type CreateTagRequest = {
 };
 
 // @public
-export const useAnnouncements: (
-  props: AnnouncementsFilters,
-  options?: AnnouncementsOptions,
-) => {
+export const useAnnouncements: (props: AnnouncementsFilters) => {
   announcements: AnnouncementsList;
   loading: boolean;
   error: Error | undefined;

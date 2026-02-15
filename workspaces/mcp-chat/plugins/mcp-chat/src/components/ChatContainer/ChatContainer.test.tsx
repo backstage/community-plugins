@@ -152,6 +152,7 @@ describe('ChatContainer', () => {
         [{ role: 'user', content: 'Hello world' }],
         ['1'],
         expect.any(AbortSignal),
+        undefined,
       );
 
       await waitFor(() => {
@@ -221,6 +222,7 @@ describe('ChatContainer', () => {
         expect.any(Array),
         ['1', '3'],
         expect.any(AbortSignal),
+        undefined,
       );
     });
   });
@@ -238,6 +240,7 @@ describe('ChatContainer', () => {
         [{ role: 'user', content: 'Test suggestion' }],
         ['1'],
         expect.any(AbortSignal),
+        undefined,
       );
     });
   });

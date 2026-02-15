@@ -71,7 +71,9 @@ const PermissionPoliciesFormNestedRow = ({
   const tooltipTitle = () => (
     <div>
       <Typography component="p" align="center">
-        {t('permissionPolicies.advancedPermissionsTooltip')}
+        {conditionRulesLength && conditionRulesLength > 0
+          ? t('permissionPolicies.advancedPermissionsTooltip')
+          : t('permissionPolicies.noAdvancedPermissionsTooltip')}
       </Typography>
     </div>
   );

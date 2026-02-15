@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-common
 
+## 0.16.0
+
+### Minor Changes
+
+- addf166: Backstage version bump to v1.47.2
+
 ## 0.15.0
 
 ### Minor Changes

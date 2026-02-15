@@ -1227,9 +1227,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/storage-blob@npm:12.29.1, @azure/storage-blob@npm:^12.5.0":
-  version: 12.29.1
-  resolution: "@azure/storage-blob@npm:12.29.1"
+"@azure/storage-blob@npm:12.30.0, @azure/storage-blob@npm:^12.5.0":
+  version: 12.30.0
+  resolution: "@azure/storage-blob@npm:12.30.0"
   dependencies:
     "@azure/abort-controller": "npm:^2.1.2"
     "@azure/core-auth": "npm:^1.9.0"
@@ -1242,16 +1242,16 @@ __metadata:
     "@azure/core-util": "npm:^1.11.0"
     "@azure/core-xml": "npm:^1.4.5"
     "@azure/logger": "npm:^1.1.4"
-    "@azure/storage-common": "npm:^12.1.1"
+    "@azure/storage-common": "npm:^12.2.0"
     events: "npm:^3.0.0"
     tslib: "npm:^2.8.1"
-  checksum: 10/a82ebafca0b1d35fc0bf61ddc8f10c00af1930c22227182968926bf6be3be6d260d80cc61c3e324297d7fa5136cc75507f6e364312a314d33912a9e71be8f4c2
+  checksum: 10/2fe2190aa6f637b4a525a2f2d129fefd9182670b59d2bfdcb4a8fb3b6cd2d10e9970ab9ebc3a3ddcf45a7143553f3ae19f800142b7218087bb8d02c91cb7b59d
   languageName: node
   linkType: hard
 
-"@azure/storage-common@npm:^12.1.1":
-  version: 12.1.1
-  resolution: "@azure/storage-common@npm:12.1.1"
+"@azure/storage-common@npm:^12.2.0":
+  version: 12.2.0
+  resolution: "@azure/storage-common@npm:12.2.0"
   dependencies:
     "@azure/abort-controller": "npm:^2.1.2"
     "@azure/core-auth": "npm:^1.9.0"
@@ -1262,7 +1262,7 @@ __metadata:
     "@azure/logger": "npm:^1.1.4"
     events: "npm:^3.3.0"
     tslib: "npm:^2.8.1"
-  checksum: 10/1fc3b5f3c57e0e7e925442c5731486c8eba9f34a793f6551a649e1f560c152133d10f9850fe53fd4042dd354a82aba69e591edc75be41e40c4bceb4fa8d41d5c
+  checksum: 10/d178748f5c0c8b2d6be51ae56aad00085fd355f83e62b379bb8cd6656a5e2c4172ccf81c5e5d78d5296dc05cda84d8b58b5d75236d6661730c2911c1e39c157d
   languageName: node
   linkType: hard
 
@@ -1687,7 +1687,7 @@ __metadata:
   resolution: "@backstage-community/plugin-azure-storage-explorer-backend@workspace:plugins/azure-storage-backend"
   dependencies:
     "@azure/identity": "npm:4.13.0"
-    "@azure/storage-blob": "npm:12.29.1"
+    "@azure/storage-blob": "npm:12.30.0"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/backend-test-utils": "backstage:^"

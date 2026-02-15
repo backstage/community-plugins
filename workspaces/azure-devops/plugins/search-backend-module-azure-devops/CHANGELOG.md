@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-azure-devops
 
+## 0.3.0
+
+### Minor Changes
+
+- 5f512a6: Backstage version bump to v1.47.2
+
+## 0.2.2
+
+### Patch Changes
+
+- 568c68b: Updated dependency `axios-retry` to `^4.0.0`.
+
 ## 0.2.1
 
 ### Patch Changes

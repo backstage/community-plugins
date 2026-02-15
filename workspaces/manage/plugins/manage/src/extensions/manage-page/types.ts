@@ -20,6 +20,7 @@ import { AppNode } from '@backstage/frontend-plugin-api';
 import {
   GetColumnFunc,
   GetColumnsFunc,
+  ManageCardRef,
   ManageCondition,
   ManageConditionOptions,
   ManageContentWidgetAccordion,
@@ -53,6 +54,13 @@ export interface ManagePageOptions {
 export type DecoratedSubRouteTab = SubRouteTab & {
   node: AppNode;
   condition: ManageCondition;
+};
+
+export type CardWidgetSpecInput = {
+  node: AppNode;
+  attachTo: string[] | undefined;
+  condition: ManageCondition;
+  card: ManageCardRef;
 };
 
 export type CardWidgetSpec = {

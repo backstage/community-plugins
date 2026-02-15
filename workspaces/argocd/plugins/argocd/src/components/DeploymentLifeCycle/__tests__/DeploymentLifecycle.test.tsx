@@ -256,4 +256,73 @@ describe('DeploymentLifecycle', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe('when multiple applications', () => {
+    const app1 = {
+      ...mockApplication,
+      metadata: {
+        ...mockApplication.metadata,
+        uid: 'dummy-uid-app-1',
+        instance: { name: 'instance-1', url: 'https://instance-1.example.com' },
+      },
+    };
+    const app2 = {
+      ...mockApplication,
+      metadata: {
+        ...mockApplication.metadata,
+        uid: 'dummy-uid-app-2',
+        instance: { name: 'instance-2', url: 'https://instance-2.example.com' },
+      },
+    };
+
+    beforeEach(() => {
+      (useArgocdConfig as any).mockReturnValue({
+        baseUrl: 'https://baseurl.com',
+        instances: [
+          { name: 'instance-1', url: 'https://instance-1.example.com' },
+          { name: 'instance-2', url: 'https://instance-2.example.com' },
+        ],
+        intervalMs: 10000,
+      });
+
+      setUseApi({
+        searchApplications: jest.fn().mockResolvedValue([app1, app2]),
+      });
+    });
+
+    test('should render multiple deployment lifecycle cards', async () => {
+      render(<DeploymentLifecycle />);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('argocd-loader')).not.toBeInTheDocument();
+      });
+
+      const cards = screen.getAllByTestId('quarkus-app-dev-card');
+      expect(cards).toHaveLength(2);
+      expect(screen.getByText('instance-1')).toBeInTheDocument();
+      expect(screen.getByText('instance-2')).toBeInTheDocument();
+    });
+
+    test('should open and close sidebar for correct application when clicking on a card', async () => {
+      render(<DeploymentLifecycle />);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('argocd-loader')).not.toBeInTheDocument();
+      });
+
+      const cards = screen.getAllByTestId('quarkus-app-dev-card');
+      expect(cards).toHaveLength(2);
+
+      // Click on the second app (from instance-2)
+      fireEvent.click(cards[1]);
+
+      let drawer: HTMLElement;
+      await waitFor(() => {
+        drawer = screen.getByTestId('quarkus-app-dev-drawer');
+        expect(drawer).toBeInTheDocument();
+        expect(drawer).toHaveTextContent('instance-2');
+        expect(drawer).not.toHaveTextContent('instance-1');
+      });
+    });
+  });
 });

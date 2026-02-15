@@ -24,7 +24,11 @@ import { argocdTranslationRef } from './ref';
  */
 export const argocdTranslations = createTranslationResource({
   ref: argocdTranslationRef,
-  translations: {},
+  translations: {
+    ja: () => import('./ja'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+  },
 });
 
 export { argocdTranslationRef };

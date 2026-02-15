@@ -32,10 +32,4 @@ export const manageTechInsightsApi = ApiBlueprint.makeWithOverrides({
       }),
     );
   },
-  //   params: defineParams =>
-  //     defineParams({
-  //       api: manageTechInsightsApiRef,
-  //       deps: {},
-  //       factory: () => new DefaultManageTechInsightsApi({}),
-  //     }),
 });

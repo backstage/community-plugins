@@ -31,6 +31,9 @@ workspace/announcements:
 workspace/apache-airflow:
   - "Workspace\\s*apache-airflow"
 
+workspace/apiiro:
+  - "Workspace\\s*apiiro"
+
 workspace/apollo-explorer:
   - "Workspace\\s*apollo-explorer"
 

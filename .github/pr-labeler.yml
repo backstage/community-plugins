@@ -42,6 +42,10 @@ workspace/apache-airflow:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/apache-airflow/**']
 
+workspace/apiiro:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/apiiro/**']
+
 workspace/apollo-explorer:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/apollo-explorer/**']

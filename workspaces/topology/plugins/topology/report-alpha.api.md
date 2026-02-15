@@ -70,6 +70,10 @@ export const topologyTranslationRef: TranslationRef<
     readonly 'toolbar.selectCluster': string;
     readonly 'toolbar.displayOptions': string;
     readonly 'toolbar.currentDisplayOptions': string;
+    readonly 'controlBar.zoomIn': string;
+    readonly 'controlBar.zoomOut': string;
+    readonly 'controlBar.fitToScreen': string;
+    readonly 'controlBar.resetView': string;
     readonly 'emptyState.noResourcesFound': string;
     readonly 'emptyState.noResourcesDescription': string;
     readonly 'sideBar.details': string;

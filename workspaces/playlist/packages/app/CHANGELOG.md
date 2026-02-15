@@ -1,5 +1,12 @@
 # app
 
+## 0.0.20
+
+### Patch Changes
+
+- Updated dependencies [f019cee]
+  - @backstage-community/plugin-playlist@0.15.0
+
 ## 0.0.19
 
 ### Patch Changes

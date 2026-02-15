@@ -1,4 +1,28 @@
-### Dependencies
+# @backstage-community/plugin-tekton
+
+## 3.35.0
+
+### Minor Changes
+
+- d3e6dbe: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [d3e6dbe]
+  - @backstage-community/plugin-tekton-common@1.18.0
+  - @backstage-community/plugin-tekton-react@0.3.0
+
+## 3.34.3
+
+### Patch Changes
+
+- c074f91: Added and updated fr, it and ja translation files.
+
+## 3.34.2
+
+### Patch Changes
+
+- fc2a6fc: Updated dependency `@types/lodash` to `4.17.23`.
 
 ## 3.34.1
 
@@ -17,6 +41,12 @@
 - Updated dependencies [5ac7a59]
   - @backstage-community/plugin-tekton-common@1.17.0
   - @backstage-community/plugin-tekton-react@0.2.0
+
+## 3.33.3
+
+### Patch Changes
+
+- 782b46b: Added and updated fr, it and ja translation files
 
 ## 3.33.2
 

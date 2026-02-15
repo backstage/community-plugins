@@ -38,6 +38,29 @@ export const Sidebar = (): JSX.Element => {
     'copilot.organization',
   );
 
+  const hasEnterprise = !!enterpriseConfig;
+  const hasOrganization = !!organizationConfig;
+  const hasBoth = hasEnterprise && hasOrganization;
+
+  // Determine the direct link path when only one option is configured
+  const getDirectPath = () => {
+    if (hasEnterprise && !hasOrganization) return 'copilot/enterprise';
+    if (hasOrganization && !hasEnterprise) return 'copilot/organization';
+    return 'copilot';
+  };
+
+  // If only one option is configured (or none), show a simple sidebar item without submenu
+  if (!hasBoth) {
+    return (
+      <SidebarItem
+        icon={SupportAgentIcon as IconComponent}
+        to={getDirectPath()}
+        text="Copilot"
+      />
+    );
+  }
+
+  // If both are configured, show the submenu
   return (
     <SidebarItem
       icon={SupportAgentIcon as IconComponent}
@@ -45,20 +68,16 @@ export const Sidebar = (): JSX.Element => {
       text="Copilot"
     >
       <SidebarSubmenu title="Copilot">
-        {enterpriseConfig && (
-          <SidebarSubmenuItem
-            title="Enterprise"
-            to="copilot/enterprise"
-            icon={BusinessIcon as IconComponent}
-          />
-        )}
-        {organizationConfig && (
-          <SidebarSubmenuItem
-            title="Organization"
-            to="copilot/organization"
-            icon={GroupIcon as IconComponent}
-          />
-        )}
+        <SidebarSubmenuItem
+          title="Enterprise"
+          to="copilot/enterprise"
+          icon={BusinessIcon as IconComponent}
+        />
+        <SidebarSubmenuItem
+          title="Organization"
+          to="copilot/organization"
+          icon={GroupIcon as IconComponent}
+        />
       </SidebarSubmenu>
     </SidebarItem>
   );

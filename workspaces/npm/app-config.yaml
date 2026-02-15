@@ -2,6 +2,12 @@ app:
   title: npm plugin example app
   baseUrl: http://localhost:3000
 
+  extensions:
+    - api:app/app-language:
+        config:
+          availableLanguages: ['en', 'es', 'fr', 'de', 'ja']
+          defaultLanguage: 'en'
+
 organization:
   name: npm plugin example
 

@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Box from '@mui/material/Box';
-import CircularProgress, {
-  CircularProgressProps,
-} from '@mui/material/CircularProgress';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 
-/** @public */
-export type ProgressColor = Extract<CircularProgressProps['color'], string>;
+import { ReactNode } from 'react';
+
+import { Box, Flex, Text } from '@backstage/ui';
+
+import Tooltip from '@mui/material/Tooltip';
+
+import { LinearProgress } from '../LinearProgress';
+import { CircularProgress } from '../CircularProgress';
+import { useParseColor, useProgressStyle } from '../../hooks';
+import { useColumnIconStyles } from './styles';
 
 /**
  * Props for {@link ColumnIconPercent}
@@ -29,9 +31,24 @@ export type ProgressColor = Extract<CircularProgressProps['color'], string>;
  * @public
  */
 export interface ColumnIconPercentProps {
-  title?: string;
+  /** Optional tooltip title */
+  title?: ReactNode;
+
+  /** Percentage value to display, between 0 and 100 */
   percent: number;
-  color?: ProgressColor;
+
+  /** Color of the progress indicator */
+  color?: string;
+
+  /**
+   * Show percentage text inside or aside the progress indicator
+   *
+   * Defaults to true for circular indicators and false for linear ones
+   */
+  showPercent?: boolean;
+
+  /** Optional component to render after the progress indicator */
+  after?: ReactNode;
 }
 
 /**
@@ -40,37 +57,65 @@ export interface ColumnIconPercentProps {
  * @public
  */
 export function ColumnIconPercent(props: ColumnIconPercentProps) {
-  const inner = (
-    <CircularProgressWithLabel
-      variant="determinate"
-      color={props.color}
-      value={props.percent}
-    />
-  );
+  const { title, percent, after } = props;
 
-  return props.title ? <Tooltip title={props.title}>{inner}</Tooltip> : inner;
+  const { graphics } = useColumnIconStyles();
+  const progressStyle = useProgressStyle();
+  const color = useParseColor()(props.color ?? 'primary');
+  const showPercent =
+    props.showPercent ?? (progressStyle === 'circular' ? true : false);
+
+  const inner =
+    progressStyle === 'linear' ? (
+      <LinearProgress style={{ width: 60 }} color={color} value={percent} />
+    ) : (
+      <CircularProgressWithLabel
+        color={color}
+        value={percent}
+        showPercent={showPercent}
+      />
+    );
+
+  const showInlinePercent = progressStyle === 'linear' && props.showPercent;
+
+  const content =
+    after || showInlinePercent ? (
+      <Flex className={graphics}>
+        <Box style={{ alignContent: 'center', cursor: 'default' }}>{inner}</Box>
+        {progressStyle === 'linear' && props.showPercent && (
+          <Box
+            style={{
+              cursor: 'default',
+              alignItems: 'center',
+              textAlign: 'right',
+            }}
+            minWidth={progressStyle === 'linear' ? '2rem' : undefined}
+          >
+            <Text variant="body-small">{Math.round(percent)}%</Text>
+          </Box>
+        )}
+        <Box style={{ alignContent: 'center' }}>{after}</Box>
+      </Flex>
+    ) : (
+      inner
+    );
+  return title ? <Tooltip title={title}>{content}</Tooltip> : content;
 }
 
-function CircularProgressWithLabel(props: CircularProgressProps) {
+function CircularProgressWithLabel(props: {
+  color: string;
+  value: number;
+  showPercent: boolean;
+}) {
   return (
-    <Box position="relative" display="inline-flex">
-      <CircularProgress variant="determinate" {...props} />
-      <Box
-        top={0}
-        left={0}
-        bottom={0}
-        right={0}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Typography
-          variant="caption"
-          component="div"
-          color="textSecondary"
-        >{`${Math.round(props.value ?? 0)}%`}</Typography>
-      </Box>
+    <Box position="relative">
+      <CircularProgress
+        progress={(props.value ?? 0) / 100}
+        color={props.color as string}
+        size={40}
+        textProps={{ variant: 'body-x-small' }}
+        showPercentage={props.showPercent}
+      />
     </Box>
   );
 }

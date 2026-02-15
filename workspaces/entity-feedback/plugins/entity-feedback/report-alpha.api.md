@@ -58,8 +58,8 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
-        title?: string | undefined;
         variant?: 'starred' | 'like-dislike' | undefined;
+        title?: string | undefined;
         requestResponse?: boolean | undefined;
         dialogTitle?: string | undefined;
         dialogResponses?:
@@ -112,9 +112,9 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type: 'content' | 'summary' | 'info' | undefined;
       };
       configInput: {
+        variant?: 'starred' | 'like-dislike' | undefined;
         title?: string | undefined;
         allEntities?: boolean | undefined;
-        variant?: 'starred' | 'like-dislike' | undefined;
         filter?: EntityPredicate | undefined;
         type?: 'content' | 'summary' | 'info' | undefined;
       };
