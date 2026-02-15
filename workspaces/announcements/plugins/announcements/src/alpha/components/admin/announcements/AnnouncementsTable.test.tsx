@@ -24,9 +24,11 @@ import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsTable } from './AnnouncementsTable';
 import { rootRouteRef } from '../../../../routes';
 
+const mockCatalogApi = catalogApiMock.mock();
+
 const renderAnnouncementsTable = async (announcements: Announcement[]) => {
   await renderInTestApp(
-    <TestApiProvider apis={[[catalogApiRef, catalogApiMock()]]}>
+    <TestApiProvider apis={[[catalogApiRef, mockCatalogApi]]}>
       <AnnouncementsTable data={announcements} />
     </TestApiProvider>,
     {
@@ -41,6 +43,7 @@ const renderAnnouncementsTable = async (announcements: Announcement[]) => {
 describe('AnnouncementsTable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCatalogApi.getEntityByRef.mockReset();
   });
 
   it('renders empty state when no announcements', async () => {
@@ -178,6 +181,115 @@ describe('AnnouncementsTable', () => {
       expect(screen.getByText('Valid Publisher')).toBeInTheDocument();
       expect(screen.getByText('Invalid Publisher')).toBeInTheDocument();
       expect(screen.getByText('No Publisher')).toBeInTheDocument();
+    });
+
+    it('displays on behalf of information when present', async () => {
+      const mockPublisher = {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'User',
+        metadata: { name: 'test-user', namespace: 'default' },
+      };
+
+      const mockTeam = {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Group',
+        metadata: { name: 'test-team', namespace: 'default' },
+        spec: { profile: { displayName: 'Test Team' } },
+      };
+
+      mockCatalogApi.getEntityByRef.mockImplementation(
+        async (
+          entityRef: string | { kind: string; namespace: string; name: string },
+        ) => {
+          const refString =
+            typeof entityRef === 'string'
+              ? entityRef
+              : `${entityRef.kind}:${entityRef.namespace}/${entityRef.name}`;
+          if (refString === 'user:default/test-user') {
+            return mockPublisher;
+          }
+          if (refString === 'group:default/test-team') {
+            return mockTeam;
+          }
+          return undefined;
+        },
+      );
+
+      const announcement: Announcement = {
+        id: '1',
+        title: 'Test Announcement',
+        excerpt: 'Test Excerpt',
+        body: 'Test Body',
+        publisher: 'user:default/test-user',
+        on_behalf_of: 'group:default/test-team',
+        created_at: DateTime.now().toISO(),
+        updated_at: DateTime.now().toISO(),
+        active: true,
+        start_at: DateTime.now().toISO(),
+      };
+
+      await renderAnnouncementsTable([announcement]);
+
+      expect(screen.getByText('Test Announcement')).toBeInTheDocument();
+      // Check that the on behalf of text is present (translation key lowercased)
+      expect(
+        screen.getByText(
+          /admin\.announcementsContent\.table\.onBehalfOf|on behalf of/i,
+        ),
+      ).toBeInTheDocument();
+      // Check that the on behalf of entity reference link is present
+      // EntityRefLink will render the entity name or displayName
+      const onBehalfOfLink = screen.getByRole('link', {
+        name: /test-team|Test Team/i,
+      });
+      expect(onBehalfOfLink).toBeInTheDocument();
+    });
+
+    it('does not display on behalf of when not present', async () => {
+      const announcement: Announcement = {
+        id: '1',
+        title: 'Test Announcement',
+        excerpt: 'Test Excerpt',
+        body: 'Test Body',
+        publisher: 'user:default/test-user',
+        created_at: DateTime.now().toISO(),
+        updated_at: DateTime.now().toISO(),
+        active: true,
+        start_at: DateTime.now().toISO(),
+      };
+
+      await renderAnnouncementsTable([announcement]);
+
+      expect(screen.getByText('Test Announcement')).toBeInTheDocument();
+      // Should not have any on behalf of links
+      const onBehalfOfLinks = screen.queryAllByRole('link', {
+        name: /group:default\/test-team/i,
+      });
+      expect(onBehalfOfLinks).toHaveLength(0);
+    });
+
+    it('does not display on behalf of when invalid entityRef', async () => {
+      const announcement: Announcement = {
+        id: '1',
+        title: 'Test Announcement',
+        excerpt: 'Test Excerpt',
+        body: 'Test Body',
+        publisher: 'user:default/test-user',
+        on_behalf_of: 'invalid-entity-ref',
+        created_at: DateTime.now().toISO(),
+        updated_at: DateTime.now().toISO(),
+        active: true,
+        start_at: DateTime.now().toISO(),
+      };
+
+      await renderAnnouncementsTable([announcement]);
+
+      expect(screen.getByText('Test Announcement')).toBeInTheDocument();
+      // Should not display invalid on_behalf_of
+      const onBehalfOfLinks = screen.queryAllByRole('link', {
+        name: /invalid-entity-ref/i,
+      });
+      expect(onBehalfOfLinks).toHaveLength(0);
     });
   });
 });

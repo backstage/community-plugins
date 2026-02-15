@@ -13,36 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  identityApiRef,
+  useApi,
+  alertApiRef,
+} from '@backstage/core-plugin-api';
 import {
   Box,
   Button,
   Card,
   CardBody,
   CardHeader,
+  Flex,
   Grid,
   Text,
+  TextField,
+  Switch,
 } from '@backstage/ui';
-import { RiSave2Line } from '@remixicon/react';
+import { RiSave2Line, RiAddLine } from '@remixicon/react';
 import {
   CreateAnnouncementRequest,
+  CreateCategoryRequest,
+  CreateTagRequest,
   useAnnouncementsTranslation,
   announcementsApiRef,
+  useCategories,
+  useTags,
 } from '@backstage-community/plugin-announcements-react';
-import { Announcement } from '@backstage-community/plugin-announcements-common';
+import {
+  Announcement,
+  Category,
+  Tag,
+} from '@backstage-community/plugin-announcements-common';
 
-import CategoryInput from './CategoryInput';
+import { CategorySelectInput, TagsSelectInput } from '../../../shared';
+import { CreateCategoryDialog } from '../../categories';
+import { CreateTagDialog } from '../../tags';
 import OnBehalfTeamDropdown from './OnBehalfTeamDropdown';
-import TagsInput from './TagsInput';
 
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
+import MuiTextField from '@mui/material/TextField';
 
 type AnnouncementFormProps = {
   initialData: Announcement;
@@ -55,7 +68,14 @@ export const AnnouncementForm = ({
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
   const announcementsApi = useApi(announcementsApiRef);
+  const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
+  const {
+    categories,
+    loading: categoriesLoading,
+    retry: refreshCategories,
+  } = useCategories();
+  const { tags, loading: tagsLoading, retry: refreshTags } = useTags();
 
   const formattedStartAt = initialData.start_at
     ? DateTime.fromISO(initialData.start_at).toISODate()
@@ -68,29 +88,103 @@ export const AnnouncementForm = ({
   const [form, setForm] = useState({
     ...initialData,
     active: initialData.active ?? true,
-    category: initialData.category?.slug,
+    category: initialData.category ?? null,
     start_at: formattedStartAt || '',
     until_date: formattedUntilDate || '',
-    tags: initialData.tags?.map(tag => tag.slug) || undefined,
+    tags: initialData.tags ?? null,
     sendNotification: initialData.sendNotification ?? false,
   });
   const [loading, setLoading] = useState(false);
   const [onBehalfOfSelectedTeam, setOnBehalfOfSelectedTeam] = useState(
     initialData.on_behalf_of || '',
   );
+  const [showCreateCategoryDialog, setShowCreateCategoryDialog] =
+    useState(false);
+  const [showCreateTagDialog, setShowCreateTagDialog] = useState(false);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.id]: event.target.value,
-    });
+  const handleCreateCategory = async (request: CreateCategoryRequest) => {
+    const slugifiedTitle = slugify(request.title.trim(), { lower: true });
+    const existingCategory = categories.find(
+      cat => cat.slug === slugifiedTitle,
+    );
+
+    if (existingCategory) {
+      alertApi.post({
+        message: t('categoriesForm.errors.alreadyExists'),
+        severity: 'warning',
+      });
+
+      // Select the existing category in the form
+      setForm(prevForm => ({
+        ...prevForm,
+        category: existingCategory,
+      }));
+
+      setShowCreateCategoryDialog(false);
+    } else {
+      try {
+        await announcementsApi.createCategory(request);
+
+        alertApi.post({
+          message: t('newCategoryDialog.createdMessage'),
+          severity: 'success',
+        });
+
+        setShowCreateCategoryDialog(false);
+        refreshCategories();
+
+        // Select the new category in the form
+        setForm(prevForm => ({
+          ...prevForm,
+          category: {
+            title: request.title,
+            slug: slugifiedTitle,
+          },
+        }));
+      } catch (err) {
+        alertApi.post({ message: (err as Error).message, severity: 'error' });
+      }
+    }
   };
 
-  const handleChangeActive = (event: ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.checked,
-    });
+  const handleCreateTag = async (request: CreateTagRequest) => {
+    const slugifiedTitle = slugify(request.title.trim(), { lower: true });
+    const existingTag = tags?.find(tag => tag.slug === slugifiedTitle);
+
+    if (existingTag) {
+      alertApi.post({
+        message: t('tagsForm.errors.alreadyExists'),
+        severity: 'warning',
+      });
+
+      setForm(prevForm => ({
+        ...prevForm,
+        tags: [...(prevForm.tags ?? []), existingTag],
+      }));
+
+      setShowCreateTagDialog(false);
+    } else {
+      try {
+        await announcementsApi.createTag(request);
+
+        alertApi.post({
+          message: t('newTagDialog.createdMessage'),
+          severity: 'success',
+        });
+
+        setShowCreateTagDialog(false);
+        refreshTags();
+
+        const newTag = { title: request.title, slug: slugifiedTitle };
+
+        setForm(prevForm => ({
+          ...prevForm,
+          tags: [...(prevForm.tags ?? []), newTag],
+        }));
+      } catch (err) {
+        alertApi.post({ message: (err as Error).message, severity: 'error' });
+      }
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -99,37 +193,18 @@ export const AnnouncementForm = ({
 
     const userIdentity = await identityApi.getBackstageIdentity();
 
-    if (form.tags && form.tags.length > 0) {
-      const existingTags = await announcementsApi.tags();
-
-      const processedTags = [];
-
-      for (const tagValue of form.tags) {
-        const slugifiedTag = slugify(tagValue.trim(), { lower: true });
-
-        if (existingTags.some(tag => tag.slug === slugifiedTag)) {
-          processedTags.push(slugifiedTag);
-        } else {
-          try {
-            await announcementsApi.createTag({ title: tagValue });
-            processedTags.push(slugifiedTag);
-          } catch (error) {
-            if (error.status === 409) {
-              processedTags.push(slugifiedTag);
-            } else {
-              throw error;
-            }
-          }
-        }
-      }
-
-      form.tags = processedTags;
-    }
-
-    const { id, created_at, ...announcementData } = form;
+    const {
+      id,
+      created_at,
+      category,
+      tags: formTags,
+      ...announcementData
+    } = form;
 
     const createRequest: CreateAnnouncementRequest = {
       ...announcementData,
+      category: category?.slug,
+      tags: formTags?.map(tag => tag.slug),
       publisher: userIdentity.userEntityRef,
       on_behalf_of: onBehalfOfSelectedTeam,
     };
@@ -159,26 +234,19 @@ export const AnnouncementForm = ({
             <Grid.Root columns="12">
               <Grid.Item colSpan="12">
                 <TextField
-                  id="title"
                   label={t('announcementForm.title')}
                   value={form.title}
-                  onChange={handleChange}
-                  variant="outlined"
-                  fullWidth
-                  required
+                  onChange={title => setForm({ ...form, title })}
+                  isRequired
                 />
               </Grid.Item>
 
               <Grid.Item colSpan="12">
                 <TextField
-                  id="excerpt"
                   label={t('announcementForm.excerpt')}
                   value={form.excerpt}
-                  onChange={handleChange}
-                  variant="outlined"
-                  fullWidth
-                  required
-                  multiline
+                  onChange={excerpt => setForm({ ...form, excerpt })}
+                  isRequired
                 />
               </Grid.Item>
 
@@ -193,11 +261,27 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <CategoryInput
-                  setForm={setForm}
-                  form={form}
-                  initialValue={initialData.category?.title ?? ''}
-                />
+                <Flex gap="2" align="end">
+                  <Box style={{ flex: 1 }}>
+                    <CategorySelectInput
+                      initialCategory={form.category ?? undefined}
+                      categories={categories}
+                      isLoading={categoriesLoading}
+                      setCategory={(category: Category | null) =>
+                        setForm(prev => ({ ...prev, category }))
+                      }
+                    />
+                  </Box>
+
+                  <Button
+                    data-testid="create-category-icon-button"
+                    variant="secondary"
+                    size="small"
+                    iconStart={<RiAddLine />}
+                    onClick={() => setShowCreateCategoryDialog(true)}
+                    aria-label={t('admin.categoriesContent.createButton')}
+                  />
+                </Flex>
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
@@ -208,11 +292,31 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <TagsInput setForm={setForm} form={form} />
+                <Flex gap="2" align="end">
+                  <Box style={{ flex: 1 }}>
+                    <TagsSelectInput
+                      initialTags={form.tags ?? undefined}
+                      tags={tags}
+                      isLoading={tagsLoading}
+                      setTags={(selectedTags: Tag[] | null) =>
+                        setForm(prev => ({ ...prev, tags: selectedTags }))
+                      }
+                    />
+                  </Box>
+
+                  <Button
+                    data-testid="create-tag-icon-button"
+                    variant="secondary"
+                    size="small"
+                    iconStart={<RiAddLine />}
+                    onClick={() => setShowCreateTagDialog(true)}
+                    aria-label={t('admin.tagsContent.createButton')}
+                  />
+                </Flex>
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <TextField
+                <MuiTextField
                   variant="outlined"
                   label={t('announcementForm.startAt')}
                   id="start-at-date"
@@ -231,7 +335,7 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan={{ xs: '12', md: '4' }}>
-                <TextField
+                <MuiTextField
                   variant="outlined"
                   label={t('announcementForm.untilDate')}
                   id="until-date"
@@ -255,43 +359,48 @@ export const AnnouncementForm = ({
               </Grid.Item>
 
               <Grid.Item colSpan="12">
-                <FormGroup row style={{ justifyContent: 'flex-end' }}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        name="active"
-                        checked={form.active}
-                        onChange={handleChangeActive}
-                        color="primary"
-                      />
-                    }
+                <Flex justify="end">
+                  <Switch
+                    name="active"
                     label={t('announcementForm.active')}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        name="sendNotification"
-                        checked={form.sendNotification}
-                        onChange={handleChangeActive}
-                        color="primary"
-                      />
+                    isSelected={form.active}
+                    onChange={isSelected =>
+                      setForm({ ...form, active: isSelected })
                     }
-                    label="Send Notification"
+                  />
+                  <Switch
+                    name="sendNotification"
+                    label={t('announcementForm.sendNotification')}
+                    isSelected={form.sendNotification}
+                    onChange={isSelected =>
+                      setForm({ ...form, sendNotification: isSelected })
+                    }
                   />
                   <Button
                     type="submit"
-                    size="medium"
                     isDisabled={loading || !form.body}
                     iconStart={<RiSave2Line />}
                   >
                     {t('announcementForm.submit')}
                   </Button>
-                </FormGroup>
+                </Flex>
               </Grid.Item>
             </Grid.Root>
           </form>
         </Box>
       </CardBody>
+
+      <CreateCategoryDialog
+        open={showCreateCategoryDialog}
+        onConfirm={handleCreateCategory}
+        onCancel={() => setShowCreateCategoryDialog(false)}
+      />
+
+      <CreateTagDialog
+        open={showCreateTagDialog}
+        onConfirm={handleCreateTag}
+        onCancel={() => setShowCreateTagDialog(false)}
+      />
     </Card>
   );
 };

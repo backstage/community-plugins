@@ -1,14 +1,19 @@
-/**
- * ProjectFilterComponent
+/*
+ * Copyright 2025 The Backstage Authors
  *
- * A controlled multi-select filter used to filter entities by project name.
- * - Displays chips for selected projects with ability to delete individually.
- * - Includes an ALL option with mutually-exclusive selection semantics.
- * - Uses Material-UI Select with custom MenuProps for positioning and height.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * State is owned by the parent; this component receives current selections and
- * a setter via props and renders accordingly.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
@@ -20,7 +25,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { SelectItem } from '@backstage/core-components';
+import type { SelectItem } from '@backstage/core-components';
 import type { MenuProps as MUIMenuProps } from '@mui/material/Menu';
 import type { SelectChangeEvent } from '@mui/material/Select';
 import Cancel from '@mui/icons-material/Cancel';
@@ -176,44 +181,51 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
           multiple
           value={projectNameFilter}
           onChange={handleProjectNameChange}
+          sx={{
+            '& [class*="MuiSelect-select"]': {
+              display: 'flex',
+              alignItems: 'center',
+              paddingTop: '1rem',
+            },
+          }}
           input={
             <OutlinedInput
               id="select-multiple-project"
               label="Filter by Project Name"
             />
           }
-          SelectDisplayProps={{ style: { paddingTop: 12, paddingBottom: 20 } }}
           renderValue={selected => {
             const values = Array.isArray(selected)
               ? (selected as string[])
               : [String(selected)];
             return (
-              <Box display="flex" flexWrap="wrap">
+              <Box display="flex" flexWrap="wrap" alignItems="center">
                 {values.map(value =>
                   value === ALL_OPTION.value ? (
-                    <Chip key={ALL_OPTION.value} label={ALL_OPTION.label} />
+                    <Chip
+                      key={ALL_OPTION.value}
+                      label={ALL_OPTION.label}
+                      size="small"
+                    />
                   ) : (
                     <Chip
                       key={value}
                       label={value}
+                      size="small"
                       onMouseDown={e => e.stopPropagation()}
                       onDelete={() => handleChipDelete(value)}
-                      deleteIcon={<Cancel sx={{ marginRight: 1 }} />}
+                      deleteIcon={
+                        <Cancel sx={{ marginRight: 0.5, fontSize: '1.2rem' }} />
+                      }
                       sx={{
                         '& [class*="MuiChip-deleteIcon"]': {
                           // default icon color
-                          color:
-                            theme.palette.mode === 'dark'
-                              ? 'rgba(255, 255, 255, 0.26)'
-                              : 'rgba(0, 0, 0, 0.26)',
+                          color: theme.palette.action.disabled,
                           transition: 'color 0.3s ease',
                         },
                         '&:hover [class*="MuiChip-deleteIcon"]': {
                           // icon color on chip hover
-                          color:
-                            theme.palette.mode === 'dark'
-                              ? 'rgba(255, 255, 255, 0.40)'
-                              : 'gray',
+                          color: theme.palette.text.secondary,
                         },
                       }}
                     />

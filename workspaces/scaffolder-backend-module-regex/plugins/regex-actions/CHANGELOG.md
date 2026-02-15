@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-regex
 
+## 2.13.0
+
+### Minor Changes
+
+- 5c059c3: Backstage version bump to v1.47.3
+
 ## 2.12.0
 
 ### Minor Changes

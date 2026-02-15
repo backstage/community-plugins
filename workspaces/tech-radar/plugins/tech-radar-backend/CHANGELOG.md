@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-radar-backend
 
+## 1.14.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+
 ## 1.14.0
 
 ### Minor Changes

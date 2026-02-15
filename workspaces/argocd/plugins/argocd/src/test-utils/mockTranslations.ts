@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ArgoCDMessages } from '../translations/ref';
+import { argocdMessages } from '../translations/ref';
 
 /**
  * Recursively flatten a nested messages object into a single-level map
@@ -51,7 +51,7 @@ function flattenMessages(
 }
 
 // Precompute the flattened message map (faster lookups)
-const flattenedMessages = flattenMessages(ArgoCDMessages);
+const flattenedMessages = flattenMessages(argocdMessages);
 
 /**
  * Minimal translation function

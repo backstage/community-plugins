@@ -68,7 +68,7 @@ export interface ResultCheckIconProps<
 export const ResultLinksMenu: (
   props: PropsWithChildren<{
     result: CheckResult;
-    entity?: Entity | undefined;
+    entity?: Entity;
     setMenu(opener: ResultLinksMenuInfo | undefined): void;
   }>,
 ) => JSX_2.Element | null;

@@ -167,7 +167,7 @@ const rbacTranslationJa = createTranslationMessages({
     'common.rule': 'ルール',
     'common.removeNestedCondition': 'ネストされた条件の削除',
     'common.overview': '概要',
-    'common.about': '概要',
+    'common.about': '詳細情報',
     'common.description': '説明',
     'common.modifiedBy': '更新者',
     'common.lastModified': '最終更新',

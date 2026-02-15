@@ -1,5 +1,15 @@
 # @backstage-community/plugin-acr
 
+## 1.22.0
+
+### Minor Changes
+
+- 1eff7b7: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 8167727: remove unused dependencies
+
 ## 1.21.1
 
 ### Patch Changes
@@ -11,6 +21,12 @@
 ### Minor Changes
 
 - 264c598: Backstage version bump to v1.46.2
+
+## 1.20.2
+
+### Patch Changes
+
+- 78a304d: Updated fr, it and ja translation files.
 
 ## 1.20.1
 

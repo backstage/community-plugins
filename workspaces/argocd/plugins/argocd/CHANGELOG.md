@@ -1,5 +1,13 @@
 # @backstage-community/plugin-argocd
 
+## 2.4.5
+
+### Patch Changes
+
+- c78148c: Add missing translations on argocd summary page
+- Updated dependencies [4818f35]
+  - @backstage-community/plugin-argocd-common@1.12.2
+
 ## 2.4.4
 
 ### Patch Changes

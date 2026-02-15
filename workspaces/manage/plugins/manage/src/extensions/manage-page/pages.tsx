@@ -21,6 +21,8 @@ import {
   createExtensionInput,
   ApiHolder,
   configApiRef,
+  ExtensionBoundary,
+  AppNode,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
@@ -41,29 +43,29 @@ import {
   ManageEntityColumnBlueprint,
   ManageEntityCardWidgetBlueprint,
   ManageEntityContentWidgetBlueprint,
-  ManageContentWidgetAccordion,
-  useCurrentTab,
-  ManageAccordion,
-  useCurrentKindTitle,
   TabContentFullHeight,
+  ManageCardRef,
+  CardWidget,
 } from '@backstage-community/plugin-manage-react';
 
 import { ManageTabsImpl, SubRouteTab } from '../../components/ManageTabs';
 import { rootRouteRef } from '../../routes';
 import { OrganizationGraphImpl } from '../../components/OrganizationGraph';
+import { Setting } from '../../components/Settings/types';
 import { useFilteredTabs } from './useTabs';
 import { useWidgetContents } from './useWidgetContents';
 import { useWidgetCards } from './useWidgetCards';
 import { useColumns } from './useColumns';
 import {
   CardWidgetSpec,
+  CardWidgetSpecInput,
   ColumnSpec,
   ContentWidgetSpec,
   DecoratedSubRouteTab,
   ManagePageOptions,
 } from './types';
 import { sortComponents, useOrder } from './sort';
-import { Setting } from '../../components/Settings/types';
+import { wrapAccordion } from './wrapAccordion';
 
 export const managePage = PageBlueprint.makeWithOverrides({
   inputs: {
@@ -89,7 +91,7 @@ export const managePage = PageBlueprint.makeWithOverrides({
     cardWidgets: createExtensionInput([
       ManageEntityCardWidgetBlueprint.dataRefs.attachTo,
       ManageEntityCardWidgetBlueprint.dataRefs.condition,
-      ManageEntityCardWidgetBlueprint.dataRefs.element,
+      ManageEntityCardWidgetBlueprint.dataRefs.card,
     ]),
     contentWidgets: createExtensionInput([
       ManageEntityContentWidgetBlueprint.dataRefs.accordion,
@@ -156,7 +158,7 @@ export const managePage = PageBlueprint.makeWithOverrides({
         });
 
         const cardWidgets = inputs.cardWidgets.map(
-          (widget): CardWidgetSpec => ({
+          (widget): CardWidgetSpecInput => ({
             node: widget.node,
             attachTo: widget.get(
               ManageEntityCardWidgetBlueprint.dataRefs.attachTo,
@@ -164,9 +166,7 @@ export const managePage = PageBlueprint.makeWithOverrides({
             condition: widget.get(
               ManageEntityCardWidgetBlueprint.dataRefs.condition,
             ),
-            element: widget.get(
-              ManageEntityCardWidgetBlueprint.dataRefs.element,
-            ),
+            card: widget.get(ManageEntityCardWidgetBlueprint.dataRefs.card),
           }),
         );
 
@@ -231,7 +231,7 @@ interface ManagePageInnerProps {
   apis: ApiHolder;
   tabs: readonly DecoratedSubRouteTab[];
   columns: ColumnSpec[];
-  cardWidgets: CardWidgetSpec[];
+  cardWidgets: CardWidgetSpecInput[];
   contentWidgets: ContentWidgetSpec[];
   config: ManageStaticConfig;
   settings: Setting[];
@@ -247,6 +247,40 @@ function ManagePageInner(props: ManagePageInnerProps) {
     (): ManageConditionOptions => ({ apis, owners, entities }),
     [apis, owners, entities],
   );
+
+  const resolvedCardsWidgets = useMemo((): CardWidgetSpec[] => {
+    const makeCardElement = (
+      node: AppNode,
+      card: ManageCardRef,
+    ): JSX.Element => {
+      if ('element' in card) {
+        return card.element;
+      } else if ('card' in card) {
+        return ExtensionBoundary.lazy(node, () =>
+          card
+            .card({ apis, owners, entities })
+            .then(({ title, subtitle, action, content }) => (
+              <CardWidget
+                title={title}
+                content={content}
+                subtitle={subtitle}
+                action={action}
+              />
+            )),
+        );
+      }
+      throw new Error('Invalid ManageCardRef');
+    };
+
+    return cardWidgets.map(
+      (widget): CardWidgetSpec => ({
+        node: widget.node,
+        attachTo: widget.attachTo,
+        condition: widget.condition,
+        element: makeCardElement(widget.node, widget.card),
+      }),
+    );
+  }, [apis, owners, entities, cardWidgets]);
 
   const {
     widgetOrderCards,
@@ -279,7 +313,7 @@ function ManagePageInner(props: ManagePageInnerProps) {
   const filteredTabs = useFilteredTabs(tabs, conditionOptions);
 
   useWidgetContents(contentWidgets, conditionOptions, managePageOptions);
-  useWidgetCards(cardWidgets, conditionOptions, managePageOptions);
+  useWidgetCards(resolvedCardsWidgets, conditionOptions, managePageOptions);
   useColumns(columns, conditionOptions, managePageOptions);
 
   // Order widgets, header content, footers content and columns by the config
@@ -358,50 +392,4 @@ function ManagePageInner(props: ManagePageInnerProps) {
       customSettings={settings}
     />
   );
-}
-
-// TODO: When deprecating the old frontend system, this could be simplified by
-// changing the API of ManageTabsImpl to inject the accordion settings and
-// wrapping there.
-function wrapAccordion(props: {
-  element: React.ReactNode;
-  accordion: ManageContentWidgetAccordion;
-}) {
-  const { element, accordion } = props;
-
-  return <WithinAccordion accordion={accordion} element={element} />;
-}
-
-function WithinAccordion(props: {
-  element: React.ReactNode;
-  accordion: ManageContentWidgetAccordion;
-}) {
-  const { element, accordion } = props;
-
-  const currentTab = useCurrentTab();
-  const kindTitle = useCurrentKindTitle();
-
-  const inAccordion =
-    typeof accordion.show === 'boolean'
-      ? accordion.show
-      : accordion.show?.[currentTab] ?? true;
-
-  const title =
-    typeof accordion.title === 'string'
-      ? accordion.title
-      : accordion.title({ currentTab, kindTitle });
-
-  if (inAccordion) {
-    return (
-      <ManageAccordion
-        title={title}
-        name={accordion.key}
-        defaultExpanded={accordion.defaultExpanded}
-        perKind={accordion.perKind}
-      >
-        {element}
-      </ManageAccordion>
-    );
-  }
-  return element;
 }

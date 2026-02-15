@@ -51,15 +51,15 @@ export function getTranslations(locale: string): RbacMessages {
     case 'en':
       return rbacMessages;
     case 'fr':
-      return transform(rbacTranslationFr.messages as unknown as FlatMessages);
+      return transform(rbacTranslationFr.messages);
     case 'de':
-      return transform(rbacTranslationDe.messages as unknown as FlatMessages);
+      return transform(rbacTranslationDe.messages);
     case 'es':
-      return transform(rbacTranslationEs.messages as unknown as FlatMessages);
+      return transform(rbacTranslationEs.messages);
     case 'it':
-      return transform(rbacTranslationIt.messages as unknown as FlatMessages);
+      return transform(rbacTranslationIt.messages);
     case 'ja':
-      return transform(rbacTranslationJa.messages as unknown as FlatMessages);
+      return transform(rbacTranslationJa.messages);
     default:
       return rbacMessages;
   }

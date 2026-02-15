@@ -1,5 +1,55 @@
 # @backstage-community/plugin-announcements
 
+## 2.3.0
+
+### Minor Changes
+
+- 5a984ed: - Added support for overriding `title`, `hideStartAt` and `markdownRenderer` via app-config for announcements page.
+  - `category` and `defaultInactive` props are now deprecated and will be removed in future releases. Use URL state to filter by category (e.g. `?category=...`). Inactive announcements are now hidden by default.
+  - Update @uiw/react-md-editor dependency to version 4.0.11.
+
+## 2.2.0
+
+### Minor Changes
+
+- 57c349e: `AnnouncementsOptions` has been dropped as an optional arg for the `useAnnouncements` hook in favor of handling state and dependencies internally.
+
+### Patch Changes
+
+- Updated dependencies [57c349e]
+  - @backstage-community/plugin-announcements-react@0.21.0
+
+## 2.1.0
+
+### Minor Changes
+
+- 99b4b52: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 1a71b9a: The On Behalf Of form component is now rewritten with `@backstage/ui`. The announcements table will now display the on behalf of group alongside publisher if present.
+- 3e53912: The tags select component in the announcements form has been swapped with our new `@backstage/ui` select implementation
+- 44a0337: The category selection in the announcements form has been refactored to use the new `CategorySelectInput` and `CreateCategoryDialog` components written with `@backstage/ui`. Category creation is now handled through the same mechanism as the categories table.
+- 64a82b0: Updates all non-date related text inputs to use the `TextField` from `@backstage/ui`.
+- 6f6d4c8: Switch components in the announcements form have been migrated to use `@backstage/ui`. The "Send notifications" label now includes support for translations.
+- 41f738e: Updates the announcements form to use `@backstage/ui` for the following components:
+
+  - Box
+  - Button
+  - InfoCard -> Card, CardBody, CardHeader
+  - Grid
+  - Typography -> Text
+  - Paper -> _removed_
+  - Divider -> _removed_
+
+  These are minor changes that do not affect the functionality of the announcements form.
+
+- Updated dependencies [44a0337]
+- Updated dependencies [6f6d4c8]
+- Updated dependencies [99b4b52]
+  - @backstage-community/plugin-announcements-react@0.20.0
+  - @backstage-community/plugin-announcements-common@0.17.0
+
 ## 2.0.0
 
 ### Major Changes

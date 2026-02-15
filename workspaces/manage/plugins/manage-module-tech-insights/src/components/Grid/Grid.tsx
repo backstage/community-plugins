@@ -15,10 +15,10 @@
  */
 import { ReactNode, useCallback, useMemo } from 'react';
 
-import { makeStyles, useTheme } from '@mui/styles';
-import Box from '@mui/material/Box';
+import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 
+import { Box } from '@backstage/ui';
 import {
   useCurrentKinds,
   useOwnedEntities,
@@ -92,7 +92,6 @@ function Title({
  * @public
  */
 export function ManageTechInsightsGrid(props: ManageTechInsightsGridProps) {
-  const { palette } = useTheme();
   const kinds = useCurrentKinds();
   const entities = useOwnedEntities(kinds);
 
@@ -114,33 +113,31 @@ export function ManageTechInsightsGrid(props: ManageTechInsightsGridProps) {
   };
 
   const getColor = useCallback(
-    (progress: number) => {
-      const rawColor = getPercentColor(progress * 100);
-      const muiColor =
-        rawColor === 'inherit'
-          ? 'inherit'
-          : palette[rawColor]?.main ?? 'inherit';
-      return muiColor;
-    },
-    [getPercentColor, palette],
+    (progress: number) => getPercentColor(progress * 100),
+    [getPercentColor],
   );
 
   const items = useMemo(() => {
-    return checks.map(({ check, uniq }) => ({
-      title: <Title titleInfo={mapTitle(check)} />,
-      progress: getRatio(responsesForCheck.get(uniq) ?? []),
-    }));
-  }, [checks, mapTitle, responsesForCheck]);
+    return checks.map(({ check, uniq }) => {
+      const progress = getRatio(responsesForCheck.get(uniq) ?? []);
+      return {
+        title: <Title titleInfo={mapTitle(check)} />,
+        describetion: check.description,
+        progress,
+        color: getColor(progress),
+      };
+    });
+  }, [checks, mapTitle, responsesForCheck, getColor]);
 
   const accordionTitle = useAccordionTitle();
 
   return inAccordion ? (
     <ManageAccordion title={accordionTitle} name="tech-insights">
-      <GaugeGrid items={items} getColor={getColor} />
+      <GaugeGrid items={items} />
     </ManageAccordion>
   ) : (
     <Box>
-      <GaugeGrid items={items} getColor={getColor} />
+      <GaugeGrid items={items} />
     </Box>
   );
 }

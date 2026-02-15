@@ -61,17 +61,17 @@ const argocdTranslationJa = createTranslationMessages({
     'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.metadataItemWithTooltip.tooltipText':
       'これらは、ArgoCD アプリケーションの全デプロイメントで使用されているイメージです。',
     'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.namespace':
-      'Namespace',
+      '名前空間',
     'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.commit':
       'コミット',
     'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.namespace':
-      'Namespace',
+      '名前空間',
     'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.strategy':
       'ストラテジー',
     'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.status':
       'ステータス',
     'deploymentLifecycle.sidebar.resources.resource.resourceMetadata.namespace':
-      'Namespace',
+      '名前空間',
     'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.iconButton.ariaLabel':
       '詳細',
     'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh':
@@ -157,7 +157,7 @@ const argocdTranslationJa = createTranslationMessages({
       'ArgoCD プラグインを使用して、namespace にデプロイされたコンポーネント/システムをレビューします',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'インスタンス',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'サーバー',
-    'deploymentLifecycle.deploymentLifecycleCard.namespace': 'Namespace',
+    'deploymentLifecycle.deploymentLifecycleCard.namespace': '名前空間',
     'deploymentLifecycle.deploymentLifecycleCard.commit': 'コミット',
     'deploymentLifecycle.deploymentLifecycleCard.tooltipText':
       '下に表示されているコミット SHA は、最初に定義されたアプリケーションソースの最新のコミットです。',
@@ -168,13 +168,16 @@ const argocdTranslationJa = createTranslationMessages({
       'ドロワーを閉じる',
     'deploymentLifecycle.deploymentLifecycleDrawer.instance': 'インスタンス',
     'deploymentLifecycle.deploymentLifecycleDrawer.cluster': 'クラスター',
-    'deploymentLifecycle.deploymentLifecycleDrawer.namespace': 'Namespace',
+    'deploymentLifecycle.deploymentLifecycleDrawer.namespace': '名前空間',
     'deploymentLifecycle.deploymentLifecycleDrawer.commit': 'コミット',
     'deploymentLifecycle.deploymentLifecycleDrawer.revision': 'リビジョン',
     'deploymentLifecycle.deploymentLifecycleDrawer.resources': 'リソース',
     'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue':
       'デフォルト',
     'deploymentSummary.deploymentSummary.tableTitle': 'デプロイメントの概要',
+    'deploymentSummary.deploymentSummary.columns.application':
+      'アプリケーション',
+    'deploymentSummary.deploymentSummary.columns.namespace': '名前空間',
     'deploymentSummary.deploymentSummary.columns.instance': 'インスタンス',
     'deploymentSummary.deploymentSummary.columns.server': 'サーバー',
     'deploymentSummary.deploymentSummary.columns.revision': 'リビジョン',

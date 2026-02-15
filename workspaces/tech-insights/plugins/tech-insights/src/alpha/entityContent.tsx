@@ -13,22 +13,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { compatWrapper } from '@backstage/core-compat-api';
-import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
-/**
- * Entity content extension that displays Tech Insights scorecards for an entity.
- *
- * @alpha
- */
-export const entityTechInsightsScorecardContent = EntityContentBlueprint.make({
-  name: 'scorecards',
-  params: {
-    path: '/tech-insights',
-    title: 'Scorecards',
-    loader: () =>
-      import('../components/ScorecardsContent').then(m =>
-        compatWrapper(<m.ScorecardsContent title="Scorecards" />),
-      ),
-  },
-});
+import { compatWrapper } from '@backstage/core-compat-api';
+import { createExtensionInput } from '@backstage/frontend-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import {
+  entityPredicateToFilterFunction,
+  EntityContentBlueprint,
+} from '@backstage/plugin-catalog-react/alpha';
+import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech-insights-react/alpha';
+
+export const entityTechInsightsContent =
+  EntityContentBlueprint.makeWithOverrides({
+    name: 'scorecards-content',
+    config: {
+      schema: {
+        description: z => z.string().optional(),
+        checkIds: z => z.array(z.string()).optional(),
+        dense: z => z.boolean().optional(),
+      },
+    },
+    inputs: {
+      scorecards: createExtensionInput([
+        TechInsightsScorecardBlueprint.dataRefs.props,
+        TechInsightsScorecardBlueprint.dataRefs.entityFilter.optional(),
+      ]),
+    },
+    factory(originalFactory, { inputs, config }) {
+      return originalFactory(defineParams =>
+        defineParams({
+          path: config.path ?? '/tech-insights',
+          title: config.title ?? 'Tech Insights',
+          loader: async () => {
+            const { ScorecardsContent } = await import(
+              '../components/ScorecardsContent'
+            );
+
+            const scorecards = inputs.scorecards.map(scorecard => {
+              const entityFilter = scorecard.get(
+                TechInsightsScorecardBlueprint.dataRefs.entityFilter,
+              );
+
+              return {
+                props: scorecard.get(
+                  TechInsightsScorecardBlueprint.dataRefs.props,
+                ),
+                entityFilter: entityFilter
+                  ? entityPredicateToFilterFunction(entityFilter)
+                  : () => true,
+              };
+            });
+
+            if (scorecards.length === 0) {
+              return (
+                <ScorecardsContent
+                  title={config.title ?? 'Scorecards'}
+                  description={config.description}
+                  checksId={config.checkIds ?? undefined}
+                  dense={config.dense}
+                />
+              );
+            }
+
+            const Component = () => {
+              const { entity } = useEntity();
+
+              const matchingScorecards = scorecards.filter(s =>
+                s.entityFilter(entity),
+              );
+
+              return (
+                <>
+                  {matchingScorecards.map(s => (
+                    <ScorecardsContent
+                      title={s.props.title ?? 'Scorecards'}
+                      description={s.props.description}
+                      checksId={s.props.checkIds ?? []}
+                      dense={s.props.dense}
+                      filter={s.props.checkFilter}
+                    />
+                  ))}
+                </>
+              );
+            };
+
+            return compatWrapper(<Component />);
+          },
+        }),
+      );
+    },
+  });

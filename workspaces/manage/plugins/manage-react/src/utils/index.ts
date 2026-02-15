@@ -13,42 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import pluralize from 'pluralize';
 
-import type { KindStarredType } from '../components/CurrentKindProvider';
-
-/**
- * Ensure a value is an array
- *
- * @public
- */
-export function arrayify<T>(t: T | T[] | Iterable<T> | undefined): T[] {
-  if (Array.isArray(t)) {
-    return t;
-  }
-  if (isIterable(t)) {
-    return Array.from(t);
-  }
-  return typeof t === 'undefined' || t === null ? [] : [t];
-}
-
-function isIterable(v: any): v is Iterable<any> {
-  return typeof v !== 'string' && typeof v?.[Symbol.iterator] === 'function';
-}
-
-export function kindToOpaqueString(kind: string | KindStarredType): string {
-  return typeof kind === 'string' ? kind : ` symbol$$${kind.description} `;
-}
-
-export function joinKinds(kinds: (string | KindStarredType)[]): string {
-  return kinds.map(k => kindToOpaqueString(k)).join(' $ ');
-}
-
-/**
- * Returns the plural of a kind
- *
- * @public
- */
-export function pluralizeKind(kind: string) {
-  return pluralize(kind);
-}
+export { arrayify } from './array';
+export { joinKinds, kindToOpaqueString, pluralizeKind } from './kind';

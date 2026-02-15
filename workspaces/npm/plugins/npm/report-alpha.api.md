@@ -10,7 +10,6 @@ import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { TranslationMessages } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
@@ -44,30 +43,6 @@ export const npmBackendApi: OverridableExtensionDefinition<{
   >(
     params: ApiFactory<TApi, TImpl, TDeps>,
   ) => ExtensionBlueprintParams<AnyApiFactory>;
-}>;
-
-// @alpha (undocumented)
-export const npmTranslation: OverridableExtensionDefinition<{
-  kind: 'translation';
-  name: 'npmTranslation';
-  config: {};
-  configInput: {};
-  output: ExtensionDataRef<
-    | TranslationResource<string>
-    | TranslationMessages<
-        string,
-        {
-          [x: string]: string;
-        },
-        boolean
-      >,
-    'core.translation.translation',
-    {}
-  >;
-  inputs: {};
-  params: {
-    resource: TranslationResource | TranslationMessages;
-  };
 }>;
 
 // @public (undocumented)

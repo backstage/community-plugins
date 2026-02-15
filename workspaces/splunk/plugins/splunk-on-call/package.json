@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-splunk-on-call",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "A Backstage plugin that integrates towards Splunk On-Call",
   "backstage": {
     "role": "frontend-plugin",
@@ -9,10 +9,23 @@
       "@backstage-community/plugin-splunk-on-call"
     ]
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "keywords": [
     "backstage",
@@ -43,8 +56,10 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",

@@ -13,33 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ComponentProps, PropsWithChildren, useCallback } from 'react';
 
-import { makeStyles } from '@mui/styles';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { PropsWithChildren } from 'react';
+
+import {
+  Accordion,
+  AccordionTrigger,
+  AccordionPanel,
+  Box,
+  Text,
+} from '@backstage/ui';
 
 import { useAccordionKey, useUserSettings } from '../../hooks';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    marginBottom: theme.spacing(2),
-  },
-  summary: {
-    marginTop: theme.spacing(0.5),
-    marginBottom: theme.spacing(0),
-    '&.Mui-expanded': {
-      marginTop: theme.spacing(0.5),
-      marginBottom: theme.spacing(1),
-    },
-  },
-  details: {
-    paddingBottom: 0,
-  },
-}));
 
 /**
  * Props for {@link ManageAccordion}
@@ -70,10 +55,6 @@ export interface ManageAccordionProps {
   perKind?: boolean;
 }
 
-type AccordionOnChange = NonNullable<
-  ComponentProps<typeof Accordion>['onChange']
->;
-
 /**
  * Renders a MUI Accordion with a title and content. The open/close state of the
  * accordion is saved in the user settings.
@@ -95,28 +76,14 @@ export function ManageAccordion(
     },
   );
 
-  const onChange = useCallback<AccordionOnChange>(
-    (_, value) => {
-      setExpanded(value);
-    },
-    [setExpanded],
-  );
-
-  const { root, summary, details } = useStyles();
-
   return (
-    <Accordion classes={{ root }} expanded={expanded} onChange={onChange}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        classes={{ content: summary }}
-      >
-        <Typography variant="h6" component="span">
-          {title}
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails classes={{ root: details }}>
-        {children}
-      </AccordionDetails>
-    </Accordion>
+    <Box mb="3">
+      <Accordion isExpanded={expanded} onExpandedChange={setExpanded}>
+        <AccordionTrigger>
+          <Text variant="title-x-small">{title}</Text>
+        </AccordionTrigger>
+        <AccordionPanel>{children}</AccordionPanel>
+      </Accordion>
+    </Box>
   );
 }

@@ -38,6 +38,7 @@ export const announcementsTranslationRef = createTranslationRef({
         label: 'Tags',
       },
       tagsLabel: 'Tags',
+      sendNotification: 'Send Notification',
     },
     announcementsPage: {
       announcements: 'Announcements',
@@ -99,6 +100,9 @@ export const announcementsTranslationRef = createTranslationRef({
       editCategory: 'Edit category',
       titleLabel: 'Title',
       submit: 'Submit',
+      errors: {
+        alreadyExists: 'A category with this name already exists.',
+      },
     },
     categoriesTable: {
       categoryDeleted: 'Category deleted.',

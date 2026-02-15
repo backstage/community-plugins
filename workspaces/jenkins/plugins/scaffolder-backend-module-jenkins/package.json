@@ -33,10 +33,7 @@
   "dependencies": {
     "@backstage-community/plugin-jenkins-common": "workspace:^",
     "@backstage/backend-plugin-api": "backstage:^",
-    "@backstage/errors": "backstage:^",
-    "@backstage/plugin-scaffolder-node": "backstage:^",
-    "cross-fetch": "^4.0.0",
-    "jenkins": "^1.1.0"
+    "@backstage/plugin-scaffolder-node": "backstage:^"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"

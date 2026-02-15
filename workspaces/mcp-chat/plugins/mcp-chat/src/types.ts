@@ -135,4 +135,39 @@ export interface ChatResponse {
   content: string;
   toolResponses?: any[];
   toolsUsed?: string[];
+  conversationId?: string;
+}
+
+/**
+ * A stored conversation record from the backend.
+ * @public
+ */
+export interface ConversationRecord {
+  /** Unique identifier for the conversation */
+  id: string;
+  /** User entity ref who owns this conversation */
+  userId: string;
+  /** Array of chat messages in the conversation */
+  messages: ChatMessage[];
+  /** Optional array of tool names used in the conversation */
+  toolsUsed?: string[];
+  /** AI-generated or user-edited conversation title */
+  title?: string;
+  /** Whether the conversation is starred/favorited */
+  isStarred: boolean;
+  /** ISO timestamp when the conversation was created */
+  createdAt: string;
+  /** ISO timestamp when the conversation was last updated */
+  updatedAt: string;
+}
+
+/**
+ * Response from the /conversations endpoint.
+ * @public
+ */
+export interface ConversationsResponse {
+  /** Array of conversation records */
+  conversations: ConversationRecord[];
+  /** Total count of conversations returned */
+  count: number;
 }
