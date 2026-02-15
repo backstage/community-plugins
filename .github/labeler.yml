@@ -127,20 +127,8 @@ workspace/gcp-projects:
 workspace/git-release-manager:
   - "Workspace\\s*git-release-manager"
 
-workspace/github-actions:
-  - "Workspace\\s*github-actions"
-
-workspace/github-deployments:
-  - "Workspace\\s*github-deployments"
-
-workspace/github-discussions:
-  - "Workspace\\s*github-discussions"
-
-workspace/github-issues:
-  - "Workspace\\s*github-issues"
-
-workspace/github-pull-requests-board:
-  - "Workspace\\s*github-pull-requests-board"
+workspace/github:
+  - "Workspace\\s*github"
 
 workspace/gitops-profiles:
   - "Workspace\\s*gitops-profiles"
