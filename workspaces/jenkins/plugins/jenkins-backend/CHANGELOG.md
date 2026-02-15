@@ -1,5 +1,17 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.25.0
+
+### Minor Changes
+
+- 5141efa: Drops support for old backend system which includes removing exports for JenkinsBuilder. Please migrate to the new backend system way of installing the plugin.
+
+### Patch Changes
+
+- fc25522: remove unused dependencies
+- Updated dependencies [fc25522]
+  - @backstage-community/plugin-jenkins-common@0.16.1
+
 ## 0.24.1
 
 ### Patch Changes
