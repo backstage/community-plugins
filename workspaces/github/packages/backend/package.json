@@ -21,6 +21,7 @@
     "build-image": "docker build ../.. -f Dockerfile --tag backstage"
   },
   "dependencies": {
+    "@backstage-community/plugin-search-backend-module-github-discussions": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
@@ -31,6 +32,8 @@
     "@backstage/plugin-auth-node": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
     "@backstage/plugin-proxy-backend": "backstage:^",
+    "@backstage/plugin-search-backend": "backstage:^",
+    "@backstage/plugin-search-backend-module-catalog": "backstage:^",
     "app": "link:../app",
     "better-sqlite3": "^12.0.0",
     "dockerode": "^3.3.1",

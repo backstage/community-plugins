@@ -1917,7 +1917,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-github-deployments@workspace:plugins/github-deployments":
+"@backstage-community/plugin-github-deployments@workspace:^, @backstage-community/plugin-github-deployments@workspace:plugins/github-deployments":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-deployments@workspace:plugins/github-deployments"
   dependencies:
@@ -1965,15 +1965,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-github-discussions@workspace:plugins/github-discussions":
+"@backstage-community/plugin-github-discussions@workspace:^, @backstage-community/plugin-github-discussions@workspace:plugins/github-discussions":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-discussions@workspace:plugins/github-discussions"
   dependencies:
     "@backstage-community/plugin-github-discussions-common": "workspace:^"
     "@backstage/cli": "backstage:^"
+    "@backstage/core-compat-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-search-common": "backstage:^"
     "@backstage/plugin-search-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
@@ -1997,7 +1999,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-github-issues@workspace:plugins/github-issues":
+"@backstage-community/plugin-github-issues@workspace:^, @backstage-community/plugin-github-issues@workspace:plugins/github-issues":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-issues@workspace:plugins/github-issues"
   dependencies:
@@ -2034,7 +2036,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-github-pull-requests-board@workspace:plugins/github-pull-requests-board":
+"@backstage-community/plugin-github-pull-requests-board@workspace:^, @backstage-community/plugin-github-pull-requests-board@workspace:plugins/github-pull-requests-board":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-github-pull-requests-board@workspace:plugins/github-pull-requests-board"
   dependencies:
@@ -2070,7 +2072,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-search-backend-module-github-discussions@workspace:plugins/search-backend-module-github-discussions":
+"@backstage-community/plugin-search-backend-module-github-discussions@workspace:^, @backstage-community/plugin-search-backend-module-github-discussions@workspace:plugins/search-backend-module-github-discussions":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-search-backend-module-github-discussions@workspace:plugins/search-backend-module-github-discussions"
   dependencies:
@@ -3436,6 +3438,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-search-backend-module-catalog@backstage:^::backstage=1.47.2&npm=0.3.11, @backstage/plugin-search-backend-module-catalog@npm:^0.3.11":
+  version: 0.3.11
+  resolution: "@backstage/plugin-search-backend-module-catalog@npm:0.3.11"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.6.0"
+    "@backstage/catalog-client": "npm:^1.12.1"
+    "@backstage/catalog-model": "npm:^1.7.6"
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/plugin-catalog-common": "npm:^1.1.7"
+    "@backstage/plugin-catalog-node": "npm:^1.20.1"
+    "@backstage/plugin-permission-common": "npm:^0.9.3"
+    "@backstage/plugin-search-backend-node": "npm:^1.4.0"
+    "@backstage/plugin-search-common": "npm:^1.2.21"
+  checksum: 10/fe1ca30dd2a4f5fb9b9f172e91b5f49e7d3f6b894fe61afdaf132db2e0fafe000043c12062ae230b656907600795662d71658d65632b2f7d804d6dd32a2e7e23
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-search-backend-node@backstage:^::backstage=1.47.2&npm=1.4.0, @backstage/plugin-search-backend-node@npm:^1.4.0":
   version: 1.4.0
   resolution: "@backstage/plugin-search-backend-node@npm:1.4.0"
@@ -3451,6 +3471,30 @@ __metadata:
     ndjson: "npm:^2.0.0"
     uuid: "npm:^11.0.0"
   checksum: 10/c283a2d83f6cba055dbeff2a16126c52f92598969c58c655fec649aea053939dff3d5752436757b9f141e97bd081ed091d083f1b670526b0701d9c79fc45beab
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-search-backend@backstage:^::backstage=1.47.2&npm=2.0.11, @backstage/plugin-search-backend@npm:^2.0.11":
+  version: 2.0.11
+  resolution: "@backstage/plugin-search-backend@npm:2.0.11"
+  dependencies:
+    "@backstage/backend-defaults": "npm:^0.15.1"
+    "@backstage/backend-openapi-utils": "npm:^0.6.5"
+    "@backstage/backend-plugin-api": "npm:^1.6.2"
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/plugin-permission-common": "npm:^0.9.5"
+    "@backstage/plugin-permission-node": "npm:^0.10.9"
+    "@backstage/plugin-search-backend-node": "npm:^1.4.0"
+    "@backstage/plugin-search-common": "npm:^1.2.21"
+    "@backstage/types": "npm:^1.2.2"
+    dataloader: "npm:^2.0.0"
+    express: "npm:^4.22.0"
+    lodash: "npm:^4.17.21"
+    qs: "npm:^6.10.1"
+    yn: "npm:^4.0.0"
+    zod: "npm:^3.25.76"
+  checksum: 10/4921ad823bf10f27779dd5a0cd9be1522effdbeb93167090527e37e6a1547b16834f69e032957a42b4a59ed7bcb64efdc10d96b8a19710359e74f752f677c87c
   languageName: node
   linkType: hard
 
@@ -3491,6 +3535,35 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/c0efe72913c1db199e54bf9946a78b58be7e0d6f3ec92af091befbfd7da4d1e7fd3f2b38d40335cb312686d8a2efab6a9256433f6da07469408b29d50dda23ff
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-search@backstage:^::backstage=1.47.2&npm=1.5.3, @backstage/plugin-search@npm:^1.5.3":
+  version: 1.5.3
+  resolution: "@backstage/plugin-search@npm:1.5.3"
+  dependencies:
+    "@backstage/core-components": "npm:^0.18.5"
+    "@backstage/core-plugin-api": "npm:^1.12.1"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/frontend-plugin-api": "npm:^0.13.3"
+    "@backstage/plugin-catalog-react": "npm:^1.21.5"
+    "@backstage/plugin-search-common": "npm:^1.2.21"
+    "@backstage/plugin-search-react": "npm:^1.10.2"
+    "@backstage/types": "npm:^1.2.2"
+    "@backstage/version-bridge": "npm:^1.0.11"
+    "@material-ui/core": "npm:^4.12.2"
+    "@material-ui/icons": "npm:^4.9.1"
+    qs: "npm:^6.9.4"
+    react-use: "npm:^17.2.4"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.3.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/e4bae5519d451f9c8993af2c79a54b3d3b7eb3e2ff3c59602eac7422bbc6892f1116bfa9e5b30401625120580853c50e0c0811a20fb6bbaec985466bff3cc5e9
   languageName: node
   linkType: hard
 
@@ -3717,7 +3790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.11.0":
+"@backstage/ui@backstage:^::backstage=1.47.2&npm=0.11.2, @backstage/ui@npm:^0.11.0, @backstage/ui@npm:^0.11.2":
   version: 0.11.2
   resolution: "@backstage/ui@npm:0.11.2"
   dependencies:
@@ -14253,6 +14326,10 @@ __metadata:
   resolution: "app-next@workspace:packages/app-next"
   dependencies:
     "@backstage-community/plugin-github-actions": "workspace:^"
+    "@backstage-community/plugin-github-deployments": "workspace:^"
+    "@backstage-community/plugin-github-discussions": "workspace:^"
+    "@backstage-community/plugin-github-issues": "workspace:^"
+    "@backstage-community/plugin-github-pull-requests-board": "workspace:^"
     "@backstage/app-defaults": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
@@ -14272,9 +14349,12 @@ __metadata:
     "@backstage/plugin-catalog-import": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-org": "backstage:^"
+    "@backstage/plugin-search": "backstage:^"
+    "@backstage/plugin-search-react": "backstage:^"
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"
@@ -14305,6 +14385,10 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-github-actions": "workspace:^"
+    "@backstage-community/plugin-github-deployments": "workspace:^"
+    "@backstage-community/plugin-github-discussions": "workspace:^"
+    "@backstage-community/plugin-github-issues": "workspace:^"
+    "@backstage-community/plugin-github-pull-requests-board": "workspace:^"
     "@backstage/app-defaults": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
@@ -14320,9 +14404,12 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-org": "backstage:^"
     "@backstage/plugin-permission-react": "backstage:^"
+    "@backstage/plugin-search": "backstage:^"
+    "@backstage/plugin-search-react": "backstage:^"
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"
@@ -14866,6 +14953,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@backstage-community/plugin-search-backend-module-github-discussions": "workspace:^"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
@@ -14877,6 +14965,8 @@ __metadata:
     "@backstage/plugin-auth-node": "backstage:^"
     "@backstage/plugin-catalog-backend": "backstage:^"
     "@backstage/plugin-proxy-backend": "backstage:^"
+    "@backstage/plugin-search-backend": "backstage:^"
+    "@backstage/plugin-search-backend-module-catalog": "backstage:^"
     "@types/dockerode": "npm:^3.3.0"
     "@types/express": "npm:^4.17.6"
     "@types/express-serve-static-core": "npm:^4.17.5"

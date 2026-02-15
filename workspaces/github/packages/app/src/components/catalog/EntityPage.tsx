@@ -42,6 +42,16 @@ import {
   EntityUserProfileCard,
 } from '@backstage/plugin-org';
 import { EmptyState } from '@backstage/core-components';
+import { EntityGithubDeploymentsCard } from '@backstage-community/plugin-github-deployments';
+import {
+  GithubIssuesCard,
+  GithubIssuesPage,
+} from '@backstage-community/plugin-github-issues';
+import { EntityApiDefinitionCard } from '@backstage/plugin-api-docs';
+import {
+  EntityTeamPullRequestsCard,
+  EntityTeamPullRequestsContent,
+} from '@backstage-community/plugin-github-pull-requests-board';
 
 const cicdContent = (
   // This is an example of how you can implement your company's logic in entity page.
@@ -104,6 +114,12 @@ const overviewContent = (
     <Grid item md={6}>
       <EntityAboutCard variant="gridItem" />
     </Grid>
+    <Grid item xs={12} sm={6} md={4}>
+      <EntityGithubDeploymentsCard />
+    </Grid>
+    <Grid item xs={12}>
+      <GithubIssuesCard />
+    </Grid>
   </Grid>
 );
 
@@ -116,6 +132,10 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/github-issues" title="GitHub Issues">
+      <GithubIssuesPage />
+    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -127,6 +147,10 @@ const websiteEntityPage = (
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/github-issues" title="GitHub Issues">
+      <GithubIssuesPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -173,6 +197,16 @@ const apiPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
+    <EntityLayout.Route path="/definition" title="Definition">
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <EntityApiDefinitionCard />
+        </Grid>
+      </Grid>
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/github-issues" title="GitHub Issues">
+      <GithubIssuesPage />
+    </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -188,6 +222,9 @@ const userPage = (
           <EntityOwnershipCard variant="gridItem" />
         </Grid>
       </Grid>
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/github-issues" title="GitHub Issues">
+      <GithubIssuesPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -209,7 +246,16 @@ const groupPage = (
         <Grid item xs={12} md={6}>
           <EntityLinksCard />
         </Grid>
+        <Grid item xs={12}>
+          <EntityTeamPullRequestsCard />
+        </Grid>
       </Grid>
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/github-issues" title="GitHub Issues">
+      <GithubIssuesPage />
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/pull-requests" title="Pull Requests">
+      <EntityTeamPullRequestsContent />
     </EntityLayout.Route>
   </EntityLayout>
 );

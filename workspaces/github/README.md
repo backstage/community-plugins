@@ -14,3 +14,36 @@ To start the app, run:
 yarn install
 yarn start
 ```
+
+## Development
+
+To start the app, run:
+
+```sh
+yarn install
+yarn start
+```
+
+## Examples
+
+There are example setup for each plugin where possible. There is overlap between each of these thus they are not exclusively showing only the given plugin's features:
+
+- `github-actions:` <http://localhost:3000/catalog/default/component/github-actions/ci-cd>
+- `github-deployments`: <http://localhost:3000/catalog/default/component/github-deployments>
+- `github-issues`: <http://localhost:3000/catalog/default/component/github-issues>
+- `github-pull-request-board`: <http://localhost:3000/catalog/default/group/github-pull-requests-board/pull-requests>
+
+For `github-discussions` you'll want to add the following config:
+
+```yaml
+search:
+  collators:
+    githubDiscussions:
+      url: https://github.com/mermaid-js/mermaid # required
+      schedule:
+        initialDelay: { seconds: 10 }
+        timeout: { minutes: 10 }
+        frequency: { minutes: 30 }
+```
+
+Once the indexing has rand and completed you can see the results here: <http://localhost:3000/search?query=&types%5B%5D=github-discussions>

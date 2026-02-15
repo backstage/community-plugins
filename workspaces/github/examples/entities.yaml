@@ -1,18 +1,3 @@
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: backstage
-  description: backstage.io
-  annotations:
-    github.com/project-slug: 'backstage/backstage'
-    backstage.io/managed-by-location: url:https://github.com/backstage/backstage
-    backstage.io/managed-by-origin-location: url:https://github.com/backstage/backstage
-    backstage.io/techdocs-ref: url:https://github.com/backstage/backstage
-spec:
-  type: website
-  lifecycle: production
-  owner: guests
-  system: examples
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
 apiVersion: backstage.io/v1alpha1
@@ -22,37 +7,58 @@ metadata:
 spec:
   owner: guests
 ---
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: example-website
+  name: github-actions
+  description: Example entity showcasing the GitHub Actions plugin
   annotations:
-    'jenkins.io/job-full-name': folder/job
+    github.com/project-slug: 'backstage/community-plugins'
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/
 spec:
   type: website
-  lifecycle: experimental
+  lifecycle: production
   owner: guests
   system: examples
-  providesApis: [example-grpc-api]
 ---
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
-kind: API
+kind: Component
 metadata:
-  name: example-grpc-api
+  name: github-deployments
+  description: Example entity showcasing the GitHub Deployments plugin
   annotations:
     github.com/project-slug: 'backstage/backstage'
+    backstage.io/source-location: url:https://github.com/backstage/backstage/
 spec:
-  type: grpc
-  lifecycle: experimental
+  type: website
+  lifecycle: production
   owner: guests
   system: examples
-  definition: |
-    syntax = "proto3";
-    service Exampler {
-      rpc Example (ExampleMessage) returns (ExampleMessage) {};
-    }
-    message ExampleMessage {
-      string example = 1;
-    };
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-issues
+  description: Example entity showcasing the GitHub Issues plugin
+  annotations:
+    github.com/project-slug: 'backstage/community-plugins'
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/
+spec:
+  type: website
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-pull-requests-board
+  description: Example entity showcasing the GitHub Pull Request Board plugin
+  annotations:
+    github.com/project-slug: 'backstage/community-plugins'
+    backstage.io/source-location: url:https://github.com/backstage/community-plugins/
+spec:
+  type: website
+  lifecycle: production
+  owner: github-pull-requests-board
+  system: examples

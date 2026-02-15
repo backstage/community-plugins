@@ -30,4 +30,13 @@ backend.add(import('./modules/auth'));
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
 
+// search plugin
+backend.add(import('@backstage/plugin-search-backend'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog'));
+backend.add(
+  import(
+    '@backstage-community/plugin-search-backend-module-github-discussions'
+  ),
+);
+
 backend.start();

@@ -15,3 +15,11 @@ metadata:
 spec:
   type: team
   children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: github-pull-requests-board
+spec:
+  type: team
+  children: []

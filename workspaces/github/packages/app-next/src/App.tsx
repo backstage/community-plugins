@@ -24,13 +24,11 @@ import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
-import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 import { Navigate, Route } from 'react-router';
 
-import { navigationExtension } from './components/Sidebar';
-import { SignInPage } from './components/auth/SignInPage';
+import { SignInPage } from './modules/auth/SignInPage';
 
-import githubActionsPlugin from '@backstage-community/plugin-github-actions/alpha';
+import { navModule } from './modules/nav';
 
 const signInPage = SignInPageBlueprint.make({
   params: {
@@ -56,12 +54,11 @@ export default createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
-    userSettingsPlugin,
-    githubActionsPlugin,
+    navModule,
     ...collectedLegacyPlugins,
     createFrontendModule({
       pluginId: 'app',
-      extensions: [signInPage, homePageExtension, navigationExtension],
+      extensions: [signInPage, homePageExtension],
     }),
   ],
 });
