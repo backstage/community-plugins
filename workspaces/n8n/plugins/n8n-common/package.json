@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-n8n-common",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Common types and utilities for the n8n plugins",
   "backstage": {
     "role": "common-library",
