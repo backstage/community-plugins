@@ -475,7 +475,12 @@ export class PoliciesServer {
         const body = await this.transformRoleArray(conditionsFilter, ...roles);
 
         if (this.defaultRole) {
-          body.push(this.defaultRole);
+          const defRoleMeta = this.roleMetadata.getDefaultRoleMetadata();
+          const roleWithMeta: Role = {
+            ...this.defaultRole,
+            metadata: defRoleMeta,
+          };
+          body.push(roleWithMeta);
         }
 
         response.json(body);
@@ -499,14 +504,20 @@ export class PoliciesServer {
 
         const roleEntityRef = this.getEntityReference(request, true);
 
-        const role = await this.enforcer.getFilteredGroupingPolicy(
-          1,
-          roleEntityRef,
-        );
-
-        let body = await this.transformRoleArray(conditionsFilter, ...role);
-        if (body.length === 0 && this.defaultRole?.name === roleEntityRef) {
-          body = [this.defaultRole];
+        let body: Role[];
+        if (this.defaultRole && roleEntityRef === this.defaultRole.name) {
+          const defRoleMeta = this.roleMetadata.getDefaultRoleMetadata();
+          const roleWithMeta: Role = {
+            ...this.defaultRole,
+            metadata: defRoleMeta,
+          };
+          body = [roleWithMeta];
+        } else {
+          const role = await this.enforcer.getFilteredGroupingPolicy(
+            1,
+            roleEntityRef,
+          );
+          body = await this.transformRoleArray(conditionsFilter, ...role);
         }
         if (body.length !== 0) {
           response.json(body);

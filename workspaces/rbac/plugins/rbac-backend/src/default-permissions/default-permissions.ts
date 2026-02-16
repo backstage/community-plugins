@@ -17,7 +17,6 @@ import { Config } from '@backstage/config';
 import { ConflictError } from '@backstage/errors';
 
 import {
-  Role,
   RoleBasedPolicy,
   isValidPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
@@ -34,24 +33,24 @@ import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
  * When no default role is configured, both `role` and `policies` are undefined.
  */
 export type DefaultRoleAndPolicies = {
-  role: Role;
+  role: {
+    name: string;
+    memberReferences: string[];
+  };
   policies: RoleBasedPolicy[];
 };
 
 const DEFAULT_ROLE_DESCRIPTION =
   'Role with default permissions for all users and groups.';
 
-function buildDefaultRole(defaultRoleRef: string): Role {
+function buildDefaultRole(defaultRoleRef: string): RoleMetadataDao {
   return {
-    memberReferences: [],
-    name: defaultRoleRef,
-    metadata: {
-      source: 'configuration',
-      isDefault: true,
-      description: DEFAULT_ROLE_DESCRIPTION,
-      modifiedBy: ADMIN_ROLE_AUTHOR,
-      lastModified: new Date().toUTCString(),
-    },
+    roleEntityRef: defaultRoleRef,
+    source: 'configuration',
+    isDefault: true,
+    description: DEFAULT_ROLE_DESCRIPTION,
+    modifiedBy: ADMIN_ROLE_AUTHOR,
+    lastModified: new Date().toUTCString(),
   };
 }
 
@@ -144,7 +143,19 @@ export async function getDefaultRoleAndPolicies(
   });
 
   return {
-    role: buildDefaultRole(defaultRoleRef),
+    role: { name: defaultRoleRef, memberReferences: [] },
     policies,
   };
+}
+
+export function getDefaultRoleMetadata(
+  config: Config,
+): RoleMetadataDao | undefined {
+  const defaultRoleRef = config.getOptionalString(
+    'permission.rbac.defaultPermissions.defaultRole',
+  );
+  if (defaultRoleRef) {
+    return buildDefaultRole(defaultRoleRef);
+  }
+  return undefined;
 }

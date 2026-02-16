@@ -45,6 +45,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
+  getDefaultRoleMetadata: jest.fn().mockImplementation(),
 };
 
 const mockClientKnex = Knex.knex({ client: MockClient });
