@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-discussions
 
+## 0.8.1
+
+### Patch Changes
+
+- 7ffa219: Added support for the New Frontend System
+
 ## 0.8.0
 
 ### Minor Changes
