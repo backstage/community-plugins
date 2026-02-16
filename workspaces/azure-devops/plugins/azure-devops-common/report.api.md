@@ -103,6 +103,12 @@ export interface CreatedBy {
 }
 
 // @public (undocumented)
+export type DashboardOrganizationHost = {
+  organization: string;
+  host: string;
+};
+
+// @public (undocumented)
 export interface DashboardPullRequest {
   // (undocumented)
   createdBy?: CreatedBy;

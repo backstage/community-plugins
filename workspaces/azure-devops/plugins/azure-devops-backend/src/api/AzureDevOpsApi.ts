@@ -303,19 +303,21 @@ export class AzureDevOpsApi {
   public async getDashboardPullRequests(
     projectName: string,
     options: PullRequestOptions,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]> {
     this.logger?.debug(
       `Getting dashboard pull requests for project '${projectName}'.`,
     );
 
-    const webApi = await this.getWebApi();
+    const webApi = await this.getWebApi(host, org);
     const client = await webApi.getGitApi();
 
     const searchCriteria: GitPullRequestSearchCriteria = {
       status: options.status,
     };
 
-    const gitPullRequests: GitPullRequest[] =
+    const gitPullRequests: GitPullRequest[] | null =
       await client.getPullRequestsByProject(
         projectName,
         searchCriteria,
@@ -324,8 +326,11 @@ export class AzureDevOpsApi {
         options.top,
       );
 
+    // Handle null response from Azure DevOps API (occurs when no PRs exist)
+    const pullRequests = gitPullRequests ?? [];
+
     return Promise.all(
-      gitPullRequests.map(async gitPullRequest => {
+      pullRequests.map(async gitPullRequest => {
         const projectId = gitPullRequest.repository?.project?.id;
         const prId = gitPullRequest.pullRequestId;
 
@@ -336,6 +341,8 @@ export class AzureDevOpsApi {
             projectName,
             projectId,
             prId,
+            host,
+            org,
           );
         }
 
@@ -352,12 +359,14 @@ export class AzureDevOpsApi {
     projectName: string,
     projectId: string,
     pullRequestId: number,
+    host?: string,
+    org?: string,
   ): Promise<Policy[]> {
     this.logger?.debug(
       `Getting pull request policies for pull request id '${pullRequestId}'.`,
     );
 
-    const webApi = await this.getWebApi();
+    const webApi = await this.getWebApi(host, org);
     const client = await webApi.getPolicyApi();
 
     const artifactId = getArtifactId(projectId, pullRequestId);
@@ -365,15 +374,23 @@ export class AzureDevOpsApi {
     const policyEvaluationRecords: PolicyEvaluationRecord[] =
       await client.getPolicyEvaluations(projectName, artifactId);
 
+    if (!policyEvaluationRecords) {
+      return [];
+    }
+
     return policyEvaluationRecords
       .map(convertPolicy)
       .filter((policy): policy is Policy => Boolean(policy));
   }
 
-  public async getAllTeams(options?: { limit?: number }): Promise<Team[]> {
+  public async getAllTeams(options?: {
+    limit?: number;
+    host?: string;
+    org?: string;
+  }): Promise<Team[]> {
     this.logger?.debug('Getting all teams.');
 
-    const webApi = await this.getWebApi();
+    const webApi = await this.getWebApi(options?.host, options?.org);
     const client = await webApi.getCoreApi();
 
     const webApiTeams: WebApiTeam[] = await client.getAllTeams(
@@ -398,11 +415,13 @@ export class AzureDevOpsApi {
   public async getTeamMembers(options: {
     projectId: string;
     teamId: string;
+    host?: string;
+    org?: string;
   }): Promise<TeamMember[] | undefined> {
-    const { projectId, teamId } = options;
+    const { projectId, teamId, host, org } = options;
     this.logger?.debug(`Getting team member ids for team '${teamId}'.`);
 
-    const webApi = await this.getWebApi();
+    const webApi = await this.getWebApi(host, org);
     const client = await webApi.getCoreApi();
 
     const teamMembers: AdoTeamMember[] =
