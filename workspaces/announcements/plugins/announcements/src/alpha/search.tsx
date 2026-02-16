@@ -17,7 +17,7 @@ import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import { RiMegaphoneLine } from '@remixicon/react';
 
 export const announcementsSearchResultListItem =
   SearchResultListItemBlueprint.make({
@@ -27,7 +27,7 @@ export const announcementsSearchResultListItem =
           m => m.AnnouncementSearchResultListItem,
         ),
       predicate: result => result.type === 'announcements',
-      icon: <RecordVoiceOverIcon />,
+      icon: <RiMegaphoneLine />,
     },
   });
 
@@ -37,6 +37,6 @@ export const announcementsSearchFilterResultType =
     params: {
       name: 'Announcements',
       value: 'announcements',
-      icon: <RecordVoiceOverIcon />,
+      icon: <RiMegaphoneLine />,
     },
   });
