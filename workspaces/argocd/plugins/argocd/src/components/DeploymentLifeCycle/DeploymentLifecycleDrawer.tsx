@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { FC } from 'react';
+import type { FC, ReactElement } from 'react';
 import Rollouts from './sidebar/rollouts/Rollouts';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -129,62 +129,63 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 
           <Grid item xs={12}>
             <Metadata>
-              {!hideInstance && (
-                <MetadataItem
-                  title={t(
-                    'deploymentLifecycle.deploymentLifecycleDrawer.instance',
-                  )}
-                >
-                  {app?.metadata?.instance?.name ??
-                    t(
-                      'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue',
+              {[
+                !hideInstance && (
+                  <MetadataItem
+                    key="instance"
+                    title={t(
+                      'deploymentLifecycle.deploymentLifecycleDrawer.instance',
                     )}
-                </MetadataItem>
-              )}
-
-              {!hideServer && (
+                  >
+                    {app?.metadata?.instance?.name ??
+                      t(
+                        'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue',
+                      )}
+                  </MetadataItem>
+                ),
+                !hideServer && (
+                  <MetadataItem
+                    key="cluster"
+                    title={t(
+                      'deploymentLifecycle.deploymentLifecycleDrawer.cluster',
+                    )}
+                  >
+                    <AppServerLink application={app} />
+                  </MetadataItem>
+                ),
                 <MetadataItem
+                  key="namespace"
                   title={t(
-                    'deploymentLifecycle.deploymentLifecycleDrawer.cluster',
+                    'deploymentLifecycle.deploymentLifecycleDrawer.namespace',
                   )}
                 >
-                  <AppServerLink application={app} />
-                </MetadataItem>
-              )}
-
-              <MetadataItem
-                title={t(
-                  'deploymentLifecycle.deploymentLifecycleDrawer.namespace',
-                )}
-              >
-                <AppNamespace app={app} />
-              </MetadataItem>
-
-              {!isAppHelmChartType(app) ? (
+                  <AppNamespace app={app} />
+                </MetadataItem>,
+                !isAppHelmChartType(app) && (
+                  <MetadataItem
+                    key="commit"
+                    title={t(
+                      'deploymentLifecycle.deploymentLifecycleDrawer.commit',
+                    )}
+                  >
+                    <AppCommitLink
+                      application={app}
+                      entity={entity}
+                      revisions={revisions}
+                      latestRevision={latestRevision}
+                      showAuthor
+                    />
+                  </MetadataItem>
+                ),
                 <MetadataItem
+                  key="revision"
                   title={t(
-                    'deploymentLifecycle.deploymentLifecycleDrawer.commit',
+                    'deploymentLifecycle.deploymentLifecycleDrawer.revision',
                   )}
                 >
-                  <AppCommitLink
-                    application={app}
-                    entity={entity}
-                    revisions={revisions}
-                    latestRevision={latestRevision}
-                    showAuthor
-                  />
-                </MetadataItem>
-              ) : (
-                <></>
-              )}
-
-              <MetadataItem
-                title={t(
-                  'deploymentLifecycle.deploymentLifecycleDrawer.revision',
-                )}
-              >
-                {app?.spec?.source?.targetRevision}
-              </MetadataItem>
+                  {app?.spec?.source?.targetRevision}
+                </MetadataItem>,
+              ].filter((item): item is ReactElement => Boolean(item))}
             </Metadata>
           </Grid>
           <Grid item xs={12}>

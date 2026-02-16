@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { FC } from 'react';
+import type { FC, ReactElement } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -97,52 +97,57 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
 
       <CardContent>
         <Metadata direction={{ sm: 'column' }} gap={{ sm: 'gapMd' }}>
-          {!hideInstance && (
+          {[
+            !hideInstance && (
+              <MetadataItem
+                key="instance"
+                title={t(
+                  'deploymentLifecycle.deploymentLifecycleCard.instance',
+                )}
+              >
+                {appName}
+              </MetadataItem>
+            ),
+            !hideServer && (
+              <MetadataItem
+                key="server"
+                title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
+              >
+                <AppServerLink application={app} />
+              </MetadataItem>
+            ),
             <MetadataItem
-              title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
+              key="namespace"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}
             >
-              {appName}
-            </MetadataItem>
-          )}
-
-          {!hideServer && (
+              <AppNamespace app={app} />
+            </MetadataItem>,
+            !isAppHelmChartType(app) && (
+              <MetadataItemWithTooltip
+                key="commit"
+                title={t('deploymentLifecycle.deploymentLifecycleCard.commit')}
+                tooltipText={t(
+                  'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
+                )}
+              >
+                <AppCommitLink
+                  application={app}
+                  entity={entity}
+                  revisions={revisions}
+                  latestRevision={latestRevision}
+                />
+              </MetadataItemWithTooltip>
+            ),
             <MetadataItem
-              title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
+              key="resources"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.resources')}
             >
-              <AppServerLink application={app} />
-            </MetadataItem>
-          )}
-
-          <MetadataItem
-            title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}
-          >
-            <AppNamespace app={app} />
-          </MetadataItem>
-
-          {!isAppHelmChartType(app) ? (
-            <MetadataItemWithTooltip
-              title={t('deploymentLifecycle.deploymentLifecycleCard.commit')}
-              tooltipText={t(
-                'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
+              {app.status.resources?.length ?? 0}{' '}
+              {t(
+                'deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed',
               )}
-            >
-              <AppCommitLink
-                application={app}
-                entity={entity}
-                revisions={revisions}
-                latestRevision={latestRevision}
-              />
-            </MetadataItemWithTooltip>
-          ) : (
-            <></>
-          )}
-
-          <MetadataItem
-            title={t('deploymentLifecycle.deploymentLifecycleCard.resources')}
-          >
-            {app.status.resources?.length ?? 0}{' '}
-            {t('deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed')}
-          </MetadataItem>
+            </MetadataItem>,
+          ].filter((item): item is ReactElement => Boolean(item))}
         </Metadata>
       </CardContent>
     </Card>
