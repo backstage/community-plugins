@@ -3872,6 +3872,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-signals-node@npm:^0.1.28":
+  version: 0.1.28
+  resolution: "@backstage/plugin-signals-node@npm:0.1.28"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.7.0"
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/plugin-auth-node": "npm:^0.6.13"
+    "@backstage/plugin-events-node": "npm:^0.4.19"
+    "@backstage/types": "npm:^1.2.2"
+    express: "npm:^4.22.0"
+    uuid: "npm:^11.0.0"
+    ws: "npm:^8.18.0"
+  checksum: 10/f1c6f0ecf41435891117604be8cfaa79700cab74d0bc8e9c933044b5483a893ec1dbff094089af65c1fb50d65ce5e25aa906d5e2ac60eabfdbec7417feef9a7c
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-signals-react@npm:^0.0.19":
   version: 0.0.19
   resolution: "@backstage/plugin-signals-react@npm:0.0.19"
@@ -4053,6 +4069,26 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/341b4e703aad3ba06b8b0172c18c2aecb10274f6e2d68fb1d01d3346aaf6a3b985d75c213d6358ccb5259b329b866d3ac21883f4c0d546e4dab5206efd8fdb8f
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-user-settings-backend@backstage:^::backstage=1.48.0&npm=0.4.0, @backstage/plugin-user-settings-backend@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@backstage/plugin-user-settings-backend@npm:0.4.0"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.7.0"
+    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/plugin-auth-node": "npm:^0.6.13"
+    "@backstage/plugin-signals-node": "npm:^0.1.28"
+    "@backstage/plugin-user-settings-common": "npm:^0.1.0"
+    "@backstage/types": "npm:^1.2.2"
+    already: "npm:^2.2.1"
+    express: "npm:^4.22.0"
+    express-promise-router: "npm:^4.1.0"
+    knex: "npm:^3.0.0"
+    p-limit: "npm:^3.1.0"
+    zod: "npm:^3.25.76"
+  checksum: 10/0729cf1e57d322f10b38f9898e454154222f112301ca75a8591e35e7eab028e9214e1c053bbb0bad88512b2148c3886010c466145ecbdd1f16ae6e7370e3150e
   languageName: node
   linkType: hard
 
@@ -14779,6 +14815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"already@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "already@npm:2.2.1"
+  checksum: 10/1c55b50667c3dbe9d40716454d4a870f5758143061a0e39c0a7077eab2c6dbec116edf081796afb6f441462096bf68ef72a4daad074843a0d970527f29037ffe
+  languageName: node
+  linkType: hard
+
 "ansi-colors@npm:^4.1.1, ansi-colors@npm:^4.1.3":
   version: 4.1.3
   resolution: "ansi-colors@npm:4.1.3"
@@ -15599,6 +15642,7 @@ __metadata:
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^"
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-techdocs-backend": "backstage:^"
+    "@backstage/plugin-user-settings-backend": "backstage:^"
     "@types/express": "npm:^4.17.25"
     "@types/express-serve-static-core": "npm:^4.19.7"
     "@types/luxon": "npm:^3.0.0"
