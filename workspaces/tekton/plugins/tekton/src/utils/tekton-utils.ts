@@ -30,7 +30,7 @@ import {
   TaskRunKind,
   TaskStatusTypes,
   updateTaskStatus,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { getPipelineRunScanResults } from '../hooks/usePipelineRunScanResults';
 import { PipelineRunGVK, TaskRunGVK } from '../models';

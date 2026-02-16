@@ -17,7 +17,6 @@ import { Entity } from '@backstage/catalog-model';
 
 import { TektonAnnotations } from '@backstage-community/plugin-tekton-common';
 
-/** @deprecated */
 const DEPRECATED_JANUS_IDP_ANNOTATION = 'janus-idp.io/tekton';
 
 /**

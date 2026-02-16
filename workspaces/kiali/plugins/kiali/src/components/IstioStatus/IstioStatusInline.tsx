@@ -15,11 +15,11 @@
  */
 import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
 import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  MinusCircleIcon,
-} from '@patternfly/react-icons';
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  ErrorOutline as ErrorOutlineIcon,
+  RemoveCircleOutline as RemoveCircleOutlineIcon,
+  WarningAmber as WarningAmberIcon,
+} from '@mui/icons-material';
 import { default as React } from 'react';
 import { IstioStatus } from './IstioStatus';
 
@@ -33,10 +33,10 @@ export const IstioStatusInline = (props: Props): React.JSX.Element => {
     <IstioStatus
       {...props}
       icons={{
-        ErrorIcon: ExclamationCircleIcon,
-        HealthyIcon: CheckCircleIcon,
-        InfoIcon: MinusCircleIcon,
-        WarningIcon: ExclamationTriangleIcon,
+        ErrorIcon: ErrorOutlineIcon,
+        HealthyIcon: CheckCircleOutlineIcon,
+        InfoIcon: RemoveCircleOutlineIcon,
+        WarningIcon: WarningAmberIcon,
       }}
     />
   );

@@ -15,7 +15,9 @@ attributes:
     - analytics
     - announcements
     - apache-airflow
+    - apiiro
     - apollo-explorer
+    - argocd
     - azure-devops
     - azure-resources
     - azure-sites
@@ -45,11 +47,7 @@ attributes:
     - gcalendar
     - gcp-projects
     - git-release-manager
-    - github-actions
-    - github-deployments
-    - github-discussions
-    - github-issues
-    - github-pull-requests-board
+    - github
     - gitops-profiles
     - gocd
     - grafana
@@ -84,7 +82,6 @@ attributes:
     - puppetdb
     - quay
     - rbac
-    - redhat-argocd
     - report-portal
     - rollbar
     - scaffolder-backend-module-annotator

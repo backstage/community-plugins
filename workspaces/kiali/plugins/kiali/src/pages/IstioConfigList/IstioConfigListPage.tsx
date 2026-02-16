@@ -87,10 +87,17 @@ export const IstioConfigListPage = (props: {
           namespacesResponse,
           namespaces,
         );
-        // const nsl = allNamespaces.filter(ns => activeNs.includes(ns.name));
-        // Check filter when entity
-        setNamespaces(allNamespaces);
-        fetchIstioConfigs(allNamespaces);
+        // Only fetch configs for the currently selected namespaces.
+        const nsl =
+          activeNs.length > 0
+            ? allNamespaces.filter(ns => activeNs.includes(ns.name))
+            : [];
+        setNamespaces(nsl);
+        if (nsl.length === 0) {
+          setIstioConfigs([]);
+          return;
+        }
+        fetchIstioConfigs(nsl);
       })
       .catch(err =>
         setErrorProvider(

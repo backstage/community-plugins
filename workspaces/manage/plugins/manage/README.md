@@ -13,7 +13,7 @@ The page is wrapped in a React provider that fetches:
 
 These are exposed as hooks for extensions to use, if needed. Each built-in tab also provides contextual information about which kind of entities are being displayed, also exposed through hooks. This makes it straightforward for extensions to add gauges, statistics, table columns, and other enhancements that depend on the current view.
 
-![Components tab](./docs/components.png)
+<img alt="Components tab" src="./docs/components.png" width="1289" />
 
 ## Installation (New frontend system)
 
@@ -32,8 +32,8 @@ To enable feature discovery for this plugin specifically, add it to `app-config.
 ```yaml title="app-config.yaml"
 app:
   packages:
-	include:
-	  - '@backstage-community/plugin-manage'
+    include:
+      - '@backstage-community/plugin-manage'
 ```
 
 Extensions can be installed in the same way, for example:
@@ -52,25 +52,36 @@ manage:
   subtitle: Things I own and work with
   showStarred: true
   enableWholeOrganization: true
+  progressStyle: linear # linear or circular
   order:
-	tabs:
-	  - entities
-	  - starred-entities
-	  - my-tab-1
-	  - organization
-	  - my-tab-2
-	cards: []
-	contentAbove:
-	  - app/foo-widget1
-	  - app/foo-widget2
-	  - tech-insights/cards
-	contentBelow:
-	columns:
-	  - app/foo-column
-	  - tech-insights/checks
+    tabs:
+      - entities
+      - starred-entities
+      - my-tab-1
+      - organization
+      - my-tab-2
+    cards: []
+    contentAbove:
+      - app/foo-widget1
+      - app/foo-widget2
+      - tech-insights/cards
+    contentBelow:
+    columns:
+      - app/foo-column
+      - tech-insights/checks
 ```
 
 Refer to `config.d.ts` for the full set of supported configuration options. For a more comprehensive example, see the [`app-config.yaml`](../../app-config.yaml) used by the `app-next` package in this workspace.
+
+#### Progress style
+
+The `progressStyle` affects how gauges, primarily in columns, are displayed - either as circular (the default) or linear progress indicators. It is up to module extensions to respect this, but an example of the `@backstage-community/plugin-manage-module-tech-insights` columns with `circular` looks like:
+
+<img alt="Circular progress indicator" src="./docs/progress-circular.png" width="728" />
+
+And with `linear`:
+
+<img alt="Linear progress indicator" src="./docs/progress-linear.png" width="721" />
 
 ### Extension configuration
 
@@ -118,6 +129,9 @@ accordionDefaultExpanded?: boolean;
 // Whether to save the open/close state per-kind.
 // Defaults to false, meaning the state is global for all kinds.
 accordionPerKind?: boolean;
+
+// Show the accordion title, even when not in an accordion.
+showTitle?: boolean;
 ```
 
 Column widgets:

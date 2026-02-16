@@ -87,7 +87,6 @@ export function OwnedProvider(props: PropsWithChildren<OwnedProviderProps>) {
 
   if (asyncState.loading || starredEntities.loading) {
     return <Progress />;
-    // return <Progress  />;
   } else if (asyncState.error) {
     return <ErrorPanel error={asyncState.error} />;
   }

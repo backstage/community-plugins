@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MemoryIcon from '@mui/icons-material/Memory';
+import HistoryIcon from '@mui/icons-material/History';
+import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { ActiveMcpServers } from './ActiveMcpServers';
 import { ActiveTools } from './ActiveTools';
 import { ProviderStatus } from './ProviderStatus';
+import { ConversationHistory } from './ConversationHistory';
 import { BotIcon } from '../BotIcon';
-import { MCPServer } from '../../types';
+import { MCPServer, ConversationRecord } from '../../types';
 import { UseProviderStatusReturn, useAvailableTools } from '../../hooks';
+
+type TabType = 'status' | 'history';
 
 interface RightPaneProps {
   sidebarCollapsed: boolean;
@@ -37,6 +44,18 @@ interface RightPaneProps {
   mcpServers: MCPServer[];
   onServerToggle: (serverName: string) => void;
   providerStatus: UseProviderStatusReturn;
+  // Conversation history props
+  starredConversations: ConversationRecord[];
+  recentConversations: ConversationRecord[];
+  conversationsLoading: boolean;
+  conversationsError?: string;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onSearchClear: () => void;
+  onSelectConversation: (conversation: ConversationRecord) => void;
+  onToggleStar: (id: string) => void;
+  onDeleteConversation: (id: string) => void;
+  selectedConversationId?: string;
 }
 
 export const RightPane: FC<RightPaneProps> = ({
@@ -46,10 +65,31 @@ export const RightPane: FC<RightPaneProps> = ({
   mcpServers,
   onServerToggle,
   providerStatus,
+  starredConversations,
+  recentConversations,
+  conversationsLoading,
+  conversationsError,
+  searchQuery,
+  onSearchChange,
+  onSearchClear,
+  onSelectConversation,
+  onToggleStar,
+  onDeleteConversation,
+  selectedConversationId,
 }: RightPaneProps) => {
   const theme = useTheme();
+  const [activeTab, setActiveTab] = useState<TabType>('status');
   const { availableTools, isLoading: toolsLoading } =
     useAvailableTools(mcpServers);
+
+  const handleTabChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newTab: TabType | null,
+  ) => {
+    if (newTab !== null) {
+      setActiveTab(newTab);
+    }
+  };
 
   return (
     <Box
@@ -90,6 +130,7 @@ export const RightPane: FC<RightPaneProps> = ({
         </IconButton>
       )}
 
+      {/* Header */}
       <Box
         sx={{
           padding: sidebarCollapsed ? theme.spacing(1) : theme.spacing(2),
@@ -136,6 +177,7 @@ export const RightPane: FC<RightPaneProps> = ({
 
       {!sidebarCollapsed && (
         <>
+          {/* New Chat Button */}
           <Box sx={{ padding: '16px 16px 8px' }}>
             <Button
               variant="contained"
@@ -159,27 +201,77 @@ export const RightPane: FC<RightPaneProps> = ({
             </Button>
           </Box>
 
-          <ProviderStatus
-            providerStatusData={providerStatus.providerStatusData}
-            isLoading={providerStatus.isLoading}
-            error={providerStatus.error}
-          />
+          {/* Tab Buttons */}
+          <Box sx={{ padding: '8px 16px' }}>
+            <ToggleButtonGroup
+              value={activeTab}
+              exclusive
+              onChange={handleTabChange}
+              size="small"
+              fullWidth
+              sx={{
+                '& .MuiToggleButton-root': {
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  padding: theme.spacing(0.75, 2),
+                  '&.Mui-selected': {
+                    backgroundColor: theme.palette.action.selected,
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover,
+                    },
+                  },
+                },
+              }}
+            >
+              <ToggleButton value="status">
+                <SettingsIcon sx={{ fontSize: 18, mr: 0.5 }} />
+                Status
+              </ToggleButton>
+              <ToggleButton value="history">
+                <HistoryIcon sx={{ fontSize: 18, mr: 0.5 }} />
+                History
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
-          {/* Active Tools Section - Now taking the main space */}
-          <ActiveTools
-            mcpServers={mcpServers}
-            availableTools={availableTools}
-            toolsLoading={toolsLoading}
-          />
+          {/* Tab Content */}
+          {activeTab === 'status' && (
+            <>
+              <ProviderStatus
+                providerStatusData={providerStatus.providerStatusData}
+                isLoading={providerStatus.isLoading}
+                error={providerStatus.error}
+              />
+
+              <ActiveTools
+                mcpServers={mcpServers}
+                availableTools={availableTools}
+                toolsLoading={toolsLoading}
+              />
+
+              <ActiveMcpServers
+                mcpServers={mcpServers}
+                onServerToggle={onServerToggle}
+              />
+            </>
+          )}
+
+          {activeTab === 'history' && (
+            <ConversationHistory
+              starredConversations={starredConversations}
+              recentConversations={recentConversations}
+              loading={conversationsLoading}
+              error={conversationsError}
+              searchQuery={searchQuery}
+              onSearchChange={onSearchChange}
+              onSearchClear={onSearchClear}
+              onSelectConversation={onSelectConversation}
+              onToggleStar={onToggleStar}
+              onDelete={onDeleteConversation}
+              selectedConversationId={selectedConversationId}
+            />
+          )}
         </>
-      )}
-
-      {/* MCP Servers Section - Separate box at the bottom */}
-      {!sidebarCollapsed && (
-        <ActiveMcpServers
-          mcpServers={mcpServers}
-          onServerToggle={onServerToggle}
-        />
       )}
 
       {sidebarCollapsed && (
@@ -217,10 +309,31 @@ export const RightPane: FC<RightPaneProps> = ({
                 <AddIcon />
               </IconButton>
             </Box>
+
+            {/* History button when collapsed */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '8px',
+              }}
+            >
+              <IconButton
+                size="small"
+                title="History"
+                onClick={() => {
+                  onToggleSidebar();
+                  setActiveTab('history');
+                }}
+                sx={{ color: theme.palette.text.secondary }}
+              >
+                <HistoryIcon />
+              </IconButton>
+            </Box>
           </Box>
 
           {/* Bottom section - MCP Servers */}
-          <Box>
+          <Box sx={{ marginTop: 'auto' }}>
             {/* Separator line */}
             <Box
               sx={{
@@ -239,7 +352,10 @@ export const RightPane: FC<RightPaneProps> = ({
               <IconButton
                 size="medium"
                 title="MCP Configuration"
-                onClick={onToggleSidebar}
+                onClick={() => {
+                  onToggleSidebar();
+                  setActiveTab('status');
+                }}
                 sx={{ color: theme.palette.text.primary }}
               >
                 <MemoryIcon />

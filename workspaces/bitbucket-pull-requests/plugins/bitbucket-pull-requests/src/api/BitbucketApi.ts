@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import fetch from 'cross-fetch';
-
 import {
   createApiRef,
   DiscoveryApi,
   IdentityApi,
   ConfigApi,
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import { parseEntityRef } from '@backstage/catalog-model';
 
@@ -65,16 +64,19 @@ type Options = {
   discoveryApi: DiscoveryApi;
   identityApi: IdentityApi;
   configApi?: ConfigApi;
+  fetchApi: FetchApi;
 };
 export class BitbucketApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi;
   private readonly configApi?: ConfigApi;
+  private readonly fetchApi: FetchApi;
 
   constructor(options: Options) {
     this.discoveryApi = options.discoveryApi;
     this.identityApi = options.identityApi;
     this.configApi = options.configApi;
+    this.fetchApi = options.fetchApi;
   }
 
   /**
@@ -105,7 +107,7 @@ export class BitbucketApi {
     }
     params.append('limit', limit.toString());
 
-    const response = await fetch(`${url}?${params}`, {
+    const response = await this.fetchApi.fetch(`${url}?${params}`, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -120,7 +122,7 @@ export class BitbucketApi {
 
   private async fetchBuildStatus(commitId: string): Promise<BuildStatus> {
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
-    const response = await fetch(
+    const response = await this.fetchApi.fetch(
       `${proxyUrl}${this.getProxyPath()}/rest/build-status/latest/commits/stats/${commitId}`,
       { headers: { 'Content-Type': 'application/json' } },
     );
@@ -219,7 +221,7 @@ export class BitbucketApi {
       user: name,
     });
 
-    const response = await fetch(`${url}?${params}`, {
+    const response = await this.fetchApi.fetch(`${url}?${params}`, {
       headers: {
         'Content-Type': 'application/json',
       },

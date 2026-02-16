@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 export { AnnouncementsAdminPage } from './AnnouncementsAdminPage';
+export { AnnouncementsContent } from './announcements';
 export { CategoriesContent } from './categories';
 export { TagsContent } from './tags';

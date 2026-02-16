@@ -20,7 +20,7 @@ import { useMemo } from 'react';
 import { V1Pod } from '@kubernetes/client-node';
 import { Flex, FlexItem } from '@patternfly/react-core';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 
 import {
   TEKTON_PIPELINE_RUN,

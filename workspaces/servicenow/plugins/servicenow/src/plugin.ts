@@ -72,6 +72,19 @@ export const EntityServicenowContent = servicenowPlugin.provide(
 );
 
 /**
+ * A component that wraps the service-now content in a memory router
+ * @public
+ */
+export const Router = servicenowPlugin.provide(
+  createComponentExtension({
+    name: 'Router',
+    component: {
+      lazy: () => import('./components/Router').then(m => m.Router),
+    },
+  }),
+);
+
+/**
  * @deprecated please use `EntityServicenowCard` instead, this page
  * might be removed in future releases or replaced with a page
  * that lists the incidents assigned to the current user.

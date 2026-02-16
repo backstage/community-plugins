@@ -23,7 +23,7 @@ exports.seed = async function seed(knex) {
   await knex('announcements').insert([
     {
       id: '1',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'Welcome to Our Internal Developer Portal',
       excerpt:
         'Your new home for discovering services, creating new projects, and accessing documentation.',
@@ -55,7 +55,7 @@ If you have questions, reach out to the Platform Engineering team in #platform-s
     },
     {
       id: '2',
-      publisher: 'default:group/security',
+      publisher: 'group:default/security',
       title: 'Critical: Update Your Dependencies for CVE-2024-XXXX',
       excerpt:
         'A critical vulnerability has been identified. All teams must update affected packages by Friday.',
@@ -99,7 +99,7 @@ Contact the Security team in #security-incidents or email security@company.com.`
     },
     {
       id: '3',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'New Backend System Migration Guide Available',
       excerpt:
         'Documentation for migrating plugins to the new Backstage backend system is now available.',
@@ -138,7 +138,7 @@ We're hosting weekly office hours every Wednesday at 2 PM to help with migration
     },
     {
       id: '4',
-      publisher: 'default:group/sre',
+      publisher: 'group:default/sre',
       title: 'Scheduled Maintenance: Database Upgrade This Weekend',
       excerpt:
         'PostgreSQL upgrade scheduled for Saturday. Expect 30 minutes of read-only mode.',
@@ -179,7 +179,7 @@ Contact the SRE team in #sre-support.`,
     },
     {
       id: '5',
-      publisher: 'default:group/developer-experience',
+      publisher: 'group:default/developer-experience',
       title: 'Introducing: Software Templates for Microservices',
       excerpt:
         'New templates available for Node.js, Go, and Python microservices with all best practices included.',
@@ -238,7 +238,7 @@ Try them out and let us know what you think in #developer-experience!`,
     },
     {
       id: '6',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'Deprecation Notice: Legacy Authentication Provider',
       excerpt:
         'The legacy OAuth provider will be removed on April 1st. Migrate to the new auth system.',
@@ -313,7 +313,7 @@ Join #backstage-auth-migration for migration support.`,
     },
     {
       id: '7',
-      publisher: 'default:group/sre',
+      publisher: 'group:default/sre',
       title: 'Post-Incident Review: Catalog Ingestion Outage',
       excerpt:
         'Summary of the February 25th incident affecting catalog entity ingestion.',
@@ -361,7 +361,7 @@ A memory leak in the GitHub entity provider caused the ingestion worker to excee
     },
     {
       id: '8',
-      publisher: 'default:group/developer-experience',
+      publisher: 'group:default/developer-experience',
       title: 'Best Practices: Writing Effective catalog-info.yaml Files',
       excerpt:
         'Tips and guidelines for creating well-structured catalog entity definitions.',
@@ -447,7 +447,7 @@ npx @backstage/cli catalog-info validate catalog-info.yaml
     },
     {
       id: '9',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'Node.js 18 to 20 Migration Required by April 30th',
       excerpt:
         'Node.js 18 reaches end-of-life. All services must upgrade to Node.js 20 LTS.',
@@ -529,7 +529,7 @@ yarn build
     },
     {
       id: '10',
-      publisher: 'default:group/developer-experience',
+      publisher: 'group:default/developer-experience',
       title: 'New Plugin: Kubernetes Cost Insights',
       excerpt:
         'Track and optimize your Kubernetes spending directly in Backstage.',
@@ -590,7 +590,7 @@ This is an early release. Please share feedback in #developer-experience!`,
     },
     {
       id: '11',
-      publisher: 'default:group/security',
+      publisher: 'group:default/security',
       title: 'New Permissions Framework Now Available',
       excerpt:
         'Fine-grained access control is here. Start defining permissions for your plugins.',
@@ -652,7 +652,7 @@ If your team needs different permissions:
     },
     {
       id: '12',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'Backstage Upgrade to 1.25: What You Need to Know',
       excerpt:
         'We are upgrading to Backstage 1.25 this weekend. Review the changes that may affect you.',
@@ -720,7 +720,7 @@ Join our office hours on Friday at 2 PM to discuss the upgrade.`,
     },
     {
       id: '13',
-      publisher: 'default:group/developer-experience',
+      publisher: 'group:default/developer-experience',
       title: 'Backstage Community Meetup: April 10th',
       excerpt:
         'Join us for our quarterly Backstage community meetup with lightning talks and demos.',
@@ -771,7 +771,7 @@ Looking forward to seeing you there! 🎉`,
     },
     {
       id: '14',
-      publisher: 'default:group/sre',
+      publisher: 'group:default/sre',
       title: 'Search Plugin Maintenance: Elasticsearch Index Rebuild',
       excerpt:
         'Search functionality will be degraded for ~2 hours during index rebuild.',
@@ -817,7 +817,7 @@ Reach out in #sre-support if you have concerns.`,
     },
     {
       id: '15',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'API Documentation Plugin Now Integrated with OpenAPI',
       excerpt:
         'View and interact with your OpenAPI specs directly in Backstage.',
@@ -875,7 +875,7 @@ Let us know how it works for you in #developer-experience!`,
     },
     {
       id: '16',
-      publisher: 'default:user/guest',
+      publisher: 'user:default/guest',
       title: 'TechDocs Best Practices: Keeping Documentation Fresh',
       excerpt:
         'Tips for maintaining up-to-date documentation that developers actually use.',
@@ -944,7 +944,7 @@ We've added a "Documentation Review" software template that creates a quarterly 
     },
     {
       id: '17',
-      publisher: 'default:group/security',
+      publisher: 'group:default/security',
       title: 'GitHub Actions Security: New Required Workflow Checks',
       excerpt:
         'New security scanning requirements for all CI/CD pipelines using GitHub Actions.',
@@ -1011,7 +1011,7 @@ Join #security-cicd for implementation help.`,
     },
     {
       id: '18',
-      publisher: 'default:group/platform-engineering',
+      publisher: 'group:default/platform-engineering',
       title: 'React 18 Migration Complete in Backstage',
       excerpt:
         'Backstage frontend now runs on React 18. Review the migration notes for your plugins.',
@@ -1082,7 +1082,7 @@ Report problems in #backstage-frontend or open an issue in the plugins repo.`,
     },
     {
       id: '19',
-      publisher: 'default:group/sre',
+      publisher: 'group:default/sre',
       title: 'OpenTelemetry Tracing Now Available',
       excerpt:
         'Distributed tracing is enabled. See request flows across your services.',
@@ -1160,7 +1160,7 @@ Reach out to #observability for help with implementation.`,
     },
     {
       id: '20',
-      publisher: 'default:group/developer-experience',
+      publisher: 'group:default/developer-experience',
       title: 'New Software Template: Full-Stack Next.js Application',
       excerpt:
         'Scaffold a complete Next.js app with authentication, database, and deployment.',

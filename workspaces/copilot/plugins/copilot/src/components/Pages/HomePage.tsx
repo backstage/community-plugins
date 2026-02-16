@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { JSX } from 'react';
+import { JSX, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import Box from '@mui/material/Box';
@@ -79,6 +79,18 @@ export const HomePage = (): JSX.Element => {
   const organizationConfig = configApi.getOptionalString(
     'copilot.organization',
   );
+
+  // Auto-redirect when only one option is configured
+  useEffect(() => {
+    const hasEnterprise = !!enterpriseConfig;
+    const hasOrganization = !!organizationConfig;
+
+    if (hasEnterprise && !hasOrganization) {
+      navigate('/copilot/enterprise', { replace: true });
+    } else if (hasOrganization && !hasEnterprise) {
+      navigate('/copilot/organization', { replace: true });
+    }
+  }, [enterpriseConfig, organizationConfig, navigate]);
 
   const handleNavigate = (path: string) => {
     navigate(path);

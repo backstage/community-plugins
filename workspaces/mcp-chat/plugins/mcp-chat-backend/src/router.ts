@@ -13,100 +13,87 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerService } from '@backstage/backend-plugin-api';
-import { InputError } from '@backstage/errors';
+
+import { LoggerService, HttpAuthService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
 import { MCPClientService } from './services/MCPClientService';
-import { validateMessages } from './utils';
+import { ChatConversationStore } from './services/ChatConversationStore';
+import { SummarizationService } from './services/SummarizationService';
+import {
+  createStatusRoutes,
+  createChatRoutes,
+  createConversationRoutes,
+} from './routes';
+
+/**
+ * Options for creating the MCP Chat router.
+ *
+ * @public
+ */
+export interface RouterOptions {
+  logger: LoggerService;
+  mcpClientService: MCPClientService;
+  conversationStore: ChatConversationStore;
+  httpAuth: HttpAuthService;
+  summarizationService: SummarizationService;
+}
 
 /**
  * Creates an Express router with MCP chat endpoints.
- * Provides /chat, /tools, /provider/status, and /mcp/status endpoints.
  *
- * @param options - Router options including logger and MCP client service
+ * Routes are organized into domain-specific modules:
+ * - Status routes: /provider/status, /mcp/status, /tools
+ * - Chat routes: /chat
+ * - Conversation routes: /conversations/*
+ *
+ * @param options - Router options including logger, services, and auth
  * @returns Express router
  * @public
  */
-export async function createRouter({
-  logger,
-  mcpClientService,
-}: {
-  logger: LoggerService;
-  mcpClientService: MCPClientService;
-}): Promise<express.Router> {
+export async function createRouter(
+  options: RouterOptions,
+): Promise<express.Router> {
+  const {
+    logger,
+    mcpClientService,
+    conversationStore,
+    httpAuth,
+    summarizationService,
+  } = options;
+
   const router = Router();
   router.use(express.json());
 
-  // provider status endpoint
-  router.get('/provider/status', async (_req, res) => {
-    logger.info('Route called: /provider/status');
-    const providerStatus = await mcpClientService.getProviderStatus();
-    return res.json(providerStatus);
-  });
+  // Mount status routes (provider/status, mcp/status, tools)
+  router.use(
+    createStatusRoutes({
+      mcpClientService,
+      logger,
+    }),
+  );
 
-  // MCP server status endpoint
-  router.get('/mcp/status', async (_req, res) => {
-    logger.info('Route called: /mcp/status');
-    const mcpServerStatus = await mcpClientService.getMCPServerStatus();
-    return res.json(mcpServerStatus);
-  });
+  // Mount chat routes (/chat)
+  router.use(
+    '/chat',
+    createChatRoutes({
+      mcpClientService,
+      conversationStore,
+      summarizationService,
+      httpAuth,
+      logger,
+    }),
+  );
 
-  // MCP Tools List endpoint
-  router.get('/tools', async (_req, res) => {
-    logger.info('Route called: /tools');
-
-    // Get all available tools from MCP servers
-    const availableTools = mcpClientService.getAvailableTools();
-
-    return res.json({
-      availableTools: availableTools,
-      toolCount: availableTools.length,
-      timestamp: new Date().toISOString(),
-    });
-  });
-
-  // MCP Chat route
-  router.post('/chat', async (req, res) => {
-    const { messages, enabledTools } = req.body;
-
-    const validation = validateMessages(messages);
-    if (!validation.isValid) {
-      logger.warn(`Message validation failed: ${validation.error}`);
-      return res.status(400).json({ error: validation.error });
-    }
-
-    if (enabledTools && !Array.isArray(enabledTools)) {
-      throw new InputError('enabledTools must be an array');
-    }
-
-    if (
-      enabledTools &&
-      enabledTools.some((tool: any) => typeof tool !== 'string')
-    ) {
-      throw new InputError('All enabledTools must be strings');
-    }
-
-    const { reply, toolCalls, toolResponses } =
-      await mcpClientService.processQuery(messages, enabledTools);
-
-    if (toolCalls.length > 0) {
-      const toolsUsed = toolCalls.map(call => call.function.name);
-
-      return res.json({
-        role: 'assistant',
-        content: reply,
-        toolResponses,
-        toolsUsed,
-      });
-    }
-    return res.json({
-      role: 'assistant',
-      content: reply,
-      toolResponses: [],
-      toolsUsed: [],
-    });
-  });
+  // Mount conversation routes (/conversations/*)
+  router.use(
+    '/conversations',
+    createConversationRoutes({
+      store: conversationStore,
+      httpAuth,
+      logger,
+    }),
+  );
 
   return router;
 }

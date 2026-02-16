@@ -1,4 +1,46 @@
-### Dependencies
+# @backstage-community/plugin-nexus-repository-manager
+
+## 1.21.0
+
+### Minor Changes
+
+- 401af6d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+
+## 1.20.1
+
+### Patch Changes
+
+- c074f91: Updated fr, it and ja translation files.
+- d567697: Updated dependency `@hey-api/openapi-ts` to `0.90.9`.
+
+## 1.20.0
+
+### Minor Changes
+
+- 570d46e: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- fb94653: Updated dependency `@hey-api/openapi-ts` to `0.90.2`.
+- b2c4feb: Updated dependency `@hey-api/openapi-ts` to `0.90.1`.
+
+## 1.19.4
+
+### Patch Changes
+
+- 5cbde4b: Updated fr, it and ja translation files
+
+## 1.19.3
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
+- 140bfbb: Updated dependency `@hey-api/openapi-ts` to `0.89.2`.
 
 ## 1.19.2
 

@@ -26,6 +26,9 @@ import { ScaffolderRelationEntityProcessor } from './ScaffolderRelationEntityPro
 import { handleTemplateUpdateNotifications } from './templateVersionUtils';
 import { readScaffolderRelationProcessorConfig } from './templateVersionUtils';
 import { TEMPLATE_VERSION_UPDATED_TOPIC } from './constants';
+import { VcsProviderRegistry } from './pullRequests/vcs/VcsProviderRegistry';
+import { GitHubProvider } from './pullRequests/vcs/providers/github/GitHubProvider';
+import { GitLabProvider } from './pullRequests/vcs/providers/gitlab/GitLabProvider';
 
 /**
  * Catalog processor that adds link relation between scaffolder templates and their generated entities
@@ -45,6 +48,7 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
         notifications: notificationService,
         auth: coreServices.auth,
         discovery: coreServices.discovery,
+        urlReader: coreServices.urlReader,
       },
       async init({
         catalog,
@@ -54,6 +58,7 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
         notifications,
         auth,
         discovery,
+        urlReader,
       }) {
         logger.debug(
           'Registering the scaffolder-relation-processor catalog module',
@@ -63,8 +68,34 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
 
         const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-        // Only subscribe to events if notifications are enabled
-        if (processorConfig.notifications?.templateUpdate?.enabled) {
+        // Initialize VCS provider registry
+        const vcsRegistry = new VcsProviderRegistry();
+
+        // Register GitHub provider
+        const githubProvider = new GitHubProvider(
+          logger,
+          config,
+          catalogClient,
+        );
+        vcsRegistry.registerProvider(githubProvider);
+
+        // Register GitLab provider
+        const gitlabProvider = new GitLabProvider(
+          logger,
+          config,
+          catalogClient,
+        );
+        vcsRegistry.registerProvider(gitlabProvider);
+
+        logger.debug('Registered VCS providers: github, gitlab');
+
+        const notificationsEnabled =
+          processorConfig.notifications?.templateUpdate?.enabled;
+        const pullRequestsEnabled =
+          processorConfig.pullRequests?.templateUpdate?.enabled;
+
+        // Subscribe to events if either notifications or pull requests are enabled
+        if (notificationsEnabled || pullRequestsEnabled) {
           await events.subscribe({
             id: 'scaffolder-relation-processor',
             topics: [TEMPLATE_VERSION_UPDATED_TOPIC],
@@ -86,6 +117,10 @@ export const catalogModuleScaffolderRelationProcessor = createBackendModule({
                 auth,
                 processorConfig,
                 payload,
+                logger,
+                urlReader,
+                vcsRegistry,
+                config,
               );
             },
           });

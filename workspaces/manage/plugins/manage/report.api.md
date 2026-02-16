@@ -11,7 +11,7 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { ComponentProps } from 'react';
 import { ComponentType } from 'react';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
+import type { Entity } from '@backstage/catalog-model';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
@@ -21,6 +21,7 @@ import { Header } from '@backstage/core-components';
 import { IconComponent } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { JSX as JSX_3 } from 'react/jsx-runtime';
+import { ManageCardRef } from '@backstage-community/plugin-manage-react';
 import { ManageColumnModule } from '@backstage-community/plugin-manage-react';
 import { ManageCondition } from '@backstage-community/plugin-manage-react';
 import { ManageConditionOptions } from '@backstage-community/plugin-manage-react';
@@ -36,7 +37,7 @@ import { RoutedTabs } from '@backstage/core-components';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
 import { SwitchProps } from '@mui/material/Switch';
-import { TableOptions } from '@backstage/core-components';
+import { TableOptions as TableOptions_2 } from '@backstage/core-components';
 import { UseUserSettingsResult } from '@backstage-community/plugin-manage-react';
 
 // @public
@@ -80,7 +81,7 @@ export interface ManageEntitiesTableProps {
   // (undocumented)
   columns?: TableColumn[];
   // (undocumented)
-  options?: TableOptions<TableRow>;
+  options?: TableOptions_2<TableRow> | TableOptions;
   // (undocumented)
   subtitle?: string;
   // (undocumented)
@@ -93,7 +94,7 @@ export interface ManageKindOptions {
   columns?: TableColumn[];
   footer?: ReactNode;
   header?: ReactNode;
-  tableOptions?: TableOptions<TableRow>;
+  tableOptions?: TableOptions_2<TableRow> | TableOptions;
 }
 
 // @public @deprecated (undocumented)
@@ -297,7 +298,6 @@ const managePlugin_2: OverridableFrontendPlugin<
           }
         >;
         cardWidgets: ExtensionInput<
-          | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
           | ConfigurableExtensionDataRef<
               {
                 attachTo: string[] | undefined;
@@ -305,6 +305,7 @@ const managePlugin_2: OverridableFrontendPlugin<
               'manage.attachTo.ref',
               {}
             >
+          | ConfigurableExtensionDataRef<ManageCardRef, 'manage.card.ref', {}>
           | ConfigurableExtensionDataRef<
               ManageCondition,
               'manage.condition.ref',
@@ -431,9 +432,17 @@ export type SwitchColor = SwitchProps['color'];
 export type TableColumn = ManageColumnSimple | ManageColumnModule;
 
 // @public (undocumented)
+export interface TableOptions {
+  // (undocumented)
+  pageSizeOptions?: number[];
+  // (undocumented)
+  paging?: boolean;
+}
+
+// @public (undocumented)
 export type TableRow = {
   entity: Entity;
-  id?: string;
+  id: string;
 };
 
 // @public

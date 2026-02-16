@@ -1,4 +1,30 @@
-### Dependencies
+# @backstage-community/plugin-analytics-module-matomo
+
+## 1.24.0
+
+### Minor Changes
+
+- b41b95d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+
+## 1.23.0
+
+### Minor Changes
+
+- 5778064: Backstage version bump to v1.46.1
+
+## 1.22.0
+
+### Minor Changes
+
+- 009b7c5: Added enhanced identity-aware tracking so Matomo records page views only after a userId is available, fixing the issue where navigate events fired anonymously despite `identity` being enabled
+
+### Patch Changes
+
+- efdad9e: Updated dependency `@types/node` to `22.19.3`.
 
 ## 1.21.1
 

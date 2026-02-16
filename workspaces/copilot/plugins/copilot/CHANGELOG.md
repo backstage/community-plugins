@@ -1,5 +1,28 @@
 # @backstage-community/plugin-copilot
 
+## 0.19.0
+
+### Minor Changes
+
+- c8ad8f8: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [c8ad8f8]
+  - @backstage-community/plugin-copilot-common@0.17.0
+
+## 0.18.0
+
+### Minor Changes
+
+- 0990dc2: Add overall data toggle and enhance metrics visualization
+
+## 0.17.1
+
+### Patch Changes
+
+- 0d18c87: Check configuration to determine whether to show enterprise or organization page.
+
 ## 0.17.0
 
 ### Minor Changes

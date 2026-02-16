@@ -70,7 +70,7 @@ export interface Config {
        */
       scriptPath?: string;
       /**
-       * URL endpoint for the MCP server (for streamable HTTP connections or SSE)
+       * URL endpoint for the MCP server (for streamable HTTP connections)
        * @visibility backend
        */
       url?: string;
@@ -92,14 +92,41 @@ export interface Config {
       /**
        * Type of MCP server connection
        * @visibility backend
-       * @enum { 'stdio' | 'sse' | 'streamable-http' }
+       * @enum { 'stdio' | 'streamable-http' }
        */
-      type?: 'stdio' | 'sse' | 'streamable-http'; // Note: Use MCPServerType enum in code
+      type?: 'stdio' | 'streamable-http'; // Note: Use MCPServerType enum in code
     }>;
     /**
      * Custom system prompt for the AI assistant
      * @visibility backend
      */
     systemPrompt?: string;
+    /**
+     * Conversation history settings
+     * @visibility backend
+     */
+    conversationHistory?: {
+      /**
+       * Number of recent conversations to display in the UI.
+       * All conversations are stored in the database; this only controls what's displayed.
+       * @visibility backend
+       * @default 10
+       */
+      displayLimit?: number;
+      /**
+       * Whether to automatically generate titles for conversations using the LLM.
+       * When disabled, falls back to using the first user message as the title.
+       * @visibility backend
+       * @default true
+       */
+      autoSummarize?: boolean;
+      /**
+       * Timeout in milliseconds for title generation requests.
+       * If the LLM takes longer than this, falls back to the first user message.
+       * @visibility backend
+       * @default 3000
+       */
+      summarizeTimeout?: number;
+    };
   };
 }

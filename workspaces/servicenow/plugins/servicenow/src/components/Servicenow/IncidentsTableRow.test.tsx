@@ -16,6 +16,8 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
@@ -24,9 +26,36 @@ jest.mock('@mui/styles', () => ({
   makeStyles: () => () => ({}),
 }));
 
+jest.mock('../../hooks/useTranslation', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'priority.high': 'High',
+        'incidentState.inProgress': 'In Progress',
+        'actions.openInServicenow': 'Open in ServiceNow',
+      };
+      return translations[key] || key;
+    },
+  }),
+}));
+
 jest.mock('../../utils/incidentUtils', () => ({
-  getPriorityValue: jest.fn(() => 'High'),
-  getIncidentStateValue: jest.fn(() => 'In Progress'),
+  renderStatusLabel: jest.fn((data?: { label: string }) => data?.label || ''),
+  usePriorityMap: () => ({
+    1: { Icon: PendingOutlinedIcon, color: '#C9190B', label: 'Critical' },
+    2: { Icon: KeyboardDoubleArrowUpIcon, color: '#EC7A08', label: 'High' },
+    3: { Icon: PendingOutlinedIcon, color: '#F0AB00', label: 'Moderate' },
+    4: { Icon: PendingOutlinedIcon, color: '#2B9AF3', label: 'Low' },
+    5: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'Planning' },
+  }),
+  useIncidentStateMap: () => ({
+    1: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'New' },
+    2: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'In Progress' },
+    3: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'On Hold' },
+    6: { Icon: PendingOutlinedIcon, color: '#3E8635', label: 'Resolved' },
+    7: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'Closed' },
+    8: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'Cancelled' },
+  }),
 }));
 
 jest.mock('../../utils/stringUtils', () => ({

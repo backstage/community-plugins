@@ -31,9 +31,14 @@ import {
   FilterProps,
 } from '../../types';
 import { InfoCard, Progress } from '@backstage/core-components';
-import { useSharedDateRange, useSharedTeam } from '../../contexts';
+import {
+  useSharedDateRange,
+  useSharedTeam,
+  useSharedShowOverall,
+} from '../../contexts';
 import { useSeatMetrics } from '../../hooks/useSeatMetrics';
 import { useSeatMetricsByTeam } from '../../hooks/useSeatMetricsByTeam';
+import { OverallToggle } from '../Filters';
 
 type MetricsProps = {
   Cards: ElementType<CardsProps>;
@@ -78,6 +83,7 @@ export const RenderCharts = ({
 }: Omit<Omit<EngagementMetricsProps, 'Cards'>, 'Filters'>) => {
   const [state] = useSharedDateRange();
   const [team] = useSharedTeam();
+  const [showOverall] = useSharedShowOverall();
   const data = useEngagementMetrics(state.startDate, state.endDate);
   const dataPerTeam = useEngagementMetricsByTeam(
     state.startDate,
@@ -102,6 +108,7 @@ export const RenderCharts = ({
       metricsByTeam={dataPerTeam.items ?? []}
       seats={seatData.items ?? []}
       seatsByTeam={seatDataPerTeam.items ?? []}
+      showOverall={showOverall}
     />
   );
 };
@@ -163,8 +170,11 @@ export const Usage = ({ Cards, Charts, Filters }: EngagementMetricsProps) => {
           </InfoCard>
         </Box>
         <Box flex={1}>
-          <Stack pb={1.5}>
-            <RenderFilters Filters={Filters} />
+          <Stack direction="row" spacing={2} pb={1.5} alignItems="center">
+            <Box flex={1}>
+              <RenderFilters Filters={Filters} />
+            </Box>
+            <OverallToggle />
           </Stack>
           <RenderCards Cards={Cards} />
         </Box>

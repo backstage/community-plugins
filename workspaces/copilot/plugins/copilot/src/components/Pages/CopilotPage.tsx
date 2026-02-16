@@ -16,7 +16,11 @@
 
 import { JSX, PropsWithChildren } from 'react';
 import { Header, Page, Content } from '@backstage/core-components';
-import { SharedDateRangeProvider, SharedTeamProvider } from '../../contexts';
+import {
+  SharedDateRangeProvider,
+  SharedTeamProvider,
+  SharedShowOverallProvider,
+} from '../../contexts';
 
 type CopilotPageProps = {
   title: string;
@@ -35,7 +39,9 @@ export function CopilotPage({
       <Header title={title} subtitle={subtitle} />
       <Content>
         <SharedDateRangeProvider>
-          <SharedTeamProvider>{children}</SharedTeamProvider>
+          <SharedTeamProvider>
+            <SharedShowOverallProvider>{children}</SharedShowOverallProvider>
+          </SharedTeamProvider>
         </SharedDateRangeProvider>
       </Content>
     </Page>

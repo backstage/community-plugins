@@ -15,13 +15,6 @@ export const DashboardSnapshot: (props: {
   permalink: string;
 }) => JSX_2.Element;
 
-// @public @deprecated
-export const DashboardSnapshotComponent: (props: {
-  guid: string;
-  name: string;
-  permalink: string;
-}) => JSX_2.Element;
-
 // @public
 export const DashboardSnapshotList: (props: { guid: string }) => JSX_2.Element;
 

@@ -97,6 +97,7 @@ export const LanguageCharts = ({
   team,
   metrics,
   metricsByTeam,
+  showOverall = true,
 }: PropsWithChildren<ChartsProps>) => {
   const languageStats = getLanguageStats(metrics);
   const languageStatsByTeam = getLanguageStats(metricsByTeam);
@@ -123,7 +124,7 @@ export const LanguageCharts = ({
           )}
         </Fieldset>
       )}
-      {team && (
+      {team && showOverall && (
         <Fieldset>
           <Legend>Overall</Legend>
           {renderPieCharts(
@@ -142,6 +143,7 @@ export const LanguageCharts = ({
           team={team}
           overallRows={languageStats}
           teamRows={languageStatsByTeam}
+          showOverall={showOverall}
         />
       </Chart>
     </MainBox>

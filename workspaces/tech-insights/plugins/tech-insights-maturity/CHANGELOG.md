@@ -1,5 +1,57 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.6.5
+
+### Patch Changes
+
+- Updated dependencies [1a5b5e4]
+  - @backstage-community/plugin-tech-insights-react@1.4.0
+
+## 0.6.4
+
+### Patch Changes
+
+- cf9caca: Fixes a typo in the package import in the README example.
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [2d9ce90]
+  - @backstage-community/plugin-tech-insights-common@0.8.2
+  - @backstage-community/plugin-tech-insights-maturity-common@0.4.2
+  - @backstage-community/plugin-tech-insights-react@1.3.3
+
+## 0.6.2
+
+### Patch Changes
+
+- Updated dependencies [0b21938]
+  - @backstage-community/plugin-tech-insights-react@1.3.2
+
+## 0.6.1
+
+### Patch Changes
+
+- 3ca2b56: Upgrades to Backstage v1.47.2
+- Updated dependencies [3ca2b56]
+  - @backstage-community/plugin-tech-insights-maturity-common@0.4.1
+  - @backstage-community/plugin-tech-insights-common@0.8.1
+  - @backstage-community/plugin-tech-insights-react@1.3.1
+
+## 0.6.0
+
+### Minor Changes
+
+- e8743d9: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [e8743d9]
+  - @backstage-community/plugin-tech-insights-common@0.8.0
+  - @backstage-community/plugin-tech-insights-maturity-common@0.4.0
+  - @backstage-community/plugin-tech-insights-react@1.3.0
+
 ## 0.5.0
 
 ### Minor Changes

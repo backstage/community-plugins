@@ -21,7 +21,7 @@ import {
   getLatestPipelineRun,
   getTaskRunsForPipelineRun,
   pipelineRunStatus,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { PipelinesData } from '../../../types/pipeline';
 import PipelineDecoratorBubble from './PipelineDecoratorBubble';

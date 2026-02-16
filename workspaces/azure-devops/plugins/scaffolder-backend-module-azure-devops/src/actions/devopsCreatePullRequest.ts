@@ -89,6 +89,13 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
               'Enable auto-completion of the pull request once policies are met',
             )
             .optional(),
+        mergeStrategy: z =>
+          z
+            .string()
+            .describe(
+              'The merge strategy to use when completing the pull request. Override the default merge strategy with: Rebase, RebaseMerge, Squash, NoFastForward. If omitted, defaults to RebaseMerge.',
+            )
+            .optional(),
         workItemId: z =>
           z
             .string()
@@ -108,6 +115,7 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
         project,
         supportsIterations,
         workItemId,
+        mergeStrategy,
         organization = 'not-empty',
         description = '',
         autoComplete = false,
@@ -165,15 +173,30 @@ export const createAzureDevopsCreatePullRequestAction = (options: {
       }
       // this can't be set at creation time, so we have to update the PR to set it
       if (autoComplete) {
+        // Resolve merge strategy: use provided value if valid, otherwise default to RebaseMerge.
+        let mappedMergeStrategy = GitPullRequestMergeStrategy.RebaseMerge;
+        if (mergeStrategy) {
+          mappedMergeStrategy = (GitPullRequestMergeStrategy as any)[
+            mergeStrategy
+          ];
+          if (mappedMergeStrategy === undefined) {
+            const allowed = Object.keys(GitPullRequestMergeStrategy)
+              .filter(k => Number.isNaN(Number(k)))
+              .join(', ');
+            throw new InputError(
+              `Invalid mergeStrategy "${mergeStrategy}". Allowed values: ${allowed}`,
+            );
+          }
+        }
+
         const updateProperties = {
           autoCompleteSetBy: { id: pullRequestResponse.createdBy?.id },
           // the idea here is that if you want to fire-and-forget the PR by setting autocomplete, you don't also want
           // the branch to stick around afterwards.
           completionOptions: {
             deleteSourceBranch: true,
-            // All new repos will accept semi-linear merges by default, and the default merge strategy (a fast-forward merge)
-            // is disabled by default so we cannot use it here.
-            mergeStrategy: GitPullRequestMergeStrategy.RebaseMerge,
+            // If no merge strategy is provided, default to RebaseMerge.
+            mergeStrategy: mappedMergeStrategy,
           } as GitPullRequestCompletionOptions,
         } as GitPullRequest;
 

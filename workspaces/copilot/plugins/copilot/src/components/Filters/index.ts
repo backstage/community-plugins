@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { SelectTeamFilter } from './SelectTeamFilter';
+export { OverallToggle } from './OverallToggle';

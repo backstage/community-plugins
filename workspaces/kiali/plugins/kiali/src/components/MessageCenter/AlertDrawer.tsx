@@ -28,9 +28,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import ExpandMoreRounded from '@material-ui/icons/ExpandMoreRounded';
-import { InfoIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { KialiAppAction } from '../../actions/KialiAppAction';
+import { KialiIcon } from '../../config/KialiIcon';
 import { MessageCenterState } from '../../store';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { AlertDrawerGroup } from './AlertDrawerGroup';
@@ -65,10 +65,10 @@ const drawer = kialiStyle({
 });
 
 const noNotificationsMessage = (
-  <>
-    <InfoIcon />
-    No Messages Available
-  </>
+  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+    <KialiIcon.Info color="inherit" />
+    <span>No Messages Available</span>
+  </span>
 );
 
 export const AlertDrawer = (props: AlertDrawerProps) => {

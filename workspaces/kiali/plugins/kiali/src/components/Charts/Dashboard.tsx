@@ -22,7 +22,6 @@ import type {
   RawOrBucket,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Grid } from '@material-ui/core';
-import { ChartThemeColor, getTheme } from '@patternfly/react-charts';
 import { isArray } from 'lodash';
 import { default as React } from 'react';
 import { getDataSupplier } from '../../utils/VictoryChartsUtils';
@@ -83,8 +82,14 @@ export class Dashboard<T extends LineInfo> extends React.Component<
   };
 
   private renderChart(chart: ChartModel) {
-    let colorScale =
-      this.props.colors || getTheme(ChartThemeColor.multi).chart!.colorScale!;
+    let colorScale = this.props.colors || [
+      '#0066cc',
+      '#8bc1f7',
+      '#3e8635',
+      '#f0ab00',
+      '#c9190b',
+      '#8a8d90',
+    ];
     if (!isArray(colorScale)) {
       colorScale = [colorScale];
     }

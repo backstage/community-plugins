@@ -36,7 +36,7 @@ type StyleNodeProps = {
 } & WithSelectionProps;
 
 const renderIcon = (element: Node): React.ReactNode => {
-  let Component: React.ComponentClass<React.ComponentProps<any>> | undefined;
+  let Component: React.ComponentType<any> | undefined;
   const data = element.getData();
   const isInaccessible = data.isInaccessible;
   const isServiceEntry = data.isServiceEntry;

@@ -100,7 +100,7 @@ export const TrafficGraph = (props: { model: Model }) => {
       }
     >
       <VisualizationProvider controller={controller}>
-        <VisualizationSurface state={props.model} />
+        <VisualizationSurface />
       </VisualizationProvider>
     </TopologyView>
   );

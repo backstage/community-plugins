@@ -189,6 +189,15 @@ export class KialiFetcher {
         cookie: this.kialiAuth.getCookie(),
       };
     }
+
+    // Add Basic Auth header if present
+    if (this.KialiDetails.basicAuth) {
+      requestInit.headers = {
+        ...requestInit.headers,
+        Authorization: `Basic ${this.KialiDetails.basicAuth}`,
+      };
+    }
+
     /*
       kialiDetails.utl is formatted to make sure it ends in '/'
       We check that endpoint does not begin with '/'

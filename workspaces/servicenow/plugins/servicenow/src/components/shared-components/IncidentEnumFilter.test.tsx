@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { createElement } from 'react';
+import { createElement, ElementType } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SelectItem } from '@backstage/core-components';
 
 import { IncidentEnumFilter } from './IncidentEnumFilter';
+import { StatusData } from '../../utils/incidentUtils';
 
 const mockSet = jest.fn();
 const mockFilter = {
@@ -31,20 +32,37 @@ jest.mock('../../hooks/useQueryArrayFilter', () => ({
   useQueryArrayFilter: () => mockFilter,
 }));
 
+const MockIcon: ElementType = () => createElement('span', {}, '●');
+
 jest.mock('../../utils/incidentUtils', () => {
   return {
     PRIORITY_MAP: {
-      1: { label: 'Critical' },
-      2: { label: 'High' },
+      1: { label: 'Critical', Icon: () => null, color: '#C9190B' },
+      2: { label: 'High', Icon: () => null, color: '#EC7A08' },
     },
     INCIDENT_STATE_MAP: {
-      1: { label: 'New' },
-      2: { label: 'In Progress' },
+      1: { label: 'New', Icon: () => null, color: '#6A6E73' },
+      2: { label: 'In Progress', Icon: () => null, color: '#6A6E73' },
     },
     renderStatusLabel: (data: { label: string }) =>
       createElement('span', {}, data.label),
+    StatusData: {},
   };
 });
+
+const createMockDataMap = (
+  items: Record<number, { label: string }>,
+): Record<number, StatusData> => {
+  const result: Record<number, StatusData> = {};
+  for (const [key, value] of Object.entries(items)) {
+    result[Number(key)] = {
+      ...value,
+      Icon: MockIcon,
+      color: '#000000',
+    };
+  }
+  return result;
+};
 
 describe('IncidentEnumFilter', () => {
   beforeEach(() => {
@@ -56,10 +74,10 @@ describe('IncidentEnumFilter', () => {
       <IncidentEnumFilter
         label="Priority"
         filterKey="priority"
-        dataMap={{
+        dataMap={createMockDataMap({
           1: { label: 'Critical' },
           2: { label: 'High' },
-        }}
+        })}
         value={[]}
         onChange={() => {}}
       />,
@@ -75,10 +93,10 @@ describe('IncidentEnumFilter', () => {
       <IncidentEnumFilter
         label="State"
         filterKey="incident_state"
-        dataMap={{
+        dataMap={createMockDataMap({
           1: { label: 'New' },
           2: { label: 'In Progress' },
-        }}
+        })}
         value={[]}
         onChange={() => {}}
       />,
@@ -101,10 +119,10 @@ describe('IncidentEnumFilter', () => {
       <IncidentEnumFilter
         label="Priority"
         filterKey="priority"
-        dataMap={{
+        dataMap={createMockDataMap({
           1: { label: 'Critical' },
           2: { label: 'High' },
-        }}
+        })}
         value={[]}
         onChange={mockOnChange}
       />,
@@ -131,10 +149,10 @@ describe('IncidentEnumFilter', () => {
       <IncidentEnumFilter
         label="Priority"
         filterKey="priority"
-        dataMap={{
+        dataMap={createMockDataMap({
           1: { label: 'Critical' },
           2: { label: 'High' },
-        }}
+        })}
         value={[{ label: 'High', value: '2' }]}
         onChange={() => {}}
       />,

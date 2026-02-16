@@ -69,10 +69,9 @@ test('Namespace selector Select All / Deselect All', async ({ page }) => {
   const namespaceSelector = page.locator('[data-test="namespace-selector"]');
   await expect(namespaceSelector).toBeVisible();
 
-  // Verify initial state - all namespaces are selected
-  await expect(namespaceSelector).toContainText(
-    'bookinfo, default, istio-system',
-  );
+  await expect(namespaceSelector).toContainText('bookinfo');
+  await expect(namespaceSelector).toContainText('default');
+  await expect(namespaceSelector).toContainText('istio-system');
 
   // Click on the namespace selector to open the menu
   const namespaceSelectButton = namespaceSelector.locator('[role="button"]');

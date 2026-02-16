@@ -38,7 +38,7 @@ const mockServers: MCPServer[] = [
     id: '2',
     name: 'test-server-2',
     enabled: false,
-    type: MCPServerType.SSE,
+    type: MCPServerType.STREAMABLE_HTTP,
     status: { valid: true, connected: false },
   },
   {

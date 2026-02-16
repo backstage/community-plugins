@@ -23,25 +23,19 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import {
-  INCIDENT_STATE_MAP,
-  PRIORITY_MAP,
-  renderStatusLabel,
-} from '../../utils/incidentUtils';
-
-type SourceMap = Record<number, { label: string }>;
+import { renderStatusLabel, StatusData } from '../../utils/incidentUtils';
 
 export interface IncidentEnumFilterProps {
   label: string;
-  filterKey: string;
-  dataMap: SourceMap;
+  /** @deprecated No longer used, kept for backwards compatibility */
+  filterKey?: string;
+  dataMap: Record<number, StatusData>;
   value: SelectItem[];
   onChange: (event: any, value: SelectItem[]) => void;
 }
 
 export const IncidentEnumFilter = ({
   label,
-  filterKey,
   dataMap,
   value,
   onChange,
@@ -76,10 +70,7 @@ export const IncidentEnumFilter = ({
         onChange={onChange}
         renderOption={(renderProps, option, { selected }) => {
           const { key, ...optionProps } = renderProps;
-          const statusData =
-            filterKey === 'priority'
-              ? PRIORITY_MAP[Number(option.value)]
-              : INCIDENT_STATE_MAP[Number(option.value)];
+          const statusData = dataMap[Number(option.value)];
 
           return (
             <li key={key} {...optionProps}>

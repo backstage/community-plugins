@@ -1,5 +1,29 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.26.0
+
+### Minor Changes
+
+- 649ffe1: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [649ffe1]
+  - @backstage-community/plugin-cost-insights-common@0.12.0
+
+## 0.25.0
+
+### Minor Changes
+
+- ae08883: The compare to dropdown in the cost insights page will not disappear anymore after selecting "none" instead of a business metric
+
+## 0.24.1
+
+### Patch Changes
+
+- efd0824: The cost breakdown tab for the cost insights page will have a horizontal scroll when adding multiple cost breakdowns
+- 9a6edd2: Updated dependency `@types/recharts` to `^2.0.0`.
+
 ## 0.24.0
 
 ### Minor Changes

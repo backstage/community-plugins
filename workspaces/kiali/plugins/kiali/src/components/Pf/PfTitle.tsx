@@ -15,10 +15,10 @@
  */
 
 import {
-  ApplicationsIcon,
-  BundleIcon,
-  ServiceIcon,
-} from '@patternfly/react-icons';
+  Apps as AppsIcon,
+  RoomService as RoomServiceIcon,
+  ViewInAr as ViewInArIcon,
+} from '@mui/icons-material';
 import { default as React } from 'react';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { MissingSidecar } from '../MissingSidecar/MissingSidecar';
@@ -56,13 +56,13 @@ export const PfTitle = (props: PfTitleProps) => {
     }
     switch (typeP) {
       case 'services':
-        setIcon(<ServiceIcon />);
+        setIcon(<RoomServiceIcon />);
         break;
       case 'workloads':
-        setIcon(<BundleIcon />);
+        setIcon(<ViewInArIcon />);
         break;
       case 'applications':
-        setIcon(<ApplicationsIcon />);
+        setIcon(<AppsIcon />);
         break;
       default:
     }

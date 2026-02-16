@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementType } from 'react';
+import { ElementType, useMemo } from 'react';
 import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
@@ -26,8 +26,9 @@ import { InProgressIcon } from '../components/Servicenow/InProgressIcon';
 import { ClosedIcon } from '../components/Servicenow/ClosedIcon';
 
 import Typography from '@mui/material/Typography';
+import { useTranslation } from '../hooks/useTranslation';
 
-interface StatusData {
+export interface StatusData {
   Icon: ElementType;
   color: string;
   label: string;
@@ -37,6 +38,9 @@ interface StatusData {
 const iconStyleBase = { marginRight: 8 };
 const typographyStyleBase = { display: 'flex', alignItems: 'center' };
 
+/**
+ * @deprecated Use usePriorityMap hook for translated labels
+ */
 export const PRIORITY_MAP: Record<number, StatusData> = {
   1: {
     Icon: LabelImportantIcon,
@@ -50,6 +54,9 @@ export const PRIORITY_MAP: Record<number, StatusData> = {
   5: { Icon: FormatListNumberedIcon, color: '#6A6E73', label: 'Planning' },
 };
 
+/**
+ * @deprecated Use useIncidentStateMap hook for translated labels
+ */
 export const INCIDENT_STATE_MAP: Record<number, StatusData> = {
   1: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'New' },
   2: { Icon: InProgressIcon, color: '#6A6E73', label: 'In Progress' },
@@ -57,6 +64,88 @@ export const INCIDENT_STATE_MAP: Record<number, StatusData> = {
   6: { Icon: CheckCircleOutlineIcon, color: '#3E8635', label: 'Resolved' },
   7: { Icon: ClosedIcon, color: '#6A6E73', label: 'Closed' },
   8: { Icon: ClosedIcon, color: '#6A6E73', label: 'Cancelled' },
+};
+
+/**
+ * Hook to get translated priority map
+ */
+export const usePriorityMap = (): Record<number, StatusData> => {
+  const { t } = useTranslation();
+
+  return useMemo(
+    () => ({
+      1: {
+        Icon: LabelImportantIcon,
+        color: '#C9190B',
+        label: t('priority.critical'),
+        transform: 'rotate(-90deg)',
+      },
+      2: {
+        Icon: KeyboardDoubleArrowUpIcon,
+        color: '#EC7A08',
+        label: t('priority.high'),
+      },
+      3: {
+        Icon: ModerateIcon,
+        color: '#F0AB00',
+        label: t('priority.moderate'),
+      },
+      4: {
+        Icon: KeyboardDoubleArrowDownIcon,
+        color: '#2B9AF3',
+        label: t('priority.low'),
+      },
+      5: {
+        Icon: FormatListNumberedIcon,
+        color: '#6A6E73',
+        label: t('priority.planning'),
+      },
+    }),
+    [t],
+  );
+};
+
+/**
+ * Hook to get translated incident state map
+ */
+export const useIncidentStateMap = (): Record<number, StatusData> => {
+  const { t } = useTranslation();
+
+  return useMemo(
+    () => ({
+      1: {
+        Icon: PendingOutlinedIcon,
+        color: '#6A6E73',
+        label: t('incidentState.new'),
+      },
+      2: {
+        Icon: InProgressIcon,
+        color: '#6A6E73',
+        label: t('incidentState.inProgress'),
+      },
+      3: {
+        Icon: PauseCircleOutlineIcon,
+        color: '#6A6E73',
+        label: t('incidentState.onHold'),
+      },
+      6: {
+        Icon: CheckCircleOutlineIcon,
+        color: '#3E8635',
+        label: t('incidentState.resolved'),
+      },
+      7: {
+        Icon: ClosedIcon,
+        color: '#6A6E73',
+        label: t('incidentState.closed'),
+      },
+      8: {
+        Icon: ClosedIcon,
+        color: '#6A6E73',
+        label: t('incidentState.cancelled'),
+      },
+    }),
+    [t],
+  );
 };
 
 export const renderStatusLabel = (data?: StatusData) => {

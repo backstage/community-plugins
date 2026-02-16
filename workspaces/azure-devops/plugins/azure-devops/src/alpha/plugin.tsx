@@ -128,6 +128,7 @@ export const azureDevOpsWikiArticleSearchResultListItem =
         import('../components/WikiArticleSearchResultListItem').then(
           m => m.WikiArticleSearchResultListItem,
         ),
+      icon: <LibraryBooksIcon />,
     },
   });
 

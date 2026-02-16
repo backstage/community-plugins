@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// eslint-disable-next-line
 import '@backstage/ui/css/styles.css';
+
 import { createDevApp } from '@backstage/dev-utils';
 import {
   EntityMultiCIPipelinesContent,
@@ -21,7 +23,7 @@ import {
 } from '../src/plugin';
 import { Header, Page, TabbedLayout } from '@backstage/core-components';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { MockPermissionApi, TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { mockEntity } from '../src/__fixtures__/entity';
 import { mssvJenkinsApiRef } from '../src/api/jenkins';
@@ -117,7 +119,7 @@ createDevApp()
           [mssvGithubActionsApiRef, new MockMssvGithubActionsApiClient()],
           [mssvGitlabCIApiRef, new MockMssvGitlabCIApiClient()],
           [mssvAzureDevopsApiRef, new MockMssvAzureDevopsClient()],
-          [permissionApiRef, new MockPermissionApi()],
+          [permissionApiRef, mockApis.permission()],
         ]}
       >
         <EntityProvider entity={mockEntity}>

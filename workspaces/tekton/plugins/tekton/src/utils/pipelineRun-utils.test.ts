@@ -17,7 +17,7 @@ import {
   ComputedStatus,
   SucceedConditionReason,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { appendPipelineRunStatus, getPLRTaskRuns } from './pipelineRun-utils';

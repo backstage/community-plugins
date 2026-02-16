@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { TagsContent } from './TagsContent';
+export { CreateTagDialog } from './CreateTagDialog';

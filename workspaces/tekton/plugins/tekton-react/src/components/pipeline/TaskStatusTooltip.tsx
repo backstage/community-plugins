@@ -1,0 +1,75 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Fragment } from 'react';
+
+import { ComputedStatus, TaskStatusTypes } from '../../types';
+import { getRunStatusColor } from '../../utils';
+
+/**
+ * Props for the TaskStatusTooltip component.
+ *
+ * @public
+ */
+export interface TaskStatusToolTipProps {
+  /** The task status. */
+  taskStatus: TaskStatusTypes;
+}
+
+/**
+ * The TaskStatusTooltip component is used to display a tooltip with the status of a task.
+ *
+ * @param taskStatus - The task status.
+ * @public
+ */
+export const TaskStatusTooltip = ({ taskStatus }: TaskStatusToolTipProps) => {
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: '1rem auto',
+        gridGap: '0.5rem',
+        textAlign: 'left',
+      }}
+    >
+      {Object.keys(ComputedStatus).map(status => {
+        const { message, color } = getRunStatusColor(status);
+
+        if (!taskStatus[status as keyof TaskStatusTypes]) {
+          return null;
+        }
+
+        return (
+          <Fragment key={status}>
+            <div
+              style={{
+                backgroundColor: color,
+                height: '1rem',
+                width: '1rem',
+              }}
+            />
+            <div>
+              {status === ComputedStatus.PipelineNotStarted ||
+              status === ComputedStatus.FailedToStart
+                ? message
+                : `${taskStatus[status as keyof TaskStatusTypes]} ${message}`}
+            </div>
+          </Fragment>
+        );
+      })}
+    </div>
+  );
+};

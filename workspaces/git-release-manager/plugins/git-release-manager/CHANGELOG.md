@@ -1,5 +1,11 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.13.1
+
+### Patch Changes
+
+- 9a6edd2: Updated dependency `@types/recharts` to `^2.0.0`.
+
 ## 0.13.0
 
 ### Minor Changes

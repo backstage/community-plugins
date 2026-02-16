@@ -1,4 +1,10 @@
-## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
+# @backstage-community/plugin-feedback-backend
+
+## 2.1.6
+
+### Patch Changes
+
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
 
 ## 2.1.5
 

@@ -15,9 +15,9 @@
  */
 import { NotificationGroup } from '@backstage-community/plugin-kiali-common/types';
 import { Button, Card, CardActions, CardContent } from '@material-ui/core';
-import { InfoIcon } from '@patternfly/react-icons';
 import { default as React } from 'react';
 import { MessageCenterActions } from '../../actions';
+import { KialiIcon } from '../../config/KialiIcon';
 import { KialiAppState, KialiContext } from '../../store';
 import { AlertDrawerMessage } from './AlertDrawerMessage';
 
@@ -27,10 +27,10 @@ type AlertDrawerGroupProps = {
 };
 
 const noNotificationsMessage = (
-  <>
-    <InfoIcon />
-    No Messages Available
-  </>
+  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+    <KialiIcon.Info color="inherit" />
+    <span>No Messages Available</span>
+  </span>
 );
 
 export const AlertDrawerGroup = (props: AlertDrawerGroupProps) => {

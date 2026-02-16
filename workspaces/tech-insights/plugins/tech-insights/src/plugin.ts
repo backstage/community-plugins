@@ -132,35 +132,3 @@ export const TechInsightsScorecardPage = techInsightsPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
-
-/**
- * @public
- * @deprecated Use `ResultCheckIcon` from `@backstage-community/plugin-tech-insights-react` instead
- */
-export const TechInsightsCheckIcon = techInsightsPlugin.provide(
-  createComponentExtension({
-    name: 'TechInsightsCheckIcon',
-    component: {
-      lazy: () =>
-        import('@backstage-community/plugin-tech-insights-react').then(
-          m => m.ResultCheckIcon,
-        ),
-    },
-  }),
-);
-
-/**
- * @public
- * @deprecated Use `ResultLinksMenu` from `@backstage-community/plugin-tech-insights-react` instead
- */
-export const TechInsightsLinksMenu = techInsightsPlugin.provide(
-  createComponentExtension({
-    name: 'TechInsightsLinksMenu',
-    component: {
-      lazy: () =>
-        import('@backstage-community/plugin-tech-insights-react').then(
-          m => m.ResultLinksMenu,
-        ),
-    },
-  }),
-);

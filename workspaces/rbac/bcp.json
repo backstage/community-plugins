@@ -1,5 +1,6 @@
 {
   "autoVersionBump": true,
   "knipReports": false,
-  "playwrightTests": true
+  "playwrightTests": true,
+  "listDeprecations": true
 }

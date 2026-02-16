@@ -20,6 +20,10 @@ export const DEFAULT_NOTIFICATION_DESCRIPTION =
   'The template used to create $ENTITY_DISPLAY_NAME has been updated to a new version. Review and update your entity to stay in sync with the template.';
 
 // @public
+export const DEFAULT_NOTIFICATION_DESCRIPTION_WITH_PR =
+  'The template used to create $ENTITY_DISPLAY_NAME has been updated to a new version. A pull request has been created to sync the changes: $PR_LINK';
+
+// @public
 export const DEFAULT_NOTIFICATION_ENABLED = false;
 
 // @public
@@ -27,7 +31,20 @@ export const DEFAULT_NOTIFICATION_TITLE =
   '$ENTITY_DISPLAY_NAME is out of sync with template';
 
 // @public
+export const DEFAULT_NOTIFICATION_TITLE_WITH_PR =
+  '$ENTITY_DISPLAY_NAME has a template update PR ready';
+
+// @public
+export const DEFAULT_PR_ENABLED = false;
+
+// @public
 export const ENTITY_DISPLAY_NAME_TEMPLATE_VAR = '$ENTITY_DISPLAY_NAME';
+
+// @public
+export const PR_CREATION_FAILED_PREFIX = 'Failed to create template update PR';
+
+// @public
+export const PR_LINK_TEMPLATE_VAR = '$PR_LINK';
 
 // @public
 export const RELATION_SCAFFOLDED_FROM = 'scaffoldedFrom';
@@ -75,7 +92,17 @@ export interface ScaffolderRelationProcessorConfig {
       };
     };
   };
+  // (undocumented)
+  pullRequests?: {
+    templateUpdate?: {
+      enabled: boolean;
+    };
+  };
 }
+
+// @public
+export const TEMPLATE_UPDATE_PRS_DOCS_URL =
+  'https://github.com/backstage/community-plugins/tree/main/workspaces/scaffolder-relation-processor/plugins/catalog-backend-module-scaffolder-relation-processor/docs/templateUpdatePRs.md';
 
 // @public
 export const TEMPLATE_VERSION_UPDATED_TOPIC =

@@ -28,6 +28,7 @@ import { mockComponentEntity } from '../src/__fixtures__/mockEntity';
 import { mockServicenowApi } from '../src/__fixtures__/mockServicenowApi';
 
 import { servicenowPlugin, EntityServicenowContent } from '../src/plugin';
+import { servicenowTranslations } from '../src/translations';
 
 const mockIdentityApi = {
   getUserId: () => 'test-user',
@@ -58,6 +59,8 @@ const mockIdentityApi = {
 
 createDevApp()
   .registerPlugin(servicenowPlugin)
+  .addTranslationResource(servicenowTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .registerApi(
     catalogApiMock.factory({
       entities: [

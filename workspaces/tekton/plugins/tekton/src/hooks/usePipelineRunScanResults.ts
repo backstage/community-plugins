@@ -15,7 +15,7 @@
  */
 import { useMemo } from 'react';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 
 import { PipelineRunScanResults } from '../types/types';
 

@@ -5,7 +5,7 @@
 ```ts
 /// <reference types="react" />
 
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { BuildRun } from '@backstage-community/plugin-azure-devops-common';
 import { BuildRunOptions } from '@backstage-community/plugin-azure-devops-common';

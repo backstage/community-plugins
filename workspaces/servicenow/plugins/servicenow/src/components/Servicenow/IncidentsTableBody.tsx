@@ -19,12 +19,14 @@ import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 
-import { IncidentsListColumns } from './IncidentsListColumns';
+import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
-  // TODO: Add loading and error states
+  const { t } = useTranslation();
+  const incidentsListColumns = useIncidentsListColumns();
 
   if (rows?.length > 0) {
     return (
@@ -39,7 +41,7 @@ export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
   return (
     <TableBody>
       <TableRow>
-        <TableCell colSpan={IncidentsListColumns.length}>
+        <TableCell colSpan={incidentsListColumns.length}>
           <Box
             data-testid="no-incidents-found"
             sx={{
@@ -48,7 +50,7 @@ export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
               justifyContent: 'center',
             }}
           >
-            No records found
+            {t('table.emptyContent')}
           </Box>
         </TableCell>
       </TableRow>

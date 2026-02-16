@@ -35,6 +35,8 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
+
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
@@ -55,7 +57,7 @@ import { topologyTranslations } from '@backstage-community/plugin-topology/alpha
 const app = createApp({
   apis,
   __experimentalTranslations: {
-    availableLanguages: ['en', 'de', 'fr', 'it', 'es'],
+    availableLanguages: ['en', 'de', 'fr', 'it', 'es', 'ja'],
     resources: [topologyTranslations],
   },
   bindRoutes({ bind }) {
@@ -76,7 +78,21 @@ const app = createApp({
     });
   },
   components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+    SignInPage: props => (
+      <SignInPage
+        {...props}
+        auto
+        providers={[
+          'guest',
+          {
+            id: 'github-auth-provider',
+            title: 'GitHub',
+            message: 'Sign in using GitHub',
+            apiRef: githubAuthApiRef,
+          },
+        ]}
+      />
+    ),
   },
 });
 

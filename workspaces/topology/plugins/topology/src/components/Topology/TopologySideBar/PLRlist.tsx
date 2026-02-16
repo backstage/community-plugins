@@ -17,7 +17,7 @@ import {
   PipelineKind,
   PipelineRunKind,
   pipelineRunStatus,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import { Status } from '../../common/Status';
 import ResourceName from '../../common/ResourceName';

@@ -23,7 +23,7 @@ import {
   ComputedStatus,
   pipelineRunFilterReducer,
   TaskRunKind,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import {
   TEKTON_PIPELINE_RUN,

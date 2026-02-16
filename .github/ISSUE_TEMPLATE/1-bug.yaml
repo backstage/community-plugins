@@ -24,7 +24,9 @@ body:
         - analytics
         - announcements
         - apache-airflow
+        - apiiro
         - apollo-explorer
+        - argocd
         - azure-devops
         - azure-resources
         - azure-sites
@@ -54,11 +56,7 @@ body:
         - gcalendar
         - gcp-projects
         - git-release-manager
-        - github-actions
-        - github-deployments
-        - github-discussions
-        - github-issues
-        - github-pull-requests-board
+        - github
         - gitops-profiles
         - gocd
         - grafana
@@ -93,7 +91,6 @@ body:
         - puppetdb
         - quay
         - rbac
-        - redhat-argocd
         - report-portal
         - rollbar
         - scaffolder-backend-module-annotator

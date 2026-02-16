@@ -27,6 +27,19 @@ import { switchType } from '../OverviewHelper';
 import { OverviewStatus } from '../OverviewStatus';
 import { OverviewType } from '../OverviewToolbar';
 
+const statusRowStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 6,
+  flexWrap: 'nowrap',
+  whiteSpace: 'nowrap',
+  textAlign: 'left',
+};
+const statusLabelStyle: React.CSSProperties = {
+  flex: '0 0 125px',
+  whiteSpace: 'nowrap',
+};
+
 type NamespaceStatusProps = {
   namespace: NamespaceInfo;
   type: OverviewType;
@@ -65,76 +78,82 @@ export const NamespaceStatus = (props: NamespaceStatusProps) => {
     )}`;
   }
   const mainLink = (
-    <div
-      style={{ display: 'inline-block', width: '125px', whiteSpace: 'nowrap' }}
-      data-test={`overview-type-${props.type}`}
-    >
+    <span style={statusLabelStyle} data-test={`overview-type-${props.type}`}>
       {text}
-    </div>
+    </span>
   );
   if (nbItems === ns.status?.notAvailable.length) {
     return (
-      <div style={{ textAlign: 'left' }}>
-        <span>
-          {mainLink}
-          <div style={{ display: 'inline-block', marginLeft: '5px' }}>N/A</div>
+      <div style={statusRowStyle}>
+        {mainLink}
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            marginLeft: '5px',
+          }}
+        >
+          N/A
         </span>
       </div>
     );
   }
   return (
-    <div style={{ textAlign: 'left' }}>
-      <span>
-        {mainLink}
-        <div
-          style={{ display: 'inline-block' }}
-          data-test="overview-app-health"
-        >
-          {ns.status && ns.status.inNotReady.length > 0 && (
-            <OverviewStatus
-              id={`${name}-not-ready`}
-              namespace={name}
-              status={NOT_READY}
-              items={ns.status.inNotReady}
-              targetPage={targetPage}
-              duration={props.duration}
-              refreshInterval={props.refreshInterval}
-            />
-          )}
-          {ns.status && ns.status.inError.length > 0 && (
-            <OverviewStatus
-              id={`${name}-failure`}
-              namespace={name}
-              status={FAILURE}
-              items={ns.status.inError}
-              targetPage={targetPage}
-              duration={props.duration}
-              refreshInterval={props.refreshInterval}
-            />
-          )}
-          {ns.status && ns.status.inWarning.length > 0 && (
-            <OverviewStatus
-              id={`${name}-degraded`}
-              namespace={name}
-              status={DEGRADED}
-              items={ns.status.inWarning}
-              targetPage={targetPage}
-              duration={props.duration}
-              refreshInterval={props.refreshInterval}
-            />
-          )}
-          {ns.status && ns.status.inSuccess.length > 0 && (
-            <OverviewStatus
-              id={`${name}-healthy`}
-              namespace={name}
-              status={HEALTHY}
-              items={ns.status.inSuccess}
-              targetPage={targetPage}
-              duration={props.duration}
-              refreshInterval={props.refreshInterval}
-            />
-          )}
-        </div>
+    <div style={statusRowStyle}>
+      {mainLink}
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          flexWrap: 'nowrap',
+          whiteSpace: 'nowrap',
+        }}
+        data-test="overview-app-health"
+      >
+        {ns.status && ns.status.inNotReady.length > 0 && (
+          <OverviewStatus
+            id={`${name}-not-ready`}
+            namespace={name}
+            status={NOT_READY}
+            items={ns.status.inNotReady}
+            targetPage={targetPage}
+            duration={props.duration}
+            refreshInterval={props.refreshInterval}
+          />
+        )}
+        {ns.status && ns.status.inError.length > 0 && (
+          <OverviewStatus
+            id={`${name}-failure`}
+            namespace={name}
+            status={FAILURE}
+            items={ns.status.inError}
+            targetPage={targetPage}
+            duration={props.duration}
+            refreshInterval={props.refreshInterval}
+          />
+        )}
+        {ns.status && ns.status.inWarning.length > 0 && (
+          <OverviewStatus
+            id={`${name}-degraded`}
+            namespace={name}
+            status={DEGRADED}
+            items={ns.status.inWarning}
+            targetPage={targetPage}
+            duration={props.duration}
+            refreshInterval={props.refreshInterval}
+          />
+        )}
+        {ns.status && ns.status.inSuccess.length > 0 && (
+          <OverviewStatus
+            id={`${name}-healthy`}
+            namespace={name}
+            status={HEALTHY}
+            items={ns.status.inSuccess}
+            targetPage={targetPage}
+            duration={props.duration}
+            refreshInterval={props.refreshInterval}
+          />
+        )}
       </span>
     </div>
   );

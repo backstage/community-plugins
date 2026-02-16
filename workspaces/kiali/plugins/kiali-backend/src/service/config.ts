@@ -28,6 +28,7 @@ export type KialiDetails = {
   tokenName?: string;
   url: string;
   urlExternal: string;
+  basicAuth?: string;
 };
 
 const isValidUrl = (url: string): boolean => {
@@ -91,6 +92,7 @@ export const getHubClusterFromConfig = (
       tokenName: hub.getOptionalString('tokenName') || 'kiali-token-Kubernetes',
       caData: hub.getOptionalString('caData'),
       caFile: hub.getOptionalString('caFile'),
+      basicAuth: hub.getOptionalString('basicAuth'),
     } as KialiDetails;
   });
 };

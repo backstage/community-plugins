@@ -117,3 +117,29 @@ Both the title and description support the following template variables:
 ### Disabling Notifications
 
 To disable the notification feature, set `scaffolder.notifications.templateUpdate.enabled` to `false` in your configuration, or simply omit the entire `scaffolder.notifications.templateUpdate` section from your config (notifications are disabled by default).
+
+## Template Update Pull Requests
+
+In addition to notifications, this plugin can automatically create pull requests (or merge requests for GitLab) to keep scaffolded repositories in sync with their source templates. When a template version changes, the plugin compares files and creates PRs with any necessary updates.
+
+### Quick Start
+
+Enable the PR feature in your `app-config.yaml`:
+
+```yaml
+scaffolder:
+  pullRequests:
+    templateUpdate:
+      enabled: true
+```
+
+### Key Features
+
+- **Automatic file comparison**: Detects added, modified, and deleted files between template and scaffolded repositories
+- **Multi-VCS support**: Works with both GitHub and GitLab
+- **Automatic reviewer assignment**: Assigns the entity owner as a reviewer if they are a User
+- **Integration with notifications**: Can send notifications with links to created PRs
+
+> ⚠️ **Important**: Always manually review the generated pull requests before merging. The automatic comparison may include changes that are intentionally different in your scaffolded repository.
+
+For detailed configuration options, prerequisites, and troubleshooting, see the [Template Update PRs documentation](./docs/templateUpdatePRs.md).

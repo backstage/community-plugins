@@ -15,26 +15,83 @@ Software Catalog integration:
 
 ## Link Backstage Entities to ServiceNow Incidents
 
-To associate a ServiceNow incident with a Backstage entity, ensure your ServiceNow incident table includes a custom field named `Backstage entity id`.
+To associate a ServiceNow incident with a Backstage entity, you can use custom and system fields in your ServiceNow incident table to filter incidents.
 
-**Required setup in ServiceNow:**
+### Standard Entity ID Field (Optional)
+
+If you want to use the `servicenow.com/entity-id` annotation, ensure your ServiceNow incident table includes a custom field named `Backstage entity id`:
+
+**Setup in ServiceNow:**
 
 - **Field name (system ID):** `u_backstage_entity_id`
 - **Field label (display name):** `Backstage entity id`
 - **Data type:** String
 - **Value example:** `my-servicenow-entity-id`
 
+### Fields for Filtering
+
+You can use custom and system fields in your ServiceNow incidents table to filter incidents. For example:
+
+- **Custom field:** `u_service` - to filter by service name
+- **Custom field:** `u_environment` - to filter by environment
+- **System field:** `subcategory` - to filter by subcategory
+- **System field:** `category` - to filter by category
+
+The plugin automatically validates that all annotation fields exist in your ServiceNow schema before querying incidents.
+
 Refer to [Configuration](./Configuration.md) for detailed backend configuration instructions.
 
 ### Annotations
 
-To enable ServiceNow integration for an entity, add the following annotation to its metadata:
+To enable ServiceNow integration for an entity, you can use annotations to filter incidents by fields in ServiceNow.
+
+#### Standard Entity ID Annotation
+
+The `servicenow.com/entity-id` annotation is a special annotation that filters incidents using the `u_backstage_entity_id` field:
 
 ```yaml
 metadata:
   annotations:
     servicenow.com/entity-id: my-servicenow-entity-id # has to match the value defined in the incident ticket `u_backstage_entity_id` field
 ```
+
+#### Incident table Field Annotations
+
+You can use custom and system fields to filter incidents in your ServiceNow incidents table. The annotation format is `servicenow.com/<field_name>`, where `<field_name>` is the name of a field in your ServiceNow incidents table.
+
+For example, to filter incidents by a custom field `u_service`:
+
+```yaml
+metadata:
+  annotations:
+    servicenow.com/u_service: my-service-value # filters incidents where u_service field equals "my-service-value"
+```
+
+Or filter by system fields like `category` and`subcategory`:
+
+```yaml
+metadata:
+  annotations:
+    servicenow.com/category: network # filters incidents where category equals "network"
+    servicenow.com/subcategory: database # filters incidents where subcategory equals "database"
+```
+
+You can use multiple field annotations simultaneously:
+
+```yaml
+metadata:
+  annotations:
+    servicenow.com/u_service: production-service
+    servicenow.com/u_environment: production
+    servicenow.com/category: hardware
+```
+
+**Important notes:**
+
+- The field must exist in your ServiceNow incidents table schema
+- The plugin validates that all annotation fields exist in ServiceNow before querying
+- All specified annotations are combined using AND logic (incidents must match all specified field values)
+- You can use both custom fields (typically starting with `u_` - ServiceNow convention) and system fields (like `category`, `subcategory`, etc.)
 
 ### Condition Functions
 

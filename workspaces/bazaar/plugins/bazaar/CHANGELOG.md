@@ -1,5 +1,17 @@
 # @backstage-community/plugin-bazaar
 
+## 0.19.0
+
+### Minor Changes
+
+- 244ef07: Backstage version bump to v1.47.2
+
+## 0.18.2
+
+### Patch Changes
+
+- 178524c: Remove unused dependencies
+
 ## 0.18.1
 
 ### Patch Changes

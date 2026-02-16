@@ -1,4 +1,46 @@
-### Dependencies
+# @backstage-community/plugin-ocm-backend
+
+## 5.14.0
+
+### Minor Changes
+
+- 92c7a8d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [92c7a8d]
+  - @backstage-community/plugin-ocm-common@3.17.0
+
+## 5.13.1
+
+### Patch Changes
+
+- 4f1b075: Replace deprecated `createPermissionIntegrationRouter` API call with `permissionsRegistry` to resolve deprecation warnings
+
+## 5.13.0
+
+### Minor Changes
+
+- f3879a7: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [f3879a7]
+  - @backstage-community/plugin-ocm-common@3.16.0
+
+## 5.12.2
+
+### Patch Changes
+
+- ef80f32: Updated dependency `@openapitools/openapi-generator-cli` to `2.27.0`.
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+
+## 5.12.1
+
+### Patch Changes
+
+- f52d810: Updated dependency `@openapitools/openapi-generator-cli` to `2.26.0`.
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
 
 ## 5.12.0
 

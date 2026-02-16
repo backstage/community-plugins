@@ -52,7 +52,7 @@ import { SignInPage } from './components/SignInPage/SignInPage';
 const app = createApp({
   apis,
   __experimentalTranslations: {
-    availableLanguages: ['en', 'de', 'fr', 'it', 'es'],
+    availableLanguages: ['en', 'de', 'fr', 'it', 'es', 'ja'],
     resources: [rbacTranslations],
   },
   bindRoutes({ bind }) {

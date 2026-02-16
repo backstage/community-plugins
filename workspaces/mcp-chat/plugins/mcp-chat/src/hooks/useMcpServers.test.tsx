@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode, FC } from 'react';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { ReactNode, FC, act } from 'react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { mcpChatApiRef } from '../api';
 import { useMcpServers } from './useMcpServers';
@@ -32,7 +32,7 @@ describe('useMcpServers', () => {
     {
       id: 'server-2',
       name: 'Test Server 2',
-      type: MCPServerType.SSE,
+      type: MCPServerType.STREAMABLE_HTTP,
       url: 'http://localhost:7007',
       status: { valid: true, connected: false },
       enabled: true,

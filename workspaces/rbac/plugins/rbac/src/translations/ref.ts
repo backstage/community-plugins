@@ -83,6 +83,7 @@ export const rbacMessages = {
       reviewAndCreate: 'Review and create',
       reviewAndSave: 'Review and save',
       nameDescriptionOwner: 'Name, description, and owner of role',
+      permissionPoliciesWithCount: 'Permission policies ({{count}})',
     },
     steps: {
       next: 'Next',
@@ -152,6 +153,8 @@ export const rbacMessages = {
     resourceTypeTooltip: 'resource type: {{resourceType}}',
     advancedPermissionsTooltip:
       'Use advanced customized permissions to allow access to specific parts of the selected resource type.',
+    noAdvancedPermissionsTooltip:
+      'Advanced customization is not supported for this resource type.',
     pluginsSelected: '{{count}} plugins',
     noPluginsSelected: 'No plugins selected',
     search: 'Search',

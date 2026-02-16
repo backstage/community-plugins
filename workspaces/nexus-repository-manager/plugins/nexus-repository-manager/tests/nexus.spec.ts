@@ -35,7 +35,7 @@ test.describe('Nexus Repository Manager plugin', () => {
       () => globalThis.navigator.language,
     );
     translations = getTranslations(currentLocale);
-    await common.switchToLocale(page, currentLocale);
+    await common.switchToLocale(currentLocale);
   });
 
   test('Heading is visible', async ({ browser }, testInfo) => {
@@ -43,7 +43,9 @@ test.describe('Nexus Repository Manager plugin', () => {
       title: 'janus-idp/backstage-showcase',
     });
 
-    await expect(page.getByRole('heading')).toHaveText(headingText);
+    await expect(
+      page.getByRole('heading', { name: headingText }),
+    ).toBeVisible();
     await common.a11yCheck(testInfo);
   });
 

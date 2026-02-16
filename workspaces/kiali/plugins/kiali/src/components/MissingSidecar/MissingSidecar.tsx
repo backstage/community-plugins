@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Tooltip, TooltipPosition } from '@patternfly/react-core';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 import { default as React } from 'react';
 import { icons } from '../../config/Icons';
 import { KialiIcon } from '../../config/KialiIcon';
@@ -28,7 +27,7 @@ type MissingSidecarProps = {
   texttooltip: string;
   tooltip: boolean;
   meshtooltip: string;
-  icon: React.ComponentClass<SVGIconProps>;
+  icon: React.ComponentType<any>;
   color: string;
   namespace: string;
   style?: React.CSSProperties;

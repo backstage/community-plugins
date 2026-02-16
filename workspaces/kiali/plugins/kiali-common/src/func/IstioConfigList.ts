@@ -170,11 +170,19 @@ export const toIstioItems = (
     objectGVK: string,
     name: string,
     namespace?: string,
-  ): ObjectValidation =>
-    istioConfigList.validations[objectGVK] &&
-    istioConfigList.validations[objectGVK][validationKey(name, namespace)];
+  ): ObjectValidation | undefined => {
+    const validations = istioConfigList?.validations;
+    if (!validations) {
+      return undefined;
+    }
+    const perType = validations[objectGVK];
+    if (!perType) {
+      return undefined;
+    }
+    return perType[validationKey(name, namespace)];
+  };
 
-  const resources = istioConfigList.resources;
+  const resources = istioConfigList?.resources ?? {};
   Object.keys(resources).forEach(field => {
     const entries = resources[field];
 
@@ -199,11 +207,7 @@ export const toIstioItems = (
           gvkString,
           entry.metadata.name,
           entry.metadata.namespace,
-        )
-          ? istioConfigList.validations[gvkString][
-              validationKey(entry.metadata.name, entry.metadata.namespace)
-            ]
-          : undefined,
+        ),
       };
 
       istioItems.push(item);

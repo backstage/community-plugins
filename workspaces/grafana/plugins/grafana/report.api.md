@@ -86,9 +86,6 @@ export const GRAFANA_ANNOTATION_DASHBOARD_SELECTOR =
 export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
   'grafana/overview-dashboard';
 
-// @public @deprecated
-export const GRAFANA_ANNOTATION_TAG_SELECTOR = 'grafana/tag-selector';
-
 // @public
 export interface GrafanaApi {
   alertsForSelector(selectors: string | string[]): Promise<Alert[]>;
@@ -114,9 +111,6 @@ export const isOverviewDashboardAvailable: (entity: Entity) => boolean;
 
 // @public
 export const overviewDashboardFromEntity: (entity: Entity) => string;
-
-// @public @deprecated
-export const tagSelectorFromEntity: (entity: Entity) => string;
 
 // (No @packageDocumentation comment for this package)
 ```

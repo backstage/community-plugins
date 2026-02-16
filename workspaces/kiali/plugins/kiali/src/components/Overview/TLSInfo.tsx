@@ -17,7 +17,6 @@ import { Chip, Tooltip } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import { default as React } from 'react';
 import { KialiIcon } from '../../config/KialiIcon';
-import { infoStyle } from '../../pages/Overview/OverviewCard/OverviewCardControlPlaneNamespace';
 import { getChipStyle, kialiStyle } from '../../styles/StyleUtils';
 
 type Props = {
@@ -25,6 +24,7 @@ type Props = {
 };
 
 const lockIconStyle = kialiStyle({ marginLeft: '5px' });
+const infoIconStyle = kialiStyle({ margin: '0px 0px -1px 4px' });
 
 const LockIcon = (): React.ReactElement => {
   return <KialiIcon.MtlsLock className={lockIconStyle} />;
@@ -36,15 +36,32 @@ export const TLSInfo = (props: Props) => {
 
   return (
     <div style={{ textAlign: 'left' }}>
-      <div>
+      <div style={{ display: 'flex' }}>
         <div
           style={{
-            display: 'inline-block',
+            display: 'inline-flex',
+            alignItems: 'center',
             width: '125px',
             whiteSpace: 'nowrap',
+            gap: 4,
+            flexWrap: 'nowrap',
           }}
         >
           Min TLS version
+          <Tooltip
+            placement="right"
+            title={
+              <div style={{ textAlign: 'left' }}>
+                The meshConfig.meshMTLS.minProtocolVersion field specifies the
+                minimum TLS version for the TLS connections among Istio
+                workloads. N/A if it was not set.
+              </div>
+            }
+          >
+            <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <KialiIcon.Info className={infoIconStyle} />
+            </span>
+          </Tooltip>
         </div>
 
         <Chip
@@ -52,23 +69,12 @@ export const TLSInfo = (props: Props) => {
           style={chipStyle}
           data-test="label-TLS"
           label={
-            <div style={{ display: '-webkit-box' }}>
-              {props.version} <LockIcon />
-              <Tooltip
-                placement="right"
-                title={
-                  <div style={{ textAlign: 'left' }}>
-                    The meshConfig.meshMTLS.minProtocolVersion field specifies
-                    the minimum TLS version for the TLS connections among Istio
-                    workloads. N/A if it was not set.
-                  </div>
-                }
-              >
-                <span>
-                  <KialiIcon.Info className={infoStyle} />
-                </span>
-              </Tooltip>
-            </div>
+            <span
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+            >
+              <span>{props.version}</span>
+              <LockIcon />
+            </span>
           }
         />
       </div>

@@ -10,6 +10,8 @@ The `community-plugins` repository is a place where members of the community can
 
 This repository is designed to provide plugin maintainers with tools and workflows to efficiently manage and publish Backstage plugins.
 
+👉 Check out the [Community Plugins documentation](./docs/README.md) for a full list of all plugins in this repository, including ownership and package details.
+
 ## Contributing a plugin
 
 Plugins created by the wider Backstage community are welcome to be published in the `community-plugins` repository. When you contribute a plugin to this repository, you agree to follow specific guidelines, including a standardized release process. This allows plugin owners to leverage established processes and the collective knowledge of the Backstage `community-plugins` community.

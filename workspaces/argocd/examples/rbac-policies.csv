@@ -1,0 +1,2 @@
+p, role:default/argocd_viewer, argocd.view.read, read, allow
+g, user:development/guest, role:default/argocd_viewer

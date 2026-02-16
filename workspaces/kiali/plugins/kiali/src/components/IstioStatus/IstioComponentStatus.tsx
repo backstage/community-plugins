@@ -16,13 +16,11 @@
 import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
 import { StatusTypes as Status } from '@backstage-community/plugin-kiali-common/types';
 import { ListItem, ListItemText } from '@material-ui/core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  MinusCircleIcon,
-} from '@patternfly/react-icons';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { default as React } from 'react';
 import { PFColors } from '@backstage-community/plugin-kiali-common/styles';
 
@@ -32,27 +30,27 @@ type Props = {
 
 export type ComponentIcon = {
   color: string;
-  icon: React.ComponentClass<SVGIconProps>;
+  icon: React.ComponentType<SvgIconProps>;
 };
 
 const ErrorCoreComponent: ComponentIcon = {
   color: PFColors.Danger,
-  icon: ExclamationCircleIcon,
+  icon: ErrorOutlineIcon,
 };
 
 const ErrorAddonComponent: ComponentIcon = {
   color: PFColors.Warning,
-  icon: ExclamationTriangleIcon,
+  icon: WarningAmberIcon,
 };
 
 const NotReadyComponent: ComponentIcon = {
   color: PFColors.Info,
-  icon: MinusCircleIcon,
+  icon: RemoveCircleOutlineIcon,
 };
 
 const SuccessComponent: ComponentIcon = {
   color: PFColors.Success,
-  icon: CheckCircleIcon,
+  icon: CheckCircleOutlineIcon,
 };
 
 // Mapping Valid-Core to Icon representation.

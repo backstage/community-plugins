@@ -70,12 +70,6 @@ export const EntityNpmReleaseTableCard = npmPlugin.provide(
 );
 
 /**
- * @deprecated please use `EntityNpmReleaseTableCard` instead.
- * @public
- */
-export const NpmReleaseTableCard = EntityNpmReleaseTableCard;
-
-/**
  * Card for the catalog (entity page) that shows the npm
  * name, description, keywords, license, some links and
  * the latest version if available.
@@ -91,12 +85,6 @@ export const EntityNpmInfoCard = npmPlugin.provide(
     },
   }),
 );
-
-/**
- * @deprecated please use `EntityNpmInfoCard` instead.
- * @public
- */
-export const NpmInfoCard = EntityNpmInfoCard;
 
 /**
  * Card for the catalog (entity page) that shows the latest tags
@@ -115,9 +103,3 @@ export const EntityNpmReleaseOverviewCard = npmPlugin.provide(
     },
   }),
 );
-
-/**
- * @deprecated please use `EntityNpmReleaseOverviewCard` instead.
- * @public
- */
-export const NpmReleaseOverviewCard = EntityNpmReleaseOverviewCard;

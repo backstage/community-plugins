@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { JSX } from 'react';
 import {
   createPlugin,
   createComponentExtension,

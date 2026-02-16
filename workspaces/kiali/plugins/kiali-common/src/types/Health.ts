@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  MinusCircleIcon,
-  UnknownIcon,
-} from '@patternfly/react-icons';
-import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  ErrorOutline as ErrorOutlineIcon,
+  HelpOutline as HelpOutlineIcon,
+  RemoveCircleOutline as RemoveCircleOutlineIcon,
+  WarningAmber as WarningAmberIcon,
+} from '@mui/icons-material';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { PFColors } from '../styles/PfColors';
 import { HealthAnnotationType } from './HealthAnnotation';
 import type { ToleranceConfig } from './ServerConfig';
@@ -85,7 +85,7 @@ export interface Status {
   name: string;
   color: string;
   priority: number;
-  icon: React.ComponentClass<SVGIconProps>;
+  icon: React.ComponentType<SvgIconProps>;
   class: string;
 }
 
@@ -100,35 +100,35 @@ export const FAILURE: Status = {
   name: 'Failure',
   color: PFColors.Danger,
   priority: 4,
-  icon: ExclamationCircleIcon,
+  icon: ErrorOutlineIcon,
   class: 'icon-failure',
 };
 export const DEGRADED: Status = {
   name: 'Degraded',
   color: PFColors.Warning,
   priority: 3,
-  icon: ExclamationTriangleIcon,
+  icon: WarningAmberIcon,
   class: 'icon-degraded',
 };
 export const NOT_READY: Status = {
   name: 'Not Ready',
   color: PFColors.InfoBackground,
   priority: 2,
-  icon: MinusCircleIcon,
+  icon: RemoveCircleOutlineIcon,
   class: 'icon-idle',
 };
 export const HEALTHY: Status = {
   name: 'Healthy',
   color: PFColors.Success,
   priority: 1,
-  icon: CheckCircleIcon,
+  icon: CheckCircleOutlineIcon,
   class: 'icon-healthy',
 };
 export const NA: Status = {
   name: 'No health information',
   color: PFColors.Color200,
   priority: 0,
-  icon: UnknownIcon,
+  icon: HelpOutlineIcon,
   class: 'icon-na',
 };
 

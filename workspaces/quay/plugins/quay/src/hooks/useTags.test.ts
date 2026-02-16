@@ -17,6 +17,7 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import { renderHook, waitFor } from '@testing-library/react';
 
+import { formatDate } from '../utils';
 import { useTags } from './quay';
 
 jest.mock('@backstage/core-plugin-api', () => ({
@@ -76,6 +77,36 @@ describe('useTags', () => {
       expect(result.current.data).toHaveLength(1);
       expect(result.current.data[0].securityStatus).toBe('scanned');
       expect(result.current.data[0].securityDetails).toEqual({});
+    });
+  });
+
+  it('should format last_modified and expiration consistently', async () => {
+    const lastModified = 'Wed, 15 Mar 2023 18:22:18 -0000';
+    const expiration = 'Tue, 06 Feb 2031 09:39:24 -0000';
+    (useApi as jest.Mock).mockReturnValue({
+      getSecurityDetails: jest
+        .fn()
+        .mockReturnValue({ data: null, status: 'unsupported' }),
+      getTags: jest.fn().mockReturnValue({
+        tags: [
+          {
+            name: 'tag1',
+            manifest_digest: 'sha256:abc123',
+            last_modified: lastModified,
+            expiration: expiration,
+            size: 1000,
+          },
+        ],
+      }),
+    });
+    const { result } = renderHook(() => useTags(undefined, 'foo', 'bar'));
+    await waitFor(() => {
+      expect(result.current.loading).toBeFalsy();
+      expect(result.current.data).toHaveLength(1);
+      expect(result.current.data[0].last_modified).toBe(
+        formatDate(lastModified),
+      );
+      expect(result.current.data[0].expiration).toBe(formatDate(expiration));
     });
   });
 });

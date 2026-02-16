@@ -68,11 +68,3 @@ export const AcrImagesEntityContent = acrPlugin.provide(
     },
   }),
 );
-
-/**
- * A catalog entity content (tab) that shows the ACR container images.
- *
- * @public
- * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
- */
-export const AcrPage = AcrImagesEntityContent;

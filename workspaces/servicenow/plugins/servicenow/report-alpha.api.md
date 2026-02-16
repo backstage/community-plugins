@@ -5,9 +5,9 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
@@ -16,6 +16,8 @@ import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
@@ -110,6 +112,131 @@ const _default: OverridableFrontendPlugin<
   }
 >;
 export default _default;
+
+// @alpha
+export const entityServicenowContent: OverridableExtensionDefinition<{
+  kind: 'entity-content';
+  name: 'EntityServicenowContent';
+  config: {
+    path: string | undefined;
+    title: string | undefined;
+    filter: EntityPredicate | undefined;
+    group: string | false | undefined;
+  };
+  configInput: {
+    filter?: EntityPredicate | undefined;
+    title?: string | undefined;
+    path?: string | undefined;
+    group?: string | false | undefined;
+  };
+  output:
+    | ExtensionDataRef<string, 'core.routing.path', {}>
+    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+    | ExtensionDataRef<
+        RouteRef<AnyRouteRefParams>,
+        'core.routing.ref',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        (entity: Entity) => boolean,
+        'catalog.entity-filter-function',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        string,
+        'catalog.entity-filter-expression',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
+    | ExtensionDataRef<
+        string,
+        'catalog.entity-content-group',
+        {
+          optional: true;
+        }
+      >;
+  inputs: {};
+  params: {
+    defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+    path: string;
+    defaultTitle?: [Error: "Use the 'title' param instead"] | undefined;
+    title: string;
+    defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
+    group?:
+      | (string & {})
+      | 'overview'
+      | 'documentation'
+      | 'development'
+      | 'deployment'
+      | 'operation'
+      | 'observability'
+      | undefined;
+    loader: () => Promise<JSX.Element>;
+    routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+    filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+  };
+}>;
+
+// @alpha (undocumented)
+export const servicenowApi: OverridableExtensionDefinition<{
+  kind: 'api';
+  name: undefined;
+  config: {};
+  configInput: {};
+  output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+  inputs: {};
+  params: <
+    TApi,
+    TImpl extends TApi,
+    TDeps extends {
+      [x: string]: unknown;
+    },
+  >(
+    params: ApiFactory<TApi, TImpl, TDeps>,
+  ) => ExtensionBlueprintParams<AnyApiFactory>;
+}>;
+
+// @alpha
+export const servicenowTranslationRef: TranslationRef<
+  'plugin.servicenow',
+  {
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.description': string;
+    readonly 'table.columns.priority': string;
+    readonly 'table.columns.incidentNumber': string;
+    readonly 'table.columns.created': string;
+    readonly 'table.columns.state': string;
+    readonly 'table.columns.actions': string;
+    readonly 'table.emptyContent': string;
+    readonly 'filter.priority': string;
+    readonly 'filter.state': string;
+    readonly 'priority.critical': string;
+    readonly 'priority.high': string;
+    readonly 'priority.moderate': string;
+    readonly 'priority.low': string;
+    readonly 'priority.planning': string;
+    readonly 'page.title': string;
+    readonly 'page.titleWithCount': string;
+    readonly 'actions.openInServicenow': string;
+    readonly 'incidentState.new': string;
+    readonly 'incidentState.inProgress': string;
+    readonly 'incidentState.onHold': string;
+    readonly 'incidentState.resolved': string;
+    readonly 'incidentState.closed': string;
+    readonly 'incidentState.cancelled': string;
+    readonly 'errors.loadingIncidents': string;
+  }
+>;
+
+// @alpha
+export const servicenowTranslations: TranslationResource<'plugin.servicenow'>;
 
 // (No @packageDocumentation comment for this package)
 ```

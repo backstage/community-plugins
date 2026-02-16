@@ -78,9 +78,26 @@ const mockUseProviderStatus = jest.fn(() => ({
   error: null,
 }));
 
+const mockUseConversations = jest.fn(() => ({
+  conversations: [],
+  starredConversations: [],
+  recentConversations: [],
+  loading: false,
+  error: undefined,
+  searchQuery: '',
+  isSearching: false,
+  setSearchQuery: jest.fn(),
+  clearSearch: jest.fn(),
+  loadConversation: jest.fn(),
+  refreshConversations: jest.fn(),
+  deleteConversation: jest.fn(),
+  toggleStar: jest.fn(),
+}));
+
 jest.mock('../../hooks', () => ({
   useProviderStatus: () => mockUseProviderStatus(),
   useMcpServers: () => mockUseMcpServers(),
+  useConversations: () => mockUseConversations(),
 }));
 
 const mockMcpChatApi = {

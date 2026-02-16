@@ -16,9 +16,8 @@
 import { useContext, useState } from 'react';
 
 import { Select, SelectedItems } from '@backstage/core-components';
-import { BackstageTheme } from '@backstage/theme';
 
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 
@@ -26,7 +25,7 @@ import './ClusterSelector.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations';
 
-const useStyles = makeStyles<BackstageTheme>(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   label: {
     color: theme.palette.text.primary,
     fontSize: '1rem',

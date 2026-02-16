@@ -4,8 +4,8 @@
 
 ```ts
 
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
-import { TranslationResource } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
 export const rbacTranslationRef: TranslationRef<"plugin.rbac", {
@@ -58,6 +58,7 @@ readonly "roleForm.titles.permissionPolicies": string;
 readonly "roleForm.review.reviewAndCreate": string;
 readonly "roleForm.review.reviewAndSave": string;
 readonly "roleForm.review.nameDescriptionOwner": string;
+readonly "roleForm.review.permissionPoliciesWithCount": string;
 readonly "roleForm.steps.create": string;
 readonly "roleForm.steps.next": string;
 readonly "roleForm.steps.back": string;
@@ -80,6 +81,7 @@ readonly "permissionPolicies.allPlugins": string;
 readonly "permissionPolicies.errorFetchingPolicies": string;
 readonly "permissionPolicies.resourceTypeTooltip": string;
 readonly "permissionPolicies.advancedPermissionsTooltip": string;
+readonly "permissionPolicies.noAdvancedPermissionsTooltip": string;
 readonly "permissionPolicies.pluginsSelected": string;
 readonly "permissionPolicies.noPluginsSelected": string;
 readonly "permissionPolicies.noRecordsToDisplay": string;

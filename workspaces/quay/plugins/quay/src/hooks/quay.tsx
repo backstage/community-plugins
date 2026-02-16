@@ -109,7 +109,9 @@ export const useTags = (
             {shortHash}
           </Box>
         ),
-        expiration: tag.expiration,
+        expiration: tag.expiration
+          ? formatDate(tag.expiration)
+          : tag.expiration,
         securityDetails: tagManifestLayers[tag.manifest_digest],
         securityStatus: tagManifestStatuses[tag.manifest_digest],
         manifest_digest_raw: tag.manifest_digest,

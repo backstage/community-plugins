@@ -15,7 +15,10 @@
  */
 import { RawFetchError } from '@backstage/plugin-kubernetes-common';
 
-import { PipelineRunKind, PipelineRunStatus } from '@janus-idp/shared-react';
+import {
+  PipelineRunKind,
+  PipelineRunStatus,
+} from '@backstage-community/plugin-tekton-react';
 
 import { mockKubernetesPlrResponse } from '../__fixtures__/1-pipelinesData';
 import { kubernetesObjects } from '../__fixtures__/kubernetesObject';

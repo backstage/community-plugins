@@ -1,5 +1,17 @@
 # @backstage-community/plugin-graphiql
 
+## 0.12.0
+
+### Minor Changes
+
+- 97fd1af: Backstage version bump to v1.47.2
+
+## 0.11.1
+
+### Patch Changes
+
+- adfea13: Replaces global JSX reference with React.JSX
+
 ## 0.11.0
 
 ### Minor Changes

@@ -15,11 +15,10 @@
  */
 import { CanaryUpgradeStatus } from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip, useTheme } from '@material-ui/core';
-import {
-  ChartDonutUtilization,
-  ChartLabel,
-  ChartThemeColor,
-} from '@patternfly/react-charts';
+import { useDrawingArea } from '@mui/x-charts/hooks';
+import { PieChart } from '@mui/x-charts/PieChart';
+import { styled } from '@mui/material/styles';
+import type { ReactNode } from 'react';
 import { KialiIcon } from '../../../config/KialiIcon';
 import { kialiStyle } from '../../../styles/StyleUtils';
 
@@ -40,6 +39,26 @@ export const CanaryUpgradeProgress = (props: Props) => {
       ? (props.canaryUpgradeStatus.migratedNamespaces.length * 100) / total
       : 0;
   const theme = useTheme().palette.type;
+
+  const size = { width: 220, height: 170 };
+  const pending = Math.max(0, 100 - migrated);
+
+  const StyledText = styled('text')(({ theme: muiTheme }) => ({
+    fill: muiTheme.palette.text.primary,
+    textAnchor: 'middle',
+    dominantBaseline: 'central',
+    fontSize: 24,
+  }));
+
+  function PieCenterLabel({ children }: { children: ReactNode }) {
+    const { width, height, left, top } = useDrawingArea();
+    return (
+      <StyledText x={left + width / 2} y={top + height / 2}>
+        {children}
+      </StyledText>
+    );
+  }
+
   return (
     <div
       style={{ textAlign: 'center', paddingTop: '10px' }}
@@ -58,27 +77,24 @@ export const CanaryUpgradeProgress = (props: Props) => {
           </Tooltip>
         </div>
         <div style={{ height: 180 }}>
-          <ChartDonutUtilization
-            ariaDesc="Canary upgrade status"
-            ariaTitle="Canary upgrade status"
-            constrainToVisibleArea
-            data={{ x: 'Migrated namespaces', y: migrated }}
-            labels={({ datum }) =>
-              datum.x ? `${datum.x}: ${datum.y.toFixed(2)}%` : null
+          <PieChart
+            aria-label="Canary upgrade status"
+            series={[
+              {
+                data: [
+                  { value: migrated, label: 'Migrated namespaces' },
+                  { value: pending, label: 'Pending namespaces' },
+                ],
+                innerRadius: 60,
+              },
+            ]}
+            colors={
+              theme === 'dark' ? ['#3E8635', '#8A8D90'] : ['#3E8635', '#D2D2D2']
             }
-            invert
-            title={`${migrated.toFixed(2)}%`}
-            height={170}
-            themeColor={ChartThemeColor.green}
-            titleComponent={
-              <ChartLabel
-                style={{
-                  fill: theme === 'dark' ? '#fff' : '#151515',
-                  fontSize: 24,
-                }}
-              />
-            }
-          />
+            {...size}
+          >
+            <PieCenterLabel>{`${migrated.toFixed(2)}%`}</PieCenterLabel>
+          </PieChart>
         </div>
         <div>
           <p>{`${props.canaryUpgradeStatus.migratedNamespaces.length} of ${total} namespaces migrated`}</p>

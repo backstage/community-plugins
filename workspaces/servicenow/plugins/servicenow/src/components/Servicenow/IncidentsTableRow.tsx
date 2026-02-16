@@ -24,10 +24,12 @@ import Typography from '@mui/material/Typography';
 
 import { convertDateFormat } from '../../utils/stringUtils';
 import {
-  getIncidentStateValue,
-  getPriorityValue,
+  renderStatusLabel,
+  usePriorityMap,
+  useIncidentStateMap,
 } from '../../utils/incidentUtils';
 import type { IncidentsData } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const useStyles = makeStyles(() => ({
   tableCellStyle: {
@@ -38,6 +40,9 @@ const useStyles = makeStyles(() => ({
 
 export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
+  const priorityMap = usePriorityMap();
+  const incidentStateMap = useIncidentStateMap();
 
   return (
     <TableRow
@@ -70,16 +75,18 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
         {convertDateFormat(data?.sysCreatedOn)}
       </TableCell>
       <TableCell align="left" className={classes.tableCellStyle}>
-        {getPriorityValue(data?.priority)}
+        {renderStatusLabel(priorityMap[data?.priority])}
       </TableCell>
 
       <TableCell align="left" className={classes.tableCellStyle}>
-        {getIncidentStateValue(data?.incidentState)}
+        {renderStatusLabel(incidentStateMap[data?.incidentState])}
       </TableCell>
       <TableCell align="left" className={classes.tableCellStyle}>
-        <IconButton onClick={() => window.open(data.url, '_blank')}>
-          <OpenInNewIcon fontSize="small" style={{ color: 'inherit' }} />
-        </IconButton>
+        <Tooltip title={t('actions.openInServicenow')} arrow placement="top">
+          <IconButton onClick={() => window.open(data.url, '_blank')}>
+            <OpenInNewIcon fontSize="small" style={{ color: 'inherit' }} />
+          </IconButton>
+        </Tooltip>
       </TableCell>
     </TableRow>
   );

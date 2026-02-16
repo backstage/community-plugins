@@ -22,7 +22,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 
 import type { Order } from '@backstage-community/plugin-servicenow-common';
 
-import { IncidentsListColumns } from './IncidentsListColumns';
+import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentTableField } from '../../types';
 
 type IncidentsTableHeaderProps = {
@@ -39,6 +39,8 @@ export const IncidentsTableHeader = ({
   orderBy,
   onRequestSort,
 }: IncidentsTableHeaderProps) => {
+  const incidentsListColumns = useIncidentsListColumns();
+
   const createSortHandler =
     (property: IncidentTableField) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -47,7 +49,7 @@ export const IncidentsTableHeader = ({
   return (
     <TableHead>
       <TableRow sx={{ marginLeft: '6px', borderBottom: '1px solid #e0e0e0' }}>
-        {IncidentsListColumns.map(column => (
+        {incidentsListColumns.map(column => (
           <TableCell
             key={column.id as string}
             align="left"

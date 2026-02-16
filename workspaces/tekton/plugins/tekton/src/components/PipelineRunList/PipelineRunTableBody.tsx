@@ -15,7 +15,7 @@
  */
 import { useContext, useState } from 'react';
 
-import { PipelineRunKind } from '@janus-idp/shared-react';
+import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { OpenRowStatus } from '../../types/types';

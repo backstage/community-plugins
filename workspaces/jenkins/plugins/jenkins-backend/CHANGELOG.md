@@ -1,5 +1,51 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.25.0
+
+### Minor Changes
+
+- 5141efa: Drops support for old backend system which includes removing exports for JenkinsBuilder. Please migrate to the new backend system way of installing the plugin.
+
+### Patch Changes
+
+- fc25522: remove unused dependencies
+- Updated dependencies [fc25522]
+  - @backstage-community/plugin-jenkins-common@0.16.1
+
+## 0.24.1
+
+### Patch Changes
+
+- 35c20d3: Migration from createPermissionIntegrationRouter to the Permissions Registry Service
+
+## 0.24.0
+
+### Minor Changes
+
+- fea4a0b: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [fea4a0b]
+  - @backstage-community/plugin-jenkins-common@0.16.0
+
+## 0.23.1
+
+### Patch Changes
+
+- 4e67490: Migrates the backend to leverage the new CatalogService
+
+## 0.23.0
+
+### Minor Changes
+
+- 95d7628: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [95d7628]
+  - @backstage-community/plugin-jenkins-common@0.15.0
+
 ## 0.22.0
 
 ### Minor Changes

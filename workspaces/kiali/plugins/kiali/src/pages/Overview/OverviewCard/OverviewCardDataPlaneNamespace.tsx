@@ -17,6 +17,7 @@ import {
   DurationInSeconds,
   Metric,
   RichDataPoint,
+  VCDataPoint,
   VCLine,
 } from '@backstage-community/plugin-kiali-common/types';
 import { default as React } from 'react';
@@ -75,7 +76,6 @@ export class OverviewCardDataPlaneNamespace extends React.Component<Props, {}> {
       <div
         style={{
           width: '100%',
-          height: 150,
           verticalAlign: 'top',
         }}
       >
@@ -102,8 +102,8 @@ export class OverviewCardDataPlaneNamespace extends React.Component<Props, {}> {
               showLegend={false}
               showYAxis
               showXAxisValues
-              padding={{ top: 60, left: 40, right: 40, bottom: 30 }}
-              tooltipFormat={dp =>
+              padding={{ top: 60, left: 40, right: 40, bottom: 0 }}
+              tooltipFormat={(dp: VCDataPoint) =>
                 `${toLocaleStringWithConditionalDate(
                   dp.x as Date,
                 )}\n${dp.y.toFixed(2)} ${dp.name}`

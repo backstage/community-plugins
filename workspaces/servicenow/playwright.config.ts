@@ -45,8 +45,31 @@ export default defineConfig({
 
   projects: [
     {
+      name: 'en',
       use: {
         channel: 'chrome',
+        locale: 'en',
+      },
+    },
+    {
+      name: 'fr',
+      use: {
+        channel: 'chrome',
+        locale: 'fr',
+      },
+    },
+    {
+      name: 'it',
+      use: {
+        channel: 'chrome',
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      use: {
+        channel: 'chrome',
+        locale: 'ja',
       },
     },
   ],

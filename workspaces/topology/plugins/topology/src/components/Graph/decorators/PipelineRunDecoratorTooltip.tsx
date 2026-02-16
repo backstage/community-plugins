@@ -24,7 +24,7 @@ import {
   TaskRunKind,
   TaskStatusTooltip,
   TaskStatusTypes,
-} from '@janus-idp/shared-react';
+} from '@backstage-community/plugin-tekton-react';
 
 import './PipelineRunDecoratorTooltip.css';
 

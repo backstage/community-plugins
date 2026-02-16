@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
+import { useEffect, useState, MouseEvent, ChangeEvent, useMemo } from 'react';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 
 import {
@@ -33,11 +33,10 @@ import TablePagination from '@mui/material/TablePagination';
 import {
   Order,
   SortingOrderEnum,
-  ServiceAnnotationFieldName,
 } from '@backstage-community/plugin-servicenow-common';
 
 import { IncidentsFilter } from './IncidentsFilter';
-import { IncidentsListColumns } from './IncidentsListColumns';
+import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentsTableBody } from './IncidentsTableBody';
 import { IncidentsTableHeader } from './IncidentsTableHeader';
 import {
@@ -52,10 +51,13 @@ import { useQueryArrayState } from '../../hooks/useQueryArrayState';
 import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import useUserEmail from '../../hooks/useUserEmail';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const EntityServicenowContent = () => {
+  const { t } = useTranslation();
   const { entity } = useEntity();
   const serviceNowApi = useApi(serviceNowApiRef);
+  const incidentsListColumns = useIncidentsListColumns();
 
   const [search, setSearch] = useQueryState<string>('search', '');
   const [input, setInput] = useState(search);
@@ -80,7 +82,23 @@ export const EntityServicenowContent = () => {
   const [error, setError] = useState<string | null>(null);
   const updateQueryParams = useUpdateQueryParams();
 
-  const entityId = entity.metadata.annotations?.[ServiceAnnotationFieldName];
+  const servicenowAnnotations = useMemo(() => {
+    const annotations = entity.metadata.annotations;
+    const snAnnotations: Record<string, string> = {};
+    if (annotations) {
+      for (const [key, value] of Object.entries(annotations)) {
+        if (key.startsWith('servicenow.com/entity-id')) {
+          snAnnotations.entityId = value;
+          continue;
+        }
+        if (key.startsWith('servicenow.com/')) {
+          const field = key.substring('servicenow.com/'.length);
+          snAnnotations[field] = value;
+        }
+      }
+    }
+    return snAnnotations;
+  }, [entity.metadata.annotations]);
 
   const kind = entity.kind.toLocaleLowerCase('en-US');
   const userEmail = useUserEmail(kind);
@@ -107,7 +125,7 @@ export const EntityServicenowContent = () => {
       setLoading(true);
       setError(null);
 
-      if (!userEmail && !entityId) {
+      if (!userEmail && Object.keys(servicenowAnnotations).length === 0) {
         setIncidentsData([]);
         setLoading(false);
         return;
@@ -123,7 +141,7 @@ export const EntityServicenowContent = () => {
           priority: priority ?? undefined,
           state: state ?? undefined,
           userEmail,
-          entityId,
+          ...servicenowAnnotations,
         });
 
         const { incidents, totalCount } = await serviceNowApi.getIncidents(
@@ -147,7 +165,7 @@ export const EntityServicenowContent = () => {
     orderBy,
     search,
     serviceNowApi,
-    entityId,
+    servicenowAnnotations,
     priority,
     state,
     userEmail,
@@ -191,7 +209,7 @@ export const EntityServicenowContent = () => {
     loading ? (
       <TableBody>
         <TableRow>
-          <TableCell colSpan={IncidentsListColumns.length} align="center">
+          <TableCell colSpan={incidentsListColumns.length} align="center">
             <Box sx={{ py: 3 }}>
               <CircularProgress />
             </Box>
@@ -207,7 +225,7 @@ export const EntityServicenowContent = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 20, 50, 100].map(n => ({
           value: n,
-          label: `${n} rows`,
+          label: t('table.labelRowsSelect', { count: String(n) }),
         }))}
         component="div"
         sx={{ mr: 1 }}
@@ -232,19 +250,21 @@ export const EntityServicenowContent = () => {
         <CatalogFilterLayout.Content>
           {error ? (
             <Box sx={{ padding: 2, color: 'error.main' }}>
-              Error loading incidents: {error}
+              {t('errors.loadingIncidents', { error })}
             </Box>
           ) : (
             <Table
               data={loading ? [] : incidentsData}
-              columns={IncidentsListColumns}
+              columns={incidentsListColumns}
               onSearchChange={handleSearch}
               title={
                 count === 0
-                  ? 'ServiceNow tickets'
-                  : `ServiceNow tickets (${count})`
+                  ? t('page.title')
+                  : t('page.titleWithCount', { count: String(count) })
               }
-              localization={{ toolbar: { searchPlaceholder: 'Search' } }}
+              localization={{
+                toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
+              }}
               components={{
                 Header: IncidentsTableHeaderComponent,
                 Body: IncidentsTableBodyComponent,
@@ -260,7 +280,7 @@ export const EntityServicenowContent = () => {
                       justifyContent: 'center',
                     }}
                   >
-                    No records found
+                    {t('table.emptyContent')}
                   </Box>
                 )
               }

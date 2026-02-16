@@ -18,6 +18,7 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 
 import { quayApiRef, QuayApiV1 } from '../../api';
 import { useTags } from '../../hooks';
+import { formatDate } from '../../utils';
 import { QuayRepository } from './QuayRepository';
 
 jest.mock('react-use', () => ({
@@ -175,5 +176,44 @@ describe('QuayRepository', () => {
     expect(queryByTestId('quay-repo-table-empty')).toBeNull();
     expect(queryByText(/Quay repository/i)).toBeInTheDocument();
     expect(queryByTestId('quay-repo-security-scan-unsupported')).not.toBeNull();
+  });
+
+  it('should display formatted expiration date when present', async () => {
+    const expirationDate = 'Sat, 10 Feb 2024 09:39:24 -0000';
+    const formattedExpiration = formatDate(expirationDate);
+    (useTags as jest.Mock).mockReturnValue({
+      loading: false,
+      data: [
+        {
+          name: 'latest',
+          manifest_digest:
+            'sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54',
+          size: '100 MB',
+          last_modified: 'Mar 15, 2023, 6:22 PM',
+          expiration: formattedExpiration,
+        },
+      ],
+    });
+    const { queryByTestId, queryByText } = await renderComponent();
+    expect(queryByTestId('quay-repo-table')).not.toBeNull();
+    expect(queryByText(formattedExpiration)).toBeInTheDocument();
+  });
+
+  it('should handle null expiration date correctly', async () => {
+    (useTags as jest.Mock).mockReturnValue({
+      loading: false,
+      data: [
+        {
+          name: 'latest',
+          manifest_digest:
+            'sha256:e766248d812bcdadc1ee293b564af1f2517dd6c0327eefab2411e4f11e980d54',
+          size: '100 MB',
+          last_modified: 'Mar 15, 2023, 6:22 PM',
+          expiration: null,
+        },
+      ],
+    });
+    const { queryByTestId } = await renderComponent();
+    expect(queryByTestId('quay-repo-table')).not.toBeNull();
   });
 });

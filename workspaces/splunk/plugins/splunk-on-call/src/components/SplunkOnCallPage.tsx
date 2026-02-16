@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { JSX } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { EntitySplunkOnCallCard } from './EntitySplunkOnCallCard';

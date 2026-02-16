@@ -5,13 +5,12 @@
 ```ts
 /// <reference types="react" />
 
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionInput } from '@backstage/frontend-plugin-api';
-import { IconComponent } from '@backstage/core-plugin-api';
+import { IconComponent } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -69,7 +68,6 @@ const _default: OverridableFrontendPlugin<
         pageTitle: string;
         width: number | undefined;
         height: number | undefined;
-      } & {
         path: string | undefined;
       };
       configInput: {
@@ -78,7 +76,6 @@ const _default: OverridableFrontendPlugin<
         title?: string | undefined;
         subtitle?: string | undefined;
         pageTitle?: string | undefined;
-      } & {
         path?: string | undefined;
       };
       output:
@@ -91,21 +88,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >;
-      inputs: {
-        [x: string]: ExtensionInput<
-          ExtensionDataRef<
-            unknown,
-            string,
-            {
-              optional?: true | undefined;
-            }
-          >,
-          {
-            singleton: boolean;
-            optional: boolean;
-          }
-        >;
-      };
+      inputs: {};
       kind: 'page';
       name: undefined;
       params: {
@@ -169,7 +152,6 @@ export const techRadarPage: OverridableExtensionDefinition<{
     pageTitle: string;
     width: number | undefined;
     height: number | undefined;
-  } & {
     path: string | undefined;
   };
   configInput: {
@@ -178,7 +160,6 @@ export const techRadarPage: OverridableExtensionDefinition<{
     title?: string | undefined;
     subtitle?: string | undefined;
     pageTitle?: string | undefined;
-  } & {
     path?: string | undefined;
   };
   output:
@@ -191,21 +172,7 @@ export const techRadarPage: OverridableExtensionDefinition<{
           optional: true;
         }
       >;
-  inputs: {
-    [x: string]: ExtensionInput<
-      ExtensionDataRef<
-        unknown,
-        string,
-        {
-          optional?: true | undefined;
-        }
-      >,
-      {
-        singleton: boolean;
-        optional: boolean;
-      }
-    >;
-  };
+  inputs: {};
   kind: 'page';
   name: undefined;
   params: {

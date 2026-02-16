@@ -11,10 +11,11 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 ## Features
 
 - 🤖 **Multi-Provider AI Support**: Works with OpenAI, Claude, Gemini, and Ollama
-- 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, SSE, Streamable HTTP)
+- 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, Streamable HTTP)
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
+- 📜 **Conversation History**: View, search, star, and manage your chat sessions
 
 ## Supported AI Providers
 
@@ -198,7 +199,7 @@ mcpChat:
       category: Catalog
 ```
 
-For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, SSE, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
+For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
 
 ### Environment Variables
 
@@ -226,8 +227,16 @@ export KUBECONFIG="/path/to/your/kubeconfig.yaml"
    - Tool management controls for enabling/disabling specific servers
 
 3. **Start Chatting**: Begin a conversation by:
+
    - Selecting from the provided quick prompts, or
    - Typing your own queries directly into the chat input field
+
+4. **Manage Conversation History**: Access your chat history from the right sidebar:
+   - View past conversations ordered by recent activity
+   - Star important conversations for quick access
+   - Search through conversation titles
+   - Delete conversations you no longer need
+   - Click any conversation to restore and continue it
 
 ### Example Queries
 

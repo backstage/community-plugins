@@ -1,4 +1,20 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-kubernetes
+
+## 2.15.0
+
+### Minor Changes
+
+- 08529af: Backstage version bump to v1.47.3
+
+## 2.14.0
+
+### Minor Changes
+
+- 65b2acf: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
 
 ## 2.13.0
 

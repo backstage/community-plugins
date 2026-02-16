@@ -51,7 +51,19 @@ export class ServiceNowBackendClient implements ServiceNowBackendAPI {
 
     const response = await this.fetchApi.fetch(url, { headers });
     if (!response.ok) {
-      throw new Error(`ServiceNow API request failed: ${response.status}`);
+      let errorBody;
+      try {
+        errorBody = await response.json();
+      } catch (e) {
+        throw new Error(
+          `ServiceNow API request failed: ${response.status} - Could not parse error response.`,
+        );
+      }
+
+      const errorMessage =
+        errorBody?.error?.message ??
+        `ServiceNow API request failed: ${response.status}`;
+      throw new Error(errorMessage);
     }
 
     return (await response.json()) as { items: T; totalCount: number };

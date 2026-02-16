@@ -37,12 +37,12 @@ import useAsync from 'react-use/lib/useAsync';
 import { Alert } from '@material-ui/lab';
 import { AlertsCardOpts, Alert as GrafanaAlert } from '../../types';
 import {
-  GRAFANA_ANNOTATION_TAG_SELECTOR,
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
   isAlertSelectorAvailable,
   isDashboardSelectorAvailable,
-  tagSelectorFromEntity,
   alertSelectorFromEntity,
+  GRAFANA_ANNOTATION_DASHBOARD_SELECTOR,
+  dashboardSelectorFromEntity,
 } from '../../constants';
 
 const AlertStatusBadge = ({ alert }: { alert: GrafanaAlert }) => {
@@ -128,7 +128,7 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
     configApi.getOptionalBoolean('grafana.unifiedAlerting') || false;
   const alertSelector = unifiedAlertingEnabled
     ? alertSelectorFromEntity(entity)
-    : tagSelectorFromEntity(entity);
+    : dashboardSelectorFromEntity(entity);
 
   const { value, loading, error } = useAsync(
     async () => await grafanaApi.alertsForSelector(alertSelector),
@@ -152,7 +152,7 @@ export const AlertsCard = (opts?: AlertsCardOpts) => {
   if (!unifiedAlertingEnabled && !isDashboardSelectorAvailable(entity)) {
     return (
       <MissingAnnotationEmptyState
-        annotation={GRAFANA_ANNOTATION_TAG_SELECTOR}
+        annotation={GRAFANA_ANNOTATION_DASHBOARD_SELECTOR}
       />
     );
   }

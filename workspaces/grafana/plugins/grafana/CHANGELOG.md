@@ -1,5 +1,23 @@
 # @backstage-community/plugin-grafana
 
+## 0.15.0
+
+### Minor Changes
+
+- 6a9a915: Backstage version bump to v1.47.2
+
+## 0.14.1
+
+### Patch Changes
+
+- ac1ac86: remove unused dependencies
+
+## 0.14.0
+
+### Minor Changes
+
+- 4477d23: All existing deprecated references have been removed. If you were still using the `GRAFANA_ANNOTATION_TAG_SELECTOR` annotation, it is now required you replace it with the `GRAFANA_ANNOTATION_DASHBOARD_SELECTOR` annotation.
+
 ## 0.13.0
 
 ### Minor Changes

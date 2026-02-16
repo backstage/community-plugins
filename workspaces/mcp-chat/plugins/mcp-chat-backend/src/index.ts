@@ -43,6 +43,14 @@ export {
   MCPClientServiceImpl,
   type Options as MCPClientServiceOptions,
 } from './services/MCPClientServiceImpl';
+export {
+  ChatConversationStore,
+  type ChatConversationStoreOptions,
+} from './services/ChatConversationStore';
+export {
+  SummarizationService,
+  type SummarizationServiceOptions,
+} from './services/SummarizationService';
 
 // =============================================================================
 // Types
@@ -76,6 +84,9 @@ export type {
   // Validation types
   MessageValidationResult,
 
+  // Conversation types
+  ConversationRecord,
+
   // OpenAI Responses API types
   ResponsesApiMcpTool,
   ResponsesApiMcpListTools,
@@ -102,4 +113,4 @@ export {
 // =============================================================================
 // Router
 // =============================================================================
-export { createRouter } from './router';
+export { createRouter, type RouterOptions } from './router';

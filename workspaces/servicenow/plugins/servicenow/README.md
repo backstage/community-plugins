@@ -25,7 +25,7 @@ Software Catalog integration:
 
    ```tsx
    import {
-     EntityServicenowContent,
+     Router,
      isServicenowAvailable,
      isMyProfile,
    } from '@backstage-community/plugin-servicenow';
@@ -40,7 +40,7 @@ Software Catalog integration:
      title="ServiceNow"
      if={isServicenowAvailable}
    >
-     <EntityServicenowContent />
+     <Router />
    </EntityLayout.Route>
    ```
 
@@ -49,7 +49,7 @@ Software Catalog integration:
 
    ```tsx
    <EntityLayout.Route path="/servicenow" title="ServiceNow" if={isMyProfile}>
-     <EntityServicenowContent />
+     <Router />
    </EntityLayout.Route>
    ```
 

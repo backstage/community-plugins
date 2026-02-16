@@ -1,5 +1,17 @@
 # @backstage-community/plugin-code-coverage
 
+## 0.13.0
+
+### Minor Changes
+
+- ef43426: Backstage version bump to v1.47.2
+
+## 0.12.1
+
+### Patch Changes
+
+- 9a6edd2: Updated dependency `@types/recharts` to `^2.0.0`.
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,30 @@
 # @backstage-community/plugin-cicd-statistics-module-github
 
+## 0.13.0
+
+### Minor Changes
+
+- 99baea4: Updated Github Authentication methods to prompt for required scopes and refactored auth to align with Backstage GitHub plugin conventions
+
+## 0.12.0
+
+### Minor Changes
+
+- 1aa4d3e: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [1aa4d3e]
+  - @backstage-community/plugin-cicd-statistics@0.15.0
+
+## 0.11.1
+
+### Patch Changes
+
+- 4e95de7: Remove unused dependencies
+- Updated dependencies [4e95de7]
+  - @backstage-community/plugin-cicd-statistics@0.14.1
+
 ## 0.11.0
 
 ### Minor Changes

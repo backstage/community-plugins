@@ -1,10 +1,10 @@
-# Report Portal Plugin
+# ReportPortal Plugin
 
 Welcome to the report-portal plugin!
 
 [ReportPortal](https://reportportal.io) is an open-source test automation dashboard that allows teams to manage and analyze test results from various test automation frameworks. It provides a centralized platform for aggregating test reports, offering real-time insights into test execution and helping to identify and address issues quickly.
 
-The plugin integrates report portal instances to show projects and launches directly in backstage. This will be helpful for not just developers but also QEs
+The plugin integrates ReportPortal instances to show projects and launches directly in backstage. This will be helpful for not just developers but also QEs
 
 ### Getting started
 
@@ -63,7 +63,7 @@ It is only meant for local development, and the setup for it can be found inside
       <SidebarPage>
 
         <!-- Add the link to route in your sidebar component -->
-        <SidebarItem icon={ReportPortalIcon as IconComponent} to="report-portal" text="Report Portal" />
+        <SidebarItem icon={ReportPortalIcon as IconComponent} to="report-portal" text="ReportPortal" />
       </SidebarPage>
     )
     ```
@@ -94,7 +94,7 @@ It is only meant for local development, and the setup for it can be found inside
     supportEmailTemplate: ${REPORT_PORTAL_SUPPORT_MAIL}
 
     # Under integrations you can configure
-    # multiple instances of report portal
+    # multiple instances of ReportPortal
     integrations:
       # host address of your instance
       # for e.g: report-portal.mycorp.com

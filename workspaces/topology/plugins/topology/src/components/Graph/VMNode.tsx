@@ -72,7 +72,7 @@ const VmNode = ({
 
   const useStyles = makeStyles({
     kubevirtbg: {
-      fill: 'var(--pf-t--color--white)',
+      fill: 'var(--pf-t--global--background--color--primary--default)',
     },
   });
   const classes = useStyles();

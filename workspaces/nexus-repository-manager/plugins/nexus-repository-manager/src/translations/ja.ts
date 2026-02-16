@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { nexusRepositoryManagerTranslationRef } from './ref';
 
+/**
+ * Japanese translation for plugin.nexus-repository-manager.
+ * @public
+ */
 const nexusRepositoryManagerTranslationJa = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
-  full: true,
   messages: {
     'table.title': 'Nexus Repository Manager: {{title}}',
     'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
     'table.columns.version': 'バージョン',
     'table.columns.artifact': 'アーティファクト',
-    'table.columns.repositoryType': 'リポジトリタイプ',
+    'table.columns.repositoryType': 'リポジトリータイプ',
     'table.columns.checksum': 'チェックサム',
-    'table.columns.modified': '変更日時',
+    'table.columns.modified': '更新済み',
     'table.columns.size': 'サイズ',
     'table.emptyValue': '該当なし',
-    'table.emptyContent.message': 'データがまだ追加されていません。',
-    'table.emptyContent.linkText': 'データの追加方法を学ぶ',
+    'table.emptyContent.message': 'まだデータが追加されていません。',
+    'table.emptyContent.linkText': 'データの追加方法をご覧ください',
     'entityContent.title': 'ビルドアーティファクト',
   },
 });

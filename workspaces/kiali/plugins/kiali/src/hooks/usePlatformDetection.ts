@@ -15,6 +15,26 @@
  */
 import { useEffect, useState } from 'react';
 
+const isOpenShiftConsole = (): boolean => {
+  if (typeof document === 'undefined' || typeof window === 'undefined') {
+    return false;
+  }
+
+  // Strong signal: OpenShift Console exposes SERVER_FLAGS globally.
+  if ((window as any).SERVER_FLAGS !== undefined) {
+    return true;
+  }
+
+  // Secondary signals: specific OpenShift Console UI test ids.
+  // Note: We intentionally do NOT rely on PatternFly masthead/header classes here,
+  // because RHDH/Backstage can also render PatternFly-based headers, which would
+  // create false positives.
+  return (
+    document.querySelector('[data-test="user-dropdown"]') !== null ||
+    document.querySelector('[data-test="perspective-switcher"]') !== null
+  );
+};
+
 /**
  * Detects if we are running in OpenShift Console
  * OpenShift Console has specific DOM elements and structure that we can detect
@@ -39,20 +59,7 @@ export const usePlatformDetection = (): boolean => {
       }
       attempts++;
 
-      // Check for OpenShift Console specific elements
-      // OpenShift Console typically has elements with specific classes or IDs
-      // Support PF4 (pf-c-), PF5 (pf-v5-), and PF6 (pf-v6-) class prefixes
-      const hasOpenShiftConsoleElements =
-        document.querySelector('[data-test="user-dropdown"]') !== null ||
-        document.querySelector('.pf-c-page__header') !== null ||
-        document.querySelector('.pf-v5-c-page__header') !== null ||
-        document.querySelector('.pf-v5-c-masthead') !== null ||
-        document.querySelector('.pf-v6-c-page__header') !== null ||
-        document.querySelector('.pf-v6-c-masthead') !== null ||
-        document.querySelector('[data-test="perspective-switcher"]') !== null ||
-        (window as any).SERVER_FLAGS !== undefined;
-
-      if (hasOpenShiftConsoleElements) {
+      if (isOpenShiftConsole()) {
         setIsOpenShift(true);
         found = true;
       }

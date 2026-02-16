@@ -18,9 +18,11 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
+
 import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
 import { JenkinsBuilder } from './service/JenkinsBuilder';
+import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
 
 /**
  * Jenkins backend plugin
@@ -34,9 +36,10 @@ export const jenkinsPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
         httpRouter: coreServices.httpRouter,
         config: coreServices.rootConfig,
-        catalogClient: catalogServiceRef,
+        catalog: catalogServiceRef,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
@@ -44,29 +47,27 @@ export const jenkinsPlugin = createBackendPlugin({
       async init({
         logger,
         permissions,
+        permissionsRegistry,
         httpRouter,
         config,
-        catalogClient,
+        catalog,
         discovery,
         auth,
         httpAuth,
       }) {
+        permissionsRegistry.addPermissions(jenkinsPermissions);
+
         const jenkinsInfoProvider = DefaultJenkinsInfoProvider.fromConfig({
           auth,
           httpAuth,
           config,
-          catalog: catalogClient,
+          catalog,
           discovery,
           logger,
         });
+
         const builder = JenkinsBuilder.createBuilder({
-          /**
-           * Logger for logging purposes
-           */
           logger,
-          /**
-           * Info provider to be able to get all necessary information for the APIs
-           */
           jenkinsInfoProvider,
           config,
           permissions,
@@ -74,6 +75,7 @@ export const jenkinsPlugin = createBackendPlugin({
           auth,
           httpAuth,
         });
+
         const { router } = await builder.build();
         httpRouter.use(router);
       },

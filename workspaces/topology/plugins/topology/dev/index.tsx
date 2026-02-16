@@ -156,7 +156,7 @@ const mockKubernetesAuthProviderApiRef = {
 createDevApp()
   .registerPlugin(topologyPlugin)
   .addTranslationResource(topologyTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .setDefaultLanguage('en')
   .addPage({
     element: (

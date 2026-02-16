@@ -30,14 +30,12 @@ export const VALID_ROLES = ['user', 'assistant', 'system', 'tool'] as const;
  * MCP server connection types.
  *
  * - `STDIO`: Local process communication via stdin/stdout
- * - `SSE`: Server-Sent Events over HTTP
  * - `STREAMABLE_HTTP`: Streamable HTTP transport
  *
  * @public
  */
 export enum MCPServerType {
   STDIO = 'stdio',
-  SSE = 'sse',
   STREAMABLE_HTTP = 'streamable-http',
 }
 
@@ -61,7 +59,7 @@ export type LLMProviderType =
 
 /**
  * Configuration for an MCP server.
- * Supports multiple connection types: STDIO, SSE, and Streamable HTTP.
+ * Supports multiple connection types: STDIO and Streamable HTTP.
  *
  * @example
  * ```typescript
@@ -90,7 +88,7 @@ export interface MCPServerConfig {
   id: string;
   /** Human-readable name for display */
   name: string;
-  /** Connection type: stdio, sse, or streamable-http */
+  /** Connection type: stdio or streamable-http */
   type: MCPServerType;
   /** Path to a local script (for STDIO servers) */
   scriptPath?: string;
@@ -98,7 +96,7 @@ export interface MCPServerConfig {
   npxCommand?: string;
   /** Command-line arguments to pass to the server */
   args?: string[];
-  /** URL endpoint (for SSE and HTTP servers) */
+  /** URL endpoint (for HTTP servers) */
   url?: string;
 }
 
@@ -645,4 +643,58 @@ export interface ResponsesApiResponse {
   };
   /** Truncation settings */
   truncation?: unknown;
+}
+
+// =============================================================================
+// Conversation Storage Types
+// =============================================================================
+
+/**
+ * A stored conversation record.
+ * Used for API responses and internal representation.
+ *
+ * @public
+ */
+export interface ConversationRecord {
+  /** Unique identifier for the conversation */
+  id: string;
+  /** User entity ref who owns this conversation */
+  userId: string;
+  /** Array of chat messages in the conversation */
+  messages: ChatMessage[];
+  /** Optional array of tool names used in the conversation */
+  toolsUsed?: string[];
+  /** AI-generated or user-edited conversation title */
+  title?: string;
+  /** Whether the conversation is starred/favorited */
+  isStarred: boolean;
+  /** Timestamp when the conversation was created */
+  createdAt: Date;
+  /** Timestamp when the conversation was last updated */
+  updatedAt: Date;
+}
+
+/**
+ * Database row representation of a conversation.
+ * Used internally for database operations.
+ *
+ * @internal
+ */
+export interface ConversationRow {
+  /** UUID primary key */
+  id: string;
+  /** User entity ref (snake_case for DB) */
+  user_id: string;
+  /** JSON-serialized messages array */
+  messages: string;
+  /** JSON-serialized tools array or null */
+  tools_used: string | null;
+  /** AI-generated or user-edited conversation title */
+  title: string | null;
+  /** Whether the conversation is starred/favorited */
+  is_starred: boolean;
+  /** Creation timestamp */
+  created_at: Date;
+  /** Last update timestamp */
+  updated_at: Date;
 }

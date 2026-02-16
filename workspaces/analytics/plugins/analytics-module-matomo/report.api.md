@@ -7,11 +7,12 @@ import { AnalyticsApi } from '@backstage/core-plugin-api';
 import { AnalyticsEvent } from '@backstage/frontend-plugin-api';
 import { AnalyticsEvent as AnalyticsEvent_2 } from '@backstage/core-plugin-api';
 import { AnalyticsImplementation } from '@backstage/frontend-plugin-api';
-import { ApiFactory } from '@backstage/core-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Config } from '@backstage/config';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { IdentityApi as IdentityApi_2 } from '@backstage/frontend-plugin-api';
 
 // @public (undocumented)
 export const analyticsModuleMatomoPlugin: BackstagePlugin<{}, {}, {}>;
@@ -35,7 +36,7 @@ export const MatomoAnalyticsApi: ApiFactory<
   MatomoAnalytics,
   {
     configApi: Config;
-    identityApi: IdentityApi;
+    identityApi: IdentityApi_2;
   }
 >;
 

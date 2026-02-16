@@ -198,7 +198,7 @@ const websiteEntityPage = (
     <EntityLayout.Route
       if={isReportPortalAvailable}
       path="/report-portal"
-      title="Report Portal"
+      title="ReportPortal"
     >
       <></>
     </EntityLayout.Route>

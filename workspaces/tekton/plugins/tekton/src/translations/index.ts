@@ -23,7 +23,11 @@ import { tektonTranslationRef } from './ref';
  */
 export const tektonTranslations = createTranslationResource({
   ref: tektonTranslationRef,
-  translations: {},
+  translations: {
+    ja: () => import('./ja'),
+    fr: () => import('./fr'),
+    it: () => import('./it'),
+  },
 });
 
 export { tektonTranslationRef };

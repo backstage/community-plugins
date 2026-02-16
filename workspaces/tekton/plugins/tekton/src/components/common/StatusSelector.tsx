@@ -21,7 +21,7 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 
 import './StatusSelector.css';
 
-import { ComputedStatus } from '@janus-idp/shared-react';
+import { ComputedStatus } from '@backstage-community/plugin-tekton-react';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';

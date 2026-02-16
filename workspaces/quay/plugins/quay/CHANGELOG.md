@@ -1,4 +1,42 @@
-### Dependencies
+# @backstage-community/plugin-quay
+
+## 1.30.1
+
+### Patch Changes
+
+- f4d1bd1: Removed unused dependencies
+- Updated dependencies [f4d1bd1]
+  - @backstage-community/plugin-quay-common@1.17.1
+
+## 1.30.0
+
+### Minor Changes
+
+- c4a2eb9: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 658c2c9: Updated dependency `start-server-and-test` to `2.1.3`.
+- Updated dependencies [c4a2eb9]
+  - @backstage-community/plugin-quay-common@1.17.0
+
+## 1.29.0
+
+### Minor Changes
+
+- c89d117: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [c89d117]
+  - @backstage-community/plugin-quay-common@1.16.0
+
+## 1.28.1
+
+### Patch Changes
+
+- 6fbecf3: fix inconsistent date rendering in quay repository table
+- 699c87f: Updated dependency `cross-fetch` to `4.1.0`.
 
 ## 1.28.0
 

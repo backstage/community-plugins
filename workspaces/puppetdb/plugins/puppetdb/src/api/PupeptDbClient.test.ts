@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { UrlPatternDiscovery } from '@backstage/core-app-api';
-import { MockFetchApi, setupRequestMockHandlers } from '@backstage/test-utils';
+import { MockFetchApi, registerMswTestHooks } from '@backstage/test-utils';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { PuppetDbClient } from './PuppetDbClient';
@@ -142,7 +142,7 @@ const logs: PuppetDbReportLog[] = [
 ];
 
 describe('PuppetDbClient', () => {
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   const puppetDbCertName = 'node1';
   const mockBaseUrl = 'http://backstage:9191/api/proxy';

@@ -26,12 +26,22 @@ export const createIcon = (status: Status, size?: Size) => {
     $nest: {
       '& svg': {
         fill: status.color,
+        display: 'inline-block',
+        verticalAlign: 'middle',
       },
     },
   });
   return React.createElement(
     Icon,
-    { size: size, className: `${status.class} ${classForColor}` },
-    React.createElement(status.icon),
+    {
+      size: size,
+      className: `${status.class} ${classForColor}`,
+      // Helps align MUI SvgIcon (and other SVG icons) with surrounding text
+      style: { display: 'inline-flex', alignItems: 'center', lineHeight: 0 },
+    },
+    React.createElement(status.icon, {
+      // Keep neutral; wrapper alignment + svg baseline styles handle centering
+      style: { position: 'relative', top: 0 },
+    }),
   );
 };

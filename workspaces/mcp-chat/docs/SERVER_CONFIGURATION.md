@@ -1,6 +1,8 @@
 # MCP Server Configuration Guide
 
-This guide demonstrates how to configure the MCP Chat to connect with different types of MCP servers. The plugin supports three connection methods: STDIO (local processes), HTTP (remote servers), and SSE (real-time updates).
+This guide demonstrates how to configure the MCP Chat to connect with different types of MCP servers. The plugin supports two connection methods: STDIO (local processes) and Streamable HTTP (remote servers).
+
+> **Note:** SSE (Server-Sent Events) transport support was removed in v0.5.0. If you were using `type: sse`, please migrate to Streamable HTTP by removing the `type` field or using `type: streamable-http`.
 
 ## Configuration Overview
 
@@ -17,8 +19,8 @@ Additionally, you can customize the AI assistant's behavior using the optional `
 These properties can be added to **any** MCP server configuration:
 
 - `env`: Environment variables object
-- `args`: Command-line arguments array (for STDIO servers) or query parameters (for HTTP/SSE servers)
-- `headers`: HTTP headers object (primarily for HTTP/SSE servers, but can be used for metadata in STDIO)
+- `args`: Command-line arguments array (for STDIO servers)
+- `headers`: HTTP headers object (for HTTP servers)
 
 ---
 
@@ -75,7 +77,7 @@ mcpServers:
 
 ## HTTP Servers (Remote Connections)
 
-HTTP servers provide MCP functionality over standard HTTP connections, ideal for cloud deployments or networked services.
+HTTP servers provide MCP functionality over Streamable HTTP connections, ideal for cloud deployments or networked services.
 
 ```yaml
 mcpServers:
@@ -92,29 +94,6 @@ mcpServers:
 **HTTP-Specific Properties:**
 
 - `url`: HTTP endpoint URL
-
----
-
-## SSE Servers (Real-time Updates)
-
-Server-Sent Events (SSE) servers provide real-time streaming capabilities for dynamic MCP interactions.
-
-```yaml
-mcpServers:
-  - id: sse-server
-    name: SSE Server
-    url: 'http://localhost:8080/sse'
-    type: sse
-    headers:
-      Authorization: 'Bearer ${SSE_TOKEN}'
-    env:
-      RECONNECT_INTERVAL: '5000'
-```
-
-**SSE-Specific Properties:**
-
-- `url`: SSE endpoint URL
-- `type`: Must be set to `sse`
 
 ---
 
@@ -143,16 +122,6 @@ mcpServers:
       X-Client-Version: '1.0.0'
     env:
       API_TIMEOUT: '60000'
-
-  # Real-time SSE server
-  - id: live-updates
-    name: Live Updates Server
-    url: 'wss://updates.example.com/sse'
-    type: sse
-    headers:
-      Authorization: 'Bearer ${SSE_TOKEN}'
-    env:
-      RECONNECT_INTERVAL: '3000'
 ```
 
 ---
@@ -164,7 +133,7 @@ mcpServers:
 - **Server Availability**: Ensure npm packages are installed and URLs are accessible before starting Backstage
 - **Authentication**: Use the `headers` property for API keys, tokens, or custom authentication
 - **Development**: STDIO servers are ideal for local development and testing
-- **Production**: HTTP/SSE servers work better for distributed or cloud deployments
+- **Production**: HTTP servers work better for distributed or cloud deployments
 
 ---
 

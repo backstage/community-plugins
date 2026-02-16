@@ -54,6 +54,7 @@ export const tags = {
       is_manifest_list: false,
       size: 235862608,
       last_modified: 'Tue, 06 Feb 2024 09:39:24 -0000',
+      expiration: 'Sat, 10 Feb 2024 09:39:24 -0000',
     },
     {
       name: 'v1',

@@ -38,7 +38,7 @@ import { Close } from '@material-ui/icons';
 import { default as React } from 'react';
 import { KialiIcon, serverConfig } from '../../config';
 import { isWaypoint } from '../../helpers/LabelFilterHelper';
-import { infoStyle } from '../../pages/Overview/OverviewCard/CanaryUpgradeProgress';
+import { kialiStyle } from '../../styles/StyleUtils';
 import { ControlPlaneBadge } from '../../pages/Overview/OverviewCard/ControlPlaneBadge';
 import { OverviewCardSparklineCharts } from '../../pages/Overview/OverviewCard/OverviewCardSparklineCharts';
 import { BackstageObjectLink } from '../../utils/backstageLinks';
@@ -60,6 +60,7 @@ import { ValidationSummary } from '../Validations/ValidationSummary';
 import { Renderer, Resource, SortResource, TResource } from './Config';
 
 const topPosition = 'top';
+const infoIconStyle = kialiStyle({ margin: '0px 0px -1px 4px' });
 
 // Cells
 export const actionRenderer = (
@@ -349,7 +350,7 @@ export const details: Renderer<WorkloadListItem | ServiceListItem> = (
               key="tooltip_missing_label"
               title="Layer 7 service Mesh capabilities in Istio Ambient"
             >
-              <KialiIcon.Info className={infoStyle} />
+              <KialiIcon.Info className={infoIconStyle} />
             </Tooltip>
           </li>
         )}

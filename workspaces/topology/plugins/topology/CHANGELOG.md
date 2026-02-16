@@ -1,4 +1,47 @@
-### Dependencies
+# @backstage-community/plugin-topology
+
+## 2.11.0
+
+### Minor Changes
+
+- 3be1d2b: Backstage version bump to v1.47.2
+
+## 2.10.2
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
+
+## 2.10.1
+
+### Patch Changes
+
+- 7fb55e3: Added internationalization support for topology control bar tooltips. The zoom in, zoom out, fit to screen, and reset view buttons now display translated tooltips in supported languages (German, Spanish, French, Italian).
+- 82886b5: Fix VM node icon styling in dark mode by using theme-aware colors
+
+## 2.10.0
+
+### Minor Changes
+
+- f738017: Backstage version bump to v1.46.2
+
+## 2.9.4
+
+### Patch Changes
+
+- a9477e3: Added ja and updated fr, it translation files.
+
+## 2.9.3
+
+### Patch Changes
+
+- 536b783: Updated dependency `@kubernetes/client-node` to `1.4.0`.
+
+## 2.9.2
+
+### Patch Changes
+
+- 8f77952: Removed shared-react dependency and adopt tekton-react
 
 ## 2.9.1
 

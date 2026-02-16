@@ -1,5 +1,16 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.19.0
+
+### Minor Changes
+
+- cdeb384: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [cdeb384]
+  - @backstage-community/plugin-lighthouse-common@0.15.0
+
 ## 0.18.0
 
 ### Minor Changes

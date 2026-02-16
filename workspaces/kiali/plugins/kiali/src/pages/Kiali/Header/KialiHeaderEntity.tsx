@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Chip, Grid, Tooltip } from '@material-ui/core';
-import { ClusterIcon } from '@patternfly/react-icons';
+import HubIcon from '@mui/icons-material/Hub';
 import { default as React } from 'react';
 import { MessageCenter } from '../../../components/MessageCenter/MessageCenter';
 import { useServerConfig } from '../../../hooks/useServerConfig';
@@ -57,7 +57,7 @@ export const KialiHeaderEntity = () => {
               }
             >
               <Chip
-                icon={<ClusterIcon />}
+                icon={<HubIcon />}
                 label={homeCluster?.name || 'Home Cluster'}
               />
             </Tooltip>

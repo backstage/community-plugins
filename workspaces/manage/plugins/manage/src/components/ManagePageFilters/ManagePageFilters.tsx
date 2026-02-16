@@ -15,7 +15,6 @@
  */
 import { useCallback } from 'react';
 
-import { makeStyles } from '@mui/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch, { SwitchProps } from '@mui/material/Switch';
@@ -31,12 +30,6 @@ import { useManagePageCombined } from './useFilters';
  */
 export type SwitchColor = SwitchProps['color'];
 
-const useStyles = makeStyles(() => ({
-  label: {
-    userSelect: 'none',
-  },
-}));
-
 /**
  * Filter component for the page header, showing a switch to toggle between
  * combined and separate entity tabs.
@@ -48,7 +41,6 @@ export function ManagePageFilters({
 }: {
   switchColor?: SwitchColor;
 }) {
-  const { label } = useStyles();
   const { value: combined, setValue: setCombined } = useManagePageCombined();
 
   const handleChange = useCallback(
@@ -72,7 +64,9 @@ export function ManagePageFilters({
                 color={switchColor}
               />
             }
-            label={<Typography className={label}>Combine</Typography>}
+            label={
+              <Typography style={{ userSelect: 'none' }}>Combine</Typography>
+            }
           />
         </FormGroup>
       }

@@ -75,7 +75,7 @@ test.describe('RBAC plugin', () => {
       () => globalThis.navigator.language,
     );
     translations = getTranslations(currentLocale);
-    await common.switchToLocale(page, currentLocale);
+    await common.switchToLocale(currentLocale);
     const navSelector = 'nav [aria-label="Administration"]';
     await page.locator(navSelector).click();
     await common.verifyHeading(translations.page.title);
@@ -124,7 +124,9 @@ test.describe('RBAC plugin', () => {
     await verifyCellsInTable(cellIdentifier, page);
   });
 
-  test('View details of role', async () => {
+  test('View details of role', async ({}, testInfo) => {
+    // Skipping Japanese tests due to https://issues.redhat.com/browse/RHDHBUGS-2598
+    test.fixme(testInfo.project.name === 'ja', 'Skip Japanese test');
     const roleName = 'role:default/rbac_admin';
     await page.locator(`a`).filter({ hasText: roleName }).click();
     await common.verifyHeading(roleName);
@@ -267,7 +269,7 @@ test.describe('RBAC plugin', () => {
         .getByRole('checkbox'),
     ).toBeChecked();
     await page
-      .getByRole('option', { name: translations.permissionPolicies.permission })
+      .getByRole('option', { name: 'Permission' })
       .getByRole('checkbox')
       .click();
     await expect(
@@ -290,9 +292,12 @@ test.describe('RBAC plugin', () => {
 
     await common.clickButton(translations.roleForm.steps.next);
     await expect(
-      // Following line is commented due to the translation of the permission policies is not happenning in UI and the bug RHDHBUGS-2417 has been reported
-      // page.getByRole('cell', { name: `${translations.permissionPolicies.permissionPolicies} (7)` }),
-      page.getByRole('cell', { name: 'Permission policies (7)' }),
+      page.getByRole('cell', {
+        name: replaceTemplate(
+          translations.roleForm.review.permissionPoliciesWithCount,
+          { count: '7' },
+        ),
+      }),
     ).toBeVisible();
     await page
       .getByText(translations.permissionPolicies.helperText)

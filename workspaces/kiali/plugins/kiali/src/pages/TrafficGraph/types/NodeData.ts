@@ -18,6 +18,8 @@ import {
   DecoratedGraphNodeData,
   DEGRADED,
   FAILURE,
+  NA,
+  NOT_READY,
   NodeType,
 } from '@backstage-community/plugin-kiali-common/types';
 import {
@@ -68,6 +70,9 @@ export const getNodeStatus = (data: NodeData): NodeStatus => {
   }
 
   switch (data.healthStatus) {
+    case NA.name:
+    case NOT_READY.name:
+      return NodeStatus.default;
     case DEGRADED.name:
       return NodeStatus.warning;
     case FAILURE.name:

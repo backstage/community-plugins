@@ -16,7 +16,57 @@
 import { TableColumn } from '@backstage/core-components';
 
 import { IncidentsData, IncidentTableFieldEnum } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
+/**
+ * Hook to get translated incidents list columns
+ */
+export const useIncidentsListColumns = (): TableColumn<IncidentsData>[] => {
+  const { t } = useTranslation();
+
+  return [
+    {
+      id: 'incidentNumber',
+      title: t('table.columns.incidentNumber'),
+      field: IncidentTableFieldEnum.Number,
+      type: 'string',
+    },
+    {
+      id: 'description',
+      title: t('table.columns.description'),
+      field: IncidentTableFieldEnum.ShortDescription,
+      type: 'string',
+    },
+    {
+      id: 'created',
+      title: t('table.columns.created'),
+      field: IncidentTableFieldEnum.Created,
+      type: 'string',
+    },
+    {
+      id: 'priority',
+      title: t('table.columns.priority'),
+      field: IncidentTableFieldEnum.Priority,
+      type: 'numeric',
+    },
+    {
+      id: 'state',
+      title: t('table.columns.state'),
+      field: IncidentTableFieldEnum.IncidentState,
+      type: 'datetime',
+    },
+    {
+      id: 'actions',
+      title: t('table.columns.actions'),
+      sorting: false,
+      type: 'string',
+    },
+  ];
+};
+
+/**
+ * @deprecated Use useIncidentsListColumns hook instead
+ */
 export const IncidentsListColumns: TableColumn<IncidentsData>[] = [
   {
     id: 'incidentNumber',

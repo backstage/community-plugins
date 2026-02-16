@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useState, JSX } from 'react';
 import { Entity } from '@backstage/catalog-model';
 import {
   useEntity,
