@@ -131,7 +131,10 @@ export class PolicyBuilder {
 
     const conditionStorage = new DataBaseConditionalStorage(databaseClient);
 
-    const roleMetadataStorage = new DataBaseRoleMetadataStorage(databaseClient);
+    const roleMetadataStorage = new DataBaseRoleMetadataStorage(
+      databaseClient,
+      env.config,
+    );
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
@@ -140,11 +143,23 @@ export class PolicyBuilder {
       databaseClient,
     );
 
+    const defaultRoleAndPolicies = await getDefaultRoleAndPolicies(
+      env.config,
+      roleMetadataStorage,
+      enforcerDelegate,
+    );
+
     env.permissionsRegistry.addResourceType({
       resourceRef: permissionMetadataResourceRef,
       getResources: resourceRefs =>
         Promise.all(
           resourceRefs.map(ref => {
+            if (
+              ref ===
+              roleMetadataStorage.getDefaultRoleMetadata()?.roleEntityRef
+            ) {
+              return roleMetadataStorage.getDefaultRoleMetadata();
+            }
             return roleMetadataStorage.findRoleMetadata(ref);
           }),
         ),
@@ -180,11 +195,6 @@ export class PolicyBuilder {
       },
     });
 
-    const defaultRoleAndPolicies = await getDefaultRoleAndPolicies(
-      env.config,
-      roleMetadataStorage,
-      enforcerDelegate,
-    );
     const isPluginEnabled = env.config.getOptionalBoolean('permission.enabled');
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');

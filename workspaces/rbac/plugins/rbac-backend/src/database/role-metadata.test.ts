@@ -46,9 +46,38 @@ describe('role-metadata-db-table', () => {
     });
 
     await migrate(mockDatabaseService);
+    const config = mockServices.rootConfig();
     return {
       knex,
-      db: new DataBaseRoleMetadataStorage(knex),
+      db: new DataBaseRoleMetadataStorage(knex, config),
+    };
+  }
+
+  async function createDatabaseWithDefaultRole(databaseId: TestDatabaseId) {
+    const knex = await databases.init(databaseId);
+    const mockDatabaseService = mockServices.database.mock({
+      getClient: async () => knex,
+      migrations: { skip: false },
+    });
+
+    await migrate(mockDatabaseService);
+    const config = mockServices.rootConfig({
+      data: {
+        permission: {
+          rbac: {
+            defaultPermissions: {
+              defaultRole: 'role:default/default-role',
+              basicPermissions: [
+                { permission: 'catalog.entity.read', policy: 'read' },
+              ],
+            },
+          },
+        },
+      },
+    });
+    return {
+      knex,
+      db: new DataBaseRoleMetadataStorage(knex, config),
     };
   }
 
@@ -344,13 +373,43 @@ describe('role-metadata-db-table', () => {
       },
     );
 
+    it.each(databases.eachSupportedId())(
+      'should throw ConflictError when creating role with default role name',
+      async databasesId => {
+        const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
+
+        const trx = await knex.transaction();
+        await expect(async () => {
+          try {
+            await db.createRoleMetadata(
+              {
+                source: 'configuration',
+                roleEntityRef: 'role:default/default-role',
+                modifiedBy,
+              },
+              trx,
+            );
+            await trx.commit();
+          } catch (err) {
+            await trx.rollback();
+            throw err;
+          }
+        }).rejects.toThrow(
+          "Cannot create a role with the same name as the default role 'role:default/default-role'. The default role is read-only and defined in configuration.",
+        );
+      },
+    );
+
     it('should throw failed to create metadata error, because inserted result is an empty array.', async () => {
       const knex = Knex.knex({ client: MockClient });
       const tracker = createTracker(knex);
       tracker.on.select(ROLE_METADATA_TABLE).response(undefined);
       tracker.on.insert(ROLE_METADATA_TABLE).response([]);
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
       const trx = await knex.transaction();
 
       await expect(
@@ -373,7 +432,10 @@ describe('role-metadata-db-table', () => {
       tracker.on.select(ROLE_METADATA_TABLE).response(undefined);
       tracker.on.insert(ROLE_METADATA_TABLE).response(undefined);
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -404,7 +466,10 @@ describe('role-metadata-db-table', () => {
         .insert(ROLE_METADATA_TABLE)
         .simulateError('connection refused error');
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -588,7 +653,10 @@ describe('role-metadata-db-table', () => {
       });
       tracker.on.update(ROLE_METADATA_TABLE).response([]);
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -622,7 +690,10 @@ describe('role-metadata-db-table', () => {
       });
       tracker.on.update(ROLE_METADATA_TABLE).response(undefined);
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -658,7 +729,10 @@ describe('role-metadata-db-table', () => {
         .update(ROLE_METADATA_TABLE)
         .simulateError('connection refused error');
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -736,6 +810,26 @@ describe('role-metadata-db-table', () => {
       },
     );
 
+    it.each(databases.eachSupportedId())(
+      'should throw ConflictError when deleting default role (read-only)',
+      async databasesId => {
+        const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
+
+        const trx = await knex.transaction();
+        await expect(async () => {
+          try {
+            await db.removeRoleMetadata('role:default/default-role', trx);
+            await trx.commit();
+          } catch (err) {
+            await trx.rollback();
+            throw err;
+          }
+        }).rejects.toThrow(
+          "The default role 'role:default/default-role' is read-only and cannot be deleted.",
+        );
+      },
+    );
+
     it('should throw an error on delete metadata operation', async () => {
       const knex = Knex.knex({ client: MockClient });
       const tracker = createTracker(knex);
@@ -748,7 +842,10 @@ describe('role-metadata-db-table', () => {
         .delete(ROLE_METADATA_TABLE)
         .simulateError('connection refused error');
 
-      const db = new DataBaseRoleMetadataStorage(knex);
+      const db = new DataBaseRoleMetadataStorage(
+        knex,
+        mockServices.rootConfig(),
+      );
 
       await expect(async () => {
         const trx = await knex.transaction();

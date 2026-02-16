@@ -88,6 +88,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
+  getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
 };
 
 const csvPermFile = resolve(
@@ -602,6 +603,7 @@ describe('RBACPermissionPolicy Tests', () => {
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
+      getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
     };
 
     beforeEach(async () => {
@@ -929,6 +931,7 @@ describe('RBACPermissionPolicy Tests', () => {
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
+      getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
     };
 
     const adminRole = 'role:default/rbac_admin';
@@ -1072,6 +1075,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
     createRoleMetadata: jest.fn().mockImplementation(),
     updateRoleMetadata: jest.fn().mockImplementation(),
     removeRoleMetadata: jest.fn().mockImplementation(),
+    getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
   };
   let enfDelegate: EnforcerDelegate;
   let policy: RBACPermissionPolicy;
@@ -2208,14 +2212,6 @@ async function newPermissionPolicy(
           role: {
             name: defaultRoleRef,
             memberReferences: [],
-            metadata: {
-              source: 'configuration',
-              isDefault: true,
-              description:
-                'Role with default permissions for all users and groups.',
-              modifiedBy: 'permission-policy-test',
-              lastModified: new Date().toUTCString(),
-            },
           },
           policies: defaultPolicies,
         }

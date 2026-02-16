@@ -25,6 +25,8 @@ import type {
 import { deepSortedEqual } from '../helper';
 import { RBACFilters } from '../permissions';
 import { matches } from '../helper';
+import { getDefaultRoleMetadata } from '../default-permissions/default-permissions';
+import { Config } from '@backstage/config';
 
 export const ROLE_METADATA_TABLE = 'role-metadata';
 
@@ -33,6 +35,8 @@ export interface RoleMetadataDao extends RoleMetadata {
   roleEntityRef: string;
   source: Source;
   modifiedBy: string;
+  // let's keep this field in memory, don't persist it to the database
+  isDefault?: boolean;
 }
 
 export interface RoleMetadataStorage {
@@ -55,10 +59,17 @@ export interface RoleMetadataStorage {
     roleEntityRef: string,
     trx: Knex.Transaction,
   ): Promise<void>;
+  getDefaultRoleMetadata(): RoleMetadataDao | undefined;
 }
 
 export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
-  constructor(private readonly knex: Knex<any, any[]>) {}
+  private readonly defaultRoleMetaData: RoleMetadataDao | undefined;
+  constructor(
+    private readonly knex: Knex<any, any[]>,
+    config: Config,
+  ) {
+    this.defaultRoleMetaData = getDefaultRoleMetadata(config);
+  }
 
   async filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]> {
     return await this.knex.table(ROLE_METADATA_TABLE).where(builder => {
@@ -66,6 +77,10 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
         builder.where('source', source);
       }
     });
+  }
+
+  getDefaultRoleMetadata(): RoleMetadataDao | undefined {
+    return this.defaultRoleMetaData;
   }
 
   async filterForOwnerRoleMetadata(
@@ -99,6 +114,14 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     metadata: RoleMetadataDao,
     trx: Knex.Transaction,
   ): Promise<number> {
+    if (
+      this.defaultRoleMetaData &&
+      metadata.roleEntityRef === this.defaultRoleMetaData.roleEntityRef
+    ) {
+      throw new ConflictError(
+        `Cannot create a role with the same name as the default role '${metadata.roleEntityRef}'. The default role is read-only and defined in configuration.`,
+      );
+    }
     if (await this.findRoleMetadata(metadata.roleEntityRef, trx)) {
       throw new ConflictError(
         `A metadata for role ${metadata.roleEntityRef} has already been stored`,
@@ -167,6 +190,14 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     roleEntityRef: string,
     trx: Knex.Transaction,
   ): Promise<void> {
+    if (
+      this.defaultRoleMetaData &&
+      roleEntityRef === this.defaultRoleMetaData.roleEntityRef
+    ) {
+      throw new ConflictError(
+        `The default role '${roleEntityRef}' is read-only and cannot be deleted.`,
+      );
+    }
     const metadataDao = await this.findRoleMetadata(roleEntityRef, trx);
     if (!metadataDao) {
       throw new NotFoundError(
