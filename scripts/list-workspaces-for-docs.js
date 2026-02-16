@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import fs from 'fs-extra';
 import { getPackages } from '@manypkg/get-packages';
 import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
@@ -84,36 +85,34 @@ async function main(args) {
     }
   }
 
-  const table = arrayToTable(backendFeatureReports);
+  // --- AWANLIN'S REQUESTED LOGIC ---
+  const tableContent = arrayToTable(backendFeatureReports);
+  const tableFlag = args.includes('--table');
+  const saveFlag = args.includes('--save');
 
-  // --- AUTO-UPDATE LOGIC ---
-  const targetFile = resolve(rootPath, 'docs', 'README.md');
-  const startMarker = '';
-  const endMarker = '';
-
-  try {
-    const fileContent = await fs.readFile(targetFile, 'utf8');
-    const markerRegex = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`);
-
-    if (!markerRegex.test(fileContent)) {
-      console.error(`Error: Could not find markers in ${targetFile}`);
-      console.error(`Please ensure '${startMarker}' and '${endMarker}' are present.`);
+  if (saveFlag) {
+    const targetFile = resolve(rootPath, 'docs', 'README.md');
+    try {
+      const fileContent = await fs.readFile(targetFile, 'utf8');
+      
+      // Use the Regex replacement method requested in the PR
+      const newContent = fileContent.replace(
+        /[\s\S]*/,
+        `\n${tableContent}\n`
+      );
+      
+      await fs.writeFile(targetFile, newContent);
+      console.log(`Successfully updated workspaces table in docs/README.md`);
+      
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Failed to update documentation: ${message}`);
       process.exit(1);
     }
-
-    const newContent = fileContent.replace(
-      markerRegex,
-      `${startMarker}\n${table}\n${endMarker}`
-    );
-
-    await fs.writeFile(targetFile, newContent);
-    console.log(`Successfully updated workspaces table in docs/README.md`);
-
-  } catch (error) {
-    // JS-safe error handling (no TypeScript syntax)
-    const message = error instanceof Error ? error.message : String(error);
-    console.error(`Failed to update documentation: ${message}`);
-    process.exit(1);
+  } else if (tableFlag) {
+    console.log(tableContent);
+  } else {
+    console.log(backendFeatureReports);
   }
 }
 
