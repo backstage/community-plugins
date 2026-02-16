@@ -1,5 +1,13 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.7.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+- 9c7ae87: Fix - stop error on upgrade v1.47.x - allow all plugins in the arry to show
+
 ## 7.7.0
 
 ### Minor Changes
