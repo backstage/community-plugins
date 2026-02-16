@@ -40,7 +40,15 @@ import AppSyncStatus from '../AppStatus/AppSyncStatus';
 import AppHealthStatus from '../AppStatus/AppHealthStatus';
 import { useTranslation } from '../../hooks/useTranslation';
 
-const DeploymentSummary = () => {
+export interface DeploymentSummaryProps {
+  hideInstance?: boolean;
+  hideServer?: boolean;
+}
+
+const DeploymentSummary = ({
+  hideInstance = false,
+  hideServer = false,
+}: DeploymentSummaryProps) => {
   const { entity } = useEntity();
 
   const { baseUrl } = useArgocdConfig();
@@ -202,6 +210,12 @@ const DeploymentSummary = () => {
     },
   ];
 
+  const visibleColumns = columns.filter(col => {
+    if (hideInstance && col.field === 'instance') return false;
+    if (hideServer && col.field === 'server') return false;
+    return true;
+  });
+
   return !error && hasArgocdViewAccess ? (
     <Table
       title={tableTitle}
@@ -213,7 +227,7 @@ const DeploymentSummary = () => {
       }}
       isLoading={loading}
       data={apps}
-      columns={columns}
+      columns={visibleColumns}
     />
   ) : null;
 };

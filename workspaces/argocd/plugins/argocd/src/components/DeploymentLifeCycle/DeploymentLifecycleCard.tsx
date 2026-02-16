@@ -56,12 +56,16 @@ interface DeploymentLifecycleCardProps {
   app: Application;
   revisions: RevisionInfo[];
   onclick?: () => void;
+  hideInstance?: boolean;
+  hideServer?: boolean;
 }
 
 const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   app,
   onclick,
   revisions,
+  hideInstance = false,
+  hideServer = false,
 }) => {
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
@@ -93,17 +97,21 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
 
       <CardContent>
         <Metadata direction={{ sm: 'column' }} gap={{ sm: 'gapMd' }}>
-          <MetadataItem
-            title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
-          >
-            {appName}
-          </MetadataItem>
+          {!hideInstance && (
+            <MetadataItem
+              title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
+            >
+              {appName}
+            </MetadataItem>
+          )}
 
-          <MetadataItem
-            title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
-          >
-            <AppServerLink application={app} />
-          </MetadataItem>
+          {!hideServer && (
+            <MetadataItem
+              title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
+            >
+              <AppServerLink application={app} />
+            </MetadataItem>
+          )}
 
           <MetadataItem
             title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}

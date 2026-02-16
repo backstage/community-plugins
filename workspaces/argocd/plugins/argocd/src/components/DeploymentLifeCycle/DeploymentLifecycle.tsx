@@ -41,6 +41,11 @@ import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 import { DrawerProvider } from './DrawerContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
+export interface DeploymentLifecycleProps {
+  hideInstance?: boolean;
+  hideServer?: boolean;
+}
+
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
     lifecycle: {
@@ -59,7 +64,10 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
   }),
 );
 
-const DeploymentLifecycle = () => {
+const DeploymentLifecycle = ({
+  hideInstance = false,
+  hideServer = false,
+}: DeploymentLifecycleProps) => {
   const { t } = useTranslation();
   const { entity } = useEntity();
   const classes = useDrawerStyles();
@@ -166,6 +174,8 @@ const DeploymentLifecycle = () => {
             app={app}
             key={app.metadata.uid ?? idx}
             revisions={revisionCache.current}
+            hideInstance={hideInstance}
+            hideServer={hideServer}
             onclick={() => {
               toggleDrawer();
               setActiveItem(app.metadata.uid);
@@ -181,6 +191,8 @@ const DeploymentLifecycle = () => {
           <DeploymentLifecycleDrawer
             isOpen={open}
             onClose={() => setOpen(false)}
+            hideInstance={hideInstance}
+            hideServer={hideServer}
           />
         </ArgoResourcesProvider>
       </DrawerProvider>

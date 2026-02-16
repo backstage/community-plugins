@@ -181,3 +181,40 @@ test('application card should not contain commit section for helm based applicat
   const commitLink = screen.queryByText('Commit');
   expect(commitLink).not.toBeInTheDocument();
 });
+
+test('should hide instance when hideInstance prop is true', () => {
+  render(
+    <DeploymentLifecycleCard
+      app={mockApplication}
+      revisions={[]}
+      hideInstance
+    />,
+  );
+
+  expect(screen.queryByText('Instance')).not.toBeInTheDocument();
+  expect(screen.getByText('Server')).toBeInTheDocument();
+});
+
+test('should hide server when hideServer prop is true', () => {
+  render(
+    <DeploymentLifecycleCard app={mockApplication} revisions={[]} hideServer />,
+  );
+
+  expect(screen.getByText('Instance')).toBeInTheDocument();
+  expect(screen.queryByText('Server')).not.toBeInTheDocument();
+});
+
+test('should hide both instance and server when both props are true', () => {
+  render(
+    <DeploymentLifecycleCard
+      app={mockApplication}
+      revisions={[]}
+      hideInstance
+      hideServer
+    />,
+  );
+
+  expect(screen.queryByText('Instance')).not.toBeInTheDocument();
+  expect(screen.queryByText('Server')).not.toBeInTheDocument();
+  expect(screen.getByText('Namespace')).toBeInTheDocument();
+});
