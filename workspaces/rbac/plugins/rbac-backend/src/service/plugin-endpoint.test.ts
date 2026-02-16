@@ -29,21 +29,25 @@ describe('plugin-endpoint', () => {
     },
   });
 
-  let fetchMock: jest.SpyInstance;
+  const fetchMock = jest.fn();
 
   beforeEach(() => {
-    fetchMock = jest.spyOn(global, 'fetch');
+    jest.clearAllMocks();
+    fetchMock.mockReset();
+    global.fetch = fetchMock as any;
   });
 
-  afterEach(() => {
-    fetchMock.mockRestore();
+  afterAll(() => {
+    // clean up global pollution
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (global as any).fetch;
   });
 
   describe('Test list plugin policies', () => {
     it('should return empty plugin policies list', async () => {
-      (
-        extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValueOnce([]);
+      // asserts that when a plugin’s well-known endpoint is missing (404)
+      // the collector returns an empty policies list instead of throwing.
+      fetchMock.mockRejectedValueOnce(new NotFoundError());
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -64,17 +68,19 @@ describe('plugin-endpoint', () => {
     it('should return non empty plugin policies list with resourced permission', async () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          permissions: [
-            {
-              type: 'resource',
-              name: 'catalog.entity.read',
-              attributes: { action: 'read' },
-              resourceType: 'catalog-entity',
-            },
-          ],
-        }),
-      });
+        json: async () => {
+          return {
+            permissions: [
+              {
+                type: 'resource',
+                name: 'catalog.entity.read',
+                attributes: { action: 'read' },
+                resourceType: 'catalog-entity',
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -103,16 +109,18 @@ describe('plugin-endpoint', () => {
     it('should return non empty plugin policies list with non resourced permission', async () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          permissions: [
-            {
-              type: 'basic',
-              name: 'catalog.entity.create',
-              attributes: { action: 'create' },
-            },
-          ],
-        }),
-      });
+        json: async () => {
+          return {
+            permissions: [
+              {
+                type: 'basic',
+                name: 'catalog.entity.create',
+                attributes: { action: 'create' },
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -140,23 +148,32 @@ describe('plugin-endpoint', () => {
     it('should log warning for not found endpoint', async () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValueOnce(['catalog', 'unknown-plugin-id']);
+      ).mockReturnValueOnce(['catalog', 'unknown-plugin-id']);
 
-      fetchMock
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            permissions: [
-              {
-                type: 'resource',
-                resourceType: 'catalog-entity',
-                name: 'catalog.entity.read',
-                attributes: { action: 'read' },
-              },
-            ],
-          }),
-        })
-        .mockRejectedValueOnce(new NotFoundError());
+      fetchMock.mockImplementation(async (wellKnownURL: string) => {
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              return {
+                permissions: [
+                  {
+                    type: 'resource',
+                    resourceType: 'catalog-entity',
+                    name: 'catalog.entity.read',
+                    attributes: { action: 'read' },
+                  },
+                ],
+              };
+            },
+          } as any;
+        }
+
+        throw new NotFoundError();
+      });
 
       const logger = mockServices.logger.mock();
       const errorSpy = jest.spyOn(logger, 'warn').mockClear();
@@ -195,21 +212,30 @@ describe('plugin-endpoint', () => {
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
       ).mockResolvedValueOnce(['scaffolder', 'catalog']);
 
-      fetchMock
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            permissions: [
-              {
-                type: 'resource',
-                resourceType: 'scaffolder-template',
-                name: 'scaffolder.template.parameter.read',
-                attributes: { action: 'read' },
-              },
-            ],
-          }),
-        })
-        .mockRejectedValueOnce(new Error('Unexpected error'));
+      fetchMock.mockImplementation(async (wellKnownURL: string) => {
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              return {
+                permissions: [
+                  {
+                    type: 'resource',
+                    resourceType: 'scaffolder-template',
+                    name: 'scaffolder.template.parameter.read',
+                    attributes: { action: 'read' },
+                  },
+                ],
+              };
+            },
+          } as any;
+        }
+
+        throw new Error('Unexpected error');
+      });
 
       const logger = mockServices.logger.mock();
       const errorSpy = jest.spyOn(logger, 'error').mockClear();
@@ -245,28 +271,43 @@ describe('plugin-endpoint', () => {
     it('should not log error caused by non json permission metadata for known endpoint', async () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValueOnce(['scaffolder', 'catalog']);
+      ).mockReturnValueOnce(['scaffolder', 'catalog']);
+      fetchMock.mockImplementation(async (wellKnownURL: string) => {
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/scaffolder/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              return {
+                permissions: [
+                  {
+                    type: 'resource',
+                    resourceType: 'scaffolder-template',
+                    name: 'scaffolder.template.parameter.read',
+                    attributes: { action: 'read' },
+                  },
+                ],
+              };
+            },
+          } as any;
+        }
 
-      fetchMock
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            permissions: [
-              {
-                type: 'resource',
-                resourceType: 'scaffolder-template',
-                name: 'scaffolder.template.parameter.read',
-                attributes: { action: 'read' },
-              },
-            ],
-          }),
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => {
-            throw new SyntaxError('Unexpected token');
-          },
-        });
+        if (
+          wellKnownURL ===
+          'https://localhost:7007/api/catalog/.well-known/backstage/permissions/metadata'
+        ) {
+          return {
+            ok: true,
+            json: async () => {
+              throw new Error('invalid json');
+            },
+          } as any;
+        }
+
+        throw new Error('Unexpected error');
+      });
 
       const logger = mockServices.logger.mock();
       const errorSpy = jest.spyOn(logger, 'error').mockClear();
@@ -303,7 +344,7 @@ describe('plugin-endpoint', () => {
     it('should return empty condition rule list', async () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValueOnce([]);
+      ).mockReturnValueOnce([]);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -324,32 +365,34 @@ describe('plugin-endpoint', () => {
     it('should return non empty condition rule list', async () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValueOnce(['catalog']);
+      ).mockReturnValueOnce(['catalog']);
 
       fetchMock.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          rules: [
-            {
-              description: 'Allow entities with the specified label',
-              name: 'HAS_LABEL',
-              paramsSchema: {
-                $schema: 'http://json-schema.org/draft-07/schema#',
-                additionalProperties: false,
-                properties: {
-                  label: {
-                    description: 'Name of the label to match on',
-                    type: 'string',
+        json: async () => {
+          return {
+            rules: [
+              {
+                description: 'Allow entities with the specified label',
+                name: 'HAS_LABEL',
+                paramsSchema: {
+                  $schema: 'http://json-schema.org/draft-07/schema#',
+                  additionalProperties: false,
+                  properties: {
+                    label: {
+                      description: 'Name of the label to match on',
+                      type: 'string',
+                    },
                   },
+                  required: ['label'],
+                  type: 'object',
                 },
-                required: ['label'],
-                type: 'object',
+                resourceType: 'catalog-entity',
               },
-              resourceType: 'catalog-entity',
-            },
-          ],
-        }),
-      });
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -392,40 +435,42 @@ describe('plugin-endpoint', () => {
     it('should return metadata by id', async () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValueOnce(['catalog']);
+      ).mockReturnValueOnce(['catalog']);
 
       fetchMock.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          permissions: [
-            {
-              type: 'resource',
-              name: 'catalog.entity.read',
-              attributes: { action: 'read' },
-              resourceType: 'catalog-entity',
-            },
-          ],
-          rules: [
-            {
-              description: 'Allow entities with the specified label',
-              name: 'HAS_LABEL',
-              paramsSchema: {
-                $schema: 'http://json-schema.org/draft-07/schema#',
-                additionalProperties: false,
-                properties: {
-                  label: {
-                    description: 'Name of the label to match on',
-                    type: 'string',
-                  },
-                },
-                required: ['label'],
-                type: 'object',
+        json: async () => {
+          return {
+            permissions: [
+              {
+                type: 'resource',
+                name: 'catalog.entity.read',
+                attributes: { action: 'read' },
+                resourceType: 'catalog-entity',
               },
-              resourceType: 'catalog-entity',
-            },
-          ],
-        }),
-      });
+            ],
+            rules: [
+              {
+                description: 'Allow entities with the specified label',
+                name: 'HAS_LABEL',
+                paramsSchema: {
+                  $schema: 'http://json-schema.org/draft-07/schema#',
+                  additionalProperties: false,
+                  properties: {
+                    label: {
+                      description: 'Name of the label to match on',
+                      type: 'string',
+                    },
+                  },
+                  required: ['label'],
+                  type: 'object',
+                },
+                resourceType: 'catalog-entity',
+              },
+            ],
+          };
+        },
+      } as any);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
@@ -474,7 +519,7 @@ describe('plugin-endpoint', () => {
     it('should return metadata by id (rbac-plugin)', async () => {
       (
         extendablePluginIdProviderMock.getPluginIds as jest.Mock
-      ).mockResolvedValue(['permission']);
+      ).mockReturnValue(['permission']);
 
       const collector = new PluginPermissionMetadataCollector({
         deps: {
