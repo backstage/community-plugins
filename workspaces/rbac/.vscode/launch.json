@@ -17,7 +17,6 @@
       "program": "${workspaceRoot}/node_modules/.bin/backstage-cli",
       "args": ["repo", "start"],
       "console": "integratedTerminal",
-      // "internalConsoleOptions": "neverOpen",
       "cwd": "${workspaceFolder}"
     },
   ]

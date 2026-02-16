@@ -35,7 +35,6 @@ export interface RoleMetadataDao extends RoleMetadata {
   roleEntityRef: string;
   source: Source;
   modifiedBy: string;
-  // let's keep this field in memory, don't persist it to the database
   isDefault?: boolean;
 }
 
