@@ -89,6 +89,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
   getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+  syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
 };
 
 const csvPermFile = resolve(
@@ -604,6 +605,7 @@ describe('RBACPermissionPolicy Tests', () => {
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
       getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+      syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
     };
 
     beforeEach(async () => {
@@ -932,6 +934,7 @@ describe('RBACPermissionPolicy Tests', () => {
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
       getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+      syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
     };
 
     const adminRole = 'role:default/rbac_admin';
@@ -1076,6 +1079,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
     updateRoleMetadata: jest.fn().mockImplementation(),
     removeRoleMetadata: jest.fn().mockImplementation(),
     getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+    syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
   };
   let enfDelegate: EnforcerDelegate;
   let policy: RBACPermissionPolicy;
