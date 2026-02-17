@@ -40,7 +40,9 @@ export type DefaultRoleAndPolicies = {
 const DEFAULT_ROLE_DESCRIPTION =
   'Role with default permissions for all users and groups.';
 
-export function buildDefaultRole(defaultRoleRef: string): RoleMetadataDao {
+export function buildDefaultRoleMetadata(
+  defaultRoleRef: string,
+): RoleMetadataDao {
   return {
     roleEntityRef: defaultRoleRef,
     source: 'configuration',
@@ -118,9 +120,6 @@ export async function getDefaultRoleAndPolicies(
       permission: permissionName,
       policy: action || 'use',
       effect: effect || 'allow',
-      metadata: {
-        source: 'configuration',
-      },
     };
   });
 
@@ -137,7 +136,7 @@ export function getDefaultRoleMetadata(
     'permission.rbac.defaultPermissions.defaultRole',
   );
   if (defaultRoleRef) {
-    return buildDefaultRole(defaultRoleRef);
+    return buildDefaultRoleMetadata(defaultRoleRef);
   }
   return undefined;
 }
