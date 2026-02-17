@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -263,12 +263,14 @@ export default async (opts: OptionValues) => {
     force,
     branch,
     scope = '@backstage',
+    monorepoRef, // <-- Added here
   } = opts as {
     monorepoPath: string;
     workspaceName: string;
     force: boolean;
     branch?: string;
     scope?: string;
+    monorepoRef?: string; // <-- Added here
   };
 
   try {
@@ -280,21 +282,36 @@ export default async (opts: OptionValues) => {
     process.exit(1);
   }
 
-  const latestBackstageRelease = await findCurrentReleaseVersion({
-    monorepoRoot: monorepoPath,
-  });
+  // --- START OF 04KASH'S REQUESTED FIX ---
+  if (monorepoRef) {
+    console.log(
+      chalk.blueBright`Checking out specified monorepo reference: ${chalk.yellow`${monorepoRef}`}`,
+    );
+    await exec('git', ['checkout', monorepoRef], { cwd: monorepoPath });
+  } else {
+    try {
+      const latestBackstageRelease = await findCurrentReleaseVersion({
+        monorepoRoot: monorepoPath,
+      });
 
-  console.log(
-    chalk.blueBright`Found latest release version in monorepo: ${chalk.yellow`${latestBackstageRelease}`}`,
-  );
+      console.log(
+        chalk.blueBright`Found latest release version in monorepo: ${chalk.yellow`${latestBackstageRelease}`}`,
+      );
 
-  // checkout that the latest release tag
-  if (!process.env.SKIP_FETCH_TAGS) {
-    await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+      // checkout that the latest release tag
+      if (!process.env.SKIP_FETCH_TAGS) {
+        await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+      }
+      await exec('git', ['checkout', `v${latestBackstageRelease}`], {
+        cwd: monorepoPath,
+      });
+    } catch (error) {
+      console.log(
+        chalk.yellow`No stable tags found or checkout failed. Proceeding with the current branch. Use --monorepo-ref to specify a target if needed.`,
+      );
+    }
   }
-  await exec('git', ['checkout', `v${latestBackstageRelease}`], {
-    cwd: monorepoPath,
-  });
+  // --- END OF FIX ---
 
   const { communityPluginsRoot, monorepoRoot, workspacePath } = await getPaths({
     monorepoPath,
@@ -405,7 +422,7 @@ export default async (opts: OptionValues) => {
       '@testing-library/react': '^15.0.0',
     };
 
-    if (movedPackageJson.backstage.role === 'frontend-plugin') {
+    if (movedPackageJson.backstage?.role === 'frontend-plugin') {
       for (const [key, value] of Object.entries(frontendDevDeps)) {
         movedPackageJson.devDependencies[key] = value;
       }
@@ -506,7 +523,10 @@ export default async (opts: OptionValues) => {
   });
 
   // reset monorepo
-  await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
+  await exec('git', ['checkout', 'master'], { cwd: monorepoPath }).catch(() =>
+    exec('git', ['checkout', 'main'], { cwd: monorepoPath }),
+  );
+  
   const defaultBranchName = `migrate-${new Date().getTime()}`;
 
   console.log(
