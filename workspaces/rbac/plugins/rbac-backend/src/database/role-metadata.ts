@@ -26,7 +26,7 @@ import { deepSortedEqual } from '../helper';
 import { RBACFilters } from '../permissions';
 import { matches } from '../helper';
 import {
-  buildDefaultRole,
+  buildDefaultRoleMetadata,
   getDefaultRoleMetadata,
 } from '../default-permissions/default-permissions';
 import { Config } from '@backstage/config';
@@ -106,7 +106,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
         .where('roleEntityRef', defaultRoleRef)
         .first();
       if (!existing) {
-        const defaultDao = buildDefaultRole(defaultRoleRef);
+        const defaultDao = buildDefaultRoleMetadata(defaultRoleRef);
         const rowData = {
           ...defaultDao,
           isDefault: defaultDao.isDefault ?? false,

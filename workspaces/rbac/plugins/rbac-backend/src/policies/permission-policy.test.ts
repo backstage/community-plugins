@@ -2257,8 +2257,8 @@ describe('Default Role Tests', () => {
     },
     {
       entityReference: 'role:default/viewer',
-      permission: 'catalog.entity.create',
-      policy: 'use',
+      permission: 'policy-entity',
+      policy: 'read',
       effect: 'allow',
     },
   ];
@@ -2270,18 +2270,18 @@ describe('Default Role Tests', () => {
       enfDelegate = await newEnforcerDelegate(adapter, config);
 
       // Add some permissions for the default role
-      await enfDelegate.addPolicy([
-        'role:default/viewer',
-        'catalog.entity.read',
-        'read',
-        'allow',
-      ]);
-      await enfDelegate.addPolicy([
-        'role:default/viewer',
-        'catalog-entity',
-        'read',
-        'allow',
-      ]);
+      // await enfDelegate.addPolicy([
+      //   'role:default/viewer',
+      //   'catalog.entity.read',
+      //   'read',
+      //   'allow',
+      // ]);
+      // await enfDelegate.addPolicy([
+      //   'role:default/viewer',
+      //   'catalog-entity',
+      //   'read',
+      //   'allow',
+      // ]);
 
       policy = await newPermissionPolicy(
         config,

@@ -100,7 +100,7 @@ describe('role-metadata-db-table', () => {
     );
 
     it.each(databases.eachSupportedId())(
-      'should upsert default role in DB when in config',
+      'should insert default role in DB when in config',
       async databasesId => {
         const { db } = await createDatabaseWithDefaultRole(databasesId);
         expect(db.getDefaultRoleMetadata()).toBeDefined();
