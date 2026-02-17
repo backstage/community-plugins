@@ -21,10 +21,7 @@ import {
   isValidPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
 
-import type {
-  RoleMetadataDao,
-  RoleMetadataStorage,
-} from '../database/role-metadata';
+import type { RoleMetadataDao } from '../database/role-metadata';
 import type { EnforcerDelegate } from '../service/enforcer-delegate';
 import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
 
@@ -43,7 +40,7 @@ export type DefaultRoleAndPolicies = {
 const DEFAULT_ROLE_DESCRIPTION =
   'Role with default permissions for all users and groups.';
 
-function buildDefaultRole(defaultRoleRef: string): RoleMetadataDao {
+export function buildDefaultRole(defaultRoleRef: string): RoleMetadataDao {
   return {
     roleEntityRef: defaultRoleRef,
     source: 'configuration',
@@ -52,19 +49,6 @@ function buildDefaultRole(defaultRoleRef: string): RoleMetadataDao {
     modifiedBy: ADMIN_ROLE_AUTHOR,
     lastModified: new Date().toUTCString(),
   };
-}
-
-async function ensureNoExistingRoleForDefaultRole(
-  defaultRoleRef: string,
-  roleMetadataStorage: RoleMetadataStorage,
-): Promise<void> {
-  const existing: RoleMetadataDao | undefined =
-    await roleMetadataStorage.findRoleMetadata(defaultRoleRef);
-  if (existing) {
-    throw new ConflictError(
-      `A role with name '${defaultRoleRef}' already exists. The default role must not conflict with an existing role.`,
-    );
-  }
 }
 
 async function ensureNoPoliciesForDefaultRole(
@@ -86,7 +70,6 @@ async function ensureNoPoliciesForDefaultRole(
  */
 export async function getDefaultRoleAndPolicies(
   config: Config,
-  roleMetadataStorage: RoleMetadataStorage,
   enforcerDelegate: EnforcerDelegate,
 ): Promise<DefaultRoleAndPolicies | undefined> {
   const defaultRoleRef = config.getOptionalString(
@@ -111,7 +94,6 @@ export async function getDefaultRoleAndPolicies(
     );
   }
 
-  await ensureNoExistingRoleForDefaultRole(defaultRoleRef, roleMetadataStorage);
   await ensureNoPoliciesForDefaultRole(defaultRoleRef, enforcerDelegate);
 
   const policies: RoleBasedPolicy[] = basicPermissions.map(permission => {

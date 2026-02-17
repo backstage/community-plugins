@@ -135,6 +135,7 @@ export class PolicyBuilder {
       databaseClient,
       env.config,
     );
+    await roleMetadataStorage.syncDefaultRoleMetadataFromConfig();
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
@@ -145,7 +146,6 @@ export class PolicyBuilder {
 
     const defaultRoleAndPolicies = await getDefaultRoleAndPolicies(
       env.config,
-      roleMetadataStorage,
       enforcerDelegate,
     );
 

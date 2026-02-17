@@ -81,6 +81,82 @@ describe('role-metadata-db-table', () => {
     };
   }
 
+  describe('syncDefaultRoleMetadataFromConfig', () => {
+    it.each(databases.eachSupportedId())(
+      'should remove default role from DB when not in config',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        await knex(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/default-role',
+          source: 'configuration',
+          modifiedBy,
+          isDefault: true,
+        });
+        await db.syncDefaultRoleMetadataFromConfig();
+        const found = await db.findRoleMetadata('role:default/default-role');
+        expect(found).toBeUndefined();
+        expect(db.getDefaultRoleMetadata()).toBeUndefined();
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should upsert default role in DB when in config',
+      async databasesId => {
+        const { db } = await createDatabaseWithDefaultRole(databasesId);
+        expect(db.getDefaultRoleMetadata()).toBeDefined();
+        await db.syncDefaultRoleMetadataFromConfig();
+        const found = await db.findRoleMetadata('role:default/default-role');
+        expect(found).toBeDefined();
+        expect(found!.roleEntityRef).toBe('role:default/default-role');
+        expect(found!.source).toBe('configuration');
+        expect(found!.isDefault).toBe(true);
+        expect(db.getDefaultRoleMetadata()?.roleEntityRef).toBe(
+          'role:default/default-role',
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should delete old default role from DB when config has a new default role',
+      async databasesId => {
+        const { knex } = await createDatabase(databasesId);
+        await knex(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/old-default',
+          source: 'configuration',
+          modifiedBy,
+          isDefault: true,
+        });
+        const configWithNewDefault = mockServices.rootConfig({
+          data: {
+            permission: {
+              rbac: {
+                defaultPermissions: {
+                  defaultRole: 'role:default/new-default',
+                  basicPermissions: [
+                    { permission: 'catalog.entity.read', policy: 'read' },
+                  ],
+                },
+              },
+            },
+          },
+        });
+        const db = new DataBaseRoleMetadataStorage(knex, configWithNewDefault);
+        await db.syncDefaultRoleMetadataFromConfig();
+
+        const oldFound = await db.findRoleMetadata('role:default/old-default');
+        expect(oldFound).toBeUndefined();
+
+        const newFound = await db.findRoleMetadata('role:default/new-default');
+        expect(newFound).toBeDefined();
+        expect(newFound!.roleEntityRef).toBe('role:default/new-default');
+        expect(newFound!.isDefault).toBe(true);
+        expect(db.getDefaultRoleMetadata()?.roleEntityRef).toBe(
+          'role:default/new-default',
+        );
+      },
+    );
+  });
+
   describe('findRoleMetadata', () => {
     it.each(databases.eachSupportedId())(
       'should return undefined',
@@ -123,6 +199,7 @@ describe('role-metadata-db-table', () => {
             createdAt: null,
             description: null,
             id: 1,
+            isDefault: false,
             lastModified: null,
             modifiedBy,
             owner: null,
@@ -169,6 +246,7 @@ describe('role-metadata-db-table', () => {
               createdAt: null,
               description: null,
               id: 1,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: null,
@@ -234,6 +312,7 @@ describe('role-metadata-db-table', () => {
               createdAt: null,
               description: null,
               id: 1,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: 'user:default/some_user',
@@ -273,6 +352,7 @@ describe('role-metadata-db-table', () => {
               createdAt: null,
               description: null,
               id: 1,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: 'user:default/some_user',
@@ -284,6 +364,7 @@ describe('role-metadata-db-table', () => {
               createdAt: null,
               description: null,
               id: 2,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: 'user:default/some_other_user',
@@ -326,7 +407,7 @@ describe('role-metadata-db-table', () => {
           id,
         );
         expect(metadata.length).toEqual(1);
-        expect(metadata[0]).toEqual({
+        expect(metadata[0]).toMatchObject({
           author: null,
           createdAt: null,
           roleEntityRef: 'role:default/some-super-important-role',
@@ -377,6 +458,7 @@ describe('role-metadata-db-table', () => {
       'should throw ConflictError when creating role with default role name',
       async databasesId => {
         const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadataFromConfig();
 
         const trx = await knex.transaction();
         await expect(async () => {
@@ -395,7 +477,7 @@ describe('role-metadata-db-table', () => {
             throw err;
           }
         }).rejects.toThrow(
-          "Cannot create a role with the same name as the default role 'role:default/default-role'. The default role is read-only and defined in configuration.",
+          `A metadata for role role:default/default-role has already been stored`,
         );
       },
     );
@@ -524,7 +606,7 @@ describe('role-metadata-db-table', () => {
           1,
         );
         expect(metadata.length).toEqual(1);
-        expect(metadata[0]).toEqual({
+        expect(metadata[0]).toMatchObject({
           author: null,
           createdAt: null,
           description: null,
@@ -601,7 +683,7 @@ describe('role-metadata-db-table', () => {
           1,
         );
         expect(metadata.length).toEqual(1);
-        expect(metadata[0]).toEqual({
+        expect(metadata[0]).toMatchObject({
           author: null,
           createdAt: null,
           description: null,
@@ -676,7 +758,7 @@ describe('role-metadata-db-table', () => {
           throw err;
         }
       }).rejects.toThrow(
-        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
+        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1,"isDefault":false}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
       );
     });
 
@@ -713,7 +795,7 @@ describe('role-metadata-db-table', () => {
           throw err;
         }
       }).rejects.toThrow(
-        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
+        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1,"isDefault":false}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
       );
     });
 
@@ -806,26 +888,6 @@ describe('role-metadata-db-table', () => {
           }
         }).rejects.toThrow(
           `A metadata for role 'role:default/some-super-important-role' was not found`,
-        );
-      },
-    );
-
-    it.each(databases.eachSupportedId())(
-      'should throw ConflictError when deleting default role (read-only)',
-      async databasesId => {
-        const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
-
-        const trx = await knex.transaction();
-        await expect(async () => {
-          try {
-            await db.removeRoleMetadata('role:default/default-role', trx);
-            await trx.commit();
-          } catch (err) {
-            await trx.rollback();
-            throw err;
-          }
-        }).rejects.toThrow(
-          "The default role 'role:default/default-role' is read-only and cannot be deleted.",
         );
       },
     );

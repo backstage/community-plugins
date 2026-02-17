@@ -194,6 +194,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
   getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+  syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
 };
 
 const roleEventEmitterMock: RoleEventEmitter<RoleEvents> = {
