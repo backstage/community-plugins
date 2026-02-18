@@ -3222,6 +3222,7 @@ describe('REST policies API', () => {
             author: undefined,
             createdAt: undefined,
             description: undefined,
+            isDefault: undefined,
             lastModified: undefined,
             modifiedBy: 'user:default/some-user',
             owner: undefined,
@@ -3831,7 +3832,6 @@ describe('REST policies API', () => {
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
         extendablePluginIdProviderMock as ExtendablePluginIdProvider,
-        undefined,
         [],
         [providerMock],
       );

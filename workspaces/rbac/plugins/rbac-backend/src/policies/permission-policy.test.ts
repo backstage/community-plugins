@@ -54,7 +54,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { DefaultRoleAndPolicies } from '../default-permissions/default-permissions';
+import { DefaultPermissions } from '../default-permissions/default-permissions';
 import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
@@ -2210,13 +2210,10 @@ async function newPermissionPolicy(
   defaultPolicies: RoleBasedPolicy[] = [],
 ): Promise<RBACPermissionPolicy> {
   const defaultRoleRef = defaultPolicies[0]?.entityReference;
-  const defaultRoleAndPolicies: DefaultRoleAndPolicies | undefined =
+  const defaultRoleAndPolicies: DefaultPermissions | undefined =
     defaultPolicies.length > 0 && defaultRoleRef
       ? {
-          role: {
-            name: defaultRoleRef,
-            memberReferences: [],
-          },
+          roleEntityRef: defaultRoleRef,
           policies: defaultPolicies,
         }
       : undefined;
@@ -2268,20 +2265,6 @@ describe('Default Role Tests', () => {
       const config = newConfigWithDefaultRole('role:default/viewer');
       const adapter = await newAdapter(config);
       enfDelegate = await newEnforcerDelegate(adapter, config);
-
-      // Add some permissions for the default role
-      // await enfDelegate.addPolicy([
-      //   'role:default/viewer',
-      //   'catalog.entity.read',
-      //   'read',
-      //   'allow',
-      // ]);
-      // await enfDelegate.addPolicy([
-      //   'role:default/viewer',
-      //   'catalog-entity',
-      //   'read',
-      //   'allow',
-      // ]);
 
       policy = await newPermissionPolicy(
         config,
