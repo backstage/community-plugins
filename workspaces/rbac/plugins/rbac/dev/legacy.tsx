@@ -13,31 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * New Frontend System dev mode for the RBAC plugin
- */
-
 import '@backstage/ui/css/styles.css';
-import { createApp } from '@backstage/frontend-defaults';
 import { configApiRef } from '@backstage/core-plugin-api';
+import { createDevApp } from '@backstage/dev-utils';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import ReactDOM from 'react-dom/client';
-import { mockApis } from '@backstage/test-utils';
-
-import {
-  ApiBlueprint,
-  createFrontendModule,
-} from '@backstage/frontend-plugin-api';
-import {
-  Sidebar,
-  SidebarGroup,
-  SidebarItem,
-  SidebarScrollWrapper,
-  SidebarSpace,
-} from '@backstage/core-components';
-import { NavContentBlueprint } from '@backstage/plugin-app-react';
-import { SidebarLanguageSwitcher } from '@backstage/dev-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import {
   PermissionAction,
@@ -53,14 +33,9 @@ import { mockMembers } from '../src/__fixtures__/mockMembers';
 import { mockPermissionPolicies } from '../src/__fixtures__/mockPermissionPolicies';
 import { mockPolicies } from '../src/__fixtures__/mockPolicies';
 import { RBACAPI, rbacApiRef } from '../src/api/RBACBackendClient';
-import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
-import type {
-  MemberEntity,
-  RoleBasedConditions,
-  RoleError,
-} from '../src/types';
-
-import { rbacPlugin, rbacTranslationsModule } from '../src/alpha';
+import { RbacPage, rbacPlugin } from '../src/plugin';
+import { MemberEntity, RoleBasedConditions, RoleError } from '../src/types';
+import { rbacTranslations } from '../src/alpha/translations';
 
 class MockRBACApi implements RBACAPI {
   readonly resources;
@@ -90,9 +65,7 @@ class MockRBACApi implements RBACAPI {
   }
 
   async getUserAuthorization(): Promise<{ status: string }> {
-    return {
-      status: 'Authorized',
-    };
+    return Promise.resolve({ status: 'Authorized' });
   }
 
   async getRole(role: string): Promise<Role[] | Response> {
@@ -185,88 +158,28 @@ const mockRBACApi = new MockRBACApi([
     name: 'role:default/rbac_admin',
   },
 ]);
-
-const mockLicensedUsersApi = {
-  async isLicensePluginEnabled(): Promise<boolean> {
-    return false;
-  },
-  async downloadStatistics(): Promise<Response> {
-    return { status: 200 } as Response;
-  },
-};
-
 const mockConfigApi = mockApis.config({
   data: { permission: { enabled: true } },
 });
 
-const rbacDevModule = createFrontendModule({
-  pluginId: 'rbac',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'rbac',
-      params: defineParams =>
-        defineParams({
-          api: rbacApiRef,
-          deps: {},
-          factory: () => mockRBACApi,
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'licensed-users',
-      params: defineParams =>
-        defineParams({
-          api: licensedUsersApiRef,
-          deps: {},
-          factory: () => mockLicensedUsersApi,
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'config',
-      params: defineParams =>
-        defineParams({
-          api: configApiRef,
-          deps: {},
-          factory: () => mockConfigApi,
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'permission',
-      params: defineParams =>
-        defineParams({
-          api: permissionApiRef,
-          deps: {},
-          factory: () => mockApis.permission(),
-        }),
-    }),
-  ],
-});
-
-const devSidebarContent = NavContentBlueprint.make({
-  params: {
-    component: ({ items }) => (
-      <Sidebar>
-        <SidebarGroup label="Menu">
-          <SidebarScrollWrapper>
-            {items.map((item, index) => (
-              <SidebarItem {...item} key={index} />
-            ))}
-          </SidebarScrollWrapper>
-        </SidebarGroup>
-        <SidebarSpace />
-        <SidebarLanguageSwitcher />
-      </Sidebar>
+createDevApp()
+  .registerPlugin(rbacPlugin)
+  .addTranslationResource(rbacTranslations)
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
+  .setDefaultLanguage('en')
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [permissionApiRef, mockApis.permission()],
+          [rbacApiRef, mockRBACApi],
+          [configApiRef, mockConfigApi],
+        ]}
+      >
+        <RbacPage />
+      </TestApiProvider>
     ),
-  },
-});
-
-const devNavModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [devSidebarContent],
-});
-
-const app = createApp({
-  features: [rbacPlugin, rbacTranslationsModule, rbacDevModule, devNavModule],
-});
-
-const root = app.createRoot();
-ReactDOM.createRoot(document.getElementById('root')!).render(root);
+    title: 'RBAC',
+    path: '/rbac',
+  })
+  .render();

@@ -76,7 +76,7 @@ test.describe('RBAC plugin', () => {
     );
     translations = getTranslations(currentLocale);
     await common.switchToLocale(currentLocale);
-    const navSelector = 'nav [aria-label="Administration"]';
+    const navSelector = 'nav [aria-label="RBAC"]';
     await page.locator(navSelector).click();
     await common.verifyHeading(translations.page.title);
   });

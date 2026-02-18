@@ -98,19 +98,12 @@ permission:
 
    - Integrate the [`SignIn`](https://backstage.io/docs/auth/#sign-in-configuration) component to be able to sign-in to the Backstage instance.
 
-## Use New Frontend System
+## New Frontend System
 
-1. Install the frontend plugin:
-
-```sh
-yarn workspace app add @backstage-community/plugin-rbac
-```
-
-2. Enable the plugin in your `packages/app(-next)/src/App.tsx`:
+If you're using Backstage's new frontend system, add the plugin to your app:
 
 ```tsx
-// packages/app-next/src/App.tsx
-import { createApp } from '@backstage/frontend-defaults';
+// packages/app/src/App.tsx
 import rbacPlugin from '@backstage-community/plugin-rbac/alpha';
 
 export default createApp({
@@ -120,6 +113,11 @@ export default createApp({
   ],
 });
 ```
+
+The plugin will automatically provide:
+
+- RBAC at `/rbac` with all the existing features
+- A "RBAC" navigation item in the sidebar
 
 ### Extensions
 
