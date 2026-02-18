@@ -20,7 +20,8 @@ import {
   createApiFactory,
   createPlugin,
   createRoutableExtension,
-  identityApiRef,
+  discoveryApiRef,
+  fetchApiRef,
 } from '@backstage/core-plugin-api';
 
 import { argoCDApiRef, argoCDInstanceApiRef } from './api';
@@ -38,13 +39,14 @@ export const argocdPlugin = createPlugin({
     createApiFactory({
       api: argoCDApiRef,
       deps: {
-        identityApi: identityApiRef,
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
         configApi: configApiRef,
       },
-      factory: ({ identityApi, configApi }) =>
+      factory: ({ discoveryApi, fetchApi, configApi }) =>
         new ArgoCDApiClient({
-          identityApi,
-          backendBaseUrl: configApi.getString('backend.baseUrl'),
+          discoveryApi,
+          fetchApi,
           useNamespacedApps: Boolean(
             configApi.getOptionalBoolean('argocd.namespacedApps'),
           ),

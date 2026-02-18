@@ -26,7 +26,7 @@ import { argocdPermissions } from '@backstage-community/plugin-argocd-common';
  * @public
  */
 export const argoCDPlugin = createBackendPlugin({
-  pluginId: 'argocd',
+  pluginId: 'backstage-community-argocd',
   register(env) {
     env.registerInit({
       deps: {

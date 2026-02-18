@@ -67,6 +67,10 @@ export async function createRouter(
 
   router.use(checkPermission);
 
+  router.get('/check', async (_req: express.Request, res: express.Response) => {
+    res.send('OK');
+  });
+
   router.get(
     '/find/name/:appName',
     async (req: express.Request, res: express.Response) => {
