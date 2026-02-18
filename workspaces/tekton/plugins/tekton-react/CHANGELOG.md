@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton-react
 
+## 0.3.1
+
+### Patch Changes
+
+- f5ae65c: remove unused dependencies
+
 ## 0.3.0
 
 ### Minor Changes
