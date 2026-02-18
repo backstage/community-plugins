@@ -49,7 +49,6 @@ export interface RoleMetadataDao extends RoleMetadata {
   roleEntityRef: string;
   source: Source;
   modifiedBy: string;
-  isDefault?: boolean;
 }
 
 export interface RoleMetadataStorage {
@@ -259,5 +258,6 @@ export function daoToMetadata(dao: RoleMetadataDao): RoleMetadata {
     modifiedBy: dao.modifiedBy,
     createdAt: dao.createdAt,
     lastModified: dao.lastModified,
+    isDefault: dao.isDefault,
   };
 }

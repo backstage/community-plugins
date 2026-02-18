@@ -29,11 +29,8 @@ import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
  * Default role and its permission policies from configuration.
  * When no default role is configured, both `role` and `policies` are undefined.
  */
-export type DefaultRoleAndPolicies = {
-  role: {
-    name: string;
-    memberReferences: string[];
-  };
+export type DefaultPermissions = {
+  roleEntityRef: string;
   policies: RoleBasedPolicy[];
 };
 
@@ -45,11 +42,13 @@ export function buildDefaultRoleMetadata(
 ): RoleMetadataDao {
   return {
     roleEntityRef: defaultRoleRef,
+    author: ADMIN_ROLE_AUTHOR,
     source: 'configuration',
     isDefault: true,
     description: DEFAULT_ROLE_DESCRIPTION,
     modifiedBy: ADMIN_ROLE_AUTHOR,
     lastModified: new Date().toUTCString(),
+    createdAt: new Date().toUTCString(),
   };
 }
 
@@ -73,17 +72,17 @@ async function ensureNoPoliciesForDefaultRole(
 export async function getDefaultRoleAndPolicies(
   config: Config,
   enforcerDelegate: EnforcerDelegate,
-): Promise<DefaultRoleAndPolicies | undefined> {
-  const defaultRoleRef = config.getOptionalString(
+): Promise<DefaultPermissions | undefined> {
+  const roleEntityRef = config.getOptionalString(
     'permission.rbac.defaultPermissions.defaultRole',
   );
-  if (defaultRoleRef === '') {
+  if (roleEntityRef === '') {
     throw new Error(
       'Ignoring default role as it is empty. Please set a valid default role in the configuration.',
     );
   }
 
-  if (!defaultRoleRef) {
+  if (!roleEntityRef) {
     return undefined;
   }
 
@@ -92,11 +91,11 @@ export async function getDefaultRoleAndPolicies(
   );
   if (!basicPermissions || basicPermissions.length === 0) {
     throw new Error(
-      `The default role '${defaultRoleRef}' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.`,
+      `The default role '${roleEntityRef}' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.`,
     );
   }
 
-  await ensureNoPoliciesForDefaultRole(defaultRoleRef, enforcerDelegate);
+  await ensureNoPoliciesForDefaultRole(roleEntityRef, enforcerDelegate);
 
   const policies: RoleBasedPolicy[] = basicPermissions.map(permission => {
     const permissionName = permission.getString('permission');
@@ -116,17 +115,14 @@ export async function getDefaultRoleAndPolicies(
     }
 
     return {
-      entityReference: defaultRoleRef,
+      entityReference: roleEntityRef,
       permission: permissionName,
       policy: action || 'use',
       effect: effect || 'allow',
     };
   });
 
-  return {
-    role: { name: defaultRoleRef, memberReferences: [] },
-    policies,
-  };
+  return { roleEntityRef, policies };
 }
 
 export function getDefaultRoleMetadata(

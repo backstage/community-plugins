@@ -57,7 +57,7 @@ import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
 import { YamlConditinalPoliciesFileWatcher } from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { DefaultRoleAndPolicies } from '../default-permissions/default-permissions';
+import { DefaultPermissions } from '../default-permissions/default-permissions';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
@@ -75,7 +75,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
     auth: AuthService,
-    defPerm?: DefaultRoleAndPolicies,
+    defPerm?: DefaultPermissions,
   ): Promise<RBACPermissionPolicy> {
     const superUserList: string[] = [];
     const adminUsers = configApi.getOptionalConfigArray(
@@ -177,11 +177,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
     superUserList?: string[],
-    defPerm?: DefaultRoleAndPolicies,
+    defPerm?: DefaultPermissions,
   ) {
     this.superUserList = superUserList;
     this.preferPermissionPolicy = preferPermissionPolicy;
-    this.defaultRole = defPerm?.role.name;
+    this.defaultRole = defPerm?.roleEntityRef;
     this.defaultPermissions = defPerm?.policies || [];
   }
 

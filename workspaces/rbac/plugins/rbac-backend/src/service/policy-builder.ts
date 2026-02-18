@@ -238,7 +238,6 @@ export class PolicyBuilder {
       roleMetadataStorage,
       extraPluginsIdStorage,
       extendablePluginIdProvider,
-      defaultRoleAndPolicies?.role,
       defaultRoleAndPolicies?.policies,
       rbacProviders,
     );

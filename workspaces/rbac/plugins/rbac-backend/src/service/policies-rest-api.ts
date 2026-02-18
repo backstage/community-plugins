@@ -143,7 +143,6 @@ export class PoliciesServer {
     private readonly roleMetadata: RoleMetadataStorage,
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly pluginIdProvider: ExtendablePluginIdProvider,
-    private readonly defaultRole: Role | undefined,
     private readonly defaultPolicies: RoleBasedPolicy[] = [],
     private readonly rbacProviders?: RBACProvider[],
   ) {}
@@ -152,6 +151,16 @@ export class PoliciesServer {
     const router = await createRouter(this.options);
 
     const { logger, auditor, auth, permissionsRegistry } = this.options;
+
+    const defRoleMeta = this.roleMetadata.getDefaultRoleMetadata();
+    let defRole: Role | undefined;
+    if (defRoleMeta) {
+      defRole = {
+        name: defRoleMeta.roleEntityRef,
+        memberReferences: [],
+        metadata: daoToMetadata(defRoleMeta),
+      };
+    }
 
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
@@ -218,7 +227,9 @@ export class PoliciesServer {
         }
 
         const body = await this.transformPolicyArray(...policies);
-        body.push(...this.defaultPolicies);
+        if (this.defaultPolicies.length > 0) {
+          body.push(...this.defaultPolicies);
+        }
         // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
         body.map(policy => {
           if (
@@ -260,9 +271,7 @@ export class PoliciesServer {
 
         const entityRef = this.getEntityReference(request);
 
-        const isDefaultRole =
-          this.defaultRole && entityRef === this.defaultRole.name;
-        if (isDefaultRole) {
+        if (this.defaultPolicies.length > 0) {
           response.json(this.defaultPolicies);
           return;
         }
@@ -474,13 +483,8 @@ export class PoliciesServer {
         const roles = await this.enforcer.getGroupingPolicy();
         const body = await this.transformRoleArray(conditionsFilter, ...roles);
 
-        if (this.defaultRole) {
-          const defRoleMeta = this.roleMetadata.getDefaultRoleMetadata();
-          const roleWithMeta: Role = {
-            ...this.defaultRole,
-            metadata: defRoleMeta,
-          };
-          body.push(roleWithMeta);
+        if (defRole) {
+          body.push(defRole);
         }
 
         response.json(body);
@@ -505,13 +509,8 @@ export class PoliciesServer {
         const roleEntityRef = this.getEntityReference(request, true);
 
         let body: Role[];
-        if (this.defaultRole && roleEntityRef === this.defaultRole.name) {
-          const defRoleMeta = this.roleMetadata.getDefaultRoleMetadata();
-          const roleWithMeta: Role = {
-            ...this.defaultRole,
-            metadata: defRoleMeta,
-          };
-          body = [roleWithMeta];
+        if (defRole && roleEntityRef === defRole.name) {
+          body = [defRole];
         } else {
           const role = await this.enforcer.getFilteredGroupingPolicy(
             1,
