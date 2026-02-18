@@ -51,7 +51,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/types": "backstage:^",
-    "@backstage/ui": "^0.10.0",
+    "@backstage/ui": "backstage:^",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
