@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
+import { GoogleGenAI } from '@google/genai';
 import { GeminiProvider } from './gemini-provider';
-import { ProviderConfig, ChatMessage, Tool } from '../types';
-import {
-  GoogleGenerativeAI,
-  GenerativeModel,
-  GenerateContentResult,
-} from '@google/generative-ai';
+import { ChatMessage, ProviderConfig, Tool } from '../types';
 
-// Mock the Google Generative AI library
-jest.mock('@google/generative-ai');
+jest.mock('@google/genai');
 
-const MockGoogleGenerativeAI = GoogleGenerativeAI as jest.MockedClass<
-  typeof GoogleGenerativeAI
->;
+const MockGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
 
 describe('GeminiProvider', () => {
   let provider: GeminiProvider;
-  let mockGenAI: jest.Mocked<GoogleGenerativeAI>;
-  let mockModel: jest.Mocked<GenerativeModel>;
+  let mockGenerateContent: jest.Mock;
 
   const config: ProviderConfig = {
     type: 'gemini',
@@ -44,36 +36,22 @@ describe('GeminiProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockModel = {
-      generateContent: jest.fn(),
-      safetySettings: [],
-    } as any;
-
-    mockGenAI = {
-      getGenerativeModel: jest.fn().mockReturnValue(mockModel),
-    } as any;
-
-    MockGoogleGenerativeAI.mockImplementation(() => mockGenAI);
+    mockGenerateContent = jest.fn();
+    MockGoogleGenAI.mockImplementation(
+      () =>
+        ({
+          models: {
+            generateContent: mockGenerateContent,
+          },
+        } as any),
+    );
 
     provider = new GeminiProvider(config);
   });
 
   describe('constructor', () => {
     it('should initialize with valid config', () => {
-      expect(MockGoogleGenerativeAI).toHaveBeenCalledWith('test-api-key');
-      expect(mockGenAI.getGenerativeModel).toHaveBeenCalledWith({
-        model: 'gemini-pro',
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 8192,
-        },
-        safetySettings: expect.arrayContaining([
-          expect.objectContaining({
-            category: expect.any(String),
-            threshold: expect.any(String),
-          }),
-        ]),
-      });
+      expect(MockGoogleGenAI).toHaveBeenCalledWith({ apiKey: 'test-api-key' });
     });
 
     it('should throw error when API key is missing', () => {
@@ -91,34 +69,36 @@ describe('GeminiProvider', () => {
         { role: 'user', content: 'Hello, how are you?' },
       ];
 
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: 'I am doing well, thank you!' }],
-              },
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'I am doing well, thank you!' }],
             },
-          ],
-          usageMetadata: {
-            promptTokenCount: 10,
-            candidatesTokenCount: 15,
-            totalTokenCount: 25,
           },
+        ],
+        usageMetadata: {
+          promptTokenCount: 10,
+          candidatesTokenCount: 15,
+          totalTokenCount: 25,
         },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+      });
 
       const result = await provider.sendMessage(messages);
 
-      expect(mockModel.generateContent).toHaveBeenCalledWith({
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
         contents: [
           {
             role: 'user',
             parts: [{ text: 'Hello, how are you?' }],
           },
         ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+        }),
       });
 
       expect(result).toEqual({
@@ -145,30 +125,27 @@ describe('GeminiProvider', () => {
         { role: 'user', content: 'Hello!' },
       ];
 
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: 'Hello! How can I help you?' }],
-              },
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Hello! How can I help you?' }],
             },
-          ],
-        },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+          },
+        ],
+      });
 
       await provider.sendMessage(messages);
 
-      expect(mockGenAI.getGenerativeModel).toHaveBeenCalledWith({
+      expect(mockGenerateContent).toHaveBeenCalledWith({
         model: 'gemini-pro',
-        generationConfig: {
+        contents: [{ role: 'user', parts: [{ text: 'Hello!' }] }],
+        config: expect.objectContaining({
           temperature: 0.7,
           maxOutputTokens: 8192,
-        },
-        safetySettings: [],
-        systemInstruction: 'You are a helpful assistant.',
+          safetySettings: expect.any(Array),
+          systemInstruction: 'You are a helpful assistant.',
+        }),
       });
     });
 
@@ -197,57 +174,59 @@ describe('GeminiProvider', () => {
         },
       ];
 
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  { text: 'I can help you get weather information.' },
-                  {
-                    functionCall: {
-                      name: 'get_weather',
-                      args: { location: 'New York' },
-                    },
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [
+                { text: 'I can help you get weather information.' },
+                {
+                  functionCall: {
+                    name: 'get_weather',
+                    args: { location: 'New York' },
                   },
-                ],
-              },
+                },
+              ],
             },
-          ],
-        },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+          },
+        ],
+      });
 
       const result = await provider.sendMessage(messages, tools);
 
-      expect(mockGenAI.getGenerativeModel).toHaveBeenCalledWith({
+      expect(mockGenerateContent).toHaveBeenCalledWith({
         model: 'gemini-pro',
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 8192,
-        },
-        safetySettings: [],
-        tools: [
+        contents: [
           {
-            functionDeclarations: [
-              {
-                name: 'get_weather',
-                description: 'Get current weather information',
-                parameters: {
-                  type: 'object',
-                  properties: {
-                    location: {
-                      type: 'string',
-                      description: 'The city and state',
-                    },
-                  },
-                  required: ['location'],
-                },
-              },
-            ],
+            role: 'user',
+            parts: [{ text: 'What is the weather like?' }],
           },
         ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+          tools: [
+            {
+              functionDeclarations: [
+                {
+                  name: 'get_weather',
+                  description: 'Get current weather information',
+                  parameters: {
+                    type: 'object',
+                    properties: {
+                      location: {
+                        type: 'string',
+                        description: 'The city and state',
+                      },
+                    },
+                    required: ['location'],
+                  },
+                },
+              ],
+            },
+          ],
+        }),
       });
 
       expect(result.choices[0].message.tool_calls).toHaveLength(1);
@@ -279,28 +258,25 @@ describe('GeminiProvider', () => {
         },
         {
           role: 'tool',
-          content: '{"temperature": "72°F", "condition": "sunny"}',
+          content: '{"temperature":"72F","condition":"sunny"}',
           tool_call_id: 'call_123',
         },
       ];
 
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: 'The weather in New York is 72°F and sunny.' }],
-              },
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'The weather in New York is 72F and sunny.' }],
             },
-          ],
-        },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+          },
+        ],
+      });
 
       await provider.sendMessage(messages);
 
-      expect(mockModel.generateContent).toHaveBeenCalledWith({
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
         contents: [
           { role: 'user', parts: [{ text: 'What is the weather?' }] },
           {
@@ -321,12 +297,17 @@ describe('GeminiProvider', () => {
               {
                 functionResponse: {
                   name: 'get_weather',
-                  response: { temperature: '72°F', condition: 'sunny' },
+                  response: { temperature: '72F', condition: 'sunny' },
                 },
               },
             ],
           },
         ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+        }),
       });
     });
 
@@ -353,23 +334,20 @@ describe('GeminiProvider', () => {
         },
       ];
 
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: 'I understand.' }],
-              },
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'I understand.' }],
             },
-          ],
-        },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+          },
+        ],
+      });
 
       await provider.sendMessage(messages);
 
-      expect(mockModel.generateContent).toHaveBeenCalledWith({
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
         contents: [
           {
             role: 'model',
@@ -395,28 +373,28 @@ describe('GeminiProvider', () => {
             ],
           },
         ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+        }),
       });
     });
 
     it('should handle API errors', async () => {
       const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
 
-      const error = new Error('API Error');
-      mockModel.generateContent.mockRejectedValue(error);
+      mockGenerateContent.mockRejectedValue(new Error('API Error'));
 
-      await expect(provider.sendMessage(messages)).rejects.toThrow();
+      await expect(provider.sendMessage(messages)).rejects.toThrow('API Error');
     });
 
     it('should handle empty response', async () => {
       const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
 
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [],
-        },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+      mockGenerateContent.mockResolvedValue({
+        candidates: [],
+      });
 
       const result = await provider.sendMessage(messages);
 
@@ -437,19 +415,15 @@ describe('GeminiProvider', () => {
 
   describe('testConnection', () => {
     it('should return connected when API is working', async () => {
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: 'Hello' }],
-              },
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Hello' }],
             },
-          ],
-        },
-      } as any;
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+          },
+        ],
+      });
 
       const result = await provider.testConnection();
 
@@ -458,15 +432,19 @@ describe('GeminiProvider', () => {
         models: ['gemini-pro'],
       });
 
-      expect(mockModel.generateContent).toHaveBeenCalledWith({
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
         contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
-        generationConfig: { maxOutputTokens: 1 },
+        config: expect.objectContaining({
+          maxOutputTokens: 1,
+          temperature: 0.7,
+          safetySettings: expect.any(Array),
+        }),
       });
     });
 
     it('should return not connected when API throws error', async () => {
-      const error = new Error('API connection failed');
-      mockModel.generateContent.mockRejectedValue(error);
+      mockGenerateContent.mockRejectedValue(new Error('API connection failed'));
 
       const result = await provider.testConnection();
 
@@ -477,7 +455,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle non-Error exceptions', async () => {
-      mockModel.generateContent.mockRejectedValue('String error');
+      mockGenerateContent.mockRejectedValue('String error');
 
       const result = await provider.testConnection();
 
@@ -488,11 +466,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should return not connected when no response', async () => {
-      const mockResult: GenerateContentResult = {
-        response: null as any,
-      };
-
-      mockModel.generateContent.mockResolvedValue(mockResult);
+      mockGenerateContent.mockResolvedValue(null as any);
 
       const result = await provider.testConnection();
 
@@ -628,36 +602,36 @@ describe('GeminiProvider', () => {
 
       const result = (provider as any).convertToGeminiTools(tools);
 
-      expect(result).toEqual({
-        functionDeclarations: [
-          {
-            name: 'get_weather',
-            description: 'Get weather information',
-            parameters: {
-              type: 'object',
-              properties: {
-                location: { type: 'string' },
+      expect(result).toEqual([
+        {
+          functionDeclarations: [
+            {
+              name: 'get_weather',
+              description: 'Get weather information',
+              parameters: {
+                type: 'object',
+                properties: {
+                  location: { type: 'string' },
+                },
+                required: ['location'],
               },
-              required: ['location'],
             },
-          },
-        ],
-      });
+          ],
+        },
+      ]);
     });
   });
 
   describe('parseResponse', () => {
     it('should parse response with only text', () => {
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [{ text: 'Hello world' }],
-              },
+      const mockResult = {
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Hello world' }],
             },
-          ],
-        },
+          },
+        ],
       } as any;
 
       const result = (provider as any).parseResponse(mockResult);
@@ -677,24 +651,22 @@ describe('GeminiProvider', () => {
     });
 
     it('should parse response with function calls', () => {
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  { text: 'Let me check that for you.' },
-                  {
-                    functionCall: {
-                      name: 'get_weather',
-                      args: { location: 'New York' },
-                    },
+      const mockResult = {
+        candidates: [
+          {
+            content: {
+              parts: [
+                { text: 'Let me check that for you.' },
+                {
+                  functionCall: {
+                    name: 'get_weather',
+                    args: { location: 'New York' },
                   },
-                ],
-              },
+                },
+              ],
             },
-          ],
-        },
+          },
+        ],
       } as any;
 
       const result = (provider as any).parseResponse(mockResult);
@@ -713,29 +685,27 @@ describe('GeminiProvider', () => {
     });
 
     it('should generate unique IDs for tool calls', () => {
-      const mockResult: GenerateContentResult = {
-        response: {
-          candidates: [
-            {
-              content: {
-                parts: [
-                  {
-                    functionCall: {
-                      name: 'function1',
-                      args: {},
-                    },
+      const mockResult = {
+        candidates: [
+          {
+            content: {
+              parts: [
+                {
+                  functionCall: {
+                    name: 'function1',
+                    args: {},
                   },
-                  {
-                    functionCall: {
-                      name: 'function2',
-                      args: {},
-                    },
+                },
+                {
+                  functionCall: {
+                    name: 'function2',
+                    args: {},
                   },
-                ],
-              },
+                },
+              ],
             },
-          ],
-        },
+          },
+        ],
       } as any;
 
       const result = (provider as any).parseResponse(mockResult);
