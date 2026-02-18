@@ -190,7 +190,11 @@ jobs:
         if: ${{ steps.bcpPlaywrightTests.outputs.playwright_tests == 'true' }}
         run: |
           yarn playwright install --with-deps chromium chrome
-          yarn playwright test
+          if [ "${{ matrix.workspaceNodeMatrix.workspace }}" = "rbac" ]; then
+            yarn test:e2e:ci
+          else
+            yarn playwright test
+          fi
 
       - name: ensure clean working directory
         run: |

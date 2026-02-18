@@ -60,8 +60,8 @@ test.describe('RBAC plugin', () => {
     await verifyText(message, page);
     if (button === translations.roleForm.steps.save) {
       await page
-        .locator(`a`)
-        .filter({ hasText: translations.page.title })
+        .getByTestId('sidebar-root')
+        .getByRole('link', { name: translations.page.title })
         .click();
     }
   };
@@ -173,8 +173,8 @@ test.describe('RBAC plugin', () => {
     await verifyCellsInTable([policies], page);
 
     await page
-      .locator(`a`)
-      .filter({ hasText: translations.page.title })
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: translations.page.title })
       .click();
   });
 
@@ -312,8 +312,8 @@ test.describe('RBAC plugin', () => {
     );
 
     await page
-      .locator(`a`)
-      .filter({ hasText: translations.page.title })
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: translations.page.title })
       .click();
   });
 
