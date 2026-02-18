@@ -1,5 +1,13 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.19.1
+
+### Patch Changes
+
+- 2cd7e22: remove unused dependencies
+- Updated dependencies [2cd7e22]
+  - @backstage-community/plugin-lighthouse-common@0.15.1
+
 ## 0.19.0
 
 ### Minor Changes
