@@ -1,5 +1,16 @@
 # @backstage-community/plugin-servicenow
 
+## 1.8.0
+
+### Minor Changes
+
+- 5a2919f: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- Updated dependencies [5a2919f]
+  - @backstage-community/plugin-servicenow-common@1.7.0
+
 ## 1.7.0
 
 ### Minor Changes
