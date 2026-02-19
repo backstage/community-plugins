@@ -79,7 +79,10 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
       data-testid={`${app?.metadata?.name}-card`}
       key={app?.metadata?.uid}
       className={classes.card}
-      style={{ justifyContent: 'space-between' }}
+      style={{
+        cursor: onclick ? 'pointer' : 'default',
+        justifyContent: 'space-between',
+      }}
       onClick={onclick}
     >
       <CardHeader
