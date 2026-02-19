@@ -21,6 +21,7 @@ export interface ManageDynamicConfig {
 
 /** @public */
 export interface ManageStaticConfig {
+  kinds: string[];
   title: string | undefined;
   subtitle: string | undefined;
   themeId: string | undefined;
@@ -38,3 +39,13 @@ export interface ManageStaticConfig {
   widgetOrderContentBelow: string[];
   columnsOrder: string[];
 }
+
+/** @internal */
+export const defaultKinds = [
+  'System',
+  'Component',
+  'API',
+  'Template',
+  'Resource',
+  'Domain',
+];

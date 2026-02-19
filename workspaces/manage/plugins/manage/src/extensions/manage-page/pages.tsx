@@ -204,6 +204,7 @@ export const managePage = PageBlueprint.makeWithOverrides({
 
         return compatWrapper(
           <ManagePageNew
+            kinds={staticConfig.kinds}
             providers={providers}
             combined={staticConfig.combined}
             showCombined={staticConfig.showCombined}
