@@ -241,11 +241,11 @@ describe('publish:azure', () => {
   it('should output pipelineRunStatus if available', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
-      result: 'InProgress',
+      result: '1',
     }));
     mockPipelineClient.getRun.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
-      result: 'InProgress',
+      result: '1',
     }));
 
     await action.handler({
@@ -264,7 +264,7 @@ describe('publish:azure', () => {
     );
     expect(mockContext.output).toHaveBeenCalledWith(
       'pipelineRunStatus',
-      'InProgress',
+      'Succeeded',
     );
   });
 

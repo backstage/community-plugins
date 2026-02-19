@@ -212,7 +212,11 @@ export function createAzureDevopsRunPipelineAction(options: {
       // Log the pipeline run result if available
       if (pipelineRun.result) {
         ctx.logger.info(
-          `Pipeline run result: ${pipelineRun.result.toString()}`,
+          `Pipeline run result: ${
+            pipelineRun.result
+              ? RunResult[pipelineRun.result]
+              : RunResult.Unknown
+          }`,
         );
       }
 
@@ -227,7 +231,10 @@ export function createAzureDevopsRunPipelineAction(options: {
 
       ctx.output('pipelineRunUrl', pipelineRun._links.web.href);
       ctx.output('pipelineRunId', pipelineRun.id!);
-      ctx.output('pipelineRunStatus', pipelineRun.result?.toString());
+      ctx.output(
+        'pipelineRunStatus',
+        pipelineRun.result ? RunResult[pipelineRun.result] : RunResult.Unknown,
+      );
       ctx.output('pipelineTimeoutExceeded', timeoutExceeded);
       ctx.output('pipelineOutput', pipelineRun.variables);
     },
