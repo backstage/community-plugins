@@ -51,6 +51,7 @@
     "@types/parse-github-url": "^1",
     "msw": "^2.6.0"
   },
+  "configSchema": "config.d.ts",
   "files": [
     "dist",
     "config.d.ts"
