@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { FC, ReactElement } from 'react';
+import type { FC } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
@@ -69,7 +69,7 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
 }) => {
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
-  const latestRevision = appHistory[appHistory.length - 1];
+  const latestRevision = appHistory.at(-1);
   const classes = useCardStyles();
   const { entity } = useEntity();
   const { t } = useTranslation();
@@ -97,57 +97,51 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
 
       <CardContent>
         <Metadata direction={{ sm: 'column' }} gap={{ sm: 'gapMd' }}>
-          {[
-            showInstance && (
-              <MetadataItem
-                key="instance"
-                title={t(
-                  'deploymentLifecycle.deploymentLifecycleCard.instance',
-                )}
-              >
-                {appName}
-              </MetadataItem>
-            ),
-            showServer && (
-              <MetadataItem
-                key="server"
-                title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
-              >
-                <AppServerLink application={app} />
-              </MetadataItem>
-            ),
+          {showInstance && (
             <MetadataItem
-              key="namespace"
-              title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}
+              key="instance"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
             >
-              <AppNamespace app={app} />
-            </MetadataItem>,
-            !isAppHelmChartType(app) && (
-              <MetadataItemWithTooltip
-                key="commit"
-                title={t('deploymentLifecycle.deploymentLifecycleCard.commit')}
-                tooltipText={t(
-                  'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
-                )}
-              >
-                <AppCommitLink
-                  application={app}
-                  entity={entity}
-                  revisions={revisions}
-                  latestRevision={latestRevision}
-                />
-              </MetadataItemWithTooltip>
-            ),
+              {appName}
+            </MetadataItem>
+          )}
+          {showServer && (
             <MetadataItem
-              key="resources"
-              title={t('deploymentLifecycle.deploymentLifecycleCard.resources')}
+              key="server"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
             >
-              {app.status.resources?.length ?? 0}{' '}
-              {t(
-                'deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed',
+              <AppServerLink application={app} />
+            </MetadataItem>
+          )}
+          <MetadataItem
+            key="namespace"
+            title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}
+          >
+            <AppNamespace app={app} />
+          </MetadataItem>
+          {!isAppHelmChartType(app) && latestRevision && (
+            <MetadataItemWithTooltip
+              key="commit"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.commit')}
+              tooltipText={t(
+                'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
               )}
-            </MetadataItem>,
-          ].filter((item): item is ReactElement => Boolean(item))}
+            >
+              <AppCommitLink
+                application={app}
+                entity={entity}
+                revisions={revisions}
+                latestRevision={latestRevision}
+              />
+            </MetadataItemWithTooltip>
+          )}
+          <MetadataItem
+            key="resources"
+            title={t('deploymentLifecycle.deploymentLifecycleCard.resources')}
+          >
+            {app.status.resources?.length ?? 0}{' '}
+            {t('deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed')}
+          </MetadataItem>
         </Metadata>
       </CardContent>
     </Card>
