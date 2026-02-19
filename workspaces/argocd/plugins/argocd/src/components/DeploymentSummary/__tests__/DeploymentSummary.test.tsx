@@ -374,8 +374,8 @@ describe('DeploymentSummary', () => {
     });
   });
 
-  test('should hide instance column when hideInstance prop is true', async () => {
-    await renderInTestApp(<DeploymentSummary hideInstance />);
+  test('should hide instance column when showInstance prop is false', async () => {
+    await renderInTestApp(<DeploymentSummary showInstance={false} />);
 
     await waitFor(() => {
       expect(screen.queryByText('Instance')).not.toBeInTheDocument();
@@ -383,8 +383,8 @@ describe('DeploymentSummary', () => {
     });
   });
 
-  test('should hide server column when hideServer prop is true', async () => {
-    await renderInTestApp(<DeploymentSummary hideServer />);
+  test('should hide server column when showServer prop is false', async () => {
+    await renderInTestApp(<DeploymentSummary showServer={false} />);
 
     await waitFor(() => {
       expect(screen.queryByText('Instance')).toBeInTheDocument();
@@ -392,8 +392,10 @@ describe('DeploymentSummary', () => {
     });
   });
 
-  test('should hide both instance and server columns when both props are true', async () => {
-    await renderInTestApp(<DeploymentSummary hideInstance hideServer />);
+  test('should hide both instance and server columns when both props are false', async () => {
+    await renderInTestApp(
+      <DeploymentSummary showInstance={false} showServer={false} />,
+    );
 
     await waitFor(() => {
       expect(screen.queryByText('Instance')).not.toBeInTheDocument();

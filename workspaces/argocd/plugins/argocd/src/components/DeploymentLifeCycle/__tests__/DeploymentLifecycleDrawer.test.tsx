@@ -223,9 +223,13 @@ describe('DeploymentLifecycleDrawer', () => {
     screen.getByText('https://remote-url.com');
   });
 
-  test('should hide instance when hideInstance prop is true', () => {
+  test('should hide instance when showInstance prop is false', () => {
     render(
-      <DeploymentLifecycleDrawer isOpen onClose={jest.fn()} hideInstance />,
+      <DeploymentLifecycleDrawer
+        isOpen
+        onClose={jest.fn()}
+        showInstance={false}
+      />,
       { wrapper },
     );
 
@@ -233,9 +237,13 @@ describe('DeploymentLifecycleDrawer', () => {
     expect(screen.getByText('Cluster')).toBeInTheDocument();
   });
 
-  test('should hide cluster when hideServer prop is true', () => {
+  test('should hide cluster when showServer prop is false', () => {
     render(
-      <DeploymentLifecycleDrawer isOpen onClose={jest.fn()} hideServer />,
+      <DeploymentLifecycleDrawer
+        isOpen
+        onClose={jest.fn()}
+        showServer={false}
+      />,
       { wrapper },
     );
 
@@ -243,13 +251,13 @@ describe('DeploymentLifecycleDrawer', () => {
     expect(screen.queryByText('Cluster')).not.toBeInTheDocument();
   });
 
-  test('should hide both instance and cluster when both props are true', () => {
+  test('should hide both instance and cluster when both props are false', () => {
     render(
       <DeploymentLifecycleDrawer
         isOpen
         onClose={jest.fn()}
-        hideInstance
-        hideServer
+        showInstance={false}
+        showServer={false}
       />,
       { wrapper },
     );

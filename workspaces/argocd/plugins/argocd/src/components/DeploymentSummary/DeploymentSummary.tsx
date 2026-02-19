@@ -41,13 +41,13 @@ import AppHealthStatus from '../AppStatus/AppHealthStatus';
 import { useTranslation } from '../../hooks/useTranslation';
 
 export interface DeploymentSummaryProps {
-  hideInstance?: boolean;
-  hideServer?: boolean;
+  showInstance?: boolean;
+  showServer?: boolean;
 }
 
 const DeploymentSummary = ({
-  hideInstance = false,
-  hideServer = false,
+  showInstance = true,
+  showServer = true,
 }: DeploymentSummaryProps) => {
   const { entity } = useEntity();
 
@@ -211,8 +211,8 @@ const DeploymentSummary = ({
   ];
 
   const visibleColumns = columns.filter(col => {
-    if (hideInstance && col.field === 'instance') return false;
-    if (hideServer && col.field === 'server') return false;
+    if (!showInstance && col.field === 'instance') return false;
+    if (!showServer && col.field === 'server') return false;
     return true;
   });
 

@@ -2,18 +2,18 @@
 '@backstage-community/plugin-argocd': minor
 ---
 
-Add `hideInstance` and `hideServer` props to deployment components
+Add `showInstance` and `showServer` props to deployment components
 
-Adds optional props to `ArgocdDeploymentSummary` and `ArgocdDeploymentLifecycle` components to allow hiding Instance and Server columns/fields:
+Adds optional props to `ArgocdDeploymentSummary` and `ArgocdDeploymentLifecycle` components to control visibility of Instance and Server columns/fields:
 
-- `hideInstance?: boolean` - Hide Instance column/field (default: false)
-- `hideServer?: boolean` - Hide Server column/field (default: false)
+- `showInstance?: boolean` - Show Instance column/field (default: true)
+- `showServer?: boolean` - Show Server column/field (default: true)
 
 **Example usage:**
 
 ```tsx
-<ArgocdDeploymentSummary hideInstance hideServer />
-<ArgocdDeploymentLifecycle hideInstance hideServer />
+<ArgocdDeploymentSummary showInstance={false} showServer={false} />
+<ArgocdDeploymentLifecycle showInstance={false} showServer={false} />
 ```
 
 This is useful when you have a single ArgoCD instance and want to declutter the UI by hiding redundant information.

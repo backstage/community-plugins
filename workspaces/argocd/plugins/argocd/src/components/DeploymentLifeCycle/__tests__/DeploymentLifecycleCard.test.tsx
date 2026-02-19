@@ -182,12 +182,12 @@ test('application card should not contain commit section for helm based applicat
   expect(commitLink).not.toBeInTheDocument();
 });
 
-test('should hide instance when hideInstance prop is true', () => {
+test('should hide instance when showInstance prop is false', () => {
   render(
     <DeploymentLifecycleCard
       app={mockApplication}
       revisions={[]}
-      hideInstance
+      showInstance={false}
     />,
   );
 
@@ -195,22 +195,26 @@ test('should hide instance when hideInstance prop is true', () => {
   expect(screen.getByText('Server')).toBeInTheDocument();
 });
 
-test('should hide server when hideServer prop is true', () => {
+test('should hide server when showServer prop is false', () => {
   render(
-    <DeploymentLifecycleCard app={mockApplication} revisions={[]} hideServer />,
+    <DeploymentLifecycleCard
+      app={mockApplication}
+      revisions={[]}
+      showServer={false}
+    />,
   );
 
   expect(screen.getByText('Instance')).toBeInTheDocument();
   expect(screen.queryByText('Server')).not.toBeInTheDocument();
 });
 
-test('should hide both instance and server when both props are true', () => {
+test('should hide both instance and server when both props are false', () => {
   render(
     <DeploymentLifecycleCard
       app={mockApplication}
       revisions={[]}
-      hideInstance
-      hideServer
+      showInstance={false}
+      showServer={false}
     />,
   );
 

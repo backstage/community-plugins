@@ -45,8 +45,8 @@ import { useTranslation } from '../../hooks/useTranslation';
 interface DeploymentLifecycleDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  hideInstance?: boolean;
-  hideServer?: boolean;
+  showInstance?: boolean;
+  showServer?: boolean;
 }
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
@@ -73,8 +73,8 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
 const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
   isOpen,
   onClose,
-  hideInstance = false,
-  hideServer = false,
+  showInstance = true,
+  showServer = true,
 }) => {
   const {
     application: app,
@@ -130,7 +130,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
           <Grid item xs={12}>
             <Metadata>
               {[
-                !hideInstance && (
+                showInstance && (
                   <MetadataItem
                     key="instance"
                     title={t(
@@ -143,7 +143,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                       )}
                   </MetadataItem>
                 ),
-                !hideServer && (
+                showServer && (
                   <MetadataItem
                     key="cluster"
                     title={t(
