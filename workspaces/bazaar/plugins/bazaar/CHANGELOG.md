@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bazaar
 
+## 0.19.1
+
+### Patch Changes
+
+- 350db52: Make the project search case insensitive
+
 ## 0.19.0
 
 ### Minor Changes
