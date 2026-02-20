@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-github-discussions
 
+## 0.9.1
+
+### Patch Changes
+
+- 73eecd4: Added configSchema field to package.json to expose the plugin's configuration schema
+
 ## 0.9.0
 
 ### Minor Changes
