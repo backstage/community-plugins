@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer-backend
 
+## 0.2.3
+
+### Patch Changes
+
+- af998b7: Updated dependency `supertest` to `7.2.2`.
+
 ## 0.2.2
 
 ### Patch Changes
