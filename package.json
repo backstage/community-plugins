@@ -9,7 +9,7 @@
   "scripts": {
     "changeset": "echo 'Error: Please run yarn changeset from a workspace directory, not the root.' && exit 1",
     "create-workspace": "community-cli workspace create",
-    "mui-to-bui": "node scripts/mui-to-bui/community-plugins-migration-analytics.cjs",
+    "mui-to-bui": "node scripts/mui-to-bui.js",
     "postinstall": "husky",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write ."

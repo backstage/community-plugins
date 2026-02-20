@@ -15,6 +15,10 @@ The Compatibility folder contains the following items:
 - [New Backend System](./compatibility/new-backend-system.md) - This contains a table of backend plugins and modules and their support for the new backend system
 - [New Frontend System](./compatibility/new-frontend-system.md) - This contains a table of frontend plugins and their support for the new frontend system
 
+## Migration
+
+- [MUI to Backstage UI Migration](./mui-to-bui-migration.md) - Documentation and analytics tool for tracking the migration from Material-UI to `@backstage/ui` components across all workspace plugins
+
 ## Workspaces and Their Plugins
 
 | workspace                            | owner                                                                                                                                                                                                                                                                                                    | package                                                                             | role                   | readme                                                                                                                                                                               |

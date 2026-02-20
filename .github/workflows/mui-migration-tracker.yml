@@ -35,7 +35,7 @@ jobs:
         id: analysis
         run: |
           # Run the migration script and save markdown output
-          node scripts/mui-to-bui/community-plugins-migration-analytics.cjs --markdown > migration-report.md
+          node scripts/mui-to-bui.js --markdown > migration-report.md
 
           # Read the report into an environment variable (escape for GitHub Actions)
           echo "REPORT<<EOF" >> $GITHUB_ENV
