@@ -1,5 +1,13 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.27.0
+
+### Minor Changes
+
+- 516a7f1: **BREAKING** Backstage UI (BUI) is now required for the Azure DevOps plugin to function
+
+  Initial Migration to Backstage UI (BUI) including Azure Pipelines, Azure Repos, Azure Repos Git Tags, and Azure Readme
+
 ## 0.26.0
 
 ### Minor Changes
