@@ -20,6 +20,7 @@ import {
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
 import { AnnotateScmSlugEntityProcessor } from './processor/AnnotateScmSlugEntityProcessor';
 
+/** @public */
 export const catalogModuleAnnotateScmSlug = createBackendModule({
   pluginId: 'catalog',
   moduleId: 'annotate-scm-slug',
