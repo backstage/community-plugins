@@ -32,8 +32,8 @@
     "dist/**/*.js"
   ],
   "dependencies": {
-    "@backstage/cli": "^0.32.0",
-    "@backstage/cli-node": "^0.2.13",
+    "@backstage/cli": "^0.35.4",
+    "@backstage/cli-node": "^0.2.18",
     "@backstage/errors": "^1.2.7",
     "@manypkg/get-packages": "^2.2.1",
     "chalk": "^4.1.2",
