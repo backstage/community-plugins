@@ -30,6 +30,8 @@ export interface ReadHostsResult {
 export function readHosts(configApi: ConfigApi): ReadHostsResult {
   const hostsConfig: GrafanaHost[] =
     configApi.getOptional('grafana.hosts') ?? [];
+  // Legacy config keys (backward compatibility); see config.d.ts @deprecated
+  /* eslint-disable deprecation/deprecation */
   const domain = configApi.getOptionalString('grafana.domain');
 
   if (!domain && hostsConfig.length === 0) {
@@ -48,6 +50,7 @@ export function readHosts(configApi: ConfigApi): ReadHostsResult {
       unifiedAlerting: configApi.getOptionalBoolean('grafana.unifiedAlerting'),
     });
   } else if (domain && hostsConfig.length > 0) {
+    /* eslint-enable deprecation/deprecation */
     // eslint-disable-next-line no-console
     console.warn(
       'Both `grafana.domain` and `grafana.hosts` are defined in app-config.yaml. ' +
