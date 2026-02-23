@@ -17,12 +17,17 @@
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { GrafanaHost } from './types';
 
+export interface ReadHostsResult {
+  hosts: GrafanaHost[];
+  defaultHostId?: string;
+}
+
 /**
  * Reads and validates Grafana host configurations from the app config.
  * Supports both the legacy single-instance `grafana.domain` config
  * and the multi-instance `grafana.hosts` array config.
  */
-export function readHosts(configApi: ConfigApi): GrafanaHost[] {
+export function readHosts(configApi: ConfigApi): ReadHostsResult {
   const hostsConfig: GrafanaHost[] =
     configApi.getOptional('grafana.hosts') ?? [];
   const domain = configApi.getOptionalString('grafana.domain');
@@ -67,5 +72,16 @@ export function readHosts(configApi: ConfigApi): GrafanaHost[] {
     }
   }
 
-  return hostsConfig;
+  const defaultHostId = configApi.getOptionalString('grafana.defaultHost');
+  if (defaultHostId) {
+    const hostIds = new Set(hostsConfig.map(h => h.id));
+    if (!hostIds.has(defaultHostId)) {
+      throw new Error(
+        `\`grafana.defaultHost\` is set to "${defaultHostId}" but no host with that id exists in \`grafana.hosts\`. ` +
+          `Available host ids: ${Array.from(hostIds).join(', ')}`,
+      );
+    }
+  }
+
+  return { hosts: hostsConfig, defaultHostId };
 }

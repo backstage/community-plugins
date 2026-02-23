@@ -20,18 +20,21 @@ export interface Config {
      * Domain used by users to access Grafana web UI.
      * Example: https://monitoring.eu.my-company.com/
      * Either `domain` or `hosts` must be defined.
+     * @deprecated Use `grafana.hosts[].domain` in `grafana.hosts` instead.
      * @visibility frontend
      */
     domain?: string;
 
     /**
      * Path to use for requests via the proxy, defaults to /grafana/api
+     * @deprecated Use `grafana.hosts[].proxyPath` in `grafana.hosts` instead.
      * @visibility frontend
      */
     proxyPath?: string;
 
     /**
      * Is Grafana using unified alerting?
+     * @deprecated Use `grafana.hosts[].unifiedAlerting` in `grafana.hosts` instead.
      * @visibility frontend
      */
     unifiedAlerting?: boolean;
@@ -49,6 +52,14 @@ export interface Config {
      * @visibility frontend
      */
     grafanaDashboardMaxPages?: number;
+
+    /**
+     * Default host id for entities that do not have the `grafana/host-id` annotation.
+     * Must match one of the `id` values in `grafana.hosts`.
+     * When not set, the first host in `hosts` is used (or the legacy `default` host).
+     * @visibility frontend
+     */
+    defaultHost?: string;
 
     /**
      * List of Grafana instances to connect to.

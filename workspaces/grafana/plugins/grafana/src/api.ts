@@ -120,6 +120,12 @@ export type GrafanaApiClientOptions = {
   hosts: GrafanaHost[];
 
   /**
+   * Default host id for entities without `grafana/host-id` annotation.
+   * Must match one of the host ids in `hosts`.
+   */
+  defaultHostId?: string;
+
+  /**
    * @deprecated Limit value to pass in Grafana Dashboard search query.
    */
   grafanaDashboardSearchLimit?: number;
@@ -288,19 +294,21 @@ function initClients(opts: GrafanaApiClientOptions): Map<string, ClientHost> {
  */
 export class GrafanaApiClient implements GrafanaApi {
   private readonly clients: Map<string, ClientHost>;
+  private readonly defaultHostId?: string;
 
   constructor(opts: GrafanaApiClientOptions) {
     this.clients = initClients(opts);
+    this.defaultHostId = opts.defaultHostId;
   }
 
   private resolveClientHost(hostId?: string): ClientHost {
-    const id = hostId || 'default';
-    const clientHost = this.clients.get(id);
+    const effectiveId = hostId ?? this.defaultHostId ?? 'default';
+    const clientHost = this.clients.get(effectiveId);
     if (clientHost) {
       return clientHost;
     }
 
-    // If no exact match and no hostId was specified, fall back to first host
+    // If no hostId was specified, fall back to first host
     if (!hostId) {
       const first = this.clients.values().next();
       if (!first.done) {
@@ -310,7 +318,7 @@ export class GrafanaApiClient implements GrafanaApi {
 
     const available = Array.from(this.clients.keys()).join(', ');
     throw new Error(
-      `Grafana instance "${id}" not found. Available instances: ${available}`,
+      `Grafana instance "${effectiveId}" not found. Available instances: ${available}`,
     );
   }
 

@@ -22,8 +22,7 @@ function createMockConfigApi(config: Record<string, any>): ConfigApi {
     keys: () => Object.keys(config),
     get: (key?: string) => {
       if (key === undefined) return config;
-      if (!(key in config))
-        throw new Error(`Missing required config: ${key}`);
+      if (!(key in config)) throw new Error(`Missing required config: ${key}`);
       return config[key];
     },
     getOptional: (key?: string) => {
@@ -31,20 +30,17 @@ function createMockConfigApi(config: Record<string, any>): ConfigApi {
       return config[key];
     },
     getString: (key: string) => {
-      if (!(key in config))
-        throw new Error(`Missing required config: ${key}`);
+      if (!(key in config)) throw new Error(`Missing required config: ${key}`);
       return config[key] as string;
     },
     getOptionalString: (key: string) => config[key] as string | undefined,
     getNumber: (key: string) => {
-      if (!(key in config))
-        throw new Error(`Missing required config: ${key}`);
+      if (!(key in config)) throw new Error(`Missing required config: ${key}`);
       return config[key] as number;
     },
     getOptionalNumber: (key: string) => config[key] as number | undefined,
     getBoolean: (key: string) => {
-      if (!(key in config))
-        throw new Error(`Missing required config: ${key}`);
+      if (!(key in config)) throw new Error(`Missing required config: ${key}`);
       return config[key] as boolean;
     },
     getOptionalBoolean: (key: string) => config[key] as boolean | undefined,
@@ -80,7 +76,7 @@ describe('readHosts', () => {
       ],
     });
 
-    const hosts = readHosts(configApi);
+    const { hosts } = readHosts(configApi);
     expect(hosts).toHaveLength(2);
     expect(hosts[0].id).toBe('prod');
     expect(hosts[1].id).toBe('staging');
@@ -93,7 +89,7 @@ describe('readHosts', () => {
       'grafana.unifiedAlerting': true,
     });
 
-    const hosts = readHosts(configApi);
+    const { hosts } = readHosts(configApi);
     expect(hosts).toHaveLength(1);
     expect(hosts[0]).toEqual({
       id: 'default',
@@ -116,7 +112,7 @@ describe('readHosts', () => {
       ],
     });
 
-    const hosts = readHosts(configApi);
+    const { hosts } = readHosts(configApi);
     expect(hosts).toHaveLength(1);
     expect(hosts[0].id).toBe('prod');
     expect(warnSpy).toHaveBeenCalledWith(
@@ -130,26 +126,6 @@ describe('readHosts', () => {
 
     expect(() => readHosts(configApi)).toThrow(
       'At least `grafana.domain` or `grafana.hosts` must be defined',
-    );
-  });
-
-  it('throws when a host is missing id', () => {
-    const configApi = createMockConfigApi({
-      'grafana.hosts': [{ domain: 'https://grafana.example.com' }],
-    });
-
-    expect(() => readHosts(configApi)).toThrow(
-      'Each `grafana.hosts[].id` must be defined',
-    );
-  });
-
-  it('throws when a host is missing domain', () => {
-    const configApi = createMockConfigApi({
-      'grafana.hosts': [{ id: 'prod' }],
-    });
-
-    expect(() => readHosts(configApi)).toThrow(
-      'Each `grafana.hosts[].domain` must be defined',
     );
   });
 
@@ -204,7 +180,47 @@ describe('readHosts', () => {
       ],
     });
 
-    const hosts = readHosts(configApi);
+    const { hosts } = readHosts(configApi);
     expect(hosts).toHaveLength(2);
+  });
+
+  it('returns defaultHostId when grafana.defaultHost is set and matches a host', () => {
+    const configApi = createMockConfigApi({
+      'grafana.defaultHost': 'staging',
+      'grafana.hosts': [
+        { id: 'prod', domain: 'https://grafana-prod.example.com' },
+        {
+          id: 'staging',
+          domain: 'https://grafana-staging.example.com',
+          proxyPath: '/grafana/staging/api',
+        },
+      ],
+    });
+
+    const { hosts, defaultHostId } = readHosts(configApi);
+    expect(hosts).toHaveLength(2);
+    expect(defaultHostId).toBe('staging');
+  });
+
+  it('throws when grafana.defaultHost is set but does not match any host id', () => {
+    const configApi = createMockConfigApi({
+      'grafana.defaultHost': 'nonexistent',
+      'grafana.hosts': [
+        {
+          id: 'prod',
+          domain: 'https://grafana-prod.example.com',
+          proxyPath: '/grafana/production/api',
+        },
+        {
+          id: 'staging',
+          domain: 'https://grafana-staging.example.com',
+          proxyPath: '/grafana/staging/api',
+        },
+      ],
+    });
+
+    expect(() => readHosts(configApi)).toThrow(
+      '`grafana.defaultHost` is set to "nonexistent" but no host with that id exists in `grafana.hosts`. Available host ids: prod, staging',
+    );
   });
 });

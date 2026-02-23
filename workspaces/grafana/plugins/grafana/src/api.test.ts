@@ -108,7 +108,7 @@ describe('GrafanaApiClient', () => {
       expect(client.isUnifiedAlerting()).toBe(true);
     });
 
-    it('falls back to first host when no default and no hostId', () => {
+    it('falls back to first host when no defaultHostId and no hostId', () => {
       const client = new GrafanaApiClient({
         discoveryApi: mockDiscoveryApi,
         fetchApi: mockFetchApi,
@@ -121,8 +121,31 @@ describe('GrafanaApiClient', () => {
         ],
       });
 
-      // No hostId, no 'default' host, should fall back to first
+      // No hostId, no defaultHostId, should fall back to first
       expect(client.isUnifiedAlerting()).toBe(true);
+    });
+
+    it('uses defaultHostId when no hostId is provided', () => {
+      const client = new GrafanaApiClient({
+        discoveryApi: mockDiscoveryApi,
+        fetchApi: mockFetchApi,
+        defaultHostId: 'staging',
+        hosts: [
+          {
+            id: 'prod',
+            domain: 'https://grafana-prod.example.com',
+            unifiedAlerting: true,
+          },
+          {
+            id: 'staging',
+            domain: 'https://grafana-staging.example.com',
+            unifiedAlerting: false,
+          },
+        ],
+      });
+
+      // No hostId provided: should use defaultHostId (staging), not first (prod)
+      expect(client.isUnifiedAlerting()).toBe(false);
     });
 
     it('throws when hostId does not match any host', () => {
