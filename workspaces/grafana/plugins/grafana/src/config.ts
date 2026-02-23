@@ -33,15 +33,6 @@ export function readHosts(configApi: ConfigApi): GrafanaHost[] {
     );
   }
 
-  for (const host of hostsConfig) {
-    if (!host.id) {
-      throw new Error('Each `grafana.hosts[].id` must be defined');
-    }
-    if (!host.domain) {
-      throw new Error('Each `grafana.hosts[].domain` must be defined');
-    }
-  }
-
   // Backwards compatibility: if legacy domain is set and no hosts are configured,
   // add it as the 'default' host
   if (domain && hostsConfig.length === 0) {
