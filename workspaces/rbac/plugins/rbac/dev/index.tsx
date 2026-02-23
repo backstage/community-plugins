@@ -37,7 +37,10 @@ import {
   SidebarSpace,
 } from '@backstage/core-components';
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
-import { SidebarLanguageSwitcher } from '@backstage/dev-utils';
+import {
+  SidebarLanguageSwitcher,
+  SidebarSignOutButton,
+} from '@backstage/dev-utils';
 import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 
@@ -99,6 +102,7 @@ const devSidebarContent = NavContentBlueprint.make({
         </SidebarGroup>
         <SidebarSpace />
         <SidebarLanguageSwitcher />
+        <SidebarSignOutButton />
       </Sidebar>
     ),
   },
@@ -109,9 +113,18 @@ const devNavModule = createFrontendModule({
   extensions: [devSidebarContent],
 });
 
+// redirect to this page on load after sign-in
+const defaultPage = '/rbac';
+
 const app = createApp({
   features: [rbacPlugin, rbacTranslationsModule, rbacDevModule, devNavModule],
 });
 
 const root = app.createRoot();
+
+// Same redirect as dev-utils render(): if at root and we have a default page, go there
+if (typeof window !== 'undefined' && window.location.pathname === '/') {
+  window.location.pathname = defaultPage;
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(root);
