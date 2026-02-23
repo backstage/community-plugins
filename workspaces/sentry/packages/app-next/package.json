@@ -48,6 +48,8 @@
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
+    "@backstage/test-utils": "backstage:^",
+    "@testing-library/jest-dom": "^6.0.0",
     "@types/react-dom": "*"
   },
   "browserslist": {
