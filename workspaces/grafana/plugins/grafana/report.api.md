@@ -106,10 +106,9 @@ export type GrafanaApiClientOptions = {
   discoveryApi: DiscoveryApi;
   fetchApi: FetchApi;
   hosts: GrafanaHost[];
-  /** @deprecated */
-  grafanaDashboardSearchLimit?: number;
-  /** @deprecated */
-  grafanaDashboardMaxPages?: number;
+  defaultHostId?: string;
+  dashboardSearchLimit?: number;
+  dashboardMaxPages?: number;
 };
 
 // @public
