@@ -85,11 +85,11 @@ export const GRAFANA_ANNOTATION_DASHBOARD_SELECTOR =
   'grafana/dashboard-selector';
 
 // @public
-export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
-  'grafana/overview-dashboard';
+export const GRAFANA_ANNOTATION_HOST_ID = 'grafana/host-id';
 
 // @public
-export const GRAFANA_ANNOTATION_HOST_ID = 'grafana/host-id';
+export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
+  'grafana/overview-dashboard';
 
 // @public
 export interface GrafanaApi {
@@ -126,6 +126,9 @@ export interface GrafanaHost {
 export const grafanaPlugin: BackstagePlugin<{}, {}, {}>;
 
 // @public
+export const hostIdFromEntity: (entity: Entity) => string | undefined;
+
+// @public
 export const isAlertSelectorAvailable: (entity: Entity) => boolean;
 
 // @public
@@ -138,9 +141,6 @@ export const isOverviewDashboardAvailable: (entity: Entity) => boolean;
 
 // @public
 export const overviewDashboardFromEntity: (entity: Entity) => string;
-
-// @public
-export const hostIdFromEntity: (entity: Entity) => string | undefined;
 
 // (No @packageDocumentation comment for this package)
 ```
