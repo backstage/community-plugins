@@ -15,7 +15,7 @@
  */
 
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import apis from './apis';
+import { rbacApi, licensedUsersApi } from './apis';
 import rbacNavItem from './navItems';
 import rbacPage from './pages';
 import { rootRouteRef } from '../routes';
@@ -23,7 +23,7 @@ import { rootRouteRef } from '../routes';
 export default createFrontendPlugin({
   pluginId: 'rbac',
   info: { packageJson: () => import('../../package.json') },
-  extensions: [...apis, rbacPage, rbacNavItem],
+  extensions: [rbacApi, licensedUsersApi, rbacPage, rbacNavItem],
   routes: {
     root: rootRouteRef,
   },

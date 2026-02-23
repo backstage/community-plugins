@@ -58,5 +58,3 @@ export const licensedUsersApi = ApiBlueprint.make({
         new LicensedUsersAPIClient({ configApi, identityApi }),
     }),
 });
-
-export default [rbacApi, licensedUsersApi];
