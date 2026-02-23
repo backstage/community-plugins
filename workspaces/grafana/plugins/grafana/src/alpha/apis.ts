@@ -37,12 +37,13 @@ export const grafanaApiExtension = ApiBlueprint.make({
         fetchApi: fetchApiRef,
       },
       factory: ({ discoveryApi, configApi, fetchApi }) => {
-        const hosts = readHosts(configApi);
+        const { hosts, defaultHostId } = readHosts(configApi);
 
         return new GrafanaApiClient({
           fetchApi,
           discoveryApi,
           hosts,
+          defaultHostId,
           grafanaDashboardSearchLimit: configApi.getOptionalNumber(
             'grafana.grafanaDashboardSearchLimit',
           ),

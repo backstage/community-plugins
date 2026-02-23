@@ -61,6 +61,8 @@ proxy:
       Authorization: Bearer ${GRAFANA_STAGING_TOKEN}
 
 grafana:
+  # Optional: default Grafana instance for entities without grafana/host-id (must match a host id below)
+  defaultHost: production
   hosts:
     - id: production
       domain: https://monitoring-prod.company.com
@@ -73,6 +75,8 @@ grafana:
 ```
 
 Each host entry supports `domain`, `proxyPath`, and `unifiedAlerting`, plus a required `id` field that uniquely identifies the instance.
+
+You can set `defaultHost` to the id of the Grafana instance that entities without the `grafana/host-id` annotation should use. If `defaultHost` is not set, the plugin uses the first host in `hosts` (or the `default` host when using the legacy `domain` config).
 
 To associate an entity with a specific Grafana instance, add the `grafana/host-id` annotation to your entity's `catalog-info.yaml`:
 
@@ -87,7 +91,7 @@ metadata:
     grafana/alert-label-selector: service=my-service
 ```
 
-If the `grafana/host-id` annotation is not set, the plugin will use the first configured host (or the `default` host created from the legacy `domain` config).
+If the `grafana/host-id` annotation is not set, the plugin will use the host specified by `grafana.defaultHost`, or the first configured host (or the `default` host created from the legacy `domain` config) when `defaultHost` is not set.
 
 Note: if both `domain` and `hosts` are defined, the `domain` value will be ignored and a warning will be logged.
 

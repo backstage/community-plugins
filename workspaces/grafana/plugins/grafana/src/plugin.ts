@@ -40,12 +40,13 @@ export const grafanaPlugin = createPlugin({
         configApi: configApiRef,
       },
       factory: ({ discoveryApi, fetchApi, configApi }) => {
-        const hosts = readHosts(configApi);
+        const { hosts, defaultHostId } = readHosts(configApi);
 
         return new GrafanaApiClient({
           discoveryApi,
           fetchApi,
           hosts,
+          defaultHostId,
           grafanaDashboardSearchLimit: configApi.getOptionalNumber(
             'grafana.grafanaDashboardSearchLimit',
           ),
