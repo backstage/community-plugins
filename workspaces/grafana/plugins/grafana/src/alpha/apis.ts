@@ -44,10 +44,13 @@ export const grafanaApiExtension = ApiBlueprint.make({
           discoveryApi,
           hosts,
           defaultHostId,
-          grafanaDashboardSearchLimit: configApi.getOptionalNumber(
+          // Legacy config (backward compatibility); see config.d.ts @deprecated
+          /* eslint-disable-next-line deprecation/deprecation */
+          dashboardSearchLimit: configApi.getOptionalNumber(
             'grafana.grafanaDashboardSearchLimit',
           ),
-          grafanaDashboardMaxPages: configApi.getOptionalNumber(
+          /* eslint-disable-next-line deprecation/deprecation */
+          dashboardMaxPages: configApi.getOptionalNumber(
             'grafana.grafanaDashboardMaxPages',
           ),
         });

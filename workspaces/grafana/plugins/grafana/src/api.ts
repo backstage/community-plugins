@@ -126,14 +126,14 @@ export type GrafanaApiClientOptions = {
   defaultHostId?: string;
 
   /**
-   * @deprecated Limit value to pass in Grafana Dashboard search query.
+   * Limit value to pass in Grafana Dashboard search query.
    */
-  grafanaDashboardSearchLimit?: number;
+  dashboardSearchLimit?: number;
 
   /**
-   * @deprecated Max pages of Grafana Dashboard search query to fetch.
+   * Max pages of Grafana Dashboard search query to fetch.
    */
-  grafanaDashboardMaxPages?: number;
+  dashboardMaxPages?: number;
 };
 
 const DEFAULT_PROXY_PATH = '/grafana/api';
@@ -152,26 +152,25 @@ class Client {
   private readonly fetchApi: FetchApi;
   private readonly proxyPath: string;
   private readonly queryEvaluator: QueryEvaluator;
-  private readonly grafanaDashboardSearchLimit: number;
-  private readonly grafanaDashboardMaxPages: number;
+  private readonly dashboardSearchLimit: number;
+  private readonly dashboardMaxPages: number;
 
   constructor(
     discoveryApi: DiscoveryApi,
     fetchApi: FetchApi,
     proxyPath: string,
-    grafanaDashboardSearchLimit?: number,
-    grafanaDashboardMaxPages?: number,
+    dashboardSearchLimit?: number,
+    dashboardMaxPages?: number,
   ) {
     this.discoveryApi = discoveryApi;
     this.fetchApi = fetchApi;
     this.proxyPath = proxyPath;
     this.queryEvaluator = new QueryEvaluator();
-    this.grafanaDashboardSearchLimit = Math.min(
-      grafanaDashboardSearchLimit ?? DEFAULT_DASHBOARDS_LIMIT,
+    this.dashboardSearchLimit = Math.min(
+      dashboardSearchLimit ?? DEFAULT_DASHBOARDS_LIMIT,
       UPSTREAM_DASHBOARDS_LIMIT_MAX,
     );
-    this.grafanaDashboardMaxPages =
-      grafanaDashboardMaxPages ?? DEFAULT_PAGES_LIMIT;
+    this.dashboardMaxPages = dashboardMaxPages ?? DEFAULT_PAGES_LIMIT;
   }
 
   public async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
@@ -222,14 +221,14 @@ class Client {
       const dashboards: Dashboard[] = await this.fetchSomeDashboards({
         domain: options.domain,
         page: page++,
-        limit: this.grafanaDashboardSearchLimit,
+        limit: this.dashboardSearchLimit,
         tag: options.tag,
       });
       allDashboards.push(...dashboards);
       // pages limit exists to prevent accidental infinite loops from Grafana
       more =
-        dashboards.length >= this.grafanaDashboardSearchLimit &&
-        page < this.grafanaDashboardMaxPages;
+        dashboards.length >= this.dashboardSearchLimit &&
+        page < this.dashboardMaxPages;
     } while (more);
     return allDashboards;
   }
@@ -281,8 +280,8 @@ function initClients(opts: GrafanaApiClientOptions): Map<string, ClientHost> {
         opts.discoveryApi,
         opts.fetchApi,
         host.proxyPath ?? DEFAULT_PROXY_PATH,
-        opts.grafanaDashboardSearchLimit,
-        opts.grafanaDashboardMaxPages,
+        opts.dashboardSearchLimit,
+        opts.dashboardMaxPages,
       ),
     });
   }
