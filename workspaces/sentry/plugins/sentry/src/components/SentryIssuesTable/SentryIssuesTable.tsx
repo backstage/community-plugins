@@ -16,7 +16,7 @@
 
 import type { ChangeEvent } from 'react';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { SentryIssue } from '../../api';
 import { DateTime, Duration } from 'luxon';
 import { ErrorCell } from '../ErrorCell/ErrorCell';
@@ -88,12 +88,10 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
     [],
   );
 
-  const filteredIssues = useMemo(() => {
-    if (selected === Number.NEGATIVE_INFINITY) {
-      return sentryIssues;
-    }
-    return sentryIssues.filter(i => filterByDate(i, selected));
-  }, [sentryIssues, selected, filterByDate]);
+  const filteredIssues =
+    selected === Number.NEGATIVE_INFINITY
+      ? sentryIssues
+      : sentryIssues.filter(i => filterByDate(i, selected));
 
   const handleFilterChange = (
     event: ChangeEvent<{ name?: string; value: unknown }>,
