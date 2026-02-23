@@ -64,11 +64,13 @@ export const DashboardViewer: ({
 export const EntityDashboardViewer: () => JSX_2.Element;
 
 // @public
-export const EntityGrafanaAlertsCard: (opts?: AlertsCardOpts) => JSX_2.Element;
+export const EntityGrafanaAlertsCard: (
+  opts?: AlertsCardOpts | undefined,
+) => JSX_2.Element;
 
 // @public
 export const EntityGrafanaDashboardsCard: (
-  opts?: DashboardCardOpts,
+  opts?: DashboardCardOpts | undefined,
 ) => JSX_2.Element;
 
 // @public
