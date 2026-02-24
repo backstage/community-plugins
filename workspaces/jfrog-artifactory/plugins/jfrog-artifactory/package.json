@@ -62,8 +62,9 @@
     "@backstage/dev-utils": "^1.1.20",
     "@backstage/test-utils": "^1.7.15",
     "@playwright/test": "^1.57.0",
-    "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "14.3.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/luxon": "^3",
     "cross-fetch": "4.1.0",
     "react-router-dom": "^6.26.2"
