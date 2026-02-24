@@ -161,9 +161,9 @@ export const PlaylistList: () => JSX_2.Element;
 // @public (undocumented)
 export const PlaylistListProvider: <
   PlaylistFilters extends DefaultPlaylistFilters,
->({
-  children,
-}: PropsWithChildren<{}>) => JSX_2.Element;
+>(
+  input: PropsWithChildren<{}>,
+) => JSX_2.Element;
 
 // @public (undocumented)
 export class PlaylistOwnerFilter implements PlaylistFilter {
