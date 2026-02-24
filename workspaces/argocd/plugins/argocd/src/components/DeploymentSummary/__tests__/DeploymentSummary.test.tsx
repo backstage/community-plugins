@@ -167,6 +167,37 @@ describe('DeploymentSummary', () => {
     });
   });
 
+  test('should link the application to instance external url', async () => {
+    (useApplications as any).mockReturnValue({
+      apps: [
+        {
+          ...mockApplication,
+          metadata: {
+            ...mockApplication.metadata,
+            instance: {
+              name: 'main',
+              url: 'https://main-instance-url.com',
+              externalUrl: 'https://external-main-instance-url.com',
+            },
+          },
+        },
+      ],
+      loading: false,
+      error: undefined,
+    });
+
+    await renderInTestApp(<DeploymentSummary />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('link', { name: 'quarkus-app-dev' }),
+      ).toHaveAttribute(
+        'href',
+        'https://external-main-instance-url.com/applications/quarkus-app-dev',
+      );
+    });
+  });
+
   test('should link the application to the base argocd url if no instance url', async () => {
     (useArgocdConfig as any).mockReturnValue({
       baseUrl: 'https://baseurl.com',
@@ -197,6 +228,41 @@ describe('DeploymentSummary', () => {
       ).toHaveAttribute(
         'href',
         'https://baseurl.com/applications/quarkus-app-dev',
+      );
+    });
+  });
+
+  test('should link the application to the external base argocd url if no instance url', async () => {
+    (useArgocdConfig as any).mockReturnValue({
+      baseUrl: 'https://baseurl.com',
+      externalBaseUrl: 'https://externalbaseurl.com',
+      instances: [{ name: 'main' }],
+      intervalMs: 10000,
+    });
+    (useApplications as any).mockReturnValue({
+      apps: [
+        {
+          ...mockApplication,
+          metadata: {
+            ...mockApplication.metadata,
+            instance: { name: 'main' },
+          },
+        },
+      ],
+      loading: false,
+      error: undefined,
+    });
+    await renderInTestApp(<DeploymentSummary />);
+
+    await waitFor(() => {
+      screen.getByText('Healthy');
+      screen.getByText('Synced');
+
+      expect(
+        screen.getByRole('link', { name: 'quarkus-app-dev' }),
+      ).toHaveAttribute(
+        'href',
+        'https://externalbaseurl.com/applications/quarkus-app-dev',
       );
     });
   });

@@ -27,6 +27,7 @@ export const getArgocdInstances = (configApi: Config) => {
   ).map(config => ({
     name: config.getOptionalString('name') ?? '',
     url: config.getOptionalString('url') ?? '',
+    externalUrl: config.getOptionalString('externalUrl') ?? '',
   }));
 };
 
@@ -34,6 +35,7 @@ export const useArgocdConfig = (): {
   instances: Instance[];
   intervalMs: number;
   baseUrl: string | undefined;
+  externalBaseUrl: string | undefined;
 } => {
   const configApi = useApi(configApiRef);
 
@@ -41,8 +43,10 @@ export const useArgocdConfig = (): {
   const intervalMs =
     configApi.getOptionalNumber('argocd.refreshInterval') ?? 10000;
   const baseUrl = configApi.getOptionalString('argocd.baseUrl');
+  const externalBaseUrl = configApi.getOptionalString('argocd.externalBaseUrl');
   return {
     baseUrl,
+    externalBaseUrl,
     instances,
     intervalMs,
   };
