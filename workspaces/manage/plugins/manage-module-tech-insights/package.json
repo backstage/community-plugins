@@ -60,7 +60,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/ui": "^0.10.0",
+    "@backstage/ui": "backstage:^",
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
     "react-use": "^17.5.0"
