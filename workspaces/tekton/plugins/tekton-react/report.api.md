@@ -57,15 +57,9 @@ export const getTaskStatus: (
 ) => TaskStatusTypes;
 
 // @public
-export const HorizontalStackedBars: ({
-  id,
-  barGap,
-  height,
-  inline,
-  values,
-  width,
-  onClick,
-}: HorizontalStackedBarsProps) => JSX_2.Element;
+export const HorizontalStackedBars: (
+  input: HorizontalStackedBarsProps,
+) => JSX_2.Element;
 
 // @public
 export type HorizontalStackedBarsProps = {
@@ -367,9 +361,9 @@ export type TaskRunWorkspace = {
 };
 
 // @public
-export const TaskStatusTooltip: ({
-  taskStatus,
-}: TaskStatusToolTipProps) => JSX_2.Element;
+export const TaskStatusTooltip: (
+  input: TaskStatusToolTipProps,
+) => JSX_2.Element;
 
 // @public
 export interface TaskStatusToolTipProps {
