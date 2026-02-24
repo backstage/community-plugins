@@ -38,13 +38,13 @@
     "prettier:fix": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
-    "@backstage/backend-plugin-api": "^1.6.2",
-    "@backstage/plugin-scaffolder-node": "^0.12.4",
+    "@backstage/backend-plugin-api": "^1.7.0",
+    "@backstage/plugin-scaffolder-node": "^0.12.5",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.3",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.7"
+    "@backstage/cli": "^0.35.4",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.8"
   },
   "files": [
     "dist"
