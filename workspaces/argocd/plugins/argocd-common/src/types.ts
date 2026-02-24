@@ -34,6 +34,7 @@ export interface Application {
 export interface Instance {
   name: string;
   url: string;
+  externalUrl?: string;
   password?: string;
   token?: string;
   username?: string;

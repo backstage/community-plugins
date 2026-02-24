@@ -95,6 +95,8 @@ export interface InitiatedBy {
 // @public (undocumented)
 export interface Instance {
   // (undocumented)
+  externalUrl?: string;
+  // (undocumented)
   name: string;
   // (undocumented)
   password?: string;
