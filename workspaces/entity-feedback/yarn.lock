@@ -1267,6 +1267,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.3"
     "@backstage/dev-utils": "npm:^1.1.20"
     "@backstage/errors": "npm:^1.2.7"
+    "@backstage/filter-predicates": "npm:^0.1.0"
     "@backstage/frontend-defaults": "npm:^0.4.0"
     "@backstage/frontend-plugin-api": "npm:^0.14.1"
     "@backstage/plugin-catalog": "npm:^1.33.0"
