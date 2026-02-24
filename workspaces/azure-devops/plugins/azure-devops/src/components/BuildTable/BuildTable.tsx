@@ -45,12 +45,12 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 
-import { AzurePipelinesIcon } from '../AzurePipelinesIcon';
 import { DateTime } from 'luxon';
 import { getDurationFromDates } from '../../utils/getDurationFromDates';
 import { BuildLogDrawer } from './lib/BuildLogDrawer';
 import { EmptyBuildResults } from './lib/EmptyBuildResults';
 import { Entity } from '@backstage/catalog-model';
+import { RiSpaceShip2Line } from '@remixicon/react';
 
 export const getBuildResultComponent = (result: number | undefined) => {
   switch (result) {
@@ -330,7 +330,7 @@ export const BuildTable = ({
         <CardHeader>
           <Flex align="center" justify="between" gap="small">
             <Flex align="center" gap="small">
-              <AzurePipelinesIcon style={{ fontSize: 30 }} />
+              <RiSpaceShip2Line style={{ fontSize: 30 }} />
               <Text
                 variant="title-small"
                 weight="bold"

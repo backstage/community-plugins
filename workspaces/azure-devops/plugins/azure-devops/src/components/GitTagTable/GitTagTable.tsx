@@ -32,7 +32,7 @@ import {
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { GitTag } from '@backstage-community/plugin-azure-devops-common';
 
-import { AzureGitTagsIcon } from '../AzureGitTagsIcon';
+import { RiPriceTag3Line } from '@remixicon/react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGitTags } from '../../hooks/useGitTags';
 import { useEffect, useMemo } from 'react';
@@ -134,7 +134,7 @@ export const GitTagTable = () => {
       <CardHeader>
         <Flex align="center" justify="between" gap="small">
           <Flex align="center" gap="small">
-            <AzureGitTagsIcon style={{ fontSize: 30 }} />
+            <RiPriceTag3Line style={{ fontSize: 30 }} />
             <Text
               variant="title-small"
               weight="bold"
