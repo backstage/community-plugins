@@ -37,9 +37,9 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
-    "@backstage/cli": "^0.35.3",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.3",
+    "@backstage/cli": "^0.35.4",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@backstage/repo-tools": "^0.16.5",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@playwright/test": "^1.56.1",
