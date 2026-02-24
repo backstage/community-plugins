@@ -41,9 +41,9 @@
     "directory": "workspaces/argocd"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.0",
+    "@backstage/cli": "^0.35.4",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@backstage/repo-tools": "^0.16.5",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.56.1",
     "concurrently": "^9.0.0",
