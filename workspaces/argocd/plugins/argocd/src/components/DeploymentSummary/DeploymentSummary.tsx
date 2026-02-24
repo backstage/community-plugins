@@ -43,7 +43,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 const DeploymentSummary = () => {
   const { entity } = useEntity();
 
-  const { baseUrl } = useArgocdConfig();
+  const { baseUrl, externalBaseUrl } = useArgocdConfig();
   const instanceNames = useMemo(() => getInstanceNames(entity), [entity]);
 
   const { appSelector, appName, projectName, appNamespace } =
@@ -60,7 +60,12 @@ const DeploymentSummary = () => {
   const hasArgocdViewAccess = useArgocdViewPermission();
 
   const getBaseUrl = (row: any): string | undefined => {
-    return row?.metadata?.instance?.url ?? baseUrl;
+    return (
+      row?.metadata?.instance?.externalUrl ||
+      row?.metadata?.instance?.url ||
+      externalBaseUrl ||
+      baseUrl
+    );
   };
 
   const buildAppUrl = (row: any): string | undefined => {

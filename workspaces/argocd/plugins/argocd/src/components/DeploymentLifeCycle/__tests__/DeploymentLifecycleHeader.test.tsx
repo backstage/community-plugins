@@ -24,45 +24,76 @@ import { mockApplication } from '../../../../dev/__data__';
 import DeploymentLifecycleHeader from '../DeploymentLifecycleHeader';
 
 describe('DeploymentLifecycleCardHeader', () => {
-  const wrapper = ({ children }: { children: ReactNode }) => {
-    return (
-      <TestApiProvider
-        apis={[
-          [
-            configApiRef,
-            mockApis.config({
-              data: {
-                argocd: {
-                  appLocatorMethods: [
-                    {
-                      instances: [
-                        {
-                          name: 'main',
-                          url: 'https://test.com',
-                        },
-                      ],
-                      type: 'config',
-                    },
-                  ],
+  test('should render the deployment lifecycle application header', () => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
+      return (
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              mockApis.config({
+                data: {
+                  argocd: {
+                    appLocatorMethods: [
+                      {
+                        instances: [
+                          {
+                            name: 'main',
+                            url: 'https://test.com',
+                          },
+                        ],
+                        type: 'config',
+                      },
+                    ],
+                  },
                 },
-              },
-            }),
-          ],
-        ]}
-      >
-        {children}
-      </TestApiProvider>
-    );
-  };
+              }),
+            ],
+          ]}
+        >
+          {children}
+        </TestApiProvider>
+      );
+    };
 
-  test('should render the deployment lifecylce appliction header', () => {
     render(<DeploymentLifecycleHeader app={mockApplication} />, { wrapper });
 
     expect(screen.queryByText('quarkus-app-dev')).toBeInTheDocument();
     expect(screen.queryByTestId('quarkus-app-dev-link')).toBeInTheDocument();
   });
 
-  test('should render the deployment lifecylce appliction header link with instance url', () => {
+  test('should render the deployment lifecycle application header link with instance url', () => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
+      return (
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              mockApis.config({
+                data: {
+                  argocd: {
+                    appLocatorMethods: [
+                      {
+                        instances: [
+                          {
+                            name: 'main',
+                            url: 'https://test.com',
+                          },
+                        ],
+                        type: 'config',
+                      },
+                    ],
+                  },
+                },
+              }),
+            ],
+          ]}
+        >
+          {children}
+        </TestApiProvider>
+      );
+    };
+
     render(<DeploymentLifecycleHeader app={mockApplication} />, { wrapper });
     const link = screen.queryByTestId(
       'quarkus-app-dev-link',
@@ -76,7 +107,53 @@ describe('DeploymentLifecycleCardHeader', () => {
     );
   });
 
-  test('should render the deployment lifecylce appliction header with base url', () => {
+  test('should render the deployment lifecycle application header link with instance external url', () => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
+      return (
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              mockApis.config({
+                data: {
+                  argocd: {
+                    appLocatorMethods: [
+                      {
+                        instances: [
+                          {
+                            name: 'main',
+                            url: 'https://test.com',
+                            externalUrl: 'https://external-test.com',
+                          },
+                        ],
+                        type: 'config',
+                      },
+                    ],
+                  },
+                },
+              }),
+            ],
+          ]}
+        >
+          {children}
+        </TestApiProvider>
+      );
+    };
+
+    render(<DeploymentLifecycleHeader app={mockApplication} />, { wrapper });
+    const link = screen.queryByTestId(
+      'quarkus-app-dev-link',
+    ) as HTMLLinkElement;
+
+    fireEvent.click(link);
+
+    expect(link).toHaveAttribute(
+      'href',
+      'https://external-test.com/applications/quarkus-app-dev',
+    );
+  });
+
+  test('should render the deployment lifecycle application header with base url', () => {
     const apiProviderWrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider
@@ -109,6 +186,43 @@ describe('DeploymentLifecycleCardHeader', () => {
     expect(link).toHaveAttribute(
       'href',
       'https://baseurl.com/applications/quarkus-app-dev',
+    );
+  });
+
+  test('should render the deployment lifecycle application header with external base url', () => {
+    const apiProviderWrapper = ({ children }: { children: ReactNode }) => {
+      return (
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              mockApis.config({
+                data: {
+                  argocd: {
+                    baseUrl: 'https://baseurl.com',
+                    externalBaseUrl: 'https://externalbaseurl.com',
+                    appLocatorMethods: [],
+                  },
+                },
+              }),
+            ],
+          ]}
+        >
+          {children}
+        </TestApiProvider>
+      );
+    };
+
+    render(<DeploymentLifecycleHeader app={mockApplication} />, {
+      wrapper: apiProviderWrapper,
+    });
+    const link = screen.queryByTestId(
+      'quarkus-app-dev-link',
+    ) as HTMLLinkElement;
+
+    expect(link).toHaveAttribute(
+      'href',
+      'https://externalbaseurl.com/applications/quarkus-app-dev',
     );
   });
 });
