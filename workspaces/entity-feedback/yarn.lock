@@ -1270,6 +1270,7 @@ __metadata:
     "@backstage/filter-predicates": "npm:^0.1.0"
     "@backstage/frontend-defaults": "npm:^0.4.0"
     "@backstage/frontend-plugin-api": "npm:^0.14.1"
+    "@backstage/frontend-test-utils": "npm:^0.5.0"
     "@backstage/plugin-catalog": "npm:^1.33.0"
     "@backstage/plugin-catalog-react": "npm:^2.0.0"
     "@backstage/test-utils": "npm:^1.7.15"
@@ -2024,6 +2025,41 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/d54c3bee4c7f3708c1196aedec76a4edcc4d99e5856a2d7b404ad1f70ed6395ee32ac7de69290b37f3cc32c19507b8cdda566c04655c57e6ed364ee356434538
+  languageName: node
+  linkType: hard
+
+"@backstage/frontend-test-utils@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@backstage/frontend-test-utils@npm:0.5.0"
+  dependencies:
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/core-app-api": "npm:^1.19.5"
+    "@backstage/core-plugin-api": "npm:^1.12.3"
+    "@backstage/frontend-app-api": "npm:^0.15.0"
+    "@backstage/frontend-plugin-api": "npm:^0.14.0"
+    "@backstage/plugin-app": "npm:^0.4.0"
+    "@backstage/plugin-app-react": "npm:^0.2.0"
+    "@backstage/plugin-permission-common": "npm:^0.9.6"
+    "@backstage/plugin-permission-react": "npm:^0.4.40"
+    "@backstage/test-utils": "npm:^1.7.15"
+    "@backstage/types": "npm:^1.2.2"
+    "@backstage/version-bridge": "npm:^1.0.12"
+    i18next: "npm:^22.4.15"
+    zen-observable: "npm:^0.10.0"
+    zod: "npm:^3.25.76"
+  peerDependencies:
+    "@testing-library/react": ^16.0.0
+    "@types/jest": "*"
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.30.2
+  peerDependenciesMeta:
+    "@types/jest":
+      optional: true
+    "@types/react":
+      optional: true
+  checksum: 10/a867a78691ab0dc51969b18c9b6e96950c6670dbe9d34f321dacf2de8abe65890db32afb51cc758e1882b2aa97c26dfd37924b8d03519899cc08089c3fd6a4c0
   languageName: node
   linkType: hard
 

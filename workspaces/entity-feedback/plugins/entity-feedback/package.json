@@ -70,6 +70,7 @@
     "@backstage/cli": "^0.35.4",
     "@backstage/dev-utils": "^1.1.20",
     "@backstage/frontend-defaults": "^0.4.0",
+    "@backstage/frontend-test-utils": "^0.5.0",
     "@backstage/plugin-catalog": "^1.33.0",
     "@backstage/test-utils": "^1.7.15",
     "@testing-library/dom": "^10.0.0",
