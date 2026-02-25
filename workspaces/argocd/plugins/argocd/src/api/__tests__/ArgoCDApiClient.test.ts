@@ -435,7 +435,7 @@ describe('API calls', () => {
 
       // Both the Helm chart version and the git SHA are in history
       await client.getRevisionDetailsList({
-        apps: [multiSourceHelmArgoApp as any],
+        apps: [multiSourceHelmArgoApp],
         revisionIDs: ['1.0.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
         appNamespace: '',
       });
