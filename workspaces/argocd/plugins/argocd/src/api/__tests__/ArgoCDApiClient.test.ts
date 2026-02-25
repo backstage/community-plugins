@@ -436,13 +436,13 @@ describe('API calls', () => {
       // Both the Helm chart version and the git SHA are in history
       await client.getRevisionDetailsList({
         apps: [multiSourceHelmArgoApp as any],
-        revisionIDs: ['6.33.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
+        revisionIDs: ['1.0.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
         appNamespace: '',
       });
 
       // The git SHA at sourceIndex=1 should be fetched
       expect(fetchMock).toHaveBeenCalledWith(
-        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/loki-app/revisions/abc123def456ghi789jkl012mno345pqr678stu901/metadata?sourceIndex=1',
+        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/helm-git-app/revisions/abc123def456ghi789jkl012mno345pqr678stu901/metadata?sourceIndex=1',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
@@ -452,7 +452,7 @@ describe('API calls', () => {
 
       // The Helm chart version at sourceIndex=0 should NOT trigger a fetch
       expect(fetchMock).not.toHaveBeenCalledWith(
-        expect.stringContaining('/revisions/6.33.0/metadata'),
+        expect.stringContaining('/revisions/1.0.0/metadata'),
         expect.anything(),
       );
     });

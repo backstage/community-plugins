@@ -282,8 +282,8 @@ describe('Utils', () => {
 
     test('should exclude Helm chart revisions from multi-source apps', () => {
       const revisions = getUniqueRevisions([multiSourceHelmArgoApp as any]);
-      // The Helm chart version '6.33.0' should be excluded; only the git SHA remains
-      expect(revisions).not.toContain('6.33.0');
+      // The Helm chart version '1.0.0' should be excluded; only the git SHA remains
+      expect(revisions).not.toContain('1.0.0');
       expect(revisions).toContain('abc123def456ghi789jkl012mno345pqr678stu901');
     });
 
