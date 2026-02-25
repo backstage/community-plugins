@@ -65,6 +65,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@mui/icons-material": "^5.18.0",
