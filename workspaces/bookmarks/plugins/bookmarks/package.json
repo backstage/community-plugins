@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bookmarks",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "A Backstage plugin that helps you view your favorite websites and services.",
   "keywords": [
     "backstage",
