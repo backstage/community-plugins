@@ -128,12 +128,44 @@ const DeploymentSummary = () => {
       render: (row: Application): ReactNode => {
         const historyList = row.status?.history ?? [];
         const latestRev = historyList[historyList.length - 1];
-        const repoUrl =
-          row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
+        const sources = row.spec.sources;
 
-        // Depending on how many sources there could be multiple revisions.
-        const latestRevision =
-          latestRev?.revision ?? latestRev?.revisions?.pop() ?? '';
+        // Multi-source: build a combined revision display (e.g. "6.49.0 / abc1234")
+        // showing Helm chart versions in full and git SHAs truncated to 7 chars.
+        if (latestRev?.revisions && sources?.length) {
+          const revisionText = sources
+            .map((source, idx) => {
+              const rev = latestRev.revisions?.[idx];
+              if (!rev) return null;
+              return source.chart ? rev : rev.substring(0, 7);
+            })
+            .filter(Boolean)
+            .join(' / ');
+
+          // Link to the first git source commit
+          const gitIdx = sources.findIndex(s => !s.chart);
+          const gitRev = gitIdx >= 0 ? latestRev.revisions?.[gitIdx] ?? '' : '';
+          const gitRepoUrl = gitIdx >= 0 ? sources[gitIdx]?.repoURL ?? '' : '';
+          const commitUrl = gitRev
+            ? getCommitUrl(
+                gitRepoUrl,
+                gitRev,
+                entity?.metadata?.annotations || {},
+              )
+            : undefined;
+
+          return commitUrl ? (
+            <Link href={commitUrl} target="_blank" rel="noopener">
+              {revisionText || '-'}
+            </Link>
+          ) : (
+            <>{revisionText || '-'}</>
+          );
+        }
+
+        // Single-source fallback
+        const repoUrl = row?.spec?.source?.repoURL ?? '';
+        const latestRevision = latestRev?.revision ?? '';
         const commitUrl = isAppHelmChartType(row)
           ? repoUrl
           : getCommitUrl(
@@ -141,8 +173,12 @@ const DeploymentSummary = () => {
               latestRevision,
               entity?.metadata?.annotations || {},
             );
-        const latestRevisionLinkText =
-          latestRevision === '' ? '-' : latestRevision?.substring(0, 7);
+        let latestRevisionLinkText = '-';
+        if (latestRevision !== '') {
+          latestRevisionLinkText = isAppHelmChartType(row)
+            ? latestRevision
+            : latestRevision.substring(0, 7);
+        }
         return (
           <Link href={commitUrl} target="_blank" rel="noopener">
             {latestRevisionLinkText}
