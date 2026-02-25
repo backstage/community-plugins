@@ -9,3 +9,4 @@ When an ArgoCD Application has multiple sources and one is a Helm chart (i.e. `s
 - `getRevisionDetailsList` now skips the revision metadata API call when the source at the given index is a Helm chart source.
 - `getUniqueRevisions` now excludes Helm chart version strings from multi-source apps so they are not passed to the revision metadata endpoint.
 - `isAppHelmChartType` now correctly returns `true` for multi-source apps that include at least one Helm chart source, fixing the revision link rendering in the Deployment Summary table.
+- Fixed the Revision column in the Deployment Summary table for multi-source apps: the previous `pop()` call mutated the cached history array causing the column to cycle between the commit SHA, the Helm version, and blank on successive React renders. The column now shows a stable combined string (e.g. `6.49.0 / abc1234`) — Helm chart versions in full and git SHAs truncated to 7 characters — linked to the first git source commit URL.
