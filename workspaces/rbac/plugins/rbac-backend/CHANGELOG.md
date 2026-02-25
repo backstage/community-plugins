@@ -1,5 +1,13 @@
 ### Dependencies
 
+## 7.4.3
+
+### Patch Changes
+
+- 05801c1: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issues when @backstage backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
+
 ## 7.4.2
 
 ### Patch Changes
