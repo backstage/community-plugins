@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import {
   coreServices,
   createBackendPlugin,
@@ -18,7 +33,10 @@ type MgmtFeature = {
   project: string;
   valueType: string;
   defaultValue: string;
-  environments: Record<string, { enabled: boolean; defaultValue: string } | undefined>;
+  environments: Record<
+    string,
+    { enabled: boolean; defaultValue: string } | undefined
+  >;
 };
 
 type GbProject = { id: string; name: string };
@@ -44,7 +62,11 @@ function resolveRawValue(rawStr: string, type: FlagType): unknown {
   if (type === 'boolean') return rawStr === 'true';
   if (type === 'number') return Number(rawStr);
   if (type === 'json') {
-    try { return JSON.parse(rawStr); } catch { return rawStr; }
+    try {
+      return JSON.parse(rawStr);
+    } catch {
+      return rawStr;
+    }
   }
   return rawStr;
 }
@@ -77,7 +99,12 @@ function detectType(value: unknown): FlagType {
   if (typeof value === 'string') {
     const t = value.trim();
     if (t.startsWith('{') || t.startsWith('[')) {
-      try { JSON.parse(t); return 'json'; } catch { /* fall through */ }
+      try {
+        JSON.parse(t);
+        return 'json';
+      } catch {
+        /* fall through */
+      }
     }
   }
   return 'string';
@@ -91,7 +118,8 @@ function normalizeSdkFlags(
       const raw = feature.defaultValue;
       const type = detectType(raw);
       let resolved: unknown = raw;
-      if (type === 'json' && typeof raw === 'string') resolved = JSON.parse(raw);
+      if (type === 'json' && typeof raw === 'string')
+        resolved = JSON.parse(raw);
       const serialized = JSON.stringify(resolved) ?? 'null';
       const valuePreview =
         serialized.length > 80 ? `${serialized.slice(0, 77)}...` : serialized;
@@ -126,13 +154,17 @@ const growthbookFlagsPlugin = createBackendPlugin({
 
         async function fetchProjects(): Promise<GbProject[]> {
           const now = Date.now();
-          if (projectCache && now - projectCache.fetchedAt < PROJECT_CACHE_TTL_MS) {
+          if (
+            projectCache &&
+            now - projectCache.fetchedAt < PROJECT_CACHE_TTL_MS
+          ) {
             return projectCache.data;
           }
           const res = await fetch(`${baseUrl}/api/v1/projects?limit=100`, {
             headers: { Authorization: `Bearer ${secretKey}` },
           });
-          if (!res.ok) throw new Error(`GrowthBook projects API returned ${res.status}`);
+          if (!res.ok)
+            throw new Error(`GrowthBook projects API returned ${res.status}`);
           const body = (await res.json()) as { projects: GbProject[] };
           projectCache = { data: body.projects, fetchedAt: now };
           return body.projects;
@@ -140,9 +172,9 @@ const growthbookFlagsPlugin = createBackendPlugin({
 
         async function fetchAllFeaturesByProject(
           projectId: string,
-          env: string,
+          gbEnv: string,
         ): Promise<FlagRow[]> {
-          const cacheKey = `${projectId}:${env}`;
+          const cacheKey = `${projectId}:${gbEnv}`;
           const now = Date.now();
           const cached = flagCache.get(cacheKey);
           if (cached && now - cached.fetchedAt < FLAG_CACHE_TTL_MS) {
@@ -150,7 +182,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
           }
 
           // GrowthBook API does not support ?project= filter — fetch all and filter client-side
-          const allRows = await fetchAllFeatures(env);
+          const allRows = await fetchAllFeatures(gbEnv);
           const allFeatures = await fetchAllRawFeatures();
           const projectFeatureIds = new Set(
             allFeatures.filter(f => f.project === projectId).map(f => f.id),
@@ -162,40 +194,45 @@ const growthbookFlagsPlugin = createBackendPlugin({
 
         async function fetchAllRawFeatures(): Promise<MgmtFeature[]> {
           const now = Date.now();
-          if (rawFeaturesCache && now - rawFeaturesCache.fetchedAt < FLAG_CACHE_TTL_MS) {
+          if (
+            rawFeaturesCache &&
+            now - rawFeaturesCache.fetchedAt < FLAG_CACHE_TTL_MS
+          ) {
             return rawFeaturesCache.data;
           }
           const features: MgmtFeature[] = [];
           let offset = 0;
           const limit = 100;
-          while (true) {
+          let hasMore = true;
+          while (hasMore) {
             const url = `${baseUrl}/api/v1/features?limit=${limit}&offset=${offset}`;
             const res = await fetch(url, {
               headers: { Authorization: `Bearer ${secretKey}` },
             });
-            if (!res.ok) throw new Error(`GrowthBook features API returned ${res.status}`);
+            if (!res.ok)
+              throw new Error(`GrowthBook features API returned ${res.status}`);
             const body = (await res.json()) as {
               features: MgmtFeature[];
               hasMore: boolean;
               nextOffset: number | null;
             };
             features.push(...body.features);
-            if (!body.hasMore || body.nextOffset === null) break;
-            offset = body.nextOffset;
+            hasMore = body.hasMore && body.nextOffset !== null;
+            if (hasMore) offset = body.nextOffset!;
           }
           rawFeaturesCache = { data: features, fetchedAt: now };
           return features;
         }
 
-        async function fetchAllFeatures(env: string): Promise<FlagRow[]> {
-          const cacheKey = `all:${env}`;
+        async function fetchAllFeatures(gbEnv: string): Promise<FlagRow[]> {
+          const cacheKey = `all:${gbEnv}`;
           const now = Date.now();
           const cached = flagCache.get(cacheKey);
           if (cached && now - cached.fetchedAt < FLAG_CACHE_TTL_MS) {
             return cached.data;
           }
           const features = await fetchAllRawFeatures();
-          const rows = normalizeMgmtFlags(features, env);
+          const rows = normalizeMgmtFlags(features, gbEnv);
           flagCache.set(cacheKey, { data: rows, fetchedAt: now });
           return rows;
         }
@@ -217,7 +254,9 @@ const growthbookFlagsPlugin = createBackendPlugin({
               res.json({ projects: projects.map(p => p.name) });
             } catch (err) {
               logger.error(`Failed to fetch GrowthBook projects: ${err}`);
-              res.status(502).json({ error: 'Failed to fetch projects from GrowthBook' });
+              res
+                .status(502)
+                .json({ error: 'Failed to fetch projects from GrowthBook' });
             }
             return;
           }
@@ -227,7 +266,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
             return;
           }
 
-          const env = (req.query.env as string) || 'prod';
+          const gbEnv = (req.query.env as string) || 'prod';
           const projectName = req.query.project as string | undefined;
 
           // --- Management API path (when secretKey is configured) ---
@@ -240,17 +279,23 @@ const growthbookFlagsPlugin = createBackendPlugin({
                   p => p.name.toLowerCase() === projectName.toLowerCase(),
                 );
                 if (!match) {
-                  res.status(400).json({ error: `Unknown project: ${projectName}` });
+                  res
+                    .status(400)
+                    .json({ error: `Unknown project: ${projectName}` });
                   return;
                 }
-                flags = await fetchAllFeaturesByProject(match.id, env);
+                flags = await fetchAllFeaturesByProject(match.id, gbEnv);
               } else {
-                flags = await fetchAllFeatures(env);
+                flags = await fetchAllFeatures(gbEnv);
               }
               res.json(flags);
             } catch (err) {
-              logger.error(`Failed to fetch GrowthBook flags (management API): ${err}`);
-              res.status(502).json({ error: 'Failed to fetch flags from GrowthBook' });
+              logger.error(
+                `Failed to fetch GrowthBook flags (management API): ${err}`,
+              );
+              res
+                .status(502)
+                .json({ error: 'Failed to fetch flags from GrowthBook' });
             }
             return;
           }
@@ -258,9 +303,9 @@ const growthbookFlagsPlugin = createBackendPlugin({
           // --- SDK API fallback (no secretKey) ---
           let sdkKey: string;
           try {
-            sdkKey = sdkKeysConfig.getString(env);
+            sdkKey = sdkKeysConfig.getString(gbEnv);
           } catch {
-            res.status(400).json({ error: `Unknown environment: ${env}` });
+            res.status(400).json({ error: `Unknown environment: ${gbEnv}` });
             return;
           }
 
@@ -283,8 +328,12 @@ const growthbookFlagsPlugin = createBackendPlugin({
             flagCache.set(sdkKey, { data: flags, fetchedAt: now });
             res.json(flags);
           } catch (err) {
-            logger.error(`Failed to fetch GrowthBook flags (SDK API) for env "${env}": ${err}`);
-            res.status(502).json({ error: 'Failed to fetch flags from GrowthBook' });
+            logger.error(
+              `Failed to fetch GrowthBook flags (SDK API) for env "${gbEnv}": ${err}`,
+            );
+            res
+              .status(502)
+              .json({ error: 'Failed to fetch flags from GrowthBook' });
           }
         };
 
@@ -292,7 +341,9 @@ const growthbookFlagsPlugin = createBackendPlugin({
         http.addAuthPolicy({ path: '/flags', allow: 'unauthenticated' });
         http.addAuthPolicy({ path: '/projects', allow: 'unauthenticated' });
         logger.info(
-          `GrowthBook Flags plugin initialized at /api/growthbook-flags (mode: ${secretKey ? 'management API' : 'SDK API'})`,
+          `GrowthBook Flags plugin initialized at /api/growthbook-flags (mode: ${
+            secretKey ? 'management API' : 'SDK API'
+          })`,
         );
       },
     });
