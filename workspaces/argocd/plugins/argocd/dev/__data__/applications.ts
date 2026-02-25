@@ -408,6 +408,82 @@ export const prodApplication: Application = {
   },
 };
 
+export const multiSourceHelmArgoApp = {
+  metadata: {
+    name: 'loki-app',
+    namespace: 'argocd',
+    uid: '9abc1234-5678-90ef-ghij-klmnopqrstuv',
+    instance: {
+      name: 'main',
+      url: 'https://kubernetes.default.svc',
+    },
+  },
+  spec: {
+    destination: {
+      server: 'https://kubernetes.example.cluster:6443',
+      namespace: 'monitoring',
+    },
+    project: 'monitoring',
+    source: {
+      repoURL: '',
+    },
+    sources: [
+      {
+        repoURL: 'https://grafana.github.io/helm-charts',
+        chart: 'loki',
+        targetRevision: '6.33.0',
+      },
+      {
+        repoURL: 'https://github.com/example-org/gitops-values.git',
+        path: 'loki',
+        targetRevision: 'HEAD',
+        ref: 'values',
+      },
+    ],
+  },
+  status: {
+    health: {
+      status: 'Healthy',
+    },
+    sync: {
+      status: 'Synced',
+    },
+    operationState: {
+      operation: {
+        sync: {},
+      },
+      phase: 'Succeeded',
+    },
+    summary: {
+      images: [],
+    },
+    history: [
+      {
+        deployedAt: '2025-02-20T16:40:32Z',
+        id: 0,
+        source: {
+          repoURL: '',
+        },
+        deployStartedAt: '2025-02-20T16:40:31Z',
+        sources: [
+          {
+            repoURL: 'https://grafana.github.io/helm-charts',
+            chart: 'loki',
+            targetRevision: '6.33.0',
+          },
+          {
+            repoURL: 'https://github.com/example-org/gitops-values.git',
+            path: 'loki',
+            targetRevision: 'HEAD',
+            ref: 'values',
+          },
+        ],
+        revisions: ['6.33.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
+      },
+    ],
+  },
+};
+
 export const multiSourceArgoApp = {
   metadata: {
     name: 'demo',

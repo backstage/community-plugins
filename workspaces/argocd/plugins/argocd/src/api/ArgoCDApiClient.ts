@@ -206,6 +206,16 @@ export class ArgoCDApiClient implements ArgoCDApi {
 
         relevantHistories.forEach(h => {
           const revisionSourceIndex = h.revisions?.indexOf(revisionID);
+          // Skip Helm chart sources — the revision is a chart version string,
+          // not a git SHA, and the ArgoCD revision metadata endpoint returns
+          // HTTP 500 for non-git revisions.
+          if (
+            revisionSourceIndex !== undefined &&
+            revisionSourceIndex >= 0 &&
+            multiSourceApp.spec.sources?.[revisionSourceIndex]?.chart
+          ) {
+            return;
+          }
           promises.push(
             this.getRevisionDetails({
               app: multiSourceApp.metadata.name as string,
