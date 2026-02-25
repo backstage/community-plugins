@@ -226,7 +226,7 @@ describe('Utils', () => {
     });
 
     test('should return true for a multi-source app with a Helm chart source', () => {
-      expect(isAppHelmChartType(multiSourceHelmArgoApp as any)).toBe(true);
+      expect(isAppHelmChartType(multiSourceHelmArgoApp)).toBe(true);
     });
   });
 
@@ -281,7 +281,7 @@ describe('Utils', () => {
     });
 
     test('should exclude Helm chart revisions from multi-source apps', () => {
-      const revisions = getUniqueRevisions([multiSourceHelmArgoApp as any]);
+      const revisions = getUniqueRevisions([multiSourceHelmArgoApp]);
       // The Helm chart version '1.0.0' should be excluded; only the git SHA remains
       expect(revisions).not.toContain('1.0.0');
       expect(revisions).toContain('abc123def456ghi789jkl012mno345pqr678stu901');

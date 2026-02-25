@@ -408,7 +408,7 @@ export const prodApplication: Application = {
   },
 };
 
-export const multiSourceHelmArgoApp = {
+export const multiSourceHelmArgoApp: Application = {
   metadata: {
     name: 'helm-git-app',
     namespace: 'argocd',
@@ -437,7 +437,6 @@ export const multiSourceHelmArgoApp = {
         repoURL: 'https://github.com/example-org/gitops-values.git',
         path: 'values',
         targetRevision: 'HEAD',
-        ref: 'values',
       },
     ],
   },
@@ -475,7 +474,6 @@ export const multiSourceHelmArgoApp = {
             repoURL: 'https://github.com/example-org/gitops-values.git',
             path: 'values',
             targetRevision: 'HEAD',
-            ref: 'values',
           },
         ],
         revisions: ['1.0.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
