@@ -96,7 +96,8 @@ export enum KnownProviders {
 }
 
 export const isAppHelmChartType = (application: Application) =>
-  !!application?.spec?.source?.chart;
+  !!application?.spec?.source?.chart ||
+  (application?.spec?.sources?.some(s => !!s.chart) ?? false);
 
 export const getGitProvider = (annotations: {
   [key: string]: string;
@@ -192,9 +193,15 @@ export const getUniqueRevisions = (apps: Application[]): string[] => {
 
     if (history.length > 0) {
       history.forEach(h => {
-        // Multi-source application
-        if (h?.revisions && !isSubset(h?.revisions, revisions)) {
-          revisions.push(...h?.revisions);
+        // Multi-source application - skip Helm chart sources (chart version
+        // strings are not git SHAs and cannot be used for revision metadata)
+        if (h?.revisions) {
+          const gitRevisions = h.revisions.filter(
+            (_, idx) => !app.spec.sources?.[idx]?.chart,
+          );
+          if (gitRevisions.length > 0 && !isSubset(gitRevisions, revisions)) {
+            revisions.push(...gitRevisions);
+          }
         }
 
         // Single source application
