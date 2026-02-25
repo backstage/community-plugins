@@ -62,7 +62,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-graph": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/ui": "^0.10.0",
+    "@backstage/ui": "backstage:^",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.16",
     "lodash": "^4.17.21",

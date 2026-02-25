@@ -44,7 +44,7 @@
     "@backstage/plugin-org": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
     "@backstage/theme": "backstage:^",
-    "@backstage/ui": "^0.10.0",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@mui/material": "^5.15.16",
