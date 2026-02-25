@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import { ComponentProps } from 'react';
 
-import { RiPulseAiLine } from '@remixicon/react';
+import { AppNode } from '@backstage/frontend-plugin-api';
+import { RoutedTabs } from '@backstage/core-components';
 
-import { rootRouteRef } from '../routes';
+/**
+ * A special "kind" that can be used to configure all kinds. Settings for this
+ * kind are shared with all tabs for entities, unless they are individually
+ * configured.
+ *
+ * @public
+ */
+export const MANAGE_KIND_COMMON = '$common';
 
-export const navItem = NavItemBlueprint.make({
-  name: 'manage',
-  params: {
-    icon: () => <RiPulseAiLine />,
-    title: 'Manage',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-  },
-});
+/** @public */
+export type SubRouteTab = ComponentProps<
+  typeof RoutedTabs
+>['routes'][number] & {
+  node?: AppNode;
+};

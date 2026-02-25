@@ -30,20 +30,20 @@ export type {
   ManagePageProps,
   HeaderProps,
   ManagePageImpl,
-} from './components/ManagePage';
+} from './components-ofs/ManagePage';
 
-export type { SwitchColor } from './components/ManagePageFilters';
+export type { SwitchColor } from './components-ofs/ManagePageFilters';
 export {
   ManagePageFilters,
   useManagePageCombined,
-} from './components/ManagePageFilters';
+} from './components-ofs/ManagePageFilters';
 
 export type {
   SubRouteTab,
   ManageTabsProps,
   ManageKindOptions,
   ManageTabsImpl,
-} from './components/ManageTabs';
+} from './components-ofs/ManageTabs';
 
 export type {
   OrganizationGraphProps,

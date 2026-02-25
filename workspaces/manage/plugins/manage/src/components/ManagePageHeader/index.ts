@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,5 @@
  * limitations under the License.
  */
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
-
-import { RiPulseAiLine } from '@remixicon/react';
-
-import { rootRouteRef } from '../routes';
-
-export const navItem = NavItemBlueprint.make({
-  name: 'manage',
-  params: {
-    icon: () => <RiPulseAiLine />,
-    title: 'Manage',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-  },
-});
+export { ManagePageHeader } from './ManagePageHeader';
+export type { HeaderLabelItem } from './types';

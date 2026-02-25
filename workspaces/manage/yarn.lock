@@ -1825,6 +1825,7 @@ __metadata:
     "@backstage/ui": "backstage:^"
     "@mui/icons-material": "npm:^5.16.7"
     "@mui/material": "npm:^5.15.16"
+    "@remixicon/react": "npm:^4.8.0"
     "@types/lodash": "npm:^4.17.23"
     "@types/react": "npm:^18.3.27"
     lodash: "npm:^4.17.21"
@@ -10582,12 +10583,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remixicon/react@npm:^4.6.0":
-  version: 4.7.0
-  resolution: "@remixicon/react@npm:4.7.0"
+"@remixicon/react@npm:^4.6.0, @remixicon/react@npm:^4.8.0":
+  version: 4.9.0
+  resolution: "@remixicon/react@npm:4.9.0"
   peerDependencies:
     react: ">=18.2.0"
-  checksum: 10/9ecee093dd4aec3744bcc7562eddb987bf9c7c059787dfecfbcc25a64c2f4833dc815dff715aa2a7f75011d65f877b3751a401d19cf2d725b5bcc685587d37f4
+  checksum: 10/3d8f1d86b2bb20ab5e44d15f18811e928b0886f7710eb7a1516afb9913ba72e46facec5dfee382825139d800bcbb6704c15d0c760d0f977c12257d4af8db3295
   languageName: node
   linkType: hard
 

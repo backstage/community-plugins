@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import { ReactElement } from 'react';
 
-import { manageApiExtension } from '@backstage-community/plugin-manage-react';
+import { Box, Flex } from '@backstage/ui';
 
-import extensions from './extensions';
-import { rootRouteRef } from './routes';
+export function Cards({ children }: { children?: ReactElement[] }) {
+  if (!children || (Array.isArray(children) && children.length === 0)) {
+    return null;
+  }
 
-/** @public */
-export const managePlugin = createFrontendPlugin({
-  pluginId: 'manage',
-  info: { packageJson: () => import('../package.json') },
-  routes: {
-    root: convertLegacyRouteRef(rootRouteRef),
-  },
-  extensions: [manageApiExtension, ...extensions],
-});
+  return (
+    <Flex align="stretch" mb="4">
+      {children.map((card, i) => (
+        <Box key={card.key ?? `card-${i}`}>{card}</Box>
+      ))}
+    </Flex>
+  );
+}

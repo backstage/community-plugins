@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import {
+  userSettingsKeys,
+  useUserSettings,
+} from '@backstage-community/plugin-manage-react';
 
-import { RiPulseAiLine } from '@remixicon/react';
+const [feature, key] = userSettingsKeys['entities-combined'];
 
-import { rootRouteRef } from '../routes';
-
-export const navItem = NavItemBlueprint.make({
-  name: 'manage',
-  params: {
-    icon: () => <RiPulseAiLine />,
-    title: 'Manage',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-  },
-});
+/**
+ * Hook to return whether the entity tabs are combined or not.
+ *
+ * @public
+ */
+export function useManagePageCombined(defaultValue?: boolean) {
+  return useUserSettings<boolean>(feature, key, { defaultValue });
+}
