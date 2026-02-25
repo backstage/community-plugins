@@ -410,7 +410,7 @@ export const prodApplication: Application = {
 
 export const multiSourceHelmArgoApp = {
   metadata: {
-    name: 'loki-app',
+    name: 'helm-git-app',
     namespace: 'argocd',
     uid: '9abc1234-5678-90ef-ghij-klmnopqrstuv',
     instance: {
@@ -421,21 +421,21 @@ export const multiSourceHelmArgoApp = {
   spec: {
     destination: {
       server: 'https://kubernetes.example.cluster:6443',
-      namespace: 'monitoring',
+      namespace: 'demo',
     },
-    project: 'monitoring',
+    project: 'demo',
     source: {
       repoURL: '',
     },
     sources: [
       {
-        repoURL: 'https://grafana.github.io/helm-charts',
-        chart: 'loki',
-        targetRevision: '6.33.0',
+        repoURL: 'https://charts.example.com/helm-charts',
+        chart: 'example-chart',
+        targetRevision: '1.0.0',
       },
       {
         repoURL: 'https://github.com/example-org/gitops-values.git',
-        path: 'loki',
+        path: 'values',
         targetRevision: 'HEAD',
         ref: 'values',
       },
@@ -467,18 +467,18 @@ export const multiSourceHelmArgoApp = {
         deployStartedAt: '2025-02-20T16:40:31Z',
         sources: [
           {
-            repoURL: 'https://grafana.github.io/helm-charts',
-            chart: 'loki',
-            targetRevision: '6.33.0',
+            repoURL: 'https://charts.example.com/helm-charts',
+            chart: 'example-chart',
+            targetRevision: '1.0.0',
           },
           {
             repoURL: 'https://github.com/example-org/gitops-values.git',
-            path: 'loki',
+            path: 'values',
             targetRevision: 'HEAD',
             ref: 'values',
           },
         ],
-        revisions: ['6.33.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
+        revisions: ['1.0.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
       },
     ],
   },
