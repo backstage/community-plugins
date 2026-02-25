@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 import { compatWrapper } from '@backstage/core-compat-api';
-import {
-  NavItemBlueprint,
-  PageBlueprint,
-} from '@backstage/frontend-plugin-api';
-import VpnKeyOutlined from '@mui/icons-material/VpnKeyOutlined';
+import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
-
-export const rbacNavItem = NavItemBlueprint.make({
-  params: {
-    routeRef: rootRouteRef,
-    title: 'RBAC',
-    icon: VpnKeyOutlined,
-  },
-});
 
 export const rbacPage = PageBlueprint.make({
   params: {

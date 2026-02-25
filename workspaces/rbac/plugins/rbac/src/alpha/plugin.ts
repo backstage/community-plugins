@@ -19,13 +19,13 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { createElement } from 'react';
 import { createRoleRouteRef, roleRouteRef, rootRouteRef } from '../routes';
-import { rbacNavItem, rbacPage } from './extensions';
+import { rbacPage } from './extensions';
 import { licensedUsersApi, rbacApi } from './api';
 
 const rbacPlugin = createFrontendPlugin({
   pluginId: 'rbac',
   info: { packageJson: () => import('../../package.json') },
-  extensions: [rbacApi, licensedUsersApi, rbacPage, rbacNavItem],
+  extensions: [rbacApi, licensedUsersApi, rbacPage],
   routes: {
     root: rootRouteRef,
     role: roleRouteRef,
