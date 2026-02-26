@@ -14250,7 +14250,6 @@ __metadata:
     "@backstage/plugin-techdocs-backend": "npm:^2.1.5"
     app: "link:../app"
     better-sqlite3: "npm:^12.0.0"
-    dockerode: "npm:^3.3.1"
     express: "npm:^4.17.1"
     node-gyp: "npm:^9.0.0"
     pg: "npm:^8.11.3"
@@ -16907,18 +16906,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docker-modem@npm:^3.0.0":
-  version: 3.0.8
-  resolution: "docker-modem@npm:3.0.8"
-  dependencies:
-    debug: "npm:^4.1.1"
-    readable-stream: "npm:^3.5.0"
-    split-ca: "npm:^1.0.1"
-    ssh2: "npm:^1.11.0"
-  checksum: 10/a731d057b3da5a9da3dd9aff7e25bc33f2d29f3e0af947bd823d1361350071afb5b7cb0582af5bf012b08fca356520685bcff87bfcba08e85725576b32f264a2
-  languageName: node
-  linkType: hard
-
 "docker-modem@npm:^5.0.6":
   version: 5.0.6
   resolution: "docker-modem@npm:5.0.6"
@@ -16928,17 +16915,6 @@ __metadata:
     split-ca: "npm:^1.0.1"
     ssh2: "npm:^1.15.0"
   checksum: 10/4977797814c29205f0762215f2e3e26600986bb65139018ff6840ff4c596e5d19f3002be1abcc5e73e3828870bb73bab28275a6458ad027ed56ab61fca014b6d
-  languageName: node
-  linkType: hard
-
-"dockerode@npm:^3.3.1":
-  version: 3.3.5
-  resolution: "dockerode@npm:3.3.5"
-  dependencies:
-    "@balena/dockerignore": "npm:^1.0.2"
-    docker-modem: "npm:^3.0.0"
-    tar-fs: "npm:~2.0.1"
-  checksum: 10/1748e8d96f88fe71bb165a4c05726904937f5863b69eaeb4a3c1bb3bbf66940c7bef13b349ff757dc43664b4367611aab76f35c1ba468f07dcbaba567e6acd88
   languageName: node
   linkType: hard
 
@@ -28720,7 +28696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssh2@npm:^1.11.0, ssh2@npm:^1.15.0, ssh2@npm:^1.4.0":
+"ssh2@npm:^1.15.0, ssh2@npm:^1.4.0":
   version: 1.15.0
   resolution: "ssh2@npm:1.15.0"
   dependencies:
@@ -29471,19 +29447,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:~2.0.1":
-  version: 2.0.1
-  resolution: "tar-fs@npm:2.0.1"
-  dependencies:
-    chownr: "npm:^1.1.1"
-    mkdirp-classic: "npm:^0.5.2"
-    pump: "npm:^3.0.0"
-    tar-stream: "npm:^2.0.0"
-  checksum: 10/85ceac6fce0e9175b5b67c0eca8864b7d29a940cae8b7657c60b66e8a252319d701c3df12814162a6839e6120f9e1975757293bdeaf294ad5b15721d236c4d32
-  languageName: node
-  linkType: hard
-
-"tar-stream@npm:^2.0.0, tar-stream@npm:^2.1.4":
+"tar-stream@npm:^2.1.4":
   version: 2.2.0
   resolution: "tar-stream@npm:2.2.0"
   dependencies:
