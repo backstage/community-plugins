@@ -24,7 +24,10 @@ yarn workspace app add @backstage-community/plugin-growthbook
 In `packages/app/src/apis.ts`:
 
 ```typescript
-import { growthbookFlagsApiRef, GrowthbookFlagsClient } from '@backstage-community/plugin-growthbook';
+import {
+  growthbookFlagsApiRef,
+  GrowthbookFlagsClient,
+} from '@backstage-community/plugin-growthbook';
 
 export const apis: AnyApiFactory[] = [
   // ... other APIs
@@ -42,7 +45,10 @@ export const apis: AnyApiFactory[] = [
 In `packages/app/src/components/catalog/EntityPage.tsx`:
 
 ```typescript
-import { GrowthbookEntityPage, isGrowthbookAvailable } from '@backstage-community/plugin-growthbook';
+import {
+  GrowthbookEntityPage,
+  isGrowthbookAvailable,
+} from '@backstage-community/plugin-growthbook';
 
 // In your componentPage:
 const componentPage = (
@@ -60,7 +66,7 @@ const componentPage = (
 ```yaml
 growthbook:
   baseUrl: ${GROWTHBOOK_BASE_URL}
-  secretKey: ${GROWTHBOOK_SECRET_KEY}  # For management API (project filtering)
+  secretKey: ${GROWTHBOOK_SECRET_KEY} # For management API (project filtering)
   sdkKeys:
     prod: ${GROWTHBOOK_SDK_KEY_PROD}
     dev: ${GROWTHBOOK_SDK_KEY_DEV}
@@ -74,9 +80,9 @@ kind: Component
 metadata:
   name: my-service
   annotations:
-    growthbook.io/enabled: "true"
-    growthbook.io/env: "prod"
-    growthbook.io/project: "my-project"  # Optional: filter to specific project
+    growthbook.io/enabled: 'true'
+    growthbook.io/env: 'prod'
+    growthbook.io/project: 'my-project' # Optional: filter to specific project
 spec:
   type: service
   owner: team-a
@@ -84,11 +90,11 @@ spec:
 
 ## Annotations
 
-| Annotation | Required | Description |
-|------------|----------|-------------|
-| `growthbook.io/enabled` | Yes | Set to `"true"` to enable the GrowthBook tab |
-| `growthbook.io/env` | No | Environment (default: `prod`) |
-| `growthbook.io/project` | No | GrowthBook project name to filter flags |
+| Annotation              | Required | Description                                  |
+| ----------------------- | -------- | -------------------------------------------- |
+| `growthbook.io/enabled` | Yes      | Set to `"true"` to enable the GrowthBook tab |
+| `growthbook.io/env`     | No       | Environment (default: `prod`)                |
+| `growthbook.io/project` | No       | GrowthBook project name to filter flags      |
 
 ## Configuration
 

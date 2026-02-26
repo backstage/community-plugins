@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { useMemo, useState } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
@@ -101,13 +116,22 @@ function FlagDetailDialog({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         {flag.key}
-        <IconButton className={classes.closeButton} onClick={onClose} size="small">
+        <IconButton
+          className={classes.closeButton}
+          onClick={onClose}
+          size="small"
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
         <Typography variant="subtitle2" gutterBottom>
-          Type: <Chip size="small" label={flag.type} color={TYPE_COLOURS[flag.type]} />
+          Type:{' '}
+          <Chip
+            size="small"
+            label={flag.type}
+            color={TYPE_COLOURS[flag.type]}
+          />
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
           Default value:
@@ -124,8 +148,12 @@ export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
 export const GROWTHBOOK_ENV_ANNOTATION = 'growthbook.io/env';
 export const GROWTHBOOK_PROJECT_ANNOTATION = 'growthbook.io/project';
 
-export function isGrowthbookAvailable(entity: { metadata: { annotations?: Record<string, string> } }) {
-  return entity.metadata.annotations?.[GROWTHBOOK_ENABLED_ANNOTATION] === 'true';
+export function isGrowthbookAvailable(entity: {
+  metadata: { annotations?: Record<string, string> };
+}) {
+  return (
+    entity.metadata.annotations?.[GROWTHBOOK_ENABLED_ANNOTATION] === 'true'
+  );
 }
 
 export function EntityGrowthbookFlagsContent() {
@@ -148,10 +176,11 @@ export function EntityGrowthbookFlagsContent() {
   const projectFilter =
     selectedProject === ALL_PROJECTS ? undefined : selectedProject;
 
-  const { value: flags, loading, error } = useAsync(
-    () => api.getFlags(env, projectFilter),
-    [env, projectFilter],
-  );
+  const {
+    value: flags,
+    loading,
+    error,
+  } = useAsync(() => api.getFlags(env, projectFilter), [env, projectFilter]);
 
   const sortedFlags = useMemo(
     () => (flags ? [...flags].sort((a, b) => a.key.localeCompare(b.key)) : []),
@@ -174,7 +203,9 @@ export function EntityGrowthbookFlagsContent() {
             {projectOptions.map(p => (
               <Button
                 key={p}
-                className={selectedProject === p ? classes.activeBtn : undefined}
+                className={
+                  selectedProject === p ? classes.activeBtn : undefined
+                }
                 onClick={() => setSelectedProject(p)}
               >
                 {p}
@@ -191,9 +222,15 @@ export function EntityGrowthbookFlagsContent() {
         <Table className={classes.table} size="small">
           <TableHead>
             <TableRow>
-              <TableCell><strong>Key</strong></TableCell>
-              <TableCell><strong>Type</strong></TableCell>
-              <TableCell><strong>Default value</strong></TableCell>
+              <TableCell>
+                <strong>Key</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Type</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Default value</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -203,7 +240,10 @@ export function EntityGrowthbookFlagsContent() {
                   <Typography variant="body2" color="textSecondary">
                     No feature flags found
                     {selectedProject !== ALL_PROJECTS && (
-                      <> for project <strong>{selectedProject}</strong></>
+                      <>
+                        {' '}
+                        for project <strong>{selectedProject}</strong>
+                      </>
                     )}{' '}
                     in environment <strong>{env}</strong>.
                   </Typography>
@@ -217,7 +257,11 @@ export function EntityGrowthbookFlagsContent() {
                   placement="left"
                 >
                   <TableRow
-                    className={flag.type === 'json' || flag.valuePretty ? classes.clickableRow : undefined}
+                    className={
+                      flag.type === 'json' || flag.valuePretty
+                        ? classes.clickableRow
+                        : undefined
+                    }
                     onClick={() => {
                       if (flag.type === 'json' || flag.valuePretty) {
                         setSelectedFlag(flag);

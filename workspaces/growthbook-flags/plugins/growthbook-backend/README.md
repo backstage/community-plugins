@@ -31,7 +31,7 @@ Add to `app-config.yaml`:
 ```yaml
 growthbook:
   baseUrl: ${GROWTHBOOK_BASE_URL}
-  secretKey: ${GROWTHBOOK_SECRET_KEY}  # Optional: for management API (enables project filtering)
+  secretKey: ${GROWTHBOOK_SECRET_KEY} # Optional: for management API (enables project filtering)
   sdkKeys:
     prod: ${GROWTHBOOK_SDK_KEY_PROD}
     dev: ${GROWTHBOOK_SDK_KEY_DEV}
@@ -49,6 +49,7 @@ growthbook:
 The plugin exposes the following endpoints:
 
 - `GET /api/growthbook-flags/flags?env=<env>&project=<project>`
+
   - Returns feature flags for the specified environment
   - Optional `project` param to filter by GrowthBook project name
 
@@ -58,6 +59,7 @@ The plugin exposes the following endpoints:
 ## How It Works
 
 1. **With `secretKey` configured:**
+
    - Uses GrowthBook management API (`/api/v1/features`)
    - Fetches project metadata (`/api/v1/projects`)
    - Enables project-based filtering
