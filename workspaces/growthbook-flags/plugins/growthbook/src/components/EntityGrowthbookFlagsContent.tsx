@@ -144,10 +144,13 @@ function FlagDetailDialog({
   );
 }
 
+/** @public */
 export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
+/** @public */
 export const GROWTHBOOK_ENV_ANNOTATION = 'growthbook.io/env';
 export const GROWTHBOOK_PROJECT_ANNOTATION = 'growthbook.io/project';
 
+/** @public */
 export function isGrowthbookAvailable(entity: {
   metadata: { annotations?: Record<string, string> };
 }) {
@@ -156,6 +159,7 @@ export function isGrowthbookAvailable(entity: {
   );
 }
 
+/** @public */
 export function EntityGrowthbookFlagsContent() {
   const classes = useStyles();
   const { entity } = useEntity();
