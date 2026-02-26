@@ -1410,8 +1410,8 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
-    "@gitbeaker/browser": "npm:^35.6.0"
-    "@gitbeaker/core": "npm:^35.6.0"
+    "@gitbeaker/core": "npm:^43.0.0"
+    "@gitbeaker/rest": "npm:^43.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0"
     "@types/react-dom": "npm:^18.2.19"
     p-limit: "npm:^3.1.0"
@@ -4008,40 +4008,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gitbeaker/browser@npm:^35.6.0":
-  version: 35.8.1
-  resolution: "@gitbeaker/browser@npm:35.8.1"
+"@gitbeaker/core@npm:^43.0.0, @gitbeaker/core@npm:^43.8.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/core@npm:43.8.0"
   dependencies:
-    "@gitbeaker/core": "npm:^35.8.1"
-    "@gitbeaker/requester-utils": "npm:^35.8.1"
-    delay: "npm:^5.0.0"
-    ky: "npm:0.28.7"
-  checksum: 10/92cd70614789bbe225ddfbbcd17ea0b002c2eca9019b11c324ac11899b77d00c7b6ec5bc16b44e83150315d603d5a3feaaeb7b52e3edd86886557103c344fe20
+    "@gitbeaker/requester-utils": "npm:^43.8.0"
+    qs: "npm:^6.14.0"
+    xcase: "npm:^2.0.1"
+  checksum: 10/1c935ffec246c854d7d543cc4ccb97271c322ea506c02ccf60774bffd42462c36cd3324d6876082da706d25e444878f76714746b1fbd77c202b0e3766ef5f4ae
   languageName: node
   linkType: hard
 
-"@gitbeaker/core@npm:^35.6.0, @gitbeaker/core@npm:^35.8.1":
-  version: 35.8.1
-  resolution: "@gitbeaker/core@npm:35.8.1"
+"@gitbeaker/requester-utils@npm:^43.8.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/requester-utils@npm:43.8.0"
   dependencies:
-    "@gitbeaker/requester-utils": "npm:^35.8.1"
-    form-data: "npm:^4.0.0"
-    li: "npm:^1.3.0"
-    mime: "npm:^3.0.0"
-    query-string: "npm:^7.0.0"
+    picomatch-browser: "npm:^2.2.6"
+    qs: "npm:^6.14.0"
+    rate-limiter-flexible: "npm:^8.0.1"
     xcase: "npm:^2.0.1"
-  checksum: 10/5e3eda56f74678ceaec6d494318a0fa9b20d587f307e4d269206cf3ffb6363c8361effd43ef465f7b19f467d7a2caea0e95705a5af88c0bede06bfd897a463f0
+  checksum: 10/529685994676068a18f4bf6329252c66a62c1ef160f6e9d4b3a916330189cc1628fb30c983625d38295cef2999438e14ecb611fcd8a484b7c479b6dcf29f7679
   languageName: node
   linkType: hard
 
-"@gitbeaker/requester-utils@npm:^35.8.1":
-  version: 35.8.1
-  resolution: "@gitbeaker/requester-utils@npm:35.8.1"
+"@gitbeaker/rest@npm:^43.0.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/rest@npm:43.8.0"
   dependencies:
-    form-data: "npm:^4.0.0"
-    qs: "npm:^6.10.1"
-    xcase: "npm:^2.0.1"
-  checksum: 10/f939216443682303b80b72fa59158cf3fb4a95d31251bb0b4cffa83bd0e0ad0e949645aaaa08fe4dfcd7d06ea5a1547e5688c02b608e8bc76b1e12286935c265
+    "@gitbeaker/core": "npm:^43.8.0"
+    "@gitbeaker/requester-utils": "npm:^43.8.0"
+  checksum: 10/a29493ee1e0e789a0fa4307108c616bb287f33a390262a57025461140a284ae1284918ff4d4e91d3351e61b050eea55ffe2ca7551ffcb6be29ae22c67136a463
   languageName: node
   linkType: hard
 
@@ -15054,13 +15050,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decode-uri-component@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "decode-uri-component@npm:0.2.2"
-  checksum: 10/17a0e5fa400bf9ea84432226e252aa7b5e72793e16bf80b907c99b46a799aeacc139ec20ea57121e50c7bd875a1a4365928f884e92abf02e21a5a13790a0f33e
-  languageName: node
-  linkType: hard
-
 "decompress-response@npm:^6.0.0":
   version: 6.0.0
   resolution: "decompress-response@npm:6.0.0"
@@ -15203,13 +15192,6 @@ __metadata:
     escodegen: "npm:^2.1.0"
     esprima: "npm:^4.0.1"
   checksum: 10/a64fa39cdf6c2edd75188157d32338ee9de7193d7dbb2aeb4acb1eb30fa4a15ed80ba8dae9bd4d7b085472cf174a5baf81adb761aaa8e326771392c922084152
-  languageName: node
-  linkType: hard
-
-"delay@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "delay@npm:5.0.0"
-  checksum: 10/62f151151ecfde0d9afbb8a6be37a6d103c4cb24f35a20ef3fe56f920b0d0d0bb02bc9c0a3084d0179ef669ca332b91155f2ee4d9854622cd2cdba5fc95285f9
   languageName: node
   linkType: hard
 
@@ -16925,13 +16907,6 @@ __metadata:
   dependencies:
     to-regex-range: "npm:^5.0.1"
   checksum: 10/a7095cb39e5bc32fada2aa7c7249d3f6b01bd1ce461a61b0adabacccabd9198500c6fb1f68a7c851a657e273fce2233ba869638897f3d7ed2e87a2d89b4436ea
-  languageName: node
-  linkType: hard
-
-"filter-obj@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "filter-obj@npm:1.1.0"
-  checksum: 10/9d681939eec2b4b129cb4f307b7e93d954a0657421d4e5357d86093b26d3f4f570909ed43717dcfd62428b3cf8cddd9841b35f9d40d12ac62cfabaa677942593
   languageName: node
   linkType: hard
 
@@ -20259,13 +20234,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:0.28.7":
-  version: 0.28.7
-  resolution: "ky@npm:0.28.7"
-  checksum: 10/d9d8da51a337943c6133d4188f9e895ff17280cdb40f012213a9fbfbe9e66116dbeaa36372cc676fe01b98120161e83bb400ee6a6afbda4fb5ef8f66669ce8b0
-  languageName: node
-  linkType: hard
-
 "language-subtag-registry@npm:^0.3.20":
   version: 0.3.23
   resolution: "language-subtag-registry@npm:0.3.23"
@@ -20325,13 +20293,6 @@ __metadata:
     prelude-ls: "npm:~1.1.2"
     type-check: "npm:~0.3.2"
   checksum: 10/e1c3e75b5c430d9aa4c32c83c8a611e4ca53608ca78e3ea3bf6bbd9d017e4776d05d86e27df7901baebd3afa732abede9f26f715b8c1be19e95505c7a3a7b589
-  languageName: node
-  linkType: hard
-
-"li@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "li@npm:1.3.0"
-  checksum: 10/825a1e132da5263e16cf24df92b787c5030c6549be66a8b2087e74ca56474aa681183f3a11b5f14e61d5d583af5f776ecf3b320ad689842511f36030339f6a0c
   languageName: node
   linkType: hard
 
@@ -23395,6 +23356,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picomatch-browser@npm:^2.2.6":
+  version: 2.2.6
+  resolution: "picomatch-browser@npm:2.2.6"
+  checksum: 10/0136abee4bbef256e9b6b20676873807e11cc6d04d52d4cd4e9e5c7b48b0888e67f224873eb7eaba6da2a5356647e5aa9a2ef62ad98a675c7940344bfae0238e
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
@@ -24258,18 +24226,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"query-string@npm:^7.0.0":
-  version: 7.1.3
-  resolution: "query-string@npm:7.1.3"
-  dependencies:
-    decode-uri-component: "npm:^0.2.2"
-    filter-obj: "npm:^1.1.0"
-    split-on-first: "npm:^1.0.0"
-    strict-uri-encode: "npm:^2.0.0"
-  checksum: 10/3b6f2c167e76ca4094c5f1a9eb276efcbb9ebfd8b1a28c413f3c4e4e7d6428c8187bf46c8cbc9f92a229369dd0015de10a7fd712c8cee98d5d84c2ac6140357e
-  languageName: node
-  linkType: hard
-
 "querystring-es3@npm:^0.2.1":
   version: 0.2.1
   resolution: "querystring-es3@npm:0.2.1"
@@ -24384,6 +24340,13 @@ __metadata:
   peerDependencies:
     express-rate-limit: ">= 6"
   checksum: 10/c36c50cfca992cbd14c97c08bb01c7d1d340d27b5fa1a2c1154275fec0b59c187eb6fb207da3d035c7c87e7629c92324cd53074f854dbb16548faf94f5a41351
+  languageName: node
+  linkType: hard
+
+"rate-limiter-flexible@npm:^8.0.1":
+  version: 8.3.0
+  resolution: "rate-limiter-flexible@npm:8.3.0"
+  checksum: 10/9c8d7a3224e3a57fdf7da721dabdb4942eb7dd7b5f3aa4cd57e2185928d5842855a8dc2e1db5e0403987d369972d0567e98aade2c2daa71436ebdae704e5a8ff
   languageName: node
   linkType: hard
 
@@ -26579,13 +26542,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"split-on-first@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "split-on-first@npm:1.1.0"
-  checksum: 10/16ff85b54ddcf17f9147210a4022529b343edbcbea4ce977c8f30e38408b8d6e0f25f92cd35b86a524d4797f455e29ab89eb8db787f3c10708e0b47ebf528d30
-  languageName: node
-  linkType: hard
-
 "split2@npm:^4.1.0":
   version: 4.2.0
   resolution: "split2@npm:4.2.0"
@@ -26814,13 +26770,6 @@ __metadata:
     bare-events:
       optional: true
   checksum: 10/635fe73c6cacc95a9932e338905781ce1aaa200b3a4935afaa873ff69be867f820e7e0dfe98d1b553b5ed1f5311a36e8158a6b748e41f3bd15a6a29ecc33b97d
-  languageName: node
-  linkType: hard
-
-"strict-uri-encode@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "strict-uri-encode@npm:2.0.0"
-  checksum: 10/eaac4cf978b6fbd480f1092cab8b233c9b949bcabfc9b598dd79a758f7243c28765ef7639c876fa72940dac687181b35486ea01ff7df3e65ce3848c64822c581
   languageName: node
   linkType: hard
 
