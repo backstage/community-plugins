@@ -11,11 +11,12 @@ Add support for a default role and permissions for authenticated users in RBAC b
   ```diff
   permission:
     rbac:
-  +   defaultRole: role:default/my-default-role
-  +   basicPermissions:
-  +     - permission: catalog.entity.read
-  +       action: read
-  +       effect: allow
+  +   defaultPermissions:
+  +     defaultRole: role:default/my-default-role
+  +     basicPermissions:
+  +       - permission: catalog.entity.read
+  +         action: read
+  +         effect: allow
   ```
 
 - Updated the RBAC permission policy to include the default role in user roles if not already present.
