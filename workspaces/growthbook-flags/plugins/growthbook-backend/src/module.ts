@@ -37,6 +37,7 @@ const flagCache = new Map<string, CacheEntry<FlagRow[]>>();
 let projectCache: CacheEntry<GbProject[]> | null = null;
 let rawFeaturesCache: CacheEntry<MgmtFeature[]> | null = null;
 
+/** @public */
 const growthbookFlagsPlugin = createBackendPlugin({
   pluginId: 'growthbook-flags',
   register(env) {
