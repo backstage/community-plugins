@@ -31,6 +31,11 @@ type CacheEntry<T> = { data: T; fetchedAt: number };
 
 const FLAG_CACHE_TTL_MS = 60_000;
 const PROJECT_CACHE_TTL_MS = 300_000;
+const FLAG_CACHE_MAX_ENTRIES = 200;
+
+const flagCache = new Map<string, CacheEntry<FlagRow[]>>();
+let projectCache: CacheEntry<GbProject[]> | null = null;
+let rawFeaturesCache: CacheEntry<MgmtFeature[]> | null = null;
 
 const growthbookFlagsPlugin = createBackendPlugin({
   pluginId: 'growthbook-flags',
@@ -90,7 +95,8 @@ const growthbookFlagsPlugin = createBackendPlugin({
             allFeatures.filter(f => f.project === projectId).map(f => f.id),
           );
           const rows = allRows.filter(r => projectFeatureIds.has(r.key));
-          flagCache.set(cacheKey, { data: rows, fetchedAt: now });
+          if (flagCache.size < FLAG_CACHE_MAX_ENTRIES)
+            flagCache.set(cacheKey, { data: rows, fetchedAt: now });
           return rows;
         }
 
@@ -135,7 +141,8 @@ const growthbookFlagsPlugin = createBackendPlugin({
           }
           const features = await fetchAllRawFeatures();
           const rows = normalizeMgmtFlags(features, gbEnv);
-          flagCache.set(cacheKey, { data: rows, fetchedAt: now });
+          if (flagCache.size < FLAG_CACHE_MAX_ENTRIES)
+            flagCache.set(cacheKey, { data: rows, fetchedAt: now });
           return rows;
         }
 
@@ -181,9 +188,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
                   p => p.name.toLowerCase() === projectName.toLowerCase(),
                 );
                 if (!match) {
-                  res
-                    .status(400)
-                    .json({ error: `Unknown project: ${projectName}` });
+                  res.status(400).json({ error: 'Unknown project' });
                   return;
                 }
                 flags = await fetchAllFeaturesByProject(match.id, gbEnv);
@@ -207,7 +212,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
           try {
             sdkKey = sdkKeysConfig.getString(gbEnv);
           } catch {
-            res.status(400).json({ error: `Unknown environment: ${gbEnv}` });
+            res.status(400).json({ error: 'Unknown environment' });
             return;
           }
 
@@ -227,12 +232,14 @@ const growthbookFlagsPlugin = createBackendPlugin({
               features?: Record<string, { defaultValue: unknown }>;
             };
             const flags = normalizeSdkFlags(payload.features ?? {});
-            flagCache.set(sdkKey, { data: flags, fetchedAt: now });
+            if (flagCache.size < FLAG_CACHE_MAX_ENTRIES)
+              flagCache.set(sdkKey, { data: flags, fetchedAt: now });
             res.json(flags);
           } catch (err) {
-            logger.error(
-              `Failed to fetch GrowthBook flags (SDK API) for env "${gbEnv}": ${err}`,
-            );
+            logger.error('Failed to fetch GrowthBook flags (SDK API)', {
+              env: gbEnv,
+              error: String(err),
+            });
             res
               .status(502)
               .json({ error: 'Failed to fetch flags from GrowthBook' });
