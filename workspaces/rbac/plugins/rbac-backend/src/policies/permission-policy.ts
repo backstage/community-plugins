@@ -199,7 +199,12 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         return { result: AuthorizeResult.DENY };
       }
 
-      if (this.superUserList!.includes(userEntityRef)) {
+      if (
+        this.superUserList!.includes(userEntityRef) ||
+        user.info.ownershipEntityRefs.some(ref =>
+          this.superUserList!.includes(ref),
+        )
+      ) {
         await auditorEvent.success({
           meta: { result: AuthorizeResult.ALLOW },
         });
