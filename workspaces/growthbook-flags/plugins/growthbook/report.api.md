@@ -9,13 +9,9 @@ import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
-// Warning: (ae-missing-release-tag) "EntityGrowthbookFlagsContent" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function EntityGrowthbookFlagsContent(): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "FlagRow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type FlagRow = {
   key: string;
@@ -24,28 +20,18 @@ export type FlagRow = {
   valuePretty?: string;
 };
 
-// Warning: (ae-missing-release-tag) "FlagType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export type FlagType = 'boolean' | 'number' | 'string' | 'json' | 'null';
 
-// Warning: (ae-missing-release-tag) "GROWTHBOOK_ENABLED_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
 
-// Warning: (ae-missing-release-tag) "GROWTHBOOK_ENV_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const GROWTHBOOK_ENV_ANNOTATION = 'growthbook.io/env';
 
-// Warning: (ae-missing-release-tag) "GrowthbookEntityPage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function GrowthbookEntityPage(): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "GrowthbookFlagsApi" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface GrowthbookFlagsApi {
   // (undocumented)
@@ -54,13 +40,9 @@ export interface GrowthbookFlagsApi {
   getProjects(): Promise<string[]>;
 }
 
-// Warning: (ae-missing-release-tag) "growthbookFlagsApiRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const growthbookFlagsApiRef: ApiRef<GrowthbookFlagsApi>;
 
-// Warning: (ae-missing-release-tag) "GrowthbookFlagsClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
@@ -70,19 +52,13 @@ export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   getProjects(): Promise<string[]>;
 }
 
-// Warning: (ae-missing-release-tag) "growthbookFlagsPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const growthbookFlagsPlugin: BackstagePlugin<{}, {}, {}>;
 
-// Warning: (ae-missing-release-tag) "isGrowthbookAvailable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export function isGrowthbookAvailable(entity: {
   metadata: {
     annotations?: Record<string, string>;
   };
 }): boolean;
-
-// (No @packageDocumentation comment for this package)
 ```
