@@ -19,8 +19,10 @@ import {
   FetchApi,
 } from '@backstage/core-plugin-api';
 
+/** @public */
 export type FlagType = 'boolean' | 'number' | 'string' | 'json' | 'null';
 
+/** @public */
 export type FlagRow = {
   key: string;
   type: FlagType;
@@ -28,15 +30,18 @@ export type FlagRow = {
   valuePretty?: string;
 };
 
+/** @public */
 export interface GrowthbookFlagsApi {
   getFlags(env: string, project?: string): Promise<FlagRow[]>;
   getProjects(): Promise<string[]>;
 }
 
+/** @public */
 export const growthbookFlagsApiRef = createApiRef<GrowthbookFlagsApi>({
   id: 'plugin.growthbook-flags.service',
 });
 
+/** @public */
 export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
