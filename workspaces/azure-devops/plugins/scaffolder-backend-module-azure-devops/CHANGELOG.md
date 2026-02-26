@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.21.0
+
+### Minor Changes
+
+- 20faa44: **BREAKING** Fixed bug in `createAzureDevopsRunPipelineAction` where `pipelineRun.result` returned an integer instead of the corresponding string
+
 ## 0.20.1
 
 ### Patch Changes
