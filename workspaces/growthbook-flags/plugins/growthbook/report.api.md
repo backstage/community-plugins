@@ -61,4 +61,6 @@ export function isGrowthbookAvailable(entity: {
     annotations?: Record<string, string>;
   };
 }): boolean;
+
+// (No @packageDocumentation comment for this package)
 ```
