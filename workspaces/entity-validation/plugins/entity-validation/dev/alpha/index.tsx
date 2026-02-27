@@ -95,10 +95,12 @@ const root = app.createRoot();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <TestApiProvider
-    apis={[
-      [catalogApiRef, catalogApi],
-      [identityApiRef, mockIdentityApi],
-    ]}
+    apis={
+      [
+        [catalogApiRef, catalogApi],
+        [identityApiRef, mockIdentityApi],
+      ] as const
+    }
   >
     {root}
   </TestApiProvider>,
