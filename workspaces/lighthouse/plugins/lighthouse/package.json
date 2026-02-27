@@ -73,6 +73,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
