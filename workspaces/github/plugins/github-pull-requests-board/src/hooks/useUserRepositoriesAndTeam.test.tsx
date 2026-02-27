@@ -160,7 +160,7 @@ describe('useUserRepositoriesAndTeam', () => {
   });
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <TestApiProvider apis={[[catalogApiRef, catalogApi]]}>
+    <TestApiProvider apis={[[catalogApiRef, catalogApi]] as const}>
       {children}
     </TestApiProvider>
   );

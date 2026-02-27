@@ -48,7 +48,9 @@ describe('Entity card extensions', () => {
 
   it('should render LatestWorkflowRunCard', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+      <TestApiProvider
+        apis={[[githubActionsApiRef, mockGithubActionsApi]] as const}
+      >
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(
             cards.entityLatestGithubActionRunCard,
@@ -67,7 +69,9 @@ describe('Entity card extensions', () => {
 
   it('should render LatestWorkflowsRunForBranchCard', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+      <TestApiProvider
+        apis={[[githubActionsApiRef, mockGithubActionsApi]] as const}
+      >
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(
             cards.entityLatestGithubActionsForBranchCard,
@@ -86,7 +90,9 @@ describe('Entity card extensions', () => {
 
   it('should render RecentWorkflowRunsCard', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+      <TestApiProvider
+        apis={[[githubActionsApiRef, mockGithubActionsApi]] as const}
+      >
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(
             cards.entityRecentGithubActionsRunsCard,

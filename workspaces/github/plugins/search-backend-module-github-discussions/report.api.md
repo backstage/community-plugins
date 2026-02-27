@@ -20,10 +20,9 @@ export class GithubDiscussionsCollatorFactory
   // (undocumented)
   execute(): AsyncGenerator<GithubDiscussionIndexableDocument>;
   // (undocumented)
-  static fromConfig({
-    logger,
-    config,
-  }: GithubDiscussionsCollatorFactoryConstructorOptions): Promise<GithubDiscussionsCollatorFactory>;
+  static fromConfig(
+    input: GithubDiscussionsCollatorFactoryConstructorOptions,
+  ): Promise<GithubDiscussionsCollatorFactory>;
   // (undocumented)
   getCollator(): Promise<Readable>;
   // (undocumented)
