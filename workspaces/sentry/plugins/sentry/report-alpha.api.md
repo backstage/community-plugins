@@ -10,12 +10,14 @@ import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { FilterPredicate } from '@backstage/filter-predicates';
 import { JSX as JSX_2 } from 'react';
+import { JSXElementConstructor } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { ReactElement } from 'react';
 import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
@@ -46,12 +48,12 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'sentry-issues';
       config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        filter: FilterPredicate | undefined;
+        type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        filter?: FilterPredicate | undefined;
+        type?: 'content' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -79,7 +81,7 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        filter?: FilterPredicate | ((entity: Entity) => boolean) | undefined;
         type?: EntityCardType | undefined;
       };
     }>;
@@ -89,14 +91,16 @@ const _default: OverridableFrontendPlugin<
       config: {
         path: string | undefined;
         title: string | undefined;
-        filter: EntityPredicate | undefined;
+        filter: FilterPredicate | undefined;
         group: string | false | undefined;
+        icon: string | undefined;
       };
       configInput: {
-        filter?: EntityPredicate | undefined;
+        filter?: FilterPredicate | undefined;
         title?: string | undefined;
         path?: string | undefined;
         group?: string | false | undefined;
+        icon?: string | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -129,6 +133,13 @@ const _default: OverridableFrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ExtensionDataRef<
+            string | ReactElement<any, string | JSXElementConstructor<any>>,
+            'catalog.entity-content-icon',
+            {
+              optional: true;
+            }
           >;
       inputs: {};
       params: {
@@ -146,9 +157,13 @@ const _default: OverridableFrontendPlugin<
           | 'operation'
           | 'observability'
           | undefined;
+        icon?:
+          | string
+          | ReactElement<any, string | JSXElementConstructor<any>>
+          | undefined;
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        filter?: FilterPredicate | ((entity: Entity) => boolean) | undefined;
       };
     }>;
   }
