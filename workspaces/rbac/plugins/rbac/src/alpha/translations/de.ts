@@ -13,60 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { rbacTranslationRef } from './ref';
 
+/**
+ * de translation for plugin.rbac.
+ * @public
+ */
 const rbacTranslationDe = createTranslationMessages({
   ref: rbacTranslationRef,
-  full: true,
   messages: {
     'page.title': 'RBAC',
     'page.createRole': 'Rolle erstellen',
     'page.editRole': 'Rolle bearbeiten',
+    'table.searchPlaceholder': 'Filter',
+    'table.labelRowsSelect': 'Zeilen',
     'table.title': 'Alle Rollen',
     'table.titleWithCount': 'Alle Rollen ({{count}})',
     'table.headers.name': 'Name',
     'table.headers.usersAndGroups': 'Benutzer und Gruppen',
-    'table.headers.accessiblePlugins': 'Zugängliche Plugins',
+    'table.headers.accessiblePlugins': 'Barrierefreie Plugins',
     'table.headers.actions': 'Aktionen',
     'table.emptyContent': 'Keine Datensätze gefunden',
-    'table.searchPlaceholder': 'Filtern',
-    'table.labelRowsSelect': 'Zeilen',
     'toolbar.createButton': 'Erstellen',
-    'toolbar.warning.title': 'Rolle kann nicht erstellt werden.',
+    'toolbar.warning.title': 'Rolle konnte nicht erstellt werden.',
     'toolbar.warning.message':
-      'Um die Schaltfläche Rolle erstellen/bearbeiten zu aktivieren, stellen Sie sicher, dass die erforderlichen Benutzer/Gruppen im Katalog verfügbar sind, da eine Rolle nicht ohne Benutzer/Gruppen erstellt werden kann, und dass die Rolle, die mit Ihrem Benutzer verknüpft ist, die Berechtigungsrichtlinien <link>hier</link> erwähnt.',
+      "Um die Schaltfläche 'Rolle erstellen/bearbeiten' zu aktivieren, stellen Sie sicher, dass die erforderlichen Benutzer/Gruppen im Katalog vorhanden sind, da eine Rolle nicht ohne Benutzer/Gruppen erstellt werden kann. Außerdem muss die Ihrem Benutzer zugeordnete Rolle über die genannten Berechtigungsrichtlinien verfügen. <link>hier</link>.",
     'toolbar.warning.linkText': 'hier',
     'toolbar.warning.note': 'Hinweis',
     'toolbar.warning.noteText':
-      'Selbst nach dem Importieren von Benutzern/Gruppen in den Katalog und dem Anwenden der oben genannten Berechtigungen, wenn die Erstellen/Bearbeiten-Schaltfläche weiterhin deaktiviert ist, wenden Sie sich bitte an Ihren Administrator, da Sie möglicherweise bedingt vom Zugriff auf die Erstellen/Bearbeiten-Schaltfläche eingeschränkt sind.',
+      "Wenn selbst nach der Aufnahme von Benutzern/Gruppen in den Katalog und nach Anwendung der o. g. Berechtigungen die Schaltfläche 'Erstellen/Bearbeiten' weiterhin deaktiviert ist, wenden Sie sich an den Administrator, da Ihr Zugriff auf die Schaltfläche 'Erstellen/Bearbeiten' möglicherweise bedingt eingeschränkt ist.",
     'errors.notFound': 'Nicht gefunden',
     'errors.notAllowed':
       'Unzureichende Berechtigungen zum Zugriff auf diese Seite',
-    'errors.unauthorized': 'Nicht berechtigt, Rolle zu erstellen',
+    'errors.unauthorized': 'Keine Berechtigung zum Erstellen der Rolle',
     'errors.rbacDisabled':
-      'Aktivieren Sie das RBAC-Backend-Plugin, um diese Funktion zu verwenden.',
+      'Aktivieren Sie das RBAC-Backend-Plugin, um diese Funktion zu nutzen.',
     'errors.rbacDisabledInfo':
-      'Um RBAC zu aktivieren, setzen Sie `permission.enabled` auf `true` in der App-Konfigurationsdatei.',
-    'errors.fetchRoles': 'Beim Abrufen der Rollen ist etwas schief gelaufen',
-    'errors.fetchRole': 'Beim Abrufen der Rolle ist etwas schief gelaufen',
-    'errors.fetchPolicies':
-      'Beim Abrufen der Berechtigungsrichtlinien ist etwas schief gelaufen',
+      "Um RBAC zu aktivieren, setzen Sie 'permission.enabled' in der 'app-config'-Datei auf 'true'.",
+    'errors.fetchRoles': 'Beim Abrufen der Rollen ist ein Fehler aufgetreten',
+    'errors.fetchRole': 'Beim Abrufen der Rolle ist ein Fehler aufgetreten',
     'errors.fetchPoliciesErr': 'Fehler beim Abrufen der Richtlinien. {{error}}',
+    'errors.fetchPolicies':
+      'Beim Abrufen der Berechtigungsrichtlinien ist ein Fehler aufgetreten',
     'errors.fetchPlugins': 'Fehler beim Abrufen der Plugins. {{error}}',
     'errors.fetchConditionalPermissionPolicies':
       'Fehler beim Abrufen der bedingten Berechtigungsrichtlinien. {{error}}',
     'errors.fetchConditions':
-      'Beim Abrufen der Rollenbedingungen ist etwas schief gelaufen',
+      'Beim Abrufen der Rollenbedingungen ist ein Fehler aufgetreten',
     'errors.fetchUsersAndGroups':
-      'Beim Abrufen der Benutzer und Gruppen ist etwas schief gelaufen',
-    'errors.createRole': 'Rolle kann nicht erstellt werden.',
-    'errors.editRole': 'Rolle kann nicht bearbeitet werden.',
-    'errors.deleteRole': 'Rolle kann nicht gelöscht werden.',
+      'Beim Abrufen der Benutzer und Gruppen ist ein Fehler aufgetreten',
+    'errors.createRole': 'Die Rolle kann nicht erstellt werden.',
+    'errors.editRole': 'Die Rolle kann nicht bearbeitet werden.',
+    'errors.deleteRole': 'Die Rolle kann nicht gelöscht werden.',
     'errors.roleCreatedSuccess':
-      'Rolle wurde erfolgreich erstellt, aber Berechtigungsrichtlinien konnten nicht zur Rolle hinzugefügt werden.',
+      'Die Rolle wurde erfolgreich erstellt, es können jedoch keine Berechtigungsrichtlinien zur Rolle hinzugefügt werden.',
     'errors.roleCreatedConditionsSuccess':
-      'Rolle wurde erfolgreich erstellt, aber Bedingungen konnten nicht zur Rolle hinzugefügt werden.',
+      'Die Rolle wurde erfolgreich erstellt, es können jedoch keine Bedingungen zur Rolle hinzugefügt werden.',
     'roleForm.titles.createRole': 'Rolle erstellen',
     'roleForm.titles.editRole': 'Rolle bearbeiten',
     'roleForm.titles.nameAndDescription':
@@ -86,27 +90,73 @@ const rbacTranslationDe = createTranslationMessages({
     'roleForm.steps.create': 'Erstellen',
     'roleForm.steps.save': 'Speichern',
     'roleForm.fields.name.label': 'Name',
-    'roleForm.fields.name.helperText': 'Name der Rolle eingeben',
+    'roleForm.fields.name.helperText': 'Geben Sie den Namen der Rolle ein',
     'roleForm.fields.description.label': 'Beschreibung',
     'roleForm.fields.description.helperText':
-      'Geben Sie eine kurze Beschreibung der Rolle ein (Der Zweck der Rolle)',
+      'Geben Sie eine kurze Beschreibung der Rolle ein (Zweck der Rolle)',
     'roleForm.fields.owner.label': 'Eigentümer',
     'roleForm.fields.owner.helperText':
-      'Optional: Geben Sie einen Benutzer oder eine Gruppe ein, die die Berechtigung haben soll, diese Rolle zu bearbeiten und zusätzliche Rollen zu erstellen. Im nächsten Schritt geben Sie an, welche Benutzer sie ihren Rollen zuweisen können und auf welche Plugins sie Zugriff gewähren können. Wenn leer gelassen, wird automatisch der Autor bei der Erstellung zugewiesen.',
+      'Optional: Geben Sie einen Benutzer oder eine Gruppe ein, der bzw. die die Berechtigung haben soll, diese Rolle zu bearbeiten und zusätzliche Rollen zu erstellen. Im nächsten Schritt legen Sie fest, welchen Benutzern sie ihre Rollen zuweisen können und auf welche Plugins sie Zugriff erteilen können. Wird hier keine Angabe gemacht, wird bei der Erstellung automatisch der Autor zugewiesen.',
     'deleteDialog.title': 'Rolle löschen',
     'deleteDialog.question': 'Diese Rolle löschen?',
     'deleteDialog.confirmation':
-      'Bist du sicher, dass du die Rolle **{{roleName}}** löschen möchtest?\n\nDas Löschen dieser Rolle ist irreversibel und entfernt ihre Funktionalität aus dem System. Bitte vorsichtig vorgehen.\n\nDie **{{members}}**, die mit dieser Rolle verbunden sind, verlieren den Zugriff auf alle in dieser Rolle angegebenen **{{permissions}} Berechtigungsrichtlinien**.',
+      'Möchten Sie die Rolle **{{roleName}}** wirklich löschen? Das Löschen dieser Rolle ist unumkehrbar und entfernt deren Funktionalität aus dem System. Gehen Sie mit Vorsicht vor. Das mit dieser Rolle verbundene **{{member}}** verliert den Zugriff auf alle in dieser Rolle festgelegten **{{permissions}}-Berechtigungsrichtlinien**.',
     'deleteDialog.roleNameLabel': 'Rollenname',
     'deleteDialog.roleNameHelper':
-      'Geben Sie den Namen der Rolle zur Bestätigung ein',
+      'Geben Sie den Namen der Rolle ein, um zu bestätigen',
     'deleteDialog.deleteButton': 'Löschen',
     'deleteDialog.cancelButton': 'Abbrechen',
     'deleteDialog.successMessage': 'Rolle {{roleName}} erfolgreich gelöscht',
     'snackbar.success': 'Erfolg',
-    'common.noResults': 'Keine Ergebnisse für diesen Zeitraum.',
+    'dialog.cancelRoleCreation': 'Rollenerstellung abbrechen',
+    'dialog.exitRoleCreation': 'Rollenerstellung beenden?',
+    'dialog.exitRoleEditing': 'Rollenbearbeitung beenden?',
+    'dialog.exitWarning':
+      '\n\nWenn Sie diese Seite verlassen, werden die von Ihnen eingegebenen Informationen endgültig verworfen. Möchten Sie wirklich beenden?',
+    'dialog.discard': 'Verwerfen',
+    'dialog.cancel': 'Abbrechen',
+    'conditionalAccess.condition': 'Bedingung',
+    'conditionalAccess.allOf': 'Alle von',
+    'conditionalAccess.anyOf': 'Beliebige von',
+    'conditionalAccess.not': 'Nicht',
+    'conditionalAccess.addNestedCondition':
+      'Verschachtelte Bedingungen hinzufügen',
+    'conditionalAccess.addRule': 'Regel hinzufügen',
+    'conditionalAccess.nestedConditionTooltip':
+      'Verschachtelte Bedingungen sind **Regeln der Ebene 1 innerhalb einer Hauptbedingung**. Dies ermöglicht es Ihnen, entsprechenden Zugriff durch detaillierte Berechtigungen auf Basis verschiedener Bedingungen zu gewähren. Sie können mehrere verschachtelte Bedingungen hinzufügen.',
+    'conditionalAccess.nestedConditionExample':
+      'Beispielsweise können Sie in der Hauptbedingung den Zugriff auf alle Elementtypen erlauben und mithilfe einer verschachtelten Bedingung den Zugriff auf die dem Benutzer gehörenden Elemente beschränken.',
+    'permissionPolicies.helperText':
+      'Standardmäßig haben Benutzer keinen Zugriff auf Plugins. Um Benutzern Zugriff zu gewähren, wählen Sie die Plugins aus, die Sie ermöglichen möchten. Wählen Sie anschließend aus, für welche Aktionen Sie dem Benutzer die Berechtigung erteilen möchten.',
+    'permissionPolicies.allPlugins': 'Alle Plugins ({{count}})',
+    'permissionPolicies.errorFetchingPolicies':
+      'Fehler beim Abrufen der Berechtigungsrichtlinien: {{error}}',
+    'permissionPolicies.resourceTypeTooltip': 'Ressourcentyp: {{resourceType}}',
+    'permissionPolicies.advancedPermissionsTooltip':
+      'Verwenden Sie erweiterte, angepasste Berechtigungen, um den Zugriff auf bestimmte Teile des ausgewählten Ressourcentyps zu ermöglichen.',
+    'permissionPolicies.noAdvancedPermissionsTooltip':
+      'Erweiterte Anpassungsmöglichkeiten werden für diesen Ressourcentyp nicht unterstützt.',
+    'permissionPolicies.pluginsSelected': '{{count}} Plugins',
+    'permissionPolicies.noPluginsSelected': 'Keine Plugins ausgewählt',
+    'permissionPolicies.search': 'Suchen',
+    'permissionPolicies.noRecordsToDisplay':
+      'Keine Datensätze zum Anzeigen vorhanden.',
+    'permissionPolicies.selectedPluginsAppearHere':
+      'Ausgewählte Plugins werden hier angezeigt.',
+    'permissionPolicies.selectPlugins': 'Plugins auswählen',
+    'permissionPolicies.noPluginsFound': 'Keine Plugins gefunden.',
+    'permissionPolicies.plugin': 'Plugin',
+    'permissionPolicies.permission': 'Berechtigung',
+    'permissionPolicies.policies': 'Richtlinien',
+    'permissionPolicies.conditional': 'Bedingt',
+    'permissionPolicies.rules': 'Regeln',
+    'permissionPolicies.rule': 'Regel',
+    'permissionPolicies.permissionPolicies': 'Berechtigungsrichtlinien',
+    'permissionPolicies.permissions': 'Berechtigungen',
+    'common.noResults':
+      'Für diesen Datumsbereich wurden keine Ergebnisse gefunden.',
     'common.exportCSV': 'CSV exportieren',
-    'common.csvFilename': 'daten-export.csv',
+    'common.csvFilename': 'data-export.csv',
     'common.noMembers': 'Keine Mitglieder',
     'common.groups': 'Gruppen',
     'common.group': 'Gruppe',
@@ -115,18 +165,18 @@ const rbacTranslationDe = createTranslationMessages({
     'common.use': 'Verwenden',
     'common.refresh': 'Aktualisieren',
     'common.edit': 'Bearbeiten',
-    'common.unauthorizedToEdit': 'Nicht berechtigt zu bearbeiten',
+    'common.unauthorizedToEdit': 'Keine Berechtigung zum Bearbeiten',
     'common.noRecordsFound': 'Keine Datensätze gefunden',
     'common.selectUsersAndGroups': 'Benutzer und Gruppen auswählen',
     'common.clearSearch': 'Suche löschen',
-    'common.closeDrawer': 'Schublade schließen',
+    'common.closeDrawer': 'Drawer schließen',
     'common.remove': 'Entfernen',
     'common.addRule': 'Regel hinzufügen',
-    'common.selectRule': 'Eine Regel auswählen',
+    'common.selectRule': 'Wählen Sie eine Regel aus',
     'common.rule': 'Regel',
     'common.removeNestedCondition': 'Verschachtelte Bedingung entfernen',
     'common.overview': 'Übersicht',
-    'common.about': 'Über',
+    'common.about': 'Info',
     'common.description': 'Beschreibung',
     'common.modifiedBy': 'Geändert von',
     'common.lastModified': 'Zuletzt geändert',
@@ -144,29 +194,30 @@ const rbacTranslationDe = createTranslationMessages({
     'common.update': 'Aktualisieren',
     'common.editRole': 'Rolle bearbeiten',
     'common.checkingPermissions': 'Berechtigungen werden überprüft…',
-    'common.unauthorizedTo': 'Nicht autorisiert für {{action}}',
-    'common.performThisAction': 'diese Aktion ausführen',
+    'common.unauthorizedTo': 'Nicht berechtigt für {{action}}',
+    'common.performThisAction': 'Ausführen dieser Aktion',
     'common.unableToCreatePermissionPolicies':
-      'Berechtigungsrichtlinien können nicht erstellt werden.',
+      'Die Berechtigungsrichtlinien konnten nicht erstellt werden.',
     'common.unableToDeletePermissionPolicies':
-      'Berechtigungsrichtlinien können nicht gelöscht werden.',
+      'Die Berechtigungsrichtlinien konnten nicht gelöscht werden.',
     'common.unableToRemoveConditions':
-      'Bedingungen können nicht von der Rolle entfernt werden.',
+      'Die Bedingungen konnten nicht aus der Rolle entfernt werden.',
     'common.unableToUpdateConditions':
-      'Bedingungen können nicht aktualisiert werden.',
+      'Die Bedingungen konnten nicht aktualisiert werden.',
     'common.unableToAddConditions':
-      'Bedingungen können nicht zur Rolle hinzugefügt werden.',
+      'Der Rolle konnten keine Bedingungen hinzugefügt werden.',
     'common.roleActionSuccessfully':
-      'Rolle {{roleName}} {{action}} erfolgreich',
-    'common.unableToFetchRole': 'Rolle kann nicht abgerufen werden: {{error}}',
+      '{{action}} für Rolle {{roleName}} erfolgreich',
+    'common.unableToFetchRole':
+      'Rolle konnte nicht abgerufen werden: {{error}}',
     'common.unableToFetchMembers':
-      'Mitglieder können nicht abgerufen werden: {{error}}',
-    'common.roleAction': '{{action}} Rolle',
+      'Mitglieder konnten nicht abgerufen werden: {{error}}',
+    'common.roleAction': '{{action}} für Rolle',
     'common.membersCount': '{{count}} Mitglieder',
     'common.parentGroupCount': '{{count}} übergeordnete Gruppe',
     'common.childGroupsCount': '{{count}} untergeordnete Gruppen',
     'common.searchAndSelectUsersGroups':
-      'Suchen und wählen Sie Benutzer und Gruppen aus, die hinzugefügt werden sollen. Ausgewählte Benutzer und Gruppen werden in der Tabelle unten angezeigt.',
+      'Suchen und wählen Sie Benutzer und Gruppen aus, die hinzugefügt werden sollen. Ausgewählte Benutzer und Gruppen werden in der folgenden Tabelle angezeigt.',
     'common.noUsersAndGroupsFound': 'Keine Benutzer und Gruppen gefunden.',
     'common.errorFetchingUserGroups':
       'Fehler beim Abrufen von Benutzern und Gruppen: {{error}}',
@@ -180,51 +231,7 @@ const rbacTranslationDe = createTranslationMessages({
     'common.expandRow': 'Zeile erweitern',
     'common.configureAccessFor': 'Zugriff konfigurieren für',
     'common.defaultResourceTypeVisible':
-      'Standardmäßig ist der ausgewählte Ressourcentyp für alle hinzugefügten Benutzer sichtbar. Wenn Sie den Zugriff einschränken oder Berechtigungen für bestimmte Plugin-Regeln gewähren möchten, wählen Sie diese aus und fügen Sie die Parameter hinzu.',
-    'conditionalAccess.condition': 'Bedingung',
-    'conditionalAccess.allOf': 'AllOf',
-    'conditionalAccess.anyOf': 'AnyOf',
-    'conditionalAccess.not': 'Not',
-    'conditionalAccess.addNestedCondition':
-      'Verschachtelte Bedingung hinzufügen',
-    'conditionalAccess.addRule': 'Regel hinzufügen',
-    'conditionalAccess.nestedConditionTooltip':
-      'Verschachtelte Bedingungen sind **1-Layer-Regeln innerhalb einer Hauptbedingung**. Sie ermöglichen es Ihnen, angemessenen Zugriff zu gewähren, indem Sie detaillierte Berechtigungen basierend auf verschiedenen Bedingungen verwenden. Sie können mehrere verschachtelte Bedingungen hinzufügen.',
-    'conditionalAccess.nestedConditionExample':
-      'Sie können beispielsweise Zugriff auf alle Entitätstypen in der Hauptbedingung gewähren und eine verschachtelte Bedingung verwenden, um den Zugriff auf Entitäten zu beschränken, die dem Benutzer gehören.',
-    'dialog.cancelRoleCreation': 'Rollenerstellung abbrechen',
-    'dialog.exitRoleCreation': 'Rollenerstellung beenden?',
-    'dialog.exitRoleEditing': 'Rollenbearbeitung beenden?',
-    'dialog.exitWarning':
-      '\n\nDas Verlassen dieser Seite verwirft dauerhaft die von Ihnen eingegebenen Informationen.\n\nMöchten Sie wirklich beenden?',
-    'dialog.discard': 'Verwerfen',
-    'dialog.cancel': 'Abbrechen',
-    'permissionPolicies.helperText':
-      'Standardmäßig erhalten Benutzer keinen Zugriff auf Plugins. Um Benutzerzugriff zu gewähren, wählen Sie die Plugins aus, die Sie aktivieren möchten. Wählen Sie dann aus, welche Aktionen Sie dem Benutzer erlauben möchten.',
-    'permissionPolicies.allPlugins': 'Alle Plugins ({{count}})',
-    'permissionPolicies.errorFetchingPolicies':
-      'Fehler beim Abrufen der Berechtigungsrichtlinien: {{error}}',
-    'permissionPolicies.resourceTypeTooltip': 'Ressourcentyp: {{resourceType}}',
-    'permissionPolicies.advancedPermissionsTooltip':
-      'Verwenden Sie erweiterte angepasste Berechtigungen, um Zugriff auf bestimmte Teile des ausgewählten Ressourcentyps zu gewähren.',
-    'permissionPolicies.noAdvancedPermissionsTooltip':
-      'Erweiterte Anpassung wird für diesen Ressourcentyp nicht unterstützt.',
-    'permissionPolicies.pluginsSelected': '{{count}} Plugins',
-    'permissionPolicies.noPluginsSelected': 'Keine Plugins ausgewählt',
-    'permissionPolicies.search': 'Suchen',
-    'permissionPolicies.noRecordsToDisplay': 'Keine Datensätze anzuzeigen.',
-    'permissionPolicies.selectedPluginsAppearHere':
-      'Ausgewählte Plugins erscheinen hier.',
-    'permissionPolicies.selectPlugins': 'Plugins auswählen',
-    'permissionPolicies.noPluginsFound': 'Keine Plugins gefunden.',
-    'permissionPolicies.plugin': 'Plugin',
-    'permissionPolicies.permission': 'Berechtigung',
-    'permissionPolicies.policies': 'Richtlinien',
-    'permissionPolicies.conditional': 'Bedingt',
-    'permissionPolicies.rules': 'Regeln',
-    'permissionPolicies.rule': 'Regel',
-    'permissionPolicies.permissionPolicies': 'Berechtigungsrichtlinien',
-    'permissionPolicies.permissions': 'Berechtigungen',
+      'Standardmäßig ist der ausgewählte Ressourcentyp für alle hinzugefügten Benutzer sichtbar. Wenn Sie bestimmte Plugin-Regeln einschränken oder Berechtigungen dafür erteilen möchten, wählen Sie diese aus, und fügen Sie die Parameter hinzu.',
   },
 });
 

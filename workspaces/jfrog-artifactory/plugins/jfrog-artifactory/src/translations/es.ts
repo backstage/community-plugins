@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { jfrogArtifactoryTranslationRef } from './ref';
 
+/**
+ * es translation for plugin.jfrog-artifactory.
+ * @public
+ */
 const jfrogArtifactoryTranslationEs = createTranslationMessages({
   ref: jfrogArtifactoryTranslationRef,
   messages: {
-    'page.title': 'Repositorio JFrog Artifactory: {{image}}',
+    'page.title': 'Repositorio de JFrog Artifactory: {{image}}',
     'table.searchPlaceholder': 'Filtrar',
     'table.labelRowsSelect': 'Filas',
     'table.columns.version': 'Versión',
@@ -27,8 +32,8 @@ const jfrogArtifactoryTranslationEs = createTranslationMessages({
     'table.columns.manifest': 'Manifiesto',
     'table.columns.modified': 'Modificado',
     'table.columns.size': 'Tamaño',
-    'table.emptyContent.message': 'Aún no se han agregado datos,',
-    'table.emptyContent.learnMore': 'aprenda cómo agregar datos.',
+    'table.emptyContent.message': 'Aún no se agregaron datos,',
+    'table.emptyContent.learnMore': 'aprenda a agregar datos.',
     'manifest.sha256': 'sha256',
   },
 });
