@@ -70,6 +70,7 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-search": "backstage:^",
