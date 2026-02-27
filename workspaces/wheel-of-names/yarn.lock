@@ -2451,7 +2451,7 @@ __metadata:
     "@changesets/cli": "npm:^2.27.1"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/react": "npm:^15.0.0"
-    "@types/node": "npm:^22.0.0"
+    "@types/node": "npm:^24.0.0"
     "@types/react": "npm:^18.2.19"
     knip: "npm:^5.27.4"
     node-gyp: "npm:^10.0.0"
@@ -7569,12 +7569,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.0.0":
-  version: 22.18.12
-  resolution: "@types/node@npm:22.18.12"
+"@types/node@npm:*, @types/node@npm:^24.0.0":
+  version: 24.10.15
+  resolution: "@types/node@npm:24.10.15"
   dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10/41b8853302deac6895aa978193fcab53bf8d1f6f5df5fad38e2a33c2c853c3689e905c9dde373e45bb87273b2690e5ac2d6f40809fe72f45264952ba3ae3b196
+    undici-types: "npm:~7.16.0"
+  checksum: 10/e6be2220f59a8776f4c8facb3f809bcc6ddb4051752bf86e935178eca58ba7841ce51871442616fcf1c419bf03b1a091dab4c9888ea5c063c9569a34382a5263
   languageName: node
   linkType: hard
 
@@ -21786,10 +21786,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
   languageName: node
   linkType: hard
 
