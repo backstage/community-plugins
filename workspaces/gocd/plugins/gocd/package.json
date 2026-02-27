@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-gocd",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "A Backstage plugin that integrates towards GoCD",
   "backstage": {
     "role": "frontend-plugin",
