@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.18.0
+
+### Minor Changes
+
+- f62e541: Backstage version bump to v1.48.2
+
 ## 0.17.1
 
 ### Patch Changes
