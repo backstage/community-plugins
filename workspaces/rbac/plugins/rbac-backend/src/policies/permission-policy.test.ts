@@ -54,7 +54,11 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { DefaultPermissions } from '../default-permissions/default-permissions';
+import {
+  DefaultPermissions,
+  buildDefaultRoleMetadata,
+  getDefaultRoleMetadata,
+} from '../default-permissions/default-permissions';
 import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
@@ -89,6 +93,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
   getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+  findDefaultRole: jest.fn().mockResolvedValue(undefined),
   syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
 };
 
@@ -605,6 +610,7 @@ describe('RBACPermissionPolicy Tests', () => {
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
       getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+      findDefaultRole: jest.fn().mockResolvedValue(undefined),
       syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -934,6 +940,7 @@ describe('RBACPermissionPolicy Tests', () => {
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
       getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+      findDefaultRole: jest.fn().mockResolvedValue(undefined),
       syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -1079,6 +1086,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
     updateRoleMetadata: jest.fn().mockImplementation(),
     removeRoleMetadata: jest.fn().mockImplementation(),
     getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+    findDefaultRole: jest.fn().mockResolvedValue(undefined),
     syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
   };
   let enfDelegate: EnforcerDelegate;
@@ -1601,6 +1609,7 @@ describe('Policy checks for conditional policies', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       mockClientKnex,
+      undefined,
     );
 
     policy = await RBACPermissionPolicy.build(
@@ -2200,6 +2209,7 @@ async function newEnforcerDelegate(
     conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
+    getDefaultRoleMetadata(config)?.roleEntityRef,
   );
 }
 
@@ -2218,6 +2228,23 @@ async function newPermissionPolicy(
         }
       : undefined;
 
+  if (defaultRoleAndPolicies) {
+    const casbinPolicies = defaultPolicies.map(p => [
+      p.entityReference!,
+      p.permission!,
+      p.policy!,
+      p.effect!,
+    ]);
+    await enfDelegate.addPolicies(casbinPolicies);
+    const storage = roleMock || roleMetadataStorageMock;
+    (storage.getDefaultRoleMetadata as jest.Mock).mockReturnValue(
+      buildDefaultRoleMetadata(defaultRoleAndPolicies.roleEntityRef),
+    );
+  } else {
+    const storage = roleMock || roleMetadataStorageMock;
+    (storage.getDefaultRoleMetadata as jest.Mock).mockReturnValue(undefined);
+  }
+
   const logger = mockServices.logger.mock();
   const permissionPolicy = await RBACPermissionPolicy.build(
     logger,
@@ -2229,7 +2256,7 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    defaultRoleAndPolicies,
+    defaultRoleAndPolicies?.roleEntityRef,
   );
   clearAuditorMock();
   return permissionPolicy;

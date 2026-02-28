@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 import { Config } from '@backstage/config';
-import { ConflictError } from '@backstage/errors';
 
 import {
   RoleBasedPolicy,
   isValidPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
 
-import type { RoleMetadataDao } from '../database/role-metadata';
+import type {
+  RoleMetadataDao,
+  RoleMetadataStorage,
+} from '../database/role-metadata';
 import type { EnforcerDelegate } from '../service/enforcer-delegate';
+import { syncRolePolicies } from '../helper';
 import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
 
 /**
@@ -52,27 +55,14 @@ export function buildDefaultRoleMetadata(
   };
 }
 
-async function ensureNoPoliciesForDefaultRole(
-  defaultRoleRef: string,
-  enforcerDelegate: EnforcerDelegate,
-): Promise<void> {
-  const policies = await enforcerDelegate.getFilteredPolicy(0, defaultRoleRef);
-  if (policies.length > 0) {
-    throw new ConflictError(
-      `Permission policies already exist for role '${defaultRoleRef}'. The default role must not conflict with existing policies.`,
-    );
-  }
-}
-
 /**
- * Returns the default role object and its permission policies from configuration.
- * Validates that no role with the same name exists and no policies are stored for it.
- * Returns undefined when default permissions are not configured.
+ * Syncs default role metadata (role-metadata) and persists default permission policies in the database (casbin via enforcer-delegate).
  */
-export async function getDefaultRoleAndPolicies(
+export async function syncDefaultRoleAndPolicies(
   config: Config,
   enforcerDelegate: EnforcerDelegate,
-): Promise<DefaultPermissions | undefined> {
+  roleMetadataStorage: RoleMetadataStorage,
+): Promise<void> {
   const roleEntityRef = config.getOptionalString(
     'permission.rbac.defaultPermissions.defaultRole',
   );
@@ -83,7 +73,18 @@ export async function getDefaultRoleAndPolicies(
   }
 
   if (!roleEntityRef) {
-    return undefined;
+    const previousDefault = await roleMetadataStorage.findDefaultRole();
+    if (previousDefault) {
+      const policiesToRemove = await enforcerDelegate.getFilteredPolicy(
+        0,
+        previousDefault.roleEntityRef,
+      );
+      if (policiesToRemove.length > 0) {
+        await enforcerDelegate.removePolicies(policiesToRemove);
+      }
+    }
+    await roleMetadataStorage.syncDefaultRoleMetadataFromConfig();
+    return;
   }
 
   const basicPermissions = config.getOptionalConfigArray(
@@ -94,8 +95,6 @@ export async function getDefaultRoleAndPolicies(
       `The default role '${roleEntityRef}' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.`,
     );
   }
-
-  await ensureNoPoliciesForDefaultRole(roleEntityRef, enforcerDelegate);
 
   const policies: RoleBasedPolicy[] = basicPermissions.map(permission => {
     const permissionName = permission.getString('permission');
@@ -122,7 +121,15 @@ export async function getDefaultRoleAndPolicies(
     };
   });
 
-  return { roleEntityRef, policies };
+  const casbinPolicies: string[][] = policies.map(p => [
+    p.entityReference!,
+    p.permission!,
+    p.policy!,
+    p.effect!,
+  ]);
+
+  await roleMetadataStorage.syncDefaultRoleMetadataFromConfig();
+  await syncRolePolicies(enforcerDelegate, roleEntityRef, casbinPolicies);
 }
 
 export function getDefaultRoleMetadata(

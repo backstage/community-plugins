@@ -18,7 +18,6 @@ import { Knex } from 'knex';
 
 import EventEmitter from 'events';
 
-import { RoleBasedPolicy } from '@backstage-community/plugin-rbac-common';
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
 import {
   RoleMetadataDao,
@@ -51,7 +50,18 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     private readonly conditionalStorage: ConditionalStorage,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
+    private readonly defaultRoleEntityRef: string | undefined,
   ) {}
+
+  /**
+   * Returns default permission policies from the database.
+   */
+  async getDefaultPermissions(): Promise<string[][]> {
+    if (!this.defaultRoleEntityRef) {
+      return [];
+    }
+    return await this.getFilteredPolicy(0, this.defaultRoleEntityRef);
+  }
 
   async loadPolicy(): Promise<void> {
     if (this.loadPolicyPromise) {
@@ -156,7 +166,11 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   }
 
   async getRolesForUser(userEntityRef: string): Promise<string[]> {
-    return await this.enforcer.getRolesForUser(userEntityRef);
+    const roles = await this.enforcer.getRolesForUser(userEntityRef);
+    if (this.defaultRoleEntityRef) {
+      roles.push(this.defaultRoleEntityRef);
+    }
+    return roles;
   }
 
   async getFilteredPolicy(
@@ -676,7 +690,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     resourceType: string,
     action: string,
     roles: string[],
-    defaultPermissions?: RoleBasedPolicy[],
   ): Promise<boolean> {
     const model = newModelFromString(MODEL);
     let policies: string[][] = [];
@@ -700,13 +713,6 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
         policy =>
           policy[0].startsWith('user:') || policy[0].startsWith('group:'),
       );
-    }
-
-    if (defaultPermissions && defaultPermissions.length > 0) {
-      const casbinPolicies = defaultPermissions
-        .filter(p => p.permission === resourceType && p.policy === action)
-        .map(p => [p.entityReference!, p.permission!, p.policy!, p.effect!]);
-      policies.push(...casbinPolicies);
     }
 
     const roleManager = this.enforcer.getRoleManager();

@@ -110,6 +110,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
   getDefaultRoleMetadata: jest.fn().mockImplementation(),
+  findDefaultRole: jest.fn().mockResolvedValue(undefined),
   syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
 };
 
@@ -179,6 +180,7 @@ describe('Connection', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
+      undefined,
     );
 
     await enforcerDelegate.addGroupingPolicy(
@@ -560,6 +562,7 @@ describe('connectRBACProviders', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
+      undefined,
     );
 
     await connectRBACProviders(

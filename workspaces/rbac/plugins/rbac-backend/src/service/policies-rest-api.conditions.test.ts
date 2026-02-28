@@ -316,7 +316,6 @@ describe('REST policies api with conditions', () => {
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
       undefined,
-      [],
     );
 
     const router = await server.serve();

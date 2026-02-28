@@ -46,6 +46,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
   getDefaultRoleMetadata: jest.fn().mockImplementation(),
+  findDefaultRole: jest.fn().mockResolvedValue(undefined),
   syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
 };
 
@@ -184,6 +185,7 @@ describe('EnforcerDelegate', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
+      undefined,
     );
   }
 

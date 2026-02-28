@@ -143,7 +143,6 @@ export class PoliciesServer {
     private readonly roleMetadata: RoleMetadataStorage,
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly pluginIdProvider: ExtendablePluginIdProvider,
-    private readonly defaultPolicies: RoleBasedPolicy[] = [],
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
@@ -227,9 +226,7 @@ export class PoliciesServer {
         }
 
         const body = await this.transformPolicyArray(...policies);
-        if (this.defaultPolicies.length > 0) {
-          body.push(...this.defaultPolicies);
-        }
+
         // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
         body.map(policy => {
           if (
@@ -270,11 +267,6 @@ export class PoliciesServer {
         });
 
         const entityRef = this.getEntityReference(request);
-
-        if (this.defaultPolicies.length > 0) {
-          response.json(this.defaultPolicies);
-          return;
-        }
 
         const policy = matchedRoleName.includes(entityRef)
           ? await this.enforcer.getFilteredPolicy(0, entityRef)
