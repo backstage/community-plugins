@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-annotate-scm-slug",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "Apache-2.0",
   "description": "The annotate-scm-slug backend module for the catalog plugin.",
   "main": "src/index.ts",

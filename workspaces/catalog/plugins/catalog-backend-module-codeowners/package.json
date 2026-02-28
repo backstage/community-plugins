@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-codeowners",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The codeowners backend module for the catalog plugin.",
   "backstage": {
     "role": "backend-plugin-module",
