@@ -41,7 +41,6 @@ import type { Knex } from 'knex';
 
 import {
   NonEmptyArray,
-  RoleBasedPolicy,
   toPermissionAction,
 } from '@backstage-community/plugin-rbac-common';
 
@@ -57,13 +56,11 @@ import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
 import { YamlConditinalPoliciesFileWatcher } from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { DefaultPermissions } from '../default-permissions/default-permissions';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
   private readonly preferPermissionPolicy: boolean;
   private readonly defaultRole?: string;
-  private readonly defaultPermissions: RoleBasedPolicy[];
 
   public static async build(
     logger: LoggerService,
@@ -75,7 +72,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
     auth: AuthService,
-    defPerm?: DefaultPermissions,
+    defaultRoleEntityRef?: string,
   ): Promise<RBACPermissionPolicy> {
     const superUserList: string[] = [];
     const adminUsers = configApi.getOptionalConfigArray(
@@ -167,7 +164,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       conditionalStorage,
       preferPermissionPolicy,
       superUserList,
-      defPerm,
+      defaultRoleEntityRef,
     );
   }
 
@@ -177,12 +174,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
     superUserList?: string[],
-    defPerm?: DefaultPermissions,
+    defaultRole?: string,
   ) {
     this.superUserList = superUserList;
     this.preferPermissionPolicy = preferPermissionPolicy;
-    this.defaultRole = defPerm?.roleEntityRef;
-    this.defaultPermissions = defPerm?.policies || [];
+    this.defaultRole = defaultRole;
   }
 
   async handle(
@@ -310,15 +306,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       }
     }
 
-    for (const defPermission of this.defaultPermissions) {
-      if (
-        defPermission.permission === permissionName &&
-        defPermission.policy === action
-      ) {
-        return true;
-      }
-    }
-
     return false;
   }
 
@@ -328,13 +315,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     action: string,
     roles: string[],
   ): Promise<boolean> => {
-    return await this.enforcer.enforce(
-      userIdentity,
-      permission,
-      action,
-      roles,
-      this.defaultPermissions,
-    );
+    return await this.enforcer.enforce(userIdentity, permission, action, roles);
   };
 
   private async handleConditions(

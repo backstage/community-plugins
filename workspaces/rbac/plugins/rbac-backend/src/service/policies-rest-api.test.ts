@@ -3832,7 +3832,6 @@ describe('REST policies API', () => {
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
         extendablePluginIdProviderMock as ExtendablePluginIdProvider,
-        [],
         [providerMock],
       );
       const router = await server.serve();

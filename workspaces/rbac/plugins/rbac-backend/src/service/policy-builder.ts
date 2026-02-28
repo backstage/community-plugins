@@ -36,7 +36,7 @@ import type {
   RBACProvider,
 } from '@backstage-community/plugin-rbac-node';
 
-import { getDefaultRoleAndPolicies } from '../default-permissions/default-permissions';
+import { syncDefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import { migrate } from '../database/migration';
@@ -135,18 +135,21 @@ export class PolicyBuilder {
       databaseClient,
       env.config,
     );
-    await roleMetadataStorage.syncDefaultRoleMetadataFromConfig();
+    const defaultRoleEntityRef =
+      roleMetadataStorage.getDefaultRoleMetadata()?.roleEntityRef;
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
       conditionStorage,
       roleMetadataStorage,
       databaseClient,
+      defaultRoleEntityRef,
     );
 
-    const defaultRoleAndPolicies = await getDefaultRoleAndPolicies(
+    await syncDefaultRoleAndPolicies(
       env.config,
       enforcerDelegate,
+      roleMetadataStorage,
     );
 
     env.permissionsRegistry.addResourceType({
@@ -199,6 +202,8 @@ export class PolicyBuilder {
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
+      const defaultRoleRef =
+        roleMetadataStorage.getDefaultRoleMetadata()?.roleEntityRef;
       const policy = await RBACPermissionPolicy.build(
         env.logger,
         env.auditor,
@@ -209,7 +214,7 @@ export class PolicyBuilder {
         databaseClient,
         pluginPermMetaData,
         env.auth,
-        defaultRoleAndPolicies,
+        defaultRoleRef,
       );
       env.policy.setPolicy(policy);
     } else {
@@ -238,7 +243,6 @@ export class PolicyBuilder {
       roleMetadataStorage,
       extraPluginsIdStorage,
       extendablePluginIdProvider,
-      defaultRoleAndPolicies?.policies,
       rbacProviders,
     );
     return server.serve();

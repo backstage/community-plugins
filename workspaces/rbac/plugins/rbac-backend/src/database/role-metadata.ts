@@ -72,6 +72,8 @@ export interface RoleMetadataStorage {
     trx: Knex.Transaction,
   ): Promise<void>;
   getDefaultRoleMetadata(): RoleMetadataDao | undefined;
+  /** Returns the default role from the database (isDefault = true), if any. */
+  findDefaultRole(): Promise<RoleMetadataDao | undefined>;
   syncDefaultRoleMetadataFromConfig(): Promise<void>;
 }
 
@@ -130,6 +132,13 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
 
   getDefaultRoleMetadata(): RoleMetadataDao | undefined {
     return this.defaultRoleMetaData;
+  }
+
+  async findDefaultRole(): Promise<RoleMetadataDao | undefined> {
+    const row = await this.knex(ROLE_METADATA_TABLE)
+      .where<Record<string, unknown>>('isDefault', true)
+      .first();
+    return toDao(row);
   }
 
   async filterForOwnerRoleMetadata(

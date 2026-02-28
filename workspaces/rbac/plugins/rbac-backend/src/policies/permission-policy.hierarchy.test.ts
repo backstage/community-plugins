@@ -1096,6 +1096,7 @@ async function newEnforcerDelegate(
     conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
+    undefined,
   );
 }
 
