@@ -1,0 +1,9 @@
+@layer components {
+  .cardBody {
+    padding-top: var(--bui-space-1);
+  }
+
+  .cardHeader {
+    padding-bottom: var(--bui-space-1);
+  }
+}

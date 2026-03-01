@@ -20,7 +20,7 @@ import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
-import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+import { RiDiscussLine } from '@remixicon/react';
 
 /** @alpha */
 export const githubDiscussionsSearchResultListItem =
@@ -30,7 +30,7 @@ export const githubDiscussionsSearchResultListItem =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        icon: <SpeakerNotesIcon />,
+        icon: <RiDiscussLine />,
         predicate: result => result.type === 'github-discussions',
         component: async () => {
           const { GithubDiscussionsSearchResultListItem } = await import(
@@ -55,7 +55,7 @@ const githubDiscussionsSearchFilterResultType =
     params: {
       value: 'github-discussions',
       name: 'GitHub Discussions',
-      icon: <SpeakerNotesIcon />,
+      icon: <RiDiscussLine size={20} />,
     },
   });
 

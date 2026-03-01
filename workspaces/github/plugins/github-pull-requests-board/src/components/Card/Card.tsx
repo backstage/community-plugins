@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 import { PropsWithChildren, FunctionComponent } from 'react';
-
-import * as React from 'react';
-import { Box, Paper, CardActionArea } from '@material-ui/core';
 import CardHeader from './CardHeader';
 import { Label, Status } from '../../utils/types';
 
@@ -35,7 +32,7 @@ type Props = {
 };
 
 const Card: FunctionComponent<PropsWithChildren<Props>> = (
-  props: React.PropsWithChildren<Props>,
+  props: PropsWithChildren<Props>,
 ) => {
   const {
     title,
@@ -53,27 +50,36 @@ const Card: FunctionComponent<PropsWithChildren<Props>> = (
   } = props;
 
   return (
-    <Box marginBottom={1}>
-      <Paper variant="outlined">
-        <CardActionArea href={prUrl} target="_blank">
-          <Box padding={1}>
-            <CardHeader
-              title={title}
-              createdAt={createdAt}
-              updatedAt={updatedAt}
-              authorName={authorName}
-              authorAvatar={authorAvatar}
-              repositoryName={repositoryName}
-              isDraft={isDraft}
-              repositoryIsArchived={repositoryIsArchived}
-              labels={labels}
-              status={status}
-            />
-            {children}
-          </Box>
-        </CardActionArea>
-      </Paper>
-    </Box>
+    <a
+      href={prUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'block',
+        marginBottom: 'var(--bui-space-2)',
+        border: '1px solid rgba(0, 0, 0, 0.12)',
+        borderRadius: '5px',
+        textDecoration: 'none',
+        color: 'inherit',
+        cursor: 'pointer',
+      }}
+    >
+      <div style={{ padding: 'var(--bui-space-2)' }}>
+        <CardHeader
+          title={title}
+          createdAt={createdAt}
+          updatedAt={updatedAt}
+          authorName={authorName}
+          authorAvatar={authorAvatar}
+          repositoryName={repositoryName}
+          isDraft={isDraft}
+          repositoryIsArchived={repositoryIsArchived}
+          labels={labels}
+          status={status}
+        />
+        {children}
+      </div>
+    </a>
   );
 };
 

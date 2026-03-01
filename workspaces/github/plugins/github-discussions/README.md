@@ -2,7 +2,12 @@
 
 Welcome to the Github Discussions plugin!
 
+> [!Note]
+> Backstage UI (BUI) is now required for the GitHub Discussions plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 This plugin allows you to search through Github discussions and integrate the results into your Backstage instance.
+
+![GitHub Discussions search results](./docs/github-discussions.png)
 
 ## Prerequisites
 
