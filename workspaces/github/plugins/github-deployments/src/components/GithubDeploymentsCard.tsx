@@ -15,7 +15,7 @@
  */
 
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { GithubDeployment, githubDeploymentsApiRef } from '../api';
+import { githubDeploymentsApiRef } from '../api';
 import {
   useEntity,
   MissingAnnotationEmptyState,
@@ -30,7 +30,7 @@ import {
   ANNOTATION_SOURCE_LOCATION,
 } from '@backstage/catalog-model';
 
-import { ResponseErrorPanel, TableColumn } from '@backstage/core-components';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
 const GithubDeploymentsComponent = ({
@@ -38,14 +38,12 @@ const GithubDeploymentsComponent = ({
   environments,
   last,
   lastStatuses,
-  columns,
   host,
 }: {
   projectSlug: string;
   environments?: string[];
   last: number;
   lastStatuses: number;
-  columns: TableColumn<GithubDeployment>[];
   host: string | undefined;
 }) => {
   const api = useApi(githubDeploymentsApiRef);
@@ -77,7 +75,6 @@ const GithubDeploymentsComponent = ({
       deployments={value || []}
       isLoading={loading}
       reload={reload}
-      columns={columns}
     />
   );
 };
@@ -86,9 +83,8 @@ export const GithubDeploymentsCard = (props: {
   environments?: string[];
   last?: number;
   lastStatuses?: number;
-  columns?: TableColumn<GithubDeployment>[];
 }) => {
-  const { environments, last, lastStatuses, columns } = props;
+  const { environments, last, lastStatuses } = props;
   const { entity } = useEntity();
   const [host] = [
     entity?.metadata.annotations?.[ANNOTATION_SOURCE_LOCATION],
@@ -106,7 +102,6 @@ export const GithubDeploymentsCard = (props: {
       last={last || 10}
       lastStatuses={lastStatuses || 5}
       host={host}
-      columns={columns || GithubDeploymentsTable.defaultDeploymentColumns}
     />
   );
 };
