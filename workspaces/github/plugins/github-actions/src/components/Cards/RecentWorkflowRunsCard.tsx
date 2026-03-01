@@ -19,8 +19,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import { Tooltip, Text, Flex, TooltipTrigger } from '@backstage/ui';
 
 import { errorApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import {
@@ -32,7 +31,6 @@ import {
 } from '@backstage/core-components';
 import { buildRouteRef } from '../../routes';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-import Box from '@material-ui/core/Box';
 
 const firstLine = (message: string): string => message.split('\n')[0];
 
@@ -84,15 +82,15 @@ export const RecentWorkflowRunsCard = (props: {
     >
       {!runs.length ? (
         <div style={{ textAlign: 'center' }}>
-          <Typography variant="body1">
+          <Text variant="body-medium">
             This component has GitHub Actions enabled, but no workflows were
             found.
-          </Typography>
-          <Typography variant="body2">
+          </Text>
+          <Text variant="body-small">
             <Link to={`https://${githubHost}/${owner}/${repo}/actions/new`}>
               Create a new workflow
             </Link>
-          </Typography>
+          </Text>
         </div>
       ) : (
         <Table<WorkflowRun>
@@ -118,19 +116,20 @@ export const RecentWorkflowRunsCard = (props: {
               title: 'Status',
               field: 'status',
               render: p => (
-                <Box display="flex">
+                <Flex>
                   <WorkflowRunStatus {...p} />
-                </Box>
+                </Flex>
               ),
             },
             {
               title: 'Age',
               render: row => (
-                <Box display="flex">
-                  <Tooltip title={row.statusDate ?? ''}>
-                    <Box>{row.statusAge}</Box>
-                  </Tooltip>
-                </Box>
+                <Flex>
+                  <TooltipTrigger>
+                    <Text>{row.statusAge}</Text>
+                    <Tooltip>{row.statusDate ?? ''}</Tooltip>
+                  </TooltipTrigger>
+                </Flex>
               ),
             },
           ]}

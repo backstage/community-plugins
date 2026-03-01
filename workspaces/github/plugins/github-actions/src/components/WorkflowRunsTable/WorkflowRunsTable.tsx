@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Button from '@material-ui/core/Button';
-import RetryIcon from '@material-ui/icons/Replay';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import {
+  Flex,
+  Text,
+  Button,
+  ButtonIcon,
+  TooltipTrigger,
+  Tooltip,
+} from '@backstage/ui';
+import { RiGithubLine, RiRefreshLine, RiRestartLine } from '@remixicon/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import SyncIcon from '@material-ui/icons/Sync';
 import { buildRouteRef } from '../../routes';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { Entity } from '@backstage/catalog-model';
@@ -76,14 +77,10 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
   {
     title: 'Source',
     render: row => (
-      <Typography variant="body2" noWrap>
-        <Typography paragraph variant="body2">
-          {row.source?.branchName}
-        </Typography>
-        <Typography paragraph variant="body2">
-          {row.source?.commit.hash}
-        </Typography>
-      </Typography>
+      <div>
+        <Text variant="body-small">{row.source?.branchName}</Text>
+        <Text variant="body-small">{row.source?.commit.hash}</Text>
+      </div>
     ),
   },
   {
@@ -96,29 +93,31 @@ const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
       return getStatusDescription(d1).localeCompare(getStatusDescription(d2));
     },
     render: row => (
-      <Box display="flex" justifyContent="center" alignItems="center">
+      <Flex justify="center" align="center">
         <WorkflowRunStatus status={row.status} conclusion={row.conclusion} />
-      </Box>
+      </Flex>
     ),
   },
   {
     title: 'Age',
     render: row => (
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <Tooltip title={row.statusDate ?? ''}>
-          <Box>{row.statusAge}</Box>
-        </Tooltip>
-      </Box>
+      <Flex justify="center" align="center">
+        <Text title={row.statusDate ?? ''}>{row.statusAge}</Text>
+      </Flex>
     ),
   },
   {
     title: 'Actions',
     render: (row: Partial<WorkflowRun>) => (
-      <Tooltip title="Rerun workflow">
-        <IconButton onClick={row.onReRunClick}>
-          <RetryIcon />
-        </IconButton>
-      </Tooltip>
+      <TooltipTrigger>
+        <ButtonIcon
+          aria-label="Rerun workflow"
+          onPress={row.onReRunClick}
+          icon={<RiRestartLine size={16} />}
+          variant="secondary"
+        />
+        <Tooltip>Rerun workflow</Tooltip>
+      </TooltipTrigger>
     ),
     width: '10%',
   },
@@ -155,7 +154,7 @@ export const WorkflowRunsTableView = ({
       page={page}
       actions={[
         {
-          icon: () => <SyncIcon />,
+          icon: () => <RiRefreshLine size={20} />,
           tooltip: 'Reload workflow runs',
           isFreeAction: true,
           onClick: () => retry(),
@@ -166,11 +165,10 @@ export const WorkflowRunsTableView = ({
       onRowsPerPageChange={onChangePageSize}
       style={{ width: '100%' }}
       title={
-        <Box display="flex" alignItems="center">
-          <GitHubIcon />
-          <Box mr={1} />
-          <Typography variant="h6">{projectName}</Typography>
-        </Box>
+        <Flex align="center" style={{ gap: 'var(--bui-space-2)' }}>
+          <RiGithubLine size={20} />
+          <Text variant="title-small">{projectName}</Text>
+        </Flex>
       }
       columns={generatedColumns}
     />
@@ -206,9 +204,13 @@ export const WorkflowRunsTable = ({
       description="This component has GitHub Actions enabled, but no data was found. Have you created any Workflows? Click the button below to create a new Workflow."
       action={
         <Button
-          variant="contained"
-          color="primary"
-          href={`https://${githubHost}/${projectName}/actions/new`}
+          variant="primary"
+          onClick={() =>
+            window.open(
+              `https://${githubHost}/${projectName}/actions/new`,
+              '_blank',
+            )
+          }
         >
           Create new Workflow
         </Button>

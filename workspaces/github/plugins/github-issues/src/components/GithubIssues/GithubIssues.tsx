@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import { Text, Flex, ButtonIcon } from '@backstage/ui';
+import { RiRefreshLine } from '@remixicon/react';
 import { InfoCard, Progress } from '@backstage/core-components';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import { useEntityGithubRepositories } from '../../hooks/useEntityGithubRepositories';
 import { useGetIssuesByRepoFromGithub } from '../../hooks/useGetIssuesByRepoFromGithub';
 import { IssuesList } from './IssuesList';
@@ -58,12 +56,15 @@ export const GithubIssues = (props: GithubIssuesProps) => {
   return (
     <InfoCard
       title={
-        <Box display="flex" justifyContent="flex-start" alignItems="center">
-          <Typography variant="h5">Open GitHub Issues</Typography>
-          <IconButton color="secondary" onClick={retry}>
-            <RefreshIcon />
-          </IconButton>
-        </Box>
+        <Flex justify="start" align="center">
+          <Text variant="title-medium">Open GitHub Issues</Text>
+          <ButtonIcon
+            aria-label="Refresh"
+            onPress={retry}
+            icon={<RiRefreshLine size={20} />}
+            variant="secondary"
+          />
+        </Flex>
       }
     >
       {isLoading && <Progress />}

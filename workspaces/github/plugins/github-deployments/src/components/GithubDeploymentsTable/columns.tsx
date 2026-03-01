@@ -17,8 +17,7 @@
 import { JSX } from 'react';
 import { GithubDeployment } from '../../api';
 import { DateTime } from 'luxon';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import { Flex, Text } from '@backstage/ui';
 import {
   StatusPending,
   StatusRunning,
@@ -58,10 +57,10 @@ export const columnFactories = Object.freeze({
     return {
       title: 'Status',
       render: (row: GithubDeployment): JSX.Element => (
-        <Box display="flex" alignItems="center">
+        <Flex align="center">
           <GithubStateIndicator state={row.state} />
-          <Typography variant="caption">{row.state}</Typography>
-        </Box>
+          <Text variant="body-x-small">{row.state}</Text>
+        </Flex>
       ),
     };
   },
@@ -89,9 +88,9 @@ export const columnFactories = Object.freeze({
     return {
       title: 'Last Updated',
       render: (row: GithubDeployment): JSX.Element => (
-        <Box>
+        <div>
           {DateTime.fromISO(row.updatedAt).toRelative({ locale: 'en' })}
-        </Box>
+        </div>
       ),
     };
   },

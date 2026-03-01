@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,32 @@
  * limitations under the License.
  */
 
-// Styles have been migrated to styles.module.css
+@layer components {
+  .root {
+    max-width: 720px;
+    margin: var(--bui-space-4);
+  }
+
+  .title {
+    padding: var(--bui-space-2) 0 var(--bui-space-4) 0;
+  }
+
+  .table {
+    padding: var(--bui-space-2);
+  }
+
+  .accordionDetails {
+    padding: 0;
+  }
+
+  .button {
+    order: -1;
+    margin-right: 0;
+    margin-left: -20px;
+  }
+
+  .externalLinkIcon {
+    font-size: inherit;
+    vertical-align: bottom;
+  }
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { PropsWithChildren, FunctionComponent } from 'react';
-import { Grid, Box } from '@material-ui/core';
+import { Grid } from '@backstage/ui';
 
 type Props = {
   fullscreen: boolean;
@@ -26,11 +26,14 @@ const Wrapper: FunctionComponent<PropsWithChildren<Props>> = (
   const { children, fullscreen } = props;
 
   return (
-    <Grid item xs>
-      <Box maxHeight={fullscreen ? '100vh' : '50vh'} overflow="auto">
-        {children}
-      </Box>
-    </Grid>
+    <Grid.Item
+      style={{
+        maxHeight: fullscreen ? '100vh' : '50vh',
+        overflow: 'auto',
+      }}
+    >
+      {children}
+    </Grid.Item>
   );
 };
 
