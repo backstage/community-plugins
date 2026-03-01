@@ -45,7 +45,7 @@ export function useWorkflowRuns({
   owner,
   repo,
   branch,
-  initialPageSize = 6,
+  initialPageSize = 60,
   fetchAllBranches = true,
 }: {
   hostname?: string;

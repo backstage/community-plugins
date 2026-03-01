@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { PropsWithChildren, FunctionComponent } from 'react';
-import { Typography, Box, IconButton } from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import { Text, Flex, ButtonIcon } from '@backstage/ui';
+import { RiRefreshLine } from '@remixicon/react';
 
 type Props = {
   onRefresh: () => void;
@@ -27,15 +27,18 @@ const InfoCardHeader: FunctionComponent<PropsWithChildren<Props>> = (
   const { children, onRefresh } = props;
 
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Box display="flex" alignItems="center">
-        <Typography variant="h5">Open pull requests</Typography>
-        <IconButton color="secondary" onClick={onRefresh}>
-          <RefreshIcon />
-        </IconButton>
-      </Box>
+    <Flex justify="between" align="center">
+      <Flex align="center">
+        <Text variant="title-medium">Open pull requests</Text>
+        <ButtonIcon
+          aria-label="Refresh"
+          onPress={onRefresh}
+          icon={<RiRefreshLine size={20} />}
+          variant="secondary"
+        />
+      </Flex>
       {children}
-    </Box>
+    </Flex>
   );
 };
 
