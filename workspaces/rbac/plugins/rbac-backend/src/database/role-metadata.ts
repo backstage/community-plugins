@@ -31,24 +31,21 @@ import {
 } from '../default-permissions/default-permissions';
 import { Config } from '@backstage/config';
 
-/** Normalize isDefault to boolean (SQLite returns 0/1). */
-function toDao(
-  row: Record<string, unknown> | undefined,
-): RoleMetadataDao | undefined {
-  if (!row) return undefined;
-  return {
-    ...row,
-    isDefault: Boolean((row as { isDefault?: unknown }).isDefault),
-  } as RoleMetadataDao;
-}
-
 export const ROLE_METADATA_TABLE = 'role-metadata';
 
-export interface RoleMetadataDao extends RoleMetadata {
+export interface RoleMetadataDao {
   id?: number;
   roleEntityRef: string;
   source: Source;
   modifiedBy: string;
+
+  description?: string;
+  author?: string;
+  lastModified?: string;
+  createdAt?: string;
+  owner?: string;
+  /** Postgres has a real boolean type; SQLite stores and may return 0/1. Optional when creating. */
+  isDefault?: boolean | 0 | 1;
 }
 
 export interface RoleMetadataStorage {
@@ -116,18 +113,20 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
       }
     });
     const row = await this.knex(ROLE_METADATA_TABLE)
-      .where('roleEntityRef', defaultRoleRef)
+      .where<RoleMetadataDao>('roleEntityRef', defaultRoleRef)
       .first();
-    this.defaultRoleMetaData = toDao(row as Record<string, unknown>);
+    this.defaultRoleMetaData = row;
   }
 
   async filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]> {
-    const rows = await this.knex.table(ROLE_METADATA_TABLE).where(builder => {
-      if (source) {
-        builder.where('source', source);
-      }
-    });
-    return rows.map(row => toDao(row as Record<string, unknown>)!);
+    const rows = await this.knex
+      .table<RoleMetadataDao>(ROLE_METADATA_TABLE)
+      .where(builder => {
+        if (source) {
+          builder.where('source', source);
+        }
+      });
+    return rows;
   }
 
   getDefaultRoleMetadata(): RoleMetadataDao | undefined {
@@ -135,27 +134,24 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
   }
 
   async findDefaultRole(): Promise<RoleMetadataDao | undefined> {
-    const row = await this.knex(ROLE_METADATA_TABLE)
-      .where<Record<string, unknown>>('isDefault', true)
+    return await this.knex<RoleMetadataDao>(ROLE_METADATA_TABLE)
+      .where('isDefault', true)
       .first();
-    return toDao(row);
   }
 
   async filterForOwnerRoleMetadata(
     filter?: RBACFilters,
   ): Promise<RoleMetadataDao[]> {
-    const rows = await this.knex.table(ROLE_METADATA_TABLE);
-    const roleMetadata: RoleMetadataDao[] = rows.map(
-      row => toDao(row as Record<string, unknown>)!,
-    );
+    const rows = await this.knex.table<RoleMetadataDao>(ROLE_METADATA_TABLE);
 
     if (filter) {
-      return roleMetadata.filter(role => {
-        return matches(role as RoleMetadata, filter);
-      });
+      return rows
+        .filter((role): role is RoleMetadataDao => !!role)
+        .filter(role => matches(daoToMetadata(role), filter))
+        .map(role => role);
     }
 
-    return roleMetadata;
+    return rows;
   }
 
   async findRoleMetadata(
@@ -163,11 +159,10 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     trx?: Knex.Transaction,
   ): Promise<RoleMetadataDao | undefined> {
     const db = trx || this.knex;
-    const row = await db
-      .table(ROLE_METADATA_TABLE)
+    return await db
+      .table<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('roleEntityRef', roleEntityRef)
       .first();
-    return toDao(row as Record<string, unknown>);
   }
 
   async createRoleMetadata(
@@ -181,7 +176,10 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     }
 
     const result = await trx(ROLE_METADATA_TABLE)
-      .insert({ ...metadata, isDefault: metadata.isDefault ?? false })
+      .insert<RoleMetadataDao>({
+        ...metadata,
+        isDefault: metadata.isDefault ?? false,
+      })
       .returning<[{ id: number }]>('id');
     if (result && result?.length > 0) {
       return result[0].id;
@@ -220,7 +218,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
       return;
     }
 
-    const result = await trx(ROLE_METADATA_TABLE)
+    const result = await trx<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('id', currentMetadataDao.id)
       .update({
         ...newRoleMetadata,
@@ -267,6 +265,6 @@ export function daoToMetadata(dao: RoleMetadataDao): RoleMetadata {
     modifiedBy: dao.modifiedBy,
     createdAt: dao.createdAt,
     lastModified: dao.lastModified,
-    isDefault: dao.isDefault,
+    isDefault: dao.isDefault === true || dao.isDefault === 1 ? true : undefined,
   };
 }
