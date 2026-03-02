@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.22.1
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+
 ## 1.22.0
 
 ### Minor Changes
