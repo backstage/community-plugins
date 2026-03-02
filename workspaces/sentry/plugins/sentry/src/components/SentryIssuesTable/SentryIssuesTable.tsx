@@ -87,9 +87,11 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
     },
     [],
   );
-  const [filteredIssues, setFilteredIssues] = useState(
-    sentryIssues.filter(i => filterByDate(i, selected)),
-  );
+
+  const filteredIssues =
+    selected === Number.NEGATIVE_INFINITY
+      ? sentryIssues
+      : sentryIssues.filter(i => filterByDate(i, selected));
 
   const handleFilterChange = (
     event: ChangeEvent<{ name?: string; value: unknown }>,
@@ -97,11 +99,6 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
     const item = event.target.value;
     if (typeof item === 'number') {
       setSelected(item);
-      if (item === Number.NEGATIVE_INFINITY) {
-        setFilteredIssues(sentryIssues);
-        return;
-      }
-      setFilteredIssues(sentryIssues.filter(i => filterByDate(i, item)));
     }
   };
   return (
