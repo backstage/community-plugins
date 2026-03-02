@@ -1,5 +1,13 @@
 # @backstage-community/plugin-linguist
 
+## 0.18.0
+
+### Minor Changes
+
+- e23846b: **BREAKING** Backstage UI (BUI) is now required for the Linguist plugin to function
+
+  Migrated from Material UI (MUI) to the new Backstage UI (BUI) design system.
+
 ## 0.17.0
 
 ### Minor Changes
