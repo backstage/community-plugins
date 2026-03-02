@@ -1,5 +1,16 @@
 # @backstage-community/plugin-manage
 
+## 1.2.0
+
+### Minor Changes
+
+- 884e720: Bump to depend on Backstage 1.48
+
+### Patch Changes
+
+- Updated dependencies [884e720]
+  - @backstage-community/plugin-manage-react@2.2.0
+
 ## 1.1.0
 
 ### Minor Changes
