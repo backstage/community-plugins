@@ -16,12 +16,12 @@
 import { ComponentProps, ReactNode } from 'react';
 
 import { Box, Card, CardBody, CardHeader, Text } from '@backstage/ui';
+import { GaugeCard, GaugePropsGetColor } from '@backstage/core-components';
 
 import { useTheme } from '@material-ui/core';
 
 import { CircularProgress } from '../CircularProgress';
-
-import { GaugeCard, GaugePropsGetColor } from '@backstage/core-components';
+import styles from './GaugeCard.module.css';
 
 /**
  * @deprecated Use the new frontend system instead
@@ -65,8 +65,8 @@ export interface ManageGaugeCardProps {
 }
 
 /**
- * This component is `@backstage/core-component`'s GaugeCard with pre-defined
- * defaults.
+ * This component is an alternative to `@backstage/core-component`'s GaugeCard
+ * with pre-defined defaults, and using BUI instead of MUI.
  *
  * @public
  */
@@ -85,19 +85,19 @@ export function ManageGaugeCard(props: ManageGaugeCardProps) {
   })();
 
   return (
-    <Card style={{ width: '140px' }}>
+    <Card className={styles.card}>
       <CardHeader>
         <Text variant="body-medium" weight="bold">
           {title}
         </Text>
       </CardHeader>
-      <CardBody style={{ alignContent: 'end' }}>
-        <Box style={{ marginInline: 'auto' }}>
+      <CardBody className={styles.cardBody}>
+        <Box className={styles.cardContent}>
           <CircularProgress
+            className={styles.cardContent}
             progress={progress}
             color={color}
             size={100}
-            style={{ marginInline: 'auto' }}
           />
         </Box>
       </CardBody>

@@ -16,6 +16,8 @@
 
 import { Box, Card, CardHeader, CardBody, Flex, Text } from '@backstage/ui';
 
+import styles from './CardWidget.module.css';
+
 /** @public */
 export interface CardWidgetProps {
   title?: string;
@@ -27,7 +29,7 @@ export interface CardWidgetProps {
 /** @public */
 export function CardWidget(props: CardWidgetProps) {
   return (
-    <Card style={{ height: '100%' }}>
+    <Card className={styles.card}>
       {(props.title || props.subtitle || props.action) && (
         <CardHeader>
           <Flex justify="between">

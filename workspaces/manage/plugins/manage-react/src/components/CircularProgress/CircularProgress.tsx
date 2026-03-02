@@ -19,6 +19,8 @@ import { ComponentProps, CSSProperties, useMemo } from 'react';
 import { Text } from '@backstage/ui';
 
 export interface CircularProgressProps {
+  /** Class name for the root element */
+  className?: string;
   /** A value between 0 and 1 defining the progress (0% - 100%) */
   progress: number;
   /** A color function for getting a color, given a progress value */
@@ -52,6 +54,7 @@ function getCircle(strokeWidth: number, progress: number) {
 
 export function CircularProgress(props: CircularProgressProps) {
   const {
+    className,
     progress,
     color,
     size,
@@ -89,7 +92,7 @@ export function CircularProgress(props: CircularProgressProps) {
   );
 
   return (
-    <div style={rootStyle}>
+    <div className={className} style={rootStyle}>
       <svg width="100%" height="100%" viewBox="0 0 100 100">
         <circle
           cx={50}

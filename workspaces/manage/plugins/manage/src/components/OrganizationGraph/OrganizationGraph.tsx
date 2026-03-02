@@ -38,7 +38,7 @@ import {
 
 const styleControlsCard: CSSProperties = {
   position: 'absolute',
-  backgroundColor: `rgba(from var(--bui-bg-surface-1) r g b / 0.8)`,
+  backgroundColor: 'var(--bui-bg-neutral-2)',
   width: 'fit-content',
   userSelect: 'none',
 };

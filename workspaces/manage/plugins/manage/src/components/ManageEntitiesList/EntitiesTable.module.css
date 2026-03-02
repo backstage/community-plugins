@@ -1,0 +1,14 @@
+.manageEntitiesTable {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.manageEntitiesTable > table {
+  width: auto;
+  min-width: 100%;
+}
+
+.manageEntitiesTableTitleCell {
+  margin-top: calc(0px - var(--bui-space-1));
+  margin-bottom: calc(0px - var(--bui-space-1));
+}

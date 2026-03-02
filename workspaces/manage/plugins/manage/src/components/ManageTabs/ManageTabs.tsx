@@ -18,8 +18,6 @@ import { ReactElement, ReactNode, useMemo } from 'react';
 
 import { upperFirst } from 'lodash';
 
-import Alert from '@mui/material/Alert';
-
 import {
   RoutedTabs,
   TableOptions as MuiTableOptions,
@@ -151,10 +149,6 @@ export interface ManageTabsProps {
   customSettings?: Setting[];
 }
 
-const defaultNothingOwned = (
-  <Alert severity="info">You and your team(s) don't own any entities</Alert>
-);
-
 /** @public */
 export function ManageTabsImpl(props: ManageTabsProps) {
   return (
@@ -197,8 +191,7 @@ function ManageTabsInner(props: ManageTabsProps) {
   const ownedKinds = useOwnedKinds(true) ?? [];
   const kinds = useKindOrder(ownedKinds);
 
-  const onNothingOwned =
-    kinds.length === 0 ? props.onNothingOwned ?? defaultNothingOwned : null;
+  const onNothingOwned = kinds.length === 0 ? props.onNothingOwned : null;
 
   const allKindsCards = kindSetupMap.get(MANAGE_KIND_COMMON)?.cards;
   const allKindsHeader = kindSetupMap.get(MANAGE_KIND_COMMON)?.header;

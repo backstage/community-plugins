@@ -26,7 +26,7 @@ import {
 import {
   CheckResultRenderer,
   techInsightsApiRef,
-} from '@backstage-community/plugin-tech-insights';
+} from '@backstage-community/plugin-tech-insights-react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import {
   BulkCheckResponse,
