@@ -1,5 +1,17 @@
 # @backstage-community/plugin-rbac
 
+## 1.49.0
+
+### Minor Changes
+
+- 8c7bddb: Added NFS support
+
+### Patch Changes
+
+- 42c05f7: exported rbacPlugin as a default and other minor updates
+- a55af54: Updated the translation of a Japanese word.
+- 1d15595: Translation updated for German and Spanish
+
 ## 1.48.1
 
 ### Patch Changes
