@@ -18,4 +18,9 @@ export { DashboardViewer, EntityDashboardViewer } from './components';
 export * from './plugin';
 export * from './constants';
 export * from './types';
-export { grafanaApiRef, type GrafanaApi } from './api';
+export {
+  grafanaApiRef,
+  type GrafanaApi,
+  type GrafanaApiClientOptions,
+  GrafanaApiClient,
+} from './api';

@@ -17,7 +17,38 @@
 import { Entity } from '@backstage/catalog-model';
 
 /**
- * Grafana daashboard parameters
+ * Configuration for a single Grafana host instance
+ * @public
+ */
+export interface GrafanaHost {
+  /**
+   * Unique identifier for this Grafana instance
+   */
+  id: string;
+  /**
+   * Domain used by users to access this Grafana instance
+   */
+  domain: string;
+  /**
+   * Path to use for requests via the proxy
+   */
+  proxyPath?: string;
+  /**
+   * Whether this instance uses unified alerting
+   */
+  unifiedAlerting?: boolean;
+  /**
+   * Limit value for dashboard search queries
+   */
+  grafanaDashboardSearchLimit?: number;
+  /**
+   * Max pages of dashboard search queries to fetch
+   */
+  grafanaDashboardMaxPages?: number;
+}
+
+/**
+ * Grafana dashboard parameters
  * @public
  */
 export interface Dashboard {

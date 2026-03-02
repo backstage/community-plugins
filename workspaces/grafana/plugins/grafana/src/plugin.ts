@@ -22,11 +22,8 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/core-plugin-api';
-import {
-  UnifiedAlertingGrafanaApiClient,
-  grafanaApiRef,
-  GrafanaApiClient,
-} from './api';
+import { grafanaApiRef, GrafanaApiClient } from './api';
+import { readHosts } from './config';
 
 /**
  * The grafana plugin.
@@ -43,35 +40,12 @@ export const grafanaPlugin = createPlugin({
         configApi: configApiRef,
       },
       factory: ({ discoveryApi, fetchApi, configApi }) => {
-        const unifiedAlertingEnabled =
-          configApi.getOptionalBoolean('grafana.unifiedAlerting') || false;
+        const hosts = readHosts(configApi);
 
-        if (!unifiedAlertingEnabled) {
-          return new GrafanaApiClient({
-            discoveryApi,
-            fetchApi,
-            domain: configApi.getString('grafana.domain'),
-            proxyPath: configApi.getOptionalString('grafana.proxyPath'),
-            grafanaDashboardSearchLimit: configApi.getOptionalNumber(
-              'grafana.grafanaDashboardSearchLimit',
-            ),
-            grafanaDashboardMaxPages: configApi.getOptionalNumber(
-              'grafana.grafanaDashboardMaxPages',
-            ),
-          });
-        }
-
-        return new UnifiedAlertingGrafanaApiClient({
+        return new GrafanaApiClient({
           discoveryApi,
           fetchApi,
-          domain: configApi.getString('grafana.domain'),
-          proxyPath: configApi.getOptionalString('grafana.proxyPath'),
-          grafanaDashboardSearchLimit: configApi.getOptionalNumber(
-            'grafana.grafanaDashboardSearchLimit',
-          ),
-          grafanaDashboardMaxPages: configApi.getOptionalNumber(
-            'grafana.grafanaDashboardMaxPages',
-          ),
+          hosts,
         });
       },
     }),
