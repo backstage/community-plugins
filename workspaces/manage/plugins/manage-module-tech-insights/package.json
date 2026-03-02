@@ -53,7 +53,7 @@
   "dependencies": {
     "@backstage-community/plugin-manage-react": "workspace:^",
     "@backstage-community/plugin-tech-insights": "^0.6.2",
-    "@backstage-community/plugin-tech-insights-common": "^0.7.1",
+    "@backstage-community/plugin-tech-insights-common": "^0.8.0",
     "@backstage-community/plugin-tech-insights-react": "^1.2.1",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
