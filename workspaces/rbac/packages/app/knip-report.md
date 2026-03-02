@@ -1,16 +1,9 @@
 # Knip report
 
-## Unused dependencies (1)
+## Unused dependencies (3)
 
-| Name         | Location     | Severity |
-| :----------- | :----------- | :------- |
-| react-router | package.json | error    |
-
-## Unused devDependencies (4)
-
-| Name                        | Location     | Severity |
-| :-------------------------- | :----------- | :------- |
-| @testing-library/user-event | package.json | error    |
-| @backstage/test-utils       | package.json | error    |
-| @testing-library/dom        | package.json | error    |
-| cross-env                   | package.json | error    |
+| Name                       | Location          | Severity |
+| :------------------------- | :---------------- | :------- |
+| @backstage/core-plugin-api | package.json:26:6 | error    |
+| @backstage/plugin-app      | package.json:29:6 | error    |
+| react-router               | package.json:39:6 | error    |

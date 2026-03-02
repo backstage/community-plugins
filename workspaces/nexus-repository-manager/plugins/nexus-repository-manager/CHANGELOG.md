@@ -1,5 +1,16 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.22.0
+
+### Minor Changes
+
+- 3dd6884: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+- 9f0798f: Updated dependency `@hey-api/openapi-ts` to `0.92.4`.
+
 ## 1.21.0
 
 ### Minor Changes

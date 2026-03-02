@@ -45,7 +45,9 @@ describe('Entity content extension', () => {
 
   it('should render WorkflowRunsTable', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+      <TestApiProvider
+        apis={[[githubActionsApiRef, mockGithubActionsApi]] as const}
+      >
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(
             content.entityGithubActionsContent,
@@ -65,7 +67,9 @@ describe('Entity content extension', () => {
 
   it('should render WorkflowRunsCards', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[githubActionsApiRef, mockGithubActionsApi]]}>
+      <TestApiProvider
+        apis={[[githubActionsApiRef, mockGithubActionsApi]] as const}
+      >
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(content.entityGithubActionsContent, {
             config: { layout: 'cards' },

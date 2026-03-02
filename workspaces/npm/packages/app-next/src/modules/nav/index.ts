@@ -17,6 +17,6 @@ import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import { SidebarContent } from './Sidebar';
 
 export const navModule = createFrontendModule({
-  pluginId: 'nav',
+  pluginId: 'app',
   extensions: [SidebarContent],
 });

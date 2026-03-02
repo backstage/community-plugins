@@ -8,12 +8,15 @@
 import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
+import { FilterPredicate } from '@backstage/filter-predicates';
 import { IconComponent } from '@backstage/frontend-plugin-api';
+import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -76,12 +79,12 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'announcements';
       config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        filter: FilterPredicate | undefined;
+        type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        filter?: FilterPredicate | undefined;
+        type?: 'content' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -109,7 +112,7 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        filter?: FilterPredicate | ((entity: Entity) => boolean) | undefined;
         type?: EntityCardType | undefined;
       };
     }>;
@@ -136,19 +139,19 @@ const _default: OverridableFrontendPlugin<
     }>;
     'page:announcements': OverridableExtensionDefinition<{
       config: {
-        title: string | undefined;
         category: string | undefined;
         hideStartAt: boolean | undefined;
         markdownRenderer: 'backstage' | 'md-editor' | undefined;
         defaultInactive: boolean | undefined;
         path: string | undefined;
+        title: string | undefined;
       };
       configInput: {
-        title?: string | undefined;
         category?: string | undefined;
         defaultInactive?: boolean | undefined;
         hideStartAt?: boolean | undefined;
         markdownRenderer?: 'backstage' | 'md-editor' | undefined;
+        title?: string | undefined;
         path?: string | undefined;
       };
       output:
@@ -160,15 +163,63 @@ const _default: OverridableFrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ExtensionDataRef<
+            string,
+            'core.title',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            IconElement,
+            'core.icon',
+            {
+              optional: true;
+            }
           >;
-      inputs: {};
+      inputs: {
+        pages: ExtensionInput<
+          | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+          | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+          | ConfigurableExtensionDataRef<
+              RouteRef<AnyRouteRefParams>,
+              'core.routing.ref',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              string,
+              'core.title',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              IconElement,
+              'core.icon',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+            internal: false;
+          }
+        >;
+      };
       kind: 'page';
       name: undefined;
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
-        loader: () => Promise<JSX.Element>;
+        title?: string | undefined;
+        icon?: IconElement | undefined;
+        loader?: (() => Promise<JSX_2.Element>) | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        noHeader?: boolean | undefined;
       };
     }>;
     'search-filter-result-type:announcements/announcements-results-type': OverridableExtensionDefinition<{

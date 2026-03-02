@@ -4,8 +4,87 @@
 
 ```ts
 
+/// <reference types="react" />
+
+import { AnyApiFactory } from '@backstage/frontend-plugin-api';
+import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
+import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
+import { IconComponent } from '@backstage/frontend-plugin-api';
+import { JSX as JSX_2 } from 'react';
+import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { RouteRef } from '@backstage/core-plugin-api';
+import { RouteRef as RouteRef_2 } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
+
+// @public (undocumented)
+export const rbacPlugin: OverridableFrontendPlugin<    {
+root: RouteRef<undefined>;
+}, {}, {
+"api:rbac/licensed-users": OverridableExtensionDefinition<    {
+kind: "api";
+name: "licensed-users";
+config: {};
+configInput: {};
+output: ExtensionDataRef<AnyApiFactory, "core.api.factory", {}>;
+inputs: {};
+params: <TApi, TImpl extends TApi, TDeps extends {
+[x: string]: unknown;
+}>(params: ApiFactory<TApi, TImpl, TDeps>) => ExtensionBlueprintParams<AnyApiFactory>;
+}>;
+"api:rbac/rbac": OverridableExtensionDefinition<    {
+kind: "api";
+name: "rbac";
+config: {};
+configInput: {};
+output: ExtensionDataRef<AnyApiFactory, "core.api.factory", {}>;
+inputs: {};
+params: <TApi, TImpl extends TApi, TDeps extends {
+[x: string]: unknown;
+}>(params: ApiFactory<TApi, TImpl, TDeps>) => ExtensionBlueprintParams<AnyApiFactory>;
+}>;
+"nav-item:rbac": OverridableExtensionDefinition<    {
+kind: "nav-item";
+name: undefined;
+config: {};
+configInput: {};
+output: ExtensionDataRef<    {
+title: string;
+icon: IconComponent;
+routeRef: RouteRef_2<undefined>;
+}, "core.nav-item.target", {}>;
+inputs: {};
+params: {
+title: string;
+icon: IconComponent;
+routeRef: RouteRef_2<undefined>;
+};
+}>;
+"page:rbac": OverridableExtensionDefinition<    {
+kind: "page";
+name: undefined;
+config: {
+path: string | undefined;
+};
+configInput: {
+path?: string | undefined;
+};
+output: ExtensionDataRef<string, "core.routing.path", {}> | ExtensionDataRef<JSX_2.Element, "core.reactElement", {}> | ExtensionDataRef<RouteRef_2<AnyRouteRefParams>, "core.routing.ref", {
+optional: true;
+}>;
+inputs: {};
+params: {
+defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
+path: string;
+loader: () => Promise<JSX.Element>;
+routeRef?: RouteRef_2<AnyRouteRefParams> | undefined;
+};
+}>;
+}>;
 
 // @public
 export const rbacTranslationRef: TranslationRef<"plugin.rbac", {
@@ -36,6 +115,7 @@ readonly "toolbar.warning.noteText": string;
 readonly "errors.createRole": string;
 readonly "errors.editRole": string;
 readonly "errors.notFound": string;
+readonly "errors.notAllowed": string;
 readonly "errors.unauthorized": string;
 readonly "errors.rbacDisabled": string;
 readonly "errors.rbacDisabledInfo": string;
@@ -71,8 +151,8 @@ readonly "roleForm.fields.description.label": string;
 readonly "roleForm.fields.description.helperText": string;
 readonly "roleForm.fields.owner.label": string;
 readonly "roleForm.fields.owner.helperText": string;
-readonly "permissionPolicies.rules": string;
 readonly "permissionPolicies.search": string;
+readonly "permissionPolicies.rules": string;
 readonly "permissionPolicies.rule": string;
 readonly "permissionPolicies.permissions": string;
 readonly "permissionPolicies.permissionPolicies": string;
@@ -109,9 +189,9 @@ readonly "conditionalAccess.addNestedCondition": string;
 readonly "conditionalAccess.addRule": string;
 readonly "conditionalAccess.nestedConditionTooltip": string;
 readonly "conditionalAccess.nestedConditionExample": string;
+readonly "common.use": string;
 readonly "common.update": string;
 readonly "common.delete": string;
-readonly "common.use": string;
 readonly "common.name": string;
 readonly "common.rule": string;
 readonly "common.groups": string;
@@ -179,6 +259,9 @@ readonly "common.defaultResourceTypeVisible": string;
 
 // @public (undocumented)
 export const rbacTranslations: TranslationResource<"plugin.rbac">;
+
+// @alpha
+export const rbacTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
 

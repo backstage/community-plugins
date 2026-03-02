@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,175 +13,118 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * New Frontend System dev mode for the RBAC plugin
+ */
+
 import '@backstage/ui/css/styles.css';
+import { createApp } from '@backstage/frontend-defaults';
 import { configApiRef } from '@backstage/core-plugin-api';
-import { createDevApp } from '@backstage/dev-utils';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { mockApis, TestApiProvider } from '@backstage/test-utils';
+import ReactDOM from 'react-dom/client';
+import { mockApis } from '@backstage/test-utils';
 
 import {
-  PermissionAction,
-  PluginPermissionMetaData,
-  Role,
-  RoleBasedPolicy,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
+import {
+  Sidebar,
+  SidebarGroup,
+  SidebarItem,
+  SidebarScrollWrapper,
+  SidebarSpace,
+} from '@backstage/core-components';
+import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import {
+  SidebarLanguageSwitcher,
+  SidebarSignOutButton,
+} from '@backstage/dev-utils';
+import { rbacApiRef } from '../src/api/RBACBackendClient';
+import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 
-import { mockConditionRules } from '../src/__fixtures__/mockConditionRules';
-import { mockConditions } from '../src/__fixtures__/mockConditions';
-import { mockMembers } from '../src/__fixtures__/mockMembers';
-import { mockPermissionPolicies } from '../src/__fixtures__/mockPermissionPolicies';
-import { mockPolicies } from '../src/__fixtures__/mockPolicies';
-import { RBACAPI, rbacApiRef } from '../src/api/RBACBackendClient';
-import { RbacPage, rbacPlugin } from '../src/plugin';
-import { MemberEntity, RoleBasedConditions, RoleError } from '../src/types';
-import { rbacTranslations } from '../src/translations';
+import { rbacPlugin, rbacTranslationsModule } from '../src/alpha';
+import { mockConfigApi, mockLicensedUsersApi, mockRBACApi } from './mocks';
 
-class MockRBACApi implements RBACAPI {
-  readonly resources;
-
-  constructor(fixtureData: Role[]) {
-    this.resources = fixtureData;
-  }
-  async isLicensePluginEnabled(): Promise<boolean> {
-    return false;
-  }
-  async downloadStatistics(): Promise<Response> {
-    return { status: 200 } as Response;
-  }
-
-  async getRoles(): Promise<Role[]> {
-    return this.resources;
-  }
-
-  async getAssociatedPolicies(
-    entityReference: string,
-  ): Promise<RoleBasedPolicy[]> {
-    return mockPolicies.filter(pol => pol.entityReference === entityReference);
-  }
-
-  async getPolicies(): Promise<RoleBasedPolicy[]> {
-    return mockPolicies;
-  }
-
-  async getUserAuthorization(): Promise<{ status: string }> {
-    return {
-      status: 'Authorized',
-    };
-  }
-
-  async getRole(role: string): Promise<Role[] | Response> {
-    const roleresource = this.resources.find(res => res.name === role);
-    return roleresource
-      ? [roleresource]
-      : ({ status: 404, statusText: 'Not Found' } as Response);
-  }
-
-  async updateRole(_oldRole: Role, _newRole: Role): Promise<Response> {
-    return { status: 200 } as Response;
-  }
-
-  async updatePolicies(
-    _entityReference: string,
-    _oldPolicies: RoleBasedPolicy[],
-    _newPolicies: RoleBasedPolicy[],
-  ): Promise<Response> {
-    return { status: 204 } as Response;
-  }
-
-  async deleteRole(_roleName: string): Promise<Response> {
-    return { status: 204, statusText: 'Deleted Successfully' } as Response;
-  }
-
-  async getMembers(): Promise<MemberEntity[] | Response> {
-    return mockMembers;
-  }
-
-  async listPermissions(): Promise<PluginPermissionMetaData[]> {
-    return mockPermissionPolicies;
-  }
-
-  async deletePolicies(
-    _entityRef: string,
-    _policies: RoleBasedPolicy[],
-  ): Promise<Response> {
-    return {
-      ok: true,
-      status: 204,
-      statusText: 'Deleted Successfully',
-    } as Response;
-  }
-
-  async createRole(_role: Role): Promise<Response> {
-    return { status: 200 } as Response;
-  }
-
-  async createPolicies(_policies: RoleBasedPolicy[]): Promise<Response> {
-    return { status: 200 } as Response;
-  }
-
-  async getPluginsConditionRules(): Promise<any | Response> {
-    return mockConditionRules;
-  }
-
-  async createConditionalPermission(
-    _conditionalPermission: RoleBasedConditions,
-  ): Promise<Response> {
-    return { status: 200 } as Response;
-  }
-
-  async getRoleConditions(
-    roleRef: string,
-  ): Promise<RoleConditionalPolicyDecision<PermissionAction>[] | Response> {
-    return mockConditions.filter(mc => mc.roleEntityRef === roleRef);
-  }
-
-  async updateConditionalPolicies(
-    _conditionId: number,
-    _data: RoleBasedConditions,
-  ): Promise<RoleError | Response> {
-    return { status: 200 } as Response;
-  }
-
-  async deleteConditionalPolicies(
-    _conditionId: number,
-  ): Promise<RoleError | Response> {
-    return { status: 204 } as Response;
-  }
-}
-
-const mockRBACApi = new MockRBACApi([
-  {
-    memberReferences: ['user:default/guest'],
-    name: 'role:default/guests',
-  },
-  {
-    memberReferences: ['user:default/xyz', 'group:default/admins'],
-    name: 'role:default/rbac_admin',
-  },
-]);
-const mockConfigApi = mockApis.config({
-  data: { permission: { enabled: true } },
+const rbacDevModule = createFrontendModule({
+  pluginId: 'rbac',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'rbac',
+      params: defineParams =>
+        defineParams({
+          api: rbacApiRef,
+          deps: {},
+          factory: () => mockRBACApi,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'licensed-users',
+      params: defineParams =>
+        defineParams({
+          api: licensedUsersApiRef,
+          deps: {},
+          factory: () => mockLicensedUsersApi,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'config',
+      params: defineParams =>
+        defineParams({
+          api: configApiRef,
+          deps: {},
+          factory: () => mockConfigApi,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => mockApis.permission(),
+        }),
+    }),
+  ],
 });
 
-createDevApp()
-  .registerPlugin(rbacPlugin)
-  .addTranslationResource(rbacTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
-  .setDefaultLanguage('en')
-  .addPage({
-    element: (
-      <TestApiProvider
-        apis={[
-          [permissionApiRef, mockApis.permission()],
-          [rbacApiRef, mockRBACApi],
-          [configApiRef, mockConfigApi],
-        ]}
-      >
-        <RbacPage />
-      </TestApiProvider>
+const devSidebarContent = NavContentBlueprint.make({
+  params: {
+    component: ({ items }) => (
+      <Sidebar>
+        <SidebarGroup label="Menu">
+          <SidebarScrollWrapper>
+            {items.map((item, index) => (
+              <SidebarItem {...item} key={index} />
+            ))}
+          </SidebarScrollWrapper>
+        </SidebarGroup>
+        <SidebarSpace />
+        <SidebarLanguageSwitcher />
+        <SidebarSignOutButton />
+      </Sidebar>
     ),
-    title: 'Administration',
-    path: '/rbac',
-  })
-  .render();
+  },
+});
+
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [devSidebarContent],
+});
+
+// redirect to this page on load after sign-in
+const defaultPage = '/rbac';
+
+const app = createApp({
+  features: [rbacPlugin, rbacTranslationsModule, rbacDevModule, devNavModule],
+});
+
+const root = app.createRoot();
+
+// Same redirect as dev-utils render(): if at root and we have a default page, go there
+if (typeof window !== 'undefined' && window.location.pathname === '/') {
+  window.location.pathname = defaultPage;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-splunk-on-call",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "description": "A Backstage plugin that integrates towards Splunk On-Call",
   "backstage": {
     "role": "frontend-plugin",

@@ -26,7 +26,6 @@ import { rootRouteRef } from '../routes';
 export const announcementsPage = PageBlueprint.makeWithOverrides({
   config: {
     schema: {
-      title: z => z.string().optional(),
       /**
        * @deprecated Filter by category using URL state (e.g. ?category=...). This option will be removed.
        */

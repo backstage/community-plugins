@@ -1,0 +1,50 @@
+{
+  "name": "@backstage-community/plugin-catalog-backend-module-annotate-scm-slug",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "The annotate-scm-slug backend module for the catalog plugin.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/catalog/plugins/catalog-backend-module-annotate-scm-slug"
+  },
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "catalog",
+    "pluginPackage": "@backstage/plugin-catalog-backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/integration": "backstage:^",
+    "@backstage/plugin-catalog-common": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
+    "git-url-parse": "^16.1.0",
+    "lodash": "^4.17.23"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@types/git-url-parse": "^9.0.3",
+    "@types/lodash": "^4.17.13"
+  },
+  "files": [
+    "dist"
+  ]
+}

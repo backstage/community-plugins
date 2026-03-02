@@ -1,5 +1,24 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.28.1
+
+### Patch Changes
+
+- 8d3c162: **DEPRECATED** This change marks the `AzurePullRequestsIcon` as deprecated, use `RiGitPullRequestLine` from `@remixicon/react` instead.
+
+  Migrated Material UI Icons to Remix Icons, also fixed a bug in `AzureDevOpsWikiArticleSearchResultListItem` to filter on the correct `result.type`
+
+## 0.28.0
+
+### Minor Changes
+
+- 00555dc: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [00555dc]
+  - @backstage-community/plugin-azure-devops-common@0.20.0
+
 ## 0.27.0
 
 ### Minor Changes

@@ -36,6 +36,7 @@ yarn.lock                                                               @backsta
 /workspaces/bitrise                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/blackduck                                                   @backstage/community-plugins-maintainers  @deepan10
 /workspaces/bookmarks                                                   @backstage/community-plugins-maintainers  @logonoff @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @hopehadfield
+/workspaces/catalog                                                     @backstage/community-plugins-maintainers  @awanlin @freben
 /workspaces/cicd-statistics                                             @backstage/community-plugins-maintainers
 /workspaces/cloudbuild                                                  @backstage/community-plugins-maintainers
 /workspaces/code-climate                                                @backstage/community-plugins-maintainers

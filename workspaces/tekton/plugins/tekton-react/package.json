@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tekton-react",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "Apache-2.0",
   "description": "Web library for the tekton plugin",
   "main": "src/index.ts",

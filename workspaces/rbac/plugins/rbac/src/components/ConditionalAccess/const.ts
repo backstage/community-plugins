@@ -15,7 +15,7 @@
  */
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { ConditionsData } from './types';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const criterias = {
   condition: 'condition' as keyof ConditionsData,

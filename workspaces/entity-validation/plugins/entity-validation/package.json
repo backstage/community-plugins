@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-entity-validation",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "entity-validation",

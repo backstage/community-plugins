@@ -15,20 +15,26 @@
  */
 import { defineConfig } from '@playwright/test';
 
+// APP_MODE: 'legacy' (app-legacy) or 'nfs' (app with new frontend system)
+const appMode = process.env.APP_MODE || 'legacy';
+const startCommand = appMode === 'legacy' ? 'yarn start:legacy' : 'yarn start';
+
 export default defineConfig({
   testDir: './plugins/rbac/tests/',
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: 'yarn start',
+          command: startCommand,
           cwd: 'plugins/rbac',
           port: 3000,
           reuseExistingServer: true,
         },
       ],
   retries: process.env.CI ? 2 : 0,
-  reporter: [['html', { open: 'never', outputFolder: 'e2e-test-report' }]],
+  reporter: [
+    ['html', { open: 'never', outputFolder: `e2e-test-report-${appMode}` }],
+  ],
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
     screenshot: 'only-on-failure',

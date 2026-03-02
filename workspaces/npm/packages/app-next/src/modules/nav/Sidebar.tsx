@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  Sidebar,
   SidebarDivider,
   SidebarGroup,
   SidebarItem,
@@ -21,7 +22,6 @@ import {
   SidebarSpace,
 } from '@backstage/core-components';
 import { compatWrapper } from '@backstage/core-compat-api';
-import { Sidebar } from '@backstage/core-components';
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
 import { SidebarLogo } from './SidebarLogo';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -31,11 +31,15 @@ import {
   UserSettingsSignInAvatar,
   Settings as SidebarSettings,
 } from '@backstage/plugin-user-settings';
+// import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 
 export const SidebarContent = NavContentBlueprint.make({
   params: {
-    component: ({ items }) =>
-      compatWrapper(
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+      return compatWrapper(
         <Sidebar>
           <SidebarLogo />
           <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
@@ -43,16 +47,16 @@ export const SidebarContent = NavContentBlueprint.make({
           </SidebarGroup>
           <SidebarDivider />
           <SidebarGroup label="Menu" icon={<MenuIcon />}>
+            {nav.take('page:catalog')}
+            {nav.take('page:scaffolder')}
+            <SidebarDivider />
             <SidebarScrollWrapper>
-              {/* Items in this group will be scrollable if they run out of space */}
-              {items
-                .filter(item => item.to !== '/settings')
-                .map((item, index) => (
-                  <SidebarItem {...item} key={index} />
-                ))}
+              {nav.rest({ sortBy: 'title' })}
             </SidebarScrollWrapper>
           </SidebarGroup>
           <SidebarSpace />
+          <SidebarDivider />
+          {/* <NotificationsSidebarItem /> */}
           <SidebarDivider />
           <SidebarGroup
             label="Settings"
@@ -62,6 +66,7 @@ export const SidebarContent = NavContentBlueprint.make({
             <SidebarSettings />
           </SidebarGroup>
         </Sidebar>,
-      ),
+      );
+    },
   },
 });

@@ -36,11 +36,11 @@ import {
 } from '@backstage-community/plugin-azure-devops-common';
 import { useState, useEffect, useMemo } from 'react';
 
-import { AzurePullRequestsIcon } from '../AzurePullRequestsIcon';
 import { DateTime } from 'luxon';
 import { PullRequestStatusButtonGroup } from '../PullRequestStatusButtonGroup';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { usePullRequests } from '../../hooks/usePullRequests';
+import { RiGitPullRequestLine } from '@remixicon/react';
 
 type PullRequestWithId = PullRequest & { id: string };
 
@@ -206,7 +206,7 @@ export const PullRequestTable = ({ defaultLimit }: PullRequestTableProps) => {
       <CardHeader>
         <Flex align="center" justify="between" gap="small">
           <Flex align="center" gap="small">
-            <AzurePullRequestsIcon style={{ fontSize: 30 }} />
+            <RiGitPullRequestLine style={{ fontSize: 30 }} />
             <Text
               variant="title-small"
               weight="bold"

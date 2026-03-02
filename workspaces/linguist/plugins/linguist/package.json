@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-linguist",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "linguist",
@@ -54,13 +54,11 @@
     "@backstage-community/plugin-linguist-common": "workspace:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-compat-api": "backstage:^",
-    "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@material-ui/core": "^4.9.13",
-    "@material-ui/lab": "4.0.0-alpha.61",
+    "@backstage/ui": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.0.0",
     "react-use": "^17.2.4",

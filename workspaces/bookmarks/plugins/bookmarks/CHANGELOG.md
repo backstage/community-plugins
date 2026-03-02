@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.8.0
+
+### Minor Changes
+
+- 3ebad56: Backstage version bump to v1.48.2
+
 ## 0.7.1
 
 ### Patch Changes

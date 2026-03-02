@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.17.2
+
+### Patch Changes
+
+- 5c9737a: Updated dependency `@keycloak/keycloak-admin-client` to `26.5.4`.
+
 ## 3.17.1
 
 ### Patch Changes

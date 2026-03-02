@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-stack-overflow",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "stack-overflow",
@@ -70,6 +70,7 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-search": "backstage:^",

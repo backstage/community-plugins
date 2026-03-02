@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.2.0
+
+### Minor Changes
+
+- 8657be6: The `ScorecardsBadge` component has been rewritten with `@backstage/ui`.
+
 ## 1.1.0
 
 ### Minor Changes

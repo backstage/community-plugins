@@ -34,7 +34,6 @@
     "@backstage/plugin-proxy-backend": "backstage:^",
     "app": "link:../app",
     "better-sqlite3": "^12.0.0",
-    "dockerode": "^3.3.1",
     "node-gyp": "^9.0.0",
     "pg": "^8.11.3",
     "winston": "^3.2.1"

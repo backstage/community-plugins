@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-grafana",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "A Backstage backend plugin that integrates towards Grafana",
   "main": "src/index.ts",
   "types": "src/index.ts",
