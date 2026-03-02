@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { rbacApi, licensedUsersApi } from './apis';
-import rbacNavItem from './navItems';
-import rbacPage from './pages';
-import { rootRouteRef } from '../routes';
+import rbacPlugin from '.';
 
-export default createFrontendPlugin({
-  pluginId: 'rbac',
-  info: { packageJson: () => import('../../package.json') },
-  extensions: [rbacApi, licensedUsersApi, rbacPage, rbacNavItem],
-  routes: {
-    root: rootRouteRef,
-  },
+describe('RBAC plugin Alpha', () => {
+  describe('Plugin Structure', () => {
+    it('should have correct plugin metadata', () => {
+      expect(rbacPlugin.id).toBe('rbac');
+      expect(rbacPlugin.routes.root).toBeDefined();
+    });
+
+    it('should export rbac page extension', () => {
+      expect(rbacPlugin.getExtension('page:rbac')).toBeDefined();
+    });
+
+    it('should export navigation item extension', () => {
+      expect(rbacPlugin.getExtension('nav-item:rbac')).toBeDefined();
+    });
+  });
 });

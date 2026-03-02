@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-rbac': patch
+'@backstage-community/plugin-rbac': minor
 '@backstage-community/plugin-rbac-backend': patch
 ---
 
