@@ -32,7 +32,7 @@ import { allExamples } from './examples';
 const builder = createDevApp()
   .registerPlugin(npmPlugin)
   .addTranslationResource(npmTranslations)
-  .setAvailableLanguages(['en', 'de']);
+  .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja']);
 
 allExamples.forEach(example => {
   builder.addPage({

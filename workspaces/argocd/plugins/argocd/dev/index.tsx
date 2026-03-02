@@ -234,7 +234,7 @@ class MockKubernetesClient implements KubernetesApi {
 
 createDevApp()
   .registerPlugin(argocdPlugin)
-  .setAvailableLanguages(['en', 'fr', 'it', 'ja'])
+  .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja'])
   .addTranslationResource(argocdTranslations)
   .addPage({
     element: (
