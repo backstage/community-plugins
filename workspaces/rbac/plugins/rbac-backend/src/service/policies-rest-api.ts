@@ -658,7 +658,7 @@ export class PoliciesServer {
           throw new NotAllowedError(`Unable to edit role: ${err.message}`);
         }
 
-        if (!matches(oldMetadata, conditionsFilter)) {
+        if (!matches(daoToMetadata(oldMetadata), conditionsFilter)) {
           throw new NotAllowedError(); // 403
         }
 
@@ -760,7 +760,10 @@ export class PoliciesServer {
         const currentMetadata =
           await this.roleMetadata.findRoleMetadata(roleEntityRef);
 
-        if (!matches(currentMetadata, conditionsFilter)) {
+        if (
+          !currentMetadata ||
+          !matches(daoToMetadata(currentMetadata), conditionsFilter)
+        ) {
           throw new NotAllowedError(); // 403
         }
 
@@ -981,7 +984,10 @@ export class PoliciesServer {
           conditionToDelete.roleEntityRef,
         );
 
-        if (!matches(roleMetadata, conditionsFilter)) {
+        if (
+          !roleMetadata ||
+          !matches(daoToMetadata(roleMetadata), conditionsFilter)
+        ) {
           throw new NotAllowedError(); // 403
         }
 
@@ -1022,7 +1028,10 @@ export class PoliciesServer {
           condition.roleEntityRef,
         );
 
-        if (!matches(roleMetadata, conditionsFilter)) {
+        if (
+          !roleMetadata ||
+          !matches(daoToMetadata(roleMetadata), conditionsFilter)
+        ) {
           throw new NotAllowedError(); // 403
         }
 
@@ -1262,7 +1271,7 @@ export class PoliciesServer {
         policy.entityReference!,
       );
 
-      if (!matches(metadata, filter)) {
+      if (!metadata || !matches(daoToMetadata(metadata), filter)) {
         throw new NotAllowedError(); // 403
       }
 

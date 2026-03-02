@@ -81,6 +81,13 @@ describe('role-metadata-db-table', () => {
     };
   }
 
+  /** Normalize DAO isDefault (0/1 from SQLite) to boolean for assertion. */
+  function withBooleanIsDefault(
+    rows: RoleMetadataDao[],
+  ): (RoleMetadataDao & { isDefault?: boolean })[] {
+    return rows.map(r => ({ ...r, isDefault: Boolean(r.isDefault) }));
+  }
+
   describe('syncDefaultRoleMetadataFromConfig', () => {
     it.each(databases.eachSupportedId())(
       'should remove default role from DB when not in config',
@@ -109,7 +116,7 @@ describe('role-metadata-db-table', () => {
         expect(found).toBeDefined();
         expect(found!.roleEntityRef).toBe('role:default/default-role');
         expect(found!.source).toBe('configuration');
-        expect(found!.isDefault).toBe(true);
+        expect(found!.isDefault).toBeTruthy();
         expect(db.getDefaultRoleMetadata()?.roleEntityRef).toBe(
           'role:default/default-role',
         );
@@ -149,7 +156,7 @@ describe('role-metadata-db-table', () => {
         const newFound = await db.findRoleMetadata('role:default/new-default');
         expect(newFound).toBeDefined();
         expect(newFound!.roleEntityRef).toBe('role:default/new-default');
-        expect(newFound!.isDefault).toBe(true);
+        expect(newFound!.isDefault).toBeTruthy();
         expect(db.getDefaultRoleMetadata()?.roleEntityRef).toBe(
           'role:default/new-default',
         );
@@ -194,7 +201,9 @@ describe('role-metadata-db-table', () => {
             trx,
           );
           await trx.commit();
-          expect(roleMetadata).toEqual({
+          expect(
+            withBooleanIsDefault(roleMetadata ? [roleMetadata] : [])[0],
+          ).toEqual({
             author: null,
             createdAt: null,
             description: null,
@@ -240,7 +249,7 @@ describe('role-metadata-db-table', () => {
 
         try {
           const roleMetadata = await db.filterRoleMetadata('rest');
-          expect(roleMetadata).toEqual([
+          expect(withBooleanIsDefault(roleMetadata)).toEqual([
             {
               author: null,
               createdAt: null,
@@ -306,7 +315,7 @@ describe('role-metadata-db-table', () => {
           const roleMetadata = await db.filterForOwnerRoleMetadata({
             anyOf: [rbacFilter],
           });
-          expect(roleMetadata).toEqual([
+          expect(withBooleanIsDefault(roleMetadata)).toEqual([
             {
               author: null,
               createdAt: null,
@@ -346,7 +355,7 @@ describe('role-metadata-db-table', () => {
 
         try {
           const roleMetadata = await db.filterForOwnerRoleMetadata();
-          expect(roleMetadata).toEqual([
+          expect(withBooleanIsDefault(roleMetadata)).toEqual([
             {
               author: null,
               createdAt: null,
@@ -758,7 +767,7 @@ describe('role-metadata-db-table', () => {
           throw err;
         }
       }).rejects.toThrow(
-        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1,"isDefault":false}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
+        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
       );
     });
 
@@ -795,7 +804,7 @@ describe('role-metadata-db-table', () => {
           throw err;
         }
       }).rejects.toThrow(
-        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1,"isDefault":false}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
+        `Failed to update the role metadata '{"roleEntityRef":"role:default/some-super-important-role","source":"configuration","id":1}' with new value: '{"roleEntityRef":"role:default/important-role","source":"configuration","modifiedBy":"user:default/some-user"}'.`,
       );
     });
 
