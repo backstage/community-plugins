@@ -2,4 +2,4 @@
 '@backstage-community/plugin-argocd': patch
 ---
 
-Added de and es to availableLanguages configuration
+Translation added for German and Spanish
