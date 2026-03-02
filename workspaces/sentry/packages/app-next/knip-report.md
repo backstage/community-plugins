@@ -15,11 +15,3 @@
 | styled-components               | package.json:48:6 | error    |
 | react-use                       | package.json:47:6 | error    |
 | history                         | package.json:42:6 | error    |
-
-## Unlisted dependencies (2)
-
-| Name                      | Location          | Severity |
-| :------------------------ | :---------------- | :------- |
-| @testing-library/jest-dom | src/setupTests.ts | error    |
-| @backstage/test-utils     | src/App.test.tsx  | error    |
-
