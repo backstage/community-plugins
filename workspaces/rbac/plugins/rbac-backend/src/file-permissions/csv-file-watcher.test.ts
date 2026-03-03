@@ -116,7 +116,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   removeRoleMetadata: jest.fn().mockImplementation(),
   getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
   getDefaultRole: jest.fn().mockResolvedValue(undefined),
-  syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockClientKnex = Knex.knex({ client: MockClient });

@@ -131,10 +131,7 @@ export class PolicyBuilder {
 
     const conditionStorage = new DataBaseConditionalStorage(databaseClient);
 
-    const roleMetadataStorage = new DataBaseRoleMetadataStorage(
-      databaseClient,
-      env.config,
-    );
+    const roleMetadataStorage = new DataBaseRoleMetadataStorage(databaseClient);
     const defaultRoleEntityRef =
       roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef;
     const enforcerDelegate = new EnforcerDelegate(

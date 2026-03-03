@@ -27,7 +27,7 @@ import { RBACFilters } from '../permissions';
 import { matches } from '../helper';
 import {
   buildDefaultRoleMetadata,
-  getDefaultRoleMetadata,
+  readDefaultRoleMetadata,
 } from '../default-permissions/default-permissions';
 import { Config } from '@backstage/config';
 
@@ -70,71 +70,61 @@ export interface RoleMetadataStorage {
   ): Promise<void>;
   getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined;
   /** Returns the default role from the database (isDefault = true), if any. */
-  getDefaultRole(): Promise<RoleMetadataDao | undefined>;
-  syncDefaultRoleMetadataFromConfig(): Promise<void>;
+  getDefaultRole(trx?: Knex.Transaction): Promise<RoleMetadataDao | undefined>;
+  syncDefaultRoleMetadata(config: Config): Promise<void>;
 }
 
 export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
-  private defaultRoleMetaData: RoleMetadataDao | undefined;
-  constructor(
-    private readonly knex: Knex<any, any[]>,
-    private readonly config: Config,
-  ) {
-    this.defaultRoleMetaData = getDefaultRoleMetadata(config);
+  private cachedDefaultRoleMeta: RoleMetadataDao | undefined;
+  constructor(private readonly knex: Knex<any, any[]>) {}
+
+  async filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]> {
+    return await this.knex.table(ROLE_METADATA_TABLE).where(builder => {
+      if (source) {
+        builder.where('source', source);
+      }
+    });
   }
 
-  async syncDefaultRoleMetadataFromConfig(): Promise<void> {
-    const defaultRoleRef = this.config.getOptionalString(
-      'permission.rbac.defaultPermissions.defaultRole',
-    );
-    if (!defaultRoleRef) {
+  async syncDefaultRoleMetadata(config: Config): Promise<void> {
+    const actualDefRole = readDefaultRoleMetadata(config);
+    const actualDefRoleRef = actualDefRole?.roleEntityRef;
+    if (!actualDefRoleRef) {
       await this.knex(ROLE_METADATA_TABLE).where('isDefault', true).delete();
-      this.defaultRoleMetaData = undefined;
+      this.cachedDefaultRoleMeta = undefined;
       return;
     }
     await this.knex.transaction(async trx => {
-      const currentDefault = await trx(ROLE_METADATA_TABLE)
-        .where<RoleMetadataDao>('isDefault', true)
-        .first();
-      // Default role must be unique. If config role name changed, remove the old one.
-      if (currentDefault && currentDefault.roleEntityRef !== defaultRoleRef) {
+      const currentDefaultRole = await this.getDefaultRole(trx);
+      if (
+        currentDefaultRole &&
+        currentDefaultRole.roleEntityRef !== actualDefRoleRef
+      ) {
         await trx(ROLE_METADATA_TABLE).where('isDefault', true).delete();
       }
       const existing = await trx(ROLE_METADATA_TABLE)
-        .where('roleEntityRef', defaultRoleRef)
+        .where('roleEntityRef', actualDefRoleRef)
         .first();
       if (!existing) {
-        const defaultDao = buildDefaultRoleMetadata(defaultRoleRef);
-        const rowData = {
-          ...defaultDao,
-          isDefault: defaultDao.isDefault ?? false,
-        };
-        await trx(ROLE_METADATA_TABLE).insert(rowData);
+        const newDefaultRole = buildDefaultRoleMetadata(actualDefRoleRef);
+        await trx(ROLE_METADATA_TABLE).insert(newDefaultRole);
       }
     });
     const row = await this.knex(ROLE_METADATA_TABLE)
-      .where<RoleMetadataDao>('roleEntityRef', defaultRoleRef)
+      .where<RoleMetadataDao>('roleEntityRef', actualDefRoleRef)
       .first();
-    this.defaultRoleMetaData = row;
-  }
-
-  async filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]> {
-    const rows = await this.knex
-      .table<RoleMetadataDao>(ROLE_METADATA_TABLE)
-      .where(builder => {
-        if (source) {
-          builder.where('source', source);
-        }
-      });
-    return rows;
+    this.cachedDefaultRoleMeta = row;
   }
 
   getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined {
-    return this.defaultRoleMetaData;
+    return this.cachedDefaultRoleMeta;
   }
 
-  async getDefaultRole(): Promise<RoleMetadataDao | undefined> {
-    return await this.knex<RoleMetadataDao>(ROLE_METADATA_TABLE)
+  async getDefaultRole(
+    trx?: Knex.Transaction,
+  ): Promise<RoleMetadataDao | undefined> {
+    const db = trx || this.knex;
+    return await db<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('isDefault', true)
       .first();
   }
@@ -142,16 +132,16 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
   async filterForOwnerRoleMetadata(
     filter?: RBACFilters,
   ): Promise<RoleMetadataDao[]> {
-    const rows = await this.knex.table<RoleMetadataDao>(ROLE_METADATA_TABLE);
+    const roleMetadata =
+      await this.knex.table<RoleMetadataDao>(ROLE_METADATA_TABLE);
 
     if (filter) {
-      return rows
-        .filter((role): role is RoleMetadataDao => !!role)
-        .filter(role => matches(daoToMetadata(role), filter))
-        .map(role => role);
+      return roleMetadata.filter(role => {
+        return matches(role as RoleMetadata, filter);
+      });
     }
 
-    return rows;
+    return roleMetadata;
   }
 
   async findRoleMetadata(
@@ -162,6 +152,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     return await db
       .table<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('roleEntityRef', roleEntityRef)
+      // roleEntityRef should be unique.
       .first();
   }
 

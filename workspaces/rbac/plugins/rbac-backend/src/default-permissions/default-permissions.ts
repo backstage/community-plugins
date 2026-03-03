@@ -83,7 +83,7 @@ export async function syncDefaultRoleAndPolicies(
         await enforcerDelegate.removePolicies(policiesToRemove);
       }
     }
-    await roleMetadataStorage.syncDefaultRoleMetadataFromConfig();
+    await roleMetadataStorage.syncDefaultRoleMetadata(config);
     return;
   }
 
@@ -128,11 +128,11 @@ export async function syncDefaultRoleAndPolicies(
     p.effect!,
   ]);
 
-  await roleMetadataStorage.syncDefaultRoleMetadataFromConfig();
+  await roleMetadataStorage.syncDefaultRoleMetadata(config);
   await syncRolePolicies(enforcerDelegate, roleEntityRef, casbinPolicies);
 }
 
-export function getDefaultRoleMetadata(
+export function readDefaultRoleMetadata(
   config: Config,
 ): RoleMetadataDao | undefined {
   const defaultRoleRef = config.getOptionalString(

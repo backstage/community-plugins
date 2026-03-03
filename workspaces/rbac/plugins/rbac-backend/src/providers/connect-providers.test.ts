@@ -111,7 +111,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   removeRoleMetadata: jest.fn().mockImplementation(),
   getCachedDefaultRoleMetadata: jest.fn().mockImplementation(),
   getDefaultRole: jest.fn().mockResolvedValue(undefined),
-  syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockAuthService = mockServices.auth();

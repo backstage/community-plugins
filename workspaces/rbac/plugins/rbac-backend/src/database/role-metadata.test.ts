@@ -49,7 +49,8 @@ describe('role-metadata-db-table', () => {
     const config = mockServices.rootConfig();
     return {
       knex,
-      db: new DataBaseRoleMetadataStorage(knex, config),
+      config,
+      db: new DataBaseRoleMetadataStorage(knex),
     };
   }
 
@@ -77,7 +78,8 @@ describe('role-metadata-db-table', () => {
     });
     return {
       knex,
-      db: new DataBaseRoleMetadataStorage(knex, config),
+      config,
+      db: new DataBaseRoleMetadataStorage(knex),
     };
   }
 
@@ -88,18 +90,18 @@ describe('role-metadata-db-table', () => {
     return rows.map(r => ({ ...r, isDefault: Boolean(r.isDefault) }));
   }
 
-  describe('syncDefaultRoleMetadataFromConfig', () => {
+  describe('syncDefaultRoleMetadata', () => {
     it.each(databases.eachSupportedId())(
       'should remove default role from DB when not in config',
       async databasesId => {
-        const { knex, db } = await createDatabase(databasesId);
+        const { knex, db, config } = await createDatabase(databasesId);
         await knex(ROLE_METADATA_TABLE).insert({
           roleEntityRef: 'role:default/default-role',
           source: 'configuration',
           modifiedBy,
           isDefault: true,
         });
-        await db.syncDefaultRoleMetadataFromConfig();
+        await db.syncDefaultRoleMetadata(config);
         const found = await db.findRoleMetadata('role:default/default-role');
         expect(found).toBeUndefined();
         expect(db.getCachedDefaultRoleMetadata()).toBeUndefined();
@@ -109,9 +111,8 @@ describe('role-metadata-db-table', () => {
     it.each(databases.eachSupportedId())(
       'should insert default role in DB when in config',
       async databasesId => {
-        const { db } = await createDatabaseWithDefaultRole(databasesId);
-        expect(db.getCachedDefaultRoleMetadata()).toBeDefined();
-        await db.syncDefaultRoleMetadataFromConfig();
+        const { db, config } = await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadata(config);
         const found = await db.findRoleMetadata('role:default/default-role');
         expect(found).toBeDefined();
         expect(found!.roleEntityRef).toBe('role:default/default-role');
@@ -147,8 +148,8 @@ describe('role-metadata-db-table', () => {
             },
           },
         });
-        const db = new DataBaseRoleMetadataStorage(knex, configWithNewDefault);
-        await db.syncDefaultRoleMetadataFromConfig();
+        const db = new DataBaseRoleMetadataStorage(knex);
+        await db.syncDefaultRoleMetadata(configWithNewDefault);
 
         const oldFound = await db.findRoleMetadata('role:default/old-default');
         expect(oldFound).toBeUndefined();
@@ -466,8 +467,9 @@ describe('role-metadata-db-table', () => {
     it.each(databases.eachSupportedId())(
       'should throw ConflictError when creating role with default role name',
       async databasesId => {
-        const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
-        await db.syncDefaultRoleMetadataFromConfig();
+        const { knex, db, config } =
+          await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadata(config);
 
         const trx = await knex.transaction();
         await expect(async () => {
@@ -497,10 +499,7 @@ describe('role-metadata-db-table', () => {
       tracker.on.select(ROLE_METADATA_TABLE).response(undefined);
       tracker.on.insert(ROLE_METADATA_TABLE).response([]);
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
       const trx = await knex.transaction();
 
       await expect(
@@ -523,10 +522,7 @@ describe('role-metadata-db-table', () => {
       tracker.on.select(ROLE_METADATA_TABLE).response(undefined);
       tracker.on.insert(ROLE_METADATA_TABLE).response(undefined);
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -557,10 +553,7 @@ describe('role-metadata-db-table', () => {
         .insert(ROLE_METADATA_TABLE)
         .simulateError('connection refused error');
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -744,10 +737,7 @@ describe('role-metadata-db-table', () => {
       });
       tracker.on.update(ROLE_METADATA_TABLE).response([]);
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -781,10 +771,7 @@ describe('role-metadata-db-table', () => {
       });
       tracker.on.update(ROLE_METADATA_TABLE).response(undefined);
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -820,10 +807,7 @@ describe('role-metadata-db-table', () => {
         .update(ROLE_METADATA_TABLE)
         .simulateError('connection refused error');
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
 
       await expect(async () => {
         const trx = await knex.transaction();
@@ -913,10 +897,7 @@ describe('role-metadata-db-table', () => {
         .delete(ROLE_METADATA_TABLE)
         .simulateError('connection refused error');
 
-      const db = new DataBaseRoleMetadataStorage(
-        knex,
-        mockServices.rootConfig(),
-      );
+      const db = new DataBaseRoleMetadataStorage(knex);
 
       await expect(async () => {
         const trx = await knex.transaction();

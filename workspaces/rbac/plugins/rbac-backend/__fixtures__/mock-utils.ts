@@ -57,7 +57,7 @@ export const roleMetadataStorageMock: RoleMetadataStorage = {
   removeRoleMetadata: jest.fn().mockImplementation(),
   getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
   getDefaultRole: jest.fn().mockResolvedValue(undefined),
-  syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =

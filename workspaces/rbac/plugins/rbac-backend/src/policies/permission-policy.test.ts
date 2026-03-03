@@ -57,7 +57,7 @@ import { RBACPermissionPolicy } from './permission-policy';
 import {
   DefaultPermissions,
   buildDefaultRoleMetadata,
-  getDefaultRoleMetadata,
+  readDefaultRoleMetadata,
 } from '../default-permissions/default-permissions';
 import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
@@ -94,7 +94,7 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   removeRoleMetadata: jest.fn().mockImplementation(),
   getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
   getDefaultRole: jest.fn().mockResolvedValue(undefined),
-  syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 const csvPermFile = resolve(
@@ -613,7 +613,7 @@ describe('RBACPermissionPolicy Tests', () => {
         .fn()
         .mockImplementation(() => undefined),
       getDefaultRole: jest.fn().mockResolvedValue(undefined),
-      syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+      syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
     };
 
     beforeEach(async () => {
@@ -945,7 +945,7 @@ describe('RBACPermissionPolicy Tests', () => {
         .fn()
         .mockImplementation(() => undefined),
       getDefaultRole: jest.fn().mockResolvedValue(undefined),
-      syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+      syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
     };
 
     const adminRole = 'role:default/rbac_admin';
@@ -1091,7 +1091,7 @@ describe('Policy checks for resourced permissions defined by name', () => {
     removeRoleMetadata: jest.fn().mockImplementation(),
     getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
     getDefaultRole: jest.fn().mockResolvedValue(undefined),
-    syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
+    syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
   };
   let enfDelegate: EnforcerDelegate;
   let policy: RBACPermissionPolicy;
@@ -2213,7 +2213,7 @@ async function newEnforcerDelegate(
     conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
-    getDefaultRoleMetadata(config)?.roleEntityRef,
+    readDefaultRoleMetadata(config)?.roleEntityRef,
   );
 }
 
