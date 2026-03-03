@@ -27,12 +27,14 @@ export abstract class LLMProvider {
   protected baseUrl: string;
   protected model: string;
   protected type: string;
+  protected logger?: any;
 
   constructor(config: ProviderConfig) {
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl;
     this.model = config.model;
     this.type = config.type;
+    this.logger = config.logger;
   }
 
   abstract sendMessage(
@@ -54,7 +56,15 @@ export abstract class LLMProvider {
   protected abstract parseResponse(response: any): ChatResponse;
 
   protected async makeRequest(endpoint: string, body: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const url = `${this.baseUrl}${endpoint}`;
+
+    if (this.logger) {
+      this.logger.debug(`[${this.type}] Request to ${url}`, {
+        payload: JSON.stringify(body, null, 2),
+      });
+    }
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(body),
@@ -64,6 +74,14 @@ export abstract class LLMProvider {
       throw await ResponseError.fromResponse(response);
     }
 
-    return response.json();
+    const responseData = await response.json();
+
+    if (this.logger) {
+      this.logger.debug(`[${this.type}] Response from ${url}`, {
+        payload: JSON.stringify(responseData, null, 2),
+      });
+    }
+
+    return responseData;
   }
 }
