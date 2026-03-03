@@ -122,15 +122,3 @@ export async function syncDefaultRoleAndPolicies(
   await roleMetadataStorage.syncDefaultRoleMetadata(roleEntityRef);
   await syncRolePolicies(enforcerDelegate, roleEntityRef, casbinPolicies);
 }
-
-export function readDefaultRoleMetadata(
-  config: Config,
-): RoleMetadataDao | undefined {
-  const defaultRoleRef = config.getOptionalString(
-    'permission.rbac.defaultPermissions.defaultRole',
-  );
-  if (defaultRoleRef) {
-    return buildDefaultRoleMetadata(defaultRoleRef);
-  }
-  return undefined;
-}

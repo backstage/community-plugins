@@ -54,10 +54,7 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import {
-  buildDefaultRoleMetadata,
-  readDefaultRoleMetadata,
-} from '../default-permissions/default-permissions';
+import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
 import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
@@ -2212,7 +2209,7 @@ async function newEnforcerDelegate(
     conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
-    readDefaultRoleMetadata(config)?.roleEntityRef,
+    (config as any).permission?.rbac?.defaultPermissions?.defaultRole,
   );
 }
 
