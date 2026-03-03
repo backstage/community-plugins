@@ -125,9 +125,13 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
       await this.knex.table<RoleMetadataDao>(ROLE_METADATA_TABLE);
 
     if (filter) {
-      return roleMetadata.filter(role => {
+      const ownerRoles = roleMetadata.filter(role => {
         return matches(role as RoleMetadata, filter);
       });
+      if (this.cachedDefaultRoleMeta) {
+        ownerRoles.push(this.cachedDefaultRoleMeta);
+      }
+      return ownerRoles;
     }
 
     return roleMetadata;

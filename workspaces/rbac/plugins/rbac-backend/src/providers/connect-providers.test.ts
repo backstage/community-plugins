@@ -180,7 +180,6 @@ describe('Connection', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
-      undefined,
     );
 
     await enforcerDelegate.addGroupingPolicy(
@@ -562,7 +561,6 @@ describe('connectRBACProviders', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
-      undefined,
     );
 
     await connectRBACProviders(

@@ -1609,7 +1609,6 @@ describe('Policy checks for conditional policies', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       mockClientKnex,
-      undefined,
     );
 
     policy = await RBACPermissionPolicy.build(
@@ -1622,7 +1621,6 @@ describe('Policy checks for conditional policies', () => {
       mockClientKnex,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockAuthService,
-      undefined,
     );
   });
 
@@ -2209,7 +2207,6 @@ async function newEnforcerDelegate(
     conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
-    (config as any).permission?.rbac?.defaultPermissions?.defaultRole,
   );
 }
 
@@ -2252,7 +2249,6 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    defaultRoleRef,
   );
   clearAuditorMock();
   return permissionPolicy;
