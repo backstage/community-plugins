@@ -19,10 +19,12 @@ export interface Config {
     analytics?: {
       newRelic: {
         /**
-         * Data ingestion endpoint to use, either bam.eu01.nr-data.net (EU) or bam.nr-data.net (US)
+         * Data ingestion endpoint to use. Standard New Relic endpoints are
+         * bam.nr-data.net (US) or bam.eu01.nr-data.net (EU). A custom endpoint
+         * can also be provided, for example when routing through an internal proxy.
          * @visibility frontend
          */
-        endpoint: 'bam.eu01.nr-data.net' | 'bam.nr-data.net';
+        endpoint: 'bam.eu01.nr-data.net' | 'bam.nr-data.net' | string;
 
         /**
          * New Relic Account ID, e.g. 1234567
