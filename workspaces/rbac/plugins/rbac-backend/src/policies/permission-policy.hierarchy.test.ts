@@ -1096,7 +1096,6 @@ async function newEnforcerDelegate(
     conditionalStorageMock,
     roleMetadataStorageMock,
     mockClientKnex,
-    undefined,
   );
 }
 
@@ -1116,7 +1115,6 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    undefined,
   );
   clearAuditorMock();
   return permissionPolicy;

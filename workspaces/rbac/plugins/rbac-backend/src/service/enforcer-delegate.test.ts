@@ -185,7 +185,6 @@ describe('EnforcerDelegate', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
-      undefined,
     );
   }
 

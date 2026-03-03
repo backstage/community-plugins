@@ -171,7 +171,6 @@ describe('CSVFileWatcher', () => {
       conditionalStorageMock,
       roleMetadataStorageMock,
       knex,
-      undefined,
     );
 
     (roleMetadataStorageMock.updateRoleMetadata as jest.Mock).mockClear();
