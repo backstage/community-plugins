@@ -44,12 +44,18 @@ import {
   validatePolicy,
   validateSource,
 } from '../validation/policies-validation';
+import { ConditionalStorage } from '../database/conditional-storage';
+import {
+  PermissionInfo,
+  RoleConditionalPolicyDecision,
+} from '@backstage-community/plugin-rbac-common';
 
 export class Connection implements RBACProviderConnection {
   constructor(
     private readonly id: string,
     private readonly enforcer: EnforcerDelegate,
     private readonly roleMetadataStorage: RoleMetadataStorage,
+    private readonly conditionStorage: ConditionalStorage,
     private readonly logger: LoggerService,
     private readonly auditor: AuditorService,
   ) {}
@@ -106,6 +112,25 @@ export class Connection implements RBACProviderConnection {
     await this.removePermissions(providerPermissions, tempEnforcer);
 
     await this.addPermissions(permissions);
+  }
+
+  async applyConditionalPermissions(
+    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+  ): Promise<void> {
+    const providerConditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[] =
+      [];
+
+    const providerRoles = await this.getProviderRoles();
+
+    for (const providerRole of providerRoles) {
+      providerConditionalPermissions.push(
+        ...(await this.conditionStorage.filterConditions(providerRole)),
+      );
+    }
+
+    await this.removeConditionalPermissions(providerConditionalPermissions);
+
+    await this.addConditionalPermissions(conditionalPermissions);
   }
 
   private async addRoles(roles: string[][]): Promise<void> {
@@ -282,6 +307,54 @@ export class Connection implements RBACProviderConnection {
     }
   }
 
+  private async addConditionalPermissions(
+    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+  ): Promise<void> {
+    for (const condition of conditionalPermissions) {
+      const auditorMeta = {
+        policies: [condition],
+      };
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: PermissionEvents.POLICY_WRITE,
+        severityLevel: 'medium',
+        meta: {
+          actionType: ActionType.CREATE,
+          source: this.id,
+        },
+      });
+      try {
+        await this.conditionStorage.createCondition(condition);
+        await auditorEvent.success({ meta: auditorMeta });
+      } catch (error) {
+        await auditorEvent.fail({ error, meta: auditorMeta });
+      }
+    }
+  }
+
+  private async removeConditionalPermissions(
+    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+  ): Promise<void> {
+    for (const conditionalPermission of conditionalPermissions) {
+      const auditorMeta = {
+        policies: [conditionalPermission],
+      };
+      const auditorEvent = await this.auditor.createEvent({
+        eventId: PermissionEvents.POLICY_WRITE,
+        severityLevel: 'medium',
+        meta: { actionType: ActionType.DELETE, source: this.id },
+      });
+      try {
+        await this.conditionStorage.deleteCondition(conditionalPermission.id);
+        await auditorEvent.success({ meta: auditorMeta });
+      } catch (error) {
+        await auditorEvent.fail({
+          error,
+          meta: auditorMeta,
+        });
+      }
+    }
+  }
+
   private async getProviderRoles(): Promise<string[]> {
     const currentRoles = await this.roleMetadataStorage.filterRoleMetadata(
       this.id,
@@ -294,6 +367,7 @@ export async function connectRBACProviders(
   providers: RBACProvider[],
   enforcer: EnforcerDelegate,
   roleMetadataStorage: RoleMetadataStorage,
+  conditionStorage: ConditionalStorage,
   logger: LoggerService,
   auditor: AuditorService,
 ) {
@@ -304,6 +378,7 @@ export async function connectRBACProviders(
           provider.getProviderName(),
           enforcer,
           roleMetadataStorage,
+          conditionStorage,
           logger,
           auditor,
         );

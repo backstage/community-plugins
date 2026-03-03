@@ -75,8 +75,12 @@ export class TestProvider implements RBACProvider {
       ['role:default/test-provider-role', 'catalog-entity', 'read', 'allow'],
     ];
 
+    const conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[] =
+      [];
+
     await this.connection.applyRoles(roles);
     await this.connection.applyPermissions(permissions);
+    await this.connection.applyConditionalPermissions(conditionalPermissions);
   }
 }
 ```

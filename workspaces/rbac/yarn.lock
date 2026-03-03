@@ -1463,6 +1463,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-node@workspace:plugins/rbac-node"
   dependencies:
+    "@backstage-community/plugin-rbac-common": "workspace:^"
     "@backstage/backend-plugin-api": "npm:^1.6.2"
     "@backstage/cli": "npm:^0.35.3"
   languageName: unknown
