@@ -94,7 +94,7 @@ describe('role-metadata-db-table', () => {
     it.each(databases.eachSupportedId())(
       'should remove default role from DB when not in config',
       async databasesId => {
-        const { knex, db, config } = await createDatabase(databasesId);
+        const { knex, db } = await createDatabase(databasesId);
         await knex(ROLE_METADATA_TABLE).insert({
           roleEntityRef: 'role:default/default-role',
           source: 'configuration',
