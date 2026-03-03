@@ -132,17 +132,13 @@ export class PolicyBuilder {
     const conditionStorage = new DataBaseConditionalStorage(databaseClient);
 
     const roleMetadataStorage = new DataBaseRoleMetadataStorage(databaseClient);
-    const defaultRoleEntityRef =
-      roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef;
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
       conditionStorage,
       roleMetadataStorage,
       databaseClient,
-      defaultRoleEntityRef,
     );
-
     await syncDefaultRoleAndPolicies(
       env.config,
       enforcerDelegate,
@@ -199,8 +195,6 @@ export class PolicyBuilder {
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
-      const defaultRoleRef =
-        roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef;
       const policy = await RBACPermissionPolicy.build(
         env.logger,
         env.auditor,
@@ -211,7 +205,6 @@ export class PolicyBuilder {
         databaseClient,
         pluginPermMetaData,
         env.auth,
-        defaultRoleRef,
       );
       env.policy.setPolicy(policy);
     } else {
