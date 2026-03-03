@@ -60,7 +60,6 @@ import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
   private readonly preferPermissionPolicy: boolean;
-  private readonly defaultRole?: string;
 
   public static async build(
     logger: LoggerService,
@@ -72,7 +71,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
     auth: AuthService,
-    defaultRoleEntityRef?: string,
   ): Promise<RBACPermissionPolicy> {
     const superUserList: string[] = [];
     const adminUsers = configApi.getOptionalConfigArray(
@@ -164,7 +162,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       conditionalStorage,
       preferPermissionPolicy,
       superUserList,
-      defaultRoleEntityRef,
     );
   }
 
@@ -174,11 +171,9 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
     superUserList?: string[],
-    defaultRole?: string,
   ) {
     this.superUserList = superUserList;
     this.preferPermissionPolicy = preferPermissionPolicy;
-    this.defaultRole = defaultRole;
   }
 
   async handle(
@@ -213,9 +208,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
-      if (this.defaultRole !== undefined && !roles.includes(this.defaultRole)) {
-        roles.push(this.defaultRole);
-      }
 
       // handle permission with 'resource' type
       const hasNamedPermission = await this.hasImplicitPermission(

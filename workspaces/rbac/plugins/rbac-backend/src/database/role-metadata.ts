@@ -34,7 +34,6 @@ export interface RoleMetadataDao {
   roleEntityRef: string;
   source: Source;
   modifiedBy: string;
-
   description?: string;
   author?: string;
   lastModified?: string;

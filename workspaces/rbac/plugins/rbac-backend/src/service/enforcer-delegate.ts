@@ -50,18 +50,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
     private readonly conditionalStorage: ConditionalStorage,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly knex: Knex,
-    private readonly defaultRoleEntityRef: string | undefined,
   ) {}
-
-  /**
-   * Returns default permission policies from the database.
-   */
-  async getDefaultPermissions(): Promise<string[][]> {
-    if (!this.defaultRoleEntityRef) {
-      return [];
-    }
-    return await this.getFilteredPolicy(0, this.defaultRoleEntityRef);
-  }
 
   async loadPolicy(): Promise<void> {
     if (this.loadPolicyPromise) {
@@ -166,11 +155,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
   }
 
   async getRolesForUser(userEntityRef: string): Promise<string[]> {
-    const roles = await this.enforcer.getRolesForUser(userEntityRef);
-    if (this.defaultRoleEntityRef) {
-      roles.push(this.defaultRoleEntityRef);
-    }
-    return roles;
+    return await this.enforcer.getRolesForUser(userEntityRef);
   }
 
   async getFilteredPolicy(
