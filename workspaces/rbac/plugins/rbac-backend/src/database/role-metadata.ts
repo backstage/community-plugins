@@ -68,9 +68,9 @@ export interface RoleMetadataStorage {
     roleEntityRef: string,
     trx: Knex.Transaction,
   ): Promise<void>;
-  getDefaultRoleMetadata(): RoleMetadataDao | undefined;
+  getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined;
   /** Returns the default role from the database (isDefault = true), if any. */
-  findDefaultRole(): Promise<RoleMetadataDao | undefined>;
+  getDefaultRole(): Promise<RoleMetadataDao | undefined>;
   syncDefaultRoleMetadataFromConfig(): Promise<void>;
 }
 
@@ -129,11 +129,11 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     return rows;
   }
 
-  getDefaultRoleMetadata(): RoleMetadataDao | undefined {
+  getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined {
     return this.defaultRoleMetaData;
   }
 
-  async findDefaultRole(): Promise<RoleMetadataDao | undefined> {
+  async getDefaultRole(): Promise<RoleMetadataDao | undefined> {
     return await this.knex<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('isDefault', true)
       .first();

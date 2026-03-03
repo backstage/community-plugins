@@ -92,8 +92,8 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
-  getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
-  findDefaultRole: jest.fn().mockResolvedValue(undefined),
+  getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+  getDefaultRole: jest.fn().mockResolvedValue(undefined),
   syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
 };
 
@@ -609,8 +609,10 @@ describe('RBACPermissionPolicy Tests', () => {
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
-      getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
-      findDefaultRole: jest.fn().mockResolvedValue(undefined),
+      getCachedDefaultRoleMetadata: jest
+        .fn()
+        .mockImplementation(() => undefined),
+      getDefaultRole: jest.fn().mockResolvedValue(undefined),
       syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -939,8 +941,10 @@ describe('RBACPermissionPolicy Tests', () => {
       createRoleMetadata: jest.fn().mockImplementation(),
       updateRoleMetadata: jest.fn().mockImplementation(),
       removeRoleMetadata: jest.fn().mockImplementation(),
-      getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
-      findDefaultRole: jest.fn().mockResolvedValue(undefined),
+      getCachedDefaultRoleMetadata: jest
+        .fn()
+        .mockImplementation(() => undefined),
+      getDefaultRole: jest.fn().mockResolvedValue(undefined),
       syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -1085,8 +1089,8 @@ describe('Policy checks for resourced permissions defined by name', () => {
     createRoleMetadata: jest.fn().mockImplementation(),
     updateRoleMetadata: jest.fn().mockImplementation(),
     removeRoleMetadata: jest.fn().mockImplementation(),
-    getDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
-    findDefaultRole: jest.fn().mockResolvedValue(undefined),
+    getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+    getDefaultRole: jest.fn().mockResolvedValue(undefined),
     syncDefaultRoleMetadataFromConfig: jest.fn().mockResolvedValue(undefined),
   };
   let enfDelegate: EnforcerDelegate;
@@ -2237,12 +2241,14 @@ async function newPermissionPolicy(
     ]);
     await enfDelegate.addPolicies(casbinPolicies);
     const storage = roleMock || roleMetadataStorageMock;
-    (storage.getDefaultRoleMetadata as jest.Mock).mockReturnValue(
+    (storage.getCachedDefaultRoleMetadata as jest.Mock).mockReturnValue(
       buildDefaultRoleMetadata(defaultRoleAndPolicies.roleEntityRef),
     );
   } else {
     const storage = roleMock || roleMetadataStorageMock;
-    (storage.getDefaultRoleMetadata as jest.Mock).mockReturnValue(undefined);
+    (storage.getCachedDefaultRoleMetadata as jest.Mock).mockReturnValue(
+      undefined,
+    );
   }
 
   const logger = mockServices.logger.mock();

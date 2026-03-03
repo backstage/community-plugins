@@ -73,7 +73,7 @@ export async function syncDefaultRoleAndPolicies(
   }
 
   if (!roleEntityRef) {
-    const previousDefault = await roleMetadataStorage.findDefaultRole();
+    const previousDefault = await roleMetadataStorage.getDefaultRole();
     if (previousDefault) {
       const policiesToRemove = await enforcerDelegate.getFilteredPolicy(
         0,
