@@ -74,7 +74,7 @@ export async function syncDefaultRoleAndPolicies(
         await enforcerDelegate.removePolicies(policiesToRemove);
       }
     }
-    await roleMetadataStorage.syncDefaultRoleMetadata(config);
+    await roleMetadataStorage.syncDefaultRoleMetadata(roleEntityRef);
     return;
   }
 
@@ -119,7 +119,7 @@ export async function syncDefaultRoleAndPolicies(
     p.effect!,
   ]);
 
-  await roleMetadataStorage.syncDefaultRoleMetadata(config);
+  await roleMetadataStorage.syncDefaultRoleMetadata(roleEntityRef);
   await syncRolePolicies(enforcerDelegate, roleEntityRef, casbinPolicies);
 }
 

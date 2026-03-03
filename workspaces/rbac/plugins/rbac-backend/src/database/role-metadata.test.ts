@@ -101,7 +101,7 @@ describe('role-metadata-db-table', () => {
           modifiedBy,
           isDefault: true,
         });
-        await db.syncDefaultRoleMetadata(config);
+        await db.syncDefaultRoleMetadata();
         const found = await db.findRoleMetadata('role:default/default-role');
         expect(found).toBeUndefined();
         expect(db.getCachedDefaultRoleMetadata()).toBeUndefined();
@@ -111,8 +111,8 @@ describe('role-metadata-db-table', () => {
     it.each(databases.eachSupportedId())(
       'should insert default role in DB when in config',
       async databasesId => {
-        const { db, config } = await createDatabaseWithDefaultRole(databasesId);
-        await db.syncDefaultRoleMetadata(config);
+        const { db } = await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadata('role:default/default-role');
         const found = await db.findRoleMetadata('role:default/default-role');
         expect(found).toBeDefined();
         expect(found!.roleEntityRef).toBe('role:default/default-role');
@@ -134,22 +134,8 @@ describe('role-metadata-db-table', () => {
           modifiedBy,
           isDefault: true,
         });
-        const configWithNewDefault = mockServices.rootConfig({
-          data: {
-            permission: {
-              rbac: {
-                defaultPermissions: {
-                  defaultRole: 'role:default/new-default',
-                  basicPermissions: [
-                    { permission: 'catalog.entity.read', policy: 'read' },
-                  ],
-                },
-              },
-            },
-          },
-        });
         const db = new DataBaseRoleMetadataStorage(knex);
-        await db.syncDefaultRoleMetadata(configWithNewDefault);
+        await db.syncDefaultRoleMetadata('role:default/new-default');
 
         const oldFound = await db.findRoleMetadata('role:default/old-default');
         expect(oldFound).toBeUndefined();
@@ -467,9 +453,8 @@ describe('role-metadata-db-table', () => {
     it.each(databases.eachSupportedId())(
       'should throw ConflictError when creating role with default role name',
       async databasesId => {
-        const { knex, db, config } =
-          await createDatabaseWithDefaultRole(databasesId);
-        await db.syncDefaultRoleMetadata(config);
+        const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadata('role:default/default-role');
 
         const trx = await knex.transaction();
         await expect(async () => {
