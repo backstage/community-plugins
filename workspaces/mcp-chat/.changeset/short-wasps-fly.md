@@ -2,4 +2,4 @@
 '@backstage-community/plugin-mcp-chat-backend': minor
 ---
 
-allow debugging LLM calls
+Added support for debugging LLM calls
