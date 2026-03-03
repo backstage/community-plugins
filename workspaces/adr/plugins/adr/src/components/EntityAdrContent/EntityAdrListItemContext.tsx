@@ -16,10 +16,18 @@
 import { createContext } from 'react';
 import { AdrFileInfo } from '../../api/types';
 
-type EntityAdrListItemContextType = {
+/**
+ * Type for context provided to an ADR list item
+ * @public
+ */
+export type EntityAdrListItemContextType = {
   adr: AdrFileInfo;
 };
 
+/**
+ * Context provider for an ADR list item
+ * @public
+ */
 export const EntityAdrListItemContext = createContext<
   EntityAdrListItemContextType | undefined
 >(undefined);
