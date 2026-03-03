@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,36 @@
  * limitations under the License.
  */
 
-import { Team } from '@backstage-community/plugin-azure-devops-common';
-import { azureDevOpsApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
+import { azureDevOpsApiRef } from '../api';
 import useAsync from 'react-use/esm/useAsync';
 
-export function useAllTeams(
+/**
+ * React hook that fetches and returns the list of project names for a given organization.
+ *
+ * @param organization - The Azure DevOps organization name
+ * @param host - Optional host URL for the Azure DevOps instance
+ * @returns Object containing projects array, loading state, and error
+ */
+export function useProjects(
+  organization?: string,
   host?: string,
-  org?: string,
 ): {
-  teams?: Team[];
+  projects: string[];
   loading: boolean;
   error?: Error;
 } {
-  const api = useApi(azureDevOpsApiRef);
+  const azureDevOpsApi = useApi(azureDevOpsApiRef);
 
-  const {
-    value: teams,
-    loading,
-    error,
-  } = useAsync(() => {
-    return api.getAllTeams(undefined, host, org);
-  }, [host, org, api]);
+  const { value, loading, error } = useAsync(async () => {
+    if (!organization) {
+      return [];
+    }
+    return await azureDevOpsApi.getProjects(organization, host);
+  }, [organization, host]);
 
   return {
-    teams,
+    projects: value ?? [],
     loading,
     error,
   };
