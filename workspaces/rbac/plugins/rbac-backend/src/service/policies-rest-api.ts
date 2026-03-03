@@ -151,7 +151,7 @@ export class PoliciesServer {
 
     const { logger, auditor, auth, permissionsRegistry } = this.options;
 
-    const defRoleMeta = this.roleMetadata.getDefaultRoleMetadata();
+    const defRoleMeta = this.roleMetadata.getCachedDefaultRoleMetadata();
     let defRole: Role | undefined;
     if (defRoleMeta) {
       defRole = {

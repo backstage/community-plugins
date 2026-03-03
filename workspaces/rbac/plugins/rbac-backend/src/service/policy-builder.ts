@@ -136,7 +136,7 @@ export class PolicyBuilder {
       env.config,
     );
     const defaultRoleEntityRef =
-      roleMetadataStorage.getDefaultRoleMetadata()?.roleEntityRef;
+      roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef;
     const enforcerDelegate = new EnforcerDelegate(
       enf,
       env.auditor,
@@ -159,9 +159,9 @@ export class PolicyBuilder {
           resourceRefs.map(ref => {
             if (
               ref ===
-              roleMetadataStorage.getDefaultRoleMetadata()?.roleEntityRef
+              roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef
             ) {
-              return roleMetadataStorage.getDefaultRoleMetadata();
+              return roleMetadataStorage.getCachedDefaultRoleMetadata();
             }
             return roleMetadataStorage.findRoleMetadata(ref);
           }),
@@ -203,7 +203,7 @@ export class PolicyBuilder {
       env.logger.info('RBAC backend plugin was enabled');
 
       const defaultRoleRef =
-        roleMetadataStorage.getDefaultRoleMetadata()?.roleEntityRef;
+        roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef;
       const policy = await RBACPermissionPolicy.build(
         env.logger,
         env.auditor,

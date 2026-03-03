@@ -102,7 +102,7 @@ describe('role-metadata-db-table', () => {
         await db.syncDefaultRoleMetadataFromConfig();
         const found = await db.findRoleMetadata('role:default/default-role');
         expect(found).toBeUndefined();
-        expect(db.getDefaultRoleMetadata()).toBeUndefined();
+        expect(db.getCachedDefaultRoleMetadata()).toBeUndefined();
       },
     );
 
@@ -110,14 +110,14 @@ describe('role-metadata-db-table', () => {
       'should insert default role in DB when in config',
       async databasesId => {
         const { db } = await createDatabaseWithDefaultRole(databasesId);
-        expect(db.getDefaultRoleMetadata()).toBeDefined();
+        expect(db.getCachedDefaultRoleMetadata()).toBeDefined();
         await db.syncDefaultRoleMetadataFromConfig();
         const found = await db.findRoleMetadata('role:default/default-role');
         expect(found).toBeDefined();
         expect(found!.roleEntityRef).toBe('role:default/default-role');
         expect(found!.source).toBe('configuration');
         expect(found!.isDefault).toBeTruthy();
-        expect(db.getDefaultRoleMetadata()?.roleEntityRef).toBe(
+        expect(db.getCachedDefaultRoleMetadata()?.roleEntityRef).toBe(
           'role:default/default-role',
         );
       },
@@ -157,7 +157,7 @@ describe('role-metadata-db-table', () => {
         expect(newFound).toBeDefined();
         expect(newFound!.roleEntityRef).toBe('role:default/new-default');
         expect(newFound!.isDefault).toBeTruthy();
-        expect(db.getDefaultRoleMetadata()?.roleEntityRef).toBe(
+        expect(db.getCachedDefaultRoleMetadata()?.roleEntityRef).toBe(
           'role:default/new-default',
         );
       },
