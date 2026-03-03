@@ -65,6 +65,7 @@
     "@backstage/ui": "backstage:^",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.15.16",
+    "@remixicon/react": "^4.8.0",
     "lodash": "^4.17.21",
     "react-use": "^17.5.0"
   },

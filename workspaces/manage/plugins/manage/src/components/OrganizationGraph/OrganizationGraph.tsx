@@ -114,7 +114,7 @@ export function OrganizationGraphImpl({
     () =>
       !graphElementSize
         ? 0
-        : graphElementSize.client.height - graphElementSize.element.top - 64,
+        : graphElementSize.client.height - graphElementSize.element.top,
     [graphElementSize],
   );
 
@@ -136,8 +136,8 @@ export function OrganizationGraphImpl({
         position: 'relative',
         display: 'flex',
         flexDirection: 'row',
-        minHeight: availHeight,
-        maxHeight: availHeight,
+        minHeight: `calc(${availHeight} - var(--bui-space-5))`,
+        maxHeight: `calc(${availHeight} - var(--bui-space-5))`,
       }}
     >
       <EntityRelationsGraph

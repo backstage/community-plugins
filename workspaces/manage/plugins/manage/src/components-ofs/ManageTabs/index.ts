@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+export type { ManageTabsProps, ManageKindOptions } from './ManageTabs';
 
-import { RiPulseAiLine } from '@remixicon/react';
+export { ManageTabsImpl } from './ManageTabs';
 
-import { rootRouteRef } from '../routes';
-
-export const navItem = NavItemBlueprint.make({
-  name: 'manage',
-  params: {
-    icon: () => <RiPulseAiLine />,
-    title: 'Manage',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-  },
-});
+export type { SubRouteTab } from './types';
+export { MANAGE_KIND_COMMON } from './types';

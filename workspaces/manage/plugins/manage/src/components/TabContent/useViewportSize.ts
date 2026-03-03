@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import { useEffect, useState } from 'react';
 
-import { RiPulseAiLine } from '@remixicon/react';
+export function useViewportSize() {
+  const [size, setSize] = useState(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }));
 
-import { rootRouteRef } from '../routes';
+  useEffect(() => {
+    function handleResize() {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    handleResize();
 
-export const navItem = NavItemBlueprint.make({
-  name: 'manage',
-  params: {
-    icon: () => <RiPulseAiLine />,
-    title: 'Manage',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-  },
-});
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return size;
+}

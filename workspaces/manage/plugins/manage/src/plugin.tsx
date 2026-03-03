@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 
+import { manageApiExtension } from '@backstage-community/plugin-manage-react';
+
+import extensions from './extensions';
+import { rootRouteRef } from './routes';
 import { RiPulseAiLine } from '@remixicon/react';
 
-import { rootRouteRef } from '../routes';
-
-export const navItem = NavItemBlueprint.make({
-  name: 'manage',
-  params: {
-    icon: () => <RiPulseAiLine />,
-    title: 'Manage',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
+/** @public */
+export const managePlugin = createFrontendPlugin({
+  pluginId: 'manage',
+  info: { packageJson: () => import('../package.json') },
+  title: 'Manage',
+  icon: <RiPulseAiLine />,
+  routes: {
+    root: convertLegacyRouteRef(rootRouteRef),
   },
+  extensions: [manageApiExtension, ...extensions],
 });

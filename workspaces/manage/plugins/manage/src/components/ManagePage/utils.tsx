@@ -18,7 +18,7 @@ import { Fragment, ReactNode } from 'react';
 
 import { ManageContentWidgetAccordion } from '@backstage-community/plugin-manage-react';
 
-import { TableColumn } from '../../components/ManageEntitiesList';
+import type { TableColumn } from '../../components/ManageEntitiesList';
 import {
   CardWidgetSpec,
   ContentWidgetSpec,
