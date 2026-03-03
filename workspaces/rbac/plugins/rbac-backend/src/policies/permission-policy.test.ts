@@ -55,7 +55,6 @@ import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import {
-  DefaultPermissions,
   buildDefaultRoleMetadata,
   readDefaultRoleMetadata,
 } from '../default-permissions/default-permissions';
@@ -2224,15 +2223,7 @@ async function newPermissionPolicy(
   defaultPolicies: RoleBasedPolicy[] = [],
 ): Promise<RBACPermissionPolicy> {
   const defaultRoleRef = defaultPolicies[0]?.entityReference;
-  const defaultRoleAndPolicies: DefaultPermissions | undefined =
-    defaultPolicies.length > 0 && defaultRoleRef
-      ? {
-          roleEntityRef: defaultRoleRef,
-          policies: defaultPolicies,
-        }
-      : undefined;
-
-  if (defaultRoleAndPolicies) {
+  if (defaultPolicies.length > 0) {
     const casbinPolicies = defaultPolicies.map(p => [
       p.entityReference!,
       p.permission!,
@@ -2241,9 +2232,11 @@ async function newPermissionPolicy(
     ]);
     await enfDelegate.addPolicies(casbinPolicies);
     const storage = roleMock || roleMetadataStorageMock;
-    (storage.getCachedDefaultRoleMetadata as jest.Mock).mockReturnValue(
-      buildDefaultRoleMetadata(defaultRoleAndPolicies.roleEntityRef),
-    );
+    if (defaultRoleRef) {
+      (storage.getCachedDefaultRoleMetadata as jest.Mock).mockReturnValue(
+        buildDefaultRoleMetadata(defaultRoleRef),
+      );
+    }
   } else {
     const storage = roleMock || roleMetadataStorageMock;
     (storage.getCachedDefaultRoleMetadata as jest.Mock).mockReturnValue(
@@ -2262,7 +2255,7 @@ async function newPermissionPolicy(
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockAuthService,
-    defaultRoleAndPolicies?.roleEntityRef,
+    defaultRoleRef,
   );
   clearAuditorMock();
   return permissionPolicy;

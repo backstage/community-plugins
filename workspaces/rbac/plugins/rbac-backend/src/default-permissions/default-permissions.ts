@@ -28,15 +28,6 @@ import type { EnforcerDelegate } from '../service/enforcer-delegate';
 import { syncRolePolicies } from '../helper';
 import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
 
-/**
- * Default role and its permission policies from configuration.
- * When no default role is configured, both `role` and `policies` are undefined.
- */
-export type DefaultPermissions = {
-  roleEntityRef: string;
-  policies: RoleBasedPolicy[];
-};
-
 const DEFAULT_ROLE_DESCRIPTION =
   'Role with default permissions for all users and groups.';
 
