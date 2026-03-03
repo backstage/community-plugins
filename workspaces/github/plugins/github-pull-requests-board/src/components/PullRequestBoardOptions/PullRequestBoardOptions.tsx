@@ -43,6 +43,7 @@ const PullRequestBoardOptions: FunctionComponent<Props> = (props: Props) => {
         <ToggleButton
           value={toggleValue}
           aria-label={ariaLabel}
+          title={ariaLabel}
           key={`${ariaLabel}-${index}`}
         >
           <TooltipTrigger>

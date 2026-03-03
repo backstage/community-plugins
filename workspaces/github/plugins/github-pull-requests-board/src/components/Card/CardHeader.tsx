@@ -66,7 +66,7 @@ const CardHeader: FunctionComponent<Props> = (props: Props) => {
       <Flex justify="start">
         {isDraft && (
           <TooltipTrigger>
-            <Flex justify="center" align="center">
+            <Flex justify="center" align="center" title="Draft PR">
               <DraftPrIcon />
             </Flex>
             <Tooltip>Draft PR</Tooltip>
@@ -74,7 +74,11 @@ const CardHeader: FunctionComponent<Props> = (props: Props) => {
         )}
         {repositoryIsArchived && (
           <TooltipTrigger>
-            <Flex justify="center" align="center">
+            <Flex
+              justify="center"
+              align="center"
+              title="Repository is archived"
+            >
               <RiInboxUnarchiveLine size={20} />
             </Flex>
             <Tooltip>Repository is archived</Tooltip>
