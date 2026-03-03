@@ -137,6 +137,86 @@ The following extensions are available in the plugin:
 - `search-result-list-item:adr`
 - `api:adr/adr-api`
 
+## Custom ADR Status
+
+A custom ADR status component can be used as follows:
+
+```jsx
+// CustomADRStatusComponent
+
+import { useContext } from 'react';
+import Chip from '@mui/material/Chip';
+import { Theme, useTheme } from '@mui/material/styles';
+import { EntityAdrListItemContext } from '@backstage-community/plugin-adr';
+
+const getChipColors = (status: string, theme: Theme) => {
+  switch (status.toLowerCase()) {
+    case 'draft':
+      return {
+        backgroundColor: theme.palette.grey[300],
+        color: theme.palette.grey[900],
+      };
+    case 'proposed':
+      return {
+        backgroundColor: theme.palette.info.main,
+        color: theme.palette.info.contrastText,
+      };
+    case 'pending':
+      return {
+        backgroundColor: theme.palette.info.light,
+        color: theme.palette.info.contrastText,
+      };
+    case 'accepted':
+    case 'approved':
+      return {
+        backgroundColor: theme.palette.success.main,
+        color: theme.palette.success.contrastText,
+      };
+    case 'rejected':
+      return {
+        backgroundColor: theme.palette.error.main,
+        color: theme.palette.error.contrastText,
+      };
+    case 'deprecated':
+    case 'superseded':
+      return {
+        backgroundColor: theme.palette.warning.main,
+        color: theme.palette.warning.contrastText,
+      };
+    default:
+      return {
+        backgroundColor: theme.palette.grey[500],
+        color: theme.palette.grey[50],
+      };
+  }
+};
+
+export const CustomADRStatusComponent = () => {
+  const theme = useTheme();
+  const listItemContext = useContext(EntityAdrListItemContext);
+
+  const status = listItemContext?.adr?.status;
+  if (!status) {
+    return null;
+  }
+
+  const colors = getChipColors(status, theme);
+
+  return (
+    <Chip
+      label={status}
+      size="small"
+      sx={{ textTransform: 'capitalize', m: 0, ...colors }}
+    />
+  );
+};
+```
+
+```jsx
+// some entity page
+<EntityAdrContent statusComponent={<CustomADRStatusComponent />} />
+```
+
 ## Custom ADR formats
 
 By default, this plugin will parse ADRs according to the format specified by the [Markdown Architecture Decision Record (MADR) v2.x template](https://github.com/adr/madr/tree/2.1.2) or the [Markdown Any Decision Record (MADR) 3.x template](https://github.com/adr/madr/tree/3.0.0). If your ADRs are written using a different format, you can apply the following customizations to correctly identify and parse your documents:
