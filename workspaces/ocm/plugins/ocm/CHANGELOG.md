@@ -1,5 +1,13 @@
 # @backstage-community/plugin-ocm
 
+## 5.14.1
+
+### Patch Changes
+
+- 926c09e: Show loading indicator and error panel if needed on the cluster info and cluster resource cards.
+- 926c09e: Fix crash when cluster entity and cluster resources doesn't match.
+- 926c09e: Improve OCM cluster page when an error is displayed and removed unnecessary home plugin dependency.
+
 ## 5.14.0
 
 ### Minor Changes
