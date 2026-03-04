@@ -27,12 +27,16 @@ export abstract class LLMProvider {
   protected baseUrl: string;
   protected model: string;
   protected type: string;
+  protected maxTokens?: number;
+  protected temperature?: number;
 
   constructor(config: ProviderConfig) {
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl;
     this.model = config.model;
     this.type = config.type;
+    this.maxTokens = config.maxTokens;
+    this.temperature = config.temperature;
   }
 
   abstract sendMessage(
