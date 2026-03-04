@@ -203,8 +203,8 @@ export interface ProviderConfig {
   baseUrl: string;
   /** Model identifier to use */
   model: string;
-  /** Logger service for debug logging (optional) */
-  logger?: any;
+  /** Logger for debugging */
+  logger: any;
 }
 
 /**
