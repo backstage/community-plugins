@@ -1,5 +1,9 @@
 # @backstage-community/plugin-tech-radar
 
+## 2.0.0
+
+- 7c8a54d: Redesigned the Tech Radar. Changes are visual only, the same JSON source can be used. The plugin now relies on BUI instead of MUI.
+
 ## 1.15.0
 
 ### Minor Changes
