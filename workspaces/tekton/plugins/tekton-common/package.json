@@ -31,10 +31,10 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.3"
+    "@backstage/cli": "^0.35.4"
   },
   "peerDependencies": {
-    "@backstage/plugin-permission-common": "^0.9.5"
+    "@backstage/plugin-permission-common": "^0.9.6"
   },
   "files": [
     "dist"
