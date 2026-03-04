@@ -208,7 +208,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       const permissionName = request.permission.name;
       const roles = await this.enforcer.getRolesForUser(userEntityRef);
-
       // handle permission with 'resource' type
       const hasNamedPermission = await this.hasImplicitPermission(
         permissionName,

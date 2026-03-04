@@ -160,10 +160,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     }
 
     const result = await trx(ROLE_METADATA_TABLE)
-      .insert<RoleMetadataDao>({
-        ...metadata,
-        isDefault: metadata.isDefault ?? false,
-      })
+      .insert<RoleMetadataDao>(metadata)
       .returning<[{ id: number }]>('id');
     if (result && result?.length > 0) {
       return result[0].id;
@@ -204,10 +201,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
 
     const result = await trx<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('id', currentMetadataDao.id)
-      .update({
-        ...newRoleMetadata,
-        isDefault: newRoleMetadata.isDefault ?? false,
-      })
+      .update(newRoleMetadata)
       .returning('id');
 
     if (!externalTrx) {
@@ -249,6 +243,6 @@ export function daoToMetadata(dao: RoleMetadataDao): RoleMetadata {
     modifiedBy: dao.modifiedBy,
     createdAt: dao.createdAt,
     lastModified: dao.lastModified,
-    isDefault: dao.isDefault === true || dao.isDefault === 1 ? true : undefined,
+    isDefault: dao.isDefault === true || dao.isDefault === 1 ? true : false,
   };
 }

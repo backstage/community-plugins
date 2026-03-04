@@ -195,18 +195,19 @@ export class PolicyBuilder {
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
-      const policy = await RBACPermissionPolicy.build(
-        env.logger,
-        env.auditor,
-        env.config,
-        conditionStorage,
-        enforcerDelegate,
-        roleMetadataStorage,
-        databaseClient,
-        pluginPermMetaData,
-        env.auth,
+      env.policy.setPolicy(
+        await RBACPermissionPolicy.build(
+          env.logger,
+          env.auditor,
+          env.config,
+          conditionStorage,
+          enforcerDelegate,
+          roleMetadataStorage,
+          databaseClient,
+          pluginPermMetaData,
+          env.auth,
+        ),
       );
-      env.policy.setPolicy(policy);
     } else {
       env.logger.warn(
         'RBAC backend plugin was disabled by application config permission.enabled: false',
