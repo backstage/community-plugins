@@ -50,17 +50,11 @@ const routes = (
 If you'd like to configure it more, see the `TechRadarPageProps` and `TechRadarComponentProps` types for options:
 
 ```ts
-export type TechRadarPageProps = TechRadarComponentProps & {
+export type TechRadarPageProps = {
   title?: string;
   subtitle?: string;
   pageTitle?: string;
 };
-
-export interface TechRadarPageProps {
-  width?: number;
-  height?: number;
-  svgProps?: object;
-}
 ```
 
 ### Radar properties
@@ -284,15 +278,11 @@ export const app = createApp({
 
 ### How do I write tests?
 
-You can use the `svgProps` option to pass custom React props to the `<svg>` element we create for the Tech Radar. This complements well with the `data-testid` attribute and the `@testing-library/react` library we use in Backstage.
+The TechRadarComponent accepts any props that a <div /> accepts. This complements well with the `data-testid` attribute and the `@testing-library/react` library we use in Backstage.
 
 ```tsx
 <TechRadarComponent
-  width={1400}
-  height={800}
-  svgProps={{
-    'data-testid': 'tech-radar-svg',
-  }}
+  data-testid: 'tech-radar-svg'
 />
 
 // Then, in your tests...

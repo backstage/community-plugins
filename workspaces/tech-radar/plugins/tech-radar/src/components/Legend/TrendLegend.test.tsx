@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@backstage/cli/asset-types';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import '@backstage/ui/css/styles.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+import { render, screen } from '@testing-library/react';
+import { TrendLegend } from './TrendLegend';
+
+describe('TrendLegend', () => {
+  it('should render the three legend items', () => {
+    render(<TrendLegend />);
+    expect(screen.getByText('New')).toBeInTheDocument();
+    expect(screen.getByText('Trend up')).toBeInTheDocument();
+    expect(screen.getByText('Trend down')).toBeInTheDocument();
+  });
+});

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-radar",
-  "version": "1.15.0",
+  "version": "2.0.0",
   "description": "A Backstage plugin that lets you display a Tech Radar for your organization",
   "backstage": {
     "role": "frontend-plugin",
@@ -24,7 +24,9 @@
     "directory": "workspaces/tech-radar/plugins/tech-radar"
   },
   "license": "Apache-2.0",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.tsx",
@@ -60,12 +62,19 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "clsx": "^2.1.1",
     "color": "^4.0.1",
     "d3-force": "^3.0.0",
-    "react-use": "^17.2.4"
+    "lucide-react": "^0.556.0",
+    "luxon": "^3.7.2",
+    "react-aria": "^3.46.0",
+    "react-aria-components": "^1.13.0",
+    "react-use": "^17.2.4",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
@@ -78,6 +87,7 @@
     "@testing-library/user-event": "^14.0.0",
     "@types/color": "^4.0.0",
     "@types/d3-force": "^3.0.0",
+    "@types/luxon": "^3",
     "@types/react-dom": "^18.2.19",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
