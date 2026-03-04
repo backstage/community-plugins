@@ -218,7 +218,7 @@ describe('Provider maxTokens and temperature configuration', () => {
       ];
 
       providers.forEach(
-        ({ name, instance, expectedMaxTokens, expectedTemperature }) => {
+        ({ instance, expectedMaxTokens, expectedTemperature }) => {
           const request = (instance as any).formatRequest(testMessages);
           expect(request.max_tokens).toBe(expectedMaxTokens);
           expect(request.temperature).toBe(expectedTemperature);
