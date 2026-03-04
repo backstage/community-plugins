@@ -70,8 +70,10 @@ export abstract class LLMProvider {
     const duration = Date.now() - startTime;
 
     if (!response.ok) {
+      const errorText = await response.text();
       this.logger.error(
         `[${this.type}] Request failed (${response.status}) after ${duration}ms`,
+        { responseData: errorText },
       );
       throw await ResponseError.fromResponse(response);
     }
