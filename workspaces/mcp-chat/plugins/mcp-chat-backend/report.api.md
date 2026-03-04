@@ -179,7 +179,7 @@ export abstract class LLMProvider {
   // (undocumented)
   protected abstract getHeaders(): Record<string, string>;
   // (undocumented)
-  protected logger?: any;
+  protected logger: any;
   // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
@@ -370,7 +370,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
-  logger?: any;
+  logger: any;
   model: string;
   type: string;
 }
