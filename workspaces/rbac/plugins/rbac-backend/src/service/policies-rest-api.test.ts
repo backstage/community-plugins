@@ -1968,6 +1968,7 @@ describe('REST policies API', () => {
           memberReferences: ['group:default/test'],
           name: 'role:default/test',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some-user',
           },
@@ -1976,6 +1977,7 @@ describe('REST policies API', () => {
           memberReferences: ['group:default/team_a'],
           name: 'role:default/team_a',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some-user',
           },
@@ -2031,6 +2033,7 @@ describe('REST policies API', () => {
           memberReferences: ['user:default/permission_admin'],
           name: 'role:default/rbac_admin',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some-user',
           },
@@ -3222,7 +3225,7 @@ describe('REST policies API', () => {
             author: undefined,
             createdAt: undefined,
             description: undefined,
-            isDefault: undefined,
+            isDefault: false,
             lastModified: undefined,
             modifiedBy: 'user:default/some-user',
             owner: undefined,

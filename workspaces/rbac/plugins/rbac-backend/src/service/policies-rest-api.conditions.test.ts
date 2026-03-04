@@ -346,6 +346,7 @@ describe('REST policies api with conditions', () => {
           memberReferences: ['group:default/test'],
           name: 'role:default/test',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some_user',
             owner: 'user:default/mock',
@@ -364,6 +365,7 @@ describe('REST policies api with conditions', () => {
           memberReferences: ['group:default/test'],
           name: 'role:default/test',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some_user',
             owner: 'user:default/mock',

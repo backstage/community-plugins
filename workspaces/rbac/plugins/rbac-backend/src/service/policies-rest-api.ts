@@ -226,7 +226,6 @@ export class PoliciesServer {
         }
 
         const body = await this.transformPolicyArray(...policies);
-
         // TODO: Temporary workaround to prevent breakages after the removal of the resource type `policy-entity` from the permission `policy.entity.create`
         body.map(policy => {
           if (

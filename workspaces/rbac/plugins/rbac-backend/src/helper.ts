@@ -79,7 +79,7 @@ export function metadataStringToPolicy(policy: string): string[] {
 /**
  * Compares two policy arrays (e.g. [entityRef, permission, policy, effect]) for equality.
  */
-export function policyArraysEqual(a: string[], b: string[]): boolean {
+function policyArraysEqual(a: string[], b: string[]): boolean {
   return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
