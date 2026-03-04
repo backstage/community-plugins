@@ -1,5 +1,14 @@
 # @backstage-community/plugin-github-discussions
 
+## 0.9.1
+
+### Patch Changes
+
+- a133aee: Fixed `githubDiscussionsSearchResultListItem` to show search results correctly when using the New Frontend System
+- 6d74723: Backstage version bump to v1.48.4
+- Updated dependencies [6d74723]
+  - @backstage-community/plugin-github-discussions-common@0.10.1
+
 ## 0.9.0
 
 ### Minor Changes
