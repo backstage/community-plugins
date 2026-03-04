@@ -1477,7 +1477,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:14.3.1"
     "@types/dagre": "npm:^0.7.52"
-    "@types/lodash": "npm:4.17.23"
+    "@types/lodash": "npm:4.17.24"
     classnames: "npm:^2.3.2"
     cross-fetch: "npm:4.1.0"
     dagre: "npm:^0.8.5"
@@ -13428,10 +13428,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.17.23":
-  version: 4.17.23
-  resolution: "@types/lodash@npm:4.17.23"
-  checksum: 10/05935534a44aadef67c2158b2fb4a042a226970088106a40ddc67e4f063783149fe5cf02279d7dd4a1e72c98d9189b9430face659645dbf77270f8c4c3e387f5
+"@types/lodash@npm:4.17.24":
+  version: 4.17.24
+  resolution: "@types/lodash@npm:4.17.24"
+  checksum: 10/0f2082565f60f9787eefc046edc38458054512be5a8b3584ef0bad5fd9e85d0ab55ec5a1fbfae1ed6ba015cf1f9e837d5fb4da1f99fc60b8f74b2a46146fb00f
   languageName: node
   linkType: hard
 
