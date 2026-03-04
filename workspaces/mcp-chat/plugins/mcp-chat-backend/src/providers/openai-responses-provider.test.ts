@@ -30,11 +30,19 @@ describe('OpenAIResponsesProvider', () => {
   let provider: OpenAIResponsesProvider;
   const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
+  const mockLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  };
+
   const config: ProviderConfig = {
     type: 'openai-responses',
     apiKey: 'test-api-key',
     baseUrl: 'http://test-api.com/v1',
     model: 'gemini/models/gemini-2.5-flash',
+    logger: mockLogger,
   };
 
   const mockMCPServerFullConfigs: MCPServerFullConfig[] = [

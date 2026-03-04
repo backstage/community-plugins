@@ -26,11 +26,19 @@ describe('GeminiProvider', () => {
   let provider: GeminiProvider;
   let mockGenerateContent: jest.Mock;
 
+  const mockLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  };
+
   const config: ProviderConfig = {
     type: 'gemini',
     apiKey: 'test-api-key',
     baseUrl: 'https://generativelanguage.googleapis.com',
     model: 'gemini-pro',
+    logger: mockLogger,
   };
 
   beforeEach(() => {
