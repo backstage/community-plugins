@@ -33,7 +33,7 @@ export const ClusterInfoCard: () => JSX_2.Element | null;
 export const OcmIcon: IconComponent;
 
 // @public (undocumented)
-export const OcmPage: ({ logo }: {
+export const OcmPage: (input: {
     logo?: ReactNode;
 }) => JSX_2.Element;
 
