@@ -92,7 +92,11 @@ export class MCPClientServiceImpl implements MCPClientService {
       );
       return llmProvider;
     } catch (error) {
-      this.logger.error('Failed to initialize LLM provider:', error);
+      this.logger.error(
+        `Failed to initialize LLM provider: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
       throw error;
     }
   }
