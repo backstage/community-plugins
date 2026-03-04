@@ -31,6 +31,10 @@ mcpChat:
       baseUrl: 'https://any-openai-compatible-url/v1'
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini
+      # Optional: Customize max tokens (default: 1000 for OpenAI)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
     - id: openai-responses # OpenAI Responses API
       baseUrl: 'http://your-responses-api-endpoint.com/v1/openai/v1'
       model: 'gemini/models/gemini-2.5-flash'
@@ -38,16 +42,32 @@ mcpChat:
     - id: gemini
       token: ${GEMINI_API_KEY}
       model: gemini-2.5-flash
+      # Optional: Customize max tokens (default: 8192 for Gemini)
+      # maxTokens: 8192
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
     - id: claude
       token: ${CLAUDE_API_KEY}
       model: claude-sonnet-4-20250514
+      # Optional: Customize max tokens (default: 4096 for Claude)
+      # maxTokens: 4096
+      # Optional: Customize temperature 0-1 (default: not set, uses Claude API default)
+      # temperature: 0.8
     - id: ollama
       baseUrl: 'http://localhost:11434'
       model: llama3.1:8b
+      # Optional: Customize max tokens (default: 1000)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
     - id: litellm
       baseUrl: 'http://localhost:4000'
       token: ${LITELLM_API_KEY}
       model: gpt-4o-mini
+      # Optional: Customize max tokens (default: 1000)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
   mcpServers:
     - id: brave-search-server
       name: Brave Search Server

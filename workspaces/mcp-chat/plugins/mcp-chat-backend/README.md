@@ -234,6 +234,10 @@ mcpChat:
     - id: openai # OpenAI provider
       token: ${OPENAI_API_KEY}
       model: gpt-4o-mini # or gpt-4, gpt-3.5-turbo, etc.
+      # Optional: Customize max tokens (default: 1000)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
     - id: openai-responses # OpenAI Responses API provider (handles MCP internally)
       baseUrl: 'http://your-responses-api-endpoint.com/v1/openai/v1'
       model: 'gemini/models/gemini-2.5-flash'
@@ -241,16 +245,32 @@ mcpChat:
     - id: claude # Claude provider
       token: ${CLAUDE_API_KEY}
       model: claude-sonnet-4-20250514 # or claude-3-7-sonnet-latest
+      # Optional: Customize max tokens (default: 4096)
+      # maxTokens: 4096
+      # Optional: Customize temperature 0-1
+      # temperature: 0.7
     - id: gemini # Gemini provider
       token: ${GEMINI_API_KEY}
       model: gemini-2.5-flash # or gemini-2.0-pro, etc.
+      # Optional: Customize max tokens (default: 8192)
+      # maxTokens: 8192
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
     - id: ollama # Ollama provider
       baseUrl: 'http://localhost:11434'
       model: llama3.1:8b # or any model you have locally
+      # Optional: Customize max tokens (default: 1000)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
     - id: litellm # LiteLLM proxy provider
       baseUrl: 'http://localhost:4000' # LiteLLM proxy URL
       token: ${LITELLM_API_KEY} # Optional, depends on your LiteLLM setup
       model: gpt-4o-mini # Model name configured in LiteLLM
+      # Optional: Customize max tokens (default: 1000)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
 
   # Configure MCP servers
   mcpServers:
@@ -344,6 +364,70 @@ systemPrompt: 'You are a security-focused DevOps assistant. Always consider secu
 - Mention specific domains or expertise when relevant
 - Include instructions about response format if needed
 - The system prompt affects all AI interactions in the plugin
+
+### Provider Response Configuration
+
+You can customize the response generation behavior for each provider using optional `maxTokens` and `temperature` settings.
+
+#### Max Tokens
+
+The `maxTokens` setting controls the maximum number of tokens (words/characters) the AI can generate in a single response.
+
+**Default Values by Provider:**
+
+- **OpenAI/LiteLLM**: 1000 tokens
+- **Claude**: 4096 tokens
+- **Gemini**: 8192 tokens
+- **Ollama**: 1000 tokens (via `num_predict` option)
+
+**Example Configuration:**
+
+```yaml
+providers:
+  - id: openai
+    token: ${OPENAI_API_KEY}
+    model: gpt-4o-mini
+    maxTokens: 2000 # Generate up to 2000 tokens
+```
+
+**When to Adjust:**
+
+- Increase for long-form responses or detailed explanations
+- Decrease to save costs or enforce concise responses
+- Consider your model's context window limits
+
+#### Temperature
+
+The `temperature` setting controls randomness in responses (0-1 scale):
+
+**Default Value:** 0.7 (for most providers)
+
+- **Lower values (0.0-0.3)**: More focused, deterministic, consistent responses
+- **Medium values (0.4-0.7)**: Balanced creativity and consistency (default)
+- **Higher values (0.8-1.0)**: More creative, diverse, and random responses
+
+**Example Configuration:**
+
+```yaml
+providers:
+  - id: claude
+    token: ${CLAUDE_API_KEY}
+    model: claude-sonnet-4-20250514
+    temperature: 0.3 # More deterministic responses
+
+  - id: gemini
+    token: ${GEMINI_API_KEY}
+    model: gemini-2.5-flash
+    temperature: 0.9 # More creative responses
+```
+
+**When to Adjust:**
+
+- Use **lower temperature** for factual queries, code generation, data analysis
+- Use **higher temperature** for brainstorming, creative writing, exploration
+- Keep **default (0.7)** for general-purpose assistant behavior
+
+**Note:** Claude provider supports temperature but doesn't set a default value, relying on the API's own defaults unless explicitly configured.
 
 For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
 
