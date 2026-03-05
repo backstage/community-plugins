@@ -17,13 +17,11 @@
 /**
  * New Frontend System dev mode for the RBAC plugin
  */
-
+// eslint-disable-next-line
 import '@backstage/ui/css/styles.css';
 import { createApp } from '@backstage/frontend-defaults';
 import { configApiRef } from '@backstage/core-plugin-api';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
 import ReactDOM from 'react-dom/client';
-import { mockApis } from '@backstage/test-utils';
 
 import {
   ApiBlueprint,
@@ -77,34 +75,28 @@ const rbacDevModule = createFrontendModule({
           factory: () => mockConfigApi,
         }),
     }),
-    ApiBlueprint.make({
-      name: 'permission',
-      params: defineParams =>
-        defineParams({
-          api: permissionApiRef,
-          deps: {},
-          factory: () => mockApis.permission(),
-        }),
-    }),
   ],
 });
 
 const devSidebarContent = NavContentBlueprint.make({
   params: {
-    component: ({ items }) => (
-      <Sidebar>
-        <SidebarGroup label="Menu">
-          <SidebarScrollWrapper>
-            {items.map((item, index) => (
-              <SidebarItem {...item} key={index} />
-            ))}
-          </SidebarScrollWrapper>
-        </SidebarGroup>
-        <SidebarSpace />
-        <SidebarLanguageSwitcher />
-        <SidebarSignOutButton />
-      </Sidebar>
-    ),
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+      return (
+        <Sidebar>
+          <SidebarGroup label="Menu">
+            <SidebarScrollWrapper>
+              {nav.rest({ sortBy: 'title' })}
+            </SidebarScrollWrapper>
+          </SidebarGroup>
+          <SidebarSpace />
+          <SidebarLanguageSwitcher />
+          <SidebarSignOutButton />
+        </Sidebar>
+      );
+    },
   },
 });
 

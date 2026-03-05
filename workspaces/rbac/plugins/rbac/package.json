@@ -75,6 +75,7 @@
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
@@ -96,7 +97,6 @@
     "@types/react": "^18.2.58",
     "msw": "1.3.5",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0",
     "start-server-and-test": "2.1.5"
   },
