@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const defaultKinds = [
-  'System',
-  'Component',
-  'API',
-  'Template',
-  'Resource',
-  'Domain',
-];
+
+import { ReactElement } from 'react';
+
+import { Box, Flex } from '@backstage/ui';
+
+export function Cards({ children }: { children?: ReactElement[] }) {
+  if (!children || (Array.isArray(children) && children.length === 0)) {
+    return null;
+  }
+
+  return (
+    <Flex align="stretch" mb="4">
+      {children.map((card, i) => (
+        <Box key={card.key ?? `card-${i}`}>{card}</Box>
+      ))}
+    </Flex>
+  );
+}

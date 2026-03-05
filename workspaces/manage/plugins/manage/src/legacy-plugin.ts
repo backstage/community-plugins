@@ -43,7 +43,7 @@ export const ManagePage = managePlugin.provide(
   createRoutableExtension({
     name: 'ManagePage',
     component: () =>
-      import('./components/ManagePage').then(m => m.ManagePageImpl),
+      import('./components-ofs/ManagePage').then(m => m.ManagePageImpl),
     mountPoint: rootRouteRef,
   }),
 );
@@ -56,7 +56,8 @@ export const ManageTabs = managePlugin.provide(
   createComponentExtension({
     name: 'ManageTabs',
     component: {
-      lazy: () => import('./components/ManageTabs').then(m => m.ManageTabsImpl),
+      lazy: () =>
+        import('./components-ofs/ManageTabs').then(m => m.ManageTabsImpl),
     },
   }),
 );

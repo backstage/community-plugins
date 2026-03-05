@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-import { GithubDiscussionsDocument } from '@backstage-community/plugin-github-discussions-common';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
-import { compatWrapper } from '@backstage/core-compat-api';
-
-function isGithubDiscussionsDocument(
-  result: any,
-): result is GithubDiscussionsDocument {
-  return result.entityRef;
-}
 
 /** @alpha */
 export const githubDiscussionsSearchResultListItem =
@@ -39,21 +31,19 @@ export const githubDiscussionsSearchResultListItem =
     },
     factory(originalFactory, { config }) {
       return originalFactory({
+        icon: <SpeakerNotesIcon />,
         predicate: result => result.type === 'github-discussions',
         component: async () => {
           const { GithubDiscussionsSearchResultListItem } = await import(
             '../components/GithubDiscussionsSearchResultListItem'
           );
-          return ({ result, ...rest }) =>
-            compatWrapper(
-              isGithubDiscussionsDocument(result) ? (
-                <GithubDiscussionsSearchResultListItem
-                  {...rest}
-                  {...config}
-                  result={result}
-                />
-              ) : null,
-            );
+          return props => (
+            <GithubDiscussionsSearchResultListItem
+              {...props}
+              result={props.result as any}
+              {...config}
+            />
+          );
         },
       });
     },

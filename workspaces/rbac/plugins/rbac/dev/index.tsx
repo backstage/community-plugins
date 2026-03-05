@@ -44,7 +44,7 @@ import {
 import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 
-import { rbacPlugin, rbacTranslationsModule } from '../src/alpha';
+import rbacPlugin, { rbacTranslationsModule } from '../src/alpha';
 import { mockConfigApi, mockLicensedUsersApi, mockRBACApi } from './mocks';
 
 const rbacDevModule = createFrontendModule({

@@ -28,12 +28,12 @@ import { ErrorPanel } from '@backstage/core-components';
 import { Progress } from '../Progress';
 import { useKindOrder } from '../KindOrder';
 import { arrayify, joinKinds } from '../../utils';
-import { defaultKinds } from './types';
 import {
   type KindStarredType,
   KindStarred,
 } from '../CurrentKindProvider/types';
 import { Owners, manageApiRef } from '../../api';
+import { defaultKinds } from '../../config/types';
 
 interface OwnedEntitiesProviderContext {
   kinds: string[];

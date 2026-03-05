@@ -21,8 +21,8 @@ import { RouteRef as RouteRef_2 } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
-// @public (undocumented)
-export const rbacPlugin: OverridableFrontendPlugin<    {
+// @alpha
+const _default: OverridableFrontendPlugin<    {
 root: RouteRef<undefined>;
 }, {}, {
 "api:rbac/licensed-users": OverridableExtensionDefinition<    {
@@ -85,6 +85,7 @@ routeRef?: RouteRef_2<AnyRouteRefParams> | undefined;
 };
 }>;
 }>;
+export default _default;
 
 // @public
 export const rbacTranslationRef: TranslationRef<"plugin.rbac", {
@@ -151,8 +152,8 @@ readonly "roleForm.fields.description.label": string;
 readonly "roleForm.fields.description.helperText": string;
 readonly "roleForm.fields.owner.label": string;
 readonly "roleForm.fields.owner.helperText": string;
-readonly "permissionPolicies.search": string;
 readonly "permissionPolicies.rules": string;
+readonly "permissionPolicies.search": string;
 readonly "permissionPolicies.rule": string;
 readonly "permissionPolicies.permissions": string;
 readonly "permissionPolicies.permissionPolicies": string;
@@ -189,9 +190,9 @@ readonly "conditionalAccess.addNestedCondition": string;
 readonly "conditionalAccess.addRule": string;
 readonly "conditionalAccess.nestedConditionTooltip": string;
 readonly "conditionalAccess.nestedConditionExample": string;
-readonly "common.use": string;
 readonly "common.update": string;
 readonly "common.delete": string;
+readonly "common.use": string;
 readonly "common.name": string;
 readonly "common.rule": string;
 readonly "common.groups": string;

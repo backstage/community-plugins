@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo
 
+## 0.17.1
+
+### Patch Changes
+
+- aa732cc: Backstage version bump to v1.48.4
+
 ## 0.17.0
 
 ### Minor Changes

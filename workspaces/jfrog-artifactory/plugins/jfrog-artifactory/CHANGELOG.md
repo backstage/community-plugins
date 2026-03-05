@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 1.27.1
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+
 ## 1.27.0
 
 ### Minor Changes

@@ -16,7 +16,7 @@
 
 export type { ManageTabsProps, ManageKindOptions } from './ManageTabs';
 
-export { ManageTabsImpl } from './ManageTabs';
+export { ManageTabs } from './ManageTabs';
 
 export type { SubRouteTab } from './types';
 export { MANAGE_KIND_COMMON } from './types';

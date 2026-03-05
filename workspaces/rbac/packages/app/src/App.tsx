@@ -15,13 +15,9 @@
  */
 
 import { createApp } from '@backstage/frontend-defaults';
-import catalogPlugin from '@backstage/plugin-catalog/alpha';
-import {
-  rbacPlugin,
-  rbacTranslationsModule,
-} from '@backstage-community/plugin-rbac/alpha';
+import { rbacTranslationsModule } from '@backstage-community/plugin-rbac/alpha';
 import { navModule } from './modules';
 
 export default createApp({
-  features: [catalogPlugin, rbacPlugin, navModule, rbacTranslationsModule],
+  features: [navModule, rbacTranslationsModule],
 });

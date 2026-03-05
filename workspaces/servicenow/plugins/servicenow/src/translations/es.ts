@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { servicenowTranslationRef } from './ref';
 
+/**
+ * es translation for plugin.servicenow.
+ * @public
+ */
 const servicenowTranslationEs = createTranslationMessages({
   ref: servicenowTranslationRef,
   messages: {
     'page.title': 'Tickets de ServiceNow',
     'page.titleWithCount': 'Tickets de ServiceNow ({{count}})',
     'table.searchPlaceholder': 'Buscar',
-    'table.labelRowsSelect': '{{count}} filas',
+    'table.labelRowsSelect': '{{count}} filas',
     'table.columns.incidentNumber': 'Número de incidente',
     'table.columns.description': 'Descripción',
     'table.columns.created': 'Creado',
@@ -38,7 +43,7 @@ const servicenowTranslationEs = createTranslationMessages({
     'priority.low': 'Baja',
     'priority.planning': 'Planificación',
     'incidentState.new': 'Nuevo',
-    'incidentState.inProgress': 'En progreso',
+    'incidentState.inProgress': 'En curso',
     'incidentState.onHold': 'En espera',
     'incidentState.resolved': 'Resuelto',
     'incidentState.closed': 'Cerrado',

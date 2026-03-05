@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-import { rbacPlugin } from '.';
+import { useEffect, useState } from 'react';
 
-describe('RBAC plugin Alpha', () => {
-  describe('Plugin Structure', () => {
-    it('should have correct plugin metadata', () => {
-      expect(rbacPlugin.id).toBe('rbac');
-      expect(rbacPlugin.routes.root).toBeDefined();
-    });
+export function useViewportSize() {
+  const [size, setSize] = useState(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }));
 
-    it('should export rbac page extension', () => {
-      expect(rbacPlugin.getExtension('page:rbac')).toBeDefined();
-    });
+  useEffect(() => {
+    function handleResize() {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    handleResize();
 
-    it('should export navigation item extension', () => {
-      expect(rbacPlugin.getExtension('nav-item:rbac')).toBeDefined();
-    });
-  });
-});
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return size;
+}

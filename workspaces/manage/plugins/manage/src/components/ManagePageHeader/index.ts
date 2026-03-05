@@ -14,17 +14,5 @@
  * limitations under the License.
  */
 
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { rbacApi, licensedUsersApi } from './apis';
-import rbacNavItem from './navItems';
-import rbacPage from './pages';
-import { rootRouteRef } from '../routes';
-
-export default createFrontendPlugin({
-  pluginId: 'rbac',
-  info: { packageJson: () => import('../../package.json') },
-  extensions: [rbacApi, licensedUsersApi, rbacPage, rbacNavItem],
-  routes: {
-    root: rootRouteRef,
-  },
-});
+export { ManagePageHeader } from './ManagePageHeader';
+export type { HeaderLabelItem } from './types';

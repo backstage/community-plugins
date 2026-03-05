@@ -782,6 +782,8 @@ export interface ManageStaticConfig {
   // (undocumented)
   kindOrder: string[];
   // (undocumented)
+  kinds: string[];
+  // (undocumented)
   showCombined: boolean;
   // (undocumented)
   showOrganizationChart: boolean;

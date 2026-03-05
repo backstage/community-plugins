@@ -1,5 +1,12 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.7.2
+
+### Patch Changes
+
+- 8c7bddb: Added NFS support
+- af998b7: Updated dependency `supertest` to `7.2.2`.
+
 ## 7.7.1
 
 ### Patch Changes

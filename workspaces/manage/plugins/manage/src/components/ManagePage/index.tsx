@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-export type { ManagePageProps, HeaderProps } from './ManagePageOld';
-export { ManagePageImpl } from './ManagePageOld';
-
-export type { ManagePagePropsNew } from './ManagePageNew';
-export { ManagePageNew } from './ManagePageNew';
+export { ManagePage } from './ManagePage';
+export { ManagePageProviders } from './ManagePageProviders';

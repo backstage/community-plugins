@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { servicenowTranslationRef } from './ref';
 
+/**
+ * de translation for plugin.servicenow.
+ * @public
+ */
 const servicenowTranslationDe = createTranslationMessages({
   ref: servicenowTranslationRef,
   messages: {
-    'page.title': 'ServiceNow Tickets',
-    'page.titleWithCount': 'ServiceNow Tickets ({{count}})',
+    'page.title': 'ServiceNow-Tickets',
+    'page.titleWithCount': 'ServiceNow-Tickets ({{count}})',
     'table.searchPlaceholder': 'Suchen',
     'table.labelRowsSelect': '{{count}} Zeilen',
     'table.columns.incidentNumber': 'Vorfallnummer',
@@ -29,17 +34,17 @@ const servicenowTranslationDe = createTranslationMessages({
     'table.columns.priority': 'Priorität',
     'table.columns.state': 'Status',
     'table.columns.actions': 'Aktionen',
-    'table.emptyContent': 'Keine Einträge gefunden',
+    'table.emptyContent': 'Keine Datensätze gefunden',
     'filter.state': 'Status',
     'filter.priority': 'Priorität',
     'priority.critical': 'Kritisch',
     'priority.high': 'Hoch',
-    'priority.moderate': 'Mittel',
+    'priority.moderate': 'Mäßig',
     'priority.low': 'Niedrig',
     'priority.planning': 'Planung',
     'incidentState.new': 'Neu',
-    'incidentState.inProgress': 'In Bearbeitung',
-    'incidentState.onHold': 'Wartend',
+    'incidentState.inProgress': 'Wird verarbeitet',
+    'incidentState.onHold': 'Angehalten',
     'incidentState.resolved': 'Gelöst',
     'incidentState.closed': 'Geschlossen',
     'incidentState.cancelled': 'Abgebrochen',

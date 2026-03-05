@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { convertLegacyRouteRef } from '@backstage/core-compat-api';
+import { ComponentProps } from 'react';
 
-import { manageApiExtension } from '@backstage-community/plugin-manage-react';
+import { AppNode } from '@backstage/frontend-plugin-api';
+import { RoutedTabs } from '@backstage/core-components';
 
-import extensions from './extensions';
-import { rootRouteRef } from './routes';
+/**
+ * A special "kind" that can be used to configure all kinds. Settings for this
+ * kind are shared with all tabs for entities, unless they are individually
+ * configured.
+ *
+ * @public
+ */
+export const MANAGE_KIND_COMMON = '$common';
 
 /** @public */
-export const managePlugin = createFrontendPlugin({
-  pluginId: 'manage',
-  info: { packageJson: () => import('../package.json') },
-  routes: {
-    root: convertLegacyRouteRef(rootRouteRef),
-  },
-  extensions: [manageApiExtension, ...extensions],
-});
+export type SubRouteTab = ComponentProps<
+  typeof RoutedTabs
+>['routes'][number] & {
+  node?: AppNode;
+};

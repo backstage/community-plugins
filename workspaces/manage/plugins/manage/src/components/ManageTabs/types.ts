@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import { ComponentProps } from 'react';
-
 import { AppNode } from '@backstage/frontend-plugin-api';
-import { RoutedTabs } from '@backstage/core-components';
 
 /**
  * A special "kind" that can be used to configure all kinds. Settings for this
@@ -29,8 +26,14 @@ import { RoutedTabs } from '@backstage/core-components';
 export const MANAGE_KIND_COMMON = '$common';
 
 /** @public */
-export type SubRouteTab = ComponentProps<
-  typeof RoutedTabs
->['routes'][number] & {
+export type SubRouteTab = {
+  path: string;
+  title: string;
+  children: JSX.Element;
   node?: AppNode;
+  fullHeight:
+    | false
+    | {
+        resizeChild: boolean;
+      };
 };

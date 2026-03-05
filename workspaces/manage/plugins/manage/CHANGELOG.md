@@ -1,5 +1,27 @@
 # @backstage-community/plugin-manage
 
+## 1.3.0
+
+### Minor Changes
+
+- 57d32c5: The page header is now replaced with the new BUI page header instead of MUI (only in NFS)
+
+### Patch Changes
+
+- Updated dependencies [57d32c5]
+  - @backstage-community/plugin-manage-react@2.2.1
+
+## 1.2.0
+
+### Minor Changes
+
+- 884e720: Bump to depend on Backstage 1.48
+
+### Patch Changes
+
+- Updated dependencies [884e720]
+  - @backstage-community/plugin-manage-react@2.2.0
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-manage-module-tech-insights",
   "description": "Manage plugin - Tech Insights module",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "manage",
@@ -52,15 +52,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-manage-react": "workspace:^",
-    "@backstage-community/plugin-tech-insights": "^0.6.2",
-    "@backstage-community/plugin-tech-insights-common": "^0.7.1",
-    "@backstage-community/plugin-tech-insights-react": "^1.2.1",
+    "@backstage-community/plugin-tech-insights": "^1.1.0",
+    "@backstage-community/plugin-tech-insights-common": "^0.8.2",
+    "@backstage-community/plugin-tech-insights-react": "^1.4.0",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/ui": "^0.10.0",
+    "@backstage/ui": "backstage:^",
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
     "react-use": "^17.5.0"
