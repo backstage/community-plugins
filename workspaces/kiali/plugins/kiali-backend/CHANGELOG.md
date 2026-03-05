@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.28.1
+
+### Patch Changes
+
+- af998b7: Updated dependency `supertest` to `7.2.2`.
+
 ## 1.28.0
 
 ### Minor Changes
