@@ -30,7 +30,12 @@ import type {
   RBACProviderConnection,
 } from '@backstage-community/plugin-rbac-node';
 
-import { ActionType, PermissionEvents, RoleEvents } from '../auditor/auditor';
+import {
+  ActionType,
+  ConditionEvents,
+  PermissionEvents,
+  RoleEvents,
+} from '../auditor/auditor';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import {
   transformArrayToPolicy,
@@ -315,7 +320,7 @@ export class Connection implements RBACProviderConnection {
         policies: [condition],
       };
       const auditorEvent = await this.auditor.createEvent({
-        eventId: PermissionEvents.POLICY_WRITE,
+        eventId: ConditionEvents.CONDITION_WRITE,
         severityLevel: 'medium',
         meta: {
           actionType: ActionType.CREATE,
@@ -339,7 +344,7 @@ export class Connection implements RBACProviderConnection {
         policies: [conditionalPermission],
       };
       const auditorEvent = await this.auditor.createEvent({
-        eventId: PermissionEvents.POLICY_WRITE,
+        eventId: ConditionEvents.CONDITION_WRITE,
         severityLevel: 'medium',
         meta: { actionType: ActionType.DELETE, source: this.id },
       });
