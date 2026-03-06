@@ -58,7 +58,7 @@ export class TestProvider implements RBACProvider {
 }
 ```
 
-Now, we will include a `run` method that will add a new role and permission to the RBAC backend plugin through the use of the extension points.
+Now, we will include a `run` method that will add a new role and permissions (one simple and one conditional) to the RBAC backend plugin through the use of the extension points.
 
 ```ts
 export class TestProvider implements RBACProvider {
@@ -75,8 +75,29 @@ export class TestProvider implements RBACProvider {
       ['role:default/test-provider-role', 'catalog-entity', 'read', 'allow'],
     ];
 
+    const conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[] =
+      [
+        {
+          id: 0, // The id is ignored, so it can be any number
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/test-provider-role',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'delete', action: 'delete' }],
+          conditions: {
+            rule: 'HAS_LABEL',
+            resourceType: 'catalog-entity',
+            params: {
+              label: 'role',
+              value: 'deletable',
+            },
+          },
+        },
+      ];
+
     await this.connection.applyRoles(roles);
     await this.connection.applyPermissions(permissions);
+    await this.connection.applyConditionalPermissions(conditionalPermissions);
   }
 }
 ```
