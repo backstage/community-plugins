@@ -1036,6 +1036,72 @@ describe('RBACPermissionPolicy Tests', () => {
       );
     });
 
+    it('should allow access to a user who is a member of a group configured as super user', async () => {
+      const superUsersConfig = new Array<{ name: string }>();
+      superUsersConfig.push({ name: 'group:default/super_users_group' });
+
+      const config = newConfig(csvPermFile, admins, superUsersConfig);
+      const adapter = await newAdapter(config);
+      const enfDelegateForTest = await newEnforcerDelegate(adapter, config);
+      const policyForTest = await newPermissionPolicy(
+        config,
+        enfDelegateForTest,
+        roleMetadataStorageTest,
+      );
+
+      const decision = await policyForTest.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.delete',
+          'catalog-entity',
+          'delete',
+        ),
+        newPolicyQueryUser('user:default/some_user', [
+          'group:default/super_users_group',
+        ]),
+      );
+      expect(decision.result).toBe(AuthorizeResult.ALLOW);
+      expectAuditorLogForPermission(
+        'user:default/some_user',
+        'catalog.entity.delete',
+        'catalog-entity',
+        'delete',
+        AuthorizeResult.ALLOW,
+      );
+    });
+
+    it('should deny access to a user who is not a member of a group configured as super user', async () => {
+      const superUsersConfig = new Array<{ name: string }>();
+      superUsersConfig.push({ name: 'group:default/super_users_group' });
+
+      const config = newConfig(csvPermFile, admins, superUsersConfig);
+      const adapter = await newAdapter(config);
+      const enfDelegateForTest = await newEnforcerDelegate(adapter, config);
+      const policyForTest = await newPermissionPolicy(
+        config,
+        enfDelegateForTest,
+        roleMetadataStorageTest,
+      );
+
+      const decision = await policyForTest.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.delete',
+          'catalog-entity',
+          'delete',
+        ),
+        newPolicyQueryUser('user:default/some_user', [
+          'group:default/other_group',
+        ]),
+      );
+      expect(decision.result).toBe(AuthorizeResult.DENY);
+      expectAuditorLogForPermission(
+        'user:default/some_user',
+        'catalog.entity.delete',
+        'catalog-entity',
+        'delete',
+        AuthorizeResult.DENY,
+      );
+    });
+
     it('should remove users that are no longer in the config file', async () => {
       const enfRole = await enfDelegate.getFilteredGroupingPolicy(1, adminRole);
       const enfPermission = await enfDelegate.getFilteredPolicy(0, adminRole);
