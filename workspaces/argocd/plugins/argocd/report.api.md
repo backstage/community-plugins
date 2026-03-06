@@ -11,12 +11,18 @@ import { RouteRef } from '@backstage/core-plugin-api';
 // Warning: (ae-missing-release-tag) "ArgocdDeploymentLifecycle" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const ArgocdDeploymentLifecycle: () => JSX_2.Element | null;
+export const ArgocdDeploymentLifecycle: ({
+  showInstance,
+  showServer,
+}: DeploymentLifecycleProps) => JSX_2.Element | null;
 
 // Warning: (ae-missing-release-tag) "ArgocdDeploymentSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const ArgocdDeploymentSummary: () => JSX_2.Element | null;
+export const ArgocdDeploymentSummary: ({
+  showInstance,
+  showServer,
+}: DeploymentSummaryProps) => JSX_2.Element | null;
 
 // Warning: (ae-missing-release-tag) "argocdPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -28,6 +34,26 @@ export const argocdPlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// Warning: (ae-missing-release-tag) "DeploymentLifecycleProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DeploymentLifecycleProps {
+  // (undocumented)
+  showInstance?: boolean;
+  // (undocumented)
+  showServer?: boolean;
+}
+
+// Warning: (ae-missing-release-tag) "DeploymentSummaryProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DeploymentSummaryProps {
+  // (undocumented)
+  showInstance?: boolean;
+  // (undocumented)
+  showServer?: boolean;
+}
 
 // Warning: (ae-missing-release-tag) "isArgocdConfigured" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
