@@ -39,6 +39,9 @@ import {
   SidebarLanguageSwitcher,
   SidebarSignOutButton,
 } from '@backstage/dev-utils';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { mockApis } from '@backstage/test-utils';
+
 import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 
@@ -102,7 +105,18 @@ const devSidebarContent = NavContentBlueprint.make({
 
 const devNavModule = createFrontendModule({
   pluginId: 'app',
-  extensions: [devSidebarContent],
+  extensions: [
+    devSidebarContent,
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => mockApis.permission(),
+        }),
+    }),
+  ],
 });
 
 // redirect to this page on load after sign-in
