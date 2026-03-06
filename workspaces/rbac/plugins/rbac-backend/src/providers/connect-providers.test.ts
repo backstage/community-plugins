@@ -57,7 +57,6 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { ConflictError } from '@backstage/errors';
-import { cloneDeepWith } from 'lodash';
 
 const mockLoggerService = mockServices.logger.mock();
 
