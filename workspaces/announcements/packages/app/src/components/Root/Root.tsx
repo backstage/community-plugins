@@ -38,7 +38,8 @@ import { SidebarSearchModal } from '@backstage/plugin-search';
 import { NotificationsSidebarItem } from '@backstage/plugin-notifications';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import { RiMegaphoneLine } from '@remixicon/react';
+import { IconComponent } from '@backstage/core-plugin-api';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -85,7 +86,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         />
 
         <SidebarItem
-          icon={RecordVoiceOverIcon}
+          icon={RiMegaphoneLine as IconComponent}
           to="announcements/admin"
           text="Admin Portal"
         />
