@@ -22,16 +22,13 @@ import { useArgocdConfig } from '../../hooks/useArgocdConfig';
 import { Application } from '@backstage-community/plugin-argocd-common';
 
 const DeploymentLifecycleHeader: FC<{ app: Application }> = ({ app }) => {
-  const { instances, baseUrl } = useArgocdConfig();
+  const { instances, baseUrl, externalBaseUrl } = useArgocdConfig();
 
-  const supportsMultipleArgoInstances = !!instances.length;
   const getBaseUrl = (row: Application): string | undefined => {
-    if (supportsMultipleArgoInstances && !baseUrl) {
-      return instances?.find(
-        value => value?.name === row.metadata?.instance?.name,
-      )?.url;
-    }
-    return baseUrl;
+    const instance = instances?.find(
+      value => value?.name === row.metadata?.instance?.name,
+    );
+    return instance?.externalUrl || instance?.url || externalBaseUrl || baseUrl;
   };
 
   const appUrl = app?.metadata?.namespace

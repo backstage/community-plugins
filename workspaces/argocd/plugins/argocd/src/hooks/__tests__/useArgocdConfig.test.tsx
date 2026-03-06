@@ -52,7 +52,7 @@ describe('useArgocdConfig', () => {
     expect(result.current.baseUrl).toBeUndefined();
   });
 
-  it('should return default name and url', () => {
+  it('should return default name, url and externalUrl', () => {
     const wrapper = ({ children }: { children: ReactNode }) => {
       return (
         <TestApiProvider
@@ -84,6 +84,7 @@ describe('useArgocdConfig', () => {
     expect(result.current.instances).toHaveLength(1);
     expect(result.current.instances[0].name).toBe('');
     expect(result.current.instances[0].url).toBe('');
+    expect(result.current.instances[0].externalUrl).toBe('');
   });
 
   it('should return base url', () => {
@@ -119,6 +120,43 @@ describe('useArgocdConfig', () => {
     expect(result.current.baseUrl).toBe('https://argo-base-url.com');
   });
 
+  it('should return external base url', () => {
+    const wrapper = ({ children }: { children: ReactNode }) => {
+      return (
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              mockApis.config({
+                data: {
+                  argocd: {
+                    baseUrl: 'https://argo-base-url.com',
+                    externalBaseUrl: 'https://external-argo-base-url.com',
+                    appLocatorMethods: [
+                      {
+                        instances: [{}],
+                        type: 'config',
+                      },
+                    ],
+                  },
+                },
+              }),
+            ],
+          ]}
+        >
+          {children}
+        </TestApiProvider>
+      );
+    };
+
+    const { result } = renderHook(() => useArgocdConfig(), { wrapper });
+
+    expect(result.current.baseUrl).toBe('https://argo-base-url.com');
+    expect(result.current.externalBaseUrl).toBe(
+      'https://external-argo-base-url.com',
+    );
+  });
+
   it('should return configured instance and refreshInterval', () => {
     const mockConfig = mockApis.config({
       data: {
@@ -152,5 +190,42 @@ describe('useArgocdConfig', () => {
     expect(result.current.instances).toHaveLength(1);
     expect(result.current.instances[0].url).toBe('https://test.com');
     expect(result.current.intervalMs).toBe(50000);
+  });
+
+  it('should return configured instance with external url', () => {
+    const mockConfig = mockApis.config({
+      data: {
+        argocd: {
+          appLocatorMethods: [
+            {
+              instances: [
+                {
+                  name: 'test',
+                  url: 'https://test.com',
+                  externalUrl: 'https://external-test.com',
+                },
+              ],
+              type: 'config',
+            },
+          ],
+        },
+      },
+    });
+
+    const wrapper = ({ children }: { children: ReactNode }) => {
+      return (
+        <TestApiProvider apis={[[configApiRef, mockConfig]]}>
+          {children}
+        </TestApiProvider>
+      );
+    };
+
+    const { result } = renderHook(() => useArgocdConfig(), { wrapper });
+
+    expect(result.current.instances).toHaveLength(1);
+    expect(result.current.instances[0].url).toBe('https://test.com');
+    expect(result.current.instances[0].externalUrl).toBe(
+      'https://external-test.com',
+    );
   });
 });
