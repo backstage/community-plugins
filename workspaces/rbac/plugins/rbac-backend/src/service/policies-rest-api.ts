@@ -151,6 +151,16 @@ export class PoliciesServer {
 
     const { logger, auditor, auth, permissionsRegistry } = this.options;
 
+    const defRoleMeta = this.roleMetadata.getCachedDefaultRoleMetadata();
+    let defRole: Role | undefined;
+    if (defRoleMeta) {
+      defRole = {
+        name: defRoleMeta.roleEntityRef,
+        memberReferences: [],
+        metadata: daoToMetadata(defRoleMeta),
+      };
+    }
+
     const isPluginEnabled =
       this.options.config.getOptionalBoolean('permission.enabled');
     if (!isPluginEnabled) {
@@ -464,6 +474,10 @@ export class PoliciesServer {
         const roles = await this.enforcer.getGroupingPolicy();
         const body = await this.transformRoleArray(conditionsFilter, ...roles);
 
+        if (defRole) {
+          body.push(defRole);
+        }
+
         response.json(body);
       },
     );
@@ -485,12 +499,16 @@ export class PoliciesServer {
 
         const roleEntityRef = this.getEntityReference(request, true);
 
-        const role = await this.enforcer.getFilteredGroupingPolicy(
-          1,
-          roleEntityRef,
-        );
-
-        const body = await this.transformRoleArray(conditionsFilter, ...role);
+        let body: Role[];
+        if (defRole && roleEntityRef === defRole.name) {
+          body = [defRole];
+        } else {
+          const role = await this.enforcer.getFilteredGroupingPolicy(
+            1,
+            roleEntityRef,
+          );
+          body = await this.transformRoleArray(conditionsFilter, ...role);
+        }
         if (body.length !== 0) {
           response.json(body);
         } else {
@@ -639,7 +657,7 @@ export class PoliciesServer {
           throw new NotAllowedError(`Unable to edit role: ${err.message}`);
         }
 
-        if (!matches(oldMetadata, conditionsFilter)) {
+        if (!matches(daoToMetadata(oldMetadata), conditionsFilter)) {
           throw new NotAllowedError(); // 403
         }
 
@@ -741,7 +759,10 @@ export class PoliciesServer {
         const currentMetadata =
           await this.roleMetadata.findRoleMetadata(roleEntityRef);
 
-        if (!matches(currentMetadata, conditionsFilter)) {
+        if (
+          !currentMetadata ||
+          !matches(daoToMetadata(currentMetadata), conditionsFilter)
+        ) {
           throw new NotAllowedError(); // 403
         }
 
@@ -962,7 +983,10 @@ export class PoliciesServer {
           conditionToDelete.roleEntityRef,
         );
 
-        if (!matches(roleMetadata, conditionsFilter)) {
+        if (
+          !roleMetadata ||
+          !matches(daoToMetadata(roleMetadata), conditionsFilter)
+        ) {
           throw new NotAllowedError(); // 403
         }
 
@@ -1003,7 +1027,10 @@ export class PoliciesServer {
           condition.roleEntityRef,
         );
 
-        if (!matches(roleMetadata, conditionsFilter)) {
+        if (
+          !roleMetadata ||
+          !matches(daoToMetadata(roleMetadata), conditionsFilter)
+        ) {
           throw new NotAllowedError(); // 403
         }
 
@@ -1243,7 +1270,7 @@ export class PoliciesServer {
         policy.entityReference!,
       );
 
-      if (!matches(metadata, filter)) {
+      if (!metadata || !matches(daoToMetadata(metadata), filter)) {
         throw new NotAllowedError(); // 403
       }
 

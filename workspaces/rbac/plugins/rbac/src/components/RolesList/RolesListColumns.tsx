@@ -47,7 +47,10 @@ export const getColumns = (
       field: 'members',
       type: 'string',
       align: 'left',
-      render: props => getMembers(props.members, t),
+      render: props =>
+        props.isDefault
+          ? t('table.defaultRoleUsersAndGroups')
+          : getMembers(props.members, t),
       customSort: (a, b) => {
         if (a.members.length === 0) {
           return -1;
@@ -89,18 +92,27 @@ export const getColumns = (
     {
       title: t('table.headers.actions'),
       sorting: false,
-      render: (props: RolesData) => (
-        <>
-          <EditRole
-            canEdit={props.actionsPermissionResults.edit.allowed}
-            roleName={props.name}
-          />
-          <DeleteRole
-            canEdit={props.actionsPermissionResults.edit.allowed}
-            roleName={props.name}
-          />
-        </>
-      ),
+      render: (props: RolesData) => {
+        const canEdit =
+          !props.isDefault && props.actionsPermissionResults.edit.allowed;
+        const defaultRoleTooltip = props.isDefault
+          ? t('errors.defaultRoleReadOnly')
+          : undefined;
+        return (
+          <>
+            <EditRole
+              canEdit={canEdit}
+              roleName={props.name}
+              tooltip={defaultRoleTooltip}
+            />
+            <DeleteRole
+              canEdit={canEdit}
+              roleName={props.name}
+              tooltip={defaultRoleTooltip}
+            />
+          </>
+        );
+      },
     },
   ];
 };

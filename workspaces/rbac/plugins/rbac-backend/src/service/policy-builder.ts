@@ -36,6 +36,7 @@ import type {
   RBACProvider,
 } from '@backstage-community/plugin-rbac-node';
 
+import { syncDefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import { migrate } from '../database/migration';
@@ -138,12 +139,23 @@ export class PolicyBuilder {
       roleMetadataStorage,
       databaseClient,
     );
+    await syncDefaultRoleAndPolicies(
+      env.config,
+      enforcerDelegate,
+      roleMetadataStorage,
+    );
 
     env.permissionsRegistry.addResourceType({
       resourceRef: permissionMetadataResourceRef,
       getResources: resourceRefs =>
         Promise.all(
           resourceRefs.map(ref => {
+            if (
+              ref ===
+              roleMetadataStorage.getCachedDefaultRoleMetadata()?.roleEntityRef
+            ) {
+              return roleMetadataStorage.getCachedDefaultRoleMetadata();
+            }
             return roleMetadataStorage.findRoleMetadata(ref);
           }),
         ),

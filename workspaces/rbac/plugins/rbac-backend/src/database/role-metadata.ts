@@ -25,14 +25,22 @@ import type {
 import { deepSortedEqual } from '../helper';
 import { RBACFilters } from '../permissions';
 import { matches } from '../helper';
+import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
 
 export const ROLE_METADATA_TABLE = 'role-metadata';
 
-export interface RoleMetadataDao extends RoleMetadata {
+export interface RoleMetadataDao {
   id?: number;
   roleEntityRef: string;
   source: Source;
   modifiedBy: string;
+  description?: string;
+  author?: string;
+  lastModified?: string;
+  createdAt?: string;
+  owner?: string;
+  /** Postgres has a real boolean type; SQLite stores and may return 0/1. Optional when creating. */
+  isDefault?: boolean | 0 | 1;
 }
 
 export interface RoleMetadataStorage {
@@ -55,9 +63,14 @@ export interface RoleMetadataStorage {
     roleEntityRef: string,
     trx: Knex.Transaction,
   ): Promise<void>;
+  getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined;
+  /** Returns the default role from the database (isDefault = true), if any. */
+  getDefaultRole(trx?: Knex.Transaction): Promise<RoleMetadataDao | undefined>;
+  syncDefaultRoleMetadata(actualDefRoleRef?: string): Promise<void>;
 }
 
 export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
+  private cachedDefaultRoleMeta: RoleMetadataDao | undefined;
   constructor(private readonly knex: Knex<any, any[]>) {}
 
   async filterRoleMetadata(source?: Source): Promise<RoleMetadataDao[]> {
@@ -68,16 +81,57 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     });
   }
 
+  async syncDefaultRoleMetadata(actualDefRoleRef?: string): Promise<void> {
+    if (!actualDefRoleRef) {
+      await this.knex(ROLE_METADATA_TABLE).where('isDefault', true).delete();
+      this.cachedDefaultRoleMeta = undefined;
+      return;
+    }
+    await this.knex.transaction(async trx => {
+      const currentDefaultRole = await this.getDefaultRole(trx);
+      if (
+        currentDefaultRole &&
+        currentDefaultRole.roleEntityRef !== actualDefRoleRef
+      ) {
+        await trx(ROLE_METADATA_TABLE).where('isDefault', true).delete();
+      }
+      const existing = await this.findRoleMetadata(actualDefRoleRef, trx);
+      if (!existing) {
+        const newDefaultRole = buildDefaultRoleMetadata(actualDefRoleRef);
+        await trx(ROLE_METADATA_TABLE).insert(newDefaultRole);
+      }
+    });
+    const row = await this.findRoleMetadata(actualDefRoleRef);
+    this.cachedDefaultRoleMeta = row;
+  }
+
+  getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined {
+    return this.cachedDefaultRoleMeta;
+  }
+
+  async getDefaultRole(
+    trx?: Knex.Transaction,
+  ): Promise<RoleMetadataDao | undefined> {
+    const db = trx || this.knex;
+    return await db<RoleMetadataDao>(ROLE_METADATA_TABLE)
+      .where('isDefault', true)
+      .first();
+  }
+
   async filterForOwnerRoleMetadata(
     filter?: RBACFilters,
   ): Promise<RoleMetadataDao[]> {
-    const roleMetadata: RoleMetadataDao[] =
-      await this.knex.table(ROLE_METADATA_TABLE);
+    const roleMetadata =
+      await this.knex.table<RoleMetadataDao>(ROLE_METADATA_TABLE);
 
     if (filter) {
-      return roleMetadata.filter(role => {
+      const ownerRoles = roleMetadata.filter(role => {
         return matches(role as RoleMetadata, filter);
       });
+      if (this.cachedDefaultRoleMeta) {
+        ownerRoles.push(this.cachedDefaultRoleMeta);
+      }
+      return ownerRoles;
     }
 
     return roleMetadata;
@@ -89,7 +143,7 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
   ): Promise<RoleMetadataDao | undefined> {
     const db = trx || this.knex;
     return await db
-      .table(ROLE_METADATA_TABLE)
+      .table<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .where('roleEntityRef', roleEntityRef)
       // roleEntityRef should be unique.
       .first();
@@ -105,8 +159,8 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
       );
     }
 
-    const result = await trx<RoleMetadataDao>(ROLE_METADATA_TABLE)
-      .insert(metadata)
+    const result = await trx(ROLE_METADATA_TABLE)
+      .insert<RoleMetadataDao>(metadata)
       .returning<[{ id: number }]>('id');
     if (result && result?.length > 0) {
       return result[0].id;
@@ -189,5 +243,6 @@ export function daoToMetadata(dao: RoleMetadataDao): RoleMetadata {
     modifiedBy: dao.modifiedBy,
     createdAt: dao.createdAt,
     lastModified: dao.lastModified,
+    isDefault: dao.isDefault === true || dao.isDefault === 1 ? true : false,
   };
 }

@@ -17,7 +17,7 @@ import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 
@@ -59,7 +59,7 @@ describe('EditRole', () => {
     expect(screen.getByRole('button', { name: 'Update' })).toBeDisabled();
   });
 
-  it('renders the button with correct tooltip and enabled state', () => {
+  it('renders the button with correct tooltip and enabled state', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
     const tooltipText = 'Update';
     const dataTestIdText = 'edit-role-btn';
@@ -74,11 +74,12 @@ describe('EditRole', () => {
       </Router>,
     );
 
-    expect(screen.getByTestId('edit-role-btn')).toHaveAttribute(
-      'title',
-      tooltipText,
-    );
+    expect(screen.getByTestId('edit-role-btn')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Update' })).not.toBeDisabled();
+    fireEvent.mouseOver(screen.getByRole('button', { name: 'Update' }));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent(tooltipText);
+    });
   });
 
   it('sets the correct navigation path when "to" prop is provided', () => {
