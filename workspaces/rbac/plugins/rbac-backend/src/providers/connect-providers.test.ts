@@ -57,6 +57,7 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { ConflictError } from '@backstage/errors';
+import { cloneDeepWith } from 'lodash';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -590,8 +591,15 @@ describe('Connection', () => {
   describe('applyConditionalPermissions', () => {
     let storageCreateConditionSpy;
 
+    beforeEach(() => {
+      (conditionalStorageMock.createCondition as jest.Mock).mockReset();
+      (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
+    });
+
     afterEach(() => {
       (mockLoggerService.warn as jest.Mock).mockReset();
+      (conditionalStorageMock.createCondition as jest.Mock).mockReset();
+      (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
     });
 
     it('should create conditional permissions', async () => {
@@ -648,6 +656,79 @@ describe('Connection', () => {
       expect(storageRemoveConditionalPermissionSpy).toHaveBeenCalledWith(
         ...existingConditionalPermission.map(it => it.id),
       );
+    });
+
+    it('should not add policies that exist already, if not changed', async () => {
+      const storageCreateConditionalPermissionSpy = jest.spyOn(
+        conditionalStorageMock,
+        'createCondition',
+      );
+
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        ...existingConditionalPermission,
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(storageCreateConditionalPermissionSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not remove existing policies if not changed', async () => {
+      const storageRemoveConditionalPermissionSpy = jest.spyOn(
+        conditionalStorageMock,
+        'deleteCondition',
+      );
+
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: 0,
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/test',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'read', action: 'read' }],
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['group:default/team-a'],
+            },
+          },
+        },
+        ...existingConditionalPermission,
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(storageRemoveConditionalPermissionSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('should replace changed policies', async () => {
+      const storageCreateConditionalPermissionSpy = jest.spyOn(
+        conditionalStorageMock,
+        'createCondition',
+      );
+      const storageRemoveConditionalPermissionSpy = jest.spyOn(
+        conditionalStorageMock,
+        'deleteCondition',
+      );
+
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: existingConditionalPermission[0].id,
+          result: existingConditionalPermission[0].result,
+          roleEntityRef: existingConditionalPermission[0].roleEntityRef,
+          pluginId: existingConditionalPermission[0].pluginId,
+          resourceType: existingConditionalPermission[0].resourceType,
+          permissionMapping: [
+            { name: 'read', action: 'read' },
+            { name: 'delete', action: 'delete' },
+          ],
+          conditions: existingConditionalPermission[0].conditions,
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(storageRemoveConditionalPermissionSpy).toHaveBeenCalledTimes(1);
+      expect(storageCreateConditionalPermissionSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

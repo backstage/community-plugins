@@ -54,6 +54,7 @@ import {
   PermissionInfo,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
+import { isEqual } from 'lodash';
 
 export class Connection implements RBACProviderConnection {
   constructor(
@@ -122,20 +123,43 @@ export class Connection implements RBACProviderConnection {
   async applyConditionalPermissions(
     conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
   ): Promise<void> {
-    const providerConditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[] =
-      [];
+    const storedConditionalPermissions =
+      await this.conditionStorage.filterConditions();
 
-    const providerRoles = await this.getProviderRoles();
-
-    for (const providerRole of providerRoles) {
-      providerConditionalPermissions.push(
-        ...(await this.conditionStorage.filterConditions(providerRole)),
+    const conditionsToBeAdded: RoleConditionalPolicyDecision<PermissionInfo>[] =
+      conditionalPermissions.filter(
+        conditionalPermission =>
+          !storedConditionalPermissions.some(
+            stored =>
+              conditionalPermission.roleEntityRef === stored.roleEntityRef &&
+              conditionalPermission.pluginId === stored.pluginId &&
+              conditionalPermission.resourceType === stored.resourceType &&
+              isEqual(
+                conditionalPermission.permissionMapping,
+                stored.permissionMapping,
+              ),
+          ),
       );
-    }
 
-    await this.removeConditionalPermissions(providerConditionalPermissions);
+    // Updated policies fails the 'some' check due to permissionMapping differences
+    const conditionsToBeRemoved: RoleConditionalPolicyDecision<PermissionInfo>[] =
+      storedConditionalPermissions.filter(
+        stored =>
+          !conditionalPermissions.some(
+            conditionalPermission =>
+              stored.roleEntityRef === conditionalPermission.roleEntityRef &&
+              stored.pluginId === conditionalPermission.pluginId &&
+              stored.resourceType === conditionalPermission.resourceType &&
+              isEqual(
+                stored.permissionMapping,
+                conditionalPermission.permissionMapping,
+              ),
+          ),
+      );
 
-    await this.addConditionalPermissions(conditionalPermissions);
+    await this.removeConditionalPermissions(conditionsToBeRemoved);
+
+    await this.addConditionalPermissions(conditionsToBeAdded);
   }
 
   private async addRoles(roles: string[][]): Promise<void> {
