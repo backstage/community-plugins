@@ -41,22 +41,22 @@ export const EntityGithubActionsContent: (props: RouterProps) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLatestGithubActionRunCard: (props: {
-  branch?: string | undefined;
-  variant?: InfoCardVariants | undefined;
+  branch?: string;
+  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLatestGithubActionsForBranchCard: (props: {
-  branch?: string | undefined;
-  variant?: InfoCardVariants | undefined;
+  branch?: string;
+  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityRecentGithubActionsRunsCard: (props: {
-  branch?: string | undefined;
-  dense?: boolean | undefined;
-  limit?: number | undefined /** @public */;
-  variant?: InfoCardVariants | undefined;
+  branch?: string;
+  dense?: boolean;
+  limit?: number;
+  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)

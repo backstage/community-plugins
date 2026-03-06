@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 import { GithubDeployment } from '../../api';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import SyncIcon from '@material-ui/icons/Sync';
+import { Text } from '@backstage/ui';
+import { RiRefreshLine } from '@remixicon/react';
 import { columnFactories } from './columns';
 import { defaultDeploymentColumns } from './presets';
 import { Table, TableColumn } from '@backstage/core-components';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
+import styles from './GithubDeploymentsTable.module.css';
 
 /** @public */
 export const GithubDeploymentsTable = (props: {
@@ -37,7 +29,6 @@ export const GithubDeploymentsTable = (props: {
   columns: TableColumn<GithubDeployment>[];
 }) => {
   const { deployments, isLoading, reload, columns } = props;
-  const classes = useStyles();
 
   return (
     <Table
@@ -48,17 +39,17 @@ export const GithubDeploymentsTable = (props: {
       isLoading={isLoading}
       actions={[
         {
-          icon: () => <SyncIcon />,
+          icon: () => <RiRefreshLine size={20} />,
           tooltip: 'Reload',
           isFreeAction: true,
           onClick: () => reload(),
         },
       ]}
       emptyContent={
-        <div className={classes.empty}>
-          <Typography variant="body1">
+        <div className={styles.empty}>
+          <Text variant="body-medium">
             No deployments found for this entity.
-          </Typography>
+          </Text>
         </div>
       }
     />

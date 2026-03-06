@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
-import PeopleIcon from '@material-ui/icons/People';
+import { Text, Grid, Flex } from '@backstage/ui';
+import { RiGroupLine, RiInboxUnarchiveLine } from '@remixicon/react';
 import { Progress, InfoCard } from '@backstage/core-components';
 
 import { InfoCardHeader } from '../InfoCardHeader';
@@ -26,7 +26,6 @@ import { usePullRequestsByTeam } from '../../hooks/usePullRequestsByTeam';
 import { PRCardFormating } from '../../utils/types';
 import { shouldDisplayCard } from '../../utils/functions';
 import { DraftPrIcon } from '../icons/DraftPr';
-import UnarchiveIcon from '@material-ui/icons/Unarchive';
 import { useUserRepositoriesAndTeam } from '../../hooks/useUserRepositoriesAndTeam';
 import { Entity } from '@backstage/catalog-model';
 
@@ -75,7 +74,7 @@ const PullRequestsBoard = (props: PullRequestsBoardProps) => {
         value={infoCardFormat}
         options={[
           {
-            icon: <PeopleIcon />,
+            icon: <RiGroupLine size={20} />,
             value: 'team',
             ariaLabel: 'Show PRs from your team',
           },
@@ -85,7 +84,7 @@ const PullRequestsBoard = (props: PullRequestsBoardProps) => {
             ariaLabel: 'Show draft PRs',
           },
           {
-            icon: <UnarchiveIcon />,
+            icon: <RiInboxUnarchiveLine size={20} />,
             value: 'archivedRepo',
             ariaLabel: 'Show archived repos',
           },
@@ -100,60 +99,72 @@ const PullRequestsBoard = (props: PullRequestsBoardProps) => {
     }
 
     return (
-      <Grid container spacing={2}>
+      <Grid.Root columns="auto" gap="4">
         {pullRequests.length ? (
           pullRequests.map(({ title: columnTitle, content }) => (
             <Wrapper key={columnTitle} fullscreen>
-              <Typography variant="overline">{columnTitle}</Typography>
-              {content.map(
-                (
-                  {
-                    id,
-                    title,
-                    createdAt,
-                    lastEditedAt,
-                    author,
-                    url,
-                    latestReviews,
-                    commits,
-                    repository,
-                    isDraft,
-                    labels,
-                  },
-                  index,
-                ) =>
-                  shouldDisplayCard(
-                    repository,
-                    author,
-                    repositories,
-                    teamMembers,
-                    infoCardFormat,
-                    isDraft,
-                  ) && (
-                    <PullRequestCard
-                      key={`pull-request-${id}-${index}`}
-                      title={title}
-                      createdAt={createdAt}
-                      updatedAt={lastEditedAt}
-                      author={author}
-                      url={url}
-                      reviews={latestReviews.nodes}
-                      status={commits.nodes}
-                      repositoryName={repository.name}
-                      repositoryIsArchived={repository.isArchived}
-                      isDraft={isDraft}
-                      labels={labels.nodes}
-                    />
-                  ),
-              )}
+              <Flex direction="column" gap="3">
+                <Text
+                  variant="body-small"
+                  style={{
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  {columnTitle}
+                </Text>
+                {content.map(
+                  (
+                    {
+                      id,
+                      title,
+                      createdAt,
+                      lastEditedAt,
+                      author,
+                      url,
+                      latestReviews,
+                      commits,
+                      repository,
+                      isDraft,
+                      labels,
+                    },
+                    index,
+                  ) =>
+                    shouldDisplayCard(
+                      repository,
+                      author,
+                      repositories,
+                      teamMembers,
+                      infoCardFormat,
+                      isDraft,
+                    ) && (
+                      <PullRequestCard
+                        key={`pull-request-${id}-${index}`}
+                        title={title}
+                        createdAt={createdAt}
+                        updatedAt={lastEditedAt}
+                        author={author}
+                        url={url}
+                        reviews={latestReviews.nodes}
+                        status={commits.nodes}
+                        repositoryName={repository.name}
+                        repositoryIsArchived={repository.isArchived}
+                        isDraft={isDraft}
+                        labels={labels.nodes}
+                      />
+                    ),
+                )}
+              </Flex>
             </Wrapper>
           ))
         ) : (
-          <Typography variant="overline" data-testid="no-prs-msg">
-            No pull requests found
-          </Typography>
+          <Grid.Item colSpan={{ sm: '12' }}>
+            <Text variant="body-small" data-testid="no-prs-msg">
+              No pull requests found
+            </Text>
+          </Grid.Item>
         )}
-      </Grid>
+      </Grid.Root>
     );
   };
 

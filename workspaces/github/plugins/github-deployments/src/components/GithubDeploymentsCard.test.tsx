@@ -40,7 +40,6 @@ import { graphql } from 'msw';
 import { ScmIntegrations } from '@backstage/integration';
 import { Entity } from '@backstage/catalog-model';
 import { GithubDeploymentsTable } from './GithubDeploymentsTable';
-import Box from '@material-ui/core/Box';
 
 import { ApiProvider, ConfigReader } from '@backstage/core-app-api';
 import {
@@ -227,7 +226,7 @@ describe('github-deployments', () => {
       const extraColumn = {
         title: 'Target',
         render: (row: GithubDeployment): JSX.Element => (
-          <Box>{renderTargetFromPayload(row.payload)}</Box>
+          <div>{renderTargetFromPayload(row.payload)}</div>
         ),
       };
 

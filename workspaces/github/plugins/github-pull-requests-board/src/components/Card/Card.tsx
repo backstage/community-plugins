@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 import { PropsWithChildren, FunctionComponent } from 'react';
-
-import * as React from 'react';
-import { Box, Paper, CardActionArea } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import CardHeader from './CardHeader';
 import { Label, Status } from '../../utils/types';
 
@@ -35,7 +34,7 @@ type Props = {
 };
 
 const Card: FunctionComponent<PropsWithChildren<Props>> = (
-  props: React.PropsWithChildren<Props>,
+  props: PropsWithChildren<Props>,
 ) => {
   const {
     title,
@@ -53,10 +52,10 @@ const Card: FunctionComponent<PropsWithChildren<Props>> = (
   } = props;
 
   return (
-    <Box marginBottom={1}>
+    <div style={{ marginBottom: 'var(--bui-space-2)' }}>
       <Paper variant="outlined">
         <CardActionArea href={prUrl} target="_blank">
-          <Box padding={1}>
+          <div style={{ padding: 'var(--bui-space-2)' }}>
             <CardHeader
               title={title}
               createdAt={createdAt}
@@ -70,10 +69,10 @@ const Card: FunctionComponent<PropsWithChildren<Props>> = (
               status={status}
             />
             {children}
-          </Box>
+          </div>
         </CardActionArea>
       </Paper>
-    </Box>
+    </div>
   );
 };
 

@@ -16,10 +16,8 @@
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ExternalLinkIcon from '@material-ui/icons/Launch';
+import { Tooltip, Text, Flex, TooltipTrigger } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import { useEffect } from 'react';
 import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
@@ -34,14 +32,7 @@ import {
 } from '@backstage/core-components';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
 import { useDefaultBranch } from '../useDefaultBranch';
-import Box from '@material-ui/core/Box';
-
-const useStyles = makeStyles({
-  externalLinkIcon: {
-    fontSize: 'inherit',
-    verticalAlign: 'bottom',
-  },
-});
+import styles from './Cards.module.css';
 
 const WidgetContent = (props: {
   error?: Error;
@@ -50,34 +41,34 @@ const WidgetContent = (props: {
   branch?: string;
 }) => {
   const { error, loading, lastRun, branch } = props;
-  const classes = useStyles();
 
-  if (error) return <Typography>Couldn't fetch latest {branch} run</Typography>;
+  if (error) return <Text>Couldn't fetch latest {branch} run</Text>;
   if (loading) return <LinearProgress />;
 
   return (
     <StructuredMetadataTable
       metadata={{
         status: (
-          <Box display="flex">
+          <Flex>
             <WorkflowRunStatus
               status={lastRun.status}
               conclusion={lastRun.conclusion}
             />
-          </Box>
+          </Flex>
         ),
         age: (
-          <Box display="flex">
-            <Tooltip title={lastRun.statusDate ?? ''}>
-              <Box>{lastRun.statusAge}</Box>
-            </Tooltip>
-          </Box>
+          <Flex>
+            <TooltipTrigger>
+              <Text>{lastRun.statusAge}</Text>
+              <Tooltip>{lastRun.statusDate ?? ''}</Tooltip>
+            </TooltipTrigger>
+          </Flex>
         ),
         message: lastRun.message,
         url: (
           <Link to={lastRun.githubUrl ?? ''}>
             See more on GitHub{' '}
-            <ExternalLinkIcon className={classes.externalLinkIcon} />
+            <RiExternalLinkLine size={14} className={styles.externalLinkIcon} />
           </Link>
         ),
       }}

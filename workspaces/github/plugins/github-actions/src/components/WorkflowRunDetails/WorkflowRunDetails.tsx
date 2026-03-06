@@ -15,10 +15,6 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -28,11 +24,15 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExternalLinkIcon from '@material-ui/icons/Launch';
+import {
+  Tooltip,
+  Text,
+  TooltipTrigger,
+  Accordion,
+  AccordionTrigger,
+  AccordionPanel,
+} from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import { DateTime } from 'luxon';
 import { Job, Jobs, Step } from '../../api';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
@@ -42,31 +42,7 @@ import { useWorkflowRunsDetails } from './useWorkflowRunsDetails';
 import { WorkflowRunLogs } from '../WorkflowRunLogs';
 import { Breadcrumbs, Link } from '@backstage/core-components';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-
-const useStyles = makeStyles<Theme>(theme => ({
-  root: {
-    maxWidth: 720,
-    margin: theme.spacing(2),
-  },
-  title: {
-    padding: theme.spacing(1, 0, 2, 0),
-  },
-  table: {
-    padding: theme.spacing(1),
-  },
-  accordionDetails: {
-    padding: 0,
-  },
-  button: {
-    order: -1,
-    marginRight: 0,
-    marginLeft: '-20px',
-  },
-  externalLinkIcon: {
-    fontSize: 'inherit',
-    verticalAlign: 'bottom',
-  },
-}));
+import styles from './WorkflowRunDetails.module.css';
 
 const getElapsedTime = (start: string | undefined, end: string | undefined) => {
   if (!start || !end) {
@@ -107,20 +83,15 @@ const JobListItem = ({
   className: string;
   entity: Entity;
 }) => {
-  const classes = useStyles();
   return (
-    <Accordion TransitionProps={{ unmountOnExit: true }} className={className}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        IconButtonProps={{
-          className: classes.button,
-        }}
-      >
-        <Typography variant="button">
-          {job.name} ({getElapsedTime(job.started_at, job.completed_at)})
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails className={classes.accordionDetails}>
+    <Accordion className={className}>
+      <AccordionTrigger
+        title={`${job.name} (${getElapsedTime(
+          job.started_at,
+          job.completed_at,
+        )})`}
+      />
+      <AccordionPanel className={styles.accordionDetails}>
         <TableContainer>
           <Table>
             {job.steps?.map(step => (
@@ -128,20 +99,19 @@ const JobListItem = ({
             ))}
           </Table>
         </TableContainer>
-      </AccordionDetails>
-      {job.status === 'queued' || job.status === 'in_progress' ? (
-        <WorkflowRunLogs runId={job.id} inProgress entity={entity} />
-      ) : (
-        <WorkflowRunLogs runId={job.id} inProgress={false} entity={entity} />
-      )}
+        {job.status === 'queued' || job.status === 'in_progress' ? (
+          <WorkflowRunLogs runId={job.id} inProgress entity={entity} />
+        ) : (
+          <WorkflowRunLogs runId={job.id} inProgress={false} entity={entity} />
+        )}
+      </AccordionPanel>
     </Accordion>
   );
 };
 
 const JobsList = ({ jobs, entity }: { jobs?: Jobs; entity: Entity }) => {
-  const classes = useStyles();
   return (
-    <Box>
+    <div>
       {jobs &&
         jobs.total_count > 0 &&
         jobs.jobs.map(job => (
@@ -149,12 +119,12 @@ const JobsList = ({ jobs, entity }: { jobs?: Jobs; entity: Entity }) => {
             key={job.id}
             job={job}
             className={
-              job.status !== 'success' ? classes.failed : classes.success
+              job.status !== 'success' ? styles.failed : styles.success
             }
             entity={entity}
           />
         ))}
-    </Box>
+    </div>
   );
 };
 
@@ -166,55 +136,53 @@ export const WorkflowRunDetails = ({ entity }: { entity: Entity }) => {
   const details = useWorkflowRunsDetails({ hostname, owner, repo });
   const jobs = useWorkflowRunJobs({ hostname, owner, repo });
 
-  const classes = useStyles();
-
   if (details.error && details.error.message) {
     return (
-      <Typography variant="h6" color="error">
+      <Text variant="title-small" color="danger">
         Failed to load build, {details.error.message}
-      </Typography>
+      </Text>
     );
   } else if (details.loading) {
     return <LinearProgress />;
   }
   return (
-    <div className={classes.root}>
-      <Box mb={3}>
+    <div className={styles.root}>
+      <div style={{ marginBottom: 'var(--bui-space-6)' }}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link to="..">Workflow runs</Link>
-          <Typography>Workflow run details</Typography>
+          <Text>Workflow run details</Text>
         </Breadcrumbs>
-      </Box>
-      <TableContainer component={Paper} className={classes.table}>
+      </div>
+      <TableContainer component={Paper} className={styles.table}>
         <Table>
           <TableBody>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Branch</Typography>
+                <Text>Branch</Text>
               </TableCell>
               <TableCell>{details.value?.head_branch}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Message</Typography>
+                <Text>Message</Text>
               </TableCell>
               <TableCell>{details.value?.head_commit?.message}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Commit ID</Typography>
+                <Text>Commit ID</Text>
               </TableCell>
               <TableCell>{details.value?.head_commit?.id}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Workflow</Typography>
+                <Text>Workflow</Text>
               </TableCell>
               <TableCell>{details.value?.name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Status</Typography>
+                <Text>Status</Text>
               </TableCell>
               <TableCell>
                 <WorkflowRunStatus
@@ -225,39 +193,43 @@ export const WorkflowRunDetails = ({ entity }: { entity: Entity }) => {
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Age</Typography>
+                <Text>Age</Text>
               </TableCell>
               <TableCell>
-                <Tooltip title={details.value?.updated_at ?? ''}>
-                  <Typography noWrap>{`${(details.value?.updated_at
+                <TooltipTrigger>
+                  <Text>{`${(details.value?.updated_at
                     ? DateTime.fromISO(details.value?.updated_at)
                     : DateTime.now()
-                  ).toRelative()}`}</Typography>
-                </Tooltip>
+                  ).toRelative()}`}</Text>
+                  <Tooltip>{details.value?.updated_at ?? ''}</Tooltip>
+                </TooltipTrigger>
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Author</Typography>
+                <Text>Author</Text>
               </TableCell>
               <TableCell>{`${details.value?.head_commit?.author?.name} (${details.value?.head_commit?.author?.email})`}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
-                <Typography noWrap>Links</Typography>
+                <Text>Links</Text>
               </TableCell>
               <TableCell>
                 {details.value?.html_url && (
                   <Link to={details.value.html_url}>
                     Workflow runs on GitHub{' '}
-                    <ExternalLinkIcon className={classes.externalLinkIcon} />
+                    <RiExternalLinkLine
+                      size={14}
+                      className={styles.externalLinkIcon}
+                    />
                   </Link>
                 )}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={2}>
-                <Typography noWrap>Jobs</Typography>
+                <Text>Jobs</Text>
                 {jobs.loading ? (
                   <CircularProgress />
                 ) : (

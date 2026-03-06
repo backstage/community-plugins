@@ -15,11 +15,10 @@
  */
 
 import { Link } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import { Text, Flex } from '@backstage/ui';
 import { DateTime } from 'luxon';
 import { Assignees } from './Assignees';
 import { CommentsCount } from './CommentsCount';
@@ -55,41 +54,49 @@ export const IssueCard = (props: IssueCardProps) => {
   } = props;
 
   return (
-    <Box marginBottom={1} data-testid={`issue-${url}`}>
+    <div
+      style={{ marginBottom: 'var(--bui-space-2)' }}
+      data-testid={`issue-${url}`}
+    >
       <Paper variant="outlined">
         <CardActionArea href={url} target="_blank">
-          <Box padding={1}>
-            <Box display="flex" justifyContent="space-between">
+          <div style={{ padding: 'var(--bui-space-2)' }}>
+            <Flex justify="between">
               <Link to={`${url.substring(0, url.lastIndexOf('/'))}`}>
                 {repositoryName}
               </Link>
               <Assignees name={assigneeName} avatar={assigneeAvatar} />
-            </Box>
-            <Box>
-              <Typography component="h2">
+            </Flex>
+            <div>
+              <Text>
                 <b>{title}</b>
-              </Typography>
-            </Box>
+              </Text>
+            </div>
             <Divider variant="middle" />
-            <Box display="flex" justifyContent="space-between">
-              <Box marginY={1}>
-                <Typography variant="body2" component="p">
+            <Flex justify="between">
+              <div
+                style={{
+                  marginTop: 'var(--bui-space-2)',
+                  marginBottom: 'var(--bui-space-2)',
+                }}
+              >
+                <Text variant="body-small">
                   Created at: <strong>{getElapsedTime(createdAt)}</strong> by{' '}
                   <strong>{authorName}</strong>
-                </Typography>
+                </Text>
                 {updatedAt && (
-                  <Typography variant="body2" component="p">
+                  <Text variant="body-small">
                     Last update at: <strong>{getElapsedTime(updatedAt)}</strong>
-                  </Typography>
+                  </Text>
                 )}
-              </Box>
+              </div>
               {commentsCount > 0 && (
                 <CommentsCount commentsCount={commentsCount} />
               )}
-            </Box>
-          </Box>
+            </Flex>
+          </div>
         </CardActionArea>
       </Paper>
-    </Box>
+    </div>
   );
 };

@@ -13,56 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChangeEvent, useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Grid from '@material-ui/core/Grid';
+import { useEffect, useState } from 'react';
+import {
+  Text,
+  Flex,
+  Button,
+  ButtonIcon,
+  TextField,
+  Alert,
+} from '@backstage/ui';
+import { Tooltip, Grid, TooltipTrigger } from '@backstage/ui';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TablePagination from '@material-ui/core/TablePagination';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import {
+  RiGithubLine,
+  RiRefreshLine,
+  RiRestartLine,
+  RiExternalLinkLine,
+} from '@remixicon/react';
 import { LinkButton, Link, InfoCard } from '@backstage/core-components';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import RetryIcon from '@material-ui/icons/Replay';
-import SyncIcon from '@material-ui/icons/Sync';
-import ExternalLinkIcon from '@material-ui/icons/Launch';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import { buildRouteRef } from '../../routes';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-
-import Alert, { Color } from '@material-ui/lab/Alert';
 import { Entity } from '@backstage/catalog-model';
-import Button from '@material-ui/core/Button';
+import styles from './WorkflowRunsCard.module.css';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      border: `1px solid ${theme.palette.divider}`,
-      boxShadow: theme.shadows[2],
-      borderRadius: '4px',
-      overflow: 'visible',
-      position: 'relative',
-      margin: theme.spacing(4, 1, 1),
-      flex: '1',
-      minWidth: '0px',
-    },
-    externalLinkIcon: {
-      fontSize: 'inherit',
-      verticalAlign: 'middle',
-    },
-    pagination: {
-      width: '100%',
-    },
-  }),
-);
+const statusColors: Record<string, 'info' | 'success' | 'warning' | 'danger'> =
+  {
+    skipped: 'warning',
+    canceled: 'info',
+    timed_out: 'danger',
+    failure: 'danger',
+    success: 'success',
+  };
+
+const matchesSearchTerm = (run: WorkflowRun, searchTerm: string) => {
+  const lowerCaseSearchTerm = searchTerm.toLocaleLowerCase();
+  return (
+    run.workflowName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
+    run.source.branchName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
+    run.status?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
+    run.id?.toLocaleLowerCase().includes(lowerCaseSearchTerm)
+  );
+};
 
 type WorkflowRunsCardViewProps = {
   runs?: WorkflowRun[];
@@ -76,24 +75,6 @@ type WorkflowRunsCardViewProps = {
   projectName: string;
 };
 
-const statusColors: Record<string, string> = {
-  skipped: 'warning',
-  canceled: 'info',
-  timed_out: 'error',
-  failure: 'error',
-  success: 'success',
-};
-
-const matchesSearchTerm = (run: WorkflowRun, searchTerm: string) => {
-  const lowerCaseSearchTerm = searchTerm.toLocaleLowerCase();
-  return (
-    run.workflowName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
-    run.source.branchName?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
-    run.status?.toLocaleLowerCase().includes(lowerCaseSearchTerm) ||
-    run.id?.toLocaleLowerCase().includes(lowerCaseSearchTerm)
-  );
-};
-
 export const WorkflowRunsCardView = ({
   runs,
   searchTerm,
@@ -104,166 +85,166 @@ export const WorkflowRunsCardView = ({
   total,
   pageSize,
 }: WorkflowRunsCardViewProps) => {
-  const classes = useStyles();
   const routeLink = useRouteRef(buildRouteRef);
 
   const filteredRuns = runs?.filter(run => matchesSearchTerm(run, searchTerm));
 
   return (
-    <Grid container spacing={3}>
+    <Grid.Root columns={{ sm: '12' }} gap="6">
       {filteredRuns && runs?.length !== 0 ? (
         filteredRuns.map(run => (
-          <Grid key={run.id} item container xs={12} lg={6} xl={4}>
-            <Box className={classes.card}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                p={2}
-                height="100%"
-                alignItems="center"
+          <Grid.Item key={run.id} colSpan={{ sm: '12', lg: '6' }}>
+            <div className={styles.card}>
+              <Flex
+                direction="column"
+                style={{ padding: 'var(--bui-space-4)', height: '100%' }}
+                align="center"
               >
-                <Box
-                  sx={{ width: '100%' }}
-                  textAlign="center"
-                  display="flex"
-                  flexDirection="column"
-                  height="100%"
+                <div
+                  style={{
+                    width: '100%',
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                  }}
                 >
-                  <Tooltip
-                    title={run.status ?? 'No Status'}
-                    placement="top-start"
-                  >
+                  <TooltipTrigger>
                     <Alert
-                      variant="outlined"
-                      severity={
+                      status={
                         statusColors[
                           run.conclusion as keyof typeof statusColors
-                        ] as Color
+                        ]
+                      }
+                      title={
+                        <Link to={routeLink({ id: run.id })}>
+                          <Text variant="title-small">{run.workflowName}</Text>
+                        </Link>
                       }
                       style={{ alignItems: 'center' }}
+                    />
+                    <Tooltip>{run.status ?? 'No Status'}</Tooltip>
+                  </TooltipTrigger>
+                  <TooltipTrigger>
+                    <Flex
+                      direction="column"
+                      style={{
+                        marginTop: 'var(--bui-space-2)',
+                        marginBottom: 'var(--bui-space-2)',
+                      }}
                     >
-                      <Typography variant="h6">
-                        <Link to={routeLink({ id: run.id })}>
-                          <Typography variant="h6">
-                            {run.workflowName}
-                          </Typography>
-                        </Link>
-                      </Typography>
-                    </Alert>
-                  </Tooltip>
-                  <Tooltip title={run.message ?? 'No run message'}>
-                    <Box display="flex" flexDirection="column" marginY={1}>
-                      <Typography variant="subtitle2" component="span">
-                        Commit
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="span"
+                      <Text variant="body-small">Commit</Text>
+                      <Text
+                        variant="body-small"
                         style={{ overflowWrap: 'break-word' }}
                       >
                         {run.source.commit.hash!}
-                      </Typography>
-                    </Box>
-                  </Tooltip>
+                      </Text>
+                    </Flex>
+                    <Tooltip>{run.message ?? 'No run message'}</Tooltip>
+                  </TooltipTrigger>
 
                   {run.source.branchName && (
-                    <Box display="flex" flexDirection="column" marginY={1}>
-                      <Typography variant="subtitle2" component="span">
-                        Branch
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="span"
+                    <Flex
+                      direction="column"
+                      style={{
+                        marginTop: 'var(--bui-space-2)',
+                        marginBottom: 'var(--bui-space-2)',
+                      }}
+                    >
+                      <Text variant="body-small">Branch</Text>
+                      <Text
+                        variant="body-small"
                         style={{ overflowWrap: 'break-word' }}
                       >
                         {run.source.branchName}
-                      </Typography>
-                    </Box>
+                      </Text>
+                    </Flex>
                   )}
-                  <Box display="flex" flexDirection="column" marginY={1}>
-                    <Typography variant="subtitle2" component="span">
-                      Workflow ID
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      component="span"
+                  <Flex
+                    direction="column"
+                    style={{
+                      marginTop: 'var(--bui-space-2)',
+                      marginBottom: 'var(--bui-space-2)',
+                    }}
+                  >
+                    <Text variant="body-small">Workflow ID</Text>
+                    <Text
+                      variant="body-small"
                       style={{ overflowWrap: 'break-word' }}
                     >
                       {run.id}
-                    </Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
+                    </Text>
+                  </Flex>
+                  <Flex justify="center" align="center">
                     <WorkflowRunStatus
                       status={run.status}
                       conclusion={run.conclusion}
                     />
-                  </Box>
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
+                  </Flex>
+                  <Flex justify="center" align="center">
+                    <TooltipTrigger>
+                      <Text>{run.statusAge}</Text>
+                      <Tooltip>{run.statusDate ?? ''}</Tooltip>
+                    </TooltipTrigger>
+                  </Flex>
+                  <Flex
+                    direction="column"
+                    justify="between"
+                    align="center"
+                    style={{ marginTop: 'auto' }}
                   >
-                    <Tooltip title={run.statusDate ?? ''}>
-                      <Box>{run.statusAge}</Box>
-                    </Tooltip>
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mt="auto"
-                  >
-                    <Box marginTop={2} marginBottom={1}>
-                      <Button
-                        endIcon={<RetryIcon />}
-                        onClick={run.onReRunClick}
-                        variant="outlined"
-                      >
-                        Rerun workflow
+                    <div
+                      style={{
+                        marginTop: 'var(--bui-space-4)',
+                        marginBottom: 'var(--bui-space-2)',
+                      }}
+                    >
+                      <Button variant="secondary" onClick={run.onReRunClick}>
+                        Rerun workflow <RiRestartLine size={16} />
                       </Button>
-                    </Box>
+                    </div>
 
                     {run.githubUrl && (
-                      <Box>
+                      <div>
                         <LinkButton
                           to={run.githubUrl}
-                          endIcon={<ExternalLinkIcon />}
+                          endIcon={<RiExternalLinkLine size={14} />}
                         >
                           View on GitHub
                         </LinkButton>
-                      </Box>
+                      </div>
                     )}
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </Grid>
+                  </Flex>
+                </div>
+              </Flex>
+            </div>
+          </Grid.Item>
         ))
       ) : (
-        <Box p={2}>
-          {loading ? <CircularProgress /> : 'No matching runs found.'}
-        </Box>
+        <Grid.Item colSpan={{ sm: '12' }}>
+          <div style={{ padding: 'var(--bui-space-4)' }}>
+            {loading ? <CircularProgress /> : 'No matching runs found.'}
+          </div>
+        </Grid.Item>
       )}
-      <div className={classes.pagination}>
-        <TablePagination
-          component="div"
-          count={total}
-          page={page}
-          rowsPerPage={pageSize}
-          onPageChange={(_, newPage) => onChangePage(newPage)}
-          onRowsPerPageChange={event =>
-            onChangePageSize(parseInt(event.target.value, 6))
-          }
-          labelRowsPerPage="Workflows per page"
-          rowsPerPageOptions={[6, 12, 18, { label: 'All', value: -1 }]}
-        />
-      </div>
-    </Grid>
+      <Grid.Item colSpan={{ sm: '12' }}>
+        <div className={styles.pagination}>
+          <TablePagination
+            component="div"
+            count={total}
+            page={page}
+            rowsPerPage={pageSize}
+            onPageChange={(_, newPage) => onChangePage(newPage)}
+            onRowsPerPageChange={event =>
+              onChangePageSize(parseInt(event.target.value, 6))
+            }
+            labelRowsPerPage="Workflows per page"
+            rowsPerPageOptions={[6, 12, 18, { label: 'All', value: -1 }]}
+          />
+        </div>
+      </Grid.Item>
+    </Grid.Root>
   );
 };
 
@@ -273,30 +254,33 @@ type WorkflowRunsCardProps = {
 
 const WorkflowRunsCardSearch = ({
   searchTerm,
-  handleSearch,
+  setSearchTerm,
   retry,
 }: {
   searchTerm: string;
-  handleSearch: (event: ChangeEvent<HTMLInputElement>) => void;
+  setSearchTerm: (value: string) => void;
   retry: () => void;
 }) => {
   return (
     <>
-      <Box flexGrow={1} />
+      <div style={{ flexGrow: 1 }} />
       <TextField
-        type="search"
         label="Search"
         value={searchTerm}
-        onChange={handleSearch}
+        onChange={setSearchTerm}
         data-testid="search-control"
         style={{ marginRight: '20px' }}
       />
       <ButtonGroup>
-        <Tooltip title="Reload workflow runs">
-          <IconButton onClick={retry}>
-            <SyncIcon />
-          </IconButton>
-        </Tooltip>
+        <TooltipTrigger>
+          <ButtonIcon
+            aria-label="Reload workflow runs"
+            onPress={retry}
+            icon={<RiRefreshLine size={16} />}
+            variant="secondary"
+          />
+          <Tooltip>Reload workflow runs</Tooltip>
+        </TooltipTrigger>
       </ButtonGroup>
     </>
   );
@@ -310,10 +294,6 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
   const [runs, setRuns] = useState<WorkflowRun[] | undefined>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
   const [
     { runs: runsData, branches, defaultBranch, ...cardProps },
     { retry, setPage, setPageSize },
@@ -326,7 +306,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
   });
 
   const handleMenuChange = (
-    event: ChangeEvent<{ name?: string; value: unknown }>,
+    event: React.ChangeEvent<{ name?: string; value: unknown }>,
   ) => {
     const selectedValue = event.target.value as string;
     setBranch(selectedValue);
@@ -343,13 +323,13 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
   }, [defaultBranch]);
 
   return (
-    <Grid item>
+    <div>
       <InfoCard
         title={
-          <Box display="flex" alignItems="center">
-            <GitHubIcon />
-            <Box mr={1} />
-            <Typography variant="h6">{projectName}</Typography>
+          <Flex align="center">
+            <RiGithubLine size={20} />
+            <div style={{ marginRight: 'var(--bui-space-2)' }} />
+            <Text variant="title-small">{projectName}</Text>
 
             <Select
               value={branch}
@@ -366,16 +346,16 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
               {branches.map(branchItem => (
                 <MenuItem key={branchItem.name} value={branchItem.name}>
                   {branchItem.name === defaultBranch ? (
-                    <Typography variant="body2" component="span">
+                    <Text variant="body-small" as="span">
                       {branchItem.name}{' '}
-                      <Typography
-                        variant="body2"
-                        component="span"
-                        style={{ color: 'lightgray', fontSize: 'x-small' }}
+                      <Text
+                        variant="body-x-small"
+                        as="span"
+                        style={{ color: 'lightgray' }}
                       >
                         (default)
-                      </Typography>
-                    </Typography>
+                      </Text>
+                    </Text>
                   ) : (
                     branchItem.name
                   )}
@@ -393,10 +373,10 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
 
             <WorkflowRunsCardSearch
               searchTerm={searchTerm}
-              handleSearch={handleSearch}
+              setSearchTerm={setSearchTerm}
               retry={retry}
             />
-          </Box>
+          </Flex>
         }
       >
         <WorkflowRunsCardView
@@ -411,7 +391,7 @@ export const WorkflowRunsCard = ({ entity }: WorkflowRunsCardProps) => {
           projectName={projectName}
         />
       </InfoCard>
-    </Grid>
+    </div>
   );
 };
 
