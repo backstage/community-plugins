@@ -20,10 +20,10 @@ import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
 import { EmptyState, Progress } from '@backstage/core-components';
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
-import { MaturityRankInfoCard } from '../MaturityRankInfoCard';
 import { MaturitySummaryTable } from '../MaturitySummaryTable';
 import { getSubEntityFilter } from '../../helpers/utils';
 import { maturityApiRef } from '../../api';
+import { MaturityScorePage } from '../MaturityScorePage';
 
 export const MaturitySummaryPage = () => {
   const { entity } = useEntity();
@@ -45,10 +45,10 @@ export const MaturitySummaryPage = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item md={3}>
-        <MaturityRankInfoCard summary={value} />
+      <Grid item xs={12}>
+        <MaturityScorePage />
       </Grid>
-      <Grid item md={9}>
+      <Grid item md={12}>
         {entities && <MaturitySummaryTable entities={entities} />}
       </Grid>
     </Grid>
