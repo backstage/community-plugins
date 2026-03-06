@@ -179,7 +179,7 @@ export const projectTableColumnSchema = projectColumn.map(rowData => {
       const value = getObjValue(row, rowData.field) as any;
       switch (rowData.field) {
         case PROJECT_FIELD.NAME: {
-          const uri = `/${row.entity?.source}/${row.entity?.namespace}/${row.entity?.kind}/${row.entity?.params.repo}/mend?filter=${row.name}`;
+          const uri = `${row?.entityUrl}/mend?filter=${row.name}`;
 
           return (
             <Link to={uri}>
