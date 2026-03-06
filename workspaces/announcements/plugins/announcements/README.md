@@ -96,7 +96,6 @@ app:
   extensions:
     - announcements/banner:
         config:
-          variant: floating
           max: 2
           category: updates
           active: true
