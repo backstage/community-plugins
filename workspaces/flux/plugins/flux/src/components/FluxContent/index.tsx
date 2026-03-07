@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 import { Content, Header, Page } from '@backstage/core-components';
-import { makeStyles } from '@material-ui/core';
 import { EntityFluxGitRepositoriesCard } from '../EntityFluxGitRepositoriesCard';
 import { EntityFluxHelmRepositoriesCard } from '../EntityFluxHelmRepositoriesCard';
 import { EntityFluxOCIRepositoriesCard } from '../EntityFluxOCIRepositoriesCard';
 import { EntityFluxKustomizationsCard } from '../EntityFluxKustomizationsCard';
 import { EntityFluxHelmReleasesCard } from '../EntityFluxHelmReleasesCard';
 import { RequireKubernetesPermissions } from '../../RequireKubernetesPermissions';
-
-const useStyles = makeStyles(() => ({
-  overflowXScroll: {
-    overflowX: 'scroll',
-  },
-}));
+import styles from './FluxContent.module.css';
 
 export interface FluxContentProps {
   /**
@@ -50,12 +44,11 @@ export interface FluxContentProps {
  */
 export function FluxContent(props: FluxContentProps) {
   const { title = 'Flux Resources' } = props;
-  const classes = useStyles();
 
   return (
     <Page themeId="tool">
       <Header title={title} />
-      <Content className={classes.overflowXScroll}>
+      <Content className={styles.overflowXScroll}>
         <RequireKubernetesPermissions>
           <EntityFluxKustomizationsCard />
           <EntityFluxHelmReleasesCard />
