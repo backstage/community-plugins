@@ -1479,7 +1479,7 @@ __metadata:
     "@backstage/plugin-catalog-node": "npm:^1.20.1"
     "@backstage/plugin-permission-common": "npm:^0.9.5"
     "@kubernetes/client-node": "npm:1.4.0"
-    "@openapitools/openapi-generator-cli": "npm:2.30.0"
+    "@openapitools/openapi-generator-cli": "npm:2.30.1"
     "@types/express": "npm:4.17.25"
     "@types/supertest": "npm:6.0.3"
     express: "npm:^4.18.2"
@@ -6890,9 +6890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:11.1.14":
-  version: 11.1.14
-  resolution: "@nestjs/common@npm:11.1.14"
+"@nestjs/common@npm:11.1.15":
+  version: 11.1.15
+  resolution: "@nestjs/common@npm:11.1.15"
   dependencies:
     file-type: "npm:21.3.0"
     iterare: "npm:1.2.1"
@@ -6909,13 +6909,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10/420c4f66ce4d3219196fa9cc6a6c4de63aacdabe869cc95754419a0d306f498a1e52031cf2f5f6c1737616943323309fb875708f5a4f61c960eebc62d5f60232
+  checksum: 10/3216e79694f688054c0824433a7c79cfc47322ca5e085ea4e68beb6a6332734965d02ca4b0cc648b28bf936e34950aff4da3d7f61fe7524886b743555398b0de
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:11.1.14":
-  version: 11.1.14
-  resolution: "@nestjs/core@npm:11.1.14"
+"@nestjs/core@npm:11.1.15":
+  version: 11.1.15
+  resolution: "@nestjs/core@npm:11.1.15"
   dependencies:
     "@nuxt/opencollective": "npm:0.4.1"
     fast-safe-stringify: "npm:2.1.1"
@@ -6937,7 +6937,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10/e346efe760079c99ab303bf05de587f172d348c194a174a4665944ab6858b36993a64b07afe62772c4e9042c685797d02579b86f12d549eb199842b436c9045e
+  checksum: 10/6ddc112e1d3f590b24da26a0c7a58fa1e30867b3ae16473ea376bc69ce716cd1bc97e39fda261638de31d5fcf33a09861ea22f9cddb860c9f68155bfcf67b5c6
   languageName: node
   linkType: hard
 
@@ -7659,22 +7659,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openapitools/openapi-generator-cli@npm:2.30.0, @openapitools/openapi-generator-cli@npm:^2.7.0":
-  version: 2.30.0
-  resolution: "@openapitools/openapi-generator-cli@npm:2.30.0"
+"@openapitools/openapi-generator-cli@npm:2.30.1, @openapitools/openapi-generator-cli@npm:^2.7.0":
+  version: 2.30.1
+  resolution: "@openapitools/openapi-generator-cli@npm:2.30.1"
   dependencies:
     "@inquirer/select": "npm:1.3.3"
     "@nestjs/axios": "npm:4.0.1"
-    "@nestjs/common": "npm:11.1.14"
-    "@nestjs/core": "npm:11.1.14"
+    "@nestjs/common": "npm:11.1.15"
+    "@nestjs/core": "npm:11.1.15"
     "@nuxtjs/opencollective": "npm:0.3.2"
-    axios: "npm:1.13.5"
+    axios: "npm:^1.13.6"
     chalk: "npm:4.1.2"
     commander: "npm:8.3.0"
     compare-versions: "npm:6.1.1"
     concurrently: "npm:9.2.1"
     console.table: "npm:0.10.0"
-    fs-extra: "npm:11.3.3"
+    fs-extra: "npm:11.3.4"
     glob: "npm:13.0.6"
     proxy-agent: "npm:6.5.0"
     reflect-metadata: "npm:0.2.2"
@@ -7682,7 +7682,7 @@ __metadata:
     tslib: "npm:2.8.1"
   bin:
     openapi-generator-cli: main.js
-  checksum: 10/645c45ebcd5a1db128fbcb990b34c19a6476a37953912f9ad46e2c47c27d2528dd02809b47f5ace371f75086059e4afdefbf914547a4af564dee5b45a347db15
+  checksum: 10/deaeed9ea11bbf6c6d9830fccafa407358c9fb7c28d6a7499cef0321f958e5e74fa21ecf14f1da1248ea0f8e502f59c3b326a01c20db52d31a9cdd15ba358293
   languageName: node
   linkType: hard
 
@@ -14838,14 +14838,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.13.5, axios@npm:^1.0.0, axios@npm:^1.12.2, axios@npm:^1.7.4":
-  version: 1.13.5
-  resolution: "axios@npm:1.13.5"
+"axios@npm:^1.0.0, axios@npm:^1.12.2, axios@npm:^1.13.6, axios@npm:^1.7.4":
+  version: 1.13.6
+  resolution: "axios@npm:1.13.6"
   dependencies:
     follow-redirects: "npm:^1.15.11"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/db726d09902565ef9a0632893530028310e2ec2b95b727114eca1b101450b00014133dfc3871cffc87983fb922bca7e4874d7e2826d1550a377a157cdf3f05b6
+  checksum: 10/a7ed83c2af3ef21d64609df0f85e76893a915a864c5934df69241001d0578082d6521a0c730bf37518ee458821b5695957cb10db9fc705f2a8996c8686ea7a89
   languageName: node
   linkType: hard
 
@@ -19538,14 +19538,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:11.3.3, fs-extra@npm:^11.0.0, fs-extra@npm:^11.2.0, fs-extra@npm:~11.3.0":
-  version: 11.3.3
-  resolution: "fs-extra@npm:11.3.3"
+"fs-extra@npm:11.3.4, fs-extra@npm:^11.0.0, fs-extra@npm:^11.2.0, fs-extra@npm:~11.3.0":
+  version: 11.3.4
+  resolution: "fs-extra@npm:11.3.4"
   dependencies:
     graceful-fs: "npm:^4.2.0"
     jsonfile: "npm:^6.0.1"
     universalify: "npm:^2.0.0"
-  checksum: 10/daeaefafbebe8fa6efd2fb96fc926f2c952be5877811f00a6794f0d64e0128e3d0d93368cd328f8f063b45deacf385c40e3d931aa46014245431cd2f4f89c67a
+  checksum: 10/1b8deea9c540a2efe63c750bc9e1ba6238115579d1571d67fe8fb58e3fb6df19aba29fd4ebb81217cf0bf5bce0df30ca68dbc3e06f6652b856edd385ce0ff649
   languageName: node
   linkType: hard
 
