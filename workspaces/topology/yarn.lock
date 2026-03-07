@@ -1393,14 +1393,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-tekton-react@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "@backstage-community/plugin-tekton-react@npm:0.3.1"
+"@backstage-community/plugin-tekton-react@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@backstage-community/plugin-tekton-react@npm:0.4.0"
   dependencies:
     "@kubernetes/client-node": "npm:1.4.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 10/d7bf2edebff0e36aa261fad8156f1a29640fb7c60d612d112cbc627d07c85a56efa6b703dfa066315539acb4f6bd8d9ff1a83c56f97970387b3b2a109701c5fc
+  checksum: 10/b298a66661205e728be790f12f81b52f7e328ca545406b108fcd47a1fe57933e048f80c0d63bab60976ef3e24629d54ad6c5c955809b4ce8aea8f0239e908757
   languageName: node
   linkType: hard
 
@@ -1409,7 +1409,7 @@ __metadata:
   resolution: "@backstage-community/plugin-topology@workspace:plugins/topology"
   dependencies:
     "@axe-core/playwright": "npm:^4.11.0"
-    "@backstage-community/plugin-tekton-react": "npm:^0.3.0"
+    "@backstage-community/plugin-tekton-react": "npm:^0.4.0"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.35.4"
     "@backstage/core-components": "npm:^0.18.7"
