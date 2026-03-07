@@ -52,7 +52,7 @@
     "@backstage/plugin-auth-backend": "^0.25.5",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.13",
     "@backstage/plugin-catalog-backend": "^3.1.2",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0"
   },
   "files": [
