@@ -22,12 +22,10 @@ import {
   OwnedProvider,
   KindOrderProvider,
   manageApiRef,
-  ManageDynamicConfig,
 } from '@backstage-community/plugin-manage-react';
 
-import { useManagePageCombined } from '../ManagePageHeaderActions';
-import { usePrimeUserSettings } from './usePrimeUserSettings';
 import { TabsOrderProvider } from '../TabsOrder';
+import { PrimeUserSettings } from './PrimeUserSettings';
 
 export interface ManagePageProvidersProps {
   kinds: string[];
@@ -39,7 +37,7 @@ export interface ManagePageProvidersProps {
         props: Record<string, unknown>;
       }
   )[];
-  dynamicConfig: ManageDynamicConfig;
+  primeUserSettings: [string, string][];
 }
 
 export function ManagePageProviders(
@@ -49,34 +47,31 @@ export function ManagePageProviders(
     kinds,
     combined,
     providers: propProviders,
-    dynamicConfig,
+    primeUserSettings,
     children,
   } = props;
-
-  // Initialize the user settings
-  usePrimeUserSettings(dynamicConfig.primeUserSettings ?? []);
-
-  // Initialize the state, set default value
-  useManagePageCombined(combined);
 
   const manageApi = useApi(manageApiRef);
   const providers = [...propProviders, ...manageApi.getProviders()];
 
   return (
-    <OwnedProvider kinds={kinds}>
-      <KindOrderProvider>
-        <TabsOrderProvider>
-          {providers.reduce(
-            (prev, Provider) =>
-              'provider' in Provider ? (
-                <Provider.provider {...Provider.props} children={prev} />
-              ) : (
-                <Provider children={prev} />
-              ),
-            <>{children}</>,
-          )}
-        </TabsOrderProvider>
-      </KindOrderProvider>
-    </OwnedProvider>
+    <>
+      <PrimeUserSettings combined={combined} userSettings={primeUserSettings} />
+      <OwnedProvider kinds={kinds}>
+        <KindOrderProvider>
+          <TabsOrderProvider>
+            {providers.reduce(
+              (prev, Provider) =>
+                'provider' in Provider ? (
+                  <Provider.provider {...Provider.props} children={prev} />
+                ) : (
+                  <Provider children={prev} />
+                ),
+              <>{children}</>,
+            )}
+          </TabsOrderProvider>
+        </KindOrderProvider>
+      </OwnedProvider>
+    </>
   );
 }
