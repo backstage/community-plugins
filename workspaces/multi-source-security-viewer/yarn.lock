@@ -1519,17 +1519,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-jenkins-common@npm:^0.16.0":
-  version: 0.16.1
-  resolution: "@backstage-community/plugin-jenkins-common@npm:0.16.1"
-  dependencies:
-    "@backstage/plugin-catalog-common": "npm:^1.1.7"
-    "@backstage/plugin-permission-common": "npm:^0.9.5"
-    node-fetch: "npm:^2.6.7"
-  checksum: 10/4a65756a68b675e992bd90963dea9e733c1d11d29185c01bf9c1132148ef38ff580cad91e058cfabd81cbe745c89da239de29de33993bbb8365b88b044f3093b
-  languageName: node
-  linkType: hard
-
 "@backstage-community/plugin-jenkins-common@npm:^0.17.0":
   version: 0.17.0
   resolution: "@backstage-community/plugin-jenkins-common@npm:0.17.0"
@@ -1541,18 +1530,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-jenkins@npm:^0.28.0":
-  version: 0.28.0
-  resolution: "@backstage-community/plugin-jenkins@npm:0.28.0"
+"@backstage-community/plugin-jenkins@npm:^0.29.0":
+  version: 0.29.0
+  resolution: "@backstage-community/plugin-jenkins@npm:0.29.0"
   dependencies:
-    "@backstage-community/plugin-jenkins-common": "npm:^0.16.0"
+    "@backstage-community/plugin-jenkins-common": "npm:^0.17.0"
     "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/core-compat-api": "npm:^0.5.7"
-    "@backstage/core-components": "npm:^0.18.6"
-    "@backstage/core-plugin-api": "npm:^1.12.2"
+    "@backstage/core-compat-api": "npm:^0.5.8"
+    "@backstage/core-components": "npm:^0.18.7"
+    "@backstage/core-plugin-api": "npm:^1.12.3"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/frontend-plugin-api": "npm:^0.13.4"
-    "@backstage/plugin-catalog-react": "npm:^1.21.6"
+    "@backstage/frontend-plugin-api": "npm:^0.14.1"
+    "@backstage/plugin-catalog-react": "npm:^2.0.0"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
@@ -1562,7 +1551,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/3e3dff11a31f1843ddd2bc80c4fe21d63a1e4fc35b90d6f35f844d8090a5d10ee214890b5e41262c4b0a47c66febe9e16e3ec7d2d7e4e02e025a9a56903b6d1c
+  checksum: 10/7f6e0cbd7a12e37ba126393b7466baeb0033b2eab1852585b9ffcbc3476412b46480d64e4f6f86ebc9450720185e2be760c52c58fe660ab01979bba43b304c45
   languageName: node
   linkType: hard
 
@@ -1607,7 +1596,7 @@ __metadata:
     "@backstage-community/plugin-azure-devops": "npm:^0.26.0"
     "@backstage-community/plugin-azure-devops-common": "npm:^0.20.0"
     "@backstage-community/plugin-github-actions": "npm:^0.20.0"
-    "@backstage-community/plugin-jenkins": "npm:^0.28.0"
+    "@backstage-community/plugin-jenkins": "npm:^0.29.0"
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.35.4"
@@ -14806,7 +14795,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-azure-devops": "npm:^0.26.0"
     "@backstage-community/plugin-github-actions": "npm:^0.20.0"
-    "@backstage-community/plugin-jenkins": "npm:^0.28.0"
+    "@backstage-community/plugin-jenkins": "npm:^0.29.0"
     "@backstage-community/plugin-multi-source-security-viewer": "workspace:^"
     "@backstage/app-defaults": "npm:^1.7.5"
     "@backstage/catalog-model": "npm:^1.7.6"
