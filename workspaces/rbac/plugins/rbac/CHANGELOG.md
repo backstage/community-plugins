@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.49.1
+
+### Patch Changes
+
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+
 ## 1.49.0
 
 ### Minor Changes
