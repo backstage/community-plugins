@@ -23,6 +23,8 @@ import {
 } from '@backstage/plugin-scaffolder-node';
 import { resolveSafeChildPath } from '@backstage/backend-plugin-api';
 import { getGitCredentials } from './helpers';
+import git from 'isomorphic-git';
+import * as fs from 'fs';
 
 export const createAzureDevOpsPushRepoAction = (options: {
   integrations: ScmIntegrationRegistry;
@@ -100,6 +102,13 @@ export const createAzureDevOpsPushRepoAction = (options: {
         integrations,
         remoteUrl,
         ctx.input.token,
+      );
+
+      const statusMatrix = await git.statusMatrix({ fs, dir: sourcePath });
+      await Promise.all(
+        statusMatrix
+          .filter(([, head, workdir]) => head !== 0 && workdir === 0)
+          .map(([filepath]) => git.remove({ fs, dir: sourcePath, filepath })),
       );
 
       await addFiles({

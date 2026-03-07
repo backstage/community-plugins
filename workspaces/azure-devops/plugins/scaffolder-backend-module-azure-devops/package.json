@@ -45,6 +45,7 @@
     "@backstage/integration": "backstage:^",
     "@backstage/plugin-scaffolder-node": "backstage:^",
     "azure-devops-node-api": "^15.0.0",
+    "isomorphic-git": "^1.23.0",
     "yaml": "^2.6.0"
   },
   "devDependencies": {

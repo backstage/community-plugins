@@ -1798,6 +1798,7 @@ __metadata:
     "@backstage/plugin-scaffolder-node": "backstage:^"
     "@backstage/plugin-scaffolder-node-test-utils": "backstage:^"
     azure-devops-node-api: "npm:^15.0.0"
+    isomorphic-git: "npm:^1.23.0"
     yaml: "npm:^2.6.0"
   languageName: unknown
   linkType: soft

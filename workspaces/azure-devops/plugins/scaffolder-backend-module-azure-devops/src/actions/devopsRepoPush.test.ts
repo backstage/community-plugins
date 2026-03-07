@@ -24,9 +24,15 @@ jest.mock('@backstage/plugin-scaffolder-node', () => ({
   addFiles: jest.fn(),
 }));
 
+jest.mock('isomorphic-git', () => ({
+  statusMatrix: jest.fn().mockResolvedValue([]),
+  remove: jest.fn().mockResolvedValue(undefined),
+}));
+
 import { createAzureDevOpsPushRepoAction } from './devopsRepoPush';
 
 const { commitAndPushBranch } = require('@backstage/plugin-scaffolder-node');
+const isomorphicGit = require('isomorphic-git');
 
 describe('createAzureDevOpsPushRepoAction', () => {
   const config = new ConfigReader({
@@ -133,6 +139,30 @@ describe('createAzureDevOpsPushRepoAction', () => {
         commitMessage: 'Initial commit',
         gitAuthorInfo: { name: 'Default Name', email: 'default@email.com' },
       }),
+    );
+  });
+
+  it('stages deleted files', async () => {
+    getCredentialsMock.mockResolvedValue(undefined);
+    isomorphicGit.statusMatrix.mockResolvedValue([
+      ['deleted-file.txt', 1, 0, 1],
+      ['modified-file.txt', 1, 2, 1],
+      ['new-file.txt', 0, 2, 0],
+    ]);
+    const ctx = createMockActionContext({
+      workspacePath,
+      input: { remoteUrl, token: 'tok' },
+    });
+    await action.handler(ctx);
+    expect(isomorphicGit.remove).toHaveBeenCalledTimes(1);
+    expect(isomorphicGit.remove).toHaveBeenCalledWith(
+      expect.objectContaining({ filepath: 'deleted-file.txt' }),
+    );
+    expect(isomorphicGit.remove).not.toHaveBeenCalledWith(
+      expect.objectContaining({ filepath: 'modified-file.txt' }),
+    );
+    expect(isomorphicGit.remove).not.toHaveBeenCalledWith(
+      expect.objectContaining({ filepath: 'created-file.txt' }),
     );
   });
 
