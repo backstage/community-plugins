@@ -117,9 +117,13 @@ export class ClaudeProvider extends LLMProvider {
 
     const request: any = {
       model: this.model,
-      max_tokens: 4096,
+      max_tokens: this.maxTokens ?? 4096,
       messages: claudeMessages,
     };
+
+    if (this.temperature !== undefined) {
+      request.temperature = this.temperature;
+    }
 
     if (tools && tools.length > 0) {
       request.tools = this.convertToAnthropicTools(tools);

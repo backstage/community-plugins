@@ -203,6 +203,10 @@ export interface ProviderConfig {
   baseUrl: string;
   /** Model identifier to use */
   model: string;
+  /** Maximum number of tokens to generate (default: 1000 for OpenAI-compatible, 4096 for Claude, 8192 for Gemini) */
+  maxTokens?: number;
+  /** Temperature for response randomness, between 0 and 1 (default: 0.7) */
+  temperature?: number;
 }
 
 /**
