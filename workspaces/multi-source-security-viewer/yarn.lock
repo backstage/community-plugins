@@ -1420,17 +1420,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-azure-devops-common@npm:^0.19.0":
-  version: 0.19.0
-  resolution: "@backstage-community/plugin-azure-devops-common@npm:0.19.0"
-  dependencies:
-    "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/plugin-catalog-common": "npm:^1.1.7"
-    "@backstage/plugin-permission-common": "npm:^0.9.5"
-  checksum: 10/c12f681124f49f3e887bd9604f013f4e51762a4ab47a0d552b51ee1eac5b427bf7600203efe756b826da1cdac4fa953155a136776112a8fe5ae9827b0d8d229c
-  languageName: node
-  linkType: hard
-
 "@backstage-community/plugin-azure-devops-common@npm:^0.20.0, @backstage-community/plugin-azure-devops-common@npm:^0.20.1":
   version: 0.20.1
   resolution: "@backstage-community/plugin-azure-devops-common@npm:0.20.1"
@@ -1472,18 +1461,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-github-actions@npm:^0.20.0":
-  version: 0.20.0
-  resolution: "@backstage-community/plugin-github-actions@npm:0.20.0"
+"@backstage-community/plugin-github-actions@npm:^0.21.0":
+  version: 0.21.1
+  resolution: "@backstage-community/plugin-github-actions@npm:0.21.1"
   dependencies:
     "@backstage/catalog-model": "npm:^1.7.6"
-    "@backstage/core-compat-api": "npm:^0.5.7"
-    "@backstage/core-components": "npm:^0.18.6"
-    "@backstage/core-plugin-api": "npm:^1.12.2"
-    "@backstage/frontend-plugin-api": "npm:^0.13.4"
-    "@backstage/integration": "npm:^1.19.2"
-    "@backstage/integration-react": "npm:^1.2.14"
-    "@backstage/plugin-catalog-react": "npm:^1.21.6"
+    "@backstage/core-compat-api": "npm:^0.5.8"
+    "@backstage/core-components": "npm:^0.18.7"
+    "@backstage/core-plugin-api": "npm:^1.12.3"
+    "@backstage/frontend-plugin-api": "npm:^0.14.1"
+    "@backstage/integration": "npm:^1.20.1"
+    "@backstage/integration-react": "npm:^1.2.15"
+    "@backstage/plugin-catalog-react": "npm:^2.0.0"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -1496,7 +1485,7 @@ __metadata:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-router-dom: 6.0.0-beta.0 || ^6.3.0
-  checksum: 10/3801ab0d7e31cb8ef71ce8bec3cafaf5694342132e5b7ff4b7bd1fb916a79d113c6ff55b4b48bc138f69339e74721e2356975170af068e3ff65c1e5547c0736d
+  checksum: 10/5622d86a9dfea8711d30c3921024d9374e18e6612f220888af353050782f5dcb70563333b8e9625c89e7a9c56fb2006e71dbc355f8530624408db1ef9b5f4cde
   languageName: node
   linkType: hard
 
@@ -1596,7 +1585,7 @@ __metadata:
     "@aonic-ui/pipelines": "npm:^3.1.1"
     "@backstage-community/plugin-azure-devops": "npm:^0.28.0"
     "@backstage-community/plugin-azure-devops-common": "npm:^0.20.0"
-    "@backstage-community/plugin-github-actions": "npm:^0.20.0"
+    "@backstage-community/plugin-github-actions": "npm:^0.21.0"
     "@backstage-community/plugin-jenkins": "npm:^0.29.0"
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.6"
@@ -2506,7 +2495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^1.19.2, @backstage/integration@npm:^1.20.0, @backstage/integration@npm:^1.20.1":
+"@backstage/integration@npm:^1.20.0, @backstage/integration@npm:^1.20.1":
   version: 1.20.1
   resolution: "@backstage/integration@npm:1.20.1"
   dependencies:
@@ -2968,7 +2957,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-react@npm:^1.15.1, @backstage/plugin-catalog-react@npm:^1.21.6":
+"@backstage/plugin-catalog-react@npm:^1.15.1":
   version: 1.21.6
   resolution: "@backstage/plugin-catalog-react@npm:1.21.6"
   dependencies:
@@ -14795,7 +14784,7 @@ __metadata:
   resolution: "app@workspace:packages/app"
   dependencies:
     "@backstage-community/plugin-azure-devops": "npm:^0.28.0"
-    "@backstage-community/plugin-github-actions": "npm:^0.20.0"
+    "@backstage-community/plugin-github-actions": "npm:^0.21.0"
     "@backstage-community/plugin-jenkins": "npm:^0.29.0"
     "@backstage-community/plugin-multi-source-security-viewer": "workspace:^"
     "@backstage/app-defaults": "npm:^1.7.5"
