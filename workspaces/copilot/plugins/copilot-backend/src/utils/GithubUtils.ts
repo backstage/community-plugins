@@ -100,12 +100,13 @@ export const getGithubCredentials = async (
 
   if (organization) {
     if (githubConfig.apps && githubConfig.apps.length > 0) {
-      // Filter apps that allow this organization (case-insensitive comparison)
+      // Filter apps that explicitly allow this organization (case-insensitive comparison)
+      // Only select apps that have allowedInstallationOwners configured with the target org
       const orgLowerCase = organization.toLowerCase();
       const allowedApp = githubConfig.apps.find(
         app =>
-          !app.allowedInstallationOwners ||
-          app.allowedInstallationOwners.length === 0 ||
+          app.allowedInstallationOwners &&
+          app.allowedInstallationOwners.length > 0 &&
           app.allowedInstallationOwners.some(
             owner => owner.toLowerCase() === orgLowerCase,
           ),
