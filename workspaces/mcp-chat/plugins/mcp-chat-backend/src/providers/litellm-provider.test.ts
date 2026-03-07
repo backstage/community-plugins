@@ -23,11 +23,19 @@ global.fetch = jest.fn();
 describe('LiteLLMProvider', () => {
   let provider: LiteLLMProvider;
 
+  const mockLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  };
+
   const config: ProviderConfig = {
     type: 'litellm',
     apiKey: 'test-api-key',
     baseUrl: 'http://localhost:4000',
     model: 'gpt-4',
+    logger: mockLogger,
   };
 
   beforeEach(() => {
