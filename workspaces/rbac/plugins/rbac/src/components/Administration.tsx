@@ -16,11 +16,7 @@
 import { useAsync } from 'react-use';
 
 import { SidebarItem } from '@backstage/core-components';
-import {
-  configApiRef,
-  IconComponent,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
 
@@ -38,7 +34,8 @@ export const Administration = () => {
 
   if (!isUserLoading && isRBACPluginEnabled) {
     return result?.status === 'Authorized' ? (
-      <SidebarItem text="RBAC" to="rbac" icon={RbacIcon as IconComponent} />
+      // FIXME: improve icon type in Backstage 1.49, currently the icon type is deprecated but there is no change in the SidebarItem!?
+      <SidebarItem text="RBAC" to="rbac" icon={RbacIcon as any} />
     ) : null;
   }
   return null;
