@@ -31,15 +31,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-apiiro-common": "workspace:^",
-    "@backstage/backend-plugin-api": "^1.4.4",
-    "@backstage/catalog-model": "^1.7.5",
-    "@backstage/config": "^1.3.5",
-    "@backstage/plugin-catalog-common": "^1.1.6",
-    "@backstage/plugin-catalog-node": "^1.19.1",
+    "@backstage/backend-plugin-api": "^1.7.0",
+    "@backstage/catalog-model": "^1.7.6",
+    "@backstage/config": "^1.3.6",
+    "@backstage/plugin-catalog-common": "^1.1.8",
+    "@backstage/plugin-catalog-node": "^2.0.0",
     "node-fetch": "^2.6.7"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.4",
+    "@backstage/cli": "^0.35.4",
     "@types/node-fetch": "^2.6.9"
   },
   "files": [
