@@ -1,0 +1,92 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .empty {
+    padding: var(--bui-space-4);
+    display: flex;
+    justify-content: center;
+  }
+
+  .textOverflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    direction: rtl;
+    max-width: 300px;
+    margin-top: 2px;
+  }
+
+  .nameLabel {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .actionButton {
+    padding: 0;
+    margin: -5px 0;
+  }
+
+  .status {
+    align-items: center;
+    display: flex;
+  }
+
+  .statusIcon {
+    flex-shrink: 0;
+    position: relative;
+    top: 0.125em;
+    margin-right: var(--bui-space-2);
+  }
+
+  .statusIconSize {
+    width: 0.8em;
+    height: 0.8em;
+  }
+
+  .statusIconSizeForImg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .reconciling {
+    fill: var(--bui-fg-link);
+  }
+
+  .ok {
+    fill: var(--bui-fg-success);
+  }
+
+  .warning {
+    fill: var(--bui-fg-warning);
+  }
+
+
+  .error {
+    fill: var(--bui-fg-danger)
+  }
+
+  .pending {
+    fill: var(--bui-fg-disabled);
+  }
+
+  .running {
+    fill: var(--bui-fg-disabled);
+  }
+
+  .aborted {
+    fill: var(--bui-fg-disabled);
+  }
+}

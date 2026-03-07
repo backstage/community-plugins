@@ -14,41 +14,122 @@
  * limitations under the License.
  */
 import _ from 'lodash';
-import Typography from '@material-ui/core/Typography';
+import { Text, Flex, Tooltip, TooltipTrigger } from '@backstage/ui';
 import {
-  StatusAborted,
-  StatusError,
-  StatusOK,
-  StatusPending,
-} from '@backstage/core-components';
+  RiCloseCircleLine,
+  RiErrorWarningLine,
+  RiCheckboxCircleLine,
+  RiIndeterminateCircleLine,
+  RiRefreshLine,
+} from '@remixicon/react';
+
 import { Condition } from '../../objects';
-import { Box, Tooltip } from '@material-ui/core';
 import classNames from 'classnames';
 import { PropsWithChildren } from 'react';
-import { ReconcilingIcon } from './icons/ReconcilingIcon';
-import { useStyles } from '../utils';
+import styles from '../utils.module.css';
 
-export function StatusReconciling(props: PropsWithChildren<{}>) {
+export function StatusAborted(props: PropsWithChildren<{}>) {
   const { children, ...otherProps } = props;
-  const classes = useStyles(otherProps);
   return (
-    <Typography
-      component="span"
-      className={classNames(classes.status)}
+    <Text
+      className={classNames(styles.status)}
+      aria-label="Status aborted"
+      aria-hidden="true"
+      {...otherProps}
+    >
+      <RiCloseCircleLine
+        className={classNames(
+          styles.ok,
+          styles.statusIcon,
+          styles.statusIconSizeForImg,
+        )}
+      />
+      {children}
+    </Text>
+  );
+}
+
+export function StatusError(props: PropsWithChildren<{}>) {
+  const { children, ...otherProps } = props;
+  return (
+    <Text
+      className={classNames(styles.status)}
+      aria-label="Status error"
+      aria-hidden="true"
+      {...otherProps}
+    >
+      <RiErrorWarningLine
+        className={classNames(
+          styles.error,
+          styles.statusIcon,
+          styles.statusIconSizeForImg,
+        )}
+      />
+      {children}
+    </Text>
+  );
+}
+
+export function StatusOK(props: PropsWithChildren<{}>) {
+  const { children, ...otherProps } = props;
+  return (
+    <Text
+      className={classNames(styles.status)}
       aria-label="Status running"
       aria-hidden="true"
       {...otherProps}
     >
-      <ReconcilingIcon
-        dataTestId="status-running"
+      <RiCheckboxCircleLine
         className={classNames(
-          classes.reconciling,
-          classes.statusIcon,
-          classes.statusIconSizeForImg,
+          styles.ok,
+          styles.statusIcon,
+          styles.statusIconSizeForImg,
         )}
       />
       {children}
-    </Typography>
+    </Text>
+  );
+}
+
+export function StatusPending(props: PropsWithChildren<{}>) {
+  const { children, ...otherProps } = props;
+  return (
+    <Text
+      className={classNames(styles.status)}
+      aria-label="Status pending"
+      aria-hidden="true"
+      {...otherProps}
+    >
+      <RiIndeterminateCircleLine
+        className={classNames(
+          styles.pending,
+          styles.statusIcon,
+          styles.statusIconSizeForImg,
+        )}
+      />
+      {children}
+    </Text>
+  );
+}
+
+export function StatusReconciling(props: PropsWithChildren<{}>) {
+  const { children, ...otherProps } = props;
+  return (
+    <Text
+      className={classNames(styles.status)}
+      aria-label="Status running"
+      aria-hidden="true"
+      {...otherProps}
+    >
+      <RiRefreshLine
+        className={classNames(
+          styles.reconciling,
+          styles.statusIcon,
+          styles.statusIconSizeForImg,
+        )}
+      />
+      {children}
+    </Text>
   );
 }
 
@@ -237,13 +318,14 @@ export function KubeStatusIndicator(props: KubeStatusIndicatorProps) {
   const ready = _.find(props.conditions, c => c.type === ReadyType.Ready);
 
   return (
-    <Tooltip title={ready?.message || ''}>
+    <TooltipTrigger>
       <div>
-        <Box display="flex" alignItems="center" justifyContent="flex-start">
+        <Flex align="center" justify="start">
           <BackstageStatusIcon {...props} />
-        </Box>
+        </Flex>
       </div>
-    </Tooltip>
+      <Tooltip>{ready?.message || ''}</Tooltip>
+    </TooltipTrigger>
   );
 }
 

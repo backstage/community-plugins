@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { Table, TableProps } from '@backstage/core-components';
-import { Typography } from '@material-ui/core';
-import { useStyles } from './utils';
+import { Text } from '@backstage/ui';
+import styles from './utils.module.css';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
 export function FluxEntityTable<T extends object = {}>({
@@ -26,8 +26,6 @@ export function FluxEntityTable<T extends object = {}>({
   filters,
   many,
 }: TableProps<T> & { many?: boolean }) {
-  const classes = useStyles();
-
   // We use this memo not really for performance, but to avoid
   // re-rendering the table when the data changes. Makes it much easier to style etc.
   // Review this decision if we run into hard to debug issues.
@@ -50,15 +48,15 @@ export function FluxEntityTable<T extends object = {}>({
         data={data}
         isLoading={isLoading}
         emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
+          <div className={styles.empty}>
+            <Text>
               No {title} found
               {title === 'flux controllers' ? '' : 'for this entity'}.
-            </Typography>
+            </Text>
           </div>
         }
         filters={Boolean(many) ? filters : []}
       />
     );
-  }, [data, title, isLoading, classes.empty, columns]);
+  }, [data, title, isLoading, styles.empty, columns]);
 }

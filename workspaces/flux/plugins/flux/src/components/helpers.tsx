@@ -15,24 +15,28 @@
  */
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
+import { Progress, TableColumn, TableFilter } from '@backstage/core-components';
+import { compare } from 'compare-versions';
 import {
   Link,
-  Progress,
-  TableColumn,
-  TableFilter,
-} from '@backstage/core-components';
-import { compare } from 'compare-versions';
-import { Box, IconButton, Tooltip, Typography } from '@material-ui/core';
-import RetryIcon from '@material-ui/icons/Replay';
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+  Box,
+  Flex,
+  Text,
+  Tooltip,
+  ButtonIcon,
+  TooltipTrigger,
+} from '@backstage/ui';
+import {
+  RiRefreshLine,
+  RiPauseLine,
+  RiPlayLine,
+  RiShieldCheckFill,
+} from '@remixicon/react';
 import { useSyncResource, useWeaveGitOpsDeepLink } from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
   findVerificationCondition,
-  useStyles,
 } from './utils';
 import {
   FluxObject,
@@ -48,6 +52,7 @@ import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
+import styles from './utils.module.css';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -70,23 +75,24 @@ export const NameLabel = ({
   const { name, namespace } = resource;
   const deepLink = useWeaveGitOpsDeepLink(resource);
   const label = `${namespace}/${name}`;
-  const classes = useStyles();
 
   if (!deepLink) {
     return (
-      <Typography
-        variant="body2"
-        className={classNames(classes.textOverflow, classes.nameLabel)}
+      <Text
+        weight="bold"
+        className={classNames(styles.textOverflow, styles.nameLabel)}
       >
         {label}
-      </Typography>
+      </Text>
     );
   }
 
   return (
     <Link
-      className={classNames(classes.textOverflow, classes.nameLabel)}
-      to={deepLink}
+      href={deepLink}
+      weight="bold"
+      className={classNames(styles.textOverflow, styles.nameLabel)}
+      target="_blank"
     >
       {label}
     </Link>
@@ -94,11 +100,11 @@ export const NameLabel = ({
 };
 
 export const Url = ({ resource }: { resource: Source }): JSX.Element => {
-  const classes = useStyles();
   return (
-    <Tooltip title={resource.url}>
-      <Box className={classes.textOverflow}>{resource.url}</Box>
-    </Tooltip>
+    <TooltipTrigger>
+      <Box className={styles.textOverflow}>{resource.url}</Box>
+      <Tooltip>{resource.url}</Tooltip>
+    </TooltipTrigger>
   );
 };
 
@@ -113,23 +119,21 @@ export function SyncButton({
   status: boolean;
   readOnly?: boolean;
 }) {
-  const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Syncing ${label}` : `Sync ${label}`;
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`sync ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={sync}
-          disabled={resource.suspended || readOnly}
-        >
-          <RetryIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label={readOnly ? 'Read-only mode is enabled' : title}
+        data-testid={`sync ${label}`}
+        className={styles.actionButton}
+        icon={<RiRefreshLine size={20} />}
+        onPress={sync}
+        isDisabled={resource.suspended || readOnly}
+        variant="secondary"
+      />
+      <Tooltip>{readOnly ? 'Read-only mode is enabled' : title}</Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -144,24 +148,22 @@ export function SuspendButton({
   status: boolean;
   readOnly?: boolean;
 }) {
-  const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Suspending ${label}` : `Suspend ${label}`;
 
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`suspend ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={toggleSuspend}
-          disabled={resource.suspended || readOnly}
-        >
-          <PauseIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label={readOnly ? 'Read-only mode is enabled' : title}
+        data-testid={`suspend ${label}`}
+        className={styles.actionButton}
+        icon={<RiPauseLine size={20} />}
+        onPress={toggleSuspend}
+        isDisabled={resource.suspended || readOnly}
+        variant="secondary"
+      />
+      <Tooltip>{readOnly ? 'Read-only mode is enabled' : title}</Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -176,24 +178,22 @@ export function ResumeButton({
   status: boolean;
   readOnly?: boolean;
 }) {
-  const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Resuming ${label}` : `Resume ${label}`;
 
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`resume ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={toggleResume}
-          disabled={!resource.suspended || readOnly}
-        >
-          <PlayArrowIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label={readOnly ? 'Read-only mode is enabled' : title}
+        data-testid={`resume ${label}`}
+        className={styles.actionButton}
+        icon={<RiPlayLine size={20} />}
+        onPress={toggleResume}
+        isDisabled={!resource.suspended || readOnly}
+        variant="secondary"
+      />
+      <Tooltip>{readOnly ? 'Read-only mode is enabled' : title}</Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -219,7 +219,7 @@ export function GroupAction({
       {isLoading ? (
         <Progress data-testid="loading" />
       ) : (
-        <Box display="flex" alignItems="start" flexDirection="row">
+        <Flex align="start" direction="row">
           <SyncButton
             readOnly={readOnly}
             resource={resource}
@@ -242,7 +242,7 @@ export function GroupAction({
               />
             </>
           ) : null}
-        </Box>
+        </Flex>
       )}
     </>
   );
@@ -261,25 +261,36 @@ export const VerifiedStatus = ({
 }: {
   resource: VerifiableSource;
 }): JSX.Element | null => {
-  const classes = useStyles();
-
   if (!resource.isVerifiable) return null;
 
   const condition = findVerificationCondition(resource);
 
   let className;
   if (condition?.status === 'True') {
-    className = classNames(classes.verifiedOK, classes.statusIconSize);
+    className = classNames(
+      styles.ok,
+      styles.statusIconSize,
+      styles.statusIconSizeForImg,
+    );
   } else if (condition?.status === 'False') {
-    className = classNames(classes.verifiedError, classes.statusIconSize);
+    className = classNames(
+      styles.error,
+      styles.statusIconSize,
+      styles.statusIconSizeForImg,
+    );
   } else if (!condition?.status) {
-    className = classNames(classes.verifiedWarning, classes.statusIconSize);
+    className = classNames(
+      styles.warning,
+      styles.statusIconSize,
+      styles.statusIconSizeForImg,
+    );
   }
 
   return (
-    <Tooltip title={condition?.message || 'pending verification'}>
-      <VerifiedUserIcon className={className} />
-    </Tooltip>
+    <TooltipTrigger>
+      <RiShieldCheckFill className={className} />
+      <Tooltip>{condition?.message || 'pending verification'}</Tooltip>
+    </TooltipTrigger>
   );
 };
 
@@ -288,10 +299,10 @@ export const nameAndClusterName = ({
 }: {
   resource: FluxObject;
 }): JSX.Element => (
-  <Box display="flux" alignItems="start" flexDirection="column">
+  <Flex align="start" direction="column">
     <NameLabel resource={resource} />
-    <Typography>cluster: {resource.clusterName}</Typography>
-  </Box>
+    <Text>cluster: {resource.clusterName}</Text>
+  </Flex>
 );
 
 export const idColumn = <T extends FluxObject | Cluster>() => {
@@ -316,7 +327,7 @@ export const clusterNameFilteringColumn = <
 export const clusterColumn = <T extends Cluster>() => {
   return {
     title: 'Cluster',
-    render: resource => <Typography>{resource?.clusterName}</Typography>,
+    render: resource => <Text>{resource?.clusterName}</Text>,
     ...sortAndFilterOptions(resource => resource?.clusterName),
   } as TableColumn<T>;
 };
@@ -324,7 +335,7 @@ export const clusterColumn = <T extends Cluster>() => {
 export const namespaceColumn = <T extends Cluster>() => {
   return {
     title: 'Namespace',
-    render: resource => <Typography>{resource?.namespace}</Typography>,
+    render: resource => <Text>{resource?.namespace}</Text>,
     ...sortAndFilterOptions(resource => resource?.namespace),
   } as TableColumn<T>;
 };
@@ -332,7 +343,7 @@ export const namespaceColumn = <T extends Cluster>() => {
 export const versionColumn = <T extends Cluster>() => {
   return {
     title: 'Version',
-    render: resource => <Typography>{resource?.version}</Typography>,
+    render: resource => <Text>{resource?.version}</Text>,
     ...sortAndFilterOptions(resource => resource?.version),
   } as TableColumn<T>;
 };
@@ -340,9 +351,7 @@ export const versionColumn = <T extends Cluster>() => {
 export const availableComponentsColumn = <T extends Cluster>() => {
   return {
     title: 'Available Components',
-    render: resource => (
-      <Typography>{resource?.availableComponents.join(', ')}</Typography>
-    ),
+    render: resource => <Text>{resource?.availableComponents.join(', ')}</Text>,
     ...sortAndFilterOptions(resource =>
       resource?.availableComponents.join(', '),
     ),
@@ -393,9 +402,10 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: (
-      <Tooltip title="Verification status">
-        <VerifiedUserIcon style={{ height: '16px' }} />
-      </Tooltip>
+      <TooltipTrigger>
+        <RiShieldCheckFill style={{ height: '20px' }} />
+        <Tooltip>Verification status</Tooltip>
+      </TooltipTrigger>
     ),
     render: resource => <VerifiedStatus resource={resource} />,
     ...sortAndFilterOptions(resource =>
@@ -429,18 +439,14 @@ export const artifactColumn = <T extends Source>() => {
   return {
     title: 'Artifact',
     render: resource => (
-      <Tooltip
-        // This is the sha of the commit that the artifact was built from
-        title={
-          resource.artifact?.revision?.split('@')[1] ||
-          resource.artifact?.revision?.split('@')[0] ||
-          'unknown tag'
-        }
-      >
-        <Typography>
-          {shortenSha(resource.artifact?.revision?.split('@')[0])}
-        </Typography>
-      </Tooltip>
+      <TooltipTrigger>
+        <Text>{shortenSha(resource.artifact?.revision?.split('@')[0])}</Text>
+        <Tooltip>
+          {resource.artifact?.revision?.split('@')[1] ||
+            resource.artifact?.revision?.split('@')[0] ||
+            'unknown tag'}
+        </Tooltip>
+      </TooltipTrigger>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
     ...sortAndFilterOptions(
@@ -465,11 +471,11 @@ export const sourceColumn = <T extends Deployment>() => {
       resource.type === 'HelmRelease' ? (
         formatContent(resource)
       ) : (
-        <Typography>
+        <Text>
           {resource.type === 'Kustomization'
             ? (resource as Kustomization)?.path
             : ''}
-        </Typography>
+        </Text>
       ),
     ...sortAndFilterOptions(resource =>
       resource.type === 'HelmRelease'
@@ -513,9 +519,10 @@ export const typeColumn = <
     headerStyle: { paddingLeft, paddingRight: 0 },
     field: 'type',
     render: resource => (
-      <Tooltip title={resource.type || 'Unknown'}>
+      <TooltipTrigger>
         <div>{getIconType(resource.type as string)}</div>
-      </Tooltip>
+        <Tooltip>{resource.type || 'Unknown'}</Tooltip>
+      </TooltipTrigger>
     ),
     ...sortAndFilterOptions(resource => resource?.type as string | undefined),
     width: '20px',
@@ -526,7 +533,7 @@ export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
-    render: resource => <Typography>{resource?.sourceRef?.name}</Typography>,
+    render: resource => <Text>{resource?.sourceRef?.name}</Text>,
     ...sortAndFilterOptions(resource => resource?.sourceRef?.name),
   } as TableColumn<T>;
 };
@@ -571,9 +578,9 @@ export const policy = <T extends ImagePolicy>() => {
     title: 'Image Policy',
     field: 'imagepolicy',
     render: resource => (
-      <Typography>
+      <Text>
         {resource?.imagePolicy.type} / {resource?.imagePolicy.value}
-      </Typography>
+      </Text>
     ),
     ...sortAndFilterOptions(
       resource =>
@@ -586,7 +593,7 @@ export const imageRepository = <T extends ImagePolicy>() => {
   return {
     title: 'Image Repository',
     field: 'imagerepository',
-    render: resource => <Typography>{resource?.imageRepositoryRef}</Typography>,
+    render: resource => <Text>{resource?.imageRepositoryRef}</Text>,
     ...sortAndFilterOptions(resource => resource?.imageRepositoryRef),
   } as TableColumn<T>;
 };
@@ -595,7 +602,7 @@ export const latestImageSelected = <T extends ImagePolicy>() => {
   return {
     title: 'Latest Image',
     field: 'latestimage',
-    render: resource => <Typography>{resource?.latestImage}</Typography>,
+    render: resource => <Text>{resource?.latestImage}</Text>,
     ...sortAndFilterOptions(resource => resource?.latestImage),
   } as TableColumn<T>;
 };
