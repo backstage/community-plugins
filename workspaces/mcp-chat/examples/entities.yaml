@@ -1,0 +1,51 @@
+---
+# Sample entity with Kubernetes annotations
+# This enables the "Select Pod" feature in K8s AI Assistant
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sample-k8s-app
+  description: Sample application with Kubernetes resources for AI Assistant demo
+  annotations:
+    # These annotations link the entity to Kubernetes resources
+    # The kubernetes-id is used as a label selector (app=sample-k8s-app)
+    backstage.io/kubernetes-id: sample-k8s-app
+    # Namespace where pods are running (use '*' for all namespaces)
+    backstage.io/kubernetes-namespace: default
+    # Optional: specify cluster name if you have multiple clusters
+    # backstage.io/kubernetes-cluster: openshift-nngf2
+spec:
+  type: service
+  owner: guest
+  lifecycle: experimental
+
+---
+# Entity that watches all pods in a specific namespace
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: openshift-apps
+  description: All applications in the OpenShift cluster
+  annotations:
+    # Use label-selector to match multiple apps
+    backstage.io/kubernetes-label-selector: 'app'
+    backstage.io/kubernetes-namespace: default
+spec:
+  type: service
+  owner: guest
+  lifecycle: experimental
+
+---
+# Entity for ocp-mcp-server namespace (where the MCP server is running)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ocp-mcp-server-app
+  description: OpenShift MCP Server application
+  annotations:
+    backstage.io/kubernetes-label-selector: 'app'
+    backstage.io/kubernetes-namespace: ocp-mcp-server
+spec:
+  type: service
+  owner: guest
+  lifecycle: production

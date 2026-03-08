@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: mcp-chat
-  description: A Backstage plugin that provides a chat interface for interacting with MCP Servers.
+  description: Backstage plugins for AI-powered chat with MCP server integration and RAG capabilities.
   # Example for optional annotations
   # annotations:
   #   github.com/project-slug: backstage/backstage

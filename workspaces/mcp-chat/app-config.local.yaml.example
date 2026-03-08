@@ -1,0 +1,41 @@
+# =============================================================================
+# LOCAL DEVELOPMENT CONFIGURATION
+# =============================================================================
+# Copy this file to app-config.local.yaml and customize for your environment:
+#   cp app-config.local.yaml.example app-config.local.yaml
+#
+# This file overrides values from app-config.yaml
+# =============================================================================
+
+# Llama Stack Configuration (REQUIRED for RAG features)
+lss:
+  llamaStack:
+    # Your Llama Stack server URL
+    baseUrl: 'https://your-llama-stack-server.example.com'
+    
+    # Vector store ID (get from Llama Stack or leave empty to auto-create)
+    # vectorStoreIds:
+    #   - 'vs_your-vector-store-id'
+    
+    # Model for chat
+    model: 'gemini/gemini-2.5-flash'
+  
+  # MCP Servers (OPTIONAL - for tool execution)
+  mcpServers:
+    - id: openshift-server
+      name: OpenShift MCP Server
+      type: streamable-http
+      url: 'https://your-mcp-server.example.com/mcp'
+
+# Kubernetes Access (OPTIONAL - for K8s resource discovery)
+# Get token with: export OPENSHIFT_TOKEN=$(oc whoami -t)
+kubernetes:
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - name: my-cluster
+          url: https://api.your-cluster.example.com:6443
+          authProvider: 'serviceAccount'
+          serviceAccountToken: ${OPENSHIFT_TOKEN}
+          skipTLSVerify: true
+
