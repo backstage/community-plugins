@@ -15,9 +15,9 @@
  */
 
 import { pipelinesToBuilds, jobsToStages } from './utils';
-import { Types } from '@gitbeaker/core';
+import { PipelineSchema, JobSchema } from '@gitbeaker/core';
 
-const pipelineMock: Types.PipelineSchema[] = [
+const pipelineMock: PipelineSchema[] = [
   {
     id: 1000,
     iid: 1,
@@ -52,7 +52,7 @@ const jobMock = [
     duration: 21.199465,
     queued_duration: 0.976313,
   },
-] as unknown as Array<Types.JobSchema>;
+] as unknown as Array<JobSchema>;
 
 describe('util functionality', () => {
   it('transforms the pipeline object to the build object', () => {
