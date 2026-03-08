@@ -1,0 +1,58 @@
+{
+  "name": "@backstage-community/plugin-agentic-chat-common",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "description": "Common types and permissions for Agentic Chat plugin",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "agentic-chat",
+    "pluginPackage": "@backstage-community/plugin-agentic-chat-common",
+    "pluginPackages": [
+      "@backstage-community/plugin-agentic-chat",
+      "@backstage-community/plugin-agentic-chat-backend",
+      "@backstage-community/plugin-agentic-chat-common"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-chat/plugins/agentic-chat-common"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "agentic",
+    "ai",
+    "chat"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint:check": "backstage-cli package lint",
+    "lint:fix": "backstage-cli package lint --fix",
+    "postpack": "backstage-cli package postpack",
+    "prepack": "backstage-cli package prepack",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "tsc": "tsc",
+    "prettier:check": "prettier --ignore-unknown --check .",
+    "prettier:fix": "prettier --ignore-unknown --write ."
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@backstage/plugin-permission-common": "^0.9.2"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0"
+  }
+}

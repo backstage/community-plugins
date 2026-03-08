@@ -11,7 +11,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 ## Features
 
 - 🤖 **Multi-Provider AI Support**: Works with OpenAI, Claude, Gemini, and Ollama
-- 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, Streamable HTTP)
+- 🔧 **Multi-Server Support**: Connect multiple MCP servers (STDIO, SSE, Streamable HTTP)
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
@@ -206,7 +206,7 @@ mcpChat:
       category: Catalog
 ```
 
-For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, custom scripts, and arguments), see [SERVER_CONFIGURATION](docs/SERVER_CONFIGURATION.md).
+For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, SSE, custom scripts, and arguments), see [SERVER_CONFIGURATION](docs/SERVER_CONFIGURATION.md).
 
 ### Environment Variables
 

@@ -1,0 +1,20 @@
+---
+# Placeholder template for K8s AI Assistant demo
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: k8s-yaml-template
+  title: Kubernetes YAML Generator
+  description: Generate Kubernetes manifests using AI
+spec:
+  owner: guest
+  type: service
+  parameters:
+    - title: Resource Details
+      properties:
+        name:
+          title: Resource Name
+          type: string
+          description: Name for the Kubernetes resource
+  steps: []
+  output: {}

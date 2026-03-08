@@ -1,1 +1,5 @@
 playwright.config.ts
+**/*.d.ts
+**/dist/**
+**/dist-dynamic/**
+**/dist-types/**

@@ -18,52 +18,38 @@ backend:
   database:
     client: better-sqlite3
     connection: ':memory:'
+    # client: pg
+    # connection:
+    #   host: localhost
+    #   port: 5432
+    #   user: backstage
+    #   password: backstage
+    #   database: agentic_chat
 
 integrations:
   github:
     - host: github.com
       token: ${GITHUB_TOKEN}
 
-# --------- MCP Chat Configuration ---------
-mcpChat:
-  providers:
-    - id: openai
-      baseUrl: 'https://any-openai-compatible-url/v1'
-      token: ${OPENAI_API_KEY}
-      model: gpt-4o-mini
-    - id: openai-responses # OpenAI Responses API
-      baseUrl: 'http://your-responses-api-endpoint.com/v1/openai/v1'
-      model: 'gemini/models/gemini-2.5-flash'
-      token: ${API_TOKEN} # Optional
-    - id: gemini
-      token: ${GEMINI_API_KEY}
-      model: gemini-2.5-flash
-    - id: claude
-      token: ${CLAUDE_API_KEY}
-      model: claude-sonnet-4-20250514
-    - id: ollama
-      baseUrl: 'http://localhost:11434'
-      model: llama3.1:8b
-    - id: litellm
-      baseUrl: 'http://localhost:4000'
-      token: ${LITELLM_API_KEY}
-      model: gpt-4o-mini
   mcpServers:
-    - id: brave-search-server
-      name: Brave Search Server
-      npxCommand: '@modelcontextprotocol/server-brave-search'
-      env:
-        BRAVE_API_KEY: ${BRAVE_API_KEY}
-    - id: kubernetes-server
-      name: Kubernetes Server
-      npxCommand: 'kubernetes-mcp-server@latest'
-      env:
-        KUBECONFIG: ${KUBECONFIG}
-    - id: backstage-server
-      name: Backstage Server
-      url: 'http://localhost:7007/api/mcp-actions/v1'
-      headers:
-        Authorization: 'Bearer ${BACKSTAGE_API_TOKEN}'
+    # OpenShift MCP Server (HTTP/SSE)
+    # Note: OAuth disabled on MCP server - it uses its own service account for K8s API calls
+    # RBAC is enforced at the Backstage layer
+    #- id: openshift-server
+    #  name: OpenShift MCP Server
+    #  type: streamable-http
+    #  url: 'https://openshift-mcp-server-ocp-mcp-server.apps.cluster-nngf2.dynamic.redhatworkshops.io/mcp'
+    # Uncomment to add more MCP servers:
+    # - id: brave-search-server
+    #   name: Brave Search Server
+    #   npxCommand: '@modelcontextprotocol/server-brave-search'
+    #   env:
+    #     BRAVE_API_KEY: ${BRAVE_API_KEY}
+    # - id: kubernetes-server
+    #   name: Kubernetes Server
+    #   npxCommand: 'kubernetes-mcp-server@latest'
+    #   env:
+    #     KUBECONFIG: ${KUBECONFIG}
   systemPrompt: "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered."
   quickPrompts:
     - title: 'Web Search & Research'
@@ -80,6 +66,601 @@ mcpChat:
       category: Portals
 # ------------------------------------------------
 
+# --------- Agentic Chat Configuration ---------
+# Agentic AI assistant - configurable provider backend
+agenticChat:
+  # =============================================================================
+  # PROVIDER SELECTION
+  # =============================================================================
+  # Which agentic provider to use. Currently supported:
+  #   - 'llamastack' (default) — Llama Stack Responses API
+  # Future providers: 'adk' (Google ADK), 'langgraph' (LangGraph Platform)
+  provider: llamastack
+
+  # Proxy base URL — must be reachable from the LlamaStack server.
+  # When using a tunnel (cloudflared/ngrok) for local dev with remote LlamaStack:
+  # proxyBaseUrl: '${PROXY_BASE_URL}'
+
+  # Enable debug logging in the browser console (default: false in production, true in development)
+  # Can also be toggled at runtime via browser console: window.enableAgenticChatDebug()
+  debug: false
+
+  # =============================================================================
+  # SECURITY CONFIGURATION - 3 Modes Available
+  # =============================================================================
+  #
+  # MODE 1: 'none' - No Access Control ✅ TESTED
+  #   - Anyone can access Agentic Chat without logging in
+  #   - MCP servers are called without any authentication headers
+  #   - Best for: Local development, demos, trusted internal environments
+  #
+  # MODE 2: 'plugin-only' - Plugin Access Control ✅ RECOMMENDED
+  #   - Users must be logged in via Keycloak to access Agentic Chat
+  #   - Access controlled by Backstage RBAC (agenticChat.access permission)
+  #   - MCP servers use their own service accounts (no auth headers sent)
+  #   - Best for: Production deployments where MCP server has its own K8s SA
+  #   - Requires: RBAC policy mapping Keycloak group to agenticChat.access
+  #
+  # MODE 3: 'full' - Full Authentication Chain 🚧 EXPERIMENTAL
+  #   - Users must be logged in via Keycloak to access Agentic Chat
+  #   - Backend fetches OAuth tokens for MCP server calls
+  #   - MCP servers receive Authorization: Bearer <token> headers
+  #   - ⚠️ NOT FULLY TESTED - MCP server may not correctly use OAuth tokens
+  #   - Best for: When MCP server requires OAuth authentication
+  #   - Requires: Keycloak service account client + mcpOAuth config below
+  #
+  security:
+    mode: 'plugin-only' # Options: 'none' | 'plugin-only' | 'full' (full is experimental)
+
+    # Admin users (used when permission.enabled is false, i.e. local dev without RBAC).
+    # On RHDH where permission.enabled: true, admin access is controlled by RBAC policy
+    # and this list is ignored.
+    # Entity refs are derived from Keycloak email: admin@example.com → user:default/admin
+    adminUsers:
+      - 'user:default/admin'
+      - 'user:default/guest'
+
+    # Keycloak group required for access (modes 2 & 3)
+    # Users in this group get agenticChat.access permission via RBAC
+    # requiredGroup: 'agentic-chat-users'
+
+    # Custom message shown when user doesn't have access
+    # accessDeniedMessage: 'Contact your platform team for Agentic Chat access.'
+
+    # OAuth config for MCP server authentication (mode 3 'full' only)
+    # Backend uses these credentials to get tokens for MCP calls
+    # mcpOAuth:
+    #   tokenUrl: 'https://keycloak.example.com/realms/demo/protocol/openid-connect/token'
+    #   clientId: 'agentic-chat-backend'
+    #   clientSecret: ${MCP_OAUTH_CLIENT_SECRET}
+    #   scopes:
+    #     - openid
+
+  # =============================================================================
+  # BRANDING - Enterprise Customization
+  # =============================================================================
+  # Override these values to apply your organization's branding
+  branding:
+    appName: 'Agentic Chat'
+    tagline: 'Your AI-powered platform assistant'
+    # Brand colors (hex values)
+    primaryColor: '#9333ea' # Purple - main accent
+    secondaryColor: '#8b5cf6' # Violet - secondary accent
+    successColor: '#10b981' # Emerald - success states
+    warningColor: '#f59e0b' # Amber - warning states
+    errorColor: '#ef4444' # Red - error states
+    # Optional: Custom logo URL (relative or absolute)
+    # logoUrl: '/branding/logo.svg'
+    # Optional: Custom font family
+    # fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+    # Optional: Disable glassmorphism effects for simpler look
+    enableGlassEffect: true
+
+  # =============================================================================
+  # LLAMA STACK - AI Backend Configuration
+  # =============================================================================
+  llamaStack:
+    baseUrl: ${LLAMASTACK_BASE_URL}
+    model: 'gemini/models/gemini-2.5-pro'
+    # DeepSeek-R1: Reasoning model (does NOT support tool calling well)
+    # model: 'r1-qwen-14b-w4a16'
+
+    # -------------------------------------------------------------------------
+    # VECTOR STORE CONFIGURATION (Required for RAG)
+    # -------------------------------------------------------------------------
+    # vectorStoreName (REQUIRED): The canonical name for your vector store.
+    # On plugin startup:
+    #   1. If vectorStoreIds is provided, validates those IDs exist on server
+    #   2. If validation fails or vectorStoreIds is empty, finds/creates store by name
+    # This ensures RAG is always enabled with a properly named vector store.
+    vectorStoreName: 'rhdh-knowledge-base'
+
+    # vectorStoreIds (Optional): Pre-existing vector store IDs to use.
+    # If provided and valid, these are used directly. Otherwise falls back to vectorStoreName.
+    # Backward compatible: 'vectorStoreId' (single) also works.
+    # vectorStoreIds:
+    #   - '${VECTOR_STORE_ID}'
+    # Embedding model for RAG (used when creating vector store)
+    embeddingModel: 'sentence-transformers/ibm-granite/granite-embedding-125m-english'
+    embeddingDimension: 768
+    # -------------------------------------------------------------------------
+    # HYBRID SEARCH CONFIGURATION (Optional)
+    # -------------------------------------------------------------------------
+    # Search mode for RAG retrieval:
+    #   - 'semantic': Pure embedding-based search (default)
+    #   - 'keyword': Pure BM25 keyword search
+    #   - 'hybrid': Combines semantic and keyword search for better results
+    # searchMode: 'hybrid'
+    # Weights for hybrid search (only used when searchMode: 'hybrid')
+    # bm25Weight: 0.5      # Weight for keyword/BM25 search (0.0 - 1.0)
+    # semanticWeight: 0.5  # Weight for semantic/embedding search (0.0 - 1.0)
+    # -------------------------------------------------------------------------
+    # Chunking configuration
+    chunkingStrategy: 'static'
+    maxChunkSizeTokens: 200
+    chunkOverlapTokens: 50
+    # -------------------------------------------------------------------------
+    # FILE SEARCH OPTIMIZATION (Token Usage)
+    # -------------------------------------------------------------------------
+    # Max chunks returned per file_search query (1-50, Llama Stack default: 10).
+    # Lower values reduce input tokens sent to the model.
+    fileSearchMaxResults: 5
+    # Minimum relevance score for returned chunks (0.0-1.0).
+    # Chunks below this score are dropped, reducing noise and token usage.
+    fileSearchScoreThreshold: 0.3
+    # Skip TLS certificate verification (for self-signed certs in dev/enterprise)
+    # Set to false in production with valid certificates
+    skipTlsVerify: true
+
+  # Safety Guardrails
+  # Reference: https://developers.redhat.com/articles/2025/08/26/implement-ai-safeguards-python-and-llama-stack
+  safety:
+    enabled: true
+
+    # Shield registration requires safety providers in the Llama Stack server's run.yaml:
+    #   safety:
+    #     - provider_id: llama-guard
+    #       provider_type: inline::llama-guard
+    #     - provider_id: prompt-guard
+    #       provider_type: inline::prompt-guard
+    #
+    # To enable Llama Stack safety shields, uncomment and configure after server setup:
+    # registerShields:
+    #   - shieldId: content_safety
+    #     providerId: llama-guard
+    #     providerShieldId: meta-llama/Llama-Guard-3-8B
+    #   - shieldId: prompt_injection
+    #     providerId: prompt-guard
+    #     providerShieldId: Prompt-Guard-86M
+    # inputShields:
+    #   - content_safety
+    #   - prompt_injection
+    # outputShields:
+    #   - content_safety
+    # onError: block  # 'block' (fail-closed, default) or 'allow' (fail-open)
+
+  # Response Evaluation - Uses Llama Stack Scoring API
+  # Available scoring functions on this server:
+  #   - braintrust::answer-relevancy (relevancy to input)
+  #   - braintrust::answer-correctness (correctness scoring)
+  #   - braintrust::faithfulness (faithfulness to context)
+  #   - braintrust::context-relevancy (context relevance)
+  #   - braintrust::factuality (factual accuracy)
+  #   - llm-as-judge::base (LLM-based judging)
+  evaluation:
+    # Disabled - scoring functions not available on this Llama Stack server
+    # Enable when server has scoring functions registered (check /v1/scoring-functions)
+    enabled: false
+    # Best scoring functions for RAG quality assessment (when available)
+    scoringFunctions:
+      - 'braintrust::answer-relevancy' # Is the answer relevant to the question?
+      - 'braintrust::faithfulness' # Is the answer faithful to the RAG context?
+    # Minimum score threshold (0-1) - below this logs a warning
+    minScoreThreshold: 0.7
+
+  # =============================================================================
+  # DOCUMENT SOURCES FOR RAG INGESTION
+  # =============================================================================
+  # IMPORTANT: Enable only ONE source to avoid duplicate ingestion!
+  # Choose based on your deployment environment:
+  #
+  # For RHDH/Container deployments:
+  #   → Use 'github' source (RECOMMENDED) - no filesystem access needed
+  #   → Or 'url' source - for individual doc URLs
+  #
+  # For Local development:
+  #   → Use 'directory' source - reads from local filesystem
+  # =============================================================================
+  documents:
+    syncMode: full
+    sources:
+      # -------------------------------------------------------------------------
+      # OPTION 1: Directory Source (LOCAL DEV)
+      # Path is relative to backend plugin directory (plugins/agentic-chat-backend/)
+      # -------------------------------------------------------------------------
+      # - type: directory
+      #   path: ../../docs/knowledge-base
+      #   patterns:
+      #     - '**/*.md'
+
+      # -------------------------------------------------------------------------
+      # OPTION 2: GitHub Source (RECOMMENDED for RHDH/Containers)
+      # ✅ Container-friendly - no volume mounts needed
+      # ✅ Easy to update - just push to repo
+      # Uncomment below and comment out directory source for production
+      # -------------------------------------------------------------------------
+      # - type: github
+      #   repo: 'your-org/your-repo'
+      #   branch: main
+      #   path: workspaces/mcp-chat/docs/knowledge-base
+      #   patterns:
+      #     - '**/*.md'
+      #   # token: ${GITHUB_TOKEN}  # Uncomment for private repos
+
+      # -------------------------------------------------------------------------
+      # OPTION 3: URL Source (Alternative for RHDH/Containers)
+      # ✅ Container-friendly - no volume mounts needed
+      # ⚠️ Must list each URL individually
+      # -------------------------------------------------------------------------
+      # - type: url
+      #   urls:
+      #     - 'https://raw.githubusercontent.com/rrbanda/backstage-community-plugins/techx/workspaces/mcp-chat/docs/knowledge-base/type-a-migration-guide.md'
+
+  # MCP Servers for tool execution
+  # Each server can have Human-in-the-Loop (HITL) approval configured
+  # Servers can also be added/managed via the Admin Panel UI
+  mcpServers:
+    - id: ocp-mcp
+      name: OpenShift MCP Server
+      type: streamable-http
+      url: ${MCP_SERVER_URL}
+      requireApproval: 'always'
+  systemPrompt: |
+    You are an intelligent AI assistant for the Application Platform. You have two powerful capabilities:
+
+    1. **RAG (Knowledge Base)**: Search and reference uploaded documentation to answer questions accurately.
+    2. **MCP Tools (Actions)**: Execute actions on OpenShift/Kubernetes clusters like creating namespaces, deployments, and more.
+
+    ## Core Behaviors
+
+    **Be Contextually Aware:**
+    - REMEMBER context from the current conversation. If a user mentions namespace "aap", subsequent questions about pods, deployments, or resources should use that namespace automatically.
+    - Track entities mentioned: namespaces, pods, deployments, services, etc. Use the most recently mentioned entity for follow-up questions.
+    - DON'T ask for clarification when context is already established in the conversation.
+
+    **Be Proactive - Execute First, Don't Ask:**
+    - ALWAYS execute the tool first, then provide a helpful response with the results
+    - NEVER say "I can do X, would you like me to?" - just DO it
+    - For read operations (list, get, describe, logs): Execute immediately, then summarize the results
+    - For logs: Fetch the logs, then provide a meaningful summary highlighting errors, warnings, or key events
+    - For listing resources: If a namespace was discussed earlier, use it automatically
+
+    **Ask Only For Destructive Operations:**
+    - Creating/deleting resources: Confirm before executing
+    - Scaling to 0: Confirm before executing
+    - Everything else (viewing, listing, logs, describe): Just do it
+
+    **Be Interactive for Guided Workflows (Migrations, Onboarding):**
+    - When a user asks for help with migrations, onboarding, or complex workflows:
+      1. FIRST search the knowledge base using file_search to find relevant documentation
+      2. Based on what you find, identify what information you need from the user
+      3. Ask questions ONE AT A TIME - don't overwhelm with multiple questions
+      4. Remember ALL answers and use them to build a personalized action plan
+    - Let the knowledge base guide your questions and recommendations - don't make assumptions
+    - Always ground your responses in the retrieved documentation
+
+    ## Example Conversations
+
+    **Good - Using Conversation Context:**
+    User: "Is there a namespace aap?"
+    You: [Execute namespaces_list tool] "Yes, namespace 'aap' exists and is Active."
+    User: "What pods are there?"
+    You: [Execute pods_list for namespace 'aap'] "Here are the pods in namespace 'aap': ..." 
+    (NOTE: You used 'aap' because it was just discussed - DO NOT ask "which namespace?")
+
+    **Good - No Prior Context:**
+    User: "Show me all pods"
+    You: [Execute pods_list across all namespaces] "Here are the pods across the cluster: ..."
+    (NOTE: List all since no specific namespace was mentioned)
+
+    **Good - Summarizing Logs:**
+    User: "Summarize logs for pod my-app-xyz"
+    You: [Execute pods_logs tool] "Here's a summary of the logs for my-app-xyz:
+    - The pod started successfully at 10:32 AM
+    - ⚠️ Warning: 3 connection timeouts to database at 10:45 AM
+    - Application is processing requests normally since 10:50 AM
+    - No errors in the last hour"
+    (NOTE: Fetch logs first, THEN provide a meaningful summary - don't ask permission)
+
+    **Good - RAG-Driven Interactive Workflow:**
+    User: "I need help with a Type A Migration."
+    You: [Execute file_search to find migration documentation]
+    You: "I found the Type A Migration Guide. Based on the documentation, I'll need some information to create your personalized migration plan.
+
+    What is your Application ID?"
+    ...continue asking questions based on what the knowledge base says is needed...
+
+    ## Response Format
+    - Be direct and concise - avoid lengthy preambles
+    - For resource lists (pods, deployments):
+      - Use a SIMPLE markdown table with 3-4 columns max: NAME | STATUS | AGE | NAMESPACE
+      - Do NOT include long fields like labels, IP addresses, or node names in tables
+      - If there are issues (CrashLoopBackOff, Error, ImagePullBackOff), highlight them with ⚠️
+    - Example pod list format:
+      | NAME | STATUS | RESTARTS | AGE |
+      |------|--------|----------|-----|
+      | my-pod-abc123 | Running | 0 | 2d |
+      | failing-pod-xyz | ⚠️ CrashLoopBackOff | 15 | 1h |
+    - Keep responses readable - quality over quantity
+  # Swim lanes - Grouped actions for app developers
+  # Each swim lane has a title, description, icon, color, order, and list of cards
+  # The 'order' field controls display order (lower numbers appear first)
+  swimLanes:
+    - id: type-a-migration
+      title: 'Type A Migration'
+      description: 'ECS 1.0 to Cloud@Citi BareMetal OpenShift'
+      icon: 'migration'
+      color: '#8b5cf6'
+      order: 1
+      cards:
+        - title: 'Start My Migration'
+          description: 'Get your personalized migration guide'
+          prompt: 'I want to start my Type A Migration. Guide me through the process.'
+          icon: 'rocket'
+        - title: 'Is My App In Scope?'
+          description: 'Check if your application is in the migration wave'
+          prompt: 'Is my application in scope for the Type A Migration? Check my CSI.'
+          icon: 'search'
+        - title: 'Migration Timeline'
+          description: 'View wave schedule and key dates'
+          prompt: 'Show me the migration timeline and wave schedule for Type A migrations.'
+          icon: 'events'
+
+    - id: migration-support
+      title: 'Migration Support'
+      description: 'Planning, networking, and troubleshooting'
+      icon: 'build'
+      color: '#10b981'
+      order: 2
+      cards:
+        - title: 'Network Planning'
+          description: 'Egress IPs, vanity URLs, and certificates'
+          prompt: 'Help me plan egress IPs, vanity URLs, and certificates for my Type A Migration.'
+          icon: 'network'
+        - title: 'Troubleshoot Issue'
+          description: 'Diagnose migration problems'
+          prompt: 'I am having an issue with my Type A Migration. Help me diagnose the problem.'
+          icon: 'bug'
+        - title: 'SSO Planning'
+          description: 'Plan Ping Access or SiteMinder changes'
+          prompt: 'Help me plan the SSO policy changes needed for my Type A Migration. What do I need to submit?'
+          icon: 'config'
+
+  # Legacy quickPrompts - kept for backwards compatibility
+  quickPrompts:
+    - title: 'Deploy from Git'
+      description: 'Deploy app directly from GitHub/GitLab'
+      prompt: 'I want to deploy my application from a Git repository. Ask me for the repo URL and help me set up the deployment.'
+      category: Deploy
+
+  # Workflows - Multi-step guided experiences for App Developers
+  # Categories: Deploy (New Developer Onboarding), Migrate (Application Migration), Daily (Daily Developer Tasks)
+  workflows:
+    # ===== NEW DEVELOPER ONBOARDING =====
+    - id: deploy-first-app
+      name: 'Deploy My App'
+      description: 'Get your application running on OpenShift'
+      icon: 'rocket'
+      category: Deploy
+      steps:
+        - title: 'Connect Git Repo'
+          prompt: 'I want to deploy my application from Git. Ask me for my repository URL and branch.'
+          description: 'Link your source code'
+        - title: 'Configure Build'
+          prompt: 'Help me configure the build settings. What base image and build strategy should I use?'
+          description: 'Set up build configuration'
+        - title: 'Deploy & Verify'
+          prompt: 'Deploy my application and show me how to verify it is running correctly.'
+          description: 'Launch and validate'
+
+    - id: add-database
+      name: 'Add Database'
+      description: 'Set up PostgreSQL or MySQL for your app'
+      icon: 'cloud'
+      category: Deploy
+      steps:
+        - title: 'Choose Database'
+          prompt: 'I need a database for my application. What options are available (PostgreSQL, MySQL, MongoDB)? Help me choose.'
+          description: 'Select database type'
+        - title: 'Deploy Database'
+          prompt: 'Deploy the database in my namespace with appropriate resource requests.'
+          description: 'Create database instance'
+        - title: 'Connect App'
+          prompt: 'Update my application deployment to connect to the new database using the secret.'
+          description: 'Link app to database'
+
+    - id: add-config
+      name: 'Add Config'
+      description: 'Set up environment variables & secrets'
+      icon: 'config'
+      category: Deploy
+      steps:
+        - title: 'Add Config'
+          prompt: 'I need to configure my application with environment variables. Help me create ConfigMaps or Secrets and attach them to my deployment.'
+          description: 'Configure app settings'
+
+    # ===== APPLICATION MIGRATION =====
+    # Migration Types (by complexity)
+    - id: migrate-type-a
+      name: 'Type A'
+      description: 'Container-ready apps (minimal changes)'
+      icon: 'rocket'
+      category: Migrate
+      comingSoon: false
+      steps:
+        - title: 'Migrate Type A'
+          prompt: 'I need help with a Type A Migration.'
+          description: 'Interactive migration assistant'
+
+    - id: migrate-type-b
+      name: 'Type B'
+      description: 'Apps needing containerization'
+      icon: 'build'
+      category: Migrate
+      comingSoon: true
+      steps:
+        - title: 'Migrate Type B'
+          prompt: 'I have an application (Type B) that needs to be containerized before running on OpenShift. Help me assess my app, create a Dockerfile, and deploy it. Ask me about my tech stack.'
+          description: 'Containerize and deploy'
+
+    - id: migrate-type-c
+      name: 'Type C'
+      description: 'Complex apps needing refactoring'
+      icon: 'settings'
+      category: Migrate
+      comingSoon: true
+      steps:
+        - title: 'Migrate Type C'
+          prompt: 'I have a complex application (Type C) that requires refactoring to run on OpenShift. Help me analyze dependencies, plan the migration strategy, and break it into microservices if needed. Ask me about my current architecture.'
+          description: 'Refactor and migrate'
+
+    # Tech-specific migrations
+    - id: migrate-java
+      name: 'Java / Spring Boot'
+      description: 'Migrate Java or Spring Boot apps'
+      icon: 'java'
+      category: Migrate
+      steps:
+        - title: 'Migrate Java'
+          prompt: 'I have a Java/Spring Boot application I want to migrate to OpenShift. Help me assess what changes are needed, create a Dockerfile, and deploy it.'
+          description: 'Migrate Java app'
+
+    - id: migrate-nodejs
+      name: 'Node.js'
+      description: 'Migrate Node.js applications'
+      icon: 'code'
+      category: Migrate
+      steps:
+        - title: 'Migrate Node.js'
+          prompt: 'I have a Node.js application I want to migrate to OpenShift. Help me containerize and deploy it.'
+          description: 'Migrate Node app'
+
+    - id: migrate-python
+      name: 'Python'
+      description: 'Migrate Python/Django/Flask apps'
+      icon: 'python'
+      category: Migrate
+      steps:
+        - title: 'Migrate Python'
+          prompt: 'I have a Python application (Django/Flask) I want to migrate to OpenShift. Help me containerize and deploy it.'
+          description: 'Migrate Python app'
+
+    # ===== DAILY DEVELOPER TASKS =====
+    - id: view-logs
+      name: 'View App Logs'
+      description: 'Check what your application is doing'
+      icon: 'logs'
+      category: Daily
+      steps:
+        - title: 'Get Logs'
+          prompt: 'Show me the recent logs for my application. Ask me which pod or deployment.'
+          description: 'View application output'
+
+    - id: debug-app
+      name: 'Debug Issues'
+      description: 'Troubleshoot application problems'
+      icon: 'bug'
+      category: Daily
+      steps:
+        - title: 'Check Status'
+          prompt: 'Show me the status of all my pods and deployments. Are there any errors or warnings?'
+          description: 'Review current state'
+        - title: 'Analyze Logs'
+          prompt: 'Show me the application logs and look for errors or exceptions.'
+          description: 'Find the issue'
+        - title: 'Get Fix'
+          prompt: 'Based on what you found, what should I fix? Give me specific commands.'
+          description: 'Apply the solution'
+
+    - id: scale-app
+      name: 'Scale My App'
+      description: 'Add or remove replicas'
+      icon: 'scale'
+      category: Daily
+      steps:
+        - title: 'Scale'
+          prompt: 'I want to scale my deployment. Ask me which deployment and how many replicas I need.'
+          description: 'Adjust replica count'
+
+    - id: update-app
+      name: 'Update My App'
+      description: 'Deploy a new version'
+      icon: 'refresh'
+      category: Daily
+      steps:
+        - title: 'Trigger Build'
+          prompt: 'I want to update my application with the latest code. Help me trigger a new build and deployment.'
+          description: 'Deploy new version'
+
+    - id: check-resources
+      name: 'Check Resources'
+      description: 'Monitor CPU, memory, quotas'
+      icon: 'monitor'
+      category: Daily
+      steps:
+        - title: 'View Resources'
+          prompt: 'Show me my namespace resource quotas and current usage. How much CPU and memory do I have left?'
+          description: 'Check resource usage'
+
+    - id: view-events
+      name: 'Pod Events'
+      description: 'See what Kubernetes is telling you'
+      icon: 'events'
+      category: Daily
+      steps:
+        - title: 'View Events'
+          prompt: 'Show me recent events for my pods. I want to understand what is happening with my deployment.'
+          description: 'Check pod events'
+
+    - id: rollback-app
+      name: 'Rollback'
+      description: 'Revert to previous version'
+      icon: 'undo'
+      category: Daily
+      steps:
+        - title: 'Rollback'
+          prompt: 'I need to rollback my deployment to the previous version. Show me the rollout history and help me revert.'
+          description: 'Revert deployment'
+# ------------------------------------------------
+
+# --------- Knowledge Base Configuration ---------
+# Using Llama Stack (OpenAI-compatible RAG with built-in vector store)
+# Llama Stack handles embeddings and vector storage automatically
+#
+knowledgeBase:
+  llamastack:
+    baseUrl: ${KNOWLEDGE_BASE_LLAMASTACK_URL}
+    vectorStoreId: ${KNOWLEDGE_BASE_VECTOR_STORE_ID}
+    model: 'llama-4-scout-17b-16e-w4a16'
+    chunkingStrategy: 'static'
+    maxChunkSizeTokens: 200
+    chunkOverlapTokens: 50
+#
+# Alternative: Traditional embedding provider + vector store (Pinecone/ChromaDB)
+# Comment out llamastack above and uncomment below to use:
+#
+# knowledgeBase:
+#   embeddingProviders:
+#     - id: gemini
+#       token: ${GEMINI_API_KEY}
+#       model: gemini-embedding-001
+#       dimensions: 3072
+#   vectorStores:
+#     - id: pinecone
+#       apiKey: ${PINECONE_API_KEY}
+#       indexName: k8s-knowledge-base
+# ------------------------------------------------
+
 proxy:
 
 techdocs:
@@ -90,8 +671,28 @@ techdocs:
     type: 'local'
 
 auth:
+  session:
+    secret: ${AUTH_SESSION_SECRET}
   providers:
-    guest: {}
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
+      enabled: true
+      userEntityRef: user:default/guest
+    # oidc:
+    #   development:
+    #     metadataUrl: https://keycloak-rhsso.apps.cluster-n5fv7.dynamic.redhatworkshops.io/auth/realms/backstage/.well-known/openid-configuration
+    #     clientId: backstage
+    #     clientSecret: ${KEYCLOAK_CLIENT_SECRET}
+    #     callbackUrl: http://localhost:7007/api/auth/oidc/handler/frame
+    #     additionalScopes:
+    #       - openid
+    #       - profile
+    #       - email
+    #     prompt: auto
+    #     signIn:
+    #       resolvers:
+    #         - resolver: emailLocalPartMatchingUserEntityName
+    #           dangerouslyAllowSignInWithoutUserInCatalog: true
 
 scaffolder:
 
@@ -102,18 +703,33 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
+    # Local examples with Kubernetes annotations
     - type: file
-      target: ../../examples/entities.yaml
+      target: ./examples/entities.yaml
     - type: file
-      target: ../../examples/template/template.yaml
+      target: ./examples/template/template.yaml
       rules:
         - allow: [Template]
     - type: file
-      target: ../../examples/org.yaml
+      target: ./examples/org.yaml
       rules:
         - allow: [User, Group]
 
+# --------- Kubernetes/OpenShift Configuration ---------
+# Required for "Select Pod" dropdown and K8s resource discovery
+# Set OPENSHIFT_TOKEN via: export OPENSHIFT_TOKEN=$(oc whoami -t)
 kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - name: my-openshift-cluster
+          url: https://api.your-cluster.example.com:6443
+          authProvider: 'serviceAccount'
+          serviceAccountToken: ${OPENSHIFT_TOKEN}
+          skipTLSVerify: true
+# ------------------------------------------------
 
 permission:
-  enabled: true
+  enabled: false

@@ -34,6 +34,7 @@ node_modules/
 # Build output
 dist
 dist-types
+dist-dynamic
 
 # Temporary change files created by Vim
 *.swp
@@ -52,3 +53,13 @@ site
 
 # E2E test reports
 e2e-test-report/
+
+# LSS document hash cache
+.lss-doc-hashes.json
+.tech-explorer-doc-hashes.json
+
+# Generated reports
+knip-report.md
+
+# CI/CD Dockerfile (contains local paths)
+Dockerfile.ci
