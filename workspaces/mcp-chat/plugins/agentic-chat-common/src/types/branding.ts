@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-/** Glass effect intensity levels */
+/**
+ * Glass effect intensity levels
+ * @public
+ */
 export type GlassIntensity = 'subtle' | 'medium' | 'strong';
 
-/** Glass effect configuration */
+/**
+ * Glass effect configuration
+ * @public
+ */
 export interface GlassConfig {
   intensity: GlassIntensity;
   blur: number;
@@ -54,6 +60,7 @@ export interface BrandingConfig {
 /**
  * Single source of truth for branding defaults.
  * Used by both frontend hooks and backend API routes.
+ * @public
  */
 export const DEFAULT_BRANDING: BrandingConfig = {
   appName: 'Agentic Chat',

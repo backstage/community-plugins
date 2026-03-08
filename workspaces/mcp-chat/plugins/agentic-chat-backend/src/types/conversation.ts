@@ -134,7 +134,7 @@ export interface StoredResponseList {
 
 /**
  * Input item from a response (conversation context)
- * Response from GET /v1/openai/v1/responses/{id}/input_items
+ * Response from GET /v1/openai/v1/responses/:id/input_items
  * @public
  */
 export interface ResponseInputItem {

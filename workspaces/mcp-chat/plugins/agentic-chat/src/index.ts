@@ -22,6 +22,7 @@
 
 export { agenticChatPlugin, AgenticChatPage, AgenticChatIcon } from './plugin';
 export { agenticChatApiRef } from './api';
+export type { AgenticChatApi } from './api';
 export * from './types';
 
 // Re-export permission for consumers

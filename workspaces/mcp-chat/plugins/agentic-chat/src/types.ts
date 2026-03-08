@@ -114,6 +114,7 @@ export interface ProcessedMessage {
  * Response from the session messages API endpoint.
  * Includes the messages and the session creation timestamp as a fallback
  * for messages that lack per-message timestamps.
+ * @public
  */
 export interface SessionMessagesResponse {
   messages: ProcessedMessage[];

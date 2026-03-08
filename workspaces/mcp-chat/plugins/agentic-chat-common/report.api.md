@@ -159,8 +159,6 @@ export interface ConversationSummary {
   status: 'completed' | 'failed' | 'in_progress';
 }
 
-// Warning: (ae-missing-release-tag) "DEFAULT_BRANDING" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const DEFAULT_BRANDING: BrandingConfig;
 
@@ -205,8 +203,6 @@ export enum FileFormat {
   YAML = 'yaml',
 }
 
-// Warning: (ae-missing-release-tag) "GlassConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface GlassConfig {
   // (undocumented)
@@ -219,8 +215,6 @@ export interface GlassConfig {
   intensity: GlassIntensity;
 }
 
-// Warning: (ae-missing-release-tag) "GlassIntensity" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type GlassIntensity = 'subtle' | 'medium' | 'strong';
 
@@ -235,8 +229,6 @@ export const GLOBAL_CONFIG_KEYS: readonly [
   'mcpProxyUrl',
 ];
 
-// Warning: (ae-missing-release-tag) "GlobalConfigKey" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type GlobalConfigKey = (typeof GLOBAL_CONFIG_KEYS)[number];
 
@@ -251,8 +243,6 @@ export function isGlobalConfigKey(key: string): key is GlobalConfigKey;
 // @public
 export function isProviderScopedKey(key: string): key is ProviderScopedKey;
 
-// Warning: (ae-missing-release-tag) "MCPServerStatus" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface MCPServerStatus {
   // (undocumented)
@@ -356,8 +346,6 @@ export interface ProviderDescriptor {
   readonly implemented: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "ProviderScopedKey" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type ProviderScopedKey = (typeof PROVIDER_SCOPED_KEYS)[number];
 

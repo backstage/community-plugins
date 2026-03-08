@@ -189,6 +189,9 @@ export interface MCPToolInfo {
   description?: string;
 }
 
+/**
+ * @public
+ */
 export interface MCPServerStatus {
   id: string;
   name: string;

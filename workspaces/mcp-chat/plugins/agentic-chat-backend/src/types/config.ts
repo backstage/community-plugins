@@ -214,7 +214,7 @@ export interface LlamaStackConfig {
    * - 'auto': Model decides when to call tools (default)
    * - 'required': Model must call at least one tool
    * - 'none': Model cannot call any tools
-   * - { type: 'function', name: '...' }: Force a specific function
+   * - `\{ type: 'function', name: '...' \}`: Force a specific function
    */
   toolChoice?: ToolChoiceConfig;
   /**

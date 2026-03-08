@@ -143,10 +143,16 @@ export const PROVIDER_SCOPED_KEYS = [
   'activeVectorStoreIds',
 ] as const;
 
-/** Type-safe element of {@link GLOBAL_CONFIG_KEYS}. */
+/**
+ * Type-safe element of {@link GLOBAL_CONFIG_KEYS}.
+ * @public
+ */
 export type GlobalConfigKey = (typeof GLOBAL_CONFIG_KEYS)[number];
 
-/** Type-safe element of {@link PROVIDER_SCOPED_KEYS}. */
+/**
+ * Type-safe element of {@link PROVIDER_SCOPED_KEYS}.
+ * @public
+ */
 export type ProviderScopedKey = (typeof PROVIDER_SCOPED_KEYS)[number];
 
 /**

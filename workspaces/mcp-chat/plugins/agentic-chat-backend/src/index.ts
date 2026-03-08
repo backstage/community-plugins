@@ -51,6 +51,7 @@ export type {
 export type {
   // Configuration
   AllowedToolSpec,
+  ReasoningConfig,
   ToolChoiceConfig,
   LlamaStackConfig,
   FunctionDefinition,

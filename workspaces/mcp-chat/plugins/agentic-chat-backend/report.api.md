@@ -159,7 +159,6 @@ export interface LlamaStackConfig {
   maxChunkSizeTokens: number;
   model: string;
   parallelToolCalls?: boolean;
-  // Warning: (ae-forgotten-export) The symbol "ReasoningConfig" needs to be exported by the entry point index.d.ts
   reasoning?: ReasoningConfig;
   searchMode?: 'semantic' | 'keyword' | 'hybrid';
   semanticWeight?: number;
@@ -173,8 +172,6 @@ export interface LlamaStackConfig {
     };
   };
   token?: string;
-  // Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-  // Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
   toolChoice?: ToolChoiceConfig;
   vectorStoreIds: string[];
   vectorStoreName: string;
@@ -248,9 +245,12 @@ export { QuickAction };
 
 export { RAGSource };
 
-// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
-// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
-//
+// @public
+export interface ReasoningConfig {
+  effort?: 'low' | 'medium' | 'high';
+  summary?: 'auto' | 'concise' | 'detailed' | 'none';
+}
+
 // @public
 export interface ResponseInputItem {
   call_id?: string;

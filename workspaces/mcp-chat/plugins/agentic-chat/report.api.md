@@ -67,8 +67,211 @@ export { AdminConfigKey };
 
 export { agenticChatAccessPermission };
 
-// Warning: (ae-forgotten-export) The symbol "AgenticChatApi" needs to be exported by the entry point index.d.ts
-//
+// @public
+export interface AgenticChatApi {
+  chat(
+    messages: ChatMessage[],
+    enableRAG?: boolean,
+    signal?: AbortSignal,
+    previousResponseId?: string,
+    conversationId?: string,
+  ): Promise<ChatResponse>;
+  chatStream(
+    messages: ChatMessage[],
+    onEvent: StreamingEventCallback,
+    enableRAG?: boolean,
+    signal?: AbortSignal,
+    previousResponseId?: string,
+    conversationId?: string,
+  ): Promise<void>;
+  chatStreamWithSession(
+    messages: ChatMessage[],
+    onEvent: StreamingEventCallback,
+    sessionId: string,
+    enableRAG?: boolean,
+    signal?: AbortSignal,
+  ): Promise<void>;
+  connectVectorStore(vectorStoreId: string): Promise<{
+    activeVectorStoreIds: string[];
+  }>;
+  createConversation(): Promise<{
+    conversationId: string;
+  }>;
+  createSession(title?: string): Promise<ChatSessionSummary>;
+  createVectorStore(
+    config?: Record<string, unknown>,
+  ): Promise<VectorStoreCreateResult>;
+  deleteAdminConfig(key: AdminConfigKey): Promise<{
+    deleted: boolean;
+  }>;
+  deleteConversation(
+    responseId: string,
+    conversationId?: string,
+  ): Promise<boolean>;
+  deleteDocument(
+    fileId: string,
+    vectorStoreId?: string,
+  ): Promise<{
+    success: boolean;
+  }>;
+  deleteSession(sessionId: string): Promise<boolean>;
+  generateSystemPrompt(
+    description: string,
+    model?: string,
+    capabilities?: PromptCapabilities,
+  ): Promise<string>;
+  getActiveProvider(): Promise<{
+    providerId: string;
+  }>;
+  getAdminConfig(key: AdminConfigKey): Promise<{
+    entry: AdminConfigEntry | null;
+    source: 'database' | 'default';
+  }>;
+  getAdminSessionMessages(sessionId: string): Promise<SessionMessagesResponse>;
+  getBranding(): Promise<BrandingConfig>;
+  getConversation(responseId: string): Promise<ConversationDetails | null>;
+  getConversationInputs(responseId: string): Promise<{
+    items: ConversationInputItem[];
+    hasMore: boolean;
+  }>;
+  getConversationItems(conversationId: string): Promise<{
+    items: ConversationInputItem[];
+  }>;
+  getConversationMessages(conversationId: string): Promise<ProcessedMessage[]>;
+  getEffectiveConfig(): Promise<Record<string, unknown>>;
+  getEvaluationStatus(): Promise<EvaluationStatusResponse>;
+  getQuickActions(): Promise<QuickAction[]>;
+  getSafetyStatus(): Promise<SafetyStatusResponse>;
+  getSessionMessages(sessionId: string): Promise<SessionMessagesResponse>;
+  getStatus(): Promise<AgenticChatStatus>;
+  getSwimLanes(): Promise<SwimLane[]>;
+  getVectorStoreConfig(): Promise<{
+    config: VectorStoreConfig;
+    source: 'yaml' | 'database' | 'merged';
+  }>;
+  getVectorStoreStatus(): Promise<VectorStoreStatusResult>;
+  getWorkflows(): Promise<Workflow[]>;
+  listActiveVectorStores(): Promise<{
+    stores: Array<
+      VectorStoreInfo & {
+        active: boolean;
+      }
+    >;
+  }>;
+  listAdminConfig(): Promise<
+    Array<{
+      configKey: AdminConfigKey;
+      updatedAt: string;
+      updatedBy: string;
+    }>
+  >;
+  listAllSessions(): Promise<ChatSessionSummary[]>;
+  listConversations(
+    limit?: number,
+    order?: 'asc' | 'desc',
+    after?: string,
+  ): Promise<{
+    conversations: ConversationSummary[];
+    hasMore: boolean;
+    lastId?: string;
+  }>;
+  listDocuments(): Promise<DocumentInfo[]>;
+  listDocumentsForStore(vectorStoreId: string): Promise<DocumentInfo[]>;
+  listModels(): Promise<
+    Array<{
+      id: string;
+      owned_by?: string;
+      model_type?: string;
+    }>
+  >;
+  listProviders(): Promise<{
+    providers: ProviderDescriptor[];
+    activeProviderId: string;
+  }>;
+  listSessions(limit?: number, offset?: number): Promise<ChatSessionSummary[]>;
+  removeVectorStore(
+    vectorStoreId: string,
+    permanent?: boolean,
+  ): Promise<{
+    removed: string;
+    permanent: boolean;
+    filesDeleted: number;
+    activeVectorStoreIds: string[];
+  }>;
+  resetVectorStoreConfig(): Promise<{
+    deleted: boolean;
+  }>;
+  saveVectorStoreConfig(overrides: Partial<VectorStoreConfig>): Promise<void>;
+  setActiveProvider(providerId: string): Promise<{
+    success: boolean;
+    providerId: string;
+    error?: string;
+  }>;
+  setAdminConfig(
+    key: AdminConfigKey,
+    value: unknown,
+  ): Promise<{
+    warnings?: string[];
+  }>;
+  submitToolApproval(
+    responseId: string,
+    callId: string,
+    approved: boolean,
+    toolName?: string,
+    toolArguments?: string,
+    signal?: AbortSignal,
+  ): Promise<{
+    success: boolean;
+    content?: string;
+    responseId?: string;
+    rejected?: boolean;
+    toolOutput?: string;
+    toolExecuted?: boolean;
+    pendingApproval?: {
+      approvalRequestId: string;
+      toolName: string;
+      serverLabel?: string;
+      arguments?: string;
+    };
+  }>;
+  syncDocuments(): Promise<{
+    added: number;
+    updated: number;
+    removed: number;
+    failed: number;
+    unchanged: number;
+    errors: string[];
+  }>;
+  testMcpConnection(
+    url: string,
+    type?: string,
+    headers?: Record<string, string>,
+  ): Promise<McpTestConnectionResult>;
+  testModelConnection(model?: string): Promise<{
+    connected: boolean;
+    modelFound: boolean;
+    canGenerate: boolean;
+    error?: string;
+  }>;
+  testRagQuery(
+    query: string,
+    maxResults?: number,
+    vectorStoreId?: string,
+    vectorStoreIds?: string[],
+  ): Promise<RagTestResult>;
+  uploadDocument(
+    file: File,
+    vectorStoreId?: string,
+    replace?: boolean,
+  ): Promise<UploadResult>;
+  walkResponseChain(responseId: string): Promise<{
+    messages: Array<{
+      role: 'user' | 'assistant';
+      text: string;
+    }>;
+  }>;
+}
+
 // @public
 export const agenticChatApiRef: ApiRef<AgenticChatApi>;
 
@@ -315,8 +518,6 @@ export interface SafetyStatusResponse {
 
 export { SecurityMode };
 
-// Warning: (ae-missing-release-tag) "SessionMessagesResponse" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface SessionMessagesResponse {
   // (undocumented)
