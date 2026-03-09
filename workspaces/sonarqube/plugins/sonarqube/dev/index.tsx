@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 import { createDevApp, EntityGridItem } from '@backstage/dev-utils';
 import Grid from '@material-ui/core/Grid';
 import { EntitySonarQubeCard, sonarQubePlugin } from '../src';
@@ -152,11 +152,7 @@ createDevApp()
 
       return {
         async getSummaries(entities: Entity[]) {
-          const map = new Map<string, FindingSummary | undefined>();
-          for (const e of entities) {
-            map.set(stringifyEntityRef(e), mockSummary(e));
-          }
-          return map;
+          return entities.map(e => mockSummary(e));
         },
       } as SonarQubeApi;
     },

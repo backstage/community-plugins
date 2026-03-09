@@ -150,10 +150,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, any>([
-      ['component:default/mock', mockMetrics],
-    ]);
-    sonarQubeApi.getSummaries.mockResolvedValue(mockData);
+    sonarQubeApi.getSummaries.mockResolvedValue([mockMetrics]);
 
     const rendered = await renderInTestApp(
       <Providers>
@@ -202,11 +199,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, any>([
-      ['component:default/mock-1', mockMetrics],
-      ['component:default/mock-2', mockMetrics],
-    ]);
-    sonarQubeApi.getSummaries.mockResolvedValue(mockData);
+    sonarQubeApi.getSummaries.mockResolvedValue([mockMetrics, mockMetrics]);
 
     const rendered = await renderInTestApp(
       <Providers>

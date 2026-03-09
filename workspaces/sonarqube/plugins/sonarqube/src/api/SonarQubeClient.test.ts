@@ -87,7 +87,7 @@ describe('SonarQubeClient', () => {
     });
 
     const summaries = await client.getSummaries([mockEntity('my-service')]);
-    const summary = summaries.get('component:default/my-service');
+    const summary = summaries[0];
 
     expect(summary).toEqual(
       expect.objectContaining({
@@ -145,7 +145,7 @@ describe('SonarQubeClient', () => {
     });
 
     const summaries = await client.getSummaries([mockEntity('my-service')]);
-    const summary = summaries.get('component:default/my-service');
+    const summary = summaries[0];
 
     expect(summary).toEqual(
       expect.objectContaining({
@@ -181,7 +181,7 @@ describe('SonarQubeClient', () => {
       fetchApi,
     });
     const summaries = await client.getSummaries([mockEntity('my-service')]);
-    const summary = summaries.get('component:default/my-service');
+    const summary = summaries[0];
 
     expect(summary?.lastAnalysis).toBe('2020-01-01T00:00:00Z');
   });
@@ -264,10 +264,9 @@ describe('SonarQubeClient', () => {
         mockEntity('component-2'),
       ]);
 
-      expect(summaries.size).toBe(2);
+      expect(summaries).toHaveLength(2);
 
-      const summary1 = summaries.get('component:default/component-1');
-      expect(summary1).toEqual(
+      expect(summaries[0]).toEqual(
         expect.objectContaining({
           lastAnalysis: '2020-01-01T00:00:00Z',
           metrics: {
@@ -279,8 +278,7 @@ describe('SonarQubeClient', () => {
         }),
       );
 
-      const summary2 = summaries.get('component:default/component-2');
-      expect(summary2).toEqual(
+      expect(summaries[1]).toEqual(
         expect.objectContaining({
           lastAnalysis: '2020-01-02T00:00:00Z',
           metrics: {
@@ -301,7 +299,7 @@ describe('SonarQubeClient', () => {
 
       const summaries = await client.getSummaries([]);
 
-      expect(summaries.size).toBe(0);
+      expect(summaries).toHaveLength(0);
     });
 
     it('should handle unknown entities with null findings', async () => {
@@ -315,15 +313,13 @@ describe('SonarQubeClient', () => {
         mockEntity('unknown-entity'),
       ]);
 
-      expect(summaries.size).toBe(2);
-      const summary1 = summaries.get('component:default/component-1');
-      expect(summary1).toEqual(
+      expect(summaries).toHaveLength(2);
+      expect(summaries[0]).toEqual(
         expect.objectContaining({
           projectUrl: 'https://sonarcloud.io/dashboard?id=component-1',
         }),
       );
-      const summaryUnknown = summaries.get('component:default/unknown-entity');
-      expect(summaryUnknown).toBeUndefined();
+      expect(summaries[1]).toBeUndefined();
     });
   });
 });

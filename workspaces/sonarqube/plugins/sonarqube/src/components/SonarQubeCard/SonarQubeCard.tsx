@@ -18,7 +18,6 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   sonarQubeApiRef,
   SONARQUBE_PROJECT_KEY_ANNOTATION,
@@ -76,10 +75,7 @@ export const SonarQubeCard = (props: {
     error,
     loading,
   } = useAsync(
-    async () =>
-      sonarQubeApi
-        .getSummaries([entity])
-        .then(m => m.get(stringifyEntityRef(entity))),
+    async () => sonarQubeApi.getSummaries([entity]).then(r => r[0]),
     [sonarQubeApi, entity],
   );
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 import {
   FindingSummary,
   Metrics,
@@ -119,21 +119,15 @@ export class SonarQubeClient implements SonarQubeApi {
 
   async getSummaries(
     entities: Entity[],
-  ): Promise<Map<string, FindingSummary | undefined>> {
-    const map = new Map<string, FindingSummary | undefined>();
+  ): Promise<(FindingSummary | undefined)[]> {
     if (entities.length === 0) {
-      return map;
+      return [];
     }
     const results = await Promise.allSettled(
       entities.map(e => this.fetchSummary(e)),
     );
-    entities.forEach((e, i) => {
-      const result = results[i];
-      map.set(
-        stringifyEntityRef(e),
-        result.status === 'fulfilled' ? result.value : undefined,
-      );
-    });
-    return map;
+    return results.map(result =>
+      result.status === 'fulfilled' ? result.value : undefined,
+    );
   }
 }

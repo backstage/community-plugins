@@ -74,7 +74,5 @@ export const sonarQubeApiRef = createApiRef<SonarQubeApi>({
 
 /** @public */
 export type SonarQubeApi = {
-  getSummaries(
-    entities: Entity[],
-  ): Promise<Map<string, FindingSummary | undefined>>;
+  getSummaries(entities: Entity[]): Promise<(FindingSummary | undefined)[]>;
 };

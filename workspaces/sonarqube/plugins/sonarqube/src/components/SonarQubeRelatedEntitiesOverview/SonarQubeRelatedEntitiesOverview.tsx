@@ -21,6 +21,7 @@ import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   sonarQubeApiRef,
   isSonarQubeAvailable,
+  FindingSummary,
 } from '@backstage-community/plugin-sonarqube-react';
 import { SonarQubeTable } from '../index.ts';
 
@@ -66,6 +67,11 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     return <ResponseErrorPanel error={error} />;
   }
 
+  const findingsMap = new Map<string, FindingSummary | undefined>();
+  sonarEntities.forEach((e, i) => {
+    findingsMap.set(stringifyEntityRef(e), findingResults?.[i]);
+  });
+
   const tableContent: any[] | undefined = entities?.map(entity => {
     const entityRef = stringifyEntityRef(entity);
     return {
@@ -73,7 +79,7 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
       resolved: {
         entityRef: entityRef,
         name: entity.metadata.name,
-        findings: findingResults?.get(entityRef),
+        findings: findingsMap.get(entityRef),
         isSonarQubeAnnotationEnabled: isSonarQubeAvailable(entity),
       },
     };
