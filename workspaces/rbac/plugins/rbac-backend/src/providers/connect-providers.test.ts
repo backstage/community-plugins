@@ -588,8 +588,6 @@ describe('Connection', () => {
   });
 
   describe('applyConditionalPermissions', () => {
-    let storageCreateConditionSpy;
-
     beforeEach(() => {
       (conditionalStorageMock.createCondition as jest.Mock).mockReset();
       (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
@@ -602,10 +600,6 @@ describe('Connection', () => {
     });
 
     it('should create conditional permissions', async () => {
-      storageCreateConditionSpy = jest.spyOn(
-        conditionalStorageMock,
-        'createCondition',
-      );
       const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
         {
           id: 0,
@@ -624,15 +618,12 @@ describe('Connection', () => {
         },
       ];
       await provider.applyConditionalPermissions(policies);
-      expect(storageCreateConditionSpy).toHaveBeenCalledWith(...policies);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
+        ...policies,
+      );
     });
 
     it('should remove old conditional permissions', async () => {
-      const storageRemoveConditionalPermissionSpy = jest.spyOn(
-        conditionalStorageMock,
-        'deleteCondition',
-      );
-
       const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
         {
           id: 0,
@@ -652,31 +643,21 @@ describe('Connection', () => {
       ];
 
       await provider.applyConditionalPermissions(policies);
-      expect(storageRemoveConditionalPermissionSpy).toHaveBeenCalledWith(
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledWith(
         ...existingConditionalPermission.map(it => it.id),
       );
     });
 
     it('should not add policies that exist already, if not changed', async () => {
-      const storageCreateConditionalPermissionSpy = jest.spyOn(
-        conditionalStorageMock,
-        'createCondition',
-      );
-
       const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
         ...existingConditionalPermission,
       ];
 
       await provider.applyConditionalPermissions(policies);
-      expect(storageCreateConditionalPermissionSpy).not.toHaveBeenCalled();
+      expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     });
 
     it('should not remove existing policies if not changed', async () => {
-      const storageRemoveConditionalPermissionSpy = jest.spyOn(
-        conditionalStorageMock,
-        'deleteCondition',
-      );
-
       const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
         {
           id: 0,
@@ -697,19 +678,10 @@ describe('Connection', () => {
       ];
 
       await provider.applyConditionalPermissions(policies);
-      expect(storageRemoveConditionalPermissionSpy).toHaveBeenCalledTimes(0);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(0);
     });
 
     it('should replace changed policies', async () => {
-      const storageCreateConditionalPermissionSpy = jest.spyOn(
-        conditionalStorageMock,
-        'createCondition',
-      );
-      const storageRemoveConditionalPermissionSpy = jest.spyOn(
-        conditionalStorageMock,
-        'deleteCondition',
-      );
-
       const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
         {
           id: existingConditionalPermission[0].id,
@@ -726,8 +698,8 @@ describe('Connection', () => {
       ];
 
       await provider.applyConditionalPermissions(policies);
-      expect(storageRemoveConditionalPermissionSpy).toHaveBeenCalledTimes(1);
-      expect(storageCreateConditionalPermissionSpy).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
     });
   });
 });
