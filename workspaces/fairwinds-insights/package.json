@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-fairwinds-insights --include @backstage-community/plugin-fairwinds-insights-backend --parallel -v -i run start",
     "start": "backstage-cli repo start",
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck true --incremental false",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
@@ -44,7 +44,7 @@
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@backstage/core-app-api": "backstage:^",
