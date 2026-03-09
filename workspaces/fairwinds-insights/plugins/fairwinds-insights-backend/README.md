@@ -26,7 +26,7 @@ fairwindsInsights:
   cacheTTL: 300 # optional; cache TTL in seconds (default: 300)
 ```
 
-## Setup 
+## Setup
 
 This plugin uses the [new backend system](https://backstage.io/docs/backend-system/). In `packages/backend/src/index.ts`:
 
