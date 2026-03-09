@@ -2,6 +2,20 @@
 
 This plugin surfaces [Fairwinds Insights](https://www.fairwinds.com/fairwinds-insights) data in Backstage: Vulnerabilities, Cost (MTD), and Action Items for entities that are linked to Insights via the `insights.fairwinds.com/app-groups` annotation.
 
+## Screenshots
+
+| Action items (table)                                 | Action items (top graph)                                      | MTD costs                          |
+| ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------- |
+| ![Action items table](./docs/action_items_table.png) | ![Action items top graphs](./docs/action_items_top_graph.png) | ![MTD costs](./docs/MTD_costs.png) |
+
+| Resource history — CPU                                   | Resource history — Memory                                      | Resource history — Pod count                                         |
+| -------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| ![Resource history CPU](./docs/resource_history_cpu.png) | ![Resource history memory](./docs/resource_history_memory.png) | ![Resource history pod count](./docs/resource_history_pod_count.png) |
+
+| Vulnerabilities Summary                        |
+| ---------------------------------------------- |
+| ![Vulnerabilities](./docs/vulnerabilities.png) |
+
 ## Setup
 
 **Note:** Install and configure the backend plugin before the frontend so the frontend can fetch data.
