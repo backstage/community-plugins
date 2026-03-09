@@ -88,9 +88,9 @@ const _default: OverridableFrontendPlugin<
         defaultGroup?: [Error: "Use the 'group' param instead"] | undefined;
         group?:
           | (string & {})
+          | 'development'
           | 'overview'
           | 'documentation'
-          | 'development'
           | 'deployment'
           | 'operation'
           | 'observability'

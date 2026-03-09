@@ -56,16 +56,20 @@ interface DeploymentLifecycleCardProps {
   app: Application;
   revisions: RevisionInfo[];
   onclick?: () => void;
+  showInstance?: boolean;
+  showServer?: boolean;
 }
 
 const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   app,
   onclick,
   revisions,
+  showInstance = true,
+  showServer = true,
 }) => {
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
-  const latestRevision = appHistory[appHistory.length - 1];
+  const latestRevision = appHistory.at(-1);
   const classes = useCardStyles();
   const { entity } = useEntity();
   const { t } = useTranslation();
@@ -96,26 +100,31 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
 
       <CardContent>
         <Metadata direction={{ sm: 'column' }} gap={{ sm: 'gapMd' }}>
+          {showInstance && (
+            <MetadataItem
+              key="instance"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
+            >
+              {appName}
+            </MetadataItem>
+          )}
+          {showServer && (
+            <MetadataItem
+              key="server"
+              title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
+            >
+              <AppServerLink application={app} />
+            </MetadataItem>
+          )}
           <MetadataItem
-            title={t('deploymentLifecycle.deploymentLifecycleCard.instance')}
-          >
-            {appName}
-          </MetadataItem>
-
-          <MetadataItem
-            title={t('deploymentLifecycle.deploymentLifecycleCard.server')}
-          >
-            <AppServerLink application={app} />
-          </MetadataItem>
-
-          <MetadataItem
+            key="namespace"
             title={t('deploymentLifecycle.deploymentLifecycleCard.namespace')}
           >
             <AppNamespace app={app} />
           </MetadataItem>
-
-          {!isAppHelmChartType(app) ? (
+          {!isAppHelmChartType(app) && latestRevision && (
             <MetadataItemWithTooltip
+              key="commit"
               title={t('deploymentLifecycle.deploymentLifecycleCard.commit')}
               tooltipText={t(
                 'deploymentLifecycle.deploymentLifecycleCard.tooltipText',
@@ -128,11 +137,9 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
                 latestRevision={latestRevision}
               />
             </MetadataItemWithTooltip>
-          ) : (
-            <></>
           )}
-
           <MetadataItem
+            key="resources"
             title={t('deploymentLifecycle.deploymentLifecycleCard.resources')}
           >
             {app.status.resources?.length ?? 0}{' '}
