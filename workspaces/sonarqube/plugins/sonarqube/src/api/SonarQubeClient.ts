@@ -15,12 +15,17 @@
  */
 
 import {
+  CompoundEntityRef,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
+import {
   FindingSummary,
   Metrics,
   SonarQubeApi,
 } from '@backstage-community/plugin-sonarqube-react';
-import { InstanceUrlWrapper, FindingsWrapper } from './types';
+import { SummaryWrapper } from './types';
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { ResponseError } from '@backstage/errors';
 
 /** @public */
 export class SonarQubeClient implements SonarQubeApi {
@@ -34,7 +39,7 @@ export class SonarQubeClient implements SonarQubeApi {
 
   private async callApi<T>(
     path: string,
-    query: { [key in string]: any },
+    query: { [key in string]: string },
   ): Promise<T | undefined> {
     const response = await this.fetchApi.fetch(
       `${await this.discoveryApi.getBaseUrl(
@@ -46,24 +51,32 @@ export class SonarQubeClient implements SonarQubeApi {
         },
       },
     );
-    if (response.status === 200) {
+    if (response.ok) {
       return (await response.json()) as T;
     }
-    return undefined;
+    throw await ResponseError.fromResponse(response);
   }
 
-  async getFindingSummary({
-    componentKey,
-    projectInstance,
-  }: {
-    componentKey?: string;
-    projectInstance?: string;
-  } = {}): Promise<FindingSummary | undefined> {
-    if (!componentKey) {
+  async getFindingSummary(
+    entityRef: CompoundEntityRef,
+  ): Promise<FindingSummary | undefined> {
+    const { kind, namespace, name } = entityRef;
+    const summary = await this.callApi<SummaryWrapper>(
+      `entities/${encodeURIComponent(kind)}/${encodeURIComponent(
+        namespace,
+      )}/${encodeURIComponent(name)}/summary`,
+      {},
+    );
+
+    if (!summary || !summary.findings) {
       return undefined;
     }
 
-    const instanceKey = projectInstance || '';
+    const { componentKey, instanceUrl: rawUrl, findings } = summary;
+    let baseUrl = rawUrl;
+    if (!baseUrl.endsWith('/')) {
+      baseUrl += '/';
+    }
 
     const metrics: Metrics = {
       alert_status: undefined,
@@ -78,29 +91,6 @@ export class SonarQubeClient implements SonarQubeApi {
       coverage: undefined,
       duplicated_lines_density: undefined,
     };
-
-    const baseUrlWrapper = await this.callApi<InstanceUrlWrapper>(
-      'instanceUrl',
-      {
-        instanceKey,
-      },
-    );
-    let baseUrl = baseUrlWrapper?.instanceUrl;
-    if (!baseUrl) {
-      return undefined;
-    }
-    // ensure trailing slash for later on
-    if (!baseUrl.endsWith('/')) {
-      baseUrl += '/';
-    }
-
-    const findings = await this.callApi<FindingsWrapper>('findings', {
-      componentKey,
-      instanceKey,
-    });
-    if (!findings) {
-      return undefined;
-    }
 
     findings.measures.forEach(m => {
       metrics[m.metric] = m.value;
@@ -127,36 +117,24 @@ export class SonarQubeClient implements SonarQubeApi {
         }security_hotspots?id=${encodeURIComponent(componentKey)}`,
     };
   }
-  settledResponseOf(responses: PromiseSettledResult<any>[]): Array<any> {
-    return responses.map(response =>
-      response.status === 'fulfilled' ? response.value : null,
-    );
-  }
 
   async getFindingSummaries(
-    components: Array<{
-      projectInstance: string | undefined;
-      componentKey: string;
-    }>,
-  ): Promise<Map<string, FindingSummary>> {
-    const map = new Map<string, FindingSummary>();
-    if (components.length === 0) {
+    entityRefs: CompoundEntityRef[],
+  ): Promise<Map<string, FindingSummary | undefined>> {
+    const map = new Map<string, FindingSummary | undefined>();
+    if (entityRefs.length === 0) {
       return map;
     }
-    const promises = components.map(({ projectInstance, componentKey }) =>
-      this.getFindingSummary({ componentKey, projectInstance }),
+    const results = await Promise.allSettled(
+      entityRefs.map(ref => this.getFindingSummary(ref)),
     );
-    const summaries: any = await Promise.allSettled(promises).then(results => {
-      return results
-        .map(result => result as PromiseFulfilledResult<FindingSummary>)
-        .map(result => result.value);
+    entityRefs.forEach((ref, i) => {
+      const result = results[i];
+      map.set(
+        stringifyEntityRef(ref),
+        result.status === 'fulfilled' ? result.value : undefined,
+      );
     });
-
-    for await (const summary of summaries) {
-      if (summary?.title && !map.has(summary.title)) {
-        map.set(summary.title, summary);
-      }
-    }
     return map;
   }
 }

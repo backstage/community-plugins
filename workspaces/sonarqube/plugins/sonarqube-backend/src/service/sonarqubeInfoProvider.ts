@@ -17,6 +17,7 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import fetch from 'node-fetch';
+import { ResponseError } from '@backstage/errors';
 
 /**
  * Provide information about sonarqube instances and projects contained within
@@ -325,16 +326,11 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
         Authorization: `${authType} ${encodedAuthToken}`,
       },
     });
-    if (!response.ok) {
-      const text = await response.text();
-      const msg = !text ? '' : ` - Response: "${text}"`;
-      this.logger.error(`"GET ${fullUrl}" ${response.status}${msg}`);
-      return undefined;
-    }
-    if (response.status === 200) {
+    if (response.ok) {
       return (await response.json()) as T;
     }
-    return undefined;
+
+    throw await ResponseError.fromResponse(response);
   }
 
   /**
