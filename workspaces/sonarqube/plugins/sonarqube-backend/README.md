@@ -101,7 +101,6 @@ Allows configuration of either a single or multiple global Sonarqube instances a
 ```yaml
 sonarqube:
   baseUrl: https://sonarqube.example.com
-  instanceKey: mySonarqube
   apiKey: 123456789abcdef0123456789abcedf012
   authType: Bearer # this defaults to Basic, it can be set to Bearer or Basic
 ```
@@ -127,15 +126,12 @@ The following will look for findings at `https://special-project-sonarqube.examp
 sonarqube:
   instances:
     - name: default
-      instanceKey: mySonarqube
       baseUrl: https://default-sonarqube.example.com
       apiKey: 123456789abcdef0123456789abcedf012
     - name: specialProject
-      instanceKey: mySonarqube
       baseUrl: https://special-project-sonarqube.example.com
       apiKey: abcdef0123456789abcedf0123456789ab
     - name: cloud
-      instanceKey: sonarcloud
       baseUrl: https://sonarcloud.io
       apiKey: 0123456789abcedf012123456789abcdef
 ```
@@ -158,11 +154,9 @@ The following config is an equivalent (but less clear) version of the above:
 ```yaml
 sonarqube:
   baseUrl: https://default-sonarqube.example.com
-  instanceKey: mySonarqube
   apiKey: 123456789abcdef0123456789abcedf012
   instances:
     - name: specialProject
-      instanceKey: mySonarqube
       baseUrl: https://special-project-sonarqube.example.com
       apiKey: abcdef0123456789abcedf0123456789ab
 ```
@@ -177,7 +171,6 @@ This can be achieved by using the optional `externalBaseUrl` property in the con
 ```yaml
 sonarqube:
   baseUrl: https://sonarqube-internal.example.com
-  instanceKey: mySonarqube
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
 ```
@@ -188,12 +181,10 @@ sonarqube:
 sonarqube:
   instances:
     - name: default
-      instanceKey: mySonarqube
       baseUrl: https://default-sonarqube-internal.example.com
       externalBaseUrl: https://default-sonarqube.example.com
       apiKey: 123456789abcdef0123456789abcedf012
     - name: specialProject
-      instanceKey: mySonarqube
       baseUrl: https://special-project-sonarqube.example.com
       apiKey: abcdef0123456789abcedf0123456789ab
 ```
