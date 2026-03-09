@@ -24,7 +24,7 @@ import {
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { useAsync } from 'react-use';
+import useAsync from 'react-use/esm/useAsync';
 import { useFairwindsInsightsApi } from '../../api';
 import Link from '@mui/material/Link';
 import Chip from '@mui/material/Chip';
