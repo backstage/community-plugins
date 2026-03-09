@@ -20,12 +20,6 @@ import { SonarqubeInfoProvider } from './sonarqubeInfoProvider';
 import { InputError } from '@backstage/errors';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
-/**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * Dependencies needed by the router
- * @public
- */
 export interface RouterOptions {
   /**
    * Logger for logging purposes
@@ -38,10 +32,6 @@ export interface RouterOptions {
 }
 
 /**
- * @deprecated Please migrate to the new backend system as this will be removed in the future.
- *
- * @public
- *
  * Constructs a sonarqube router.
  *
  * Expose endpoint to get information on or for a sonarqube instance.
@@ -55,7 +45,45 @@ export async function createRouter(
 
   const router = Router();
   router.use(express.json());
+
+  router.get(
+    '/entities/:kind/:namespace/:name/summary',
+    async (request, response) => {
+      const { kind, namespace, name } = request.params;
+      const componentKey = request.query.componentKey as string;
+      const instanceKey = request.query.instanceKey as string;
+
+      if (!componentKey)
+        throw new InputError(
+          'ComponentKey must be provided as a single string.',
+        );
+
+      logger.info(
+        instanceKey
+          ? `Retrieving summary for entity ${kind}:${namespace}/${name} (component ${componentKey}) in sonarqube instance ${instanceKey}`
+          : `Retrieving summary for entity ${kind}:${namespace}/${name} (component ${componentKey}) in default sonarqube instance`,
+      );
+
+      const [findings, { baseUrl, externalBaseUrl }] = await Promise.all([
+        sonarqubeInfoProvider.getFindings({
+          componentKey,
+          instanceName: instanceKey,
+        }),
+        sonarqubeInfoProvider.getBaseUrl({ instanceName: instanceKey }),
+      ]);
+
+      response.json({
+        findings: findings ?? null,
+        instanceUrl: externalBaseUrl || baseUrl,
+      });
+    },
+  );
+
   router.get('/findings', async (request, response) => {
+    logger.warn(
+      'The /findings endpoint is deprecated and will be removed in a future release. Use /entities/:kind/:namespace/:name/summary instead.',
+    );
+    response.setHeader('Deprecation', 'true');
     const componentKey = request.query.componentKey as string;
     const instanceKey = request.query.instanceKey as string;
 
@@ -64,7 +92,7 @@ export async function createRouter(
 
     logger.info(
       instanceKey
-        ? `Retrieving findings for component ${componentKey}  in sonarqube instance name ${instanceKey}`
+        ? `Retrieving findings for component ${componentKey} in sonarqube instance name ${instanceKey}`
         : `Retrieving findings for component ${componentKey} in default sonarqube instance`,
     );
 
@@ -77,6 +105,10 @@ export async function createRouter(
   });
 
   router.get('/instanceUrl', (request, response) => {
+    logger.warn(
+      'The /instanceUrl endpoint is deprecated and will be removed in a future release. Use /entities/:kind/:namespace/:name/summary instead.',
+    );
+    response.setHeader('Deprecation', 'true');
     const instanceKey = request.query.instanceKey as string;
 
     logger.info(

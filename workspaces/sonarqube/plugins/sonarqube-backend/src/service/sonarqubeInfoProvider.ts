@@ -20,7 +20,6 @@ import fetch from 'node-fetch';
 
 /**
  * Provide information about sonarqube instances and projects contained within
- * @public
  */
 export interface SonarqubeInfoProvider {
   /**
@@ -55,7 +54,6 @@ export interface SonarqubeInfoProvider {
 
 /**
  * Information retrieved for a specific project in Sonarqube
- * @public
  */
 export interface SonarqubeFindings {
   /**
@@ -74,7 +72,6 @@ interface MeasuresWrapper {
 
 /**
  * A specific measure on a project in Sonarqube
- * @public
  */
 export interface SonarqubeMeasure {
   /**
@@ -89,7 +86,6 @@ export interface SonarqubeMeasure {
 
 /**
  * Information about a Sonarqube instance.
- * @public
  */
 export interface SonarqubeInstanceConfig {
   /**
@@ -120,7 +116,6 @@ interface ComponentWrapper {
 
 /**
  * Holds multiple Sonarqube configurations.
- * @public
  */
 export class SonarqubeConfig {
   /**
@@ -244,8 +239,6 @@ export class SonarqubeConfig {
 }
 
 /**
- * @public
- *
  * Use default config and annotations, build using fromConfig static function.
  */
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
