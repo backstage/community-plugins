@@ -23,77 +23,6 @@ In your `packages/backend/src/index.ts` make the following changes:
   backend.start();
 ```
 
-## Old Backend System
-
-Typically, this means creating a `src/plugins/sonarqube.ts` file and adding a reference to it to `src/index.ts` in the backend package.
-
-### sonarqube.ts
-
-```typescript
-import {
-  createRouter,
-  DefaultSonarqubeInfoProvider,
-} from '@backstage-community/plugin-sonarqube-backend';
-import { Router } from 'express';
-import { PluginEnvironment } from '../types';
-
-export default async function createPlugin(
-  env: PluginEnvironment,
-): Promise<Router> {
-  return await createRouter({
-    logger: env.logger,
-    sonarqubeInfoProvider: DefaultSonarqubeInfoProvider.fromConfig(
-      env.config,
-      env.logger,
-    ),
-  });
-}
-```
-
-### src/index.ts
-
-```diff
-diff --git a/packages/backend/src/index.ts b/packages/backend/src/index.ts
-index 1942c36ad1..7fdc48ba24 100644
---- a/packages/backend/src/index.ts
-+++ b/packages/backend/src/index.ts
-@@ -50,6 +50,7 @@ import scaffolder from './plugins/scaffolder';
- import proxy from './plugins/proxy';
- import search from './plugins/search';
- import techdocs from './plugins/techdocs';
-+import sonarqube from './plugins/sonarqube';
- import techInsights from './plugins/techInsights';
- import todo from './plugins/todo';
- import graphql from './plugins/graphql';
-@@ -133,6 +134,7 @@ async function main() {
-     createEnv('tech-insights'),
-   );
-   const permissionEnv = useHotMemoize(module, () => createEnv('permission'));
-+  const sonarqubeEnv = useHotMemoize(module, () => createEnv('sonarqube'));
-
-   const apiRouter = Router();
-   apiRouter.use('/catalog', await catalog(catalogEnv));
-@@ -152,6 +154,7 @@ async function main() {
-   apiRouter.use('/badges', await badges(badgesEnv));
-   apiRouter.use('/jenkins', await jenkins(jenkinsEnv));
-   apiRouter.use('/permission', await permission(permissionEnv));
-+  apiRouter.use('/sonarqube', await sonarqube(sonarqubeEnv));
-   apiRouter.use(notFoundHandler());
-
-   const service = createServiceBuilder(module)
-
-```
-
-## SonarqubeInfoProvider
-
-This plugin must be provided with a `SonarqubeInfoProvider`, this is a strategy object for finding Sonarqube instances in configuration and retrieving data from an instance.
-
-There is a standard one provided (`DefaultSonarqubeInfoProvider`), but the Integrator is free to build their own.
-
-### DefaultSonarqubeInfoProvider
-
-Allows configuration of either a single or multiple global Sonarqube instances and annotating entities with the instance name. This instance name in the entities is optional, if not provided the default instance in configuration will be used. That allow to keep configuration from before multiple instances capability to keep working without changes.
-
 #### Example - Single global instance
 
 ##### Config
@@ -113,12 +42,12 @@ kind: Component
 metadata:
   name: backstage
   annotations:
-    sonarqube.org/project-key: YOUR_INSTANCE_NAME/YOUR_PROJECT_KEY
+    sonarqube.org/project-key: YOUR_PROJECT_KEY # this is the project key in Sonarqube, not the project name. It can be found in the URL of the project in Sonarqube, or in the project settings.
 ```
 
 #### Example - Multiple global instance
 
-The following will look for findings at `https://special-project-sonarqube.example.com` for the project of key `YOUR_PROJECT_KEY`.
+If you have multiple Sonarqube instances, you can configure them all in the config and specify which one to use in the catalog annotation:
 
 ##### Config
 
@@ -144,22 +73,10 @@ kind: Component
 metadata:
   name: backstage
   annotations:
-    sonarqube.org/project-key: specialProject/YOUR_PROJECT_KEY
+    sonarqube.org/project-key: specialProject/YOUR_PROJECT_KEY # this is the project key in Sonarqube, not the project name. It can be found in the URL of the project in Sonarqube, or in the project settings. The part before the / is the instance name, and the part after is the project key.
 ```
 
 If the `specialProject/` part is omitted (or replaced with `default/`), the Sonarqube instance of name `default` will be used.
-
-The following config is an equivalent (but less clear) version of the above:
-
-```yaml
-sonarqube:
-  baseUrl: https://default-sonarqube.example.com
-  apiKey: 123456789abcdef0123456789abcedf012
-  instances:
-    - name: specialProject
-      baseUrl: https://special-project-sonarqube.example.com
-      apiKey: abcdef0123456789abcedf0123456789ab
-```
 
 #### Example - Different frontend and backend URLs
 
@@ -173,20 +90,6 @@ sonarqube:
   baseUrl: https://sonarqube-internal.example.com
   externalBaseUrl: https://sonarqube.example.com
   apiKey: 123456789abcdef0123456789abcedf012
-```
-
-##### Multiple instance config
-
-```yaml
-sonarqube:
-  instances:
-    - name: default
-      baseUrl: https://default-sonarqube-internal.example.com
-      externalBaseUrl: https://default-sonarqube.example.com
-      apiKey: 123456789abcdef0123456789abcedf012
-    - name: specialProject
-      baseUrl: https://special-project-sonarqube.example.com
-      apiKey: abcdef0123456789abcedf0123456789ab
 ```
 
 ## Links
