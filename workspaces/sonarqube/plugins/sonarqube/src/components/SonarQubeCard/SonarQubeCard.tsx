@@ -205,7 +205,9 @@ function ErrorMessage({ error }: { error: Error }) {
     <EmptyState
       missing="info"
       title={t('sonarQubeCard.emptyState.title')}
-      description={error.message}
+      description={
+        error.cause instanceof Error ? error.cause.message : error.message
+      }
     />
   );
 }
