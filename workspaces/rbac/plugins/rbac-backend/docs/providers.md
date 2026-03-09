@@ -83,7 +83,9 @@ export class TestProvider implements RBACProvider {
           roleEntityRef: 'role:default/test-provider-role',
           pluginId: 'catalog',
           resourceType: 'catalog-entity',
-          permissionMapping: [{ name: 'delete', action: 'delete' }],
+          permissionMapping: [
+            { name: 'catalog.entity.delete', action: 'delete' },
+          ],
           conditions: {
             rule: 'HAS_LABEL',
             resourceType: 'catalog-entity',
