@@ -85,7 +85,6 @@ async function main(args) {
     }
   }
 
-  // --- AWANLIN'S REQUESTED LOGIC ---
   const tableContent = arrayToTable(backendFeatureReports);
   const tableFlag = args.includes('--table');
   const saveFlag = args.includes('--save');
@@ -95,7 +94,7 @@ async function main(args) {
     try {
       const fileContent = await fs.readFile(targetFile, 'utf8');
       
-      // Use the Regex replacement method requested in the PR
+       
       const newContent = fileContent.replace(
         /[\s\S]*/,
         `\n${tableContent}\n`
