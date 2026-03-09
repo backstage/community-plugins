@@ -15,7 +15,7 @@
  */
 
 import '@testing-library/jest-dom';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { VulnerabilitiesCard } from '../index';
@@ -103,12 +103,9 @@ describe('VulnerabilitiesCard', () => {
       </EntityProvider>,
     );
 
-    await waitFor(() => {
-      expect(screen.getByText('Top Impacted Images')).toBeInTheDocument();
-      expect(screen.getByText('Severity Breakdown')).toBeInTheDocument();
-      expect(screen.getByText('Top Impacted Packages')).toBeInTheDocument();
-    });
-
+    expect(await screen.findByText('Top Impacted Images')).toBeInTheDocument();
+    expect(screen.getByText('Severity Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('Top Impacted Packages')).toBeInTheDocument();
     expect(screen.getByText(/Total: 100 vulnerabilities/)).toBeInTheDocument();
   });
 
@@ -127,9 +124,9 @@ describe('VulnerabilitiesCard', () => {
       </EntityProvider>,
     );
 
-    await waitFor(() => {
-      expect(screen.getByText('No vulnerabilities found')).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByText('No vulnerabilities found'),
+    ).toBeInTheDocument();
   });
 
   it('should render error state when API fails', async () => {
@@ -141,10 +138,8 @@ describe('VulnerabilitiesCard', () => {
       </EntityProvider>,
     );
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: /Error: Network error/ }),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByRole('heading', { name: /Error: Network error/ }),
+    ).toBeInTheDocument();
   });
 });
