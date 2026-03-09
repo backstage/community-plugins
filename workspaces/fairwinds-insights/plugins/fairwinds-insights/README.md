@@ -4,17 +4,17 @@ This plugin surfaces [Fairwinds Insights](https://www.fairwinds.com/fairwinds-in
 
 ## Screenshots
 
-| Action items (table)                                 | Action items (top graph)                                      | MTD costs                          |
-| ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------- |
-| ![Action items table](./docs/action_items_table.png) | ![Action items top graphs](./docs/action_items_top_graph.png) | ![MTD costs](./docs/MTD_costs.png) |
+| Action items (table)                                       | Action items (top graph)                                            | MTD costs                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| ![Action items table](./../../docs/action_items_table.png) | ![Action items top graphs](./../../docs/action_items_top_graph.png) | ![MTD costs](./../../docs/MTD_costs.png) |
 
-| Resource history — CPU                                   | Resource history — Memory                                      | Resource history — Pod count                                         |
-| -------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
-| ![Resource history CPU](./docs/resource_history_cpu.png) | ![Resource history memory](./docs/resource_history_memory.png) | ![Resource history pod count](./docs/resource_history_pod_count.png) |
+| Resource history — CPU                                         | Resource history — Memory                                            | Resource history — Pod count                                               |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| ![Resource history CPU](./../../docs/resource_history_cpu.png) | ![Resource history memory](./../../docs/resource_history_memory.png) | ![Resource history pod count](./../../docs/resource_history_pod_count.png) |
 
-| Vulnerabilities Summary                        |
-| ---------------------------------------------- |
-| ![Vulnerabilities](./docs/vulnerabilities.png) |
+| Vulnerabilities Summary                              |
+| ---------------------------------------------------- |
+| ![Vulnerabilities](./../../docs/vulnerabilities.png) |
 
 ## Setup
 
