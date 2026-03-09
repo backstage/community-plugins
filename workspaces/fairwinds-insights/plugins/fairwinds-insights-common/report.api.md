@@ -142,18 +142,6 @@ export interface CostsMtdResponse {
 }
 
 // @public (undocumented)
-export interface FairwindsInsightsApiConfig {
-  // (undocumented)
-  apiKey: string;
-  // (undocumented)
-  apiUrl: string;
-  // (undocumented)
-  cacheTTL: number;
-  // (undocumented)
-  organization: string;
-}
-
-// @public (undocumented)
 export const RESOURCES_SUMMARY_TIMESERIES_DATE_PRESETS: ReadonlyArray<{
   value: ResourcesSummaryTimeseriesDatePreset;
   label: string;

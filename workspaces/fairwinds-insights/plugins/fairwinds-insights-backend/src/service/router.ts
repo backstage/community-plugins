@@ -25,7 +25,6 @@ import {
   ActionItemsTopItem,
   ActionItemsTopResponse,
   CostsMtdResponse,
-  FairwindsInsightsApiConfig,
   ResourcesSummaryTimeseriesResponse,
   ResourcesTotalCostsResponse,
   severityNumericToLabel,
@@ -53,14 +52,14 @@ export async function createRouter(
 
   const router = Router();
 
-  const apiConfig: FairwindsInsightsApiConfig = {
+  const apiConfig = {
     apiUrl:
       config.getOptionalString('fairwindsInsights.apiUrl') ??
       'https://insights.fairwinds.com',
     apiKey: config.getString('fairwindsInsights.apiKey'),
     organization: config.getString('fairwindsInsights.organization'),
     cacheTTL: config.getOptionalNumber('fairwindsInsights.cacheTTL') ?? 300,
-  };
+  } as const;
 
   function buildInsightsUiUrl(
     path: string,

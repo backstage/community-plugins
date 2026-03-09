@@ -128,14 +128,6 @@ export interface ActionItemTopItem {
 }
 
 /** @public */
-export interface FairwindsInsightsApiConfig {
-  apiUrl: string;
-  apiKey: string;
-  organization: string;
-  cacheTTL: number;
-}
-
-/** @public */
 export interface VulnerabilitiesTopItem {
   count: number;
   title: string;

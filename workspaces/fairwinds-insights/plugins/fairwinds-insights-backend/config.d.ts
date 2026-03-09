@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
-
-/**
- * Configuration interface for the GitHub FairwindsInsights Plugin.
- */
 export interface Config {
-  /** Configuration options for the GitHub FairwindsInsights Plugin */
+  /** Configuration options for the Fairwinds Insights backend plugin */
   fairwindsInsights?: {
     /**
-     * Schedule definition for the GitHub FairwindsInsights Plugin tasks.
+     * Fairwinds Insights API base URL.
+     * @default "https://insights.fairwinds.com"
      */
-    schedule?: SchedulerServiceTaskScheduleDefinition;
+    apiUrl?: string;
     /**
-     * The name of the GitHub enterprise.
+     * API key for Fairwinds Insights.
+     * @visibility secret
      */
-    enterprise?: string;
+    apiKey: string;
     /**
-     * The name of the GitHub organization.
+     * Organization name in Fairwinds Insights.
      */
-    organization?: string;
+    organization: string;
     /**
-     * The host for GitHub FairwindsInsights integration.
+     * Cache TTL in seconds for API responses.
+     * @default 300
      */
-    host: string;
+    cacheTTL?: number;
   };
 }
