@@ -20,10 +20,7 @@ import {
   SonarqubeConfig,
 } from './sonarqubeInfoProvider';
 import { setupServer } from 'msw/node';
-import {
-  mockServices,
-  registerMswTestHooks,
-} from '@backstage/backend-test-utils';
+import { registerMswTestHooks } from '@backstage/backend-test-utils';
 import { rest, RestRequest } from 'msw';
 
 describe('SonarqubeConfig', () => {
@@ -239,10 +236,9 @@ const server = setupServer();
 
 describe('DefaultSonarqubeInfoProvider', () => {
   function configureProvider(configData: any) {
-    const logger = mockServices.logger.mock();
     const config = new ConfigReader(configData);
 
-    return DefaultSonarqubeInfoProvider.fromConfig(config, logger);
+    return DefaultSonarqubeInfoProvider.fromConfig(config);
   }
 
   describe('getBaseUrl', () => {

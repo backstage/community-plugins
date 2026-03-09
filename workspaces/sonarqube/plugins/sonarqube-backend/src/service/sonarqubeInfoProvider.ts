@@ -15,7 +15,6 @@
  */
 
 import { Config } from '@backstage/config';
-import { LoggerService } from '@backstage/backend-plugin-api';
 import fetch from 'node-fetch';
 import { ResponseError } from '@backstage/errors';
 
@@ -243,23 +242,14 @@ export class SonarqubeConfig {
  * Use default config and annotations, build using fromConfig static function.
  */
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
-  private constructor(
-    private readonly config: SonarqubeConfig,
-    private readonly logger: LoggerService,
-  ) {}
+  private constructor(private readonly config: SonarqubeConfig) {}
 
   /**
    * Generate an instance from a Config instance
    * @param config - Backend configuration
    */
-  static fromConfig(
-    config: Config,
-    logger: LoggerService,
-  ): DefaultSonarqubeInfoProvider {
-    return new DefaultSonarqubeInfoProvider(
-      SonarqubeConfig.fromConfig(config),
-      logger,
-    );
+  static fromConfig(config: Config): DefaultSonarqubeInfoProvider {
+    return new DefaultSonarqubeInfoProvider(SonarqubeConfig.fromConfig(config));
   }
 
   /**

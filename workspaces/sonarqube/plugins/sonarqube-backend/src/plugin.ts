@@ -48,10 +48,8 @@ export const sonarqubePlugin = createBackendPlugin({
           /**
            * Info provider to be able to get all necessary information for the APIs
            */
-          sonarqubeInfoProvider: DefaultSonarqubeInfoProvider.fromConfig(
-            config,
-            logger,
-          ),
+          sonarqubeInfoProvider:
+            DefaultSonarqubeInfoProvider.fromConfig(config),
           catalog,
           httpAuth,
         });
