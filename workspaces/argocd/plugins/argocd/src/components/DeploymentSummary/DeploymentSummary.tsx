@@ -40,7 +40,15 @@ import AppSyncStatus from '../AppStatus/AppSyncStatus';
 import AppHealthStatus from '../AppStatus/AppHealthStatus';
 import { useTranslation } from '../../hooks/useTranslation';
 
-const DeploymentSummary = () => {
+export interface DeploymentSummaryProps {
+  showInstance?: boolean;
+  showServer?: boolean;
+}
+
+const DeploymentSummary = ({
+  showInstance = true,
+  showServer = true,
+}: DeploymentSummaryProps) => {
   const { entity } = useEntity();
 
   const { baseUrl } = useArgocdConfig();
@@ -59,148 +67,168 @@ const DeploymentSummary = () => {
 
   const hasArgocdViewAccess = useArgocdViewPermission();
 
-  const getBaseUrl = (row: any): string | undefined => {
-    return row?.metadata?.instance?.url ?? baseUrl;
-  };
-
-  const buildAppUrl = (row: any): string | undefined => {
-    const appBaseUrl = getBaseUrl(row);
-
-    return row?.metadata?.namespace
-      ? `${appBaseUrl}/applications/${row.metadata.namespace}/${row.metadata.name}`
-      : `${appBaseUrl}/applications/${row.metadata.name}`;
-  };
-
   const { t } = useTranslation();
   // Translated text
   const tableTitle = t('deploymentSummary.deploymentSummary.tableTitle');
-  const columnTitles = {
-    application: t('deploymentSummary.deploymentSummary.columns.application'),
-    namespace: t('deploymentSummary.deploymentSummary.columns.namespace'),
-    instance: t('deploymentSummary.deploymentSummary.columns.instance'),
-    server: t('deploymentSummary.deploymentSummary.columns.server'),
-    revision: t('deploymentSummary.deploymentSummary.columns.revision'),
-    lastDeployed: t('deploymentSummary.deploymentSummary.columns.lastDeployed'),
-    syncStatus: t('deploymentSummary.deploymentSummary.columns.syncStatus'),
-    healthStatus: t('deploymentSummary.deploymentSummary.columns.healthStatus'),
-  };
+  const columnTitles = useMemo(
+    () => ({
+      application: t('deploymentSummary.deploymentSummary.columns.application'),
+      namespace: t('deploymentSummary.deploymentSummary.columns.namespace'),
+      instance: t('deploymentSummary.deploymentSummary.columns.instance'),
+      server: t('deploymentSummary.deploymentSummary.columns.server'),
+      revision: t('deploymentSummary.deploymentSummary.columns.revision'),
+      lastDeployed: t(
+        'deploymentSummary.deploymentSummary.columns.lastDeployed',
+      ),
+      syncStatus: t('deploymentSummary.deploymentSummary.columns.syncStatus'),
+      healthStatus: t(
+        'deploymentSummary.deploymentSummary.columns.healthStatus',
+      ),
+    }),
+    [t],
+  );
 
-  const columns: TableColumn<Application>[] = [
-    {
-      title: `${columnTitles.application}`,
-      field: 'name',
-      render: (row: Application): ReactNode =>
-        getBaseUrl(row) ? (
-          <Link href={`${buildAppUrl(row)}`} target="_blank" rel="noopener">
-            {row.metadata.name}{' '}
-            <IconButton color="primary" size="small">
-              <ExternalLinkIcon />
-            </IconButton>
-          </Link>
-        ) : (
-          row.metadata.name
-        ),
-    },
-    {
-      title: `${columnTitles.namespace}`,
-      field: 'namespace',
-      render: (row: Application): ReactNode => {
-        return <>{row.spec.destination.namespace}</>;
-      },
-    },
-    {
-      title: `${columnTitles.instance}`,
-      field: 'instance',
-      render: (row: Application): ReactNode => {
-        return <>{row.metadata?.instance?.name}</>;
-      },
-    },
-    {
-      title: `${columnTitles.server}`,
-      field: 'server',
-      render: (row: Application): ReactNode => {
-        return <>{row.spec.destination.server}</>;
-      },
-    },
-    {
-      title: `${columnTitles.revision}`,
-      field: 'revision',
-      render: (row: Application): ReactNode => {
-        const historyList = row.status?.history ?? [];
-        const latestRev = historyList[historyList.length - 1];
-        const repoUrl =
-          row?.spec?.sources?.[0]?.repoURL ?? row?.spec?.source?.repoURL ?? '';
+  const columns = useMemo<TableColumn<Application>[]>(() => {
+    const getBaseUrl = (row: any): string | undefined => {
+      return row?.metadata?.instance?.url ?? baseUrl;
+    };
 
-        // Depending on how many sources there could be multiple revisions.
-        const latestRevision =
-          latestRev?.revision ?? latestRev?.revisions?.pop() ?? '';
-        const commitUrl = isAppHelmChartType(row)
-          ? repoUrl
-          : getCommitUrl(
-              repoUrl,
-              latestRevision,
-              entity?.metadata?.annotations || {},
-            );
-        const latestRevisionLinkText =
-          latestRevision === '' ? '-' : latestRevision?.substring(0, 7);
-        return (
-          <Link href={commitUrl} target="_blank" rel="noopener">
-            {latestRevisionLinkText}
-          </Link>
-        );
-      },
-    },
+    const buildAppUrl = (row: any): string | undefined => {
+      const appBaseUrl = getBaseUrl(row);
 
-    {
-      id: 'test',
-      title: `${columnTitles.lastDeployed}`,
-      field: 'lastdeployed',
-      customSort: (a: Application, b: Application) => {
-        const bHistory = b?.status?.history ?? [];
-        const bDeployedAt = bHistory?.[bHistory.length - 1]?.deployedAt;
+      return row?.metadata?.namespace
+        ? `${appBaseUrl}/applications/${row.metadata.namespace}/${row.metadata.name}`
+        : `${appBaseUrl}/applications/${row.metadata.name}`;
+    };
 
-        const aHistory = a?.status?.history ?? [];
-        const aDeployedAt = aHistory?.[aHistory.length - 1]?.deployedAt;
+    return [
+      {
+        title: `${columnTitles.application}`,
+        field: 'name',
+        render: (row: Application): ReactNode =>
+          getBaseUrl(row) ? (
+            <Link href={`${buildAppUrl(row)}`} target="_blank" rel="noopener">
+              {row.metadata.name}{' '}
+              <IconButton color="primary" size="small">
+                <ExternalLinkIcon />
+              </IconButton>
+            </Link>
+          ) : (
+            row.metadata.name
+          ),
+      },
+      {
+        title: `${columnTitles.namespace}`,
+        field: 'namespace',
+        render: (row: Application): ReactNode => {
+          return <>{row.spec.destination.namespace}</>;
+        },
+      },
+      {
+        title: `${columnTitles.instance}`,
+        field: 'instance',
+        render: (row: Application): ReactNode => {
+          return <>{row.metadata?.instance?.name}</>;
+        },
+      },
+      {
+        title: `${columnTitles.server}`,
+        field: 'server',
+        render: (row: Application): ReactNode => {
+          return <>{row.spec.destination.server}</>;
+        },
+      },
+      {
+        title: `${columnTitles.revision}`,
+        field: 'revision',
+        render: (row: Application): ReactNode => {
+          const historyList = row.status?.history ?? [];
+          const latestRev = historyList.at(-1);
+          const repoUrl =
+            row?.spec?.sources?.[0]?.repoURL ??
+            row?.spec?.source?.repoURL ??
+            '';
 
-        return moment(aDeployedAt).diff(moment(bDeployedAt));
+          const latestRevision =
+            latestRev?.revision ?? latestRev?.revisions?.pop() ?? '';
+          const commitUrl = isAppHelmChartType(row)
+            ? repoUrl
+            : getCommitUrl(
+                repoUrl,
+                latestRevision,
+                entity?.metadata?.annotations || {},
+              );
+          const latestRevisionLinkText =
+            latestRevision === '' ? '-' : latestRevision?.substring(0, 7);
+          return (
+            <Link href={commitUrl} target="_blank" rel="noopener">
+              {latestRevisionLinkText}
+            </Link>
+          );
+        },
       },
-      render: (row: Application): ReactNode => {
-        const history = row?.status?.history ?? [];
-        const finishedAt = history[history.length - 1]?.deployedAt;
-        return (
-          <>
-            {finishedAt
-              ? moment(finishedAt).local().format('D/MM/YYYY, H:mm:ss')
-              : null}
-          </>
-        );
+
+      {
+        id: 'test',
+        title: `${columnTitles.lastDeployed}`,
+        field: 'lastdeployed',
+        customSort: (a: Application, b: Application) => {
+          const bHistory = b?.status?.history ?? [];
+          const bDeployedAt = bHistory?.at(-1)?.deployedAt;
+
+          const aHistory = a?.status?.history ?? [];
+          const aDeployedAt = aHistory?.at(-1)?.deployedAt;
+
+          return moment(aDeployedAt).diff(moment(bDeployedAt));
+        },
+        render: (row: Application): ReactNode => {
+          const history = row?.status?.history ?? [];
+          const finishedAt = history.at(-1)?.deployedAt;
+          return (
+            <>
+              {finishedAt
+                ? moment(finishedAt).local().format('D/MM/YYYY, H:mm:ss')
+                : null}
+            </>
+          );
+        },
       },
-    },
-    {
-      title: `${columnTitles.syncStatus}`,
-      field: 'syncstatus',
-      customSort: (a: Application, b: Application): number => {
-        const syncStatusOrder: string[] = Object.values(SyncStatuses);
-        return (
-          syncStatusOrder.indexOf(a?.status?.sync?.status) -
-          syncStatusOrder.indexOf(b?.status?.sync?.status)
-        );
+      {
+        title: `${columnTitles.syncStatus}`,
+        field: 'syncstatus',
+        customSort: (a: Application, b: Application): number => {
+          const syncStatusOrder: string[] = Object.values(SyncStatuses);
+          return (
+            syncStatusOrder.indexOf(a?.status?.sync?.status) -
+            syncStatusOrder.indexOf(b?.status?.sync?.status)
+          );
+        },
+        render: (row: Application): ReactNode => <AppSyncStatus app={row} />,
       },
-      render: (row: Application): ReactNode => <AppSyncStatus app={row} />,
-    },
-    {
-      title: `${columnTitles.healthStatus}`,
-      field: 'healthstatus',
-      customSort: (a: Application, b: Application): number => {
-        const healthStatusOrder: string[] = Object.values(HealthStatus);
-        return (
-          healthStatusOrder.indexOf(a?.status?.health?.status) -
-          healthStatusOrder.indexOf(b?.status?.health?.status)
-        );
+      {
+        title: `${columnTitles.healthStatus}`,
+        field: 'healthstatus',
+        customSort: (a: Application, b: Application): number => {
+          const healthStatusOrder: string[] = Object.values(HealthStatus);
+          return (
+            healthStatusOrder.indexOf(a?.status?.health?.status) -
+            healthStatusOrder.indexOf(b?.status?.health?.status)
+          );
+        },
+        render: (row: Application): ReactNode => <AppHealthStatus app={row} />,
       },
-      render: (row: Application): ReactNode => <AppHealthStatus app={row} />,
-    },
-  ];
+    ];
+  }, [baseUrl, columnTitles, entity]);
+
+  const visibleColumns = useMemo(
+    () =>
+      columns.filter(col => {
+        if (!showInstance && col.field === 'instance') return false;
+        if (!showServer && col.field === 'server') return false;
+        return true;
+      }),
+    [columns, showInstance, showServer],
+  );
 
   return !error && hasArgocdViewAccess ? (
     <Table
@@ -213,7 +241,7 @@ const DeploymentSummary = () => {
       }}
       isLoading={loading}
       data={apps}
-      columns={columns}
+      columns={visibleColumns}
     />
   ) : null;
 };

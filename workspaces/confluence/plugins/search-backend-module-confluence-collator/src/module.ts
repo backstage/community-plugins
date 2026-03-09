@@ -102,7 +102,7 @@ export const searchModuleConfluenceCollator = createBackendModule({
               config,
               { logger },
               actualInstanceKey,
-              collatorKey,
+              collatorKey.toLowerCase(),
             ),
           });
         }
