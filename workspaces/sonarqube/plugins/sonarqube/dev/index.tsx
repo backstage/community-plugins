@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { createDevApp, EntityGridItem } from '@backstage/dev-utils';
 import Grid from '@material-ui/core/Grid';
 import { EntitySonarQubeCard, sonarQubePlugin } from '../src';
@@ -73,85 +73,92 @@ createDevApp()
   .registerApi({
     api: sonarQubeApiRef,
     deps: {},
-    factory: () =>
-      ({
-        getFindingSummary: async ({ componentKey }) => {
-          switch (componentKey) {
-            case 'error':
-              throw new Error('Error!');
+    factory: () => {
+      function mockSummary(e: Entity): FindingSummary | undefined {
+        const { name } = e.metadata;
+        switch (name) {
+          case 'error':
+            throw new Error('Error!');
 
-            case 'never':
-              return new Promise(() => {});
+          case 'never':
+            return undefined;
 
-            case 'not-computed':
-              return {
-                lastAnalysis: new Date().toISOString(),
-                metrics: {
-                  bugs: '0',
-                  reliability_rating: '1.0',
-                  vulnerabilities: '0',
-                  security_rating: '1.0',
-                  code_smells: '0',
-                  sqale_rating: '1.0',
-                  coverage: '0.0',
-                  duplicated_lines_density: '0.0',
-                },
-                projectUrl: `/#${componentKey}`,
-                getIssuesUrl: i => `/#${componentKey}/issues/${i}`,
-                getComponentMeasuresUrl: i => `/#${componentKey}/measures/${i}`,
-                getSecurityHotspotsUrl: () =>
-                  `#${componentKey}/security_hotspots`,
-              } as FindingSummary;
+          case 'not-computed':
+            return {
+              lastAnalysis: new Date().toISOString(),
+              metrics: {
+                bugs: '0',
+                reliability_rating: '1.0',
+                vulnerabilities: '0',
+                security_rating: '1.0',
+                code_smells: '0',
+                sqale_rating: '1.0',
+                coverage: '0.0',
+                duplicated_lines_density: '0.0',
+              },
+              projectUrl: `/#${name}`,
+              getIssuesUrl: i => `/#${name}/issues/${i}`,
+              getComponentMeasuresUrl: i => `/#${name}/measures/${i}`,
+              getSecurityHotspotsUrl: () => `#${name}/security_hotspots`,
+            } as FindingSummary;
 
-            case 'failed':
-              return {
-                lastAnalysis: new Date().toISOString(),
-                metrics: {
-                  alert_status: 'FAILED',
-                  bugs: '4',
-                  reliability_rating: '2.0',
-                  vulnerabilities: '18',
-                  security_rating: '3.0',
-                  security_review_rating: '3.0',
-                  code_smells: '22',
-                  sqale_rating: '5.0',
-                  coverage: '15.7',
-                  duplicated_lines_density: '15.6',
-                },
-                projectUrl: `/#${componentKey}`,
-                getIssuesUrl: i => `/#${componentKey}/issues/${i}`,
-                getComponentMeasuresUrl: i => `/#${componentKey}/measures/${i}`,
-                getSecurityHotspotsUrl: () =>
-                  `#${componentKey}/security_hotspots`,
-              } as FindingSummary;
+          case 'failed':
+            return {
+              lastAnalysis: new Date().toISOString(),
+              metrics: {
+                alert_status: 'FAILED',
+                bugs: '4',
+                reliability_rating: '2.0',
+                vulnerabilities: '18',
+                security_rating: '3.0',
+                security_review_rating: '3.0',
+                code_smells: '22',
+                sqale_rating: '5.0',
+                coverage: '15.7',
+                duplicated_lines_density: '15.6',
+              },
+              projectUrl: `/#${name}`,
+              getIssuesUrl: i => `/#${name}/issues/${i}`,
+              getComponentMeasuresUrl: i => `/#${name}/measures/${i}`,
+              getSecurityHotspotsUrl: () => `#${name}/security_hotspots`,
+            } as FindingSummary;
 
-            case 'passed':
-              return {
-                lastAnalysis: new Date().toISOString(),
-                metrics: {
-                  alert_status: 'OK',
-                  bugs: '0',
-                  reliability_rating: '1.0',
-                  vulnerabilities: '0',
-                  security_rating: '1.0',
-                  security_hotspots_reviewed: '100.0',
-                  security_review_rating: '1.0',
-                  code_smells: '0',
-                  sqale_rating: '1.0',
-                  coverage: '100.0',
-                  duplicated_lines_density: '0.0',
-                },
-                projectUrl: `/#${componentKey}`,
-                getIssuesUrl: i => `/#${componentKey}/issues/${i}`,
-                getComponentMeasuresUrl: i => `/#${componentKey}/measures/${i}`,
-                getSecurityHotspotsUrl: () =>
-                  `#${componentKey}/security_hotspots`,
-              } as FindingSummary;
+          case 'passed':
+            return {
+              lastAnalysis: new Date().toISOString(),
+              metrics: {
+                alert_status: 'OK',
+                bugs: '0',
+                reliability_rating: '1.0',
+                vulnerabilities: '0',
+                security_rating: '1.0',
+                security_hotspots_reviewed: '100.0',
+                security_review_rating: '1.0',
+                code_smells: '0',
+                sqale_rating: '1.0',
+                coverage: '100.0',
+                duplicated_lines_density: '0.0',
+              },
+              projectUrl: `/#${name}`,
+              getIssuesUrl: i => `/#${name}/issues/${i}`,
+              getComponentMeasuresUrl: i => `/#${name}/measures/${i}`,
+              getSecurityHotspotsUrl: () => `#${name}/security_hotspots`,
+            } as FindingSummary;
 
-            default:
-              return undefined;
+          default:
+            return undefined;
+        }
+      }
+
+      return {
+        async getSummaries(entities: Entity[]) {
+          const map = new Map<string, FindingSummary | undefined>();
+          for (const e of entities) {
+            map.set(stringifyEntityRef(e), mockSummary(e));
           }
+          return map;
         },
-      } as SonarQubeApi),
+      } as SonarQubeApi;
+    },
   })
   .render();

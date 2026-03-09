@@ -24,7 +24,7 @@ import {
 import { SonarQubeRelatedEntitiesOverview } from './SonarQubeRelatedEntitiesOverview.tsx';
 
 const sonarQubeApi = {
-  getFindingSummaries: jest.fn(),
+  getSummaries: jest.fn(),
 };
 
 const catalogApi = {
@@ -153,7 +153,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
     const mockData = new Map<string, any>([
       ['component:default/mock', mockMetrics],
     ]);
-    sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
+    sonarQubeApi.getSummaries.mockResolvedValue(mockData);
 
     const rendered = await renderInTestApp(
       <Providers>
@@ -206,7 +206,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
       ['component:default/mock-1', mockMetrics],
       ['component:default/mock-2', mockMetrics],
     ]);
-    sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
+    sonarQubeApi.getSummaries.mockResolvedValue(mockData);
 
     const rendered = await renderInTestApp(
       <Providers>

@@ -57,15 +57,8 @@ export const SONARQUBE_PROJECT_KEY_ANNOTATION = 'sonarqube.org/project-key';
 
 // @public (undocumented)
 export type SonarQubeApi = {
-  getFindingSummary(options: {
-    componentKey?: string;
-    projectInstance?: string;
-  }): Promise<FindingSummary | undefined>;
-  getFindingSummaries(
-    components: Array<{
-      projectInstance: string | undefined;
-      componentKey: string;
-    }>,
+  getSummaries(
+    entities: Entity[],
   ): Promise<Map<string, FindingSummary | undefined>>;
 };
 

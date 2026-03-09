@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  CompoundEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   FindingSummary,
   Metrics,
@@ -57,10 +54,12 @@ export class SonarQubeClient implements SonarQubeApi {
     throw await ResponseError.fromResponse(response);
   }
 
-  async getFindingSummary(
-    entityRef: CompoundEntityRef,
+  private async fetchSummary(
+    entity: Entity,
   ): Promise<FindingSummary | undefined> {
-    const { kind, namespace, name } = entityRef;
+    const kind = entity.kind;
+    const namespace = entity.metadata.namespace ?? 'default';
+    const name = entity.metadata.name;
     const summary = await this.callApi<SummaryWrapper>(
       `entities/${encodeURIComponent(kind)}/${encodeURIComponent(
         namespace,
@@ -118,20 +117,20 @@ export class SonarQubeClient implements SonarQubeApi {
     };
   }
 
-  async getFindingSummaries(
-    entityRefs: CompoundEntityRef[],
+  async getSummaries(
+    entities: Entity[],
   ): Promise<Map<string, FindingSummary | undefined>> {
     const map = new Map<string, FindingSummary | undefined>();
-    if (entityRefs.length === 0) {
+    if (entities.length === 0) {
       return map;
     }
     const results = await Promise.allSettled(
-      entityRefs.map(ref => this.getFindingSummary(ref)),
+      entities.map(e => this.fetchSummary(e)),
     );
-    entityRefs.forEach((ref, i) => {
+    entities.forEach((e, i) => {
       const result = results[i];
       map.set(
-        stringifyEntityRef(ref),
+        stringifyEntityRef(e),
         result.status === 'fulfilled' ? result.value : undefined,
       );
     });

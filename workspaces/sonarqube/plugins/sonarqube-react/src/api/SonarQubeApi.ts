@@ -15,7 +15,7 @@
  */
 
 import { createApiRef } from '@backstage/core-plugin-api';
-import { CompoundEntityRef } from '@backstage/catalog-model';
+import { Entity } from '@backstage/catalog-model';
 
 /** @public */
 export type MetricKey =
@@ -74,10 +74,7 @@ export const sonarQubeApiRef = createApiRef<SonarQubeApi>({
 
 /** @public */
 export type SonarQubeApi = {
-  getFindingSummary(
-    entityRef: CompoundEntityRef,
-  ): Promise<FindingSummary | undefined>;
-  getFindingSummaries(
-    entityRefs: CompoundEntityRef[],
+  getSummaries(
+    entities: Entity[],
   ): Promise<Map<string, FindingSummary | undefined>>;
 };

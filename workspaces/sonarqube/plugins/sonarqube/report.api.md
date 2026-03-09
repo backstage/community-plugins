@@ -59,22 +59,9 @@ export class SonarQubeClient implements SonarQubeApi {
   // (undocumented)
   fetchApi: FetchApi;
   // (undocumented)
-  getFindingSummaries(
-    components: Array<{
-      projectInstance: string | undefined;
-      componentKey: string;
-    }>,
-  ): Promise<Map<string, FindingSummary>>;
-  // (undocumented)
-  getFindingSummary({
-    componentKey,
-    projectInstance,
-  }?: {
-    componentKey?: string;
-    projectInstance?: string;
-  }): Promise<FindingSummary | undefined>;
-  // (undocumented)
-  settledResponseOf(responses: PromiseSettledResult<any>[]): Array<any>;
+  getSummaries(
+    entities: Entity[],
+  ): Promise<Map<string, FindingSummary | undefined>>;
 }
 
 // @public (undocumented)
@@ -126,6 +113,12 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.qualityBadgeTooltip': 'View SonarQube Dashboard';
     readonly 'sonarQubeCard.emptyState.title': 'No information to display';
     readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
+    readonly 'sonarQubeCard.unauthorizedError.title': 'Unauthorized';
+    readonly 'sonarQubeCard.unauthorizedError.description': 'Your authentication token for SonarQube is missing or invalid. Please verify your SonarQube token configuration.';
+    readonly 'sonarQubeCard.notFoundError.title': 'SonarQube project not found';
+    readonly 'sonarQubeCard.notFoundError.description': 'The sonarqube.org/project-key annotation may be invalid or the project does not exist in SonarQube. Please verify the annotation value.';
+    readonly 'sonarQubeCard.forbiddenError.title': 'Access denied';
+    readonly 'sonarQubeCard.forbiddenError.description': 'Your SonarQube token does not have sufficient permissions to access this project. Please check the project permissions in SonarQube.';
     readonly 'sonarQubeCard.noSonarQubeError.hasAnnotation': "There is no SonarQube project with key '{{project}}'";
     readonly 'sonarQubeCard.noSonarQubeError.noAnnotation': 'No SonarQube annotation found';
     readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';

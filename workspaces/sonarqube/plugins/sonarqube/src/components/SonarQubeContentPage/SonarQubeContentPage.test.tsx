@@ -25,10 +25,7 @@ import {
 } from '@backstage-community/plugin-sonarqube-react';
 
 const mockSonarQubeApi: SonarQubeApi = {
-  getFindingSummary: jest
-    .fn()
-    .mockRejectedValue(new Error('Project not found')),
-  getFindingSummaries: jest.fn().mockResolvedValue(new Map()),
+  getSummaries: jest.fn().mockRejectedValue(new Error('Project not found')),
 };
 
 const Providers = ({

@@ -17,10 +17,7 @@ import useAsync from 'react-use/esm/useAsync';
 import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
-import {
-  stringifyEntityRef,
-  CompoundEntityRef,
-} from '@backstage/catalog-model';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   sonarQubeApiRef,
   isSonarQubeAvailable,
@@ -50,20 +47,14 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     kind: props.entityKind,
   });
 
-  const entityRefs: CompoundEntityRef[] = (entities || [])
-    .filter(isSonarQubeAvailable)
-    .map(e => ({
-      kind: e.kind,
-      namespace: e.metadata.namespace ?? 'default',
-      name: e.metadata.name,
-    }));
+  const sonarEntities = (entities || []).filter(isSonarQubeAvailable);
 
   const {
     value: findingResults,
     loading: loadingFindings,
     error: errorFindings,
   } = useAsync(
-    async () => sonarQubeApi.getFindingSummaries(entityRefs),
+    async () => sonarQubeApi.getSummaries(sonarEntities),
     [sonarQubeApi, entities],
   );
 

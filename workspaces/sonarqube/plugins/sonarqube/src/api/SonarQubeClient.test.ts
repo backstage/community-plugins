@@ -15,9 +15,18 @@
  */
 
 import { UrlPatternDiscovery } from '@backstage/core-app-api';
+import { Entity } from '@backstage/catalog-model';
 import { SonarQubeClient } from './SonarQubeClient';
 import { SummaryWrapper } from './types';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
+
+function mockEntity(name: string): Entity {
+  return {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'component',
+    metadata: { name, namespace: 'default' },
+  };
+}
 
 const fetchApi = {
   fetch: jest.fn(),
@@ -77,11 +86,8 @@ describe('SonarQubeClient', () => {
       fetchApi,
     });
 
-    const summary = await client.getFindingSummary({
-      kind: 'component',
-      namespace: 'default',
-      name: 'my-service',
-    });
+    const summaries = await client.getSummaries([mockEntity('my-service')]);
+    const summary = summaries.get('component:default/my-service');
 
     expect(summary).toEqual(
       expect.objectContaining({
@@ -138,11 +144,8 @@ describe('SonarQubeClient', () => {
       fetchApi,
     });
 
-    const summary = await client.getFindingSummary({
-      kind: 'component',
-      namespace: 'default',
-      name: 'my-service',
-    });
+    const summaries = await client.getSummaries([mockEntity('my-service')]);
+    const summary = summaries.get('component:default/my-service');
 
     expect(summary).toEqual(
       expect.objectContaining({
@@ -177,17 +180,14 @@ describe('SonarQubeClient', () => {
       discoveryApi,
       fetchApi,
     });
-    const summary = await client.getFindingSummary({
-      kind: 'component',
-      namespace: 'default',
-      name: 'my-service',
-    });
+    const summaries = await client.getSummaries([mockEntity('my-service')]);
+    const summary = summaries.get('component:default/my-service');
 
     expect(summary?.lastAnalysis).toBe('2020-01-01T00:00:00Z');
   });
 
-  describe('getFindingSummaries', () => {
-    const setupHandlersForGetFindingSummaries = () => {
+  describe('getSummaries', () => {
+    const setupHandlersForGetSummaries = () => {
       fetchApi.fetch.mockImplementation(
         async (input: RequestInfo, _?: RequestInit) => {
           if (input.toString().includes('/entities/')) {
@@ -250,7 +250,7 @@ describe('SonarQubeClient', () => {
     };
 
     beforeEach(() => {
-      setupHandlersForGetFindingSummaries();
+      setupHandlersForGetSummaries();
     });
 
     it('should report finding summaries for multiple components', async () => {
@@ -259,9 +259,9 @@ describe('SonarQubeClient', () => {
         fetchApi,
       });
 
-      const summaries = await client.getFindingSummaries([
-        { kind: 'component', namespace: 'default', name: 'component-1' },
-        { kind: 'component', namespace: 'default', name: 'component-2' },
+      const summaries = await client.getSummaries([
+        mockEntity('component-1'),
+        mockEntity('component-2'),
       ]);
 
       expect(summaries.size).toBe(2);
@@ -299,7 +299,7 @@ describe('SonarQubeClient', () => {
         fetchApi,
       });
 
-      const summaries = await client.getFindingSummaries([]);
+      const summaries = await client.getSummaries([]);
 
       expect(summaries.size).toBe(0);
     });
@@ -310,9 +310,9 @@ describe('SonarQubeClient', () => {
         fetchApi,
       });
 
-      const summaries = await client.getFindingSummaries([
-        { kind: 'component', namespace: 'default', name: 'component-1' },
-        { kind: 'component', namespace: 'default', name: 'unknown-entity' },
+      const summaries = await client.getSummaries([
+        mockEntity('component-1'),
+        mockEntity('unknown-entity'),
       ]);
 
       expect(summaries.size).toBe(2);
