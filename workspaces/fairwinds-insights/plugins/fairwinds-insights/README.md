@@ -4,14 +4,16 @@ This plugin surfaces [Fairwinds Insights](https://www.fairwinds.com/fairwinds-in
 
 ## Setup
 
-1. Install the frontend plugin:
+**Note:** Install and configure the backend plugin before the frontend so the frontend can fetch data.
+
+1. Install and configure the [Fairwinds Insights backend plugin](../fairwinds-insights-backend/README.md) first.
+
+2. Install the frontend plugin:
 
 ```bash
 # From your Backstage root directory
 yarn --cwd packages/app add @backstage-community/plugin-fairwinds-insights
 ```
-
-2. Install and configure the [Fairwinds Insights backend plugin](../fairwinds-insights-backend/README.md) so the frontend can fetch data.
 
 3. Register the plugin in your app:
 
@@ -25,7 +27,7 @@ const app = createApp({
 });
 ```
 
-4. Example shape from the plugin schema:
+4. Example config shape:
 
 ```yaml
 # app-config.yaml
