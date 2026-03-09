@@ -150,7 +150,9 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, any>([['foo.bar', mockMetrics]]);
+    const mockData = new Map<string, any>([
+      ['component:default/mock', mockMetrics],
+    ]);
     sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
 
     const rendered = await renderInTestApp(
@@ -167,11 +169,28 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
 
   it('renders properly if multiple instances are present', async () => {
     const mockEntities: Entity[] = [
-      createMockEntity(SONARQUBE_PROJECT_KEY_ANNOTATION, 'component-key.1'),
-      createMockEntity(
-        SONARQUBE_PROJECT_KEY_ANNOTATION,
-        'instance-key/component-key.2',
-      ),
+      {
+        metadata: {
+          name: 'mock-1',
+          namespace: 'default',
+          annotations: {
+            [SONARQUBE_PROJECT_KEY_ANNOTATION]: 'component-key.1',
+          },
+        },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'component',
+      },
+      {
+        metadata: {
+          name: 'mock-2',
+          namespace: 'default',
+          annotations: {
+            [SONARQUBE_PROJECT_KEY_ANNOTATION]: 'instance-key/component-key.2',
+          },
+        },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'component',
+      },
     ];
     catalogApi.getEntitiesByRefs.mockResolvedValue({
       items: mockEntities,
@@ -184,8 +203,8 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
       },
     };
     const mockData = new Map<string, any>([
-      ['component-key.1', mockMetrics],
-      ['component-key.2', mockMetrics],
+      ['component:default/mock-1', mockMetrics],
+      ['component:default/mock-2', mockMetrics],
     ]);
     sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
 

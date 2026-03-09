@@ -17,10 +17,13 @@ import useAsync from 'react-use/esm/useAsync';
 import { useEntity, useRelatedEntities } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
-import { stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  stringifyEntityRef,
+  CompoundEntityRef,
+} from '@backstage/catalog-model';
 import {
   sonarQubeApiRef,
-  getProjectInfo,
+  isSonarQubeAvailable,
 } from '@backstage-community/plugin-sonarqube-react';
 import { SonarQubeTable } from '../index.ts';
 
@@ -47,26 +50,20 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     kind: props.entityKind,
   });
 
-  const findingsRequest: Array<{
-    projectInstance: string | undefined;
-    componentKey: string;
-  }> = [];
+  const entityRefs: CompoundEntityRef[] = (entities || [])
+    .filter(isSonarQubeAvailable)
+    .map(e => ({
+      kind: e.kind,
+      namespace: e.metadata.namespace ?? 'default',
+      name: e.metadata.name,
+    }));
 
-  const entityNameToProjectKey: { [key: string]: string } = {};
-
-  for (const entity of entities || []) {
-    const { projectKey, projectInstance } = getProjectInfo(entity);
-    if (projectKey) {
-      entityNameToProjectKey[entity.metadata.name] = projectKey;
-      findingsRequest.push({ componentKey: projectKey, projectInstance });
-    }
-  }
   const {
     value: findingResults,
     loading: loadingFindings,
     error: errorFindings,
   } = useAsync(
-    async () => sonarQubeApi.getFindingSummaries(findingsRequest),
+    async () => sonarQubeApi.getFindingSummaries(entityRefs),
     [sonarQubeApi, entities],
   );
 
@@ -79,14 +76,14 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
   }
 
   const tableContent: any[] | undefined = entities?.map(entity => {
-    const projectKey = entityNameToProjectKey[entity.metadata.name];
+    const entityRef = stringifyEntityRef(entity);
     return {
-      id: projectKey || entity.metadata.name,
+      id: entityRef,
       resolved: {
-        entityRef: stringifyEntityRef(entity),
+        entityRef: entityRef,
         name: entity.metadata.name,
-        findings: findingResults?.get(projectKey),
-        isSonarQubeAnnotationEnabled: !!projectKey,
+        findings: findingResults?.get(entityRef),
+        isSonarQubeAnnotationEnabled: isSonarQubeAvailable(entity),
       },
     };
   });

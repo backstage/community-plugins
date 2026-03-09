@@ -20,8 +20,8 @@ import {
 } from '@backstage/plugin-catalog-react';
 import {
   sonarQubeApiRef,
-  useProjectInfo,
   SONARQUBE_PROJECT_KEY_ANNOTATION,
+  isSonarQubeAvailable,
 } from '@backstage-community/plugin-sonarqube-react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -70,15 +70,18 @@ export const SonarQubeCard = (props: {
   const sonarQubeApi = useApi(sonarQubeApiRef);
   const { t } = useTranslationRef(sonarqubeTranslationRef);
 
-  const { projectKey: projectTitle, projectInstance } = useProjectInfo(entity);
-
-  const { value: summaryFinding, loading } = useAsync(
+  const {
+    value: summaryFinding,
+    error,
+    loading,
+  } = useAsync(
     async () =>
       sonarQubeApi.getFindingSummary({
-        componentKey: projectTitle,
-        projectInstance: projectInstance,
+        kind: entity.kind,
+        namespace: entity.metadata.namespace ?? 'default',
+        name: entity.metadata.name,
       }),
-    [sonarQubeApi, projectTitle],
+    [sonarQubeApi, entity],
   );
 
   const deepLink =
@@ -107,22 +110,14 @@ export const SonarQubeCard = (props: {
     >
       {loading && <Progress />}
 
-      {!loading && !projectTitle && (
+      {!loading && !isSonarQubeAvailable(entity) && (
         <MissingAnnotationEmptyState
           annotation={SONARQUBE_PROJECT_KEY_ANNOTATION}
           readMoreUrl={missingAnnotationReadMoreUrl}
         />
       )}
 
-      {!loading && projectTitle && !summaryFinding?.metrics && (
-        <EmptyState
-          missing="info"
-          title={t('sonarQubeCard.emptyState.title')}
-          description={t('sonarQubeCard.emptyState.description', {
-            projectTitle,
-          })}
-        />
-      )}
+      {!loading && error && <ErrorMessage error={error} />}
 
       {!loading && summaryFinding?.metrics && (
         <>
@@ -171,3 +166,52 @@ export const SonarQubeCard = (props: {
     </InfoCard>
   );
 };
+
+function ErrorMessage({ error }: { error: Error }) {
+  const { t } = useTranslationRef(sonarqubeTranslationRef);
+  const statusCode = isResponseError(error) ? error.statusCode : undefined;
+
+  if (statusCode === 401) {
+    return (
+      <EmptyState
+        missing="info"
+        title={t('sonarQubeCard.unauthorizedError.title')}
+        description={t('sonarQubeCard.unauthorizedError.description')}
+      />
+    );
+  }
+
+  if (statusCode === 403) {
+    return (
+      <EmptyState
+        missing="info"
+        title={t('sonarQubeCard.forbiddenError.title')}
+        description={t('sonarQubeCard.forbiddenError.description')}
+      />
+    );
+  }
+
+  if (statusCode === 404) {
+    return (
+      <EmptyState
+        missing="info"
+        title={t('sonarQubeCard.notFoundError.title')}
+        description={t('sonarQubeCard.notFoundError.description')}
+      />
+    );
+  }
+
+  return (
+    <EmptyState
+      missing="info"
+      title={t('sonarQubeCard.emptyState.title')}
+      description={error.message}
+    />
+  );
+}
+
+function isResponseError(
+  error: Error,
+): error is Error & { statusCode: number } {
+  return 'statusCode' in error;
+}

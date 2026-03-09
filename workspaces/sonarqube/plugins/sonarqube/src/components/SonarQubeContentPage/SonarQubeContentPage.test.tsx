@@ -24,11 +24,18 @@ import {
   SONARQUBE_PROJECT_KEY_ANNOTATION,
 } from '@backstage-community/plugin-sonarqube-react';
 
+const mockSonarQubeApi: SonarQubeApi = {
+  getFindingSummary: jest
+    .fn()
+    .mockRejectedValue(new Error('Project not found')),
+  getFindingSummaries: jest.fn().mockResolvedValue(new Map()),
+};
+
 const Providers = ({
   annotation,
   children,
 }: { annotation: string } & PropsWithChildren<any>): JSX.Element => (
-  <TestApiProvider apis={[[sonarQubeApiRef, {} as SonarQubeApi]]}>
+  <TestApiProvider apis={[[sonarQubeApiRef, mockSonarQubeApi]]}>
     <EntityProvider
       entity={{
         metadata: {
@@ -68,11 +75,7 @@ describe('<SonarQubeContentPage />', () => {
     );
     expect(rendered.getByText('SonarQube Dashboard')).toBeInTheDocument();
     expect(rendered.getByText('No information to display')).toBeInTheDocument();
-    expect(
-      rendered.getByText(
-        "There is no SonarQube project with key 'bar', check that project exists and permissions.",
-      ),
-    ).toBeInTheDocument();
+    expect(rendered.getByText('Project not found')).toBeInTheDocument();
   }, 15000);
 
   it('renders MissingAnnotationEmptyState if sonar annotation is missing', async () => {
