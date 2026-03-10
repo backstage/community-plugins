@@ -33,6 +33,26 @@ export const argocdPlugin: BackstagePlugin<
   {}
 >;
 
+// Warning: (ae-missing-release-tag) "DeploymentLifecycleProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DeploymentLifecycleProps {
+  // (undocumented)
+  showInstance?: boolean;
+  // (undocumented)
+  showServer?: boolean;
+}
+
+// Warning: (ae-missing-release-tag) "DeploymentSummaryProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DeploymentSummaryProps {
+  // (undocumented)
+  showInstance?: boolean;
+  // (undocumented)
+  showServer?: boolean;
+}
+
 // Warning: (ae-missing-release-tag) "isArgocdConfigured" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)

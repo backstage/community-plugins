@@ -17,8 +17,8 @@ export function createArgoCDResource(
     path: string;
     namespace: string;
     appName: string;
-    repoUrl: string;
     argoInstance: string;
+    repoUrl: string;
     label?: string | undefined;
     projectName?: string | undefined;
   },
