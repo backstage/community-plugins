@@ -1,8 +1,8 @@
 # Knip report
 
-## Unused devDependencies (2)
+## Unused devDependencies (1)
 
-| Name                   | Location     | Severity |
-| :--------------------- | :----------- | :------- |
-| @testing-library/react | package.json | error    |
-| canvas                 | package.json | error    |
+| Name                   | Location          | Severity |
+| :--------------------- | :---------------- | :------- |
+| @testing-library/react | package.json:60:6 | error    |
+
