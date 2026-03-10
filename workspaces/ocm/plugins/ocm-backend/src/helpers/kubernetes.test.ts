@@ -66,17 +66,17 @@ describe('kubernetes.ts', () => {
   describe('getManagedClusters', () => {
     it('should return some clusters', async () => {
       const api = await getApi();
-      const result: any = await listManagedClusters(api);
-      expect(result.items[0].metadata.name).toBe('local-cluster');
-      expect(result.items[1].metadata.name).toBe('cluster1');
+      const result = await listManagedClusters(api);
+      expect(result.items[0].metadata!.name).toBe('local-cluster');
+      expect(result.items[1].metadata!.name).toBe('cluster1');
     });
   });
 
   describe('getManagedCluster', () => {
     it('should return the correct cluster', async () => {
-      const result: any = await getManagedCluster(await getApi(), 'cluster1');
+      const result = await getManagedCluster(await getApi(), 'cluster1');
 
-      expect(result.metadata.name).toBe('cluster1');
+      expect(result.metadata!.name).toBe('cluster1');
     });
 
     it('should return an error object when cluster is not found', async () => {
@@ -92,19 +92,19 @@ describe('kubernetes.ts', () => {
 
   describe('getManagedClusterInfo', () => {
     it('should return cluster', async () => {
-      const result: any = await getManagedClusterInfo(
+      const result = await getManagedClusterInfo(
         await getApi(),
         'local-cluster',
       );
-      expect(result.metadata.name).toBe('local-cluster');
+      expect(result.metadata!.name).toBe('local-cluster');
     });
   });
 
   describe('getManagedClusterInfos', () => {
     it('should return some cluster infos', async () => {
-      const result: any = await listManagedClusterInfos(await getApi());
-      expect(result.items[0].metadata.name).toBe('local-cluster');
-      expect(result.items[1].metadata.name).toBe('cluster1');
+      const result = await listManagedClusterInfos(await getApi());
+      expect(result.items[0].metadata!.name).toBe('local-cluster');
+      expect(result.items[1].metadata!.name).toBe('cluster1');
     });
   });
 
