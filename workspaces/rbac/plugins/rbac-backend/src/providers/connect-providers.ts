@@ -352,6 +352,13 @@ export class Connection implements RBACProviderConnection {
         },
       });
       try {
+        const metadata = await this.roleMetadataStorage.findRoleMetadata(
+          condition.roleEntityRef,
+        );
+        const err = await validateSource(this.id, metadata);
+        if (err) {
+          throw err;
+        }
         await this.conditionStorage.createCondition(condition);
         await auditorEvent.success({ meta: auditorMeta });
       } catch (error) {
@@ -373,6 +380,13 @@ export class Connection implements RBACProviderConnection {
         meta: { actionType: ActionType.DELETE, source: this.id },
       });
       try {
+        const metadata = await this.roleMetadataStorage.findRoleMetadata(
+          conditionalPermission.roleEntityRef,
+        );
+        const err = await validateSource(this.id, metadata);
+        if (err) {
+          throw err;
+        }
         await this.conditionStorage.deleteCondition(conditionalPermission.id);
         await auditorEvent.success({ meta: auditorMeta });
       } catch (error) {
