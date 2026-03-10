@@ -13,55 +13,40 @@ View and manage GrowthBook feature flags directly in Backstage catalog entities.
 
 ## Installation
 
+> **Note:** Install and configure the backend plugin first — [`@backstage-community/plugin-growthbook-backend`](../growthbook-backend/README.md). It provides the API that this frontend plugin depends on.
+
 ```bash
 yarn workspace app add @backstage-community/plugin-growthbook
 ```
 
 ## Setup
 
-### 1. Register the API factory
-
-In `packages/app/src/apis.ts`:
-
-```typescript
-import {
-  growthbookFlagsApiRef,
-  GrowthbookFlagsClient,
-} from '@backstage-community/plugin-growthbook';
-
-export const apis: AnyApiFactory[] = [
-  // ... other APIs
-  createApiFactory({
-    api: growthbookFlagsApiRef,
-    deps: { discoveryApi: discoveryApiRef, fetchApi: fetchApiRef },
-    factory: ({ discoveryApi, fetchApi }) =>
-      new GrowthbookFlagsClient({ discoveryApi, fetchApi }),
-  }),
-];
-```
-
-### 2. Add to Entity Page
+### 1. Add to Entity Page
 
 In `packages/app/src/components/catalog/EntityPage.tsx`:
 
 ```typescript
 import {
-  GrowthbookEntityPage,
+  EntityGrowthbookFlagsContent,
   isGrowthbookAvailable,
 } from '@backstage-community/plugin-growthbook';
 
-// In your componentPage:
-const componentPage = (
-  <EntitySwitch>
-    <EntitySwitch.Case if={isGrowthbookAvailable}>
-      <GrowthbookEntityPage />
-    </EntitySwitch.Case>
-    {/* ... other cases */}
-  </EntitySwitch>
+// Add a Feature Flags tab to your existing entity page:
+const serviceEntityPage = (
+  <EntityLayout>
+    {/* ... your existing routes */}
+    <EntityLayout.Route
+      if={isGrowthbookAvailable}
+      path="/feature-flags"
+      title="Feature Flags"
+    >
+      <EntityGrowthbookFlagsContent />
+    </EntityLayout.Route>
+  </EntityLayout>
 );
 ```
 
-### 3. Configure in `app-config.yaml`
+### 2. Configure in `app-config.yaml`
 
 ```yaml
 growthbook:
@@ -72,7 +57,7 @@ growthbook:
     dev: ${GROWTHBOOK_SDK_KEY_DEV}
 ```
 
-### 4. Annotate entities in `catalog-info.yaml`
+### 3. Annotate entities in `catalog-info.yaml`
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
