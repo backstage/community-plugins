@@ -241,10 +241,7 @@ export const formatOperationMessage: (
 // Warning: (ae-missing-release-tag) "getInstanceByName" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-export const getInstanceByName: ({
-  instances,
-  instanceName,
-}: {
+export const getInstanceByName: (input: {
   instances: Instance[];
   instanceName: string;
 }) => Instance | undefined;
