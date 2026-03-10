@@ -15,10 +15,10 @@ export function createArgoCDResource(
 ): TemplateAction<
   {
     path: string;
-    namespace: string;
     appName: string;
-    argoInstance: string;
+    namespace: string;
     repoUrl: string;
+    argoInstance: string;
     label?: string | undefined;
     projectName?: string | undefined;
   },
