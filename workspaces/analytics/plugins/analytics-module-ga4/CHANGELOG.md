@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.16.1
+
+### Patch Changes
+
+- 6ac83bc: Updated dependency `jest` to `^30.0.0`.
+
 ## 0.16.0
 
 ### Minor Changes
