@@ -59,9 +59,7 @@ export class SonarQubeClient implements SonarQubeApi {
   // (undocumented)
   fetchApi: FetchApi;
   // (undocumented)
-  getSummaries(
-    entities: Entity[],
-  ): Promise<Map<string, FindingSummary | undefined>>;
+  getSummaries(entities: Entity[]): Promise<(FindingSummary | undefined)[]>;
 }
 
 // @public (undocumented)
