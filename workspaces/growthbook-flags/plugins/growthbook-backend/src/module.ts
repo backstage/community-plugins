@@ -244,8 +244,6 @@ const growthbookFlagsPlugin = createBackendPlugin({
         };
 
         http.use(handler);
-        http.addAuthPolicy({ path: '/flags', allow: 'unauthenticated' });
-        http.addAuthPolicy({ path: '/projects', allow: 'unauthenticated' });
         logger.info(
           `GrowthBook Flags plugin initialized at /api/growthbook-flags (mode: ${
             secretKey ? 'management API' : 'SDK API'
