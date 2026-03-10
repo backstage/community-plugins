@@ -17,13 +17,11 @@
 /**
  * New Frontend System dev mode for the RBAC plugin
  */
-
+// eslint-disable-next-line
 import '@backstage/ui/css/styles.css';
 import { createApp } from '@backstage/frontend-defaults';
 import { configApiRef } from '@backstage/core-plugin-api';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
 import ReactDOM from 'react-dom/client';
-import { mockApis } from '@backstage/test-utils';
 
 import {
   ApiBlueprint,
@@ -41,6 +39,9 @@ import {
   SidebarLanguageSwitcher,
   SidebarSignOutButton,
 } from '@backstage/dev-utils';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { mockApis } from '@backstage/test-utils';
+
 import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 
@@ -77,6 +78,35 @@ const rbacDevModule = createFrontendModule({
           factory: () => mockConfigApi,
         }),
     }),
+  ],
+});
+
+const devSidebarContent = NavContentBlueprint.make({
+  params: {
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+      return (
+        <Sidebar>
+          <SidebarGroup label="Menu">
+            <SidebarScrollWrapper>
+              {nav.rest({ sortBy: 'title' })}
+            </SidebarScrollWrapper>
+          </SidebarGroup>
+          <SidebarSpace />
+          <SidebarLanguageSwitcher />
+          <SidebarSignOutButton />
+        </Sidebar>
+      );
+    },
+  },
+});
+
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    devSidebarContent,
     ApiBlueprint.make({
       name: 'permission',
       params: defineParams =>
@@ -87,30 +117,6 @@ const rbacDevModule = createFrontendModule({
         }),
     }),
   ],
-});
-
-const devSidebarContent = NavContentBlueprint.make({
-  params: {
-    component: ({ items }) => (
-      <Sidebar>
-        <SidebarGroup label="Menu">
-          <SidebarScrollWrapper>
-            {items.map((item, index) => (
-              <SidebarItem {...item} key={index} />
-            ))}
-          </SidebarScrollWrapper>
-        </SidebarGroup>
-        <SidebarSpace />
-        <SidebarLanguageSwitcher />
-        <SidebarSignOutButton />
-      </Sidebar>
-    ),
-  },
-});
-
-const devNavModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [devSidebarContent],
 });
 
 // redirect to this page on load after sign-in
