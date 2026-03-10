@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-matomo
 
+## 1.25.1
+
+### Patch Changes
+
+- 6ac83bc: Remove unused dev dependencies for @types/node and msw
+
 ## 1.25.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.25.1
+
+### Patch Changes
+
+- 6ac83bc: Removed all unused direct dependencies (Material UI v4, prop-types and react-use)
+- 6ac83bc: Remove unused dev dependencies for @types/node and msw
+
 ## 1.25.0
 
 ### Minor Changes
