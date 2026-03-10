@@ -15,6 +15,7 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 
+import { CustomObjectsApi, KubeConfig } from '@kubernetes/client-node';
 import { setupServer } from 'msw/node';
 
 import { handlers } from '../../__fixtures__/handlers';
@@ -22,9 +23,18 @@ import { OcmConfig } from '../types';
 import {
   getManagedCluster,
   getManagedClusterInfo,
+  hubApiClient,
   listManagedClusterInfos,
   listManagedClusters,
 } from './kubernetes';
+
+jest.mock('@kubernetes/client-node', () => {
+  const k8sClient = jest.requireActual('@kubernetes/client-node');
+  return {
+    ...k8sClient,
+    KubeConfig: jest.fn().mockImplementation(() => new k8sClient.KubeConfig()),
+  };
+});
 
 const server = setupServer(...handlers);
 
@@ -40,9 +50,6 @@ const kubeConfig = {
 };
 
 const getApi = async () => {
-  const { KubeConfig, CustomObjectsApi } = await import(
-    '@kubernetes/client-node'
-  );
   const kc = new KubeConfig();
   kc.loadFromOptions(kubeConfig);
   return kc.makeApiClient(CustomObjectsApi);
@@ -50,12 +57,6 @@ const getApi = async () => {
 
 const FIXTURES_DIR = `${__dirname}/../../__fixtures__`;
 const logger = mockServices.logger.mock();
-
-const mockKubeConfig = {
-  loadFromOptions: jest.fn(),
-  loadFromDefault: jest.fn(),
-  makeApiClient: jest.fn(),
-};
 
 describe('kubernetes.ts', () => {
   beforeEach(() => {
@@ -108,13 +109,14 @@ describe('kubernetes.ts', () => {
   });
 
   describe('hubApiClient', () => {
-    beforeAll(() => {
-      // @ts-ignore
-      jest.unstable_mockModule('@kubernetes/client-node', () => {
-        return {
-          KubeConfig: jest.fn().mockImplementation(() => mockKubeConfig),
-        };
-      });
+    const mockKubeConfig = {
+      loadFromOptions: jest.fn(),
+      loadFromDefault: jest.fn(),
+      makeApiClient: jest.fn(),
+    };
+
+    beforeEach(() => {
+      (KubeConfig as jest.Mock).mockReturnValue(mockKubeConfig);
     });
 
     it('should use the default config if there is no service account token configured', async () => {
@@ -123,9 +125,6 @@ describe('kubernetes.ts', () => {
         id: 'foo',
         hubResourceName: 'cluster1',
       } as OcmConfig;
-
-      // use require here to ensure the mock is used. It doesn't work with direct import
-      const { hubApiClient } = require('./kubernetes');
 
       await hubApiClient(clusterConfig, logger);
 
@@ -140,9 +139,6 @@ describe('kubernetes.ts', () => {
         serviceAccountToken: 'TOKEN',
         url: 'http://cluster.com',
       } as OcmConfig;
-
-      // use require here to ensure the mock is used. It doesn't work with direct import
-      const { hubApiClient } = require('./kubernetes');
 
       await hubApiClient(clusterConfig, logger);
 

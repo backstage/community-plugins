@@ -35,7 +35,7 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
-    "test": "NODE_OPTIONS='--no-node-snapshot --experimental-vm-modules' backstage-cli package test --passWithNoTests --coverage",
+    "test": "backstage-cli package test --coverage",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
