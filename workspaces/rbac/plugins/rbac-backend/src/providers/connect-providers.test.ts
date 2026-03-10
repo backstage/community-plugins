@@ -49,7 +49,11 @@ import {
   clearAuditorMock,
   expectAuditorLog,
 } from '../../__fixtures__/auditor-test-utils';
-import { ActionType, PermissionEvents } from '../auditor/auditor';
+import {
+  ActionType,
+  ConditionEvents,
+  PermissionEvents,
+} from '../auditor/auditor';
 import {
   PermissionAction,
   PermissionInfo,
@@ -726,6 +730,53 @@ describe('Connection', () => {
       await provider.applyConditionalPermissions(policies);
       expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
       expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+    });
+    it('should reject policies from an invalid source', async () => {
+      const anotherProvider = new Connection(
+        'another-provider',
+        enforcerDelegate,
+        roleMetadataStorageMock,
+        conditionalStorageMock,
+        mockLoggerService,
+        mockAuditorService,
+      );
+
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: 0,
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/existing-provider-role',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'read', action: 'read' }],
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['group:default/team-a'],
+            },
+          },
+        },
+        ...existingConditionalPermission,
+      ];
+
+      await anotherProvider.applyConditionalPermissions(policies);
+      expectAuditorLog([
+        {
+          event: {
+            eventId: ConditionEvents.CONDITION_WRITE,
+            meta: { actionType: ActionType.CREATE, source: 'another-provider' },
+          },
+          fail: {
+            error: new Error(
+              `source does not match originating role role:default/existing-provider-role, consider making changes to the 'TEST'`,
+            ),
+            meta: {
+              policies: [policies[0]],
+            },
+          },
+        },
+      ]);
     });
   });
 });
