@@ -1,8 +1,8 @@
 # Knip report
 
-## Unused devDependencies (2)
+## Unused devDependencies (1)
 
 | Name                    | Location          | Severity |
 | :---------------------- | :---------------- | :------- |
-| @backstage/core-app-api | package.json:44:6 | error    |
-| msw                     | package.json:50:6 | error    |
+| @backstage/core-app-api | package.json:58:6 | error    |
+
