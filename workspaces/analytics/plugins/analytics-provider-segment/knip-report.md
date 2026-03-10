@@ -1,6 +1,6 @@
 # Knip report
 
-## Unused devDependencies (6)
+## Unused devDependencies (5)
 
 | Name                        | Location          | Severity |
 | :-------------------------- | :---------------- | :------- |
@@ -9,5 +9,4 @@
 | @testing-library/react      | package.json:67:6 | error    |
 | @backstage/test-utils       | package.json:64:6 | error    |
 | @testing-library/dom        | package.json:65:6 | error    |
-| msw                         | package.json:72:6 | error    |
 
