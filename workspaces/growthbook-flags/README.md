@@ -20,44 +20,7 @@ This workspace contains plugins for integrating GrowthBook feature flag manageme
 
 ## Getting Started
 
-### Installation
-
-```bash
-# Frontend
-yarn workspace app add @backstage-community/plugin-growthbook
-
-# Backend
-yarn workspace backend add @backstage-community/plugin-growthbook-backend
-```
-
-### Quick Setup
-
-1. **Backend**: Add to `packages/backend/src/index.ts`:
-
-   ```typescript
-   backend.add(import('@backstage-community/plugin-growthbook-backend'));
-   ```
-
-2. **Frontend**: Register API in `packages/app/src/apis.ts` and add to EntityPage (see [frontend README](./plugins/growthbook/README.md))
-
-3. **Configure** `app-config.yaml`:
-
-   ```yaml
-   growthbook:
-     baseUrl: ${GROWTHBOOK_BASE_URL}
-     secretKey: ${GROWTHBOOK_SECRET_KEY}
-     sdkKeys:
-       prod: ${GROWTHBOOK_SDK_KEY_PROD}
-   ```
-
-4. **Annotate entities** in `catalog-info.yaml`:
-   ```yaml
-   metadata:
-     annotations:
-       growthbook.io/enabled: "true"
-       growthbook.io/env: "prod"
-       growthbook.io/project: "my-project" // if no project scope, all project flags will be displayed
-   ```
+See the individual plugin READMEs linked above for installation and configuration instructions.
 
 ## Development
 
