@@ -39,7 +39,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { growthbookFlagsApiRef, FlagRow, FlagType } from '../api';
+import { growthbookFlagsApiRef } from '../api';
+import type {
+  FlagRow,
+  FlagType,
+} from '@backstage-community/plugin-growthbook-common';
 
 const ALL_PROJECTS = 'All';
 

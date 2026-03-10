@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-export type FlagType = 'boolean' | 'number' | 'string' | 'json' | 'null';
-
-export type FlagRow = {
-  key: string;
-  type: FlagType;
-  valuePreview: string;
-  valuePretty?: string;
-};
+import type {
+  FlagType,
+  FlagRow,
+} from '@backstage-community/plugin-growthbook-common';
 
 export type MgmtFeature = {
   id: string;

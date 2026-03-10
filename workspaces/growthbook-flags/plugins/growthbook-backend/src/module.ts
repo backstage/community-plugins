@@ -18,12 +18,8 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { RequestHandler } from 'express';
-import {
-  FlagRow,
-  MgmtFeature,
-  normalizeMgmtFlags,
-  normalizeSdkFlags,
-} from './helpers';
+import type { FlagRow } from '@backstage-community/plugin-growthbook-common';
+import { MgmtFeature, normalizeMgmtFlags, normalizeSdkFlags } from './helpers';
 
 type GbProject = { id: string; name: string };
 

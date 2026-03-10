@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-export { growthbookFlagsPlugin } from './plugin';
-export {
-  EntityGrowthbookFlagsContent,
-  isGrowthbookAvailable,
-  GROWTHBOOK_ENABLED_ANNOTATION,
-  GROWTHBOOK_ENV_ANNOTATION,
-} from './components/EntityGrowthbookFlagsContent';
-export { GrowthbookEntityPage } from './components/GrowthbookEntityPage';
-export { growthbookFlagsApiRef, GrowthbookFlagsClient } from './api';
-export type { GrowthbookFlagsApi } from './api';
-export type {
-  FlagRow,
-  FlagType,
-} from '@backstage-community/plugin-growthbook-common';
+/** @public */
+export type FlagType = 'boolean' | 'number' | 'string' | 'json' | 'null';
+
+/** @public */
+export type FlagRow = {
+  key: string;
+  type: FlagType;
+  valuePreview: string;
+  valuePretty?: string;
+};
