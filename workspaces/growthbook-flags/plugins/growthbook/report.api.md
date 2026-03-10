@@ -5,8 +5,6 @@
 ```ts
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { DiscoveryApi } from '@backstage/core-plugin-api';
-import { FetchApi } from '@backstage/core-plugin-api';
 import { FlagRow } from '@backstage-community/plugin-growthbook-common';
 import { FlagType } from '@backstage-community/plugin-growthbook-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
@@ -25,9 +23,6 @@ export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
 export const GROWTHBOOK_ENV_ANNOTATION = 'growthbook.io/env';
 
 // @public (undocumented)
-export function GrowthbookEntityPage(): JSX_2.Element;
-
-// @public (undocumented)
 export interface GrowthbookFlagsApi {
   // (undocumented)
   getFlags(env: string, project?: string): Promise<FlagRow[]>;
@@ -37,15 +32,6 @@ export interface GrowthbookFlagsApi {
 
 // @public (undocumented)
 export const growthbookFlagsApiRef: ApiRef<GrowthbookFlagsApi>;
-
-// @public (undocumented)
-export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
-  constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
-  // (undocumented)
-  getFlags(env: string, project?: string): Promise<FlagRow[]>;
-  // (undocumented)
-  getProjects(): Promise<string[]>;
-}
 
 // @public (undocumented)
 export const growthbookFlagsPlugin: BackstagePlugin<{}, {}, {}>;

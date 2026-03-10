@@ -21,8 +21,7 @@ export {
   GROWTHBOOK_ENABLED_ANNOTATION,
   GROWTHBOOK_ENV_ANNOTATION,
 } from './components/EntityGrowthbookFlagsContent';
-export { GrowthbookEntityPage } from './components/GrowthbookEntityPage';
-export { growthbookFlagsApiRef, GrowthbookFlagsClient } from './api';
+export { growthbookFlagsApiRef } from './api';
 export type { GrowthbookFlagsApi } from './api';
 export type {
   FlagRow,
