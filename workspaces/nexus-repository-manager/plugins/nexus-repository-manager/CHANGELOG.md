@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.22.3
+
+### Patch Changes
+
+- da31305: Updated dependency `filesize` to `^11.0.0`.
+
 ## 1.22.2
 
 ### Patch Changes
