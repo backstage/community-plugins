@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 2.4.1
+
+### Patch Changes
+
+- 693fc2f: Replace Announcements plugin icon from Material UI's RecordVoiceOverIcon to Remix Icon's RiMegaphoneLine. This change is made in the SearchPage component, the search result list item component, the search result type blueprint and use by default for nav blueprint.
+
 ## 2.4.0
 
 ### Minor Changes
