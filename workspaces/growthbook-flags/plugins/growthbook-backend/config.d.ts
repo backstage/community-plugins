@@ -18,7 +18,7 @@ export interface Config {
     /**
      * Base URL of your GrowthBook instance.
      * @example https://app.growthbook.io
-     * @visibility frontend
+     * @visibility backend
      */
     baseUrl: string;
 
@@ -26,7 +26,7 @@ export interface Config {
      * GrowthBook Management API secret key (read-only).
      * When present, flags are fetched via the Management API with full project and environment metadata.
      * When absent, the SDK API fallback is used and sdkKeys must be provided.
-     * @visibility backend
+     * @visibility secret
      */
     secretKey?: string;
 

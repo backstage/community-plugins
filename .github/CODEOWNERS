@@ -67,6 +67,7 @@ yarn.lock                                                               @backsta
 /workspaces/github/plugins/github-issues                                @backstage/community-plugins-maintainers
 /workspaces/github/plugins/github-pull-requests-board                   @backstage/community-plugins-maintainers  @gregorytalita
 /workspaces/gitops-profiles                                             @backstage/community-plugins-maintainers
+/workspaces/growthbook-flags                                            @backstage/community-plugins-maintainers  @zaki-hanafiah
 /workspaces/gocd                                                        @backstage/community-plugins-maintainers
 /workspaces/grafana                                                     @backstage/community-plugins-maintainers
 /workspaces/graphiql                                                    @backstage/community-plugins-maintainers
