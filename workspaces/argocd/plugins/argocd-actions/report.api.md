@@ -15,8 +15,8 @@ export function createArgoCDResource(
 ): TemplateAction<
   {
     path: string;
-    appName: string;
     namespace: string;
+    appName: string;
     repoUrl: string;
     argoInstance: string;
     label?: string | undefined;
