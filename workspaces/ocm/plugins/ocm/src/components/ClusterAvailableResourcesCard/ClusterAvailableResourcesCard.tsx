@@ -24,7 +24,7 @@ import { TableCardFromData } from '../TableCardFromData';
 /**
  * @public
  */
-export const ClusterAvailableResourceCard = (): any => {
+export const ClusterAvailableResourceCard = () => {
   const { loading, data, error } = useCluster();
 
   if (loading) {
