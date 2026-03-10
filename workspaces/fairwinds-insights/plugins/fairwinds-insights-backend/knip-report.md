@@ -10,6 +10,6 @@
 
 | Name                                                 | Location          | Severity |
 | :--------------------------------------------------- | :---------------- | :------- |
-| @backstage/plugin-auth-backend-module-guest-provider | package.json:61:6 | error    |
-| @backstage/plugin-auth-backend                       | package.json:60:6 | error    |
+| @backstage/plugin-auth-backend-module-guest-provider | package.json:62:6 | error    |
+| @backstage/plugin-auth-backend                       | package.json:61:6 | error    |
 

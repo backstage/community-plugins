@@ -1,13 +1,12 @@
 # Knip report
 
-## Unused dependencies (5)
+## Unused dependencies (4)
 
 | Name                           | Location          | Severity |
 | :----------------------------- | :---------------- | :------- |
 | @backstage/frontend-plugin-api | package.json:60:6 | error    |
 | @backstage/plugin-auth-react   | package.json:61:6 | error    |
 | @backstage/core-compat-api     | package.json:56:6 | error    |
-| @backstage/errors              | package.json:59:6 | error    |
 | @mui/styles                    | package.json:66:6 | error    |
 
 ## Unused devDependencies (5)
