@@ -1,5 +1,12 @@
 # @backstage-community/plugin-quay
 
+## 1.31.1
+
+### Patch Changes
+
+- da31305: Updated dependency `filesize` to `^11.0.0`.
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+
 ## 1.31.0
 
 ### Minor Changes
