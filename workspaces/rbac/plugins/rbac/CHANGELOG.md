@@ -1,5 +1,17 @@
 # @backstage-community/plugin-rbac
 
+## 1.50.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+
 ## 1.49.0
 
 ### Minor Changes
