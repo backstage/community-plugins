@@ -18,34 +18,34 @@
  * The Vulnerabilities Card.
  *
  * @public */
-export { VulnerabilitiesCard } from './VulnerabilitiesCard';
+export { VulnerabilitiesCard } from './VulnerabilitiesCard/VulnerabilitiesCard';
 /**
  * The MTD Cost Overview Card.
  *
  * @public */
-export { MTDCostOverviewCard } from './MTDCostOverviewCard';
+export { MTDCostOverviewCard } from './MTDCostOverviewCard/MTDCostOverviewCard';
 /**
  * The Action Items Card.
  *
  * @public */
-export { ActionItemsCard } from './ActionItemsCard';
+export { ActionItemsCard } from './ActionItemsCard/ActionItemsCard';
 /**
  * The Action Items Top Card.
  *
  * @public */
-export { ActionItemsTopCard } from './ActionItemsTopCard';
+export { ActionItemsTopCard } from './ActionItemsTopCard/ActionItemsTopCard';
 /**
  * The Resources History Pod Count Card.
  *
  * @public */
-export { ResourcesHistoryPodCountCard } from './ResourcesHistoryPodCountCard';
+export { ResourcesHistoryPodCountCard } from './ResourcesHistoryPodCountCard/ResourcesHistoryPodCountCard';
 /**
  * The Resources History CPU Card.
  *
  * @public */
-export { ResourcesHistoryCPUCard } from './ResourcesHistoryCPUCard';
+export { ResourcesHistoryCPUCard } from './ResourcesHistoryCPUCard/ResourcesHistoryCPUCard';
 /**
  * The Resources History Memory Card.
  *
  * @public */
-export { ResourcesHistoryMemoryCard } from './ResourcesHistoryMemoryCard';
+export { ResourcesHistoryMemoryCard } from './ResourcesHistoryMemoryCard/ResourcesHistoryMemoryCard';

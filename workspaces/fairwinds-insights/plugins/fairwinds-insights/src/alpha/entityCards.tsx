@@ -47,7 +47,7 @@ export const entityActionItemsCard = EntityCardBlueprint.makeWithOverrides({
     return originalFactory({
       filter: isFairwindsInsightsAvailable,
       loader: async () =>
-        import('../components/ActionItemsCard').then(m => (
+        import('../components/ActionItemsCard/ActionItemsCard').then(m => (
           <m.ActionItemsCard {...config.props} />
         )),
     });
@@ -68,9 +68,9 @@ export const entityActionItemsTopCard = EntityCardBlueprint.makeWithOverrides({
     return originalFactory({
       filter: isFairwindsInsightsAvailable,
       loader: async () =>
-        import('../components/ActionItemsTopCard').then(m => (
-          <m.ActionItemsTopCard {...config.props} />
-        )),
+        import('../components/ActionItemsTopCard/ActionItemsTopCard').then(
+          m => <m.ActionItemsTopCard {...config.props} />,
+        ),
     });
   },
 });
@@ -89,9 +89,9 @@ export const entityMTDCostOverviewCard = EntityCardBlueprint.makeWithOverrides({
     return originalFactory({
       filter: isFairwindsInsightsAvailable,
       loader: async () =>
-        import('../components/MTDCostOverviewCard').then(m => (
-          <m.MTDCostOverviewCard {...config.props} />
-        )),
+        import('../components/MTDCostOverviewCard/MTDCostOverviewCard').then(
+          m => <m.MTDCostOverviewCard {...config.props} />,
+        ),
     });
   },
 });
@@ -110,9 +110,9 @@ export const entityVulnerabilitiesCard = EntityCardBlueprint.makeWithOverrides({
     return originalFactory({
       filter: isFairwindsInsightsAvailable,
       loader: async () =>
-        import('../components/VulnerabilitiesCard').then(m => (
-          <m.VulnerabilitiesCard {...config.props} />
-        )),
+        import('../components/VulnerabilitiesCard/VulnerabilitiesCard').then(
+          m => <m.VulnerabilitiesCard {...config.props} />,
+        ),
     });
   },
 });
@@ -132,9 +132,9 @@ export const entityResourcesHistoryPodCountCard =
       return originalFactory({
         filter: isFairwindsInsightsAvailable,
         loader: async () =>
-          import('../components/ResourcesHistoryPodCountCard').then(m => (
-            <m.ResourcesHistoryPodCountCard {...config.props} />
-          )),
+          import(
+            '../components/ResourcesHistoryPodCountCard/ResourcesHistoryPodCountCard'
+          ).then(m => <m.ResourcesHistoryPodCountCard {...config.props} />),
       });
     },
   });
@@ -154,9 +154,9 @@ export const entityResourcesHistoryCPUCard =
       return originalFactory({
         filter: isFairwindsInsightsAvailable,
         loader: async () =>
-          import('../components/ResourcesHistoryCPUCard').then(m => (
-            <m.ResourcesHistoryCPUCard {...config.props} />
-          )),
+          import(
+            '../components/ResourcesHistoryCPUCard/ResourcesHistoryCPUCard'
+          ).then(m => <m.ResourcesHistoryCPUCard {...config.props} />),
       });
     },
   });
@@ -176,9 +176,9 @@ export const entityResourcesHistoryMemoryCard =
       return originalFactory({
         filter: isFairwindsInsightsAvailable,
         loader: async () =>
-          import('../components/ResourcesHistoryMemoryCard').then(m => (
-            <m.ResourcesHistoryMemoryCard {...config.props} />
-          )),
+          import(
+            '../components/ResourcesHistoryMemoryCard/ResourcesHistoryMemoryCard'
+          ).then(m => <m.ResourcesHistoryMemoryCard {...config.props} />),
       });
     },
   });

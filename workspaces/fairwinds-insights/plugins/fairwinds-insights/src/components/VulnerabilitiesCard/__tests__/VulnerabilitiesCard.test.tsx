@@ -18,7 +18,7 @@ import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
 import { renderInTestApp } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { VulnerabilitiesCard } from '../index';
+import { VulnerabilitiesCard } from '../VulnerabilitiesCard';
 import { Entity } from '@backstage/catalog-model';
 
 const mockGetVulnerabilities = jest.fn();
