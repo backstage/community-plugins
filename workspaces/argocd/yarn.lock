@@ -11231,19 +11231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/node-config-provider@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@smithy/node-config-provider@npm:4.0.1"
-  dependencies:
-    "@smithy/property-provider": "npm:^4.0.1"
-    "@smithy/shared-ini-file-loader": "npm:^4.0.1"
-    "@smithy/types": "npm:^4.1.0"
-    tslib: "npm:^2.6.2"
-  checksum: 10/f4e7b272e154e2eea457d298c6e0c4bb9b5b1c708b0fa2abf10c8153fbf2a7383e3f72b742093931566cfd8b1b42b487f8bb7eb84d67aac00dee82aed5b303d0
-  languageName: node
-  linkType: hard
-
-"@smithy/node-config-provider@npm:^4.3.11":
+"@smithy/node-config-provider@npm:^4.0.1, @smithy/node-config-provider@npm:^4.3.11":
   version: 4.3.11
   resolution: "@smithy/node-config-provider@npm:4.3.11"
   dependencies:
@@ -11281,17 +11269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/property-provider@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@smithy/property-provider@npm:4.0.1"
-  dependencies:
-    "@smithy/types": "npm:^4.1.0"
-    tslib: "npm:^2.6.2"
-  checksum: 10/6b97e175b68bd87f83521a4926db150511695e9c454d2a0fc3567f67449a727308040a92d194ca99538b04d0ec98b3c90fcb2b60657d42da5c32c4c2a8fdce3d
-  languageName: node
-  linkType: hard
-
-"@smithy/property-provider@npm:^4.2.11":
+"@smithy/property-provider@npm:^4.0.1, @smithy/property-provider@npm:^4.2.11":
   version: 4.2.11
   resolution: "@smithy/property-provider@npm:4.2.11"
   dependencies:
@@ -11362,17 +11340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/shared-ini-file-loader@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@smithy/shared-ini-file-loader@npm:4.0.1"
-  dependencies:
-    "@smithy/types": "npm:^4.1.0"
-    tslib: "npm:^2.6.2"
-  checksum: 10/4e75cc58278fae01d8cce41a2c874e2f18f5abcdfda0729f0e9aa723e5d23bb2d642c26863fc8ebee70433a097dbc4b67aff9523094f42d23e9ca3b4551febc3
-  languageName: node
-  linkType: hard
-
-"@smithy/shared-ini-file-loader@npm:^4.4.6":
+"@smithy/shared-ini-file-loader@npm:^4.0.1, @smithy/shared-ini-file-loader@npm:^4.4.6":
   version: 4.4.6
   resolution: "@smithy/shared-ini-file-loader@npm:4.4.6"
   dependencies:
@@ -11447,16 +11415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/types@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@smithy/types@npm:4.1.0"
-  dependencies:
-    tslib: "npm:^2.6.2"
-  checksum: 10/578e500f10371b5ca88c34d41a76fec52f75ab85abc105a0948aa0002a86a4b797c4e8d444008416f38c982503528c8a89cd43b83e7329740fca7e48ece1c75b
-  languageName: node
-  linkType: hard
-
-"@smithy/types@npm:^4.13.0":
+"@smithy/types@npm:^4.1.0, @smithy/types@npm:^4.13.0":
   version: 4.13.0
   resolution: "@smithy/types@npm:4.13.0"
   dependencies:
@@ -11535,16 +11494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/util-config-provider@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@smithy/util-config-provider@npm:4.0.0"
-  dependencies:
-    tslib: "npm:^2.6.2"
-  checksum: 10/74f3cb317056f0974b0942c79d43859031cb860fcf6eb5c9244bee369fc6c4b9c823491a40ca4f03f65641f4128d7fa5c2d322860cb7ee8517c0b2e63088ac6f
-  languageName: node
-  linkType: hard
-
-"@smithy/util-config-provider@npm:^4.2.2":
+"@smithy/util-config-provider@npm:^4.0.0, @smithy/util-config-provider@npm:^4.2.2":
   version: 4.2.2
   resolution: "@smithy/util-config-provider@npm:4.2.2"
   dependencies:
@@ -11581,18 +11531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/util-endpoints@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@smithy/util-endpoints@npm:3.0.1"
-  dependencies:
-    "@smithy/node-config-provider": "npm:^4.0.1"
-    "@smithy/types": "npm:^4.1.0"
-    tslib: "npm:^2.6.2"
-  checksum: 10/9c044f174e42b031817bd3ad09e2ee9fc15e4ccd0fd967b4dbf591023f016c02dd76511f827210c2d7a3fc8611bed8860779a5bba56b1d9d063d1861ee872051
-  languageName: node
-  linkType: hard
-
-"@smithy/util-endpoints@npm:^3.3.2":
+"@smithy/util-endpoints@npm:^3.0.1, @smithy/util-endpoints@npm:^3.3.2":
   version: 3.3.2
   resolution: "@smithy/util-endpoints@npm:3.3.2"
   dependencies:
@@ -11631,17 +11570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@smithy/util-middleware@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@smithy/util-middleware@npm:4.0.1"
-  dependencies:
-    "@smithy/types": "npm:^4.1.0"
-    tslib: "npm:^2.6.2"
-  checksum: 10/3b4c64b3d75561d8a4f2eaddda02f2c042f1589ad8280d6933a357f1456d9513702f90d0a25ea41f008d27587a34bdb5e5b7a8e2fc1f47022d680ec0b91d7a3f
-  languageName: node
-  linkType: hard
-
-"@smithy/util-middleware@npm:^4.2.11":
+"@smithy/util-middleware@npm:^4.0.1, @smithy/util-middleware@npm:^4.2.11":
   version: 4.2.11
   resolution: "@smithy/util-middleware@npm:4.2.11"
   dependencies:
