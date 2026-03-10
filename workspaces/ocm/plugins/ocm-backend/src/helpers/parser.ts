@@ -43,7 +43,7 @@ export const parseResources = (
 });
 
 export const getClaim = (
-  cluster: { status?: { clusterClaims: ClusterClaim[] } },
+  cluster: { status?: { clusterClaims?: ClusterClaim[] } },
   claimName: string,
 ): string =>
   cluster.status?.clusterClaims?.find(value => value.name === claimName)
