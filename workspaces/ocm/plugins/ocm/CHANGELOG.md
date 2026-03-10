@@ -1,5 +1,20 @@
 # @backstage-community/plugin-ocm
 
+## 5.15.0
+
+### Minor Changes
+
+- 5f6f816: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 926c09e: Show loading indicator and error panel if needed on the cluster info and cluster resource cards.
+- 13684ea: ClusterAvailableResourceCard components returns now a JSX element instead of any but this should be fine in most cases.
+- 926c09e: Fix crash when cluster entity and cluster resources doesn't match.
+- 926c09e: Improve OCM cluster page when an error is displayed and removed unnecessary home plugin dependency.
+- Updated dependencies [5f6f816]
+  - @backstage-community/plugin-ocm-common@3.19.0
+
 ## 5.14.0
 
 ### Minor Changes
