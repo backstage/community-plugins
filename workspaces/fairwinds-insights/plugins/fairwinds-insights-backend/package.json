@@ -48,6 +48,7 @@
     "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
+    "@backstage/errors": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
     "express": "^4.22.0",
     "express-promise-router": "^4.1.0",
