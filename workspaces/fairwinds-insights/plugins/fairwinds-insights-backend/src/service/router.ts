@@ -36,11 +36,7 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import {
-  InputError,
-  NotFoundError,
-  ResponseError,
-} from '@backstage/errors/index';
+import { InputError, NotFoundError, ResponseError } from '@backstage/errors';
 
 export interface RouterOptions {
   config: RootConfigService;

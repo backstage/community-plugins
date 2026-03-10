@@ -24,7 +24,7 @@ import type {
   ResourcesSummaryTimeseriesResponse,
   VulnerabilitiesResponse,
 } from '@backstage-community/plugin-fairwinds-insights-common';
-import { ResponseError } from '@backstage/errors/index';
+import { ResponseError } from '@backstage/errors';
 
 export interface ActionItemsListParams {
   page?: number;
