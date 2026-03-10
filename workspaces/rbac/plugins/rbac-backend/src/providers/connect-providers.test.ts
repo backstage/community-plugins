@@ -701,6 +701,32 @@ describe('Connection', () => {
       expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
       expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
     });
+    it('should replace permissions with changed condition', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: existingConditionalPermission[0].id,
+          result: existingConditionalPermission[0].result,
+          roleEntityRef: existingConditionalPermission[0].roleEntityRef,
+          pluginId: existingConditionalPermission[0].pluginId,
+          resourceType: existingConditionalPermission[0].resourceType,
+          permissionMapping: existingConditionalPermission[0].permissionMapping,
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: [
+                'group:default/existing-team',
+                'group:default/one-more-team',
+              ],
+            },
+          },
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+    });
   });
 });
 

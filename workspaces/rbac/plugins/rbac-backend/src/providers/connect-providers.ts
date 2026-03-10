@@ -137,7 +137,8 @@ export class Connection implements RBACProviderConnection {
               isEqual(
                 conditionalPermission.permissionMapping,
                 stored.permissionMapping,
-              ),
+              ) &&
+              isEqual(conditionalPermission.conditions, stored.conditions),
           ),
       );
 
@@ -153,7 +154,8 @@ export class Connection implements RBACProviderConnection {
               isEqual(
                 stored.permissionMapping,
                 conditionalPermission.permissionMapping,
-              ),
+              ) &&
+              isEqual(stored.conditions, conditionalPermission.conditions),
           ),
       );
 
