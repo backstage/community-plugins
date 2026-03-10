@@ -19,16 +19,7 @@ import {
   FetchApi,
 } from '@backstage/core-plugin-api';
 
-/** @public */
-export type FlagType = 'boolean' | 'number' | 'string' | 'json' | 'null';
-
-/** @public */
-export type FlagRow = {
-  key: string;
-  type: FlagType;
-  valuePreview: string;
-  valuePretty?: string;
-};
+import type { FlagRow } from '@backstage-community/plugin-growthbook-common';
 
 /** @public */
 export interface GrowthbookFlagsApi {

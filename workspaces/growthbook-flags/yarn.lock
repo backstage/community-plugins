@@ -1248,6 +1248,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-growthbook-backend@workspace:plugins/growthbook-backend"
   dependencies:
+    "@backstage-community/plugin-growthbook-common": "npm:^0.1.0"
     "@backstage/backend-plugin-api": "npm:^1.6.2"
     "@backstage/backend-test-utils": "npm:^1.10.4"
     "@backstage/cli": "npm:^0.35.3"
@@ -1259,10 +1260,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@backstage-community/plugin-growthbook-common@npm:^0.1.0, @backstage-community/plugin-growthbook-common@workspace:plugins/growthbook-common":
+  version: 0.0.0-use.local
+  resolution: "@backstage-community/plugin-growthbook-common@workspace:plugins/growthbook-common"
+  dependencies:
+    "@backstage/cli": "npm:^0.35.3"
+  languageName: unknown
+  linkType: soft
+
 "@backstage-community/plugin-growthbook@workspace:plugins/growthbook":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-growthbook@workspace:plugins/growthbook"
   dependencies:
+    "@backstage-community/plugin-growthbook-common": "npm:^0.1.0"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.35.3"
     "@backstage/config": "npm:^1.3.6"

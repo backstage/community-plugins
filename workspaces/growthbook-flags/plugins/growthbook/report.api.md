@@ -7,21 +7,16 @@ import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
+import { FlagRow } from '@backstage-community/plugin-growthbook-common';
+import { FlagType } from '@backstage-community/plugin-growthbook-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public (undocumented)
 export function EntityGrowthbookFlagsContent(): JSX_2.Element;
 
-// @public (undocumented)
-export type FlagRow = {
-  key: string;
-  type: FlagType;
-  valuePreview: string;
-  valuePretty?: string;
-};
+export { FlagRow };
 
-// @public (undocumented)
-export type FlagType = 'boolean' | 'number' | 'string' | 'json' | 'null';
+export { FlagType };
 
 // @public (undocumented)
 export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';

@@ -13,7 +13,8 @@
     "pluginPackage": "@backstage-community/plugin-growthbook",
     "pluginPackages": [
       "@backstage-community/plugin-growthbook",
-      "@backstage-community/plugin-growthbook-backend"
+      "@backstage-community/plugin-growthbook-backend",
+      "@backstage-community/plugin-growthbook-common"
     ]
   },
   "exports": {
@@ -39,6 +40,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@backstage-community/plugin-growthbook-common": "^0.1.0",
     "@backstage/catalog-model": "^1.7.6",
     "@backstage/core-components": "^0.18.6",
     "@backstage/core-plugin-api": "^1.12.2",
