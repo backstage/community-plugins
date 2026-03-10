@@ -28,7 +28,7 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import { RiMegaphoneLine } from '@remixicon/react';
 
 const useStyles = makeStyles({
   createdAt: {
@@ -107,7 +107,7 @@ export const AnnouncementSearchResultListItem = ({
   return (
     <ListItem alignItems="center">
       <ListItemIcon title={t('announcementSearchResultListItem.announcement')}>
-        <RecordVoiceOverIcon />
+        <RiMegaphoneLine />
       </ListItemIcon>
       <ListItemText
         primary={title}

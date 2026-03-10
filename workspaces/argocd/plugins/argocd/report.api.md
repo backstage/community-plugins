@@ -11,18 +11,16 @@ import { RouteRef } from '@backstage/core-plugin-api';
 // Warning: (ae-missing-release-tag) "ArgocdDeploymentLifecycle" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const ArgocdDeploymentLifecycle: ({
-  showInstance,
-  showServer,
-}: DeploymentLifecycleProps) => JSX_2.Element | null;
+export const ArgocdDeploymentLifecycle: (
+  input: DeploymentLifecycleProps,
+) => JSX_2.Element | null;
 
 // Warning: (ae-missing-release-tag) "ArgocdDeploymentSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const ArgocdDeploymentSummary: ({
-  showInstance,
-  showServer,
-}: DeploymentSummaryProps) => JSX_2.Element | null;
+export const ArgocdDeploymentSummary: (
+  input: DeploymentSummaryProps,
+) => JSX_2.Element | null;
 
 // Warning: (ae-missing-release-tag) "argocdPlugin" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

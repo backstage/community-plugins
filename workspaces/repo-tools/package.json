@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@backstage/cli": "^0.35.4",
-    "@backstage/repo-tools": "^0.16.4",
+    "@backstage/repo-tools": "^0.16.5",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",
     "prettier": "^2.3.2",

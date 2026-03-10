@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-import {
-  IconComponent,
-  NavItemBlueprint as NavItem,
-} from '@backstage/frontend-plugin-api';
+import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
 import { RbacIcon } from '..';
 
-export const rbacNavItem = NavItem.make({
+export const rbacNavItem = NavItemBlueprint.make({
   params: {
     title: 'RBAC',
     routeRef: rootRouteRef,
-    icon: RbacIcon as IconComponent,
+    // FIXME: improve icon type in Backstage 1.49, currently the icon type is deprecated but there is no change in the NavItemBlueprint!?
+    icon: RbacIcon as any,
   },
 });
 

@@ -12,7 +12,7 @@ import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
-export const ClusterAvailableResourceCard: () => any;
+export const ClusterAvailableResourceCard: () => JSX_2.Element;
 
 // @public (undocumented)
 export const ClusterContextProvider: (props: any) => JSX_2.Element;

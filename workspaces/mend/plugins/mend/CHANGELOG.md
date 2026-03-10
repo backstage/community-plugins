@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend
 
+## 1.1.0
+
+### Minor Changes
+
+- 93f75d2: Backstage version bump to v1.48.2
+
 ## 1.0.0
 
 ### Major Changes

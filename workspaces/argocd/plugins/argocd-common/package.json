@@ -17,7 +17,8 @@
     "pluginPackages": [
       "@backstage-community/plugin-argocd",
       "@backstage-community/plugin-argocd-backend",
-      "@backstage-community/plugin-argocd-common"
+      "@backstage-community/plugin-argocd-common",
+      "@backstage-community/plugin-argocd-node"
     ]
   },
   "sideEffects": false,
@@ -31,11 +32,11 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/plugin-permission-common": "^0.9.5",
+    "@backstage/plugin-permission-common": "^0.9.6",
     "@kubernetes/client-node": "^1.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.3"
+    "@backstage/cli": "^0.35.4"
   },
   "files": [
     "dist"
