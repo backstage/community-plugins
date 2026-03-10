@@ -24,6 +24,7 @@ import type {
   ResourcesSummaryTimeseriesResponse,
   VulnerabilitiesResponse,
 } from '@backstage-community/plugin-fairwinds-insights-common';
+import { ResponseError } from '@backstage/errors/index';
 
 export interface ActionItemsListParams {
   page?: number;
@@ -46,10 +47,7 @@ export function useFairwindsInsightsApi() {
 
       const response = await fetchApi.fetch(url);
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to fetch vulnerabilities: ${response.statusText} - ${errorText}`,
-        );
+        throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<VulnerabilitiesResponse>;
     },
@@ -70,10 +68,7 @@ export function useFairwindsInsightsApi() {
 
       const response = await fetchApi.fetch(url);
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to fetch action items: ${response.statusText} - ${errorText}`,
-        );
+        throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<ActionItemsListResponse>;
     },
@@ -92,10 +87,7 @@ export function useFairwindsInsightsApi() {
 
       const response = await fetchApi.fetch(url);
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to fetch action item filters: ${response.statusText} - ${errorText}`,
-        );
+        throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<ActionItemFiltersResponse>;
     },
@@ -111,10 +103,7 @@ export function useFairwindsInsightsApi() {
       const response = await fetchApi.fetch(url);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to fetch action items top: ${response.statusText} - ${errorText}`,
-        );
+        throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<ActionItemsTopResponse>;
     },
@@ -128,10 +117,7 @@ export function useFairwindsInsightsApi() {
       const response = await fetchApi.fetch(url);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to fetch costs: ${response.statusText} - ${errorText}`,
-        );
+        throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<CostsMtdResponse>;
     },
@@ -148,10 +134,7 @@ export function useFairwindsInsightsApi() {
 
       const response = await fetchApi.fetch(url);
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to fetch resources summary timeseries: ${response.statusText} - ${errorText}`,
-        );
+        throw await ResponseError.fromResponse(response);
       }
       return response.json() as Promise<ResourcesSummaryTimeseriesResponse>;
     },

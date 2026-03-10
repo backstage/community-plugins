@@ -36,6 +36,11 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
+import {
+  InputError,
+  NotFoundError,
+  ResponseError,
+} from '@backstage/errors/index';
 
 export interface RouterOptions {
   config: RootConfigService;
@@ -65,9 +70,9 @@ export async function createRouter(
     path: string,
     queryParams?: URLSearchParams,
   ): string {
-    const base = apiConfig.apiUrl!.endsWith('/')
-      ? apiConfig.apiUrl!.slice(0, -1)
-      : apiConfig.apiUrl!;
+    const base = apiConfig.apiUrl.endsWith('/')
+      ? apiConfig.apiUrl.slice(0, -1)
+      : apiConfig.apiUrl;
     const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
     const baseUrl = `${base}/orgs/${apiConfig.organization}/`;
     const url = new URL(normalizedPath, baseUrl);
@@ -78,62 +83,33 @@ export async function createRouter(
     return url.toString();
   }
 
-  async function getAppGroupsFromEntity(
-    req: Request,
-    entityRef: string,
-  ): Promise<string[] | null> {
-    try {
-      const credentials = await httpAuth.credentials(req, { allow: ['user'] });
-      const parsedRef = parseEntityRef(entityRef);
-      const entity = await catalogService.getEntityByRef(parsedRef, {
-        credentials,
-      });
+  async function getAppGroupsFromEntity(req: Request, entityRef: string) {
+    const credentials = await httpAuth.credentials(req, { allow: ['user'] });
+    const parsedRef = parseEntityRef(entityRef);
+    const entity = await catalogService.getEntityByRef(parsedRef, {
+      credentials,
+    });
 
-      if (!entity) {
-        logger.warn(`Entity not found: ${entityRef}`);
-        return null;
-      }
-
-      // Try annotation first (preferred)
-      const appGroupsFromAnnotation =
-        entity.metadata.annotations?.['insights.fairwinds.com/app-groups'];
-      if (appGroupsFromAnnotation) {
-        // Parse comma-separated values and trim whitespace
-        const groups = appGroupsFromAnnotation
-          .split(',')
-          .map(g => g.trim())
-          .filter(g => g.length > 0);
-        if (groups.length > 0) {
-          return groups;
-        }
-      }
-
-      // Fallback to spec (support both single value and comma-separated)
-      const appGroupsFromSpec =
-        (entity.spec as any)?.['app-groups'] ||
-        (entity.spec as any)?.['app-group'];
-      if (appGroupsFromSpec) {
-        const specValue =
-          typeof appGroupsFromSpec === 'string'
-            ? appGroupsFromSpec
-            : String(appGroupsFromSpec);
-        const groups = specValue
-          .split(',')
-          .map(g => g.trim())
-          .filter(g => g.length > 0);
-        if (groups.length > 0) {
-          return groups;
-        }
-      }
-
-      logger.warn(
-        `No app-groups found for entity ${entityRef}. Expected annotation 'insights.fairwinds.com/app-groups' or spec.app-groups`,
-      );
-      return null;
-    } catch (error) {
-      logger.error(`Error fetching entity ${entityRef}:`, error);
-      return null;
+    if (!entity) {
+      throw new NotFoundError(`Entity not found: ${entityRef}`);
     }
+
+    const appGroupsFromAnnotation =
+      entity.metadata.annotations?.['insights.fairwinds.com/app-groups'];
+    if (appGroupsFromAnnotation) {
+      // Parse comma-separated values and trim whitespace
+      const groups = appGroupsFromAnnotation
+        .split(',')
+        .map(g => g.trim())
+        .filter(g => g.length > 0);
+      if (groups.length > 0) {
+        return groups;
+      }
+    }
+
+    throw new NotFoundError(
+      `No app-groups found for entity ${entityRef}. Expected annotation 'insights.fairwinds.com/app-groups'`,
+    );
   }
 
   type AppGroupKey = 'app-groups' | 'appGroups' | 'appGroup' | 'AppGroup';
@@ -175,10 +151,7 @@ export async function createRouter(
     const response = await fetch(url, { headers });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `Fairwinds Insights API error: ${response.status} ${response.statusText} - ${errorText}`,
-      );
+      throw await ResponseError.fromResponse(response);
     }
 
     return response.json() as Promise<T>;
@@ -235,10 +208,7 @@ export async function createRouter(
     );
     const response = await fetch(url, { headers });
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `Fairwinds Insights API error: ${response.status} ${response.statusText} - ${errorText}`,
-      );
+      throw await ResponseError.fromResponse(response);
     }
     const data = (await response.json()) as ActionItem[];
     const totalHeader = response.headers.get('total-size') ?? data.length;
@@ -304,88 +274,67 @@ export async function createRouter(
     const { entityRef } = req.query;
 
     if (!entityRef || typeof entityRef !== 'string') {
-      res.status(400).json({
-        error: 'Missing required query parameter: entityRef',
-      });
-      return;
+      throw new InputError('Missing required query parameter: entityRef');
     }
 
-    try {
-      const appGroups = await getAppGroupsFromEntity(req, entityRef);
+    const appGroups = await getAppGroupsFromEntity(req, entityRef);
 
-      if (!appGroups || appGroups.length === 0) {
-        res.status(404).json({
-          error: 'Entity does not have app-groups configured',
-          details:
-            'Entity must have insights.fairwinds.com/app-groups annotation or spec.app-groups',
-        });
-        return;
-      }
+    const cacheKey = `vulnerabilities:${appGroups.sort().join(',')}`;
 
-      const cacheKey = `vulnerabilities:${appGroups.sort().join(',')}`;
+    const response = await getCachedOrFetch<VulnerabilitiesResponse>(
+      cacheKey,
+      async () => {
+        const baseUrl = `/v0/organizations/${apiConfig.organization}/images/vulnerabilities`;
+        const queryParams = 'resolved=false&onlyCriticalAndHighSeverities=true';
 
-      const response = await getCachedOrFetch<VulnerabilitiesResponse>(
-        cacheKey,
-        async () => {
-          const baseUrl = `/v0/organizations/${apiConfig.organization}/images/vulnerabilities`;
-          const queryParams =
-            'resolved=false&onlyCriticalAndHighSeverities=true';
+        const [summaries, topByTitle, topBySeverity, topByPackage] =
+          await Promise.all([
+            fetchFromInsightsApi<VulnerabilitiesSummaryResponse>(
+              `${baseUrl}/summaries?page=0&pageSize=25&${queryParams}`,
+              appGroups,
+            ),
+            fetchFromInsightsApi<VulnerabilitiesTopResponse[]>(
+              `${baseUrl}/top?groupBy=title&${queryParams}`,
+              appGroups,
+            ),
+            fetchFromInsightsApi<VulnerabilitiesTopResponse[]>(
+              `${baseUrl}/top?groupBy=severity&${queryParams}`,
+              appGroups,
+            ),
+            fetchFromInsightsApi<VulnerabilitiesTopResponse[]>(
+              `${baseUrl}/top?groupBy=package&${queryParams}`,
+              appGroups,
+            ),
+          ]);
 
-          const [summaries, topByTitle, topBySeverity, topByPackage] =
-            await Promise.all([
-              fetchFromInsightsApi<VulnerabilitiesSummaryResponse>(
-                `${baseUrl}/summaries?page=0&pageSize=25&${queryParams}`,
-                appGroups,
-              ),
-              fetchFromInsightsApi<VulnerabilitiesTopResponse[]>(
-                `${baseUrl}/top?groupBy=title&${queryParams}`,
-                appGroups,
-              ),
-              fetchFromInsightsApi<VulnerabilitiesTopResponse[]>(
-                `${baseUrl}/top?groupBy=severity&${queryParams}`,
-                appGroups,
-              ),
-              fetchFromInsightsApi<VulnerabilitiesTopResponse[]>(
-                `${baseUrl}/top?groupBy=package&${queryParams}`,
-                appGroups,
-              ),
-            ]);
+        return {
+          topByTitle: topByTitle.map(item => ({
+            count: item.count,
+            title: item.value || '',
+          })),
+          topBySeverity: topBySeverity.map(item => ({
+            count: item.count,
+            title: item.value || '',
+          })),
+          topByPackage: topByPackage.map(item => ({
+            count: item.count,
+            title: item.value || '',
+          })),
+          items: [], // Full items list would come from a different endpoint
+          total: summaries.total || 0,
+        };
+      },
+    );
 
-          return {
-            topByTitle: topByTitle.map(item => ({
-              count: item.count,
-              title: item.value || '',
-            })),
-            topBySeverity: topBySeverity.map(item => ({
-              count: item.count,
-              title: item.value || '',
-            })),
-            topByPackage: topByPackage.map(item => ({
-              count: item.count,
-              title: item.value || '',
-            })),
-            items: [], // Full items list would come from a different endpoint
-            total: summaries.total || 0,
-          };
-        },
-      );
+    const queryParams = buildAppGroupsQuery(appGroups, 'appGroups');
 
-      const queryParams = buildAppGroupsQuery(appGroups, 'appGroups');
-
-      res.json({
-        ...response,
-        insightsUrl: buildInsightsUiUrl(
-          '/vulnerabilities/all-images',
-          queryParams,
-        ),
-      });
-    } catch (error: any) {
-      logger.error('Error fetching vulnerabilities:', error);
-      res.status(500).json({
-        error: 'Failed to fetch vulnerabilities',
-        message: error.message,
-      });
-    }
+    res.json({
+      ...response,
+      insightsUrl: buildInsightsUiUrl(
+        '/vulnerabilities/all-images',
+        queryParams,
+      ),
+    });
   });
 
   /**
@@ -405,68 +354,48 @@ export async function createRouter(
     } = req.query;
 
     if (!entityRef || typeof entityRef !== 'string') {
-      res.status(400).json({
-        error: 'Missing required query parameter: entityRef',
-      });
-      return;
+      throw new InputError('Missing required query parameter: entityRef');
     }
 
-    try {
-      const appGroups = await getAppGroupsFromEntity(req, entityRef);
+    const appGroups = await getAppGroupsFromEntity(req, entityRef);
 
-      if (!appGroups || appGroups.length === 0) {
-        res.status(404).json({
-          error: 'Entity does not have app-groups configured',
-          details:
-            'Entity must have insights.fairwinds.com/app-groups annotation or spec.app-groups',
-        });
-        return;
-      }
+    const basePath = `/v0/organizations/${apiConfig.organization}/action-items`;
+    const params = new URLSearchParams();
+    params.set('page', String(page));
+    params.set('pageSize', String(pageSize));
+    params.set('orderBy', String(orderBy));
+    params.set('Fixed', String(Fixed));
+    params.set('Resolution', String(Resolution));
+    if (Search) params.set('Search', String(Search));
+    if (ReportType) params.set('ReportType', String(ReportType));
+    const listUrl = `${basePath}?${params.toString()}`;
 
-      const basePath = `/v0/organizations/${apiConfig.organization}/action-items`;
-      const params = new URLSearchParams();
-      params.set('page', String(page));
-      params.set('pageSize', String(pageSize));
-      params.set('orderBy', String(orderBy));
-      params.set('Fixed', String(Fixed));
-      params.set('Resolution', String(Resolution));
-      if (Search) params.set('Search', String(Search));
-      if (ReportType) params.set('ReportType', String(ReportType));
-      const listUrl = `${basePath}?${params.toString()}`;
+    const cacheKey = `action-items:${[...appGroups]
+      .sort()
+      .join(
+        ',',
+      )}:${page}:${pageSize}:${orderBy}:${Search}:${ReportType}:${Fixed}:${Resolution}`;
+    const { data: items, totalSize } = await getCachedOrFetch<{
+      data: ActionItem[];
+      totalSize: number;
+    }>(cacheKey, () => fetchFromInsightsApiWithHeaders(listUrl, appGroups));
 
-      const cacheKey = `action-items:${[...appGroups]
-        .sort()
-        .join(
-          ',',
-        )}:${page}:${pageSize}:${orderBy}:${Search}:${ReportType}:${Fixed}:${Resolution}`;
-      const { data: items, totalSize } = await getCachedOrFetch<{
-        data: ActionItem[];
-        totalSize: number;
-      }>(cacheKey, () => fetchFromInsightsApiWithHeaders(listUrl, appGroups));
+    const queryParams = buildAppGroupsQuery(appGroups, 'AppGroup');
+    queryParams.append('page', String(page));
+    queryParams.append('orderBy', String(orderBy));
+    queryParams.append('pageSize', String(pageSize));
+    queryParams.append('Fixed', String(Fixed));
+    queryParams.append('Resolution', String(Resolution));
+    if (Search) queryParams.append('Search', String(Search));
+    if (ReportType) queryParams.append('ReportType', String(ReportType));
 
-      const queryParams = buildAppGroupsQuery(appGroups, 'AppGroup');
-      queryParams.append('page', String(page));
-      queryParams.append('orderBy', String(orderBy));
-      queryParams.append('pageSize', String(pageSize));
-      queryParams.append('Fixed', String(Fixed));
-      queryParams.append('Resolution', String(Resolution));
-      if (Search) queryParams.append('Search', String(Search));
-      if (ReportType) queryParams.append('ReportType', String(ReportType));
+    const response: ActionItemsListResponse = {
+      data: items.map(normalizeActionItemRow),
+      total: totalSize,
+      insightsUrl: buildInsightsUiUrl('/action-items', queryParams),
+    };
 
-      const response: ActionItemsListResponse = {
-        data: items.map(normalizeActionItemRow),
-        total: totalSize,
-        insightsUrl: buildInsightsUiUrl('/action-items', queryParams),
-      };
-
-      res.json(response);
-    } catch (error: any) {
-      logger.error('Error fetching action items:', error);
-      res.status(500).json({
-        error: 'Failed to fetch action items',
-        message: error.message,
-      });
-    }
+    res.json(response);
   });
 
   /**
@@ -481,52 +410,32 @@ export async function createRouter(
     } = req.query;
 
     if (!entityRef || typeof entityRef !== 'string') {
-      res.status(400).json({
-        error: 'Missing required query parameter: entityRef',
-      });
-      return;
+      throw new InputError('Missing required query parameter: entityRef');
     }
 
-    try {
-      const appGroups = await getAppGroupsFromEntity(req, entityRef);
+    const appGroups = await getAppGroupsFromEntity(req, entityRef);
 
-      if (!appGroups || appGroups.length === 0) {
-        res.status(404).json({
-          error: 'Entity does not have app-groups configured',
-          details:
-            'Entity must have insights.fairwinds.com/app-groups annotation or spec.app-groups',
-        });
-        return;
-      }
+    const basePath = `/v0/organizations/${apiConfig.organization}/action-item-filters`;
+    const params = new URLSearchParams();
+    params.set('Fixed', String(Fixed));
+    params.set('Resolution', String(Resolution));
+    params.set('Field', String(Field));
+    const filtersUrl = `${basePath}?${params.toString()}`;
 
-      const basePath = `/v0/organizations/${apiConfig.organization}/action-item-filters`;
-      const params = new URLSearchParams();
-      params.set('Fixed', String(Fixed));
-      params.set('Resolution', String(Resolution));
-      params.set('Field', String(Field));
-      const filtersUrl = `${basePath}?${params.toString()}`;
+    const cacheKey = `action-item-filters:${[...appGroups]
+      .sort()
+      .join(',')}:${Fixed}:${Resolution}:${Field}`;
+    const data = await getCachedOrFetch<{ ReportType: string[] }>(
+      cacheKey,
+      () =>
+        fetchFromInsightsApi<{ ReportType: string[] }>(
+          filtersUrl,
+          appGroups,
+          'AppGroup',
+        ),
+    );
 
-      const cacheKey = `action-item-filters:${[...appGroups]
-        .sort()
-        .join(',')}:${Fixed}:${Resolution}:${Field}`;
-      const data = await getCachedOrFetch<{ ReportType: string[] }>(
-        cacheKey,
-        () =>
-          fetchFromInsightsApi<{ ReportType: string[] }>(
-            filtersUrl,
-            appGroups,
-            'AppGroup',
-          ),
-      );
-
-      res.json(data ?? { ReportType: [] });
-    } catch (error: any) {
-      logger.error('Error fetching action item filters:', error);
-      res.status(500).json({
-        error: 'Failed to fetch action item filters',
-        message: error.message,
-      });
-    }
+    res.json(data ?? { ReportType: [] });
   });
 
   function normalizeActionItemsTop(
@@ -549,77 +458,57 @@ export async function createRouter(
     const { entityRef } = req.query;
 
     if (!entityRef || typeof entityRef !== 'string') {
-      res.status(400).json({
-        error: 'Missing required query parameter: entityRef',
-      });
-      return;
+      throw new InputError('Missing required query parameter: entityRef');
     }
 
-    try {
-      const appGroups = await getAppGroupsFromEntity(req, entityRef);
+    const appGroups = await getAppGroupsFromEntity(req, entityRef);
 
-      if (!appGroups || appGroups.length === 0) {
-        res.status(404).json({
-          error: 'Entity does not have app-groups configured',
-          details:
-            'Entity must have insights.fairwinds.com/app-groups annotation or spec.app-groups',
-        });
-        return;
-      }
+    const cacheKey = `action-items-top:${appGroups.sort().join(',')}`;
+    const basePath = `/v0/organizations/${apiConfig.organization}/action-items/top`;
+    const query = 'page=0&pageSize=6&Fixed=false&Resolution=None';
 
-      const cacheKey = `action-items-top:${appGroups.sort().join(',')}`;
-      const basePath = `/v0/organizations/${apiConfig.organization}/action-items/top`;
-      const query = 'page=0&pageSize=6&Fixed=false&Resolution=None';
+    const response = await getCachedOrFetch<ActionItemsTopResponse>(
+      cacheKey,
+      async () => {
+        const [bySeverity, byTitle, byNamespace, byResource] =
+          await Promise.all([
+            fetchFromInsightsApi<any[]>(
+              `${basePath}?groupBy=severity&${query}`,
+              appGroups,
+            ),
+            fetchFromInsightsApi<any[]>(
+              `${basePath}?groupBy=title&${query}`,
+              appGroups,
+            ),
+            fetchFromInsightsApi<any[]>(
+              `${basePath}?groupBy=namespace&${query}`,
+              appGroups,
+            ),
+            fetchFromInsightsApi<any[]>(
+              `${basePath}?groupBy=resource&${query}`,
+              appGroups,
+            ),
+          ]);
 
-      const response = await getCachedOrFetch<ActionItemsTopResponse>(
-        cacheKey,
-        async () => {
-          const [bySeverity, byTitle, byNamespace, byResource] =
-            await Promise.all([
-              fetchFromInsightsApi<any[]>(
-                `${basePath}?groupBy=severity&${query}`,
-                appGroups,
-              ),
-              fetchFromInsightsApi<any[]>(
-                `${basePath}?groupBy=title&${query}`,
-                appGroups,
-              ),
-              fetchFromInsightsApi<any[]>(
-                `${basePath}?groupBy=namespace&${query}`,
-                appGroups,
-              ),
-              fetchFromInsightsApi<any[]>(
-                `${basePath}?groupBy=resource&${query}`,
-                appGroups,
-              ),
-            ]);
+        return {
+          topBySeverity: normalizeActionItemsTop(bySeverity, 'Severity'),
+          topByTitle: normalizeActionItemsTop(byTitle, 'Title'),
+          topByNamespace: normalizeActionItemsTop(byNamespace, 'Namespace'),
+          topByResource: normalizeActionItemsTop(byResource, 'Resource'),
+        };
+      },
+    );
 
-          return {
-            topBySeverity: normalizeActionItemsTop(bySeverity, 'Severity'),
-            topByTitle: normalizeActionItemsTop(byTitle, 'Title'),
-            topByNamespace: normalizeActionItemsTop(byNamespace, 'Namespace'),
-            topByResource: normalizeActionItemsTop(byResource, 'Resource'),
-          };
-        },
-      );
+    const queryParams = buildAppGroupsQuery(appGroups, 'AppGroup');
+    queryParams.append('page', '0');
+    queryParams.append('pageSize', '6');
+    queryParams.append('Fixed', 'false');
+    queryParams.append('Resolution', 'None');
 
-      const queryParams = buildAppGroupsQuery(appGroups, 'AppGroup');
-      queryParams.append('page', '0');
-      queryParams.append('pageSize', '6');
-      queryParams.append('Fixed', 'false');
-      queryParams.append('Resolution', 'None');
-
-      res.json({
-        ...response,
-        insightsUrl: buildInsightsUiUrl('/action-items', queryParams),
-      });
-    } catch (error: any) {
-      logger.error('Error fetching action items top:', error);
-      res.status(500).json({
-        error: 'Failed to fetch action items top',
-        message: error.message,
-      });
-    }
+    res.json({
+      ...response,
+      insightsUrl: buildInsightsUiUrl('/action-items', queryParams),
+    });
   });
 
   /** Downsample granularity: daily = no averaging, weekly/monthly = average into that bucket */
@@ -845,85 +734,63 @@ export async function createRouter(
     const { entityRef } = req.query;
 
     if (!entityRef || typeof entityRef !== 'string') {
-      res.status(400).json({
-        error: 'Missing required query parameter: entityRef',
-      });
-      return;
+      throw new InputError('Missing required query parameter: entityRef');
     }
 
-    try {
-      const appGroups = await getAppGroupsFromEntity(req, entityRef);
+    const appGroups = await getAppGroupsFromEntity(req, entityRef);
 
-      if (!appGroups || appGroups.length === 0) {
-        res.status(404).json({
-          error: 'Entity does not have app-groups configured',
-          details:
-            'Entity must have insights.fairwinds.com/app-groups annotation or spec.app-groups',
-        });
-        return;
-      }
+    const cacheKey = `resources-total-costs:mtd:${appGroups
+      .sort()
+      .join(',')}:${new Date().toISOString().slice(0, 7)}`;
 
-      const cacheKey = `resources-total-costs:mtd:${appGroups
-        .sort()
-        .join(',')}:${new Date().toISOString().slice(0, 7)}`;
+    const currentRange = getCurrentMtdRange();
+    const previousRange = getPreviousMtdRange();
 
-      const currentRange = getCurrentMtdRange();
-      const previousRange = getPreviousMtdRange();
+    const response = await getCachedOrFetch<CostsMtdResponse>(
+      cacheKey,
+      async () => {
+        const basePath = `/v0/organizations/${apiConfig.organization}/resources-total-costs`;
+        const params = 'addNetworkAndStorage=true&skipSavingsAvailable=true';
 
-      const response = await getCachedOrFetch<CostsMtdResponse>(
-        cacheKey,
-        async () => {
-          const basePath = `/v0/organizations/${apiConfig.organization}/resources-total-costs`;
-          const params = 'addNetworkAndStorage=true&skipSavingsAvailable=true';
+        const [currentMtd, previousMtd] = await Promise.all([
+          fetchFromInsightsApi<ResourcesTotalCostsResponse>(
+            `${basePath}?startDate=${encodeURIComponent(
+              currentRange.startDate,
+            )}&endDate=${encodeURIComponent(currentRange.endDate)}&${params}`,
+            appGroups,
+            'appGroups',
+          ),
+          fetchFromInsightsApi<ResourcesTotalCostsResponse>(
+            `${basePath}?startDate=${encodeURIComponent(
+              previousRange.startDate,
+            )}&endDate=${encodeURIComponent(previousRange.endDate)}&${params}`,
+            appGroups,
+            'appGroups',
+          ),
+        ]);
 
-          const [currentMtd, previousMtd] = await Promise.all([
-            fetchFromInsightsApi<ResourcesTotalCostsResponse>(
-              `${basePath}?startDate=${encodeURIComponent(
-                currentRange.startDate,
-              )}&endDate=${encodeURIComponent(currentRange.endDate)}&${params}`,
-              appGroups,
-              'appGroups',
-            ),
-            fetchFromInsightsApi<ResourcesTotalCostsResponse>(
-              `${basePath}?startDate=${encodeURIComponent(
-                previousRange.startDate,
-              )}&endDate=${encodeURIComponent(
-                previousRange.endDate,
-              )}&${params}`,
-              appGroups,
-              'appGroups',
-            ),
-          ]);
+        return { currentMtd, previousMtd };
+      },
+    );
 
-          return { currentMtd, previousMtd };
-        },
-      );
+    const queryParams = buildAppGroupsQuery(appGroups, 'appGroups');
 
-      const queryParams = buildAppGroupsQuery(appGroups, 'appGroups');
+    queryParams.append('endDate', currentRange.endDate);
+    queryParams.append('startDate', currentRange.startDate);
+    queryParams.append('orderBy', 'totalCost');
+    queryParams.append('orderByDesc', 'true');
+    queryParams.append('addNetworkAndStorage', 'true');
+    queryParams.append('pageSize', '10');
+    queryParams.append('page', '0');
+    queryParams.append('aggregators', 'cluster');
 
-      queryParams.append('endDate', currentRange.endDate);
-      queryParams.append('startDate', currentRange.startDate);
-      queryParams.append('orderBy', 'totalCost');
-      queryParams.append('orderByDesc', 'true');
-      queryParams.append('addNetworkAndStorage', 'true');
-      queryParams.append('pageSize', '10');
-      queryParams.append('page', '0');
-      queryParams.append('aggregators', 'cluster');
-
-      res.json({
-        ...response,
-        insightsUrl: buildInsightsUiUrl(
-          `/efficiency/cumulative-costs`,
-          queryParams,
-        ),
-      });
-    } catch (error: any) {
-      logger.error('Error fetching costs:', error);
-      res.status(500).json({
-        error: 'Failed to fetch costs',
-        message: error.message,
-      });
-    }
+    res.json({
+      ...response,
+      insightsUrl: buildInsightsUiUrl(
+        `/efficiency/cumulative-costs`,
+        queryParams,
+      ),
+    });
   });
 
   type Usage = {
@@ -964,458 +831,429 @@ export async function createRouter(
     const { entityRef, datePreset = '30d' } = req.query;
 
     if (!entityRef || typeof entityRef !== 'string') {
-      res.status(400).json({
-        error: 'Missing required query parameter: entityRef',
-      });
-      return;
+      throw new InputError('Missing required query parameter: entityRef');
     }
 
     const preset = typeof datePreset === 'string' ? datePreset : '30d';
 
-    try {
-      const appGroups = await getAppGroupsFromEntity(req, entityRef);
+    const appGroups = await getAppGroupsFromEntity(req, entityRef);
 
-      if (!appGroups || appGroups.length === 0) {
-        res.status(404).json({
-          error: 'Entity does not have app-groups configured',
-          details:
-            'Entity must have insights.fairwinds.com/app-groups annotation or spec.app-groups',
-        });
-        return;
-      }
+    const { startDate, endDate } = getDateRangeForPreset(preset);
+    const cacheKey = `resources-summary-timeseries:${appGroups
+      .slice()
+      .sort()
+      .join(',')}:${preset}:${startDate}:${endDate}`;
 
-      const { startDate, endDate } = getDateRangeForPreset(preset);
-      const cacheKey = `resources-summary-timeseries:${appGroups
-        .slice()
-        .sort()
-        .join(',')}:${preset}:${startDate}:${endDate}`;
+    const response = await getCachedOrFetch<ResourcesSummaryTimeseriesResponse>(
+      cacheKey,
+      async () => {
+        const basePath = `/v0/organizations/${apiConfig.organization}/resources-summary-timeseries`;
+        const params = new URLSearchParams();
+        params.set('startDate', startDate);
+        params.set('endDate', endDate);
+        params.set('aggregators', 'cluster');
+        params.set('addNetworkAndStorage', 'true');
+        params.set('pageSize', '500');
+        params.set('page', '0');
+        const url = `${basePath}?${params.toString()}`;
 
-      const response =
-        await getCachedOrFetch<ResourcesSummaryTimeseriesResponse>(
-          cacheKey,
-          async () => {
-            const basePath = `/v0/organizations/${apiConfig.organization}/resources-summary-timeseries`;
-            const params = new URLSearchParams();
-            params.set('startDate', startDate);
-            params.set('endDate', endDate);
-            params.set('aggregators', 'cluster');
-            params.set('addNetworkAndStorage', 'true');
-            params.set('pageSize', '500');
-            params.set('page', '0');
-            const url = `${basePath}?${params.toString()}`;
+        const data =
+          await fetchFromInsightsApi<ResourcesSummaryTimeseriesRawResponse>(
+            url,
+            appGroups,
+            'appGroups',
+          );
 
-            const data =
-              await fetchFromInsightsApi<ResourcesSummaryTimeseriesRawResponse>(
-                url,
-                appGroups,
-                'appGroups',
-              );
+        const byDate = new Map<
+          string,
+          {
+            podSum: number;
+            podCount: number;
+            cpu: TimeseriesResources;
+            memory: TimeseriesResources;
+          }
+        >();
 
-            const byDate = new Map<
-              string,
-              {
-                podSum: number;
-                podCount: number;
-                cpu: TimeseriesResources;
-                memory: TimeseriesResources;
-              }
-            >();
+        function getNum(
+          o: { cpuRaw?: number; memoryRaw?: number } | undefined,
+          key: 'cpuRaw' | 'memoryRaw',
+        ): number {
+          return o?.[key] ?? 0;
+        }
 
-            function getNum(
-              o: { cpuRaw?: number; memoryRaw?: number } | undefined,
-              key: 'cpuRaw' | 'memoryRaw',
-            ): number {
-              return o?.[key] ?? 0;
-            }
+        for (const resource of data.resources) {
+          for (const entry of resource.timeseries) {
+            const t = entry.time.slice(0, 10);
+            const r = entry.resources;
+            if (!t) continue;
 
-            for (const resource of data.resources) {
-              for (const entry of resource.timeseries) {
-                const t = entry.time.slice(0, 10);
-                const r = entry.resources;
-                if (!t) continue;
-
-                const existing = byDate.get(t);
-                if (!existing) {
-                  byDate.set(t, {
-                    podSum: r?.averagePodCount ?? 0,
-                    podCount: 1,
-                    cpu: {
-                      averagePodCount: r?.averagePodCount,
-                      minUsage: r?.minUsage,
-                      averageUsage: r?.averageUsage,
-                      maxUsage: r?.maxUsage,
-                      recommendation: r?.recommendation,
-                      settings: r?.settings,
-                    },
-                    memory: {
-                      averagePodCount: r?.averagePodCount,
-                      minUsage: r?.minUsage,
-                      averageUsage: r?.averageUsage,
-                      maxUsage: r?.maxUsage,
-                      recommendation: r?.recommendation,
-                      settings: r?.settings,
-                    },
-                  });
-                } else {
-                  existing.podSum += r?.averagePodCount ?? 0;
-                  existing.podCount += 1;
-                  existing.cpu = {
-                    minUsage: {
-                      cpuRaw:
-                        (existing.cpu.minUsage?.cpuRaw ?? 0) +
-                        getNum(r?.minUsage, 'cpuRaw'),
-                    },
-                    averageUsage: {
-                      cpuRaw:
-                        (existing.cpu.averageUsage?.cpuRaw ?? 0) +
-                        getNum(r?.averageUsage, 'cpuRaw'),
-                    },
-                    maxUsage: {
-                      cpuRaw:
-                        (existing.cpu.maxUsage?.cpuRaw ?? 0) +
-                        getNum(r?.maxUsage, 'cpuRaw'),
-                    },
-                    recommendation: {
-                      limits: {
-                        cpuRaw:
-                          (existing.cpu.recommendation?.limits?.cpuRaw ?? 0) +
-                          getNum(r?.recommendation?.limits, 'cpuRaw'),
-                      },
-                      requests: {
-                        cpuRaw:
-                          (existing.cpu.recommendation?.requests?.cpuRaw ?? 0) +
-                          getNum(r?.recommendation?.requests, 'cpuRaw'),
-                      },
-                    },
-                    settings: {
-                      limits: {
-                        cpuRaw:
-                          (existing.cpu.settings?.limits?.cpuRaw ?? 0) +
-                          getNum(r?.settings?.limits, 'cpuRaw'),
-                      },
-                      requests: {
-                        cpuRaw:
-                          (existing.cpu.settings?.requests?.cpuRaw ?? 0) +
-                          getNum(r?.settings?.requests, 'cpuRaw'),
-                      },
-                    },
-                  };
-                  existing.memory = {
-                    minUsage: {
-                      memoryRaw:
-                        (existing.memory.minUsage?.memoryRaw ?? 0) +
-                        getNum(r?.minUsage, 'memoryRaw'),
-                    },
-                    averageUsage: {
-                      memoryRaw:
-                        (existing.memory.averageUsage?.memoryRaw ?? 0) +
-                        getNum(r?.averageUsage, 'memoryRaw'),
-                    },
-                    maxUsage: {
-                      memoryRaw:
-                        (existing.memory.maxUsage?.memoryRaw ?? 0) +
-                        getNum(r?.maxUsage, 'memoryRaw'),
-                    },
-                    recommendation: {
-                      limits: {
-                        memoryRaw:
-                          (existing.memory.recommendation?.limits?.memoryRaw ??
-                            0) + getNum(r?.recommendation?.limits, 'memoryRaw'),
-                      },
-                      requests: {
-                        memoryRaw:
-                          (existing.memory.recommendation?.requests
-                            ?.memoryRaw ?? 0) +
-                          getNum(r?.recommendation?.requests, 'memoryRaw'),
-                      },
-                    },
-                    settings: {
-                      limits: {
-                        memoryRaw:
-                          (existing.memory.settings?.limits?.memoryRaw ?? 0) +
-                          getNum(r?.settings?.limits, 'memoryRaw'),
-                      },
-                      requests: {
-                        memoryRaw:
-                          (existing.memory.settings?.requests?.memoryRaw ?? 0) +
-                          getNum(r?.settings?.requests, 'memoryRaw'),
-                      },
-                    },
-                  };
-                }
-              }
-            }
-
-            const granularity = getDownsampleGranularity(preset);
-            const allDaysInRange = getCalendarDaysInRange(startDate, endDate);
-            const getVal = (d: string) => byDate.get(d);
-
-            let sortedDates: string[];
-            if (granularity === 'daily') {
-              sortedDates = allDaysInRange;
+            const existing = byDate.get(t);
+            if (!existing) {
+              byDate.set(t, {
+                podSum: r?.averagePodCount ?? 0,
+                podCount: 1,
+                cpu: {
+                  averagePodCount: r?.averagePodCount,
+                  minUsage: r?.minUsage,
+                  averageUsage: r?.averageUsage,
+                  maxUsage: r?.maxUsage,
+                  recommendation: r?.recommendation,
+                  settings: r?.settings,
+                },
+                memory: {
+                  averagePodCount: r?.averagePodCount,
+                  minUsage: r?.minUsage,
+                  averageUsage: r?.averageUsage,
+                  maxUsage: r?.maxUsage,
+                  recommendation: r?.recommendation,
+                  settings: r?.settings,
+                },
+              });
             } else {
-              const bucketToDays = new Map<string, string[]>();
-              const getBucket = (d: string) =>
-                granularity === 'weekly' ? getWeekStart(d) : getMonthStart(d);
-              for (const d of allDaysInRange) {
-                const bucket = getBucket(d);
-                if (!bucketToDays.has(bucket)) bucketToDays.set(bucket, []);
-                bucketToDays.get(bucket)!.push(d);
-              }
-              sortedDates = Array.from(bucketToDays.keys()).sort();
+              existing.podSum += r?.averagePodCount ?? 0;
+              existing.podCount += 1;
+              existing.cpu = {
+                minUsage: {
+                  cpuRaw:
+                    (existing.cpu.minUsage?.cpuRaw ?? 0) +
+                    getNum(r?.minUsage, 'cpuRaw'),
+                },
+                averageUsage: {
+                  cpuRaw:
+                    (existing.cpu.averageUsage?.cpuRaw ?? 0) +
+                    getNum(r?.averageUsage, 'cpuRaw'),
+                },
+                maxUsage: {
+                  cpuRaw:
+                    (existing.cpu.maxUsage?.cpuRaw ?? 0) +
+                    getNum(r?.maxUsage, 'cpuRaw'),
+                },
+                recommendation: {
+                  limits: {
+                    cpuRaw:
+                      (existing.cpu.recommendation?.limits?.cpuRaw ?? 0) +
+                      getNum(r?.recommendation?.limits, 'cpuRaw'),
+                  },
+                  requests: {
+                    cpuRaw:
+                      (existing.cpu.recommendation?.requests?.cpuRaw ?? 0) +
+                      getNum(r?.recommendation?.requests, 'cpuRaw'),
+                  },
+                },
+                settings: {
+                  limits: {
+                    cpuRaw:
+                      (existing.cpu.settings?.limits?.cpuRaw ?? 0) +
+                      getNum(r?.settings?.limits, 'cpuRaw'),
+                  },
+                  requests: {
+                    cpuRaw:
+                      (existing.cpu.settings?.requests?.cpuRaw ?? 0) +
+                      getNum(r?.settings?.requests, 'cpuRaw'),
+                  },
+                },
+              };
+              existing.memory = {
+                minUsage: {
+                  memoryRaw:
+                    (existing.memory.minUsage?.memoryRaw ?? 0) +
+                    getNum(r?.minUsage, 'memoryRaw'),
+                },
+                averageUsage: {
+                  memoryRaw:
+                    (existing.memory.averageUsage?.memoryRaw ?? 0) +
+                    getNum(r?.averageUsage, 'memoryRaw'),
+                },
+                maxUsage: {
+                  memoryRaw:
+                    (existing.memory.maxUsage?.memoryRaw ?? 0) +
+                    getNum(r?.maxUsage, 'memoryRaw'),
+                },
+                recommendation: {
+                  limits: {
+                    memoryRaw:
+                      (existing.memory.recommendation?.limits?.memoryRaw ?? 0) +
+                      getNum(r?.recommendation?.limits, 'memoryRaw'),
+                  },
+                  requests: {
+                    memoryRaw:
+                      (existing.memory.recommendation?.requests?.memoryRaw ??
+                        0) + getNum(r?.recommendation?.requests, 'memoryRaw'),
+                  },
+                },
+                settings: {
+                  limits: {
+                    memoryRaw:
+                      (existing.memory.settings?.limits?.memoryRaw ?? 0) +
+                      getNum(r?.settings?.limits, 'memoryRaw'),
+                  },
+                  requests: {
+                    memoryRaw:
+                      (existing.memory.settings?.requests?.memoryRaw ?? 0) +
+                      getNum(r?.settings?.requests, 'memoryRaw'),
+                  },
+                },
+              };
             }
+          }
+        }
 
-            function avgPod(bucketDates: string[]): number | null {
-              let sum = 0;
-              let n = 0;
-              for (const d of bucketDates) {
+        const granularity = getDownsampleGranularity(preset);
+        const allDaysInRange = getCalendarDaysInRange(startDate, endDate);
+        const getVal = (d: string) => byDate.get(d);
+
+        let sortedDates: string[];
+        if (granularity === 'daily') {
+          sortedDates = allDaysInRange;
+        } else {
+          const bucketToDays = new Map<string, string[]>();
+          const getBucket = (d: string) =>
+            granularity === 'weekly' ? getWeekStart(d) : getMonthStart(d);
+          for (const d of allDaysInRange) {
+            const bucket = getBucket(d);
+            if (!bucketToDays.has(bucket)) bucketToDays.set(bucket, []);
+            bucketToDays.get(bucket)!.push(d);
+          }
+          sortedDates = Array.from(bucketToDays.keys()).sort();
+        }
+
+        function avgPod(bucketDates: string[]): number | null {
+          let sum = 0;
+          let n = 0;
+          for (const d of bucketDates) {
+            const v = getVal(d);
+            if (v && v.podCount) {
+              sum += v.podSum / v.podCount;
+              n += 1;
+            }
+          }
+          return n === 0 ? null : sum / n;
+        }
+        function avgCpuRaw(
+          bucketDates: string[],
+          getter: (r: TimeseriesResources) => number | undefined,
+        ): number | null {
+          let sum = 0;
+          let n = 0;
+          for (const d of bucketDates) {
+            const raw = getVal(d)?.cpu && getter(getVal(d)!.cpu);
+            if (raw !== undefined && raw !== null) {
+              sum += raw;
+              n += 1;
+            }
+          }
+          return n === 0 ? null : sum / n;
+        }
+        function avgMemRaw(
+          bucketDates: string[],
+          getter: (r: TimeseriesResources) => number | undefined,
+        ): number | null {
+          let sum = 0;
+          let n = 0;
+          for (const d of bucketDates) {
+            const raw = getVal(d)?.memory && getter(getVal(d)!.memory);
+            if (raw !== undefined && raw !== null) {
+              sum += raw;
+              n += 1;
+            }
+          }
+          return n === 0 ? null : sum / n;
+        }
+
+        const getBucketDays = (() => {
+          if (granularity === 'daily') return (d: string) => [d] as string[];
+          const weekToDays = new Map<string, string[]>();
+          const monthToDays = new Map<string, string[]>();
+          for (const day of allDaysInRange) {
+            const b = getWeekStart(day);
+            if (!weekToDays.has(b)) weekToDays.set(b, []);
+            weekToDays.get(b)!.push(day);
+          }
+          for (const day of allDaysInRange) {
+            const b = getMonthStart(day);
+            if (!monthToDays.has(b)) monthToDays.set(b, []);
+            monthToDays.get(b)!.push(day);
+          }
+          return (bucketKey: string) =>
+            granularity === 'weekly'
+              ? weekToDays.get(bucketKey) ?? []
+              : monthToDays.get(bucketKey) ?? [];
+        })();
+
+        const podAvg = sortedDates.map(d =>
+          granularity === 'daily'
+            ? (() => {
                 const v = getVal(d);
-                if (v && v.podCount) {
-                  sum += v.podSum / v.podCount;
-                  n += 1;
-                }
-              }
-              return n === 0 ? null : sum / n;
-            }
-            function avgCpuRaw(
-              bucketDates: string[],
-              getter: (r: TimeseriesResources) => number | undefined,
-            ): number | null {
-              let sum = 0;
-              let n = 0;
-              for (const d of bucketDates) {
-                const raw = getVal(d)?.cpu && getter(getVal(d)!.cpu);
-                if (raw !== undefined && raw !== null) {
-                  sum += raw;
-                  n += 1;
-                }
-              }
-              return n === 0 ? null : sum / n;
-            }
-            function avgMemRaw(
-              bucketDates: string[],
-              getter: (r: TimeseriesResources) => number | undefined,
-            ): number | null {
-              let sum = 0;
-              let n = 0;
-              for (const d of bucketDates) {
-                const raw = getVal(d)?.memory && getter(getVal(d)!.memory);
-                if (raw !== undefined && raw !== null) {
-                  sum += raw;
-                  n += 1;
-                }
-              }
-              return n === 0 ? null : sum / n;
-            }
-
-            const getBucketDays = (() => {
-              if (granularity === 'daily')
-                return (d: string) => [d] as string[];
-              const weekToDays = new Map<string, string[]>();
-              const monthToDays = new Map<string, string[]>();
-              for (const day of allDaysInRange) {
-                const b = getWeekStart(day);
-                if (!weekToDays.has(b)) weekToDays.set(b, []);
-                weekToDays.get(b)!.push(day);
-              }
-              for (const day of allDaysInRange) {
-                const b = getMonthStart(day);
-                if (!monthToDays.has(b)) monthToDays.set(b, []);
-                monthToDays.get(b)!.push(day);
-              }
-              return (bucketKey: string) =>
-                granularity === 'weekly'
-                  ? weekToDays.get(bucketKey) ?? []
-                  : monthToDays.get(bucketKey) ?? [];
-            })();
-
-            const podAvg = sortedDates.map(d =>
-              granularity === 'daily'
-                ? (() => {
-                    const v = getVal(d);
-                    if (!v || !v.podCount) return null;
-                    return v.podSum / v.podCount;
-                  })()
-                : avgPod(getBucketDays(d)),
-            );
-            const GB = 1e9;
-            const milliToCpu = (v: number | null | undefined) =>
-              v === undefined || v === null ? null : v / 1000;
-            const cpu = {
-              minUsage: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.minUsage?.cpuRaw
-                    : avgCpuRaw(getBucketDays(d), r => r.minUsage?.cpuRaw),
-                ),
-              ),
-              avgUsage: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.averageUsage?.cpuRaw
-                    : avgCpuRaw(getBucketDays(d), r => r.averageUsage?.cpuRaw),
-                ),
-              ),
-              maxUsage: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.maxUsage?.cpuRaw
-                    : avgCpuRaw(getBucketDays(d), r => r.maxUsage?.cpuRaw),
-                ),
-              ),
-              recommendedLimits: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.recommendation?.limits?.cpuRaw
-                    : avgCpuRaw(
-                        getBucketDays(d),
-                        r => r.recommendation?.limits?.cpuRaw,
-                      ),
-                ),
-              ),
-              recommendedRequests: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.recommendation?.requests?.cpuRaw
-                    : avgCpuRaw(
-                        getBucketDays(d),
-                        r => r.recommendation?.requests?.cpuRaw,
-                      ),
-                ),
-              ),
-              actualLimits: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.settings?.limits?.cpuRaw
-                    : avgCpuRaw(
-                        getBucketDays(d),
-                        r => r.settings?.limits?.cpuRaw,
-                      ),
-                ),
-              ),
-              actualRequests: sortedDates.map(d =>
-                milliToCpu(
-                  granularity === 'daily'
-                    ? getVal(d)?.cpu.settings?.requests?.cpuRaw
-                    : avgCpuRaw(
-                        getBucketDays(d),
-                        r => r.settings?.requests?.cpuRaw,
-                      ),
-                ),
-              ),
-            };
-            const memory = {
-              minUsage: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.minUsage?.memoryRaw
-                    : avgMemRaw(getBucketDays(d), r => r.minUsage?.memoryRaw);
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-              avgUsage: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.averageUsage?.memoryRaw
-                    : avgMemRaw(
-                        getBucketDays(d),
-                        r => r.averageUsage?.memoryRaw,
-                      );
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-              maxUsage: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.maxUsage?.memoryRaw
-                    : avgMemRaw(getBucketDays(d), r => r.maxUsage?.memoryRaw);
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-              recommendedLimits: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.recommendation?.limits?.memoryRaw
-                    : avgMemRaw(
-                        getBucketDays(d),
-                        r => r.recommendation?.limits?.memoryRaw,
-                      );
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-              recommendedRequests: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.recommendation?.requests?.memoryRaw
-                    : avgMemRaw(
-                        getBucketDays(d),
-                        r => r.recommendation?.requests?.memoryRaw,
-                      );
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-              actualLimits: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.settings?.limits?.memoryRaw
-                    : avgMemRaw(
-                        getBucketDays(d),
-                        r => r.settings?.limits?.memoryRaw,
-                      );
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-              actualRequests: sortedDates.map(d => {
-                const raw =
-                  granularity === 'daily'
-                    ? getVal(d)?.memory.settings?.requests?.memoryRaw
-                    : avgMemRaw(
-                        getBucketDays(d),
-                        r => r.settings?.requests?.memoryRaw,
-                      );
-                return raw === undefined || raw === null ? null : raw / GB;
-              }),
-            };
-
-            return {
-              dates: sortedDates,
-              podCount: { avg: podAvg },
-              cpu: {
-                minUsage: cpu.minUsage,
-                avgUsage: cpu.avgUsage,
-                maxUsage: cpu.maxUsage,
-                recommendedLimits: cpu.recommendedLimits,
-                recommendedRequests: cpu.recommendedRequests,
-                actualLimits: cpu.actualLimits,
-                actualRequests: cpu.actualRequests,
-              },
-              memory: {
-                minUsage: memory.minUsage,
-                avgUsage: memory.avgUsage,
-                maxUsage: memory.maxUsage,
-                recommendedLimits: memory.recommendedLimits,
-                recommendedRequests: memory.recommendedRequests,
-                actualLimits: memory.actualLimits,
-                actualRequests: memory.actualRequests,
-              },
-            };
-          },
+                if (!v || !v.podCount) return null;
+                return v.podSum / v.podCount;
+              })()
+            : avgPod(getBucketDays(d)),
         );
+        const GB = 1e9;
+        const milliToCpu = (v: number | null | undefined) =>
+          v === undefined || v === null ? null : v / 1000;
+        const cpu = {
+          minUsage: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.minUsage?.cpuRaw
+                : avgCpuRaw(getBucketDays(d), r => r.minUsage?.cpuRaw),
+            ),
+          ),
+          avgUsage: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.averageUsage?.cpuRaw
+                : avgCpuRaw(getBucketDays(d), r => r.averageUsage?.cpuRaw),
+            ),
+          ),
+          maxUsage: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.maxUsage?.cpuRaw
+                : avgCpuRaw(getBucketDays(d), r => r.maxUsage?.cpuRaw),
+            ),
+          ),
+          recommendedLimits: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.recommendation?.limits?.cpuRaw
+                : avgCpuRaw(
+                    getBucketDays(d),
+                    r => r.recommendation?.limits?.cpuRaw,
+                  ),
+            ),
+          ),
+          recommendedRequests: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.recommendation?.requests?.cpuRaw
+                : avgCpuRaw(
+                    getBucketDays(d),
+                    r => r.recommendation?.requests?.cpuRaw,
+                  ),
+            ),
+          ),
+          actualLimits: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.settings?.limits?.cpuRaw
+                : avgCpuRaw(getBucketDays(d), r => r.settings?.limits?.cpuRaw),
+            ),
+          ),
+          actualRequests: sortedDates.map(d =>
+            milliToCpu(
+              granularity === 'daily'
+                ? getVal(d)?.cpu.settings?.requests?.cpuRaw
+                : avgCpuRaw(
+                    getBucketDays(d),
+                    r => r.settings?.requests?.cpuRaw,
+                  ),
+            ),
+          ),
+        };
+        const memory = {
+          minUsage: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.minUsage?.memoryRaw
+                : avgMemRaw(getBucketDays(d), r => r.minUsage?.memoryRaw);
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+          avgUsage: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.averageUsage?.memoryRaw
+                : avgMemRaw(getBucketDays(d), r => r.averageUsage?.memoryRaw);
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+          maxUsage: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.maxUsage?.memoryRaw
+                : avgMemRaw(getBucketDays(d), r => r.maxUsage?.memoryRaw);
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+          recommendedLimits: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.recommendation?.limits?.memoryRaw
+                : avgMemRaw(
+                    getBucketDays(d),
+                    r => r.recommendation?.limits?.memoryRaw,
+                  );
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+          recommendedRequests: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.recommendation?.requests?.memoryRaw
+                : avgMemRaw(
+                    getBucketDays(d),
+                    r => r.recommendation?.requests?.memoryRaw,
+                  );
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+          actualLimits: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.settings?.limits?.memoryRaw
+                : avgMemRaw(
+                    getBucketDays(d),
+                    r => r.settings?.limits?.memoryRaw,
+                  );
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+          actualRequests: sortedDates.map(d => {
+            const raw =
+              granularity === 'daily'
+                ? getVal(d)?.memory.settings?.requests?.memoryRaw
+                : avgMemRaw(
+                    getBucketDays(d),
+                    r => r.settings?.requests?.memoryRaw,
+                  );
+            return raw === undefined || raw === null ? null : raw / GB;
+          }),
+        };
 
-      const queryParams = buildAppGroupsQuery(appGroups, 'appGroups');
-      queryParams.append('startDate', startDate);
-      queryParams.append('endDate', endDate);
-      queryParams.append('aggregators', 'cluster');
-      queryParams.append('addNetworkAndStorage', 'true');
+        return {
+          dates: sortedDates,
+          podCount: { avg: podAvg },
+          cpu: {
+            minUsage: cpu.minUsage,
+            avgUsage: cpu.avgUsage,
+            maxUsage: cpu.maxUsage,
+            recommendedLimits: cpu.recommendedLimits,
+            recommendedRequests: cpu.recommendedRequests,
+            actualLimits: cpu.actualLimits,
+            actualRequests: cpu.actualRequests,
+          },
+          memory: {
+            minUsage: memory.minUsage,
+            avgUsage: memory.avgUsage,
+            maxUsage: memory.maxUsage,
+            recommendedLimits: memory.recommendedLimits,
+            recommendedRequests: memory.recommendedRequests,
+            actualLimits: memory.actualLimits,
+            actualRequests: memory.actualRequests,
+          },
+        };
+      },
+    );
 
-      res.json({
-        ...response,
-        insightsUrl: buildInsightsUiUrl(
-          '/efficiency/cumulative-costs',
-          queryParams,
-        ),
-      });
-    } catch (error: any) {
-      logger.error('Error fetching resources-summary-timeseries:', error);
-      res.status(500).json({
-        error: 'Failed to fetch resources summary timeseries',
-        message: error.message,
-      });
-    }
+    const queryParams = buildAppGroupsQuery(appGroups, 'appGroups');
+    queryParams.append('startDate', startDate);
+    queryParams.append('endDate', endDate);
+    queryParams.append('aggregators', 'cluster');
+    queryParams.append('addNetworkAndStorage', 'true');
+
+    res.json({
+      ...response,
+      insightsUrl: buildInsightsUiUrl(
+        '/efficiency/cumulative-costs',
+        queryParams,
+      ),
+    });
   });
 
   return router;
