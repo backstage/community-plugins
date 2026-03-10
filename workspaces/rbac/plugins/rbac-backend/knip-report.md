@@ -19,3 +19,4 @@
 | Name                      | Location                         | Severity |
 | :------------------------ | :------------------------------- | :------- |
 | express-serve-static-core | src/service/policies-rest-api.ts | error    |
+
