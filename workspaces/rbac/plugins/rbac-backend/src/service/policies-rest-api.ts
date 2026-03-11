@@ -34,8 +34,7 @@ import {
   ResourcePermission,
 } from '@backstage/plugin-permission-common';
 
-import express from 'express';
-import type { Request } from 'express-serve-static-core';
+import express, { Request } from 'express';
 import { isEmpty, isEqual } from 'lodash';
 import type { ParsedQs } from 'qs';
 

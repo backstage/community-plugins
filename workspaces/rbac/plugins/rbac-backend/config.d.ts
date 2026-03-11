@@ -91,7 +91,7 @@ export interface Config {
           /**
            * Action for the permission. Defaults to `use` when omitted.
            */
-          action?: 'create' | 'read' | 'update' | 'delete' | 'use';
+          action: 'create' | 'read' | 'update' | 'delete' | 'use';
           /**
            * Permission effect. Defaults to `allow` when omitted.
            */
