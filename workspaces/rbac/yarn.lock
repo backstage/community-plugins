@@ -1420,7 +1420,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.6"
     "@backstage/plugin-permission-node": "npm:^0.10.10"
     "@backstage/types": "npm:^1.2.2"
-    "@dagrejs/graphlib": "npm:^2.1.13"
+    "@dagrejs/graphlib": "npm:^3.0.0"
     "@types/express": "npm:4.17.25"
     "@types/js-yaml": "npm:^4.0.9"
     "@types/knex": "npm:^0.16.1"
@@ -4331,10 +4331,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dagrejs/graphlib@npm:2.2.4, @dagrejs/graphlib@npm:^2.1.13":
+"@dagrejs/graphlib@npm:2.2.4":
   version: 2.2.4
   resolution: "@dagrejs/graphlib@npm:2.2.4"
   checksum: 10/1fc5393525a3d666284ca740867d082768bc87ff61f5f181eb5c1a73c1a6e328ad23581f7415c81df2614171b8a4b4a8e6a417eefd7f9fca74a4a625ec3aa848
+  languageName: node
+  linkType: hard
+
+"@dagrejs/graphlib@npm:^3.0.0":
+  version: 3.0.4
+  resolution: "@dagrejs/graphlib@npm:3.0.4"
+  checksum: 10/c1c854da7f900f58d5e7ca63eb36d94792818d8d458ababe6b308c5c4ebdc3643c484df38a78831b79b4a52808fe70638f0fdce176da5ad4744c9888d3b1daf6
   languageName: node
   linkType: hard
 
