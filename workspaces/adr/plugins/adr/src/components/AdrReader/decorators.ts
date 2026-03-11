@@ -61,9 +61,26 @@ export const adrDecoratorFactories = Object.freeze({
           }
           return val;
         };
-        const stripNewLines = (val: unknown) => {
+        const stripNewLines = (val: unknown): string => {
           if (val instanceof Date) {
             return val.toLocaleString(undefined, { dateStyle: 'medium' });
+          }
+          if (Array.isArray(val)) {
+            return val
+              .map(item => {
+                if (item !== null && typeof item === 'object') {
+                  const link = item as Record<string, unknown>;
+                  if ('kind' in link && 'target' in link) {
+                    return `${link.kind} ${link.target}`;
+                  }
+                  return JSON.stringify(item);
+                }
+                return String(item);
+              })
+              .join(', ');
+          }
+          if (val !== null && typeof val === 'object') {
+            return JSON.stringify(val);
           }
           return String(val).replaceAll('\n', '<br/>');
         };
