@@ -18,12 +18,7 @@ import { ReactElement, ReactNode, useMemo } from 'react';
 
 import { upperFirst } from 'lodash';
 
-import Alert from '@mui/material/Alert';
-
-import {
-  RoutedTabs,
-  TableOptions as MuiTableOptions,
-} from '@backstage/core-components';
+import { TableOptions as MuiTableOptions } from '@backstage/core-components';
 
 import {
   CurrentKindProvider,
@@ -32,6 +27,7 @@ import {
   arrayify,
   pluralizeKind,
   useOrder,
+  ManageStaticConfig,
 } from '@backstage-community/plugin-manage-react';
 
 import {
@@ -40,12 +36,16 @@ import {
   ManageEntitiesTable,
   TableOptions,
 } from '../ManageEntitiesList';
-import { useManagePageCombined } from '../ManagePageFilters';
+import { useManagePageCombined } from '../../components-ofs/ManagePageFilters';
 import { MANAGE_KIND_COMMON, SubRouteTab } from './types';
 import { Settings, Setting } from '../Settings';
-import { TabsOrderProvider, useTabsOrder } from '../TabsOrder';
+import { useTabsOrder } from '../TabsOrder';
 import { renderArray } from '../../utils/renderArray';
 import { Cards } from './Cards';
+import { HeaderLabelItem, ManagePageHeader } from '../ManagePageHeader';
+import { managePageHeaderActions } from '../ManagePageHeaderActions';
+import { TabContent } from '../TabContent';
+import { useTab } from './useTab';
 
 /**
  * Options for configuring how an entity kind is displayed.
@@ -132,12 +132,6 @@ export interface ManageTabsProps {
   tabsAfter?: SubRouteTab[];
 
   /**
-   * If the user and corresponding groups don't own any entities, show this
-   * component at the top
-   */
-  onNothingOwned?: ReactNode;
-
-  /**
    * Render a "Settings" tab at the end of the tabs. This tab will contain a
    * way for users to re-order the tabs.
    *
@@ -149,22 +143,14 @@ export interface ManageTabsProps {
 
   /** Custom settings widgets */
   customSettings?: Setting[];
-}
 
-const defaultNothingOwned = (
-  <Alert severity="info">You and your team(s) don't own any entities</Alert>
-);
+  config: ManageStaticConfig;
+  labelsElements: HeaderLabelItem[];
+  showCombined: boolean;
+}
 
 /** @public */
-export function ManageTabsImpl(props: ManageTabsProps) {
-  return (
-    <TabsOrderProvider>
-      <ManageTabsInner {...props} />
-    </TabsOrderProvider>
-  );
-}
-
-function ManageTabsInner(props: ManageTabsProps) {
+export function ManageTabs(props: ManageTabsProps) {
   const {
     combined,
     commonColumns = [],
@@ -174,6 +160,9 @@ function ManageTabsInner(props: ManageTabsProps) {
     tabsAfter = [],
     settings = true,
     customSettings = [],
+    config,
+    labelsElements,
+    showCombined,
   } = props;
 
   const tabOrder = useTabsOrder() ?? [];
@@ -196,9 +185,6 @@ function ManageTabsInner(props: ManageTabsProps) {
 
   const ownedKinds = useOwnedKinds(true) ?? [];
   const kinds = useKindOrder(ownedKinds);
-
-  const onNothingOwned =
-    kinds.length === 0 ? props.onNothingOwned ?? defaultNothingOwned : null;
 
   const allKindsCards = kindSetupMap.get(MANAGE_KIND_COMMON)?.cards;
   const allKindsHeader = kindSetupMap.get(MANAGE_KIND_COMMON)?.header;
@@ -292,6 +278,7 @@ function ManageTabsInner(props: ManageTabsProps) {
             })}
           </CurrentKindProvider>
         ),
+        fullHeight: false,
       },
     ];
   };
@@ -304,7 +291,8 @@ function ManageTabsInner(props: ManageTabsProps) {
       path: 'entities',
       title: 'Entities...',
       children: <></>,
-    },
+      fullHeight: false,
+    } as SubRouteTab,
     ...starredTab,
     ...tabsAfter,
   ];
@@ -325,6 +313,7 @@ function ManageTabsInner(props: ManageTabsProps) {
           customSettings={customSettings}
         />
       ),
+      fullHeight: false,
     });
   }
 
@@ -332,6 +321,7 @@ function ManageTabsInner(props: ManageTabsProps) {
     path: 'entities',
     title: 'Entities',
     children: makeGenericTable(combined ?? {}),
+    fullHeight: false,
   });
 
   const makeSeparateEntitiesTabs = (): SubRouteTab[] => {
@@ -344,25 +334,45 @@ function ManageTabsInner(props: ManageTabsProps) {
           path: kind,
           title: upperFirst(pluralizeKind(rawKind)),
           children: makeTable(kind),
+          fullHeight: false,
         };
       });
   };
 
+  const routedTabs = orderedTabs
+    .flatMap(tab => {
+      if (tab.path === 'entities') {
+        if (settingsCombined) {
+          return makeCombinedEntitiesTab();
+        }
+        return makeSeparateEntitiesTabs();
+      }
+      return tab;
+    })
+    .map(tab => ({ ...tab, path: tab.path }));
+
+  const labels = [
+    ...(labelsElements ?? []),
+    ...(showCombined ? managePageHeaderActions : []),
+  ];
+
+  const currentTab = useTab(routedTabs);
+
   return (
     <>
-      {onNothingOwned}
-      <RoutedTabs
-        routes={orderedTabs.flatMap(tab => {
-          if (tab.path === 'entities') {
-            if (settingsCombined) {
-              return makeCombinedEntitiesTab();
-            }
-            return makeSeparateEntitiesTabs();
-          }
-          return tab;
-        })}
-        key="manage-routed-tabs"
+      <ManagePageHeader
+        config={config}
+        labelsElements={labels}
+        tabs={routedTabs}
       />
+      <TabContent
+        fullHeight={!!currentTab.fullHeight}
+        resizeChild={
+          currentTab.fullHeight ? currentTab.fullHeight.resizeChild : false
+        }
+      >
+        {currentTab.children}
+      </TabContent>
     </>
   );
 }

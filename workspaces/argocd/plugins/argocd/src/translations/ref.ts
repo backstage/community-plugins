@@ -193,6 +193,8 @@ export const argocdMessages = {
     deploymentSummary: {
       tableTitle: 'Deployment Summary',
       columns: {
+        application: 'Application',
+        namespace: 'Namespace',
         instance: 'Instance',
         server: 'Server',
         revision: 'Revision',

@@ -30,7 +30,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { DEFAULT_DATE_FORMAT, CostInsightsTheme } from '../../types';
+import { DEFAULT_DATE_FORMAT, CostInsightsTheme, Duration } from '../../types';
 import { Cost } from '@backstage-community/plugin-cost-insights-common';
 import {
   BarChartLegend,
@@ -66,7 +66,7 @@ export const CostOverviewBreakdownChart = ({
   const classes = useStyles(theme);
   const { baseCurrency } = useConfig();
   const lastCompleteBillingDate = useLastCompleteBillingDate();
-  const { duration } = useFilters(mapFiltersToProps);
+  const { duration, customDateRange } = useFilters(mapFiltersToProps);
   const [isExpanded, setExpanded] = useState(false);
 
   if (!costBreakdown) {
@@ -83,6 +83,7 @@ export const CostOverviewBreakdownChart = ({
     flattenedAggregation,
     duration,
     lastCompleteBillingDate,
+    customDateRange,
   );
   const currentPeriodTotal = totalCost - previousPeriodTotal;
   const canExpand = costBreakdown.length >= 8;
@@ -216,17 +217,33 @@ export const CostOverviewBreakdownChart = ({
   };
 
   const options: Partial<BarChartLegendOptions> = {
-    previousName: formatPeriod(duration, lastCompleteBillingDate, false),
-    currentName: formatPeriod(duration, lastCompleteBillingDate, true),
+    previousName: formatPeriod(
+      duration,
+      lastCompleteBillingDate,
+      false,
+      customDateRange,
+    ),
+    currentName: formatPeriod(
+      duration,
+      lastCompleteBillingDate,
+      true,
+      customDateRange,
+    ),
     hideMarker: true,
   };
+
+  // For custom date ranges, only show total cost (no previous/current split)
+  const legendCostStart =
+    duration === Duration.CUSTOM ? 0 : previousPeriodTotal;
+  const legendCostEnd =
+    duration === Duration.CUSTOM ? totalCost : currentPeriodTotal;
 
   return (
     <Box display="flex" flexDirection="column">
       <Box display="flex" flexDirection="row">
         <BarChartLegend
-          costStart={previousPeriodTotal}
-          costEnd={currentPeriodTotal}
+          costStart={legendCostStart}
+          costEnd={legendCostEnd}
           options={options}
         />
       </Box>

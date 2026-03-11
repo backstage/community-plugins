@@ -15,19 +15,33 @@
  */
 import type { FC } from 'react';
 
-import { SyncIcon } from '../../../AppStatus/StatusIcons';
 import { SyncStatusCode } from '@backstage-community/plugin-argocd-common';
+import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
+
+import { SyncIcon } from '../../../AppStatus/StatusIcons';
+import { useTranslation } from '../../../../hooks/useTranslation';
+import { argocdTranslationRef } from '../../../../translations/ref';
 
 interface ResourceSyncStatusProps {
   syncStatus: string;
 }
 
+const getSyncStatusTranslation = (
+  status: SyncStatusCode,
+  t: TranslationFunction<typeof argocdTranslationRef.T>,
+) => {
+  return t(`appStatus.appSyncStatus.${status}`);
+};
+
 export const ResourceSyncStatus: FC<ResourceSyncStatusProps> = ({
   syncStatus,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <SyncIcon status={syncStatus as SyncStatusCode} /> {syncStatus}
+      <SyncIcon status={syncStatus as SyncStatusCode} />{' '}
+      {getSyncStatusTranslation(syncStatus as SyncStatusCode, t)}
     </>
   );
 };

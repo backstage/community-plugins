@@ -1,5 +1,25 @@
 # @backstage-community/plugin-jenkins
 
+## 0.29.0
+
+### Minor Changes
+
+- 5b10e9e: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [5b10e9e]
+  - @backstage-community/plugin-jenkins-common@0.17.0
+
+## 0.28.1
+
+### Patch Changes
+
+- 5141efa: Replaces global JSX import with React.JSX
+- fc25522: remove unused dependencies
+- Updated dependencies [fc25522]
+  - @backstage-community/plugin-jenkins-common@0.16.1
+
 ## 0.28.0
 
 ### Minor Changes

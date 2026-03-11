@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-react
 
+## 1.4.0
+
+### Minor Changes
+
+- 1a5b5e4: Added `TechInsightsScorecardBlueprint` for creating custom entity scorecard content filtered to specific entities on the new frontend system. See the plugin README for usage details.
+
 ## 1.3.3
 
 ### Patch Changes

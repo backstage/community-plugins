@@ -170,25 +170,9 @@ workspace/git-release-manager:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/git-release-manager/**']
 
-workspace/github-actions:
+workspace/github:
 - changed-files:
-  - any-glob-to-any-file: ['workspaces/github-actions/**']
-
-workspace/github-deployments:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/github-deployments/**']
-
-workspace/github-discussions:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/github-discussions/**']
-
-workspace/github-issues:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/github-issues/**']
-
-workspace/github-pull-requests-board:
-- changed-files:
-  - any-glob-to-any-file: ['workspaces/github-pull-requests-board/**']
+  - any-glob-to-any-file: ['workspaces/github/**']
 
 workspace/gitops-profiles:
 - changed-files:
@@ -420,4 +404,4 @@ workspace/xcmetrics:
 
 owner/area-maintainers:
 - changed-files:
-  - any-glob-to-any-file: ['workspaces/airbrake/**', 'workspaces/allure/**', 'workspaces/apache-airflow/**', 'workspaces/apollo-explorer/**', 'workspaces/badges/**', 'workspaces/bazaar/**', 'workspaces/cicd-statistics/**', 'workspaces/cloudbuild/**', 'workspaces/code-climate/**', 'workspaces/codescene/**', 'workspaces/dynatrace/**', 'workspaces/entity-validation/**', 'workspaces/firehydrant/**', 'workspaces/gcalendar/**', 'workspaces/gcp-projects/**', 'workspaces/github-actions/**', 'workspaces/github-deployments/**', 'workspaces/github-issues/**', 'workspaces/gitops-profiles/**', 'workspaces/gocd/**', 'workspaces/grafana/**', 'workspaces/graphiql/**', 'workspaces/graphql-voyager/**', 'workspaces/ilert/**', 'workspaces/jaeger/**', 'workspaces/jenkins/**', 'workspaces/lighthouse/**', 'workspaces/linkerd/**', 'workspaces/microsoft-calendar/**', 'workspaces/newrelic/**', 'workspaces/nomad/**', 'workspaces/opencost/**', 'workspaces/periskop/**', 'workspaces/puppetdb/**', 'workspaces/sentry/**', 'workspaces/shortcuts/**', 'workspaces/splunk/**', 'workspaces/stack-overflow/**', 'workspaces/stackstorm/**', 'workspaces/tech-radar/**', 'workspaces/todo/**', 'workspaces/vault/**', 'workspaces/xcmetrics/**']
+  - any-glob-to-any-file: ['workspaces/airbrake/**', 'workspaces/allure/**', 'workspaces/apache-airflow/**', 'workspaces/apollo-explorer/**', 'workspaces/badges/**', 'workspaces/bazaar/**', 'workspaces/cicd-statistics/**', 'workspaces/cloudbuild/**', 'workspaces/code-climate/**', 'workspaces/codescene/**', 'workspaces/dynatrace/**', 'workspaces/entity-validation/**', 'workspaces/firehydrant/**', 'workspaces/gcalendar/**', 'workspaces/gcp-projects/**', 'workspaces/github/**', 'workspaces/gitops-profiles/**', 'workspaces/gocd/**', 'workspaces/grafana/**', 'workspaces/graphiql/**', 'workspaces/graphql-voyager/**', 'workspaces/ilert/**', 'workspaces/jaeger/**', 'workspaces/jenkins/**', 'workspaces/lighthouse/**', 'workspaces/linkerd/**', 'workspaces/microsoft-calendar/**', 'workspaces/newrelic/**', 'workspaces/nomad/**', 'workspaces/opencost/**', 'workspaces/periskop/**', 'workspaces/puppetdb/**', 'workspaces/sentry/**', 'workspaces/shortcuts/**', 'workspaces/splunk/**', 'workspaces/stack-overflow/**', 'workspaces/stackstorm/**', 'workspaces/tech-radar/**', 'workspaces/todo/**', 'workspaces/vault/**', 'workspaces/xcmetrics/**']

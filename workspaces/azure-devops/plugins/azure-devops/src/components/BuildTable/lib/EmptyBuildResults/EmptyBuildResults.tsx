@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import { Box, Text } from '@backstage/ui';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 
 export const EmptyBuildResults = ({ entity }: { entity?: Entity }) => {
@@ -26,15 +25,15 @@ export const EmptyBuildResults = ({ entity }: { entity?: Entity }) => {
   const buildDefinition = annotations?.definition;
 
   return (
-    <Box padding={2}>
-      <Typography component="p" align="center" variant="body1">
+    <Box p="4" style={{ textAlign: 'center' }}>
+      <Text as="p" variant="body-large">
         No records to display
-      </Typography>
-      <Typography component="p" align="center" variant="body2">
+      </Text>
+      <Text as="p" variant="body-medium">
         No builds could be found with repository name{' '}
         {repoName ?? '(no value provided)'} or build definition{' '}
         {buildDefinition ?? '(no value provided)'}.
-      </Typography>
+      </Text>
     </Box>
   );
 };

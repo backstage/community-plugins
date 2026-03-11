@@ -98,6 +98,36 @@ permission:
 
    - Integrate the [`SignIn`](https://backstage.io/docs/auth/#sign-in-configuration) component to be able to sign-in to the Backstage instance.
 
+## New Frontend System
+
+If you're using Backstage's new frontend system, add the plugin to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import rbacPlugin from '@backstage-community/plugin-rbac/alpha';
+
+export default createApp({
+  features: [
+    // ...other plugins
+    rbacPlugin,
+  ],
+});
+```
+
+The plugin will automatically provide:
+
+- RBAC at `/rbac` with all the existing features
+- A "RBAC" navigation item in the sidebar
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:rbac`
+- `api:rbac/licensed-users`
+- `page:rbac`
+- `nav-item:rbac`
+
 ### Configure plugins with permission
 
 In order for the RBAC UI to display available permissions provided by installed plugins, add the corresponding

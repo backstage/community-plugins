@@ -22,7 +22,7 @@ import {
   SidebarSpace,
   SidebarScrollWrapper,
 } from '@backstage/core-components';
-import { NavContentBlueprint } from '@backstage/frontend-plugin-api';
+import { NavContentBlueprint } from '@backstage/plugin-app-react';
 import {
   Settings,
   UserSettingsSignInAvatar,

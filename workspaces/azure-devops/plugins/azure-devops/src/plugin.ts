@@ -138,6 +138,6 @@ export const AzureDevOpsWikiArticleSearchResultListItem: (
       import('./components/WikiArticleSearchResultListItem').then(
         m => m.WikiArticleSearchResultListItem,
       ),
-    predicate: result => result.type === 'adr',
+    predicate: result => result.type === 'azure-devops-wiki-article',
   }),
 );

@@ -75,7 +75,7 @@ const app = createApp({
     SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
   },
   __experimentalTranslations: {
-    availableLanguages: ['en', 'de'],
+    availableLanguages: ['en', 'de', 'es', 'fr', 'it', 'ja'],
     resources: [npmTranslations],
   },
 });

@@ -81,7 +81,10 @@ permission:
       superUsers:
         - name: user:default/alice
         - name: user:default/mike
+        - name: group:default/admins
 ```
+
+> **Note:** **Transient memberships are not supported for `superUsers`.** Meaning, when a group is specified as a super user, only direct group memberships are taken into account. Users who belong to a sub-group of a configured super user group will not be granted super user access.
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
 

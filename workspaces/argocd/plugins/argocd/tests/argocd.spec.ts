@@ -95,10 +95,8 @@ test.describe('ArgoCD plugin', () => {
     test('Verify column names', async () => {
       const cols = translations.deploymentSummary.deploymentSummary.columns;
       const columns = [
-        'ArgoCD App',
-        // Commenting because of missing translation in UI for Namespace https://issues.redhat.com/browse/RHDHBUGS-2601
-        // translations.deploymentLifecycle.deploymentLifecycleCard.namespace,
-        'NAMESPACE',
+        cols.application,
+        cols.namespace,
         cols.instance,
         cols.server,
         cols.revision,
@@ -135,7 +133,13 @@ test.describe('ArgoCD plugin', () => {
           row.getByRole('cell', { name: revision }).first(),
         ).toBeVisible();
         await expect(
-          row.getByRole('cell', { name: app.status.health.status }).first(),
+          row
+            .getByRole('cell', {
+              name: translations.appStatus.appHealthStatus[
+                app.status.health.status
+              ],
+            })
+            .first(),
         ).toBeVisible();
         await expect(
           row

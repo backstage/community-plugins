@@ -28,10 +28,13 @@ import { RELATION_OWNED_BY } from '@backstage/catalog-model';
 import {
   ManageApi,
   manageApiRef,
+  ManageStaticConfig,
 } from '@backstage-community/plugin-manage-react';
 
-import { ManagePageImpl } from './ManagePageOld';
-import { ManageTabsImpl } from '../ManageTabs';
+import { ManagePage } from './ManagePage';
+import { ManagePageProviders } from './ManagePageProviders';
+import { routeResolutionApiRef } from '@backstage/frontend-plugin-api';
+import { rootRouteRef } from '../../routes';
 
 const starredEntities: StarredEntitiesApi = {
   toggleStarred: async () => {},
@@ -50,66 +53,49 @@ const mockCatalogApi: CatalogApi = {
   },
 } satisfies Partial<CatalogApi> as any as CatalogApi;
 
+const mockConfig: ManageStaticConfig = {
+  kinds: ['Component', 'API', 'Template', 'Resource', 'Domain'],
+  title: 'Manage',
+  subtitle: 'Things you own',
+  themeId: 'home',
+  combined: false,
+  showCombined: false,
+  enableStarredEntities: false,
+  showOrganizationChart: false,
+  enableWholeOrganization: false,
+  tabOrder: [],
+  kindOrder: ['component'],
+  widgetOrderCards: [],
+  widgetOrderContentAbove: [],
+  widgetOrderContentBelow: [],
+  columnsOrder: [],
+};
+
 describe('ManagePage', () => {
-  it('should render an empty page if nothing owned', async () => {
-    const mockApi: ManageApi = {
-      getProviders: () => [],
-      getOwnersAndEntities: async () => ({
-        owners: { groups: [], ownerEntityRefs: [], user: undefined },
-        ownedEntities: [],
-      }),
-      kindOrder: [],
-      progressStyle: 'circular',
-    };
-
-    const apis = [
-      [manageApiRef, mockApi],
-      [catalogApiRef, mockCatalogApi],
-      [starredEntitiesApiRef, starredEntities],
-    ] as const;
-
-    const { getByText } = await renderInTestApp(
-      <TestApiProvider apis={apis}>
-        <ManagePageImpl subtitle="Things you own">
-          <ManageTabsImpl />
-        </ManagePageImpl>
-      </TestApiProvider>,
-      {
-        mountedRoutes: {
-          '/catalog': catalogPlugin.routes.catalogIndex,
-          '/catalog/:kind/:namespace/:name': catalogPlugin.routes.catalogEntity,
-        },
-      },
-    );
-
-    expect(getByText('Manage')?.tagName).toBe('H1');
-    expect(getByText('Things you own')).toBeDefined();
-    expect(
-      getByText("You and your team(s) don't own any entities"),
-    ).toBeDefined();
-  });
-
   it('should render a table of owned entities', async () => {
     const mockApi: ManageApi = {
       getProviders: () => [],
       getOwnersAndEntities: async () => ({
         owners: {
-          groups: [],
-          ownerEntityRefs: ['user:default/guest'],
+          groups: [
+            {
+              kind: 'Group',
+              metadata: { name: 'testgroup' },
+              apiVersion: 'backstage.io/v1alpha1',
+            },
+          ],
+          ownerEntityRefs: ['group:default/testgroup'],
           user: undefined,
         },
         ownedEntities: [
           {
             apiVersion: 'backstage.io/v1alpha1',
             kind: 'Component',
-            metadata: {
-              name: 'foo',
-              title: 'The Foo',
-            },
+            metadata: { name: 'testcomponent' },
             relations: [
               {
                 type: RELATION_OWNED_BY,
-                targetRef: 'user:default/guest',
+                targetRef: 'group:default/testgroup',
               },
             ],
           },
@@ -123,24 +109,74 @@ describe('ManagePage', () => {
       [manageApiRef, mockApi],
       [catalogApiRef, mockCatalogApi],
       [starredEntitiesApiRef, starredEntities],
+      [routeResolutionApiRef, { resolve: () => () => '/manage' }],
     ] as const;
 
-    const { getByText } = await renderInTestApp(
+    const { getByText, findAllByText } = await renderInTestApp(
       <TestApiProvider apis={apis}>
-        <ManagePageImpl subtitle="Things you own">
-          <ManageTabsImpl />
-        </ManagePageImpl>
+        <ManagePageProviders
+          combined={false}
+          kinds={['component']}
+          providers={[]}
+          dynamicConfig={{ primeUserSettings: [] }}
+        >
+          <ManagePage
+            config={mockConfig}
+            pluginNode={{
+              spec: {
+                id: 'manage',
+                attachTo: { id: 'app', input: 'manage' },
+                extension: null as any,
+                disabled: false,
+                plugin: {} as any,
+              },
+              edges: { attachments: new Map() },
+            }}
+            apis={{
+              get(apiRef) {
+                return apis.find(tuple => apiRef === tuple[0])?.[1] as any;
+              },
+            }}
+            tabs={[
+              {
+                title: 'Test tab',
+                path: 'test',
+                children: <></>,
+                fullHeight: false,
+                condition: () => true,
+                node: { spec: { id: 'test' } },
+              } as any,
+            ]}
+            columns={[]}
+            cardWidgets={[]}
+            contentWidgets={[]}
+            settings={[]}
+            labelsElements={[]}
+            showCombined={false}
+          />
+        </ManagePageProviders>
       </TestApiProvider>,
       {
         mountedRoutes: {
           '/catalog': catalogPlugin.routes.catalogIndex,
           '/catalog/:kind/:namespace/:name': catalogPlugin.routes.catalogEntity,
+          '/manage/:tab': rootRouteRef,
         },
+        routeEntries: ['/', '/manage', '/manage/components'],
       },
     );
 
-    expect(getByText('Manage')?.tagName).toBe('H1');
-    expect(getByText('Things you own')).toBeDefined();
-    expect(getByText('The Foo')).toBeDefined();
+    expect(
+      getByText('Manage — Things you own')?.parentElement?.className,
+    ).toContain('PluginHeader');
+
+    // Component found in the table
+    expect(await findAllByText('testcomponent')).toBeDefined();
+
+    // Test tab found in the tabs
+    expect(getByText('Test tab')).toBeDefined();
+
+    // Settings tab found in the tabs
+    expect(getByText('Settings')).toBeDefined();
   });
 });

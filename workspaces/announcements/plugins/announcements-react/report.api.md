@@ -68,16 +68,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
   // (undocumented)
   announcementByID(id: string): Promise<Announcement>;
   // (undocumented)
-  announcements({
-    max,
-    page,
-    category,
-    active,
-    sortBy,
-    order,
-    current,
-    tags,
-  }: {
+  announcements(input: {
     max?: number;
     page?: number;
     category?: string;

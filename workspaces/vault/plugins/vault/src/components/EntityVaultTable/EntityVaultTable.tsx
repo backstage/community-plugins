@@ -29,76 +29,125 @@ import {
 } from '../../constants';
 
 export const vaultSecretConfig = (entity: Entity) => {
-  const secretPath =
+  const secretPathAnnotation =
     entity.metadata.annotations?.[VAULT_SECRET_PATH_ANNOTATION];
+  const secretPaths = secretPathAnnotation
+    ? secretPathAnnotation
+        .split(',')
+        .map(path => path.trim())
+        .filter(Boolean)
+    : [];
   const secretEngine =
     entity.metadata.annotations?.[VAULT_SECRET_ENGINE_ANNOTATION];
 
-  return { secretPath, secretEngine };
+  return { secretPaths, secretEngine };
 };
 
 export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
   const vaultApi = useApi(vaultApiRef);
-  const { secretPath, secretEngine } = vaultSecretConfig(entity);
-  if (!secretPath) {
+  const { secretPaths, secretEngine } = vaultSecretConfig(entity);
+  if (!secretPaths || secretPaths.length === 0) {
     throw Error(
       `The secret path is undefined. Please, define the annotation ${VAULT_SECRET_PATH_ANNOTATION}`,
     );
   }
 
   const { value, loading, error } = useAsync(async (): Promise<
-    VaultSecret[]
+    { path: string; secrets: VaultSecret[]; createUrl?: string }[]
   > => {
-    return vaultApi.listSecrets(secretPath, { secretEngine });
+    const results = await Promise.all(
+      secretPaths.map(async path => {
+        const response = await vaultApi
+          .listSecrets(path, { secretEngine })
+          .catch(() => ({
+            secrets: [],
+          }));
+
+        let createUrl: string | undefined = undefined;
+        if (response.secrets.length === 0) {
+          createUrl = await vaultApi.getCreateUrl?.(path, { secretEngine });
+        }
+        return {
+          path,
+          secrets: response.secrets,
+          createUrl,
+        };
+      }),
+    );
+    return results;
   }, []);
 
   const columns: TableColumn[] = [
+    { title: 'Path', field: 'path', width: '20%' },
     { title: 'Secret', field: 'secret', highlight: true },
-    { title: 'View URL', field: 'view', width: '10%' },
-    { title: 'Edit URL', field: 'edit', width: '10%' },
+    { title: 'View', field: 'view', width: '10%' },
+    { title: 'Edit', field: 'edit', width: '10%' },
   ];
 
-  const data = (value || []).map(secret => {
-    const secretName = `${secret.path.replace(`${secretPath}/`, '')}/${
-      secret.name
-    }`;
+  const data: any[] = [];
 
-    return {
-      secret: secretName,
-      view: (
-        <Link
-          aria-label="View"
-          title={`View ${secretName}`}
-          to={secret.showUrl}
-        >
-          <Visibility style={{ fontSize: 16 }} />
-        </Link>
-      ),
-      edit: (
-        <Link
-          aria-label="Edit"
-          title={`Edit ${secretName}`}
-          to={secret.editUrl}
-        >
-          <Edit style={{ fontSize: 16 }} />
-        </Link>
-      ),
-    };
+  (value || []).forEach(({ path, secrets, createUrl }) => {
+    if (secrets.length === 0) {
+      // No secrets in this path - show a link to create one
+      data.push({
+        path,
+        secret: (
+          <Typography variant="body2" color="textSecondary">
+            No secrets, <Link to={createUrl || ''}>create one</Link>
+          </Typography>
+        ),
+        view: null,
+        edit: null,
+      });
+    } else {
+      secrets.forEach((secret, index) => {
+        const secretName = `${secret.path.replace(`${path}/`, '')}/${
+          secret.name
+        }`;
+        data.push({
+          path: index === 0 ? path : '',
+          secret: secretName,
+          view: (
+            <Link
+              aria-label="View"
+              title={`View ${secretName}`}
+              to={secret.showUrl}
+            >
+              <Visibility style={{ fontSize: 16 }} />
+            </Link>
+          ),
+          edit: (
+            <Link
+              aria-label="Edit"
+              title={`Edit ${secretName}`}
+              to={secret.editUrl}
+            >
+              <Edit style={{ fontSize: 16 }} />
+            </Link>
+          ),
+        });
+      });
+    }
   });
 
   if (error) {
     return (
       <Alert severity="error">
-        Unexpected error while fetching secrets from path '{secretPath}':{' '}
-        {error.message}
+        Unexpected error while fetching secrets from path(s) '
+        {secretPaths.join(', ')}': {error.message}
       </Alert>
     );
   }
 
+  const subtitle =
+    secretPaths.length === 1
+      ? `Secrets for ${entity.metadata.name} in ${secretPaths[0]}`
+      : `Secrets for ${entity.metadata.name} in ${secretPaths.length} paths`;
+
   return (
     <Table
       title="Vault"
-      subtitle={`Secrets for ${entity.metadata.name} in ${secretPath}`}
+      subtitle={subtitle}
       columns={columns}
       data={data}
       isLoading={loading}
@@ -111,7 +160,8 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
       emptyContent={
         <Box style={{ textAlign: 'center', padding: '15px' }}>
           <Typography variant="body1">
-            No secrets found for {entity.metadata.name} in {secretPath}
+            No secrets found for {entity.metadata.name} in{' '}
+            {secretPaths.join(', ')}
           </Typography>
         </Box>
       }

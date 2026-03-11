@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-azure-devops
 
+## 0.4.1
+
+### Patch Changes
+
+- a5203e4: Backstage version bump to v1.48.4
+
+## 0.4.0
+
+### Minor Changes
+
+- 00555dc: Backstage version bump to v1.48.2
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-badges",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "A Backstage plugin that generates README badges for your entities",
   "backstage": {
     "role": "frontend-plugin",

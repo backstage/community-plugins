@@ -36,7 +36,7 @@ import { MembersDropdownOption } from './MembersDropdownOption';
 import { RoleFormValues, SelectedMember } from './types';
 import { useTranslation } from '../../hooks/useTranslation';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 type AddMembersFormProps = {
   selectedMembers: SelectedMember[];

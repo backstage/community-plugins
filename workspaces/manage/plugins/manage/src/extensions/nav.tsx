@@ -17,14 +17,14 @@
 import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 
-import ManageIcon from '@mui/icons-material/Ballot';
+import { RiPulseAiLine } from '@remixicon/react';
 
 import { rootRouteRef } from '../routes';
 
 export const navItem = NavItemBlueprint.make({
   name: 'manage',
   params: {
-    icon: ManageIcon,
+    icon: () => <RiPulseAiLine />,
     title: 'Manage',
     routeRef: convertLegacyRouteRef(rootRouteRef),
   },

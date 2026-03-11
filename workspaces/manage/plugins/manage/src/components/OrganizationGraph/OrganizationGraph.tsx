@@ -38,7 +38,7 @@ import {
 
 const styleControlsCard: CSSProperties = {
   position: 'absolute',
-  backgroundColor: `rgba(from var(--bui-bg-surface-1) r g b / 0.8)`,
+  backgroundColor: 'var(--bui-bg-neutral-2)',
   width: 'fit-content',
   userSelect: 'none',
 };
@@ -114,7 +114,7 @@ export function OrganizationGraphImpl({
     () =>
       !graphElementSize
         ? 0
-        : graphElementSize.client.height - graphElementSize.element.top - 64,
+        : graphElementSize.client.height - graphElementSize.element.top,
     [graphElementSize],
   );
 
@@ -136,8 +136,8 @@ export function OrganizationGraphImpl({
         position: 'relative',
         display: 'flex',
         flexDirection: 'row',
-        minHeight: availHeight,
-        maxHeight: availHeight,
+        minHeight: `calc(${availHeight} - var(--bui-space-5))`,
+        maxHeight: `calc(${availHeight} - var(--bui-space-5))`,
       }}
     >
       <EntityRelationsGraph

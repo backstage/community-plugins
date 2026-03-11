@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bookmarks",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "A Backstage plugin that helps you view your favorite websites and services.",
   "keywords": [
     "backstage",
@@ -65,6 +65,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@mui/icons-material": "^5.18.0",

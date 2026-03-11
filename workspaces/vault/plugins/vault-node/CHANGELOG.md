@@ -1,5 +1,17 @@
 # @backstage-community/plugin-vault-node
 
+## 0.17.0
+
+### Minor Changes
+
+- 92587e2: Backstage version bump to v1.48.2
+
+## 0.16.0
+
+### Minor Changes
+
+- 7ad5206: Added support for multiple secrets paths
+
 ## 0.15.0
 
 ### Minor Changes

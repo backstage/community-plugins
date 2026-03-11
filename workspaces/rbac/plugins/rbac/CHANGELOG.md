@@ -1,5 +1,35 @@
 # @backstage-community/plugin-rbac
 
+## 1.50.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+
+## 1.49.0
+
+### Minor Changes
+
+- 8c7bddb: Added NFS support
+
+### Patch Changes
+
+- 42c05f7: exported rbacPlugin as a default and other minor updates
+- a55af54: Updated the translation of a Japanese word.
+- 1d15595: Translation updated for German and Spanish
+
+## 1.48.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
 ## 1.48.0
 
 ### Minor Changes

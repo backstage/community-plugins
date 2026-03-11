@@ -1,5 +1,24 @@
 # @backstage-community/plugin-argocd-common
 
+## 1.14.0
+
+### Minor Changes
+
+- 2cde93e: Add additional functionality to the ArgoCDService and move it to a new argocd-node plugin. These new functions will be used in the ArgoCD Scaffolder plugin.
+- c59fa05: Backstage version bump to v1.48.4
+
+## 1.13.0
+
+### Minor Changes
+
+- 2ef9a5d: Backstage version bump to v1.47.2
+
+## 1.12.2
+
+### Patch Changes
+
+- 4818f35: Updated the `repository.url` value to just be an HTTP URL in the `package.json` file following the common convention in this repo.
+
 ## 1.12.1
 
 ### Patch Changes

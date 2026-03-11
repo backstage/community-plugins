@@ -18,7 +18,7 @@ import { getPolicyString } from '../../utils/rbac-utils';
 import { ConditionsData } from '../ConditionalAccess/types';
 import { RowPolicy } from './types';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const selectedPermissionPoliciesColumn = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,

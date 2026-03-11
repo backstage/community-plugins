@@ -32,6 +32,7 @@ export type TableRow = {
 };
 
 export type ColumnInfo = {
+  header?: true;
   id: string;
   title: string;
   render: (row: TableRow) => ReactNode;

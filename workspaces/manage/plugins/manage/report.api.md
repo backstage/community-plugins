@@ -19,6 +19,7 @@ import { GetColumnFunc } from '@backstage-community/plugin-manage-react';
 import { GetColumnsFunc } from '@backstage-community/plugin-manage-react';
 import { Header } from '@backstage/core-components';
 import { IconComponent } from '@backstage/frontend-plugin-api';
+import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { JSX as JSX_3 } from 'react/jsx-runtime';
 import { ManageCardRef } from '@backstage-community/plugin-manage-react';
@@ -197,8 +198,10 @@ const managePlugin_2: OverridableFrontendPlugin<
     'page:manage': OverridableExtensionDefinition<{
       config: {
         path: string | undefined;
+        title: string | undefined;
       };
       configInput: {
+        title?: string | undefined | undefined;
         path?: string | undefined | undefined;
       };
       output:
@@ -210,13 +213,58 @@ const managePlugin_2: OverridableFrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ExtensionDataRef<
+            string,
+            'core.title',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            IconElement,
+            'core.icon',
+            {
+              optional: true;
+            }
           >;
       inputs: {
+        pages: ExtensionInput<
+          | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+          | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+          | ConfigurableExtensionDataRef<
+              RouteRef<AnyRouteRefParams>,
+              'core.routing.ref',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              string,
+              'core.title',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              IconElement,
+              'core.icon',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+            internal: false;
+          }
+        >;
         config: ExtensionInput<
           ConfigurableExtensionDataRef<ManageConfig, 'manage.config.ref', {}>,
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         headerLabels: ExtensionInput<
@@ -224,6 +272,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         providers: ExtensionInput<
@@ -238,6 +287,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         tabs: ExtensionInput<
@@ -257,6 +307,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         columns: ExtensionInput<
@@ -295,6 +346,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         cardWidgets: ExtensionInput<
@@ -314,6 +366,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         contentWidgets: ExtensionInput<
@@ -338,6 +391,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
         settings: ExtensionInput<
@@ -354,6 +408,7 @@ const managePlugin_2: OverridableFrontendPlugin<
           {
             singleton: false;
             optional: false;
+            internal: false;
           }
         >;
       };
@@ -362,8 +417,11 @@ const managePlugin_2: OverridableFrontendPlugin<
       params: {
         defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
-        loader: () => Promise<JSX.Element>;
+        title?: string;
+        icon?: IconElement;
+        loader?: () => Promise<JSX_2.Element>;
         routeRef?: RouteRef;
+        noHeader?: boolean;
       };
     }>;
   }

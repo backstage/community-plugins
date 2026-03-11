@@ -1,5 +1,46 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.28.2
+
+### Patch Changes
+
+- a5203e4: Backstage version bump to v1.48.4
+- Updated dependencies [a5203e4]
+  - @backstage-community/plugin-azure-devops-common@0.20.1
+
+## 0.28.1
+
+### Patch Changes
+
+- 8d3c162: **DEPRECATED** This change marks the `AzurePullRequestsIcon` as deprecated, use `RiGitPullRequestLine` from `@remixicon/react` instead.
+
+  Migrated Material UI Icons to Remix Icons, also fixed a bug in `AzureDevOpsWikiArticleSearchResultListItem` to filter on the correct `result.type`
+
+## 0.28.0
+
+### Minor Changes
+
+- 00555dc: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [00555dc]
+  - @backstage-community/plugin-azure-devops-common@0.20.0
+
+## 0.27.0
+
+### Minor Changes
+
+- 516a7f1: **BREAKING** Backstage UI (BUI) is now required for the Azure DevOps plugin to function
+
+  Initial Migration to Backstage UI (BUI) including Azure Pipelines, Azure Repos, Azure Repos Git Tags, and Azure Readme
+
+## 0.26.0
+
+### Minor Changes
+
+- 5bb714f: Updated readme to add a clarification for readme-path annotation.
+
 ## 0.25.0
 
 ### Minor Changes

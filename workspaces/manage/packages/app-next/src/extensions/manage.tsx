@@ -17,8 +17,7 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 
 import { Entity } from '@backstage/catalog-model';
-import { HeaderLabel } from '@backstage/core-components';
-import { Skeleton } from '@backstage/ui';
+import { Button, Skeleton, Tooltip, TooltipTrigger } from '@backstage/ui';
 
 import {
   ManageEntityCardWidgetBlueprint,
@@ -32,10 +31,6 @@ import {
 import { ManageTechInsightsBlueprint } from '@backstage-community/plugin-manage-module-tech-insights';
 
 import { useTheme } from '@material-ui/core';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
 
 function Foo({
   name,
@@ -230,21 +225,10 @@ const label = ManageHeaderLabelBlueprint.make({
   params: defineParams =>
     defineParams({
       loader: async () => (
-        <HeaderLabel
-          label="Example toggle"
-          value={
-            <FormGroup row>
-              <FormControlLabel
-                control={<Switch name="manage-page-combined" color="primary" />}
-                label={
-                  <Typography sx={{ userSelect: 'none' }}>
-                    This does nothing
-                  </Typography>
-                }
-              />
-            </FormGroup>
-          }
-        />
+        <TooltipTrigger>
+          <Tooltip>Custom header action example</Tooltip>
+          <Button variant="tertiary">This does nothing</Button>
+        </TooltipTrigger>
       ),
     }),
 });

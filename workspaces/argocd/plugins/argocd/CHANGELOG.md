@@ -1,5 +1,69 @@
 # @backstage-community/plugin-argocd
 
+## 2.7.0
+
+### Minor Changes
+
+- 2cde93e: Add additional functionality to the ArgoCDService and move it to a new argocd-node plugin. These new functions will be used in the ArgoCD Scaffolder plugin.
+- c59fa05: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 9e0c387: pass namespace to getRevisionDetailsList in DeploymentLifecycle
+- Updated dependencies [2cde93e]
+- Updated dependencies [c59fa05]
+  - @backstage-community/plugin-argocd-common@1.14.0
+
+## 2.6.0
+
+### Minor Changes
+
+- 93c07b8: Add `showInstance` and `showServer` props to deployment components
+
+  Adds optional props to `ArgocdDeploymentSummary` and `ArgocdDeploymentLifecycle` components to control visibility of Instance and Server columns/fields:
+
+  - `showInstance?: boolean` - Show Instance column/field (default: true)
+  - `showServer?: boolean` - Show Server column/field (default: true)
+
+  **Example usage:**
+
+  ```tsx
+  <ArgocdDeploymentSummary showInstance={false} showServer={false} />
+  <ArgocdDeploymentLifecycle showInstance={false} showServer={false} />
+  ```
+
+  This is useful when you have a single ArgoCD instance and want to declutter the UI by hiding redundant information.
+
+### Patch Changes
+
+- 1d15595: Translation added for German and Spanish
+
+## 2.5.0
+
+### Minor Changes
+
+- 2ef9a5d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [2ef9a5d]
+  - @backstage-community/plugin-argocd-common@1.13.0
+
+## 2.4.6
+
+### Patch Changes
+
+- 074cfaa: Changes the (mostly internal used) pluginId from `argocd` to `backstage-community-argocd` to resolve a conflict with the Argo CD plugin from Roadie. This will allow users to install both plugins in parallel. Since the Backstage Community Argo CD plugin works fine with the Roadie Argo CD Backend plugin the frontend automatically falls back to the `argocd` backend if there is no `backstage-community-argocd` backend available.
+- 40d5b94: Use (mouse) cursor pointer (hand) to show that the deployment lifecycle card is clickable.
+
+## 2.4.5
+
+### Patch Changes
+
+- c78148c: Add missing translations on argocd summary page
+- Updated dependencies [4818f35]
+  - @backstage-community/plugin-argocd-common@1.12.2
+
 ## 2.4.4
 
 ### Patch Changes

@@ -58,7 +58,7 @@ describe('Entity content extensions', () => {
 
   it('should render Jenkins projects table', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[jenkinsApiRef, mockJenkinsApi]]}>
+      <TestApiProvider apis={[[jenkinsApiRef, mockJenkinsApi]] as const}>
         <EntityProvider entity={mockedEntity}>
           {createExtensionTester(content.entityJenkinsProjects).reactElement()}
         </EntityProvider>

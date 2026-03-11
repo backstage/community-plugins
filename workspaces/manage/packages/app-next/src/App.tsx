@@ -22,8 +22,8 @@ import { createApp } from '@backstage/frontend-defaults';
 import {
   createFrontendModule,
   PageBlueprint,
-  SignInPageBlueprint,
 } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 
 import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';

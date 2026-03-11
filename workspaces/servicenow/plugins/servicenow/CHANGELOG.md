@@ -1,5 +1,28 @@
 # @backstage-community/plugin-servicenow
 
+## 1.9.0
+
+### Minor Changes
+
+- d578507: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+- Updated dependencies [d578507]
+  - @backstage-community/plugin-servicenow-common@1.8.0
+
+## 1.8.0
+
+### Minor Changes
+
+- 5a2919f: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- Updated dependencies [5a2919f]
+  - @backstage-community/plugin-servicenow-common@1.7.0
+
 ## 1.7.0
 
 ### Minor Changes

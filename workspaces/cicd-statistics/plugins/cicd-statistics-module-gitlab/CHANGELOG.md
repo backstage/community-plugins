@@ -1,5 +1,20 @@
 # @backstage-community/plugin-cicd-statistics-module-gitlab
 
+## 0.15.2
+
+### Patch Changes
+
+- 9e7b674: Updated dependency `@gitbeaker/rest` to `^43.0.0`.
+  Replaced deprecated `@gitbeaker/browser` with `@gitbeaker/rest`
+
+## 0.15.1
+
+### Patch Changes
+
+- a7f3f99: Backstage version bump to v1.48.4
+- Updated dependencies [a7f3f99]
+  - @backstage-community/plugin-cicd-statistics@0.15.1
+
 ## 0.15.0
 
 ### Minor Changes

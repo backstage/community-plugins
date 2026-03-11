@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.27.0
+
+### Minor Changes
+
+- 8a5c766: The product insights and the cost insights graph support date ranges to add custom time frames
+
 ## 0.26.0
 
 ### Minor Changes

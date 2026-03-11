@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic
 
+## 0.19.0
+
+### Minor Changes
+
+- 806a57f: Backstage version bump to v1.48.2
+
 ## 0.18.0
 
 ### Minor Changes

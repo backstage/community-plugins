@@ -202,7 +202,7 @@ const mockKubernetesAuthProviderApiRef = {
 
 createDevApp()
   .addTranslationResource(tektonTranslations)
-  .setAvailableLanguages(['en', 'fr', 'it', 'ja'])
+  .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja'])
   .addPage({
     element: (
       <TestApiProvider

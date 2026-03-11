@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tekton-react
 
+## 0.4.0
+
+### Minor Changes
+
+- 1f270b5: Backstage version bump to v1.48.4
+
+## 0.3.1
+
+### Patch Changes
+
+- f5ae65c: remove unused dependencies
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @backstage-community/plugin-acr
 
+## 1.23.0
+
+### Minor Changes
+
+- e9e547f: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+
 ## 1.22.0
 
 ### Minor Changes

@@ -24,7 +24,7 @@ import { getMembers } from '../../utils/rbac-utils';
 import EditRole from '../EditRole';
 import DeleteRole from './DeleteRole';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const getColumns = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,
