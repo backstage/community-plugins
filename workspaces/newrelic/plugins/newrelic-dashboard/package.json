@@ -5,7 +5,8 @@
     "role": "frontend-plugin",
     "pluginId": "newrelic-dashboard",
     "pluginPackages": [
-      "@backstage-community/plugin-newrelic-dashboard"
+      "@backstage-community/plugin-newrelic-dashboard",
+      "@backstage-community/plugin-newrelic-dashboard-backend"
     ]
   },
   "homepage": "https://backstage.io",
@@ -59,6 +60,7 @@
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "pdfjs-dist": "^4.4.168",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
