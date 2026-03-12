@@ -100,7 +100,6 @@ permission:
       basicPermissions:
         - permission: catalog.entity.read
           action: read
-          effect: allow
         - permission: catalog-entity
           action: read
         - permission: catalog.entity.create

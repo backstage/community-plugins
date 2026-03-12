@@ -75,7 +75,6 @@ export class DefaultPermissionsReader {
       policies = basicPermissions.map(permission => {
         const permissionName = permission.getString('permission');
         const action = permission.getOptionalString('action');
-        const effect = permission.getOptionalString('effect');
 
         if (action && !isValidPermissionAction(action)) {
           throw new Error(
@@ -83,17 +82,11 @@ export class DefaultPermissionsReader {
           );
         }
 
-        if (effect && effect !== 'allow' && effect !== 'deny') {
-          throw new Error(
-            `Invalid effect '${effect}' for permission '${permissionName}'. It must be 'allow' or 'deny'.`,
-          );
-        }
-
         return {
           entityReference: role,
           permission: permissionName,
           policy: action || 'use',
-          effect: effect || 'allow',
+          effect: 'allow',
         };
       });
     }
