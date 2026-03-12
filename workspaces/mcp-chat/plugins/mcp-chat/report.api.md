@@ -5,7 +5,7 @@
 ```ts
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { IconComponent } from '@backstage/core-plugin-api';
+import { ComponentType } from 'react';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -80,7 +80,9 @@ export interface McpChatApi {
 export const mcpChatApiRef: ApiRef<McpChatApi>;
 
 // @public
-export const MCPChatIcon: IconComponent;
+export const MCPChatIcon: ComponentType<{
+  fontSize?: 'medium' | 'large' | 'small' | 'inherit';
+}>;
 
 // @public
 export const McpChatPage: () => JSX_2.Element;
