@@ -1,5 +1,15 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.7.0
+
+### Minor Changes
+
+- 158dbf4: Backstage version bump to v1.48.5
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.6.1
 
 ### Patch Changes
