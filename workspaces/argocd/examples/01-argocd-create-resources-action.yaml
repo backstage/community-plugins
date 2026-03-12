@@ -31,8 +31,8 @@ input:
   namespace: my-namespace
   repoUrl: https://github.com/my-org/my-repo.git
   path: manifests/production
-  label: backstage-service     # Label used by Backstage to find applications (defaults to appName)
-  projectName: my-project      # ArgoCD project name (defaults to appName)
+  label: backstage-service # Label used by Backstage to find applications (defaults to appName)
+  projectName: my-project # ArgoCD project name (defaults to appName)
 
 # Expected output:
 #   applicationUrl: <URL to the created ArgoCD application>
