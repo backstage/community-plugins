@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.13.1
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 1.13.0
 
 ### Minor Changes
