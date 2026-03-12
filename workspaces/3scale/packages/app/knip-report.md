@@ -8,11 +8,10 @@
 | @backstage/plugin-catalog-react  | package.json:34:6 | error    |
 | react-router                     | package.json:44:6 | error    |
 
-## Unused devDependencies (3)
+## Unused devDependencies (2)
 
 | Name                        | Location          | Severity |
 | :-------------------------- | :---------------- | :------- |
 | @testing-library/user-event | package.json:53:6 | error    |
 | @backstage/test-utils       | package.json:48:6 | error    |
-| @testing-library/dom        | package.json:50:6 | error    |
 
