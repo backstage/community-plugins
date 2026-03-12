@@ -25,6 +25,7 @@ import {
   RoleMetadataStorage,
 } from '../database/role-metadata';
 import { BackstageRoleManager } from '../role-manager/role-manager';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import {
@@ -167,6 +168,7 @@ describe('EnforcerDelegate', () => {
       rbacDBClient,
       config,
       mockAuthService,
+      new DefaultPermissionsReader(config),
     );
     enf.setRoleManager(rm);
     enf.enableAutoBuildRoleLinks(false);

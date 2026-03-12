@@ -36,7 +36,6 @@ import type {
   RBACProvider,
 } from '@backstage-community/plugin-rbac-node';
 
-import { syncDefaultRoleAndPolicies } from '../default-permissions/default-permissions';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import { migrate } from '../database/migration';
@@ -55,6 +54,10 @@ import { permissionMetadataResourceRef } from '../permissions/resource';
 import { PermissionDependentPluginDatabaseStore } from '../database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
 import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+import {
+  DefaultPermissionsReader,
+  DefaultPermissionsSyncher,
+} from '../default-permissions/default-permissions';
 
 /**
  * @public
@@ -115,6 +118,8 @@ export class PolicyBuilder {
       .forPlugin('catalog', { logger: env.logger, lifecycle: env.lifecycle })
       .getClient();
 
+    const defPermReader = new DefaultPermissionsReader(env.config);
+
     const rm = new BackstageRoleManager(
       catalogClient,
       env.logger,
@@ -122,6 +127,7 @@ export class PolicyBuilder {
       databaseClient,
       env.config,
       env.auth,
+      defPermReader,
     );
     enf.setRoleManager(rm);
     enf.enableAutoBuildRoleLinks(false);
@@ -139,11 +145,13 @@ export class PolicyBuilder {
       roleMetadataStorage,
       databaseClient,
     );
-    await syncDefaultRoleAndPolicies(
-      env.config,
-      enforcerDelegate,
+
+    const defPermSyncher = new DefaultPermissionsSyncher(
       roleMetadataStorage,
+      enforcerDelegate,
+      defPermReader,
     );
+    await defPermSyncher.sync();
 
     env.permissionsRegistry.addResourceType({
       resourceRef: permissionMetadataResourceRef,

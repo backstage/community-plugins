@@ -24,6 +24,7 @@ import { Knex } from 'knex';
 import { AncestorSearchMemo, ASMGroup } from './ancestor-search-memo';
 import { RoleMemberList } from './member-list';
 import { AncestorSearchFactory } from './ancestor-search-factory';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 
 export class BackstageRoleManager implements RoleManager {
   private allRoles: Map<string, RoleMemberList>;
@@ -36,13 +37,12 @@ export class BackstageRoleManager implements RoleManager {
     private readonly rbacDBClient: Knex,
     private readonly config: Config,
     private readonly auth: AuthService,
+    defaultPermissionReader: DefaultPermissionsReader,
   ) {
     this.allRoles = new Map<string, RoleMemberList>();
     const rbacConfig = this.config.getOptionalConfig('permission.rbac');
     this.maxDepth = rbacConfig?.getOptionalNumber('maxDepth');
-    this.defaultRoleRef = rbacConfig?.getOptionalString(
-      'defaultPermissions.defaultRole',
-    );
+    this.defaultRoleRef = defaultPermissionReader.readRole();
     if (this.maxDepth !== undefined && this.maxDepth! < 0) {
       throw new Error(
         'Max Depth for RBAC group hierarchy must be greater than or equal to zero',

@@ -61,7 +61,7 @@ export interface RoleMetadataStorage {
   ): Promise<void>;
   removeRoleMetadata(
     roleEntityRef: string,
-    trx: Knex.Transaction,
+    trx?: Knex.Transaction,
   ): Promise<void>;
   getCachedDefaultRoleMetadata(): RoleMetadataDao | undefined;
   /** Returns the default role from the database (isDefault = true), if any. */
@@ -219,8 +219,9 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
 
   async removeRoleMetadata(
     roleEntityRef: string,
-    trx: Knex.Transaction,
+    externalTrx?: Knex.Transaction,
   ): Promise<void> {
+    const trx = externalTrx ?? (await this.knex.transaction());
     const metadataDao = await this.findRoleMetadata(roleEntityRef, trx);
     if (!metadataDao) {
       throw new NotFoundError(
@@ -231,6 +232,10 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
     await trx<RoleMetadataDao>(ROLE_METADATA_TABLE)
       .delete()
       .whereIn('id', [metadataDao.id!]);
+
+    if (!externalTrx) {
+      await trx.commit();
+    }
   }
 }
 
