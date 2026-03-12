@@ -40,8 +40,10 @@
   "dependencies": {
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
     "@types/express": "*",
     "express": "^4.18.1",
     "express-promise-router": "^4.1.0",

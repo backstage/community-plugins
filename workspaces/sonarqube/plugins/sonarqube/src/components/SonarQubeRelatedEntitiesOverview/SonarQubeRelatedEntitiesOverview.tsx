@@ -20,7 +20,8 @@ import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   sonarQubeApiRef,
-  getProjectInfo,
+  isSonarQubeAvailable,
+  FindingSummary,
 } from '@backstage-community/plugin-sonarqube-react';
 import { SonarQubeTable } from '../index.ts';
 
@@ -47,26 +48,14 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     kind: props.entityKind,
   });
 
-  const findingsRequest: Array<{
-    projectInstance: string | undefined;
-    componentKey: string;
-  }> = [];
+  const sonarEntities = (entities || []).filter(isSonarQubeAvailable);
 
-  const entityNameToProjectKey: { [key: string]: string } = {};
-
-  for (const entity of entities || []) {
-    const { projectKey, projectInstance } = getProjectInfo(entity);
-    if (projectKey) {
-      entityNameToProjectKey[entity.metadata.name] = projectKey;
-      findingsRequest.push({ componentKey: projectKey, projectInstance });
-    }
-  }
   const {
     value: findingResults,
     loading: loadingFindings,
     error: errorFindings,
   } = useAsync(
-    async () => sonarQubeApi.getFindingSummaries(findingsRequest),
+    async () => sonarQubeApi.getSummaries(sonarEntities),
     [sonarQubeApi, entities],
   );
 
@@ -78,15 +67,20 @@ export const SonarQubeRelatedEntitiesOverview = (props: SonarOverviewProps) => {
     return <ResponseErrorPanel error={error} />;
   }
 
+  const findingsMap = new Map<string, FindingSummary | undefined>();
+  sonarEntities.forEach((e, i) => {
+    findingsMap.set(stringifyEntityRef(e), findingResults?.[i]);
+  });
+
   const tableContent: any[] | undefined = entities?.map(entity => {
-    const projectKey = entityNameToProjectKey[entity.metadata.name];
+    const entityRef = stringifyEntityRef(entity);
     return {
-      id: projectKey || entity.metadata.name,
+      id: entityRef,
       resolved: {
-        entityRef: stringifyEntityRef(entity),
+        entityRef: entityRef,
         name: entity.metadata.name,
-        findings: findingResults?.get(projectKey),
-        isSonarQubeAnnotationEnabled: !!projectKey,
+        findings: findingsMap.get(entityRef),
+        isSonarQubeAnnotationEnabled: isSonarQubeAvailable(entity),
       },
     };
   });
