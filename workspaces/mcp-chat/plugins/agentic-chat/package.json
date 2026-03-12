@@ -1,0 +1,93 @@
+{
+  "name": "@backstage-community/plugin-agentic-chat",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "description": "Frontend plugin for Agentic Chat - AI assistant with RAG, tool calling, and safety guardrails",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "agentic-chat",
+    "pluginPackage": "@backstage-community/plugin-agentic-chat",
+    "pluginPackages": [
+      "@backstage-community/plugin-agentic-chat",
+      "@backstage-community/plugin-agentic-chat-backend",
+      "@backstage-community/plugin-agentic-chat-common"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-chat/plugins/agentic-chat"
+  },
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "rag",
+    "agentic",
+    "ai",
+    "chat",
+    "mcp",
+    "responses-api"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-chat/plugins/agentic-chat",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "sideEffects": false,
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-agentic-chat-common": "workspace:^",
+    "@backstage/core-components": "^0.17.3",
+    "@backstage/core-plugin-api": "^1.10.8",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/plugin-permission-react": "^0.4.30",
+    "@backstage/theme": "^0.6.6",
+    "@mui/icons-material": "^5.17.1",
+    "@mui/material": "^5.17.1",
+    "katex": "^0.16.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.0",
+    "react-use": "^17.2.4",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0"
+  },
+  "peerDependencies": {
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0",
+    "@backstage/core-app-api": "^1.17.1",
+    "@backstage/dev-utils": "^1.1.11",
+    "@backstage/test-utils": "^1.7.8",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}

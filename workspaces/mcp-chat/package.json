@@ -8,6 +8,9 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
+    "start:mcp": "backstage-cli repo start @backstage-community/plugin-mcp-chat @backstage-community/plugin-mcp-chat-backend",
+    "start:all": "backstage-cli repo start @backstage-community/plugin-mcp-chat @backstage-community/plugin-mcp-chat-backend @backstage-community/plugin-agentic-chat @backstage-community/plugin-agentic-chat-backend",
+    "start:agentic-chat": "backstage-cli repo start @backstage-community/plugin-agentic-chat @backstage-community/plugin-agentic-chat-backend",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -21,13 +24,13 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
   "workspaces": {
     "packages": [
-      "plugins/*"
+      "plugins/*",
+      "packages/*"
     ]
   },
   "repository": {
@@ -36,10 +39,16 @@
     "directory": "workspaces/mcp-chat"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.33.0",
+    "@babel/core": "^7.28.5",
+    "@babel/plugin-bugfix-firefox-class-in-computed-class-key": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@backstage/cli": "^0.34.5",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.14.0",
     "@changesets/cli": "^2.27.1",
+    "@svgr/rollup": "^8.1.0",
+    "@types/babel__core": "^7",
+    "@types/babel__preset-env": "^7",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
