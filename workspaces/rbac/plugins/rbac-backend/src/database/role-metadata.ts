@@ -26,6 +26,7 @@ import { deepSortedEqual } from '../helper';
 import { RBACFilters } from '../permissions';
 import { matches } from '../helper';
 import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
+import { validateSource } from '../validation/policies-validation';
 
 export const ROLE_METADATA_TABLE = 'role-metadata';
 
@@ -98,7 +99,14 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
       const existing = await this.findRoleMetadata(actualDefRoleRef, trx);
       if (!existing) {
         const newDefaultRole = buildDefaultRoleMetadata(actualDefRoleRef);
-        await trx(ROLE_METADATA_TABLE).insert(newDefaultRole);
+        await this.createRoleMetadata(newDefaultRole, trx);
+      } else {
+        const err = await validateSource('configuration', existing);
+        if (err) {
+          throw new Error(
+            `Role '${actualDefRoleRef}' has incompatible source. Expected 'configuration' source value. Cause: ${err.message}`,
+          );
+        }
       }
     });
     const row = await this.findRoleMetadata(actualDefRoleRef);
