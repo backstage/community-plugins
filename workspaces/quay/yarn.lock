@@ -3037,9 +3037,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend@npm:^3.1.4":
-  version: 3.1.4
-  resolution: "@backstage/plugin-scaffolder-backend@npm:3.1.4"
+"@backstage/plugin-scaffolder-backend@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "@backstage/plugin-scaffolder-backend@npm:3.1.5"
   dependencies:
     "@backstage/backend-openapi-utils": "npm:^0.6.6"
     "@backstage/backend-plugin-api": "npm:^1.7.0"
@@ -3090,7 +3090,7 @@ __metadata:
     zen-observable: "npm:^0.10.0"
     zod: "npm:^3.25.76"
     zod-to-json-schema: "npm:^3.25.1"
-  checksum: 10/ae78779c06db6463d849155536632c00303291e91db70cb9940b9599bde8eb7252387c629c4268083d049e24c37077520790d0ad48f632d41a31dce8b1d1b0e5
+  checksum: 10/0039f87fa9ae38fdcf0baee35cc689a5bf73e082873dda644447a4f348fd1058a4432a7a065d7276cb017fb7b3e7e42078739ddc98f658b935281bb6f127e914
   languageName: node
   linkType: hard
 
@@ -14576,7 +14576,7 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.6"
     "@backstage/plugin-permission-node": "npm:^0.10.10"
     "@backstage/plugin-proxy-backend": "npm:^0.6.10"
-    "@backstage/plugin-scaffolder-backend": "npm:^3.1.4"
+    "@backstage/plugin-scaffolder-backend": "npm:^3.1.5"
     "@backstage/plugin-techdocs-backend": "npm:^2.1.5"
     app: "link:../app"
   languageName: unknown

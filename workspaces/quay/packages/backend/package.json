@@ -38,7 +38,7 @@
     "@backstage/plugin-permission-common": "^0.9.6",
     "@backstage/plugin-permission-node": "^0.10.10",
     "@backstage/plugin-proxy-backend": "^0.6.10",
-    "@backstage/plugin-scaffolder-backend": "^3.1.4",
+    "@backstage/plugin-scaffolder-backend": "^3.1.5",
     "@backstage/plugin-techdocs-backend": "^2.1.5",
     "app": "link:../app"
   },
