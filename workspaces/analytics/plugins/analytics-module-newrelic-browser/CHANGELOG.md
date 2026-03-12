@@ -1,5 +1,23 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.16.1
+
+### Patch Changes
+
+- 5416340: Allow custom endpoint values to support internal proxies
+
+## 0.16.0
+
+### Minor Changes
+
+- 616b66c: Backstage version bump to v1.48.2
+
+## 0.15.0
+
+### Minor Changes
+
+- b41b95d: Backstage version bump to v1.47.2
+
 ## 0.14.0
 
 ### Minor Changes

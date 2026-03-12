@@ -1,17 +1,16 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name                                                     | Location     | Severity |
-| :------------------------------------------------------- | :----------- | :------- |
-| @backstage-community/plugin-multi-source-security-viewer | package.json | error    |
-| react-router                                             | package.json | error    |
+| Name         | Location          | Severity |
+| :----------- | :---------------- | :------- |
+| react-router | package.json:55:6 | error    |
 
 ## Unused devDependencies (4)
 
-| Name                        | Location     | Severity |
-| :-------------------------- | :----------- | :------- |
-| @testing-library/user-event | package.json | error    |
-| @backstage/test-utils       | package.json | error    |
-| @testing-library/dom        | package.json | error    |
-| cross-env                   | package.json | error    |
+| Name                        | Location          | Severity |
+| :-------------------------- | :---------------- | :------- |
+| @testing-library/user-event | package.json:64:6 | error    |
+| @backstage/test-utils       | package.json:59:6 | error    |
+| @testing-library/dom        | package.json:61:6 | error    |
+| cross-env                   | package.json:66:6 | error    |

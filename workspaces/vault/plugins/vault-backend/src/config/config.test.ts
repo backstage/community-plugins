@@ -45,6 +45,7 @@ describe('GetVaultConfig', () => {
       token: { type: 'static', config: { secret: '123' } },
       kvVersion: 2,
       secretEngine: 'secrets',
+      secretSuffix: undefined,
     });
   });
 
@@ -66,6 +67,7 @@ describe('GetVaultConfig', () => {
       token: { type: 'static', config: { secret: '123' } },
       kvVersion: 2,
       secretEngine: 'secrets',
+      secretSuffix: undefined,
     });
   });
 
@@ -89,6 +91,7 @@ describe('GetVaultConfig', () => {
       token: { type: 'static', config: { secret: '123' } },
       kvVersion: 1,
       secretEngine: 'test',
+      secretSuffix: undefined,
     });
   });
 
@@ -118,6 +121,7 @@ describe('GetVaultConfig', () => {
       },
       kvVersion: 2,
       secretEngine: 'secrets',
+      secretSuffix: undefined,
     });
   });
 
@@ -148,6 +152,7 @@ describe('GetVaultConfig', () => {
       },
       kvVersion: 2,
       secretEngine: 'secrets',
+      secretSuffix: undefined,
     });
   });
 });

@@ -15,10 +15,12 @@
  */
 import { expect, Locator, Page, test } from '@playwright/test';
 import { Common } from './utils/tektonHelper';
+import { getTranslations, TektonMessages } from './utils/translations';
 
 test.describe('Tekton plugin', () => {
   let page: Page;
   let common: Common;
+  let translations: TektonMessages;
 
   test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext();
@@ -26,30 +28,43 @@ test.describe('Tekton plugin', () => {
     common = new Common(page);
 
     await common.loginAsGuest();
+    const currentLocale = await page.evaluate(
+      () => globalThis.navigator.language,
+    );
+    translations = getTranslations(currentLocale);
+    await common.switchToLocale(currentLocale);
+
     await expect(
-      page.getByRole('heading', { name: 'Pipeline Runs' }),
+      page.getByRole('heading', { name: translations.pipelineRunList.title }),
     ).toBeVisible();
   });
 
   test('Control elements are shown', async ({ browser }, testInfo) => {
     const clusterSelect = page.locator('.bs-tkn-cluster-selector');
     await expect(
-      clusterSelect.getByText('Cluster', { exact: true }),
+      clusterSelect.getByText(translations.clusterSelector.label, {
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(clusterSelect.getByText('mock-cluster')).toBeVisible();
 
     const statusSelect = page.locator('.bs-tkn-status-selector');
-    await expect(statusSelect.getByText('Status')).toBeVisible();
-    await expect(statusSelect.getByText('All')).toBeVisible();
+    await expect(
+      statusSelect.getByText(translations.statusSelector.label),
+    ).toBeVisible();
+    await expect(
+      statusSelect.getByText(translations.pipelineRunStatus.All),
+    ).toBeVisible();
 
+    const th = translations.pipelineRunList.tableHeaderTitle;
     const columns = [
-      'NAME',
-      'VULNERABILITIES',
-      'STATUS',
-      'TASK STATUS',
-      'STARTED',
-      'DURATION',
-      'ACTIONS',
+      th.name,
+      th.vulnerabilities,
+      th.status,
+      th.taskStatus,
+      th.startTime,
+      th.duration,
+      th.actions,
     ];
     const thead = page.locator('thead');
     for (const col of columns) {
@@ -69,7 +84,9 @@ test.describe('Tekton plugin', () => {
   });
 
   test('Filtering works', async () => {
-    const search = page.getByPlaceholder('Search');
+    const search = page.getByPlaceholder(
+      translations.pipelineRunList.searchBarPlaceholder,
+    );
     const rows = page.getByRole('row').filter({ hasText: 'PLR' });
 
     await search.fill('sbom');
@@ -124,7 +141,7 @@ test.describe('Tekton plugin', () => {
     });
 
     test('Vulnerabilities are shown in the run', async () => {
-      await checkVulnerabilities(row, output.vulnerabilities);
+      await checkVulnerabilities(row, output.vulnerabilities, translations);
     });
 
     test('Output action is available', async () => {
@@ -239,7 +256,7 @@ test.describe('Tekton plugin', () => {
     await expect(row.getByTestId('view-output-icon')).toBeDisabled();
     await showSbom.click();
 
-    const dialog = page.getByTitle('PipelineRun Logs');
+    const dialog = page.getByTitle(translations.pipelineRunLogs.title);
     await expect(dialog.getByText('sbom-task')).toBeVisible();
 
     await common.a11yCheck(testInfo);
@@ -271,7 +288,7 @@ test.describe('Tekton plugin', () => {
     });
 
     test('Vulnerability scan is shown', async () => {
-      await checkVulnerabilities(row, output.vulnerabilities);
+      await checkVulnerabilities(row, output.vulnerabilities, translations);
     });
 
     test('Show sbom action points to quay.io', async () => {
@@ -335,16 +352,26 @@ async function checkVulnerabilities(
     high: number;
     medium: number;
     low: number;
+    unknown?: number;
   },
+  translations: TektonMessages,
 ) {
   const vuln = row.locator('.severity');
+  const severityTitles =
+    translations.pipelineRunList.vulnerabilitySeverityTitle;
   let i = 0;
 
   for (const [key, value] of Object.entries(vulnerabilities)) {
     if (value > 0) {
-      await expect(vuln.nth(i)).toContainText(new RegExp(`${key}\s*${value}`), {
-        ignoreCase: true,
-      });
+      // Unknown translation key is missing in the translations file, so we use the key directly https://issues.redhat.com/browse/RHDHBUGS-2607
+      const keyTranslation =
+        key === 'unknown'
+          ? 'unknown'
+          : severityTitles[key as keyof typeof severityTitles];
+      await expect(vuln.nth(i)).toContainText(
+        new RegExp(`${keyTranslation}\\s*${value}`),
+        { ignoreCase: true },
+      );
       i++;
     }
   }

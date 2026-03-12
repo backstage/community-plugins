@@ -1,4 +1,22 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-regex
+
+## 2.14.0
+
+### Minor Changes
+
+- d589c26: Backstage version bump to v1.48.4
+
+## 2.13.0
+
+### Minor Changes
+
+- 5c059c3: Backstage version bump to v1.47.3
+
+## 2.12.0
+
+### Minor Changes
+
+- 630735e: Backstage version bump to v1.46.2
 
 ## 2.11.0
 

@@ -1,5 +1,18 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.11.2
+
+### Patch Changes
+
+- 499c5d4: Added missing config definition
+- 01d7f68: Updated dependency `@azure/storage-blob` to `12.31.0`.
+
+## 0.11.1
+
+### Patch Changes
+
+- 90a8981: Updated dependency `@azure/storage-blob` to `12.30.0`.
+
 ## 0.11.0
 
 ### Minor Changes

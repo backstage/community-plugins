@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-copilot-backend",
-  "version": "0.17.1",
+  "version": "0.18.2",
   "homepage": "https://backstage.io",
   "license": "Apache-2.0",
   "main": "src/index.ts",
@@ -65,7 +65,7 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@types/node-fetch": "^2.6.11",
-    "@types/supertest": "^2.0.8",
+    "@types/supertest": "^6.0.0",
     "msw": "^1.0.0",
     "supertest": "^7.0.0"
   },

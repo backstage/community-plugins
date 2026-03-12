@@ -15,9 +15,18 @@
  */
 import { ComponentProps, ReactNode } from 'react';
 
+import { Box, Card, CardBody, CardHeader, Text } from '@backstage/ui';
 import { GaugeCard, GaugePropsGetColor } from '@backstage/core-components';
 
-/** @public */
+import { useTheme } from '@material-ui/core';
+
+import { CircularProgress } from '../CircularProgress';
+import styles from './GaugeCard.module.css';
+
+/**
+ * @deprecated Use the new frontend system instead
+ * @public
+ */
 export type GaugeCardProps = Pick<
   ComponentProps<typeof GaugeCard>,
   'size' | 'alignGauge' | 'variant' | 'description' | 'subheader'
@@ -37,33 +46,61 @@ export interface ManageGaugeCardProps {
 
   /**
    * Function which turns a value into a color
+   *
+   * @deprecated Use {@link ManageGaugeCardProps.color | color} instead
    */
-  getColor: GaugePropsGetColor;
+  getColor?: GaugePropsGetColor;
+
+  /**
+   * The color of the progress indicator.
+   */
+  color?: string;
 
   /**
    * Optional gauge card props
+   *
+   * @deprecated Use the new frontend system instead
    */
   gaugeCardProps?: GaugeCardProps;
 }
 
 /**
- * This component is `@backstage/core-component`'s GaugeCard with pre-defined
- * defaults.
+ * This component is an alternative to `@backstage/core-component`'s GaugeCard
+ * with pre-defined defaults, and using BUI instead of MUI.
  *
  * @public
  */
 export function ManageGaugeCard(props: ManageGaugeCardProps) {
-  const { title, progress, getColor, gaugeCardProps } = props;
+  const { title, progress } = props;
+
+  const { palette } = useTheme();
+
+  const color = (() => {
+    if (props.color) {
+      return props.color;
+    } else if (props.getColor) {
+      return props.getColor({ value: progress * 100, max: 100, palette });
+    }
+    return 'primary';
+  })();
 
   return (
-    <GaugeCard
-      size="small"
-      alignGauge="bottom"
-      variant="fullHeight"
-      {...gaugeCardProps}
-      title={title as string}
-      progress={progress}
-      getColor={getColor}
-    />
+    <Card className={styles.card}>
+      <CardHeader>
+        <Text variant="body-medium" weight="bold">
+          {title}
+        </Text>
+      </CardHeader>
+      <CardBody className={styles.cardBody}>
+        <Box className={styles.cardContent}>
+          <CircularProgress
+            className={styles.cardContent}
+            progress={progress}
+            color={color}
+            size={100}
+          />
+        </Box>
+      </CardBody>
+    </Card>
   );
 }

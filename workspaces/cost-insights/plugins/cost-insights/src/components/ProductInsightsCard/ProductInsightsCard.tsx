@@ -24,7 +24,7 @@ import {
 import pluralize from 'pluralize';
 import Typography from '@material-ui/core/Typography';
 import { default as Alert } from '@material-ui/lab/Alert';
-import { PeriodSelect } from '../PeriodSelect';
+import { DateRangePicker } from '../PeriodSelect';
 import { ProductInsightsChart } from './ProductInsightsChart';
 import { useProductInsightsCardStyles as useStyles } from '../../utils/styles';
 import { DefaultLoadingAction } from '../../utils/loading';
@@ -51,7 +51,11 @@ export type ProductInsightsCardProps = {
     entity: Maybe<Entity>;
     duration: Duration;
   };
-  onSelectAsync: (product: Product, duration: Duration) => Promise<Entity>;
+  onSelectAsync: (
+    product: Product,
+    duration: Duration,
+    customDateRange?: { start: string; end: string },
+  ) => Promise<Entity>;
 };
 
 const mapLoadingToProps: MapLoadingToProps<LoadingProps> =
@@ -71,6 +75,9 @@ export const ProductInsightsCard = ({
   const lastCompleteBillingDate = useLastCompleteBillingDate();
   const [entity, setEntity] = useState<Maybe<Entity>>(initialState.entity);
   const [duration, setDuration] = useState<Duration>(initialState.duration);
+  const [customDateRange, setCustomDateRange] = useState<
+    { start: string; end: string } | undefined
+  >(undefined);
 
   /* eslint-disable react-hooks/exhaustive-deps */
   const dispatchLoadingProduct = useCallback(dispatchLoading, []);
@@ -80,7 +87,7 @@ export const ProductInsightsCard = ({
     async function handleOnSelectAsync() {
       dispatchLoadingProduct(true);
       try {
-        const e = await onSelectAsync(product, duration);
+        const e = await onSelectAsync(product, duration, customDateRange);
         setEntity(e);
       } catch (e) {
         setEntity(null);
@@ -95,7 +102,13 @@ export const ProductInsightsCard = ({
     } else {
       mountedRef.current = true;
     }
-  }, [product, duration, onSelectAsync, dispatchLoadingProduct]);
+  }, [
+    product,
+    duration,
+    customDateRange,
+    onSelectAsync,
+    dispatchLoadingProduct,
+  ]);
 
   // Only a single entities Record for the root product entity is supported
   const entityKey = findAnyKey(entity?.entities);
@@ -105,9 +118,23 @@ export const ProductInsightsCard = ({
     entityKey && entities.length
       ? `${pluralize(entityKey, entities.length, true)}, sorted by cost`
       : null;
+  const handleDurationSelect = (
+    newDuration: Duration,
+    newCustomDateRange?: { start: string; end: string },
+  ) => {
+    setDuration(newDuration);
+    setCustomDateRange(newCustomDateRange);
+  };
+
   const headerProps = {
     classes: classes,
-    action: <PeriodSelect duration={duration} onSelect={setDuration} />,
+    action: (
+      <DateRangePicker
+        duration={duration}
+        onSelect={handleDurationSelect}
+        customDateRange={customDateRange}
+      />
+    ),
   };
 
   if (error || !entity) {
@@ -135,6 +162,7 @@ export const ProductInsightsCard = ({
           entity={entity}
           duration={duration}
           billingDate={lastCompleteBillingDate}
+          customDateRange={customDateRange}
         />
       ) : (
         <Typography>

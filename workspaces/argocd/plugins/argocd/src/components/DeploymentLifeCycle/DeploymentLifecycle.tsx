@@ -41,6 +41,11 @@ import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 import { DrawerProvider } from './DrawerContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
+export interface DeploymentLifecycleProps {
+  showInstance?: boolean;
+  showServer?: boolean;
+}
+
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
     lifecycle: {
@@ -59,7 +64,10 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
   }),
 );
 
-const DeploymentLifecycle = () => {
+const DeploymentLifecycle = ({
+  showInstance = true,
+  showServer = true,
+}: DeploymentLifecycleProps) => {
   const { t } = useTranslation();
   const { entity } = useEntity();
   const classes = useDrawerStyles();
@@ -82,7 +90,7 @@ const DeploymentLifecycle = () => {
   const hasArgocdViewAccess = useArgocdViewPermission();
 
   const [open, setOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState<string>();
+  const [activeItem, setActiveItem] = useState<string | undefined>();
   const [, setRevisions] = useState<RevisionInfo[]>();
   const revisionCache = useRef<RevisionInfo[]>([]);
   const keepDuplicateRevisions = configApi.getOptionalBoolean(
@@ -105,6 +113,7 @@ const DeploymentLifecycle = () => {
         .getRevisionDetailsList({
           apps: apps,
           revisionIDs: uniqRevisions,
+          appNamespace: appNamespace,
         })
         .then(data => {
           // By default, the data returned can contain copies of the same revision, depending on
@@ -122,6 +131,7 @@ const DeploymentLifecycle = () => {
   }, [
     api,
     apps,
+    appNamespace,
     entity,
     uniqRevisions,
     keepDuplicateRevisions,
@@ -130,7 +140,7 @@ const DeploymentLifecycle = () => {
 
   const toggleDrawer = () => setOpen(e => !e);
 
-  const activeApp = apps.find(a => a.metadata.name === activeItem);
+  const activeApp = apps.find(a => a.metadata.uid === activeItem);
 
   if (!hasArgocdViewAccess) {
     return <PermissionAlert />;
@@ -166,9 +176,11 @@ const DeploymentLifecycle = () => {
             app={app}
             key={app.metadata.uid ?? idx}
             revisions={revisionCache.current}
+            showInstance={showInstance}
+            showServer={showServer}
             onclick={() => {
               toggleDrawer();
-              setActiveItem(app.metadata.name);
+              setActiveItem(app.metadata.uid);
             }}
           />
         ))}
@@ -181,6 +193,8 @@ const DeploymentLifecycle = () => {
           <DeploymentLifecycleDrawer
             isOpen={open}
             onClose={() => setOpen(false)}
+            showInstance={showInstance}
+            showServer={showServer}
           />
         </ArgoResourcesProvider>
       </DrawerProvider>

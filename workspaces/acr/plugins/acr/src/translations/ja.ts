@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { acrTranslationRef } from './ref';
 
+/**
+ * Japanese translation for plugin.acr.
+ * @public
+ */
 const acrTranslationJa = createTranslationMessages({
   ref: acrTranslationRef,
   messages: {
-    'page.title': 'Azure Container Registry リポジトリ: {{image}}',
+    'page.title': 'Azure Container Registry リポジトリー: {{image}}',
     'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
     'table.columns.tag': 'タグ',
-    'table.columns.created': '作成日時',
+    'table.columns.created': '作成済み',
     'table.columns.lastModified': '最終更新',
     'table.columns.manifest': 'マニフェスト',
   },

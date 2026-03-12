@@ -190,7 +190,7 @@ export const AzureDevOpsWikiArticleSearchResultListItem: (
   props: WikiArticleSearchResultListItemProps,
 ) => React.JSX.Element | null;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const AzurePullRequestsIcon: (props: SvgIconProps) => JSX_2.Element;
 
 // @public (undocumented)

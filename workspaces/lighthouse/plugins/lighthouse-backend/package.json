@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-lighthouse-backend",
-  "version": "0.18.0",
+  "version": "0.20.0",
   "description": "Backend functionalities for lighthouse",
   "backstage": {
     "role": "backend-plugin",
@@ -52,8 +52,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
-    "@backstage/types": "backstage:^",
-    "winston": "^3.2.1"
+    "@backstage/types": "backstage:^"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "backstage:^",

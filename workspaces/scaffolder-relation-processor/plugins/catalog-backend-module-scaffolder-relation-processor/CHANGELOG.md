@@ -1,5 +1,21 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.13.0
+
+### Minor Changes
+
+- 495ad08: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 9e7b674: Updated dependency `@gitbeaker/rest` to `^43.0.0`.
+
+## 2.12.0
+
+### Minor Changes
+
+- b901dce: Backstage version bump to v1.47.3
+
 ## 2.11.0
 
 ### Minor Changes

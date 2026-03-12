@@ -6,8 +6,11 @@
 /// <reference types="react" />
 
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
+import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { IconComponent } from '@backstage/frontend-plugin-api';
+import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -46,8 +49,10 @@ const _default: OverridableFrontendPlugin<
       name: undefined;
       config: {
         path: string | undefined;
+        title: string | undefined;
       };
       configInput: {
+        title?: string | undefined;
         path?: string | undefined;
       };
       output:
@@ -59,13 +64,61 @@ const _default: OverridableFrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ExtensionDataRef<
+            string,
+            'core.title',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            IconElement,
+            'core.icon',
+            {
+              optional: true;
+            }
           >;
-      inputs: {};
+      inputs: {
+        pages: ExtensionInput<
+          | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+          | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+          | ConfigurableExtensionDataRef<
+              RouteRef<AnyRouteRefParams>,
+              'core.routing.ref',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              string,
+              'core.title',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              IconElement,
+              'core.icon',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+            internal: false;
+          }
+        >;
+      };
       params: {
         defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
-        loader: () => Promise<JSX.Element>;
+        title?: string | undefined;
+        icon?: IconElement | undefined;
+        loader?: (() => Promise<JSX_2.Element>) | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        noHeader?: boolean | undefined;
       };
     }>;
   }

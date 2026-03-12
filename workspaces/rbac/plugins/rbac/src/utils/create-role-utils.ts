@@ -40,7 +40,7 @@ import {
   UpdatedConditionsData,
 } from '../types';
 import { capitalizeFirstLetter } from './string-utils';
-import { rbacTranslationRef } from '../translations';
+import { rbacTranslationRef } from '../alpha/translations';
 
 export const uniqBy = (arr: string[], iteratee: (arg: string) => any) => {
   return arr.filter(

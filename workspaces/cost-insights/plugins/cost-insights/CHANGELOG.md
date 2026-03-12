@@ -1,5 +1,28 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.27.0
+
+### Minor Changes
+
+- 8a5c766: The product insights and the cost insights graph support date ranges to add custom time frames
+
+## 0.26.0
+
+### Minor Changes
+
+- 649ffe1: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [649ffe1]
+  - @backstage-community/plugin-cost-insights-common@0.12.0
+
+## 0.25.0
+
+### Minor Changes
+
+- ae08883: The compare to dropdown in the cost insights page will not disappear anymore after selecting "none" instead of a business metric
+
 ## 0.24.1
 
 ### Patch Changes

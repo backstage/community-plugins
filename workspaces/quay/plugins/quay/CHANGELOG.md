@@ -1,4 +1,42 @@
-### Dependencies
+# @backstage-community/plugin-quay
+
+## 1.31.1
+
+### Patch Changes
+
+- da31305: Updated dependency `filesize` to `^11.0.0`.
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+
+## 1.31.0
+
+### Minor Changes
+
+- c9adc64: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [c9adc64]
+  - @backstage-community/plugin-quay-common@1.18.0
+
+## 1.30.1
+
+### Patch Changes
+
+- f4d1bd1: Removed unused dependencies
+- Updated dependencies [f4d1bd1]
+  - @backstage-community/plugin-quay-common@1.17.1
+
+## 1.30.0
+
+### Minor Changes
+
+- c4a2eb9: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 658c2c9: Updated dependency `start-server-and-test` to `2.1.3`.
+- Updated dependencies [c4a2eb9]
+  - @backstage-community/plugin-quay-common@1.17.0
 
 ## 1.29.0
 

@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { topologyTranslationRef } from './ref';
 
+/**
+ * es translation for plugin.topology.
+ * @public
+ */
 const topologyTranslationEs = createTranslationMessages({
   ref: topologyTranslationRef,
   messages: {
-    // CRITICAL: Use flat dot notation, not nested objects
     'page.title': 'Topología',
     'page.subtitle':
-      'Visualización de topología de cargas de trabajo de Kubernetes',
+      'Visualización de la topología de la carga de trabajo de Kubernetes',
     'toolbar.cluster': 'Clúster',
     'toolbar.selectCluster': 'Seleccionar clúster',
     'toolbar.displayOptions': 'Opciones de visualización',
     'toolbar.currentDisplayOptions': 'Opciones de visualización actuales',
+    'controlBar.zoomIn': 'Acercar',
+    'controlBar.zoomOut': 'Alejar',
+    'controlBar.fitToScreen': 'Ajustar a la pantalla',
+    'controlBar.resetView': 'Restablecer vista',
     'emptyState.noResourcesFound': 'No se encontraron recursos',
     'emptyState.noResourcesDescription':
       'No se encontraron recursos de Kubernetes en el clúster seleccionado.',
@@ -40,9 +48,9 @@ const topologyTranslationEs = createTranslationMessages({
     'permissions.goBack': 'Volver',
     'sideBar.details': 'Detalles',
     'sideBar.resources': 'Recursos',
-    'status.running': 'Ejecutándose',
+    'status.running': 'En ejecución',
     'status.pending': 'Pendiente',
-    'status.succeeded': 'Exitoso',
+    'status.succeeded': 'Ejecución exitosa',
     'status.failed': 'Fallido',
     'status.unknown': 'Desconocido',
     'status.terminating': 'Terminando',
@@ -50,7 +58,7 @@ const topologyTranslationEs = createTranslationMessages({
     'status.error': 'Error',
     'status.warning': 'Advertencia',
     'status.ready': 'Listo',
-    'status.notReady': 'No listo',
+    'status.notReady': 'No está listo',
     'status.active': 'Activo',
     'status.inactive': 'Inactivo',
     'status.updating': 'Actualizando',
@@ -61,7 +69,7 @@ const topologyTranslationEs = createTranslationMessages({
     'details.labels': 'Etiquetas',
     'details.annotations': 'Anotaciones',
     'details.createdAt': 'Creado',
-    'details.age': 'Antigüedad',
+    'details.age': 'Edad',
     'details.replicas': 'Réplicas',
     'details.availableReplicas': 'Réplicas disponibles',
     'details.readyReplicas': 'Réplicas listas',
@@ -79,15 +87,26 @@ const topologyTranslationEs = createTranslationMessages({
     'details.cpu': 'CPU',
     'details.memory': 'Memoria',
     'details.storage': 'Almacenamiento',
+    'details.noLabels': 'Sin etiquetas',
+    'details.noAnnotations': 'Sin anotaciones',
+    'details.noOwner': 'Sin propietario',
+    'details.notAvailable': 'No disponible',
+    'details.notConfigured': 'No configurado',
+    'details.updateStrategy': 'Estrategia de actualización',
+    'details.maxUnavailable': 'Máximo no disponible',
+    'details.maxSurge': 'Aumento máximo',
+    'details.progressDeadlineSeconds':
+      'Segundos de la fecha límite de progreso',
+    'details.minReadySeconds': 'Segundos mínimos de preparación',
     'details.desiredCompletions': 'Finalizaciones deseadas',
     'details.parallelism': 'Paralelismo',
     'details.activeDeadlineSeconds': 'Segundos de fecha límite activa',
     'details.currentCount': 'Recuento actual',
     'details.desiredCount': 'Recuento deseado',
-    'details.schedule': 'Horario',
+    'details.schedule': 'Cronograma',
     'details.concurrencyPolicy': 'Política de concurrencia',
     'details.startingDeadlineSeconds': 'Segundos de fecha límite de inicio',
-    'details.lastScheduleTime': 'Última hora de programación',
+    'details.lastScheduleTime': 'Última hora programada',
     'details.maxSurgeDescription': '{{maxSurge}} mayor que {{replicas}} pod',
     'details.maxUnavailableDescription':
       '{{maxUnavailable}} de {{replicas}} pod',
@@ -100,15 +119,15 @@ const topologyTranslationEs = createTranslationMessages({
     'logs.follow': 'Seguir',
     'logs.refresh': 'Actualizar',
     'logs.timestamps': 'Marcas de tiempo',
-    'logs.wrapLines': 'Ajustar líneas',
-    'logs.clearLogs': 'Limpiar registros',
+    'logs.wrapLines': 'Envolver líneas',
+    'logs.clearLogs': 'Borrar registros',
     'logs.logLevel': 'Nivel de registro',
     'logs.search': 'Buscar',
     'logs.noMatchingLogs': 'No se encontraron registros coincidentes',
     'resources.noResourcesFound':
-      'No se encontraron {{resourceType}} para este recurso.',
+      'No se encontró {{resourceType}} para este recurso.',
     'resources.showingLatest':
-      'Mostrando los últimos {{count}} {{resourceType}}',
+      'Se muestran los últimos {{count}} {{resourceType}}',
     'time.seconds': 'segundos',
     'time.minutes': 'minutos',
     'time.hours': 'horas',
@@ -116,7 +135,7 @@ const topologyTranslationEs = createTranslationMessages({
     'events.type': 'Tipo',
     'events.reason': 'Razón',
     'events.message': 'Mensaje',
-    'events.source': 'Origen',
+    'events.source': 'Fuente',
     'events.firstSeen': 'Visto por primera vez',
     'events.lastSeen': 'Visto por última vez',
     'events.count': 'Recuento',
@@ -130,20 +149,20 @@ const topologyTranslationEs = createTranslationMessages({
     'common.location': 'Ubicación',
     'common.viewLogs': 'Ver registros',
     'bootOrder.summary': 'Resumen del orden de arranque',
-    'bootOrder.emptySummary': 'No se configuró orden de arranque',
+    'bootOrder.emptySummary': 'No hay orden de arranque configurado',
     'bootOrder.disk': 'Disco',
     'bootOrder.network': 'Red',
     'bootOrder.cdrom': 'CD-ROM',
-    'vm.status.starting': 'Iniciando',
-    'vm.status.stopping': 'Deteniéndose',
-    'vm.status.stopped': 'Detenido',
-    'vm.status.paused': 'Pausado',
-    'vm.status.migrating': 'Migrando',
-    'vm.status.provisioning': 'Aprovisionando',
-    'vm.status.errorUnschedulable': 'Error no programable',
-    'vm.status.errorImagePull': 'Error al extraer imagen',
-    'vm.status.imageNotReady': 'Imagen no lista',
-    'vm.status.waitingForVolumeBinding': 'Esperando enlace de volumen',
+    'vm.status.starting': 'Iniciada',
+    'vm.status.stopping': 'Detenida',
+    'vm.status.stopped': 'Interrumpida',
+    'vm.status.paused': 'En pausa',
+    'vm.status.migrating': 'En migración',
+    'vm.status.provisioning': 'En aprovisionamiento',
+    'vm.status.errorUnschedulable': 'ErrorUnschedulable',
+    'vm.status.errorImagePull': 'ErrorImagePull',
+    'vm.status.imageNotReady': 'ImageNotReady',
+    'vm.status.waitingForVolumeBinding': 'WaitingForVolumeBinding',
   },
 });
 

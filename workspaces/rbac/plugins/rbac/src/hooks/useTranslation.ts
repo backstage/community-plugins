@@ -17,7 +17,7 @@ import {
   useTranslationRef,
   TranslationFunction,
 } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../translations';
+import { rbacTranslationRef } from '../alpha/translations';
 
 /**
  * @alpha

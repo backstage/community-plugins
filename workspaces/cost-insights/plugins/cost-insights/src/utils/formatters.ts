@@ -127,10 +127,16 @@ const formatRelativePeriod = (
   duration: Duration,
   date: string,
   isEndDate: boolean,
+  customDays?: number,
 ): string => {
+  // For custom durations, we already know the days, so skip validation
+  if (duration === Duration.CUSTOM && customDays !== undefined) {
+    return isEndDate ? `Last ${customDays} Days` : `First ${customDays} Days`;
+  }
+
   const periodStart = isEndDate ? inclusiveStartDateOf(duration, date) : date;
   const periodEnd = isEndDate ? date : inclusiveEndDateOf(duration, date);
-  const days = LuxonDuration.fromISO(duration).days;
+  const days = customDays ?? LuxonDuration.fromISO(duration).days;
   if (![periodStart, periodEnd].includes(date)) {
     throw new Error(`Invalid relative date ${date} for duration ${duration}`);
   }
@@ -141,14 +147,36 @@ export function formatPeriod(
   duration: Duration,
   date: string,
   isEndDate: boolean,
+  customDateRange?: { start: string; end: string },
+  comparisonMode: boolean = false,
 ) {
   switch (duration) {
     case Duration.P3M:
       return quarterOf(
         isEndDate
-          ? inclusiveEndDateOf(duration, date)
-          : inclusiveStartDateOf(duration, date),
+          ? inclusiveEndDateOf(duration, date, customDateRange)
+          : inclusiveStartDateOf(duration, date, customDateRange),
       );
+    case Duration.CUSTOM:
+      // For custom durations in non-comparison mode, display the full date range
+      if (customDateRange && !comparisonMode) {
+        const startDate = DateTime.fromISO(customDateRange.start);
+        const endDate = DateTime.fromISO(customDateRange.end);
+        return `${startDate.toFormat('MMM dd')} - ${endDate.toFormat(
+          'MMM dd, yyyy',
+        )}`;
+      }
+      // For comparison mode, display as "First X Days" vs "Last X Days"
+      if (customDateRange && comparisonMode) {
+        const startDate = DateTime.fromISO(customDateRange.start);
+        const endDate = DateTime.fromISO(customDateRange.end);
+        const totalDays = Math.round(endDate.diff(startDate, 'days').days) + 1;
+        const firstPeriodDays = Math.floor(totalDays / 2);
+        const lastPeriodDays = totalDays - firstPeriodDays;
+        const periodDays = isEndDate ? lastPeriodDays : firstPeriodDays;
+        return formatRelativePeriod(duration, date, isEndDate, periodDays);
+      }
+      return DateTime.fromISO(date).toFormat('MMM dd, yyyy');
     default:
       return formatRelativePeriod(duration, date, isEndDate);
   }

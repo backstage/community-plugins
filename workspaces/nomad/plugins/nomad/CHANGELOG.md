@@ -1,5 +1,17 @@
 # @backstage-community/plugin-nomad
 
+## 0.16.0
+
+### Minor Changes
+
+- bb5a0b9: Backstage version bump to v1.48.2
+
+## 0.15.0
+
+### Minor Changes
+
+- b607186: Backstage version bump to v1.47.2
+
 ## 0.14.0
 
 ### Minor Changes

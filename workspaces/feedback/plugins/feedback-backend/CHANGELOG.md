@@ -1,4 +1,4 @@
-## @janus-idp/backstage-plugin-feedback-backend [1.7.0](https://github.com/janus-idp/backstage-plugins/compare/@janus-idp/backstage-plugin-feedback-backend@1.6.0...@janus-idp/backstage-plugin-feedback-backend@1.7.0) (2024-07-26)
+# @backstage-community/plugin-feedback-backend
 
 ## 2.1.6
 

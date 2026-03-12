@@ -1,8 +1,22 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
-import { makeStyles } from '@mui/styles';
 import { Tag, TagColor, Tooltip } from '../../../components';
 import { dateTimeFormat } from '../../../utils';
 
@@ -15,50 +29,6 @@ type FindingTableIssueTrackingTooltipProps = {
   issueStatus: string;
 };
 
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '8px',
-    lineHeight: '16px',
-  },
-  label: { fontWeight: 700, fontSize: '12px', lineHeight: '16px' },
-  header: {
-    lineHeight: '16px',
-    fontSize: '12px',
-    fontWeight: 400,
-  },
-  innerContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    padding: '8px',
-    color: 'white',
-    borderRadius: '4px',
-    gap: '8px',
-  },
-  smBlock: {
-    display: 'flex',
-    columnGap: '8px',
-    rowGap: '4px',
-  },
-  divider: { border: '1px solid white', opacity: '0.1' },
-  dataGroup: {
-    display: 'flex',
-    gap: '4px',
-    flexDirection: 'column',
-    width: '50%',
-  },
-  linkAction: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    cursor: 'pointer',
-  },
-  issueLink: {
-    textDecoration: 'underline',
-    width: 'auto',
-  },
-}));
-
 export const FindingTableIssueTrackingTooltip = ({
   ticketName,
   creationDate,
@@ -67,24 +37,80 @@ export const FindingTableIssueTrackingTooltip = ({
   issue,
   issueStatus,
 }: FindingTableIssueTrackingTooltipProps) => {
-  const classes = useStyles();
-
   return (
     <Tooltip
       isAlwaysVisible
       tooltipContent={
-        <Box className={classes.container}>
-          <Typography className={classes.label}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '8px',
+            lineHeight: '16px',
+          }}
+        >
+          <Typography
+            sx={{
+              fontWeight: 700,
+              fontSize: '12px',
+              lineHeight: '16px',
+            }}
+          >
             Issue Tracking Status
           </Typography>
-          <Typography className={classes.header}>{`"${issue}"`}</Typography>
-          <div className={classes.innerContainer}>
-            <div className={classes.smBlock}>
-              <p className={classes.dataGroup}>
-                <Typography className={classes.label}>Ticket #</Typography>
-                <Typography className={classes.linkAction}>
+          <Typography
+            sx={{
+              lineHeight: '16px',
+              fontSize: '12px',
+              fontWeight: 400,
+            }}
+          >{`"${issue}"`}</Typography>
+          <div
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              padding: '8px',
+              color: 'white',
+              borderRadius: '4px',
+              gap: '8px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                columnGap: '8px',
+                rowGap: '4px',
+              }}
+            >
+              <p
+                style={{
+                  display: 'flex',
+                  gap: '4px',
+                  flexDirection: 'column',
+                  width: '50%',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    lineHeight: '16px',
+                  }}
+                >
+                  Ticket #
+                </Typography>
+                <Typography
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    cursor: 'pointer',
+                  }}
+                >
                   <a
-                    className={classes.issueLink}
+                    style={{
+                      textDecoration: 'underline',
+                      width: 'auto',
+                    }}
                     target="_blank"
                     rel="noopener noreferrer"
                     href={link}
@@ -99,8 +125,23 @@ export const FindingTableIssueTrackingTooltip = ({
                   </SvgIcon>
                 </Typography>
               </p>
-              <p className={classes.dataGroup}>
-                <Typography className={classes.label}>Status</Typography>
+              <p
+                style={{
+                  display: 'flex',
+                  gap: '4px',
+                  flexDirection: 'column',
+                  width: '50%',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    lineHeight: '16px',
+                  }}
+                >
+                  Status
+                </Typography>
                 <Tag
                   label={issueStatus}
                   color={TagColor.ACTIVE}
@@ -109,16 +150,57 @@ export const FindingTableIssueTrackingTooltip = ({
                 />
               </p>
             </div>
-            <Divider className={classes.divider} />
-            <div className={classes.smBlock}>
-              <p className={classes.dataGroup}>
-                <Typography className={classes.label}>Creation date</Typography>
+            <Divider
+              sx={{
+                border: '1px solid white',
+                opacity: '0.1',
+              }}
+            />
+            <div
+              style={{
+                display: 'flex',
+                columnGap: '8px',
+                rowGap: '4px',
+              }}
+            >
+              <p
+                style={{
+                  display: 'flex',
+                  gap: '4px',
+                  flexDirection: 'column',
+                  width: '50%',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    lineHeight: '16px',
+                  }}
+                >
+                  Creation date
+                </Typography>
                 <Typography variant="caption">
                   {dateTimeFormat(creationDate)}
                 </Typography>
               </p>
-              <p className={classes.dataGroup}>
-                <Typography className={classes.label}>Reporter</Typography>
+              <p
+                style={{
+                  display: 'flex',
+                  gap: '4px',
+                  flexDirection: 'column',
+                  width: '50%',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    lineHeight: '16px',
+                  }}
+                >
+                  Reporter
+                </Typography>
                 <Typography variant="caption">{reporter}</Typography>
               </p>
             </div>

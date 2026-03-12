@@ -15,6 +15,7 @@ attributes:
     - analytics
     - announcements
     - apache-airflow
+    - apiiro
     - apollo-explorer
     - argocd
     - azure-devops
@@ -46,11 +47,7 @@ attributes:
     - gcalendar
     - gcp-projects
     - git-release-manager
-    - github-actions
-    - github-deployments
-    - github-discussions
-    - github-issues
-    - github-pull-requests-board
+    - github
     - gitops-profiles
     - gocd
     - grafana

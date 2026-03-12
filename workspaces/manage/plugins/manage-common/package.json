@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-manage-common",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "license": "Apache-2.0",
   "description": "Common functionalities for the manage plugin",
   "main": "src/index.ts",

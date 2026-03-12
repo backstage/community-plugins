@@ -1,5 +1,36 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.13.0
+
+### Minor Changes
+
+- c9adc64: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [c9adc64]
+  - @backstage-community/plugin-quay-common@1.18.0
+
+## 1.12.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- f4d1bd1: Removed unused dependencies
+- Updated dependencies [f4d1bd1]
+  - @backstage-community/plugin-quay-common@1.17.1
+
+## 1.12.0
+
+### Minor Changes
+
+- c4a2eb9: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [c4a2eb9]
+  - @backstage-community/plugin-quay-common@1.17.0
+
 ## 1.11.0
 
 ### Minor Changes

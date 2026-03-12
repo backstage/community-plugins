@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { nexusRepositoryManagerTranslationRef } from './ref';
 
+/**
+ * de translation for plugin.nexus-repository-manager.
+ * @public
+ */
 const nexusRepositoryManagerTranslationDe = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
-  full: true,
   messages: {
     'table.title': 'Nexus Repository Manager: {{title}}',
-    'table.searchPlaceholder': 'Filtern',
+    'table.searchPlaceholder': 'Filter',
     'table.labelRowsSelect': 'Zeilen',
     'table.columns.version': 'Version',
     'table.columns.artifact': 'Artefakt',
@@ -29,10 +33,10 @@ const nexusRepositoryManagerTranslationDe = createTranslationMessages({
     'table.columns.checksum': 'Prüfsumme',
     'table.columns.modified': 'Geändert',
     'table.columns.size': 'Größe',
-    'table.emptyValue': 'N/V',
-    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt,',
-    'table.emptyContent.linkText': 'erfahren Sie, wie Sie Daten hinzufügen',
-    'entityContent.title': 'Build-Artefakte',
+    'table.emptyValue': 'Nicht zutreffend',
+    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt.',
+    'table.emptyContent.linkText': 'Erfahren Sie, wie man Daten hinzufügt.',
+    'entityContent.title': 'Artefakte erstellen',
   },
 });
 

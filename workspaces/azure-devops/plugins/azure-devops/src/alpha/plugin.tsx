@@ -36,7 +36,7 @@ import {
 } from '@backstage/plugin-search-react/alpha';
 import { azurePullRequestDashboardRouteRef } from '../routes';
 import { isAzureDevOpsAvailable, isAzurePipelinesAvailable } from '../plugin';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import { RiBookShelfLine } from '@remixicon/react';
 
 /** @alpha */
 export const azureDevOpsApi = ApiBlueprint.make({
@@ -128,7 +128,7 @@ export const azureDevOpsWikiArticleSearchResultListItem =
         import('../components/WikiArticleSearchResultListItem').then(
           m => m.WikiArticleSearchResultListItem,
         ),
-      icon: <LibraryBooksIcon />,
+      icon: <RiBookShelfLine />,
     },
   });
 
@@ -138,7 +138,7 @@ const azureDevOpsWikiArticleSearchFilterResultType =
     params: {
       value: 'azure-devops-wiki-article',
       name: 'Azure DevOps Wiki',
-      icon: <LibraryBooksIcon />,
+      icon: <RiBookShelfLine />,
     },
   });
 

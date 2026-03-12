@@ -57,7 +57,7 @@ import { topologyTranslations } from '@backstage-community/plugin-topology/alpha
 const app = createApp({
   apis,
   __experimentalTranslations: {
-    availableLanguages: ['en', 'de', 'fr', 'it', 'es'],
+    availableLanguages: ['en', 'de', 'fr', 'it', 'es', 'ja'],
     resources: [topologyTranslations],
   },
   bindRoutes({ bind }) {

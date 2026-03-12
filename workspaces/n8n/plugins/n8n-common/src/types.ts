@@ -1,0 +1,49 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/** @public */
+export interface N8nWorkflow {
+  id: string;
+  name: string;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+  tags?: Array<{ id: string; name: string }>;
+}
+
+/** @public */
+export interface N8nExecution {
+  id: string;
+  finished: boolean;
+  mode: string;
+  startedAt: string;
+  stoppedAt: string;
+  workflowId: string;
+  status: 'success' | 'error' | 'running' | 'waiting' | 'unknown';
+  workflowName?: string;
+}
+
+/** @public */
+export interface N8nWorkflowListResponse {
+  data: N8nWorkflow[];
+  nextCursor?: string;
+}
+
+/** @public */
+export interface N8nExecutionListResponse {
+  data: N8nExecution[];
+  nextCursor?: string;
+}

@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { nexusRepositoryManagerTranslationRef } from './ref';
 
+/**
+ * fr translation for plugin.nexus-repository-manager.
+ * @public
+ */
 const nexusRepositoryManagerTranslationFr = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
-  full: true,
   messages: {
-    'table.title': 'Nexus Repository Manager : {{title}}',
-    'table.searchPlaceholder': 'Filtrer',
+    'table.title': 'Nexus Repository Manager: {{title}}',
+    'table.searchPlaceholder': 'Filtre',
     'table.labelRowsSelect': 'Lignes',
     'table.columns.version': 'Version',
-    'table.columns.artifact': 'Artefact',
-    'table.columns.repositoryType': 'Type de dépôt',
-    'table.columns.checksum': 'Somme de contrôle',
+    'table.columns.artifact': 'Artifact',
+    'table.columns.repositoryType': 'Type de référentiel',
+    'table.columns.checksum': 'Checksum',
     'table.columns.modified': 'Modifié',
     'table.columns.size': 'Taille',
-    'table.emptyValue': 'N/D',
-    'table.emptyContent.message': "Aucune donnée n'a encore été ajoutée,",
-    'table.emptyContent.linkText': 'apprenez comment ajouter des données',
-    'entityContent.title': 'Artefacts de build',
+    'table.emptyValue': 'N/A',
+    'table.emptyContent.message':
+      'Aucune donnée n’a été ajouté pour l’instant,',
+    'table.emptyContent.linkText': 'apprenez comment ajouter des données.',
+    'entityContent.title': 'Build Artifacts',
   },
 });
 

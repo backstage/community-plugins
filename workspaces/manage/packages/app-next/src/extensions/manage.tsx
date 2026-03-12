@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+import { PropsWithChildren, useEffect, useState } from 'react';
+
 import { Entity } from '@backstage/catalog-model';
-import { HeaderLabel } from '@backstage/core-components';
+import { Button, Skeleton, Tooltip, TooltipTrigger } from '@backstage/ui';
+
 import {
   ManageEntityCardWidgetBlueprint,
   ManageEntityColumnBlueprint,
+  ManageEntityContentWidgetBlueprint,
   ManageHeaderLabelBlueprint,
   ManageSettingsBlueprint,
   ManageTabBlueprint,
@@ -27,13 +31,6 @@ import {
 import { ManageTechInsightsBlueprint } from '@backstage-community/plugin-manage-module-tech-insights';
 
 import { useTheme } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
 
 function Foo({
   name,
@@ -77,7 +74,7 @@ const testTab1 = ManageTabBlueprint.make({
     defineParams({
       loader: async () => <Foo name="1" />,
       path: 'my-tab-1',
-      title: 'My tab 1',
+      title: 'My custom tab',
       condition: ({ owners }) =>
         owners.ownerEntityRefs.some(x => x.includes('guest')),
     }),
@@ -90,7 +87,7 @@ const testTab2 = ManageTabBlueprint.make({
     defineParams({
       loader: async () => <Foo name="2 with delayed loading" fullHeight />,
       path: 'my-tab-2',
-      title: 'My tab 2',
+      title: 'My second custom tab',
       fullHeight: { resizeChild: true },
       condition: async ({ owners }) =>
         new Promise(res => setTimeout(res, 3000)).then(() =>
@@ -98,6 +95,21 @@ const testTab2 = ManageTabBlueprint.make({
         ),
     }),
 });
+
+function DelayedLoading(props: PropsWithChildren<{ delay: number }>) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), props.delay);
+    return () => clearTimeout(timer);
+  }, [props.delay]);
+
+  if (!loaded) {
+    return <Skeleton width="100%" height={18} />;
+  }
+
+  return <>{props.children}</>;
+}
 
 // Create a set of one or multiple columns, configurable per entity kind
 const testColumn1 = ManageEntityColumnBlueprint.make({
@@ -124,11 +136,47 @@ const testColumn1 = ManageEntityColumnBlueprint.make({
           {
             id: 'the-title3',
             title: 'The title 2',
-            render: () => <div>Second column</div>,
+            render: () => (
+              <DelayedLoading delay={Math.random() * 3000}>
+                <div>Second column with delayed loading</div>
+              </DelayedLoading>
+            ),
           },
         ],
     }),
 });
+
+const cols: (number | string)[] = [
+  // Add values to see the result as columns
+  /* 1, 2, 3 */
+];
+const testColumns = cols.map(col =>
+  ManageEntityColumnBlueprint.make({
+    name: `foo-column-${col}`,
+    params: defineParams =>
+      defineParams({
+        attachTo: ['component', '$entities'],
+        loaderMulti: async () => _entities =>
+          [
+            {
+              id: `multicol-${col}-a`,
+              title: `The title ${col} a`,
+              render: () => <div>Column {col} a</div>,
+            },
+            {
+              id: `multicol-${col}-b`,
+              title: `The title ${col} b`,
+              render: () => <div>Column {col} b</div>,
+            },
+            {
+              id: `multicol-${col}-c`,
+              title: `The title ${col} c`,
+              render: () => <div>Column {col} c</div>,
+            },
+          ],
+      }),
+  }),
+);
 
 // Create a card widget
 const testWidget1 = ManageEntityCardWidgetBlueprint.make({
@@ -136,12 +184,11 @@ const testWidget1 = ManageEntityCardWidgetBlueprint.make({
   params: defineParams =>
     defineParams({
       attachTo: ['component', '$entities'],
-      loader: async () => (
-        <Card style={{ height: '100%', maxWidth: 200 }}>
-          <CardHeader title="Some widget" />
-          <CardContent>Example widget for the Manage page</CardContent>
-        </Card>
-      ),
+      card: async () => ({
+        title: 'Some widget',
+        subtitle: 'This is a subtitle',
+        content: <div>Example widget for the Manage page</div>,
+      }),
     }),
 });
 
@@ -151,11 +198,24 @@ const testWidget2 = ManageEntityCardWidgetBlueprint.make({
   params: defineParams =>
     defineParams({
       attachTo: ['$all', '$starred', '$entities'],
-      loader: async () => (
-        <Card style={{ height: '100%', maxWidth: 200 }}>
-          <CardContent>Another card widget</CardContent>
-        </Card>
-      ),
+      card: async () => ({
+        content: 'Another card widget',
+      }),
+    }),
+});
+
+// Create a content widgets
+const testWidget3 = ManageEntityContentWidgetBlueprint.make({
+  name: 'foo-widget3',
+  params: defineParams =>
+    defineParams({
+      attachTo: ['$starred'],
+      accordion: {
+        accordionTitle: () => `Content widget for starred entities`,
+        key: 'starred-entities-widget',
+        show: true,
+      },
+      loader: async () => <div>Content goes here</div>,
     }),
 });
 
@@ -165,21 +225,10 @@ const label = ManageHeaderLabelBlueprint.make({
   params: defineParams =>
     defineParams({
       loader: async () => (
-        <HeaderLabel
-          label="Example toggle"
-          value={
-            <FormGroup row>
-              <FormControlLabel
-                control={<Switch name="manage-page-combined" color="primary" />}
-                label={
-                  <Typography sx={{ userSelect: 'none' }}>
-                    This does nothing
-                  </Typography>
-                }
-              />
-            </FormGroup>
-          }
-        />
+        <TooltipTrigger>
+          <Tooltip>Custom header action example</Tooltip>
+          <Button variant="tertiary">This does nothing</Button>
+        </TooltipTrigger>
       ),
     }),
 });
@@ -219,8 +268,10 @@ export default [
   testTab1,
   testTab2,
   testColumn1,
+  ...testColumns,
   testWidget1,
   testWidget2,
+  testWidget3,
   label,
   setting,
   techInsights,

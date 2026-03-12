@@ -1,5 +1,62 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.14.0
+
+### Minor Changes
+
+- d9a66c5: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 39da154: Updated dependency `@backstage-community/plugin-github-actions` to `^0.21.0`.
+- f38f7ba: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.28.0`.
+- 73fd985: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.20.0`.
+- Updated dependencies [d9a66c5]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.12.0
+
+## 0.13.1
+
+### Patch Changes
+
+- 4ff4586: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.26.0`.
+
+## 0.13.0
+
+### Minor Changes
+
+- 0e8efcd: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 30425e7: Updated dependency `@backstage-community/plugin-jenkins` to `^0.28.0`.
+- 7c6e7b4: Updated dependency `@backstage-community/plugin-github-actions` to `^0.20.0`.
+- Updated dependencies [0e8efcd]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.11.0
+
+## 0.12.2
+
+### Patch Changes
+
+- 4b2575b: Updated dependency `@backstage-community/plugin-azure-devops-common` to `^0.19.0`.
+
+## 0.12.1
+
+### Patch Changes
+
+- fcd0d52: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.24.0`.
+- 202c077: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.25.0`.
+
+## 0.12.0
+
+### Minor Changes
+
+- 3338247: Create the Multi Source Security Viewer backend plugin. This will enhance the RBAC UX by allowing users to configure the MSSV permissions in the RBAC plugin UI.
+
+### Patch Changes
+
+- Updated dependencies [3338247]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.10.0
+
 ## 0.11.0
 
 ### Minor Changes

@@ -1,4 +1,26 @@
-### Dependencies
+# @backstage-community/plugin-catalog-backend-module-keycloak
+
+## 3.17.2
+
+### Patch Changes
+
+- 5c9737a: Updated dependency `@keycloak/keycloak-admin-client` to `26.5.4`.
+
+## 3.17.1
+
+### Patch Changes
+
+- 26fee66: Removed unused "pg-format" dependency
+
+## 3.17.0
+
+### Minor Changes
+
+- 4716bd5: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- fc2a6fc: Updated dependency `@types/lodash` to `4.17.23`.
 
 ## 3.16.0
 

@@ -15,6 +15,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
+- 📜 **Conversation History**: Automatic saving, starring, search, and management of chat sessions
 
 ## Supported AI Providers
 
@@ -301,6 +302,12 @@ mcpChat:
       description: 'Query the Backstage software catalog'
       prompt: 'Describe the "example-app" microservice in our Backstage catalog'
       category: Catalog
+
+  # Conversation history settings (optional)
+  conversationHistory:
+    displayLimit: 20 # Number of conversations shown in UI (default: 10)
+    autoSummarize: true # Auto-generate titles using LLM (default: true)
+    summarizeTimeout: 3000 # Title generation timeout in ms (default: 3000)
 ```
 
 ### System Prompt Configuration
@@ -335,6 +342,23 @@ systemPrompt: 'You are a security-focused DevOps assistant. Always consider secu
 - The system prompt affects all AI interactions in the plugin
 
 For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
+
+### Conversation History Configuration
+
+The plugin automatically saves chat conversations for authenticated users. Configuration options:
+
+| Option             | Default | Description                                                            |
+| ------------------ | ------- | ---------------------------------------------------------------------- |
+| `displayLimit`     | 10      | Number of recent conversations displayed in the UI                     |
+| `autoSummarize`    | true    | Whether to generate AI-powered titles for conversations                |
+| `summarizeTimeout` | 3000    | Timeout (ms) for title generation before falling back to first message |
+
+**Notes:**
+
+- Conversations are stored in a `mcp_chat_conversations` database table
+- Guest users (`user:development/guest`) do not have conversations saved
+- Starred conversations appear at the top of the history list
+- Search filters conversations by title on the client side
 
 ### Environment Variables
 
@@ -461,12 +485,17 @@ Use these endpoints for debugging:
 
 ### Backend Endpoints
 
-| Endpoint                        | Method | Description                           |
-| ------------------------------- | ------ | ------------------------------------- |
-| `/api/mcp-chat/chat`            | POST   | Send chat messages                    |
-| `/api/mcp-chat/provider/status` | GET    | Get status of connected AI provider   |
-| `/api/mcp-chat/mcp/status`      | GET    | Get status of connected MCP servers   |
-| `/api/mcp-chat/tools`           | GET    | List available MCP tools from servers |
+| Endpoint                                | Method | Description                           |
+| --------------------------------------- | ------ | ------------------------------------- |
+| `/api/mcp-chat/chat`                    | POST   | Send chat messages                    |
+| `/api/mcp-chat/provider/status`         | GET    | Get status of connected AI provider   |
+| `/api/mcp-chat/mcp/status`              | GET    | Get status of connected MCP servers   |
+| `/api/mcp-chat/tools`                   | GET    | List available MCP tools from servers |
+| `/api/mcp-chat/conversations`           | GET    | List user's conversation history      |
+| `/api/mcp-chat/conversations/:id`       | GET    | Get a specific conversation           |
+| `/api/mcp-chat/conversations/:id`       | DELETE | Delete a conversation                 |
+| `/api/mcp-chat/conversations/:id/star`  | PATCH  | Toggle conversation star status       |
+| `/api/mcp-chat/conversations/:id/title` | PATCH  | Update conversation title             |
 
 ## Using as a Library
 
@@ -500,8 +529,8 @@ const result = await mcpService.processQuery([
 | Category      | Exports                                                                                                                                                |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Providers** | `LLMProvider`, `ProviderFactory`, `OpenAIProvider`, `ClaudeProvider`, `GeminiProvider`, `OllamaProvider`, `LiteLLMProvider`, `OpenAIResponsesProvider` |
-| **Services**  | `MCPClientService`, `MCPClientServiceImpl`                                                                                                             |
-| **Types**     | `ChatMessage`, `ChatResponse`, `ProviderConfig`, `ServerConfig`, `Tool`, `ToolCall`, and more                                                          |
+| **Services**  | `MCPClientService`, `MCPClientServiceImpl`, `ChatConversationStore`, `SummarizationService`                                                            |
+| **Types**     | `ChatMessage`, `ChatResponse`, `ConversationRecord`, `ProviderConfig`, `Tool`, `ToolCall`, and more                                                    |
 | **Utilities** | `validateConfig`, `validateMessages`, `loadServerConfigs`, `executeToolCall`                                                                           |
 | **Router**    | `createRouter` - reuse the standard API endpoints                                                                                                      |
 

@@ -48,15 +48,15 @@ export function getTranslations(locale: string): AcrMessages {
     case 'en':
       return acrMessages;
     case 'fr':
-      return transform(acrTranslationFr.messages as unknown as FlatMessages);
+      return transform(acrTranslationFr.messages);
     case 'de':
-      return transform(acrTranslationDe.messages as unknown as FlatMessages);
+      return transform(acrTranslationDe.messages);
     case 'es':
-      return transform(acrTranslationEs.messages as unknown as FlatMessages);
+      return transform(acrTranslationEs.messages);
     case 'it':
-      return transform(acrTranslationIt.messages as unknown as FlatMessages);
+      return transform(acrTranslationIt.messages);
     case 'ja':
-      return transform(acrTranslationJa.messages as unknown as FlatMessages);
+      return transform(acrTranslationJa.messages);
     default:
       return acrMessages;
   }

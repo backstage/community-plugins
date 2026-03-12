@@ -9,6 +9,7 @@ import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { AdrFilePathFilterFn } from '@backstage-community/plugin-adr-common';
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { Context } from 'react';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { isAdrAvailable } from '@backstage-community/plugin-adr-common';
@@ -109,7 +110,18 @@ export type AdrSearchResultListItemProps = {
 export const EntityAdrContent: (props: {
   contentDecorators?: AdrContentDecorator[] | undefined;
   filePathFilterFn?: AdrFilePathFilterFn | undefined;
+  statusComponent?: ReactNode;
 }) => JSX_2.Element;
+
+// @public
+export const EntityAdrListItemContext: Context<
+  EntityAdrListItemContextType | undefined
+>;
+
+// @public
+export type EntityAdrListItemContextType = {
+  adr: AdrFileInfo;
+};
 
 export { isAdrAvailable };
 ```

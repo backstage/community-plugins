@@ -1,4 +1,53 @@
-### Dependencies
+# @backstage-community/plugin-rbac-backend
+
+## 7.8.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+  - @backstage-community/plugin-rbac-node@1.18.0
+
+## 7.7.2
+
+### Patch Changes
+
+- 8c7bddb: Added NFS support
+- af998b7: Updated dependency `supertest` to `7.2.2`.
+
+## 7.7.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+- 9c7ae87: Fix - stop error on upgrade v1.47.x - allow all plugins in the arry to show
+
+## 7.7.0
+
+### Minor Changes
+
+- e6dbf70: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- e6dbf70: updated the permissionFactory to use the `FetchUrlReader.fromConfig`
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+- Updated dependencies [e6dbf70]
+  - @backstage-community/plugin-rbac-common@1.23.0
+  - @backstage-community/plugin-rbac-node@1.17.0
+
+## 7.6.2
+
+### Patch Changes
+
+- 9a07184: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issue when @backstage/backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
 
 ## 7.6.1
 
@@ -21,6 +70,14 @@
   - @backstage-community/plugin-rbac-common@1.22.0
   - @backstage-community/plugin-rbac-node@1.16.0
 
+## 7.5.1
+
+### Patch Changes
+
+- 0743ffa: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issues when @backstage backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
+
 ## 7.5.0
 
 ### Minor Changes
@@ -32,6 +89,14 @@
 - Updated dependencies [2d1f63f]
   - @backstage-community/plugin-rbac-common@1.21.0
   - @backstage-community/plugin-rbac-node@1.15.0
+
+## 7.4.3
+
+### Patch Changes
+
+- 05801c1: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issues when @backstage backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
 
 ## 7.4.2
 

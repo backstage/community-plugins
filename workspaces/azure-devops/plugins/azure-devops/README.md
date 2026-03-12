@@ -2,6 +2,9 @@
 
 Website: [https://dev.azure.com/](https://dev.azure.com/)
 
+> [!Note]
+> Backstage UI (BUI) is now required for the Azure DevOps plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 ## Features
 
 ### Azure Pipelines
@@ -70,7 +73,7 @@ dev.azure.com/project-repo: <my-project>/<my-repo>
 dev.azure.com/build-definition: <build-definition-name>
 ```
 
-Then to display the `README` file that belongs to each entity you would do this:
+Then to display the `README` file that belongs to each entity you would add below annotation in addition to the [`project-repo`](#entity-annotation) annotation:
 
 ```yaml
 dev.azure.com/readme-path: /<path-to>/<my-readme-file>.md

@@ -50,6 +50,7 @@ export type ChartsProps = {
   team?: string;
   metrics: Metric[];
   metricsByTeam: Metric[];
+  showOverall?: boolean;
 };
 
 export type EngagementChartsProps = {
@@ -58,6 +59,7 @@ export type EngagementChartsProps = {
   metricsByTeam: EngagementMetrics[];
   seats: SeatAnalysis[];
   seatsByTeam: SeatAnalysis[];
+  showOverall?: boolean;
 };
 
 export type FilterProps = {

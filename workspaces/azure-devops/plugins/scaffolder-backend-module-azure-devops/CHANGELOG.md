@@ -1,5 +1,41 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.22.1
+
+### Patch Changes
+
+- a5203e4: Backstage version bump to v1.48.4
+
+## 0.22.0
+
+### Minor Changes
+
+- 00555dc: Backstage version bump to v1.48.2
+
+## 0.21.0
+
+### Minor Changes
+
+- 20faa44: **BREAKING** Fixed bug in `createAzureDevopsRunPipelineAction` where `pipelineRun.result` returned an integer instead of the corresponding string
+
+## 0.20.1
+
+### Patch Changes
+
+- 09a0a9b: Add support for alternative merge strategies, when using azure:pr:create
+
+## 0.20.0
+
+### Minor Changes
+
+- 5f512a6: Backstage version bump to v1.47.2
+
+## 0.19.1
+
+### Patch Changes
+
+- 7c297d4: Updated dependency `azure-devops-node-api` to `^15.0.0`.
+
 ## 0.19.0
 
 ### Minor Changes

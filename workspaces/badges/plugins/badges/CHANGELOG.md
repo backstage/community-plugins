@@ -1,5 +1,23 @@
 # @backstage-community/plugin-badges
 
+## 0.18.0
+
+### Minor Changes
+
+- 0d67d72: Backstage version bump to v1.48.2
+
+## 0.17.0
+
+### Minor Changes
+
+- 5914b94: Backstage version bump to v1.47.2
+
+## 0.16.1
+
+### Patch Changes
+
+- 810d09d: Remove unused dependencies
+
 ## 0.16.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-lighthouse",
-  "version": "0.17.0",
+  "version": "0.19.0",
   "description": "A Backstage plugin that integrates towards Lighthouse",
   "backstage": {
     "role": "frontend-plugin",
@@ -72,11 +72,10 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
-    "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",

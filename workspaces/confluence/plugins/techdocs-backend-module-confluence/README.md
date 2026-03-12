@@ -1,0 +1,228 @@
+# TechDocs Confluence Backend Module
+
+This plugin provides a TechDocs preparer that fetches documentation from Confluence pages and converts them to Markdown for rendering in Backstage TechDocs.
+
+## Features
+
+- **Automatic HTML to Markdown conversion** - Converts Confluence page content to MkDocs-compatible Markdown
+- **Page tree support** - Recursively fetches child pages to build a complete documentation hierarchy
+- **Attachment handling** - Downloads and embeds images and draw.io diagrams
+- **Multiple URL formats** - Supports Confluence Cloud and Server/Data Center URL patterns
+- **Multiple Confluence instances** - Connect to multiple Confluence instances and automatically route URLs to the correct one
+- **Hybrid preparer** - Transparently handles both Confluence URLs and standard TechDocs URLs
+
+## Installation
+
+Add the module package as a dependency:
+
+```bash
+# From your Backstage root directory
+yarn --cwd packages/backend add @backstage-community/plugin-techdocs-backend-module-confluence
+```
+
+### New Backend System
+
+This backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/). In your `packages/backend/src/index.ts`, add the module to your backend instance:
+
+```tsx
+import { createBackend } from '@backstage/backend-defaults';
+
+const backend = createBackend();
+backend.add(import('@backstage/plugin-techdocs-backend'));
+backend.add(
+  import('@backstage-community/plugin-techdocs-backend-module-confluence'),
+);
+backend.start();
+```
+
+## Configuration
+
+The module uses the shared `confluence` configuration section. Add the following to your `app-config.yaml`:
+
+```yaml
+confluence:
+  baseUrl: 'https://your-company.atlassian.net/wiki'
+  auth:
+    type: 'basic'
+    token: '${CONFLUENCE_TOKEN}'
+    email: 'your-email@company.org'
+```
+
+### Base URL
+
+The `baseUrl` for Confluence Cloud should include the product name which is `wiki` by default. An example `baseUrl` for Confluence Cloud would look like this: `https://example.atlassian.net/wiki`
+
+If you are using a self-hosted Confluence instance, your `baseUrl` would look something like this: `https://confluence.example.com`
+
+### Auth Methods
+
+The module supports three authentication methods: `basic`, `bearer`, and `userpass`.
+
+#### Basic (Recommended for Confluence Cloud)
+
+Confluence Cloud requires Basic authentication using your email address and an API token. API tokens for Confluence Cloud are unscoped (no specific permissions need to be selected when creating the token).
+
+```yaml
+confluence:
+  baseUrl: 'https://your-company.atlassian.net/wiki'
+  auth:
+    type: 'basic'
+    token: '${CONFLUENCE_TOKEN}'
+    email: 'example@company.org'
+```
+
+You can create an API token for Confluence Cloud at [Atlassian Account API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens).
+
+#### Bearer (For Confluence Server/Data Center)
+
+Confluence Server and Data Center support Bearer authentication using a Personal Access Token (PAT). The PAT should have `Read` permissions.
+
+```yaml
+confluence:
+  baseUrl: 'https://confluence.example.com'
+  auth:
+    type: 'bearer'
+    token: '${CONFLUENCE_TOKEN}'
+```
+
+You can create a Personal Access Token in your Confluence Server/Data Center user settings.
+
+#### Userpass (Username + Password)
+
+For Confluence Server/Data Center, you can also use username and password authentication:
+
+```yaml
+confluence:
+  baseUrl: 'https://confluence.example.com'
+  auth:
+    type: 'userpass'
+    username: '${CONFLUENCE_USERNAME}'
+    password: '${CONFLUENCE_PASSWORD}'
+```
+
+### Page Tree Options
+
+You can customize how the module fetches hierarchical page structures:
+
+```yaml
+confluence:
+  baseUrl: 'https://your-company.atlassian.net/wiki'
+  auth:
+    type: 'basic'
+    token: '${CONFLUENCE_TOKEN}'
+    email: 'your-email@company.org'
+  pageTree:
+    # Enable parallel fetching of child pages (default: true)
+    # Set to false if your Confluence API has rate limiting issues
+    parallel: true
+    # Maximum depth to traverse (default: 0 = unlimited)
+    # Useful for limiting very deep page hierarchies
+    maxDepth: 5
+```
+
+### Multiple Confluence Instances
+
+If your organization uses multiple Confluence instances (e.g., different teams or acquired companies), you can configure them all under named keys. The module will automatically route TechDocs requests to the correct instance based on the URL hostname.
+
+```yaml
+confluence:
+  # Primary instance (Confluence Cloud)
+  default:
+    baseUrl: 'https://company.atlassian.net/wiki'
+    auth:
+      type: 'basic'
+      token: '${CONFLUENCE_TOKEN}'
+      email: 'user@company.com'
+    pageTree:
+      parallel: true
+      maxDepth: 0
+
+  # Secondary instance (e.g., acquired company)
+  secondary:
+    baseUrl: 'https://other-company.atlassian.net/wiki'
+    auth:
+      type: 'basic'
+      token: '${CONFLUENCE_SECONDARY_TOKEN}'
+      email: 'user@other-company.com'
+
+  # On-premise instance
+  onprem:
+    baseUrl: 'https://confluence.internal.company.com'
+    auth:
+      type: 'userpass'
+      username: '${CONFLUENCE_ONPREM_USERNAME}'
+      password: '${CONFLUENCE_ONPREM_PASSWORD}'
+```
+
+**How URL routing works:**
+
+- When an entity has a `backstage.io/techdocs-ref` annotation pointing to a Confluence URL
+- The module extracts the hostname from the URL (e.g., `company.atlassian.net`)
+- It finds the configured instance whose `baseUrl` matches that hostname
+- The request is authenticated and processed using that instance's credentials
+
+This means you can have entities from different Confluence instances without any additional configuration on the entity side - just use the correct Confluence URL in the annotation.
+
+## Usage
+
+### Configuring Entities
+
+To use Confluence as a TechDocs source, add the `backstage.io/techdocs-ref` annotation to your entity:
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-service
+  annotations:
+    # Standard url: format - Confluence URLs are auto-detected
+    backstage.io/techdocs-ref: url:https://your-company.atlassian.net/wiki/spaces/DOCS/pages/123456789/My+Service+Docs
+spec:
+  type: service
+  owner: my-team
+```
+
+### Supported URL Formats
+
+The module supports multiple Confluence URL patterns:
+
+**Confluence Cloud (spaces format):**
+
+```text
+https://{org}.atlassian.net/wiki/spaces/{SPACE}/pages/{pageId}/{page-title}
+```
+
+**Confluence Server/Data Center (display format):**
+
+```text
+https://confluence.example.com/display/{SPACE}/{Page+Title}
+```
+
+**Direct page ID:**
+
+```text
+https://confluence.example.com/pages/viewpage.action?pageId=123456789
+```
+
+### Alternative Annotation Format
+
+You can also use the explicit `confluence-url:` prefix:
+
+```yaml
+metadata:
+  annotations:
+    backstage.io/techdocs-ref: confluence-url:https://your-company.atlassian.net/wiki/spaces/DOCS/pages/123456789/Docs
+```
+
+## How It Works
+
+1. When TechDocs builds documentation for an entity with a Confluence URL, this module intercepts the request
+2. It fetches the Confluence page and all its child pages recursively
+3. HTML content is converted to Markdown using `node-html-markdown`
+4. Attachments (images, draw.io diagrams) are downloaded and embedded
+5. An `mkdocs.yml` configuration is generated with proper navigation
+6. The prepared documentation is passed to TechDocs for building
+
+## Combining with Search Collator
+
+This module works well alongside the [search-backend-module-confluence-collator](../search-backend-module-confluence-collator/README.md) which indexes Confluence documents for search. Both modules share the same `confluence` configuration section.

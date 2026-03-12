@@ -1,4 +1,60 @@
-### Dependencies
+# @backstage-community/plugin-rbac
+
+## 1.50.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+
+## 1.49.0
+
+### Minor Changes
+
+- 8c7bddb: Added NFS support
+
+### Patch Changes
+
+- 42c05f7: exported rbacPlugin as a default and other minor updates
+- a55af54: Updated the translation of a Japanese word.
+- 1d15595: Translation updated for German and Spanish
+
+## 1.48.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
+## 1.48.0
+
+### Minor Changes
+
+- e6dbf70: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 658c2c9: Updated dependency `start-server-and-test` to `2.1.3`.
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+- Updated dependencies [e6dbf70]
+  - @backstage-community/plugin-rbac-common@1.23.0
+
+## 1.47.4
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
+
+## 1.47.3
+
+### Patch Changes
+
+- 5af1aa9: Fixed excessive vertical padding between table rows and pagination controls in RolesList component.
+- b3dda0c: Fix RBAC conditional access tooltips for disabled buttons
 
 ## 1.47.2
 

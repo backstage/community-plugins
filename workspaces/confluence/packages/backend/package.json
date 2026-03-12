@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-search-backend-module-confluence-collator": "workspace:^",
+    "@backstage-community/plugin-techdocs-backend-module-confluence": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/plugin-app-backend": "backstage:^",
@@ -37,6 +38,7 @@
     "@backstage/plugin-search-backend": "backstage:^",
     "@backstage/plugin-search-backend-module-catalog": "backstage:^",
     "@backstage/plugin-search-backend-node": "backstage:^",
+    "@backstage/plugin-techdocs-backend": "backstage:^",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "node-gyp": "^10.0.0",

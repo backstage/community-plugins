@@ -1,5 +1,44 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.22.0
+
+### Minor Changes
+
+- 8b42b6b: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [8b42b6b]
+  - @backstage-community/plugin-announcements-common@0.18.0
+
+## 0.21.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+
+## 0.21.0
+
+### Minor Changes
+
+- 99b4b52: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [99b4b52]
+  - @backstage-community/plugin-announcements-common@0.17.0
+
+## 0.20.0
+
+### Minor Changes
+
+- c299df2: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- Updated dependencies [c299df2]
+  - @backstage-community/plugin-announcements-common@0.16.0
+
 ## 0.19.0
 
 ### Minor Changes

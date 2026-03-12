@@ -1,4 +1,68 @@
-### Dependencies
+# @backstage-community/plugin-ocm-backend
+
+## 5.16.0
+
+### Minor Changes
+
+- 5f6f816: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- fbd59de: Updated dependency `@openapitools/openapi-generator-cli` to `2.30.2`.
+- 5f6f816: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [5f6f816]
+  - @backstage-community/plugin-ocm-common@3.19.0
+
+## 5.15.1
+
+### Patch Changes
+
+- 5c0c5f2: Updated dependency `@openapitools/openapi-generator-cli` to `2.29.0`.
+- af998b7: Updated dependency `supertest` to `7.2.2`.
+- de04885: Updated dependency `@openapitools/openapi-generator-cli` to `2.30.0`.
+
+## 5.15.0
+
+### Minor Changes
+
+- 3134355: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- 95dd04e: Updated dependency `@openapitools/openapi-generator-cli` to `2.28.0`.
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- 38128d5: Updated dependency `@openapitools/openapi-generator-cli` to `2.28.2`.
+- 5f6da50: Updated dependency `@openapitools/openapi-generator-cli` to `2.28.3`.
+- Updated dependencies [3134355]
+  - @backstage-community/plugin-ocm-common@3.18.0
+
+## 5.14.0
+
+### Minor Changes
+
+- 92c7a8d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [92c7a8d]
+  - @backstage-community/plugin-ocm-common@3.17.0
+
+## 5.13.1
+
+### Patch Changes
+
+- 4f1b075: Replace deprecated `createPermissionIntegrationRouter` API call with `permissionsRegistry` to resolve deprecation warnings
+
+## 5.13.0
+
+### Minor Changes
+
+- f3879a7: Backstage version bump to v1.46.2
+
+### Patch Changes
+
+- Updated dependencies [f3879a7]
+  - @backstage-community/plugin-ocm-common@3.16.0
 
 ## 5.12.2
 

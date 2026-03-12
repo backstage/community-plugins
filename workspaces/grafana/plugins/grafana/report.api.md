@@ -52,11 +52,7 @@ export type DashboardCardOpts = {
 export const dashboardSelectorFromEntity: (entity: Entity) => string;
 
 // @public
-export const DashboardViewer: ({
-  embedUrl,
-}: {
-  embedUrl: string;
-}) => JSX_2.Element;
+export const DashboardViewer: (input: { embedUrl: string }) => JSX_2.Element;
 
 // @public
 export const EntityDashboardViewer: () => JSX_2.Element;

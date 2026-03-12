@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -15,7 +15,7 @@
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
-    "build:api-reports": "yarn build:api-reports:only",
+    "build:api-reports": "yarn tsc --skipLibCheck && yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports --allow-all-warnings -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "clean": "backstage-cli repo clean",
@@ -41,9 +41,9 @@
     "directory": "workspaces/argocd"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.0",
+    "@backstage/cli": "^0.35.4",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@backstage/repo-tools": "^0.16.5",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.56.1",
     "concurrently": "^9.0.0",

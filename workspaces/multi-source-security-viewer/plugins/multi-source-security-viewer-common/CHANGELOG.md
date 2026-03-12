@@ -1,5 +1,23 @@
 # @backstage-community/plugin-multi-source-security-viewer-common
 
+## 0.12.0
+
+### Minor Changes
+
+- d9a66c5: Backstage version bump to v1.48.4
+
+## 0.11.0
+
+### Minor Changes
+
+- 0e8efcd: Backstage version bump to v1.47.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 3338247: Create the Multi Source Security Viewer backend plugin. This will enhance the RBAC UX by allowing users to configure the MSSV permissions in the RBAC plugin UI.
+
 ## 0.9.0
 
 ### Minor Changes

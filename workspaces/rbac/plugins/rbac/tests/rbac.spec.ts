@@ -60,8 +60,8 @@ test.describe('RBAC plugin', () => {
     await verifyText(message, page);
     if (button === translations.roleForm.steps.save) {
       await page
-        .locator(`a`)
-        .filter({ hasText: translations.page.title })
+        .getByTestId('sidebar-root')
+        .getByRole('link', { name: translations.page.title })
         .click();
     }
   };
@@ -75,8 +75,8 @@ test.describe('RBAC plugin', () => {
       () => globalThis.navigator.language,
     );
     translations = getTranslations(currentLocale);
-    await common.switchToLocale(page, currentLocale);
-    const navSelector = 'nav [aria-label="Administration"]';
+    await common.switchToLocale(currentLocale);
+    const navSelector = 'nav [aria-label="RBAC"]';
     await page.locator(navSelector).click();
     await common.verifyHeading(translations.page.title);
   });
@@ -124,7 +124,9 @@ test.describe('RBAC plugin', () => {
     await verifyCellsInTable(cellIdentifier, page);
   });
 
-  test('View details of role', async () => {
+  test('View details of role', async ({}, testInfo) => {
+    // Skipping Japanese tests due to https://issues.redhat.com/browse/RHDHBUGS-2598
+    test.fixme(testInfo.project.name === 'ja', 'Skip Japanese test');
     const roleName = 'role:default/rbac_admin';
     await page.locator(`a`).filter({ hasText: roleName }).click();
     await common.verifyHeading(roleName);
@@ -171,8 +173,8 @@ test.describe('RBAC plugin', () => {
     await verifyCellsInTable([policies], page);
 
     await page
-      .locator(`a`)
-      .filter({ hasText: translations.page.title })
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: translations.page.title })
       .click();
   });
 
@@ -267,7 +269,7 @@ test.describe('RBAC plugin', () => {
         .getByRole('checkbox'),
     ).toBeChecked();
     await page
-      .getByRole('option', { name: translations.permissionPolicies.permission })
+      .getByRole('option', { name: 'Permission' })
       .getByRole('checkbox')
       .click();
     await expect(
@@ -310,8 +312,8 @@ test.describe('RBAC plugin', () => {
     );
 
     await page
-      .locator(`a`)
-      .filter({ hasText: translations.page.title })
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: translations.page.title })
       .click();
   });
 

@@ -22,24 +22,21 @@ import {
   useAnnouncementsTranslation,
   useAnnouncements,
   useAnnouncementsPermissions,
-  useCategories,
 } from '@backstage-community/plugin-announcements-react';
 import {
   Announcement,
-  Category,
   announcementCreatePermission,
 } from '@backstage-community/plugin-announcements-common';
 import { useRouteRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
-import { Box, Button, Grid } from '@backstage/ui';
-import slugify from 'slugify';
+import { Box, Grid, Flex, Button } from '@backstage/ui';
 
 import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { AnnouncementForm } from '../../../../components/Admin/AnnouncementsContent/AnnouncementForm';
+import { AnnouncementForm } from './AnnouncementForm';
 import { AnnouncementsTableCard } from './AnnouncementsTableCard';
 import { announcementViewRouteRef } from '../../../../routes';
 
@@ -49,9 +46,33 @@ import { announcementViewRouteRef } from '../../../../routes';
 export type AnnouncementsContentProps = {
   /** default form values when creating a new announcement */
   formDefaults: {
-    /** sets active switch form input to false by default when creating a new announcement */
+    /**
+     * @deprecated Inactive announcement are hidden by default. This option will be removed.
+     */
     defaultInactive?: boolean;
   };
+};
+
+const AnnouncementFormContent = (props: {
+  onCancel: () => void;
+  onSubmit: (request: CreateAnnouncementRequest) => Promise<void>;
+  initialData: Announcement;
+}) => {
+  const { t } = useAnnouncementsTranslation();
+
+  const { onCancel, onSubmit, initialData } = props;
+
+  return (
+    <Box mb="2">
+      <Flex justify="end" align="center" pb="3">
+        <Button variant="secondary" onClick={onCancel}>
+          {t('admin.announcementsContent.cancelButton')}
+        </Button>
+      </Flex>
+
+      <AnnouncementForm initialData={initialData} onSubmit={onSubmit} />
+    </Box>
+  );
 };
 
 /**
@@ -64,7 +85,6 @@ export const AnnouncementsContent = ({
   const alertApi = useApi(alertApiRef);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
-  const { categories } = useCategories();
 
   const [showCreateAnnouncementForm, setShowCreateAnnouncementForm] =
     useState(false);
@@ -85,14 +105,7 @@ export const AnnouncementsContent = ({
   const navigate = useNavigate();
 
   const onCreateButtonClick = () => {
-    if (editingAnnouncementId) {
-      // If editing, cancel the edit
-      setEditingAnnouncementId(null);
-      setShowCreateAnnouncementForm(false);
-    } else {
-      // If not editing, toggle create form
-      setShowCreateAnnouncementForm(!showCreateAnnouncementForm);
-    }
+    setShowCreateAnnouncementForm(true);
   };
 
   const onPreviewClick = (announcement: Announcement) => {
@@ -106,35 +119,13 @@ export const AnnouncementsContent = ({
   };
 
   const onSubmit = async (request: CreateAnnouncementRequest) => {
-    const { category } = request;
-
-    const slugs = categories.map((c: Category) => c.slug);
-    let alertMsg = t('admin.announcementsContent.alertMessage') as string;
-
     try {
-      if (category) {
-        const categorySlug = slugify(category, {
-          lower: true,
-        });
+      await announcementsApi.createAnnouncement(request);
 
-        if (slugs.indexOf(categorySlug) === -1) {
-          alertMsg = alertMsg.replace('.', '');
-          alertMsg = `${alertMsg} ${t(
-            'admin.announcementsContent.alertMessageWithNewCategory',
-          )} ${category}.`;
-
-          await announcementsApi.createCategory({
-            title: category,
-          });
-        }
-      }
-
-      await announcementsApi.createAnnouncement({
-        ...request,
-        category: request.category?.toLocaleLowerCase('en-US'),
+      alertApi.post({
+        message: t('admin.announcementsContent.alertMessage'),
+        severity: 'success',
       });
-
-      alertApi.post({ message: alertMsg, severity: 'success' });
 
       setShowCreateAnnouncementForm(false);
       refresh();
@@ -148,37 +139,26 @@ export const AnnouncementsContent = ({
       return;
     }
 
-    const { category } = request;
-
-    const slugs = categories.map((c: Category) => c.slug);
-    let updateMsg = t('editAnnouncementPage.updatedMessage') as string;
-
     try {
-      if (category) {
-        const categorySlug = slugify(category, {
-          lower: true,
-        });
-
-        if (slugs.indexOf(categorySlug) === -1) {
-          updateMsg = updateMsg.replace('.', '');
-          updateMsg = `${updateMsg} ${t(
-            'editAnnouncementPage.updatedMessageWithNewCategory',
-          )} ${category}.`;
-
-          await announcementsApi.createCategory({
-            title: category,
-          });
-        }
-      }
-
       await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
-      alertApi.post({ message: updateMsg, severity: 'success' });
+      alertApi.post({
+        message: t('editAnnouncementPage.updatedMessage'),
+        severity: 'success',
+      });
 
       setEditingAnnouncementId(null);
       refresh();
     } catch (err) {
       alertApi.post({ message: (err as Error).message, severity: 'error' });
     }
+  };
+
+  const onCancelCreate = () => {
+    setShowCreateAnnouncementForm(false);
+  };
+
+  const onCancelEdit = () => {
+    setEditingAnnouncementId(null);
   };
 
   const announcementToEdit = useMemo(() => {
@@ -226,32 +206,22 @@ export const AnnouncementsContent = ({
   return (
     <RequirePermission permission={announcementCreatePermission}>
       <Grid.Root columns="1">
-        <Grid.Item>
-          <Button
-            isDisabled={!canCreate}
-            variant="primary"
-            onClick={() => onCreateButtonClick()}
-          >
-            {showCreateAnnouncementForm || editingAnnouncementId
-              ? t('admin.announcementsContent.cancelButton')
-              : t('admin.announcementsContent.createButton')}
-          </Button>
-        </Grid.Item>
-
         {showCreateAnnouncementForm && (
           <Grid.Item>
-            <AnnouncementForm
-              initialData={{ active: !defaultInactive } as Announcement}
+            <AnnouncementFormContent
+              onCancel={onCancelCreate}
               onSubmit={onSubmit}
+              initialData={{ active: !defaultInactive } as Announcement}
             />
           </Grid.Item>
         )}
 
         {editingAnnouncementId && announcementToEdit && (
           <Grid.Item>
-            <AnnouncementForm
-              initialData={announcementToEdit}
+            <AnnouncementFormContent
+              onCancel={onCancelEdit}
               onSubmit={onUpdate}
+              initialData={announcementToEdit}
             />
           </Grid.Item>
         )}
@@ -263,8 +233,10 @@ export const AnnouncementsContent = ({
               onPreviewClick={onPreviewClick}
               onEditClick={onEditClick}
               onDeleteClick={onDeleteClick}
+              onCreateClick={onCreateButtonClick}
               canEdit={canEdit}
               canDelete={canDelete}
+              canCreate={canCreate}
               editingAnnouncementId={editingAnnouncementId}
             />
           </Box>

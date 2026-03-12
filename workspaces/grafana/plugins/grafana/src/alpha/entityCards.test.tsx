@@ -38,7 +38,7 @@ describe('Entity card extensions', () => {
 
   it('should render the Alerts card', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]]}>
+      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]] as const}>
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(cards.entityGrafanaAlertsCard).reactElement()}
         </EntityProvider>
@@ -52,7 +52,7 @@ describe('Entity card extensions', () => {
 
   it('should render the Dashboards card', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]]}>
+      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]] as const}>
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(
             cards.entityGrafanaDashboardsCard,
@@ -68,7 +68,7 @@ describe('Entity card extensions', () => {
 
   it('should render the Overview Dashboard card', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]]}>
+      <TestApiProvider apis={[[grafanaApiRef, mockGrafanaApi]] as const}>
         <EntityProvider entity={sampleEntity.entity}>
           {createExtensionTester(
             cards.entityGrafanaOverviewDashboardViewer,

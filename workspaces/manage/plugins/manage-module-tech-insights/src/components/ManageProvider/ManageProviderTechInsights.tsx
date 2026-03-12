@@ -26,14 +26,13 @@ import {
 import {
   CheckResultRenderer,
   techInsightsApiRef,
-} from '@backstage-community/plugin-tech-insights';
+} from '@backstage-community/plugin-tech-insights-react';
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import {
   BulkCheckResponse,
   CheckResult,
 } from '@backstage-community/plugin-tech-insights-common';
 import {
-  ProgressColor,
   useCurrentTab,
   useManagedEntities,
 } from '@backstage-community/plugin-manage-react';
@@ -53,7 +52,7 @@ export interface ManageTechInsightsContextConfig {
   columnsCheckFilter?:
     | ((check: Check) => boolean)
     | Record<string, (check: Check) => boolean>;
-  getPercentColor?: (percent: number) => ProgressColor;
+  getPercentColor?: (percent: number) => string;
   mapTitle?: ManageTechInsightsMapTitle;
   showEmpty: boolean | Record<string, boolean>;
 }

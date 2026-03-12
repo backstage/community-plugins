@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-node
 
+## 1.6.0
+
+### Minor Changes
+
+- 334c2e0: Backstage version bump to v1.47.1
+
 ## 1.5.1
 
 ### Patch Changes

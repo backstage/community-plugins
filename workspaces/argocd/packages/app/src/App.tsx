@@ -59,7 +59,7 @@ import { argocdTranslations } from '@backstage-community/plugin-argocd/alpha';
 const app = createApp({
   apis,
   __experimentalTranslations: {
-    availableLanguages: ['en'],
+    availableLanguages: ['en', 'de', 'es', 'fr', 'it', 'ja'],
     resources: [argocdTranslations],
   },
   bindRoutes({ bind }) {
