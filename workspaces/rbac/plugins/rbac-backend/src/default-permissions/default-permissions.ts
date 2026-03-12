@@ -46,9 +46,9 @@ export class DefaultPermissionsReader {
     if (defPermissionsConfig) {
       role = defPermissionsConfig.getOptionalString('defaultRole');
 
-      if (role === '') {
+      if (!role) {
         throw new Error(
-          'Ignoring default role as it is empty. Please set a valid default role in the configuration.',
+          'Default role is mandatory for defaultPermissions configuration. Please set a valid default role in the configuration.',
         );
       }
     }
