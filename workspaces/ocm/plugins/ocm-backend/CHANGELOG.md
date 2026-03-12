@@ -1,5 +1,18 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.16.0
+
+### Minor Changes
+
+- 5f6f816: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- fbd59de: Updated dependency `@openapitools/openapi-generator-cli` to `2.30.2`.
+- 5f6f816: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [5f6f816]
+  - @backstage-community/plugin-ocm-common@3.19.0
+
 ## 5.15.1
 
 ### Patch Changes

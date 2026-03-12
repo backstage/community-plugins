@@ -1,5 +1,25 @@
 # @backstage-community/plugin-rbac
 
+## 1.50.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
+## 1.50.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+
 ## 1.49.0
 
 ### Minor Changes

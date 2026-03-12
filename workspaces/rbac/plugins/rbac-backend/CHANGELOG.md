@@ -1,5 +1,27 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.9.0
+
+### Minor Changes
+
+- da170a1: Add support for group reference in superUsers list, using direct membership only
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+
+## 7.8.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+  - @backstage-community/plugin-rbac-node@1.18.0
+
 ## 7.7.2
 
 ### Patch Changes

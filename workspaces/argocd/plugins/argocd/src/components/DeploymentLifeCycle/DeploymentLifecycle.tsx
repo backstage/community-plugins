@@ -113,6 +113,7 @@ const DeploymentLifecycle = ({
         .getRevisionDetailsList({
           apps: apps,
           revisionIDs: uniqRevisions,
+          appNamespace: appNamespace,
         })
         .then(data => {
           // By default, the data returned can contain copies of the same revision, depending on
@@ -130,6 +131,7 @@ const DeploymentLifecycle = ({
   }, [
     api,
     apps,
+    appNamespace,
     entity,
     uniqRevisions,
     keepDuplicateRevisions,

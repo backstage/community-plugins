@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
+import {
+  IconComponent,
+  NavItemBlueprint,
+} from '@backstage/frontend-plugin-api';
 import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 import { rootRouteRef } from '../routes';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
-
+import { RiMegaphoneLine } from '@remixicon/react';
 /**
  * @alpha
  */
@@ -25,7 +27,7 @@ export const announcementsNavItem = NavItemBlueprint.make({
   params: {
     title: 'Announcements',
     routeRef: convertLegacyRouteRef(rootRouteRef),
-    icon: RecordVoiceOverIcon,
+    icon: RiMegaphoneLine as IconComponent,
   },
 });
 

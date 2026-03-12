@@ -19,7 +19,7 @@ import rbacPlugin from '.';
 describe('RBAC plugin Alpha', () => {
   describe('Plugin Structure', () => {
     it('should have correct plugin metadata', () => {
-      expect(rbacPlugin.id).toBe('rbac');
+      expect(rbacPlugin.pluginId).toBe('rbac');
       expect(rbacPlugin.routes.root).toBeDefined();
     });
 
