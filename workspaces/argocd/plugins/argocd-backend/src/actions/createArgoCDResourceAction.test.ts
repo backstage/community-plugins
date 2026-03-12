@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createArgoCDResource } from './createArgoCDResource';
-import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
+import { createArgoCDResourceAction } from './createArgoCDResourceAction';
 import { ConfigReader } from '@backstage/config';
 import { mockServices } from '@backstage/backend-test-utils';
 import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
@@ -23,7 +22,7 @@ jest.mock('@backstage-community/plugin-argocd-node');
 
 const mockLogger = mockServices.logger.mock();
 
-describe('createArgoCDResource', () => {
+describe('createArgoCDResourceAction', () => {
   const mockConfig = new ConfigReader({
     argocd: {
       username: 'admin',
@@ -44,6 +43,7 @@ describe('createArgoCDResource', () => {
   });
 
   let mockCreateArgoResources: jest.Mock;
+  let registeredAction: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -54,12 +54,33 @@ describe('createArgoCDResource', () => {
     (ArgoCDService as jest.Mock).mockImplementation(() => ({
       createArgoResources: mockCreateArgoResources,
     }));
+
+    const mockRegistry = {
+      register: jest.fn((action: any) => {
+        registeredAction = action;
+      }),
+    };
+
+    createArgoCDResourceAction({
+      actionsRegistry: mockRegistry as any,
+      config: mockConfig,
+      logger: mockLogger,
+    });
+  });
+
+  it('should register an action with correct metadata', () => {
+    expect(registeredAction.name).toBe('create-resources');
+    expect(registeredAction.title).toBe('Create ArgoCD Resources');
+    expect(registeredAction.description).toBe('Creates ArgoCD resources');
+    expect(registeredAction.attributes).toEqual({
+      destructive: false,
+      idempotent: false,
+      readOnly: false,
+    });
   });
 
   it('should create ArgoCD resources with all parameters', async () => {
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    const mockContext = createMockActionContext({
+    const result = await registeredAction.action({
       input: {
         appName: 'test-app',
         argoInstance: 'test-instance',
@@ -71,8 +92,6 @@ describe('createArgoCDResource', () => {
       },
     });
 
-    await action.handler(mockContext);
-
     expect(mockCreateArgoResources).toHaveBeenCalledWith({
       instanceName: 'test-instance',
       appName: 'test-app',
@@ -82,16 +101,16 @@ describe('createArgoCDResource', () => {
       path: 'kubernetes/manifests',
       label: 'test-label',
     });
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'applicationUrl',
-      'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
-    );
+    expect(result).toEqual({
+      output: {
+        applicationUrl:
+          'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
+      },
+    });
   });
 
   it('should use appName as label when label is not provided', async () => {
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    const mockContext = createMockActionContext({
+    const result = await registeredAction.action({
       input: {
         appName: 'test-app',
         argoInstance: 'test-instance',
@@ -101,27 +120,22 @@ describe('createArgoCDResource', () => {
       },
     });
 
-    await action.handler(mockContext);
-
-    expect(mockCreateArgoResources).toHaveBeenCalledWith({
-      instanceName: 'test-instance',
-      appName: 'test-app',
-      projectName: 'test-app',
-      namespace: 'test-namespace',
-      repoUrl: 'https://github.com/test/repo',
-      path: 'kubernetes/manifests',
-      label: 'test-app',
-    });
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'applicationUrl',
-      'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
+    expect(mockCreateArgoResources).toHaveBeenCalledWith(
+      expect.objectContaining({
+        label: 'test-app',
+        projectName: 'test-app',
+      }),
     );
+    expect(result).toEqual({
+      output: {
+        applicationUrl:
+          'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
+      },
+    });
   });
 
   it('should use appName as projectName when projectName is not provided', async () => {
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    const mockContext = createMockActionContext({
+    await registeredAction.action({
       input: {
         appName: 'test-app',
         argoInstance: 'test-instance',
@@ -132,55 +146,34 @@ describe('createArgoCDResource', () => {
       },
     });
 
-    await action.handler(mockContext);
-
-    expect(mockCreateArgoResources).toHaveBeenCalledWith({
-      instanceName: 'test-instance',
-      appName: 'test-app',
-      projectName: 'test-app',
-      namespace: 'test-namespace',
-      repoUrl: 'https://github.com/test/repo',
-      path: 'kubernetes/manifests',
-      label: 'custom-label',
-    });
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'applicationUrl',
-      'https://argocd.example.com/applications/argocd/test-app?view=tree&resource=',
+    expect(mockCreateArgoResources).toHaveBeenCalledWith(
+      expect.objectContaining({
+        projectName: 'test-app',
+        label: 'custom-label',
+      }),
     );
   });
 
   it('should handle errors from ArgoCDService', async () => {
-    const mockError = new Error('Failed to create ArgoCD resources');
-    mockCreateArgoResources.mockRejectedValue(mockError);
-
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    const mockContext = createMockActionContext({
-      input: {
-        appName: 'test-app',
-        argoInstance: 'test-instance',
-        namespace: 'test-namespace',
-        repoUrl: 'https://github.com/test/repo',
-        path: 'kubernetes/manifests',
-      },
-    });
-
-    await expect(action.handler(mockContext)).rejects.toThrow(
-      'Failed to create ArgoCD resources',
+    mockCreateArgoResources.mockRejectedValue(
+      new Error('Failed to create ArgoCD resources'),
     );
+
+    await expect(
+      registeredAction.action({
+        input: {
+          appName: 'test-app',
+          argoInstance: 'test-instance',
+          namespace: 'test-namespace',
+          repoUrl: 'https://github.com/test/repo',
+          path: 'kubernetes/manifests',
+        },
+      }),
+    ).rejects.toThrow('Failed to create ArgoCD resources');
   });
 
-  it('should have correct action metadata', () => {
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    expect(action.id).toBe('argocd:create-resources');
-    expect(action.description).toBe('Creates ArgoCD resources');
-  });
-
-  it('should create new ArgoCDService instance with config and logger', async () => {
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    const mockContext = createMockActionContext({
+  it('should create ArgoCDService with config and logger', async () => {
+    await registeredAction.action({
       input: {
         appName: 'test-app',
         argoInstance: 'test-instance',
@@ -189,8 +182,6 @@ describe('createArgoCDResource', () => {
         path: 'kubernetes/manifests',
       },
     });
-
-    await action.handler(mockContext);
 
     expect(ArgoCDService).toHaveBeenCalledWith(mockConfig, mockLogger);
   });
@@ -201,9 +192,7 @@ describe('createArgoCDResource', () => {
         'https://argocd.example.com/applications/argocd/my-app?view=tree&resource=',
     });
 
-    const action = createArgoCDResource(mockConfig, mockLogger);
-
-    const mockContext = createMockActionContext({
+    const result = await registeredAction.action({
       input: {
         appName: 'my-app',
         argoInstance: 'production-instance',
@@ -215,8 +204,6 @@ describe('createArgoCDResource', () => {
       },
     });
 
-    await action.handler(mockContext);
-
     expect(mockCreateArgoResources).toHaveBeenCalledWith({
       instanceName: 'production-instance',
       appName: 'my-app',
@@ -226,9 +213,11 @@ describe('createArgoCDResource', () => {
       path: 'k8s/prod',
       label: 'production-label',
     });
-    expect(mockContext.output).toHaveBeenCalledWith(
-      'applicationUrl',
-      'https://argocd.example.com/applications/argocd/my-app?view=tree&resource=',
-    );
+    expect(result).toEqual({
+      output: {
+        applicationUrl:
+          'https://argocd.example.com/applications/argocd/my-app?view=tree&resource=',
+      },
+    });
   });
 });

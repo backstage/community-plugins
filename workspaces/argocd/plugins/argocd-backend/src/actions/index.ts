@@ -13,5 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
+import { createArgoCDResourceAction } from './createArgoCDResourceAction';
 
-export { createArgoCDResource } from './createArgoCDResource';
+export { createArgoCDResourceAction } from './createArgoCDResourceAction';
+
+/**
+ * Registers all ArgoCD actions with the Actions API.
+ * @public
+ */
+export function createArgoCDActions(options: {
+  actionsRegistry: ActionsRegistryService;
+  config: RootConfigService;
+  logger: LoggerService;
+}) {
+  createArgoCDResourceAction(options);
+}

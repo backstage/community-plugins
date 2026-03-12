@@ -17,17 +17,23 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
+
 /**
+ * Registers the ArgoCD create-resources action with the Actions API.
  * @public
  */
-export function createArgoCDResource(
-  config: RootConfigService,
-  logger: LoggerService,
-) {
-  return createTemplateAction({
-    id: 'argocd:create-resources',
+export function createArgoCDResourceAction(options: {
+  actionsRegistry: ActionsRegistryService;
+  config: RootConfigService;
+  logger: LoggerService;
+}) {
+  const { actionsRegistry, config, logger } = options;
+
+  actionsRegistry.register({
+    name: 'create-resources',
+    title: 'Create ArgoCD Resources',
     description: 'Creates ArgoCD resources',
     schema: {
       input: z =>
@@ -67,28 +73,23 @@ export function createArgoCDResource(
             .describe('The URL to the ArgoCD application'),
         }),
     },
-
-    async handler(ctx) {
-      const {
-        appName,
-        argoInstance,
-        namespace,
-        repoUrl,
-        path,
-        label,
-        projectName,
-      } = ctx.input;
+    attributes: {
+      destructive: false,
+      idempotent: false,
+      readOnly: false,
+    },
+    action: async ({ input }) => {
       const svc = new ArgoCDService(config, logger);
       const { applicationUrl } = await svc.createArgoResources({
-        instanceName: argoInstance,
-        appName,
-        projectName: projectName ?? appName,
-        namespace,
-        repoUrl,
-        path,
-        label: label ?? appName,
+        instanceName: input.argoInstance,
+        appName: input.appName,
+        projectName: input.projectName ?? input.appName,
+        namespace: input.namespace,
+        repoUrl: input.repoUrl,
+        path: input.path,
+        label: input.label ?? input.appName,
       });
-      ctx.output('applicationUrl', applicationUrl);
+      return { output: { applicationUrl } };
     },
   });
 }

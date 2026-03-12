@@ -40,6 +40,9 @@ backend:
     credentials: true
   # This is for local development only, it is not recommended to use this in production
   # The production database configuration is stored in app-config.production.yaml
+  actions:
+    pluginSources:
+      - backstage-community-argocd
   database:
     client: better-sqlite3
     connection: ':memory:'
@@ -98,17 +101,17 @@ catalog:
     - type: file
       target: ../../examples/argocd-entities.yaml
 
+    # ArgoCD scaffolder template
+    - type: file
+      target: ../../examples/templates/argocd-create-resources.yaml
+      rules:
+        - allow: [Template]
+
     # Local example organizational data
     - type: file
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
-
-    # ArgoCD template
-    - type: file
-      target: ../../plugins/argocd-actions/examples/01-argocd-createresource.yml
-      rules:
-        - allow: [Template]
 
 permission:
   # setting this to `false` will disable permissions
