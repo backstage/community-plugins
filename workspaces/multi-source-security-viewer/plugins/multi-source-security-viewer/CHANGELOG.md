@@ -1,5 +1,13 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.14.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
 ## 0.14.0
 
 ### Minor Changes
