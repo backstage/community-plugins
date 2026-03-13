@@ -43,17 +43,6 @@ export type Statistics = {
   [StatisticsEngine.CONTAINERS]: StatisticsBase;
 } & StatisticsBase;
 
-export type EntityURL = {
-  path: string;
-  params: {
-    org?: string;
-    repo?: string;
-  };
-  namespace?: string;
-  kind: string;
-  source: string;
-};
-
 export type Project = {
   statistics: Statistics;
   uuid: string;
@@ -63,7 +52,7 @@ export type Project = {
   applicationUuid: string;
   lastScan: number;
   languages: Array<[string, number]>;
-  entity: EntityURL;
+  entityUrl?: string;
 };
 
 export enum FindingIssueStatus {
