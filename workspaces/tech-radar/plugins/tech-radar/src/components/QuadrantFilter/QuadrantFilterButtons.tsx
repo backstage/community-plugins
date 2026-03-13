@@ -19,6 +19,7 @@ import type { Quadrant } from '../../types';
 
 import { RadarFilterContext } from '../RadarFilterContext';
 import { cn } from '../../util/cn';
+import { Button } from '@backstage/ui';
 
 type Props = Readonly<{
   quadrants: Quadrant[];
@@ -80,7 +81,7 @@ export const QuadrantFilterButtons = ({ quadrants }: Props) => {
       {quadrants.map(q => {
         const isFocused = focusedQuadrant?.id === q.id;
         return (
-          <button
+          <Button
             data-testid={q.id}
             className={cn(
               'absolute h-[calc(50%+1px)] w-[calc(50%+1px)] bg-transparent transition-all border-none cursor-pointer',

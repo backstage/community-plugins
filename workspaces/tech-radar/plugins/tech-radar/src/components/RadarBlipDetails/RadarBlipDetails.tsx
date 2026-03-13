@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { MovedState } from '@backstage-community/plugin-tech-radar-common';
+import { Flex, Link } from '@backstage/ui';
 import { useComponents } from './../hooks/useComponents';
 import { CircleDot, Triangle } from 'lucide-react';
 import { DateTime } from 'luxon';
@@ -26,7 +27,7 @@ type Props = Readonly<{
 }>;
 
 export const RadarBlipDetails = (props: Props) => {
-  const { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Link } =
+  const { Button, Dialog, DialogBody, DialogFooter, DialogHeader } =
     useComponents();
 
   const { blip, onOpenChange } = props;
@@ -49,7 +50,7 @@ export const RadarBlipDetails = (props: Props) => {
       }
     })();
 
-    return <div className="flex items-center">{icon}</div>;
+    return <Flex align="center">{icon}</Flex>;
   };
 
   const thStyles = 'font-semibold text-left';

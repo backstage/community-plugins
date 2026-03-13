@@ -26,6 +26,7 @@ import { RadarFilterContext } from './RadarFilterContext';
 import { TechRadarFilter } from './RadarFilter/TechRadarFilter';
 import { TrendLegend } from './Legend/TrendLegend';
 import { cn } from '../util/cn';
+import { Box, Button, Flex } from '@backstage/ui';
 import { useComponents } from './hooks/useComponents';
 
 import { UNSAFE_PortalProvider } from 'react-aria';
@@ -37,7 +38,7 @@ type Props = Readonly<{
 }>;
 
 export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
-  const { Button, SearchField } = useComponents();
+  const { SearchField } = useComponents();
   const { handleSelectedBlip, searchTerm, setSearchTerm } =
     useContext(RadarFilterContext);
 
@@ -60,15 +61,22 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
     Otherwise, the tooltips are placed outside this div, and not rendered.
      */
     <UNSAFE_PortalProvider getContainer={() => ref.current}>
-      <div
+      <Flex
+        direction="column"
+        gap="2"
         className={cn(
           'transition-[position,width,height] duration-300',
           'group fullscreen:overflow-y-auto fullscreen:bg-background fullscreen:px-10',
-          'flex flex-col gap-2',
         )}
         ref={ref}
       >
-        <div className="flex items-center justify-between gap-2 border-0 border-b border-solid border-border py-2 sticky top-0 z-10 bg-background">
+        <Flex
+          align="center"
+          justify="between"
+          gap="2"
+          py="2"
+          className="border-0 border-b border-solid border-border sticky top-0 z-10 bg-background"
+        >
           <SearchField
             className="[&_.bui-SearchFieldInputWrapper]:h-10 max-w-80"
             onChange={value => onSearch(value)}
@@ -76,7 +84,7 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
             placeholder="Search"
             type="text"
           />
-          <div className="flex gap-2 items-center">
+          <Flex gap="2" align="center">
             <TechRadarFilter
               className="h-10"
               quadrants={quadrants}
@@ -95,21 +103,29 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
               <Maximize className="block h-5 w-5 group-fullscreen:hidden" />
             </Button>
             <QuadrantFilterButtons quadrants={quadrants} />
-          </div>
-        </div>
+          </Flex>
+        </Flex>
 
-        <div className="flex w-full gap-10 px-1 flex-col-reverse lg:flex-row">
-          <div className="lg:basis-1/3">
+        <Flex
+          gap="10"
+          px="1"
+          direction={{ initial: 'column-reverse', lg: 'row' }}
+          style={{ width: '100%' }}
+        >
+          <Box style={{ flexBasis: '33.333333%' }} className="lg:block">
             {loading ? (
               <div className="animate-pulse rounded-md mt-11 h-full w-full bg-card" />
             ) : (
               <RadarAccordion quadrants={quadrants} rings={rings} />
             )}
-          </div>
-          <div className="relative lg:basis-2/3">
-            <div className="sticky top-[9rem] flex flex-col transition-all duration-500 ease-in-out">
+          </Box>
+          <Box style={{ flexBasis: '66.666667%', position: 'relative' }}>
+            <Flex
+              direction="column"
+              className="sticky top-[9rem] transition-all duration-500 ease-in-out"
+            >
               <TrendLegend />
-              <div className="flex mt-4 h-full flex-1 justify-center">
+              <Flex mt="4" justify="center" style={{ height: '100%', flex: 1 }}>
                 <Radar
                   loading={loading}
                   onClick={() => handleSelectedBlip(undefined)}
@@ -118,11 +134,11 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
                 >
                   <RadarBlipsAndLabels quadrants={quadrants} rings={rings} />
                 </Radar>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              </Flex>
+            </Flex>
+          </Box>
+        </Flex>
+      </Flex>
     </UNSAFE_PortalProvider>
   );
 };

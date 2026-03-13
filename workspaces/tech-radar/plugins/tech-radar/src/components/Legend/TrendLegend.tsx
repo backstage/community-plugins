@@ -18,6 +18,7 @@ import { Focusable } from 'react-aria-components';
 
 import { CircleDot, Triangle } from 'lucide-react';
 import { useComponents } from './../hooks/useComponents';
+import { Flex, Text } from '@backstage/ui';
 
 type ItemProps = Readonly<{
   icon: ReactNode;
@@ -31,10 +32,12 @@ const Item = (props: ItemProps) => {
   return (
     <TooltipTrigger delay={150}>
       <Focusable>
-        <div className="flex items-center gap-1.5 cursor-pointer">
+        <Flex align="center" gap="1.5" className="cursor-pointer">
           {props.icon}
-          <span className="capitalize">{props.text}</span>
-        </div>
+          <Text as="span" className="capitalize">
+            {props.text}
+          </Text>
+        </Flex>
       </Focusable>
 
       <Tooltip placement="bottom">{props.tooltipText}</Tooltip>
@@ -44,7 +47,13 @@ const Item = (props: ItemProps) => {
 
 export const TrendLegend = () => {
   return (
-    <div className="flex items-center justify-end gap-5 py-2 text-xs font-medium text-muted-foreground">
+    <Flex
+      align="center"
+      justify="end"
+      gap="5"
+      py="2"
+      className="text-xs font-medium text-muted-foreground"
+    >
       <Item
         icon={<CircleDot size={12} />}
         text="New"
@@ -62,6 +71,6 @@ export const TrendLegend = () => {
         text="Trend down"
         tooltipText="The recommendation has weakened"
       />
-    </div>
+    </Flex>
   );
 };
