@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mend-backend
 
+## 1.1.1
+
+### Patch Changes
+
+- ba05827: Enhance Mapping Logic to support GitLab Subgroup Repository
+
 ## 1.1.0
 
 ### Minor Changes
