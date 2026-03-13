@@ -31,8 +31,13 @@ import {
 } from '../../components';
 import { formatDate } from '../../utils/dateFormatter';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
+import { ApiiroApi } from '../../api';
 
-export const risksColumns: GridColDef[] = [
+export const getRisksColumns = (
+  apiiroApi: ApiiroApi,
+  repoId?: string,
+  applicationId?: string,
+): GridColDef[] => [
   {
     field: 'riskStatus',
     headerName: 'Risk Status',
@@ -73,18 +78,34 @@ export const risksColumns: GridColDef[] = [
     minWidth: 220,
     headerAlign: 'center',
     valueGetter: (_, row) => row.ruleName,
-    renderCell: (params: any) => (
-      <SimpleTooltip title={params.value ?? ''}>
-        <Link
-          href={`${APIIRO_DEFAULT_BASE_URL}/profiles/repositories/${params.row.entity?.details?.key}/risk/development?fl[RiskStatus][values][0]=${params.row.riskStatus}&trigger=${params.row.id}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
-        >
-          {params.value ?? ''}
-        </Link>
-      </SimpleTooltip>
-    ),
+    renderCell: (params: any) => {
+      const profileType = repoId ? 'repositories' : 'applications';
+      const profileId = repoId || applicationId;
+      const queryParams = new URLSearchParams({
+        trigger: params.row.id,
+      });
+
+      if (apiiroApi.getRedirectDevView()) {
+        queryParams.append('devView', 'true');
+      } else {
+        queryParams.append('fl[RiskStatus][values][0]', params.row.riskStatus);
+      }
+
+      const url = `${APIIRO_DEFAULT_BASE_URL}/profiles/${profileType}/${profileId}/risk/development?${queryParams.toString()}`;
+
+      return (
+        <SimpleTooltip title={params.value ?? ''}>
+          <Link
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+          >
+            {params.value ?? ''}
+          </Link>
+        </SimpleTooltip>
+      );
+    },
   },
   {
     field: 'component',

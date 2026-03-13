@@ -47,6 +47,7 @@ interface MttrVsSLATileProps {
   height?: string | number;
   repoId?: string;
   entityRef?: string;
+  applicationId?: string;
 }
 
 const GaugesGrid = styled(Box)(() => ({
@@ -54,10 +55,12 @@ const GaugesGrid = styled(Box)(() => ({
   gridTemplateColumns: '1fr 1fr',
   justifyItems: 'center',
   alignItems: 'center',
-  gap: '8px',
+  gap: '20px',
   width: 'fit-content',
   maxWidth: '100%',
-  margin: '0 auto',
+  maxHeight: '280px',
+  overflowY: 'auto',
+  overflowX: 'hidden',
   '@media (max-width: 320px)': {
     gridTemplateColumns: '1fr',
     gap: '12px',
@@ -106,7 +109,7 @@ const transformMttrStatisticsToGauges = (
   };
 
   // Define the desired order: Medium, Low, High, Critical
-  const riskLevelOrder = ['Critical', 'High', 'Medium', 'Low'];
+  const riskLevelOrder = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
 
   // Sort statistics according to the desired order
   const sortedStatistics = statistics.sort((a, b) => {
@@ -144,7 +147,9 @@ const transformMttrStatisticsToGauges = (
       maxValue:
         unit === 'Days' ? maxDisplay.displayValue * 24 : Math.ceil(maxHours),
       categoryLabel: stat.riskLevel,
-      tooltip: `View ${stat.riskLevel} risks out of SLA`,
+      tooltip: stat?.slaInHours
+        ? `View ${stat.riskLevel} risks out of SLA`
+        : 'SLA is not defined',
       unit: unit,
       displayValue: meanTimeDisplay.displayValue, // Converted value for center display
       displayTickValue: slaDisplay.displayValue, // Converted value for tick display
@@ -162,6 +167,7 @@ export const MttrVsSLATile = ({
   width = '100%',
   repoId,
   entityRef,
+  applicationId,
 }: MttrVsSLATileProps) => {
   // Use API hooks internally
   const connectBackendApi = useApi(apiiroApiRef);
@@ -175,11 +181,12 @@ export const MttrVsSLATile = ({
   } = useMttrStatisticsData({
     connectApi: connectBackendApi,
     fetchApi: fetch,
-    repositoryKey: repoId,
+    repositoryId: repoId,
     entityRef: entityRef,
+    applicationId: applicationId,
   });
-  // Only use API data if repositoryKey is provided
-  const shouldUseApiData = !!repoId;
+  // Only use API data if repositoryId or applicationId is provided
+  const shouldUseApiData = !!repoId || !!applicationId;
 
   // Transform API data to gauge data if available and should be used
   const apiGauges =
@@ -227,7 +234,7 @@ export const MttrVsSLATile = ({
         {repoId ? (
           <NotFound />
         ) : (
-          <NotFound message="Please provide the repository details to access the data." />
+          <NotFound message="Please configure the apiiro annotation to access the data." />
         )}
       </ChartBox>
     );

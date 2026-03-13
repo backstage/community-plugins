@@ -26,6 +26,8 @@ import {
 export type ApiiroApi = {
   discoveryApi: DiscoveryApi;
   getDefaultAllowMetricsView: () => boolean;
+  getEnableApplicationsView: () => boolean;
+  getRedirectDevView: () => boolean;
 };
 
 export const apiiroApiRef = createApiRef<ApiiroApi>({
@@ -46,6 +48,17 @@ export class ApiiroClient implements ApiiroApi {
       this.configApi.getOptionalBoolean('apiiro.defaultAllowMetricsView') ??
       true
     );
+  }
+
+  getEnableApplicationsView(): boolean {
+    return (
+      this.configApi.getOptionalBoolean('apiiro.enableApplicationsView') ??
+      false
+    );
+  }
+
+  getRedirectDevView(): boolean {
+    return this.configApi.getOptionalBoolean('apiiro.redirectDevView') ?? false;
   }
 }
 

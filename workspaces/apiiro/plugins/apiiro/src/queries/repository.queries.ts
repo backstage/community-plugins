@@ -31,14 +31,22 @@ const getRepositoriesData = async ({
   fetchApi,
   signal,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
-}: Query & { repositoryKey?: string; entityRef?: string }) => {
+  applicationId,
+}: Query & {
+  repositoryId?: string;
+  entityRef?: string;
+  applicationId?: string;
+}) => {
   const url = await connectApi.discoveryApi.getBaseUrl('apiiro');
   const body: any = {};
 
-  if (repositoryKey) {
-    body.repositoryKey = repositoryKey;
+  if (repositoryId) {
+    body.repositoryId = repositoryId;
+  }
+  if (applicationId) {
+    body.applicationId = applicationId;
   }
 
   if (entityRef) {
@@ -61,26 +69,34 @@ export function useRepositoriesData({
   fetchApi,
   connectApi,
   enabled = true,
-  repositoryKey,
+  repositoryId,
+  applicationId,
   entityRef,
 }: Omit<Query, 'signal'> & {
   enabled?: boolean;
-  repositoryKey?: string;
+  repositoryId?: string;
   entityRef?: string;
+  applicationId?: string;
 }): UseRepositoriesDataResult {
   const {
     data: repositoriesData,
     error: queryError,
     isLoading: repositoriesDataLoading,
   } = useQuery({
-    queryKey: [REPOSITORY_QUERY_KEY.GET_REPOSITORIES, repositoryKey, entityRef],
+    queryKey: [
+      REPOSITORY_QUERY_KEY.GET_REPOSITORIES,
+      repositoryId,
+      entityRef,
+      applicationId,
+    ],
     queryFn: ({ signal }) =>
       getRepositoriesData({
         fetchApi,
         signal,
         connectApi,
-        repositoryKey,
+        repositoryId,
         entityRef,
+        applicationId,
       }),
     enabled,
   });

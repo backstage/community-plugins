@@ -36,10 +36,18 @@ yarn --cwd packages/backend add @backstage-community/plugin-catalog-backend-modu
 
 - **Dashboard View**: Repository list with comprehensive statistics from Apiiro
   ![Apiiro Dashboard](./assets/dashboard.png)
-- **Apiiro Tab**: Detailed risk metrics and security insights for each repository
+- **Apiiro Tab (Component)**: Detailed risk metrics and security insights for each repository
   ![Apiiro Tab](./assets/apiiro-tab.png)
 - **Apiiro Widget**: Embeddable widget for custom entity tabs
   ![Apiiro Widget](./assets/apiiro-widget.png)
+
+> [!NOTE]
+> The Application List and Apiiro Tab (System) require the Backstage connector to be configured in Apiiro to function properly.
+
+- **Application List**: Comprehensive list of all applications integrated with Apiiro
+  ![Apiiro Application List](./assets/application-list.png)
+- **Apiiro Tab (System)**: Detailed risk metrics and security insights for each application
+  ![Apiiro Tab (System)](./assets/application-tab.png)
 
 ## Development
 

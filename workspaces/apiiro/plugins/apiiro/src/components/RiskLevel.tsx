@@ -25,6 +25,7 @@ export type RiskLevelValue =
   | 'Medium'
   | 'Low'
   | 'Critical'
+  | 'Informational'
   | 'AutoIgnored';
 
 export interface ColorMapping {
@@ -98,6 +99,7 @@ export const createRiskColorMappings = (theme: Theme): ColorMapping => {
     High: riskColors.high,
     Medium: riskColors.medium,
     Low: riskColors.low,
+    Informational: riskColors.informational,
     AutoIgnored: riskColors.autoIgnored,
   };
 };
