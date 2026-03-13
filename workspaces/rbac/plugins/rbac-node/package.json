@@ -39,6 +39,7 @@
     "dist"
   ],
   "dependencies": {
+    "@backstage-community/plugin-rbac-common": "workspace:^",
     "@backstage/backend-plugin-api": "^1.7.0"
   },
   "repository": {
