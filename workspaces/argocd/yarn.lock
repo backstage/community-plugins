@@ -1394,7 +1394,7 @@ __metadata:
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     supertest: "npm:^7.0.0"
-    undici: "npm:^7.3.0"
+    undici: "npm:^7.24.0"
   languageName: unknown
   linkType: soft
 
@@ -1418,7 +1418,7 @@ __metadata:
     "@backstage/cli": "npm:^0.35.4"
     "@backstage/config": "npm:^1.3.6"
     "@backstage/errors": "npm:^1.2.7"
-    undici: "npm:^7.3.0"
+    undici: "npm:^7.24.0"
   languageName: unknown
   linkType: soft
 
@@ -31844,10 +31844,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^7.16.0, undici@npm:^7.2.3, undici@npm:^7.3.0":
+"undici@npm:^7.16.0, undici@npm:^7.2.3":
   version: 7.19.2
   resolution: "undici@npm:7.19.2"
   checksum: 10/26a01804402e5f09d02a5d09607e42096828698dddbcf32132dd313af4fda99f3c04ed84d884e28528f945a5b77d87df5c01ec6c1bdc918fd28878cb35f1cb4a
+  languageName: node
+  linkType: hard
+
+"undici@npm:^7.24.0":
+  version: 7.24.1
+  resolution: "undici@npm:7.24.1"
+  checksum: 10/0af4ec2fc2ae50b1d0636895793ea2274a89a7cd445690089a1b957c4ac4a0336e48ab9ac48a4e8f5023d4b5eab56368c3f17c75d6b4c81b4281b674d1e60c9f
   languageName: node
   linkType: hard
 
