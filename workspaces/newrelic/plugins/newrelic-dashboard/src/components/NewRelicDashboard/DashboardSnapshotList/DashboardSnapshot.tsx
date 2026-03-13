@@ -18,7 +18,12 @@ import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { useApi, storageApiRef } from '@backstage/core-plugin-api';
+import {
+  useApi,
+  discoveryApiRef,
+  fetchApiRef,
+  storageApiRef,
+} from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
   InfoCard,
@@ -26,9 +31,8 @@ import {
   ErrorPanel,
   Link,
 } from '@backstage/core-components';
-import { newRelicDashboardApiRef } from '../../../api';
-import { DashboardSnapshotSummary } from '../../../api/NewRelicDashboardApi';
 import useObservable from 'react-use/esm/useObservable';
+import { renderPdfToDataUrl } from './renderPdfToDataUrl';
 
 const useStyles = makeStyles(
   theme => ({
@@ -44,6 +48,8 @@ const useStyles = makeStyles(
   { name: 'BackstageNewRelicDashboardSnapshot' },
 );
 
+const DEFAULT_DURATION = 2592000000;
+
 /**
  * @public
  */
@@ -54,7 +60,8 @@ export const DashboardSnapshot = (props: {
 }) => {
   const classes = useStyles();
   const { guid, name, permalink } = props;
-  const newRelicDashboardAPI = useApi(newRelicDashboardApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const fetchApi = useApi(fetchApiRef);
   const storageApi = useApi(storageApiRef).forBucket('newrelic-dashboard');
   const setStorageValue = (value: number) => {
     storageApi.set(guid, value);
@@ -64,16 +71,24 @@ export const DashboardSnapshot = (props: {
     storageApi.snapshot(guid),
   );
 
-  const { value, loading, error } = useAsync(async (): Promise<
-    DashboardSnapshotSummary | undefined
-  > => {
-    const dashboardObject: Promise<DashboardSnapshotSummary | undefined> =
-      newRelicDashboardAPI.getDashboardSnapshot(
-        guid,
-        storageSnapshot.value || 2592000000,
-      );
-    return dashboardObject;
-  }, [guid, storageSnapshot.value]);
+  const duration = storageSnapshot.value || DEFAULT_DURATION;
+
+  const {
+    value: blobUrl,
+    loading,
+    error,
+  } = useAsync(async () => {
+    const baseUrl = await discoveryApi.getBaseUrl('newrelic-dashboard');
+    const url = `${baseUrl}/snapshot/pdf?guid=${encodeURIComponent(
+      guid,
+    )}&duration=${duration}`;
+    const response = await fetchApi.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Snapshot request failed: ${response.status}`);
+    }
+    const pdfBytes = new Uint8Array(await response.arrayBuffer());
+    return renderPdfToDataUrl(pdfBytes);
+  }, [guid, duration]);
 
   if (loading) {
     return <Progress />;
@@ -81,12 +96,6 @@ export const DashboardSnapshot = (props: {
   if (error) {
     return <ErrorPanel title={error.name} defaultExpanded error={error} />;
   }
-
-  const url =
-    value?.getDashboardSnapshot?.data?.dashboardCreateSnapshotUrl?.replace(
-      /\pdf$/i,
-      'png',
-    );
 
   return (
     <InfoCard
@@ -96,7 +105,7 @@ export const DashboardSnapshot = (props: {
         <div>
           <Select
             className={classes.cardSelect}
-            defaultValue={2592000000}
+            defaultValue={DEFAULT_DURATION}
             value={storageSnapshot.value}
             onChange={event => {
               setStorageValue(Number(event.target.value));
@@ -115,14 +124,14 @@ export const DashboardSnapshot = (props: {
       <Box display="flex">
         <Box flexGrow="1">
           <Link to={permalink}>
-            {url ? (
+            {blobUrl ? (
               <img
                 alt={`${name} Dashboard`}
                 className={classes.img}
-                src={url}
+                src={blobUrl}
               />
             ) : (
-              'Dashboard loading... , click here to open if it did not render correctly'
+              'Dashboard loading..., click here to open if it did not render correctly'
             )}
           </Link>
         </Box>
