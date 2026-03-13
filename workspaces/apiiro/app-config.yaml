@@ -43,9 +43,13 @@ catalog:
     - type: file
       target: ../../examples/entities.yaml
 
-    # TODO: List of apiiro repositories as entity for example
+    # List of apiiro repositories as entity for example
     - type: file
       target: ../../examples/apiiro-repos.yaml
+
+    # List of apiiro systems as entity for example
+    - type: file
+      target: ../../examples/apiiro-systems.yaml
 
     # Local example organizational data
     - type: file

@@ -35,7 +35,7 @@ import {
   useFilterOptionsData,
   FilterDefinition,
 } from '../../queries/filterOptions.queries';
-import { columnVisibilityModal, risksColumns } from './tableConfig';
+import { columnVisibilityModal, getRisksColumns } from './tableConfig';
 import Box from '@mui/material/Box';
 
 // Helper function to format date without timezone conversion
@@ -98,9 +98,11 @@ const DATA_GRID_FEATURES = {
 export const Risks = ({
   repoId,
   entityRef,
+  applicationId,
 }: {
-  repoId: string | undefined;
+  repoId?: string;
   entityRef: string;
+  applicationId?: string;
 }) => {
   const connectBackendApi = useApi(apiiroApiRef);
   const { fetch } = useApi(fetchApiRef);
@@ -164,8 +166,9 @@ export const Risks = ({
   const { risksData, risksDataLoading, risksDataError } = useRisksData({
     connectApi: connectBackendApi,
     fetchApi: fetch,
-    repositoryKey: repoId!,
+    repositoryId: repoId,
     entityRef: entityRef,
+    applicationId: applicationId,
     filters: {
       ...(riskCategoryFilter.length > 0 && {
         RiskCategory: riskCategoryFilter,
@@ -188,6 +191,11 @@ export const Risks = ({
 
   // Memoize rows to prevent unnecessary re-renders that cause pagination flickering
   const rows = useMemo(() => risksData?.risks || [], [risksData?.risks]);
+
+  const risksColumns = useMemo(
+    () => getRisksColumns(connectBackendApi, repoId, applicationId),
+    [connectBackendApi, repoId, applicationId],
+  );
 
   const handlePresetSelect = (range: CalendarQuickRange) => {
     setIsPresetSelection(true);

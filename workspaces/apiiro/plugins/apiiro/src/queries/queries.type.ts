@@ -106,3 +106,99 @@ export type TopRiskDataPoint = {
 };
 
 export type TopRiskSuccessResponseData = TopRiskDataPoint[];
+
+export type ApplicationType = {
+  applicationType?: string;
+  applicationTypeOther?: string;
+  businessImpact?: string;
+  businessImpactFactors?: {
+    businessImpact?: string;
+    manualConfiguration?: boolean;
+    title?: string;
+  }[];
+  businessUnit?: string;
+  commitCount?: number;
+  complianceFrameworkReferences?: {
+    description?: string;
+    identifier?: string;
+    securityComplianceFramework?: string;
+    url?: string;
+  }[];
+  complianceRequirements?: string[];
+  containingRiskLevel?: string[];
+  deploymentLocations?: string[];
+  description?: string;
+  estimatedRevenue?: string;
+  estimatedUsersNumber?: string;
+  hasApiAuthorizationUsage?: boolean;
+  hasApiMissingAuthorization?: boolean;
+  hasApiMissingInputValidation?: boolean;
+  hasApis?: boolean;
+  hasAuthenticationUsage?: boolean;
+  hasAuthorizationUsage?: boolean;
+  hasDataAccessObjects?: boolean;
+  hasDataModels?: boolean;
+  hasDependenciesWithVulnerabilities?: boolean;
+  hasEncryptionUsage?: boolean;
+  hasExternalDependencies?: boolean;
+  hasGraphqlTypes?: boolean;
+  hasNewDevelopers?: boolean;
+  hasPaymentsData?: boolean;
+  hasPhiData?: boolean;
+  hasPiiData?: boolean;
+  hasPrivateAssets?: boolean;
+  hasPublicAssets?: boolean;
+  hasRbacUsage?: boolean;
+  hasSecrets?: boolean;
+  hasSensitiveApis?: boolean;
+  hasSensitiveData?: boolean;
+  hasSensitiveDependencies?: boolean;
+  hasSensitiveDependenciesWithVulnerabilities?: boolean;
+  hasValidationUsage?: boolean;
+  isActive?: boolean;
+  isDeployed?: boolean;
+  isInternetExposed?: boolean;
+  isPublic?: boolean;
+  isUserFacing?: boolean;
+  key: string;
+  languagePercentages?: {
+    language?: string;
+    percentage?: number;
+  }[];
+  languages?: string[];
+  lastUpdated?: string;
+  licenses?: string[];
+  name: string;
+  pointsOfContact?: { identity?: string; title?: string }[];
+  projects?: {
+    key?: string;
+    name?: string;
+    serverUrl?: string;
+    url?: string;
+  }[];
+  repositories?: {
+    branch?: string;
+    key?: string;
+    name?: string;
+    serverUrl?: string;
+    url?: string;
+  }[];
+  repositoryGroups?: { serverUrl?: string; group?: string }[];
+  repositoryTags?: {
+    tagSource?: string;
+    provider?: string;
+    name?: string;
+    value?: string;
+  }[];
+  riskLevel?: string;
+  riskScore?: number;
+  riskyCommitCount?: number;
+  riskyIssuesCount?: number;
+  tags?: { tagSource?: string; name?: string; value?: string }[];
+  entityUrl: string;
+};
+
+export type ApplicationSuccessResponseData = {
+  applications: ApplicationType[] | undefined;
+  totalCount: number;
+};

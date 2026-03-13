@@ -20,6 +20,10 @@ export const APIIRO_DEFAULT_PAGE_LIMIT = '1000';
 export const REPOSITORY_CACHE_REFRESH_INTERVAL_MINUTES = 60; // How often to refresh the cache
 export const REPOSITORY_CACHE_REFRESH_TIMEOUT_MINUTES = 5; // Timeout for cache refresh operation
 
+// Application cache configuration
+export const APPLICATION_CACHE_REFRESH_INTERVAL_MINUTES = 60; // How often to refresh the cache
+export const APPLICATION_CACHE_REFRESH_TIMEOUT_MINUTES = 5; // Timeout for cache refresh operation
+
 // Filter options cache configuration
 // Cache TTL for filter options (1 hour)
 export const FILTER_OPTIONS_CACHE_TTL_MS = 60 * 60 * 1000;
@@ -35,6 +39,8 @@ export const APIIRO_SLA_BREACH_PATH =
 export const APIIRO_TOP_RISKS_PATH = '/rest-api/v1/risks-statistics/top-risks';
 export const APIIRO_FILTER_OPTIONS_PATH =
   '/rest-api/v1/internal/connectors/backstage/filterOptions';
+export const APIIRO_APPLICATION_PROFILES_PATH =
+  '/rest-api/v1/applications/profiles';
 
 // Backend router endpoint paths
 export const ROUTER_PATH_REPOSITORIES = '/repositories';
@@ -45,3 +51,4 @@ export const ROUTER_PATH_SLA_BREACH = '/sla-breach';
 export const ROUTER_PATH_TOP_RISKS = '/top-risks';
 export const ROUTER_PATH_FILTER_OPTIONS = '/filterOptions';
 export const ROUTER_PATH_HEALTH = '/health';
+export const ROUTER_PATH_APPLICATIONS = '/applications';

@@ -43,6 +43,7 @@ const lightPalette = {
     high: '#f2405e',
     medium: '#ffa70f',
     low: '#ffe366',
+    informational: '#769cd6',
   },
   riskStatus: {
     open: '#f2405e',
@@ -130,6 +131,7 @@ const darkPalette = {
     high: '#f14763ff',
     medium: '#ffb84d',
     low: '#ffe680',
+    informational: '#769cd6',
   },
   riskStatus: {
     open: '#f2405e',
@@ -237,6 +239,7 @@ export const getRiskColors = (theme: Theme) => {
     high: palette.risk.high,
     medium: palette.risk.medium,
     low: palette.risk.low,
+    informational: palette.risk.informational,
     autoIgnored: theme.palette.grey[palette.grey.riskAutoIgnored],
   };
 };

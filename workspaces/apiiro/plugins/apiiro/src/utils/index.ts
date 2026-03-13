@@ -18,5 +18,8 @@ export {
   formatDateWithTimeCheck,
   formatActivityTooltip,
 } from './dateFormatter';
-export { isApiiroRepoAvailable } from './utils';
-export { isApiiroMetricViewAvailable } from './utils';
+export {
+  isApiiroRepoAvailable,
+  isApiiroMetricViewAvailable,
+  isApiiroApplicationAvailable,
+} from './utils';
