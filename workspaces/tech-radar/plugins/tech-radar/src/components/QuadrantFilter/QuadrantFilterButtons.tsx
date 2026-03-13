@@ -21,6 +21,8 @@ import { RadarFilterContext } from '../RadarFilterContext';
 import { cn } from '../../util/cn';
 import { Button } from '@backstage/ui';
 
+import styles from './QuadrantFilterButtons.module.css';
+
 type Props = Readonly<{
   quadrants: Quadrant[];
 }>;
@@ -37,17 +39,13 @@ export const QuadrantFilterButtons = ({ quadrants }: Props) => {
   return (
     <div
       aria-label="Radar quadrant filter"
-      className="relative aspect-[5/3] h-10 rounded-md border border-solid border-border bg-card"
+      className={styles.root}
       role="group"
     >
-      <svg
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full"
-        viewBox="0 0 400 240"
-      >
+      <svg aria-hidden="true" className={styles.svg} viewBox="0 0 400 240">
         {/* Cross */}
         <line
-          className="stroke-muted-foreground"
+          className={styles.svgLine}
           strokeWidth="6"
           x1="200"
           x2="200"
@@ -55,7 +53,7 @@ export const QuadrantFilterButtons = ({ quadrants }: Props) => {
           y2="240"
         />
         <line
-          className="stroke-muted-foreground"
+          className={styles.svgLine}
           strokeWidth="6"
           x1="0"
           x2="400"
@@ -66,7 +64,7 @@ export const QuadrantFilterButtons = ({ quadrants }: Props) => {
         {/* Concentric circles */}
         {[30, 50, 70, 90].map(r => (
           <circle
-            className="stroke-muted-foreground"
+            className={styles.svgCircle}
             cx="200"
             cy="120"
             fill="none"
@@ -84,14 +82,14 @@ export const QuadrantFilterButtons = ({ quadrants }: Props) => {
           <Button
             data-testid={q.id}
             className={cn(
-              'absolute h-[calc(50%+1px)] w-[calc(50%+1px)] bg-transparent transition-all border-none cursor-pointer',
-              isFocused ? 'bg-active-quadrant-filter/60' : '',
-              q.offsetX === 1 ? 'right-[-1px]' : 'left-[-1px]',
-              q.offsetY === 1 ? 'bottom-[-1px]' : 'top-[-1px]',
-              q.offsetX === -1 && q.offsetY === -1 && 'rounded-tl-sm',
-              q.offsetX === 1 && q.offsetY === -1 && 'rounded-tr-sm',
-              q.offsetX === -1 && q.offsetY === 1 && 'rounded-bl-sm',
-              q.offsetX === 1 && q.offsetY === 1 && 'rounded-br-sm',
+              styles.quadrantButton,
+              isFocused && styles.isFocused,
+              q.offsetX === 1 ? styles.right : styles.left,
+              q.offsetY === 1 ? styles.bottom : styles.top,
+              q.offsetX === -1 && q.offsetY === -1 && styles.roundedTl,
+              q.offsetX === 1 && q.offsetY === -1 && styles.roundedTr,
+              q.offsetX === -1 && q.offsetY === 1 && styles.roundedBl,
+              q.offsetX === 1 && q.offsetY === 1 && styles.roundedBr,
             )}
             key={q.id}
             onClick={() => onSelect(q)}

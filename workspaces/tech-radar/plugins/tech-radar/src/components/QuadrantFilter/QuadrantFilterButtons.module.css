@@ -1,0 +1,67 @@
+.root {
+  position: relative;
+  aspect-ratio: 5 / 3;
+  height: 2.5rem; /* h-10 */
+  border-radius: var(--bui-radius-2); /* rounded-md */
+  border: 1px solid var(--bui-border); /* border-border */
+  background-color: var(--bui-bg-surface-1); /* bg-card */
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.svgLine,
+.svgCircle {
+  stroke: var(--bui-fg-secondary); /* stroke-muted-foreground */
+}
+
+.quadrantButton {
+  position: absolute;
+  height: calc(50% + 1px);
+  width: calc(50% + 1px);
+  background-color: transparent;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.isFocused {
+  background-color: hsl(210 79% 46% / 0.6); /* bg-active-quadrant-filter/60 */
+}
+
+.right {
+  right: -1px;
+}
+
+.left {
+  left: -1px;
+}
+
+.bottom {
+  bottom: -1px;
+}
+
+.top {
+  top: -1px;
+}
+
+.roundedTl {
+  border-top-left-radius: 0.125rem; /* rounded-tl-sm */
+}
+
+.roundedTr {
+  border-top-right-radius: 0.125rem; /* rounded-tr-sm */
+}
+
+.roundedBl {
+  border-bottom-left-radius: 0.125rem; /* rounded-bl-sm */
+}
+
+.roundedBr {
+  border-bottom-right-radius: 0.125rem; /* rounded-br-sm */
+}

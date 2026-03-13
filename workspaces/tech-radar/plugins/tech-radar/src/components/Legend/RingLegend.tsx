@@ -22,6 +22,7 @@ import color from 'color';
 import { Box, Flex, Link, Text } from '@backstage/ui';
 
 import { useComponents } from '../hooks/useComponents';
+import styles from './RingLegend.module.css';
 
 type Props = Readonly<{
   highlighted?: string;
@@ -43,17 +44,12 @@ export const RingLegend = (props: Props) => {
             align="start"
             gap="4"
             p="2"
-            className={cn(
-              isHighlighted
-                ? 'border-primary/40 bg-muted/70 shadow-sm'
-                : 'border-border bg-card hover:bg-muted/40',
-            )}
+            className={cn(styles.ringItem, isHighlighted && styles.highlighted)}
             key={id}
           >
             <Box
-              mt="0.5"
               p="2"
-              className="border border-gray-300 bg-card"
+              className={styles.radarPreview}
               style={{ flexBasis: '10%' }}
             >
               <Radar
@@ -64,19 +60,11 @@ export const RingLegend = (props: Props) => {
               />
             </Box>
 
-            <Box className="space-y-0.5" style={{ flex: 1 }}>
-              <h3
-                className={cn(
-                  'text-lg font-semibold capitalize tracking-tight',
-                )}
-                style={{ color: textColor }}
-              >
+            <Box className={styles.description} style={{ flex: 1 }}>
+              <h3 className={styles.title} style={{ color: textColor }}>
                 {name}
               </h3>
-              <Text
-                as="p"
-                className="text-sm leading-relaxed text-muted-foreground"
-              >
+              <Text as="p" className={styles.text}>
                 {description ? (
                   description
                 ) : (

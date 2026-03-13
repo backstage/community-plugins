@@ -29,6 +29,8 @@ import { cn } from '../util/cn';
 import { Box, Button, Flex } from '@backstage/ui';
 import { useComponents } from './hooks/useComponents';
 
+import styles from './TechRadarContent.module.css';
+
 import { UNSAFE_PortalProvider } from 'react-aria';
 
 type Props = Readonly<{
@@ -64,10 +66,7 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
       <Flex
         direction="column"
         gap="2"
-        className={cn(
-          'transition-[position,width,height] duration-300',
-          'group fullscreen:overflow-y-auto fullscreen:bg-background fullscreen:px-10',
-        )}
+        className={cn(styles.root, 'group')}
         ref={ref}
       >
         <Flex
@@ -75,10 +74,10 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
           justify="between"
           gap="2"
           py="2"
-          className="border-0 border-b border-solid border-border sticky top-0 z-10 bg-background"
+          className={styles.stickyHeader}
         >
           <SearchField
-            className="[&_.bui-SearchFieldInputWrapper]:h-10 max-w-80"
+            className={styles.searchField}
             onChange={value => onSearch(value)}
             value={searchTerm}
             placeholder="Search"
@@ -86,12 +85,12 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
           />
           <Flex gap="2" align="center">
             <TechRadarFilter
-              className="h-10"
+              className={styles.filter}
               quadrants={quadrants}
               rings={rings}
             />
             <Button
-              className="h-10 w-12 p-0.5 [&_svg]:h-[22px] [&_svg]:w-[22px] bg-card border border-border border-solid"
+              className={styles.fullscreenButton}
               variant="tertiary"
               onClick={() => {
                 return document.fullscreenElement
@@ -99,8 +98,8 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
                   : ref.current?.requestFullscreen();
               }}
             >
-              <Minimize className="hidden h-5 w-5 group-fullscreen:block" />
-              <Maximize className="block h-5 w-5 group-fullscreen:hidden" />
+              <Minimize className={styles.minimizeIcon} />
+              <Maximize className={styles.maximizeIcon} />
             </Button>
             <QuadrantFilterButtons quadrants={quadrants} />
           </Flex>
@@ -110,22 +109,19 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
           gap="10"
           px="1"
           direction={{ initial: 'column-reverse', lg: 'row' }}
-          style={{ width: '100%' }}
+          className={styles.mainGrid}
         >
-          <Box style={{ flexBasis: '33.333333%' }} className="lg:block">
+          <Box className={cn(styles.accordionContainer, 'lg:block')}>
             {loading ? (
-              <div className="animate-pulse rounded-md mt-11 h-full w-full bg-card" />
+              <div className={styles.loadingPulse} />
             ) : (
               <RadarAccordion quadrants={quadrants} rings={rings} />
             )}
           </Box>
-          <Box style={{ flexBasis: '66.666667%', position: 'relative' }}>
-            <Flex
-              direction="column"
-              className="sticky top-[9rem] transition-all duration-500 ease-in-out"
-            >
+          <Box className={styles.radarContainer}>
+            <Flex direction="column" className={styles.stickyRadar}>
               <TrendLegend />
-              <Flex mt="4" justify="center" style={{ height: '100%', flex: 1 }}>
+              <Flex justify="center" className={styles.radarPlotWrapper}>
                 <Radar
                   loading={loading}
                   onClick={() => handleSelectedBlip(undefined)}

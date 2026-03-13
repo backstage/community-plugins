@@ -21,6 +21,8 @@ import { ChevronDown } from 'lucide-react';
 import { RadarFilterContext } from '../RadarFilterContext';
 import { Quadrant, Ring } from '../../types';
 
+import styles from './TechRadarFilter.module.css';
+
 type Props = Readonly<{
   className?: string;
   quadrants: Quadrant[];
@@ -53,7 +55,7 @@ export const TechRadarFilter = ({ className, quadrants, rings }: Props) => {
   const triggerLabel = useMemo(() => {
     if (selectedFilters.length === 0) {
       return (
-        <Text as="span" className="text-muted-foreground">
+        <Text as="span" className={styles.triggerLabelEmpty}>
           Select filter
         </Text>
       );
@@ -72,10 +74,10 @@ export const TechRadarFilter = ({ className, quadrants, rings }: Props) => {
         <Button
           aria-label="Filter"
           variant="tertiary"
-          className="bg-card border border-border border-solid w-60 h-10 [&_.bui-ButtonContent]:justify-between font-normal"
+          className={styles.filterButton}
         >
           {triggerLabel}
-          <ChevronDown size={12} className="text-muted-foreground" />
+          <ChevronDown size={12} className={styles.triggerLabelEmpty} />
         </Button>
         <MenuAutocompleteListbox
           className="with-custom-css"
@@ -91,12 +93,10 @@ export const TechRadarFilter = ({ className, quadrants, rings }: Props) => {
               key={option.value}
               id={option.value}
               textValue={option.label}
-              className="w-full [&_.bui-MenuItemWrapper]:w-full [&_.bui-MenuItemContent]:flex [&_.bui-MenuItemContent]:items-center [&_.bui-MenuItemContent]:w-full"
+              className={styles.menuItem}
             >
-              <Box mr="2" style={{ flexGrow: 1 }}>
-                {option.label}
-              </Box>
-              <Text as="span" className="text-muted-foreground text-xs">
+              <Box className={styles.optionLabel}>{option.label}</Box>
+              <Text as="span" className={styles.optionCategory}>
                 {option.category}
               </Text>
             </MenuListBoxItem>

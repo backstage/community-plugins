@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import { MovedState } from '@backstage-community/plugin-tech-radar-common';
-import { Flex, Link } from '@backstage/ui';
+import { Button, Flex, Link } from '@backstage/ui';
 import { useComponents } from './../hooks/useComponents';
 import { CircleDot, Triangle } from 'lucide-react';
 import { DateTime } from 'luxon';
 
 import type { Blip } from '../../types';
+import styles from './RadarBlipDetails.module.css';
 
 type Props = Readonly<{
   blip?: Blip;
@@ -27,8 +28,7 @@ type Props = Readonly<{
 }>;
 
 export const RadarBlipDetails = (props: Props) => {
-  const { Button, Dialog, DialogBody, DialogFooter, DialogHeader } =
-    useComponents();
+  const { Dialog, DialogBody, DialogFooter, DialogHeader } = useComponents();
 
   const { blip, onOpenChange } = props;
 
@@ -41,10 +41,13 @@ export const RadarBlipDetails = (props: Props) => {
       switch (movedState) {
         case MovedState.Down:
           return (
-            <Triangle className="rotate-180 fill-muted-foreground" size={12} />
+            <Triangle
+              className={`${styles.rotate180} ${styles.triangleIcon}`}
+              size={12}
+            />
           );
         case MovedState.Up:
-          return <Triangle className="fill-muted-foreground" size={12} />;
+          return <Triangle className={styles.triangleIcon} size={12} />;
         default:
           return <CircleDot size={16} />;
       }
@@ -52,8 +55,6 @@ export const RadarBlipDetails = (props: Props) => {
 
     return <Flex align="center">{icon}</Flex>;
   };
-
-  const thStyles = 'font-semibold text-left';
 
   return (
     <Dialog
@@ -63,23 +64,23 @@ export const RadarBlipDetails = (props: Props) => {
       className="with-custom-css"
     >
       <DialogHeader>{blip?.title}</DialogHeader>
-      <DialogBody className="p-4">
+      <DialogBody className={styles.dialogContent}>
         <table>
           <thead>
-            <tr className="hover:bg-transparent">
-              <th className={thStyles}>Moved in direction</th>
-              <th className={thStyles}>Moved to ring</th>
-              <th className={thStyles}>Moved on date</th>
-              <th className={thStyles}>Description</th>
+            <tr className={styles.tableRow}>
+              <th className={styles.tableHeader}>Moved in direction</th>
+              <th className={styles.tableHeader}>Moved to ring</th>
+              <th className={styles.tableHeader}>Moved on date</th>
+              <th className={styles.tableHeader}>Description</th>
             </tr>
           </thead>
           <tbody>
             {snapshots.map((snapshot, idx) => {
               return (
-                <tr className="hover:bg-transparent" key={idx}>
+                <tr className={styles.tableRow} key={idx}>
                   <td>{movedInDirection(snapshot.moved)}</td>
-                  <td className="capitalize">{snapshot.ring.name}</td>
-                  <td className="min-w-[7rem] whitespace-nowrap">
+                  <td className={styles.capitalize}>{snapshot.ring.name}</td>
+                  <td className={styles.dateCell}>
                     {DateTime.fromJSDate(snapshot.date).toISODate()}
                   </td>
                   <td>{snapshot.description}</td>
@@ -91,7 +92,7 @@ export const RadarBlipDetails = (props: Props) => {
       </DialogBody>
       <DialogFooter>
         {blip?.url ? (
-          <Link className="capitalize" href={blip.url}>
+          <Link className={styles.learnMoreLink} href={blip.url}>
             Learn more
           </Link>
         ) : null}
