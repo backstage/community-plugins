@@ -47,6 +47,7 @@
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^",
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
+    "@backstage/plugin-user-settings-backend": "backstage:^",
     "app": "link:../app",
     "better-sqlite3": "^12.5.0",
     "node-gyp": "^11.0.0",
