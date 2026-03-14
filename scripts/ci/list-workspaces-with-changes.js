@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 import { execFile as execFileCb } from 'child_process';
-import { promises as fs } from 'fs';
+import fs from 'fs/promises';
 import { promisify } from 'util';
-import { resolve as resolvePath } from 'path';
+import { join, resolve as resolvePath } from 'path';
 import { EOL } from 'os';
 
 import * as url from 'url';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+import { asyncFilter } from '../utils.js';
 
-const commitShaBefore = process.env.COMMIT_SHA_BEFORE;
 const baseRef = process.env.BASE_REF || 'origin/main';
 
 const execFile = promisify(execFileCb);
+const reWorkspaces = /^workspaces\/(?<workspace>[^/]+)\//;
+
+const nameOnly = fullPath => fullPath.split('/').at(1);
+const expand = workspace => join('workspaces', workspace, 'package.json');
 
 async function runPlain(cmd, ...args) {
   try {
@@ -45,84 +48,80 @@ async function runPlain(cmd, ...args) {
   }
 }
 
-async function main() {
+export async function main() {
   if (!process.env.GITHUB_OUTPUT) {
     throw new Error('GITHUB_OUTPUT environment variable not set');
   }
-  const repoRoot = resolvePath(__dirname, '..', '..');
+  const repoRoot = resolvePath(
+    url.fileURLToPath(import.meta.url),
+    '..',
+    '..',
+    '..',
+  );
   process.chdir(repoRoot);
 
-  const diff = process.env.COMMIT_SHA_BEFORE
-    ? await runPlain('git', 'diff', '--name-only', commitShaBefore)
-    : await runPlain('git', 'diff', '--name-only', `${baseRef}...`);
+  const diff = await runPlain(
+    'git',
+    'diff',
+    '--name-only',
+    process.env.COMMIT_SHA_BEFORE || `${baseRef}...`,
+  );
 
-  const packageList = diff.split('\n');
+  const workspaces = Array.from(
+    diff.split('\n').reduce((result, path) => {
+      const { workspace } = path.match(reWorkspaces)?.groups || {};
 
-  const workspaces = new Set(['noop']);
-  for (const path of packageList) {
-    const match = path.match(/^workspaces\/([^/]+)\//);
-    if (match) {
-      workspaces.add(match[1]);
-    }
-  }
+      if (workspace) {
+        result.add(workspace);
+      }
 
-  console.log('workspaces found with changes:', Array.from(workspaces));
+      return result;
+    }, new Set(['noop'])),
+    expand,
+  );
 
-  for (const workspace of workspaces) {
-    if (
-      !(await fs
-        .stat(`workspaces/${workspace}/package.json`)
-        .catch(() => false))
-    ) {
-      workspaces.delete(workspace);
-    }
-  }
+  console.log('workspaces found with changes:', workspaces.map(nameOnly));
 
-  console.log('workspaces that exist:', Array.from(workspaces));
+  const existingWorkspaces = await asyncFilter(workspaces, ws =>
+    fs.stat(ws).catch(() => false),
+  );
+  const existingWorkspaceNames = existingWorkspaces.map(nameOnly);
+
+  console.log('workspaces that exist:', existingWorkspaceNames);
 
   // Automatically detect the supported Node versions from package.json
-  const workspaceNodeMatrix = [];
-  for (const workspace of workspaces) {
-    const packageJson = JSON.parse(
-      await fs.readFile(`workspaces/${workspace}/package.json`),
-    );
-    const nodeString = packageJson.engines.node;
-    if (!nodeString) {
-      throw new Error(
-        `No node engine specified in workspaces/${workspace}/package.json`,
-      );
-    }
-    const nodeVersions = nodeString.split('||').map(v => v.trim());
-    console.log(
-      `Detected node versions for workspace ${workspace}:`,
-      nodeVersions,
-    );
-    // Convert versions like "18" to "18.x" for GitHub matrix usage
-    nodeVersions.forEach(nodeVersion => {
-      if (nodeVersion.match(/^\d\d$/)) {
-        workspaceNodeMatrix.push({
-          workspace,
-          nodeVersion: `${nodeVersion}.x`,
-        });
-      } else {
-        workspaceNodeMatrix.push({ workspace, nodeVersion });
+  const workspaceNodeMatrix = await Promise.all(
+    existingWorkspaces.map(async fullPath => {
+      const nodeString = JSON.parse(await fs.readFile(fullPath)).engines.node;
+      if (!nodeString) {
+        throw new Error(`No node engine specified in ${fullPath}`);
       }
-    });
-  }
-
-  await fs.appendFile(
-    process.env.GITHUB_OUTPUT,
-    `workspaces=${JSON.stringify(Array.from(workspaces))}${EOL}`,
+      const nodeVersions = nodeString.split('||').map(v => v.trim());
+      const workspace = nameOnly(fullPath);
+      console.log(
+        `Detected node versions for workspace ${workspace}:`,
+        nodeVersions,
+      );
+      return nodeVersions.map(nodeVersion => ({
+        workspace,
+        // Convert versions like "18" to "18.x" for GitHub matrix usage
+        nodeVersion: `${nodeVersion}${/^\d\d$/.test(nodeVersion) ? '.x' : ''}`,
+      }));
+    }),
   );
   await fs.appendFile(
     process.env.GITHUB_OUTPUT,
-    `workspace_node_matrix=${JSON.stringify(
-      Array.from(workspaceNodeMatrix),
-    )}${EOL}`,
+    `workspaces=${JSON.stringify(existingWorkspaceNames)}${EOL}`,
+  );
+  await fs.appendFile(
+    process.env.GITHUB_OUTPUT,
+    `workspace_node_matrix=${JSON.stringify(workspaceNodeMatrix.flat())}${EOL}`,
   );
 }
 
-main().catch(error => {
-  console.error(error.stack);
-  process.exit(1);
-});
+if (import.meta.main) {
+  main().catch(error => {
+    console.error(error.stack);
+    process.exit(1);
+  });
+}
