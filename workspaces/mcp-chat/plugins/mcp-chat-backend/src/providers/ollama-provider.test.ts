@@ -27,10 +27,18 @@ describe('OllamaProvider', () => {
   let provider: OllamaProvider;
   let mockOllama: jest.Mocked<Ollama>;
 
+  const mockLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  };
+
   const config: ProviderConfig = {
     type: 'ollama',
     baseUrl: 'http://localhost:11434',
     model: 'llama2',
+    logger: mockLogger,
   };
 
   beforeEach(() => {
