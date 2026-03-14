@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { FunctionComponent } from 'react';
-import { Typography, Box } from '@material-ui/core';
+import { Text, Flex } from '@backstage/ui';
 import { filterSameUser } from '../../utils/functions';
 
 import { UserHeader } from '../UserHeader';
@@ -29,18 +29,20 @@ const UserHeaderList: FunctionComponent<Props> = (props: Props) => {
   const { users, label } = props;
 
   return (
-    <Box
-      display="flex"
-      width="100%"
-      alignItems="center"
-      marginY={2}
-      flexWrap="wrap"
+    <Flex
+      style={{
+        width: '100%',
+        marginTop: 'var(--bui-space-4)',
+        marginBottom: 'var(--bui-space-4)',
+        flexWrap: 'wrap',
+      }}
+      align="center"
     >
-      {label && <Typography variant="subtitle2">{label}</Typography>}
+      {label && <Text variant="body-small">{label}</Text>}
       {filterSameUser(users).map(({ login, avatarUrl }) => (
         <UserHeader name={login} avatar={avatarUrl} key={login} />
       ))}
-    </Box>
+    </Flex>
   );
 };
 

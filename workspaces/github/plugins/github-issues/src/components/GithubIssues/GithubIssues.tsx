@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { InfoCard, Progress } from '@backstage/core-components';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import {
+  Text,
+  Flex,
+  Box,
+  ButtonIcon,
+  Card,
+  CardHeader,
+  CardBody,
+} from '@backstage/ui';
+import { RiRefreshLine } from '@remixicon/react';
+import { Progress } from '@backstage/core-components';
 import { useEntityGithubRepositories } from '../../hooks/useEntityGithubRepositories';
 import { useGetIssuesByRepoFromGithub } from '../../hooks/useGetIssuesByRepoFromGithub';
 import { IssuesList } from './IssuesList';
@@ -27,6 +33,7 @@ import type {
   GithubIssuesFilters,
   GithubIssuesOrdering,
 } from '../../api/githubIssuesApi';
+import styles from './GithubIssues.module.css';
 
 /**
  * @public
@@ -56,22 +63,28 @@ export const GithubIssues = (props: GithubIssuesProps) => {
   }
 
   return (
-    <InfoCard
-      title={
-        <Box display="flex" justifyContent="flex-start" alignItems="center">
-          <Typography variant="h5">Open GitHub Issues</Typography>
-          <IconButton color="secondary" onClick={retry}>
-            <RefreshIcon />
-          </IconButton>
-        </Box>
-      }
-    >
-      {isLoading && <Progress />}
+    <Card>
+      <CardHeader className={styles.cardHeader}>
+        <Flex justify="between" align="center">
+          <Text variant="title-medium">Open GitHub Issues</Text>
+          <Box>
+            <ButtonIcon
+              aria-label="Refresh"
+              onPress={retry}
+              icon={<RiRefreshLine size={20} />}
+              variant="secondary"
+            />
+          </Box>
+        </Flex>
+      </CardHeader>
+      <CardBody className={styles.cardBody}>
+        {isLoading && <Progress />}
 
-      <IssuesList
-        issuesByRepository={issuesByRepository}
-        itemsPerPage={itemsPerPage}
-      />
-    </InfoCard>
+        <IssuesList
+          issuesByRepository={issuesByRepository}
+          itemsPerPage={itemsPerPage}
+        />
+      </CardBody>
+    </Card>
   );
 };

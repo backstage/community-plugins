@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,27 @@
  * limitations under the License.
  */
 
-export { WorkflowRunStatus, WorkflowIcon } from './WorkflowRunStatus';
+@layer components {
+  .item {
+    display: flex;
+  }
+
+  .listItemIcon {
+    min-width: 56px;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2px;
+    color: var(--bui-fg-primary);
+  }
+
+  .flexContainer {
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  .itemText {
+    width: 100%;
+    word-break: break-all;
+    margin-bottom: 1rem;
+  }
+}

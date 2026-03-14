@@ -15,31 +15,13 @@
  */
 
 import { ReactNode } from 'react';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import { Text, Tag, TagGroup } from '@backstage/ui';
+import { RiDiscussLine, RiGithubLine } from '@remixicon/react';
 import { Link } from '@backstage/core-components';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
 import { type GithubDiscussionsSearchDocument } from '@backstage-community/plugin-github-discussions-common';
-
-const useStyles = makeStyles({
-  item: {
-    display: 'flex',
-  },
-  flexContainer: {
-    flexWrap: 'wrap',
-  },
-  itemText: {
-    width: '100%',
-    wordBreak: 'break-all',
-    marginBottom: '1rem',
-  },
-});
+import styles from './GithubDiscussionsSearchResultListItem.module.css';
 
 /**
  * Props for {@link GithubDiscussionsSearchResultListItem}.
@@ -61,17 +43,18 @@ export function GithubDiscussionsSearchResultListItem(
   props: GithubDiscussionsSearchResultListItemProps,
 ) {
   const { result, highlight, icon } = props;
-  const classes = useStyles();
   if (!result) return null;
 
   return (
-    <div className={classes.item}>
-      {icon && <ListItemIcon>{icon}</ListItemIcon>}
-      <div className={classes.flexContainer}>
-        <ListItemText
-          className={classes.itemText}
-          primaryTypographyProps={{ variant: 'h6' }}
-          primary={
+    <div className={styles.item}>
+      {(icon && <div className={styles.listItemIcon}>{icon}</div>) ?? (
+        <div className={styles.listItemIcon}>
+          <RiDiscussLine />
+        </div>
+      )}
+      <div className={styles.flexContainer}>
+        <div className={styles.itemText}>
+          <Text variant="title-small">
             <Link noTrack to={result.location}>
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
@@ -83,48 +66,53 @@ export function GithubDiscussionsSearchResultListItem(
                 result.title
               )}
             </Link>
-          }
-          secondary={
-            <Typography
-              component="span"
-              style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: props.lineClamp,
-                overflow: 'hidden',
-              }}
-              color="textSecondary"
-              variant="body2"
-            >
-              {highlight?.fields.text ? (
-                <HighlightedSearchResultText
-                  text={highlight.fields.text}
-                  preTag={highlight.preTag}
-                  postTag={highlight.postTag}
-                />
-              ) : (
-                result.text
-              )}
-            </Typography>
-          }
-        />
-        <Box>
-          {result.author && (
-            <Chip
-              label={result.author}
-              size="small"
-              component="a"
-              href={`https://github.com/${result.author}`}
-              clickable
-              icon={<GitHubIcon />}
-            />
-          )}
-          {result.category && <Chip label={result.category} size="small" />}
-          {result.labels.length > 0 &&
-            result.labels.map(({ name }) => {
-              return <Chip key={name} label={name} size="small" />;
-            })}
-        </Box>
+          </Text>
+          <Text
+            variant="body-small"
+            color="secondary"
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: props.lineClamp,
+              overflow: 'hidden',
+            }}
+          >
+            {highlight?.fields.text ? (
+              <HighlightedSearchResultText
+                text={highlight.fields.text}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              result.text
+            )}
+          </Text>
+        </div>
+        <div>
+          <TagGroup aria-label="Discussion metadata">
+            {result.author ? (
+              <Tag id={`author-${result.author}`} size="small">
+                <a
+                  href={`https://github.com/${result.author}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <RiGithubLine size={14} />
+                  {result.author}
+                </a>
+              </Tag>
+            ) : null}
+            {result.category ? (
+              <Tag id={`category-${result.category}`} size="small">
+                {result.category}
+              </Tag>
+            ) : null}
+            {result.labels.map(({ name }) => (
+              <Tag key={name} id={name} size="small">
+                {name}
+              </Tag>
+            ))}
+          </TagGroup>
+        </div>
       </div>
     </div>
   );

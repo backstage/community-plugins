@@ -15,9 +15,8 @@
  */
 
 import { Select, SelectedItems, SelectItem } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
+import styles from './Filters.module.css';
 
 type RepositoryFiltersProps = {
   items: Array<SelectItem>;
@@ -25,18 +24,6 @@ type RepositoryFiltersProps = {
   placeholder: string;
   onChange: (active: Array<string>) => void;
 };
-
-const useStyles = makeStyles(theme => ({
-  filters: {
-    margin: theme.spacing(0, 0, 2, 0),
-    '& > div': {
-      maxWidth: '800px',
-      '& > div': {
-        maxWidth: '800px',
-      },
-    },
-  },
-}));
 
 const checkSelectedItems: (
   onChange: (active: Array<string>) => void,
@@ -49,10 +36,8 @@ export const RepositoryFilters = ({
   onChange,
   placeholder,
 }: RepositoryFiltersProps) => {
-  const css = useStyles();
-
   return (
-    <Box className={css.filters}>
+    <div className={styles.filters}>
       <Select
         placeholder={placeholder}
         label=""
@@ -60,10 +45,10 @@ export const RepositoryFilters = ({
         multiple
         onChange={checkSelectedItems(onChange)}
       />
-      <Typography variant="caption">
+      <Text variant="body-x-small">
         *Repositories with more Issues on GitHub than available to view in
         Backstage. To view them go to GitHub.
-      </Typography>
-    </Box>
+      </Text>
+    </div>
   );
 };
