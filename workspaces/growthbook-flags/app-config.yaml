@@ -1,0 +1,41 @@
+app:
+  title: GrowthBook Feature Flags
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+
+# GrowthBook plugin configuration
+# GROWTHBOOK_BASE_URL  - your GrowthBook instance (e.g. https://app.growthbook.io)
+# GROWTHBOOK_SECRET_KEY - read-only API key from GrowthBook Settings > API Keys
+#                         When set, flags are fetched via the Management API (recommended).
+#                         When unset, the SDK API fallback is used and sdkKeys are required.
+# GROWTHBOOK_SDK_KEY_<ENV> - SDK Connection key for each environment (GrowthBook SDK Connections)
+#                            Add one entry per environment you use (e.g. prod, staging, dev).
+#                            The key name must match the growthbook.io/env annotation on entities.
+growthbook:
+  baseUrl: ${GROWTHBOOK_BASE_URL}
+  secretKey: ${GROWTHBOOK_SECRET_KEY}
+  sdkKeys:
+    prod: ${GROWTHBOOK_SDK_KEY_PROD}
+    # staging: ${GROWTHBOOK_SDK_KEY_STAGING}
+    # dev: ${GROWTHBOOK_SDK_KEY_DEV}
