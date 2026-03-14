@@ -85,8 +85,10 @@ describe('NewAnnouncementBanner', () => {
 
     await renderNewAnnouncementBanner(mockAnnouncementsApi(announcementsList));
 
-    expect(await screen.findByText('New Announcement')).toBeInTheDocument();
+    const titles = await screen.findAllByText(/New Announcement/i);
+    expect(titles.length).toBeGreaterThan(0);
     expect(screen.getByText(/This is a new announcement/i)).toBeInTheDocument();
+    expect(screen.getAllByRole('link').length).toBeGreaterThan(0);
   });
 
   it('hides the announcement banner when dismissed', async () => {
@@ -110,11 +112,13 @@ describe('NewAnnouncementBanner', () => {
 
     await renderNewAnnouncementBanner(mockApi);
 
-    const dismissButton = await screen.findByTitle(/mark as seen/i);
+    const dismissButton = await screen.findByRole('button', {
+      name: /mark as seen/i,
+    });
     fireEvent.click(dismissButton);
 
     await waitFor(() => {
-      expect(screen.queryByText('New Announcement')).not.toBeInTheDocument();
+      expect(screen.queryAllByText('New Announcement').length).toBe(0);
     });
 
     expect(mockApi.markLastSeenDate).toHaveBeenCalled();
@@ -128,7 +132,7 @@ describe('NewAnnouncementBanner', () => {
 
     await renderNewAnnouncementBanner(mockApi);
 
-    expect(screen.queryByText(/new announcement/i)).not.toBeInTheDocument();
+    expect(screen.queryAllByText(/new announcement/i).length).toBe(0);
   });
 
   it('captures analytics view events when banner displays', async () => {
@@ -197,7 +201,8 @@ describe('NewAnnouncementBanner', () => {
       analyticsApi,
     );
 
-    const link = await screen.findByText('Clickable Banner Announcement');
+    const links = await screen.findAllByRole('link');
+    const link = links[0];
     fireEvent.click(link);
 
     await waitFor(() => {

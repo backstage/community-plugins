@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Link } from '@backstage/core-components';
+import { Link, Alert, ButtonIcon } from '@backstage/ui';
 import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
@@ -31,51 +31,13 @@ import {
 } from '@backstage-community/plugin-announcements-common';
 import { useSignal } from '@backstage/plugin-signals-react';
 import {
-  makeStyles,
-  Snackbar,
-  SnackbarContent,
-  IconButton,
-  Typography,
-} from '@material-ui/core';
-import Close from '@material-ui/icons/Close';
-import { Alert } from '@material-ui/lab';
+  RiCloseLine,
+  RiMegaphoneLine,
+  RiExternalLinkLine,
+} from '@remixicon/react';
 
 import { announcementViewRouteRef } from '../../routes';
 import { truncate } from '../utils/truncateUtils';
-
-const useStyles = makeStyles(theme => {
-  return {
-    // showing on top, as a block
-    blockPositioning: {
-      padding: theme?.spacing?.(0) ?? 0,
-      position: 'relative',
-      marginBottom: theme?.spacing?.(4) ?? 32,
-      marginTop: theme?.spacing?.(3) ?? -24,
-      zIndex: 'unset',
-    },
-    // showing on top, as a floating alert
-    floatingPositioning: {},
-    icon: {
-      fontSize: 20,
-    },
-    bannerIcon: {
-      fontSize: 20,
-      marginRight: '0.5rem',
-    },
-    content: {
-      width: '100%',
-      maxWidth: 'inherit',
-      flexWrap: 'nowrap',
-      backgroundColor: theme?.palette?.banner?.info ?? '#f0f0f0',
-      display: 'flex',
-      alignItems: 'center',
-      color: theme?.palette?.banner?.text ?? '#000000',
-      '& a': {
-        color: theme?.palette?.banner?.link ?? '#0068c8',
-      },
-    },
-  };
-});
 
 type CardOptions = {
   titleLength?: number;
@@ -84,18 +46,15 @@ type CardOptions = {
 
 type AnnouncementBannerProps = {
   announcement: Announcement;
-  variant?: 'block' | 'floating';
   cardOptions?: CardOptions;
 };
 
 const AnnouncementBanner = (props: AnnouncementBannerProps) => {
-  const classes = useStyles();
   const announcementsApi = useApi(announcementsApiRef);
   const viewAnnouncementLink = useRouteRef(announcementViewRouteRef);
   const analytics = useAnalytics();
   const { t } = useAnnouncementsTranslation();
   const [bannerOpen, setBannerOpen] = useState(true);
-  const variant = props.variant || 'block';
   const announcement = props.announcement;
   const titleLength = props.cardOptions?.titleLength;
   const excerptLength = props.cardOptions?.excerptLength;
@@ -136,24 +95,34 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     ? truncate(announcement.excerpt, excerptLength)
     : announcement.excerpt;
 
-  const message = (
+  const bannerTitle = (
     <>
-      <Typography
-        component="span"
-        className={classes.bannerIcon}
-        variant="inherit"
-      >
-        📣
-      </Typography>
+      {title}
       <Link
-        to={viewAnnouncementLink({ id: announcement.id })}
-        variant="inherit"
+        href={viewAnnouncementLink({ id: announcement.id })}
         onClick={handleLinkClick}
+        variant="body-large"
       >
-        {title}
+        <RiExternalLinkLine
+          aria-hidden
+          style={{
+            width: '0.85em',
+            height: '0.85em',
+            verticalAlign: 'middle',
+            marginLeft: 5,
+          }}
+        />
       </Link>
-      &nbsp;– {excerpt}
     </>
+  );
+
+  const closeButton = (
+    <ButtonIcon
+      icon={<RiCloseLine />}
+      aria-label={t('newAnnouncementBanner.markAsSeen')}
+      onPress={handleDismiss}
+      variant="tertiary"
+    />
   );
 
   useEffect(() => {
@@ -169,36 +138,31 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     });
   }, [analytics, announcement.id, announcement.title, bannerOpen]);
 
+  if (!bannerOpen) {
+    return null;
+  }
+
+  const floatingStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 20,
+    left: '50%',
+    transform: 'translateX(-50%)',
+  };
+
   return (
-    <Snackbar
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={bannerOpen}
-      className={
-        variant === 'block'
-          ? classes.blockPositioning
-          : classes.floatingPositioning
-      }
-    >
-      <SnackbarContent
-        className={classes.content}
-        message={message}
-        action={[
-          <IconButton
-            key="dismiss"
-            title={t('newAnnouncementBanner.markAsSeen')}
-            color="inherit"
-            onClick={handleDismiss}
-          >
-            <Close className={classes.icon} />
-          </IconButton>,
-        ]}
-      />
-    </Snackbar>
+    <Alert
+      style={floatingStyle}
+      status="info"
+      icon={<RiMegaphoneLine />}
+      title={bannerTitle}
+      description={excerpt}
+      customActions={closeButton}
+      mb="4"
+    />
   );
 };
 
 type NewAnnouncementBannerProps = {
-  variant?: 'block' | 'floating';
   max?: number;
   category?: string;
   active?: boolean;
@@ -214,7 +178,6 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
     category,
     tags,
     active,
-    variant,
     current,
     sortBy,
     cardOptions = {
@@ -254,7 +217,7 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
   if (loading) {
     return null;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   }
 
   if (announcements.count === 0) {
@@ -279,7 +242,6 @@ export const NewAnnouncementBanner = (props: NewAnnouncementBannerProps) => {
         <AnnouncementBanner
           key={announcement.id}
           announcement={announcement}
-          variant={variant}
           cardOptions={cardOptions}
         />
       ))}
