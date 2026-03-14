@@ -109,6 +109,53 @@ argocd:
 > [!Note]
 > When using multiple instances, specify the target instances (comma separated) in your entity using the `argocd/instance-name` annotation. If not specified, the plugin will search all available Argo CD instances. It is advised to add this annotation for better performance. To display multiple ArgoCD applications per entity, use `argocd/app-selector` annotation. More information about available Argo CD annotations can be found in this [documentation](../argocd/README.md#how-to-add-argo-cd-frontend-plugin-to-backstage-app).
 
+## Actions API
+
+This plugin automatically registers actions with the [Backstage Actions API](https://backstage.io/docs/backend-system/core-services/actions-registry) when installed. These actions are discoverable and invokable by any service, AI tools via MCP, and other plugins not limited to scaffolder template workflows. They are also automatically available as scaffolder actions, so they can be used in Software Templates.
+
+To enable action discovery, add the plugin to `backend.actions.pluginSources` in your `app-config.yaml`:
+
+```yaml
+backend:
+  actions:
+    pluginSources:
+      - backstage-community-argocd
+```
+
+This tells the Backstage Actions Service to query this plugin for its registered actions, making them available to the Scaffolder and other consumers.
+
+### Available Actions
+
+#### `backstage-community-argocd:create-resources`
+
+Creates ArgoCD resources (project and application) for a given repository.
+
+**Input Parameters:**
+
+| Parameter      | Type   | Required | Description                                                              |
+| -------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| `appName`      | string | Yes      | The name of the application to be created                                |
+| `argoInstance` | string | Yes      | The name of the Argo CD instance                                         |
+| `namespace`    | string | Yes      | The namespace Argo CD will use for resource deployment                   |
+| `repoUrl`      | string | Yes      | The repo URL used in the Argo CD project and application                 |
+| `path`         | string | Yes      | The path of the resources in the repository that Argo CD will watch      |
+| `label`        | string | No       | The label used by Backstage to find applications (defaults to `appName`) |
+| `projectName`  | string | No       | The name of the project (defaults to `appName`)                          |
+
+**Output:**
+
+| Parameter        | Type   | Description                       |
+| ---------------- | ------ | --------------------------------- |
+| `applicationUrl` | string | The URL to the ArgoCD application |
+
+**Attributes:** `destructive: false`, `idempotent: false`, `readOnly: false`
+
+### Using in a Scaffolder Template
+
+Actions registered via the Actions API are automatically available in Scaffolder templates. See [`examples/templates/argocd-create-resources.yaml`](../../examples/templates/argocd-create-resources.yaml) for a full example template.
+
+> **Tip:** You can also browse all available actions (including this one) at `/create/actions` in the Backstage UI.
+
 ## Notifications Integration
 
 You can configure ArgoCD to send real-time notifications to Backstage when application sync events occur (sync succeeded, sync failed, health degraded, etc.). This allows your team to receive alerts directly in the Backstage UI when deployments happen or issues arise.
