@@ -78,6 +78,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const providerId = providerConfig.getString('id');
   const token = providerConfig.getOptionalString('token');
   const model = providerConfig.getString('model');
+  const maxTokens = providerConfig.getOptionalNumber('maxTokens');
+  const temperature = providerConfig.getOptionalNumber('temperature');
 
   const allowedProviders = [
     'openai',
@@ -103,6 +105,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
         providerConfig.getOptionalString('baseUrl') ||
         'https://api.openai.com/v1',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     'openai-responses': {
@@ -110,6 +114,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: providerConfig.getOptionalString('baseUrl') || '',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     claude: {
@@ -117,6 +123,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: 'https://api.anthropic.com/v1',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     gemini: {
@@ -124,6 +132,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: 'https://generativelanguage.googleapis.com',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     ollama: {
@@ -132,6 +142,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       baseUrl:
         providerConfig.getOptionalString('baseUrl') || 'http://localhost:11434',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     litellm: {
@@ -140,6 +152,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       baseUrl:
         providerConfig.getOptionalString('baseUrl') || 'http://localhost:4000',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
   };
 

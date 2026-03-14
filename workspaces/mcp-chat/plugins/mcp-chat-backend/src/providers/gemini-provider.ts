@@ -50,8 +50,8 @@ export class GeminiProvider extends LLMProvider {
     this.geminiModel = this.genAI.getGenerativeModel({
       model: this.model,
       generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 8192,
+        temperature: this.temperature ?? 0.7,
+        maxOutputTokens: this.maxTokens ?? 8192,
       },
       safetySettings: [
         {
@@ -88,8 +88,8 @@ export class GeminiProvider extends LLMProvider {
       const modelConfig: any = {
         model: this.model,
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 8192,
+          temperature: this.temperature ?? 0.7,
+          maxOutputTokens: this.maxTokens ?? 8192,
         },
         safetySettings: this.geminiModel.safetySettings,
       };

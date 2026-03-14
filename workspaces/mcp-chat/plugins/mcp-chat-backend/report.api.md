@@ -181,6 +181,8 @@ export abstract class LLMProvider {
   // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
+  protected maxTokens?: number;
+  // (undocumented)
   protected model: string;
   // (undocumented)
   protected abstract parseResponse(response: any): ChatResponse;
@@ -189,6 +191,8 @@ export abstract class LLMProvider {
     messages: ChatMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse>;
+  // (undocumented)
+  protected temperature?: number;
   // (undocumented)
   abstract testConnection(): Promise<{
     connected: boolean;
@@ -368,7 +372,9 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  maxTokens?: number;
   model: string;
+  temperature?: number;
   type: string;
 }
 
