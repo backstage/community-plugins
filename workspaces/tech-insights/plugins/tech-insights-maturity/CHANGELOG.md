@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.6.6
+
+### Patch Changes
+
+- 3dbf0ae: Make tooltip and reference icon optional so it doesn't show when there is no link configured for the check
+
 ## 0.6.5
 
 ### Patch Changes
