@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-quay
 
+## 2.17.1
+
+### Patch Changes
+
+- 46068bd: Backstage version bump to v1.48.5
+
 ## 2.17.0
 
 ### Minor Changes
