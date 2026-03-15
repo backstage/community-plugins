@@ -1,5 +1,16 @@
 # @backstage-community/plugin-argocd
 
+## 2.7.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- dc8e24e: Backstage version bump to v1.48.5
+- Updated dependencies [dc8e24e]
+  - @backstage-community/plugin-argocd-common@1.14.1
+
 ## 2.7.0
 
 ### Minor Changes
