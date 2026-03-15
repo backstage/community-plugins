@@ -1,5 +1,13 @@
 # @backstage-community/plugin-rbac
 
+## 1.50.2
+
+### Patch Changes
+
+- d737494: Backstage version bump to v1.48.5
+- Updated dependencies [d737494]
+  - @backstage-community/plugin-rbac-common@1.24.1
+
 ## 1.50.1
 
 ### Patch Changes
