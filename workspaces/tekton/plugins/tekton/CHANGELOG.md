@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tekton
 
+## 3.36.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- f5dd5e1: Backstage version bump to v1.48.5
+- Updated dependencies [f5dd5e1]
+  - @backstage-community/plugin-tekton-common@1.19.1
+  - @backstage-community/plugin-tekton-react@0.4.1
+
 ## 3.36.0
 
 ### Minor Changes
