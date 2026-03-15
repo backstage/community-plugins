@@ -1,5 +1,14 @@
 # @backstage-community/plugin-argocd-node
 
+## 1.0.1
+
+### Patch Changes
+
+- 399031e: Updated dependency `undici` to `^7.24.2`.
+- dc8e24e: Backstage version bump to v1.48.5
+- Updated dependencies [dc8e24e]
+  - @backstage-community/plugin-argocd-common@1.14.1
+
 ## 1.0.0
 
 ### Major Changes
