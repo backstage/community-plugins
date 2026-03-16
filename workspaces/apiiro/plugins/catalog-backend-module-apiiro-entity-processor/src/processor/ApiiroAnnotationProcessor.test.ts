@@ -29,6 +29,7 @@ import {
 import { BACKSTAGE_SOURCE_LOCATION_ANNOTATION } from '../helpers/types';
 import { ApiiroApiClient } from '../helpers/apiClient';
 import { CacheManager } from '../helpers/cacheManager';
+import { CacheService } from '@backstage/backend-plugin-api';
 
 const mockGetRepoKey = jest.fn();
 const mockGetApplicationId = jest.fn();
@@ -59,6 +60,7 @@ describe('ApiiroAnnotationProcessor', () => {
 
   let cacheStore: Map<string, any>;
   let mockCache: CatalogProcessorCache;
+  let mockCacheService: CacheService;
 
   const createMockCache = (): CatalogProcessorCache => {
     cacheStore = new Map();
@@ -70,6 +72,32 @@ describe('ApiiroAnnotationProcessor', () => {
         cacheStore.set(key, value);
       }),
     };
+  };
+
+  const createMockCacheService = (): CacheService => {
+    const cache = new Map();
+    return {
+      get: jest.fn().mockImplementation(async (key: string) => {
+        return cache.get(key) || null;
+      }),
+      set: jest.fn().mockImplementation(async (key: string, value: any) => {
+        cache.set(key, value);
+      }),
+      delete: jest.fn().mockImplementation(async (key: string) => {
+        cache.delete(key);
+      }),
+      withOptions: jest.fn().mockReturnValue({
+        get: jest.fn().mockImplementation(async (key: string) => {
+          return cache.get(key) || null;
+        }),
+        set: jest.fn().mockImplementation(async (key: string, value: any) => {
+          cache.set(key, value);
+        }),
+        delete: jest.fn().mockImplementation(async (key: string) => {
+          cache.delete(key);
+        }),
+      }),
+    } as CacheService;
   };
 
   const buildProcessor = (configOverrides?: Record<string, unknown>) => {
@@ -86,7 +114,9 @@ describe('ApiiroAnnotationProcessor', () => {
         baseUrl: 'https://backstage.apiiro.com',
       },
     });
-    return new ApiiroAnnotationProcessor(config);
+    return new ApiiroAnnotationProcessor(config, {
+      cache: mockCacheService,
+    });
   };
 
   beforeEach(() => {
@@ -95,6 +125,7 @@ describe('ApiiroAnnotationProcessor', () => {
     mockGetApplicationId.mockReset();
     mockGetEntityUid.mockReset();
     mockCache = createMockCache();
+    mockCacheService = createMockCacheService();
   });
 
   describe('getProcessorName', () => {
@@ -349,12 +380,13 @@ describe('ApiiroAnnotationProcessor', () => {
       expect(ApiiroApiClient).toHaveBeenCalledWith('test-token');
     });
 
-    it('initializes CacheManager with ApiiroApiClient and backstage URL', () => {
+    it('initializes CacheManager with ApiiroApiClient, backstage URL, and CacheService', () => {
       buildProcessor();
 
       expect(CacheManager).toHaveBeenCalledWith(
         expect.any(Object),
         'https://backstage.apiiro.com',
+        mockCacheService,
         undefined,
         undefined,
       );

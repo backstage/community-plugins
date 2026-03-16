@@ -40,11 +40,12 @@ export const catalogModuleApiiroEntityProcessor = createBackendModule({
         config: coreServices.rootConfig,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
+        cache: coreServices.cache,
       },
-      async init({ catalog, config, discovery, auth }) {
+      async init({ catalog, config, discovery, auth, cache }) {
         const catalogApi = new CatalogClient({ discoveryApi: discovery });
         catalog.addProcessor(
-          new ApiiroAnnotationProcessor(config, { catalogApi, auth }),
+          new ApiiroAnnotationProcessor(config, { catalogApi, auth, cache }),
         );
       },
     });

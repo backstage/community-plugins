@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { CatalogApi } from '@backstage/catalog-client';
-import { AuthService } from '@backstage/backend-plugin-api';
+import { AuthService, CacheService } from '@backstage/backend-plugin-api';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { ApiiroApiClient } from './apiClient';
 import {
@@ -29,26 +28,18 @@ import {
 } from './types';
 
 export class CacheManager {
-  // Static cache that persists across all entity processing calls
-  private static repoCache: CachedRepositoryData | null = null;
-  private static appCache: CachedApplicationData | null = null;
-  private static entityRefCache: CachedEntityRefData | null = null;
-  private static repoLock: { locked: boolean; timestamp: number } = {
-    locked: false,
-    timestamp: 0,
-  };
-  private static appLock: { locked: boolean; timestamp: number } = {
-    locked: false,
-    timestamp: 0,
-  };
-  private static entityRefLock: { locked: boolean; timestamp: number } = {
-    locked: false,
-    timestamp: 0,
-  };
+  // Cache keys for Backstage CacheService
+  private static readonly REPO_CACHE_KEY = 'apiiro:repositories';
+  private static readonly APP_CACHE_KEY = 'apiiro:applications';
+  private static readonly ENTITY_REF_CACHE_KEY = 'apiiro:entity-refs';
+  private static readonly REPO_LOCK_KEY = 'apiiro:repositories:lock';
+  private static readonly APP_LOCK_KEY = 'apiiro:applications:lock';
+  private static readonly ENTITY_REF_LOCK_KEY = 'apiiro:entity-refs:lock';
 
   constructor(
     private readonly apiClient: ApiiroApiClient,
     private readonly backstageUrl: string | undefined,
+    private readonly cacheService: CacheService,
     private readonly catalogApi?: CatalogApi,
     private readonly auth?: AuthService,
   ) {}
@@ -102,65 +93,61 @@ export class CacheManager {
     }
   }
 
-  async refreshRepositoryCacheIfNeeded(
-    _cache: CatalogProcessorCache,
-  ): Promise<void> {
-    const cachedData = CacheManager.repoCache;
+  async refreshRepositoryCacheIfNeeded(): Promise<void> {
+    const cachedData = await this.cacheService.get<CachedRepositoryData>(
+      CacheManager.REPO_CACHE_KEY,
+    );
 
     if (cachedData && !this.isCacheExpired(cachedData.lastFetched)) {
       return;
     }
 
-    const refreshLock = CacheManager.repoLock;
+    const refreshLock = await this.cacheService.get<{
+      locked: boolean;
+      timestamp: number;
+    }>(CacheManager.REPO_LOCK_KEY);
     const now = Date.now();
     if (refreshLock && now - refreshLock.timestamp < REFRESH_LOCK_TTL_MS) {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.refreshRepositoryCacheIfNeeded(_cache);
+      await this.refreshRepositoryCacheIfNeeded();
       return;
     }
-    CacheManager.repoLock = {
+
+    await this.cacheService.set(CacheManager.REPO_LOCK_KEY, {
       locked: true,
       timestamp: now,
-    };
+    });
 
     try {
       const urlToKeyMap = await this.fetchAndBuildRepoMap();
 
-      CacheManager.repoCache = {
-        urlToKeyMap,
-        lastFetched: Date.now(),
-        fetchCompleted: true,
-      };
+      await this.cacheService.set(
+        CacheManager.REPO_CACHE_KEY,
+        {
+          urlToKeyMap,
+          lastFetched: Date.now(),
+          fetchCompleted: true,
+        },
+        { ttl: CACHE_TTL_MS },
+      );
 
-      CacheManager.repoLock = {
-        locked: false,
-        timestamp: 0,
-      };
+      await this.cacheService.delete(CacheManager.REPO_LOCK_KEY);
     } catch (error) {
-      CacheManager.repoLock = {
-        locked: false,
-        timestamp: 0,
-      };
+      await this.cacheService.delete(CacheManager.REPO_LOCK_KEY);
       throw error;
     }
   }
 
-  async getRepoKey(
-    repoUrl: string,
-    cache: CatalogProcessorCache,
-  ): Promise<string | null> {
+  async getRepoKey(repoUrl: string): Promise<string | null> {
     if (!repoUrl) {
       return null;
     }
 
-    await this.refreshRepositoryCacheIfNeeded(cache);
-    const cachedData = CacheManager.repoCache;
-
-    if (!cachedData?.urlToKeyMap) {
-      return null;
-    }
-
-    return cachedData.urlToKeyMap[repoUrl] || null;
+    await this.refreshRepositoryCacheIfNeeded();
+    const cachedData = await this.cacheService.get<CachedRepositoryData>(
+      CacheManager.REPO_CACHE_KEY,
+    );
+    return cachedData?.urlToKeyMap[repoUrl] || null;
   }
 
   private buildApplicationUidToKeyMap(
@@ -204,65 +191,62 @@ export class CacheManager {
     }
   }
 
-  async refreshApplicationCacheIfNeeded(
-    _cache: CatalogProcessorCache,
-  ): Promise<void> {
-    const cachedData = CacheManager.appCache;
+  async refreshApplicationCacheIfNeeded(): Promise<void> {
+    const cachedData = await this.cacheService.get<CachedApplicationData>(
+      CacheManager.APP_CACHE_KEY,
+    );
 
     if (cachedData && !this.isCacheExpired(cachedData.lastFetched)) {
       return;
     }
 
-    const refreshLock = CacheManager.appLock;
+    const refreshLock = await this.cacheService.get<{
+      locked: boolean;
+      timestamp: number;
+    }>(CacheManager.APP_LOCK_KEY);
     const now = Date.now();
     if (refreshLock && now - refreshLock.timestamp < REFRESH_LOCK_TTL_MS) {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.refreshApplicationCacheIfNeeded(_cache);
+      await this.refreshApplicationCacheIfNeeded();
       return;
     }
 
-    CacheManager.appLock = {
+    await this.cacheService.set(CacheManager.APP_LOCK_KEY, {
       locked: true,
       timestamp: now,
-    };
+    });
 
     try {
       const uidToKeyMap = await this.fetchAndBuildAppMap();
-      CacheManager.appCache = {
-        uidToKeyMap,
-        lastFetched: Date.now(),
-        fetchCompleted: true,
-      };
+      await this.cacheService.set(
+        CacheManager.APP_CACHE_KEY,
+        {
+          uidToKeyMap,
+          lastFetched: Date.now(),
+          fetchCompleted: true,
+        },
+        { ttl: CACHE_TTL_MS },
+      );
 
-      CacheManager.appLock = {
-        locked: false,
-        timestamp: 0,
-      };
+      await this.cacheService.delete(CacheManager.APP_LOCK_KEY);
     } catch (error) {
-      CacheManager.appLock = {
-        locked: false,
-        timestamp: 0,
-      };
+      await this.cacheService.delete(CacheManager.APP_LOCK_KEY);
       throw error;
     }
   }
 
   async getApplicationId(
     entityUid: string | undefined,
-    cache: CatalogProcessorCache,
   ): Promise<string | null> {
     if (!entityUid) {
       return null;
     }
 
-    await this.refreshApplicationCacheIfNeeded(cache);
-    const cachedData = CacheManager.appCache;
-
-    if (!cachedData?.uidToKeyMap) {
-      return null;
-    }
-
-    return cachedData.uidToKeyMap[entityUid] || null;
+    await this.refreshApplicationCacheIfNeeded();
+    const cachedData = await this.cacheService.get<CachedApplicationData>(
+      CacheManager.APP_CACHE_KEY,
+    );
+    return cachedData?.uidToKeyMap[entityUid] || null;
   }
 
   private async fetchAndBuildEntityRefMap(): Promise<Record<string, string>> {
@@ -312,72 +296,68 @@ export class CacheManager {
     }
   }
 
-  async refreshEntityRefCacheIfNeeded(
-    _cache: CatalogProcessorCache,
-  ): Promise<void> {
-    const cachedData = CacheManager.entityRefCache;
+  async refreshEntityRefCacheIfNeeded(): Promise<void> {
+    const cachedData = await this.cacheService.get<CachedEntityRefData>(
+      CacheManager.ENTITY_REF_CACHE_KEY,
+    );
 
     if (cachedData && !this.isCacheExpired(cachedData.lastFetched)) {
       return;
     }
 
-    const refreshLock = CacheManager.entityRefLock;
+    const refreshLock = await this.cacheService.get<{
+      locked: boolean;
+      timestamp: number;
+    }>(CacheManager.ENTITY_REF_LOCK_KEY);
     const now = Date.now();
     if (refreshLock && now - refreshLock.timestamp < REFRESH_LOCK_TTL_MS) {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.refreshEntityRefCacheIfNeeded(_cache);
+      await this.refreshEntityRefCacheIfNeeded();
       return;
     }
-    CacheManager.entityRefLock = {
+
+    await this.cacheService.set(CacheManager.ENTITY_REF_LOCK_KEY, {
       locked: true,
       timestamp: now,
-    };
+    });
 
     try {
       const refToUidMap = await this.fetchAndBuildEntityRefMap();
+      await this.cacheService.set(
+        CacheManager.ENTITY_REF_CACHE_KEY,
+        {
+          refToUidMap,
+          lastFetched: Date.now(),
+          fetchCompleted: true,
+        },
+        { ttl: CACHE_TTL_MS },
+      );
 
-      CacheManager.entityRefCache = {
-        refToUidMap,
-        lastFetched: Date.now(),
-        fetchCompleted: true,
-      };
-
-      CacheManager.entityRefLock = {
-        locked: false,
-        timestamp: 0,
-      };
+      await this.cacheService.delete(CacheManager.ENTITY_REF_LOCK_KEY);
     } catch (error) {
-      CacheManager.entityRefLock = {
-        locked: false,
-        timestamp: 0,
-      };
+      await this.cacheService.delete(CacheManager.ENTITY_REF_LOCK_KEY);
       throw error;
     }
   }
 
-  async invalidateEntityRefCache(_cache: CatalogProcessorCache): Promise<void> {
-    CacheManager.entityRefCache = {
+  async invalidateEntityRefCache(): Promise<void> {
+    await this.cacheService.set(CacheManager.ENTITY_REF_CACHE_KEY, {
       refToUidMap: {},
       lastFetched: 0,
       fetchCompleted: false,
-    };
+    });
   }
 
-  async getEntityUid(
-    entityRef: string,
-    cache: CatalogProcessorCache,
-  ): Promise<string | null> {
+  async getEntityUid(entityRef: string): Promise<string | null> {
     if (!entityRef) {
       return null;
     }
 
-    await this.refreshEntityRefCacheIfNeeded(cache);
-    const cachedData = CacheManager.entityRefCache;
+    await this.refreshEntityRefCacheIfNeeded();
+    const cachedData = await this.cacheService.get<CachedEntityRefData>(
+      CacheManager.ENTITY_REF_CACHE_KEY,
+    );
 
-    if (!cachedData?.refToUidMap) {
-      return null;
-    }
-
-    return cachedData.refToUidMap[entityRef] || null;
+    return cachedData?.refToUidMap[entityRef] || null;
   }
 }

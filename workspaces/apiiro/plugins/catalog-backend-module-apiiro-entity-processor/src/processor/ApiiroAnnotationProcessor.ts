@@ -22,7 +22,7 @@ import type { LocationSpec } from '@backstage/plugin-catalog-common';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
-import { AuthService } from '@backstage/backend-plugin-api';
+import { AuthService, CacheService } from '@backstage/backend-plugin-api';
 import {
   APIIRO_METRICS_VIEW_ANNOTATION,
   APIIRO_PROJECT_ANNOTATION,
@@ -41,10 +41,15 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
   private readonly cacheManager: CacheManager;
   private readonly catalogApi?: CatalogApi;
   private readonly auth?: AuthService;
+  private readonly cache: CacheService;
 
   constructor(
     private readonly config: Config,
-    options?: { catalogApi?: CatalogApi; auth?: AuthService },
+    options: {
+      catalogApi?: CatalogApi;
+      auth?: AuthService;
+      cache: CacheService;
+    },
   ) {
     const accessToken = this.config.getOptionalString('apiiro.accessToken');
     const backstageUrl = this.config.getOptionalString('app.baseUrl');
@@ -52,9 +57,11 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
     this.apiClient = new ApiiroApiClient(accessToken);
     this.catalogApi = options?.catalogApi;
     this.auth = options?.auth;
+    this.cache = options.cache;
     this.cacheManager = new CacheManager(
       this.apiClient,
       backstageUrl,
+      this.cache,
       this.catalogApi,
       this.auth,
     );
@@ -145,7 +152,7 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
     _location: LocationSpec,
     _emit: CatalogProcessorEmit,
     _originLocation: LocationSpec,
-    cache: CatalogProcessorCache,
+    _cache: CatalogProcessorCache,
   ): Promise<Entity> {
     if (!this.shouldProcessEntity(entity)) {
       return entity;
@@ -158,25 +165,20 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
       const sourceLocation =
         entity.metadata.annotations?.[BACKSTAGE_SOURCE_LOCATION_ANNOTATION];
       const repoUrl = extractRepoUrlFromSourceLocation(sourceLocation);
-      repoKey = repoUrl
-        ? await this.cacheManager.getRepoKey(repoUrl, cache)
-        : null;
+      repoKey = repoUrl ? await this.cacheManager.getRepoKey(repoUrl) : null;
     }
 
     if (entity.kind === 'System' && this.isApplicationsViewEnabled()) {
       const entityRef = stringifyEntityRef(entity);
-      let entityUid = await this.cacheManager.getEntityUid(entityRef, cache);
+      let entityUid = await this.cacheManager.getEntityUid(entityRef);
 
       if (!entityUid) {
-        await this.cacheManager.invalidateEntityRefCache(cache);
-        entityUid = await this.cacheManager.getEntityUid(entityRef, cache);
+        await this.cacheManager.invalidateEntityRefCache();
+        entityUid = await this.cacheManager.getEntityUid(entityRef);
       }
 
       if (entityUid) {
-        applicationId = await this.cacheManager.getApplicationId(
-          entityUid,
-          cache,
-        );
+        applicationId = await this.cacheManager.getApplicationId(entityUid);
       }
     }
 
