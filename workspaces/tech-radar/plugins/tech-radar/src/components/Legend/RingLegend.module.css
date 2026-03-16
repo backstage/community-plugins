@@ -1,0 +1,40 @@
+.ringItem {
+  border: 1px solid var(--bui-border);
+  background-color: var(--bui-bg-surface-1); /* bg-card */
+  transition: background-color 0.2s;
+}
+
+.ringItem:hover {
+  background-color: rgba(var(--bui-bg-surface-1), 0.4);
+}
+
+.highlighted {
+  border-color: rgba(var(--backstage-theme-palette-primary-main), 0.4);
+  background-color: rgba(var(--bui-bg-surface-1), 0.7);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.radarPreview {
+  margin-top: 0.125rem; /* mt-0.5 */
+  border: 1px solid #d1d5d9; /* border-gray-300 */
+  background-color: var(--bui-bg-surface-1);
+}
+
+.description {
+  margin-top: 0.125rem; /* space-y-0.5 fallback */
+}
+
+.title {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  text-transform: capitalize;
+  letter-spacing: -0.025em; /* tracking-tight */
+  margin: 0;
+}
+
+.text {
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.625; /* leading-relaxed */
+  color: var(--bui-fg-secondary); /* text-muted-foreground */
+  margin: 0;
+}

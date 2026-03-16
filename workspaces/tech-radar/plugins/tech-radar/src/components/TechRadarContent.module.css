@@ -1,0 +1,109 @@
+.root {
+  transition: position 0.3s, width 0.3s, height 0.3s;
+}
+
+.root:fullscreen {
+  overflow-y: auto;
+  background-color: var(--bui-bg-surface-0); /* bg-background */
+  padding-left: 2.5rem; /* px-10 */
+  padding-right: 2.5rem;
+}
+
+.stickyHeader {
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-style: solid;
+  border-color: var(--bui-border); /* border-border */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--bui-bg-surface-0); /* bg-background */
+}
+
+.searchField {
+  max-width: 20rem; /* max-w-80 */
+}
+
+.searchField :global(.bui-SearchFieldInputWrapper) {
+  height: 2.5rem; /* h-10 */
+}
+
+.filter {
+  height: 2.5rem; /* h-10 */
+}
+
+.fullscreenButton {
+  height: 2.5rem; /* h-10 */
+  width: 3rem; /* w-12 */
+  padding: 0.125rem; /* p-0.5 */
+  background-color: var(--bui-bg-surface-1); /* bg-card */
+  border: 1px solid var(--bui-border); /* border-border */
+}
+
+.fullscreenButton svg {
+  height: 22px;
+  width: 22px;
+}
+
+.minimizeIcon {
+  display: none;
+}
+
+.root:fullscreen .minimizeIcon {
+  display: block;
+  height: 1.25rem; /* h-5 */
+  width: 1.25rem; /* w-5 */
+}
+
+.maximizeIcon {
+  display: block;
+  height: 1.25rem; /* h-5 */
+  width: 1.25rem; /* w-5 */
+}
+
+.root:fullscreen .maximizeIcon {
+  display: none;
+}
+
+.mainGrid {
+  width: 100%;
+}
+
+.accordionContainer {
+  flex-basis: 33.333333%;
+}
+
+.radarContainer {
+  flex-basis: 66.666667%;
+  position: relative;
+}
+
+.stickyRadar {
+  position: sticky;
+  top: 9rem;
+  transition: all 0.5s ease-in-out;
+}
+
+.radarPlotWrapper {
+  margin-top: 1rem; /* mt-4 */
+  height: 100%;
+  flex: 1;
+}
+
+.loadingPulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--bui-radius-2);
+  margin-top: 2.75rem; /* mt-11 */
+  height: 100%;
+  width: 100%;
+  background-color: var(--bui-bg-surface-1); /* bg-card */
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}

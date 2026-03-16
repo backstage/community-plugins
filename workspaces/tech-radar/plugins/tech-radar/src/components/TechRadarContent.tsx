@@ -26,7 +26,10 @@ import { RadarFilterContext } from './RadarFilterContext';
 import { TechRadarFilter } from './RadarFilter/TechRadarFilter';
 import { TrendLegend } from './Legend/TrendLegend';
 import { cn } from '../util/cn';
+import { Box, Button, Flex } from '@backstage/ui';
 import { useComponents } from './hooks/useComponents';
+
+import styles from './TechRadarContent.module.css';
 
 import { UNSAFE_PortalProvider } from 'react-aria';
 
@@ -37,7 +40,7 @@ type Props = Readonly<{
 }>;
 
 export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
-  const { Button, SearchField } = useComponents();
+  const { SearchField } = useComponents();
   const { handleSelectedBlip, searchTerm, setSearchTerm } =
     useContext(RadarFilterContext);
 
@@ -60,30 +63,34 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
     Otherwise, the tooltips are placed outside this div, and not rendered.
      */
     <UNSAFE_PortalProvider getContainer={() => ref.current}>
-      <div
-        className={cn(
-          'transition-[position,width,height] duration-300',
-          'group fullscreen:overflow-y-auto fullscreen:bg-background fullscreen:px-10',
-          'flex flex-col gap-2',
-        )}
+      <Flex
+        direction="column"
+        gap="2"
+        className={cn(styles.root, 'group')}
         ref={ref}
       >
-        <div className="flex items-center justify-between gap-2 border-0 border-b border-solid border-border py-2 sticky top-0 z-10 bg-background">
+        <Flex
+          align="center"
+          justify="between"
+          gap="2"
+          py="2"
+          className={styles.stickyHeader}
+        >
           <SearchField
-            className="[&_.bui-SearchFieldInputWrapper]:h-10 max-w-80"
+            className={styles.searchField}
             onChange={value => onSearch(value)}
             value={searchTerm}
             placeholder="Search"
             type="text"
           />
-          <div className="flex gap-2 items-center">
+          <Flex gap="2" align="center">
             <TechRadarFilter
-              className="h-10"
+              className={styles.filter}
               quadrants={quadrants}
               rings={rings}
             />
             <Button
-              className="h-10 w-12 p-0.5 [&_svg]:h-[22px] [&_svg]:w-[22px] bg-card border border-border border-solid"
+              className={styles.fullscreenButton}
               variant="tertiary"
               onClick={() => {
                 return document.fullscreenElement
@@ -91,25 +98,30 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
                   : ref.current?.requestFullscreen();
               }}
             >
-              <Minimize className="hidden h-5 w-5 group-fullscreen:block" />
-              <Maximize className="block h-5 w-5 group-fullscreen:hidden" />
+              <Minimize className={styles.minimizeIcon} />
+              <Maximize className={styles.maximizeIcon} />
             </Button>
             <QuadrantFilterButtons quadrants={quadrants} />
-          </div>
-        </div>
+          </Flex>
+        </Flex>
 
-        <div className="flex w-full gap-10 px-1 flex-col-reverse lg:flex-row">
-          <div className="lg:basis-1/3">
+        <Flex
+          gap="10"
+          px="1"
+          direction={{ initial: 'column-reverse', lg: 'row' }}
+          className={styles.mainGrid}
+        >
+          <Box className={cn(styles.accordionContainer, 'lg:block')}>
             {loading ? (
-              <div className="animate-pulse rounded-md mt-11 h-full w-full bg-card" />
+              <div className={styles.loadingPulse} />
             ) : (
               <RadarAccordion quadrants={quadrants} rings={rings} />
             )}
-          </div>
-          <div className="relative lg:basis-2/3">
-            <div className="sticky top-[9rem] flex flex-col transition-all duration-500 ease-in-out">
+          </Box>
+          <Box className={styles.radarContainer}>
+            <Flex direction="column" className={styles.stickyRadar}>
               <TrendLegend />
-              <div className="flex mt-4 h-full flex-1 justify-center">
+              <Flex justify="center" className={styles.radarPlotWrapper}>
                 <Radar
                   loading={loading}
                   onClick={() => handleSelectedBlip(undefined)}
@@ -118,11 +130,11 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
                 >
                   <RadarBlipsAndLabels quadrants={quadrants} rings={rings} />
                 </Radar>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              </Flex>
+            </Flex>
+          </Box>
+        </Flex>
+      </Flex>
     </UNSAFE_PortalProvider>
   );
 };

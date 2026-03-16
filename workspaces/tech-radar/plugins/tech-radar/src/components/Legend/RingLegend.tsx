@@ -19,7 +19,10 @@ import { Radar } from '../RadarPlot/Radar';
 import { cn } from '../../util/cn';
 
 import color from 'color';
-import { Link } from '@backstage/ui';
+import { Box, Flex, Link, Text } from '@backstage/ui';
+
+import { useComponents } from '../hooks/useComponents';
+import styles from './RingLegend.module.css';
 
 type Props = Readonly<{
   highlighted?: string;
@@ -31,40 +34,37 @@ export const RingLegend = (props: Props) => {
   const { highlighted, quadrants, rings } = props;
 
   return (
-    <div className={cn('flex flex-col gap-2')}>
+    <Flex direction="column" gap="2">
       {rings.map(({ id, name, color: ringColor, description }) => {
         const textColor = color(ringColor).hex();
         const isHighlighted = highlighted === id;
 
         return (
-          <div
-            className={cn(
-              'flex items-start gap-4 p-2',
-              isHighlighted
-                ? 'border-primary/40 bg-muted/70 shadow-sm'
-                : 'border-border bg-card hover:bg-muted/40',
-            )}
+          <Flex
+            align="start"
+            gap="4"
+            p="2"
+            className={cn(styles.ringItem, isHighlighted && styles.highlighted)}
             key={id}
           >
-            <div className="mt-0.5 basis-[10%] border border-gray-300 bg-card p-2">
+            <Box
+              p="2"
+              className={styles.radarPreview}
+              style={{ flexBasis: '10%' }}
+            >
               <Radar
                 highlightRing={id}
                 isInLegend
                 quadrants={quadrants}
                 rings={rings}
               />
-            </div>
+            </Box>
 
-            <div className="flex-1 space-y-0.5">
-              <h3
-                className={cn(
-                  'text-lg font-semibold capitalize tracking-tight',
-                )}
-                style={{ color: textColor }}
-              >
+            <Box className={styles.description} style={{ flex: 1 }}>
+              <h3 className={styles.title} style={{ color: textColor }}>
                 {name}
               </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
+              <Text as="p" className={styles.text}>
                 {description ? (
                   description
                 ) : (
@@ -80,11 +80,11 @@ export const RingLegend = (props: Props) => {
                     </Link>
                   </>
                 )}
-              </p>
-            </div>
-          </div>
+              </Text>
+            </Box>
+          </Flex>
         );
       })}
-    </div>
+    </Flex>
   );
 };

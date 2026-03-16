@@ -1,0 +1,60 @@
+.container {
+  border-radius: 0.25rem; /* rounded */
+  background-color: var(--bui-bg-surface-0); /* bg-background */
+  padding: 0;
+}
+
+.ringHeader {
+  margin-top: 1rem; /* mt-4 */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.ringTitle {
+  text-transform: capitalize;
+}
+
+.noEntries {
+  font-size: 0.875rem; /* text-sm */
+  color: var(--bui-fg-secondary); /* text-muted-foreground */
+}
+
+.blipList {
+  min-width: 15rem; /* min-w-[15rem] */
+}
+
+.accordion {
+  position: relative;
+  border-bottom: 1px solid var(--bui-bg-surface-1); /* border-muted */
+  transition: all 0.2s;
+}
+
+.accordion:first-child {
+  border-top-left-radius: var(--bui-radius-3);
+  border-top-right-radius: var(--bui-radius-3);
+}
+
+.accordion:last-child {
+  border-bottom-left-radius: var(--bui-radius-3);
+  border-bottom-right-radius: var(--bui-radius-3);
+}
+
+.timelineInfo {
+  margin-top: 1rem; /* mt-4 */
+}
+
+.sinceText {
+  font-size: 0.75rem; /* text-xs */
+}
+
+.detailsLink {
+  text-transform: uppercase;
+  color: var(--bui-bg-solid); /* text-primary */
+}
+
+.triangleIcon {
+  fill: var(--bui-fg-secondary); /* fill-muted-foreground */
+}
+
+.rotate180 {
+  transform: rotate(180deg);
+}

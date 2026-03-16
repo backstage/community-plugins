@@ -1,0 +1,40 @@
+.filterButton {
+  background-color: var(--bui-bg-surface-1); /* bg-card */
+  border: 1px solid var(--bui-border); /* border-border */
+  border-style: solid;
+  width: 15rem; /* w-60 */
+  height: 2.5rem; /* h-10 */
+  font-weight: 400; /* font-normal */
+}
+
+.filterButton :global(.bui-ButtonContent) {
+  justify-content: space-between;
+}
+
+.triggerLabelEmpty {
+  color: var(--bui-fg-secondary); /* text-muted-foreground */
+}
+
+.menuItem {
+  width: 100%;
+}
+
+.menuItem :global(.bui-MenuItemWrapper) {
+  width: 100%;
+}
+
+.menuItem :global(.bui-MenuItemContent) {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.optionLabel {
+  flex-grow: 1;
+  margin-right: 0.5rem; /* mr-2 */
+}
+
+.optionCategory {
+  color: var(--bui-fg-secondary); /* text-muted-foreground */
+  font-size: 0.75rem; /* text-xs */
+}

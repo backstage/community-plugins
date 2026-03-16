@@ -18,7 +18,8 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Info, Triangle } from 'lucide-react';
 import { DateTime } from 'luxon';
 
-import { useComponents } from './../hooks/useComponents';
+import { Box, Button, Flex, Link, Text } from '@backstage/ui';
+import { useComponents } from '../hooks/useComponents';
 import { RingLegend } from '../Legend/RingLegend';
 import { RadarFilterContext } from '../RadarFilterContext';
 import { Blip, Quadrant, Ring } from '../../types';
@@ -27,6 +28,9 @@ import color from 'color';
 import { appThemeApiRef } from '@backstage/frontend-plugin-api';
 import { useApi } from '@backstage/core-plugin-api';
 import { useObservable } from 'react-use';
+
+import styles from './RadarAccordion.module.css';
+import { cn } from '../../util/cn';
 
 type Props = Readonly<{
   quadrants: Quadrant[];
@@ -40,24 +44,21 @@ const Moved = (props: {
 }) => {
   const { moved, showLabel = false, size } = props;
   if (!moved) {
-    return <span />;
+    return <Text as="span" />;
   }
 
   return (
-    <span className="inline-flex items-center gap-1.5">
+    <Flex align="center" gap="1.5">
       {showLabel && 'Moved: '}
       {moved === 1 ? (
-        <Triangle
-          className="text-muted-foreground fill-muted-foreground"
-          size={size}
-        />
+        <Triangle className={styles.triangleIcon} size={size} />
       ) : (
         <Triangle
-          className="rotate-180 text-muted-foreground fill-muted-foreground"
+          className={cn(styles.rotate180, styles.triangleIcon)}
           size={size}
         />
       )}
-    </span>
+    </Flex>
   );
 };
 
@@ -83,13 +84,11 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
     Accordion,
     AccordionPanel,
     AccordionTrigger,
-    Button,
     Dialog,
     DialogBody,
     DialogFooter,
     DialogHeader,
     DialogTrigger,
-    Link,
   } = useComponents();
 
   const visibleBlips = useMemo(() => {
@@ -123,7 +122,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
 
   return (
     <>
-      <div className="rounded bg-background p-0">
+      <Box className={styles.container}>
         {rings.map(ring => {
           const ringEntries = visibleBlips.filter(e => e.ring.id === ring.id);
 
@@ -140,8 +139,10 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
 
           return (
             <div key={ring.id}>
-              <h3 className="mt-4 mb-2 flex items-center gap-1">
-                <span className="capitalize">{ring.name.toLowerCase()}</span>
+              <Flex align="center" gap="1" className={styles.ringHeader}>
+                <Text as="span" className={styles.ringTitle}>
+                  {ring.name.toLowerCase()}
+                </Text>
                 <DialogTrigger>
                   <Button variant="tertiary">
                     <Info data-testid="info-icon" />
@@ -163,15 +164,13 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
                     </DialogFooter>
                   </Dialog>
                 </DialogTrigger>
-              </h3>
+              </Flex>
 
               {ringEntries.length === 0 && (
-                <div className="text-sm text-muted-foreground">
-                  No entries found
-                </div>
+                <div className={styles.noEntries}>No entries found</div>
               )}
 
-              <div className="flex flex-col gap-1 min-w-[15rem]">
+              <Flex direction="column" gap="1" className={styles.blipList}>
                 {visibleBlips
                   .filter(blip => blip.timeline?.[0].ring.id === ring.id)
                   .map(blip => {
@@ -193,7 +192,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
 
                     return (
                       <Accordion
-                        className="relative border-b border-muted transition-all first:rounded-t-lg last:rounded-b-lg"
+                        className={styles.accordion}
                         isExpanded={isSelected}
                         onExpandedChange={isExpanded =>
                           onAccordionValueChange(
@@ -205,53 +204,52 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
                         ref={isSelected ? activeItemRef : null}
                       >
                         <AccordionTrigger level={5}>
-                          <div className="flex items-center gap-2">
+                          <Flex align="center" gap="2">
                             {blip.title}
                             {!isSelected && (
                               <Moved moved={timeline.moved} size={12} />
                             )}
-                          </div>
+                          </Flex>
                         </AccordionTrigger>
-                        <AccordionPanel className="flex flex-col gap-2">
-                          <div className="flex gap-2 mt-4">
-                            {timelineDate.isValid && (
-                              <div
-                                className={
-                                  timeline.moved
-                                    ? 'inline-flex items-center gap-2 sm:gap-3'
-                                    : ''
-                                }
-                              >
-                                <Moved
-                                  moved={timeline.moved}
-                                  showLabel
-                                  size={12}
-                                />
-                                <span className="text-xs">
-                                  {'SINCE: '}
-                                  <span className="font-semibold">
-                                    {timelineDate.toISODate()}
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          <div>{blip.timeline[0].description}</div>
-                          <Link
-                            className="uppercase text-primary"
-                            onClick={() => setOpenBlip(blip)}
-                          >
-                            Details
-                          </Link>
+                        <AccordionPanel>
+                          <Flex direction="column" gap="2">
+                            <Flex gap="2" className={styles.timelineInfo}>
+                              {timelineDate.isValid && (
+                                <Flex
+                                  align="center"
+                                  gap={{ initial: '2', sm: '3' }}
+                                >
+                                  <Moved
+                                    moved={timeline.moved}
+                                    showLabel
+                                    size={12}
+                                  />
+                                  <Text as="span" className={styles.sinceText}>
+                                    {'SINCE: '}
+                                    <Text as="span" weight="bold">
+                                      {timelineDate.toISODate()}
+                                    </Text>
+                                  </Text>
+                                </Flex>
+                              )}
+                            </Flex>
+                            <div>{blip.timeline[0].description}</div>
+                            <Link
+                              className={styles.detailsLink}
+                              onClick={() => setOpenBlip(blip)}
+                            >
+                              Details
+                            </Link>
+                          </Flex>
                         </AccordionPanel>
                       </Accordion>
                     );
                   })}
-              </div>
+              </Flex>
             </div>
           );
         })}
-      </div>
+      </Box>
 
       <RadarBlipDetails
         blip={openBlip}
