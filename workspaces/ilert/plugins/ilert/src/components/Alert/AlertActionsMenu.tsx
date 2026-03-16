@@ -199,7 +199,7 @@ export const AlertActionsMenu = ({
 
         <MenuItem key="details" onClick={handleCloseMenu}>
           <Typography variant="inherit" noWrap>
-            <Link to={ilertApi.getAlertDetailsURL(alert)}>View in iLert</Link>
+            <Link to={ilertApi.getAlertDetailsURL(alert)}>View in ilert</Link>
           </Typography>
         </MenuItem>
       </Menu>
