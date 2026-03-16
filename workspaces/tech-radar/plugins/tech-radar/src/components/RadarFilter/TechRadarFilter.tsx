@@ -80,7 +80,6 @@ export const TechRadarFilter = ({ className, quadrants, rings }: Props) => {
           <ChevronDown size={12} className={styles.triggerLabelEmpty} />
         </Button>
         <MenuAutocompleteListbox
-          className="with-custom-css"
           onSelectionChange={keys => {
             handleSelectedBlip(undefined);
             setSelectedFilters(Array.from(keys).map(key => String(key)));

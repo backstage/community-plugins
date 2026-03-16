@@ -1,6 +1,6 @@
 .filterButton {
-  background-color: var(--bui-bg-surface-1); /* bg-card */
-  border: 1px solid var(--bui-border); /* border-border */
+  background-color: var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff)); /* bg-card */
+  border: 1px solid var(--bui-border, var(--backstage-theme-palette-border, #ccc)); /* border-border */
   border-style: solid;
   width: 15rem; /* w-60 */
   height: 2.5rem; /* h-10 */
@@ -12,7 +12,7 @@
 }
 
 .triggerLabelEmpty {
-  color: var(--bui-fg-secondary); /* text-muted-foreground */
+  color: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* text-muted-foreground */
 }
 
 .menuItem {
@@ -35,6 +35,6 @@
 }
 
 .optionCategory {
-  color: var(--bui-fg-secondary); /* text-muted-foreground */
+  color: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* text-muted-foreground */
   font-size: 0.75rem; /* text-xs */
 }

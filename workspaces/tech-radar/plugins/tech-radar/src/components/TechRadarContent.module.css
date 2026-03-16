@@ -4,7 +4,7 @@
 
 .root:fullscreen {
   overflow-y: auto;
-  background-color: var(--bui-bg-surface-0); /* bg-background */
+  background-color: var(--bui-bg-surface-0, var(--backstage-theme-palette-background-default, #fff)); /* bg-background */
   padding-left: 2.5rem; /* px-10 */
   padding-right: 2.5rem;
 }
@@ -13,11 +13,11 @@
   border-width: 0;
   border-bottom-width: 1px;
   border-style: solid;
-  border-color: var(--bui-border); /* border-border */
+  border-color: var(--bui-border, var(--backstage-theme-palette-border, #ccc)); /* border-border */
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: var(--bui-bg-surface-0); /* bg-background */
+  background-color: var(--bui-bg-surface-0, var(--backstage-theme-palette-background-default, #fff)); /* bg-background */
 }
 
 .searchField {
@@ -36,10 +36,10 @@
   height: 2.5rem; /* h-10 */
   width: 3rem; /* w-12 */
   padding: 0.125rem; /* p-0.5 */
-  background-color: var(--bui-bg-surface-1); /* bg-card */
-  border: 1px solid var(--bui-border); /* border-border */
+  background-color: var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff)); /* bg-card */
+  border: 1px solid var(--bui-border, var(--backstage-theme-palette-border, #ccc)); /* border-border */
+  border-style: solid;
 }
-
 .fullscreenButton svg {
   height: 22px;
   width: 22px;
@@ -96,7 +96,7 @@
   margin-top: 2.75rem; /* mt-11 */
   height: 100%;
   width: 100%;
-  background-color: var(--bui-bg-surface-1); /* bg-card */
+  background-color: var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff)); /* bg-card */
 }
 
 @keyframes pulse {
@@ -106,4 +106,8 @@
   50% {
     opacity: .5;
   }
+}
+
+:global(.bui-TooltipArrow) {
+  pointer-events: none;
 }

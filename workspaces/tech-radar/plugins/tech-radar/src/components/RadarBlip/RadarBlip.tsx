@@ -21,6 +21,8 @@ import { RadarFilterContext } from '../RadarFilterContext';
 import { cn } from '../../util/cn';
 import color from 'color';
 
+import styles from './RadarBlip.module.css';
+
 type RadarBlipProps = Readonly<{
   blip: Blip;
   muted?: boolean;
@@ -41,10 +43,10 @@ const makeBlipSvg = (
   },
 ) => {
   const sharedClasses = cn(
-    'cursor-pointer [transition-property:opacity,stroke] duration-200',
-    !visible && 'opacity-10',
-    visible && muted && !selected && 'opacity-30',
-    visible && (!muted || selected) && 'opacity-100',
+    styles.shared,
+    !visible && styles.invisible,
+    visible && muted && !selected && styles.muted,
+    visible && (!muted || selected) && styles.visible,
   );
 
   const fillStyle = color(ringColor).hex();
@@ -62,7 +64,7 @@ const makeBlipSvg = (
         <circle r={BLIP_RADIUS - 1} />
       </clipPath>
       <text
-        className="pointer-events-none select-none fill-white text-[5px] font-semibold tracking-tighter"
+        className={styles.blipText}
         clipPath={`url(#clip-${id})`}
         dominantBaseline="middle"
         textAnchor="middle"
@@ -84,8 +86,8 @@ const makeBlipSvg = (
         <path
           className={cn(
             sharedClasses,
-            'duration-100',
-            selected ? 'opacity-100' : 'opacity-0',
+            styles.duration100,
+            selected ? styles.opacity100 : styles.opacity0,
           )}
           d={moved > 0 ? 'M -11,5 11,5 0,-13 z' : 'M -11,-5 11,-5 0,13 z'}
           strokeWidth={1.5}
@@ -105,8 +107,8 @@ const makeBlipSvg = (
       <circle
         className={cn(
           sharedClasses,
-          'duration-100',
-          selected ? 'opacity-100' : 'opacity-0',
+          styles.duration100,
+          selected ? styles.opacity100 : styles.opacity0,
         )}
         r={BLIP_RADIUS - 1 + 2}
         strokeWidth={2}

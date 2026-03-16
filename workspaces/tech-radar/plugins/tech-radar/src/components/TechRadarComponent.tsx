@@ -15,8 +15,6 @@
  */
 import { HTMLAttributes, useMemo } from 'react';
 
-import '../css/bui-styles.css';
-import '../css/tech-radar.css';
 import { TechRadarContent } from './TechRadarContent';
 import {
   ComponentContext,
@@ -82,7 +80,7 @@ export const TechRadarComponent = ({
       value={{ ...defaultComponents, ...customComponents }}
     >
       <RadarFilterContextWrapper allBlips={allBlips} quadrants={quadrants}>
-        <div className="with-custom-css" {...props}>
+        <div {...props}>
           <TechRadarContent
             loading={loading}
             rings={rings}

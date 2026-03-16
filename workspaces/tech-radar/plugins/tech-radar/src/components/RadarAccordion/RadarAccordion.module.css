@@ -1,6 +1,6 @@
 .container {
   border-radius: 0.25rem; /* rounded */
-  background-color: var(--bui-bg-surface-0); /* bg-background */
+  background-color: var(--bui-bg-surface-0, var(--backstage-theme-palette-background-default, #fff)); /* bg-background */
   padding: 0;
 }
 
@@ -15,7 +15,7 @@
 
 .noEntries {
   font-size: 0.875rem; /* text-sm */
-  color: var(--bui-fg-secondary); /* text-muted-foreground */
+  color: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* text-muted-foreground */
 }
 
 .blipList {
@@ -24,7 +24,7 @@
 
 .accordion {
   position: relative;
-  border-bottom: 1px solid var(--bui-bg-surface-1); /* border-muted */
+  border-bottom: 1px solid var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff)); /* border-muted */
   transition: all 0.2s;
 }
 
@@ -48,11 +48,11 @@
 
 .detailsLink {
   text-transform: uppercase;
-  color: var(--bui-bg-solid); /* text-primary */
+  color: var(--bui-bg-solid, var(--backstage-theme-palette-primary-main, #333)); /* text-primary */
 }
 
 .triangleIcon {
-  fill: var(--bui-fg-secondary); /* fill-muted-foreground */
+  fill: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* fill-muted-foreground */
 }
 
 .rotate180 {

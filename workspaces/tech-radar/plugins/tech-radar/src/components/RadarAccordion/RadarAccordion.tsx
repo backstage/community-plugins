@@ -148,7 +148,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
                     <Info data-testid="info-icon" />
                   </Button>
 
-                  <Dialog className="with-custom-css" width={1000}>
+                  <Dialog width={1000}>
                     <DialogHeader>Legend</DialogHeader>
                     <DialogBody>
                       <RingLegend

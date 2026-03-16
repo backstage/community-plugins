@@ -5,11 +5,11 @@
 .legend {
   font-size: 0.75rem; /* text-xs */
   font-weight: 500; /* font-medium */
-  color: var(--bui-fg-secondary); /* text-muted-foreground */
+  color: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* text-muted-foreground */
 }
 
 .triangleIcon {
-  fill: var(--bui-fg-secondary); /* fill-muted-foreground */
+  fill: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* fill-muted-foreground */
 }
 
 .rotate180 {

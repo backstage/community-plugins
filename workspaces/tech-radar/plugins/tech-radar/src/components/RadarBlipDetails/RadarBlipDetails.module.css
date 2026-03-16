@@ -17,7 +17,7 @@
 }
 
 .triangleIcon {
-  fill: var(--bui-fg-secondary); /* fill-muted-foreground */
+  fill: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* fill-muted-foreground */
 }
 
 .rotate180 {

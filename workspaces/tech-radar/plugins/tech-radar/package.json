@@ -73,8 +73,7 @@
     "luxon": "^3.7.2",
     "react-aria": "^3.46.0",
     "react-aria-components": "^1.13.0",
-    "react-use": "^17.2.4",
-    "tailwind-merge": "^3.4.0"
+    "react-use": "^17.2.4"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
