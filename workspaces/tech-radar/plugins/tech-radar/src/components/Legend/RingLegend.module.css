@@ -1,18 +1,18 @@
 .ringItem {
-  border: 1px solid var(--bui-border, var(--backstage-theme-palette-border, #ccc));
-  background-color: var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff));
+  border: 1px solid var(--bui-border);
+  background-color: var(--bui-bg-surface-1);
   transition: background-color 0.2s ease-in-out;
 }
 
 .highlighted {
-  background-color: var(--bui-bg-neutral-on-surface-1, rgba(0, 0, 0, 0.05));
+  background-color: var(--bui-bg-neutral-on-surface-1);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .radarPreview {
   margin-top: 0.125rem; /* mt-0.5 */
   border: 1px solid #d1d5d9; /* border-gray-300 */
-  background-color: var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff));
+  background-color: var(--bui-bg-surface-1);
 }
 
 .description {
@@ -30,6 +30,6 @@
 .text {
   font-size: 0.875rem; /* text-sm */
   line-height: 1.625; /* leading-relaxed */
-  color: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* text-muted-foreground */
+  color: var(--bui-fg-secondary); /* text-muted-foreground */
   margin: 0;
 }

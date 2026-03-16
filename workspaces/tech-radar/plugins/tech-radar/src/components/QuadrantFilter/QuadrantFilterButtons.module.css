@@ -3,8 +3,8 @@
   aspect-ratio: 5 / 3;
   height: 2.5rem; /* h-10 */
   border-radius: var(--bui-radius-2); /* rounded-md */
-  border: 1px solid var(--bui-border, var(--backstage-theme-palette-border, #ccc)); /* border-border */
-  background-color: var(--bui-bg-surface-1, var(--backstage-theme-palette-background-paper, #fff)); /* bg-card */
+  border: 1px solid var(--bui-border); /* border-border */
+  background-color: var(--bui-bg-surface-1); /* bg-card */
 }
 
 .svg {
@@ -16,7 +16,7 @@
 
 .svgLine,
 .svgCircle {
-  stroke: var(--bui-fg-secondary, var(--backstage-theme-palette-text-secondary, #666)); /* stroke-muted-foreground */
+  stroke: var(--bui-fg-secondary); /* stroke-muted-foreground */
 }
 
 .quadrantButton {
