@@ -28,7 +28,7 @@
     "@backstage/core-plugin-api": "^1.12.3",
     "@backstage/integration-react": "^1.2.15",
     "@backstage/plugin-api-docs": "^0.13.4",
-    "@backstage/plugin-catalog": "^1.33.0",
+    "@backstage/plugin-catalog": "^1.33.1",
     "@backstage/plugin-catalog-common": "^1.1.8",
     "@backstage/plugin-catalog-graph": "^0.5.7",
     "@backstage/plugin-catalog-import": "^0.13.10",
@@ -52,8 +52,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.32.3",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/react-dom": "*"
   },
   "browserslist": {

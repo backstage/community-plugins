@@ -1,5 +1,30 @@
 # @backstage-community/plugin-argocd
 
+## 2.7.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- dc8e24e: Backstage version bump to v1.48.5
+- Updated dependencies [dc8e24e]
+  - @backstage-community/plugin-argocd-common@1.14.1
+
+## 2.7.0
+
+### Minor Changes
+
+- 2cde93e: Add additional functionality to the ArgoCDService and move it to a new argocd-node plugin. These new functions will be used in the ArgoCD Scaffolder plugin.
+- c59fa05: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 9e0c387: pass namespace to getRevisionDetailsList in DeploymentLifecycle
+- Updated dependencies [2cde93e]
+- Updated dependencies [c59fa05]
+  - @backstage-community/plugin-argocd-common@1.14.0
+
 ## 2.6.0
 
 ### Minor Changes

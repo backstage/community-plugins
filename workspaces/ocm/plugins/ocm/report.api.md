@@ -4,17 +4,15 @@
 
 ```ts
 
-/// <reference types="react" />
-
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Cluster } from '@backstage-community/plugin-ocm-common';
-import { IconComponent } from '@backstage/core-plugin-api';
+import { ComponentType } from 'react';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
-export const ClusterAvailableResourceCard: () => any;
+export const ClusterAvailableResourceCard: () => JSX_2.Element;
 
 // @public (undocumented)
 export const ClusterContextProvider: (props: any) => JSX_2.Element;
@@ -30,10 +28,12 @@ export type ClusterContextType = {
 export const ClusterInfoCard: () => JSX_2.Element;
 
 // @public (undocumented)
-export const OcmIcon: IconComponent;
+export const OcmIcon: ComponentType<{
+    fontSize?: "small" | "inherit" | "medium" | "large" | undefined;
+}>;
 
 // @public (undocumented)
-export const OcmPage: ({ logo }: {
+export const OcmPage: (input: {
     logo?: ReactNode;
 }) => JSX_2.Element;
 

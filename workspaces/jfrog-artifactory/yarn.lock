@@ -416,7 +416,7 @@ __metadata:
     "@testing-library/react": "npm:^16.3.2"
     "@types/luxon": "npm:^3"
     cross-fetch: "npm:4.1.0"
-    filesize: "npm:^10.1.6"
+    filesize: "npm:^11.0.0"
     luxon: "npm:^3.6.1"
     react-router-dom: "npm:^6.26.2"
     react-use: "npm:^17.4.0"
@@ -11207,10 +11207,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"filesize@npm:^10.1.6":
-  version: 10.1.6
-  resolution: "filesize@npm:10.1.6"
-  checksum: 10/e800837c4fc02303f1944d5a4c7b706df1c5cd95d745181852604fb00a1c2d55d2d3921252722bd2f0c86b59c94edaba23fa224776bbf977455d4034e7be1f45
+"filesize@npm:^11.0.0":
+  version: 11.0.13
+  resolution: "filesize@npm:11.0.13"
+  checksum: 10/3797c6f6981d5d35ae224121e86d97ea942847b95b67170266ca442e2fa600f0bb9f99687a8b692d2275e964cf912bd88e148a6ddffb7b6b1d813076d40370eb
   languageName: node
   linkType: hard
 
@@ -20167,9 +20167,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^7.2.3":
-  version: 7.10.0
-  resolution: "undici@npm:7.10.0"
-  checksum: 10/41d8ccd5b5e35bcd9035a5a640d9020f9ea1a2ef3dffb3e29518ff16ca01957833f1befe141b3a58db09015174681614732f9d322b0bc7f78855f51020bd744e
+  version: 7.24.1
+  resolution: "undici@npm:7.24.1"
+  checksum: 10/0af4ec2fc2ae50b1d0636895793ea2274a89a7cd445690089a1b957c4ac4a0336e48ab9ac48a4e8f5023d4b5eab56368c3f17c75d6b4c81b4281b674d1e60c9f
   languageName: node
   linkType: hard
 

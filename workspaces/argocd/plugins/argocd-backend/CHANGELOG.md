@@ -1,5 +1,32 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.2.1
+
+### Patch Changes
+
+- 399031e: Updated dependency `undici` to `^7.24.2`.
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+- dc8e24e: Backstage version bump to v1.48.5
+- Updated dependencies [399031e]
+- Updated dependencies [dc8e24e]
+  - @backstage-community/plugin-argocd-node@1.0.1
+  - @backstage-community/plugin-argocd-common@1.14.1
+
+## 1.2.0
+
+### Minor Changes
+
+- 2cde93e: Add additional functionality to the ArgoCDService and move it to a new argocd-node plugin. These new functions will be used in the ArgoCD Scaffolder plugin.
+- c59fa05: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [2cde93e]
+- Updated dependencies [2cde93e]
+- Updated dependencies [c59fa05]
+  - @backstage-community/plugin-argocd-node@1.0.0
+  - @backstage-community/plugin-argocd-common@1.14.0
+
 ## 1.1.0
 
 ### Minor Changes

@@ -18,7 +18,6 @@ import { match } from 'path-to-regexp';
 import type { QueryParams } from '../api';
 import {
   ProjectStatisticsSuccessResponseData,
-  EntityURL,
   OrganizationProjectSuccessResponseData,
   PaginationQueryParams,
   Project,
@@ -44,7 +43,7 @@ type OverviewData = {
 
 export const dataProjectParser = (
   projectStatistics: Array<
-    ProjectStatisticsSuccessResponseData & { entity: EntityURL }
+    ProjectStatisticsSuccessResponseData & { entityUrl?: string }
   >,
   organizationProjects: OrganizationProjectSuccessResponseData[],
 ) => {
@@ -56,7 +55,7 @@ export const dataProjectParser = (
   const projectData = projectStatistics.reduce(
     (
       prev: OverviewData,
-      next: ProjectStatisticsSuccessResponseData & { entity: EntityURL },
+      next: ProjectStatisticsSuccessResponseData & { entityUrl?: string },
     ) => {
       const dependenciesCritical =
         next.statistics[FINDING_TYPE.DEPENDENCIES]
@@ -132,7 +131,7 @@ export const dataProjectParser = (
         uuid: next.uuid,
         name: next.name,
         path: next.path,
-        entity: next.entity,
+        entityUrl: next.entityUrl,
         applicationName: organizationData[next.uuid].applicationName,
         applicationUuid: next.applicationUuid,
         lastScan: next.statistics[FINDING_TYPE.LAST_SCAN].lastScanTime,
@@ -164,7 +163,9 @@ export const parseEntityURL = (entityUrl?: string) => {
       return null;
     }
 
-    const matches = entityUrl.match(
+    // Extract the base URL (remove "url:" prefix if present)
+    const cleanUrl = entityUrl.replace(/^url:/, '');
+    const matches = cleanUrl.match(
       /https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(:[0-9]{1,5})?(\/.*)?/g,
     );
 
@@ -173,16 +174,61 @@ export const parseEntityURL = (entityUrl?: string) => {
     }
     const url = new URL(matches[0]);
     const hostname = url.host.toLowerCase();
-    let matcher = match('/:org/:repo', { end: false });
 
+    // Handle different SCM providers using path-to-regexp patterns
+    let path;
     if (hostname === AZURE_HOST_NAME) {
-      matcher = match('/:org/:project/_git/:repo', { end: false });
+      // Azure DevOps format: /org/project/_git/repo
+      const matcher = match('/:org/:project/_git/:repo', { end: false });
+      const extracted = matcher(url.pathname);
+      if (extracted) {
+        path = `/${extracted.params.org}/${extracted.params.project}/_git/${extracted.params.repo}`;
+      }
+    } else if (hostname.includes('gitlab')) {
+      // GitLab format: /org/repo or /group/subgroup/.../repo
+      // Remove GitLab-specific parts like /-/tree/branch
+      const cleanPath = url.pathname.replace(/\/-\/(tree|blob)\/[^\/]+.*$/, '');
+
+      // Use a pattern that matches any number of segments between org and repo
+      const matcher = match('/:org/:repo', { end: false });
+      const extracted = matcher(cleanPath);
+
+      if (extracted) {
+        // For GitLab, preserve the full path structure to support subgroups
+        path = cleanPath;
+      }
+    } else {
+      // GitHub and Bitbucket format: /org/repo
+      const matcher = match('/:org/:repo', { end: false });
+      const extracted = matcher(url.pathname);
+      if (extracted) {
+        path = `/${extracted.params.org}/${extracted.params.repo}`;
+      }
     }
-    const extractedContent = matcher(url.pathname);
-    if (extractedContent) {
-      return { ...extractedContent, host: hostname };
-    }
+
+    return path ? { host: hostname, path } : null;
+  } catch (error) {
     return null;
+  }
+};
+
+/**
+ * Generates entity URL for Backstage navigation
+ * @param entity - Backstage entity
+ * @returns Entity URL string or null if unable to generate
+ */
+export const generateEntityUrl = (entity: Entity): string | null => {
+  try {
+    const source = 'catalog';
+    const namespace = entity?.metadata?.namespace;
+    const kind = entity?.kind?.toLowerCase();
+    const entityName = entity?.metadata?.name;
+
+    if (!namespace || !kind || !entityName) {
+      return null;
+    }
+
+    return `/${source}/${namespace}/${kind}/${entityName}`;
   } catch (error) {
     return null;
   }
@@ -196,37 +242,33 @@ export const dataMatcher = (
   return entities.reduce(
     (
       prev: Array<
-        ProjectStatisticsSuccessResponseData & {
-          entity: EntityURL;
-        }
+        ProjectStatisticsSuccessResponseData & { entityUrl?: string }
       >,
       next: Entity,
     ) => {
-      const entityURL = parseEntityURL(
+      const parsedSourceLocation = parseEntityURL(
         next?.metadata?.annotations?.['backstage.io/source-location'],
       );
 
-      if (!entityURL) {
+      if (!parsedSourceLocation) {
         return prev;
       }
 
       // NOTE: Find project based on Github URL
       const relatedProjects =
-        projectSourceURL[`${entityURL?.host}${entityURL?.path}`]?.projectObjs;
+        projectSourceURL[
+          `${parsedSourceLocation?.host}${parsedSourceLocation?.path}`
+        ]?.projectObjs;
 
       if (!relatedProjects) {
         return prev;
       }
 
-      const entity = {
-        path: entityURL.path,
-        params: entityURL.params,
-        namespace: next.metadata.namespace,
-        kind: 'component',
-        source: 'catalog',
-      };
+      const entityUrl = generateEntityUrl(next);
 
-      relatedProjects.forEach(project => prev.push({ ...project, entity }));
+      relatedProjects.forEach(project =>
+        prev.push({ ...project, entityUrl: entityUrl ?? undefined }),
+      );
 
       return prev;
     },

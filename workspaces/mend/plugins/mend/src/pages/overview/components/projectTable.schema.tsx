@@ -17,7 +17,12 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { Tag, TagColor, type TableRowProjectProps } from '../../../components';
+import {
+  Tag,
+  Tooltip,
+  TagColor,
+  type TableRowProjectProps,
+} from '../../../components';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import { ProjectTableLanguages } from './ProjectTableLanguages';
 
@@ -57,6 +62,7 @@ const classes: Record<string, CSSProperties> = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    display: 'inline-block',
   },
 };
 
@@ -91,6 +97,8 @@ export const projectColumn = [
     title: 'Application',
     field: PROJECT_FIELD.APPLICATION_NAME,
     ...textColumn,
+    width: '200px',
+    minWidth: '200px',
   },
   {
     title: 'Total Findings',
@@ -179,7 +187,7 @@ export const projectTableColumnSchema = projectColumn.map(rowData => {
       const value = getObjValue(row, rowData.field) as any;
       switch (rowData.field) {
         case PROJECT_FIELD.NAME: {
-          const uri = `/${row.entity?.source}/${row.entity?.namespace}/${row.entity?.kind}/${row.entity?.params.repo}/mend?filter=${row.name}`;
+          const uri = `${row?.entityUrl}/mend?filter=${row.name}`;
 
           return (
             <Link to={uri}>
@@ -207,13 +215,15 @@ export const projectTableColumnSchema = projectColumn.map(rowData => {
         }
         default: {
           return (
-            <Typography
-              component="span"
-              style={classes.ellipsis}
-              variant="body2"
-            >
-              {value}
-            </Typography>
+            <Tooltip tooltipContent={value} isAlwaysVisible={false}>
+              <Typography
+                component="span"
+                style={classes.ellipsis}
+                variant="body2"
+              >
+                {value}
+              </Typography>
+            </Tooltip>
           );
         }
       }
