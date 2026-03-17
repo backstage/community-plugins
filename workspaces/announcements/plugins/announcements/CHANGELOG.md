@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 2.5.0
+
+### Minor Changes
+
+- a598f92: Migrate Announcements Banner to the Backstage UI using the Alert component.
+
+  This change also removes the `variant` React prop. If you were using the prop with the `block` or `floating` values, it can be safely removed, as the banner now uses the Backstage UI Alert default style.
+
+### Patch Changes
+
+- 693fc2f: Replace Announcements plugin icon from Material UI's RecordVoiceOverIcon to Remix Icon's RiMegaphoneLine. This change is made in the SearchPage component, the search result list item component, the search result type blueprint and use by default for nav blueprint.
+
 ## 2.4.0
 
 ### Minor Changes
