@@ -15,7 +15,7 @@
  */
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Link, Alert, ButtonIcon } from '@backstage/ui';
+import { Link, Alert, ButtonIcon, Box } from '@backstage/ui';
 import { useApi, useRouteRef, useAnalytics } from '@backstage/core-plugin-api';
 import {
   announcementsApiRef,
@@ -47,6 +47,20 @@ type CardOptions = {
 type AnnouncementBannerProps = {
   announcement: Announcement;
   cardOptions?: CardOptions;
+};
+
+const floatingStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 20,
+  left: '50%',
+  transform: 'translateX(-50%)',
+};
+
+const externalLinkIconStyle: React.CSSProperties = {
+  width: '0.85em',
+  height: '0.85em',
+  verticalAlign: 'middle',
+  marginLeft: 5,
 };
 
 const AnnouncementBanner = (props: AnnouncementBannerProps) => {
@@ -96,24 +110,16 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     : announcement.excerpt;
 
   const bannerTitle = (
-    <>
+    <Box>
       {title}
       <Link
         href={viewAnnouncementLink({ id: announcement.id })}
         onClick={handleLinkClick}
         variant="body-large"
       >
-        <RiExternalLinkLine
-          aria-hidden
-          style={{
-            width: '0.85em',
-            height: '0.85em',
-            verticalAlign: 'middle',
-            marginLeft: 5,
-          }}
-        />
+        <RiExternalLinkLine aria-hidden style={externalLinkIconStyle} />
       </Link>
-    </>
+    </Box>
   );
 
   const closeButton = (
@@ -141,13 +147,6 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   if (!bannerOpen) {
     return null;
   }
-
-  const floatingStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 20,
-    left: '50%',
-    transform: 'translateX(-50%)',
-  };
 
   return (
     <Alert
