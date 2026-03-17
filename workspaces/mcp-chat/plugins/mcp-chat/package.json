@@ -10,6 +10,21 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "mcp-chat",
@@ -33,6 +48,7 @@
     "@backstage/core-components": "^0.18.7",
     "@backstage/core-plugin-api": "^1.12.3",
     "@backstage/errors": "^1.2.7",
+    "@backstage/frontend-plugin-api": "^0.14.1",
     "@backstage/theme": "^0.7.2",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.17.1",
