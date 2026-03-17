@@ -57,12 +57,7 @@ export const RadarBlipDetails = (props: Props) => {
   };
 
   return (
-    <Dialog
-      onOpenChange={onOpenChange}
-      isOpen={!!blip}
-      width={900}
-      className="with-custom-css"
-    >
+    <Dialog onOpenChange={onOpenChange} isOpen={!!blip} width={900}>
       <DialogHeader>{blip?.title}</DialogHeader>
       <DialogBody className={styles.dialogContent}>
         <table>

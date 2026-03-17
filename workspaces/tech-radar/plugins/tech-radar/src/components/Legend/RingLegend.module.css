@@ -1,17 +1,12 @@
 .ringItem {
   border: 1px solid var(--bui-border);
-  background-color: var(--bui-bg-surface-1); /* bg-card */
-  transition: background-color 0.2s;
-}
-
-.ringItem:hover {
-  background-color: rgba(var(--bui-bg-surface-1), 0.4);
+  background-color: var(--bui-bg-surface-1);
+  transition: background-color 0.2s ease-in-out;
 }
 
 .highlighted {
-  border-color: rgba(var(--backstage-theme-palette-primary-main), 0.4);
-  background-color: rgba(var(--bui-bg-surface-1), 0.7);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  background-color: var(--bui-bg-neutral-on-surface-1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .radarPreview {

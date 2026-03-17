@@ -38,8 +38,8 @@
   padding: 0.125rem; /* p-0.5 */
   background-color: var(--bui-bg-surface-1); /* bg-card */
   border: 1px solid var(--bui-border); /* border-border */
+  border-style: solid;
 }
-
 .fullscreenButton svg {
   height: 22px;
   width: 22px;
@@ -106,4 +106,8 @@
   50% {
     opacity: .5;
   }
+}
+
+:global(.bui-TooltipArrow) {
+  pointer-events: none;
 }

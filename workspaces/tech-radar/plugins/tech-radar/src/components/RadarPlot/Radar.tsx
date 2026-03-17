@@ -31,6 +31,8 @@ import { useComponents } from '../hooks/useComponents';
 import { Focusable } from 'react-aria-components';
 import color from 'color';
 
+import styles from './Radar.module.css';
+
 type RadarProps = Readonly<{
   highlightRing?: string;
   isInLegend?: boolean;
@@ -71,10 +73,7 @@ export const Radar = ({
 
   return (
     <svg
-      className={cn(
-        'select-none font-sans max-h-[calc(100vh-300px)]',
-        loading ? 'animate-pulse' : '',
-      )}
+      className={cn(styles.radarSvg, loading && 'animate-pulse')}
       onClick={onClick}
       viewBox={`${viewBoxMinX} ${viewBoxMinY} ${adjustedViewBoxSize} ${adjustedViewBoxSize}`}
     >
@@ -82,7 +81,7 @@ export const Radar = ({
       {quadrants.map((quadrant, qIndex) => {
         return (
           <g
-            className="transition-opacity duration-300"
+            className={styles.quadrantGroup}
             key={qIndex}
             transform={`translate(${quadrant.offsetX * QUADRANT_GAP}, ${
               quadrant.offsetY * QUADRANT_GAP
@@ -104,18 +103,22 @@ export const Radar = ({
                   ? color(ring.color).string()
                   : undefined;
 
-                const stroke = isInLegend
-                  ? 'stroke-muted-foreground'
-                  : 'stroke-border';
+                const strokeClass = isInLegend
+                  ? styles.strokeMuted
+                  : styles.strokeBorder;
                 const strokeWidth = isInLegend ? '8' : '1';
+
+                const defaultFill = 'var(--bui-bg-surface-1)';
+                const defaultStroke = 'var(--bui-border)';
 
                 return (
                   <path
-                    className={cn('fill-card', stroke)}
+                    className={cn(styles.ringPath, strokeClass)}
                     d={pathD}
                     key={ring.id}
                     strokeWidth={strokeWidth}
-                    style={{ fill: highlightColor }}
+                    fill={highlightColor || defaultFill}
+                    stroke={highlightColor ? undefined : defaultStroke}
                   />
                 );
               })}
@@ -125,8 +128,8 @@ export const Radar = ({
 
       <g
         className={cn(
-          'transition-opacity duration-300',
-          loading ? 'opacity-0' : 'opacity-100',
+          styles.blipGroup,
+          loading ? styles.opacity0 : styles.opacity100,
         )}
       >
         {children}
@@ -182,10 +185,7 @@ export const RadarBlipsAndLabels = ({
       {
         /* Quadrant Label on Rim */
         quadrants.map((quadrant, qIndex) => (
-          <text
-            className="cursor-pointer fill-muted-foreground font-light uppercase tracking-[0.4em]"
-            key={quadrant.name}
-          >
+          <text className={styles.quadrantLabel} key={quadrant.name}>
             <textPath
               dominantBaseline="central"
               href={`#${id}-label-path-${qIndex}`}
@@ -206,7 +206,7 @@ export const RadarBlipsAndLabels = ({
           <Focusable excludeFromTabOrder>
             <RadarBlip
               blip={blip}
-              className="focus:outline-none"
+              className={styles.focusableBlip}
               data-testid={blip.id}
               muted={!!selectedBlip}
               onClick={e => {
@@ -244,7 +244,7 @@ export const RadarBlipsAndLabels = ({
         if (i === 0) {
           return (
             <text
-              className="cursor-pointer fill-muted-foreground align-middle text-[12px] uppercase"
+              className={styles.ringLabel}
               dominantBaseline="central"
               key={`ring-label-${i}`}
               textAnchor="middle"
@@ -260,7 +260,7 @@ export const RadarBlipsAndLabels = ({
           <g key={`ring-labels-${i}`}>
             {/* Right Axis Label */}
             <text
-              className="cursor-pointer fill-muted-foreground text-[12px] uppercase"
+              className={styles.ringLabel}
               dominantBaseline="middle"
               textAnchor="middle"
               x={centerX + r + QUADRANT_GAP}
@@ -270,7 +270,7 @@ export const RadarBlipsAndLabels = ({
             </text>
             {/* Left Axis Label */}
             <text
-              className="cursor-pointer fill-muted-foreground text-[12px] uppercase"
+              className={styles.ringLabel}
               dominantBaseline="middle"
               textAnchor="middle"
               x={centerX - (r + QUADRANT_GAP)}

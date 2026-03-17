@@ -21,7 +21,6 @@ import { cn } from '../../util/cn';
 import color from 'color';
 import { Box, Flex, Link, Text } from '@backstage/ui';
 
-import { useComponents } from '../hooks/useComponents';
 import styles from './RingLegend.module.css';
 
 type Props = Readonly<{
