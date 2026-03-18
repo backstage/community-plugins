@@ -52,15 +52,12 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
     },
   ) {
     const accessToken = this.config.getOptionalString('apiiro.accessToken');
-    const backstageUrl = this.config.getOptionalString('app.baseUrl');
-
     this.apiClient = new ApiiroApiClient(accessToken);
     this.catalogApi = options?.catalogApi;
     this.auth = options?.auth;
     this.cache = options.cache;
     this.cacheManager = new CacheManager(
       this.apiClient,
-      backstageUrl,
       this.cache,
       this.catalogApi,
       this.auth,

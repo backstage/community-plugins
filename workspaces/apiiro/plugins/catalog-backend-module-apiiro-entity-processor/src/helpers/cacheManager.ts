@@ -38,7 +38,6 @@ export class CacheManager {
 
   constructor(
     private readonly apiClient: ApiiroApiClient,
-    private readonly backstageUrl: string | undefined,
     private readonly cacheService: CacheService,
     private readonly catalogApi?: CatalogApi,
     private readonly auth?: AuthService,
@@ -152,7 +151,6 @@ export class CacheManager {
 
   private buildApplicationUidToKeyMap(
     applications: ApplicationItem[],
-    backstageUrl: string | undefined,
   ): Record<string, string> {
     const uidToKeyMap: Record<string, string> = {};
 
@@ -166,10 +164,7 @@ export class CacheManager {
       }
 
       for (const source of app.externalSources) {
-        if (
-          source.server.provider === 'Backstage' &&
-          source.server.url === backstageUrl
-        ) {
+        if (source.server.provider === 'Backstage') {
           uidToKeyMap[source.id] = app.key;
         }
       }
@@ -180,7 +175,7 @@ export class CacheManager {
   private async fetchAndBuildAppMap(): Promise<Record<string, string>> {
     try {
       const { items } = await this.apiClient.fetchAllApplications();
-      return this.buildApplicationUidToKeyMap(items, this.backstageUrl);
+      return this.buildApplicationUidToKeyMap(items);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);

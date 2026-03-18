@@ -110,9 +110,6 @@ describe('ApiiroAnnotationProcessor', () => {
         },
         ...configOverrides,
       },
-      app: {
-        baseUrl: 'https://backstage.apiiro.com',
-      },
     });
     return new ApiiroAnnotationProcessor(config, {
       cache: mockCacheService,
@@ -380,12 +377,11 @@ describe('ApiiroAnnotationProcessor', () => {
       expect(ApiiroApiClient).toHaveBeenCalledWith('test-token');
     });
 
-    it('initializes CacheManager with ApiiroApiClient, backstage URL, and CacheService', () => {
+    it('initializes CacheManager with ApiiroApiClient and CacheService', () => {
       buildProcessor();
 
       expect(CacheManager).toHaveBeenCalledWith(
         expect.any(Object),
-        'https://backstage.apiiro.com',
         mockCacheService,
         undefined,
         undefined,
