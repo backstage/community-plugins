@@ -42,6 +42,9 @@ export const WidgetMetricsGroup = ({
   const defaultViewChart = apiiroApi.getDefaultAllowMetricsView();
   const allowViewChart =
     isApiiroMetricViewAvailable(entity) ?? defaultViewChart;
+  const detailViewUrl = repoId
+    ? repositoryData?.entityUrl
+    : applicationData?.entityUrl;
 
   const transformApplicationLanguages = (
     languages?: { language?: string; percentage?: number }[],
@@ -59,6 +62,7 @@ export const WidgetMetricsGroup = ({
     repositoryData?.languagePercentages ||
     transformApplicationLanguages(applicationData?.languagePercentages) ||
     {};
+
   return (
     <Grid container spacing={3} direction="column">
       <Grid container spacing={3}>
@@ -66,7 +70,7 @@ export const WidgetMetricsGroup = ({
           <StatusTile
             repository={repositoryData}
             application={applicationData}
-            detailViewLink={`${entityRef}/apiiro`}
+            detailViewLink={`${detailViewUrl}/apiiro`}
             allowViewChart={allowViewChart}
           />
         </Grid>
