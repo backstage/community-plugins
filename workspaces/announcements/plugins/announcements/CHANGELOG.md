@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 2.5.1
+
+### Patch Changes
+
+- c4d2f14: Ensure that Announcement banner is always on top of the page. It fixes the issue where the banner could be hidden behind existing page content.
+
 ## 2.5.0
 
 ### Minor Changes
