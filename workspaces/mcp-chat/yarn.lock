@@ -1266,6 +1266,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.3"
     "@backstage/dev-utils": "npm:^1.1.20"
     "@backstage/errors": "npm:^1.2.7"
+    "@backstage/frontend-plugin-api": "npm:^0.14.1"
     "@backstage/test-utils": "npm:^1.7.15"
     "@backstage/theme": "npm:^0.7.2"
     "@mui/icons-material": "npm:^5.17.1"
@@ -1929,7 +1930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.14.0":
+"@backstage/frontend-plugin-api@npm:^0.14.0, @backstage/frontend-plugin-api@npm:^0.14.1":
   version: 0.14.1
   resolution: "@backstage/frontend-plugin-api@npm:0.14.1"
   dependencies:

@@ -52,15 +52,13 @@ const _default: OverridableFrontendPlugin<
     }>;
     'app-root-element:announcements/banner': OverridableExtensionDefinition<{
       config: {
-        variant: 'block' | 'floating';
-        max: number | undefined;
+        max: number;
         category: string | undefined;
         active: boolean | undefined;
         current: boolean | undefined;
         tags: string[] | undefined;
       };
       configInput: {
-        variant?: 'block' | 'floating' | undefined;
         max?: number | undefined;
         active?: boolean | undefined;
         current?: boolean | undefined;

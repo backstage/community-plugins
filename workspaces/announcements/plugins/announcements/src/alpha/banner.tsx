@@ -25,8 +25,7 @@ export const announcementsBanner = AppRootElementBlueprint.makeWithOverrides({
   name: 'banner',
   config: {
     schema: {
-      variant: z => z.enum(['block', 'floating']).default('floating'),
-      max: z => z.number().optional(),
+      max: z => z.number().optional().default(1),
       category: z => z.string().optional(),
       active: z => z.boolean().optional(),
       current: z => z.boolean().optional(),

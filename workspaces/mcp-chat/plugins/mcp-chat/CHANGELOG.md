@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat
 
+## 0.5.0
+
+### Minor Changes
+
+- 805e6fd: Add support for new frontend system
+
 ## 0.4.0
 
 ### Minor Changes
