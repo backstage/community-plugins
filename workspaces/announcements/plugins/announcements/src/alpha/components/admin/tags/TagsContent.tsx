@@ -22,8 +22,7 @@ import {
   useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import { Tag } from '@backstage-community/plugin-announcements-common';
-import { useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useApi } from '@backstage/frontend-plugin-api';
 import { ResponseError } from '@backstage/errors';
 
 import {

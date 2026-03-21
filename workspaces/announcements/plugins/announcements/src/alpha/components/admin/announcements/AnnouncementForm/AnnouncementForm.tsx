@@ -17,8 +17,11 @@ import { useState, type FormEvent } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
-import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { toastApiRef } from '@backstage/frontend-plugin-api';
+import {
+  toastApiRef,
+  identityApiRef,
+  useApi,
+} from '@backstage/frontend-plugin-api';
 import {
   Box,
   Button,
