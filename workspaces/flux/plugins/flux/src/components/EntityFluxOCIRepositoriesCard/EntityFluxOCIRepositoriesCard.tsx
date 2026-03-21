@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard, TableColumn } from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
 import { FluxContext } from '../FluxContext';
 import { useOCIRepositories } from '../../hooks';
 import {
@@ -22,6 +22,7 @@ import {
   FluxSourcesTable,
 } from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
+import { FluxColumn } from '../FluxEntityTable';
 
 const OCIRepositoryPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -45,7 +46,7 @@ const OCIRepositoryPanel = ({ many }: { many?: boolean }) => {
       <FluxSourcesTable
         sources={data || []}
         isLoading={loading && !data}
-        columns={gitOciDefaultColumns as TableColumn<Source>[]}
+        columns={gitOciDefaultColumns as FluxColumn<Source>[]}
         many={many}
       />
     </InfoCard>

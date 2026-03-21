@@ -13,50 +13,145 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Table, TableProps } from '@backstage/core-components';
-import { Text } from '@backstage/ui';
+import { ReactNode, useMemo, useState } from 'react';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  Column,
+  Row,
+  Text,
+  useTable,
+  TablePagination,
+  Flex,
+  SearchField,
+  Skeleton,
+} from '@backstage/ui';
+import { Cell } from 'react-aria-components';
 import styles from './utils.module.css';
-import { useDeepCompareMemo } from 'use-deep-compare';
 
-export function FluxEntityTable<T extends object = {}>({
+/**
+ * Column configuration compatible with the old TableColumn interface,
+ * but rendered using BUI Table primitives.
+ */
+export interface FluxColumn<T extends object> {
+  title: ReactNode;
+  field?: string;
+  render?: (row: T) => ReactNode;
+  hidden?: boolean;
+  width?: string;
+  minWidth?: string;
+  align?: string;
+  customSort?: (a: T, b: T) => number;
+  customFilterAndSearch?: (filter: string, item: T) => boolean;
+  cellStyle?: Record<string, any>;
+  headerStyle?: Record<string, any>;
+}
+
+interface FluxEntityTableProps<T extends object> {
+  title?: string;
+  data: T[];
+  isLoading: boolean;
+  columns: FluxColumn<T>[];
+  many?: boolean;
+}
+
+export function FluxEntityTable<T extends object & { id?: string }>({
   title,
   data,
   isLoading,
   columns,
-  filters,
   many,
-}: TableProps<T> & { many?: boolean }) {
-  // We use this memo not really for performance, but to avoid
-  // re-rendering the table when the data changes. Makes it much easier to style etc.
-  // Review this decision if we run into hard to debug issues.
+}: FluxEntityTableProps<T>) {
+  const [searchText, setSearchText] = useState('');
 
-  return useDeepCompareMemo(() => {
-    return (
-      <Table
-        key={data.length}
-        columns={columns}
-        options={{
-          padding: 'dense',
-          paging: Boolean(many),
-          search: Boolean(many),
-          pageSize: 5,
-          // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
-          thirdSortClick: false,
-          emptyRowsWhenPaging: false,
-          columnsButton: true,
-        }}
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={styles.empty}>
-            <Text>
-              No {title} found
-              {title === 'flux controllers' ? '' : 'for this entity'}.
-            </Text>
-          </div>
-        }
-        filters={Boolean(many) ? filters : []}
-      />
+  const visibleColumns = useMemo(
+    () => columns.filter(c => !c.hidden),
+    [columns],
+  );
+
+  const filterableColumns = useMemo(
+    () => columns.filter(c => c.customFilterAndSearch),
+    [columns],
+  );
+
+  const filteredData = useMemo(() => {
+    if (!searchText || filterableColumns.length === 0) return data;
+    return data.filter(item =>
+      filterableColumns.some(col =>
+        col.customFilterAndSearch!(searchText, item),
+      ),
     );
-  }, [data, title, isLoading, styles.empty, columns]);
+  }, [data, searchText, filterableColumns]);
+
+  const { data: pageData, paginationProps } = useTable({
+    data: filteredData,
+    pagination: many
+      ? { defaultPageSize: 5, showPageSizeOptions: true }
+      : undefined,
+  });
+
+  const displayData = many ? pageData ?? filteredData : filteredData;
+
+  function renderCellContent(col: FluxColumn<T>, row: T): ReactNode {
+    if (col.render) return col.render(row);
+    if (col.field) return String((row as any)[col.field] ?? '');
+    return '';
+  }
+
+  if (isLoading) {
+    return (
+      <Flex direction="column" gap="2">
+        <Skeleton style={{ height: 40, width: '100%' }} />
+        <Skeleton style={{ height: 32, width: '100%' }} />
+        <Skeleton style={{ height: 32, width: '100%' }} />
+        <Skeleton style={{ height: 32, width: '100%' }} />
+      </Flex>
+    );
+  }
+
+  if (displayData.length === 0) {
+    return (
+      <div className={styles.empty}>
+        <Text>
+          No {title || 'items'} found
+          {title === 'flux controllers' ? '' : ' for this entity'}.
+        </Text>
+      </div>
+    );
+  }
+
+  return (
+    <Flex direction="column" gap="3">
+      {many && (
+        <SearchField
+          aria-label={`Search ${title || 'items'}`}
+          value={searchText}
+          onChange={setSearchText}
+        />
+      )}
+      <Table aria-label={title || 'Flux table'}>
+        <TableHeader>
+          {visibleColumns.map((col, i) => (
+            <Column key={i} id={`col-${i}`} isRowHeader={i === 0}>
+              {col.title}
+            </Column>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {displayData.map((row, rowIndex) => (
+            <Row
+              key={(row as any).id ?? rowIndex}
+              id={(row as any).id ?? `row-${rowIndex}`}
+            >
+              {visibleColumns.map((col, colIndex) => (
+                <Cell key={colIndex}>{renderCellContent(col, row)}</Cell>
+              ))}
+            </Row>
+          ))}
+        </TableBody>
+      </Table>
+      {many && <TablePagination {...paginationProps} />}
+    </Flex>
+  );
 }

@@ -15,7 +15,7 @@
  */
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
-import { Progress, TableColumn, TableFilter } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
 import { compare } from 'compare-versions';
 import {
   Link,
@@ -53,6 +53,7 @@ import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
 import styles from './utils.module.css';
+import { FluxColumn } from './FluxEntityTable';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -251,9 +252,9 @@ export function GroupAction({
 export function actionColumn<T extends Source | Deployment | ImagePolicy>() {
   return {
     title: 'Actions',
-    render: row => <GroupAction resource={row} />,
+    render: (row: T) => <GroupAction resource={row} />,
     width: '24px',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 }
 
 export const VerifiedStatus = ({
@@ -310,7 +311,7 @@ export const idColumn = <T extends FluxObject | Cluster>() => {
     title: 'Id',
     field: 'id',
     hidden: true,
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 // Added hidden column to allow checkbox filtering by clusterName
@@ -321,41 +322,43 @@ export const clusterNameFilteringColumn = <
     title: 'Cluster name',
     hidden: true,
     field: 'clusterName',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const clusterColumn = <T extends Cluster>() => {
   return {
     title: 'Cluster',
-    render: resource => <Text>{resource?.clusterName}</Text>,
-    ...sortAndFilterOptions(resource => resource?.clusterName),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.clusterName}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.clusterName),
+  } as FluxColumn<T>;
 };
 
 export const namespaceColumn = <T extends Cluster>() => {
   return {
     title: 'Namespace',
-    render: resource => <Text>{resource?.namespace}</Text>,
-    ...sortAndFilterOptions(resource => resource?.namespace),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.namespace}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.namespace),
+  } as FluxColumn<T>;
 };
 
 export const versionColumn = <T extends Cluster>() => {
   return {
     title: 'Version',
-    render: resource => <Text>{resource?.version}</Text>,
-    ...sortAndFilterOptions(resource => resource?.version),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.version}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.version),
+  } as FluxColumn<T>;
 };
 
 export const availableComponentsColumn = <T extends Cluster>() => {
   return {
     title: 'Available Components',
-    render: resource => <Text>{resource?.availableComponents.join(', ')}</Text>,
-    ...sortAndFilterOptions(resource =>
+    render: (resource: T) => (
+      <Text>{resource?.availableComponents.join(', ')}</Text>
+    ),
+    ...sortAndFilterOptions((resource: T) =>
       resource?.availableComponents.join(', '),
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 /**
@@ -376,27 +379,27 @@ export const FluxReleasesLink = ({
       resource.version.substring(1),
       '>',
     ) ? (
-    <Link to={FLUX_RELEASES_URL}>Update available</Link>
+    <Link href={FLUX_RELEASES_URL}>Update available</Link>
   ) : null;
 };
 
 export const fluxUpdate = <T extends Cluster>() => {
   return {
     title: 'Flux update',
-    render: resource => <FluxReleasesLink resource={resource} />,
-  } as TableColumn<T>;
+    render: (resource: T) => <FluxReleasesLink resource={resource} />,
+  } as FluxColumn<T>;
 };
 
 export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   return {
     title: 'Name',
-    render: resource => nameAndClusterName({ resource }),
+    render: (resource: T) => nameAndClusterName({ resource }),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         `${resource.namespace}/${resource.name}/${resource.clusterName}`,
     ),
     minWidth: '200px',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
@@ -407,26 +410,21 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
         <Tooltip>Verification status</Tooltip>
       </TooltipTrigger>
     ),
-    render: resource => <VerifiedStatus resource={resource} />,
-    ...sortAndFilterOptions(resource =>
-      resource.isVerifiable
-        ? findVerificationCondition(resource)?.status || 'unknown'
-        : '',
-    ),
-    ...sortAndFilterOptions(resource => {
+    render: (resource: T) => <VerifiedStatus resource={resource} />,
+    ...sortAndFilterOptions((resource: T) => {
       const condition = findVerificationCondition(resource);
       return condition?.message || '';
     }),
     width: '90px',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const urlColumn = <T extends Source>() => {
   return {
     title: 'URL',
     field: 'url',
-    render: resource => <Url resource={resource} />,
-  } as TableColumn<T>;
+    render: (resource: T) => <Url resource={resource} />,
+  } as FluxColumn<T>;
 };
 
 export function shortenSha(sha: string | undefined) {
@@ -438,7 +436,7 @@ export function shortenSha(sha: string | undefined) {
 export const artifactColumn = <T extends Source>() => {
   return {
     title: 'Artifact',
-    render: resource => (
+    render: (resource: T) => (
       <TooltipTrigger>
         <Text>{shortenSha(resource.artifact?.revision?.split('@')[0])}</Text>
         <Tooltip>
@@ -448,11 +446,10 @@ export const artifactColumn = <T extends Source>() => {
         </Tooltip>
       </TooltipTrigger>
     ),
-    ...sortAndFilterOptions(resource => resource.artifact?.revision),
     ...sortAndFilterOptions(
-      resource => resource.artifact?.revision?.split('@')[1],
+      (resource: T) => resource.artifact?.revision?.split('@')[1],
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const sourceColumn = <T extends Deployment>() => {
@@ -467,7 +464,7 @@ export const sourceColumn = <T extends Deployment>() => {
 
   return {
     title: 'Source',
-    render: (resource: Deployment) =>
+    render: (resource: T) =>
       resource.type === 'HelmRelease' ? (
         formatContent(resource)
       ) : (
@@ -477,12 +474,12 @@ export const sourceColumn = <T extends Deployment>() => {
             : ''}
         </Text>
       ),
-    ...sortAndFilterOptions(resource =>
+    ...sortAndFilterOptions((resource: T) =>
       resource.type === 'HelmRelease'
         ? formatContent(resource)
         : (resource as Kustomization)?.path,
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const getIconType = (type: string) => {
@@ -511,37 +508,35 @@ export const typeColumn = <
     | HelmRepository
     | ImagePolicy,
 >() => {
-  const paddingLeft = 0;
   return {
     title: 'Kind',
-    align: 'right',
-    cellStyle: { paddingLeft, paddingRight: 6 },
-    headerStyle: { paddingLeft, paddingRight: 0 },
     field: 'type',
-    render: resource => (
+    render: (resource: T) => (
       <TooltipTrigger>
         <div>{getIconType(resource.type as string)}</div>
         <Tooltip>{resource.type || 'Unknown'}</Tooltip>
       </TooltipTrigger>
     ),
-    ...sortAndFilterOptions(resource => resource?.type as string | undefined),
+    ...sortAndFilterOptions(
+      (resource: T) => resource?.type as string | undefined,
+    ),
     width: '20px',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
-    render: resource => <Text>{resource?.sourceRef?.name}</Text>,
-    ...sortAndFilterOptions(resource => resource?.sourceRef?.name),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.sourceRef?.name}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.sourceRef?.name),
+  } as FluxColumn<T>;
 };
 
 export function statusColumn<T extends FluxObject>() {
   return {
     title: 'Status',
-    render: resource => (
+    render: (resource: T) => (
       <KubeStatusIndicator
         short
         conditions={resource.conditions}
@@ -549,62 +544,62 @@ export function statusColumn<T extends FluxObject>() {
       />
     ),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         getIndicatorInfo(resource.suspended, resource.conditions).type,
     ),
     minWidth: '130px',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 }
 
 export const updatedColumn = <T extends FluxObject>() => {
   return {
     title: 'Updated',
-    render: resource =>
+    render: (resource: T) =>
       DateTime.fromISO(automationLastUpdated(resource)).toRelative({
         locale: 'en',
       }),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         DateTime.fromISO(automationLastUpdated(resource)).toRelative({
           locale: 'en',
         }) as string,
     ),
     minWidth: '130px',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const policy = <T extends ImagePolicy>() => {
   return {
     title: 'Image Policy',
     field: 'imagepolicy',
-    render: resource => (
+    render: (resource: T) => (
       <Text>
         {resource?.imagePolicy.type} / {resource?.imagePolicy.value}
       </Text>
     ),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         `${resource?.imagePolicy.type} / ${resource?.imagePolicy.value}`,
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const imageRepository = <T extends ImagePolicy>() => {
   return {
     title: 'Image Repository',
     field: 'imagerepository',
-    render: resource => <Text>{resource?.imageRepositoryRef}</Text>,
-    ...sortAndFilterOptions(resource => resource?.imageRepositoryRef),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.imageRepositoryRef}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.imageRepositoryRef),
+  } as FluxColumn<T>;
 };
 
 export const latestImageSelected = <T extends ImagePolicy>() => {
   return {
     title: 'Latest Image',
     field: 'latestimage',
-    render: resource => <Text>{resource?.latestImage}</Text>,
-    ...sortAndFilterOptions(resource => resource?.latestImage),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.latestImage}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.latestImage),
+  } as FluxColumn<T>;
 };
 
 //
@@ -617,7 +612,7 @@ export function sortAndFilterOptions<T extends object>(
   return {
     customFilterAndSearch: stringCompareFilter(fn),
     customSort: stringCompareSort(fn),
-  } as TableColumn<T>;
+  };
 }
 
 export function stringCompareSort<T>(fn: (item: T) => string | undefined) {
@@ -627,17 +622,9 @@ export function stringCompareSort<T>(fn: (item: T) => string | undefined) {
 }
 
 export function stringCompareFilter<T>(fn: (item: T) => string | undefined) {
-  return (filter: any, item: T) => {
+  return (filter: string, item: T) => {
     return (fn(item) || '')
       .toLocaleLowerCase()
-      .includes((filter as string).toLocaleLowerCase());
+      .includes(filter.toLocaleLowerCase());
   };
 }
-
-// checkbox filters
-export const filters: TableFilter[] = [
-  {
-    column: 'Cluster name',
-    type: 'multiple-select',
-  },
-];

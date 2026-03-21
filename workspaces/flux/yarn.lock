@@ -725,6 +725,7 @@ __metadata:
     luxon: "npm:^3.3.0"
     msw: "npm:^1.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-aria-components: "npm:^1.16.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:^6.0.0"
     react-use: "npm:^17.6.0"
@@ -19749,7 +19750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria-components@npm:^1.10.1":
+"react-aria-components@npm:^1.10.1, react-aria-components@npm:^1.16.0":
   version: 1.16.0
   resolution: "react-aria-components@npm:1.16.0"
   dependencies:
