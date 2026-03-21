@@ -17,8 +17,9 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { useFluxSources } from '../../hooks';
 import { FluxSourcesTable, sourceDefaultColumns } from './FluxSourcesTable';
 import { FluxContext } from '../FluxContext';
-import { InfoCard, TableColumn } from '@backstage/core-components';
+import { InfoCard } from '@backstage/core-components';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
+import { FluxColumn } from '../FluxEntityTable';
 
 export type GH = GitRepository & HelmRepository;
 export type OH = OCIRepository & HelmRepository;
@@ -45,7 +46,7 @@ const SourcesPanel = ({ many }: { many?: boolean }) => {
       <FluxSourcesTable
         sources={data || []}
         isLoading={loading && !data}
-        columns={sourceDefaultColumns as TableColumn<GH | OH>[]}
+        columns={sourceDefaultColumns as FluxColumn<GH | OH>[]}
         many={many}
       />
     </InfoCard>

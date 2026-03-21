@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TableColumn } from '@backstage/core-components';
 import {
   clusterNameFilteringColumn,
   idColumn,
@@ -25,12 +24,12 @@ import {
   repoColumn,
   sourceColumn,
   typeColumn,
-  filters,
 } from '../helpers';
+import { FluxColumn } from '../FluxEntityTable';
 import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
-export const defaultColumns: TableColumn<Deployment>[] = [
+export const defaultColumns: FluxColumn<Deployment>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
@@ -45,7 +44,7 @@ export const defaultColumns: TableColumn<Deployment>[] = [
 type Props = {
   deployments: Deployment[];
   isLoading: boolean;
-  columns: TableColumn<Deployment>[];
+  columns: FluxColumn<Deployment>[];
   many?: boolean;
 };
 
@@ -111,7 +110,6 @@ export const FluxDeploymentsTable = ({
         )[]
       }
       isLoading={isLoading}
-      filters={filters}
       many={many}
     />
   );
