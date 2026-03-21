@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.15.1
+
+### Patch Changes
+
+- 7112596: Improve code quality: use `ResponseError` for HTTP error handling, remove unused `@date-io/core` dependency, and fix destructuring patterns in annotation helpers.
+
 ## 1.15.0
 
 ### Minor Changes
