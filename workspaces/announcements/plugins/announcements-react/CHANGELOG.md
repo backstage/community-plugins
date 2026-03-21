@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.23.0
+
+### Minor Changes
+
+- 8403fca: Backstage version bump to v1.48.2. This release also includes migration from `AlertApi` to the new `ToastApi`.
+
 ## 0.22.0
 
 ### Minor Changes
