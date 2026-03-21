@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- 8403fca: Backstage version bump to v1.48.2. This release also includes migration from `AlertApi` to the new `ToastApi`.
+- 8403fca: Backstage version bump to v1.49.1. This release also includes migration from `AlertApi` to the new `ToastApi`.
 
 ### Patch Changes
 
