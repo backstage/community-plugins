@@ -24,6 +24,7 @@ import {
   SearchField,
   Skeleton,
   Header,
+  Container,
 } from '@backstage/ui';
 import type { ColumnConfig, TableItem } from '@backstage/ui';
 import styles from './utils.module.css';
@@ -136,7 +137,7 @@ export function FluxEntityTable<T extends TableItem>({
   }
 
   return (
-    <>
+    <Container>
       <Header
         title={title}
         customActions={
@@ -159,6 +160,6 @@ export function FluxEntityTable<T extends TableItem>({
         columnConfig={columnConfig}
         {...tableProps}
       />
-    </>
+    </Container>
   );
 }
