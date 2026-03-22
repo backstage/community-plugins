@@ -90,7 +90,7 @@ export const FluxRuntimeTable = ({
     <FluxEntityTable
       title="flux controllers"
       columns={columns}
-      data={data as Cluster[]}
+      data={data as (Cluster & { id: string })[]}
       isLoading={isLoading}
       many={many}
     />

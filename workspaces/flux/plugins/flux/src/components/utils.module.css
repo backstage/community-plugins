@@ -26,12 +26,10 @@
     text-overflow: ellipsis;
     direction: rtl;
     max-width: 300px;
-    margin-top: 2px;
   }
 
   .nameLabel {
     font-weight: 600;
-    margin-bottom: 6px;
   }
 
   .actionButton {
@@ -62,7 +60,7 @@
   }
 
   .reconciling {
-    fill: var(--bui-fg-link);
+    fill: var(--bui-fg-info);
   }
 
   .ok {
@@ -88,5 +86,10 @@
 
   .aborted {
     fill: var(--bui-fg-disabled);
+  }
+
+  .searchBar {
+    justify-self: end;
+    width: 210px;
   }
 }
