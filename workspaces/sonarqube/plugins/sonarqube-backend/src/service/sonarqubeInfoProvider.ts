@@ -15,12 +15,11 @@
  */
 
 import { Config } from '@backstage/config';
-import { LoggerService } from '@backstage/backend-plugin-api';
 import fetch from 'node-fetch';
+import { ResponseError } from '@backstage/errors';
 
 /**
  * Provide information about sonarqube instances and projects contained within
- * @public
  */
 export interface SonarqubeInfoProvider {
   /**
@@ -55,7 +54,6 @@ export interface SonarqubeInfoProvider {
 
 /**
  * Information retrieved for a specific project in Sonarqube
- * @public
  */
 export interface SonarqubeFindings {
   /**
@@ -74,7 +72,6 @@ interface MeasuresWrapper {
 
 /**
  * A specific measure on a project in Sonarqube
- * @public
  */
 export interface SonarqubeMeasure {
   /**
@@ -89,7 +86,6 @@ export interface SonarqubeMeasure {
 
 /**
  * Information about a Sonarqube instance.
- * @public
  */
 export interface SonarqubeInstanceConfig {
   /**
@@ -120,7 +116,6 @@ interface ComponentWrapper {
 
 /**
  * Holds multiple Sonarqube configurations.
- * @public
  */
 export class SonarqubeConfig {
   /**
@@ -244,28 +239,17 @@ export class SonarqubeConfig {
 }
 
 /**
- * @public
- *
  * Use default config and annotations, build using fromConfig static function.
  */
 export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
-  private constructor(
-    private readonly config: SonarqubeConfig,
-    private readonly logger: LoggerService,
-  ) {}
+  private constructor(private readonly config: SonarqubeConfig) {}
 
   /**
    * Generate an instance from a Config instance
    * @param config - Backend configuration
    */
-  static fromConfig(
-    config: Config,
-    logger: LoggerService,
-  ): DefaultSonarqubeInfoProvider {
-    return new DefaultSonarqubeInfoProvider(
-      SonarqubeConfig.fromConfig(config),
-      logger,
-    );
+  static fromConfig(config: Config): DefaultSonarqubeInfoProvider {
+    return new DefaultSonarqubeInfoProvider(SonarqubeConfig.fromConfig(config));
   }
 
   /**
@@ -332,16 +316,11 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
         Authorization: `${authType} ${encodedAuthToken}`,
       },
     });
-    if (!response.ok) {
-      const text = await response.text();
-      const msg = !text ? '' : ` - Response: "${text}"`;
-      this.logger.error(`"GET ${fullUrl}" ${response.status}${msg}`);
-      return undefined;
-    }
-    if (response.status === 200) {
+    if (response.ok) {
       return (await response.json()) as T;
     }
-    return undefined;
+
+    throw await ResponseError.fromResponse(response);
   }
 
   /**
