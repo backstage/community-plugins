@@ -23,6 +23,7 @@ import {
   Flex,
   SearchField,
   Skeleton,
+  Header,
 } from '@backstage/ui';
 import type { ColumnConfig, TableItem } from '@backstage/ui';
 import styles from './utils.module.css';
@@ -136,16 +137,23 @@ export function FluxEntityTable<T extends TableItem>({
 
   return (
     <>
-      {many && (
-        <Flex className={styles.searchBar}>
-          <SearchField
-            aria-label={`Search ${title || 'items'}`}
-            placeholder="Search..."
-            value={search.value}
-            onChange={search.onChange}
-          />
-        </Flex>
-      )}
+      <Header
+        title={title}
+        customActions={
+          <>
+            {many && (
+              <Flex className={styles.searchBar}>
+                <SearchField
+                  aria-label={`Search ${title || 'items'}`}
+                  placeholder="Search..."
+                  value={search.value}
+                  onChange={search.onChange}
+                />
+              </Flex>
+            )}
+          </>
+        }
+      />
       <Table
         aria-label={title || 'Flux table'}
         columnConfig={columnConfig}

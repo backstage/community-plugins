@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
 import { useHelmReleases } from '../../hooks/query';
 import { FluxContext } from '../FluxContext';
 import {
   FluxDeploymentsTable,
   defaultColumns,
 } from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
+import { Box } from '@backstage/ui';
 
 const HelmReleasePanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -40,14 +40,15 @@ const HelmReleasePanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Helm Releases">
+    <Box>
       <FluxDeploymentsTable
+        title="Helm Releases"
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 

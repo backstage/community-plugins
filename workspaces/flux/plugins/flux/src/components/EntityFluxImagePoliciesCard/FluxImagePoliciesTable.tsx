@@ -43,6 +43,7 @@ export const defaultColumns: FluxColumn<ImagePolicy>[] = [
 ];
 
 type Props = {
+  title: string;
   imagePolicies: ImagePolicy[];
   isLoading: boolean;
   columns: FluxColumn<ImagePolicy>[];
@@ -50,6 +51,7 @@ type Props = {
 };
 
 export const FluxImagePoliciesTable = ({
+  title,
   imagePolicies,
   isLoading,
   columns,
@@ -85,6 +87,7 @@ export const FluxImagePoliciesTable = ({
 
   return (
     <FluxEntityTable
+      title={title}
       columns={columns}
       data={data}
       isLoading={isLoading}

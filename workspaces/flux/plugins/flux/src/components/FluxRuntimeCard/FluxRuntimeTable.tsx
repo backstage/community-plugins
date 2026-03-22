@@ -38,6 +38,7 @@ export const defaultColumns: FluxColumn<Cluster>[] = [
 ];
 
 type Props = {
+  title: string;
   deployments: FluxControllerEnriched[];
   isLoading: boolean;
   columns: FluxColumn<Cluster>[];
@@ -45,6 +46,7 @@ type Props = {
 };
 
 export const FluxRuntimeTable = ({
+  title,
   deployments,
   isLoading,
   columns,
@@ -88,7 +90,7 @@ export const FluxRuntimeTable = ({
 
   return (
     <FluxEntityTable
-      title="flux controllers"
+      title={title}
       columns={columns}
       data={data as (Cluster & { id: string })[]}
       isLoading={isLoading}

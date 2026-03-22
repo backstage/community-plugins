@@ -42,6 +42,7 @@ export const defaultColumns: FluxColumn<Deployment>[] = [
 ];
 
 type Props = {
+  title: string;
   deployments: Deployment[];
   isLoading: boolean;
   columns: FluxColumn<Deployment>[];
@@ -49,6 +50,7 @@ type Props = {
 };
 
 export const FluxDeploymentsTable = ({
+  title,
   deployments,
   isLoading,
   columns,
@@ -102,6 +104,7 @@ export const FluxDeploymentsTable = ({
 
   return (
     <FluxEntityTable
+      title={title}
       columns={columns}
       data={
         data as (
