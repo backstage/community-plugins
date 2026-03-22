@@ -103,7 +103,7 @@ export const NameLabel = ({
 export const Url = ({ resource }: { resource: Source }): JSX.Element => {
   return (
     <TooltipTrigger>
-      <Box className={styles.textOverflow}>{resource.url}</Box>
+      <Text>{resource.url}</Text>
       <Tooltip>{resource.url}</Tooltip>
     </TooltipTrigger>
   );
@@ -253,7 +253,7 @@ export function actionColumn<T extends Source | Deployment | ImagePolicy>() {
   return {
     title: 'Actions',
     render: (row: T) => <GroupAction resource={row} />,
-    width: '24px',
+    width: 150,
   } as FluxColumn<T>;
 }
 
@@ -398,24 +398,19 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
       (resource: T) =>
         `${resource.namespace}/${resource.name}/${resource.clusterName}`,
     ),
-    minWidth: '200px',
+    width: 200,
   } as FluxColumn<T>;
 };
 
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
-    title: (
-      <TooltipTrigger>
-        <RiShieldCheckFill style={{ height: '20px' }} />
-        <Tooltip>Verification status</Tooltip>
-      </TooltipTrigger>
-    ),
+    title: 'Verified',
     render: (resource: T) => <VerifiedStatus resource={resource} />,
     ...sortAndFilterOptions((resource: T) => {
       const condition = findVerificationCondition(resource);
       return condition?.message || '';
     }),
-    width: '90px',
+    width: 90,
   } as FluxColumn<T>;
 };
 
@@ -424,6 +419,7 @@ export const urlColumn = <T extends Source>() => {
     title: 'URL',
     field: 'url',
     render: (resource: T) => <Url resource={resource} />,
+    // minWidth: 400,
   } as FluxColumn<T>;
 };
 
@@ -449,6 +445,7 @@ export const artifactColumn = <T extends Source>() => {
     ...sortAndFilterOptions(
       (resource: T) => resource.artifact?.revision?.split('@')[1],
     ),
+    width: 130,
   } as FluxColumn<T>;
 };
 
@@ -520,7 +517,7 @@ export const typeColumn = <
     ...sortAndFilterOptions(
       (resource: T) => resource?.type as string | undefined,
     ),
-    width: '20px',
+    width: 20,
   } as FluxColumn<T>;
 };
 
@@ -547,7 +544,7 @@ export function statusColumn<T extends FluxObject>() {
       (resource: T) =>
         getIndicatorInfo(resource.suspended, resource.conditions).type,
     ),
-    minWidth: '130px',
+    width: 130,
   } as FluxColumn<T>;
 }
 
@@ -564,7 +561,7 @@ export const updatedColumn = <T extends FluxObject>() => {
           locale: 'en',
         }) as string,
     ),
-    minWidth: '130px',
+    width: 130,
   } as FluxColumn<T>;
 };
 

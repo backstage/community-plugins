@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactElement, useMemo } from 'react';
 import {
   Table,
-  TableHeader,
-  TableBody,
-  Column,
-  Row,
+  Cell,
+  CellText,
   Text,
   useTable,
-  TablePagination,
   Flex,
   SearchField,
   Skeleton,
 } from '@backstage/ui';
-import { Cell } from 'react-aria-components';
+import type { ColumnConfig, TableItem } from '@backstage/ui';
 import styles from './utils.module.css';
 
 /**
@@ -35,20 +32,16 @@ import styles from './utils.module.css';
  * but rendered using BUI Table primitives.
  */
 export interface FluxColumn<T extends object> {
-  title: ReactNode;
+  title: string;
   field?: string;
-  render?: (row: T) => ReactNode;
+  render?: (row: T) => ReactElement | string | null;
   hidden?: boolean;
-  width?: string;
-  minWidth?: string;
-  align?: string;
+  width?: number;
   customSort?: (a: T, b: T) => number;
   customFilterAndSearch?: (filter: string, item: T) => boolean;
-  cellStyle?: Record<string, any>;
-  headerStyle?: Record<string, any>;
 }
 
-interface FluxEntityTableProps<T extends object> {
+interface FluxEntityTableProps<T extends TableItem> {
   title?: string;
   data: T[];
   isLoading: boolean;
@@ -56,48 +49,68 @@ interface FluxEntityTableProps<T extends object> {
   many?: boolean;
 }
 
-export function FluxEntityTable<T extends object & { id?: string }>({
+function toColumnConfig<T extends TableItem>(
+  col: FluxColumn<T>,
+  index: number,
+  isRowHeader: boolean,
+): ColumnConfig<T> {
+  return {
+    id: col.field ?? `col-${index}`,
+    label: col.title,
+    isHidden: col.hidden,
+    isRowHeader,
+    ...(col.width ? { width: col.width } : {}),
+    cell: (item: T) => {
+      if (col.render) {
+        const content = col.render(item);
+        if (content === null || content === undefined) return <Cell />;
+        if (typeof content === 'string') return <CellText title={content} />;
+        return <Cell>{content}</Cell>;
+      }
+      if (col.field) {
+        return <CellText title={String((item as any)[col.field] ?? '')} />;
+      }
+      return <Cell />;
+    },
+    isSortable: true,
+  };
+}
+
+export function FluxEntityTable<T extends TableItem>({
   title,
   data,
   isLoading,
   columns,
   many,
 }: FluxEntityTableProps<T>) {
-  const [searchText, setSearchText] = useState('');
-
-  const visibleColumns = useMemo(
-    () => columns.filter(c => !c.hidden),
-    [columns],
-  );
+  const columnConfig = useMemo(() => {
+    const firstVisibleIndex = columns.findIndex(c => !c.hidden);
+    return columns.map((col, i) =>
+      toColumnConfig(col, i, i === firstVisibleIndex),
+    );
+  }, [columns]);
 
   const filterableColumns = useMemo(
     () => columns.filter(c => c.customFilterAndSearch),
     [columns],
   );
 
-  const filteredData = useMemo(() => {
-    if (!searchText || filterableColumns.length === 0) return data;
-    return data.filter(item =>
-      filterableColumns.some(col =>
-        col.customFilterAndSearch!(searchText, item),
-      ),
-    );
-  }, [data, searchText, filterableColumns]);
+  const searchFn = useMemo(() => {
+    if (filterableColumns.length === 0) return undefined;
+    return (items: T[], search: string) =>
+      items.filter(item =>
+        filterableColumns.some(col => col.customFilterAndSearch!(search, item)),
+      );
+  }, [filterableColumns]);
 
-  const { data: pageData, paginationProps } = useTable({
-    data: filteredData,
-    pagination: many
-      ? { defaultPageSize: 5, showPageSizeOptions: true }
+  const { tableProps, search } = useTable<T>({
+    mode: 'complete',
+    data,
+    paginationOptions: many
+      ? { pageSize: 5, showPageSizeOptions: true }
       : undefined,
+    searchFn,
   });
-
-  const displayData = many ? pageData ?? filteredData : filteredData;
-
-  function renderCellContent(col: FluxColumn<T>, row: T): ReactNode {
-    if (col.render) return col.render(row);
-    if (col.field) return String((row as any)[col.field] ?? '');
-    return '';
-  }
 
   if (isLoading) {
     return (
@@ -110,7 +123,7 @@ export function FluxEntityTable<T extends object & { id?: string }>({
     );
   }
 
-  if (displayData.length === 0) {
+  if (data.length === 0) {
     return (
       <div className={styles.empty}>
         <Text>
@@ -122,36 +135,22 @@ export function FluxEntityTable<T extends object & { id?: string }>({
   }
 
   return (
-    <Flex direction="column" gap="3">
+    <>
       {many && (
-        <SearchField
-          aria-label={`Search ${title || 'items'}`}
-          value={searchText}
-          onChange={setSearchText}
-        />
+        <Flex className={styles.searchBar}>
+          <SearchField
+            aria-label={`Search ${title || 'items'}`}
+            placeholder="Search..."
+            value={search.value}
+            onChange={search.onChange}
+          />
+        </Flex>
       )}
-      <Table aria-label={title || 'Flux table'}>
-        <TableHeader>
-          {visibleColumns.map((col, i) => (
-            <Column key={i} id={`col-${i}`} isRowHeader={i === 0}>
-              {col.title}
-            </Column>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {displayData.map((row, rowIndex) => (
-            <Row
-              key={(row as any).id ?? rowIndex}
-              id={(row as any).id ?? `row-${rowIndex}`}
-            >
-              {visibleColumns.map((col, colIndex) => (
-                <Cell key={colIndex}>{renderCellContent(col, row)}</Cell>
-              ))}
-            </Row>
-          ))}
-        </TableBody>
-      </Table>
-      {many && <TablePagination {...paginationProps} />}
-    </Flex>
+      <Table
+        aria-label={title || 'Flux table'}
+        columnConfig={columnConfig}
+        {...tableProps}
+      />
+    </>
   );
 }
