@@ -19,7 +19,6 @@ import { Progress } from '@backstage/core-components';
 import { compare } from 'compare-versions';
 import {
   Link,
-  Box,
   Flex,
   Text,
   Tooltip,
@@ -398,7 +397,7 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
       (resource: T) =>
         `${resource.namespace}/${resource.name}/${resource.clusterName}`,
     ),
-    width: 200,
+    width: 350,
   } as FluxColumn<T>;
 };
 
@@ -410,7 +409,7 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
       const condition = findVerificationCondition(resource);
       return condition?.message || '';
     }),
-    width: 90,
+    width: 100,
   } as FluxColumn<T>;
 };
 

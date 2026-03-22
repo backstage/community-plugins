@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
+import { Box } from '@backstage/ui';
 import { FluxContext } from '../FluxContext';
 import { useFluxDeployments } from '../../hooks';
 import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
@@ -37,14 +37,15 @@ const DeploymentsPanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Deployments">
+    <Box>
       <FluxDeploymentsTable
+        title="Deployments"
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 

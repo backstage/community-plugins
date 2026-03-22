@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { FC } from 'react';
-import { InfoCard } from '@backstage/core-components';
 import { FluxRuntimeTable, defaultColumns } from './FluxRuntimeTable';
 import { useGetDeployments } from '../../hooks/useGetDeployments';
 import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { Box } from '@backstage/ui';
 
 const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
   const { data, isLoading, error } = useGetDeployments();
@@ -29,14 +29,15 @@ const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
   }
 
   return (
-    <InfoCard title="Flux runtime">
+    <Box>
       <FluxRuntimeTable
+        title="Flux runtime"
         deployments={data || []}
         isLoading={isLoading || !data}
         columns={defaultColumns}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 

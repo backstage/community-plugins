@@ -66,6 +66,7 @@ export const helmDefaultColumns = [
 ] as FluxColumn<HelmRepository>[];
 
 type Props = {
+  title: string;
   sources: Source[];
   isLoading: boolean;
   columns: FluxColumn<any>[];
@@ -73,6 +74,7 @@ type Props = {
 };
 
 export const FluxSourcesTable = ({
+  title,
   sources,
   isLoading,
   columns,
@@ -119,6 +121,7 @@ export const FluxSourcesTable = ({
 
   return (
     <FluxEntityTable
+      title={title}
       columns={columns}
       data={
         data as (

@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, Header, Page } from '@backstage/core-components';
 import { FluxRuntimeCard } from '../FluxRuntimeCard';
 import { RequireKubernetesPermissions } from '../../RequireKubernetesPermissions';
-import styles from './FluxRuntimePage.module.css';
+import { Box, Container, PluginHeader } from '@backstage/ui';
 
 export interface FluxRuntimePageProps {
   /**
@@ -42,13 +41,13 @@ export function FluxRuntimePage(props: FluxRuntimePageProps) {
   const { title = 'Flux Runtime' } = props;
 
   return (
-    <Page themeId="tool">
-      <Header title={title} />
-      <Content className={styles.overflowXScroll}>
+    <Box>
+      <PluginHeader title={title} />
+      <Container>
         <RequireKubernetesPermissions>
           <FluxRuntimeCard />
         </RequireKubernetesPermissions>
-      </Content>
-    </Page>
+      </Container>
+    </Box>
   );
 }

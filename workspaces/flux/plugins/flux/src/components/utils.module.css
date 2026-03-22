@@ -71,9 +71,8 @@
     fill: var(--bui-fg-warning);
   }
 
-
   .error {
-    fill: var(--bui-fg-danger)
+    fill: var(--bui-fg-danger);
   }
 
   .pending {

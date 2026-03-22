@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
 import { useHelmRepositories } from '../../hooks';
 import { FluxContext } from '../FluxContext';
 import {
@@ -23,6 +22,7 @@ import {
 } from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
 import { FluxColumn } from '../FluxEntityTable';
+import { Box } from '@backstage/ui';
 
 const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -42,14 +42,15 @@ const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Helm Repositories">
+    <Box>
       <FluxSourcesTable
+        title="Helm Repositories"
         sources={data || []}
         isLoading={loading && !data}
         columns={helmDefaultColumns as FluxColumn<Source>[]}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 
