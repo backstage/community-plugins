@@ -66,10 +66,10 @@ import {
 Modify your app routes in [`App.tsx`](https://github.com/backstage/backstage/blob/master/packages/app/src/App.tsx) to include the Router component exported by the plugin - for example:
 
 ```tsx
-import { IlertPage } from '@backstage-community/plugin-ilert';
+import { ILertPage } from '@backstage-community/plugin-ilert';
 <FlatRoutes>
   // ...
-  <Route path="/ilert" element={<IlertPage />} />
+  <Route path="/ilert" element={<ILertPage />} />
   // ...
 </FlatRoutes>;
 ```
@@ -77,10 +77,10 @@ import { IlertPage } from '@backstage-community/plugin-ilert';
 Modify your sidebar in [`Root.tsx`](https://github.com/backstage/backstage/blob/master/packages/app/src/components/Root/Root.tsx) to include the icon component exported by the plugin - for example:
 
 ```tsx
-import { IlertIcon } from '@backstage-community/plugin-ilert';
+import { ILertIcon } from '@backstage-community/plugin-ilert';
 <Sidebar>
   // ...
-  <SidebarItem icon={IlertIcon} to="ilert" text="ilert" />
+  <SidebarItem icon={ILertIcon} to="ilert" text="ilert" />
   // ...
 </Sidebar>;
 ```
