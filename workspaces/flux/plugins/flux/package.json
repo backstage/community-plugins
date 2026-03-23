@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "backstage:^",
-    "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-kubernetes": "backstage:^",
@@ -64,6 +63,7 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",

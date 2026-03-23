@@ -15,7 +15,7 @@
  */
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
-import { Progress } from '@backstage/core-components';
+
 import { compare } from 'compare-versions';
 import {
   Link,
@@ -24,6 +24,7 @@ import {
   Tooltip,
   ButtonIcon,
   TooltipTrigger,
+  Skeleton,
 } from '@backstage/ui';
 import {
   RiRefreshLine,
@@ -217,7 +218,7 @@ export function GroupAction({
   return (
     <>
       {isLoading ? (
-        <Progress data-testid="loading" />
+        <Skeleton data-testid="loading" style={{ height: 32, width: 96 }} />
       ) : (
         <Flex align="start" direction="row">
           <SyncButton
