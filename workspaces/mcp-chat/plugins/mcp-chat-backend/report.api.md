@@ -8,7 +8,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
-import { GenerateContentResult } from '@google/generative-ai';
+import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
@@ -75,24 +75,6 @@ export interface ChatResponse {
 }
 
 // @public
-export class ClaudeProvider extends LLMProvider {
-  // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
-  // (undocumented)
-  protected getHeaders(): Record<string, string>;
-  // (undocumented)
-  protected parseResponse(response: any): ChatResponse;
-  // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
-  // (undocumented)
-  testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-}
-
-// @public
 export interface ConversationRecord {
   createdAt: Date;
   id: string;
@@ -118,53 +100,6 @@ export function executeToolCall(
 export function findNpxPath(): Promise<string>;
 
 // @public
-export class GeminiProvider extends LLMProvider {
-  constructor(config: ProviderConfig);
-  // (undocumented)
-  protected formatRequest(_messages: ChatMessage[], _tools?: Tool[]): any;
-  // (undocumented)
-  protected getHeaders(): Record<string, string>;
-  // (undocumented)
-  protected parseResponse(result: GenerateContentResult): ChatResponse;
-  // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
-  // (undocumented)
-  testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-}
-
-// @public
-export function getProviderConfig(config: RootConfigService): ProviderConfig;
-
-// @public
-export function getProviderInfo(config: RootConfigService): {
-  provider: string;
-  model: string;
-  baseURL: string;
-};
-
-// @public
-export class LiteLLMProvider extends LLMProvider {
-  // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
-  // (undocumented)
-  protected getHeaders(): Record<string, string>;
-  // (undocumented)
-  protected parseResponse(response: any): ChatResponse;
-  // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
-  // (undocumented)
-  testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-}
-
-// @public
 export abstract class LLMProvider {
   constructor(config: ProviderConfig);
   // (undocumented)
@@ -176,8 +111,12 @@ export abstract class LLMProvider {
     messages: ChatMessage[],
     tools?: Tool[],
   ): any;
+  getBaseUrl(): string;
   // (undocumented)
   protected abstract getHeaders(): Record<string, string>;
+  getLastResponseOutput(): any;
+  getModel(): string;
+  getType(): string;
   // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
@@ -189,6 +128,8 @@ export abstract class LLMProvider {
     messages: ChatMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse>;
+  setMcpServerConfigs(_configs: MCPServerFullConfig[]): void;
+  supportsNativeMcp(): boolean;
   // (undocumented)
   abstract testConnection(): Promise<{
     connected: boolean;
@@ -198,6 +139,14 @@ export abstract class LLMProvider {
   // (undocumented)
   protected type: string;
 }
+
+// @public
+export interface LlmProviderExtensionPoint {
+  registerProvider(type: string, provider: LLMProvider): void;
+}
+
+// @public
+export const llmProviderExtensionPoint: ExtensionPoint<LlmProviderExtensionPoint>;
 
 // @public
 export type LLMProviderType =
@@ -251,6 +200,7 @@ export class MCPClientServiceImpl implements MCPClientService {
 export type MCPClientServiceOptions = {
   logger: LoggerService;
   config: RootConfigService;
+  provider: LLMProvider;
 };
 
 // @public
@@ -306,67 +256,9 @@ export interface MessageValidationResult {
 }
 
 // @public
-export class OllamaProvider extends LLMProvider {
-  constructor(config: any);
-  // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
-  // (undocumented)
-  protected getHeaders(): Record<string, string>;
-  // (undocumented)
-  protected parseResponse(response: any): ChatResponse;
-  // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
-  // (undocumented)
-  testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-}
-
-// @public
-export class OpenAIProvider extends LLMProvider {
-  // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
-  // (undocumented)
-  protected getHeaders(): Record<string, string>;
-  // (undocumented)
-  protected parseResponse(response: any): ChatResponse;
-  // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
-  // (undocumented)
-  testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-}
-
-// @public
-export class OpenAIResponsesProvider extends LLMProvider {
-  // (undocumented)
-  protected formatRequest(messages: ChatMessage[], _tools?: Tool[]): any;
-  // (undocumented)
-  protected getHeaders(): Record<string, string>;
-  getLastResponseOutput(): ResponsesApiResponse['output'] | null;
-  // (undocumented)
-  protected makeRequest(endpoint: string, body: any): Promise<any>;
-  // (undocumented)
-  protected parseResponse(response: ResponsesApiResponse): ChatResponse;
-  // (undocumented)
-  sendMessage(messages: ChatMessage[], _tools?: Tool[]): Promise<ChatResponse>;
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void;
-  // (undocumented)
-  testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-}
-
-// @public
 export interface ProviderConfig {
   apiKey?: string;
+  auth?: Record<string, string>;
   baseUrl: string;
   model: string;
   type: string;
@@ -377,11 +269,6 @@ export interface ProviderConnectionStatus {
   connected: boolean;
   error?: string;
   models?: string[];
-}
-
-// @public
-export class ProviderFactory {
-  static createProvider(config: ProviderConfig): LLMProvider;
 }
 
 // @public

@@ -1,0 +1,55 @@
+{
+  "name": "@backstage-community/plugin-mcp-chat-node",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "description": "Node.js library for the mcp-chat plugin",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "node-library",
+    "pluginId": "mcp-chat",
+    "pluginPackages": [
+      "@backstage-community/plugin-mcp-chat-node",
+      "@backstage-community/plugin-mcp-chat-common",
+      "@backstage-community/plugin-mcp-chat-backend"
+    ]
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-mcp-chat-common": "workspace:^",
+    "@backstage/backend-plugin-api": "^1.4.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-chat/plugins/mcp-chat-node"
+  },
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "mcp",
+    "mcp-chat",
+    "node-library"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-chat/plugins/mcp-chat-node",
+  "bugs": "https://github.com/backstage/community-plugins/issues"
+}
