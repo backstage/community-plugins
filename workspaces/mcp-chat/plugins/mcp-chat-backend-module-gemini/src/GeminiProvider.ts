@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider } from './base-provider';
+
 import {
-  ChatMessage,
-  Tool,
-  ChatResponse,
-  ToolCall,
-  ProviderConfig,
-} from '../types';
+  LLMProvider,
+  type ChatMessage,
+  type Tool,
+  type ChatResponse,
+  type ToolCall,
+  type ProviderConfig,
+} from '@backstage-community/plugin-mcp-chat-common';
 import {
   GenerateContentConfig,
   GoogleGenAI,
@@ -137,10 +138,7 @@ export class GeminiProvider extends LLMProvider {
     error?: string;
   }> {
     try {
-      // Gemini doesn't have a models list endpoint in the same way
-      // We'll test by making a simple generateContent request
-      const response = await this.genAI.models.generateContent({
-        model: this.model,
+      const result = await this.geminiModel.generateContent({
         contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
         config: {
           ...this.baseModelConfig,
@@ -148,11 +146,11 @@ export class GeminiProvider extends LLMProvider {
         },
       });
 
-      // If we get here without error, the connection is working
+      const response = await result.response;
       if (response) {
         return {
           connected: true,
-          models: [this.model], // Gemini doesn't list models, so return the configured one
+          models: [this.model],
         };
       }
       return {

@@ -13,39 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse } from '../types';
+
+import {
+  LLMProvider,
+  type ChatMessage,
+  type Tool,
+  type ChatResponse,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
- * LiteLLM Provider
- *
- * LiteLLM is a unified interface to 100+ LLM APIs including:
- * - OpenAI, Azure OpenAI
- * - Anthropic (Claude)
- * - Google (Gemini, VertexAI)
- * - AWS Bedrock
- * - Cohere, Replicate, Huggingface
- * - And many more...
- *
- * It uses the OpenAI-compatible format, making it easy to integrate.
- *
- * Configuration example in app-config.yaml:
- * ```yaml
- * mcpChat:
- *   providers:
- *     - id: litellm
- *       token: ${LITELLM_API_KEY}  # Optional, depends on your LiteLLM setup
- *       baseUrl: 'http://localhost:4000'  # Your LiteLLM proxy URL
- *       model: gpt-4  # Any model supported by your LiteLLM instance
- * ```
- */
-/**
- * LiteLLM proxy provider.
- * Provides unified access to 100+ LLM APIs through LiteLLM.
+ * OpenAI Chat Completions API provider.
  *
  * @public
  */
-export class LiteLLMProvider extends LLMProvider {
+export class OpenAIProvider extends LLMProvider {
   async sendMessage(
     messages: ChatMessage[],
     tools?: Tool[],
@@ -61,7 +42,6 @@ export class LiteLLMProvider extends LLMProvider {
     error?: string;
   }> {
     try {
-      // Try to fetch available models from LiteLLM
       const response = await fetch(`${this.baseUrl}/models`, {
         method: 'GET',
         headers: this.getHeaders(),
@@ -69,36 +49,29 @@ export class LiteLLMProvider extends LLMProvider {
 
       if (!response.ok) {
         const errorText = await response.text();
-        let errorMessage = `LiteLLM API error (${response.status})`;
+        let errorMessage = `OpenAI API error (${response.status})`;
 
         try {
           const errorData = JSON.parse(errorText);
           if (errorData.error?.message) {
             errorMessage = errorData.error.message;
-          } else if (errorData.detail) {
-            errorMessage = errorData.detail;
           }
         } catch {
-          // If parsing fails, use the raw error text but truncate if too long
           errorMessage =
             errorText.length > 100
               ? `${errorText.substring(0, 100)}...`
               : errorText;
         }
 
-        // Provide user-friendly messages for common errors
         if (response.status === 401) {
           errorMessage =
-            'Invalid API key. Please check your LiteLLM API key configuration.';
+            'Invalid API key. Please check your OpenAI API key configuration.';
         } else if (response.status === 429) {
           errorMessage =
-            'Rate limit exceeded. Please try again later or check your LiteLLM usage limits.';
+            'Rate limit exceeded. Please try again later or check your OpenAI usage limits.';
         } else if (response.status === 403) {
           errorMessage =
             'Access forbidden. Please check your API key permissions.';
-        } else if (response.status === 404) {
-          errorMessage =
-            'LiteLLM endpoint not found. Please verify your baseUrl configuration.';
         }
 
         return {
@@ -108,38 +81,16 @@ export class LiteLLMProvider extends LLMProvider {
       }
 
       const data = await response.json();
-
-      // LiteLLM returns models in OpenAI format
       const models = data.data?.map((model: any) => model.id) || [];
 
       return {
         connected: true,
-        models: models.length > 0 ? models : [this.model],
+        models,
       };
     } catch (error) {
-      // If /models endpoint fails, try a simple health check
-      try {
-        const healthResponse = await fetch(`${this.baseUrl}/health`, {
-          method: 'GET',
-          headers: this.getHeaders(),
-        });
-
-        if (healthResponse.ok) {
-          return {
-            connected: true,
-            models: [this.model],
-          };
-        }
-      } catch {
-        // Health check also failed
-      }
-
       return {
         connected: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to connect to LiteLLM API',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -149,7 +100,6 @@ export class LiteLLMProvider extends LLMProvider {
       'Content-Type': 'application/json',
     };
 
-    // LiteLLM supports both Authorization header and API key header
     if (this.apiKey) {
       headers.Authorization = `Bearer ${this.apiKey}`;
     }
@@ -158,24 +108,30 @@ export class LiteLLMProvider extends LLMProvider {
   }
 
   protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+    const maxTokens = this.maxTokens ?? 1000;
+    const useMaxCompletionTokens = /^(o[0-9]|gpt-5)/.test(this.model);
+
     const request: any = {
       model: this.model,
       messages,
-      max_tokens: this.maxTokens ?? 1000,
-      temperature: this.temperature ?? 0.7,
+      ...(useMaxCompletionTokens
+        ? { max_completion_tokens: maxTokens }
+        : { max_tokens: maxTokens }),
     };
+
+    // O-series and GPT-5 models do not support the temperature parameter
+    if (!useMaxCompletionTokens) {
+      request.temperature = this.temperature ?? 0.7;
+    }
 
     if (tools && tools.length > 0) {
       request.tools = tools;
-      // Enable parallel tool calls if supported by the underlying model
-      request.parallel_tool_calls = true;
     }
 
     return request;
   }
 
   protected parseResponse(response: any): ChatResponse {
-    // LiteLLM returns OpenAI-compatible format
-    return response;
+    return response; // OpenAI format is our standard
   }
 }
