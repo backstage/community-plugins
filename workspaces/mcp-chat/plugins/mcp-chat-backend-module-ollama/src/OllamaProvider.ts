@@ -1,0 +1,200 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {
+  LLMProvider,
+  type ChatMessage,
+  type Tool,
+  type ChatResponse,
+  type ProviderConfig,
+} from '@backstage-community/plugin-mcp-chat-common';
+import { Ollama } from 'ollama';
+
+/**
+ * Ollama local LLM provider.
+ *
+ * @public
+ */
+export class OllamaProvider extends LLMProvider {
+  private ollama: Ollama;
+
+  constructor(config: ProviderConfig) {
+    super(config);
+    // Initialize Ollama client with the base URL
+    this.ollama = new Ollama({
+      host: this.baseUrl.replace('/v1', ''), // Remove /v1 suffix if present
+    });
+  }
+
+  async sendMessage(
+    messages: ChatMessage[],
+    tools?: Tool[],
+  ): Promise<ChatResponse> {
+    const ollamaMessages = messages.map(msg => {
+      const ollamaMsg: any = {
+        role: msg.role,
+        content: msg.content || '',
+        tool_call_id: msg.tool_call_id,
+      };
+
+      if (msg.tool_calls) {
+        ollamaMsg.tool_calls = msg.tool_calls.map(toolCall => ({
+          id: toolCall.id,
+          type: toolCall.type,
+          function: {
+            name: toolCall.function.name,
+            arguments:
+              typeof toolCall.function.arguments === 'string'
+                ? JSON.parse(toolCall.function.arguments)
+                : toolCall.function.arguments,
+          },
+        }));
+      }
+
+      return ollamaMsg;
+    });
+
+    this.logger?.debug(`[ollama] Request to model ${this.model}`, {
+      messages: this.truncateForLogging(JSON.stringify(ollamaMessages)),
+      toolCount: tools?.length ?? 0,
+    });
+
+    try {
+      const startTime = Date.now();
+      const response = await this.ollama.chat({
+        model: this.model,
+        messages: ollamaMessages,
+        tools: tools,
+      });
+      const duration = Date.now() - startTime;
+
+      this.logger?.debug(`[ollama] Response received in ${duration}ms`, {
+        data: this.truncateForLogging(JSON.stringify(response)),
+      });
+
+      const parsedResponse = this.parseResponse(response);
+      return parsedResponse;
+    } catch (error) {
+      this.logger?.error(`[ollama] API error`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  async testConnection(): Promise<{
+    connected: boolean;
+    models?: string[];
+    error?: string;
+  }> {
+    try {
+      // Use Ollama's list method to get available models
+      const modelList = await this.ollama.list();
+      const models = modelList.models?.map(model => model.name) || [];
+
+      // Check if the configured model is available
+      if (!models.includes(this.model)) {
+        return {
+          connected: false,
+          models,
+          error: `Model '${
+            this.model
+          }' is not available on this Ollama server. Available models: ${
+            models.length > 0 ? models.join(', ') : 'none'
+          }. Please ensure the model is installed by running 'ollama pull ${
+            this.model
+          }' or update your configuration to use an available model.`,
+        };
+      }
+
+      return {
+        connected: true,
+        models,
+      };
+    } catch (error) {
+      return {
+        connected: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to connect to Ollama server',
+      };
+    }
+  }
+
+  protected getHeaders(): Record<string, string> {
+    return {
+      'Content-Type': 'application/json',
+      // No authorization header needed for Ollama
+    };
+  }
+
+  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+    // This method is not used since we use the Ollama SDK directly
+    const request: any = {
+      model: this.model,
+      messages,
+      max_tokens: 1000,
+      temperature: 0.7,
+    };
+
+    if (tools && tools.length > 0) {
+      request.tools = tools;
+    }
+
+    return request;
+  }
+
+  protected parseResponse(response: any): ChatResponse {
+    let toolCalls;
+    if (response.message?.tool_calls) {
+      // Convert Ollama tool calls to the expected format
+      toolCalls = response.message.tool_calls.map(
+        (toolCall: any, index: number) => ({
+          id: toolCall.id || `call_${index}`,
+          type: 'function' as const,
+          function: {
+            name: toolCall.function?.name || toolCall.name,
+            arguments:
+              typeof toolCall.function?.arguments === 'string'
+                ? toolCall.function.arguments
+                : JSON.stringify(
+                    toolCall.function?.arguments || toolCall.arguments || {},
+                  ),
+          },
+        }),
+      );
+    }
+
+    return {
+      choices: [
+        {
+          message: {
+            role: 'assistant',
+            content: response.message?.content || null,
+            tool_calls: toolCalls,
+          },
+        },
+      ],
+      usage: response.usage || {
+        prompt_tokens: response.prompt_eval_count || 0,
+        completion_tokens: response.eval_count || 0,
+        total_tokens:
+          (response.prompt_eval_count || 0) + (response.eval_count || 0),
+      },
+    };
+  }
+}
