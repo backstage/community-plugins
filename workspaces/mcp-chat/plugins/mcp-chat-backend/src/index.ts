@@ -20,21 +20,17 @@
 export { mcpChatPlugin as default } from './plugin';
 
 // =============================================================================
-// LLM Providers
+// Extension Point
 // =============================================================================
 export {
-  LLMProvider,
-  ProviderFactory,
-  getProviderConfig,
-  getProviderInfo,
-  OpenAIProvider,
-  AzureOpenAIProvider,
-  OpenAIResponsesProvider,
-  ClaudeProvider,
-  GeminiProvider,
-  OllamaProvider,
-  LiteLLMProvider,
-} from './providers';
+  llmProviderExtensionPoint,
+  type LlmProviderExtensionPoint,
+} from './extensions';
+
+// =============================================================================
+// LLM Providers
+// =============================================================================
+export { LLMProvider } from './providers';
 
 // =============================================================================
 // Services

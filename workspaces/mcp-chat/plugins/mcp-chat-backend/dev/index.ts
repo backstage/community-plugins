@@ -41,5 +41,7 @@ backend.add(
 );
 
 backend.add(import('../src'));
-
+backend.add(
+  import('@backstage-community/plugin-mcp-chat-backend-module-openai'),
+);
 backend.start();

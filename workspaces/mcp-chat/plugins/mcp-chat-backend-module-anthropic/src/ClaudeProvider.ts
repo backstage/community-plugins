@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse, ToolCall } from '../types';
+
+import {
+  LLMProvider,
+  type ChatMessage,
+  type Tool,
+  type ChatResponse,
+  type ToolCall,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Anthropic Claude API provider.
@@ -37,7 +43,7 @@ export class ClaudeProvider extends LLMProvider {
     error?: string;
   }> {
     try {
-      // Claude doesn't have a models endpoint, so we'll make a simple test request
+      // Claude doesn't have a models endpoint, so we make a simple test request
       const testMessages = [{ role: 'user' as const, content: 'Hello' }];
       const requestBody = {
         model: this.model,
