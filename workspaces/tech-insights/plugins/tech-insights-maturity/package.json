@@ -9,6 +9,9 @@
   },
   "typesVersions": {
     "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
       "package.json": [
         "package.json"
       ]
@@ -16,6 +19,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
     "./package.json": "./package.json"
   },
   "backstage": {
@@ -57,8 +61,10 @@
     "@backstage-community/plugin-tech-insights-react": "workspace:^",
     "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@backstage/version-bridge": "backstage:^",
