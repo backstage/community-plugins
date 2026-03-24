@@ -4,14 +4,27 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { Config } from '@backstage/config';
+import { ConversationRecord } from '@backstage-community/plugin-mcp-chat-common';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
-import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-common';
+import { LlmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
+import { llmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MCPServer } from '@backstage-community/plugin-mcp-chat-common';
+import { MCPServerFullConfig } from '@backstage-community/plugin-mcp-chat-common';
+import { MCPServerStatusData } from '@backstage-community/plugin-mcp-chat-common';
+import { MessageValidationResult } from '@backstage-community/plugin-mcp-chat-common';
+import { ProviderStatusData } from '@backstage-community/plugin-mcp-chat-common';
+import { QueryResponse } from '@backstage-community/plugin-mcp-chat-common';
 import { RootConfigService } from '@backstage/backend-plugin-api';
+import { ServerTool } from '@backstage-community/plugin-mcp-chat-common';
+import { ToolCall } from '@backstage-community/plugin-mcp-chat-common';
+import { ToolExecutionResult } from '@backstage-community/plugin-mcp-chat-common';
 
 // @public
 export class AzureOpenAIProvider extends OpenAIProvider {
@@ -61,44 +74,6 @@ export interface ChatConversationStoreOptions {
   database: DatabaseService;
   // (undocumented)
   logger: LoggerService;
-}
-
-// @public
-export interface ChatMessage {
-  content: string | null;
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  tool_call_id?: string;
-  tool_calls?: ToolCall[];
-}
-
-// @public
-export interface ChatResponse {
-  choices: [
-    {
-      message: {
-        role: 'assistant';
-        content: string | null;
-        tool_calls?: ToolCall[];
-      };
-    },
-  ];
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
-// @public
-export interface ConversationRecord {
-  createdAt: Date;
-  id: string;
-  isStarred: boolean;
-  messages: ChatMessage[];
-  title?: string;
-  toolsUsed?: string[];
-  updatedAt: Date;
-  userId: string;
 }
 
 // @public
@@ -167,23 +142,9 @@ export abstract class LLMProvider {
   protected type: string;
 }
 
-// @public
-export interface LlmProviderExtensionPoint {
-  registerProvider(type: string, provider: LLMProvider): void;
-}
+export { LlmProviderExtensionPoint };
 
-// @public
-export const llmProviderExtensionPoint: ExtensionPoint<LlmProviderExtensionPoint>;
-
-// @public
-export type LLMProviderType =
-  | 'openai'
-  | 'openai-responses'
-  | 'azure-openai'
-  | 'claude'
-  | 'gemini'
-  | 'ollama'
-  | 'litellm';
+export { llmProviderExtensionPoint };
 
 // @public
 export function loadServerConfigs(
@@ -493,11 +454,6 @@ export interface RouterOptions {
 }
 
 // @public
-export interface ServerTool extends Tool {
-  serverId: string;
-}
-
-// @public
 export class SummarizationService {
   constructor(options: SummarizationServiceOptions);
   summarizeConversation(messages: ChatMessage[]): Promise<string>;
@@ -512,38 +468,6 @@ export interface SummarizationServiceOptions {
   // (undocumented)
   mcpClientService: MCPClientService;
 }
-
-// @public
-export interface Tool {
-  function: {
-    name: string;
-    description: string;
-    parameters: Record<string, unknown>;
-  };
-  type: 'function';
-}
-
-// @public
-export interface ToolCall {
-  function: {
-    name: string;
-    arguments: string;
-  };
-  id: string;
-  type: 'function';
-}
-
-// @public
-export interface ToolExecutionResult {
-  arguments: Record<string, unknown>;
-  id: string;
-  name: string;
-  result: string;
-  serverId: string;
-}
-
-// @public
-export const VALID_ROLES: readonly ['user', 'assistant', 'system', 'tool'];
 
 // @public
 export const validateConfig: (config: RootConfigService) => void;

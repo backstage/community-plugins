@@ -18,7 +18,7 @@ import { mcpChatPlugin } from './plugin';
 import { llmProviderExtensionPoint } from './extensions';
 import request from 'supertest';
 import { TestBackend } from '@backstage/backend-test-utils';
-import { MCPServerType } from './types';
+import { MCPServerType } from '@backstage-community/plugin-mcp-chat-common';
 import { createBackendModule } from '@backstage/backend-plugin-api';
 
 jest.mock('./services/MCPClientServiceImpl', () => ({
