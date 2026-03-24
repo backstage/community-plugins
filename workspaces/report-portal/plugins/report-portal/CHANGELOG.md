@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal
 
+## 1.6.0
+
+### Minor Changes
+
+- f11e6c6: Support multiple ReportPortal launches per entity with comma separated launch names and accordion UI
+
 ## 1.5.1
 
 ### Patch Changes
