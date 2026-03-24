@@ -35,7 +35,7 @@ import {
   MCPServerType,
   MCPServerFullConfig,
   ResponsesApiMcpCall,
-} from '../types';
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Options for creating an MCPClientServiceImpl instance.

@@ -4,14 +4,27 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { Config } from '@backstage/config';
+import { ConversationRecord } from '@backstage-community/plugin-mcp-chat-common';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
-import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-common';
+import { LlmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
+import { llmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { MCPServer } from '@backstage-community/plugin-mcp-chat-common';
+import { MCPServerFullConfig } from '@backstage-community/plugin-mcp-chat-common';
+import { MCPServerStatusData } from '@backstage-community/plugin-mcp-chat-common';
+import { MessageValidationResult } from '@backstage-community/plugin-mcp-chat-common';
+import { ProviderStatusData } from '@backstage-community/plugin-mcp-chat-common';
+import { QueryResponse } from '@backstage-community/plugin-mcp-chat-common';
 import { RootConfigService } from '@backstage/backend-plugin-api';
+import { ServerTool } from '@backstage-community/plugin-mcp-chat-common';
+import { ToolCall } from '@backstage-community/plugin-mcp-chat-common';
+import { ToolExecutionResult } from '@backstage-community/plugin-mcp-chat-common';
 
 // @public
 export class ChatConversationStore {
@@ -49,44 +62,6 @@ export interface ChatConversationStoreOptions {
 }
 
 // @public
-export interface ChatMessage {
-  content: string | null;
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  tool_call_id?: string;
-  tool_calls?: ToolCall[];
-}
-
-// @public
-export interface ChatResponse {
-  choices: [
-    {
-      message: {
-        role: 'assistant';
-        content: string | null;
-        tool_calls?: ToolCall[];
-      };
-    },
-  ];
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
-// @public
-export interface ConversationRecord {
-  createdAt: Date;
-  id: string;
-  isStarred: boolean;
-  messages: ChatMessage[];
-  title?: string;
-  toolsUsed?: string[];
-  updatedAt: Date;
-  userId: string;
-}
-
-// @public
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
@@ -99,67 +74,11 @@ export function executeToolCall(
 // @public
 export function findNpxPath(): Promise<string>;
 
-// @public
-export abstract class LLMProvider {
-  constructor(config: ProviderConfig);
-  // (undocumented)
-  protected apiKey?: string;
-  // (undocumented)
-  protected baseUrl: string;
-  // (undocumented)
-  protected abstract formatRequest(
-    messages: ChatMessage[],
-    tools?: Tool[],
-  ): any;
-  getBaseUrl(): string;
-  // (undocumented)
-  protected abstract getHeaders(): Record<string, string>;
-  getLastResponseOutput(): any;
-  getModel(): string;
-  getType(): string;
-  // (undocumented)
-  protected logger?: LoggerService;
-  // (undocumented)
-  protected makeRequest(endpoint: string, body: any): Promise<any>;
-  // (undocumented)
-  protected model: string;
-  // (undocumented)
-  protected abstract parseResponse(response: any): ChatResponse;
-  // (undocumented)
-  abstract sendMessage(
-    messages: ChatMessage[],
-    tools?: Tool[],
-  ): Promise<ChatResponse>;
-  setMcpServerConfigs(_configs: MCPServerFullConfig[]): void;
-  supportsNativeMcp(): boolean;
-  // (undocumented)
-  abstract testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-  // (undocumented)
-  protected truncateForLogging(data: string, maxLength?: number): string;
-  // (undocumented)
-  protected type: string;
-}
+export { LLMProvider };
 
-// @public
-export interface LlmProviderExtensionPoint {
-  registerProvider(type: string, provider: LLMProvider): void;
-}
+export { LlmProviderExtensionPoint };
 
-// @public
-export const llmProviderExtensionPoint: ExtensionPoint<LlmProviderExtensionPoint>;
-
-// @public
-export type LLMProviderType =
-  | 'openai'
-  | 'openai-responses'
-  | 'claude'
-  | 'gemini'
-  | 'ollama'
-  | 'litellm';
+export { llmProviderExtensionPoint };
 
 // @public
 export function loadServerConfigs(
@@ -208,185 +127,6 @@ export type MCPClientServiceOptions = {
 };
 
 // @public
-export type MCPServer = MCPServerConfig & {
-  status: {
-    valid: boolean;
-    connected: boolean;
-    error?: string;
-  };
-};
-
-// @public
-export interface MCPServerConfig {
-  args?: string[];
-  id: string;
-  name: string;
-  npxCommand?: string;
-  scriptPath?: string;
-  type: MCPServerType;
-  url?: string;
-}
-
-// @public
-export type MCPServerFullConfig = MCPServerConfig & MCPServerSecrets;
-
-// @public
-export interface MCPServerSecrets {
-  env?: Record<string, string>;
-  headers?: Record<string, string>;
-}
-
-// @public
-export interface MCPServerStatusData {
-  active: number;
-  servers: MCPServer[];
-  timestamp: string;
-  total: number;
-  valid: number;
-}
-
-// @public
-export enum MCPServerType {
-  // (undocumented)
-  STDIO = 'stdio',
-  // (undocumented)
-  STREAMABLE_HTTP = 'streamable-http',
-}
-
-// @public
-export interface MessageValidationResult {
-  error?: string;
-  isValid: boolean;
-}
-
-// @public
-export interface ProviderConfig {
-  apiKey?: string;
-  auth?: Record<string, string>;
-  baseUrl: string;
-  logger?: LoggerService;
-  model: string;
-  type: string;
-}
-
-// @public
-export interface ProviderConnectionStatus {
-  connected: boolean;
-  error?: string;
-  models?: string[];
-}
-
-// @public
-export interface ProviderInfo {
-  baseUrl: string;
-  connection: ProviderConnectionStatus;
-  id: string;
-  model: string;
-}
-
-// @public
-export interface ProviderStatusData {
-  providers: ProviderInfo[];
-  summary: {
-    totalProviders: number;
-    healthyProviders: number;
-    error?: string;
-  };
-  timestamp: string;
-}
-
-// @public
-export interface QueryResponse {
-  reply: string;
-  toolCalls: ToolCall[];
-  toolResponses: ToolExecutionResult[];
-}
-
-// @public
-export interface ResponsesApiMcpCall {
-  arguments: string;
-  error: string | null;
-  id: string;
-  name: string;
-  output: string;
-  server_label: string;
-  type: 'mcp_call';
-}
-
-// @public
-export interface ResponsesApiMcpListTools {
-  id: string;
-  server_label: string;
-  tools: Array<{
-    name: string;
-    description: string;
-    input_schema: Record<string, unknown>;
-  }>;
-  type: 'mcp_list_tools';
-}
-
-// @public
-export interface ResponsesApiMcpTool {
-  allowed_tools?: string[];
-  headers?: Record<string, string>;
-  require_approval: 'never' | 'always' | 'auto';
-  server_label: string;
-  server_url: string;
-  type: 'mcp';
-}
-
-// @public
-export interface ResponsesApiMessage {
-  content: Array<{
-    type: 'output_text';
-    text: string;
-    annotations?: unknown[];
-  }>;
-  id: string;
-  role: 'assistant';
-  status: 'completed' | 'failed';
-  type: 'message';
-}
-
-// @public
-export type ResponsesApiOutputEvent =
-  | ResponsesApiMcpListTools
-  | ResponsesApiMcpCall
-  | ResponsesApiMessage;
-
-// @public
-export interface ResponsesApiResponse {
-  created_at: number;
-  error?: string | null;
-  id: string;
-  instructions?: string | null;
-  model: string;
-  object: 'response';
-  output: ResponsesApiOutputEvent[];
-  parallel_tool_calls?: boolean;
-  previous_response_id?: string | null;
-  status: 'completed' | 'failed' | 'cancelled';
-  temperature?: number | null;
-  text?: {
-    format: {
-      type: string;
-    };
-  };
-  tools?: ResponsesApiMcpTool[];
-  top_p?: number | null;
-  truncation?: unknown;
-  usage?: {
-    input_tokens: number;
-    output_tokens: number;
-    total_tokens: number;
-    input_tokens_details?: {
-      cached_tokens: number;
-    };
-    output_tokens_details?: unknown;
-  };
-}
-
-// @public
 export interface RouterOptions {
   // (undocumented)
   conversationStore: ChatConversationStore;
@@ -398,11 +138,6 @@ export interface RouterOptions {
   mcpClientService: MCPClientService;
   // (undocumented)
   summarizationService: SummarizationService;
-}
-
-// @public
-export interface ServerTool extends Tool {
-  serverId: string;
 }
 
 // @public
@@ -420,38 +155,6 @@ export interface SummarizationServiceOptions {
   // (undocumented)
   mcpClientService: MCPClientService;
 }
-
-// @public
-export interface Tool {
-  function: {
-    name: string;
-    description: string;
-    parameters: Record<string, unknown>;
-  };
-  type: 'function';
-}
-
-// @public
-export interface ToolCall {
-  function: {
-    name: string;
-    arguments: string;
-  };
-  id: string;
-  type: 'function';
-}
-
-// @public
-export interface ToolExecutionResult {
-  arguments: Record<string, unknown>;
-  id: string;
-  name: string;
-  result: string;
-  serverId: string;
-}
-
-// @public
-export const VALID_ROLES: readonly ['user', 'assistant', 'system', 'tool'];
 
 // @public
 export const validateConfig: (config: RootConfigService) => void;

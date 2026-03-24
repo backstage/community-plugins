@@ -22,7 +22,11 @@ import {
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import { ChatMessage, ConversationRecord, ConversationRow } from '../types';
+import {
+  ChatMessage,
+  ConversationRecord,
+  ConversationRow,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 const TABLE_NAME = 'mcp_chat_conversations';
 const DEFAULT_DISPLAY_LIMIT = 10;
