@@ -562,7 +562,7 @@ export interface ConversationRecord {
  * Database row representation of a conversation.
  * Used internally for database operations.
  *
- * @internal
+ * @public
  */
 export interface ConversationRow {
   /** UUID primary key */

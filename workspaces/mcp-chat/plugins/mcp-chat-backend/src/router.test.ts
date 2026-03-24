@@ -21,7 +21,7 @@ import { createRouter } from './router';
 import { MCPClientService } from './services/MCPClientService';
 import { ChatConversationStore } from './services/ChatConversationStore';
 import { SummarizationService } from './services/SummarizationService';
-import { MCPServerType } from './types';
+import { MCPServerType } from '@backstage-community/plugin-mcp-chat-common';
 
 describe('createRouter', () => {
   let app: express.Express;

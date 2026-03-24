@@ -18,7 +18,7 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
 import { SummarizationService } from './SummarizationService';
 import { MCPClientService } from './MCPClientService';
-import { ChatMessage } from '../types';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
 
 describe('SummarizationService', () => {
   let service: SummarizationService;
