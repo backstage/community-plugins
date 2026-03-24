@@ -162,6 +162,31 @@ techInsights:
       gold:
         title: 'Excellent'
         description: 'Conforms with the Golden Path standards. Ownership, Maintainability, Security, and Reliability are all ensured'
+
+## Integrating with the New Frontend System
+
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), the plugin will be auto-discovered and automatically register:
+
+- The Maturity API
+- The Maturity overview page at `/maturity`
+- Entity content for displaying maturity scorecards on `Component` entity pages
+- Entity content for displaying maturity summary on `System`, `Domain`, and `Group` entity pages
+- Entity card for displaying maturity summary in entity overview (info column)
+
+No manual wiring in `EntityPage.tsx` or `App.tsx` is required — the extensions are registered automatically.
+
+### Customizing via `app-config.yaml`
+
+You can configure the maturity extensions in your `app-config.yaml`. For example, to disable specific extensions:
+
+```yaml
+app:
+  extensions:
+    - entity-card:tech-insights-maturity/summary:
+        config:
+          filter: { kind: 'Component' }
+    - entity-content:tech-insights-maturity/scorecards:
+        disabled: true
 ```
 
 ## Compatibility
