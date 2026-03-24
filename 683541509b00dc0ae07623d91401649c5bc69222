@@ -1,0 +1,25 @@
+workspaces/playlist/package.json
+  0ae081ac0c3213ee 46
+workspaces/playlist/plugins/playlist-backend/src/permissions/rules.ts
+  0ae081ac0c3213ee 32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.7",
+  "base_commit_sha": "683541509b00dc0ae07623d91401649c5bc69222",
+  "prompts": {
+    "0ae081ac0c3213ee": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a6c26e8-14c2-4ce5-bc2c-fc0c73ef690c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Phil Kuang <pkuang@factset.com>",
+      "messages": [],
+      "total_additions": 29,
+      "total_deletions": 21,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
