@@ -15,9 +15,9 @@
     "role": "node-library",
     "pluginId": "mcp-chat",
     "pluginPackages": [
-      "@backstage-community/plugin-mcp-chat-node",
+      "@backstage-community/plugin-mcp-chat",
       "@backstage-community/plugin-mcp-chat-common",
-      "@backstage-community/plugin-mcp-chat-backend"
+      "@backstage-community/plugin-mcp-chat-node"
     ]
   },
   "scripts": {

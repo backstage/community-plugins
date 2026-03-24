@@ -43,6 +43,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock": "workspace:^",
     "@backstage-community/plugin-mcp-chat-backend-module-openai": "workspace:^",
     "@backstage/backend-test-utils": "^1.11.2",
     "@backstage/cli": "^0.36.1",
