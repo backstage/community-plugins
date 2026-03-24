@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isN8nAvailable } from '../components/Router';
 
 /**
  * @alpha
  */
-export const entityN8nLatestExecutionCard = EntityCardBlueprint.make({
-  name: 'latest-execution',
-  params: {
-    filter: isN8nAvailable,
-    loader: () =>
-      import(
-        '../components/N8nLatestExecutionCard/N8nLatestExecutionCard'
-      ).then(m => <m.N8nLatestExecutionCard />),
-  },
-});
+export const entityN8nLatestExecutionCard: ExtensionDefinition =
+  EntityCardBlueprint.make({
+    name: 'latest-execution',
+    params: {
+      filter: isN8nAvailable,
+      loader: () =>
+        import(
+          '../components/N8nLatestExecutionCard/N8nLatestExecutionCard'
+        ).then(m => <m.N8nLatestExecutionCard />),
+    },
+  });
 
 /**
  * @alpha
  */
-export const entityN8nWorkflowsTable = EntityCardBlueprint.make({
-  name: 'workflows-table',
-  params: {
-    filter: isN8nAvailable,
-    loader: () =>
-      import('../components/N8nWorkflowsTable/N8nWorkflowsTable').then(m => (
-        <m.N8nWorkflowsTable />
-      )),
-  },
-});
+export const entityN8nWorkflowsTable: ExtensionDefinition =
+  EntityCardBlueprint.make({
+    name: 'workflows-table',
+    params: {
+      filter: isN8nAvailable,
+      loader: () =>
+        import('../components/N8nWorkflowsTable/N8nWorkflowsTable').then(m => (
+          <m.N8nWorkflowsTable />
+        )),
+    },
+  });

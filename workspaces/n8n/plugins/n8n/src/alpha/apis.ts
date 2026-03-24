@@ -17,13 +17,14 @@ import {
   ApiBlueprint,
   discoveryApiRef,
   fetchApiRef,
+  ExtensionDefinition,
 } from '@backstage/frontend-plugin-api';
 import { n8nApiRef, N8nClient } from '../api';
 
 /**
  * @alpha
  */
-export const n8nApi = ApiBlueprint.make({
+export const n8nApi: ExtensionDefinition = ApiBlueprint.make({
   name: 'n8n',
   params: defineParams =>
     defineParams({

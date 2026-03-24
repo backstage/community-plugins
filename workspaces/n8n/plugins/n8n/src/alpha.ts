@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendPlugin,
+  FrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 import {
   entityN8nContent,
   entityN8nLatestExecutionCard,
@@ -26,7 +29,7 @@ import { rootRouteRef } from './plugin';
 /**
  * @alpha
  */
-export default createFrontendPlugin({
+const n8nPlugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'n8n',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
@@ -38,3 +41,5 @@ export default createFrontendPlugin({
     n8nApi,
   ],
 });
+
+export default n8nPlugin;
