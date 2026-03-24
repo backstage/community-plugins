@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
 import { Page, Content } from '@backstage/core-components';
+import { Grid } from '@backstage/ui';
 import {
   useEntity,
   MissingAnnotationEmptyState,
@@ -43,25 +43,23 @@ export const DynatraceTab = () => {
   return (
     <Page themeId="tool">
       <Content>
-        <Grid container spacing={2}>
-          {dynatraceEntityId ? (
-            <Grid item xs={12} lg={12}>
+        <Grid.Root columns="1" gap="4">
+          {dynatraceEntityId && (
+            <Grid.Item>
               <ProblemsList dynatraceEntityId={dynatraceEntityId} />
-            </Grid>
-          ) : (
-            ''
+            </Grid.Item>
           )}
           {syntheticsIds
             ?.split(/[ ,]/)
             .filter(Boolean)
             .map(id => {
               return (
-                <Grid key={id} item xs={12} lg={12}>
+                <Grid.Item key={id}>
                   <SyntheticsCard syntheticsId={id} />
-                </Grid>
+                </Grid.Item>
               );
             })}
-        </Grid>
+        </Grid.Root>
       </Content>
     </Page>
   );

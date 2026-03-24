@@ -17,7 +17,7 @@
 import useAsync from 'react-use/esm/useAsync';
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import Chip from '@material-ui/core/Chip';
+import { Box, Text } from '@backstage/ui';
 import { dynatraceApiRef } from '../../../api';
 
 type SyntheticsLocationProps = {
@@ -32,17 +32,14 @@ const failedInLastXHours = (timestamp: Date, offset: number): boolean => {
   return timestamp > new Date(new Date().getTime() - 1000 * 60 * 60 * offset);
 };
 
-const chipColor = (timestamp: Date): string => {
+const chipColor = (timestamp: Date): 'danger' | 'warning' | 'success' => {
   if (failedInLastXHours(timestamp, 1)) {
-    return 'salmon';
-  }
-  if (failedInLastXHours(timestamp, 6)) {
-    return 'sandybrown';
+    return 'danger';
   }
   if (failedInLastXHours(timestamp, 24)) {
-    return 'palegoldenrod';
+    return 'warning';
   }
-  return 'lightgreen';
+  return 'success';
 };
 
 export const SyntheticsLocation = (props: SyntheticsLocationProps) => {
@@ -61,14 +58,24 @@ export const SyntheticsLocation = (props: SyntheticsLocationProps) => {
   }
 
   return (
-    <Chip
-      label={`${value?.name}${
-        failedInLastXHours(new Date(lastFailedTimestamp), 24)
-          ? `: failed @ ${lastFailedTimestamp.toLocaleTimeString()}`
-          : ''
-      }`}
-      size="medium"
-      style={{ backgroundColor: chipColor(lastFailedTimestamp) }}
-    />
+    <Box
+      as="span"
+      style={{
+        alignItems: 'center',
+        border: '1px solid var(--bui-border)',
+        borderRadius: '999px',
+        display: 'inline-flex',
+        minHeight: '32px',
+        padding: '0 12px',
+      }}
+    >
+      <Text variant="body-small" color={chipColor(lastFailedTimestamp)}>
+        {`${value?.name}${
+          failedInLastXHours(new Date(lastFailedTimestamp), 24)
+            ? `: failed @ ${lastFailedTimestamp.toLocaleTimeString()}`
+            : ''
+        }`}
+      </Text>
+    </Box>
   );
 };
