@@ -31,16 +31,16 @@
   },
   "dependencies": {
     "@backstage-community/plugin-npm-common": "workspace:^",
-    "@backstage/backend-defaults": "^0.15.2",
-    "@backstage/backend-plugin-api": "^1.7.0",
+    "@backstage/backend-defaults": "^0.16.0",
+    "@backstage/backend-plugin-api": "^1.8.0",
     "@backstage/errors": "^1.2.7",
-    "@backstage/plugin-catalog-node": "^2.0.0",
+    "@backstage/plugin-catalog-node": "^2.1.0",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "^1.11.0",
-    "@backstage/cli": "^0.35.4",
+    "@backstage/backend-test-utils": "^1.11.1",
+    "@backstage/cli": "^0.36.0",
     "@types/express": "^4.17.1"
   },
   "files": [
