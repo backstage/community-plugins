@@ -156,6 +156,7 @@ export class PolicyBuilder {
         rbacProviders,
         enforcerDelegate,
         roleMetadataStorage,
+        conditionStorage,
         env.logger,
         env.auditor,
       );
