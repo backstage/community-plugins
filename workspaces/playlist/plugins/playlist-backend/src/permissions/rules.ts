@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-import { makeCreatePermissionRule } from '@backstage/plugin-permission-node';
+import {
+  createPermissionResourceRef,
+  createPermissionRule,
+} from '@backstage/plugin-permission-node';
 import {
   PLAYLIST_LIST_RESOURCE_TYPE,
   PlaylistMetadata,
 } from '@backstage-community/plugin-playlist-common';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 import { ListPlaylistsFilter } from '../service';
 
-const createPlaylistPermissionRule = makeCreatePermissionRule<
+const playlistListResourceRef = createPermissionResourceRef<
   PlaylistMetadata,
-  ListPlaylistsFilter,
-  typeof PLAYLIST_LIST_RESOURCE_TYPE
->();
+  ListPlaylistsFilter
+>().with({
+  pluginId: 'playlist',
+  resourceType: PLAYLIST_LIST_RESOURCE_TYPE,
+});
 
-const isOwner = createPlaylistPermissionRule({
+const isOwner = createPermissionRule({
   name: 'IS_OWNER',
   description: 'Allow playlists owned by the given entity refs',
-  resourceType: PLAYLIST_LIST_RESOURCE_TYPE,
+  resourceRef: playlistListResourceRef,
   paramsSchema: z.object({
     owners: z.array(z.string()).describe('List of entity refs to match on'),
   }),
@@ -43,10 +48,10 @@ const isOwner = createPlaylistPermissionRule({
   }),
 });
 
-const isPublic = createPlaylistPermissionRule({
+const isPublic = createPermissionRule({
   name: 'IS_PUBLIC',
   description: 'Allow playlists that are set as public',
-  resourceType: PLAYLIST_LIST_RESOURCE_TYPE,
+  resourceRef: playlistListResourceRef,
   apply: (list: PlaylistMetadata) => list.public,
   toQuery: () => ({ key: 'public', values: [true] }),
 });
