@@ -29,7 +29,9 @@
     "supported-versions": "1.40.0",
     "pluginPackage": "@backstage-community/plugin-mcp-chat",
     "pluginPackages": [
-      "@backstage-community/plugin-mcp-chat"
+      "@backstage-community/plugin-mcp-chat",
+      "@backstage-community/plugin-mcp-chat-common",
+      "@backstage-community/plugin-mcp-chat-node"
     ]
   },
   "sideEffects": false,
