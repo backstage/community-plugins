@@ -133,7 +133,6 @@ const mcpChatPlugin: OverridableFrontendPlugin<
         >;
       };
       params: {
-        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
         title?: string | undefined;
         icon?: IconElement | undefined;
