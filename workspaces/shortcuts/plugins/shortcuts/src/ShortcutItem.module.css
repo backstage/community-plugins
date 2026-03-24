@@ -1,0 +1,17 @@
+@layer components {
+  .root {
+  }
+
+  .root:hover .button {
+    visibility: visible;
+  }
+
+  .button {
+    visibility: hidden;
+  }
+
+  .icon {
+    color: white;
+    font-size: 16px;
+  }
+}

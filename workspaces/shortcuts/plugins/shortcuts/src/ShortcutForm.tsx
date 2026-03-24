@@ -17,25 +17,11 @@
 import { useEffect, useRef } from 'react';
 import useObservable from 'react-use/esm/useObservable';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import Button from '@material-ui/core/Button';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, TextField, Text } from '@backstage/ui';
 import { FormValues } from './types';
 import { shortcutsApiRef } from './api';
 import { useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  field: {
-    marginBottom: theme.spacing(2),
-  },
-  actionRoot: {
-    paddingLeft: theme.spacing(2),
-    paddingBottom: theme.spacing(3),
-    justifyContent: 'flex-start',
-  },
-}));
+import styles from './ShortcutForm.module.css';
 
 type Props = {
   formValues?: FormValues;
@@ -50,7 +36,6 @@ export const ShortcutForm = ({
   onClose,
   allowExternalLinks,
 }: Props) => {
-  const classes = useStyles();
   const shortcutApi = useApi(shortcutsApiRef);
   const shortcutData = useObservable(
     shortcutApi.shortcut$(),
@@ -94,12 +79,12 @@ export const ShortcutForm = ({
 
   return (
     <>
-      <CardContent>
+      <div className={styles.formContent}>
         <Controller
           name="url"
           control={control}
           rules={{
-            required: true,
+            required: 'URL is required',
             validate: urlIsUnique,
             ...(allowExternalLinks
               ? {
@@ -116,28 +101,35 @@ export const ShortcutForm = ({
                 }),
           }}
           render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.url}
-              helperText={errors.url?.message}
-              type="text"
-              placeholder="Enter a URL"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className={classes.field}
-              fullWidth
-              label="Shortcut URL"
-              variant="outlined"
-              autoComplete="off"
-            />
+            <div className={styles.fieldWrapper}>
+              <TextField
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                type="text"
+                placeholder="Enter a URL"
+                label="Shortcut URL"
+                autoComplete="off"
+                isRequired
+              />
+              {errors.url && (
+                <Text
+                  className={styles.error}
+                  variant="body-small"
+                  style={{ color: 'var(--bui-fg-danger)' }}
+                >
+                  {errors.url.message}
+                </Text>
+              )}
+            </div>
           )}
         />
         <Controller
           name="title"
           control={control}
           rules={{
-            required: true,
+            required: 'Display name is required',
             validate: titleIsUnique,
             minLength: {
               value: 2,
@@ -145,37 +137,42 @@ export const ShortcutForm = ({
             },
           }}
           render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.title}
-              helperText={errors.title?.message}
-              type="text"
-              placeholder="Enter a display name"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className={classes.field}
-              fullWidth
-              label="Display Name"
-              variant="outlined"
-              autoComplete="off"
-            />
+            <div className={styles.fieldWrapper}>
+              <TextField
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                type="text"
+                placeholder="Enter a display name"
+                label="Display Name"
+                autoComplete="off"
+                isRequired
+              />
+              {errors.title && (
+                <Text
+                  className={styles.error}
+                  variant="body-small"
+                  style={{ color: 'var(--bui-fg-danger)' }}
+                >
+                  {errors.title.message}
+                </Text>
+              )}
+            </div>
           )}
         />
-      </CardContent>
-      <CardActions classes={{ root: classes.actionRoot }}>
+      </div>
+      <div className={styles.actionRoot}>
         <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleSubmit(onSave)}
+          variant="primary"
+          onPress={() => handleSubmit(onSave)()}
         >
           Save
         </Button>
-        <Button variant="outlined" size="large" onClick={onClose}>
+        <Button variant="secondary" onPress={onClose}>
           Cancel
         </Button>
-      </CardActions>
+      </div>
     </>
   );
 };
