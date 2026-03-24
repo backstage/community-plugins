@@ -4,11 +4,11 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { ChatMessage } from '@backstage-community/plugin-mcp-chat-backend';
-import { ChatResponse } from '@backstage-community/plugin-mcp-chat-backend';
-import { LLMProvider } from '@backstage-community/plugin-mcp-chat-backend';
-import { ProviderConfig } from '@backstage-community/plugin-mcp-chat-backend';
-import { Tool } from '@backstage-community/plugin-mcp-chat-backend';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
+import { ChatResponse } from '@backstage-community/plugin-mcp-chat-common';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-common';
+import { ProviderConfig } from '@backstage-community/plugin-mcp-chat-common';
+import { Tool } from '@backstage-community/plugin-mcp-chat-common';
 
 // @public
 const _default: BackendFeature;
