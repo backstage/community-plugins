@@ -36,9 +36,9 @@
     "directory": "workspaces/ocm"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.4",
+    "@backstage/cli": "^0.36.0",
     "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.16.5",
+    "@backstage/repo-tools": "^0.17.0",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "knip": "^5.27.4",
