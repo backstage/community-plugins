@@ -15,9 +15,18 @@
  */
 
 import { UrlPatternDiscovery } from '@backstage/core-app-api';
+import { Entity } from '@backstage/catalog-model';
 import { SonarQubeClient } from './SonarQubeClient';
-import { InstanceUrlWrapper, FindingsWrapper } from './types';
+import { SummaryWrapper } from './types';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
+
+function mockEntity(name: string): Entity {
+  return {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'component',
+    metadata: { name, namespace: 'default' },
+  };
+}
 
 const fetchApi = {
   fetch: jest.fn(),
@@ -27,38 +36,32 @@ describe('SonarQubeClient', () => {
   const mockBaseUrl = 'http://backstage:9191/api/sonarqube';
   const discoveryApi = UrlPatternDiscovery.compile(mockBaseUrl);
 
-  const setupHandlers = (
-    findings: FindingsWrapper,
-    instanceUrlWrapper: InstanceUrlWrapper,
-  ) => {
+  const setupHandlers = (summary: SummaryWrapper) => {
     fetchApi.fetch.mockImplementation(
       async (input: RequestInfo, _?: RequestInit) => {
-        if (input.toString().includes('/findings')) {
+        if (input.toString().includes('/entities/')) {
           return {
+            ok: true,
             status: 200,
-            json: async () => findings,
-          };
-        } else if (input.toString().includes('/instanceUrl')) {
-          return {
-            status: 200,
-            json: async () => instanceUrlWrapper,
+            json: async () => summary,
           };
         }
         return {
+          ok: false,
           status: 404,
-          json: async () => {
-            return {
-              message: 'Not Found',
-            };
-          },
+          json: async () => ({ message: 'Not Found' }),
+          statusText: 'Not Found',
+          headers: new Headers(),
+          url: input.toString(),
+          text: async () => JSON.stringify({ message: 'Not Found' }),
         };
       },
     );
   };
 
   it('should report finding summary', async () => {
-    setupHandlers(
-      {
+    setupHandlers({
+      findings: {
         analysisDate: '2020-01-01T00:00:00Z',
         measures: [
           { metric: 'alert_status', value: 'OK' },
@@ -74,19 +77,17 @@ describe('SonarQubeClient', () => {
           { metric: 'duplicated_lines_density', value: '1.0' },
         ],
       },
-      {
-        instanceUrl: 'https://sonarcloud.io',
-      },
-    );
+      instanceUrl: 'https://sonarcloud.io',
+      componentKey: 'our:service',
+    });
 
     const client = new SonarQubeClient({
       discoveryApi,
       fetchApi,
     });
 
-    const summary = await client.getFindingSummary({
-      componentKey: 'our:service',
-    });
+    const summaries = await client.getSummaries([mockEntity('my-service')]);
+    const summary = summaries[0];
 
     expect(summary).toEqual(
       expect.objectContaining({
@@ -114,9 +115,10 @@ describe('SonarQubeClient', () => {
       'https://sonarcloud.io/component_measures?id=our%3Aservice&metric=coverage&resolved=false&view=list',
     );
   });
+
   it('should report finding summary (custom baseUrl)', async () => {
-    setupHandlers(
-      {
+    setupHandlers({
+      findings: {
         analysisDate: '2020-01-03T00:00:00Z',
         measures: [
           {
@@ -133,20 +135,17 @@ describe('SonarQubeClient', () => {
           },
         ],
       },
-      {
-        instanceUrl: 'http://a.instance.local',
-      },
-    );
+      instanceUrl: 'http://a.instance.local',
+      componentKey: 'our:service',
+    });
 
     const client = new SonarQubeClient({
       discoveryApi,
       fetchApi,
     });
 
-    const summary = await client.getFindingSummary({
-      componentKey: 'our:service',
-      projectInstance: 'custom',
-    });
+    const summaries = await client.getSummaries([mockEntity('my-service')]);
+    const summary = summaries[0];
 
     expect(summary).toEqual(
       expect.objectContaining({
@@ -168,90 +167,90 @@ describe('SonarQubeClient', () => {
   });
 
   it('should add identity token for logged in users', async () => {
-    setupHandlers(
-      {
+    setupHandlers({
+      findings: {
         analysisDate: '2020-01-01T00:00:00Z',
         measures: [],
       },
-      {
-        instanceUrl: 'http://a.instance.local',
-      },
-    );
+      instanceUrl: 'http://a.instance.local',
+      componentKey: 'our:service',
+    });
 
     const client = new SonarQubeClient({
       discoveryApi,
       fetchApi,
     });
-    const summary = await client.getFindingSummary({
-      componentKey: 'our:service',
-    });
+    const summaries = await client.getSummaries([mockEntity('my-service')]);
+    const summary = summaries[0];
 
     expect(summary?.lastAnalysis).toBe('2020-01-01T00:00:00Z');
   });
 
-  describe('getFindingSummaries', () => {
-    const setupHandlersForGetFindingSummaries = () => {
+  describe('getSummaries', () => {
+    const setupHandlersForGetSummaries = () => {
       fetchApi.fetch.mockImplementation(
         async (input: RequestInfo, _?: RequestInit) => {
-          if (input.toString().includes('/findings')) {
-            const componentKey = new URL(input.toString()).searchParams.get(
-              'componentKey',
-            );
-            if (componentKey === 'unknown') {
+          if (input.toString().includes('/entities/')) {
+            const urlParts = input.toString().split('/entities/')[1].split('/');
+            // urlParts = [kind, namespace, name, 'summary']
+            const entityName = urlParts[2];
+            if (entityName === 'unknown-entity') {
               return {
+                ok: true,
                 status: 200,
-                json: '',
+                json: async () =>
+                  ({
+                    findings: null,
+                    instanceUrl: 'https://sonarcloud.io',
+                    componentKey: 'unknown',
+                  } as SummaryWrapper),
               };
             }
-            const findings = {
-              analysisDate:
-                componentKey === 'component-1'
+            const isComponent1 = entityName === 'component-1';
+            const summary: SummaryWrapper = {
+              findings: {
+                analysisDate: isComponent1
                   ? '2020-01-01T00:00:00Z'
                   : '2020-01-02T00:00:00Z',
-              measures: [
-                {
-                  metric: 'alert_status',
-                  value: componentKey === 'component-1' ? 'OK' : 'ERROR',
-                },
-                {
-                  metric: 'bugs',
-                  value: componentKey === 'component-1' ? '2' : '5',
-                },
-                {
-                  metric: 'code_smells',
-                  value: componentKey === 'component-1' ? '100' : '200',
-                },
-              ],
-            } as FindingsWrapper;
-
-            return {
-              status: 200,
-              json: async () => findings,
-            };
-          } else if (input.toString().includes('/instanceUrl')) {
-            return {
-              status: 200,
-              json: async () => {
-                return {
-                  instanceUrl: 'https://sonarcloud.io',
-                } as InstanceUrlWrapper;
+                measures: [
+                  {
+                    metric: 'alert_status',
+                    value: isComponent1 ? 'OK' : 'ERROR',
+                  },
+                  {
+                    metric: 'bugs',
+                    value: isComponent1 ? '2' : '5',
+                  },
+                  {
+                    metric: 'code_smells',
+                    value: isComponent1 ? '100' : '200',
+                  },
+                ],
               },
+              instanceUrl: 'https://sonarcloud.io',
+              componentKey: isComponent1 ? 'component-1' : 'component-2',
+            };
+            return {
+              ok: true,
+              status: 200,
+              json: async () => summary,
             };
           }
           return {
+            ok: false,
             status: 404,
-            json: async () => {
-              return {
-                message: 'Not Found',
-              };
-            },
+            json: async () => ({ message: 'Not Found' }),
+            statusText: 'Not Found',
+            headers: new Headers(),
+            url: input.toString(),
+            text: async () => JSON.stringify({ message: 'Not Found' }),
           };
         },
       );
     };
 
     beforeEach(() => {
-      setupHandlersForGetFindingSummaries();
+      setupHandlersForGetSummaries();
     });
 
     it('should report finding summaries for multiple components', async () => {
@@ -260,15 +259,14 @@ describe('SonarQubeClient', () => {
         fetchApi,
       });
 
-      const summaries = await client.getFindingSummaries([
-        { projectInstance: 'instance-1', componentKey: 'component-1' },
-        { projectInstance: 'instance-2', componentKey: 'component-2' },
+      const summaries = await client.getSummaries([
+        mockEntity('component-1'),
+        mockEntity('component-2'),
       ]);
 
-      expect(summaries.size).toBe(2);
+      expect(summaries).toHaveLength(2);
 
-      const summary1 = summaries.get('component-1');
-      expect(summary1).toEqual(
+      expect(summaries[0]).toEqual(
         expect.objectContaining({
           lastAnalysis: '2020-01-01T00:00:00Z',
           metrics: {
@@ -280,8 +278,7 @@ describe('SonarQubeClient', () => {
         }),
       );
 
-      const summary2 = summaries.get('component-2');
-      expect(summary2).toEqual(
+      expect(summaries[1]).toEqual(
         expect.objectContaining({
           lastAnalysis: '2020-01-02T00:00:00Z',
           metrics: {
@@ -300,29 +297,29 @@ describe('SonarQubeClient', () => {
         fetchApi,
       });
 
-      const summaries = await client.getFindingSummaries([]);
+      const summaries = await client.getSummaries([]);
 
-      expect(summaries.size).toBe(0);
+      expect(summaries).toHaveLength(0);
     });
 
-    it('should handle incorrect component keys', async () => {
+    it('should handle unknown entities with null findings', async () => {
       const client = new SonarQubeClient({
         discoveryApi,
         fetchApi,
       });
 
-      const summaries = await client.getFindingSummaries([
-        { projectInstance: 'instance-1', componentKey: 'component-1' },
-        { projectInstance: 'instance-2', componentKey: 'unknown' },
+      const summaries = await client.getSummaries([
+        mockEntity('component-1'),
+        mockEntity('unknown-entity'),
       ]);
 
-      expect(summaries.size).toBe(1);
-      const summary1 = summaries.get('component-1');
-      expect(summary1).toEqual(
+      expect(summaries).toHaveLength(2);
+      expect(summaries[0]).toEqual(
         expect.objectContaining({
           projectUrl: 'https://sonarcloud.io/dashboard?id=component-1',
         }),
       );
+      expect(summaries[1]).toBeUndefined();
     });
   });
 });

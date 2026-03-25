@@ -211,7 +211,6 @@ const _default: OverridableFrontendPlugin<
       kind: 'page';
       name: undefined;
       params: {
-        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
         title?: string | undefined;
         icon?: IconElement | undefined;

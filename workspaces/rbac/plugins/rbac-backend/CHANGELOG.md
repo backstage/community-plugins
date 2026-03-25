@@ -1,5 +1,16 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.10.0
+
+### Minor Changes
+
+- 133eae6: Add support for loading conditional permissions from a remote provider (fix #6412)
+
+### Patch Changes
+
+- Updated dependencies [133eae6]
+  - @backstage-community/plugin-rbac-node@1.19.0
+
 ## 7.9.1
 
 ### Patch Changes

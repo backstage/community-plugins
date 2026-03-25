@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 2.6.0
+
+### Minor Changes
+
+- 8403fca: Backstage version bump to v1.49.1. This release also includes migration from `AlertApi` to the new `ToastApi`.
+
+### Patch Changes
+
+- 7397465: Updated dependency `slugify` to `1.6.8`.
+- Updated dependencies [8403fca]
+  - @backstage-community/plugin-announcements-react@0.23.0
+
 ## 2.5.1
 
 ### Patch Changes

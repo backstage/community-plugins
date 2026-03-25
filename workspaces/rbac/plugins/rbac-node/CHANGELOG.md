@@ -1,5 +1,11 @@
 ## @backstage-community/plugin-rbac-node [1.4.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-node@1.3.1...@backstage-community/plugin-rbac-node@1.4.0) (2024-07-26)
 
+## 1.19.0
+
+### Minor Changes
+
+- 133eae6: Add support for loading conditional permissions from a remote provider (fix #6412)
+
 ## 1.18.1
 
 ### Patch Changes

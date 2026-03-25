@@ -20,10 +20,7 @@ import {
   SonarqubeConfig,
 } from './sonarqubeInfoProvider';
 import { setupServer } from 'msw/node';
-import {
-  mockServices,
-  registerMswTestHooks,
-} from '@backstage/backend-test-utils';
+import { registerMswTestHooks } from '@backstage/backend-test-utils';
 import { rest, RestRequest } from 'msw';
 
 describe('SonarqubeConfig', () => {
@@ -239,10 +236,9 @@ const server = setupServer();
 
 describe('DefaultSonarqubeInfoProvider', () => {
   function configureProvider(configData: any) {
-    const logger = mockServices.logger.mock();
     const config = new ConfigReader(configData);
 
-    return DefaultSonarqubeInfoProvider.fromConfig(config, logger);
+    return DefaultSonarqubeInfoProvider.fromConfig(config);
   }
 
   describe('getBaseUrl', () => {
@@ -484,15 +480,15 @@ describe('DefaultSonarqubeInfoProvider', () => {
           authType: 'Bearer',
         },
       });
-      expect(
-        await provider.getFindings({
+      await expect(
+        provider.getFindings({
           componentKey: DUMMY_COMPONENT_KEY,
           instanceName: 'default',
         }),
-      ).toBeUndefined();
+      ).rejects.toThrow('500');
     });
 
-    it('Provide undefined as finding if component API answer code is not 200', async () => {
+    it('Throws if component API answer code is not 200', async () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
           checkAuthToken(req);
@@ -509,12 +505,29 @@ describe('DefaultSonarqubeInfoProvider', () => {
           apiKey: '123456789abcdef0123456789abcedf012',
         },
       });
-      expect(
-        await provider.getFindings({
+      await expect(
+        provider.getFindings({
           componentKey: DUMMY_COMPONENT_KEY,
           instanceName: 'default',
         }),
-      ).toBeUndefined();
+      ).rejects.toThrow('500');
+    });
+
+    it('Preserves status code when SonarQube returns 401', async () => {
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {
+          checkAuthToken(req);
+          return res(ctx.status(401));
+        }),
+      );
+
+      const provider = configureProvider(DUMMY_SIMPLE_CONFIG_FOR_PROVIDER);
+      await expect(
+        provider.getFindings({
+          componentKey: DUMMY_COMPONENT_KEY,
+          instanceName: 'default',
+        }),
+      ).rejects.toMatchObject({ statusCode: 401 });
     });
     it('Provide undefined as finding if component API answer incorrectly', async () => {
       server.use(
@@ -578,10 +591,9 @@ describe('DefaultSonarqubeInfoProvider', () => {
       });
     });
 
-    it('Provide undefined as findings when measure API answer code is not 200', async () => {
+    it('Throws when measure API answer code is not 200', async () => {
       setupComponentHandler();
       setupMetricsHandler();
-      // custom metrics handler that provide two pages
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
           checkAuthToken(req);
@@ -593,12 +605,12 @@ describe('DefaultSonarqubeInfoProvider', () => {
       );
 
       const provider = configureProvider(DUMMY_SIMPLE_CONFIG_FOR_PROVIDER);
-      expect(
-        await provider.getFindings({
+      await expect(
+        provider.getFindings({
           componentKey: DUMMY_COMPONENT_KEY,
           instanceName: 'default',
         }),
-      ).toBeUndefined();
+      ).rejects.toThrow('500');
     });
 
     it('Provide findings with empty measures when metrics API answer incorrectly', async () => {

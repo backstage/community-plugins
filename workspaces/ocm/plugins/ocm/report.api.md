@@ -29,7 +29,7 @@ export const ClusterInfoCard: () => JSX_2.Element;
 
 // @public (undocumented)
 export const OcmIcon: ComponentType<{
-    fontSize?: "small" | "inherit" | "medium" | "large" | undefined;
+    fontSize?: "medium" | "large" | "small" | "inherit";
 }>;
 
 // @public (undocumented)
