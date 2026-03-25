@@ -21,6 +21,7 @@ import {
   type Message,
   type ContentBlock,
 } from '@aws-sdk/client-bedrock-runtime';
+import type { AwsCredentialIdentityProvider } from '@aws-sdk/types';
 import {
   LLMProvider,
   type ChatMessage,
@@ -31,15 +32,27 @@ import {
 } from '@backstage-community/plugin-mcp-chat-common';
 
 /**
+ * Options for constructing a BedrockProvider with AWS credentials
+ * resolved via `@backstage/integration-aws-node`.
+ *
+ * @public
+ */
+export interface BedrockProviderOptions {
+  /** AWS region for the Bedrock Runtime client. */
+  region: string;
+  /** Credential provider resolved from DefaultAwsCredentialsManager. */
+  credentialProvider: AwsCredentialIdentityProvider;
+}
+
+/**
  * Amazon Bedrock Converse API provider.
  *
  * Uses the AWS SDK Bedrock Runtime client with the Converse API,
  * which provides a unified interface across all Bedrock foundation models.
  *
- * Authentication is handled via the standard AWS credential chain
- * (environment variables, IAM roles, SSO, etc.). Explicit credentials
- * can be supplied through the `auth` config record with `accessKeyId`,
- * `secretAccessKey`, and optionally `sessionToken`.
+ * Authentication is handled via `@backstage/integration-aws-node`,
+ * which resolves credentials from the Backstage `aws` app-config section
+ * (IAM roles, profiles, static keys, or the default SDK credential chain).
  *
  * @public
  */
@@ -47,22 +60,14 @@ export class BedrockProvider extends LLMProvider {
   private client: BedrockRuntimeClient;
   private lastTools?: Tool[];
 
-  constructor(config: ProviderConfig) {
+  constructor(config: ProviderConfig, options: BedrockProviderOptions) {
     super(config);
 
-    const region = config.auth?.region || 'us-east-1';
-
-    const clientConfig: Record<string, any> = { region };
-
-    if (config.auth?.accessKeyId && config.auth?.secretAccessKey) {
-      clientConfig.credentials = {
-        accessKeyId: config.auth.accessKeyId,
-        secretAccessKey: config.auth.secretAccessKey,
-        ...(config.auth.sessionToken && {
-          sessionToken: config.auth.sessionToken,
-        }),
+    const clientConfig: ConstructorParameters<typeof BedrockRuntimeClient>[0] =
+      {
+        region: options.region,
+        credentialDefaultProvider: () => options.credentialProvider,
       };
-    }
 
     if (config.baseUrl) {
       clientConfig.endpoint = config.baseUrl;
