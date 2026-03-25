@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal
 
+## 1.6.1
+
+### Patch Changes
+
+- 6302f7e: Fix accordion summary spacing for launch name and count on newer MUI versions
+
 ## 1.6.0
 
 ### Minor Changes
