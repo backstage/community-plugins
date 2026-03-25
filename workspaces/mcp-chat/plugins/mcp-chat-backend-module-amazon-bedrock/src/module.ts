@@ -19,6 +19,7 @@ import {
   coreServices,
 } from '@backstage/backend-plugin-api';
 import { llmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
+import { DefaultAwsCredentialsManager } from '@backstage/integration-aws-node';
 import type { Config } from '@backstage/config';
 import { BedrockProvider } from './BedrockProvider';
 
@@ -61,17 +62,28 @@ export default createBackendModule({
 
         if (!entry) return; // Skip registration if not configured
 
+        const auth = readAuthRecord(entry);
+        const region = auth?.region || 'us-east-1';
+
+        const credsManager = DefaultAwsCredentialsManager.fromConfig(config);
+        const credProvider = await credsManager.getCredentialProvider({
+          accountId: auth?.accountId,
+        });
+
         const providerConfig = {
           type: 'amazon-bedrock',
           apiKey: entry.getOptionalString('token'),
           baseUrl: entry.getOptionalString('baseUrl') || '',
           model: entry.getString('model'),
-          auth: readAuthRecord(entry),
+          auth,
         };
 
         llmProviders.registerProvider(
           'amazon-bedrock',
-          new BedrockProvider(providerConfig),
+          new BedrockProvider(providerConfig, {
+            region,
+            credentialProvider: credProvider.sdkCredentialProvider,
+          }),
         );
       },
     });
