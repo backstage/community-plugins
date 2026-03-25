@@ -77,6 +77,7 @@ const mcpChatPlugin: OverridableFrontendPlugin<
         path?: string | undefined;
       };
       output:
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
             RouteRef_2<AnyRouteRefParams>,
@@ -85,7 +86,6 @@ const mcpChatPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             string,
             'core.title',
