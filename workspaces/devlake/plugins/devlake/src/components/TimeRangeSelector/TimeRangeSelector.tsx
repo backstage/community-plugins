@@ -41,9 +41,10 @@ const PRESETS: { label: string; value: TimeRangePreset }[] = [
   { label: '30D', value: '30d' },
   { label: '90D', value: '90d' },
   { label: 'Quarter', value: 'quarter' },
+  { label: '1Y', value: '1y' },
 ];
 
-/** @internal */
+/** @public */
 export interface TimeRangeSelectorProps {
   preset?: TimeRangePreset;
   from?: string;
@@ -52,7 +53,7 @@ export interface TimeRangeSelectorProps {
   onCustomRangeChange: (from: string, to: string) => void;
 }
 
-/** @internal */
+/** @public */
 export const TimeRangeSelector = (props: TimeRangeSelectorProps) => {
   const { preset, from, to, onPresetChange, onCustomRangeChange } = props;
   const classes = useStyles();

@@ -76,5 +76,5 @@ export interface DoraTeam {
 }
 
 // @public
-export type TimeRangePreset = '7d' | '30d' | '90d' | 'quarter';
+export type TimeRangePreset = '7d' | '30d' | '90d' | 'quarter' | '1y';
 ```

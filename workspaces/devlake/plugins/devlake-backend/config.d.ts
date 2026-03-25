@@ -18,18 +18,43 @@ export interface Config {
   /** Configuration options for the DevLake plugin */
   devlake?: {
     /**
-     * The base URL of the DevLake instance.
-     *
-     * @visibility frontend
-     */
-    baseUrl: string;
-
-    /**
-     * Cache TTL in minutes. Defaults to 15.
+     * PostgreSQL connection settings for DevLake's database.
      *
      * @visibility backend
      */
-    cacheTtlMinutes?: number;
+    db: {
+      /**
+       * Database host.
+       */
+      host: string;
+
+      /**
+       * Database port. Defaults to 3306.
+       */
+      port?: number;
+
+      /**
+       * Database user.
+       */
+      user: string;
+
+      /**
+       * Database password.
+       *
+       * @visibility secret
+       */
+      password: string;
+
+      /**
+       * Database name.
+       */
+      database: string;
+
+      /**
+       * Use SSL connection. Defaults to false.
+       */
+      ssl?: boolean;
+    };
 
     /**
      * Team-to-DevLake project mappings.

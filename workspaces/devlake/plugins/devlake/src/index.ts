@@ -23,3 +23,11 @@
 export { devlakePlugin, DoraMetricsPage } from './plugin';
 export { devlakeApiRef } from './api';
 export type { DevlakeApi } from './api';
+export { MetricCard } from './components/MetricCard';
+export type { MetricCardProps } from './components/MetricCard/MetricCard';
+export { MetricChart } from './components/MetricChart';
+export type { MetricChartProps } from './components/MetricChart/MetricChart';
+export { TeamSelector } from './components/TeamSelector';
+export type { TeamSelectorProps } from './components/TeamSelector/TeamSelector';
+export { TimeRangeSelector } from './components/TimeRangeSelector';
+export type { TimeRangeSelectorProps } from './components/TimeRangeSelector/TimeRangeSelector';

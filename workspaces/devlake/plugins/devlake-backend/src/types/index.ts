@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export type { DevlakeConfig } from './config';
+export type { DevlakeConfig, DevlakeDbConfig } from './config';
 export { readDevlakeConfig } from './config';

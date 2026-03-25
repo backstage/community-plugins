@@ -20,7 +20,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { readDevlakeConfig } from '../types';
-import { DevlakeClient } from './DevlakeClient';
+import { DevlakeDbClient } from './DevlakeDbClient';
 import { TimeRangePreset } from '@backstage-community/plugin-devlake-common';
 
 /** @public */
@@ -46,6 +46,7 @@ function getDateRange(
     '30d': 30,
     '90d': 90,
     quarter: 90,
+    '1y': 365,
   };
 
   const days = presetDays[(preset as TimeRangePreset) ?? '30d'] ?? 30;
@@ -63,7 +64,7 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, config } = options;
   const devlakeConfig = readDevlakeConfig(config);
-  const client = new DevlakeClient(devlakeConfig, logger);
+  const client = new DevlakeDbClient(devlakeConfig.db, logger);
 
   const router = Router();
   router.use(express.json());
@@ -73,12 +74,14 @@ export async function createRouter(
   });
 
   router.get('/teams', (_, response) => {
-    response.json(
-      devlakeConfig.teams.map(team => ({
+    const teams = [
+      { name: 'All', devlakeProjectName: '__all__' },
+      ...devlakeConfig.teams.map(team => ({
         name: team.name,
         devlakeProjectName: team.devlakeProjectName,
       })),
-    );
+    ];
+    response.json(teams);
   });
 
   router.get('/dora/metrics', async (req, response) => {
@@ -90,12 +93,18 @@ export async function createRouter(
       return;
     }
 
-    const team = devlakeConfig.teams.find(t => t.name === teamName);
-    if (!team) {
-      response
-        .status(404)
-        .json({ error: `Team "${teamName}" not found in configuration` });
-      return;
+    let projectName: string | null;
+    if (teamName === 'All') {
+      projectName = null;
+    } else {
+      const team = devlakeConfig.teams.find(t => t.name === teamName);
+      if (!team) {
+        response
+          .status(404)
+          .json({ error: `Team "${teamName}" not found in configuration` });
+        return;
+      }
+      projectName = team.devlakeProjectName;
     }
 
     const { from, to } = getDateRange(
@@ -106,16 +115,17 @@ export async function createRouter(
 
     try {
       const metrics = await client.getDoraMetrics({
-        projectName: team.devlakeProjectName,
+        projectName,
         from,
         to,
       });
       response.json(metrics);
     } catch (error) {
-      logger.error('Failed to fetch DORA metrics from DevLake', error as Error);
-      response
-        .status(502)
-        .json({ error: 'Unable to reach DevLake, please try again later' });
+      logger.error(
+        'Failed to fetch DORA metrics from DevLake DB',
+        error as Error,
+      );
+      response.status(502).json({ error: 'Unable to query DevLake database' });
     }
   });
 
@@ -128,12 +138,18 @@ export async function createRouter(
       return;
     }
 
-    const team = devlakeConfig.teams.find(t => t.name === teamName);
-    if (!team) {
-      response
-        .status(404)
-        .json({ error: `Team "${teamName}" not found in configuration` });
-      return;
+    let projectName: string | null;
+    if (teamName === 'All') {
+      projectName = null;
+    } else {
+      const team = devlakeConfig.teams.find(t => t.name === teamName);
+      if (!team) {
+        response
+          .status(404)
+          .json({ error: `Team "${teamName}" not found in configuration` });
+        return;
+      }
+      projectName = team.devlakeProjectName;
     }
 
     const { from, to } = getDateRange(
@@ -144,19 +160,17 @@ export async function createRouter(
 
     try {
       const trend = await client.getDoraTrend({
-        projectName: team.devlakeProjectName,
+        projectName,
         from,
         to,
       });
       response.json(trend);
     } catch (error) {
       logger.error(
-        'Failed to fetch DORA trend data from DevLake',
+        'Failed to fetch DORA trend data from DevLake DB',
         error as Error,
       );
-      response
-        .status(502)
-        .json({ error: 'Unable to reach DevLake, please try again later' });
+      response.status(502).json({ error: 'Unable to query DevLake database' });
     }
   });
 

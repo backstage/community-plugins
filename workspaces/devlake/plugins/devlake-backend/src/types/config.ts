@@ -18,18 +18,34 @@ import { Config } from '@backstage/config';
 import { DoraTeam } from '@backstage-community/plugin-devlake-common';
 
 /** @internal */
+export interface DevlakeDbConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database: string;
+  ssl: boolean;
+}
+
+/** @internal */
 export interface DevlakeConfig {
-  baseUrl: string;
-  cacheTtlMinutes: number;
+  db: DevlakeDbConfig;
   teams: DoraTeam[];
 }
 
 /** @internal */
 export function readDevlakeConfig(config: Config): DevlakeConfig {
   const devlakeConfig = config.getConfig('devlake');
-  const baseUrl = devlakeConfig.getString('baseUrl');
-  const cacheTtlMinutes =
-    devlakeConfig.getOptionalNumber('cacheTtlMinutes') ?? 15;
+  const dbConfig = devlakeConfig.getConfig('db');
+
+  const db: DevlakeDbConfig = {
+    host: dbConfig.getString('host'),
+    port: dbConfig.getOptionalNumber('port') ?? 3306,
+    user: dbConfig.getString('user'),
+    password: dbConfig.getString('password'),
+    database: dbConfig.getString('database'),
+    ssl: dbConfig.getOptionalBoolean('ssl') ?? false,
+  };
 
   const teamsConfig = devlakeConfig.getOptionalConfigArray('teams') ?? [];
   const teams: DoraTeam[] = teamsConfig.map(teamConfig => ({
@@ -37,5 +53,5 @@ export function readDevlakeConfig(config: Config): DevlakeConfig {
     devlakeProjectName: teamConfig.getString('devlakeProjectName'),
   }));
 
-  return { baseUrl, cacheTtlMinutes, teams };
+  return { db, teams };
 }

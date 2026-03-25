@@ -5,11 +5,14 @@
 ```ts
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { DoraMetric } from '@backstage-community/plugin-devlake-common';
 import { DoraMetrics } from '@backstage-community/plugin-devlake-common';
 import { DoraMetricsTrend } from '@backstage-community/plugin-devlake-common';
+import { DoraMetricTrendPoint } from '@backstage-community/plugin-devlake-common';
 import { DoraTeam } from '@backstage-community/plugin-devlake-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TimeRangePreset } from '@backstage-community/plugin-devlake-common';
 
 // @public
 export interface DevlakeApi {
@@ -45,4 +48,64 @@ export const devlakePlugin: BackstagePlugin<
 
 // @public
 export const DoraMetricsPage: () => JSX_2.Element;
+
+// @public (undocumented)
+export const MetricCard: (props: MetricCardProps) => JSX_2.Element;
+
+// @public (undocumented)
+export interface MetricCardProps {
+  // (undocumented)
+  invertTrend?: boolean;
+  // (undocumented)
+  metric: DoraMetric;
+  // (undocumented)
+  title: string;
+}
+
+// @public (undocumented)
+export const MetricChart: (props: MetricChartProps) => JSX_2.Element;
+
+// @public (undocumented)
+export interface MetricChartProps {
+  // (undocumented)
+  color: string;
+  // (undocumented)
+  data: DoraMetricTrendPoint[];
+  // (undocumented)
+  title: string;
+  // (undocumented)
+  unit: string;
+}
+
+// @public (undocumented)
+export const TeamSelector: (props: TeamSelectorProps) => JSX_2.Element;
+
+// @public (undocumented)
+export interface TeamSelectorProps {
+  // (undocumented)
+  onTeamChange: (teamName: string) => void;
+  // (undocumented)
+  selectedTeam: string;
+  // (undocumented)
+  teams: DoraTeam[];
+}
+
+// @public (undocumented)
+export const TimeRangeSelector: (
+  props: TimeRangeSelectorProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface TimeRangeSelectorProps {
+  // (undocumented)
+  from?: string;
+  // (undocumented)
+  onCustomRangeChange: (from: string, to: string) => void;
+  // (undocumented)
+  onPresetChange: (preset: TimeRangePreset) => void;
+  // (undocumented)
+  preset?: TimeRangePreset;
+  // (undocumented)
+  to?: string;
+}
 ```

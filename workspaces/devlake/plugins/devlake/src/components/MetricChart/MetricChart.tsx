@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-/** @internal */
+/** @public */
 export interface MetricChartProps {
   title: string;
   data: DoraMetricTrendPoint[];
@@ -44,7 +44,7 @@ export interface MetricChartProps {
   unit: string;
 }
 
-/** @internal */
+/** @public */
 export const MetricChart = (props: MetricChartProps) => {
   const { title, data, color, unit } = props;
   const classes = useStyles();

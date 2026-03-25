@@ -22,7 +22,13 @@ import { mockServices } from '@backstage/backend-test-utils';
 
 const mockConfig = new ConfigReader({
   devlake: {
-    baseUrl: 'http://localhost:4000',
+    db: {
+      host: 'localhost',
+      port: 5432,
+      user: 'test',
+      password: 'test',
+      database: 'devlake_test',
+    },
     teams: [
       {
         name: 'Team Alpha',
@@ -53,6 +59,7 @@ describe('createRouter', () => {
     const response = await request(app).get('/teams');
     expect(response.status).toBe(200);
     expect(response.body).toEqual([
+      { name: 'All', devlakeProjectName: '__all__' },
       { name: 'Team Alpha', devlakeProjectName: 'project-alpha' },
     ]);
   });

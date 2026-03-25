@@ -73,21 +73,36 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'baseline',
     gap: theme.spacing(1),
   },
+  noData: {
+    fontSize: '0.875rem',
+    color: theme.palette.text.disabled,
+    fontStyle: 'italic',
+    marginTop: theme.spacing(0.5),
+  },
 }));
 
-/** @internal */
+const NO_DATA_HINTS: Record<string, string> = {
+  'Deployment Frequency': 'No deployments found in this period',
+  'Lead Time for Changes': 'No merged PRs found in this period',
+  'Change Failure Rate': 'No deployments found in this period',
+  'Mean Time to Recovery': 'No incidents linked to deployments',
+};
+
+/** @public */
 export interface MetricCardProps {
   title: string;
   metric: DoraMetric;
   invertTrend?: boolean;
 }
 
-/** @internal */
+/** @public */
 export const MetricCard = (props: MetricCardProps) => {
   const { title, metric, invertTrend = false } = props;
   const classes = useStyles();
 
   const isPositiveTrend = invertTrend ? metric.trend <= 0 : metric.trend >= 0;
+
+  const hasData = metric.value > 0;
 
   return (
     <Card className={classes.card}>
@@ -96,31 +111,43 @@ export const MetricCard = (props: MetricCardProps) => {
           <Typography variant="subtitle2" color="textSecondary">
             {title}
           </Typography>
-          <Chip
-            label={DORA_LEVEL_LABELS[metric.level]}
-            size="small"
-            style={{
-              backgroundColor: DORA_LEVEL_COLORS[metric.level],
-              color: '#fff',
-            }}
-          />
+          {hasData && (
+            <Chip
+              label={DORA_LEVEL_LABELS[metric.level]}
+              size="small"
+              style={{
+                backgroundColor: DORA_LEVEL_COLORS[metric.level],
+                color: '#fff',
+              }}
+            />
+          )}
         </div>
-        <div className={classes.valueRow}>
-          <Typography className={classes.value}>{metric.value}</Typography>
-          <Typography className={classes.unit}>{metric.unit}</Typography>
-        </div>
-        {metric.trend !== 0 && (
-          <Typography
-            className={
-              isPositiveTrend ? classes.trendPositive : classes.trendNegative
-            }
-          >
-            {metric.trend > 0 ? (
-              <ArrowUpwardIcon className={classes.trendIcon} />
-            ) : (
-              <ArrowDownwardIcon className={classes.trendIcon} />
+        {hasData ? (
+          <>
+            <div className={classes.valueRow}>
+              <Typography className={classes.value}>{metric.value}</Typography>
+              <Typography className={classes.unit}>{metric.unit}</Typography>
+            </div>
+            {metric.trend !== 0 && (
+              <Typography
+                className={
+                  isPositiveTrend
+                    ? classes.trendPositive
+                    : classes.trendNegative
+                }
+              >
+                {metric.trend > 0 ? (
+                  <ArrowUpwardIcon className={classes.trendIcon} />
+                ) : (
+                  <ArrowDownwardIcon className={classes.trendIcon} />
+                )}
+                {Math.abs(metric.trend)}%
+              </Typography>
             )}
-            {Math.abs(metric.trend)}%
+          </>
+        ) : (
+          <Typography className={classes.noData}>
+            {NO_DATA_HINTS[title] || 'No data available'}
           </Typography>
         )}
       </CardContent>

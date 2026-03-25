@@ -1262,6 +1262,7 @@ __metadata:
     "@types/supertest": "npm:^6.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
+    mysql2: "npm:^3.11.0"
     supertest: "npm:^7.0.0"
   languageName: unknown
   linkType: soft
@@ -19246,7 +19247,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mysql2@npm:^3.0.0":
+"mysql2@npm:^3.0.0, mysql2@npm:^3.11.0":
   version: 3.20.0
   resolution: "mysql2@npm:3.20.0"
   dependencies:

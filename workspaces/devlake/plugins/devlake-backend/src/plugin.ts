@@ -44,6 +44,14 @@ export const devlakePlugin = createBackendPlugin({
           path: '/health',
           allow: 'unauthenticated',
         });
+        httpRouter.addAuthPolicy({
+          path: '/teams',
+          allow: 'user-cookie',
+        });
+        httpRouter.addAuthPolicy({
+          path: '/dora',
+          allow: 'user-cookie',
+        });
       },
     });
   },

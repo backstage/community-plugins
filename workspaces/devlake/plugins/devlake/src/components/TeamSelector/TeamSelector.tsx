@@ -18,14 +18,14 @@
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { DoraTeam } from '@backstage-community/plugin-devlake-common';
 
-/** @internal */
+/** @public */
 export interface TeamSelectorProps {
   teams: DoraTeam[];
   selectedTeam: string;
   onTeamChange: (teamName: string) => void;
 }
 
-/** @internal */
+/** @public */
 export const TeamSelector = (props: TeamSelectorProps) => {
   const { teams, selectedTeam, onTeamChange } = props;
 
