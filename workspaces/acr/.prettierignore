@@ -2,5 +2,6 @@ dist
 dist-types
 coverage
 knip-report.md
+report-alpha.api.md
 .vscode
 .eslintrc.js
