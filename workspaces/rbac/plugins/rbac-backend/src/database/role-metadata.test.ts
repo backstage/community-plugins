@@ -149,6 +149,28 @@ describe('role-metadata-db-table', () => {
         );
       },
     );
+
+    it.each(databases.eachSupportedId())(
+      'should throw error when role exists with incompatible source',
+      async databasesId => {
+        const { knex } = await createDatabase(databasesId);
+
+        await knex(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/csv-role',
+          source: 'csv-file',
+          modifiedBy,
+          isDefault: false,
+        });
+        const db = new DataBaseRoleMetadataStorage(knex);
+
+        // Try to sync this role as default (which requires 'configuration' source)
+        await expect(
+          db.syncDefaultRoleMetadata('role:default/csv-role'),
+        ).rejects.toThrow(
+          "Role 'role:default/csv-role' has incompatible source. Expected 'configuration' source value",
+        );
+      },
+    );
   });
 
   describe('findRoleMetadata', () => {
@@ -368,6 +390,47 @@ describe('role-metadata-db-table', () => {
               source: 'rest',
             },
           ]);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should include cached default role in filtered results',
+      async databasesId => {
+        const rbacFilter: RBACFilter = {
+          key: 'owner',
+          values: ['user:default/some_user'],
+        };
+        const { knex, db } = await createDatabase(databasesId);
+
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/regular-role',
+          source: 'rest',
+          modifiedBy,
+          owner: 'user:default/some_user',
+        });
+
+        await db.syncDefaultRoleMetadata('role:default/default-role');
+
+        try {
+          const roleMetadata = await db.filterForOwnerRoleMetadata({
+            anyOf: [rbacFilter],
+          });
+
+          // Should return regular role + cached default role
+          expect(roleMetadata.length).toBe(2);
+          expect(roleMetadata.map(r => r.roleEntityRef).sort()).toEqual([
+            'role:default/default-role',
+            'role:default/regular-role',
+          ]);
+
+          const defaultRole = roleMetadata.find(
+            r => r.roleEntityRef === 'role:default/default-role',
+          );
+          expect(defaultRole?.isDefault).toBeTruthy();
+          expect(defaultRole?.source).toBe('configuration');
         } catch (err) {
           throw err;
         }
