@@ -21,4 +21,7 @@
  */
 
 export { default } from './module';
-export { BedrockProvider } from './BedrockProvider';
+export {
+  BedrockProvider,
+  type BedrockProviderOptions,
+} from './BedrockProvider';
