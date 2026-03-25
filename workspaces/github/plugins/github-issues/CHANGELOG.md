@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.20.0
+
+### Minor Changes
+
+- 4f8c80c: Enhance support for all Kinds
+
 ## 0.19.1
 
 ### Patch Changes
