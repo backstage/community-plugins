@@ -22,7 +22,25 @@ import {
   buildDefaultRoleMetadata,
 } from './default-permissions';
 
+const mockValidateEntityReference = jest.fn();
+jest.mock('../validation/policies-validation', () => {
+  const actual = jest.requireActual('../validation/policies-validation');
+  return {
+    ...actual,
+    validateEntityReference: (...args: any[]) =>
+      mockValidateEntityReference(...args),
+  };
+});
+
 describe('DefaultPermissionsReader', () => {
+  beforeEach(() => {
+    mockValidateEntityReference.mockReturnValue(undefined);
+  });
+
+  afterEach(() => {
+    mockValidateEntityReference.mockClear();
+  });
+
   describe('readRole', () => {
     it('returns undefined when no defaultPermissions config', () => {
       const config = mockServices.rootConfig({ data: {} });
@@ -77,6 +95,48 @@ describe('DefaultPermissionsReader', () => {
       const reader = new DefaultPermissionsReader(config);
       // Either config layer or readRole throws when defaultRole is empty/missing
       expect(() => reader.readRole()).toThrow();
+    });
+
+    it('should validate role using validateEntityReference with role=true', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/catalog-reader',
+              },
+            },
+          },
+        },
+      });
+      const reader = new DefaultPermissionsReader(config);
+      reader.readRole();
+
+      expect(mockValidateEntityReference).toHaveBeenCalledWith(
+        'role:default/catalog-reader',
+        true,
+      );
+    });
+
+    it('throws when validateEntityReference returns an error', () => {
+      const mockError = new Error('Invalid role format');
+      mockValidateEntityReference.mockReturnValue(mockError);
+
+      const config = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'invalid-role',
+              },
+            },
+          },
+        },
+      });
+      const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readRole()).toThrow(
+        "Invalid default role 'invalid-role': Invalid role format",
+      );
     });
   });
 
@@ -341,6 +401,142 @@ describe('DefaultPermissionsSyncher', () => {
     await expect(syncher.sync()).rejects.toThrow(
       'Detected previous default role with incompatible source:',
     );
+  });
+
+  describe('sync - role name changes', () => {
+    it('should clean up old role permissions when role name changes', async () => {
+      const storage = createRoleMetadataStorageMock();
+      storage.getDefaultRole = jest.fn().mockResolvedValue({
+        roleEntityRef: 'role:default/old-role',
+        source: 'configuration',
+        isDefault: true,
+      });
+
+      const enforcer = createEnforcerMock();
+      enforcer.getFilteredPolicy = jest.fn().mockResolvedValue([
+        ['role:default/old-role', 'catalog-entity', 'read', 'allow'],
+        ['role:default/old-role', 'catalog.entity.create', 'use', 'allow'],
+      ]);
+
+      const config = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/new-role',
+                basicPermissions: [
+                  { permission: 'catalog-entity', action: 'read' },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      const reader = new DefaultPermissionsReader(config);
+      const syncher = new DefaultPermissionsSyncher(
+        storage as any,
+        enforcer as any,
+        reader,
+      );
+
+      await syncher.sync();
+
+      // Should remove old role's permissions
+      expect(enforcer.getFilteredPolicy).toHaveBeenCalledWith(
+        0,
+        'role:default/old-role',
+      );
+      expect(enforcer.removePolicies).toHaveBeenCalledWith([
+        ['role:default/old-role', 'catalog-entity', 'read', 'allow'],
+        ['role:default/old-role', 'catalog.entity.create', 'use', 'allow'],
+      ]);
+
+      // Should sync new role metadata and policies
+      expect(storage.syncDefaultRoleMetadata).toHaveBeenCalledWith(
+        'role:default/new-role',
+      );
+    });
+
+    it('should not clean up when role name is unchanged', async () => {
+      const storage = createRoleMetadataStorageMock();
+      storage.getDefaultRole = jest.fn().mockResolvedValue({
+        roleEntityRef: 'role:default/same-role',
+        source: 'configuration',
+        isDefault: true,
+      });
+      const enforcer = createEnforcerMock();
+      enforcer.getFilteredPolicy = jest.fn().mockResolvedValue([]);
+
+      const config = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/same-role',
+                basicPermissions: [
+                  { permission: 'catalog-entity', action: 'read' },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      const reader = new DefaultPermissionsReader(config);
+      const syncher = new DefaultPermissionsSyncher(
+        storage as any,
+        enforcer as any,
+        reader,
+      );
+
+      await syncher.sync();
+
+      // Should NOT call removePolicies for cleanup since role name hasn't changed
+      expect(enforcer.removePolicies).not.toHaveBeenCalled();
+    });
+
+    it('should handle cleanup when old role has no permissions', async () => {
+      const storage = createRoleMetadataStorageMock();
+      storage.getDefaultRole = jest.fn().mockResolvedValue({
+        roleEntityRef: 'role:default/old-role',
+        source: 'configuration',
+        isDefault: true,
+      });
+
+      const enforcer = createEnforcerMock();
+      enforcer.getFilteredPolicy = jest.fn().mockResolvedValue([]);
+
+      const config = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/new-role',
+                basicPermissions: [
+                  { permission: 'catalog-entity', action: 'read' },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      const reader = new DefaultPermissionsReader(config);
+      const syncher = new DefaultPermissionsSyncher(
+        storage as any,
+        enforcer as any,
+        reader,
+      );
+
+      await syncher.sync();
+
+      expect(enforcer.getFilteredPolicy).toHaveBeenCalledWith(
+        0,
+        'role:default/old-role',
+      );
+      expect(enforcer.removePolicies).not.toHaveBeenCalled();
+    });
   });
 });
 

@@ -27,7 +27,10 @@ import type {
 import type { EnforcerDelegate } from '../service/enforcer-delegate';
 import { syncRolePolicies } from '../helper';
 import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
-import { validateSource } from '../validation/policies-validation';
+import {
+  validateSource,
+  validateEntityReference,
+} from '../validation/policies-validation';
 
 const DEFAULT_ROLE_DESCRIPTION =
   'Role with default permissions for all users and groups.';
@@ -49,6 +52,13 @@ export class DefaultPermissionsReader {
       if (!role) {
         throw new Error(
           'Default role is mandatory for defaultPermissions configuration. Please set a valid default role in the configuration.',
+        );
+      }
+
+      const validationError = validateEntityReference(role, true);
+      if (validationError) {
+        throw new Error(
+          `Invalid default role '${role}': ${validationError.message}`,
         );
       }
     }
@@ -130,6 +140,17 @@ export class DefaultPermissionsSyncher {
       }
 
       return;
+    }
+
+    // Clean up orphaned permissions if role name changed
+    if (prevDefRole && prevDefRole.roleEntityRef !== roleEntityRef) {
+      const oldPolicies = await this.enforcer.getFilteredPolicy(
+        0,
+        prevDefRole.roleEntityRef,
+      );
+      if (oldPolicies.length > 0) {
+        await this.enforcer.removePolicies(oldPolicies);
+      }
     }
 
     const casbinPolicies: string[][] = policies.map(p => [
