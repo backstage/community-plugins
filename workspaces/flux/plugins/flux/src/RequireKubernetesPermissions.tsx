@@ -19,7 +19,7 @@ import {
   kubernetesResourcesReadPermission,
 } from '@backstage/plugin-kubernetes-common';
 import { usePermission } from '@backstage/plugin-permission-react';
-import { WarningPanel } from '@backstage/core-components';
+import { Alert } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { fluxTranslationRef } from './alpha/translation';
 
@@ -53,9 +53,10 @@ export function RequireKubernetesPermissions(
   }
 
   return (
-    <WarningPanel
+    <Alert
+      status="warning"
       title={t('fluxContentCard.permissionAlert.title')}
-      message={t('fluxContentCard.permissionAlert.message')}
+      description={t('fluxContentCard.permissionAlert.message')}
     />
   );
 }
