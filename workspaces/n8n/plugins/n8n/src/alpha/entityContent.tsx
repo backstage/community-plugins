@@ -25,15 +25,14 @@ import { isN8nAvailable } from '../components/Router';
 /**
  * @alpha
  */
-export const entityN8nContent: ExtensionDefinition =
-  EntityContentBlueprint.make({
-    name: 'workflows',
-    params: {
-      path: 'n8n',
-      title: 'n8n',
-      filter: isN8nAvailable,
-      routeRef: convertLegacyRouteRef(rootRouteRef),
-      loader: () =>
-        import('../components/Router').then(m => compatWrapper(<m.Router />)),
-    },
-  });
+export const entityN8nContent = EntityContentBlueprint.make({
+  name: 'workflows',
+  params: {
+    path: 'n8n',
+    title: 'n8n',
+    filter: isN8nAvailable,
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: () =>
+      import('../components/Router').then(m => compatWrapper(<m.Router />)),
+  },
+}) satisfies ExtensionDefinition;

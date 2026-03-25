@@ -24,7 +24,7 @@ import { n8nApiRef, N8nClient } from '../api';
 /**
  * @alpha
  */
-export const n8nApi: ExtensionDefinition = ApiBlueprint.make({
+export const n8nApi = ApiBlueprint.make({
   name: 'n8n',
   params: defineParams =>
     defineParams({
@@ -36,4 +36,4 @@ export const n8nApi: ExtensionDefinition = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new N8nClient({ discoveryApi, fetchApi }),
     }),
-});
+}) satisfies ExtensionDefinition;

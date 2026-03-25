@@ -29,7 +29,7 @@ import { rootRouteRef } from './plugin';
 /**
  * @alpha
  */
-const n8nPlugin: FrontendPlugin = createFrontendPlugin({
+export default createFrontendPlugin({
   pluginId: 'n8n',
   routes: convertLegacyRouteRefs({
     entityContent: rootRouteRef,
@@ -40,6 +40,4 @@ const n8nPlugin: FrontendPlugin = createFrontendPlugin({
     entityN8nWorkflowsTable,
     n8nApi,
   ],
-});
-
-export default n8nPlugin;
+}) satisfies FrontendPlugin;
