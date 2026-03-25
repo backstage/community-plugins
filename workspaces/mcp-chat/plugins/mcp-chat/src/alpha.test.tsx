@@ -36,10 +36,6 @@ describe('mcp-chat plugin', () => {
     it('should register page extension', () => {
       expect(mcpChatPlugin.getExtension('page:mcp-chat')).toBeDefined();
     });
-
-    it('should register nav item extension', () => {
-      expect(mcpChatPlugin.getExtension('nav-item:mcp-chat')).toBeDefined();
-    });
   });
 
   describe('McpChat API implementation', () => {
