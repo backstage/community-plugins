@@ -253,7 +253,7 @@ const MultiLaunchCard = (props: {
                 <Typography
                   variant="body2"
                   component="span"
-                  style={{ whiteSpace: 'nowrap', marginLeft: 'auto' }}
+                  style={{ whiteSpace: 'nowrap', marginLeft: '16px' }}
                 >
                   {total} (
                   <Typography
