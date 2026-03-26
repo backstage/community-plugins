@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { createPermissionRule } from '@backstage/plugin-permission-node';
-import type { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 import { z } from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
 import { permissionMetadataResourceRef } from './resource';
+import { RoleMetadataDao } from '../database/role-metadata';
 
 /**
  * The RBACFilter is a simple filter without any conditional criteria.
@@ -47,7 +47,10 @@ const isOwner = createPermissionRule({
   paramsSchema: z.object({
     owners: z.string().array().describe('List of entity refs to match against'),
   }),
-  apply: (roleMeta: RoleMetadata, { owners }) => {
+  apply: (roleMeta: RoleMetadataDao, { owners }) => {
+    if (roleMeta.isDefault) {
+      return true;
+    }
     if (!roleMeta.owner) {
       return false;
     }

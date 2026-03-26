@@ -31,6 +31,8 @@ export type MembersInfo = {
   retry: { roleRetry: () => void; membersRetry: () => void };
   error?: { message: string };
   canReadUsersAndGroups: boolean;
+  /** When true, this role is the default role for all users and groups. */
+  isDefaultRole?: boolean;
 };
 
 const getErrorText = (
@@ -143,11 +145,14 @@ export const useMembers = (
     loading ? null : pollInterval || 10000,
   );
 
+  const isDefaultRole = Array.isArray(role) && role[0]?.metadata?.isDefault;
+
   return {
     loading,
     data,
     retry: { roleRetry, membersRetry },
     error: getErrorText(role, members, t) || roleError || membersError,
     canReadUsersAndGroups,
+    isDefaultRole: isDefaultRole ?? false,
   };
 };

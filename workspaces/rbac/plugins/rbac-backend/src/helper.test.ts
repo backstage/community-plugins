@@ -27,6 +27,7 @@ import {
   policiesToString,
   policyToString,
   removeTheDifference,
+  syncRolePolicies,
   transformArrayToPolicy,
   transformPolicyGroupToLowercase,
   transformRolesGroupToLowercase,
@@ -121,6 +122,178 @@ describe('helper.ts', () => {
       const policy = '[user:default/some-user, role:default/dev]';
       const expectedPolicy = ['user:default/some-user', 'role:default/dev'];
       expect(metadataStringToPolicy(policy)).toEqual(expectedPolicy);
+    });
+  });
+
+  describe('syncRolePolicies', () => {
+    it('should add new policies when they are not in the enforcer', async () => {
+      const mockEnforcer = {
+        getFilteredPolicy: jest
+          .fn()
+          .mockResolvedValue([
+            ['role:default/test', 'catalog-entity', 'read', 'allow'],
+          ]),
+        addPolicies: jest.fn().mockResolvedValue(true),
+        removePolicies: jest.fn().mockResolvedValue(true),
+      } as unknown as EnforcerDelegate;
+
+      const desiredPolicies = [
+        ['role:default/test', 'catalog-entity', 'read', 'allow'],
+        ['role:default/test', 'catalog-entity', 'update', 'allow'],
+      ];
+
+      await syncRolePolicies(
+        mockEnforcer,
+        'role:default/test',
+        desiredPolicies,
+      );
+
+      expect(mockEnforcer.getFilteredPolicy).toHaveBeenCalledWith(
+        0,
+        'role:default/test',
+      );
+      expect(mockEnforcer.addPolicies).toHaveBeenCalledWith([
+        ['role:default/test', 'catalog-entity', 'update', 'allow'],
+      ]);
+      expect(mockEnforcer.removePolicies).not.toHaveBeenCalled();
+    });
+
+    it('should remove old policies when they are not in desired', async () => {
+      const mockEnforcer = {
+        getFilteredPolicy: jest.fn().mockResolvedValue([
+          ['role:default/test', 'catalog-entity', 'read', 'allow'],
+          ['role:default/test', 'catalog-entity', 'delete', 'allow'],
+        ]),
+        addPolicies: jest.fn().mockResolvedValue(true),
+        removePolicies: jest.fn().mockResolvedValue(true),
+      } as unknown as EnforcerDelegate;
+
+      const desiredPolicies = [
+        ['role:default/test', 'catalog-entity', 'read', 'allow'],
+      ];
+
+      await syncRolePolicies(
+        mockEnforcer,
+        'role:default/test',
+        desiredPolicies,
+      );
+
+      expect(mockEnforcer.getFilteredPolicy).toHaveBeenCalledWith(
+        0,
+        'role:default/test',
+      );
+      expect(mockEnforcer.removePolicies).toHaveBeenCalledWith([
+        ['role:default/test', 'catalog-entity', 'delete', 'allow'],
+      ]);
+      expect(mockEnforcer.addPolicies).not.toHaveBeenCalled();
+    });
+
+    it('should add and remove policies to sync to desired state', async () => {
+      const mockEnforcer = {
+        getFilteredPolicy: jest.fn().mockResolvedValue([
+          ['role:default/test', 'catalog-entity', 'read', 'allow'],
+          ['role:default/test', 'catalog-entity', 'delete', 'allow'],
+        ]),
+        addPolicies: jest.fn().mockResolvedValue(true),
+        removePolicies: jest.fn().mockResolvedValue(true),
+      } as unknown as EnforcerDelegate;
+
+      const desiredPolicies = [
+        ['role:default/test', 'catalog-entity', 'read', 'allow'],
+        ['role:default/test', 'catalog-entity', 'update', 'allow'],
+      ];
+
+      await syncRolePolicies(
+        mockEnforcer,
+        'role:default/test',
+        desiredPolicies,
+      );
+
+      expect(mockEnforcer.getFilteredPolicy).toHaveBeenCalledWith(
+        0,
+        'role:default/test',
+      );
+      expect(mockEnforcer.addPolicies).toHaveBeenCalledWith([
+        ['role:default/test', 'catalog-entity', 'update', 'allow'],
+      ]);
+      expect(mockEnforcer.removePolicies).toHaveBeenCalledWith([
+        ['role:default/test', 'catalog-entity', 'delete', 'allow'],
+      ]);
+    });
+
+    it('should do nothing when current and desired policies match', async () => {
+      const mockEnforcer = {
+        getFilteredPolicy: jest.fn().mockResolvedValue([
+          ['role:default/test', 'catalog-entity', 'read', 'allow'],
+          ['role:default/test', 'catalog-entity', 'update', 'allow'],
+        ]),
+        addPolicies: jest.fn().mockResolvedValue(true),
+        removePolicies: jest.fn().mockResolvedValue(true),
+      } as unknown as EnforcerDelegate;
+
+      const desiredPolicies = [
+        ['role:default/test', 'catalog-entity', 'read', 'allow'],
+        ['role:default/test', 'catalog-entity', 'update', 'allow'],
+      ];
+
+      await syncRolePolicies(
+        mockEnforcer,
+        'role:default/test',
+        desiredPolicies,
+      );
+
+      expect(mockEnforcer.getFilteredPolicy).toHaveBeenCalledWith(
+        0,
+        'role:default/test',
+      );
+      expect(mockEnforcer.addPolicies).not.toHaveBeenCalled();
+      expect(mockEnforcer.removePolicies).not.toHaveBeenCalled();
+    });
+
+    it('should handle empty current policies', async () => {
+      const mockEnforcer = {
+        getFilteredPolicy: jest.fn().mockResolvedValue([]),
+        addPolicies: jest.fn().mockResolvedValue(true),
+        removePolicies: jest.fn().mockResolvedValue(true),
+      } as unknown as EnforcerDelegate;
+
+      const desiredPolicies = [
+        ['role:default/test', 'catalog-entity', 'read', 'allow'],
+      ];
+
+      await syncRolePolicies(
+        mockEnforcer,
+        'role:default/test',
+        desiredPolicies,
+      );
+
+      expect(mockEnforcer.addPolicies).toHaveBeenCalledWith(desiredPolicies);
+      expect(mockEnforcer.removePolicies).not.toHaveBeenCalled();
+    });
+
+    it('should handle empty desired policies', async () => {
+      const mockEnforcer = {
+        getFilteredPolicy: jest
+          .fn()
+          .mockResolvedValue([
+            ['role:default/test', 'catalog-entity', 'read', 'allow'],
+          ]),
+        addPolicies: jest.fn().mockResolvedValue(true),
+        removePolicies: jest.fn().mockResolvedValue(true),
+      } as unknown as EnforcerDelegate;
+
+      const desiredPolicies: string[][] = [];
+
+      await syncRolePolicies(
+        mockEnforcer,
+        'role:default/test',
+        desiredPolicies,
+      );
+
+      expect(mockEnforcer.removePolicies).toHaveBeenCalledWith([
+        ['role:default/test', 'catalog-entity', 'read', 'allow'],
+      ]);
+      expect(mockEnforcer.addPolicies).not.toHaveBeenCalled();
     });
   });
 

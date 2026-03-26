@@ -46,11 +46,132 @@ describe('role-metadata-db-table', () => {
     });
 
     await migrate(mockDatabaseService);
+    const config = mockServices.rootConfig();
     return {
       knex,
+      config,
       db: new DataBaseRoleMetadataStorage(knex),
     };
   }
+
+  async function createDatabaseWithDefaultRole(databaseId: TestDatabaseId) {
+    const knex = await databases.init(databaseId);
+    const mockDatabaseService = mockServices.database.mock({
+      getClient: async () => knex,
+      migrations: { skip: false },
+    });
+
+    await migrate(mockDatabaseService);
+    const config = mockServices.rootConfig({
+      data: {
+        permission: {
+          rbac: {
+            defaultPermissions: {
+              defaultRole: 'role:default/default-role',
+              basicPermissions: [
+                { permission: 'catalog.entity.read', policy: 'read' },
+              ],
+            },
+          },
+        },
+      },
+    });
+    return {
+      knex,
+      config,
+      db: new DataBaseRoleMetadataStorage(knex),
+    };
+  }
+
+  /** Normalize DAO isDefault (0/1 from SQLite) to boolean for assertion. */
+  function withBooleanIsDefault(
+    rows: RoleMetadataDao[],
+  ): (RoleMetadataDao & { isDefault?: boolean })[] {
+    return rows.map(r => ({ ...r, isDefault: Boolean(r.isDefault) }));
+  }
+
+  describe('syncDefaultRoleMetadata', () => {
+    it.each(databases.eachSupportedId())(
+      'should remove default role from DB when not in config',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        await knex(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/default-role',
+          source: 'configuration',
+          modifiedBy,
+          isDefault: true,
+        });
+        await db.syncDefaultRoleMetadata();
+        const found = await db.findRoleMetadata('role:default/default-role');
+        expect(found).toBeUndefined();
+        expect(db.getCachedDefaultRoleMetadata()).toBeUndefined();
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should insert default role in DB when in config',
+      async databasesId => {
+        const { db } = await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadata('role:default/default-role');
+        const found = await db.findRoleMetadata('role:default/default-role');
+        expect(found).toBeDefined();
+        expect(found!.roleEntityRef).toBe('role:default/default-role');
+        expect(found!.source).toBe('configuration');
+        expect(found!.isDefault).toBeTruthy();
+        expect(db.getCachedDefaultRoleMetadata()?.roleEntityRef).toBe(
+          'role:default/default-role',
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should delete old default role from DB when config has a new default role',
+      async databasesId => {
+        const { knex } = await createDatabase(databasesId);
+        await knex(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/old-default',
+          source: 'configuration',
+          modifiedBy,
+          isDefault: true,
+        });
+        const db = new DataBaseRoleMetadataStorage(knex);
+        await db.syncDefaultRoleMetadata('role:default/new-default');
+
+        const oldFound = await db.findRoleMetadata('role:default/old-default');
+        expect(oldFound).toBeUndefined();
+
+        const newFound = await db.findRoleMetadata('role:default/new-default');
+        expect(newFound).toBeDefined();
+        expect(newFound!.roleEntityRef).toBe('role:default/new-default');
+        expect(newFound!.isDefault).toBeTruthy();
+        expect(db.getCachedDefaultRoleMetadata()?.roleEntityRef).toBe(
+          'role:default/new-default',
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should throw error when role exists with incompatible source',
+      async databasesId => {
+        const { knex } = await createDatabase(databasesId);
+
+        await knex(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/csv-role',
+          source: 'csv-file',
+          modifiedBy,
+          isDefault: false,
+        });
+        const db = new DataBaseRoleMetadataStorage(knex);
+
+        // Try to sync this role as default (which requires 'configuration' source)
+        await expect(
+          db.syncDefaultRoleMetadata('role:default/csv-role'),
+        ).rejects.toThrow(
+          "Role 'role:default/csv-role' has incompatible source. Expected 'configuration' source value",
+        );
+      },
+    );
+  });
 
   describe('findRoleMetadata', () => {
     it.each(databases.eachSupportedId())(
@@ -89,11 +210,14 @@ describe('role-metadata-db-table', () => {
             trx,
           );
           await trx.commit();
-          expect(roleMetadata).toEqual({
+          expect(
+            withBooleanIsDefault(roleMetadata ? [roleMetadata] : [])[0],
+          ).toEqual({
             author: null,
             createdAt: null,
             description: null,
             id: 1,
+            isDefault: false,
             lastModified: null,
             modifiedBy,
             owner: null,
@@ -134,12 +258,13 @@ describe('role-metadata-db-table', () => {
 
         try {
           const roleMetadata = await db.filterRoleMetadata('rest');
-          expect(roleMetadata).toEqual([
+          expect(withBooleanIsDefault(roleMetadata)).toEqual([
             {
               author: null,
               createdAt: null,
               description: null,
               id: 1,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: null,
@@ -199,12 +324,13 @@ describe('role-metadata-db-table', () => {
           const roleMetadata = await db.filterForOwnerRoleMetadata({
             anyOf: [rbacFilter],
           });
-          expect(roleMetadata).toEqual([
+          expect(withBooleanIsDefault(roleMetadata)).toEqual([
             {
               author: null,
               createdAt: null,
               description: null,
               id: 1,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: 'user:default/some_user',
@@ -238,12 +364,13 @@ describe('role-metadata-db-table', () => {
 
         try {
           const roleMetadata = await db.filterForOwnerRoleMetadata();
-          expect(roleMetadata).toEqual([
+          expect(withBooleanIsDefault(roleMetadata)).toEqual([
             {
               author: null,
               createdAt: null,
               description: null,
               id: 1,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: 'user:default/some_user',
@@ -255,6 +382,7 @@ describe('role-metadata-db-table', () => {
               createdAt: null,
               description: null,
               id: 2,
+              isDefault: false,
               lastModified: null,
               modifiedBy,
               owner: 'user:default/some_other_user',
@@ -262,6 +390,47 @@ describe('role-metadata-db-table', () => {
               source: 'rest',
             },
           ]);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should include cached default role in filtered results',
+      async databasesId => {
+        const rbacFilter: RBACFilter = {
+          key: 'owner',
+          values: ['user:default/some_user'],
+        };
+        const { knex, db } = await createDatabase(databasesId);
+
+        await knex<RoleMetadataDao>(ROLE_METADATA_TABLE).insert({
+          roleEntityRef: 'role:default/regular-role',
+          source: 'rest',
+          modifiedBy,
+          owner: 'user:default/some_user',
+        });
+
+        await db.syncDefaultRoleMetadata('role:default/default-role');
+
+        try {
+          const roleMetadata = await db.filterForOwnerRoleMetadata({
+            anyOf: [rbacFilter],
+          });
+
+          // Should return regular role + cached default role
+          expect(roleMetadata.length).toBe(2);
+          expect(roleMetadata.map(r => r.roleEntityRef).sort()).toEqual([
+            'role:default/default-role',
+            'role:default/regular-role',
+          ]);
+
+          const defaultRole = roleMetadata.find(
+            r => r.roleEntityRef === 'role:default/default-role',
+          );
+          expect(defaultRole?.isDefault).toBeTruthy();
+          expect(defaultRole?.source).toBe('configuration');
         } catch (err) {
           throw err;
         }
@@ -297,7 +466,7 @@ describe('role-metadata-db-table', () => {
           id,
         );
         expect(metadata.length).toEqual(1);
-        expect(metadata[0]).toEqual({
+        expect(metadata[0]).toMatchObject({
           author: null,
           createdAt: null,
           roleEntityRef: 'role:default/some-super-important-role',
@@ -340,6 +509,34 @@ describe('role-metadata-db-table', () => {
           }
         }).rejects.toThrow(
           `A metadata for role role:default/some-super-important-role has already been stored`,
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should throw ConflictError when creating role with default role name',
+      async databasesId => {
+        const { knex, db } = await createDatabaseWithDefaultRole(databasesId);
+        await db.syncDefaultRoleMetadata('role:default/default-role');
+
+        const trx = await knex.transaction();
+        await expect(async () => {
+          try {
+            await db.createRoleMetadata(
+              {
+                source: 'configuration',
+                roleEntityRef: 'role:default/default-role',
+                modifiedBy,
+              },
+              trx,
+            );
+            await trx.commit();
+          } catch (err) {
+            await trx.rollback();
+            throw err;
+          }
+        }).rejects.toThrow(
+          `A metadata for role role:default/default-role has already been stored`,
         );
       },
     );
@@ -459,7 +656,7 @@ describe('role-metadata-db-table', () => {
           1,
         );
         expect(metadata.length).toEqual(1);
-        expect(metadata[0]).toEqual({
+        expect(metadata[0]).toMatchObject({
           author: null,
           createdAt: null,
           description: null,
@@ -536,7 +733,7 @@ describe('role-metadata-db-table', () => {
           1,
         );
         expect(metadata.length).toEqual(1);
-        expect(metadata[0]).toEqual({
+        expect(metadata[0]).toMatchObject({
           author: null,
           createdAt: null,
           description: null,
