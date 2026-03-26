@@ -1,5 +1,31 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.11.0
+
+### Minor Changes
+
+- 50e194d: Add support for a default role and permissions for authenticated users in RBAC backend
+
+  - Introduced a new `defaultRole` and `basicPermissions` configuration options to assign a default role to all authenticated users.
+
+    ```diff
+    permission:
+      rbac:
+    +   defaultPermissions:
+    +     defaultRole: role:default/my-default-role
+    +     basicPermissions:
+    +       - permission: catalog.entity.read
+    +         action: read
+    ```
+
+  - Updated the RBAC permission policy to include the default role in user roles if not already present.
+
+### Patch Changes
+
+- Updated dependencies [50e194d]
+  - @backstage-community/plugin-rbac-common@1.25.0
+  - @backstage-community/plugin-rbac-node@1.19.1
+
 ## 7.10.0
 
 ### Minor Changes
