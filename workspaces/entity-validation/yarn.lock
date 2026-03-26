@@ -11401,13 +11401,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.4.1":
-  version: 4.5.1
-  resolution: "fast-xml-parser@npm:4.5.1"
+  version: 4.5.5
+  resolution: "fast-xml-parser@npm:4.5.5"
   dependencies:
     strnum: "npm:^1.0.5"
   bin:
     fxparser: src/cli/cli.js
-  checksum: 10/17ce5908e798de1b6d12a39d26f04ac3b582ea9ce28f3a6e3b9c401edcb74790f28df84d75377608af53308ff8caad2b244ba1283cc4b5b4cf4cc7bd532a9983
+  checksum: 10/4820da92160724be9c8cc8df6f0c7bd6c9c3bcd0396ed88cedd28eebd0bf0553bc0899cbad4ba615c6fd9f21e410a7723123c416974f52390721720cadf3c455
   languageName: node
   linkType: hard
 
