@@ -61,6 +61,26 @@ export type LLMProviderType =
  * Configuration for an MCP server.
  * Supports multiple connection types: STDIO and Streamable HTTP.
  *
+ * @example
+ * ```typescript
+ * // STDIO server using npx
+ * const stdioServer: MCPServerConfig = {
+ *   id: 'filesystem',
+ *   name: 'File System',
+ *   type: MCPServerType.STDIO,
+ *   npxCommand: '@modelcontextprotocol/server-filesystem',
+ *   args: ['/path/to/directory']
+ * };
+ *
+ * // HTTP server
+ * const httpServer: MCPServerConfig = {
+ *   id: 'remote-api',
+ *   name: 'Remote API',
+ *   type: MCPServerType.STREAMABLE_HTTP,
+ *   url: 'https://api.example.com/mcp'
+ * };
+ * ```
+ *
  * @public
  */
 export interface MCPServerConfig {
@@ -83,6 +103,19 @@ export interface MCPServerConfig {
 /**
  * Sensitive configuration for an MCP server.
  * Contains environment variables and HTTP headers that may include secrets.
+ *
+ * @example
+ * ```typescript
+ * const secrets: MCPServerSecrets = {
+ *   env: {
+ *     API_KEY: 'your-secret-key',
+ *     DATABASE_URL: 'postgres://...'
+ *   },
+ *   headers: {
+ *     'Authorization': 'Bearer token123'
+ *   }
+ * };
+ * ```
  *
  * @public
  */
@@ -143,6 +176,22 @@ export interface MCPServerStatusData {
 /**
  * Configuration for an LLM provider.
  *
+ * @example
+ * ```typescript
+ * const openaiConfig: ProviderConfig = {
+ *   type: 'openai',
+ *   apiKey: 'sk-...',
+ *   baseUrl: 'https://api.openai.com/v1',
+ *   model: 'gpt-4'
+ * };
+ *
+ * const ollamaConfig: ProviderConfig = {
+ *   type: 'ollama',
+ *   baseUrl: 'http://localhost:11434',
+ *   model: 'llama2'
+ * };
+ * ```
+ *
  * @public
  */
 export interface ProviderConfig {
@@ -154,8 +203,6 @@ export interface ProviderConfig {
   baseUrl: string;
   /** Model identifier to use */
   model: string;
-  /** Optional auth record for provider-specific authentication (IAM, session, etc.) */
-  auth?: Record<string, string>;
 }
 
 /**
@@ -217,6 +264,33 @@ export interface ProviderStatusData {
 /**
  * A chat message in the conversation.
  * Compatible with OpenAI's Chat Completions API message format.
+ *
+ * @example
+ * ```typescript
+ * // User message
+ * const userMsg: ChatMessage = {
+ *   role: 'user',
+ *   content: 'What files are in the current directory?'
+ * };
+ *
+ * // Assistant message with tool call
+ * const assistantMsg: ChatMessage = {
+ *   role: 'assistant',
+ *   content: null,
+ *   tool_calls: [{
+ *     id: 'call_123',
+ *     type: 'function',
+ *     function: { name: 'list_files', arguments: '{"path": "."}' }
+ *   }]
+ * };
+ *
+ * // Tool response
+ * const toolMsg: ChatMessage = {
+ *   role: 'tool',
+ *   content: '["file1.txt", "file2.txt"]',
+ *   tool_call_id: 'call_123'
+ * };
+ * ```
  *
  * @public
  */
@@ -285,6 +359,25 @@ export interface QueryResponse {
  * Tool definition in OpenAI function calling format.
  * Describes a tool that the LLM can invoke.
  *
+ * @example
+ * ```typescript
+ * const tool: Tool = {
+ *   type: 'function',
+ *   function: {
+ *     name: 'get_weather',
+ *     description: 'Get the current weather for a location',
+ *     parameters: {
+ *       type: 'object',
+ *       properties: {
+ *         location: { type: 'string', description: 'City name' },
+ *         unit: { type: 'string', enum: ['celsius', 'fahrenheit'] }
+ *       },
+ *       required: ['location']
+ *     }
+ *   }
+ * };
+ * ```
+ *
  * @public
  */
 export interface Tool {
@@ -304,6 +397,21 @@ export interface Tool {
 /**
  * A tool call made by the LLM.
  * Represents the model's request to invoke a specific tool.
+ *
+ * @example
+ * ```typescript
+ * const toolCall: ToolCall = {
+ *   id: 'call_abc123',
+ *   type: 'function',
+ *   function: {
+ *     name: 'get_weather',
+ *     arguments: '{"location": "San Francisco", "unit": "celsius"}'
+ *   }
+ * };
+ *
+ * // Parse the arguments
+ * const args = JSON.parse(toolCall.function.arguments);
+ * ```
  *
  * @public
  */
@@ -356,6 +464,14 @@ export interface ToolExecutionResult {
 
 /**
  * Result of validating chat messages.
+ *
+ * @example
+ * ```typescript
+ * const result = validateMessages(messages);
+ * if (!result.isValid) {
+ *   console.error('Validation failed:', result.error);
+ * }
+ * ```
  *
  * @public
  */
