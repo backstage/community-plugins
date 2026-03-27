@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd-common
 
+## 1.15.0
+
+### Minor Changes
+
+- 265995b: Backstage version bump to v1.49.2
+
 ## 1.14.1
 
 ### Patch Changes
