@@ -56,6 +56,7 @@
     "@backstage/plugin-permission-react": "^0.4.41",
     "@backstage/theme": "^0.7.2",
     "@kubernetes/client-node": "1.4.0",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "5.18.0",
     "@mui/lab": "5.0.0-alpha.177",
     "@mui/material": "^5.15.17",
@@ -69,6 +70,7 @@
     "git-url-parse": "^13.1.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
+    "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
     "style-inject": "^0.3.0",
     "victory": "^37.3.6"
