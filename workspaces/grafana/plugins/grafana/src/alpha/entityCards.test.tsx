@@ -31,10 +31,11 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
 }));
 
 describe('Entity card extensions', () => {
-  const mockGrafanaApi = {
+  const mockGrafanaApi: GrafanaApi = {
     listDashboards: async () => [],
     alertsForSelector: async () => [],
-  } as unknown as GrafanaApi;
+    isUnifiedAlerting: () => false,
+  };
 
   it('should render the Alerts card', async () => {
     renderInTestApp(
