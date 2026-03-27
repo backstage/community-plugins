@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { createPermissionRule } from '@backstage/plugin-permission-node';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import zodToJsonSchema from 'zod-to-json-schema';
 import { permissionMetadataResourceRef } from './resource';
 import { RoleMetadataDao } from '../database/role-metadata';
