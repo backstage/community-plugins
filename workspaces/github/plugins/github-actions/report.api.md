@@ -7,7 +7,6 @@ import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { ConfigApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RestEndpointMethodTypes } from '@octokit/rest';
 import { RouteRef } from '@backstage/core-plugin-api';
@@ -41,22 +40,19 @@ export const EntityGithubActionsContent: (props: RouterProps) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLatestGithubActionRunCard: (props: {
-  branch?: string | undefined;
-  variant?: InfoCardVariants | undefined;
+  branch?: string;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLatestGithubActionsForBranchCard: (props: {
-  branch?: string | undefined;
-  variant?: InfoCardVariants | undefined;
+  branch?: string;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityRecentGithubActionsRunsCard: (props: {
-  branch?: string | undefined;
-  dense?: boolean | undefined;
-  limit?: number | undefined /** @public */;
-  variant?: InfoCardVariants | undefined;
+  branch?: string;
+  dense?: boolean;
+  limit?: number;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -249,13 +245,11 @@ export type Jobs = {
 // @public (undocumented)
 export const LatestWorkflowRunCard: (props: {
   branch?: string;
-  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const LatestWorkflowsForBranchCard: (props: {
   branch?: string;
-  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -263,7 +257,6 @@ export const RecentWorkflowRunsCard: (props: {
   branch?: string;
   dense?: boolean;
   limit?: number;
-  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)

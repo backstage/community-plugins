@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 import { useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import PeopleIcon from '@material-ui/icons/People';
+import { Grid, Text, Flex, Card, CardHeader, CardBody } from '@backstage/ui';
+import {
+  RiFullscreenLine,
+  RiGroupLine,
+  RiInboxUnarchiveLine,
+} from '@remixicon/react';
 
-import { Progress, InfoCard } from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
 
 import { InfoCardHeader } from '../InfoCardHeader';
 import { PullRequestBoardOptions } from '../PullRequestBoardOptions';
@@ -29,7 +32,6 @@ import { PRCardFormating } from '../../utils/types';
 import { shouldDisplayCard } from '../../utils/functions';
 import { DraftPrIcon } from '../icons/DraftPr';
 import { useUserRepositoriesAndTeam } from '../../hooks/useUserRepositoriesAndTeam';
-import UnarchiveIcon from '@material-ui/icons/Unarchive';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 /** @public */
@@ -65,7 +67,7 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
         value={infoCardFormat}
         options={[
           {
-            icon: <PeopleIcon />,
+            icon: <RiGroupLine size={20} />,
             value: 'team',
             ariaLabel: 'Show PRs from your team',
           },
@@ -75,12 +77,12 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
             ariaLabel: 'Show draft PRs',
           },
           {
-            icon: <UnarchiveIcon />,
+            icon: <RiInboxUnarchiveLine size={20} />,
             value: 'archivedRepo',
             ariaLabel: 'Show archived repos',
           },
           {
-            icon: <FullscreenIcon />,
+            icon: <RiFullscreenLine size={20} />,
             value: 'fullscreen',
             ariaLabel: 'Set card to fullscreen',
           },
@@ -95,67 +97,84 @@ const EntityTeamPullRequestsCard = (props: EntityTeamPullRequestsCardProps) => {
     }
 
     return (
-      <Grid container spacing={2}>
+      <Grid.Root columns="auto" gap="4">
         {pullRequests.length ? (
           pullRequests.map(({ title: columnTitle, content }) => (
             <Wrapper
               key={columnTitle}
               fullscreen={infoCardFormat.includes('fullscreen')}
             >
-              <Typography variant="overline">{columnTitle}</Typography>
-              {content.map(
-                (
-                  {
-                    id,
-                    title,
-                    createdAt,
-                    lastEditedAt,
-                    author,
-                    url,
-                    latestReviews,
-                    repository,
-                    isDraft,
-                    labels,
-                    commits,
-                  },
-                  index,
-                ) =>
-                  shouldDisplayCard(
-                    repository,
-                    author,
-                    repositories,
-                    teamMembers,
-                    infoCardFormat,
-                    isDraft,
-                  ) && (
-                    <PullRequestCard
-                      key={`pull-request-${id}-${index}`}
-                      title={title}
-                      createdAt={createdAt}
-                      updatedAt={lastEditedAt}
-                      author={author}
-                      url={url}
-                      reviews={latestReviews.nodes}
-                      repositoryName={repository.name}
-                      repositoryIsArchived={repository.isArchived}
-                      isDraft={isDraft}
-                      labels={labels.nodes}
-                      status={commits.nodes}
-                    />
-                  ),
-              )}
+              <Flex direction="column" gap="3">
+                <Text
+                  variant="body-small"
+                  style={{
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  {columnTitle}
+                </Text>
+                {content.map(
+                  (
+                    {
+                      id,
+                      title,
+                      createdAt,
+                      lastEditedAt,
+                      author,
+                      url,
+                      latestReviews,
+                      repository,
+                      isDraft,
+                      labels,
+                      commits,
+                    },
+                    index,
+                  ) =>
+                    shouldDisplayCard(
+                      repository,
+                      author,
+                      repositories,
+                      teamMembers,
+                      infoCardFormat,
+                      isDraft,
+                    ) && (
+                      <PullRequestCard
+                        key={`pull-request-${id}-${index}`}
+                        title={title}
+                        createdAt={createdAt}
+                        updatedAt={lastEditedAt}
+                        author={author}
+                        url={url}
+                        reviews={latestReviews.nodes}
+                        repositoryName={repository.name}
+                        repositoryIsArchived={repository.isArchived}
+                        isDraft={isDraft}
+                        labels={labels.nodes}
+                        status={commits.nodes}
+                      />
+                    ),
+                )}
+              </Flex>
             </Wrapper>
           ))
         ) : (
-          <Typography variant="overline" data-testid="no-prs-msg">
-            No pull requests found
-          </Typography>
+          <Grid.Item colSpan={{ sm: '12' }}>
+            <Text variant="body-small" data-testid="no-prs-msg">
+              No pull requests found
+            </Text>
+          </Grid.Item>
         )}
-      </Grid>
+      </Grid.Root>
     );
   };
 
-  return <InfoCard title={header}>{getContent()}</InfoCard>;
+  return (
+    <Card>
+      <CardHeader>{header}</CardHeader>
+      <CardBody>{getContent()}</CardBody>
+    </Card>
+  );
 };
 
 export default EntityTeamPullRequestsCard;

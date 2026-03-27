@@ -2,11 +2,23 @@
 
 Website: [https://github.com/actions](https://github.com/actions)
 
+> [!Note]
+> Backstage UI (BUI) is now required for the GitHub Actions plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 ## Table of Contents
 
 - [GitHub Actions Plugin](#github-actions-plugin)
   - [Table of Contents](#table-of-contents)
   - [Screenshots](#screenshots)
+    - [CI/CD - Table View](#cicd---table-view)
+    - [CI/CD - Card View](#cicd---card-view)
+    - [Recent Workflow Runs](#recent-workflow-runs)
+    - [Recent Main Branch Builds](#recent-main-branch-builds)
+    - [Last Main Build Status](#last-main-build-status)
+    - [Workflow Runs Overview](#workflow-runs-overview)
+    - [Workflow Run Jobs](#workflow-run-jobs)
+    - [Job Step Logs](#job-step-logs)
+    - [Full Job Logs](#full-job-logs)
   - [Setup](#setup)
     - [Generic Requirements](#generic-requirements)
       - [Provide OAuth Credentials](#provide-oauth-credentials)
@@ -20,7 +32,59 @@ Website: [https://github.com/actions](https://github.com/actions)
 
 ## Screenshots
 
-TBD
+### CI/CD - Table View
+
+![GitHub Actions Workflow Runs - Table View](docs/github-actions-ci-cd-table.png)
+
+View all workflow runs in a comprehensive table format showing status, branch, commit information, and timing details for easy monitoring of your CI/CD pipelines.
+
+### CI/CD - Card View
+
+![GitHub Actions Workflow Runs - Card View](docs/github-actions-ci-cd-cards.png)
+
+Alternative card-based layout for workflow runs with branch selection dropdown, providing a more visual and compact way to monitor your builds across different branches.
+
+### Recent Workflow Runs
+
+![GitHub Actions Recent Workflow Runs](docs/github-actions-recent-workflow-runs.png)
+
+Quick summary view of the most recent workflow runs with status indicators, perfect for at-a-glance monitoring of your latest builds.
+
+### Recent Main Branch Builds
+
+![GitHub Actions Recent Main Builds](docs/github-actions-recent-main-builds.png)
+
+Focused view displaying the latest builds specifically from your main branch, helping you track the health of your primary development branch.
+
+### Last Main Build Status
+
+![GitHub Actions Last Main Build](docs/github-actions-last-main-build.png)
+
+Summary card showing the status and details of the most recent build on the main branch for quick health checks.
+
+### Workflow Runs Overview
+
+![GitHub Actions Workflow Runs](docs/github-actions-workflow-runs.png)
+
+Detailed overview of workflow runs with filtering and search capabilities, showing comprehensive information about each run including workflow name, status, branch, commit message, and execution time.
+
+### Workflow Run Jobs
+
+![GitHub Actions Workflow Jobs](docs/github-actions-workflow-runs-jobs.png)
+
+Drill down into individual workflow runs to see all jobs, their status, and execution duration, making it easy to identify which jobs succeeded or failed.
+
+### Job Step Logs
+
+![GitHub Actions Job Log](docs/github-actions-workflow-runs-job-log.png)
+
+View detailed logs for each step within a job, including timestamps and output, helping you debug failures and understand execution flow.
+
+### Full Job Logs
+
+![GitHub Actions Job Log Full View](docs/github-actions-workflow-runs-job-log-full.png)
+
+Expanded view of complete job logs with all steps and their detailed output for thorough investigation and troubleshooting.
 
 ## Setup
 
