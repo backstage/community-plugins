@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendPlugin,
+  FrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 import {
   entityN8nContent,
   entityN8nLatestExecutionCard,
@@ -37,4 +40,4 @@ export default createFrontendPlugin({
     entityN8nWorkflowsTable,
     n8nApi,
   ],
-});
+}) satisfies FrontendPlugin;
