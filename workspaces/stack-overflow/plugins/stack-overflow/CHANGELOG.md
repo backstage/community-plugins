@@ -1,5 +1,11 @@
 # @backstage-community/plugin-stack-overflow
 
+## 0.16.0
+
+### Minor Changes
+
+- 19f286a: Backstage version bump to v1.49.2
+
 ## 0.15.0
 
 ### Minor Changes
