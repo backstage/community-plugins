@@ -20,9 +20,6 @@ import {
 } from './NewRelicDashboardApi';
 import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { DashboardEntity } from '../types/DashboardEntity';
-import { DashboardSnapshot } from '../types/DashboardSnapshot';
-import { getDashboardParentGuidQuery } from '../queries/getDashboardParentGuidQuery';
-import { getDashboardSnapshotQuery } from '../queries/getDashboardSnapshotQuery';
 import { ResponseError } from '@backstage/errors';
 
 export class NewRelicDashboardClient implements NewRelicDashboardApi {
@@ -41,73 +38,40 @@ export class NewRelicDashboardClient implements NewRelicDashboardApi {
     this.fetchApi = fetchApi;
   }
 
-  private async callApi<T>(
-    query: string,
-    variables: { [key in string]: string | number },
-  ): Promise<T | undefined> {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    const graphql = JSON.stringify({
-      query: query,
-      variables: variables,
-    });
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: myHeaders,
-      body: graphql,
-      redirect: 'follow',
-    };
-
-    const apiUrl = `${await this.discoveryApi.getBaseUrl(
-      'proxy',
-    )}/newrelic/api/graphql`;
-    const response = await this.fetchApi.fetch(apiUrl, requestOptions);
-    if (response.status === 200) {
-      return (await response.json()) as T;
-    }
-    if (!response.ok) {
-      throw await ResponseError.fromResponse(response);
-    } else {
-      return undefined;
-    }
-  }
-
   async getDashboardEntity(
     guid: string,
   ): Promise<DashboardEntitySummary | undefined> {
-    const DashboardEntityList = await this.callApi<DashboardEntity>(
-      getDashboardParentGuidQuery,
-      {
-        query: `id ='${guid}' OR parentId ='${guid}'`,
-      },
-    );
-    if (
-      DashboardEntityList &&
-      DashboardEntityList?.data?.actor.entitySearch.results.entities?.length > 1
-    ) {
-      DashboardEntityList.data.actor.entitySearch.results.entities =
-        DashboardEntityList?.data.actor.entitySearch.results.entities.filter(
-          entity => entity?.dashboardParentGuid !== null,
-        );
+    const baseUrl = await this.discoveryApi.getBaseUrl('newrelic-dashboard');
+    const url = `${baseUrl}/entities?guid=${encodeURIComponent(guid)}`;
+    const response = await this.fetchApi.fetch(url);
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
     }
-    return {
-      getDashboardEntity: DashboardEntityList!,
-    };
+
+    const body = (await response.json()) as DashboardEntity;
+    return { getDashboardEntity: body };
   }
 
   async getDashboardSnapshot(
     guid: string,
     duration: number,
   ): Promise<DashboardSnapshotSummary | undefined> {
-    const DashboardSnapshotValue = await this.callApi<DashboardSnapshot>(
-      getDashboardSnapshotQuery,
-      {
-        guid: guid,
-        duration: duration,
-      },
-    );
+    const baseUrl = await this.discoveryApi.getBaseUrl('newrelic-dashboard');
+    const url = `${baseUrl}/snapshot/image?guid=${encodeURIComponent(
+      guid,
+    )}&duration=${duration}`;
+    const response = await this.fetchApi.fetch(url);
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    const pdfUrl = URL.createObjectURL(await response.blob());
     return {
-      getDashboardSnapshot: DashboardSnapshotValue!,
+      getDashboardSnapshot: {
+        data: { dashboardCreateSnapshotUrl: pdfUrl },
+      },
     };
   }
 }
