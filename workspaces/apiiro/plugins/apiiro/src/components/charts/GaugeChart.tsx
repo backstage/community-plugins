@@ -22,10 +22,10 @@ import Typography from '@mui/material/Typography';
 
 const getArcColor = (
   value: number,
-  tickValue: number,
+  tickValue: number | null,
   gaugeColors: ReturnType<typeof getGaugeColors>,
 ) => {
-  if (tickValue === 0) {
+  if (tickValue === null || tickValue === 0) {
     return gaugeColors.background;
   }
   return value > tickValue ? gaugeColors.warning : gaugeColors.success;
@@ -75,29 +75,35 @@ function GaugeBottomLabels({
   minValue,
   maxValue,
   categoryLabel,
+  tickValue,
   width = '135px',
 }: {
   minValue: number;
   maxValue: number;
   categoryLabel: string;
+  tickValue: number | null;
   width?: string;
 }) {
   const theme = useTheme();
+  const shouldShowLabels = tickValue !== null;
+
   return (
     <div
       style={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: shouldShowLabels ? 'space-between' : 'center',
         alignItems: 'center',
         width,
         marginTop: 7,
       }}
     >
-      <Typography
-        style={{ fontSize: '14px', color: theme.palette.text.secondary }}
-      >
-        {minValue}
-      </Typography>
+      {shouldShowLabels && (
+        <Typography
+          style={{ fontSize: '14px', color: theme.palette.text.secondary }}
+        >
+          {minValue}
+        </Typography>
+      )}
       <Typography
         style={{
           fontSize: '14px',
@@ -107,11 +113,13 @@ function GaugeBottomLabels({
       >
         {categoryLabel}
       </Typography>
-      <Typography
-        style={{ fontSize: '14px', color: theme.palette.text.secondary }}
-      >
-        {maxValue}
-      </Typography>
+      {shouldShowLabels && (
+        <Typography
+          style={{ fontSize: '14px', color: theme.palette.text.secondary }}
+        >
+          {maxValue}
+        </Typography>
+      )}
     </div>
   );
 }
@@ -203,13 +211,13 @@ export default function GaugeChart({
   width: number;
   height: number;
   value: number;
-  tickValue: number;
+  tickValue: number | null;
   minValue: number;
   maxValue: number;
   tooltip?: string;
   unit?: string;
   displayValue?: number;
-  displayTickValue?: number;
+  displayTickValue?: number | null;
 }) {
   const theme = useTheme();
   const gaugeColors = getGaugeColors(theme);
@@ -259,19 +267,16 @@ export default function GaugeChart({
   }, [value]);
 
   // Define margins (adjust as needed)
-  const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  const margin = { top: 20, right: 35, bottom: 20, left: 35 };
 
-  const innerWidth = width - margin.left - margin.right; // 220 - 20 - 20 = 180
-  const innerHeight = height - margin.top - margin.bottom; // 200 - 20 - 20 = 160   // fixed centerY (you can adjust this)
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
 
   const outerRadius = Math.min(innerWidth, innerHeight) / 2.2;
-  // Math.min(180, 160) / 2.2 ≈ 72.73
 
   const innerRadius = outerRadius * 0.72;
 
   const arcColor = getArcColor(value, tickValue, gaugeColors);
-
-  // 72.73 * 0.67 ≈ 48.72
 
   const gaugeElement = (
     <Gauge
@@ -299,7 +304,7 @@ export default function GaugeChart({
         markerValue={tickValue}
         min={minValue}
         max={maxValue}
-        displayMarkerValue={displayTickValue}
+        displayMarkerValue={displayTickValue || undefined}
       />
       <GaugeCenterLabel
         value={displayValue || animatedValue}

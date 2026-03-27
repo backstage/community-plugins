@@ -77,5 +77,4 @@ export const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 export const REFRESH_LOCK_TTL_MS = 2 * 60 * 1000; // 2 minutes
 export const PAGE_LIMIT = 1000;
 export const MAX_PAGES = 1000;
-export const DEFAULT_NAMESPACE = 'default';
 export const AZURE_HOST_NAME = 'dev.azure.com';

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
-import { AZURE_HOST_NAME, DEFAULT_NAMESPACE } from './types';
+import { AZURE_HOST_NAME } from './types';
 import { match } from 'path-to-regexp';
 
 export function extractRepoUrlFromSourceLocation(
@@ -72,11 +71,4 @@ export function extractRepoUrlFromSourceLocation(
   } catch (error) {
     return null;
   }
-}
-
-export function createEntityReference(entity: Entity): string {
-  const kind = entity.kind?.toLowerCase() || 'component';
-  const namespace = entity.metadata.namespace || DEFAULT_NAMESPACE;
-  const name = entity.metadata.name;
-  return `${kind}:${namespace}/${name}`;
 }

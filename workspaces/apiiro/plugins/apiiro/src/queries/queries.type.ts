@@ -77,7 +77,7 @@ export type RepositorySuccessResponseData = {
 export type MttrStatistic = {
   riskLevel: string;
   meanTimeInHours: number;
-  slaInHours: number;
+  slaInHours: number | null;
 };
 
 export type MttrStatisticsSuccessResponseData = MttrStatistic[];

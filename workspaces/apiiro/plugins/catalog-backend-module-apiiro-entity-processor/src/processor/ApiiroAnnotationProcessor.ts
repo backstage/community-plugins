@@ -30,10 +30,7 @@ import {
 } from '@backstage-community/plugin-apiiro-common';
 import { ApiiroApiClient } from '../helpers/apiClient';
 import { CacheManager } from '../helpers/cacheManager';
-import {
-  extractRepoUrlFromSourceLocation,
-  createEntityReference,
-} from '../helpers/utils';
+import { extractRepoUrlFromSourceLocation } from '../helpers/utils';
 import { BACKSTAGE_SOURCE_LOCATION_ANNOTATION } from '../helpers/types';
 
 export class ApiiroAnnotationProcessor implements CatalogProcessor {
@@ -89,9 +86,9 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
       this.config.getOptionalBoolean('apiiro.annotationControl.exclude') ??
       true;
     const entityNames =
-      this.config.getOptionalStringArray(
-        'apiiro.annotationControl.entityNames',
-      ) ?? [];
+      this.config
+        .getOptionalStringArray('apiiro.annotationControl.entityNames')
+        ?.map(name => name.toLowerCase()) ?? [];
 
     if (entityNames.length === 0) {
       return (
@@ -99,7 +96,7 @@ export class ApiiroAnnotationProcessor implements CatalogProcessor {
       );
     }
 
-    const entityRef = createEntityReference(entity);
+    const entityRef = stringifyEntityRef(entity);
     const isInList = entityNames.includes(entityRef);
 
     return exclude ? !isInList : isInList;

@@ -302,7 +302,7 @@ export type RisksAggregation = {
 export type MttrStatistic = {
   riskLevel: string | null;
   meanTimeInHours: number;
-  slaInHours: number;
+  slaInHours: number | null;
 };
 
 /**
