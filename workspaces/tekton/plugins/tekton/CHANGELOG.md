@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tekton
 
+## 3.37.0
+
+### Minor Changes
+
+- 701b9e7: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 92e7fe8: Fix horizontal bar stylings so they render properly.
+- Updated dependencies [701b9e7]
+  - @backstage-community/plugin-tekton-common@1.20.0
+  - @backstage-community/plugin-tekton-react@0.5.0
+
 ## 3.36.1
 
 ### Patch Changes
