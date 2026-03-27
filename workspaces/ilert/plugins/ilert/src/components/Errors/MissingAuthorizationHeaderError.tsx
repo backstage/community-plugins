@@ -19,7 +19,7 @@ import { EmptyState } from '@backstage/core-components';
 export const MissingAuthorizationHeaderError = () => (
   <EmptyState
     missing="info"
-    title="Missing or invalid iLert authorization header"
+    title="Missing or invalid ilert authorization header"
     description="The request to fetch data needs a valid authorization header. See README for more details."
     action={
       <Button

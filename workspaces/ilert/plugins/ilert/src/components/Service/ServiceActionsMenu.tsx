@@ -62,7 +62,7 @@ export const ServiceActionsMenu = ({ service }: { service: Service }) => {
         <MenuItem key="details" onClick={handleCloseMenu}>
           <Typography variant="inherit" noWrap>
             <Link to={ilertApi.getServiceDetailsURL(service)}>
-              View in iLert
+              View in ilert
             </Link>
           </Typography>
         </MenuItem>
