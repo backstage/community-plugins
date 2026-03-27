@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-acr': patch
+'@backstage-community/plugin-topology': patch
 ---
 
 Translation updated for German and Spanish
