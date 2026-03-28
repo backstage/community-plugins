@@ -1,0 +1,21 @@
+@layer components {
+  .card {
+    width: 400px;
+    background-color: var(--bui-bg-surface-1);
+    border-radius: var(--bui-radius-3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .header {
+    margin-bottom: var(--bui-space-2);
+    padding: var(--bui-space-4);
+    padding-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .button {
+    margin-top: var(--bui-space-2);
+  }
+}

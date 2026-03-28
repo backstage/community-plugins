@@ -17,30 +17,15 @@
 import type { MouseEvent } from 'react';
 
 import { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import EditIcon from '@material-ui/icons/Edit';
+import { ButtonIcon, Tooltip } from '@backstage/ui';
+import { TooltipTrigger } from 'react-aria-components';
+import { RiEditLine } from '@remixicon/react';
 import { ShortcutIcon } from './ShortcutIcon';
 import { EditShortcut } from './EditShortcut';
 import { ShortcutApi } from './api';
 import { Shortcut } from './types';
 import { SidebarItem } from '@backstage/core-components';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    '&:hover #edit': {
-      visibility: 'visible',
-    },
-  },
-  button: {
-    visibility: 'hidden',
-  },
-  icon: {
-    color: theme.palette.common.white,
-    fontSize: 16,
-  },
-}));
+import styles from './ShortcutItem.module.css';
 
 const getIconText = (title: string) =>
   title.split(' ').length === 1
@@ -64,7 +49,6 @@ type Props = {
 };
 
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<Element | undefined>();
 
   const handleClick = (event: MouseEvent<Element>) => {
@@ -81,23 +65,25 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
 
   return (
     <>
-      <Tooltip title={shortcut.title} enterDelay={500}>
+      <TooltipTrigger delay={500}>
         <SidebarItem
-          className={classes.root}
+          className={styles.root}
           to={shortcut.url}
           text={shortcut.title}
           icon={() => <ShortcutIcon text={text} color={color} />}
         >
-          <IconButton
+          <ButtonIcon
             id="edit"
             data-testid="edit"
-            onClick={handleClick}
-            className={classes.button}
-          >
-            <EditIcon className={classes.icon} />
-          </IconButton>
+            onPress={handleClick}
+            className={styles.button}
+            icon={<RiEditLine className={styles.icon} />}
+            aria-label="Edit shortcut"
+            variant="tertiary"
+          />
         </SidebarItem>
-      </Tooltip>
+        <Tooltip>{shortcut.title}</Tooltip>
+      </TooltipTrigger>
       <EditShortcut
         onClose={handleClose}
         anchorEl={anchorEl}
