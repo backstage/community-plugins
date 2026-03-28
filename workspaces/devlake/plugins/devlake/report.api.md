@@ -5,14 +5,20 @@
 ```ts
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import type { ComponentType } from 'react';
 import { DoraMetric } from '@backstage-community/plugin-devlake-common';
 import { DoraMetrics } from '@backstage-community/plugin-devlake-common';
 import { DoraMetricsTrend } from '@backstage-community/plugin-devlake-common';
 import { DoraMetricTrendPoint } from '@backstage-community/plugin-devlake-common';
 import { DoraTeam } from '@backstage-community/plugin-devlake-common';
+import { Entity } from '@backstage/catalog-model';
+import { InfoCardVariants } from '@backstage/core-components';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { TimeRangePreset } from '@backstage-community/plugin-devlake-common';
+
+// @public
+export const DEVLAKE_PROJECT_NAME_ANNOTATION = 'devlake.io/project-name';
 
 // @public
 export interface DevlakeApi {
@@ -48,6 +54,18 @@ export const devlakePlugin: BackstagePlugin<
 
 // @public
 export const DoraMetricsPage: () => JSX_2.Element;
+
+// @public
+export const EntityDoraCard: ComponentType<EntityDoraCardProps>;
+
+// @public (undocumented)
+export interface EntityDoraCardProps {
+  // (undocumented)
+  variant?: InfoCardVariants;
+}
+
+// @public
+export const isDevlakeAvailable: (entity: Entity) => boolean;
 
 // @public (undocumented)
 export const MetricCard: (props: MetricCardProps) => JSX_2.Element;

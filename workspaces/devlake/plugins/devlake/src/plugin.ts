@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import type { ComponentType } from 'react';
 import {
   createApiFactory,
   createComponentExtension,
@@ -25,6 +26,7 @@ import {
 
 import { rootRouteRef } from './routes';
 import { devlakeApiRef, DevlakeClientImpl } from './api';
+import type { EntityDoraCardProps } from './components/EntityDoraCard';
 
 /**
  * The DevLake plugin instance.
@@ -66,12 +68,13 @@ export const DoraMetricsPage = devlakePlugin.provide(
  *
  * @public
  */
-export const EntityDoraCard = devlakePlugin.provide(
-  createComponentExtension({
-    name: 'EntityDoraCard',
-    component: {
-      lazy: () =>
-        import('./components/EntityDoraCard').then(m => m.EntityDoraCard),
-    },
-  }),
-);
+export const EntityDoraCard: ComponentType<EntityDoraCardProps> =
+  devlakePlugin.provide(
+    createComponentExtension({
+      name: 'EntityDoraCard',
+      component: {
+        lazy: () =>
+          import('./components/EntityDoraCard').then(m => m.EntityDoraCard),
+      },
+    }),
+  ) as ComponentType<EntityDoraCardProps>;

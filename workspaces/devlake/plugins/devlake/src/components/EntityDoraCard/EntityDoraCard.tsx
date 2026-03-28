@@ -20,12 +20,14 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import {
   InfoCard,
   InfoCardVariants,
-  MissingAnnotationEmptyState,
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { useEntity } from '@backstage/plugin-catalog-react';
+import {
+  MissingAnnotationEmptyState,
+  useEntity,
+} from '@backstage/plugin-catalog-react';
 import {
   DoraMetric,
   DoraMetrics,
