@@ -29,9 +29,11 @@ import {
   replaceReadme,
   buildEncodedUrl,
   parseAzureDevOpsUrl,
+  getConfiguredAzureDevOpsOrganizations,
 } from './azure-devops-utils';
 import { GitPullRequest } from 'azure-devops-node-api/interfaces/GitInterfaces';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
+import { ConfigReader } from '@backstage/config';
 
 describe('convertDashboardPullRequest', () => {
   it('should return DashboardPullRequest', () => {
@@ -338,5 +340,200 @@ describe('parseAzureDevOpsUrl', () => {
     expect(result.org).toEqual('organization');
     expect(result.project).toEqual('project');
     expect(result.repo).toEqual('repository');
+  });
+});
+
+describe('getConfiguredAzureDevOpsOrganizations', () => {
+  it('should return empty array when no configuration is present', () => {
+    const config = new ConfigReader({});
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([]);
+  });
+
+  it('should return organizations from pullRequestDashboard.organizations config', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        pullRequestDashboard: {
+          organizations: [
+            {
+              organization: 'org1',
+              host: 'dev.azure.com',
+            },
+            {
+              organization: 'org2',
+              host: 'dev.azure.com',
+            },
+          ],
+        },
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'org1',
+        host: 'dev.azure.com',
+      },
+      {
+        organization: 'org2',
+        host: 'dev.azure.com',
+      },
+    ]);
+  });
+
+  it('should return only legacy config when no dashboard organizations are present', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        host: 'legacy.azure.com',
+        organization: 'legacy-org',
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'legacy-org',
+        host: 'legacy.azure.com',
+      },
+    ]);
+  });
+
+  it('should combine dashboard organizations with legacy config', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        host: 'legacy.azure.com',
+        organization: 'legacy-org',
+        pullRequestDashboard: {
+          organizations: [
+            {
+              organization: 'org1',
+              host: 'dev.azure.com',
+            },
+          ],
+        },
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'org1',
+        host: 'dev.azure.com',
+      },
+      {
+        organization: 'legacy-org',
+        host: 'legacy.azure.com',
+      },
+    ]);
+  });
+
+  it('should not duplicate legacy config if already in dashboard organizations', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        host: 'dev.azure.com',
+        organization: 'org1',
+        pullRequestDashboard: {
+          organizations: [
+            {
+              organization: 'org1',
+              host: 'dev.azure.com',
+            },
+            {
+              organization: 'org2',
+              host: 'dev.azure.com',
+            },
+          ],
+        },
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'org1',
+        host: 'dev.azure.com',
+      },
+      {
+        organization: 'org2',
+        host: 'dev.azure.com',
+      },
+    ]);
+  });
+
+  it('should add legacy config when host matches but organization differs', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        host: 'dev.azure.com',
+        organization: 'legacy-org',
+        pullRequestDashboard: {
+          organizations: [
+            {
+              organization: 'org1',
+              host: 'dev.azure.com',
+            },
+          ],
+        },
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'org1',
+        host: 'dev.azure.com',
+      },
+      {
+        organization: 'legacy-org',
+        host: 'dev.azure.com',
+      },
+    ]);
+  });
+
+  it('should not add legacy config when only host is present', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        host: 'dev.azure.com',
+        pullRequestDashboard: {
+          organizations: [
+            {
+              organization: 'org1',
+              host: 'dev.azure.com',
+            },
+          ],
+        },
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'org1',
+        host: 'dev.azure.com',
+      },
+    ]);
+  });
+
+  it('should not add legacy config when only organization is present', () => {
+    const config = new ConfigReader({
+      azureDevOps: {
+        organization: 'legacy-org',
+        pullRequestDashboard: {
+          organizations: [
+            {
+              organization: 'org1',
+              host: 'dev.azure.com',
+            },
+          ],
+        },
+      },
+    });
+
+    const result = getConfiguredAzureDevOpsOrganizations(config);
+    expect(result).toEqual([
+      {
+        organization: 'org1',
+        host: 'dev.azure.com',
+      },
+    ]);
   });
 });

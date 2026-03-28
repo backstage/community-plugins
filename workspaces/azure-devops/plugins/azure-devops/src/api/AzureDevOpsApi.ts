@@ -55,11 +55,17 @@ export interface AzureDevOpsApi {
   getDashboardPullRequests(
     projectName: string,
     teamsLimit?: number,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]>;
 
-  getAllTeams(limit?: number): Promise<Team[]>;
+  getAllTeams(limit?: number, host?: string, org?: string): Promise<Team[]>;
 
-  getUserTeamIds(userId: string): Promise<string[]>;
+  getUserTeamIds(
+    userId: string,
+    host?: string,
+    org?: string,
+  ): Promise<string[]>;
 
   getBuildRuns(
     projectName: string,
@@ -80,4 +86,6 @@ export interface AzureDevOpsApi {
     host?: string,
     org?: string,
   ): Promise<{ log: string[] }>;
+
+  getProjects(host?: string, org?: string): Promise<string[]>;
 }
