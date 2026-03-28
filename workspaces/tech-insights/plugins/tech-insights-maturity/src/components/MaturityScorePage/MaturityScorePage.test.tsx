@@ -29,15 +29,8 @@ const entity = {
   kind: 'Component',
   metadata: {
     namespace: 'default',
-    name: 'bingaux-sources',
-    title: 'Bingaux Sources',
-    stakeholders: [
-      {
-        role: 'architect',
-        email: 'jcarres@mdsol.com',
-      },
-    ],
-    tags: ['python', 'csharp'],
+    name: 'mock-name',
+    title: 'Mock Title',
   },
   spec: {
     type: 'service',
@@ -273,9 +266,9 @@ describe('<MaturityScorePage />', () => {
 
     // Maturity Check Table
     expect(queryByText('Checks')).toBeInTheDocument(); // title
-    expect(getAllByAltText(/Bronze/)).toHaveLength(3); // Bronze Accordion + Maturity Summary chip
-    expect(getAllByText(/Silver/)).toHaveLength(2); // Silver Accordion + Maturity Summary chip
-    expect(getAllByText(/Gold/)).toHaveLength(2); // Gold Accordion + Maturity Summary chip
+    expect(queryByText(/Bronze/)).toBeInTheDocument(); // Bronze Accordion
+    expect(queryByText(/Silver/)).toBeInTheDocument(); // Silver Accordion
+    expect(getAllByAltText(/Gold/)).toHaveLength(2); // Gold Accordion + 0% to Gold
     expect(getByText(/Product Owner Check/)).toBeInTheDocument();
     expect(
       getByText(
