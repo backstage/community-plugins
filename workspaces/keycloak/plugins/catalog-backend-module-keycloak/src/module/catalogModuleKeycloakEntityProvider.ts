@@ -19,7 +19,7 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { InputError } from '@backstage/errors';
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 
 import { keycloakTransformerExtensionPoint } from '../extensions';
 import type { GroupTransformer, UserTransformer } from '../lib/types';
