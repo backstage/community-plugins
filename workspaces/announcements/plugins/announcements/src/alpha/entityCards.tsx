@@ -17,6 +17,13 @@ import { compatWrapper } from '@backstage/core-compat-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 /**
+ * An entity card that displays announcements relevant to a catalog entity.
+ *
+ * @remarks
+ * Extension ID: `entity-card:announcements/announcements`
+ *
+ * Disabled by default — must be explicitly enabled in `app-config.yaml`.
+ *
  * @alpha
  */
 export const entityAnnouncementsCard = EntityCardBlueprint.make({
