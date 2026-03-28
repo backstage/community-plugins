@@ -27,12 +27,14 @@ export abstract class LLMProvider {
   protected baseUrl: string;
   protected model: string;
   protected type: string;
+  protected logger: any;
 
   constructor(config: ProviderConfig) {
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl;
     this.model = config.model;
     this.type = config.type;
+    this.logger = config.logger;
   }
 
   abstract sendMessage(
@@ -54,16 +56,43 @@ export abstract class LLMProvider {
   protected abstract parseResponse(response: any): ChatResponse;
 
   protected async makeRequest(endpoint: string, body: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const url = `${this.baseUrl}${endpoint}`;
+
+    this.logger.debug(`[${this.type}] Request to ${url}`, {
+      body: JSON.stringify(body),
+    });
+    const startTime = Date.now();
+    const response = await fetch(url, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(body),
     });
+    const duration = Date.now() - startTime;
 
     if (!response.ok) {
+      const errorText = await response.text();
+      this.logger.error(
+        `[${this.type}] Request failed (${response.status}) after ${duration}ms`,
+        { responseData: errorText },
+      );
       throw await ResponseError.fromResponse(response);
     }
 
-    return response.json();
+    const responseData = await response.json();
+
+    this.logger.debug(`[${this.type}] Response received in ${duration}ms`, {
+      data: JSON.stringify(responseData),
+    });
+
+    // Warn if response was truncated due to token limits
+    const finishReason = responseData.choices?.[0]?.finish_reason;
+    if (finishReason === 'length' || finishReason === 'max_tokens') {
+      this.logger.warn(
+        `[${this.type}] Response was truncated due to token limit (finish_reason: ${finishReason}). ` +
+          `Consider increasing max_tokens in your provider configuration.`,
+      );
+    }
+
+    return responseData;
   }
 }
