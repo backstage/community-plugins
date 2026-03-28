@@ -87,12 +87,20 @@ export class ArgoCDInstanceApiClient implements ArgoCDInstanceApi {
     if (
       application.metadata &&
       (!application.metadata.instance?.name ||
+        !application.metadata.instance?.externalUrl ||
         !application.metadata.instance?.url)
     ) {
-      const instanceUrl =
-        application.metadata.instance?.url ??
-        this.instances.find(instance => instance.name === instanceName)?.url;
-      application.metadata.instance = { name: instanceName, url: instanceUrl };
+      const instance = this.instances.find(
+        candidate => candidate.name === instanceName,
+      );
+      const instanceUrl = application.metadata.instance?.url || instance?.url;
+      const instanceExternalUrl =
+        application.metadata.instance?.externalUrl || instance?.externalUrl;
+      application.metadata.instance = {
+        name: instanceName,
+        url: instanceUrl!,
+        externalUrl: instanceExternalUrl,
+      };
     }
     return application;
   }
