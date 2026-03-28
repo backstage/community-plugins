@@ -14,3 +14,10 @@
  * limitations under the License.
  */
 import '@testing-library/jest-dom';
+
+// recharts uses ResizeObserver which is not available in jsdom
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
