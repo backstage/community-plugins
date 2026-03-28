@@ -27,6 +27,6 @@ export { isCodeCoverageAvailable };
 
 /**
  * @public
- * @deprecated Use `isPluginApplicableToEntity` instead.
+ * @deprecated Use `isCodeCoverageAvailable` instead.
  */
 export const isPluginApplicableToEntity = isCodeCoverageAvailable;
