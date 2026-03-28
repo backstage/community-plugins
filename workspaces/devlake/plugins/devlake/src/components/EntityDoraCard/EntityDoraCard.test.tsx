@@ -71,21 +71,6 @@ const makeEntity = (annotations?: Record<string, string>): Entity =>
     metadata: { name: 'my-service', annotations },
   } as Entity);
 
-const renderCard = (entity: Entity) =>
-  renderInTestApp(
-    <TestApiProvider
-      apis={[
-        [devlakeApiRef, mockDevlakeApi],
-        [configApiRef, mockConfigApi],
-      ]}
-    >
-      <EntityDoraCard />
-    </TestApiProvider>,
-    { mountedRoutes: { '/devlake': {} as any } },
-  ).then(() => {
-    (useEntity as jest.Mock).mockReturnValue({ entity });
-  });
-
 describe('EntityDoraCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();

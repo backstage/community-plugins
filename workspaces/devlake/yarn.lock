@@ -1295,6 +1295,7 @@ __metadata:
     "@material-ui/lab": "npm:^4.0.0-alpha.61"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
+    "@types/lodash": "npm:^4.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
     msw: "npm:^1.0.0"
@@ -9580,6 +9581,13 @@ __metadata:
   dependencies:
     keyv: "npm:*"
   checksum: 10/8713da9382b9346d664866a6cab2f91b0fd479f61379af891303a618e9a2abad6f347adc38a0850540e3f2dad278427de24e7555339264fddb04d1d17d3b50e0
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.0.0":
+  version: 4.17.24
+  resolution: "@types/lodash@npm:4.17.24"
+  checksum: 10/0f2082565f60f9787eefc046edc38458054512be5a8b3584ef0bad5fd9e85d0ab55ec5a1fbfae1ed6ba015cf1f9e837d5fb4da1f99fc60b8f74b2a46146fb00f
   languageName: node
   linkType: hard
 
