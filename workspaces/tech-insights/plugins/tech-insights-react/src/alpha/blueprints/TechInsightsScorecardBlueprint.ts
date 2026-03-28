@@ -19,7 +19,7 @@ import {
   createExtensionDataRef,
   createExtensionBlueprint,
 } from '@backstage/frontend-plugin-api';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
+import { FilterPredicate } from '@backstage/filter-predicates';
 
 /**
  * @internal
@@ -41,7 +41,7 @@ export const techInsightsScorecardExtensionData = {
   /**
    * A filter to determine if a scorecard should be shown for an entity.
    */
-  entityFilter: createExtensionDataRef<EntityPredicate>().with({
+  entityFilter: createExtensionDataRef<FilterPredicate>().with({
     id: 'tech-insights-scorecard.entity-filter',
   }),
 };
@@ -54,7 +54,7 @@ export type TechInsightsScorecardBlueprintParams = {
   description?: string;
   checkIds?: string[];
   dense?: boolean;
-  entityFilter?: EntityPredicate;
+  entityFilter?: FilterPredicate;
   checkFilter?: (check: Check) => boolean;
 };
 
@@ -94,7 +94,7 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
     });
 
     const entityFilter =
-      (config.entityFilter as EntityPredicate | undefined) ??
+      (config.entityFilter as FilterPredicate | undefined) ??
       params.entityFilter;
     if (entityFilter) {
       yield techInsightsScorecardExtensionData.entityFilter(entityFilter);
