@@ -20,3 +20,17 @@
  * transitive dependencies (e.g. react-aria-components) that use it.
  */
 type NoInfer<T> = [T][T extends any ? 0 : never];
+
+/**
+ * Ambient module stub for lodash. Recharts imports lodash types internally but
+ * does not ship @types/lodash as a dependency. This stub satisfies
+ * tsc --skipLibCheck false without us needing @types/lodash as a direct dep.
+ */
+declare module 'lodash' {
+  // Minimal surface needed by recharts (generateCategoricalChart.d.ts)
+  interface DebouncedFunc<T extends (...args: any[]) => any> {
+    (...args: Parameters<T>): ReturnType<T> | undefined;
+    cancel(): void;
+    flush(): ReturnType<T> | undefined;
+  }
+}
