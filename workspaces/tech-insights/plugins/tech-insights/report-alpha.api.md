@@ -107,7 +107,6 @@ const techInsightsPlugin: OverridableFrontendPlugin<
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
-        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
         | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
@@ -129,6 +128,7 @@ const techInsightsPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >
+        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
         | ExtensionDataRef<
             string,
             'catalog.entity-content-group',
