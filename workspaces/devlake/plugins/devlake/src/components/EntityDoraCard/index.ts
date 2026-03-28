@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export { devlakeApiExtension } from './apis';
-export { devlakeDoraMetricsPage } from './pages';
-export { entityDoraCard } from './entityCards';
+export { EntityDoraCard } from './EntityDoraCard';
+export type { EntityDoraCardProps } from './EntityDoraCard';

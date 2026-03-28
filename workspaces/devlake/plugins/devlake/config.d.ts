@@ -40,5 +40,25 @@ export interface Config {
        */
       devlakeProjectName: string;
     }>;
+
+    /**
+     * Optional Grafana integration settings for deep-linking entity cards.
+     */
+    grafana?: {
+      /**
+       * Base URL of the Grafana instance (e.g. https://grafana.example.com).
+       *
+       * @visibility frontend
+       */
+      baseUrl?: string;
+
+      /**
+       * Path to the DORA dashboard in Grafana.
+       * Defaults to `/d/qNo8_0M4z/dora`.
+       *
+       * @visibility frontend
+       */
+      doraDashboardPath?: string;
+    };
   };
 }

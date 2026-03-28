@@ -16,6 +16,7 @@
 
 import {
   createApiFactory,
+  createComponentExtension,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
@@ -56,5 +57,21 @@ export const DoraMetricsPage = devlakePlugin.provide(
     component: () =>
       import('./pages/DoraMetricsPage').then(m => m.DoraMetricsPage),
     mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * A compact DORA metrics card for Backstage entity pages.
+ * Requires the `devlake.io/project-name` annotation on the entity.
+ *
+ * @public
+ */
+export const EntityDoraCard = devlakePlugin.provide(
+  createComponentExtension({
+    name: 'EntityDoraCard',
+    component: {
+      lazy: () =>
+        import('./components/EntityDoraCard').then(m => m.EntityDoraCard),
+    },
   }),
 );

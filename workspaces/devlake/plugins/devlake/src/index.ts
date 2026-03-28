@@ -20,9 +20,14 @@
  * @packageDocumentation
  */
 
-export { devlakePlugin, DoraMetricsPage } from './plugin';
+export { devlakePlugin, DoraMetricsPage, EntityDoraCard } from './plugin';
 export { devlakeApiRef } from './api';
 export type { DevlakeApi } from './api';
+export {
+  DEVLAKE_PROJECT_NAME_ANNOTATION,
+  isDevlakeAvailable,
+} from './constants';
+export type { EntityDoraCardProps } from './components/EntityDoraCard';
 export { MetricCard } from './components/MetricCard';
 export type { MetricCardProps } from './components/MetricCard/MetricCard';
 export { MetricChart } from './components/MetricChart';

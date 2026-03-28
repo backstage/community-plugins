@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import {
-  createFrontendPlugin,
-  FrontendPlugin,
-} from '@backstage/frontend-plugin-api';
-import {
-  devlakeApiExtension,
-  devlakeDoraMetricsPage,
-  entityDoraCard,
-} from './alpha/index';
-import { rootRouteRef } from './routes';
+import { compatWrapper } from '@backstage/core-compat-api';
+import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isDevlakeAvailable } from '../constants';
 
 /** @alpha */
-// @ts-ignore -- nested frontend-plugin-api version mismatch causes TS2589
-const plugin: FrontendPlugin = createFrontendPlugin({
-  pluginId: 'devlake',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
-  extensions: [devlakeApiExtension, devlakeDoraMetricsPage, entityDoraCard],
+export const entityDoraCard: any = EntityCardBlueprint.make({
+  name: 'dora',
+  params: {
+    filter: isDevlakeAvailable,
+    loader: async () =>
+      import('../components/EntityDoraCard').then(m =>
+        compatWrapper(<m.EntityDoraCard />),
+      ),
+  },
 });
-
-export default plugin;
