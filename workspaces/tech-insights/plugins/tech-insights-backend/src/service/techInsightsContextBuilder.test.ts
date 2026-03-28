@@ -21,6 +21,7 @@ import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Knex } from 'knex';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DatabaseService } from '@backstage/backend-plugin-api';
+import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 
 jest.mock('./fact/FactRetrieverRegistry');
 jest.mock('./fact/FactRetrieverEngine', () => ({
@@ -55,6 +56,7 @@ describe('buildTechInsightsContext', () => {
     rootLifecycle,
     httpRouter,
     pluginMetadata: { getId: () => 'plugin-id' },
+    metrics: metricsServiceMock.mock(),
   });
 
   beforeEach(() => {

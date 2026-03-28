@@ -34,6 +34,7 @@ import {
   mockServices,
 } from '@backstage/backend-test-utils';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 
 jest.setTimeout(60_000);
 
@@ -146,6 +147,7 @@ describe('FactRetrieverEngine', () => {
       rootLifecycle,
       httpRouter,
       pluginMetadata: { getId: () => 'plugin-id' },
+      metrics: metricsServiceMock.mock(),
     });
     return await DefaultFactRetrieverEngine.create({
       factRetrieverContext: {

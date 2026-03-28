@@ -27,6 +27,7 @@ import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { DateTime } from 'luxon';
 import { mockServices } from '@backstage/backend-test-utils';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 
 const setupRouter = async (
   mockPersistenceContext: PersistenceContext,
@@ -39,6 +40,7 @@ const setupRouter = async (
   const urlReader = mockServices.urlReader.mock();
   const rootLifecycle = mockServices.rootLifecycle.mock();
   const httpRouter = mockServices.httpRouter.mock();
+  const metrics = metricsServiceMock.mock();
   const techInsightsContext = await buildTechInsightsContext({
     database,
     logger,
@@ -48,6 +50,7 @@ const setupRouter = async (
       logger,
       rootLifecycle,
       httpRouter,
+      metrics,
       pluginMetadata: { getId: () => 'plugin-id' },
     }),
     config: ConfigReader.fromConfigs([]),
