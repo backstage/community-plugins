@@ -34,7 +34,6 @@ export type {
   ProviderStatusData,
   ProviderInfo,
   ProviderConnectionStatus,
-  LLMProviderType,
 
   // MCP Server types
   MCPServerConfig,
