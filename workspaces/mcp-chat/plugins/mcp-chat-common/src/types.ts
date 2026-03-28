@@ -39,20 +39,6 @@ export enum MCPServerType {
   STREAMABLE_HTTP = 'streamable-http',
 }
 
-/**
- * Supported LLM provider types.
- * Use this type for type-safe provider selection.
- *
- * @public
- */
-export type LLMProviderType =
-  | 'openai'
-  | 'openai-responses'
-  | 'claude'
-  | 'gemini'
-  | 'ollama'
-  | 'litellm';
-
 // =============================================================================
 // MCP Server Configuration Types
 // =============================================================================
