@@ -93,9 +93,7 @@ export const rbacApiRef: ApiRef<RBACAPI>;
 export { RbacIcon };
 
 // @public (undocumented)
-export const RbacPage: (input: {
-  useHeader?: boolean | undefined;
-}) => JSX_2.Element;
+export const RbacPage: (input: { useHeader?: boolean }) => JSX_2.Element;
 
 // @public (undocumented)
 export const rbacPlugin: BackstagePlugin<
