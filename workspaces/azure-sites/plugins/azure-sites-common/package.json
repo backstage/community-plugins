@@ -43,10 +43,10 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.7.6",
-    "@backstage/plugin-catalog-common": "^1.1.7",
-    "@backstage/plugin-permission-common": "^0.9.5"
+    "@backstage/plugin-catalog-common": "^1.1.8",
+    "@backstage/plugin-permission-common": "^0.9.6"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.3"
+    "@backstage/cli": "^0.35.4"
   }
 }
