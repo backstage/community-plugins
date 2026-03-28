@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,6 +54,14 @@ export const registerCommands = (program: Command) => {
     .requiredOption(
       '--workspace-name [name]',
       'Name of the workspace that will be created, the plugins will be pulled automatically from the monorepo',
+    )
+    .option(
+      '--scope [scope]',
+      'The npm scope of the plugins (default: @backstage)',
+    )
+    .option(
+      '--monorepo-ref [ref]',
+      'The branch, tag, or commit to checkout in the monorepo before migrating. If omitted, attempts to use the latest tag.',
     )
     .option('--branch [branch]', 'use a branch for deprecation commits')
     .option('--force', 'Overwrite existing workspace', false)

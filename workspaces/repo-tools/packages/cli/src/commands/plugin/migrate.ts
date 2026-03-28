@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -71,22 +71,24 @@ const getPaths = async (options: {
 const getMonorepoPackagesForWorkspace = async (options: {
   monorepoRoot: string;
   workspaceName: string;
+  scope: string;
 }) => {
   const packages = await getPackages(options.monorepoRoot);
 
   const workspacePackages = packages.packages.filter(
     pkg =>
       pkg.packageJson.name.startsWith(
-        `@backstage/plugin-${options.workspaceName}-`,
+        `${options.scope}/plugin-${options.workspaceName}-`,
       ) ||
-      pkg.packageJson.name === `@backstage/plugin-${options.workspaceName}`,
+      pkg.packageJson.name ===
+        `${options.scope}/plugin-${options.workspaceName}`,
   );
 
   return workspacePackages;
 };
 
-const generateNewPackageName = (name: string) =>
-  name.replace(`@backstage/`, `@backstage-community/`);
+const generateNewPackageName = (name: string, scope: string) =>
+  name.replace(`${scope}/`, `@backstage-community/`);
 
 const ensureWorkspaceExists = async (options: {
   workspacePath: string;
@@ -145,12 +147,16 @@ const fixWorkspaceDependencies = async (options: {
 const fixSourceCodeReferences = async (options: {
   packagesToBeMoved: Package[];
   workspacePath: string;
+  scope: string;
 }) => {
   return await replace({
     files: path.join(options.workspacePath, '**', '*'),
     processor: (input: string) =>
       options.packagesToBeMoved.reduce((acc, { packageJson }) => {
-        const newPackageName = generateNewPackageName(packageJson.name);
+        const newPackageName = generateNewPackageName(
+          packageJson.name,
+          options.scope,
+        );
         return acc.replace(new RegExp(packageJson.name, 'g'), newPackageName);
       }, input),
   });
@@ -210,9 +216,13 @@ ${options.message}
   await fs.appendFile(changesetFile, changesetContents);
 };
 
-const deprecatePackage = async (options: { package: Package }) => {
+const deprecatePackage = async (options: {
+  package: Package;
+  scope: string;
+}) => {
   const newPackageName = generateNewPackageName(
     options.package.packageJson.name,
+    options.scope,
   );
 
   // first update the readme
@@ -247,11 +257,20 @@ const packageAndTypeMap = {
 };
 
 export default async (opts: OptionValues) => {
-  const { monorepoPath, workspaceName, force, branch } = opts as {
+  const {
+    monorepoPath,
+    workspaceName,
+    force,
+    branch,
+    scope = '@backstage',
+    monorepoRef, // <-- Added here
+  } = opts as {
     monorepoPath: string;
     workspaceName: string;
     force: boolean;
     branch?: string;
+    scope?: string;
+    monorepoRef?: string; // <-- Added here
   };
 
   try {
@@ -263,21 +282,36 @@ export default async (opts: OptionValues) => {
     process.exit(1);
   }
 
-  const latestBackstageRelease = await findCurrentReleaseVersion({
-    monorepoRoot: monorepoPath,
-  });
+  // --- START OF 04KASH'S REQUESTED FIX ---
+  if (monorepoRef) {
+    console.log(
+      chalk.blueBright`Checking out specified monorepo reference: ${chalk.yellow`${monorepoRef}`}`,
+    );
+    await exec('git', ['checkout', monorepoRef], { cwd: monorepoPath });
+  } else {
+    try {
+      const latestBackstageRelease = await findCurrentReleaseVersion({
+        monorepoRoot: monorepoPath,
+      });
 
-  console.log(
-    chalk.blueBright`Found latest release version in monorepo: ${chalk.yellow`${latestBackstageRelease}`}`,
-  );
+      console.log(
+        chalk.blueBright`Found latest release version in monorepo: ${chalk.yellow`${latestBackstageRelease}`}`,
+      );
 
-  // checkout that the latest release tag
-  if (!process.env.SKIP_FETCH_TAGS) {
-    await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+      // checkout that the latest release tag
+      if (!process.env.SKIP_FETCH_TAGS) {
+        await exec('git', ['fetch', '--tags'], { cwd: monorepoPath });
+      }
+      await exec('git', ['checkout', `v${latestBackstageRelease}`], {
+        cwd: monorepoPath,
+      });
+    } catch (error) {
+      console.log(
+        chalk.yellow`No stable tags found or checkout failed. Proceeding with the current branch. Use --monorepo-ref to specify a target if needed.`,
+      );
+    }
   }
-  await exec('git', ['checkout', `v${latestBackstageRelease}`], {
-    cwd: monorepoPath,
-  });
+  // --- END OF FIX ---
 
   const { communityPluginsRoot, monorepoRoot, workspacePath } = await getPaths({
     monorepoPath,
@@ -288,6 +322,7 @@ export default async (opts: OptionValues) => {
   const packagesToBeMoved = await getMonorepoPackagesForWorkspace({
     monorepoRoot,
     workspaceName,
+    scope,
   });
   if (packagesToBeMoved.length === 0) {
     console.error(chalk.red`No packages found for plugin ${workspaceName}`);
@@ -387,7 +422,7 @@ export default async (opts: OptionValues) => {
       '@testing-library/react': '^15.0.0',
     };
 
-    if (movedPackageJson.backstage.role === 'frontend-plugin') {
+    if (movedPackageJson.backstage?.role === 'frontend-plugin') {
       for (const [key, value] of Object.entries(frontendDevDeps)) {
         movedPackageJson.devDependencies[key] = value;
       }
@@ -455,12 +490,13 @@ export default async (opts: OptionValues) => {
   await fixSourceCodeReferences({
     packagesToBeMoved,
     workspacePath,
+    scope,
   });
 
   // Create changeset for the new packages
   await createChangeset({
     packages: packagesToBeMoved.map(p =>
-      generateNewPackageName(p.packageJson.name),
+      generateNewPackageName(p.packageJson.name, scope),
     ),
     workspacePath,
     message:
@@ -487,7 +523,10 @@ export default async (opts: OptionValues) => {
   });
 
   // reset monorepo
-  await exec('git', ['checkout', 'master'], { cwd: monorepoPath });
+  await exec('git', ['checkout', 'master'], { cwd: monorepoPath }).catch(() =>
+    exec('git', ['checkout', 'main'], { cwd: monorepoPath }),
+  );
+  
   const defaultBranchName = `migrate-${new Date().getTime()}`;
 
   console.log(
@@ -505,7 +544,7 @@ export default async (opts: OptionValues) => {
 
   // deprecate package in monorepo on new branch
   for (const packageToBeMoved of packagesToBeMoved) {
-    await deprecatePackage({ package: packageToBeMoved });
+    await deprecatePackage({ package: packageToBeMoved, scope });
   }
 
   console.log(chalk.yellow`Committing changes to monorepo`);
