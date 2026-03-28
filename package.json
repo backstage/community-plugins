@@ -12,7 +12,8 @@
     "mui-to-bui": "node scripts/mui-to-bui.js",
     "postinstall": "husky",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write ."
+    "prettier:fix": "prettier --write .",
+    "test:scripts": "node --experimental-test-module-mocks --test scripts/**/*.test.js"
   },
   "type": "module",
   "packageManager": "yarn@4.12.0",
