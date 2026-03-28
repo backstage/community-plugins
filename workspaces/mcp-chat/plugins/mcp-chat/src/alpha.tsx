@@ -18,7 +18,6 @@ import {
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
-  NavItemBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { mcpChatApiRef } from './api';
@@ -47,19 +46,9 @@ const mcpChatApi = ApiBlueprint.make({
 const mcpChatPage = PageBlueprint.make({
   params: {
     path: '/mcp-chat',
-    loader: () => import('./components/ChatPage').then(m => <m.ChatPage />),
-    routeRef: rootRouteRef,
-  },
-});
-
-/**
- * MCP Chat Nav Item
- * @public
- */
-const mcpChatNavItem = NavItemBlueprint.make({
-  params: {
     title: 'MCP Chat',
-    icon: BotIconComponent,
+    icon: <BotIconComponent />,
+    loader: () => import('./components/ChatPage').then(m => <m.ChatPage />),
     routeRef: rootRouteRef,
   },
 });
@@ -70,7 +59,7 @@ const mcpChatNavItem = NavItemBlueprint.make({
  */
 const mcpChatPlugin = createFrontendPlugin({
   pluginId: 'mcp-chat',
-  extensions: [mcpChatApi, mcpChatPage, mcpChatNavItem],
+  extensions: [mcpChatApi, mcpChatPage],
   routes: {
     root: rootRouteRef,
   },
