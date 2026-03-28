@@ -57,12 +57,12 @@ export function createMttrStatisticsHandler(
         return;
       }
 
-      const { repositoryKey, entityRef } = req.body;
+      const { repositoryId, entityRef, applicationId } = req.body;
 
       // Validate required fields using common validation function
       if (
         !validateRepositoryParams(
-          { repositoryKey, entityRef },
+          { repositoryId, entityRef, applicationId },
           res,
           logger,
           ROUTER_PATH_MTTR_STATISTICS,
@@ -74,10 +74,11 @@ export function createMttrStatisticsHandler(
       // Fetch MTTR statistics for the repository
       logger.debug(
         `${ROUTER_PATH_MTTR_STATISTICS} - Fetching MTTR statistics for repository`,
-        { repositoryKey },
+        { repositoryId, applicationId },
       );
       const mttrData = await dataService.getMttrStatistics(
-        repositoryKey as string,
+        repositoryId as string,
+        applicationId,
       );
       logger.debug(
         `${ROUTER_PATH_MTTR_STATISTICS} - Successfully fetched MTTR statistics`,
@@ -114,12 +115,12 @@ export function createRiskScoreOverTimeHandler(
         return;
       }
 
-      const { repositoryKey, entityRef } = req.body;
+      const { repositoryId, entityRef, applicationId } = req.body;
 
       // Validate required fields using common validation function
       if (
         !validateRepositoryParams(
-          { repositoryKey, entityRef },
+          { repositoryId, entityRef, applicationId },
           res,
           logger,
           ROUTER_PATH_RISK_SCORE_OVER_TIME,
@@ -131,10 +132,11 @@ export function createRiskScoreOverTimeHandler(
       // Fetch risk score over time data for the repository
       logger.debug(
         `${ROUTER_PATH_RISK_SCORE_OVER_TIME} - Fetching risk score over time data for repository`,
-        { repositoryKey },
+        { repositoryId, applicationId },
       );
       const riskScoreData = await dataService.getRiskScoreOverTime(
-        repositoryKey as string,
+        repositoryId,
+        applicationId,
       );
       logger.debug(
         `${ROUTER_PATH_RISK_SCORE_OVER_TIME} - Successfully fetched risk score over time data`,
@@ -169,12 +171,12 @@ export function createSlaBreachHandler(deps: StatisticsHandlerDependencies) {
         return;
       }
 
-      const { repositoryKey, entityRef } = req.body;
+      const { repositoryId, entityRef, applicationId } = req.body;
 
       // Validate required fields using common validation function
       if (
         !validateRepositoryParams(
-          { repositoryKey, entityRef },
+          { repositoryId, entityRef, applicationId },
           res,
           logger,
           ROUTER_PATH_SLA_BREACH,
@@ -186,10 +188,11 @@ export function createSlaBreachHandler(deps: StatisticsHandlerDependencies) {
       // Fetch SLA breach data for the repository
       logger.debug(
         `${ROUTER_PATH_SLA_BREACH} - Fetching SLA breach data for repository`,
-        { repositoryKey },
+        { repositoryId, applicationId },
       );
       const slaBreachData = await dataService.getSlaBreachStatistics(
-        repositoryKey as string,
+        repositoryId as string,
+        applicationId,
       );
       logger.debug(
         `${ROUTER_PATH_SLA_BREACH} - Successfully fetched SLA breach data`,
@@ -224,12 +227,12 @@ export function createTopRisksHandler(deps: StatisticsHandlerDependencies) {
         return;
       }
 
-      const { repositoryKey, entityRef } = req.body;
+      const { repositoryId, entityRef, applicationId } = req.body;
 
       // Validate required fields using common validation function
       if (
         !validateRepositoryParams(
-          { repositoryKey, entityRef },
+          { repositoryId, entityRef, applicationId },
           res,
           logger,
           ROUTER_PATH_TOP_RISKS,
@@ -242,12 +245,14 @@ export function createTopRisksHandler(deps: StatisticsHandlerDependencies) {
       logger.debug(
         `${ROUTER_PATH_TOP_RISKS} - Fetching top risks statistics for repository`,
         {
-          repositoryKey,
+          repositoryId,
           entityRef,
+          applicationId,
         },
       );
       const topRisksData = await dataService.getTopRisksStatistics(
-        repositoryKey as string,
+        repositoryId as string,
+        applicationId,
       );
       logger.debug(
         `${ROUTER_PATH_TOP_RISKS} - Successfully fetched top risks statistics`,

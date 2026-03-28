@@ -34,6 +34,7 @@ import { CatalogClient } from '@backstage/catalog-client';
 import { ApiiroDataService } from './data.service';
 import { EntityService } from './entity.service';
 import { RepositoryCacheService } from './cache.service';
+import { ApplicationCacheService } from './application-cache.service';
 import {
   createAuthMiddleware,
   createEntityAccessMiddleware,
@@ -50,6 +51,7 @@ import {
   createTopRisksHandler,
   createHealthHandler,
   createFilterOptionsHandler,
+  createApplicationsHandler,
 } from './handlers';
 import {
   ROUTER_PATH_REPOSITORIES,
@@ -60,6 +62,7 @@ import {
   ROUTER_PATH_TOP_RISKS,
   ROUTER_PATH_FILTER_OPTIONS,
   ROUTER_PATH_HEALTH,
+  ROUTER_PATH_APPLICATIONS,
 } from '../constants';
 
 export type RouterOptions = {
@@ -70,6 +73,7 @@ export type RouterOptions = {
   httpAuth: HttpAuthService;
   cache: CacheService;
   repoService: RepositoryCacheService;
+  appService?: ApplicationCacheService;
 };
 
 /**
@@ -78,7 +82,8 @@ export type RouterOptions = {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<ExpressRouter> {
-  const { config, discovery, auth, httpAuth, cache, repoService } = options;
+  const { config, discovery, auth, httpAuth, cache, repoService, appService } =
+    options;
   const logger = options.logger;
 
   const router = Router();
@@ -186,6 +191,17 @@ export async function createRouter(
   );
 
   router.get(ROUTER_PATH_FILTER_OPTIONS, checkForAuth, filterOptionsHandler);
+
+  // Conditionally register applications route if enabled
+  if (appService) {
+    const applicationsHandler = createApplicationsHandler({
+      entityService,
+      cacheService: appService,
+      logger,
+    });
+    router.post(ROUTER_PATH_APPLICATIONS, checkForAuth, applicationsHandler);
+    logger.info('Applications route registered');
+  }
 
   router.get(ROUTER_PATH_HEALTH, healthHandler);
 

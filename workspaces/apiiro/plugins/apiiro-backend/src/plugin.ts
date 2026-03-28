@@ -20,9 +20,12 @@ import {
 import { createRouter } from './service/router';
 import { ApiiroDataService } from './service/data.service';
 import { RepositoryCacheService } from './service/cache.service';
+import { ApplicationCacheService } from './service/application-cache.service';
 import {
   REPOSITORY_CACHE_REFRESH_INTERVAL_MINUTES,
   REPOSITORY_CACHE_REFRESH_TIMEOUT_MINUTES,
+  APPLICATION_CACHE_REFRESH_INTERVAL_MINUTES,
+  APPLICATION_CACHE_REFRESH_TIMEOUT_MINUTES,
 } from './constants';
 
 /**
@@ -31,11 +34,11 @@ import {
  * Registers the HTTP router under `/api/apiiro` and wires required core
  * services. The router implements proxy endpoints to the Apiiro REST API.
  *
- * Includes a scheduled task to refresh the repository cache periodically
- * to improve performance when dealing with large numbers of repositories.
+ * Includes a scheduled task to refresh the repository and application cache periodically
+ * to improve performance when dealing with large numbers of repositories and applications.
+ *
+ * @public
  */
-
-/** @public */
 export const apiiroBackendPlugin = createBackendPlugin({
   pluginId: 'apiiro',
   register(env) {
@@ -94,6 +97,50 @@ export const apiiroBackendPlugin = createBackendPlugin({
           `Repository cache refresh task scheduled (every ${REPOSITORY_CACHE_REFRESH_INTERVAL_MINUTES} minutes)`,
         );
 
+        // Conditionally initialize application cache service based on config
+        const enableApplicationsView =
+          config.getOptionalBoolean('apiiro.enableApplicationsView') ?? false;
+
+        let appService: ApplicationCacheService | undefined;
+
+        if (enableApplicationsView) {
+          appService = new ApplicationCacheService(dataService, cache, logger);
+
+          // Schedule periodic application cache refresh
+          await scheduler.scheduleTask({
+            id: 'apiiro-refresh-applications-cache',
+            frequency: {
+              minutes: APPLICATION_CACHE_REFRESH_INTERVAL_MINUTES,
+            },
+            timeout: {
+              minutes: APPLICATION_CACHE_REFRESH_TIMEOUT_MINUTES,
+            },
+            fn: async () => {
+              logger.info('Running scheduled application cache refresh...');
+              try {
+                await appService!.refreshAllApplicationsCache();
+                logger.info(
+                  'Scheduled application cache refresh completed successfully',
+                );
+              } catch (error) {
+                logger.error('Scheduled application cache refresh failed', {
+                  error:
+                    error instanceof Error ? error.message : 'Unknown error',
+                });
+                // Don't throw - let the scheduler continue running
+              }
+            },
+          });
+
+          logger.info(
+            `Application cache refresh task scheduled (every ${APPLICATION_CACHE_REFRESH_INTERVAL_MINUTES} minutes)`,
+          );
+        } else {
+          logger.info(
+            'Applications view is disabled. Set apiiro.enableApplicationsView to true to enable.',
+          );
+        }
+
         httpRouter.use(
           await createRouter({
             auth,
@@ -103,6 +150,7 @@ export const apiiroBackendPlugin = createBackendPlugin({
             config,
             cache,
             repoService,
+            appService,
           }),
         );
       },

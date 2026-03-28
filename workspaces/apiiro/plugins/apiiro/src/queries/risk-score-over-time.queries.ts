@@ -25,18 +25,27 @@ const getRiskScoreOverTimeData = async ({
   fetchApi,
   signal,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
-}: Query & { repositoryKey?: string; entityRef?: string }) => {
+  applicationId,
+}: Query & {
+  repositoryId?: string;
+  entityRef?: string;
+  applicationId?: string;
+}) => {
   const url = await connectApi.discoveryApi.getBaseUrl('apiiro');
   const body: any = {};
 
-  if (repositoryKey) {
-    body.repositoryKey = repositoryKey;
+  if (repositoryId) {
+    body.repositoryId = repositoryId;
   }
 
   if (entityRef) {
     body.entityRef = entityRef;
+  }
+
+  if (applicationId) {
+    body.applicationId = applicationId;
   }
 
   return await post<RiskScoreOverTimeSuccessResponseData>(
@@ -52,9 +61,14 @@ const getRiskScoreOverTimeData = async ({
 export function useRiskScoreOverTimeData({
   fetchApi,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
-}: Omit<Query, 'signal'> & { repositoryKey?: string; entityRef?: string }) {
+  applicationId,
+}: Omit<Query, 'signal'> & {
+  repositoryId?: string;
+  entityRef?: string;
+  applicationId?: string;
+}) {
   const {
     data: riskScoreOverTimeData,
     error: riskScoreOverTimeDataError,
@@ -62,20 +76,22 @@ export function useRiskScoreOverTimeData({
   } = useQuery({
     queryKey: [
       RISK_SCORE_OVER_TIME_QUERY_KEY.GET_RISK_SCORE_OVER_TIME,
-      repositoryKey,
+      repositoryId,
       entityRef,
+      applicationId,
     ],
     queryFn: ({ signal }) =>
-      repositoryKey || entityRef
+      repositoryId || applicationId
         ? getRiskScoreOverTimeData({
             fetchApi,
             signal,
             connectApi,
-            repositoryKey,
+            repositoryId,
             entityRef,
+            applicationId,
           })
         : Promise.resolve([]),
-    enabled: !!(repositoryKey || entityRef),
+    enabled: !!repositoryId || !!applicationId,
   });
 
   return {

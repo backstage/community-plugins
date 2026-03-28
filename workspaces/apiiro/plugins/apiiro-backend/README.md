@@ -5,7 +5,11 @@ The Apiiro backend plugin provides the server-side functionality for the Apiiro 
 ## Features
 
 - **API Integration**: Communicates with Apiiro platform to retrieve security metrics and risk data
+- **Application View Support**: Provides API endpoints for application-level insights and metrics
 - **Metrics View Management**: Supports conditional access control for displaying the metrics view for specific entities
+
+> [!NOTE]
+> The Application View features require the Backstage connector to be configured in Apiiro to function properly.
 
 ## Prerequisites
 
@@ -28,19 +32,31 @@ backend.add(import('@backstage-community/plugin-apiiro-backend'));
 
 ### Apiiro annotations
 
-To be able to use the Apiiro plugin you need to add the following annotation to any entities you want to use it with:
+To be able to use the Apiiro plugin you need to add the following annotations to any entities you want to use it with:
+
+**For Component entities (repositories):**
 
 ```yaml
 apiiro.com/repo-id: <apiiro-repo-key>
-apiiro.com/allow-metrics-view: "true" or "false" (controls whether the Metrics view appears in the Apiiro tab and Apiiro widget)
+apiiro.com/allow-metrics-view: "true" or "false" (controls whether the Metrics view appears in the Component Apiiro tab and Apiiro widget)
 ```
 
-Let's break this down a little: `<apiiro-repo-key>` will be the key of your repository in Apiiro.
+**For System entities (applications):**
+
+```yaml
+apiiro.com/application-id: <apiiro-application-key>
+apiiro.com/allow-metrics-view: "true" or "false" (controls whether the Metrics view and repository list appears in the System Apiiro tab and Apiiro widget)
+```
+
+Let's break this down:
+
+- `<apiiro-repo-key>` is the key of your repository in Apiiro
+- `<apiiro-application-key>` is the key of your application in Apiiro
 
 Here's what that will look like in action:
 
 ```yaml
-# Example catalog-info.yaml entity definition file
+# Example catalog-info.yaml for Component entity
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -48,15 +64,24 @@ metadata:
   annotations:
     apiiro.com/repo-id: my-repo-key
     apiiro.com/allow-metrics-view: 'true'
+---
+# Example catalog-info.yaml for System entity
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: my-application
+  annotations:
+    apiiro.com/application-id: my-application-key
+    apiiro.com/allow-metrics-view: 'true'
 ```
 
 ## Automatically Adding Apiiro Annotations (Optional)
 
 ### Notes
 
-- Annotation values are derived from the value of `backstage.io/source-location`.
-- If Apiiro annotations already exist on an entity, they take precedence and will not be overwritten.
-- If `backstage.io/source-location` is not present, Apiiro annotations will not be added.
+- **Component annotation:** Values are derived from the `backstage.io/source-location` field. If this field is not present, Apiiro annotations will not be added.
+- **System annotation:** Values are derived from the entity reference and entity UID. The Backstage connector must be configured in Apiiro for this to work properly.
+- **Existing annotations:** If Apiiro annotations already exist on an entity, they take precedence and will not be overwritten.
 
 ### Step 1: Install the entity processor module
 
@@ -86,22 +111,28 @@ Optionally, define a list of entities that should have restricted access to Apii
 apiiro:
   accessToken: ${APIIRO_TOKEN}
   defaultAllowMetricsView: true
+  enableApplicationsView: false
   # Optional configuration to allow or disallow metric views for specific entities
   # Only applicable for adding the annotation automatically using the catalog entity processor
   annotationControl:
     entityNames:
       - component:<namespace>/<entity-name>
+      - system:<namespace>/<entity-name>
     exclude: true
 ```
 
 **Configuration options:**
 
-- **entityNames**:
-  - A list of entity references to control access
-  - Supports entity references in the format: `component:<namespace>/<entity-name>`
-- **exclude**:
-  - `true` (blocklist mode): Allow all entities except those listed in `entityNames`.
-  - `false` (allowlist mode): Deny all entities except those listed in `entityNames`.
+- `defaultAllowMetricsView`: Default value for allowing metrics view (default: `true`).
+- `enableApplicationsView`: Enables application annotation processing for System entities (default: `false`). **Note:** Requires Backstage connector configured in Apiiro.
+- `annotationControl`:
+  - `entityNames`: List of entity references to control the metrics view access.
+  - `exclude: true` → **blocklist mode** (allow all entities except those listed).
+  - `exclude: false` → **allowlist mode** (deny all entities except those listed).
+
+The `apiiro.com/allow-metrics-view` annotation and the above configuration
+together determine whether a given entity can display metrics on Apiiro Tab and Apiiro Widget.
+If you configure this list it will override the `defaultAllowMetricsView` configuration.
 
 After the catalog processing interval elapses, the Apiiro annotations will be added or updated on the corresponding Backstage entities.
 
@@ -113,6 +144,7 @@ You can configure default filters for the Apiiro Risk Table. When configured, on
 apiiro:
   accessToken: ${APIIRO_TOKEN}
   defaultAllowMetricsView: true
+  enableApplicationsView: false
   # Optional: Configure default risk filters for the Apiiro Risk Table
   defaultRiskFilters:
     RiskLevel:
