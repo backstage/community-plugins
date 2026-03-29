@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { GoogleGenAI } from '@google/genai';
 import { GeminiProvider } from './GeminiProvider';
 import type {
   ChatMessage,
@@ -21,222 +22,755 @@ import type {
   ProviderConfig,
 } from '@backstage-community/plugin-mcp-chat-common';
 
-// Mock the @google/generative-ai SDK module
-const mockGenerateContent = jest.fn();
-jest.mock('@google/generative-ai', () => ({
-  GoogleGenerativeAI: jest.fn().mockImplementation(() => ({
-    getGenerativeModel: jest.fn().mockReturnValue({
-      generateContent: mockGenerateContent,
-      safetySettings: [],
-    }),
-  })),
-  HarmCategory: {
-    HARM_CATEGORY_HARASSMENT: 'HARM_CATEGORY_HARASSMENT',
-    HARM_CATEGORY_HATE_SPEECH: 'HARM_CATEGORY_HATE_SPEECH',
-    HARM_CATEGORY_SEXUALLY_EXPLICIT: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-    HARM_CATEGORY_DANGEROUS_CONTENT: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-  },
-  HarmBlockThreshold: {
-    BLOCK_MEDIUM_AND_ABOVE: 'BLOCK_MEDIUM_AND_ABOVE',
-  },
-}));
+jest.mock('@google/genai');
 
-function createProvider(
-  configOverrides?: Partial<ProviderConfig>,
-): GeminiProvider {
-  const config: ProviderConfig = {
-    type: 'gemini',
-    baseUrl: '',
-    model: 'gemini-2.0-flash',
-    apiKey: 'test-api-key',
-    ...configOverrides,
-  };
-  return new GeminiProvider(config);
-}
-
-const sampleTool: Tool = {
-  type: 'function',
-  function: {
-    name: 'get_weather',
-    description: 'Get the weather',
-    parameters: { type: 'object', properties: { city: { type: 'string' } } },
-  },
-};
+const MockGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
 
 describe('GeminiProvider', () => {
+  let provider: GeminiProvider;
+  let mockGenerateContent: jest.Mock;
+
+  const config: ProviderConfig = {
+    type: 'gemini',
+    apiKey: 'test-api-key',
+    baseUrl: 'https://generativelanguage.googleapis.com',
+    model: 'gemini-pro',
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockGenerateContent = jest.fn();
+    MockGoogleGenAI.mockImplementation(
+      () =>
+        ({
+          models: {
+            generateContent: mockGenerateContent,
+          },
+        } as any),
+    );
+
+    provider = new GeminiProvider(config);
   });
 
-  it('sends a basic user message and returns parsed response', async () => {
-    const provider = createProvider();
-    mockGenerateContent.mockResolvedValueOnce({
-      response: {
+  describe('constructor', () => {
+    it('should initialize with valid config', () => {
+      expect(MockGoogleGenAI).toHaveBeenCalledWith({ apiKey: 'test-api-key' });
+    });
+
+    it('should throw error when API key is missing', () => {
+      const invalidConfig = { ...config, apiKey: undefined };
+
+      expect(() => new GeminiProvider(invalidConfig)).toThrow(
+        'Gemini API key is required',
+      );
+    });
+  });
+
+  describe('sendMessage', () => {
+    it('should send simple message without tools', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Hello, how are you?' },
+      ];
+
+      mockGenerateContent.mockResolvedValue({
         candidates: [
           {
             content: {
-              parts: [{ text: 'Hello there!' }],
+              parts: [{ text: 'I am doing well, thank you!' }],
             },
           },
         ],
         usageMetadata: {
           promptTokenCount: 10,
-          candidatesTokenCount: 5,
-          totalTokenCount: 15,
+          candidatesTokenCount: 15,
+          totalTokenCount: 25,
         },
-      },
-    });
+      });
 
-    const messages: ChatMessage[] = [{ role: 'user', content: 'Hi' }];
-    const result = await provider.sendMessage(messages);
+      const result = await provider.sendMessage(messages);
 
-    expect(result.choices[0].message.role).toBe('assistant');
-    expect(result.choices[0].message.content).toBe('Hello there!');
-    expect(result.usage).toEqual({
-      prompt_tokens: 10,
-      completion_tokens: 5,
-      total_tokens: 15,
-    });
-  });
-
-  it('extracts system message as systemInstruction and excludes it from contents', async () => {
-    const provider = createProvider();
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
-    const mockGetGenerativeModel =
-      GoogleGenerativeAI.mock.results[0].value.getGenerativeModel;
-
-    mockGenerateContent.mockResolvedValueOnce({
-      response: {
-        candidates: [
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
+        contents: [
           {
-            content: {
-              parts: [{ text: 'OK' }],
+            role: 'user',
+            parts: [{ text: 'Hello, how are you?' }],
+          },
+        ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+        }),
+      });
+
+      expect(result).toEqual({
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'I am doing well, thank you!',
+              tool_calls: undefined,
             },
           },
         ],
-      },
+        usage: {
+          prompt_tokens: 10,
+          completion_tokens: 15,
+          total_tokens: 25,
+        },
+      });
     });
 
-    const messages: ChatMessage[] = [
-      { role: 'system', content: 'You are helpful.' },
-      { role: 'user', content: 'Hi' },
-    ];
-    await provider.sendMessage(messages);
+    it('should handle system message correctly', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: 'Hello!' },
+      ];
 
-    // getGenerativeModel is called again with systemInstruction when a system message is present
-    const lastModelCall =
-      mockGetGenerativeModel.mock.calls[
-        mockGetGenerativeModel.mock.calls.length - 1
-      ][0];
-    expect(lastModelCall.systemInstruction).toBe('You are helpful.');
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Hello! How can I help you?' }],
+            },
+          },
+        ],
+      });
 
-    // generateContent is called with contents that exclude the system message
-    const generateCall = mockGenerateContent.mock.calls[0][0];
-    const contents = generateCall.contents;
-    expect(contents.every((c: any) => c.role !== 'system')).toBe(true);
-    expect(contents).toHaveLength(1);
-    expect(contents[0]).toEqual({
-      role: 'user',
-      parts: [{ text: 'Hi' }],
+      await provider.sendMessage(messages);
+
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
+        contents: [{ role: 'user', parts: [{ text: 'Hello!' }] }],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+          systemInstruction: 'You are a helpful assistant.',
+        }),
+      });
     });
-  });
 
-  it('parses functionCall parts into ToolCall objects', async () => {
-    const provider = createProvider();
-    mockGenerateContent.mockResolvedValueOnce({
-      response: {
+    it('should handle tools correctly', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'What is the weather like?' },
+      ];
+
+      const tools: Tool[] = [
+        {
+          type: 'function',
+          function: {
+            name: 'get_weather',
+            description: 'Get current weather information',
+            parameters: {
+              type: 'object',
+              properties: {
+                location: {
+                  type: 'string',
+                  description: 'The city and state',
+                },
+              },
+              required: ['location'],
+            },
+          },
+        },
+      ];
+
+      mockGenerateContent.mockResolvedValue({
         candidates: [
           {
             content: {
               parts: [
+                { text: 'I can help you get weather information.' },
                 {
                   functionCall: {
                     name: 'get_weather',
-                    args: { city: 'Seattle' },
+                    args: { location: 'New York' },
                   },
                 },
               ],
             },
           },
         ],
-      },
+      });
+
+      const result = await provider.sendMessage(messages, tools);
+
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: 'What is the weather like?' }],
+          },
+        ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+          tools: [
+            {
+              functionDeclarations: [
+                {
+                  name: 'get_weather',
+                  description: 'Get current weather information',
+                  parameters: {
+                    type: 'object',
+                    properties: {
+                      location: {
+                        type: 'string',
+                        description: 'The city and state',
+                      },
+                    },
+                    required: ['location'],
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+      });
+
+      expect(result.choices[0].message.tool_calls).toHaveLength(1);
+      expect(result.choices[0].message.tool_calls![0]).toMatchObject({
+        type: 'function',
+        function: {
+          name: 'get_weather',
+          arguments: '{"location":"New York"}',
+        },
+      });
     });
 
-    const result = await provider.sendMessage(
-      [{ role: 'user', content: 'Weather in Seattle?' }],
-      [sampleTool],
-    );
+    it('should handle tool response messages', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'What is the weather?' },
+        {
+          role: 'assistant',
+          content: 'Let me check the weather for you.',
+          tool_calls: [
+            {
+              id: 'call_123',
+              type: 'function',
+              function: {
+                name: 'get_weather',
+                arguments: '{"location":"New York"}',
+              },
+            },
+          ],
+        },
+        {
+          role: 'tool',
+          content: '{"temperature":"72F","condition":"sunny"}',
+          tool_call_id: 'call_123',
+        },
+      ];
 
-    expect(result.choices[0].message.tool_calls).toHaveLength(1);
-    const toolCall = result.choices[0].message.tool_calls![0];
-    expect(toolCall.id).toBeDefined();
-    expect(toolCall.type).toBe('function');
-    expect(toolCall.function.name).toBe('get_weather');
-    expect(toolCall.function.arguments).toBe('{"city":"Seattle"}');
-  });
-
-  it('converts tool messages to functionResponse format with name from tool_calls history', async () => {
-    const provider = createProvider();
-    mockGenerateContent.mockResolvedValueOnce({
-      response: {
+      mockGenerateContent.mockResolvedValue({
         candidates: [
           {
             content: {
-              parts: [{ text: 'It is sunny in NYC.' }],
+              parts: [{ text: 'The weather in New York is 72F and sunny.' }],
             },
           },
         ],
-      },
-    });
+      });
 
-    const messages: ChatMessage[] = [
-      { role: 'user', content: 'Weather?' },
-      {
-        role: 'assistant',
-        content: null,
-        tool_calls: [
+      await provider.sendMessage(messages);
+
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
+        contents: [
+          { role: 'user', parts: [{ text: 'What is the weather?' }] },
           {
-            id: 'call_1',
-            type: 'function',
-            function: {
-              name: 'get_weather',
-              arguments: '{"city":"NYC"}',
+            role: 'model',
+            parts: [
+              { text: 'Let me check the weather for you.' },
+              {
+                functionCall: {
+                  name: 'get_weather',
+                  args: { location: 'New York' },
+                },
+              },
+            ],
+          },
+          {
+            role: 'function',
+            parts: [
+              {
+                functionResponse: {
+                  name: 'get_weather',
+                  response: { temperature: '72F', condition: 'sunny' },
+                },
+              },
+            ],
+          },
+        ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+        }),
+      });
+    });
+
+    it('should handle tool response with invalid JSON', async () => {
+      const messages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: 'Let me check that for you.',
+          tool_calls: [
+            {
+              id: 'call_123',
+              type: 'function',
+              function: {
+                name: 'test_function',
+                arguments: '{}',
+              },
+            },
+          ],
+        },
+        {
+          role: 'tool',
+          content: 'Invalid JSON response',
+          tool_call_id: 'call_123',
+        },
+      ];
+
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'I understand.' }],
             },
           },
         ],
-      },
-      { role: 'tool', content: '{"temp":"75°F"}', tool_call_id: 'call_1' },
-    ];
-    const result = await provider.sendMessage(messages);
+      });
 
-    const generateCall = mockGenerateContent.mock.calls[0][0];
-    const contents = generateCall.contents;
+      await provider.sendMessage(messages);
 
-    // Tool message converted to function role with functionResponse
-    const functionContent = contents.find((c: any) => c.role === 'function');
-    expect(functionContent).toBeDefined();
-    expect(functionContent.parts[0].functionResponse.name).toBe('get_weather');
-    expect(functionContent.parts[0].functionResponse.response).toEqual({
-      temp: '75°F',
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
+        contents: [
+          {
+            role: 'model',
+            parts: [
+              { text: 'Let me check that for you.' },
+              {
+                functionCall: {
+                  name: 'test_function',
+                  args: {},
+                },
+              },
+            ],
+          },
+          {
+            role: 'function',
+            parts: [
+              {
+                functionResponse: {
+                  name: 'test_function',
+                  response: { result: 'Invalid JSON response' },
+                },
+              },
+            ],
+          },
+        ],
+        config: expect.objectContaining({
+          temperature: 0.7,
+          maxOutputTokens: 8192,
+          safetySettings: expect.any(Array),
+        }),
+      });
     });
 
-    // Assistant tool_calls converted to model role with functionCall
-    const modelContent = contents.find((c: any) => c.role === 'model');
-    expect(modelContent).toBeDefined();
-    expect(modelContent.parts[0].functionCall.name).toBe('get_weather');
+    it('should handle API errors', async () => {
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
 
-    // Follow-up response is parsed correctly
-    expect(result.choices[0].message.role).toBe('assistant');
-    expect(result.choices[0].message.content).toBe('It is sunny in NYC.');
+      mockGenerateContent.mockRejectedValue(new Error('API Error'));
+
+      await expect(provider.sendMessage(messages)).rejects.toThrow('API Error');
+    });
+
+    it('should not leak tools or systemInstruction across calls', async () => {
+      const tools: Tool[] = [
+        {
+          type: 'function',
+          function: {
+            name: 'get_weather',
+            description: 'Get weather',
+            parameters: { type: 'object', properties: {} },
+          },
+        },
+      ];
+
+      mockGenerateContent.mockResolvedValue({
+        candidates: [{ content: { parts: [{ text: 'response' }] } }],
+      });
+
+      await provider.sendMessage(
+        [
+          { role: 'system', content: 'Be helpful' },
+          { role: 'user', content: 'First call' },
+        ],
+        tools,
+      );
+
+      const firstCallConfig = mockGenerateContent.mock.calls[0][0].config;
+      expect(firstCallConfig.tools).toBeDefined();
+      expect(firstCallConfig.systemInstruction).toBe('Be helpful');
+
+      await provider.sendMessage([
+        { role: 'user', content: 'Second call without tools or system' },
+      ]);
+
+      const secondCallConfig = mockGenerateContent.mock.calls[1][0].config;
+      expect(secondCallConfig.tools).toBeUndefined();
+      expect(secondCallConfig.systemInstruction).toBeUndefined();
+    });
+
+    it('should handle empty response', async () => {
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+
+      mockGenerateContent.mockResolvedValue({
+        candidates: [],
+      });
+
+      const result = await provider.sendMessage(messages);
+
+      expect(result).toEqual({
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: '',
+              tool_calls: undefined,
+            },
+          },
+        ],
+        usage: undefined,
+      });
+    });
   });
 
-  it('returns error on failed testConnection', async () => {
-    const provider = createProvider();
-    mockGenerateContent.mockRejectedValueOnce(new Error('API key invalid'));
+  describe('testConnection', () => {
+    it('should return connected when API is working', async () => {
+      mockGenerateContent.mockResolvedValue({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Hello' }],
+            },
+          },
+        ],
+      });
 
-    const result = await provider.testConnection();
+      const result = await provider.testConnection();
 
-    expect(result.connected).toBe(false);
-    expect(result.error).toBe('API key invalid');
+      expect(result).toEqual({
+        connected: true,
+        models: ['gemini-pro'],
+      });
+
+      expect(mockGenerateContent).toHaveBeenCalledWith({
+        model: 'gemini-pro',
+        contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
+        config: expect.objectContaining({
+          maxOutputTokens: 1,
+          temperature: 0.7,
+          safetySettings: expect.any(Array),
+        }),
+      });
+    });
+
+    it('should return not connected when API throws error', async () => {
+      mockGenerateContent.mockRejectedValue(new Error('API connection failed'));
+
+      const result = await provider.testConnection();
+
+      expect(result).toEqual({
+        connected: false,
+        error: 'API connection failed',
+      });
+    });
+
+    it('should handle non-Error exceptions', async () => {
+      mockGenerateContent.mockRejectedValue('String error');
+
+      const result = await provider.testConnection();
+
+      expect(result).toEqual({
+        connected: false,
+        error: 'Failed to connect to Gemini API',
+      });
+    });
+
+    it('should return not connected when no response', async () => {
+      mockGenerateContent.mockResolvedValue(null as any);
+
+      const result = await provider.testConnection();
+
+      expect(result).toEqual({
+        connected: false,
+        error: 'No response received from Gemini API',
+      });
+    });
+  });
+
+  describe('cleanJsonSchemaForGemini', () => {
+    it('should remove unsupported schema properties', () => {
+      const schema = {
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        type: 'object',
+        additionalProperties: false,
+        $id: 'test-schema',
+        $ref: '#/definitions/Test',
+        definitions: { Test: {} },
+        $defs: { Test: {} },
+        properties: {
+          name: {
+            type: 'string',
+            $schema: 'nested',
+            additionalProperties: true,
+          },
+        },
+        items: {
+          type: 'string',
+          additionalProperties: false,
+        },
+        anyOf: [
+          { type: 'string', additionalProperties: true },
+          { type: 'number' },
+        ],
+        oneOf: [{ type: 'string', $schema: 'test' }],
+        allOf: [{ type: 'object', definitions: {} }],
+      };
+
+      // Access the private method through type assertion
+      const cleanedSchema = (provider as any).cleanJsonSchemaForGemini(schema);
+
+      expect(cleanedSchema).toEqual({
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+          },
+        },
+        items: {
+          type: 'string',
+        },
+        anyOf: [{ type: 'string' }, { type: 'number' }],
+        oneOf: [{ type: 'string' }],
+        allOf: [{ type: 'object' }],
+      });
+    });
+
+    it('should handle non-object schemas', () => {
+      expect((provider as any).cleanJsonSchemaForGemini(null)).toBeNull();
+      expect((provider as any).cleanJsonSchemaForGemini('string')).toBe(
+        'string',
+      );
+      expect((provider as any).cleanJsonSchemaForGemini(123)).toBe(123);
+    });
+
+    it('should handle empty schema', () => {
+      const result = (provider as any).cleanJsonSchemaForGemini({});
+      expect(result).toEqual({});
+    });
+  });
+
+  describe('convertToGeminiFormat', () => {
+    it('should convert basic messages correctly', () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Hello' },
+        { role: 'assistant', content: 'Hi there!' },
+      ];
+
+      const result = (provider as any).convertToGeminiFormat(messages);
+
+      expect(result).toEqual([
+        { role: 'user', parts: [{ text: 'Hello' }] },
+        { role: 'model', parts: [{ text: 'Hi there!' }] },
+      ]);
+    });
+
+    it('should handle messages with null content', () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: null },
+        { role: 'assistant', content: null },
+      ];
+
+      const result = (provider as any).convertToGeminiFormat(messages);
+
+      expect(result).toEqual([
+        { role: 'user', parts: [{ text: '' }] },
+        { role: 'model', parts: [{ text: '' }] },
+      ]);
+    });
+
+    it('should skip system messages in conversion', () => {
+      const messages: ChatMessage[] = [
+        { role: 'system', content: 'You are helpful' },
+        { role: 'user', content: 'Hello' },
+      ];
+
+      const result = (provider as any).convertToGeminiFormat(messages);
+
+      expect(result).toEqual([{ role: 'user', parts: [{ text: 'Hello' }] }]);
+    });
+  });
+
+  describe('convertToGeminiTools', () => {
+    it('should convert tools to Gemini format', () => {
+      const tools: Tool[] = [
+        {
+          type: 'function',
+          function: {
+            name: 'get_weather',
+            description: 'Get weather information',
+            parameters: {
+              type: 'object',
+              properties: {
+                location: { type: 'string' },
+              },
+              required: ['location'],
+              additionalProperties: false,
+            },
+          },
+        },
+      ];
+
+      const result = (provider as any).convertToGeminiTools(tools);
+
+      expect(result).toEqual([
+        {
+          functionDeclarations: [
+            {
+              name: 'get_weather',
+              description: 'Get weather information',
+              parameters: {
+                type: 'object',
+                properties: {
+                  location: { type: 'string' },
+                },
+                required: ['location'],
+              },
+            },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe('parseResponse', () => {
+    it('should parse response with only text', () => {
+      const mockResult = {
+        candidates: [
+          {
+            content: {
+              parts: [{ text: 'Hello world' }],
+            },
+          },
+        ],
+      } as any;
+
+      const result = (provider as any).parseResponse(mockResult);
+
+      expect(result).toEqual({
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: 'Hello world',
+              tool_calls: undefined,
+            },
+          },
+        ],
+        usage: undefined,
+      });
+    });
+
+    it('should parse response with function calls', () => {
+      const mockResult = {
+        candidates: [
+          {
+            content: {
+              parts: [
+                { text: 'Let me check that for you.' },
+                {
+                  functionCall: {
+                    name: 'get_weather',
+                    args: { location: 'New York' },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      } as any;
+
+      const result = (provider as any).parseResponse(mockResult);
+
+      expect(result.choices[0].message.content).toBe(
+        'Let me check that for you.',
+      );
+      expect(result.choices[0].message.tool_calls).toHaveLength(1);
+      expect(result.choices[0].message.tool_calls![0]).toMatchObject({
+        type: 'function',
+        function: {
+          name: 'get_weather',
+          arguments: '{"location":"New York"}',
+        },
+      });
+    });
+
+    it('should generate unique IDs for tool calls', () => {
+      const mockResult = {
+        candidates: [
+          {
+            content: {
+              parts: [
+                {
+                  functionCall: {
+                    name: 'function1',
+                    args: {},
+                  },
+                },
+                {
+                  functionCall: {
+                    name: 'function2',
+                    args: {},
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      } as any;
+
+      const result = (provider as any).parseResponse(mockResult);
+
+      expect(result.choices[0].message.tool_calls).toHaveLength(2);
+      expect(result.choices[0].message.tool_calls![0].id).toBeDefined();
+      expect(result.choices[0].message.tool_calls![1].id).toBeDefined();
+      expect(result.choices[0].message.tool_calls![0].id).not.toBe(
+        result.choices[0].message.tool_calls![1].id,
+      );
+    });
+  });
+
+  describe('getHeaders', () => {
+    it('should return empty headers', () => {
+      const headers = (provider as any).getHeaders();
+      expect(headers).toEqual({});
+    });
+  });
+
+  describe('formatRequest', () => {
+    it('should return empty object', () => {
+      const request = (provider as any).formatRequest([], []);
+      expect(request).toEqual({});
+    });
   });
 });

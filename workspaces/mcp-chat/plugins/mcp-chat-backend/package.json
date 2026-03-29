@@ -35,12 +35,11 @@
     "@backstage/config": "^1.3.0",
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-catalog-node": "^2.1.0",
-    "@google/genai": "^1.41.0",
     "@modelcontextprotocol/sdk": "^1.25.2",
     "express": "^4.22.0",
     "express-promise-router": "^4.1.0",
     "knex": "^3.1.0",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   },
   "devDependencies": {
     "@backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock": "workspace:^",
