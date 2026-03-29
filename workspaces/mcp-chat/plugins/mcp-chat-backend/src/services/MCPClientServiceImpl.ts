@@ -21,14 +21,8 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import * as path from 'path';
-import {
-  ProviderFactory,
-  getProviderConfig as getConfig,
-  getProviderInfo,
-} from '../providers/provider-factory';
 import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
 import { LLMProvider } from '../providers/base-provider';
-import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
 import { MCPClientService } from './MCPClientService';
 import {
   ChatMessage,
@@ -41,7 +35,7 @@ import {
   MCPServerType,
   MCPServerFullConfig,
   ResponsesApiMcpCall,
-} from '../types';
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Options for creating an MCPClientServiceImpl instance.
@@ -51,6 +45,7 @@ import {
 export type Options = {
   logger: LoggerService;
   config: RootConfigService;
+  provider: LLMProvider;
 };
 
 /**
@@ -73,25 +68,11 @@ export class MCPClientServiceImpl implements MCPClientService {
   constructor(options: Options) {
     this.logger = options.logger;
     this.config = options.config;
-    this.llmProvider = this.initializeLLMProvider();
+    this.llmProvider = options.provider;
     this.mcpServers = this.initializeMCPServers();
     this.systemPrompt =
       this.config.getOptionalString('mcpChat.systemPrompt') ||
       "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.";
-  }
-
-  private initializeLLMProvider(): LLMProvider {
-    try {
-      const providerConfig = getConfig(this.config);
-      const llmProvider = ProviderFactory.createProvider(providerConfig);
-      this.logger.info(
-        `Using LLM Provider: ${providerConfig.type}, Model: ${providerConfig.model}`,
-      );
-      return llmProvider;
-    } catch (error) {
-      this.logger.error('Failed to initialize LLM provider:', error);
-      throw error;
-    }
   }
 
   async initializeMCPServers(): Promise<MCPServer[]> {
@@ -117,9 +98,8 @@ export class MCPClientServiceImpl implements MCPClientService {
     // Store server configs for Responses API provider
     this.serverConfigs = serverConfigs;
 
-    // Check if using Responses API provider - initialize local MCP for tool discovery
-    const providerConfig = getConfig(this.config);
-    if (providerConfig.type === 'openai-responses') {
+    // Check if using native MCP provider - initialize local MCP for tool discovery
+    if (this.llmProvider.supportsNativeMcp()) {
       this.logger.info(
         'Using OpenAI Responses API - initializing local MCP for tool discovery',
       );
@@ -421,9 +401,8 @@ export class MCPClientServiceImpl implements MCPClientService {
       });
     }
 
-    // Check if using Responses API provider
-    const providerConfig = getConfig(this.config);
-    if (providerConfig.type === 'openai-responses') {
+    // Check if using native MCP provider
+    if (this.llmProvider.supportsNativeMcp()) {
       return this.processQueryWithResponsesApi(messages, enabledTools);
     }
 
@@ -537,9 +516,7 @@ export class MCPClientServiceImpl implements MCPClientService {
         : this.serverConfigs;
 
     // Set the filtered configs on the provider
-    if (this.llmProvider instanceof OpenAIResponsesProvider) {
-      this.llmProvider.setMcpServerConfigs(enabledServerConfigs);
-    }
+    this.llmProvider.setMcpServerConfigs(enabledServerConfigs);
 
     // Send message - the provider handles MCP tool configuration internally
     const response = await this.llmProvider.sendMessage(messages);
@@ -550,22 +527,20 @@ export class MCPClientServiceImpl implements MCPClientService {
     const toolResponses: any[] = [];
 
     // Get the raw output from the provider to extract tool execution details
-    if (this.llmProvider instanceof OpenAIResponsesProvider) {
-      const output = this.llmProvider.getLastResponseOutput();
-      if (output) {
-        for (const event of output) {
-          if (event.type === 'mcp_call') {
-            const mcpCall = event as ResponsesApiMcpCall;
-            // Build tool response in the format expected by the UI
-            toolResponses.push({
-              id: mcpCall.id,
-              name: mcpCall.name,
-              arguments: JSON.parse(mcpCall.arguments || '{}'),
-              result: mcpCall.error || mcpCall.output,
-              serverId: mcpCall.server_label,
-              error: mcpCall.error,
-            });
-          }
+    const output = this.llmProvider.getLastResponseOutput();
+    if (output) {
+      for (const event of output) {
+        if (event.type === 'mcp_call') {
+          const mcpCall = event as ResponsesApiMcpCall;
+          // Build tool response in the format expected by the UI
+          toolResponses.push({
+            id: mcpCall.id,
+            name: mcpCall.name,
+            arguments: JSON.parse(mcpCall.arguments || '{}'),
+            result: mcpCall.error || mcpCall.output,
+            serverId: mcpCall.server_label,
+            error: mcpCall.error,
+          });
         }
       }
     }
@@ -587,15 +562,14 @@ export class MCPClientServiceImpl implements MCPClientService {
 
   async getProviderStatus(): Promise<ProviderStatusData> {
     try {
-      const info = getProviderInfo(this.config);
       const status = await this.llmProvider.testConnection();
 
-      // Structure for future multi-provider support
+      // Derive provider info from the injected provider instance
       const providers = [
         {
-          id: info.provider,
-          model: info.model,
-          baseUrl: info.baseURL,
+          id: this.llmProvider.getType(),
+          model: this.llmProvider.getModel(),
+          baseUrl: this.llmProvider.getBaseUrl(),
           connection: {
             connected: status.connected,
             models: status.models || [],

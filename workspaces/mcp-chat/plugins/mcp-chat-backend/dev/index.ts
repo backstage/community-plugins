@@ -41,5 +41,10 @@ backend.add(
 );
 
 backend.add(import('../src'));
-
+backend.add(
+  import('@backstage-community/plugin-mcp-chat-backend-module-openai'),
+);
+backend.add(
+  import('@backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock'),
+);
 backend.start();

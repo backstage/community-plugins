@@ -13,57 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResponseError } from '@backstage/errors';
-import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
 
 /**
- * Abstract base class for all LLM providers.
- * Extend this class to create custom LLM provider implementations.
- *
- * @public
+ * Re-exports LLMProvider from the common package for backward compatibility.
+ * New consumers should import directly from `@backstage-community/plugin-mcp-chat-common`.
  */
-export abstract class LLMProvider {
-  protected apiKey?: string; // Made optional
-  protected baseUrl: string;
-  protected model: string;
-  protected type: string;
-
-  constructor(config: ProviderConfig) {
-    this.apiKey = config.apiKey;
-    this.baseUrl = config.baseUrl;
-    this.model = config.model;
-    this.type = config.type;
-  }
-
-  abstract sendMessage(
-    messages: ChatMessage[],
-    tools?: Tool[],
-  ): Promise<ChatResponse>;
-
-  abstract testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-
-  protected abstract getHeaders(): Record<string, string>;
-  protected abstract formatRequest(
-    messages: ChatMessage[],
-    tools?: Tool[],
-  ): any;
-  protected abstract parseResponse(response: any): ChatResponse;
-
-  protected async makeRequest(endpoint: string, body: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      throw await ResponseError.fromResponse(response);
-    }
-
-    return response.json();
-  }
-}
+export { LLMProvider } from '@backstage-community/plugin-mcp-chat-common';

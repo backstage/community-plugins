@@ -16,13 +16,16 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { MCPClientServiceImpl } from './MCPClientServiceImpl';
-import { ChatResponse, ToolCall, MCPServerType } from '../types';
+import {
+  ChatResponse,
+  ToolCall,
+  MCPServerType,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js');
 jest.mock('@modelcontextprotocol/sdk/client/streamableHttp.js');
 jest.mock('@modelcontextprotocol/sdk/client/stdio.js');
 jest.mock('@modelcontextprotocol/sdk/client/sse.js');
-jest.mock('../providers/provider-factory');
 jest.mock('../utils');
 
 const { Client } = require('@modelcontextprotocol/sdk/client/index.js');
@@ -32,7 +35,6 @@ const {
 const {
   StdioClientTransport,
 } = require('@modelcontextprotocol/sdk/client/stdio.js');
-const providerFactory = require('../providers/provider-factory');
 const utils = require('../utils');
 
 describe('MCPClientServiceImpl', () => {
@@ -51,6 +53,12 @@ describe('MCPClientServiceImpl', () => {
     mockLLMProvider = {
       sendMessage: jest.fn(),
       testConnection: jest.fn(),
+      getType: jest.fn().mockReturnValue('openai'),
+      getModel: jest.fn().mockReturnValue('gpt-4'),
+      getBaseUrl: jest.fn().mockReturnValue('https://api.openai.com/v1'),
+      supportsNativeMcp: jest.fn().mockReturnValue(false),
+      setMcpServerConfigs: jest.fn(),
+      getLastResponseOutput: jest.fn().mockReturnValue(null),
     };
 
     mockClient = {
@@ -58,23 +66,6 @@ describe('MCPClientServiceImpl', () => {
       listTools: jest.fn().mockResolvedValue({ tools: [] }),
       callTool: jest.fn(),
     };
-
-    providerFactory.getProviderConfig.mockReturnValue({
-      type: 'openai',
-      apiKey: 'test-key',
-      baseUrl: 'https://api.openai.com/v1',
-      model: 'gpt-4',
-    });
-
-    providerFactory.ProviderFactory.createProvider.mockReturnValue(
-      mockLLMProvider,
-    );
-
-    providerFactory.getProviderInfo.mockReturnValue({
-      provider: 'openai',
-      model: 'gpt-4',
-      baseURL: 'https://api.openai.com/v1',
-    });
 
     utils.loadServerConfigs.mockReturnValue([]);
     utils.findNpxPath.mockResolvedValue('/usr/local/bin/npx');
@@ -94,27 +85,10 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       expect(service).toBeDefined();
-      expect(providerFactory.getProviderConfig).toHaveBeenCalledWith(
-        mockConfig,
-      );
-      expect(providerFactory.ProviderFactory.createProvider).toHaveBeenCalled();
-    });
-
-    it('should throw error when LLM provider configuration is invalid', () => {
-      providerFactory.getProviderConfig.mockImplementation(() => {
-        throw new Error('Invalid provider configuration');
-      });
-
-      expect(
-        () =>
-          new MCPClientServiceImpl({
-            logger: mockLogger,
-            config: mockConfig,
-          }),
-      ).toThrow('Invalid provider configuration');
     });
   });
 
@@ -123,6 +97,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
     });
 
@@ -268,6 +243,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
     });
 
@@ -294,15 +270,15 @@ describe('MCPClientServiceImpl', () => {
     });
 
     it('should handle provider status errors', async () => {
-      providerFactory.getProviderInfo.mockImplementation(() => {
-        throw new Error('Provider info failed');
-      });
+      mockLLMProvider.testConnection.mockRejectedValue(
+        new Error('Provider connection failed'),
+      );
 
       const status = await service.getProviderStatus();
 
       expect(status.providers).toHaveLength(0);
       expect(status.summary.totalProviders).toBe(0);
-      expect(status.summary.error).toBe('Provider info failed');
+      expect(status.summary.error).toBe('Provider connection failed');
       expect(status.timestamp).toBeDefined();
     });
 
@@ -341,6 +317,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       const servers = await service.initializeMCPServers();
@@ -366,6 +343,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       const servers = await service.initializeMCPServers();
@@ -397,6 +375,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       await service.initializeMCPServers();
@@ -427,6 +406,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       const servers = await service.initializeMCPServers();
@@ -442,6 +422,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       const tools = service.getAvailableTools();
@@ -475,6 +456,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       await service.processQuery([{ role: 'user', content: 'Hello' }], []);
@@ -514,6 +496,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       await service.processQuery([{ role: 'user', content: 'Hello' }], []);
@@ -559,6 +542,7 @@ describe('MCPClientServiceImpl', () => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
         config: mockConfig,
+        provider: mockLLMProvider,
       });
 
       await service.processQuery(

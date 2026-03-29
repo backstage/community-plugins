@@ -25,9 +25,8 @@ export interface Config {
       /**
        * Unique identifier for the provider
        * @visibility backend
-       * @enum { 'openai' | 'claude' | 'gemini' | 'ollama' }
        */
-      id: 'openai' | 'claude' | 'gemini' | 'ollama';
+      id: string;
       /**
        * API token for the provider
        * @visibility secret
@@ -43,6 +42,11 @@ export interface Config {
        * @visibility backend
        */
       baseUrl?: string;
+      /**
+       * Provider-specific authentication parameters (IAM, session tokens, etc.)
+       * @visibility secret
+       */
+      auth?: { [key: string]: string };
     }>;
     /**
      * MCP (Model Context Protocol) servers configuration
