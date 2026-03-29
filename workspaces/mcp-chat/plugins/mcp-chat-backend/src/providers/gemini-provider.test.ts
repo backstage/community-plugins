@@ -389,6 +389,43 @@ describe('GeminiProvider', () => {
       await expect(provider.sendMessage(messages)).rejects.toThrow('API Error');
     });
 
+    it('should not leak tools or systemInstruction across calls', async () => {
+      const tools: Tool[] = [
+        {
+          type: 'function',
+          function: {
+            name: 'get_weather',
+            description: 'Get weather',
+            parameters: { type: 'object', properties: {} },
+          },
+        },
+      ];
+
+      mockGenerateContent.mockResolvedValue({
+        candidates: [{ content: { parts: [{ text: 'response' }] } }],
+      });
+
+      await provider.sendMessage(
+        [
+          { role: 'system', content: 'Be helpful' },
+          { role: 'user', content: 'First call' },
+        ],
+        tools,
+      );
+
+      const firstCallConfig = mockGenerateContent.mock.calls[0][0].config;
+      expect(firstCallConfig.tools).toBeDefined();
+      expect(firstCallConfig.systemInstruction).toBe('Be helpful');
+
+      await provider.sendMessage([
+        { role: 'user', content: 'Second call without tools or system' },
+      ]);
+
+      const secondCallConfig = mockGenerateContent.mock.calls[1][0].config;
+      expect(secondCallConfig.tools).toBeUndefined();
+      expect(secondCallConfig.systemInstruction).toBeUndefined();
+    });
+
     it('should handle empty response', async () => {
       const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
 

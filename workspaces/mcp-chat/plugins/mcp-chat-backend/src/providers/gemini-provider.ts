@@ -38,7 +38,7 @@ import {
  */
 export class GeminiProvider extends LLMProvider {
   private genAI: GoogleGenAI;
-  private modelConfig: GenerateContentConfig;
+  private readonly baseModelConfig: GenerateContentConfig;
 
   constructor(config: ProviderConfig) {
     super(config);
@@ -47,7 +47,7 @@ export class GeminiProvider extends LLMProvider {
     }
 
     this.genAI = new GoogleGenAI({ apiKey: this.apiKey });
-    this.modelConfig = {
+    this.baseModelConfig = {
       temperature: 0.7,
       maxOutputTokens: 8192,
       safetySettings: [
@@ -81,18 +81,22 @@ export class GeminiProvider extends LLMProvider {
 
       const contents = this.convertToGeminiFormat(conversationMessages);
 
+      const requestConfig: GenerateContentConfig = {
+        ...this.baseModelConfig,
+      };
+
       if (tools && tools.length > 0) {
-        this.modelConfig.tools = this.convertToGeminiTools(tools);
+        requestConfig.tools = this.convertToGeminiTools(tools);
       }
 
       if (systemMessage) {
-        this.modelConfig.systemInstruction = systemMessage.content ?? undefined;
+        requestConfig.systemInstruction = systemMessage.content ?? undefined;
       }
 
       const result = await this.genAI.models.generateContent({
         model: this.model,
         contents,
-        config: this.modelConfig,
+        config: requestConfig,
       });
 
       return this.parseResponse(result);
@@ -114,7 +118,7 @@ export class GeminiProvider extends LLMProvider {
         model: this.model,
         contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
         config: {
-          ...this.modelConfig,
+          ...this.baseModelConfig,
           maxOutputTokens: 1,
         },
       });
