@@ -60,7 +60,7 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.10.4",
     "@backstage/cli": "^0.35.3",
-    "@backstage/plugin-auth-backend": "^0.26.0",
+    "@backstage/plugin-auth-backend": "^0.27.0",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.15",
     "@types/lodash": "^4.14.151",
     "@types/node-fetch": "^2.5.12",
