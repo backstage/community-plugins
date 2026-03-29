@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { GoogleGenAI } from '@google/genai';
 import { GeminiProvider } from './gemini-provider';
 import { ChatMessage, ProviderConfig, Tool } from '../types';
@@ -26,12 +27,7 @@ describe('GeminiProvider', () => {
   let provider: GeminiProvider;
   let mockGenerateContent: jest.Mock;
 
-  const mockLogger = {
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  };
+  const mockLogger = mockServices.logger.mock();
 
   const config: ProviderConfig = {
     type: 'gemini',

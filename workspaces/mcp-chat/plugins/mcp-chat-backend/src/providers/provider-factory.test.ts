@@ -39,19 +39,12 @@ describe('ProviderFactory', () => {
       ];
 
       testCases.forEach(({ type, expectedClass }) => {
-        const mockLogger = {
-          debug: jest.fn(),
-          info: jest.fn(),
-          warn: jest.fn(),
-          error: jest.fn(),
-        };
-
         const config: ProviderConfig = {
           type,
           apiKey: 'test-key',
           baseUrl: 'https://example.com',
           model: 'test-model',
-          logger: mockLogger,
+          logger: mockServices.logger.mock(),
         };
 
         const provider = ProviderFactory.createProvider(config);
@@ -60,19 +53,12 @@ describe('ProviderFactory', () => {
     });
 
     it('should throw error for unsupported provider type', () => {
-      const mockLogger = {
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-      };
-
       const config: ProviderConfig = {
         type: 'unsupported',
         apiKey: 'test-key',
         baseUrl: 'https://example.com',
         model: 'test-model',
-        logger: mockLogger,
+        logger: mockServices.logger.mock(),
       };
 
       expect(() => ProviderFactory.createProvider(config)).toThrow(

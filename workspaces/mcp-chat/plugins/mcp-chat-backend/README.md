@@ -498,6 +498,8 @@ backend:
         level: debug
 ```
 
+> **Security note:** Debug logging includes raw LLM request and response payloads (truncated to 4 KB), which may contain user messages and tool results. Only enable in development or controlled environments.
+
 ## API Reference
 
 ### Backend Endpoints

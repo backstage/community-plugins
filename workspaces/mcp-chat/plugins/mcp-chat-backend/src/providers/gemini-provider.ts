@@ -93,15 +93,40 @@ export class GeminiProvider extends LLMProvider {
         requestConfig.systemInstruction = systemMessage.content ?? undefined;
       }
 
+      this.logger?.debug(`[gemini] Request to model ${this.model}`, {
+        contents: this.truncateForLogging(JSON.stringify(contents)),
+        config: this.truncateForLogging(JSON.stringify(requestConfig)),
+        toolCount: tools?.length ?? 0,
+      });
+
+      const startTime = Date.now();
       const result = await this.genAI.models.generateContent({
         model: this.model,
         contents,
         config: requestConfig,
       });
+      const duration = Date.now() - startTime;
+
+      this.logger?.debug(`[gemini] Response received in ${duration}ms`, {
+        data: this.truncateForLogging(JSON.stringify(result)),
+        usageMetadata: result.usageMetadata
+          ? JSON.stringify(result.usageMetadata)
+          : undefined,
+      });
+
+      const finishReason = result.candidates?.[0]?.finishReason;
+      if (finishReason === 'MAX_TOKENS') {
+        this.logger?.warn(
+          `[gemini] Response was truncated due to token limit (finishReason: ${finishReason}). ` +
+            `Consider increasing maxOutputTokens in your provider configuration.`,
+        );
+      }
 
       return this.parseResponse(result);
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      this.logger?.error(`[gemini] API error`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   }

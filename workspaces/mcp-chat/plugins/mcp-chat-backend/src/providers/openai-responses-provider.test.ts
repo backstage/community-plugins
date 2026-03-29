@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { OpenAIResponsesProvider } from './openai-responses-provider';
 import {
   ProviderConfig,
@@ -30,12 +31,7 @@ describe('OpenAIResponsesProvider', () => {
   let provider: OpenAIResponsesProvider;
   const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
-  const mockLogger = {
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  };
+  const mockLogger = mockServices.logger.mock();
 
   const config: ProviderConfig = {
     type: 'openai-responses',

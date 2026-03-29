@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { LiteLLMProvider } from './litellm-provider';
 import { ProviderConfig, ChatMessage, Tool } from '../types';
 
@@ -23,12 +24,7 @@ global.fetch = jest.fn();
 describe('LiteLLMProvider', () => {
   let provider: LiteLLMProvider;
 
-  const mockLogger = {
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  };
+  const mockLogger = mockServices.logger.mock();
 
   const config: ProviderConfig = {
     type: 'litellm',

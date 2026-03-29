@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { OllamaProvider } from './ollama-provider';
 import { ProviderConfig, ChatMessage, Tool } from '../types';
 import { Ollama } from 'ollama';
@@ -27,12 +28,7 @@ describe('OllamaProvider', () => {
   let provider: OllamaProvider;
   let mockOllama: jest.Mocked<Ollama>;
 
-  const mockLogger = {
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-  };
+  const mockLogger = mockServices.logger.mock();
 
   const config: ProviderConfig = {
     type: 'ollama',
