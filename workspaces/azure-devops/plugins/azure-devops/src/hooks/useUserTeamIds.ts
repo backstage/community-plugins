@@ -18,7 +18,11 @@ import { azureDevOpsApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 
-export function useUserTeamIds(userId: string | undefined): {
+export function useUserTeamIds(
+  userId: string | undefined,
+  host?: string,
+  org?: string,
+): {
   teamIds?: string[];
   loading: boolean;
   error?: Error;
@@ -30,8 +34,11 @@ export function useUserTeamIds(userId: string | undefined): {
     loading,
     error,
   } = useAsync(() => {
-    return userId ? api.getUserTeamIds(userId) : Promise.resolve(undefined);
-  }, [userId, api]);
+    if (!userId || !host || !org) {
+      return Promise.resolve(undefined);
+    }
+    return api.getUserTeamIds(userId, host, org);
+  }, [userId, host, org, api]);
 
   return {
     teamIds,

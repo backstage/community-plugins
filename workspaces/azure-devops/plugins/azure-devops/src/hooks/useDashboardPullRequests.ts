@@ -28,6 +28,8 @@ export function useDashboardPullRequests(
   project?: string,
   pollingInterval: number = POLLING_INTERVAL,
   teamsLimit?: number,
+  host?: string,
+  org?: string,
 ): {
   pullRequests?: DashboardPullRequest[];
   loading: boolean;
@@ -40,11 +42,11 @@ export function useDashboardPullRequests(
     DashboardPullRequest[]
   > => {
     if (!project) {
-      return Promise.reject(new Error('Missing project name'));
+      return [];
     }
 
     try {
-      return await api.getDashboardPullRequests(project, teamsLimit);
+      return await api.getDashboardPullRequests(project, teamsLimit, host, org);
     } catch (error) {
       if (error instanceof Error) {
         errorApi.post(error);
@@ -52,7 +54,7 @@ export function useDashboardPullRequests(
 
       return Promise.reject(error);
     }
-  }, [project, api, teamsLimit, errorApi]);
+  }, [project, api, teamsLimit, host, org, errorApi]);
 
   const {
     value: pullRequests,
@@ -64,7 +66,7 @@ export function useDashboardPullRequests(
     [getDashboardPullRequests],
   );
 
-  useInterval(() => retry(), pollingInterval);
+  useInterval(() => retry(), project ? pollingInterval : null);
 
   return {
     pullRequests,

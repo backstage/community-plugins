@@ -41,6 +41,7 @@ import {
   PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { getConfiguredAzureDevOpsOrganizations } from '../utils/azure-devops-utils';
 
 const DEFAULT_TOP = 10;
 
@@ -64,6 +65,9 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, reader, config, permissions, httpAuth } = options;
 
+  // Get configured organizations from pull request dashboard config and legacy config
+  const organizations = getConfiguredAzureDevOpsOrganizations(config);
+
   const azureDevOpsApi =
     options.azureDevOpsApi ||
     AzureDevOpsApi.fromConfig(config, { logger, urlReader: reader });
@@ -78,8 +82,43 @@ export async function createRouter(
     res.status(200).json({ status: 'ok' });
   });
 
-  router.get('/projects', async (_req, res) => {
-    const projects = await azureDevOpsApi.getProjects();
+  router.get('/projects', async (req, res) => {
+    const host = req.query.host?.toString();
+    const org = req.query.org?.toString();
+
+    // Validate that host and org are provided
+    if (!host || !org) {
+      throw new InputError('host and org query parameters are required');
+    }
+
+    // Validate that the provided host and org are in the configured organizations
+    const isValidOrganization = organizations.some(
+      configuredOrg =>
+        configuredOrg.host === host && configuredOrg.organization === org,
+    );
+
+    if (!isValidOrganization) {
+      throw new InputError(
+        `Host '${host}' with Organization '${org}' is not configured. Please check your configuration.`,
+      );
+    }
+
+    const decision = (
+      await permissions.authorize(
+        [
+          {
+            permission: azureDevOpsPullRequestDashboardReadPermission,
+          },
+        ],
+        { credentials: await httpAuth.credentials(req) },
+      )
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    const projects = await azureDevOpsApi.getProjects(host, org);
     res.status(200).json(projects);
   });
 
@@ -205,6 +244,9 @@ export async function createRouter(
       ? Number(req.query.status)
       : PullRequestStatus.Active;
 
+    const host = req.query.host?.toString();
+    const org = req.query.org?.toString();
+
     const pullRequestOptions: PullRequestOptions = {
       top: top,
       status: status,
@@ -230,6 +272,8 @@ export async function createRouter(
       await pullRequestsDashboardProvider.getDashboardPullRequests(
         projectName,
         pullRequestOptions,
+        host,
+        org,
       );
 
     res.status(200).json(pullRequests);
@@ -237,7 +281,46 @@ export async function createRouter(
 
   router.get('/all-teams', async (req, res) => {
     const limit = req.query.limit ? Number(req.query.limit) : undefined;
-    const allTeams = await pullRequestsDashboardProvider.getAllTeams({ limit });
+    const host = req.query.host?.toString();
+    const org = req.query.org?.toString();
+
+    // Validate that host and org are provided
+    if (!host || !org) {
+      throw new InputError('host and org query parameters are required');
+    }
+
+    // Validate that the provided host and org are in the configured organizations
+    const isValidOrganization = organizations.some(
+      configuredOrg =>
+        configuredOrg.host === host && configuredOrg.organization === org,
+    );
+
+    if (!isValidOrganization) {
+      throw new InputError(
+        `Host '${host}' with Organization '${org}' is not configured. Please check your configuration.`,
+      );
+    }
+
+    const decision = (
+      await permissions.authorize(
+        [
+          {
+            permission: azureDevOpsPullRequestDashboardReadPermission,
+          },
+        ],
+        { credentials: await httpAuth.credentials(req) },
+      )
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    const allTeams = await pullRequestsDashboardProvider.getAllTeams({
+      limit,
+      host,
+      org,
+    });
     res.status(200).json(allTeams);
   });
 
@@ -283,7 +366,46 @@ export async function createRouter(
 
   router.get('/users/:userId/team-ids', async (req, res) => {
     const { userId } = req.params;
-    const teamIds = await pullRequestsDashboardProvider.getUserTeamIds(userId);
+    const host = req.query.host?.toString();
+    const org = req.query.org?.toString();
+
+    // Validate that host and org are provided
+    if (!host || !org) {
+      throw new InputError('host and org query parameters are required');
+    }
+
+    // Validate that the provided host and org are in the configured organizations
+    const isValidOrganization = organizations.some(
+      configuredOrg =>
+        configuredOrg.host === host && configuredOrg.organization === org,
+    );
+
+    if (!isValidOrganization) {
+      throw new InputError(
+        `Host '${host}' with Organization '${org}' is not configured. Please check your configuration.`,
+      );
+    }
+
+    const decision = (
+      await permissions.authorize(
+        [
+          {
+            permission: azureDevOpsPullRequestDashboardReadPermission,
+          },
+        ],
+        { credentials: await httpAuth.credentials(req) },
+      )
+    )[0];
+
+    if (decision.result === AuthorizeResult.DENY) {
+      throw new NotAllowedError('Unauthorized');
+    }
+
+    const teamIds = await pullRequestsDashboardProvider.getUserTeamIds(
+      userId,
+      host,
+      org,
+    );
     res.status(200).json(teamIds);
   });
 

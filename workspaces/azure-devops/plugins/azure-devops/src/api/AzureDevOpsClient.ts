@@ -101,20 +101,40 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   public getDashboardPullRequests(
     projectName: string,
     teamsLimit?: number,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]> {
     const queryString = new URLSearchParams();
     queryString.append('top', '100');
     if (teamsLimit) {
       queryString.append('teamsLimit', teamsLimit.toString());
     }
-    const urlSegment = `dashboard-pull-requests/${projectName}?${queryString}`;
+    if (host) {
+      queryString.append('host', host);
+    }
+    if (org) {
+      queryString.append('org', org);
+    }
+    const urlSegment = `dashboard-pull-requests/${encodeURIComponent(
+      projectName,
+    )}?${queryString}`;
     return this.get<DashboardPullRequest[]>(urlSegment);
   }
 
-  public getAllTeams(limit?: number): Promise<Team[]> {
+  public getAllTeams(
+    limit?: number,
+    host?: string,
+    org?: string,
+  ): Promise<Team[]> {
     const queryString = new URLSearchParams();
     if (limit) {
       queryString.append('limit', limit.toString());
+    }
+    if (host) {
+      queryString.append('host', host);
+    }
+    if (org) {
+      queryString.append('org', org);
     }
     let urlSegment = 'all-teams';
     if (queryString.toString()) {
@@ -123,8 +143,23 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
     return this.get<Team[]>(urlSegment);
   }
 
-  public getUserTeamIds(userId: string): Promise<string[]> {
-    return this.get<string[]>(`users/${userId}/team-ids`);
+  public getUserTeamIds(
+    userId: string,
+    host?: string,
+    org?: string,
+  ): Promise<string[]> {
+    const queryString = new URLSearchParams();
+    if (host) {
+      queryString.append('host', host);
+    }
+    if (org) {
+      queryString.append('org', org);
+    }
+    let urlSegment = `users/${userId}/team-ids`;
+    if (queryString.toString()) {
+      urlSegment += `?${queryString}`;
+    }
+    return this.get<string[]>(urlSegment);
   }
 
   public async getBuildRuns(
@@ -215,6 +250,22 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
       projectName,
     )}/build/${buildId}/log?${queryString}`;
     return await this.get<{ log: string[] }>(urlSegment);
+  }
+
+  public async getProjects(host?: string, org?: string): Promise<string[]> {
+    const queryString = new URLSearchParams();
+    if (host) {
+      queryString.append('host', host);
+    }
+    if (org) {
+      queryString.append('org', org);
+    }
+    let urlSegment = 'projects';
+    if (queryString.toString()) {
+      urlSegment += `?${queryString}`;
+    }
+    const projects = await this.get<Array<{ name: string }>>(urlSegment);
+    return projects.map(project => project.name);
   }
 
   private async get<T>(path: string): Promise<T> {

@@ -5,6 +5,36 @@ Website: [https://dev.azure.com/](https://dev.azure.com/)
 > [!Note]
 > Backstage UI (BUI) is now required for the Azure DevOps plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
 
+## Table of Contents
+
+- [Azure DevOps Plugin](#azure-devops-plugin)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Azure Pipelines](#azure-pipelines)
+    - [Azure Repos](#azure-repos)
+    - [Azure Repos Git Tags](#azure-repos-git-tags)
+    - [Azure Repos Pull Request Dashboard](#azure-repos-pull-request-dashboard)
+    - [Azure Readme](#azure-readme)
+  - [Setup](#setup)
+    - [Azure DevOps Backend](#azure-devops-backend)
+    - [Entity Annotation](#entity-annotation)
+      - [Mono repos](#mono-repos)
+      - [Pipeline in different project to repo](#pipeline-in-different-project-to-repo)
+      - [Azure Pipelines Only](#azure-pipelines-only)
+      - [Multiple Organizations](#multiple-organizations)
+      - [Project Names and Repository Names with Spaces](#project-names-and-repository-names-with-spaces)
+    - [Azure Pipelines Component](#azure-pipelines-component)
+    - [Azure Repos Component](#azure-repos-component)
+    - [Git Tags Component](#git-tags-component)
+    - [Azure Pull Request Dashboard Page](#azure-pull-request-dashboard-page)
+      - [Column Configuration](#column-configuration)
+    - [Git README](#git-readme)
+  - [Search](#search)
+  - [Permission Framework](#permission-framework)
+    - [Configure Permission](#configure-permission)
+  - [New Frontend System (Alpha)](#new-frontend-system-alpha)
+    - [Use new frontend system](#use-new-frontend-system)
+
 ## Features
 
 ### Azure Pipelines
@@ -24,6 +54,16 @@ Lists the top _n_ Active, Completed, or Abandoned Pull Requests for a given repo
 Lists all Git Tags for a given repository
 
 ![Azure Repos Git Tags Example](./docs/azure-devops-git-tags.png)
+
+### Azure Repos Pull Request Dashboard
+
+Displays pull request for a single project in a dashboard like view
+
+![Azure Repo Pull Request Dashboard Example](./docs/azure-devops-pull-request-dashboard.png)
+
+Shows pull request by picking the Organization and Project in a dashboard like view
+
+![Azure Repo Pull Request Dashboard Multi-Org Example](./docs/azure-devops-pull-request-dashboard-multi-org.png)
 
 ### Azure Readme
 
@@ -309,6 +349,130 @@ To get the Git Tags component working you'll need to do the following two steps:
 
 - You'll need to add the `EntityLayout.Route` above from step 2 to all the entity sections you want to see Git Tags in. For example if you wanted to see Git Tags when looking at Website entities then you would need to add this to the `websiteEntityPage` section.
 - The `if` prop is optional on the `EntityLayout.Route`, you can remove it if you always want to see the tab even if the entity being viewed does not have the needed annotation
+
+### Azure Pull Request Dashboard Page
+
+To get the Azure Pull Request Dashboard page working you'll need to do the following steps:
+
+1. First we need to add the @backstage-community/plugin-azure-devops package to your frontend app:
+
+   ```bash
+   # From your Backstage root directory
+   yarn --cwd packages/app add @backstage-community/plugin-azure-devops
+   ```
+
+2. Second we need to add the `AzurePullRequestsPage` component as a route in your app. You have two options depending on your setup:
+
+   **Option A - Single Organization/Project:** Pass the `projectName` prop to pre-select a specific project:
+
+   ```tsx
+   // In packages/app/src/App.tsx
+   import { AzurePullRequestsPage } from '@backstage-community/plugin-azure-devops';
+
+   // Add the route to your FlatRoutes
+   const routes = (
+     <FlatRoutes>
+       // ...
+       <Route
+         path="/azure-pull-requests"
+         element={<AzurePullRequestsPage projectName="my-project" />}
+       />
+       // ...
+     </FlatRoutes>
+   );
+   ```
+
+   **Option B - Multiple Organizations/Projects:** Leave the `projectName` prop unset and configure the available options through your `app-config.yaml`. This allows users to select from the configured organizations and projects using dropdown filters on the page:
+
+   ```tsx
+   // In packages/app/src/App.tsx
+   import { AzurePullRequestsPage } from '@backstage-community/plugin-azure-devops';
+
+   // Add the route to your FlatRoutes
+   const routes = (
+     <FlatRoutes>
+       // ...
+       <Route path="/azure-pull-requests" element={<AzurePullRequestsPage />} />
+       // ...
+     </FlatRoutes>
+   );
+   ```
+
+   ```yaml
+   # In your app-config.yaml
+   azureDevOps:
+     pullRequestDashboard:
+       organizations:
+         - organization: my-org
+           host: dev.azure.com
+         - organization: my-other-org
+           host: dev.azure.com
+   ```
+
+3. Third, add the page to your sidebar navigation:
+
+   ```tsx
+   // In packages/app/src/components/Root/Root.tsx
+   import { AzurePullRequestsIcon } from '@backstage-community/plugin-azure-devops';
+
+   // Add to your sidebar
+   export const Root = ({ children }: PropsWithChildren<{}>) => (
+     <SidebarPage>
+       <Sidebar>
+         {/* ... */}
+         <SidebarGroup label="Menu" icon={<MenuIcon />}>
+           {/* ... other sidebar items ... */}
+           <SidebarItem
+             icon={AzurePullRequestsIcon}
+             to="azure-pull-requests"
+             text="Azure PRs"
+           />
+         </SidebarGroup>
+         {/* ... */}
+       </Sidebar>
+       {children}
+     </SidebarPage>
+   );
+   ```
+
+#### Column Configuration
+
+The `AzurePullRequestsPage` includes a set of two columns - Created by me (using the `CreatedByCurrentUser` filter) and Other PRs (using the `All` filter) - by default but you can provide your own column configuration by using the `defaultColumnConfigs` prop. Here's an example, this mimics the default setup:
+
+```ts
+const DEFAULT_COLUMN_CONFIGS: PullRequestColumnConfig[] = [
+  {
+    title: 'Created by me',
+    filters: [{ type: FilterType.CreatedByCurrentUser }],
+    simplified: false,
+  },
+  {
+    title: 'Other PRs',
+    filters: [{ type: FilterType.All }],
+    simplified: true,
+  },
+];
+```
+
+**Notes:**
+
+- Setting `simplified` to `false` will show more details on the cards
+- The `FilterType` and the `PullRequestColumnConfig` are exported from the `@backstage-community/plugin-azure-devops` plugin
+- User in the context of the filters is based on the current user logged into Backstage and the email address returned from the `identityApi.getProfileInfo()`
+
+Filters work on the open PRs based on the configured or selected Organization and Project. The available filters you can use are:
+
+- `FilterType.All`
+- `FilterType.AssignedToUser`
+- `FilterType.AssignedToCurrentUser`
+- `FilterType.AssignedToTeam`
+- `FilterType.AssignedToTeams`
+- `FilterType.AssignedToCurrentUsersTeams`
+- `FilterType.CreatedByUser`
+- `FilterType.CreatedByCurrentUser`
+- `FilterType.CreatedByTeam`
+- `FilterType.CreatedByTeams`
+- `FilterType.CreatedByCurrentUsersTeams`
 
 ### Git README
 
