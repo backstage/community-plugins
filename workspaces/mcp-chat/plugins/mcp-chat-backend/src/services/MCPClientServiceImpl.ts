@@ -83,13 +83,20 @@ export class MCPClientServiceImpl implements MCPClientService {
   private initializeLLMProvider(): LLMProvider {
     try {
       const providerConfig = getConfig(this.config);
-      const llmProvider = ProviderFactory.createProvider(providerConfig);
+      const llmProvider = ProviderFactory.createProvider(
+        providerConfig,
+        this.logger,
+      );
       this.logger.info(
         `Using LLM Provider: ${providerConfig.type}, Model: ${providerConfig.model}`,
       );
       return llmProvider;
     } catch (error) {
-      this.logger.error('Failed to initialize LLM provider:', error);
+      this.logger.error(
+        `Failed to initialize LLM provider: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
       throw error;
     }
   }

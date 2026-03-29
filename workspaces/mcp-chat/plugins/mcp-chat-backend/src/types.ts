@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { LoggerService } from '@backstage/backend-plugin-api';
+
 // =============================================================================
 // Constants and Enums
 // =============================================================================
@@ -203,6 +205,8 @@ export interface ProviderConfig {
   baseUrl: string;
   /** Model identifier to use */
   model: string;
+  /** Logger for debugging */
+  logger?: LoggerService;
 }
 
 /**

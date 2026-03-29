@@ -179,6 +179,8 @@ export abstract class LLMProvider {
   // (undocumented)
   protected abstract getHeaders(): Record<string, string>;
   // (undocumented)
+  protected logger?: LoggerService;
+  // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
   protected model: string;
@@ -195,6 +197,8 @@ export abstract class LLMProvider {
     models?: string[];
     error?: string;
   }>;
+  // (undocumented)
+  protected truncateForLogging(data: string, maxLength?: number): string;
   // (undocumented)
   protected type: string;
 }
@@ -368,6 +372,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  logger?: LoggerService;
   model: string;
   type: string;
 }
@@ -381,7 +386,10 @@ export interface ProviderConnectionStatus {
 
 // @public
 export class ProviderFactory {
-  static createProvider(config: ProviderConfig): LLMProvider;
+  static createProvider(
+    config: ProviderConfig,
+    logger?: LoggerService,
+  ): LLMProvider;
 }
 
 // @public
