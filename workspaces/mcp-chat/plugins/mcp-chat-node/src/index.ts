@@ -24,3 +24,5 @@ export {
   llmProviderExtensionPoint,
   type LlmProviderExtensionPoint,
 } from './extensions';
+
+export { LLMProvider } from './base-provider';
