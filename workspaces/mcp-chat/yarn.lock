@@ -2766,7 +2766,9 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-mcp-chat-common": "workspace:^"
     "@backstage/backend-plugin-api": "npm:^1.4.0"
+    "@backstage/backend-test-utils": "npm:^1.6.0"
     "@backstage/cli": "npm:^0.33.0"
+    "@backstage/errors": "npm:^1.2.7"
   languageName: unknown
   linkType: soft
 
