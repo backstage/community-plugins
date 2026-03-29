@@ -138,7 +138,10 @@ export class GeminiProvider extends LLMProvider {
     error?: string;
   }> {
     try {
-      const result = await this.geminiModel.generateContent({
+      // Gemini doesn't have a models list endpoint in the same way
+      // We'll test by making a simple generateContent request
+      const response = await this.genAI.models.generateContent({
+        model: this.model,
         contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
         config: {
           ...this.baseModelConfig,
@@ -146,11 +149,11 @@ export class GeminiProvider extends LLMProvider {
         },
       });
 
-      const response = await result.response;
+      // If we get here without error, the connection is working
       if (response) {
         return {
           connected: true,
-          models: [this.model],
+          models: [this.model], // Gemini doesn't list models, so return the configured one
         };
       }
       return {

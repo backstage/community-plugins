@@ -40,7 +40,7 @@
     "express": "^4.22.0",
     "express-promise-router": "^4.1.0",
     "knex": "^3.1.0",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   },
   "devDependencies": {
     "@backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock": "workspace:^",
