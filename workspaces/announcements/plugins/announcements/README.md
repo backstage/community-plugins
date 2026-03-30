@@ -94,13 +94,21 @@ Banner params:
 ```yaml
 app:
   extensions:
-    - announcements/banner:
+    - app-root-element:announcements/banner:
         config:
           max: 2
           category: updates
           active: true
           current: true
           tags: ['security', 'platform']
+```
+
+To disable the banner entirely:
+
+```yaml
+app:
+  extensions:
+    - app-root-element:announcements/banner: false
 ```
 
 The entity card will only appear on components & systems by default, but you can override that

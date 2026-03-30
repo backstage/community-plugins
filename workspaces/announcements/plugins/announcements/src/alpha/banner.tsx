@@ -19,6 +19,11 @@ import { AppRootElementBlueprint } from '@backstage/frontend-plugin-api';
 import { NewAnnouncementBanner } from '../components/NewAnnouncementBanner';
 
 /**
+ * Displays unseen announcements as dismissable banners at the app root.
+ *
+ * @remarks
+ * Extension ID: `app-root-element:announcements/banner`
+ *
  * @alpha
  */
 export const announcementsBanner = AppRootElementBlueprint.makeWithOverrides({

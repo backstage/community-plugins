@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton-common
 
+## 1.20.0
+
+### Minor Changes
+
+- 701b9e7: Backstage version bump to v1.49.2
+
 ## 1.19.1
 
 ### Patch Changes

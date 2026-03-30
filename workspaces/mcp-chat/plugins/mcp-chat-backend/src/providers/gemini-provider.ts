@@ -22,37 +22,34 @@ import {
   ProviderConfig,
 } from '../types';
 import {
-  GoogleGenerativeAI,
-  GenerativeModel,
-  Content,
+  GenerateContentConfig,
+  GoogleGenAI,
   HarmCategory,
   HarmBlockThreshold,
-  GenerateContentResult,
+  Content,
   Part,
-} from '@google/generative-ai';
-
+  Tool as GenAITool,
+  GenerateContentResponse,
+} from '@google/genai';
 /**
  * Google Gemini API provider.
  *
  * @public
  */
 export class GeminiProvider extends LLMProvider {
-  private genAI: GoogleGenerativeAI;
-  private geminiModel: GenerativeModel;
+  private genAI: GoogleGenAI;
+  private readonly baseModelConfig: GenerateContentConfig;
 
   constructor(config: ProviderConfig) {
     super(config);
     if (!this.apiKey) {
       throw new Error('Gemini API key is required');
     }
-    this.genAI = new GoogleGenerativeAI(this.apiKey);
 
-    this.geminiModel = this.genAI.getGenerativeModel({
-      model: this.model,
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 8192,
-      },
+    this.genAI = new GoogleGenAI({ apiKey: this.apiKey });
+    this.baseModelConfig = {
+      temperature: 0.7,
+      maxOutputTokens: 8192,
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -71,7 +68,7 @@ export class GeminiProvider extends LLMProvider {
           threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
         },
       ],
-    });
+    };
   }
 
   async sendMessage(
@@ -84,33 +81,52 @@ export class GeminiProvider extends LLMProvider {
 
       const contents = this.convertToGeminiFormat(conversationMessages);
 
-      let modelToUse = this.geminiModel;
-      const modelConfig: any = {
-        model: this.model,
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 8192,
-        },
-        safetySettings: this.geminiModel.safetySettings,
+      const requestConfig: GenerateContentConfig = {
+        ...this.baseModelConfig,
       };
 
       if (tools && tools.length > 0) {
-        modelConfig.tools = [this.convertToGeminiTools(tools)];
+        requestConfig.tools = this.convertToGeminiTools(tools);
       }
 
       if (systemMessage) {
-        modelConfig.systemInstruction = systemMessage.content ?? undefined;
+        requestConfig.systemInstruction = systemMessage.content ?? undefined;
       }
 
-      if ((tools && tools.length > 0) || systemMessage) {
-        modelToUse = this.genAI.getGenerativeModel(modelConfig);
-      }
+      this.logger?.debug(`[gemini] Request to model ${this.model}`, {
+        contents: this.truncateForLogging(JSON.stringify(contents)),
+        config: this.truncateForLogging(JSON.stringify(requestConfig)),
+        toolCount: tools?.length ?? 0,
+      });
 
-      const result = await modelToUse.generateContent({ contents });
+      const startTime = Date.now();
+      const result = await this.genAI.models.generateContent({
+        model: this.model,
+        contents,
+        config: requestConfig,
+      });
+      const duration = Date.now() - startTime;
+
+      this.logger?.debug(`[gemini] Response received in ${duration}ms`, {
+        data: this.truncateForLogging(JSON.stringify(result)),
+        usageMetadata: result.usageMetadata
+          ? JSON.stringify(result.usageMetadata)
+          : undefined,
+      });
+
+      const finishReason = result.candidates?.[0]?.finishReason;
+      if (finishReason === 'MAX_TOKENS') {
+        this.logger?.warn(
+          `[gemini] Response was truncated due to token limit (finishReason: ${finishReason}). ` +
+            `Consider increasing maxOutputTokens in your provider configuration.`,
+        );
+      }
 
       return this.parseResponse(result);
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      this.logger?.error(`[gemini] API error`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   }
@@ -123,13 +139,16 @@ export class GeminiProvider extends LLMProvider {
     try {
       // Gemini doesn't have a models list endpoint in the same way
       // We'll test by making a simple generateContent request
-      const result = await this.geminiModel.generateContent({
+      const response = await this.genAI.models.generateContent({
+        model: this.model,
         contents: [{ role: 'user', parts: [{ text: 'Hello' }] }],
-        generationConfig: { maxOutputTokens: 1 },
+        config: {
+          ...this.baseModelConfig,
+          maxOutputTokens: 1,
+        },
       });
 
       // If we get here without error, the connection is working
-      const response = await result.response;
       if (response) {
         return {
           connected: true,
@@ -159,9 +178,8 @@ export class GeminiProvider extends LLMProvider {
     return {};
   }
 
-  protected parseResponse(result: GenerateContentResult): ChatResponse {
-    const { response } = result;
-    const candidate = response.candidates?.[0];
+  protected parseResponse(result: GenerateContentResponse): ChatResponse {
+    const candidate = result.candidates?.[0];
     const parts = candidate?.content?.parts || [];
 
     const textPart = parts.find((part: Part) => part.text);
@@ -173,7 +191,7 @@ export class GeminiProvider extends LLMProvider {
         id: Math.random().toString(36).substring(2, 15),
         type: 'function' as const,
         function: {
-          name: part.functionCall!.name,
+          name: part.functionCall!.name!,
           arguments: JSON.stringify(part.functionCall!.args || {}),
         },
       }));
@@ -188,11 +206,11 @@ export class GeminiProvider extends LLMProvider {
           },
         },
       ],
-      usage: response.usageMetadata
+      usage: result.usageMetadata
         ? {
-            prompt_tokens: response.usageMetadata.promptTokenCount || 0,
-            completion_tokens: response.usageMetadata.candidatesTokenCount || 0,
-            total_tokens: response.usageMetadata.totalTokenCount || 0,
+            prompt_tokens: result.usageMetadata.promptTokenCount || 0,
+            completion_tokens: result.usageMetadata.candidatesTokenCount || 0,
+            total_tokens: result.usageMetadata.totalTokenCount || 0,
           }
         : undefined,
     };
@@ -274,14 +292,16 @@ export class GeminiProvider extends LLMProvider {
     return contents;
   }
 
-  private convertToGeminiTools(tools: Tool[]) {
-    return {
-      functionDeclarations: tools.map(tool => ({
-        name: tool.function.name,
-        description: tool.function.description,
-        parameters: this.cleanJsonSchemaForGemini(tool.function.parameters),
-      })),
-    };
+  private convertToGeminiTools(tools: Tool[]): GenAITool[] {
+    return [
+      {
+        functionDeclarations: tools.map(tool => ({
+          name: tool.function.name,
+          description: tool.function.description,
+          parameters: this.cleanJsonSchemaForGemini(tool.function.parameters),
+        })),
+      },
+    ];
   }
 
   private cleanJsonSchemaForGemini(schema: any): any {

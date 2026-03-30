@@ -1414,16 +1414,13 @@ __metadata:
     "@backstage/config": "npm:^1.3.6"
     "@backstage/core-plugin-api": "npm:^1.12.3"
     "@backstage/errors": "npm:^1.2.7"
-    "@backstage/plugin-auth-node": "npm:^0.6.13"
     "@backstage/plugin-catalog-node": "npm:^2.0.0"
-    "@backstage/plugin-permission-backend": "npm:^0.7.9"
     "@backstage/plugin-permission-common": "npm:^0.9.6"
     "@backstage/plugin-permission-node": "npm:^0.10.10"
     "@backstage/types": "npm:^1.2.2"
     "@dagrejs/graphlib": "npm:^2.1.13"
     "@types/express": "npm:4.17.25"
     "@types/js-yaml": "npm:^4.0.9"
-    "@types/knex": "npm:^0.16.1"
     "@types/lodash": "npm:^4.14.151"
     "@types/node": "npm:22.19.11"
     "@types/supertest": "npm:7.2.0"
@@ -1436,7 +1433,6 @@ __metadata:
     knex: "npm:^3.0.0"
     knex-mock-client: "npm:3.0.2"
     lodash: "npm:^4.17.21"
-    msw: "npm:1.3.5"
     qs: "npm:6.14.1"
     supertest: "npm:7.2.2"
     typeorm-adapter: "npm:^1.6.1"
@@ -13019,15 +13015,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/knex@npm:^0.16.1":
-  version: 0.16.1
-  resolution: "@types/knex@npm:0.16.1"
-  dependencies:
-    knex: "npm:*"
-  checksum: 10/daf16bef279e68a11c74ad5d351237c6667ea9921ebe73e613d24b26acc25ba86b40fdc9d8adddfe1a0d234f20336adde6e4a2d062ae7ebe74a2c288ac6ccdc5
-  languageName: node
-  linkType: hard
-
 "@types/lodash@npm:^4.14.151":
   version: 4.17.13
   resolution: "@types/lodash@npm:4.17.13"
@@ -22596,7 +22583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knex@npm:*, knex@npm:3, knex@npm:3.1.0, knex@npm:^3.0.0":
+"knex@npm:3, knex@npm:3.1.0, knex@npm:^3.0.0":
   version: 3.1.0
   resolution: "knex@npm:3.1.0"
   dependencies:

@@ -44,6 +44,7 @@ describe('ProviderFactory', () => {
           apiKey: 'test-key',
           baseUrl: 'https://example.com',
           model: 'test-model',
+          logger: mockServices.logger.mock(),
         };
 
         const provider = ProviderFactory.createProvider(config);
@@ -57,6 +58,7 @@ describe('ProviderFactory', () => {
         apiKey: 'test-key',
         baseUrl: 'https://example.com',
         model: 'test-model',
+        logger: mockServices.logger.mock(),
       };
 
       expect(() => ProviderFactory.createProvider(config)).toThrow(

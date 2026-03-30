@@ -25,6 +25,7 @@ import {
   RoleMetadataStorage,
 } from '../database/role-metadata';
 import { BackstageRoleManager } from '../role-manager/role-manager';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from './enforcer-delegate';
 import { MODEL } from './permission-model';
 import {
@@ -45,6 +46,9 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
+  getCachedDefaultRoleMetadata: jest.fn().mockImplementation(),
+  getDefaultRole: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockClientKnex = Knex.knex({ client: MockClient });
@@ -164,6 +168,7 @@ describe('EnforcerDelegate', () => {
       rbacDBClient,
       config,
       mockAuthService,
+      new DefaultPermissionsReader(config),
     );
     enf.setRoleManager(rm);
     enf.enableAutoBuildRoleLinks(false);
