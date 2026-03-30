@@ -26,3 +26,4 @@ export {
 } from './extensions';
 
 export { LLMProvider } from './base-provider';
+export type { ProviderConfig } from './types';
