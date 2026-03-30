@@ -40,6 +40,7 @@ describe('EditShortcut', () => {
     anchorEl: document.createElement('div'),
     shortcut,
     api,
+    isOpen: true,
   };
 
   beforeEach(() => {
