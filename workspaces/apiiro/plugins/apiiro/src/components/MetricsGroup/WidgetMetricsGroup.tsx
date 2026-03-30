@@ -50,9 +50,16 @@ export const WidgetMetricsGroup = ({
     languages?: { language?: string; percentage?: number }[],
   ): Record<string, number> => {
     if (!languages) return {};
+
+    const totalPercentage = languages.reduce((sum, item) => {
+      return sum + (item.percentage || 0);
+    }, 0);
+
+    if (totalPercentage === 0) return {};
+
     return languages.reduce((acc, item) => {
       if (item.language && item.percentage !== undefined) {
-        acc[item.language] = item.percentage;
+        acc[item.language] = (item.percentage / totalPercentage) * 100;
       }
       return acc;
     }, {} as Record<string, number>);
