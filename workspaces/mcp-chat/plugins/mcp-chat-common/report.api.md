@@ -54,56 +54,6 @@ export interface ConversationRow {
 }
 
 // @public
-export abstract class LLMProvider {
-  constructor(config: ProviderConfig);
-  // (undocumented)
-  protected apiKey?: string;
-  // (undocumented)
-  protected baseUrl: string;
-  // (undocumented)
-  protected abstract formatRequest(
-    messages: ChatMessage[],
-    tools?: Tool[],
-  ): any;
-  getBaseUrl(): string;
-  // (undocumented)
-  protected abstract getHeaders(): Record<string, string>;
-  getLastResponseOutput(): any;
-  getModel(): string;
-  getType(): string;
-  // (undocumented)
-  protected makeRequest(endpoint: string, body: any): Promise<any>;
-  // (undocumented)
-  protected model: string;
-  // (undocumented)
-  protected abstract parseResponse(response: any): ChatResponse;
-  // (undocumented)
-  abstract sendMessage(
-    messages: ChatMessage[],
-    tools?: Tool[],
-  ): Promise<ChatResponse>;
-  setMcpServerConfigs(_configs: MCPServerFullConfig[]): void;
-  supportsNativeMcp(): boolean;
-  // (undocumented)
-  abstract testConnection(): Promise<{
-    connected: boolean;
-    models?: string[];
-    error?: string;
-  }>;
-  // (undocumented)
-  protected type: string;
-}
-
-// @public
-export type LLMProviderType =
-  | 'openai'
-  | 'openai-responses'
-  | 'claude'
-  | 'gemini'
-  | 'ollama'
-  | 'litellm';
-
-// @public
 export type MCPServer = MCPServerConfig & {
   status: {
     valid: boolean;
@@ -153,15 +103,6 @@ export enum MCPServerType {
 export interface MessageValidationResult {
   error?: string;
   isValid: boolean;
-}
-
-// @public
-export interface ProviderConfig {
-  apiKey?: string;
-  auth?: Record<string, string>;
-  baseUrl: string;
-  model: string;
-  type: string;
 }
 
 // @public

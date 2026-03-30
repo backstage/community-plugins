@@ -11,7 +11,6 @@ import { ConversationRecord } from '@backstage-community/plugin-mcp-chat-common'
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
-import { LLMProvider } from '@backstage-community/plugin-mcp-chat-common';
 import { LlmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
 import { llmProviderExtensionPoint } from '@backstage-community/plugin-mcp-chat-node';
 import { LoggerService } from '@backstage/backend-plugin-api';
@@ -174,7 +173,6 @@ export class MCPClientServiceImpl implements MCPClientService {
 export type MCPClientServiceOptions = {
   logger: LoggerService;
   config: RootConfigService;
-  provider: LLMProvider;
 };
 
 // @public
