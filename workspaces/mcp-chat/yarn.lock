@@ -2556,7 +2556,6 @@ __metadata:
   resolution: "@backstage-community/plugin-mcp-chat-common@workspace:plugins/mcp-chat-common"
   dependencies:
     "@backstage/cli": "npm:^0.33.0"
-    "@backstage/errors": "npm:^1.2.7"
   languageName: unknown
   linkType: soft
 
