@@ -27,6 +27,7 @@ type Props = {
   shortcut: Shortcut;
   onClose: () => void;
   isOpen: boolean;
+  anchorEl?: Element | null;
   api: ShortcutApi;
   allowExternalLinks?: boolean;
 };
@@ -35,6 +36,7 @@ export const EditShortcut = ({
   shortcut,
   onClose,
   isOpen,
+  anchorEl,
   api,
   allowExternalLinks,
 }: Props) => {
@@ -91,6 +93,7 @@ export const EditShortcut = ({
   return (
     <Popover
       isOpen={isOpen}
+      triggerRef={{ current: anchorEl as HTMLElement }}
       onOpenChange={open => {
         if (!open) onClose();
       }}

@@ -68,8 +68,8 @@ describe('ShortcutForm', () => {
     const urlInput = screen.getByPlaceholderText('Enter a URL');
     const titleInput = screen.getByPlaceholderText('Enter a display name');
 
-    fireEvent.change(urlInput, { target: { value: '/existing-url' } });
-    fireEvent.change(titleInput, { target: { value: 'Existing Title' } });
+    fireEvent.input(urlInput, { target: { value: '/existing-url' } });
+    fireEvent.input(titleInput, { target: { value: 'Existing Title' } });
 
     fireEvent.click(screen.getByText('Save'));
 
@@ -99,10 +99,10 @@ describe('ShortcutForm', () => {
 
     const urlInput = screen.getByPlaceholderText('Enter a URL');
     const titleInput = screen.getByPlaceholderText('Enter a display name');
-    fireEvent.change(urlInput, {
+    fireEvent.input(urlInput, {
       target: { value: 'https://www.backstage.io' },
     });
-    fireEvent.change(titleInput, { target: { value: 'Backstage' } });
+    fireEvent.input(titleInput, { target: { value: 'Backstage' } });
 
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
@@ -111,7 +111,7 @@ describe('ShortcutForm', () => {
           title: 'Backstage',
           url: 'https://www.backstage.io',
         }),
-        expect.anything(),
+        undefined,
       );
     });
   });
@@ -129,10 +129,10 @@ describe('ShortcutForm', () => {
 
     const urlInput = screen.getByPlaceholderText('Enter a URL');
     const titleInput = screen.getByPlaceholderText('Enter a display name');
-    fireEvent.change(urlInput, {
+    fireEvent.input(urlInput, {
       target: { value: '/catalog' },
     });
-    fireEvent.change(titleInput, { target: { value: 'Catalog' } });
+    fireEvent.input(titleInput, { target: { value: 'Catalog' } });
 
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
@@ -141,7 +141,7 @@ describe('ShortcutForm', () => {
           title: 'Catalog',
           url: '/catalog',
         }),
-        expect.anything(),
+        undefined,
       );
     });
   });
@@ -165,7 +165,7 @@ describe('ShortcutForm', () => {
     await waitFor(() => {
       expect(props.onSave).toHaveBeenCalledWith(
         expect.objectContaining({ title: 'some title', url: '/some-url' }),
-        expect.anything(),
+        undefined,
       );
     });
   });

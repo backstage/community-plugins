@@ -91,8 +91,8 @@ describe('EditShortcut', () => {
 
     const urlInput = screen.getByPlaceholderText('Enter a URL');
     const titleInput = screen.getByPlaceholderText('Enter a display name');
-    fireEvent.change(urlInput, { target: { value: '/some-new-url' } });
-    fireEvent.change(titleInput, { target: { value: 'some new title' } });
+    fireEvent.input(urlInput, { target: { value: '/some-new-url' } });
+    fireEvent.input(titleInput, { target: { value: 'some new title' } });
 
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
@@ -122,8 +122,8 @@ describe('EditShortcut', () => {
 
     const urlInput = screen.getByPlaceholderText('Enter a URL');
     const titleInput = screen.getByPlaceholderText('Enter a display name');
-    fireEvent.change(urlInput, { target: { value: '/some-new-url' } });
-    fireEvent.change(titleInput, { target: { value: 'some new title' } });
+    fireEvent.input(urlInput, { target: { value: '/some-new-url' } });
+    fireEvent.input(titleInput, { target: { value: 'some new title' } });
 
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {

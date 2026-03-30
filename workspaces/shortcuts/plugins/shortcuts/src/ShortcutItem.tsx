@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ButtonIcon, Tooltip } from '@backstage/ui';
 import { TooltipTrigger } from 'react-aria-components';
 import { RiEditLine } from '@remixicon/react';
@@ -48,6 +48,7 @@ type Props = {
 
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const handleClick = () => {
     setIsOpen(true);
@@ -70,6 +71,7 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
           icon={() => <ShortcutIcon text={text} color={color} />}
         >
           <ButtonIcon
+            ref={buttonRef}
             id="edit"
             data-testid="edit"
             onPress={handleClick}
@@ -84,6 +86,7 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
       <EditShortcut
         onClose={handleClose}
         isOpen={isOpen}
+        anchorEl={buttonRef.current}
         api={api}
         shortcut={shortcut}
         allowExternalLinks={allowExternalLinks}
