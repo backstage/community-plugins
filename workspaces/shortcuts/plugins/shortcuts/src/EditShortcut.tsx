@@ -26,7 +26,7 @@ import styles from './EditShortcut.module.css';
 type Props = {
   shortcut: Shortcut;
   onClose: () => void;
-  anchorEl?: Element;
+  isOpen: boolean;
   api: ShortcutApi;
   allowExternalLinks?: boolean;
 };
@@ -34,12 +34,11 @@ type Props = {
 export const EditShortcut = ({
   shortcut,
   onClose,
-  anchorEl,
+  isOpen,
   api,
   allowExternalLinks,
 }: Props) => {
   const alertApi = useApi(alertApiRef);
-  const open = Boolean(anchorEl);
   const analytics = useAnalytics();
 
   const handleSave: SubmitHandler<FormValues> = async ({ url, title }) => {
@@ -91,10 +90,9 @@ export const EditShortcut = ({
 
   return (
     <Popover
-      isOpen={open}
-      triggerRef={{ current: anchorEl as HTMLElement }}
-      onOpenChange={isOpen => {
-        if (!isOpen) onClose();
+      isOpen={isOpen}
+      onOpenChange={open => {
+        if (!open) onClose();
       }}
       placement="bottom end"
     >

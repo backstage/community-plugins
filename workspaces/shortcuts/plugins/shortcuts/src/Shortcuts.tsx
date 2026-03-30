@@ -57,7 +57,7 @@ export const Shortcuts = (props: ShortcutsProps) => {
   return (
     <SidebarScrollWrapper>
       <SidebarItem
-        icon={props.icon ?? RiPlayListAddLine}
+        icon={(props.icon ?? RiPlayListAddLine) as IconComponent}
         text="Add Shortcuts"
         onClick={handleClick}
       />

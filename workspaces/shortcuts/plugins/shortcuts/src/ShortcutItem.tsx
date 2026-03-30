@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import type { MouseEvent } from 'react';
-
 import { useState } from 'react';
 import { ButtonIcon, Tooltip } from '@backstage/ui';
 import { TooltipTrigger } from 'react-aria-components';
@@ -49,15 +47,14 @@ type Props = {
 };
 
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
-  const [anchorEl, setAnchorEl] = useState<Element | undefined>();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleClick = (event: MouseEvent<Element>) => {
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
+  const handleClick = () => {
+    setIsOpen(true);
   };
 
   const handleClose = () => {
-    setAnchorEl(undefined);
+    setIsOpen(false);
   };
 
   const text = getIconText(shortcut.title);
@@ -86,7 +83,7 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
       </TooltipTrigger>
       <EditShortcut
         onClose={handleClose}
-        anchorEl={anchorEl}
+        isOpen={isOpen}
         api={api}
         shortcut={shortcut}
         allowExternalLinks={allowExternalLinks}
