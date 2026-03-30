@@ -29,9 +29,6 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack"
   },
-  "dependencies": {
-    "@backstage/errors": "^1.2.7"
-  },
   "devDependencies": {
     "@backstage/cli": "^0.33.0"
   },
