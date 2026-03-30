@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { GoogleGenAI } from '@google/genai';
-import { GeminiProvider } from './GeminiProvider';
-import type {
-  ChatMessage,
-  Tool,
-  ProviderConfig,
-} from '@backstage-community/plugin-mcp-chat-common';
+import { GeminiProvider } from './gemini-provider';
+import { ChatMessage, Tool } from '@backstage-community/plugin-mcp-chat-common';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
 
 jest.mock('@google/genai');
 
@@ -30,11 +28,14 @@ describe('GeminiProvider', () => {
   let provider: GeminiProvider;
   let mockGenerateContent: jest.Mock;
 
+  const mockLogger = mockServices.logger.mock();
+
   const config: ProviderConfig = {
     type: 'gemini',
     apiKey: 'test-api-key',
     baseUrl: 'https://generativelanguage.googleapis.com',
     model: 'gemini-pro',
+    logger: mockLogger,
   };
 
   beforeEach(() => {

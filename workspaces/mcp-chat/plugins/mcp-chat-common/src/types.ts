@@ -160,38 +160,6 @@ export interface MCPServerStatusData {
 // =============================================================================
 
 /**
- * Configuration for an LLM provider.
- *
- * @example
- * ```typescript
- * const openaiConfig: ProviderConfig = {
- *   type: 'openai',
- *   apiKey: 'sk-...',
- *   baseUrl: 'https://api.openai.com/v1',
- *   model: 'gpt-4'
- * };
- *
- * const ollamaConfig: ProviderConfig = {
- *   type: 'ollama',
- *   baseUrl: 'http://localhost:11434',
- *   model: 'llama2'
- * };
- * ```
- *
- * @public
- */
-export interface ProviderConfig {
-  /** Provider type identifier */
-  type: string;
-  /** API key for authentication (optional for local providers like Ollama) */
-  apiKey?: string;
-  /** Base URL for the provider's API */
-  baseUrl: string;
-  /** Model identifier to use */
-  model: string;
-}
-
-/**
  * Runtime information about an active LLM provider.
  * Used for status display and monitoring.
  *

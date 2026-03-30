@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
 import {
-  LLMProvider,
-  type ChatMessage,
-  type Tool,
-  type ChatResponse,
-  type ProviderConfig,
+  ChatMessage,
+  Tool,
+  ChatResponse,
 } from '@backstage-community/plugin-mcp-chat-common';
 import { Ollama } from 'ollama';
 
@@ -31,7 +29,7 @@ import { Ollama } from 'ollama';
 export class OllamaProvider extends LLMProvider {
   private ollama: Ollama;
 
-  constructor(config: ProviderConfig) {
+  constructor(config: any) {
     super(config);
     // Initialize Ollama client with the base URL
     this.ollama = new Ollama({
@@ -147,7 +145,7 @@ export class OllamaProvider extends LLMProvider {
   }
 
   protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
-    // This method is not used since we use the Ollama SDK directly
+    // This method is not used anymore since we're using the Ollama library directly
     const request: any = {
       model: this.model,
       messages,
@@ -163,6 +161,8 @@ export class OllamaProvider extends LLMProvider {
   }
 
   protected parseResponse(response: any): ChatResponse {
+    // The Ollama library returns a response that should be compatible with OpenAI format
+    // But let's ensure it matches our expected ChatResponse format
     let toolCalls;
     if (response.message?.tool_calls) {
       // Convert Ollama tool calls to the expected format

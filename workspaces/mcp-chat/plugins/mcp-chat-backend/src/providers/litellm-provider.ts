@@ -13,14 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
 import {
-  LLMProvider,
-  type ChatMessage,
-  type Tool,
-  type ChatResponse,
+  ChatMessage,
+  Tool,
+  ChatResponse,
 } from '@backstage-community/plugin-mcp-chat-common';
 
+/**
+ * LiteLLM Provider
+ *
+ * LiteLLM is a unified interface to 100+ LLM APIs including:
+ * - OpenAI, Azure OpenAI
+ * - Anthropic (Claude)
+ * - Google (Gemini, VertexAI)
+ * - AWS Bedrock
+ * - Cohere, Replicate, Huggingface
+ * - And many more...
+ *
+ * It uses the OpenAI-compatible format, making it easy to integrate.
+ *
+ * Configuration example in app-config.yaml:
+ * ```yaml
+ * mcpChat:
+ *   providers:
+ *     - id: litellm
+ *       token: ${LITELLM_API_KEY}  # Optional, depends on your LiteLLM setup
+ *       baseUrl: 'http://localhost:4000'  # Your LiteLLM proxy URL
+ *       model: gpt-4  # Any model supported by your LiteLLM instance
+ * ```
+ */
 /**
  * LiteLLM proxy provider.
  * Provides unified access to 100+ LLM APIs through LiteLLM.
