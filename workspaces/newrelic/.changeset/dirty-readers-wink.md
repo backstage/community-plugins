@@ -2,4 +2,4 @@
 '@backstage-community/plugin-newrelic-dashboard': patch
 ---
 
-Use format param in mutation query
+Fixed an issue causing dashboards not to display
