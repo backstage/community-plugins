@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
 import {
-  LLMProvider,
-  type ChatMessage,
-  type Tool,
-  type ChatResponse,
+  ChatMessage,
+  Tool,
+  ChatResponse,
 } from '@backstage-community/plugin-mcp-chat-common';
 
 /**
@@ -61,12 +60,14 @@ export class OpenAIProvider extends LLMProvider {
             errorMessage = errorData.error.message;
           }
         } catch {
+          // If parsing fails, use the raw error text but truncate if too long
           errorMessage =
             errorText.length > 100
               ? `${errorText.substring(0, 100)}...`
               : errorText;
         }
 
+        // Provide user-friendly messages for common errors
         if (response.status === 401) {
           errorMessage = `Invalid API key. Please check your ${this.providerName} API key configuration.`;
         } else if (response.status === 429) {

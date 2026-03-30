@@ -14,4 +14,21 @@
  * limitations under the License.
  */
 
-export { LLMProvider } from './base-provider';
+// =============================================================================
+// Provider Base Class and Factory
+// =============================================================================
+export {
+  ProviderFactory,
+  getProviderConfig,
+  getProviderInfo,
+} from './provider-factory';
+
+// =============================================================================
+// Provider Implementations
+// =============================================================================
+export { OpenAIProvider } from './openai-provider';
+export { OpenAIResponsesProvider } from './openai-responses-provider';
+export { ClaudeProvider } from './claude-provider';
+export { GeminiProvider } from './gemini-provider';
+export { OllamaProvider } from './ollama-provider';
+export { LiteLLMProvider } from './litellm-provider';

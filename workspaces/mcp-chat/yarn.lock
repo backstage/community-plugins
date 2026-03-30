@@ -205,61 +205,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/client-bedrock-runtime@npm:^3.0.0":
-  version: 3.1019.0
-  resolution: "@aws-sdk/client-bedrock-runtime@npm:3.1019.0"
-  dependencies:
-    "@aws-crypto/sha256-browser": "npm:5.2.0"
-    "@aws-crypto/sha256-js": "npm:5.2.0"
-    "@aws-sdk/core": "npm:^3.973.25"
-    "@aws-sdk/credential-provider-node": "npm:^3.972.27"
-    "@aws-sdk/eventstream-handler-node": "npm:^3.972.12"
-    "@aws-sdk/middleware-eventstream": "npm:^3.972.8"
-    "@aws-sdk/middleware-host-header": "npm:^3.972.8"
-    "@aws-sdk/middleware-logger": "npm:^3.972.8"
-    "@aws-sdk/middleware-recursion-detection": "npm:^3.972.9"
-    "@aws-sdk/middleware-user-agent": "npm:^3.972.26"
-    "@aws-sdk/middleware-websocket": "npm:^3.972.14"
-    "@aws-sdk/region-config-resolver": "npm:^3.972.10"
-    "@aws-sdk/token-providers": "npm:3.1019.0"
-    "@aws-sdk/types": "npm:^3.973.6"
-    "@aws-sdk/util-endpoints": "npm:^3.996.5"
-    "@aws-sdk/util-user-agent-browser": "npm:^3.972.8"
-    "@aws-sdk/util-user-agent-node": "npm:^3.973.12"
-    "@smithy/config-resolver": "npm:^4.4.13"
-    "@smithy/core": "npm:^3.23.12"
-    "@smithy/eventstream-serde-browser": "npm:^4.2.12"
-    "@smithy/eventstream-serde-config-resolver": "npm:^4.3.12"
-    "@smithy/eventstream-serde-node": "npm:^4.2.12"
-    "@smithy/fetch-http-handler": "npm:^5.3.15"
-    "@smithy/hash-node": "npm:^4.2.12"
-    "@smithy/invalid-dependency": "npm:^4.2.12"
-    "@smithy/middleware-content-length": "npm:^4.2.12"
-    "@smithy/middleware-endpoint": "npm:^4.4.27"
-    "@smithy/middleware-retry": "npm:^4.4.44"
-    "@smithy/middleware-serde": "npm:^4.2.15"
-    "@smithy/middleware-stack": "npm:^4.2.12"
-    "@smithy/node-config-provider": "npm:^4.3.12"
-    "@smithy/node-http-handler": "npm:^4.5.0"
-    "@smithy/protocol-http": "npm:^5.3.12"
-    "@smithy/smithy-client": "npm:^4.12.7"
-    "@smithy/types": "npm:^4.13.1"
-    "@smithy/url-parser": "npm:^4.2.12"
-    "@smithy/util-base64": "npm:^4.3.2"
-    "@smithy/util-body-length-browser": "npm:^4.2.2"
-    "@smithy/util-body-length-node": "npm:^4.2.3"
-    "@smithy/util-defaults-mode-browser": "npm:^4.3.43"
-    "@smithy/util-defaults-mode-node": "npm:^4.2.47"
-    "@smithy/util-endpoints": "npm:^3.3.3"
-    "@smithy/util-middleware": "npm:^4.2.12"
-    "@smithy/util-retry": "npm:^4.2.12"
-    "@smithy/util-stream": "npm:^4.5.20"
-    "@smithy/util-utf8": "npm:^4.2.2"
-    tslib: "npm:^2.6.2"
-  checksum: 10/698b5448e7028fb8f7c679c3e007ebbb45f70fe67c73f0e53ec4c829ef7b97813b91b764a431ea4d3a39498dc487508bb643dc7c0b5a946a48f686139d77ff66
-  languageName: node
-  linkType: hard
-
 "@aws-sdk/client-codecommit@npm:^3.350.0":
   version: 3.1019.0
   resolution: "@aws-sdk/client-codecommit@npm:3.1019.0"
@@ -670,18 +615,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-sdk/eventstream-handler-node@npm:^3.972.12":
-  version: 3.972.12
-  resolution: "@aws-sdk/eventstream-handler-node@npm:3.972.12"
-  dependencies:
-    "@aws-sdk/types": "npm:^3.973.6"
-    "@smithy/eventstream-codec": "npm:^4.2.12"
-    "@smithy/types": "npm:^4.13.1"
-    tslib: "npm:^2.6.2"
-  checksum: 10/6f90ac1cb9faf204984c9dead9022ec79325b6565f03d87137f4636e653ff6ad03944ee0417b136effdcc5591419587673b54fc065e4f02c9ca67f42f8f8dbed
-  languageName: node
-  linkType: hard
-
 "@aws-sdk/middleware-bucket-endpoint@npm:^3.972.8":
   version: 3.972.8
   resolution: "@aws-sdk/middleware-bucket-endpoint@npm:3.972.8"
@@ -694,18 +627,6 @@ __metadata:
     "@smithy/util-config-provider": "npm:^4.2.2"
     tslib: "npm:^2.6.2"
   checksum: 10/d02078c46b63f97d5798156e9b07bc2bb60a4b7aadf2936605fdde6e75f7c4dc3a0de03af0033b374d64eedef257c689131758ec29a8107829e87712add49129
-  languageName: node
-  linkType: hard
-
-"@aws-sdk/middleware-eventstream@npm:^3.972.8":
-  version: 3.972.8
-  resolution: "@aws-sdk/middleware-eventstream@npm:3.972.8"
-  dependencies:
-    "@aws-sdk/types": "npm:^3.973.6"
-    "@smithy/protocol-http": "npm:^5.3.12"
-    "@smithy/types": "npm:^4.13.1"
-    tslib: "npm:^2.6.2"
-  checksum: 10/d69ea8e3787c30d1cec0f90568a1b1697f6a78db1368536bf2254becd2e4470c4b5009ab9742b74eab655086c7587e5a4c32df26a40af1b1693ac185ac7abb66
   languageName: node
   linkType: hard
 
@@ -999,18 +920,6 @@ __metadata:
     "@smithy/types": "npm:^4.14.1"
     tslib: "npm:^2.6.2"
   checksum: 10/57698e7df25da153fee7b2b98ece6009d139faa4fb81bb4fa51455a462c1bd2696ba9b451a7d7f14e9a34b28b6c01e3f191458dcd3d7ca841e5ff91e59e799b1
-  languageName: node
-  linkType: hard
-
-"@aws-sdk/util-format-url@npm:^3.972.8":
-  version: 3.972.8
-  resolution: "@aws-sdk/util-format-url@npm:3.972.8"
-  dependencies:
-    "@aws-sdk/types": "npm:^3.973.6"
-    "@smithy/querystring-builder": "npm:^4.2.12"
-    "@smithy/types": "npm:^4.13.1"
-    tslib: "npm:^2.6.2"
-  checksum: 10/37aa7d0e47b32fbfbb9b6d2c7ec03512191cac3eab7ce45c996dd19b77d5317cf2e1636d90de87313a5604c3c7fb2f8a426c8fbb6f39f672f3774ca8a5e72d19
   languageName: node
   linkType: hard
 
@@ -1677,95 +1586,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock@workspace:^, @backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock@workspace:plugins/mcp-chat-backend-module-amazon-bedrock":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-amazon-bedrock@workspace:plugins/mcp-chat-backend-module-amazon-bedrock"
-  dependencies:
-    "@aws-sdk/client-bedrock-runtime": "npm:^3.0.0"
-    "@aws-sdk/types": "npm:^3.0.0"
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-    "@backstage/integration-aws-node": "npm:^0.1.20"
-  languageName: unknown
-  linkType: soft
-
-"@backstage-community/plugin-mcp-chat-backend-module-anthropic@workspace:plugins/mcp-chat-backend-module-anthropic":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-anthropic@workspace:plugins/mcp-chat-backend-module-anthropic"
-  dependencies:
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-  languageName: unknown
-  linkType: soft
-
-"@backstage-community/plugin-mcp-chat-backend-module-gemini@workspace:plugins/mcp-chat-backend-module-gemini":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-gemini@workspace:plugins/mcp-chat-backend-module-gemini"
-  dependencies:
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-    "@google/genai": "npm:^1.41.0"
-  languageName: unknown
-  linkType: soft
-
-"@backstage-community/plugin-mcp-chat-backend-module-litellm@workspace:plugins/mcp-chat-backend-module-litellm":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-litellm@workspace:plugins/mcp-chat-backend-module-litellm"
-  dependencies:
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-  languageName: unknown
-  linkType: soft
-
-"@backstage-community/plugin-mcp-chat-backend-module-ollama@workspace:plugins/mcp-chat-backend-module-ollama":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-ollama@workspace:plugins/mcp-chat-backend-module-ollama"
-  dependencies:
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-    ollama: "npm:^0.6.0"
-  languageName: unknown
-  linkType: soft
-
-"@backstage-community/plugin-mcp-chat-backend-module-openai-responses@workspace:plugins/mcp-chat-backend-module-openai-responses":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-openai-responses@workspace:plugins/mcp-chat-backend-module-openai-responses"
-  dependencies:
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-  languageName: unknown
-  linkType: soft
-
-"@backstage-community/plugin-mcp-chat-backend-module-openai@workspace:^, @backstage-community/plugin-mcp-chat-backend-module-openai@workspace:plugins/mcp-chat-backend-module-openai":
-  version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-mcp-chat-backend-module-openai@workspace:plugins/mcp-chat-backend-module-openai"
-  dependencies:
-    "@backstage-community/plugin-mcp-chat-common": "workspace:^"
-    "@backstage-community/plugin-mcp-chat-node": "workspace:^"
-    "@backstage/backend-plugin-api": "npm:^1.4.0"
-    "@backstage/cli": "npm:^0.33.0"
-    "@backstage/config": "npm:^1.3.0"
-  languageName: unknown
-  linkType: soft
-
 "@backstage-community/plugin-mcp-chat-backend@workspace:plugins/mcp-chat-backend":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-mcp-chat-backend@workspace:plugins/mcp-chat-backend"
@@ -1785,6 +1605,7 @@ __metadata:
     express: "npm:^4.22.0"
     express-promise-router: "npm:^4.1.0"
     knex: "npm:^3.1.0"
+    ollama: "npm:^0.6.0"
     supertest: "npm:^7.0.0"
     uuid: "npm:^11.0.0"
   languageName: unknown
@@ -1967,7 +1788,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-dev-utils@npm:^0.1.5, @backstage/backend-dev-utils@npm:^0.1.7":
+"@backstage/backend-dev-utils@npm:^0.1.7":
   version: 0.1.7
   resolution: "@backstage/backend-dev-utils@npm:0.1.7"
   checksum: 10/c10ca3636d48dc5963f269f3b5c504bb48956ca5d90b54895b4e5c76e05c5813f1f498e58f0020f99d073abedc2b31c76083e720e01252a1726940249663d09b
@@ -11737,17 +11558,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^11.0.0":
-  version: 11.10.0
-  resolution: "better-sqlite3@npm:11.10.0"
-  dependencies:
-    bindings: "npm:^1.5.0"
-    node-gyp: "npm:latest"
-    prebuild-install: "npm:^7.1.1"
-  checksum: 10/5e4c7437c4fe6033335a79c82974d7ab29f33c51c36f48b73e87e087d21578468575de1c56a7badd4f76f17255e25abefddaeacf018e5eeb9e0cb8d6e3e4a5e1
-  languageName: node
-  linkType: hard
-
 "better-sqlite3@npm:^12.0.0":
   version: 12.8.0
   resolution: "better-sqlite3@npm:12.8.0"
@@ -15527,15 +15337,6 @@ __metadata:
     "@types/express":
       optional: true
   checksum: 10/7e6da926733756700b788f8eea81be96fe9668299b29b87815071f89408ae8368d5054cd68ec9d2b141000b8213b87d1f495a00b887f9e021a90f9e0cbb23146
-  languageName: node
-  linkType: hard
-
-"express-rate-limit@npm:^7.5.0":
-  version: 7.5.1
-  resolution: "express-rate-limit@npm:7.5.1"
-  peerDependencies:
-    express: ">= 4.11"
-  checksum: 10/357c3398450144ab7bbce2841d0bf4f93a0f3fd9d1d5ed9a0ee331b557af969cc790941dc37b47f8d9b5672964aa0e31666f770e1f48b334dc7d1e69f6433040
   languageName: node
   linkType: hard
 
@@ -21874,7 +21675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-forge@npm:^1, node-forge@npm:^1.3.1, node-forge@npm:^1.3.2":
+"node-forge@npm:^1, node-forge@npm:^1.3.2":
   version: 1.4.0
   resolution: "node-forge@npm:1.4.0"
   checksum: 10/d70fd769768e646eda73343d4d4105ccb6869315d975905a22117431c04ae5b6df6c488e34ed275b1a66b50195a09b84b5c8aeca3b8605c20605fcb8e9f109d9
@@ -29144,7 +28945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yauzl@npm:^3.0.0, yauzl@npm:^3.2.1":
+"yauzl@npm:^3.2.1":
   version: 3.2.1
   resolution: "yauzl@npm:3.2.1"
   dependencies:
@@ -29210,7 +29011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-to-json-schema@npm:^3.20.4, zod-to-json-schema@npm:^3.25.1":
+"zod-to-json-schema@npm:^3.25.1":
   version: 3.25.2
   resolution: "zod-to-json-schema@npm:3.25.2"
   peerDependencies:

@@ -15,11 +15,9 @@
  */
 import { startTestBackend, mockServices } from '@backstage/backend-test-utils';
 import { mcpChatPlugin } from './plugin';
-import { llmProviderExtensionPoint } from './extensions';
 import request from 'supertest';
 import { TestBackend } from '@backstage/backend-test-utils';
 import { MCPServerType } from '@backstage-community/plugin-mcp-chat-common';
-import { createBackendModule } from '@backstage/backend-plugin-api';
 
 jest.mock('./services/MCPClientServiceImpl', () => ({
   MCPClientServiceImpl: jest.fn().mockImplementation(() => ({
@@ -113,36 +111,10 @@ describe('mcpChatPlugin', () => {
   let backend: TestBackend;
   const { validateMessages } = require('./utils');
 
-  // Create a test module that registers a mock provider via the extension point
-  const mockProviderModule = createBackendModule({
-    pluginId: 'mcp-chat',
-    moduleId: 'test-openai',
-    register(reg) {
-      reg.registerInit({
-        deps: {
-          llmProviders: llmProviderExtensionPoint,
-        },
-        async init({ llmProviders }) {
-          llmProviders.registerProvider('openai', {
-            sendMessage: jest.fn(),
-            testConnection: jest.fn(),
-            getType: () => 'openai',
-            getModel: () => 'gpt-4o-mini',
-            getBaseUrl: () => 'https://api.openai.com/v1',
-            supportsNativeMcp: () => false,
-            setMcpServerConfigs: jest.fn(),
-            getLastResponseOutput: () => null,
-          } as any);
-        },
-      });
-    },
-  });
-
   beforeEach(async () => {
     backend = await startTestBackend({
       features: [
         mcpChatPlugin,
-        mockProviderModule,
         mockServices.rootConfig.factory({
           data: mockConfig,
         }),

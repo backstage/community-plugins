@@ -24,8 +24,6 @@ import {
   SummarizationService,
 } from './services';
 import { validateConfig } from './utils';
-import { llmProviderExtensionPoint } from './extensions';
-import { LLMProvider } from './providers/base-provider';
 
 /**
  * mcpChatPlugin backend plugin
@@ -35,15 +33,6 @@ import { LLMProvider } from './providers/base-provider';
 export const mcpChatPlugin = createBackendPlugin({
   pluginId: 'mcp-chat',
   register(env) {
-    const providers = new Map<string, LLMProvider>();
-
-    env.registerExtensionPoint(llmProviderExtensionPoint, {
-      registerProvider(type: string, provider: LLMProvider) {
-        // Last-write-wins on duplicate registration (Req 1.4)
-        providers.set(type, provider);
-      },
-    });
-
     env.registerInit({
       deps: {
         logger: coreServices.logger,
@@ -55,38 +44,10 @@ export const mcpChatPlugin = createBackendPlugin({
       async init({ logger, httpRouter, config, database, httpAuth }) {
         validateConfig(config);
 
-        // Resolve active provider from extension point registry (Req 6.3, 8.2)
-        const configuredProviders =
-          config.getOptionalConfigArray('mcpChat.providers') ?? [];
-        const activeId = configuredProviders[0]?.getString('id');
-
-        if (!activeId) {
-          throw new Error('No provider configured in mcpChat.providers[0].id');
-        }
-
-        const activeProvider = providers.get(activeId);
-        if (!activeProvider) {
-          const available = Array.from(providers.keys()).join(', ');
-          throw new Error(
-            `No provider module registered for type '${activeId}'. ` +
-              `Available registered types: [${available}]. ` +
-              `Install the corresponding module package.`,
-          );
-        }
-
-        if (providers.size > 0) {
-          for (const [type] of providers) {
-            if (type === activeId) {
-              logger.info(`Active LLM provider: '${type}'`);
-            }
-          }
-        }
-
-        // Inject resolved provider into MCPClientServiceImpl (Req 8.2)
+        // Initialize core services
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
-          provider: activeProvider,
         });
 
         const conversationStore = await ChatConversationStore.create({

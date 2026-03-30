@@ -19,8 +19,8 @@ import {
   ChatMessage,
   Tool,
   ChatResponse,
-  ProviderConfig,
 } from '@backstage-community/plugin-mcp-chat-common';
+import { type ProviderConfig } from './types';
 
 /**
  * Abstract base class for all LLM providers.

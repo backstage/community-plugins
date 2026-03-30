@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
 import {
-  LLMProvider,
-  type ChatMessage,
-  type Tool,
-  type ChatResponse,
-  type MCPServerFullConfig,
-  type ResponsesApiResponse,
-  type ResponsesApiMcpTool,
-  type ResponsesApiMcpCall,
-  type ResponsesApiMessage,
-  type ToolCall,
+  ChatMessage,
+  Tool,
+  ChatResponse,
+  MCPServerFullConfig,
+  ResponsesApiResponse,
+  ResponsesApiMcpTool,
+  ResponsesApiMcpCall,
+  ResponsesApiMessage,
+  ToolCall,
 } from '@backstage-community/plugin-mcp-chat-common';
 
 /**
@@ -52,14 +51,6 @@ export class OpenAIResponsesProvider extends LLMProvider {
     this.allowedToolsByServer = allowedToolsByServer;
   }
 
-  /**
-   * Get the raw Responses API output for detailed tool execution information.
-   * Used by MCPClientServiceImpl to construct toolResponses.
-   */
-  getLastResponseOutput(): ResponsesApiResponse['output'] | null {
-    return this.lastResponseOutput;
-  }
-
   async sendMessage(
     messages: ChatMessage[],
     _tools?: Tool[],
@@ -75,6 +66,8 @@ export class OpenAIResponsesProvider extends LLMProvider {
     error?: string;
   }> {
     try {
+      // For Responses API, we can test with a simple request
+      // Or we could check if the endpoint is reachable
       const response = await fetch(`${this.baseUrl}/responses`, {
         method: 'POST',
         headers: this.getHeaders(),
@@ -201,6 +194,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
     for (const event of response.output) {
       if (event.type === 'mcp_call') {
         const mcpCall = event as ResponsesApiMcpCall;
+        // Create a tool call in the standard format
         toolCalls.push({
           id: mcpCall.id,
           type: 'function',
@@ -211,6 +205,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
         });
       } else if (event.type === 'message') {
         const message = event as ResponsesApiMessage;
+        // Extract the final text content
         if (message.content && message.content.length > 0) {
           finalContent = message.content
             .map(part => part.text)
@@ -220,6 +215,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
       }
     }
 
+    // Return in standard ChatResponse format
     return {
       choices: [
         {
@@ -239,6 +235,16 @@ export class OpenAIResponsesProvider extends LLMProvider {
         : undefined,
     };
   }
+
+  /**
+   * Get the raw Responses API output for detailed tool execution information
+   * This is used by MCPClientServiceImpl to construct toolResponses
+   */
+  getLastResponseOutput(): ResponsesApiResponse['output'] | null {
+    return this.lastResponseOutput;
+  }
+
+  private lastResponseOutput: ResponsesApiResponse['output'] | null = null;
 
   protected async makeRequest(endpoint: string, body: any): Promise<any> {
     const url = `${this.baseUrl}${endpoint}`;

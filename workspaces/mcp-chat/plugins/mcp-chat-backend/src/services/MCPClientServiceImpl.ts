@@ -22,12 +22,14 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import * as path from 'path';
 import {
-  executeToolCall,
-  findNpxPath,
-  loadServerConfigs,
+  ProviderFactory,
+  getProviderConfig as getConfig,
+  getProviderInfo,
   DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
-} from '../utils';
-import { LLMProvider } from '../providers/base-provider';
+} from '../providers/provider-factory';
+import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
+import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
 import { MCPClientService } from './MCPClientService';
 import {
   ChatMessage,
@@ -50,7 +52,6 @@ import {
 export type Options = {
   logger: LoggerService;
   config: RootConfigService;
-  provider: LLMProvider;
 };
 
 /**
@@ -75,14 +76,32 @@ export class MCPClientServiceImpl implements MCPClientService {
   constructor(options: Options) {
     this.logger = options.logger;
     this.config = options.config;
-    this.toolCallTimeout =
-      this.config.getOptionalNumber('mcpChat.toolCallTimeout') ??
-      DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS;
-    this.llmProvider = options.provider;
+    this.llmProvider = this.initializeLLMProvider();
     this.mcpServers = this.initializeMCPServers();
     this.systemPrompt =
       this.config.getOptionalString('mcpChat.systemPrompt') ||
       "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.";
+  }
+
+  private initializeLLMProvider(): LLMProvider {
+    try {
+      const providerConfig = getConfig(this.config);
+      const llmProvider = ProviderFactory.createProvider(
+        providerConfig,
+        this.logger,
+      );
+      this.logger.info(
+        `Using LLM Provider: ${providerConfig.type}, Model: ${providerConfig.model}`,
+      );
+      return llmProvider;
+    } catch (error) {
+      this.logger.error(
+        `Failed to initialize LLM provider: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+      throw error;
+    }
   }
 
   async initializeMCPServers(): Promise<MCPServer[]> {
@@ -108,8 +127,9 @@ export class MCPClientServiceImpl implements MCPClientService {
     // Store server configs for Responses API provider
     this.serverConfigs = serverConfigs;
 
-    // Check if using native MCP provider - initialize local MCP for tool discovery
-    if (this.llmProvider.supportsNativeMcp()) {
+    // Check if using Responses API provider - initialize local MCP for tool discovery
+    const providerConfig = getConfig(this.config);
+    if (providerConfig.type === 'openai-responses') {
       this.logger.info(
         'Using OpenAI Responses API - initializing local MCP for tool discovery',
       );
@@ -475,8 +495,9 @@ export class MCPClientServiceImpl implements MCPClientService {
       });
     }
 
-    // Check if using native MCP provider
-    if (this.llmProvider.supportsNativeMcp()) {
+    // Check if using Responses API provider
+    const providerConfig = getConfig(this.config);
+    if (providerConfig.type === 'openai-responses') {
       return this.processQueryWithResponsesApi(messages, enabledTools);
     }
 
@@ -607,20 +628,22 @@ export class MCPClientServiceImpl implements MCPClientService {
     const toolResponses: any[] = [];
 
     // Get the raw output from the provider to extract tool execution details
-    const output = this.llmProvider.getLastResponseOutput();
-    if (output) {
-      for (const event of output) {
-        if (event.type === 'mcp_call') {
-          const mcpCall = event as ResponsesApiMcpCall;
-          // Build tool response in the format expected by the UI
-          toolResponses.push({
-            id: mcpCall.id,
-            name: mcpCall.name,
-            arguments: JSON.parse(mcpCall.arguments || '{}'),
-            result: mcpCall.error || mcpCall.output,
-            serverId: mcpCall.server_label,
-            error: mcpCall.error,
-          });
+    if (this.llmProvider instanceof OpenAIResponsesProvider) {
+      const output = this.llmProvider.getLastResponseOutput();
+      if (output) {
+        for (const event of output) {
+          if (event.type === 'mcp_call') {
+            const mcpCall = event as ResponsesApiMcpCall;
+            // Build tool response in the format expected by the UI
+            toolResponses.push({
+              id: mcpCall.id,
+              name: mcpCall.name,
+              arguments: JSON.parse(mcpCall.arguments || '{}'),
+              result: mcpCall.error || mcpCall.output,
+              serverId: mcpCall.server_label,
+              error: mcpCall.error,
+            });
+          }
         }
       }
     }
@@ -642,14 +665,15 @@ export class MCPClientServiceImpl implements MCPClientService {
 
   async getProviderStatus(): Promise<ProviderStatusData> {
     try {
+      const info = getProviderInfo(this.config);
       const status = await this.llmProvider.testConnection();
 
-      // Derive provider info from the injected provider instance
+      // Structure for future multi-provider support
       const providers = [
         {
-          id: this.llmProvider.getType(),
-          model: this.llmProvider.getModel(),
-          baseUrl: this.llmProvider.getBaseUrl(),
+          id: info.provider,
+          model: info.model,
+          baseUrl: info.baseURL,
           connection: {
             connected: status.connected,
             models: status.models || [],
