@@ -27,13 +27,13 @@ Displays the list of integrated repositories along with statistics sourced from 
 
 ### Apiiro Tab (Component)
 
-Provides an in-depth look at each repository's open risks and detailed metrics retrieved from Apiiro.
+Provides an in-depth look at each repository's open risks and detailed metrics retrieved from Apiiro. The risk view links and "Go to Apiiro" button redirect to the development risks tab in Apiiro.
 
 ![Apiiro Tab](../../assets/apiiro-tab.png)
 
 ### Apiiro Widget
 
-Offers a high-level overview of the repository, including programming languages and top risk details. Can be added to any custom entity tab.
+Offers a high-level overview of the repository, including programming languages and top risk details. Can be added to any custom entity tab. "Go to Apiiro" button redirect to the development risks tab in Apiiro.
 
 ![Apiiro Widget](../../assets/apiiro-widget.png)
 
@@ -48,7 +48,7 @@ Displays a comprehensive list of all applications integrated with Apiiro, includ
 
 ### Apiiro Tab (System)
 
-Provides a detailed view of applications with comprehensive risk insights, associated repositories, and security metrics. This tab displays application-level statistics and allows navigation between repositories and risks within the application context.
+Provides a detailed view of applications with comprehensive risk insights, associated repositories, and security metrics. This tab displays application-level statistics and allows navigation between repositories and risks within the application context. The risks view links and "Go to Apiiro" button redirect to the development risks tab in Apiiro.
 
 > [!NOTE]
 > This feature requires the Backstage connector to be configured in Apiiro.
