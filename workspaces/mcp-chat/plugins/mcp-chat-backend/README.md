@@ -267,6 +267,10 @@ mcpChat:
       npxCommand: 'kubernetes-mcp-server@latest'
       env:
         KUBECONFIG: ${KUBECONFIG}
+      # Optional: exclude specific tools from the LLM
+      disabledTools:
+        - pods_delete
+        - pods_exec
 
     # Backstage server integration (with authorization headers)
     - id: backstage-server
@@ -342,6 +346,22 @@ systemPrompt: 'You are a security-focused DevOps assistant. Always consider secu
 - The system prompt affects all AI interactions in the plugin
 
 For more advanced MCP server configuration examples (including STDIO, Streamable HTTP, custom scripts, and arguments), see [SERVER_CONFIGURATION](../../docs/SERVER_CONFIGURATION.md).
+
+### Tool-Level Filtering (disabledTools)
+
+Administrators can exclude specific tools from an MCP server using the `disabledTools` configuration. Disabled tools are filtered out at discovery time and are never exposed to the LLM or the frontend.
+
+```yaml
+mcpServers:
+  - id: kubernetes-server
+    name: Kubernetes Server
+    npxCommand: 'kubernetes-mcp-server@latest'
+    env:
+      KUBECONFIG: ${KUBECONFIG}
+    disabledTools:
+      - pods_delete
+      - pods_exec
+```
 
 ### Conversation History Configuration
 
