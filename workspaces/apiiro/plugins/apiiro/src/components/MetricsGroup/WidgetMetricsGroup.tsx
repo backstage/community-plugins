@@ -81,19 +81,19 @@ export const WidgetMetricsGroup = ({
             allowViewChart={allowViewChart}
           />
         </Grid>
+        {allowViewChart && repositoryData && (
+          <Grid xs={12} sm={6} lg={6}>
+            <TopLanguagesTile data={languagePercentages} />
+          </Grid>
+        )}
         {allowViewChart && (
-          <>
-            <Grid xs={12} sm={6} lg={6}>
-              <TopLanguagesTile data={languagePercentages} />
-            </Grid>
-            <Grid xs={12} sm={6} lg={6}>
-              <TopRiskTile
-                repoId={repoId}
-                applicationId={applicationId}
-                entityRef={entityRef}
-              />
-            </Grid>
-          </>
+          <Grid xs={12} sm={6} lg={applicationData ? 12 : 6}>
+            <TopRiskTile
+              repoId={repoId}
+              applicationId={applicationId}
+              entityRef={entityRef}
+            />
+          </Grid>
         )}
       </Grid>
     </Grid>

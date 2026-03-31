@@ -2,10 +2,6 @@
 
 The Apiiro plugin for Backstage integrates Apiiro's application risk management capabilities directly into your Backstage developer portal. This plugin empowers developers to code securely by automatically checking for security vulnerabilities and enables them to review and address newly introduced vulnerabilities directly in Backstage.
 
-## Plugin Compatibility
-
-The plugin has been successfully tested with Backstage v1.44.0 If you are using a newer version of Backstage, please file an issue, and we will provide guidance on the best integration practices for your specific version.
-
 ## Features
 
 - **Dashboard View**: Repository list with statistics sourced from Apiiro
