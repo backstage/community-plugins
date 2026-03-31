@@ -15,13 +15,21 @@
  */
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '../../api';
-import { Tab } from './Tab';
+import { ComponentTab } from './ComponentTab';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { SystemTab } from './SystemTab';
 
-/** @public */
+/**
+ * Entity tab component that displays Apiiro security insights for system and component entities.
+ * Shows metrics, risks, and other security-related information for a specific entity.
+ * @public
+ */
 export const ApiiroTab = () => {
+  const { entity } = useEntity();
   return (
     <QueryClientProvider client={queryClient}>
-      <Tab />
+      {entity.kind === 'Component' && <ComponentTab />}
+      {entity.kind === 'System' && <SystemTab />}
     </QueryClientProvider>
   );
 };

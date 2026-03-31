@@ -26,5 +26,19 @@ export interface Config {
      * @default true
      */
     defaultAllowMetricsView?: boolean;
+
+    /**
+     * Default value for the enable applications view annotation
+     * @visibility frontend
+     * @default false
+     */
+    enableApplicationsView?: boolean;
+
+    /**
+     * Configuration to enable the devView for risks after redirect from Backstage to Apiiro
+     * @visibility frontend
+     * @default false
+     */
+    redirectDevView?: boolean;
   };
 }

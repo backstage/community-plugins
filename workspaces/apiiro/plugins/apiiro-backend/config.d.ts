@@ -69,6 +69,14 @@ export interface Config {
     };
 
     /**
+     * Enable the applications view integration.
+     * When enabled, applications data is fetched from Apiiro and cached on a schedule.
+     * @visibility backend
+     * @default false
+     */
+    enableApplicationsView?: boolean;
+
+    /**
      * Annotation control configuration for metric view access using catalog entity processor
      * Controls which entities users can view metrics for.
      * @visibility backend

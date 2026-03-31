@@ -17,7 +17,7 @@ import { LoggerService, CacheService } from '@backstage/backend-plugin-api';
 import { ApiiroDataService } from './data.service';
 import {
   matchRepositoriesWithEntitiesAndAddUrl,
-  filterRepositoriesByKey,
+  filterRepositoriesById,
 } from './data.service.helpers';
 
 /**
@@ -84,8 +84,11 @@ export class RepositoryCacheService {
       this.logger.error('Failed to refresh repository cache', {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
+      // Reset flag before re-throwing
+      this.isRefreshing = false;
       throw error;
     } finally {
+      // Ensure flag is reset in all cases
       this.isRefreshing = false;
     }
   }
@@ -93,10 +96,20 @@ export class RepositoryCacheService {
   /**
    * Get all repositories from cache, or fetch if cache is empty
    */
-  async getAllRepositories(): Promise<{
+  async getAllRepositories(applicationId?: string): Promise<{
     repositories: any[];
     totalCount: number;
   }> {
+    if (applicationId) {
+      const result = await this.dataService.getAllRepositories(
+        undefined,
+        applicationId,
+      );
+      return {
+        repositories: result.repositories,
+        totalCount: result.totalCount,
+      };
+    }
     const cached = (await this.cache.get(this.CACHE_KEY_ALL)) as
       | CachedRepositoryData
       | undefined;
@@ -118,59 +131,70 @@ export class RepositoryCacheService {
     this.logger.debug('Cache miss - fetching repositories from API');
     await this.refreshAllRepositoriesCache();
 
-    const refreshedCache = (await this.cache.get(this.CACHE_KEY_ALL)) as
-      | CachedRepositoryData
-      | undefined;
-    if (!refreshedCache) {
-      throw new Error('Failed to populate cache after fetch');
+    // Wait for cache to be populated if refresh was already in progress
+    let attempts = 0;
+    const maxAttempts = 2;
+    const waitTime = 100; // 100ms between attempts
+
+    while (attempts < maxAttempts) {
+      const refreshedCache = (await this.cache.get(this.CACHE_KEY_ALL)) as
+        | CachedRepositoryData
+        | undefined;
+
+      if (refreshedCache) {
+        return {
+          repositories: refreshedCache.repositories,
+          totalCount: refreshedCache.totalCount,
+        };
+      }
+
+      if (!this.isRefreshing) {
+        // If refresh completed but cache is still empty, fall back to direct API call
+        this.logger.warn(
+          'Cache refresh completed but cache is empty, falling back to direct API call',
+        );
+        const result = await this.dataService.getAllRepositories();
+        return {
+          repositories: result.repositories,
+          totalCount: result.totalCount,
+        };
+      }
+
+      // Wait for refresh to complete
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      attempts++;
     }
 
+    // If we've waited too long, fall back to direct API call
+    this.logger.warn(
+      'Cache refresh taking too long, falling back to direct API call',
+    );
+    const result = await this.dataService.getAllRepositories();
     return {
-      repositories: refreshedCache.repositories,
-      totalCount: refreshedCache.totalCount,
+      repositories: result.repositories,
+      totalCount: result.totalCount,
     };
   }
 
   /**
-   * Get repositories filtered by Key, using cache when possible
+   * Get repositories filtered by Key, using cache
    */
-  async getRepositoriesByKey(repositoryKey: string): Promise<{
+  async getRepositoriesById(repositoryId: string): Promise<{
     repositories: any[];
     totalCount: number;
   }> {
     this.logger.debug('Getting repositories by key', {
-      repositoryKey,
+      repositoryId,
     });
 
-    // Try to get from cache first
-    const cached = (await this.cache.get(this.CACHE_KEY_ALL)) as
-      | CachedRepositoryData
-      | undefined;
-
-    let allRepositories: any[];
-
-    if (cached && repositoryKey) {
-      // Use cache and filter in memory
-      this.logger.debug('Using cache for repositoryKey');
-      allRepositories = cached.repositories;
-    } else {
-      // Fetch with server-side filtering if we have a repository name
-      this.logger.debug('Fetching with server-side filtering', {
-        repositoryKey,
-      });
-      const result = await this.dataService.getAllRepositories(
-        undefined,
-        repositoryKey || undefined,
-      );
-      allRepositories = result.repositories;
-    }
+    const allRepositories = (await this.getAllRepositories()).repositories;
 
     // Apply exact URL filtering if needed
     let filteredRepositories = [];
-    if (repositoryKey) {
-      filteredRepositories = filterRepositoriesByKey(
+    if (repositoryId) {
+      filteredRepositories = filterRepositoriesById(
         allRepositories,
-        repositoryKey,
+        repositoryId,
       );
     } else {
       filteredRepositories = allRepositories;
@@ -198,13 +222,13 @@ export class RepositoryCacheService {
     repositories: any[];
     totalCount: number;
   } {
-    if (entities.length === 0) {
+    if (entities.length === 0 || repositories.length === 0) {
       this.logger.warn(
-        'No entities provided for matching, returning all repositories',
+        'No entities provided for matching, returning empty repositories',
       );
       return {
-        repositories,
-        totalCount: repositories.length,
+        repositories: [],
+        totalCount: 0,
       };
     }
 

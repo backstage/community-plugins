@@ -27,9 +27,18 @@ const getTopRisksData = async ({
   connectApi,
   repoId,
   entityRef,
-}: Query & { repoId: string; entityRef?: string }) => {
+  applicationId,
+}: Query & {
+  repoId?: string;
+  entityRef?: string;
+  applicationId?: string;
+}) => {
   const url = await connectApi.discoveryApi.getBaseUrl('apiiro');
-  const body = { repositoryKey: repoId, ...(entityRef && { entityRef }) };
+  const body = {
+    ...(repoId && { repositoryId: repoId }),
+    ...(entityRef && { entityRef }),
+    ...(applicationId && { applicationId }),
+  };
   return await post<TopRiskSuccessResponseData>(fetchApi, `${url}/top-risks`, {
     signal,
     body,
@@ -41,24 +50,35 @@ export function useTopRisksData({
   connectApi,
   repoId,
   entityRef,
-}: Omit<Query, 'signal'> & { repoId?: string; entityRef?: string }) {
+  applicationId,
+}: Omit<Query, 'signal'> & {
+  repoId?: string;
+  entityRef?: string;
+  applicationId?: string;
+}) {
   const {
     data: topRisksData,
     error: topRisksDataError,
     isLoading: topRisksDataLoading,
   } = useQuery({
-    queryKey: [TOP_RISKS_QUERY_KEY.GET_TOP_RISKS, repoId, entityRef],
+    queryKey: [
+      TOP_RISKS_QUERY_KEY.GET_TOP_RISKS,
+      repoId,
+      entityRef,
+      applicationId,
+    ],
     queryFn: ({ signal }) =>
-      repoId
+      repoId || applicationId
         ? getTopRisksData({
             fetchApi,
             signal,
             connectApi,
             repoId,
             entityRef,
+            applicationId,
           })
         : Promise.resolve([]),
-    enabled: !!repoId,
+    enabled: !!repoId || !!applicationId,
   });
 
   return {
