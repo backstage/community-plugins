@@ -69,6 +69,7 @@ export function loadServerConfigs(
       url: serverConfig.getOptionalString('url'),
       headers,
       type,
+      disabledTools: serverConfig.getOptionalStringArray('disabledTools'),
     };
   });
 }

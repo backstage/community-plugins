@@ -447,6 +447,174 @@ describe('MCPClientServiceImpl', () => {
       const tools = service.getAvailableTools();
       expect(Array.isArray(tools)).toBe(true);
     });
+
+    it('should exclude disabled tools from available tools (STDIO)', async () => {
+      const serverConfigs = [
+        {
+          id: 'test-server',
+          name: 'test-server',
+          type: MCPServerType.STDIO,
+          scriptPath: '/path/to/script.py',
+          disabledTools: ['dangerous_tool'],
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.listTools.mockResolvedValue({
+        tools: [
+          { name: 'safe_tool', description: 'Safe tool', inputSchema: {} },
+          {
+            name: 'dangerous_tool',
+            description: 'Dangerous tool',
+            inputSchema: {},
+          },
+        ],
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.initializeMCPServers();
+      const tools = service.getAvailableTools();
+
+      expect(tools).toHaveLength(1);
+      expect(tools[0].function.name).toBe('safe_tool');
+    });
+
+    it('should exclude disabled tools from available tools (Responses API)', async () => {
+      providerFactory.getProviderConfig.mockReturnValue({
+        type: 'openai-responses',
+        apiKey: 'test-key',
+        baseUrl: 'https://api.openai.com/v1',
+        model: 'gpt-4',
+      });
+
+      const serverConfigs = [
+        {
+          id: 'http-server',
+          name: 'http-server',
+          type: MCPServerType.STREAMABLE_HTTP,
+          url: 'https://example.com/mcp',
+          disabledTools: ['pods_delete', 'pods_exec'],
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.listTools.mockResolvedValue({
+        tools: [
+          { name: 'pods_list', description: 'List pods', inputSchema: {} },
+          { name: 'pods_delete', description: 'Delete pod', inputSchema: {} },
+          { name: 'pods_exec', description: 'Exec in pod', inputSchema: {} },
+        ],
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.initializeMCPServers();
+      const tools = service.getAvailableTools();
+
+      expect(tools).toHaveLength(1);
+      expect(tools[0].function.name).toBe('pods_list');
+    });
+
+    it('should log warning for invalid disabled tool names', async () => {
+      const serverConfigs = [
+        {
+          id: 'test-server',
+          name: 'test-server',
+          type: MCPServerType.STDIO,
+          scriptPath: '/path/to/script.py',
+          disabledTools: ['nonexistent_tool'],
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.listTools.mockResolvedValue({
+        tools: [
+          { name: 'real_tool', description: 'Real tool', inputSchema: {} },
+        ],
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.initializeMCPServers();
+
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        expect.stringContaining("Unable to exclude tool 'nonexistent_tool'"),
+      );
+    });
+
+    it('should log info when tools are disabled', async () => {
+      const serverConfigs = [
+        {
+          id: 'test-server',
+          name: 'test-server',
+          type: MCPServerType.STDIO,
+          scriptPath: '/path/to/script.py',
+          disabledTools: ['dangerous_tool'],
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.listTools.mockResolvedValue({
+        tools: [
+          { name: 'safe_tool', description: 'Safe tool', inputSchema: {} },
+          {
+            name: 'dangerous_tool',
+            description: 'Dangerous tool',
+            inputSchema: {},
+          },
+        ],
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.initializeMCPServers();
+
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        expect.stringContaining('disabled tools: dangerous_tool'),
+      );
+    });
+
+    it('should not affect behavior when no disabledTools configured', async () => {
+      const serverConfigs = [
+        {
+          id: 'test-server',
+          name: 'test-server',
+          type: MCPServerType.STDIO,
+          scriptPath: '/path/to/script.py',
+        },
+      ];
+
+      utils.loadServerConfigs.mockReturnValue(serverConfigs);
+      mockClient.listTools.mockResolvedValue({
+        tools: [
+          { name: 'tool_a', description: 'Tool A', inputSchema: {} },
+          { name: 'tool_b', description: 'Tool B', inputSchema: {} },
+        ],
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      await service.initializeMCPServers();
+      const tools = service.getAvailableTools();
+
+      expect(tools).toHaveLength(2);
+    });
   });
 
   describe('System Prompt Configuration', () => {

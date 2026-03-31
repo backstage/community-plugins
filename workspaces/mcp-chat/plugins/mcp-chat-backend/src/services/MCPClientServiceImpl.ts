@@ -163,15 +163,16 @@ export class MCPClientServiceImpl implements MCPClientService {
           // List tools from this server
           const { tools } = await client.listTools();
 
-          const serverTools: ServerTool[] = tools.map(tool => ({
-            type: 'function',
-            function: {
-              name: tool.name,
-              description: tool.description || '',
-              parameters: tool.inputSchema,
-            },
-            serverId: serverConfig.id,
-          }));
+          const { serverTools, allowedTools } = this.filterDiscoveredTools(
+            tools,
+            serverConfig,
+          );
+
+          // Store the computed allowed tool names on the config for use by
+          // the Responses API provider's allowed_tools field
+          if (allowedTools) {
+            serverConfig.allowedTools = allowedTools;
+          }
 
           allTools.push(...serverTools);
 
@@ -342,17 +343,9 @@ export class MCPClientServiceImpl implements MCPClientService {
         // Connect the client with the appropriate transport
         await client.connect(transport);
 
-        const toolsResult = await client.listTools();
+        const { tools } = await client.listTools();
 
-        const serverTools: ServerTool[] = toolsResult.tools.map(tool => ({
-          type: 'function',
-          function: {
-            name: tool.name,
-            description: tool.description ?? '', // Ensure string
-            parameters: tool.inputSchema,
-          },
-          serverId: serverConfig.id, // Track which server this tool belongs to
-        }));
+        const { serverTools } = this.filterDiscoveredTools(tools, serverConfig);
 
         allTools.push(...serverTools);
         this.mcpClients.set(serverConfig.id, client);
@@ -413,6 +406,74 @@ export class MCPClientServiceImpl implements MCPClientService {
     }
 
     return serverResults;
+  }
+
+  /**
+   * Filters discovered tools based on the server's disabledTools config.
+   * Validates disabled tool names and logs warnings for invalid ones.
+   * Returns the filtered ServerTool[] and, if any tools were disabled,
+   * the list of allowed tool names (for use with the Responses API).
+   */
+  private filterDiscoveredTools(
+    tools: {
+      name: string;
+      description?: string;
+      inputSchema: Record<string, unknown>;
+    }[],
+    serverConfig: MCPServerFullConfig,
+  ): { serverTools: ServerTool[]; allowedTools?: string[] } {
+    const disabledTools = serverConfig.disabledTools || [];
+
+    // Validate disabled tool names and warn about invalid ones
+    if (disabledTools.length > 0) {
+      const allToolNames = tools.map(t => t.name);
+      const invalidDisabledTools = disabledTools.filter(
+        t => !allToolNames.includes(t),
+      );
+      for (const invalidTool of invalidDisabledTools) {
+        this.logger.warn(
+          `Unable to exclude tool '${invalidTool}' from MCP Server '${
+            serverConfig.name
+          }': tool not found among discovered tools. Available tools are: ${allToolNames.join(
+            ', ',
+          )}`,
+        );
+      }
+    }
+
+    // Filter out disabled tools
+    const enabledToolsList = tools.filter(
+      tool => !disabledTools.includes(tool.name),
+    );
+
+    const actuallyDisabled = disabledTools.filter(t =>
+      tools.some(tool => tool.name === t),
+    );
+    if (actuallyDisabled.length > 0) {
+      this.logger.info(
+        `MCP Server '${
+          serverConfig.name
+        }': disabled tools: ${actuallyDisabled.join(', ')}`,
+      );
+    }
+
+    const serverTools: ServerTool[] = enabledToolsList.map(tool => ({
+      type: 'function',
+      function: {
+        name: tool.name,
+        description: tool.description || '',
+        parameters: tool.inputSchema,
+      },
+      serverId: serverConfig.id,
+    }));
+
+    return {
+      serverTools,
+      allowedTools:
+        disabledTools.length > 0
+          ? enabledToolsList.map(t => t.name)
+          : undefined,
+    };
   }
 
   async processQuery(

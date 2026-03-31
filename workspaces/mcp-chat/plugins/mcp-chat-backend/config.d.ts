@@ -90,6 +90,12 @@ export interface Config {
        */
       args?: string[];
       /**
+       * List of tool names to disable for this MCP server.
+       * Disabled tools are filtered out at discovery time and never exposed to the LLM or frontend.
+       * @visibility backend
+       */
+      disabledTools?: string[];
+      /**
        * Type of MCP server connection
        * @visibility backend
        * @enum { 'stdio' | 'streamable-http' }
