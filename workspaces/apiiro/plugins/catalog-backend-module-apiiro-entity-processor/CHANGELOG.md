@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-apiiro-entity-processor
 
+## 1.0.0
+
+### Major Changes
+
+- ff337ee: Added support to automatically apply application annotations to system entities.
+
+### Patch Changes
+
+- Updated dependencies [ff337ee]
+  - @backstage-community/plugin-apiiro-common@1.0.0
+
 ## 0.2.0
 
 ### Minor Changes

@@ -42,6 +42,7 @@ interface RiskOverTimeTileProps {
   height?: string | number;
   repoId?: string;
   entityRef?: string;
+  applicationId?: string;
 }
 
 const HeaderContainer = styled(Box)(() => ({
@@ -132,6 +133,7 @@ export const RiskOverTimeTile = ({
   width = '100%',
   repoId,
   entityRef,
+  applicationId,
 }: RiskOverTimeTileProps) => {
   // Use API hooks internally
   const theme = useTheme();
@@ -139,7 +141,6 @@ export const RiskOverTimeTile = ({
   const connectBackendApi = useApi(apiiroApiRef);
   const { fetch } = useApi(fetchApiRef);
 
-  // Always call the hook, but conditionally use the result
   const {
     riskScoreOverTimeData,
     riskScoreOverTimeDataError,
@@ -147,9 +148,26 @@ export const RiskOverTimeTile = ({
   } = useRiskScoreOverTimeData({
     connectApi: connectBackendApi,
     fetchApi: fetch,
-    repositoryKey: repoId,
+    repositoryId: repoId,
     entityRef: entityRef,
+    applicationId: applicationId,
   });
+
+  // Show message when repository key or application key is not provided
+  if (!repoId && !applicationId) {
+    return (
+      <ChartBox title={title} tooltip={tooltip} width={width}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="300px"
+        >
+          <NotFound message="Please configure the apiiro annotation to access the data." />
+        </Box>
+      </ChartBox>
+    );
+  }
 
   // Show loading state while data is loading (Query check - loading)
   if (riskScoreOverTimeDataLoading) {
@@ -172,22 +190,6 @@ export const RiskOverTimeTile = ({
     return (
       <ChartBox title={title} tooltip={tooltip} width={width}>
         <SomethingWentWrong />
-      </ChartBox>
-    );
-  }
-
-  // Show message when no repository key is provided
-  if (!repoId) {
-    return (
-      <ChartBox title={title} tooltip={tooltip} width={width}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="300px"
-        >
-          <NotFound message="Please provide the repository details to access the data." />
-        </Box>
       </ChartBox>
     );
   }

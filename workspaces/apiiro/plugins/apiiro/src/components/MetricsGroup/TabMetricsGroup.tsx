@@ -17,7 +17,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { MttrVsSLATile } from '../tiles/MttrVsSLATile';
 import { SLAAdherenceTile } from '../tiles/SLAAdherenceTile';
 import { RiskOverTimeTile } from '../tiles/RiskOverTimeTile';
-import { RepositoryType } from '../../queries';
+import { ApplicationType, RepositoryType } from '../../queries';
 import StatusTile from '../tiles/StatusTile';
 import type { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
@@ -26,14 +26,18 @@ import { apiiroApiRef } from '../../api';
 
 export const TabMetricsGroup = ({
   repositoryData,
+  applicationData,
   entity,
   repoId,
   entityRef,
+  applicationId,
 }: {
-  repositoryData: RepositoryType;
+  repositoryData?: RepositoryType;
+  applicationData?: ApplicationType;
   entity: Entity;
-  repoId: string;
+  repoId?: string;
   entityRef: string;
+  applicationId?: string;
 }) => {
   const apiiroApi = useApi(apiiroApiRef);
   const defaultViewChart = apiiroApi.getDefaultAllowMetricsView();
@@ -45,19 +49,32 @@ export const TabMetricsGroup = ({
         <Grid xs={12} sm={12}>
           <StatusTile
             repository={repositoryData}
+            application={applicationData}
             allowViewChart={allowViewChart}
           />
         </Grid>
         {allowViewChart && (
           <>
             <Grid xs={12} sm={6} lg={4}>
-              <MttrVsSLATile repoId={repoId} entityRef={entityRef} />
+              <MttrVsSLATile
+                repoId={repoId}
+                applicationId={applicationId}
+                entityRef={entityRef}
+              />
             </Grid>
             <Grid xs={12} sm={6} lg={4}>
-              <RiskOverTimeTile repoId={repoId} entityRef={entityRef} />
+              <RiskOverTimeTile
+                repoId={repoId}
+                applicationId={applicationId}
+                entityRef={entityRef}
+              />
             </Grid>
             <Grid xs={12} sm={6} lg={4}>
-              <SLAAdherenceTile repoId={repoId} entityRef={entityRef} />
+              <SLAAdherenceTile
+                repoId={repoId}
+                applicationId={applicationId}
+                entityRef={entityRef}
+              />
             </Grid>
           </>
         )}

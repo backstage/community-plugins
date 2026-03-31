@@ -5,7 +5,7 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public
 const catalogModuleApiiroEntityProcessor: BackendFeature;
 export default catalogModuleApiiroEntityProcessor;
 ```

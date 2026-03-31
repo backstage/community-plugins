@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apiiro-common
 
+## 1.0.0
+
+### Major Changes
+
+- ff337ee: Configured the application annotation key for system entities.
+
 ## 0.2.0
 
 ### Minor Changes

@@ -41,6 +41,7 @@ export interface TopRiskTileProps {
   height?: string | number;
   repoId?: string;
   entityRef?: string;
+  applicationId?: string;
 }
 
 const RiskListContainer = styled(Box)(() => ({
@@ -129,6 +130,7 @@ export const TopRiskTile = ({
   height = '366px',
   repoId,
   entityRef,
+  applicationId,
 }: TopRiskTileProps) => {
   const customHeader = (
     <CustomHeader>
@@ -142,14 +144,35 @@ export const TopRiskTile = ({
   const connectBackendApi = useApi(apiiroApiRef);
   const { fetch } = useApi(fetchApiRef);
 
-  // Always call the hook, but conditionally use the result
   const { topRisksData, topRisksDataError, topRisksDataLoading } =
     useTopRisksData({
       connectApi: connectBackendApi,
       fetchApi: fetch,
       repoId,
       entityRef,
+      applicationId,
     });
+
+  // Show message when repository key or application key is not provided
+  if (!repoId && !applicationId) {
+    return (
+      <ChartBox
+        title={title}
+        width={width}
+        height={height}
+        customHeader={customHeader}
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="300px"
+        >
+          <NotFound message="Please configure the apiiro annotation to access the data." />
+        </Box>
+      </ChartBox>
+    );
+  }
 
   // Transform API data to component data format
   const finalData: TopRiskData[] = topRisksData
@@ -198,27 +221,6 @@ export const TopRiskTile = ({
           minHeight="300px"
         >
           <SomethingWentWrong />
-        </Box>
-      </ChartBox>
-    );
-  }
-
-  // Show message when no repository key is provided
-  if (!repoId) {
-    return (
-      <ChartBox
-        title={title}
-        width={width}
-        height={height}
-        customHeader={customHeader}
-      >
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="300px"
-        >
-          <NotFound message="Please provide the repository details to access the data." />
         </Box>
       </ChartBox>
     );
