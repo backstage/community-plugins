@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@backstage-community/plugin-catalog-backend-module-apiiro-entity-processor": "workspace:^",
+    "@backstage/backend-test-utils": "^1.11.0",
     "@backstage/cli": "^0.35.4",
     "@backstage/plugin-auth-backend": "^0.27.0",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.16",

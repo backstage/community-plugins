@@ -31,6 +31,7 @@ import {
   ApiiroTab,
   ApiiroWidget,
   isApiiroRepoAvailable,
+  isApiiroApplicationAvailable,
   ApiiroSidebar,
 } from '../src';
 import HomeIcon from '@mui/icons-material/Home';
@@ -49,7 +50,9 @@ const SampleEntityPage = ({ children }: PropsWithChildren<{}>) => (
       </Grid>
     </EntityLayout.Route>
     <EntityLayout.Route
-      if={isApiiroRepoAvailable}
+      if={entity =>
+        isApiiroApplicationAvailable(entity) || isApiiroRepoAvailable(entity)
+      }
       path="/apiiro"
       title="Apiiro"
     >
@@ -74,7 +77,12 @@ createDevApp()
     children: (
       <SampleEntityPage>
         <EntitySwitch>
-          <EntitySwitch.Case if={isApiiroRepoAvailable}>
+          <EntitySwitch.Case
+            if={entity =>
+              isApiiroRepoAvailable(entity) ||
+              isApiiroApplicationAvailable(entity)
+            }
+          >
             <Grid md={12}>
               <ApiiroWidget />
             </Grid>

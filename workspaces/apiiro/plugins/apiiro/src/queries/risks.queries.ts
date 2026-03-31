@@ -22,8 +22,9 @@ export enum RISK_QUERY_KEY {
 }
 
 interface RisksQuery extends Query {
-  repositoryKey?: string;
+  repositoryId?: string;
   entityRef?: string;
+  applicationId?: string;
   filters?: {
     RiskCategory?: string[];
     RiskLevel?: string[];
@@ -40,19 +41,24 @@ const getRisksData = async ({
   fetchApi,
   signal,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
+  applicationId,
   filters,
 }: RisksQuery) => {
   const url = await connectApi.discoveryApi.getBaseUrl('apiiro');
   const body: any = { filters };
 
-  if (repositoryKey) {
-    body.repositoryKey = repositoryKey;
+  if (repositoryId) {
+    body.repositoryId = repositoryId;
   }
 
   if (entityRef) {
     body.entityRef = entityRef;
+  }
+
+  if (applicationId) {
+    body.applicationId = applicationId;
   }
 
   return await post<any>(fetchApi, `${url}/risks`, {
@@ -64,8 +70,9 @@ const getRisksData = async ({
 export function useRisksData({
   fetchApi,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
+  applicationId,
   filters,
 }: Omit<RisksQuery, 'signal'>) {
   const {
@@ -73,17 +80,24 @@ export function useRisksData({
     error: risksDataError,
     isLoading: risksDataLoading,
   } = useQuery({
-    queryKey: [RISK_QUERY_KEY.GET_RISKS, repositoryKey, entityRef, filters],
+    queryKey: [
+      RISK_QUERY_KEY.GET_RISKS,
+      repositoryId,
+      entityRef,
+      applicationId,
+      filters,
+    ],
     queryFn: ({ signal }) =>
       getRisksData({
         fetchApi,
         signal,
         connectApi,
-        repositoryKey,
+        repositoryId,
         entityRef,
+        applicationId,
         filters,
       }),
-    enabled: !!(repositoryKey || entityRef),
+    enabled: !!repositoryId || !!applicationId,
     staleTime: 2 * 60 * 1000, // Consider data fresh for 2 minutes
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
     refetchOnMount: 'always', // Always refetch but don't block with loading if cache exists

@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * A Backstage plugin for integrating Apiiro security insights into your developer portal.
+ *
+ * @packageDocumentation
+ */
+
 export { apiiroPlugin, ApiiroPage } from './plugin';
 export { ApiiroSidebar } from './components';
 export { ApiiroTab } from './pages/tab';
 export { ApiiroWidget } from './pages/widget';
-export { isApiiroRepoAvailable } from './utils';
+export { isApiiroRepoAvailable, isApiiroApplicationAvailable } from './utils';

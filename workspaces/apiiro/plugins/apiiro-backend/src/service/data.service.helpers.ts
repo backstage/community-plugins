@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { RepositoryItem } from './data.service.types';
-import { APIIRO_PROJECT_ANNOTATION } from '@backstage-community/plugin-apiiro-common';
+import { RepositoryItem, ApplicationItem } from './data.service.types';
+import {
+  APIIRO_PROJECT_ANNOTATION,
+  APIIRO_APPLICATION_ANNOTATION,
+} from '@backstage-community/plugin-apiiro-common';
 
 /**
  * Parses a Backstage entity URL to extract organization and repository information
@@ -160,18 +163,6 @@ export const generateEntityUrl = (entity: Entity): string | null => {
     const kind = entity?.kind?.toLowerCase();
     const entityName = entity?.metadata?.name;
 
-    // Extract repo name from source-location annotation
-    const sourceLocation =
-      entity?.metadata?.annotations?.['backstage.io/source-location'];
-    if (!sourceLocation) {
-      return null;
-    }
-
-    const entityURL = parseEntityURL(sourceLocation);
-    if (!entityURL) {
-      return null;
-    }
-
     if (!namespace || !kind || !entityName) {
       return null;
     }
@@ -217,11 +208,11 @@ export const filterRepositoriesByUrl = (
  * @param repositoryUrl - The specific repository URL to filter by
  * @returns Array containing only the repository that matches the URL, or empty array if no match
  */
-export const filterRepositoriesByKey = (
+export const filterRepositoriesById = (
   repositories: RepositoryItem[],
-  repositoryKey: string,
+  repositoryId: string,
 ): RepositoryItem[] => {
-  return repositories.filter(repository => repository.key === repositoryKey);
+  return repositories.filter(repository => repository.key === repositoryId);
 };
 
 /**
@@ -256,6 +247,61 @@ export const matchRepositoriesWithEntitiesAndAddUrl = (
       const entityUrl = generateEntityUrl(next);
 
       prev.push({ ...relatedProject, entityUrl: entityUrl || undefined });
+
+      return prev;
+    },
+    [],
+  );
+};
+
+/**
+ * Creates a map of application keys to application items
+ * @param applications - Array of application items
+ * @returns Map with application key as key and application item as value
+ */
+const ApplicationKeyMap = (
+  applications: ApplicationItem[],
+): Map<string, ApplicationItem> => {
+  const map = new Map<string, ApplicationItem>();
+  for (const app of applications) {
+    if (app.key) {
+      map.set(app.key, app);
+    }
+  }
+  return map;
+};
+
+/**
+ * Matches Backstage entities with Apiiro applications and adds entityUrl to each application
+ * @param entities - Array of Backstage entities
+ * @param applications - Array of Apiiro applications
+ * @returns Array of applications that match with Backstage entities, with entityUrl added
+ */
+export const matchApplicationsWithEntitiesAndAddUrl = (
+  entities: Entity[],
+  applications: ApplicationItem[],
+): (ApplicationItem & { entityUrl?: string })[] => {
+  // Create a map of application keys for quick lookup
+  const ApplicationListWithKey = ApplicationKeyMap(applications);
+
+  return entities.reduce(
+    (prev: Array<ApplicationItem & { entityUrl?: string }>, next: Entity) => {
+      const annotationId =
+        next?.metadata?.annotations?.[APIIRO_APPLICATION_ANNOTATION];
+
+      if (!annotationId) {
+        return prev;
+      }
+
+      // Find application based on application ID annotation
+      const relatedApplication = ApplicationListWithKey.get(annotationId);
+
+      if (!relatedApplication) {
+        return prev;
+      }
+
+      const entityUrl = generateEntityUrl(next);
+      prev.push({ ...relatedApplication, entityUrl: entityUrl || undefined });
 
       return prev;
     },

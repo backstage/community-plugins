@@ -48,11 +48,11 @@ export class EntityService {
   /**
    * Get all entities from the catalog
    */
-  async getAllEntities(req: Request) {
+  async getAllEntities(req: Request, kind: string) {
     const { token } = await this.getCredentialsAndToken(req);
 
     const entitiesResponse = await this.deps.catalogClient.getEntities(
-      { filter: [{ kind: ['Component'] }] },
+      { filter: [{ kind: [kind] }] },
       { token },
     );
 

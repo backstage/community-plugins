@@ -18,3 +18,4 @@ export type { ChartBoxProps } from './ChartBox';
 export { default as CustomTooltip } from './CustomTooltip';
 export { NotFound } from './NotFound';
 export { SomethingWentWrong } from './SomethingWentWrong';
+export { StatusContainer } from './StatusContainer';

@@ -21,16 +21,34 @@ import type {
   CatalogProcessorEmit,
   CatalogProcessorCache,
 } from '@backstage/plugin-catalog-node';
-import fetch from 'node-fetch';
 import {
   APIIRO_METRICS_VIEW_ANNOTATION,
   APIIRO_PROJECT_ANNOTATION,
+  APIIRO_APPLICATION_ANNOTATION,
 } from '@backstage-community/plugin-apiiro-common';
+import { BACKSTAGE_SOURCE_LOCATION_ANNOTATION } from '../helpers/types';
+import { ApiiroApiClient } from '../helpers/apiClient';
+import { CacheManager } from '../helpers/cacheManager';
+import { CacheService } from '@backstage/backend-plugin-api';
 
-jest.mock('node-fetch');
-const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+const mockGetRepoKey = jest.fn();
+const mockGetApplicationId = jest.fn();
+const mockGetEntityUid = jest.fn();
 
-const BACKSTAGE_SOURCE_LOCATION_ANNOTATION = 'backstage.io/source-location';
+jest.mock('../helpers/apiClient');
+jest.mock('../helpers/cacheManager', () => {
+  return {
+    CacheManager: jest.fn().mockImplementation(() => {
+      return {
+        getRepoKey: mockGetRepoKey,
+        getApplicationId: mockGetApplicationId,
+        getEntityUid: mockGetEntityUid,
+        refreshRepositoryCacheIfNeeded: jest.fn(),
+        refreshApplicationCacheIfNeeded: jest.fn(),
+      };
+    }),
+  };
+});
 
 describe('ApiiroAnnotationProcessor', () => {
   const mockLocation: LocationSpec = {
@@ -39,9 +57,47 @@ describe('ApiiroAnnotationProcessor', () => {
   };
   const mockOriginLocation: LocationSpec = mockLocation;
   const mockEmit: CatalogProcessorEmit = jest.fn();
-  const mockCache: CatalogProcessorCache = {
-    get: jest.fn(),
-    set: jest.fn(),
+
+  let cacheStore: Map<string, any>;
+  let mockCache: CatalogProcessorCache;
+  let mockCacheService: CacheService;
+
+  const createMockCache = (): CatalogProcessorCache => {
+    cacheStore = new Map();
+    return {
+      get: jest.fn().mockImplementation(async (key: string) => {
+        return cacheStore.get(key) || null;
+      }),
+      set: jest.fn().mockImplementation(async (key: string, value: any) => {
+        cacheStore.set(key, value);
+      }),
+    };
+  };
+
+  const createMockCacheService = (): CacheService => {
+    const cache = new Map();
+    return {
+      get: jest.fn().mockImplementation(async (key: string) => {
+        return cache.get(key) || null;
+      }),
+      set: jest.fn().mockImplementation(async (key: string, value: any) => {
+        cache.set(key, value);
+      }),
+      delete: jest.fn().mockImplementation(async (key: string) => {
+        cache.delete(key);
+      }),
+      withOptions: jest.fn().mockReturnValue({
+        get: jest.fn().mockImplementation(async (key: string) => {
+          return cache.get(key) || null;
+        }),
+        set: jest.fn().mockImplementation(async (key: string, value: any) => {
+          cache.set(key, value);
+        }),
+        delete: jest.fn().mockImplementation(async (key: string) => {
+          cache.delete(key);
+        }),
+      }),
+    } as CacheService;
   };
 
   const buildProcessor = (configOverrides?: Record<string, unknown>) => {
@@ -55,11 +111,18 @@ describe('ApiiroAnnotationProcessor', () => {
         ...configOverrides,
       },
     });
-    return new ApiiroAnnotationProcessor(config);
+    return new ApiiroAnnotationProcessor(config, {
+      cache: mockCacheService,
+    });
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetRepoKey.mockReset();
+    mockGetApplicationId.mockReset();
+    mockGetEntityUid.mockReset();
+    mockCache = createMockCache();
+    mockCacheService = createMockCacheService();
   });
 
   describe('getProcessorName', () => {
@@ -91,28 +154,12 @@ describe('ApiiroAnnotationProcessor', () => {
       );
 
       expect(result).toEqual(entity);
-      expect(mockFetch).not.toHaveBeenCalled();
     });
 
     it('adds project and metrics annotations when repo is found and allowed', async () => {
+      mockGetRepoKey.mockResolvedValue('repo-key-123');
+
       const processor = buildProcessor();
-
-      const mockResponse = {
-        items: [
-          {
-            name: 'test-component',
-            key: 'repo-key-123',
-            url: 'https://github.com/org/test-repo',
-            isDefaultBranch: true,
-          },
-        ],
-        next: null,
-      };
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      } as any);
 
       const entity: Entity = {
         apiVersion: 'backstage.io/v1alpha1',
@@ -146,11 +193,9 @@ describe('ApiiroAnnotationProcessor', () => {
     });
 
     it('does not override existing Apiiro annotations', async () => {
-      const processor = buildProcessor();
+      mockGetRepoKey.mockResolvedValue('new-key');
 
-      jest
-        .spyOn(processor as any, 'getRepoKey' as any)
-        .mockResolvedValue('new-key');
+      const processor = buildProcessor();
 
       const entity: Entity = {
         apiVersion: 'backstage.io/v1alpha1',
@@ -185,14 +230,14 @@ describe('ApiiroAnnotationProcessor', () => {
     });
 
     it('respects exclude list in permission control (metrics not added)', async () => {
+      mockGetRepoKey.mockResolvedValue(null);
+
       const processor = buildProcessor({
         annotationControl: {
           exclude: true,
           entityNames: ['component:default/test-component'],
         },
       });
-
-      jest.spyOn(processor as any, 'getRepoKey' as any).mockResolvedValue(null);
 
       const entity: Entity = {
         apiVersion: 'backstage.io/v1alpha1',
@@ -222,16 +267,14 @@ describe('ApiiroAnnotationProcessor', () => {
     });
 
     it('respects include list in permission control (metrics added)', async () => {
+      mockGetRepoKey.mockResolvedValue('new-key');
+
       const processor = buildProcessor({
         annotationControl: {
           exclude: false,
           entityNames: ['component:default/test-component'],
         },
       });
-
-      jest
-        .spyOn(processor as any, 'getRepoKey' as any)
-        .mockResolvedValue('new-key');
 
       const entity: Entity = {
         apiVersion: 'backstage.io/v1alpha1',
@@ -261,27 +304,88 @@ describe('ApiiroAnnotationProcessor', () => {
     });
   });
 
-  describe('getAccessToken', () => {
-    it('returns undefined when access token is not configured', () => {
-      const configWithoutToken = new ConfigReader({
-        apiiro: {},
+  describe('System entity processing', () => {
+    it('does not add application annotation when applications view is disabled', async () => {
+      const processor = buildProcessor({
+        enableApplicationsView: false,
       });
 
-      const processorWithoutToken = new ApiiroAnnotationProcessor(
-        configWithoutToken,
+      const entity: Entity = {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'System',
+        metadata: {
+          name: 'test-system',
+          namespace: 'default',
+        },
+        spec: {},
+      };
+
+      const result = await processor.preProcessEntity(
+        entity,
+        mockLocation,
+        mockEmit,
+        mockOriginLocation,
+        mockCache,
       );
 
-      const token = (processorWithoutToken as any).getAccessToken();
-
-      expect(token).toBeUndefined();
+      expect(
+        result.metadata.annotations?.[APIIRO_APPLICATION_ANNOTATION],
+      ).toBeUndefined();
     });
 
-    it('returns access token when configured', () => {
-      const processor = buildProcessor();
+    it('adds application annotation when applications view is enabled and app is found', async () => {
+      mockGetEntityUid.mockResolvedValue('test-uid-123');
+      mockGetApplicationId.mockResolvedValue('app-key-456');
 
-      const token = (processor as any).getAccessToken();
+      const processor = buildProcessor({
+        enableApplicationsView: true,
+      });
 
-      expect(token).toBe('test-token');
+      const entity: Entity = {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'System',
+        metadata: {
+          name: 'test-system',
+          namespace: 'default',
+          uid: 'test-uid-123',
+        },
+        spec: {},
+      };
+
+      const result = await processor.preProcessEntity(
+        entity,
+        mockLocation,
+        mockEmit,
+        mockOriginLocation,
+        mockCache,
+      );
+
+      expect(result.metadata.annotations).toBeDefined();
+      expect(result.metadata.annotations![APIIRO_APPLICATION_ANNOTATION]).toBe(
+        'app-key-456',
+      );
+      expect(result.metadata.annotations![APIIRO_METRICS_VIEW_ANNOTATION]).toBe(
+        'true',
+      );
+    });
+  });
+
+  describe('Module integration', () => {
+    it('initializes ApiiroApiClient with access token from config', () => {
+      buildProcessor();
+
+      expect(ApiiroApiClient).toHaveBeenCalledWith('test-token');
+    });
+
+    it('initializes CacheManager with ApiiroApiClient and CacheService', () => {
+      buildProcessor();
+
+      expect(CacheManager).toHaveBeenCalledWith(
+        expect.any(Object),
+        mockCacheService,
+        undefined,
+        undefined,
+      );
     });
   });
 });
