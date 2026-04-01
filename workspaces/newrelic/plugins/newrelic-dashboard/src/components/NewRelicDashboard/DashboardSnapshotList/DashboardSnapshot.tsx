@@ -82,11 +82,7 @@ export const DashboardSnapshot = (props: {
     return <ErrorPanel title={error.name} defaultExpanded error={error} />;
   }
 
-  const url =
-    value?.getDashboardSnapshot?.data?.dashboardCreateSnapshotUrl?.replace(
-      /\pdf$/i,
-      'png',
-    );
+  const url = value?.getDashboardSnapshot?.data?.dashboardCreateSnapshotUrl;
 
   return (
     <InfoCard
