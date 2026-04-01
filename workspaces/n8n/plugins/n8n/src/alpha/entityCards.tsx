@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isN8nAvailable } from '../components/Router';
 
@@ -28,7 +29,7 @@ export const entityN8nLatestExecutionCard = EntityCardBlueprint.make({
         '../components/N8nLatestExecutionCard/N8nLatestExecutionCard'
       ).then(m => <m.N8nLatestExecutionCard />),
   },
-});
+}) satisfies ExtensionDefinition;
 
 /**
  * @alpha
@@ -42,4 +43,4 @@ export const entityN8nWorkflowsTable = EntityCardBlueprint.make({
         <m.N8nWorkflowsTable />
       )),
   },
-});
+}) satisfies ExtensionDefinition;
