@@ -166,7 +166,14 @@ jobs:
         run: yarn backstage-cli repo fix --check --publish
 
       - name: test changed packages
-        run: yarn test:all --maxWorkers=3
+        run: |
+          if node -e "const p = require('./package.json'); process.exit(p.devDependencies?.jest ? 0 : 1)"; then
+            echo "Using Jest 30"
+            ./node_modules/.bin/backstage-cli repo test --coverage --maxWorkers=3
+          else
+            echo "Using Jest 29 from the Backstage CLI"
+            yarn backstage-cli repo test --coverage --maxWorkers=3
+          fi
         env:
           BACKSTAGE_TEST_DISABLE_DOCKER: 1
           BACKSTAGE_TEST_DATABASE_POSTGRES18_CONNECTION_STRING: postgresql://postgres:postgres@localhost:${{ job.services.postgres18.ports[5432] }}

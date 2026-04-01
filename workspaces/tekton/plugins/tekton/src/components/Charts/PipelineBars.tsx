@@ -63,7 +63,6 @@ const PipelineBars = ({ pipelineRun }: PipelineBarProps) => {
           id={`${pipelineRun?.metadata?.name}`}
           onClick={openDialog}
           height="1em"
-          inline
           values={Object.keys(ComputedStatus).map(status => ({
             color: getRunStatusColor(
               ComputedStatus[status as keyof typeof ComputedStatus],

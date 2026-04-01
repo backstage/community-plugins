@@ -371,6 +371,25 @@ Use these endpoints for debugging:
 - **MCP Server Status**: `/api/mcp-chat/mcp/status`
 - **Available Tools**: `/api/mcp-chat/tools`
 
+### Debug LLM discussion
+
+Depending on your need to see what is going on at the LLM level:
+
+- You can trace LLM calls with some external tooling acting as an OpenAI compatible gateway
+- You can set the following to debug `mcp-chat`:
+
+```
+backend:
+  logger:
+    level: info
+    overrides:
+      - matchers:
+          plugin: mcp-chat
+        level: debug
+```
+
+> **Security note:** Debug logging includes raw LLM request and response payloads (truncated to 4 KB), which may contain user messages and tool results. Only enable in development or controlled environments.
+
 ## API Reference
 
 ### Backend Endpoints

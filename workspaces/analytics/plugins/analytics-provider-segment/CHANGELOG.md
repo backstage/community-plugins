@@ -1,5 +1,30 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.25.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
+## 1.25.1
+
+### Patch Changes
+
+- 6ac83bc: Removed all unused direct dependencies (Material UI v4, prop-types and react-use)
+- 6ac83bc: Remove unused dev dependencies for @types/node and msw
+
+## 1.25.0
+
+### Minor Changes
+
+- 616b66c: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
 ## 1.24.0
 
 ### Minor Changes

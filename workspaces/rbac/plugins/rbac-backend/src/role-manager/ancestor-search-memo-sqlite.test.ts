@@ -47,14 +47,40 @@ describe('ancestor-search-memo', () => {
   describe('getAllGroups and getAllRelations', () => {
     it('should return all groups', async () => {
       const allGroupsTest = await asm.getAllASMGroups();
-      expect(allGroupsTest).toEqual(testGroups);
+      // The map function aligns the entities with the `fields` definition
+      // used in `getAllASMGroups` for the `catalogApi.getEntities` call.
+      expect(allGroupsTest).toEqual(
+        testGroups.map(entity => ({
+          kind: entity.kind,
+          metadata: {
+            name: entity.metadata.name,
+            namespace: entity.metadata.namespace,
+          },
+          spec: {
+            parent: entity.spec?.parent,
+          },
+        })),
+      );
     });
   });
 
   describe('getUserGroups and getUserRelations', () => {
     it('should return all user groups', async () => {
       const userGroups = await asm.getUserASMGroups();
-      expect(userGroups).toEqual(testUserGroups);
+      // The map function aligns the entities with the `fields` definition
+      // used in `getUserASMGroups` for the `catalogApi.getEntities` call.
+      expect(userGroups).toEqual(
+        testUserGroups.map(entity => ({
+          kind: entity.kind,
+          metadata: {
+            name: entity.metadata.name,
+            namespace: entity.metadata.namespace,
+          },
+          spec: {
+            parent: entity.spec?.parent,
+          },
+        })),
+      );
     });
   });
 

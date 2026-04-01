@@ -21,7 +21,10 @@ import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
 import { LiteLLMProvider } from './litellm-provider';
-import { RootConfigService } from '@backstage/backend-plugin-api';
+import {
+  RootConfigService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 
 /**
  * Factory class for creating LLM provider instances.
@@ -34,27 +37,32 @@ export class ProviderFactory {
    * Creates an LLM provider instance based on the configuration.
    *
    * @param config - The provider configuration
+   * @param logger - Optional logger service for debug logging
    * @returns An LLM provider instance
    */
-  static createProvider(config: ProviderConfig): LLMProvider {
+  static createProvider(
+    config: ProviderConfig,
+    logger?: LoggerService,
+  ): LLMProvider {
+    const configWithLogger = { ...config, logger };
     switch (config.type) {
       case 'openai':
-        return new OpenAIProvider(config);
+        return new OpenAIProvider(configWithLogger);
 
       case 'openai-responses':
-        return new OpenAIResponsesProvider(config);
+        return new OpenAIResponsesProvider(configWithLogger);
 
       case 'claude':
-        return new ClaudeProvider(config);
+        return new ClaudeProvider(configWithLogger);
 
       case 'gemini':
-        return new GeminiProvider(config);
+        return new GeminiProvider(configWithLogger);
 
       case 'ollama':
-        return new OllamaProvider(config);
+        return new OllamaProvider(configWithLogger);
 
       case 'litellm':
-        return new LiteLLMProvider(config);
+        return new LiteLLMProvider(configWithLogger);
 
       default:
         throw new Error(`Unsupported provider: ${config.type}`);

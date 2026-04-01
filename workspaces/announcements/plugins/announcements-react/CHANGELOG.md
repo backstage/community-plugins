@@ -1,5 +1,22 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.24.0
+
+### Minor Changes
+
+- e0c2eb4: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [e0c2eb4]
+  - @backstage-community/plugin-announcements-common@0.19.0
+
+## 0.23.0
+
+### Minor Changes
+
+- 8403fca: Backstage version bump to v1.49.1. This release also includes migration from `AlertApi` to the new `ToastApi`.
+
 ## 0.22.0
 
 ### Minor Changes

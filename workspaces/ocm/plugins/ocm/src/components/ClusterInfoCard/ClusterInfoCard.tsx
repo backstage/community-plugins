@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ErrorPanel, Progress, WarningPanel } from '@backstage/core-components';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 
 import { ocmEntityReadPermission } from '@backstage-community/plugin-ocm-common';
@@ -25,10 +26,16 @@ import { TableCardFromData } from '../TableCardFromData';
  * @public
  */
 export const ClusterInfoCard = () => {
-  const { data } = useCluster();
+  const { loading, data, error } = useCluster();
 
+  if (loading) {
+    return <Progress />;
+  }
+  if (error) {
+    return <ErrorPanel error={error} />;
+  }
   if (!data) {
-    return null;
+    return <WarningPanel severity="error" title="No cluster data available" />;
   }
 
   data.openshiftVersion = (

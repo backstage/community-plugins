@@ -22,7 +22,7 @@ import {
   useAnnouncementsPermissions,
 } from '@backstage-community/plugin-announcements-react';
 import { Tag } from '@backstage-community/plugin-announcements-common';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import { toastApiRef, useApi } from '@backstage/frontend-plugin-api';
 import { ResponseError } from '@backstage/errors';
 
 import {
@@ -39,7 +39,7 @@ export const TagsContent = () => {
   const [showNewTagForm, setShowNewTagForm] = useState(false);
   const { tags, retry: refresh } = useTags();
   const announcementsApi = useApi(announcementsApiRef);
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
 
@@ -58,21 +58,22 @@ export const TagsContent = () => {
         title,
       });
 
-      alertApi.post({
-        message: `${title} ${t('admin.tagsContent.createdMessage')}`,
-        severity: 'success',
+      toastApi.post({
+        title: `${title} ${t('admin.tagsContent.createdMessage')}`,
+        status: 'success',
+        timeout: 5000,
       });
 
       setShowNewTagForm(false);
       refresh();
     } catch (err: any) {
       if (err.response?.status === 409) {
-        alertApi.post({
-          message: t('admin.tagsContent.errors.alreadyExists'),
-          severity: 'error',
+        toastApi.post({
+          title: t('admin.tagsContent.errors.alreadyExists'),
+          status: 'danger',
         });
       } else {
-        alertApi.post({ message: (err as Error).message, severity: 'error' });
+        toastApi.post({ title: (err as Error).message, status: 'danger' });
       }
     }
   };
@@ -95,14 +96,15 @@ export const TagsContent = () => {
     try {
       await announcementsApi.deleteTag(tagToDelete!.slug);
 
-      alertApi.post({
-        message: t('admin.tagsContent.table.tagDeleted'),
-        severity: 'success',
+      toastApi.post({
+        title: t('admin.tagsContent.table.tagDeleted'),
+        status: 'success',
+        timeout: 5000,
       });
     } catch (err) {
-      alertApi.post({
-        message: (err as ResponseError).body.error.message,
-        severity: 'error',
+      toastApi.post({
+        title: (err as ResponseError).body.error.message,
+        status: 'danger',
       });
     }
 

@@ -81,9 +81,36 @@ permission:
       superUsers:
         - name: user:default/alice
         - name: user:default/mike
+        - name: group:default/admins
 ```
 
+> **Note:** **Transient memberships are not supported for `superUsers`.** Meaning, when a group is specified as a super user, only direct group memberships are taken into account. Users who belong to a sub-group of a configured super user group will not be granted super user access.
+
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
+
+### Configure default role
+
+You can optionally assign a default role to all authenticated users by using `defaultPermissions.defaultRole`.
+This ensures that every authenticated user receives the specified role in addition to any other roles they may have.
+You can also define baseline permissions for that role using `defaultPermissions.basicPermissions`.
+This is especially useful when using [Sign-In without Users in the Catalog](https://backstage.io/docs/auth/identity-resolver/#sign-in-without-users-in-the-catalog).
+
+```YAML
+permission:
+  rbac:
+    defaultPermissions:
+      defaultRole: role:default/my-default-role
+      basicPermissions:
+        - permission: catalog.entity.read
+          action: read
+        - permission: catalog-entity
+          action: read
+        - permission: catalog.entity.create
+          action: create
+```
+
+If configured, the RBAC backend will automatically include the default role in each authenticated user's roles and evaluate the configured `basicPermissions` for that role.
+When `defaultPermissions.defaultRole` is set, `defaultPermissions.basicPermissions` must contain at least one permission entry.
 
 ### Configure plugins with permission
 

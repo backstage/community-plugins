@@ -1,5 +1,31 @@
 # @backstage-community/plugin-servicenow
 
+## 1.10.0
+
+### Minor Changes
+
+- a229130: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- Updated dependencies [a229130]
+  - @backstage-community/plugin-servicenow-common@1.9.0
+
+## 1.9.0
+
+### Minor Changes
+
+- d578507: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+- Updated dependencies [d578507]
+  - @backstage-community/plugin-servicenow-common@1.8.0
+
 ## 1.8.0
 
 ### Minor Changes

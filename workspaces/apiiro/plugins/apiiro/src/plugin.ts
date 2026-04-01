@@ -24,7 +24,11 @@ import {
 import { rootRouteRef } from './routes';
 import { apiiroApiRef, ApiiroClient } from './api';
 
-/** @public */
+/**
+ * Backstage plugin for Apiiro security insights integration.
+ * Provides routes, API clients, and components for displaying security data.
+ * @public
+ */
 export const apiiroPlugin = createPlugin({
   id: 'apiiro-plugin',
   routes: {
@@ -43,7 +47,11 @@ export const apiiroPlugin = createPlugin({
   ],
 });
 
-/** @public */
+/**
+ * Main page component for the Apiiro plugin.
+ * Displays repositories, applications, and risks in a dedicated page.
+ * @public
+ */
 export const ApiiroPage = apiiroPlugin.provide(
   createRoutableExtension({
     name: 'ApiiroPage',

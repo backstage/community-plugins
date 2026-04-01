@@ -1,5 +1,44 @@
 # @backstage-community/plugin-tekton
 
+## 3.37.0
+
+### Minor Changes
+
+- 701b9e7: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 92e7fe8: Fix horizontal bar stylings so they render properly.
+- Updated dependencies [701b9e7]
+  - @backstage-community/plugin-tekton-common@1.20.0
+  - @backstage-community/plugin-tekton-react@0.5.0
+
+## 3.36.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- f5dd5e1: Backstage version bump to v1.48.5
+- Updated dependencies [f5dd5e1]
+  - @backstage-community/plugin-tekton-common@1.19.1
+  - @backstage-community/plugin-tekton-react@0.4.1
+
+## 3.36.0
+
+### Minor Changes
+
+- 1f270b5: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 95eca61: Updated dependency `@types/lodash` to `4.17.24`.
+- 1d15595: Translation added for German and Spanish
+- Updated dependencies [1f270b5]
+  - @backstage-community/plugin-tekton-common@1.19.0
+  - @backstage-community/plugin-tekton-react@0.4.0
+
 ## 3.35.0
 
 ### Minor Changes

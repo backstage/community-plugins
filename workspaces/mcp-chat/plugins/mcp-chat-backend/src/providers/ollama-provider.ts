@@ -37,15 +37,13 @@ export class OllamaProvider extends LLMProvider {
     messages: ChatMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse> {
-    // Convert our ChatMessage format to Ollama's Message format
     const ollamaMessages = messages.map(msg => {
       const ollamaMsg: any = {
         role: msg.role,
-        content: msg.content || '', // Ollama expects string, not null
+        content: msg.content || '',
         tool_call_id: msg.tool_call_id,
       };
 
-      // Convert tool_calls for Ollama - it expects function.arguments to be an object, not a string
       if (msg.tool_calls) {
         ollamaMsg.tool_calls = msg.tool_calls.map(toolCall => ({
           id: toolCall.id,
@@ -63,17 +61,36 @@ export class OllamaProvider extends LLMProvider {
       return ollamaMsg;
     });
 
-    const response = await this.ollama.chat({
-      model: this.model,
-      messages: ollamaMessages,
-      tools: tools,
-      options: {
-        temperature: this.temperature ?? 0.7,
-        num_predict: this.maxTokens ?? 1000,
-      },
+    this.logger?.debug(`[ollama] Request to model ${this.model}`, {
+      messages: this.truncateForLogging(JSON.stringify(ollamaMessages)),
+      toolCount: tools?.length ?? 0,
     });
-    const parsedResponse = this.parseResponse(response);
-    return parsedResponse;
+
+    try {
+      const startTime = Date.now();
+      const response = await this.ollama.chat({
+        model: this.model,
+        messages: ollamaMessages,
+        tools: tools,
+        options: {
+          temperature: this.temperature ?? 0.7,
+          num_predict: this.maxTokens ?? 1000,
+        },
+      });
+      const duration = Date.now() - startTime;
+
+      this.logger?.debug(`[ollama] Response received in ${duration}ms`, {
+        data: this.truncateForLogging(JSON.stringify(response)),
+      });
+
+      const parsedResponse = this.parseResponse(response);
+      return parsedResponse;
+    } catch (error) {
+      this.logger?.error(`[ollama] API error`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
   }
 
   async testConnection(): Promise<{

@@ -24,10 +24,12 @@ import { Knex } from 'knex';
 import { AncestorSearchMemo, ASMGroup } from './ancestor-search-memo';
 import { RoleMemberList } from './member-list';
 import { AncestorSearchFactory } from './ancestor-search-factory';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 
 export class BackstageRoleManager implements RoleManager {
   private allRoles: Map<string, RoleMemberList>;
   private maxDepth?: number;
+  private defaultRoleRef?: string;
   constructor(
     private readonly catalogApi: CatalogApi,
     private readonly logger: LoggerService,
@@ -35,10 +37,12 @@ export class BackstageRoleManager implements RoleManager {
     private readonly rbacDBClient: Knex,
     private readonly config: Config,
     private readonly auth: AuthService,
+    defaultPermissionReader: DefaultPermissionsReader,
   ) {
     this.allRoles = new Map<string, RoleMemberList>();
     const rbacConfig = this.config.getOptionalConfig('permission.rbac');
     this.maxDepth = rbacConfig?.getOptionalNumber('maxDepth');
+    this.defaultRoleRef = defaultPermissionReader.readRole();
     if (this.maxDepth !== undefined && this.maxDepth! < 0) {
       throw new Error(
         'Max Depth for RBAC group hierarchy must be greater than or equal to zero',
@@ -255,7 +259,9 @@ export class BackstageRoleManager implements RoleManager {
           memo.getNodes(),
           this.rbacDBClient,
         );
-        return Promise.resolve(currentRole.getRoles());
+        const roles = currentRole.getRoles();
+        if (this.defaultRoleRef) roles.push(this.defaultRoleRef);
+        return Promise.resolve(roles);
       }
 
       const allRoles: string[] = [];
@@ -265,6 +271,7 @@ export class BackstageRoleManager implements RoleManager {
         }
       }
 
+      if (this.defaultRoleRef) allRoles.push(this.defaultRoleRef);
       return Promise.resolve(allRoles);
     }
 

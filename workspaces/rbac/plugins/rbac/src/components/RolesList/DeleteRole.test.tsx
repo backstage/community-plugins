@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { usePermission } from '@backstage/plugin-permission-react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import DeleteRole from './DeleteRole';
 import { useDeleteDialog } from '../DeleteDialogContext';
@@ -42,7 +42,7 @@ describe('DeleteRole', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the button with the correct tooltip', () => {
+  it('renders the button with the correct tooltip', async () => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: false });
     render(
       <DeleteRole
@@ -54,10 +54,12 @@ describe('DeleteRole', () => {
     );
 
     expect(screen.getByTestId('delete-admin-role')).toBeInTheDocument();
-    expect(screen.getByRole('button')).toHaveAttribute(
-      'title',
-      'Delete Admin Role',
-    );
+    fireEvent.mouseOver(screen.getByRole('button'));
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toHaveTextContent(
+        'Delete Admin Role',
+      );
+    });
   });
 
   it('calls openDialog with the roleName when clicked', () => {

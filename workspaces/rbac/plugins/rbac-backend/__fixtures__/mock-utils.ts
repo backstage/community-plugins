@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
+import {
+  mockCredentials,
+  mockServices,
+  ServiceMock,
+} from '@backstage/backend-test-utils';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
+import { AuditorService } from '@backstage/backend-plugin-api';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import type { Enforcer } from 'casbin';
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
+import { resolve } from 'path';
 import type TypeORMAdapter from 'typeorm-adapter';
 
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
-
-import { resolve } from 'path';
 
 import { CasbinDBAdapterFactory } from '../src/database/casbin-adapter-factory';
 import { ConditionalStorage } from '../src/database/conditional-storage';
@@ -33,11 +39,9 @@ import {
   RoleEvents,
 } from '../src/service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { PermissionDependentPluginStore } from '../src/database/extra-permission-enabled-plugins-storage';
 import { ExtendablePluginIdProvider } from '../src/service/extendable-id-provider';
 import { convertGroupsToEntity, convertUsersToEntity } from './test-utils';
-import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 export const conditionalStorageMock: ConditionalStorage = {
   filterConditions: jest.fn().mockImplementation(() => []),
@@ -55,6 +59,9 @@ export const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
+  getCachedDefaultRoleMetadata: jest.fn().mockImplementation(() => undefined),
+  getDefaultRole: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 export const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
@@ -138,11 +145,12 @@ export const createEventMock = {
   success: jest.fn(),
   fail: jest.fn(),
 };
-export const mockAuditorService = mockServices.auditor.mock({
-  createEvent: jest.fn(async _ => {
-    return createEventMock;
-  }),
-});
+export const mockAuditorService: ServiceMock<AuditorService> =
+  mockServices.auditor.mock({
+    createEvent: jest.fn(async _ => {
+      return createEventMock;
+    }),
+  });
 
 export const credentials = mockCredentials.user();
 export const mockLoggerService = mockServices.logger.mock();

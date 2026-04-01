@@ -1,5 +1,24 @@
 # @backstage-community/plugin-argocd-common
 
+## 1.15.0
+
+### Minor Changes
+
+- 265995b: Backstage version bump to v1.49.2
+
+## 1.14.1
+
+### Patch Changes
+
+- dc8e24e: Backstage version bump to v1.48.5
+
+## 1.14.0
+
+### Minor Changes
+
+- 2cde93e: Add additional functionality to the ArgoCDService and move it to a new argocd-node plugin. These new functions will be used in the ArgoCD Scaffolder plugin.
+- c59fa05: Backstage version bump to v1.48.4
+
 ## 1.13.0
 
 ### Minor Changes

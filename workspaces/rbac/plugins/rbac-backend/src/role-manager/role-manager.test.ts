@@ -21,6 +21,7 @@ import * as Knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 
 import { BackstageRoleManager } from '../role-manager/role-manager';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { catalogMock } from '../../__fixtures__/mock-utils';
 
 describe('BackstageRoleManager', () => {
@@ -42,6 +43,7 @@ describe('BackstageRoleManager', () => {
       rbacDBClient,
       config,
       mockAuthService,
+      new DefaultPermissionsReader(config),
     );
   });
 
@@ -65,6 +67,7 @@ describe('BackstageRoleManager', () => {
           rbacDBClient,
           config,
           mockAuthService,
+          new DefaultPermissionsReader(config),
         );
       } catch (error) {
         expectedError = error;
@@ -248,6 +251,7 @@ describe('BackstageRoleManager', () => {
         rbacDBClient,
         config,
         mockAuthService,
+        new DefaultPermissionsReader(config),
       );
       let result = await rm.hasLink(
         'user:default/mike',

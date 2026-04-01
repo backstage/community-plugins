@@ -1,5 +1,48 @@
 # @backstage-community/plugin-announcements
 
+## 2.7.0
+
+### Minor Changes
+
+- e0c2eb4: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- a24a1d0: Improved jsdocs for all alpha exports
+- Updated dependencies [e0c2eb4]
+  - @backstage-community/plugin-announcements-common@0.19.0
+  - @backstage-community/plugin-announcements-react@0.24.0
+
+## 2.6.0
+
+### Minor Changes
+
+- 8403fca: Backstage version bump to v1.49.1. This release also includes migration from `AlertApi` to the new `ToastApi`.
+
+### Patch Changes
+
+- 7397465: Updated dependency `slugify` to `1.6.8`.
+- Updated dependencies [8403fca]
+  - @backstage-community/plugin-announcements-react@0.23.0
+
+## 2.5.1
+
+### Patch Changes
+
+- c4d2f14: Ensure that Announcement banner is always on top of the page. It fixes the issue where the banner could be hidden behind existing page content.
+
+## 2.5.0
+
+### Minor Changes
+
+- a598f92: Migrate Announcements Banner to the Backstage UI using the Alert component.
+
+  This change also removes the `variant` React prop. If you were using the prop with the `block` or `floating` values, it can be safely removed, as the banner now uses the Backstage UI Alert default style.
+
+### Patch Changes
+
+- 693fc2f: Replace Announcements plugin icon from Material UI's RecordVoiceOverIcon to Remix Icon's RiMegaphoneLine. This change is made in the SearchPage component, the search result list item component, the search result type blueprint and use by default for nav blueprint.
+
 ## 2.4.0
 
 ### Minor Changes

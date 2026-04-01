@@ -1,5 +1,23 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 1.28.0
+
+### Minor Changes
+
+- 27092f4: Backstage version bump to v1.49.2
+
+## 1.27.2
+
+### Patch Changes
+
+- da31305: Updated dependency `filesize` to `^11.0.0`.
+
+## 1.27.1
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+
 ## 1.27.0
 
 ### Minor Changes

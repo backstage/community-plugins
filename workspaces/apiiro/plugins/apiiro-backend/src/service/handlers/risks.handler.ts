@@ -46,12 +46,12 @@ export function createRisksHandler(deps: RisksHandlerDependencies) {
         return;
       }
 
-      const { repositoryKey, entityRef, filters = {} } = req.body;
+      const { repositoryId, entityRef, applicationId, filters = {} } = req.body;
 
       // Validate required fields using common validation function
       if (
         !validateRepositoryParams(
-          { repositoryKey, entityRef },
+          { repositoryId, entityRef, applicationId },
           res,
           logger,
           ROUTER_PATH_RISKS,
@@ -61,8 +61,9 @@ export function createRisksHandler(deps: RisksHandlerDependencies) {
       }
 
       logger.debug(`${ROUTER_PATH_RISKS} - Request received:`, {
-        repositoryKey,
+        repositoryId,
         entityRef,
+        applicationId,
         filters,
       });
 
@@ -83,11 +84,14 @@ export function createRisksHandler(deps: RisksHandlerDependencies) {
 
       // Fetch risks for the repository
       logger.debug(`${ROUTER_PATH_RISKS} - Fetching risks for repository`, {
-        repositoryKey,
+        repositoryId,
+        applicationId,
       });
       const aggregated = await dataService.getAllRisks(
-        repositoryKey,
+        repositoryId,
         filterValidation.validatedFilters,
+        undefined,
+        applicationId,
       );
       logger.debug(`${ROUTER_PATH_RISKS} - Successfully fetched risks:`, {
         totalCount: aggregated.totalCount,

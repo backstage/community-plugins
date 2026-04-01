@@ -26,7 +26,7 @@ import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-rea
 import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
-// @alpha (undocumented)
+// @alpha
 const _default: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
@@ -52,15 +52,13 @@ const _default: OverridableFrontendPlugin<
     }>;
     'app-root-element:announcements/banner': OverridableExtensionDefinition<{
       config: {
-        variant: 'block' | 'floating';
-        max: number | undefined;
+        max: number;
         category: string | undefined;
         active: boolean | undefined;
         current: boolean | undefined;
         tags: string[] | undefined;
       };
       configInput: {
-        variant?: 'block' | 'floating' | undefined;
         max?: number | undefined;
         active?: boolean | undefined;
         current?: boolean | undefined;
@@ -213,7 +211,6 @@ const _default: OverridableFrontendPlugin<
       kind: 'page';
       name: undefined;
       params: {
-        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
         title?: string | undefined;
         icon?: IconElement | undefined;

@@ -373,4 +373,34 @@ describe('DeploymentSummary', () => {
       expect(within(firstRow).getByText('Degraded')).toBeInTheDocument();
     });
   });
+
+  test('should hide instance column when showInstance prop is false', async () => {
+    await renderInTestApp(<DeploymentSummary showInstance={false} />);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Instance')).not.toBeInTheDocument();
+      expect(screen.queryByText('Server')).toBeInTheDocument();
+    });
+  });
+
+  test('should hide server column when showServer prop is false', async () => {
+    await renderInTestApp(<DeploymentSummary showServer={false} />);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Instance')).toBeInTheDocument();
+      expect(screen.queryByText('Server')).not.toBeInTheDocument();
+    });
+  });
+
+  test('should hide both instance and server columns when both props are false', async () => {
+    await renderInTestApp(
+      <DeploymentSummary showInstance={false} showServer={false} />,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Instance')).not.toBeInTheDocument();
+      expect(screen.queryByText('Server')).not.toBeInTheDocument();
+      expect(screen.queryByText('Namespace')).toBeInTheDocument();
+    });
+  });
 });

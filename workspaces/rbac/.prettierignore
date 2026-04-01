@@ -5,3 +5,4 @@ coverage
 .eslintrc.js
 report.api.md
 report-alpha.api.md
+knip-report.md

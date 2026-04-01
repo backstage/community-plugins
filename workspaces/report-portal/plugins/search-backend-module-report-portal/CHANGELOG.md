@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-report-portal
 
+## 1.2.0
+
+### Minor Changes
+
+- f11e6c6: Support multiple ReportPortal launches per entity with comma separated launch names and accordion UI
+
 ## 1.1.3
 
 ### Patch Changes

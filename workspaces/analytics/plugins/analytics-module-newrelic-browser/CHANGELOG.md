@@ -1,5 +1,25 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.16.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
+## 0.16.1
+
+### Patch Changes
+
+- 5416340: Allow custom endpoint values to support internal proxies
+
+## 0.16.0
+
+### Minor Changes
+
+- 616b66c: Backstage version bump to v1.48.2
+
 ## 0.15.0
 
 ### Minor Changes

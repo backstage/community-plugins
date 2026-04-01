@@ -10,10 +10,10 @@ import type { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
-// @public (undocumented)
+// @public
 export const ApiiroPage: () => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export const apiiroPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
@@ -22,17 +22,18 @@ export const apiiroPlugin: BackstagePlugin<
   {}
 >;
 
-// @public (undocumented)
+// @public
 export const ApiiroSidebar: () => JSX.Element;
 
-// @public (undocumented)
+// @public
 export const ApiiroTab: () => JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export const ApiiroWidget: () => JSX_2.Element;
 
 // @public
-export const isApiiroRepoAvailable: (entity: Entity) => boolean;
+export const isApiiroApplicationAvailable: (entity: Entity) => boolean;
 
-// (No @packageDocumentation comment for this package)
+// @public
+export const isApiiroRepoAvailable: (entity: Entity) => boolean;
 ```

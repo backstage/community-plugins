@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "private": true,
   "bundled": true,
   "repository": {
@@ -42,7 +42,6 @@
     "@backstage/plugin-techdocs-module-addons-contrib": "backstage:^",
     "@backstage/plugin-techdocs-react": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
-    "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "react": "^18.0.2",
@@ -50,7 +49,6 @@
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.32.3",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@types/react-dom": "*"

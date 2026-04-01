@@ -8,7 +8,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { Config } from '@backstage/config';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
-import { GenerateContentResult } from '@google/generative-ai';
+import { GenerateContentResponse } from '@google/genai';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
@@ -125,7 +125,7 @@ export class GeminiProvider extends LLMProvider {
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
-  protected parseResponse(result: GenerateContentResult): ChatResponse;
+  protected parseResponse(result: GenerateContentResponse): ChatResponse;
   // (undocumented)
   sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
@@ -179,6 +179,8 @@ export abstract class LLMProvider {
   // (undocumented)
   protected abstract getHeaders(): Record<string, string>;
   // (undocumented)
+  protected logger?: LoggerService;
+  // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
   protected maxTokens?: number;
@@ -199,6 +201,8 @@ export abstract class LLMProvider {
     models?: string[];
     error?: string;
   }>;
+  // (undocumented)
+  protected truncateForLogging(data: string, maxLength?: number): string;
   // (undocumented)
   protected type: string;
 }
@@ -372,6 +376,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  logger?: LoggerService;
   maxTokens?: number;
   model: string;
   temperature?: number;
@@ -387,7 +392,10 @@ export interface ProviderConnectionStatus {
 
 // @public
 export class ProviderFactory {
-  static createProvider(config: ProviderConfig): LLMProvider;
+  static createProvider(
+    config: ProviderConfig,
+    logger?: LoggerService,
+  ): LLMProvider;
 }
 
 // @public

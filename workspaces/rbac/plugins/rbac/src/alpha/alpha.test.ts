@@ -19,16 +19,12 @@ import rbacPlugin from '.';
 describe('RBAC plugin Alpha', () => {
   describe('Plugin Structure', () => {
     it('should have correct plugin metadata', () => {
-      expect(rbacPlugin.id).toBe('rbac');
+      expect(rbacPlugin.pluginId).toBe('rbac');
       expect(rbacPlugin.routes.root).toBeDefined();
     });
 
     it('should export rbac page extension', () => {
       expect(rbacPlugin.getExtension('page:rbac')).toBeDefined();
-    });
-
-    it('should export navigation item extension', () => {
-      expect(rbacPlugin.getExtension('nav-item:rbac')).toBeDefined();
     });
   });
 });

@@ -26,11 +26,11 @@ const parseAnnotation = (entity: Entity) => {
 };
 
 export const getProjectSlug = (entity: Entity) => {
-  const [projectSlug, _] = parseAnnotation(entity);
+  const [projectSlug] = parseAnnotation(entity);
   return projectSlug ?? '';
 };
 
 export const getOrganization = (entity: Entity) => {
-  const [_, organization] = parseAnnotation(entity);
+  const [, organization] = parseAnnotation(entity);
   return organization ?? '';
 };

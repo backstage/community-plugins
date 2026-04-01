@@ -29,13 +29,50 @@ export function useLaunchDetails(
   const [loading, setLoading] = useState(true);
   const [launchDetails, setLaunchDetails] = useState<LaunchDetails>();
 
+  const [error, setError] = useState<Error>();
+
   useEffect(() => {
     setLoading(true);
-    reportPortalApi.getLaunchResults(projectId, hostName, filters).then(res => {
-      setLaunchDetails(res.content[0]);
-      setLoading(false);
-    });
+    setError(undefined);
+    reportPortalApi
+      .getLaunchResults(projectId, hostName, filters)
+      .then(res => {
+        setLaunchDetails(res.content[0]);
+      })
+      .catch(setError)
+      .finally(() => setLoading(false));
   }, [filters, projectId, hostName, reportPortalApi]);
 
-  return { loading, launchDetails };
+  return { loading, launchDetails, error };
+}
+
+export function useMultipleLaunchDetails(
+  projectId: string,
+  hostName: string,
+  launchNames: string[],
+) {
+  const reportPortalApi = useApi(reportPortalApiRef);
+  const [loading, setLoading] = useState(true);
+  const [launches, setLaunches] = useState<LaunchDetails[]>([]);
+  const [error, setError] = useState<Error>();
+
+  useEffect(() => {
+    setLoading(true);
+    setError(undefined);
+
+    const filters: { [key: string]: string | number } | undefined =
+      launchNames.length > 0
+        ? { 'filter.in.name': launchNames.join(',') }
+        : undefined;
+
+    reportPortalApi
+      .getLaunchResults(projectId, hostName, filters)
+      .then(res => {
+        setLaunches(res.content);
+      })
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [launchNames, projectId, hostName, reportPortalApi]);
+
+  return { loading, launches, error };
 }

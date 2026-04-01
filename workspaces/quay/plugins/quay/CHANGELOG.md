@@ -1,5 +1,45 @@
 # @backstage-community/plugin-quay
 
+## 1.32.0
+
+### Minor Changes
+
+- cfd52e1: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [cfd52e1]
+  - @backstage-community/plugin-quay-common@1.19.0
+
+## 1.31.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- 46068bd: Backstage version bump to v1.48.5
+- Updated dependencies [46068bd]
+  - @backstage-community/plugin-quay-common@1.18.1
+
+## 1.31.1
+
+### Patch Changes
+
+- da31305: Updated dependency `filesize` to `^11.0.0`.
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+
+## 1.31.0
+
+### Minor Changes
+
+- c9adc64: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [c9adc64]
+  - @backstage-community/plugin-quay-common@1.18.0
+
 ## 1.30.1
 
 ### Patch Changes

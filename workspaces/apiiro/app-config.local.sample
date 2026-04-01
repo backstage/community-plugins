@@ -1,6 +1,8 @@
 apiiro:
   accessToken:
   defaultAllowMetricsView: true
+  enableApplicationsView: true
+  redirectDevView: true
   # Optional Configuration for allow and disallow the component
   annotationControl:
     entityNames:

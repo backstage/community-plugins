@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-import { useMemo } from 'react';
-
 import {
   PageBlueprint,
   createExtensionInput,
-  ApiHolder,
   configApiRef,
-  ExtensionBoundary,
-  AppNode,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
@@ -30,9 +25,6 @@ import {
 } from '@backstage/core-compat-api';
 
 import {
-  useOwnersAndEntities,
-  ManageConditionOptions,
-  ManageStaticConfig,
   parseStaticConfig,
   parseDynamicConfig,
   ManageSettingsBlueprint,
@@ -43,29 +35,17 @@ import {
   ManageEntityColumnBlueprint,
   ManageEntityCardWidgetBlueprint,
   ManageEntityContentWidgetBlueprint,
-  TabContentFullHeight,
-  ManageCardRef,
-  CardWidget,
 } from '@backstage-community/plugin-manage-react';
 
-import { ManageTabsImpl, SubRouteTab } from '../../components/ManageTabs';
 import { rootRouteRef } from '../../routes';
-import { OrganizationGraphImpl } from '../../components/OrganizationGraph';
-import { Setting } from '../../components/Settings/types';
-import { useFilteredTabs } from './useTabs';
-import { useWidgetContents } from './useWidgetContents';
-import { useWidgetCards } from './useWidgetCards';
-import { useColumns } from './useColumns';
-import {
-  CardWidgetSpec,
+import type { Setting } from '../../components/Settings/types';
+import type {
   CardWidgetSpecInput,
   ColumnSpec,
   ContentWidgetSpec,
   DecoratedSubRouteTab,
-  ManagePageOptions,
-} from './types';
-import { sortComponents, useOrder } from './sort';
-import { wrapAccordion } from './wrapAccordion';
+} from '../../components/ManagePage/types';
+import type { HeaderLabelItem } from '../../components/ManagePageHeader';
 
 export const managePage = PageBlueprint.makeWithOverrides({
   inputs: {
@@ -104,18 +84,25 @@ export const managePage = PageBlueprint.makeWithOverrides({
       ManageSettingsBlueprint.dataRefs.element,
     ]),
   },
-  factory(originalFactory, { inputs, apis }) {
+  factory(originalFactory, { inputs, apis, node: pluginNode }) {
     return originalFactory({
       path: '/manage',
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () => {
-        const { ManagePageNew } = await import('../../components/ManagePage');
+        const { ManagePageProviders, ManagePage } = await import(
+          '../../components/ManagePage'
+        );
 
         const staticConfig = parseStaticConfig(apis.get(configApiRef));
         const dynamicConfig = parseDynamicConfig(inputs.config);
 
-        const headerLabels = inputs.headerLabels.map(headerLabel =>
-          headerLabel.get(ManageHeaderLabelBlueprint.dataRefs.element),
+        const headerLabels = inputs.headerLabels.map(
+          (headerLabel): HeaderLabelItem => ({
+            key: headerLabel.node.spec.id,
+            element: headerLabel.get(
+              ManageHeaderLabelBlueprint.dataRefs.element,
+            ),
+          }),
         );
 
         const providers = inputs.providers.map(provider =>
@@ -128,20 +115,13 @@ export const managePage = PageBlueprint.makeWithOverrides({
           );
           const children = tab.get(ManageTabBlueprint.dataRefs.element);
 
-          const wrappedChildren = fullHeight ? (
-            <TabContentFullHeight resizeChild={resizeChild}>
-              {children}
-            </TabContentFullHeight>
-          ) : (
-            children
-          );
-
           return {
             node: tab.node,
             title: tab.get(ManageTabBlueprint.dataRefs.title),
             path: tab.get(ManageTabBlueprint.dataRefs.path),
             condition: tab.get(ManageTabBlueprint.dataRefs.condition),
-            children: wrappedChildren,
+            children,
+            fullHeight: fullHeight ? { resizeChild } : false,
           };
         });
 
@@ -203,15 +183,14 @@ export const managePage = PageBlueprint.makeWithOverrides({
         });
 
         return compatWrapper(
-          <ManagePageNew
-            providers={providers}
+          <ManagePageProviders
+            kinds={staticConfig.kinds}
             combined={staticConfig.combined}
-            showCombined={staticConfig.showCombined}
+            providers={providers}
             dynamicConfig={dynamicConfig}
-            staticConfig={staticConfig}
-            labels={headerLabels}
           >
-            <ManagePageInner
+            <ManagePage
+              pluginNode={pluginNode}
               apis={apis}
               tabs={tabs}
               columns={columns}
@@ -219,177 +198,12 @@ export const managePage = PageBlueprint.makeWithOverrides({
               contentWidgets={contentWidgets}
               config={staticConfig}
               settings={settings}
+              labelsElements={headerLabels}
+              showCombined={staticConfig.showCombined}
             />
-          </ManagePageNew>,
+          </ManagePageProviders>,
         );
       },
     });
   },
 });
-
-interface ManagePageInnerProps {
-  apis: ApiHolder;
-  tabs: readonly DecoratedSubRouteTab[];
-  columns: ColumnSpec[];
-  cardWidgets: CardWidgetSpecInput[];
-  contentWidgets: ContentWidgetSpec[];
-  config: ManageStaticConfig;
-  settings: Setting[];
-}
-
-function ManagePageInner(props: ManagePageInnerProps) {
-  const { apis, tabs, columns, cardWidgets, contentWidgets, config, settings } =
-    props;
-
-  const { owners, entities } = useOwnersAndEntities();
-
-  const conditionOptions = useMemo(
-    (): ManageConditionOptions => ({ apis, owners, entities }),
-    [apis, owners, entities],
-  );
-
-  const resolvedCardsWidgets = useMemo((): CardWidgetSpec[] => {
-    const makeCardElement = (
-      node: AppNode,
-      card: ManageCardRef,
-    ): JSX.Element => {
-      if ('element' in card) {
-        return card.element;
-      } else if ('card' in card) {
-        return ExtensionBoundary.lazy(node, () =>
-          card
-            .card({ apis, owners, entities })
-            .then(({ title, subtitle, action, content }) => (
-              <CardWidget
-                title={title}
-                content={content}
-                subtitle={subtitle}
-                action={action}
-              />
-            )),
-        );
-      }
-      throw new Error('Invalid ManageCardRef');
-    };
-
-    return cardWidgets.map(
-      (widget): CardWidgetSpec => ({
-        node: widget.node,
-        attachTo: widget.attachTo,
-        condition: widget.condition,
-        element: makeCardElement(widget.node, widget.card),
-      }),
-    );
-  }, [apis, owners, entities, cardWidgets]);
-
-  const {
-    widgetOrderCards,
-    widgetOrderContentAbove,
-    widgetOrderContentBelow,
-    columnsOrder,
-    isContentFooter,
-  } = useOrder(config);
-
-  const managePageOptions: ManagePageOptions = {
-    isContentFooter,
-    combined: {
-      cards: [],
-      header: [],
-      footer: [],
-      columns: [],
-    },
-    kinds: {},
-    starred:
-      config.enableStarredEntities === false
-        ? false
-        : {
-            cards: [],
-            header: [],
-            footer: [],
-            columns: [],
-          },
-  };
-
-  const filteredTabs = useFilteredTabs(tabs, conditionOptions);
-
-  useWidgetContents(contentWidgets, conditionOptions, managePageOptions);
-  useWidgetCards(resolvedCardsWidgets, conditionOptions, managePageOptions);
-  useColumns(columns, conditionOptions, managePageOptions);
-
-  // Order widgets, header content, footers content and columns by the config
-  const combined = {
-    cards: sortComponents(
-      managePageOptions.combined.cards,
-      widgetOrderCards,
-    ).map(w => w.element),
-    header: sortComponents(
-      managePageOptions.combined.header,
-      widgetOrderContentAbove,
-    ).map(w => wrapAccordion(w)),
-    footer: sortComponents(
-      managePageOptions.combined.footer,
-      widgetOrderContentBelow,
-    ).map(w => wrapAccordion(w)),
-    columns: sortComponents(managePageOptions.combined.columns, columnsOrder),
-  };
-  const starred =
-    managePageOptions.starred === false
-      ? false
-      : {
-          cards: sortComponents(
-            managePageOptions.starred.cards,
-            widgetOrderCards,
-          ).map(w => w.element),
-          header: sortComponents(
-            managePageOptions.starred.header,
-            widgetOrderContentAbove,
-          ).map(w => wrapAccordion(w)),
-          footer: sortComponents(
-            managePageOptions.starred.footer,
-            widgetOrderContentBelow,
-          ).map(w => wrapAccordion(w)),
-          columns: sortComponents(
-            managePageOptions.starred.columns,
-            columnsOrder,
-          ),
-        };
-  const kinds = Object.fromEntries(
-    Object.entries(managePageOptions.kinds).map(([kind, def]) => [
-      kind,
-      {
-        cards: sortComponents(def.cards, widgetOrderCards).map(w => w.element),
-        header: sortComponents(def.header, widgetOrderContentAbove).map(w =>
-          wrapAccordion(w),
-        ),
-        footer: sortComponents(def.footer, widgetOrderContentBelow).map(w =>
-          wrapAccordion(w),
-        ),
-        columns: sortComponents(def.columns, columnsOrder),
-      },
-    ]),
-  );
-
-  const organizationTab: SubRouteTab[] = !config.showOrganizationChart
-    ? []
-    : [
-        {
-          path: 'organization',
-          title: 'Organization',
-          children: (
-            <OrganizationGraphImpl
-              enableWholeOrganization={config.enableWholeOrganization}
-            />
-          ),
-        },
-      ];
-
-  return (
-    <ManageTabsImpl
-      combined={combined}
-      kinds={kinds}
-      starred={starred}
-      tabsAfter={[...organizationTab, ...filteredTabs]}
-      customSettings={settings}
-    />
-  );
-}

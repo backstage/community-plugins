@@ -1,5 +1,65 @@
 # @backstage-community/plugin-argocd
 
+## 2.8.0
+
+### Minor Changes
+
+- 265995b: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [265995b]
+  - @backstage-community/plugin-argocd-common@1.15.0
+
+## 2.7.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- dc8e24e: Backstage version bump to v1.48.5
+- Updated dependencies [dc8e24e]
+  - @backstage-community/plugin-argocd-common@1.14.1
+
+## 2.7.0
+
+### Minor Changes
+
+- 2cde93e: Add additional functionality to the ArgoCDService and move it to a new argocd-node plugin. These new functions will be used in the ArgoCD Scaffolder plugin.
+- c59fa05: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 9e0c387: pass namespace to getRevisionDetailsList in DeploymentLifecycle
+- Updated dependencies [2cde93e]
+- Updated dependencies [c59fa05]
+  - @backstage-community/plugin-argocd-common@1.14.0
+
+## 2.6.0
+
+### Minor Changes
+
+- 93c07b8: Add `showInstance` and `showServer` props to deployment components
+
+  Adds optional props to `ArgocdDeploymentSummary` and `ArgocdDeploymentLifecycle` components to control visibility of Instance and Server columns/fields:
+
+  - `showInstance?: boolean` - Show Instance column/field (default: true)
+  - `showServer?: boolean` - Show Server column/field (default: true)
+
+  **Example usage:**
+
+  ```tsx
+  <ArgocdDeploymentSummary showInstance={false} showServer={false} />
+  <ArgocdDeploymentLifecycle showInstance={false} showServer={false} />
+  ```
+
+  This is useful when you have a single ArgoCD instance and want to declutter the UI by hiding redundant information.
+
+### Patch Changes
+
+- 1d15595: Translation added for German and Spanish
+
 ## 2.5.0
 
 ### Minor Changes

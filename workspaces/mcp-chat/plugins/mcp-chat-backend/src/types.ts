@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { LoggerService } from '@backstage/backend-plugin-api';
+
 // =============================================================================
 // Constants and Enums
 // =============================================================================
@@ -203,6 +205,8 @@ export interface ProviderConfig {
   baseUrl: string;
   /** Model identifier to use */
   model: string;
+  /** Logger for debugging */
+  logger?: LoggerService;
   /** Maximum number of tokens to generate (default: 1000 for OpenAI-compatible, 4096 for Claude, 8192 for Gemini) */
   maxTokens?: number;
   /** Temperature for response randomness, between 0 and 1 (default: 0.7) */

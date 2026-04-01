@@ -1,5 +1,11 @@
 # @backstage-community/plugin-manage-react
 
+## 2.2.1
+
+### Patch Changes
+
+- 57d32c5: Use 'manage.kinds' config for deciding what kinds to use
+
 ## 2.2.0
 
 ### Minor Changes
