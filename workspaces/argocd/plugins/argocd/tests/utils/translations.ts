@@ -17,6 +17,8 @@
 // These translation files are not exported by the package, so relative imports are necessary for e2e tests
 /* eslint-disable @backstage/no-relative-monorepo-imports */
 import { argocdMessages } from '../../src/translations/ref.js';
+import argocdTranslationDe from '../../src/translations/de.js';
+import argocdTranslationEs from '../../src/translations/es.js';
 import argocdTranslationFr from '../../src/translations/fr.js';
 import argocdTranslationIt from '../../src/translations/it.js';
 import argocdTranslationJa from '../../src/translations/ja.js';
@@ -51,6 +53,10 @@ export function getTranslations(locale: string): ArgoCDMessages {
   switch (base) {
     case 'en':
       return argocdMessages;
+    case 'de':
+      return transform(argocdTranslationDe.messages);
+    case 'es':
+      return transform(argocdTranslationEs.messages);
     case 'fr':
       return transform(argocdTranslationFr.messages);
     case 'it':

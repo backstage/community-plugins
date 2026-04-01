@@ -39,7 +39,8 @@ export class Common {
 
   async switchToLocale(locale: string) {
     if (locale !== 'en') {
-      const localeString = locale === 'ja' ? '日本語' : locale;
+      const names = new Intl.DisplayNames([locale], { type: 'language' });
+      const localeString = names.of(locale) || locale;
       await this.page.getByRole('button', { name: 'Language' }).click();
       await this.page.getByRole('menuitem', { name: localeString }).click();
     }
