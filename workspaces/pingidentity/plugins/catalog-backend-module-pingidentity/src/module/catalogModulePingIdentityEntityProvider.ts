@@ -17,7 +17,7 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 import { PingIdentityEntityProvider } from '../providers/PingIdentityEntityProvider';
 import { GroupTransformer, UserTransformer } from '../lib/types';
 import { pingIdentityTransformerExtensionPoint } from '../extensions';
