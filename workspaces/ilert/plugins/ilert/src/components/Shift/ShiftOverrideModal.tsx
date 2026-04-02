@@ -29,7 +29,8 @@ import { Shift } from '../../types';
 import { DateTimePicker } from '@material-ui/pickers/DateTimePicker';
 import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
 import LuxonUtils from '@date-io/luxon';
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -78,7 +79,7 @@ export const ShiftOverrideModal = ({
     { setUser, setStart, setEnd, setIsLoading },
   ] = useShiftOverride(shift, isModalOpened);
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(alertApiRef);
+  const alertApi = useApi(toastApiRef);
   const classes = useStyles();
 
   const handleClose = () => {
@@ -99,11 +100,11 @@ export const ShiftOverrideModal = ({
           end,
         );
         if (success) {
-          alertApi.post({ message: 'Shift overridden.' });
+          alertApi.post({ title: 'Shift overridden.' });
           refetchOnCallSchedules();
         }
       } catch (err) {
-        alertApi.post({ message: err, severity: 'error' });
+        alertApi.post({ title: err, status: 'danger' });
       }
       setIsModalOpened(false);
     }, 250);
