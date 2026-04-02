@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.19.0
+
+### Minor Changes
+
+- 4fc4345: Backstage version bump to v1.49.3
+
 ## 3.18.0
 
 ### Minor Changes
