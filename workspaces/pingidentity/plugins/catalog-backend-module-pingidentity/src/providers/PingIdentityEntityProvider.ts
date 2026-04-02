@@ -27,7 +27,7 @@ import {
   UserEntityV1alpha1,
 } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { PingIdentityProviderConfig, readProviderConfigs } from '../lib/config';
 import { readPingIdentity } from '../lib/read';
 import { UserTransformer, GroupTransformer } from '../lib/types';
@@ -180,7 +180,7 @@ export class PingIdentityEntityProvider implements EntityProvider {
           const logger = this.options.logger.child({
             class: PingIdentityEntityProvider.prototype.constructor.name,
             taskId: id,
-            taskInstanceId: uuid.v4(),
+            taskInstanceId: uuidv4(),
           });
 
           try {
