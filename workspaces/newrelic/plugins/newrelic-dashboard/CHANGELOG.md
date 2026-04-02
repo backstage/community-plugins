@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.21.1
+
+### Patch Changes
+
+- 637b38a: Fixed an issue causing dashboards not to display
+
 ## 0.21.0
 
 ### Minor Changes
