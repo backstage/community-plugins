@@ -18,7 +18,7 @@ import { createApiRef } from '@backstage/frontend-plugin-api';
 import { RestEndpointMethodTypes } from '@octokit/rest';
 
 /** @public */
-export const githubActionsApiRef = createApiRef<GithubActionsApi>({
+export const githubActionsApiRef = createApiRef<GithubActionsApi>().with({
   id: 'plugin.githubactions.service',
 });
 

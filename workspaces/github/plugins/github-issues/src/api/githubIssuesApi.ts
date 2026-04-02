@@ -15,7 +15,8 @@
  */
 
 import { Octokit } from 'octokit';
-import { createApiRef, ConfigApi, ErrorApi } from '@backstage/core-plugin-api';
+import { ConfigApi, ErrorApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { readGithubIntegrationConfigs } from '@backstage/integration';
 import { ForwardedError } from '@backstage/errors';
 import { ScmAuthApi } from '@backstage/integration-react';
@@ -104,7 +105,7 @@ export interface GithubIssuesByRepoOptions {
 }
 
 /** @internal */
-export const githubIssuesApiRef = createApiRef<GithubIssuesApi>({
+export const githubIssuesApiRef = createApiRef<GithubIssuesApi>().with({
   id: 'plugin.githubissues.service',
 });
 
