@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.18.0
+
+### Minor Changes
+
+- e8105de: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 95eca61: Updated dependency `@types/lodash` to `4.17.24`.
+- f788dc3: Updated dependency `@keycloak/keycloak-admin-client` to `26.5.6`.
+
 ## 3.17.2
 
 ### Patch Changes
