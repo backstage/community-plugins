@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-discussions-common
 
+## 0.11.0
+
+### Minor Changes
+
+- d72f986: Backstage version bump to v1.49.2
+
 ## 0.10.1
 
 ### Patch Changes
