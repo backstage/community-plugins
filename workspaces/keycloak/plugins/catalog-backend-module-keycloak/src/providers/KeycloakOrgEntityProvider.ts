@@ -36,7 +36,7 @@ import { Attributes, Counter, Meter, metrics } from '@opentelemetry/api';
 // @ts-ignore
 import { merge } from 'lodash';
 import pLimit from 'p-limit';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   GroupTransformer,
@@ -279,7 +279,7 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
       await taskRunner.run({
         id,
         fn: async () => {
-          const taskInstanceId = uuid.v4();
+          const taskInstanceId = uuidv4();
           const logger = this.options.logger.child({
             class: KeycloakOrgEntityProvider.prototype.constructor.name,
             taskId: id,

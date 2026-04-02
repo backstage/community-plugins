@@ -48,7 +48,7 @@
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "p-limit": "^6.1.0",
-    "uuid": "^9.0.1"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.16.0",
@@ -58,7 +58,6 @@
     "@backstage/plugin-catalog-backend": "^3.5.0",
     "@backstage/types": "^1.2.2",
     "@types/lodash": "4.17.24",
-    "@types/uuid": "10.0.0",
     "deepmerge": "4.3.1",
     "open-cli": "^8.0.0"
   },
