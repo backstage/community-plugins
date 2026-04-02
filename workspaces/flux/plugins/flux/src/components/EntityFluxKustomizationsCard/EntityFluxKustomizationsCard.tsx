@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
 import { FluxContext } from '../FluxContext';
 import { useKustomizations } from '../../hooks';
 import {
   FluxDeploymentsTable,
   defaultColumns,
 } from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
+import { Box } from '@backstage/ui';
 
 const KustomizationPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -40,14 +40,15 @@ const KustomizationPanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Kustomizations">
+    <Box>
       <FluxDeploymentsTable
+        title="Kustomizations"
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 

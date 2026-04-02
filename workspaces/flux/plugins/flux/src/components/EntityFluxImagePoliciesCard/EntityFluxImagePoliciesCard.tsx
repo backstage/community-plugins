@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
 import { FluxContext } from '../FluxContext';
 import { useImagePolicies } from '../../hooks';
 import {
   FluxImagePoliciesTable,
   defaultColumns,
 } from './FluxImagePoliciesTable';
+import { Box } from '@backstage/ui';
 
 const ImagePolicyPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -40,14 +40,15 @@ const ImagePolicyPanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Image Policies">
+    <Box>
       <FluxImagePoliciesTable
+        title="Image Policies"
         imagePolicies={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 
