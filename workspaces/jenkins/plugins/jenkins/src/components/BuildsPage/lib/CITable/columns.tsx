@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { Link, Progress, TableColumn } from '@backstage/core-components';
-import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { useApi, useRouteRef } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { useEntityPermission } from '@backstage/plugin-catalog-react/alpha';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
@@ -220,7 +221,7 @@ export const columnFactories = Object.freeze({
             jenkinsExecutePermission,
           );
 
-          const alertApi = useApi(alertApiRef);
+          const toastApi = useApi(toastApiRef);
           const jobRunsLink = useRouteRef(jobRunsRouteRef);
 
           const onRebuild = async () => {
@@ -228,15 +229,14 @@ export const columnFactories = Object.freeze({
               setIsLoadingRebuild(true);
               try {
                 await row.onRestartClick();
-                alertApi.post({
-                  message: 'Jenkins re-build has successfully executed',
-                  severity: 'success',
-                  display: 'transient',
+                toastApi.post({
+                  title: 'Jenkins re-build has successfully executed',
+                  status: 'success',
                 });
               } catch (e) {
-                alertApi.post({
-                  message: `Jenkins re-build has failed. Error: ${e.message}`,
-                  severity: 'error',
+                toastApi.post({
+                  title: `Jenkins re-build has failed. Error: ${e.message}`,
+                  status: 'danger',
                 });
               } finally {
                 setIsLoadingRebuild(false);
