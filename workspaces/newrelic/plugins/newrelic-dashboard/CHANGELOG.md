@@ -1,5 +1,11 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.22.0
+
+### Minor Changes
+
+- ab9413d: Backstage version bump to v1.49.2
+
 ## 0.21.1
 
 ### Patch Changes
