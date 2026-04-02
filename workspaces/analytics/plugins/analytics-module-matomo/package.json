@@ -25,7 +25,7 @@
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "app",
-    "pluginPackage": "@backstage/plugin-app-backend"
+    "pluginPackage": "@backstage/plugin-app"
   },
   "sideEffects": false,
   "scripts": {
