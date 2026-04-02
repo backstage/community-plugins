@@ -27,11 +27,8 @@ import { AlertAssignModal } from './AlertAssignModal';
 
 import { DEFAULT_NAMESPACE, parseEntityRef } from '@backstage/catalog-model';
 import { Link, Progress } from '@backstage/core-components';
-import {
-  alertApiRef,
-  identityApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { identityApiRef, useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 export const AlertActionsMenu = ({
   alert,
@@ -43,7 +40,7 @@ export const AlertActionsMenu = ({
   setIsLoading?: (isLoading: boolean) => void;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(alertApiRef);
+  const alertApi = useApi(toastApiRef);
   const identityApi = useApi(identityApiRef);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const callback = onAlertChanged || ((_: Alert): void => {});
@@ -75,13 +72,13 @@ export const AlertActionsMenu = ({
         defaultNamespace: DEFAULT_NAMESPACE,
       });
       const newAlert = await ilertApi.acceptAlert(alert, userName);
-      alertApi.post({ message: 'Alert accepted.' });
+      alertApi.post({ title: 'Alert accepted.' });
 
       callback(newAlert);
       setProcessing(false);
     } catch (err) {
       setProcessing(false);
-      alertApi.post({ message: err, severity: 'error' });
+      alertApi.post({ title: err, status: 'danger' });
     }
   };
 
@@ -95,13 +92,13 @@ export const AlertActionsMenu = ({
         defaultNamespace: DEFAULT_NAMESPACE,
       });
       const newAlert = await ilertApi.resolveAlert(alert, userName);
-      alertApi.post({ message: 'Alert resolved.' });
+      alertApi.post({ title: 'Alert resolved.' });
 
       callback(newAlert);
       setProcessing(false);
     } catch (err) {
       setProcessing(false);
-      alertApi.post({ message: err, severity: 'error' });
+      alertApi.post({ title: err, status: 'danger' });
     }
   };
 
@@ -115,11 +112,11 @@ export const AlertActionsMenu = ({
       handleCloseMenu();
       setProcessing(true);
       await ilertApi.triggerAlertAction(alert, action);
-      alertApi.post({ message: 'Alert action triggered.' });
+      alertApi.post({ title: 'Alert action triggered.' });
       setProcessing(false);
     } catch (err) {
       setProcessing(false);
-      alertApi.post({ message: err, severity: 'error' });
+      alertApi.post({ title: err, status: 'danger' });
     }
   };
 
