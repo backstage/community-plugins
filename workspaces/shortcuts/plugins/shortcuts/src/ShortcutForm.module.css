@@ -1,0 +1,33 @@
+@layer components {
+  .formContent {
+    padding: var(--bui-space-4);
+  }
+
+  .fieldWrapper {
+    margin-bottom: var(--bui-space-4);
+  }
+
+  .field {
+    margin-bottom: var(--bui-space-4);
+  }
+
+  .field[data-invalid] {
+    border-color: var(--bui-fg-danger);
+  }
+
+  .error {
+    color: var(--bui-fg-danger) !important;
+    font-size: var(--bui-font-size-1);
+    margin-top: var(--bui-space-1);
+    display: block;
+  }
+
+  .actionRoot {
+    padding-left: var(--bui-space-4);
+    padding-right: var(--bui-space-4);
+    padding-bottom: var(--bui-space-6);
+    justify-content: flex-start;
+    display: flex;
+    gap: var(--bui-space-2);
+  }
+}

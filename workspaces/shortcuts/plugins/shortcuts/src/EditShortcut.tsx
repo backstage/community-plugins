@@ -15,33 +15,19 @@
  */
 
 import { SubmitHandler } from 'react-hook-form';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Popover from '@material-ui/core/Popover';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Popover, Text } from '@backstage/ui';
 import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { RiDeleteBinLine } from '@remixicon/react';
 import { ShortcutApi } from './api';
 import { alertApiRef, useApi, useAnalytics } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  card: {
-    width: 400,
-  },
-  header: {
-    marginBottom: theme.spacing(1),
-  },
-  button: {
-    marginTop: theme.spacing(1),
-  },
-}));
+import styles from './EditShortcut.module.css';
 
 type Props = {
   shortcut: Shortcut;
   onClose: () => void;
-  anchorEl?: Element;
+  isOpen: boolean;
+  anchorEl?: Element | null;
   api: ShortcutApi;
   allowExternalLinks?: boolean;
 };
@@ -49,13 +35,12 @@ type Props = {
 export const EditShortcut = ({
   shortcut,
   onClose,
+  isOpen,
   anchorEl,
   api,
   allowExternalLinks,
 }: Props) => {
-  const classes = useStyles();
   const alertApi = useApi(alertApiRef);
-  const open = Boolean(anchorEl);
   const analytics = useAnalytics();
 
   const handleSave: SubmitHandler<FormValues> = async ({ url, title }) => {
@@ -107,39 +92,33 @@ export const EditShortcut = ({
 
   return (
     <Popover
-      open={open}
-      anchorEl={anchorEl}
-      onClose={onClose}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+      isOpen={isOpen}
+      triggerRef={{ current: anchorEl as HTMLElement }}
+      onOpenChange={open => {
+        if (!open) onClose();
       }}
+      placement="bottom end"
     >
-      <Card className={classes.card}>
-        <CardHeader
-          className={classes.header}
-          title="Edit Shortcut"
-          titleTypographyProps={{ variant: 'subtitle2' }}
-          action={
-            <Button
-              className={classes.button}
-              variant="text"
-              size="small"
-              color="secondary"
-              startIcon={<DeleteIcon />}
-              onClick={handleRemove}
-            >
-              Remove
-            </Button>
-          }
-        />
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <Text variant="title-small">Edit Shortcut</Text>
+          <Button
+            className={styles.button}
+            variant="tertiary"
+            size="small"
+            onPress={handleRemove}
+          >
+            <RiDeleteBinLine size={16} />
+            Remove
+          </Button>
+        </div>
         <ShortcutForm
           formValues={{ url: shortcut.url, title: shortcut.title }}
           onClose={handleClose}
           onSave={handleSave}
           allowExternalLinks={allowExternalLinks}
         />
-      </Card>
+      </div>
     </Popover>
   );
 };
