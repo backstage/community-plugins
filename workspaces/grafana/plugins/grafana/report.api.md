@@ -87,7 +87,7 @@ export interface GrafanaApi {
 }
 
 // @public
-export const grafanaApiRef: ApiRef<GrafanaApi> & {
+export const grafanaApiRef: ApiRef<GrafanaApi, 'plugin.grafana.service'> & {
   readonly $$type: '@backstage/ApiRef';
 };
 
