@@ -16,11 +16,8 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { ApiProvider, ConfigReader } from '@backstage/core-app-api';
-import {
-  alertApiRef,
-  ConfigApi,
-  configApiRef,
-} from '@backstage/core-plugin-api';
+import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiRegistry, renderInTestApp } from '@backstage/test-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
@@ -59,7 +56,7 @@ const configApi: ConfigApi = new ConfigReader({
 const apis = TestApiRegistry.from(
   [splunkOnCallApiRef, mockSplunkOnCallApi],
   [configApiRef, configApi],
-  [alertApiRef, {}],
+  [toastApiRef, {}],
 );
 
 const mockEntity = {

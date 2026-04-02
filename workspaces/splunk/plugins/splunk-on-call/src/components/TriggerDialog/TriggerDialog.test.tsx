@@ -15,7 +15,7 @@
  */
 
 import { ApiProvider } from '@backstage/core-app-api';
-import { alertApiRef } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { TestApiRegistry, renderInTestApp } from '@backstage/test-utils';
 import { screen } from '@testing-library/react';
 import { splunkOnCallApiRef } from '../../api';
@@ -29,7 +29,7 @@ describe('TriggerDialog', () => {
   };
 
   const apis = TestApiRegistry.from(
-    [alertApiRef, {}],
+    [toastApiRef, {}],
     [splunkOnCallApiRef, mockSplunkOnCallApi],
   );
 
