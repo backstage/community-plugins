@@ -66,7 +66,7 @@ export const StatusPageActionsMenu = ({
         <MenuItem key="details" onClick={handleCloseMenu}>
           <Typography variant="inherit" noWrap>
             <Link to={ilertApi.getStatusPageDetailsURL(statusPage)}>
-              View in iLert
+              View in ilert
             </Link>
           </Typography>
         </MenuItem>
