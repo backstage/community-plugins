@@ -12,7 +12,6 @@ import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { GraphQLEndpoint } from '@backstage-community/plugin-graphiql';
-import { IconComponent } from '@backstage/frontend-plugin-api';
 import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -75,27 +74,6 @@ const _default: OverridableFrontendPlugin<
       name: 'gitlab';
       params: {
         endpoint: GraphQLEndpoint;
-      };
-    }>;
-    'nav-item:graphiql': OverridableExtensionDefinition<{
-      kind: 'nav-item';
-      name: undefined;
-      config: {};
-      configInput: {};
-      output: ExtensionDataRef<
-        {
-          title: string;
-          icon: IconComponent;
-          routeRef: RouteRef<undefined>;
-        },
-        'core.nav-item.target',
-        {}
-      >;
-      inputs: {};
-      params: {
-        title: string;
-        icon: IconComponent;
-        routeRef: RouteRef<undefined>;
       };
     }>;
     'page:graphiql': OverridableExtensionDefinition<{
@@ -219,29 +197,6 @@ export const GraphiQLEndpointBlueprint: ExtensionBlueprint<{
   config: {};
   configInput: {};
   dataRefs: never;
-}>;
-
-// @alpha (undocumented)
-export const graphiqlNavItem: OverridableExtensionDefinition<{
-  kind: 'nav-item';
-  name: undefined;
-  config: {};
-  configInput: {};
-  output: ExtensionDataRef<
-    {
-      title: string;
-      icon: IconComponent;
-      routeRef: RouteRef<undefined>;
-    },
-    'core.nav-item.target',
-    {}
-  >;
-  inputs: {};
-  params: {
-    title: string;
-    icon: IconComponent;
-    routeRef: RouteRef<undefined>;
-  };
 }>;
 
 // @alpha (undocumented)
