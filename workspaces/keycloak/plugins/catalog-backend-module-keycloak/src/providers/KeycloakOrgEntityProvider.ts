@@ -31,9 +31,11 @@ import type {
   EntityProviderConnection,
 } from '@backstage/plugin-catalog-node';
 
+import KeyCloakAdminClient from '@keycloak/keycloak-admin-client';
+import { Attributes, Counter, Meter, metrics } from '@opentelemetry/api';
 // @ts-ignore
 import { merge } from 'lodash';
-import { LimitFunction } from 'p-limit';
+import pLimit from 'p-limit';
 import * as uuid from 'uuid';
 
 import {
@@ -45,7 +47,6 @@ import {
 import { readProviderConfigs } from '../lib/config';
 import { readKeycloakRealm } from '../lib/read';
 import { authenticate } from '../lib/authenticate';
-import { Attributes, Counter, Meter, metrics } from '@opentelemetry/api';
 
 /**
  * Options for {@link KeycloakOrgEntityProvider}.
@@ -223,10 +224,6 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     const provider = this.options.provider;
 
     const { markReadComplete } = trackProgress(logger);
-    const KeyCloakAdminClientModule = await import(
-      '@keycloak/keycloak-admin-client'
-    );
-    const KeyCloakAdminClient = KeyCloakAdminClientModule.default;
 
     const kcAdminClient = new KeyCloakAdminClient({
       baseUrl: provider.baseUrl,
@@ -234,10 +231,8 @@ export class KeycloakOrgEntityProvider implements EntityProvider {
     });
     await authenticate(kcAdminClient, provider, logger);
 
-    const pLimitCJSModule = await import('p-limit');
-    const limitFunc = pLimitCJSModule.default;
     const concurrency = provider.maxConcurrency ?? 20;
-    const limit: LimitFunction = limitFunc(concurrency);
+    const limit = pLimit(concurrency);
 
     const dataBatchFailureCounter = this.meter.createCounter(
       'backend_keycloak.fetch.data.batch.failure.count',

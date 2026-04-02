@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -14,8 +14,8 @@
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "clean": "backstage-cli repo clean",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' backstage-cli repo test",
-    "test:all": "NODE_OPTIONS='--experimental-vm-modules' backstage-cli repo test --coverage",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
@@ -36,9 +36,9 @@
     "directory": "workspaces/keycloak"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.3",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.3",
+    "@backstage/cli": "^0.35.4",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@backstage/repo-tools": "^0.16.5",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
