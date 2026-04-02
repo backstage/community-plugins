@@ -101,7 +101,9 @@ export type GitOpsApi = {
 };
 
 // @public (undocumented)
-export const gitOpsApiRef: ApiRef<GitOpsApi>;
+export const gitOpsApiRef: ApiRef<GitOpsApi, 'plugin.gitops.service'> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export const GitopsProfilesClusterListPage: () => JSX_2.Element;
