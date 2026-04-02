@@ -76,7 +76,12 @@ export type CloudbuildApi = {
 };
 
 // @public (undocumented)
-export const cloudbuildApiRef: ApiRef<CloudbuildApi>;
+export const cloudbuildApiRef: ApiRef<
+  CloudbuildApi,
+  'plugin.cloudbuild.service'
+> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export class CloudbuildClient implements CloudbuildApi {
