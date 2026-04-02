@@ -20,6 +20,7 @@ import {
 } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
+import BuildIcon from '@material-ui/icons/Build';
 
 /**
  * @alpha
@@ -28,6 +29,8 @@ export const entityValidationPage = PageBlueprint.make({
   params: {
     path: '/entity-validation',
     routeRef: convertLegacyRouteRef(rootRouteRef),
+    title: 'Entity Validation',
+    icon: <BuildIcon />,
     loader: async () =>
       import('../components/EntityValidationPage').then(m =>
         compatWrapper(<m.EntityValidationPage />),
