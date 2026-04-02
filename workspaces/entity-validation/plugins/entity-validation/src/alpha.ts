@@ -14,26 +14,10 @@
  * limitations under the License.
  */
 
-import {
-  convertLegacyRouteRef,
-  convertLegacyRouteRefs,
-} from '@backstage/core-compat-api';
-import {
-  createFrontendPlugin,
-  NavItemBlueprint,
-} from '@backstage/frontend-plugin-api';
+import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { entityValidationPage } from './alpha/entityPages';
 import { rootRouteRef } from './routes';
-import BuildIcon from '@material-ui/icons/Build';
-
-/** @alpha */
-const entityValidationNavItem = NavItemBlueprint.make({
-  params: {
-    icon: BuildIcon,
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    title: 'Entity Validation',
-  },
-});
 
 /** @alpha */
 export default createFrontendPlugin({
@@ -41,5 +25,5 @@ export default createFrontendPlugin({
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
-  extensions: [entityValidationPage, entityValidationNavItem],
+  extensions: [entityValidationPage],
 });
