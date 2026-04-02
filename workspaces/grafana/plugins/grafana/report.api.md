@@ -58,13 +58,11 @@ export const DashboardViewer: (input: { embedUrl: string }) => JSX_2.Element;
 export const EntityDashboardViewer: () => JSX_2.Element;
 
 // @public
-export const EntityGrafanaAlertsCard: (
-  opts?: AlertsCardOpts | undefined,
-) => JSX_2.Element;
+export const EntityGrafanaAlertsCard: (opts?: AlertsCardOpts) => JSX_2.Element;
 
 // @public
 export const EntityGrafanaDashboardsCard: (
-  opts?: DashboardCardOpts | undefined,
+  opts?: DashboardCardOpts,
 ) => JSX_2.Element;
 
 // @public
@@ -89,7 +87,9 @@ export interface GrafanaApi {
 }
 
 // @public
-export const grafanaApiRef: ApiRef<GrafanaApi>;
+export const grafanaApiRef: ApiRef<GrafanaApi> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public
 export const grafanaPlugin: BackstagePlugin<{}, {}, {}>;
