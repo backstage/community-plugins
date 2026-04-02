@@ -15,27 +15,26 @@
  */
 import {
   configApiRef,
-  identityApiRef,
   createFrontendModule,
+  identityApiRef,
 } from '@backstage/frontend-plugin-api';
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
-import { GoogleAnalytics4 } from './apis/implementations/AnalyticsApi';
+import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
 
-const ga4Implementation = AnalyticsImplementationBlueprint.make({
-  name: 'ga4',
+const segmentImplementation = AnalyticsImplementationBlueprint.make({
   params: defineParams =>
     defineParams({
       deps: { configApi: configApiRef, identityApi: identityApiRef },
       factory: ({ configApi, identityApi }) =>
-        GoogleAnalytics4.fromConfig(configApi, { identityApi }),
+        SegmentAnalytics.fromConfig(configApi, { identityApi }),
     }),
 });
 
 /**
  * @public
  */
-export const ga4Module = createFrontendModule({
+export const segmentModule = createFrontendModule({
   pluginId: 'app',
-  extensions: [ga4Implementation],
+  extensions: [segmentImplementation],
 });

@@ -49,6 +49,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@segment/analytics-next": "^1.58.0"
   },
