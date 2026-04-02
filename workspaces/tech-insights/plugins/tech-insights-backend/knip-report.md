@@ -1,15 +1,14 @@
 # Knip report
 
-## Unused dependencies (2)
+## Unused dependencies (1)
 
-| Name | Location     | Severity |
-| :--- | :----------- | :------- |
-| uuid | package.json | error    |
-| yn   | package.json | error    |
+| Name | Location          | Severity |
+| :- | :---------------- | :------- |
+| yn | package.json:71:6 | error    |
 
-## Unused devDependencies (2)
+## Unused devDependencies (1)
 
-| Name            | Location     | Severity |
-| :-------------- | :----------- | :------- |
-| wait-for-expect | package.json | error    |
-| @types/uuid     | package.json | error    |
+| Name            | Location          | Severity |
+| :-------------- | :---------------- | :------- |
+| wait-for-expect | package.json:79:6 | error    |
+
