@@ -188,3 +188,79 @@ export class KeycloakAdminClientMockServerv24 {
 
   auth = authMock;
 }
+
+export class KeycloakAdminClientMockServerv26 {
+  public constructor() {
+    return;
+  }
+
+  serverInfo = {
+    find: jest.fn().mockResolvedValue({
+      systemInfo: {},
+    }),
+  };
+
+  users = {
+    find: jest.fn().mockResolvedValue(users),
+    count: jest.fn().mockResolvedValue(users.length),
+  };
+
+  groups = {
+    find: jest.fn().mockResolvedValue(topLevelGroups23orHigher),
+    findOne: jest.fn().mockResolvedValue({
+      id: '9cf51b5d-e066-4ed8-940c-dc6da77f81a5',
+      name: 'biggroup',
+      path: '/biggroup',
+      subGroupCount: 1,
+      subGroups: [],
+      access: {
+        view: true,
+        viewMembers: true,
+        manageMembers: false,
+        manage: false,
+        manageMembership: false,
+      },
+    }),
+    count: jest.fn().mockResolvedValue(3),
+    listSubGroups: jest.fn().mockResolvedValue([
+      {
+        id: 'eefa5b46-0509-41d8-b8b3-7ddae9c83632',
+        name: 'subgroup',
+        path: '/biggroup/subgroup',
+        parentId: '9cf51b5d-e066-4ed8-940c-dc6da77f81a5',
+        subGroupCount: 0,
+        subGroups: [],
+        access: {
+          view: true,
+          viewMembers: true,
+          manageMembers: false,
+          manage: false,
+          manageMembership: false,
+        },
+      },
+    ]),
+    listMembers: jest
+      .fn()
+      .mockImplementation(
+        async (payload?: {
+          id: string;
+          _max?: number;
+          _realm?: string;
+          first?: number;
+        }) => {
+          const { id, first } = payload || {};
+          if (id === '9cf51b5d-e066-4ed8-940c-dc6da77f81a5' && first === 0) {
+            // biggroup - first members page
+            return groupMembers1.map(username => ({ username }));
+          }
+          if (id === 'bb10231b-2939-4b1a-b8bb-9249ed7b76f7' && first === 0) {
+            // testgroup - first members page
+            return groupMembers2.map(username => ({ username }));
+          }
+          return [];
+        },
+      ),
+  };
+
+  auth = authMock;
+}
