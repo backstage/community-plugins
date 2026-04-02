@@ -69,7 +69,9 @@ export type SentryApiError = {
 };
 
 // @public (undocumented)
-export const sentryApiRef: ApiRef<SentryApi>;
+export const sentryApiRef: ApiRef<SentryApi> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export type SentryIssue = {
