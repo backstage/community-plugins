@@ -28,6 +28,7 @@ import {
 import {
   KeycloakAdminClientMockServerv18,
   KeycloakAdminClientMockServerv24,
+  KeycloakAdminClientMockServerv26,
 } from '../../__fixtures__/helpers';
 import { KeycloakProviderConfig } from './config';
 import {
@@ -121,6 +122,21 @@ describe('readKeycloakRealm', () => {
     expect(groups).toHaveLength(3);
   });
 
+  it('should return the correct number of users and groups (Version 26 or Higher, no systemInfo version)', async () => {
+    const client =
+      new KeycloakAdminClientMockServerv26() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+    );
+    expect(users).toHaveLength(3);
+    expect(groups).toHaveLength(3);
+  });
+
   it(`should not contain undefined members when a group member is not found in the fetched user list`, async () => {
     const client =
       new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
@@ -188,6 +204,38 @@ describe('readKeycloakRealm', () => {
 
     const client =
       new KeycloakAdminClientMockServerv18() as unknown as KeycloakAdminClient;
+    const { users, groups } = await readKeycloakRealm(
+      client,
+      config,
+      logger,
+      mockPLimit as unknown as LimitFunction,
+      taskInstanceId,
+      mockCounter,
+      {
+        userTransformer,
+        groupTransformer,
+      },
+    );
+    expect(groups[0].metadata.name).toBe('biggroup_foo');
+    expect(groups[0].spec.children).toEqual(['subgroup_foo']);
+    expect(groups[0].spec.members).toEqual(['jamesdoe_bar']);
+    expect(groups[1].spec.parent).toBe('biggroup_foo');
+    expect(users[0].metadata.name).toBe('jamesdoe_bar');
+    expect(users[0].spec.memberOf).toEqual(['biggroup_foo']);
+  });
+
+  it('should propagate transformer changes to entities (version 26 or higher, no systemInfo version)', async () => {
+    const groupTransformer: GroupTransformer = async (entity, _g, _r) => {
+      entity.metadata.name = `${entity.metadata.name}_foo`;
+      return entity;
+    };
+    const userTransformer: UserTransformer = async (e, _u, _r, _g) => {
+      e.metadata.name = `${e.metadata.name}_bar`;
+      return e;
+    };
+
+    const client =
+      new KeycloakAdminClientMockServerv26() as unknown as KeycloakAdminClient;
     const { users, groups } = await readKeycloakRealm(
       client,
       config,
@@ -449,5 +497,18 @@ describe('fetch subgroups', () => {
     const groups = [...traverseGroups(topLevelGroupsLowerThan23[0])];
 
     expect(groups).toHaveLength(2);
+  });
+
+  it('processGroupsRecursively (Version 26 or Higher, no systemInfo version)', async () => {
+    const client =
+      new KeycloakAdminClientMockServerv26() as unknown as KeycloakAdminClient;
+    const groups = await processGroupsRecursively(
+      client,
+      config,
+      logger,
+      topLevelGroups23orHigher,
+    );
+
+    expect(groups).toHaveLength(3);
   });
 });

@@ -30,6 +30,7 @@ import {
   CONFIG,
   KeycloakAdminClientMockServerv18,
   KeycloakAdminClientMockServerv24,
+  KeycloakAdminClientMockServerv26,
   PASSWORD_CONFIG,
 } from '../../__fixtures__/helpers';
 import { KeycloakOrgEntityProvider } from './KeycloakOrgEntityProvider';
@@ -66,6 +67,7 @@ const scheduler = mockServices.scheduler.mock({
 
 describe.each([
   ['v24', KeycloakAdminClientMockServerv24],
+  ['v26', KeycloakAdminClientMockServerv26],
   ['v18', KeycloakAdminClientMockServerv18],
 ])('KeycloakOrgEntityProvider with %s', (_version, MockImplementation) => {
   let logger: ServiceMock<LoggerService>;
