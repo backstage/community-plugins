@@ -37,7 +37,8 @@ const mockUrlReader: UrlReaderService = {
 const databases = TestDatabases.create();
 
 describe('createRouter', () => {
-  let linguistBackendApi: jest.Mocked<LinguistBackendApi>;
+  const linguistBackendApi: jest.Mocked<LinguistBackendApi> =
+    {} as jest.Mocked<LinguistBackendApi>;
   let app: express.Express | Server;
 
   beforeEach(() => {
