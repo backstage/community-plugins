@@ -51,6 +51,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
     "@newrelic/browser-agent": "^1.295.0"
   },
   "devDependencies": {

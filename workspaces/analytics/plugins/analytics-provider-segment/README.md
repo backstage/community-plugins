@@ -22,10 +22,10 @@ This plugin contains no other functionality.
    plugin to `createApp()`:
 
    ```tsx
-   import analyticsProviderSegmentPlugin from '@backstage-community/plugin-analytics-provider-segment/alpha';
+   import analyticsProviderSegmentModule from '@backstage-community/plugin-analytics-provider-segment/alpha';
 
    const app = createApp({
-     features: [analyticsProviderSegmentPlugin],
+     features: [analyticsProviderSegmentModule],
    });
    ```
 

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import {
-  AnalyticsImplementationBlueprint,
   configApiRef,
   createFrontendModule,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
+
 import { NewRelicBrowser } from './apis/implementations/AnalyticsApi';
 
 const newRelicBrowserImplementation = AnalyticsImplementationBlueprint.make({
