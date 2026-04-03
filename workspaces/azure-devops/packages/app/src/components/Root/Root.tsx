@@ -41,7 +41,8 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import { RiGitPullRequestLine } from '@remixicon/react';
-import { IconComponent } from '@backstage/core-plugin-api';
+
+const GitPullRequestLine = () => <RiGitPullRequestLine />;
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -71,8 +72,6 @@ const SidebarLogo = () => {
   );
 };
 
-const AzurePRIcon: IconComponent = () => <RiGitPullRequestLine />;
-
 export const Root = ({ children }: PropsWithChildren<{}>) => (
   <SidebarPage>
     <Sidebar>
@@ -91,7 +90,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarDivider />
         <SidebarScrollWrapper>
           <SidebarItem
-            icon={AzurePRIcon}
+            icon={GitPullRequestLine}
             to="azure-pull-requests"
             text="Azure PRs"
           />

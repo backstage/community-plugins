@@ -1697,9 +1697,8 @@ __metadata:
     "@backstage/plugin-permission-common": "backstage:^"
     "@backstage/plugin-permission-node": "backstage:^"
     "@types/express": "npm:^4.17.6"
-    "@types/lodash": "npm:^4.14.151"
     "@types/mime-types": "npm:^2.1.0"
-    "@types/supertest": "npm:^6.0.0"
+    "@types/supertest": "npm:^7.0.0"
     azure-devops-node-api: "npm:^15.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
@@ -1773,7 +1772,8 @@ __metadata:
     "@backstage/integration": "backstage:^"
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-catalog-node": "backstage:^"
-    lodash: "npm:^4.17.21"
+    "@types/lodash": "npm:^4.17.24"
+    lodash: "npm:^4.18.1"
   languageName: unknown
   linkType: soft
 
@@ -2082,7 +2082,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli-defaults@npm:^0.1.0":
+"@backstage/cli-defaults@backstage:^::backstage=1.49.2&npm=0.1.0, @backstage/cli-defaults@npm:^0.1.0":
   version: 0.1.0
   resolution: "@backstage/cli-defaults@npm:0.1.0"
   dependencies:
@@ -5505,6 +5505,7 @@ __metadata:
   resolution: "@internal/azure-devops@workspace:."
   dependencies:
     "@backstage/cli": "backstage:^"
+    "@backstage/cli-defaults": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.27.1"
@@ -5516,7 +5517,7 @@ __metadata:
     knip: "npm:^5.27.4"
     node-gyp: "npm:^10.0.0"
     prettier: "npm:^2.3.2"
-    typescript: "npm:~5.4.0"
+    typescript: "npm:~5.8.0"
   languageName: unknown
   linkType: soft
 
@@ -10153,6 +10154,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@remix-run/router@npm:1.23.2":
+  version: 1.23.2
+  resolution: "@remix-run/router@npm:1.23.2"
+  checksum: 10/50eb497854881bbd2e1016d4eb83c935ecd618e1c3888b74718851317e3b04edbaae9fe1baa49ec08c5c52cfe7118f4664e37144813d9500f45f922d6602a782
+  languageName: node
+  linkType: hard
+
 "@remixicon/react@npm:^4.6.0, @remixicon/react@npm:^4.9.0":
   version: 4.9.0
   resolution: "@remixicon/react@npm:4.9.0"
@@ -13124,10 +13132,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.151":
-  version: 4.17.13
-  resolution: "@types/lodash@npm:4.17.13"
-  checksum: 10/ddb34e20810c71be2d9445bcc4b64ec25b83976738454de709854b79c7f655b03704b76235445699956d65012987720e0e429a35489de65495cdb5420202d905
+"@types/lodash@npm:^4.17.24":
+  version: 4.17.24
+  resolution: "@types/lodash@npm:4.17.24"
+  checksum: 10/0f2082565f60f9787eefc046edc38458054512be5a8b3584ef0bad5fd9e85d0ab55ec5a1fbfae1ed6ba015cf1f9e837d5fb4da1f99fc60b8f74b2a46146fb00f
   languageName: node
   linkType: hard
 
@@ -13485,13 +13493,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^6.0.0":
-  version: 6.0.2
-  resolution: "@types/supertest@npm:6.0.2"
+"@types/supertest@npm:^7.0.0":
+  version: 7.2.0
+  resolution: "@types/supertest@npm:7.2.0"
   dependencies:
     "@types/methods": "npm:^1.1.4"
     "@types/superagent": "npm:^8.1.0"
-  checksum: 10/4b67fb2d1bfbb7ff0a7dfaaf190cdf2e0014522615fb2dc53c214bdac95b4ee42696dd1df13332c90a7765cc52934c9cc0c428bf0f9e8189167aef01042e7448
+  checksum: 10/5a322e29b81033e90ac50ab315d49559b21809ee39b5681ab7386819463e30d68e29c63c946023a1c353e7f13fb3f20d64dcb89d3d8a0fff569450501aff786c
   languageName: node
   linkType: hard
 
@@ -14561,8 +14569,8 @@ __metadata:
     "@types/react-dom": "npm:*"
     react: "npm:^18.0.2"
     react-dom: "npm:^18.0.2"
-    react-router: "npm:^6.3.0"
-    react-router-dom: "npm:^6.3.0"
+    react-router: "npm:^6.30.2"
+    react-router-dom: "npm:^6.30.2"
     react-use: "npm:^17.2.4"
   languageName: unknown
   linkType: soft
@@ -24021,6 +24029,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:^4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
+  languageName: node
+  linkType: hard
+
 "log-symbols@npm:^4.1.0":
   version: 4.1.0
   resolution: "log-symbols@npm:4.1.0"
@@ -28657,7 +28672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.0.0-beta.0 || ^6.3.0, react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:6.0.0-beta.0 || ^6.3.0":
   version: 6.27.0
   resolution: "react-router-dom@npm:6.27.0"
   dependencies:
@@ -28670,7 +28685,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.27.0, react-router@npm:^6.3.0":
+"react-router-dom@npm:^6.30.2":
+  version: 6.30.3
+  resolution: "react-router-dom@npm:6.30.3"
+  dependencies:
+    "@remix-run/router": "npm:1.23.2"
+    react-router: "npm:6.30.3"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10/db974d801070e9967a076b31edca902e127793e02dc79f364461b94e81846a588c241d72e069f5b586b4a90ffd99798f5cb97753ac9d22fe90afa6dc008ab520
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.27.0":
   version: 6.27.0
   resolution: "react-router@npm:6.27.0"
   dependencies:
@@ -28678,6 +28706,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 10/352e3af2075cdccf9d114b7e06d94a1b46a2147ba9d6e8643787a92464f5fd9ead950252a98d551f99f21860288bcf3a4f088cb5f46b28d1274a4e2ba24cc0f9
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.30.3, react-router@npm:^6.30.2":
+  version: 6.30.3
+  resolution: "react-router@npm:6.30.3"
+  dependencies:
+    "@remix-run/router": "npm:1.23.2"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10/1a51bdcc42b8d7979228dea8b5c44a28a4add9b681781f75b74f5f920d20058a92ffe5f1d0ba0621f03abe1384b36025b53b402515ecb35f27a6a2f2f25d6fbe
   languageName: node
   linkType: hard
 
@@ -32209,16 +32248,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.4.0":
-  version: 5.4.5
-  resolution: "typescript@npm:5.4.5"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10/d04a9e27e6d83861f2126665aa8d84847e8ebabcea9125b9ebc30370b98cb38b5dff2508d74e2326a744938191a83a69aa9fddab41f193ffa43eabfdf3f190a5
-  languageName: node
-  linkType: hard
-
 "typescript@npm:~5.5.0":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
@@ -32226,6 +32255,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/1689ccafef894825481fc3d856b4834ba3cc185a9c2878f3c76a9a1ef81af04194849840f3c69e7961e2312771471bb3b460ca92561e1d87599b26c37d0ffb6f
+  languageName: node
+  linkType: hard
+
+"typescript@npm:~5.8.0":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/65c40944c51b513b0172c6710ee62e951b70af6f75d5a5da745cb7fab132c09ae27ffdf7838996e3ed603bb015dadd099006658046941bd0ba30340cc563ae92
   languageName: node
   linkType: hard
 
@@ -32239,16 +32278,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.4.0#optional!builtin<compat/typescript>":
-  version: 5.4.5
-  resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10/760f7d92fb383dbf7dee2443bf902f4365db2117f96f875cf809167f6103d55064de973db9f78fe8f31ec08fff52b2c969aee0d310939c0a3798ec75d0bca2e1
-  languageName: node
-  linkType: hard
-
 "typescript@patch:typescript@npm%3A~5.5.0#optional!builtin<compat/typescript>":
   version: 5.5.4
   resolution: "typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"
@@ -32256,6 +32285,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/746fdd0865c5ce4f15e494c57ede03a9e12ede59cfdb40da3a281807853fe63b00ef1c912d7222143499aa82f18b8b472baa1830df8804746d09b55f6cf5b1cc
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A~5.8.0#optional!builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/b9b1e73dabac5dc730c041325dbd9c99467c1b0d239f1b74ec3b90d831384af3e2ba973946232df670519147eb51a2c20f6f96163cea2b359f03de1e2091cc4f
   languageName: node
   linkType: hard
 
