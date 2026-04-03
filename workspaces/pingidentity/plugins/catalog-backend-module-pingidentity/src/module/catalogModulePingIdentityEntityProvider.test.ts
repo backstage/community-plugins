@@ -15,7 +15,7 @@
  */
 import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
 import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 import { catalogModulePingIdentityEntityProvider } from './catalogModulePingIdentityEntityProvider';
 import { PingIdentityEntityProvider } from '../providers/PingIdentityEntityProvider';
 
