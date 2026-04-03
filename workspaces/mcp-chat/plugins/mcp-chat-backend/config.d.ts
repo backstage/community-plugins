@@ -25,8 +25,9 @@ export interface Config {
       /**
        * Unique identifier for the provider
        * @visibility backend
+       * @enum { 'openai' | 'claude' | 'gemini' | 'ollama' }
        */
-      id: string;
+      id: 'openai' | 'claude' | 'gemini' | 'ollama';
       /**
        * API token for the provider
        * @visibility secret
