@@ -105,7 +105,9 @@ export const LinguistCard = () => {
                       language.color?.toString() || 'var(--bui-bg-surface-0)',
                     width: `${barWidth}%`,
                   }}
-                />
+                >
+                  {null}
+                </Box>
                 <Tooltip placement="top">{language.name}</Tooltip>
               </TooltipTrigger>
             );
@@ -123,7 +125,9 @@ export const LinguistCard = () => {
                     backgroundColor:
                       languages?.color?.toString() || 'var(--bui-bg-surface-0)',
                   }}
-                />
+                >
+                  {null}
+                </Box>
                 {languages.name} - {languages.percentage}%
               </Tag>
             ))}
