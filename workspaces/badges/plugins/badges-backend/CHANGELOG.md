@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.22.0
+
+### Minor Changes
+
+- 87a4cec: Backstage version bump to v1.49.2
+
 ## 0.21.0
 
 ### Minor Changes
