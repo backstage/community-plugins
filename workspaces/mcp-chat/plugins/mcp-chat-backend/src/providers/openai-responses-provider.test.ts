@@ -646,6 +646,100 @@ describe('OpenAIResponsesProvider', () => {
     });
   });
 
+  describe('disabledTools / allowed_tools', () => {
+    it('should include allowed_tools when allowedTools is set on config', async () => {
+      const configsWithAllowed: MCPServerFullConfig[] = [
+        {
+          id: 'k8s',
+          name: 'Kubernetes Server',
+          type: MCPServerType.STREAMABLE_HTTP,
+          url: 'https://k8s.example.com/mcp',
+          disabledTools: ['pods_delete'],
+          allowedTools: ['pods_list', 'pods_get'],
+        },
+      ];
+
+      provider.setMcpServerConfigs(configsWithAllowed);
+
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+
+      const mockResponse: ResponsesApiResponse = {
+        id: 'resp_allowed',
+        object: 'response',
+        created_at: Date.now(),
+        model: 'gemini/models/gemini-2.5-flash',
+        status: 'completed',
+        output: [
+          {
+            id: 'msg_1',
+            type: 'message',
+            role: 'assistant',
+            status: 'completed',
+            content: [{ type: 'output_text', text: 'Response' }],
+          },
+        ],
+      };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response);
+
+      await provider.sendMessage(messages);
+
+      const callArgs = mockFetch.mock.calls[0];
+      const bodyObj = JSON.parse(callArgs[1]?.body as string);
+
+      expect(bodyObj.tools).toHaveLength(1);
+      expect(bodyObj.tools[0].allowed_tools).toEqual(['pods_list', 'pods_get']);
+    });
+
+    it('should not include allowed_tools when allowedTools is not set', async () => {
+      const configsWithoutAllowed: MCPServerFullConfig[] = [
+        {
+          id: 'k8s',
+          name: 'Kubernetes Server',
+          type: MCPServerType.STREAMABLE_HTTP,
+          url: 'https://k8s.example.com/mcp',
+        },
+      ];
+
+      provider.setMcpServerConfigs(configsWithoutAllowed);
+
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+
+      const mockResponse: ResponsesApiResponse = {
+        id: 'resp_no_allowed',
+        object: 'response',
+        created_at: Date.now(),
+        model: 'gemini/models/gemini-2.5-flash',
+        status: 'completed',
+        output: [
+          {
+            id: 'msg_1',
+            type: 'message',
+            role: 'assistant',
+            status: 'completed',
+            content: [{ type: 'output_text', text: 'Response' }],
+          },
+        ],
+      };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response);
+
+      await provider.sendMessage(messages);
+
+      const callArgs = mockFetch.mock.calls[0];
+      const bodyObj = JSON.parse(callArgs[1]?.body as string);
+
+      expect(bodyObj.tools).toHaveLength(1);
+      expect(bodyObj.tools[0].allowed_tools).toBeUndefined();
+    });
+  });
+
   describe('testConnection', () => {
     it('should return connected when API is reachable', async () => {
       const mockResponse: ResponsesApiResponse = {

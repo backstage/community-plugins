@@ -141,6 +141,11 @@ export class OpenAIResponsesProvider extends LLMProvider {
           server_url: config.url!,
           server_label: config.id,
           require_approval: 'never' as const,
+          // Only restrict tools if disabledTools was configured and
+          // allowedTools was computed during server init
+          ...(config.allowedTools
+            ? { allowed_tools: config.allowedTools }
+            : {}),
         };
 
         // Add headers if present in server config

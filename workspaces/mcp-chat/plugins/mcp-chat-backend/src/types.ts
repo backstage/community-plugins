@@ -100,6 +100,10 @@ export interface MCPServerConfig {
   args?: string[];
   /** URL endpoint (for HTTP servers) */
   url?: string;
+  /** List of tools to be excluded for the MCP Server */
+  disabledTools?: string[];
+  /** Computed list of allowed tool names (inverse of disabledTools). Set at runtime after tool discovery. */
+  allowedTools?: string[];
 }
 
 /**

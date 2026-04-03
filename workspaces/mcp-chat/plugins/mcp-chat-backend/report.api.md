@@ -268,7 +268,9 @@ export type MCPServer = MCPServerConfig & {
 
 // @public
 export interface MCPServerConfig {
+  allowedTools?: string[];
   args?: string[];
+  disabledTools?: string[];
   id: string;
   name: string;
   npxCommand?: string;
