@@ -86,6 +86,10 @@
 
 - f5374b3: Backstage version bump to v1.43.2
 
+### Patch Changes
+
+- 172d01b: Fixed typos in `README` and code
+
 ## 0.12.0
 
 ### Minor Changes
