@@ -40,6 +40,9 @@ backend:
     credentials: true
   # This is for local development only, it is not recommended to use this in production
   # The production database configuration is stored in app-config.production.yaml
+  actions:
+    pluginSources:
+      - backstage-community-argocd
   database:
     client: better-sqlite3
     connection: ':memory:'
@@ -89,7 +92,7 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location]
+    - allow: [Component, System, API, Resource, Location, Template]
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
@@ -97,6 +100,12 @@ catalog:
 
     - type: file
       target: ../../examples/argocd-entities.yaml
+
+    # ArgoCD scaffolder template
+    - type: file
+      target: ../../examples/templates/argocd-create-resources.yaml
+      rules:
+        - allow: [Template]
 
     # Local example organizational data
     - type: file
