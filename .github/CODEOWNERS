@@ -50,6 +50,7 @@ yarn.lock                                                               @backsta
 /workspaces/entity-feedback                                             @backstage/community-plugins-maintainers  @kuangp
 /workspaces/entity-validation                                           @backstage/community-plugins-maintainers
 /workspaces/explore                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
+/workspaces/fairwinds-insights                                          @backstage/community-plugins-maintainers  @vitorvezani
 /workspaces/feedback                                                    @backstage/community-plugins-maintainers  @riginoommen @deshmukhmayur @yashoswalyo
 /workspaces/firehydrant                                                 @backstage/community-plugins-maintainers
 /workspaces/flux                                                        @backstage/community-plugins-maintainers  @fjudith @fleveillee
