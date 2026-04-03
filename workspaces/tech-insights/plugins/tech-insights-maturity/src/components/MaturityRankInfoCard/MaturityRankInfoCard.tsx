@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import {
   MaturitySummary,
   Rank,
 } from '@backstage-community/plugin-tech-insights-maturity-common';
+import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
@@ -38,25 +39,6 @@ const useStyles = makeStyles({
     margin: 'auto',
   },
 });
-
-const RankDescription = new Map<number, string>([
-  [
-    Rank.Stone,
-    'Entity does not utilize standard infrastructure or tools to ensure effective operations',
-  ],
-  [
-    Rank.Bronze,
-    'Has full Ownership, but Maintainability, Security, and Reliability are not ensured',
-  ],
-  [
-    Rank.Silver,
-    'Ownership, Maintainability, and Security are ensured, but Reliability is not guaranteed',
-  ],
-  [
-    Rank.Gold,
-    'Conforms with the Golden Path standards. Ownership, Maintainability, Security, and Reliability are all ensured',
-  ],
-]);
 
 function rankProgress(rank: Rank, value: MaturitySummary) {
   if (value.rank >= rank || (value.maxRank === rank && value.isMaxRank)) {
@@ -80,7 +62,60 @@ function getRankAvatarProgress(rank: Rank, value: MaturitySummary) {
 }
 
 export const MaturityRankInfoCard = ({ summary }: Props) => {
+  const configApi = useApi(configApiRef);
   const { content } = useStyles();
+
+  const rankInfo = useMemo(
+    () => ({
+      [Rank.Stone]: {
+        title:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.stone.title',
+          ) ?? 'Unmanaged',
+        description:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.stone.description',
+          ) ??
+          'Entity does not utilize standard infrastructure or tools to ensure effective operations',
+      },
+      [Rank.Bronze]: {
+        title:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.bronze.title',
+          ) ?? 'Foundational',
+        description:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.bronze.description',
+          ) ??
+          'Has full Ownership, but Maintainability, Security, and Reliability are not ensured',
+      },
+      [Rank.Silver]: {
+        title:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.silver.title',
+          ) ?? 'Standard',
+        description:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.silver.description',
+          ) ??
+          'Ownership, Maintainability, and Security are ensured, but Reliability is not guaranteed',
+      },
+      [Rank.Gold]: {
+        title:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.gold.title',
+          ) ?? 'Excellent',
+        description:
+          configApi.getOptionalString(
+            'techInsights.maturity.rank.gold.description',
+          ) ??
+          'Conforms with the Golden Path standards. Ownership, Maintainability, Security, and Reliability are all ensured',
+      },
+    }),
+    [configApi],
+  );
+
+  const { title, description } = rankInfo[summary.rank];
 
   return (
     <InfoCard
@@ -107,10 +142,10 @@ export const MaturityRankInfoCard = ({ summary }: Props) => {
           className={content}
         />
         <Typography variant="h6" align="center">
-          {Rank[summary.rank]}
+          {title}
         </Typography>
         <Typography variant="subtitle2" align="center">
-          {RankDescription.get(summary.rank)}
+          {description}
         </Typography>
       </CardContent>
       <Divider />
