@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.2.1
+
+### Patch Changes
+
+- 60cfba4: Update correct param name in README.
+
 ## 1.2.0
 
 ### Minor Changes
