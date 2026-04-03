@@ -17,7 +17,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { TopLanguagesTile } from '../tiles/TopLanguagesTile';
 import { TopRiskTile } from '../tiles/TopRiskTile';
 import StatusTile from '../tiles/StatusTile';
-import { RepositoryType } from '../../queries';
+import { ApplicationType, RepositoryType } from '../../queries';
 import { useApi } from '@backstage/core-plugin-api';
 import { isApiiroMetricViewAvailable } from '../../utils';
 import type { Entity } from '@backstage/catalog-model';
@@ -25,38 +25,75 @@ import { apiiroApiRef } from '../../api';
 
 export const WidgetMetricsGroup = ({
   repositoryData,
+  applicationData,
   repoId,
   entityRef,
   entity,
+  applicationId,
 }: {
-  repositoryData: RepositoryType;
-  repoId: string;
+  repositoryData?: RepositoryType;
+  applicationData?: ApplicationType;
+  repoId?: string;
   entityRef: string;
   entity: Entity;
+  applicationId?: string;
 }) => {
   const apiiroApi = useApi(apiiroApiRef);
   const defaultViewChart = apiiroApi.getDefaultAllowMetricsView();
   const allowViewChart =
     isApiiroMetricViewAvailable(entity) ?? defaultViewChart;
+  const detailViewUrl = repoId
+    ? repositoryData?.entityUrl
+    : applicationData?.entityUrl;
+
+  const transformApplicationLanguages = (
+    languages?: { language?: string; percentage?: number }[],
+  ): Record<string, number> => {
+    if (!languages) return {};
+
+    const totalPercentage = languages.reduce((sum, item) => {
+      return sum + (item.percentage || 0);
+    }, 0);
+
+    if (totalPercentage === 0) return {};
+
+    return languages.reduce((acc, item) => {
+      if (item.language && item.percentage !== undefined) {
+        acc[item.language] = (item.percentage / totalPercentage) * 100;
+      }
+      return acc;
+    }, {} as Record<string, number>);
+  };
+
+  const languagePercentages =
+    repositoryData?.languagePercentages ||
+    transformApplicationLanguages(applicationData?.languagePercentages) ||
+    {};
+
   return (
     <Grid container spacing={3} direction="column">
       <Grid container spacing={3}>
         <Grid xs={12} sm={12}>
           <StatusTile
             repository={repositoryData}
-            detailViewLink={`${repositoryData.entityUrl}/apiiro`}
+            application={applicationData}
+            detailViewLink={`${detailViewUrl}/apiiro`}
             allowViewChart={allowViewChart}
           />
         </Grid>
+        {allowViewChart && repositoryData && (
+          <Grid xs={12} sm={6} lg={6}>
+            <TopLanguagesTile data={languagePercentages} />
+          </Grid>
+        )}
         {allowViewChart && (
-          <>
-            <Grid xs={12} sm={6} lg={6}>
-              <TopLanguagesTile data={repositoryData?.languagePercentages} />
-            </Grid>
-            <Grid xs={12} sm={6} lg={6}>
-              <TopRiskTile repoId={repoId} entityRef={entityRef} />
-            </Grid>
-          </>
+          <Grid xs={12} sm={6} lg={applicationData ? 12 : 6}>
+            <TopRiskTile
+              repoId={repoId}
+              applicationId={applicationId}
+              entityRef={entityRef}
+            />
+          </Grid>
         )}
       </Grid>
     </Grid>

@@ -20,7 +20,9 @@ export type GcpApi = {
 };
 
 // @public (undocumented)
-export const gcpApiRef: ApiRef<GcpApi>;
+export const gcpApiRef: ApiRef<GcpApi, 'plugin.gcpprojects.service'> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export class GcpClient implements GcpApi {

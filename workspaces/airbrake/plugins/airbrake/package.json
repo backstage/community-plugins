@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-airbrake",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "airbrake",
@@ -41,6 +41,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@material-ui/core": "^4.12.2",

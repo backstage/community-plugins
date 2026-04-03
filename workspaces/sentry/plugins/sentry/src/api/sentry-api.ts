@@ -19,7 +19,7 @@ import { createApiRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 
 /** @public */
-export const sentryApiRef = createApiRef<SentryApi>({
+export const sentryApiRef = createApiRef<SentryApi>().with({
   id: 'plugin.sentry.service',
 });
 

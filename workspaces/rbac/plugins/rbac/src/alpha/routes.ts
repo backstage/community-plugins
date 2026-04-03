@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  createRouteRef,
+  createSubRouteRef,
+} from '@backstage/frontend-plugin-api';
 
-import { NavItemBlueprint } from '@backstage/frontend-plugin-api';
-import { rootRouteRef } from '../routes';
-import { RbacIcon } from '..';
+export const rootRouteRef = createRouteRef();
 
-export const rbacNavItem = NavItemBlueprint.make({
-  params: {
-    title: 'RBAC',
-    routeRef: rootRouteRef,
-    // FIXME: improve icon type in Backstage 1.49, currently the icon type is deprecated but there is no change in the NavItemBlueprint!?
-    icon: RbacIcon as any,
-  },
+export const roleRouteRef = createSubRouteRef({
+  parent: rootRouteRef,
+  path: '/roles/:roleKind/:roleNamespace/:roleName',
 });
 
-export default rbacNavItem;
+export const createRoleRouteRef = createSubRouteRef({
+  parent: rootRouteRef,
+  path: '/role/new',
+});
+
+export const editRoleRouteRef = createSubRouteRef({
+  parent: rootRouteRef,
+  path: '/role/:roleKind/:roleNamespace/:roleName',
+});

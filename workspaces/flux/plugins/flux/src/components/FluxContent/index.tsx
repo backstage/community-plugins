@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, Header, Page } from '@backstage/core-components';
-import { makeStyles } from '@material-ui/core';
+
+import { Box, Container, PluginHeader } from '@backstage/ui';
 import { EntityFluxGitRepositoriesCard } from '../EntityFluxGitRepositoriesCard';
 import { EntityFluxHelmRepositoriesCard } from '../EntityFluxHelmRepositoriesCard';
 import { EntityFluxOCIRepositoriesCard } from '../EntityFluxOCIRepositoriesCard';
 import { EntityFluxKustomizationsCard } from '../EntityFluxKustomizationsCard';
 import { EntityFluxHelmReleasesCard } from '../EntityFluxHelmReleasesCard';
 import { RequireKubernetesPermissions } from '../../RequireKubernetesPermissions';
-
-const useStyles = makeStyles(() => ({
-  overflowXScroll: {
-    overflowX: 'scroll',
-  },
-}));
 
 export interface FluxContentProps {
   /**
@@ -50,12 +44,11 @@ export interface FluxContentProps {
  */
 export function FluxContent(props: FluxContentProps) {
   const { title = 'Flux Resources' } = props;
-  const classes = useStyles();
 
   return (
-    <Page themeId="tool">
-      <Header title={title} />
-      <Content className={classes.overflowXScroll}>
+    <Box>
+      <PluginHeader title={title} />
+      <Container>
         <RequireKubernetesPermissions>
           <EntityFluxKustomizationsCard />
           <EntityFluxHelmReleasesCard />
@@ -63,7 +56,7 @@ export function FluxContent(props: FluxContentProps) {
           <EntityFluxHelmRepositoriesCard />
           <EntityFluxOCIRepositoriesCard />
         </RequireKubernetesPermissions>
-      </Content>
-    </Page>
+      </Container>
+    </Box>
   );
 }

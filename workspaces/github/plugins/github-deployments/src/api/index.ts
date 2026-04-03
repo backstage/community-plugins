@@ -17,7 +17,8 @@ import { parseLocationRef } from '@backstage/catalog-model';
 import { InputError } from '@backstage/errors';
 import { ScmIntegrationRegistry } from '@backstage/integration';
 import { graphql } from '@octokit/graphql';
-import { createApiRef, OAuthApi } from '@backstage/core-plugin-api';
+import { OAuthApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 const getBaseUrl = (
   scmIntegrationsApi: ScmIntegrationRegistry,
@@ -92,9 +93,10 @@ export interface GithubDeploymentsApi {
   listDeployments(params: QueryParams): Promise<GithubDeployment[]>;
 }
 
-export const githubDeploymentsApiRef = createApiRef<GithubDeploymentsApi>({
-  id: 'plugin.github-deployments.service',
-});
+export const githubDeploymentsApiRef =
+  createApiRef<GithubDeploymentsApi>().with({
+    id: 'plugin.github-deployments.service',
+  });
 
 export type Options = {
   githubAuthApi: OAuthApi;

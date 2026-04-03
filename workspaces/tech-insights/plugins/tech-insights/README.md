@@ -27,7 +27,7 @@ If you are using Backstage's [new frontend system](https://backstage.io/docs/fro
 
 #### Creating custom scorecards with TechInsightsScorecardBlueprint
 
-The `TechInsightsScorecardBlueprint` allows you to create custom scorecard content that can be filtered to specific entities. This is useful when you want different scorecards to appear for different entity types or based on entity metadata. The `filter` parameter uses the same entity predicate format as other Backstage entity filters, allowing you to match on `kind`, `metadata`, `spec` fields, and more.
+The `TechInsightsScorecardBlueprint` allows you to create custom scorecard content that can be filtered to specific entities. This is useful when you want different scorecards to appear for different entity types or based on entity metadata. The `entityFilter` parameter uses the same entity predicate format as other Backstage entity filters, allowing you to match on `kind`, `metadata`, `spec` fields, and more.
 
 ```ts
 import { createFrontendModule } from '@backstage/frontend-plugin-api';
@@ -40,7 +40,7 @@ const techInsightsModule = createFrontendModule({
     TechInsightsScorecardBlueprint.make({
       name: 'apis',
       params: {
-        filter: { kind: 'api' },
+        entityFilter: { kind: 'api' },
         title: 'API Scorecard',
         description: 'Checks specific to API entities',
         checkIds: ['apiDefinitionCheck'],
@@ -49,7 +49,7 @@ const techInsightsModule = createFrontendModule({
     TechInsightsScorecardBlueprint.make({
       name: 'production-apis',
       params: {
-        filter: { kind: 'api', 'spec.lifecycle': 'production' },
+        entityFilter: { kind: 'api', 'spec.lifecycle': 'production' },
         title: 'Production API Scorecard',
         checkIds: ['groupOwnerCheck', 'productionReadinessCheck'],
       },

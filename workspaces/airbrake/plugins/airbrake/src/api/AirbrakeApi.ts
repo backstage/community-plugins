@@ -15,9 +15,9 @@
  */
 
 import { Groups } from './airbrakeGroups';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
-export const airbrakeApiRef = createApiRef<AirbrakeApi>({
+export const airbrakeApiRef = createApiRef<AirbrakeApi>().with({
   id: 'plugin.airbrake.service',
 });
 

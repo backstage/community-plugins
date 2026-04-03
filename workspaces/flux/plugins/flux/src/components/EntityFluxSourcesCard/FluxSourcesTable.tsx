@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -26,20 +25,20 @@ import {
   typeColumn,
   verifiedColumn,
   clusterNameFilteringColumn,
-  filters,
 } from '../helpers';
+import { FluxColumn } from '../FluxEntityTable';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 import { GH, OH } from './EntityFluxSourcesCard';
 
-const commonInitialColumns: TableColumn<Source>[] = [
+const commonInitialColumns: FluxColumn<Source>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
 ];
 
-const commonEndColumns: TableColumn<Source>[] = [
+const commonEndColumns: FluxColumn<Source>[] = [
   urlColumn(),
   artifactColumn(),
   statusColumn(),
@@ -52,28 +51,30 @@ export const sourceDefaultColumns = [
   verifiedColumn(),
   { title: 'Provider', field: 'provider' },
   ...commonEndColumns,
-] as TableColumn<GH | OH>[];
+] as FluxColumn<GH | OH>[];
 
 export const gitOciDefaultColumns = [
   ...commonInitialColumns,
   verifiedColumn(),
   ...commonEndColumns,
-] as TableColumn<GitRepository | OCIRepository>[];
+] as FluxColumn<GitRepository | OCIRepository>[];
 
 export const helmDefaultColumns = [
   ...commonInitialColumns,
   { title: 'Provider', field: 'provider' },
   ...commonEndColumns,
-] as TableColumn<HelmRepository>[];
+] as FluxColumn<HelmRepository>[];
 
 type Props = {
+  title: string;
   sources: Source[];
   isLoading: boolean;
-  columns: TableColumn<any>[];
+  columns: FluxColumn<any>[];
   many?: boolean;
 };
 
 export const FluxSourcesTable = ({
+  title,
   sources,
   isLoading,
   columns,
@@ -120,6 +121,7 @@ export const FluxSourcesTable = ({
 
   return (
     <FluxEntityTable
+      title={title}
       columns={columns}
       data={
         data as (
@@ -129,7 +131,6 @@ export const FluxSourcesTable = ({
         )[]
       }
       isLoading={isLoading}
-      filters={filters}
       many={many}
     />
   );

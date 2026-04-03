@@ -33,7 +33,8 @@ import {
   HeaderIconLinkRow,
   IconLinkVerticalProps,
 } from '@backstage/core-components';
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 export const ILertCardActionsHeader = ({
   alertSource,
@@ -47,7 +48,7 @@ export const ILertCardActionsHeader = ({
   setIsMaintenanceModalOpened: (isOpen: boolean) => void;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(alertApiRef);
+  const alertApi = useApi(toastApiRef);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisableModalOpened, setIsDisableModalOpened] = useState(false);
 
@@ -62,12 +63,12 @@ export const ILertCardActionsHeader = ({
       }
       setIsLoading(true);
       const newAlertSource = await ilertApi.enableAlertSource(alertSource);
-      alertApi.post({ message: 'Alert source enabled.' });
+      alertApi.post({ title: 'Alert source enabled.' });
       setIsLoading(false);
       setAlertSource(newAlertSource);
     } catch (err) {
       setIsLoading(false);
-      alertApi.post({ message: err, severity: 'error' });
+      alertApi.post({ title: err, status: 'danger' });
     }
   };
   const handleDisableAlertSource = async () => {
@@ -78,12 +79,12 @@ export const ILertCardActionsHeader = ({
       setIsDisableModalOpened(false);
       setIsLoading(true);
       const newAlertSource = await ilertApi.disableAlertSource(alertSource);
-      alertApi.post({ message: 'Alert source disabled.' });
+      alertApi.post({ title: 'Alert source disabled.' });
       setIsLoading(false);
       setAlertSource(newAlertSource);
     } catch (err) {
       setIsLoading(false);
-      alertApi.post({ message: err, severity: 'error' });
+      alertApi.post({ title: err, status: 'danger' });
     }
   };
 

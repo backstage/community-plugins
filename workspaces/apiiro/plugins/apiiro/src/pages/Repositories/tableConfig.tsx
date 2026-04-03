@@ -18,7 +18,6 @@ import { Link } from 'react-router-dom';
 import { Chip, ChipsList, RiskLevel, SimpleTooltip } from '../../components';
 import { scmProviderIcons } from '../../components/common/scmProviders';
 import { formatDate } from '../../utils/dateFormatter';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // Color mapping for business impact
@@ -219,7 +218,7 @@ export const repositoryColumns: GridColDef[] = [
           : 'No sensitive data';
       return (
         <SimpleTooltip title={tooltipText} centered>
-          <Typography>{displayValue}</Typography>
+          {displayValue}
         </SimpleTooltip>
       );
     },

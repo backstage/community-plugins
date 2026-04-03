@@ -15,9 +15,9 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
-export const badgesApiRef = createApiRef<BadgesApi>({
+export const badgesApiRef = createApiRef<BadgesApi>().with({
   id: 'plugin.badges.client',
 });
 

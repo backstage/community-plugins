@@ -12,6 +12,6 @@ export const badgesPlugin: BackstagePlugin<{}, {}, {}>;
 // @public (undocumented)
 export const EntityBadgesDialog: (props: {
   open: boolean;
-  onClose?: (() => any) | undefined;
+  onClose?: () => any;
 }) => JSX_2.Element;
 ```

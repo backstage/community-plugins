@@ -20,7 +20,6 @@ import {
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
-  NavItemBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
   compatWrapper,
@@ -50,6 +49,8 @@ export const newRelicPage = PageBlueprint.make({
   params: {
     path: '/new-relic',
     routeRef: convertLegacyRouteRef(rootRouteRef),
+    title: 'New Relic',
+    icon: <ExtensionIcon />,
     loader: () =>
       import('../components/NewRelicComponent').then(m =>
         compatWrapper(<m.NewRelicComponent />),
@@ -58,16 +59,7 @@ export const newRelicPage = PageBlueprint.make({
 });
 
 /** @alpha */
-export const newRelicNavItem = NavItemBlueprint.make({
-  params: {
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    title: 'New Relic',
-    icon: ExtensionIcon,
-  },
-});
-
-/** @alpha */
 export default createFrontendPlugin({
   pluginId: 'newrelic',
-  extensions: [newRelicApi, newRelicPage, newRelicNavItem],
+  extensions: [newRelicApi, newRelicPage],
 });

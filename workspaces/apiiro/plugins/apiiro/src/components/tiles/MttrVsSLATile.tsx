@@ -26,14 +26,14 @@ import { LogoSpinner } from '../common/logoSpinner';
 
 interface GaugeData {
   value: number;
-  tickValue: number;
+  tickValue: number | null;
   minValue: number;
   maxValue: number;
   categoryLabel: string;
   tooltip?: string;
   unit?: string;
   displayValue?: number;
-  displayTickValue?: number;
+  displayTickValue?: number | null;
   displayMinValue?: number;
   displayMaxValue?: number;
 }
@@ -47,6 +47,7 @@ interface MttrVsSLATileProps {
   height?: string | number;
   repoId?: string;
   entityRef?: string;
+  applicationId?: string;
 }
 
 const GaugesGrid = styled(Box)(() => ({
@@ -54,10 +55,17 @@ const GaugesGrid = styled(Box)(() => ({
   gridTemplateColumns: '1fr 1fr',
   justifyItems: 'center',
   alignItems: 'center',
-  gap: '8px',
+  gap: '20px',
   width: 'fit-content',
   maxWidth: '100%',
-  margin: '0 auto',
+  maxHeight: '280px',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  scrollbarWidth: 'none', // Firefox
+  msOverflowStyle: 'none', // IE and Edge
+  '&::-webkit-scrollbar': {
+    display: 'none', // Chrome, Safari, and Opera
+  },
   '@media (max-width: 320px)': {
     gridTemplateColumns: '1fr',
     gap: '12px',
@@ -106,7 +114,7 @@ const transformMttrStatisticsToGauges = (
   };
 
   // Define the desired order: Medium, Low, High, Critical
-  const riskLevelOrder = ['Critical', 'High', 'Medium', 'Low'];
+  const riskLevelOrder = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
 
   // Sort statistics according to the desired order
   const sortedStatistics = statistics.sort((a, b) => {
@@ -122,32 +130,40 @@ const transformMttrStatisticsToGauges = (
 
   return sortedStatistics.map(stat => {
     const meanTimeDisplay = convertHoursForDisplay(stat.meanTimeInHours);
-    const slaDisplay = convertHoursForDisplay(stat.slaInHours);
+    const slaDisplay =
+      stat.slaInHours !== null ? convertHoursForDisplay(stat.slaInHours) : null;
 
     // Use the unit from the mean time (primary value)
     const unit = meanTimeDisplay.unit;
 
     // Use original hours for arc scaling, but display converted values for labels
-    const maxHours = Math.max(stat.meanTimeInHours, stat.slaInHours) + 24;
+    const maxHours = Math.max(stat.meanTimeInHours, stat.slaInHours || 0) + 24;
     const maxDisplay = convertHoursForDisplay(maxHours);
+
+    let tickValue: number | null = null;
+    if (slaDisplay !== null && stat.slaInHours !== null) {
+      tickValue =
+        unit === 'Days'
+          ? slaDisplay.displayValue * 24
+          : Math.ceil(stat.slaInHours);
+    }
 
     return {
       value:
         unit === 'Days'
           ? meanTimeDisplay.displayValue * 24
           : Math.ceil(stat.meanTimeInHours), // Original hours for arc scaling
-      tickValue:
-        unit === 'Days'
-          ? slaDisplay.displayValue * 24
-          : Math.ceil(stat.slaInHours), // Original hours for arc scaling
+      tickValue,
       minValue: 0,
       maxValue:
         unit === 'Days' ? maxDisplay.displayValue * 24 : Math.ceil(maxHours),
       categoryLabel: stat.riskLevel,
-      tooltip: `View ${stat.riskLevel} risks out of SLA`,
+      tooltip: stat?.slaInHours
+        ? `View ${stat.riskLevel} risks out of SLA`
+        : 'SLA is not defined',
       unit: unit,
       displayValue: meanTimeDisplay.displayValue, // Converted value for center display
-      displayTickValue: slaDisplay.displayValue, // Converted value for tick display
+      displayTickValue: slaDisplay?.displayValue ?? null, // Converted value for tick display
       displayMinValue: 0, // Min is always 0
       displayMaxValue: maxDisplay.displayValue, // Converted max value for bottom labels
     };
@@ -162,6 +178,7 @@ export const MttrVsSLATile = ({
   width = '100%',
   repoId,
   entityRef,
+  applicationId,
 }: MttrVsSLATileProps) => {
   // Use API hooks internally
   const connectBackendApi = useApi(apiiroApiRef);
@@ -175,11 +192,12 @@ export const MttrVsSLATile = ({
   } = useMttrStatisticsData({
     connectApi: connectBackendApi,
     fetchApi: fetch,
-    repositoryKey: repoId,
+    repositoryId: repoId,
     entityRef: entityRef,
+    applicationId: applicationId,
   });
-  // Only use API data if repositoryKey is provided
-  const shouldUseApiData = !!repoId;
+  // Only use API data if repositoryId or applicationId is provided
+  const shouldUseApiData = !!repoId || !!applicationId;
 
   // Transform API data to gauge data if available and should be used
   const apiGauges =
@@ -227,7 +245,7 @@ export const MttrVsSLATile = ({
         {repoId ? (
           <NotFound />
         ) : (
-          <NotFound message="Please provide the repository details to access the data." />
+          <NotFound message="Please configure the apiiro annotation to access the data." />
         )}
       </ChartBox>
     );
@@ -254,6 +272,7 @@ export const MttrVsSLATile = ({
               minValue={gauge.displayMinValue ?? gauge.minValue}
               maxValue={gauge.displayMaxValue ?? gauge.maxValue}
               categoryLabel={gauge.categoryLabel}
+              tickValue={gauge.tickValue}
               width="130px"
             />
           </GaugeContainer>

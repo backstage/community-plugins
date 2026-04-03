@@ -20,7 +20,6 @@ import {
   createExtensionDataRef,
   createExtensionInput,
   createFrontendPlugin,
-  NavItemBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -41,17 +40,10 @@ export const graphiqlPage = PageBlueprint.make({
   params: {
     path: '/graphiql',
     routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+    title: 'GraphiQL',
+    icon: <GraphiQLIcon />,
     loader: () =>
       import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
-  },
-});
-
-/** @alpha */
-export const graphiqlNavItem = NavItemBlueprint.make({
-  params: {
-    title: 'GraphiQL',
-    routeRef: convertLegacyRouteRef(graphiQLRouteRef),
-    icon: GraphiQLIcon,
   },
 });
 
@@ -111,7 +103,6 @@ export default createFrontendPlugin({
   pluginId: 'graphiql',
   extensions: [
     graphiqlPage,
-    graphiqlNavItem,
     graphiqlBrowseApi,
     graphiqlGitlabGraphiQLEndpointExtension,
   ],

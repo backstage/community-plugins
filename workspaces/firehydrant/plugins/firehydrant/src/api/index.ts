@@ -20,11 +20,8 @@ import {
   ServiceIncidentsResponse,
 } from './types';
 import { Incident, Service } from '../components/types';
-import {
-  createApiRef,
-  DiscoveryApi,
-  FetchApi,
-} from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 export interface FireHydrantAPI {
   getServiceAnalytics(options: {
@@ -43,7 +40,7 @@ export interface FireHydrantAPI {
   }): Promise<ServiceIncidentsResponse>;
 }
 
-export const fireHydrantApiRef = createApiRef<FireHydrantAPI>({
+export const fireHydrantApiRef = createApiRef<FireHydrantAPI>().with({
   id: 'plugin.firehydrant.service',
 });
 

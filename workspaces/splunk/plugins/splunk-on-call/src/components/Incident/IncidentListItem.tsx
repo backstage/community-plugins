@@ -37,7 +37,8 @@ import {
   StatusWarning,
   StatusOK,
 } from '@backstage/core-components';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 const useStyles = makeStyles({
   denseListIcon: {
@@ -144,7 +145,7 @@ export const IncidentListItem = ({
   const createdAt = DateTime.local()
     .minus(Duration.fromMillis(duration))
     .toRelative({ locale: 'en' });
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const api = useApi(splunkOnCallApiRef);
 
   const hasBeenManuallyTriggered = incident.monitorName?.includes('vouser-');
@@ -184,32 +185,32 @@ export const IncidentListItem = ({
 
   useEffect(() => {
     if (acknowledgeValue) {
-      alertApi.post({
-        message: `Incident successfully acknowledged`,
+      toastApi.post({
+        title: `Incident successfully acknowledged`,
       });
     }
 
     if (resolveValue) {
-      alertApi.post({
-        message: `Incident successfully resolved`,
+      toastApi.post({
+        title: `Incident successfully resolved`,
       });
     }
     if (resolveValue || acknowledgeValue) {
       onIncidentAction();
     }
-  }, [acknowledgeValue, resolveValue, alertApi, onIncidentAction]);
+  }, [acknowledgeValue, resolveValue, toastApi, onIncidentAction]);
 
   if (acknowledgeError) {
-    alertApi.post({
-      message: `Failed to acknowledge incident. ${acknowledgeError.message}`,
-      severity: 'error',
+    toastApi.post({
+      title: `Failed to acknowledge incident. ${acknowledgeError.message}`,
+      status: 'danger',
     });
   }
 
   if (resolveError) {
-    alertApi.post({
-      message: `Failed to resolve incident. ${resolveError.message}`,
-      severity: 'error',
+    toastApi.post({
+      title: `Failed to resolve incident. ${resolveError.message}`,
+      status: 'danger',
     });
   }
 

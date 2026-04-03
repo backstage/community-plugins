@@ -8,59 +8,43 @@ import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public
-export const EntityFluxDeploymentsCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxDeploymentsCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxGitRepositoriesCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxGitRepositoriesCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxHelmReleasesCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxHelmReleasesCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxHelmRepositoriesCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxHelmRepositoriesCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxImagePoliciesCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxImagePoliciesCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxKustomizationsCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxKustomizationsCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxOCIRepositoriesCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxOCIRepositoriesCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
-export const EntityFluxSourcesCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
+export const EntityFluxSourcesCard: (input: {
+  many?: boolean;
 }) => JSX_2.Element;
 
 // @public
@@ -76,11 +60,7 @@ export const fluxPlugin: BackstagePlugin<
 >;
 
 // @public
-export const FluxRuntimeCard: ({
-  many,
-}: {
-  many?: boolean | undefined;
-}) => JSX_2.Element;
+export const FluxRuntimeCard: (input: { many?: boolean }) => JSX_2.Element;
 
 // Warning: (ae-forgotten-export) The symbol "FluxRuntimePage_2" needs to be exported by the entry point index.d.ts
 //

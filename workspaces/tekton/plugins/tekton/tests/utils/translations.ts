@@ -17,6 +17,8 @@
 // These translation files are not exported by the package, so relative imports are necessary for e2e tests
 /* eslint-disable @backstage/no-relative-monorepo-imports */
 import { tektonMessages } from '../../src/translations/ref.js';
+import tektonTranslationDe from '../../src/translations/de.js';
+import tektonTranslationEs from '../../src/translations/es.js';
 import tektonTranslationFr from '../../src/translations/fr.js';
 import tektonTranslationIt from '../../src/translations/it.js';
 import tektonTranslationJa from '../../src/translations/ja.js';
@@ -51,6 +53,10 @@ export function getTranslations(locale: string): TektonMessages {
   switch (base) {
     case 'en':
       return tektonMessages;
+    case 'de':
+      return transform(tektonTranslationDe.messages);
+    case 'es':
+      return transform(tektonTranslationEs.messages);
     case 'fr':
       return transform(tektonTranslationFr.messages);
     case 'it':

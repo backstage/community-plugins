@@ -439,7 +439,9 @@ export interface ILertApi {
 }
 
 // @public (undocumented)
-export const ilertApiRef: ApiRef<ILertApi>;
+export const ilertApiRef: ApiRef<ILertApi, 'plugin.ilert.service'> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export const ILertCard: () => JSX_2.Element;

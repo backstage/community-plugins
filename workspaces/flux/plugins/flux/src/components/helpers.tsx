@@ -15,24 +15,28 @@
  */
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
+
+import { compare } from 'compare-versions';
 import {
   Link,
-  Progress,
-  TableColumn,
-  TableFilter,
-} from '@backstage/core-components';
-import { compare } from 'compare-versions';
-import { Box, IconButton, Tooltip, Typography } from '@material-ui/core';
-import RetryIcon from '@material-ui/icons/Replay';
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+  Flex,
+  Text,
+  Tooltip,
+  ButtonIcon,
+  TooltipTrigger,
+  Skeleton,
+} from '@backstage/ui';
+import {
+  RiRefreshLine,
+  RiPauseLine,
+  RiPlayLine,
+  RiShieldCheckFill,
+} from '@remixicon/react';
 import { useSyncResource, useWeaveGitOpsDeepLink } from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
   findVerificationCondition,
-  useStyles,
 } from './utils';
 import {
   FluxObject,
@@ -48,6 +52,8 @@ import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
+import styles from './utils.module.css';
+import { FluxColumn } from './FluxEntityTable';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -70,23 +76,24 @@ export const NameLabel = ({
   const { name, namespace } = resource;
   const deepLink = useWeaveGitOpsDeepLink(resource);
   const label = `${namespace}/${name}`;
-  const classes = useStyles();
 
   if (!deepLink) {
     return (
-      <Typography
-        variant="body2"
-        className={classNames(classes.textOverflow, classes.nameLabel)}
+      <Text
+        weight="bold"
+        className={classNames(styles.textOverflow, styles.nameLabel)}
       >
         {label}
-      </Typography>
+      </Text>
     );
   }
 
   return (
     <Link
-      className={classNames(classes.textOverflow, classes.nameLabel)}
-      to={deepLink}
+      href={deepLink}
+      weight="bold"
+      className={classNames(styles.textOverflow, styles.nameLabel)}
+      target="_blank"
     >
       {label}
     </Link>
@@ -94,11 +101,11 @@ export const NameLabel = ({
 };
 
 export const Url = ({ resource }: { resource: Source }): JSX.Element => {
-  const classes = useStyles();
   return (
-    <Tooltip title={resource.url}>
-      <Box className={classes.textOverflow}>{resource.url}</Box>
-    </Tooltip>
+    <TooltipTrigger>
+      <Text>{resource.url}</Text>
+      <Tooltip>{resource.url}</Tooltip>
+    </TooltipTrigger>
   );
 };
 
@@ -113,23 +120,21 @@ export function SyncButton({
   status: boolean;
   readOnly?: boolean;
 }) {
-  const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Syncing ${label}` : `Sync ${label}`;
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`sync ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={sync}
-          disabled={resource.suspended || readOnly}
-        >
-          <RetryIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label={readOnly ? 'Read-only mode is enabled' : title}
+        data-testid={`sync ${label}`}
+        className={styles.actionButton}
+        icon={<RiRefreshLine size={20} />}
+        onPress={sync}
+        isDisabled={resource.suspended || readOnly}
+        variant="secondary"
+      />
+      <Tooltip>{readOnly ? 'Read-only mode is enabled' : title}</Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -144,24 +149,22 @@ export function SuspendButton({
   status: boolean;
   readOnly?: boolean;
 }) {
-  const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Suspending ${label}` : `Suspend ${label}`;
 
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`suspend ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={toggleSuspend}
-          disabled={resource.suspended || readOnly}
-        >
-          <PauseIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label={readOnly ? 'Read-only mode is enabled' : title}
+        data-testid={`suspend ${label}`}
+        className={styles.actionButton}
+        icon={<RiPauseLine size={20} />}
+        onPress={toggleSuspend}
+        isDisabled={resource.suspended || readOnly}
+        variant="secondary"
+      />
+      <Tooltip>{readOnly ? 'Read-only mode is enabled' : title}</Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -176,24 +179,22 @@ export function ResumeButton({
   status: boolean;
   readOnly?: boolean;
 }) {
-  const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Resuming ${label}` : `Resume ${label}`;
 
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`resume ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={toggleResume}
-          disabled={!resource.suspended || readOnly}
-        >
-          <PlayArrowIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label={readOnly ? 'Read-only mode is enabled' : title}
+        data-testid={`resume ${label}`}
+        className={styles.actionButton}
+        icon={<RiPlayLine size={20} />}
+        onPress={toggleResume}
+        isDisabled={!resource.suspended || readOnly}
+        variant="secondary"
+      />
+      <Tooltip>{readOnly ? 'Read-only mode is enabled' : title}</Tooltip>
+    </TooltipTrigger>
   );
 }
 
@@ -217,9 +218,9 @@ export function GroupAction({
   return (
     <>
       {isLoading ? (
-        <Progress data-testid="loading" />
+        <Skeleton data-testid="loading" style={{ height: 32, width: 96 }} />
       ) : (
-        <Box display="flex" alignItems="start" flexDirection="row">
+        <Flex align="start" direction="row">
           <SyncButton
             readOnly={readOnly}
             resource={resource}
@@ -242,7 +243,7 @@ export function GroupAction({
               />
             </>
           ) : null}
-        </Box>
+        </Flex>
       )}
     </>
   );
@@ -251,9 +252,9 @@ export function GroupAction({
 export function actionColumn<T extends Source | Deployment | ImagePolicy>() {
   return {
     title: 'Actions',
-    render: row => <GroupAction resource={row} />,
-    width: '24px',
-  } as TableColumn<T>;
+    render: (row: T) => <GroupAction resource={row} />,
+    width: 150,
+  } as FluxColumn<T>;
 }
 
 export const VerifiedStatus = ({
@@ -261,25 +262,36 @@ export const VerifiedStatus = ({
 }: {
   resource: VerifiableSource;
 }): JSX.Element | null => {
-  const classes = useStyles();
-
   if (!resource.isVerifiable) return null;
 
   const condition = findVerificationCondition(resource);
 
   let className;
   if (condition?.status === 'True') {
-    className = classNames(classes.verifiedOK, classes.statusIconSize);
+    className = classNames(
+      styles.ok,
+      styles.statusIconSize,
+      styles.statusIconSizeForImg,
+    );
   } else if (condition?.status === 'False') {
-    className = classNames(classes.verifiedError, classes.statusIconSize);
+    className = classNames(
+      styles.error,
+      styles.statusIconSize,
+      styles.statusIconSizeForImg,
+    );
   } else if (!condition?.status) {
-    className = classNames(classes.verifiedWarning, classes.statusIconSize);
+    className = classNames(
+      styles.warning,
+      styles.statusIconSize,
+      styles.statusIconSizeForImg,
+    );
   }
 
   return (
-    <Tooltip title={condition?.message || 'pending verification'}>
-      <VerifiedUserIcon className={className} />
-    </Tooltip>
+    <TooltipTrigger>
+      <RiShieldCheckFill className={className} />
+      <Tooltip>{condition?.message || 'pending verification'}</Tooltip>
+    </TooltipTrigger>
   );
 };
 
@@ -288,10 +300,10 @@ export const nameAndClusterName = ({
 }: {
   resource: FluxObject;
 }): JSX.Element => (
-  <Box display="flux" alignItems="start" flexDirection="column">
+  <Flex align="start" direction="column">
     <NameLabel resource={resource} />
-    <Typography>cluster: {resource.clusterName}</Typography>
-  </Box>
+    <Text>cluster: {resource.clusterName}</Text>
+  </Flex>
 );
 
 export const idColumn = <T extends FluxObject | Cluster>() => {
@@ -299,7 +311,7 @@ export const idColumn = <T extends FluxObject | Cluster>() => {
     title: 'Id',
     field: 'id',
     hidden: true,
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 // Added hidden column to allow checkbox filtering by clusterName
@@ -310,43 +322,43 @@ export const clusterNameFilteringColumn = <
     title: 'Cluster name',
     hidden: true,
     field: 'clusterName',
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const clusterColumn = <T extends Cluster>() => {
   return {
     title: 'Cluster',
-    render: resource => <Typography>{resource?.clusterName}</Typography>,
-    ...sortAndFilterOptions(resource => resource?.clusterName),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.clusterName}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.clusterName),
+  } as FluxColumn<T>;
 };
 
 export const namespaceColumn = <T extends Cluster>() => {
   return {
     title: 'Namespace',
-    render: resource => <Typography>{resource?.namespace}</Typography>,
-    ...sortAndFilterOptions(resource => resource?.namespace),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.namespace}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.namespace),
+  } as FluxColumn<T>;
 };
 
 export const versionColumn = <T extends Cluster>() => {
   return {
     title: 'Version',
-    render: resource => <Typography>{resource?.version}</Typography>,
-    ...sortAndFilterOptions(resource => resource?.version),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.version}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.version),
+  } as FluxColumn<T>;
 };
 
 export const availableComponentsColumn = <T extends Cluster>() => {
   return {
     title: 'Available Components',
-    render: resource => (
-      <Typography>{resource?.availableComponents.join(', ')}</Typography>
+    render: (resource: T) => (
+      <Text>{resource?.availableComponents.join(', ')}</Text>
     ),
-    ...sortAndFilterOptions(resource =>
+    ...sortAndFilterOptions((resource: T) =>
       resource?.availableComponents.join(', '),
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 /**
@@ -367,56 +379,48 @@ export const FluxReleasesLink = ({
       resource.version.substring(1),
       '>',
     ) ? (
-    <Link to={FLUX_RELEASES_URL}>Update available</Link>
+    <Link href={FLUX_RELEASES_URL}>Update available</Link>
   ) : null;
 };
 
 export const fluxUpdate = <T extends Cluster>() => {
   return {
     title: 'Flux update',
-    render: resource => <FluxReleasesLink resource={resource} />,
-  } as TableColumn<T>;
+    render: (resource: T) => <FluxReleasesLink resource={resource} />,
+  } as FluxColumn<T>;
 };
 
 export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   return {
     title: 'Name',
-    render: resource => nameAndClusterName({ resource }),
+    render: (resource: T) => nameAndClusterName({ resource }),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         `${resource.namespace}/${resource.name}/${resource.clusterName}`,
     ),
-    minWidth: '200px',
-  } as TableColumn<T>;
+    width: 350,
+  } as FluxColumn<T>;
 };
 
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
-    title: (
-      <Tooltip title="Verification status">
-        <VerifiedUserIcon style={{ height: '16px' }} />
-      </Tooltip>
-    ),
-    render: resource => <VerifiedStatus resource={resource} />,
-    ...sortAndFilterOptions(resource =>
-      resource.isVerifiable
-        ? findVerificationCondition(resource)?.status || 'unknown'
-        : '',
-    ),
-    ...sortAndFilterOptions(resource => {
+    title: 'Verified',
+    render: (resource: T) => <VerifiedStatus resource={resource} />,
+    ...sortAndFilterOptions((resource: T) => {
       const condition = findVerificationCondition(resource);
       return condition?.message || '';
     }),
-    width: '90px',
-  } as TableColumn<T>;
+    width: 100,
+  } as FluxColumn<T>;
 };
 
 export const urlColumn = <T extends Source>() => {
   return {
     title: 'URL',
     field: 'url',
-    render: resource => <Url resource={resource} />,
-  } as TableColumn<T>;
+    render: (resource: T) => <Url resource={resource} />,
+    // minWidth: 400,
+  } as FluxColumn<T>;
 };
 
 export function shortenSha(sha: string | undefined) {
@@ -428,25 +432,21 @@ export function shortenSha(sha: string | undefined) {
 export const artifactColumn = <T extends Source>() => {
   return {
     title: 'Artifact',
-    render: resource => (
-      <Tooltip
-        // This is the sha of the commit that the artifact was built from
-        title={
-          resource.artifact?.revision?.split('@')[1] ||
-          resource.artifact?.revision?.split('@')[0] ||
-          'unknown tag'
-        }
-      >
-        <Typography>
-          {shortenSha(resource.artifact?.revision?.split('@')[0])}
-        </Typography>
-      </Tooltip>
+    render: (resource: T) => (
+      <TooltipTrigger>
+        <Text>{shortenSha(resource.artifact?.revision?.split('@')[0])}</Text>
+        <Tooltip>
+          {resource.artifact?.revision?.split('@')[1] ||
+            resource.artifact?.revision?.split('@')[0] ||
+            'unknown tag'}
+        </Tooltip>
+      </TooltipTrigger>
     ),
-    ...sortAndFilterOptions(resource => resource.artifact?.revision),
     ...sortAndFilterOptions(
-      resource => resource.artifact?.revision?.split('@')[1],
+      (resource: T) => resource.artifact?.revision?.split('@')[1],
     ),
-  } as TableColumn<T>;
+    width: 130,
+  } as FluxColumn<T>;
 };
 
 export const sourceColumn = <T extends Deployment>() => {
@@ -461,22 +461,22 @@ export const sourceColumn = <T extends Deployment>() => {
 
   return {
     title: 'Source',
-    render: (resource: Deployment) =>
+    render: (resource: T) =>
       resource.type === 'HelmRelease' ? (
         formatContent(resource)
       ) : (
-        <Typography>
+        <Text>
           {resource.type === 'Kustomization'
             ? (resource as Kustomization)?.path
             : ''}
-        </Typography>
+        </Text>
       ),
-    ...sortAndFilterOptions(resource =>
+    ...sortAndFilterOptions((resource: T) =>
       resource.type === 'HelmRelease'
         ? formatContent(resource)
         : (resource as Kustomization)?.path,
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const getIconType = (type: string) => {
@@ -505,36 +505,35 @@ export const typeColumn = <
     | HelmRepository
     | ImagePolicy,
 >() => {
-  const paddingLeft = 0;
   return {
     title: 'Kind',
-    align: 'right',
-    cellStyle: { paddingLeft, paddingRight: 6 },
-    headerStyle: { paddingLeft, paddingRight: 0 },
     field: 'type',
-    render: resource => (
-      <Tooltip title={resource.type || 'Unknown'}>
+    render: (resource: T) => (
+      <TooltipTrigger>
         <div>{getIconType(resource.type as string)}</div>
-      </Tooltip>
+        <Tooltip>{resource.type || 'Unknown'}</Tooltip>
+      </TooltipTrigger>
     ),
-    ...sortAndFilterOptions(resource => resource?.type as string | undefined),
-    width: '20px',
-  } as TableColumn<T>;
+    ...sortAndFilterOptions(
+      (resource: T) => resource?.type as string | undefined,
+    ),
+    width: 20,
+  } as FluxColumn<T>;
 };
 
 export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
-    render: resource => <Typography>{resource?.sourceRef?.name}</Typography>,
-    ...sortAndFilterOptions(resource => resource?.sourceRef?.name),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.sourceRef?.name}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.sourceRef?.name),
+  } as FluxColumn<T>;
 };
 
 export function statusColumn<T extends FluxObject>() {
   return {
     title: 'Status',
-    render: resource => (
+    render: (resource: T) => (
       <KubeStatusIndicator
         short
         conditions={resource.conditions}
@@ -542,62 +541,62 @@ export function statusColumn<T extends FluxObject>() {
       />
     ),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         getIndicatorInfo(resource.suspended, resource.conditions).type,
     ),
-    minWidth: '130px',
-  } as TableColumn<T>;
+    width: 130,
+  } as FluxColumn<T>;
 }
 
 export const updatedColumn = <T extends FluxObject>() => {
   return {
     title: 'Updated',
-    render: resource =>
+    render: (resource: T) =>
       DateTime.fromISO(automationLastUpdated(resource)).toRelative({
         locale: 'en',
       }),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         DateTime.fromISO(automationLastUpdated(resource)).toRelative({
           locale: 'en',
         }) as string,
     ),
-    minWidth: '130px',
-  } as TableColumn<T>;
+    width: 130,
+  } as FluxColumn<T>;
 };
 
 export const policy = <T extends ImagePolicy>() => {
   return {
     title: 'Image Policy',
     field: 'imagepolicy',
-    render: resource => (
-      <Typography>
+    render: (resource: T) => (
+      <Text>
         {resource?.imagePolicy.type} / {resource?.imagePolicy.value}
-      </Typography>
+      </Text>
     ),
     ...sortAndFilterOptions(
-      resource =>
+      (resource: T) =>
         `${resource?.imagePolicy.type} / ${resource?.imagePolicy.value}`,
     ),
-  } as TableColumn<T>;
+  } as FluxColumn<T>;
 };
 
 export const imageRepository = <T extends ImagePolicy>() => {
   return {
     title: 'Image Repository',
     field: 'imagerepository',
-    render: resource => <Typography>{resource?.imageRepositoryRef}</Typography>,
-    ...sortAndFilterOptions(resource => resource?.imageRepositoryRef),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.imageRepositoryRef}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.imageRepositoryRef),
+  } as FluxColumn<T>;
 };
 
 export const latestImageSelected = <T extends ImagePolicy>() => {
   return {
     title: 'Latest Image',
     field: 'latestimage',
-    render: resource => <Typography>{resource?.latestImage}</Typography>,
-    ...sortAndFilterOptions(resource => resource?.latestImage),
-  } as TableColumn<T>;
+    render: (resource: T) => <Text>{resource?.latestImage}</Text>,
+    ...sortAndFilterOptions((resource: T) => resource?.latestImage),
+  } as FluxColumn<T>;
 };
 
 //
@@ -610,7 +609,7 @@ export function sortAndFilterOptions<T extends object>(
   return {
     customFilterAndSearch: stringCompareFilter(fn),
     customSort: stringCompareSort(fn),
-  } as TableColumn<T>;
+  };
 }
 
 export function stringCompareSort<T>(fn: (item: T) => string | undefined) {
@@ -620,17 +619,9 @@ export function stringCompareSort<T>(fn: (item: T) => string | undefined) {
 }
 
 export function stringCompareFilter<T>(fn: (item: T) => string | undefined) {
-  return (filter: any, item: T) => {
+  return (filter: string, item: T) => {
     return (fn(item) || '')
       .toLocaleLowerCase()
-      .includes((filter as string).toLocaleLowerCase());
+      .includes(filter.toLocaleLowerCase());
   };
 }
-
-// checkbox filters
-export const filters: TableFilter[] = [
-  {
-    column: 'Cluster name',
-    type: 'multiple-select',
-  },
-];

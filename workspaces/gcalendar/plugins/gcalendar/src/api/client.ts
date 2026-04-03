@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { OAuthApi, createApiRef, FetchApi } from '@backstage/core-plugin-api';
+import { OAuthApi, FetchApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { GCalendarEvent, GCalendarList } from './types';
 import { ResponseError } from '@backstage/errors';
 
 /** @public */
-export const gcalendarApiRef = createApiRef<GCalendarApiClient>({
+export const gcalendarApiRef = createApiRef<GCalendarApiClient>().with({
   id: 'plugin.gcalendar.service',
 });
 
