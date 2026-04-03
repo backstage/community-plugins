@@ -25,7 +25,7 @@ export { mcpChatPlugin as default } from './plugin';
 export {
   llmProviderExtensionPoint,
   type LlmProviderExtensionPoint,
-} from './extensions';
+} from '@backstage-community/plugin-mcp-chat-node';
 
 // =============================================================================
 // Services
