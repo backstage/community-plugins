@@ -72,6 +72,10 @@ export class OllamaProvider extends LLMProvider {
         model: this.model,
         messages: ollamaMessages,
         tools: tools,
+        options: {
+          temperature: this.temperature ?? 0.7,
+          num_predict: this.maxTokens ?? 1000,
+        },
       });
       const duration = Date.now() - startTime;
 
@@ -141,8 +145,8 @@ export class OllamaProvider extends LLMProvider {
     const request: any = {
       model: this.model,
       messages,
-      max_tokens: 1000,
-      temperature: 0.7,
+      max_tokens: this.maxTokens ?? 1000,
+      temperature: this.temperature ?? 0.7,
     };
 
     if (tools && tools.length > 0) {

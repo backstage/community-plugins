@@ -43,6 +43,16 @@ export interface Config {
        * @visibility backend
        */
       baseUrl?: string;
+      /**
+       * Maximum number of tokens to generate in the response
+       * @visibility backend
+       */
+      maxTokens?: number;
+      /**
+       * Sampling temperature for the model
+       * @visibility backend
+       */
+      temperature?: number;
     }>;
     /**
      * MCP (Model Context Protocol) servers configuration
