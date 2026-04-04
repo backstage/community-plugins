@@ -41,6 +41,7 @@ export type ApplicationPayload = Omit<Application, 'status' | 'metadata'> & {
 export interface Instance {
   name: string;
   url: string;
+  externalUrl?: string;
   password?: string;
   token?: string;
   username?: string;

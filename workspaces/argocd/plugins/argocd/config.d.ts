@@ -22,6 +22,11 @@ export interface Config {
      */
     baseUrl?: string;
     /**
+     * The external URL to the ArgoCD instance that is exposed to the clients.
+     * @visibility frontend
+     */
+    externalBaseUrl?: string;
+    /**
      * Support for the ArgoCD beta feature "Applications in any namespace"
      * @visibility frontend
      */
@@ -63,6 +68,10 @@ export interface Config {
          * @visibility frontend
          */
         url: string;
+        /**
+         * @visibility frontend
+         */
+        externalUrl: string;
         /**
          * @visibility secret
          */

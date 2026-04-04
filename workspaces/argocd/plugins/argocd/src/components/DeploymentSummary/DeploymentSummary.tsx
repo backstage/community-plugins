@@ -51,7 +51,7 @@ const DeploymentSummary = ({
 }: DeploymentSummaryProps) => {
   const { entity } = useEntity();
 
-  const { baseUrl } = useArgocdConfig();
+  const { baseUrl, externalBaseUrl } = useArgocdConfig();
   const instanceNames = useMemo(() => getInstanceNames(entity), [entity]);
 
   const { appSelector, appName, projectName, appNamespace } =
@@ -90,7 +90,12 @@ const DeploymentSummary = ({
 
   const columns = useMemo<TableColumn<Application>[]>(() => {
     const getBaseUrl = (row: any): string | undefined => {
-      return row?.metadata?.instance?.url ?? baseUrl;
+      return (
+        row?.metadata?.instance?.externalUrl ||
+        row?.metadata?.instance?.url ||
+        externalBaseUrl ||
+        baseUrl
+      );
     };
 
     const buildAppUrl = (row: any): string | undefined => {
