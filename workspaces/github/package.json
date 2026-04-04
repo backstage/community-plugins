@@ -51,7 +51,7 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "type-fest": "^4.41.0",
+    "type-fest": "^5.0.0",
     "@types/webpack-env": "^1.18.6"
   },
   "prettier": "@backstage/cli/config/prettier",
