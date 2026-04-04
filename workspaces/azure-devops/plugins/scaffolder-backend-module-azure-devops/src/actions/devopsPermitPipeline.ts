@@ -110,6 +110,24 @@ export function createAzureDevopsPermitPipelineAction(options: {
       const webApi = new WebApi(url, authHandler);
       const client = webApi.rest.client;
 
+      // For repository resources, Azure DevOps requires a compound resource ID
+      // in the format {projectId}.{repositoryId}. If the resourceId doesn't
+      // already contain a dot, resolve the project GUID and build the compound ID.
+      let resolvedResourceId = resourceId;
+      if (resourceType === 'repository' && !resourceId.includes('.')) {
+        const coreApi = await webApi.getCoreApi();
+        const projectObj = await coreApi.getProject(project);
+        if (!projectObj?.id) {
+          throw new InputError(
+            `Could not retrieve project ID for project "${project}"`,
+          );
+        }
+        resolvedResourceId = `${projectObj.id}.${resourceId}`;
+        ctx.logger.info(
+          `Repository resource ID resolved to compound format: ${resolvedResourceId}`,
+        );
+      }
+
       const authorizeOptions = {
         pipelines: [
           {
@@ -126,7 +144,7 @@ export function createAzureDevopsPermitPipelineAction(options: {
 
       // See the Azure DevOps documentation for more information about the REST API:
       // https://learn.microsoft.com/en-us/rest/api/azure/devops/approvalsandchecks/pipeline-permissions/update-pipeline-permisions-for-resource?view=azure-devops-rest-7.1&tabs=HTTP#resourcepipelinepermissions
-      const requestUrl = `${project}/_apis/pipelines/pipelinepermissions/${resourceType}/${resourceId}?api-version=${apiVersion}`;
+      const requestUrl = `${url}/${project}/_apis/pipelines/pipelinepermissions/${resourceType}/${resolvedResourceId}?api-version=${apiVersion}`;
       const response = await client.patch(
         requestUrl,
         JSON.stringify(authorizeOptions),
@@ -149,7 +167,7 @@ export function createAzureDevopsPermitPipelineAction(options: {
       ctx.logger.info(
         `Pipeline ${pipelineId} in project ${project} has been ${
           authorized ? 'authorized' : 'unauthorized'
-        } for resource ${resourceId} of type ${resourceType}.`,
+        } for resource ${resolvedResourceId} of type ${resourceType}.`,
       );
     },
   });
