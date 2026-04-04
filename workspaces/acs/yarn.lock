@@ -2735,7 +2735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.2.0, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.25.7, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.25.7, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.26.9
   resolution: "@babel/runtime@npm:7.26.9"
   dependencies:
@@ -2805,7 +2805,7 @@ __metadata:
     "@patternfly/react-icons": "npm:5.4.2"
     "@patternfly/react-styles": "npm:5.4.1"
     "@patternfly/react-table": "npm:5.4.16"
-    "@patternfly/react-topology": "npm:5.4.1"
+    "@patternfly/react-topology": "npm:6.4.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
     "@testing-library/user-event": "npm:^14.0.0"
@@ -9524,7 +9524,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:5.4.14, @patternfly/react-core@npm:^5.1.1, @patternfly/react-core@npm:^5.4.14":
+"@patternfly/react-core@npm:5.4.14, @patternfly/react-core@npm:^5.4.14":
   version: 5.4.14
   resolution: "@patternfly/react-core@npm:5.4.14"
   dependencies:
@@ -9558,7 +9558,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-icons@npm:5.4.2, @patternfly/react-icons@npm:^5.1.1, @patternfly/react-icons@npm:^5.4.2":
+"@patternfly/react-icons@npm:5.4.2, @patternfly/react-icons@npm:^5.4.2":
   version: 5.4.2
   resolution: "@patternfly/react-icons@npm:5.4.2"
   peerDependencies:
@@ -9578,7 +9578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-styles@npm:5.4.1, @patternfly/react-styles@npm:^5.1.1, @patternfly/react-styles@npm:^5.4.1":
+"@patternfly/react-styles@npm:5.4.1, @patternfly/react-styles@npm:^5.4.1":
   version: 5.4.1
   resolution: "@patternfly/react-styles@npm:5.4.1"
   checksum: 10/414a55c31a90d4619f13085d043d90e93b3e563cde88ba72b485ed3e334e99f442cc43030b8de61712a5ace498e9e83acd5bd76ebe00098d0e0319fcc048fc8e
@@ -9640,29 +9640,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-topology@npm:5.4.1":
-  version: 5.4.1
-  resolution: "@patternfly/react-topology@npm:5.4.1"
+"@patternfly/react-topology@npm:6.4.0":
+  version: 6.4.0
+  resolution: "@patternfly/react-topology@npm:6.4.0"
   dependencies:
     "@dagrejs/dagre": "npm:1.1.2"
-    "@patternfly/react-core": "npm:^5.1.1"
-    "@patternfly/react-icons": "npm:^5.1.1"
-    "@patternfly/react-styles": "npm:^5.1.1"
+    "@patternfly/react-core": "npm:^6.0.0"
+    "@patternfly/react-icons": "npm:^6.0.0"
+    "@patternfly/react-styles": "npm:^6.0.0"
     "@types/d3": "npm:^7.4.0"
     "@types/d3-force": "npm:^1.2.1"
-    "@types/react-measure": "npm:^2.0.6"
     d3: "npm:^7.8.0"
     mobx: "npm:^6.9.0"
     mobx-react: "npm:^7.6.0"
     point-in-svg-path: "npm:^1.0.1"
     popper.js: "npm:^1.16.1"
-    react-measure: "npm:^2.3.0"
     tslib: "npm:^2.0.0"
     webcola: "npm:3.4.0"
   peerDependencies:
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
-  checksum: 10/ab81ad9f7dd7a6758acee12a44958779ffe85100b80f0a7ba48390b142dce82a6e03faf3f1fd1d54274fdeb1280b0c2e6aef8ec3cb8f3807e9a7342fba3ccd3e
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  checksum: 10/ffc972fa7c06e4609f6a8f679c96054b8bd9145b9f410b75404e03a80dea3e8ce7bfe2fb0f560fab8e21692cb875cfa8ed1c9c3c0e189e42803b09e746a7f805
   languageName: node
   linkType: hard
 
@@ -13754,15 +13752,6 @@ __metadata:
   peerDependencies:
     "@types/react": ^18.0.0
   checksum: 10/02095b326f373867498e0eb2b5ebb60f9bd9535db0d757ea13504c4b7d75e16605cf1d43ce7a2e67893d177b51db4357cabb2842fb4257c49427d02da1a14e09
-  languageName: node
-  linkType: hard
-
-"@types/react-measure@npm:^2.0.6":
-  version: 2.0.12
-  resolution: "@types/react-measure@npm:2.0.12"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/c04ab0835bc4732383a9c7cf90aabab1155e3834fc4ee8470e173964aaa301963057a1905db51c208d5bc833df345720565ae430ac4f41e34e6aff6d9671cc61
   languageName: node
   linkType: hard
 
@@ -21066,13 +21055,6 @@ __metadata:
     hasown: "npm:^2.0.2"
     math-intrinsics: "npm:^1.1.0"
   checksum: 10/4f7149c9a826723f94c6d49f70bcb3df1d3f9213994fab3668f12f09fa72074681460fb29ebb6f135556ec6372992d63802386098791a8f09cfa6f27090fa67b
-  languageName: node
-  linkType: hard
-
-"get-node-dimensions@npm:^1.2.1":
-  version: 1.2.2
-  resolution: "get-node-dimensions@npm:1.2.2"
-  checksum: 10/3b97a4da4ec5d0c3c162ce8c1838c43d4b2828ada62e84aa712aaebe3164653ed4a91f8ffd7600d49227c1e8594dfc6f7ddbd8db21b01b414e2d87a9299f0a5d
   languageName: node
   linkType: hard
 
@@ -29829,21 +29811,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-measure@npm:^2.3.0":
-  version: 2.5.2
-  resolution: "react-measure@npm:2.5.2"
-  dependencies:
-    "@babel/runtime": "npm:^7.2.0"
-    get-node-dimensions: "npm:^1.2.1"
-    prop-types: "npm:^15.6.2"
-    resize-observer-polyfill: "npm:^1.5.0"
-  peerDependencies:
-    react: ">0.13.0"
-    react-dom: ">0.13.0"
-  checksum: 10/0d409e6bb2b756f78a0dfdc1216c068338bf4daf4f904775465544141df52dce3d155b24db202d351c1bb23e82db6dedb02af98f36efc88dd5496c2ba3f46b15
-  languageName: node
-  linkType: hard
-
 "react-redux@npm:^7.2.0":
   version: 7.2.9
   resolution: "react-redux@npm:7.2.9"
@@ -30543,7 +30510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resize-observer-polyfill@npm:^1.5.0, resize-observer-polyfill@npm:^1.5.1":
+"resize-observer-polyfill@npm:^1.5.1":
   version: 1.5.1
   resolution: "resize-observer-polyfill@npm:1.5.1"
   checksum: 10/e10ee50cd6cf558001de5c6fb03fee15debd011c2f694564b71f81742eef03fb30d6c2596d1d5bf946d9991cb692fcef529b7bd2e4057041377ecc9636c753ce
