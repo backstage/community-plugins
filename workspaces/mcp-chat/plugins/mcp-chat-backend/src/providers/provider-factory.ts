@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider } from './base-provider';
-import { ProviderConfig } from '../types';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
 import { OpenAIProvider } from './openai-provider';
 import { OpenAIResponsesProvider } from './openai-responses-provider';
 import { ClaudeProvider } from './claude-provider';

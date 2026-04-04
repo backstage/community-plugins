@@ -16,7 +16,8 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { LiteLLMProvider } from './litellm-provider';
-import { ProviderConfig, ChatMessage, Tool } from '../types';
+import { ChatMessage, Tool } from '@backstage-community/plugin-mcp-chat-common';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
 
 // Mock fetch globally
 global.fetch = jest.fn();

@@ -17,7 +17,6 @@
 // =============================================================================
 // Provider Base Class and Factory
 // =============================================================================
-export { LLMProvider } from './base-provider';
 export {
   ProviderFactory,
   getProviderConfig,

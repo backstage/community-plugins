@@ -17,12 +17,12 @@
 import { mockServices } from '@backstage/backend-test-utils';
 import { OpenAIResponsesProvider } from './openai-responses-provider';
 import {
-  ProviderConfig,
   ChatMessage,
   MCPServerFullConfig,
   MCPServerType,
   ResponsesApiResponse,
-} from '../types';
+} from '@backstage-community/plugin-mcp-chat-common';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
 
 // Mock fetch globally
 global.fetch = jest.fn();

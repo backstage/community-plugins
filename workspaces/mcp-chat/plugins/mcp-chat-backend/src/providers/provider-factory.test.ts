@@ -25,7 +25,7 @@ import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
 import { LiteLLMProvider } from './litellm-provider';
-import { ProviderConfig } from '../types';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
 
 describe('ProviderFactory', () => {
   describe('createProvider', () => {

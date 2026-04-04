@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { LoggerService } from '@backstage/backend-plugin-api';
-
 // =============================================================================
 // Constants and Enums
 // =============================================================================
@@ -40,20 +38,6 @@ export enum MCPServerType {
   STDIO = 'stdio',
   STREAMABLE_HTTP = 'streamable-http',
 }
-
-/**
- * Supported LLM provider types.
- * Use this type for type-safe provider selection.
- *
- * @public
- */
-export type LLMProviderType =
-  | 'openai'
-  | 'openai-responses'
-  | 'claude'
-  | 'gemini'
-  | 'ollama'
-  | 'litellm';
 
 // =============================================================================
 // MCP Server Configuration Types
@@ -174,40 +158,6 @@ export interface MCPServerStatusData {
 // =============================================================================
 // LLM Provider Configuration Types
 // =============================================================================
-
-/**
- * Configuration for an LLM provider.
- *
- * @example
- * ```typescript
- * const openaiConfig: ProviderConfig = {
- *   type: 'openai',
- *   apiKey: 'sk-...',
- *   baseUrl: 'https://api.openai.com/v1',
- *   model: 'gpt-4'
- * };
- *
- * const ollamaConfig: ProviderConfig = {
- *   type: 'ollama',
- *   baseUrl: 'http://localhost:11434',
- *   model: 'llama2'
- * };
- * ```
- *
- * @public
- */
-export interface ProviderConfig {
-  /** Provider type identifier */
-  type: string;
-  /** API key for authentication (optional for local providers like Ollama) */
-  apiKey?: string;
-  /** Base URL for the provider's API */
-  baseUrl: string;
-  /** Model identifier to use */
-  model: string;
-  /** Logger for debugging */
-  logger?: LoggerService;
-}
 
 /**
  * Runtime information about an active LLM provider.
@@ -682,7 +632,7 @@ export interface ConversationRecord {
  * Database row representation of a conversation.
  * Used internally for database operations.
  *
- * @internal
+ * @public
  */
 export interface ConversationRow {
   /** UUID primary key */

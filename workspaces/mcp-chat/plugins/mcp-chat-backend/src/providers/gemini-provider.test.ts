@@ -17,7 +17,8 @@
 import { mockServices } from '@backstage/backend-test-utils';
 import { GoogleGenAI } from '@google/genai';
 import { GeminiProvider } from './gemini-provider';
-import { ChatMessage, ProviderConfig, Tool } from '../types';
+import { ChatMessage, Tool } from '@backstage-community/plugin-mcp-chat-common';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
 
 jest.mock('@google/genai');
 

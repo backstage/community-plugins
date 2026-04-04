@@ -27,7 +27,7 @@ import {
   getProviderInfo,
 } from '../providers/provider-factory';
 import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
-import { LLMProvider } from '../providers/base-provider';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
 import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
 import { MCPClientService } from './MCPClientService';
 import {
@@ -41,7 +41,7 @@ import {
   MCPServerType,
   MCPServerFullConfig,
   ResponsesApiMcpCall,
-} from '../types';
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Options for creating an MCPClientServiceImpl instance.
