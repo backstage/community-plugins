@@ -1,0 +1,56 @@
+---
+# System grouping all example entities
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: examples
+spec:
+  owner: guests
+
+---
+# Example component of type "service" — exercises component-metadata + service-oncall patches
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: payments-api
+  namespace: default
+  description: Handles payment processing for the checkout flow.
+  annotations:
+    slack/channel: '#payments'
+    pagerduty.com/integration-key: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'
+    backstage.io/runbook-url: 'https://wiki.example.com/runbooks/payments-api'
+    internal/tier: 'tier-1'
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+  system: examples
+
+---
+# Another component — only exercises component-metadata patch (type != service)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: frontend-app
+  namespace: default
+  description: Main customer-facing web application.
+  annotations:
+    internal/tier: 'tier-2'
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guests
+  system: examples
+
+---
+# Component with minimal data — tests empty/missing field handling
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: legacy-worker
+  namespace: default
+spec:
+  type: service
+  lifecycle: deprecated
+  owner: guests
+  system: examples

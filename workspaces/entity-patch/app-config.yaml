@@ -8,6 +8,32 @@ backend:
   baseUrl: http://localhost:7007
   listen:
     port: 7007
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  cors:
+    origin: http://localhost:3010
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Example components and systems — exercises component-metadata and service-oncall patches
+    - type: file
+      target: examples/entities.yaml
+    # Example users and groups — exercises group-details and team-ownership patches
+    - type: file
+      target: examples/org.yaml
+      rules:
+        - allow: [User, Group]
 
 entityPatch:
   patches:
