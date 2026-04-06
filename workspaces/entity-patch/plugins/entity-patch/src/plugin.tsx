@@ -17,6 +17,8 @@ import {
   configApiRef,
   createFrontendPlugin,
   dialogApiRef,
+  discoveryApiRef,
+  fetchApiRef,
   PageBlueprint,
   useApi,
 } from '@backstage/frontend-plugin-api';
@@ -34,6 +36,7 @@ import {
   filterPatchesForEntity,
 } from './utils/patchFilter';
 import { validatePatchConfig } from './utils/validatePatchConfig';
+import { EntityPatchClient } from './api/EntityPatchClient';
 
 const entityPatchContextMenuItem =
   EntityContextMenuItemBlueprint.makeWithOverrides({
@@ -54,21 +57,41 @@ const entityPatchContextMenuItem =
           const { entity } = useEntity();
           const dialogApi = useApi(dialogApiRef);
           const formFieldsApi = useApi(formFieldsApiRef);
+          const discoveryApi = useApi(discoveryApiRef);
+          const fetchApi = useApi(fetchApiRef);
           const matchingPatches = filterPatchesForEntity(patchesConfig, entity);
+          const patchClient = new EntityPatchClient({ discoveryApi, fetchApi });
           return {
             title: 'Edit Patch',
             onClick: async () => {
               const formFields = await formFieldsApi.loadFormFields();
+              const { kind, namespace, name } = entity.metadata;
+              let initialData = {};
+              try {
+                initialData = await patchClient.getInitialValues(
+                  kind,
+                  namespace ?? 'default',
+                  name,
+                );
+              } catch {
+                // Backend may not be installed; fall back to empty initial data
+              }
 
               dialogApi.show(({ dialog }) => (
                 <PatchEditDialog
                   dialog={dialog}
                   patches={matchingPatches}
-                  // TODO: Once the backend plugin is available, fetch the entity's current
-                  // field values using the patch mapping config and pass them here as initialData.
-                  initialData={{}}
-                  onSave={async _data => {
-                    // TODO: call patch API with _data once backend plugin is available
+                  initialData={initialData}
+                  onSave={async data => {
+                    for (const [patchName, patchData] of Object.entries(data)) {
+                      await patchClient.savePatch(
+                        kind,
+                        namespace ?? 'default',
+                        name,
+                        patchName,
+                        patchData as Record<string, unknown>,
+                      );
+                    }
                   }}
                   formFields={
                     formFields as unknown[] as FieldExtensionOptions<any, any>[]
