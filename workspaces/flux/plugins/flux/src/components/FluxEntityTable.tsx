@@ -13,52 +13,153 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Table, TableProps } from '@backstage/core-components';
-import { Typography } from '@material-ui/core';
-import { useStyles } from './utils';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { ReactElement, useMemo } from 'react';
+import {
+  Table,
+  Cell,
+  CellText,
+  Text,
+  useTable,
+  Flex,
+  SearchField,
+  Skeleton,
+  Header,
+  Container,
+} from '@backstage/ui';
+import type { ColumnConfig, TableItem } from '@backstage/ui';
+import styles from './utils.module.css';
 
-export function FluxEntityTable<T extends object = {}>({
+/**
+ * Column configuration compatible with the old TableColumn interface,
+ * but rendered using BUI Table primitives.
+ */
+export interface FluxColumn<T extends object> {
+  title: string;
+  field?: string;
+  render?: (row: T) => ReactElement | string | null;
+  hidden?: boolean;
+  width?: number;
+  customSort?: (a: T, b: T) => number;
+  customFilterAndSearch?: (filter: string, item: T) => boolean;
+}
+
+interface FluxEntityTableProps<T extends TableItem> {
+  title?: string;
+  data: T[];
+  isLoading: boolean;
+  columns: FluxColumn<T>[];
+  many?: boolean;
+}
+
+function toColumnConfig<T extends TableItem>(
+  col: FluxColumn<T>,
+  index: number,
+  isRowHeader: boolean,
+): ColumnConfig<T> {
+  return {
+    id: col.field ?? `col-${index}`,
+    label: col.title,
+    isHidden: col.hidden,
+    isRowHeader,
+    ...(col.width ? { width: col.width } : {}),
+    cell: (item: T) => {
+      if (col.render) {
+        const content = col.render(item);
+        if (content === null || content === undefined) return <Cell />;
+        if (typeof content === 'string') return <CellText title={content} />;
+        return <Cell>{content}</Cell>;
+      }
+      if (col.field) {
+        return <CellText title={String((item as any)[col.field] ?? '')} />;
+      }
+      return <Cell />;
+    },
+    isSortable: true,
+  };
+}
+
+export function FluxEntityTable<T extends TableItem>({
   title,
   data,
   isLoading,
   columns,
-  filters,
   many,
-}: TableProps<T> & { many?: boolean }) {
-  const classes = useStyles();
-
-  // We use this memo not really for performance, but to avoid
-  // re-rendering the table when the data changes. Makes it much easier to style etc.
-  // Review this decision if we run into hard to debug issues.
-
-  return useDeepCompareMemo(() => {
-    return (
-      <Table
-        key={data.length}
-        columns={columns}
-        options={{
-          padding: 'dense',
-          paging: Boolean(many),
-          search: Boolean(many),
-          pageSize: 5,
-          // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
-          thirdSortClick: false,
-          emptyRowsWhenPaging: false,
-          columnsButton: true,
-        }}
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
-              No {title} found
-              {title === 'flux controllers' ? '' : 'for this entity'}.
-            </Typography>
-          </div>
-        }
-        filters={Boolean(many) ? filters : []}
-      />
+}: FluxEntityTableProps<T>) {
+  const columnConfig = useMemo(() => {
+    const firstVisibleIndex = columns.findIndex(c => !c.hidden);
+    return columns.map((col, i) =>
+      toColumnConfig(col, i, i === firstVisibleIndex),
     );
-  }, [data, title, isLoading, classes.empty, columns]);
+  }, [columns]);
+
+  const filterableColumns = useMemo(
+    () => columns.filter(c => c.customFilterAndSearch),
+    [columns],
+  );
+
+  const searchFn = useMemo(() => {
+    if (filterableColumns.length === 0) return undefined;
+    return (items: T[], search: string) =>
+      items.filter(item =>
+        filterableColumns.some(col => col.customFilterAndSearch!(search, item)),
+      );
+  }, [filterableColumns]);
+
+  const { tableProps, search } = useTable<T>({
+    mode: 'complete',
+    data,
+    paginationOptions: many
+      ? { pageSize: 5, showPageSizeOptions: true }
+      : undefined,
+    searchFn,
+  });
+
+  if (isLoading) {
+    return (
+      <Flex direction="column" gap="2">
+        <Skeleton style={{ height: 40, width: '100%' }} />
+        <Skeleton style={{ height: 32, width: '100%' }} />
+        <Skeleton style={{ height: 32, width: '100%' }} />
+        <Skeleton style={{ height: 32, width: '100%' }} />
+      </Flex>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div className={styles.empty}>
+        <Text>
+          No {title || 'items'} found
+          {title === 'flux controllers' ? '' : ' for this entity'}.
+        </Text>
+      </div>
+    );
+  }
+
+  return (
+    <Container>
+      <Header
+        title={title}
+        customActions={
+          <>
+            {many && (
+              <Flex className={styles.searchBar}>
+                <SearchField
+                  aria-label={`Search ${title || 'items'}`}
+                  placeholder="Search..."
+                  value={search.value}
+                  onChange={search.onChange}
+                />
+              </Flex>
+            )}
+          </>
+        }
+      />
+      <Table
+        aria-label={title || 'Flux table'}
+        columnConfig={columnConfig}
+        {...tableProps}
+      />
+    </Container>
+  );
 }

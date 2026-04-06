@@ -32,3 +32,6 @@ export type { HealthHandlerDependencies } from './health.handler';
 
 export { createFilterOptionsHandler } from './filterOptions.handler';
 export type { FilterOptionsHandlerDependencies } from './filterOptions.handler';
+
+export { createApplicationsHandler } from './applications.handler';
+export type { ApplicationsHandlerDependencies } from './applications.handler';

@@ -5,9 +5,7 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 
-// @public (undocumented)
+// @public
 const apiiroBackendPlugin: BackendFeature;
 export default apiiroBackendPlugin;
-
-// (No @packageDocumentation comment for this package)
 ```

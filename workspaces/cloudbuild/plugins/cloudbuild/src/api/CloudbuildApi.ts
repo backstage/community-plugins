@@ -18,10 +18,10 @@ import {
   ActionsListWorkflowRunsForRepoResponseData,
   ActionsGetWorkflowResponseData,
 } from '../api/types';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 /** @public */
-export const cloudbuildApiRef = createApiRef<CloudbuildApi>({
+export const cloudbuildApiRef = createApiRef<CloudbuildApi>().with({
   id: 'plugin.cloudbuild.service',
 });
 

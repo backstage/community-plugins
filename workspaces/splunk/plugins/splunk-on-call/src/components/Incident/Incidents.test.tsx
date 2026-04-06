@@ -20,7 +20,7 @@ import { TestApiRegistry, renderInTestApp } from '@backstage/test-utils';
 import { splunkOnCallApiRef } from '../../api';
 import { MOCK_TEAM, MOCK_INCIDENT } from '../../api/mocks';
 
-import { alertApiRef } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { ApiProvider } from '@backstage/core-app-api';
 
 const mockSplunkOnCallApi = {
@@ -28,7 +28,7 @@ const mockSplunkOnCallApi = {
   getTeams: jest.fn(),
 };
 const apis = TestApiRegistry.from(
-  [alertApiRef, {}],
+  [toastApiRef, {}],
   [splunkOnCallApiRef, mockSplunkOnCallApi],
 );
 

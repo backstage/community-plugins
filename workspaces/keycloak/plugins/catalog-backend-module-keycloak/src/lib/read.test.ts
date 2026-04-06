@@ -139,7 +139,7 @@ describe('readKeycloakRealm', () => {
     );
 
     for (const group of groups) {
-      console.log(group.spec.members);
+      // console.log(group.spec.members);
       expect(group.spec.members).not.toContain(undefined);
     }
   });

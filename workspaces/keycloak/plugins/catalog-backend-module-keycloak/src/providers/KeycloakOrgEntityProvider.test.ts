@@ -34,6 +34,12 @@ import {
 } from '../../__fixtures__/helpers';
 import { KeycloakOrgEntityProvider } from './KeycloakOrgEntityProvider';
 
+import KeyCloakAdminClient from '@keycloak/keycloak-admin-client';
+
+const KeyCloakAdminClientMock = KeyCloakAdminClient as jest.Mock;
+
+jest.mock('@keycloak/keycloak-admin-client', () => jest.fn());
+
 const connection = {
   applyMutation: jest.fn(),
   refresh: jest.fn(),
@@ -61,43 +67,17 @@ const scheduler = mockServices.scheduler.mock({
 describe.each([
   ['v24', KeycloakAdminClientMockServerv24],
   ['v18', KeycloakAdminClientMockServerv18],
-])('KeycloakOrgEntityProvider with %s', (_version, mockImplementation) => {
+])('KeycloakOrgEntityProvider with %s', (_version, MockImplementation) => {
   let logger: ServiceMock<LoggerService>;
   let keycloakLogger: ServiceMock<LoggerService>;
   let schedule: SchedulerServiceTaskRunnerMock;
 
-  const mockPLimit = jest.fn().mockImplementation((_concurrency: number) => {
-    // Create function repeatedly calling the original function without limit implementation
-    const limit = jest
-      .fn()
-      .mockImplementation(
-        async <Arguments extends unknown[], ReturnType>(
-          fn: (...args: Arguments) => ReturnType | PromiseLike<ReturnType>,
-          ...args: Arguments
-        ): Promise<ReturnType> => {
-          const result = fn(...args);
-          return result instanceof Promise ? result : Promise.resolve(result); // Ensure result is always a Promise
-        },
-      );
-    return limit;
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
     authMock.mockReset();
-    jest.resetModules(); // Clears require cache to allow re-mocking
 
-    // @ts-ignore
-    jest.unstable_mockModule('@keycloak/keycloak-admin-client', async () => ({
-      default: mockImplementation,
-    }));
+    KeyCloakAdminClientMock.mockImplementation(() => new MockImplementation());
 
-    // @ts-ignore
-    jest.unstable_mockModule('p-limit', () => {
-      return {
-        default: mockPLimit,
-      };
-    });
     keycloakLogger = mockServices.logger.mock();
     logger = mockServices.logger.mock({
       child: () => keycloakLogger,

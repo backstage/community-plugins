@@ -1,5 +1,16 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.14.0
+
+### Minor Changes
+
+- cfd52e1: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [cfd52e1]
+  - @backstage-community/plugin-quay-common@1.19.0
+
 ## 1.13.1
 
 ### Patch Changes
