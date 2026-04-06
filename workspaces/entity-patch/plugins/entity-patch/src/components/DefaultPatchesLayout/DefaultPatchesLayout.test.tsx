@@ -118,7 +118,7 @@ describe('DefaultPatchesLayout', () => {
 
     expect(onChange).toHaveBeenCalledWith(
       { 'my-patch': { name: 'my-service' } },
-      { isValid: true },
+      { isValid: true, isDirty: true },
     );
   });
 
@@ -177,7 +177,7 @@ describe('DefaultPatchesLayout', () => {
 
     expect(onChange).toHaveBeenCalledWith(
       { 'patch-a': { foo: 'existing' }, 'patch-b': { bar: 'new-value' } },
-      { isValid: true },
+      { isValid: true, isDirty: true },
     );
   });
 
@@ -223,7 +223,7 @@ describe('DefaultPatchesLayout', () => {
         'patch-a': { name: 'value-from-a' },
         'patch-b': { name: 'value-from-b' },
       },
-      { isValid: true },
+      { isValid: true, isDirty: true },
     );
   });
 
@@ -267,7 +267,7 @@ describe('DefaultPatchesLayout', () => {
 
     expect(onChange).toHaveBeenCalledWith(
       { 'patch-a': { foo: 'pre-filled' }, 'patch-b': { bar: 'new' } },
-      { isValid: true },
+      { isValid: true, isDirty: true },
     );
   });
 
@@ -435,11 +435,13 @@ describe('DefaultPatchesLayout', () => {
       await waitFor(() => {
         expect(onChange).toHaveBeenLastCalledWith(expect.any(Object), {
           isValid: false,
+          isDirty: true,
         });
       });
       // Importantly, it should never have been called with isValid:true
       expect(onChange).not.toHaveBeenCalledWith(expect.any(Object), {
         isValid: true,
+        isDirty: true,
       });
     });
 
@@ -473,7 +475,7 @@ describe('DefaultPatchesLayout', () => {
 
       expect(onChange).toHaveBeenCalledWith(
         { 'val-patch': { owner: 'valid-value' } },
-        { isValid: true },
+        { isValid: true, isDirty: true },
       );
     });
 
@@ -628,6 +630,7 @@ describe('DefaultPatchesLayout', () => {
       await waitFor(() => {
         expect(onChange).toHaveBeenLastCalledWith(expect.any(Object), {
           isValid: false,
+          isDirty: true,
         });
       });
     });
@@ -663,7 +666,7 @@ describe('DefaultPatchesLayout', () => {
       await waitFor(() => {
         expect(onChange).toHaveBeenLastCalledWith(
           { 'val-patch': { owner: 'valid-value' } },
-          { isValid: true },
+          { isValid: true, isDirty: true },
         );
       });
     });
