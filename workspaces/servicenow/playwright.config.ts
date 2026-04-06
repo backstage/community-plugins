@@ -72,5 +72,19 @@ export default defineConfig({
         locale: 'ja',
       },
     },
+    {
+      name: 'de',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
+      },
+    },
   ],
 });

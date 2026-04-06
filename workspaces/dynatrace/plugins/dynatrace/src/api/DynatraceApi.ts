@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 export type DynatraceEntity = {
   entityId: {
@@ -63,7 +63,7 @@ export interface DynatraceProblems {
   pageSize: number;
 }
 
-export const dynatraceApiRef = createApiRef<DynatraceApi>({
+export const dynatraceApiRef = createApiRef<DynatraceApi>().with({
   id: 'plugin.dynatrace.service',
 });
 

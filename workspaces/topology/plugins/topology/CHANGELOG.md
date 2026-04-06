@@ -1,5 +1,17 @@
 # @backstage-community/plugin-topology
 
+## 2.12.0
+
+### Minor Changes
+
+- 9deb41e: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 29fd2da: Add (already used) Material UI v4 and mobx-react dependency to resolve linter issues.
+- 9c24b43: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.4.0`.
+- 1d15595: Translation updated for German and Spanish
+
 ## 2.11.0
 
 ### Minor Changes

@@ -17,7 +17,12 @@ export interface CodeClimateApi {
 }
 
 // @public (undocumented)
-export const codeClimateApiRef: ApiRef<CodeClimateApi>;
+export const codeClimateApiRef: ApiRef<
+  CodeClimateApi,
+  'plugin.code-climate.service'
+> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export type CodeClimateData = {

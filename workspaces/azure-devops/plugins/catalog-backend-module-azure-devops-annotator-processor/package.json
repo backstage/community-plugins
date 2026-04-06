@@ -37,11 +37,12 @@
     "@backstage/integration": "backstage:^",
     "@backstage/plugin-catalog-common": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
-    "lodash": "^4.17.21"
+    "lodash": "^4.18.1"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
-    "@backstage/cli": "backstage:^"
+    "@backstage/cli": "backstage:^",
+    "@types/lodash": "^4.17.24"
   },
   "files": [
     "dist"

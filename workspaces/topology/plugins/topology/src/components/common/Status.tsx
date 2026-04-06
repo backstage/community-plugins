@@ -24,7 +24,7 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import OffIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import UnknownIcon from '@mui/icons-material/HelpOutline';
 import AngleDoubleRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';

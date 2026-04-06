@@ -20,9 +20,8 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { rbacApi, licensedUsersApi } from './apis';
-import rbacNavItem from './navItems';
 import rbacPage from './pages';
-import { rootRouteRef } from '../routes';
+import { rootRouteRef } from './routes';
 import { rbacTranslations } from './translations';
 
 /**
@@ -33,7 +32,7 @@ import { rbacTranslations } from './translations';
 export default createFrontendPlugin({
   pluginId: 'rbac',
   info: { packageJson: () => import('../../package.json') },
-  extensions: [rbacApi, licensedUsersApi, rbacPage, rbacNavItem],
+  extensions: [rbacApi, licensedUsersApi, rbacPage],
   routes: {
     root: rootRouteRef,
   },

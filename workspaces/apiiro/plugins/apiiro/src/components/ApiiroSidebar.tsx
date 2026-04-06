@@ -16,7 +16,11 @@
 import { SidebarItem } from '@backstage/core-components';
 import { ApiiroSidebar as ApiiroSidebarIcon } from '../assets/apiiroLogo/apiiroSidebar';
 
-/** @public */
+/**
+ * Sidebar navigation item for the Apiiro plugin.
+ * Displays the Apiiro icon and links to the Apiiro page.
+ * @public
+ */
 export const ApiiroSidebar = (): JSX.Element => {
   return <SidebarItem icon={ApiiroSidebarIcon} to="apiiro" text="apiiro" />;
 };

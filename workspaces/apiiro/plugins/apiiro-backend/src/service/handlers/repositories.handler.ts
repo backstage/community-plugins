@@ -40,8 +40,9 @@ export function createRepositoriesHandler(
     const { cacheService, entityService, logger } = deps;
 
     try {
-      // Validate request body if present for repositoryKey filter
-      let repositoryKey: string | undefined;
+      // Validate request body if present for repositoryId filter
+      let repositoryId: string | undefined;
+      let applicationId: string | undefined;
       let entityRef: string | undefined;
       if (req.body && typeof req.body === 'object') {
         const filterValidation = validateRepositoryFilters(req.body);
@@ -60,13 +61,14 @@ export function createRepositoriesHandler(
           );
           return;
         }
-        repositoryKey = filterValidation.validatedFilters?.repositoryKey;
+        repositoryId = filterValidation.validatedFilters?.repositoryId;
+        applicationId = filterValidation.validatedFilters?.applicationId;
         entityRef = filterValidation.validatedFilters?.entityRef;
       }
 
       logger.debug(
-        `${ROUTER_PATH_REPOSITORIES} - Request received with repositoryKey filter:`,
-        { repositoryKey },
+        `${ROUTER_PATH_REPOSITORIES} - Request received with query parameters:`,
+        { repositoryId, applicationId, entityRef },
       );
 
       // Fetch entities (always fresh, as they might change frequently)
@@ -89,21 +91,30 @@ export function createRepositoriesHandler(
         }
         entities = [entityResponse];
       } else {
-        const result = await entityService.getAllEntities(req);
+        const result = await entityService.getAllEntities(req, 'Component');
         entities = result.entities;
       }
 
       // Get repositories from cache or API
       let repositoriesResult: { repositories: any[]; totalCount: number };
 
-      if (repositoryKey) {
-        // Specific repository requested - use cache with URL filtering
+      if (repositoryId) {
+        // Specific repository requested - use cache with Key filtering
         logger.debug(
-          `${ROUTER_PATH_REPOSITORIES} - Fetching specific repository by URL`,
-          { repositoryKey },
+          `${ROUTER_PATH_REPOSITORIES} - Fetching specific repository by Key`,
+          { repositoryId },
         );
-        repositoriesResult = await cacheService.getRepositoriesByKey(
-          repositoryKey,
+        repositoriesResult = await cacheService.getRepositoriesById(
+          repositoryId,
+        );
+      } else if (applicationId) {
+        // All repositories for specific application requested
+        logger.debug(
+          `${ROUTER_PATH_REPOSITORIES} - Fetching all repositories for application`,
+          { applicationId },
+        );
+        repositoriesResult = await cacheService.getAllRepositories(
+          applicationId,
         );
       } else {
         // All repositories requested - use cache
@@ -137,15 +148,6 @@ export function createRepositoriesHandler(
       const matchedResult = cacheService.matchWithEntities(
         repositoriesResult.repositories,
         entities,
-      );
-
-      logger.info(
-        `${ROUTER_PATH_REPOSITORIES} - Final filtered repositories:`,
-        {
-          totalEntities: entities.length,
-          totalRepositories: repositoriesResult.totalCount,
-          matchedRepositories: matchedResult.totalCount,
-        },
       );
 
       res.json(matchedResult);

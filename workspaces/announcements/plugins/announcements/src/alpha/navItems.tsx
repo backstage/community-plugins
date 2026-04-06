@@ -21,6 +21,11 @@ import { convertLegacyRouteRef } from '@backstage/core-compat-api';
 import { rootRouteRef } from '../routes';
 import { RiMegaphoneLine } from '@remixicon/react';
 /**
+ * Sidebar navigation item linking to the announcements page.
+ *
+ * @remarks
+ * Extension ID: `nav-item:announcements`
+ *
  * @alpha
  */
 export const announcementsNavItem = NavItemBlueprint.make({

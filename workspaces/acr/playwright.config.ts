@@ -71,5 +71,21 @@ export default defineConfig({
         locale: 'ja',
       },
     },
+    {
+      name: 'de',
+      testDir: './plugins/acr/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      testDir: './plugins/acr/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
+      },
+    },
   ],
 });

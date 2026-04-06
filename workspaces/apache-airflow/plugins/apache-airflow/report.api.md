@@ -9,7 +9,7 @@ import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public
 export const ApacheAirflowDagTable: (props: {
-  dagIds?: string[] | undefined;
+  dagIds?: string[];
 }) => JSX_2.Element;
 
 // @public (undocumented)
