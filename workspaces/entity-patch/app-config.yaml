@@ -1,0 +1,140 @@
+app:
+  title: entity-patch dev
+  baseUrl: http://localhost:3010
+  packages: all
+
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+
+entityPatch:
+  patches:
+    # ── Patch 1: all Groups ────────────────────────────────────────────────────
+    - name: group-details
+      filter:
+        kind: group
+      mapping:
+        description: metadata.description
+        contactEmail: spec.profile.email
+        slackChannel: metadata.annotations.slack/channel
+      sections:
+        - title: Team Details
+          description: Basic information shown on the team catalog page.
+          required:
+            - description
+          properties:
+            description:
+              title: Description
+              type: string
+              description: A brief description of this team.
+              'ui:widget': textarea
+            contactEmail:
+              title: Contact Email
+              type: string
+              format: email
+              description: Primary contact email for this team.
+              errorMessage:
+                format: 'Must be a valid email address'
+            slackChannel:
+              title: Slack Channel
+              type: string
+              pattern: '^#[a-z0-9_-]+$'
+              description: 'Slack channel name, must start with # and use only lowercase letters, numbers, hyphens, or underscores.'
+              errorMessage:
+                pattern: "Must start with # followed by lowercase letters, numbers, hyphens, or underscores (e.g. #team-platform)"
+
+    # ── Patch 2: only team-type Groups ────────────────────────────────────────
+    - name: team-ownership
+      filter:
+        kind: group
+        'spec.type': team
+      mapping:
+        owner: spec.owner
+      sections:
+        - title: Ownership
+          description: Applies only to groups of type "team".
+          required:
+            - owner
+          properties:
+            owner:
+              title: Owner
+              type: string
+              description: The owning entity for this team.
+              'ui:field': EntityNamePicker
+
+    # ── Patch 3: Components ────────────────────────────────────────────────────
+    - name: component-metadata
+      filter:
+        kind: component
+      mapping:
+        description: metadata.description
+        lifecycle: spec.lifecycle
+        tier: metadata.annotations.internal/tier
+      sections:
+        - title: Component Info
+          description: Core metadata for this component.
+          required:
+            - description
+            - lifecycle
+          properties:
+            description:
+              title: Description
+              type: string
+              description: What this component does.
+              'ui:widget': textarea
+            lifecycle:
+              title: Lifecycle
+              type: string
+              description: Current lifecycle stage.
+              enum:
+                - experimental
+                - production
+                - deprecated
+              enumNames:
+                - Experimental
+                - Production
+                - Deprecated
+        - title: Operational Tags
+          description: Operational metadata used for routing and SLOs.
+          properties:
+            tier:
+              title: Service Tier
+              type: string
+              description: Service tier classification.
+              enum:
+                - tier-1
+                - tier-2
+                - tier-3
+              enumNames:
+                - 'Tier 1 — Critical'
+                - 'Tier 2 — Important'
+                - 'Tier 3 — Best-effort'
+
+    # ── Patch 4: only service-type Components  ────────────────────────────────
+    - name: service-oncall
+      filter:
+        kind: component
+        'spec.type': service
+      mapping:
+        pagerdutyKey: metadata.annotations.pagerduty.com/integration-key
+        runbook: metadata.annotations.backstage.io/runbook-url
+      sections:
+        - title: On-Call & Runbook
+          description: Applies only to components of type "service".
+          properties:
+            pagerdutyKey:
+              title: PagerDuty Integration Key
+              type: string
+              description: The PagerDuty Events API v2 integration key.
+              pattern: '^[a-f0-9]{32}$'
+              errorMessage:
+                pattern: 'Must be a 32-character hex string'
+            runbook:
+              title: Runbook URL
+              type: string
+              format: uri
+              description: Link to the on-call runbook for this service.
+              errorMessage:
+                format: 'Must be a valid URL'
