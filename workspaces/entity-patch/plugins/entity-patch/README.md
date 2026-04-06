@@ -7,6 +7,24 @@ Patches are defined in `app-config.yaml`. Each patch specifies:
 - One or more **sections** (groups of fields, modelled as JSON Schema)
 - An optional **mapping** (field → entity path, used by the backend to persist changes)
 
+## How it works
+
+Once installed, an **Edit Patch** item appears in the entity context menu for any entity that matches a configured patch filter.
+
+![Entity context menu showing the Edit Patch option at the top](docs/context-menu.png)
+
+Clicking **Edit Patch** opens a dialog with the configured form sections. Fields are rendered from JSON Schema — no custom UI code required.
+
+![Edit Patch dialog showing Component Info, Operational Tags, and On-Call & Runbook sections](docs/patch-dialog.png)
+
+Required fields are validated on blur. Errors are shown inline and in a summary at the top of the form. The **Save** button stays disabled until all required fields are filled and valid.
+
+![Edit Patch dialog showing inline validation errors after leaving required fields empty](docs/patch-dialog-validation.png)
+
+A **standalone page** is also available at `/entity-patch/:namespace/:kind/:name`, useful for linking directly from notifications, scripts, or other plugins. It shows the entity context at the top and constrains the form to a readable width.
+
+![Standalone patch page for payments-api showing entity context header and form sections](docs/standalone-page.png)
+
 ## Features
 
 - **Context menu integration** — an "Edit Patch" item appears on matching entities via the catalog context menu.
