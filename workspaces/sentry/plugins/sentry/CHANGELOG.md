@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sentry
 
+## 1.15.2
+
+### Patch Changes
+
+- 8cc2192: Fixed issue list not displaying data when issues are fetched asynchronously.
+
 ## 1.15.1
 
 ### Patch Changes

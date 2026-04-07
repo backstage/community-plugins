@@ -106,7 +106,7 @@ test.describe('ArgoCD plugin', () => {
       ];
       for (const col of columns) {
         await expect(
-          argocdPage.getByRole('columnheader', { name: col }),
+          argocdPage.getByRole('columnheader', { name: col, exact: true }),
         ).toBeVisible();
       }
       await runAccessibilityTests(argocdPage);

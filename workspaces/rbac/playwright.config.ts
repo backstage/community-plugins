@@ -67,5 +67,17 @@ export default defineConfig({
         locale: 'ja',
       },
     },
+    {
+      name: 'de',
+      use: {
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      use: {
+        locale: 'es',
+      },
+    },
   ],
 });

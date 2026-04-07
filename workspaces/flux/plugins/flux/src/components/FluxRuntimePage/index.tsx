@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, Header, Page } from '@backstage/core-components';
-import { makeStyles } from '@material-ui/core';
 import { FluxRuntimeCard } from '../FluxRuntimeCard';
 import { RequireKubernetesPermissions } from '../../RequireKubernetesPermissions';
-
-const useStyles = makeStyles(() => ({
-  overflowXScroll: {
-    overflowX: 'scroll',
-  },
-}));
+import { Box, Container, PluginHeader } from '@backstage/ui';
 
 export interface FluxRuntimePageProps {
   /**
@@ -46,16 +39,15 @@ export interface FluxRuntimePageProps {
  */
 export function FluxRuntimePage(props: FluxRuntimePageProps) {
   const { title = 'Flux Runtime' } = props;
-  const classes = useStyles();
 
   return (
-    <Page themeId="tool">
-      <Header title={title} />
-      <Content className={classes.overflowXScroll}>
+    <Box>
+      <PluginHeader title={title} />
+      <Container>
         <RequireKubernetesPermissions>
           <FluxRuntimeCard />
         </RequireKubernetesPermissions>
-      </Content>
-    </Page>
+      </Container>
+    </Box>
   );
 }
