@@ -81,7 +81,7 @@ export function filterIdeCompletionMetrics(
       type: type,
       team_name: team ?? '',
       total_engaged_users:
-        metric.copilot_ide_code_completions.total_engaged_users,
+        metric.copilot_ide_code_completions!.total_engaged_users,
     }))
     .filter(completion => completion.total_engaged_users > 0);
 }
@@ -95,7 +95,7 @@ export function filterIdeCompletionLanguageMetrics(
     .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions.languages?.map(language => ({
+        metric.copilot_ide_code_completions!.languages?.map(language => ({
           day: metric.date,
           type: type,
           team_name: team ?? '',
@@ -114,7 +114,7 @@ export function filterIdeCompletionEditorMetrics(
     .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions.editors?.map(editor => ({
+        metric.copilot_ide_code_completions!.editors?.map(editor => ({
           day: metric.date,
           type: type,
           team_name: team ?? '',
@@ -134,7 +134,7 @@ export function filterIdeCompletionEditorModelMetrics(
     .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions.editors?.flatMap(editor =>
+        metric.copilot_ide_code_completions!.editors?.flatMap(editor =>
           editor.models.map(model => ({
             day: metric.date,
             type: type,
@@ -156,7 +156,7 @@ export function filterIdeCompletionEditorModelLanguageMetrics(
     .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions.editors?.flatMap(editor =>
+        metric.copilot_ide_code_completions!.editors?.flatMap(editor =>
           editor.models.flatMap(model =>
             model.languages.map(language => ({
               day: metric.date,
@@ -188,7 +188,7 @@ export function filterIdeChatMetrics(
       day: metric.date,
       type: type,
       team_name: team ?? '',
-      total_engaged_users: metric.copilot_ide_chat.total_engaged_users,
+      total_engaged_users: metric.copilot_ide_chat!.total_engaged_users,
     }))
     .filter(chat => chat.total_engaged_users > 0);
 }
@@ -202,7 +202,7 @@ export function filterIdeEditorMetrics(
     .filter(metric => metric.copilot_ide_chat !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
-        metric.copilot_ide_chat.editors?.map(editor => ({
+        metric.copilot_ide_chat!.editors?.map(editor => ({
           day: metric.date,
           type: type,
           team_name: team ?? '',
