@@ -73,7 +73,7 @@
     "@uiw/react-md-editor": "^4.0.11",
     "luxon": "^3.2.0",
     "react-use": "^17.2.4",
-    "slugify": "1.6.8"
+    "slugify": "1.6.9"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
