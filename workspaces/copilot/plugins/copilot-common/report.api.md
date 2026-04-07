@@ -80,10 +80,10 @@ export interface CopilotLanguages {
 
 // @public
 export interface CopilotMetrics {
-  copilot_dotcom_chat: DotcomChat;
-  copilot_dotcom_pull_requests: DotcomPullRequests;
-  copilot_ide_chat: CopilotChats;
-  copilot_ide_code_completions: CopilotIdeCodeCompletions;
+  copilot_dotcom_chat?: DotcomChat;
+  copilot_dotcom_pull_requests?: DotcomPullRequests;
+  copilot_ide_chat?: CopilotChats;
+  copilot_ide_code_completions?: CopilotIdeCodeCompletions;
   date: string;
   total_active_users: number;
   total_engaged_users: number;
