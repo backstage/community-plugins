@@ -34,8 +34,10 @@
     "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/filter-predicates": "backstage:^",
     "express": "^4.21.2",
     "express-promise-router": "^4.1.0",
+    "lodash": "^4.17.21",
     "zod": "^3.0.0 || ^4.0.0"
   },
   "devDependencies": {
@@ -45,7 +47,9 @@
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-catalog-backend-module-logs": "backstage:^",
     "@types/express": "^4.17.6",
+    "@types/lodash": "^4.14.0",
     "@types/supertest": "^6.0.0",
     "better-sqlite3": "^9.0.0",
     "supertest": "^7.0.0"

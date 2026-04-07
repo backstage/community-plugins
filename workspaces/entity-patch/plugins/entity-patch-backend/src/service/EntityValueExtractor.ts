@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { get } from 'lodash';
 import { Entity } from '@backstage/catalog-model';
 
 /**
  * Reads a value from a deeply nested object using a dot-separated path.
- * Returns `undefined` if any segment along the path is missing.
- *
- * @example
- * getByPath({ spec: { profile: { email: 'a@b.com' } } }, 'spec.profile.email')
- * // → 'a@b.com'
+ * Delegates to lodash `get`, which supports:
+ * - Plain dot notation: `metadata.description`
+ * - Bracket notation for keys with dots: `metadata.annotations["pagerduty.com/integration-key"]`
  */
 export function getByPath(obj: unknown, path: string): unknown {
-  return path
-    .split('.')
-    .reduce(
-      (current, key) =>
-        current !== null && current !== undefined && typeof current === 'object'
-          ? (current as Record<string, unknown>)[key]
-          : undefined,
-      obj,
-    );
+  return get(obj, path);
 }
 
 /**

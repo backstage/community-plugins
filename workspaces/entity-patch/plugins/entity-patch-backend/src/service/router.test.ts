@@ -121,6 +121,61 @@ describe('GET /values/:namespace/:kind/:name', () => {
 
     expect(res.status).toBe(404);
   });
+
+  it('only returns patches whose filter.kind matches the entity kind', async () => {
+    const guestsGroup: Entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Group',
+      metadata: { name: 'guests', namespace: 'default' },
+      spec: { type: 'team', profile: {} },
+    };
+
+    (CatalogClient as jest.Mock).mockImplementation(() => ({
+      getEntityByRef: jest.fn().mockResolvedValue(guestsGroup),
+    }));
+
+    // Config with both a component patch and a group patch
+    const configWithBoth = {
+      entityPatch: {
+        patches: [
+          {
+            name: 'component-metadata',
+            filter: { kind: 'component' },
+            mapping: { description: 'metadata.description' },
+            sections: [{ title: 'Info', properties: {} }],
+          },
+          {
+            name: 'group-details',
+            filter: { kind: 'group' },
+            mapping: { description: 'metadata.description' },
+            sections: [{ title: 'Team', properties: {} }],
+          },
+        ],
+      },
+    };
+
+    const router = await createRouter({
+      logger: mockServices.logger.mock(),
+      database: mockServices.database.mock(),
+      httpAuth: mockServices.httpAuth(),
+      auth: mockServices.auth(),
+      userInfo: mockServices.userInfo(),
+      discovery: mockServices.discovery(),
+      config: mockServices.rootConfig({ data: configWithBoth }),
+    });
+    const app = express();
+    app.use(express.json());
+    app.use(router);
+
+    const res = await request(app)
+      .get('/values/default/group/guests')
+      .set('Authorization', mockCredentials.user.header());
+
+    expect(res.status).toBe(200);
+    // Only the group patch should appear — component patch must be absent
+    expect(res.body).toHaveProperty('group-details');
+    expect(res.body).not.toHaveProperty('component-metadata');
+  });
 });
 
 describe('POST /patches/:namespace/:kind/:name', () => {

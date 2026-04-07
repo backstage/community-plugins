@@ -23,7 +23,11 @@ const entity: Entity = {
     name: 'my-service',
     namespace: 'default',
     description: 'My service description',
-    annotations: { 'slack/channel': '#my-team' },
+    annotations: {
+      'slack/channel': '#my-team',
+      'pagerduty.com/integration-key': 'abc123',
+      'backstage.io/runbook-url': 'https://runbooks.example.com/my-service',
+    },
   },
   spec: {
     type: 'service',
@@ -49,6 +53,27 @@ describe('getByPath', () => {
   it('returns undefined for a missing path without throwing', () => {
     expect(getByPath(entity, 'spec.nonexistent.field')).toBeUndefined();
   });
+
+  it('resolves annotation keys containing dots using bracket notation', () => {
+    expect(
+      getByPath(
+        entity,
+        'metadata.annotations["pagerduty.com/integration-key"]',
+      ),
+    ).toBe('abc123');
+  });
+
+  it('resolves annotation keys with dots and slashes using bracket notation', () => {
+    expect(
+      getByPath(entity, 'metadata.annotations["backstage.io/runbook-url"]'),
+    ).toBe('https://runbooks.example.com/my-service');
+  });
+
+  it('resolves annotation keys without dots using plain dot notation', () => {
+    expect(getByPath(entity, 'metadata.annotations.slack/channel')).toBe(
+      '#my-team',
+    );
+  });
 });
 
 describe('extractEntityValues', () => {
@@ -69,5 +94,16 @@ describe('extractEntityValues', () => {
       missing: 'spec.doesNotExist',
     });
     expect(result).toEqual({ description: 'My service description' });
+  });
+
+  it('extracts dotted annotation keys using bracket notation', () => {
+    const result = extractEntityValues(entity, {
+      pagerdutyKey: 'metadata.annotations["pagerduty.com/integration-key"]',
+      runbook: 'metadata.annotations["backstage.io/runbook-url"]',
+    });
+    expect(result).toEqual({
+      pagerdutyKey: 'abc123',
+      runbook: 'https://runbooks.example.com/my-service',
+    });
   });
 });

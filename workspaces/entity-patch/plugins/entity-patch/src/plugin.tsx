@@ -65,7 +65,8 @@ const entityPatchContextMenuItem =
             title: 'Edit Patch',
             onClick: async () => {
               const formFields = await formFieldsApi.loadFormFields();
-              const { kind, namespace, name } = entity.metadata;
+              const { kind } = entity;
+              const { namespace, name } = entity.metadata;
               let initialData = {};
               try {
                 initialData = await patchClient.getInitialValues(
@@ -84,12 +85,15 @@ const entityPatchContextMenuItem =
                   initialData={initialData}
                   onSave={async data => {
                     for (const [patchName, patchData] of Object.entries(data)) {
+                      const record = patchData as Record<string, unknown>;
+                      // Skip patches with no data — nothing to persist
+                      if (!record || Object.keys(record).length === 0) continue;
                       await patchClient.savePatch(
                         kind,
                         namespace ?? 'default',
                         name,
                         patchName,
-                        patchData as Record<string, unknown>,
+                        record,
                       );
                     }
                   }}

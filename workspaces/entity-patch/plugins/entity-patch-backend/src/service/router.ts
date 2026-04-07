@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import Router from 'express-promise-router';
+import express from 'express';
 import type { NextFunction, Request, Response } from 'express';
 import type {
   LoggerService,
@@ -22,11 +23,16 @@ import type {
   AuthService,
   UserInfoService,
   DiscoveryService,
-  ConfigService,
+  RootConfigService,
 } from '@backstage/backend-plugin-api';
+import type { Config } from '@backstage/config';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { CatalogClient } from '@backstage/catalog-client';
 import { stringifyEntityRef } from '@backstage/catalog-model';
+import {
+  evaluateFilterPredicate,
+  FilterPredicate,
+} from '@backstage/filter-predicates';
 import { z } from 'zod';
 import { PatchStore } from './PatchStore';
 import { extractEntityValues } from './EntityValueExtractor';
@@ -38,7 +44,7 @@ export interface RouterOptions {
   auth: AuthService;
   userInfo: UserInfoService;
   discovery: DiscoveryService;
-  config: ConfigService;
+  config: RootConfigService;
 }
 
 const patchBodySchema = z.object({
@@ -53,20 +59,31 @@ export async function createRouter(options: RouterOptions) {
   const store = await PatchStore.create(database);
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-  /** Build a mapping of patchName → field→dotPath from config. */
-  function getMappings(): Record<string, Record<string, string>> {
+  /**
+   * Builds a mapping of patchName → { mapping, filter } from config.
+   * Only patches that have a `mapping` block are included.
+   * The `filter` is the full FilterPredicate object from config (e.g. `{ kind: "Component" }`
+   * or a compound predicate like `{ $all: [{ kind: "Component" }, { "spec.type": "service" }] }`).
+   */
+  function getPatchConfigs(): Array<{
+    name: string;
+    mapping: Record<string, string>;
+    filter?: FilterPredicate;
+  }> {
     const patches = config.getOptionalConfigArray('entityPatch.patches') ?? [];
-    return Object.fromEntries(
-      patches
-        .filter(p => p.has('mapping'))
-        .map(p => [
-          p.getString('name'),
-          p.get<Record<string, string>>('mapping'),
-        ]),
-    );
+    return patches
+      .filter((p: Config) => p.has('mapping'))
+      .map((p: Config) => ({
+        name: p.getString('name'),
+        mapping: p.getOptional('mapping') as Record<string, string>,
+        filter: p.has('filter')
+          ? (p.get('filter') as FilterPredicate)
+          : undefined,
+      }));
   }
 
   const router = Router();
+  router.use(express.json());
 
   router.get('/health', (_req, res) => {
     res.json({ status: 'ok' });
@@ -74,7 +91,7 @@ export async function createRouter(options: RouterOptions) {
 
   /**
    * GET /values/:namespace/:kind/:name
-   * Returns initial form values for all configured patches on this entity.
+   * Returns initial form values for patches that match this entity's kind.
    * Catalog values (via mapping) are merged with any DB overlay,
    * DB overlay taking precedence.
    */
@@ -97,9 +114,13 @@ export async function createRouter(options: RouterOptions) {
       throw new NotFoundError(`Entity '${entityRef}' not found in catalog`);
     }
 
-    const mappings = getMappings();
+    // Only extract values for patches whose filter matches the entity
+    const patchConfigs = getPatchConfigs().filter(
+      p => !p.filter || evaluateFilterPredicate(p.filter, entity),
+    );
+
     const catalogValues: Record<string, Record<string, unknown>> = {};
-    for (const [patchName, mapping] of Object.entries(mappings)) {
+    for (const { name: patchName, mapping } of patchConfigs) {
       catalogValues[patchName] = extractEntityValues(entity, mapping);
     }
 
@@ -110,7 +131,9 @@ export async function createRouter(options: RouterOptions) {
       ...catalogValues,
     };
     for (const [patchName, dbData] of Object.entries(dbOverlay)) {
-      merged[patchName] = { ...(catalogValues[patchName] ?? {}), ...dbData };
+      if (patchName in catalogValues) {
+        merged[patchName] = { ...(catalogValues[patchName] ?? {}), ...dbData };
+      }
     }
 
     logger.debug('Returning initial values', { entityRef });

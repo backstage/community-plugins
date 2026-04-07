@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import { createDevApp } from '@backstage/frontend-dev-utils';
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import {
   ApiBlueprint,
   createFrontendModule,
+  fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
 import { EntityNamePickerFieldExtension } from '@backstage/plugin-scaffolder';
@@ -30,108 +29,84 @@ import {
 
 import plugin from '../src';
 
-const mockEntity = {
-  apiVersion: 'backstage.io/v1alpha1' as const,
-  kind: 'Group',
-  metadata: {
-    name: 'example-team',
-    namespace: 'default',
-    description: 'Initial description',
-    annotations: { 'slack/channel': '#team-example' },
-  },
-  spec: {
-    type: 'team',
-    profile: { email: 'team@example.com' },
-    owner: 'group:default/platform',
-    children: [],
-    members: [],
-  },
-};
-
-const mockDepartmentGroup = {
-  apiVersion: 'backstage.io/v1alpha1' as const,
-  kind: 'Group',
-  metadata: {
-    name: 'engineering',
-    namespace: 'default',
-    description: 'The engineering department',
-  },
-  spec: {
-    type: 'department',
-    children: ['group:default/example-team'],
-    members: [],
-  },
-};
-
-const mockPlatformGroup = {
-  apiVersion: 'backstage.io/v1alpha1' as const,
-  kind: 'Group',
-  metadata: { name: 'platform', namespace: 'default' },
-  spec: { type: 'team', children: [], members: [] },
-};
-
-const mockJohnUser = {
-  apiVersion: 'backstage.io/v1alpha1' as const,
-  kind: 'User',
-  metadata: { name: 'jdoe', namespace: 'default' },
-  spec: { profile: { displayName: 'John Doe' }, memberOf: [] },
-};
-
-const mockServiceComponent = {
-  apiVersion: 'backstage.io/v1alpha1' as const,
-  kind: 'Component',
-  metadata: {
-    name: 'payments-api',
-    namespace: 'default',
-    description: 'Handles payment processing',
-    annotations: {
-      'internal/tier': 'tier-1',
-      'pagerduty.com/integration-key': 'abc123def456abc123def456abc123de',
-      'backstage.io/runbook-url': 'https://wiki.example.com/runbooks/payments',
-    },
-  },
-  spec: {
-    type: 'service',
-    lifecycle: 'production',
-    owner: 'group:default/example-team',
-  },
-};
-
-const mockLibraryComponent = {
-  apiVersion: 'backstage.io/v1alpha1' as const,
-  kind: 'Component',
-  metadata: {
-    name: 'ui-kit',
-    namespace: 'default',
-    description: 'Shared UI component library',
-  },
-  spec: {
-    type: 'library',
-    lifecycle: 'experimental',
-    owner: 'group:default/example-team',
-  },
-};
-
-const catalogApi = catalogApiMock({
-  entities: [
-    mockEntity,
-    mockDepartmentGroup,
-    mockPlatformGroup,
-    mockJohnUser,
-    mockServiceComponent,
-    mockLibraryComponent,
-  ],
-});
-
-const catalogMockModule = createFrontendModule({
-  pluginId: 'catalog',
+/**
+ * Dev-only fetchApi override that auto-injects a guest Bearer token for all
+ * requests to the local backend (localhost:7007).
+ *
+ * Why not override identityApiRef? AppRouter calls
+ * `toAppIdentityProxy(useApi(identityApiRef))` which requires the impl to have
+ * an `enableCookieAuth` property — a private framework interface. Overriding
+ * fetchApiRef directly is simpler and avoids that constraint.
+ */
+const devGuestFetchModule = createFrontendModule({
+  pluginId: 'app',
   extensions: [
     ApiBlueprint.make({
+      name: 'fetch',
       params: defineParams =>
         defineParams({
-          api: catalogApiRef,
+          api: fetchApiRef,
           deps: {},
-          factory: () => catalogApi,
+          factory: () => {
+            let cachedToken: string | undefined;
+            let expiresAt = 0;
+
+            async function getGuestToken(): Promise<string | undefined> {
+              const now = Date.now();
+              if (cachedToken && expiresAt > now + 60_000) return cachedToken;
+              try {
+                const resp = await globalThis.fetch(
+                  'http://localhost:7007/api/auth/guest/refresh',
+                  {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ scope: '' }),
+                  },
+                );
+                if (!resp.ok) return undefined;
+                const data = await resp.json();
+                cachedToken = data?.backstageIdentity?.token as
+                  | string
+                  | undefined;
+                expiresAt =
+                  now +
+                  (data?.backstageIdentity?.expiresInSeconds ?? 3600) * 1000;
+                return cachedToken;
+              } catch {
+                return undefined;
+              }
+            }
+
+            return {
+              fetch: async (
+                input: Parameters<typeof fetch>[0],
+                init?: Parameters<typeof fetch>[1],
+              ) => {
+                let url: string;
+                if (typeof input === 'string') {
+                  url = input;
+                } else if (input instanceof URL) {
+                  url = input.toString();
+                } else {
+                  url = (input as Request).url;
+                }
+
+                if (!url.startsWith('http://localhost:7007')) {
+                  return globalThis.fetch(input, init);
+                }
+
+                const token = await getGuestToken();
+                return globalThis.fetch(input, {
+                  ...init,
+                  headers: {
+                    ...(init?.headers ?? {}),
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                  },
+                });
+              },
+            };
+          },
         }),
     }),
   ],
@@ -139,17 +114,20 @@ const catalogMockModule = createFrontendModule({
 
 // Register the built-in EntityNamePicker scaffolder field extension so that
 // patches using `ui:field: EntityNamePicker` work in the dev environment.
-// In production, the scaffolder plugin in the new frontend system should register
-// these automatically via FormFieldBlueprint once the alpha API stabilises.
-const entityNamePickerField = FormFieldBlueprint.make({
-  name: 'entity-name-picker',
-  params: {
-    field: async () =>
-      createFormField({
-        name: 'EntityNamePicker',
-        component: EntityNamePickerFieldExtension as any,
-      }),
-  },
+const entityNamePickerModule = createFrontendModule({
+  pluginId: 'scaffolder',
+  extensions: [
+    FormFieldBlueprint.make({
+      name: 'entity-name-picker',
+      params: {
+        field: async () =>
+          createFormField({
+            name: 'EntityNamePicker',
+            component: EntityNamePickerFieldExtension as any,
+          }),
+      },
+    }),
+  ],
 });
 
 createDevApp({
@@ -157,8 +135,7 @@ createDevApp({
     plugin,
     catalogPlugin,
     scaffolderPlugin,
-    catalogMockModule,
-    entityNamePickerField,
-    // configMockModule,
+    devGuestFetchModule,
+    entityNamePickerModule,
   ],
 });

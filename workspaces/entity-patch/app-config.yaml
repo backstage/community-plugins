@@ -15,8 +15,15 @@ backend:
     origin: http://localhost:3010
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: secret-token
+          subject: 'guest'
 
 auth:
+  environment: development
   providers:
     guest: {}
 
@@ -144,8 +151,8 @@ entityPatch:
         kind: component
         'spec.type': service
       mapping:
-        pagerdutyKey: metadata.annotations.pagerduty.com/integration-key
-        runbook: metadata.annotations.backstage.io/runbook-url
+        pagerdutyKey: 'metadata.annotations["pagerduty.com/integration-key"]'
+        runbook: 'metadata.annotations["backstage.io/runbook-url"]'
       sections:
         - title: On-Call & Runbook
           description: Applies only to components of type "service".
