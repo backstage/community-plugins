@@ -55,4 +55,9 @@ backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 // The entity-patch backend plugin itself
 backend.add(import('../src'));
 
+// add the processor module to test the whole flow
+backend.add(
+  import('@backstage-community/plugin-catalog-backend-module-entity-patch'),
+);
+
 backend.start();

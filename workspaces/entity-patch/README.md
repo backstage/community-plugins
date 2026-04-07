@@ -1,25 +1,28 @@
 # entity-patch
 
-This workspace contains the `@backstage-community/plugin-entity-patch` frontend plugin, which lets users edit [Backstage catalog entities](https://backstage.io/docs/features/software-catalog/) through structured, schema-driven forms — either from a context menu dialog or a dedicated page.
+This workspace contains the plugins that enable UI-driven editing of [Backstage catalog](https://backstage.io/docs/features/software-catalog/) entity fields — without writing custom UI code or editing YAML files manually.
 
-## Plugins
+Patches are declared in `app-config.yaml`. An **Edit Patch** context menu item appears on matching entities, opens a form pre-populated from the current entity, and persists changes back to the catalog on save.
 
-- \[plugin-backend](./plugins/plugin-backend/README):  Backend plugin that provides... WIP
-- [`@backstage-community/plugin-entity-patch`](./plugins/entity-patch/README.md): Frontend plugin that adds an **Edit Patch** context menu item and a standalone patch page to catalog entities.
+## Packages
+
+| Package                                                                                                                      | Description                                                                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [`@backstage-community/plugin-entity-patch`](./plugins/entity-patch/README.md)                                               | Frontend plugin. Adds an **Edit Patch** context menu item and a standalone page to catalog entities.                              |
+| [`@backstage-community/plugin-entity-patch-backend`](./plugins/entity-patch-backend/README.md)                               | Backend plugin. REST API for storing and retrieving patch data per entity; triggers a catalog refresh on save.                    |
+| [`@backstage-community/plugin-catalog-backend-module-entity-patch`](./plugins/catalog-backend-module-entity-patch/README.md) | Catalog processor module. Reads stored patches, applies scalar values to entity fields, and emits custom bidirectional relations. |
 
 ## Getting Started
-
-To start the app, run:
 
 ```sh
 yarn install
 yarn start
 ```
 
-The dev app starts at `http://localhost:3010` with a mock catalog entity. Open the context menu on any entity card and click **Edit Patch**, or navigate directly to `/entity-patch/:namespace/:kind/:name`. 
+The dev app starts at `http://localhost:3010` with sample catalog entities.
+Open the context menu (**⋮**) on any entity and click **Edit Patch**.
 
-
-To generate knip reports for this app, run:
+## Generating knip reports
 
 ```sh
 yarn backstage-repo-tools knip-reports

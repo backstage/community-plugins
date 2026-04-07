@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { extractEntityValues, getByPath } from './EntityValueExtractor';
+import {
+  extractEntityValues,
+  extractRelationValues,
+  getByPath,
+  RelationPair,
+} from './EntityValueExtractor';
 import type { Entity } from '@backstage/catalog-model';
 
 const entity: Entity = {
@@ -33,6 +38,11 @@ const entity: Entity = {
     type: 'service',
     profile: { email: 'team@example.com' },
   },
+  relations: [
+    { type: 'hasDesigner', targetRef: 'user:default/alice' },
+    { type: 'hasDesigner', targetRef: 'user:default/bob' },
+    { type: 'hasTechLead', targetRef: 'user:default/carol' },
+  ],
 };
 
 describe('getByPath', () => {
@@ -104,6 +114,107 @@ describe('extractEntityValues', () => {
     expect(result).toEqual({
       pagerdutyKey: 'abc123',
       runbook: 'https://runbooks.example.com/my-service',
+    });
+  });
+});
+
+describe('extractRelationValues', () => {
+  it('returns all target refs for a given type as array when multiple=true', () => {
+    expect(extractRelationValues(entity, 'hasDesigner', true)).toEqual([
+      'user:default/alice',
+      'user:default/bob',
+    ]);
+  });
+
+  it('returns the first target ref as a string when multiple=false', () => {
+    expect(extractRelationValues(entity, 'hasDesigner', false)).toBe(
+      'user:default/alice',
+    );
+  });
+
+  it('returns undefined when no relations match and multiple=false', () => {
+    expect(extractRelationValues(entity, 'unknownType', false)).toBeUndefined();
+  });
+
+  it('returns undefined when no relations match and multiple=true', () => {
+    expect(extractRelationValues(entity, 'unknownType', true)).toBeUndefined();
+  });
+});
+
+describe('extractEntityValues — relations support', () => {
+  const relationPairs = new Map<string, RelationPair>([
+    ['hasDesigner', { forward: 'hasDesigner', reverse: 'designerOn' }],
+    ['designerOn', { forward: 'hasDesigner', reverse: 'designerOn' }],
+    ['hasTechLead', { forward: 'hasTechLead', reverse: 'techLeadOf' }],
+  ]);
+
+  const sectionProperties = {
+    designers: { type: 'array' },
+    techLead: { type: 'string' },
+  };
+
+  it('extracts array relation values when type is "array"', () => {
+    const result = extractEntityValues(
+      entity,
+      { designers: 'relations.hasDesigner' },
+      { relationPairs, sectionProperties },
+    );
+    expect(result).toEqual({
+      designers: ['user:default/alice', 'user:default/bob'],
+    });
+  });
+
+  it('extracts single relation value when type is not "array"', () => {
+    const result = extractEntityValues(
+      entity,
+      { techLead: 'relations.hasTechLead' },
+      { relationPairs, sectionProperties },
+    );
+    expect(result).toEqual({ techLead: 'user:default/carol' });
+  });
+
+  it('omits relation fields when no matching relations exist on entity', () => {
+    const result = extractEntityValues(
+      entity,
+      { managers: 'relations.hasManager' },
+      {
+        relationPairs: new Map([
+          ['hasManager', { forward: 'hasManager', reverse: 'managerOn' }],
+        ]),
+        sectionProperties: { managers: { type: 'array' } },
+      },
+    );
+    expect(result).toEqual({});
+  });
+
+  it('omits relation field when type is not in the registry', () => {
+    const result = extractEntityValues(
+      entity,
+      { unknown: 'relations.unknownType' },
+      { relationPairs, sectionProperties },
+    );
+    expect(result).toEqual({});
+  });
+
+  it('skips relation fields when relationPairs is not provided', () => {
+    const result = extractEntityValues(entity, {
+      designers: 'relations.hasDesigner',
+    });
+    expect(result).toEqual({});
+  });
+
+  it('mixes scalar and relation fields correctly', () => {
+    const result = extractEntityValues(
+      entity,
+      {
+        description: 'metadata.description',
+        designers: 'relations.hasDesigner',
+      },
+      { relationPairs, sectionProperties },
+    );
+    expect(result).toEqual({
+      description: 'My service description',
+      designers: ['user:default/alice', 'user:default/bob'],
     });
   });
 });

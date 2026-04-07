@@ -40,7 +40,8 @@ export class EntityPatchClient {
   }
 
   /**
-   * Fetches the current values for all patches on an entity.
+   * Fetches the current values for all patches on an entity, pre-populated
+   * from the entity's current catalog field values via the configured mapping.
    * Returns `{}` if the backend is unavailable (graceful degradation).
    */
   async getInitialValues(
@@ -50,7 +51,7 @@ export class EntityPatchClient {
   ): Promise<PatchesData> {
     const base = await this.baseUrl();
     const response = await this.fetchApi.fetch(
-      `${base}/values/${encodeURIComponent(namespace)}/${encodeURIComponent(kind)}/${encodeURIComponent(name)}`,
+      `${base}/values/${encodeURIComponent(namespace)}/${encodeURIComponent(kind)}/${encodeURIComponent(name)}?fillFromEntity=true`,
     );
     if (!response.ok) {
       throw new Error(

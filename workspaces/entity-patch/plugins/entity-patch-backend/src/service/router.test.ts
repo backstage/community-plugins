@@ -26,6 +26,7 @@ jest.mock('./PatchStore');
 
 const mockStore = {
   findByEntityRef: jest.fn().mockResolvedValue({}),
+  getLatestUpdatedAt: jest.fn().mockResolvedValue(null),
   upsert: jest.fn().mockResolvedValue(undefined),
 };
 (PatchStore.create as jest.Mock) = jest.fn().mockResolvedValue(mockStore);
@@ -91,6 +92,88 @@ describe('GET /health', () => {
 describe('GET /values/:namespace/:kind/:name', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockStore.findByEntityRef.mockResolvedValue({});
+    mockStore.getLatestUpdatedAt.mockResolvedValue(null);
+  });
+
+  it('returns raw DB data only when fillFromEntity param is absent', async () => {
+    mockStore.findByEntityRef.mockResolvedValueOnce({
+      'component-metadata': { description: 'stored description' },
+    });
+
+    const getEntityByRef = jest.fn();
+    (CatalogClient as jest.Mock).mockImplementation(() => ({ getEntityByRef }));
+
+    const app = await buildApp();
+    const res = await request(app)
+      .get('/values/default/component/payments-api')
+      .set('Authorization', mockCredentials.user.header());
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      'component-metadata': { description: 'stored description' },
+    });
+    // No catalog lookup in raw mode
+    expect(getEntityByRef).not.toHaveBeenCalled();
+  });
+
+  it('includes an ETag header in raw mode based on latest updated_at', async () => {
+    mockStore.getLatestUpdatedAt.mockResolvedValueOnce(
+      '2026-01-01T00:00:00.000Z',
+    );
+    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
+
+    const app = await buildApp();
+    const res = await request(app)
+      .get('/values/default/component/payments-api')
+      .set('Authorization', mockCredentials.user.header());
+
+    expect(res.status).toBe(200);
+    expect(res.headers.etag).toBeDefined();
+    // ETag is a quoted base64 of the timestamp
+    expect(res.headers.etag).toMatch(/^"[A-Za-z0-9+/=]+"$/);
+  });
+
+  it('returns 304 when If-None-Match matches the current ETag', async () => {
+    const timestamp = '2026-01-01T00:00:00.000Z';
+    mockStore.getLatestUpdatedAt.mockResolvedValue(timestamp);
+    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
+
+    const app = await buildApp();
+
+    // First request to get the ETag
+    const first = await request(app)
+      .get('/values/default/component/payments-api')
+      .set('Authorization', mockCredentials.user.header());
+    const etag = first.headers.etag;
+
+    // Second request with matching If-None-Match
+    const second = await request(app)
+      .get('/values/default/component/payments-api')
+      .set('Authorization', mockCredentials.user.header())
+      .set('If-None-Match', etag);
+
+    expect(second.status).toBe(304);
+    expect(second.text).toBe('');
+  });
+
+  it('returns 200 with data when If-None-Match does not match', async () => {
+    mockStore.getLatestUpdatedAt.mockResolvedValue('2026-01-01T00:00:00.000Z');
+    mockStore.findByEntityRef.mockResolvedValue({
+      'component-metadata': { description: 'fresh data' },
+    });
+    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
+
+    const app = await buildApp();
+    const res = await request(app)
+      .get('/values/default/component/payments-api')
+      .set('Authorization', mockCredentials.user.header())
+      .set('If-None-Match', '"stale-etag"');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      'component-metadata': { description: 'fresh data' },
+    });
   });
 
   it('returns catalog values merged with empty DB overlay when entity exists', async () => {
@@ -100,7 +183,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
 
     const app = await buildApp();
     const res = await request(app)
-      .get('/values/default/component/payments-api')
+      .get('/values/default/component/payments-api?fillFromEntity=true')
       .set('Authorization', mockCredentials.user.header());
     expect(res.status).toBe(200);
     expect(res.body['component-metadata']).toMatchObject({
@@ -116,7 +199,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
 
     const app = await buildApp();
     const res = await request(app)
-      .get('/values/default/component/unknown')
+      .get('/values/default/component/unknown?fillFromEntity=true')
       .set('Authorization', mockCredentials.user.header());
 
     expect(res.status).toBe(404);
@@ -168,7 +251,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
     app.use(router);
 
     const res = await request(app)
-      .get('/values/default/group/guests')
+      .get('/values/default/group/guests?fillFromEntity=true')
       .set('Authorization', mockCredentials.user.header());
 
     expect(res.status).toBe(200);
@@ -181,7 +264,9 @@ describe('GET /values/:namespace/:kind/:name', () => {
 describe('POST /patches/:namespace/:kind/:name', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
+    (CatalogClient as jest.Mock).mockImplementation(() => ({
+      refreshEntity: jest.fn().mockResolvedValue(undefined),
+    }));
   });
 
   it('stores patch data and returns 200 for a valid body', async () => {
@@ -196,6 +281,25 @@ describe('POST /patches/:namespace/:kind/:name', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ status: 'ok' });
+  });
+
+  it('triggers a catalog entity refresh after saving the patch', async () => {
+    const refreshEntity = jest.fn().mockResolvedValue(undefined);
+    (CatalogClient as jest.Mock).mockImplementation(() => ({ refreshEntity }));
+
+    const app = await buildApp();
+    await request(app)
+      .post('/patches/default/component/payments-api')
+      .set('Authorization', mockCredentials.user.header())
+      .send({ patchName: 'component-metadata', data: { description: 'New' } });
+
+    // Allow the fire-and-forget promise to resolve
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(refreshEntity).toHaveBeenCalledWith(
+      'component:default/payments-api',
+      expect.objectContaining({ token: expect.any(String) }),
+    );
   });
 
   it('returns 400 for a body missing patchName', async () => {
