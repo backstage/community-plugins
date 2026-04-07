@@ -2,6 +2,8 @@ app:
   title: Scaffolded Backstage App
   baseUrl: http://localhost:3000
 
+  packages: all
+
 acs:
   acsUrl: ${ACS_API_URL}
 
@@ -86,7 +88,7 @@ catalog:
     - allow: [Component, System, User, Group, Resource, Location, Template, API]
   locations:
     - type: file
-      target: ../../catalog/all.yaml
+      target: ../../catalog_default/all.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -104,4 +106,4 @@ kubernetes:
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
   # setting this to `false` will disable permissions
-  enabled: true
+  enabled: false

@@ -13,11 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createApp } from '@backstage/frontend-defaults';
-import catalogPlugin from '@backstage/plugin-catalog/alpha';
-import { navModule } from './modules/nav';
-import acsPlugin from '@backstage-community/plugin-acs/alpha';
-
-export default createApp({
-  features: [catalogPlugin, navModule, acsPlugin],
-});
+export { default } from './plugin.tsx';

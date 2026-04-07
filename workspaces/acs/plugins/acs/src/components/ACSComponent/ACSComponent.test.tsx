@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ACSComponent } from './ACSComponent';
-import { configApiRef } from '@backstage/core-plugin-api';
-import {
-  renderInTestApp,
-  TestApiProvider,
-} from '@backstage/frontend-test-utils';
-import { waitFor } from '@testing-library/react';
+import { mockApis, TestApiProvider } from '@backstage/frontend-test-utils';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),
@@ -34,27 +29,19 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
 
 describe('DataFilterComponent', () => {
   test('displays loading state initially', async () => {
-    const mockConfigApi = {
-      getString: (key: string) => {
-        if (key === 'acs.acsUrl') {
-          return 'http://localhost:3000';
-        }
-        throw new Error(`Missing required config value at '${key}'`);
+    const mockConfigApi = mockApis.config({
+      data: {
+        acs: {
+          acsUrl: 'http://localhost:3000',
+        },
       },
-      getOptionalString: (key: string) => {
-        if (key === 'backend.baseUrl') {
-          return 'http://localhost:7007';
-        }
-        return undefined;
-      },
-      getOptionalConfig: jest.fn(),
-    };
+    });
 
-    renderInTestApp(
-      <TestApiProvider apis={[[configApiRef, mockConfigApi]]}>
-        render(
+    render(
+      <TestApiProvider
+        apis={[mockConfigApi, mockApis.error(), mockApis.translation()]}
+      >
         <ACSComponent />
-        );
       </TestApiProvider>,
     );
 
