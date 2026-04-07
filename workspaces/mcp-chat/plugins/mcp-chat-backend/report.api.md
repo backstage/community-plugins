@@ -268,7 +268,6 @@ export type MCPServer = MCPServerConfig & {
 
 // @public
 export interface MCPServerConfig {
-  allowedTools?: string[];
   args?: string[];
   disabledTools?: string[];
   id: string;
@@ -361,7 +360,10 @@ export class OpenAIResponsesProvider extends LLMProvider {
   protected parseResponse(response: ResponsesApiResponse): ChatResponse;
   // (undocumented)
   sendMessage(messages: ChatMessage[], _tools?: Tool[]): Promise<ChatResponse>;
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void;
+  setMcpServerConfigs(
+    configs: MCPServerFullConfig[],
+    allowedToolsByServer?: Map<string, string[]>,
+  ): void;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;

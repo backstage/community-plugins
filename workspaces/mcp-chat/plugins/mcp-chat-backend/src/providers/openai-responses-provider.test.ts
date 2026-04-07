@@ -647,7 +647,7 @@ describe('OpenAIResponsesProvider', () => {
   });
 
   describe('disabledTools / allowed_tools', () => {
-    it('should include allowed_tools when allowedTools is set on config', async () => {
+    it('should include allowed_tools when allowedToolsByServer map has entry', async () => {
       const configsWithAllowed: MCPServerFullConfig[] = [
         {
           id: 'k8s',
@@ -655,11 +655,13 @@ describe('OpenAIResponsesProvider', () => {
           type: MCPServerType.STREAMABLE_HTTP,
           url: 'https://k8s.example.com/mcp',
           disabledTools: ['pods_delete'],
-          allowedTools: ['pods_list', 'pods_get'],
         },
       ];
 
-      provider.setMcpServerConfigs(configsWithAllowed);
+      const allowedToolsByServer = new Map<string, string[]>();
+      allowedToolsByServer.set('k8s', ['pods_list', 'pods_get']);
+
+      provider.setMcpServerConfigs(configsWithAllowed, allowedToolsByServer);
 
       const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
 
@@ -694,7 +696,7 @@ describe('OpenAIResponsesProvider', () => {
       expect(bodyObj.tools[0].allowed_tools).toEqual(['pods_list', 'pods_get']);
     });
 
-    it('should not include allowed_tools when allowedTools is not set', async () => {
+    it('should not include allowed_tools when allowedToolsByServer has no entry', async () => {
       const configsWithoutAllowed: MCPServerFullConfig[] = [
         {
           id: 'k8s',
