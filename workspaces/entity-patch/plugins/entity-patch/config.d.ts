@@ -14,14 +14,47 @@
  * limitations under the License.
  */
 
-
-
 export interface Config {
   /**
    * Configuration for the entity-patch plugin.
    * @deepVisibility frontend
    */
   entityPatch?: {
+    /**
+     * Global registry of bidirectional custom relation pairs. Each entry
+     * declares a human-readable name and the two relation type strings
+     * (one for each side of the pair).
+     *
+     * To reference a relation in a patch `mapping`, use `relations.{type}`
+     * where `{type}` is the exact forward or reverse type string. The
+     * processor looks up the pair by type and emits both directions.
+     *
+     * @example
+     * ```yaml
+     * relations:
+     *   - name: designer
+     *     forward: hasDesigner   # emitted on the source entity (e.g. Group)
+     *     reverse: designerOn   # emitted on each target entity (e.g. User)
+     * ```
+     *
+     * @visibility backend
+     */
+    relations?: Array<{
+      /** Human-readable label for this pair (not used in mapping references). */
+      name: string;
+      /**
+       * Relation type emitted on the **source** entity (the one being patched).
+       * Use this value in `mapping` as `relations.{forward}`.
+       */
+      forward: string;
+      /**
+       * Relation type emitted on each **target** entity referenced by the field.
+       * Can also be used in `mapping` as `relations.{reverse}` when patching
+       * from the target entity's perspective.
+       */
+      reverse: string;
+    }>;
+
     /**
      * Static schema definitions. Each entry describes a set of patchable
      * fields for a filtered group of entities. Fields may carry inline
@@ -57,9 +90,16 @@ export interface Config {
         properties?: { [key: string]: unknown };
       }>;
       /**
-       * Maps form field names to dot-separated entity paths.
-       * Used only by the backend when persisting the patch.
-       * @example { description: 'metadata.description', email: 'spec.profile.email' }
+       * Maps form field names to either a dot-separated entity path or a
+       * `relations.{type}` reference for custom relation fields.
+       *
+       * - Dot-path: written directly onto the entity via `lodash.set`
+       *   e.g. `{ description: 'metadata.description' }`
+       * - Relation type: triggers bidirectional relation emission in
+       *   `postProcessEntity` — the type must match a `forward` or `reverse`
+       *   value declared in `entityPatch.relations`.
+       *   e.g. `{ designers: 'relations.hasDesigner' }`
+       *
        * @visibility backend
        */
       mapping?: { [key: string]: string };

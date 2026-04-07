@@ -35,7 +35,7 @@ import {
 } from '@backstage/filter-predicates';
 import { z } from 'zod';
 import { PatchStore } from './PatchStore';
-import { extractEntityValues } from './EntityValueExtractor';
+import { extractEntityValues, RelationPair } from './EntityValueExtractor';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -60,26 +60,53 @@ export async function createRouter(options: RouterOptions) {
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
   /**
-   * Builds a mapping of patchName → { mapping, filter } from config.
+   * Builds a lookup map from relation type → RelationPair, indexed by both
+   * forward and reverse types. Returns an empty map when no relations are configured.
+   */
+  function getRelationPairs(): Map<string, RelationPair> {
+    const pairs = new Map<string, RelationPair>();
+    const relations =
+      config.getOptionalConfigArray('entityPatch.relations') ?? [];
+    for (const r of relations) {
+      const forward = r.getString('forward');
+      const reverse = r.getString('reverse');
+      const pair: RelationPair = { forward, reverse };
+      pairs.set(forward, pair);
+      pairs.set(reverse, pair);
+    }
+    return pairs;
+  }
+
+  /**
+   * Builds a mapping of patchName → { mapping, filter, sectionProperties } from config.
    * Only patches that have a `mapping` block are included.
-   * The `filter` is the full FilterPredicate object from config (e.g. `{ kind: "Component" }`
-   * or a compound predicate like `{ $all: [{ kind: "Component" }, { "spec.type": "service" }] }`).
    */
   function getPatchConfigs(): Array<{
     name: string;
     mapping: Record<string, string>;
     filter?: FilterPredicate;
+    sectionProperties: Record<string, unknown>;
   }> {
     const patches = config.getOptionalConfigArray('entityPatch.patches') ?? [];
     return patches
       .filter((p: Config) => p.has('mapping'))
-      .map((p: Config) => ({
-        name: p.getString('name'),
-        mapping: p.getOptional('mapping') as Record<string, string>,
-        filter: p.has('filter')
-          ? (p.get('filter') as FilterPredicate)
-          : undefined,
-      }));
+      .map((p: Config) => {
+        const sections =
+          p
+            .getOptionalConfigArray('sections')
+            ?.map(
+              s => s.getOptional<Record<string, unknown>>('properties') ?? {},
+            ) ?? [];
+        const sectionProperties = Object.assign({}, ...sections);
+        return {
+          name: p.getString('name'),
+          mapping: p.getOptional('mapping') as Record<string, string>,
+          filter: p.has('filter')
+            ? (p.get('filter') as FilterPredicate)
+            : undefined,
+          sectionProperties,
+        };
+      });
   }
 
   const router = Router();
@@ -91,18 +118,51 @@ export async function createRouter(options: RouterOptions) {
 
   /**
    * GET /values/:namespace/:kind/:name
-   * Returns initial form values for patches that match this entity's kind.
-   * Catalog values (via mapping) are merged with any DB overlay,
-   * DB overlay taking precedence.
+   *
+   * Returns patch data for an entity.
+   *
+   * By default returns **raw DB-stored data only** — only patches that have
+   * been explicitly saved are included. This mode also supports ETag-based
+   * conditional requests: the response includes an `ETag` header derived from
+   * the latest `updated_at` timestamp in the DB. Callers that send a matching
+   * `If-None-Match` header receive a `304 Not Modified` with no body, allowing
+   * the catalog processor to skip re-applying unchanged data.
+   *
+   * Pass `?fillFromEntity=true` to also extract current catalog field values
+   * via the configured mapping and merge them as a base (DB data takes
+   * precedence). This is the mode used by the frontend form to pre-populate
+   * fields from the entity's current state.
    */
   router.get('/values/:namespace/:kind/:name', async (req, res) => {
     const { namespace, kind, name } = req.params;
+    const fillFromEntity = req.query.fillFromEntity === 'true';
     const credentials = await httpAuth.credentials(req, {
       allow: ['user', 'service'],
     });
 
     const entityRef = stringifyEntityRef({ kind, namespace, name });
 
+    const dbOverlay = await store.findByEntityRef(entityRef);
+
+    if (!fillFromEntity) {
+      // Raw mode (used by the catalog processor): add ETag for conditional requests.
+      const latestUpdatedAt = await store.getLatestUpdatedAt(entityRef);
+      const etag = latestUpdatedAt
+        ? `"${Buffer.from(latestUpdatedAt).toString('base64')}"`
+        : '"empty"';
+      res.setHeader('ETag', etag);
+
+      if (req.headers['if-none-match'] === etag) {
+        res.status(304).end();
+        return;
+      }
+
+      logger.debug('Returning raw patch data', { entityRef });
+      res.json(dbOverlay);
+      return;
+    }
+
+    // fillFromEntity mode: merge catalog field values with DB overlay
     const { token } = await auth.getPluginRequestToken({
       onBehalfOf: credentials,
       targetPluginId: 'catalog',
@@ -118,13 +178,19 @@ export async function createRouter(options: RouterOptions) {
     const patchConfigs = getPatchConfigs().filter(
       p => !p.filter || evaluateFilterPredicate(p.filter, entity),
     );
+    const relationPairs = getRelationPairs();
 
     const catalogValues: Record<string, Record<string, unknown>> = {};
-    for (const { name: patchName, mapping } of patchConfigs) {
-      catalogValues[patchName] = extractEntityValues(entity, mapping);
+    for (const {
+      name: patchName,
+      mapping,
+      sectionProperties,
+    } of patchConfigs) {
+      catalogValues[patchName] = extractEntityValues(entity, mapping, {
+        relationPairs,
+        sectionProperties,
+      });
     }
-
-    const dbOverlay = await store.findByEntityRef(entityRef);
 
     // Merge: catalog values as base, DB overlay on top per patch
     const merged: Record<string, Record<string, unknown>> = {
@@ -136,7 +202,7 @@ export async function createRouter(options: RouterOptions) {
       }
     }
 
-    logger.debug('Returning initial values', { entityRef });
+    logger.debug('Returning entity-filled values', { entityRef });
     res.json(merged);
   });
 
@@ -166,6 +232,23 @@ export async function createRouter(options: RouterOptions) {
       patchName,
       updatedBy: userEntityRef,
     });
+
+    // Trigger an immediate catalog refresh so the processor re-processes
+    // the entity with the new patch data rather than waiting for the next
+    // scheduled ingestion loop. This is best-effort — a failure here does
+    // not affect the save result.
+    auth
+      .getPluginRequestToken({
+        onBehalfOf: credentials,
+        targetPluginId: 'catalog',
+      })
+      .then(({ token }) => catalogClient.refreshEntity(entityRef, { token }))
+      .catch(err =>
+        logger.warn(
+          `Could not trigger catalog refresh for ${entityRef} after patch save: ${err}`,
+        ),
+      );
+
     res.status(200).json({ status: 'ok' });
   });
 

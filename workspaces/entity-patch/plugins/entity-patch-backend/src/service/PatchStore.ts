@@ -57,6 +57,22 @@ export class PatchStore {
     );
   }
 
+  /**
+   * Returns the most recent `updated_at` timestamp across all patches for an
+   * entity, as an ISO 8601 string. Returns `null` when no patches exist yet.
+   * Used to compute ETags for the raw values endpoint.
+   */
+  async getLatestUpdatedAt(entityRef: string): Promise<string | null> {
+    const result = await this.db('entity_patches')
+      .where({ entity_ref: entityRef })
+      .max('updated_at as ts')
+      .first<{ ts: string | Date | null }>();
+    if (!result?.ts) return null;
+    const ts =
+      result.ts instanceof Date ? result.ts.toISOString() : String(result.ts);
+    return ts;
+  }
+
   /** Inserts or updates patch data for a single patch on an entity. */
   async upsert(
     entityRef: string,

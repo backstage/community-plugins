@@ -43,6 +43,19 @@ catalog:
         - allow: [User, Group]
 
 entityPatch:
+
+  # Global registry of bidirectional custom relation pairs.
+  # Each entry declares a human-readable name and the two relation type strings.
+  # Reference these in patch `mapping` as `relations.{type}` where `{type}` is
+  # the forward or reverse type string declared here.
+  relations:
+    - name: designer
+      forward: hasDesigner   # emitted on the source entity (e.g. Group)
+      reverse: designerOn    # emitted on each target entity (e.g. User)
+    - name: techLead
+      forward: hasTechLead
+      reverse: techLeadOf
+
   patches:
     # ── Patch 1: all Groups ────────────────────────────────────────────────────
     - name: group-details
@@ -78,7 +91,36 @@ entityPatch:
               errorMessage:
                 pattern: "Must start with # followed by lowercase letters, numbers, hyphens, or underscores (e.g. #team-platform)"
 
-    # ── Patch 2: only team-type Groups ────────────────────────────────────────
+    # ── Patch 2: team roles (relations) ───────────────────────────────────────
+    - name: team-roles
+      filter:
+        kind: group
+        'spec.type': team
+      mapping:
+        designers: relations.hasDesigner     # type ref → emit hasDesigner + designerOn pair
+        techLeads: relations.hasTechLead
+      sections:
+        - title: Team Roles
+          description: Assign people to specific roles on this team.
+          properties:
+            designers:
+              title: Designers
+              type: array
+              description: Team members acting as designers.
+              'ui:field': MultiEntityPicker
+              'ui:options':
+                catalogFilter:
+                  - kind: User
+            techLeads:
+              title: Tech Leads
+              type: array
+              description: Team members acting as tech leads.
+              'ui:field': MultiEntityPicker
+              'ui:options':
+                catalogFilter:
+                  - kind: User
+
+    # ── Patch 3: only team-type Groups ────────────────────────────────────────
     - name: team-ownership
       filter:
         kind: group
