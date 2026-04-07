@@ -484,22 +484,22 @@ export interface CopilotMetrics {
   /**
    * The total number of code suggestions for IDE users.
    */
-  copilot_ide_code_completions: CopilotIdeCodeCompletions;
+  copilot_ide_code_completions?: CopilotIdeCodeCompletions;
 
   /**
    * The total number of chats for IDE users.
    */
-  copilot_ide_chat: CopilotChats;
+  copilot_ide_chat?: CopilotChats;
 
   /**
    * The total number of chats for dotcom users.
    */
-  copilot_dotcom_chat: DotcomChat;
+  copilot_dotcom_chat?: DotcomChat;
 
   /**
    * The total number of pull requests for dotcom users.
    */
-  copilot_dotcom_pull_requests: DotcomPullRequests;
+  copilot_dotcom_pull_requests?: DotcomPullRequests;
 }
 
 /**

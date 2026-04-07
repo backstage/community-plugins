@@ -75,6 +75,7 @@ export function filterIdeCompletionMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .map(metric => ({
       day: metric.date,
       type: type,
@@ -91,6 +92,7 @@ export function filterIdeCompletionLanguageMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsLanguageDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
         metric.copilot_ide_code_completions.languages?.map(language => ({
@@ -109,6 +111,7 @@ export function filterIdeCompletionEditorMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsEditorsDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
         metric.copilot_ide_code_completions.editors?.map(editor => ({
@@ -128,6 +131,7 @@ export function filterIdeCompletionEditorModelMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelsDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
         metric.copilot_ide_code_completions.editors?.flatMap(editor =>
@@ -149,6 +153,7 @@ export function filterIdeCompletionEditorModelLanguageMetrics(
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelLanguagesDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_code_completions !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
         metric.copilot_ide_code_completions.editors?.flatMap(editor =>
@@ -178,6 +183,7 @@ export function filterIdeChatMetrics(
   team?: string,
 ): CopilotIdeChatsDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_chat !== undefined)
     .map((metric: CopilotMetrics) => ({
       day: metric.date,
       type: type,
@@ -193,6 +199,7 @@ export function filterIdeEditorMetrics(
   team?: string,
 ): CopilotIdeChatsEditorsDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_chat !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
         metric.copilot_ide_chat.editors?.map(editor => ({
@@ -212,9 +219,10 @@ export function filterIdeChatEditorModelMetrics(
   team?: string,
 ): CopilotIdeChatsEditorModelDb[] {
   return metrics
+    .filter(metric => metric.copilot_ide_chat !== undefined)
     .flatMap(
       (metric: CopilotMetrics) =>
-        metric.copilot_ide_chat.editors?.flatMap(editor =>
+        metric.copilot_ide_chat!.editors?.flatMap(editor =>
           editor.models.map(model => ({
             day: metric.date,
             type: type,

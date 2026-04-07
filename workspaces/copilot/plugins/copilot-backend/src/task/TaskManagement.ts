@@ -18,9 +18,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { GithubClient } from '../client/GithubClient';
 import { DatabaseHandler } from '../db/DatabaseHandler';
 import { discoverOrganizationMetrics } from './OrganizationTask';
-import { discoverOrganizationTeamMetrics } from './OrganizationTeamTask';
 import { discoverEnterpriseMetrics } from './EnterpriseTask';
-import { discoverEnterpriseTeamMetrics } from './EnterpriseTeamTask';
 
 export type TaskOptions = {
   api: GithubClient;
@@ -35,9 +33,7 @@ export default class TaskManagement {
   constructor(private readonly options: TaskOptions) {
     this.tasks = [
       () => discoverOrganizationMetrics(this.options),
-      () => discoverOrganizationTeamMetrics(this.options),
       () => discoverEnterpriseMetrics(this.options),
-      () => discoverEnterpriseTeamMetrics(this.options),
     ];
   }
 

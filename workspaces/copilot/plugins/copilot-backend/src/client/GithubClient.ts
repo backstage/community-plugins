@@ -32,13 +32,7 @@ import {
 
 interface GithubApi {
   fetchEnterpriseCopilotMetrics: () => Promise<CopilotMetrics[]>;
-  fetchEnterpriseTeamCopilotMetrics: (
-    teamId: string,
-  ) => Promise<CopilotMetrics[]>;
   fetchOrganizationCopilotMetrics: () => Promise<CopilotMetrics[]>;
-  fetchOrganizationTeamCopilotMetrics: (
-    teamId: string,
-  ) => Promise<CopilotMetrics[]>;
 
   fetchEnterpriseTeams: () => Promise<TeamInfo[]>;
   fetchOrganizationTeams: () => Promise<TeamInfo[]>;
@@ -83,7 +77,7 @@ export class GithubClient implements GithubApi {
       baseUrl: this.copilotConfig.apiBaseUrl,
       headers: {
         Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
+        'X-GitHub-Api-Version': '2026-03-10',
       },
     };
 
@@ -161,20 +155,22 @@ export class GithubClient implements GithubApi {
 
   async fetchEnterpriseCopilotMetrics(): Promise<CopilotMetrics[]> {
     const octokit = await this.getEnterpriseOctokit();
-    const path = `/enterprises/${this.copilotConfig.enterprise}/copilot/metrics`;
+    const path = `/enterprises/${this.copilotConfig.enterprise}/copilot/metrics/reports/enterprise-28-day/latest`;
 
     const response = await octokit.request(`GET ${path}`);
-    return response.data as CopilotMetrics[];
-  }
+    const { download_links } = response.data as {
+      download_links: string[];
+      report_start_day: string;
+      report_end_day: string;
+    };
 
-  async fetchEnterpriseTeamCopilotMetrics(
-    teamId: string,
-  ): Promise<CopilotMetrics[]> {
-    const octokit = await this.getEnterpriseOctokit();
-    const path = `/enterprises/${this.copilotConfig.enterprise}/team/${teamId}/copilot/metrics`;
-
-    const response = await octokit.request(`GET ${path}`);
-    return response.data as CopilotMetrics[];
+    const allMetrics: CopilotMetrics[] = [];
+    for (const url of download_links) {
+      const res = await fetch(url);
+      const data = (await res.json()) as CopilotMetrics[];
+      allMetrics.push(...(Array.isArray(data) ? data : [data]));
+    }
+    return allMetrics;
   }
 
   async fetchEnterpriseTeams(): Promise<TeamInfo[]> {
@@ -262,20 +258,22 @@ export class GithubClient implements GithubApi {
 
   async fetchOrganizationCopilotMetrics(): Promise<CopilotMetrics[]> {
     const octokit = await this.getOrganizationOctokit();
-    const path = `/orgs/${this.copilotConfig.organization}/copilot/metrics`;
+    const path = `/orgs/${this.copilotConfig.organization}/copilot/metrics/reports/organization-28-day/latest`;
 
     const response = await octokit.request(`GET ${path}`);
-    return response.data as CopilotMetrics[];
-  }
+    const { download_links } = response.data as {
+      download_links: string[];
+      report_start_day: string;
+      report_end_day: string;
+    };
 
-  async fetchOrganizationTeamCopilotMetrics(
-    teamId: string,
-  ): Promise<CopilotMetrics[]> {
-    const octokit = await this.getOrganizationOctokit();
-    const path = `/orgs/${this.copilotConfig.organization}/team/${teamId}/copilot/metrics`;
-
-    const response = await octokit.request(`GET ${path}`);
-    return response.data as CopilotMetrics[];
+    const allMetrics: CopilotMetrics[] = [];
+    for (const url of download_links) {
+      const res = await fetch(url);
+      const data = (await res.json()) as CopilotMetrics[];
+      allMetrics.push(...(Array.isArray(data) ? data : [data]));
+    }
+    return allMetrics;
   }
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {
