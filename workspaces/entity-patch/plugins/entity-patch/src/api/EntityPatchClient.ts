@@ -62,6 +62,7 @@ export class EntityPatchClient {
 
   /**
    * Persists form data for a single patch on an entity.
+   * Throws if `data` is empty — callers should skip patches with no changes.
    */
   async savePatch(
     kind: string,
@@ -70,6 +71,11 @@ export class EntityPatchClient {
     patchName: string,
     data: Record<string, unknown>,
   ): Promise<void> {
+    if (!data || Object.keys(data).length === 0) {
+      throw new Error(
+        `savePatch called with empty data for patch "${patchName}" — skipping empty patches before calling savePatch`,
+      );
+    }
     const base = await this.baseUrl();
     const response = await this.fetchApi.fetch(
       `${base}/patches/${encodeURIComponent(namespace)}/${encodeURIComponent(kind)}/${encodeURIComponent(name)}`,

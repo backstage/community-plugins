@@ -43,6 +43,14 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // Catalog is required so the plugin can resolve entities by ref
 backend.add(import('@backstage/plugin-catalog-backend'));
+// catalog plugin
+// backend.add(import('@backstage/plugin-catalog-backend'));
+// backend.add(
+//   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
+// );
+
+// See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
+backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // The entity-patch backend plugin itself
 backend.add(import('../src'));

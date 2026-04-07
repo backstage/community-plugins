@@ -15,7 +15,7 @@
  */
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import {
-  alertApiRef,
+  toastApiRef,
   configApiRef,
   discoveryApiRef,
   fetchApiRef,
@@ -25,15 +25,14 @@ import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
 import { formFieldsApiRef } from '@backstage/plugin-scaffolder-react/alpha';
 import { JsonValue } from '@backstage/types';
-import { Button } from '@backstage/ui';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Button, Flex, Text } from '@backstage/ui';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useEffect, useState } from 'react';
+import { useAsync } from 'react-use';
 import { useParams } from 'react-router-dom';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
 import { PatchDefinition } from '../DefaultPatchesLayout/types';
 import { filterPatchesForEntity } from '../../utils/patchFilter';
-import { Entity } from '@backstage/catalog-model';
 import { EntityPatchClient } from '../../api/EntityPatchClient';
 
 type PatchData = Record<string, JsonValue>;
@@ -49,7 +48,7 @@ export const EntityPatchPage = () => {
   const configApi = useApi(configApiRef);
   const catalogApi = useApi(catalogApiRef);
   const formFieldsApi = useApi(formFieldsApiRef);
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
 
@@ -59,40 +58,41 @@ export const EntityPatchPage = () => {
     'entityPatch.patches',
   ) ?? []) as PatchDefinition[];
 
-  const [entity, setEntity] = useState<Entity | undefined>();
-  const [loadError, setLoadError] = useState<Error | undefined>();
+  // Load entity + initial values together so DefaultPatchesLayout mounts
+  // only once both are available (prevents the useState initializer from
+  // running with empty data before the async fetch completes).
+  const {
+    loading,
+    error: loadError,
+    value: entityData,
+  } = useAsync(async () => {
+    const entity = await catalogApi.getEntityByRef({
+      namespace: namespace!,
+      kind: kind!,
+      name: name!,
+    });
+    if (!entity) {
+      throw new Error(`Entity ${kind}:${namespace}/${name} not found`);
+    }
+    let initialValues: PatchesData = {};
+    try {
+      initialValues = (await patchClient.getInitialValues(
+        entity.kind,
+        entity.metadata.namespace ?? 'default',
+        entity.metadata.name,
+      )) as PatchesData;
+    } catch {
+      // Backend may not be installed; start with empty form data
+    }
+    return { entity, initialValues };
+  }, [catalogApi, namespace, kind, name]);
+
   const [extensions, setExtensions] = useState<
     FieldExtensionOptions<any, any>[]
   >([]);
   const [formData, setFormData] = useState<PatchesData>({});
   const [isValid, setIsValid] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
-
-  useEffect(() => {
-    catalogApi
-      .getEntityByRef({ namespace: namespace!, kind: kind!, name: name! })
-      .then(async e => {
-        if (!e) {
-          setLoadError(
-            new Error(`Entity ${kind}:${namespace}/${name} not found`),
-          );
-          return;
-        }
-        setEntity(e);
-        try {
-          const initial = await patchClient.getInitialValues(
-            e.kind,
-            e.metadata.namespace ?? 'default',
-            e.metadata.name,
-          );
-          setFormData(initial as PatchesData);
-        } catch {
-          // Backend may not be installed; start with empty form data
-        }
-      })
-      .catch(setLoadError);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [catalogApi, namespace, kind, name]);
 
   useEffect(() => {
     formFieldsApi.loadFormFields().then(fields => {
@@ -104,56 +104,57 @@ export const EntityPatchPage = () => {
     return <ResponseErrorPanel error={loadError} />;
   }
 
-  if (!entity) {
+  if (loading || !entityData) {
     return <Progress />;
   }
 
+  const { entity, initialValues } = entityData;
   const patches = filterPatchesForEntity(allPatches, entity);
   const entityRef = `${entity.kind}:${entity.metadata.namespace ?? 'default'}/${entity.metadata.name}`;
 
   const handleSave = async () => {
     try {
       for (const [patchName, patchData] of Object.entries(formData)) {
+        const record = patchData as Record<string, unknown>;
+        // Skip patches with no data — nothing to persist
+        if (!record || Object.keys(record).length === 0) continue;
         await patchClient.savePatch(
           entity.kind,
           entity.metadata.namespace ?? 'default',
           entity.metadata.name,
           patchName,
-          patchData as Record<string, unknown>,
+          record,
         );
       }
-      alertApi.post({
-        message: 'Patch saved successfully.',
-        severity: 'success',
-        display: 'transient',
+      toastApi.post({
+        title: 'Patch saved successfully.',
+        status: 'success',
+        timeout: 5000,
       });
     } catch (err: any) {
-      alertApi.post({
-        message: `Failed to save patch: ${err?.message ?? 'Unknown error'}`,
-        severity: 'error',
+      toastApi.post({
+        title: 'Failed to save patch',
+        description: err?.message ?? 'Unknown error',
+        status: 'danger',
       });
     }
   };
 
   return (
     <>
-      <Box
-        display="flex"
-        alignItems="center"
-        style={{ gap: 8, marginBottom: 16 }}
-      >
+      <Flex align="center" style={{ gap: 8, marginBottom: 16 }}>
         <ArrowBackIcon fontSize="small" color="action" />
         <EntityRefLink entityRef={entityRef} />
-        <Typography variant="caption" color="textSecondary">
+        <Text>
           {entity.kind}
           {(entity.spec as any)?.type ? ` · ${(entity.spec as any).type}` : ''}
-        </Typography>
-      </Box>
+        </Text>
+      </Flex>
 
       <Box style={{ maxWidth: 720, margin: '0 auto' }}>
         <DefaultPatchesLayout
           patches={patches}
-          initialData={formData}
+          initialData={initialValues}
           onChange={(data, options) => {
             setFormData(data);
             setIsValid(options.isValid);
@@ -161,7 +162,7 @@ export const EntityPatchPage = () => {
           }}
           extensions={extensions}
         />
-        <Box display="flex" justifyContent="flex-end" style={{ marginTop: 16 }}>
+        <Flex justify="end" style={{ marginTop: 16 }}>
           <Button
             variant="primary"
             isDisabled={!isDirty || !isValid}
@@ -169,7 +170,7 @@ export const EntityPatchPage = () => {
           >
             Save
           </Button>
-        </Box>
+        </Flex>
       </Box>
     </>
   );

@@ -705,4 +705,71 @@ describe('DefaultPatchesLayout', () => {
       });
     });
   });
+
+  describe('unknown ui:field warning', () => {
+    it('renders a visible warning when a ui:field is not registered', async () => {
+      const patchWithUnknownField: PatchDefinition[] = [
+        {
+          name: 'owner-patch',
+          filter: { kind: 'group' },
+          sections: [
+            {
+              title: 'Ownership',
+              properties: {
+                owner: {
+                  title: 'Owner',
+                  type: 'string',
+                  'ui:field': 'EntityNamePicker',
+                },
+              },
+            },
+          ],
+        },
+      ];
+
+      // No extensions provided — EntityNamePicker is unregistered
+      const { getAllByTestId } = await renderInTestApp(
+        <DefaultPatchesLayout
+          patches={patchWithUnknownField}
+          onChange={() => {}}
+        />,
+      );
+
+      const warnings = getAllByTestId('unknown-field-warning');
+      expect(warnings.length).toBeGreaterThanOrEqual(1);
+      expect(warnings[0].textContent).toMatch(/EntityNamePicker/);
+    });
+
+    it('does not show a warning when the ui:field is registered', async () => {
+      const MockField = () => <span>registered-field</span>;
+      const patchWithRegisteredField: PatchDefinition[] = [
+        {
+          name: 'owner-patch',
+          filter: { kind: 'group' },
+          sections: [
+            {
+              title: 'Ownership',
+              properties: {
+                owner: {
+                  title: 'Owner',
+                  type: 'string',
+                  'ui:field': 'MockField',
+                },
+              },
+            },
+          ],
+        },
+      ];
+
+      const { queryByTestId } = await renderInTestApp(
+        <DefaultPatchesLayout
+          patches={patchWithRegisteredField}
+          extensions={[{ name: 'MockField', component: MockField }]}
+          onChange={() => {}}
+        />,
+      );
+
+      expect(queryByTestId('unknown-field-warning')).toBeNull();
+    });
+  });
 });

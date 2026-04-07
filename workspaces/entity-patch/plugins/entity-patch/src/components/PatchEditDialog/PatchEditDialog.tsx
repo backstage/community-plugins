@@ -26,7 +26,7 @@ import {
 import { Button, ButtonIcon } from '@backstage/ui';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
-import { alertApiRef, useApi } from '@backstage/frontend-plugin-api';
+import { toastApiRef, useApi } from '@backstage/frontend-plugin-api';
 
 type PatchData = Record<string, JsonValue>;
 type PatchesData = Record<string, PatchData>;
@@ -44,9 +44,9 @@ export const PatchEditDialog = ({
   patches,
   initialData,
   onSave,
-  formFields
+  formFields,
 }: PatchEditDialogProps) => {
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const [formData, setFormData] = useState<PatchesData>(initialData ?? {});
   const [isFormValid, setIsFormValid] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
@@ -54,22 +54,28 @@ export const PatchEditDialog = ({
   const handleSave = async () => {
     try {
       await onSave(formData);
-      alertApi.post({
-        message: 'Patch saved successfully.',
-        severity: 'success',
-        display: 'transient',
+      toastApi.post({
+        title: 'Patch saved successfully.',
+        status: 'success',
+        timeout: 5000,
       });
       dialog.close();
     } catch (err: any) {
-      alertApi.post({
-        message: `Failed to save patch: ${err?.message ?? 'Unknown error'}`,
-        severity: 'error',
+      toastApi.post({
+        title: 'Failed to save patch',
+        description: err?.message ?? 'Unknown error',
+        status: 'danger',
       });
     }
   };
 
   return (
-    <Dialog open onClose={() => dialog.close()} fullWidth maxWidth="lg">
+    <Dialog
+      open
+      onClose={() => dialog.close()}
+      PaperProps={{ style: { width: 720, maxWidth: '90vw' } }}
+    >
+      {' '}
       <DialogTitle>Edit Patch</DialogTitle>
       <ButtonIcon
         style={{ position: 'absolute', top: 8, right: 8 }}

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Box } from '@backstage/ui';
-import { Divider, LinearProgress } from '@material-ui/core';
+import { Alert, Box } from '@backstage/ui';
+import { Progress } from '@backstage/core-components';
 
 import Form from '@rjsf/material-ui';
 import ajvErrors from 'ajv-errors';
@@ -72,7 +72,9 @@ export const DefaultPatchesLayout = ({
 
   const [isValidating, setIsValidating] = useState(false);
 
-  const [touchedSections, setTouchedSections] = useState<Set<string>>(new Set());
+  const [touchedSections, setTouchedSections] = useState<Set<string>>(
+    new Set(),
+  );
 
   const handleChange = (
     patchId: string,
@@ -102,18 +104,18 @@ export const DefaultPatchesLayout = ({
     [extensionsMap],
   );
 
-    const validators = useMemo(() => {
-      return Object.fromEntries(
-        extensions.map(({ name, validation }) => [name, validation]),
-      );
-    }, [extensions]);
+  const validators = useMemo(() => {
+    return Object.fromEntries(
+      extensions.map(({ name, validation }) => [name, validation]),
+    );
+  }, [extensions]);
 
-    const validations = useMemo(() => {
-      return (section: PatchSection) =>
-        createAsyncValidators(section as unknown as JsonObject, validators, {
-          apiHolder,
-        });
-    }, [validators, apiHolder]);
+  const validations = useMemo(() => {
+    return (section: PatchSection) =>
+      createAsyncValidators(section as unknown as JsonObject, validators, {
+        apiHolder,
+      });
+  }, [validators, apiHolder]);
 
   const hasErrors = (errors: Record<string, any>): boolean => {
     for (const error of Object.values(errors)) {
@@ -132,15 +134,44 @@ export const DefaultPatchesLayout = ({
 
   return (
     <Box p="4">
-      {isValidating && <LinearProgress variant="indeterminate" />}
+      {isValidating && <Progress />}
       {allSections.map(({ patch, section }, flatIndex) => {
         const { schema, uiSchema } = extractSchemaFromStep(
           section as unknown as JsonObject,
         );
         const patchName = patch.name;
         const sectionKey = `${patchName}-${flatIndex}`;
+
+        // Detect any ui:field references that are not registered — surface a
+        // warning so maintainers know the field is missing instead of seeing
+        // a silently empty section.
+        const unknownFields = Object.entries(uiSchema)
+          .filter(
+            ([, fieldUi]) =>
+              fieldUi &&
+              typeof fieldUi === 'object' &&
+              'ui:field' in (fieldUi as object) &&
+              !(
+                ((fieldUi as Record<string, unknown>)['ui:field'] as string) in
+                fields
+              ),
+          )
+          .map(([fieldKey, fieldUi]) => ({
+            fieldKey,
+            uiField: (fieldUi as Record<string, unknown>)['ui:field'] as string,
+          }));
+
         return (
           <Box key={sectionKey} mb="4">
+            {unknownFields.map(({ fieldKey, uiField }) => (
+              <Alert
+                key={fieldKey}
+                status="warning"
+                title={`Field "${fieldKey}" uses ui:field: ${uiField} which is not registered`}
+                description="Register it via the formFields API or remove it from the patch config."
+                data-testid="unknown-field-warning"
+              />
+            ))}
             <Form
               schema={schema}
               uiSchema={{
@@ -169,15 +200,17 @@ export const DefaultPatchesLayout = ({
                       [sectionKey]: validation as unknown as ErrorSchema,
                     }));
                     const asyncValid = !hasErrors(validation);
-                    handleChange(patchName, data ?? {}, asyncValid && schemaValid);
+                    handleChange(
+                      patchName,
+                      data ?? {},
+                      asyncValid && schemaValid,
+                    );
                   })
                   .finally(() => setIsValidating(false));
               }}
               onBlur={() => {
                 setTouchedSections(prev =>
-                  prev.has(sectionKey)
-                    ? prev
-                    : new Set([...prev, sectionKey]),
+                  prev.has(sectionKey) ? prev : new Set([...prev, sectionKey]),
                 );
               }}
               liveValidate={touchedSections.has(sectionKey)}
@@ -185,7 +218,15 @@ export const DefaultPatchesLayout = ({
               onSubmit={() => {}}
             />
 
-            {flatIndex < allSections.length - 1 && <Divider />}
+            {flatIndex < allSections.length - 1 && (
+              <hr
+                style={{
+                  border: 'none',
+                  borderBottom: '1px solid rgba(0,0,0,0.12)',
+                  margin: '16px 0',
+                }}
+              />
+            )}
           </Box>
         );
       })}
