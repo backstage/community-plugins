@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
-export * from './service/router';
-export * from './service/sonarqubeInfoProvider';
+/**
+ * A Backstage plugin to display {@link https://www.sonarqube.org | SonarQube}
+ * code quality and security results.
+ *
+ * @packageDocumentation
+ */
+
 export { sonarqubePlugin as default } from './plugin';

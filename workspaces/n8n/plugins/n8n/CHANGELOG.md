@@ -1,5 +1,16 @@
 # @backstage-community/plugin-n8n
 
+## 0.2.0
+
+### Minor Changes
+
+- d2bad06: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [d2bad06]
+  - @backstage-community/plugin-n8n-common@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

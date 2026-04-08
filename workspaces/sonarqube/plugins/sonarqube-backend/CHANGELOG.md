@@ -1,5 +1,19 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 1.0.0
+
+### Major Changes
+
+- 39ef4af: The support for the old backend system has been removed. The `createRouter`, `SonarqubeInfoProvider` and other related classes and functions have been removed.
+
+### Minor Changes
+
+- 39ef4af: A new `GET /entities/:kind/:namespace/:name/summary` endpoint has been introduced, which resolves the entity, reads the `sonarqube.org/project-key` annotation, and fetches findings and instance URL server-side. This replaces the old `/findings` and `/instanceUrl` endpoints (now deprecated), removing the need for the frontend to parse annotations or pass project keys directly.
+
+  **BREAKING**: The `SonarQubeApi` interface has been consolidated from two methods (`getFindingSummary` and `getFindingSummaries`) into a single `getSummaries` method that accepts an array of `Entity` objects (instead of `componentKey`/`projectInstance` options).
+
+  The `<SonarQubeCard />` component now displays more specific error messages.
+
 ## 0.17.0
 
 ### Minor Changes

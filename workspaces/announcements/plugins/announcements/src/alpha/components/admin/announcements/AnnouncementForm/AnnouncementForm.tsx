@@ -18,10 +18,10 @@ import MDEditor from '@uiw/react-md-editor';
 import { DateTime } from 'luxon';
 import slugify from 'slugify';
 import {
+  toastApiRef,
   identityApiRef,
   useApi,
-  alertApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
 import {
   Box,
   Button,
@@ -68,7 +68,7 @@ export const AnnouncementForm = ({
 }: AnnouncementFormProps) => {
   const identityApi = useApi(identityApiRef);
   const announcementsApi = useApi(announcementsApiRef);
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const { t } = useAnnouncementsTranslation();
   const {
     categories,
@@ -109,9 +109,10 @@ export const AnnouncementForm = ({
     );
 
     if (existingCategory) {
-      alertApi.post({
-        message: t('categoriesForm.errors.alreadyExists'),
-        severity: 'warning',
+      toastApi.post({
+        title: t('categoriesForm.errors.alreadyExists'),
+        status: 'warning',
+        timeout: 5000,
       });
 
       // Select the existing category in the form
@@ -125,9 +126,10 @@ export const AnnouncementForm = ({
       try {
         await announcementsApi.createCategory(request);
 
-        alertApi.post({
-          message: t('newCategoryDialog.createdMessage'),
-          severity: 'success',
+        toastApi.post({
+          title: t('newCategoryDialog.createdMessage'),
+          status: 'success',
+          timeout: 5000,
         });
 
         setShowCreateCategoryDialog(false);
@@ -142,7 +144,7 @@ export const AnnouncementForm = ({
           },
         }));
       } catch (err) {
-        alertApi.post({ message: (err as Error).message, severity: 'error' });
+        toastApi.post({ title: (err as Error).message, status: 'danger' });
       }
     }
   };
@@ -152,9 +154,10 @@ export const AnnouncementForm = ({
     const existingTag = tags?.find(tag => tag.slug === slugifiedTitle);
 
     if (existingTag) {
-      alertApi.post({
-        message: t('tagsForm.errors.alreadyExists'),
-        severity: 'warning',
+      toastApi.post({
+        title: t('tagsForm.errors.alreadyExists'),
+        status: 'warning',
+        timeout: 5000,
       });
 
       setForm(prevForm => ({
@@ -167,9 +170,10 @@ export const AnnouncementForm = ({
       try {
         await announcementsApi.createTag(request);
 
-        alertApi.post({
-          message: t('newTagDialog.createdMessage'),
-          severity: 'success',
+        toastApi.post({
+          title: t('newTagDialog.createdMessage'),
+          status: 'success',
+          timeout: 5000,
         });
 
         setShowCreateTagDialog(false);
@@ -182,7 +186,7 @@ export const AnnouncementForm = ({
           tags: [...(prevForm.tags ?? []), newTag],
         }));
       } catch (err) {
-        alertApi.post({ message: (err as Error).message, severity: 'error' });
+        toastApi.post({ title: (err as Error).message, status: 'danger' });
       }
     }
   };

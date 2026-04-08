@@ -1,5 +1,27 @@
 # @backstage-community/plugin-ocm
 
+## 5.16.0
+
+### Minor Changes
+
+- 10dc05b: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [10dc05b]
+  - @backstage-community/plugin-ocm-common@3.20.0
+
+## 5.15.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- 4632846: Backstage version bump to v1.48.5
+- Updated dependencies [4632846]
+  - @backstage-community/plugin-ocm-common@3.19.1
+
 ## 5.15.0
 
 ### Minor Changes

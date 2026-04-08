@@ -159,17 +159,6 @@ export type GetProjectStatisticsSuccessResponseData = {
   response: ProjectStatisticsSuccessResponseData[];
 } & PaginationSuccessResponseData;
 
-export type EntityURL = {
-  path: string;
-  params: {
-    org?: string;
-    repo?: string;
-  };
-  namespace?: string;
-  kind: string;
-  source: string;
-};
-
 export enum StatisticsName {
   CRITICAL = 'critical',
   HIGH = 'high',
@@ -209,7 +198,7 @@ export type Project = {
   applicationUuid: string;
   lastScan: number;
   languages: Array<[string, number]>;
-  entity: EntityURL;
+  entityUrl?: string;
 };
 
 // Code Finding API Data

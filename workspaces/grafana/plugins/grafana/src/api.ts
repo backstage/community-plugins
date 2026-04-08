@@ -102,7 +102,7 @@ interface AlertRule {
  * The grafana API reference
  * @public
  */
-export const grafanaApiRef = createApiRef<GrafanaApi>({
+export const grafanaApiRef = createApiRef<GrafanaApi>().with({
   id: 'plugin.grafana.service',
 });
 

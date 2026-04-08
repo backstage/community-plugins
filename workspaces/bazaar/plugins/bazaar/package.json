@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-bazaar",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "bazaar",
@@ -41,6 +41,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@date-io/luxon": "1.x",
     "@material-ui/core": "^4.12.2",

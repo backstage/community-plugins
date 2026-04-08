@@ -4,6 +4,8 @@
 
 ```ts
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
+import { PermissionInfo } from '@backstage-community/plugin-rbac-common';
+import { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 
 // @public
 export interface PluginIdProvider {
@@ -31,6 +33,10 @@ export interface RBACProvider {
 
 // @public (undocumented)
 export interface RBACProviderConnection {
+  // (undocumented)
+  applyConditionalPermissions(
+    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+  ): Promise<void>;
   // (undocumented)
   applyPermissions(permissions: string[][]): Promise<void>;
   // (undocumented)

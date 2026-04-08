@@ -76,6 +76,44 @@ export function metadataStringToPolicy(policy: string): string[] {
   return policy.replace('[', '').replace(']', '').split(', ');
 }
 
+/**
+ * Compares two policy arrays (e.g. [entityRef, permission, policy, effect]) for equality.
+ */
+function policyArraysEqual(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+/**
+ * Syncs permission policies for a role to match a desired set.
+ * - Adds policies that are in desired but not in the enforcer (addPolicies skips existing via hasPolicy).
+ * - Removes policies that are in the enforcer but not in desired.
+ *
+ * @param enforcerDelegate - Enforcer to read from and write to
+ * @param roleEntityRef - Role to sync (used to load current policies via getFilteredPolicy(0, roleEntityRef))
+ * @param desiredPolicies - Desired policies in casbin format string[][]
+ */
+export async function syncRolePolicies(
+  enforcerDelegate: EnforcerDelegate,
+  roleEntityRef: string,
+  desiredPolicies: string[][],
+): Promise<void> {
+  const current = await enforcerDelegate.getFilteredPolicy(0, roleEntityRef);
+
+  const toAdd = desiredPolicies.filter(
+    d => !current.some(c => policyArraysEqual(c, d)),
+  );
+  const toRemove = current.filter(
+    c => !desiredPolicies.some(d => policyArraysEqual(c, d)),
+  );
+
+  if (toAdd.length > 0) {
+    await enforcerDelegate.addPolicies(toAdd);
+  }
+  if (toRemove.length > 0) {
+    await enforcerDelegate.removePolicies(toRemove);
+  }
+}
+
 export async function removeTheDifference(
   originalGroup: string[],
   addedGroup: string[],

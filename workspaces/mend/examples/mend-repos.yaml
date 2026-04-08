@@ -5,7 +5,7 @@ metadata:
   name: not-exists-mend
   namespace: mend-gitlab-test
   annotations:
-    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/not-exists-mend
+    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/not-exists-mend/-/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -17,7 +17,7 @@ metadata:
   name: nodeexpresstest
   namespace: mend-gitlab-test
   annotations:
-    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/nodeexpresstest
+    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/nodeexpresstest/-/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -29,7 +29,7 @@ metadata:
   name: easybuggy
   namespace: mend-gitlab-test
   annotations:
-    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/easybuggy
+    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/easybuggy/-/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -41,7 +41,7 @@ metadata:
   name: rortest
   namespace: mend-gitlab-test
   annotations:
-    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/rortest
+    backstage.io/source-location: url:https://gitlab-dev.mendinfra.com/crest/rortest/-/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -53,7 +53,7 @@ metadata:
   name: mend-test2
   namespace: mend-azure-testdatasys
   annotations:
-    backstage.io/source-location: url:https://dev.azure.com/Crestdatasys/Devops-Testing/_git/mend-test2
+    backstage.io/source-location: url:https://dev.azure.com/Crestdatasys/Devops-Testing/_git/mend-test2?version=GBmain
 spec:
   type: service
   lifecycle: unknown
@@ -65,7 +65,7 @@ metadata:
   name: mend-test1
   namespace: mend-azure-testdatasys
   annotations:
-    backstage.io/source-location: url:https://dev.azure.com/Crestdatasys/Devops-Testing/_git/mend-test1
+    backstage.io/source-location: url:https://dev.azure.com/Crestdatasys/Devops-Testing/_git/mend-test1?version=GBmain
 spec:
   type: service
   lifecycle: unknown
@@ -77,7 +77,7 @@ metadata:
   name: Devops-Testing
   namespace: mend-azure-testdatasys
   annotations:
-    backstage.io/source-location: url:https://dev.azure.com/Crestdatasys/Devops-Testing/_git/Devops-Testing
+    backstage.io/source-location: url:https://dev.azure.com/Crestdatasys/Devops-Testing/_git/Devops-Testing?version=GBmain
 spec:
   type: service
   lifecycle: unknown
@@ -89,7 +89,7 @@ metadata:
   name: securityshepherd53
   namespace: mend-bitbucket-mend4
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/mendcrest4/securityshepherd53
+    backstage.io/source-location: url:https://bitbucket.org/mendcrest4/securityshepherd53/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -101,7 +101,7 @@ metadata:
   name: securityshepherd47
   namespace: mend-bitbucket-mend4
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/mendcrest4/securityshepherd47
+    backstage.io/source-location: url:https://bitbucket.org/mendcrest4/securityshepherd47/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -113,7 +113,7 @@ metadata:
   name: juice-shop
   namespace: mend-github-mend-test-data
   annotations:
-    backstage.io/source-location: url:https://github.com/mend-crest-data/juice-shop
+    backstage.io/source-location: url:https://github.com/mend-crest-data/juice-shop/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -125,7 +125,7 @@ metadata:
   name: test_repo1
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/test_repo1
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/test_repo1/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -137,7 +137,7 @@ metadata:
   name: securityshepherd57
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd57
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd57/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -149,7 +149,7 @@ metadata:
   name: securityshepherd56
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd56
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd56/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -161,7 +161,7 @@ metadata:
   name: securityshepherd55
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd55
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd55/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -173,7 +173,7 @@ metadata:
   name: securityshepherd54
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd54
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd54/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -185,7 +185,7 @@ metadata:
   name: securityshepherd53
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd53
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd53/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -197,7 +197,7 @@ metadata:
   name: securityshepherd52
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd52
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd52/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -209,7 +209,7 @@ metadata:
   name: securityshepherd51
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd51
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd51/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -221,7 +221,7 @@ metadata:
   name: securityshepherd50
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd50
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd50/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -233,7 +233,7 @@ metadata:
   name: securityshepherd49
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd49
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd49/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -245,7 +245,7 @@ metadata:
   name: securityshepherd48
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd48
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd48/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -257,7 +257,7 @@ metadata:
   name: securityshepherd47
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd47
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd47/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -269,7 +269,7 @@ metadata:
   name: securityshepherd46
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd46
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd46/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -281,7 +281,7 @@ metadata:
   name: securityshepherd45
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd45
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd45/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -293,7 +293,7 @@ metadata:
   name: securityshepherd44
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd44
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd44/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -305,7 +305,7 @@ metadata:
   name: securityshepherd43
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd43
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd43/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -317,7 +317,7 @@ metadata:
   name: securityshepherd42
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd42
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd42/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -329,7 +329,7 @@ metadata:
   name: securityshepherd41
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd41
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd41/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -341,7 +341,7 @@ metadata:
   name: securityshepherd40
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd40
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd40/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -353,7 +353,7 @@ metadata:
   name: securityshepherd39
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd39
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd39/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -365,7 +365,7 @@ metadata:
   name: securityshepherd38
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd38
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd38/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -377,7 +377,7 @@ metadata:
   name: securityshepherd37
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd37
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd37/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -389,7 +389,7 @@ metadata:
   name: securityshepherd36
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd36
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd36/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -401,7 +401,7 @@ metadata:
   name: securityshepherd35
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd35
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd35/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -413,7 +413,7 @@ metadata:
   name: securityshepherd34
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd34
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd34/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -425,7 +425,7 @@ metadata:
   name: securityshepherd33
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd33
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd33/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -437,7 +437,7 @@ metadata:
   name: securityshepherd32
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd32
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd32/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -449,7 +449,7 @@ metadata:
   name: securityshepherd31
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd31
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd31/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -461,7 +461,7 @@ metadata:
   name: securityshepherd30
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd30
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd30/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -473,7 +473,7 @@ metadata:
   name: securityshepherd29
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd29
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd29/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -485,7 +485,7 @@ metadata:
   name: securityshepherd28
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd28
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd28/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -497,7 +497,7 @@ metadata:
   name: securityshepherd27
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd27
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd27/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -509,7 +509,7 @@ metadata:
   name: securityshepherd26
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd26
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd26/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -521,7 +521,7 @@ metadata:
   name: securityshepherd101
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd101
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd101/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -533,7 +533,7 @@ metadata:
   name: securityshepherd25
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd25
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd25/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -545,7 +545,7 @@ metadata:
   name: securityshepherd24
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd24
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd24/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -557,7 +557,7 @@ metadata:
   name: securityshepherd23
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd23
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd23/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -569,7 +569,7 @@ metadata:
   name: securityshepherd22
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd22
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd22/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -581,7 +581,7 @@ metadata:
   name: securityshepherd21
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd21
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd21/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -593,7 +593,7 @@ metadata:
   name: securityshepherd20
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd20
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd20/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -605,7 +605,7 @@ metadata:
   name: securityshepherd19
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd19
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd19/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -617,7 +617,7 @@ metadata:
   name: securityshepherd18
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd18
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd18/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -629,7 +629,7 @@ metadata:
   name: securityshepherd17
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd17
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd17/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -641,7 +641,7 @@ metadata:
   name: securityshepherd16
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd16
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd16/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -653,7 +653,7 @@ metadata:
   name: securityshepherd15
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd15
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd15/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -665,7 +665,7 @@ metadata:
   name: securityshepherd14
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd14
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd14/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -677,7 +677,7 @@ metadata:
   name: securityshepherd13
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd13
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd13/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -689,7 +689,7 @@ metadata:
   name: securityshepherd12
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd12
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd12/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -701,7 +701,7 @@ metadata:
   name: securityshepherd11
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd11
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd11/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -713,7 +713,7 @@ metadata:
   name: securityshepherd10
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd10
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd10/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -725,7 +725,7 @@ metadata:
   name: securityshepherd9
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd9
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd9/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -737,7 +737,7 @@ metadata:
   name: securityshepherd8
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd8
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd8/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -749,7 +749,7 @@ metadata:
   name: securityshepherd7
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd7
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd7/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -761,7 +761,7 @@ metadata:
   name: securityshepherd6
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd6
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd6/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -773,7 +773,7 @@ metadata:
   name: securityshepherd5
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd5
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd5/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -785,7 +785,7 @@ metadata:
   name: securityshepherd4
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd4
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd4/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -797,7 +797,7 @@ metadata:
   name: securityshepherd3
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd3
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd3/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -809,7 +809,7 @@ metadata:
   name: securityshepherd2
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd2
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd2/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -821,7 +821,7 @@ metadata:
   name: securityshepherd1
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd1
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd1/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -833,7 +833,7 @@ metadata:
   name: juice-shop-1
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/juice-shop-1
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/juice-shop-1/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -845,7 +845,7 @@ metadata:
   name: wordpress1
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/wordpress1
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/wordpress1/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -857,7 +857,7 @@ metadata:
   name: wordpress
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/wordpress
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/wordpress/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -869,7 +869,7 @@ metadata:
   name: dvwa
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/dvwa
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/dvwa/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -881,7 +881,7 @@ metadata:
   name: devskim
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/devskim
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/devskim/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -893,7 +893,7 @@ metadata:
   name: nodegoat
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/nodegoat
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/nodegoat/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -905,7 +905,7 @@ metadata:
   name: securityshepherd
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/securityshepherd/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -917,7 +917,7 @@ metadata:
   name: benchmark
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/benchmark
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/benchmark/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -929,7 +929,7 @@ metadata:
   name: vulnerableapp2
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/vulnerableapp2
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/vulnerableapp2/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -941,7 +941,7 @@ metadata:
   name: library_management
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/library_management
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/library_management/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -953,7 +953,7 @@ metadata:
   name: vulnerableapp1
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/vulnerableapp1
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/vulnerableapp1/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -965,7 +965,7 @@ metadata:
   name: vulnerableapp
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/vulnerableapp
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/vulnerableapp/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -977,7 +977,7 @@ metadata:
   name: baseline-sast-testing
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/baseline-sast-testing
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/baseline-sast-testing/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -989,7 +989,7 @@ metadata:
   name: juice-shop
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/juice-shop
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/juice-shop/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1001,7 +1001,7 @@ metadata:
   name: buggyapp
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/buggyapp
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/buggyapp/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1013,7 +1013,7 @@ metadata:
   name: buggy-demo-code
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/buggy-demo-code
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/buggy-demo-code/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1025,7 +1025,7 @@ metadata:
   name: anat_easybuggy
   namespace: mend-bitbucket-testmendtest
   annotations:
-    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/anat_easybuggy
+    backstage.io/source-location: url:https://bitbucket.org/crestmendtest/anat_easybuggy/src/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1037,7 +1037,7 @@ metadata:
   name: AltoroJ
   namespace: mend-github-mend-test-data
   annotations:
-    backstage.io/source-location: url:https://github.com/mend-crest-data/AltoroJ
+    backstage.io/source-location: url:https://github.com/mend-crest-data/AltoroJ/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1049,7 +1049,7 @@ metadata:
   name: pygoat
   namespace: mend-github-mend-test-data
   annotations:
-    backstage.io/source-location: url:https://github.com/mend-crest-data/pygoat
+    backstage.io/source-location: url:https://github.com/mend-crest-data/pygoat/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1061,7 +1061,7 @@ metadata:
   name: NodeGoat
   namespace: mend-github-mend-test-data
   annotations:
-    backstage.io/source-location: url:https://github.com/mend-crest-data/NodeGoat
+    backstage.io/source-location: url:https://github.com/mend-crest-data/NodeGoat/tree/master/
 spec:
   type: service
   lifecycle: unknown
@@ -1073,7 +1073,67 @@ metadata:
   name: WebGoat
   namespace: mend-github-mend-test-data
   annotations:
-    backstage.io/source-location: url:https://github.com/mend-crest-data/WebGoat
+    backstage.io/source-location: url:https://github.com/mend-crest-data/WebGoat/tree/master/
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-repo-sub-group
+  namespace: mend-gitlab-sub-group
+  annotations:
+    backstage.io/source-location: url:https://gitlab.com/test-org/group-1/sub-group-1/test-repo-sub-group/-/tree/master/
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-repo-sub-group-5
+  namespace: mend-gitlab-sub-group-5
+  annotations:
+    backstage.io/source-location: url:https://gitlab.com/test-org/group-2/sub-group-1/sub-group-2/sub-group-3/sub-group-4/sub-group-5/test-repo-sub-group-5/-/tree/master/
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: easybuggy
+  namespace: mend-github-mend-test-data
+  annotations:
+    backstage.io/source-location: url:https://github.com/mend-crest-data/easybuggy/tree/master/
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test_repo_1a
+  namespace: mend-gitlab-mendplatform
+  annotations:
+    backstage.io/source-location: url:https://gitlab.com/mendplatform/crest_subgroup_1/crest_subgroup_1_a/test_repo_1a/-/tree/master/
+spec:
+  type: service
+  lifecycle: unknown
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test_repo_1b
+  namespace: mend-gitlab-mendplatform
+  annotations:
+    backstage.io/source-location: url:https://gitlab.com/mendplatform/crest_subgroup_1/crest_subgroup_1_b/test_repo_1b/-/tree/master/
 spec:
   type: service
   lifecycle: unknown

@@ -15,6 +15,7 @@
  */
 
 import { createApiRef } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 
 /** @public */
 export type MetricKey =
@@ -73,14 +74,5 @@ export const sonarQubeApiRef = createApiRef<SonarQubeApi>({
 
 /** @public */
 export type SonarQubeApi = {
-  getFindingSummary(options: {
-    componentKey?: string;
-    projectInstance?: string;
-  }): Promise<FindingSummary | undefined>;
-  getFindingSummaries(
-    components: Array<{
-      projectInstance: string | undefined;
-      componentKey: string;
-    }>,
-  ): Promise<Map<string, FindingSummary | undefined>>;
+  getSummaries(entities: Entity[]): Promise<(FindingSummary | undefined)[]>;
 };

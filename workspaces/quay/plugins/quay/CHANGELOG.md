@@ -1,5 +1,27 @@
 # @backstage-community/plugin-quay
 
+## 1.32.0
+
+### Minor Changes
+
+- cfd52e1: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [cfd52e1]
+  - @backstage-community/plugin-quay-common@1.19.0
+
+## 1.31.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- 46068bd: Backstage version bump to v1.48.5
+- Updated dependencies [46068bd]
+  - @backstage-community/plugin-quay-common@1.18.1
+
 ## 1.31.1
 
 ### Patch Changes

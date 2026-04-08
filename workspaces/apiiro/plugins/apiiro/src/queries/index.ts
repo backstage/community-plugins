@@ -20,3 +20,4 @@ export { useRiskScoreOverTimeData } from './risk-score-over-time.queries.ts';
 export { useSlaBreachData } from './sla-breach.queries.ts';
 export { useTopRisksData } from './top-risks.queries.ts';
 export { useRisksData } from './risks.queries.ts';
+export { useApplicationsData } from './application.queries.ts';

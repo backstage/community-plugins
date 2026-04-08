@@ -10,12 +10,11 @@
 | @backstage/core-plugin-api      | package.json:26:6 | error    |
 | @backstage/plugin-org           | package.json:34:6 | error    |
 
-## Unused devDependencies (4)
+## Unused devDependencies (3)
 
 | Name                        | Location          | Severity |
 | :-------------------------- | :---------------- | :------- |
 | @testing-library/user-event | package.json:53:6 | error    |
 | @backstage/test-utils       | package.json:48:6 | error    |
-| @testing-library/dom        | package.json:50:6 | error    |
 | @playwright/test            | package.json:49:6 | error    |
 
