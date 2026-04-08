@@ -360,6 +360,7 @@ __metadata:
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
     "@backstage/types": "backstage:^"
@@ -1114,7 +1115,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.15.0":
+"@backstage/frontend-plugin-api@backstage:^::backstage=1.49.2&npm=0.15.1, @backstage/frontend-plugin-api@npm:^0.15.0, @backstage/frontend-plugin-api@npm:^0.15.1":
   version: 0.15.1
   resolution: "@backstage/frontend-plugin-api@npm:0.15.1"
   dependencies:
