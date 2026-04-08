@@ -26,10 +26,7 @@ export const sendAnnouncementNotification = async (
     return;
   }
 
-  const appBaseUrl = config?.getOptionalString('app.baseUrl') ?? '';
-  const link = appBaseUrl
-    ? `${appBaseUrl}/announcements/view/${announcement.id}`
-    : `/announcements/view/${announcement.id}`;
+  const link = `${config?.getOptionalString('app.baseUrl') ?? ''}/announcements/view/${announcement.id}`;
 
   await notifications.send({
     recipients: {

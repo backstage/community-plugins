@@ -308,7 +308,7 @@ export async function createRouter(
             const announcementNotificationsEnabled =
               req.body?.sendNotification === true;
             if (announcementNotificationsEnabled) {
-              await sendAnnouncementNotification(announcement, notifications);
+              await sendAnnouncementNotification(announcement, notifications, config);
             }
           }
         }
@@ -409,7 +409,7 @@ export async function createRouter(
         const announcementNotificationsEnabled =
           req.body?.sendNotification === true;
         if (announcementNotificationsEnabled) {
-          await sendAnnouncementNotification(announcement, notifications);
+          await sendAnnouncementNotification(announcement, notifications, config);
         }
       }
 
