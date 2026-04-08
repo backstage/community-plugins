@@ -15,24 +15,33 @@
  */
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { type Entity } from '@backstage/catalog-model';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendPlugin,
+  ExtensionDefinition,
+  FrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 
-export const EntityACSContent = EntityContentBlueprint.make({
-  name: 'acs-content',
-  params: {
-    title: 'Security',
-    path: '/acs',
-    filter: (entity: Entity) =>
-      entity.metadata.annotations !== undefined &&
-      'acs/deployment-name' in entity.metadata.annotations,
-    async loader() {
-      return import('../components/ACSComponent').then(m => <m.ACSComponent />);
+export const EntityACSContent: ExtensionDefinition =
+  EntityContentBlueprint.make({
+    name: 'acs-content',
+    params: {
+      title: 'Security',
+      path: '/acs',
+      filter: (entity: Entity) =>
+        entity.metadata.annotations !== undefined &&
+        'acs/deployment-name' in entity.metadata.annotations,
+      async loader() {
+        return import('../components/ACSComponent').then(m => (
+          <m.ACSComponent />
+        ));
+      },
     },
-  },
-});
+  });
 
-export default createFrontendPlugin({
+const plugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'acs',
   info: { packageJson: () => import('../../package.json') },
   extensions: [EntityACSContent],
 });
+
+export default plugin;
