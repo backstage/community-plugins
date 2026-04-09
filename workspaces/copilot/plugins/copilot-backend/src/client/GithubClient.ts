@@ -17,7 +17,8 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import {
-  CopilotMetrics,
+  CopilotOrgDayTotal,
+  CopilotOrgReportFile,
   CopilotSeats,
   TeamInfo,
 } from '@backstage-community/plugin-copilot-common';
@@ -31,8 +32,8 @@ import {
 } from '../utils/GithubUtils';
 
 interface GithubApi {
-  fetchEnterpriseCopilotMetrics: () => Promise<CopilotMetrics[]>;
-  fetchOrganizationCopilotMetrics: () => Promise<CopilotMetrics[]>;
+  fetchEnterpriseCopilotMetrics: () => Promise<CopilotOrgDayTotal[]>;
+  fetchOrganizationCopilotMetrics: () => Promise<CopilotOrgDayTotal[]>;
 
   fetchEnterpriseTeams: () => Promise<TeamInfo[]>;
   fetchOrganizationTeams: () => Promise<TeamInfo[]>;
@@ -153,7 +154,7 @@ export class GithubClient implements GithubApi {
     return this.organizationOctokit;
   }
 
-  async fetchEnterpriseCopilotMetrics(): Promise<CopilotMetrics[]> {
+  async fetchEnterpriseCopilotMetrics(): Promise<CopilotOrgDayTotal[]> {
     const octokit = await this.getEnterpriseOctokit();
     const path = `/enterprises/${this.copilotConfig.enterprise}/copilot/metrics/reports/enterprise-28-day/latest`;
 
@@ -164,13 +165,15 @@ export class GithubClient implements GithubApi {
       report_end_day: string;
     };
 
-    const allMetrics: CopilotMetrics[] = [];
+    const allDayTotals: CopilotOrgDayTotal[] = [];
     for (const url of download_links) {
       const res = await fetch(url);
-      const data = (await res.json()) as CopilotMetrics[];
-      allMetrics.push(...(Array.isArray(data) ? data : [data]));
+      const reportFile = (await res.json()) as CopilotOrgReportFile;
+      if (Array.isArray(reportFile.day_totals)) {
+        allDayTotals.push(...reportFile.day_totals);
+      }
     }
-    return allMetrics;
+    return allDayTotals;
   }
 
   async fetchEnterpriseTeams(): Promise<TeamInfo[]> {
@@ -256,7 +259,7 @@ export class GithubClient implements GithubApi {
     return this.mergePaginationResult(seats as CopilotSeats[]);
   }
 
-  async fetchOrganizationCopilotMetrics(): Promise<CopilotMetrics[]> {
+  async fetchOrganizationCopilotMetrics(): Promise<CopilotOrgDayTotal[]> {
     const octokit = await this.getOrganizationOctokit();
     const path = `/orgs/${this.copilotConfig.organization}/copilot/metrics/reports/organization-28-day/latest`;
 
@@ -267,13 +270,15 @@ export class GithubClient implements GithubApi {
       report_end_day: string;
     };
 
-    const allMetrics: CopilotMetrics[] = [];
+    const allDayTotals: CopilotOrgDayTotal[] = [];
     for (const url of download_links) {
       const res = await fetch(url);
-      const data = (await res.json()) as CopilotMetrics[];
-      allMetrics.push(...(Array.isArray(data) ? data : [data]));
+      const reportFile = (await res.json()) as CopilotOrgReportFile;
+      if (Array.isArray(reportFile.day_totals)) {
+        allDayTotals.push(...reportFile.day_totals);
+      }
     }
-    return allMetrics;
+    return allDayTotals;
   }
 
   async fetchOrganizationTeams(): Promise<TeamInfo[]> {

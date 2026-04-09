@@ -544,29 +544,29 @@ export class DatabaseHandler {
           'CAST(MIN(cm.total_active_users) AS INTEGER) as total_active_users',
         ),
         this.db.raw(
-          'CAST(MIN(ide_chats.total_engaged_users) AS INTEGER) as total_active_chat_users',
+          'CAST(COALESCE(MIN(ide_chats.total_engaged_users), 0) AS INTEGER) as total_active_chat_users',
         ),
         this.db.raw(
-          'CAST(SUM(icelm.total_code_suggestions) AS INTEGER) as total_suggestions_count',
+          'CAST(COALESCE(SUM(icelm.total_code_suggestions), 0) AS INTEGER) as total_suggestions_count',
         ),
         this.db.raw(
-          'CAST(SUM(icelm.total_code_acceptances) AS INTEGER) as total_acceptances_count',
+          'CAST(COALESCE(SUM(icelm.total_code_acceptances), 0) AS INTEGER) as total_acceptances_count',
         ),
         this.db.raw(
-          'CAST(SUM(icelm.total_code_lines_suggested) AS INTEGER) as total_lines_suggested',
+          'CAST(COALESCE(SUM(icelm.total_code_lines_suggested), 0) AS INTEGER) as total_lines_suggested',
         ),
         this.db.raw(
-          'CAST(SUM(icelm.total_code_lines_accepted) AS INTEGER) as total_lines_accepted',
+          'CAST(COALESCE(SUM(icelm.total_code_lines_accepted), 0) AS INTEGER) as total_lines_accepted',
         ),
         this.db.raw(
-          'CAST(SUM(icem.total_chats) AS INTEGER) as total_chat_turns',
+          'CAST(COALESCE(SUM(icem.total_chats), 0) AS INTEGER) as total_chat_turns',
         ),
         this.db.raw(
-          'CAST(SUM(icem.total_chat_copy_events) AS INTEGER) as total_chat_acceptances',
+          'CAST(COALESCE(SUM(icem.total_chat_copy_events), 0) AS INTEGER) as total_chat_acceptances',
         ),
         this.db.raw("'' as breakdown"),
       )
-      .join('ide_completions', join => {
+      .leftJoin('ide_completions', join => {
         join
           .on('ide_completions.day', '=', 'cm.day')
           .andOn('ide_completions.type', '=', 'cm.type')
@@ -576,7 +576,7 @@ export class DatabaseHandler {
             this.db.raw('?', [teamName ?? '']),
           );
       })
-      .join('ide_chats', join => {
+      .leftJoin('ide_chats', join => {
         join
           .on('ide_chats.day', '=', 'cm.day')
           .andOn('ide_chats.type', '=', 'cm.type')
@@ -586,7 +586,7 @@ export class DatabaseHandler {
             this.db.raw('?', [teamName ?? '']),
           );
       })
-      .join(
+      .leftJoin(
         this.db.raw(
           `(SELECT day, type, team_name,
         SUM(total_code_suggestions) as total_code_suggestions, 
@@ -603,7 +603,7 @@ export class DatabaseHandler {
             .andOn('icelm.team_name', '=', this.db.raw('?', [teamName ?? '']));
         },
       )
-      .join(
+      .leftJoin(
         this.db.raw(
           `(SELECT day, type, team_name, SUM(total_chats) as total_chats, 
       SUM(total_chat_copy_events) as total_chat_copy_events 

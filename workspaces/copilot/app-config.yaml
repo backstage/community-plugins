@@ -55,6 +55,9 @@ copilot:
       minutes: 2
     initialDelay:
       seconds: 15
-  host: abc.github.com
-  enterprise: YOUR_ENTERPRISE_NAME_HERE
-  # organization: YOUR_ORGANIZATION_NAME_HERE
+  host: github.com
+  # enterprise: verisk-emu
+  organization: VeriskPlatformEngineering
+
+# github:
+#   token: ghp_QtCAmGVxuKoajuqc9ZJvavpwwwDBRI630Nms5

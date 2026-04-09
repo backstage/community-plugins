@@ -27,214 +27,200 @@ import {
 } from '../db/DatabaseHandler';
 import {
   MetricsType,
-  CopilotMetrics,
+  CopilotOrgDayTotal,
   CopilotSeats,
   SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
 
-export function filterNewMetricsV2(
-  metrics: CopilotMetrics[],
+export function filterNewDayTotals(
+  dayTotals: CopilotOrgDayTotal[],
   lastDay?: string,
-): CopilotMetrics[] {
-  return metrics
+): CopilotOrgDayTotal[] {
+  return dayTotals
     .sort(
       (a, b) =>
-        DateTime.fromISO(a.date).toMillis() -
-        DateTime.fromISO(b.date).toMillis(),
+        DateTime.fromISO(a.day).toMillis() - DateTime.fromISO(b.day).toMillis(),
     )
-    .filter(metric => {
-      const metricDate = DateTime.fromISO(metric.date);
-
+    .filter(total => {
+      const totalDate = DateTime.fromISO(total.day);
       const lastDayDate = lastDay
         ? DateTime.fromJSDate(new Date(lastDay))
         : null;
-
-      return !lastDay || (lastDayDate?.isValid && metricDate > lastDayDate);
+      return !lastDay || (lastDayDate?.isValid && totalDate > lastDayDate);
     });
 }
 
 export function filterBaseMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotMetricsDb[] {
-  return metrics
-    .map(metric => ({
-      day: metric.date,
-      type: type,
-      team_name: team ?? '',
-      total_engaged_users: metric.total_engaged_users,
-      total_active_users: metric.total_active_users,
-    }))
-    .filter(metric => metric.total_engaged_users > 0);
+  return dayTotals.map(total => ({
+    day: total.day,
+    type,
+    team_name: team ?? '',
+    total_active_users:
+      total.daily_active_users ?? total.monthly_active_users ?? 0,
+    total_engaged_users:
+      total.daily_active_users ?? total.monthly_active_users ?? 0,
+  }));
 }
 
 export function filterIdeCompletionMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_code_completions !== undefined)
-    .map(metric => ({
-      day: metric.date,
-      type: type,
+  return dayTotals
+    .filter(
+      total =>
+        total.code_generation_activity_count !== undefined ||
+        (total.totals_by_ide && total.totals_by_ide.length > 0),
+    )
+    .map(total => ({
+      day: total.day,
+      type,
       team_name: team ?? '',
-      total_engaged_users:
-        metric.copilot_ide_code_completions!.total_engaged_users,
+      total_engaged_users: total.daily_active_users ?? 0,
     }))
     .filter(completion => completion.total_engaged_users > 0);
 }
 
 export function filterIdeCompletionLanguageMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsLanguageDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_code_completions !== undefined)
-    .flatMap(
-      (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions!.languages?.map(language => ({
-          day: metric.date,
-          type: type,
-          team_name: team ?? '',
-          language: language.name,
-          total_engaged_users: language.total_engaged_users,
-        })) || [],
+  return dayTotals
+    .flatMap(total =>
+      (total.totals_by_language_model ?? []).map(lm => ({
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        language: lm.language,
+        total_engaged_users: lm.code_generation_activity_count ?? 0,
+      })),
     )
     .filter(language => language.total_engaged_users > 0);
 }
+
 export function filterIdeCompletionEditorMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsEditorsDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_code_completions !== undefined)
-    .flatMap(
-      (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions!.editors?.map(editor => ({
-          day: metric.date,
-          type: type,
-          team_name: team ?? '',
-          editor: editor.name,
-          total_engaged_users: editor.total_engaged_users,
-        })) || [],
+  return dayTotals
+    .flatMap(total =>
+      (total.totals_by_ide ?? []).map(ide => ({
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        editor: ide.ide,
+        total_engaged_users: ide.code_generation_activity_count ?? 0,
+      })),
     )
     .filter(editor => editor.total_engaged_users > 0);
 }
 
 export function filterIdeCompletionEditorModelMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelsDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_code_completions !== undefined)
-    .flatMap(
-      (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions!.editors?.flatMap(editor =>
-          editor.models.map(model => ({
-            day: metric.date,
-            type: type,
-            team_name: team ?? '',
-            editor: editor.name,
-            model: model.name,
-            total_engaged_users: model.total_engaged_users,
-          })),
-        ) || [],
+  return dayTotals
+    .flatMap(total =>
+      (total.totals_by_language_model ?? []).map(lm => ({
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        editor: 'unknown',
+        model: lm.model,
+        total_engaged_users: lm.code_generation_activity_count ?? 0,
+      })),
     )
     .filter(model => model.total_engaged_users > 0);
 }
+
 export function filterIdeCompletionEditorModelLanguageMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelLanguagesDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_code_completions !== undefined)
-    .flatMap(
-      (metric: CopilotMetrics) =>
-        metric.copilot_ide_code_completions!.editors?.flatMap(editor =>
-          editor.models.flatMap(model =>
-            model.languages.map(language => ({
-              day: metric.date,
-              type: type,
-              team_name: team ?? '',
-              editor: editor.name,
-              model: model.name,
-              language: language.name,
-              total_engaged_users: language.total_engaged_users,
-              total_code_acceptances: language.total_code_acceptances,
-              total_code_suggestions: language.total_code_suggestions,
-              total_code_lines_accepted: language.total_code_lines_accepted,
-              total_code_lines_suggested: language.total_code_lines_suggested,
-            })),
-          ),
-        ) || [],
+  return dayTotals
+    .flatMap(total =>
+      (total.totals_by_language_model ?? []).map(lm => ({
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        editor: 'unknown',
+        model: lm.model,
+        language: lm.language,
+        total_engaged_users: lm.code_generation_activity_count ?? 0,
+        total_code_acceptances: lm.code_acceptance_activity_count ?? 0,
+        total_code_suggestions: lm.code_generation_activity_count ?? 0,
+        total_code_lines_accepted: lm.loc_added_sum ?? 0,
+        total_code_lines_suggested: lm.loc_suggested_to_add_sum ?? 0,
+      })),
     )
     .filter(language => language.total_engaged_users > 0);
 }
 
 export function filterIdeChatMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeChatsDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_chat !== undefined)
-    .map((metric: CopilotMetrics) => ({
-      day: metric.date,
-      type: type,
+  return dayTotals
+    .filter(
+      total =>
+        total.monthly_active_chat_users !== undefined ||
+        (total.totals_by_feature && total.totals_by_feature.length > 0),
+    )
+    .map(total => ({
+      day: total.day,
+      type,
       team_name: team ?? '',
-      total_engaged_users: metric.copilot_ide_chat!.total_engaged_users,
+      total_engaged_users: total.monthly_active_chat_users ?? 0,
     }))
     .filter(chat => chat.total_engaged_users > 0);
 }
 
 export function filterIdeEditorMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeChatsEditorsDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_chat !== undefined)
-    .flatMap(
-      (metric: CopilotMetrics) =>
-        metric.copilot_ide_chat!.editors?.map(editor => ({
-          day: metric.date,
-          type: type,
-          team_name: team ?? '',
-          editor: editor.name,
-          total_engaged_users: editor.total_engaged_users,
-        })) || [],
+  return dayTotals
+    .flatMap(total =>
+      (total.totals_by_ide ?? []).map(ide => ({
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        editor: ide.ide,
+        total_engaged_users: ide.user_initiated_interaction_count ?? 0,
+      })),
     )
     .filter(editor => editor.total_engaged_users > 0);
 }
 
 export function filterIdeChatEditorModelMetrics(
-  metrics: CopilotMetrics[],
+  dayTotals: CopilotOrgDayTotal[],
   type: MetricsType,
   team?: string,
 ): CopilotIdeChatsEditorModelDb[] {
-  return metrics
-    .filter(metric => metric.copilot_ide_chat !== undefined)
-    .flatMap(
-      (metric: CopilotMetrics) =>
-        metric.copilot_ide_chat!.editors?.flatMap(editor =>
-          editor.models.map(model => ({
-            day: metric.date,
-            type: type,
-            team_name: team ?? '',
-            editor: editor.name,
-            model: model.name,
-            total_engaged_users: model.total_engaged_users,
-            total_chat_copy_events: model.total_chat_copy_events,
-            total_chats: model.total_chats,
-            total_chat_insertion_events: model.total_chat_insertion_events,
-          })),
-        ) || [],
+  return dayTotals
+    .flatMap(total =>
+      (total.totals_by_model_feature ?? []).map(mf => ({
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        editor: 'unknown',
+        model: mf.model,
+        total_engaged_users: mf.user_initiated_interaction_count ?? 0,
+        total_chats: mf.user_initiated_interaction_count ?? 0,
+        total_chat_copy_events: 0,
+        total_chat_insertion_events: 0,
+      })),
     )
     .filter(model => model.total_engaged_users > 0);
 }

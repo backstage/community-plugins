@@ -15,13 +15,13 @@
  */
 import {
   MetricsType,
-  CopilotMetrics,
+  CopilotOrgDayTotal,
 } from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
 import { formatDate } from '../utils/dateUtils';
 import {
   filterBaseMetrics,
-  filterNewMetricsV2,
+  filterNewDayTotals,
   filterIdeCompletionMetrics,
   filterIdeCompletionLanguageMetrics,
   filterIdeCompletionEditorMetrics,
@@ -60,16 +60,38 @@ export async function discoverOrganizationMetrics({
       `[discoverOrganizationMetrics] Found last day: ${formatDate(lastDay)}`,
     );
 
-    const newMetrics: CopilotMetrics[] = filterNewMetricsV2(
+    const newMetrics: CopilotOrgDayTotal[] = filterNewDayTotals(
       copilotMetrics,
       lastDay,
     );
     logger.info(
       `[discoverOrganizationMetrics] Found ${newMetrics.length} new metrics to insert`,
     );
+    if (newMetrics.length > 0) {
+      logger.info(
+        `[discoverOrganizationMetrics] Sample day total fields: ${JSON.stringify(
+          {
+            day: newMetrics[0].day,
+            daily_active_users: newMetrics[0].daily_active_users,
+            monthly_active_users: newMetrics[0].monthly_active_users,
+            weekly_active_users: newMetrics[0].weekly_active_users,
+            code_generation_activity_count:
+              newMetrics[0].code_generation_activity_count,
+            totals_by_ide_count: newMetrics[0].totals_by_ide?.length ?? 0,
+            totals_by_feature_count:
+              newMetrics[0].totals_by_feature?.length ?? 0,
+            totals_by_language_model_count:
+              newMetrics[0].totals_by_language_model?.length ?? 0,
+          },
+        )}`,
+      );
+    }
 
     if (newMetrics.length > 0) {
       const coPilotMetrics = filterBaseMetrics(newMetrics, type);
+      logger.info(
+        `[discoverOrganizationMetrics] filterBaseMetrics: ${coPilotMetrics.length} rows to insert`,
+      );
       const ideCompletionsToInsert = filterIdeCompletionMetrics(
         newMetrics,
         type,

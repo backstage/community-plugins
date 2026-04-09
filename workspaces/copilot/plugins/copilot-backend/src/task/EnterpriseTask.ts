@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {
-  CopilotMetrics,
+  CopilotOrgDayTotal,
   MetricsType,
 } from '@backstage-community/plugin-copilot-common';
 import { batchInsertInChunks } from '../utils/batchInsert';
@@ -30,7 +30,7 @@ import {
   filterIdeCompletionLanguageMetrics,
   filterIdeCompletionMetrics,
   filterIdeEditorMetrics,
-  filterNewMetricsV2,
+  filterNewDayTotals,
 } from '../utils/metricHelpers';
 import { TaskOptions } from './TaskManagement';
 
@@ -60,7 +60,7 @@ export async function discoverEnterpriseMetrics({
       `[discoverEnterpriseMetrics] Found last day: ${formatDate(lastDay)}`,
     );
 
-    const newMetrics: CopilotMetrics[] = filterNewMetricsV2(
+    const newMetrics: CopilotOrgDayTotal[] = filterNewDayTotals(
       copilotMetrics,
       lastDay,
     );

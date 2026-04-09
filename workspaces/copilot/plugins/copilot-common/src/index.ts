@@ -675,3 +675,127 @@ export interface SeatAnalysis {
    */
   seats_inactive_28_days: number;
 }
+
+/**
+ * Breakdown of Copilot activity by IDE for the new metrics report format.
+ *
+ * @public
+ */
+export interface CopilotIdeBreakdown {
+  ide: string;
+  user_initiated_interaction_count?: number;
+  code_generation_activity_count?: number;
+  code_acceptance_activity_count?: number;
+  loc_suggested_to_add_sum?: number;
+  loc_suggested_to_delete_sum?: number;
+  loc_added_sum?: number;
+  loc_deleted_sum?: number;
+}
+
+/**
+ * Breakdown of Copilot activity by feature for the new metrics report format.
+ *
+ * @public
+ */
+export interface CopilotFeatureBreakdown {
+  feature: string;
+  user_initiated_interaction_count?: number;
+  code_generation_activity_count?: number;
+  code_acceptance_activity_count?: number;
+  loc_suggested_to_add_sum?: number;
+  loc_suggested_to_delete_sum?: number;
+  loc_added_sum?: number;
+  loc_deleted_sum?: number;
+}
+
+/**
+ * Breakdown of Copilot activity by language and feature for the new metrics report format.
+ *
+ * @public
+ */
+export interface CopilotLanguageFeatureBreakdown {
+  language: string;
+  feature: string;
+  code_generation_activity_count?: number;
+  code_acceptance_activity_count?: number;
+  loc_suggested_to_add_sum?: number;
+  loc_suggested_to_delete_sum?: number;
+  loc_added_sum?: number;
+  loc_deleted_sum?: number;
+}
+
+/**
+ * Breakdown of Copilot activity by language and model for the new metrics report format.
+ *
+ * @public
+ */
+export interface CopilotLanguageModelBreakdown {
+  language: string;
+  model: string;
+  code_generation_activity_count?: number;
+  code_acceptance_activity_count?: number;
+  loc_suggested_to_add_sum?: number;
+  loc_suggested_to_delete_sum?: number;
+  loc_added_sum?: number;
+  loc_deleted_sum?: number;
+}
+
+/**
+ * Breakdown of Copilot activity by model and feature for the new metrics report format.
+ *
+ * @public
+ */
+export interface CopilotModelFeatureBreakdown {
+  model: string;
+  feature: string;
+  user_initiated_interaction_count?: number;
+  code_generation_activity_count?: number;
+  code_acceptance_activity_count?: number;
+  loc_suggested_to_add_sum?: number;
+  loc_suggested_to_delete_sum?: number;
+  loc_added_sum?: number;
+  loc_deleted_sum?: number;
+}
+
+/**
+ * A single day's aggregated Copilot metrics for an organization or enterprise.
+ * Returned inside CopilotOrgReportFile from the new report-based API.
+ *
+ * @public
+ */
+export interface CopilotOrgDayTotal {
+  day: string;
+  organization_id: string;
+  enterprise_id?: string;
+  daily_active_users?: number;
+  weekly_active_users?: number;
+  monthly_active_users?: number;
+  monthly_active_chat_users?: number;
+  monthly_active_agent_users?: number;
+  user_initiated_interaction_count?: number;
+  code_generation_activity_count?: number;
+  code_acceptance_activity_count?: number;
+  loc_suggested_to_add_sum?: number;
+  loc_suggested_to_delete_sum?: number;
+  loc_added_sum?: number;
+  loc_deleted_sum?: number;
+  totals_by_ide?: CopilotIdeBreakdown[];
+  totals_by_feature?: CopilotFeatureBreakdown[];
+  totals_by_language_feature?: CopilotLanguageFeatureBreakdown[];
+  totals_by_language_model?: CopilotLanguageModelBreakdown[];
+  totals_by_model_feature?: CopilotModelFeatureBreakdown[];
+}
+
+/**
+ * The downloaded org/enterprise report JSON file structure from the new metrics API.
+ *
+ * @public
+ */
+export interface CopilotOrgReportFile {
+  report_start_day: string;
+  report_end_day: string;
+  organization_id: string;
+  enterprise_id?: string;
+  created_at: string;
+  day_totals: CopilotOrgDayTotal[];
+}
