@@ -24,12 +24,12 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MarkdownContent } from '@backstage/core-components';
 import { ValidationOutputOk } from '../../types';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import { getEntityPresentationRef } from './entityPresentation';
 
 const useStyles = makeStyles(theme => ({
   validationOk: {
@@ -57,10 +57,13 @@ export const EntityResult = ({
   const classes = useStyles();
   const app = useApp();
   const [expanded, setExpanded] = useState(isFirstError);
+  const entityRef = getEntityPresentationRef(item.entity);
 
-  const Icon = app.getSystemIcon(
-    `kind:${item.entity.kind.toLocaleLowerCase('en-US')}`,
-  ) as typeof SvgIcon;
+  const Icon = item.entity.kind
+    ? (app.getSystemIcon(
+        `kind:${item.entity.kind.toLocaleLowerCase('en-US')}`,
+      ) as typeof SvgIcon)
+    : undefined;
 
   const fetchErrorMessages = (response: ValidateEntityResponse) => {
     if (!response.valid) {
@@ -71,7 +74,7 @@ export const EntityResult = ({
 
   return (
     <>
-      <ListItem key={humanizeEntityRef(item.entity)}>
+      <ListItem key={entityRef}>
         <ListItemIcon>
           {Icon && (
             <Icon
@@ -84,7 +87,7 @@ export const EntityResult = ({
           )}
         </ListItemIcon>
         <ListItemText
-          primary={humanizeEntityRef(item.entity)}
+          primary={entityRef}
           onClick={() => setExpanded(!expanded)}
         />
         {!item.response.valid && (

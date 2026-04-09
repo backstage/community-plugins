@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
-import {
-  catalogApiRef,
-  humanizeEntityRef,
-} from '@backstage/plugin-catalog-react';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,6 +28,7 @@ import {
   ValidationOutputOk,
 } from '../../types';
 import { EntityResult } from './EntityResult';
+import { getEntityPresentationRef } from './entityPresentation';
 
 const useStyles = makeStyles(theme => ({
   validationOk: {
@@ -43,7 +41,9 @@ const useStyles = makeStyles(theme => ({
 
 function sortResults(items: Array<ValidationOutputOk>) {
   return items.sort((a, b) =>
-    humanizeEntityRef(a.entity).localeCompare(humanizeEntityRef(b.entity)),
+    getEntityPresentationRef(a.entity).localeCompare(
+      getEntityPresentationRef(b.entity),
+    ),
   );
 }
 
