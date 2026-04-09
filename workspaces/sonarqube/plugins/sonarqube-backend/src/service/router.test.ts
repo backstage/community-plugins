@@ -20,6 +20,7 @@ import request from 'supertest';
 import { createRouter } from './router';
 import { SonarqubeFindings } from './sonarqubeInfoProvider';
 import { mockServices } from '@backstage/backend-test-utils';
+import { Entity } from '@backstage/catalog-model';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -37,6 +38,13 @@ describe('createRouter', () => {
     ]
   > = jest.fn();
 
+  const catalogMock = {
+    getEntityByRef: jest.fn(),
+  };
+  const httpAuthMock = {
+    credentials: jest.fn().mockResolvedValue({ type: 'none' }),
+  };
+
   beforeAll(async () => {
     const router = await createRouter({
       logger: mockServices.rootLogger(),
@@ -44,12 +52,147 @@ describe('createRouter', () => {
         getBaseUrl: getBaseUrlMock,
         getFindings: getFindingsMock,
       },
+      catalog: catalogMock as any,
+      httpAuth: httpAuthMock as any,
     });
-    app = express().use(router);
+    app = express()
+      .use(router)
+      .use(
+        (
+          err: any,
+          _req: express.Request,
+          res: express.Response,
+          _next: express.NextFunction,
+        ) => {
+          if (err.name === 'NotFoundError') {
+            res.status(404).json({ error: err.message });
+          } else if (err.name === 'InputError') {
+            res.status(400).json({ error: err.message });
+          } else {
+            res
+              .status(500)
+              .json({ error: err.message || 'Internal Server Error' });
+          }
+        },
+      );
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
+    httpAuthMock.credentials.mockResolvedValue({ type: 'none' });
+  });
+
+  describe('GET /entities/:kind/:namespace/:name/summary', () => {
+    const DUMMY_KIND = 'component';
+    const DUMMY_NAMESPACE = 'default';
+    const DUMMY_NAME = 'my-service';
+    const DUMMY_INSTANCE_URL = 'http://sonarqube-internal.example.com';
+    const DUMMY_INSTANCE_EXTERNAL_URL = 'http://sonarqube.example.com';
+
+    const makeEntity = (annotation: string): Entity => ({
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: DUMMY_KIND,
+      metadata: {
+        name: DUMMY_NAME,
+        namespace: DUMMY_NAMESPACE,
+        annotations: { 'sonarqube.org/project-key': annotation },
+      },
+      spec: {},
+    });
+
+    it('returns findings and instanceUrl using annotation without instance', async () => {
+      const measures: SonarqubeFindings = {
+        analysisDate: '2022-01-01T00:00:00Z',
+        measures: [{ metric: 'vulnerabilities', value: '54' }],
+      };
+      catalogMock.getEntityByRef.mockResolvedValue(makeEntity('my:component'));
+      getFindingsMock.mockResolvedValue(measures);
+      getBaseUrlMock.mockReturnValue({ baseUrl: DUMMY_INSTANCE_URL });
+
+      const response = await request(app)
+        .get(`/entities/${DUMMY_KIND}/${DUMMY_NAMESPACE}/${DUMMY_NAME}/summary`)
+        .send();
+
+      expect(catalogMock.getEntityByRef).toHaveBeenCalledWith(
+        { kind: DUMMY_KIND, namespace: DUMMY_NAMESPACE, name: DUMMY_NAME },
+        expect.objectContaining({ credentials: { type: 'none' } }),
+      );
+      expect(getFindingsMock).toHaveBeenCalledWith({
+        componentKey: 'my:component',
+        instanceName: undefined,
+      });
+      expect(getBaseUrlMock).toHaveBeenCalledWith({ instanceName: undefined });
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        findings: measures,
+        instanceUrl: DUMMY_INSTANCE_URL,
+        componentKey: 'my:component',
+      });
+    });
+
+    it('parses instance name and project key from annotation with slash', async () => {
+      catalogMock.getEntityByRef.mockResolvedValue(
+        makeEntity('myInstance/my:component'),
+      );
+      getFindingsMock.mockResolvedValue(undefined);
+      getBaseUrlMock.mockReturnValue({
+        baseUrl: DUMMY_INSTANCE_URL,
+        externalBaseUrl: DUMMY_INSTANCE_EXTERNAL_URL,
+      });
+
+      const response = await request(app)
+        .get(`/entities/${DUMMY_KIND}/${DUMMY_NAMESPACE}/${DUMMY_NAME}/summary`)
+        .send();
+
+      expect(getFindingsMock).toHaveBeenCalledWith({
+        componentKey: 'my:component',
+        instanceName: 'myInstance',
+      });
+      expect(getBaseUrlMock).toHaveBeenCalledWith({
+        instanceName: 'myInstance',
+      });
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        findings: null,
+        instanceUrl: DUMMY_INSTANCE_EXTERNAL_URL,
+        componentKey: 'my:component',
+      });
+    });
+
+    it('returns 404 when entity is not found', async () => {
+      catalogMock.getEntityByRef.mockResolvedValue(undefined);
+
+      const response = await request(app)
+        .get(`/entities/${DUMMY_KIND}/${DUMMY_NAMESPACE}/${DUMMY_NAME}/summary`)
+        .send();
+
+      expect(response.status).toEqual(404);
+      expect(response.body).toMatchObject({
+        error: expect.stringContaining('not found'),
+      });
+    });
+
+    it('returns 400 when entity is missing the sonarqube annotation', async () => {
+      catalogMock.getEntityByRef.mockResolvedValue({
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: DUMMY_KIND,
+        metadata: {
+          name: DUMMY_NAME,
+          namespace: DUMMY_NAMESPACE,
+          annotations: {},
+        },
+        spec: {},
+      });
+
+      const response = await request(app)
+        .get(`/entities/${DUMMY_KIND}/${DUMMY_NAMESPACE}/${DUMMY_NAME}/summary`)
+        .send();
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toMatchObject({
+        error: expect.stringContaining('sonarqube.org/project-key'),
+      });
+    });
   });
 
   describe('GET /findings', () => {
@@ -79,7 +222,7 @@ describe('createRouter', () => {
       expect(response.body).toEqual(measures);
     });
 
-    it('returns an error when component key is not defined', async () => {
+    it('returns 400 when component key is not defined', async () => {
       const response = await request(app)
         .get('/findings')
         .query({
@@ -87,7 +230,7 @@ describe('createRouter', () => {
         })
         .send();
 
-      expect(response.status).toEqual(500);
+      expect(response.status).toEqual(400);
     });
 
     it('use the value as instance name when instance key not provided', async () => {
@@ -112,6 +255,17 @@ describe('createRouter', () => {
       });
       expect(response.status).toEqual(200);
       expect(response.body).toEqual(measures);
+    });
+
+    it('includes a Deprecation response header', async () => {
+      getFindingsMock.mockResolvedValue(undefined);
+      const response = await request(app)
+        .get('/findings')
+        .query({ componentKey: DUMMY_COMPONENT_KEY })
+        .send();
+
+      expect(response.status).toEqual(200);
+      expect(response.headers.deprecation).toBe('true');
     });
   });
 
@@ -157,6 +311,14 @@ describe('createRouter', () => {
       expect(response.body).toEqual({
         instanceUrl: DUMMY_INSTANCE_EXTERNAL_URL,
       });
+    });
+
+    it('includes a Deprecation response header', async () => {
+      getBaseUrlMock.mockReturnValue({ baseUrl: DUMMY_INSTANCE_URL });
+      const response = await request(app).get('/instanceUrl').send();
+
+      expect(response.status).toEqual(200);
+      expect(response.headers.deprecation).toBe('true');
     });
   });
 });

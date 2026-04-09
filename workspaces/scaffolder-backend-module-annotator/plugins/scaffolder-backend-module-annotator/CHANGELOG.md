@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-annotator
 
+## 2.16.0
+
+### Minor Changes
+
+- c386ef9: Backstage version bump to v1.49.3
+
 ## 2.15.0
 
 ### Minor Changes

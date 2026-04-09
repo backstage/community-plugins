@@ -6,10 +6,26 @@ Based on the [well-known GitHub slug annotation](https://backstage.io/docs/featu
 The plugin will attempt to determine the source code location using the [well-known Source location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiosource-location) or [Managed by location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiomanaged-by-location) associated with the Entity.
 If no configured Github provider will match, the first one will be used.
 
-The plugin is designed to work with four Entity kinds, and it behaves a bit differently depending on that kind:
+The plugin is designed to work with any Entity kind, and it behaves a bit differently depending on the target kind:
 
-- Kind: Group/User: plugin renders issues from all repositories for which the Entity is the owner.
-- Kind: API/Component: plugin renders issues from only one repository assigned to the Entity
+- Kind: Group/User: the plugin renders issues from all repositories for which the Entity is the owner.
+- Kind: Component: the plugin renders all issues related to the entity as a page and as a card (can be customized by filter, see below)
+- All other kinds by default show a card. If needed, target kinds can be filtered using the following configuration:
+
+```yaml
+app:
+  extensions:
+    - entity-card:github-issues/overview:
+      config:
+        filter:
+          kind:
+            $in:
+              - component
+              - system
+              - resource
+              - group
+              - user
+```
 
 **Issues are sorted from the recently updated DESC order (the plugin might not render all issues from a single repo next to each other).**
 

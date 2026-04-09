@@ -24,7 +24,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { ilertApiRef } from '../../api';
 import { AlertSource } from '../../types';
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 export const ILertCardMaintenanceModal = ({
   alertSource,
@@ -38,7 +39,7 @@ export const ILertCardMaintenanceModal = ({
   setIsModalOpened: (isModalOpened: boolean) => void;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(alertApiRef);
+  const alertApi = useApi(toastApiRef);
   const [minutes, setMinutes] = useState(5);
 
   const handleClose = () => {
@@ -53,10 +54,10 @@ export const ILertCardMaintenanceModal = ({
     setTimeout(async () => {
       try {
         await ilertApi.addImmediateMaintenance(alertSource.id, minutes);
-        alertApi.post({ message: 'Maintenance started.' });
+        alertApi.post({ title: 'Maintenance started.' });
         refetchAlertSource();
       } catch (err) {
-        alertApi.post({ message: err, severity: 'error' });
+        alertApi.post({ title: err, status: 'danger' });
       }
     }, 250);
   };

@@ -1,5 +1,23 @@
 # @backstage-community/plugin-sentry
 
+## 1.16.0
+
+### Minor Changes
+
+- 6a59774: Backstage version bump to v1.49.2
+
+## 1.15.2
+
+### Patch Changes
+
+- 8cc2192: Fixed issue list not displaying data when issues are fetched asynchronously.
+
+## 1.15.1
+
+### Patch Changes
+
+- 7112596: Improve code quality: use `ResponseError` for HTTP error handling, remove unused `@date-io/core` dependency, and fix destructuring patterns in annotation helpers.
+
 ## 1.15.0
 
 ### Minor Changes

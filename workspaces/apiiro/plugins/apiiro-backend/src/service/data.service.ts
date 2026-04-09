@@ -25,10 +25,15 @@ import {
   SlaBreachResponse,
   TopRisksResponse,
   ApiiroFilterOptionsResponse,
+  ApplicationsAggregation,
+  ApplicationItem,
+  ApiiroApplicationsPage,
 } from './data.service.types';
 import {
   parseApiiroRepositoriesPage,
   parseApiiroRisksPage,
+  parseApiiroApplicationsPage,
+  parseApiiroApplicationItem,
 } from './validators';
 import {
   APIIRO_DEFAULT_TIMEOUT_MS,
@@ -41,6 +46,7 @@ import {
   APIIRO_FILTER_OPTIONS_PATH,
   APIIRO_DEFAULT_PAGE_LIMIT,
   FILTER_OPTIONS_CACHE_TTL_MS,
+  APIIRO_APPLICATION_PROFILES_PATH,
 } from '../constants';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 import { fetchWithErrorHandling, fetchAllPages } from './utils';
@@ -120,31 +126,39 @@ export class ApiiroConfig {
     this.cache = options.cache;
   }
 
-  private buildUrl(pageCursor?: string, repositoryName?: string) {
+  private buildUrl(pageCursor?: string, applicationId?: string) {
     const params = new URLSearchParams();
-    params.append('limit', APIIRO_DEFAULT_PAGE_LIMIT);
+    params.append('pageSize', APIIRO_DEFAULT_PAGE_LIMIT);
     if (pageCursor) params.append('next', pageCursor);
-    if (repositoryName) {
-      params.append('filters[RepositoryName][0]', repositoryName);
+    if (applicationId) {
+      params.append('filters[ApplicationID][0]', applicationId);
     }
 
     return `${this.baseUrl}${APIIRO_REPOSITORIES_PATH}?${params.toString()}`;
   }
 
   private buildRisksUrl(
-    repositoryId: string,
+    repositoryId?: string,
     filters: RiskFilters = {},
     pageCursor?: string,
+    applicationId?: string,
   ) {
     const params = new URLSearchParams();
-    params.append('limit', APIIRO_DEFAULT_PAGE_LIMIT);
+    params.append('pageSize', APIIRO_DEFAULT_PAGE_LIMIT);
     if (pageCursor) params.append('next', pageCursor);
 
     // Apiiro expects camel-cased RepositoryId and indexed array keys
-    params.append('filters[RepositoryId][0]', repositoryId);
+    if (repositoryId) {
+      params.append('filters[RepositoryID][0]', repositoryId);
+    }
+
+    // Add application filter if provided
+    if (applicationId) {
+      params.append('filters[ApplicationID][0]', applicationId);
+    }
 
     // Default Filter: Only fetch the Open risks
-    params.append('filters[RiskStatus]', 'Open');
+    params.append('filters[RiskStatus][0]', 'Open');
 
     // Get default filter values by converting displayNames from config to API names
     const getDefaultFilterValues = (key: string): string[] => {
@@ -209,92 +223,121 @@ export class ApiiroConfig {
   }
 
   /**
-   * Builds the URL for MTTR statistics API endpoint with repository filter.
-   * Constructs URL with filters[RepositoryKeys] parameter as expected by Apiiro API.
-   * Also adds a default 30-day date range filter.
-   *
-   * @param repositoryKey - The repository key to filter MTTR statistics for
-   * @returns Complete URL string for the MTTR statistics API endpoint with filters
-   */
-  private buildMttrUrl(repositoryKey: string) {
-    const params = new URLSearchParams();
-    params.append('filters[RepositoryKeys]', repositoryKey);
-
-    // Add default 30-day date range
-    const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-    params.append('filters[DashboardDateRange][0]', startDate.toISOString());
-    params.append('filters[DashboardDateRange][1]', endDate.toISOString());
-
-    return `${this.baseUrl}${APIIRO_MTTR_PATH}?${params.toString()}`;
-  }
-
-  /**
-   * Builds the URL for risk score over time API endpoint with repository filter.
-   * Constructs URL with filters[RepositoryKeys] parameter as expected by Apiiro API.
-   * Also adds a default 30-day date range filter.
-   *
-   * @param repositoryKey - The repository key to filter risk score over time data for
-   * @returns Complete URL string for the risk score over time API endpoint with filters
-   */
-  private buildRiskScoreOverTimeUrl(repositoryKey: string) {
-    const params = new URLSearchParams();
-    params.append('filters[RepositoryKeys]', repositoryKey);
-
-    // Add default 30-day date range
-    const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-    params.append('filters[DashboardDateRange][0]', startDate.toISOString());
-    params.append('filters[DashboardDateRange][1]', endDate.toISOString());
-
-    return `${
-      this.baseUrl
-    }${APIIRO_RISK_SCORE_OVER_TIME_PATH}?${params.toString()}`;
-  }
-
-  /**
-   * Builds the URL for SLA breach statistics API endpoint with repository filter.
-   * Constructs URL with filters[RepositoryKeys] parameter as expected by Apiiro API.
-   *
-   * @param repositoryKey - The repository key to filter SLA breach statistics for
-   * @returns Complete URL string for the SLA breach statistics API endpoint with filters
-   */
-  private buildSlaBreachUrl(repositoryKey: string) {
-    return this.buildStatisticsUrl(APIIRO_SLA_BREACH_PATH, repositoryKey);
-  }
-
-  /**
-   * Builds the URL for top risks statistics API endpoint with repository filter.
-   * Constructs URL with filters[RepositoryKeys] parameter as expected by Apiiro API.
-   *
-   * @param repositoryKey - The repository key to filter top risks statistics for
-   * @returns Complete URL string for the top risks statistics API endpoint with filters
-   */
-  private buildTopRisksUrl(repositoryKey: string) {
-    return this.buildStatisticsUrl(APIIRO_TOP_RISKS_PATH, repositoryKey);
-  }
-
-  /**
    * Generic helper to build statistics endpoint URLs with repository filter.
    * All statistics endpoints use the same pattern: filters[RepositoryKeys]=value
    *
    * @param path - The API endpoint path
-   * @param repositoryKey - The repository key to filter for
+   * @param repositoryId - The repository key to filter for
    * @returns Complete URL string with filters
    */
-  private buildStatisticsUrl(path: string, repositoryKey: string): string {
+  private buildStatisticsUrl(
+    path: string,
+    repositoryId?: string,
+    applicationId?: string,
+  ): string {
     const params = new URLSearchParams();
-    params.append('filters[RepositoryKeys]', repositoryKey);
+    if (repositoryId) {
+      params.append('filters[RepositoryKeys]', repositoryId);
+    }
+    if (applicationId) {
+      params.append('filters[AssetCollectionKeys]', applicationId);
+    }
+
+    // Add default 30-day date range
+    const endDate = new Date();
+    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    params.append('filters[DashboardDateRange][0]', startDate.toISOString());
+    params.append('filters[DashboardDateRange][1]', endDate.toISOString());
+
     return `${this.baseUrl}${path}?${params.toString()}`;
+  }
+
+  private buildApplicationsUrl(pageCursor?: string, applicationId?: string) {
+    if (applicationId) {
+      return `${
+        this.baseUrl
+      }${APIIRO_APPLICATION_PROFILES_PATH}/${applicationId.toString()}`;
+    }
+    const params = new URLSearchParams();
+    params.append('pageSize', APIIRO_DEFAULT_PAGE_LIMIT);
+    if (pageCursor) params.append('next', pageCursor);
+    return `${
+      this.baseUrl
+    }${APIIRO_APPLICATION_PROFILES_PATH}?${params.toString()}`;
+  }
+
+  async fetchApplicationsPage(
+    pageCursor?: string,
+  ): Promise<ApiiroApplicationsPage> {
+    const url = this.buildApplicationsUrl(pageCursor);
+    const response = await fetchWithErrorHandling(
+      url,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+      this.timeoutMs,
+      this.fetchFn,
+    );
+
+    try {
+      const data = await response.json();
+      return parseApiiroApplicationsPage(data);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        throw new Error(`Invalid API response format: ${error.message}`);
+      }
+      throw new Error(
+        `Failed to parse API response: ${
+          error instanceof Error ? error.message : 'Invalid JSON'
+        }`,
+      );
+    }
+  }
+
+  async fetchApplicationById(applicationId: string): Promise<ApplicationItem> {
+    const url = this.buildApplicationsUrl(undefined, applicationId);
+    const response = await fetchWithErrorHandling(
+      url,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+      this.timeoutMs,
+      this.fetchFn,
+    );
+
+    try {
+      const data = await response.json();
+      return parseApiiroApplicationItem(data);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'ZodError') {
+        throw new Error(`Invalid API response format: ${error.message}`);
+      }
+      throw new Error(
+        `Failed to parse API response: ${
+          error instanceof Error ? error.message : 'Invalid JSON'
+        }`,
+      );
+    }
+  }
+
+  async fetchAllApplications(): Promise<{ items: any[]; totalCount: number }> {
+    return fetchAllPages(pageCursor => this.fetchApplicationsPage(pageCursor));
   }
 
   async fetchRepositoriesPage(
     pageCursor?: string,
-    repositoryName?: string,
+    applicationId?: string,
   ): Promise<ApiiroRepositoriesPage> {
-    const url = this.buildUrl(pageCursor, repositoryName);
+    const url = this.buildUrl(pageCursor, applicationId);
     const response = await fetchWithErrorHandling(
       url,
       {
@@ -324,22 +367,28 @@ export class ApiiroConfig {
   }
 
   async fetchAllRepositories(
-    repositoryName?: string,
+    applicationId?: string,
   ): Promise<{ items: any[]; totalCount: number }> {
     return fetchAllPages(pageCursor =>
-      this.fetchRepositoriesPage(pageCursor, repositoryName),
+      this.fetchRepositoriesPage(pageCursor, applicationId),
     );
   }
 
   async fetchRisksPage(
-    repositoryId: string,
+    repositoryId?: string,
     filters: RiskFilters = {},
     pageCursor?: string,
+    applicationId?: string,
   ): Promise<ApiiroRisksPage> {
     // Ensure filter options are loaded to have the displayName to name mapping
     await this.ensureFilterOptionsLoaded();
 
-    const url = this.buildRisksUrl(repositoryId, filters, pageCursor);
+    const url = this.buildRisksUrl(
+      repositoryId,
+      filters,
+      pageCursor,
+      applicationId,
+    );
     const response = await fetchWithErrorHandling(
       url,
       {
@@ -369,11 +418,12 @@ export class ApiiroConfig {
   }
 
   async fetchAllRisks(
-    repositoryId: string,
+    repositoryId?: string,
     filters: RiskFilters = {},
+    applicationId?: string,
   ): Promise<{ items: any[]; totalCount: number }> {
     return fetchAllPages(pageCursor =>
-      this.fetchRisksPage(repositoryId, filters, pageCursor),
+      this.fetchRisksPage(repositoryId, filters, pageCursor, applicationId),
     );
   }
 
@@ -419,8 +469,15 @@ export class ApiiroConfig {
    * This method calls the Apiiro MTTR statistics endpoint and returns data about average resolution
    * times for different risk levels compared to their SLA targets.
    */
-  async fetchMttrStatistics(repositoryKey: string): Promise<MttrResponse> {
-    const url = this.buildMttrUrl(repositoryKey);
+  async fetchMttrStatistics(
+    repositoryId?: string,
+    applicationId?: string,
+  ): Promise<MttrResponse> {
+    const url = this.buildStatisticsUrl(
+      APIIRO_MTTR_PATH,
+      repositoryId,
+      applicationId,
+    );
     return this.fetchStatisticsData<MttrResponse>(url, 'MTTR');
   }
 
@@ -429,14 +486,19 @@ export class ApiiroConfig {
    * This method calls the Apiiro risk score over time endpoint and returns historical data
    * showing how risk scores change over time.
    *
-   * @param repositoryKey - The unique repository key to fetch risk score over time data for
+   * @param repositoryId - The unique repository key to fetch risk score over time data for
    * @returns Promise that resolves to RiskScoreOverTimeResponse containing time series data
    * @throws {Error} If the API request fails or returns non-200 status
    */
   async fetchRiskScoreOverTime(
-    repositoryKey: string,
+    repositoryId?: string,
+    applicationId?: string,
   ): Promise<RiskScoreOverTimeResponse> {
-    const url = this.buildRiskScoreOverTimeUrl(repositoryKey);
+    const url = this.buildStatisticsUrl(
+      APIIRO_RISK_SCORE_OVER_TIME_PATH,
+      repositoryId,
+      applicationId,
+    );
     return this.fetchStatisticsData<RiskScoreOverTimeResponse>(
       url,
       'risk score over time',
@@ -448,14 +510,19 @@ export class ApiiroConfig {
    * This method calls the Apiiro SLA breach statistics endpoint and returns data about
    * SLA breaches, adherence, and unset due dates for different risk levels.
    *
-   * @param repositoryKey - The unique repository key to fetch SLA breach statistics for
+   * @param repositoryId - The unique repository key to fetch SLA breach statistics for
    * @returns Promise that resolves to SlaBreachResponse containing breach statistics
    * @throws {Error} If the API request fails or returns non-200 status
    */
   async fetchSlaBreachStatistics(
-    repositoryKey: string,
+    repositoryId?: string,
+    applicationId?: string,
   ): Promise<SlaBreachResponse> {
-    const url = this.buildSlaBreachUrl(repositoryKey);
+    const url = this.buildStatisticsUrl(
+      APIIRO_SLA_BREACH_PATH,
+      repositoryId,
+      applicationId,
+    );
     return this.fetchStatisticsData<SlaBreachResponse>(url, 'SLA breach');
   }
 
@@ -464,14 +531,19 @@ export class ApiiroConfig {
    * This method calls the Apiiro top risks statistics endpoint and returns data about
    * the most frequent or impactful risks with their rule names, counts, severity, and development phase.
    *
-   * @param repositoryKey - The unique repository key to fetch top risks statistics for
+   * @param repositoryId - The unique repository key to fetch top risks statistics for
    * @returns Promise that resolves to TopRisksResponse containing top risk items
    * @throws {Error} If the API request fails or returns non-200 status
    */
   async fetchTopRisksStatistics(
-    repositoryKey: string,
+    repositoryId?: string,
+    applicationId?: string,
   ): Promise<TopRisksResponse> {
-    const url = this.buildTopRisksUrl(repositoryKey);
+    const url = this.buildStatisticsUrl(
+      APIIRO_TOP_RISKS_PATH,
+      repositoryId,
+      applicationId,
+    );
     return this.fetchStatisticsData<TopRisksResponse>(url, 'top risks');
   }
 
@@ -640,12 +712,9 @@ export class ApiiroDataService {
    */
   async getRepositoriesPage(
     pageCursor?: string,
-    repositoryName?: string,
+    repositoryId?: string,
   ): Promise<ApiiroRepositoriesPage> {
-    return this.ensureClient().fetchRepositoriesPage(
-      pageCursor,
-      repositoryName,
-    );
+    return this.ensureClient().fetchRepositoriesPage(pageCursor, repositoryId);
   }
 
   /**
@@ -654,18 +723,18 @@ export class ApiiroDataService {
    */
   async getAllRepositories(
     pageCursor?: string,
-    repositoryName?: string,
+    applicationId?: string,
   ): Promise<RepositoriesAggregation> {
     const client = this.ensureClient();
     if (pageCursor) {
       const page = await client.fetchRepositoriesPage(
         pageCursor,
-        repositoryName,
+        applicationId,
       );
       return { repositories: page.items, totalCount: page.items.length };
     }
 
-    const allRepos = await client.fetchAllRepositories(repositoryName);
+    const allRepos = await client.fetchAllRepositories(applicationId);
     return { repositories: allRepos.items, totalCount: allRepos.totalCount };
   }
 
@@ -689,9 +758,10 @@ export class ApiiroDataService {
    * Shape: { risks, totalCount }
    */
   async getAllRisks(
-    repositoryId: string,
+    repositoryId?: string,
     filters: RiskFilters = {},
     pageCursor?: string,
+    applicationId?: string,
   ): Promise<RisksAggregation> {
     const client = this.ensureClient();
     if (pageCursor) {
@@ -699,11 +769,16 @@ export class ApiiroDataService {
         repositoryId,
         filters,
         pageCursor,
+        applicationId,
       );
       return { risks: page.items, totalCount: page.items.length };
     }
 
-    const allRisks = await client.fetchAllRisks(repositoryId, filters);
+    const allRisks = await client.fetchAllRisks(
+      repositoryId,
+      filters,
+      applicationId,
+    );
     return { risks: allRisks.items, totalCount: allRisks.totalCount };
   }
 
@@ -711,48 +786,63 @@ export class ApiiroDataService {
    * Return MTTR vs SLA statistics for a repository.
    * Uses static mock data for now, ready to be replaced with real API call.
    */
-  async getMttrStatistics(repositoryKey: string): Promise<MttrResponse> {
-    return this.ensureClient().fetchMttrStatistics(repositoryKey);
+  async getMttrStatistics(
+    repositoryId?: string,
+    applicationId?: string,
+  ): Promise<MttrResponse> {
+    return this.ensureClient().fetchMttrStatistics(repositoryId, applicationId);
   }
 
   /**
    * Return risk score over time statistics for a repository.
    * Uses static mock data for now, ready to be replaced with real API call.
    *
-   * @param repositoryKey - The repository key to fetch risk score over time data for
+   * @param repositoryId - The repository key to fetch risk score over time data for
    * @returns Promise that resolves to RiskScoreOverTimeResponse containing mock time series data
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getRiskScoreOverTime(
-    repositoryKey: string,
+    repositoryId?: string,
+    applicationId?: string,
   ): Promise<RiskScoreOverTimeResponse> {
-    return this.ensureClient().fetchRiskScoreOverTime(repositoryKey);
+    return this.ensureClient().fetchRiskScoreOverTime(
+      repositoryId,
+      applicationId,
+    );
   }
 
   /**
    * Return SLA breach statistics for a repository.
    * Fetches data about SLA breaches, adherence, and unset due dates for different risk levels.
    *
-   * @param repositoryKey - The repository key to fetch SLA breach statistics for
+   * @param repositoryId - The repository key to fetch SLA breach statistics for
    * @returns Promise that resolves to SlaBreachResponse containing breach statistics
    */
   async getSlaBreachStatistics(
-    repositoryKey: string,
+    repositoryId?: string,
+    applicationId?: string,
   ): Promise<SlaBreachResponse> {
-    return this.ensureClient().fetchSlaBreachStatistics(repositoryKey);
+    return this.ensureClient().fetchSlaBreachStatistics(
+      repositoryId,
+      applicationId,
+    );
   }
 
   /**
    * Return top risks statistics for a repository.
    * Fetches data about the most frequent or impactful risks with their rule names, counts, severity, and development phase.
    *
-   * @param repositoryKey - The repository key to fetch top risks statistics for
+   * @param repositoryId - The repository key to fetch top risks statistics for
    * @returns Promise that resolves to TopRisksResponse containing top risk items
    */
   async getTopRisksStatistics(
-    repositoryKey: string,
+    repositoryId?: string,
+    applicationId?: string,
   ): Promise<TopRisksResponse> {
-    return this.ensureClient().fetchTopRisksStatistics(repositoryKey);
+    return this.ensureClient().fetchTopRisksStatistics(
+      repositoryId,
+      applicationId,
+    );
   }
 
   /**
@@ -764,5 +854,27 @@ export class ApiiroDataService {
    */
   async getFilterOptions(): Promise<ApiiroFilterOptionsResponse> {
     return this.ensureClient().fetchFilterOptions();
+  }
+
+  /**
+   * Return aggregated applications by fetching all pages.
+   * Shape: { applications, totalCount }
+   */
+  async getAllApplications(): Promise<ApplicationsAggregation> {
+    const client = this.ensureClient();
+    const allApplication = await client.fetchAllApplications();
+    return {
+      applications: allApplication.items,
+      totalCount: allApplication.totalCount,
+    };
+  }
+
+  /**
+   * Return a single application by its ID.
+   */
+  async getApplicationById(applicationId: string): Promise<ApplicationItem> {
+    const client = this.ensureClient();
+    const result = await client.fetchApplicationById(applicationId);
+    return result;
   }
 }

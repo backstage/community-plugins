@@ -30,6 +30,21 @@ export const sonarqubeTranslationRef = createTranslationRef({
         description:
           "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.",
       },
+      unauthorizedError: {
+        title: 'Unauthorized',
+        description:
+          'Your authentication token for SonarQube is missing or invalid. Please verify your SonarQube token configuration.',
+      },
+      notFoundError: {
+        title: 'SonarQube project not found',
+        description:
+          'The sonarqube.org/project-key annotation may be invalid or the project does not exist in SonarQube. Please verify the annotation value.',
+      },
+      forbiddenError: {
+        title: 'Access denied',
+        description:
+          'Your SonarQube token does not have sufficient permissions to access this project. Please check the project permissions in SonarQube.',
+      },
       noSonarQubeError: {
         hasAnnotation: "There is no SonarQube project with key '{{project}}'",
         noAnnotation: 'No SonarQube annotation found',

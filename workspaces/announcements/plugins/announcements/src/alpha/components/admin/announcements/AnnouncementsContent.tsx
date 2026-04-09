@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useState, useMemo } from 'react';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
   CreateAnnouncementRequest,
@@ -27,7 +27,7 @@ import {
   Announcement,
   announcementCreatePermission,
 } from '@backstage-community/plugin-announcements-common';
-import { useRouteRef } from '@backstage/frontend-plugin-api';
+import { useRouteRef, toastApiRef } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { Box, Grid, Flex, Button } from '@backstage/ui';
@@ -82,7 +82,7 @@ export const AnnouncementsContent = ({
   formDefaults: { defaultInactive },
 }: AnnouncementsContentProps) => {
   const announcementsApi = useApi(announcementsApiRef);
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const { t } = useAnnouncementsTranslation();
   const permissions = useAnnouncementsPermissions();
 
@@ -122,15 +122,16 @@ export const AnnouncementsContent = ({
     try {
       await announcementsApi.createAnnouncement(request);
 
-      alertApi.post({
-        message: t('admin.announcementsContent.alertMessage'),
-        severity: 'success',
+      toastApi.post({
+        title: t('admin.announcementsContent.alertMessage'),
+        status: 'success',
+        timeout: 5000,
       });
 
       setShowCreateAnnouncementForm(false);
       refresh();
     } catch (err) {
-      alertApi.post({ message: (err as Error).message, severity: 'error' });
+      toastApi.post({ title: (err as Error).message, status: 'danger' });
     }
   };
 
@@ -141,15 +142,16 @@ export const AnnouncementsContent = ({
 
     try {
       await announcementsApi.updateAnnouncement(editingAnnouncementId, request);
-      alertApi.post({
-        message: t('editAnnouncementPage.updatedMessage'),
-        severity: 'success',
+      toastApi.post({
+        title: t('editAnnouncementPage.updatedMessage'),
+        status: 'success',
+        timeout: 5000,
       });
 
       setEditingAnnouncementId(null);
       refresh();
     } catch (err) {
-      alertApi.post({ message: (err as Error).message, severity: 'error' });
+      toastApi.post({ title: (err as Error).message, status: 'danger' });
     }
   };
 
@@ -180,15 +182,16 @@ export const AnnouncementsContent = ({
     try {
       await announcementsApi.deleteAnnouncementByID(announcementToDelete!.id);
 
-      alertApi.post({
-        message: t('admin.announcementsContent.deletedMessage'),
-        severity: 'success',
+      toastApi.post({
+        title: t('admin.announcementsContent.deletedMessage'),
+        status: 'success',
+        timeout: 5000,
       });
     } catch (err) {
-      alertApi.post({
-        message:
+      toastApi.post({
+        title:
           (err as ResponseError).body?.error?.message || (err as Error).message,
-        severity: 'error',
+        status: 'danger',
       });
     }
 

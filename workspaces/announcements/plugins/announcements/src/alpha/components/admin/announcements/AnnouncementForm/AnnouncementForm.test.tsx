@@ -20,7 +20,7 @@ import {
   Tag,
 } from '@backstage-community/plugin-announcements-common';
 import { announcementsApiRef } from '@backstage-community/plugin-announcements-react';
-import { alertApiRef, identityApiRef } from '@backstage/core-plugin-api';
+import { toastApiRef, identityApiRef } from '@backstage/frontend-plugin-api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -66,9 +66,8 @@ const createMockAnnouncementsApi = (
   };
 };
 
-const mockAlertApi = {
-  post: jest.fn(),
-  alert$: jest.fn(),
+const mockToastApi = {
+  post: jest.fn().mockReturnValue({ close: jest.fn() }),
 };
 
 const mockIdentityApi = {
@@ -112,7 +111,7 @@ const renderAnnouncementForm = async ({
     <TestApiProvider
       apis={[
         [announcementsApiRef, mockAnnouncementsApi],
-        [alertApiRef, mockAlertApi],
+        [toastApiRef, mockToastApi],
         [identityApiRef, mockIdentityApi],
         [catalogApiRef, mockCatalogApi],
       ]}

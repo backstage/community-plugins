@@ -63,7 +63,6 @@ export type MarkdownRendererTypeProps = 'backstage' | 'md-editor';
 
 // @public (undocumented)
 export const NewAnnouncementBanner: (props: {
-  variant?: 'block' | 'floating' | undefined;
   max?: number | undefined;
   category?: string | undefined;
   active?: boolean | undefined;

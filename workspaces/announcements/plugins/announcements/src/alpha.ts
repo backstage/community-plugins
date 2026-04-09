@@ -27,6 +27,8 @@ import {
 import { rootRouteRef } from './routes';
 
 /**
+ * The announcements frontend plugin for the new frontend system.
+ *
  * @alpha
  */
 export default createFrontendPlugin({

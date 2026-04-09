@@ -15,10 +15,10 @@
  */
 
 import { Project, Operation } from './types';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 /** @public */
-export const gcpApiRef = createApiRef<GcpApi>({
+export const gcpApiRef = createApiRef<GcpApi>().with({
   id: 'plugin.gcpprojects.service',
 });
 

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.9.0
+
+### Minor Changes
+
+- 0cd7087: Backstage version bump to v1.49.2
+
 ## 0.8.0
 
 ### Minor Changes
