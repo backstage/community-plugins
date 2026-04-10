@@ -28,7 +28,7 @@ import { JsonValue } from '@backstage/types';
 import { Box, Button, Flex, Text } from '@backstage/ui';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useEffect, useState } from 'react';
-import { useAsync } from 'react-use';
+import useAsync from 'react-use/esm/useAsync';
 import { useParams } from 'react-router-dom';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
 import { PatchDefinition } from '../DefaultPatchesLayout/types';
@@ -110,7 +110,9 @@ export const EntityPatchPage = () => {
 
   const { entity, initialValues } = entityData;
   const patches = filterPatchesForEntity(allPatches, entity);
-  const entityRef = `${entity.kind}:${entity.metadata.namespace ?? 'default'}/${entity.metadata.name}`;
+  const entityRef = `${entity.kind}:${entity.metadata.namespace ?? 'default'}/${
+    entity.metadata.name
+  }`;
 
   const handleSave = async () => {
     try {
