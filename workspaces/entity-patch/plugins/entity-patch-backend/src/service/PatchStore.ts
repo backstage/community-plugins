@@ -58,19 +58,39 @@ export class PatchStore {
   }
 
   /**
-   * Returns the most recent `updated_at` timestamp across all patches for an
-   * entity, as an ISO 8601 string. Returns `null` when no patches exist yet.
-   * Used to compute ETags for the raw values endpoint.
+   * Returns all stored patches for an entity together with the latest
+   * `updated_at` timestamp, all in a single query. Using a single query
+   * avoids a TOCTOU race where a write between two separate queries could
+   * make the ETag cover data not in the response.
    */
-  async getLatestUpdatedAt(entityRef: string): Promise<string | null> {
-    const result = await this.db('entity_patches')
+  async findWithLatestUpdatedAt(
+    entityRef: string,
+  ): Promise<{ rows: PatchDataMap; latestUpdatedAt: string | null }> {
+    const rows = await this.db<PatchRow>('entity_patches')
       .where({ entity_ref: entityRef })
-      .max('updated_at as ts')
-      .first<{ ts: string | Date | null }>();
-    if (!result?.ts) return null;
-    const ts =
-      result.ts instanceof Date ? result.ts.toISOString() : String(result.ts);
-    return ts;
+      .select('patch_name', 'data', 'updated_at');
+
+    const latestUpdatedAt =
+      rows.length > 0
+        ? rows.reduce(
+            (max, r) => {
+              const ts =
+                r.updated_at instanceof Date
+                  ? r.updated_at.toISOString()
+                  : String(r.updated_at);
+              return ts > max ? ts : max;
+            },
+            rows[0].updated_at instanceof Date
+              ? rows[0].updated_at.toISOString()
+              : String(rows[0].updated_at),
+          )
+        : null;
+
+    const patchMap: PatchDataMap = Object.fromEntries(
+      rows.map(row => [row.patch_name, JSON.parse(row.data)]),
+    );
+
+    return { rows: patchMap, latestUpdatedAt };
   }
 
   /** Inserts or updates patch data for a single patch on an entity. */
@@ -81,26 +101,15 @@ export class PatchStore {
     updatedBy: string | null,
   ): Promise<void> {
     const now = new Date();
-    const existing = await this.db<PatchRow>('entity_patches')
-      .where({ entity_ref: entityRef, patch_name: patchName })
-      .first();
-
-    if (existing) {
-      await this.db<PatchRow>('entity_patches')
-        .where({ entity_ref: entityRef, patch_name: patchName })
-        .update({
-          data: JSON.stringify(data),
-          updated_by: updatedBy,
-          updated_at: now,
-        });
-    } else {
-      await this.db<PatchRow>('entity_patches').insert({
+    await this.db('entity_patches')
+      .insert({
         entity_ref: entityRef,
         patch_name: patchName,
         data: JSON.stringify(data),
         updated_by: updatedBy,
         updated_at: now,
-      });
-    }
+      })
+      .onConflict(['entity_ref', 'patch_name'])
+      .merge(['data', 'updated_by', 'updated_at']);
   }
 }

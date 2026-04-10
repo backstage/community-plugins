@@ -3,7 +3,6 @@ app:
   baseUrl: http://localhost:3010
   packages: all
 
-
 backend:
   baseUrl: http://localhost:7007
   listen:
@@ -43,15 +42,14 @@ catalog:
         - allow: [User, Group]
 
 entityPatch:
-
   # Global registry of bidirectional custom relation pairs.
   # Each entry declares a human-readable name and the two relation type strings.
   # Reference these in patch `mapping` as `relations.{type}` where `{type}` is
   # the forward or reverse type string declared here.
   relations:
     - name: designer
-      forward: hasDesigner   # emitted on the source entity (e.g. Group)
-      reverse: designerOn    # emitted on each target entity (e.g. User)
+      forward: hasDesigner # emitted on the source entity (e.g. Group)
+      reverse: designerOn # emitted on each target entity (e.g. User)
     - name: techLead
       forward: hasTechLead
       reverse: techLeadOf
@@ -89,7 +87,7 @@ entityPatch:
               pattern: '^#[a-z0-9_-]+$'
               description: 'Slack channel name, must start with # and use only lowercase letters, numbers, hyphens, or underscores.'
               errorMessage:
-                pattern: "Must start with # followed by lowercase letters, numbers, hyphens, or underscores (e.g. #team-platform)"
+                pattern: 'Must start with # followed by lowercase letters, numbers, hyphens, or underscores (e.g. #team-platform)'
 
     # ── Patch 2: team roles (relations) ───────────────────────────────────────
     - name: team-roles
@@ -97,7 +95,7 @@ entityPatch:
         kind: group
         'spec.type': team
       mapping:
-        designers: relations.hasDesigner     # type ref → emit hasDesigner + designerOn pair
+        designers: relations.hasDesigner # type ref → emit hasDesigner + designerOn pair
         techLeads: relations.hasTechLead
       sections:
         - title: Team Roles

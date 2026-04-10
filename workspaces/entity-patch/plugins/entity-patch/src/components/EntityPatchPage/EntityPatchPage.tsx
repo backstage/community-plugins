@@ -25,20 +25,31 @@ import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
 import { formFieldsApiRef } from '@backstage/plugin-scaffolder-react/alpha';
 import { JsonValue } from '@backstage/types';
-import { Box, Button, Flex, Text } from '@backstage/ui';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Box,
+  Button,
+  ButtonIcon,
+  Flex,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
+import { RiArrowLeftLine } from '@remixicon/react';
+import { useEffect, useMemo, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
-import { PatchDefinition } from '../DefaultPatchesLayout/types';
+import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 import { filterPatchesForEntity } from '../../utils/patchFilter';
 import { EntityPatchClient } from '../../api/EntityPatchClient';
+import { saveAllPatches } from '../../utils/saveAllPatches';
 
 type PatchData = Record<string, JsonValue>;
 type PatchesData = Record<string, PatchData>;
 
 export const EntityPatchPage = () => {
+  const navigate = useNavigate();
   const { namespace, kind, name } = useParams<{
     namespace: string;
     kind: string;
@@ -52,7 +63,10 @@ export const EntityPatchPage = () => {
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
 
-  const patchClient = new EntityPatchClient({ discoveryApi, fetchApi });
+  const patchClient = useMemo(
+    () => new EntityPatchClient({ discoveryApi, fetchApi }),
+    [discoveryApi, fetchApi],
+  );
 
   const allPatches = (configApi.getOptional<PatchDefinition[]>(
     'entityPatch.patches',
@@ -75,6 +89,7 @@ export const EntityPatchPage = () => {
       throw new Error(`Entity ${kind}:${namespace}/${name} not found`);
     }
     let initialValues: PatchesData = {};
+    let initialValuesError = false;
     try {
       initialValues = (await patchClient.getInitialValues(
         entity.kind,
@@ -83,8 +98,9 @@ export const EntityPatchPage = () => {
       )) as PatchesData;
     } catch {
       // Backend may not be installed; start with empty form data
+      initialValuesError = true;
     }
-    return { entity, initialValues };
+    return { entity, initialValues, initialValuesError };
   }, [catalogApi, namespace, kind, name]);
 
   const [extensions, setExtensions] = useState<
@@ -93,6 +109,18 @@ export const EntityPatchPage = () => {
   const [formData, setFormData] = useState<PatchesData>({});
   const [isValid, setIsValid] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
+  const [initialValuesAlertDismissed, setInitialValuesAlertDismissed] =
+    useState(false);
+
+  // Warn on page refresh/close when there are unsaved changes.
+  useEffect(() => {
+    if (!isDirty) return undefined;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [isDirty]);
 
   useEffect(() => {
     formFieldsApi.loadFormFields().then(fields => {
@@ -108,7 +136,7 @@ export const EntityPatchPage = () => {
     return <Progress />;
   }
 
-  const { entity, initialValues } = entityData;
+  const { entity, initialValues, initialValuesError } = entityData;
   const patches = filterPatchesForEntity(allPatches, entity);
   const entityRef = `${entity.kind}:${entity.metadata.namespace ?? 'default'}/${
     entity.metadata.name
@@ -116,23 +144,19 @@ export const EntityPatchPage = () => {
 
   const handleSave = async () => {
     try {
-      for (const [patchName, patchData] of Object.entries(formData)) {
-        const record = patchData as Record<string, unknown>;
-        // Skip patches with no data — nothing to persist
-        if (!record || Object.keys(record).length === 0) continue;
-        await patchClient.savePatch(
-          entity.kind,
-          entity.metadata.namespace ?? 'default',
-          entity.metadata.name,
-          patchName,
-          record,
-        );
-      }
+      await saveAllPatches(
+        patchClient,
+        entity.kind,
+        entity.metadata.namespace ?? 'default',
+        entity.metadata.name,
+        formData,
+      );
       toastApi.post({
         title: 'Patch saved successfully.',
         status: 'success',
         timeout: 5000,
       });
+      setIsDirty(false);
     } catch (err: any) {
       toastApi.post({
         title: 'Failed to save patch',
@@ -142,18 +166,45 @@ export const EntityPatchPage = () => {
     }
   };
 
+  let saveTooltip = '';
+  if (!isValid) saveTooltip = 'Fix validation errors before saving';
+  else if (!isDirty) saveTooltip = 'No changes to save';
+
   return (
     <>
       <Flex align="center" style={{ gap: 8, marginBottom: 16 }}>
-        <ArrowBackIcon fontSize="small" color="action" />
+        <ButtonIcon
+          variant="tertiary"
+          size="small"
+          icon={<RiArrowLeftLine />}
+          aria-label="Go back"
+          onClick={() => navigate(-1)}
+        />
         <EntityRefLink entityRef={entityRef} />
         <Text>
           {entity.kind}
-          {(entity.spec as any)?.type ? ` · ${(entity.spec as any).type}` : ''}
+          {(entity.spec as { type?: string })?.type
+            ? ` · ${(entity.spec as { type?: string }).type}`
+            : ''}
         </Text>
       </Flex>
 
       <Box style={{ maxWidth: 720, margin: '0 auto' }}>
+        {initialValuesError && !initialValuesAlertDismissed && (
+          <Alert
+            status="danger"
+            title="Could not load patch data. Please try again."
+            customActions={
+              <Button
+                variant="secondary"
+                onClick={() => setInitialValuesAlertDismissed(true)}
+              >
+                Dismiss
+              </Button>
+            }
+            style={{ marginBottom: 16 }}
+          />
+        )}
         <DefaultPatchesLayout
           patches={patches}
           initialData={initialValues}
@@ -165,13 +216,16 @@ export const EntityPatchPage = () => {
           extensions={extensions}
         />
         <Flex justify="end" style={{ marginTop: 16 }}>
-          <Button
-            variant="primary"
-            isDisabled={!isDirty || !isValid}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
+          <TooltipTrigger isDisabled={!saveTooltip}>
+            <Button
+              variant="primary"
+              isDisabled={!isDirty || !isValid}
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+            <Tooltip>{saveTooltip}</Tooltip>
+          </TooltipTrigger>
         </Flex>
       </Box>
     </>

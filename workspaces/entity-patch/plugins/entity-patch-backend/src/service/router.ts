@@ -25,17 +25,14 @@ import type {
   DiscoveryService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import type { Config } from '@backstage/config';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { CatalogClient } from '@backstage/catalog-client';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import {
-  evaluateFilterPredicate,
-  FilterPredicate,
-} from '@backstage/filter-predicates';
+import { evaluateFilterPredicate } from '@backstage/filter-predicates';
 import { z } from 'zod';
 import { PatchStore } from './PatchStore';
-import { extractEntityValues, RelationPair } from './EntityValueExtractor';
+import { extractEntityValues } from './EntityValueExtractor';
+import { buildRelationPairs, buildPatchConfigs } from './configHelpers';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -59,55 +56,9 @@ export async function createRouter(options: RouterOptions) {
   const store = await PatchStore.create(database);
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-  /**
-   * Builds a lookup map from relation type → RelationPair, indexed by both
-   * forward and reverse types. Returns an empty map when no relations are configured.
-   */
-  function getRelationPairs(): Map<string, RelationPair> {
-    const pairs = new Map<string, RelationPair>();
-    const relations =
-      config.getOptionalConfigArray('entityPatch.relations') ?? [];
-    for (const r of relations) {
-      const forward = r.getString('forward');
-      const reverse = r.getString('reverse');
-      const pair: RelationPair = { forward, reverse };
-      pairs.set(forward, pair);
-      pairs.set(reverse, pair);
-    }
-    return pairs;
-  }
-
-  /**
-   * Builds a mapping of patchName → { mapping, filter, sectionProperties } from config.
-   * Only patches that have a `mapping` block are included.
-   */
-  function getPatchConfigs(): Array<{
-    name: string;
-    mapping: Record<string, string>;
-    filter?: FilterPredicate;
-    sectionProperties: Record<string, unknown>;
-  }> {
-    const patches = config.getOptionalConfigArray('entityPatch.patches') ?? [];
-    return patches
-      .filter((p: Config) => p.has('mapping'))
-      .map((p: Config) => {
-        const sections =
-          p
-            .getOptionalConfigArray('sections')
-            ?.map(
-              s => s.getOptional<Record<string, unknown>>('properties') ?? {},
-            ) ?? [];
-        const sectionProperties = Object.assign({}, ...sections);
-        return {
-          name: p.getString('name'),
-          mapping: p.getOptional('mapping') as Record<string, string>,
-          filter: p.has('filter')
-            ? (p.get('filter') as FilterPredicate)
-            : undefined,
-          sectionProperties,
-        };
-      });
-  }
+  // Read config once at startup — config is static at runtime.
+  const relationPairs = buildRelationPairs(config);
+  const patchConfigs = buildPatchConfigs(config);
 
   const router = Router();
   router.use(express.json());
@@ -142,11 +93,11 @@ export async function createRouter(options: RouterOptions) {
 
     const entityRef = stringifyEntityRef({ kind, namespace, name });
 
-    const dbOverlay = await store.findByEntityRef(entityRef);
-
     if (!fillFromEntity) {
-      // Raw mode (used by the catalog processor): add ETag for conditional requests.
-      const latestUpdatedAt = await store.getLatestUpdatedAt(entityRef);
+      // Raw mode (used by the catalog processor): single query to avoid TOCTOU
+      // race between fetching data and computing the ETag timestamp.
+      const { rows: dbOverlay, latestUpdatedAt } =
+        await store.findWithLatestUpdatedAt(entityRef);
       const etag = latestUpdatedAt
         ? `"${Buffer.from(latestUpdatedAt).toString('base64')}"`
         : '"empty"';
@@ -162,6 +113,8 @@ export async function createRouter(options: RouterOptions) {
       return;
     }
 
+    const dbOverlay = await store.findByEntityRef(entityRef);
+
     // fillFromEntity mode: merge catalog field values with DB overlay
     const { token } = await auth.getPluginRequestToken({
       onBehalfOf: credentials,
@@ -175,17 +128,16 @@ export async function createRouter(options: RouterOptions) {
     }
 
     // Only extract values for patches whose filter matches the entity
-    const patchConfigs = getPatchConfigs().filter(
+    const matchingPatchConfigs = patchConfigs.filter(
       p => !p.filter || evaluateFilterPredicate(p.filter, entity),
     );
-    const relationPairs = getRelationPairs();
 
     const catalogValues: Record<string, Record<string, unknown>> = {};
     for (const {
       name: patchName,
       mapping,
       sectionProperties,
-    } of patchConfigs) {
+    } of matchingPatchConfigs) {
       catalogValues[patchName] = extractEntityValues(entity, mapping, {
         relationPairs,
         sectionProperties,
@@ -197,6 +149,9 @@ export async function createRouter(options: RouterOptions) {
       ...catalogValues,
     };
     for (const [patchName, dbData] of Object.entries(dbOverlay)) {
+      // Only merge DB data for patches whose filter currently matches this entity.
+      // DB patches for non-matching patches are intentionally excluded here:
+      // they shouldn't be applied to this entity given its current state.
       if (patchName in catalogValues) {
         merged[patchName] = { ...(catalogValues[patchName] ?? {}), ...dbData };
       }
@@ -218,7 +173,9 @@ export async function createRouter(options: RouterOptions) {
     const parsed = patchBodySchema.safeParse(req.body);
     if (!parsed.success) {
       throw new InputError(
-        `Invalid request body: ${parsed.error.issues.map(i => i.message).join(', ')}`,
+        `Invalid request body: ${parsed.error.issues
+          .map(i => i.message)
+          .join(', ')}`,
       );
     }
 

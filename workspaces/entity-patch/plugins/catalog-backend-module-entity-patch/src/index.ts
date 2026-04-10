@@ -18,5 +18,3 @@ export {
   catalogModuleEntityPatch as default,
   catalogModuleEntityPatch,
 } from './module';
-export { EntityPatchProcessor } from './processor';
-export type { EntityPatchProcessorOptions } from './processor';

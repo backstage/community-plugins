@@ -26,7 +26,9 @@ jest.mock('./PatchStore');
 
 const mockStore = {
   findByEntityRef: jest.fn().mockResolvedValue({}),
-  getLatestUpdatedAt: jest.fn().mockResolvedValue(null),
+  findWithLatestUpdatedAt: jest
+    .fn()
+    .mockResolvedValue({ rows: {}, latestUpdatedAt: null }),
   upsert: jest.fn().mockResolvedValue(undefined),
 };
 (PatchStore.create as jest.Mock) = jest.fn().mockResolvedValue(mockStore);
@@ -93,12 +95,16 @@ describe('GET /values/:namespace/:kind/:name', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockStore.findByEntityRef.mockResolvedValue({});
-    mockStore.getLatestUpdatedAt.mockResolvedValue(null);
+    mockStore.findWithLatestUpdatedAt.mockResolvedValue({
+      rows: {},
+      latestUpdatedAt: null,
+    });
   });
 
   it('returns raw DB data only when fillFromEntity param is absent', async () => {
-    mockStore.findByEntityRef.mockResolvedValueOnce({
-      'component-metadata': { description: 'stored description' },
+    mockStore.findWithLatestUpdatedAt.mockResolvedValueOnce({
+      rows: { 'component-metadata': { description: 'stored description' } },
+      latestUpdatedAt: null,
     });
 
     const getEntityByRef = jest.fn();
@@ -118,9 +124,10 @@ describe('GET /values/:namespace/:kind/:name', () => {
   });
 
   it('includes an ETag header in raw mode based on latest updated_at', async () => {
-    mockStore.getLatestUpdatedAt.mockResolvedValueOnce(
-      '2026-01-01T00:00:00.000Z',
-    );
+    mockStore.findWithLatestUpdatedAt.mockResolvedValueOnce({
+      rows: {},
+      latestUpdatedAt: '2026-01-01T00:00:00.000Z',
+    });
     (CatalogClient as jest.Mock).mockImplementation(() => ({}));
 
     const app = await buildApp();
@@ -136,7 +143,10 @@ describe('GET /values/:namespace/:kind/:name', () => {
 
   it('returns 304 when If-None-Match matches the current ETag', async () => {
     const timestamp = '2026-01-01T00:00:00.000Z';
-    mockStore.getLatestUpdatedAt.mockResolvedValue(timestamp);
+    mockStore.findWithLatestUpdatedAt.mockResolvedValue({
+      rows: {},
+      latestUpdatedAt: timestamp,
+    });
     (CatalogClient as jest.Mock).mockImplementation(() => ({}));
 
     const app = await buildApp();
@@ -158,9 +168,9 @@ describe('GET /values/:namespace/:kind/:name', () => {
   });
 
   it('returns 200 with data when If-None-Match does not match', async () => {
-    mockStore.getLatestUpdatedAt.mockResolvedValue('2026-01-01T00:00:00.000Z');
-    mockStore.findByEntityRef.mockResolvedValue({
-      'component-metadata': { description: 'fresh data' },
+    mockStore.findWithLatestUpdatedAt.mockResolvedValue({
+      rows: { 'component-metadata': { description: 'fresh data' } },
+      latestUpdatedAt: '2026-01-01T00:00:00.000Z',
     });
     (CatalogClient as jest.Mock).mockImplementation(() => ({}));
 

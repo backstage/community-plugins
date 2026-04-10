@@ -15,14 +15,7 @@
  */
 import { get } from 'lodash';
 import { Entity } from '@backstage/catalog-model';
-
-/**
- * A resolved bidirectional relation pair, as parsed from `entityPatch.relations`.
- */
-export interface RelationPair {
-  forward: string;
-  reverse: string;
-}
+import type { RelationPair } from '@backstage-community/plugin-entity-patch-common';
 
 /**
  * Reads a value from a deeply nested object using a dot-separated path.

@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { evaluateFilterPredicate, FilterPredicate } from '@backstage/filter-predicates';
+import {
+  evaluateFilterPredicate,
+  FilterPredicate,
+} from '@backstage/filter-predicates';
 import { Entity } from '@backstage/catalog-model';
-import { PatchDefinition } from '../components/DefaultPatchesLayout/types';
+import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 
 /**
  * Returns an entity predicate that is true when at least one patch's filter
