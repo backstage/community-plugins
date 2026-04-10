@@ -15,7 +15,7 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import { PatchDefinition } from '../components/DefaultPatchesLayout/types';
+import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 import { mergePatchesFilters, filterPatchesForEntity } from './patchFilter';
 
 const groupEntity: Entity = {
@@ -138,7 +138,6 @@ describe('buildMenuFilter', () => {
     // department type matches neither patch — menu must be hidden
     expect(filter(departmentGroup)).toBe(false);
   });
-
 });
 
 // ---------------------------------------------------------------------------

@@ -60,7 +60,7 @@ describe('EntityPatchClient.savePatch', () => {
     });
   });
 
-  it('throws immediately when data is empty — callers must skip empty patches', async () => {
+  it('returns early silently when data is empty — no fetch is made', async () => {
     const client = makeClient();
     await expect(
       client.savePatch(
@@ -70,7 +70,7 @@ describe('EntityPatchClient.savePatch', () => {
         'component-metadata',
         {},
       ),
-    ).rejects.toThrow(/empty data/);
+    ).resolves.toBeUndefined();
 
     // fetch should never be called for empty data
     expect(mockFetch).not.toHaveBeenCalled();

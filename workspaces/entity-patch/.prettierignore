@@ -1,5 +1,7 @@
 dist
 dist-types
 coverage
+knip-report.md
 .vscode
 .eslintrc.js
+.playwright-mcp

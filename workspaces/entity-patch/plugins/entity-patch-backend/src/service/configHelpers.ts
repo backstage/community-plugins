@@ -15,6 +15,8 @@
  */
 
 export {
-  catalogModuleEntityPatch as default,
-  catalogModuleEntityPatch,
-} from './module';
+  buildRelationPairs,
+  buildPatchConfigs,
+  type RelationPair,
+  type PatchConfig,
+} from '@backstage-community/plugin-entity-patch-common';

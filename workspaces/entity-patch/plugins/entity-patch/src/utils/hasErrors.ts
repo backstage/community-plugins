@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export {
-  catalogModuleEntityPatch as default,
-  catalogModuleEntityPatch,
-} from './module';
+/** Returns true when any entry in the validity map is false. */
+export function hasErrors(validity: Record<string, boolean>): boolean {
+  return Object.values(validity).some(v => !v);
+}

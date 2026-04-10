@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 import { renderInTestApp } from '@backstage/frontend-test-utils';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act } from 'react';
 import { DefaultPatchesLayout } from './DefaultPatchesLayout';
-import { PatchDefinition } from './types';
+import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 
 const patches: PatchDefinition[] = [
   {

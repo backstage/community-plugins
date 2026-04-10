@@ -17,8 +17,8 @@ import {
   extractEntityValues,
   extractRelationValues,
   getByPath,
-  RelationPair,
 } from './EntityValueExtractor';
+import type { RelationPair } from '@backstage-community/plugin-entity-patch-common';
 import type { Entity } from '@backstage/catalog-model';
 
 const entity: Entity = {

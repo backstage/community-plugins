@@ -18,8 +18,7 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { JsonObject } from '@backstage/types';
 import { Entity } from '@backstage/catalog-model';
 
-jest.mock('node-fetch');
-const nodeFetch = require('node-fetch');
+let mockFetch: jest.SpyInstance;
 
 const mockComponentEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -67,8 +66,13 @@ function makeProcessor(
 }
 
 beforeEach(() => {
+  mockFetch = jest.spyOn(global, 'fetch');
   jest.clearAllMocks();
   mockCache.get.mockResolvedValue(undefined);
+});
+
+afterEach(() => {
+  mockFetch.mockRestore();
 });
 
 describe('EntityPatchProcessor', () => {
@@ -103,11 +107,11 @@ describe('EntityPatchProcessor', () => {
       );
 
       expect(result).toEqual(mockComponentEntity);
-      expect(nodeFetch).not.toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
     });
 
     it('applies saved patch data to entity using the mapping', async () => {
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-abc"' : null) },
@@ -157,7 +161,7 @@ describe('EntityPatchProcessor', () => {
         },
       };
 
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-pd"' : null) },
@@ -198,7 +202,7 @@ describe('EntityPatchProcessor', () => {
         etag: '"etag-abc"',
       };
       mockCache.get.mockResolvedValue(cachedData);
-      nodeFetch.mockResolvedValue({ ok: false, status: 304 });
+      mockFetch.mockResolvedValue({ ok: false, status: 304 });
 
       const processor = makeProcessor();
       const result = await processor.preProcessEntity(
@@ -211,8 +215,8 @@ describe('EntityPatchProcessor', () => {
 
       expect(result.metadata.description).toBe('cached description');
       // API was still called (with If-None-Match) but no cache.set because data unchanged
-      expect(nodeFetch).toHaveBeenCalledTimes(1);
-      const callHeaders = nodeFetch.mock.calls[0][1].headers;
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      const callHeaders = mockFetch.mock.calls[0][1].headers;
       expect(callHeaders['If-None-Match']).toBe('"etag-abc"');
       expect(mockCache.set).not.toHaveBeenCalled();
     });
@@ -224,7 +228,7 @@ describe('EntityPatchProcessor', () => {
       };
       mockCache.get.mockResolvedValue(cachedData);
 
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-new"' : null) },
@@ -243,7 +247,7 @@ describe('EntityPatchProcessor', () => {
       );
 
       expect(result.metadata.description).toBe('refreshed');
-      expect(nodeFetch).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(mockCache.set).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({ etag: '"etag-new"' }),
@@ -251,7 +255,7 @@ describe('EntityPatchProcessor', () => {
     });
 
     it('returns entity unchanged on API 404 (no patch data saved)', async () => {
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: false,
         status: 404,
         json: async () => ({}),
@@ -270,7 +274,7 @@ describe('EntityPatchProcessor', () => {
     });
 
     it('returns entity unchanged on network error', async () => {
-      nodeFetch.mockRejectedValue(new Error('ECONNREFUSED'));
+      mockFetch.mockRejectedValue(new Error('ECONNREFUSED'));
 
       const processor = makeProcessor();
       const result = await processor.preProcessEntity(
@@ -285,7 +289,7 @@ describe('EntityPatchProcessor', () => {
     });
 
     it('skips fields where fieldName has no mapping entry', async () => {
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-xyz"' : null) },
@@ -335,7 +339,7 @@ describe('EntityPatchProcessor', () => {
           ],
         } as unknown as JsonObject,
       };
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-rel"' : null) },
@@ -398,7 +402,7 @@ describe('EntityPatchProcessor', () => {
     };
 
     it('emits forward and reverse relations for each stored ref', async () => {
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-team"' : null) },
@@ -444,7 +448,7 @@ describe('EntityPatchProcessor', () => {
     });
 
     it('emits nothing when no patch data is saved', async () => {
-      nodeFetch.mockResolvedValue({ ok: false, status: 404 });
+      mockFetch.mockResolvedValue({ ok: false, status: 404 });
 
       const emitted: any[] = [];
       const processor = makeProcessor(relationsConfig);
@@ -459,7 +463,7 @@ describe('EntityPatchProcessor', () => {
     });
 
     it('returns entity unchanged and emits nothing when no patches match', async () => {
-      nodeFetch.mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
         headers: { get: (h: string) => (h === 'etag' ? '"etag-x"' : null) },

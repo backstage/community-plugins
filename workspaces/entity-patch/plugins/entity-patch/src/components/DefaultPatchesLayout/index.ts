@@ -15,4 +15,3 @@
  */
 
 export { DefaultPatchesLayout } from './DefaultPatchesLayout';
-export type { PatchDefinition, PatchProperty, PatchSection } from './types';

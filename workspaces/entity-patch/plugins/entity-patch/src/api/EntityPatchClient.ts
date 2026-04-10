@@ -51,11 +51,15 @@ export class EntityPatchClient {
   ): Promise<PatchesData> {
     const base = await this.baseUrl();
     const response = await this.fetchApi.fetch(
-      `${base}/values/${encodeURIComponent(namespace)}/${encodeURIComponent(kind)}/${encodeURIComponent(name)}?fillFromEntity=true`,
+      `${base}/values/${encodeURIComponent(namespace)}/${encodeURIComponent(
+        kind,
+      )}/${encodeURIComponent(name)}?fillFromEntity=true`,
     );
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch initial values (${response.status}): ${await response.text()}`,
+        `Failed to fetch initial values (${
+          response.status
+        }): ${await response.text()}`,
       );
     }
     return response.json();
@@ -63,7 +67,7 @@ export class EntityPatchClient {
 
   /**
    * Persists form data for a single patch on an entity.
-   * Throws if `data` is empty — callers should skip patches with no changes.
+   * Silently returns if `data` is empty — callers may skip empty patches before calling.
    */
   async savePatch(
     kind: string,
@@ -73,13 +77,13 @@ export class EntityPatchClient {
     data: Record<string, unknown>,
   ): Promise<void> {
     if (!data || Object.keys(data).length === 0) {
-      throw new Error(
-        `savePatch called with empty data for patch "${patchName}" — skipping empty patches before calling savePatch`,
-      );
+      return;
     }
     const base = await this.baseUrl();
     const response = await this.fetchApi.fetch(
-      `${base}/patches/${encodeURIComponent(namespace)}/${encodeURIComponent(kind)}/${encodeURIComponent(name)}`,
+      `${base}/patches/${encodeURIComponent(namespace)}/${encodeURIComponent(
+        kind,
+      )}/${encodeURIComponent(name)}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

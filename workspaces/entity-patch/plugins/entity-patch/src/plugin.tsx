@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useEffect, useMemo, useState } from 'react';
 import {
   configApiRef,
   createFrontendPlugin,
@@ -30,13 +31,14 @@ import { rootRouteRef } from './routes';
 import { PatchEditDialog } from './components/PatchEditDialog';
 import { formFieldsApiRef } from '@backstage/plugin-scaffolder-react/alpha';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
-import { PatchDefinition } from './components/DefaultPatchesLayout/types';
+import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 import {
   mergePatchesFilters,
   filterPatchesForEntity,
 } from './utils/patchFilter';
-import { validatePatchConfig } from './utils/validatePatchConfig';
+import { validatePatchConfig } from '@backstage-community/plugin-entity-patch-common';
 import { EntityPatchClient } from './api/EntityPatchClient';
+import { saveAllPatches } from './utils/saveAllPatches';
 
 const entityPatchContextMenuItem =
   EntityContextMenuItemBlueprint.makeWithOverrides({
@@ -60,14 +62,27 @@ const entityPatchContextMenuItem =
           const discoveryApi = useApi(discoveryApiRef);
           const fetchApi = useApi(fetchApiRef);
           const matchingPatches = filterPatchesForEntity(patchesConfig, entity);
-          const patchClient = new EntityPatchClient({ discoveryApi, fetchApi });
+          const patchClient = useMemo(
+            () => new EntityPatchClient({ discoveryApi, fetchApi }),
+            [discoveryApi, fetchApi],
+          );
+          const [formFields, setFormFields] = useState<
+            FieldExtensionOptions<any, any>[]
+          >([]);
+          useEffect(() => {
+            formFieldsApi.loadFormFields().then(fields => {
+              setFormFields(
+                fields as unknown[] as FieldExtensionOptions<any, any>[],
+              );
+            });
+          }, [formFieldsApi]);
           return {
-            title: 'Edit Patch',
+            title: 'Edit Entity',
             onClick: async () => {
-              const formFields = await formFieldsApi.loadFormFields();
               const { kind } = entity;
               const { namespace, name } = entity.metadata;
               let initialData = {};
+              let loadError = false;
               try {
                 initialData = await patchClient.getInitialValues(
                   kind,
@@ -76,6 +91,7 @@ const entityPatchContextMenuItem =
                 );
               } catch {
                 // Backend may not be installed; fall back to empty initial data
+                loadError = true;
               }
 
               dialogApi.show(({ dialog }) => (
@@ -83,19 +99,15 @@ const entityPatchContextMenuItem =
                   dialog={dialog}
                   patches={matchingPatches}
                   initialData={initialData}
+                  loadError={loadError}
                   onSave={async data => {
-                    for (const [patchName, patchData] of Object.entries(data)) {
-                      const record = patchData as Record<string, unknown>;
-                      // Skip patches with no data — nothing to persist
-                      if (!record || Object.keys(record).length === 0) continue;
-                      await patchClient.savePatch(
-                        kind,
-                        namespace ?? 'default',
-                        name,
-                        patchName,
-                        record,
-                      );
-                    }
+                    await saveAllPatches(
+                      patchClient,
+                      kind,
+                      namespace ?? 'default',
+                      name,
+                      data,
+                    );
                   }}
                   formFields={
                     formFields as unknown[] as FieldExtensionOptions<any, any>[]
@@ -120,6 +132,11 @@ const entityPatchPage = PageBlueprint.make({
   },
 });
 
+/**
+ * The Entity Patch plugin for Backstage, which provides functionality to create and manage patches for entities in the Backstage catalog.
+ *
+ * @public
+ */
 export const entityPatchPlugin = createFrontendPlugin({
   pluginId: 'entity-patch',
   extensions: [entityPatchContextMenuItem, entityPatchPage],
