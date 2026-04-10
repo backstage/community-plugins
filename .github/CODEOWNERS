@@ -48,6 +48,7 @@ yarn.lock                                                               @backsta
 /workspaces/cost-insights                                               @backstage/community-plugins-maintainers  @backstage/silver-lining
 /workspaces/dynatrace                                                   @backstage/community-plugins-maintainers
 /workspaces/entity-feedback                                             @backstage/community-plugins-maintainers  @kuangp
+/workspaces/entity-patch                                                @backstage/community-plugins-maintainers  @Sarabadu
 /workspaces/entity-validation                                           @backstage/community-plugins-maintainers
 /workspaces/explore                                                     @backstage/community-plugins-maintainers  @backstage/sda-se-reviewers
 /workspaces/fairwinds-insights                                          @backstage/community-plugins-maintainers  @vitorvezani
