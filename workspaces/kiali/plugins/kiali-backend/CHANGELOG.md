@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.29.0
+
+### Minor Changes
+
+- 93d62a4: Fix JS error. Update dependencies
+
 ## 1.28.1
 
 ### Patch Changes
