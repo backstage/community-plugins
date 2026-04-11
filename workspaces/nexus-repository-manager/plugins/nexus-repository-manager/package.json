@@ -71,7 +71,7 @@
     "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/test-utils": "^1.7.16",
     "@backstage/ui": "^0.13.1",
-    "@hey-api/openapi-ts": "0.93.1",
+    "@hey-api/openapi-ts": "0.95.0",
     "@playwright/test": "^1.57.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
