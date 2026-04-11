@@ -441,7 +441,7 @@ __metadata:
     "@testing-library/react-hooks": "npm:^8.0.1"
     "@testing-library/user-event": "npm:^14.0.0"
     "@types/lodash": "npm:^4.17.16"
-    "@types/node": "npm:22.19.11"
+    "@types/node": "npm:22.19.17"
     "@types/react": "npm:^18.2.58"
     "@types/react-dom": "npm:^18.2.58"
     canvas: "npm:^3.1.2"
@@ -8028,12 +8028,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.19.11":
-  version: 22.19.11
-  resolution: "@types/node@npm:22.19.11"
+"@types/node@npm:22.19.17":
+  version: 22.19.17
+  resolution: "@types/node@npm:22.19.17"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/bb899551432ce2bf3e1a175d58802f25dfb6a96e574ce1f0056d55d0ce48513961976ee3621215565142a8ad99a2464d9c384fa53ccba0650def031d218800f7
+  checksum: 10/8adcf9c2e9e7c524196efdd5ee60ebeda980b4ec9b5b8650e2341a2cabe46d368f3a4e4c0050b3bf26eb9cf383453ea2193ec5604079cdf9493a11a742f62018
   languageName: node
   linkType: hard
 
