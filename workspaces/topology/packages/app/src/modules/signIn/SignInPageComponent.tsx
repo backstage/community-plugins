@@ -13,9 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@backstage/cli/asset-types';
-import '@backstage/ui/css/styles.css';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import { SignInPage } from '@backstage/core-components';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import type { SignInPageProps } from '@backstage/plugin-app-react';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(App);
+const githubProvider = {
+  id: 'github-auth-provider',
+  title: 'GitHub',
+  message: 'Sign in using GitHub',
+  apiRef: githubAuthApiRef,
+};
+
+export function SignInPageComponent(props: SignInPageProps) {
+  return <SignInPage {...props} auto providers={['guest', githubProvider]} />;
+}

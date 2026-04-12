@@ -16,13 +16,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.ts",
+    "./alpha": "./src/alpha/index.tsx",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
-        "src/alpha.ts"
+        "src/alpha/index.tsx"
       ],
       "package.json": [
         "package.json"
@@ -56,6 +56,8 @@
     "@backstage/plugin-permission-react": "^0.5.1",
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.15.0",
+    "@backstage/frontend-plugin-api": "^0.15.0",
+    "@backstage/plugin-app-react": "^0.2.1",
     "@kubernetes/client-node": "1.4.0",
     "@patternfly/patternfly": "^6.1.0",
     "@patternfly/react-charts": "^8.1.0",

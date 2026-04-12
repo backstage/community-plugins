@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@backstage/cli/asset-types';
-import '@backstage/ui/css/styles.css';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { rootRouteRef } from '../../routes';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(App);
+export const topologyEntityContent = EntityContentBlueprint.makeWithOverrides({
+  name: 'entity-content-topology',
+  factory(original) {
+    return original({
+      path: '/topology',
+      title: 'Topology',
+      routeRef: rootRouteRef,
+      loader: async () => {
+        const { TopologyComponent } = await import('../../components/Topology');
+        return <TopologyComponent />;
+      },
+    });
+  },
+});

@@ -46,30 +46,13 @@
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.15.0",
     "@remixicon/react": "^4.2.0",
+    "@backstage/frontend-defaults": "^0.5.0",
+    "@backstage/frontend-plugin-api": "^0.15.0",
+    "@backstage/plugin-app-react": "^0.2.1",
     "react": "^18.0.2",
-    "react-dom": "^18.0.2",
-    "react-router": "^6.30.2",
-    "react-router-dom": "^6.30.2"
+    "react-dom": "^18.0.2"
   },
   "devDependencies": {
-    "@playwright/test": "1.60.0",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^16.0.0",
-    "@types/react-dom": "*"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "files": [
-    "dist"
-  ]
+    "@types/react": "^18"
+  }
 }
