@@ -12718,7 +12718,6 @@ __metadata:
     "@types/react-dom": "npm:*"
     react: "npm:^18.0.2"
     react-dom: "npm:^18.0.2"
-    react-router: "npm:^6.3.0"
     react-router-dom: "npm:^6.3.0"
   languageName: unknown
   linkType: soft
