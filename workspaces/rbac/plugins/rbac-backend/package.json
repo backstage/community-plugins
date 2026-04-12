@@ -67,7 +67,7 @@
     "@types/node": "22.19.17",
     "@types/supertest": "7.2.0",
     "knex-mock-client": "3.0.2",
-    "qs": "6.14.2",
+    "qs": "6.15.1",
     "supertest": "7.2.2"
   },
   "files": [
