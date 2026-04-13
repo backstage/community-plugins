@@ -50,8 +50,8 @@ site
 # vscode database functionality support files
 *.session.sql
 
-# E2E test reports
-e2e-test-report/
+# E2E test reports (playwright.config: e2e-test-report-${APP_MODE})
+e2e-test-report*/
 
 # Playwright
 test-results/
