@@ -28,6 +28,7 @@ const topologyTranslation = TranslationBlueprint.make({
   },
 });
 
+/** @alpha */
 export default createFrontendPlugin({
   pluginId: 'topology',
   extensions: [],
@@ -36,11 +37,13 @@ export default createFrontendPlugin({
   },
 });
 
+/** @alpha */
 export const topologyCatalogModule = createFrontendModule({
   pluginId: 'catalog',
   extensions: [topologyEntityContent],
 });
 
+/** @alpha */
 export const topologyTranslationsModule = createFrontendModule({
   pluginId: 'app',
   extensions: [topologyTranslation],
