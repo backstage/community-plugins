@@ -13,206 +13,159 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
-import { createDevApp } from '@backstage/dev-utils';
-import { Page, Header, TabbedLayout } from '@backstage/core-components';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { KubernetesApi } from '@backstage/plugin-kubernetes-react';
-import { mockApis, TestApiProvider } from '@backstage/test-utils';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
+
+/**
+ * New Frontend System dev mode for the Topology plugin.
+ */
+
+import '@backstage/cli/asset-types';
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui';
+
+import ReactDOM from 'react-dom/client';
+
+import { createApp } from '@backstage/frontend-defaults';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+  pluginHeaderActionsApiRef,
+} from '@backstage/frontend-plugin-api';
+import {
+  Sidebar,
+  SidebarGroup,
+  SidebarItem,
+  SidebarScrollWrapper,
+  SidebarSpace,
+} from '@backstage/core-components';
+import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import {
+  SidebarLanguageSwitcher,
+  SidebarSignOutButton,
+} from '@backstage/dev-utils';
+
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
-import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
-import { TopologyPage, topologyPlugin } from '../src/plugin';
-import { topologyTranslations } from '../src/translations';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
 
-const mockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage',
-    description: 'backstage.io',
-    annotations: {
-      'backstage.io/kubernetes-id': 'backstage',
-    },
+import topologyPlugin, {
+  topologyCatalogModule,
+  topologyTranslationsModule,
+} from '../src/alpha';
+
+import {
+  mockCatalogApi,
+  mockKubernetesClient,
+  mockKubernetesAuthProviderApi,
+} from './mocks';
+
+const catalogDevModule = createFrontendModule({
+  pluginId: 'catalog',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'catalog',
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => mockCatalogApi,
+        }),
+    }),
+  ],
+});
+
+const kubernetesDevModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'kubernetes',
+      params: defineParams =>
+        defineParams({
+          api: kubernetesApiRef,
+          deps: {},
+          factory: () => mockKubernetesClient,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'kubernetes-auth-providers',
+      params: defineParams =>
+        defineParams({
+          api: kubernetesAuthProvidersApiRef,
+          deps: {},
+          factory: () => mockKubernetesAuthProviderApi,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => ({
+            authorize: async () => ({
+              result: window.location.pathname.includes('permission-denied')
+                ? AuthorizeResult.DENY
+                : AuthorizeResult.ALLOW,
+            }),
+          }),
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'plugin-header-actions',
+      params: defineParams =>
+        defineParams({
+          api: pluginHeaderActionsApiRef,
+          deps: {},
+          factory: () => ({
+            getPluginHeaderActions: () => [],
+          }),
+        }),
+    }),
+  ],
+});
+
+const devSidebarContent = NavContentBlueprint.make({
+  params: {
+    component: ({ items }) => (
+      <Sidebar>
+        <SidebarGroup label="Menu">
+          <SidebarScrollWrapper>
+            {items.map((item, index) => (
+              <SidebarItem {...item} key={index} />
+            ))}
+          </SidebarScrollWrapper>
+        </SidebarGroup>
+        <SidebarSpace />
+        <SidebarLanguageSwitcher />
+        <SidebarSignOutButton />
+      </Sidebar>
+    ),
   },
-  spec: {
-    lifecycle: 'production',
-    type: 'service',
-    owner: 'user:guest',
-  },
-};
+});
 
-const permissionDeniedMockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'permission-denied',
-    description: 'backstage.io',
-    annotations: {
-      'backstage.io/kubernetes-id': 'backstage',
-    },
-  },
-  spec: {
-    lifecycle: 'production',
-    type: 'service',
-    owner: 'user:guest',
-  },
-};
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [devSidebarContent],
+});
 
-class MockKubernetesClient implements KubernetesApi {
-  readonly resources;
+const app = createApp({
+  features: [
+    devNavModule,
+    topologyPlugin,
+    topologyCatalogModule,
+    topologyTranslationsModule,
+    catalogDevModule,
+    kubernetesDevModule,
+  ],
+});
 
-  constructor(fixtureData: { [resourceType: string]: any[] }) {
-    this.resources = Object.entries(fixtureData).flatMap(
-      ([type, resources]) => ({
-        type: type.toLocaleLowerCase('en-US'),
-        resources,
-      }),
-    );
-  }
-  async getWorkloadsByEntity(_request: any): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-  async getCustomObjectsByEntity(_request: any): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-
-  async getObjectsByEntity(): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-
-  async getClusters(): Promise<{ name: string; authProvider: string }[]> {
-    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
-  }
-  async getCluster(_clusterName: string): Promise<
-    | {
-        name: string;
-        authProvider: string;
-        oidcTokenProvider?: string;
-        dashboardUrl?: string;
-      }
-    | undefined
-  > {
-    return { name: 'mock-cluster', authProvider: 'serviceAccount' };
-  }
-
-  async proxy(_options: { clusterName: String; path: String }): Promise<any> {
-    return {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name: 'mock-ns',
-      },
-    };
-  }
+if (window.location.pathname === '/') {
+  window.location.replace('/catalog');
 }
 
-const mockKubernetesAuthProviderApiRef = {
-  decorateRequestBodyForAuth: async () => {
-    return {
-      entity: {
-        apiVersion: 'v1',
-        kind: 'xyz',
-        metadata: { name: 'hey' },
-      },
-    };
-  },
-  getCredentials: async () => {
-    return {};
-  },
-};
+const root = app.createRoot();
 
-createDevApp()
-  .registerPlugin(topologyPlugin)
-  .addTranslationResource(topologyTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
-  .setDefaultLanguage('en')
-  .addPage({
-    element: (
-      <TestApiProvider
-        apis={[
-          [kubernetesApiRef, new MockKubernetesClient(mockKubernetesResponse)],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
-          [permissionApiRef, mockApis.permission()],
-        ]}
-      >
-        <EntityProvider entity={mockEntity}>
-          <Page themeId="service">
-            <Header
-              type="component — service"
-              title={mockEntity.metadata.name}
-            />
-            <TabbedLayout>
-              <TabbedLayout.Route path="/" title="Topology">
-                <TopologyPage />
-              </TabbedLayout.Route>
-            </TabbedLayout>
-          </Page>
-        </EntityProvider>
-      </TestApiProvider>
-    ),
-    title: 'Topology',
-    path: '/topology',
-  })
-  .addPage({
-    element: (
-      <TestApiProvider
-        apis={[
-          [kubernetesApiRef, new MockKubernetesClient(mockKubernetesResponse)],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
-          [
-            permissionApiRef,
-            mockApis.permission({ authorize: AuthorizeResult.DENY }),
-          ],
-        ]}
-      >
-        <EntityProvider entity={permissionDeniedMockEntity}>
-          <Page themeId="service">
-            <Header
-              type="component — service"
-              title={permissionDeniedMockEntity.metadata.name}
-            />
-            <TabbedLayout>
-              <TabbedLayout.Route path="/" title="Topology">
-                <TopologyPage />
-              </TabbedLayout.Route>
-            </TabbedLayout>
-          </Page>
-        </EntityProvider>
-      </TestApiProvider>
-    ),
-    title: 'Missing permissions',
-    path: '/missing-permissions',
-  })
-  .render();
+ReactDOM.createRoot(document.getElementById('root')!).render(root);
