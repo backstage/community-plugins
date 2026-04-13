@@ -56,6 +56,46 @@ export interface CopilotEditors {
 }
 
 // @public
+export interface CopilotFeatureBreakdown {
+  // (undocumented)
+  code_acceptance_activity_count?: number;
+  // (undocumented)
+  code_generation_activity_count?: number;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  loc_added_sum?: number;
+  // (undocumented)
+  loc_deleted_sum?: number;
+  // (undocumented)
+  loc_suggested_to_add_sum?: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum?: number;
+  // (undocumented)
+  user_initiated_interaction_count?: number;
+}
+
+// @public
+export interface CopilotIdeBreakdown {
+  // (undocumented)
+  code_acceptance_activity_count?: number;
+  // (undocumented)
+  code_generation_activity_count?: number;
+  // (undocumented)
+  ide: string;
+  // (undocumented)
+  loc_added_sum?: number;
+  // (undocumented)
+  loc_deleted_sum?: number;
+  // (undocumented)
+  loc_suggested_to_add_sum?: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum?: number;
+  // (undocumented)
+  user_initiated_interaction_count?: number;
+}
+
+// @public
 export interface CopilotIdeCodeCompletions {
   editors: CopilotEditors[];
   languages: CopilotIdeLanguages[];
@@ -66,6 +106,46 @@ export interface CopilotIdeCodeCompletions {
 export interface CopilotIdeLanguages {
   name: string;
   total_engaged_users: number;
+}
+
+// @public
+export interface CopilotLanguageFeatureBreakdown {
+  // (undocumented)
+  code_acceptance_activity_count?: number;
+  // (undocumented)
+  code_generation_activity_count?: number;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  loc_added_sum?: number;
+  // (undocumented)
+  loc_deleted_sum?: number;
+  // (undocumented)
+  loc_suggested_to_add_sum?: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum?: number;
+}
+
+// @public
+export interface CopilotLanguageModelBreakdown {
+  // (undocumented)
+  code_acceptance_activity_count?: number;
+  // (undocumented)
+  code_generation_activity_count?: number;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  loc_added_sum?: number;
+  // (undocumented)
+  loc_deleted_sum?: number;
+  // (undocumented)
+  loc_suggested_to_add_sum?: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum?: number;
+  // (undocumented)
+  model: string;
 }
 
 // @public
@@ -90,10 +170,92 @@ export interface CopilotMetrics {
 }
 
 // @public
+export interface CopilotModelFeatureBreakdown {
+  // (undocumented)
+  code_acceptance_activity_count?: number;
+  // (undocumented)
+  code_generation_activity_count?: number;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  loc_added_sum?: number;
+  // (undocumented)
+  loc_deleted_sum?: number;
+  // (undocumented)
+  loc_suggested_to_add_sum?: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum?: number;
+  // (undocumented)
+  model: string;
+  // (undocumented)
+  user_initiated_interaction_count?: number;
+}
+
+// @public
 export interface CopilotModels {
   languages: CopilotLanguages[];
   name: string;
   total_engaged_users: number;
+}
+
+// @public
+export interface CopilotOrgDayTotal {
+  // (undocumented)
+  code_acceptance_activity_count?: number;
+  // (undocumented)
+  code_generation_activity_count?: number;
+  // (undocumented)
+  daily_active_users?: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  enterprise_id?: string;
+  // (undocumented)
+  loc_added_sum?: number;
+  // (undocumented)
+  loc_deleted_sum?: number;
+  // (undocumented)
+  loc_suggested_to_add_sum?: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum?: number;
+  // (undocumented)
+  monthly_active_agent_users?: number;
+  // (undocumented)
+  monthly_active_chat_users?: number;
+  // (undocumented)
+  monthly_active_users?: number;
+  // (undocumented)
+  organization_id: string;
+  // (undocumented)
+  totals_by_feature?: CopilotFeatureBreakdown[];
+  // (undocumented)
+  totals_by_ide?: CopilotIdeBreakdown[];
+  // (undocumented)
+  totals_by_language_feature?: CopilotLanguageFeatureBreakdown[];
+  // (undocumented)
+  totals_by_language_model?: CopilotLanguageModelBreakdown[];
+  // (undocumented)
+  totals_by_model_feature?: CopilotModelFeatureBreakdown[];
+  // (undocumented)
+  user_initiated_interaction_count?: number;
+  // (undocumented)
+  weekly_active_users?: number;
+}
+
+// @public
+export interface CopilotOrgReportFile {
+  // (undocumented)
+  created_at: string;
+  // (undocumented)
+  day_totals: CopilotOrgDayTotal[];
+  // (undocumented)
+  enterprise_id?: string;
+  // (undocumented)
+  organization_id: string;
+  // (undocumented)
+  report_end_day: string;
+  // (undocumented)
+  report_start_day: string;
 }
 
 // @public
