@@ -129,13 +129,24 @@ const kubernetesDevModule = createFrontendModule({
 
 const devSidebarContent = NavContentBlueprint.make({
   params: {
-    component: ({ items }) => (
+    component: props => (
       <Sidebar>
         <SidebarGroup label="Menu">
           <SidebarScrollWrapper>
-            {items.map((item, index) => (
-              <SidebarItem {...item} key={index} />
-            ))}
+            {props.navItems
+              ? props.navItems
+                  .rest()
+                  .map((item, index) => (
+                    <SidebarItem
+                      key={index}
+                      icon={() => item.icon}
+                      to={item.href}
+                      text={item.title}
+                    />
+                  ))
+              : (props as any).items?.map((item: any, index: number) => (
+                  <SidebarItem key={index} {...item} />
+                ))}
           </SidebarScrollWrapper>
         </SidebarGroup>
         <SidebarSpace />
