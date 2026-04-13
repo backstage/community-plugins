@@ -38,8 +38,7 @@
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-permission-common": "^0.9.7",
     "express": "^4.17.1",
-    "express-promise-router": "^4.1.0",
-    "undici": "^7.24.2"
+    "express-promise-router": "^4.1.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "^1.11.1",

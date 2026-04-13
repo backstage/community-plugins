@@ -14,4 +14,3 @@
  * limitations under the License.
  */
 export { argoCDPlugin as default } from './plugin';
-export { createArgoCDActions, createArgoCDResourceAction } from './actions';

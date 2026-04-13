@@ -1394,7 +1394,6 @@ __metadata:
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     supertest: "npm:^7.0.0"
-    undici: "npm:^7.24.2"
   languageName: unknown
   linkType: soft
 
