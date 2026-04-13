@@ -1249,6 +1249,7 @@ __metadata:
     "@backstage/backend-defaults": "npm:^0.16.0"
     "@backstage/backend-plugin-api": "npm:^1.8.0"
     "@backstage/backend-test-utils": "npm:^1.11.1"
+    "@backstage/catalog-model": "npm:^1.8.0"
     "@backstage/cli": "npm:^0.36.0"
     "@backstage/config": "npm:^1.3.6"
     "@backstage/errors": "npm:^1.2.7"
@@ -1526,15 +1527,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-model@npm:^1.7.6, @backstage/catalog-model@npm:^1.7.7":
-  version: 1.7.7
-  resolution: "@backstage/catalog-model@npm:1.7.7"
+"@backstage/catalog-model@npm:^1.7.6, @backstage/catalog-model@npm:^1.7.7, @backstage/catalog-model@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@backstage/catalog-model@npm:1.8.0"
   dependencies:
-    "@backstage/errors": "npm:^1.2.7"
+    "@backstage/errors": "npm:^1.3.0"
     "@backstage/types": "npm:^1.2.2"
     ajv: "npm:^8.10.0"
+    ajv-errors: "npm:^3.0.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/ccb85232eb155b9b8c3e6e925238974b94b125aaf65efa42b4d6cd6851a4b6b846cf2e336c3a59c05f978157bdc9347de2e37fc7b6634b234e2b2ea0b1cdebd8
+    zod: "npm:^3.25.76"
+  checksum: 10/f5d1c627d8d62c5f91136c144ddb0a57a57ad74a0a1e6ac18db68c3f71db25cd44a3127e5d75afa7fb221d27bfa2e87c25527ef6193cd0ed8420934138a1b42f
   languageName: node
   linkType: hard
 
@@ -2163,13 +2166,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/errors@npm:^1.2.7":
-  version: 1.2.7
-  resolution: "@backstage/errors@npm:1.2.7"
+"@backstage/errors@npm:^1.2.7, @backstage/errors@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@backstage/errors@npm:1.3.0"
   dependencies:
-    "@backstage/types": "npm:^1.2.1"
+    "@backstage/types": "npm:^1.2.2"
     serialize-error: "npm:^8.0.1"
-  checksum: 10/99bbe2cbb9f6672afe30bab02ab1cf48daa8e994fb0c5b9390075ebf9357d5f7d450b9ea889e908e2823ee47cbf5405432e32171d338653bebf1b5914b735c35
+  checksum: 10/1070f737a807f511d7d1fca401fff5aa1fb9e00f481cae9b78fe70294b4f8ee6396ecbead423a75ab0daf57d224fe70a31ac4f612bf982b7b852253a1b18be74
   languageName: node
   linkType: hard
 
@@ -2752,7 +2755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/types@npm:^1.2.1, @backstage/types@npm:^1.2.2":
+"@backstage/types@npm:^1.2.2":
   version: 1.2.2
   resolution: "@backstage/types@npm:1.2.2"
   checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
@@ -10727,7 +10730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv-errors@npm:~3.0.0":
+"ajv-errors@npm:^3.0.0, ajv-errors@npm:~3.0.0":
   version: 3.0.0
   resolution: "ajv-errors@npm:3.0.0"
   peerDependencies:
