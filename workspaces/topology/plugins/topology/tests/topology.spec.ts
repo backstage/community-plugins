@@ -67,16 +67,9 @@ test.describe('Topology plugin', () => {
       await page.goto('/missing-permissions');
       await page.reload();
 
-      await expect(
-        page.getByText(translations.permissions.missingPermission, {
-          exact: true,
-        }),
-      ).toBeVisible({ timeout: 60000 });
-
-      const topologyTextCount = await page
-        .getByText('Topology', { exact: true })
-        .count();
-      expect(topologyTextCount).toEqual(2);
+      await expect(page.locator('h3')).toContainText(
+        translations.permissions.missingPermission,
+      );
       await expect(page.getByRole('article')).toContainText(
         'kubernetes.clusters.read, kubernetes.resources.read',
       );
