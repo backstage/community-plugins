@@ -49,4 +49,7 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 // Jenkins
 backend.add(import('@backstage-community/plugin-jenkins-backend'));
 
+// MCP Actions
+backend.add(import('@backstage/plugin-mcp-actions-backend'));
+
 backend.start();

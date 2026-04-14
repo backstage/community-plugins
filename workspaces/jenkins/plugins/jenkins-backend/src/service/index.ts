@@ -24,3 +24,5 @@ export type {
   JenkinsInstanceConfig,
 } from './jenkinsInfoProvider';
 export * from './JenkinsBuilder';
+export { JenkinsService } from './jenkinsService';
+export type { EntityRef, RebuildResult } from './jenkinsService';

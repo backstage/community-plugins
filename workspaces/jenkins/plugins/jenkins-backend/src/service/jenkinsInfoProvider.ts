@@ -28,6 +28,7 @@ import {
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { Config } from '@backstage/config';
+import { InputError, NotFoundError } from '@backstage/errors';
 
 /** @public */
 export interface JenkinsInfoProvider {
@@ -122,7 +123,7 @@ export class JenkinsConfig {
     );
 
     if (hasNamedDefault && (baseUrl || username || apiKey)) {
-      throw new Error(
+      throw new InputError(
         `Found both a named jenkins instance with name ${DEFAULT_JENKINS_NAME} and top level baseUrl, username or apiKey config. Use only one style of config.`,
       );
     }
@@ -130,7 +131,7 @@ export class JenkinsConfig {
     const unnamedNonePresent = !baseUrl && !username && !apiKey;
     const unnamedAllPresent = baseUrl && username && apiKey;
     if (!(unnamedAllPresent || unnamedNonePresent)) {
-      throw new Error(
+      throw new InputError(
         `Found partial default jenkins config. All (or none) of baseUrl, username and apiKey must be provided.`,
       );
     }
@@ -169,7 +170,7 @@ export class JenkinsConfig {
       );
 
       if (!instanceConfig) {
-        throw new Error(
+        throw new NotFoundError(
           `Couldn't find a default jenkins instance in the config. Either configure an instance with name ${DEFAULT_JENKINS_NAME} or add a prefix to your annotation value.`,
         );
       }
@@ -181,7 +182,7 @@ export class JenkinsConfig {
     const instanceConfig = this.instances.find(c => c.name === jenkinsName);
 
     if (!instanceConfig) {
-      throw new Error(
+      throw new NotFoundError(
         `Couldn't find a jenkins instance in the config with name ${jenkinsName}`,
       );
     }
@@ -238,7 +239,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
       credentials,
     });
     if (!entity) {
-      throw new Error(
+      throw new NotFoundError(
         `Couldn't find entity with name: ${stringifyEntityRef(opt.entityRef)}`,
       );
     }
@@ -247,7 +248,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     const jenkinsAndJobNames =
       DefaultJenkinsInfoProvider.getEntityAnnotationValue(entity);
     if (!jenkinsAndJobNames || jenkinsAndJobNames.length === 0) {
-      throw new Error(
+      throw new NotFoundError(
         `Couldn't find jenkins annotation (${
           DefaultJenkinsInfoProvider.NEW_JENKINS_ANNOTATION
         }) on entity with name: ${stringifyEntityRef(opt.entityRef)}`,
@@ -279,7 +280,7 @@ export class DefaultJenkinsInfoProvider implements JenkinsInfoProvider {
     // Ensure that all jobs belong to a single Jenkins instance.
     const instancesFound: string[] = Object.keys(jobsByInstance);
     if (instancesFound.length > 1) {
-      throw new Error(
+      throw new InputError(
         `More than one Jenkins instance found: (${instancesFound}) ` +
           `on entity with name: ${stringifyEntityRef(opt.entityRef)}. ` +
           `Please use the same instance for all jobs.`,
