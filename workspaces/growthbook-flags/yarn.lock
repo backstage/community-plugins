@@ -1293,7 +1293,7 @@ __metadata:
     react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.6.0"
   peerDependencies:
-    react: ^17.0.0 || ^18.0.0
+    react: ^18.0.0
     react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
