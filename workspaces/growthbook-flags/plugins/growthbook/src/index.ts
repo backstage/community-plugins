@@ -23,7 +23,3 @@ export {
 } from './components/EntityGrowthbookFlagsContent';
 export { growthbookFlagsApiRef } from './api';
 export type { GrowthbookFlagsApi } from './api';
-export type {
-  FlagRow,
-  FlagType,
-} from '@backstage-community/plugin-growthbook-common';

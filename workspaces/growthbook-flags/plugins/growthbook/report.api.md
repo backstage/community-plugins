@@ -5,16 +5,11 @@
 ```ts
 import { ApiRef } from '@backstage/core-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { FlagRow } from '@backstage-community/plugin-growthbook-common';
-import { FlagType } from '@backstage-community/plugin-growthbook-common';
+import type { FlagRow } from '@backstage-community/plugin-growthbook-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public (undocumented)
 export function EntityGrowthbookFlagsContent(): JSX_2.Element;
-
-export { FlagRow };
-
-export { FlagType };
 
 // @public (undocumented)
 export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
