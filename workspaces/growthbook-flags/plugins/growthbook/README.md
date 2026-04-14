@@ -21,7 +21,27 @@ yarn workspace app add @backstage-community/plugin-growthbook
 
 ## Setup
 
-### 1. Add to Entity Page
+### New Frontend System
+
+If you are on the new Backstage frontend system, import the plugin from the `/alpha` subpath and add it to your app:
+
+```typescript
+// packages/app/src/App.tsx
+import growthbookPlugin from '@backstage-community/plugin-growthbook/alpha';
+
+export const app = createApp({
+  features: [
+    // ...your other plugins
+    growthbookPlugin,
+  ],
+});
+```
+
+The `entityGrowthbookFlagsContent` extension is included by default and will show up on any entity that has the `growthbook.io/enabled: 'true'` annotation.
+
+### Legacy Frontend System
+
+#### 1. Add to Entity Page
 
 In `packages/app/src/components/catalog/EntityPage.tsx`:
 
@@ -46,7 +66,7 @@ const serviceEntityPage = (
 );
 ```
 
-### 2. Configure in `app-config.yaml`
+#### 2. Configure in `app-config.yaml`
 
 ```yaml
 growthbook:
@@ -57,7 +77,7 @@ growthbook:
     dev: ${GROWTHBOOK_SDK_KEY_DEV}
 ```
 
-### 3. Annotate entities in `catalog-info.yaml`
+#### 3. Annotate entities in `catalog-info.yaml`
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
