@@ -42,8 +42,10 @@
     "@types/supertest": "^6.0.0",
     "supertest": "^7.0.0"
   },
+  "configSchema": "config.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
   "repository": {
     "type": "git",
