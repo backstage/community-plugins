@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { analyticsModuleMatomoPlugin } from './plugin';
+import { analyticsModuleMatomoPlugin, MatomoAnalyticsApi } from './plugin';
 
 describe('matomo', () => {
   it('should export plugin', () => {
     expect(analyticsModuleMatomoPlugin).toBeDefined();
+  });
+
+  it('should export the analytics API factory', () => {
+    expect(MatomoAnalyticsApi).toBeDefined();
   });
 });
