@@ -146,7 +146,7 @@ Additionally, you can configure the title and description for the maturity ranks
 
 Sample check written in app-config:
 
-````yaml title="app-config.yaml"
+```yaml title="app-config.yaml"
 techInsights:
   maturity:
     rank:
@@ -162,6 +162,7 @@ techInsights:
       gold:
         title: 'Excellent'
         description: 'Conforms with the Golden Path standards. Ownership, Maintainability, Security, and Reliability are all ensured'
+```
 
 ## Integrating with the New Frontend System
 
@@ -187,7 +188,7 @@ app:
           filter: { kind: 'Component' }
     - entity-content:tech-insights-maturity/scorecards:
         disabled: true
-````
+```
 
 ## Compatibility
 
