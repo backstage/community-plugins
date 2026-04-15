@@ -30,16 +30,6 @@ export function topologyEntityHeaderTabTestId(): string {
   return isNfsAppMode() ? 'header-tab-/topology' : 'header-tab-0';
 }
 
-/** Sidebar "Catalog" label by base locale (aligns with catalog nav in dev app). */
-const CATALOG_NAV_LINK: Record<string, string> = {
-  en: 'Catalog',
-  de: 'Katalog',
-  fr: 'Catalogue',
-  it: 'Catalogo',
-  es: 'Catálogo',
-  ja: 'カタログ',
-};
-
 export class Common {
   page: Page;
 
@@ -87,20 +77,14 @@ export class Common {
 
   /**
    * Opens the Topology workload view. Legacy dev exposes `/topology`; NFS dev
-   * mounts Topology on the entity page (navigate Catalog → entity → tab).
+   * mounts Topology on the entity page (catalog → entity → Topology tab).
    */
-  async navigateToTopologyView(locale: string) {
+  async navigateToTopologyView() {
     if (!isNfsAppMode()) {
       await this.page.goto('/topology');
       return;
     }
-    const base = locale.split('-')[0];
-    const catalogLinkName = CATALOG_NAV_LINK[base] ?? CATALOG_NAV_LINK.en;
     await this.page.goto('/catalog');
-    await this.page
-      .locator('nav')
-      .getByRole('link', { name: catalogLinkName })
-      .click();
     await this.page
       .getByRole('link', { name: 'backstage', exact: true })
       .first()

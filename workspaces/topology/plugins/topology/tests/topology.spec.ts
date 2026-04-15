@@ -40,18 +40,18 @@ test.describe('Topology plugin', () => {
   let page: Page;
   let common: Common;
   let translations: TopologyMessages;
-  let currentLocale: string;
 
   test.beforeAll(async ({ browser }, testInfo) => {
-    const locale = testInfo.project.use.locale as string | undefined;
-    context = await browser.newContext(locale ? { locale } : {});
+    // Must match playwright.config.ts project `locale` so i18n and assertions stay
+    // aligned. A bare newContext() does not reliably inherit project locale.
+    const projectLocale = testInfo.project.use.locale ?? 'en';
+    const context = await browser.newContext({ locale: projectLocale });
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
 
-    currentLocale = await page.evaluate(() => globalThis.navigator.language);
-    translations = getTranslations(currentLocale);
-    await common.switchToLocale(currentLocale);
+    translations = getTranslations(projectLocale);
+    await common.switchToLocale(projectLocale);
   });
 
   test.afterAll(async () => {
@@ -59,7 +59,7 @@ test.describe('Topology plugin', () => {
   });
 
   test.describe('Missing permissions page', () => {
-    test('shows missing permissions error', async ({ browser }, testInfo) => {
+    test('shows missing permissions error', async ({}, testInfo) => {
       test.skip(
         isNfsAppMode(),
         'Standalone /missing-permissions route exists only in legacy dev app',
@@ -82,12 +82,10 @@ test.describe('Topology plugin', () => {
 
   test.describe('Topology view', () => {
     test.beforeEach(async () => {
-      await common.navigateToTopologyView(currentLocale);
+      await common.navigateToTopologyView();
     });
 
-    test('displays header and cluster controls', async ({
-      browser,
-    }, testInfo) => {
+    test('displays header and cluster controls', async ({}, testInfo) => {
       await expect(page.getByRole('heading')).toContainText('backstage');
       await expect(
         page.getByTestId(topologyEntityHeaderTabTestId()),
@@ -159,9 +157,7 @@ test.describe('Topology plugin', () => {
       }
     });
 
-    test('opens sidebar with deployment details and resources', async ({
-      browser,
-    }, testInfo) => {
+    test('opens sidebar with deployment details and resources', async ({}, testInfo) => {
       await expect(
         page.getByRole('separator', { name: 'Resize' }),
       ).not.toBeVisible();
