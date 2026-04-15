@@ -27,5 +27,6 @@ export const npmTranslations = createTranslationResource({
   ref: npmTranslationRef,
   translations: {
     de: () => import('./de'),
+    es: () => import('./es'),
   },
 });

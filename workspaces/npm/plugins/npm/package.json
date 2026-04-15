@@ -52,6 +52,7 @@
     "@backstage/core-plugin-api": "^1.12.4",
     "@backstage/errors": "^1.2.7",
     "@backstage/frontend-plugin-api": "^0.15.1",
+    "@backstage/plugin-app-react": "^0.2.2",
     "@backstage/plugin-catalog-react": "^2.1.0",
     "@backstage/theme": "^0.7.2",
     "@material-ui/core": "^4.9.13",
@@ -59,16 +60,12 @@
     "luxon": "^3.5.0",
     "react-use": "^17.2.4"
   },
-  "peerDependencies": {
-    "react": "^18"
-  },
   "devDependencies": {
     "@backstage/cli": "^0.36.0",
     "@backstage/dev-utils": "^1.1.21",
     "@backstage/frontend-defaults": "^0.5.0",
     "@backstage/frontend-dev-utils": "^0.1.0",
     "@backstage/frontend-test-utils": "^0.5.1",
-    "@backstage/plugin-app-react": "^0.2.2",
     "@backstage/ui": "^0.14.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
@@ -78,6 +75,9 @@
     "react-dom": "^18",
     "react-router": "^7.14.1",
     "react-router-dom": "^7.14.1"
+  },
+  "peerDependencies": {
+    "react": "^18"
   },
   "files": [
     "config.d.ts",

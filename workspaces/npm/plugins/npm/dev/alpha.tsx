@@ -38,7 +38,7 @@ import { RiNpmjsLine } from '@remixicon/react';
 // eslint-disable-next-line @backstage/no-relative-monorepo-imports
 import { allExamples } from '../../../examples';
 
-import npmPlugin from '../src/alpha';
+import npmPlugin, { npmTranslationsModule } from '../src/alpha';
 
 import {
   EntityNpmInfoCard,
@@ -106,5 +106,5 @@ const devAppModule = createFrontendModule({
 });
 
 createDevApp({
-  features: [devAppModule, npmPlugin],
+  features: [devAppModule, npmPlugin, npmTranslationsModule],
 });

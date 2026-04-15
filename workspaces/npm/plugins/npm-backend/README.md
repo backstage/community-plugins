@@ -120,35 +120,20 @@ Your Backstage frontend app must use that new frontend system which isn't the de
    });
    ```
 
-3. Optional enable translation via the `TranslationBlueprint` extension:
+3. Optional enable translation via an `app` module that adds one `TranslationBlueprint` extension:
 
    ```tsx
-   import { TranslationBlueprint } from '@backstage/plugin-app-react';
-
    import npmPlugin, {
-     npmTranslations,
+     npmTranslationsModule,
    } from '@backstage-community/plugin-npm/alpha';
    ```
 
    ```tsx
-   const npmTranslation = TranslationBlueprint.make({
-     name: 'npmTranslation',
-     params: {
-       resource: npmTranslations,
-     },
-   });
-
    export default createApp({
      features: [
-       createFrontendModule({
-         pluginId: 'app',
-         extensions: [
-           // ...other extensions
-           npmTranslation,
-         ],
-       }),
        // ...other plugins
        npmPlugin,
+       npmTranslationsModule,
      ],
    });
    ```

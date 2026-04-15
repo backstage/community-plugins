@@ -25,7 +25,7 @@ test('failing-examples', async ({ page }) => {
 
   for (const entity of failingExamples) {
     const name = entity.metadata.name;
-    const packageName = entity.metadata.annotations!['npm/package'];
+    const packageName = entity.metadata.annotations?.['npm/package'];
 
     await page.getByRole('link', { name }).click();
 
