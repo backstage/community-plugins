@@ -17,7 +17,7 @@
 import { test, expect } from '@playwright/test';
 
 import { failingExamples } from '../examples/failing-examples';
-import { skipLoginIfPresent } from './test-utils';
+import { navigateToCatalogIfPresent, skipLoginIfPresent } from './test-utils';
 
 test('failing-examples', async ({ page }) => {
   await page.goto('/');
@@ -27,15 +27,38 @@ test('failing-examples', async ({ page }) => {
     const name = entity.metadata.name;
     const packageName = entity.metadata.annotations?.['npm/package'];
 
+    await navigateToCatalogIfPresent(page);
     await page.getByRole('link', { name }).click();
 
     if (name === 'no-npm-package-annotation') {
-      await expect(page.getByText('Missing Annotation')).toHaveCount(3);
+      if (await page.getByRole('link', { name: 'Catalog' }).isVisible()) {
+        // NFS
+        await expect(page.getByText('About')).toBeVisible();
+        await expect(page.getByRole('tab')).toHaveCount(1);
+        await expect(
+          page.getByText(`NPM package ${packageName}`),
+        ).not.toBeVisible();
+      } else {
+        await expect(page.getByText('Missing Annotation')).toHaveCount(3);
+      }
     } else if (name === 'npm-package-not-found') {
       await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
-      await expect(
-        page.getByText('Error: Unexpected status code: 404 Not Found'),
-      ).toHaveCount(8);
+      if (await page.getByRole('link', { name: 'Catalog' }).isVisible()) {
+        // NFS
+        await expect(page.getByText('About')).toBeVisible();
+        await expect(page.getByRole('tab')).toHaveCount(2);
+        await expect(
+          page.getByText('Error: Unexpected status code: 404 Not Found'),
+        ).toHaveCount(4);
+        await page.getByRole('tab', { name: 'Npm Releases' }).click();
+        await expect(
+          page.getByText('Error: Unexpected status code: 404 Not Found'),
+        ).toHaveCount(4);
+      } else {
+        await expect(
+          page.getByText('Error: Unexpected status code: 404 Not Found'),
+        ).toHaveCount(8);
+      }
     } else {
       throw new Error(`Unexpected entity ${name} is playwright test`);
     }

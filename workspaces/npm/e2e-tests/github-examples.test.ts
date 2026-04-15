@@ -17,7 +17,7 @@
 import { test, expect } from '@playwright/test';
 
 import { githubExamples } from '../examples/github-examples';
-import { skipLoginIfPresent } from './test-utils';
+import { navigateToCatalogIfPresent, skipLoginIfPresent } from './test-utils';
 
 test('github-examples', async ({ page }) => {
   await page.goto('/');
@@ -27,7 +27,9 @@ test('github-examples', async ({ page }) => {
     const name = entity.metadata.name;
     const packageName = entity.metadata.annotations!['npm/package'];
 
+    await navigateToCatalogIfPresent(page);
     await page.getByRole('link', { name, exact: true }).click();
+
     await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
     // Getting the package information fails without GITHUB_TOKEN, we we ignore that here for now.
   }

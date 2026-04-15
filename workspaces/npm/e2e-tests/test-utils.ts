@@ -17,11 +17,16 @@
 import { Page } from '@playwright/test';
 
 export async function skipLoginIfPresent(page: Page) {
-  // Skip login if appears (old test app)
   if (await page.getByText('Select a sign-in method').isVisible()) {
     page.once('dialog', async dialog => {
       await dialog.accept();
     });
     await page.getByRole('button', { name: 'Enter' }).click();
+  }
+}
+
+export async function navigateToCatalogIfPresent(page: Page) {
+  if (await page.getByRole('link', { name: 'Catalog' }).isVisible()) {
+    await page.getByRole('link', { name: 'Catalog' }).click();
   }
 }

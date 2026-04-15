@@ -13,98 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Sidebar,
-  SidebarGroup,
-  SidebarItem,
-  SidebarScrollWrapper,
-  SidebarSpace,
-} from '@backstage/core-components';
-import {
-  SidebarLanguageSwitcher,
-  SidebarSignOutButton,
-} from '@backstage/dev-utils';
 import { createDevApp } from '@backstage/frontend-dev-utils';
-import {
-  createFrontendModule,
-  PageBlueprint,
-} from '@backstage/frontend-plugin-api';
-import { NavContentBlueprint } from '@backstage/plugin-app-react';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { Container, Flex } from '@backstage/ui';
-
-import { RiNpmjsLine } from '@remixicon/react';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
 
 // eslint-disable-next-line @backstage/no-relative-monorepo-imports
 import { allExamples } from '../../../examples';
 
 import npmPlugin, { npmTranslationsModule } from '../src/alpha';
 
-import {
-  EntityNpmInfoCard,
-  EntityNpmReleaseOverviewCard,
-  EntityNpmReleaseTableCard,
-} from '../src';
-
-const devPages = allExamples.map(example =>
-  PageBlueprint.make({
-    name: example.metadata.name,
-    params: {
-      path: `/${example.metadata.name}`,
-      title: example.metadata.name,
-      icon: <RiNpmjsLine />,
-      loader: async () => (
-        <EntityProvider entity={example}>
-          <Container>
-            <Flex direction="column" gap="4" mt="4" mb="4">
-              {/* Can we load this more dynamically to verify the NFS extensions loading way? */}
-              <EntityNpmInfoCard />
-              <EntityNpmReleaseOverviewCard />
-              <EntityNpmReleaseTableCard />
-            </Flex>
-          </Container>
-        </EntityProvider>
-      ),
-    },
-  }),
-);
-
-const devSidebarContent = NavContentBlueprint.make({
-  params: {
-    component: ({ navItems }) => {
-      const nav = navItems.withComponent(item => (
-        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
-      ));
-      return (
-        <Sidebar>
-          <SidebarGroup label="Menu">
-            <SidebarScrollWrapper>
-              {nav.rest({ sortBy: 'title' })}
-              {/* TODO: PageBlueprints are not picked up automatically?! Why? ¯_(ツ)_/¯ */}
-              {allExamples.map(example => (
-                <SidebarItem
-                  key={example.metadata.name}
-                  icon={() => <RiNpmjsLine />}
-                  to={`/${example.metadata.name}`}
-                  text={example.metadata.name}
-                />
-              ))}
-            </SidebarScrollWrapper>
-          </SidebarGroup>
-          <SidebarSpace />
-          <SidebarLanguageSwitcher />
-          <SidebarSignOutButton />
-        </Sidebar>
-      );
-    },
-  },
-});
-
-const devAppModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [devSidebarContent, ...devPages],
+const catalogPluginOverrides = catalogPlugin.withOverrides({
+  extensions: [
+    catalogPlugin.getExtension('api:catalog').override({
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => catalogApiMock({ entities: allExamples }),
+        }),
+    }),
+  ],
 });
 
 createDevApp({
-  features: [devAppModule, npmPlugin, npmTranslationsModule],
+  features: [catalogPluginOverrides, npmPlugin, npmTranslationsModule],
 });

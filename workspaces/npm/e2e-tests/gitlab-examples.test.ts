@@ -17,7 +17,7 @@
 import { test, expect } from '@playwright/test';
 
 import { gitlabExamples } from '../examples/gitlab-examples';
-import { skipLoginIfPresent } from './test-utils';
+import { navigateToCatalogIfPresent, skipLoginIfPresent } from './test-utils';
 
 test('gitlab-examples', async ({ page }) => {
   await page.goto('/');
@@ -27,10 +27,17 @@ test('gitlab-examples', async ({ page }) => {
     const name = entity.metadata.name;
     const packageName = entity.metadata.annotations!['npm/package'];
 
+    await navigateToCatalogIfPresent(page);
     await page.getByRole('link', { name }).click();
+
     await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
-    await expect(page.getByText('Latest version')).toBeVisible();
-    await expect(page.getByText('Version History')).toBeVisible();
+    await expect(page.getByText('Current Tags').first()).toBeVisible();
+
+    if (await page.getByRole('tab', { name: 'Npm Releases' }).isVisible()) {
+      await page.getByRole('tab', { name: 'Npm Releases' }).click();
+    }
+
+    await expect(page.getByText('Current Tags').last()).toBeVisible();
     await expect(page.getByText('Version History')).toBeVisible();
     await expect(page.getByText('1.1.0')).toBeVisible();
     await expect(page.getByText('1.0.0')).toBeVisible();
