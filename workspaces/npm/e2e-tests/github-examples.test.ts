@@ -16,28 +16,19 @@
 
 import { test, expect } from '@playwright/test';
 
-import { githubExamples } from '../plugins/npm/dev/examples/github-examples';
+import { githubExamples } from '../examples/github-examples';
+import { skipLoginIfPresent } from './test-utils';
 
 test('github-examples', async ({ page }) => {
   await page.goto('/');
-
-  // Skip login if appears (old test app)
-  if (await page.getByText('Select a sign-in method').isVisible()) {
-    page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
-    await page.getByRole('button', { name: 'Enter' }).click();
-  }
+  await skipLoginIfPresent(page);
 
   for (const entity of githubExamples) {
     const name = entity.metadata.name;
+    const packageName = entity.metadata.annotations!['npm/package'];
 
     await page.getByRole('link', { name, exact: true }).click();
-    await expect(
-      page.getByText(
-        `NPM package ${entity.metadata.annotations!['npm/package']}`,
-      ),
-    ).toBeVisible();
+    await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
     // Getting the package information fails without GITHUB_TOKEN, we we ignore that here for now.
   }
 });

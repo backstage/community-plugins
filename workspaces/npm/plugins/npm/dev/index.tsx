@@ -27,7 +27,8 @@ import {
 
 import { npmTranslations } from '../src/translations';
 
-import { allExamples } from './examples';
+// eslint-disable-next-line @backstage/no-relative-monorepo-imports
+import { allExamples } from '../../../examples';
 
 const builder = createDevApp()
   .registerPlugin(npmPlugin)

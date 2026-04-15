@@ -16,37 +16,28 @@
 
 import { test, expect } from '@playwright/test';
 
-import { failingExamples } from '../plugins/npm/dev/examples/failing-examples';
+import { failingExamples } from '../examples/failing-examples';
+import { skipLoginIfPresent } from './test-utils';
 
 test('failing-examples', async ({ page }) => {
   await page.goto('/');
-
-  // Skip login if appears (old test app)
-  if (await page.getByText('Select a sign-in method').isVisible()) {
-    page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
-    await page.getByRole('button', { name: 'Enter' }).click();
-  }
+  await skipLoginIfPresent(page);
 
   for (const entity of failingExamples) {
     const name = entity.metadata.name;
+    const packageName = entity.metadata.annotations!['npm/package'];
 
     await page.getByRole('link', { name }).click();
 
     if (name === 'no-npm-package-annotation') {
       await expect(page.getByText('Missing Annotation')).toHaveCount(3);
     } else if (name === 'npm-package-not-found') {
-      await expect(
-        page.getByText('NPM package npm-package-not-found'),
-      ).toBeVisible();
+      await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
       await expect(
         page.getByText('Error: Unexpected status code: 404 Not Found'),
       ).toHaveCount(8);
     } else {
-      throw new Error(
-        `Unexpected entity ${name} is playwright test failing-examples`,
-      );
+      throw new Error(`Unexpected entity ${name} is playwright test`);
     }
   }
 });

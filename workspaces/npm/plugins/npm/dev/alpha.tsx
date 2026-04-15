@@ -30,14 +30,16 @@ import {
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Container, Flex } from '@backstage/ui';
 
 import { RiNpmjsLine } from '@remixicon/react';
 
+// eslint-disable-next-line @backstage/no-relative-monorepo-imports
+import { allExamples } from '../../../examples';
+
 import npmPlugin from '../src/alpha';
 
-import { allExamples } from './examples';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   EntityNpmInfoCard,
   EntityNpmReleaseOverviewCard,

@@ -16,28 +16,19 @@
 
 import { test, expect } from '@playwright/test';
 
-import { gitlabExamples } from '../plugins/npm/dev/examples/gitlab-examples';
+import { gitlabExamples } from '../examples/gitlab-examples';
+import { skipLoginIfPresent } from './test-utils';
 
 test('gitlab-examples', async ({ page }) => {
   await page.goto('/');
-
-  // Skip login if appears (old test app)
-  if (await page.getByText('Select a sign-in method').isVisible()) {
-    page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
-    await page.getByRole('button', { name: 'Enter' }).click();
-  }
+  await skipLoginIfPresent(page);
 
   for (const entity of gitlabExamples) {
     const name = entity.metadata.name;
+    const packageName = entity.metadata.annotations!['npm/package'];
 
     await page.getByRole('link', { name }).click();
-    await expect(
-      page.getByText(
-        `NPM package ${entity.metadata.annotations!['npm/package']}`,
-      ),
-    ).toBeVisible();
+    await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
     await expect(page.getByText('Latest version')).toBeVisible();
     await expect(page.getByText('Version History')).toBeVisible();
     await expect(page.getByText('Version History')).toBeVisible();

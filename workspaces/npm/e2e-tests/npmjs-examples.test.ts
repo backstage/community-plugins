@@ -16,30 +16,19 @@
 
 import { test, expect } from '@playwright/test';
 
-import { npmjsExamples } from '../plugins/npm/dev/examples/npmjs-examples';
+import { npmjsExamples } from '../examples/npmjs-examples';
+import { skipLoginIfPresent } from './test-utils';
 
 test('npmjs-examples', async ({ page }) => {
   await page.goto('/');
-
-  // Skip login if appears (old test app)
-  if (await page.getByText('Select a sign-in method').isVisible()) {
-    page.once('dialog', async dialog => {
-      await dialog.accept();
-    });
-    await page.getByRole('button', { name: 'Enter' }).click();
-  }
-
-  const nav = page.getByRole('navigation');
+  await skipLoginIfPresent(page);
 
   for (const entity of npmjsExamples) {
     const name = entity.metadata.name;
+    const packageName = entity.metadata.annotations!['npm/package'];
 
     await page.getByRole('link', { name }).click();
-    await expect(
-      page.getByText(
-        `NPM package ${entity.metadata.annotations!['npm/package']}`,
-      ),
-    ).toBeVisible();
+    await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
     await expect(page.getByText('Version History')).toBeVisible();
   }
 });
