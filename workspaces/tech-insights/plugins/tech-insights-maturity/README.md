@@ -146,7 +146,7 @@ Additionally, you can configure the title and description for the maturity ranks
 
 Sample check written in app-config:
 
-```yaml title="app-config.yaml"
+````yaml title="app-config.yaml"
 techInsights:
   maturity:
     rank:
@@ -187,7 +187,7 @@ app:
           filter: { kind: 'Component' }
     - entity-content:tech-insights-maturity/scorecards:
         disabled: true
-```
+````
 
 ## Compatibility
 
