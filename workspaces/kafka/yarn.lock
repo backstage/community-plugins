@@ -1674,7 +1674,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.4"
     "@backstage/dev-utils": "npm:^1.1.21"
     "@backstage/frontend-defaults": "npm:^0.5.0"
-    "@backstage/frontend-plugin-api": "npm:^0.15.1"
+    "@backstage/frontend-plugin-api": "npm:^0.16.1"
     "@backstage/frontend-test-utils": "npm:^0.5.1"
     "@backstage/plugin-catalog": "npm:^2.0.1"
     "@backstage/plugin-catalog-react": "npm:^2.1.0"
@@ -2666,7 +2666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/filter-predicates@npm:^0.1.1, @backstage/filter-predicates@npm:^0.1.2":
+"@backstage/filter-predicates@npm:^0.1.2":
   version: 0.1.2
   resolution: "@backstage/filter-predicates@npm:0.1.2"
   dependencies:
@@ -2729,29 +2729,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.15.1":
-  version: 0.15.1
-  resolution: "@backstage/frontend-plugin-api@npm:0.15.1"
-  dependencies:
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/filter-predicates": "npm:^0.1.1"
-    "@backstage/types": "npm:^1.2.2"
-    "@backstage/version-bridge": "npm:^1.0.12"
-    zod: "npm:^3.25.76 || ^4.0.0"
-    zod-to-json-schema: "npm:^3.25.1"
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-    react-router-dom: ^6.30.2
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/e40d2bbd8eb2b55eaced37e8f855cece9ed74092a89949a474e38ed6f06c20d289fef4595ee6267375effc9983ae6dfb8fc91d8d2d2b7d7a1642ced248ec1f01
-  languageName: node
-  linkType: hard
-
-"@backstage/frontend-plugin-api@npm:^0.16.0, @backstage/frontend-plugin-api@npm:^0.16.1":
+"@backstage/frontend-plugin-api@npm:^0.16.1":
   version: 0.16.1
   resolution: "@backstage/frontend-plugin-api@npm:0.16.1"
   dependencies:
