@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
@@ -49,9 +50,10 @@
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.4.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
+    "@backstage/frontend-plugin-api": "0.16.1",
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },
