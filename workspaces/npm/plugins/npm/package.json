@@ -73,7 +73,7 @@
     "react-router-dom": "^7.14.1"
   },
   "peerDependencies": {
-    "react": "^18"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
     "config.d.ts",

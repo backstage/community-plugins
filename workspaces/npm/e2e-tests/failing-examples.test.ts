@@ -60,7 +60,7 @@ test('failing-examples', async ({ page }) => {
         ).toHaveCount(8);
       }
     } else {
-      throw new Error(`Unexpected entity ${name} is playwright test`);
+      throw new Error(`Unexpected entity ${name} in the Playwright test`);
     }
   }
 });

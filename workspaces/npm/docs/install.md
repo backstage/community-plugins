@@ -32,7 +32,7 @@ Ensure that your Backstage frontend app is using that new frontend system.
    });
    ```
 
-3. Optional enable translation via an `app` module that adds one `TranslationBlueprint` extension:
+3. Optionally enable translation via an `app` module that adds one `TranslationBlueprint` extension:
 
    ```tsx
    import npmPlugin, {

@@ -131,6 +131,7 @@ export default createFrontendPlugin({
  * Extension for npm translations.
  */
 const npmTranslation = TranslationBlueprint.make({
+  name: 'npmTranslations',
   params: {
     resource: npmTranslations,
   },
