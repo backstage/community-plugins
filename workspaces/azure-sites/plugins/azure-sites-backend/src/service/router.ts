@@ -25,7 +25,7 @@ import {
   azureSitesPermissions,
 } from '@backstage-community/plugin-azure-sites-common';
 import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
-import { CatalogApi } from '@backstage/catalog-client';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 
 import { AzureSitesApi } from '../api';
 import {
@@ -42,7 +42,7 @@ import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 export interface RouterOptions {
   logger: LoggerService;
   azureSitesApi: AzureSitesApi;
-  catalogApi: CatalogApi;
+  catalogApi: CatalogService;
   permissions: PermissionsService;
   discovery: DiscoveryService;
   auth: AuthService;
@@ -54,15 +54,8 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const {
-    logger,
-    azureSitesApi,
-    permissions,
-    catalogApi,
-    config,
-    auth,
-    httpAuth,
-  } = options;
+  const { logger, azureSitesApi, permissions, catalogApi, config, httpAuth } =
+    options;
 
   const permissionIntegrationRouter = createPermissionIntegrationRouter({
     permissions: azureSitesPermissions,
@@ -93,11 +86,9 @@ export async function createRouter(
       if (typeof entityRef !== 'string') {
         throw new InputError('Invalid entityRef, not a string');
       }
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: credentials,
-        targetPluginId: 'catalog',
+      const entity = await catalogApi.getEntityByRef(entityRef, {
+        credentials,
       });
-      const entity = await catalogApi.getEntityByRef(entityRef, { token });
 
       if (entity) {
         const annotationName =
@@ -151,11 +142,9 @@ export async function createRouter(
       if (typeof entityRef !== 'string') {
         throw new InputError('Invalid entityRef, not a string');
       }
-      const { token } = await auth.getPluginRequestToken({
-        onBehalfOf: credentials,
-        targetPluginId: 'catalog',
+      const entity = await catalogApi.getEntityByRef(entityRef, {
+        credentials,
       });
-      const entity = await catalogApi.getEntityByRef(entityRef, { token });
 
       if (entity) {
         const annotationName =
