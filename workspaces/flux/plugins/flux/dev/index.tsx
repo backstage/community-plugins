@@ -65,6 +65,7 @@ import {
 import { Namespace } from '../src/objects';
 import { FluxContent } from '../src/components/FluxContent';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
+import '@backstage/ui/css/styles.css';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',

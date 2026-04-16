@@ -63,99 +63,294 @@ jest
   .useFakeTimers()
   .setSystemTime(new Date('2020-04-20T08:15:47.614Z').getTime());
 
-const entityComponent = {
-  metadata: {
-    annotations: {
-      'github.com/project-slug': 'backstage/backstage',
-      'backstage.io/source-location':
-        'url:https://github.com/backstage/backstage',
+const makeEntityWithKind = (
+  kind: string,
+  {
+    name = 'backstage',
+    spec,
+  }: { name?: string; spec?: Record<string, unknown> } = {},
+): Entity =>
+  ({
+    metadata: {
+      annotations: {
+        'github.com/project-slug': `backstage/${name}`,
+        'backstage.io/source-location': `url:https://github.com/backstage/${name}`,
+      },
+      name,
     },
-    name: 'backstage',
-  },
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-} as unknown as Entity;
+    apiVersion: 'backstage.io/v1alpha1',
+    kind,
+    ...(spec ? { spec } : {}),
+  } as unknown as Entity);
+
+const makeGroupEntity = (): Entity =>
+  ({
+    metadata: {
+      name: 'my-team',
+      annotations: {
+        'github.com/team-slug': 'my-team',
+        'backstage.io/source-location':
+          'url:https://github.com/backstage/backstage',
+      },
+    },
+    spec: {
+      type: 'team',
+      children: [],
+    },
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Group',
+  } as unknown as Entity);
+
+const makeUserEntity = (): Entity =>
+  ({
+    metadata: {
+      annotations: {
+        'github.com/team-slug': 'my-team',
+        'backstage.io/source-location':
+          'url:https://github.com/backstage/backstage',
+      },
+      name: 'jdoe',
+    },
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'User',
+  } as unknown as Entity);
 
 const mockCatalogApi = {
   getEntities: () => ({}),
 } as CatalogApi;
 
-describe('GithubIssues', () => {
-  it('should render correctly when there are no issues in GitHub', async () => {
-    const mockApi = {
-      fetchIssuesByRepoFromGithub: async () => ({
-        backstage: {
-          issues: {
-            totalCount: 0,
-            edges: [],
-          },
+const mockIssuesApi = (repoKey: string): GithubIssuesApi =>
+  ({
+    fetchIssuesByRepoFromGithub: async () => ({
+      [repoKey]: {
+        issues: {
+          totalCount: 0,
+          edges: [],
         },
-      }),
-    } as GithubIssuesApi;
+      },
+    }),
+  } as GithubIssuesApi);
 
-    const apis = [
-      [githubIssuesApiRef, mockApi],
-      [catalogApiRef, mockCatalogApi],
-    ] as const;
+describe('GithubIssues', () => {
+  describe('entity kind rendering', () => {
+    it.each(['System', 'Resource', 'Application', 'Component'])(
+      'should render correctly when there are no issues in GitHub for kind: %s',
+      async kind => {
+        const apis = [
+          [githubIssuesApiRef, mockIssuesApi('backstage')],
+          [catalogApiRef, mockCatalogApi],
+        ] as const;
 
-    const { getByTestId } = await renderInTestApp(
-      <TestApiProvider apis={apis}>
-        <EntityProvider entity={entityComponent}>
-          <GithubIssues />
-        </EntityProvider>
-      </TestApiProvider>,
+        const { getByTestId } = await renderInTestApp(
+          <TestApiProvider apis={apis}>
+            <EntityProvider entity={makeEntityWithKind(kind)}>
+              <GithubIssues />
+            </EntityProvider>
+          </TestApiProvider>,
+        );
+
+        expect(getByTestId('no-issues-msg')).toHaveTextContent(
+          'Hurray! No Issues 🚀',
+        );
+      },
     );
 
-    expect(getByTestId('no-issues-msg')).toHaveTextContent(
-      'Hurray! No Issues 🚀',
-    );
-  });
+    it.each(['System', 'Resource', 'Application', 'Component'])(
+      'should render correctly for kind: %s',
+      async kind => {
+        const testIssue = getTestIssue({
+          createdAt: '2020-04-19T10:15:47.614Z',
+          updatedAt: '2020-04-20T00:15:47.614Z',
+        });
 
-  it('should render correctly', async () => {
-    const testIssue = getTestIssue({
-      createdAt: '2020-04-19T10:15:47.614Z',
-      updatedAt: '2020-04-20T00:15:47.614Z',
+        const mockApi: GithubIssuesApi = {
+          fetchIssuesByRepoFromGithub: async () => ({
+            backstage: {
+              issues: {
+                totalCount: 1,
+                edges: [testIssue],
+              },
+            },
+          }),
+        } as GithubIssuesApi;
+
+        const apis = [
+          [githubIssuesApiRef, mockApi],
+          [catalogApiRef, mockCatalogApi],
+        ] as const;
+
+        const { getByText, getByTestId } = await renderInTestApp(
+          <TestApiProvider apis={apis}>
+            <EntityProvider entity={makeEntityWithKind(kind)}>
+              <GithubIssues />
+            </EntityProvider>
+          </TestApiProvider>,
+        );
+
+        getByText('All repositories (1 Issue)');
+
+        expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+          testIssue.node.title,
+        );
+
+        expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+          testIssue.node.repository.nameWithOwner,
+        );
+
+        expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+          `Created at: 22 hours ago by ${testIssue.node.author.login}`,
+        );
+
+        expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+          `Last update at: 8 hours ago`,
+        );
+      },
+    );
+
+    it('should render correctly when there are no issues in GitHub for kind: Group', async () => {
+      const ownedComponent = makeEntityWithKind('Component', {
+        name: 'owned-repo',
+        spec: { type: 'service', lifecycle: 'production', owner: 'my-team' },
+      });
+
+      const catalogApiWithOwned = {
+        getEntities: async () => ({ items: [ownedComponent] }),
+      } as CatalogApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockIssuesApi('owned-repo')],
+        [catalogApiRef, catalogApiWithOwned],
+      ] as const;
+
+      const { getByTestId } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeGroupEntity()}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByTestId('no-issues-msg')).toHaveTextContent(
+        'Hurray! No Issues 🚀',
+      );
     });
 
-    const mockApi = {
-      fetchIssuesByRepoFromGithub: async () => ({
-        backstage: {
-          issues: {
-            totalCount: 1,
-            edges: [testIssue],
+    it('should render correctly for kind: Group', async () => {
+      const testIssue = getTestIssue({
+        createdAt: '2020-04-19T10:15:47.614Z',
+        updatedAt: '2020-04-20T00:15:47.614Z',
+        repository: { nameWithOwner: 'backstage/owned-repo' },
+      });
+
+      const ownedComponent = makeEntityWithKind('Component', {
+        name: 'owned-repo',
+        spec: { type: 'service', lifecycle: 'production', owner: 'my-team' },
+      });
+
+      const catalogApiWithOwned = {
+        getEntities: async () => ({ items: [ownedComponent] }),
+      } as CatalogApi;
+
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          'owned-repo': {
+            issues: {
+              totalCount: 1,
+              edges: [testIssue],
+            },
           },
-        },
-      }),
-    } as GithubIssuesApi;
-    const apis = [
-      [githubIssuesApiRef, mockApi],
-      [catalogApiRef, mockCatalogApi],
-    ] as const;
+        }),
+      } as GithubIssuesApi;
 
-    const { getByText, getByTestId } = await renderInTestApp(
-      <TestApiProvider apis={apis}>
-        <EntityProvider entity={entityComponent}>
-          <GithubIssues />
-        </EntityProvider>
-      </TestApiProvider>,
-    );
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, catalogApiWithOwned],
+      ] as const;
 
-    getByText('All repositories (1 Issue)');
+      const { getByTestId } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeGroupEntity()}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
 
-    expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
-      testIssue.node.title,
-    );
+      expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+        testIssue.node.title,
+      );
+    });
 
-    expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
-      testIssue.node.repository.nameWithOwner,
-    );
+    it('should render correctly when there are no issues in GitHub for kind: User', async () => {
+      const ownedComponent = makeEntityWithKind('Component', {
+        name: 'owned-repo',
+        spec: { type: 'service', lifecycle: 'production', owner: 'jdoe' },
+      });
 
-    expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
-      `Created at: 22 hours ago by ${testIssue.node.author.login}`,
-    );
+      const catalogApiWithOwned = {
+        getEntities: async () => ({ items: [ownedComponent] }),
+      } as CatalogApi;
 
-    expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
-      `Last update at: 8 hours ago`,
-    );
+      const apis = [
+        [githubIssuesApiRef, mockIssuesApi('owned-repo')],
+        [catalogApiRef, catalogApiWithOwned],
+      ] as const;
+
+      const { getByTestId } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeUserEntity()}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByTestId('no-issues-msg')).toHaveTextContent(
+        'Hurray! No Issues 🚀',
+      );
+    });
+
+    it('should render correctly for kind: User', async () => {
+      const testIssue = getTestIssue({
+        createdAt: '2020-04-19T10:15:47.614Z',
+        updatedAt: '2020-04-20T00:15:47.614Z',
+        repository: { nameWithOwner: 'backstage/owned-repo' },
+      });
+
+      const ownedComponent = makeEntityWithKind('Component', {
+        name: 'owned-repo',
+        spec: { type: 'service', lifecycle: 'production', owner: 'jdoe' },
+      });
+
+      const catalogApiWithOwned = {
+        getEntities: async () => ({ items: [ownedComponent] }),
+      } as CatalogApi;
+
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          'owned-repo': {
+            issues: {
+              totalCount: 1,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, catalogApiWithOwned],
+      ] as const;
+
+      const { getByTestId } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeUserEntity()}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+        testIssue.node.title,
+      );
+    });
   });
 });

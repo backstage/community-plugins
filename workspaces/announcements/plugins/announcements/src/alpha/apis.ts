@@ -26,6 +26,12 @@ import {
 } from '@backstage-community/plugin-announcements-react';
 
 /**
+ * Provides the frontend Announcements API
+ * {@link @backstage-community/plugin-announcements-react#AnnouncementsClient}
+ *
+ * @remarks
+ * Extension ID: `api:announcements`
+ *
  * @alpha
  */
 export const announcementsApiExtension = ApiBlueprint.make({

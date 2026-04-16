@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-apache-airflow",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "apache-airflow",
@@ -39,6 +39,7 @@
   "dependencies": {
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",

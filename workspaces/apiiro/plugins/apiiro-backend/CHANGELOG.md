@@ -1,5 +1,16 @@
 # @backstage-community/plugin-apiiro-backend
 
+## 1.0.0
+
+### Major Changes
+
+- ff337ee: Added backend support to provide Apiiro data for the Application View of System Entities.
+
+### Patch Changes
+
+- Updated dependencies [ff337ee]
+  - @backstage-community/plugin-apiiro-common@1.0.0
+
 ## 0.2.0
 
 ### Minor Changes

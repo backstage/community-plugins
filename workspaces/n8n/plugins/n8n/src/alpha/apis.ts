@@ -17,6 +17,7 @@ import {
   ApiBlueprint,
   discoveryApiRef,
   fetchApiRef,
+  ExtensionDefinition,
 } from '@backstage/frontend-plugin-api';
 import { n8nApiRef, N8nClient } from '../api';
 
@@ -35,4 +36,4 @@ export const n8nApi = ApiBlueprint.make({
       factory: ({ discoveryApi, fetchApi }) =>
         new N8nClient({ discoveryApi, fetchApi }),
     }),
-});
+}) satisfies ExtensionDefinition;
