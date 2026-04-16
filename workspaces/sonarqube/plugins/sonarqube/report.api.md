@@ -22,9 +22,9 @@ export type DuplicationRating = {
 
 // @public (undocumented)
 export const EntitySonarQubeCard: (props: {
-  variant?: InfoCardVariants | undefined;
-  duplicationRatings?: DuplicationRating[] | undefined;
-  missingAnnotationReadMoreUrl?: string | undefined;
+  variant?: InfoCardVariants;
+  duplicationRatings?: DuplicationRating[];
+  missingAnnotationReadMoreUrl?: string;
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -78,13 +78,7 @@ export const SonarQubeRelatedEntitiesOverview: (
 ) => JSX_2.Element;
 
 // @public (undocumented)
-export const SonarQubeTable: ({
-  tableContent,
-  title,
-  options,
-  emptyContent,
-  localization,
-}: SonarQubeTableProps) => JSX_2.Element;
+export const SonarQubeTable: (input: SonarQubeTableProps) => JSX_2.Element;
 
 // @public (undocumented)
 export type SonarQubeTableProps = {
@@ -101,6 +95,8 @@ export const sonarqubeTranslationRef: TranslationRef<
   {
     readonly title: 'SonarQube Dashboard';
     readonly 'sonarQubeCard.title': 'Code Quality';
+    readonly 'sonarQubeCard.emptyState.title': 'No information to display';
+    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
     readonly 'sonarQubeCard.deepLinkTitle': 'View more';
     readonly 'sonarQubeCard.bugReportRatingCardTitle': 'Bugs';
     readonly 'sonarQubeCard.vulnerabilitiesRatingCardTitle': 'Vulnerabilities';
@@ -109,8 +105,6 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
     readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
     readonly 'sonarQubeCard.qualityBadgeTooltip': 'View SonarQube Dashboard';
-    readonly 'sonarQubeCard.emptyState.title': 'No information to display';
-    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
     readonly 'sonarQubeCard.unauthorizedError.title': 'Unauthorized';
     readonly 'sonarQubeCard.unauthorizedError.description': 'Your authentication token for SonarQube is missing or invalid. Please verify your SonarQube token configuration.';
     readonly 'sonarQubeCard.notFoundError.title': 'SonarQube project not found';
