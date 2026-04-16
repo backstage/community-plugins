@@ -1,5 +1,13 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.15.1
+
+### Patch Changes
+
+- 29371ff: Updated dependency `@backstage-community/plugin-jenkins` to `^0.30.0`.
+- 4e630e4: Updated dependency `@backstage-community/plugin-github-actions` to `^0.22.0`.
+- edbdf1a: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.29.0`.
+
 ## 0.15.0
 
 ### Minor Changes
