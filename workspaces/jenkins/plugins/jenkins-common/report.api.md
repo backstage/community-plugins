@@ -53,11 +53,11 @@ export class Jenkins {
   build: {
     get: (
       name: string | string[],
-      buildNumber: string | number,
+      buildNumber: number | string,
     ) => Promise<JenkinsBuild>;
     getConsoleText: (
       name: string | string[],
-      buildNumber: string | number,
+      buildNumber: number | string,
     ) => Promise<string>;
   };
   // (undocumented)
@@ -66,7 +66,7 @@ export class Jenkins {
     getBuilds: (name: string | string[], tree?: string) => Promise<unknown>;
     build: (
       name: string | string[],
-      opts?: JobBuildOptions | undefined,
+      opts?: JobBuildOptions,
     ) => Promise<unknown>;
     copy: (name: string | string[], from: string) => Promise<void>;
     create: (name: string | string[], xml: string) => Promise<void>;

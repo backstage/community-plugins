@@ -223,6 +223,7 @@ describe('PingIdentityEntityProvider', () => {
       triggerTask: jest.fn(),
       scheduleTask: jest.fn(),
       getScheduledTasks: jest.fn(),
+      cancelTask: jest.fn(),
     };
 
     const provider = PingIdentityEntityProvider.fromConfig(config, {
@@ -290,6 +291,7 @@ describe('PingIdentityEntityProvider', () => {
       triggerTask: jest.fn(),
       scheduleTask: jest.fn(),
       getScheduledTasks: jest.fn(),
+      cancelTask: jest.fn(),
     };
 
     expect(() =>

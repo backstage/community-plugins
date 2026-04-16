@@ -273,24 +273,38 @@ export function buildFilterParams(
 }
 
 /**
- * Common validation function for repositoryKey and entityRef
+ * Common validation function for repositoryId and entityRef
  * Returns validated parameters or sends error response
  */
 export function validateRepositoryParams(
-  params: { repositoryKey?: unknown; entityRef?: unknown },
+  params: {
+    repositoryId?: unknown;
+    entityRef?: unknown;
+    applicationId?: unknown;
+  },
   res: ExpressResponse,
   logger: LoggerService,
   endpoint: string,
-): params is { repositoryKey: string; entityRef: string } {
-  const { repositoryKey, entityRef } = params;
+): params is {
+  repositoryId: string;
+  entityRef: string;
+  applicationId?: string;
+} {
+  const { repositoryId, entityRef, applicationId } = params;
   const missingFields: string[] = [];
 
-  if (
-    !repositoryKey ||
-    typeof repositoryKey !== 'string' ||
-    repositoryKey.trim() === ''
-  ) {
-    missingFields.push('repositoryKey');
+  // Either repositoryId or applicationId must be provided
+  const hasRepositoryId =
+    repositoryId &&
+    typeof repositoryId === 'string' &&
+    repositoryId.trim() !== '';
+  const hasApplicationId =
+    applicationId &&
+    typeof applicationId === 'string' &&
+    (applicationId as string).trim() !== '';
+
+  if (!hasRepositoryId && !hasApplicationId) {
+    missingFields.push('repositoryId or applicationId');
   }
   if (!entityRef || typeof entityRef !== 'string' || entityRef.trim() === '') {
     missingFields.push('entityRef');
@@ -299,8 +313,10 @@ export function validateRepositoryParams(
   if (missingFields.length > 0) {
     logger.warn(`${endpoint} - Missing or invalid required fields:`, {
       missingFields,
-      providedRepositoryKey:
-        typeof repositoryKey === 'string' ? repositoryKey : undefined,
+      providedRepositoryId:
+        typeof repositoryId === 'string' ? repositoryId : undefined,
+      providedApplicationId:
+        typeof applicationId === 'string' ? applicationId : undefined,
       providedEntityRef: typeof entityRef === 'string' ? entityRef : undefined,
     });
     res

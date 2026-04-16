@@ -17,6 +17,7 @@ import {
   compatWrapper,
   convertLegacyRouteRef,
 } from '@backstage/core-compat-api';
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../plugin';
 import { isN8nAvailable } from '../components/Router';
@@ -34,4 +35,4 @@ export const entityN8nContent = EntityContentBlueprint.make({
     loader: () =>
       import('../components/Router').then(m => compatWrapper(<m.Router />)),
   },
-});
+}) satisfies ExtensionDefinition;

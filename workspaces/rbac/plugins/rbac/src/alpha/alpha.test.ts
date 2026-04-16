@@ -26,9 +26,5 @@ describe('RBAC plugin Alpha', () => {
     it('should export rbac page extension', () => {
       expect(rbacPlugin.getExtension('page:rbac')).toBeDefined();
     });
-
-    it('should export navigation item extension', () => {
-      expect(rbacPlugin.getExtension('nav-item:rbac')).toBeDefined();
-    });
   });
 });

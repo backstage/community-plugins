@@ -315,6 +315,7 @@ describe('REST policies api with conditions', () => {
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+      undefined,
     );
 
     const router = await server.serve();
@@ -345,6 +346,7 @@ describe('REST policies api with conditions', () => {
           memberReferences: ['group:default/test'],
           name: 'role:default/test',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some_user',
             owner: 'user:default/mock',
@@ -363,6 +365,7 @@ describe('REST policies api with conditions', () => {
           memberReferences: ['group:default/test'],
           name: 'role:default/test',
           metadata: {
+            isDefault: false,
             source: 'rest',
             modifiedBy: 'user:default/some_user',
             owner: 'user:default/mock',

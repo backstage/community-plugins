@@ -294,6 +294,7 @@ export const readKeycloakRealm = async (
   try {
     await ensureTokenValid(client, config, logger);
     const serverInfo = await client.serverInfo.find();
+
     serverVersion = parseInt(
       serverInfo.systemInfo?.version?.slice(0, 2) || '',
       10,
@@ -302,22 +303,22 @@ export const readKeycloakRealm = async (
     throw new Error(`Failed to retrieve Keycloak server information: ${error}`);
   }
 
-  const isVersion23orHigher = serverVersion >= 23;
+  const isVersion22orLower = serverVersion <= 22;
 
   let rawKGroups: GroupRepresentationWithParent[] = [];
 
   logger.debug(`Processing groups recursively`);
-  if (isVersion23orHigher) {
+  if (isVersion22orLower) {
+    rawKGroups = topLevelKGroups.reduce(
+      (acc, g) => acc.concat(...traverseGroups(g)),
+      [] as GroupRepresentationWithParent[],
+    );
+  } else {
     rawKGroups = await processGroupsRecursively(
       client,
       config,
       logger,
       topLevelKGroups,
-    );
-  } else {
-    rawKGroups = topLevelKGroups.reduce(
-      (acc, g) => acc.concat(...traverseGroups(g)),
-      [] as GroupRepresentationWithParent[],
     );
   }
 
@@ -338,7 +339,7 @@ export const readKeycloakRealm = async (
           options,
         );
 
-        if (isVersion23orHigher) {
+        if (!isVersion22orLower) {
           if (g.subGroupCount! > 0) {
             await ensureTokenValid(client, config, logger);
             g.subGroups = await client.groups.listSubGroups({

@@ -186,7 +186,7 @@ export const getLabel = (
   value: any,
   label: string,
   defaultValue?: string,
-): string =>
+): string | undefined =>
   _.has(value, 'metadata.labels') ? value.metadata.labels[label] : defaultValue;
 
 // Node

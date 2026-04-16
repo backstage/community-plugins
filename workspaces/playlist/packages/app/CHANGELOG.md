@@ -1,5 +1,12 @@
 # app
 
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies [d60015e]
+  - @backstage-community/plugin-playlist@0.17.0
+
 ## 0.0.21
 
 ### Patch Changes

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard, TableColumn } from '@backstage/core-components';
 import { useGitRepositories } from '../../hooks/query';
 import { FluxContext } from '../FluxContext';
 import {
@@ -22,6 +21,8 @@ import {
   FluxSourcesTable,
 } from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
+import { FluxColumn } from '../FluxEntityTable';
+import { Box } from '@backstage/ui';
 
 const GitRepositoriesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -41,14 +42,15 @@ const GitRepositoriesPanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Git Repositories">
+    <Box>
       <FluxSourcesTable
+        title="Git Repositiories"
         sources={data || []}
         isLoading={loading && !data}
-        columns={gitOciDefaultColumns as TableColumn<Source>[]}
+        columns={gitOciDefaultColumns as FluxColumn<Source>[]}
         many={many}
       />
-    </InfoCard>
+    </Box>
   );
 };
 
