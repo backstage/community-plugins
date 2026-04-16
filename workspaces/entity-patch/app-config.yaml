@@ -60,9 +60,10 @@ entityPatch:
       filter:
         kind: group
       mapping:
-        description: metadata.description
-        contactEmail: spec.profile.email
-        slackChannel: metadata.annotations.slack/channel
+        # entity path → form field name  (or Nunjucks template string)
+        metadata.description: description
+        spec.profile.email: contactEmail
+        metadata.annotations.slack/channel: slackChannel
       sections:
         - title: Team Details
           description: Basic information shown on the team catalog page.
@@ -95,8 +96,8 @@ entityPatch:
         kind: group
         'spec.type': team
       mapping:
-        designers: relations.hasDesigner # type ref → emit hasDesigner + designerOn pair
-        techLeads: relations.hasTechLead
+        relations.hasDesigner: designers # type ref → emit hasDesigner + designerOn pair
+        relations.hasTechLead: techLeads
       sections:
         - title: Team Roles
           description: Assign people to specific roles on this team.
@@ -124,7 +125,13 @@ entityPatch:
         kind: group
         'spec.type': team
       mapping:
-        owner: spec.owner
+        spec.owner: owner
+        # parseEntityRef | pick — extract individual parts of the owner entity ref
+        # e.g. owner = "group:default/platform-team"
+        #   → custom/owner-name      = "platform-team"
+        #   → custom/owner-namespace = "default"
+        'metadata.annotations["custom/owner-name"]': "{{ owner | parseEntityRef | pick('name') }}"
+        'metadata.annotations["custom/owner-namespace"]': "{{ owner | parseEntityRef | pick('namespace') }}"
       sections:
         - title: Ownership
           description: Applies only to groups of type "team".
@@ -134,17 +141,17 @@ entityPatch:
             owner:
               title: Owner
               type: string
-              description: The owning entity for this team.
-              'ui:field': EntityNamePicker
+              description: 'The owning entity ref for this team (e.g. group:default/guests).'
+              'ui:placeholder': 'group:default/guests'
 
     # ── Patch 3: Components ────────────────────────────────────────────────────
     - name: component-metadata
       filter:
         kind: component
       mapping:
-        description: metadata.description
-        lifecycle: spec.lifecycle
-        tier: metadata.annotations.internal/tier
+        metadata.description: description
+        spec.lifecycle: lifecycle
+        metadata.annotations.internal/tier: tier
       sections:
         - title: Component Info
           description: Core metadata for this component.
@@ -191,8 +198,8 @@ entityPatch:
         kind: component
         'spec.type': service
       mapping:
-        pagerdutyKey: 'metadata.annotations["pagerduty.com/integration-key"]'
-        runbook: 'metadata.annotations["backstage.io/runbook-url"]'
+        'metadata.annotations["pagerduty.com/integration-key"]': pagerdutyKey
+        'metadata.annotations["backstage.io/runbook-url"]': runbook
       sections:
         - title: On-Call & Runbook
           description: Applies only to components of type "service".

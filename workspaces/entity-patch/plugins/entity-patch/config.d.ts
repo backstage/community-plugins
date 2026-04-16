@@ -90,19 +90,27 @@ export interface Config {
         properties?: { [key: string]: unknown };
       }>;
       /**
-       * Maps form field names to either a dot-separated entity path or a
-       * `relations.{type}` reference for custom relation fields.
+       * Maps entity paths (or `relations.{type}`) to form field names or
+       * Nunjucks template strings.
        *
-       * - Dot-path: written directly onto the entity via `lodash.set`
-       *   e.g. `{ description: 'metadata.description' }`
-       * - Relation type: triggers bidirectional relation emission in
-       *   `postProcessEntity` — the type must match a `forward` or `reverse`
-       *   value declared in `entityPatch.relations`.
-       *   e.g. `{ designers: 'relations.hasDesigner' }`
+       * Keys are dot-separated paths on the Backstage entity (e.g.
+       * `metadata.description`) or `relations.{type}` references. Both flat
+       * dot-notation keys and nested YAML objects are accepted.
+       *
+       * Values are either:
+       * - A **form field name** — writes the saved field value directly to the entity path.
+       *   e.g. `metadata.description: description`
+       * - A **Nunjucks template** — rendered with all saved form values as context.
+       *   e.g. `metadata.annotations.slack-url: "slack.com/c/{{ channelId }}"`
+       * - A **`relations.{type}`** key — emits a bidirectional catalog relation.
+       *   e.g. `relations.hasDesigner: designerRef`
+       *
+       * Fan-out (one form field → multiple entity paths) is supported by
+       * repeating the same field name as the value for different keys.
        *
        * @visibility backend
        */
-      mapping?: { [key: string]: string };
+      mapping?: { [key: string]: unknown };
     }>;
   };
 }

@@ -16,6 +16,7 @@
 import { get } from 'lodash';
 import { Entity } from '@backstage/catalog-model';
 import type { RelationPair } from '@backstage-community/plugin-entity-patch-common';
+import { isMappingTemplate } from '@backstage-community/plugin-entity-patch-common';
 
 /**
  * Reads a value from a deeply nested object using a dot-separated path.
@@ -50,16 +51,21 @@ export function extractRelationValues(
 }
 
 /**
- * Extracts form field values from a catalog entity using a field→path mapping.
+ * Extracts form field values from a catalog entity using an entity-path → field mapping.
  *
- * Mapping values starting with `relations.` are resolved via `entity.relations[]`
- * rather than `lodash.get`. The type after the prefix must appear in the
- * provided `relationPairs` lookup (indexed by both forward and reverse types).
+ * Each key is a dot-separated entity path or `relations.{type}` reference;
+ * each value is the form field name to populate, or a Nunjucks template string.
+ *
+ * Template-mapped paths (values containing `{{`) are skipped — the rendered
+ * result lives on the entity but cannot be reverse-engineered into the original
+ * form field values. The form will instead load those fields from the DB overlay.
+ *
+ * Multiple entity paths may share the same form field name (fan-out writes).
+ * When reading back, the last entity path with a defined value wins.
  *
  * @param entity - The Backstage entity to read values from.
- * @param mapping - Map of form field names to dot-separated entity paths or
- *   `relations.{type}` references.
- *   e.g. `{ description: 'metadata.description', designers: 'relations.hasDesigner' }`
+ * @param mapping - Map of entity paths → form field names or Nunjucks templates.
+ *   e.g. `{ "metadata.description": "description", "relations.hasDesigner": "designerRef" }`
  * @param options.relationPairs - Lookup map from relation type → RelationPair.
  *   Required for resolving `relations.` values; ignored for plain dot-paths.
  * @param options.sectionProperties - Raw JSON Schema properties map keyed by
@@ -78,10 +84,16 @@ export function extractEntityValues(
   const { relationPairs, sectionProperties } = options;
   const result: Record<string, unknown> = {};
 
-  for (const [fieldName, mappingValue] of Object.entries(mapping)) {
-    if (mappingValue.startsWith('relations.')) {
+  for (const [entityPath, fieldOrTemplate] of Object.entries(mapping)) {
+    // Template values are rendered by the processor at write time using saved
+    // form data — we cannot reverse them to individual field values here.
+    if (isMappingTemplate(fieldOrTemplate)) continue;
+
+    const fieldName = fieldOrTemplate;
+
+    if (entityPath.startsWith('relations.')) {
       if (!relationPairs) continue;
-      const relType = mappingValue.slice('relations.'.length);
+      const relType = entityPath.slice('relations.'.length);
       if (!relationPairs.has(relType)) continue;
 
       const propSchema = sectionProperties?.[fieldName] as
@@ -93,7 +105,7 @@ export function extractEntityValues(
         result[fieldName] = value;
       }
     } else {
-      const value = getByPath(entity, mappingValue);
+      const value = getByPath(entity, entityPath);
       if (value !== undefined) {
         result[fieldName] = value;
       }

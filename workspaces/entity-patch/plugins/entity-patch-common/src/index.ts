@@ -79,12 +79,23 @@ export interface PatchDefinition {
   /** One or more sections that make up the form for this patch. */
   sections: PatchSection[];
   /**
-   * Maps form field names to dot-separated paths on the Backstage entity
-   * (e.g. `{ description: "metadata.description", email: "spec.profile.email" }`).
-   * Used exclusively by the backend when applying the patch — not read by
-   * the frontend form renderer.
+   * Maps entity paths (or `relations.{type}`) to form field names or Nunjucks
+   * template strings.
+   *
+   * Each key is a dot-separated path on the Backstage entity, e.g.:
+   * - `metadata.description` → `description`  (writes the form field value)
+   * - `metadata.annotations.slack` → `"slack.com/c/{{ channelId }}"` (Nunjucks template)
+   * - `relations.hasDesigner` → `designerRef`  (emits a relation)
+   *
+   * Fan-out (one form field → multiple entity paths) is supported by repeating
+   * the same form field name as the value for different keys.
+   *
+   * Both flat dot-notation keys and nested YAML objects are accepted and
+   * normalised to flat dot-notation internally.
+   *
+   * Used exclusively by the backend — not read by the frontend form renderer.
    */
-  mapping?: Record<string, string>;
+  mapping?: Record<string, unknown>;
 }
 
 // ─── Backend types ────────────────────────────────────────────────────────────
@@ -104,6 +115,11 @@ export interface RelationPair {
  */
 export interface PatchConfig {
   name: string;
+  /**
+   * Normalised mapping of entity path → form field name or Nunjucks template string.
+   * Always flat dot-notation keys (nested YAML is flattened by `buildPatchConfigs`).
+   * Values containing `{{` are Nunjucks templates; plain values are form field names.
+   */
   mapping: Record<string, string>;
   filter?: FilterPredicate;
   /**
@@ -111,6 +127,16 @@ export interface PatchConfig {
    * Used to infer `multiple` for relation fields (`type: "array"`).
    */
   sectionProperties: Record<string, unknown>;
+}
+
+/**
+ * Returns `true` when a mapping value is a Nunjucks template (contains `{{`).
+ * Plain mapping values are form field names; template values are rendered
+ * with saved form data as context before being written to the entity.
+ * @public
+ */
+export function isMappingTemplate(value: string): boolean {
+  return value.includes('{{');
 }
 
 /**
@@ -133,6 +159,41 @@ export function buildRelationPairs(config: Config): Map<string, RelationPair> {
 }
 
 /**
+ * Recursively flattens a nested mapping object to flat dot-notation keys.
+ *
+ * Both styles below produce identical output:
+ * ```yaml
+ * # Flat dot-notation
+ * mapping:
+ *   metadata.title: name
+ *
+ * # Nested YAML (equivalent)
+ * mapping:
+ *   metadata:
+ *     title: name
+ * ```
+ * @public
+ */
+export function flattenMapping(
+  obj: Record<string, unknown>,
+  prefix = '',
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+    if (typeof value === 'string') {
+      result[fullKey] = value;
+    } else if (typeof value === 'object' && value !== null) {
+      Object.assign(
+        result,
+        flattenMapping(value as Record<string, unknown>, fullKey),
+      );
+    }
+  }
+  return result;
+}
+
+/**
  * Builds an array of patch configs from `entityPatch.patches`.
  * Only patches that have a `mapping` block are included.
  * @public
@@ -149,9 +210,11 @@ export function buildPatchConfigs(config: Config): PatchConfig[] {
             s => s.getOptional<Record<string, unknown>>('properties') ?? {},
           ) ?? [];
       const sectionProperties = Object.assign({}, ...sections);
+      const rawMapping =
+        p.getOptional<Record<string, unknown>>('mapping') ?? {};
       return {
         name: p.getString('name'),
-        mapping: p.getOptional('mapping') as Record<string, string>,
+        mapping: flattenMapping(rawMapping),
         filter: p.has('filter')
           ? (p.get('filter') as FilterPredicate)
           : undefined,
@@ -181,7 +244,9 @@ const patchDefinitionSchema = z.object({
   sections: z
     .array(patchSectionSchema)
     .min(1, 'at least one section is required'),
-  mapping: z.record(z.string(), z.string()).optional(),
+  // mapping values are either plain field names or Nunjucks templates (strings),
+  // and keys can be nested YAML objects or flat dot-notation strings.
+  mapping: z.record(z.string(), z.unknown()).optional(),
 });
 
 const patchesSchema = z.array(patchDefinitionSchema);

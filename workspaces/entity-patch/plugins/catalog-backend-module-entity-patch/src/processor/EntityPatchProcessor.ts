@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 import { cloneDeep, set } from 'lodash';
+import nunjucks from 'nunjucks';
 import {
   Entity,
   parseEntityRef,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
+import { ScmIntegrations } from '@backstage/integration';
+import { createDefaultFilters } from '../templating/filters/createDefaultFilters';
 import {
   CatalogProcessor,
   CatalogProcessorCache,
@@ -37,6 +40,7 @@ import {
   PatchConfig,
   buildRelationPairs,
   buildPatchConfigs,
+  isMappingTemplate,
 } from '@backstage-community/plugin-entity-patch-common';
 
 /** Raw stored patch data: patchName → { fieldName → value } */
@@ -85,6 +89,8 @@ export class EntityPatchProcessor implements CatalogProcessor {
   private readonly patchConfigs: PatchConfig[];
   /** Lookup map: relation type (forward or reverse) → RelationPair */
   private readonly relationPairs: Map<string, RelationPair>;
+  /** Nunjucks environment pre-configured with scaffolder-compatible filters. */
+  private readonly nunjucksEnv: nunjucks.Environment;
   /**
    * Per-cycle in-memory cache to deduplicate the HTTP fetch between
    * preProcessEntity and postProcessEntity for the same entity.
@@ -99,6 +105,15 @@ export class EntityPatchProcessor implements CatalogProcessor {
     this.auth = options.auth;
     this.relationPairs = buildRelationPairs(options.config);
     this.patchConfigs = buildPatchConfigs(options.config);
+
+    const integrations = ScmIntegrations.fromConfig(options.config);
+    const filters = createDefaultFilters({ integrations });
+    this.nunjucksEnv = new nunjucks.Environment(null as any, {
+      autoescape: false,
+    });
+    for (const { id, filter } of filters) {
+      this.nunjucksEnv.addFilter(id, filter as (...args: any[]) => any);
+    }
   }
 
   static fromConfig(
@@ -270,11 +285,19 @@ export class EntityPatchProcessor implements CatalogProcessor {
       const savedValues = patchData[patchName];
       if (!savedValues) continue;
 
-      for (const [fieldName, value] of Object.entries(savedValues)) {
-        const entityPath = mapping[fieldName];
-        if (!entityPath) continue;
-        // Skip relation-mapped fields — they are handled in postProcessEntity
+      for (const [entityPath, fieldOrTemplate] of Object.entries(mapping)) {
+        // Relations are handled in postProcessEntity
         if (entityPath.startsWith('relations.')) continue;
+
+        let value: unknown;
+        if (isMappingTemplate(fieldOrTemplate)) {
+          // Render Nunjucks template with saved form values as context
+          value = this.nunjucksEnv.renderString(fieldOrTemplate, savedValues);
+        } else {
+          value = savedValues[fieldOrTemplate];
+        }
+
+        if (value === undefined || value === null) continue;
         set(result, entityPath, value);
       }
     }
@@ -323,9 +346,12 @@ export class EntityPatchProcessor implements CatalogProcessor {
         const savedValues = patchData[patchName];
         if (!savedValues) continue;
 
-        for (const [fieldName, entityPath] of Object.entries(mapping)) {
+        for (const [entityPath, fieldOrTemplate] of Object.entries(mapping)) {
           if (!entityPath.startsWith('relations.')) continue;
+          // Template values don't make sense for relations — skip them
+          if (isMappingTemplate(fieldOrTemplate)) continue;
 
+          const fieldName = fieldOrTemplate;
           const relType = entityPath.slice('relations.'.length);
           const pair = this.relationPairs.get(relType);
           if (!pair) {

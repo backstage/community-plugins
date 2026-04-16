@@ -15,7 +15,9 @@
  */
 import type { DatabaseService } from '@backstage/backend-plugin-api';
 import { resolvePackagePath } from '@backstage/backend-plugin-api';
-import type { Knex } from 'knex';
+
+/** Knex client type derived from DatabaseService to avoid version conflicts. */
+type Knex = Awaited<ReturnType<DatabaseService['getClient']>>;
 
 /** Stored row from the entity_patches table. */
 interface PatchRow {

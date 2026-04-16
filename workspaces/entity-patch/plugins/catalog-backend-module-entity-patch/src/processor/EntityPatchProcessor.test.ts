@@ -38,8 +38,8 @@ const componentConfig = {
         name: 'component-metadata',
         filter: { kind: 'component' },
         mapping: {
-          description: 'metadata.description',
-          lifecycle: 'spec.lifecycle',
+          'metadata.description': 'description',
+          'spec.lifecycle': 'lifecycle',
         },
         sections: [{ title: 'Info', properties: {} }],
       },
@@ -90,7 +90,7 @@ describe('EntityPatchProcessor', () => {
             {
               name: 'group-only',
               filter: { kind: 'group' },
-              mapping: { description: 'metadata.description' },
+              mapping: { 'metadata.description': 'description' },
               sections: [],
             },
           ],
@@ -151,9 +151,9 @@ describe('EntityPatchProcessor', () => {
               name: 'service-oncall',
               filter: { kind: 'component' },
               mapping: {
-                pagerdutyKey:
-                  'metadata.annotations["pagerduty.com/integration-key"]',
-                runbook: 'metadata.annotations["backstage.io/runbook-url"]',
+                'metadata.annotations["pagerduty.com/integration-key"]':
+                  'pagerdutyKey',
+                'metadata.annotations["backstage.io/runbook-url"]': 'runbook',
               },
               sections: [{ title: 'On-Call', properties: {} }],
             },
@@ -313,6 +313,182 @@ describe('EntityPatchProcessor', () => {
       expect(result.metadata.description).toBe('patched');
       expect((result.metadata as any).unmappedField).toBeUndefined();
     });
+    it('renders Nunjucks template values using saved form data as context', async () => {
+      const templateConfig: JsonObject = {
+        entityPatch: {
+          patches: [
+            {
+              name: 'service-links',
+              filter: { kind: 'component' },
+              mapping: {
+                'metadata.annotations.runbook-url':
+                  'https://wiki.example.com/runbooks/{{ service }}/{{ env }}',
+                'metadata.description': 'description',
+              },
+              sections: [{ title: 'Links', properties: {} }],
+            },
+          ],
+        },
+      };
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: { get: (h: string) => (h === 'etag' ? '"etag-tmpl"' : null) },
+        json: async () => ({
+          'service-links': {
+            service: 'payments-api',
+            env: 'production',
+            description: 'Handles payment processing',
+          },
+        }),
+      });
+
+      const processor = makeProcessor(templateConfig as unknown as JsonObject);
+      const result = await processor.preProcessEntity(
+        mockComponentEntity,
+        {} as any,
+        () => {},
+        {} as any,
+        mockCache as any,
+      );
+
+      expect(
+        (result.metadata.annotations as Record<string, string>)['runbook-url'],
+      ).toBe('https://wiki.example.com/runbooks/payments-api/production');
+      expect(result.metadata.description).toBe('Handles payment processing');
+    });
+
+    it('resolves template filters — parseEntityRef, pick, parseRepoUrl and projectSlug', async () => {
+      const configWithIntegrations: JsonObject = {
+        integrations: {
+          github: [{ host: 'github.com' }],
+        },
+        entityPatch: {
+          patches: [
+            {
+              name: 'team-ownership',
+              filter: { kind: 'group' },
+              mapping: {
+                // parseEntityRef + pick — extract parts of an entity ref
+                'spec.owner': 'owner',
+                'metadata.annotations["custom/owner-name"]':
+                  "{{ owner | parseEntityRef | pick('name') }}",
+                'metadata.annotations["custom/owner-namespace"]':
+                  "{{ owner | parseEntityRef | pick('namespace') }}",
+                'metadata.annotations["custom/owner-kind"]':
+                  "{{ owner | parseEntityRef | pick('kind') }}",
+                // parseRepoUrl — parse a repo URL into its parts
+                'metadata.annotations["custom/repo-host"]':
+                  "{{ repoUrl | parseRepoUrl | pick('host') }}",
+                'metadata.annotations["custom/repo-owner"]':
+                  "{{ repoUrl | parseRepoUrl | pick('owner') }}",
+                // projectSlug — derive "owner/repo" from a repo URL
+                'metadata.annotations["custom/project-slug"]':
+                  '{{ repoUrl | projectSlug }}',
+              },
+              sections: [{ title: 'Ownership', properties: {} }],
+            },
+          ],
+        },
+      };
+
+      const groupEntity: Entity = {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Group',
+        metadata: { name: 'platform-team', namespace: 'default' },
+        spec: { type: 'team', children: [] },
+      };
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: {
+          get: (h: string) => (h === 'etag' ? '"etag-filters"' : null),
+        },
+        json: async () => ({
+          'team-ownership': {
+            owner: 'group:default/guests',
+            repoUrl: 'github.com?owner=my-org&repo=my-service',
+          },
+        }),
+      });
+
+      const processor = makeProcessor(configWithIntegrations);
+      const result = await processor.preProcessEntity(
+        groupEntity,
+        {} as any,
+        () => {},
+        {} as any,
+        mockCache as any,
+      );
+
+      const annotations = result.metadata.annotations as Record<string, string>;
+
+      // parseEntityRef | pick
+      expect((result.spec as any).owner).toBe('group:default/guests');
+      expect(annotations['custom/owner-name']).toBe('guests');
+      expect(annotations['custom/owner-namespace']).toBe('default');
+      expect(annotations['custom/owner-kind']).toBe('group');
+
+      // parseRepoUrl | pick
+      expect(annotations['custom/repo-host']).toBe('github.com');
+      expect(annotations['custom/repo-owner']).toBe('my-org');
+
+      // projectSlug
+      expect(annotations['custom/project-slug']).toBe('my-org/my-service');
+    });
+
+    it('supports fan-out: writes same field value to multiple entity paths', async () => {
+      const fanOutConfig: JsonObject = {
+        entityPatch: {
+          patches: [
+            {
+              name: 'group-details',
+              filter: { kind: 'group' },
+              mapping: {
+                'metadata.description': 'description',
+                'metadata.annotations.custom/description': 'description', // fan-out
+              },
+              sections: [{ title: 'Details', properties: {} }],
+            },
+          ],
+        },
+      };
+
+      const groupEntity: Entity = {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Group',
+        metadata: { name: 'my-team', namespace: 'default' },
+        spec: { type: 'team', children: [] },
+      };
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: { get: (h: string) => (h === 'etag' ? '"etag-fo"' : null) },
+        json: async () => ({
+          'group-details': { description: 'Great team' },
+        }),
+      });
+
+      const processor = makeProcessor(fanOutConfig as unknown as JsonObject);
+      const result = await processor.preProcessEntity(
+        groupEntity,
+        {} as any,
+        () => {},
+        {} as any,
+        mockCache as any,
+      );
+
+      expect(result.metadata.description).toBe('Great team');
+      expect(
+        (result.metadata.annotations as Record<string, string>)[
+          'custom/description'
+        ],
+      ).toBe('Great team');
+    });
+
     it('skips relation-mapped fields in preProcessEntity (they are handled in postProcessEntity)', async () => {
       const relationsConfig: JsonObject = {
         entityPatch: {
@@ -324,8 +500,8 @@ describe('EntityPatchProcessor', () => {
               name: 'component-metadata',
               filter: { kind: 'component' },
               mapping: {
-                description: 'metadata.description',
-                designers: 'relations.hasDesigner',
+                'metadata.description': 'description',
+                'relations.hasDesigner': 'designers',
               },
               sections: [
                 {
@@ -385,8 +561,8 @@ describe('EntityPatchProcessor', () => {
             name: 'team-roles',
             filter: { kind: 'group' },
             mapping: {
-              designers: 'relations.hasDesigner',
-              techLeads: 'relations.hasTechLead',
+              'relations.hasDesigner': 'designers',
+              'relations.hasTechLead': 'techLeads',
             },
             sections: [
               {
