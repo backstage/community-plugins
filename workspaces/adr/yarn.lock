@@ -4031,6 +4031,7 @@ __metadata:
   resolution: "@internal/adr@workspace:."
   dependencies:
     "@backstage/cli": "npm:^0.36.1"
+    "@backstage/cli-defaults": "npm:^0.1.1"
     "@backstage/e2e-test-utils": "npm:^0.1.2"
     "@backstage/repo-tools": "npm:^0.17.1"
     "@changesets/cli": "npm:^2.27.1"
