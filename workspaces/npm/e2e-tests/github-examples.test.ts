@@ -31,6 +31,6 @@ test('github-examples', async ({ page }) => {
     await page.getByRole('link', { name, exact: true }).click();
 
     await expect(page.getByText(`NPM package ${packageName}`)).toBeVisible();
-    // Getting the package information fails without GITHUB_TOKEN, we we ignore that here for now.
+    // Getting the package information fails without GITHUB_TOKEN, so we ignore that here for now.
   }
 });

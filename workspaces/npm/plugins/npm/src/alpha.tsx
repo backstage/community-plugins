@@ -128,7 +128,7 @@ export default createFrontendPlugin({
 });
 
 /**
- * Extension for Scorecard translations.
+ * Extension for npm translations.
  */
 const npmTranslation = TranslationBlueprint.make({
   params: {
