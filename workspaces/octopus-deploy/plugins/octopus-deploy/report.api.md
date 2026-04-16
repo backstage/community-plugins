@@ -14,7 +14,7 @@ import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public (undocumented)
 export const EntityOctopusDeployContent: (props: {
-  defaultLimit?: number | undefined;
+  defaultLimit?: number;
 }) => JSX_2.Element;
 
 // @public (undocumented)
