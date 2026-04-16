@@ -34,8 +34,7 @@ export const Administration = () => {
 
   if (!isUserLoading && isRBACPluginEnabled) {
     return result?.status === 'Authorized' ? (
-      // FIXME: improve icon type in Backstage 1.49, currently the icon type is deprecated but there is no change in the SidebarItem!?
-      <SidebarItem text="RBAC" to="rbac" icon={RbacIcon as any} />
+      <SidebarItem text="RBAC" to="rbac" icon={RbacIcon} />
     ) : null;
   }
   return null;

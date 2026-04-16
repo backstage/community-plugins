@@ -36,7 +36,11 @@ type MembersCardProps = {
 };
 
 const getRefreshIcon = () => <CachedIcon />;
-const getEditIcon = (isAllowed: boolean, roleName: string) => {
+const getEditIcon = (
+  isAllowed: boolean,
+  roleName: string,
+  tooltip?: string,
+) => {
   const { kind, name, namespace } = parseEntityRef(roleName);
 
   return (
@@ -45,6 +49,7 @@ const getEditIcon = (isAllowed: boolean, roleName: string) => {
       canEdit={isAllowed}
       roleName={roleName}
       to={`../../role/${kind}/${namespace}/${name}?activeStep=${1}`}
+      tooltip={tooltip}
     />
   );
 };
@@ -54,6 +59,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
   const locale = useLanguage();
   const { data, loading, retry, error, canReadUsersAndGroups } = membersInfo;
   const [searchText, setSearchText] = useState<string>();
+
+  const editTooltip = canReadUsersAndGroups
+    ? t('common.edit')
+    : t('common.unauthorizedToEdit');
 
   const actions = [
     {
@@ -66,10 +75,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
       },
     },
     {
-      icon: () => getEditIcon(canReadUsersAndGroups, roleName),
-      tooltip: canReadUsersAndGroups
-        ? t('common.edit')
-        : t('common.unauthorizedToEdit'),
+      icon: () => getEditIcon(canReadUsersAndGroups, roleName, editTooltip),
       isFreeAction: true,
       onClick: () => {},
     },
@@ -79,6 +85,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
     () => filterTableData({ data, columns, searchText, locale }),
     [data, searchText, locale, columns],
   );
+
+  if (membersInfo.isDefaultRole) {
+    return null;
+  }
 
   return (
     <Box>

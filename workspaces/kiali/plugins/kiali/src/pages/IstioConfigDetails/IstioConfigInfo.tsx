@@ -34,7 +34,7 @@ export const IstioConfigInfo = (istioConfigProps: IstioConfigInfoProps) => {
   return (
     <Grid container spacing={1} style={{ paddingTop: '20px' }}>
       <Grid
-        key={`Card_${istioConfigProps.istioConfig?.resource.kind}`}
+        key={`Card_${istioConfigProps.istioConfig?.resource?.kind ?? 'loading'}`}
         item
         xs={size}
       >

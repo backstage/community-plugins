@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  RESOURCE_TYPE_POLICY_ENTITY,
-  type RoleMetadata,
-} from '@backstage-community/plugin-rbac-common';
+import { RESOURCE_TYPE_POLICY_ENTITY } from '@backstage-community/plugin-rbac-common';
 import { createPermissionResourceRef } from '@backstage/plugin-permission-node';
 import { RBACFilter } from './rules';
+import { RoleMetadataDao } from '../database/role-metadata';
 
 /**
  * Reference to the RBAC permission metadata resource.
@@ -26,7 +24,7 @@ import { RBACFilter } from './rules';
  *
  */
 export const permissionMetadataResourceRef = createPermissionResourceRef<
-  RoleMetadata,
+  RoleMetadataDao,
   RBACFilter
 >().with({
   pluginId: 'permission',

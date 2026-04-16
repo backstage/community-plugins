@@ -68,5 +68,21 @@ export default defineConfig({
         locale: 'ja',
       },
     },
+    {
+      name: 'de',
+      testDir: './plugins/argocd/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      testDir: './plugins/argocd/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
+      },
+    },
   ],
 });

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -24,12 +24,10 @@
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "plugins/*"
-    ]
-  },
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
@@ -37,13 +35,14 @@
   },
   "devDependencies": {
     "@backstage/cli": "^{{version '@backstage/cli'}}",
+    "@backstage/cli-defaults": "^{{version '@backstage/cli-defaults'}}",
     "@backstage/e2e-test-utils": "^{{version '@backstage/e2e-test-utils'}}",
     "@backstage/repo-tools": "^{{version '@backstage/repo-tools'}}",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",

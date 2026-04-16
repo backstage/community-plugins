@@ -207,7 +207,10 @@ export const item: Renderer<TResource> = (
         cluster={resource.cluster}
         objectGVK={
           config.name === 'istio'
-            ? getIstioObjectGVK('', (resource as IstioConfigItem).kind)
+            ? getIstioObjectGVK(
+                (resource as IstioConfigItem).apiVersion,
+                (resource as IstioConfigItem).kind,
+              )
             : undefined
         }
         key={key}
@@ -412,9 +415,13 @@ export const istioConfiguration: Renderer<IstioConfigItem> = (
       style={{ verticalAlign: 'middle' }}
     >
       {validation ? (
-        <Link to="">
+        <Link
+          to="#"
+          onClick={(e: React.MouseEvent) => e.preventDefault()}
+          style={{ color: 'inherit', textDecoration: 'none' }}
+        >
           <ValidationObjectSummary
-            id={`${item.name}-config-validation`}
+            id={`${resource.name}-config-validation`}
             validations={[validation]}
             reconciledCondition={reconciledCondition}
           />
