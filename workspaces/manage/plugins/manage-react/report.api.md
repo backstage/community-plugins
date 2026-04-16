@@ -20,8 +20,8 @@ import { DiscoveryApi as DiscoveryApi_2 } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { ExtensionBlueprint } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
+import { ExtensionDataContainer } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import type { FetchApi } from '@backstage/core-plugin-api';
 import { FetchApi as FetchApi_2 } from '@backstage/frontend-plugin-api';
 import { GaugeCard as GaugeCard_2 } from '@backstage/core-components';
@@ -33,7 +33,6 @@ import { JSX as JSX_3 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { PropsWithChildren } from 'react';
 import { ReactNode } from 'react';
-import { ResolvedExtensionInputs } from '@backstage/frontend-plugin-api';
 
 // @public
 export interface ApiFactoryOptions {
@@ -142,13 +141,7 @@ export function CurrentKindProvider(
 
 // @public
 export class DefaultManageApi implements ManageApi {
-  constructor({
-    configApi,
-    discoveryApi,
-    fetchApi,
-    kindOrder,
-    providers,
-  }: DefaultManageApiOptions);
+  constructor(input: DefaultManageApiOptions);
   // (undocumented)
   getOwnersAndEntities: (
     kinds: readonly string[],
@@ -888,15 +881,7 @@ export interface OwnersAndEntities {
 
 // @public
 export function parseDynamicConfig(
-  configs: ResolvedExtensionInputs<{
-    config: ExtensionInput<
-      typeof manageConfigDataRef,
-      {
-        optional: false;
-        singleton: boolean;
-      }
-    >;
-  }>['config'],
+  configs: Array<ExtensionDataContainer<typeof manageConfigDataRef>>,
 ): ManageDynamicConfig;
 
 // @public

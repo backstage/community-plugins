@@ -42,9 +42,7 @@ import { TableOptions as TableOptions_2 } from '@backstage/core-components';
 import { UseUserSettingsResult } from '@backstage-community/plugin-manage-react';
 
 // @public
-export function DefaultSettings({
-  customSettings,
-}: {
+export function DefaultSettings(input: {
   readonly customSettings: readonly Setting[];
 }): JSX_3.Element;
 
@@ -102,9 +100,7 @@ export interface ManageKindOptions {
 export const ManagePage: ManagePageImpl;
 
 // @public
-export function ManagePageFilters({
-  switchColor,
-}: {
+export function ManagePageFilters(input: {
   switchColor?: SwitchColor;
 }): JSX_3.Element;
 
@@ -415,7 +411,6 @@ const managePlugin_2: OverridableFrontendPlugin<
       kind: 'page';
       name: undefined;
       params: {
-        defaultPath?: [Error: `Use the 'path' param instead`];
         path: string;
         title?: string;
         icon?: IconElement;
@@ -453,9 +448,9 @@ export interface ManageTabsProps {
 export const OrganizationGraph: OrganizationGraphImpl;
 
 // @public
-export function OrganizationGraphImpl({
-  enableWholeOrganization,
-}: OrganizationGraphProps): JSX_3.Element;
+export function OrganizationGraphImpl(
+  input: OrganizationGraphProps,
+): JSX_3.Element;
 
 // @public (undocumented)
 export interface OrganizationGraphProps {
