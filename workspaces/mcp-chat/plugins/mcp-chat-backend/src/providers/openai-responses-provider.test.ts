@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { OpenAIResponsesProvider } from './openai-responses-provider';
 import {
   ProviderConfig,
@@ -30,11 +31,14 @@ describe('OpenAIResponsesProvider', () => {
   let provider: OpenAIResponsesProvider;
   const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
+  const mockLogger = mockServices.logger.mock();
+
   const config: ProviderConfig = {
     type: 'openai-responses',
     apiKey: 'test-api-key',
     baseUrl: 'http://test-api.com/v1',
     model: 'gemini/models/gemini-2.5-flash',
+    logger: mockLogger,
   };
 
   const mockMCPServerFullConfigs: MCPServerFullConfig[] = [

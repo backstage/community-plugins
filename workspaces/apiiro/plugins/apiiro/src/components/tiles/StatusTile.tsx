@@ -27,11 +27,13 @@ import {
   formatActivityTooltip,
   getDevelopmentDuration,
 } from '../../utils/dateFormatter';
-import { RepositoryType } from '../../queries/queries.type';
+import { RepositoryType, ApplicationType } from '../../queries/queries.type';
 import { CustomTooltip, NotFound } from '../common';
 import { generateRepoURL, scmProviderIcons } from '../common/scmProviders';
 import { APIIRO_DEFAULT_BASE_URL } from '@backstage-community/plugin-apiiro-common';
 import SettingIcon from '../../assets/SettingIcon';
+import { useApi } from '@backstage/core-plugin-api';
+import { apiiroApiRef } from '../../api';
 
 const ThemedIcon = styled('span')(({ theme }) => ({
   display: 'inline-flex',
@@ -64,7 +66,8 @@ export interface StatusTileProps {
   title?: string;
   width?: string | number;
   height?: string | number;
-  repository: RepositoryType;
+  repository?: RepositoryType;
+  application?: ApplicationType;
   detailViewLink?: string | null;
   allowViewChart?: boolean;
 }
@@ -198,97 +201,157 @@ export const StatusTile = ({
   width = '100%',
   height = 'auto',
   repository,
+  application,
   detailViewLink = null,
   allowViewChart = true,
 }: StatusTileProps) => {
+  const isApplication = !!application;
+  const data = isApplication ? application : repository;
+  const connectApi = useApi(apiiroApiRef);
+  const redirectDevView = connectApi.getRedirectDevView();
+
   // Show message when no data is available
-  if (Object.keys(repository).length === 0) {
+  if (!data || Object.keys(data).length === 0) {
     return (
       <StatusBox width={width} height={height} alignContent="flex-start">
         <CustomHeaderData title="" />
-        <NotFound message="Results for this repository are either unavailable on Apiiro or cannot be accessed." />
+        <NotFound
+          message={`Results for this ${
+            isApplication ? 'application' : 'repository'
+          } are either unavailable on Apiiro or can not be accessed.`}
+        />
       </StatusBox>
     );
   }
 
-  const ProviderIconComponent = scmProviderIcons[repository.provider as string];
-  const apiiroRepoUrl = `${APIIRO_DEFAULT_BASE_URL}/profiles/repositories/${repository.key}`;
-  const settingsUrl = `${apiiroRepoUrl}/profile/${repository.scmRepositoryKey}/multi-branch`;
+  // Determine Apiiro URL based on type
+  const profileType = isApplication ? 'applications' : 'repositories';
+  const profileKey = isApplication ? application!.key : repository!.key;
+  const apiiroUrl = `${APIIRO_DEFAULT_BASE_URL}/profiles/${profileType}/${profileKey}`;
+
+  const queryParams = redirectDevView ? '?devView=true' : '';
+  const actionUrl = `${apiiroUrl}/risk/development${queryParams}`;
+
+  // Render Activity Row
+  const renderActivityRow = () => {
+    if (isApplication) {
+      if (application!.isActive === undefined) return null;
+      return (
+        <StatusRow>
+          <StatusLabel>Activity:</StatusLabel>
+          <StatusValue>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <StatusIndicator isActive={application!.isActive} />
+              {application!.isActive ? 'Active' : 'Inactive'}
+            </Box>
+          </StatusValue>
+        </StatusRow>
+      );
+    }
+
+    // Repository activity with tooltip
+    if (!repository!.lastActivity || !repository!.activeSince) return null;
+    return (
+      <CustomTooltip
+        title={formatActivityTooltip(
+          repository!.lastActivity,
+          repository!.activeSince,
+        )}
+        placement="bottom"
+      >
+        <StatusRow>
+          <StatusLabel>Activity:</StatusLabel>
+          <StatusValue>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <StatusIndicator isActive={repository!.isActive} />
+              {repository!.isActive
+                ? `In development for ${getDevelopmentDuration(
+                    repository!.activeSince,
+                  )}`
+                : 'Inactive'}
+            </Box>
+          </StatusValue>
+        </StatusRow>
+      </CustomTooltip>
+    );
+  };
+
+  // Render Risk Score Row (common for both)
+  const renderRiskScoreRow = () => {
+    const riskScore = isApplication
+      ? application!.riskScore ?? 0
+      : repository!.riskScore;
+    return (
+      <CustomTooltip
+        title="A weighted value based on the number of risks at each severity level."
+        placement="top"
+      >
+        <StatusRow>
+          <StatusLabel>Risk score:</StatusLabel>
+          <StatusValue>{formatNumberWithSuffix(riskScore)}</StatusValue>
+        </StatusRow>
+      </CustomTooltip>
+    );
+  };
+
+  // Render Repository-specific Branch Row
+  const renderBranchRow = () => {
+    if (isApplication) return null;
+
+    const ProviderIconComponent =
+      scmProviderIcons[repository!.provider as string];
+    const settingsUrl = `${apiiroUrl}/profile/${
+      repository!.scmRepositoryKey
+    }/multi-branch`;
+
+    return (
+      <StatusRow>
+        {ProviderIconComponent && (
+          <ThemedIcon>
+            <ProviderIconComponent />
+          </ThemedIcon>
+        )}
+        <BranchLink
+          to={generateRepoURL(repository!) || ''}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {`Analyzing ${repository!.branchName} branch`}
+        </BranchLink>
+        <Link
+          to={settingsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: 'inline-flex', marginLeft: '4px' }}
+        >
+          <SettingIcon />
+        </Link>
+      </StatusRow>
+    );
+  };
+
+  // Render Action Links (common for both)
+  const renderActionLinks = () => (
+    <ActionLinks>
+      {allowViewChart && (
+        <ActionLink to={actionUrl} target="_blank" rel="noopener noreferrer">
+          Go to Apiiro →
+        </ActionLink>
+      )}
+      {detailViewLink && (
+        <ActionLink to={detailViewLink}>Detail View →</ActionLink>
+      )}
+    </ActionLinks>
+  );
 
   return (
     <StatusBox width={width} height={height} alignContent="flex-start">
       <CustomHeaderData title={title} />
       <StatusContent>
-        {repository?.lastActivity && repository?.activeSince && (
-          <CustomTooltip
-            title={formatActivityTooltip(
-              repository.lastActivity,
-              repository.activeSince,
-            )}
-            placement="bottom"
-          >
-            <StatusRow>
-              <StatusLabel>Activity:</StatusLabel>
-              <StatusValue>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <StatusIndicator isActive={repository.isActive} />
-                  {repository.isActive
-                    ? `In development for ${getDevelopmentDuration(
-                        repository.activeSince,
-                      )}`
-                    : 'Inactive'}
-                </Box>
-              </StatusValue>
-            </StatusRow>
-          </CustomTooltip>
-        )}
-        <CustomTooltip
-          title="A weighted value based on the number of risks at each severity level."
-          placement="top"
-        >
-          <StatusRow>
-            <StatusLabel>Risk score:</StatusLabel>
-            <StatusValue>
-              {formatNumberWithSuffix(repository.riskScore)}
-            </StatusValue>
-          </StatusRow>
-        </CustomTooltip>
-        <StatusRow>
-          {ProviderIconComponent && (
-            <ThemedIcon>
-              <ProviderIconComponent />
-            </ThemedIcon>
-          )}
-          <BranchLink
-            to={generateRepoURL(repository) || ''}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {`Analyzing ${repository.branchName} branch`}
-          </BranchLink>
-          <Link
-            to={settingsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'inline-flex', marginLeft: '4px' }}
-          >
-            <SettingIcon />
-          </Link>
-        </StatusRow>
-        <ActionLinks>
-          {allowViewChart && (
-            <ActionLink
-              to={apiiroRepoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Go to Apiiro →
-            </ActionLink>
-          )}
-          {detailViewLink && (
-            <ActionLink to={detailViewLink}>Detail View →</ActionLink>
-          )}
-        </ActionLinks>
+        {renderActivityRow()}
+        {renderRiskScoreRow()}
+        {renderBranchRow()}
+        {renderActionLinks()}
       </StatusContent>
     </StatusBox>
   );

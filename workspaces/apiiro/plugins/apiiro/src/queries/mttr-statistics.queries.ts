@@ -25,21 +25,27 @@ const getMttrStatisticsData = async ({
   fetchApi,
   signal,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
+  applicationId,
 }: Query & {
-  repositoryKey?: string;
+  repositoryId?: string;
   entityRef?: string;
+  applicationId?: string;
 }) => {
   const url = await connectApi.discoveryApi.getBaseUrl('apiiro');
   const body: any = {};
 
-  if (repositoryKey) {
-    body.repositoryKey = repositoryKey;
+  if (repositoryId) {
+    body.repositoryId = repositoryId;
   }
 
   if (entityRef) {
     body.entityRef = entityRef;
+  }
+
+  if (applicationId) {
+    body.applicationId = applicationId;
   }
 
   return await post<MttrStatisticsSuccessResponseData>(
@@ -55,11 +61,13 @@ const getMttrStatisticsData = async ({
 export function useMttrStatisticsData({
   fetchApi,
   connectApi,
-  repositoryKey,
+  repositoryId,
   entityRef,
+  applicationId,
 }: Omit<Query, 'signal'> & {
-  repositoryKey?: string;
+  repositoryId?: string;
   entityRef?: string;
+  applicationId?: string;
 }) {
   const {
     data: mttrStatisticsData,
@@ -68,20 +76,22 @@ export function useMttrStatisticsData({
   } = useQuery({
     queryKey: [
       MTTR_STATISTICS_QUERY_KEY.GET_MTTR_STATISTICS,
-      repositoryKey,
+      repositoryId,
       entityRef,
+      applicationId,
     ],
     queryFn: ({ signal }) =>
-      repositoryKey || entityRef
+      repositoryId || applicationId
         ? getMttrStatisticsData({
             fetchApi,
             signal,
             connectApi,
-            repositoryKey,
+            repositoryId,
             entityRef,
+            applicationId,
           })
         : Promise.resolve([]),
-    enabled: !!(repositoryKey || entityRef),
+    enabled: !!repositoryId || !!applicationId,
   });
 
   return {

@@ -65,12 +65,138 @@ export type RepositoriesAggregation = {
   totalCount: number;
 };
 
-export type RepositoryFilters = {
-  repositoryUrl?: string;
+export type ApplicationEntryPoint = {
+  name?: string | null;
+  url?: string | null;
+};
+
+export type ApplicationPointOfContact = {
+  identity?: string | null;
+  title?: string | null;
+};
+
+export type ApplicationRepository = {
+  branches?: string[] | null;
+  repositoryUrl?: string | null;
+};
+
+export type ApplicationRepositoryGroup = {
+  serverUrl?: string | null;
+  group?: string | null;
+};
+
+export type ApplicationRepositoryTag = {
+  tagSource?: string | null;
+  provider?: string | null;
+  name?: string | null;
+  value?: string | null;
+};
+
+export type ApplicationTag = {
+  tagSource?: string | null;
+  name?: string | null;
+  value?: string | null;
+};
+
+export type BusinessImpactFactor = {
+  businessImpact?: string | null;
+  manualConfiguration?: boolean;
+  title?: string | null;
+};
+
+export type ComplianceFrameworkReference = {
+  description?: string | null;
+  identifier?: string | null;
+  securityComplianceFramework?: string | null;
+  url?: string | null;
+};
+
+export type LanguagePercentage = {
+  language?: string | null;
+  percentage?: number;
+};
+
+export type ApplicationProject = {
+  key?: string | null;
+  name?: string | null;
+  serverUrl?: string | null;
+  url?: string | null;
+};
+
+export type ApplicationItem = {
+  applicationType?: string | null;
+  applicationTypeOther?: string | null;
+  businessImpact?: string | null;
+  businessImpactFactors?: BusinessImpactFactor[] | null;
+  businessUnit?: string | null;
+  commitCount?: number;
+  complianceFrameworkReferences?: ComplianceFrameworkReference[] | null;
+  complianceRequirements?: string[] | null;
+  containingRiskLevel?: string[] | null;
+  deploymentLocations?: string[] | null;
+  description?: string | null;
+  estimatedRevenue?: string | null;
+  estimatedUsersNumber?: string | null;
+  hasApiAuthorizationUsage?: boolean;
+  hasApiMissingAuthorization?: boolean;
+  hasApiMissingInputValidation?: boolean;
+  hasApis?: boolean;
+  hasAuthenticationUsage?: boolean;
+  hasAuthorizationUsage?: boolean;
+  hasDataAccessObjects?: boolean;
+  hasDataModels?: boolean;
+  hasDependenciesWithVulnerabilities?: boolean;
+  hasEncryptionUsage?: boolean;
+  hasExternalDependencies?: boolean;
+  hasGraphqlTypes?: boolean;
+  hasNewDevelopers?: boolean;
+  hasPaymentsData?: boolean;
+  hasPhiData?: boolean;
+  hasPiiData?: boolean;
+  hasPrivateAssets?: boolean;
+  hasPublicAssets?: boolean;
+  hasRbacUsage?: boolean;
+  hasSecrets?: boolean;
+  hasSensitiveApis?: boolean;
+  hasSensitiveData?: boolean;
+  hasSensitiveDependencies?: boolean;
+  hasSensitiveDependenciesWithVulnerabilities?: boolean;
+  hasValidationUsage?: boolean;
+  isActive?: boolean;
+  isDeployed?: boolean;
+  isInternetExposed?: boolean;
+  isPublic?: boolean;
+  isUserFacing?: boolean;
+  key?: string | null;
+  languagePercentages?: LanguagePercentage[] | null;
+  languages?: string[] | null;
+  lastUpdated?: string | null;
+  licenses?: string[] | null;
+  name?: string | null;
+  pointsOfContact?: ApplicationPointOfContact[] | null;
+  projects?: ApplicationProject[] | null;
+  repositories?: ApplicationRepository[] | null;
+  repositoryGroups?: ApplicationRepositoryGroup[] | null;
+  repositoryTags?: ApplicationRepositoryTag[] | null;
+  riskLevel?: string | null;
+  riskScore?: number;
+  riskyCommitCount?: number;
+  riskyIssuesCount?: number;
+  tags?: ApplicationTag[] | null;
+  [k: string]: unknown;
+};
+
+export type ApiiroApplicationsPage = {
+  next?: string | null;
+  items: ApplicationItem[];
+};
+
+export type ApplicationsAggregation = {
+  applications: ApplicationItem[];
+  totalCount: number;
 };
 
 export type RiskFilters = {
-  repositoryId?: string;
   RiskLevel?: string[];
   RiskCategory?: string[];
   RiskInsight?: string[];
@@ -176,7 +302,7 @@ export type RisksAggregation = {
 export type MttrStatistic = {
   riskLevel: string | null;
   meanTimeInHours: number;
-  slaInHours: number;
+  slaInHours: number | null;
 };
 
 /**

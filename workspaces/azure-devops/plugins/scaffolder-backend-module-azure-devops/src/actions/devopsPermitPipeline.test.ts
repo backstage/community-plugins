@@ -53,14 +53,35 @@ describe('azure:pipeline:permit', () => {
     },
   };
 
+  const mockGetProject = jest.fn().mockResolvedValue({
+    id: 'project-guid-123',
+    name: 'testproject',
+  });
+
   const mockWebApi = {
     rest: mockRestClient,
+    getCoreApi: jest.fn().mockResolvedValue({
+      getProject: mockGetProject,
+    }),
   };
 
   (WebApi as unknown as jest.Mock).mockImplementation(() => mockWebApi);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRestClient.client.patch.mockResolvedValue({
+      message: {
+        statusCode: 200,
+        statusMessage: 'OK',
+      },
+    });
+    mockGetProject.mockResolvedValue({
+      id: 'project-guid-123',
+      name: 'testproject',
+    });
+    mockWebApi.getCoreApi.mockResolvedValue({
+      getProject: mockGetProject,
+    });
   });
 
   it('should throw if there is no token or credentials provided', async () => {
@@ -104,7 +125,7 @@ describe('azure:pipeline:permit', () => {
     );
 
     expect(mockRestClient.client.patch).toHaveBeenCalledWith(
-      'testproject/_apis/pipelines/pipelinepermissions/endpoint/456?api-version=7.1-preview.1',
+      'https://dev.azure.com/testorg/testproject/_apis/pipelines/pipelinepermissions/endpoint/456?api-version=7.1-preview.1',
       JSON.stringify({
         pipelines: [
           {
@@ -137,7 +158,7 @@ describe('azure:pipeline:permit', () => {
     await action.handler(mockContext);
 
     expect(mockRestClient.client.patch).toHaveBeenCalledWith(
-      'testproject/_apis/pipelines/pipelinepermissions/repository/789?api-version=7.1-preview.1',
+      'https://dev.azure.com/testorg/testproject/_apis/pipelines/pipelinepermissions/repository/project-guid-123.789?api-version=7.1-preview.1',
       JSON.stringify({
         pipelines: [
           {
@@ -170,5 +191,97 @@ describe('azure:pipeline:permit', () => {
     mockRestClient.client.patch.mockRejectedValue(new Error('Request failed'));
 
     await expect(action.handler(mockContext)).rejects.toThrow(/Request failed/);
+  });
+
+  it('should resolve compound resource ID for repository type', async () => {
+    const mockContext = createMockActionContext({
+      input: {
+        organization: 'testorg',
+        project: 'testproject',
+        pipelineId: '123',
+        token: 'input-token',
+        authorized: true,
+        resourceType: 'repository',
+        resourceId: 'repo-guid-abc',
+      },
+    });
+
+    await action.handler(mockContext);
+
+    expect(mockWebApi.getCoreApi).toHaveBeenCalled();
+    expect(mockGetProject).toHaveBeenCalledWith('testproject');
+    expect(mockRestClient.client.patch).toHaveBeenCalledWith(
+      'https://dev.azure.com/testorg/testproject/_apis/pipelines/pipelinepermissions/repository/project-guid-123.repo-guid-abc?api-version=7.1-preview.1',
+      expect.any(String),
+      expect.any(Object),
+    );
+  });
+
+  it('should pass through repository resource ID that already contains a dot', async () => {
+    const mockContext = createMockActionContext({
+      input: {
+        organization: 'testorg',
+        project: 'testproject',
+        pipelineId: '123',
+        token: 'input-token',
+        authorized: true,
+        resourceType: 'repository',
+        resourceId: 'existing-project-id.repo-guid',
+      },
+    });
+
+    await action.handler(mockContext);
+
+    expect(mockWebApi.getCoreApi).not.toHaveBeenCalled();
+    expect(mockRestClient.client.patch).toHaveBeenCalledWith(
+      'https://dev.azure.com/testorg/testproject/_apis/pipelines/pipelinepermissions/repository/existing-project-id.repo-guid?api-version=7.1-preview.1',
+      expect.any(String),
+      expect.any(Object),
+    );
+  });
+
+  it('should not resolve compound ID for non-repository resource types', async () => {
+    const mockContext = createMockActionContext({
+      input: {
+        organization: 'testorg',
+        project: 'testproject',
+        pipelineId: '123',
+        token: 'input-token',
+        authorized: true,
+        resourceType: 'endpoint',
+        resourceId: 'simple-guid',
+      },
+    });
+
+    await action.handler(mockContext);
+
+    expect(mockWebApi.getCoreApi).not.toHaveBeenCalled();
+    expect(mockRestClient.client.patch).toHaveBeenCalledWith(
+      'https://dev.azure.com/testorg/testproject/_apis/pipelines/pipelinepermissions/endpoint/simple-guid?api-version=7.1-preview.1',
+      expect.any(String),
+      expect.any(Object),
+    );
+  });
+
+  it('should throw if project lookup fails for repository type', async () => {
+    mockWebApi.getCoreApi.mockResolvedValueOnce({
+      getProject: jest.fn().mockResolvedValue(null),
+    });
+
+    const mockContext = createMockActionContext({
+      input: {
+        organization: 'testorg',
+        project: 'nonexistent',
+        pipelineId: '123',
+        token: 'input-token',
+        authorized: true,
+        resourceType: 'repository',
+        resourceId: 'repo-guid',
+      },
+    });
+
+    await expect(action.handler(mockContext)).rejects.toThrow(
+      /Could not retrieve project ID/,
+    );
   });
 });

@@ -16,8 +16,8 @@ import { TableColumn } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityJenkinsContent: (props: {
-  title?: string | undefined;
-  columns?: TableColumn<Project>[] | undefined;
+  title?: string;
+  columns?: TableColumn<Project>[];
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -26,8 +26,8 @@ export const EntityJobRunsTable: () => JSX_2.Element;
 // @public (undocumented)
 export const EntityLatestJenkinsRunCard: (props: {
   branch: string;
-  variant?: InfoCardVariants | undefined;
-  title?: string | ((branch: string) => string) | undefined;
+  variant?: InfoCardVariants;
+  title?: string | ((branch: string) => string);
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -135,8 +135,8 @@ export { jenkinsPlugin as plugin };
 // @public (undocumented)
 export const LatestRunCard: (props: {
   branch: string;
-  variant?: InfoCardVariants | undefined;
-  title?: string | ((branch: string) => string) | undefined;
+  variant?: InfoCardVariants;
+  title?: string | ((branch: string) => string);
 }) => JSX_2.Element;
 
 // Warning: (ae-missing-release-tag) "LEGACY_JENKINS_ANNOTATION" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

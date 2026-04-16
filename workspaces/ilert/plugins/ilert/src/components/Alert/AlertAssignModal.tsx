@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -71,7 +72,7 @@ export const AlertAssignModal = ({
   ] = useAssignAlert(alert, isModalOpened);
   const callback = onAlertChanged || ((_: Alert): void => {});
   const ilertApi = useApi(ilertApiRef);
-  const alertApi = useApi(alertApiRef);
+  const alertApi = useApi(toastApiRef);
   const classes = useStyles();
 
   const handleClose = () => {
@@ -89,9 +90,9 @@ export const AlertAssignModal = ({
       try {
         const newAlert = await ilertApi.assignAlert(alert, alertResponder);
         callback(newAlert);
-        alertApi.post({ message: 'Alert assigned.' });
+        alertApi.post({ title: 'Alert assigned.' });
       } catch (err) {
-        alertApi.post({ message: err, severity: 'error' });
+        alertApi.post({ title: err, status: 'danger' });
       }
       setIsLoading(false);
       setIsModalOpened(false);

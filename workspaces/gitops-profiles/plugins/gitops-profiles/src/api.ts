@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 /** @public */
 export interface CloneFromTemplateRequest {
@@ -126,7 +126,7 @@ export type GitOpsApi = {
 };
 
 /** @public */
-export const gitOpsApiRef = createApiRef<GitOpsApi>({
+export const gitOpsApiRef = createApiRef<GitOpsApi>().with({
   id: 'plugin.gitops.service',
 });
 

@@ -229,20 +229,34 @@ export class OpenAIResponsesProvider extends LLMProvider {
   private lastResponseOutput: ResponsesApiResponse['output'] | null = null;
 
   protected async makeRequest(endpoint: string, body: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const url = `${this.baseUrl}${endpoint}`;
+    this.logger?.debug(`[${this.type}] Request to ${url}`, {
+      body: this.truncateForLogging(JSON.stringify(body)),
+    });
+
+    const startTime = Date.now();
+    const response = await fetch(url, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(body),
     });
+    const duration = Date.now() - startTime;
 
     if (!response.ok) {
       const errorText = await response.text();
+      this.logger?.error(
+        `[${this.type}] Request failed (${response.status}) after ${duration}ms`,
+        { responseData: errorText },
+      );
       throw new Error(
         `HTTP ${response.status}: ${errorText.substring(0, 200)}`,
       );
     }
 
     const jsonResponse = await response.json();
+    this.logger?.debug(`[${this.type}] Response received in ${duration}ms`, {
+      data: this.truncateForLogging(JSON.stringify(jsonResponse)),
+    });
 
     // Store the output for later retrieval
     if (jsonResponse.output) {

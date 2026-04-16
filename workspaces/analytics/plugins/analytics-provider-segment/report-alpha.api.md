@@ -25,11 +25,7 @@ const analyticsProviderSegmentPlugin: OverridableFrontendPlugin<
         {}
       >;
       inputs: {};
-      params: <
-        TDeps extends {
-          [x: string]: unknown;
-        },
-      >(
+      params: <TDeps extends { [name in string]: unknown }>(
         params: AnalyticsImplementationFactory<TDeps>,
       ) => ExtensionBlueprintParams<AnalyticsImplementationFactory<{}>>;
     }>;

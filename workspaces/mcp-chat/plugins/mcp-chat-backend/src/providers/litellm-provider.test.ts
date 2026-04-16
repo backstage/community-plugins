@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { LiteLLMProvider } from './litellm-provider';
 import { ProviderConfig, ChatMessage, Tool } from '../types';
 
@@ -23,11 +24,14 @@ global.fetch = jest.fn();
 describe('LiteLLMProvider', () => {
   let provider: LiteLLMProvider;
 
+  const mockLogger = mockServices.logger.mock();
+
   const config: ProviderConfig = {
     type: 'litellm',
     apiKey: 'test-api-key',
     baseUrl: 'http://localhost:4000',
     model: 'gpt-4',
+    logger: mockLogger,
   };
 
   beforeEach(() => {

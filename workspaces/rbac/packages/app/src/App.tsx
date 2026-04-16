@@ -17,7 +17,17 @@
 import { createApp } from '@backstage/frontend-defaults';
 import { rbacTranslationsModule } from '@backstage-community/plugin-rbac/alpha';
 import { navModule } from './modules';
+import { convertLegacyAppOptions } from '@backstage/core-compat-api';
+import { SignInPage } from './legacy-components/SignInPage/SignInPage';
+
+const convertedOptionsModule = convertLegacyAppOptions({
+  /* legacy options such as apis, icons, plugins, components, themes and featureFlags */
+
+  components: {
+    SignInPage: props => <SignInPage {...props} />,
+  },
+});
 
 export default createApp({
-  features: [navModule, rbacTranslationsModule],
+  features: [navModule, rbacTranslationsModule, convertedOptionsModule],
 });

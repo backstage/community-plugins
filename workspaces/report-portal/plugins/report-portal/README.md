@@ -123,9 +123,28 @@ metadata:
     reportportal.io/project-name: <your-project-name>
     reportportal.io/launch-name: <your-launch-name>
 
-    # (optional) if host is not added in annotaions, first entry from app-config will be used
+    # (optional) if host is not added in annotations, first entry from app-config will be used
     reportportal.io/host: <your-report-portal-host>
 ```
+
+| Annotation                     | Required | Description                                       |
+| ------------------------------ | -------- | ------------------------------------------------- |
+| `reportportal.io/project-name` | Yes      | The project name in ReportPortal                  |
+| `reportportal.io/launch-name`  | No       | Launch name(s). Supports comma-separated values   |
+| `reportportal.io/host`         | No       | ReportPortal host. Defaults to first config entry |
+
+### Multiple launches
+
+To show statistics for multiple launches on a single entity, list them as comma-separated values:
+
+```yaml
+metadata:
+  annotations:
+    reportportal.io/project-name: my-project
+    reportportal.io/launch-name: Unit Tests, Integration Tests, Contract Tests
+```
+
+Each launch will be displayed in its own expandable accordion section within the overview card.
 
 ## Acknowledgments
 

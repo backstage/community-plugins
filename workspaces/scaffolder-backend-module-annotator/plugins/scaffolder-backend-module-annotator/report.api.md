@@ -12,25 +12,17 @@ export const createAnnotatorAction: (
   actionId?: string,
   actionDescription?: string,
   loggerInfoMsg?: string,
-  annotateEntityObjectProvider?:
-    | (() => {
-        annotations?:
-          | {
-              [key: string]: Value;
-            }
-          | undefined;
-        labels?:
-          | {
-              [key: string]: string;
-            }
-          | undefined;
-        spec?:
-          | {
-              [key: string]: Value;
-            }
-          | undefined;
-      })
-    | undefined,
+  annotateEntityObjectProvider?: () => {
+    annotations?: {
+      [key: string]: Value;
+    };
+    labels?: {
+      [key: string]: string;
+    };
+    spec?: {
+      [key: string]: Value;
+    };
+  },
   examples?: TemplateExample[],
 ) => TemplateAction<
   {
