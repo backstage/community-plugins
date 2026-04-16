@@ -35,14 +35,18 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/filter-predicates": "backstage:^",
+    "@backstage/integration": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
+    "@backstage/plugin-scaffolder-node": "backstage:^",
     "@backstage/types": "backstage:^",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "nunjucks": "^3.2.4"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
-    "@types/lodash": "^4.14.0"
+    "@types/lodash": "^4.14.0",
+    "@types/nunjucks": "^3.2.6"
   },
   "files": [
     "dist"

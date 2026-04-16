@@ -52,8 +52,8 @@ const mockConfig = {
         name: 'component-metadata',
         filter: { kind: 'component' },
         mapping: {
-          description: 'metadata.description',
-          slackChannel: 'metadata.annotations.slack/channel',
+          'metadata.description': 'description',
+          'metadata.annotations.slack/channel': 'slackChannel',
         },
         sections: [
           { title: 'Info', properties: { description: { type: 'string' } } },
@@ -234,13 +234,13 @@ describe('GET /values/:namespace/:kind/:name', () => {
           {
             name: 'component-metadata',
             filter: { kind: 'component' },
-            mapping: { description: 'metadata.description' },
+            mapping: { 'metadata.description': 'description' },
             sections: [{ title: 'Info', properties: {} }],
           },
           {
             name: 'group-details',
             filter: { kind: 'group' },
-            mapping: { description: 'metadata.description' },
+            mapping: { 'metadata.description': 'description' },
             sections: [{ title: 'Team', properties: {} }],
           },
         ],

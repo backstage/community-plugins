@@ -94,7 +94,7 @@ const entityPatchContextMenuItem =
                 loadError = true;
               }
 
-              dialogApi.show(({ dialog }) => (
+              dialogApi.open(({ dialog }) => (
                 <PatchEditDialog
                   dialog={dialog}
                   patches={matchingPatches}

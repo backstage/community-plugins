@@ -13,10 +13,18 @@ export function buildPatchConfigs(config: Config): PatchConfig[];
 export function buildRelationPairs(config: Config): Map<string, RelationPair>;
 
 // @public
+export function flattenMapping(
+  obj: Record<string, unknown>,
+  prefix?: string,
+): Record<string, string>;
+
+// @public
+export function isMappingTemplate(value: string): boolean;
+
+// @public
 export interface PatchConfig {
   // (undocumented)
   filter?: FilterPredicate;
-  // (undocumented)
   mapping: Record<string, string>;
   // (undocumented)
   name: string;
@@ -26,7 +34,7 @@ export interface PatchConfig {
 // @public
 export interface PatchDefinition {
   filter?: FilterPredicate;
-  mapping?: Record<string, string>;
+  mapping?: Record<string, unknown>;
   name: string;
   sections: PatchSection[];
 }

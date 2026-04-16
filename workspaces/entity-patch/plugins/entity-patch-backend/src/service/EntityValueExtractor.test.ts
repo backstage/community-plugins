@@ -87,10 +87,10 @@ describe('getByPath', () => {
 });
 
 describe('extractEntityValues', () => {
-  it('extracts multiple mapped fields', () => {
+  it('extracts multiple mapped fields (inverted mapping: entityPath → fieldName)', () => {
     const result = extractEntityValues(entity, {
-      description: 'metadata.description',
-      slackChannel: 'metadata.annotations.slack/channel',
+      'metadata.description': 'description',
+      'metadata.annotations.slack/channel': 'slackChannel',
     });
     expect(result).toEqual({
       description: 'My service description',
@@ -100,21 +100,40 @@ describe('extractEntityValues', () => {
 
   it('omits fields whose path is not present on the entity', () => {
     const result = extractEntityValues(entity, {
-      description: 'metadata.description',
-      missing: 'spec.doesNotExist',
+      'metadata.description': 'description',
+      'spec.doesNotExist': 'missing',
     });
     expect(result).toEqual({ description: 'My service description' });
   });
 
   it('extracts dotted annotation keys using bracket notation', () => {
     const result = extractEntityValues(entity, {
-      pagerdutyKey: 'metadata.annotations["pagerduty.com/integration-key"]',
-      runbook: 'metadata.annotations["backstage.io/runbook-url"]',
+      'metadata.annotations["pagerduty.com/integration-key"]': 'pagerdutyKey',
+      'metadata.annotations["backstage.io/runbook-url"]': 'runbook',
     });
     expect(result).toEqual({
       pagerdutyKey: 'abc123',
       runbook: 'https://runbooks.example.com/my-service',
     });
+  });
+
+  it('supports fan-out: multiple entity paths mapping to the same form field', () => {
+    // Last entity path with a defined value wins
+    const result = extractEntityValues(entity, {
+      'metadata.description': 'description',
+      'metadata.annotations.slack/channel': 'description', // fan-out, same field
+    });
+    // Both paths resolve — last one wins
+    expect(result).toEqual({ description: '#my-team' });
+  });
+
+  it('skips template values — they cannot be reverse-extracted from the entity', () => {
+    const result = extractEntityValues(entity, {
+      'metadata.description': 'description',
+      'metadata.annotations.slack/channel': '{{ channelId }}', // template
+    });
+    // Template path skipped; only the plain field is extracted
+    expect(result).toEqual({ description: 'My service description' });
   });
 });
 
@@ -156,7 +175,7 @@ describe('extractEntityValues — relations support', () => {
   it('extracts array relation values when type is "array"', () => {
     const result = extractEntityValues(
       entity,
-      { designers: 'relations.hasDesigner' },
+      { 'relations.hasDesigner': 'designers' },
       { relationPairs, sectionProperties },
     );
     expect(result).toEqual({
@@ -167,7 +186,7 @@ describe('extractEntityValues — relations support', () => {
   it('extracts single relation value when type is not "array"', () => {
     const result = extractEntityValues(
       entity,
-      { techLead: 'relations.hasTechLead' },
+      { 'relations.hasTechLead': 'techLead' },
       { relationPairs, sectionProperties },
     );
     expect(result).toEqual({ techLead: 'user:default/carol' });
@@ -176,7 +195,7 @@ describe('extractEntityValues — relations support', () => {
   it('omits relation fields when no matching relations exist on entity', () => {
     const result = extractEntityValues(
       entity,
-      { managers: 'relations.hasManager' },
+      { 'relations.hasManager': 'managers' },
       {
         relationPairs: new Map([
           ['hasManager', { forward: 'hasManager', reverse: 'managerOn' }],
@@ -190,7 +209,7 @@ describe('extractEntityValues — relations support', () => {
   it('omits relation field when type is not in the registry', () => {
     const result = extractEntityValues(
       entity,
-      { unknown: 'relations.unknownType' },
+      { 'relations.unknownType': 'unknown' },
       { relationPairs, sectionProperties },
     );
     expect(result).toEqual({});
@@ -198,7 +217,7 @@ describe('extractEntityValues — relations support', () => {
 
   it('skips relation fields when relationPairs is not provided', () => {
     const result = extractEntityValues(entity, {
-      designers: 'relations.hasDesigner',
+      'relations.hasDesigner': 'designers',
     });
     expect(result).toEqual({});
   });
@@ -207,8 +226,8 @@ describe('extractEntityValues — relations support', () => {
     const result = extractEntityValues(
       entity,
       {
-        description: 'metadata.description',
-        designers: 'relations.hasDesigner',
+        'metadata.description': 'description',
+        'relations.hasDesigner': 'designers',
       },
       { relationPairs, sectionProperties },
     );
