@@ -13061,6 +13061,7 @@ __metadata:
   resolution: "repo-tools@workspace:."
   dependencies:
     "@backstage/cli": "npm:^0.36.0"
+    "@backstage/cli-defaults": "npm:^0.1.0"
     "@backstage/repo-tools": "npm:^0.17.0"
     "@changesets/cli": "npm:^2.27.1"
     "@playwright/test": "npm:^1.32.3"
