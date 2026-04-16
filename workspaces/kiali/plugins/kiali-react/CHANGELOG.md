@@ -1,5 +1,12 @@
 # @backstage-community/plugin-kiali-react
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [93d62a4]
+  - @backstage-community/plugin-kiali-common@0.10.0
+
 ## 0.7.0
 
 ### Minor Changes

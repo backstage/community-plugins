@@ -34,7 +34,8 @@ import useAsyncFn from 'react-use/esm/useAsyncFn';
 import { splunkOnCallApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
 import { TriggerAlarmRequest } from '../../api';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 type Props = {
   routingKey: string;
@@ -79,7 +80,7 @@ export const TriggerDialog = ({
   handleDialog,
   onIncidentCreated: onIncidentCreated,
 }: Props) => {
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
   const api = useApi(splunkOnCallApiRef);
   const classes = useStyles();
 
@@ -122,18 +123,18 @@ export const TriggerDialog = ({
 
   useEffect(() => {
     if (value) {
-      alertApi.post({
-        message: `Alarm successfully triggered`,
+      toastApi.post({
+        title: `Alarm successfully triggered`,
       });
       onIncidentCreated();
       handleDialog();
     }
-  }, [value, alertApi, handleDialog, onIncidentCreated]);
+  }, [value, toastApi, handleDialog, onIncidentCreated]);
 
   if (triggerError) {
-    alertApi.post({
-      message: `Failed to trigger alarm. ${triggerError.message}`,
-      severity: 'error',
+    toastApi.post({
+      title: `Failed to trigger alarm. ${triggerError.message}`,
+      status: 'danger',
     });
   }
 

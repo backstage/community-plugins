@@ -1,5 +1,17 @@
 # @backstage-community/plugin-apiiro
 
+## 1.0.0
+
+### Major Changes
+
+- ff337ee: Implemented Application View functionality to enable risk display and navigation for System Entities.
+  Fixed the UI component to support the Informational risk level type.
+
+### Patch Changes
+
+- Updated dependencies [ff337ee]
+  - @backstage-community/plugin-apiiro-common@1.0.0
+
 ## 0.2.0
 
 ### Minor Changes

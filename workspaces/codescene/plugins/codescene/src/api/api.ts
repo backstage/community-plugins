@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  createApiRef,
-  DiscoveryApi,
-  FetchApi,
-} from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
   FetchProjectsResponse,
@@ -27,7 +24,7 @@ import {
   Analysis,
 } from './types';
 
-export const codesceneApiRef = createApiRef<CodeSceneApi>({
+export const codesceneApiRef = createApiRef<CodeSceneApi>().with({
   id: 'plugin.codescene.service',
 });
 

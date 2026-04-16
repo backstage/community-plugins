@@ -1,5 +1,16 @@
 # @backstage-community/plugin-adr
 
+## 0.23.0
+
+### Minor Changes
+
+- da3bcc2: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [da3bcc2]
+  - @backstage-community/plugin-adr-common@0.18.0
+
 ## 0.22.0
 
 ### Minor Changes

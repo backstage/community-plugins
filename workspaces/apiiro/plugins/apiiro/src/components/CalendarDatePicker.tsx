@@ -29,7 +29,6 @@ import {
   QuickRangeItem,
   QuickRangeText,
 } from './CalendarDatePicker.styles';
-import { LooseValue } from 'react-calendar/dist/cjs/shared/types';
 
 type Value = Date | Date[] | null;
 
@@ -173,7 +172,7 @@ export const CalendarDatePicker = forwardRef<
     return (
       <CalendarContainer ref={ref}>
         <StyledCalendar
-          value={value as LooseValue}
+          value={value as any}
           onChange={handleCalendarChange as any}
           selectRange={selectRange}
           formatShortWeekday={formatShortWeekday}

@@ -17,33 +17,12 @@ import { useMemo } from 'react';
 import { Content, Page } from '@backstage/core-components';
 import { fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import { apiiroApiRef } from '../../api';
 import { DataGrid } from '../../components/DataGrid';
 import { Header } from '../../components/Header';
 import { RepositoryType, useRepositoriesData } from '../../queries';
 import { columnVisibilityModal, repositoryColumns } from './tableConfig';
-import { SomethingWentWrong } from '../../components/common';
-
-interface SomethingWentWrongBoxProps {
-  statusCode?: number;
-}
-
-const SomethingWentWrongBox = ({ statusCode }: SomethingWentWrongBoxProps) => {
-  return (
-    <Content>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
-        minHeight="300px"
-      >
-        <SomethingWentWrong statusCode={statusCode} />
-      </Box>
-    </Content>
-  );
-};
+import { StatusContainer } from '../../components/common';
 
 const INITIAL_SORTING = [
   {
@@ -63,7 +42,11 @@ const DATA_GRID_FEATURES = {
   persistLayout: true,
 } as const;
 
-export const Repositories = () => {
+export const RepositoriesContent = ({
+  applicationId,
+}: {
+  applicationId?: string;
+}) => {
   const connectBackendApi = useApi(apiiroApiRef);
   const { fetch } = useApi(fetchApiRef);
 
@@ -71,6 +54,7 @@ export const Repositories = () => {
     useRepositoriesData({
       connectApi: connectBackendApi,
       fetchApi: fetch,
+      applicationId,
     });
 
   const rows = useMemo(
@@ -78,9 +62,37 @@ export const Repositories = () => {
     [repositoriesData?.repositories],
   );
 
-  const showDataGrid = !repositoriesDataError;
-  const errorStatusCode = repositoriesDataError?.details?.status;
+  return (
+    <StatusContainer
+      isLoading={repositoriesDataLoading}
+      error={repositoriesDataError}
+      isEmpty={!rows}
+      notFoundMessage="No repositories found."
+      showLogo={applicationId ? true : false}
+    >
+      <DataGrid<RepositoryType>
+        getRowId={row => `${row.key}-${row.entityUrl}`}
+        loading={repositoriesDataLoading}
+        tableKey="repositories"
+        columns={repositoryColumns}
+        rows={rows}
+        dataLabel="repositories"
+        searchBarPlaceHolder="Search repository name..."
+        features={DATA_GRID_FEATURES}
+        initialState={{
+          sorting: {
+            sortModel: INITIAL_SORTING,
+          },
+        }}
+        initialPageSize={PAGE_SIZE_OPTIONS[0]}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
+        columnVisibility={columnVisibilityModal}
+      />
+    </StatusContainer>
+  );
+};
 
+export const Repositories = () => {
   return (
     <Page themeId="tool">
       <Header />
@@ -88,31 +100,7 @@ export const Repositories = () => {
         <Typography variant="h4" sx={{ color: 'text.primary', mb: 2 }}>
           Repositories
         </Typography>
-
-        {repositoriesDataError && (
-          <SomethingWentWrongBox statusCode={errorStatusCode} />
-        )}
-
-        {showDataGrid && (
-          <DataGrid<RepositoryType>
-            getRowId={row => `${row.key}-${row.entityUrl}`}
-            loading={repositoriesDataLoading}
-            tableKey="repositories"
-            columns={repositoryColumns}
-            rows={rows}
-            dataLabel="repositories"
-            searchBarPlaceHolder="Search repository name..."
-            features={DATA_GRID_FEATURES}
-            initialState={{
-              sorting: {
-                sortModel: INITIAL_SORTING,
-              },
-            }}
-            initialPageSize={PAGE_SIZE_OPTIONS[0]}
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
-            columnVisibility={columnVisibilityModal}
-          />
-        )}
+        <RepositoriesContent />
       </Content>
     </Page>
   );

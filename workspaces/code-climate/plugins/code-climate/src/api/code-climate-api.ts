@@ -15,10 +15,10 @@
  */
 
 import { CodeClimateData } from './code-climate-data';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 /** @public */
-export const codeClimateApiRef = createApiRef<CodeClimateApi>({
+export const codeClimateApiRef = createApiRef<CodeClimateApi>().with({
   id: 'plugin.code-climate.service',
 });
 

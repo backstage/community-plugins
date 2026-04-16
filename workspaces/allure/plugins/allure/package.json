@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-allure",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "A Backstage plugin that integrates with Allure",
   "backstage": {
     "role": "frontend-plugin",
@@ -40,6 +40,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-use": "^17.2.4"

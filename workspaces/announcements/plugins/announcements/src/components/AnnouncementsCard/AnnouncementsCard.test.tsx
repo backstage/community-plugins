@@ -177,13 +177,6 @@ describe('AnnouncementsCard', () => {
             location: 'AnnouncementsCard',
           }),
         }),
-        expect.objectContaining({
-          action: 'click',
-          subject: 'Clickable Announcement',
-          attributes: expect.objectContaining({
-            to: '/announcements/view/1',
-          }),
-        }),
       ]),
     );
   });

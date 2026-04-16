@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  ConfigApi,
-  createApiRef,
-  DiscoveryApi,
-  FetchApi,
-} from '@backstage/core-plugin-api';
+import { ConfigApi, DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { AuthenticationError, ResponseError } from '@backstage/errors';
 import { DateTime as dt } from 'luxon';
 import {
@@ -44,7 +40,7 @@ import {
 } from './types';
 
 /** @public */
-export const ilertApiRef = createApiRef<ILertApi>({
+export const ilertApiRef = createApiRef<ILertApi>().with({
   id: 'plugin.ilert.service',
 });
 
