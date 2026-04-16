@@ -1,5 +1,14 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.12.2
+
+### Patch Changes
+
+- 39272f8: Updated dependency `csv-parse` to `^6.0.0`.
+- 70e6333: Updated dependency `@dagrejs/graphlib` to `^4.0.0`.
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+- 8846adf: Updated dependency `qs` to `6.15.1`.
+
 ## 7.12.1
 
 ### Patch Changes
