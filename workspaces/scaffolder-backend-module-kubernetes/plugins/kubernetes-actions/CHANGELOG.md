@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-kubernetes
 
+## 2.17.0
+
+### Minor Changes
+
+- d1e083d: Backstage version bump to v1.49.3
+
 ## 2.16.0
 
 ### Minor Changes

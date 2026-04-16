@@ -155,7 +155,7 @@ export const DiscoveredOnFilter = ({
       if (yearsDiff > MAX_RANGE_YEARS) {
         const spanText = formatDateRangeSpan(startDate, endDate);
         setValidationError(
-          `Date range cannot exceed ${MAX_RANGE_YEARS} years. Current selection spans ${spanText}.`,
+          `Date range can not exceed ${MAX_RANGE_YEARS} years. Current selection spans ${spanText}.`,
         );
         return; // Don't proceed with the change
       }

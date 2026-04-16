@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
-  filters,
   clusterColumn,
   namespaceColumn,
   versionColumn,
@@ -25,10 +23,11 @@ import {
   clusterNameFilteringColumn,
   fluxUpdate,
 } from '../helpers';
+import { FluxColumn } from '../FluxEntityTable';
 import { FluxEntityTable } from '../FluxEntityTable';
 import { FluxControllerEnriched } from '../../objects';
 
-export const defaultColumns: TableColumn<Cluster>[] = [
+export const defaultColumns: FluxColumn<Cluster>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
   clusterColumn(),
@@ -39,13 +38,15 @@ export const defaultColumns: TableColumn<Cluster>[] = [
 ];
 
 type Props = {
+  title: string;
   deployments: FluxControllerEnriched[];
   isLoading: boolean;
-  columns: TableColumn<Cluster>[];
+  columns: FluxColumn<Cluster>[];
   many?: boolean;
 };
 
 export const FluxRuntimeTable = ({
+  title,
   deployments,
   isLoading,
   columns,
@@ -89,11 +90,10 @@ export const FluxRuntimeTable = ({
 
   return (
     <FluxEntityTable
-      title="flux controllers"
+      title={title}
       columns={columns}
-      data={data as Cluster[]}
+      data={data as (Cluster & { id: string })[]}
       isLoading={isLoading}
-      filters={filters}
       many={many}
     />
   );

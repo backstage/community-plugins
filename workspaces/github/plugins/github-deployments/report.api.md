@@ -10,10 +10,10 @@ import { TableColumn } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityGithubDeploymentsCard: (props: {
-  environments?: string[] | undefined;
-  last?: number | undefined;
-  lastStatuses?: number | undefined;
-  columns?: TableColumn<GithubDeployment>[] | undefined;
+  environments?: string[];
+  last?: number;
+  lastStatuses?: number;
+  columns?: TableColumn<GithubDeployment>[];
 }) => JSX_2.Element;
 
 // @public (undocumented)

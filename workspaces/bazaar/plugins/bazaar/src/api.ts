@@ -17,14 +17,14 @@
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   ApiHolder,
-  createApiRef,
   DiscoveryApi,
   FetchApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { ResponseError } from '@backstage/errors';
 
-export const bazaarApiRef = createApiRef<BazaarApi>({
+export const bazaarApiRef = createApiRef<BazaarApi>().with({
   id: 'bazaar',
 });
 

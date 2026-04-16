@@ -21,6 +21,7 @@ import type { Entity } from '@backstage/catalog-model';
 import {
   APIIRO_PROJECT_ANNOTATION,
   APIIRO_METRICS_VIEW_ANNOTATION,
+  APIIRO_APPLICATION_ANNOTATION,
 } from '@backstage-community/plugin-apiiro-common';
 
 export const scmProviderIcons: Record<string, any> = {
@@ -42,7 +43,15 @@ export const isApiiroRepoAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[APIIRO_PROJECT_ANNOTATION]);
 
 /**
- * Checks if the entity has the APIIRO project annotation.
+ * @public
+ * Checks if the entity has the APIIRO application annotation.
+ */
+export const isApiiroApplicationAvailable = (entity: Entity) =>
+  Boolean(entity.metadata.annotations?.[APIIRO_APPLICATION_ANNOTATION]);
+
+/**
+ * @public
+ * Checks if the entity has the APIIRO metrics view annotation.
  */
 export const isApiiroMetricViewAvailable = (entity: Entity) => {
   const metricViewAnnotation =

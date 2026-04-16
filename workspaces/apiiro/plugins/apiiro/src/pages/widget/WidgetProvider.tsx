@@ -15,15 +15,23 @@
  */
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '../../api';
-import { Widget } from './Widget';
+import { ComponentWidget } from './ComponentWidget';
+import { SystemWidget } from './SystemWidget';
 import { InfoCard } from '@backstage/core-components';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
-/** @public */
+/**
+ * Widget component that displays Apiiro metrics summary for system and component entities.
+ * Can be added to entity overview pages to show key security metrics at a glance.
+ * @public
+ */
 export const ApiiroWidget = () => {
+  const { entity } = useEntity();
   return (
     <QueryClientProvider client={queryClient}>
       <InfoCard title="Apiiro Metrics">
-        <Widget />
+        {entity.kind === 'Component' && <ComponentWidget />}
+        {entity.kind === 'System' && <SystemWidget />}
       </InfoCard>
     </QueryClientProvider>
   );

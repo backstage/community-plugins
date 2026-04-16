@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { z } from 'zod';
-import { ApiiroRepositoriesPage, ApiiroRisksPage } from './data.service.types';
+import {
+  ApiiroRepositoriesPage,
+  ApiiroRisksPage,
+  ApplicationItem,
+  ApiiroApplicationsPage,
+} from './data.service.types';
 
 /**
  * Maximum allowed length for string inputs to prevent abuse
@@ -32,6 +37,11 @@ function trimAndFilterArray(arr: string[]): string[] {
 export const ApiiroRepositoryModuleSchema = z.object({
   filePath: z.string().nullable().optional(),
   name: z.string().nullable().optional(),
+});
+
+export const LanguagePercentageSchema = z.object({
+  language: z.string().nullable().optional(),
+  percentage: z.number().optional(),
 });
 
 export const ApiiroRepositorySchema = z
@@ -80,6 +90,83 @@ export function parseApiiroRepositoriesPage(
 ): ApiiroRepositoriesPage {
   const parsed = ApiiroRepositoriesPageSchema.parse(input);
   return parsed as ApiiroRepositoriesPage;
+}
+
+// Application Item Schema - using nonstrict to allow additional fields
+export const ApiiroApplicationSchema = z
+  .object({
+    applicationType: z.string().nullable().optional(),
+    applicationTypeOther: z.string().nullable().optional(),
+    businessImpact: z.string().nullable().optional(),
+    businessUnit: z.string().nullable().optional(),
+    commitCount: z.number().optional(),
+    complianceRequirements: z.array(z.string()).nullable().optional(),
+    containingRiskLevel: z.array(z.string()).nullable().optional(),
+    deploymentLocations: z.array(z.string()).nullable().optional(),
+    description: z.string().nullable().optional(),
+    estimatedRevenue: z.string().nullable().optional(),
+    estimatedUsersNumber: z.string().nullable().optional(),
+    hasApiAuthorizationUsage: z.boolean().optional(),
+    hasApiMissingAuthorization: z.boolean().optional(),
+    hasApiMissingInputValidation: z.boolean().optional(),
+    hasApis: z.boolean().optional(),
+    hasAuthenticationUsage: z.boolean().optional(),
+    hasAuthorizationUsage: z.boolean().optional(),
+    hasDataAccessObjects: z.boolean().optional(),
+    hasDataModels: z.boolean().optional(),
+    hasDependenciesWithVulnerabilities: z.boolean().optional(),
+    hasEncryptionUsage: z.boolean().optional(),
+    hasExternalDependencies: z.boolean().optional(),
+    hasGraphqlTypes: z.boolean().optional(),
+    hasNewDevelopers: z.boolean().optional(),
+    hasPaymentsData: z.boolean().optional(),
+    hasPhiData: z.boolean().optional(),
+    hasPiiData: z.boolean().optional(),
+    hasPrivateAssets: z.boolean().optional(),
+    hasPublicAssets: z.boolean().optional(),
+    hasRbacUsage: z.boolean().optional(),
+    hasSecrets: z.boolean().optional(),
+    hasSensitiveApis: z.boolean().optional(),
+    hasSensitiveData: z.boolean().optional(),
+    hasSensitiveDependencies: z.boolean().optional(),
+    hasSensitiveDependenciesWithVulnerabilities: z.boolean().optional(),
+    hasValidationUsage: z.boolean().optional(),
+    isActive: z.boolean().optional(),
+    isDeployed: z.boolean().optional(),
+    isInternetExposed: z.boolean().optional(),
+    isPublic: z.boolean().optional(),
+    isUserFacing: z.boolean().optional(),
+    key: z.string().nullable().optional(),
+    languages: z.array(z.string()).nullable().optional(),
+    languagePercentages: z
+      .array(LanguagePercentageSchema)
+      .nullable()
+      .optional(),
+    lastUpdated: z.string().nullable().optional(),
+    licenses: z.array(z.string()).nullable().optional(),
+    name: z.string().nullable().optional(),
+    riskLevel: z.string().nullable().optional(),
+    riskScore: z.number().optional(),
+    riskyCommitCount: z.number().optional(),
+    riskyIssuesCount: z.number().optional(),
+  })
+  .nonstrict();
+
+export const ApiiroApplicationsPageSchema = z.object({
+  next: z.string().nullable().optional(),
+  items: z.array(ApiiroApplicationSchema),
+});
+
+export function parseApiiroApplicationsPage(
+  input: unknown,
+): ApiiroApplicationsPage {
+  const parsed = ApiiroApplicationsPageSchema.parse(input);
+  return parsed as ApiiroApplicationsPage;
+}
+
+export function parseApiiroApplicationItem(input: unknown): ApplicationItem {
+  const parsed = ApiiroApplicationSchema.parse(input);
+  return parsed as ApplicationItem;
 }
 
 export const ApiiroRiskInsightSchema = z.object({
@@ -175,6 +262,7 @@ export function parseApiiroRisksPage(input: unknown): ApiiroRisksPage {
 export const RiskFiltersSchema = z
   .object({
     repositoryId: z.string().max(MAX_STRING_LENGTH).optional(),
+    applicationId: z.string().max(MAX_STRING_LENGTH).optional(),
     RiskCategory: z
       .array(z.string().max(MAX_STRING_LENGTH))
       .max(MAX_FILTER_ARRAY_LENGTH)
@@ -235,7 +323,7 @@ export function validateRiskFilters(filters: unknown): {
       );
       if (validatedFilters.RiskCategory.length === 0) {
         additionalErrors.push(
-          'RiskCategory array cannot be empty after trimming',
+          'RiskCategory array can not be empty after trimming',
         );
       }
     }
@@ -245,7 +333,7 @@ export function validateRiskFilters(filters: unknown): {
       );
       if (validatedFilters.RiskInsight.length === 0) {
         additionalErrors.push(
-          'RiskInsight array cannot be empty after trimming',
+          'RiskInsight array can not be empty after trimming',
         );
       }
     }
@@ -255,7 +343,7 @@ export function validateRiskFilters(filters: unknown): {
       );
       if (validatedFilters.FindingCategory.length === 0) {
         additionalErrors.push(
-          'FindingCategory array cannot be empty after trimming',
+          'FindingCategory array can not be empty after trimming',
         );
       }
     }
@@ -264,7 +352,9 @@ export function validateRiskFilters(filters: unknown): {
         validatedFilters.RiskLevel,
       );
       if (validatedFilters.RiskLevel.length === 0) {
-        additionalErrors.push('RiskLevel array cannot be empty after trimming');
+        additionalErrors.push(
+          'RiskLevel array can not be empty after trimming',
+        );
       }
     }
 
@@ -272,7 +362,7 @@ export function validateRiskFilters(filters: unknown): {
     if (validatedFilters.repositoryId) {
       validatedFilters.repositoryId = validatedFilters.repositoryId.trim();
       if (validatedFilters.repositoryId.length === 0) {
-        additionalErrors.push('repositoryId cannot be empty after trimming');
+        additionalErrors.push('repositoryId can not be empty after trimming');
       }
     }
 
@@ -323,7 +413,7 @@ export function validateRiskFilters(filters: unknown): {
           const tenYearsInMs = 10 * 365 * 24 * 60 * 60 * 1000;
           if (endDate.getTime() - startDate.getTime() > tenYearsInMs) {
             additionalErrors.push(
-              'DiscoveredOn date range cannot exceed 10 years',
+              'DiscoveredOn date range can not exceed 10 years',
             );
           }
         }
@@ -350,7 +440,8 @@ export function validateRiskFilters(filters: unknown): {
 // Repository Filters validation schema
 export const RepositoryFiltersSchema = z
   .object({
-    repositoryKey: z.string().max(MAX_STRING_LENGTH).optional(),
+    repositoryId: z.string().max(MAX_STRING_LENGTH).optional(),
+    applicationId: z.string().max(MAX_STRING_LENGTH).optional(),
     entityRef: z.string().max(MAX_STRING_LENGTH).optional(),
   })
   .strict();
@@ -368,7 +459,7 @@ export function validateRepositoryFilters(filters: unknown): {
       const errors = result.error.errors.map(err => {
         if (err.code === 'unrecognized_keys') {
           const invalidKeys = err.keys.join(', ');
-          return `Invalid filter keys: ${invalidKeys}. Only repositoryKey is allowed.`;
+          return `Invalid filter keys: ${invalidKeys}.`;
         }
         return `${err.path.join('.')}: ${err.message}`;
       });
@@ -378,14 +469,95 @@ export function validateRepositoryFilters(filters: unknown): {
     const validatedFilters = result.data;
     const additionalErrors: string[] = [];
 
-    // Validate and normalize repositoryUrl if present
-    if (validatedFilters.repositoryKey) {
-      const trimmedRepositoryKey = validatedFilters.repositoryKey.trim();
+    // Validate and normalize repositoryId if present
+    if (validatedFilters.repositoryId) {
+      const trimmedRepositoryId = validatedFilters.repositoryId.trim();
 
-      if (trimmedRepositoryKey.length === 0) {
-        additionalErrors.push('repositoryKey cannot be empty after trimming');
+      if (trimmedRepositoryId.length === 0) {
+        additionalErrors.push('repositoryId can not be empty after trimming');
       } else {
-        validatedFilters.repositoryKey = trimmedRepositoryKey;
+        validatedFilters.repositoryId = trimmedRepositoryId;
+      }
+    }
+
+    // Validate and normalize applicationId if present
+    if (validatedFilters.applicationId) {
+      const trimmedApplicationId = validatedFilters.applicationId.trim();
+
+      if (trimmedApplicationId.length === 0) {
+        additionalErrors.push('applicationId can not be empty after trimming');
+      } else {
+        validatedFilters.applicationId = trimmedApplicationId;
+      }
+    }
+
+    if (additionalErrors.length > 0) {
+      return { isValid: false, errors: additionalErrors };
+    }
+
+    return { isValid: true, errors: [], validatedFilters };
+  } catch (error) {
+    return {
+      isValid: false,
+      errors: [
+        `Filter validation error: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+      ],
+    };
+  }
+}
+
+// Application Filters validation schema
+export const ApplicationFiltersSchema = z
+  .object({
+    applicationId: z.string().max(MAX_STRING_LENGTH).optional(),
+    entityRef: z.string().max(MAX_STRING_LENGTH).optional(),
+  })
+  .strict();
+
+export function validateApplicationFilters(filters: unknown): {
+  isValid: boolean;
+  errors: string[];
+  validatedFilters?: any;
+} {
+  try {
+    // Validate the overall structure
+    const result = ApplicationFiltersSchema.safeParse(filters);
+
+    if (!result.success) {
+      const errors = result.error.errors.map(err => {
+        if (err.code === 'unrecognized_keys') {
+          const invalidKeys = err.keys.join(', ');
+          return `Invalid filter keys: ${invalidKeys}.`;
+        }
+        return `${err.path.join('.')}: ${err.message}`;
+      });
+      return { isValid: false, errors };
+    }
+
+    const validatedFilters = result.data;
+    const additionalErrors: string[] = [];
+
+    // Validate and normalize applicationId if present
+    if (validatedFilters.applicationId) {
+      const trimmedApplicationId = validatedFilters.applicationId.trim();
+
+      if (trimmedApplicationId.length === 0) {
+        additionalErrors.push('applicationId can not be empty after trimming');
+      } else {
+        validatedFilters.applicationId = trimmedApplicationId;
+      }
+    }
+
+    // Validate and normalize entityRef if present
+    if (validatedFilters.entityRef) {
+      const trimmedEntityRef = validatedFilters.entityRef.trim();
+
+      if (trimmedEntityRef.length === 0) {
+        additionalErrors.push('entityRef can not be empty after trimming');
+      } else {
+        validatedFilters.entityRef = trimmedEntityRef;
       }
     }
 

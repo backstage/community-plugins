@@ -15,7 +15,8 @@
  */
 
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
-import { rootRouteRef } from '../routes';
+import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
+import { rootRouteRef } from './routes';
 
 /**
  * @alpha
@@ -23,6 +24,8 @@ import { rootRouteRef } from '../routes';
 export const rbacPage = PageBlueprint.make({
   params: {
     path: '/rbac',
+    title: 'RBAC',
+    icon: <RbacIcon />,
     routeRef: rootRouteRef,
     loader: async () => import('../components/Router').then(m => <m.Router />),
   },

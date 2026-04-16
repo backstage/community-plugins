@@ -78,5 +78,21 @@ export default defineConfig({
         locale: 'ja',
       },
     },
+    {
+      name: 'de',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
+      },
+    },
   ],
 });

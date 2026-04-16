@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
-
-import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
 import { RequirePermission } from '@backstage/plugin-permission-react';
@@ -50,7 +48,7 @@ type ViewLogsProps = {
 };
 
 const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
-  const { clusters, selectedCluster } = React.useContext(K8sResourcesContext);
+  const { clusters, selectedCluster } = useContext(K8sResourcesContext);
   const [logText, setLogText] = useState<string>('');
 
   const curCluster =
@@ -63,8 +61,8 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     (containersList?.length && (containersList?.[0].name ?? '')) || '';
 
   const [containerSelected, setContainerSelected] =
-    React.useState<string>(curContainer);
-  const [podScope, setPodScope] = React.useState<ContainerScope>({
+    useState<string>(curContainer);
+  const [podScope, setPodScope] = useState<ContainerScope>({
     containerName: curContainer,
     podName,
     podNamespace: podNamespace,
@@ -75,7 +73,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     setContainerSelected(event.target.value);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (containerSelected) {
       setPodScope(ps => ({
         ...ps,
@@ -146,7 +144,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
 
 export const PodLogsDialog = ({ podData }: PodLogsDialogProps) => {
   const { t } = useTranslation();
-  const { clusters, selectedCluster } = React.useContext(K8sResourcesContext);
+  const { clusters, selectedCluster } = useContext(K8sResourcesContext);
   const [open, setOpen] = useState<boolean>(false);
 
   const curCluster =

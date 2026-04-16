@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-devops",
-  "version": "0.28.2",
+  "version": "0.29.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "azure-devops",

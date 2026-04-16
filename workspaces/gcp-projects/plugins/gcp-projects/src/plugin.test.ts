@@ -21,7 +21,7 @@ import packageinfo from '../package.json';
 
 describe('gcp-projects', () => {
   let sut: GcpClient;
-  let googleAuthApi: OAuthApi;
+  let googleAuthApi!: OAuthApi;
   beforeEach(() => {
     sut = new GcpClient(googleAuthApi);
   });

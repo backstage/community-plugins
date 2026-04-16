@@ -32,7 +32,7 @@ import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import { Navigate, Route } from 'react-router';
+import { Navigate, Route } from 'react-router-dom';
 
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';

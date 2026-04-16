@@ -6,7 +6,7 @@ The Apiiro common package provides shared constants used by both the frontend an
 
 This package is a small common library that currently contains:
 
-- **Catalog Annotations**: Shared annotation keys for linking Backstage entities to Apiiro repositories and for controlling metrics visibility
+- **Catalog Annotations**: Shared annotation keys for linking Backstage entities to Apiiro repositories and applications, and for controlling metrics visibility
 - **Configuration Defaults**: Shared defaults such as the Apiiro SaaS base URL
 
 ## Installation
@@ -24,12 +24,14 @@ yarn --cwd packages/backend add @backstage-community/plugin-apiiro-common
 The package re-exports everything from `src/constants.ts`:
 
 - **`APIIRO_PROJECT_ANNOTATION`**
+- **`APIIRO_APPLICATION_ANNOTATION`**
 - **`APIIRO_METRICS_VIEW_ANNOTATION`**
 - **`APIIRO_DEFAULT_BASE_URL`**
 
 ```ts
 import {
   APIIRO_PROJECT_ANNOTATION,
+  APIIRO_APPLICATION_ANNOTATION,
   APIIRO_METRICS_VIEW_ANNOTATION,
   APIIRO_DEFAULT_BASE_URL,
 } from '@backstage-community/plugin-apiiro-common';
@@ -39,7 +41,7 @@ import {
 
 - Key: `apiiro.com/repo-id`
 - Type: `string`
-- Purpose: Identifies the Apiiro repository associated with a Backstage entity.
+- Purpose: Identifies the Apiiro repository associated with a Backstage Component entity.
 
 Example entity annotation:
 
@@ -49,11 +51,25 @@ metadata:
     apiiro.com/repo-id: my-org/my-repo
 ```
 
+### `APIIRO_APPLICATION_ANNOTATION`
+
+- Key: `apiiro.com/application-id`
+- Type: `string`
+- Purpose: Identifies the Apiiro application associated with a Backstage System entity.
+
+Example entity annotation:
+
+```yaml
+metadata:
+  annotations:
+    apiiro.com/application-id: my-application-key
+```
+
 ### `APIIRO_METRICS_VIEW_ANNOTATION`
 
 - Key: `apiiro.com/allow-metrics-view`
 - Type: `string` (usually interpreted as a boolean-like flag, e.g. `"true"`)
-- Purpose: Controls whether Apiiro metrics (tiles / dashboards) and Widgets are allowed to be shown for a given entity.
+- Purpose: Controls whether Apiiro metrics (tiles / dashboards) and Widgets are allowed to be shown for a given entity. Applies to both Component (repository) and System (application) entities.
 
 Example entity annotation:
 

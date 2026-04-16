@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-linguist-backend",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "linguist",
@@ -71,7 +71,7 @@
     "@backstage/repo-tools": "backstage:^",
     "@types/fs-extra": "^11.0.0",
     "@types/node-fetch": "^2.5.12",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0"
   },
   "configSchema": "config.d.ts"
