@@ -12,14 +12,14 @@ import { TableFilter } from '@backstage/core-components';
 
 // @public (undocumented)
 export const BlackDuckAllVersionPage: (input: {
-  columns?: TableColumn<{}>[] | undefined;
-  filters?: TableFilter[] | undefined;
+  columns?: TableColumn[];
+  filters?: TableFilter[];
 }) => JSX_2.Element;
 
 // @public (undocumented)
 export const BlackDuckPage: (input: {
-  columns?: TableColumn<{}>[] | undefined;
-  filters?: TableFilter[] | undefined;
+  columns?: TableColumn[];
+  filters?: TableFilter[];
 }) => JSX_2.Element;
 
 // @public (undocumented)
