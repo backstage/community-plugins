@@ -19,7 +19,7 @@
     "lint": "backstage-cli package lint"
   },
   "dependencies": {
-    "@backstage-community/plugin-azure-devops": "^0.28.0",
+    "@backstage-community/plugin-azure-devops": "^0.29.0",
     "@backstage-community/plugin-github-actions": "^0.22.0",
     "@backstage-community/plugin-jenkins": "^0.30.0",
     "@backstage-community/plugin-multi-source-security-viewer": "workspace:^",
