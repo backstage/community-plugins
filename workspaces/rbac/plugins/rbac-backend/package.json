@@ -43,7 +43,7 @@
     "@backstage/errors": "^1.2.7",
     "@backstage/plugin-permission-common": "^0.9.7",
     "@backstage/plugin-permission-node": "^0.10.11",
-    "@dagrejs/graphlib": "^2.1.13",
+    "@dagrejs/graphlib": "^4.0.0",
     "casbin": "^5.27.1",
     "chokidar": "^3.6.0",
     "csv-parse": "^5.5.5",
