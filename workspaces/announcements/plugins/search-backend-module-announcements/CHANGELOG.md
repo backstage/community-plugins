@@ -1,5 +1,17 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.16.0
+
+### Minor Changes
+
+- e0c2eb4: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [e0c2eb4]
+  - @backstage-community/plugin-announcements-common@0.19.0
+  - @backstage-community/plugin-announcements-node@0.17.0
+
 ## 0.15.0
 
 ### Minor Changes

@@ -14,5 +14,9 @@
  * limitations under the License.
  */
 
-// Backstage backend plugin instance which registers the HTTP router.
+/**
+ * Backend plugin for Apiiro integration that provides REST API proxy endpoints.
+ *
+ * @packageDocumentation
+ */
 export { apiiroBackendPlugin as default } from './plugin';

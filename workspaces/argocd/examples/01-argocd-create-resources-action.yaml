@@ -1,0 +1,38 @@
+# ArgoCD Create Resources Action
+#
+# Action ID: backstage-community-argocd:create-resources
+#
+# This action is automatically registered by the @backstage-community/plugin-argocd-backend
+# plugin via the Backstage Actions API. No additional setup is required beyond
+# installing the backend plugin.
+#
+# Prerequisites:
+#   - ArgoCD backend plugin installed and configured
+#   - ArgoCD instance(s) configured in app-config.yaml under argocd.appLocatorMethods
+
+---
+# Minimal example (required fields only)
+#
+# When label and projectName are omitted, they default to the appName value.
+actionId: backstage-community-argocd:create-resources
+input:
+  appName: my-service
+  argoInstance: production
+  namespace: my-namespace
+  repoUrl: https://github.com/my-org/my-repo.git
+  path: manifests/production
+
+---
+# Full example (all fields)
+actionId: backstage-community-argocd:create-resources
+input:
+  appName: my-service
+  argoInstance: production
+  namespace: my-namespace
+  repoUrl: https://github.com/my-org/my-repo.git
+  path: manifests/production
+  label: backstage-service # Label used by Backstage to find applications (defaults to appName)
+  projectName: my-project # ArgoCD project name (defaults to appName)
+
+# Expected output:
+#   applicationUrl: <URL to the created ArgoCD application>

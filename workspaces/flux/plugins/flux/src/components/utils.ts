@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core';
 import { Condition, FluxObject } from '../objects';
 
 /**
@@ -26,62 +25,6 @@ export function automationLastUpdated(a: FluxObject): string {
       .timestamp || ''
   );
 }
-
-export const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  textOverflow: {
-    // overflow hidden and white-space nowrap are needed for text-overflow to work
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    direction: 'rtl',
-    maxWidth: '300px',
-    height: '16px',
-    marginTop: '2px',
-  },
-  nameLabel: {
-    fontWeight: 600,
-    marginBottom: '6px',
-  },
-  actionButton: {
-    padding: 0,
-    margin: '-5px 0',
-  },
-  verifiedOK: {
-    fill: theme.palette.status.ok || '#27AE60',
-  },
-  verifiedError: {
-    fill: theme.palette.status.error || '#BC3B1D',
-  },
-  verifiedWarning: {
-    fill: theme.palette.status.warning || '#FEF071',
-  },
-  status: {
-    alignItems: 'baseline',
-    display: 'flex',
-  },
-  statusIcon: {
-    flexShrink: 0,
-    position: 'relative',
-    top: '0.125em',
-    marginRight: theme.spacing(1),
-  },
-  statusIconSize: {
-    width: '0.8em',
-    height: '0.8em',
-  },
-  statusIconSizeForImg: {
-    width: '1.2em',
-    height: '1.2em',
-  },
-  reconciling: {
-    fill: theme.palette.status.running || '#00b3ec',
-  },
-}));
 
 export interface VerifiableSource {
   isVerifiable: boolean;

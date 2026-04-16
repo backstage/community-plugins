@@ -17,12 +17,14 @@ import {
   createBackendPlugin,
   coreServices,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { createRouter } from './router';
 import { signalsServiceRef } from '@backstage/plugin-signals-node';
 import { eventsServiceRef } from '@backstage/plugin-events-node';
 import { buildAnnouncementsContext } from './service';
 import { announcementEntityPermissions } from '@backstage-community/plugin-announcements-common';
 import { notificationService } from '@backstage/plugin-notifications-node';
+import { createAnnouncementsActions } from './actions';
 
 /**
  * A backend for the announcements plugin.
@@ -44,6 +46,7 @@ export const announcementsPlugin = createBackendPlugin({
         signals: signalsServiceRef,
         notifications: notificationService,
         auditor: coreServices.auditor,
+        actionsRegistry: actionsRegistryServiceRef,
       },
       async init({
         config,
@@ -57,6 +60,7 @@ export const announcementsPlugin = createBackendPlugin({
         signals,
         notifications,
         auditor,
+        actionsRegistry,
       }) {
         const context = await buildAnnouncementsContext({
           config,
@@ -78,6 +82,12 @@ export const announcementsPlugin = createBackendPlugin({
         const router = await createRouter(context);
 
         http.use(router);
+
+        createAnnouncementsActions({
+          actionsRegistry,
+          persistenceContext: context.persistenceContext,
+          permissions,
+        });
       },
     });
   },

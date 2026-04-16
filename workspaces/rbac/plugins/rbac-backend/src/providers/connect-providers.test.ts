@@ -37,6 +37,7 @@ import {
   RoleMetadataStorage,
 } from '../database/role-metadata';
 import { BackstageRoleManager } from '../role-manager/role-manager';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
@@ -119,6 +120,9 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
+  getCachedDefaultRoleMetadata: jest.fn().mockImplementation(),
+  getDefaultRole: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockAuthService = mockServices.auth();
@@ -303,24 +307,24 @@ describe('Connection', () => {
         ['user:default/Adam', 'role:default/test-provider'], // to add
       ];
 
-      const roleMeta = {
-        createdAt: new Date().toUTCString(),
-        lastModified: new Date().toUTCString(),
-        modifiedBy: 'test',
-        source: 'test',
-        roleEntityRef: roles[0][1],
-      };
-
       await provider.applyRoles(roles);
       expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
         1,
         ['user:default/test', 'role:default/test-provider'],
-        roleMeta,
+        expect.objectContaining({
+          modifiedBy: 'test',
+          source: 'test',
+          roleEntityRef: 'role:default/test-provider',
+        }),
       );
       expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
         2,
         ['user:default/adam', 'role:default/test-provider'],
-        roleMeta,
+        expect.objectContaining({
+          modifiedBy: 'test',
+          source: 'test',
+          roleEntityRef: 'role:default/test-provider',
+        }),
       );
     });
 
@@ -837,6 +841,7 @@ async function createEnforcer(
     rbacDBClient,
     config,
     mockAuthService,
+    new DefaultPermissionsReader(config),
   );
   enf.setRoleManager(rm);
   enf.enableAutoBuildRoleLinks(false);

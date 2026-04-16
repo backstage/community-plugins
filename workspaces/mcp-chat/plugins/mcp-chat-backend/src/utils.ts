@@ -229,7 +229,9 @@ export const validateConfig = (config: RootConfigService) => {
       }
     } catch (error) {
       throw new Error(
-        `Invalid configuration for MCP server at index ${index}: ${error.message}`,
+        `Invalid configuration for MCP server at index ${index}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
       );
     }
   }

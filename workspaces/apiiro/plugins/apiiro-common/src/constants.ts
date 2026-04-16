@@ -15,16 +15,28 @@
  */
 
 /**
+ * Annotation key for Apiiro repository ID.
+ * Used to link Backstage entities to Apiiro repositories.
  * @public
  */
 export const APIIRO_PROJECT_ANNOTATION = 'apiiro.com/repo-id';
 
 /**
+ * Annotation key for Apiiro application ID.
+ * Used to link Backstage system entities to Apiiro applications.
+ * @public
+ */
+export const APIIRO_APPLICATION_ANNOTATION = 'apiiro.com/application-id';
+
+/**
+ * Annotation key for controlling Apiiro metrics visibility.
+ * Set to 'true' or 'false' to enable/disable metrics view for an entity.
  * @public
  */
 export const APIIRO_METRICS_VIEW_ANNOTATION = 'apiiro.com/allow-metrics-view';
 
 /**
+ * Default base URL for the Apiiro API.
  * @public
  */
 export const APIIRO_DEFAULT_BASE_URL = 'https://app.apiiro.com';

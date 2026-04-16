@@ -87,14 +87,17 @@ export class ReportPortalCollatorFactory implements DocumentCollatorFactory {
           {
             kind: 'component',
             'metadata.annotations.reportportal.io/project-name': projectName,
-            'metadata.annotations.reportportal.io/launch-name': launchName,
           },
         ],
-        limit: 1,
       },
       { credentials: await this.auth.getOwnServiceCredentials() },
     );
-    return items.at(0);
+    return items.find(entity => {
+      const annotation =
+        entity.metadata.annotations?.['reportportal.io/launch-name'] ?? '';
+      const names = annotation.split(',').map(n => n.trim());
+      return names.includes(launchName) || !annotation;
+    });
   }
 
   async *execute(): AsyncGenerator<ReportPortalDocument> {
