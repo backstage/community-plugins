@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { CatalogApi } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
+import { mockServices } from '@backstage/backend-test-utils';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 import { TodoItem, TodoReader } from '../lib';
 import { TodoReaderService } from './TodoReaderService';
 
@@ -40,25 +41,33 @@ const mockEntity = {
   },
 };
 
-function mockCatalogClient(entity?: Entity): jest.Mocked<CatalogApi> {
+function mockCatalogClient(entity?: Entity): jest.Mocked<CatalogService> {
   const mock = {
     addLocation: jest.fn(),
     getEntities: jest.fn(),
-    getEntityByRef: jest.fn(),
-    getEntityByName: jest.fn(),
+    getEntitiesByRefs: jest.fn(),
+    queryEntities: jest.fn(),
+    getEntityByRef: jest.fn().mockResolvedValue(undefined),
+    getEntityAncestors: jest.fn(),
+    getEntityFacets: jest.fn(),
     getLocationByRef: jest.fn(),
     getLocationById: jest.fn(),
+    getLocations: jest.fn(),
+    queryLocations: jest.fn(),
+    streamLocations: jest.fn(),
     removeLocationById: jest.fn(),
     removeEntityByUid: jest.fn(),
     refreshEntity: jest.fn(),
-    getEntityAncestors: jest.fn(),
-    getEntityFacets: jest.fn(),
+    updateLocation: jest.fn(),
+    getLocationByEntity: jest.fn(),
     validateEntity: jest.fn(),
+    analyzeLocation: jest.fn(),
+    streamEntities: jest.fn(),
   };
   if (entity) {
-    mock.getEntityByRef.mockReturnValue(entity);
+    mock.getEntityByRef.mockResolvedValue(entity);
   }
-  return mock as Partial<jest.Mocked<CatalogApi>> as jest.Mocked<CatalogApi>;
+  return mock as unknown as jest.Mocked<CatalogService>;
 }
 
 function mockTodoReader(items?: TodoItem[]): jest.Mocked<TodoReader> {
@@ -75,9 +84,12 @@ function makeTodo(text: string, extra?: Partial<TodoItem>): TodoItem {
   return { text, tag: 'TODO', ...extra };
 }
 
+const auth = mockServices.auth();
+
 describe('TodoReaderService', () => {
   it('should be created', () => {
     const service = new TodoReaderService({
+      auth,
       todoReader: mockTodoReader(),
       catalogClient: mockCatalogClient(),
     });
@@ -87,7 +99,7 @@ describe('TodoReaderService', () => {
   it('should list 0 todos', async () => {
     const todoReader = mockTodoReader([]);
     const catalogClient = mockCatalogClient(mockEntity);
-    const service = new TodoReaderService({ todoReader, catalogClient });
+    const service = new TodoReaderService({ auth, todoReader, catalogClient });
 
     await expect(service.listTodos({ entity: entityName })).resolves.toEqual({
       items: [],
@@ -96,7 +108,7 @@ describe('TodoReaderService', () => {
       limit: 10,
     });
     expect(catalogClient.getEntityByRef).toHaveBeenCalledWith(entityName, {
-      token: undefined,
+      credentials: expect.anything(),
     });
   });
 
@@ -121,7 +133,7 @@ describe('TodoReaderService', () => {
         },
       },
     });
-    const service = new TodoReaderService({ todoReader, catalogClient });
+    const service = new TodoReaderService({ auth, todoReader, catalogClient });
 
     await expect(service.listTodos({ entity: entityName })).resolves.toEqual({
       items: [todo1, todo2, todo3, todo4, todo5],
@@ -247,6 +259,7 @@ describe('TodoReaderService', () => {
     const todoReader = mockTodoReader([todo1, todo2, todo3, todo4, todo5]);
     const catalogClient = mockCatalogClient(mockEntity);
     const service = new TodoReaderService({
+      auth,
       todoReader,
       catalogClient,
       defaultPageSize: 2,
@@ -287,6 +300,7 @@ describe('TodoReaderService', () => {
 
   it('should require an entity', async () => {
     const service = new TodoReaderService({
+      auth,
       todoReader: mockTodoReader(),
       catalogClient: mockCatalogClient(),
     });
@@ -298,7 +312,7 @@ describe('TodoReaderService', () => {
   it('should throw if entity is not found', async () => {
     const todoReader = mockTodoReader([]);
     const catalogClient = mockCatalogClient();
-    const service = new TodoReaderService({ todoReader, catalogClient });
+    const service = new TodoReaderService({ auth, todoReader, catalogClient });
 
     await expect(service.listTodos({ entity: entityName })).rejects.toEqual(
       expect.objectContaining({
@@ -307,7 +321,7 @@ describe('TodoReaderService', () => {
       }),
     );
     expect(catalogClient.getEntityByRef).toHaveBeenCalledWith(entityName, {
-      token: undefined,
+      credentials: expect.anything(),
     });
   });
 
@@ -317,7 +331,7 @@ describe('TodoReaderService', () => {
       ...mockEntity,
       metadata: { ...mockEntity.metadata, annotations: undefined },
     });
-    const service = new TodoReaderService({ todoReader, catalogClient });
+    const service = new TodoReaderService({ auth, todoReader, catalogClient });
 
     await expect(service.listTodos({ entity: entityName })).rejects.toEqual(
       expect.objectContaining({
@@ -339,7 +353,7 @@ describe('TodoReaderService', () => {
         },
       },
     });
-    const service = new TodoReaderService({ todoReader, catalogClient });
+    const service = new TodoReaderService({ auth, todoReader, catalogClient });
 
     await expect(service.listTodos({ entity: entityName })).rejects.toEqual(
       expect.objectContaining({
@@ -360,7 +374,7 @@ describe('TodoReaderService', () => {
         },
       },
     });
-    const service = new TodoReaderService({ todoReader, catalogClient });
+    const service = new TodoReaderService({ auth, todoReader, catalogClient });
 
     await expect(service.listTodos({ entity: entityName })).rejects.toEqual(
       expect.objectContaining({

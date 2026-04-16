@@ -37,16 +37,10 @@ global.fetch = jest.fn(() =>
 );
 
 const loggerMock = mockServices.logger.mock();
+const schedulerMock = mockServices.scheduler.mock();
 
 const schedulerTaskRunnerMock = {
   run: jest.fn().mockImplementation(),
-};
-
-const shedulerServiceMock = {
-  triggerTask: jest.fn().mockImplementation(),
-  scheduleTask: jest.fn().mockImplementation(),
-  createScheduledTaskRunner: jest.fn().mockImplementation(),
-  getScheduledTasks: jest.fn().mockImplementation(),
 };
 
 const entityProviderConnection = {
@@ -86,7 +80,7 @@ describe('ThreeScaleApiEntityProvider', () => {
   it('should be defined', () => {
     const threeScaleApiEntityProvider = createApiEntityProvider(
       schedulerTaskRunnerMock,
-      shedulerServiceMock,
+      schedulerMock,
     );
     expect(threeScaleApiEntityProvider).toBeDefined();
     expect(threeScaleApiEntityProvider).toBeInstanceOf(Array);
@@ -99,7 +93,7 @@ describe('ThreeScaleApiEntityProvider', () => {
       entityProviderConnection.applyMutation.mockClear();
       threeScaleApiEntityProvider = createApiEntityProvider(
         schedulerTaskRunnerMock,
-        shedulerServiceMock,
+        schedulerMock,
       )[0];
       await threeScaleApiEntityProvider.connect(entityProviderConnection);
     });

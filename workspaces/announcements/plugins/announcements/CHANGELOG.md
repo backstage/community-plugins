@@ -1,5 +1,28 @@
 # @backstage-community/plugin-announcements
 
+## 2.8.0
+
+### Minor Changes
+
+- daaeefa: Migrated `AnnouncementsCard` component to Backstage UI.
+
+### Patch Changes
+
+- ebf4891: Updated dependency `slugify` to `1.6.9`.
+
+## 2.7.0
+
+### Minor Changes
+
+- e0c2eb4: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- a24a1d0: Improved jsdocs for all alpha exports
+- Updated dependencies [e0c2eb4]
+  - @backstage-community/plugin-announcements-common@0.19.0
+  - @backstage-community/plugin-announcements-react@0.24.0
+
 ## 2.6.0
 
 ### Minor Changes

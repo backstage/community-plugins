@@ -1,5 +1,11 @@
 # @backstage-community/plugin-3scale-backend
 
+## 3.13.0
+
+### Minor Changes
+
+- e5c4ffb: Backstage version bump to v1.49.2
+
 ## 3.12.0
 
 ### Minor Changes

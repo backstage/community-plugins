@@ -1,5 +1,17 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.10.0
+
+### Minor Changes
+
+- a229130: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [a229130]
+  - @backstage-community/plugin-servicenow-common@1.9.0
+
 ## 1.9.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-feedback-common
 
+## 0.15.0
+
+### Minor Changes
+
+- 8cb1076: Backstage version bump to v1.49.2
+
 ## 0.14.0
 
 ### Minor Changes
@@ -11,6 +17,10 @@
 ### Minor Changes
 
 - 227f90a: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- c92a717: Add clickable link to feedback notifications. When entity owners receive notifications about new feedback, the notification now includes a link to navigate directly to the entity page. The entity URL is derived from the frontend routing configuration using the same logic as `EntityRefLink`, ensuring it always matches the actual routes configured in the app without requiring additional backend configuration.
 
 ## 0.12.0
 

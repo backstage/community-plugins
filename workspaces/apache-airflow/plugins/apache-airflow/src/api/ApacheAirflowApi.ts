@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { Dag, InstanceStatus, InstanceVersion } from './types';
 import { DagRun } from './types/Dags';
 
-export const apacheAirflowApiRef = createApiRef<ApacheAirflowApi>({
+export const apacheAirflowApiRef = createApiRef<ApacheAirflowApi>().with({
   id: 'plugin.apacheairflow.service',
 });
 

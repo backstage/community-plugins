@@ -42,46 +42,45 @@ export function useEntityGithubRepositories() {
   const [repositories, setRepositories] = useState<Repository[]>([]);
 
   const getRepositoriesNames = useCallback(async () => {
-    if (entity.kind === 'Component' || entity.kind === 'API') {
+    const repositoryEntities: Repository[] = [];
+    // For Group and User entities fetch owned components and retrieve all issues
+    if (entity.kind === 'Group' || entity.kind === 'User') {
+      const entitiesList = await catalogApi.getEntities({
+        filter: {
+          'relations.ownedBy': stringifyEntityRef(entity),
+        },
+      });
+
+      entitiesList.items.forEach((componentEntity: Entity) => {
+        const ownedEntityName = getProjectNameFromEntity(componentEntity);
+        const ownedEntityLocationHostname =
+          getHostnameFromEntity(componentEntity);
+        if (
+          ownedEntityName &&
+          !repositoryEntities.some(
+            (it: Repository) => it.name === ownedEntityName,
+          ) &&
+          ownedEntityName.length
+        ) {
+          repositoryEntities.push({
+            name: ownedEntityName,
+            locationHostname: ownedEntityLocationHostname,
+          });
+        }
+      });
+    }
+    // Fallback to all other entity kinds
+    else {
+      // Check if the current entity has a github project slug annotation
       const entityName = getProjectNameFromEntity(entity);
       const locationHostname = getHostnameFromEntity(entity);
       if (entityName) {
-        setRepositories([
-          {
-            name: entityName,
-            locationHostname,
-          },
-        ]);
+        repositoryEntities.push({
+          name: entityName,
+          locationHostname,
+        });
       }
-
-      return;
     }
-
-    const entitiesList = await catalogApi.getEntities({
-      filter: {
-        kind: ['Component', 'API'],
-        'relations.ownedBy': stringifyEntityRef(entity),
-      },
-    });
-
-    const repositoryEntities: Repository[] = entitiesList.items.reduce(
-      (acc: Repository[], componentEntity: Entity) => {
-        const entityName = getProjectNameFromEntity(componentEntity);
-        const entityLocationHostname = getHostnameFromEntity(componentEntity);
-        if (
-          entityName &&
-          !acc.some((it: Repository) => it.name === entityName) &&
-          entityName.length
-        ) {
-          acc.push({
-            name: entityName,
-            locationHostname: entityLocationHostname,
-          });
-        }
-        return acc;
-      },
-      [],
-    );
 
     setRepositories(repositoryEntities);
   }, [catalogApi, entity]);

@@ -21,6 +21,11 @@ import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
 
 /**
+ * The announcements page provides a filterable list of announcements.
+ *
+ * @remarks
+ * Extension ID: `page:announcements`
+ *
  * @alpha
  */
 export const announcementsPage = PageBlueprint.makeWithOverrides({
