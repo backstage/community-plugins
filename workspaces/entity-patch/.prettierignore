@@ -5,3 +5,4 @@ knip-report.md
 .vscode
 .eslintrc.js
 .playwright-mcp
+e2e-test-report

@@ -7,6 +7,8 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
+    "test:e2e": "playwright test",
+    "test:e2e-ui": "playwright test --ui",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -42,11 +44,13 @@
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30",
+    "@playwright/test": "^1.50.0",
     "@types/jest": "^30",
     "jest": "^30",
     "jsdom": "^27",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
+    "playwright-core": "^1.50.0",
     "prettier": "^2.3.2",
     "typescript": "~5.8.0"
   },
