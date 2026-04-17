@@ -1658,10 +1658,7 @@ __metadata:
   resolution: "@backstage-community/plugins@workspace:."
   dependencies:
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli"
-    "@backstage/catalog-model": "npm:^1.7.7"
     "@backstage/cli": "npm:^0.32.0"
-    "@backstage/config": "npm:^1.3.6"
-    "@backstage/types": "npm:^1.2.2"
     "@changesets/parse": "npm:^0.4.0"
     "@manypkg/get-packages": "npm:^2.2.2"
     "@octokit/rest": "npm:^20.1.1"
@@ -1676,7 +1673,6 @@ __metadata:
     husky: "npm:^9.0.11"
     js-yaml: "npm:^4.1.0"
     lint-staged: "npm:^16.0.0"
-    lodash: "npm:^4.18.1"
     lodash.escaperegexp: "npm:^4.1.2"
     node-fetch: "npm:^2.6.7"
     prettier: "npm:^2.3.2"
@@ -1694,18 +1690,6 @@ __metadata:
     ajv: "npm:^8.10.0"
     lodash: "npm:^4.17.21"
   checksum: 10/002b26972537b14b7bee90d617cb174c6b036cfbdbed58a52ab02195b2045743e87b8ddf58fd1afa8056315c559a60203488e0f596db82f6c85b05145685a850
-  languageName: node
-  linkType: hard
-
-"@backstage/catalog-model@npm:^1.7.7":
-  version: 1.7.7
-  resolution: "@backstage/catalog-model@npm:1.7.7"
-  dependencies:
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/types": "npm:^1.2.2"
-    ajv: "npm:^8.10.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/ccb85232eb155b9b8c3e6e925238974b94b125aaf65efa42b4d6cd6851a4b6b846cf2e336c3a59c05f978157bdc9347de2e37fc7b6634b234e2b2ea0b1cdebd8
   languageName: node
   linkType: hard
 
@@ -13744,13 +13728,6 @@ __metadata:
   linkType: hard
 
 "lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4":
-  version: 4.18.1
-  resolution: "lodash@npm:4.18.1"
-  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
-  languageName: node
-  linkType: hard
-
-"lodash@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash@npm:4.18.1"
   checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f

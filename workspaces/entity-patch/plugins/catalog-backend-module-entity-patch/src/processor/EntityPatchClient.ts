@@ -72,6 +72,11 @@ export class EntityPatchClient {
 
     if (result.status === 'unchanged') {
       this.logger.debug('Using cached patch data (ETag match)', { entityRef });
+      // Re-write the existing cache entry so it survives the next cycle.
+      // Without this, newState stays undefined and the framework falls back
+      // to existingState — which works, but is implicit. Matching the pattern
+      // used by UrlReaderProcessor makes the intent explicit.
+      await cache.set(entityRef, cached as JsonValue);
       // cached is guaranteed non-null here: 'unchanged' is only returned when
       // cachedEtag was provided, which requires cached to be non-null.
       return cached!.data;

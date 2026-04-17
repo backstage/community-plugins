@@ -214,11 +214,15 @@ describe('EntityPatchProcessor', () => {
       );
 
       expect(result.metadata.description).toBe('cached description');
-      // API was still called (with If-None-Match) but no cache.set because data unchanged
+      // API was still called (with If-None-Match)
       expect(mockFetch).toHaveBeenCalledTimes(1);
       const callHeaders = mockFetch.mock.calls[0][1].headers;
       expect(callHeaders['If-None-Match']).toBe('"etag-abc"');
-      expect(mockCache.set).not.toHaveBeenCalled();
+      // Cache is re-written with the existing entry so it survives the next cycle
+      expect(mockCache.set).toHaveBeenCalledWith(
+        expect.any(String),
+        cachedData,
+      );
     });
 
     it('re-fetches and updates cache when ETag changes (data modified)', async () => {
@@ -593,6 +597,14 @@ describe('EntityPatchProcessor', () => {
       const emit = (result: any) => emitted.push(result);
 
       const processor = makeProcessor(relationsConfig);
+      // pre populates cycleData; post reads from it (no second network call)
+      await processor.preProcessEntity(
+        groupEntity,
+        {} as any,
+        () => {},
+        {} as any,
+        mockCache as any,
+      );
       await processor.postProcessEntity(
         groupEntity,
         {} as any,
@@ -600,6 +612,7 @@ describe('EntityPatchProcessor', () => {
         mockCache as any,
       );
 
+      expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(emitted).toHaveLength(4); // 2 refs × 2 directions
       expect(emitted).toContainEqual(
         expect.objectContaining({
@@ -628,6 +641,14 @@ describe('EntityPatchProcessor', () => {
 
       const emitted: any[] = [];
       const processor = makeProcessor(relationsConfig);
+      // pre sets cycleData to null (404); post reads null and emits nothing
+      await processor.preProcessEntity(
+        groupEntity,
+        {} as any,
+        () => {},
+        {} as any,
+        mockCache as any,
+      );
       await processor.postProcessEntity(
         groupEntity,
         {} as any,
