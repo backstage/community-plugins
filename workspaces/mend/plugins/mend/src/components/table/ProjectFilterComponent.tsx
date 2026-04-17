@@ -93,6 +93,14 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
     return null;
   }
 
+  const projectLabelMap = projectNameOptions.reduce<Record<string, string>>(
+    (prev, next) => {
+      prev[next.value] = next.label;
+      return prev;
+    },
+    {},
+  );
+
   /**
    * Handles changes from the MUI Select input.
    * Normalizes the event value to a string array and enforces ALL option rules:
@@ -210,7 +218,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
                   ) : (
                     <Chip
                       key={value}
-                      label={value}
+                      label={projectLabelMap[value]}
                       size="small"
                       onMouseDown={e => e.stopPropagation()}
                       onDelete={() => handleChipDelete(value)}
@@ -242,11 +250,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
                 checked={projectNameFilter.includes(item.value.toString())}
                 color="primary"
               />
-              {item.value === ALL_OPTION.value ? (
-                <ListItemText primary={item.label} />
-              ) : (
-                <ListItemText primary={item.label} />
-              )}
+              <ListItemText primary={item.label} />
             </MenuItem>
           ))}
         </Select>

@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { MendPage, plugin } from './plugin';
-export { MendSidebar } from './components';
-export { MendTab } from './pages/tab';
-export { isMendProjectAvailable } from './utils';
+
+/**
+ * The mend-entity-processor backend module for the catalog plugin.
+ *
+ * @packageDocumentation
+ */
+
+export { catalogModuleMendEntityProcessor as default } from './module';

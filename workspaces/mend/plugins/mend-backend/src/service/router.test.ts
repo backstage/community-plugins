@@ -39,6 +39,8 @@ describe('createRouter', () => {
       discovery: mockServices.discovery(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
+      cache: mockServices.cache.mock(),
+      scheduler: mockServices.scheduler.mock(),
     });
     app = express().use(router);
   });

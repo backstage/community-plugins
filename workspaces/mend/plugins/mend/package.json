@@ -12,7 +12,8 @@
     "pluginId": "mend",
     "pluginPackages": [
       "@backstage-community/plugin-mend",
-      "@backstage-community/plugin-mend-backend"
+      "@backstage-community/plugin-mend-backend",
+      "@backstage-community/plugin-catalog-backend-module-mend-entity-processor"
     ]
   },
   "exports": {
@@ -47,6 +48,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@backstage/catalog-model": "^1.7.6",
     "@backstage/core-compat-api": "^0.5.8",
     "@backstage/core-components": "^0.18.7",
     "@backstage/core-plugin-api": "^1.12.3",
@@ -66,15 +68,9 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.35.4",
-    "@backstage/core-app-api": "^1.19.5",
     "@backstage/dev-utils": "^1.1.20",
     "@backstage/plugin-catalog": "^1.33.0",
-    "@backstage/test-utils": "^1.7.15",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.0.0",
     "@types/react": "^18",
-    "msw": "^1.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.30.1"

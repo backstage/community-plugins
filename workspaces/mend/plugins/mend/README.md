@@ -29,7 +29,7 @@ From your Backstage root directory, run the following commands:
 
 ```bash
 yarn --cwd packages/app add @backstage-community/plugin-mend
-yarn --cwd packages/backend add @backstage-community/plugin-mend-backend
+yarn --cwd packages/backend add @backstage-community/plugin-mend-backend @backstage-community/plugin-catalog-backend-module-mend-entity-processor
 ```
 
 ### Dependencies
@@ -57,19 +57,54 @@ mend:
   activationKey: ${YOUR_ACTIVATION_KEY_HERE}
 ```
 
+### Configure Mend Plugin for Backstage
+
+The following annotation used by the plugin fetch the corresponding project for the entity.
+
+```yaml
+mend.io/project-ids: <project-ids>
+```
+
+Let's break this down:
+
+- `mend.io/project-ids` : Annotation key for the Mend.io plugin
+- `<project-ids>`: list of Mend Project Ids that linked to particular entity
+
+Here's what that will look like in action:
+
+```yaml
+# Example catalog-info.yaml for Component entity
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-component
+  annotations:
+    mend.io/project-ids: <project-ids>
+---
+```
+
+The `@backstage-community/plugin-catalog-backend-module-mend-entity-processor` package will add this annotation automatically. Please find steps [here](../catalog-backend-module-mend-entity-processor/README.md) to install this.
+
 ### Add the Mend.io tab to your entity page
 
 In your `packages/app/src/components/Catalog/EntityPage.tsx` file:
 
 ```tsx
 // ... other imports here
-import { MendTab } from '@backstage-community/plugin-mend';
+import {
+  MendTab,
+  isMendProjectAvailable,
+} from '@backstage-community/plugin-mend';
 // ... other components
 const serviceEntityPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
       // ... other elements
-      <EntityLayout.Route path="/mend" title="Mend.io">
+      <EntityLayout.Route
+        if={isMendProjectAvailable} // Remove this if condition to always display the MendTab
+        path="/mend"
+        title="Mend.io"
+      >
         <MendTab />
       </EntityLayout.Route>
       // ... other elements
@@ -79,6 +114,8 @@ const serviceEntityPage = (
 );
 // ...
 ```
+
+`isMendProjectAvailable` : Used this to display the MendTab based on presence of the mend.io annotation
 
 ### Add the Mend.io page to your routes
 
@@ -135,6 +172,7 @@ The Mend Plugin also supports the [Spotify Portal](https://spotify.github.io/por
 
 - `@backstage-community/plugin-mend`
 - `@backstage-community/plugin-mend-backend`
+- `@backstage-community/plugin-catalog-backend-module-mend-entity-processor`
 
 For detailed installation instructions, refer to the [Portal documentation](https://spotify.github.io/portal/docs/plugins/installing-plugins).
 
@@ -145,8 +183,9 @@ For detailed installation instructions, refer to the [Portal documentation](http
 1. **Navigate** to the _Plugins_ section
 2. Click on the **Mend Plugin** - this will redirect you to the Mend configuration page
 3. Enter your **Mend activation key** in the `activationKey` configuration field
-4. **(Optional)** Configure the **Permission Control** section as needed to filter Mend projects using ids
-5. Save your configuration by clicking the **Save** button
-6. **Start** the plugin and wait for the confirmation message indicating successful installation
+4. **(Optional)** Change **Cache Refresh** value in minutes to change the refresh cycle. Default: 240 minutes (4 hours)
+5. **(Optional)** Configure the **Permission Control** section as needed to filter Mend projects using ids
+6. Save your configuration by clicking the **Save** button
+7. **Start** the plugin and wait for the confirmation message indicating successful installation
 
 Once completed, you will be able to see the Mend plugin on the sidebar navigation.

@@ -75,6 +75,7 @@ type TableProps = {
   totalTitle: string;
   projectList?: Project[] | null;
   selectedProject?: string | null;
+  useFullDataForStatistics?: boolean;
 };
 
 export const Table = ({
@@ -90,13 +91,14 @@ export const Table = ({
   totalTitle,
   projectList = null,
   selectedProject = null,
+  useFullDataForStatistics = false,
 }: TableProps) => {
   const theme = useTheme();
   const tableRef = useRef<MaterialTable>(null);
 
   const ALL_OPTION = useMemo(() => ({ label: 'All', value: '__ALL__' }), []);
   const projectNameOptionsWithoutAll = projectList
-    ? projectList.map(d => ({ label: d.name, value: d.name }))
+    ? projectList.map(d => ({ label: d.name, value: d.uuid }))
     : [];
   const projectNameOptions: SelectItem[] = [
     ALL_OPTION,
@@ -115,10 +117,10 @@ export const Table = ({
     ) {
       data = tableData.filter(row => {
         // Filter by Project Name multi-select
-        const projectName = (row as any).projectName;
+        const projectId = (row as any).projectId;
         if (
           projectNameFilter.length > 0 &&
-          !projectNameFilter.includes(projectName)
+          !projectNameFilter.includes(projectId)
         ) {
           return false;
         }
@@ -227,10 +229,15 @@ export const Table = ({
         ),
         // NOTE: This component contain search/filter input and total statistics rendered at the top of page.
         Toolbar: props => {
+          // Use full dataset for statistics if useFullDataForStatistics is true (for Overview page)
+          // Otherwise use filtered/sorted data (for entity-specific pages)
+          const statisticsData = useFullDataForStatistics
+            ? tableData
+            : tableRef.current?.dataManager?.sortedData;
           return (
             <TableHeader
               clientName={clientName}
-              data={getStatistics(tableRef.current?.dataManager?.sortedData)}
+              data={getStatistics(statisticsData as (Project | Finding)[])}
               dataLoading={tableDataLoading}
               headerTitle={headerTitle}
               toolbar={props}

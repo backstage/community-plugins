@@ -22,6 +22,14 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // We need the catalog plugin to get the example entities and make the front entity page functional
 backend.add(import('@backstage/plugin-catalog-backend'));
+
+// Mend catalog processor for entity annotations
+backend.add(
+  import(
+    '@backstage-community/plugin-catalog-backend-module-mend-entity-processor'
+  ),
+);
+
 backend.add(import('../src/index'));
 
 backend.start();

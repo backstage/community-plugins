@@ -18,7 +18,6 @@ import { match } from 'path-to-regexp';
 import type { QueryParams } from '../api';
 import {
   ProjectStatisticsSuccessResponseData,
-  OrganizationProjectSuccessResponseData,
   PaginationQueryParams,
   Project,
   CodeFindingSuccessResponseData,
@@ -45,13 +44,7 @@ export const dataProjectParser = (
   projectStatistics: Array<
     ProjectStatisticsSuccessResponseData & { entityUrl?: string }
   >,
-  organizationProjects: OrganizationProjectSuccessResponseData[],
 ) => {
-  const organizationData = organizationProjects.reduce((prev, next) => {
-    prev[next.uuid] = next;
-    return prev;
-  }, {} as { [key: string]: OrganizationProjectSuccessResponseData });
-
   const projectData = projectStatistics.reduce(
     (
       prev: OverviewData,
@@ -130,9 +123,8 @@ export const dataProjectParser = (
         statistics,
         uuid: next.uuid,
         name: next.name,
-        path: next.path,
         entityUrl: next.entityUrl,
-        applicationName: organizationData[next.uuid].applicationName,
+        applicationName: next.path,
         applicationUuid: next.applicationUuid,
         lastScan: next.statistics[FINDING_TYPE.LAST_SCAN].lastScanTime,
         languages: next.statistics?.LIBRARY_TYPE_HISTOGRAM
@@ -233,113 +225,6 @@ export const generateEntityUrl = (entity: Entity): string | null => {
     return null;
   }
 };
-
-export const dataMatcher = (
-  entities: Entity[],
-  projects: ProjectStatisticsSuccessResponseData[],
-) => {
-  const projectSourceURL = getSourceURLWiseProject(projects);
-  return entities.reduce(
-    (
-      prev: Array<
-        ProjectStatisticsSuccessResponseData & { entityUrl?: string }
-      >,
-      next: Entity,
-    ) => {
-      const parsedSourceLocation = parseEntityURL(
-        next?.metadata?.annotations?.['backstage.io/source-location'],
-      );
-
-      if (!parsedSourceLocation) {
-        return prev;
-      }
-
-      // NOTE: Find project based on Github URL
-      const relatedProjects =
-        projectSourceURL[
-          `${parsedSourceLocation?.host}${parsedSourceLocation?.path}`
-        ]?.projectObjs;
-
-      if (!relatedProjects) {
-        return prev;
-      }
-
-      const entityUrl = generateEntityUrl(next);
-
-      relatedProjects.forEach(project =>
-        prev.push({ ...project, entityUrl: entityUrl ?? undefined }),
-      );
-
-      return prev;
-    },
-    [],
-  );
-};
-
-/**
- * Extracts the source URL details from each project and returns a dictionary
- * where each key is a combination of the URL's host and pathname,
- * and the value is an object containing the original project and the parsed source URL data.
- *
- * @param projects Array of ProjectStatisticsSuccessResponseData
- * @returns A dictionary object with keys as `${host}${pathname}` strings extracted from sourceUrl and values as:
- *          {
- *            projectObjs: ProjectStatisticsSuccessResponseData[];
-              sourceUrl: string | null;
-              host: string | null;
-              pathname: string | null;
- *          }
- */
-export function getSourceURLWiseProject(
-  projects: ProjectStatisticsSuccessResponseData[],
-) {
-  return projects.reduce(
-    (acc, project) => {
-      const projectTags = project.tags as Array<{ key: string; value: string }>;
-      const sourceUrlTag = projectTags?.find(tag => tag.key === 'sourceUrl');
-      let host = null;
-      let pathname = null;
-      let sourceUrl = null;
-
-      if (sourceUrlTag && typeof sourceUrlTag.value === 'string') {
-        sourceUrl = sourceUrlTag.value;
-        const urlString = sourceUrl.startsWith('http')
-          ? sourceUrl
-          : `https://${sourceUrl}`;
-
-        try {
-          const urlObj = new URL(urlString);
-          host = urlObj.host.toLocaleLowerCase();
-          // Remove leading/trailing slashes and split
-          pathname = urlObj.pathname;
-        } catch (e) {
-          // fallback: leave as nulls
-        }
-      }
-
-      if (acc[`${host}${pathname}`]) {
-        acc[`${host}${pathname}`].projectObjs.push(project);
-      } else {
-        acc[`${host}${pathname}`] = {
-          projectObjs: [project],
-          sourceUrl,
-          host,
-          pathname,
-        };
-      }
-      return acc;
-    },
-    {} as Record<
-      string,
-      {
-        projectObjs: ProjectStatisticsSuccessResponseData[];
-        sourceUrl: string | null;
-        host: string | null;
-        pathname: string | null;
-      }
-    >,
-  );
-}
 
 const getIssueStatus = (
   engine: StatisticsEngine,

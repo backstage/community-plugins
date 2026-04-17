@@ -21,28 +21,36 @@ import {
   DiscoveryService,
   AuthService,
   HttpAuthService,
+  CacheService,
+  SchedulerService,
 } from '@backstage/backend-plugin-api';
-import { CatalogClient } from '@backstage/catalog-client';
+import {
+  CATALOG_FILTER_EXISTS,
+  CatalogClient,
+} from '@backstage/catalog-client';
 import type { Config } from '@backstage/config';
 import {
   dataFindingParser,
-  dataMatcher,
-  dataProjectParser,
   fetchQueryPagination,
   parseEntityURL,
+  generateEntityUrl,
 } from './data.service.helpers';
 import { MendDataService } from './data.service';
 import { MendAuthSevice } from './auth.service';
 import {
   PaginationQueryParams,
-  ProjectStatisticsSuccessResponseData,
-  OrganizationProjectSuccessResponseData,
   CodeFindingSuccessResponseData,
   DependenciesFindingSuccessResponseData,
   ContainersFindingSuccessResponseData,
   Finding,
+  Project,
 } from './data.service.types';
-import { MEND_API_VERSION } from '../constants';
+import { MendCacheManager } from './cache.service';
+import {
+  MEND_API_VERSION,
+  MEND_PROJECT_ANNOTATION,
+  BACKSTAGE_SOURCE_LOCATION_ANNOTATION,
+} from '../constants';
 
 /** @internal */
 export type RouterOptions = {
@@ -51,6 +59,8 @@ export type RouterOptions = {
   discovery: DiscoveryService;
   auth: AuthService;
   httpAuth: HttpAuthService;
+  cache: CacheService;
+  scheduler: SchedulerService;
 };
 
 enum ROUTE {
@@ -62,7 +72,8 @@ enum ROUTE {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, discovery, auth, httpAuth } = options;
+  const { logger, config, discovery, auth, httpAuth, cache, scheduler } =
+    options;
 
   const router = Router();
   router.use(express.json());
@@ -114,41 +125,17 @@ export async function createRouter(
     logger,
   });
 
+  // Init cache manager with scheduler
+  const mendCacheManager = new MendCacheManager(
+    config,
+    cache,
+    logger,
+    scheduler,
+    mendDataService,
+  );
+
   // Init catalog client
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
-
-  /**
-   * Filters project IDs based on mend.permissionControl configuration
-   * @param projectItems - Array of project items to filter
-   * @returns Filtered array of project items
-   */
-  const filterProjectsByPermissionControl = <T extends { uuid: string }>(
-    projectItems: T[],
-  ): T[] => {
-    const permissionControl = config.getOptionalConfig(
-      'mend.permissionControl',
-    );
-
-    if (!permissionControl) {
-      // No permission control configured, return all items
-      return projectItems;
-    }
-
-    const ids = permissionControl.getOptionalStringArray('ids') || [];
-    const exclude = permissionControl.getOptionalBoolean('exclude') ?? true;
-
-    if (ids.length === 0) {
-      // No IDs configured, return all items
-      return projectItems;
-    }
-
-    return projectItems.filter(item => {
-      const isInList = ids.includes(item.uuid);
-      // If exclude is true (blocklist mode): filter out items in the list
-      // If exclude is false (allowlist mode): only include items in the list
-      return exclude ? !isInList : isInList;
-    });
-  };
 
   // Routes
   router.get(ROUTE.PROJECT, checkForAuth, async (request, response) => {
@@ -160,34 +147,54 @@ export async function createRouter(
         targetPluginId: 'catalog',
       });
 
-      // entity to project match
-      const results = await Promise.all([
+      // Get all entities with mend annotation and cached projects
+      const [entities, projectsById] = await Promise.all([
         catalogClient.getEntities(
-          { filter: [{ kind: ['Component'] }] },
+          {
+            filter: [
+              {
+                kind: 'Component',
+                [`metadata.annotations.${MEND_PROJECT_ANNOTATION}`]:
+                  CATALOG_FILTER_EXISTS,
+              },
+            ],
+          },
           { token },
         ),
-        fetchQueryPagination<ProjectStatisticsSuccessResponseData>(
-          mendDataService.getProjectStatistics,
-        ),
-        fetchQueryPagination<OrganizationProjectSuccessResponseData>(
-          mendDataService.getOrganizationProject,
-        ),
+        mendCacheManager.getProjectsById(),
       ]);
 
-      // Apply permission control from config
-      const filteredItems = filterProjectsByPermissionControl(results[1]);
+      // Build project list from entities with annotations
+      const projectList: (Project & { entityUrl?: string })[] = [];
 
-      const data = dataMatcher(results[0].items, filteredItems);
+      for (const entity of entities.items) {
+        const projectIdsAnnotation =
+          entity.metadata.annotations?.[MEND_PROJECT_ANNOTATION];
+        if (!projectIdsAnnotation) continue;
 
-      // parse data
-      const projects = dataProjectParser(data, results[2]);
+        const projectIds = projectIdsAnnotation
+          .split(',')
+          .map(id => id.trim())
+          .filter(id => id.length > 0);
+
+        const entityUrl = generateEntityUrl(entity) ?? undefined;
+
+        for (const projectId of projectIds) {
+          const project = projectsById[projectId];
+          if (project) {
+            projectList.push({ ...project, entityUrl });
+          }
+        }
+      }
+
+      // Sort by critical severity (descending)
+      projectList.sort((a, b) => b.statistics.critical - a.statistics.critical);
 
       response.json({
-        ...projects,
+        projectList,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });
-      // Allow any object structure here
     } catch (error: any) {
       logger.error('/project', error);
       response.status(500).json({ error: 'Oops! Please try again later.' });
@@ -203,7 +210,6 @@ export async function createRouter(
         targetPluginId: 'catalog',
       });
 
-      // entity to project match
       const uid = request.body.uid;
 
       if (!uid) {
@@ -215,35 +221,49 @@ export async function createRouter(
         return;
       }
 
-      const projectResult = await Promise.all([
+      // Get entity and cached projects
+      const [entityResult, projectsById] = await Promise.all([
         catalogClient.getEntities(
           { filter: [{ 'metadata.uid': uid }] },
           { token },
         ),
-        fetchQueryPagination<ProjectStatisticsSuccessResponseData>(
-          mendDataService.getProjectStatistics,
-        ),
-        fetchQueryPagination<OrganizationProjectSuccessResponseData>(
-          mendDataService.getOrganizationProject,
-        ),
+        mendCacheManager.getProjectsById(),
       ]);
 
-      // Apply permission control from config
-      const filteredItems = filterProjectsByPermissionControl(projectResult[1]);
+      const entity = entityResult.items[0];
+      if (!entity) {
+        response.status(404).json({
+          message: 'Entity not found.',
+          clientUrl: MendAuthSevice.getClientUrl(),
+          clientName: MendAuthSevice.getClientName(),
+        });
+        return;
+      }
 
-      const data = dataMatcher(projectResult[0].items, filteredItems);
+      // Get project IDs from annotation
+      const projectIdsAnnotation =
+        entity.metadata.annotations?.[MEND_PROJECT_ANNOTATION];
 
-      const entityURL = parseEntityURL(
-        projectResult[0].items[0]?.metadata?.annotations?.[
-          'backstage.io/source-location'
-        ],
-      );
+      if (!projectIdsAnnotation) {
+        response.status(404).json({
+          message:
+            'Results for this repository unavailable on Mend or can not be accessed.',
+          clientUrl: MendAuthSevice.getClientUrl(),
+          clientName: MendAuthSevice.getClientName(),
+        });
+        return;
+      }
 
-      const projectSourceUrl = entityURL?.host
-        ? `${entityURL.host}${entityURL.path}`
-        : '';
+      const projectIds = projectIdsAnnotation
+        .split(',')
+        .map(id => id.trim())
+        .filter(id => id.length > 0);
 
-      if (!data.length) {
+      const projects: Project[] = projectIds
+        .map(id => projectsById[id])
+        .filter((p): p is Project => p !== undefined);
+
+      if (projects.length === 0) {
         response.status(404).json({
           message:
             'Results for this repository are either unavailable on Mend or can not be accessed.',
@@ -253,16 +273,24 @@ export async function createRouter(
         return;
       }
 
+      // Get projectSourceUrl from entity
+      const entityURL = parseEntityURL(
+        entity.metadata.annotations?.[BACKSTAGE_SOURCE_LOCATION_ANNOTATION],
+      );
+      const projectSourceUrl = entityURL?.host
+        ? `${entityURL.host}${entityURL.path}`
+        : '';
+
+      // Fetch findings for each project
       const findingList: Finding[] = [];
 
-      for (const projectItem of data) {
+      for (const project of projects) {
         const params = {
           pathParams: {
-            uuid: projectItem.uuid,
+            uuid: project.uuid,
           },
         };
 
-        // get project findings
         const findingResult = await Promise.all([
           fetchQueryPagination<CodeFindingSuccessResponseData>(
             (queryParam: PaginationQueryParams) =>
@@ -288,27 +316,23 @@ export async function createRouter(
         ]);
 
         const tempFindingList: Finding[] = dataFindingParser(
-          findingResult[0].filter(item => !item.suppressed), // NOTE: Do not show suppressed item
+          findingResult[0].filter(item => !item.suppressed),
           findingResult[1].filter(
             item => !(item.findingInfo.status === 'IGNORED'),
-            projectItem,
-          ), // NOTE: Do not show ignored item
-          findingResult[2], // ESC-51: Follow Jira activity
-          projectItem.name,
+          ),
+          findingResult[2],
+          project.name,
         );
         findingList.push(...tempFindingList);
       }
 
-      const projects = dataProjectParser(data, projectResult[2]);
-
       response.json({
         findingList,
-        ...projects,
+        projectList: projects,
         projectSourceUrl,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),
       });
-      // Allow any object structure here
     } catch (error: any) {
       logger.error('/finding', error);
       response.status(500).json({ error: 'Oops! Please try again later.' });

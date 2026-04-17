@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { MendPage, plugin } from './plugin';
-export { MendSidebar } from './components';
-export { MendTab } from './pages/tab';
-export { isMendProjectAvailable } from './utils';
+
+export { CacheManager } from './cacheManager';
+export { extractRepoUrlFromSourceLocation } from './utils';
+export * from './types';

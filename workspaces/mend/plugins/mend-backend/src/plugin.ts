@@ -30,20 +30,33 @@ export const mendPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         auth: coreServices.auth,
+        cache: coreServices.cache,
         config: coreServices.rootConfig,
         discovery: coreServices.discovery,
         httpAuth: coreServices.httpAuth,
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
+        scheduler: coreServices.scheduler,
       },
-      async init({ auth, config, discovery, httpAuth, httpRouter, logger }) {
+      async init({
+        auth,
+        cache,
+        config,
+        discovery,
+        httpAuth,
+        httpRouter,
+        logger,
+        scheduler,
+      }) {
         httpRouter.use(
           await createRouter({
             auth,
+            cache,
             config,
             discovery,
             httpAuth,
             logger,
+            scheduler,
           }),
         );
         httpRouter.addAuthPolicy({

@@ -13,6 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Entity } from '@backstage/catalog-model';
+
+export const MEND_PROJECT_ANNOTATION = 'mend.io/project-ids';
+/**
+ * Checks if a Mend project is available for the given entity.
+ * Returns true if the entity has the mend.io/project-ids annotation with at least one project ID.
+ *
+ * @public
+ */
+export const isMendProjectAvailable = (entity: Entity): boolean => {
+  return !!entity.metadata.annotations?.[MEND_PROJECT_ANNOTATION];
+};
 export const dateTimeFormat = (date: number | string, locales = 'en-US') => {
   if (!date) return '';
   return new Date(date).toLocaleDateString(locales, {
