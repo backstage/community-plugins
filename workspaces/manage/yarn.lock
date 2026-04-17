@@ -6593,6 +6593,9 @@ __metadata:
     "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.27.1"
     "@jest/environment-jsdom-abstract": "npm:^30.0.0"
+    "@react-aria/interactions": "npm:^3.28.0"
+    "@react-stately/layout": "npm:^4.7.0"
+    "@react-stately/overlays": "npm:^3.7.0"
     "@react-types/table": "npm:^3.14.0"
     "@types/jest": "npm:^30.0.0"
     jest: "npm:^30.2.0"
@@ -9629,6 +9632,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-aria/interactions@npm:^3.28.0":
+  version: 3.28.0
+  resolution: "@react-aria/interactions@npm:3.28.0"
+  dependencies:
+    "@react-types/shared": "npm:^3.34.0"
+    "@swc/helpers": "npm:^0.5.0"
+    react-aria: "npm:3.48.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+    react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+  checksum: 10/f845180e29ac0607ec16cb85ff4605076c3d8f6de06f6530b3fdec8009272b711c7057af5a7c793851d568ef41626b8fc965cac7a8cee5a043dcf5f27fec2239
+  languageName: node
+  linkType: hard
+
 "@react-hookz/deep-equal@npm:^1.0.4":
   version: 1.0.4
   resolution: "@react-hookz/deep-equal@npm:1.0.4"
@@ -9663,6 +9680,32 @@ __metadata:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
   checksum: 10/169131ef935b5d6103c24c45bee46c9cac59378cff49ff6636f3c68cfb71afe698a957c49439ea3b3b5f541c8e3f9948199956d5f7f61bf1666722a57e356707
+  languageName: node
+  linkType: hard
+
+"@react-stately/layout@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "@react-stately/layout@npm:4.7.0"
+  dependencies:
+    "@swc/helpers": "npm:^0.5.0"
+    react-stately: "npm:3.46.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+    react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+  checksum: 10/c8bd96dd798be3e8ea8138ded259f09ab343ce8719c8378381e84eaa3fb06f14dab64928971fd5d37096788eefa6a66f1a4114ac58aed935ad6d68e006334a22
+  languageName: node
+  linkType: hard
+
+"@react-stately/overlays@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@react-stately/overlays@npm:3.7.0"
+  dependencies:
+    "@swc/helpers": "npm:^0.5.0"
+    react-stately: "npm:3.46.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+    react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+  checksum: 10/c50b401fbe66949e47bc620bf89ed0636c3217e51cbd7f3fb6b2b1af204c3e92c0a8f2c969d3cf5890d1637cb41fd28a5582b7cec07425bc7d982a7bf6430d29
   languageName: node
   linkType: hard
 
