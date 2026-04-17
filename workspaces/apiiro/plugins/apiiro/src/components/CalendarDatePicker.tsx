@@ -29,6 +29,7 @@ import {
   QuickRangeItem,
   QuickRangeText,
 } from './CalendarDatePicker.styles';
+type LooseValue = NonNullable<CalendarProps['value']>;
 
 type Value = Date | Date[] | null;
 
@@ -172,7 +173,7 @@ export const CalendarDatePicker = forwardRef<
     return (
       <CalendarContainer ref={ref}>
         <StyledCalendar
-          value={value as any}
+          value={value as LooseValue}
           onChange={handleCalendarChange as any}
           selectRange={selectRange}
           formatShortWeekday={formatShortWeekday}
