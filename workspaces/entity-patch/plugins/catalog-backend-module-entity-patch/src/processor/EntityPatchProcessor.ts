@@ -33,7 +33,7 @@ import {
   buildRelationPairs,
   buildPatchConfigs,
 } from '@backstage-community/plugin-entity-patch-common';
-import { EntityPatcher } from './EntityPatcher';
+import { EntityPatcher, PatchDataMap } from './EntityPatcher';
 import { EntityPatchClient } from './EntityPatchClient';
 
 /**
@@ -64,6 +64,12 @@ export class EntityPatchProcessor implements CatalogProcessor {
   private readonly logger: LoggerService;
   private readonly client: EntityPatchClient;
   private readonly patcher: EntityPatcher;
+  /**
+   * Holds patch data fetched during preProcessEntity so postProcessEntity can
+   * use it without making a second network call. Entries are deleted immediately
+   * after postProcessEntity consumes them, so the map stays near-empty.
+   */
+  private readonly cycleData = new Map<string, PatchDataMap | null>();
 
   constructor(options: EntityPatchProcessorOptions) {
     this.logger = options.logger;
@@ -108,14 +114,15 @@ export class EntityPatchProcessor implements CatalogProcessor {
     _originLocation: any,
     cache: CatalogProcessorCache,
   ): Promise<Entity> {
-    if (!this.patcher.hasScalarEntries(entity)) return entity;
+    if (!this.patcher.hasMatchingEntries(entity)) return entity;
 
+    const entityRef = stringifyEntityRef(entity);
     const patchData = await this.client.getPatchData(entity, cache);
+    this.cycleData.set(entityRef, patchData);
+
     if (!patchData) return entity;
 
-    this.logger.debug('Applied patch data to entity', {
-      entityRef: stringifyEntityRef(entity),
-    });
+    this.logger.debug('Applied patch data to entity', { entityRef });
     return this.patcher.applyScalars(entity, patchData);
   }
 
@@ -123,11 +130,14 @@ export class EntityPatchProcessor implements CatalogProcessor {
     entity: Entity,
     _location: any,
     emit: CatalogProcessorEmit,
-    cache: CatalogProcessorCache,
+    _cache: CatalogProcessorCache,
   ): Promise<Entity> {
     if (!this.patcher.hasRelationEntries(entity)) return entity;
 
-    const patchData = await this.client.getPatchData(entity, cache);
+    const entityRef = stringifyEntityRef(entity);
+    const patchData = this.cycleData.get(entityRef) ?? null;
+    this.cycleData.delete(entityRef);
+
     if (!patchData) return entity;
 
     this.patcher

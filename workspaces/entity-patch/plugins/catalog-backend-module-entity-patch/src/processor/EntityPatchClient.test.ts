@@ -69,15 +69,22 @@ describe('EntityPatchClient', () => {
       );
     });
 
-    it('returns cached data without updating cache on a 304 response', async () => {
-      const cachedData = { 'comp-patch': { description: 'cached' } };
-      mockCache.get.mockResolvedValue({ data: cachedData, etag: '"etag-v1"' });
+    it('returns cached data and re-writes the cache entry on a 304 response', async () => {
+      const cached = {
+        data: { 'comp-patch': { description: 'cached' } },
+        etag: '"etag-v1"',
+      };
+      mockCache.get.mockResolvedValue(cached);
       mockFetch.mockResolvedValue({ ok: false, status: 304 });
 
       const result = await makeClient().getPatchData(entity, mockCache as any);
 
-      expect(result).toEqual(cachedData);
-      expect(mockCache.set).not.toHaveBeenCalled();
+      expect(result).toEqual(cached.data);
+      // Must re-write so the cache entry survives the next cycle (matches UrlReaderProcessor pattern)
+      expect(mockCache.set).toHaveBeenCalledWith(
+        'component:default/my-service',
+        cached,
+      );
     });
 
     it('sends If-None-Match header when a cached ETag is available', async () => {

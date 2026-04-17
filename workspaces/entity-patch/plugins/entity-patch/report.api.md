@@ -52,8 +52,8 @@ const entityPatchPlugin: OverridableFrontendPlugin<
         title: string | undefined;
       };
       configInput: {
-        path?: string | undefined;
         title?: string | undefined;
+        path?: string | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
