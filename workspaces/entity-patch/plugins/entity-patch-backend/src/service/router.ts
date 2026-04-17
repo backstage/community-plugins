@@ -24,6 +24,7 @@ import type {
   UserInfoService,
   DiscoveryService,
   RootConfigService,
+  BackstageCredentials,
 } from '@backstage/backend-plugin-api';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { CatalogClient } from '@backstage/catalog-client';
@@ -32,7 +33,12 @@ import { evaluateFilterPredicate } from '@backstage/filter-predicates';
 import { z } from 'zod';
 import { PatchStore } from './PatchStore';
 import { extractEntityValues } from './EntityValueExtractor';
-import { buildRelationPairs, buildPatchConfigs } from './configHelpers';
+import {
+  buildRelationPairs,
+  buildPatchConfigs,
+  type RelationPair,
+  type PatchConfig,
+} from '@backstage-community/plugin-entity-patch-common';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -48,6 +54,55 @@ const patchBodySchema = z.object({
   patchName: z.string().min(1),
   data: z.record(z.string(), z.unknown()),
 });
+
+/**
+ * Fetches the entity from the catalog, applies the patch configs whose filter
+ * matches the entity, and merges the result with the DB overlay (DB wins).
+ */
+async function mergeWithCatalog(
+  entityRef: string,
+  dbOverlay: Record<string, Record<string, unknown>>,
+  credentials: BackstageCredentials,
+  auth: AuthService,
+  catalogClient: CatalogClient,
+  patchConfigs: PatchConfig[],
+  relationPairs: Map<string, RelationPair>,
+): Promise<Record<string, Record<string, unknown>>> {
+  const { token } = await auth.getPluginRequestToken({
+    onBehalfOf: credentials,
+    targetPluginId: 'catalog',
+  });
+
+  const entity = await catalogClient.getEntityByRef(entityRef, { token });
+  if (!entity) {
+    throw new NotFoundError(`Entity '${entityRef}' not found in catalog`);
+  }
+
+  const matchingConfigs = patchConfigs.filter(
+    p => !p.filter || evaluateFilterPredicate(p.filter, entity),
+  );
+
+  const catalogValues: Record<string, Record<string, unknown>> = {};
+  for (const {
+    name: patchName,
+    mapping,
+    sectionProperties,
+  } of matchingConfigs) {
+    catalogValues[patchName] = extractEntityValues(entity, mapping, {
+      relationPairs,
+      sectionProperties,
+    });
+  }
+
+  const merged: Record<string, Record<string, unknown>> = { ...catalogValues };
+  for (const [patchName, dbData] of Object.entries(dbOverlay)) {
+    // Only merge DB data for patches whose filter currently matches this entity.
+    if (patchName in catalogValues) {
+      merged[patchName] = { ...(catalogValues[patchName] ?? {}), ...dbData };
+    }
+  }
+  return merged;
+}
 
 export async function createRouter(options: RouterOptions) {
   const { logger, database, httpAuth, auth, userInfo, discovery, config } =
@@ -90,73 +145,34 @@ export async function createRouter(options: RouterOptions) {
     const credentials = await httpAuth.credentials(req, {
       allow: ['user', 'service'],
     });
-
     const entityRef = stringifyEntityRef({ kind, namespace, name });
 
+    const { rows: dbOverlay, latestUpdatedAt } =
+      await store.findWithLatestUpdatedAt(entityRef);
+
     if (!fillFromEntity) {
-      // Raw mode (used by the catalog processor): single query to avoid TOCTOU
-      // race between fetching data and computing the ETag timestamp.
-      const { rows: dbOverlay, latestUpdatedAt } =
-        await store.findWithLatestUpdatedAt(entityRef);
       const etag = latestUpdatedAt
         ? `"${Buffer.from(latestUpdatedAt).toString('base64')}"`
         : '"empty"';
       res.setHeader('ETag', etag);
-
       if (req.headers['if-none-match'] === etag) {
         res.status(304).end();
         return;
       }
-
       logger.debug('Returning raw patch data', { entityRef });
       res.json(dbOverlay);
       return;
     }
 
-    const dbOverlay = await store.findByEntityRef(entityRef);
-
-    // fillFromEntity mode: merge catalog field values with DB overlay
-    const { token } = await auth.getPluginRequestToken({
-      onBehalfOf: credentials,
-      targetPluginId: 'catalog',
-    });
-
-    const entity = await catalogClient.getEntityByRef(entityRef, { token });
-
-    if (!entity) {
-      throw new NotFoundError(`Entity '${entityRef}' not found in catalog`);
-    }
-
-    // Only extract values for patches whose filter matches the entity
-    const matchingPatchConfigs = patchConfigs.filter(
-      p => !p.filter || evaluateFilterPredicate(p.filter, entity),
+    const merged = await mergeWithCatalog(
+      entityRef,
+      dbOverlay,
+      credentials,
+      auth,
+      catalogClient,
+      patchConfigs,
+      relationPairs,
     );
-
-    const catalogValues: Record<string, Record<string, unknown>> = {};
-    for (const {
-      name: patchName,
-      mapping,
-      sectionProperties,
-    } of matchingPatchConfigs) {
-      catalogValues[patchName] = extractEntityValues(entity, mapping, {
-        relationPairs,
-        sectionProperties,
-      });
-    }
-
-    // Merge: catalog values as base, DB overlay on top per patch
-    const merged: Record<string, Record<string, unknown>> = {
-      ...catalogValues,
-    };
-    for (const [patchName, dbData] of Object.entries(dbOverlay)) {
-      // Only merge DB data for patches whose filter currently matches this entity.
-      // DB patches for non-matching patches are intentionally excluded here:
-      // they shouldn't be applied to this entity given its current state.
-      if (patchName in catalogValues) {
-        merged[patchName] = { ...(catalogValues[patchName] ?? {}), ...dbData };
-      }
-    }
-
     logger.debug('Returning entity-filled values', { entityRef });
     res.json(merged);
   });
