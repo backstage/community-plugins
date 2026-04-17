@@ -1611,9 +1611,9 @@ __metadata:
     "@backstage/plugin-catalog-node": "backstage:^"
     "@backstage/plugin-scaffolder-node": "backstage:^"
     "@backstage/types": "backstage:^"
-    "@types/lodash": "npm:^4.14.0"
+    "@types/lodash": "npm:^4.17.24"
     "@types/nunjucks": "npm:^3.2.6"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.18.1"
     nunjucks: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -1636,14 +1636,14 @@ __metadata:
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^"
     "@backstage/plugin-catalog-backend": "backstage:^"
     "@backstage/plugin-catalog-backend-module-logs": "backstage:^"
-    "@types/express": "npm:^4.17.6"
-    "@types/lodash": "npm:^4.14.0"
-    "@types/supertest": "npm:^6.0.0"
-    better-sqlite3: "npm:^9.0.0"
-    express: "npm:^4.21.2"
-    express-promise-router: "npm:^4.1.0"
-    lodash: "npm:^4.17.21"
-    supertest: "npm:^7.0.0"
+    "@types/express": "npm:^4.17.25"
+    "@types/lodash": "npm:^4.17.24"
+    "@types/supertest": "npm:^6.0.3"
+    better-sqlite3: "npm:^9.6.0"
+    express: "npm:^4.22.1"
+    express-promise-router: "npm:^4.1.1"
+    lodash: "npm:^4.18.1"
+    supertest: "npm:^7.2.2"
     zod: "npm:^3.0.0 || ^4.0.0"
   languageName: unknown
   linkType: soft
@@ -1678,20 +1678,20 @@ __metadata:
     "@backstage/theme": "backstage:^"
     "@backstage/types": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/icons": "npm:^4.11.3"
     "@playwright/test": "npm:^1.59.1"
     "@remixicon/react": "npm:^4.9.0"
     "@rjsf/material-ui": "npm:^5.24.13"
     "@rjsf/utils": "npm:^5.24.13"
     "@rjsf/validator-ajv8": "npm:^5.24.13"
-    "@testing-library/jest-dom": "npm:^6.0.0"
-    "@testing-library/react": "npm:^14.0.0"
+    "@testing-library/jest-dom": "npm:^6.9.1"
+    "@testing-library/react": "npm:^14.3.1"
     ajv-errors: "npm:^3.0.0"
-    react: "npm:^18.0.0"
-    react-dom: "npm:^18.0.0"
-    react-router-dom: "npm:^7.13.2"
-    react-use: "npm:^17.2.4"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    react-router-dom: "npm:^7.14.1"
+    react-use: "npm:^17.6.0"
   peerDependencies:
     react: ^18.0.0
     react-dom: ^18.0.0
@@ -3639,7 +3639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/cli@npm:^2.27.1":
+"@changesets/cli@npm:^2.30.0":
   version: 2.30.0
   resolution: "@changesets/cli@npm:2.30.0"
   dependencies:
@@ -4779,17 +4779,17 @@ __metadata:
     "@backstage/cli-defaults": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
-    "@changesets/cli": "npm:^2.27.1"
-    "@jest/environment-jsdom-abstract": "npm:^30"
-    "@playwright/test": "npm:^1.50.0"
-    "@types/jest": "npm:^30"
-    jest: "npm:^30"
-    jsdom: "npm:^27"
-    knip: "npm:^5.27.4"
-    node-gyp: "npm:^10.0.0"
-    playwright-core: "npm:^1.50.0"
-    prettier: "npm:^2.3.2"
-    typescript: "npm:~5.8.0"
+    "@changesets/cli": "npm:^2.30.0"
+    "@jest/environment-jsdom-abstract": "npm:^30.3.0"
+    "@playwright/test": "npm:^1.59.1"
+    "@types/jest": "npm:^30.0.0"
+    jest: "npm:^30.3.0"
+    jsdom: "npm:^27.4.0"
+    knip: "npm:^5.88.1"
+    node-gyp: "npm:^10.3.1"
+    playwright-core: "npm:^1.59.1"
+    prettier: "npm:^2.8.8"
+    typescript: "npm:~5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -4993,7 +4993,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment-jsdom-abstract@npm:^30":
+"@jest/environment-jsdom-abstract@npm:^30.3.0":
   version: 30.3.0
   resolution: "@jest/environment-jsdom-abstract@npm:30.3.0"
   dependencies:
@@ -5733,7 +5733,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/core@npm:^4.12.2, @material-ui/core@npm:^4.9.13":
+"@material-ui/core@npm:^4.12.2, @material-ui/core@npm:^4.12.4, @material-ui/core@npm:^4.9.13":
   version: 4.12.4
   resolution: "@material-ui/core@npm:4.12.4"
   dependencies:
@@ -5760,7 +5760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/icons@npm:^4.9.1":
+"@material-ui/icons@npm:^4.11.3, @material-ui/icons@npm:^4.9.1":
   version: 4.11.3
   resolution: "@material-ui/icons@npm:4.11.3"
   dependencies:
@@ -7222,7 +7222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.50.0, @playwright/test@npm:^1.59.1":
+"@playwright/test@npm:^1.59.1":
   version: 1.59.1
   resolution: "@playwright/test@npm:1.59.1"
   dependencies:
@@ -9175,7 +9175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.0.0":
+"@testing-library/jest-dom@npm:^6.9.1":
   version: 6.9.1
   resolution: "@testing-library/jest-dom@npm:6.9.1"
   dependencies:
@@ -9189,7 +9189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^14.0.0":
+"@testing-library/react@npm:^14.3.1":
   version: 14.3.1
   resolution: "@testing-library/react@npm:14.3.1"
   dependencies:
@@ -9623,7 +9623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^30":
+"@types/jest@npm:^30.0.0":
   version: 30.0.0
   resolution: "@types/jest@npm:30.0.0"
   dependencies:
@@ -9684,7 +9684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.0":
+"@types/lodash@npm:^4.17.24":
   version: 4.17.24
   resolution: "@types/lodash@npm:4.17.24"
   checksum: 10/0f2082565f60f9787eefc046edc38458054512be5a8b3584ef0bad5fd9e85d0ab55ec5a1fbfae1ed6ba015cf1f9e837d5fb4da1f99fc60b8f74b2a46146fb00f
@@ -10064,7 +10064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^6.0.0":
+"@types/supertest@npm:^6.0.3":
   version: 6.0.3
   resolution: "@types/supertest@npm:6.0.3"
   dependencies:
@@ -11782,7 +11782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^9.0.0":
+"better-sqlite3@npm:^9.6.0":
   version: 9.6.0
   resolution: "better-sqlite3@npm:9.6.0"
   dependencies:
@@ -15575,7 +15575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-promise-router@npm:^4.1.0":
+"express-promise-router@npm:^4.1.0, express-promise-router@npm:^4.1.1":
   version: 4.1.1
   resolution: "express-promise-router@npm:4.1.1"
   dependencies:
@@ -15619,7 +15619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.14.0, express@npm:^4.21.2, express@npm:^4.22.0, express@npm:^4.22.1":
+"express@npm:^4.14.0, express@npm:^4.22.0, express@npm:^4.22.1":
   version: 4.22.1
   resolution: "express@npm:4.22.1"
   dependencies:
@@ -18968,7 +18968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^30":
+"jest@npm:^30.3.0":
   version: 30.3.0
   resolution: "jest@npm:30.3.0"
   dependencies:
@@ -19063,7 +19063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^27":
+"jsdom@npm:^27.4.0":
   version: 27.4.0
   resolution: "jsdom@npm:27.4.0"
   dependencies:
@@ -19629,7 +19629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:^5.27.4, knip@npm:^5.42.0":
+"knip@npm:^5.42.0, knip@npm:^5.88.1":
   version: 5.88.1
   resolution: "knip@npm:5.88.1"
   dependencies:
@@ -20020,7 +20020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.16.4, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4":
+"lodash@npm:^4.16.4, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash@npm:4.18.1"
   checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
@@ -21756,7 +21756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^10.0.0":
+"node-gyp@npm:^10.3.1":
   version: 10.3.1
   resolution: "node-gyp@npm:10.3.1"
   dependencies:
@@ -23066,7 +23066,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.59.1, playwright-core@npm:^1.50.0":
+"playwright-core@npm:1.59.1, playwright-core@npm:^1.59.1":
   version: 1.59.1
   resolution: "playwright-core@npm:1.59.1"
   bin:
@@ -23623,7 +23623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.3.2, prettier@npm:^2.7.1":
+"prettier@npm:^2.7.1, prettier@npm:^2.8.8":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -24192,7 +24192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.0.0":
+"react-dom@npm:^18.3.1":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -24389,21 +24389,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.13.2":
-  version: 7.13.2
-  resolution: "react-router-dom@npm:7.13.2"
+"react-router-dom@npm:^7.14.1":
+  version: 7.14.1
+  resolution: "react-router-dom@npm:7.14.1"
   dependencies:
-    react-router: "npm:7.13.2"
+    react-router: "npm:7.14.1"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
-  checksum: 10/981835c8df633f9b033e185d3efcdd178d5809b489d6d696172767cc7f96c280403cf4d8a768f86f99b4096360859bbc96aca66e93f4d5741e814766b34cced0
+  checksum: 10/29e0b139e7dafd0916a4773a07cdad294b649422b50b0bc911974c09a08623079df901c57d8f8efeea737c54cad91a453ce8f74d4997995667cc99e56b5e533a
   languageName: node
   linkType: hard
 
-"react-router@npm:7.13.2":
-  version: 7.13.2
-  resolution: "react-router@npm:7.13.2"
+"react-router@npm:7.14.1":
+  version: 7.14.1
+  resolution: "react-router@npm:7.14.1"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -24413,7 +24413,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10/86e3538e4b50402bb15ac7b0938fdace5947a45d418bd1713b15288a208a5b102dfa599a3e5c4a86e136331b5dafaacfe57d93d2cc48241cf48fe770190cfbda
+  checksum: 10/8d518134e2d3f8aea84665881c84e3d3c2967d39c1bad01adce86d32549dbd13155f224325fd8cca851cf39bd6cb0c3e8aaff71403d910a7b15226cf9cb124cd
   languageName: node
   linkType: hard
 
@@ -24495,7 +24495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.2.4, react-use@npm:^17.3.2":
+"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:^17.6.0":
   version: 17.6.0
   resolution: "react-use@npm:17.6.0"
   dependencies:
@@ -24543,7 +24543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.0.0":
+"react@npm:^18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -26589,7 +26589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:^7.0.0":
+"supertest@npm:^7.2.2":
   version: 7.2.2
   resolution: "supertest@npm:7.2.2"
   dependencies:
@@ -27561,7 +27561,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.8.0":
+"typescript@npm:~5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -27591,7 +27591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.8.0#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A~5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
