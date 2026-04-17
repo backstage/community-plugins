@@ -51,7 +51,7 @@
     "knip": "^5.88.1",
     "node-gyp": "^10.3.1",
     "playwright-core": "^1.59.1",
-    "prettier": "^2.8.8",
+    "prettier": "^2.3.2",
     "typescript": "~5.8.3"
   },
   "resolutions": {

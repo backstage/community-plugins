@@ -43,10 +43,10 @@
   "dependencies": {
     "@backstage-community/plugin-entity-patch-common": "workspace:^",
     "@backstage/backend-plugin-api": "backstage:^",
-    "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/filter-predicates": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
     "express": "^4.22.1",
     "express-promise-router": "^4.1.1",
     "lodash": "^4.18.1",

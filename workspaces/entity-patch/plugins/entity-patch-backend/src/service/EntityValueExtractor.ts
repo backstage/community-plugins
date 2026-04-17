@@ -15,8 +15,22 @@
  */
 import { get } from 'lodash';
 import { Entity } from '@backstage/catalog-model';
-import type { RelationPair } from '@backstage-community/plugin-entity-patch-common';
-import { isMappingTemplate } from '@backstage-community/plugin-entity-patch-common';
+import type {
+  BackstageCredentials,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { NotFoundError } from '@backstage/errors';
+import { CatalogService } from '@backstage/plugin-catalog-node';
+import { evaluateFilterPredicate } from '@backstage/filter-predicates';
+import type {
+  PatchConfig,
+  RelationPair,
+} from '@backstage-community/plugin-entity-patch-common';
+import {
+  isMappingTemplate,
+  buildRelationPairs,
+  buildPatchConfigs,
+} from '@backstage-community/plugin-entity-patch-common';
 
 /**
  * Reads a value from a deeply nested object using a dot-separated path.
@@ -51,9 +65,10 @@ export function extractRelationValues(
 }
 
 /**
- * Extracts form field values from a catalog entity using an entity-path → field mapping.
+ * Extracts form field values from catalog entities across all configured patches.
+ * Created once at startup via `fromConfig`; `getValues` is called per request.
  *
- * Each key is a dot-separated entity path or `relations.{type}` reference;
+ * Each patch mapping key is a dot-separated entity path or `relations.{type}` ref;
  * each value is the form field name to populate, or a Nunjucks template string.
  *
  * Template-mapped paths (values containing `{{`) are skipped — the rendered
@@ -63,53 +78,128 @@ export function extractRelationValues(
  * Multiple entity paths may share the same form field name (fan-out writes).
  * When reading back, the last entity path with a defined value wins.
  *
- * @param entity - The Backstage entity to read values from.
- * @param mapping - Map of entity paths → form field names or Nunjucks templates.
- *   e.g. `{ "metadata.description": "description", "relations.hasDesigner": "designerRef" }`
- * @param options.relationPairs - Lookup map from relation type → RelationPair.
- *   Required for resolving `relations.` values; ignored for plain dot-paths.
- * @param options.sectionProperties - Raw JSON Schema properties map keyed by
- *   field name. Used to infer `multiple` (`type: "array"`) for relation fields.
- * @returns A record of field names to their current values on the entity.
- *   Fields whose path resolves to `undefined` are omitted.
+ * @example
+ * // At startup:
+ * const extractor = EntityValueExtractor.fromConfig(config, { auth, catalogClient });
+ * // Per request:
+ * const catalogValues = await extractor.getValues(entityRef, credentials);
  */
-export function extractEntityValues(
-  entity: Entity,
-  mapping: Record<string, string>,
-  options: {
-    relationPairs?: Map<string, RelationPair>;
-    sectionProperties?: Record<string, unknown>;
-  } = {},
-): Record<string, unknown> {
-  const { relationPairs, sectionProperties } = options;
-  const result: Record<string, unknown> = {};
+export class EntityValueExtractor {
+  private constructor(
+    private readonly patches: PatchConfig[],
+    private readonly relationPairs: Map<string, RelationPair> | undefined,
+    private readonly catalogService: CatalogService | undefined,
+  ) {}
 
-  for (const [entityPath, fieldOrTemplate] of Object.entries(mapping)) {
-    // Template values are rendered by the processor at write time using saved
-    // form data — we cannot reverse them to individual field values here.
-    if (isMappingTemplate(fieldOrTemplate)) continue;
-
-    const fieldName = fieldOrTemplate;
-
-    if (entityPath.startsWith('relations.')) {
-      if (!relationPairs) continue;
-      const relType = entityPath.slice('relations.'.length);
-      if (!relationPairs.has(relType)) continue;
-
-      const propSchema = sectionProperties?.[fieldName] as
-        | { type?: string }
-        | undefined;
-      const multiple = propSchema?.type === 'array';
-      const value = extractRelationValues(entity, relType, multiple);
-      if (value !== undefined) {
-        result[fieldName] = value;
-      }
-    } else {
-      const value = getByPath(entity, entityPath);
-      if (value !== undefined) {
-        result[fieldName] = value;
-      }
-    }
+  /**
+   * Builds the extractor from app config with all catalog dependencies.
+   * Call once at plugin startup.
+   */
+  static fromConfig(
+    config: RootConfigService,
+    deps: { catalogService: CatalogService },
+  ): EntityValueExtractor {
+    return new EntityValueExtractor(
+      buildPatchConfigs(config),
+      buildRelationPairs(config),
+      deps.catalogService,
+    );
   }
-  return result;
+
+  /**
+   * Fetches the entity from the catalog and extracts values for all matching
+   * patches. Returns a map of patch name → field values.
+   */
+  async getValues(
+    entityRef: string,
+    credentials: BackstageCredentials,
+  ): Promise<Record<string, Record<string, unknown>>> {
+    const entity = await this.catalogService!.getEntityByRef(entityRef, {
+      credentials,
+    });
+    if (!entity)
+      throw new NotFoundError(`Entity '${entityRef}' not found in catalog`);
+    return this.extractAll(entity);
+  }
+
+  /**
+   * Fetches catalog values for all matching patches and merges them with the
+   * DB overlay (DB wins). Returns a map of patch name → field values.
+   */
+  async mergeWithCatalog(
+    entityRef: string,
+    dbOverlay: Record<string, Record<string, unknown>>,
+    credentials: BackstageCredentials,
+  ): Promise<Record<string, Record<string, unknown>>> {
+    const catalogValues = await this.getValues(entityRef, credentials);
+    return Object.fromEntries(
+      Object.entries(catalogValues).map(([name, vals]) => [
+        name,
+        { ...vals, ...(dbOverlay[name] ?? {}) },
+      ]),
+    );
+  }
+
+  /**
+   * Extracts values from a pre-fetched entity for all matching patches.
+   * Useful in tests where you already have an entity object.
+   */
+  extractAll(entity: Entity): Record<string, Record<string, unknown>> {
+    const result: Record<string, Record<string, unknown>> = {};
+    for (const patch of this.patches) {
+      if (patch.filter && !evaluateFilterPredicate(patch.filter, entity))
+        continue;
+      result[patch.name] = this.extractPatch(entity, patch);
+    }
+    return result;
+  }
+
+  private extractPatch(
+    entity: Entity,
+    patch: PatchConfig,
+  ): Record<string, unknown> {
+    const patchResult: Record<string, unknown> = {};
+    for (const [entityPath, fieldOrTemplate] of Object.entries(patch.mapping)) {
+      // Template values are rendered by the processor at write time using saved
+      // form data — we cannot reverse them to individual field values here.
+      if (isMappingTemplate(fieldOrTemplate)) continue;
+      const value = this.getValue(
+        entity,
+        entityPath,
+        fieldOrTemplate,
+        patch.sectionProperties,
+      );
+      if (value !== undefined) patchResult[fieldOrTemplate] = value;
+    }
+    return patchResult;
+  }
+
+  private getValue(
+    entity: Entity,
+    entityPath: string,
+    fieldName: string,
+    sectionProperties: Record<string, unknown>,
+  ): unknown {
+    if (entityPath.startsWith('relations.'))
+      return this.getRelationValue(
+        entity,
+        entityPath.slice('relations.'.length),
+        fieldName,
+        sectionProperties,
+      );
+    return getByPath(entity, entityPath);
+  }
+
+  private getRelationValue(
+    entity: Entity,
+    relType: string,
+    fieldName: string,
+    sectionProperties: Record<string, unknown>,
+  ): unknown {
+    if (!this.relationPairs?.has(relType)) return undefined;
+    const schema = sectionProperties[fieldName] as
+      | { type?: string }
+      | undefined;
+    return extractRelationValues(entity, relType, schema?.type === 'array');
+  }
 }

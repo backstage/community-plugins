@@ -1627,7 +1627,6 @@ __metadata:
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/backend-test-utils": "backstage:^"
-    "@backstage/catalog-client": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/errors": "backstage:^"
@@ -1636,6 +1635,7 @@ __metadata:
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^"
     "@backstage/plugin-catalog-backend": "backstage:^"
     "@backstage/plugin-catalog-backend-module-logs": "backstage:^"
+    "@backstage/plugin-catalog-node": "backstage:^"
     "@types/express": "npm:^4.17.25"
     "@types/lodash": "npm:^4.17.24"
     "@types/supertest": "npm:^6.0.3"
@@ -1897,7 +1897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@backstage:^::backstage=1.50.1&npm=1.15.0, @backstage/catalog-client@npm:^1.15.0":
+"@backstage/catalog-client@npm:^1.15.0":
   version: 1.15.0
   resolution: "@backstage/catalog-client@npm:1.15.0"
   dependencies:
@@ -4788,7 +4788,7 @@ __metadata:
     knip: "npm:^5.88.1"
     node-gyp: "npm:^10.3.1"
     playwright-core: "npm:^1.59.1"
-    prettier: "npm:^2.8.8"
+    prettier: "npm:^2.3.2"
     typescript: "npm:~5.8.3"
   languageName: unknown
   linkType: soft
@@ -23623,7 +23623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.7.1, prettier@npm:^2.8.8":
+"prettier@npm:^2.3.2, prettier@npm:^2.7.1":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
