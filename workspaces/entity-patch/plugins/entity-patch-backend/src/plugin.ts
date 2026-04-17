@@ -17,6 +17,7 @@ import {
   createBackendPlugin,
   coreServices,
 } from '@backstage/backend-plugin-api';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { createRouter } from './service/router';
 
 /**
@@ -36,29 +37,26 @@ export const entityPatchPlugin = createBackendPlugin({
         logger: coreServices.logger,
         database: coreServices.database,
         httpAuth: coreServices.httpAuth,
-        auth: coreServices.auth,
         userInfo: coreServices.userInfo,
-        discovery: coreServices.discovery,
         config: coreServices.rootConfig,
+        catalogService: catalogServiceRef,
       },
       async init({
         httpRouter,
         logger,
         database,
         httpAuth,
-        auth,
         userInfo,
-        discovery,
         config,
+        catalogService,
       }) {
         const router = await createRouter({
           logger,
           database,
           httpAuth,
-          auth,
           userInfo,
-          discovery,
           config,
+          catalogService,
         });
 
         httpRouter.use(router);

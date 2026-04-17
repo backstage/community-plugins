@@ -17,11 +17,9 @@ import request from 'supertest';
 import express from 'express';
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { createRouter } from './router';
-import { CatalogClient } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
 import { PatchStore } from './PatchStore';
 
-jest.mock('@backstage/catalog-client');
 jest.mock('./PatchStore');
 
 const mockStore = {
@@ -32,6 +30,12 @@ const mockStore = {
   upsert: jest.fn().mockResolvedValue(undefined),
 };
 (PatchStore.create as jest.Mock) = jest.fn().mockResolvedValue(mockStore);
+
+const mockCatalogService = {
+  getEntityByRef: jest.fn(),
+  refreshEntity: jest.fn().mockResolvedValue(undefined),
+  queryEntities: jest.fn(),
+};
 
 const paymentsApi: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -68,10 +72,9 @@ async function buildApp() {
     logger: mockServices.logger.mock(),
     database: mockServices.database.mock(),
     httpAuth: mockServices.httpAuth(),
-    auth: mockServices.auth(),
     userInfo: mockServices.userInfo(),
-    discovery: mockServices.discovery(),
     config: mockServices.rootConfig({ data: mockConfig }),
+    catalogService: mockCatalogService as any,
   });
   const app = express();
   app.use(express.json());
@@ -107,9 +110,6 @@ describe('GET /values/:namespace/:kind/:name', () => {
       latestUpdatedAt: null,
     });
 
-    const getEntityByRef = jest.fn();
-    (CatalogClient as jest.Mock).mockImplementation(() => ({ getEntityByRef }));
-
     const app = await buildApp();
     const res = await request(app)
       .get('/values/default/component/payments-api')
@@ -120,7 +120,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
       'component-metadata': { description: 'stored description' },
     });
     // No catalog lookup in raw mode
-    expect(getEntityByRef).not.toHaveBeenCalled();
+    expect(mockCatalogService.getEntityByRef).not.toHaveBeenCalled();
   });
 
   it('includes an ETag header in raw mode based on latest updated_at', async () => {
@@ -128,7 +128,6 @@ describe('GET /values/:namespace/:kind/:name', () => {
       rows: {},
       latestUpdatedAt: '2026-01-01T00:00:00.000Z',
     });
-    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
 
     const app = await buildApp();
     const res = await request(app)
@@ -147,7 +146,6 @@ describe('GET /values/:namespace/:kind/:name', () => {
       rows: {},
       latestUpdatedAt: timestamp,
     });
-    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
 
     const app = await buildApp();
 
@@ -172,7 +170,6 @@ describe('GET /values/:namespace/:kind/:name', () => {
       rows: { 'component-metadata': { description: 'fresh data' } },
       latestUpdatedAt: '2026-01-01T00:00:00.000Z',
     });
-    (CatalogClient as jest.Mock).mockImplementation(() => ({}));
 
     const app = await buildApp();
     const res = await request(app)
@@ -187,9 +184,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
   });
 
   it('returns catalog values merged with empty DB overlay when entity exists', async () => {
-    (CatalogClient as jest.Mock).mockImplementation(() => ({
-      getEntityByRef: jest.fn().mockResolvedValue(paymentsApi),
-    }));
+    mockCatalogService.getEntityByRef.mockResolvedValue(paymentsApi);
 
     const app = await buildApp();
     const res = await request(app)
@@ -203,9 +198,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
   });
 
   it('returns 404 when entity is not found in catalog', async () => {
-    (CatalogClient as jest.Mock).mockImplementation(() => ({
-      getEntityByRef: jest.fn().mockResolvedValue(null),
-    }));
+    mockCatalogService.getEntityByRef.mockResolvedValue(null);
 
     const app = await buildApp();
     const res = await request(app)
@@ -223,9 +216,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
       spec: { type: 'team', profile: {} },
     };
 
-    (CatalogClient as jest.Mock).mockImplementation(() => ({
-      getEntityByRef: jest.fn().mockResolvedValue(guestsGroup),
-    }));
+    mockCatalogService.getEntityByRef.mockResolvedValue(guestsGroup);
 
     // Config with both a component patch and a group patch
     const configWithBoth = {
@@ -251,10 +242,9 @@ describe('GET /values/:namespace/:kind/:name', () => {
       logger: mockServices.logger.mock(),
       database: mockServices.database.mock(),
       httpAuth: mockServices.httpAuth(),
-      auth: mockServices.auth(),
       userInfo: mockServices.userInfo(),
-      discovery: mockServices.discovery(),
       config: mockServices.rootConfig({ data: configWithBoth }),
+      catalogService: mockCatalogService as any,
     });
     const app = express();
     app.use(express.json());
@@ -274,9 +264,7 @@ describe('GET /values/:namespace/:kind/:name', () => {
 describe('POST /patches/:namespace/:kind/:name', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (CatalogClient as jest.Mock).mockImplementation(() => ({
-      refreshEntity: jest.fn().mockResolvedValue(undefined),
-    }));
+    mockCatalogService.refreshEntity.mockResolvedValue(undefined);
   });
 
   it('stores patch data and returns 200 for a valid body', async () => {
@@ -294,9 +282,6 @@ describe('POST /patches/:namespace/:kind/:name', () => {
   });
 
   it('triggers a catalog entity refresh after saving the patch', async () => {
-    const refreshEntity = jest.fn().mockResolvedValue(undefined);
-    (CatalogClient as jest.Mock).mockImplementation(() => ({ refreshEntity }));
-
     const app = await buildApp();
     await request(app)
       .post('/patches/default/component/payments-api')
@@ -306,9 +291,9 @@ describe('POST /patches/:namespace/:kind/:name', () => {
     // Allow the fire-and-forget promise to resolve
     await new Promise(resolve => setTimeout(resolve, 10));
 
-    expect(refreshEntity).toHaveBeenCalledWith(
+    expect(mockCatalogService.refreshEntity).toHaveBeenCalledWith(
       'component:default/payments-api',
-      expect.objectContaining({ token: expect.any(String) }),
+      expect.objectContaining({ credentials: expect.anything() }),
     );
   });
 

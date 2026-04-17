@@ -20,34 +20,23 @@ import type {
   LoggerService,
   DatabaseService,
   HttpAuthService,
-  AuthService,
   UserInfoService,
-  DiscoveryService,
   RootConfigService,
-  BackstageCredentials,
 } from '@backstage/backend-plugin-api';
 import { InputError, NotFoundError } from '@backstage/errors';
-import { CatalogClient } from '@backstage/catalog-client';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { evaluateFilterPredicate } from '@backstage/filter-predicates';
 import { z } from 'zod';
 import { PatchStore } from './PatchStore';
-import { extractEntityValues } from './EntityValueExtractor';
-import {
-  buildRelationPairs,
-  buildPatchConfigs,
-  type RelationPair,
-  type PatchConfig,
-} from '@backstage-community/plugin-entity-patch-common';
+import { EntityValueExtractor } from './EntityValueExtractor';
 
 export interface RouterOptions {
   logger: LoggerService;
   database: DatabaseService;
   httpAuth: HttpAuthService;
-  auth: AuthService;
   userInfo: UserInfoService;
-  discovery: DiscoveryService;
   config: RootConfigService;
+  catalogService: CatalogService;
 }
 
 const patchBodySchema = z.object({
@@ -55,65 +44,14 @@ const patchBodySchema = z.object({
   data: z.record(z.string(), z.unknown()),
 });
 
-/**
- * Fetches the entity from the catalog, applies the patch configs whose filter
- * matches the entity, and merges the result with the DB overlay (DB wins).
- */
-async function mergeWithCatalog(
-  entityRef: string,
-  dbOverlay: Record<string, Record<string, unknown>>,
-  credentials: BackstageCredentials,
-  auth: AuthService,
-  catalogClient: CatalogClient,
-  patchConfigs: PatchConfig[],
-  relationPairs: Map<string, RelationPair>,
-): Promise<Record<string, Record<string, unknown>>> {
-  const { token } = await auth.getPluginRequestToken({
-    onBehalfOf: credentials,
-    targetPluginId: 'catalog',
-  });
-
-  const entity = await catalogClient.getEntityByRef(entityRef, { token });
-  if (!entity) {
-    throw new NotFoundError(`Entity '${entityRef}' not found in catalog`);
-  }
-
-  const matchingConfigs = patchConfigs.filter(
-    p => !p.filter || evaluateFilterPredicate(p.filter, entity),
-  );
-
-  const catalogValues: Record<string, Record<string, unknown>> = {};
-  for (const {
-    name: patchName,
-    mapping,
-    sectionProperties,
-  } of matchingConfigs) {
-    catalogValues[patchName] = extractEntityValues(entity, mapping, {
-      relationPairs,
-      sectionProperties,
-    });
-  }
-
-  const merged: Record<string, Record<string, unknown>> = { ...catalogValues };
-  for (const [patchName, dbData] of Object.entries(dbOverlay)) {
-    // Only merge DB data for patches whose filter currently matches this entity.
-    if (patchName in catalogValues) {
-      merged[patchName] = { ...(catalogValues[patchName] ?? {}), ...dbData };
-    }
-  }
-  return merged;
-}
-
 export async function createRouter(options: RouterOptions) {
-  const { logger, database, httpAuth, auth, userInfo, discovery, config } =
+  const { logger, database, httpAuth, userInfo, config, catalogService } =
     options;
 
   const store = await PatchStore.create(database);
-  const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-  // Read config once at startup — config is static at runtime.
-  const relationPairs = buildRelationPairs(config);
-  const patchConfigs = buildPatchConfigs(config);
+  // Build all config-derived values once at startup.
+  const extractor = EntityValueExtractor.fromConfig(config, { catalogService });
 
   const router = Router();
   router.use(express.json());
@@ -164,14 +102,10 @@ export async function createRouter(options: RouterOptions) {
       return;
     }
 
-    const merged = await mergeWithCatalog(
+    const merged = await extractor.mergeWithCatalog(
       entityRef,
       dbOverlay,
       credentials,
-      auth,
-      catalogClient,
-      patchConfigs,
-      relationPairs,
     );
     logger.debug('Returning entity-filled values', { entityRef });
     res.json(merged);
@@ -210,12 +144,8 @@ export async function createRouter(options: RouterOptions) {
     // the entity with the new patch data rather than waiting for the next
     // scheduled ingestion loop. This is best-effort — a failure here does
     // not affect the save result.
-    auth
-      .getPluginRequestToken({
-        onBehalfOf: credentials,
-        targetPluginId: 'catalog',
-      })
-      .then(({ token }) => catalogClient.refreshEntity(entityRef, { token }))
+    catalogService
+      .refreshEntity(entityRef, { credentials })
       .catch(err =>
         logger.warn(
           `Could not trigger catalog refresh for ${entityRef} after patch save: ${err}`,
