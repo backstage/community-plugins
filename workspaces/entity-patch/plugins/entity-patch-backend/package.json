@@ -47,9 +47,9 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/filter-predicates": "backstage:^",
-    "express": "^4.21.2",
-    "express-promise-router": "^4.1.0",
-    "lodash": "^4.17.21",
+    "express": "^4.22.1",
+    "express-promise-router": "^4.1.1",
+    "lodash": "^4.18.1",
     "zod": "^3.0.0 || ^4.0.0"
   },
   "devDependencies": {
@@ -61,11 +61,11 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
     "@backstage/plugin-catalog-backend-module-logs": "backstage:^",
-    "@types/express": "^4.17.6",
-    "@types/lodash": "^4.14.0",
-    "@types/supertest": "^6.0.0",
-    "better-sqlite3": "^9.0.0",
-    "supertest": "^7.0.0"
+    "@types/express": "^4.17.25",
+    "@types/lodash": "^4.17.24",
+    "@types/supertest": "^6.0.3",
+    "better-sqlite3": "^9.6.0",
+    "supertest": "^7.2.2"
   },
   "files": [
     "dist",
