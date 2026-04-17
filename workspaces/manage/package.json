@@ -44,6 +44,7 @@
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30.0.0",
+    "@react-types/table": "^3.14.0",
     "@types/jest": "^30.0.0",
     "jest": "^30.2.0",
     "jsdom": "^27.1.0",
@@ -54,7 +55,9 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@backstage/frontend-plugin-api": "0.16.1",
+    "@react-types/table": "^3.14.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

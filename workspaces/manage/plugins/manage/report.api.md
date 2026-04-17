@@ -173,8 +173,12 @@ const managePlugin_2: OverridableFrontendPlugin<
     'nav-item:manage/manage': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: 'manage';
-      config: {};
-      configInput: {};
+      config: {
+        title: string | undefined;
+      };
+      configInput: {
+        title?: string | undefined;
+      };
       output: ExtensionDataRef<
         {
           title: string;
@@ -197,8 +201,8 @@ const managePlugin_2: OverridableFrontendPlugin<
         title: string | undefined;
       };
       configInput: {
-        title?: string | undefined | undefined;
         path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
