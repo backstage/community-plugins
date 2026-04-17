@@ -38,6 +38,7 @@ body:
         - bitrise
         - blackduck
         - bookmarks
+        - catalog
         - cicd-statistics
         - cloudbuild
         - code-climate
@@ -79,6 +80,7 @@ body:
         - microsoft-calendar
         - mta
         - multi-source-security-viewer
+        - n8n
         - newrelic
         - nexus-repository-manager
         - nomad
