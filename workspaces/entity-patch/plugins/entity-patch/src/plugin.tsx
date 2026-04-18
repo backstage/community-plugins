@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   configApiRef,
   createFrontendPlugin,
   dialogApiRef,
-  discoveryApiRef,
-  fetchApiRef,
   PageBlueprint,
   useApi,
 } from '@backstage/frontend-plugin-api';
@@ -37,12 +35,12 @@ import {
   filterPatchesForEntity,
 } from './utils/patchFilter';
 import { validatePatchConfig } from '@backstage-community/plugin-entity-patch-common';
-import { EntityPatchClient } from './api/EntityPatchClient';
 import { saveAllPatches } from './utils/saveAllPatches';
 import {
   CONFIG_KEYS,
   DEFAULT_NAMESPACE,
 } from '@backstage-community/plugin-entity-patch-common';
+import { useEntityPatchClient } from './hooks/useEntityPatchClient';
 
 const entityPatchContextMenuItem =
   EntityContextMenuItemBlueprint.makeWithOverrides({
@@ -63,13 +61,8 @@ const entityPatchContextMenuItem =
           const { entity } = useEntity();
           const dialogApi = useApi(dialogApiRef);
           const formFieldsApi = useApi(formFieldsApiRef);
-          const discoveryApi = useApi(discoveryApiRef);
-          const fetchApi = useApi(fetchApiRef);
           const matchingPatches = filterPatchesForEntity(patchesConfig, entity);
-          const patchClient = useMemo(
-            () => new EntityPatchClient({ discoveryApi, fetchApi }),
-            [discoveryApi, fetchApi],
-          );
+          const patchClient = useEntityPatchClient();
           const [formFields, setFormFields] = useState<
             FieldExtensionOptions<any, any>[]
           >([]);
