@@ -20,6 +20,7 @@ export {
   isGrowthbookAvailable,
   GROWTHBOOK_ENABLED_ANNOTATION,
   GROWTHBOOK_ENV_ANNOTATION,
+  GROWTHBOOK_PROJECT_ANNOTATION,
 } from './components/EntityGrowthbookFlagsContent';
 export { growthbookFlagsApiRef } from './api';
 export type { GrowthbookFlagsApi } from './api';
