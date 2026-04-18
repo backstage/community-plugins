@@ -153,6 +153,7 @@ function FlagDetailDialog({
 export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
 /** @public */
 export const GROWTHBOOK_ENV_ANNOTATION = 'growthbook.io/env';
+/** @public */
 export const GROWTHBOOK_PROJECT_ANNOTATION = 'growthbook.io/project';
 
 /** @public */

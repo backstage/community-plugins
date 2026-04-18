@@ -18,6 +18,9 @@ export const GROWTHBOOK_ENABLED_ANNOTATION = 'growthbook.io/enabled';
 export const GROWTHBOOK_ENV_ANNOTATION = 'growthbook.io/env';
 
 // @public (undocumented)
+export const GROWTHBOOK_PROJECT_ANNOTATION = 'growthbook.io/project';
+
+// @public (undocumented)
 export interface GrowthbookFlagsApi {
   // (undocumented)
   getFlags(env: string, project?: string): Promise<FlagRow[]>;

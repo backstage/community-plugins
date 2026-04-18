@@ -20,7 +20,7 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:growthbook-flags': OverridableExtensionDefinition<{
+    'api:backstage-community-growthbook': OverridableExtensionDefinition<{
       kind: 'api';
       name: undefined;
       config: {};
@@ -35,7 +35,7 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-content:growthbook-flags': OverridableExtensionDefinition<{
+    'entity-content:backstage-community-growthbook': OverridableExtensionDefinition<{
       kind: 'entity-content';
       name: undefined;
       config: {
