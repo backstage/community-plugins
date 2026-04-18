@@ -58,6 +58,14 @@ const growthbookFlagsPlugin = createBackendPlugin({
           ? undefined
           : gbConfig.getOptionalConfig('sdkKeys');
 
+        if (!secretKey && !sdkKeysConfig) {
+          logger.error(
+            'Invalid growthbook config: either growthbook.secretKey or growthbook.sdkKeys must be configured',
+          );
+          throw new Error(
+            'Missing required GrowthBook configuration: growthbook.secretKey or growthbook.sdkKeys',
+          );
+        }
         async function fetchProjects(): Promise<GbProject[]> {
           const now = Date.now();
           if (
