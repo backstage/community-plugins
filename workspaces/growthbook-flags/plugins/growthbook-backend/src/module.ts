@@ -214,11 +214,14 @@ const growthbookFlagsPlugin = createBackendPlugin({
 
           // --- SDK API fallback (no secretKey) ---
           if (projectName) {
-            res
-              .status(400)
-              .json({
-                error: 'Project filtering is not supported in SDK mode',
-              });
+            res.status(400).json({
+              error: 'Project filtering is not supported in SDK mode',
+            });
+            return;
+          }
+
+          if (!sdkKeysConfig) {
+            res.status(500).json({ error: 'SDK keys not configured' });
             return;
           }
 
