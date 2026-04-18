@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
-import {
-  toastApiRef,
-  configApiRef,
-  discoveryApiRef,
-  fetchApiRef,
-  useApi,
-} from '@backstage/frontend-plugin-api';
+import { configApiRef, useApi } from '@backstage/frontend-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
 import { formFieldsApiRef } from '@backstage/plugin-scaffolder-react/alpha';
 import { JsonValue } from '@backstage/types';
 import {
-  Alert,
   Box,
   Button,
   ButtonIcon,
@@ -36,7 +29,7 @@ import {
   TooltipTrigger,
 } from '@backstage/ui';
 import { RiArrowLeftLine } from '@remixicon/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
@@ -46,8 +39,10 @@ import {
   PatchDefinition,
 } from '@backstage-community/plugin-entity-patch-common';
 import { filterPatchesForEntity } from '../../utils/patchFilter';
-import { EntityPatchClient } from '../../api/EntityPatchClient';
 import { saveAllPatches } from '../../utils/saveAllPatches';
+import { LoadErrorAlert } from '../LoadErrorAlert';
+import { useEntityPatchClient } from '../../hooks/useEntityPatchClient';
+import { usePatchSave } from '../../hooks/usePatchSave';
 
 type PatchData = Record<string, JsonValue>;
 type PatchesData = Record<string, PatchData>;
@@ -63,14 +58,8 @@ export const EntityPatchPage = () => {
   const configApi = useApi(configApiRef);
   const catalogApi = useApi(catalogApiRef);
   const formFieldsApi = useApi(formFieldsApiRef);
-  const toastApi = useApi(toastApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const fetchApi = useApi(fetchApiRef);
 
-  const patchClient = useMemo(
-    () => new EntityPatchClient({ discoveryApi, fetchApi }),
-    [discoveryApi, fetchApi],
-  );
+  const patchClient = useEntityPatchClient();
 
   const allPatches = (configApi.getOptional<PatchDefinition[]>(
     CONFIG_KEYS.PATCHES,
@@ -113,8 +102,8 @@ export const EntityPatchPage = () => {
   const [formData, setFormData] = useState<PatchesData>({});
   const [isValid, setIsValid] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
-  const [initialValuesAlertDismissed, setInitialValuesAlertDismissed] =
-    useState(false);
+
+  const { executeSave, isSaving } = usePatchSave(() => setIsDirty(false));
 
   // Warn on page refresh/close when there are unsaved changes.
   useEffect(() => {
@@ -146,29 +135,16 @@ export const EntityPatchPage = () => {
     entity.metadata.namespace ?? DEFAULT_NAMESPACE
   }/${entity.metadata.name}`;
 
-  const handleSave = async () => {
-    try {
-      await saveAllPatches(
+  const handleSave = () =>
+    executeSave(() =>
+      saveAllPatches(
         patchClient,
         entity.kind,
         entity.metadata.namespace ?? DEFAULT_NAMESPACE,
         entity.metadata.name,
         formData,
-      );
-      toastApi.post({
-        title: 'Patch saved successfully.',
-        status: 'success',
-        timeout: 5000,
-      });
-      setIsDirty(false);
-    } catch (err: any) {
-      toastApi.post({
-        title: 'Failed to save patch',
-        description: err?.message ?? 'Unknown error',
-        status: 'danger',
-      });
-    }
-  };
+      ),
+    );
 
   let saveTooltip = '';
   if (!isValid) saveTooltip = 'Fix validation errors before saving';
@@ -194,21 +170,7 @@ export const EntityPatchPage = () => {
       </Flex>
 
       <Box style={{ maxWidth: 720, margin: '0 auto' }}>
-        {initialValuesError && !initialValuesAlertDismissed && (
-          <Alert
-            status="danger"
-            title="Could not load patch data. Please try again."
-            customActions={
-              <Button
-                variant="secondary"
-                onClick={() => setInitialValuesAlertDismissed(true)}
-              >
-                Dismiss
-              </Button>
-            }
-            style={{ marginBottom: 16 }}
-          />
-        )}
+        <LoadErrorAlert show={initialValuesError} />
         <DefaultPatchesLayout
           patches={patches}
           initialData={initialValues}
@@ -223,7 +185,7 @@ export const EntityPatchPage = () => {
           <TooltipTrigger isDisabled={!saveTooltip}>
             <Button
               variant="primary"
-              isDisabled={!isDirty || !isValid}
+              isDisabled={!isDirty || !isValid || isSaving}
               onClick={handleSave}
             >
               Save

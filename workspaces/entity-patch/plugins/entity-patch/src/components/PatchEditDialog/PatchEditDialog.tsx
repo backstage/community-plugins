@@ -16,13 +16,7 @@
 import { useState } from 'react';
 import { JsonValue } from '@backstage/types';
 import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
-import {
-  Alert,
-  Button,
-  ButtonIcon,
-  Tooltip,
-  TooltipTrigger,
-} from '@backstage/ui';
+import { Button, ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { RiCloseLine } from '@remixicon/react';
 // TODO: Replace with BUI Dialog once @backstage/ui exports Dialog components.
 import {
@@ -33,7 +27,9 @@ import {
 } from '@material-ui/core';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
-import { toastApiRef, useApi } from '@backstage/frontend-plugin-api';
+import { LoadErrorAlert } from '../LoadErrorAlert';
+import { UnsavedWarningAlert } from '../UnsavedWarningAlert';
+import { usePatchSave } from '../../hooks/usePatchSave';
 
 type PatchData = Record<string, JsonValue>;
 type PatchesData = Record<string, PatchData>;
@@ -55,12 +51,16 @@ export const PatchEditDialog = ({
   onSave,
   formFields,
 }: PatchEditDialogProps) => {
-  const toastApi = useApi(toastApiRef);
   const [formData, setFormData] = useState<PatchesData>(initialData ?? {});
   const [isFormValid, setIsFormValid] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
-  const [loadAlertDismissed, setLoadAlertDismissed] = useState(false);
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+
+  const { executeSave, isSaving } = usePatchSave(() => {
+    setIsDirty(false);
+    setShowUnsavedWarning(false);
+    dialog.close();
+  });
 
   const handleClose = () => {
     if (isDirty) {
@@ -70,25 +70,7 @@ export const PatchEditDialog = ({
     dialog.close();
   };
 
-  const handleSave = async () => {
-    try {
-      await onSave(formData);
-      toastApi.post({
-        title: 'Patch saved successfully.',
-        status: 'success',
-        timeout: 5000,
-      });
-      setIsDirty(false);
-      setShowUnsavedWarning(false);
-      dialog.close();
-    } catch (err: any) {
-      toastApi.post({
-        title: 'Failed to save patch',
-        description: err?.message ?? 'Unknown error',
-        status: 'danger',
-      });
-    }
-  };
+  const handleSave = () => executeSave(() => onSave(formData));
 
   let saveTooltip = '';
   if (!isFormValid) saveTooltip = 'Fix validation errors before saving';
@@ -110,45 +92,12 @@ export const PatchEditDialog = ({
         onClick={handleClose}
       />
       <DialogContent>
-        {loadError && !loadAlertDismissed && (
-          <Alert
-            status="danger"
-            title="Could not load patch data. Please try again."
-            customActions={
-              <Button
-                variant="secondary"
-                onClick={() => setLoadAlertDismissed(true)}
-              >
-                Dismiss
-              </Button>
-            }
-            style={{ marginBottom: 16 }}
-          />
-        )}
-        {showUnsavedWarning && (
-          <Alert
-            status="warning"
-            title="You have unsaved changes. Discard them?"
-            customActions={
-              <>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowUnsavedWarning(false)}
-                >
-                  Keep editing
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => dialog.close()}
-                  style={{ marginLeft: 8 }}
-                >
-                  Discard changes
-                </Button>
-              </>
-            }
-            style={{ marginBottom: 16 }}
-          />
-        )}
+        <LoadErrorAlert show={!!loadError} />
+        <UnsavedWarningAlert
+          show={showUnsavedWarning}
+          onKeepEditing={() => setShowUnsavedWarning(false)}
+          onDiscard={() => dialog.close()}
+        />
         <DefaultPatchesLayout
           onChange={(data, { isValid, isDirty: dirty }) => {
             setFormData(data);
@@ -170,7 +119,7 @@ export const PatchEditDialog = ({
         <TooltipTrigger isDisabled={!saveTooltip}>
           <Button
             variant="primary"
-            isDisabled={!isDirty || !isFormValid}
+            isDisabled={!isDirty || !isFormValid || isSaving}
             onClick={handleSave}
           >
             Save
