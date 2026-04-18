@@ -39,6 +39,16 @@ export class EntityPatchClient {
     return this.discoveryApi.getBaseUrl('entity-patch');
   }
 
+  private encodeEntityParams(
+    namespace: string,
+    kind: string,
+    name: string,
+  ): string {
+    return `${encodeURIComponent(namespace)}/${encodeURIComponent(
+      kind,
+    )}/${encodeURIComponent(name)}`;
+  }
+
   /**
    * Fetches the current values for all patches on an entity, pre-populated
    * from the entity's current catalog field values via the configured mapping.
@@ -51,9 +61,11 @@ export class EntityPatchClient {
   ): Promise<PatchesData> {
     const base = await this.baseUrl();
     const response = await this.fetchApi.fetch(
-      `${base}/values/${encodeURIComponent(namespace)}/${encodeURIComponent(
+      `${base}/values/${this.encodeEntityParams(
+        namespace,
         kind,
-      )}/${encodeURIComponent(name)}?fillFromEntity=true`,
+        name,
+      )}?fillFromEntity=true`,
     );
     if (!response.ok) {
       throw new Error(
@@ -81,9 +93,7 @@ export class EntityPatchClient {
     }
     const base = await this.baseUrl();
     const response = await this.fetchApi.fetch(
-      `${base}/patches/${encodeURIComponent(namespace)}/${encodeURIComponent(
-        kind,
-      )}/${encodeURIComponent(name)}`,
+      `${base}/patches/${this.encodeEntityParams(namespace, kind, name)}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

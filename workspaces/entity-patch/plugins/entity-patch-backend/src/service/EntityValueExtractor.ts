@@ -30,6 +30,7 @@ import {
   isMappingTemplate,
   buildRelationPairs,
   buildPatchConfigs,
+  RELATION_KEY_PREFIX,
 } from '@backstage-community/plugin-entity-patch-common';
 
 /**
@@ -180,10 +181,10 @@ export class EntityValueExtractor {
     fieldName: string,
     sectionProperties: Record<string, unknown>,
   ): unknown {
-    if (entityPath.startsWith('relations.'))
+    if (entityPath.startsWith(RELATION_KEY_PREFIX))
       return this.getRelationValue(
         entity,
-        entityPath.slice('relations.'.length),
+        entityPath.slice(RELATION_KEY_PREFIX.length),
         fieldName,
         sectionProperties,
       );

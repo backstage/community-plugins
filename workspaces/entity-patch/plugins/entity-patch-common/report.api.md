@@ -13,6 +13,15 @@ export function buildPatchConfigs(config: Config): PatchConfig[];
 export function buildRelationPairs(config: Config): Map<string, RelationPair>;
 
 // @public
+export const CONFIG_KEYS: {
+  readonly PATCHES: 'entityPatch.patches';
+  readonly RELATIONS: 'entityPatch.relations';
+};
+
+// @public
+export const DEFAULT_NAMESPACE: 'default';
+
+// @public
 export function flattenMapping(
   obj: Record<string, unknown>,
   prefix?: string,
@@ -69,6 +78,9 @@ export interface PatchSection {
   required?: string[];
   title?: string;
 }
+
+// @public
+export const RELATION_KEY_PREFIX: 'relations.';
 
 // @public
 export interface RelationPair {

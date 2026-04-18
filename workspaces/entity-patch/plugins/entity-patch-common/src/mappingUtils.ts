@@ -16,6 +16,7 @@
 
 import type { Config } from '@backstage/config';
 import type { FilterPredicate } from '@backstage/filter-predicates';
+import { CONFIG_KEYS } from './constants';
 import { PatchConfig, RelationPair } from './types';
 
 /**
@@ -83,8 +84,7 @@ export function flattenMapping(
  */
 export function buildRelationPairs(config: Config): Map<string, RelationPair> {
   const pairs = new Map<string, RelationPair>();
-  const relations =
-    config.getOptionalConfigArray('entityPatch.relations') ?? [];
+  const relations = config.getOptionalConfigArray(CONFIG_KEYS.RELATIONS) ?? [];
   for (const r of relations) {
     const forward = r.getString('forward');
     const reverse = r.getString('reverse');
@@ -101,7 +101,7 @@ export function buildRelationPairs(config: Config): Map<string, RelationPair> {
  * @public
  */
 export function buildPatchConfigs(config: Config): PatchConfig[] {
-  const patches = config.getOptionalConfigArray('entityPatch.patches') ?? [];
+  const patches = config.getOptionalConfigArray(CONFIG_KEYS.PATCHES) ?? [];
   return patches
     .filter((p: Config) => p.has('mapping'))
     .map((p: Config) => {
