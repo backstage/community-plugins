@@ -86,7 +86,7 @@ metadata:
   annotations:
     growthbook.io/enabled: 'true'
     growthbook.io/env: 'prod'
-    growthbook.io/project: 'my-project' # Optional: filter to specific project
+    growthbook.io/project: 'my-project' # Optional: scope flags to a specific project (management API only)
 spec:
   type: service
   owner: team-a
@@ -94,11 +94,11 @@ spec:
 
 ## Annotations
 
-| Annotation              | Required | Description                                  |
-| ----------------------- | -------- | -------------------------------------------- |
-| `growthbook.io/enabled` | Yes      | Set to `"true"` to enable the GrowthBook tab |
-| `growthbook.io/env`     | No       | Environment (default: `prod`)                |
-| `growthbook.io/project` | No       | GrowthBook project name to filter flags      |
+| Annotation              | Required | Description                                                                  |
+| ----------------------- | -------- | ---------------------------------------------------------------------------- |
+| `growthbook.io/enabled` | Yes      | Set to `"true"` to enable the GrowthBook tab                                 |
+| `growthbook.io/env`     | No       | Environment (default: `prod`)                                                |
+| `growthbook.io/project` | No       | Scope flags to a specific project (management API only; ignored in SDK mode) |
 
 ## Configuration
 

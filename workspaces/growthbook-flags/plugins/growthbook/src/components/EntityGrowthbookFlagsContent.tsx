@@ -182,8 +182,12 @@ export function EntityGrowthbookFlagsContent() {
 
   const { value: projects } = useAsync(() => api.getProjects(), []);
 
-  const projectFilter =
-    selectedProject === ALL_PROJECTS ? undefined : selectedProject;
+  const hasProjectSupport = projects && projects.length > 0;
+
+  const projectFilter = hasProjectSupport
+    ? annotationProject ??
+      (selectedProject === ALL_PROJECTS ? undefined : selectedProject)
+    : undefined;
 
   const {
     value: flags,
@@ -205,22 +209,32 @@ export function EntityGrowthbookFlagsContent() {
     <>
       <div className={classes.toolbar}>
         <Box display="flex" alignItems="center" gridGap={8} flexWrap="wrap">
-          <Typography variant="body2" color="textSecondary">
-            Project:
-          </Typography>
-          <ButtonGroup size="small" variant="outlined">
-            {projectOptions.map(p => (
-              <Button
-                key={p}
-                className={
-                  selectedProject === p ? classes.activeBtn : undefined
-                }
-                onClick={() => setSelectedProject(p)}
-              >
-                {p}
-              </Button>
-            ))}
-          </ButtonGroup>
+          {hasProjectSupport && (
+            <>
+              <Typography variant="body2" color="textSecondary">
+                Project:
+              </Typography>
+              {annotationProject ? (
+                <Typography variant="body2">
+                  <strong>{annotationProject}</strong>
+                </Typography>
+              ) : (
+                <ButtonGroup size="small" variant="outlined">
+                  {projectOptions.map(p => (
+                    <Button
+                      key={p}
+                      className={
+                        selectedProject === p ? classes.activeBtn : undefined
+                      }
+                      onClick={() => setSelectedProject(p)}
+                    >
+                      {p}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+              )}
+            </>
+          )}
         </Box>
         <Typography variant="body2" color="textSecondary">
           {sortedFlags.length} flag{sortedFlags.length !== 1 ? 's' : ''}
