@@ -210,6 +210,33 @@ describe('EntityPatcher', () => {
       ).toBe('https://wiki.example.com/platform/my-service');
     });
 
+    it('writes to annotation keys with dots using bracket notation', () => {
+      // Keys like "github.com/project-slug" contain a dot and must use bracket
+      // notation so lodash set treats the whole key as a single path segment.
+      const patcher = makePatcher({
+        patchConfigs: [
+          {
+            name: 'ann-patch',
+            mapping: {
+              'metadata.annotations["github.com/project-slug"]': 'projectSlug',
+              'metadata.annotations["backstage.io/techdocs-ref"]':
+                'techdocsRef',
+            },
+            sectionProperties: {},
+          },
+        ],
+      });
+      const result = patcher.applyScalars(component, {
+        'ann-patch': {
+          projectSlug: 'myorg/my-service',
+          techdocsRef: 'dir:.',
+        },
+      });
+      const annotations = result.metadata.annotations as Record<string, string>;
+      expect(annotations['github.com/project-slug']).toBe('myorg/my-service');
+      expect(annotations['backstage.io/techdocs-ref']).toBe('dir:.');
+    });
+
     it('returns entity unchanged when no patch data exists for the patch name', () => {
       const patcher = makePatcher({
         patchConfigs: [

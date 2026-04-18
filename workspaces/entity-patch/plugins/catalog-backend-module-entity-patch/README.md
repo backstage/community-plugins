@@ -51,10 +51,26 @@ Mapping values use a dot-separated entity path and are applied directly to the e
 
 ```yaml
 mapping:
-  description: metadata.description
-  slackChannel: metadata.annotations.slack.com/channel
-  owner: spec.owner
+  metadata.description: description
+  metadata.annotations.slack.com/channel: slackChannel
+  spec.owner: owner
 ```
+
+### Template mapping values
+
+When a mapping value contains `{{`, it is treated as a **Nunjucks template** and rendered using the saved form data as context. Use this to compose annotations from multiple fields or transform values before writing them to the entity.
+
+```yaml
+mapping:
+  metadata.description: description # plain field — value copied directly
+  # Template: build the GitHub project slug from two separate form fields.
+  # Annotation keys with dots must use bracket notation (["github.com/..."]).
+  'metadata.annotations["github.com/project-slug"]': '{{ githubOrg }}/{{ githubRepo }}'
+```
+
+The template has access to all saved field values for that patch. It is rendered at write time by the catalog processor — not by the frontend.
+
+> **Note:** Template-mapped paths cannot be pre-filled when the dialog opens (the rendered value on the entity cannot be decomposed back into individual field values). The form fields used in a template will open blank and load from the saved patch overlay instead.
 
 ### Relation pair registry
 
@@ -82,8 +98,8 @@ entityPatch:
         kind: group
         'spec.type': team
       mapping:
-        productOwners: relations.hasProductOwner # → emits hasProductOwner + productOwnerOf
-        techLeads: relations.hasTechLead # → emits hasTechLead + techLeadOf
+        relations.hasProductOwner: productOwners # → emits hasProductOwner + productOwnerOf
+        relations.hasTechLead: techLeads # → emits hasTechLead + techLeadOf
       sections:
         - title: Team Roles
           properties:

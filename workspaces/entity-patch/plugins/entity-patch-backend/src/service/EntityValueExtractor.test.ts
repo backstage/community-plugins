@@ -122,7 +122,7 @@ describe('getByPath', () => {
 });
 
 describe('EntityValueExtractor', () => {
-  it('extracts multiple mapped fields (inverted mapping: entityPath → fieldName)', () => {
+  it('extracts multiple mapped fields (entityPath → fieldName)', () => {
     const result = makeExtractor({
       'metadata.description': 'description',
       'metadata.annotations.slack/channel': 'slackChannel',
