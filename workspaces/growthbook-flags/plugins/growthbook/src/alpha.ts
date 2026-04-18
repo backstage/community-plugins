@@ -21,6 +21,6 @@ import {
 
 /** @alpha */
 export default createFrontendPlugin({
-  pluginId: 'growthbook-flags',
+  pluginId: 'backstage-community-growthbook',
   extensions: [entityGrowthbookFlagsContent, growthbookFlagsApi],
 });

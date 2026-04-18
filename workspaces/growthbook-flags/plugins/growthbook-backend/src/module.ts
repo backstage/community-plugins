@@ -35,7 +35,7 @@ let rawFeaturesCache: CacheEntry<MgmtFeature[]> | null = null;
 
 /** @public */
 const growthbookFlagsPlugin = createBackendPlugin({
-  pluginId: 'growthbook-flags',
+  pluginId: 'backstage-community-growthbook',
   register(env) {
     env.registerInit({
       deps: {
@@ -54,7 +54,9 @@ const growthbookFlagsPlugin = createBackendPlugin({
 
         const baseUrl = gbConfig.getString('baseUrl');
         const secretKey = gbConfig.getOptionalString('secretKey');
-        const sdkKeysConfig = gbConfig.getConfig('sdkKeys');
+        const sdkKeysConfig = secretKey
+          ? undefined
+          : gbConfig.getOptionalConfig('sdkKeys');
 
         async function fetchProjects(): Promise<GbProject[]> {
           const now = Date.now();
@@ -92,7 +94,10 @@ const growthbookFlagsPlugin = createBackendPlugin({
             allFeatures.filter(f => f.project === projectId).map(f => f.id),
           );
           const rows = allRows.filter(r => projectFeatureIds.has(r.key));
-          if (flagCache.size < FLAG_CACHE_MAX_ENTRIES)
+          if (
+            flagCache.has(cacheKey) ||
+            flagCache.size < FLAG_CACHE_MAX_ENTRIES
+          )
             flagCache.set(cacheKey, { data: rows, fetchedAt: now });
           return rows;
         }
@@ -138,7 +143,10 @@ const growthbookFlagsPlugin = createBackendPlugin({
           }
           const features = await fetchAllRawFeatures();
           const rows = normalizeMgmtFlags(features, gbEnv);
-          if (flagCache.size < FLAG_CACHE_MAX_ENTRIES)
+          if (
+            flagCache.has(cacheKey) ||
+            flagCache.size < FLAG_CACHE_MAX_ENTRIES
+          )
             flagCache.set(cacheKey, { data: rows, fetchedAt: now });
           return rows;
         }
@@ -205,6 +213,15 @@ const growthbookFlagsPlugin = createBackendPlugin({
           }
 
           // --- SDK API fallback (no secretKey) ---
+          if (projectName) {
+            res
+              .status(400)
+              .json({
+                error: 'Project filtering is not supported in SDK mode',
+              });
+            return;
+          }
+
           let sdkKey: string;
           try {
             sdkKey = sdkKeysConfig.getString(gbEnv);
@@ -229,7 +246,10 @@ const growthbookFlagsPlugin = createBackendPlugin({
               features?: Record<string, { defaultValue: unknown }>;
             };
             const flags = normalizeSdkFlags(payload.features ?? {});
-            if (flagCache.size < FLAG_CACHE_MAX_ENTRIES)
+            if (
+              flagCache.has(sdkKey) ||
+              flagCache.size < FLAG_CACHE_MAX_ENTRIES
+            )
               flagCache.set(sdkKey, { data: flags, fetchedAt: now });
             res.json(flags);
           } catch (err) {
@@ -245,7 +265,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
 
         http.use(handler);
         logger.info(
-          `GrowthBook Flags plugin initialized at /api/growthbook-flags (mode: ${
+          `GrowthBook Flags plugin initialized at /api/backstage-community-growthbook (mode: ${
             secretKey ? 'management API' : 'SDK API'
           })`,
         );

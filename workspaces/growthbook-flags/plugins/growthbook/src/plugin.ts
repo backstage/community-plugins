@@ -23,7 +23,7 @@ import { growthbookFlagsApiRef, GrowthbookFlagsClient } from './api';
 
 /** @public */
 export const growthbookFlagsPlugin = createPlugin({
-  id: 'growthbook-flags',
+  id: 'backstage-community-growthbook',
   apis: [
     createApiFactory({
       api: growthbookFlagsApiRef,

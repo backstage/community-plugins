@@ -43,7 +43,9 @@ export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   }
 
   async getFlags(env: string, project?: string): Promise<FlagRow[]> {
-    const baseUrl = await this.discoveryApi.getBaseUrl('growthbook-flags');
+    const baseUrl = await this.discoveryApi.getBaseUrl(
+      'backstage-community-growthbook',
+    );
     const params = new URLSearchParams({ env });
     if (project) params.set('project', project);
     const response = await this.fetchApi.fetch(`${baseUrl}/flags?${params}`);
@@ -55,7 +57,9 @@ export class GrowthbookFlagsClient implements GrowthbookFlagsApi {
   }
 
   async getProjects(): Promise<string[]> {
-    const baseUrl = await this.discoveryApi.getBaseUrl('growthbook-flags');
+    const baseUrl = await this.discoveryApi.getBaseUrl(
+      'backstage-community-growthbook',
+    );
     const response = await this.fetchApi.fetch(`${baseUrl}/projects`);
     if (!response.ok) {
       const body = await response.text();
