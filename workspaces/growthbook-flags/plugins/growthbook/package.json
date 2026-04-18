@@ -57,7 +57,7 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
     "@backstage/cli": "^0.35.3",
