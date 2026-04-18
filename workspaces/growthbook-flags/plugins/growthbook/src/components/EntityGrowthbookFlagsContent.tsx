@@ -124,6 +124,7 @@ function FlagDetailDialog({
           className={classes.closeButton}
           onClick={onClose}
           size="small"
+          aria-label="Close dialog"
         >
           <CloseIcon />
         </IconButton>
