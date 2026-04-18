@@ -48,12 +48,12 @@ growthbook:
 
 The plugin exposes the following endpoints:
 
-- `GET /api/growthbook-flags/flags?env=<env>&project=<project>`
+- `GET /api/backstage-community-growthbook/flags?env=<env>&project=<project>`
 
   - Returns feature flags for the specified environment
   - Optional `project` param to filter by GrowthBook project name
 
-- `GET /api/growthbook-flags/projects`
+- `GET /api/backstage-community-growthbook/projects`
   - Returns list of GrowthBook project names (requires `secretKey`)
 
 ## How It Works
