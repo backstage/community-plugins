@@ -52,7 +52,7 @@ const growthbookFlagsPlugin = createBackendPlugin({
           return;
         }
 
-        const baseUrl = gbConfig.getString('baseUrl');
+        const baseUrl = gbConfig.getString('baseUrl').replace(/\/+$/, '');
         const secretKey = gbConfig.getOptionalString('secretKey');
         const sdkKeysConfig = secretKey
           ? undefined
