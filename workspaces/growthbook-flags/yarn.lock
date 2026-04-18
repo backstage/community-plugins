@@ -1290,11 +1290,11 @@ __metadata:
     "@testing-library/react": "npm:14.3.1"
     react: "npm:^18.0.0"
     react-dom: "npm:^18"
-    react-router-dom: "npm:^6.3.0"
+    react-router-dom: "npm:^6.30.3"
     react-use: "npm:^17.6.0"
   peerDependencies:
     react: ^18.0.0
-    react-router-dom: ^6.3.0
+    react-router-dom: ^6.30.3
   languageName: unknown
   linkType: soft
 
@@ -21938,7 +21938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.30.3":
   version: 6.30.3
   resolution: "react-router-dom@npm:6.30.3"
   dependencies:
