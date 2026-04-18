@@ -22,6 +22,7 @@ import {
 import { CatalogProcessorCache } from '@backstage/plugin-catalog-node';
 import { PatchDataMap } from './EntityPatcher';
 import { JsonValue } from '@backstage/types';
+import { DEFAULT_NAMESPACE } from '@backstage-community/plugin-entity-patch-common';
 
 interface CachedPatchData {
   data: PatchDataMap;
@@ -102,7 +103,7 @@ export class EntityPatchClient {
     cachedEtag?: string,
   ): Promise<FetchResult> {
     const { kind, metadata } = entity;
-    const namespace = metadata.namespace ?? 'default';
+    const namespace = metadata.namespace ?? DEFAULT_NAMESPACE;
     const { name } = metadata;
     const entityRef = stringifyEntityRef(entity);
 

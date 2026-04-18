@@ -26,6 +26,8 @@ import {
   RelationPair,
   PatchConfig,
   isMappingTemplate,
+  RELATION_KEY_PREFIX,
+  CONFIG_KEYS,
 } from '@backstage-community/plugin-entity-patch-common';
 import { EntityRelationSpec } from '@backstage/plugin-catalog-node';
 
@@ -263,12 +265,12 @@ function buildEntries({
     for (const [entityPath, fieldOrTemplate] of Object.entries(mapping)) {
       const resolver = buildValueResolver(fieldOrTemplate, nunjucksEnv);
 
-      if (entityPath.startsWith('relations.')) {
-        const relType = entityPath.slice('relations.'.length);
+      if (entityPath.startsWith(RELATION_KEY_PREFIX)) {
+        const relType = entityPath.slice(RELATION_KEY_PREFIX.length);
         const pair = relationPairs.get(relType);
         if (!pair) {
           logger.warn(
-            `Patch "${patchName}" mapping "relations.${relType}" has no matching entry in entityPatch.relations — skipping`,
+            `Patch "${patchName}" mapping "${RELATION_KEY_PREFIX}${relType}" has no matching entry in ${CONFIG_KEYS.RELATIONS} — skipping`,
           );
           continue;
         }

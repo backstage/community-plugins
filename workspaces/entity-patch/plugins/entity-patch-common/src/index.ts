@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './constants';
 export * from './types';
 export * from './mappingUtils';
 export * from './validation';

@@ -15,6 +15,7 @@
  */
 
 import { z } from 'zod';
+import { CONFIG_KEYS } from './constants';
 
 const patchSectionSchema = z
   .object({
@@ -55,8 +56,8 @@ export function validatePatchConfig(patches: unknown[]): void {
       .map(issue => {
         const path =
           issue.path.length > 0
-            ? `entityPatch.patches[${issue.path.join('.')}]`
-            : 'entityPatch.patches';
+            ? `${CONFIG_KEYS.PATCHES}[${issue.path.join('.')}]`
+            : CONFIG_KEYS.PATCHES;
         return `  ${path}: ${issue.message}`;
       })
       .join('\n');

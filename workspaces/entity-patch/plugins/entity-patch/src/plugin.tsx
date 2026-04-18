@@ -39,6 +39,10 @@ import {
 import { validatePatchConfig } from '@backstage-community/plugin-entity-patch-common';
 import { EntityPatchClient } from './api/EntityPatchClient';
 import { saveAllPatches } from './utils/saveAllPatches';
+import {
+  CONFIG_KEYS,
+  DEFAULT_NAMESPACE,
+} from '@backstage-community/plugin-entity-patch-common';
 
 const entityPatchContextMenuItem =
   EntityContextMenuItemBlueprint.makeWithOverrides({
@@ -47,7 +51,7 @@ const entityPatchContextMenuItem =
     factory: (originalFactory, { apis }) => {
       const configApi = apis.get(configApiRef);
       const patchesConfig = (configApi?.getOptional<PatchDefinition[]>(
-        'entityPatch.patches',
+        CONFIG_KEYS.PATCHES,
       ) ?? []) as PatchDefinition[];
 
       validatePatchConfig(patchesConfig);
@@ -86,7 +90,7 @@ const entityPatchContextMenuItem =
               try {
                 initialData = await patchClient.getInitialValues(
                   kind,
-                  namespace ?? 'default',
+                  namespace ?? DEFAULT_NAMESPACE,
                   name,
                 );
               } catch {
@@ -104,7 +108,7 @@ const entityPatchContextMenuItem =
                     await saveAllPatches(
                       patchClient,
                       kind,
-                      namespace ?? 'default',
+                      namespace ?? DEFAULT_NAMESPACE,
                       name,
                       data,
                     );

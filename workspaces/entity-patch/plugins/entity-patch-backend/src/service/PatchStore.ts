@@ -35,6 +35,12 @@ export type PatchDataMap = Record<string, Record<string, unknown>>;
 export class PatchStore {
   private constructor(private readonly db: Knex) {}
 
+  /** Normalises a DB timestamp to an ISO-8601 string.
+   * SQLite returns strings; PostgreSQL returns Date objects. */
+  private static toTimestamp(d: Date | unknown): string {
+    return d instanceof Date ? d.toISOString() : String(d);
+  }
+
   static async create(database: DatabaseService): Promise<PatchStore> {
     const client = await database.getClient();
     if (!database.migrations?.skip) {
@@ -74,18 +80,10 @@ export class PatchStore {
 
     const latestUpdatedAt =
       rows.length > 0
-        ? rows.reduce(
-            (max, r) => {
-              const ts =
-                r.updated_at instanceof Date
-                  ? r.updated_at.toISOString()
-                  : String(r.updated_at);
-              return ts > max ? ts : max;
-            },
-            rows[0].updated_at instanceof Date
-              ? rows[0].updated_at.toISOString()
-              : String(rows[0].updated_at),
-          )
+        ? rows.reduce((max, r) => {
+            const ts = PatchStore.toTimestamp(r.updated_at);
+            return ts > max ? ts : max;
+          }, PatchStore.toTimestamp(rows[0].updated_at))
         : null;
 
     const patchMap: PatchDataMap = Object.fromEntries(

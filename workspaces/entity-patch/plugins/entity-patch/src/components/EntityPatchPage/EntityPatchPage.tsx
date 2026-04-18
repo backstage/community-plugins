@@ -40,7 +40,11 @@ import { useEffect, useMemo, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
-import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
+import {
+  CONFIG_KEYS,
+  DEFAULT_NAMESPACE,
+  PatchDefinition,
+} from '@backstage-community/plugin-entity-patch-common';
 import { filterPatchesForEntity } from '../../utils/patchFilter';
 import { EntityPatchClient } from '../../api/EntityPatchClient';
 import { saveAllPatches } from '../../utils/saveAllPatches';
@@ -69,7 +73,7 @@ export const EntityPatchPage = () => {
   );
 
   const allPatches = (configApi.getOptional<PatchDefinition[]>(
-    'entityPatch.patches',
+    CONFIG_KEYS.PATCHES,
   ) ?? []) as PatchDefinition[];
 
   // Load entity + initial values together so DefaultPatchesLayout mounts
@@ -93,7 +97,7 @@ export const EntityPatchPage = () => {
     try {
       initialValues = (await patchClient.getInitialValues(
         entity.kind,
-        entity.metadata.namespace ?? 'default',
+        entity.metadata.namespace ?? DEFAULT_NAMESPACE,
         entity.metadata.name,
       )) as PatchesData;
     } catch {
@@ -138,16 +142,16 @@ export const EntityPatchPage = () => {
 
   const { entity, initialValues, initialValuesError } = entityData;
   const patches = filterPatchesForEntity(allPatches, entity);
-  const entityRef = `${entity.kind}:${entity.metadata.namespace ?? 'default'}/${
-    entity.metadata.name
-  }`;
+  const entityRef = `${entity.kind}:${
+    entity.metadata.namespace ?? DEFAULT_NAMESPACE
+  }/${entity.metadata.name}`;
 
   const handleSave = async () => {
     try {
       await saveAllPatches(
         patchClient,
         entity.kind,
-        entity.metadata.namespace ?? 'default',
+        entity.metadata.namespace ?? DEFAULT_NAMESPACE,
         entity.metadata.name,
         formData,
       );
