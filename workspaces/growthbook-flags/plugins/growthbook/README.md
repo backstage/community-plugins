@@ -8,7 +8,6 @@ View and manage GrowthBook feature flags directly in Backstage catalog entities.
 - 🔍 Filter flags by GrowthBook project
 - 📊 Alphabetical sorting
 - 🔐 Secure backend proxy with management API
-- 📄 Custom entity page layout (Overview, Docs, Feature Flags only)
 - 🎨 JSON detail dialog for complex flag values
 
 ## Installation
