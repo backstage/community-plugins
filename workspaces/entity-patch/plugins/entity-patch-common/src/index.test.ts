@@ -62,6 +62,38 @@ describe('flattenMapping', () => {
     ).toEqual({ 'metadata.annotations.slack/channel': 'slackChannel' });
   });
 
+  it('wraps dotted annotation keys in bracket notation when flattening nested YAML', () => {
+    // "github.com/project-slug" has a dot in the key — must become bracket notation
+    // so that lodash get/set treats it as a single path segment, not nested paths.
+    expect(
+      flattenMapping({
+        metadata: {
+          annotations: { 'github.com/project-slug': 'projectSlug' },
+        } as any,
+      }),
+    ).toEqual({
+      'metadata.annotations["github.com/project-slug"]': 'projectSlug',
+    });
+  });
+
+  it('wraps multiple dotted annotation keys in bracket notation', () => {
+    expect(
+      flattenMapping({
+        metadata: {
+          annotations: {
+            'github.com/project-slug': 'projectSlug',
+            'backstage.io/techdocs-ref': 'techdocsRef',
+            'slack/channel': 'slackChannel', // no dot — plain dot notation
+          },
+        } as any,
+      }),
+    ).toEqual({
+      'metadata.annotations["github.com/project-slug"]': 'projectSlug',
+      'metadata.annotations["backstage.io/techdocs-ref"]': 'techdocsRef',
+      'metadata.annotations.slack/channel': 'slackChannel',
+    });
+  });
+
   it('handles mixed flat and nested keys', () => {
     expect(
       flattenMapping({

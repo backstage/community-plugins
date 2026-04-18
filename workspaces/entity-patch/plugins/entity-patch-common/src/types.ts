@@ -16,7 +16,7 @@
 
 import type { FilterPredicate } from '@backstage/filter-predicates';
 
-// ─── Frontend types ──────────────────────────────────────────────────────────
+// ─── Raw config types (as declared in app-config.yaml) ───────────────────────
 
 /**
  * A single JSON Schema property definition.
@@ -96,7 +96,7 @@ export interface PatchDefinition {
   mapping?: Record<string, unknown>;
 }
 
-// ─── Backend types ────────────────────────────────────────────────────────────
+// ─── Resolved types (used by the backend processor after config is parsed) ────
 
 /**
  * A resolved bidirectional relation pair, as parsed from `entityPatch.relations`.

@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@backstage-community/plugin-entity-patch-common": "workspace:^",
+    "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/errors": "backstage:^",
@@ -54,7 +55,6 @@
   },
   "devDependencies": {
     "@backstage-community/plugin-catalog-backend-module-entity-patch": "workspace:^",
-    "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",

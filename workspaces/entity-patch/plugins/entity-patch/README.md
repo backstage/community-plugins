@@ -51,11 +51,14 @@ entityPatch:
       filter:
         kind: group
         'spec.type': team
-      # mapping connects each form field to its entity path.
+      # mapping connects each entity path to a form field name or Nunjucks template.
       # The backend processor reads this to apply values and emit relations.
       mapping:
-        description: metadata.description # scalar — written directly
-        slackChannel: metadata.annotations.slack/channel
+        metadata.description: description # scalar — written directly to the entity
+        metadata.annotations.slack/channel: slackChannel
+        # Template value: compose the annotation from two form fields using Nunjucks.
+        # Any mapping value containing {{ is rendered as a template at write time.
+        'metadata.annotations["github.com/project-slug"]': '{{ githubOrg }}/{{ githubRepo }}'
       sections:
         - title: Team Details
           description: Basic information shown on the team catalog page.
@@ -77,6 +80,16 @@ entityPatch:
               errorMessage:
                 pattern: 'Must start with # followed by lowercase letters, numbers, hyphens, or underscores'
 
+            githubOrg:
+              title: GitHub Organisation
+              type: string
+              description: GitHub organisation name (e.g. "mycompany").
+
+            githubRepo:
+              title: GitHub Repository
+              type: string
+              description: Repository name within the organisation (e.g. "my-team-service").
+
     # ── Patch 2: team role assignments (relations) ────────────────────────────
     - name: team-roles
       filter:
@@ -85,8 +98,8 @@ entityPatch:
       mapping:
         # relations.{type} — the processor resolves these as relation pairs
         # and emits both the forward and reverse directions in the catalog.
-        productOwners: relations.hasProductOwner
-        techLeads: relations.hasTechLead
+        relations.hasProductOwner: productOwners
+        relations.hasTechLead: techLeads
       sections:
         - title: Team Roles
           description: Assign people to specific roles on this team.
@@ -148,16 +161,16 @@ Declares the bidirectional custom relation pairs that can be referenced in patch
 
 ### `entityPatch.patches[]` — patch definitions
 
-| Key                      | Type                         | Description                                                                                                                                                                                          |
-| ------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                   | `string`                     | Stable slug. Used as the storage key — do not change after data is persisted.                                                                                                                        |
-| `filter`                 | `object`                     | Which entities this patch applies to. Supports `kind`, any entity path, and logical operators `$any`, `$all`, `$not`, `$in`, `$exists`.                                                              |
-| `mapping`                | `Record<string, string>`     | Maps each field name to its entity path (`metadata.description`, `spec.owner`, …) or a relation reference (`relations.{type}`). Read by the backend — not used by the frontend.                      |
-| `sections[]`             | `array`                      | One or more form sections. Each section groups related fields under a heading. Section properties imitate the Scaffolder template properties, and scaffolder custom fields can be used here as well. |
-| `sections[].title`       | `string`                     | Section heading shown in the dialog.                                                                                                                                                                 |
-| `sections[].description` | `string`                     | Optional subtitle shown below the section heading.                                                                                                                                                   |
-| `sections[].required`    | `string[]`                   | Field names that must be non-empty before the form can be saved.                                                                                                                                     |
-| `sections[].properties`  | `Record<string, JSONSchema>` | Field definitions (JSON Schema). Inline `ui:*` keys control rendering — see below.                                                                                                                   |
+| Key                      | Type                         | Description                                                                                                                                                                                                                                                                                                                              |
+| ------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                   | `string`                     | Stable slug. Used as the storage key — do not change after data is persisted.                                                                                                                                                                                                                                                            |
+| `filter`                 | `object`                     | Which entities this patch applies to. Supports `kind`, any entity path, and logical operators `$any`, `$all`, `$not`, `$in`, `$exists`.                                                                                                                                                                                                  |
+| `mapping`                | `Record<string, string>`     | Maps each **entity path** (key) to a form field name or Nunjucks template (value). Entity path examples: `metadata.description`, `spec.owner`, `relations.{type}`. When the value contains `{{` it is rendered as a Nunjucks template with the saved form data as context. Read by the backend — not used by the frontend form renderer. |
+| `sections[]`             | `array`                      | One or more form sections. Each section groups related fields under a heading. Section properties imitate the Scaffolder template properties, and scaffolder custom fields can be used here as well.                                                                                                                                     |
+| `sections[].title`       | `string`                     | Section heading shown in the dialog.                                                                                                                                                                                                                                                                                                     |
+| `sections[].description` | `string`                     | Optional subtitle shown below the section heading.                                                                                                                                                                                                                                                                                       |
+| `sections[].required`    | `string[]`                   | Field names that must be non-empty before the form can be saved.                                                                                                                                                                                                                                                                         |
+| `sections[].properties`  | `Record<string, JSONSchema>` | Field definitions (JSON Schema). Inline `ui:*` keys control rendering — see below.                                                                                                                                                                                                                                                       |
 
 ---
 

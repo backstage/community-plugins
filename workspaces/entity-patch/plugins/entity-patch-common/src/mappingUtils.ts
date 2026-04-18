@@ -30,17 +30,21 @@ export function isMappingTemplate(value: string): boolean {
 
 /**
  * Recursively flattens a nested mapping object to flat dot-notation keys.
+ * Keys that themselves contain dots (e.g. annotation keys like `github.com/slug`)
+ * are wrapped in bracket notation so that lodash `get`/`set` treat them as a
+ * single path segment rather than further nesting.
  *
  * Both styles below produce identical output:
  * ```yaml
- * # Flat dot-notation
+ * # Flat dot-notation (bracket notation required for dotted annotation keys)
  * mapping:
- *   metadata.title: name
+ *   'metadata.annotations["github.com/project-slug"]': projectSlug
  *
- * # Nested YAML (equivalent)
+ * # Nested YAML — flattenMapping produces the bracket-notation key automatically
  * mapping:
  *   metadata:
- *     title: name
+ *     annotations:
+ *       "github.com/project-slug": projectSlug
  * ```
  * @public
  */
@@ -50,7 +54,16 @@ export function flattenMapping(
 ): Record<string, string> {
   const result: Record<string, string> = {};
   for (const [key, value] of Object.entries(obj)) {
-    const fullKey = prefix ? `${prefix}.${key}` : key;
+    // When appending to a prefix, wrap dotted segments in bracket notation so
+    // lodash get/set treats the full key string as a single path component.
+    let fullKey: string;
+    if (!prefix) {
+      fullKey = key;
+    } else if (key.includes('.')) {
+      fullKey = `${prefix}["${key}"]`;
+    } else {
+      fullKey = `${prefix}.${key}`;
+    }
     if (typeof value === 'string') {
       result[fullKey] = value;
     } else if (typeof value === 'object' && value !== null) {

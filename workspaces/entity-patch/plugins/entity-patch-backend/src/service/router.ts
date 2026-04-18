@@ -15,7 +15,6 @@
  */
 import Router from 'express-promise-router';
 import express from 'express';
-import type { NextFunction, Request, Response } from 'express';
 import type {
   LoggerService,
   DatabaseService,
@@ -23,7 +22,8 @@ import type {
   UserInfoService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { InputError, NotFoundError } from '@backstage/errors';
+import { InputError } from '@backstage/errors';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { z } from 'zod';
@@ -155,16 +155,7 @@ export async function createRouter(options: RouterOptions) {
     res.status(200).json({ status: 'ok' });
   });
 
-  // Map Backstage error types to HTTP status codes
-  router.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
-    if (err instanceof NotFoundError) {
-      res.status(404).json({ error: err.message });
-    } else if (err instanceof InputError) {
-      res.status(400).json({ error: err.message });
-    } else {
-      next(err);
-    }
-  });
+  router.use(MiddlewareFactory.create({ logger, config }).error());
 
   return router;
 }
