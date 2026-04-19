@@ -5,4 +5,4 @@
 '@backstage-community/plugin-entity-patch': patch
 ---
 
-Initial entity-patch version a plugin for manual entity metadata
+Initial release of the entity-patch plugin — a schema-driven UI for editing Backstage catalog entity metadata without writing custom code.

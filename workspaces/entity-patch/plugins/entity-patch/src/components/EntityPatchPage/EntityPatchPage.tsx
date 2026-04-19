@@ -94,7 +94,7 @@ export const EntityPatchPage = () => {
       initialValuesError = true;
     }
     return { entity, initialValues, initialValuesError };
-  }, [catalogApi, namespace, kind, name]);
+  }, [catalogApi, patchClient, namespace, kind, name]);
 
   const [extensions, setExtensions] = useState<
     FieldExtensionOptions<any, any>[]
@@ -110,6 +110,8 @@ export const EntityPatchPage = () => {
     if (!isDirty) return undefined;
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
+      // Required for Chrome/Edge to show the confirmation dialog.
+      e.returnValue = '';
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);

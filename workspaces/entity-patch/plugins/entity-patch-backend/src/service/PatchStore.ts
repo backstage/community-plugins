@@ -37,7 +37,7 @@ export class PatchStore {
 
   /** Normalises a DB timestamp to an ISO-8601 string.
    * SQLite returns strings; PostgreSQL returns Date objects. */
-  private static toTimestamp(d: Date | unknown): string {
+  private static toTimestamp(d: unknown): string {
     return d instanceof Date ? d.toISOString() : String(d);
   }
 
