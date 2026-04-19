@@ -95,6 +95,15 @@ export interface PatchDefinition {
 }
 
 // ─── Resolved types (used by the backend processor after config is parsed) ────
+//
+// PatchDefinition (above) is the raw shape as declared in app-config.yaml —
+// mapping values are unflattened and typed as `unknown` to accept both string
+// values and nested YAML objects.
+//
+// PatchConfig (below) is the normalised form produced by `buildPatchConfigs`:
+// mapping is always a flat Record<string, string>, filter is resolved, and
+// properties are carried over for relation-field inference.
+// The two types are intentionally separate to preserve the raw→resolved boundary.
 
 /**
  * A resolved bidirectional relation pair, as parsed from `entityPatch.relations`.

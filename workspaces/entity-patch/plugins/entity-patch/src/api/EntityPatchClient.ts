@@ -52,7 +52,7 @@ export class EntityPatchClient {
   /**
    * Fetches the current values for all patches on an entity, pre-populated
    * from the entity's current catalog field values via the configured mapping.
-   * Returns `{}` if the backend is unavailable (graceful degradation).
+   * Throws if the backend returns a non-OK response.
    */
   async getInitialValues(
     kind: string,

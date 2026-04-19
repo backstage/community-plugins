@@ -47,10 +47,10 @@ const unfiltered: PatchDefinition = {
 };
 
 // ---------------------------------------------------------------------------
-// buildMenuFilter
+// mergePatchesFilters
 // ---------------------------------------------------------------------------
 
-describe('buildMenuFilter', () => {
+describe('mergePatchesFilters', () => {
   it('returns false for any entity when patches list is empty', () => {
     const filter = mergePatchesFilters([]);
     expect(filter(groupEntity)).toBe(false);
