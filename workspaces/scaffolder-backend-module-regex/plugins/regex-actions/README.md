@@ -83,6 +83,8 @@ Searches for strings that match a regular expression pattern in JSON objects. Re
 >
 > The `pattern` string cannot have a leading or trailing forward slash
 >
+> The `outputKey` must not collide with any existing property names in the input objects. If a collision is detected, the action will throw an error.
+>
 > All original properties from the input objects are preserved in the output, allowing for chaining multiple search operations
 
 #### Output

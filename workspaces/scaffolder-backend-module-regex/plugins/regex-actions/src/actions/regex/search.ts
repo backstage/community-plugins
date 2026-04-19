@@ -127,6 +127,16 @@ export const createSearchAction = () => {
 
       const regex = new RegExp(pattern, flags);
 
+      // Check for outputKey collisions with existing properties
+      for (const obj of objects) {
+        if (outputKey in obj) {
+          throw new Error(
+            `Output key "${outputKey}" collides with an existing property in input object. ` +
+              `Please use a different outputKey that does not exist in the input objects.`,
+          );
+        }
+      }
+
       const results = objects.map(obj => {
         const value = obj[property];
         if (typeof value !== 'string') {

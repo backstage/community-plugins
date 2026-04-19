@@ -191,4 +191,45 @@ describe('regex:search', () => {
       { id: '3', text: 'xfoofoo', matches: [] },
     ]);
   });
+
+  it('should throw error when outputKey collides with existing property', async () => {
+    const input = {
+      objects: [{ id: '1', text: 'Hello world', result: 'existing value' }],
+      property: 'text',
+      pattern: 'world',
+      outputKey: 'result', // Collides with existing 'result' property
+      firstOnly: true,
+    };
+
+    const context = {
+      ...mockContext,
+      input,
+    };
+
+    await expect(action.handler(context)).rejects.toThrow(
+      'Output key "result" collides with an existing property in input object',
+    );
+  });
+
+  it('should throw error when outputKey collides in any of the objects', async () => {
+    const input = {
+      objects: [
+        { id: '1', text: 'Hello world' },
+        { id: '2', text: 'Goodbye world', matches: 'existing value' }, // Collision in second object
+      ],
+      property: 'text',
+      pattern: 'world',
+      outputKey: 'matches',
+      firstOnly: true,
+    };
+
+    const context = {
+      ...mockContext,
+      input,
+    };
+
+    await expect(action.handler(context)).rejects.toThrow(
+      'Output key "matches" collides with an existing property in input object',
+    );
+  });
 });
