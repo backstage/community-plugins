@@ -41,7 +41,7 @@ export const createSearchAction = () => {
             .string()
             .refine(value => !value.startsWith('/') && !value.endsWith('/'), {
               message:
-                'The RegExp constructor cannot take a string pattern with a leading and trailing forward slash.',
+                'The RegExp constructor cannot take a string pattern with a leading or a trailing forward slash.',
             })
             .describe(
               'The regex pattern to match the value like in String.prototype.match()',
