@@ -44,6 +44,7 @@
     "@jest/environment-jsdom-abstract": "^30",
     "@types/jest": "^30",
     "@types/jsdom": "^27",
+    "@types/node": "22.7.8",
     "jest": "^30",
     "jsdom": "^27",
     "knip": "^5.27.4",
@@ -52,6 +53,7 @@
     "typescript": "~5.8.0"
   },
   "resolutions": {
+    "@types/node": "22.7.8",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "csstype@npm:^3.0.2": "3.0.9",
