@@ -49,6 +49,30 @@ interface PatchesLayoutProps {
   extensions?: FieldExtensionOptions<any, any>[];
 }
 
+/**
+ * Treat undefined, null, and empty arrays as equivalent "empty" when
+ * comparing form values for dirty detection. This prevents EntityPicker
+ * fields (which normalize undefined → [] on mount) from incorrectly
+ * marking the form as dirty before the user has made any changes.
+ */
+function isEmptyValue(v: unknown): boolean {
+  return v === undefined || v === null || (Array.isArray(v) && v.length === 0);
+}
+
+function isPatchDirty(
+  current: Record<string, unknown>,
+  initial: Record<string, unknown>,
+): boolean {
+  const allKeys = new Set([...Object.keys(current), ...Object.keys(initial)]);
+  for (const key of allKeys) {
+    const c = current[key];
+    const i = initial[key];
+    if (isEmptyValue(c) && isEmptyValue(i)) continue;
+    if (JSON.stringify(c) !== JSON.stringify(i)) return true;
+  }
+  return false;
+}
+
 export const PatchesLayout = ({
   patches,
   initialData,
@@ -111,17 +135,24 @@ export const PatchesLayout = ({
         [patchName]: { data, isValid },
       };
 
+      const isDirty = patches.some(p =>
+        isPatchDirty(
+          patchState.current[p.name]?.data ?? {},
+          initialData?.[p.name] ?? {},
+        ),
+      );
+
       onChange(
         Object.fromEntries(
           Object.entries(patchState.current).map(([k, v]) => [k, v.data]),
         ),
         {
           isValid: Object.values(patchState.current).every(s => s.isValid),
-          isDirty: true,
+          isDirty,
         },
       );
     },
-    [onChange],
+    [onChange, patches, initialData],
   );
 
   return (
