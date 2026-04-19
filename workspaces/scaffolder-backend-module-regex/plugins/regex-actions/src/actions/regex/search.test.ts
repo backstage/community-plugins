@@ -155,4 +155,40 @@ describe('regex:search', () => {
       },
     ]);
   });
+
+  it('should handle sticky flag (y) correctly across multiple objects without lastIndex carry-over', async () => {
+    // The sticky flag (y) causes the regex to match only at the exact lastIndex position.
+    // Matches must be consecutive with no gaps. This test ensures lastIndex is reset for each object.
+    const input = {
+      objects: [
+        { id: '1', text: 'foofoofoo' },
+        { id: '2', text: 'fooxfoo' },
+        { id: '3', text: 'xfoofoo' },
+      ],
+      property: 'text',
+      pattern: 'foo',
+      global: true,
+      sticky: true,
+      outputKey: 'matches',
+      firstOnly: false,
+    };
+
+    const context = {
+      ...mockContext,
+      input,
+    };
+
+    await action.handler(context);
+
+    // With sticky flag, matches must be consecutive (no gaps between them)
+    // Object 1: 'foofoofoo' - three consecutive 'foo' matches
+    // Object 2: 'fooxfoo' - first 'foo' matches, then 'x' breaks the sequence, no more matches
+    // Object 3: 'xfoofoo' - starts with 'x', so no match at position 0, then 'foofoo' won't match
+    //           (because sticky starts at 0, not at the 'f' position)
+    expect(context.output).toHaveBeenLastCalledWith('results', [
+      { id: '1', text: 'foofoofoo', matches: ['foo', 'foo', 'foo'] },
+      { id: '2', text: 'fooxfoo', matches: ['foo'] },
+      { id: '3', text: 'xfoofoo', matches: [] },
+    ]);
+  });
 });

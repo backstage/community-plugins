@@ -133,6 +133,9 @@ export const createSearchAction = () => {
           return { ...obj, [outputKey]: firstOnly ? '' : [] };
         }
 
+        // Reset lastIndex for each object to prevent sticky flag carry-over
+        regex.lastIndex = 0;
+
         const matches = [];
         let match = regex.exec(value);
 
