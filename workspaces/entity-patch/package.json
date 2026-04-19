@@ -42,7 +42,7 @@
     "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@changesets/cli": "^2.30.0",
+    "@changesets/cli": "^2.31.0",
     "@jest/environment-jsdom-abstract": "^30.3.0",
     "@playwright/test": "^1.59.1",
     "@types/jest": "^30.0.0",
@@ -51,7 +51,7 @@
     "knip": "^5.88.1",
     "node-gyp": "^10.3.1",
     "playwright-core": "^1.59.1",
-    "prettier": "^2.3.2",
+    "prettier": "^3.8.3",
     "typescript": "~5.8.3"
   },
   "resolutions": {
