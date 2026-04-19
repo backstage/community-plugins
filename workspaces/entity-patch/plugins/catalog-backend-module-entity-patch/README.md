@@ -100,21 +100,20 @@ entityPatch:
       mapping:
         relations.hasProductOwner: productOwners # → emits hasProductOwner + productOwnerOf
         relations.hasTechLead: techLeads # → emits hasTechLead + techLeadOf
-      sections:
-        - title: Team Roles
-          properties:
-            productOwners:
-              title: Product Owners
-              type: array
-              'ui:field': MultiEntityPicker
-              'ui:options':
-                catalogFilter:
-                  - kind: User
-            techLeads:
-              title: Tech Leads
-              type: array
-              'ui:field': MultiEntityPicker
-              'ui:options':
-                catalogFilter:
-                  - kind: User
+      title: Team Roles
+      properties:
+        productOwners:
+          title: Product Owners
+          type: array
+          'ui:field': MultiEntityPicker
+          'ui:options':
+            catalogFilter:
+              - kind: User
+        techLeads:
+          title: Tech Leads
+          type: array
+          'ui:field': MultiEntityPicker
+          'ui:options':
+            catalogFilter:
+              - kind: User
 ```

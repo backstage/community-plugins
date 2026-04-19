@@ -105,13 +105,8 @@ export function buildPatchConfigs(config: Config): PatchConfig[] {
   return patches
     .filter((p: Config) => p.has('mapping'))
     .map((p: Config) => {
-      const sections =
-        p
-          .getOptionalConfigArray('sections')
-          ?.map(
-            s => s.getOptional<Record<string, unknown>>('properties') ?? {},
-          ) ?? [];
-      const sectionProperties = Object.assign({}, ...sections);
+      const properties =
+        p.getOptional<Record<string, unknown>>('properties') ?? {};
       const rawMapping =
         p.getOptional<Record<string, unknown>>('mapping') ?? {};
       return {
@@ -120,7 +115,7 @@ export function buildPatchConfigs(config: Config): PatchConfig[] {
         filter: p.has('filter')
           ? (p.get('filter') as FilterPredicate)
           : undefined,
-        sectionProperties,
+        properties,
       };
     });
 }

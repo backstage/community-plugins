@@ -73,22 +73,31 @@ export interface Config {
        * @example { $any: [{ kind: 'group' }, { kind: 'component' }] }
        */
       filter?: { [key: string]: unknown };
+      /** Optional title displayed above the form. */
+      title?: string;
+      /** Optional description shown below the title. */
+      description?: string;
+      /** Field names that must be non-empty before the form can be saved. */
+      required?: string[];
       /**
-       * Multi-section form definition. Each section maps to a titled group
-       * of fields rendered in the form.
+       * JSON Schema property definitions, keyed by field name.
+       * Inline `ui:*` keys (e.g. `ui:widget`, `ui:field`) are extracted
+       * automatically — no separate `uiSchema` block is needed.
+       * Full JSON Schema is supported: scalars, nested objects, arrays,
+       * composition keywords (`allOf`, `anyOf`, `if`/`then`), and custom
+       * field extensions. Nesting a field inside a `type: object` property
+       * renders it as a visually grouped fieldset — use dot-notation in the
+       * `mapping` values to address paths inside nested objects.
        */
-      sections?: Array<{
-        /** Optional section title displayed above the group of fields. */
-        title?: string;
-        /** Fields that are required in this section. */
-        required?: string[];
-        /**
-         * JSON Schema property definitions, keyed by field name.
-         * Inline `ui:*` keys (e.g. `ui:widget`, `ui:field`) are extracted
-         * automatically — no separate `uiSchema` block is needed.
-         */
-        properties?: { [key: string]: unknown };
-      }>;
+      properties?: { [key: string]: unknown };
+      /**
+       * ajv-errors custom error message overrides keyed by field name.
+       * @example { properties: { email: 'Must be a valid email' } }
+       */
+      errorMessage?: {
+        properties?: { [key: string]: string };
+        [key: string]: unknown;
+      };
       /**
        * Maps entity paths (or `relations.{type}`) to form field names or
        * Nunjucks template strings.

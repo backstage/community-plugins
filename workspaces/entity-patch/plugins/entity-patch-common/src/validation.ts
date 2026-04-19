@@ -17,25 +17,17 @@
 import { z } from 'zod';
 import { CONFIG_KEYS } from './constants';
 
-const patchSectionSchema = z
-  .object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    required: z.array(z.string()).optional(),
-    properties: z.record(z.string(), z.unknown()).optional(),
-    errorMessage: z
-      .object({ properties: z.record(z.string(), z.string()).optional() })
-      .loose()
-      .optional(),
-  })
-  .loose();
-
 const patchDefinitionSchema = z.object({
   name: z.string().min(1, 'name must be a non-empty string'),
   filter: z.unknown().optional(),
-  sections: z
-    .array(patchSectionSchema)
-    .min(1, 'at least one section is required'),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  required: z.array(z.string()).optional(),
+  properties: z.record(z.string(), z.unknown()).optional(),
+  errorMessage: z
+    .object({ properties: z.record(z.string(), z.string()).optional() })
+    .loose()
+    .optional(),
   mapping: z.record(z.string(), z.unknown()).optional(),
 });
 

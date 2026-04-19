@@ -2,7 +2,7 @@
 
 A Backstage frontend plugin that lets operators edit catalog entity fields through structured, schema-driven forms — without writing any custom UI code.
 
-Patches are declared entirely in `app-config.yaml`. Each patch specifies which entities it applies to, what fields the form contains, and how those fields map back to entity properties. The result is an **Edit Patch** item in the entity context menu that opens a pre-populated dialog for any matching entity.
+Patches are declared entirely in `app-config.yaml`. Each patch specifies which entities it applies to, what fields the form contains, and how those fields map back to entity properties. The result is an **Edit Entity** item in the entity context menu that opens a pre-populated dialog for any matching entity.
 
 > **Backend required** — this plugin only renders the form and calls the API. Persisting data and applying it to the catalog requires the backend plugin and catalog processor. See [plugin-entity-patch-backend](../entity-patch-backend/README.md) and [plugin-catalog-backend-module-entity-patch](../catalog-backend-module-entity-patch/README.md).
 
@@ -10,21 +10,21 @@ Patches are declared entirely in `app-config.yaml`. Each patch specifies which e
 
 ## How it works
 
-An **Edit Patch** item appears in the entity context menu for every entity that matches at least one configured patch filter.
+An **Edit Entity** item appears in the entity context menu for every entity that matches at least one configured patch filter.
 
-![Entity context menu showing the Edit Patch option](docs/context-menu.png)
+![Entity context menu showing the Edit Entity option](docs/context-menu.png)
 
-Clicking it opens a dialog with all matching patch sections, pre-populated with the values currently stored in the backend.
+Clicking it opens a dialog with all matching patches, pre-populated with the values currently stored in the backend.
 
-![Edit Patch dialog showing Team Details (description, slack channel) and Team Roles (PO and Tech Lead pickers)](docs/patch-dialog.png)
+![Edit Entity dialog showing Team Details (description, slack channel) and Team Roles (PO and Tech Lead pickers)](docs/patch-dialog.png)
 
-On save, each patch section is persisted to the backend and a catalog refresh is triggered so changes take effect as soon as the processing loop completes.
+On save, each patch is persisted to the backend and a catalog refresh is triggered so changes take effect as soon as the processing loop completes.
 
 ---
 
 ## Example — team profile with description, Slack channel, and role assignments
 
-The configuration below adds an **Edit Patch** dialog to all `Group` entities of type `team`. It demonstrates three common field patterns:
+The configuration below adds an **Edit Entity** dialog to all `Group` entities of type `team`. It demonstrates three common field patterns:
 
 - a **markdown-friendly multiline textarea** for the team description
 - a **validated text field** for the Slack contact channel
@@ -59,36 +59,35 @@ entityPatch:
         # Template value: compose the annotation from two form fields using Nunjucks.
         # Any mapping value containing {{ is rendered as a template at write time.
         'metadata.annotations["github.com/project-slug"]': '{{ githubOrg }}/{{ githubRepo }}'
-      sections:
-        - title: Team Details
-          description: Basic information shown on the team catalog page.
-          required:
-            - description
-          properties:
-            description:
-              title: Description
-              type: string
-              description: >
-                A brief description of this team. Markdown is supported.
-              'ui:widget': textarea # multiline, markdown-friendly
+      title: Team Details
+      description: Basic information shown on the team catalog page.
+      required:
+        - description
+      properties:
+        description:
+          title: Description
+          type: string
+          description: >
+            A brief description of this team. Markdown is supported.
+          'ui:widget': textarea # multiline, markdown-friendly
 
-            slackChannel:
-              title: Slack Channel
-              type: string
-              pattern: '^#[a-z0-9_-]+$'
-              description: Primary Slack channel for reaching this team.
-              errorMessage:
-                pattern: 'Must start with # followed by lowercase letters, numbers, hyphens, or underscores'
+        slackChannel:
+          title: Slack Channel
+          type: string
+          pattern: '^#[a-z0-9_-]+$'
+          description: Primary Slack channel for reaching this team.
+          errorMessage:
+            pattern: 'Must start with # followed by lowercase letters, numbers, hyphens, or underscores'
 
-            githubOrg:
-              title: GitHub Organisation
-              type: string
-              description: GitHub organisation name (e.g. "mycompany").
+        githubOrg:
+          title: GitHub Organisation
+          type: string
+          description: GitHub organisation name (e.g. "mycompany").
 
-            githubRepo:
-              title: GitHub Repository
-              type: string
-              description: Repository name within the organisation (e.g. "my-team-service").
+        githubRepo:
+          title: GitHub Repository
+          type: string
+          description: Repository name within the organisation (e.g. "my-team-service").
 
     # ── Patch 2: team role assignments (relations) ────────────────────────────
     - name: team-roles
@@ -100,27 +99,26 @@ entityPatch:
         # and emits both the forward and reverse directions in the catalog.
         relations.hasProductOwner: productOwners
         relations.hasTechLead: techLeads
-      sections:
-        - title: Team Roles
-          description: Assign people to specific roles on this team.
-          properties:
-            productOwners:
-              title: Product Owners
-              type: array # array → MultiEntityPicker
-              description: Users acting as Product Owner for this team.
-              'ui:field': MultiEntityPicker # scaffolder custom field for picking multiple entities
-              'ui:options':
-                catalogFilter:
-                  - kind: User
+      title: Team Roles
+      description: Assign people to specific roles on this team.
+      properties:
+        productOwners:
+          title: Product Owners
+          type: array # array → MultiEntityPicker
+          description: Users acting as Product Owner for this team.
+          'ui:field': MultiEntityPicker # scaffolder custom field for picking multiple entities
+          'ui:options':
+            catalogFilter:
+              - kind: User
 
-            techLeads:
-              title: Tech Leads
-              type: array
-              description: Users acting as Tech Lead for this team.
-              'ui:field': MultiEntityPicker
-              'ui:options':
-                catalogFilter:
-                  - kind: User
+        techLeads:
+          title: Tech Leads
+          type: array
+          description: Users acting as Tech Lead for this team.
+          'ui:field': MultiEntityPicker
+          'ui:options':
+            catalogFilter:
+              - kind: User
 ```
 
 ---
@@ -161,26 +159,39 @@ Declares the bidirectional custom relation pairs that can be referenced in patch
 
 ### `entityPatch.patches[]` — patch definitions
 
-| Key                      | Type                         | Description                                                                                                                                                                                                                                                                                                                              |
-| ------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                   | `string`                     | Stable slug. Used as the storage key — do not change after data is persisted.                                                                                                                                                                                                                                                            |
-| `filter`                 | `object`                     | Which entities this patch applies to. Supports `kind`, any entity path, and logical operators `$any`, `$all`, `$not`, `$in`, `$exists`.                                                                                                                                                                                                  |
-| `mapping`                | `Record<string, string>`     | Maps each **entity path** (key) to a form field name or Nunjucks template (value). Entity path examples: `metadata.description`, `spec.owner`, `relations.{type}`. When the value contains `{{` it is rendered as a Nunjucks template with the saved form data as context. Read by the backend — not used by the frontend form renderer. |
-| `sections[]`             | `array`                      | One or more form sections. Each section groups related fields under a heading. Section properties imitate the Scaffolder template properties, and scaffolder custom fields can be used here as well.                                                                                                                                     |
-| `sections[].title`       | `string`                     | Section heading shown in the dialog.                                                                                                                                                                                                                                                                                                     |
-| `sections[].description` | `string`                     | Optional subtitle shown below the section heading.                                                                                                                                                                                                                                                                                       |
-| `sections[].required`    | `string[]`                   | Field names that must be non-empty before the form can be saved.                                                                                                                                                                                                                                                                         |
-| `sections[].properties`  | `Record<string, JSONSchema>` | Field definitions (JSON Schema). Inline `ui:*` keys control rendering — see below.                                                                                                                                                                                                                                                       |
+| Key            | Type                         | Description                                                                                                                                                                                                                                                                                                                              |
+| -------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | `string`                     | Stable slug. Used as the storage key — do not change after data is persisted.                                                                                                                                                                                                                                                            |
+| `filter`       | `object`                     | Which entities this patch applies to. Supports `kind`, any entity path, and logical operators `$any`, `$all`, `$not`, `$in`, `$exists`.                                                                                                                                                                                                  |
+| `mapping`      | `Record<string, string>`     | Maps each **entity path** (key) to a form field name or Nunjucks template (value). Entity path examples: `metadata.description`, `spec.owner`, `relations.{type}`. When the value contains `{{` it is rendered as a Nunjucks template with the saved form data as context. Read by the backend — not used by the frontend form renderer. |
+| `title`        | `string`                     | Form heading shown in the dialog for this patch.                                                                                                                                                                                                                                                                                         |
+| `description`  | `string`                     | Optional subtitle shown below the patch heading.                                                                                                                                                                                                                                                                                         |
+| `required`     | `string[]`                   | Top-level field names that must be non-empty before the form can be saved.                                                                                                                                                                                                                                                               |
+| `properties`   | `Record<string, JSONSchema>` | Field definitions. Accepts any valid JSON Schema — scalars, arrays, nested objects, composition (`allOf`, `anyOf`), and `ui:*` keys for rendering control. See below.                                                                                                                                                                    |
+| `errorMessage` | `object`                     | Custom error messages for AJV validation errors (uses `ajv-errors` syntax). Can be set at patch level or inside any nested schema.                                                                                                                                                                                                       |
+
+---
+
+### Full JSON Schema support
+
+`properties` (and any nested `properties` within it) accepts **any valid JSON Schema**. Supported patterns include:
+
+- **Scalars** — `type: string`, `type: number`, `type: boolean`, `enum`, `format`, `pattern`
+- **Arrays** — `type: array` with `items` (e.g. multi-entity pickers)
+- **Nested objects** — `type: object` with its own `properties` (visual grouping, unlimited depth)
+- **Composition** — `allOf`, `anyOf`, `oneOf`, `if`/`then`/`else`
+- **Rendering control** — any `ui:*` key (RJSF widget / field / options)
+- **Custom errors** — `errorMessage` for human-readable validation messages (ajv-errors)
 
 ---
 
 ## Using scaffolder field extensions
 
-The `ui:field`, `ui:widget`, and `ui:options` keys in a section property work **exactly the same as in Backstage scaffolder templates**. If you have used these in a `template.yaml`, the API is identical here.
+The `ui:field`, `ui:widget`, and `ui:options` keys in a patch property work **exactly the same as in Backstage scaffolder templates**. If you have used these in a `template.yaml`, the API is identical here.
 
 ```yaml
 # Scaffolder template equivalent — both work the same way:
-#   template.yaml             →   patch section property
+#   template.yaml             →   patch property
 #   ui:field: EntityPicker    →   'ui:field': EntityPicker
 #   ui:options: ...           →   'ui:options': ...
 ```
@@ -230,4 +241,4 @@ yarn start
 ```
 
 Opens a dev app at `http://localhost:3010` with mock entities.
-Navigate to any entity page, open the **⋮** menu, and click **Edit Patch**.
+Navigate to any entity page, open the **⋮** menu, and click **Edit Entity**.

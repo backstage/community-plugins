@@ -27,7 +27,7 @@ function makeExtractor(
   mapping: Record<string, string>,
   options: {
     relationPairs?: Map<string, RelationPair>;
-    sectionProperties?: Record<string, unknown>;
+    properties?: Record<string, unknown>;
   } = {},
 ) {
   // Deduplicate relation pairs (the map indexes both forward and reverse).
@@ -39,13 +39,12 @@ function makeExtractor(
       relations.push({ forward: pair.forward, reverse: pair.reverse });
     }
   }
-  const sections = options.sectionProperties
-    ? [{ properties: options.sectionProperties }]
-    : [];
   const config = mockServices.rootConfig({
     data: {
       entityPatch: {
-        patches: [{ name: 'test', mapping, sections }] as any,
+        patches: [
+          { name: 'test', mapping, properties: options.properties ?? {} },
+        ] as any,
         relations,
       },
     },
@@ -202,7 +201,7 @@ describe('EntityValueExtractor — relations support', () => {
     ['hasTechLead', { forward: 'hasTechLead', reverse: 'techLeadOf' }],
   ]);
 
-  const sectionProperties = {
+  const properties = {
     designers: { type: 'array' },
     techLead: { type: 'string' },
   };
@@ -210,7 +209,7 @@ describe('EntityValueExtractor — relations support', () => {
   it('extracts array relation values when type is "array"', () => {
     const result = makeExtractor(
       { 'relations.hasDesigner': 'designers' },
-      { relationPairs, sectionProperties },
+      { relationPairs, properties },
     ).extract(entity);
     expect(result).toEqual({
       designers: ['user:default/alice', 'user:default/bob'],
@@ -220,7 +219,7 @@ describe('EntityValueExtractor — relations support', () => {
   it('extracts single relation value when type is not "array"', () => {
     const result = makeExtractor(
       { 'relations.hasTechLead': 'techLead' },
-      { relationPairs, sectionProperties },
+      { relationPairs, properties },
     ).extract(entity);
     expect(result).toEqual({ techLead: 'user:default/carol' });
   });
@@ -232,7 +231,7 @@ describe('EntityValueExtractor — relations support', () => {
         relationPairs: new Map([
           ['hasManager', { forward: 'hasManager', reverse: 'managerOn' }],
         ]),
-        sectionProperties: { managers: { type: 'array' } },
+        properties: { managers: { type: 'array' } },
       },
     ).extract(entity);
     expect(result).toEqual({});
@@ -241,7 +240,7 @@ describe('EntityValueExtractor — relations support', () => {
   it('omits relation field when type is not in the registry', () => {
     const result = makeExtractor(
       { 'relations.unknownType': 'unknown' },
-      { relationPairs, sectionProperties },
+      { relationPairs, properties },
     ).extract(entity);
     expect(result).toEqual({});
   });
@@ -259,7 +258,7 @@ describe('EntityValueExtractor — relations support', () => {
         'metadata.description': 'description',
         'relations.hasDesigner': 'designers',
       },
-      { relationPairs, sectionProperties },
+      { relationPairs, properties },
     ).extract(entity);
     expect(result).toEqual({
       description: 'My service description',

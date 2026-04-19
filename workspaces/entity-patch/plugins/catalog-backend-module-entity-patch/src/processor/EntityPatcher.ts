@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep, get, set } from 'lodash';
 import nunjucks from 'nunjucks';
 import {
   Entity,
@@ -222,7 +222,9 @@ function resolveValue(
   savedValues: Record<string, unknown>,
 ): unknown {
   if (resolver.source === 'template') return resolver.render(savedValues);
-  return savedValues[resolver.fieldName];
+  // Use lodash get to support dot-notation paths in mapping values
+  // (e.g. "componentInfo.description" reads from nested form data)
+  return get(savedValues, resolver.fieldName);
 }
 
 function isValidEntityRef(ref: string): boolean {

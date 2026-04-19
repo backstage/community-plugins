@@ -72,7 +72,7 @@ describe('EntityPatcher', () => {
             name: 'comp-patch',
             filter: { kind: 'component' },
             mapping: { 'metadata.description': 'description' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -87,7 +87,7 @@ describe('EntityPatcher', () => {
             name: 'comp-patch',
             filter: { kind: 'component' },
             mapping: { 'relations.ownedBy': 'owner' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
         relationPairs: new Map([
@@ -104,7 +104,7 @@ describe('EntityPatcher', () => {
           {
             name: 'global-patch',
             mapping: { 'metadata.description': 'description' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -124,7 +124,7 @@ describe('EntityPatcher', () => {
               'metadata.description': 'description',
               'spec.lifecycle': 'lifecycle',
             },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -143,7 +143,7 @@ describe('EntityPatcher', () => {
           {
             name: 'comp-patch',
             mapping: { 'metadata.description': 'description' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -160,7 +160,7 @@ describe('EntityPatcher', () => {
               'metadata.description': 'description',
               'spec.lifecycle': 'lifecycle',
             },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -179,7 +179,7 @@ describe('EntityPatcher', () => {
             name: 'group-only',
             filter: { kind: 'group' },
             mapping: { 'metadata.description': 'description' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -198,7 +198,7 @@ describe('EntityPatcher', () => {
               'metadata.annotations["runbook-url"]':
                 'https://wiki.example.com/{{ team }}/{{ service }}',
             },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -222,7 +222,7 @@ describe('EntityPatcher', () => {
               'metadata.annotations["backstage.io/techdocs-ref"]':
                 'techdocsRef',
             },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -243,7 +243,7 @@ describe('EntityPatcher', () => {
           {
             name: 'comp-patch',
             mapping: { 'metadata.description': 'description' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
       });
@@ -264,7 +264,7 @@ describe('EntityPatcher', () => {
             name: 'comp-patch',
             filter: { kind: 'component' },
             mapping: { 'relations.ownedBy': 'owner' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
         relationPairs,
@@ -288,7 +288,7 @@ describe('EntityPatcher', () => {
           {
             name: 'comp-patch',
             mapping: { 'relations.ownedBy': 'owner' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
         relationPairs,
@@ -309,7 +309,7 @@ describe('EntityPatcher', () => {
           {
             name: 'comp-patch',
             mapping: { 'relations.ownedBy': 'owner' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
         relationPairs,
@@ -332,7 +332,7 @@ describe('EntityPatcher', () => {
           {
             name: 'comp-patch',
             mapping: { 'relations.ownedBy': 'owner' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
         relationPairs,
@@ -347,7 +347,7 @@ describe('EntityPatcher', () => {
           {
             name: 'comp-patch',
             mapping: { 'relations.unknownRelation': 'target' },
-            sectionProperties: {},
+            properties: {},
           },
         ],
         relationPairs: new Map(),
