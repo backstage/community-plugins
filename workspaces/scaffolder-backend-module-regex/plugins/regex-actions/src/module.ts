@@ -16,7 +16,7 @@
 import { createBackendModule } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
 
-import { createReplaceAction } from './actions';
+import { createReplaceAction, createSearchAction } from './actions';
 
 /**
  * @public
@@ -30,7 +30,7 @@ export const scaffolderModuleRegexActions = createBackendModule({
         scaffolder: scaffolderActionsExtensionPoint,
       },
       async init({ scaffolder }) {
-        scaffolder.addActions(createReplaceAction());
+        scaffolder.addActions(createReplaceAction(), createSearchAction());
       },
     });
   },

@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { createReplaceAction } from './replace';
+export { createSearchAction } from './search';

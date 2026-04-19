@@ -23,6 +23,24 @@ flags?: ("i" | "g" | "m" | "y" | "u" | "s" | "d")[] | undefined;
 }, "v2">;
 
 // @public (undocumented)
+export const createSearchAction: () => TemplateAction<    {
+objects: Record<string, any>[];
+property: string;
+pattern: string;
+outputKey: string;
+firstOnly: boolean;
+global?: boolean | undefined;
+multiline?: boolean | undefined;
+caseInsensitive?: boolean | undefined;
+sticky?: boolean | undefined;
+unicode?: boolean | undefined;
+dotAll?: boolean | undefined;
+hasIndices?: boolean | undefined;
+}, {
+[x: string]: any;
+}, "v2">;
+
+// @public (undocumented)
 const scaffolderModuleRegexActions: BackendFeature;
 export default scaffolderModuleRegexActions;
 
