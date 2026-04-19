@@ -64,31 +64,30 @@ entityPatch:
         metadata.description: description
         spec.profile.email: contactEmail
         metadata.annotations.slack/channel: slackChannel
-      sections:
-        - title: Team Details
-          description: Basic information shown on the team catalog page.
-          required:
-            - description
-          properties:
-            description:
-              title: Description
-              type: string
-              description: A brief description of this team.
-              'ui:widget': textarea
-            contactEmail:
-              title: Contact Email
-              type: string
-              format: email
-              description: Primary contact email for this team.
-              errorMessage:
-                format: 'Must be a valid email address'
-            slackChannel:
-              title: Slack Channel
-              type: string
-              pattern: '^#[a-z0-9_-]+$'
-              description: 'Slack channel name, must start with # and use only lowercase letters, numbers, hyphens, or underscores.'
-              errorMessage:
-                pattern: 'Must start with # followed by lowercase letters, numbers, hyphens, or underscores (e.g. #team-platform)'
+      title: Team Details
+      description: Basic information shown on the team catalog page.
+      required:
+        - description
+      properties:
+        description:
+          title: Description
+          type: string
+          description: A brief description of this team.
+          'ui:widget': textarea
+        contactEmail:
+          title: Contact Email
+          type: string
+          format: email
+          description: Primary contact email for this team.
+          errorMessage:
+            format: 'Must be a valid email address'
+        slackChannel:
+          title: Slack Channel
+          type: string
+          pattern: '^#[a-z0-9_-]+$'
+          description: 'Slack channel name, must start with # and use only lowercase letters, numbers, hyphens, or underscores.'
+          errorMessage:
+            pattern: 'Must start with # followed by lowercase letters, numbers, hyphens, or underscores (e.g. #team-platform)'
 
     # ── Patch 2: team roles (relations) ───────────────────────────────────────
     - name: team-roles
@@ -98,26 +97,25 @@ entityPatch:
       mapping:
         relations.hasDesigner: designers # type ref → emit hasDesigner + designerOn pair
         relations.hasTechLead: techLeads
-      sections:
-        - title: Team Roles
-          description: Assign people to specific roles on this team.
-          properties:
-            designers:
-              title: Designers
-              type: array
-              description: Team members acting as designers.
-              'ui:field': MultiEntityPicker
-              'ui:options':
-                catalogFilter:
-                  - kind: User
-            techLeads:
-              title: Tech Leads
-              type: array
-              description: Team members acting as tech leads.
-              'ui:field': MultiEntityPicker
-              'ui:options':
-                catalogFilter:
-                  - kind: User
+      title: Team Roles
+      description: Assign people to specific roles on this team.
+      properties:
+        designers:
+          title: Designers
+          type: array
+          description: Team members acting as designers.
+          'ui:field': MultiEntityPicker
+          'ui:options':
+            catalogFilter:
+              - kind: User
+        techLeads:
+          title: Tech Leads
+          type: array
+          description: Team members acting as tech leads.
+          'ui:field': MultiEntityPicker
+          'ui:options':
+            catalogFilter:
+              - kind: User
 
     # ── Patch 3: only team-type Groups ────────────────────────────────────────
     - name: team-ownership
@@ -132,28 +130,33 @@ entityPatch:
         #   → custom/owner-namespace = "default"
         'metadata.annotations["custom/owner-name"]': "{{ owner | parseEntityRef | pick('name') }}"
         'metadata.annotations["custom/owner-namespace"]': "{{ owner | parseEntityRef | pick('namespace') }}"
-      sections:
-        - title: Ownership
-          description: Applies only to groups of type "team".
-          required:
-            - owner
-          properties:
-            owner:
-              title: Owner
-              type: string
-              description: 'The owning entity ref for this team (e.g. group:default/guests).'
-              'ui:placeholder': 'group:default/guests'
+      title: Ownership
+      description: Applies only to groups of type "team".
+      required:
+        - owner
+      properties:
+        owner:
+          title: Owner
+          type: string
+          description: 'The owning entity ref for this team (e.g. group:default/guests).'
+          'ui:placeholder': 'group:default/guests'
 
-    # ── Patch 3: Components ────────────────────────────────────────────────────
+    # ── Patch 4: Components ────────────────────────────────────────────────────
+    # component-metadata uses nested object properties to preserve visual grouping
+    # for two logical groups (Component Info + Operational Tags).
+    # The mapping values use dot-notation to address the nested form data paths.
     - name: component-metadata
       filter:
         kind: component
       mapping:
-        metadata.description: description
-        spec.lifecycle: lifecycle
-        metadata.annotations.internal/tier: tier
-      sections:
-        - title: Component Info
+        metadata.description: componentInfo.description
+        spec.lifecycle: componentInfo.lifecycle
+        metadata.annotations.internal/tier: operationalTags.tier
+      title: Component Metadata
+      properties:
+        componentInfo:
+          title: Component Info
+          type: object
           description: Core metadata for this component.
           required:
             - description
@@ -176,7 +179,9 @@ entityPatch:
                 - Experimental
                 - Production
                 - Deprecated
-        - title: Operational Tags
+        operationalTags:
+          title: Operational Tags
+          type: object
           description: Operational metadata used for routing and SLOs.
           properties:
             tier:
@@ -192,7 +197,7 @@ entityPatch:
                 - 'Tier 2 — Important'
                 - 'Tier 3 — Best-effort'
 
-    # ── Patch 4: only service-type Components  ────────────────────────────────
+    # ── Patch 5: only service-type Components  ────────────────────────────────
     - name: service-oncall
       filter:
         kind: component
@@ -200,21 +205,20 @@ entityPatch:
       mapping:
         'metadata.annotations["pagerduty.com/integration-key"]': pagerdutyKey
         'metadata.annotations["backstage.io/runbook-url"]': runbook
-      sections:
-        - title: On-Call & Runbook
-          description: Applies only to components of type "service".
-          properties:
-            pagerdutyKey:
-              title: PagerDuty Integration Key
-              type: string
-              description: The PagerDuty Events API v2 integration key.
-              pattern: '^[a-f0-9]{32}$'
-              errorMessage:
-                pattern: 'Must be a 32-character hex string'
-            runbook:
-              title: Runbook URL
-              type: string
-              format: uri
-              description: Link to the on-call runbook for this service.
-              errorMessage:
-                format: 'Must be a valid URL'
+      title: On-Call & Runbook
+      description: Applies only to components of type "service".
+      properties:
+        pagerdutyKey:
+          title: PagerDuty Integration Key
+          type: string
+          description: The PagerDuty Events API v2 integration key.
+          pattern: '^[a-f0-9]{32}$'
+          errorMessage:
+            pattern: 'Must be a 32-character hex string'
+        runbook:
+          title: Runbook URL
+          type: string
+          format: uri
+          description: Link to the on-call runbook for this service.
+          errorMessage:
+            format: 'Must be a valid URL'

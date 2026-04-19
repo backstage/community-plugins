@@ -37,28 +37,7 @@ export interface PatchProperty {
 }
 
 /**
- * A titled group of fields that renders as one `<Form>` section.
- * @public
- */
-export interface PatchSection {
-  /** Optional heading displayed above the fields. */
-  title?: string;
-  /** Optional description rendered below the title. */
-  description?: string;
-  /** Field names that must be non-empty before the form is valid. */
-  required?: string[];
-  /** JSON Schema property definitions keyed by field name. */
-  properties?: Record<string, PatchProperty>;
-  /** ajv-errors errorMessage overrides keyed by field name. */
-  errorMessage?: {
-    properties?: Record<string, string>;
-    [key: string]: unknown;
-  };
-  [key: string]: unknown;
-}
-
-/**
- * A named patch definition: a filter predicate and one or more form sections.
+ * A named patch definition: a filter predicate and a single form schema.
  * @public
  */
 export interface PatchDefinition {
@@ -74,8 +53,27 @@ export interface PatchDefinition {
    * See {@link @backstage/filter-predicates#FilterPredicate} for the full grammar.
    */
   filter?: FilterPredicate;
-  /** One or more sections that make up the form for this patch. */
-  sections: PatchSection[];
+  /** Optional title displayed above the form. */
+  title?: string;
+  /** Optional description rendered below the title. */
+  description?: string;
+  /** Field names that must be non-empty before the form is valid. */
+  required?: string[];
+  /**
+   * JSON Schema property definitions. Any `ui:*` keys (e.g. `ui:widget`,
+   * `ui:field`, `ui:options`) are extracted automatically into the RJSF
+   * uiSchema by `extractSchemaFromStep`. Full JSON Schema is supported:
+   * scalars, nested objects (`type: "object"`), arrays, composition keywords
+   * (`allOf`, `anyOf`, `if`/`then`), and custom `ui:field` extensions.
+   * Nesting can be used for visual grouping — use dot-notation in the
+   * `mapping` values to address nested paths.
+   */
+  properties?: Record<string, unknown>;
+  /** ajv-errors errorMessage overrides keyed by field name. */
+  errorMessage?: {
+    properties?: Record<string, string>;
+    [key: string]: unknown;
+  };
   /**
    * Maps entity paths (or `relations.{type}`) to form field names or Nunjucks
    * template strings.
@@ -108,7 +106,7 @@ export interface RelationPair {
 }
 
 /**
- * Configuration for a single named patch: mapping, optional filter, and section schema.
+ * Configuration for a single named patch: mapping, optional filter, and form schema properties.
  * @public
  */
 export interface PatchConfig {
@@ -117,12 +115,15 @@ export interface PatchConfig {
    * Normalised mapping of entity path → form field name or Nunjucks template string.
    * Always flat dot-notation keys (nested YAML is flattened by `buildPatchConfigs`).
    * Values containing `{{` are Nunjucks templates; plain values are form field names.
+   * Mapping values support dot-notation to address nested form data paths
+   * (e.g. `componentInfo.description` reads from `formData.componentInfo.description`).
    */
   mapping: Record<string, string>;
   filter?: FilterPredicate;
   /**
-   * Flattened JSON Schema properties from all sections (fieldName → schema).
+   * JSON Schema properties from the patch (fieldName → schema).
    * Used to infer `multiple` for relation fields (`type: "array"`).
+   * Supports arbitrary depth — use dot-notation in mapping values to address nested paths.
    */
-  sectionProperties: Record<string, unknown>;
+  properties: Record<string, unknown>;
 }

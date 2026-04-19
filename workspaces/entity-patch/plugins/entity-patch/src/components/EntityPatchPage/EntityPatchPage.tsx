@@ -32,7 +32,7 @@ import { RiArrowLeftLine } from '@remixicon/react';
 import { useEffect, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { useNavigate, useParams } from 'react-router-dom';
-import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
+import { PatchesLayout } from '../PatchesLayout/PatchesLayout';
 import {
   CONFIG_KEYS,
   DEFAULT_NAMESPACE,
@@ -169,9 +169,15 @@ export const EntityPatchPage = () => {
         </Text>
       </Flex>
 
-      <Box style={{ maxWidth: 720, margin: '0 auto' }}>
+      <Box
+        style={{
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: 16,
+        }}
+      >
         <LoadErrorAlert show={initialValuesError} />
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={patches}
           initialData={initialValues}
           onChange={(data, options) => {

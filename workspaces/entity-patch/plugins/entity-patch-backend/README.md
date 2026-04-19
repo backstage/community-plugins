@@ -45,7 +45,7 @@ All endpoints are mounted under `/api/entity-patch`.
 | ------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `GET`  | `/values/:namespace/:kind/:name`                | Returns the raw stored patch data for an entity (used by the processor). Supports `ETag` / `If-None-Match` for conditional caching. |
 | `GET`  | `/values/:namespace/:kind/:name?fillFromEntity` | Returns patch data pre-populated from the live catalog entity (used by the frontend on dialog open).                                |
-| `POST` | `/patches/:namespace/:kind/:name`               | Saves a patch section for an entity and triggers a catalog refresh. Body: `{ patchName, data }`.                                    |
+| `POST` | `/patches/:namespace/:kind/:name`               | Saves patch data for an entity and triggers a catalog refresh. Body: `{ patchName, data }`.                                         |
 
 ---
 

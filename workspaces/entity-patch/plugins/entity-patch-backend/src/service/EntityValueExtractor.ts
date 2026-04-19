@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import { Entity } from '@backstage/catalog-model';
 import type {
   BackstageCredentials,
@@ -168,9 +168,13 @@ export class EntityValueExtractor {
         entity,
         entityPath,
         fieldOrTemplate,
-        patch.sectionProperties,
+        patch.properties,
       );
-      if (value !== undefined) patchResult[fieldOrTemplate] = value;
+      if (value !== undefined) {
+        // Use lodash set to support dot-notation paths in mapping values
+        // (e.g. "componentInfo.description" sets nested form data correctly)
+        set(patchResult, fieldOrTemplate, value);
+      }
     }
     return patchResult;
   }
@@ -179,14 +183,14 @@ export class EntityValueExtractor {
     entity: Entity,
     entityPath: string,
     fieldName: string,
-    sectionProperties: Record<string, unknown>,
+    properties: Record<string, unknown>,
   ): unknown {
     if (entityPath.startsWith(RELATION_KEY_PREFIX))
       return this.getRelationValue(
         entity,
         entityPath.slice(RELATION_KEY_PREFIX.length),
         fieldName,
-        sectionProperties,
+        properties,
       );
     return getByPath(entity, entityPath);
   }
@@ -195,12 +199,11 @@ export class EntityValueExtractor {
     entity: Entity,
     relType: string,
     fieldName: string,
-    sectionProperties: Record<string, unknown>,
+    properties: Record<string, unknown>,
   ): unknown {
     if (!this.relationPairs?.has(relType)) return undefined;
-    const schema = sectionProperties[fieldName] as
-      | { type?: string }
-      | undefined;
+    // Use lodash get to support dot-notation field names in relation schema lookup
+    const schema = get(properties, fieldName) as { type?: string } | undefined;
     return extractRelationValues(entity, relType, schema?.type === 'array');
   }
 }

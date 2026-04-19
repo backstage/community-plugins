@@ -16,75 +16,67 @@
 import { renderInTestApp } from '@backstage/frontend-test-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { act } from 'react';
-import { DefaultPatchesLayout } from './DefaultPatchesLayout';
+import { PatchesLayout } from './PatchesLayout';
 import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 
 const patches: PatchDefinition[] = [
   {
     name: 'group-details',
     filter: { kind: 'group' },
-    sections: [
-      {
-        title: 'Group Details',
-        description: 'Basic metadata for all groups.',
-        required: ['description'],
-        properties: {
-          description: {
-            title: 'Description',
-            type: 'string',
-            description: 'A brief description of this group.',
-            'ui:widget': 'textarea',
-          },
-          contactEmail: {
-            title: 'Contact Email',
-            type: 'string',
-            format: 'email',
-            description: 'Primary contact email.',
-          },
-          slackChannel: {
-            title: 'Slack Channel',
-            type: 'string',
-            description: 'Slack channel name, e.g. #team-platform',
-          },
-          aliases: {
-            title: 'Aliases',
-            type: 'array',
-            items: { type: 'string' },
-            description: 'Other names for this group.',
-          },
-        },
+    title: 'Group Details',
+    description: 'Basic metadata for all groups.',
+    required: ['description'],
+    properties: {
+      description: {
+        title: 'Description',
+        type: 'string',
+        description: 'A brief description of this group.',
+        'ui:widget': 'textarea',
       },
-    ],
+      contactEmail: {
+        title: 'Contact Email',
+        type: 'string',
+        format: 'email',
+        description: 'Primary contact email.',
+      },
+      slackChannel: {
+        title: 'Slack Channel',
+        type: 'string',
+        description: 'Slack channel name, e.g. #team-platform',
+      },
+      aliases: {
+        title: 'Aliases',
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Other names for this group.',
+      },
+    },
   },
   {
     name: 'team-ownership',
     filter: { kind: 'group', 'spec.type': 'team' },
-    sections: [
-      {
-        title: 'Team Ownership',
-        description: 'Ownership roles — applies only to groups of type "team".',
-        properties: {
-          owner: {
-            title: 'Owner',
-            type: 'string',
-            description: 'The owner for this team.',
-            'ui:field': 'OwnerPicker',
-          },
-        },
+    title: 'Team Ownership',
+    description: 'Ownership roles — applies only to groups of type "team".',
+    properties: {
+      owner: {
+        title: 'Owner',
+        type: 'string',
+        description: 'The owner for this team.',
+        'ui:field': 'OwnerPicker',
       },
-    ],
+    },
   },
 ];
 
-describe('DefaultPatchesLayout', () => {
-  it('should render visible text for each section title', async () => {
+describe('PatchesLayout', () => {
+  it('should render visible text for each patch title', async () => {
     const testPatches = [
-      { name: 'p1', sections: [{ title: 'Step 1', properties: {} }] },
-      { name: 'p2', sections: [{ title: 'Step 2', properties: {} }] },
+      { name: 'p1', title: 'Step 1', properties: {} },
+      { name: 'p2', title: 'Step 2', properties: {} },
     ];
 
     await renderInTestApp(
-      <DefaultPatchesLayout patches={testPatches} onChange={() => {}} />,
+      <PatchesLayout patches={testPatches} onChange={() => {}} />,
     );
 
     expect(screen.getByText('Step 1')).toBeInTheDocument();
@@ -96,19 +88,15 @@ describe('DefaultPatchesLayout', () => {
     const testPatches = [
       {
         name: 'my-patch',
-        sections: [
-          {
-            title: 'Step 1',
-            properties: {
-              name: { title: 'name', type: 'string' },
-            },
-          },
-        ],
+        title: 'Step 1',
+        properties: {
+          name: { title: 'name', type: 'string' },
+        },
       },
     ];
 
     const { getByRole } = await renderInTestApp(
-      <DefaultPatchesLayout patches={testPatches} onChange={onChange} />,
+      <PatchesLayout patches={testPatches} onChange={onChange} />,
     );
 
     await act(async () => {
@@ -125,7 +113,7 @@ describe('DefaultPatchesLayout', () => {
 
   it('should pre-fill fields from initialData', async () => {
     const { getByRole } = await renderInTestApp(
-      <DefaultPatchesLayout
+      <PatchesLayout
         patches={patches}
         initialData={{
           'group-details': { slackChannel: '#team-platform' },
@@ -144,26 +132,18 @@ describe('DefaultPatchesLayout', () => {
     const twoPatches = [
       {
         name: 'patch-a',
-        sections: [
-          {
-            title: 'Patch A',
-            properties: { foo: { title: 'foo', type: 'string' } },
-          },
-        ],
+        title: 'Patch A',
+        properties: { foo: { title: 'foo', type: 'string' } },
       },
       {
         name: 'patch-b',
-        sections: [
-          {
-            title: 'Patch B',
-            properties: { bar: { title: 'bar', type: 'string' } },
-          },
-        ],
+        title: 'Patch B',
+        properties: { bar: { title: 'bar', type: 'string' } },
       },
     ];
 
     const { getByRole } = await renderInTestApp(
-      <DefaultPatchesLayout
+      <PatchesLayout
         patches={twoPatches}
         initialData={{ 'patch-a': { foo: 'existing' } }}
         onChange={onChange}
@@ -187,26 +167,18 @@ describe('DefaultPatchesLayout', () => {
     const twoPatches = [
       {
         name: 'patch-a',
-        sections: [
-          {
-            title: 'Patch A',
-            properties: { name: { title: 'Name A', type: 'string' } },
-          },
-        ],
+        title: 'Patch A',
+        properties: { name: { title: 'Name A', type: 'string' } },
       },
       {
         name: 'patch-b',
-        sections: [
-          {
-            title: 'Patch B',
-            properties: { name: { title: 'Name B', type: 'string' } },
-          },
-        ],
+        title: 'Patch B',
+        properties: { name: { title: 'Name B', type: 'string' } },
       },
     ];
 
     const { getAllByRole } = await renderInTestApp(
-      <DefaultPatchesLayout patches={twoPatches} onChange={onChange} />,
+      <PatchesLayout patches={twoPatches} onChange={onChange} />,
     );
 
     const [inputA, inputB] = getAllByRole('textbox');
@@ -233,27 +205,19 @@ describe('DefaultPatchesLayout', () => {
     const twoPatches = [
       {
         name: 'patch-a',
-        sections: [
-          {
-            title: 'Patch A',
-            properties: { foo: { title: 'foo', type: 'string' } },
-          },
-        ],
+        title: 'Patch A',
+        properties: { foo: { title: 'foo', type: 'string' } },
       },
       {
         name: 'patch-b',
-        sections: [
-          {
-            title: 'Patch B',
-            properties: { bar: { title: 'bar', type: 'string' } },
-          },
-        ],
+        title: 'Patch B',
+        properties: { bar: { title: 'bar', type: 'string' } },
       },
     ];
 
     // Only patch-a has initialData, patch-b is absent
     const { getByRole } = await renderInTestApp(
-      <DefaultPatchesLayout
+      <PatchesLayout
         patches={twoPatches}
         initialData={{ 'patch-a': { foo: 'pre-filled' } }}
         onChange={onChange}
@@ -274,7 +238,7 @@ describe('DefaultPatchesLayout', () => {
 
   it('should render a textarea for fields that declare ui:widget textarea', async () => {
     const { getByRole } = await renderInTestApp(
-      <DefaultPatchesLayout patches={patches} onChange={() => {}} />,
+      <PatchesLayout patches={patches} onChange={() => {}} />,
     );
 
     // 'description' has 'ui:widget': 'textarea' in the patches fixture
@@ -287,25 +251,19 @@ describe('DefaultPatchesLayout', () => {
     const testPatches = [
       {
         name: 'my-patch',
-        sections: [
-          {
-            title: 'My Patch',
-            required: ['name'],
-            properties: {
-              name: { title: 'Name', type: 'string' },
-              other: { title: 'Other', type: 'string' },
-            },
-          },
-        ],
+        title: 'My Patch',
+        required: ['name'],
+        properties: {
+          name: { title: 'Name', type: 'string' },
+          other: { title: 'Other', type: 'string' },
+        },
       },
     ];
 
     const { container } = await renderInTestApp(
-      <DefaultPatchesLayout patches={testPatches} onChange={() => {}} />,
+      <PatchesLayout patches={testPatches} onChange={() => {}} />,
     );
 
-    // Submitting the form with the required field never filled (formData={})
-    // triggers rjsf validation, which shows the required error via onError
     await act(async () => {
       fireEvent.submit(container.querySelector('form')!);
     });
@@ -317,28 +275,24 @@ describe('DefaultPatchesLayout', () => {
     const testPatches = [
       {
         name: 'my-patch',
-        sections: [
-          {
-            title: 'My Patch',
-            properties: {
-              postcode: {
-                title: 'Postcode',
-                type: 'string',
-                pattern: '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]',
-              },
-            },
-            errorMessage: {
-              properties: {
-                postcode: 'invalid postcode format',
-              },
-            },
+        title: 'My Patch',
+        properties: {
+          postcode: {
+            title: 'Postcode',
+            type: 'string',
+            pattern: '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]',
           },
-        ],
+        },
+        errorMessage: {
+          properties: {
+            postcode: 'invalid postcode format',
+          },
+        },
       },
     ];
 
     const { getByRole, container } = await renderInTestApp(
-      <DefaultPatchesLayout patches={testPatches} onChange={() => {}} />,
+      <PatchesLayout patches={testPatches} onChange={() => {}} />,
     );
 
     await act(async () => {
@@ -349,10 +303,12 @@ describe('DefaultPatchesLayout', () => {
     });
 
     expect(
-      await screen.findByText((content: string) =>
-        content.includes('invalid postcode format'),
-      ),
-    ).toBeInTheDocument();
+      (
+        await screen.findAllByText((content: string) =>
+          content.includes('invalid postcode format'),
+        )
+      ).length,
+    ).toBeGreaterThanOrEqual(1);
   });
 
   it('should render a custom field extension when provided via the extensions prop', async () => {
@@ -361,23 +317,19 @@ describe('DefaultPatchesLayout', () => {
     const testPatches = [
       {
         name: 'ext-patch',
-        sections: [
-          {
-            title: 'Ext Patch',
-            properties: {
-              owner: {
-                title: 'Owner',
-                type: 'string',
-                'ui:field': 'MockField',
-              },
-            },
+        title: 'Ext Patch',
+        properties: {
+          owner: {
+            title: 'Owner',
+            type: 'string',
+            'ui:field': 'MockField',
           },
-        ],
+        },
       },
     ];
 
     const { getByText } = await renderInTestApp(
-      <DefaultPatchesLayout
+      <PatchesLayout
         patches={testPatches}
         extensions={[{ name: 'MockField', component: MockField }]}
         onChange={() => {}}
@@ -391,20 +343,14 @@ describe('DefaultPatchesLayout', () => {
   const asyncValidationPatches = [
     {
       name: 'val-patch',
-      sections: [
-        {
-          title: 'Val Patch',
-          properties: {
-            owner: { title: 'Owner', type: 'string', 'ui:field': 'MockField' },
-          },
-        },
-      ],
+      title: 'Val Patch',
+      properties: {
+        owner: { title: 'Owner', type: 'string', 'ui:field': 'MockField' },
+      },
     },
   ];
 
   describe('async validation', () => {
-    // onChange is always called — with isValid:false when there are errors,
-    // so the consumer can still react (e.g. disable Save) even on invalid input.
     it('should call onChange with isValid:false (not isValid:true) when a field extension validator returns an error', async () => {
       const onChange = jest.fn();
       const MockField = ({ onChange: onFieldChange }: any) => (
@@ -414,7 +360,7 @@ describe('DefaultPatchesLayout', () => {
       );
 
       await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={asyncValidationPatches}
           onChange={onChange}
           extensions={[
@@ -455,7 +401,7 @@ describe('DefaultPatchesLayout', () => {
       );
 
       await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={asyncValidationPatches}
           onChange={onChange}
           extensions={[
@@ -488,7 +434,7 @@ describe('DefaultPatchesLayout', () => {
       );
 
       await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={asyncValidationPatches}
           onChange={() => {}}
           extensions={[
@@ -519,7 +465,7 @@ describe('DefaultPatchesLayout', () => {
       );
 
       const { getByRole } = await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={asyncValidationPatches}
           onChange={() => {}}
           extensions={[
@@ -558,24 +504,20 @@ describe('DefaultPatchesLayout', () => {
       const testPatches = [
         {
           name: 'ctx-patch',
-          sections: [
-            {
-              title: 'Ctx Patch',
-              properties: {
-                sib: { title: 'Sib', type: 'string' },
-                dep: {
-                  title: 'Dep',
-                  type: 'string',
-                  'ui:field': 'ContextReader',
-                },
-              },
+          title: 'Ctx Patch',
+          properties: {
+            sib: { title: 'Sib', type: 'string' },
+            dep: {
+              title: 'Dep',
+              type: 'string',
+              'ui:field': 'ContextReader',
             },
-          ],
+          },
         },
       ];
 
       const { getByRole, getByTestId } = await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={testPatches}
           onChange={() => {}}
           extensions={[{ name: 'ContextReader', component: ContextReader }]}
@@ -609,7 +551,7 @@ describe('DefaultPatchesLayout', () => {
       );
 
       await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={asyncValidationPatches}
           onChange={onChange}
           extensions={[
@@ -645,7 +587,7 @@ describe('DefaultPatchesLayout', () => {
       );
 
       await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={asyncValidationPatches}
           onChange={onChange}
           extensions={[
@@ -678,20 +620,16 @@ describe('DefaultPatchesLayout', () => {
       const testPatches = [
         {
           name: 'err-patch',
-          sections: [
-            {
-              title: 'Err Patch',
-              required: ['name'],
-              properties: {
-                name: { title: 'Name', type: 'string' },
-              },
-            },
-          ],
+          title: 'Err Patch',
+          required: ['name'],
+          properties: {
+            name: { title: 'Name', type: 'string' },
+          },
         },
       ];
 
       const { container } = await renderInTestApp(
-        <DefaultPatchesLayout patches={testPatches} onChange={() => {}} />,
+        <PatchesLayout patches={testPatches} onChange={() => {}} />,
       );
 
       await act(async () => {
@@ -713,27 +651,20 @@ describe('DefaultPatchesLayout', () => {
         {
           name: 'owner-patch',
           filter: { kind: 'group' },
-          sections: [
-            {
-              title: 'Ownership',
-              properties: {
-                owner: {
-                  title: 'Owner',
-                  type: 'string',
-                  'ui:field': 'EntityNamePicker',
-                },
-              },
+          title: 'Ownership',
+          properties: {
+            owner: {
+              title: 'Owner',
+              type: 'string',
+              'ui:field': 'EntityNamePicker',
             },
-          ],
+          },
         },
       ];
 
       // No extensions provided — EntityNamePicker is unregistered
       const { getAllByTestId } = await renderInTestApp(
-        <DefaultPatchesLayout
-          patches={patchWithUnknownField}
-          onChange={() => {}}
-        />,
+        <PatchesLayout patches={patchWithUnknownField} onChange={() => {}} />,
       );
 
       const warnings = getAllByTestId('unknown-field-warning');
@@ -747,23 +678,19 @@ describe('DefaultPatchesLayout', () => {
         {
           name: 'owner-patch',
           filter: { kind: 'group' },
-          sections: [
-            {
-              title: 'Ownership',
-              properties: {
-                owner: {
-                  title: 'Owner',
-                  type: 'string',
-                  'ui:field': 'MockField',
-                },
-              },
+          title: 'Ownership',
+          properties: {
+            owner: {
+              title: 'Owner',
+              type: 'string',
+              'ui:field': 'MockField',
             },
-          ],
+          },
         },
       ];
 
       const { queryByTestId } = await renderInTestApp(
-        <DefaultPatchesLayout
+        <PatchesLayout
           patches={patchWithRegisteredField}
           extensions={[{ name: 'MockField', component: MockField }]}
           onChange={() => {}}

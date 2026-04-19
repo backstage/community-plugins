@@ -35,18 +35,15 @@ const componentEntity: Entity = {
 const groupPatch: PatchDefinition = {
   name: 'group-details',
   filter: { kind: 'group' },
-  sections: [],
 };
 
 const componentPatch: PatchDefinition = {
   name: 'component-details',
   filter: { kind: 'component' },
-  sections: [],
 };
 
 const unfiltered: PatchDefinition = {
   name: 'universal',
-  sections: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -88,13 +85,11 @@ describe('buildMenuFilter', () => {
     const allGroupsPatch: PatchDefinition = {
       name: 'all-groups',
       filter: { kind: 'group' },
-      sections: [],
     };
     // Patch 2: applies only to Groups of type "team"
     const teamGroupPatch: PatchDefinition = {
       name: 'team-groups',
       filter: { kind: 'group', 'spec.type': 'team' },
-      sections: [],
     };
     const squadGroup: Entity = {
       ...groupEntity,
@@ -113,12 +108,10 @@ describe('buildMenuFilter', () => {
     const teamPatch: PatchDefinition = {
       name: 'team-patch',
       filter: { kind: 'group', 'spec.type': 'team' },
-      sections: [],
     };
     const squadPatch: PatchDefinition = {
       name: 'squad-patch',
       filter: { kind: 'group', 'spec.type': 'squad' },
-      sections: [],
     };
     const teamGroup: Entity = {
       ...groupEntity,
@@ -174,7 +167,6 @@ describe('filterPatchesForEntity', () => {
     const anotherGroupPatch: PatchDefinition = {
       name: 'group-extra',
       filter: { kind: 'group' },
-      sections: [],
     };
     const result = filterPatchesForEntity(
       [groupPatch, anotherGroupPatch, componentPatch],

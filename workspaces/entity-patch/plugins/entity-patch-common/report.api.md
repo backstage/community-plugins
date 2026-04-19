@@ -37,15 +37,22 @@ export interface PatchConfig {
   mapping: Record<string, string>;
   // (undocumented)
   name: string;
-  sectionProperties: Record<string, unknown>;
+  properties: Record<string, unknown>;
 }
 
 // @public
 export interface PatchDefinition {
+  description?: string;
+  errorMessage?: {
+    properties?: Record<string, string>;
+    [key: string]: unknown;
+  };
   filter?: FilterPredicate;
   mapping?: Record<string, unknown>;
   name: string;
-  sections: PatchSection[];
+  properties?: Record<string, unknown>;
+  required?: string[];
+  title?: string;
 }
 
 // @public
@@ -63,20 +70,6 @@ export interface PatchProperty {
   title?: string;
   // (undocumented)
   type?: string;
-}
-
-// @public
-export interface PatchSection {
-  // (undocumented)
-  [key: string]: unknown;
-  description?: string;
-  errorMessage?: {
-    properties?: Record<string, string>;
-    [key: string]: unknown;
-  };
-  properties?: Record<string, PatchProperty>;
-  required?: string[];
-  title?: string;
 }
 
 // @public

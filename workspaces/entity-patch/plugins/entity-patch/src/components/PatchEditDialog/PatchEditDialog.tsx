@@ -25,7 +25,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import { DefaultPatchesLayout } from '../DefaultPatchesLayout';
+import { PatchesLayout } from '../PatchesLayout/PatchesLayout';
 import { FieldExtensionOptions } from '@backstage/plugin-scaffolder-react';
 import { LoadErrorAlert } from '../LoadErrorAlert';
 import { UnsavedWarningAlert } from '../UnsavedWarningAlert';
@@ -98,7 +98,7 @@ export const PatchEditDialog = ({
           onKeepEditing={() => setShowUnsavedWarning(false)}
           onDiscard={() => dialog.close()}
         />
-        <DefaultPatchesLayout
+        <PatchesLayout
           onChange={(data, { isValid, isDirty: dirty }) => {
             setFormData(data);
             setIsFormValid(isValid);
