@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createFrontendModule,
-  createFrontendPlugin,
-} from '@backstage/frontend-plugin-api';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import { TranslationBlueprint } from '@backstage/plugin-app-react';
-import { rootRouteRef } from '../routes';
 import { topologyTranslations } from '../translations';
 import { topologyEntityContent } from './extensions/entityTab';
 
 const topologyTranslation = TranslationBlueprint.make({
   params: {
     resource: topologyTranslations,
-  },
-});
-
-/** @alpha */
-export default createFrontendPlugin({
-  pluginId: 'topology',
-  extensions: [],
-  routes: {
-    root: rootRouteRef,
   },
 });
 
