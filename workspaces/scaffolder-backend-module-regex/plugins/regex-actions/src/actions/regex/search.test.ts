@@ -232,4 +232,76 @@ describe('regex:search', () => {
       'Output key "matches" collides with an existing property in input object',
     );
   });
+
+  it('should extract JIRA IDs from commit messages', async () => {
+    const input = {
+      objects: [
+        {
+          sha: 'a2dcbf9b5dd684a727eedc74a9ae67c2cb02661f',
+          commitDate: '2026-04-15T10:15:00Z',
+          commitMessage: 'PROJ-123: Add new feature for user authentication',
+          pullRequestNumber: 33939,
+          authorName: 'Robin Hilton',
+          authorEmail: '22367rh@gmail.com',
+        },
+        {
+          sha: 'b3edcf0c6ee795b838fddee75b0bf73d3dc13672g',
+          commitDate: '2026-04-14T14:30:00Z',
+          commitMessage: 'Fix bug in CI-456 pipeline integration',
+          pullRequestNumber: 33938,
+          authorName: 'Jane Smith',
+          authorEmail: 'jane.smith@example.com',
+        },
+        {
+          sha: 'c4feedf1d7ff8a6c949geeef86c0cg84eed24783h',
+          commitDate: '2026-04-13T09:45:00Z',
+          commitMessage: 'Update dependencies without ticket reference',
+          pullRequestNumber: 33937,
+          authorName: 'John Doe',
+          authorEmail: 'john.doe@example.com',
+        },
+      ],
+      property: 'commitMessage',
+      pattern: '([A-Za-z]{2,}-[0-9]+)',
+      outputKey: 'jiraId',
+      firstOnly: true,
+    };
+
+    const context = {
+      ...mockContext,
+      input,
+    };
+
+    await action.handler(context);
+
+    expect(context.output).toHaveBeenLastCalledWith('results', [
+      {
+        sha: 'a2dcbf9b5dd684a727eedc74a9ae67c2cb02661f',
+        commitDate: '2026-04-15T10:15:00Z',
+        commitMessage: 'PROJ-123: Add new feature for user authentication',
+        pullRequestNumber: 33939,
+        authorName: 'Robin Hilton',
+        authorEmail: '22367rh@gmail.com',
+        jiraId: 'PROJ-123',
+      },
+      {
+        sha: 'b3edcf0c6ee795b838fddee75b0bf73d3dc13672g',
+        commitDate: '2026-04-14T14:30:00Z',
+        commitMessage: 'Fix bug in CI-456 pipeline integration',
+        pullRequestNumber: 33938,
+        authorName: 'Jane Smith',
+        authorEmail: 'jane.smith@example.com',
+        jiraId: 'CI-456',
+      },
+      {
+        sha: 'c4feedf1d7ff8a6c949geeef86c0cg84eed24783h',
+        commitDate: '2026-04-13T09:45:00Z',
+        commitMessage: 'Update dependencies without ticket reference',
+        pullRequestNumber: 33937,
+        authorName: 'John Doe',
+        authorEmail: 'john.doe@example.com',
+        jiraId: '',
+      },
+    ]);
+  });
 });
