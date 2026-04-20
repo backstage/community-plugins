@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { act } from '@testing-library/react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { TechRadarLoaderResponse } from '@backstage-community/plugin-tech-radar-common';
 
@@ -30,6 +31,10 @@ describe('RadarComponent', () => {
 
   afterAll(() => {
     GetBBoxPolyfill.remove();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   class MockClient implements TechRadarApi {
@@ -62,13 +67,15 @@ describe('RadarComponent', () => {
       </TestApiProvider>,
     );
 
-    jest.advanceTimersByTime(250);
+    await act(async () => {
+      jest.advanceTimersByTime(250);
+    });
     await expect(findByTestId('progress')).resolves.toBeInTheDocument();
 
-    jest.advanceTimersByTime(250);
+    await act(async () => {
+      jest.advanceTimersByTime(250);
+    });
     await expect(findByTestId('tech-radar-svg')).resolves.toBeInTheDocument();
-
-    jest.useRealTimers();
   });
 
   it('should call the errorApi if load fails', async () => {
