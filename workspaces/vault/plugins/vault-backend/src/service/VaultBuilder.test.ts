@@ -99,7 +99,7 @@ describe('VaultBuilder', () => {
 
   describe('enableTokenRenew schedule configuration', () => {
     const createBuilderWithScheduleConfig = (
-      schedule?: SchedulerServiceTaskScheduleDefinition | boolean,
+      schedule?: SchedulerServiceTaskScheduleDefinition,
     ) => {
       const runner = jest.fn();
       const mockScheduler = mockServices.scheduler.mock({
@@ -147,18 +147,6 @@ describe('VaultBuilder', () => {
 
     it('uses default hourly schedule when vault.schedule is not provided', async () => {
       const { builder, mockScheduler } = createBuilderWithScheduleConfig();
-      builder.build();
-
-      await builder.enableTokenRenew();
-
-      expect(mockScheduler.createScheduledTaskRunner).toHaveBeenCalledWith({
-        frequency: { hours: 1 },
-        timeout: { hours: 1 },
-      });
-    });
-
-    it('uses default hourly schedule when vault.schedule is false', async () => {
-      const { builder, mockScheduler } = createBuilderWithScheduleConfig(false);
       builder.build();
 
       await builder.enableTokenRenew();

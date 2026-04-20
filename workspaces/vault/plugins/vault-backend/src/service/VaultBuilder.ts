@@ -147,12 +147,13 @@ export class VaultBuilder {
   }
 
   private getConfigSchedule(): SchedulerServiceTaskScheduleDefinition {
-    const schedule = this.env.config.getOptional<
-      SchedulerServiceTaskScheduleDefinitionConfig | boolean
-    >('vault.schedule');
+    const schedule =
+      this.env.config.getOptional<SchedulerServiceTaskScheduleDefinitionConfig>(
+        'vault.schedule',
+      );
 
     const scheduleCfg =
-      schedule !== undefined && schedule !== false
+      schedule !== undefined
         ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
             this.env.config.getConfig('vault.schedule'),
           )
