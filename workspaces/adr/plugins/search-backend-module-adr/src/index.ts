@@ -101,7 +101,6 @@ export default createBackendModule({
         auth: coreServices.auth,
         cache: coreServices.cache,
         config: coreServices.rootConfig,
-        discovery: coreServices.discovery,
         logger: coreServices.rootLogger,
         reader: coreServices.urlReader,
         scheduler: coreServices.scheduler,
