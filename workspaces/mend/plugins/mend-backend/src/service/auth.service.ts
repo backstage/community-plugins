@@ -218,20 +218,30 @@ export class MendAuthSevice {
       return this.connect();
     }
 
-    const decoded = jwt.decode(this.authToken);
-    if (!decoded || typeof decoded !== 'object' || !('exp' in decoded)) {
+    try {
+      const decoded = jwt.decode(this.authToken);
+      if (!decoded || typeof decoded !== 'object' || !('exp' in decoded)) {
+        return this.connect();
+      }
+
+      const token = decoded as JwtAuthToken;
+      const expMs = Number(token.exp) * 1000;
+      if (Number.isNaN(expMs) || expMs - Date.now() < 0) {
+        return this.connect();
+      }
+
+      return Promise.resolve();
+    } catch (err) {
+      this.logger?.error(
+        `Failed to decode auth token: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+      // Clear invalid token and reconnect
+      this.authToken = '';
       return this.connect();
     }
-
-    const token = decoded as JwtAuthToken;
-    const expMs = Number(token.exp) * 1000;
-    if (Number.isNaN(expMs) || expMs - Date.now() < 0) {
-      return this.connect();
-    }
-
-    return Promise.resolve();
   }
-
   static getAuthToken(): string {
     return MendAuthSevice.authToken;
   }
