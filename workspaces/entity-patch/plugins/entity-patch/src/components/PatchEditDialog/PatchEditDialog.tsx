@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { JsonValue } from '@backstage/types';
 import { PatchDefinition } from '@backstage-community/plugin-entity-patch-common';
 import { Button, ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
@@ -55,6 +55,7 @@ export const PatchEditDialog = ({
   const [isFormValid, setIsFormValid] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const dialogContentRef = useRef<HTMLDivElement>(null);
 
   const { executeSave, isSaving } = usePatchSave(() => {
     setIsDirty(false);
@@ -65,6 +66,7 @@ export const PatchEditDialog = ({
   const handleClose = () => {
     if (isDirty) {
       setShowUnsavedWarning(true);
+      dialogContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     dialog.close();
@@ -91,7 +93,7 @@ export const PatchEditDialog = ({
         aria-label="Close dialog"
         onClick={handleClose}
       />
-      <DialogContent>
+      <DialogContent ref={dialogContentRef}>
         <LoadErrorAlert show={!!loadError} />
         <UnsavedWarningAlert
           show={showUnsavedWarning}
