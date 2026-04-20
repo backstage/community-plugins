@@ -153,13 +153,13 @@ export class VaultBuilder {
 
     const scheduleCfg =
       schedule !== undefined && schedule !== false
-        ? {
+        ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+            this.env.config.getConfig('vault.schedule'),
+          )
+        : {
             frequency: { hours: 1 },
             timeout: { hours: 1 },
-          }
-        : readSchedulerServiceTaskScheduleDefinitionFromConfig(
-            this.env.config.getConfig('vault.schedule'),
-          );
+          };
 
     return scheduleCfg;
   }
