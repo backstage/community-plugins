@@ -116,11 +116,8 @@ describe('VaultBuilder', () => {
           type: 'static',
           secret: '1234567890',
         },
+        schedule: schedule,
       };
-
-      if (schedule) {
-        vaultConfig.schedule = schedule;
-      }
 
       const builder = VaultBuilder.createBuilder({
         logger: mockServices.logger.mock(),
