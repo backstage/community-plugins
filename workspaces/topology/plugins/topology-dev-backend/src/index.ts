@@ -13,10 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
-import { SidebarContent } from './Sidebar';
 
-export const navModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [SidebarContent],
-});
+export { topologyDevBackendPlugin as default } from './plugin';

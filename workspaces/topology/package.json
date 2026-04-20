@@ -8,8 +8,8 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
-    "start": "backstage-cli repo start app backend",
-    "start:legacy": "backstage-cli repo start app-legacy backend",
+    "start": "backstage-cli repo start",
+    "start:alpha": "yarn workspaces foreach -A --include @backstage-community/plugin-topology --include @internal/plugin-topology-dev-backend --parallel -v -i run start:alpha",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",

@@ -16,7 +16,7 @@
 
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/legacy.tsx) or 'nfs' (default dev entry)
+// APP_MODE: 'legacy' (dev/index.tsx) or 'nfs' (dev/alpha/index.tsx)
 const appMode = process.env.APP_MODE || 'legacy';
 const startCommand = appMode === 'legacy' ? 'yarn start:legacy' : 'yarn start';
 

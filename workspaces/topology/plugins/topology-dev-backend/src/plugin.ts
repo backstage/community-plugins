@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@backstage/cli/asset-types';
-import '@backstage/ui/css/styles.css';
-import ReactDOM from 'react-dom/client';
-import App from './App';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(App);
+import { createBackendPlugin } from '@backstage/backend-plugin-api';
+
+/**
+ * Minimal backend plugin so `backstage-cli repo start` pairs this package with
+ * `@backstage-community/plugin-topology`.
+ * Dev-only wiring (catalog, auth, kubernetes, …) lives in `dev/index.ts`.
+ */
+export const topologyDevBackendPlugin = createBackendPlugin({
+  pluginId: 'topology',
+  register(env) {
+    env.registerInit({
+      deps: {},
+      async init() {},
+    });
+  },
+});
