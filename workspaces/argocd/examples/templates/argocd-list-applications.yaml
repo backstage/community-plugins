@@ -23,7 +23,7 @@ spec:
         selector:
           title: Label Selector
           type: string
-          description: "Label selector to filter applications, e.g. app.kubernetes.io/part-of=my-app"
+          description: 'Label selector to filter applications, e.g. app.kubernetes.io/part-of=my-app'
         project:
           title: Project Name
           type: string
