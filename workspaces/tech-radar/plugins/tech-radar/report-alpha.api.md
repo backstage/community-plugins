@@ -42,8 +42,12 @@ const _default: OverridableFrontendPlugin<
     'nav-item:tech-radar': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
-      config: {};
-      configInput: {};
+      config: {
+        title: string | undefined;
+      };
+      configInput: {
+        title?: string | undefined;
+      };
       output: ExtensionDataRef<
         {
           title: string;
@@ -74,8 +78,8 @@ const _default: OverridableFrontendPlugin<
         width?: number | undefined;
         subtitle?: string | undefined;
         pageTitle?: string | undefined;
-        title?: string | undefined | undefined;
         path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -169,8 +173,12 @@ export const techRadarApi: OverridableExtensionDefinition<{
 export const techRadarNavItem: OverridableExtensionDefinition<{
   kind: 'nav-item';
   name: undefined;
-  config: {};
-  configInput: {};
+  config: {
+    title: string | undefined;
+  };
+  configInput: {
+    title?: string | undefined;
+  };
   output: ExtensionDataRef<
     {
       title: string;
@@ -203,8 +211,8 @@ export const techRadarPage: OverridableExtensionDefinition<{
     width?: number | undefined;
     subtitle?: string | undefined;
     pageTitle?: string | undefined;
-    title?: string | undefined | undefined;
     path?: string | undefined | undefined;
+    title?: string | undefined | undefined;
   };
   output:
     | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
