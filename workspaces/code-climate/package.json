@@ -41,12 +41,18 @@
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
+    "@jest/environment-jsdom-abstract": "^30",
+    "@types/jest": "^30",
+    "@types/jsdom": "^27",
+    "jest": "^30",
+    "jsdom": "^27",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.8.0"
   },
   "resolutions": {
+    "@types/node": "22.7.8",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "csstype@npm:^3.0.2": "3.0.9",
