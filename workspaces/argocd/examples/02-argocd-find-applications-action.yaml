@@ -1,6 +1,6 @@
 # ArgoCD Find Applications Action
 #
-# Action ID: argocd:find-applications
+# Action ID: backstage-community-argocd:argocd:find-applications
 #
 # This action is automatically registered by the @backstage-community/plugin-argocd-backend
 # plugin via the Backstage Actions API. No additional setup is required beyond
@@ -12,13 +12,13 @@
 
 ---
 # Minimal example (required fields only)
-actionId: argocd:find-applications
+actionId: backstage-community-argocd:argocd:find-applications
 input:
   appName: my-service
 
 ---
 # Full example (all fields)
-actionId: argocd:find-applications
+actionId: backstage-community-argocd:argocd:find-applications
 input:
   appName: my-service
   project: my-project # Filter by ArgoCD project name

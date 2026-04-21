@@ -1,6 +1,6 @@
 # ArgoCD Get Application Action
 #
-# Action ID: argocd:get-application
+# Action ID: backstage-community-argocd:argocd:get-application
 #
 # This action is automatically registered by the @backstage-community/plugin-argocd-backend
 # plugin via the Backstage Actions API. No additional setup is required beyond
@@ -12,14 +12,14 @@
 
 ---
 # Minimal example (required fields only)
-actionId: argocd:get-application
+actionId: backstage-community-argocd:argocd:get-application
 input:
   instanceName: local
   appName: my-service
 
 ---
 # Full example (all fields)
-actionId: argocd:get-application
+actionId: backstage-community-argocd:argocd:get-application
 input:
   instanceName: local
   appName: my-service

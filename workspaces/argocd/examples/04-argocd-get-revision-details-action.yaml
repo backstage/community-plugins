@@ -1,6 +1,6 @@
 # ArgoCD Get Revision Details Action
 #
-# Action ID: argocd:get-revision-details
+# Action ID: backstage-community-argocd:argocd:get-revision-details
 #
 # This action is automatically registered by the @backstage-community/plugin-argocd-backend
 # plugin via the Backstage Actions API. No additional setup is required beyond
@@ -12,7 +12,7 @@
 
 ---
 # Minimal example (required fields only)
-actionId: argocd:get-revision-details
+actionId: backstage-community-argocd:argocd:get-revision-details
 input:
   instanceName: local
   appName: my-service
@@ -20,7 +20,7 @@ input:
 
 ---
 # Full example (all fields)
-actionId: argocd:get-revision-details
+actionId: backstage-community-argocd:argocd:get-revision-details
 input:
   instanceName: local
   appName: my-service
