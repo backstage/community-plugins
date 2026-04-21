@@ -145,6 +145,7 @@ export async function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
+  toolCallTimeout: number = 60000,
 ): Promise<ToolExecutionResult> {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || '{}');
@@ -160,10 +161,14 @@ export async function executeToolCall(
     throw new Error(`Client for server '${tool.serverId}' not found`);
   }
 
-  const result = await client.callTool({
-    name: toolName,
-    arguments: toolArgs,
-  });
+  const result = await client.callTool(
+    {
+      name: toolName,
+      arguments: toolArgs,
+    },
+    undefined,
+    { timeout: toolCallTimeout },
+  );
 
   // Extract and format the result content properly
   let formattedResult: string;

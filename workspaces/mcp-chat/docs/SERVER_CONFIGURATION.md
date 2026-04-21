@@ -168,6 +168,15 @@ mcpServers:
 - **Development**: STDIO servers are ideal for local development and testing
 - **Production**: HTTP servers work better for distributed or cloud deployments
 
+### Tool Call Timeout
+
+By default, MCP tool calls time out after **60 seconds**. For long-running tools (e.g., scaffolder templates that provision infrastructure), increase this with `toolCallTimeout`:
+
+```yaml
+mcpChat:
+  toolCallTimeout: 300000 # 5 minutes, in milliseconds
+```
+
 ---
 
 For additional setup instructions and troubleshooting, refer to the [main README](../README.md).

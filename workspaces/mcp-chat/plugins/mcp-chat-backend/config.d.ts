@@ -113,6 +113,13 @@ export interface Config {
       type?: 'stdio' | 'streamable-http'; // Note: Use MCPServerType enum in code
     }>;
     /**
+     * Timeout in milliseconds for MCP tool call requests.
+     * Increase this for long-running tools such as scaffolder templates.
+     * @visibility backend
+     * @default 60000
+     */
+    toolCallTimeout?: number;
+    /**
      * Custom system prompt for the AI assistant
      * @visibility backend
      */

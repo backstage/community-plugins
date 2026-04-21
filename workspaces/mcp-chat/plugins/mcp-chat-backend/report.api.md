@@ -112,6 +112,7 @@ export function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
+  toolCallTimeout?: number,
 ): Promise<ToolExecutionResult>;
 
 // @public
