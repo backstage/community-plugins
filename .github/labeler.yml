@@ -151,6 +151,9 @@ workspace/graphiql:
 workspace/graphql-voyager:
   - "Workspace\\s*graphql-voyager"
 
+workspace/growthbook-flags:
+  - "Workspace\\s*growthbook-flags"
+
 workspace/ilert:
   - "Workspace\\s*ilert"
 
