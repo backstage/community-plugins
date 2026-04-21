@@ -1,0 +1,52 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-get-revision-details
+  title: Get ArgoCD Revision Details
+  description: Fetch the Git commit metadata for a specific revision of an ArgoCD application deployment
+  tags:
+    - argocd
+    - deployment
+    - kubernetes
+spec:
+  owner: group:default/infrastructure
+  type: deployment
+  parameters:
+    - title: Revision Details
+      required:
+        - instanceName
+        - appName
+        - revisionID
+      properties:
+        instanceName:
+          title: ArgoCD Instance
+          type: string
+          description: Name of the ArgoCD instance
+        appName:
+          title: Application Name
+          type: string
+          description: The ArgoCD application name
+        revisionID:
+          title: Revision ID
+          type: string
+          description: Git commit SHA or tag to get details for
+        appNamespace:
+          title: Application Namespace
+          type: string
+          description: Namespace of the application
+  steps:
+    - id: get-revision-details
+      name: Get Revision Details
+      action: backstage-community-argocd:argocd:get-revision-details
+      input:
+        instanceName: ${{ parameters.instanceName }}
+        appName: ${{ parameters.appName }}
+        revisionID: ${{ parameters.revisionID }}
+        appNamespace: ${{ parameters.appNamespace }}
+  output:
+    text:
+      - title: Revision Info
+        content: |
+          **Author:** ${{ steps['get-revision-details'].output.author }}
+          **Date:** ${{ steps['get-revision-details'].output.date }}
+          **Message:** ${{ steps['get-revision-details'].output.message }}

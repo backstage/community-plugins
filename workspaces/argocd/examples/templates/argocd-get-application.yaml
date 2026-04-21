@@ -1,0 +1,52 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-get-application
+  title: Get ArgoCD Application
+  description: Get full details of a specific ArgoCD application from a named instance
+  tags:
+    - argocd
+    - deployment
+    - kubernetes
+spec:
+  owner: group:default/infrastructure
+  type: deployment
+  parameters:
+    - title: ArgoCD Application Details
+      required:
+        - instanceName
+        - appName
+      properties:
+        instanceName:
+          title: ArgoCD Instance
+          type: string
+          description: Name of the ArgoCD instance as configured in argocd.appLocatorMethods[].instances
+        appName:
+          title: Application Name
+          type: string
+          description: The ArgoCD application name
+        appNamespace:
+          title: Application Namespace
+          type: string
+          description: Namespace of the application
+        project:
+          title: Project Name
+          type: string
+          description: ArgoCD project name
+  steps:
+    - id: get-application
+      name: Get ArgoCD Application
+      action: backstage-community-argocd:argocd:get-application
+      input:
+        instanceName: ${{ parameters.instanceName }}
+        appName: ${{ parameters.appName }}
+        appNamespace: ${{ parameters.appNamespace }}
+        project: ${{ parameters.project }}
+  output:
+    text:
+      - title: Application Status
+        content: |
+          **Name:** ${{ steps['get-application'].output.name }}
+          **Sync:** ${{ steps['get-application'].output.syncStatus }}
+          **Health:** ${{ steps['get-application'].output.healthStatus }}
+          **Resources:** ${{ steps['get-application'].output.resourcesCount }}
