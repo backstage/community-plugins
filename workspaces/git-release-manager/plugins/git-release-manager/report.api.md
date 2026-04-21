@@ -81,9 +81,9 @@ declare namespace constants {
 // Warning: (ae-missing-release-tag) "createMockBranch" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-const createMockBranch: ({
-  ...rest
-}?: Partial<GetBranchResult>) => GetBranchResult['branch'];
+const createMockBranch: (
+  input?: Partial<GetBranchResult>,
+) => GetBranchResult['branch'];
 
 // Warning: (ae-forgotten-export) The symbol "GetCommitResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "createMockCommit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -97,21 +97,17 @@ const createMockCommit: (
 // Warning: (ae-missing-release-tag) "createMockRecentCommit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-const createMockRecentCommit: ({
-  ...rest
-}: Partial<GetRecentCommitsResultSingle>) => GetRecentCommitsResultSingle;
+const createMockRecentCommit: (
+  input: Partial<GetRecentCommitsResultSingle>,
+) => GetRecentCommitsResultSingle;
 
 // Warning: (ae-forgotten-export) The symbol "GetLatestReleaseResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "createMockRelease" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-const createMockRelease: ({
-  id,
-  prerelease,
-  ...rest
-}?: Partial<
-  NonNullable<GetLatestReleaseResult['latestRelease']>
->) => NonNullable<GetLatestReleaseResult['latestRelease']>;
+const createMockRelease: (
+  input?: Partial<NonNullable<GetLatestReleaseResult['latestRelease']>>,
+) => NonNullable<GetLatestReleaseResult['latestRelease']>;
 
 // Warning: (ae-forgotten-export) The symbol "GetTagResult" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "createMockTag" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -143,7 +139,7 @@ export interface CreateRcOnSuccessArgs {
 // Warning: (ae-missing-release-tag) "Differ" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const Differ: ({ current, next, icon }: DifferProps) => JSX_2.Element;
+const Differ: (input: DifferProps) => JSX_2.Element;
 
 // Warning: (ae-missing-release-tag) "DISABLE_CACHE" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -598,32 +594,21 @@ export interface ResponseStep {
 // Warning: (ae-missing-release-tag) "ResponseStepDialog" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const ResponseStepDialog: ({
-  progress,
-  responseSteps,
-  title,
-}: DialogProps) => JSX_2.Element;
+const ResponseStepDialog: (input: DialogProps) => JSX_2.Element;
 
 // Warning: (ae-forgotten-export) The symbol "ResponseStepListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ResponseStepList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const ResponseStepList: ({
-  responseSteps,
-  animationDelay,
-  loading,
-  denseList,
-  children,
-}: PropsWithChildren<ResponseStepListProps>) => JSX_2.Element;
+const ResponseStepList: (
+  input: PropsWithChildren<ResponseStepListProps>,
+) => JSX_2.Element;
 
 // Warning: (ae-forgotten-export) The symbol "ResponseStepListItemProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ResponseStepListItem" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const ResponseStepListItem: ({
-  responseStep,
-  animationDelay,
-}: ResponseStepListItemProps) => JSX_2.Element;
+const ResponseStepListItem: (input: ResponseStepListItemProps) => JSX_2.Element;
 
 // Warning: (ae-missing-release-tag) "SEMVER_PARTS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

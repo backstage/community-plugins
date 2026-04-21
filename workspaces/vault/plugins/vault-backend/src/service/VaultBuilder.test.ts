@@ -19,6 +19,7 @@ import express from 'express';
 import request from 'supertest';
 import { mockServices } from '@backstage/backend-test-utils';
 import { VaultBuilder } from './VaultBuilder';
+import { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
 
 describe('VaultBuilder', () => {
   let app: express.Express;
@@ -93,6 +94,67 @@ describe('VaultBuilder', () => {
       const response = await request(app).get('/v1/secrets//create-url');
 
       expect(response.status).toEqual(404);
+    });
+  });
+
+  describe('enableTokenRenew schedule configuration', () => {
+    const createBuilderWithScheduleConfig = (
+      schedule?: SchedulerServiceTaskScheduleDefinition,
+    ) => {
+      const runner = jest.fn();
+      const mockScheduler = mockServices.scheduler.mock({
+        createScheduledTaskRunner() {
+          return { run: runner };
+        },
+      });
+
+      const vaultConfig: any = {
+        baseUrl: 'https://vault-server',
+        publicUrl: 'https://vault-server',
+        secretEngine: 'secrets',
+        auth: {
+          type: 'static',
+          secret: '1234567890',
+        },
+        schedule: schedule,
+      };
+
+      const builder = VaultBuilder.createBuilder({
+        logger: mockServices.logger.mock(),
+        config: new ConfigReader({ vault: vaultConfig }),
+        scheduler: mockScheduler,
+      });
+
+      return { builder, mockScheduler };
+    };
+
+    it('uses config schedule when vault.schedule is provided', async () => {
+      const { builder, mockScheduler } = createBuilderWithScheduleConfig({
+        scope: 'local',
+        frequency: { minutes: 30 },
+        timeout: { minutes: 15 },
+      });
+      builder.build();
+
+      await builder.enableTokenRenew();
+
+      expect(mockScheduler.createScheduledTaskRunner).toHaveBeenCalledWith({
+        scope: 'local',
+        frequency: { minutes: 30 },
+        timeout: { minutes: 15 },
+      });
+    });
+
+    it('uses default hourly schedule when vault.schedule is not provided', async () => {
+      const { builder, mockScheduler } = createBuilderWithScheduleConfig();
+      builder.build();
+
+      await builder.enableTokenRenew();
+
+      expect(mockScheduler.createScheduledTaskRunner).toHaveBeenCalledWith({
+        frequency: { hours: 1 },
+        timeout: { hours: 1 },
+      });
     });
   });
 });

@@ -1,5 +1,16 @@
 # @backstage-community/plugin-explore-react
 
+## 0.13.0
+
+### Minor Changes
+
+- 21067f0: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [21067f0]
+  - @backstage-community/plugin-explore-common@0.13.0
+
 ## 0.12.0
 
 ### Minor Changes

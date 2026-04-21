@@ -15,16 +15,20 @@
  */
 
 import { InputError, NotFoundError } from '@backstage/errors';
-import { CatalogApi } from '@backstage/catalog-client';
 import {
   getEntitySourceLocation,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import {
+  AuthService,
   createServiceFactory,
   createServiceRef,
+  coreServices,
 } from '@backstage/backend-plugin-api';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
+import {
+  catalogServiceRef,
+  CatalogService,
+} from '@backstage/plugin-catalog-node';
 
 import { TodoReader, todoReaderServiceRef } from '../lib';
 import { ListTodosRequest, ListTodosResponse, TodoService } from './types';
@@ -35,7 +39,8 @@ const DEFAULT_MAX_PAGE_SIZE = 50;
 /** @public */
 export type TodoReaderServiceOptions = {
   todoReader: TodoReader;
-  catalogClient: CatalogApi;
+  catalogClient: CatalogService;
+  auth: AuthService;
   maxPageSize?: number;
   defaultPageSize?: number;
 };
@@ -50,13 +55,15 @@ function wildcardRegex(str: string): RegExp {
 /** @public */
 export class TodoReaderService implements TodoService {
   private readonly todoReader: TodoReader;
-  private readonly catalogClient: CatalogApi;
+  private readonly catalogClient: CatalogService;
+  private readonly auth: AuthService;
   private readonly maxPageSize: number;
   private readonly defaultPageSize: number;
 
   constructor(options: TodoReaderServiceOptions) {
     this.todoReader = options.todoReader;
     this.catalogClient = options.catalogClient;
+    this.auth = options.auth;
     this.maxPageSize = options.maxPageSize ?? DEFAULT_MAX_PAGE_SIZE;
     this.defaultPageSize = options.defaultPageSize ?? DEFAULT_DEFAULT_PAGE_SIZE;
   }
@@ -68,9 +75,11 @@ export class TodoReaderService implements TodoService {
     if (!req.entity) {
       throw new InputError('Entity filter is required to list TODOs');
     }
-    const token = options?.token;
+    const credentials = options?.token
+      ? await this.auth.authenticate(options.token)
+      : await this.auth.getOwnServiceCredentials();
     const entity = await this.catalogClient.getEntityByRef(req.entity, {
-      token,
+      credentials,
     });
     if (!entity) {
       throw new NotFoundError(
@@ -143,11 +152,13 @@ export const todoServiceRef = createServiceRef<TodoService>({
     createServiceFactory({
       service,
       deps: {
+        auth: coreServices.auth,
         catalogApi: catalogServiceRef,
         todoReader: todoReaderServiceRef,
       },
-      async factory({ catalogApi, todoReader }) {
+      async factory({ auth, catalogApi, todoReader }) {
         const todoReaderService = new TodoReaderService({
+          auth,
           catalogClient: catalogApi,
           todoReader,
         });

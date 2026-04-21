@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gcalendar
 
+## 0.19.1
+
+### Patch Changes
+
+- 90d745b: Updated dependency `dompurify` to `^3.4.0`.
+
 ## 0.19.0
 
 ### Minor Changes

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
+import { ApiRef, createApiRef } from '@backstage/core-plugin-api';
 import type { N8nWorkflow, N8nExecution } from './types';
 
 /** @public */
@@ -27,6 +27,6 @@ export interface N8nApi {
 }
 
 /** @public */
-export const n8nApiRef = createApiRef<N8nApi>({
+export const n8nApiRef: ApiRef<N8nApi> = createApiRef<N8nApi>({
   id: 'plugin.n8n.service',
 });

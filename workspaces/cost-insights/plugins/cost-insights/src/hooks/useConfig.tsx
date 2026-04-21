@@ -132,7 +132,7 @@ export const ConfigProvider = ({ children }: PropsWithChildren<{}>) => {
         return new Intl.NumberFormat(
           baseCurrency.getOptionalString('locale'),
           options
-            ? {
+            ? ({
                 localeMatcher: options.getOptionalString('localeMatcher'),
                 style: 'currency',
                 currency: options.getOptionalString('currency'),
@@ -153,7 +153,7 @@ export const ConfigProvider = ({ children }: PropsWithChildren<{}>) => {
                 maximumSignificantDigits: options.getOptionalNumber(
                   'maximumSignificantDigits',
                 ),
-              }
+              } as Intl.NumberFormatOptions)
             : undefined,
         );
       }

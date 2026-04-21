@@ -46,7 +46,7 @@ const mockSystem: Entity = {
   relations: [
     {
       type: RELATION_HAS_PART,
-      targetRef: 'component:default/bingaux-sources',
+      targetRef: 'component:default/mock-name',
     },
   ],
   spec: {
@@ -60,8 +60,8 @@ const mockComponent: Entity = {
   kind: 'Component',
   metadata: {
     namespace: 'default',
-    name: 'bingaux-sources',
-    title: 'Bingaux Sources',
+    name: 'mock-name',
+    title: 'Mock Title',
     tags: ['python', 'csharp'],
   },
   spec: {
@@ -117,7 +117,7 @@ describe('<MaturitySummaryTable />', () => {
   };
 
   const bulkSummary: BulkMaturitySummary = [
-    { entity: 'component:default/bingaux-sources', summary },
+    { entity: 'component:default/mock-name', summary },
   ];
 
   const catalogApi: Partial<CatalogApi> = {

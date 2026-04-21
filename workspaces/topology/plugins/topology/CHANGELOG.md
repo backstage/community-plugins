@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.12.1
+
+### Patch Changes
+
+- 045e3b1: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.5.0`.
+
 ## 2.12.0
 
 ### Minor Changes

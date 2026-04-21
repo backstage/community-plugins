@@ -94,6 +94,10 @@ workspace/bookmarks:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/bookmarks/**']
 
+workspace/catalog:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/catalog/**']
+
 workspace/cicd-statistics:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/cicd-statistics/**']
@@ -141,6 +145,10 @@ workspace/entity-validation:
 workspace/explore:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/explore/**']
+
+workspace/fairwinds-insights:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/fairwinds-insights/**']
 
 workspace/feedback:
 - changed-files:
@@ -257,6 +265,10 @@ workspace/mta:
 workspace/multi-source-security-viewer:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/multi-source-security-viewer/**']
+
+workspace/n8n:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/n8n/**']
 
 workspace/newrelic:
 - changed-files:

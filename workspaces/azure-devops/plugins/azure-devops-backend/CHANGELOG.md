@@ -1,5 +1,16 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.27.0
+
+### Minor Changes
+
+- 7c1dfa3: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [7c1dfa3]
+  - @backstage-community/plugin-azure-devops-common@0.21.0
+
 ## 0.26.1
 
 ### Patch Changes

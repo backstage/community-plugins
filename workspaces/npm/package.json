@@ -7,11 +7,8 @@
     "node": "22 || 24"
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-npm --include @backstage-community/plugin-npm-backend --parallel -v -i run start",
-    "start": "backstage-cli repo start",
-    "start:next": "yarn workspaces foreach -A --include backend --include app-next --parallel -v -i run start",
-    "build:backend": "yarn workspace backend build",
-    "build-image": "yarn workspace backend build-image",
+    "start": "yarn workspaces foreach -A --include @backstage-community/plugin-npm --include @backstage-community/plugin-npm-backend --parallel -v -i run start",
+    "start:alpha": "yarn workspaces foreach -A --include @backstage-community/plugin-npm --include @backstage-community/plugin-npm-backend --parallel -v -i run start:alpha",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -22,6 +19,8 @@
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:alpha": "APP_MODE=alpha playwright test",
+    "test:e2e:ci": "yarn test:e2e && yarn test:e2e:alpha",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
@@ -30,26 +29,27 @@
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "plugins/*"
-    ]
-  },
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/npm"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.0",
-    "@backstage/cli-defaults": "^0.1.0",
+    "@backstage/cli": "^0.36.1",
+    "@backstage/cli-defaults": "^0.1.1",
     "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.17.0",
+    "@backstage/repo-tools": "^0.17.1",
     "@changesets/cli": "^2.27.1",
+    "@jest/environment-jsdom-abstract": "^30.3.0",
     "@playwright/test": "^1.32.3",
+    "jest": "^30.3.0",
+    "jsdom": "^29.0.2",
     "knip": "^5.27.4",
-    "node-gyp": "^9.0.0",
+    "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
     "typescript": "~5.8.0"
   },

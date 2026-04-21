@@ -38,6 +38,7 @@ body:
         - bitrise
         - blackduck
         - bookmarks
+        - catalog
         - cicd-statistics
         - cloudbuild
         - code-climate
@@ -50,6 +51,7 @@ body:
         - entity-feedback
         - entity-validation
         - explore
+        - fairwinds-insights
         - feedback
         - firehydrant
         - flux
@@ -79,6 +81,7 @@ body:
         - microsoft-calendar
         - mta
         - multi-source-security-viewer
+        - n8n
         - newrelic
         - nexus-repository-manager
         - nomad

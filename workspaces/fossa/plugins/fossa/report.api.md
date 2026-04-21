@@ -10,7 +10,7 @@ import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
 export const EntityFossaCard: (props: {
-  variant?: InfoCardVariants | undefined;
+  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)

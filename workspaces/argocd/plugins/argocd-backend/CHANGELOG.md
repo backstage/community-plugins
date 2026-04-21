@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.4.0
+
+### Minor Changes
+
+- 8a3c5b7: Add the Actions API to enable scaffolder actions
+
 ## 1.3.0
 
 ### Minor Changes

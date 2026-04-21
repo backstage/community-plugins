@@ -1,1 +1,4 @@
+# TODO: re-enable eslint for e2e-tests, but it looks like it requires additional configuration files :-/
+e2e-tests
+examples
 playwright.config.ts
