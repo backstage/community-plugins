@@ -100,7 +100,7 @@ const rbacTranslationFr = createTranslationMessages({
     'roleForm.fields.name.helperText': 'Entrez le nom du rôle',
     'roleForm.fields.description.label': 'Description',
     'roleForm.fields.description.helperText':
-      'Facultatif : saisissez une brève description du rôle (le but du rôle)',
+      'Facultatif : saisissez une brève description du rôle (le but du rôle)',
     'roleForm.fields.owner.label': 'Propriétaire',
     'roleForm.fields.owner.helperText':
       "Facultatif : saisissez un utilisateur ou un groupe qui sera autorisé à modifier ce rôle et à créer des rôles supplémentaires. À l’étape suivante, spécifiez les utilisateurs auxquels ils peuvent attribuer leurs rôles et les plugins auxquels ils peuvent accorder l’accès. Si laissé vide, attribue automatiquement l'auteur lors de la création.",
