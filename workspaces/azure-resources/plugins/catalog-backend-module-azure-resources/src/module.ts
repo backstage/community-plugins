@@ -17,7 +17,7 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 import { azureResourcesServiceRef } from '@backstage-community/plugin-azure-resources-node';
 import { readProviderConfigs } from './lib';
 import { AzureResourceProvider } from './provider/AzureResourceProvider';
