@@ -202,6 +202,10 @@ workspace/graphql-voyager:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/graphql-voyager/**']
 
+workspace/growthbook-flags:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/growthbook-flags/**']
+
 workspace/ilert:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/ilert/**']

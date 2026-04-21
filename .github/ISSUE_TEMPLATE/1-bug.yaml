@@ -64,6 +64,7 @@ body:
         - grafana
         - graphiql
         - graphql-voyager
+        - growthbook-flags
         - ilert
         - jaeger
         - jenkins
