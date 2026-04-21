@@ -5229,6 +5229,9 @@ __metadata:
     knip: "npm:^5.27.4"
     prettier: "npm:^2.3.2"
     typescript: "npm:~5.4.0"
+  dependenciesMeta:
+    better-sqlite3:
+      built: true
   languageName: unknown
   linkType: soft
 
