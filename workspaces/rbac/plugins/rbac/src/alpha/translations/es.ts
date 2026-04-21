@@ -75,7 +75,7 @@ const rbacTranslationEs = createTranslationMessages({
     'roleForm.titles.createRole': 'Crear rol',
     'roleForm.titles.editRole': 'Modificar rol',
     'roleForm.titles.nameAndDescription':
-      'Ingresar el nombre y la descripción del rol',
+      'Ingresar el nombre, la descripción y el propietario del rol',
     'roleForm.titles.usersAndGroups': 'Agregar usuarios y grupos',
     'roleForm.titles.permissionPolicies': 'Agregar políticas de permisos',
     'roleForm.review.reviewAndCreate': 'Revisar y crear',
@@ -94,7 +94,7 @@ const rbacTranslationEs = createTranslationMessages({
     'roleForm.fields.name.helperText': 'Ingresar el nombre del rol',
     'roleForm.fields.description.label': 'Descripción',
     'roleForm.fields.description.helperText':
-      'Ingrese una breve descripción sobre el rol (el propósito del rol)',
+      'Opcional: Ingrese una breve descripción sobre el rol (el propósito del rol)',
     'roleForm.fields.owner.label': 'Propietario',
     'roleForm.fields.owner.helperText':
       'Opcional: Ingrese un usuario o grupo que tenga permiso para modificar este rol y crear roles adicionales. En el siguiente paso, especifique a qué usuarios pueden asignar sus roles y a qué complementos pueden conceder acceso. Si se deja en blanco, se asigna automáticamente el autor en el momento de la creación.',
