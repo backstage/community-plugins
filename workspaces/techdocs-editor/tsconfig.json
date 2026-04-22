@@ -11,10 +11,14 @@
   "compilerOptions": {
     "outDir": "dist-types",
     "rootDir": ".",
+    "baseUrl": ".",
     "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
     "target": "ES2022",
     "useUnknownInCatchVariables": false,
     "jsx": "react-jsx",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@toast-ui/react-editor": ["./typings/toast-ui-react-editor.d.ts"]
+    }
   }
 }

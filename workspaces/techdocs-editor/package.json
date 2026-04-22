@@ -42,6 +42,7 @@
     "@jest/environment-jsdom-abstract": "^30",
     "@types/jest": "^30",
     "@types/jsdom": "^27",
+    "@types/react-dom": "^18",
     "jest": "^30",
     "jsdom": "^27",
     "knip": "^5.27.4",

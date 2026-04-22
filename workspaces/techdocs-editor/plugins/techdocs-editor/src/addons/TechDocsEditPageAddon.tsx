@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import EditIcon from '@material-ui/icons';
+import EditIcon from '@material-ui/icons/Edit';
 import { Button, Tooltip } from '@material-ui/core';
 import {
   createTechDocsAddonExtension,

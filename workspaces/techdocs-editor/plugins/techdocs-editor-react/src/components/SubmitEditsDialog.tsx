@@ -27,7 +27,7 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { EditedFile } from '@backstage-community/plugin-techdocs-editor-common';
 
 const useStyles = makeStyles(theme => ({
