@@ -347,11 +347,12 @@ export async function createRouter(
         return;
       }
 
-      // Build branch name: techdocs-editor/<username>/<timestamp>
+      // Build branch name: techdocs-editor/<username>/<timestamp>-<random>
       const userLogin =
         (user as any)?.userEntityRef?.split('/').pop() ?? 'user';
       const timestamp = Date.now();
-      const headBranch = `techdocs-editor/${userLogin}/${timestamp}`;
+      const randomSuffix = Math.random().toString(36).slice(2, 7);
+      const headBranch = `techdocs-editor/${userLogin}/${timestamp}-${randomSuffix}`;
 
       // Build file map
       const files = new Map<string, string | null>();

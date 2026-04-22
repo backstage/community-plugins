@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef } from 'react';
-import { makeStyles } from '@material-ui/core';
+import { useEffect, useRef, useState } from 'react';
+import { makeStyles, Typography } from '@material-ui/core';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 // Lazy-load Toast UI to avoid SSR issues
@@ -38,7 +38,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-/** @public */
+/**
+ * Props for {@link TechDocsMarkdownEditor}.
+ * @public
+ */
 export type TechDocsMarkdownEditorProps = {
   /** Initial markdown content */
   initialContent: string;
@@ -60,10 +63,17 @@ export function TechDocsMarkdownEditor({
 }: TechDocsMarkdownEditorProps) {
   const classes = useStyles();
   const editorRef = useRef<any>(null);
-  const [EditorComponent, setEditorComponent] = React.useState<any>(null);
+  const [EditorComponent, setEditorComponent] = useState<any>(null);
+  const [editorLoadError, setEditorLoadError] = useState<string | undefined>();
 
   useEffect(() => {
-    EditorPromise.then(Editor => setEditorComponent(() => Editor));
+    EditorPromise.then(Editor => setEditorComponent(() => Editor)).catch(
+      err => {
+        setEditorLoadError(
+          `Failed to load editor: ${err?.message ?? String(err)}`,
+        );
+      },
+    );
   }, []);
 
   // Sync editor mode when sourceMode prop changes
@@ -76,6 +86,16 @@ export function TechDocsMarkdownEditor({
       instance.changeMode('wysiwyg');
     }
   }, [sourceMode]);
+
+  if (editorLoadError) {
+    return (
+      <div className={classes.editorWrapper}>
+        <Typography color="error" variant="body2">
+          {editorLoadError}
+        </Typography>
+      </div>
+    );
+  }
 
   if (!EditorComponent) {
     return <div className={classes.editorWrapper}>Loading editor…</div>;

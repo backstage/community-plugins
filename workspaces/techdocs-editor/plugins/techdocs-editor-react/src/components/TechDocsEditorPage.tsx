@@ -96,7 +96,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-/** @public */
+/**
+ * Props for {@link TechDocsEditorPage}.
+ * @public
+ */
 export type TechDocsEditorPageProps = {
   entityRef: CompoundEntityRef;
   /** Pre-selected file path (e.g. when linked from the TechDocs addon) */

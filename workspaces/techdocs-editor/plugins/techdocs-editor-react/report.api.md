@@ -18,7 +18,7 @@ import { SubmitEditsResponse } from '@backstage-community/plugin-techdocs-editor
 // @public
 export function SubmitEditsDialog(input: SubmitEditsDialogProps): JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type SubmitEditsDialogProps = {
   open: boolean;
   changedFiles: EditedFile[];
@@ -34,7 +34,6 @@ export type SubmitEditsDialogProps = {
 
 // @public
 export interface TechDocsEditorApi {
-  // (undocumented)
   getFile(
     entityRef: CompoundEntityRef,
     path: string,
@@ -44,15 +43,12 @@ export interface TechDocsEditorApi {
     etag: string;
     branch: string;
   }>;
-  // (undocumented)
   getFileTree(entityRef: CompoundEntityRef): Promise<
     DocTree & {
       branch: string;
     }
   >;
-  // (undocumented)
   getMkDocsConfig(entityRef: CompoundEntityRef): Promise<MkDocsConfig>;
-  // (undocumented)
   submitEdits(
     entityRef: CompoundEntityRef,
     request: SubmitEditsRequest,
@@ -95,7 +91,7 @@ export function TechDocsEditorPage(
   input: TechDocsEditorPageProps,
 ): JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type TechDocsEditorPageProps = {
   entityRef: CompoundEntityRef;
   initialPath?: string;
@@ -105,7 +101,7 @@ export type TechDocsEditorPageProps = {
 // @public
 export function TechDocsFileTree(input: TechDocsFileTreeProps): JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type TechDocsFileTreeProps = {
   nodes: DocTreeNode[];
   selectedPath?: string;
@@ -119,7 +115,7 @@ export function TechDocsMarkdownEditor(
   input: TechDocsMarkdownEditorProps,
 ): JSX_2.Element;
 
-// @public (undocumented)
+// @public
 export type TechDocsMarkdownEditorProps = {
   initialContent: string;
   onChange: (markdown: string) => void;

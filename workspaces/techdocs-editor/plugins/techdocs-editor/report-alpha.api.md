@@ -40,6 +40,7 @@ export const techdocsEditorAddonExtension: OverridableExtensionDefinition<{
     icon?: string | undefined;
   };
   output:
+    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
     | ExtensionDataRef<string, 'core.routing.path', {}>
     | ExtensionDataRef<
         RouteRef_2<AnyRouteRefParams>,
@@ -48,7 +49,6 @@ export const techdocsEditorAddonExtension: OverridableExtensionDefinition<{
           optional: true;
         }
       >
-    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
     | ExtensionDataRef<
         (entity: Entity) => boolean,
         'catalog.entity-filter-function',
@@ -87,10 +87,10 @@ export const techdocsEditorAddonExtension: OverridableExtensionDefinition<{
     defaultGroup?: [Error: `Use the 'group' param instead`];
     group?:
       | (
-          | 'documentation'
-          | 'overview'
           | 'development'
           | 'deployment'
+          | 'overview'
+          | 'documentation'
           | 'operation'
           | 'observability'
         )
@@ -146,6 +146,7 @@ const techdocsEditorAlphaPlugin: OverridableFrontendPlugin<
         icon?: string | undefined;
       };
       output:
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
             RouteRef_2<AnyRouteRefParams>,
@@ -154,7 +155,6 @@ const techdocsEditorAlphaPlugin: OverridableFrontendPlugin<
               optional: true;
             }
           >
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
@@ -193,10 +193,10 @@ const techdocsEditorAlphaPlugin: OverridableFrontendPlugin<
         defaultGroup?: [Error: `Use the 'group' param instead`];
         group?:
           | (
-              | 'documentation'
-              | 'overview'
               | 'development'
               | 'deployment'
+              | 'overview'
+              | 'documentation'
               | 'operation'
               | 'observability'
             )
@@ -219,8 +219,8 @@ const techdocsEditorAlphaPlugin: OverridableFrontendPlugin<
         title?: string | undefined;
       };
       output:
-        | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
             RouteRef_2<AnyRouteRefParams>,
             'core.routing.ref',
@@ -300,8 +300,8 @@ export const techdocsEditorExtensionPage: OverridableExtensionDefinition<{
     title?: string | undefined;
   };
   output:
-    | ExtensionDataRef<string, 'core.routing.path', {}>
     | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+    | ExtensionDataRef<string, 'core.routing.path', {}>
     | ExtensionDataRef<
         RouteRef_2<AnyRouteRefParams>,
         'core.routing.ref',

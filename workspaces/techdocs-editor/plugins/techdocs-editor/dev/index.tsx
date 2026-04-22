@@ -20,7 +20,6 @@ import {
   TechDocsEditorClient,
   TechDocsEditorPage,
 } from '@backstage-community/plugin-techdocs-editor-react';
-import { techdocsEditorPlugin } from '../src';
 import {
   createApiFactory,
   discoveryApiRef,
@@ -28,7 +27,6 @@ import {
 } from '@backstage/core-plugin-api';
 
 createDevApp()
-  .registerPlugin(techdocsEditorPlugin)
   .registerApi(
     createApiFactory({
       api: TechDocsEditorApiRef,

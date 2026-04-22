@@ -73,7 +73,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-/** @public */
+/**
+ * Props for {@link TechDocsFileTree}.
+ * @public
+ */
 export type TechDocsFileTreeProps = {
   nodes: DocTreeNode[];
   selectedPath?: string;

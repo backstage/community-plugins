@@ -47,11 +47,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-/** @public */
+/**
+ * Props for {@link SubmitEditsDialog}.
+ * @public
+ */
 export type SubmitEditsDialogProps = {
+  /** Whether the dialog is open. */
   open: boolean;
+  /** Files the user has modified in the current editing session. */
   changedFiles: EditedFile[];
+  /** Called when the user dismisses the dialog without submitting. */
   onClose: () => void;
+  /**
+   * Called when the user confirms their PR details.
+   * Should create a branch, commit the files, and open a pull request.
+   */
   onSubmit: (opts: {
     prTitle: string;
     prDescription: string;

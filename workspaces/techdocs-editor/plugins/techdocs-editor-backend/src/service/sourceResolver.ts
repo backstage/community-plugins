@@ -25,6 +25,33 @@ const GITHUB_SLUG_ANNOTATION = 'github.com/project-slug';
 const GITLAB_SLUG_ANNOTATION = 'gitlab.com/project-slug';
 
 /**
+ * Validates that a `docs_dir` value parsed from mkdocs.yml or a URL hash is
+ * safe to use as a path prefix when constructing file paths on the VCS provider.
+ * Throws InputError if the value could allow path traversal.
+ *
+ * @internal
+ */
+function assertSafeDocsDir(docsDir: string): void {
+  if (
+    docsDir.startsWith('/') ||
+    docsDir.startsWith('..') ||
+    docsDir.includes('/../') ||
+    docsDir.includes('/..') ||
+    docsDir === '..' ||
+    /\0/.test(docsDir)
+  ) {
+    throw new InputError(
+      `Invalid docs_dir '${docsDir}': must be a relative path and must not escape the repository root.`,
+    );
+  }
+  if (!/^[a-zA-Z0-9_\-./]+$/.test(docsDir)) {
+    throw new InputError(
+      `Invalid docs_dir '${docsDir}': only alphanumeric characters, hyphens, underscores, dots, and slashes are allowed.`,
+    );
+  }
+}
+
+/**
  * Attempt to derive a repo URL from the entity's SCM project-slug annotations
  * (github.com/project-slug or gitlab.com/project-slug) when techdocs-ref is
  * not a remote `url:` annotation. Returns undefined if no usable slug is found.
@@ -155,6 +182,10 @@ export async function resolveSourceUrl(
       .join('/')}`;
     docsDir = undefined;
     defaultBranch = undefined;
+  }
+
+  if (docsDir) {
+    assertSafeDocsDir(docsDir);
   }
 
   return { repoUrl, docsDir, defaultBranch };

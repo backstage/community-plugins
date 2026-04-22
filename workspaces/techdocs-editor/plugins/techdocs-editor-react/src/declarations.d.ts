@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+// Type shims for packages whose internal .d.ts files have prosemirror
 // version incompatibilities. These declarations prevent TypeScript from
 // crawling into @toast-ui/editor/types/* when skipLibCheck is false.
+// Note: @toast-ui/react-editor is redirected via tsconfig paths to
+// typings/toast-ui-react-editor.d.ts — no ambient shim needed here.
 declare module '@toast-ui/editor' {
   const Editor: any;
   export default Editor;
@@ -24,12 +27,4 @@ declare module '@toast-ui/editor' {
 declare module '@toast-ui/editor/dist/toastui-editor-viewer' {
   const Viewer: any;
   export default Viewer;
-}
-
-declare module '@toast-ui/react-editor' {
-  // eslint-disable-next-line no-restricted-imports
-  import React from 'react';
-
-  export const Editor: React.ComponentType<any>;
-  export const Viewer: React.ComponentType<any>;
 }

@@ -20,7 +20,6 @@
  * @packageDocumentation
  */
 
-export { techdocsEditorPlugin } from './plugin';
 export { TechDocsEditPageAddon } from './addons/TechDocsEditPageAddon';
 export {
   TechDocsEditorApiRef,

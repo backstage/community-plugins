@@ -33,15 +33,36 @@ import {
  * @public
  */
 export interface TechDocsEditorApi {
+  /**
+   * Returns the parsed mkdocs.yml configuration for the given entity's docs repo.
+   * Used to determine the docs directory, site name, and nav tree.
+   */
   getMkDocsConfig(entityRef: CompoundEntityRef): Promise<MkDocsConfig>;
+
+  /**
+   * Returns the flat list of Markdown files under the entity's docs directory,
+   * along with the current default branch name.
+   */
   getFileTree(
     entityRef: CompoundEntityRef,
   ): Promise<DocTree & { branch: string }>;
+
+  /**
+   * Returns the raw Markdown content and a conflict-detection etag for a single
+   * file, optionally checked out at a specific branch.
+   */
   getFile(
     entityRef: CompoundEntityRef,
     path: string,
     branch?: string,
   ): Promise<{ content: string; etag: string; branch: string }>;
+
+  /**
+   * Creates a branch, commits the edited files, and opens a pull request on the
+   * entity's VCS provider. Returns the PR URL and number.
+   * Throws a 409 error (with a `conflicts` array) if any file was modified
+   * externally since it was last fetched.
+   */
   submitEdits(
     entityRef: CompoundEntityRef,
     request: SubmitEditsRequest,

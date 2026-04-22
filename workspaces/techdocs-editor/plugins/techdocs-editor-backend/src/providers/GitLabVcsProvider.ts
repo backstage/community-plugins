@@ -134,8 +134,23 @@ export class GitLabVcsProvider implements VcsProvider {
     const client = this.getClient(opts.repoUrl);
     const projectPath = this.getProjectPath(opts.repoUrl);
 
-    // Create branch
-    await client.Branches.create(projectPath, opts.headBranch, opts.baseBranch);
+    // Create branch (idempotent: ignore "already exists" errors from retries)
+    try {
+      await client.Branches.create(
+        projectPath,
+        opts.headBranch,
+        opts.baseBranch,
+      );
+    } catch (branchErr: any) {
+      const msg: string =
+        branchErr?.cause?.description ??
+        branchErr?.message ??
+        String(branchErr);
+      // GitLab returns 400 with "Branch already exists" on duplicate — treat as idempotent
+      if (!msg.toLocaleLowerCase('en-US').includes('branch already exists')) {
+        throw branchErr;
+      }
+    }
 
     // Commit all files in one batch
     const actions: any[] = [];
