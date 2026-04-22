@@ -145,7 +145,7 @@ export async function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
-  toolCallTimeout: number = 60000,
+  toolCallTimeout: number,
 ): Promise<ToolExecutionResult> {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || '{}');
@@ -260,6 +260,14 @@ export const validateConfig = (config: RootConfigService) => {
         );
       }
     }
+  }
+
+  // Validate toolCallTimeout if present
+  const toolCallTimeout = config.getOptionalNumber('mcpChat.toolCallTimeout');
+  if (toolCallTimeout !== undefined && toolCallTimeout <= 0) {
+    throw new Error(
+      `mcpChat.toolCallTimeout must be a strictly positive number, got: ${toolCallTimeout}`,
+    );
   }
 
   // Validate systemPrompt if present
