@@ -122,6 +122,7 @@ yarn.lock                                                               @backsta
 /workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle @kurtaking
 /workspaces/tech-insights/plugins/tech-insights-maturity                @backstage/community-plugins-maintainers  @xantier @punkle @maicaballangan
 /workspaces/tech-radar                                                  @backstage/community-plugins-maintainers
+/workspaces/techdocs-editor                                             @backstage/community-plugins-maintainers  @Estehsan
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar 
 /workspaces/todo                                                        @backstage/community-plugins-maintainers
 /workspaces/topology                                                    @backstage/community-plugins-maintainers  @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @logonoff @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar 

@@ -1,0 +1,18 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: techdocs-editor-test
+  title: TechDocs Editor Test
+  description: >
+    A test component for the TechDocs in-app editor plugin.
+    Points to the Backstage backstage repository docs via url: annotation.
+  annotations:
+    # url: annotation is required for the editor plugin (dir: is not supported)
+    # Points to a small example repo used by Backstage's own TechDocs tests.
+    # Replace with your own GitHub repo (needs docs/ folder + mkdocs.yml) when you want to test editing.
+    backstage.io/techdocs-ref: url:https://github.com/backstage/backstage/tree/master/plugins/techdocs-backend/examples/documented-component
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guest

@@ -1,0 +1,96 @@
+{
+  "name": "@backstage-community/plugin-techdocs-editor-backend",
+  "version": "0.1.0",
+  "description": "Backend plugin providing source read/write and PR creation APIs for the TechDocs in-app editor",
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "techdocs-editor",
+    "pluginPackages": [
+      "@backstage-community/plugin-techdocs-editor",
+      "@backstage-community/plugin-techdocs-editor-backend",
+      "@backstage-community/plugin-techdocs-editor-common",
+      "@backstage-community/plugin-techdocs-editor-node",
+      "@backstage-community/plugin-techdocs-editor-react"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "backstage",
+    "techdocs",
+    "editor"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/techdocs-editor/plugins/techdocs-editor-backend"
+  },
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "configSchema": "config.d.ts",
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-permission-backend": "backstage:^",
+    "@backstage/plugin-permission-backend-module-allow-all-policy": "backstage:^",
+    "@types/js-yaml": "^4.0.0",
+    "@types/supertest": "^6.0.0",
+    "supertest": "^7.0.0"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-techdocs-editor-common": "workspace:^",
+    "@backstage-community/plugin-techdocs-editor-node": "workspace:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-client": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/integration": "backstage:^",
+    "@backstage/plugin-auth-node": "backstage:^",
+    "@backstage/plugin-permission-common": "backstage:^",
+    "@backstage/plugin-permission-node": "backstage:^",
+    "@backstage/plugin-techdocs-common": "backstage:^",
+    "@backstage/plugin-techdocs-node": "backstage:^",
+    "@gitbeaker/rest": "^42.0.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "js-yaml": "^4.1.0",
+    "octokit": "^4.0.2",
+    "octokit-plugin-create-pull-request": "^6.0.1"
+  }
+}
