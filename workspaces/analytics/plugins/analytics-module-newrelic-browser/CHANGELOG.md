@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.18.0
+
+### Minor Changes
+
+- a34e621: Migrate `AnalyticsImplementationBlueprint` from `@backstage/frontend-plugin-api` to `@backstage/plugin-app-react`.
+
 ## 0.17.0
 
 ### Minor Changes
