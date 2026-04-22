@@ -26,7 +26,12 @@ import {
   getProviderConfig as getConfig,
   getProviderInfo,
 } from '../providers/provider-factory';
-import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
+import {
+  executeToolCall,
+  findNpxPath,
+  loadServerConfigs,
+  DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
+} from '../utils';
 import { LLMProvider } from '../providers/base-provider';
 import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
 import { MCPClientService } from './MCPClientService';
@@ -76,7 +81,8 @@ export class MCPClientServiceImpl implements MCPClientService {
     this.logger = options.logger;
     this.config = options.config;
     this.toolCallTimeout =
-      this.config.getOptionalNumber('mcpChat.toolCallTimeout') ?? 60000;
+      this.config.getOptionalNumber('mcpChat.toolCallTimeout') ??
+      DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS;
     this.llmProvider = this.initializeLLMProvider();
     this.mcpServers = this.initializeMCPServers();
     this.systemPrompt =

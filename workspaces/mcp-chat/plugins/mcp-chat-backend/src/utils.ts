@@ -28,6 +28,9 @@ import {
 } from './types';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
+/** Default timeout in milliseconds for MCP tool call requests. */
+export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
+
 /**
  * Loads MCP server configurations from Backstage config.
  * Reads from the `mcpChat.mcpServers` configuration section.
@@ -138,6 +141,7 @@ export async function findNpxPath(): Promise<string> {
  * @param toolCall - The tool call from the LLM containing function name and arguments
  * @param tools - List of available tools with their server IDs
  * @param mcpClients - Map of server IDs to MCP client instances
+ * @param toolCallTimeout - Timeout for the tool call to complete (default: 60000, unit: ms)
  * @returns Promise resolving to the tool execution result
  * @public
  */
@@ -145,7 +149,7 @@ export async function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
-  toolCallTimeout: number = 60000,
+  toolCallTimeout: number = DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
 ): Promise<ToolExecutionResult> {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || '{}');

@@ -199,6 +199,7 @@ describe('MCPClientServiceImpl', () => {
         toolCall,
         expect.any(Array),
         expect.any(Map),
+        expect.any(Number),
       );
     });
 
