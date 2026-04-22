@@ -242,7 +242,7 @@ describe('regex:search', () => {
           commitMessage: 'PROJ-123: Add new feature for user authentication',
           pullRequestNumber: 33939,
           authorName: 'Robin Hilton',
-          authorEmail: '22367rh@gmail.com',
+          authorEmail: 'robin.hilton@example.com',
         },
         {
           sha: 'b3edcf0c6ee795b838fddee75b0bf73d3dc13672g',
