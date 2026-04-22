@@ -37,7 +37,7 @@ import { useTheme } from '@mui/material/styles';
  *   List of available projects. If not provided or if options are trivial,
  *   the filter hides itself.
  * projectIdFilter:
- *   Currently selected project names. The special ALL_OPTION.value denotes "All".
+ *   Currently selected project IDs/UUIDs. The special ALL_OPTION.value denotes "All".
  * setProjectIdFilter:
  *   Callback to update the selected values in the parent component.
  * projectOptions:

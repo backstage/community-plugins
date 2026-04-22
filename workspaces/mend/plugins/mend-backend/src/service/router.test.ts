@@ -33,7 +33,6 @@ import { Project } from './data.service.types';
 jest.mock('./cache.service');
 jest.mock('./auth.service');
 jest.mock('@backstage/catalog-client');
-jest.mock('./data.service');
 
 const mockCatalogClient = {
   getEntities: jest.fn(),
