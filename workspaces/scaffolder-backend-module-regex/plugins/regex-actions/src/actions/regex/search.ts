@@ -152,7 +152,7 @@ export const createSearchAction = () => {
         if (global) {
           while (match !== null) {
             matches.push(match[0]);
-            if (!regex.global) break;
+            if (firstOnly || !regex.global) break;
             match = regex.exec(value);
           }
         } else {
