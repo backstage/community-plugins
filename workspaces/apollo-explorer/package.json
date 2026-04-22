@@ -43,6 +43,8 @@
     "@jest/environment-jsdom-abstract": "^30",
     "@types/jest": "^30",
     "@types/jsdom": "^27",
+    "@types/node": "22.19.17",
+    "@types/webpack-env": "1.18.8",
     "jest": "^30",
     "jsdom": "^27",
     "knip": "^5.27.4",
