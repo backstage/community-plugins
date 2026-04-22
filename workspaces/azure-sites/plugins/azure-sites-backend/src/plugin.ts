@@ -18,7 +18,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { AzureSitesApi } from './api';
 
 /**
