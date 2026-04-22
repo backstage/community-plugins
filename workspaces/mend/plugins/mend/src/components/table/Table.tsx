@@ -24,11 +24,13 @@ import { useTheme } from '@mui/material/styles';
 import { ProjectFilterComponent } from './ProjectFilterComponent';
 import { Project, Finding, Statistics } from '../../models';
 import { TableMessage } from './TableMessage';
+import { BackendNotInstalledMessage } from './BackendNotInstalledMessage';
 import { TableHeader } from './TableHeader';
 import { TablePagination } from './TablePagination';
 import { tableBackstageIcons, TableIcon } from './table.icons';
 import { TableBar } from './TableBar';
 import { TablePaper } from './TablePaper';
+import { isMendBackendNotInstalled } from '../../utils';
 
 type MaterialTable = {
   dataManager?: {
@@ -97,14 +99,14 @@ export const Table = ({
   const tableRef = useRef<MaterialTable>(null);
 
   const ALL_OPTION = useMemo(() => ({ label: 'All', value: '__ALL__' }), []);
-  const projectNameOptionsWithoutAll = projectList
+  const projectOptionsWithoutAll = projectList
     ? projectList.map(d => ({ label: d.name, value: d.uuid }))
     : [];
-  const projectNameOptions: SelectItem[] = [
+  const projectOptions: SelectItem[] = [
     ALL_OPTION,
-    ...projectNameOptionsWithoutAll,
+    ...projectOptionsWithoutAll,
   ];
-  const [projectNameFilter, setProjectNameFilter] = useState<string[]>([
+  const [projectIdFilter, setProjectIdFilter] = useState<string[]>([
     selectedProject || ALL_OPTION.value,
   ]);
 
@@ -112,15 +114,15 @@ export const Table = ({
     let data = tableData;
 
     if (
-      projectNameFilter.length > 0 &&
-      !projectNameFilter.includes(ALL_OPTION.value)
+      projectIdFilter.length > 0 &&
+      !projectIdFilter.includes(ALL_OPTION.value)
     ) {
       data = tableData.filter(row => {
         // Filter by Project Name multi-select
         const projectId = (row as any).projectId;
         if (
-          projectNameFilter.length > 0 &&
-          !projectNameFilter.includes(projectId)
+          projectIdFilter.length > 0 &&
+          !projectIdFilter.includes(projectId)
         ) {
           return false;
         }
@@ -134,7 +136,7 @@ export const Table = ({
       ...row,
       id: (row as any).uuid || `row-${index}`,
     }));
-  }, [tableData, ALL_OPTION, projectNameFilter]);
+  }, [tableData, ALL_OPTION, projectIdFilter]);
 
   return (
     <TableBackstage
@@ -142,6 +144,11 @@ export const Table = ({
         body: {
           emptyDataSourceMessage: tableDataError ? (
             (() => {
+              // Check if backend plugin is not installed
+              if (isMendBackendNotInstalled(tableDataError)) {
+                return <BackendNotInstalledMessage />;
+              }
+
               const errorStatus = (tableDataError as any).status;
               let icon = TableIcon.ERROR;
               let title = 'Oops! Something Went Wrong';
@@ -244,9 +251,9 @@ export const Table = ({
               ProjectFilterComponent={() => (
                 <ProjectFilterComponent
                   projectList={projectList}
-                  projectNameFilter={projectNameFilter}
-                  setProjectNameFilter={setProjectNameFilter}
-                  projectNameOptions={projectNameOptions}
+                  projectIdFilter={projectIdFilter}
+                  setProjectIdFilter={setProjectIdFilter}
+                  projectOptions={projectOptions}
                   ALL_OPTION={ALL_OPTION}
                 />
               )}

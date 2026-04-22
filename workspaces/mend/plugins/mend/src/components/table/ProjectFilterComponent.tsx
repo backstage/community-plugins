@@ -36,20 +36,20 @@ import { useTheme } from '@mui/material/styles';
  * projectList:
  *   List of available projects. If not provided or if options are trivial,
  *   the filter hides itself.
- * projectNameFilter:
+ * projectIdFilter:
  *   Currently selected project names. The special ALL_OPTION.value denotes "All".
- * setProjectNameFilter:
+ * setProjectIdFilter:
  *   Callback to update the selected values in the parent component.
- * projectNameOptions:
+ * projectOptions:
  *   Options rendered in the Select dropdown.
  * ALL_OPTION:
  *   Special option representing "All Projects" with shape { label, value }.
  */
 type ProjectFilterComponentProps = {
   projectList: { name: string }[] | null | undefined;
-  projectNameFilter: string[];
-  setProjectNameFilter: (filter: string[]) => void;
-  projectNameOptions: SelectItem[];
+  projectIdFilter: string[];
+  setProjectIdFilter: (filter: string[]) => void;
+  projectOptions: SelectItem[];
   ALL_OPTION: { label: string; value: string };
 };
 
@@ -81,19 +81,19 @@ const selectMenuProps: Partial<MUIMenuProps> = {
  */
 export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
   projectList,
-  projectNameFilter,
-  setProjectNameFilter,
-  projectNameOptions,
+  projectIdFilter,
+  setProjectIdFilter,
+  projectOptions,
   ALL_OPTION,
 }) => {
   const theme = useTheme();
   // If there is no project data or only trivial options (e.g., ALL + placeholder),
   // do not render the filter.
-  if (!projectList || projectNameOptions.length <= 2) {
+  if (!projectList || projectOptions.length <= 2) {
     return null;
   }
 
-  const projectLabelMap = projectNameOptions.reduce<Record<string, string>>(
+  const projectLabelMap = projectOptions.reduce<Record<string, string>>(
     (prev, next) => {
       prev[next.value] = next.label;
       return prev;
@@ -108,7 +108,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
    * - Selecting another value while ALL is active removes ALL.
    * - Clearing all selections reverts to ALL.
    */
-  const handleProjectNameChange = (event: SelectChangeEvent<string[]>) => {
+  const handleProjectIdChange = (event: SelectChangeEvent<string[]>) => {
     // SelectedItems can be string or string[]
     const selected = event.target.value;
     const selectedArray = Array.isArray(selected) ? selected : [selected];
@@ -118,27 +118,27 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
 
     // If nothing is selected, set to ALL
     if (stringArray.length === 0) {
-      setProjectNameFilter([ALL_OPTION.value]);
+      setProjectIdFilter([ALL_OPTION.value]);
       return;
     }
 
     // If ALL is newly selected (was not in previous selection), set only ALL
     if (
       stringArray.includes(ALL_OPTION.value) &&
-      !projectNameFilter.includes(ALL_OPTION.value)
+      !projectIdFilter.includes(ALL_OPTION.value)
     ) {
-      setProjectNameFilter([ALL_OPTION.value]);
+      setProjectIdFilter([ALL_OPTION.value]);
       return;
     }
 
     // If ALL is selected and there are other values, remove ALL and keep the others
     if (stringArray.includes(ALL_OPTION.value) && stringArray.length > 1) {
-      setProjectNameFilter(stringArray.filter(v => v !== ALL_OPTION.value));
+      setProjectIdFilter(stringArray.filter(v => v !== ALL_OPTION.value));
       return;
     }
 
     // Otherwise, set selected values
-    setProjectNameFilter(stringArray);
+    setProjectIdFilter(stringArray);
   };
 
   /**
@@ -146,9 +146,9 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
    * default back to ALL to avoid an empty selection state.
    */
   const handleChipDelete = (chipValue: string) => {
-    let tempProject = projectNameFilter.filter(v => v !== chipValue);
+    let tempProject = projectIdFilter.filter(v => v !== chipValue);
     tempProject = tempProject.length === 0 ? [ALL_OPTION.value] : tempProject;
-    setProjectNameFilter(tempProject);
+    setProjectIdFilter(tempProject);
   };
 
   return (
@@ -187,8 +187,8 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
           labelId="multiple-project-filter-label"
           id="multiple-project-filter"
           multiple
-          value={projectNameFilter}
-          onChange={handleProjectNameChange}
+          value={projectIdFilter}
+          onChange={handleProjectIdChange}
           sx={{
             '& [class*="MuiSelect-select"]': {
               display: 'flex',
@@ -218,7 +218,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
                   ) : (
                     <Chip
                       key={value}
-                      label={projectLabelMap[value]}
+                      label={projectLabelMap[value] ?? 'N/A'}
                       size="small"
                       onMouseDown={e => e.stopPropagation()}
                       onDelete={() => handleChipDelete(value)}
@@ -244,10 +244,10 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
           }}
           MenuProps={selectMenuProps}
         >
-          {projectNameOptions.map(item => (
+          {projectOptions.map(item => (
             <MenuItem key={item.label} value={item.value}>
               <Checkbox
-                checked={projectNameFilter.includes(item.value.toString())}
+                checked={projectIdFilter.includes(item.value.toString())}
                 color="primary"
               />
               <ListItemText primary={item.label} />

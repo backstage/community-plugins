@@ -4,4 +4,4 @@
 
 | Name      | Location          | Severity |
 | :-------- | :---------------- | :------- |
-| react-use | package.json:62:6 | error    |
+| react-use | package.json:61:6 | error    |

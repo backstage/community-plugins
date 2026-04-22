@@ -38,11 +38,6 @@ Configure the Mend activation key in your `app-config.yaml` or`app-config.produc
 mend:
   activationKey: ${MEND_ACTIVATION_KEY}
   cacheRefresh: 240
-  permissionControl:
-    ids:
-      - <project-uuid-1> # Project UUID to filter
-      - <project-uuid-2> # Another project UUID
-    exclude: true # Set to true for blocklist mode, false for allowlist mode
 ```
 
 ## How It Works
@@ -50,8 +45,7 @@ mend:
 **Entity Processing**: When a Component entity is processed, the module:
 
 - Extracts the source location from the entity's annotations
-- Looks up matching Mend projects by repository URL from cache ( refresh cache based on the `cacheRefresh` configuration)
-- Based on the permissionControl it would take the decision to add the filtered project ids
+- Looks up matching Mend projects by repository URL from cache ( set cacheTTL based on the `cacheRefresh` configuration)
 - Adds the `mend.io/project-ids` annotation with the matching project IDs
 
 ## Annotations Added

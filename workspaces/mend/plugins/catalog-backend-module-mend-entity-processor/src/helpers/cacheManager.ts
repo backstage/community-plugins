@@ -74,32 +74,44 @@ export class CacheManager {
   }
 
   async refreshProjectCacheIfNeeded(force: boolean = false): Promise<void> {
-    const cachedData = (await this.cacheService.get(
-      CacheManager.PROJECT_CACHE_KEY,
-    )) as CachedUrlToProjectIds | undefined;
+    let now: number;
+    let lockAcquired = false;
+    while (!lockAcquired) {
+      const cachedData = (await this.cacheService.get(
+        CacheManager.PROJECT_CACHE_KEY,
+      )) as CachedUrlToProjectIds | undefined;
+      if (
+        !force &&
+        cachedData &&
+        !this.isCacheExpired(cachedData.lastFetched)
+      ) {
+        return;
+      }
+      // Check for refresh lock to prevent concurrent refreshes
+      const refreshLock = await this.cacheService.get<{
+        locked: boolean;
+        timestamp: number;
+      }>(CacheManager.PROJECT_LOCK_KEY);
 
-    if (!force && cachedData && !this.isCacheExpired(cachedData.lastFetched)) {
-      return;
-    }
-
-    // Check for refresh lock to prevent concurrent refreshes
-    const refreshLock = (await this.cacheService.get(
-      CacheManager.PROJECT_LOCK_KEY,
-    )) as { locked: boolean; timestamp: number } | undefined;
-
-    const now = Date.now();
-    if (refreshLock && now - refreshLock.timestamp < REFRESH_LOCK_TTL_MS) {
-      // Another process is refreshing, wait and retry
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.refreshProjectCacheIfNeeded(force);
-      return;
+      now = Date.now();
+      if (refreshLock && now - refreshLock.timestamp < REFRESH_LOCK_TTL_MS) {
+        // Another process is refreshing, wait and retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        continue;
+      }
+      lockAcquired = true;
     }
 
     // Acquire lock
-    await this.cacheService.set(CacheManager.PROJECT_LOCK_KEY, {
-      locked: true,
-      timestamp: now,
-    });
+    now = Date.now();
+    await this.cacheService.set(
+      CacheManager.PROJECT_LOCK_KEY,
+      {
+        locked: true,
+        timestamp: now,
+      },
+      { ttl: REFRESH_LOCK_TTL_MS },
+    );
 
     try {
       const projects = await this.apiClient.fetchAllProjects();
@@ -123,8 +135,19 @@ export class CacheManager {
 
       await this.cacheService.delete(CacheManager.PROJECT_LOCK_KEY);
     } catch (error) {
-      await this.cacheService.delete(CacheManager.PROJECT_LOCK_KEY);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `Error refreshing Mend projectIdsByRepoUrl cache: ${errorMessage}`,
+      );
       throw error;
+    } finally {
+      // Always release the lock, even if an error occurred
+      try {
+        await this.cacheService.delete(CacheManager.PROJECT_LOCK_KEY);
+      } catch (lockError) {
+        this.logger.warn('Failed to release cache refresh lock:', lockError);
+      }
     }
   }
 

@@ -30,6 +30,8 @@ import {
 } from './data.service.helpers';
 
 const REFRESH_LOCK_TTL_MS = 2 * 60 * 1000; // 2 minutes
+const MAX_WAIT_RETRIES = 30;
+const RETRY_DELAY_MS = 1000;
 
 interface CachedProjectData {
   projectsById: Record<string, Project>;
@@ -82,7 +84,7 @@ export class MendCacheManager {
       id: 'mend-backend-project-cache-refresh',
       frequency: { minutes: this.scheduleIntervalMinutes },
       timeout: { minutes: 10 },
-      initialDelay: { seconds: 30 },
+      initialDelay: { seconds: 20 },
       fn: async () => {
         this.logger.info(
           'Starting scheduled Mend backend project cache refresh',
@@ -106,37 +108,56 @@ export class MendCacheManager {
     }
 
     // Check for refresh lock to prevent concurrent refreshes
-    const refreshLock = await this.cacheService.get<{
-      locked: boolean;
-      timestamp: number;
-    }>(MendCacheManager.PROJECT_LOCK_KEY);
+    // Use iterative retry loop instead of recursion to prevent stack overflow
+    let retryCount = 0;
+    while (retryCount < MAX_WAIT_RETRIES) {
+      const refreshLock = await this.cacheService.get<{
+        locked: boolean;
+        timestamp: number;
+      }>(MendCacheManager.PROJECT_LOCK_KEY);
 
-    const now = Date.now();
-    if (refreshLock && now - refreshLock.timestamp < REFRESH_LOCK_TTL_MS) {
+      const now = Date.now();
+      if (!refreshLock || now - refreshLock.timestamp >= REFRESH_LOCK_TTL_MS) {
+        // No lock or lock has expired, proceed with refresh
+        break;
+      }
+
       // Another process is refreshing, wait and retry
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.refreshProjectCacheIfNeeded(force);
-      return;
+      this.logger.debug(
+        `Cache refresh lock detected, waiting... (attempt ${
+          retryCount + 1
+        }/${MAX_WAIT_RETRIES})`,
+      );
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+      retryCount++;
+    }
+
+    if (retryCount >= MAX_WAIT_RETRIES) {
+      this.logger.warn(
+        'Maximum lock wait retries exceeded, proceeding with cache refresh anyway',
+      );
     }
 
     // Acquire lock
-    await this.cacheService.set(MendCacheManager.PROJECT_LOCK_KEY, {
-      locked: true,
-      timestamp: now,
-    });
+    await this.cacheService.set(
+      MendCacheManager.PROJECT_LOCK_KEY,
+      {
+        locked: true,
+        timestamp: Date.now(),
+      },
+      { ttl: REFRESH_LOCK_TTL_MS },
+    );
 
     try {
-      while (!MendDataService.getOrganizationUuid()) {
+      if (!MendDataService.getOrganizationUuid()) {
         const configurationError = MendDataService.getConfigurationError();
-        if (configurationError) {
-          this.logger.error(configurationError);
-          return;
-        }
-        this.logger.info(
-          'Waiting for complete the Mend configuration setup...',
-        );
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        const errorMessage =
+          configurationError ||
+          'Mend organization UUID not found. Authentication may have failed.';
+        this.logger.error(errorMessage);
+        throw new Error(errorMessage);
       }
+
       this.logger.info('Fetching all Mend projects for cache...');
 
       const projectStatistics =
@@ -168,14 +189,18 @@ export class MendCacheManager {
         },
         { ttl: this.cacheTtlMs },
       );
-
-      await this.cacheService.delete(MendCacheManager.PROJECT_LOCK_KEY);
     } catch (error) {
-      await this.cacheService.delete(MendCacheManager.PROJECT_LOCK_KEY);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       this.logger.error(`Error refreshing Mend project cache: ${errorMessage}`);
       throw error;
+    } finally {
+      // Always release the lock, even if an error occurred
+      try {
+        await this.cacheService.delete(MendCacheManager.PROJECT_LOCK_KEY);
+      } catch (lockError) {
+        this.logger.warn('Failed to release cache refresh lock:', lockError);
+      }
     }
   }
 
