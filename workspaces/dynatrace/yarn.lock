@@ -2794,7 +2794,6 @@ __metadata:
     "@jest/environment-jsdom-abstract": "npm:^30"
     "@types/jest": "npm:^30"
     "@types/jsdom": "npm:^27"
-    "@types/node": "npm:22.19.17"
     "@types/webpack-env": "npm:1.18.8"
     jest: "npm:^30"
     jsdom: "npm:^27"
