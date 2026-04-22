@@ -28,7 +28,10 @@ import {
 } from './types';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
-/** Default timeout in milliseconds for MCP tool call requests. */
+/**
+ * Default timeout in milliseconds for MCP tool call requests.
+ * @public
+ */
 export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
 
 /**
