@@ -1684,6 +1684,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-techdocs-common": "backstage:^"
+    "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@testing-library/dom": "npm:^10.0.0"
