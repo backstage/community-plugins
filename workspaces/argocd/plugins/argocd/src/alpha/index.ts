@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export { argocdTranslationRef, argocdTranslations } from './translations';
-export { default, argocdTranslationsModule } from './alpha/index';
+export { default, argocdTranslationsModule } from './plugin';

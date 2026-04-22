@@ -13,6 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { compatWrapper } from '@backstage/core-compat-api';
+import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isArgocdConfigured } from '../utils/isArgocdConfigured';
 
-export { argocdTranslationRef, argocdTranslations } from './translations';
-export { default, argocdTranslationsModule } from './alpha/index';
+/**
+ * @alpha
+ */
+export const argocdDeploymentSummaryCard = EntityCardBlueprint.make({
+  name: 'deployment-summary',
+  params: {
+    filter: isArgocdConfigured,
+    loader: () =>
+      import('../components/DeploymentSummary').then(m =>
+        compatWrapper(<m.DeploymentSummary />),
+      ),
+  },
+});

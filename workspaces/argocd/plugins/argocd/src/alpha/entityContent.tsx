@@ -13,6 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { compatWrapper } from '@backstage/core-compat-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isArgocdConfigured } from '../utils/isArgocdConfigured';
 
-export { argocdTranslationRef, argocdTranslations } from './translations';
-export { default, argocdTranslationsModule } from './alpha/index';
+/**
+ * @alpha
+ */
+export const argocdDeploymentLifecycleContent = EntityContentBlueprint.make({
+  name: 'deployment-lifecycle',
+  params: {
+    path: '/argocd',
+    title: 'ArgoCD',
+    filter: isArgocdConfigured,
+    loader: () =>
+      import('../components/DeploymentLifeCycle').then(m =>
+        compatWrapper(<m.DeploymentLifecycle />),
+      ),
+  },
+});
