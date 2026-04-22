@@ -77,13 +77,6 @@ export const createSearchAction = () => {
             .describe('Unicode flag - treat pattern as unicode'),
         dotAll: z =>
           z.boolean().optional().describe('DotAll flag - . matches newlines'),
-        hasIndices: z =>
-          z
-            .boolean()
-            .optional()
-            .describe(
-              'HasIndices flag - match indices are included in the result',
-            ),
         outputKey: z =>
           z
             .string()
@@ -110,7 +103,6 @@ export const createSearchAction = () => {
         sticky,
         unicode,
         dotAll,
-        hasIndices,
         outputKey,
         firstOnly,
       } = input;
@@ -123,7 +115,6 @@ export const createSearchAction = () => {
       if (sticky) flags += 'y';
       if (unicode) flags += 'u';
       if (dotAll) flags += 's';
-      if (hasIndices) flags += 'd';
 
       const regex = new RegExp(pattern, flags);
 

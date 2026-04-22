@@ -281,7 +281,7 @@ describe('regex:search', () => {
         commitMessage: 'PROJ-123: Add new feature for user authentication',
         pullRequestNumber: 33939,
         authorName: 'Robin Hilton',
-        authorEmail: '22367rh@gmail.com',
+        authorEmail: 'robin.hilton@example.com',
         jiraId: 'PROJ-123',
       },
       {
