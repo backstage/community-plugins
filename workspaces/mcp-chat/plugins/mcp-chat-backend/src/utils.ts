@@ -145,7 +145,7 @@ export async function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
-  toolCallTimeout: number,
+  toolCallTimeout: number = 60000,
 ): Promise<ToolExecutionResult> {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || '{}');
