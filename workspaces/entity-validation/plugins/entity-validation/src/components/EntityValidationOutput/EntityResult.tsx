@@ -50,6 +50,13 @@ type EntityResultProps = {
   item: ValidationOutputOk;
 };
 
+const fetchErrorMessages = (response: ValidateEntityResponse) => {
+  if (!response.valid) {
+    return response.errors.map(err => err.message).join('\n\n');
+  }
+  return '';
+};
+
 export const EntityResult = ({
   isFirstError = false,
   item,
@@ -57,21 +64,18 @@ export const EntityResult = ({
   const classes = useStyles();
   const app = useApp();
   const [expanded, setExpanded] = useState(isFirstError);
+  const kind = item?.entity?.kind?.toLocaleLowerCase?.('en-US') ?? '<UNKNOWN>';
+  const entityKey = humanizeEntityRef({
+    kind,
+    namespace: item?.entity?.metadata?.namespace ?? '<UNKNOWN>',
+    name: item?.entity?.metadata?.name ?? '<UNKNOWN>',
+  });
 
-  const Icon = app.getSystemIcon(
-    `kind:${item.entity.kind.toLocaleLowerCase('en-US')}`,
-  ) as typeof SvgIcon;
-
-  const fetchErrorMessages = (response: ValidateEntityResponse) => {
-    if (!response.valid) {
-      return response.errors.map(err => err.message).join('\n\n');
-    }
-    return '';
-  };
+  const Icon = app.getSystemIcon(`kind:${kind}`) as typeof SvgIcon;
 
   return (
     <>
-      <ListItem key={humanizeEntityRef(item.entity)}>
+      <ListItem key={entityKey}>
         <ListItemIcon>
           {Icon && (
             <Icon
@@ -84,7 +88,7 @@ export const EntityResult = ({
           )}
         </ListItemIcon>
         <ListItemText
-          primary={humanizeEntityRef(item.entity)}
+          primary={entityKey}
           onClick={() => setExpanded(!expanded)}
         />
         {!item.response.valid && (
