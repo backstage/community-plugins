@@ -21,3 +21,7 @@ export { useAvailableTools } from './useAvailableTools';
 export type { UseAvailableToolsReturn } from './useAvailableTools';
 export { useConversations } from './useConversations';
 export type { UseConversationsReturn } from './useConversations';
+export { useToolApproval } from './useToolApproval';
+export type { UseToolApprovalReturn } from './useToolApproval';
+export { useApiRequest } from './useApiRequest';
+export type { UseApiRequestReturn } from './useApiRequest';

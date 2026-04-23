@@ -15,7 +15,13 @@
  */
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ResponseError } from '@backstage/errors';
-import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
+import {
+  ChatMessage,
+  Tool,
+  ChatResponse,
+  ProviderConfig,
+  LlmMessage,
+} from '../types';
 
 /**
  * Abstract base class for all LLM providers.
@@ -39,7 +45,7 @@ export abstract class LLMProvider {
   }
 
   abstract sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse>;
 

@@ -120,22 +120,81 @@ export interface ToolsResponse {
 }
 
 /**
+ * Approval lifecycle states for a tool call.
+ *
+ * - `pending` — awaiting user decision
+ * - `approved` — user approved execution
+ * - `rejected` — user rejected execution
+ *
+ * @public
+ */
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
+/**
+ * Subset of {@link ApprovalStatus} representing a final user decision.
+ *
+ * @public
+ */
+export type ConfirmedStatus = Exclude<ApprovalStatus, 'pending'>;
+
+/**
+ * @public
+ */
+export interface ToolCall {
+  /** Unique identifier for this tool call */
+  id: string;
+  /** Always 'function' for function calls */
+  type: 'function';
+  /** Function invocation details */
+  function: {
+    /** Name of the function to call */
+    name: string;
+    /** JSON-encoded string of the function arguments */
+    arguments: string;
+  };
+  /** Additional parameters */
+  metadata?: {
+    /** MCP server ID that provides this tool (not sent to LLM) */
+    serverId?: string;
+    /** Approval status for this tool call (not sent to LLM) */
+    approval_status?: ApprovalStatus;
+  };
+}
+
+/**
+ * Valid roles for a chat message author.
+ *
+ * @public
+ */
+export type ChatRole = 'system' | 'user' | 'assistant' | 'tool';
+
+/**
  * @public
  */
 export interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
+  /** The role of the message author */
+  role: ChatRole;
+  /** Message content. Can be null for assistant messages that only contain tool calls. */
+  content: string | null;
+  /** Tool calls requested by the assistant. Only present when role is 'assistant' and the LLM decided to call some tools. */
+  tool_calls?: ToolCall[];
+  /** ID of the tool call this message responds to. Required when role is 'tool'. */
+  tool_call_id?: string;
+
+  metadata: {
+    id: string;
+    timestamp: Date;
+  };
 }
 
 /**
  * @public
  */
 export interface ChatResponse {
-  role: 'assistant';
-  content: string;
-  toolResponses?: any[];
-  toolsUsed?: string[];
-  conversationId?: string;
+  /** Array of chat messages in the conversation */
+  messages: ChatMessage[];
+  /** A unique ID for the conversation. */
+  conversationId: string;
 }
 
 /**

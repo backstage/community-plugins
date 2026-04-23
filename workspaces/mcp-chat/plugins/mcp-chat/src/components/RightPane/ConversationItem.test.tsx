@@ -51,8 +51,16 @@ describe('ConversationItem', () => {
     userId: 'user:default/test-user',
     title: 'Test Conversation',
     messages: [
-      { role: 'user', content: 'Hello there' },
-      { role: 'assistant', content: 'Hi! How can I help?' },
+      {
+        role: 'user',
+        content: 'Hello there',
+        metadata: { id: '1', timestamp: new Date(1) },
+      },
+      {
+        role: 'assistant',
+        content: 'Hi! How can I help?',
+        metadata: { id: '2', timestamp: new Date(2) },
+      },
     ],
     toolsUsed: ['search_tool'],
     isStarred: false,

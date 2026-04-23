@@ -45,8 +45,16 @@ describe('ChatConversationStore', () => {
   const conversationId = '123e4567-e89b-12d3-a456-426614174000';
 
   const sampleMessages: ChatMessage[] = [
-    { role: 'user', content: 'Hello' },
-    { role: 'assistant', content: 'Hi there!' },
+    {
+      role: 'user',
+      content: 'Hello',
+      metadata: { id: '1', timestamp: new Date(1) },
+    },
+    {
+      role: 'assistant',
+      content: 'Hi there!',
+      metadata: { id: '2', timestamp: new Date(2) },
+    },
   ];
 
   const sampleRow: ConversationRow = {
@@ -197,7 +205,9 @@ describe('ChatConversationStore', () => {
         user_id: userId,
       });
       expect(result?.id).toBe(conversationId);
-      expect(result?.messages).toEqual(sampleMessages);
+      expect(result?.messages).toEqual(
+        JSON.parse(JSON.stringify(sampleMessages)),
+      );
     });
 
     it('returns null when not found', async () => {

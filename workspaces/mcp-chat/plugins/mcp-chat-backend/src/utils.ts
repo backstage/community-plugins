@@ -23,8 +23,11 @@ import {
   MCPServerType,
   ToolCall,
   ServerTool,
+  ValidationResult,
+  ChatMessage,
   ToolExecutionResult,
-  MessageValidationResult,
+  LlmMessage,
+  ConfirmedStatus,
 } from './types';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
@@ -287,9 +290,7 @@ export const validateConfig = (config: RootConfigService) => {
  *
  * @public
  */
-export const validateMessages = (
-  messages: unknown,
-): MessageValidationResult => {
+export const validateMessages = (messages: unknown): ValidationResult => {
   // Check if messages exists and is an array
   if (!messages) {
     return { isValid: false, error: 'Messages field is required' };
@@ -297,10 +298,6 @@ export const validateMessages = (
 
   if (!Array.isArray(messages)) {
     return { isValid: false, error: 'Messages must be an array' };
-  }
-
-  if (messages.length === 0) {
-    return { isValid: false, error: 'At least one message is required' };
   }
 
   // Validate each message
@@ -348,13 +345,20 @@ export const validateMessages = (
       };
     }
 
-    // Check for empty or whitespace-only content
     if (
       message.content === null ||
       (typeof message.content === 'string' && message.content.trim() === '')
     ) {
-      // For tool messages, empty content might be acceptable
-      if (message.role !== 'tool') {
+      // Assistant messages can have no content when the LLM required to call a tool
+      if (message.role === 'assistant' && message.tool_calls) {
+        if (message.tool_calls.length === 0) {
+          return {
+            isValid: false,
+            error: `Message at index ${i} is from assistant but has empty array 'tool_calls'. Expected an array with minimum length 1 when 'tool_calls' is provided.`,
+          };
+        }
+      } else if (message.role !== 'tool') {
+        // For tool messages, empty content might be acceptable
         return {
           isValid: false,
           error: `Message at index ${i} has empty content`,
@@ -429,25 +433,195 @@ export const validateMessages = (
     }
   }
 
-  // Validate conversation flow
-  const lastMessage = messages[messages.length - 1];
-  if (lastMessage.role !== 'user') {
-    return { isValid: false, error: 'Last message must be from user' };
+  let hasConsecutiveMessage = false;
+  for (let i = 1; i < messages.length; i++) {
+    // Check for alternating pattern (optional but recommended)
+    if (
+      messages[i].role !== 'tool' &&
+      messages[i].role === messages[i - 1].role
+    ) {
+      hasConsecutiveMessage = true;
+      break;
+    } else {
+      if (messages[i].role === 'tool') {
+        let foundAssistant = false;
+        for (let j = i - 1; j >= 0; j--) {
+          if (
+            messages[j].role === 'assistant' &&
+            messages[j].tool_calls &&
+            messages[j].tool_calls.length > 0
+          ) {
+            foundAssistant = true;
+            break;
+          }
+          if (messages[j].role !== 'tool') {
+            break;
+          }
+        }
+        if (!foundAssistant) {
+          return {
+            isValid: false,
+            error: `Messages with role 'tool' must be preceded by a valid 'assistant' message. Found invalid sequence at ${i} and ${
+              i - 1
+            }.`,
+          };
+        }
+      }
+    }
   }
 
-  // Check for alternating pattern (optional but recommended)
-  let hasConsecutiveUserMessages = false;
-  for (let i = 1; i < messages.length; i++) {
-    if (messages[i].role === 'user' && messages[i - 1].role === 'user') {
-      hasConsecutiveUserMessages = true;
-      break;
+  if (messages.length > 0) {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.role !== 'user' && lastMessage.role !== 'assistant') {
+      return {
+        isValid: false,
+        error: 'Last message must be from user or assistant',
+      };
     }
   }
 
   // Allow consecutive user messages but log a warning
-  if (hasConsecutiveUserMessages) {
+  if (hasConsecutiveMessage) {
     // This is acceptable but not ideal - we'll just log it
-    console.warn('Consecutive user messages detected in conversation');
+    console.warn(
+      'Consecutive messages with same role detected in conversation',
+    );
+  }
+
+  return { isValid: true };
+};
+
+/**
+ * Validates the structure and content of enabledTools.
+ * Checks for required fields and proper format.
+ *
+ * @param enabledTools - Array of enabled tools to validate
+ * @returns Validation result with isValid flag and optional error message
+ *
+ * @example
+ * ```typescript
+ * const result = validateEnabledTools([
+ *   'tool_1', 'tool_2'
+ * ]);
+ * if (!result.isValid) {
+ *   throw new Error(result.error);
+ * }
+ * ```
+ *
+ * @public
+ */
+export const validateEnabledTools = (
+  enabledTools: unknown,
+): ValidationResult => {
+  if (!enabledTools) {
+    return { isValid: true };
+  }
+
+  if (enabledTools && !Array.isArray(enabledTools)) {
+    return { isValid: false, error: 'enabledTools must be an array' };
+  }
+  const tools = enabledTools as unknown[];
+
+  if (tools.some((tool: any) => typeof tool !== 'string')) {
+    return { isValid: false, error: 'All enabledTools must be strings' };
+  }
+
+  return { isValid: true };
+};
+
+/**
+ * Validates that the last message in the array is an assistant message
+ * with pending tool calls, as required by the approval endpoint.
+ *
+ * @param messages - Array of chat messages to validate
+ * @returns Validation result with isValid flag and optional error message
+ * @public
+ */
+export const validateToolApprovalMessage = (
+  messages: ChatMessage[],
+): ValidationResult => {
+  const lastMessage = messages[messages.length - 1];
+  if (lastMessage.role !== 'assistant') {
+    return {
+      isValid: false,
+      error: 'Last message must be from assistant',
+    };
+  }
+
+  if (!lastMessage.tool_calls || lastMessage.tool_calls.length === 0) {
+    return {
+      isValid: false,
+      error:
+        'Last message must have an array of tool_calls with at least one item',
+    };
+  }
+
+  for (const toolCall of lastMessage.tool_calls) {
+    if (toolCall.metadata?.approval_status !== 'pending') {
+      return {
+        isValid: false,
+        error:
+          'Last message must declare tool_calls with pending approval status',
+      };
+    }
+  }
+
+  return { isValid: true };
+};
+
+/**
+ * Validates user approval/rejection decisions against pending tool calls.
+ * Ensures every pending tool call has exactly one decision and all values
+ * are either `'approved'` or `'rejected'`.
+ *
+ * @param decisions - Map of tool call ID to approval decision
+ * @param messages - Conversation messages; the last message must contain the pending tool calls
+ * @returns Validation result with isValid flag and optional error message
+ * @public
+ */
+export const validateDecisions = (
+  decisions: Record<string, ConfirmedStatus> | undefined,
+  messages: ChatMessage[],
+): ValidationResult => {
+  if (
+    !decisions ||
+    typeof decisions !== 'object' ||
+    Array.isArray(decisions) ||
+    Object.keys(decisions).length === 0
+  ) {
+    return {
+      isValid: false,
+      error:
+        'Decisions must be a non-empty object mapping tool call IDs to "approved" or "rejected"',
+    };
+  }
+
+  const pendingToolCalls = messages[messages.length - 1].tool_calls!;
+  if (pendingToolCalls.length !== Object.keys(decisions).length) {
+    return {
+      isValid: false,
+      error: `Number of decisions (${
+        Object.keys(decisions).length
+      }) does not match number of pending tool calls (${
+        pendingToolCalls.length
+      })`,
+    };
+  }
+
+  for (const [key, value] of Object.entries(decisions)) {
+    if (value !== 'approved' && value !== 'rejected') {
+      return {
+        isValid: false,
+        error: `Invalid decision value for tool call "${key}": must be "approved" or "rejected"`,
+      };
+    }
+
+    if (!pendingToolCalls.some(tc => tc.id === key)) {
+      return {
+        isValid: false,
+        error: `Decision key "${key}" does not match any pending tool call IDs`,
+      };
+    }
   }
 
   return { isValid: true };
@@ -474,4 +648,109 @@ export const validateMessages = (
 export function isGuestUser(userEntityRef: string): boolean {
   const guestPattern = /^user:development\/guest$/i;
   return guestPattern.test(userEntityRef);
+}
+
+/**
+ * Sanitizes messages for a new user query.
+ * Strips all tool_calls assistant messages and tool response messages,
+ * keeping only system, user, and assistant summary (content-only) messages.
+ *
+ * @param messages - Full conversation history including metadata
+ * @returns Cleaned message array suitable for sending to the LLM
+ */
+function sanitizeNewQuery(messages: ChatMessage[]): LlmMessage[] {
+  return messages.reduce<LlmMessage[]>((acc, { metadata, ...msg }) => {
+    if (msg.role === 'tool') return acc;
+    if (msg.role === 'assistant' && msg.tool_calls?.length) {
+      if (msg.content) {
+        acc.push({ role: msg.role, content: msg.content });
+      }
+      return acc;
+    }
+    acc.push(msg);
+    return acc;
+  }, []);
+}
+
+/**
+ * Sanitizes messages after tool execution (follow-up).
+ * Keeps the last assistant(tool_calls) round and its tool responses,
+ * but strips metadata and collapses older tool rounds into summaries.
+ *
+ * @param messages - Full conversation history including metadata
+ * @returns Cleaned message array suitable for sending to the LLM
+ */
+function sanitizeToolFollowUp(messages: ChatMessage[]): LlmMessage[] {
+  let lastToolCallIdx = -1;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].role === 'assistant' && messages[i].tool_calls?.length) {
+      lastToolCallIdx = i;
+      break;
+    }
+  }
+
+  const activeToolCallIds = new Set<string>();
+  if (lastToolCallIdx !== -1) {
+    for (const tc of messages[lastToolCallIdx].tool_calls!) {
+      activeToolCallIds.add(tc.id);
+    }
+  }
+
+  return messages.reduce<LlmMessage[]>(
+    (acc, { metadata: _metadata, ...msg }, idx) => {
+      // Active round assistant: strip metadata from tool_calls
+      if (idx === lastToolCallIdx) {
+        acc.push({
+          ...msg,
+          tool_calls: msg.tool_calls!.map(({ metadata, ...tc }) => tc),
+        });
+        return acc;
+      }
+
+      // Older assistant with tool_calls: keep only summary content
+      if (
+        msg.role === 'assistant' &&
+        msg.tool_calls?.length &&
+        idx < lastToolCallIdx
+      ) {
+        if (msg.content) {
+          acc.push({ role: msg.role, content: msg.content });
+        }
+        return acc;
+      }
+
+      // Drop tool responses from older rounds
+      if (
+        msg.role === 'tool' &&
+        msg.tool_call_id &&
+        !activeToolCallIds.has(msg.tool_call_id)
+      ) {
+        return acc;
+      }
+
+      acc.push(msg);
+      return acc;
+    },
+    [],
+  );
+}
+
+/**
+ * Prepares a conversation history for the LLM by stripping UI metadata
+ * and collapsing older tool-call rounds into content-only summaries.
+ *
+ * Automatically detects whether the conversation is a new user query
+ * or a follow-up after tool execution and applies the appropriate strategy.
+ *
+ * @param messages - Full conversation history with metadata
+ * @returns Cleaned {@link LlmMessage} array ready for the provider
+ * @public
+ */
+export function sanitizeForLLM(messages: ChatMessage[]): LlmMessage[] {
+  const lastMessage = messages[messages.length - 1];
+  const isFollowUp = lastMessage.role === 'tool';
+
+  return isFollowUp
+    ? sanitizeToolFollowUp(messages)
+    : sanitizeNewQuery(messages);
 }

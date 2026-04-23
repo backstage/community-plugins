@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse, ToolCall } from '../types';
+import { Tool, ChatResponse, ToolCall, LlmMessage } from '../types';
 
 /**
  * Anthropic Claude API provider.
@@ -23,7 +23,7 @@ import { ChatMessage, Tool, ChatResponse, ToolCall } from '../types';
  */
 export class ClaudeProvider extends LLMProvider {
   async sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse> {
     const requestBody = this.formatRequest(messages, tools);
@@ -112,7 +112,7 @@ export class ClaudeProvider extends LLMProvider {
     return headers;
   }
 
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any {
     const claudeMessages = this.convertToAnthropicFormat(messages);
 
     const request: any = {
@@ -165,7 +165,7 @@ export class ClaudeProvider extends LLMProvider {
     };
   }
 
-  private convertToAnthropicFormat(messages: ChatMessage[]) {
+  private convertToAnthropicFormat(messages: LlmMessage[]) {
     return messages
       .filter(msg => msg.role !== 'system') // Claude handles system messages differently
       .map(msg => {

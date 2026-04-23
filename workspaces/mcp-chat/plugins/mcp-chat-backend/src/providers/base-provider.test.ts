@@ -16,7 +16,7 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
+import { LlmMessage, Tool, ChatResponse, ProviderConfig } from '../types';
 
 global.fetch = jest.fn();
 
@@ -30,7 +30,7 @@ class TestProvider extends LLMProvider {
   }
 
   async sendMessage(
-    _messages: ChatMessage[],
+    _messages: LlmMessage[],
     _tools?: Tool[],
   ): Promise<ChatResponse> {
     return { choices: [{ message: { role: 'assistant', content: '' } }] };
@@ -44,7 +44,7 @@ class TestProvider extends LLMProvider {
     return { 'Content-Type': 'application/json' };
   }
 
-  protected formatRequest(_messages: ChatMessage[], _tools?: Tool[]): any {
+  protected formatRequest(_messages: LlmMessage[], _tools?: Tool[]): any {
     return {};
   }
 

@@ -16,7 +16,7 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { LiteLLMProvider } from './litellm-provider';
-import { ProviderConfig, ChatMessage, Tool } from '../types';
+import { ProviderConfig, LlmMessage, Tool } from '../types';
 
 // Mock fetch globally
 global.fetch = jest.fn();
@@ -57,7 +57,7 @@ describe('LiteLLMProvider', () => {
 
   describe('sendMessage', () => {
     it('should send simple message without tools', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Hello, how are you?' },
       ];
 
@@ -100,7 +100,7 @@ describe('LiteLLMProvider', () => {
     });
 
     it('should send message with tools', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'What is the weather?' },
       ];
 
@@ -163,7 +163,7 @@ describe('LiteLLMProvider', () => {
     });
 
     it('should handle API errors', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
@@ -285,7 +285,7 @@ describe('LiteLLMProvider', () => {
 
   describe('formatRequest', () => {
     it('should format request with default parameters', () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const request = (provider as any).formatRequest(messages);
 
@@ -298,7 +298,7 @@ describe('LiteLLMProvider', () => {
     });
 
     it('should include tools when provided', () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const tools: Tool[] = [
         {

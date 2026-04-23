@@ -15,14 +15,22 @@
  */
 
 import { HttpAuthService, LoggerService } from '@backstage/backend-plugin-api';
-import { InputError } from '@backstage/errors';
 import express from 'express';
 import Router from 'express-promise-router';
-import { validate as uuidValidate } from 'uuid';
-import { MCPClientService } from '../services/MCPClientService';
-import { ChatConversationStore } from '../services/ChatConversationStore';
-import { SummarizationService } from '../services/SummarizationService';
-import { validateMessages, isGuestUser } from '../utils';
+import { v4 as uuid, validate as uuidValidate } from 'uuid';
+import {
+  MCPClientService,
+  ChatConversationStore,
+  SummarizationService,
+} from '../services';
+import { ChatMessage } from '../types';
+import {
+  validateMessages,
+  isGuestUser,
+  validateEnabledTools,
+  validateToolApprovalMessage,
+  validateDecisions,
+} from '../utils';
 
 /**
  * Dependencies required for chat routes.
@@ -52,51 +60,11 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
   } = deps;
   const router = Router();
 
-  /**
-   * POST /chat
-   * Process a chat message through the LLM with optional tool usage.
-   */
-  router.post('/', async (req, res) => {
-    const { messages, enabledTools, conversationId } = req.body;
-
-    // Validate conversationId format if provided
-    if (conversationId && !uuidValidate(conversationId)) {
-      return res.status(400).json({ error: 'Invalid conversation ID format' });
-    }
-
-    const validation = validateMessages(messages);
-    if (!validation.isValid) {
-      logger.warn(`Message validation failed: ${validation.error}`);
-      return res.status(400).json({ error: validation.error });
-    }
-
-    if (enabledTools && !Array.isArray(enabledTools)) {
-      throw new InputError('enabledTools must be an array');
-    }
-
-    if (
-      enabledTools &&
-      enabledTools.some((tool: any) => typeof tool !== 'string')
-    ) {
-      throw new InputError('All enabledTools must be strings');
-    }
-
-    const { reply, toolCalls, toolResponses } =
-      await mcpClientService.processQuery(messages, enabledTools);
-
-    const toolsUsed =
-      toolCalls.length > 0 ? toolCalls.map(call => call.function.name) : [];
-
-    // Create conversation messages with assistant response
-    const conversationMessages = [
-      ...messages,
-      {
-        role: 'assistant' as const,
-        content: reply,
-        tool_calls: toolCalls.length > 0 ? toolCalls : undefined,
-      },
-    ];
-
+  async function saveConversation(
+    req: express.Request,
+    messages: ChatMessage[],
+    conversationId?: string,
+  ): Promise<string> {
     // Save conversation for authenticated non-guest users
     let savedConversationId: string | undefined;
     let userId: string | undefined;
@@ -111,8 +79,15 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
       if (!isGuestUser(userId)) {
         const savedConversation = await conversationStore.saveConversation(
           userId,
-          conversationMessages,
-          toolsUsed.length > 0 ? toolsUsed : undefined,
+          messages,
+          messages
+            .filter(
+              msg =>
+                msg.role === 'assistant' &&
+                msg.tool_calls &&
+                msg.tool_calls.length > 0,
+            )
+            .flatMap(msg => msg.tool_calls!.map(tc => tc.function.name)),
           conversationId,
         );
         savedConversationId = savedConversation.id;
@@ -128,7 +103,7 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
             try {
               // Generate title using LLM
               const title = await summarizationService.summarizeConversation(
-                conversationMessages,
+                messages,
               );
 
               // Update title in database
@@ -154,12 +129,99 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
       }
     }
 
+    // Conversation doesn't have an id if user is guest
+    return savedConversationId ?? uuid();
+  }
+
+  /**
+   * POST /chat
+   * Process a chat message through the LLM with optional tool usage.
+   */
+  router.post('/', async (req, res) => {
+    const { messages, userMessage, enabledTools, conversationId } = req.body;
+
+    if (conversationId && !uuidValidate(conversationId)) {
+      return res.status(400).json({ error: 'Invalid conversation ID format' });
+    }
+
+    const messagesValidation = validateMessages(messages);
+    if (!messagesValidation.isValid) {
+      logger.warn(`Message validation failed: ${messagesValidation.error}`);
+      return res.status(400).json({ error: messagesValidation.error });
+    }
+
+    if (userMessage === undefined || userMessage.trim() === '') {
+      logger.warn(`userMessage validation failed: invalid userMessage`);
+      return res.status(400).json({ error: 'A message from user is required' });
+    }
+
+    const enabledToolsValidation = validateEnabledTools(enabledTools);
+    if (!enabledToolsValidation.isValid) {
+      logger.warn(
+        `enabledTools validation failed: ${enabledToolsValidation.error}`,
+      );
+      return res.status(400).json({ error: enabledToolsValidation.error });
+    }
+
+    const updatedMessages = await mcpClientService.processQuery(
+      messages,
+      userMessage,
+      enabledTools,
+    );
+
+    const id = await saveConversation(req, updatedMessages, conversationId);
+
     return res.json({
-      role: 'assistant',
-      content: reply,
-      toolResponses: toolCalls.length > 0 ? toolResponses : [],
-      toolsUsed,
-      conversationId: savedConversationId,
+      conversationId: id,
+      messages: updatedMessages,
+    });
+  });
+
+  /**
+   * POST /chat/approve
+   * Process user approval/rejection decisions for pending tool calls.
+   * Accepts a decisions map keyed by tool call ID, executes approved tools,
+   * appends rejection messages for rejected tools, and returns the LLM follow-up.
+   */
+  router.post('/approve', async (req, res) => {
+    const { messages, decisions, conversationId } = req.body;
+
+    if (conversationId && !uuidValidate(conversationId)) {
+      return res.status(400).json({ error: 'Invalid conversation ID format' });
+    }
+
+    let messagesValidation = validateMessages(messages);
+    if (messagesValidation.isValid) {
+      if (messages.length === 0) {
+        messagesValidation = {
+          isValid: false,
+          error: 'At least one message is required',
+        };
+      } else {
+        messagesValidation = validateToolApprovalMessage(messages);
+      }
+    }
+    if (!messagesValidation.isValid) {
+      logger.warn(`Message validation failed: ${messagesValidation.error}`);
+      return res.status(400).json({ error: messagesValidation.error });
+    }
+
+    const decisionsValidation = validateDecisions(decisions, messages);
+    if (!decisionsValidation.isValid) {
+      logger.warn(`Decisions validation failed: ${decisionsValidation.error}`);
+      return res.status(400).json({ error: decisionsValidation.error });
+    }
+
+    const updatedMessages = await mcpClientService.processApprovalDecisions(
+      messages,
+      decisions,
+    );
+
+    const id = await saveConversation(req, updatedMessages, conversationId);
+
+    return res.json({
+      conversationId: id,
+      messages: updatedMessages,
     });
   });
 

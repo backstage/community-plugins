@@ -15,7 +15,7 @@
  */
 import { LLMProvider } from './base-provider';
 import {
-  ChatMessage,
+  LlmMessage,
   Tool,
   ChatResponse,
   MCPServerFullConfig,
@@ -46,7 +46,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
   }
 
   async sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     _tools?: Tool[],
   ): Promise<ChatResponse> {
     const requestBody = this.formatRequest(messages);
@@ -127,7 +127,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
     return headers;
   }
 
-  protected formatRequest(messages: ChatMessage[], _tools?: Tool[]): any {
+  protected formatRequest(messages: LlmMessage[], _tools?: Tool[]): any {
     // Extract the user input from the last message
     const lastMessage = messages[messages.length - 1];
     const input = lastMessage?.content || '';

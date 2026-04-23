@@ -26,9 +26,13 @@ import {
   getProviderConfig as getConfig,
   getProviderInfo,
 } from '../providers/provider-factory';
-import { executeToolCall, findNpxPath, loadServerConfigs } from '../utils';
-import { LLMProvider } from '../providers/base-provider';
-import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
+import {
+  executeToolCall,
+  findNpxPath,
+  loadServerConfigs,
+  sanitizeForLLM,
+} from '../utils';
+import { LLMProvider, OpenAIResponsesProvider } from '../providers';
 import { MCPClientService } from './MCPClientService';
 import {
   ChatMessage,
@@ -36,12 +40,21 @@ import {
   MCPServer,
   MCPServerStatusData,
   ProviderStatusData,
-  QueryResponse,
   ServerTool,
   MCPServerType,
   MCPServerFullConfig,
   ResponsesApiMcpCall,
+  ToolCall,
+  ApprovalStatus,
+  ConfirmedStatus,
 } from '../types';
+import {
+  systemMessage,
+  userMessage,
+  assistantMessage,
+  assistantToolCallMessage,
+  toolMessage,
+} from '../messageFactory';
 
 /**
  * Options for creating an MCPClientServiceImpl instance.
@@ -62,7 +75,7 @@ export type Options = {
 export class MCPClientServiceImpl implements MCPClientService {
   private readonly logger: LoggerService;
   private readonly config: RootConfigService;
-  private llmProvider: LLMProvider;
+  private readonly llmProvider: LLMProvider;
   private readonly mcpClients: Map<string, Client> = new Map();
   private tools: ServerTool[] = [];
   private connected = false;
@@ -415,23 +428,89 @@ export class MCPClientServiceImpl implements MCPClientService {
     return serverResults;
   }
 
+  /**
+   * Executes tool calls and returns the resulting tool response messages.
+   * Does not mutate any input — returns only the new messages.
+   */
+  private async executeToolCalls(
+    toolCalls: ToolCall[],
+  ): Promise<ChatMessage[]> {
+    const toolMessages: ChatMessage[] = [];
+    for (const toolCall of toolCalls) {
+      try {
+        const toolResponse = await executeToolCall(
+          toolCall,
+          this.tools,
+          this.mcpClients,
+        );
+
+        toolMessages.push(toolMessage(toolResponse.result, toolCall.id));
+      } catch (error) {
+        const errorMessage = `Error executing tool '${
+          toolCall.function.name
+        }': ${error instanceof Error ? error.message : error}`;
+
+        this.logger.warn(errorMessage);
+
+        toolMessages.push(toolMessage(errorMessage, toolCall.id));
+      }
+    }
+    return toolMessages;
+  }
+
+  /**
+   * Resolves the MCP server ID that provides a given tool.
+   *
+   * @param toolCall - The tool call to look up
+   * @returns The server ID, or `'unknown'` if the tool is not found
+   */
+  private getServerIdFromToolCall(toolCall: ToolCall): string {
+    const serverTool = this.tools.find(
+      t => t.function.name === toolCall.function.name,
+    );
+    return serverTool?.serverId || 'unknown';
+  }
+
+  /**
+   * Builds an assistant message with tool calls annotated with server IDs
+   * and the given approval status.
+   *
+   * @param toolCalls - Raw tool calls from the LLM response
+   * @param status - Approval status to assign to each tool call
+   * @returns A {@link ChatMessage} with role `assistant` containing the annotated tool calls
+   */
+  private buildAssistantToolCallMsg(
+    toolCalls: ToolCall[],
+    status: ApprovalStatus,
+  ): ChatMessage {
+    return assistantToolCallMessage(
+      toolCalls.map(tc => ({
+        ...tc,
+        metadata: {
+          serverId: this.getServerIdFromToolCall(tc),
+          approval_status: status,
+        },
+      })),
+    );
+  }
+
   async processQuery(
-    messagesInput: any[],
+    messagesInput: ChatMessage[],
+    userInput: string,
     enabledTools?: string[],
-  ): Promise<QueryResponse> {
+  ): Promise<ChatMessage[]> {
     // Only add system message if one doesn't already exist
     const messages: ChatMessage[] = [...messagesInput];
     if (messages.length === 0 || messages[0].role !== 'system') {
-      messages.unshift({
-        role: 'system',
-        content: this.systemPrompt,
-      });
+      messages.unshift(systemMessage(this.systemPrompt));
     }
+
+    const withUser: ChatMessage[] = [...messages, userMessage(userInput)];
 
     // Check if using Responses API provider
     const providerConfig = getConfig(this.config);
     if (providerConfig.type === 'openai-responses') {
-      return this.processQueryWithResponsesApi(messages, enabledTools);
+      return this.processQueryWithResponsesApi(withUser, enabledTools);
     }
 
     // Filter tools based on enabled servers
@@ -446,7 +525,10 @@ export class MCPClientServiceImpl implements MCPClientService {
     // Remove serverId from tools when sending to LLM
     const llmTools: Tool[] = filteredTools.map(({ serverId, ...tool }) => tool);
 
-    const response = await this.llmProvider.sendMessage(messages, llmTools);
+    const response = await this.llmProvider.sendMessage(
+      sanitizeForLLM(withUser),
+      llmTools,
+    );
     const replyMessage = response.choices[0].message;
     this.logger.info(
       `LLM response received with ${
@@ -455,75 +537,33 @@ export class MCPClientServiceImpl implements MCPClientService {
     );
     const toolCalls = replyMessage.tool_calls || [];
 
-    if (toolCalls.length > 0) {
-      const toolResponses = [];
-
-      for (const toolCall of toolCalls) {
-        try {
-          const toolResponse = await executeToolCall(
-            toolCall,
-            this.tools,
-            this.mcpClients,
-          );
-          toolResponses.push(toolResponse);
-
-          messages.push({
-            role: 'assistant',
-            content: null,
-            tool_calls: [toolCall],
-          });
-
-          messages.push({
-            role: 'tool',
-            content: toolResponse.result,
-            tool_call_id: toolCall.id,
-          });
-        } catch (error) {
-          const errorMessage = `Error executing tool '${
-            toolCall.function.name
-          }': ${error instanceof Error ? error.message : error}`;
-
-          this.logger.warn(errorMessage);
-
-          // Still add the tool call and error response to maintain conversation flow
-          const errorResponse = {
-            id: toolCall.id,
-            name: toolCall.function.name,
-            arguments: JSON.parse(toolCall.function.arguments || '{}'),
-            result: errorMessage,
-            serverId: 'error',
-          };
-
-          toolResponses.push(errorResponse);
-
-          messages.push({
-            role: 'assistant',
-            content: null,
-            tool_calls: [toolCall],
-          });
-
-          messages.push({
-            role: 'tool',
-            content: errorMessage,
-            tool_call_id: toolCall.id,
-          });
-        }
-      }
-
-      const followUp = await this.llmProvider.sendMessage(messages);
-
-      return {
-        reply: followUp.choices[0].message.content || '',
-        toolCalls,
-        toolResponses,
-      };
+    if (toolCalls.length === 0) {
+      return [...withUser, assistantMessage(replyMessage.content || '')];
     }
 
-    return {
-      reply: replyMessage.content || '',
-      toolCalls: [],
-      toolResponses: [],
-    };
+    // When requestApproval is true, return pending tool calls without executing
+    if (this.config.getOptionalBoolean('mcpChat.requestApproval')) {
+      return [
+        ...withUser,
+        this.buildAssistantToolCallMsg(toolCalls, 'pending'),
+      ];
+    }
+
+    const withAssistant = [
+      ...withUser,
+      this.buildAssistantToolCallMsg(toolCalls, 'approved'),
+    ];
+    const toolResponses = await this.executeToolCalls(toolCalls);
+    const withTools = [...withAssistant, ...toolResponses];
+
+    const followUp = await this.llmProvider.sendMessage(
+      sanitizeForLLM(withTools),
+    );
+
+    return [
+      ...withTools,
+      assistantMessage(followUp.choices[0].message.content || ''),
+    ];
   }
 
   /**
@@ -533,7 +573,7 @@ export class MCPClientServiceImpl implements MCPClientService {
   private async processQueryWithResponsesApi(
     messages: ChatMessage[],
     enabledTools?: string[],
-  ): Promise<QueryResponse> {
+  ): Promise<ChatMessage[]> {
     // Filter server configs based on enabled tools
     // - If enabledTools is undefined/null: use all servers (default)
     // - If enabledTools is empty array []: use no servers (all disabled)
@@ -549,12 +589,18 @@ export class MCPClientServiceImpl implements MCPClientService {
     }
 
     // Send message - the provider handles MCP tool configuration internally
-    const response = await this.llmProvider.sendMessage(messages);
+    const response = await this.llmProvider.sendMessage(
+      sanitizeForLLM(messages),
+    );
     const replyMessage = response.choices[0].message;
+    const assistantReply = assistantMessage(replyMessage.content ?? '');
 
-    // Extract tool calls and responses from the Responses API output
-    const toolCalls = replyMessage.tool_calls || [];
-    const toolResponses: any[] = [];
+    if (!replyMessage.tool_calls) {
+      // The LLM didn't use any tool. Return simple agent message
+      return [...messages, assistantReply];
+    }
+
+    const toolMessages: ChatMessage[] = [];
 
     // Get the raw output from the provider to extract tool execution details
     if (this.llmProvider instanceof OpenAIResponsesProvider) {
@@ -563,29 +609,86 @@ export class MCPClientServiceImpl implements MCPClientService {
         for (const event of output) {
           if (event.type === 'mcp_call') {
             const mcpCall = event as ResponsesApiMcpCall;
-            // Build tool response in the format expected by the UI
-            toolResponses.push({
-              id: mcpCall.id,
-              name: mcpCall.name,
-              arguments: JSON.parse(mcpCall.arguments || '{}'),
-              result: mcpCall.error || mcpCall.output,
-              serverId: mcpCall.server_label,
-              error: mcpCall.error,
-            });
+            toolMessages.push(
+              toolMessage(mcpCall.error || mcpCall.output, mcpCall.id),
+            );
           }
         }
       }
     }
 
     this.logger.info(
-      `Responses API completed with ${toolCalls.length} tool calls`,
+      `Responses API completed with ${replyMessage.tool_calls.length} tool calls`,
     );
 
-    return {
-      reply: replyMessage.content || '',
-      toolCalls,
-      toolResponses,
+    return [
+      ...messages,
+      assistantToolCallMessage(replyMessage.tool_calls),
+      ...toolMessages,
+      assistantReply,
+    ];
+  }
+
+  async processApprovalDecisions(
+    messagesInput: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
+  ): Promise<ChatMessage[]> {
+    const lastMessage = messagesInput[messagesInput.length - 1];
+    const pendingToolCalls = lastMessage.tool_calls!;
+
+    const updatedToolCalls: ToolCall[] = pendingToolCalls.map(tc => ({
+      ...tc,
+      metadata: {
+        ...tc.metadata,
+        approval_status: decisions[tc.id]!,
+      },
+    }));
+
+    const updatedLastMessage: ChatMessage = {
+      ...lastMessage,
+      tool_calls: updatedToolCalls,
     };
+
+    const messages = [...messagesInput.slice(0, -1), updatedLastMessage];
+
+    const approvedCalls = updatedToolCalls.filter(
+      tc => tc.metadata!.approval_status === 'approved',
+    );
+    const rejectedCalls = updatedToolCalls.filter(
+      tc => tc.metadata!.approval_status === 'rejected',
+    );
+
+    const approvedResponseMap = new Map(
+      (await this.executeToolCalls(approvedCalls)).map(r => [
+        r.tool_call_id,
+        r,
+      ]),
+    );
+
+    const rejectedResponseMap = new Map(
+      rejectedCalls.map(tc => [
+        tc.id,
+        toolMessage(
+          'The user rejected this tool call. Do not attempt to provide information that would have come from this tool call. Simply acknowledge that the operation was not permitted and move on.',
+          tc.id,
+        ),
+      ]),
+    );
+
+    const orderedResponses = updatedToolCalls.map(
+      tc => approvedResponseMap.get(tc.id) ?? rejectedResponseMap.get(tc.id)!,
+    );
+
+    const withToolResponses = [...messages, ...orderedResponses];
+
+    const followUp = await this.llmProvider.sendMessage(
+      sanitizeForLLM(withToolResponses),
+    );
+
+    return [
+      ...withToolResponses,
+      assistantMessage(followUp.choices[0].message.content || ''),
+    ];
   }
 
   getAvailableTools(): ServerTool[] {

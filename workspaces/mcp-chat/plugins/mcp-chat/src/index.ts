@@ -18,9 +18,11 @@ export { mcpChatApiRef } from './api';
 export type { McpChatApi } from './api/McpChatApi';
 export type {
   ChatMessage,
-  ChatResponse,
   ToolsResponse,
   Tool,
+  ToolCall,
+  ChatRole,
+  ChatResponse,
   MCPServerStatusData,
   ProviderStatusData,
   MCPServer,
@@ -28,5 +30,7 @@ export type {
   Provider,
   ProviderConnectionStatus,
   ConversationRecord,
+  ApprovalStatus,
+  ConfirmedStatus,
   ConversationsResponse,
 } from './types';

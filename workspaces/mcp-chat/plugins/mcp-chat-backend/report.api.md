@@ -14,6 +14,9 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 // @public
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
+// @public
 export class ChatConversationStore {
   static create(
     options: ChatConversationStoreOptions,
@@ -49,11 +52,9 @@ export interface ChatConversationStoreOptions {
 }
 
 // @public
-export interface ChatMessage {
-  content: string | null;
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  tool_call_id?: string;
-  tool_calls?: ToolCall[];
+export interface ChatMessage extends LlmMessage {
+  // (undocumented)
+  metadata: MessageMetadata;
 }
 
 // @public
@@ -75,15 +76,18 @@ export interface ChatResponse {
 }
 
 // @public
+export type ChatRole = 'system' | 'user' | 'assistant' | 'tool';
+
+// @public
 export class ClaudeProvider extends LLMProvider {
   // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any;
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
+  sendMessage(messages: LlmMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -91,6 +95,9 @@ export class ClaudeProvider extends LLMProvider {
     error?: string;
   }>;
 }
+
+// @public
+export type ConfirmedStatus = Exclude<ApprovalStatus, 'pending'>;
 
 // @public
 export interface ConversationRecord {
@@ -121,13 +128,13 @@ export function findNpxPath(): Promise<string>;
 export class GeminiProvider extends LLMProvider {
   constructor(config: ProviderConfig);
   // (undocumented)
-  protected formatRequest(_messages: ChatMessage[], _tools?: Tool[]): any;
+  protected formatRequest(_messages: LlmMessage[], _tools?: Tool[]): any;
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
   protected parseResponse(result: GenerateContentResponse): ChatResponse;
   // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
+  sendMessage(messages: LlmMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -149,19 +156,27 @@ export function getProviderInfo(config: RootConfigService): {
 // @public
 export class LiteLLMProvider extends LLMProvider {
   // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any;
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
+  sendMessage(messages: LlmMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
     models?: string[];
     error?: string;
   }>;
+}
+
+// @public
+export interface LlmMessage {
+  content: string | null;
+  role: ChatRole;
+  tool_call_id?: string;
+  tool_calls?: ToolCall[];
 }
 
 // @public
@@ -188,7 +203,7 @@ export abstract class LLMProvider {
   protected abstract parseResponse(response: any): ChatResponse;
   // (undocumented)
   abstract sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse>;
   // (undocumented)
@@ -227,10 +242,15 @@ export interface MCPClientService {
   getMCPServerStatus(): Promise<MCPServerStatusData>;
   getProviderStatus(): Promise<ProviderStatusData>;
   initializeMCPServers(): Promise<MCPServer[]>;
+  processApprovalDecisions(
+    messages: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
+  ): Promise<ChatMessage[]>;
   processQuery(
     messagesInput: ChatMessage[],
+    userMessage: string,
     enabledTools?: string[],
-  ): Promise<QueryResponse>;
+  ): Promise<ChatMessage[]>;
 }
 
 // @public
@@ -245,10 +265,16 @@ export class MCPClientServiceImpl implements MCPClientService {
   // (undocumented)
   initializeMCPServers(): Promise<MCPServer[]>;
   // (undocumented)
+  processApprovalDecisions(
+    messagesInput: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
+  ): Promise<ChatMessage[]>;
+  // (undocumented)
   processQuery(
-    messagesInput: any[],
+    messagesInput: ChatMessage[],
+    userInput: string,
     enabledTools?: string[],
-  ): Promise<QueryResponse>;
+  ): Promise<ChatMessage[]>;
 }
 
 // @public
@@ -304,22 +330,22 @@ export enum MCPServerType {
 }
 
 // @public
-export interface MessageValidationResult {
-  error?: string;
-  isValid: boolean;
-}
+export type MessageMetadata = {
+  id: string;
+  timestamp: Date;
+};
 
 // @public
 export class OllamaProvider extends LLMProvider {
   constructor(config: any);
   // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any;
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
+  sendMessage(messages: LlmMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -331,13 +357,13 @@ export class OllamaProvider extends LLMProvider {
 // @public
 export class OpenAIProvider extends LLMProvider {
   // (undocumented)
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any;
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
-  sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
+  sendMessage(messages: LlmMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -349,7 +375,7 @@ export class OpenAIProvider extends LLMProvider {
 // @public
 export class OpenAIResponsesProvider extends LLMProvider {
   // (undocumented)
-  protected formatRequest(messages: ChatMessage[], _tools?: Tool[]): any;
+  protected formatRequest(messages: LlmMessage[], _tools?: Tool[]): any;
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   getLastResponseOutput(): ResponsesApiResponse['output'] | null;
@@ -358,7 +384,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
   // (undocumented)
   protected parseResponse(response: ResponsesApiResponse): ChatResponse;
   // (undocumented)
-  sendMessage(messages: ChatMessage[], _tools?: Tool[]): Promise<ChatResponse>;
+  sendMessage(messages: LlmMessage[], _tools?: Tool[]): Promise<ChatResponse>;
   setMcpServerConfigs(configs: MCPServerFullConfig[]): void;
   // (undocumented)
   testConnection(): Promise<{
@@ -409,13 +435,6 @@ export interface ProviderStatusData {
     error?: string;
   };
   timestamp: string;
-}
-
-// @public
-export interface QueryResponse {
-  reply: string;
-  toolCalls: ToolCall[];
-  toolResponses: ToolExecutionResult[];
 }
 
 // @public
@@ -517,6 +536,9 @@ export interface RouterOptions {
 }
 
 // @public
+export function sanitizeForLLM(messages: ChatMessage[]): LlmMessage[];
+
+// @public
 export interface ServerTool extends Tool {
   serverId: string;
 }
@@ -554,6 +576,10 @@ export interface ToolCall {
     arguments: string;
   };
   id: string;
+  metadata?: {
+    serverId?: string;
+    approval_status?: ApprovalStatus;
+  };
   type: 'function';
 }
 
@@ -573,7 +599,27 @@ export const VALID_ROLES: readonly ['user', 'assistant', 'system', 'tool'];
 export const validateConfig: (config: RootConfigService) => void;
 
 // @public
-export const validateMessages: (messages: unknown) => MessageValidationResult;
+export const validateDecisions: (
+  decisions: Record<string, ConfirmedStatus> | undefined,
+  messages: ChatMessage[],
+) => ValidationResult;
+
+// @public
+export const validateEnabledTools: (enabledTools: unknown) => ValidationResult;
+
+// @public
+export const validateMessages: (messages: unknown) => ValidationResult;
+
+// @public
+export const validateToolApprovalMessage: (
+  messages: ChatMessage[],
+) => ValidationResult;
+
+// @public
+export interface ValidationResult {
+  error?: string;
+  isValid: boolean;
+}
 
 // (No @packageDocumentation comment for this package)
 ```

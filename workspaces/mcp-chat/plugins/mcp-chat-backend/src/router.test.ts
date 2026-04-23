@@ -18,21 +18,25 @@ import { InputError } from '@backstage/errors';
 import express from 'express';
 import request from 'supertest';
 import { createRouter } from './router';
-import { MCPClientService } from './services/MCPClientService';
-import { ChatConversationStore } from './services/ChatConversationStore';
-import { SummarizationService } from './services/SummarizationService';
-import { MCPServerType } from './types';
+import {
+  MCPClientService,
+  ChatConversationStore,
+  SummarizationService,
+} from './services';
+import { ChatMessage, MCPServerType } from './types';
 
 describe('createRouter', () => {
   let app: express.Express;
   let mcpClientService: jest.Mocked<MCPClientService>;
   let conversationStore: jest.Mocked<ChatConversationStore>;
   let summarizationService: jest.Mocked<SummarizationService>;
+  let mockHttpAuth: ReturnType<typeof mockServices.httpAuth.mock>;
 
   beforeEach(async () => {
     mcpClientService = {
       initializeMCPServers: jest.fn(),
       processQuery: jest.fn(),
+      processApprovalDecisions: jest.fn(),
       getAvailableTools: jest.fn(),
       getProviderStatus: jest.fn(),
       getMCPServerStatus: jest.fn(),
@@ -52,11 +56,13 @@ describe('createRouter', () => {
       summarizeConversation: jest.fn().mockResolvedValue('Test Title'),
     } as unknown as jest.Mocked<SummarizationService>;
 
+    mockHttpAuth = mockServices.httpAuth.mock();
+
     const router = await createRouter({
       logger: mockServices.logger.mock(),
       mcpClientService,
       conversationStore,
-      httpAuth: mockServices.httpAuth.mock(),
+      httpAuth: mockHttpAuth,
       summarizationService,
     });
 
@@ -221,91 +227,157 @@ describe('createRouter', () => {
   });
 
   describe('POST /chat', () => {
-    const validMessages = [
-      { role: 'user', content: 'Hello, what can you help me with?' },
-    ];
+    const userQuery = 'Hello, what can you help me with?';
+    const mockToolCall = {
+      id: 'call_123',
+      type: 'function' as const,
+      function: {
+        name: 'search_web',
+        arguments: JSON.stringify({ query: 'test' }),
+      },
+    };
+
+    const buildUserMessage = (query: string): ChatMessage => {
+      return {
+        role: 'user',
+        content: query,
+        metadata: {
+          id: '2',
+          timestamp: new Date(2),
+        },
+      };
+    };
+
+    const parseMessages = (messages: ChatMessage[]): ChatMessage[] => {
+      return JSON.parse(JSON.stringify(messages));
+    };
 
     it('should process chat request without tools', async () => {
-      const mockResponse = {
-        reply: 'Hello! I can help you with various tasks.',
-        toolCalls: [],
-        toolResponses: [],
-      };
+      const mockResponse: ChatMessage[] = [
+        buildUserMessage(userQuery),
+        {
+          role: 'assistant',
+          content: 'Hello! I can help you with various tasks.',
+          metadata: { id: '2', timestamp: new Date(2) },
+        },
+      ];
 
       mcpClientService.processQuery.mockResolvedValue(mockResponse);
 
       const response = await request(app)
         .post('/chat')
-        .send({ messages: validMessages, enabledTools: [] });
+        .send({ messages: [], userMessage: userQuery, enabledTools: [] });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
-        role: 'assistant',
-        content: 'Hello! I can help you with various tasks.',
-        toolResponses: [],
-        toolsUsed: [],
+        messages: parseMessages(mockResponse),
+        conversationId: expect.any(String),
       });
       expect(mcpClientService.processQuery).toHaveBeenCalledWith(
-        validMessages,
+        [],
+        userQuery,
         [],
       );
     });
 
     it('should process chat request with tools', async () => {
-      const mockToolCall = {
-        id: 'call_123',
-        type: 'function' as const,
-        function: {
-          name: 'search_web',
-          arguments: JSON.stringify({ query: 'test' }),
+      const mockResponse: ChatMessage[] = [
+        buildUserMessage(userQuery),
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [mockToolCall],
+          metadata: { id: '2', timestamp: new Date(2) },
         },
-      };
-
-      const mockResponse = {
-        reply: 'I found some search results.',
-        toolCalls: [mockToolCall],
-        toolResponses: [
-          {
-            id: 'call_456',
-            name: 'search_web',
-            arguments: {},
-            result: 'Results here',
-            serverId: 'test-server',
-          },
-        ],
-      };
+        {
+          role: 'tool',
+          content: 'Results here',
+          tool_call_id: 'call_123',
+          metadata: { id: '3', timestamp: new Date(3) },
+        },
+        {
+          role: 'assistant',
+          content: 'I found some search results.',
+          metadata: { id: '4', timestamp: new Date(4) },
+        },
+      ];
 
       mcpClientService.processQuery.mockResolvedValue(mockResponse);
 
       const response = await request(app)
         .post('/chat')
-        .send({ messages: validMessages, enabledTools: ['search_web'] });
+        .send({
+          messages: [],
+          userMessage: userQuery,
+          enabledTools: ['search_web'],
+        });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
-        role: 'assistant',
-        content: 'I found some search results.',
-        toolResponses: [
-          {
-            id: 'call_456',
-            name: 'search_web',
-            arguments: {},
-            result: 'Results here',
-            serverId: 'test-server',
-          },
-        ],
-        toolsUsed: ['search_web'],
+        messages: parseMessages(mockResponse),
+        conversationId: expect.any(String),
       });
     });
 
-    it('should return 400 for empty messages array', async () => {
+    it('should continue on a started conversation', async () => {
+      const messages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: 'You are a helpful assistant',
+          metadata: { id: '1', timestamp: new Date(1) },
+        },
+        {
+          role: 'user',
+          content: userQuery,
+          metadata: { id: '2', timestamp: new Date(2) },
+        },
+        {
+          role: 'assistant',
+          content: 'Hello! I can help you with various tasks.',
+          metadata: { id: '3', timestamp: new Date(3) },
+        },
+      ];
+      const newQuery = 'I have to leave now';
+      const mockResponse: ChatMessage[] = [
+        ...messages,
+        {
+          role: 'user',
+          content: newQuery,
+          metadata: { id: '4', timestamp: new Date(4) },
+        },
+        {
+          role: 'assistant',
+          content: 'Okay, bye!',
+          metadata: { id: '5', timestamp: new Date(5) },
+        },
+      ];
+
+      mcpClientService.processQuery.mockResolvedValue(mockResponse);
+
       const response = await request(app)
         .post('/chat')
-        .send({ messages: [], enabledTools: [] });
+        .send({ messages: messages, userMessage: userQuery, enabledTools: [] });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        messages: parseMessages(mockResponse),
+        conversationId: expect.any(String),
+      });
+      expect(mcpClientService.processQuery).toHaveBeenCalledWith(
+        parseMessages(messages),
+        userQuery,
+        [],
+      );
+    });
+
+    it('should return 400 for empty user message', async () => {
+      const response = await request(app)
+        .post('/chat')
+        .send({ messages: [], userMessage: '', enabledTools: [] });
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'At least one message is required',
+        error: 'A message from user is required',
       });
     });
 
@@ -361,7 +433,8 @@ describe('createRouter', () => {
       const response = await request(app)
         .post('/chat')
         .send({
-          messages: [{ role: 'user', content: null }],
+          messages: [{ role: 'system', content: null }],
+          userMessage: userQuery,
           enabledTools: [],
         });
 
@@ -371,44 +444,54 @@ describe('createRouter', () => {
       });
     });
 
-    it('should return 400 for non-user last message', async () => {
+    it('should return 400 for non-user and non-assistant last message', async () => {
       const response = await request(app)
         .post('/chat')
         .send({
           messages: [
             { role: 'user', content: 'Hello' },
-            { role: 'assistant', content: 'Hi there' },
+            {
+              role: 'assistant',
+              content: null,
+              tool_calls: [mockToolCall],
+            },
+            { role: 'tool', content: 'result', tool_call_id: 'call_123' },
           ],
+          userMessage: userQuery,
           enabledTools: [],
         });
 
       expect(response.status).toBe(400);
       expect(response.body).toEqual({
-        error: 'Last message must be from user',
+        error: 'Last message must be from user or assistant',
       });
     });
 
     it('should return 400 for non-array enabledTools', async () => {
-      const response = await request(app)
-        .post('/chat')
-        .send({ messages: validMessages, enabledTools: 'not-array' });
+      const response = await request(app).post('/chat').send({
+        messages: [],
+        userMessage: userQuery,
+        enabledTools: 'not-array',
+      });
 
       expect(response.status).toBe(400);
-      expect(response.body.error).toMatchObject({
-        name: 'InputError',
-        message: 'enabledTools must be an array',
+      expect(response.body).toMatchObject({
+        error: 'enabledTools must be an array',
       });
     });
 
     it('should return 400 for non-string enabledTools elements', async () => {
       const response = await request(app)
         .post('/chat')
-        .send({ messages: validMessages, enabledTools: [123, 'valid'] });
+        .send({
+          messages: [],
+          userMessage: userQuery,
+          enabledTools: [123, 'valid'],
+        });
 
       expect(response.status).toBe(400);
-      expect(response.body.error).toMatchObject({
-        name: 'InputError',
-        message: 'All enabledTools must be strings',
+      expect(response.body).toMatchObject({
+        error: 'All enabledTools must be strings',
       });
     });
 
@@ -419,29 +502,326 @@ describe('createRouter', () => {
 
       const response = await request(app)
         .post('/chat')
-        .send({ messages: validMessages, enabledTools: [] });
+        .send({ messages: [], userMessage: userQuery, enabledTools: [] });
 
       expect(response.status).toBe(500);
     });
 
     it('should handle enabledTools being undefined', async () => {
-      const mockResponse = {
-        reply: 'Response without tools',
-        toolCalls: [],
-        toolResponses: [],
-      };
+      const mockResponse: ChatMessage[] = [
+        buildUserMessage(userQuery),
+        {
+          role: 'assistant',
+          content: 'Response without tools',
+          metadata: { id: '2', timestamp: new Date(2) },
+        },
+      ];
 
       mcpClientService.processQuery.mockResolvedValue(mockResponse);
 
       const response = await request(app)
         .post('/chat')
-        .send({ messages: validMessages });
+        .send({ messages: [], userMessage: userQuery });
 
       expect(response.status).toBe(200);
       expect(mcpClientService.processQuery).toHaveBeenCalledWith(
-        validMessages,
+        [],
+        userQuery,
         undefined,
       );
+    });
+  });
+
+  describe('POST /chat/approve', () => {
+    const metadata = { id: '1', timestamp: new Date(1) };
+
+    const pendingToolCall = {
+      id: 'call_1',
+      type: 'function' as const,
+      function: { name: 'search', arguments: '{}' },
+      metadata: { serverId: 'server-1', approval_status: 'pending' as const },
+    };
+
+    const pendingMessages: ChatMessage[] = [
+      { role: 'user', content: 'Search for cats', metadata },
+      {
+        role: 'assistant',
+        content: null,
+        tool_calls: [pendingToolCall],
+        metadata,
+      },
+    ];
+
+    const parseMessages = (messages: ChatMessage[]): ChatMessage[] => {
+      return JSON.parse(JSON.stringify(messages));
+    };
+
+    it('should process approval decisions successfully', async () => {
+      const mockResponse: ChatMessage[] = [
+        ...pendingMessages,
+        {
+          role: 'tool',
+          content: 'cat results',
+          tool_call_id: 'call_1',
+          metadata,
+        },
+        { role: 'assistant', content: 'Here are some cats!', metadata },
+      ];
+
+      mcpClientService.processApprovalDecisions.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        messages: parseMessages(mockResponse),
+        conversationId: expect.any(String),
+      });
+      expect(mcpClientService.processApprovalDecisions).toHaveBeenCalledWith(
+        parseMessages(pendingMessages),
+        { call_1: 'approved' },
+      );
+    });
+
+    it('should process rejection decisions successfully', async () => {
+      const mockResponse: ChatMessage[] = [
+        ...pendingMessages,
+        { role: 'tool', content: 'rejected', tool_call_id: 'call_1', metadata },
+        { role: 'assistant', content: 'Understood, skipping that.', metadata },
+      ];
+
+      mcpClientService.processApprovalDecisions.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { call_1: 'rejected' },
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        messages: parseMessages(mockResponse),
+        conversationId: expect.any(String),
+      });
+    });
+
+    it('should pass conversationId through', async () => {
+      const convId = '550e8400-e29b-41d4-a716-446655440000';
+      const mockResponse: ChatMessage[] = [
+        ...pendingMessages,
+        { role: 'tool', content: 'result', tool_call_id: 'call_1', metadata },
+        { role: 'assistant', content: 'Done.', metadata },
+      ];
+
+      mcpClientService.processApprovalDecisions.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { call_1: 'approved' },
+          conversationId: convId,
+        });
+
+      expect(response.status).toBe(200);
+    });
+
+    it('should return 400 for invalid conversationId format', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { call_1: 'approved' },
+          conversationId: 'not-a-uuid',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'Invalid conversation ID format',
+      });
+    });
+
+    it('should return 400 for missing messages', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({ decisions: { call_1: 'approved' } });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'Messages field is required',
+      });
+    });
+
+    it('should return 400 for empty messages array', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: [],
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'At least one message is required',
+      });
+    });
+
+    it('should return 400 when last message is not from assistant', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: [{ role: 'user', content: 'Hello', metadata }],
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: 'Last message must be from assistant',
+      });
+    });
+
+    it('should return 400 when last assistant message has no tool_calls', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: [{ role: 'assistant', content: 'Hi', metadata }],
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Last message must have an array of tool_calls with at least one item',
+      });
+    });
+
+    it('should return 400 when tool calls are not pending', async () => {
+      const approvedMessages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              ...pendingToolCall,
+              metadata: { serverId: 'server-1', approval_status: 'approved' },
+            },
+          ],
+          metadata,
+        },
+      ];
+
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: approvedMessages,
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Last message must declare tool_calls with pending approval status',
+      });
+    });
+
+    it('should return 400 for missing decisions', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({ messages: pendingMessages });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Decisions must be a non-empty object mapping tool call IDs to "approved" or "rejected"',
+      });
+    });
+
+    it('should return 400 for empty decisions object', async () => {
+      const response = await request(app).post('/chat/approve').send({
+        messages: pendingMessages,
+        decisions: {},
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Decisions must be a non-empty object mapping tool call IDs to "approved" or "rejected"',
+      });
+    });
+
+    it('should return 400 when decision count does not match tool calls', async () => {
+      const twoToolMessages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [pendingToolCall, { ...pendingToolCall, id: 'call_2' }],
+          metadata,
+        },
+      ];
+
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: twoToolMessages,
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Number of decisions (1) does not match number of pending tool calls (2)',
+      });
+    });
+
+    it('should return 400 for invalid decision value', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { call_1: 'pending' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Invalid decision value for tool call "call_1": must be "approved" or "rejected"',
+      });
+    });
+
+    it('should return 400 for decision key not matching any tool call', async () => {
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { wrong_id: 'approved' },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error:
+          'Decision key "wrong_id" does not match any pending tool call IDs',
+      });
+    });
+
+    it('should handle processApprovalDecisions errors', async () => {
+      mcpClientService.processApprovalDecisions.mockRejectedValue(
+        new Error('Approval processing failed'),
+      );
+
+      const response = await request(app)
+        .post('/chat/approve')
+        .send({
+          messages: pendingMessages,
+          decisions: { call_1: 'approved' },
+        });
+
+      expect(response.status).toBe(500);
     });
   });
 });

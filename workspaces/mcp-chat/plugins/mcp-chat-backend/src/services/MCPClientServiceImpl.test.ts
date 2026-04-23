@@ -16,7 +16,7 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { MCPClientServiceImpl } from './MCPClientServiceImpl';
-import { ChatResponse, ToolCall, MCPServerType } from '../types';
+import { ChatResponse, ToolCall, MCPServerType, ChatMessage } from '../types';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js');
 jest.mock('@modelcontextprotocol/sdk/client/streamableHttp.js');
@@ -85,6 +85,9 @@ describe('MCPClientServiceImpl', () => {
       result: 'tool result',
       serverId: 'test-server',
     });
+    utils.sanitizeForLLM.mockImplementation(
+      (messages: ChatMessage[]) => messages,
+    );
 
     Client.mockImplementation(() => mockClient);
   });
@@ -119,6 +122,32 @@ describe('MCPClientServiceImpl', () => {
   });
 
   describe('Query Processing', () => {
+    const expectMessages = (
+      expectedMessages: any[],
+      actualMessages: ChatMessage[],
+    ) => {
+      expect(expectedMessages.length).toEqual(actualMessages.length);
+
+      for (let i = 0; i < expectedMessages.length; i++) {
+        const expectedMessage = expectedMessages[i];
+        const actualMessage = actualMessages[i];
+
+        expect(expectedMessage.role).toEqual(actualMessage.role);
+        if (expectedMessage.role !== 'system') {
+          expect(expectedMessage.content).toEqual(actualMessage.content);
+        }
+        if (expectedMessage.tool_calls) {
+          expect(expectedMessage.tool_calls.length).toEqual(
+            actualMessage.tool_calls?.length,
+          );
+          for (let j = 0; j < expectedMessage.tool_calls.length; j++) {
+            const { metadata, ...toolCall } = actualMessage.tool_calls![j];
+            expect(expectedMessage.tool_calls[j]).toEqual(toolCall);
+          }
+        }
+      }
+    };
+
     beforeEach(() => {
       service = new MCPClientServiceImpl({
         logger: mockLogger,
@@ -140,15 +169,16 @@ describe('MCPClientServiceImpl', () => {
 
       mockLLMProvider.sendMessage.mockResolvedValue(mockResponse);
 
-      const result = await service.processQuery([
-        { role: 'user', content: 'Hello' },
-      ]);
+      const result = await service.processQuery([], 'Hello');
 
-      expect(result).toEqual({
-        reply: 'Hello! How can I help you?',
-        toolCalls: [],
-        toolResponses: [],
-      });
+      expectMessages(
+        [
+          { role: 'system' },
+          { role: 'user', content: 'Hello' },
+          { role: 'assistant', content: 'Hello! How can I help you?' },
+        ],
+        result,
+      );
     });
 
     it('should process query with tool execution', async () => {
@@ -188,13 +218,33 @@ describe('MCPClientServiceImpl', () => {
         .mockResolvedValueOnce(initialResponse)
         .mockResolvedValueOnce(followUpResponse);
 
-      const result = await service.processQuery([
-        { role: 'user', content: 'Use the test tool' },
-      ]);
+      const result = await service.processQuery([], 'Use the test tool');
 
-      expect(result.reply).toBe('Based on the tool result: tool result');
-      expect(result.toolCalls).toHaveLength(1);
-      expect(result.toolResponses).toHaveLength(1);
+      expectMessages(
+        [
+          {
+            role: 'system',
+          },
+          {
+            role: 'user',
+            content: 'Use the test tool',
+          },
+          {
+            role: 'assistant',
+            content: null,
+            tool_calls: [toolCall],
+          },
+          {
+            role: 'tool',
+            content: 'tool result',
+          },
+          {
+            role: 'assistant',
+            content: 'Based on the tool result: tool result',
+          },
+        ],
+        result,
+      );
       expect(utils.executeToolCall).toHaveBeenCalledWith(
         toolCall,
         expect.any(Array),
@@ -243,13 +293,34 @@ describe('MCPClientServiceImpl', () => {
         new Error('Tool execution failed'),
       );
 
-      const result = await service.processQuery([
-        { role: 'user', content: 'Use the failing tool' },
-      ]);
+      const result = await service.processQuery([], 'Use the failing tool');
 
-      expect(result.reply).toBe('I encountered an error with the tool.');
-      expect(result.toolResponses[0].result).toContain('Tool execution failed');
-      expect(result.toolResponses[0].serverId).toBe('error');
+      expectMessages(
+        [
+          {
+            role: 'system',
+          },
+          {
+            role: 'user',
+            content: 'Use the failing tool',
+          },
+          {
+            role: 'assistant',
+            content: null,
+            tool_calls: [toolCall],
+          },
+          {
+            role: 'tool',
+            content:
+              "Error executing tool 'failing_tool': Tool execution failed",
+          },
+          {
+            role: 'assistant',
+            content: 'I encountered an error with the tool.',
+          },
+        ],
+        result,
+      );
     });
 
     it('should handle LLM provider errors', async () => {
@@ -257,9 +328,174 @@ describe('MCPClientServiceImpl', () => {
         new Error('LLM connection failed'),
       );
 
-      await expect(
-        service.processQuery([{ role: 'user', content: 'Hello' }]),
-      ).rejects.toThrow('LLM connection failed');
+      await expect(service.processQuery([], 'Hello')).rejects.toThrow(
+        'LLM connection failed',
+      );
+    });
+
+    it('should return pending tool calls when requestApproval is true', async () => {
+      mockConfig.getOptionalBoolean.mockImplementation((key: string) => {
+        if (key === 'mcpChat.requestApproval') return true;
+        return undefined;
+      });
+
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+
+      const toolCall: ToolCall = {
+        id: 'call_1',
+        type: 'function',
+        function: { name: 'search', arguments: '{}' },
+      };
+
+      mockLLMProvider.sendMessage.mockResolvedValue({
+        choices: [
+          {
+            message: {
+              role: 'assistant',
+              content: null,
+              tool_calls: [toolCall],
+            },
+          },
+        ],
+      });
+
+      const result = await service.processQuery([], 'Search for cats');
+
+      // Should NOT execute any tools
+      expect(utils.executeToolCall).not.toHaveBeenCalled();
+      // Should NOT send a follow-up to the LLM
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledTimes(1);
+
+      const assistantMsg = result.find(
+        m => m.role === 'assistant' && m.tool_calls?.length,
+      );
+      expect(assistantMsg).toBeDefined();
+      expect(assistantMsg!.tool_calls![0].metadata?.approval_status).toBe(
+        'pending',
+      );
+    });
+  });
+
+  describe('Approval Decisions', () => {
+    const meta = { id: '1', timestamp: new Date(1) };
+
+    const pendingToolCall = (id: string, name: string): ToolCall => ({
+      id,
+      type: 'function',
+      function: { name, arguments: '{}' },
+      metadata: { serverId: 'server-1', approval_status: 'pending' },
+    });
+
+    beforeEach(() => {
+      service = new MCPClientServiceImpl({
+        logger: mockLogger,
+        config: mockConfig,
+      });
+    });
+
+    it('should execute approved tools and return follow-up', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Search', metadata: meta },
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [pendingToolCall('call_1', 'search')],
+          metadata: meta,
+        },
+      ];
+
+      mockLLMProvider.sendMessage.mockResolvedValue({
+        choices: [
+          { message: { role: 'assistant', content: 'Here are results.' } },
+        ],
+      });
+
+      const result = await service.processApprovalDecisions(messages, {
+        call_1: 'approved',
+      });
+
+      expect(utils.executeToolCall).toHaveBeenCalledTimes(1);
+      expect(mockLLMProvider.sendMessage).toHaveBeenCalledTimes(1);
+
+      // Updated tool call should be approved
+      const assistantMsg = result.find(m => m.tool_calls?.length);
+      expect(assistantMsg!.tool_calls![0].metadata?.approval_status).toBe(
+        'approved',
+      );
+
+      // Should have tool response and follow-up
+      expect(result.find(m => m.role === 'tool')).toBeDefined();
+      expect(result[result.length - 1].content).toBe('Here are results.');
+    });
+
+    it('should not execute rejected tools', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Search', metadata: meta },
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [pendingToolCall('call_1', 'search')],
+          metadata: meta,
+        },
+      ];
+
+      mockLLMProvider.sendMessage.mockResolvedValue({
+        choices: [{ message: { role: 'assistant', content: 'Understood.' } }],
+      });
+
+      const result = await service.processApprovalDecisions(messages, {
+        call_1: 'rejected',
+      });
+
+      expect(utils.executeToolCall).not.toHaveBeenCalled();
+
+      const assistantMsg = result.find(m => m.tool_calls?.length);
+      expect(assistantMsg!.tool_calls![0].metadata?.approval_status).toBe(
+        'rejected',
+      );
+
+      const toolMsg = result.find(m => m.role === 'tool');
+      expect(toolMsg!.content).toContain('rejected');
+    });
+
+    it('should handle mixed approve and reject decisions', async () => {
+      const messages: ChatMessage[] = [
+        { role: 'user', content: 'Do both', metadata: meta },
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            pendingToolCall('call_1', 'search'),
+            pendingToolCall('call_2', 'delete'),
+          ],
+          metadata: meta,
+        },
+      ];
+
+      mockLLMProvider.sendMessage.mockResolvedValue({
+        choices: [
+          { message: { role: 'assistant', content: 'Partial results.' } },
+        ],
+      });
+
+      const result = await service.processApprovalDecisions(messages, {
+        call_1: 'approved',
+        call_2: 'rejected',
+      });
+
+      // Only the approved tool should be executed
+      expect(utils.executeToolCall).toHaveBeenCalledTimes(1);
+
+      const toolMsgs = result.filter(m => m.role === 'tool');
+      expect(toolMsgs).toHaveLength(2);
+
+      // Responses should be in the same order as the tool calls
+      expect(toolMsgs[0].tool_call_id).toBe('call_1');
+      expect(toolMsgs[1].tool_call_id).toBe('call_2');
+      expect(toolMsgs[1].content).toContain('rejected');
     });
   });
 
@@ -477,7 +713,7 @@ describe('MCPClientServiceImpl', () => {
         config: mockConfig,
       });
 
-      await service.processQuery([{ role: 'user', content: 'Hello' }], []);
+      await service.processQuery([], 'Hello', []);
 
       expect(mockLLMProvider.sendMessage).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -516,7 +752,7 @@ describe('MCPClientServiceImpl', () => {
         config: mockConfig,
       });
 
-      await service.processQuery([{ role: 'user', content: 'Hello' }], []);
+      await service.processQuery([], 'Hello', []);
 
       const defaultPrompt =
         "You are a helpful assistant. When using tools, provide a clear, readable summary of the results rather than showing raw data. Focus on answering the user's question with the information gathered.";
@@ -563,9 +799,13 @@ describe('MCPClientServiceImpl', () => {
 
       await service.processQuery(
         [
-          { role: 'system', content: userProvidedSystemMessage },
-          { role: 'user', content: 'Hello' },
+          {
+            role: 'system',
+            content: userProvidedSystemMessage,
+            metadata: { id: '1', timestamp: new Date(1) },
+          },
         ],
+        'Hello',
         [],
       );
 

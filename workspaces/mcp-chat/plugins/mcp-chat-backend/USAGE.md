@@ -449,7 +449,17 @@ interface ToolCall {
     name: string; // Function to call
     arguments: string; // JSON-encoded arguments (parse with JSON.parse)
   };
+  metadata?: {
+    serverId?: string; // MCP server ID that provides this tool
+    approval_status?: ApprovalStatus; // Approval status for this tool call
+  };
 }
+
+// ApprovalStatus - Lifecycle states for a tool call approval
+type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
+// ConfirmedStatus - Final user decision (excludes 'pending')
+type ConfirmedStatus = Exclude<ApprovalStatus, 'pending'>;
 
 // ServerTool - Tool with server identification
 interface ServerTool extends Tool {
@@ -509,6 +519,11 @@ mcpChat:
 
   # Optional: Custom system prompt
   systemPrompt: 'You are a helpful Kubernetes assistant.'
+
+  # Optional: Require user approval before executing tool calls
+  # Note: Not supported with the 'openai-responses' provider, which executes tools
+  # server-side within the API request.
+  requestApproval: true
 ```
 
 ---
