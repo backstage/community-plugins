@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import type { SelectItem } from '@backstage/core-components';
 import type { MenuProps as MUIMenuProps } from '@mui/material/Menu';
 import type { SelectChangeEvent } from '@mui/material/Select';
-import Cancel from '@mui/icons-material/Cancel';
-import { useTheme } from '@mui/material/styles';
 /**
  * Props for ProjectFilterComponent.
  *
@@ -37,20 +30,17 @@ import { useTheme } from '@mui/material/styles';
  *   List of available projects. If not provided or if options are trivial,
  *   the filter hides itself.
  * projectIdFilter:
- *   Currently selected project IDs/UUIDs. The special ALL_OPTION.value denotes "All".
+ *   Currently selected project ID/UUID.
  * setProjectIdFilter:
- *   Callback to update the selected values in the parent component.
+ *   Callback to update the selected value in the parent component.
  * projectOptions:
  *   Options rendered in the Select dropdown.
- * ALL_OPTION:
- *   Special option representing "All Projects" with shape { label, value }.
  */
 type ProjectFilterComponentProps = {
   projectList: { name: string }[] | null | undefined;
-  projectIdFilter: string[];
-  setProjectIdFilter: (filter: string[]) => void;
+  projectIdFilter: string;
+  setProjectIdFilter: (filter: string) => void;
   projectOptions: SelectItem[];
-  ALL_OPTION: { label: string; value: string };
 };
 
 const ITEM_HEIGHT = 48;
@@ -76,79 +66,31 @@ const selectMenuProps: Partial<MUIMenuProps> = {
 } as const;
 
 /**
- * Renders a multi-select dropdown for filtering by project name.
- * Hides itself when project data is unavailable or options are insufficient.
+ * Renders a single-select dropdown for filtering by project name.
+ * Hides itself when project data is unavailable, only one project exists, or no options available.
  */
 export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
   projectList,
   projectIdFilter,
   setProjectIdFilter,
   projectOptions,
-  ALL_OPTION,
 }) => {
-  const theme = useTheme();
-  // If there is no project data or only trivial options (e.g., ALL + placeholder),
+  // If there is no project data, no options available, or only one project,
   // do not render the filter.
-  if (!projectList || projectOptions.length <= 2) {
+  if (
+    !projectList ||
+    projectOptions.length === 0 ||
+    projectOptions.length === 1
+  ) {
     return null;
   }
 
-  const projectLabelMap = projectOptions.reduce<Record<string, string>>(
-    (prev, next) => {
-      prev[next.value] = next.label;
-      return prev;
-    },
-    {},
-  );
-
   /**
    * Handles changes from the MUI Select input.
-   * Normalizes the event value to a string array and enforces ALL option rules:
-   * - Selecting ALL clears other selections.
-   * - Selecting another value while ALL is active removes ALL.
-   * - Clearing all selections reverts to ALL.
    */
-  const handleProjectIdChange = (event: SelectChangeEvent<string[]>) => {
-    // SelectedItems can be string or string[]
+  const handleProjectIdChange = (event: SelectChangeEvent<string>) => {
     const selected = event.target.value;
-    const selectedArray = Array.isArray(selected) ? selected : [selected];
-    const stringArray = selectedArray.filter(
-      (v): v is string => typeof v === 'string',
-    );
-
-    // If nothing is selected, set to ALL
-    if (stringArray.length === 0) {
-      setProjectIdFilter([ALL_OPTION.value]);
-      return;
-    }
-
-    // If ALL is newly selected (was not in previous selection), set only ALL
-    if (
-      stringArray.includes(ALL_OPTION.value) &&
-      !projectIdFilter.includes(ALL_OPTION.value)
-    ) {
-      setProjectIdFilter([ALL_OPTION.value]);
-      return;
-    }
-
-    // If ALL is selected and there are other values, remove ALL and keep the others
-    if (stringArray.includes(ALL_OPTION.value) && stringArray.length > 1) {
-      setProjectIdFilter(stringArray.filter(v => v !== ALL_OPTION.value));
-      return;
-    }
-
-    // Otherwise, set selected values
-    setProjectIdFilter(stringArray);
-  };
-
-  /**
-   * Removes a selected project chip. If the last chip is removed,
-   * default back to ALL to avoid an empty selection state.
-   */
-  const handleChipDelete = (chipValue: string) => {
-    let tempProject = projectIdFilter.filter(v => v !== chipValue);
-    tempProject = tempProject.length === 0 ? [ALL_OPTION.value] : tempProject;
-    setProjectIdFilter(tempProject);
+    setProjectIdFilter(selected);
   };
 
   return (
@@ -167,7 +109,7 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
           variant="overline"
         >
           For this repository multiple projects exist within Mend. You can
-          filter for these projects you are interested in by project name.
+          select a project you are interested in by project name.
           <br />
           e.g. to investigate results of a specific branch.
         </Typography>
@@ -180,77 +122,20 @@ export const ProjectFilterComponent: React.FC<ProjectFilterComponentProps> = ({
         style={{ minWidth: '30%' }}
         size="small"
       >
-        <InputLabel id="multiple-project-filter-label">
+        <InputLabel id="project-filter-label">
           Filter by Project Name
         </InputLabel>
         <Select
-          labelId="multiple-project-filter-label"
-          id="multiple-project-filter"
-          multiple
+          labelId="project-filter-label"
+          id="project-filter"
           value={projectIdFilter}
           onChange={handleProjectIdChange}
-          sx={{
-            '& [class*="MuiSelect-select"]': {
-              display: 'flex',
-              alignItems: 'center',
-              paddingTop: '1rem',
-            },
-          }}
-          input={
-            <OutlinedInput
-              id="select-multiple-project"
-              label="Filter by Project Name"
-            />
-          }
-          renderValue={selected => {
-            const values = Array.isArray(selected)
-              ? (selected as string[])
-              : [String(selected)];
-            return (
-              <Box display="flex" flexWrap="wrap" alignItems="center">
-                {values.map(value =>
-                  value === ALL_OPTION.value ? (
-                    <Chip
-                      key={ALL_OPTION.value}
-                      label={ALL_OPTION.label}
-                      size="small"
-                    />
-                  ) : (
-                    <Chip
-                      key={value}
-                      label={projectLabelMap[value] ?? 'N/A'}
-                      size="small"
-                      onMouseDown={e => e.stopPropagation()}
-                      onDelete={() => handleChipDelete(value)}
-                      deleteIcon={
-                        <Cancel sx={{ marginRight: 0.5, fontSize: '1.2rem' }} />
-                      }
-                      sx={{
-                        '& [class*="MuiChip-deleteIcon"]': {
-                          // default icon color
-                          color: theme.palette.action.disabled,
-                          transition: 'color 0.3s ease',
-                        },
-                        '&:hover [class*="MuiChip-deleteIcon"]': {
-                          // icon color on chip hover
-                          color: theme.palette.text.secondary,
-                        },
-                      }}
-                    />
-                  ),
-                )}
-              </Box>
-            );
-          }}
+          label="Filter by Project Name"
           MenuProps={selectMenuProps}
         >
           {projectOptions.map(item => (
             <MenuItem key={item.label} value={item.value}>
-              <Checkbox
-                checked={projectIdFilter.includes(item.value.toString())}
-                color="primary"
-              />
-              <ListItemText primary={item.label} />
+              {item.label}
             </MenuItem>
           ))}
         </Select>

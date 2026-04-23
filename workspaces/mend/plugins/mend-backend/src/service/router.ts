@@ -211,6 +211,7 @@ export async function createRouter(
       });
 
       const uid = request.body.uid;
+      let projectId = request.body.projectId;
 
       if (!uid) {
         response.status(400).json({
@@ -247,7 +248,7 @@ export async function createRouter(
       if (!projectIdsAnnotation) {
         response.status(404).json({
           message:
-            'Results for this repository unavailable on Mend or can not be accessed.',
+            'Results for this repository unavailable on Mend or cannot be accessed.',
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
@@ -259,14 +260,44 @@ export async function createRouter(
         .map(id => id.trim())
         .filter(id => id.length > 0);
 
-      const projects: Project[] = projectIds
+      // Verify that the requested project ID is associated with this entity
+      if (projectId && !projectIds.includes(projectId)) {
+        response.status(403).json({
+          message:
+            'Provided Mend project ID is not associated with this entity.',
+          clientUrl: MendAuthSevice.getClientUrl(),
+          clientName: MendAuthSevice.getClientName(),
+        });
+        return;
+      }
+
+      // Get all projects for this entity
+      const allEntityProjects: Project[] = projectIds
         .map(id => projectsById[id])
         .filter((p): p is Project => p !== undefined);
 
-      if (projects.length === 0) {
+      if (allEntityProjects.length === 0) {
         response.status(404).json({
           message:
-            'Results for this repository are either unavailable on Mend or can not be accessed.',
+            'Results for this repository are either unavailable on Mend or cannot be accessed.',
+          clientUrl: MendAuthSevice.getClientUrl(),
+          clientName: MendAuthSevice.getClientName(),
+        });
+        return;
+      }
+
+      // If no projectId provided, use the first project
+      if (!projectId) {
+        projectId = allEntityProjects[0].uuid;
+      }
+
+      // Get the specific project by ID
+      const project = projectsById[projectId];
+
+      if (!project) {
+        response.status(404).json({
+          message:
+            'Results for this repository are either unavailable on Mend or cannot be accessed.',
           clientUrl: MendAuthSevice.getClientUrl(),
           clientName: MendAuthSevice.getClientName(),
         });
@@ -281,54 +312,50 @@ export async function createRouter(
         ? `${entityURL.host}${entityURL.path}`
         : '';
 
-      // Fetch findings for each project
-      const findingList: Finding[] = [];
+      // Fetch findings for the specific project
+      const params = {
+        pathParams: {
+          uuid: project.uuid,
+        },
+      };
 
-      for (const project of projects) {
-        const params = {
-          pathParams: {
-            uuid: project.uuid,
-          },
-        };
+      const findingResult = await Promise.all([
+        fetchQueryPagination<CodeFindingSuccessResponseData>(
+          (queryParam: PaginationQueryParams) =>
+            mendDataService.getCodeFinding({
+              ...params,
+              ...queryParam,
+            }),
+        ),
+        fetchQueryPagination<DependenciesFindingSuccessResponseData>(
+          (queryParam: PaginationQueryParams) =>
+            mendDataService.getDependenciesFinding({
+              ...params,
+              ...queryParam,
+            }),
+        ),
+        fetchQueryPagination<ContainersFindingSuccessResponseData>(
+          (queryParam: PaginationQueryParams) =>
+            mendDataService.getContainersFinding({
+              ...params,
+              ...queryParam,
+            }),
+        ),
+      ]);
 
-        const findingResult = await Promise.all([
-          fetchQueryPagination<CodeFindingSuccessResponseData>(
-            (queryParam: PaginationQueryParams) =>
-              mendDataService.getCodeFinding({
-                ...params,
-                ...queryParam,
-              }),
-          ),
-          fetchQueryPagination<DependenciesFindingSuccessResponseData>(
-            (queryParam: PaginationQueryParams) =>
-              mendDataService.getDependenciesFinding({
-                ...params,
-                ...queryParam,
-              }),
-          ),
-          fetchQueryPagination<ContainersFindingSuccessResponseData>(
-            (queryParam: PaginationQueryParams) =>
-              mendDataService.getContainersFinding({
-                ...params,
-                ...queryParam,
-              }),
-          ),
-        ]);
-
-        const tempFindingList: Finding[] = dataFindingParser(
-          findingResult[0].filter(item => !item.suppressed),
-          findingResult[1].filter(
-            item => !(item.findingInfo.status === 'IGNORED'),
-          ),
-          findingResult[2],
-          project.name,
-        );
-        findingList.push(...tempFindingList);
-      }
+      const findingList: Finding[] = dataFindingParser(
+        findingResult[0].filter(item => !item.suppressed),
+        findingResult[1].filter(
+          item => !(item.findingInfo.status === 'IGNORED'),
+        ),
+        findingResult[2],
+        project.name,
+      );
 
       response.json({
         findingList,
-        projectList: projects,
+        projectList: allEntityProjects,
+        selectedProject: project,
         projectSourceUrl,
         clientUrl: MendAuthSevice.getClientUrl(),
         clientName: MendAuthSevice.getClientName(),

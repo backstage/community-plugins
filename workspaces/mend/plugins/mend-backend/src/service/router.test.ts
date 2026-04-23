@@ -532,7 +532,7 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(404);
       expect(response.body.message).toBe(
-        'Results for this repository unavailable on Mend or can not be accessed.',
+        'Results for this repository unavailable on Mend or cannot be accessed.',
       );
     });
 
@@ -560,7 +560,7 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(404);
       expect(response.body.message).toBe(
-        'Results for this repository unavailable on Mend or can not be accessed.',
+        'Results for this repository unavailable on Mend or cannot be accessed.',
       );
     });
 
@@ -576,7 +576,91 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(404);
       expect(response.body.message).toBe(
-        'Results for this repository are either unavailable on Mend or can not be accessed.',
+        'Results for this repository are either unavailable on Mend or cannot be accessed.',
+      );
+    });
+
+    it('should return findings for first project when no projectId is provided', async () => {
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: [mockEntity2], // Has project-1 and project-2
+      });
+      mockCacheManager.getProjectsById.mockResolvedValue({
+        'project-1': mockProject1,
+        'project-2': mockProject2,
+      });
+
+      const response = await request(app)
+        .post('/finding')
+        .send({ uid: 'entity-2' });
+
+      expect(response.status).toEqual(200);
+      expect(response.body.findingList).toBeDefined();
+      expect(response.body.projectList).toHaveLength(2); // All entity projects
+      expect(response.body.selectedProject).toBeDefined();
+      expect(response.body.selectedProject.uuid).toBe('project-1'); // First project
+      expect(response.body.clientUrl).toBe('https://mend.example.com');
+      expect(response.body.clientName).toBe('Mend');
+    });
+
+    it('should return findings for specified projectId', async () => {
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: [mockEntity2], // Has project-1 and project-2
+      });
+      mockCacheManager.getProjectsById.mockResolvedValue({
+        'project-1': mockProject1,
+        'project-2': mockProject2,
+      });
+
+      const response = await request(app)
+        .post('/finding')
+        .send({ uid: 'entity-2', projectId: 'project-2' });
+
+      expect(response.status).toEqual(200);
+      expect(response.body.findingList).toBeDefined();
+      expect(response.body.projectList).toHaveLength(2); // All entity projects
+      expect(response.body.selectedProject).toBeDefined();
+      expect(response.body.selectedProject.uuid).toBe('project-2'); // Requested project
+      expect(mockDataService.getCodeFinding).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pathParams: { uuid: 'project-2' },
+        }),
+      );
+    });
+
+    it('should return 404 when projectId does not exist in cache but is in annotation', async () => {
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: [mockEntity1], // Has project-1 in annotation
+      });
+      mockCacheManager.getProjectsById.mockResolvedValue({
+        // project-1 not in cache
+      });
+
+      const response = await request(app)
+        .post('/finding')
+        .send({ uid: 'entity-1', projectId: 'project-1' });
+
+      expect(response.status).toEqual(404);
+      expect(response.body.message).toBe(
+        'Results for this repository are either unavailable on Mend or cannot be accessed.',
+      );
+    });
+
+    it('should return 403 when projectId exists in cache but not in entity annotation', async () => {
+      mockCatalogClient.getEntities.mockResolvedValue({
+        items: [mockEntity1], // Only has project-1
+      });
+      mockCacheManager.getProjectsById.mockResolvedValue({
+        'project-1': mockProject1,
+        'project-2': mockProject2,
+      });
+
+      const response = await request(app)
+        .post('/finding')
+        .send({ uid: 'entity-1', projectId: 'project-2' }); // Requesting project-2 which is not in entity-1
+
+      expect(response.status).toEqual(403);
+      expect(response.body.message).toBe(
+        'Provided Mend project ID is not associated with this entity.',
       );
     });
 
@@ -600,6 +684,7 @@ describe('createRouter', () => {
       expect(response.body.findingList).toEqual([]); // Should be empty array
       expect(response.body.projectList).toHaveLength(1);
       expect(response.body.projectList[0].uuid).toBe('project-1');
+      expect(response.body.selectedProject.uuid).toBe('project-1');
       expect(response.body.clientUrl).toBe('https://mend.example.com');
       expect(response.body.clientName).toBe('Mend');
     });
@@ -628,11 +713,11 @@ describe('createRouter', () => {
       const response = await request(app)
         .post('/finding')
         .send({ uid: 'entity-1' });
-      // console.log(response)
 
       // Should process both projects despite whitespace
       expect(response.status).toEqual(200);
       expect(response.body.projectList).toHaveLength(2);
+      expect(response.body.selectedProject.uuid).toBe('project-1'); // First project used
     });
 
     it('should parse source location annotation correctly', async () => {

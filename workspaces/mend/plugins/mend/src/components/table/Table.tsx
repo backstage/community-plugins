@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { ReactElement, ReactNode, Ref } from 'react';
-import { useRef, forwardRef, useState, useMemo } from 'react';
+import { useRef, forwardRef, useState, useMemo, useEffect } from 'react';
 import {
   Table as TableBackstage,
   SelectItem,
@@ -76,7 +76,8 @@ type TableProps = {
   tableTitle: string;
   totalTitle: string;
   projectList?: Project[] | null;
-  selectedProject?: string | null;
+  selectedProjectId?: string | null;
+  onProjectChange?: (projectId: string) => void;
   useFullDataForStatistics?: boolean;
 };
 
@@ -92,42 +93,47 @@ export const Table = ({
   tableTitle,
   totalTitle,
   projectList = null,
-  selectedProject = null,
+  selectedProjectId = null,
+  onProjectChange,
   useFullDataForStatistics = false,
 }: TableProps) => {
   const theme = useTheme();
   const tableRef = useRef<MaterialTable>(null);
 
-  const ALL_OPTION = useMemo(() => ({ label: 'All', value: '__ALL__' }), []);
-  const projectOptionsWithoutAll = projectList
+  const projectOptions: SelectItem[] = projectList
     ? projectList.map(d => ({ label: d.name, value: d.uuid }))
     : [];
-  const projectOptions: SelectItem[] = [
-    ALL_OPTION,
-    ...projectOptionsWithoutAll,
-  ];
-  const [projectIdFilter, setProjectIdFilter] = useState<string[]>([
-    selectedProject || ALL_OPTION.value,
-  ]);
+
+  // Set initial project filter to selectedProjectId or first project
+  const initialProjectId =
+    selectedProjectId ||
+    (projectList && projectList.length > 0 ? projectList[0].uuid : '');
+  const [projectIdFilter, setProjectIdFilter] =
+    useState<string>(initialProjectId);
+
+  // Update local state when selectedProjectId changes
+  useEffect(() => {
+    if (selectedProjectId) {
+      setProjectIdFilter(selectedProjectId);
+    }
+  }, [selectedProjectId]);
+
+  // Handle project filter change
+  const handleProjectFilterChange = (newProjectId: string) => {
+    setProjectIdFilter(newProjectId);
+    if (onProjectChange) {
+      onProjectChange(newProjectId);
+    }
+  };
 
   const filteredData = useMemo(() => {
     let data = tableData;
 
-    if (
-      projectIdFilter.length > 0 &&
-      !projectIdFilter.includes(ALL_OPTION.value)
-    ) {
+    // Filter by selected project if a project is selected
+    if (projectIdFilter) {
       data = tableData.filter(row => {
-        // Filter by Project Name multi-select
         const projectId = (row as any).projectId;
-        if (
-          projectIdFilter.length > 0 &&
-          !projectIdFilter.includes(projectId)
-        ) {
-          return false;
-        }
-
-        return true;
+        return projectId === projectIdFilter;
       });
     }
 
@@ -136,7 +142,7 @@ export const Table = ({
       ...row,
       id: (row as any).uuid || `row-${index}`,
     }));
-  }, [tableData, ALL_OPTION, projectIdFilter]);
+  }, [tableData, projectIdFilter]);
 
   return (
     <TableBackstage
@@ -252,9 +258,8 @@ export const Table = ({
                 <ProjectFilterComponent
                   projectList={projectList}
                   projectIdFilter={projectIdFilter}
-                  setProjectIdFilter={setProjectIdFilter}
+                  setProjectIdFilter={handleProjectFilterChange}
                   projectOptions={projectOptions}
-                  ALL_OPTION={ALL_OPTION}
                 />
               )}
               totalTitle={totalTitle}

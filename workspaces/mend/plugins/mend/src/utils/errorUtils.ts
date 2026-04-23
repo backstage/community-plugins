@@ -31,10 +31,10 @@ export function isMendBackendNotInstalled(
   // 2. JSON parsing errors (empty response from missing endpoint)
   // 3. Network errors when trying to reach the mend endpoint
   return (
-    error.status === 404 ||
-    error.message?.includes('Unexpected end of JSON input') ||
-    error.message?.includes("Failed to execute 'json' on 'Response'") ||
-    error.message?.includes('Not Found') ||
+    (error.status === 404 &&
+      (error.message?.includes('Unexpected end of JSON input') ||
+        error.message?.includes("Failed to execute 'json' on 'Response'") ||
+        error.message?.includes('Not Found'))) ||
     (error.status === undefined && error.message?.includes('fetch'))
   );
 }
