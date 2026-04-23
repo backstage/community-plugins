@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:github-production-user-asset-6210df.s3.amazonaws.com)",
+      "Bash(winget list *)",
+      "Bash(where gh *)",
+      "Bash(yarn dedupe *)",
+      "Bash(gh issue *)"
+    ]
+  }
+}
