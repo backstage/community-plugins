@@ -27,8 +27,8 @@ import {
 } from '@backstage/plugin-scaffolder-react/alpha';
 import { ConfigApi, DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 
-import { isOctopusDeployAvailable } from './plugin';
 import { OctopusDeployClient, octopusDeployApiRef } from './api';
+import { isOctopusDeployAvailable } from './utils/isOctopusDeployAvailable';
 
 /**
  * @alpha
