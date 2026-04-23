@@ -4,15 +4,136 @@
 
 ```ts
 import { AnyApiFactory } from '@backstage/frontend-plugin-api';
+import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { FilterPredicate } from '@backstage/filter-predicates';
 import { FormField } from '@backstage/plugin-scaffolder-react/alpha';
+import { JSX as JSX_2 } from 'react';
+import { JSXElementConstructor } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { ReactElement } from 'react';
+import { RouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
-const _default: OverridableFrontendPlugin<{}, {}, {}>;
+const _default: OverridableFrontendPlugin<
+  {},
+  {},
+  {
+    'api:octopus-deploy/octopusDeployApi': OverridableExtensionDefinition<{
+      kind: 'api';
+      name: 'octopusDeployApi';
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+      inputs: {};
+      params: <
+        TApi,
+        TImpl extends TApi,
+        TDeps extends { [name in string]: unknown },
+      >(
+        params: ApiFactory<TApi, TImpl, TDeps>,
+      ) => ExtensionBlueprintParams<AnyApiFactory>;
+    }>;
+    'entity-content:octopus-deploy/octopusDeployEntityContent': OverridableExtensionDefinition<{
+      kind: 'entity-content';
+      name: 'octopusDeployEntityContent';
+      config: {
+        path: string | undefined;
+        title: string | undefined;
+        filter: FilterPredicate | undefined;
+        group: string | false | undefined;
+        icon: string | undefined;
+      };
+      configInput: {
+        path?: string | undefined;
+        title?: string | undefined;
+        filter?: FilterPredicate | undefined;
+        group?: string | false | undefined;
+        icon?: string | undefined;
+      };
+      output:
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<string, 'core.routing.path', {}>
+        | ExtensionDataRef<
+            RouteRef<AnyRouteRefParams>,
+            'core.routing.ref',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            (entity: Entity) => boolean,
+            'catalog.entity-filter-function',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            string,
+            'catalog.entity-filter-expression',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
+        | ExtensionDataRef<
+            string,
+            'catalog.entity-content-group',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            string | ReactElement<any, string | JSXElementConstructor<any>>,
+            'catalog.entity-content-icon',
+            {
+              optional: true;
+            }
+          >;
+      inputs: {};
+      params: {
+        defaultPath?: [Error: `Use the 'path' param instead`];
+        path: string;
+        defaultTitle?: [Error: `Use the 'title' param instead`];
+        title: string;
+        defaultGroup?: [Error: `Use the 'group' param instead`];
+        group?:
+          | (
+              | 'development'
+              | 'deployment'
+              | 'overview'
+              | 'documentation'
+              | 'operation'
+              | 'observability'
+            )
+          | (string & {});
+        icon?: string | ReactElement;
+        loader: () => Promise<JSX.Element>;
+        routeRef?: RouteRef;
+        filter?: string | FilterPredicate | ((entity: Entity) => boolean);
+      };
+    }>;
+    'scaffolder-form-field:octopus-deploy/OctopusDeployProjectGroupDropdown': OverridableExtensionDefinition<{
+      kind: 'scaffolder-form-field';
+      name: 'OctopusDeployProjectGroupDropdown';
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<
+        () => Promise<FormField>,
+        'scaffolder.form-field-loader',
+        {}
+      >;
+      inputs: {};
+      params: {
+        field: () => Promise<FormField>;
+      };
+    }>;
+  }
+>;
 export default _default;
 
 // @alpha (undocumented)
@@ -33,7 +154,85 @@ export const octopusDeployApi: OverridableExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const octopusDeployEntityContent: any;
+export const octopusDeployEntityContent: OverridableExtensionDefinition<{
+  kind: 'entity-content';
+  name: 'octopusDeployEntityContent';
+  config: {
+    path: string | undefined;
+    title: string | undefined;
+    filter: FilterPredicate | undefined;
+    group: string | false | undefined;
+    icon: string | undefined;
+  };
+  configInput: {
+    path?: string | undefined;
+    title?: string | undefined;
+    filter?: FilterPredicate | undefined;
+    group?: string | false | undefined;
+    icon?: string | undefined;
+  };
+  output:
+    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+    | ExtensionDataRef<string, 'core.routing.path', {}>
+    | ExtensionDataRef<
+        RouteRef<AnyRouteRefParams>,
+        'core.routing.ref',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        (entity: Entity) => boolean,
+        'catalog.entity-filter-function',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        string,
+        'catalog.entity-filter-expression',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
+    | ExtensionDataRef<
+        string,
+        'catalog.entity-content-group',
+        {
+          optional: true;
+        }
+      >
+    | ExtensionDataRef<
+        string | ReactElement<any, string | JSXElementConstructor<any>>,
+        'catalog.entity-content-icon',
+        {
+          optional: true;
+        }
+      >;
+  inputs: {};
+  params: {
+    defaultPath?: [Error: `Use the 'path' param instead`];
+    path: string;
+    defaultTitle?: [Error: `Use the 'title' param instead`];
+    title: string;
+    defaultGroup?: [Error: `Use the 'group' param instead`];
+    group?:
+      | (
+          | 'development'
+          | 'deployment'
+          | 'overview'
+          | 'documentation'
+          | 'operation'
+          | 'observability'
+        )
+      | (string & {});
+    icon?: string | ReactElement;
+    loader: () => Promise<JSX.Element>;
+    routeRef?: RouteRef;
+    filter?: string | FilterPredicate | ((entity: Entity) => boolean);
+  };
+}>;
 
 // @alpha (undocumented)
 export const octopusDeployProjectGroupDropdown: OverridableExtensionDefinition<{

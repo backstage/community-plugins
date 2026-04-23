@@ -58,7 +58,7 @@ export const octopusDeployApi = ApiBlueprint.make({
 /**
  * @alpha
  */
-export const octopusDeployEntityContent: any = EntityContentBlueprint.make({
+export const octopusDeployEntityContent = EntityContentBlueprint.make({
   name: 'octopusDeployEntityContent',
   params: {
     path: 'octopus-deploy',
