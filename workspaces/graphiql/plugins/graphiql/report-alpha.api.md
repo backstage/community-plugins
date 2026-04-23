@@ -61,8 +61,8 @@ const _default: OverridableFrontendPlugin<
       };
       configInput: {
         id?: string | undefined;
-        url?: string | undefined;
         title?: string | undefined;
+        url?: string | undefined;
       };
       output: ExtensionDataRef<
         GraphQLEndpoint,
