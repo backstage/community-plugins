@@ -158,7 +158,7 @@ describe('ChatContainer', () => {
       content: 'Hello',
       metadata: {
         id: '1',
-        timestamp: new Date(1),
+        timestamp: new Date(1).toISOString(),
       },
     },
     {
@@ -166,7 +166,7 @@ describe('ChatContainer', () => {
       content: 'Hi there!',
       metadata: {
         id: '2',
-        timestamp: new Date(2),
+        timestamp: new Date(2).toISOString(),
       },
     },
   ];
@@ -218,7 +218,7 @@ describe('ChatContainer', () => {
               metadata: { serverId: '1', approval_status: 'pending' },
             },
           ],
-          metadata: { id: 'a1', timestamp: new Date(1) },
+          metadata: { id: 'a1', timestamp: new Date(1).toISOString() },
         },
       ];
 
@@ -243,7 +243,7 @@ describe('ChatContainer', () => {
               metadata: { serverId: '1', approval_status: 'approved' },
             },
           ],
-          metadata: { id: 'a1', timestamp: new Date(1) },
+          metadata: { id: 'a1', timestamp: new Date(1).toISOString() },
         },
       ];
 
@@ -265,13 +265,13 @@ describe('ChatContainer', () => {
               metadata: { serverId: '1', approval_status: 'approved' },
             },
           ],
-          metadata: { id: 'a1', timestamp: new Date(1) },
+          metadata: { id: 'a1', timestamp: new Date(1).toISOString() },
         },
         {
           role: 'tool',
           content: 'found 3 cats',
           tool_call_id: 'c1',
-          metadata: { id: 't1', timestamp: new Date(2) },
+          metadata: { id: 't1', timestamp: new Date(2).toISOString() },
         },
       ];
 
@@ -287,18 +287,18 @@ describe('ChatContainer', () => {
         {
           role: 'system',
           content: 'You are helpful',
-          metadata: { id: 's1', timestamp: new Date(1) },
+          metadata: { id: 's1', timestamp: new Date(1).toISOString() },
         },
         {
           role: 'user',
           content: 'Hi',
-          metadata: { id: 'u1', timestamp: new Date(2) },
+          metadata: { id: 'u1', timestamp: new Date(2).toISOString() },
         },
         {
           role: 'tool',
           content: 'result',
           tool_call_id: 'c1',
-          metadata: { id: 't1', timestamp: new Date(3) },
+          metadata: { id: 't1', timestamp: new Date(3).toISOString() },
         },
       ];
 
@@ -382,7 +382,7 @@ describe('ChatContainer', () => {
           content: messages[0].content,
           metadata: {
             id: expect.any(String),
-            timestamp: expect.any(Date),
+            timestamp: expect.any(String),
           },
         },
       ]);
@@ -483,7 +483,7 @@ describe('ChatContainer', () => {
       {
         role: 'user',
         content: 'Search cats',
-        metadata: { id: '1', timestamp: new Date(1) },
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
       },
       {
         role: 'assistant',
@@ -496,7 +496,7 @@ describe('ChatContainer', () => {
             metadata: { serverId: 's1', approval_status: 'pending' },
           },
         ],
-        metadata: { id: '2', timestamp: new Date(2) },
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
       },
     ];
 
@@ -632,7 +632,7 @@ describe('ChatContainer', () => {
           content: 'Hello world',
           metadata: {
             id: expect.any(String),
-            timestamp: expect.any(Date),
+            timestamp: expect.any(String),
           },
         },
         {
@@ -641,7 +641,7 @@ describe('ChatContainer', () => {
             'The MCP Chat service is not available. Please check if the backend is running.',
           metadata: {
             id: expect.any(String),
-            timestamp: expect.any(Date),
+            timestamp: expect.any(String),
           },
         },
       ]);

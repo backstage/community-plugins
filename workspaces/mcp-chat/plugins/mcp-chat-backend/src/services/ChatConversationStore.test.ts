@@ -48,12 +48,12 @@ describe('ChatConversationStore', () => {
     {
       role: 'user',
       content: 'Hello',
-      metadata: { id: '1', timestamp: new Date(1) },
+      metadata: { id: '1', timestamp: new Date(1).toISOString() },
     },
     {
       role: 'assistant',
       content: 'Hi there!',
-      metadata: { id: '2', timestamp: new Date(2) },
+      metadata: { id: '2', timestamp: new Date(2).toISOString() },
     },
   ];
 

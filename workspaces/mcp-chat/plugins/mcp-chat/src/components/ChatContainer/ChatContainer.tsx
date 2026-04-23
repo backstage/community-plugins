@@ -142,7 +142,7 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
           content: errorMessage,
           metadata: {
             id: (Date.now() + 1).toString(),
-            timestamp: new Date(),
+            timestamp: new Date().toISOString(),
           },
         };
         onMessagesChange([...msgs, errorResponse]);
@@ -157,7 +157,7 @@ export const ChatContainer = forwardRef<ChatContainerRef, ChatContainerProps>(
         content: messageText,
         metadata: {
           id: Date.now().toString(),
-          timestamp: new Date(),
+          timestamp: new Date().toISOString(),
         },
       };
       const withUser = [...messages, newMessage];

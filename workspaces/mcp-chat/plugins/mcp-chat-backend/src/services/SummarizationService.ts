@@ -18,7 +18,7 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { MCPClientService } from './MCPClientService';
 import { ChatMessage } from '../types';
-import { systemMessage } from '../messageFactory.ts';
+import { systemMessage } from '../messageFactory';
 
 /** Default timeout for summarization requests in milliseconds */
 const DEFAULT_SUMMARIZE_TIMEOUT = 3000;
@@ -112,7 +112,6 @@ export class SummarizationService {
 
       // Sanitize and truncate the response
       const title = this.sanitizeTitle(lastMessage.content);
-      this.logger.warn(`Summarization performed, using title: ${title}`);
       return title.slice(0, MAX_TITLE_LENGTH);
     } catch (error) {
       this.logger.warn(`Summarization failed, using fallback: ${error}`);

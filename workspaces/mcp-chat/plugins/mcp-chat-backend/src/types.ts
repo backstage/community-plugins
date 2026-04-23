@@ -281,8 +281,8 @@ export type ChatRole = 'system' | 'user' | 'assistant' | 'tool';
 export type MessageMetadata = {
   /** Unique identifier for the message (UUID) */
   id: string;
-  /** Timestamp when the message was created */
-  timestamp: Date;
+  /** ISO timestamp when the message was created */
+  timestamp: string;
 };
 
 /**

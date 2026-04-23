@@ -26,7 +26,7 @@ import { ChatMessage, MessageMetadata, ToolCall } from './types';
 export function buildMessageMetadata(): MessageMetadata {
   return {
     id: uuid(),
-    timestamp: new Date(),
+    timestamp: new Date().toISOString(),
   };
 }
 

@@ -62,12 +62,12 @@ describe('SummarizationService', () => {
       {
         role: 'user',
         content: 'How do I deploy to Kubernetes?',
-        metadata: { id: '1', timestamp: new Date(1) },
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
       },
       {
         role: 'assistant',
         content: 'You can use kubectl apply...',
-        metadata: { id: '2', timestamp: new Date(2) },
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
       },
     ];
 
@@ -79,7 +79,7 @@ describe('SummarizationService', () => {
       {
         role: 'assistant',
         content: summary,
-        metadata: { id: '3', timestamp: new Date(3) },
+        metadata: { id: '3', timestamp: new Date(3).toISOString() },
       },
     ];
 
@@ -173,7 +173,7 @@ describe('SummarizationService', () => {
           role: 'user',
           content:
             'This is a very long message that exceeds the fifty character limit for fallback titles',
-          metadata: { id: '1', timestamp: new Date(1) },
+          metadata: { id: '1', timestamp: new Date(1).toISOString() },
         },
       ];
       mockMcpClientService.processQuery.mockRejectedValue(
@@ -191,27 +191,27 @@ describe('SummarizationService', () => {
         {
           role: 'user',
           content: 'First question',
-          metadata: { id: '1', timestamp: new Date(1) },
+          metadata: { id: '1', timestamp: new Date(1).toISOString() },
         },
         {
           role: 'assistant',
           content: 'First answer',
-          metadata: { id: '2', timestamp: new Date(2) },
+          metadata: { id: '2', timestamp: new Date(2).toISOString() },
         },
         {
           role: 'user',
           content: 'Second question',
-          metadata: { id: '3', timestamp: new Date(3) },
+          metadata: { id: '3', timestamp: new Date(3).toISOString() },
         },
         {
           role: 'assistant',
           content: 'Second answer',
-          metadata: { id: '4', timestamp: new Date(4) },
+          metadata: { id: '4', timestamp: new Date(4).toISOString() },
         },
         {
           role: 'user',
           content: 'Third question',
-          metadata: { id: '5', timestamp: new Date(5) },
+          metadata: { id: '5', timestamp: new Date(5).toISOString() },
         },
       ];
 

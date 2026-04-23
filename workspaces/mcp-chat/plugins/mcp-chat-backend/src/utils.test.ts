@@ -1086,7 +1086,7 @@ describe('Utils', () => {
   });
 
   describe('validateToolApprovalMessage', () => {
-    const metadata = { id: '1', timestamp: new Date() };
+    const metadata = { id: '1', timestamp: new Date().toISOString() };
 
     const pendingToolCall = {
       id: 'call_1',
@@ -1187,7 +1187,7 @@ describe('Utils', () => {
   });
 
   describe('validateDecisions', () => {
-    const metadata = { id: '1', timestamp: new Date() };
+    const metadata = { id: '1', timestamp: new Date().toISOString() };
 
     const makeMessages = (toolCallIds: string[]): ChatMessage[] => [
       {
@@ -1276,7 +1276,7 @@ describe('Utils', () => {
   });
 
   describe('sanitizeForLLM', () => {
-    const meta = { id: '1', timestamp: new Date() };
+    const meta = { id: '1', timestamp: new Date().toISOString() };
 
     const msg = (
       overrides: Partial<ChatMessage> & Pick<ChatMessage, 'role' | 'content'>,

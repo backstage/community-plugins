@@ -67,19 +67,23 @@ describe('McpChatApi', () => {
       {
         role: 'user',
         content: mockUserMessage,
-        metadata: { id: '1', timestamp: new Date(1) },
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
       },
       {
         role: 'assistant',
         content: 'Hi there!',
-        metadata: { id: '2', timestamp: new Date(2) },
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
       },
     ];
+    const mockChatResponse = {
+      conversationId: 'conv-1',
+      messages: mockMessages,
+    };
 
     it('should send chat message successfully', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockMessages),
+        json: jest.fn().mockResolvedValue(mockChatResponse),
       });
 
       const result = await mcpChat.sendChatMessage([], mockUserMessage);
@@ -97,17 +101,21 @@ describe('McpChatApi', () => {
         }),
         signal: undefined,
       });
-      expect(result).toEqual(mockMessages);
+      expect(result).toEqual(mockChatResponse);
     });
 
     it('should send chat message with enabled tools', async () => {
       const enabledTools = ['tool1', 'tool2'];
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockMessages),
+        json: jest.fn().mockResolvedValue(mockChatResponse),
       });
 
-      await mcpChat.sendChatMessage([], mockUserMessage, enabledTools);
+      const result = await mcpChat.sendChatMessage(
+        [],
+        mockUserMessage,
+        enabledTools,
+      );
 
       expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/chat`, {
         method: 'POST',
@@ -121,16 +129,17 @@ describe('McpChatApi', () => {
         }),
         signal: undefined,
       });
+      expect(result).toEqual(mockChatResponse);
     });
 
     it('should send chat message with abort signal', async () => {
       const abortController = new AbortController();
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockMessages),
+        json: jest.fn().mockResolvedValue(mockChatResponse),
       });
 
-      await mcpChat.sendChatMessage(
+      const result = await mcpChat.sendChatMessage(
         [],
         mockUserMessage,
         [],
@@ -149,6 +158,7 @@ describe('McpChatApi', () => {
         }),
         signal: abortController.signal,
       });
+      expect(result).toEqual(mockChatResponse);
     });
 
     it('should handle HTTP errors', async () => {
@@ -176,7 +186,7 @@ describe('McpChatApi', () => {
       {
         role: 'user',
         content: 'Call a test tool',
-        metadata: { id: '1', timestamp: new Date(1) },
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
       },
       {
         role: 'assistant',
@@ -189,7 +199,7 @@ describe('McpChatApi', () => {
             metadata: { serverId: 's1', approval_status: 'pending' },
           },
         ],
-        metadata: { id: '2', timestamp: new Date(2) },
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
       },
     ];
     const mockDecisions = { call_1: 'approved' as const };

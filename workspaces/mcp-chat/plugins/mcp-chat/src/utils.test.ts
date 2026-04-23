@@ -18,7 +18,7 @@ import { extractLastToolRequests } from './utils';
 import { ChatMessage } from './types';
 
 describe('extractLastToolRequests', () => {
-  const meta = { id: '1', timestamp: new Date() };
+  const meta = { id: '1', timestamp: new Date().toISOString() };
 
   it('returns undefined for empty messages', () => {
     expect(extractLastToolRequests([])).toBeUndefined();

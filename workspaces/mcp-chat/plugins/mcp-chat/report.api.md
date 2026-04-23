@@ -18,7 +18,7 @@ export interface ChatMessage {
   // (undocumented)
   metadata: {
     id: string;
-    timestamp: Date;
+    timestamp: string;
   };
   role: ChatRole;
   tool_call_id?: string;

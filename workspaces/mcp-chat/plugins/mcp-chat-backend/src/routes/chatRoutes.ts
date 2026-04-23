@@ -130,7 +130,7 @@ export function createChatRoutes(deps: ChatRoutesDeps): express.Router {
     }
 
     // Conversation doesn't have an id if user is guest
-    return savedConversationId ?? uuid();
+    return savedConversationId ?? conversationId ?? uuid();
   }
 
   /**

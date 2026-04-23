@@ -332,7 +332,7 @@ export enum MCPServerType {
 // @public
 export type MessageMetadata = {
   id: string;
-  timestamp: Date;
+  timestamp: string;
 };
 
 // @public

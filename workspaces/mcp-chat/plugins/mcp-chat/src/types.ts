@@ -183,7 +183,8 @@ export interface ChatMessage {
 
   metadata: {
     id: string;
-    timestamp: Date;
+    /** ISO timestamp when the message was created */
+    timestamp: string;
   };
 }
 

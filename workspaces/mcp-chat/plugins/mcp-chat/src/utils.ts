@@ -32,11 +32,10 @@ export function extractLastToolRequests(
   if (lastMsg?.role !== 'assistant' || !lastMsg.tool_calls) {
     return undefined;
   }
-  return lastMsg.tool_calls.reduce(
-    (acc, tc) => ({
-      ...acc,
-      [tc.id]: tc.metadata?.approval_status ?? 'pending',
-    }),
-    {} as Record<string, ApprovalStatus>,
+  return Object.fromEntries(
+    lastMsg.tool_calls.map(tc => [
+      tc.id,
+      tc.metadata?.approval_status ?? 'pending',
+    ]),
   );
 }

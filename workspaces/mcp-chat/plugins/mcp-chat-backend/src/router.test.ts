@@ -243,7 +243,7 @@ describe('createRouter', () => {
         content: query,
         metadata: {
           id: '2',
-          timestamp: new Date(2),
+          timestamp: new Date(2).toISOString(),
         },
       };
     };
@@ -258,7 +258,7 @@ describe('createRouter', () => {
         {
           role: 'assistant',
           content: 'Hello! I can help you with various tasks.',
-          metadata: { id: '2', timestamp: new Date(2) },
+          metadata: { id: '2', timestamp: new Date(2).toISOString() },
         },
       ];
 
@@ -287,18 +287,18 @@ describe('createRouter', () => {
           role: 'assistant',
           content: null,
           tool_calls: [mockToolCall],
-          metadata: { id: '2', timestamp: new Date(2) },
+          metadata: { id: '2', timestamp: new Date(2).toISOString() },
         },
         {
           role: 'tool',
           content: 'Results here',
           tool_call_id: 'call_123',
-          metadata: { id: '3', timestamp: new Date(3) },
+          metadata: { id: '3', timestamp: new Date(3).toISOString() },
         },
         {
           role: 'assistant',
           content: 'I found some search results.',
-          metadata: { id: '4', timestamp: new Date(4) },
+          metadata: { id: '4', timestamp: new Date(4).toISOString() },
         },
       ];
 
@@ -324,17 +324,17 @@ describe('createRouter', () => {
         {
           role: 'system',
           content: 'You are a helpful assistant',
-          metadata: { id: '1', timestamp: new Date(1) },
+          metadata: { id: '1', timestamp: new Date(1).toISOString() },
         },
         {
           role: 'user',
           content: userQuery,
-          metadata: { id: '2', timestamp: new Date(2) },
+          metadata: { id: '2', timestamp: new Date(2).toISOString() },
         },
         {
           role: 'assistant',
           content: 'Hello! I can help you with various tasks.',
-          metadata: { id: '3', timestamp: new Date(3) },
+          metadata: { id: '3', timestamp: new Date(3).toISOString() },
         },
       ];
       const newQuery = 'I have to leave now';
@@ -343,12 +343,12 @@ describe('createRouter', () => {
         {
           role: 'user',
           content: newQuery,
-          metadata: { id: '4', timestamp: new Date(4) },
+          metadata: { id: '4', timestamp: new Date(4).toISOString() },
         },
         {
           role: 'assistant',
           content: 'Okay, bye!',
-          metadata: { id: '5', timestamp: new Date(5) },
+          metadata: { id: '5', timestamp: new Date(5).toISOString() },
         },
       ];
 
@@ -513,7 +513,7 @@ describe('createRouter', () => {
         {
           role: 'assistant',
           content: 'Response without tools',
-          metadata: { id: '2', timestamp: new Date(2) },
+          metadata: { id: '2', timestamp: new Date(2).toISOString() },
         },
       ];
 
@@ -533,7 +533,7 @@ describe('createRouter', () => {
   });
 
   describe('POST /chat/approve', () => {
-    const metadata = { id: '1', timestamp: new Date(1) };
+    const metadata = { id: '1', timestamp: new Date(1).toISOString() };
 
     const pendingToolCall = {
       id: 'call_1',

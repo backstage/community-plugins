@@ -34,16 +34,16 @@ describe('messageFactory', () => {
       expect(metadata.id).toMatch(UUID_REGEX);
     });
 
-    it('should return a Date timestamp', () => {
+    it('should return an ISO string timestamp', () => {
       const before = new Date();
       const metadata = buildMessageMetadata();
       const after = new Date();
 
-      expect(metadata.timestamp).toBeInstanceOf(Date);
-      expect(metadata.timestamp.getTime()).toBeGreaterThanOrEqual(
-        before.getTime(),
-      );
-      expect(metadata.timestamp.getTime()).toBeLessThanOrEqual(after.getTime());
+      expect(typeof metadata.timestamp).toBe('string');
+      const parsed = new Date(metadata.timestamp);
+      expect(metadata.timestamp).toBe(parsed.toISOString());
+      expect(parsed.getTime()).toBeGreaterThanOrEqual(before.getTime());
+      expect(parsed.getTime()).toBeLessThanOrEqual(after.getTime());
     });
 
     it('should generate unique ids on each call', () => {
@@ -59,7 +59,7 @@ describe('messageFactory', () => {
       expect(msg.role).toBe('system');
       expect(msg.content).toBe('You are helpful.');
       expect(msg.metadata.id).toMatch(UUID_REGEX);
-      expect(msg.metadata.timestamp).toBeInstanceOf(Date);
+      expect(typeof msg.metadata.timestamp).toBe('string');
     });
 
     it('should not include tool_calls or tool_call_id', () => {

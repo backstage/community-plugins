@@ -289,12 +289,12 @@ describe('ChatPage', () => {
       {
         role: 'user' as const,
         content: 'Hello',
-        metadata: { id: '1', timestamp: new Date(1) },
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
       },
       {
         role: 'assistant' as const,
         content: 'Hi!',
-        metadata: { id: '2', timestamp: new Date(2) },
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
       },
     ];
 

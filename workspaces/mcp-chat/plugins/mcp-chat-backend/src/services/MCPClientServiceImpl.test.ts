@@ -380,7 +380,7 @@ describe('MCPClientServiceImpl', () => {
   });
 
   describe('Approval Decisions', () => {
-    const meta = { id: '1', timestamp: new Date(1) };
+    const meta = { id: '1', timestamp: new Date(1).toISOString() };
 
     const pendingToolCall = (id: string, name: string): ToolCall => ({
       id,
@@ -802,7 +802,7 @@ describe('MCPClientServiceImpl', () => {
           {
             role: 'system',
             content: userProvidedSystemMessage,
-            metadata: { id: '1', timestamp: new Date(1) },
+            metadata: { id: '1', timestamp: new Date(1).toISOString() },
           },
         ],
         'Hello',
