@@ -1,6 +1,6 @@
 # ArgoCD List Applications Action
 #
-# Action ID: backstage-community-argocd:argocd:list-applications
+# Action ID: backstage-community-argocd:list-applications
 #
 # This action is automatically registered by the @backstage-community/plugin-argocd-backend
 # plugin via the Backstage Actions API. No additional setup is required beyond
@@ -12,13 +12,13 @@
 
 ---
 # Minimal example (required fields only)
-actionId: backstage-community-argocd:argocd:list-applications
+actionId: backstage-community-argocd:list-applications
 input:
   instanceName: local
 
 ---
 # Full example (all fields)
-actionId: backstage-community-argocd:argocd:list-applications
+actionId: backstage-community-argocd:list-applications
 input:
   instanceName: local
   selector: app.kubernetes.io/part-of=my-app # Label selector to filter applications

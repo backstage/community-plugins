@@ -21,7 +21,7 @@ import { argocdViewPermission } from '@backstage-community/plugin-argocd-common'
 import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
 /**
- * Registers the `argocd:get-application` action.
+ * Registers the `get-application` action.
  * @internal
  */
 export function createGetApplicationAction(options: {
@@ -32,7 +32,7 @@ export function createGetApplicationAction(options: {
   const { actionsRegistry, argoCDService, permissions } = options;
 
   actionsRegistry.register({
-    name: 'argocd:get-application',
+    name: 'get-application',
     title: 'Get ArgoCD Application',
     description:
       'Get full details of a specific ArgoCD application from a named instance, including sync status, health, resources, and operation state.',

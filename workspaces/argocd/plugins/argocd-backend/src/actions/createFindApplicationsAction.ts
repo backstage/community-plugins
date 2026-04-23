@@ -21,7 +21,7 @@ import { argocdViewPermission } from '@backstage-community/plugin-argocd-common'
 import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
 /**
- * Registers the `argocd:find-applications` action.
+ * Registers the `find-applications` action.
  * @internal
  */
 export function createFindApplicationsAction(options: {
@@ -32,7 +32,7 @@ export function createFindApplicationsAction(options: {
   const { actionsRegistry, argoCDService, permissions } = options;
 
   actionsRegistry.register({
-    name: 'argocd:find-applications',
+    name: 'find-applications',
     title: 'Find ArgoCD Applications',
     description:
       'Find all ArgoCD applications across all configured instances by application name. Returns sync status, health, and deployment details. Use the app name from the catalog entity annotation `argocd/app-name`.',

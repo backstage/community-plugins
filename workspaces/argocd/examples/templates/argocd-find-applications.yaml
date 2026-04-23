@@ -31,7 +31,7 @@ spec:
   steps:
     - id: find-applications
       name: Find ArgoCD Applications
-      action: backstage-community-argocd:argocd:find-applications
+      action: backstage-community-argocd:find-applications
       input:
         appName: ${{ parameters.appName }}
         project: ${{ parameters.project }}

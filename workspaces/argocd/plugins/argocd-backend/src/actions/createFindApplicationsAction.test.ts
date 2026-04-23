@@ -76,10 +76,10 @@ describe('createFindApplicationsAction', () => {
     });
   });
 
-  it('registers the argocd:find-applications action', () => {
+  it('registers the find-applications action', () => {
     expect(mockActionsRegistry.register).toHaveBeenCalledTimes(1);
     const reg = mockActionsRegistry.register.mock.calls[0][0];
-    expect(reg.name).toBe('argocd:find-applications');
+    expect(reg.name).toBe('find-applications');
     expect(reg.attributes.readOnly).toBe(true);
     expect(reg.attributes.destructive).toBe(false);
     expect(reg.attributes.idempotent).toBe(true);

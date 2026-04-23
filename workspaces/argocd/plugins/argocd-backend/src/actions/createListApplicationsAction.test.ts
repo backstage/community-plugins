@@ -63,10 +63,10 @@ describe('createListApplicationsAction', () => {
     });
   });
 
-  it('registers the argocd:list-applications action', () => {
+  it('registers the list-applications action', () => {
     expect(mockActionsRegistry.register).toHaveBeenCalledTimes(1);
     const reg = mockActionsRegistry.register.mock.calls[0][0];
-    expect(reg.name).toBe('argocd:list-applications');
+    expect(reg.name).toBe('list-applications');
     expect(reg.attributes.readOnly).toBe(true);
     expect(reg.attributes.destructive).toBe(false);
     expect(reg.attributes.idempotent).toBe(true);

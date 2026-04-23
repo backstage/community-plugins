@@ -152,7 +152,7 @@ Creates ArgoCD resources (project and application) for a given repository.
 
 ---
 
-#### `backstage-community-argocd:argocd:find-applications`
+#### `backstage-community-argocd:find-applications`
 
 Find all ArgoCD applications across all configured instances by application name. Returns sync status, health, and deployment details.
 
@@ -174,7 +174,7 @@ Find all ArgoCD applications across all configured instances by application name
 
 ---
 
-#### `backstage-community-argocd:argocd:get-application`
+#### `backstage-community-argocd:get-application`
 
 Get full details of a specific ArgoCD application from a named instance, including sync status, health, resources, and operation state.
 
@@ -207,7 +207,7 @@ Get full details of a specific ArgoCD application from a named instance, includi
 
 ---
 
-#### `backstage-community-argocd:argocd:get-revision-details`
+#### `backstage-community-argocd:get-revision-details`
 
 Fetch Git commit metadata (author, date, message) for a specific revision of an ArgoCD application deployment.
 
@@ -233,7 +233,7 @@ Fetch Git commit metadata (author, date, message) for a specific revision of an 
 
 ---
 
-#### `backstage-community-argocd:argocd:list-applications`
+#### `backstage-community-argocd:list-applications`
 
 List ArgoCD applications on a specific instance, optionally filtered by label selector, project, or namespace. Returns sync and health status for each app.
 

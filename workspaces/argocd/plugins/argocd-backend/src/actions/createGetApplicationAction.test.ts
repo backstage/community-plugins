@@ -69,10 +69,10 @@ describe('createGetApplicationAction', () => {
     });
   });
 
-  it('registers the argocd:get-application action', () => {
+  it('registers the get-application action', () => {
     expect(mockActionsRegistry.register).toHaveBeenCalledTimes(1);
     const reg = mockActionsRegistry.register.mock.calls[0][0];
-    expect(reg.name).toBe('argocd:get-application');
+    expect(reg.name).toBe('get-application');
     expect(reg.attributes.readOnly).toBe(true);
     expect(reg.attributes.destructive).toBe(false);
     expect(reg.attributes.idempotent).toBe(true);

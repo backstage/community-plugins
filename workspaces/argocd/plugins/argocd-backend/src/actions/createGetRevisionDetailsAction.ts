@@ -21,7 +21,7 @@ import { argocdViewPermission } from '@backstage-community/plugin-argocd-common'
 import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
 /**
- * Registers the `argocd:get-revision-details` action.
+ * Registers the `get-revision-details` action.
  * @internal
  */
 export function createGetRevisionDetailsAction(options: {
@@ -32,7 +32,7 @@ export function createGetRevisionDetailsAction(options: {
   const { actionsRegistry, argoCDService, permissions } = options;
 
   actionsRegistry.register({
-    name: 'argocd:get-revision-details',
+    name: 'get-revision-details',
     title: 'Get ArgoCD Revision Details',
     description:
       'Fetch the Git commit metadata (author, date, message) for a specific revision of an ArgoCD application deployment.',

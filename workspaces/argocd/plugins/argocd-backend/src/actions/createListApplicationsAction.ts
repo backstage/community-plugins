@@ -21,7 +21,7 @@ import { argocdViewPermission } from '@backstage-community/plugin-argocd-common'
 import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
 /**
- * Registers the `argocd:list-applications` action.
+ * Registers the `list-applications` action.
  * @internal
  */
 export function createListApplicationsAction(options: {
@@ -32,7 +32,7 @@ export function createListApplicationsAction(options: {
   const { actionsRegistry, argoCDService, permissions } = options;
 
   actionsRegistry.register({
-    name: 'argocd:list-applications',
+    name: 'list-applications',
     title: 'List ArgoCD Applications',
     description:
       'List ArgoCD applications on a specific instance, optionally filtered by label selector, project or namespace. Returns sync and health status for each app.',

@@ -55,10 +55,10 @@ describe('createGetRevisionDetailsAction', () => {
     });
   });
 
-  it('registers the argocd:get-revision-details action', () => {
+  it('registers the get-revision-details action', () => {
     expect(mockActionsRegistry.register).toHaveBeenCalledTimes(1);
     const reg = mockActionsRegistry.register.mock.calls[0][0];
-    expect(reg.name).toBe('argocd:get-revision-details');
+    expect(reg.name).toBe('get-revision-details');
     expect(reg.attributes.readOnly).toBe(true);
     expect(reg.attributes.destructive).toBe(false);
     expect(reg.attributes.idempotent).toBe(true);

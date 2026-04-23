@@ -37,7 +37,7 @@ spec:
   steps:
     - id: get-revision-details
       name: Get Revision Details
-      action: backstage-community-argocd:argocd:get-revision-details
+      action: backstage-community-argocd:get-revision-details
       input:
         instanceName: ${{ parameters.instanceName }}
         appName: ${{ parameters.appName }}

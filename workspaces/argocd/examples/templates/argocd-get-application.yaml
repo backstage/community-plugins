@@ -36,7 +36,7 @@ spec:
   steps:
     - id: get-application
       name: Get ArgoCD Application
-      action: backstage-community-argocd:argocd:get-application
+      action: backstage-community-argocd:get-application
       input:
         instanceName: ${{ parameters.instanceName }}
         appName: ${{ parameters.appName }}
