@@ -361,6 +361,7 @@ __metadata:
     "@backstage/core-components": "npm:^0.18.9"
     "@backstage/core-plugin-api": "npm:^1.12.5"
     "@backstage/dev-utils": "npm:^1.1.22"
+    "@backstage/frontend-plugin-api": "npm:^0.16.0"
     "@backstage/plugin-catalog-react": "npm:^2.1.4"
     "@backstage/plugin-scaffolder-react": "npm:^1.20.1"
     "@material-ui/core": "npm:^4.9.13"
