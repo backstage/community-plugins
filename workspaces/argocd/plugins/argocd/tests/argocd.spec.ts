@@ -15,13 +15,16 @@
  */
 import { expect, Page, test } from '@playwright/test';
 import { runAccessibilityTests } from './utils/accessibility';
-import { getTranslations, ArgoCDMessages } from './utils/translations';
+import { ArgoCDMessages, getTranslations } from './utils/translations';
 
 import {
+  DEV_INSTANCE_APPLICATIONS,
   mockApplication,
   preProdApplication,
   prodApplication,
 } from '../dev/__data__';
+
+import { type Application } from '@backstage-community/plugin-argocd-common';
 import { Common } from './utils/argocdHelper';
 import { verifyAppCard, verifyAppSidebar } from './utils/utils';
 
@@ -152,5 +155,61 @@ test.describe('ArgoCD plugin', () => {
         ).toBeVisible();
       });
     }
+  });
+
+  test.describe('Multiple ArgoCD instances', () => {
+    const verifyInstances = async (
+      expectedAppsByInstance: Record<string, Application[]>,
+    ) => {
+      for (const [instanceName, instanceApps] of Object.entries(
+        expectedAppsByInstance,
+      )) {
+        for (const app of instanceApps) {
+          const appName = app.metadata.name ?? '';
+
+          const lifecycleCard = argocdPage
+            .locator('[data-testid$="-card"]')
+            .filter({ hasText: appName })
+            .filter({ hasText: instanceName })
+            .filter({ hasText: app.spec.destination.server })
+            .first();
+          await expect(lifecycleCard).toBeVisible();
+
+          const summaryRow = argocdPage
+            .getByRole('row')
+            .filter({ hasText: appName })
+            .filter({ hasText: instanceName })
+            .filter({ hasText: app.spec.destination.server })
+            .first();
+          await expect(summaryRow).toBeVisible();
+        }
+      }
+    };
+
+    test('Verify app selector resolves app from all instances', async () => {
+      await argocdPage.goto('/argocd/multi-instance-selector');
+      await verifyInstances({
+        argoInstance1: DEV_INSTANCE_APPLICATIONS.argoInstance1,
+        argoInstance2: [
+          DEV_INSTANCE_APPLICATIONS.argoInstance2[1],
+          DEV_INSTANCE_APPLICATIONS.argoInstance2[2],
+        ],
+      });
+    });
+
+    test('Verify app name resolves app from all instances', async () => {
+      await argocdPage.goto('/argocd/multi-instance-app-name');
+      await verifyInstances({
+        argoInstance1: [DEV_INSTANCE_APPLICATIONS.argoInstance1[2]],
+        argoInstance2: [DEV_INSTANCE_APPLICATIONS.argoInstance2[2]],
+      });
+    });
+
+    test('Verify app name resolves for 1 app across all instances when no instances label in entity', async () => {
+      await argocdPage.goto('/argocd/multi-instance-one-app-name');
+      await verifyInstances({
+        argoInstance2: [DEV_INSTANCE_APPLICATIONS.argoInstance2[0]],
+      });
+    });
   });
 });

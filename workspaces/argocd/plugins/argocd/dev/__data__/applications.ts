@@ -148,6 +148,16 @@ export const mockApplication: Application = {
   status: commonStatus,
 };
 
+export const mockBasicApplication: Application = {
+  ...mockApplication,
+  metadata: {
+    ...mockApplication.metadata,
+    uid: '0791efe1-164a-48f8-b1ed-11310efa6bef',
+    name: 'basic-app',
+    labels: { 'backstage.io/kubernetes-id': 'basic-app' },
+  },
+};
+
 export const mockQuarkusApplication: Application = {
   metadata: {
     ...commonMetadata,
@@ -197,6 +207,14 @@ export const mockQuarkusApplication: Application = {
         },
       },
     ],
+  },
+};
+
+export const mockQuarkus2Application: Application = {
+  ...mockQuarkusApplication,
+  metadata: {
+    ...mockQuarkusApplication.metadata,
+    uid: '142880cc-931f-48b0-84d0-909b78680f51',
   },
 };
 
