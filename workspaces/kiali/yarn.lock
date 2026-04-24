@@ -6380,6 +6380,9 @@ __metadata:
     prettier: "npm:^3.6.2"
     prettier-plugin-sort-imports: "npm:^1.8.8"
     typescript: "npm:~5.3.0"
+  dependenciesMeta:
+    canvas:
+      built: true
   languageName: unknown
   linkType: soft
 

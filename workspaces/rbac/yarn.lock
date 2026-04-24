@@ -5757,6 +5757,9 @@ __metadata:
     node-gyp: "npm:^9.0.0"
     prettier: "npm:^3.3.3"
     typescript: "npm:~5.8.0"
+  dependenciesMeta:
+    better-sqlite3:
+      built: true
   languageName: unknown
   linkType: soft
 

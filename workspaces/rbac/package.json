@@ -65,6 +65,11 @@
     "prettier": "3.x.x",
     "prismjs": "^1.30.0"
   },
+  "dependenciesMeta": {
+    "better-sqlite3": {
+      "built": true
+    }
+  },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
