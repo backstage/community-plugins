@@ -63,7 +63,7 @@ export const mockArgoMultiInstanceAppNameEntity: Entity = {
   },
 };
 
-export const mocArgoOneAppEntity: Entity = {
+export const mockArgoOneAppEntity: Entity = {
   ...mockEntity,
   metadata: {
     name: 'backstage-argocd-multi-one-app-name',

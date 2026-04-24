@@ -20,13 +20,13 @@ import {
 } from '@backstage-community/plugin-argocd-common';
 import {
   mockApplication,
-  mockArgocdMultiInstanceConfig,
   mockBasicApplication,
   mockQuarkus2Application,
   mockQuarkusApplication,
   preProdApplication,
   prodApplication,
-} from '.';
+} from './applications';
+import { mockArgocdMultiInstanceConfig } from './config';
 
 const createInstanceApplication = (
   instance: Pick<Instance, 'name' | 'url'>,

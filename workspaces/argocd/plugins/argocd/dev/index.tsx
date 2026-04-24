@@ -60,7 +60,7 @@ import {
   mockEntity,
   mockIdRevisions,
   DEV_INSTANCE_APPLICATIONS,
-  mocArgoOneAppEntity,
+  mockArgoOneAppEntity,
 } from './__data__';
 import { mockArgoResources } from './__data__/argoRolloutsObjects';
 import { argocdTranslations } from '../src/translations';
@@ -75,7 +75,7 @@ const getInstanceNameFromUrl = (url: string): string => {
 export class MockArgoCDApiClient implements ArgoCDApi {
   async listApps(options: ListAppsOptions): Promise<{ items: Application[] }> {
     const instanceName = getInstanceNameFromUrl(options.url);
-    let apps = DEV_INSTANCE_APPLICATIONS[instanceName];
+    let apps = DEV_INSTANCE_APPLICATIONS[instanceName] ?? [];
 
     if (options.appSelector) {
       const decodedSelector = decodeURIComponent(options.appSelector);
@@ -100,7 +100,7 @@ export class MockArgoCDApiClient implements ArgoCDApi {
     if (!options.revisionIDs || options.revisionIDs.length < 1) {
       return Promise.resolve([]);
     }
-    const promises: any = [];
+    const promises: Promise<ArgoCDAppDeployRevisionDetails>[] = [];
 
     options.revisionIDs.forEach((revisionID: string) => {
       const application = options.apps.find(app =>
@@ -150,11 +150,19 @@ export class MockArgoCDApiClient implements ArgoCDApi {
   async getApplication(options: GetApplicationOptions): Promise<Application> {
     const instanceName = getInstanceNameFromUrl(options.url);
 
+    if (!DEV_INSTANCE_APPLICATIONS[instanceName]) {
+      throw new Error(
+        `Failed to fetch Application from Instance ${instanceName} : ArgoCD Instance ${instanceName} not found`,
+      );
+    }
+
     const result = DEV_INSTANCE_APPLICATIONS[instanceName].filter(
       app => app.metadata.name === options.appName,
     )[0];
     if (!result) {
-      throw new Error('Application Not Found');
+      throw new Error(
+        `Failed to fetch data, status 403: Insufficient permissions for ArgoCD server`,
+      );
     }
 
     return result;
@@ -176,7 +184,7 @@ export class MockArgoCDApiClient implements ArgoCDApi {
       if (matchingApps.length !== 0) {
         result.push({
           name: instanceName,
-          url: matchingApps[0].spec.destination.server,
+          url: matchingApps[0].metadata.instance.url,
           appName: [options.appName],
           applications: matchingApps,
         });
@@ -455,7 +463,7 @@ createDevApp()
       >
         <EntityProvider
           key="multi-instance-one-app-name"
-          entity={mocArgoOneAppEntity}
+          entity={mockArgoOneAppEntity}
         >
           <Page themeId="service">
             <Header type="component — service" title="basic-app" />

@@ -41,10 +41,17 @@ export const getInstanceAppUrl = (
       ?.find(method => method.type === 'config')
       ?.instances?.find(instance => instance.name === instanceName)?.url ??
     config.argocd?.baseUrl;
+
+  if (!instanceBaseUrl) {
+    throw new Error(
+      `Unable to resolve ArgoCD instance URL for application "${app.metadata.name}" and instance "${instanceName}"`,
+    );
+  }
+
   const appPath = app.metadata.namespace
     ? `/applications/${app.metadata.namespace}/${app.metadata.name}`
     : `/applications/${app.metadata.name}`;
-  return `${instanceBaseUrl ?? ''}${appPath}`;
+  return `${instanceBaseUrl}${appPath}`;
 };
 
 export const verifyHeader = async (
