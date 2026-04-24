@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.20.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.20.0
 
 ### Minor Changes
