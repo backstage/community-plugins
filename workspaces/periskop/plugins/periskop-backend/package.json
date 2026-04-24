@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-periskop-backend",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "periskop",
