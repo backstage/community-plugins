@@ -1,5 +1,17 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.22.0
+
+### Minor Changes
+
+- e4d32d6: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- d8730d8: Correctly load schedule configuration for token renewal tasks.
+- Updated dependencies [e4d32d6]
+  - @backstage-community/plugin-vault-node@0.19.0
+
 ## 0.21.0
 
 ### Minor Changes
