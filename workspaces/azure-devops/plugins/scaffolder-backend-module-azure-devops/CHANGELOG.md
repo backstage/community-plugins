@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.24.0
+
+### Minor Changes
+
+- f2f1e66: Backstage version bump to v1.50.2
+
 ## 0.23.0
 
 ### Minor Changes
