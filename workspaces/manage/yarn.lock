@@ -13396,7 +13396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:^4.17.21, @types/express-serve-static-core@npm:^4.17.33, @types/express-serve-static-core@npm:^4.17.5, @types/express-serve-static-core@npm:^4.19.7":
+"@types/express-serve-static-core@npm:^4.17.21, @types/express-serve-static-core@npm:^4.17.33, @types/express-serve-static-core@npm:^4.17.5":
   version: 4.19.7
   resolution: "@types/express-serve-static-core@npm:4.19.7"
   dependencies:
@@ -15607,7 +15607,7 @@ __metadata:
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-techdocs-backend": "backstage:^"
     "@types/express": "npm:^4.17.25"
-    "@types/express-serve-static-core": "npm:^4.19.7"
+    "@types/express-serve-static-core": "npm:^5.0.0"
     "@types/luxon": "npm:^3.0.0"
     app: "link:../app"
     better-sqlite3: "npm:^12.5.0"
