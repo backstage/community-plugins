@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-ilert",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "A Backstage plugin that integrates towards ilert",
   "backstage": {
     "role": "frontend-plugin",
