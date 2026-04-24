@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-common
 
+## 0.10.0
+
+### Minor Changes
+
+- 93d62a4: Fix JS error. Update dependencies
+
 ## 0.9.0
 
 ### Minor Changes

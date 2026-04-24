@@ -1,0 +1,32 @@
+# Sample catalog entities for Fairwinds Insights (for integrators testing in a full Backstage app).
+# The plugin workspace dev backend uses catalogServiceMock with equivalent data (see
+# plugins/fairwinds-insights-backend/dev/index.ts).
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: examples
+spec:
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: no-config
+spec:
+  type: service
+  owner: guests
+  system: examples
+  lifecycle: production
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: with-config
+  annotations:
+    insights.fairwinds.com/app-groups: all-resources
+spec:
+  type: service
+  owner: guests
+  system: examples
+  lifecycle: production

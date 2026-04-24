@@ -1,0 +1,66 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-create-resources
+  title: Create ArgoCD Resources
+  description: Creates an ArgoCD Project and Application for deploying your service
+  tags:
+    - argocd
+    - deployment
+    - kubernetes
+spec:
+  owner: group:default/infrastructure
+  type: deployment
+  parameters:
+    - title: ArgoCD Application Details
+      required:
+        - appName
+        - argoInstance
+        - namespace
+        - repoUrl
+        - path
+      properties:
+        appName:
+          title: Application Name
+          type: string
+          description: The name of the ArgoCD application to create
+        argoInstance:
+          title: ArgoCD Instance
+          type: string
+          description: The ArgoCD instance to deploy to
+        namespace:
+          title: Namespace
+          type: string
+          description: The Kubernetes namespace for resource deployment
+        repoUrl:
+          title: Repository URL
+          type: string
+          description: The Git repository URL that ArgoCD will watch
+        path:
+          title: Manifests Path
+          type: string
+          description: The path in the repository containing Kubernetes manifests
+        projectName:
+          title: Project Name
+          type: string
+          description: The ArgoCD project name (defaults to application name)
+        label:
+          title: Backstage Label
+          type: string
+          description: The label used by Backstage to discover the application (defaults to application name)
+  steps:
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: backstage-community-argocd:create-resources
+      input:
+        appName: ${{ parameters.appName }}
+        argoInstance: ${{ parameters.argoInstance }}
+        namespace: ${{ parameters.namespace }}
+        repoUrl: ${{ parameters.repoUrl }}
+        path: ${{ parameters.path }}
+        projectName: ${{ parameters.projectName }}
+        label: ${{ parameters.label }}
+  output:
+    links:
+      - title: ArgoCD Application
+        url: ${{ steps['create-argocd-resources'].output.applicationUrl }}

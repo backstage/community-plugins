@@ -93,17 +93,15 @@ you must install also the backend plugin and [configure it](./registries.md).
 
 ### Load plugin via the new frontend system (alpha)
 
-For early adaopters of the new frontend system.
-
-Your Backstage frontend app must use that new frontend system which isn't the default at the moment.
+Ensure that your Backstage frontend app is using that new frontend system.
 
 1. Install the frontend dependency:
 
    ```sh
-   yarn workspace app-next add @backstage-community/plugin-npm
+   yarn workspace app add @backstage-community/plugin-npm
    ```
 
-2. Add the package to your `packages/app-next/src/App.tsx`.
+2. Add the package to your `packages/app/src/App.tsx`.
 
    ```tsx
    import npmPlugin from '@backstage-community/plugin-npm/alpha';
@@ -120,35 +118,20 @@ Your Backstage frontend app must use that new frontend system which isn't the de
    });
    ```
 
-3. Optional enable translation via the `TranslationBlueprint` extension:
+3. Optionally enable translation via an `app` module that adds one `TranslationBlueprint` extension:
 
    ```tsx
-   import { TranslationBlueprint } from '@backstage/plugin-app-react';
-
    import npmPlugin, {
-     npmTranslations,
+     npmTranslationsModule,
    } from '@backstage-community/plugin-npm/alpha';
    ```
 
    ```tsx
-   const npmTranslation = TranslationBlueprint.make({
-     name: 'npmTranslation',
-     params: {
-       resource: npmTranslations,
-     },
-   });
-
    export default createApp({
      features: [
-       createFrontendModule({
-         pluginId: 'app',
-         extensions: [
-           // ...other extensions
-           npmTranslation,
-         ],
-       }),
        // ...other plugins
        npmPlugin,
+       npmTranslationsModule,
      ],
    });
    ```

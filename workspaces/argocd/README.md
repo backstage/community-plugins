@@ -35,6 +35,12 @@ yarn install
 yarn start
 ```
 
+## Actions API
+
+The backend plugin registers actions with the [Backstage Actions API](./plugins/argocd-backend/README.md#actions-api), making ArgoCD resource creation available platform-wide, discoverable and invokable by any service, AI tools via MCP, and other plugins. See the [backend plugin README](./plugins/argocd-backend/README.md#actions-api) for details on available actions, input/output schemas, and usage examples.
+
+## Links
+
 Follow these links to learn more about this plugin:
 
 1. [Frontend](./plugins/argocd/README.md)

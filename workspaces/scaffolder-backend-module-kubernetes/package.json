@@ -37,13 +37,14 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.0",
+    "@backstage/cli-defaults": "^0.1.0",
     "@backstage/e2e-test-utils": "^0.1.2",
     "@backstage/repo-tools": "^0.17.0",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
     "@types/react": "^18",

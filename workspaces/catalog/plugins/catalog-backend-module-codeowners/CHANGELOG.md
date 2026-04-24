@@ -1,5 +1,17 @@
 # @backstage-community/plugin-catalog-backend-module-codeowners
 
+## 0.3.0
+
+### Minor Changes
+
+- c0e3399: Backstage version bump to v1.50.2
+
+## 0.2.0
+
+### Minor Changes
+
+- e1b2ed3: Backstage version bump to v1.49.2
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.52.1
+
+### Patch Changes
+
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+
 ## 1.52.0
 
 ### Minor Changes

@@ -7,6 +7,7 @@ import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -79,6 +80,9 @@ export const npmTranslationRef: TranslationRef<
 
 // @public (undocumented)
 export const npmTranslations: TranslationResource<'plugin.npm.translation-ref'>;
+
+// @alpha
+export const npmTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
 ```

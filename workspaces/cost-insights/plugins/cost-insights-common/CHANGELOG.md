@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights-common
 
+## 0.13.0
+
+### Minor Changes
+
+- ea7c464: Backstage version bump to v1.49.2
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-storage-explorer-backend
 
+## 0.11.3
+
+### Patch Changes
+
+- cadb1a1: Updated dependency `@azure/identity` to `4.13.1`.
+
 ## 0.11.2
 
 ### Patch Changes

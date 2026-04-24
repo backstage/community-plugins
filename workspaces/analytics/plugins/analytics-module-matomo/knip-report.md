@@ -4,5 +4,5 @@
 
 | Name                    | Location          | Severity |
 | :---------------------- | :---------------- | :------- |
-| @backstage/core-app-api | package.json:58:6 | error    |
+| @backstage/core-app-api | package.json:59:6 | error    |
 

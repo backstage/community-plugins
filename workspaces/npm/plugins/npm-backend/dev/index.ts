@@ -18,7 +18,7 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 // eslint-disable-next-line @backstage/no-relative-monorepo-imports
-import { allExamples } from '../../npm/dev/examples';
+import { allExamples } from '../../../examples';
 
 const backend = createBackend();
 

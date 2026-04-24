@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import {
-  CatalogClient,
-  CATALOG_FILTER_EXISTS,
-} from '@backstage/catalog-client';
+import { CATALOG_FILTER_EXISTS } from '@backstage/catalog-client';
 import { AuthService } from '@backstage/backend-plugin-api';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 
 export async function loadLighthouseEntities(
-  catalogClient: CatalogClient,
+  catalogClient: CatalogService,
   auth: AuthService,
 ) {
   const filter: Record<string, symbol | string> = {
@@ -29,15 +27,12 @@ export async function loadLighthouseEntities(
     ['lighthouse.com/website-url']: CATALOG_FILTER_EXISTS,
   };
 
-  const { token } = await auth.getPluginRequestToken({
-    onBehalfOf: await auth.getOwnServiceCredentials(),
-    targetPluginId: 'catalog',
-  });
+  const credentials = await auth.getOwnServiceCredentials();
 
   return await catalogClient.getEntities(
     {
       filter: [filter],
     },
-    { token },
+    { credentials },
   );
 }

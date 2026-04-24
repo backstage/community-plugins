@@ -27,12 +27,13 @@ import {
 
 import { npmTranslations } from '../src/translations';
 
-import { allExamples } from './examples';
+// eslint-disable-next-line @backstage/no-relative-monorepo-imports
+import { allExamples } from '../../../examples';
 
 const builder = createDevApp()
   .registerPlugin(npmPlugin)
   .addTranslationResource(npmTranslations)
-  .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja']);
+  .setAvailableLanguages(['en', 'de', 'es']);
 
 allExamples.forEach(example => {
   builder.addPage({

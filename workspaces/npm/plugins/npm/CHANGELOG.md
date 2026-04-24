@@ -1,5 +1,34 @@
 # @backstage-community/plugin-npm
 
+## 1.21.0
+
+### Minor Changes
+
+- 57f14ed: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- 90b17c9: Export a new `app` module for translations, which needs to be manually imported:
+
+  ```tsx
+  import npmPlugin, {
+    npmTranslationsModule,
+  } from '@backstage-community/plugin-npm/alpha';
+
+  // ...
+
+  export default createApp({
+    features: [
+      // ...other plugins
+      npmPlugin,
+      npmTranslationsModule,
+    ],
+  });
+  ```
+
+- Updated dependencies [57f14ed]
+  - @backstage-community/plugin-npm-common@1.21.0
+
 ## 1.20.0
 
 ### Minor Changes

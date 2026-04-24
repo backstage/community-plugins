@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-analytics-module-ga4",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "backstage": {
     "role": "frontend-plugin-module",
     "pluginId": "app",
@@ -52,6 +52,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
     "react-ga4": "^2.0.0"
   },
   "devDependencies": {

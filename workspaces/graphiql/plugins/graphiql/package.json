@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-graphiql",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Backstage plugin for browsing GraphQL APIs",
   "backstage": {
     "role": "frontend-plugin",
@@ -63,7 +63,8 @@
     "graphql": "^16.0.0",
     "graphql-config": "^5.0.2",
     "graphql-ws": "^5.4.1",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
