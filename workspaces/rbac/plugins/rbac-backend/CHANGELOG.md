@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.12.3
+
+### Patch Changes
+
+- fb2a770: Made postgres username and password optional in casbin adapter factory to support passwordless authentication
+
 ## 7.12.2
 
 ### Patch Changes
