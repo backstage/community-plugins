@@ -79,5 +79,10 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependenciesMeta": {
+    "isolated-vm": {
+      "built": true
+    }
   }
 }
