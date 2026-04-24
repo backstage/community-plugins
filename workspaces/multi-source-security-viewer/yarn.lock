@@ -6798,6 +6798,8 @@ __metadata:
     start-server-and-test: "npm:^3.0.0"
     typescript: "npm:~5.8.0"
   dependenciesMeta:
+    better-sqlite3:
+      built: true
     isolated-vm:
       built: true
   languageName: unknown

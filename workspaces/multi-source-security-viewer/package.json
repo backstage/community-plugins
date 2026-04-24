@@ -81,6 +81,9 @@
     ]
   },
   "dependenciesMeta": {
+    "better-sqlite3": {
+      "built": true
+    },
     "isolated-vm": {
       "built": true
     }
