@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer-backend
 
+## 0.4.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.4.0
 
 ### Minor Changes
