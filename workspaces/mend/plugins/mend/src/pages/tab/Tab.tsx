@@ -20,20 +20,51 @@ import { mendApiRef } from '../../api';
 import { FindingTable } from './components';
 import { useFindingData } from '../../queries';
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Project } from '../../models';
 
 export const Tab = () => {
   const connectBackendApi = useApi(mendApiRef);
   const { fetch } = useApi(fetchApiRef);
   const { entity } = useEntity();
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(search);
   const selectedProjectFromUrl = queryParams.get('filter') || null;
 
   const [projectId, setProjectId] = useState<string | null>(
     selectedProjectFromUrl,
   );
+
+  // Track if the project change is from user selection (not URL change)
+  const isManualSelectionRef = useRef(false);
+
+  // Sync projectId state with URL query parameter changes
+  // Only update if it's not a manual selection
+  useEffect(() => {
+    if (!isManualSelectionRef.current) {
+      setProjectId(selectedProjectFromUrl);
+    }
+    // Reset the flag after processing
+    isManualSelectionRef.current = false;
+  }, [selectedProjectFromUrl]);
+
+  // Handle project change from dropdown - remove filter from URL
+  const handleProjectChange = (newProjectId: string) => {
+    // Set flag to prevent useEffect from overriding our selection
+    isManualSelectionRef.current = true;
+
+    setProjectId(newProjectId);
+
+    // Remove the filter parameter from URL when user manually selects from dropdown
+    const newQueryParams = new URLSearchParams(search);
+    newQueryParams.delete('filter');
+
+    const newSearch = newQueryParams.toString();
+    const newUrl = newSearch ? `${pathname}?${newSearch}` : pathname;
+
+    navigate(newUrl, { replace: true });
+  };
 
   // Keep a stable reference to the project list to prevent filter from hiding during refetch
   const projectListRef = useRef<Project[] | undefined>(undefined);
@@ -62,7 +93,7 @@ export const Tab = () => {
         // Use the stable project list reference to prevent filter from disappearing during refetch
         projectList={projectListRef.current}
         selectedProjectId={projectId}
-        onProjectChange={setProjectId}
+        onProjectChange={handleProjectChange}
       />
     </Content>
   );

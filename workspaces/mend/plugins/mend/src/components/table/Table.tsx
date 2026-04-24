@@ -104,19 +104,14 @@ export const Table = ({
     ? projectList.map(d => ({ label: d.name, value: d.uuid }))
     : [];
 
-  // Set initial project filter to selectedProjectId or first project
-  const initialProjectId =
-    selectedProjectId ||
-    (projectList && projectList.length > 0 ? projectList[0].uuid : '');
-  const [projectIdFilter, setProjectIdFilter] =
-    useState<string>(initialProjectId);
+  const [projectIdFilter, setProjectIdFilter] = useState<string>('');
 
-  // Update local state when selectedProjectId changes
+  // Update filter when selectedProjectId or projectList changes
   useEffect(() => {
-    if (selectedProjectId) {
-      setProjectIdFilter(selectedProjectId);
-    }
-  }, [selectedProjectId]);
+    const defaultProjectId =
+      selectedProjectId ?? (projectList?.[0]?.uuid || '');
+    setProjectIdFilter(defaultProjectId);
+  }, [selectedProjectId, projectList]);
 
   // Handle project filter change
   const handleProjectFilterChange = (newProjectId: string) => {
