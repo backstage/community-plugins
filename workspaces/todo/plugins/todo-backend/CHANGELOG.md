@@ -1,5 +1,11 @@
 # @backstage-community/plugin-todo-backend
 
+## 0.21.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.21.0
 
 ### Minor Changes
