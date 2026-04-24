@@ -20,7 +20,10 @@ const commonMetadata = {
   labels: {
     'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
   },
-  instance: { name: 'main', url: 'https:/kubernetes.default.svc' },
+  instance: {
+    name: 'main',
+    url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+  },
   name: 'quarkus-app-dev',
 };
 
@@ -338,7 +341,10 @@ export const prodApplication: Application = {
     labels: {
       'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
     },
-    instance: { name: 'main', url: 'https://kubernetes.default.svc' },
+    instance: {
+      name: 'main',
+      url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+    },
     name: 'quarkus-app-prod',
   },
   spec: {
@@ -439,7 +445,7 @@ export const multiSourceArgoApp = {
     },
     instance: {
       name: 'main',
-      url: 'https://kubernetes.default.svc',
+      url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
     },
   },
   spec: {

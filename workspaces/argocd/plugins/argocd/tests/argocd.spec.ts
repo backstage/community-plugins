@@ -20,13 +20,19 @@ import { ArgoCDMessages, getTranslations } from './utils/translations';
 import {
   DEV_INSTANCE_APPLICATIONS,
   mockApplication,
+  mockArgocdConfig,
+  mockArgocdMultiInstanceConfig,
   preProdApplication,
   prodApplication,
 } from '../dev/__data__';
 
 import { type Application } from '@backstage-community/plugin-argocd-common';
 import { Common } from './utils/argocdHelper';
-import { verifyAppCard, verifyAppSidebar } from './utils/utils';
+import {
+  getInstanceAppUrl,
+  verifyAppCard,
+  verifyAppSidebar,
+} from './utils/utils';
 
 test.describe('ArgoCD plugin', () => {
   let argocdPage: Page;
@@ -117,6 +123,7 @@ test.describe('ArgoCD plugin', () => {
 
     for (const app of apps) {
       const appName = app.metadata.name;
+      const appUrl = getInstanceAppUrl(app, 'main', mockArgocdConfig);
 
       /* eslint-disable-next-line  no-loop-func */
       test(`Verify ${appName} row`, async () => {
@@ -153,6 +160,10 @@ test.describe('ArgoCD plugin', () => {
             })
             .first(),
         ).toBeVisible();
+        const appLink = row.getByRole('link', {
+          name: appName,
+        });
+        expect(await appLink.getAttribute('href')).toContain(appUrl);
       });
     }
   });
@@ -166,14 +177,22 @@ test.describe('ArgoCD plugin', () => {
       )) {
         for (const app of instanceApps) {
           const appName = app.metadata.name ?? '';
+          const appUrl = getInstanceAppUrl(
+            app,
+            instanceName,
+            mockArgocdMultiInstanceConfig,
+          );
 
           const lifecycleCard = argocdPage
-            .locator('[data-testid$="-card"]')
+            .getByTestId(`${appName}-card`)
             .filter({ hasText: appName })
             .filter({ hasText: instanceName })
             .filter({ hasText: app.spec.destination.server })
             .first();
           await expect(lifecycleCard).toBeVisible();
+          await expect(
+            lifecycleCard.getByTestId(`${appName}-link`),
+          ).toHaveAttribute('href', appUrl);
 
           const summaryRow = argocdPage
             .getByRole('row')
@@ -182,6 +201,10 @@ test.describe('ArgoCD plugin', () => {
             .filter({ hasText: app.spec.destination.server })
             .first();
           await expect(summaryRow).toBeVisible();
+          const appLink = summaryRow.getByRole('link', {
+            name: appName,
+          });
+          expect(await appLink.getAttribute('href')).toContain(appUrl);
         }
       }
     };
