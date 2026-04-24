@@ -2767,7 +2767,7 @@ __metadata:
     "@changesets/cli": "npm:^2.27.1"
     "@jest/environment-jsdom-abstract": "npm:^30"
     "@types/jest": "npm:^30"
-    "@types/jsdom": "npm:^27"
+    "@types/jsdom": "npm:^28.0.0"
     "@types/node": "npm:22.19.17"
     "@types/webpack-env": "npm:1.18.8"
     jest: "npm:^30"
@@ -6435,14 +6435,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:^27":
-  version: 27.0.0
-  resolution: "@types/jsdom@npm:27.0.0"
+"@types/jsdom@npm:^28.0.0":
+  version: 28.0.1
+  resolution: "@types/jsdom@npm:28.0.1"
   dependencies:
     "@types/node": "npm:*"
     "@types/tough-cookie": "npm:*"
     parse5: "npm:^7.0.0"
-  checksum: 10/67dc284f74960e1ba0787599dfb0a46ca94ea4443242d3fc1e513b0c5313d2d4136176764acce2b03b8c66dec942ff4ab15322208ccc17b7c1dccc8cd01d4cc2
+    undici-types: "npm:^7.21.0"
+  checksum: 10/5761f89fb00567bce87ec81f9c926cff9a400e2989615368093a0eed81da122329710f39e13d8388cdde8f6a24d49cde4a94bd194e6d94c61727aeaae694f6bb
   languageName: node
   linkType: hard
 
@@ -21506,6 +21507,13 @@ __metadata:
     has-symbols: "npm:^1.1.0"
     which-boxed-primitive: "npm:^1.1.1"
   checksum: 10/fadb347020f66b2c8aeacf8b9a79826fa34cc5e5457af4eb0bbc4e79bd87fed0fa795949825df534320f7c13f199259516ad30abc55a6e7b91d8d996ca069e50
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:^7.21.0":
+  version: 7.25.0
+  resolution: "undici-types@npm:7.25.0"
+  checksum: 10/66f3a460cbc9e83e73c11c3a1869c32eef6c92b32450cc9dc677c671d958b9d1bb8635ff36a421019e4b1114dfc79d187aecf4dc75cf167a85535e03559b9250
   languageName: node
   linkType: hard
 
