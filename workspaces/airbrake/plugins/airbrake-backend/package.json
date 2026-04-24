@@ -46,7 +46,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0"
   },
   "files": [

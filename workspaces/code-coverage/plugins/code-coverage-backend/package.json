@@ -58,7 +58,7 @@
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@types/body-parser-xml": "^2.0.2",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0",
     "xml2js": "^0.6.0"
   }

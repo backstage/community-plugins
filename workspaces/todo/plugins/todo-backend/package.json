@@ -57,7 +57,7 @@
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0"
   }
 }

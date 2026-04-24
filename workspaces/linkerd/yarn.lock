@@ -1377,7 +1377,7 @@ __metadata:
     "@types/express": "npm:*"
     "@types/parse-duration": "npm:^0.3.0"
     "@types/qs": "npm:^6"
-    "@types/supertest": "npm:^6.0.0"
+    "@types/supertest": "npm:^7.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     ms: "npm:^2.1.3"
@@ -12693,13 +12693,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^6.0.0":
-  version: 6.0.2
-  resolution: "@types/supertest@npm:6.0.2"
+"@types/supertest@npm:^7.0.0":
+  version: 7.2.0
+  resolution: "@types/supertest@npm:7.2.0"
   dependencies:
     "@types/methods": "npm:^1.1.4"
     "@types/superagent": "npm:^8.1.0"
-  checksum: 10/4b67fb2d1bfbb7ff0a7dfaaf190cdf2e0014522615fb2dc53c214bdac95b4ee42696dd1df13332c90a7765cc52934c9cc0c428bf0f9e8189167aef01042e7448
+  checksum: 10/5a322e29b81033e90ac50ab315d49559b21809ee39b5681ab7386819463e30d68e29c63c946023a1c353e7f13fb3f20d64dcb89d3d8a0fff569450501aff786c
   languageName: node
   linkType: hard
 

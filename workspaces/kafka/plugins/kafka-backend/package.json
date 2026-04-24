@@ -71,7 +71,7 @@
     "@backstage/cli": "^0.36.0",
     "@types/jest-when": "^3.5.0",
     "@types/lodash": "^4.14.151",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "jest-when": "^3.1.0",
     "supertest": "^7.0.0"
   },

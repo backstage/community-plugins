@@ -68,7 +68,7 @@
     "@backstage/plugin-catalog-backend": "backstage:^",
     "@types/compression": "^1.7.2",
     "@types/node-fetch": "^2.5.12",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "msw": "^1.0.0",
     "supertest": "^7.0.0"
   },
