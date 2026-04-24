@@ -17,12 +17,12 @@
 import { createDevApp } from '@backstage/dev-utils';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-
-import { topologyTranslations } from '../src/translations';
-import { topologyPlugin, TopologyPage } from '../src/plugin';
 import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
 
 import { Entity } from '@backstage/catalog-model';
+
+import { topologyTranslations } from '../src/translations';
+import { topologyPlugin, TopologyPage } from '../src/plugin';
 
 export const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -38,6 +38,18 @@ export const mockEntity: Entity = {
     lifecycle: 'production',
     type: 'service',
     owner: 'user:guest',
+  },
+};
+
+const permissionDeniedMockEntity: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'permission-denied',
+    description: 'backstage.io',
+    annotations: {
+      'backstage.io/kubernetes-id': 'backstage',
+    },
   },
 };
 
@@ -62,5 +74,24 @@ createDevApp()
     ),
     title: 'Topology',
     path: '/topology',
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={permissionDeniedMockEntity}>
+        <Page themeId="service">
+          <Header
+            type="component — service"
+            title={permissionDeniedMockEntity.metadata.name}
+          />
+          <TabbedLayout>
+            <TabbedLayout.Route path="/" title="Topology">
+              <TopologyPage />
+            </TabbedLayout.Route>
+          </TabbedLayout>
+        </Page>
+      </EntityProvider>
+    ),
+    title: 'Missing permissions',
+    path: '/missing-permissions',
   })
   .render();

@@ -57,7 +57,7 @@
     "@backstage/plugin-permission-react": "^0.5.1",
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.15.0",
-    "@backstage/frontend-plugin-api": "^0.15.0",
+    "@backstage/frontend-plugin-api": "^0.16.0",
     "@backstage/plugin-app-react": "^0.2.1",
     "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/core-compat-api": "^0.5.9",

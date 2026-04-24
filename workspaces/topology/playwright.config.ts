@@ -18,7 +18,7 @@ import { defineConfig } from '@playwright/test';
 
 // APP_MODE: 'legacy' (dev/index.tsx) or 'nfs' (dev/alpha/index.tsx)
 const appMode = process.env.APP_MODE || 'legacy';
-const startCommand = appMode === 'legacy' ? 'yarn start:legacy' : 'yarn start';
+const startCommand = appMode === 'legacy' ? 'yarn start' : 'yarn start:alpha';
 
 export default defineConfig({
   webServer: process.env.PLAYWRIGHT_URL

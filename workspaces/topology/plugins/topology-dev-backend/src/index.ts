@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
+/**
+ * @internal
+ */
 export { topologyDevBackendPlugin as default } from './plugin';

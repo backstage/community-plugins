@@ -4,20 +4,8 @@
 
 ```ts
 import { FrontendModule } from '@backstage/frontend-plugin-api';
-import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { RouteRef } from '@backstage/core-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
-
-// @alpha (undocumented)
-const _default: OverridableFrontendPlugin<
-  {
-    root: RouteRef<undefined>;
-  },
-  {},
-  {}
->;
-export default _default;
 
 // @alpha (undocumented)
 export const topologyCatalogModule: FrontendModule;

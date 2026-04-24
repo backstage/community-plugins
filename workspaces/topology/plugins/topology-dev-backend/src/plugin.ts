@@ -17,9 +17,11 @@
 import { createBackendPlugin } from '@backstage/backend-plugin-api';
 
 /**
- * Minimal backend plugin so `backstage-cli repo start` pairs this package with
+ * Minimal backend plugin pairs this package with
  * `@backstage-community/plugin-topology`.
  * Dev-only wiring (catalog, auth, kubernetes, …) lives in `dev/index.ts`.
+ *
+ * @internal
  */
 export const topologyDevBackendPlugin = createBackendPlugin({
   pluginId: 'topology',
