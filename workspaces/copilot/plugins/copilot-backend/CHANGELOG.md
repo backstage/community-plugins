@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.18.3
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.18.2
 
 ### Patch Changes
