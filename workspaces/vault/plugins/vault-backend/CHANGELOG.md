@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.22.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.22.0
 
 ### Minor Changes
