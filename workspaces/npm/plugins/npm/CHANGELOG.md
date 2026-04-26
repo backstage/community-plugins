@@ -1,5 +1,12 @@
 # @backstage-community/plugin-npm
 
+## 1.21.1
+
+### Patch Changes
+
+- 8833c60: Remove any from exported alpha types so that they are now correctly typed.
+  - @backstage-community/plugin-npm-common@1.21.1
+
 ## 1.21.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-npm-backend
 
+## 1.21.1
+
+### Patch Changes
+
+- @backstage-community/plugin-npm-common@1.21.1
+
 ## 1.21.0
 
 ### Minor Changes
