@@ -17,9 +17,14 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { createRouter } from './service';
 import { readServiceNowConfig } from './config';
 import { ServiceNowConfig } from '../config';
+import { ServiceNowConnection } from './service-now-rest/connection';
+import { DefaultServiceNowClient } from './service-now-rest/client';
+import { createServiceNowActions } from './actions';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 /**
  * servicenowPlugin backend plugin
@@ -35,8 +40,17 @@ export const servicenowPlugin = createBackendPlugin({
         config: coreServices.rootConfig,
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
+        actionsRegistry: actionsRegistryServiceRef,
+        catalog: catalogServiceRef,
       },
-      async init({ logger, config, httpRouter, httpAuth }) {
+      async init({
+        logger,
+        config,
+        httpRouter,
+        httpAuth,
+        actionsRegistry,
+        catalog,
+      }) {
         const servicenowConfig: ServiceNowConfig | undefined =
           readServiceNowConfig(config);
 
@@ -54,6 +68,13 @@ export const servicenowPlugin = createBackendPlugin({
             httpAuth,
           }),
         );
+
+        const connection = new ServiceNowConnection(servicenowConfig, logger);
+        const serviceNowClient = new DefaultServiceNowClient(
+          connection,
+          logger,
+        );
+        createServiceNowActions({ actionsRegistry, serviceNowClient, catalog });
       },
     });
   },

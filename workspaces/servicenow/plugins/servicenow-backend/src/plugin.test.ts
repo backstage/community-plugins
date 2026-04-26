@@ -19,6 +19,8 @@ import {
   createServiceFactory,
 } from '@backstage/backend-plugin-api';
 import { startTestBackend, mockServices } from '@backstage/backend-test-utils';
+import { actionsRegistryServiceMock } from '@backstage/backend-test-utils/alpha';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 import { createRouter } from './service/router';
 import { readServiceNowConfig } from './config';
@@ -26,6 +28,9 @@ import { servicenowPlugin } from './plugin';
 
 jest.mock('./service/router');
 jest.mock('./config');
+jest.mock('./service-now-rest/connection');
+jest.mock('./service-now-rest/client');
+jest.mock('./actions');
 
 describe('servicenowPlugin', () => {
   const mockRouter = jest.fn();
@@ -60,6 +65,8 @@ describe('servicenowPlugin', () => {
           factory: () => httpRouter,
         }),
         mockServices.httpAuth.factory(),
+        actionsRegistryServiceMock.factory(),
+        catalogServiceMock.factory(),
       ],
     });
 
@@ -90,11 +97,13 @@ describe('servicenowPlugin', () => {
           factory: () => httpRouter,
         }),
         mockServices.httpAuth.factory(),
+        actionsRegistryServiceMock.factory(),
+        catalogServiceMock.factory(),
       ],
     });
 
     expect(readServiceNowConfig).toHaveBeenCalled();
     expect(createRouter).not.toHaveBeenCalled();
-    expect(httpRouter.use).not.toHaveBeenCalled();
+    expect(httpRouter.use).not.toHaveBeenCalledWith(mockRouter);
   });
 });
