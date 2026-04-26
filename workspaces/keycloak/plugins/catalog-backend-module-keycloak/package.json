@@ -48,7 +48,7 @@
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "p-limit": "^6.1.0",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.16.0",
