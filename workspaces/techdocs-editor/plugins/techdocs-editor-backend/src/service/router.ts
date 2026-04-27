@@ -26,8 +26,9 @@ import {
   UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { InputError, NotFoundError, NotAllowedError } from '@backstage/errors';
+import { posix as posixPath } from 'path';
 import { ScmIntegrations } from '@backstage/integration';
-import { stringifyEntityRef } from '@backstage/catalog-model';
+import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   techdocsEditorReadPermission,
   techdocsEditorWritePermission,
@@ -46,23 +47,23 @@ import { resolveSourceUrl } from './sourceResolver';
  * Throws InputError on any violation.
  */
 function assertSafeDocPath(filePath: string): void {
-  // Block absolute paths, hidden-file prefixes, and any form of path traversal
-  if (
-    filePath.startsWith('/') ||
-    filePath.startsWith('..') ||
-    filePath.includes('/../') ||
-    filePath.includes('/..') ||
-    filePath === '..' ||
-    /\0/.test(filePath) // null bytes
-  ) {
-    throw new InputError(
-      'Invalid file path: must be relative and must not escape the docs directory.',
-    );
+  // Block null bytes
+  if (/\0/.test(filePath)) {
+    throw new InputError('Invalid file path: null bytes are not allowed.');
   }
   // Whitelist: only alphanumeric, hyphens, underscores, dots, slashes
   if (!/^[a-zA-Z0-9_\-./]+$/.test(filePath)) {
     throw new InputError(
       'Invalid file path: only alphanumeric characters, hyphens, underscores, dots, and slashes are allowed.',
+    );
+  }
+  // Normalize and verify the path cannot escape the docs directory root.
+  // Using posix normalization resolves sequences like `a/../b` → `b` and
+  // `../secret` → `../secret` (which starts with `..` and is thus rejected).
+  const normalized = posixPath.normalize(filePath);
+  if (normalized.startsWith('..') || posixPath.isAbsolute(normalized)) {
+    throw new InputError(
+      'Invalid file path: must be relative and must not escape the docs directory.',
     );
   }
 }
@@ -348,8 +349,7 @@ export async function createRouter(
       }
 
       // Build branch name: techdocs-editor/<username>/<timestamp>-<random>
-      const userLogin =
-        (user as any)?.userEntityRef?.split('/').pop() ?? 'user';
+      const userLogin = parseEntityRef(user.userEntityRef).name;
       const timestamp = Date.now();
       const randomSuffix = Math.random().toString(36).slice(2, 7);
       const headBranch = `techdocs-editor/${userLogin}/${timestamp}-${randomSuffix}`;

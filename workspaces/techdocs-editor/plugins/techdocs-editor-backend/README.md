@@ -52,11 +52,11 @@ techdocsEditor:
 
 ### `defaultAuthorName`
 
-Display name used as the Git commit author when the Backstage user's profile does not include a name. Defaults to `'Backstage'`.
+Display name used as the Git commit author when the Backstage user's profile does not include a name. Defaults to the user's login (the entity name from their user identity).
 
 ### `defaultAuthorEmail`
 
-Email used as the Git commit author when the user's profile does not include an email. Defaults to `'backstage@backstage.io'`.
+Email used as the Git commit author when the user's profile does not include an email. Defaults to `'techdocs-editor@backstage.io'`.
 
 ### `defaultBranchPrefix`
 

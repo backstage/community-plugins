@@ -1,16 +1,14 @@
-# [Backstage](https://backstage.io)
-
-This is your newly scaffolded Backstage App, Good Luck!
-
-> [!IMPORTANT] > **TODO**: Consider updating your README text with relevant documentation for your plugin. See some suggested text below.
-
 # techdocs-editor
 
-This workspace contains plugins for \[brief description of purpose, e.g. exposing data from a service].
+This workspace contains the TechDocs Editor plugin suite for Backstage, enabling users to edit documentation directly in the app using a WYSIWYG or Markdown editor and submit changes as pull/merge requests to GitHub or GitLab.
 
-## Plugins
+## Packages
 
-- \[plugin-backend](./plugins/plugin-backend/README): Backend plugin that provides...
+- [techdocs-editor](./plugins/techdocs-editor/README.md): Frontend plugin — editor page, file tree, and Submit Changes dialog.
+- [techdocs-editor-backend](./plugins/techdocs-editor-backend/README.md): Backend plugin — REST API, VCS providers (GitHub/GitLab), permission enforcement, and conflict detection.
+- [techdocs-editor-react](./plugins/techdocs-editor-react/README.md): Shared React components and `TechDocsEditorClient` API.
+- [techdocs-editor-node](./plugins/techdocs-editor-node/README.md): Extension point (`techdocsEditorVcsProviderExtensionPoint`) for adding custom VCS providers via backend modules.
+- [techdocs-editor-common](./plugins/techdocs-editor-common/README.md): Shared types, permissions, and request/response interfaces.
 
 ## Getting Started
 
