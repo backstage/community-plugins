@@ -15,8 +15,16 @@
  */
 
 import { createDevApp } from '@backstage/dev-utils';
-import { Page, Header, TabbedLayout } from '@backstage/core-components';
-import { EntityProvider } from '@backstage/plugin-catalog-react';
+import {
+  CatalogEntityPage,
+  CatalogIndexPage,
+  catalogPlugin,
+  EntityLayout,
+} from '@backstage/plugin-catalog';
+import {
+  EntityKubernetesContent,
+  isKubernetesAvailable,
+} from '@backstage/plugin-kubernetes';
 import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
 
 import { Entity } from '@backstage/catalog-model';
@@ -41,57 +49,34 @@ export const mockEntity: Entity = {
   },
 };
 
-const permissionDeniedMockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'permission-denied',
-    description: 'backstage.io',
-    annotations: {
-      'backstage.io/kubernetes-id': 'backstage',
-    },
-  },
-};
-
 createDevApp()
   .registerPlugin(kubernetesPlugin)
+  .registerPlugin(catalogPlugin)
   .registerPlugin(topologyPlugin)
   .addTranslationResource(topologyTranslations)
   .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .setDefaultLanguage('en')
   .addPage({
-    element: (
-      <EntityProvider entity={mockEntity}>
-        <Page themeId="service">
-          <Header type="component — service" title={mockEntity.metadata.name} />
-          <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Topology">
-              <TopologyPage />
-            </TabbedLayout.Route>
-          </TabbedLayout>
-        </Page>
-      </EntityProvider>
-    ),
-    title: 'Topology',
-    path: '/topology',
+    path: '/catalog',
+    title: 'Catalog',
+    element: <CatalogIndexPage />,
   })
   .addPage({
-    element: (
-      <EntityProvider entity={permissionDeniedMockEntity}>
-        <Page themeId="service">
-          <Header
-            type="component — service"
-            title={permissionDeniedMockEntity.metadata.name}
-          />
-          <TabbedLayout>
-            <TabbedLayout.Route path="/" title="Topology">
-              <TopologyPage />
-            </TabbedLayout.Route>
-          </TabbedLayout>
-        </Page>
-      </EntityProvider>
+    path: '/catalog/:namespace/:kind/:name',
+    element: <CatalogEntityPage />,
+    children: (
+      <EntityLayout>
+        <EntityLayout.Route path="/topology" title="Topology">
+          <TopologyPage />
+        </EntityLayout.Route>
+        <EntityLayout.Route
+          path="/kubernetes"
+          title="Kubernetes"
+          if={e => isKubernetesAvailable(e)}
+        >
+          <EntityKubernetesContent />
+        </EntityLayout.Route>
+      </EntityLayout>
     ),
-    title: 'Missing permissions',
-    path: '/missing-permissions',
   })
   .render();
