@@ -134,7 +134,7 @@ export async function getFilteredEntities(options: {
 
   const catalogClient = new CatalogClient({ discoveryApi: discovery });
 
-  if (entityFilter && isFilterPredicate(entityFilter)) {
+  if (entityFilter !== undefined && isFilterPredicate(entityFilter)) {
     return queryAllEntities(catalogClient, entityFilter, token);
   }
 

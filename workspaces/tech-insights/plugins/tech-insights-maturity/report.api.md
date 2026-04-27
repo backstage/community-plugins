@@ -20,9 +20,7 @@ import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react
 import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
 
 // @public (undocumented)
-export const EntityMaturityRankWidget: ({
-  entity,
-}: {
+export const EntityMaturityRankWidget: (input: {
   entity: Entity;
 }) => JSX_2.Element;
 

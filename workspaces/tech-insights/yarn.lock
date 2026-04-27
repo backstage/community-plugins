@@ -2088,7 +2088,8 @@ __metadata:
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
-    "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/filter-predicates": "backstage:^"
+    "@backstage/frontend-plugin-api": "npm:^0.16.2"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/types": "backstage:^"
@@ -2116,7 +2117,8 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/errors": "backstage:^"
-    "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/filter-predicates": "backstage:^"
+    "@backstage/frontend-plugin-api": "npm:^0.16.2"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/types": "backstage:^"
     "@backstage/ui": "backstage:^"
@@ -2489,7 +2491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli-defaults@npm:^0.1.1":
+"@backstage/cli-defaults@backstage:^::backstage=1.49.5&npm=0.1.0, @backstage/cli-defaults@npm:^0.1.0, @backstage/cli-defaults@npm:^0.1.1":
   version: 0.1.1
   resolution: "@backstage/cli-defaults@npm:0.1.1"
   dependencies:
@@ -3145,7 +3147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@backstage:^::backstage=1.49.5&npm=0.15.1, @backstage/frontend-plugin-api@npm:^0.15.0, @backstage/frontend-plugin-api@npm:^0.15.1":
+"@backstage/frontend-plugin-api@npm:^0.15.0":
   version: 0.15.1
   resolution: "@backstage/frontend-plugin-api@npm:0.15.1"
   dependencies:
@@ -5748,8 +5750,8 @@ __metadata:
   resolution: "@internal/tech-insights@workspace:."
   dependencies:
     "@backstage/cli": "backstage:^"
+    "@backstage/cli-defaults": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
-    "@backstage/filter-predicates": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.27.1"
     knip: "npm:^5.27.4"

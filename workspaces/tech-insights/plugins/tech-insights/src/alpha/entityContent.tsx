@@ -17,10 +17,8 @@
 import { compatWrapper } from '@backstage/core-compat-api';
 import { createExtensionInput } from '@backstage/frontend-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import {
-  entityPredicateToFilterFunction,
-  EntityContentBlueprint,
-} from '@backstage/plugin-catalog-react/alpha';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { filterPredicateToFilterFunction } from '@backstage/filter-predicates';
 import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech-insights-react/alpha';
 
 export const entityTechInsightsContent =
@@ -59,7 +57,7 @@ export const entityTechInsightsContent =
                   TechInsightsScorecardBlueprint.dataRefs.props,
                 ),
                 entityFilter: entityFilter
-                  ? entityPredicateToFilterFunction(entityFilter)
+                  ? filterPredicateToFilterFunction(entityFilter)
                   : () => true,
               };
             });
