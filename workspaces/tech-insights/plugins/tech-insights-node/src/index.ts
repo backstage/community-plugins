@@ -23,3 +23,6 @@ export {
   techInsightsServiceRef,
   type TechInsightsService,
 } from './techInsightsService';
+
+// Re-export FilterPredicate for convenience
+export type { FilterPredicate } from '@backstage/filter-predicates';

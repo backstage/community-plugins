@@ -24,6 +24,25 @@ import {
   LoggerService,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
+import { FilterPredicate } from '@backstage/filter-predicates';
+
+/**
+ * @public
+ * @deprecated Use `FilterPredicate` from `@backstage/filter-predicates` instead.
+ */
+export type EntityFilterQuery =
+  | Record<string, string | symbol | (string | symbol)[]>[]
+  | Record<string, string | symbol | (string | symbol)[]>;
+
+/**
+ * The union of filter types accepted by fact retrievers.
+ *
+ * @public
+ */
+export type EntityFilter =
+  | FilterPredicate
+  | Record<string, string | symbol | (string | symbol)[]>[]
+  | Record<string, string | symbol | (string | symbol)[]>;
 
 /**
  * A container for facts. The shape of the fact records needs to correspond to the FactSchema with same `ref` value.
@@ -95,9 +114,7 @@ export type FactRetrieverContext<TExtension = {}> = {
   logger: LoggerService;
   auth: AuthService;
   urlReader: UrlReaderService;
-  entityFilter?:
-    | Record<string, string | symbol | (string | symbol)[]>[]
-    | Record<string, string | symbol | (string | symbol)[]>;
+  entityFilter?: EntityFilter;
 } & TExtension;
 
 /**
@@ -150,13 +167,18 @@ export interface FactRetriever<
    * An optional object/array of objects of entity filters to indicate if this fact retriever is valid for an entity type.
    * If omitted, the retriever should apply to all entities.
    *
-   * Should be defined for example:
-   *   \{ field: 'kind', values: \['component'\] \}
-   *   \{ field: 'metadata.name', values: \['component-1', 'component-2'\] \}
+   * Supports both the legacy key-value filter format and the new FilterPredicate format
+   * from `@backstage/filter-predicates` which provides logical operators like $all, $any, $not
+   * and value matchers like $in, $exists, $contains, $hasPrefix.
+   *
+   * @example Using FilterPredicate (recommended)
+   *   \{ kind: 'component', 'spec.type': \{ $in: ['service', 'website'] \} \}
+   *   \{ $any: [\{ kind: 'component' \}, \{ kind: 'api' \}] \}
+   *
+   * @example Using legacy format
+   *   \{ kind: 'component' \}
    */
-  entityFilter?:
-    | Record<string, string | symbol | (string | symbol)[]>[]
-    | Record<string, string | symbol | (string | symbol)[]>;
+  entityFilter?: EntityFilter;
 }
 
 /**

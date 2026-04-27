@@ -17,6 +17,7 @@
 import { buildTechInsightsContext } from './techInsightsContextBuilder';
 import { ConfigReader } from '@backstage/config';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
+import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Knex } from 'knex';
 import { mockServices } from '@backstage/backend-test-utils';
@@ -52,6 +53,7 @@ describe('buildTechInsightsContext', () => {
   const scheduler = DefaultSchedulerService.create({
     database,
     logger,
+    metrics: metricsServiceMock.mock(),
     rootLifecycle,
     httpRouter,
     pluginMetadata: { getId: () => 'plugin-id' },

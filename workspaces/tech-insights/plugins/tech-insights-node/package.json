@@ -49,6 +49,7 @@
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
+    "@backstage/filter-predicates": "backstage:^",
     "@backstage/types": "backstage:^",
     "@types/luxon": "^3.0.0",
     "luxon": "^3.0.0"
