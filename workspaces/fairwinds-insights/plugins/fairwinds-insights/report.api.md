@@ -6,7 +6,7 @@
 import type { ActionItemFiltersResponse } from '@backstage-community/plugin-fairwinds-insights-common';
 import type { ActionItemsListResponse } from '@backstage-community/plugin-fairwinds-insights-common';
 import type { ActionItemsTopResponse } from '@backstage-community/plugin-fairwinds-insights-common';
-import { ApiRef } from '@backstage/core-plugin-api';
+import { ApiRef } from '@backstage/frontend-plugin-api';
 import type { CostsMtdResponse } from '@backstage-community/plugin-fairwinds-insights-common';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
