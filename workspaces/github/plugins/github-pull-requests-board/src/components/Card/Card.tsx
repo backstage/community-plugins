@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { PropsWithChildren, FunctionComponent } from 'react';
+import { Card as BUICard, CardBody } from '@backstage/ui';
 import CardHeader from './CardHeader';
 import { Label, Status } from '../../utils/types';
 
@@ -50,21 +51,17 @@ const Card: FunctionComponent<PropsWithChildren<Props>> = (
   } = props;
 
   return (
-    <a
+    <BUICard
       href={prUrl}
       target="_blank"
       rel="noopener noreferrer"
+      label={title}
       style={{
-        display: 'block',
-        marginBottom: 'var(--bui-space-2)',
-        border: '1px solid rgba(0, 0, 0, 0.12)',
-        borderRadius: '5px',
-        textDecoration: 'none',
-        color: 'inherit',
-        cursor: 'pointer',
+        background: 'transparent',
+        border: '1px solid var(--bui-border-1)',
       }}
     >
-      <div style={{ padding: 'var(--bui-space-2)' }}>
+      <CardBody style={{ paddingBlockStart: 'var(--bui-space-4)' }}>
         <CardHeader
           title={title}
           createdAt={createdAt}
@@ -78,8 +75,8 @@ const Card: FunctionComponent<PropsWithChildren<Props>> = (
           status={status}
         />
         {children}
-      </div>
-    </a>
+      </CardBody>
+    </BUICard>
   );
 };
 
