@@ -20,7 +20,10 @@ const commonMetadata = {
   labels: {
     'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
   },
-  instance: { name: 'main', url: 'https:/kubernetes.default.svc' },
+  instance: {
+    name: 'main',
+    url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+  },
   name: 'quarkus-app-dev',
 };
 
@@ -148,6 +151,16 @@ export const mockApplication: Application = {
   status: commonStatus,
 };
 
+export const mockBasicApplication: Application = {
+  ...mockApplication,
+  metadata: {
+    ...mockApplication.metadata,
+    uid: '0791efe1-164a-48f8-b1ed-11310efa6bef',
+    name: 'basic-app',
+    labels: { 'backstage.io/kubernetes-id': 'basic-app' },
+  },
+};
+
 export const mockQuarkusApplication: Application = {
   metadata: {
     ...commonMetadata,
@@ -197,6 +210,14 @@ export const mockQuarkusApplication: Application = {
         },
       },
     ],
+  },
+};
+
+export const mockQuarkus2Application: Application = {
+  ...mockQuarkusApplication,
+  metadata: {
+    ...mockQuarkusApplication.metadata,
+    uid: '142880cc-931f-48b0-84d0-909b78680f51',
   },
 };
 
@@ -320,7 +341,10 @@ export const prodApplication: Application = {
     labels: {
       'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
     },
-    instance: { name: 'main', url: 'https://kubernetes.default.svc' },
+    instance: {
+      name: 'main',
+      url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+    },
     name: 'quarkus-app-prod',
   },
   spec: {
@@ -421,7 +445,7 @@ export const multiSourceArgoApp = {
     },
     instance: {
       name: 'main',
-      url: 'https://kubernetes.default.svc',
+      url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
     },
   },
   spec: {

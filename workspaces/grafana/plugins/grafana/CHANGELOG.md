@@ -1,5 +1,11 @@
 # @backstage-community/plugin-grafana
 
+## 0.18.0
+
+### Minor Changes
+
+- e86cf28: Backstage version bump to v1.50.2
+
 ## 0.17.0
 
 ### Minor Changes

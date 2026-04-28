@@ -49,7 +49,7 @@ export const StatusPagesPage = () => {
     <Content>
       <ContentHeader title="Status pages">
         <SupportButton>
-          This helps you to bring iLert into your developer portal.
+          This helps you to bring ilert into your developer portal.
         </SupportButton>
       </ContentHeader>
       <StatusPagesTable

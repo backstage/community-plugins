@@ -43,7 +43,7 @@
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30",
     "@types/jest": "^30",
-    "@types/jsdom": "^27",
+    "@types/jsdom": "^28.0.0",
     "@types/node": "22.7.8",
     "jest": "^30",
     "jsdom": "^27",

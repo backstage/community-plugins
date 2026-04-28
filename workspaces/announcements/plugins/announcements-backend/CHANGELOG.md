@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.24.0
+
+### Minor Changes
+
+- 510c863: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- 3f2d8c2: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [510c863]
+  - @backstage-community/plugin-announcements-common@0.20.0
+
 ## 0.23.1
 
 ### Patch Changes

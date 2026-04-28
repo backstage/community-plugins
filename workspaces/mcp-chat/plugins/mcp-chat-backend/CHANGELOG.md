@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.9.0
+
+### Minor Changes
+
+- 81aead2: Backstage version bump to v1.50.2
+
 ## 0.8.0
 
 ### Minor Changes

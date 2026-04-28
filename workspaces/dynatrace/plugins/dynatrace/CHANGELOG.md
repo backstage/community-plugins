@@ -1,5 +1,11 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.18.0
+
+### Minor Changes
+
+- 7b15e77: Backstage version bump to v1.50.2
+
 ## 10.17.0
 
 ### Minor Changes

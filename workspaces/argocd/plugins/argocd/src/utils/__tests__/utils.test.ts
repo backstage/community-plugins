@@ -70,13 +70,13 @@ describe('Utils', () => {
     });
 
     test('should return the instance name', () => {
-      expect(getInstanceName(mockEntity)).toBe('instance-1');
+      expect(getInstanceName(mockEntity)).toBe('main');
     });
   });
 
   describe('getInstanceNames', () => {
     test('should return the instance name', () => {
-      expect(getInstanceName(mockEntity)).toEqual('instance-1');
+      expect(getInstanceName(mockEntity)).toEqual('main');
     });
 
     test('should return multiple instance names', () => {

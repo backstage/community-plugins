@@ -48,8 +48,8 @@ const _default: OverridableFrontendPlugin<
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        variant?: 'flex' | 'fullHeight' | 'gridItem' | undefined;
         branch?: string | undefined;
+        variant?: 'flex' | 'fullHeight' | 'gridItem' | undefined;
         filter?: FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
@@ -96,9 +96,9 @@ const _default: OverridableFrontendPlugin<
         icon: string | undefined;
       };
       configInput: {
-        filter?: FilterPredicate | undefined;
-        title?: string | undefined;
         path?: string | undefined;
+        title?: string | undefined;
+        filter?: FilterPredicate | undefined;
         group?: string | false | undefined;
         icon?: string | undefined;
       };
