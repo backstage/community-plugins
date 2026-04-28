@@ -11,7 +11,8 @@
     "role": "frontend-plugin",
     "pluginId": "topology",
     "pluginPackages": [
-      "@backstage-community/plugin-topology"
+      "@backstage-community/plugin-topology",
+      "@internal/plugin-topology-dev-backend"
     ]
   },
   "exports": {
@@ -41,7 +42,9 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
-    "start:alpha": "backstage-cli package start --entrypoint dev/alpha.tsx",
+    "start:mock": "backstage-cli package start --entrypoint dev/index.mock.tsx",
+    "start:alpha": "backstage-cli package start --entrypoint dev/alpha/index.tsx",
+    "start:alpha:mock": "backstage-cli package start --entrypoint dev/alpha/index.mock.tsx",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc"
   },

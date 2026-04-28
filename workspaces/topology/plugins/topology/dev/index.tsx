@@ -27,27 +27,8 @@ import {
 } from '@backstage/plugin-kubernetes';
 import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
 
-import { Entity } from '@backstage/catalog-model';
-
 import { topologyTranslations } from '../src/translations';
 import { topologyPlugin, TopologyPage } from '../src/plugin';
-
-export const mockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage',
-    description: 'backstage.io',
-    annotations: {
-      'backstage.io/kubernetes-id': 'backstage',
-    },
-  },
-  spec: {
-    lifecycle: 'production',
-    type: 'service',
-    owner: 'user:guest',
-  },
-};
 
 createDevApp()
   .registerPlugin(kubernetesPlugin)
