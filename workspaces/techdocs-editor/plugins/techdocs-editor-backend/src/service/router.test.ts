@@ -99,12 +99,20 @@ async function buildApp(overrides?: {
     getOwnServiceCredentials: jest.fn().mockResolvedValue({}),
   };
 
+  const userInfo = {
+    ...mockServices.userInfo.mock(),
+    getUserInfo: jest.fn().mockResolvedValue({
+      userEntityRef: 'user:default/guest',
+      ownershipEntityRefs: ['user:default/guest'],
+    }),
+  };
+
   const router = await createRouter({
     logger: mockServices.logger.mock(),
     config,
     reader: mockServices.urlReader.mock(),
     httpAuth: mockServices.httpAuth.mock(),
-    userInfo: mockServices.userInfo.mock(),
+    userInfo,
     auth,
     catalog,
     providerRegistry: buildRegistry(),
