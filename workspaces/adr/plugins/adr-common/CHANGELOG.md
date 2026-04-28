@@ -1,5 +1,11 @@
 # @backstage-community/plugin-adr-common
 
+## 0.19.0
+
+### Minor Changes
+
+- e43abbc: Backstage version bump to v1.50.3
+
 ## 0.18.0
 
 ### Minor Changes
