@@ -202,9 +202,9 @@ const _default: OverridableFrontendPlugin<
       };
       configInput: {
         layout?: 'table' | 'cards' | undefined;
-        filter?: FilterPredicate | undefined;
-        title?: string | undefined | undefined;
         path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
+        filter?: FilterPredicate | undefined;
         group?: string | false | undefined | undefined;
         icon?: string | undefined | undefined;
       };
