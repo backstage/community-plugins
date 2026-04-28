@@ -1,5 +1,16 @@
 # @backstage-community/plugin-github-discussions
 
+## 0.11.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
+### Patch Changes
+
+- Updated dependencies [df6b360]
+  - @backstage-community/plugin-github-discussions-common@0.12.0
+
 ## 0.10.0
 
 ### Minor Changes

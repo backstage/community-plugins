@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 0.17.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
 ## 0.16.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 0.22.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
 ## 0.21.0
 
 ### Minor Changes
