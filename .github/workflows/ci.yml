@@ -161,7 +161,7 @@ jobs:
         if: failure() && steps.api-reports.outcome == 'failure'
         uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
         with:
-          name: api-reports-${{ matrix.workspaceNodeMatrix.nodeVersion }}
+          name: api-reports-${{ matrix.workspaceNodeMatrix.workspace }}-${{ matrix.workspaceNodeMatrix.nodeVersion }}
           path: |
             /home/runner/work/backstage/backstage/node_modules/.cache/api-extractor/**/report.api.md
 
