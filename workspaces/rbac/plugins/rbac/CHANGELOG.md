@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.52.2
+
+### Patch Changes
+
+- 3fc1a9e: Fix RBAC role creation form UI text consistency and accuracy
+
 ## 1.52.1
 
 ### Patch Changes
