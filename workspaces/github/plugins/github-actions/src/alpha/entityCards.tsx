@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { z } from 'zod';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isGithubActionsAvailable } from '../components/Router';
 
@@ -23,15 +24,8 @@ export const entityLatestGithubActionRunCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-workflow-run',
     disabled: true,
-    config: {
-      schema: {
-        props: z =>
-          z
-            .object({
-              branch: z.string().optional(),
-            })
-            .default({}),
-      },
+    configSchema: {
+      props: z.object({ branch: z.string().optional() }).default({}),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
@@ -51,15 +45,8 @@ export const entityLatestGithubActionsForBranchCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'latest-branch-workflow-runs',
     disabled: true,
-    config: {
-      schema: {
-        props: z =>
-          z
-            .object({
-              branch: z.string().optional(),
-            })
-            .default({}),
-      },
+    configSchema: {
+      props: z.object({ branch: z.string().optional() }).default({}),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
@@ -78,17 +65,14 @@ export const entityLatestGithubActionsForBranchCard =
 export const entityRecentGithubActionsRunsCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'recent-workflow-runs',
-    config: {
-      schema: {
-        props: z =>
-          z
-            .object({
-              branch: z.string().optional(),
-              dense: z.boolean().default(false),
-              limit: z.number().default(5).optional(),
-            })
-            .default({}),
-      },
+    configSchema: {
+      props: z
+        .object({
+          branch: z.string().optional(),
+          dense: z.boolean().default(false),
+          limit: z.number().default(5).optional(),
+        })
+        .default({ dense: false }),
     },
     factory(originalFactory, { config }) {
       return originalFactory({

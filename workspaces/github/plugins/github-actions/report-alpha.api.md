@@ -142,8 +142,8 @@ const _default: OverridableFrontendPlugin<
       config: {
         props: {
           dense: boolean;
-          limit?: number | undefined;
           branch?: string | undefined;
+          limit?: number | undefined;
         };
         filter: FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
@@ -151,9 +151,9 @@ const _default: OverridableFrontendPlugin<
       configInput: {
         props?:
           | {
+              branch?: string | undefined;
               dense?: boolean | undefined;
               limit?: number | undefined;
-              branch?: string | undefined;
             }
           | undefined;
         filter?: FilterPredicate | undefined;

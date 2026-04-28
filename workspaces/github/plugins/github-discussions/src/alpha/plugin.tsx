@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { z } from 'zod';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   SearchFilterResultTypeBlueprint,
@@ -24,10 +25,8 @@ import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 /** @alpha */
 export const githubDiscussionsSearchResultListItem =
   SearchResultListItemBlueprint.makeWithOverrides({
-    config: {
-      schema: {
-        lineClamp: z => z.number().default(5),
-      },
+    configSchema: {
+      lineClamp: z.number().default(5),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
