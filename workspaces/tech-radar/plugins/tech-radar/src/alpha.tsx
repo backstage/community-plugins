@@ -52,8 +52,8 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
       icon: <MapIcon />,
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
-        import('./components').then(m =>
-          compatWrapper(<m.RadarPage {...config} />),
+        import('./components/TechRadarPage').then(m =>
+          compatWrapper(<m.TechRadarPage {...config} />),
         ),
     });
   },
