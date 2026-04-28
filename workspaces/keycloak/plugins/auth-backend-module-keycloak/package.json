@@ -10,9 +10,7 @@
     "directory": "workspaces/keycloak/plugins/auth-backend-module-keycloak"
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.cjs.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "backstage": {
     "role": "backend-plugin-module",
