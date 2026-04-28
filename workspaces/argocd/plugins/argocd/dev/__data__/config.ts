@@ -15,19 +15,36 @@
  */
 export const mockArgocdConfig = {
   argocd: {
-    baseUrl: 'https://localhost:8080',
+    baseUrl: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+    appLocatorMethods: [
+      {
+        type: 'config',
+        instances: [
+          {
+            name: 'main',
+            url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+            token: 'fake-jwt-token',
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const mockArgocdMultiInstanceConfig = {
+  argocd: {
     appLocatorMethods: [
       {
         type: 'config',
         instances: [
           {
             name: 'argoInstance1',
-            url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com/',
+            url: 'https://test1-openshift-gitops.apps.test.devcluster.openshift.com',
             token: 'fake-jwt-token1',
           },
           {
             name: 'argoInstance2',
-            url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com/',
+            url: 'https://test2-openshift-gitops.apps.test.devcluster.openshift.com',
             token: 'fake-jwt-token2',
           },
         ],

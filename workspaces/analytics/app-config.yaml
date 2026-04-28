@@ -6,6 +6,7 @@ app:
     matomo:
       host: ${MATOMO_HOST}
       siteId: ${MATOMO_SITE_ID}
+
     newRelic:
       # New Relic browser monitoring config
       endpoint: 'bam.nr-data.net'
@@ -19,10 +20,23 @@ app:
         samplingRate: 100
         errorSamplingRate: 100
 
+    segment:
+      # Segment analytics provider config
+      writeKey: ${SEGMENT_WRITE_KEY}
+
 backend:
   baseUrl: http://localhost:7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
-    origin: http://localhost:3000
+    origin:
+      - http://localhost:3000
+      - http://localhost:7007
+      # for new relic browser monitoring
+      - https://bam.nr-data.net
+      - https://bam.eu01.nr-data.net
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   reading:

@@ -79,7 +79,7 @@ export class ILertClient implements ILertApi {
     fetchApi: FetchApi;
 
     /**
-     * URL used by users to access iLert web UI.
+     * URL used by users to access ilert web UI.
      * Example: https://my-org.ilert.com/
      */
     baseUrl: string;
@@ -378,7 +378,7 @@ export class ILertClient implements ILertApi {
       body: JSON.stringify({
         start: dt.utc().toISO(),
         end: dt.utc().plus({ minutes }).toISO(),
-        description: `Immediate maintenance window for ${minutes} minutes. Backstage — iLert plugin.`,
+        description: `Immediate maintenance window for ${minutes} minutes. Backstage — ilert plugin.`,
         createdBy: 'Backstage',
         timezone: dt.local().zoneName,
         alertSources: [{ id: alertSourceId }],

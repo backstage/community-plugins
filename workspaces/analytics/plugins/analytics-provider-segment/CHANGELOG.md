@@ -1,5 +1,19 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.28.0
+
+### Minor Changes
+
+- 3fee6eb: Backstage version bump to v1.50.3
+
+## 1.27.0
+
+### Minor Changes
+
+- a34e621: Migrate `AnalyticsImplementationBlueprint` from `@backstage/frontend-plugin-api` to `@backstage/plugin-app-react`.
+
+  The `alpha` export returns now an `app` module instead of a plugin to be aligned with this changes and Backstage 1.49.
+
 ## 1.26.0
 
 ### Minor Changes

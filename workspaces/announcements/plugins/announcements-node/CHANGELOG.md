@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.18.0
+
+### Minor Changes
+
+- 510c863: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [510c863]
+  - @backstage-community/plugin-announcements-common@0.20.0
+
 ## 0.17.0
 
 ### Minor Changes

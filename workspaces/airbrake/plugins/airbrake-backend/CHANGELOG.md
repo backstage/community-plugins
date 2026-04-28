@@ -1,5 +1,17 @@
 # @backstage-community/plugin-airbrake-backend
 
+## 0.21.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
+## 0.21.0
+
+### Minor Changes
+
+- 00a5795: Backstage version bump to v1.50.2
+
 ## 0.20.0
 
 ### Minor Changes

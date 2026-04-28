@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { z } from 'zod';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isJenkinsAvailable } from '../components/Router';
 
@@ -22,11 +23,9 @@ import { isJenkinsAvailable } from '../components/Router';
 export const entityLatestJenkinsRunCard = EntityCardBlueprint.makeWithOverrides(
   {
     name: 'latest-run',
-    config: {
-      schema: {
-        branch: z => z.string().default('master'),
-        variant: z => z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
-      },
+    configSchema: {
+      branch: z.string().default('master'),
+      variant: z.enum(['flex', 'fullHeight', 'gridItem']).optional(),
     },
     factory(originalFactory, { config }) {
       return originalFactory({

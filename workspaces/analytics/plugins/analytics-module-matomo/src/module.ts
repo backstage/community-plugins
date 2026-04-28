@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import {
-  AnalyticsImplementationBlueprint,
   configApiRef,
   createFrontendModule,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
+
 import { MatomoAnalytics } from './api';
 
 const matomoImplementation = AnalyticsImplementationBlueprint.make({

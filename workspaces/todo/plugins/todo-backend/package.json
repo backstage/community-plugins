@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-todo-backend",
-  "version": "0.20.0",
+  "version": "0.21.1",
   "description": "A Backstage backend plugin that lets you browse TODO comments in your source code",
   "backstage": {
     "role": "backend-plugin",
@@ -57,7 +57,7 @@
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0"
   }
 }

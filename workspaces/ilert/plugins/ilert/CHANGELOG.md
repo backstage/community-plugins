@@ -1,5 +1,17 @@
 # @backstage-community/plugin-ilert
 
+## 0.20.1
+
+### Patch Changes
+
+- e02db27: Align plugin copy and docs to ilert naming; update README, config types, and UI wording (alerts).
+
+## 0.20.0
+
+### Minor Changes
+
+- 8db2f72: Backstage version bump to v1.50.2
+
 ## 0.19.0
 
 ### Minor Changes

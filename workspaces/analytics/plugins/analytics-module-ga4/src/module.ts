@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import {
-  AnalyticsImplementationBlueprint,
   configApiRef,
   identityApiRef,
   createFrontendModule,
 } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
+
 import { GoogleAnalytics4 } from './apis/implementations/AnalyticsApi';
 
 const ga4Implementation = AnalyticsImplementationBlueprint.make({

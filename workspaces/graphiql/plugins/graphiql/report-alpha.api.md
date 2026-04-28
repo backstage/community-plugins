@@ -61,8 +61,8 @@ const _default: OverridableFrontendPlugin<
       };
       configInput: {
         id?: string | undefined;
-        url?: string | undefined;
         title?: string | undefined;
+        url?: string | undefined;
       };
       output: ExtensionDataRef<
         GraphQLEndpoint,
@@ -84,8 +84,8 @@ const _default: OverridableFrontendPlugin<
         title: string | undefined;
       };
       configInput: {
-        title?: string | undefined;
         path?: string | undefined;
+        title?: string | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -208,8 +208,8 @@ export const graphiqlPage: OverridableExtensionDefinition<{
     title: string | undefined;
   };
   configInput: {
-    title?: string | undefined;
     path?: string | undefined;
+    title?: string | undefined;
   };
   output:
     | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>

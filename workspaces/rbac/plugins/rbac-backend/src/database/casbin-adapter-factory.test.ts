@@ -135,6 +135,36 @@ describe('CasbinAdapterFactory', () => {
       });
     });
 
+    it('test building an adapter using a PostgreSQL configuration without explicit credentials.', async () => {
+      const config = mockServices.rootConfig({
+        data: {
+          backend: {
+            database: {
+              client: 'pg',
+              connection: {
+                host: 'localhost',
+                port: '5432',
+                schema: 'public',
+              },
+            },
+          },
+        },
+      });
+      const factory = new CasbinDBAdapterFactory(config, db);
+      const adapter = await factory.createAdapter();
+      expect(adapter).not.toBeNull();
+      expect(newAdapterMock).toHaveBeenCalledWith({
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        schema: 'public',
+        username: undefined,
+        password: undefined,
+        database: 'test-database',
+        ssl: undefined,
+      });
+    });
+
     it('test building an adapter using a PostgreSQL configuration with intentionally disabled ssl.', async () => {
       const config = mockServices.rootConfig({
         data: {
