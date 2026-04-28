@@ -66,5 +66,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@backstage/ui": "backstage:^"
   }
 }
