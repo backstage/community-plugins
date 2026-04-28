@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { alertSelectorFromEntity, hostIdFromEntity } from './constants';
+import {
+  alertSelectorFromEntity,
+  hostIdFromEntity,
+  GRAFANA_ANNOTATION_HOST_ID,
+} from './constants';
 
 describe('constants', () => {
   describe('hostIdFromEntity', () => {
@@ -21,7 +25,7 @@ describe('constants', () => {
       const entity = {
         metadata: {
           name: 'test',
-          annotations: { 'grafana/host-id': 'production' },
+          annotations: { [GRAFANA_ANNOTATION_HOST_ID]: 'production' },
         },
         apiVersion: 'backstage.io/v1alpha1',
         kind: 'Component',

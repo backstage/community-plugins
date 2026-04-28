@@ -32,7 +32,7 @@ import {
   useEntity,
 } from '@backstage/plugin-catalog-react';
 import { useApi } from '@backstage/core-plugin-api';
-import { grafanaApiRef } from '../../api';
+import { grafanaApiRef, GrafanaApi } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
 import { Alert } from '@material-ui/lab';
 import { AlertsCardOpts, Alert as GrafanaAlert } from '../../types';
@@ -122,10 +122,22 @@ export const AlertsTable = ({
   );
 };
 
+function resolveUnifiedAlerting(
+  grafanaApi: GrafanaApi,
+  hostId: string | undefined,
+): { enabled: boolean; error?: Error } {
+  try {
+    return { enabled: grafanaApi.isUnifiedAlerting(hostId) };
+  } catch (e) {
+    return { enabled: false, error: e as Error };
+  }
+}
+
 const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   const grafanaApi = useApi(grafanaApiRef);
   const hostId = hostIdFromEntity(entity);
-  const unifiedAlertingEnabled = grafanaApi.isUnifiedAlerting(hostId);
+  const { enabled: unifiedAlertingEnabled, error: resolveError } =
+    resolveUnifiedAlerting(grafanaApi, hostId);
   const alertSelector = unifiedAlertingEnabled
     ? alertSelectorFromEntity(entity)
     : dashboardSelectorFromEntity(entity);
@@ -133,6 +145,10 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   const { value, loading, error } = useAsync(
     async () => await grafanaApi.alertsForSelector(alertSelector, hostId),
   );
+
+  if (resolveError) {
+    return <Alert severity="error">{resolveError.message}</Alert>;
+  }
 
   if (loading) {
     return <Progress />;
@@ -147,7 +163,12 @@ export const AlertsCard = (opts?: AlertsCardOpts) => {
   const { entity } = useEntity();
   const grafanaApi = useApi(grafanaApiRef);
   const hostId = hostIdFromEntity(entity);
-  const unifiedAlertingEnabled = grafanaApi.isUnifiedAlerting(hostId);
+  const { enabled: unifiedAlertingEnabled, error: resolveError } =
+    resolveUnifiedAlerting(grafanaApi, hostId);
+
+  if (resolveError) {
+    return <Alert severity="error">{resolveError.message}</Alert>;
+  }
 
   if (!unifiedAlertingEnabled && !isDashboardSelectorAvailable(entity)) {
     return (

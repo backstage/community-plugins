@@ -29,9 +29,15 @@ export interface ReadHostsResult {
  */
 export function readHosts(configApi: ConfigApi): ReadHostsResult {
   const hostsConfig: GrafanaHost[] =
-    configApi.getOptional('grafana.hosts') ?? [];
+    configApi.getOptionalConfigArray('grafana.hosts')?.map(hostConfig => ({
+      id: hostConfig.getString('id'),
+      domain: hostConfig.getString('domain'),
+      proxyPath: hostConfig.getOptionalString('proxyPath'),
+      unifiedAlerting: hostConfig.getOptionalBoolean('unifiedAlerting'),
+    })) ?? [];
+
   // Legacy config keys (backward compatibility); see config.d.ts @deprecated
-  /* eslint-disable deprecation/deprecation */
+  // eslint-disable-next-line deprecation/deprecation
   const domain = configApi.getOptionalString('grafana.domain');
 
   if (!domain && hostsConfig.length === 0) {
@@ -46,11 +52,12 @@ export function readHosts(configApi: ConfigApi): ReadHostsResult {
     hostsConfig.push({
       id: 'default',
       domain,
+      // eslint-disable-next-line deprecation/deprecation
       proxyPath: configApi.getOptionalString('grafana.proxyPath'),
+      // eslint-disable-next-line deprecation/deprecation
       unifiedAlerting: configApi.getOptionalBoolean('grafana.unifiedAlerting'),
     });
   } else if (domain && hostsConfig.length > 0) {
-    /* eslint-enable deprecation/deprecation */
     // eslint-disable-next-line no-console
     console.warn(
       'Both `grafana.domain` and `grafana.hosts` are defined in app-config.yaml. ' +
@@ -58,7 +65,31 @@ export function readHosts(configApi: ConfigApi): ReadHostsResult {
     );
   }
 
-  // Validate unique proxy paths when multiple hosts are configured
+  // Validate unique ids and proxy paths
+  if (hostsConfig.length > 0) {
+    const seenIds = new Set<string>();
+    for (const host of hostsConfig) {
+      if (!host.id || typeof host.id !== 'string') {
+        throw new Error(
+          'Invalid Grafana host configuration: missing or invalid "id" field. ' +
+            'Each host in grafana.hosts must have a non-empty string "id".',
+        );
+      }
+      if (!host.domain || typeof host.domain !== 'string') {
+        throw new Error(
+          `Invalid Grafana host configuration: host "${host.id}" is missing or has an invalid "domain" field.`,
+        );
+      }
+      if (seenIds.has(host.id)) {
+        throw new Error(
+          `Duplicate Grafana host id "${host.id}" in grafana.hosts configuration. ` +
+            'Each host must have a unique "id".',
+        );
+      }
+      seenIds.add(host.id);
+    }
+  }
+
   if (hostsConfig.length > 1) {
     const defaultProxyPath = '/grafana/api';
     const seen = new Map<string, string>();

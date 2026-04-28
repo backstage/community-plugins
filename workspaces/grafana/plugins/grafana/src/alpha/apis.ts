@@ -18,7 +18,6 @@ import {
   ApiBlueprint,
   discoveryApiRef,
   fetchApiRef,
-  identityApiRef,
 } from '@backstage/frontend-plugin-api';
 import { GrafanaApiClient, grafanaApiRef } from '../api';
 import { readHosts } from '../config';
@@ -32,7 +31,6 @@ export const grafanaApiExtension = ApiBlueprint.make({
       api: grafanaApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
-        identityApi: identityApiRef,
         configApi: configApiRef,
         fetchApi: fetchApiRef,
       },

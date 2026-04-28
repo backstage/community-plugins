@@ -223,4 +223,55 @@ describe('readHosts', () => {
       '`grafana.defaultHost` is set to "nonexistent" but no host with that id exists in `grafana.hosts`. Available host ids: prod, staging',
     );
   });
+
+  it('throws when duplicate host ids are configured', () => {
+    const configApi = createMockConfigApi({
+      'grafana.hosts': [
+        {
+          id: 'prod',
+          domain: 'https://grafana-prod.example.com',
+          proxyPath: '/grafana/production/api',
+        },
+        {
+          id: 'prod',
+          domain: 'https://grafana-prod-backup.example.com',
+          proxyPath: '/grafana/production-backup/api',
+        },
+      ],
+    });
+
+    expect(() => readHosts(configApi)).toThrow(
+      'Duplicate Grafana host id "prod" in grafana.hosts configuration',
+    );
+  });
+
+  it('throws when a host has an empty id', () => {
+    const configApi = createMockConfigApi({
+      'grafana.hosts': [
+        {
+          id: '',
+          domain: 'https://grafana-prod.example.com',
+        },
+      ],
+    });
+
+    expect(() => readHosts(configApi)).toThrow(
+      'Invalid Grafana host configuration: missing or invalid "id" field',
+    );
+  });
+
+  it('throws when a host has an empty domain', () => {
+    const configApi = createMockConfigApi({
+      'grafana.hosts': [
+        {
+          id: 'prod',
+          domain: '',
+        },
+      ],
+    });
+
+    expect(() => readHosts(configApi)).toThrow(
+      'Invalid Grafana host configuration: host "prod" is missing or has an invalid "domain" field',
+    );
+  });
 });
