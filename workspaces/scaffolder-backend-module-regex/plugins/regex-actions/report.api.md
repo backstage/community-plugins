@@ -35,7 +35,6 @@ caseInsensitive?: boolean | undefined;
 sticky?: boolean | undefined;
 unicode?: boolean | undefined;
 dotAll?: boolean | undefined;
-hasIndices?: boolean | undefined;
 }, {
 [x: string]: any;
 }, "v2">;
