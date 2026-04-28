@@ -16,7 +16,6 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { encodeOAuthState } from '@backstage/plugin-auth-node';
-import type { Request } from 'express';
 
 const mockAuthorizationUrl = jest.fn();
 const mockCallbackParams = jest.fn();
