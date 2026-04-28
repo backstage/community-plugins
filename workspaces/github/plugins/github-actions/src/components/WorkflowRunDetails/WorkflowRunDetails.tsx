@@ -22,6 +22,7 @@ import {
   Accordion,
   AccordionTrigger,
   AccordionPanel,
+  Box,
   Flex,
   Card,
   CardHeader,
@@ -107,7 +108,7 @@ const JobListItem = ({
 
 const JobsList = ({ jobs, entity }: { jobs?: Jobs; entity: Entity }) => {
   return (
-    <div style={{ marginTop: 'var(--bui-space-2)' }}>
+    <Box mt="2">
       {jobs &&
         jobs.total_count > 0 &&
         jobs.jobs.map(job => (
@@ -120,7 +121,7 @@ const JobsList = ({ jobs, entity }: { jobs?: Jobs; entity: Entity }) => {
             entity={entity}
           />
         ))}
-    </div>
+    </Box>
   );
 };
 

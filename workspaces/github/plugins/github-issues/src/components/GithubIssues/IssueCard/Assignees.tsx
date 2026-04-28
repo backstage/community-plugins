@@ -27,26 +27,14 @@ export const Assignees = (props: AssigneesProps) => {
 
   // todo: many assignees -> NUM assignees + stock images on each other
   return name ? (
-    <Flex
-      align="center"
-      style={{
-        marginLeft: 'var(--bui-space-2)',
-        marginRight: 'var(--bui-space-2)',
-      }}
-    >
+    <Flex align="center" mx="2">
       <Text variant="body-small" color="primary">
         {name}
       </Text>
       <Avatar src={avatar ?? ''} name={name} className={styles.small} />
     </Flex>
   ) : (
-    <Flex
-      align="center"
-      style={{
-        marginLeft: 'var(--bui-space-2)',
-        marginRight: 'var(--bui-space-2)',
-      }}
-    >
+    <Flex align="center" mx="2">
       <Text variant="body-small" color="primary" className={styles.noAssignees}>
         No assignees
       </Text>

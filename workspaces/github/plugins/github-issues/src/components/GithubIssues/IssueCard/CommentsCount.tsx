@@ -15,6 +15,7 @@
  */
 
 import { ChatIcon } from '@backstage/core-components';
+import { Flex } from '@backstage/ui';
 import Badge from '@material-ui/core/Badge';
 
 type CommentsCountProps = {
@@ -25,18 +26,10 @@ export const CommentsCount = (props: CommentsCountProps) => {
   const { commentsCount } = props;
 
   return (
-    <div
-      style={{
-        marginBottom: 'var(--bui-space-2)',
-        marginRight: '12px',
-        display: 'flex',
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-end',
-      }}
-    >
+    <Flex mb="2" mr="3" justify="start" style={{ alignSelf: 'flex-end' }}>
       <Badge badgeContent={commentsCount} color="primary">
         <ChatIcon />
       </Badge>
-    </div>
+    </Flex>
   );
 };
