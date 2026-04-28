@@ -1,0 +1,54 @@
+.radarSvg {
+  user-select: none;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  max-height: calc(100vh - 300px);
+}
+
+.radarSvg:global(.animate-pulse) {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.quadrantGroup {
+  transition: opacity 0.3s;
+}
+
+.ringPath {
+  /* No default fill here, will be handled by inline style */
+}
+
+.strokeBorder {
+  stroke: var(--bui-border, #ccc);
+}
+
+.strokeMuted {
+  stroke: var(--bui-fg-secondary, #666);
+}
+
+.quadrantLabel {
+  cursor: pointer;
+  fill: var(--bui-fg-secondary, #666);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+}
+
+.ringLabel {
+  cursor: pointer;
+  fill: var(--bui-fg-secondary, #666);
+  vertical-align: middle;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.focusableBlip:focus {
+  outline: none;
+}
