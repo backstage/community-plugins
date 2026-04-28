@@ -154,7 +154,16 @@ jobs:
         run: yarn backstage-cli repo list-deprecations
 
       - name: check api reports and generate API reference
+        id: api-reports
         run: yarn build:api-reports:only --ci
+
+      - name: Upload API Reports for Verification Testing
+        if: failure() && steps.api-reports.outcome == 'failure'
+        uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595 # v4.1.0
+        with:
+          name: api-reports-${{ matrix.workspaceNodeMatrix.nodeVersion }}
+          path: |
+            /home/runner/work/backstage/backstage/node_modules/.cache/api-extractor/**/report.api.md
 
       - name: build all packages
         run: yarn backstage-cli repo build --all
