@@ -1,0 +1,38 @@
+.dialogContent {
+  padding: 1rem; /* p-4 */
+}
+
+.tableHeader {
+  font-weight: 600; /* font-semibold */
+  text-align: left; /* text-left */
+}
+
+.tableRow {
+  /* Using global selector for existing table structure if needed, 
+     but targeting based on current implementation */
+}
+
+.tableRow:hover {
+  background-color: transparent !important;
+}
+
+.triangleIcon {
+  fill: var(--bui-fg-secondary); /* fill-muted-foreground */
+}
+
+.rotate180 {
+  transform: rotate(180deg);
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.dateCell {
+  min-width: 7rem; /* min-w-[7rem] */
+  white-space: nowrap; /* whitespace-nowrap */
+}
+
+.learnMoreLink {
+  text-transform: capitalize;
+}
