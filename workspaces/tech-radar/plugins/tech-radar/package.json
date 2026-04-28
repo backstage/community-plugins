@@ -63,7 +63,6 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "clsx": "^2.1.1",

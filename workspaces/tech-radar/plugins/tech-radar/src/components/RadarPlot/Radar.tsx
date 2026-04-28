@@ -165,7 +165,7 @@ export const RadarBlipsAndLabels = ({
     <>
       <defs>
         {quadrants.map((q, i) => {
-          const isBottom = i === 0 || i === 1 || i === 4;
+          const isBottom = i === 0 || i === 1;
           const pathD = describeArcTextLine({
             endAngle: q.radialMin,
             radius: maxRadius * 1.1,
