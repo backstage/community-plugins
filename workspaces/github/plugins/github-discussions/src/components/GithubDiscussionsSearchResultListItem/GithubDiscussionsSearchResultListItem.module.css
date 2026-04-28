@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-@layer components {
-  .item {
-    display: flex;
-  }
+.item {
+  display: flex;
+}
 
-  .listItemIcon {
-    min-width: 56px;
-    display: flex;
-    align-items: flex-start;
-    padding-top: 2px;
-    color: var(--bui-fg-primary);
-  }
+.listItemIcon {
+  min-width: 56px;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+  color: var(--bui-fg-primary);
+}
 
-  .flexContainer {
-    flex-wrap: wrap;
-    flex: 1;
-  }
+.flexContainer {
+  flex-wrap: wrap;
+  flex: 1;
+}
 
-  .itemText {
-    width: 100%;
-    word-break: break-all;
-    margin-bottom: 1rem;
-  }
+.itemText {
+  width: 100%;
+  word-break: break-all;
+  margin-bottom: 1rem;
 }

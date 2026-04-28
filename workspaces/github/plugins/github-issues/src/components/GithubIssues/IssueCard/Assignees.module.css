@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-@layer components {
-  .small {
-    width: var(--bui-space-8);
-    height: var(--bui-space-8);
-    margin-left: var(--bui-space-2);
-  }
+.small {
+  width: var(--bui-space-8);
+  height: var(--bui-space-8);
+  margin-left: var(--bui-space-2);
+}
 
-  .noAssignees {
-    height: var(--bui-space-8);
-  }
+.noAssignees {
+  height: var(--bui-space-8);
 }

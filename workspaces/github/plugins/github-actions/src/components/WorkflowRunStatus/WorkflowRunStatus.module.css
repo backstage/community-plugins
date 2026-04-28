@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-@layer components {
-  .statusIcon {
-    & svg {
-      position: static;
-    }
+.statusIcon {
+  & svg {
+    position: static;
   }
 }

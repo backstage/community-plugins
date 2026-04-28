@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-@layer components {
-  .filters {
-    margin: 0 0 var(--bui-space-4) 0;
+.filters {
+  margin: 0 0 var(--bui-space-4) 0;
+
+  & > div {
+    max-width: 800px;
 
     & > div {
       max-width: 800px;
-
-      & > div {
-        max-width: 800px;
-      }
     }
   }
 }

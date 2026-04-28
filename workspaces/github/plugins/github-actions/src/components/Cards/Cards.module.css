@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-@layer components {
-  .externalLinkIcon {
-    font-size: inherit;
-    vertical-align: bottom;
-  }
+.externalLinkIcon {
+  font-size: inherit;
+  vertical-align: bottom;
 }

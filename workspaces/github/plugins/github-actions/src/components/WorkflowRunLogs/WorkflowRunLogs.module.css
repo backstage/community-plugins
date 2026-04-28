@@ -14,37 +14,35 @@
  * limitations under the License.
  */
 
-@layer components {
-  .accordion {
-    padding-top: var(--bui-space-2);
-  }
+.accordion {
+  padding-top: var(--bui-space-2);
+}
 
-  .button {
-    order: -1;
-    margin-right: 0;
-    margin-left: -20px;
-  }
+.button {
+  order: -1;
+  margin-right: 0;
+  margin-left: -20px;
+}
 
-  .modal {
-    display: flex;
-    align-items: center;
-    width: 85%;
-    height: 85%;
-    justify-content: center;
-    margin: auto;
-  }
+.modal {
+  display: flex;
+  align-items: center;
+  width: 85%;
+  height: 85%;
+  justify-content: center;
+  margin: auto;
+}
 
-  .normalLogContainer {
-    height: 75vh;
-    width: 100%;
-  }
+.normalLogContainer {
+  height: 75vh;
+  width: 100%;
+}
 
-  .modalLogContainer {
-    height: 100%;
-    width: 100%;
-  }
+.modalLogContainer {
+  height: 100%;
+  width: 100%;
+}
 
-  .log {
-    background: var(--bui-bg-surface-0);
-  }
+.log {
+  background: var(--bui-bg-surface-0);
 }

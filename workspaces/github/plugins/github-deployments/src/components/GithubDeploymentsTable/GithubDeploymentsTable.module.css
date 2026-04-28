@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-@layer components {
-  .empty {
-    padding: var(--bui-space-4);
-    display: flex;
-    justify-content: center;
-  }
+.empty {
+  padding: var(--bui-space-4);
+  display: flex;
+  justify-content: center;
 }

@@ -14,43 +14,41 @@
  * limitations under the License.
  */
 
-@layer components {
-  .root {
-    margin: var(--bui-space-4);
-  }
+.root {
+  margin: var(--bui-space-4);
+}
 
-  .title {
-    padding: var(--bui-space-2) 0 var(--bui-space-4) 0;
-  }
+.title {
+  padding: var(--bui-space-2) 0 var(--bui-space-4) 0;
+}
 
-  .table {
-    padding: var(--bui-space-2);
-  }
+.table {
+  padding: var(--bui-space-2);
+}
 
-  .accordionDetails {
-    padding: 0;
-  }
+.accordionDetails {
+  padding: 0;
+}
 
-  .button {
-    order: -1;
-    margin-right: 0;
-    margin-left: -20px;
-  }
+.button {
+  order: -1;
+  margin-right: 0;
+  margin-left: -20px;
+}
 
-  .externalLinkIcon {
-    font-size: inherit;
-    vertical-align: bottom;
-  }
+.externalLinkIcon {
+  font-size: inherit;
+  vertical-align: bottom;
+}
 
-  .jobListItem {
-    margin-bottom: var(--bui-space-3);
-  }
+.jobListItem {
+  margin-bottom: var(--bui-space-3);
+}
 
-  .jobListItem:last-child {
-    margin-bottom: 0;
-  }
+.jobListItem:last-child {
+  margin-bottom: 0;
+}
 
-  .stepsMetadata {
-    padding-top: var(--bui-space-2);
-  }
+.stepsMetadata {
+  padding-top: var(--bui-space-2);
 }
