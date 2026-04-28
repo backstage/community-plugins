@@ -50,7 +50,7 @@ export const IssueCard = (props: IssueCardProps) => {
   } = props;
 
   const handleCardClick = () => {
-    window.open(url, '_blank');
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {

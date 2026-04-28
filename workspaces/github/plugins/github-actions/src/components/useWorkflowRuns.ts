@@ -202,14 +202,24 @@ export function useWorkflowRuns({
       hostname,
       owner,
       repo,
-      branch,
+      branch: branch === 'default' ? fetchedDefaultBranch : branch,
       page: page + 1,
       pageSize,
     });
 
     setTotal(totalCount);
     return workflowRuns;
-  }, [page, pageSize, repo, owner]);
+  }, [
+    page,
+    pageSize,
+    repo,
+    owner,
+    hostname,
+    branch,
+    fetchAllBranches,
+    api,
+    errorApi,
+  ]);
 
   return [
     {

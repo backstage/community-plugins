@@ -35,12 +35,8 @@ export const RepositoryFilters = ({
   onChange,
   placeholder,
 }: RepositoryFiltersProps) => {
-  const handleSelectionChange = (keys: 'all' | Iterable<Key>) => {
-    if (keys === 'all') {
-      onChange(items.map(item => item.value));
-    } else {
-      onChange(Array.from(keys).map(String));
-    }
+  const handleSelectionChange = (keys: Key | Key[] | null) => {
+    onChange(Array.isArray(keys) ? keys.map(String) : []);
   };
 
   return (
@@ -50,7 +46,7 @@ export const RepositoryFilters = ({
         label=""
         options={items}
         selectionMode="multiple"
-        onChange={handleSelectionChange as any}
+        onChange={handleSelectionChange}
       />
       <Text variant="body-x-small">
         *Repositories with more Issues on GitHub than available to view in

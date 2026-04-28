@@ -228,7 +228,7 @@ export const WorkflowRunsCardView = ({
             rowsPerPage={pageSize}
             onPageChange={(_, newPage) => onChangePage(newPage)}
             onRowsPerPageChange={event =>
-              onChangePageSize(parseInt(event.target.value, 6))
+              onChangePageSize(parseInt(event.target.value, 10))
             }
             labelRowsPerPage="Workflows per page"
             rowsPerPageOptions={[6, 12, 18, { label: 'All', value: -1 }]}

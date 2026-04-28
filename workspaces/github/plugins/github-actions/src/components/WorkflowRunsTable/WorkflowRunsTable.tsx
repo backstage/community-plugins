@@ -26,6 +26,8 @@ import {
   Table,
   useTable,
   TextField,
+  TooltipTrigger,
+  Tooltip,
   type ColumnConfig,
   type TableItem,
 } from '@backstage/ui';
@@ -36,7 +38,6 @@ import { WorkflowRunStatus } from '../WorkflowRunStatus';
 import { buildRouteRef } from '../../routes';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { Entity } from '@backstage/catalog-model';
-import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { EmptyState, Link } from '@backstage/core-components';
 import { useApi, useRouteRef, errorApiRef } from '@backstage/core-plugin-api';
@@ -292,6 +293,7 @@ export const WorkflowRunsTable = ({
               window.open(
                 `https://${githubHost}/${projectName}/actions/new`,
                 '_blank',
+                'noopener,noreferrer',
               )
             }
           >

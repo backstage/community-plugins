@@ -15,7 +15,7 @@
  */
 
 .card {
-  border: 1px solid var(--bui-border);
+  border: 1px solid var(--bui-border-1);
   border-radius: var(--bui-radius-2);
   overflow: visible;
   position: relative;
