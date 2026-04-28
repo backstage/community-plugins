@@ -33,7 +33,7 @@ export const useTechRadarLoader = () => {
     if (error) {
       errorApi.post(error);
     }
-  }, [error, errorApi, value?.entries]);
+  }, [error, errorApi]);
 
   return { error, loading, value };
 };

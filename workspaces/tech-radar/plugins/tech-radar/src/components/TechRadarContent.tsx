@@ -92,11 +92,7 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
             <Button
               className={styles.fullscreenButton}
               variant="tertiary"
-              aria-label={
-                document.fullscreenElement
-                  ? 'Exit fullscreen mode'
-                  : 'Enter fullscreen mode'
-              }
+              aria-label="Toggle fullscreen mode"
               onClick={() => {
                 return document.fullscreenElement
                   ? document.exitFullscreen()
