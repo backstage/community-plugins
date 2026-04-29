@@ -16,12 +16,12 @@
 
 .filters {
   margin: 0 0 var(--bui-space-4) 0;
+}
 
-  & > div {
-    max-width: 800px;
+.filters > div {
+  max-width: 800px;
+}
 
-    & > div {
-      max-width: 800px;
-    }
-  }
+.filters > div > div {
+  max-width: 800px;
 }

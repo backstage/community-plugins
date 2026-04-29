@@ -87,7 +87,12 @@ export const IssueCard = (props: IssueCardProps) => {
           <Assignees name={assigneeName} avatar={assigneeAvatar} />
         </Flex>
         <div>
-          <Link href={url} target="_blank" color="primary">
+          <Link
+            href={url}
+            target="_blank"
+            color="primary"
+            onClick={e => e.stopPropagation()}
+          >
             <Text>
               <b>{title}</b>
             </Text>

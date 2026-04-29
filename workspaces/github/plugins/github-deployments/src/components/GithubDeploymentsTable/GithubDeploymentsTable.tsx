@@ -126,9 +126,9 @@ export const GithubDeploymentsTable = (props: {
 
   const deploymentsWithId: GithubDeploymentWithId[] = useMemo(
     () =>
-      deployments.map((deployment, index) => ({
+      deployments.map(deployment => ({
         ...deployment,
-        id: `deployment-${index}`,
+        id: `${deployment.environment}-${deployment.updatedAt}-${deployment.creator.login}`,
       })),
     [deployments],
   );
