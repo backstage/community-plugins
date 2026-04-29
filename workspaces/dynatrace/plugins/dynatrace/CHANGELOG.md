@@ -1,5 +1,11 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.19.0
+
+### Minor Changes
+
+- c7ab6f2: Added support for the new frontend system via the `./alpha` entrypoint.
+
 ## 10.18.0
 
 ### Minor Changes
