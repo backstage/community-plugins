@@ -1,5 +1,16 @@
 # @backstage-community/plugin-azure-devops
 
+## 0.31.0
+
+### Minor Changes
+
+- 7067acc: Added multi-org support to the Azure Pull Request Dashboard Page
+
+### Patch Changes
+
+- Updated dependencies [7067acc]
+  - @backstage-community/plugin-azure-devops-common@0.23.0
+
 ## 0.30.0
 
 ### Minor Changes
