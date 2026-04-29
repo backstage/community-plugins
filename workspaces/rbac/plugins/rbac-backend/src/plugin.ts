@@ -18,7 +18,7 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 
-import { PolicyBuilder } from '@backstage-community/plugin-rbac-backend';
+import { PolicyBuilder } from './service/policy-builder';
 import {
   PluginIdProvider,
   PluginIdProviderExtensionPoint,
