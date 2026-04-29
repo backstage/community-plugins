@@ -54,7 +54,7 @@ const CONFIG = {
   ],
 
   // Excluded workspaces (same as list-workspaces.js)
-  excludedWorkspaces: ['noop', 'repo-tools'],
+  excludedWorkspaces: ['.claude', 'noop', 'repo-tools'],
 
   // MUI import patterns to track
   muiPatterns: {
@@ -244,12 +244,8 @@ class CommunityPluginsMigrationAnalyzer {
 
     // Find all relevant files in the workspace
     const files = [];
-    const packagesDir = path.join(workspacePath, 'packages');
     const pluginsDir = path.join(workspacePath, 'plugins');
 
-    if (fs.existsSync(packagesDir)) {
-      files.push(...this.findRelevantFiles(packagesDir));
-    }
     if (fs.existsSync(pluginsDir)) {
       files.push(...this.findRelevantFiles(pluginsDir));
     }
