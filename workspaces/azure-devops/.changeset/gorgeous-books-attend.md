@@ -1,7 +1,7 @@
 ---
-'@backstage-community/plugin-azure-devops-backend': patch
-'@backstage-community/plugin-azure-devops-common': patch
-'@backstage-community/plugin-azure-devops': patch
+'@backstage-community/plugin-azure-devops-backend': minor
+'@backstage-community/plugin-azure-devops-common': minor
+'@backstage-community/plugin-azure-devops': minor
 ---
 
 Added multi-org support to the Azure Pull Request Dashboard Page
