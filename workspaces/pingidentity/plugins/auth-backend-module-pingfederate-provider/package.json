@@ -1,7 +1,7 @@
 {
-  "name": "@backstage-community/plugin-catalog-backend-module-pingidentity",
-  "description": "The PingOne backend module for the catalog plugin. Ingests organization data (users and groups) from Ping Identity's cloud offering.",
-  "version": "0.11.1",
+  "name": "@backstage-community/plugin-auth-backend-module-pingfederate-provider",
+  "description": "The PingFederate provider backend module for the auth plugin.",
+  "version": "0.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -13,12 +13,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
-    "directory": "workspaces/pingidentity/plugins/catalog-backend-module-pingidentity"
+    "directory": "workspaces/pingidentity/plugins/auth-backend-module-pingfederate-provider"
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "pluginId": "catalog",
-    "pluginPackage": "@backstage/plugin-catalog-backend"
+    "pluginId": "auth",
+    "pluginPackage": "@backstage/plugin-auth-backend"
   },
   "scripts": {
     "start": "backstage-cli package start",
@@ -26,28 +26,31 @@
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
-    "prepack": "backstage-cli package prepack"
+    "prepack": "backstage-cli package prepack",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.8.0",
-    "@backstage/catalog-model": "^1.7.7",
     "@backstage/config": "^1.3.6",
-    "@backstage/plugin-catalog-node": "^2.1.0",
-    "node-fetch": "^2.6.7",
-    "uuid": "^13.0.0"
+    "@backstage/plugin-auth-node": "^0.7.0",
+    "@backstage/types": "^1.2.2",
+    "jose": "^5.0.0",
+    "openid-client": "^5.5.0",
+    "zod": "^3.25.76 || ^4.0.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "^0.16.0",
     "@backstage/backend-test-utils": "^1.11.1",
     "@backstage/cli": "^0.36.0",
-    "@backstage/plugin-catalog-backend": "^3.5.0",
-    "@types/node-fetch": "^2.6.11",
-    "msw": "1.3.5"
+    "@backstage/plugin-auth-backend": "^0.27.3",
+    "@types/supertest": "^6.0.0",
+    "express": "^4.22.0",
+    "msw": "^1.3.1",
+    "supertest": "^7.0.0"
   },
   "files": [
-    "app-config.example.yaml",
-    "config.d.ts",
-    "dist"
+    "dist",
+    "config.d.ts"
   ],
   "configSchema": "config.d.ts"
 }
