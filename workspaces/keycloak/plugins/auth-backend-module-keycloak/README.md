@@ -50,7 +50,7 @@ served, and `http://localhost:3000` with the URL of the Backstage frontend.
 Install the package into your Backstage backend:
 
 ```bash
-yarn workspace backend add @backstage-community/plugin-auth-backend-module-keycloak
+yarn workspace backend add @backstage-community/plugin-auth-backend-module-keycloak-provider
 ```
 
 Register the plugin in the `packages/backend/src/index.ts` file:
@@ -59,7 +59,9 @@ Register the plugin in the `packages/backend/src/index.ts` file:
 const backend = createBackend();
 
 /* highlight-add-next-line */
-backend.add(import('@backstage-community/plugin-auth-backend-module-keycloak'));
+backend.add(
+  import('@backstage-community/plugin-auth-backend-module-keycloak-provider'),
+);
 
 backend.start();
 ```
@@ -82,27 +84,37 @@ auth:
         # additionalScopes:
         #   - offline_access
         #   - roles
+        #
         # Optional: URL the browser is redirected to after Keycloak has
-        # terminated the SSO session. Must match a value registered under
-        # `Valid post logout redirect URIs` on the Keycloak client.
+        #           terminated the SSO session. Must match a value registered under
+        #           `Valid post logout redirect URIs` on the Keycloak client.
         # postLogoutRedirectUri: ${AUTH_KEYCLOAK_POST_LOGOUT_REDIRECT_URI}
+        #
+        # Optional: prompt parameter for the OIDC authorization request.
+        #           For example, set to 'login' to force the user to manually enter
+        #           their credentials even if an active session already exists.
+        # prompt: "login"
         signIn:
           resolvers:
             # See https://backstage.io/docs/auth/identity-resolver for more resolvers.
             - resolver: preferredUsernameMatchingUserEntityName
+            # Optional: Bypass the catalog check by enabling the `dangerouslyAllowSignInWithoutUserInCatalog` option.
+            # - resolver: preferredUsernameMatchingUserEntityName
+            #   dangerouslyAllowSignInWithoutUserInCatalog: true
 ```
 
 The following table describes the parameters that can be configured under
 `auth.providers.keycloak.<ENVIRONMENT_NAME>`:
 
-| Name                    | Description                                                                                                                                | Default | Required |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------- | -------- |
-| `clientId`              | The client ID registered for Backstage in the Keycloak realm.                                                                              | -       | Yes      |
-| `clientSecret`          | The client secret for the Keycloak client.                                                                                                 | -       | Yes      |
-| `baseUrl`               | Base URL of the Keycloak server, without a trailing `/realms/...` path (e.g. `https://kc.x`).                                              | -       | Yes      |
-| `realm`                 | Name of the Keycloak realm that Backstage authenticates against.                                                                           | -       | Yes      |
-| `additionalScopes`      | Scopes appended to the required `openid profile email` scopes.                                                                             | `[]`    | No       |
-| `postLogoutRedirectUri` | URL the browser is redirected to after the Keycloak session has been terminated. Must match a registered `Valid post logout redirect URI`. | -       | No       |
+| Name                    | Description                                                                                                                                                                                                                                                   | Default | Required |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
+| `clientId`              | The client ID registered for Backstage in the Keycloak realm.                                                                                                                                                                                                 | -       | Yes      |
+| `clientSecret`          | The client secret for the Keycloak client.                                                                                                                                                                                                                    | -       | Yes      |
+| `baseUrl`               | Base URL of the Keycloak server, without a trailing `/realms/...` path (e.g. `https://kc.x`).                                                                                                                                                                 | -       | Yes      |
+| `realm`                 | Name of the Keycloak realm that Backstage authenticates against.                                                                                                                                                                                              | -       | Yes      |
+| `additionalScopes`      | Scopes appended to the required `openid profile email` scopes.                                                                                                                                                                                                | `[]`    | No       |
+| `postLogoutRedirectUri` | URL the browser is redirected to after the Keycloak session has been terminated. Must match a registered `Valid post logout redirect URI`.                                                                                                                    | -       | No       |
+| `prompt`                | Value of the OIDC `prompt` parameter forwarded to Keycloak on every authorization request (e.g. `login` to force credential entry, `none` for silent re-authentication). When omitted, no `prompt` parameter is sent and Keycloak's default behavior applies. | -       | No       |
 
 > **Note**
 >

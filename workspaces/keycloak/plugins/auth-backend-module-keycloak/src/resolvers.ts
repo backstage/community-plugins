@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { z } from 'zod/v3';
 import {
   commonSignInResolvers,
   createSignInResolverFactory,
@@ -45,7 +45,12 @@ export namespace keycloakSignInResolvers {
    */
   export const preferredUsernameMatchingUserEntityName =
     createSignInResolverFactory({
-      create() {
+      optionsSchema: z
+        .object({
+          dangerouslyAllowSignInWithoutUserInCatalog: z.boolean().optional(),
+        })
+        .optional(),
+      create(options = {}) {
         return async (
           info: SignInInfo<OAuthAuthenticatorResult<UserinfoResponse>>,
           ctx,
@@ -65,9 +70,15 @@ export namespace keycloakSignInResolvers {
             '-',
           );
 
-          return ctx.signInWithCatalogUser({
-            entityRef: { name: sanitizedUsername },
-          });
+          return ctx.signInWithCatalogUser(
+            { entityRef: { name: sanitizedUsername } },
+            {
+              dangerousEntityRefFallback:
+                options?.dangerouslyAllowSignInWithoutUserInCatalog
+                  ? { entityRef: { name: sanitizedUsername } }
+                  : undefined,
+            },
+          );
         };
       },
     });

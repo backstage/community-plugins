@@ -33,6 +33,7 @@ import {
  * @public
  */
 export type KeycloakAuthenticatorContext = {
+  prompt?: string;
   promise: Promise<{
     client: Client;
     callbackUrl: string;
@@ -100,7 +101,7 @@ export const keycloakAuthenticator = createOAuthAuthenticator<
     const postLogoutRedirectUri = config.getOptionalString(
       'postLogoutRedirectUri',
     );
-
+    const prompt = config.getOptionalString('prompt');
     const issuerUrl = `${baseUrl}/realms/${realm}`;
 
     const promise = (async () => {
@@ -134,10 +135,10 @@ export const keycloakAuthenticator = createOAuthAuthenticator<
     // The error is preserved and will be surfaced when the promise is awaited by auth handlers later.
     void promise.catch(() => undefined);
 
-    return { promise };
+    return { promise, prompt };
   },
 
-  async start(input, { promise }) {
+  async start(input, { promise, prompt }) {
     const { client } = await promise;
     const { nonce } = decodeOAuthState(input.state);
 
@@ -146,6 +147,7 @@ export const keycloakAuthenticator = createOAuthAuthenticator<
         scope: input.scope,
         state: input.state,
         nonce,
+        ...(prompt ? { prompt } : {}),
       }),
       status: 302,
     };

@@ -210,6 +210,23 @@ describe('keycloakAuthenticator', () => {
         ),
       ).rejects.toThrow();
     });
+
+    it('forwards the configured prompt to the authorization URL', async () => {
+      // Arrange
+      const ctx = initContext({ prompt: 'login' });
+      mockAuthorizationUrl.mockReturnValue('https://keycloak.test/authorize');
+
+      // Act
+      await keycloakAuthenticator.start(
+        { scope: 'openid', state: encodedState, req },
+        ctx,
+      );
+
+      // Assert
+      expect(mockAuthorizationUrl).toHaveBeenCalledWith(
+        expect.objectContaining({ prompt: 'login' }),
+      );
+    });
   });
 
   describe('authenticate', () => {
@@ -393,6 +410,25 @@ describe('keycloakAuthenticator', () => {
 
       // Assert
       expect(result.session.scope).toBe('requested-scope');
+    });
+
+    it('falls back the session tokenType to "bearer" when Keycloak omits it on refresh', async () => {
+      // Arrange
+      const ctx = initContext();
+      mockRefresh.mockResolvedValue({
+        access_token: 'a',
+        scope: 'openid',
+      });
+      mockUserinfo.mockResolvedValue({});
+
+      // Act
+      const result = await keycloakAuthenticator.refresh(
+        { refreshToken: 'r', scope: 'openid', req },
+        ctx,
+      );
+
+      // Assert
+      expect(result.session.tokenType).toBe('bearer');
     });
 
     it('throws when the refreshed token response has no access token', async () => {

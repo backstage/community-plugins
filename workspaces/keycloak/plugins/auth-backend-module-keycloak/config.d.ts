@@ -49,6 +49,12 @@ export interface Config {
            * client. When omitted, Keycloak renders its own post-logout page.
            */
           postLogoutRedirectUri?: string;
+          /**
+           * Optional prompt parameter for the authorization request.
+           * For example, set to 'login' to force the user to enter their credentials.
+           * @example "login"
+           */
+          prompt?: string;
         };
       };
     };
