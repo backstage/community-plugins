@@ -1,5 +1,11 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.19.1
+
+### Patch Changes
+
+- 7922e56: Removed duplicate `@backstage/plugin-catalog-react` peer dependency
+
 ## 10.19.0
 
 ### Minor Changes
