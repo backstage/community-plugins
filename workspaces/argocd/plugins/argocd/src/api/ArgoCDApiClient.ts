@@ -212,7 +212,10 @@ export class ArgoCDApiClient implements ArgoCDApi {
           if (
             revisionSourceIndex !== undefined &&
             revisionSourceIndex >= 0 &&
-            multiSourceApp.spec.sources?.[revisionSourceIndex]?.chart
+            (
+              h.sources?.[revisionSourceIndex] ??
+              multiSourceApp.spec.sources?.[revisionSourceIndex]
+            )?.chart
           ) {
             return;
           }

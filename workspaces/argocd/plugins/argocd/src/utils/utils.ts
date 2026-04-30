@@ -197,7 +197,7 @@ export const getUniqueRevisions = (apps: Application[]): string[] => {
         // strings are not git SHAs and cannot be used for revision metadata)
         if (h?.revisions) {
           const gitRevisions = h.revisions.filter(
-            (_, idx) => !app.spec.sources?.[idx]?.chart,
+            (_, idx) => !(h.sources?.[idx] ?? app.spec.sources?.[idx])?.chart,
           );
           if (gitRevisions.length > 0 && !isSubset(gitRevisions, revisions)) {
             revisions.push(...gitRevisions);

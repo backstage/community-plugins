@@ -144,7 +144,7 @@ const DeploymentSummary = ({
         render: (row: Application): ReactNode => {
           const historyList = row.status?.history ?? [];
           const latestRev = historyList.at(-1);
-          const sources = row.spec.sources;
+          const sources = latestRev?.sources ?? row.spec.sources;
 
           // Multi-source: build a combined revision display (e.g. "6.49.0 / abc1234")
           // showing Helm chart versions in full and git SHAs truncated to 7 chars.
