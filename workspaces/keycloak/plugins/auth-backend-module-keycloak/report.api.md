@@ -22,6 +22,7 @@ export const keycloakAuthenticator: OAuthAuthenticator<
 
 // @public
 export type KeycloakAuthenticatorContext = {
+  prompt?: string;
   promise: Promise<{
     client: Client;
     callbackUrl: string;
@@ -49,7 +50,10 @@ export namespace keycloakSignInResolvers {
   >;
   const preferredUsernameMatchingUserEntityName: SignInResolverFactory<
     OAuthAuthenticatorResult<UserinfoResponse>,
-    unknown
+    | {
+        dangerouslyAllowSignInWithoutUserInCatalog?: boolean | undefined;
+      }
+    | undefined
   >;
 }
 ```
