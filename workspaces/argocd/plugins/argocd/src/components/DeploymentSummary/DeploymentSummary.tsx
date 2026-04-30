@@ -161,9 +161,9 @@ const DeploymentSummary = ({
             // Link to the first git source commit
             const gitIdx = sources.findIndex(s => !s.chart);
             const gitRev =
-              gitIdx >= 0 ? (latestRev.revisions?.[gitIdx] ?? '') : '';
+              gitIdx >= 0 ? latestRev.revisions?.[gitIdx] ?? '' : '';
             const gitRepoUrl =
-              gitIdx >= 0 ? (sources[gitIdx]?.repoURL ?? '') : '';
+              gitIdx >= 0 ? sources[gitIdx]?.repoURL ?? '' : '';
             const commitUrl = gitRev
               ? getCommitUrl(
                   gitRepoUrl,
