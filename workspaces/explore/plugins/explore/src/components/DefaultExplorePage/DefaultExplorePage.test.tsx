@@ -19,6 +19,7 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { waitFor, getByText } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { DefaultExplorePage } from './DefaultExplorePage';
+import { exploreRouteRef } from '../../routes';
 
 describe('<DefaultExplorePage />', () => {
   const catalogApi = {
@@ -52,6 +53,11 @@ describe('<DefaultExplorePage />', () => {
       <Wrapper>
         <DefaultExplorePage />
       </Wrapper>,
+      {
+        mountedRoutes: {
+          '/explore': exploreRouteRef,
+        },
+      },
     );
 
     await waitFor(() => {

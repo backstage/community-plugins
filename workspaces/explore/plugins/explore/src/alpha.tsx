@@ -51,6 +51,7 @@ const explorePage = PageBlueprint.make({
   params: {
     path: '/explore',
     routeRef: convertLegacyRouteRef(exploreRouteRef),
+    noHeader: true,
     loader: async () =>
       import('./components/ExplorePage').then(m =>
         compatWrapper(<m.ExplorePage />),

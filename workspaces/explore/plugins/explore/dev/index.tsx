@@ -18,6 +18,11 @@ import ReactDOM from 'react-dom/client';
 
 import { createApp } from '@backstage/frontend-defaults';
 
+// The dev harness bootstraps a standalone app, so it needs the BUI styles
+// even though this package is a frontend-plugin.
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
 import {
   ApiBlueprint,
   createFrontendModule,
