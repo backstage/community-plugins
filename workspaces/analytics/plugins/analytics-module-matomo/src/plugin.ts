@@ -20,11 +20,11 @@ import {
   createPlugin,
 } from '@backstage/core-plugin-api';
 import {
-  AnalyticsImplementationBlueprint,
   configApiRef,
   createFrontendPlugin,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 import { MatomoAnalytics } from './api';
 
 /**
