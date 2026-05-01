@@ -389,6 +389,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/plugin-app-react": "backstage:^"
     "@testing-library/jest-dom": "npm:6.9.1"
     cross-fetch: "npm:4.1.0"
   peerDependencies:
