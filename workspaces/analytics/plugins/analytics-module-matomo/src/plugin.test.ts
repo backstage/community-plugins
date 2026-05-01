@@ -13,14 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { analyticsModuleMatomoPlugin, MatomoAnalyticsApi } from './plugin';
+import {
+  analyticsModuleMatomoPlugin,
+  analyticsProviderMatomoPlugin,
+  MatomoAnalyticsApi,
+} from './plugin';
 
 describe('matomo', () => {
   it('should export plugin', () => {
     expect(analyticsModuleMatomoPlugin).toBeDefined();
   });
 
-  it('should export the analytics API factory', () => {
-    expect(MatomoAnalyticsApi).toBeDefined();
+  it('should register the analytics API factory on the plugin', () => {
+    const apis = Array.from(analyticsModuleMatomoPlugin.getApis());
+    expect(apis).toHaveLength(1);
+    expect(apis[0]).toBe(MatomoAnalyticsApi);
+  });
+
+  it('should export NFS plugin', () => {
+    expect(analyticsProviderMatomoPlugin).toBeDefined();
   });
 });

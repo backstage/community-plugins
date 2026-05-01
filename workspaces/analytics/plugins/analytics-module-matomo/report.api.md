@@ -30,7 +30,7 @@ export class MatomoAnalytics implements AnalyticsApi, AnalyticsImplementation {
   ): MatomoAnalytics;
 }
 
-// @public
+// @public (undocumented)
 export const MatomoAnalyticsApi: ApiFactory<
   AnalyticsApi,
   MatomoAnalytics,

@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { createPlugin } from '@backstage/core-plugin-api';
+import {
+  analyticsApiRef,
+  createApiFactory,
+  createPlugin,
+} from '@backstage/core-plugin-api';
 import {
   AnalyticsImplementationBlueprint,
   configApiRef,
@@ -22,6 +26,16 @@ import {
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
 import { MatomoAnalytics } from './api';
+
+/**
+ * @public
+ */
+export const MatomoAnalyticsApi = createApiFactory({
+  api: analyticsApiRef,
+  deps: { configApi: configApiRef, identityApi: identityApiRef },
+  factory: ({ configApi, identityApi }) =>
+    MatomoAnalytics.fromConfig(configApi, { identityApi }),
+});
 
 /** @public */
 export const analyticsModuleMatomoPlugin = createPlugin({
