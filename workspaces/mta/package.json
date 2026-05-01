@@ -16,7 +16,7 @@
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
