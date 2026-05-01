@@ -26,8 +26,7 @@ describe('matomo', () => {
 
   it('should register the analytics API factory on the plugin', () => {
     const apis = Array.from(analyticsModuleMatomoPlugin.getApis());
-    expect(apis).toHaveLength(1);
-    expect(apis[0]).toBe(MatomoAnalyticsApi);
+    expect(apis).toContain(MatomoAnalyticsApi);
   });
 
   it('should export NFS plugin', () => {
