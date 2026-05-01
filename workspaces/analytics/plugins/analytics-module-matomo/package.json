@@ -23,9 +23,12 @@
     }
   },
   "backstage": {
-    "role": "frontend-plugin-module",
-    "pluginId": "app",
-    "pluginPackage": "@backstage/plugin-app"
+    "role": "frontend-plugin",
+    "pluginId": "analytics-module-matomo",
+    "pluginPackage": "@backstage-community/plugin-analytics-module-matomo",
+    "pluginPackages": [
+      "@backstage-community/plugin-analytics-module-matomo"
+    ]
   },
   "sideEffects": false,
   "scripts": {

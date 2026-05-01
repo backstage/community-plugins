@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  analyticsApiRef,
-  configApiRef,
-  createApiFactory,
-  createPlugin,
-  identityApiRef,
-} from '@backstage/core-plugin-api';
-import { MatomoAnalytics } from './api';
 
-/**
- * API factory method for matomo
- *
- * @public
- */
-export const MatomoAnalyticsApi = createApiFactory({
-  api: analyticsApiRef,
-  deps: { configApi: configApiRef, identityApi: identityApiRef },
-  factory: ({ configApi, identityApi }) =>
-    MatomoAnalytics.fromConfig(configApi, {
-      identityApi,
-    }),
-});
+import { createPlugin } from '@backstage/core-plugin-api';
+import {
+  AnalyticsImplementationBlueprint,
+  configApiRef,
+  createFrontendPlugin,
+  identityApiRef,
+} from '@backstage/frontend-plugin-api';
+import { MatomoAnalytics } from './api';
 
 /** @public */
 export const analyticsModuleMatomoPlugin = createPlugin({
   id: 'analytics-module-matomo',
   apis: [MatomoAnalyticsApi],
+});
+
+const matomoImplementation = AnalyticsImplementationBlueprint.make({
+  params: defineParams =>
+    defineParams({
+      deps: { configApi: configApiRef, identityApi: identityApiRef },
+      factory: ({ configApi, identityApi }) =>
+        MatomoAnalytics.fromConfig(configApi, { identityApi }),
+    }),
+});
+
+/**
+ * @public
+ */
+export const analyticsProviderMatomoPlugin = createFrontendPlugin({
+  pluginId: 'analytics-module-matomo',
+  extensions: [matomoImplementation],
 });
