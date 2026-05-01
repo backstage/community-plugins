@@ -152,30 +152,8 @@ export function createAzureDevopsRunPipelineAction(options: {
 
       // Add template parameters to RunPipelineParameters if available
       if (templateParameters) {
-        // Log the template parameter keys only (values may contain secrets)
-        ctx.logger.info(
-          `Template parameters provided: ${Object.keys(templateParameters).join(
-            ', ',
-          )}`,
-        );
         createOptions.templateParameters = templateParameters;
       }
-
-      // Log the createOptions object in a readable format (masking template parameter values)
-      const createOptionsForLogging = {
-        ...createOptions,
-        ...(createOptions.templateParameters && {
-          templateParameters: Object.fromEntries(
-            Object.keys(createOptions.templateParameters).map(key => [
-              key,
-              '*****',
-            ]),
-          ),
-        }),
-      };
-      ctx.logger.debug('Create options for running the pipeline:', {
-        RunPipelineParameters: JSON.stringify(createOptionsForLogging, null, 2),
-      });
 
       const pipelineIdAsInt = parseInt(pipelineId, 10);
 
