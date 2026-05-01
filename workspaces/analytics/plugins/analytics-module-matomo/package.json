@@ -51,15 +51,13 @@
   },
   "dependencies": {
     "@backstage/core-plugin-api": "backstage:^",
-    "@backstage/frontend-plugin-api": "backstage:^",
-    "@backstage/plugin-app-react": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@backstage/core-app-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@testing-library/jest-dom": "6.9.1",
