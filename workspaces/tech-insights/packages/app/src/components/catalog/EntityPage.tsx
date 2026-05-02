@@ -350,7 +350,7 @@ const systemPage = (
           <EntityHasComponentsCard />
         </Grid>
         <Grid item md={6}>
-          <EntityHasApisCard variant="gridItem" />
+          <EntityHasApisCard />
         </Grid>
         <Grid item md={6}>
           <EntityHasResourcesCard />
