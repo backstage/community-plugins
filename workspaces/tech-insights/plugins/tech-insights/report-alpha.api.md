@@ -14,7 +14,6 @@ import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { FilterPredicate } from '@backstage/filter-predicates';
-import { IconComponent } from '@backstage/frontend-plugin-api';
 import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { JSXElementConstructor } from 'react';
@@ -97,8 +96,8 @@ const techInsightsPlugin: OverridableFrontendPlugin<
       };
       configInput: {
         description?: string | undefined;
-        dense?: boolean | undefined;
         checkIds?: string[] | undefined;
+        dense?: boolean | undefined;
         path?: string | undefined | undefined;
         title?: string | undefined | undefined;
         filter?: FilterPredicate | undefined;
@@ -193,31 +192,6 @@ const techInsightsPlugin: OverridableFrontendPlugin<
         loader: () => Promise<JSX.Element>;
         routeRef?: RouteRef;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);
-      };
-    }>;
-    'nav-item:tech-insights': OverridableExtensionDefinition<{
-      kind: 'nav-item';
-      name: undefined;
-      config: {
-        title: string | undefined;
-      };
-      configInput: {
-        title?: string | undefined;
-      };
-      output: ExtensionDataRef<
-        {
-          title: string;
-          icon: IconComponent;
-          routeRef: RouteRef<undefined>;
-        },
-        'core.nav-item.target',
-        {}
-      >;
-      inputs: {};
-      params: {
-        title: string;
-        icon: IconComponent;
-        routeRef: RouteRef<undefined>;
       };
     }>;
     'page:tech-insights': OverridableExtensionDefinition<{

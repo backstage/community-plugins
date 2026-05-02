@@ -43,9 +43,9 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
   configInput: {
     title?: string | undefined;
     description?: string | undefined;
+    checkIds?: string[] | undefined;
     dense?: boolean | undefined;
     entityFilter?: Record<string, unknown> | undefined;
-    checkIds?: string[] | undefined;
   };
   dataRefs: {
     props: ConfigurableExtensionDataRef<
