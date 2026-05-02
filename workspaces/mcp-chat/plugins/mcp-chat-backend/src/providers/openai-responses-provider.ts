@@ -175,6 +175,14 @@ export class OpenAIResponsesProvider extends LLMProvider {
       request.instructions = instructions;
     }
 
+    if (this.maxTokens !== undefined) {
+      request.max_output_tokens = this.maxTokens;
+    }
+
+    if (this.temperature !== undefined) {
+      request.temperature = this.temperature;
+    }
+
     return request;
   }
 

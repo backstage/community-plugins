@@ -89,6 +89,20 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const maxTokens = providerConfig.getOptionalNumber('maxTokens');
   const temperature = providerConfig.getOptionalNumber('temperature');
 
+  if (
+    maxTokens !== undefined &&
+    (maxTokens <= 0 || !Number.isInteger(maxTokens))
+  ) {
+    throw new Error(
+      `Invalid maxTokens value: ${maxTokens}. Must be a positive integer.`,
+    );
+  }
+  if (temperature !== undefined && (temperature < 0 || temperature > 2)) {
+    throw new Error(
+      `Invalid temperature value: ${temperature}. Must be between 0 and 2.`,
+    );
+  }
+
   const allowedProviders = [
     'openai',
     'openai-responses',

@@ -854,6 +854,51 @@ describe('OpenAIResponsesProvider', () => {
     });
   });
 
+  describe('maxTokens and temperature in formatRequest', () => {
+    it('should include max_output_tokens when maxTokens is configured', () => {
+      const p = new OpenAIResponsesProvider({ ...config, maxTokens: 4096 });
+      p.setMcpServerConfigs(mockMCPServerFullConfigs);
+      const messages: ChatMessage[] = [{ role: 'user', content: 'test' }];
+      const request = (p as any).formatRequest(messages);
+      expect(request.max_output_tokens).toBe(4096);
+    });
+
+    it('should not include max_output_tokens when maxTokens is not configured', () => {
+      const request = (provider as any).formatRequest([
+        { role: 'user', content: 'test' },
+      ]);
+      expect(request.max_output_tokens).toBeUndefined();
+    });
+
+    it('should include temperature when configured', () => {
+      const p = new OpenAIResponsesProvider({ ...config, temperature: 0.3 });
+      p.setMcpServerConfigs(mockMCPServerFullConfigs);
+      const messages: ChatMessage[] = [{ role: 'user', content: 'test' }];
+      const request = (p as any).formatRequest(messages);
+      expect(request.temperature).toBe(0.3);
+    });
+
+    it('should not include temperature when not configured', () => {
+      const request = (provider as any).formatRequest([
+        { role: 'user', content: 'test' },
+      ]);
+      expect(request.temperature).toBeUndefined();
+    });
+
+    it('should include both max_output_tokens and temperature when both configured', () => {
+      const p = new OpenAIResponsesProvider({
+        ...config,
+        maxTokens: 2048,
+        temperature: 0.5,
+      });
+      p.setMcpServerConfigs(mockMCPServerFullConfigs);
+      const messages: ChatMessage[] = [{ role: 'user', content: 'test' }];
+      const request = (p as any).formatRequest(messages);
+      expect(request.max_output_tokens).toBe(2048);
+      expect(request.temperature).toBe(0.5);
+    });
+  });
+
   describe('getHeaders', () => {
     it('should include authorization header when API key is provided', () => {
       const headers = (provider as any).getHeaders();

@@ -245,6 +245,24 @@ describe('OpenAIProvider', () => {
       expect(request.temperature).toBe(expected);
     });
 
+    it.each(['o1', 'o1-mini', 'o3-mini', 'o4-mini', 'gpt-5', 'gpt-5.2'])(
+      'model %s should NOT include temperature',
+      model => {
+        const p = new OpenAIProvider({ ...config, model, temperature: 0.5 });
+        const request = (p as any).formatRequest(messages);
+        expect(request.temperature).toBeUndefined();
+      },
+    );
+
+    it.each(['gpt-4o-mini', 'gpt-4o', 'gpt-4', 'gpt-3.5-turbo'])(
+      'model %s should include temperature',
+      model => {
+        const p = new OpenAIProvider({ ...config, model, temperature: 0.5 });
+        const request = (p as any).formatRequest(messages);
+        expect(request.temperature).toBe(0.5);
+      },
+    );
+
     it('should not include tools when array is empty', () => {
       const request = (provider as any).formatRequest(messages, []);
       expect(request.tools).toBeUndefined();
