@@ -58,6 +58,53 @@ const techInsightsModule = createFrontendModule({
 });
 ```
 
+> **Note:** As soon as one or more `TechInsightsScorecardBlueprint` extensions are registered, the default "all checks" scorecard is no longer rendered on the Tech Insights tab. Only scorecards whose `entityFilter` matches the current entity are shown, so entity kinds that do not match any filter will see an empty Tech Insights tab. If you want to keep a generic scorecard alongside kind-specific ones, register an additional scorecard without an `entityFilter` (or with a catch-all filter) to act as the default:
+>
+> ```ts
+> TechInsightsScorecardBlueprint.make({
+>   name: 'default',
+>   params: {
+>     title: 'Scorecards',
+>     // No entityFilter, so this scorecard is shown for every entity.
+>   },
+> }),
+> ```
+
+#### Configuring the Tech Insights tab via app-config
+
+The Tech Insights entity tab is provided by the `entity-content:tech-insights/scorecards-content` extension. You can configure or disable it from `app-config.yaml` like any other extension in the new frontend system.
+
+To customize the title, description, or which checks are shown by default:
+
+```yaml
+app:
+  extensions:
+    - entity-content:tech-insights/scorecards-content:
+        config:
+          title: My Scorecards
+          description: Check compliance status
+          checkIds: ['groupOwnerCheck']
+          dense: false
+```
+
+To completely hide the Tech Insights tab from entity pages:
+
+```yaml
+app:
+  extensions:
+    - entity-content:tech-insights/scorecards-content: false
+```
+
+#### Configuring the Tech Insights overview card via app-config
+
+A scorecard card is also auto-registered on entity overview pages via the `entity-card:tech-insights/scorecards` extension. To disable it:
+
+```yaml
+app:
+  extensions:
+    - entity-card:tech-insights/scorecards: false
+```
+
 ### Integrating with the Legacy Frontend System
 
 The following sections describe how to integrate the plugin with the legacy frontend system.
