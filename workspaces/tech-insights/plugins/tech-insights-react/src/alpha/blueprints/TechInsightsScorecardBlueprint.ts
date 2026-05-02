@@ -20,6 +20,7 @@ import {
   createExtensionBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { FilterPredicate } from '@backstage/filter-predicates';
+import { z } from 'zod';
 
 /**
  * @internal
@@ -71,14 +72,12 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
     props: techInsightsScorecardExtensionData.props,
     entityFilter: techInsightsScorecardExtensionData.entityFilter,
   },
-  config: {
-    schema: {
-      title: z => z.string().optional(),
-      description: z => z.string().optional(),
-      checkIds: z => z.array(z.string()).optional(),
-      dense: z => z.boolean().optional(),
-      entityFilter: z => z.record(z.unknown()).optional(),
-    },
+  configSchema: {
+    title: z.string().optional(),
+    description: z.string().optional(),
+    checkIds: z.array(z.string()).optional(),
+    dense: z.boolean().optional(),
+    entityFilter: z.record(z.string(), z.unknown()).optional(),
   },
   output: [
     techInsightsScorecardExtensionData.props,

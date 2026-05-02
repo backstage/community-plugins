@@ -18,7 +18,6 @@ import { techInsightsApi } from './apis';
 import { entityTechInsightsContent } from './entityContent';
 import { entityTechInsightsScorecardCard } from './entityCards';
 import { techInsightsScorecardPage } from './pages';
-import { techInsightsNavItem } from './navItems';
 
 /**
  * The Tech Insights frontend plugin for the new Backstage frontend system.
@@ -32,7 +31,6 @@ const techInsightsPlugin = createFrontendPlugin({
     techInsightsScorecardPage,
     entityTechInsightsContent,
     entityTechInsightsScorecardCard,
-    techInsightsNavItem,
   ],
 });
 

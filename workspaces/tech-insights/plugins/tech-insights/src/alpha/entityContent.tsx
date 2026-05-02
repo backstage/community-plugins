@@ -20,16 +20,15 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { filterPredicateToFilterFunction } from '@backstage/filter-predicates';
 import { TechInsightsScorecardBlueprint } from '@backstage-community/plugin-tech-insights-react/alpha';
+import { z } from 'zod';
 
 export const entityTechInsightsContent =
   EntityContentBlueprint.makeWithOverrides({
     name: 'scorecards-content',
-    config: {
-      schema: {
-        description: z => z.string().optional(),
-        checkIds: z => z.array(z.string()).optional(),
-        dense: z => z.boolean().optional(),
-      },
+    configSchema: {
+      description: z.string().optional(),
+      checkIds: z.array(z.string()).optional(),
+      dense: z.boolean().optional(),
     },
     inputs: {
       scorecards: createExtensionInput([
