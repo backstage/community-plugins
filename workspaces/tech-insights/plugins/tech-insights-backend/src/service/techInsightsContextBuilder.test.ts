@@ -20,6 +20,7 @@ import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
 import { DefaultFactRetrieverRegistry } from './fact/FactRetrieverRegistry';
 import { Knex } from 'knex';
 import { mockServices } from '@backstage/backend-test-utils';
+import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 import { DatabaseService } from '@backstage/backend-plugin-api';
 
 jest.mock('./fact/FactRetrieverRegistry');
@@ -52,6 +53,7 @@ describe('buildTechInsightsContext', () => {
   const scheduler = DefaultSchedulerService.create({
     database,
     logger,
+    metrics: metricsServiceMock.mock(),
     rootLifecycle,
     httpRouter,
     pluginMetadata: { getId: () => 'plugin-id' },

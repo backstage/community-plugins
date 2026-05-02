@@ -55,6 +55,7 @@
     "@backstage-community/plugin-tech-insights-common": "workspace:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/filter-predicates": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/types": "backstage:^",

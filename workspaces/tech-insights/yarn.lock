@@ -2042,6 +2042,7 @@ __metadata:
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/filter-predicates": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
@@ -2070,6 +2071,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/errors": "backstage:^"
+    "@backstage/filter-predicates": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/types": "backstage:^"
@@ -2998,7 +3000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/filter-predicates@npm:^0.1.2":
+"@backstage/filter-predicates@backstage:^::backstage=1.50.2&npm=0.1.2, @backstage/filter-predicates@npm:^0.1.2":
   version: 0.1.2
   resolution: "@backstage/filter-predicates@npm:0.1.2"
   dependencies:
