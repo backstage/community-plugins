@@ -1960,6 +1960,7 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/errors": "backstage:^"
+    "@backstage/plugin-permission-common": "backstage:^"
     "@backstage/types": "backstage:^"
     "@types/luxon": "npm:^3.0.0"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -2357,7 +2358,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli-defaults@npm:^0.1.1":
+"@backstage/cli-defaults@backstage:^::backstage=1.50.2&npm=0.1.1, @backstage/cli-defaults@npm:^0.1.1":
   version: 0.1.1
   resolution: "@backstage/cli-defaults@npm:0.1.1"
   dependencies:
@@ -5472,6 +5473,7 @@ __metadata:
   resolution: "@internal/tech-insights@workspace:."
   dependencies:
     "@backstage/cli": "backstage:^"
+    "@backstage/cli-defaults": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.27.1"
@@ -13001,6 +13003,7 @@ __metadata:
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"

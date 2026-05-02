@@ -63,6 +63,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/plugin-permission-common": "backstage:^",
     "@backstage/types": "backstage:^",
     "@types/luxon": "^3.0.0",
     "fast-json-stable-stringify": "^2.1.0",
