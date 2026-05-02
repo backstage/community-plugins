@@ -24,17 +24,8 @@ import {
   useMcpServers,
   useConversations,
 } from '../../hooks';
-import type { ConversationRecord } from '../../types';
-
-interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-  tools?: string[];
-  toolsUsed?: string[];
-  toolResponses?: any[];
-}
+import { ApprovalStatus, ChatMessage, ConversationRecord } from '../../types';
+import { extractLastToolRequests } from '../../utils';
 
 export const ChatPage = () => {
   const theme = useTheme();
@@ -61,12 +52,15 @@ export const ChatPage = () => {
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<
     string | undefined
   >();
   const [selectedConversationId, setSelectedConversationId] = useState<
     string | undefined
+  >();
+  const [toolRequests, setToolRequests] = useState<
+    Record<string, ApprovalStatus> | undefined
   >();
   const chatContainerRef = useRef<ChatContainerRef>(null);
 
@@ -87,9 +81,10 @@ export const ChatPage = () => {
     setMessages([]);
     setCurrentConversationId(undefined);
     setSelectedConversationId(undefined);
+    setToolRequests(undefined);
   };
 
-  const handleMessagesChange = (newMessages: Message[]) => {
+  const handleMessagesChange = (newMessages: ChatMessage[]) => {
     setMessages(newMessages);
   };
 
@@ -112,22 +107,11 @@ export const ChatPage = () => {
       // Load the full conversation
       const fullConversation = await loadConversation(conversation.id);
 
-      // Convert conversation messages to UI messages
-      const uiMessages: Message[] = fullConversation.messages.map(
-        (msg, index) => ({
-          id: `${conversation.id}-${index}`,
-          text: msg.content,
-          isUser: msg.role === 'user',
-          timestamp: new Date(fullConversation.updatedAt),
-          toolsUsed:
-            msg.role === 'assistant' ? fullConversation.toolsUsed : undefined,
-        }),
-      );
-
-      setMessages(uiMessages);
+      setMessages(fullConversation.messages);
       setSelectedConversationId(conversation.id);
       setCurrentConversationId(conversation.id);
       setError(null);
+      setToolRequests(extractLastToolRequests(fullConversation.messages));
     } catch (err) {
       setError(`Failed to load conversation: ${err}`);
     }
@@ -180,6 +164,8 @@ export const ChatPage = () => {
                   onMessagesChange={handleMessagesChange}
                   conversationId={currentConversationId}
                   onConversationUpdated={handleConversationUpdated}
+                  toolRequests={toolRequests}
+                  setToolRequests={setToolRequests}
                 />
 
                 {/* Sidebar - Right Side */}

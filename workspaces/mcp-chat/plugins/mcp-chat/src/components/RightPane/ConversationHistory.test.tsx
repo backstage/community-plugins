@@ -57,8 +57,16 @@ describe('ConversationHistory', () => {
     userId: 'user:default/test-user',
     title,
     messages: [
-      { role: 'user', content: `Message for ${title}` },
-      { role: 'assistant', content: 'Response' },
+      {
+        role: 'user',
+        content: `Message for ${title}`,
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
+      },
+      {
+        role: 'assistant',
+        content: 'Response',
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
+      },
     ],
     toolsUsed: [],
     isStarred,

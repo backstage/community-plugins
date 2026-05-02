@@ -18,7 +18,7 @@ import { mockServices } from '@backstage/backend-test-utils';
 import { OpenAIResponsesProvider } from './openai-responses-provider';
 import {
   ProviderConfig,
-  ChatMessage,
+  LlmMessage,
   MCPServerFullConfig,
   MCPServerType,
   ResponsesApiResponse,
@@ -86,7 +86,7 @@ describe('OpenAIResponsesProvider', () => {
 
   describe('sendMessage', () => {
     it('should send message with MCP tools to Responses API', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         {
           role: 'user',
           content: 'How many pods in the mcp-servers namespace?',
@@ -205,7 +205,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should handle response without tool calls', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Hello, how are you?' },
       ];
 
@@ -253,7 +253,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should include system prompt as instructions', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'system', content: 'You are a helpful assistant.' },
         { role: 'user', content: 'Help me' },
       ];
@@ -315,7 +315,7 @@ describe('OpenAIResponsesProvider', () => {
 
       provider.setMcpServerConfigs(mixedConfigs);
 
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Test' }];
 
       const mockResponse: ResponsesApiResponse = {
         id: 'resp_test',
@@ -350,7 +350,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should handle API errors', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Test' }];
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -364,7 +364,7 @@ describe('OpenAIResponsesProvider', () => {
     });
 
     it('should handle multiple tool calls', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Check pods and search' },
       ];
 
@@ -439,7 +439,7 @@ describe('OpenAIResponsesProvider', () => {
 
       provider.setMcpServerConfigs(serverWithHeaders);
 
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Test with headers' },
       ];
 
@@ -505,7 +505,7 @@ describe('OpenAIResponsesProvider', () => {
 
       provider.setMcpServerConfigs(serverWithoutHeaders);
 
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Test without headers' },
       ];
 
@@ -578,7 +578,7 @@ describe('OpenAIResponsesProvider', () => {
 
       provider.setMcpServerConfigs(mixedServers);
 
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Test mixed servers' },
       ];
 
@@ -722,7 +722,7 @@ describe('OpenAIResponsesProvider', () => {
 
   describe('getLastResponseOutput', () => {
     it('should return the last response output', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Test' }];
 
       const mockResponse: ResponsesApiResponse = {
         id: 'resp_test',

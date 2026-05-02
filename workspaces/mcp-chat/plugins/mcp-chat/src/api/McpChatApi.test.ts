@@ -18,7 +18,6 @@ import { ResponseError } from '@backstage/errors';
 import { McpChat } from './McpChatApi';
 import {
   ChatMessage,
-  ChatResponse,
   MCPServerStatusData,
   ProviderStatusData,
   ToolsResponse,
@@ -63,25 +62,31 @@ describe('McpChatApi', () => {
   });
 
   describe('sendChatMessage', () => {
+    const mockUserMessage = 'Hello';
     const mockMessages: ChatMessage[] = [
-      { role: 'user', content: 'Hello' },
-      { role: 'assistant', content: 'Hi there!' },
+      {
+        role: 'user',
+        content: mockUserMessage,
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
+      },
+      {
+        role: 'assistant',
+        content: 'Hi there!',
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
+      },
     ];
-
-    const mockResponse: ChatResponse = {
-      role: 'assistant',
-      content: 'Test response',
-      toolResponses: [{ toolName: 'test-tool', result: 'success' }],
-      toolsUsed: ['test-tool'],
+    const mockChatResponse = {
+      conversationId: 'conv-1',
+      messages: mockMessages,
     };
 
     it('should send chat message successfully', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockChatResponse),
       });
 
-      const result = await mcpChat.sendChatMessage(mockMessages);
+      const result = await mcpChat.sendChatMessage([], mockUserMessage);
 
       expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
       expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/chat`, {
@@ -90,22 +95,27 @@ describe('McpChatApi', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: mockMessages,
+          messages: [],
+          userMessage: mockUserMessage,
           enabledTools: [],
         }),
         signal: undefined,
       });
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual(mockChatResponse);
     });
 
     it('should send chat message with enabled tools', async () => {
       const enabledTools = ['tool1', 'tool2'];
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockChatResponse),
       });
 
-      await mcpChat.sendChatMessage(mockMessages, enabledTools);
+      const result = await mcpChat.sendChatMessage(
+        [],
+        mockUserMessage,
+        enabledTools,
+      );
 
       expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/chat`, {
         method: 'POST',
@@ -113,21 +123,28 @@ describe('McpChatApi', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: mockMessages,
+          messages: [],
+          userMessage: mockUserMessage,
           enabledTools,
         }),
         signal: undefined,
       });
+      expect(result).toEqual(mockChatResponse);
     });
 
     it('should send chat message with abort signal', async () => {
       const abortController = new AbortController();
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockChatResponse),
       });
 
-      await mcpChat.sendChatMessage(mockMessages, [], abortController.signal);
+      const result = await mcpChat.sendChatMessage(
+        [],
+        mockUserMessage,
+        [],
+        abortController.signal,
+      );
 
       expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/chat`, {
         method: 'POST',
@@ -135,11 +152,13 @@ describe('McpChatApi', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: mockMessages,
+          messages: [],
+          userMessage: mockUserMessage,
           enabledTools: [],
         }),
         signal: abortController.signal,
       });
+      expect(result).toEqual(mockChatResponse);
     });
 
     it('should handle HTTP errors', async () => {
@@ -156,9 +175,125 @@ describe('McpChatApi', () => {
         .spyOn(ResponseError, 'fromResponse')
         .mockResolvedValueOnce(mockResponseError);
 
-      await expect(mcpChat.sendChatMessage(mockMessages)).rejects.toThrow(
-        'Internal Server Error',
+      await expect(
+        mcpChat.sendChatMessage([], mockUserMessage),
+      ).rejects.toThrow('Internal Server Error');
+    });
+  });
+
+  describe('sendApprovedToolCalls', () => {
+    const mockMessages: ChatMessage[] = [
+      {
+        role: 'user',
+        content: 'Call a test tool',
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
+      },
+      {
+        role: 'assistant',
+        content: null,
+        tool_calls: [
+          {
+            id: 'call_1',
+            type: 'function',
+            function: { name: 'search', arguments: '{}' },
+            metadata: { serverId: 's1', approval_status: 'pending' },
+          },
+        ],
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
+      },
+    ];
+    const mockDecisions = { call_1: 'approved' as const };
+    const mockResponse = {
+      conversationId: 'conv-1',
+      messages: mockMessages,
+    };
+
+    it('should send approval decisions successfully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      const result = await mcpChat.sendApprovedToolCalls(
+        mockMessages,
+        mockDecisions,
       );
+
+      expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');
+      expect(mockFetch).toHaveBeenCalledWith(`${baseUrl}/chat/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: mockMessages,
+          decisions: mockDecisions,
+          conversationId: undefined,
+        }),
+        signal: undefined,
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should pass conversationId when provided', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      await mcpChat.sendApprovedToolCalls(
+        mockMessages,
+        mockDecisions,
+        undefined,
+        'conv-123',
+      );
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${baseUrl}/chat/approve`,
+        expect.objectContaining({
+          body: JSON.stringify({
+            messages: mockMessages,
+            decisions: mockDecisions,
+            conversationId: 'conv-123',
+          }),
+        }),
+      );
+    });
+
+    it('should pass abort signal when provided', async () => {
+      const abortController = new AbortController();
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      await mcpChat.sendApprovedToolCalls(
+        mockMessages,
+        mockDecisions,
+        abortController.signal,
+      );
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${baseUrl}/chat/approve`,
+        expect.objectContaining({ signal: abortController.signal }),
+      );
+    });
+
+    it('should handle HTTP errors', async () => {
+      const response = {
+        ok: false,
+        statusText: 'Bad Request',
+      };
+      mockFetch.mockResolvedValueOnce(response);
+      const mockResponseError = new Error('Bad Request') as any;
+      mockResponseError.response = response;
+      mockResponseError.statusCode = 400;
+      mockResponseError.statusText = 'Bad Request';
+      jest
+        .spyOn(ResponseError, 'fromResponse')
+        .mockResolvedValueOnce(mockResponseError);
+
+      await expect(
+        mcpChat.sendApprovedToolCalls(mockMessages, mockDecisions),
+      ).rejects.toThrow('Bad Request');
     });
   });
 

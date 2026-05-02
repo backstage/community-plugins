@@ -16,7 +16,7 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { OllamaProvider } from './ollama-provider';
-import { ProviderConfig, ChatMessage, Tool } from '../types';
+import { ProviderConfig, LlmMessage, Tool } from '../types';
 import { Ollama } from 'ollama';
 
 // Mock the Ollama library
@@ -88,7 +88,7 @@ describe('OllamaProvider', () => {
 
   describe('sendMessage', () => {
     it('should send simple message without tools', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Hello, how are you?' },
       ];
 
@@ -139,7 +139,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle null content by converting to empty string', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: null }];
+      const messages: LlmMessage[] = [{ role: 'user', content: null }];
 
       const mockResponse = {
         message: {
@@ -166,7 +166,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle tools correctly', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'What is the weather like?' },
       ];
 
@@ -234,7 +234,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should convert string tool call arguments to objects', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         {
           role: 'assistant',
           content: 'Let me check that for you.',
@@ -286,7 +286,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle tool call arguments that are already objects', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         {
           role: 'assistant',
           content: 'Let me check that for you.',
@@ -338,7 +338,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle tool messages', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         {
           role: 'tool',
           content: '{"temperature": "72°F", "condition": "sunny"}',
@@ -371,7 +371,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle response with alternative tool call format', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Test message' },
       ];
 
@@ -405,7 +405,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle response without usage metadata', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const mockResponse = {
         message: {
@@ -429,7 +429,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should handle response with null content', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const mockResponse = {
         message: {
@@ -555,7 +555,7 @@ describe('OllamaProvider', () => {
 
   describe('formatRequest', () => {
     it('should format request correctly without tools', () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const request = (provider as any).formatRequest(messages);
 
@@ -568,7 +568,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should format request correctly with tools', () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const tools: Tool[] = [
         {
@@ -593,7 +593,7 @@ describe('OllamaProvider', () => {
     });
 
     it('should not include tools when empty array', () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       const request = (provider as any).formatRequest(messages, []);
 

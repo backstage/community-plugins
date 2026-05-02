@@ -266,6 +266,43 @@ export interface ProviderStatusData {
 // =============================================================================
 
 /**
+ * Valid roles for a chat message author.
+ *
+ * @public
+ */
+export type ChatRole = 'system' | 'user' | 'assistant' | 'tool';
+
+/**
+ * Metadata attached to every chat message.
+ * Provides a unique identifier and creation timestamp.
+ *
+ * @public
+ */
+export type MessageMetadata = {
+  /** Unique identifier for the message (UUID) */
+  id: string;
+  /** ISO timestamp when the message was created */
+  timestamp: string;
+};
+
+/**
+ * A message in the format expected by LLM providers.
+ * Stripped of UI-specific metadata so it can be sent directly to the model.
+ *
+ * @public
+ */
+export interface LlmMessage {
+  /** The role of the message author */
+  role: ChatRole;
+  /** Message content. Can be null for assistant messages that only contain tool calls. */
+  content: string | null;
+  /** Tool calls requested by the assistant. Only present when role is 'assistant' and the LLM decided to call some tools. */
+  tool_calls?: ToolCall[];
+  /** ID of the tool call this message responds to. Required when role is 'tool'. */
+  tool_call_id?: string;
+}
+
+/**
  * A chat message in the conversation.
  * Compatible with OpenAI's Chat Completions API message format.
  *
@@ -298,15 +335,8 @@ export interface ProviderStatusData {
  *
  * @public
  */
-export interface ChatMessage {
-  /** The role of the message author */
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  /** Message content. Can be null for assistant messages that only contain tool calls. */
-  content: string | null;
-  /** Tool calls requested by the assistant. Only present when role is 'assistant'. */
-  tool_calls?: ToolCall[];
-  /** ID of the tool call this message responds to. Required when role is 'tool'. */
-  tool_call_id?: string;
+export interface ChatMessage extends LlmMessage {
+  metadata: MessageMetadata;
 }
 
 /**
@@ -339,20 +369,6 @@ export interface ChatResponse {
     /** Total tokens used */
     total_tokens: number;
   };
-}
-
-/**
- * Complete response from a chat query including tool execution results.
- *
- * @public
- */
-export interface QueryResponse {
-  /** The final text reply from the assistant */
-  reply: string;
-  /** Tool calls that were made during the conversation */
-  toolCalls: ToolCall[];
-  /** Results from executing the tool calls */
-  toolResponses: ToolExecutionResult[];
 }
 
 // =============================================================================
@@ -399,6 +415,24 @@ export interface Tool {
 }
 
 /**
+ * Approval lifecycle states for a tool call.
+ *
+ * - `pending` — awaiting user decision
+ * - `approved` — user approved execution
+ * - `rejected` — user rejected execution
+ *
+ * @public
+ */
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
+/**
+ * Subset of {@link ApprovalStatus} representing a final user decision.
+ *
+ * @public
+ */
+export type ConfirmedStatus = Exclude<ApprovalStatus, 'pending'>;
+
+/**
  * A tool call made by the LLM.
  * Represents the model's request to invoke a specific tool.
  *
@@ -430,6 +464,13 @@ export interface ToolCall {
     name: string;
     /** JSON-encoded string of the function arguments */
     arguments: string;
+  };
+  /** Additional parameters */
+  metadata?: {
+    /** MCP server ID that provides this tool (not sent to LLM) */
+    serverId?: string;
+    /** Approval status for this tool call (not sent to LLM) */
+    approval_status?: ApprovalStatus;
   };
 }
 
@@ -467,7 +508,7 @@ export interface ToolExecutionResult {
 // =============================================================================
 
 /**
- * Result of validating chat messages.
+ * Result of validating a parameter.
  *
  * @example
  * ```typescript
@@ -479,8 +520,8 @@ export interface ToolExecutionResult {
  *
  * @public
  */
-export interface MessageValidationResult {
-  /** Whether the messages passed validation */
+export interface ValidationResult {
+  /** Whether the parameter passed validation */
   isValid: boolean;
   /** Error message describing the validation failure */
   error?: string;

@@ -33,11 +33,9 @@ jest.mock('./services/MCPClientServiceImpl', () => ({
         },
       },
     ]),
-    processQuery: jest.fn().mockResolvedValue({
-      reply: 'Test response',
-      toolCalls: [],
-      toolResponses: [],
-    }),
+    processQuery: jest
+      .fn()
+      .mockResolvedValue([{ role: 'assistant', content: 'Test response' }]),
     getAvailableTools: jest.fn().mockReturnValue([
       {
         type: 'function',
@@ -87,6 +85,7 @@ jest.mock('./services/MCPClientServiceImpl', () => ({
 jest.mock('./utils', () => ({
   validateConfig: jest.fn(),
   validateMessages: jest.fn().mockReturnValue({ isValid: true }),
+  validateEnabledTools: jest.fn().mockReturnValue({ isValid: true }),
 }));
 
 const mockConfig = {
@@ -174,7 +173,8 @@ describe('mcpChatPlugin', () => {
   describe('Chat Endpoint', () => {
     it('should process valid chat requests', async () => {
       const chatRequest = {
-        messages: [{ role: 'user', content: 'Hello' }],
+        messages: [],
+        userMessage: 'Hello',
         enabledTools: [],
       };
 
@@ -183,15 +183,16 @@ describe('mcpChatPlugin', () => {
         .send(chatRequest)
         .expect(200);
 
-      expect(response.body).toHaveProperty('role', 'assistant');
-      expect(response.body).toHaveProperty('content');
-      expect(response.body).toHaveProperty('toolResponses');
-      expect(response.body).toHaveProperty('toolsUsed');
+      expect(response.body).toHaveProperty('messages');
+      const lastMessage = response.body.messages.at(-1);
+      expect(lastMessage).toHaveProperty('role', 'assistant');
+      expect(lastMessage).toHaveProperty('content');
     });
 
     it('should handle chat requests with tools', async () => {
       const chatRequest = {
-        messages: [{ role: 'user', content: 'Use a tool' }],
+        messages: [],
+        userMessage: 'Use a tool',
         enabledTools: ['test-server'],
       };
 
@@ -200,9 +201,9 @@ describe('mcpChatPlugin', () => {
         .send(chatRequest)
         .expect(200);
 
-      expect(response.body.role).toBe('assistant');
-      expect(Array.isArray(response.body.toolResponses)).toBe(true);
-      expect(Array.isArray(response.body.toolsUsed)).toBe(true);
+      const lastMessage = response.body.messages.at(-1);
+      expect(lastMessage).toHaveProperty('role', 'assistant');
+      expect(lastMessage).toHaveProperty('content');
     });
 
     it('should validate messages and return error for invalid messages', async () => {
@@ -231,36 +232,6 @@ describe('mcpChatPlugin', () => {
         .expect(400);
 
       expect(response.body.error).toBe('At least one message is required');
-    });
-
-    it('should reject invalid enabledTools', async () => {
-      const response = await request(backend.server)
-        .post('/api/mcp-chat/chat')
-        .send({
-          messages: [{ role: 'user', content: 'Hello' }],
-          enabledTools: 'not-an-array',
-        })
-        .expect(400);
-
-      expect(response.body.error).toMatchObject({
-        name: 'InputError',
-        message: 'enabledTools must be an array',
-      });
-    });
-
-    it('should reject non-string enabledTools', async () => {
-      const response = await request(backend.server)
-        .post('/api/mcp-chat/chat')
-        .send({
-          messages: [{ role: 'user', content: 'Hello' }],
-          enabledTools: [123, 'valid'],
-        })
-        .expect(400);
-
-      expect(response.body.error).toMatchObject({
-        name: 'InputError',
-        message: 'All enabledTools must be strings',
-      });
     });
   });
 

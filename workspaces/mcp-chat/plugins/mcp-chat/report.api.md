@@ -9,27 +9,33 @@ import { ComponentType } from 'react';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
+// @public
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
 // @public (undocumented)
 export interface ChatMessage {
+  content: string | null;
   // (undocumented)
-  content: string;
-  // (undocumented)
-  role: 'user' | 'assistant';
+  metadata: {
+    id: string;
+    timestamp: string;
+  };
+  role: ChatRole;
+  tool_call_id?: string;
+  tool_calls?: ToolCall[];
 }
 
 // @public (undocumented)
 export interface ChatResponse {
-  // (undocumented)
-  content: string;
-  // (undocumented)
-  conversationId?: string;
-  // (undocumented)
-  role: 'assistant';
-  // (undocumented)
-  toolResponses?: any[];
-  // (undocumented)
-  toolsUsed?: string[];
+  conversationId: string;
+  messages: ChatMessage[];
 }
+
+// @public
+export type ChatRole = 'system' | 'user' | 'assistant' | 'tool';
+
+// @public
+export type ConfirmedStatus = Exclude<ApprovalStatus, 'pending'>;
 
 // @public
 export interface ConversationRecord {
@@ -64,8 +70,16 @@ export interface McpChatApi {
   // (undocumented)
   getProviderStatus(): Promise<ProviderStatusData>;
   // (undocumented)
+  sendApprovedToolCalls(
+    messages: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
+    signal?: AbortSignal,
+    conversationId?: string,
+  ): Promise<ChatResponse>;
+  // (undocumented)
   sendChatMessage(
     messages: ChatMessage[],
+    userMessage: string,
     enabledTools?: string[],
     signal?: AbortSignal,
     conversationId?: string,
@@ -192,6 +206,20 @@ export interface Tool {
   serverId: string;
   // (undocumented)
   type: string;
+}
+
+// @public (undocumented)
+export interface ToolCall {
+  function: {
+    name: string;
+    arguments: string;
+  };
+  id: string;
+  metadata?: {
+    serverId?: string;
+    approval_status?: ApprovalStatus;
+  };
+  type: 'function';
 }
 
 // @public (undocumented)

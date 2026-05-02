@@ -15,6 +15,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
+- ✅ **Tool Approval**: Optional human-in-the-loop approval for tool calls before execution
 
 ## Supported AI Providers
 
@@ -183,6 +184,12 @@ mcpChat:
       url: 'http://localhost:7007/api/mcp-actions/v1'
       headers:
         Authorization: 'Bearer ${BACKSTAGE_MCP_TOKEN}'
+
+  # Optional: Require user approval before executing tool calls
+  # When true, tool calls are paused and presented to the user for approval/rejection
+  # Note: Not supported with the 'openai-responses' provider, which executes tools
+  # server-side within the API request.
+  requestApproval: true
 
   # Optional: Customize the system prompt for the AI assistant
   # If not specified, uses a default prompt optimized for tool usage
@@ -353,6 +360,7 @@ backend:
 | Endpoint                        | Method | Description                           |
 | ------------------------------- | ------ | ------------------------------------- |
 | `/api/mcp-chat/chat`            | POST   | Send chat messages                    |
+| `/api/mcp-chat/chat/approve`    | POST   | Approve or reject pending tool calls  |
 | `/api/mcp-chat/provider/status` | GET    | Get status of connected AI provider   |
 | `/api/mcp-chat/mcp/status`      | GET    | Get status of connected MCP servers   |
 | `/api/mcp-chat/tools`           | GET    | List available MCP tools from servers |

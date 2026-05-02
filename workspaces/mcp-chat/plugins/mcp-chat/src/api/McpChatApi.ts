@@ -19,6 +19,7 @@ import { ResponseError } from '@backstage/errors';
 import {
   ChatMessage,
   ChatResponse,
+  ConfirmedStatus,
   ConversationRecord,
   ConversationsResponse,
   MCPServerStatusData,
@@ -32,7 +33,14 @@ import {
 export interface McpChatApi {
   sendChatMessage(
     messages: ChatMessage[],
+    userMessage: string,
     enabledTools?: string[],
+    signal?: AbortSignal,
+    conversationId?: string,
+  ): Promise<ChatResponse>;
+  sendApprovedToolCalls(
+    messages: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
     signal?: AbortSignal,
     conversationId?: string,
   ): Promise<ChatResponse>;
@@ -56,6 +64,7 @@ export class McpChat implements McpChatApi {
 
   async sendChatMessage(
     messages: ChatMessage[],
+    userMessage: string,
     enabledTools: string[] = [],
     signal?: AbortSignal,
     conversationId?: string,
@@ -69,7 +78,36 @@ export class McpChat implements McpChatApi {
       },
       body: JSON.stringify({
         messages,
+        userMessage,
         enabledTools,
+        conversationId,
+      }),
+      signal,
+    });
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    return response.json();
+  }
+
+  async sendApprovedToolCalls(
+    messages: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
+    signal?: AbortSignal,
+    conversationId?: string,
+  ): Promise<ChatResponse> {
+    const baseUrl = await this.discoveryApi.getBaseUrl('mcp-chat');
+
+    const response = await this.fetchApi.fetch(`${baseUrl}/chat/approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages,
+        decisions,
         conversationId,
       }),
       signal,

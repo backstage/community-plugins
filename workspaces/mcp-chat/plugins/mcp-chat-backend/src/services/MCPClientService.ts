@@ -16,10 +16,10 @@
 
 import {
   ChatMessage,
+  ConfirmedStatus,
   MCPServer,
   MCPServerStatusData,
   ProviderStatusData,
-  QueryResponse,
   ServerTool,
 } from '../types';
 
@@ -61,6 +61,7 @@ export interface MCPClientService {
    * Automatically handles tool calls if the LLM requests them.
    *
    * @param messagesInput - Array of chat messages representing the conversation
+   * @param userMessage - String containing the query from the user
    * @param enabledTools - Optional array of server IDs to enable. If undefined, all tools are enabled.
    *                       If empty array, no tools are enabled.
    * @returns Promise resolving to the query response with reply and tool execution details
@@ -79,8 +80,24 @@ export interface MCPClientService {
    */
   processQuery(
     messagesInput: ChatMessage[],
+    userMessage: string,
     enabledTools?: string[],
-  ): Promise<QueryResponse>;
+  ): Promise<ChatMessage[]>;
+
+  /**
+   * Processes user approval/rejection decisions for pending tool calls.
+   * Matches each decision to a tool call in the last assistant message,
+   * executes approved tools, appends rejection messages for rejected tools,
+   * then sends the updated history to the LLM for a follow-up response.
+   *
+   * @param messages - Full conversation history including the pending tool calls
+   * @param decisions - Map of tool call ID to 'approved' or 'rejected'
+   * @returns Promise resolving to complete status with the full messages array
+   */
+  processApprovalDecisions(
+    messages: ChatMessage[],
+    decisions: Record<string, ConfirmedStatus>,
+  ): Promise<ChatMessage[]>;
 
   /**
    * Returns all tools available from connected MCP servers.

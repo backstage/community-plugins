@@ -15,12 +15,20 @@
  */
 
 import { createRef } from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatContainer, type ChatContainerRef } from './ChatContainer';
 import { mcpChatApiRef } from '../../api';
-import { MCPServerType } from '../../types';
+import { ChatMessage, MCPServerType } from '../../types';
+import { useApiRequest, useToolApproval } from '../../hooks';
+import { extractLastToolRequests } from '../../utils';
 
 const mockScrollIntoView = jest.fn();
 Object.defineProperty(Element.prototype, 'scrollIntoView', {
@@ -51,8 +59,48 @@ jest.mock('./TypingIndicator', () => ({
   TypingIndicator: () => <div data-testid="typing-indicator">Typing...</div>,
 }));
 
+jest.mock('./ToolCallCard', () => ({
+  ToolCallCard: ({
+    toolCall,
+    approvalStatus,
+    serverName,
+    onApprove,
+    onReject,
+    toolResult,
+  }: any) => (
+    <div data-testid="tool-call-card">
+      <span data-testid="tool-call-name">{toolCall.function.name}</span>
+      <span data-testid="tool-call-status">{approvalStatus}</span>
+      <span data-testid="tool-call-server">{serverName}</span>
+      {toolResult && <span data-testid="tool-call-result">{toolResult}</span>}
+      <button
+        data-testid={`approve-${toolCall.id}`}
+        onClick={() => onApprove(toolCall.id)}
+      >
+        Approve
+      </button>
+      <button
+        data-testid={`reject-${toolCall.id}`}
+        onClick={() => onReject(toolCall.id)}
+      >
+        Reject
+      </button>
+    </div>
+  ),
+}));
+
+jest.mock('../../hooks', () => ({
+  useToolApproval: jest.fn(),
+  useApiRequest: jest.fn(),
+}));
+
+jest.mock('../../utils', () => ({
+  extractLastToolRequests: jest.fn(),
+}));
+
 const mockMcpChatApi = {
   sendChatMessage: jest.fn(),
+  sendApprovedToolCalls: jest.fn(),
   getConfigStatus: jest.fn(),
   getAvailableTools: jest.fn(),
   testProviderConnection: jest.fn(),
@@ -73,6 +121,18 @@ const defaultProps = {
   ],
   messages: [],
   onMessagesChange: jest.fn(),
+  setToolRequests: jest.fn(),
+};
+
+const mockUseApiRequest = {
+  isTyping: false,
+  execute: jest.fn(),
+  cancelOngoingRequest: jest.fn(),
+};
+
+const mockUseToolApproval = {
+  approve: jest.fn(),
+  reject: jest.fn(),
 };
 
 const renderChatContainer = (props = {}) => {
@@ -92,14 +152,34 @@ const renderChatContainer = (props = {}) => {
 };
 
 describe('ChatContainer', () => {
+  const messages: ChatMessage[] = [
+    {
+      role: 'user',
+      content: 'Hello',
+      metadata: {
+        id: '1',
+        timestamp: new Date(1).toISOString(),
+      },
+    },
+    {
+      role: 'assistant',
+      content: 'Hi there!',
+      metadata: {
+        id: '2',
+        timestamp: new Date(2).toISOString(),
+      },
+    },
+  ];
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockScrollIntoView.mockClear();
     mockMcpChatApi.sendChatMessage.mockResolvedValue({
-      content: 'Test response',
-      toolsUsed: [],
-      toolResponses: [],
+      messages,
+      conversationId: 'conv-123',
     });
+    (useApiRequest as jest.Mock).mockReturnValue(mockUseApiRequest);
+    (useToolApproval as jest.Mock).mockReturnValue(mockUseToolApproval);
   });
 
   describe('rendering', () => {
@@ -111,21 +191,6 @@ describe('ChatContainer', () => {
     });
 
     it('renders messages when messages exist', () => {
-      const messages = [
-        {
-          id: '1',
-          text: 'Hello',
-          isUser: true,
-          timestamp: new Date(),
-        },
-        {
-          id: '2',
-          text: 'Hi there!',
-          isUser: false,
-          timestamp: new Date(),
-        },
-      ];
-
       renderChatContainer({ messages });
 
       const messageElements = screen.getAllByTestId('chat-message');
@@ -133,12 +198,123 @@ describe('ChatContainer', () => {
       expect(screen.getByText('Hello')).toBeInTheDocument();
       expect(screen.getByText('Hi there!')).toBeInTheDocument();
     });
+
+    it('renders assistant tool_calls as ToolCallCards', () => {
+      const toolMessages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              id: 'c1',
+              type: 'function',
+              function: { name: 'search', arguments: '{}' },
+              metadata: { serverId: '1', approval_status: 'approved' },
+            },
+            {
+              id: 'c2',
+              type: 'function',
+              function: { name: 'fetch', arguments: '{}' },
+              metadata: { serverId: '1', approval_status: 'pending' },
+            },
+          ],
+          metadata: { id: 'a1', timestamp: new Date(1).toISOString() },
+        },
+      ];
+
+      renderChatContainer({ messages: toolMessages });
+
+      const cards = screen.getAllByTestId('tool-call-card');
+      expect(cards).toHaveLength(2);
+      expect(screen.getByText('search')).toBeInTheDocument();
+      expect(screen.getByText('fetch')).toBeInTheDocument();
+    });
+
+    it('resolves server name for tool call cards', () => {
+      const toolMessages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              id: 'c1',
+              type: 'function',
+              function: { name: 'search', arguments: '{}' },
+              metadata: { serverId: '1', approval_status: 'approved' },
+            },
+          ],
+          metadata: { id: 'a1', timestamp: new Date(1).toISOString() },
+        },
+      ];
+
+      renderChatContainer({ messages: toolMessages });
+
+      expect(screen.getByText('test-server')).toBeInTheDocument();
+    });
+
+    it('shows tool result on ToolCallCard when tool response exists', () => {
+      const toolMessages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              id: 'c1',
+              type: 'function',
+              function: { name: 'search', arguments: '{}' },
+              metadata: { serverId: '1', approval_status: 'approved' },
+            },
+          ],
+          metadata: { id: 'a1', timestamp: new Date(1).toISOString() },
+        },
+        {
+          role: 'tool',
+          content: 'found 3 cats',
+          tool_call_id: 'c1',
+          metadata: { id: 't1', timestamp: new Date(2).toISOString() },
+        },
+      ];
+
+      renderChatContainer({ messages: toolMessages });
+
+      expect(screen.getByTestId('tool-call-result')).toHaveTextContent(
+        'found 3 cats',
+      );
+    });
+
+    it('does not render tool or system messages directly', () => {
+      const mixedMessages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: 'You are helpful',
+          metadata: { id: 's1', timestamp: new Date(1).toISOString() },
+        },
+        {
+          role: 'user',
+          content: 'Hi',
+          metadata: { id: 'u1', timestamp: new Date(2).toISOString() },
+        },
+        {
+          role: 'tool',
+          content: 'result',
+          tool_call_id: 'c1',
+          metadata: { id: 't1', timestamp: new Date(3).toISOString() },
+        },
+      ];
+
+      renderChatContainer({ messages: mixedMessages });
+
+      const chatMessages = screen.getAllByTestId('chat-message');
+      expect(chatMessages).toHaveLength(1);
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+      expect(screen.queryByText('You are helpful')).not.toBeInTheDocument();
+      expect(screen.queryByText('result')).not.toBeInTheDocument();
+    });
   });
 
   describe('message sending', () => {
-    it('sends message and clears input', async () => {
-      const onMessagesChange = jest.fn();
-      renderChatContainer({ onMessagesChange });
+    it('clears input after sending', async () => {
+      renderChatContainer();
 
       const input = screen.getByPlaceholderText(
         'Message Assistant...',
@@ -148,16 +324,101 @@ describe('ChatContainer', () => {
       fireEvent.change(input, { target: { value: 'Hello world' } });
       fireEvent.click(sendButton!);
 
-      expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
-        [{ role: 'user', content: 'Hello world' }],
-        ['1'],
-        expect.any(AbortSignal),
-        undefined,
-      );
-
       await waitFor(() => {
         expect(input.value).toBe('');
       });
+    });
+
+    it('calls execute with api callback on send', async () => {
+      renderChatContainer();
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello world' } });
+      fireEvent.click(sendButton!);
+
+      expect(mockUseApiRequest.execute).toHaveBeenCalledTimes(1);
+
+      const apiCall = mockUseApiRequest.execute.mock.calls[0][0];
+      const controller = new AbortController();
+      await apiCall(controller.signal);
+
+      expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
+        [],
+        'Hello world',
+        ['1'],
+        controller.signal,
+        undefined,
+      );
+    });
+
+    it('onSuccess updates messages and conversation', async () => {
+      const onMessagesChange = jest.fn();
+      const onConversationUpdated = jest.fn();
+      const setToolRequests = jest.fn();
+
+      const mockResponse = {
+        messages: messages,
+        conversationId: 'conv-1',
+      };
+
+      renderChatContainer({
+        onMessagesChange,
+        onConversationUpdated,
+        setToolRequests,
+      });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: messages[0].content } });
+      fireEvent.click(sendButton!);
+
+      expect(onMessagesChange).toHaveBeenCalledTimes(1);
+      expect(onMessagesChange).toHaveBeenCalledWith([
+        {
+          role: 'user',
+          content: messages[0].content,
+          metadata: {
+            id: expect.any(String),
+            timestamp: expect.any(String),
+          },
+        },
+      ]);
+
+      const onSuccess = mockUseApiRequest.execute.mock.calls[0][1];
+      act(() => onSuccess(mockResponse));
+
+      expect(onConversationUpdated).toHaveBeenCalledTimes(1);
+      expect(onConversationUpdated).toHaveBeenCalledWith('conv-1');
+      expect(onMessagesChange).toHaveBeenCalledTimes(2);
+      expect(onMessagesChange).toHaveBeenCalledWith(messages);
+    });
+
+    it('sets tool requests when response has pending tool calls', () => {
+      const setToolRequests = jest.fn();
+      const pendingRequests = { call_1: 'pending' as const };
+      (extractLastToolRequests as jest.Mock).mockReturnValue(pendingRequests);
+
+      const mockResponse = {
+        messages,
+        conversationId: 'conv-1',
+      };
+
+      renderChatContainer({ setToolRequests });
+
+      const input = screen.getByPlaceholderText('Message Assistant...');
+      const sendButton = screen.getByTestId('SendIcon').closest('button');
+
+      fireEvent.change(input, { target: { value: 'Hello' } });
+      fireEvent.click(sendButton!);
+
+      const onSuccess = mockUseApiRequest.execute.mock.calls[0][1];
+      act(() => onSuccess(mockResponse));
+
+      expect(extractLastToolRequests).toHaveBeenCalledWith(messages);
+      expect(setToolRequests).toHaveBeenCalledWith(pendingRequests);
     });
 
     it('does not send message when Shift+Enter is pressed', async () => {
@@ -176,31 +437,15 @@ describe('ChatContainer', () => {
       expect(mockMcpChatApi.sendChatMessage).not.toHaveBeenCalled();
     });
 
-    it('shows typing indicator while waiting for response', async () => {
-      mockMcpChatApi.sendChatMessage.mockImplementation(
-        () => new Promise(resolve => setTimeout(resolve, 100)),
-      );
-
-      const messages = [
-        {
-          id: '1',
-          text: 'Previous message',
-          isUser: true,
-          timestamp: new Date(),
-        },
-      ];
+    it('shows typing indicator', () => {
+      (useApiRequest as jest.Mock).mockReturnValue({
+        ...mockUseApiRequest,
+        isTyping: true,
+      });
 
       renderChatContainer({ messages });
 
-      const input = screen.getByPlaceholderText('Message Assistant...');
-      const sendButton = screen.getByTestId('SendIcon').closest('button');
-
-      fireEvent.change(input, { target: { value: 'Hello world' } });
-      fireEvent.click(sendButton!);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('typing-indicator')).toBeInTheDocument();
-      });
+      expect(screen.getByTestId('typing-indicator')).toBeInTheDocument();
     });
 
     it('includes only enabled MCP servers in API call', async () => {
@@ -218,12 +463,122 @@ describe('ChatContainer', () => {
       fireEvent.change(input, { target: { value: 'Hello world' } });
       fireEvent.click(sendButton!);
 
+      expect(mockUseApiRequest.execute).toHaveBeenCalledTimes(1);
+      const apiCall = mockUseApiRequest.execute.mock.calls[0][0];
+      const controller = new AbortController();
+      await apiCall(controller.signal);
+
       expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
         expect.any(Array),
+        'Hello world',
         ['1', '3'],
-        expect.any(AbortSignal),
+        controller.signal,
         undefined,
       );
+    });
+  });
+
+  describe('approval', () => {
+    const pendingMessages: ChatMessage[] = [
+      {
+        role: 'user',
+        content: 'Search cats',
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
+      },
+      {
+        role: 'assistant',
+        content: null,
+        tool_calls: [
+          {
+            id: 'call_1',
+            type: 'function',
+            function: { name: 'search', arguments: '{}' },
+            metadata: { serverId: 's1', approval_status: 'pending' },
+          },
+        ],
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
+      },
+    ];
+
+    const getOnComplete = (): ((decisions: Record<string, string>) => void) => {
+      return (useToolApproval as jest.Mock).mock.calls[0][2];
+    };
+
+    it('calls sendApprovedToolCalls via execute on approval complete', async () => {
+      renderChatContainer({ messages: pendingMessages });
+
+      const onComplete = getOnComplete();
+      await act(async () => onComplete({ call_1: 'approved' }));
+
+      expect(mockUseApiRequest.execute).toHaveBeenCalledTimes(1);
+
+      const apiCall = mockUseApiRequest.execute.mock.calls[0][0];
+      const controller = new AbortController();
+      await apiCall(controller.signal);
+
+      expect(mockMcpChatApi.sendApprovedToolCalls).toHaveBeenCalledWith(
+        pendingMessages,
+        { call_1: 'approved' },
+        controller.signal,
+        undefined,
+      );
+    });
+
+    it('passes conversationId to sendApprovedToolCalls', async () => {
+      renderChatContainer({
+        messages: pendingMessages,
+        conversationId: 'conv-42',
+      });
+
+      const onComplete = getOnComplete();
+      await act(async () => onComplete({ call_1: 'approved' }));
+
+      const apiCall = mockUseApiRequest.execute.mock.calls[0][0];
+      const controller = new AbortController();
+      await apiCall(controller.signal);
+
+      expect(mockMcpChatApi.sendApprovedToolCalls).toHaveBeenCalledWith(
+        pendingMessages,
+        { call_1: 'approved' },
+        controller.signal,
+        'conv-42',
+      );
+    });
+
+    it('clears tool requests after approval complete', async () => {
+      const setToolRequests = jest.fn();
+      renderChatContainer({ messages: pendingMessages, setToolRequests });
+
+      const onComplete = getOnComplete();
+      await act(async () => onComplete({ call_1: 'approved' }));
+
+      expect(setToolRequests).toHaveBeenCalledWith(undefined);
+    });
+
+    it('handles approval errors and clears tool requests', async () => {
+      const onMessagesChange = jest.fn();
+      const setToolRequests = jest.fn();
+      renderChatContainer({
+        messages: pendingMessages,
+        onMessagesChange,
+        setToolRequests,
+      });
+
+      const onComplete = getOnComplete();
+      await act(async () => onComplete({ call_1: 'approved' }));
+
+      const onError = mockUseApiRequest.execute.mock.calls[0][2];
+      act(() => onError(new Error('500 Server Error')));
+
+      expect(onMessagesChange).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            role: 'assistant',
+            content: 'Error: 500 Server Error',
+          }),
+        ]),
+      );
+      expect(setToolRequests).toHaveBeenCalledWith(undefined);
     });
   });
 
@@ -236,8 +591,14 @@ describe('ChatContainer', () => {
       const suggestionButton = screen.getByText('Test Suggestion');
       fireEvent.click(suggestionButton);
 
+      expect(mockUseApiRequest.execute).toHaveBeenCalledTimes(1);
+      const apiCall = mockUseApiRequest.execute.mock.calls[0][0];
+      const controller = new AbortController();
+      await apiCall(controller.signal);
+
       expect(mockMcpChatApi.sendChatMessage).toHaveBeenCalledWith(
-        [{ role: 'user', content: 'Test suggestion' }],
+        [],
+        'Test suggestion',
         ['1'],
         expect.any(AbortSignal),
         undefined,
@@ -248,7 +609,6 @@ describe('ChatContainer', () => {
   describe('error handling', () => {
     it('handles API errors gracefully', async () => {
       const onMessagesChange = jest.fn();
-      mockMcpChatApi.sendChatMessage.mockRejectedValue(new Error('API Error'));
 
       renderChatContainer({ onMessagesChange });
 
@@ -258,9 +618,33 @@ describe('ChatContainer', () => {
       fireEvent.change(input, { target: { value: 'Hello world' } });
       fireEvent.click(sendButton!);
 
-      await waitFor(() => {
-        expect(onMessagesChange).toHaveBeenCalled();
-      });
+      expect(onMessagesChange).toHaveBeenCalledTimes(1);
+
+      expect(mockUseApiRequest.execute).toHaveBeenCalledTimes(1);
+      const apiCall = mockUseApiRequest.execute.mock.calls[0][2];
+      const testError = new Error('404');
+      await apiCall(testError);
+
+      expect(onMessagesChange).toHaveBeenCalledTimes(2);
+      expect(onMessagesChange).toHaveBeenCalledWith([
+        {
+          role: 'user',
+          content: 'Hello world',
+          metadata: {
+            id: expect.any(String),
+            timestamp: expect.any(String),
+          },
+        },
+        {
+          role: 'assistant',
+          content:
+            'The MCP Chat service is not available. Please check if the backend is running.',
+          metadata: {
+            id: expect.any(String),
+            timestamp: expect.any(String),
+          },
+        },
+      ]);
     });
   });
 
@@ -273,32 +657,13 @@ describe('ChatContainer', () => {
     });
 
     it('cancels ongoing request when called', async () => {
-      const firstCallPromise = new Promise(() => {});
-
-      mockMcpChatApi.sendChatMessage.mockImplementationOnce(
-        () => firstCallPromise,
-      );
-
       const { ref } = renderChatContainer();
 
-      const input = screen.getByPlaceholderText('Message Assistant...');
-      const sendButton = screen.getByTestId('SendIcon').closest('button');
-
-      fireEvent.change(input, { target: { value: 'First message' } });
-      fireEvent.click(sendButton!);
-
-      await waitFor(() => {
-        expect(input).toBeDisabled();
-      });
-
-      // Wrap the cancellation in act to handle state updates
-      await waitFor(() => {
+      act(() => {
         ref.current?.cancelOngoingRequest();
       });
 
-      await waitFor(() => {
-        expect(input).not.toBeDisabled();
-      });
+      expect(mockUseApiRequest.cancelOngoingRequest).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse } from '../types';
+import { LlmMessage, Tool, ChatResponse } from '../types';
 
 /**
  * OpenAI Chat Completions API provider.
@@ -23,7 +23,7 @@ import { ChatMessage, Tool, ChatResponse } from '../types';
  */
 export class OpenAIProvider extends LLMProvider {
   async sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse> {
     const requestBody = this.formatRequest(messages, tools);
@@ -104,7 +104,7 @@ export class OpenAIProvider extends LLMProvider {
     return headers;
   }
 
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any {
     const request: any = {
       model: this.model,
       messages,

@@ -72,8 +72,7 @@ describe('mcp-chat plugin', () => {
         json: jest.fn().mockResolvedValue(mockResponse),
       });
 
-      const messages = [{ role: 'user' as const, content: 'Hello' }];
-      const result = await client.sendChatMessage(messages, ['tool1']);
+      const result = await client.sendChatMessage([], 'Hello', ['tool1']);
 
       expect(result).toEqual(mockResponse);
       expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('mcp-chat');

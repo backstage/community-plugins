@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
-
 import { useTheme } from '@mui/material/styles';
-import BuildIcon from '@mui/icons-material/Build';
-import CodeIcon from '@mui/icons-material/Code';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Chip from '@mui/material/Chip';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ReactMarkdown from 'react-markdown';
 import { BotIcon } from '../BotIcon';
+import { CodeBlock } from './CodeBlock';
 
 interface ChatMessageProps {
   message: {
-    id: string;
     text: string;
     isUser: boolean;
-    timestamp: Date;
-    tools?: string[];
-    toolsUsed?: string[];
-    toolResponses?: any[];
   };
   onFeedback?: (messageId: string, type: 'like' | 'dislike') => void;
   onCopy?: (text: string) => void;
@@ -47,8 +35,6 @@ interface ChatMessageProps {
 export const ChatMessage = ({ message }: ChatMessageProps) => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
-  const [copiedText, setCopiedText] = useState<string | null>(null);
-  const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
   // Helper functions to avoid nested ternary expressions
   const getAvatarBackgroundColor = () => {
@@ -75,76 +61,6 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
   const getCardBorder = () => {
     if (!message.isUser) return 'none';
     return `1px solid ${theme.palette.divider}`;
-  };
-
-  const handleCopyCode = async (text: string) => {
-    try {
-      await window.navigator.clipboard.writeText(text);
-      setCopiedText(text);
-      setTimeout(() => setCopiedText(null), 2000);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to copy text:', err);
-    }
-  };
-
-  const handleTooltipToggle = (toolName: string) => {
-    setSelectedTool(selectedTool === toolName ? null : toolName);
-  };
-
-  const getToolResponseForTool = (toolName: string) => {
-    if (!message.toolsUsed || !message.toolResponses) {
-      return 'No tools used or no tool responses available';
-    }
-
-    const toolResponse = message.toolResponses.find(
-      response => response.name === toolName,
-    );
-
-    if (!toolResponse) {
-      return `No response data found for tool: ${toolName}`;
-    }
-
-    return JSON.stringify(toolResponse, null, 2);
-  };
-
-  const handleCopyToolResponse = async (toolName: string) => {
-    try {
-      const toolResponse = getToolResponseForTool(toolName);
-      await window.navigator.clipboard.writeText(toolResponse);
-      setCopiedText(toolResponse);
-      setTimeout(() => setCopiedText(null), 2000);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to copy tool response:', err);
-    }
-  };
-
-  const CodeBlock = ({ children, ...props }: any) => {
-    const codeText = children?.props?.children || '';
-    return (
-      <Box sx={{ position: 'relative' }}>
-        <pre {...props}>{children}</pre>
-        <IconButton
-          size="small"
-          onClick={() => handleCopyCode(codeText)}
-          title={copiedText === codeText ? 'Copied!' : 'Copy code'}
-          sx={{
-            position: 'absolute',
-            top: theme.spacing(0.5),
-            right: theme.spacing(0.5),
-            padding: theme.spacing(0.5),
-            minWidth: 'auto',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            },
-          }}
-        >
-          <FileCopyIcon fontSize="small" />
-        </IconButton>
-      </Box>
-    );
   };
 
   const formatMessage = (text: string) => {
@@ -357,147 +273,6 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
             }}
           >
             {formatMessage(message.text)}
-
-            {/* Show tools section for tools that were used */}
-            {(message.toolsUsed || message.tools) &&
-              (message.toolsUsed || message.tools)!.length > 0 && (
-                <Box
-                  sx={{
-                    marginTop: theme.spacing(1.5),
-                    padding: theme.spacing(1, 0),
-                    borderTop: `1px solid ${theme.palette.divider}`,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: theme.spacing(0.5),
-                      marginBottom: theme.spacing(1),
-                      color: theme.palette.text.primary,
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <BuildIcon fontSize="small" />
-                    <Typography
-                      variant="caption"
-                      style={{ fontWeight: 'bold' }}
-                    >
-                      Tools used ({(message.toolsUsed || message.tools)!.length}
-                      )
-                    </Typography>
-                    {(message.toolsUsed || message.tools)!.map(tool => (
-                      <Chip
-                        key={tool}
-                        label={tool}
-                        size="small"
-                        clickable
-                        onClick={() => handleTooltipToggle(tool)}
-                        icon={<CodeIcon fontSize="small" />}
-                        sx={{
-                          height: 24,
-                          fontSize: '0.75rem',
-                          fontWeight: 500,
-                          backgroundColor: 'transparent',
-                          color:
-                            selectedTool === tool
-                              ? theme.palette.primary.main
-                              : theme.palette.text.secondary,
-                          margin: '0 4px 0 8px',
-                          border:
-                            selectedTool === tool
-                              ? `2px solid ${theme.palette.primary.main}`
-                              : `1px solid ${theme.palette.divider}`,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          '&:hover': {
-                            backgroundColor: theme.palette.action.hover,
-                            color: theme.palette.text.primary,
-                            transform: 'translateY(-1px)',
-                          },
-                        }}
-                      />
-                    ))}
-                  </Box>
-
-                  {/* Tool responses - shown below the chips */}
-                  {(message.toolsUsed || message.tools)!.map(tool => (
-                    <Collapse
-                      key={`collapse-${tool}`}
-                      in={selectedTool === tool}
-                    >
-                      <Card
-                        sx={{
-                          marginTop: theme.spacing(1),
-                          backgroundColor: theme.palette.background.default,
-                          border: `1px solid ${theme.palette.divider}`,
-                          borderRadius: theme.spacing(1),
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: theme.spacing(1, 1.5),
-                            backgroundColor: theme.palette.action.hover,
-                            borderBottom: `1px solid ${theme.palette.divider}`,
-                            borderRadius: theme.spacing(1, 1, 0, 0),
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              fontSize: '0.875rem',
-                              fontWeight: 600,
-                              color: theme.palette.text.primary,
-                            }}
-                          >
-                            {tool} Response
-                          </Typography>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleCopyToolResponse(tool)}
-                            title={copiedText ? 'Copied!' : 'Copy response'}
-                            sx={{
-                              color: theme.palette.text.primary,
-                            }}
-                          >
-                            <FileCopyIcon fontSize="small" />
-                          </IconButton>
-                        </Box>
-                        <Box
-                          sx={{
-                            padding: theme.spacing(1.5),
-                            maxHeight: '300px',
-                            overflow: 'auto',
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              backgroundColor: theme.palette.background.paper,
-                              border: `1px solid ${theme.palette.divider}`,
-                              borderRadius: theme.spacing(0.5),
-                              padding: theme.spacing(1.5),
-                              fontFamily:
-                                'Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace',
-                              fontSize: '0.8rem',
-                              lineHeight: 1.4,
-                              overflow: 'auto',
-                              whiteSpace: 'pre-wrap',
-                              wordBreak: 'break-word',
-                              color: theme.palette.text.primary,
-                            }}
-                          >
-                            {getToolResponseForTool(tool)}
-                          </Box>
-                        </Box>
-                      </Card>
-                    </Collapse>
-                  ))}
-                </Box>
-              )}
           </Box>
         </Card>
       </Box>

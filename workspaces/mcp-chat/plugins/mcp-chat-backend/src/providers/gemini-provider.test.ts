@@ -17,7 +17,7 @@
 import { mockServices } from '@backstage/backend-test-utils';
 import { GoogleGenAI } from '@google/genai';
 import { GeminiProvider } from './gemini-provider';
-import { ChatMessage, ProviderConfig, Tool } from '../types';
+import { LlmMessage, ProviderConfig, Tool } from '../types';
 
 jest.mock('@google/genai');
 
@@ -69,7 +69,7 @@ describe('GeminiProvider', () => {
 
   describe('sendMessage', () => {
     it('should send simple message without tools', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Hello, how are you?' },
       ];
 
@@ -124,7 +124,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle system message correctly', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'system', content: 'You are a helpful assistant.' },
         { role: 'user', content: 'Hello!' },
       ];
@@ -154,7 +154,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle tools correctly', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'What is the weather like?' },
       ];
 
@@ -244,7 +244,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle tool response messages', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'What is the weather?' },
         {
           role: 'assistant',
@@ -316,7 +316,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle tool response with invalid JSON', async () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         {
           role: 'assistant',
           content: 'Let me check that for you.',
@@ -386,7 +386,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle API errors', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       mockGenerateContent.mockRejectedValue(new Error('API Error'));
 
@@ -431,7 +431,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle empty response', async () => {
-      const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+      const messages: LlmMessage[] = [{ role: 'user', content: 'Hello' }];
 
       mockGenerateContent.mockResolvedValue({
         candidates: [],
@@ -582,7 +582,7 @@ describe('GeminiProvider', () => {
 
   describe('convertToGeminiFormat', () => {
     it('should convert basic messages correctly', () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: 'Hello' },
         { role: 'assistant', content: 'Hi there!' },
       ];
@@ -596,7 +596,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should handle messages with null content', () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'user', content: null },
         { role: 'assistant', content: null },
       ];
@@ -610,7 +610,7 @@ describe('GeminiProvider', () => {
     });
 
     it('should skip system messages in conversion', () => {
-      const messages: ChatMessage[] = [
+      const messages: LlmMessage[] = [
         { role: 'system', content: 'You are helpful' },
         { role: 'user', content: 'Hello' },
       ];

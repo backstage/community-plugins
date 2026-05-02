@@ -15,11 +15,11 @@
  */
 import { LLMProvider } from './base-provider';
 import {
-  ChatMessage,
   Tool,
   ChatResponse,
   ToolCall,
   ProviderConfig,
+  LlmMessage,
 } from '../types';
 import {
   GenerateContentConfig,
@@ -72,7 +72,7 @@ export class GeminiProvider extends LLMProvider {
   }
 
   async sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse> {
     try {
@@ -174,7 +174,7 @@ export class GeminiProvider extends LLMProvider {
     return {};
   }
 
-  protected formatRequest(_messages: ChatMessage[], _tools?: Tool[]): any {
+  protected formatRequest(_messages: LlmMessage[], _tools?: Tool[]): any {
     return {};
   }
 
@@ -216,7 +216,7 @@ export class GeminiProvider extends LLMProvider {
     };
   }
 
-  private convertToGeminiFormat(messages: ChatMessage[]): Content[] {
+  private convertToGeminiFormat(messages: LlmMessage[]): Content[] {
     const contents: Content[] = [];
 
     for (let i = 0; i < messages.length; i++) {

@@ -72,8 +72,10 @@ export type {
 
   // Chat types
   ChatMessage,
+  ChatRole,
   ChatResponse,
-  QueryResponse,
+  LlmMessage,
+  MessageMetadata,
 
   // Tool types
   Tool,
@@ -81,8 +83,12 @@ export type {
   ServerTool,
   ToolExecutionResult,
 
+  // Approval types
+  ApprovalStatus,
+  ConfirmedStatus,
+
   // Validation types
-  MessageValidationResult,
+  ValidationResult,
 
   // Conversation types
   ConversationRecord,
@@ -105,6 +111,10 @@ export { MCPServerType, VALID_ROLES } from './types';
 export {
   validateConfig,
   validateMessages,
+  validateEnabledTools,
+  validateToolApprovalMessage,
+  validateDecisions,
+  sanitizeForLLM,
   loadServerConfigs,
   executeToolCall,
   findNpxPath,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse } from '../types';
+import { LlmMessage, Tool, ChatResponse } from '../types';
 import { Ollama } from 'ollama';
 
 /**
@@ -34,7 +34,7 @@ export class OllamaProvider extends LLMProvider {
   }
 
   async sendMessage(
-    messages: ChatMessage[],
+    messages: LlmMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse> {
     const ollamaMessages = messages.map(msg => {
@@ -136,7 +136,7 @@ export class OllamaProvider extends LLMProvider {
     };
   }
 
-  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+  protected formatRequest(messages: LlmMessage[], tools?: Tool[]): any {
     // This method is not used anymore since we're using the Ollama library directly
     const request: any = {
       model: this.model,

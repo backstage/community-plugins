@@ -47,6 +47,7 @@ describe('SummarizationService', () => {
     mockMcpClientService = {
       initializeMCPServers: jest.fn(),
       processQuery: jest.fn(),
+      processApprovalDecisions: jest.fn(),
       getAvailableTools: jest.fn(),
       getProviderStatus: jest.fn(),
       getMCPServerStatus: jest.fn(),
@@ -58,29 +59,49 @@ describe('SummarizationService', () => {
 
   describe('summarizeConversation', () => {
     const messages: ChatMessage[] = [
-      { role: 'user', content: 'How do I deploy to Kubernetes?' },
-      { role: 'assistant', content: 'You can use kubectl apply...' },
+      {
+        role: 'user',
+        content: 'How do I deploy to Kubernetes?',
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
+      },
+      {
+        role: 'assistant',
+        content: 'You can use kubectl apply...',
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
+      },
+    ];
+
+    const buildSummarizationResponse = (
+      msgs: ChatMessage[],
+      summary: string,
+    ): ChatMessage[] => [
+      ...msgs,
+      {
+        role: 'assistant',
+        content: summary,
+        metadata: { id: '3', timestamp: new Date(3).toISOString() },
+      },
     ];
 
     it('should return LLM-generated title', async () => {
-      mockMcpClientService.processQuery.mockResolvedValue({
-        reply: 'Kubernetes Deployment Guide',
-        toolCalls: [],
-        toolResponses: [],
-      });
+      const summary = 'Kubernetes Deployment Guide';
+      mockMcpClientService.processQuery.mockResolvedValue(
+        buildSummarizationResponse(messages, summary),
+      );
 
       const title = await service.summarizeConversation(messages);
 
-      expect(title).toBe('Kubernetes Deployment Guide');
+      expect(title).toBe(summary);
       expect(mockMcpClientService.processQuery).toHaveBeenCalledTimes(1);
     });
 
     it('should sanitize HTML from title', async () => {
-      mockMcpClientService.processQuery.mockResolvedValue({
-        reply: '<script>alert("xss")</script>Test Title',
-        toolCalls: [],
-        toolResponses: [],
-      });
+      mockMcpClientService.processQuery.mockResolvedValue(
+        buildSummarizationResponse(
+          messages,
+          '<script>alert("xss")</script>Test Title',
+        ),
+      );
 
       const title = await service.summarizeConversation(messages);
 
@@ -89,11 +110,9 @@ describe('SummarizationService', () => {
 
     it('should truncate long titles', async () => {
       const longTitle = 'A'.repeat(150);
-      mockMcpClientService.processQuery.mockResolvedValue({
-        reply: longTitle,
-        toolCalls: [],
-        toolResponses: [],
-      });
+      mockMcpClientService.processQuery.mockResolvedValue(
+        buildSummarizationResponse(messages, longTitle),
+      );
 
       const title = await service.summarizeConversation(messages);
 
@@ -120,11 +139,7 @@ describe('SummarizationService', () => {
           new Promise(resolve =>
             setTimeout(
               () =>
-                resolve({
-                  reply: 'Late response',
-                  toolCalls: [],
-                  toolResponses: [],
-                }),
+                resolve(buildSummarizationResponse(messages, 'Last response')),
               100,
             ),
           ),
@@ -158,6 +173,7 @@ describe('SummarizationService', () => {
           role: 'user',
           content:
             'This is a very long message that exceeds the fifty character limit for fallback titles',
+          metadata: { id: '1', timestamp: new Date(1).toISOString() },
         },
       ];
       mockMcpClientService.processQuery.mockRejectedValue(
@@ -172,23 +188,40 @@ describe('SummarizationService', () => {
 
     it('should extract only user messages for summarization', async () => {
       const conversationMessages: ChatMessage[] = [
-        { role: 'user', content: 'First question' },
-        { role: 'assistant', content: 'First answer' },
-        { role: 'user', content: 'Second question' },
-        { role: 'assistant', content: 'Second answer' },
-        { role: 'user', content: 'Third question' },
+        {
+          role: 'user',
+          content: 'First question',
+          metadata: { id: '1', timestamp: new Date(1).toISOString() },
+        },
+        {
+          role: 'assistant',
+          content: 'First answer',
+          metadata: { id: '2', timestamp: new Date(2).toISOString() },
+        },
+        {
+          role: 'user',
+          content: 'Second question',
+          metadata: { id: '3', timestamp: new Date(3).toISOString() },
+        },
+        {
+          role: 'assistant',
+          content: 'Second answer',
+          metadata: { id: '4', timestamp: new Date(4).toISOString() },
+        },
+        {
+          role: 'user',
+          content: 'Third question',
+          metadata: { id: '5', timestamp: new Date(5).toISOString() },
+        },
       ];
 
-      mockMcpClientService.processQuery.mockResolvedValue({
-        reply: 'Test Title',
-        toolCalls: [],
-        toolResponses: [],
-      });
+      mockMcpClientService.processQuery.mockResolvedValue(
+        buildSummarizationResponse(conversationMessages, 'Test Title'),
+      );
 
       await service.summarizeConversation(conversationMessages);
 
-      const callArg = mockMcpClientService.processQuery.mock.calls[0][0];
-      const messageContent = callArg[0].content;
+      const messageContent = mockMcpClientService.processQuery.mock.calls[0][1];
 
       // Should only include user messages
       expect(messageContent).toContain('First question');

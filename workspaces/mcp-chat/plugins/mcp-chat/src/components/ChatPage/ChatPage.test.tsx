@@ -15,7 +15,7 @@
  */
 
 import { ReactNode, forwardRef, useImperativeHandle } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ChatPage } from './ChatPage';
@@ -100,8 +100,15 @@ jest.mock('../../hooks', () => ({
   useConversations: () => mockUseConversations(),
 }));
 
+jest.mock('../../utils', () => ({
+  extractLastToolRequests: jest.fn(),
+}));
+
+import { extractLastToolRequests } from '../../utils';
+
 const mockMcpChatApi = {
   sendChatMessage: jest.fn(),
+  sendApprovedToolCalls: jest.fn(),
   getConfigStatus: jest.fn(),
   getAvailableTools: jest.fn(),
   testProviderConnection: jest.fn(),
@@ -274,6 +281,105 @@ describe('ChatPage', () => {
 
       // The cancelOngoingRequest should have been called
       expect(mockCancelOngoingRequest).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleSelectConversation', () => {
+    const conversationMessages = [
+      {
+        role: 'user' as const,
+        content: 'Hello',
+        metadata: { id: '1', timestamp: new Date(1).toISOString() },
+      },
+      {
+        role: 'assistant' as const,
+        content: 'Hi!',
+        metadata: { id: '2', timestamp: new Date(2).toISOString() },
+      },
+    ];
+
+    const mockConversation = {
+      id: 'conv-1',
+      userId: 'user:default/test',
+      messages: conversationMessages,
+      isStarred: false,
+      createdAt: '2025-01-01',
+      updatedAt: '2025-01-01',
+    };
+
+    it('loads conversation and sets messages', async () => {
+      const mockLoadConversation = jest.fn().mockResolvedValue({
+        ...mockConversation,
+        messages: conversationMessages,
+      });
+      (extractLastToolRequests as jest.Mock).mockReturnValue(undefined);
+
+      mockUseConversations.mockReturnValue({
+        conversations: [],
+        starredConversations: [],
+        recentConversations: [],
+        loading: false,
+        error: undefined,
+        searchQuery: '',
+        isSearching: false,
+        setSearchQuery: jest.fn(),
+        clearSearch: jest.fn(),
+        loadConversation: mockLoadConversation,
+        refreshConversations: jest.fn(),
+        deleteConversation: jest.fn(),
+        toggleStar: jest.fn(),
+      });
+
+      renderChatPage();
+
+      const onSelectConversation =
+        mockRightPane.mock.calls[0][0].onSelectConversation;
+      await act(async () => onSelectConversation(mockConversation));
+
+      expect(mockLoadConversation).toHaveBeenCalledWith('conv-1');
+      expect(mockCancelOngoingRequest).toHaveBeenCalled();
+
+      const lastCall = mockChatContainer.mock.calls.at(-1)[0];
+      expect(lastCall.messages).toEqual(conversationMessages);
+      expect(lastCall.conversationId).toBe('conv-1');
+    });
+
+    it('calls extractLastToolRequests and sets tool requests', async () => {
+      const pendingRequests = { call_1: 'pending' as const };
+      const mockLoadConversation = jest.fn().mockResolvedValue({
+        ...mockConversation,
+        messages: conversationMessages,
+      });
+      (extractLastToolRequests as jest.Mock).mockReturnValue(pendingRequests);
+
+      mockUseConversations.mockReturnValue({
+        conversations: [],
+        starredConversations: [],
+        recentConversations: [],
+        loading: false,
+        error: undefined,
+        searchQuery: '',
+        isSearching: false,
+        setSearchQuery: jest.fn(),
+        clearSearch: jest.fn(),
+        loadConversation: mockLoadConversation,
+        refreshConversations: jest.fn(),
+        deleteConversation: jest.fn(),
+        toggleStar: jest.fn(),
+      });
+
+      renderChatPage();
+
+      const onSelectConversation =
+        mockRightPane.mock.calls[0][0].onSelectConversation;
+      await act(async () => onSelectConversation(mockConversation));
+
+      expect(extractLastToolRequests).toHaveBeenCalledWith(
+        conversationMessages,
+      );
+
+      const lastCall = mockChatContainer.mock.calls.at(-1)[0];
+      expect(lastCall.toolRequests).toEqual(pendingRequests);
     });
   });
 });
