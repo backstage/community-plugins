@@ -9,4 +9,4 @@
 '@backstage-community/plugin-tech-insights-react': minor
 ---
 
-Backstage version bump to v1.50.2
+Backstage version bump to v1.50.2. `techInsightsNavItem` has been removed as it's no longer needed.
