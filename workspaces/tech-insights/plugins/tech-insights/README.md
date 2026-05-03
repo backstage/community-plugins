@@ -74,7 +74,7 @@ const techInsightsModule = createFrontendModule({
 
 The Tech Insights entity tab is provided by the `entity-content:tech-insights/scorecards-content` extension. You can configure or disable it from `app-config.yaml` like any other extension in the new frontend system.
 
-To customize the title, description, or which checks are shown by default:
+To customize the tab title or path, and (when no `TechInsightsScorecardBlueprint` extensions are registered) the fallback scorecard's title, description, default checks, and density:
 
 ```yaml
 app:
@@ -87,6 +87,8 @@ app:
           dense: false
 ```
 
+> **Note:** The `description`, `checkIds`, and `dense` config fields only apply to the built-in fallback scorecard that is rendered when no `TechInsightsScorecardBlueprint` extensions are registered. As soon as any scorecard blueprint is registered, scorecard rendering is driven by the blueprint's own `params` (and the matching extension's `config` overrides), and these fallback config fields are ignored. The `title` field continues to control the tab label in either case.
+
 To completely hide the Tech Insights tab from entity pages:
 
 ```yaml
@@ -97,7 +99,7 @@ app:
 
 #### Configuring the Tech Insights overview card via app-config
 
-A scorecard card is also auto-registered on entity overview pages via the `entity-card:tech-insights/scorecards` extension. To disable it:
+A scorecards overview card is also auto-registered on entity overview pages via the `entity-card:tech-insights/scorecards` extension. To disable it:
 
 ```yaml
 app:
