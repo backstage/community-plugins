@@ -15,45 +15,9 @@
  */
 
 import { ExploreTool } from '@backstage-community/plugin-explore-react';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Chip from '@material-ui/core/Chip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { LinkButton } from '@backstage/core-components';
+import { ButtonLink, Card, CardBody, CardFooter, Text } from '@backstage/ui';
 import classNames from 'classnames';
-
-// TODO: Align styling between Domain and ToolCard
-
-const useStyles = makeStyles<Theme>(
-  theme => ({
-    media: {
-      height: 128,
-    },
-    mediaContain: {
-      backgroundSize: 'contain',
-    },
-    lifecycle: {
-      lineHeight: '0.8em',
-      color: theme.palette.common.white,
-    },
-    ga: {
-      backgroundColor: theme.palette.status.ok,
-    },
-    alpha: {
-      backgroundColor: theme.palette.status.error,
-    },
-    beta: {
-      backgroundColor: theme.palette.status.warning,
-    },
-  }),
-  {
-    name: 'ExploreToolCard',
-  },
-);
+import styles from './ToolCard.module.css';
 
 type Props = {
   card: ExploreTool;
@@ -61,47 +25,32 @@ type Props = {
 };
 
 export const ToolCard = ({ card, objectFit }: Props) => {
-  const classes = useStyles();
-
-  const { title, description, url, image, lifecycle, tags } = card;
+  const { title, description, url, image } = card;
 
   return (
-    <Card key={title}>
-      <CardMedia
-        image={image}
+    <Card>
+      <div
+        role="img"
+        aria-label={title}
         title={title}
-        className={classNames(classes.media, {
-          [classes.mediaContain]: objectFit === 'contain',
+        className={classNames(styles.media, {
+          [styles.mediaContain]: objectFit === 'contain',
         })}
+        style={{ backgroundImage: image ? `url(${image})` : undefined }}
       />
-      <CardContent>
-        <Typography variant="h5">
-          {title}{' '}
-          {lifecycle && lifecycle.toLocaleLowerCase('en-US') !== 'ga' && (
-            <Chip
-              size="small"
-              label={lifecycle}
-              className={classNames(
-                classes.lifecycle,
-                classes[lifecycle.toLocaleLowerCase('en-US')],
-              )}
-            />
-          )}
-        </Typography>
-        <Typography>{description || 'Description missing'}</Typography>
-        {tags && (
-          <Box marginTop={2}>
-            {tags.map((item, idx) => (
-              <Chip size="small" key={idx} label={item} />
-            ))}
-          </Box>
-        )}
-      </CardContent>
-      <CardActions>
-        <LinkButton color="primary" to={url} disabled={!url}>
+      <CardBody>
+        <Text as="h5" variant="title-medium" weight="bold">
+          {title}
+        </Text>
+        <Text style={{ marginTop: 'var(--bui-space-2)' }}>
+          {description || 'Description missing'}
+        </Text>
+      </CardBody>
+      <CardFooter style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <ButtonLink variant="primary" href={url ?? ''} isDisabled={!url}>
           Explore
-        </LinkButton>
-      </CardActions>
+        </ButtonLink>
+      </CardFooter>
     </Card>
   );
 };

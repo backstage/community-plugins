@@ -5,7 +5,7 @@ app:
     - 'nav-item:catalog': false
     - 'page:explore':
         config:
-          path: '/'
+          path: '/explore'
 backend:
   baseUrl: http://localhost:7007
   listen:

@@ -33,76 +33,17 @@ import {
   getEntityRelations,
   EntityDisplayName,
 } from '@backstage/plugin-catalog-react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import ZoomOutMap from '@material-ui/icons/ZoomOutMap';
+import { Text } from '@backstage/ui';
+import { RiFullscreenLine } from '@remixicon/react';
 import classNames from 'classnames';
 import useAsync from 'react-use/esm/useAsync';
 import { EntityFilterQuery } from '@backstage/catalog-client';
-
-const useStyles = makeStyles(
-  theme => ({
-    graph: {
-      minHeight: '100%',
-      maxHeight: '1200px',
-      flex: 1,
-    },
-    graphWrapper: {
-      display: 'flex',
-      height: '100%',
-    },
-    organizationNode: {
-      fill: theme.palette.secondary.light,
-      stroke: theme.palette.secondary.light,
-    },
-    groupNode: {
-      fill: theme.palette.primary.light,
-      stroke: theme.palette.primary.light,
-    },
-    centeredContent: {
-      padding: theme.spacing(1),
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: theme.palette.common.black,
-    },
-    legend: {
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      padding: theme.spacing(1),
-      '& .icon': {
-        verticalAlign: 'bottom',
-      },
-    },
-    textOrganization: {
-      color: theme.palette.secondary.contrastText,
-    },
-    textGroup: {
-      color: theme.palette.primary.contrastText,
-    },
-    textWrapper: {
-      display: '-webkit-box',
-      WebkitBoxOrient: 'vertical',
-      WebkitLineClamp: 2,
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: '20px',
-    },
-  }),
-  {
-    name: 'ExploreGroupsDiagram',
-  },
-);
+import styles from './GroupsDiagram.module.css';
 
 function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
   const nodeWidth = 180;
   const nodeHeight = 60;
-  const theme = useTheme();
-  const classes = useStyles();
+  const borderRadius = 4;
   const catalogEntityRoute = useRouteRef(entityRouteRef);
 
   if (props.node.id === 'root') {
@@ -111,16 +52,16 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
         <rect
           width={nodeWidth}
           height={nodeHeight}
-          rx={theme.shape.borderRadius}
-          className={classes.organizationNode}
+          rx={borderRadius}
+          className={styles.organizationNode}
         />
         <title>{props.node.name}</title>
         <foreignObject width={nodeWidth} height={nodeHeight}>
-          <div className={classes.centeredContent}>
+          <div className={styles.centeredContent}>
             <div
               className={classNames(
-                classes.textWrapper,
-                classes.textOrganization,
+                styles.textWrapper,
+                styles.textOrganization,
               )}
             >
               {props.node.name}
@@ -138,8 +79,8 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
       <rect
         width={nodeWidth}
         height={nodeHeight}
-        rx={theme.shape.borderRadius}
-        className={classes.groupNode}
+        rx={borderRadius}
+        className={styles.groupNode}
       />
       <title>
         <EntityDisplayName entityRef={props.node.id} hideIcon disableTooltip />
@@ -153,8 +94,8 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
         })}
       >
         <foreignObject width={nodeWidth} height={nodeHeight}>
-          <div className={classes.centeredContent}>
-            <div className={classNames(classes.textWrapper, classes.textGroup)}>
+          <div className={styles.centeredContent}>
+            <div className={classNames(styles.textWrapper, styles.textGroup)}>
               <EntityDisplayName entityRef={props.node.id} hideIcon />
             </div>
           </div>
@@ -179,7 +120,6 @@ export function GroupsDiagram(props: {
   }>();
   const edges = new Array<{ from: string; to: string; label: string }>();
 
-  const classes = useStyles();
   const configApi = useApi(configApiRef);
   const catalogApi = useApi(catalogApiRef);
   const organizationName =
@@ -245,26 +185,26 @@ export function GroupsDiagram(props: {
   }
 
   return (
-    <div className={classes.graphWrapper}>
+    <div className={styles.graphWrapper}>
       <DependencyGraph
         nodes={nodes}
         edges={edges}
         nodeMargin={10}
         direction={props.direction || DependencyGraphTypes.Direction.RIGHT_LEFT}
         renderNode={RenderNode}
-        className={classes.graph}
+        className={styles.graph}
         fit="contain"
       />
 
-      <Typography
-        variant="caption"
-        color="textSecondary"
-        display="block"
-        className={classes.legend}
+      <Text
+        as="small"
+        variant="body-small"
+        color="secondary"
+        className={styles.legend}
       >
-        <ZoomOutMap className="icon" /> Use pinch &amp; zoom to move around the
-        diagram.
-      </Typography>
+        <RiFullscreenLine size={16} className={styles.legendIcon} /> Use pinch
+        &amp; zoom to move around the diagram.
+      </Text>
     </div>
   );
 }

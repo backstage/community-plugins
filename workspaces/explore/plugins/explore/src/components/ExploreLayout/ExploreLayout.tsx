@@ -20,8 +20,7 @@ import {
   useRouteRef,
 } from '@backstage/core-plugin-api';
 import { HeaderTab, PluginHeader } from '@backstage/ui';
-import { TabProps } from '@material-ui/core/Tab';
-import { default as React, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { exploreRouteRef } from '../../routes';
 
@@ -32,7 +31,12 @@ export type SubRoute = {
   path: string;
   title: string;
   children: JSX.Element;
-  tabProps?: TabProps<React.ElementType, { component?: React.ElementType }>;
+  /**
+   * @deprecated The Backstage UI `PluginHeader` does not forward extra MUI tab
+   * props. This field is kept for backwards compatibility but is no longer
+   * used.
+   */
+  tabProps?: Record<string, unknown>;
 };
 
 const dataKey = 'plugin.explore.exploreLayoutRoute';
@@ -119,7 +123,17 @@ export const ExploreLayout = (props: ExploreLayoutProps) => {
   return (
     <>
       <PluginHeader title={title ?? 'Explore our ecosystem'} tabs={tabs} />
-      {element ?? routes[0]?.children ?? null}
+      <div
+        style={{
+          padding: 'var(--bui-space-6)',
+          height: '100%',
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {element ?? routes[0]?.children ?? null}
+      </div>
     </>
   );
 };

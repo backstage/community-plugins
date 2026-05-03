@@ -21,14 +21,15 @@ import {
   getEntityRelations,
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Chip from '@material-ui/core/Chip';
+import {
+  ButtonLink,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+} from '@backstage/ui';
 
-import { LinkButton, ItemCardHeader } from '@backstage/core-components';
+import { ItemCardHeader } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 
 /** @public */
@@ -49,27 +50,20 @@ export const DomainCard = (props: { entity: DomainEntity }) => {
 
   return (
     <Card>
-      <CardMedia>
+      <CardHeader style={{ padding: 0 }}>
         <ItemCardHeader
           title={entity.metadata.title ?? entity.metadata.name}
           subtitle={owner}
         />
-      </CardMedia>
-      <CardContent>
-        {entity.metadata.tags?.length ? (
-          <Box>
-            {entity.metadata.tags.map(tag => (
-              <Chip size="small" label={tag} key={tag} />
-            ))}
-          </Box>
-        ) : null}
+      </CardHeader>
+      <CardBody style={{ overflow: 'visible' }}>
         {entity.metadata.description}
-      </CardContent>
-      <CardActions>
-        <LinkButton to={url} color="primary">
+      </CardBody>
+      <CardFooter style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <ButtonLink href={url} variant="primary">
           Explore
-        </LinkButton>
-      </CardActions>
+        </ButtonLink>
+      </CardFooter>
     </Card>
   );
 };
