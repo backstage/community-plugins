@@ -21,4 +21,6 @@ export {
   EntityMaturityRankWidget,
   EntityMaturitySummaryCard,
 } from './plugin';
+export { MaturityScorePage } from './components/MaturityScorePage';
+export type { MaturityScorePageProps } from './components/MaturityScorePage';
 export * from './api';

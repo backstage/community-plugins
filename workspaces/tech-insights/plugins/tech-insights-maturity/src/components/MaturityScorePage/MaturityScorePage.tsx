@@ -27,7 +27,31 @@ import { Rank } from '@backstage-community/plugin-tech-insights-maturity-common'
 import Box from '@mui/material/Box';
 import { MaturityCheckTable } from './maturityTableRows';
 
-export const MaturityScorePage = () => {
+/**
+ * Props for the MaturityScorePage component.
+ *
+ * @public
+ */
+export interface MaturityScorePageProps {
+  /**
+   * How to group checks in the UI.
+   * - `'rank'` (default): groups by maturity rank tier (Bronze / Silver / Gold).
+   * - `'category'`: groups by `metadata.category` on each check.
+   */
+  groupBy?: 'rank' | 'category';
+  /**
+   * When `groupBy` is `'category'`, an optional ordered list of category names.
+   * Categories not in this list are appended in the order they appear in the data.
+   * Ignored when `groupBy` is `'rank'`.
+   */
+  categoryOrder?: string[];
+}
+
+/** @public */
+export const MaturityScorePage = ({
+  groupBy = 'rank',
+  categoryOrder,
+}: MaturityScorePageProps) => {
   const { entity } = useEntity();
   const api = useApi(maturityApiRef);
 
@@ -72,30 +96,65 @@ export const MaturityScorePage = () => {
           >
             <Box sx={{ flexGrow: 1 }}>
               <Grid item>
-                <MaturityCheckTable
-                  checks={value.checks.filter(
-                    x => x.check.metadata.rank === Rank.Bronze,
-                  )}
-                  facts={value.facts}
-                  category={Rank.Bronze}
-                  rank={value.rank}
-                />
-                <MaturityCheckTable
-                  checks={value.checks.filter(
-                    x => x.check.metadata.rank === Rank.Silver,
-                  )}
-                  facts={value.facts}
-                  category={Rank.Silver}
-                  rank={value.rank}
-                />
-                <MaturityCheckTable
-                  checks={value.checks.filter(
-                    x => x.check.metadata.rank === Rank.Gold,
-                  )}
-                  facts={value.facts}
-                  category={Rank.Gold}
-                  rank={value.rank}
-                />
+                {groupBy === 'category' ? (
+                  (() => {
+                    const derived = [
+                      ...new Set(
+                        value.checks.map(c => c.check.metadata.category),
+                      ),
+                    ];
+                    const ordered = categoryOrder
+                      ? [
+                          ...new Set(categoryOrder),
+                          ...derived.filter(c => !categoryOrder.includes(c)),
+                        ]
+                      : derived;
+                    return ordered
+                      .filter(cat =>
+                        value.checks.some(
+                          x => x.check.metadata.category === cat,
+                        ),
+                      )
+                      .map(cat => (
+                        <MaturityCheckTable
+                          key={cat}
+                          checks={value.checks.filter(
+                            x => x.check.metadata.category === cat,
+                          )}
+                          facts={value.facts}
+                          categoryName={cat}
+                          rank={value.rank}
+                        />
+                      ));
+                  })()
+                ) : (
+                  <>
+                    <MaturityCheckTable
+                      checks={value.checks.filter(
+                        x => x.check.metadata.rank === Rank.Bronze,
+                      )}
+                      facts={value.facts}
+                      category={Rank.Bronze}
+                      rank={value.rank}
+                    />
+                    <MaturityCheckTable
+                      checks={value.checks.filter(
+                        x => x.check.metadata.rank === Rank.Silver,
+                      )}
+                      facts={value.facts}
+                      category={Rank.Silver}
+                      rank={value.rank}
+                    />
+                    <MaturityCheckTable
+                      checks={value.checks.filter(
+                        x => x.check.metadata.rank === Rank.Gold,
+                      )}
+                      facts={value.facts}
+                      category={Rank.Gold}
+                      rank={value.rank}
+                    />
+                  </>
+                )}
               </Grid>
             </Box>
           </Grid>

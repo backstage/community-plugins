@@ -40,13 +40,27 @@ import { MaturityRankChip } from '../MaturityRankChip';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Chip from '@mui/material/Chip';
 
-interface Props {
+interface BaseProps {
   checks: MaturityCheckResult[];
   facts: InsightFacts;
   rank: MaturityRank;
-  category: Rank;
 }
+
+interface RankModeProps extends BaseProps {
+  /** Pass for rank-based grouping (default upstream behavior). */
+  category: Rank;
+  categoryName?: never;
+}
+
+interface CategoryModeProps extends BaseProps {
+  category?: never;
+  /** Pass for category-based grouping (groups by metadata.category). */
+  categoryName: string;
+}
+
+type Props = RankModeProps | CategoryModeProps;
 
 const MaturityCheckTableRow = ({
   checkResult,
@@ -190,14 +204,21 @@ const MaturityCheckTableRow = ({
   );
 };
 
-export const MaturityCheckTable = ({
-  rank,
-  category,
-  checks,
-  facts,
-}: Props) => {
-  // Expand only the next rank Category needed to level up
-  const [expanded, setExpanded] = useState<boolean>(rank.rank + 1 === category);
+export const MaturityCheckTable = (props: Props) => {
+  const { rank, checks, facts } = props;
+
+  const panelId =
+    props.categoryName !== undefined
+      ? `panel-cat-${props.categoryName.replace(/\s+/g, '-').toLowerCase()}`
+      : `panel-rank-${props.category}`;
+
+  // Rank mode: expand the tier the entity needs to reach next
+  // Category mode: expand any category with at least one failing check
+  const [expanded, setExpanded] = useState<boolean>(
+    props.categoryName !== undefined
+      ? checks.some(c => !c.result)
+      : rank.rank + 1 === props.category,
+  );
   if (checks.length === 0) return <></>;
 
   const handleChange = () => (_event: SyntheticEvent, newExpanded: boolean) => {
@@ -214,19 +235,32 @@ export const MaturityCheckTable = ({
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2-content"
-          id="panel2-header"
+          aria-controls={`${panelId}-content`}
+          id={`${panelId}-header`}
         >
-          <MaturityRankChip
-            value={{ rank: category, isMaxRank: category <= rank.rank }}
-          />
+          {props.categoryName !== undefined ? (
+            <Chip
+              label={props.categoryName}
+              data-testid={`category-chip-${props.categoryName}`}
+              color={checks.every(c => c.result) ? 'success' : 'default'}
+              variant="outlined"
+              sx={{ fontWeight: 600, fontSize: '0.9rem' }}
+            />
+          ) : (
+            <MaturityRankChip
+              value={{
+                rank: props.category,
+                isMaxRank: props.category <= rank.rank,
+              }}
+            />
+          )}
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails id={`${panelId}-content`}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              {checks?.map(entry => (
+              {checks?.map((entry, index) => (
                 <MaturityCheckTableRow
-                  key={entry.check.id}
+                  key={`${entry.check.id}-${index}`}
                   updated={facts[entry.check.factIds[0]]?.timestamp}
                   checkResult={entry}
                 />

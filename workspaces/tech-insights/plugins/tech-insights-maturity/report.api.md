@@ -83,6 +83,18 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
 export const MaturityPage: () => JSX_2.Element;
 
 // @public (undocumented)
+export const MaturityScorePage: ({
+  groupBy,
+  categoryOrder,
+}: MaturityScorePageProps) => JSX_2.Element;
+
+// @public
+export interface MaturityScorePageProps {
+  categoryOrder?: string[];
+  groupBy?: 'rank' | 'category';
+}
+
+// @public (undocumented)
 export const techInsightsMaturityPlugin: BackstagePlugin<
   {
     root: RouteRef<undefined>;
