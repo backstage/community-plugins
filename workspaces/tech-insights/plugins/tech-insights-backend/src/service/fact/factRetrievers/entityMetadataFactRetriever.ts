@@ -18,10 +18,10 @@ import {
   FactRetriever,
   FactRetrieverContext,
 } from '@backstage-community/plugin-tech-insights-node';
-import { CatalogClient } from '@backstage/catalog-client';
 import { Entity } from '@backstage/catalog-model';
 import isEmpty from 'lodash/isEmpty';
 import { DateTime } from 'luxon';
+import { getFilteredEntities } from './catalogEntityFilter';
 
 /**
  * Generates facts which indicate the completeness of entity metadata.
@@ -49,19 +49,13 @@ export const entityMetadataFactRetriever: FactRetriever = {
     },
   },
   handler: async ({ discovery, entityFilter, auth }: FactRetrieverContext) => {
-    const { token } = await auth.getPluginRequestToken({
-      onBehalfOf: await auth.getOwnServiceCredentials(),
-      targetPluginId: 'catalog',
+    const entities = await getFilteredEntities({
+      discovery,
+      auth,
+      entityFilter,
     });
-    const catalogClient = new CatalogClient({
-      discoveryApi: discovery,
-    });
-    const entities = await catalogClient.getEntities(
-      { filter: entityFilter },
-      { token },
-    );
 
-    return entities.items.map((entity: Entity) => {
+    return entities.map((entity: Entity) => {
       return {
         entity: {
           namespace: entity.metadata.namespace!,

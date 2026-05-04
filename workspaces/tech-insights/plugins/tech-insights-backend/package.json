@@ -57,6 +57,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/filter-predicates": "backstage:^",
     "@backstage/plugin-permission-common": "backstage:^",
     "@backstage/types": "backstage:^",
     "@types/express": "^4.17.6",

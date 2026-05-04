@@ -16,6 +16,7 @@ import { Duration } from 'luxon';
 import { DurationLike } from 'luxon';
 import { ExtensionPoint } from '@backstage/backend-plugin-api';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
+import { FilterPredicate } from '@backstage/filter-predicates';
 import { HumanDuration } from '@backstage/types';
 import { InsightFacts } from '@backstage-community/plugin-tech-insights-common';
 import { JsonValue } from '@backstage/types';
@@ -29,6 +30,17 @@ export type CheckValidationResponse = {
   message?: string;
   errors?: unknown[];
 };
+
+// @public
+export type EntityFilter =
+  | FilterPredicate
+  | Record<string, string | symbol | (string | symbol)[]>[]
+  | Record<string, string | symbol | (string | symbol)[]>;
+
+// @public @deprecated (undocumented)
+export type EntityFilterQuery =
+  | Record<string, string | symbol | (string | symbol)[]>[]
+  | Record<string, string | symbol | (string | symbol)[]>;
 
 // @public
 export interface FactChecker<
@@ -59,9 +71,7 @@ export interface FactRetriever<
   TContext extends FactRetrieverContext = FactRetrieverContext,
 > {
   description?: string;
-  entityFilter?:
-    | Record<string, string | symbol | (string | symbol)[]>[]
-    | Record<string, string | symbol | (string | symbol)[]>;
+  entityFilter?: EntityFilter;
   handler: (ctx: TContext) => Promise<TechInsightFact[]>;
   id: string;
   schema: FactSchema;
@@ -76,9 +86,7 @@ export type FactRetrieverContext<TExtension = {}> = {
   logger: LoggerService;
   auth: AuthService;
   urlReader: UrlReaderService;
-  entityFilter?:
-    | Record<string, string | symbol | (string | symbol)[]>[]
-    | Record<string, string | symbol | (string | symbol)[]>;
+  entityFilter?: EntityFilter;
 } & TExtension;
 
 // @public
@@ -110,6 +118,8 @@ export interface FactRetrieverRegistry {
 
 // @public
 export type FactSchemaDefinition = Omit<FactRetriever, 'handler'>;
+
+export { FilterPredicate };
 
 // @public
 export type FlatTechInsightFact = TechInsightFact & {
