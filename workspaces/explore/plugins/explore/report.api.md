@@ -5,6 +5,7 @@
 ```ts
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { default as default_2 } from 'react';
 import { DependencyGraphTypes } from '@backstage/core-components';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { DomainEntity } from '@backstage/catalog-model';
@@ -15,11 +16,11 @@ import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-comm
 import { GetExploreToolsResponse } from '@backstage-community/plugin-explore-common';
 import { IndexableDocument } from '@backstage/plugin-search-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SearchResultListItemExtensionProps } from '@backstage/plugin-search-react';
+import { TabProps } from '@material-ui/core/Tab';
 
 // @public @deprecated (undocumented)
 export const catalogEntityRouteRef: ExternalRouteRef<
@@ -74,7 +75,7 @@ export const ExploreLayout: {
 export type ExploreLayoutProps = {
   title?: string;
   subtitle?: string;
-  children?: React_2.ReactNode;
+  children?: default_2.ReactNode;
 };
 
 // @public (undocumented)
@@ -116,7 +117,12 @@ export type SubRoute = {
   path: string;
   title: string;
   children: JSX.Element;
-  tabProps?: Record<string, unknown>;
+  tabProps?: TabProps<
+    default_2.ElementType,
+    {
+      component?: default_2.ElementType;
+    }
+  >;
 };
 
 // @public (undocumented)
