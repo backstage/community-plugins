@@ -140,11 +140,24 @@ const PermissionPoliciesFormNestedRow = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    onChange={(_e, checked) =>
-                      onSelectPolicy(checked, pIndex, permissionPolicyRowIndex)
-                    }
+                    onChange={() => {
+                      if (permissionPolicyRowIndex < 0) {
+                        onSelectPermission(
+                          plugin,
+                          permissionPolicy.permission,
+                          permissionPolicy.isResourced,
+                          permissionPolicy.actions,
+                          permissionPolicy.resourceType,
+                        );
+                      } else {
+                        onSelectPolicy(
+                          p.effect !== 'allow',
+                          pIndex,
+                          permissionPolicyRowIndex,
+                        );
+                      }
+                    }}
                     checked={p.effect === 'allow'}
-                    disabled={permissionPolicyRowIndex < 0}
                   />
                 }
                 label={p.policy}

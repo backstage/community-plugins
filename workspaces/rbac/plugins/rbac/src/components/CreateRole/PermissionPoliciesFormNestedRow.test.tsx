@@ -109,7 +109,7 @@ describe('PermissionPoliciesFormNestedRow', () => {
     expect(baseProps.onSelectPolicy).toHaveBeenCalledWith(true, 0, 0);
   });
 
-  it('does not toggle disabled policy checkboxes when permission is not selected', () => {
+  it('auto-selects the permission when a policy checkbox is clicked and permission is not selected', () => {
     render(
       <Table>
         <PermissionPoliciesFormNestedRow {...baseProps} />
@@ -117,10 +117,17 @@ describe('PermissionPoliciesFormNestedRow', () => {
     );
 
     const readCheckbox = screen.getByRole('checkbox', { name: 'Read' });
-    expect(readCheckbox).toBeDisabled();
+    expect(readCheckbox).not.toBeDisabled();
 
     fireEvent.click(screen.getByText('Read'));
 
     expect(baseProps.onSelectPolicy).not.toHaveBeenCalled();
+    expect(baseProps.onSelectPermission).toHaveBeenCalledWith(
+      'catalog',
+      'catalog.entity.read',
+      true,
+      ['Read'],
+      'catalog-entity',
+    );
   });
 });

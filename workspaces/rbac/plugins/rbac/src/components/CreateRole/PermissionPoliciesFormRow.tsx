@@ -114,12 +114,17 @@ const PermissionPoliciesFormRow = ({
             display: 'flex',
             alignItems: 'center',
             fontWeight: theme => theme.typography.fontWeightMedium,
+            cursor: 'pointer',
           }}
+          onClick={() => setCurrentOpen(!currentOpen)}
         >
           <IconButton
             aria-label={t('common.expandRow')}
             size="small"
-            onClick={() => setCurrentOpen(!currentOpen)}
+            onClick={e => {
+              e.stopPropagation();
+              setCurrentOpen(!currentOpen);
+            }}
             data-testid={`expand-row-${rowData.plugin}`}
           >
             {currentOpen ? <ArrowDownIcon /> : <ArrowRightIcon />}
