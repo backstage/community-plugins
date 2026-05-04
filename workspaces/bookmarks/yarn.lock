@@ -3106,13 +3106,13 @@ __metadata:
     "@backstage/e2e-test-utils": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.29.8"
-    "@jest/environment-jsdom-abstract": "npm:^30"
+    "@jest/environment-jsdom-abstract": "npm:^30.0.0"
     "@playwright/test": "npm:^1.58.1"
-    "@types/jest": "npm:^30"
-    "@types/jsdom": "npm:^27"
-    jest: "npm:^30"
+    "@types/jest": "npm:^30.0.0"
+    "@types/jsdom": "npm:^27.0.0"
+    jest: "npm:^30.2.0"
     jest-environment-jsdom: "npm:^30.2.0"
-    jsdom: "npm:^27"
+    jsdom: "npm:^27.0.0"
     node-gyp: "npm:^11.4.2"
     playwright-core: "npm:^1.58.1"
     prettier: "npm:^3.6.2"
@@ -3281,7 +3281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment-jsdom-abstract@npm:^30":
+"@jest/environment-jsdom-abstract@npm:^30.0.0":
   version: 30.3.0
   resolution: "@jest/environment-jsdom-abstract@npm:30.3.0"
   dependencies:
@@ -6946,7 +6946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^30, @types/jest@npm:^30.0.0":
+"@types/jest@npm:^30.0.0":
   version: 30.0.0
   resolution: "@types/jest@npm:30.0.0"
   dependencies:
@@ -6974,7 +6974,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:^27":
+"@types/jsdom@npm:^27.0.0":
   version: 27.0.0
   resolution: "@types/jsdom@npm:27.0.0"
   dependencies:
@@ -14868,7 +14868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:*, jest@npm:^30":
+"jest@npm:*, jest@npm:^30.2.0":
   version: 30.3.0
   resolution: "jest@npm:30.3.0"
   dependencies:
@@ -14996,7 +14996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^27":
+"jsdom@npm:^27.0.0":
   version: 27.4.0
   resolution: "jsdom@npm:27.4.0"
   dependencies:
