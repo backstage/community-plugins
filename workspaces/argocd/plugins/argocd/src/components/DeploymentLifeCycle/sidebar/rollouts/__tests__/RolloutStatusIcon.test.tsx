@@ -59,7 +59,7 @@ describe('RolloutStatusIcon', () => {
     render(<RolloutStatusIcon status={RolloutPhase.Healthy} />);
     const icon = screen.getByTestId('rollout-healthy-icon');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveStyle('color: green');
+    expect(icon).toHaveStyle('color: rgb(0, 128, 0)');
   });
 
   test('renders PauseCircleIcon for RolloutPhase.Paused with correct color', () => {
