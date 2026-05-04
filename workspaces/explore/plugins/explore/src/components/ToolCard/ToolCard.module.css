@@ -25,4 +25,19 @@
   .mediaContain {
     background-size: contain;
   }
+
+  .titleRow {
+    display: flex;
+    align-items: center;
+    gap: var(--bui-space-2);
+    flex-wrap: wrap;
+  }
+
+  .lifecycle {
+    text-transform: lowercase;
+  }
+
+  .tags {
+    margin-top: var(--bui-space-2);
+  }
 }

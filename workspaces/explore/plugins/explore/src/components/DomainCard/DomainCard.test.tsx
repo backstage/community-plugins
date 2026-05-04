@@ -71,8 +71,7 @@ describe('<DomainCard />', () => {
       },
     );
 
-    expect(getByText('Explore').parentElement).toHaveAttribute(
-      'href',
+    expect(getByText('Explore').closest('a')?.getAttribute('href')).toContain(
       '/catalog/default/domain/artists',
     );
     expect(getByText('my Custom Title')).toBeInTheDocument();

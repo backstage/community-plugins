@@ -12,9 +12,13 @@ Changes:
   `PluginHeader` (and native tabs) instead of `Header` + `RoutedTabs` from
   `@backstage/core-components`.
 - `DomainCard` and `ToolCard` now use BUI `Card`, `CardHeader`, `CardBody`,
-  `CardFooter`, `Text` and `ButtonLink`, with styling moved to CSS Modules
-  using BUI design tokens.
-- `DomainExplorerContent` uses BUI `ButtonLink` in the empty-state action.
+  `CardFooter`, `Text`, `Tag`/`TagGroup` and `ButtonLink`, with styling
+  moved to CSS Modules using BUI design tokens.
+- `DomainExplorerContent` uses BUI `ButtonLink` in the empty-state action,
+  and `DefaultExplorePage` now renders `DomainExplorerContent` for the
+  Domains tab so the default route is fully on BUI.
+- `CatalogKindExploreContent`'s empty-state action also uses BUI
+  `ButtonLink` instead of `@material-ui/core/Button`.
 - `GroupsExplorerContent` and `GroupsDiagram` use CSS Modules backed by BUI
   CSS variables instead of `makeStyles` and `useTheme`, and the legend uses
   the Remix `RiFullscreenLine` icon and BUI `Text`.

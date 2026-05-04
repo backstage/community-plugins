@@ -27,6 +27,8 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Tag,
+  TagGroup,
 } from '@backstage/ui';
 
 import { ItemCardHeader } from '@backstage/core-components';
@@ -57,6 +59,15 @@ export const DomainCard = (props: { entity: DomainEntity }) => {
         />
       </CardHeader>
       <CardBody style={{ overflow: 'visible' }}>
+        {entity.metadata.tags?.length ? (
+          <TagGroup style={{ marginBottom: 'var(--bui-space-2)' }}>
+            {entity.metadata.tags.map(tag => (
+              <Tag key={tag} size="small">
+                {tag}
+              </Tag>
+            ))}
+          </TagGroup>
+        ) : null}
         {entity.metadata.description}
       </CardBody>
       <CardFooter style={{ display: 'flex', justifyContent: 'flex-end' }}>

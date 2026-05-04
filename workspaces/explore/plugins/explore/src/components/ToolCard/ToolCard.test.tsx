@@ -61,7 +61,7 @@ describe('<ToolCard />', () => {
     expect(screen.getByText('Description missing')).toBeInTheDocument();
   });
 
-  it('does not render lifecycle badge', async () => {
+  it('renders lifecycle badge when set and not ga', async () => {
     const propsWithLifecycle = {
       card: {
         title: 'Title',
@@ -71,12 +71,25 @@ describe('<ToolCard />', () => {
       },
     };
     await renderInTestApp(<ToolCard {...propsWithLifecycle} />);
-    expect(screen.queryByText('alpha')).not.toBeInTheDocument();
+    expect(screen.getByText('alpha')).toBeInTheDocument();
   });
 
-  it('does not render tags', async () => {
+  it('does not render lifecycle badge when ga', async () => {
+    const propsWithLifecycle = {
+      card: {
+        title: 'Title',
+        url: 'http://spotify.com/',
+        image: 'https://developer.spotify.com/assets/WebAPI_intro.png',
+        lifecycle: 'ga',
+      },
+    };
+    await renderInTestApp(<ToolCard {...propsWithLifecycle} />);
+    expect(screen.queryByText('ga')).not.toBeInTheDocument();
+  });
+
+  it('renders tags', async () => {
     await renderInTestApp(<ToolCard {...minProps} />);
-    expect(screen.queryByText(minProps.card.tags[0])).not.toBeInTheDocument();
-    expect(screen.queryByText(minProps.card.tags[1])).not.toBeInTheDocument();
+    expect(screen.getByText(minProps.card.tags[0])).toBeInTheDocument();
+    expect(screen.getByText(minProps.card.tags[1])).toBeInTheDocument();
   });
 });

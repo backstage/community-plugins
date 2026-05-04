@@ -18,7 +18,7 @@ import { ExploreLayout } from '../ExploreLayout';
 import { GroupsExplorerContent } from '../GroupsExplorerContent';
 import { ToolExplorerContent } from '../ToolExplorerContent';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { CatalogKindExploreContent } from '../CatalogKindExploreContent';
+import { DomainExplorerContent } from '../DomainExplorerContent';
 
 export const DefaultExplorePage = () => {
   const configApi = useApi(configApiRef);
@@ -28,7 +28,7 @@ export const DefaultExplorePage = () => {
   return (
     <ExploreLayout title={`Explore the ${organizationName} ecosystem`}>
       <ExploreLayout.Route path="domains" title="Domains">
-        <CatalogKindExploreContent kind="domain" />
+        <DomainExplorerContent />
       </ExploreLayout.Route>
       <ExploreLayout.Route path="groups" title="Groups">
         <GroupsExplorerContent />

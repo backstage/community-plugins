@@ -15,7 +15,16 @@
  */
 
 import { ExploreTool } from '@backstage-community/plugin-explore-react';
-import { ButtonLink, Card, CardBody, CardFooter, Text } from '@backstage/ui';
+import {
+  Button,
+  ButtonLink,
+  Card,
+  CardBody,
+  CardFooter,
+  Tag,
+  TagGroup,
+  Text,
+} from '@backstage/ui';
 import classNames from 'classnames';
 import styles from './ToolCard.module.css';
 
@@ -25,7 +34,9 @@ type Props = {
 };
 
 export const ToolCard = ({ card, objectFit }: Props) => {
-  const { title, description, url, image } = card;
+  const { title, description, url, image, lifecycle, tags } = card;
+  const showLifecycle =
+    !!lifecycle && lifecycle.toLocaleLowerCase('en-US') !== 'ga';
 
   return (
     <Card>
@@ -39,17 +50,41 @@ export const ToolCard = ({ card, objectFit }: Props) => {
         style={{ backgroundImage: image ? `url(${image})` : undefined }}
       />
       <CardBody>
-        <Text as="h5" variant="title-medium" weight="bold">
-          {title}
-        </Text>
+        <div className={styles.titleRow}>
+          <Text as="h5" variant="title-medium" weight="bold">
+            {title}
+          </Text>
+          {showLifecycle && (
+            <TagGroup>
+              <Tag size="small" className={styles.lifecycle}>
+                {lifecycle}
+              </Tag>
+            </TagGroup>
+          )}
+        </div>
         <Text style={{ marginTop: 'var(--bui-space-2)' }}>
           {description || 'Description missing'}
         </Text>
+        {tags && tags.length > 0 && (
+          <TagGroup className={styles.tags}>
+            {tags.map(tag => (
+              <Tag key={tag} size="small">
+                {tag}
+              </Tag>
+            ))}
+          </TagGroup>
+        )}
       </CardBody>
       <CardFooter style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <ButtonLink variant="primary" href={url ?? ''} isDisabled={!url}>
-          Explore
-        </ButtonLink>
+        {url ? (
+          <ButtonLink variant="primary" href={url}>
+            Explore
+          </ButtonLink>
+        ) : (
+          <Button variant="primary" isDisabled>
+            Explore
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
