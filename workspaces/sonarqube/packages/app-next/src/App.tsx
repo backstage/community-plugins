@@ -56,7 +56,7 @@ const collectedLegacyPlugins = convertLegacyApp(
   </FlatRoutes>,
 );
 
-export const app = createApp({
+export default createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
@@ -69,5 +69,3 @@ export const app = createApp({
     }),
   ],
 });
-
-export default app.createRoot();
