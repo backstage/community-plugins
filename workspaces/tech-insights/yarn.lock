@@ -1945,7 +1945,7 @@ __metadata:
     p-limit: "npm:^3.1.0"
     semver: "npm:^7.5.3"
     supertest: "npm:^7.0.0"
-    uuid: "npm:^9.0.0"
+    uuid: "npm:^14.0.0"
     wait-for-expect: "npm:^4.0.0"
     yn: "npm:^4.0.0"
   languageName: unknown
@@ -30827,6 +30827,15 @@ __metadata:
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10/251385563195709eb0697c74a834764eef28e1656d61174e35edbd129288acb4d95a43f4ce8a77b8c2fc128e2b55924296a0945f964b05b9173469d045625ff2
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "uuid@npm:14.0.0"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 10/8ee9b98f9650e25555515f7a28d3c3ae9364e72f7bb19b9e08b681bc135338beba5509b2830f6ae1cfaba4d45401da0d16d4d109b977097bc3d6ba0c5583341b
   languageName: node
   linkType: hard
 
