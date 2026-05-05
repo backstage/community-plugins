@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.19.2
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 3.19.1
 
 ### Patch Changes
