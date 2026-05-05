@@ -227,6 +227,20 @@ describe('GrafanaApiClient', () => {
       );
     });
 
+    it('throws when constructed with duplicate host ids', () => {
+      expect(
+        () =>
+          new GrafanaApiClient(
+            defaultOpts({
+              hosts: [
+                { id: 'prod', domain: 'https://grafana-prod.example.com' },
+                { id: 'prod', domain: 'https://grafana-prod-2.example.com' },
+              ],
+            }),
+          ),
+      ).toThrow('Duplicate Grafana host id "prod"');
+    });
+
     it('lists available instances in error message', () => {
       const client = new GrafanaApiClient(
         defaultOpts({

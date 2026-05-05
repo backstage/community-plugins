@@ -274,6 +274,11 @@ interface ClientHost {
 function initClients(opts: GrafanaApiClientOptions): Map<string, ClientHost> {
   const clients = new Map<string, ClientHost>();
   for (const host of opts.hosts) {
+    if (clients.has(host.id)) {
+      throw new Error(
+        `Duplicate Grafana host id "${host.id}" in GrafanaApiClient options. Each host must have a unique "id".`,
+      );
+    }
     clients.set(host.id, {
       host,
       client: new Client(
