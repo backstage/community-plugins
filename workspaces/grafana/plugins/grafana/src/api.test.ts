@@ -227,6 +227,22 @@ describe('GrafanaApiClient', () => {
       );
     });
 
+    it('throws when defaultHostId does not match any host', () => {
+      expect(
+        () =>
+          new GrafanaApiClient(
+            defaultOpts({
+              defaultHostId: 'missing',
+              hosts: [
+                { id: 'prod', domain: 'https://grafana-prod.example.com' },
+              ],
+            }),
+          ),
+      ).toThrow(
+        '`defaultHostId` is set to "missing" but no host with that id was provided',
+      );
+    });
+
     it('throws when constructed with duplicate host ids', () => {
       expect(
         () =>
@@ -377,6 +393,35 @@ describe('GrafanaApiClient', () => {
 
       const alerts = await client.alertsForSelector('no-match');
       expect(alerts).toEqual([]);
+    });
+
+    it('queries every selector when an array is provided', async () => {
+      const fetchApi = createMockFetchApi(url => {
+        if (url.includes('dashboardTag=tag-a')) {
+          return [sampleLegacyAlerts[0]];
+        }
+        if (url.includes('dashboardTag=tag-b')) {
+          return [sampleLegacyAlerts[1]];
+        }
+        return [];
+      });
+
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
+
+      const alerts = await client.alertsForSelector(['tag-a', 'tag-b']);
+
+      expect(alerts).toHaveLength(2);
+      expect(alerts.map(a => a.matchingSelector).sort()).toEqual([
+        'tag-a',
+        'tag-b',
+      ]);
+      const calls = (fetchApi.fetch as jest.Mock).mock.calls.map(c => c[0]);
+      expect(calls.some((u: string) => u.includes('dashboardTag=tag-a'))).toBe(
+        true,
+      );
+      expect(calls.some((u: string) => u.includes('dashboardTag=tag-b'))).toBe(
+        true,
+      );
     });
   });
 

@@ -141,10 +141,16 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   const alertSelector = unifiedAlertingEnabled
     ? alertSelectorFromEntity(entity)
     : dashboardSelectorFromEntity(entity);
+  const selectorKey = Array.isArray(alertSelector)
+    ? alertSelector.join(',')
+    : alertSelector;
 
-  const { value, loading, error } = useAsync(
-    async () => await grafanaApi.alertsForSelector(alertSelector, hostId),
-  );
+  const { value, loading, error } = useAsync(async () => {
+    if (resolveError) {
+      return [];
+    }
+    return await grafanaApi.alertsForSelector(alertSelector, hostId);
+  }, [grafanaApi, selectorKey, hostId, Boolean(resolveError)]);
 
   if (resolveError) {
     return <Alert severity="error">{resolveError.message}</Alert>;

@@ -15,6 +15,7 @@
  */
 
 import { ConfigApi } from '@backstage/core-plugin-api';
+import { DEFAULT_PROXY_PATH } from './defaults';
 import { GrafanaHost } from './types';
 
 export interface ReadHostsResult {
@@ -91,10 +92,9 @@ export function readHosts(configApi: ConfigApi): ReadHostsResult {
   }
 
   if (hostsConfig.length > 1) {
-    const defaultProxyPath = '/grafana/api';
     const seen = new Map<string, string>();
     for (const host of hostsConfig) {
-      const path = host.proxyPath ?? defaultProxyPath;
+      const path = host.proxyPath ?? DEFAULT_PROXY_PATH;
       const existing = seen.get(path);
       if (existing) {
         throw new Error(

@@ -20,6 +20,7 @@ import {
   FetchApi,
 } from '@backstage/frontend-plugin-api';
 import { QueryEvaluator } from './query';
+import { DEFAULT_PROXY_PATH } from './defaults';
 import { Alert, Dashboard, GrafanaHost } from './types';
 
 /**
@@ -136,7 +137,6 @@ export type GrafanaApiClientOptions = {
   dashboardMaxPages?: number;
 };
 
-const DEFAULT_PROXY_PATH = '/grafana/api';
 // upstream default if no limit is specified.
 const DEFAULT_DASHBOARDS_LIMIT: number = 1000;
 const DEFAULT_PAGES_LIMIT: number = 1;
@@ -302,28 +302,33 @@ export class GrafanaApiClient implements GrafanaApi {
 
   constructor(opts: GrafanaApiClientOptions) {
     this.clients = initClients(opts);
+    if (opts.defaultHostId && !this.clients.has(opts.defaultHostId)) {
+      const available = Array.from(this.clients.keys()).join(', ');
+      throw new Error(
+        `\`defaultHostId\` is set to "${opts.defaultHostId}" but no host with that id was provided. Available host ids: ${available}`,
+      );
+    }
     this.defaultHostId = opts.defaultHostId;
   }
 
   private resolveClientHost(hostId?: string): ClientHost {
-    const effectiveId = hostId ?? this.defaultHostId ?? 'default';
-    const clientHost = this.clients.get(effectiveId);
-    if (clientHost) {
-      return clientHost;
-    }
-
-    // If no hostId was specified, fall back to first host
-    if (!hostId) {
-      const first = this.clients.values().next();
-      if (!first.done) {
-        return first.value;
+    const effectiveId = hostId ?? this.defaultHostId;
+    if (effectiveId) {
+      const clientHost = this.clients.get(effectiveId);
+      if (clientHost) {
+        return clientHost;
       }
+      const available = Array.from(this.clients.keys()).join(', ');
+      throw new Error(
+        `Grafana instance "${effectiveId}" not found. Available instances: ${available}`,
+      );
     }
 
-    const available = Array.from(this.clients.keys()).join(', ');
-    throw new Error(
-      `Grafana instance "${effectiveId}" not found. Available instances: ${available}`,
-    );
+    const first = this.clients.values().next();
+    if (!first.done) {
+      return first.value;
+    }
+    throw new Error('No Grafana hosts configured');
   }
 
   /** {@inheritDoc GrafanaApi.isUnifiedAlerting} */
@@ -350,18 +355,22 @@ export class GrafanaApiClient implements GrafanaApi {
     }
 
     // Legacy alerting
-    const dashboardTag =
-      typeof selectors === 'string' ? selectors : selectors[0];
-    const response = await client.fetch<GrafanaAlert[]>(
-      `/api/alerts?dashboardTag=${dashboardTag}`,
+    const dashboardTags =
+      typeof selectors === 'string' ? [selectors] : selectors;
+    const responses = await Promise.all(
+      dashboardTags.map(async dashboardTag => {
+        const response = await client.fetch<GrafanaAlert[]>(
+          `/api/alerts?dashboardTag=${dashboardTag}`,
+        );
+        return response.map(alert => ({
+          name: alert.name,
+          state: alert.state,
+          matchingSelector: dashboardTag,
+          url: `${host.domain}${alert.url}?panelId=${alert.panelId}&fullscreen&refresh=30s`,
+        }));
+      }),
     );
-
-    return response.map(alert => ({
-      name: alert.name,
-      state: alert.state,
-      matchingSelector: dashboardTag,
-      url: `${host.domain}${alert.url}?panelId=${alert.panelId}&fullscreen&refresh=30s`,
-    }));
+    return responses.flat();
   }
 
   private async unifiedAlertsForSelector(
