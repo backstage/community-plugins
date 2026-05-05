@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-regex
 
+## 2.15.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 2.15.0
 
 ### Minor Changes
