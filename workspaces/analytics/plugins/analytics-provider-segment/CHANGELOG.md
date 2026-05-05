@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.28.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 1.28.0
 
 ### Minor Changes

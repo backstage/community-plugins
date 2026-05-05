@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.19.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 0.19.0
 
 ### Minor Changes
