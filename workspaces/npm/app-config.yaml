@@ -89,6 +89,7 @@ npm:
       url: https://npm.pkg.github.com
     - name: gitlab
       url: https://gitlab.com/api/v4/packages/npm
+      webUrl: https://gitlab.com/npm
     - name: gitlab-private
       url: https://gitlab.com/api/v4/packages/npm
       extraRequestHeaders:
