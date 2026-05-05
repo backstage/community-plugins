@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acr
 
+## 1.24.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 1.24.0
 
 ### Minor Changes
