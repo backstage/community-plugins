@@ -1,0 +1,3 @@
+g, user:default/alice, role:default/csv-malformed-test
+p, role:default/csv-malformed-test, catalog-entity"fuzz, read, allow
+p, role:default/csv-malformed-test, catalog-entity, read, allow

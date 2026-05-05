@@ -30,6 +30,14 @@ import {
 import { RoleMetadataDao } from '../database/role-metadata';
 
 /**
+ * TypeORM adapter wraps every value in quotes before passing it to Casbin CSV
+ * parser. Unescaped embedded quotes break parsing in that path.
+ */
+function permissionContainsUnescapedQuote(permission: string): boolean {
+  return permission.includes('"');
+}
+
+/**
  * validateSource validates the source to the role that is being modified. This includes comparing the source from the
  * originating role to the source that the modification is coming from.
  * We do this to ensure consistency between permissions and roles and where they are originally defined.
@@ -68,6 +76,12 @@ export function validatePolicy(policy: RoleBasedPolicy): Error | undefined {
 
   if (!policy.permission) {
     return new Error(`'permission' field must not be empty`);
+  }
+
+  if (permissionContainsUnescapedQuote(policy.permission)) {
+    return new Error(
+      `'permission' contains double quotes (") which are not supported by the RBAC policy persistence format.`,
+    );
   }
 
   if (!policy.policy) {

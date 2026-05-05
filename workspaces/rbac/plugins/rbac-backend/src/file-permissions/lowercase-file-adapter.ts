@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { LoggerService } from '@backstage/backend-plugin-api';
+
 import { FileAdapter, Helper, Model, mustGetDefaultFileSystem } from 'casbin';
 
 export class LowercaseFileAdapter extends FileAdapter {
+  constructor(
+    filePath: string,
+    private readonly logger?: LoggerService,
+  ) {
+    super(filePath);
+  }
+
   public async loadPolicy(model: Model): Promise<void> {
     if (!this.filePath) {
       return;
@@ -44,12 +53,25 @@ export class LowercaseFileAdapter extends FileAdapter {
     ).readFileSync(this.filePath);
     const lines = bodyBuf.toString().split('\n');
 
-    lines.forEach((line: string) => {
-      if (!line) {
+    lines.forEach((line: string, index: number) => {
+      const trimmed = line.replace(/\r$/, '').trim();
+      if (!trimmed || trimmed.startsWith('#')) {
         return;
       }
-      const lowercasedLine = this.transformLineToLowercaseGroupsUsers(line);
-      handler(lowercasedLine, model);
+      const lineNumber = index + 1;
+      try {
+        const lowercasedLine =
+          this.transformLineToLowercaseGroupsUsers(trimmed);
+        handler(lowercasedLine, model);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.logger?.warn(
+          `Skipping invalid policy line ${lineNumber} in ${this.filePath}: ${message}; line=${trimmed.slice(
+            0,
+            120,
+          )}`,
+        );
+      }
     });
   }
 }

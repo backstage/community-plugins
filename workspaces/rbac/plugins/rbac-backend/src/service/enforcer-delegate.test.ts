@@ -15,7 +15,7 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 
-import { Model, newEnforcer, newModelFromString } from 'casbin';
+import { Enforcer, Model, newEnforcer, newModelFromString } from 'casbin';
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 
@@ -31,6 +31,7 @@ import { MODEL } from './permission-model';
 import {
   catalogMock,
   conditionalStorageMock,
+  createEventMock,
   mockAuditorService,
 } from '../../__fixtures__/mock-utils';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
@@ -129,6 +130,8 @@ describe('EnforcerDelegate', () => {
     (roleMetadataStorageMock.updateRoleMetadata as jest.Mock).mockReset();
     (roleMetadataStorageMock.findRoleMetadata as jest.Mock).mockReset();
     (roleMetadataStorageMock.removeRoleMetadata as jest.Mock).mockReset();
+    jest.mocked(createEventMock.fail).mockReset();
+    jest.mocked(createEventMock.success).mockReset();
   });
 
   const knex = Knex.knex({ client: MockClient });
@@ -189,6 +192,27 @@ describe('EnforcerDelegate', () => {
       knex,
     );
   }
+
+  describe('loadPolicy', () => {
+    it('rethrows after auditing a failed enforcer loadPolicy', async () => {
+      const loadErr = new Error('Invalid Closing Quote');
+      const mockEnforcer = {
+        loadPolicy: jest.fn().mockRejectedValue(loadErr),
+      } as unknown as Enforcer;
+
+      const delegate = new EnforcerDelegate(
+        mockEnforcer,
+        mockAuditorService,
+        conditionalStorageMock,
+        roleMetadataStorageMock,
+        knex,
+      );
+
+      await expect(delegate.loadPolicy()).rejects.toThrow(loadErr);
+
+      expect(createEventMock.fail).toHaveBeenCalledWith({ error: loadErr });
+    });
+  });
 
   describe('hasPolicy', () => {
     it('has policy should return false', async () => {

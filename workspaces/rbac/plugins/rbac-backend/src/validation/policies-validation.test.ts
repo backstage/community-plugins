@@ -47,6 +47,18 @@ describe('rest data validation', () => {
       expect(err?.message).toEqual(`'permission' field must not be empty`);
     });
 
+    it('should return an error when permission has embedded double quotes', () => {
+      const policy: RoleBasedPolicy = {
+        entityReference: 'role:default/dev',
+        permission: 'catalog-entity"fuzz',
+        policy: 'read',
+        effect: 'allow',
+      };
+      const err = validatePolicy(policy);
+      expect(err).toBeTruthy();
+      expect(err?.message).toContain(`'permission' contains double quotes (")`);
+    });
+
     it('should return an error when policy is empty', () => {
       const policy: RoleBasedPolicy = {
         entityReference: 'user:default/guest',

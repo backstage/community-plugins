@@ -83,14 +83,38 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
    */
   parse(): string[][] {
     const content = this.getCurrentContents();
-    const data = parse(content, {
+    const lines = content.split(/\r?\n/);
+    const data: string[][] = [];
+    const parseOptions = {
+      delimiter: ',',
       skip_empty_lines: true,
       relax_column_count: true,
       trim: true,
-    });
+    } as const;
 
-    for (const policy of data) {
-      transformPolicyGroupToLowercase(policy);
+    for (let i = 0; i < lines.length; i += 1) {
+      const rawLine = lines[i];
+      const line = rawLine.trim();
+      if (!line || line.startsWith('#')) {
+        continue;
+      }
+      const lineNumber = i + 1;
+      try {
+        const rows = parse(line, parseOptions);
+        const row = rows[0];
+        if (row && row.length > 0) {
+          transformPolicyGroupToLowercase(row);
+          data.push(row);
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.logger.warn(
+          `Skipping invalid CSV policy line ${lineNumber} in ${this.filePath}: ${message}; line=${line.slice(
+            0,
+            120,
+          )}`,
+        );
+      }
     }
 
     return data;
@@ -115,7 +139,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     const tempEnforcer = await newEnforcer(
       newModelFromString(MODEL),
-      new LowercaseFileAdapter(this.filePath),
+      new LowercaseFileAdapter(this.filePath, this.logger),
     );
 
     // Check for any old policies that will need to be removed
@@ -194,7 +218,7 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
 
     const tempEnforcer = await newEnforcer(
       newModelFromString(MODEL),
-      new LowercaseFileAdapter(this.filePath!),
+      new LowercaseFileAdapter(this.filePath!, this.logger),
     );
 
     const currentFlatContent = this.currentContent.flatMap(data => {
