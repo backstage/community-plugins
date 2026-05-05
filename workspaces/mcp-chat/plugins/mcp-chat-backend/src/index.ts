@@ -28,6 +28,7 @@ export {
   getProviderConfig,
   getProviderInfo,
   OpenAIProvider,
+  AzureOpenAIProvider,
   OpenAIResponsesProvider,
   ClaudeProvider,
   GeminiProvider,

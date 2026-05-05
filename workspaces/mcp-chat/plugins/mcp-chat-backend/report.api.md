@@ -14,6 +14,21 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 // @public
+export class AzureOpenAIProvider extends OpenAIProvider {
+  constructor(config: ProviderConfig);
+  // (undocumented)
+  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
+  testConnection(): Promise<{
+    connected: boolean;
+    models?: string[];
+    error?: string;
+  }>;
+}
+
+// @public
 export class ChatConversationStore {
   static create(
     options: ChatConversationStoreOptions,
@@ -145,6 +160,7 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig;
 
 // @public
 export function getProviderInfo(config: RootConfigService): {
+  deploymentName?: string | undefined;
   provider: string;
   model: string;
   baseURL: string;
@@ -215,6 +231,7 @@ export abstract class LLMProvider {
 export type LLMProviderType =
   | 'openai'
   | 'openai-responses'
+  | 'azure-openai'
   | 'claude'
   | 'gemini'
   | 'ollama'
@@ -346,6 +363,8 @@ export class OpenAIProvider extends LLMProvider {
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
   sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
@@ -384,6 +403,7 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  deploymentName?: string;
   logger?: LoggerService;
   maxTokens?: number;
   model: string;

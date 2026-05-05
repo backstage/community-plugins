@@ -28,6 +28,7 @@ export {
 // Provider Implementations
 // =============================================================================
 export { OpenAIProvider } from './openai-provider';
+export { AzureOpenAIProvider } from './azure-openai-provider';
 export { OpenAIResponsesProvider } from './openai-responses-provider';
 export { ClaudeProvider } from './claude-provider';
 export { GeminiProvider } from './gemini-provider';

@@ -142,7 +142,7 @@ Add the following configuration to your `app-config.yaml`:
 ```yaml
 mcpChat:
   # Configure AI providers (currently only the first provider is used)
-  # Supported Providers: OpenAI, Gemini, Claude, and Ollama
+  # OpenAI, OpenAI Responses API, Azure OpenAI, Gemini, Claude, Ollama, and LiteLLM
   providers:
     - id: openai # OpenAI provider
       # Optional: Specify a custom baseUrl for OpenAI-compatible endpoints
@@ -155,6 +155,15 @@ mcpChat:
       # maxTokens: 1000
       # Optional: Customize temperature 0-1 (default: 0.7)
       # temperature: 0.7
+    - id: openai-responses # OpenAI Responses API provider (handles MCP internally)
+      baseUrl: 'http://your-responses-api-endpoint.com/v1/openai/v1'
+      model: 'gemini/models/gemini-2.5-flash'
+      token: ${API_TOKEN} # Optional, depends on your API setup
+    - id: azure-openai # Azure OpenAI provider, requires the v1 API endpoint (not the older /openai/deployments/NAME/...?api-version=... format)
+      baseUrl: 'https://your-api-endpoint.openai.azure.com/openai/v1'
+      token: ${AZURE_OPENAI_API_KEY}
+      model: 'gpt-5.1'
+      deploymentName: 'your-deployment-name'
     - id: claude # Claude provider
       token: ${CLAUDE_API_KEY}
       model: claude-sonnet-4-20250514 # or claude-3-7-sonnet-latest
@@ -172,6 +181,14 @@ mcpChat:
     - id: ollama # Ollama provider
       baseUrl: 'http://localhost:11434'
       model: llama3.1:8b # or any model you have locally
+      # Optional: Customize max tokens (default: 1000)
+      # maxTokens: 1000
+      # Optional: Customize temperature 0-1 (default: 0.7)
+      # temperature: 0.7
+    - id: litellm # LiteLLM proxy provider
+      baseUrl: 'http://localhost:4000' # LiteLLM proxy URL
+      token: ${LITELLM_API_KEY} # Optional, depends on your LiteLLM setup
+      model: gpt-4o-mini # Model name configured in LiteLLM
       # Optional: Customize max tokens (default: 1000)
       # maxTokens: 1000
       # Optional: Customize temperature 0-1 (default: 0.7)

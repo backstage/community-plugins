@@ -133,6 +133,7 @@ describe('OpenAIProvider', () => {
 
       expect(result.connected).toBe(false);
       expect(result.error).toContain('Invalid API key');
+      expect(result.error).toContain('OpenAI');
     });
 
     it('should return error message on 429', async () => {
@@ -146,6 +147,7 @@ describe('OpenAIProvider', () => {
 
       expect(result.connected).toBe(false);
       expect(result.error).toContain('Rate limit exceeded');
+      expect(result.error).toContain('OpenAI');
     });
 
     it('should return error message on 403', async () => {

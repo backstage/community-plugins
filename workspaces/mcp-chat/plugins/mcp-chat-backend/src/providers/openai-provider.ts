@@ -22,6 +22,10 @@ import { ChatMessage, Tool, ChatResponse } from '../types';
  * @public
  */
 export class OpenAIProvider extends LLMProvider {
+  protected get providerName(): string {
+    return 'OpenAI';
+  }
+
   async sendMessage(
     messages: ChatMessage[],
     tools?: Tool[],
@@ -44,7 +48,7 @@ export class OpenAIProvider extends LLMProvider {
 
       if (!response.ok) {
         const errorText = await response.text();
-        let errorMessage = `OpenAI API error (${response.status})`;
+        let errorMessage = `${this.providerName} API error (${response.status})`;
 
         try {
           const errorData = JSON.parse(errorText);
@@ -61,11 +65,9 @@ export class OpenAIProvider extends LLMProvider {
 
         // Provide user-friendly messages for common errors
         if (response.status === 401) {
-          errorMessage =
-            'Invalid API key. Please check your OpenAI API key configuration.';
+          errorMessage = `Invalid API key. Please check your ${this.providerName} API key configuration.`;
         } else if (response.status === 429) {
-          errorMessage =
-            'Rate limit exceeded. Please try again later or check your OpenAI usage limits.';
+          errorMessage = `Rate limit exceeded. Please try again later or check your ${this.providerName} usage limits.`;
         } else if (response.status === 403) {
           errorMessage =
             'Access forbidden. Please check your API key permissions.';
