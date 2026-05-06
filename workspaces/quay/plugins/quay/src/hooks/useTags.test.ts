@@ -109,4 +109,22 @@ describe('useTags', () => {
       expect(result.current.data[0].expiration).toBe(formatDate(expiration));
     });
   });
+
+  it('should return empty data and stop loading when instance not found', async () => {
+    (useApi as jest.Mock).mockReturnValueOnce({
+      getSecurityDetails: jest.fn(),
+      getTags: jest
+        .fn()
+        .mockRejectedValue(
+          new Error('Quay instance "unknown" not found in configuration.'),
+        ),
+    });
+
+    const { result } = renderHook(() => useTags('unknown', 'foo', 'bar'));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBeFalsy();
+      expect(result.current.data).toEqual([]);
+    });
+  });
 });
