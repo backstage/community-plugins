@@ -21,6 +21,7 @@ These properties can be added to **any** MCP server configuration:
 - `env`: Environment variables object
 - `args`: Command-line arguments array (for STDIO servers)
 - `headers`: HTTP headers object (for HTTP servers)
+- `disabledTools`: List of tool names to exclude from the server (see [Tool-Level Filtering](#tool-level-filtering))
 
 ---
 
@@ -126,6 +127,38 @@ mcpServers:
 
 ---
 
+## Tool-Level Filtering
+
+Use `disabledTools` to exclude specific tools from any MCP server. Disabled tools are filtered at discovery time and never exposed to the LLM or the frontend.
+
+```yaml
+mcpServers:
+  - id: kubernetes-server
+    name: Kubernetes Server
+    npxCommand: 'kubernetes-mcp-server@latest'
+    env:
+      KUBECONFIG: ${KUBECONFIG}
+    disabledTools:
+      - pods_delete
+      - pods_exec
+
+  - id: backstage-server
+    name: Backstage Server
+    url: 'http://localhost:7007/api/mcp-actions/v1'
+    headers:
+      Authorization: 'Bearer ${BACKSTAGE_MCP_TOKEN}'
+    disabledTools:
+      - catalog_entity_delete
+```
+
+**Notes:**
+
+- Works for both STDIO and HTTP servers
+- Invalid tool names (typos, etc.) log a warning but do not crash the server
+- When using the OpenAI Responses API provider, the restriction is enforced via `allowed_tools` on the API request
+
+---
+
 ## Configuration Tips
 
 - **Environment Variables**: Use `${VARIABLE_NAME}` syntax to reference environment variables
@@ -134,6 +167,15 @@ mcpServers:
 - **Authentication**: Use the `headers` property for API keys, tokens, or custom authentication
 - **Development**: STDIO servers are ideal for local development and testing
 - **Production**: HTTP servers work better for distributed or cloud deployments
+
+### Tool Call Timeout
+
+By default, MCP tool calls time out after **60 seconds**. For long-running tools (e.g., scaffolder templates that provision infrastructure), increase this with `toolCallTimeout`:
+
+```yaml
+mcpChat:
+  toolCallTimeout: 300000 # 5 minutes, in milliseconds
+```
 
 ---
 

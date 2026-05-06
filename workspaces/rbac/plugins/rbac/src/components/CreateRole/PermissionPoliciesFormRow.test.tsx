@@ -91,4 +91,14 @@ describe('PermissionPoliciesFormRow', () => {
 
     expect(getByTestId(/nested-row-catalog/)).toBeInTheDocument();
   });
+
+  it('expands nested row when plugin name text is clicked', () => {
+    const { getByTestId } = render(
+      <PermissionPoliciesFormRow {...mockProps} />,
+    );
+
+    fireEvent.click(screen.getByText('Catalog'));
+
+    expect(getByTestId(/nested-row-catalog/)).toBeInTheDocument();
+  });
 });

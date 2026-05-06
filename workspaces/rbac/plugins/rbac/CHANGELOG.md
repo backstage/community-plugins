@@ -1,5 +1,17 @@
 # @backstage-community/plugin-rbac
 
+## 1.52.3
+
+### Patch Changes
+
+- c1b8a19: Expanded checkbox click targets in the permission policies form to include the associated label text. Clicking the permission name or policy action text now toggles the corresponding checkbox.
+
+## 1.52.2
+
+### Patch Changes
+
+- 3fc1a9e: Fix RBAC role creation form UI text consistency and accuracy
+
 ## 1.52.1
 
 ### Patch Changes

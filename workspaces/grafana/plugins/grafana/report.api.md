@@ -5,7 +5,9 @@
 ```ts
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { DiscoveryApi } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FetchApi } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 
 // @public
@@ -77,14 +79,31 @@ export const GRAFANA_ANNOTATION_DASHBOARD_SELECTOR =
   'grafana/dashboard-selector';
 
 // @public
+export const GRAFANA_ANNOTATION_HOST_ID = 'grafana/host-id';
+
+// @public
 export const GRAFANA_ANNOTATION_OVERVIEW_DASHBOARD =
   'grafana/overview-dashboard';
 
 // @public
 export interface GrafanaApi {
-  alertsForSelector(selectors: string | string[]): Promise<Alert[]>;
-  listDashboards(query: string): Promise<Dashboard[]>;
+  alertsForSelector(
+    selectors: string | string[],
+    hostId?: string,
+  ): Promise<Alert[]>;
+  isUnifiedAlerting(hostId?: string): boolean;
+  listDashboards(query: string, hostId?: string): Promise<Dashboard[]>;
 }
+
+// @public
+export type GrafanaApiClientOptions = {
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
+  hosts: GrafanaHost[];
+  defaultHostId?: string;
+  dashboardSearchLimit?: number;
+  dashboardMaxPages?: number;
+};
 
 // @public
 export const grafanaApiRef: ApiRef<GrafanaApi, 'plugin.grafana.service'> & {
@@ -92,7 +111,18 @@ export const grafanaApiRef: ApiRef<GrafanaApi, 'plugin.grafana.service'> & {
 };
 
 // @public
+export interface GrafanaHost {
+  domain: string;
+  id: string;
+  proxyPath?: string;
+  unifiedAlerting?: boolean;
+}
+
+// @public
 export const grafanaPlugin: BackstagePlugin<{}, {}, {}>;
+
+// @public
+export const hostIdFromEntity: (entity: Entity) => string | undefined;
 
 // @public
 export const isAlertSelectorAvailable: (entity: Entity) => boolean;

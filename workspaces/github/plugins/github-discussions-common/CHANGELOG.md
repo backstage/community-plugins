@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-discussions-common
 
+## 0.12.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
 ## 0.11.0
 
 ### Minor Changes

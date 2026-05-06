@@ -26,6 +26,7 @@ import {
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { DateTime } from 'luxon';
 import { mockServices } from '@backstage/backend-test-utils';
+import { metricsServiceMock } from '@backstage/backend-test-utils/alpha';
 import { DefaultSchedulerService } from '@backstage/backend-defaults/scheduler';
 
 const setupRouter = async (
@@ -46,6 +47,7 @@ const setupRouter = async (
     scheduler: DefaultSchedulerService.create({
       database,
       logger,
+      metrics: metricsServiceMock.mock(),
       rootLifecycle,
       httpRouter,
       pluginMetadata: { getId: () => 'plugin-id' },

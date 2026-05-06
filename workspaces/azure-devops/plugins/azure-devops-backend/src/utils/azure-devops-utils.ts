@@ -35,6 +35,7 @@ import mime from 'mime-types';
 import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 import { PolicyEvaluationRecord } from 'azure-devops-node-api/interfaces/PolicyInterfaces';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
+import { Config } from '@backstage/config';
 
 export function convertDashboardPullRequest(
   pullRequest: GitPullRequest,
@@ -353,4 +354,52 @@ export function parseAzureDevOpsUrl(sourceUrl: string) {
   }
 
   return { host, org, project, repo };
+}
+
+export interface AzureDevOpsOrganization {
+  organization: string;
+  host: string;
+}
+
+/**
+ * Get configured Azure DevOps organizations from config.
+ * Combines organizations from pullRequestDashboard.organizations array
+ * with legacy host/organization config if present.
+ *
+ * @param config - Backstage configuration object
+ * @returns Array of organization objects with host and organization name
+ */
+export function getConfiguredAzureDevOpsOrganizations(
+  config: Config,
+): AzureDevOpsOrganization[] {
+  // Get configured organizations from pull request dashboard config
+  const dashboardOrgs = config.getOptionalConfigArray(
+    'azureDevOps.pullRequestDashboard.organizations',
+  );
+  const organizations: AzureDevOpsOrganization[] = dashboardOrgs
+    ? dashboardOrgs.map(orgConfig => ({
+        organization: orgConfig.getString('organization'),
+        host: orgConfig.getString('host'),
+      }))
+    : [];
+
+  // Add legacy host/organization config if present
+  const legacyHost = config.getOptionalString('azureDevOps.host');
+  const legacyOrg = config.getOptionalString('azureDevOps.organization');
+
+  if (legacyHost && legacyOrg) {
+    // Only add if not already in the organizations array
+    const isAlreadyConfigured = organizations.some(
+      org => org.host === legacyHost && org.organization === legacyOrg,
+    );
+
+    if (!isAlreadyConfigured) {
+      organizations.push({
+        organization: legacyOrg,
+        host: legacyHost,
+      });
+    }
+  }
+
+  return organizations;
 }

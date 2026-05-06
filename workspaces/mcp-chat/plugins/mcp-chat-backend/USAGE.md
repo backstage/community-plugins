@@ -410,6 +410,7 @@ interface MCPServerConfig {
   npxCommand?: string; // For STDIO: npx package
   args?: string[]; // Command-line arguments
   url?: string; // For HTTP: endpoint URL
+  disabledTools?: string[]; // Tool names to exclude
 }
 
 // MCPServerSecrets - Sensitive configuration

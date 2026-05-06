@@ -18,19 +18,20 @@ import { Table } from '../../../components';
 import { FindingData } from '../../../queries';
 import { findingTableColumnSchema } from './findingTable.schema';
 import { getFindingStatistics } from './findingTable.helpers';
-import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 export const FindingTable = ({
   findingData,
   findingDataError,
   findingDataLoading,
-}: FindingData) => {
-  // Read the query parameters for filter the project on the Mend Tab
-  const { search } = useLocation();
-  const queryParams = new URLSearchParams(search);
-  const selectedProject = queryParams.get('filter') || null;
-
+  projectList,
+  selectedProjectId,
+  onProjectChange,
+}: FindingData & {
+  projectList?: Project[];
+  selectedProjectId: string | null;
+  onProjectChange: (projectId: string) => void;
+}) => {
   const [clientName, setClientName] = useState<string>('');
   const [url, setUrl] = useState<string>('');
 
@@ -63,8 +64,10 @@ export const FindingTable = ({
       tableDataLoading={findingDataLoading}
       tableTitle="Project Findings"
       totalTitle="Findings Overview"
-      projectList={findingData?.projectList as Project[]}
-      selectedProject={selectedProject}
+      projectList={projectList || (findingData?.projectList as Project[])}
+      selectedProjectId={selectedProjectId}
+      onProjectChange={onProjectChange}
+      useFullDataForStatistics
     />
   );
 };

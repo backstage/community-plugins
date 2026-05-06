@@ -78,7 +78,7 @@ const rbacTranslationIt = createTranslationMessages({
     'roleForm.titles.createRole': 'Crea ruolo',
     'roleForm.titles.editRole': 'Modifica ruolo',
     'roleForm.titles.nameAndDescription':
-      'Inserire il nome e la descrizione del ruolo',
+      'Inserire il nome, la descrizione e il proprietario del ruolo',
     'roleForm.titles.usersAndGroups': 'Aggiungi utenti e gruppi',
     'roleForm.titles.permissionPolicies': 'Aggiungi criteri di autorizzazione',
     'roleForm.review.reviewAndCreate': 'Rivedi e crea',
@@ -97,7 +97,7 @@ const rbacTranslationIt = createTranslationMessages({
     'roleForm.fields.name.helperText': 'Inserire il nome del ruolo',
     'roleForm.fields.description.label': 'Descrizione',
     'roleForm.fields.description.helperText':
-      'Inserire una breve descrizione del ruolo (finalità del ruolo)',
+      'Facoltativo: inserire una breve descrizione del ruolo (finalità del ruolo)',
     'roleForm.fields.owner.label': 'Proprietario',
     'roleForm.fields.owner.helperText':
       "Facoltativo: inserire un utente o un gruppo che avrà l'autorizzazione a modificare questo ruolo e a creare ruoli aggiuntivi. Nel passaggio successivo, specificare quali utenti possono assegnare ai loro ruoli e a quali plugin possono concedere l'accesso. Se vuoto, l'autore viene assegnato automaticamente al momento della creazione.",

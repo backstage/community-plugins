@@ -100,6 +100,8 @@ export interface MCPServerConfig {
   args?: string[];
   /** URL endpoint (for HTTP servers) */
   url?: string;
+  /** List of tools to be excluded for the MCP Server */
+  disabledTools?: string[];
 }
 
 /**
@@ -207,6 +209,10 @@ export interface ProviderConfig {
   model: string;
   /** Logger for debugging */
   logger?: LoggerService;
+  /** Maximum number of tokens to generate (default: 1000 for OpenAI-compatible, 4096 for Claude, 8192 for Gemini) */
+  maxTokens?: number;
+  /** Temperature for response randomness, between 0 and 1 (default: 0.7) */
+  temperature?: number;
 }
 
 /**

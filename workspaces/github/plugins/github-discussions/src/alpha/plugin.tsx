@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
+import { z } from 'zod';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
-import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+import { RiDiscussLine } from '@remixicon/react';
 
 /** @alpha */
 export const githubDiscussionsSearchResultListItem =
   SearchResultListItemBlueprint.makeWithOverrides({
-    config: {
-      schema: {
-        lineClamp: z => z.number().default(5),
-      },
+    configSchema: {
+      lineClamp: z.number().default(5),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
-        icon: <SpeakerNotesIcon />,
+        icon: <RiDiscussLine />,
         predicate: result => result.type === 'github-discussions',
         component: async () => {
           const { GithubDiscussionsSearchResultListItem } = await import(
@@ -56,7 +55,7 @@ const githubDiscussionsSearchFilterResultType =
     params: {
       value: 'github-discussions',
       name: 'GitHub Discussions',
-      icon: <SpeakerNotesIcon />,
+      icon: <RiDiscussLine size={20} />,
     },
   });
 

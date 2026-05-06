@@ -28,9 +28,10 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 export const DEFAULT_TEAMS_LIMIT = 100;
 
 export class PullRequestsDashboardProvider {
-  private teams = new Map<string, Team>();
+  // Cache keys are in format: "host:org" (e.g., "dev.azure.com:myorg")
+  private teams = new Map<string, Map<string, Team>>();
 
-  private teamMembers = new Map<string, TeamMember>();
+  private teamMembers = new Map<string, Map<string, TeamMember>>();
 
   private constructor(
     private readonly logger: LoggerService,
@@ -45,10 +46,19 @@ export class PullRequestsDashboardProvider {
     return provider;
   }
 
-  public async readTeams(limit?: number): Promise<void> {
-    this.logger.info('Reading teams.');
+  private getCacheKey(host?: string, org?: string): string {
+    return `${host ?? 'default'}:${org ?? 'default'}`;
+  }
 
-    let teams = await this.azureDevOpsApi.getAllTeams({ limit });
+  public async readTeams(
+    limit?: number,
+    host?: string,
+    org?: string,
+  ): Promise<void> {
+    const cacheKey = this.getCacheKey(host, org);
+    this.logger.info(`Reading teams for ${cacheKey}.`);
+
+    let teams = await this.azureDevOpsApi.getAllTeams({ limit, host, org });
 
     // This is used to filter out the default Azure Devops project teams.
     teams = teams.filter(team =>
@@ -57,8 +67,8 @@ export class PullRequestsDashboardProvider {
         : true,
     );
 
-    this.teams = new Map<string, Team>();
-    this.teamMembers = new Map<string, TeamMember>();
+    const teamsCache = new Map<string, Team>();
+    const teamMembersCache = new Map<string, TeamMember>();
 
     const limiter = limiterFactory(5);
 
@@ -75,6 +85,8 @@ export class PullRequestsDashboardProvider {
               teamMembers = await this.azureDevOpsApi.getTeamMembers({
                 projectId,
                 teamId,
+                host,
+                org,
               });
             }
 
@@ -85,10 +97,10 @@ export class PullRequestsDashboardProvider {
                 if (teamMemberId) {
                   arr.push(teamMemberId);
                   const memberOf = [
-                    ...(this.teamMembers.get(teamMemberId)?.memberOf ?? []),
+                    ...(teamMembersCache.get(teamMemberId)?.memberOf ?? []),
                     teamId,
                   ];
-                  this.teamMembers.set(teamMemberId, {
+                  teamMembersCache.set(teamMemberId, {
                     ...teamMember,
                     memberOf,
                   });
@@ -97,29 +109,44 @@ export class PullRequestsDashboardProvider {
                 return arr;
               }, [] as string[]);
 
-              this.teams.set(teamId, team);
+              teamsCache.set(teamId, team);
             }
           }
         }),
       ),
     );
+
+    this.teams.set(cacheKey, teamsCache);
+    this.teamMembers.set(cacheKey, teamMembersCache);
   }
 
   public async getDashboardPullRequests(
     projectName: string,
     options: PullRequestOptions,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]> {
     const dashboardPullRequests =
-      await this.azureDevOpsApi.getDashboardPullRequests(projectName, options);
+      await this.azureDevOpsApi.getDashboardPullRequests(
+        projectName,
+        options,
+        host,
+        org,
+      );
 
-    await this.getAllTeams({ limit: options.teamsLimit }); // Make sure team members are loaded
+    await this.getAllTeams({ limit: options.teamsLimit, host, org }); // Make sure team members are loaded for the correct org
+
+    const cacheKey = this.getCacheKey(host, org);
+    const teamsCache = this.teams.get(cacheKey) ?? new Map<string, Team>();
+    const teamMembersCache =
+      this.teamMembers.get(cacheKey) ?? new Map<string, TeamMember>();
 
     return dashboardPullRequests.map(pr => {
       if (pr.createdBy?.id) {
-        const teamIds = this.teamMembers.get(pr.createdBy.id)?.memberOf;
+        const teamIds = teamMembersCache.get(pr.createdBy.id)?.memberOf;
         pr.createdBy.teamIds = teamIds;
         pr.createdBy.teamNames = teamIds?.map(
-          teamId => this.teams.get(teamId)?.name ?? '',
+          teamId => teamsCache.get(teamId)?.name ?? '',
         );
       }
 
@@ -127,21 +154,37 @@ export class PullRequestsDashboardProvider {
     });
   }
 
-  public async getUserTeamIds(email: string): Promise<string[]> {
-    await this.getAllTeams({}); // Make sure team members are loaded
+  public async getUserTeamIds(
+    email: string,
+    host?: string,
+    org?: string,
+  ): Promise<string[]> {
+    await this.getAllTeams({ host, org }); // Make sure team members are loaded for the correct org
+
+    const cacheKey = this.getCacheKey(host, org);
+    const teamMembersCache =
+      this.teamMembers.get(cacheKey) ?? new Map<string, TeamMember>();
+
     return (
-      Array.from(this.teamMembers.values()).find(
+      Array.from(teamMembersCache.values()).find(
         teamMember => teamMember.uniqueName === email,
       )?.memberOf ?? []
     );
   }
 
-  public async getAllTeams(options: { limit?: number }): Promise<Team[]> {
-    if (!this.teams.size) {
+  public async getAllTeams(options: {
+    limit?: number;
+    host?: string;
+    org?: string;
+  }): Promise<Team[]> {
+    const cacheKey = this.getCacheKey(options.host, options.org);
+    const teamsCache = this.teams.get(cacheKey);
+
+    if (!teamsCache || teamsCache.size === 0) {
       const maxTeams = options?.limit ?? DEFAULT_TEAMS_LIMIT;
-      await this.readTeams(maxTeams);
+      await this.readTeams(maxTeams, options.host, options.org);
     }
 
-    return Array.from(this.teams.values());
+    return Array.from(this.teams.get(cacheKey)?.values() ?? []);
   }
 }

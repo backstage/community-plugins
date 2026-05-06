@@ -1,9 +1,43 @@
 # Mend.io - backend
 
+The Mend backend plugin provides the server-side functionality for the Mend Backstage integration. This plugin is **required** for the frontend plugin to function and handles API communication with the Mend.io platform to retrieve project details and security findings with permission management.
+
+## Prerequisites
+
+- Mend Activation Key
+- Frontend plugin `@backstage-community/plugin-mend` installed
+- Catalog Backend Module Mend Entity Processor plugin `@backstage-community/plugin-catalog-backend-module-mend-entity-processor` installed to add the Mend annotations in entities.
+
+## Installation
+
+From your Backstage root directory, install the Mend backend plugins:
+
+```bash
+yarn --cwd packages/backend add @backstage-community/plugin-mend-backend @backstage-community/plugin-catalog-backend-module-mend-entity-processor
+```
+
 In your `packages/backend/src/index.ts` file:
 
 ```ts
 backend.add(import('@backstage-community/plugin-mend-backend'));
+backend.add(
+  import(
+    '@backstage-community/plugin-catalog-backend-module-mend-entity-processor'
+  ),
+);
+```
+
+## Mend.io Projects Cache Refresh (Optional)
+
+The plugin using a cache mechanism to store the project detail from Mend for better performance on data retrieval.
+By default the data will be refresh on every 240 minutes (4 hours).
+
+use the following configuration to modify that refresh cycle:
+
+```yaml
+mend:
+  activationKey: ${MEND_ACTIVATION_KEY}
+  cacheRefresh: 240
 ```
 
 ## Mend.io Projects Control (Optional)
@@ -64,6 +98,7 @@ permissionControl:
 
 _Result: Show **only** project-789 and project-101_
 
-## Add the Mend.io frontend plugin
+## Links
 
-See the [mend frontend plugin instructions](../mend/README.md).
+- [Frontend Mend Plugin Documentation](../mend/README.md)
+- [Catalog Backend Module Mend Entity Processor Documentation](../catalog-backend-module-mend-entity-processor/README.md)

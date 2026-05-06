@@ -105,12 +105,21 @@ export class OpenAIProvider extends LLMProvider {
   }
 
   protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+    const maxTokens = this.maxTokens ?? 1000;
+    const useMaxCompletionTokens = /^(o[0-9]|gpt-5)/.test(this.model);
+
     const request: any = {
       model: this.model,
       messages,
-      max_tokens: 1000,
-      temperature: 0.7,
+      ...(useMaxCompletionTokens
+        ? { max_completion_tokens: maxTokens }
+        : { max_tokens: maxTokens }),
     };
+
+    // O-series and GPT-5 models do not support the temperature parameter
+    if (!useMaxCompletionTokens) {
+      request.temperature = this.temperature ?? 0.7;
+    }
 
     if (tools && tools.length > 0) {
       request.tools = tools;

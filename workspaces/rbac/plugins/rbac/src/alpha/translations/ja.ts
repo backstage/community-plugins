@@ -73,7 +73,7 @@ const rbacTranslationJa = createTranslationMessages({
     'roleForm.titles.createRole': 'ロールの作成',
     'roleForm.titles.editRole': 'ロールの編集',
     'roleForm.titles.nameAndDescription':
-      'ロールの名前と説明を入力してください',
+      'ロールの名前、説明、および所有者を入力してください',
     'roleForm.titles.usersAndGroups': 'ユーザーとグループの追加',
     'roleForm.titles.permissionPolicies': '権限ポリシーの追加',
     'roleForm.review.reviewAndCreate': '確認および作成',
@@ -90,7 +90,7 @@ const rbacTranslationJa = createTranslationMessages({
     'roleForm.fields.name.helperText': 'ロールの名前を入力してください',
     'roleForm.fields.description.label': '説明',
     'roleForm.fields.description.helperText':
-      'ロールについての簡単な説明を入力してください (ロールの目的)',
+      '任意: ロールについての簡単な説明を入力してください (ロールの目的)',
     'roleForm.fields.owner.label': '所有者',
     'roleForm.fields.owner.helperText':
       '任意: このロールを編集する権限と追加のロールを作成する権限を持つユーザーまたはグループを入力してください。どのユーザーを自分のロールに割り当て可能にするか、どのプラグインへのアクセスを許可するかは、次のステップで設定します。空白のままにすると、作成時に作成者が自動的に割り当てられます。',

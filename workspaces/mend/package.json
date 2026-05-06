@@ -40,6 +40,7 @@
     "@backstage/e2e-test-utils": "^0.1.2",
     "@backstage/repo-tools": "^0.16.5",
     "@changesets/cli": "^2.27.1",
+    "@types/react-dom": "^18",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",

@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 import { FunctionComponent } from 'react';
-import { Typography, Box, Avatar, makeStyles } from '@material-ui/core';
+import { Text, Flex, Avatar } from '@backstage/ui';
+import styles from './UserHeader.module.css';
 
 type Props = {
   name: string;
   avatar?: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  small: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-    marginLeft: theme.spacing(1),
-  },
-}));
-
 const UserHeader: FunctionComponent<Props> = (props: Props) => {
   const { name, avatar } = props;
-  const classes = useStyles();
 
   return (
-    <Box display="flex" alignItems="center" marginX={1}>
-      <Typography color="textSecondary" variant="body2" component="p">
+    <Flex
+      align="center"
+      style={{
+        marginLeft: 'var(--bui-space-2)',
+        marginRight: 'var(--bui-space-2)',
+      }}
+    >
+      <Text variant="body-small" color="secondary">
         {name}
-      </Typography>
-      <Avatar alt={name} src={avatar} className={classes.small} />
-    </Box>
+      </Text>
+      <Avatar src={avatar ?? ''} name={name} className={styles.small} />
+    </Flex>
   );
 };
 

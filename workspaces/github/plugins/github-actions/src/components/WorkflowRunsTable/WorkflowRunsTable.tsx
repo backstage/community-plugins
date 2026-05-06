@@ -13,30 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Button from '@material-ui/core/Button';
-import RetryIcon from '@material-ui/icons/Replay';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import {
+  Flex,
+  Text,
+  Button,
+  ButtonIcon,
+  Card,
+  CardHeader,
+  CardBody,
+  Cell,
+  CellText,
+  Table,
+  useTable,
+  TextField,
+  TooltipTrigger,
+  Tooltip,
+  type ColumnConfig,
+  type TableItem,
+} from '@backstage/ui';
+import { RiGithubLine, RiRefreshLine, RiRestartLine } from '@remixicon/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
+import { fetchWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import SyncIcon from '@material-ui/icons/Sync';
 import { buildRouteRef } from '../../routes';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { Entity } from '@backstage/catalog-model';
 
-import {
-  EmptyState,
-  Table,
-  TableColumn,
-  Link,
-} from '@backstage/core-components';
-import { useRouteRef } from '@backstage/core-plugin-api';
+import { EmptyState, Link } from '@backstage/core-components';
+import { useApi, useRouteRef, errorApiRef } from '@backstage/core-plugin-api';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-import { getStatusDescription } from '../WorkflowRunStatus/WorkflowRunStatus';
+import { useMemo, ReactElement, useState } from 'react';
+import { githubActionsApiRef } from '../../api';
+
+type WorkflowRunWithId = WorkflowRun & TableItem;
 
 // Utility function to truncate string at the first newline character
 const truncateAtNewline = (str: string) => {
@@ -44,184 +53,265 @@ const truncateAtNewline = (str: string) => {
   return newlineIndex !== -1 ? str.substring(0, newlineIndex) : str;
 };
 
-const generatedColumns: TableColumn<Partial<WorkflowRun>>[] = [
+const createColumns = (): ColumnConfig<WorkflowRunWithId>[] => [
   {
-    title: 'ID',
-    field: 'id',
-    type: 'numeric',
-    width: '150px',
+    id: 'id',
+    label: 'ID',
+    isRowHeader: true,
+    cell: (item): ReactElement => {
+      const text = String(item.id);
+      return <CellText title={text}>{text}</CellText>;
+    },
   },
   {
-    title: 'Message',
-    field: 'message',
-    highlight: true,
-    render: row => {
+    id: 'message',
+    label: 'Message',
+    cell: (item): ReactElement => {
       const LinkWrapper = () => {
         const routeLink = useRouteRef(buildRouteRef);
-        const truncatedMessage = truncateAtNewline(row.message!);
+        const truncatedMessage = truncateAtNewline(item.message!);
         return (
           <Link
             component={RouterLink}
-            to={routeLink({ id: row.id! })}
-            title={row.message} // display full message on hover
+            to={routeLink({ id: item.id! })}
+            title={item.message}
           >
             {truncatedMessage}
           </Link>
         );
       };
 
-      return <LinkWrapper />;
+      return (
+        <Cell>
+          <LinkWrapper />
+        </Cell>
+      );
     },
   },
   {
-    title: 'Source',
-    render: row => (
-      <Typography variant="body2" noWrap>
-        <Typography paragraph variant="body2">
-          {row.source?.branchName}
-        </Typography>
-        <Typography paragraph variant="body2">
-          {row.source?.commit.hash}
-        </Typography>
-      </Typography>
+    id: 'source',
+    label: 'Source',
+    cell: (item): ReactElement => (
+      <Cell>
+        <Flex direction="column">
+          <Text variant="body-small">{item.source?.branchName}</Text>
+          <Text variant="body-small">{item.source?.commit.hash}</Text>
+        </Flex>
+      </Cell>
     ),
   },
   {
-    title: 'Workflow',
-    field: 'workflowName',
-  },
-  {
-    title: 'Status',
-    customSort: (d1, d2) => {
-      return getStatusDescription(d1).localeCompare(getStatusDescription(d2));
+    id: 'workflowName',
+    label: 'Workflow',
+    cell: (item): ReactElement => {
+      const text = item.workflowName || '';
+      return <CellText title={text}>{text}</CellText>;
     },
-    render: row => (
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <WorkflowRunStatus status={row.status} conclusion={row.conclusion} />
-      </Box>
+  },
+  {
+    id: 'status',
+    label: 'Status',
+    cell: (item): ReactElement => (
+      <Cell>
+        <Flex justify="center" align="center">
+          <WorkflowRunStatus
+            status={item.status}
+            conclusion={item.conclusion}
+          />
+        </Flex>
+      </Cell>
     ),
   },
   {
-    title: 'Age',
-    render: row => (
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <Tooltip title={row.statusDate ?? ''}>
-          <Box>{row.statusAge}</Box>
-        </Tooltip>
-      </Box>
+    id: 'age',
+    label: 'Age',
+    cell: (item): ReactElement => (
+      <Cell>
+        <Flex justify="center" align="center">
+          <Text title={item.statusDate ?? ''}>{item.statusAge}</Text>
+        </Flex>
+      </Cell>
     ),
   },
   {
-    title: 'Actions',
-    render: (row: Partial<WorkflowRun>) => (
-      <Tooltip title="Rerun workflow">
-        <IconButton onClick={row.onReRunClick}>
-          <RetryIcon />
-        </IconButton>
-      </Tooltip>
+    id: 'actions',
+    label: 'Actions',
+    cell: (item): ReactElement => (
+      <Cell>
+        <TooltipTrigger>
+          <ButtonIcon
+            aria-label="Rerun workflow"
+            onPress={item.onReRunClick}
+            icon={<RiRestartLine size={16} />}
+            variant="secondary"
+          />
+          <Tooltip>Rerun workflow</Tooltip>
+        </TooltipTrigger>
+      </Cell>
     ),
-    width: '10%',
   },
 ];
 
 type Props = {
-  loading: boolean;
-  retry: () => void;
-  runs?: WorkflowRun[];
+  hostname?: string;
+  owner: string;
+  repo: string;
+  branch?: string;
   projectName: string;
-  page: number;
-  onChangePage: (page: number) => void;
-  total: number;
-  pageSize: number;
-  onChangePageSize: (pageSize: number) => void;
+  title?: string;
 };
 
 export const WorkflowRunsTableView = ({
+  hostname,
+  owner,
+  repo,
+  branch,
   projectName,
-  loading,
-  pageSize,
-  page,
-  retry,
-  runs,
-  onChangePage,
-  onChangePageSize,
-  total,
+  title,
 }: Props) => {
+  const api = useApi(githubActionsApiRef);
+  const errorApi = useApi(errorApiRef);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const columnConfig = useMemo(() => createColumns(), []);
+
+  const { tableProps, reload } = useTable<WorkflowRun>({
+    mode: 'offset',
+    getData: async ({ offset, pageSize }) => {
+      const page = Math.floor(offset / pageSize) + 1;
+
+      const { runs, totalCount } = await fetchWorkflowRuns({
+        api,
+        errorApi,
+        hostname,
+        owner,
+        repo,
+        branch,
+        page,
+        pageSize,
+      });
+
+      return {
+        data: runs,
+        totalCount,
+      };
+    },
+    paginationOptions: {
+      pageSize: 5,
+      pageSizeOptions: [5, 10, 20, 50],
+    },
+  });
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery || !tableProps.data) {
+      return tableProps.data;
+    }
+
+    const query = searchQuery.toLowerCase();
+    return tableProps.data.filter((item: WorkflowRun) => {
+      return (
+        String(item.id).toLowerCase().includes(query) ||
+        item.message?.toLowerCase().includes(query) ||
+        item.workflowName?.toLowerCase().includes(query) ||
+        item.source?.branchName?.toLowerCase().includes(query) ||
+        item.source?.commit.hash?.toLowerCase().includes(query)
+      );
+    });
+  }, [tableProps.data, searchQuery]);
+
   return (
-    <Table
-      isLoading={loading}
-      options={{ paging: true, pageSize, padding: 'dense' }}
-      totalCount={total}
-      page={page}
-      actions={[
-        {
-          icon: () => <SyncIcon />,
-          tooltip: 'Reload workflow runs',
-          isFreeAction: true,
-          onClick: () => retry(),
-        },
-      ]}
-      data={runs ?? []}
-      onPageChange={onChangePage}
-      onRowsPerPageChange={onChangePageSize}
-      style={{ width: '100%' }}
-      title={
-        <Box display="flex" alignItems="center">
-          <GitHubIcon />
-          <Box mr={1} />
-          <Typography variant="h6">{projectName}</Typography>
-        </Box>
-      }
-      columns={generatedColumns}
-    />
+    <Card>
+      <CardHeader>
+        <Flex justify="between" align="center">
+          <Flex align="center" style={{ gap: 'var(--bui-space-2)' }}>
+            {!title && <RiGithubLine size={20} />}
+            <Text variant="title-medium">{title || projectName}</Text>
+          </Flex>
+          <Flex
+            align="center"
+            style={{ gap: 'var(--bui-space-2)', flexShrink: 0 }}
+          >
+            <TextField
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Filter..."
+              aria-label="Search workflow runs"
+              style={{ width: '200px' }}
+            />
+            <ButtonIcon
+              aria-label="Reload workflow runs"
+              icon={<RiRefreshLine size={20} />}
+              onPress={reload}
+              variant="secondary"
+            />
+          </Flex>
+        </Flex>
+      </CardHeader>
+      <CardBody>
+        <Table
+          columnConfig={columnConfig}
+          {...tableProps}
+          data={filteredData}
+          emptyState={
+            <Text variant="body-medium">
+              {searchQuery
+                ? 'No matching workflow runs found.'
+                : 'No workflow runs found.'}
+            </Text>
+          }
+        />
+      </CardBody>
+    </Card>
   );
 };
 
 export const WorkflowRunsTable = ({
   entity,
   branch,
+  title,
 }: {
   entity: Entity;
   branch?: string;
+  title?: string;
 }) => {
   const projectName = getProjectNameFromEntity(entity);
   const hostname = getHostnameFromEntity(entity);
   const [owner, repo] = (projectName ?? '/').split('/');
-  const [{ runs, ...tableProps }, { retry, setPage, setPageSize }] =
-    useWorkflowRuns({
-      hostname,
-      owner,
-      repo,
-      branch,
-      fetchAllBranches: false,
-    });
 
   const githubHost = hostname || 'github.com';
-  const hasNoRuns = !tableProps.loading && !runs;
 
-  return hasNoRuns ? (
-    <EmptyState
-      missing="data"
-      title="No Workflow Data"
-      description="This component has GitHub Actions enabled, but no data was found. Have you created any Workflows? Click the button below to create a new Workflow."
-      action={
-        <Button
-          variant="contained"
-          color="primary"
-          href={`https://${githubHost}/${projectName}/actions/new`}
-        >
-          Create new Workflow
-        </Button>
-      }
-    />
-  ) : (
+  if (!owner || !repo) {
+    return (
+      <EmptyState
+        missing="data"
+        title="No Workflow Data"
+        description="This component has GitHub Actions enabled, but no data was found. Have you created any Workflows? Click the button below to create a new Workflow."
+        action={
+          <Button
+            variant="primary"
+            onClick={() =>
+              window.open(
+                `https://${githubHost}/${projectName}/actions/new`,
+                '_blank',
+                'noopener,noreferrer',
+              )
+            }
+          >
+            Create new Workflow
+          </Button>
+        }
+      />
+    );
+  }
+
+  return (
     <WorkflowRunsTableView
-      {...tableProps}
-      runs={runs}
-      loading={tableProps.loading}
-      retry={retry}
-      onChangePageSize={setPageSize}
-      onChangePage={setPage}
+      hostname={hostname}
+      owner={owner}
+      repo={repo}
+      branch={branch}
+      projectName={projectName ?? ''}
+      title={title}
     />
   );
 };

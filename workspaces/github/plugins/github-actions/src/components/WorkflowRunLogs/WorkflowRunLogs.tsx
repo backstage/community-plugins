@@ -15,49 +15,24 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import { LogViewer } from '@backstage/core-components';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import Modal from '@material-ui/core/Modal';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import Zoom from '@material-ui/core/Zoom';
-import { makeStyles } from '@material-ui/core/styles';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useState } from 'react';
+import { LogViewer, Progress } from '@backstage/core-components';
+import {
+  TooltipTrigger,
+  Accordion,
+  AccordionTrigger,
+  AccordionPanel,
+  Flex,
+  Tooltip,
+  ButtonIcon,
+  Dialog,
+  DialogTrigger,
+  DialogBody,
+} from '@backstage/ui';
+import { RiFileTextLine } from '@remixicon/react';
 import { getProjectNameFromEntity } from '../getProjectNameFromEntity';
 import { useDownloadWorkflowRunLogs } from './useDownloadWorkflowRunLogs';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    order: -1,
-    marginRight: 0,
-    marginLeft: '-20px',
-  },
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '85%',
-    height: '85%',
-    justifyContent: 'center',
-    margin: 'auto',
-  },
-  normalLogContainer: {
-    height: '75vh',
-    width: '100%',
-  },
-  modalLogContainer: {
-    height: '100%',
-    width: '100%',
-  },
-  log: {
-    background: theme.palette.background.default,
-  },
-}));
+import styles from './WorkflowRunLogs.module.css';
 
 /**
  * A component for Run Logs visualization.
@@ -71,7 +46,6 @@ export const WorkflowRunLogs = ({
   runId: number;
   inProgress: boolean;
 }) => {
-  const classes = useStyles();
   const projectName = getProjectNameFromEntity(entity);
 
   const hostname = getHostnameFromEntity(entity);
@@ -83,57 +57,44 @@ export const WorkflowRunLogs = ({
     id: runId,
   });
   const logText = jobLogs.value ? String(jobLogs.value) : undefined;
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
-    <Accordion TransitionProps={{ unmountOnExit: true }} disabled={inProgress}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        IconButtonProps={{
-          className: classes.button,
-        }}
-      >
-        <Typography variant="button">
-          {jobLogs.loading ? <CircularProgress /> : 'Job Log'}
-        </Typography>
-        <Tooltip title="Open Log" TransitionComponent={Zoom} arrow>
-          <DescriptionIcon
-            onClick={event => {
-              event.stopPropagation();
-              handleOpen();
-            }}
-            style={{ marginLeft: 'auto' }}
-          />
-        </Tooltip>
-        <Modal
-          className={classes.modal}
-          onClick={event => event.stopPropagation()}
-          open={open}
-          onClose={handleClose}
-        >
-          <Fade in={open}>
-            <div className={classes.modalLogContainer}>
-              <LogViewer
-                text={logText ?? 'No Values Found'}
-                classes={{ root: classes.log }}
+    <div className={styles.accordion}>
+      <Accordion isDisabled={inProgress}>
+        <Flex align="center">
+          <AccordionTrigger title="Job Log">
+            {jobLogs.loading && <Progress />}
+          </AccordionTrigger>
+          <DialogTrigger>
+            <TooltipTrigger>
+              <ButtonIcon
+                aria-label="Open Log"
+                icon={<RiFileTextLine size={20} />}
+                variant="secondary"
+                style={{ marginLeft: 'auto' }}
               />
+              <Tooltip>Open Log</Tooltip>
+            </TooltipTrigger>
+            <Dialog width="85vw" height="85vh">
+              <DialogBody>
+                <div className={styles.modalLogContainer}>
+                  <LogViewer
+                    text={logText ?? 'No Values Found'}
+                    classes={{ root: styles.log }}
+                  />
+                </div>
+              </DialogBody>
+            </Dialog>
+          </DialogTrigger>
+        </Flex>
+        <AccordionPanel>
+          {logText && (
+            <div className={styles.normalLogContainer}>
+              <LogViewer text={logText} classes={{ root: styles.log }} />
             </div>
-          </Fade>
-        </Modal>
-      </AccordionSummary>
-      {logText && (
-        <div className={classes.normalLogContainer}>
-          <LogViewer text={logText} classes={{ root: classes.log }} />
-        </div>
-      )}
-    </Accordion>
+          )}
+        </AccordionPanel>
+      </Accordion>
+    </div>
   );
 };

@@ -108,10 +108,14 @@ export interface ConversationRecord {
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
+export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
+
+// @public
 export function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
+  toolCallTimeout?: number,
 ): Promise<ToolExecutionResult>;
 
 // @public
@@ -183,6 +187,8 @@ export abstract class LLMProvider {
   // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
+  protected maxTokens?: number;
+  // (undocumented)
   protected model: string;
   // (undocumented)
   protected abstract parseResponse(response: any): ChatResponse;
@@ -191,6 +197,8 @@ export abstract class LLMProvider {
     messages: ChatMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse>;
+  // (undocumented)
+  protected temperature?: number;
   // (undocumented)
   abstract testConnection(): Promise<{
     connected: boolean;
@@ -269,6 +277,7 @@ export type MCPServer = MCPServerConfig & {
 // @public
 export interface MCPServerConfig {
   args?: string[];
+  disabledTools?: string[];
   id: string;
   name: string;
   npxCommand?: string;
@@ -359,7 +368,10 @@ export class OpenAIResponsesProvider extends LLMProvider {
   protected parseResponse(response: ResponsesApiResponse): ChatResponse;
   // (undocumented)
   sendMessage(messages: ChatMessage[], _tools?: Tool[]): Promise<ChatResponse>;
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void;
+  setMcpServerConfigs(
+    configs: MCPServerFullConfig[],
+    allowedToolsByServer?: Map<string, string[]>,
+  ): void;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -373,7 +385,9 @@ export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
   logger?: LoggerService;
+  maxTokens?: number;
   model: string;
+  temperature?: number;
   type: string;
 }
 

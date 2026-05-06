@@ -29,6 +29,12 @@ import {
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 /**
+ * Default timeout in milliseconds for MCP tool call requests.
+ * @public
+ */
+export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
+
+/**
  * Loads MCP server configurations from Backstage config.
  * Reads from the `mcpChat.mcpServers` configuration section.
  *
@@ -69,6 +75,7 @@ export function loadServerConfigs(
       url: serverConfig.getOptionalString('url'),
       headers,
       type,
+      disabledTools: serverConfig.getOptionalStringArray('disabledTools'),
     };
   });
 }
@@ -137,6 +144,7 @@ export async function findNpxPath(): Promise<string> {
  * @param toolCall - The tool call from the LLM containing function name and arguments
  * @param tools - List of available tools with their server IDs
  * @param mcpClients - Map of server IDs to MCP client instances
+ * @param toolCallTimeout - Timeout for the tool call to complete (default: 60000, unit: ms)
  * @returns Promise resolving to the tool execution result
  * @public
  */
@@ -144,6 +152,7 @@ export async function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
+  toolCallTimeout: number = DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
 ): Promise<ToolExecutionResult> {
   const toolName = toolCall.function.name;
   const toolArgs = JSON.parse(toolCall.function.arguments || '{}');
@@ -159,10 +168,14 @@ export async function executeToolCall(
     throw new Error(`Client for server '${tool.serverId}' not found`);
   }
 
-  const result = await client.callTool({
-    name: toolName,
-    arguments: toolArgs,
-  });
+  const result = await client.callTool(
+    {
+      name: toolName,
+      arguments: toolArgs,
+    },
+    undefined,
+    { timeout: toolCallTimeout },
+  );
 
   // Extract and format the result content properly
   let formattedResult: string;
@@ -254,6 +267,14 @@ export const validateConfig = (config: RootConfigService) => {
         );
       }
     }
+  }
+
+  // Validate toolCallTimeout if present
+  const toolCallTimeout = config.getOptionalNumber('mcpChat.toolCallTimeout');
+  if (toolCallTimeout !== undefined && toolCallTimeout <= 0) {
+    throw new Error(
+      `mcpChat.toolCallTimeout must be a strictly positive number, got: ${toolCallTimeout}`,
+    );
   }
 
   // Validate systemPrompt if present

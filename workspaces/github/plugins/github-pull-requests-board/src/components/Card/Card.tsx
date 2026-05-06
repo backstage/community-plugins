@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import { PropsWithChildren, FunctionComponent } from 'react';
-
-import * as React from 'react';
-import { Box, Paper, CardActionArea } from '@material-ui/core';
+import { Card as BUICard, CardBody } from '@backstage/ui';
 import CardHeader from './CardHeader';
 import { Label, Status } from '../../utils/types';
 
@@ -35,7 +33,7 @@ type Props = {
 };
 
 const Card: FunctionComponent<PropsWithChildren<Props>> = (
-  props: React.PropsWithChildren<Props>,
+  props: PropsWithChildren<Props>,
 ) => {
   const {
     title,
@@ -53,27 +51,32 @@ const Card: FunctionComponent<PropsWithChildren<Props>> = (
   } = props;
 
   return (
-    <Box marginBottom={1}>
-      <Paper variant="outlined">
-        <CardActionArea href={prUrl} target="_blank">
-          <Box padding={1}>
-            <CardHeader
-              title={title}
-              createdAt={createdAt}
-              updatedAt={updatedAt}
-              authorName={authorName}
-              authorAvatar={authorAvatar}
-              repositoryName={repositoryName}
-              isDraft={isDraft}
-              repositoryIsArchived={repositoryIsArchived}
-              labels={labels}
-              status={status}
-            />
-            {children}
-          </Box>
-        </CardActionArea>
-      </Paper>
-    </Box>
+    <BUICard
+      href={prUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      label={title}
+      style={{
+        background: 'transparent',
+        border: '1px solid var(--bui-border-1)',
+      }}
+    >
+      <CardBody style={{ paddingBlockStart: 'var(--bui-space-4)' }}>
+        <CardHeader
+          title={title}
+          createdAt={createdAt}
+          updatedAt={updatedAt}
+          authorName={authorName}
+          authorAvatar={authorAvatar}
+          repositoryName={repositoryName}
+          isDraft={isDraft}
+          repositoryIsArchived={repositoryIsArchived}
+          labels={labels}
+          status={status}
+        />
+        {children}
+      </CardBody>
+    </BUICard>
   );
 };
 

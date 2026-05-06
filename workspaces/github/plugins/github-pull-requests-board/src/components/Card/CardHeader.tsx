@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 import { FunctionComponent } from 'react';
-import { Typography, Box, Tooltip, Chip } from '@material-ui/core';
+import {
+  Text,
+  Flex,
+  Tag,
+  TagGroup,
+  Tooltip,
+  TooltipTrigger,
+} from '@backstage/ui';
 import { getElapsedTime, decorateCommitStatus } from '../../utils/functions';
 import { UserHeader } from '../UserHeader';
 import { DraftPrIcon } from '../icons/DraftPr';
-import UnarchiveIcon from '@material-ui/icons/Unarchive';
+import { RiInboxUnarchiveLine } from '@remixicon/react';
 import { Label, Status } from '../../utils/types';
-import { useFormClasses } from './styles';
 
 type Props = {
   title: string;
@@ -36,8 +42,6 @@ type Props = {
 };
 
 const CardHeader: FunctionComponent<Props> = (props: Props) => {
-  const classes = useFormClasses();
-
   const {
     title,
     createdAt,
@@ -53,58 +57,74 @@ const CardHeader: FunctionComponent<Props> = (props: Props) => {
 
   return (
     <>
-      <Box display="flex" justifyContent="space-between">
-        <Typography color="textSecondary" variant="body2" component="p">
+      <Flex justify="between">
+        <Text variant="body-small" color="secondary">
           {repositoryName}
-        </Typography>
+        </Text>
         <UserHeader name={authorName} avatar={authorAvatar} />
-      </Box>
-      <Box display="flex" justifyContent="left">
+      </Flex>
+      <Flex justify="start">
         {isDraft && (
-          <Tooltip title="Draft PR">
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <DraftPrIcon />
-            </Box>
-          </Tooltip>
+          <TooltipTrigger>
+            <span title="Draft PR">
+              <Flex justify="center" align="center">
+                <DraftPrIcon />
+              </Flex>
+            </span>
+            <Tooltip>Draft PR</Tooltip>
+          </TooltipTrigger>
         )}
         {repositoryIsArchived && (
-          <Tooltip title="Repository is archived">
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <UnarchiveIcon />
-            </Box>
-          </Tooltip>
+          <TooltipTrigger>
+            <span title="Repository is archived">
+              <Flex justify="center" align="center">
+                <RiInboxUnarchiveLine size={20} />
+              </Flex>
+            </span>
+            <Tooltip>Repository is archived</Tooltip>
+          </TooltipTrigger>
         )}
-      </Box>
-      <Typography component="h3">
+      </Flex>
+      <Text>
         <b>{title}</b>
-      </Typography>
-      <Box display="flex" justifyContent="space-between" marginY={1}>
-        <Typography variant="body2" component="p">
+      </Text>
+      <Flex
+        justify="between"
+        style={{
+          marginTop: 'var(--bui-space-2)',
+          marginBottom: 'var(--bui-space-2)',
+        }}
+      >
+        <Text variant="body-small">
           Created: <strong>{getElapsedTime(createdAt)}</strong>
-        </Typography>
+        </Text>
         {updatedAt && (
-          <Typography variant="body2" component="p">
+          <Text variant="body-small">
             Last update: <strong>{getElapsedTime(updatedAt)}</strong>
-          </Typography>
+          </Text>
         )}
-      </Box>
+      </Flex>
       {status && (
-        <Box display="flex" alignItems="center" flexWrap="wrap" paddingTop={1}>
-          <Typography variant="body2" component="p">
+        <Flex
+          align="center"
+          style={{ flexWrap: 'wrap', paddingTop: 'var(--bui-space-2)' }}
+        >
+          <Text variant="body-small">
             Commit Status: <strong>{decorateCommitStatus(status)}</strong>
-          </Typography>
-        </Box>
+          </Text>
+        </Flex>
       )}
       {labels && (
-        <Box display="flex" alignItems="center" flexWrap="wrap" paddingTop={1}>
-          {labels.map(data => {
-            return (
-              <li key={data.id} className={classes.labelItem}>
-                <Chip color="primary" label={data.name} size="small" />
-              </li>
-            );
-          })}
-        </Box>
+        <TagGroup
+          aria-label="Labels"
+          style={{ paddingTop: 'var(--bui-space-2)' }}
+        >
+          {labels.map(data => (
+            <Tag key={data.id} id={data.id} size="small">
+              {data.name}
+            </Tag>
+          ))}
+        </TagGroup>
       )}
     </>
   );

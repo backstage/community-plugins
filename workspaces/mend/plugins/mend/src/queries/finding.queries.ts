@@ -24,6 +24,7 @@ export enum FINDING_QUERY_KEY {
 
 type FindingRequestData = {
   uid?: string;
+  projectId?: string;
 } & Query;
 
 type FindingSuccessResponseData = {
@@ -49,12 +50,14 @@ const getFindingData = async ({
   signal,
   fetchApi,
   uid,
+  projectId,
   connectApi,
 }: FindingRequestData) => {
   const url = await connectApi.discoveryApi.getBaseUrl('mend');
   return await post<FindingSuccessResponseData>(fetchApi, `${url}/finding`, {
     body: {
       uid: uid,
+      projectId: projectId,
     },
     signal,
   });
@@ -63,6 +66,7 @@ const getFindingData = async ({
 export function useFindingData({
   fetchApi,
   uid,
+  projectId,
   connectApi,
 }: Omit<FindingRequestData, 'signal'>) {
   const {
@@ -70,9 +74,9 @@ export function useFindingData({
     error: findingDataError,
     isLoading: findingDataLoading,
   } = useQuery({
-    queryKey: [FINDING_QUERY_KEY.GET_FINDINGS, uid],
+    queryKey: [FINDING_QUERY_KEY.GET_FINDINGS, uid, projectId],
     queryFn: ({ signal }) =>
-      getFindingData({ fetchApi, signal, uid, connectApi }),
+      getFindingData({ fetchApi, signal, uid, projectId, connectApi }),
     enabled: !!uid,
   });
 

@@ -18,3 +18,4 @@ export {
   type TableRowProjectProps,
   type TableRowFindingProps,
 } from './Table';
+export { BackendNotInstalledMessage } from './BackendNotInstalledMessage';

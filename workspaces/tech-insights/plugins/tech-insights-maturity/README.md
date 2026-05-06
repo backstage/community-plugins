@@ -25,7 +25,7 @@ These are the currently available Maturity Ranks:
 yarn --cwd packages/app add @backstage-community/plugin-tech-insights-maturity
 ```
 
-### Add Maturity Summary Card to the entity overview page:
+### Add Maturity Summary Card to the entity overview page
 
 If you want to show Maturity Summary in the overview of any entity use `EntityMaturitySummaryCard`.
 Note: This applies to all types of entity.
@@ -41,10 +41,10 @@ const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     {entityWarningContent}
     <Grid item md={3} xs={6}>
-      <EntityAboutCard variant="gridItem" />
+      <EntityAboutCard />
     </Grid>
     <Grid item md={3} xs={6}>
-      <EntityCatalogGraphCard variant="gridItem" height={400} />
+      <EntityCatalogGraphCard height={400} />
     </Grid>
     ...
     <Grid item md={3} xs={6}>
@@ -54,7 +54,7 @@ const overviewContent = (
 );
 ```
 
-### Add Maturity Checks overview (Maturity Scorecards) page to the any Component EntityPage:
+### Add Maturity Checks overview (Maturity Scorecards) page to the any Component EntityPage
 
 Note: This only applies to entities of Kind: 'Component'
 
@@ -82,7 +82,7 @@ const componentEntityPage = (
 );
 ```
 
-### Add Maturity Summary overview page to System/Domain/Group:
+### Add Maturity Summary overview page to System/Domain/Group
 
 Note: This only applies to entities of Kind: 'System', 'Domain', or 'Group'
 
@@ -107,7 +107,7 @@ const systemEntityPage = (
 );
 ```
 
-### Add Maturity page:
+### Add Maturity page
 
 <img src="./img/maturityPage.png" width="700" height="350" />
 
@@ -164,7 +164,7 @@ techInsights:
         description: 'Conforms with the Golden Path standards. Ownership, Maintainability, Security, and Reliability are all ensured'
 ```
 
-## Compatibility!!
+## Compatibility
 
 This module is based on the existing Tech Insights Plugin and should be compatible with any existing implementations of [tech-insights-backend](../../../tech-insights/plugins/tech-insights-backend/README.md) or [tech-insights-backend-module-jsonfc](../../../tech-insights/plugins/tech-insights-backend-module-jsonfc/README.md).
 

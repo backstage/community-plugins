@@ -1,5 +1,18 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.10.0
+
+### Minor Changes
+
+- 8db17fe: Added support for max_tokens and temperature customization
+- 371fbad: Implement tool-level filtering using plugin configuration
+- 2cb7b1b: Add support for configuring MCP tool call timeout
+- 8db17fe: Added support for O-series and GPT-5 models
+
+### Patch Changes
+
+- 371fbad: Remove allowedTools from public MCPServerConfig API surface and improve disabledTools validation
+
 ## 0.9.0
 
 ### Minor Changes

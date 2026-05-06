@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  GrafanaApiClient,
-  UnifiedAlertingGrafanaApiClient,
-  Options,
-} from './api';
+import { GrafanaApiClient, GrafanaApiClientOptions } from './api';
 import { DiscoveryApi, FetchApi } from '@backstage/frontend-plugin-api';
 
 const PROXY_URL = 'http://localhost:7007/api/proxy';
@@ -50,11 +46,13 @@ function createMockFetchApiWithStatus(
   };
 }
 
-function defaultOpts(overrides: Partial<Options> = {}): Options {
+function defaultOpts(
+  overrides: Partial<GrafanaApiClientOptions> = {},
+): GrafanaApiClientOptions {
   return {
     discoveryApi: createMockDiscoveryApi(),
     fetchApi: createMockFetchApi(() => []),
-    domain: DOMAIN,
+    hosts: [{ id: 'default', domain: DOMAIN }],
     ...overrides,
   };
 }
@@ -94,6 +92,190 @@ const sampleLegacyAlerts = [
 ];
 
 describe('GrafanaApiClient', () => {
+  describe('isUnifiedAlerting', () => {
+    it('returns true when host has unifiedAlerting enabled', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [
+            {
+              id: 'prod',
+              domain: 'https://grafana-prod.example.com',
+              unifiedAlerting: true,
+            },
+          ],
+        }),
+      );
+
+      expect(client.isUnifiedAlerting('prod')).toBe(true);
+    });
+
+    it('returns false when host has unifiedAlerting disabled', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [
+            {
+              id: 'staging',
+              domain: 'https://grafana-staging.example.com',
+              unifiedAlerting: false,
+            },
+          ],
+        }),
+      );
+
+      expect(client.isUnifiedAlerting('staging')).toBe(false);
+    });
+
+    it('returns false when unifiedAlerting is not set', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [{ id: 'default', domain: 'https://grafana.example.com' }],
+        }),
+      );
+
+      expect(client.isUnifiedAlerting('default')).toBe(false);
+    });
+
+    it('resolves per-host in multi-instance setup', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [
+            {
+              id: 'prod',
+              domain: 'https://grafana-prod.example.com',
+              unifiedAlerting: true,
+            },
+            {
+              id: 'staging',
+              domain: 'https://grafana-staging.example.com',
+              unifiedAlerting: false,
+            },
+          ],
+        }),
+      );
+
+      expect(client.isUnifiedAlerting('prod')).toBe(true);
+      expect(client.isUnifiedAlerting('staging')).toBe(false);
+    });
+  });
+
+  describe('host resolution', () => {
+    it('falls back to default host when no hostId is provided', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [
+            {
+              id: 'default',
+              domain: 'https://grafana.example.com',
+              unifiedAlerting: true,
+            },
+          ],
+        }),
+      );
+
+      expect(client.isUnifiedAlerting()).toBe(true);
+    });
+
+    it('falls back to first host when no defaultHostId and no hostId', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [
+            {
+              id: 'prod',
+              domain: 'https://grafana-prod.example.com',
+              unifiedAlerting: true,
+            },
+          ],
+        }),
+      );
+
+      // No hostId, no defaultHostId, should fall back to first
+      expect(client.isUnifiedAlerting()).toBe(true);
+    });
+
+    it('uses defaultHostId when no hostId is provided', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          defaultHostId: 'staging',
+          hosts: [
+            {
+              id: 'prod',
+              domain: 'https://grafana-prod.example.com',
+              unifiedAlerting: true,
+            },
+            {
+              id: 'staging',
+              domain: 'https://grafana-staging.example.com',
+              unifiedAlerting: false,
+            },
+          ],
+        }),
+      );
+
+      // No hostId provided: should use defaultHostId (staging), not first (prod)
+      expect(client.isUnifiedAlerting()).toBe(false);
+    });
+
+    it('throws when hostId does not match any host', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [{ id: 'prod', domain: 'https://grafana-prod.example.com' }],
+        }),
+      );
+
+      expect(() => client.isUnifiedAlerting('nonexistent')).toThrow(
+        'Grafana instance "nonexistent" not found. Available instances: prod',
+      );
+    });
+
+    it('throws when defaultHostId does not match any host', () => {
+      expect(
+        () =>
+          new GrafanaApiClient(
+            defaultOpts({
+              defaultHostId: 'missing',
+              hosts: [
+                { id: 'prod', domain: 'https://grafana-prod.example.com' },
+              ],
+            }),
+          ),
+      ).toThrow(
+        '`defaultHostId` is set to "missing" but no host with that id was provided',
+      );
+    });
+
+    it('throws when constructed with duplicate host ids', () => {
+      expect(
+        () =>
+          new GrafanaApiClient(
+            defaultOpts({
+              hosts: [
+                { id: 'prod', domain: 'https://grafana-prod.example.com' },
+                { id: 'prod', domain: 'https://grafana-prod-2.example.com' },
+              ],
+            }),
+          ),
+      ).toThrow('Duplicate Grafana host id "prod"');
+    });
+
+    it('lists available instances in error message', () => {
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          hosts: [
+            { id: 'prod', domain: 'https://grafana-prod.example.com' },
+            {
+              id: 'staging',
+              domain: 'https://grafana-staging.example.com',
+            },
+          ],
+        }),
+      );
+
+      expect(() => client.isUnifiedAlerting('invalid')).toThrow(
+        'Available instances: prod, staging',
+      );
+    });
+  });
+
   describe('listDashboards', () => {
     it('searches by tag for a single-word query', async () => {
       const fetchApi = createMockFetchApi(url => {
@@ -103,10 +285,7 @@ describe('GrafanaApiClient', () => {
         return [];
       });
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const dashboards = await client.listDashboards('my-service');
       expect(dashboards).toHaveLength(1);
@@ -124,10 +303,7 @@ describe('GrafanaApiClient', () => {
         return [];
       });
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const dashboards = await client.listDashboards(
         "tags @> 'my-service' && tags @> 'generated'",
@@ -140,10 +316,7 @@ describe('GrafanaApiClient', () => {
     it('qualifies dashboard URLs with the configured domain', async () => {
       const fetchApi = createMockFetchApi(() => [sampleDashboards[0]]);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const dashboards = await client.listDashboards('my-service');
       expect(dashboards[0].url).toBe(`${DOMAIN}/d/abc123/service-overview`);
@@ -153,10 +326,7 @@ describe('GrafanaApiClient', () => {
     it('defaults folderTitle to empty string when undefined', async () => {
       const fetchApi = createMockFetchApi(() => [sampleDashboards[1]]);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const dashboards = await client.listDashboards('my-service-slo');
       expect(dashboards[0].folderTitle).toBe('');
@@ -170,10 +340,7 @@ describe('GrafanaApiClient', () => {
         return [];
       });
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const dashboards = await client.listDashboards('my-service-slo');
       expect(dashboards).toHaveLength(1);
@@ -183,14 +350,11 @@ describe('GrafanaApiClient', () => {
     });
   });
 
-  describe('alertsForSelector', () => {
+  describe('alertsForSelector (legacy)', () => {
     it('returns alerts mapped with correct fields', async () => {
       const fetchApi = createMockFetchApi(() => sampleLegacyAlerts);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const alerts = await client.alertsForSelector('my-service');
       expect(alerts).toHaveLength(2);
@@ -205,10 +369,7 @@ describe('GrafanaApiClient', () => {
     it('builds alert URL with panelId and fullscreen params', async () => {
       const fetchApi = createMockFetchApi(() => [sampleLegacyAlerts[1]]);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       const alerts = await client.alertsForSelector('my-service');
       expect(alerts[0].url).toBe(
@@ -219,10 +380,7 @@ describe('GrafanaApiClient', () => {
     it('passes the selector as dashboardTag query parameter', async () => {
       const fetchApi = createMockFetchApi(() => []);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       await client.alertsForSelector('production-alerts');
 
@@ -236,16 +394,42 @@ describe('GrafanaApiClient', () => {
       const alerts = await client.alertsForSelector('no-match');
       expect(alerts).toEqual([]);
     });
+
+    it('queries every selector when an array is provided', async () => {
+      const fetchApi = createMockFetchApi(url => {
+        if (url.includes('dashboardTag=tag-a')) {
+          return [sampleLegacyAlerts[0]];
+        }
+        if (url.includes('dashboardTag=tag-b')) {
+          return [sampleLegacyAlerts[1]];
+        }
+        return [];
+      });
+
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
+
+      const alerts = await client.alertsForSelector(['tag-a', 'tag-b']);
+
+      expect(alerts).toHaveLength(2);
+      expect(alerts.map(a => a.matchingSelector).sort()).toEqual([
+        'tag-a',
+        'tag-b',
+      ]);
+      const calls = (fetchApi.fetch as jest.Mock).mock.calls.map(c => c[0]);
+      expect(calls.some((u: string) => u.includes('dashboardTag=tag-a'))).toBe(
+        true,
+      );
+      expect(calls.some((u: string) => u.includes('dashboardTag=tag-b'))).toBe(
+        true,
+      );
+    });
   });
 
   describe('fetch error handling', () => {
     it('throws on non-ok HTTP response', async () => {
       const fetchApi = createMockFetchApiWithStatus(403, 'Forbidden');
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       await expect(client.alertsForSelector('test')).rejects.toThrow(
         'Request failed with 403 Forbidden',
@@ -258,10 +442,7 @@ describe('GrafanaApiClient', () => {
         'Internal Server Error',
       );
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       await expect(client.listDashboards('test')).rejects.toThrow(
         'Request failed with 500 Internal Server Error',
@@ -273,10 +454,7 @@ describe('GrafanaApiClient', () => {
     it('uses default proxy path /grafana/api', async () => {
       const fetchApi = createMockFetchApi(() => []);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       await client.alertsForSelector('test');
 
@@ -287,11 +465,18 @@ describe('GrafanaApiClient', () => {
     it('uses custom proxy path when configured', async () => {
       const fetchApi = createMockFetchApi(() => []);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-        proxyPath: '/custom-grafana',
-      });
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          fetchApi,
+          hosts: [
+            {
+              id: 'default',
+              domain: DOMAIN,
+              proxyPath: '/custom-grafana',
+            },
+          ],
+        }),
+      );
 
       await client.alertsForSelector('test');
 
@@ -313,10 +498,7 @@ describe('GrafanaApiClient', () => {
         })),
       );
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(defaultOpts({ fetchApi }));
 
       await client.listDashboards('tag');
 
@@ -343,12 +525,13 @@ describe('GrafanaApiClient', () => {
         }),
       };
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-        grafanaDashboardSearchLimit: 100,
-        grafanaDashboardMaxPages: 5,
-      });
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          fetchApi,
+          dashboardSearchLimit: 100,
+          dashboardMaxPages: 5,
+        }),
+      );
 
       const dashboards = await client.listDashboards('tag');
 
@@ -375,12 +558,13 @@ describe('GrafanaApiClient', () => {
         }),
       };
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-        grafanaDashboardSearchLimit: 100,
-        grafanaDashboardMaxPages: 10,
-      });
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          fetchApi,
+          dashboardSearchLimit: 100,
+          dashboardMaxPages: 10,
+        }),
+      );
 
       const dashboards = await client.listDashboards('tag');
 
@@ -391,11 +575,12 @@ describe('GrafanaApiClient', () => {
     it('caps search limit at upstream maximum of 5000', async () => {
       const fetchApi = createMockFetchApi(() => []);
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-        grafanaDashboardSearchLimit: 10000,
-      });
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          fetchApi,
+          dashboardSearchLimit: 10000,
+        }),
+      );
 
       await client.listDashboards('tag');
 
@@ -417,92 +602,102 @@ describe('GrafanaApiClient', () => {
         }),
       };
 
-      const client = new GrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-        grafanaDashboardSearchLimit: 100,
-        grafanaDashboardMaxPages: 3,
-      });
+      const client = new GrafanaApiClient(
+        defaultOpts({
+          fetchApi,
+          dashboardSearchLimit: 100,
+          dashboardMaxPages: 3,
+        }),
+      );
 
       await client.listDashboards('tag');
 
       expect(fetchApi.fetch).toHaveBeenCalledTimes(3);
     });
   });
-});
 
-describe('UnifiedAlertingGrafanaApiClient', () => {
-  const sampleRulesResponse = {
-    'folder-1': [
-      {
-        name: 'rule-group-1',
-        rules: [
-          {
-            labels: { service: 'my-service' },
-            grafana_alert: {
-              uid: 'alert-uid-1',
-              title: 'High CPU',
+  describe('alertsForSelector (unified alerting)', () => {
+    const sampleRulesResponse = {
+      'folder-1': [
+        {
+          name: 'rule-group-1',
+          rules: [
+            {
+              labels: { service: 'my-service' },
+              grafana_alert: {
+                uid: 'alert-uid-1',
+                title: 'High CPU',
+              },
             },
-          },
-          {
-            labels: { service: 'my-service' },
-            grafana_alert: {
-              uid: 'alert-uid-2',
-              title: 'High Memory',
+            {
+              labels: { service: 'my-service' },
+              grafana_alert: {
+                uid: 'alert-uid-2',
+                title: 'High Memory',
+              },
             },
-          },
-        ],
-      },
-    ],
-    'folder-2': [
-      {
-        name: 'rule-group-2',
-        rules: [
-          {
-            labels: { team: 'platform' },
-            grafana_alert: {
-              uid: 'alert-uid-3',
-              title: 'Disk Usage',
+          ],
+        },
+      ],
+      'folder-2': [
+        {
+          name: 'rule-group-2',
+          rules: [
+            {
+              labels: { team: 'platform' },
+              grafana_alert: {
+                uid: 'alert-uid-3',
+                title: 'Disk Usage',
+              },
             },
-          },
-        ],
-      },
-    ],
-  };
-
-  function createUnifiedFetchApi(
-    alertInstances: Array<{ labels: Record<string, string>; state: string }>,
-    rules: Record<
-      string,
-      Array<{
-        name: string;
-        rules: Array<{
-          labels: any;
-          grafana_alert: { uid: string; title: string };
-        }>;
-      }>
-    > = sampleRulesResponse,
-  ): FetchApi {
-    return {
-      fetch: jest.fn(async (input: RequestInfo | URL) => {
-        const url = String(input);
-        if (url.includes('/api/ruler/grafana/api/v1/rules')) {
-          return new Response(JSON.stringify(rules), { status: 200 });
-        }
-        if (url.includes('/api/prometheus/grafana/api/v1/alerts')) {
-          return new Response(
-            JSON.stringify({ data: { alerts: alertInstances } }),
-            { status: 200 },
-          );
-        }
-        // Dashboard search
-        return new Response(JSON.stringify([]), { status: 200 });
-      }),
+          ],
+        },
+      ],
     };
-  }
 
-  describe('listDashboards', () => {
-    it('delegates to the same dashboard search logic', async () => {
+    function createUnifiedFetchApi(
+      alertInstances: Array<{ labels: Record<string, string>; state: string }>,
+      rules: Record<
+        string,
+        Array<{
+          name: string;
+          rules: Array<{
+            labels: any;
+            grafana_alert: { uid: string; title: string };
+          }>;
+        }>
+      > = sampleRulesResponse,
+    ): FetchApi {
+      return {
+        fetch: jest.fn(async (input: RequestInfo | URL) => {
+          const url = String(input);
+          if (url.includes('/api/ruler/grafana/api/v1/rules')) {
+            return new Response(JSON.stringify(rules), { status: 200 });
+          }
+          if (url.includes('/api/prometheus/grafana/api/v1/alerts')) {
+            return new Response(
+              JSON.stringify({ data: { alerts: alertInstances } }),
+              { status: 200 },
+            );
+          }
+          // Dashboard search
+          return new Response(JSON.stringify([]), { status: 200 });
+        }),
+      };
+    }
+
+    function unifiedOpts(
+      overrides: Partial<GrafanaApiClientOptions> = {},
+    ): GrafanaApiClientOptions {
+      return {
+        discoveryApi: createMockDiscoveryApi(),
+        fetchApi: createMockFetchApi(() => []),
+        hosts: [{ id: 'default', domain: DOMAIN, unifiedAlerting: true }],
+        ...overrides,
+      };
+    }
+
+    it('delegates dashboard search to the same logic', async () => {
       const fetchApi: FetchApi = {
         fetch: jest.fn(async (input: RequestInfo | URL) => {
           const url = String(input);
@@ -515,19 +710,14 @@ describe('UnifiedAlertingGrafanaApiClient', () => {
         }),
       };
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
       const dashboards = await client.listDashboards('my-service');
       expect(dashboards).toHaveLength(1);
       expect(dashboards[0].title).toBe('Service Overview');
       expect(dashboards[0].url).toContain(DOMAIN);
     });
-  });
 
-  describe('alertsForSelector', () => {
     it('returns alerts for a single string selector', async () => {
       const fetchApi = createUnifiedFetchApi([
         {
@@ -536,10 +726,7 @@ describe('UnifiedAlertingGrafanaApiClient', () => {
         },
       ]);
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
       const alerts = await client.alertsForSelector('service=my-service');
 
@@ -561,10 +748,7 @@ describe('UnifiedAlertingGrafanaApiClient', () => {
         },
       ]);
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
       const alerts = await client.alertsForSelector([
         'service=my-service',
@@ -586,10 +770,7 @@ describe('UnifiedAlertingGrafanaApiClient', () => {
     it('fetches both rules and alert instances endpoints', async () => {
       const fetchApi = createUnifiedFetchApi([]);
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
       await client.alertsForSelector('service=my-service');
 
@@ -611,10 +792,7 @@ describe('UnifiedAlertingGrafanaApiClient', () => {
     it('returns empty array when no rules match the selector', async () => {
       const fetchApi = createUnifiedFetchApi([]);
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
       const alerts = await client.alertsForSelector(
         'service=nonexistent-service',
@@ -639,204 +817,174 @@ describe('UnifiedAlertingGrafanaApiClient', () => {
 
       const fetchApi = createUnifiedFetchApi([], rulesWithNoLabels);
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
-      });
+      const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
       const alerts = await client.alertsForSelector('service=my-service');
       expect(alerts).toEqual([]);
     });
-  });
 
-  describe('alert state aggregation', () => {
-    it('returns Alerting when any instance is alerting', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Normal',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Alerting',
-        },
-      ]);
+    describe('alert state aggregation', () => {
+      it('returns Alerting when any instance is alerting', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Normal',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Alerting',
+          },
+        ]);
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
+
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('Alerting');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('Alerting');
-    });
+      it('returns Error when any instance is in error and none alerting', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Normal',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Error',
+          },
+        ]);
 
-    it('returns Error when any instance is in error and none alerting', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Normal',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Error',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('Error');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('Error');
-    });
+      it('returns Pending when any instance is pending and none alerting or error', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Normal',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Pending',
+          },
+        ]);
 
-    it('returns Pending when any instance is pending and none alerting or error', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Normal',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Pending',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('Pending');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('Pending');
-    });
+      it('returns NoData when all instances are NoData', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'NoData',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'NoData',
+          },
+        ]);
 
-    it('returns NoData when all instances are NoData', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'NoData',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'NoData',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('NoData');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('NoData');
-    });
+      it('returns Normal when all instances are Normal', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Normal',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Normal',
+          },
+        ]);
 
-    it('returns Normal when all instances are Normal', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Normal',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Normal',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('Normal');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('Normal');
-    });
+      it('returns Normal when instances are mix of Normal and NoData', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Normal',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'NoData',
+          },
+        ]);
 
-    it('returns Normal when instances are mix of Normal and NoData', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Normal',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'NoData',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('Normal');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('Normal');
-    });
+      it('returns NoData when no alert instances match a rule', async () => {
+        const fetchApi = createUnifiedFetchApi([]);
 
-    it('returns NoData when no alert instances match a rule', async () => {
-      const fetchApi = createUnifiedFetchApi([]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('NoData');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('NoData');
-    });
+      it('returns n/a for unrecognized alert states', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'SomeUnknownState',
+          },
+        ]);
 
-    it('returns n/a for unrecognized alert states', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'SomeUnknownState',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('n/a');
       });
 
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('n/a');
-    });
+      it('prioritizes Alerting over Error', async () => {
+        const fetchApi = createUnifiedFetchApi([
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Error',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Alerting',
+          },
+          {
+            labels: { alertname: 'High CPU', service: 'my-service' },
+            state: 'Pending',
+          },
+        ]);
 
-    it('prioritizes Alerting over Error', async () => {
-      const fetchApi = createUnifiedFetchApi([
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Error',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Alerting',
-        },
-        {
-          labels: { alertname: 'High CPU', service: 'my-service' },
-          state: 'Pending',
-        },
-      ]);
+        const client = new GrafanaApiClient(unifiedOpts({ fetchApi }));
 
-      const client = new UnifiedAlertingGrafanaApiClient({
-        ...defaultOpts(),
-        fetchApi,
+        const alerts = await client.alertsForSelector('service=my-service');
+        const highCpu = alerts.find(a => a.name === 'High CPU');
+        expect(highCpu?.state).toBe('Alerting');
       });
-
-      const alerts = await client.alertsForSelector('service=my-service');
-      const highCpu = alerts.find(a => a.name === 'High CPU');
-      expect(highCpu?.state).toBe('Alerting');
     });
   });
 });

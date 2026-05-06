@@ -15,5 +15,7 @@
  */
 
 export const MEND_API_VERSION: string = 'v3.0';
-
+export const MEND_PROJECT_ANNOTATION = 'mend.io/project-ids';
+export const BACKSTAGE_SOURCE_LOCATION_ANNOTATION =
+  'backstage.io/source-location';
 export const AZURE_HOST_NAME: string = 'dev.azure.com';

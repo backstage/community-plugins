@@ -92,6 +92,7 @@ describe('getProviderConfig', () => {
         if (key === 'baseUrl') return undefined;
         return 'test-key';
       }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -122,6 +123,7 @@ describe('getProviderConfig', () => {
           if (key === 'baseUrl') return undefined;
           return 'test-key';
         }),
+        getOptionalNumber: jest.fn().mockReturnValue(undefined),
       } as any;
 
       mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -158,6 +160,7 @@ describe('getProviderConfig', () => {
           if (key === 'baseUrl') return customBaseUrl;
           return undefined;
         }),
+        getOptionalNumber: jest.fn().mockReturnValue(undefined),
       } as any;
 
       mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -190,6 +193,7 @@ describe('getProviderConfig', () => {
           if (key === 'baseUrl') return customBaseUrl;
           return undefined;
         }),
+        getOptionalNumber: jest.fn().mockReturnValue(undefined),
       } as any;
 
       mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -222,6 +226,7 @@ describe('getProviderConfig', () => {
           if (key === 'baseUrl') return customBaseUrl;
           return undefined;
         }),
+        getOptionalNumber: jest.fn().mockReturnValue(undefined),
       } as any;
 
       mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -245,6 +250,7 @@ describe('getProviderConfig', () => {
         if (key === 'baseUrl') return 'http://localhost:4000';
         return undefined;
       }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -263,6 +269,7 @@ describe('getProviderConfig', () => {
         throw new Error(`Unexpected key: ${key}`);
       }),
       getOptionalString: jest.fn().mockReturnValue(undefined),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -283,6 +290,7 @@ describe('getProviderConfig', () => {
         if (key === 'baseUrl') return undefined;
         return 'first-key';
       }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     const mockProviderConfig2 = {
@@ -295,6 +303,7 @@ describe('getProviderConfig', () => {
         if (key === 'baseUrl') return undefined;
         return 'second-key';
       }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([
@@ -323,6 +332,7 @@ describe('getProviderConfig', () => {
         if (key === 'baseUrl') return undefined;
         return 'test-key';
       }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
@@ -331,6 +341,157 @@ describe('getProviderConfig', () => {
       'Model is required for provider: openai',
     );
   });
+
+  it('should read maxTokens and temperature from config for OpenAI', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return undefined;
+        if (key === 'token') return 'test-key';
+        return undefined;
+      }),
+      getOptionalNumber: jest.fn().mockImplementation((key: string) => {
+        if (key === 'maxTokens') return 2000;
+        if (key === 'temperature') return 0.5;
+        return undefined;
+      }),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderConfig(mockConfig);
+
+    expect(result.maxTokens).toBe(2000);
+    expect(result.temperature).toBe(0.5);
+  });
+
+  it('should handle undefined maxTokens and temperature', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return undefined;
+        if (key === 'token') return 'test-key';
+        return undefined;
+      }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderConfig(mockConfig);
+
+    expect(result.maxTokens).toBeUndefined();
+    expect(result.temperature).toBeUndefined();
+  });
+
+  it('should pass maxTokens and temperature to all provider types', () => {
+    const providerTypes = ['openai', 'claude', 'gemini', 'ollama', 'litellm'];
+
+    providerTypes.forEach(providerId => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return providerId;
+          if (key === 'model') return 'test-model';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'token')
+            return providerId === 'ollama' ? undefined : 'test-key';
+          if (key === 'baseUrl') return undefined;
+          return undefined;
+        }),
+        getOptionalNumber: jest.fn().mockImplementation((key: string) => {
+          if (key === 'maxTokens') return 1500;
+          if (key === 'temperature') return 0.3;
+          return undefined;
+        }),
+      } as any;
+
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+
+      expect(result.maxTokens).toBe(1500);
+      expect(result.temperature).toBe(0.3);
+      expect(result.type).toBe(providerId);
+    });
+  });
+
+  it.each([0, -1, -100, 1.5, 3.14])(
+    'should throw on invalid maxTokens: %s',
+    invalidValue => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'openai';
+          if (key === 'model') return 'gpt-4';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockReturnValue('test-key'),
+        getOptionalNumber: jest.fn().mockImplementation((key: string) => {
+          if (key === 'maxTokens') return invalidValue;
+          return undefined;
+        }),
+      } as any;
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      expect(() => getProviderConfig(mockConfig)).toThrow(
+        /Invalid maxTokens value/,
+      );
+    },
+  );
+
+  it.each([-1, -0.1, 2.1, 3, 100])(
+    'should throw on invalid temperature: %s',
+    invalidValue => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'openai';
+          if (key === 'model') return 'gpt-4';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockReturnValue('test-key'),
+        getOptionalNumber: jest.fn().mockImplementation((key: string) => {
+          if (key === 'temperature') return invalidValue;
+          return undefined;
+        }),
+      } as any;
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      expect(() => getProviderConfig(mockConfig)).toThrow(
+        /Invalid temperature value/,
+      );
+    },
+  );
+
+  it.each([0, 0.5, 1, 1.5, 2])(
+    'should accept valid temperature: %s',
+    validValue => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'openai';
+          if (key === 'model') return 'gpt-4';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockReturnValue('test-key'),
+        getOptionalNumber: jest.fn().mockImplementation((key: string) => {
+          if (key === 'temperature') return validValue;
+          return undefined;
+        }),
+      } as any;
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+      expect(result.temperature).toBe(validValue);
+    },
+  );
 });
 
 describe('getProviderInfo', () => {
@@ -351,6 +512,7 @@ describe('getProviderInfo', () => {
         if (key === 'baseUrl') return 'https://api.openai.com/v1';
         return 'test-key';
       }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
     } as any;
 
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);

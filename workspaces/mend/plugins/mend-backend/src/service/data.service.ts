@@ -16,12 +16,10 @@
 import { get, post } from '../api';
 import { MendAuthSevice } from './auth.service';
 import {
-  GetOrganizationProjectRequestData,
   GetProjectStatisticsRequestData,
   GetCodeFindingsRequestData,
   GetDependenciesFindingsRequestData,
   GetContainersFindingsRequestData,
-  GetOrganizationProjectSuccessResponseData,
   GetProjectStatisticsSuccessResponseData,
   GetCodeFindingSuccessResponseData,
   GetDependenciesFindingSuccessResponseData,
@@ -29,16 +27,6 @@ import {
 } from './data.service.types';
 
 export class MendDataService extends MendAuthSevice {
-  async getOrganizationProject({
-    queryParams,
-  }: GetOrganizationProjectRequestData): Promise<GetOrganizationProjectSuccessResponseData> {
-    return get(`/orgs/${MendAuthSevice.getOrganizationUuid()}/projects`, {
-      params: {
-        ...queryParams,
-      },
-    });
-  }
-
   async getProjectStatistics({
     queryParams,
     bodyParams,

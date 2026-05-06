@@ -15,7 +15,6 @@
  */
 
 import { useState, useMemo } from 'react';
-import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import { IssueCard } from '../IssueCard';
 import { IssuesByRepo } from '../../../api';
@@ -108,7 +107,7 @@ export const IssuesList = ({
   );
 
   return (
-    <Box>
+    <div>
       {issues.length > 0 && (
         <RepositoryFilters
           placeholder={`All repositories ${getIssuesCountForFilterLabel(
@@ -162,6 +161,6 @@ export const IssuesList = ({
           onChange={(_, page) => setCurrentPage(page)}
         />
       ) : null}
-    </Box>
+    </div>
   );
 };

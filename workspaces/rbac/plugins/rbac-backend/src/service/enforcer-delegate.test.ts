@@ -431,10 +431,7 @@ describe('EnforcerDelegate', () => {
 
       expect(storePolicies.length).toEqual(2);
       expect(storePolicies).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining(policy),
-          expect.objectContaining(secondPolicy),
-        ]),
+        expect.arrayContaining([policy, secondPolicy]),
       );
       expect(enfAddPoliciesSpy).toHaveBeenCalledWith([policy, secondPolicy]);
     });

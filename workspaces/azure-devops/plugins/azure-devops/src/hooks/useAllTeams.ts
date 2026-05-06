@@ -19,7 +19,10 @@ import { azureDevOpsApiRef } from '../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 
-export function useAllTeams(): {
+export function useAllTeams(
+  host?: string,
+  org?: string,
+): {
   teams?: Team[];
   loading: boolean;
   error?: Error;
@@ -31,8 +34,11 @@ export function useAllTeams(): {
     loading,
     error,
   } = useAsync(() => {
-    return api.getAllTeams();
-  }, [api]);
+    if (!host || !org) {
+      return Promise.resolve(undefined);
+    }
+    return api.getAllTeams(undefined, host, org);
+  }, [host, org, api]);
 
   return {
     teams,

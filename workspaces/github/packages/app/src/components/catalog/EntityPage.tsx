@@ -33,6 +33,9 @@ import {
 } from '@backstage/plugin-catalog';
 import {
   EntityGithubActionsContent,
+  EntityLatestGithubActionRunCard,
+  EntityLatestGithubActionsForBranchCard,
+  EntityRecentGithubActionsRunsCard,
   isGithubActionsAvailable,
 } from '@backstage-community/plugin-github-actions';
 import {
@@ -114,9 +117,19 @@ const overviewContent = (
     <Grid item md={6}>
       <EntityAboutCard />
     </Grid>
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item xs={6}>
       <EntityGithubDeploymentsCard />
     </Grid>
+    <Grid item xs={6}>
+      <EntityLatestGithubActionRunCard />
+    </Grid>
+    <Grid item xs={6}>
+      <EntityRecentGithubActionsRunsCard />
+    </Grid>
+    <Grid item xs={12}>
+      <EntityLatestGithubActionsForBranchCard />
+    </Grid>
+
     <Grid item xs={12}>
       <GithubIssuesCard />
     </Grid>
@@ -133,6 +146,10 @@ const serviceEntityPage = (
       {cicdContent}
     </EntityLayout.Route>
 
+    <EntityLayout.Route path="/github-actions" title="GitHub Actions Cards">
+      <EntityGithubActionsContent view="cards" />
+    </EntityLayout.Route>
+
     <EntityLayout.Route path="/github-issues" title="GitHub Issues">
       <GithubIssuesPage />
     </EntityLayout.Route>
@@ -147,6 +164,10 @@ const websiteEntityPage = (
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
       {cicdContent}
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/github-actions" title="GitHub Actions Cards">
+      <EntityGithubActionsContent view="cards" />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/github-issues" title="GitHub Issues">

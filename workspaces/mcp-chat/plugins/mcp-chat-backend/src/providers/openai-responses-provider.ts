@@ -34,15 +34,21 @@ import {
  */
 export class OpenAIResponsesProvider extends LLMProvider {
   private mcpServerConfigs: MCPServerFullConfig[] = [];
+  private allowedToolsByServer: Map<string, string[]> = new Map();
 
   /**
    * Sets the MCP server configurations for native tool support.
    * These servers will be passed to the OpenAI Responses API.
    *
    * @param configs - Array of MCP server configurations
+   * @param allowedToolsByServer - Map of server ID to allowed tool names
    */
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void {
+  setMcpServerConfigs(
+    configs: MCPServerFullConfig[],
+    allowedToolsByServer: Map<string, string[]> = new Map(),
+  ): void {
     this.mcpServerConfigs = configs;
+    this.allowedToolsByServer = allowedToolsByServer;
   }
 
   async sendMessage(
@@ -141,6 +147,10 @@ export class OpenAIResponsesProvider extends LLMProvider {
           server_url: config.url!,
           server_label: config.id,
           require_approval: 'never' as const,
+          // Only restrict tools if allowed tools were computed during server init
+          ...(this.allowedToolsByServer.has(config.id)
+            ? { allowed_tools: this.allowedToolsByServer.get(config.id)! }
+            : {}),
         };
 
         // Add headers if present in server config
@@ -163,6 +173,14 @@ export class OpenAIResponsesProvider extends LLMProvider {
 
     if (instructions) {
       request.instructions = instructions;
+    }
+
+    if (this.maxTokens !== undefined) {
+      request.max_output_tokens = this.maxTokens;
+    }
+
+    if (this.temperature !== undefined) {
+      request.temperature = this.temperature;
     }
 
     return request;

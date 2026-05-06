@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.14.2
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 2.14.1
 
 ### Patch Changes

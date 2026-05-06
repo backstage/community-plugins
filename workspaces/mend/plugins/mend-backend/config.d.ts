@@ -21,6 +21,14 @@ export type Config = {
     activationKey: string;
 
     /**
+     * Cache refresh time in minutes for Mend project cache.
+     * This configuration is shared between mend-backend and catalog-processor.
+     * @default 240
+     * @visibility backend
+     */
+    cacheRefresh?: number;
+
+    /**
      * Permission control configuration for entity access.
      * Controls which entities users can view Apiiro data for.
      * @visibility frontend
