@@ -137,7 +137,13 @@ export class DataBaseRoleMetadataStorage implements RoleMetadataStorage {
         return matches(role as RoleMetadata, filter);
       });
       if (this.cachedDefaultRoleMeta) {
-        ownerRoles.push(this.cachedDefaultRoleMeta);
+        const hasDefaultRole = ownerRoles.some(
+          role =>
+            role.roleEntityRef === this.cachedDefaultRoleMeta!.roleEntityRef,
+        );
+        if (!hasDefaultRole) {
+          ownerRoles.push(this.cachedDefaultRoleMeta);
+        }
       }
       return ownerRoles;
     }

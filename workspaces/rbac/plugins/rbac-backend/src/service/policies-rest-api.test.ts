@@ -356,7 +356,7 @@ describe('REST policies API', () => {
       expect(result.statusCode).toBe(400);
       expect(result.body.error).toEqual({
         name: 'InputError',
-        message: `permission policy must be present`,
+        message: `permission policy must be provided as an array`,
       });
     });
 
@@ -997,7 +997,7 @@ describe('REST policies API', () => {
       expect(result.statusCode).toEqual(400);
       expect(result.body.error).toEqual({
         name: 'InputError',
-        message: `permission policy must be present`,
+        message: `permission policy must be provided as an array`,
       });
     });
 
