@@ -56,7 +56,7 @@ import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
 import {
   ConditionalPoliciesFileLimits,
   DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS,
-  YamlConditinalPoliciesFileWatcher,
+  YamlConditionalPoliciesFileWatcher,
 } from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
@@ -147,7 +147,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     );
     await csvFile.initialize();
 
-    const conditionalFile = new YamlConditinalPoliciesFileWatcher(
+    const conditionalFile = new YamlConditionalPoliciesFileWatcher(
       conditionalPoliciesFile,
       allowReload,
       logger,
@@ -401,35 +401,20 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   private static readConditionValidationLimits(
     configApi: ConfigApi,
   ): Partial<ConditionValidationLimits> {
+    const baseKey = 'permission.rbac.validation.conditionalPolicies';
+    const limitKeys: (keyof ConditionValidationLimits)[] = [
+      'maxPermissionMappingItems',
+      'maxConditionDepth',
+      'maxConditionNodeCount',
+      'maxCriteriaItems',
+    ];
     const limits: Partial<ConditionValidationLimits> = {};
-    const maxPermissionMappingItems = configApi.getOptionalNumber(
-      'permission.rbac.validation.conditionalPolicies.maxPermissionMappingItems',
-    );
-    if (maxPermissionMappingItems !== undefined) {
-      limits.maxPermissionMappingItems = maxPermissionMappingItems;
+    for (const key of limitKeys) {
+      const value = configApi.getOptionalNumber(`${baseKey}.${key}`);
+      if (value !== undefined) {
+        limits[key] = value;
+      }
     }
-
-    const maxConditionDepth = configApi.getOptionalNumber(
-      'permission.rbac.validation.conditionalPolicies.maxConditionDepth',
-    );
-    if (maxConditionDepth !== undefined) {
-      limits.maxConditionDepth = maxConditionDepth;
-    }
-
-    const maxConditionNodeCount = configApi.getOptionalNumber(
-      'permission.rbac.validation.conditionalPolicies.maxConditionNodeCount',
-    );
-    if (maxConditionNodeCount !== undefined) {
-      limits.maxConditionNodeCount = maxConditionNodeCount;
-    }
-
-    const maxCriteriaItems = configApi.getOptionalNumber(
-      'permission.rbac.validation.conditionalPolicies.maxCriteriaItems',
-    );
-    if (maxCriteriaItems !== undefined) {
-      limits.maxCriteriaItems = maxCriteriaItems;
-    }
-
     return limits;
   }
 

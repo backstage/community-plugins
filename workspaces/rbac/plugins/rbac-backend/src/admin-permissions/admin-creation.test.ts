@@ -232,9 +232,11 @@ describe('Admin Creation', () => {
           roleMetadataStorageMock,
           mockClientKnex,
         ),
-      ).rejects.toThrow(
-        'Invalid admin entity reference \'invalid-admin\': Entity reference "invalid-admin" had missing or empty kind (e.g. did not start with "component:" or similar)',
-      );
+      ).rejects.toMatchObject({
+        name: 'InputError',
+        message:
+          'Invalid admin entity reference \'invalid-admin\': Entity reference "invalid-admin" had missing or empty kind (e.g. did not start with "component:" or similar)',
+      });
     });
   });
 });

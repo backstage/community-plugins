@@ -55,7 +55,7 @@ export const DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS: ConditionalPoliciesFileLi
     maxDocuments: 256,
   };
 
-export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
+export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   RoleConditionalPolicyDecision<PermissionAction>[]
 > {
   private conditionsDiff: ConditionalPoliciesDiff;

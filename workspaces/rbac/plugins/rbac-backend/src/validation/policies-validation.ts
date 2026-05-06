@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { CompoundEntityRef, parseEntityRef } from '@backstage/catalog-model';
-import { NotAllowedError } from '@backstage/errors';
+import { InputError, NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import { Enforcer } from 'casbin';
@@ -79,7 +79,7 @@ export function validatePolicy(policy: RoleBasedPolicy): Error | undefined {
   }
 
   if (permissionContainsUnescapedQuote(policy.permission)) {
-    return new Error(
+    return new InputError(
       `'permission' contains double quotes (") which are not supported by the RBAC policy persistence format.`,
     );
   }

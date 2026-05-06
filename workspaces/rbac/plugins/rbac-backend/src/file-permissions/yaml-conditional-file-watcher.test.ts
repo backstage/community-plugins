@@ -29,7 +29,7 @@ import {
 } from '../database/role-metadata';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { YamlConditinalPoliciesFileWatcher } from './yaml-conditional-file-watcher'; // Adjust the import path as necessary
+import { YamlConditionalPoliciesFileWatcher } from './yaml-conditional-file-watcher';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
 import {
@@ -228,8 +228,10 @@ describe('YamlConditionalFileWatcher', () => {
     jest.clearAllMocks();
   });
 
-  function createWatcher(filePath?: string): YamlConditinalPoliciesFileWatcher {
-    return new YamlConditinalPoliciesFileWatcher(
+  function createWatcher(
+    filePath?: string,
+  ): YamlConditionalPoliciesFileWatcher {
+    return new YamlConditionalPoliciesFileWatcher(
       filePath,
       false,
       mockLoggerService,
@@ -246,8 +248,8 @@ describe('YamlConditionalFileWatcher', () => {
     filePath: string | undefined,
     maxBytes: number,
     maxDocuments: number,
-  ): YamlConditinalPoliciesFileWatcher {
-    return new YamlConditinalPoliciesFileWatcher(
+  ): YamlConditionalPoliciesFileWatcher {
+    return new YamlConditionalPoliciesFileWatcher(
       filePath,
       false,
       mockLoggerService,

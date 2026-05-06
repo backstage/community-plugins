@@ -17,6 +17,7 @@ import type {
   RoleBasedPolicy,
   Source,
 } from '@backstage-community/plugin-rbac-common';
+import { InputError } from '@backstage/errors';
 
 import { RoleMetadataDao } from '../database/role-metadata';
 import {
@@ -55,7 +56,7 @@ describe('rest data validation', () => {
         effect: 'allow',
       };
       const err = validatePolicy(policy);
-      expect(err).toBeTruthy();
+      expect(err).toBeInstanceOf(InputError);
       expect(err?.message).toContain(`'permission' contains double quotes (")`);
     });
 

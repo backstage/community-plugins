@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
+import { InputError } from '@backstage/errors';
 
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import {
@@ -59,6 +60,7 @@ describe('DefaultPermissionsReader', () => {
         },
       });
       const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readRole()).toThrow(InputError);
       expect(() => reader.readRole()).toThrow(
         'Default role is mandatory for defaultPermissions configuration. Please set a valid default role in the configuration.',
       );
@@ -134,6 +136,7 @@ describe('DefaultPermissionsReader', () => {
         },
       });
       const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readRole()).toThrow(InputError);
       expect(() => reader.readRole()).toThrow(
         "Invalid default role 'invalid-role': Invalid role format",
       );
@@ -160,6 +163,7 @@ describe('DefaultPermissionsReader', () => {
         },
       });
       const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readPolicies()).toThrow(InputError);
       expect(() => reader.readPolicies()).toThrow(
         "The default role 'role:default/catalog-reader' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.",
       );
@@ -179,6 +183,7 @@ describe('DefaultPermissionsReader', () => {
         },
       });
       const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readPolicies()).toThrow(InputError);
       expect(() => reader.readPolicies()).toThrow(
         "The default role 'role:default/catalog-reader' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.",
       );
@@ -270,6 +275,7 @@ describe('DefaultPermissionsReader', () => {
         },
       });
       const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readPolicies()).toThrow(InputError);
       expect(() => reader.readPolicies()).toThrow(
         "Invalid action 'invalid-action' for permission 'catalog.entity.read'.",
       );
@@ -294,6 +300,7 @@ describe('DefaultPermissionsReader', () => {
         },
       });
       const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readPolicies()).toThrow(InputError);
       expect(() => reader.readPolicies()).toThrow(
         `Invalid default permission policy for role 'role:default/guest': 'permission' contains double quotes (") which are not supported by the RBAC policy persistence format.`,
       );
