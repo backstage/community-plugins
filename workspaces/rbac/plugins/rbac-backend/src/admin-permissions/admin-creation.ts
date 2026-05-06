@@ -58,7 +58,12 @@ export const useAdminsFromConfig = async (
 
   for (const admin of admins) {
     const entityRef = admin.getString('name').toLocaleLowerCase('en-US');
-    validateEntityReference(entityRef);
+    const validationError = validateEntityReference(entityRef);
+    if (validationError) {
+      throw new Error(
+        `Invalid admin entity reference '${entityRef}': ${validationError.message}`,
+      );
+    }
 
     addedGroupPolicies.set(entityRef, ADMIN_ROLE_NAME);
 

@@ -207,5 +207,34 @@ describe('Admin Creation', () => {
       expect(enfRole).not.toContain(oldGroupPolicy);
       expect(enfPermission).toEqual(permissions);
     });
+
+    it('should fail to build admin roles when admin entity reference is invalid', async () => {
+      const invalidConfig = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              admin: {
+                users: [{ name: 'invalid-admin' }],
+              },
+            },
+          },
+        },
+      });
+      const adminUsers =
+        invalidConfig.getOptionalConfigArray('permission.rbac.admin.users') ??
+        [];
+
+      await expect(
+        useAdminsFromConfig(
+          adminUsers,
+          enfDelegate,
+          mockAuditorService,
+          roleMetadataStorageMock,
+          mockClientKnex,
+        ),
+      ).rejects.toThrow(
+        'Invalid admin entity reference \'invalid-admin\': Entity reference "invalid-admin" had missing or empty kind (e.g. did not start with "component:" or similar)',
+      );
+    });
   });
 });

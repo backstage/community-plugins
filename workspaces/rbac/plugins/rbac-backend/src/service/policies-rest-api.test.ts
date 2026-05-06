@@ -360,6 +360,16 @@ describe('REST policies API', () => {
       });
     });
 
+    it('should not be created permission policy - req body must be an array', async () => {
+      const result = await request(app).post('/policies').send({});
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: `permission policy must be provided as an array`,
+      });
+    });
+
     it('should not be created permission policy - entityReference is empty', async () => {
       const result = await request(app).post('/policies').send([{}]);
 
@@ -573,6 +583,42 @@ describe('REST policies API', () => {
         ]);
 
       expect(result.statusCode).toBe(500);
+    });
+
+    it('should fail to create policy for missing role', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:default/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .post('/policies')
+        .send([
+          {
+            entityReference: 'role:default/missing-role',
+            permission: 'policy-entity',
+            policy: 'delete',
+            effect: 'deny',
+          },
+        ]);
+
+      expect(result.statusCode).toBe(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:default/missing-role was not found`,
+      });
     });
 
     it('should fail to create permission policy - duplication in req body', async () => {
@@ -955,6 +1001,18 @@ describe('REST policies API', () => {
       });
     });
 
+    it('should fail to delete, request body must be an array', async () => {
+      const result = await request(app)
+        .delete('/policies/user/default/permission_admin')
+        .send({});
+
+      expect(result.statusCode).toEqual(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: `permission policy must be provided as an array`,
+      });
+    });
+
     it('should fail to delete, because permission field is absent', async () => {
       const result = await request(app)
         .delete('/policies/user/default/permission_admin')
@@ -1226,6 +1284,50 @@ describe('REST policies API', () => {
       expect(result.body.error).toEqual({
         name: 'InputError',
         message: `'newPolicy' object must be present`,
+      });
+    });
+
+    it('should fail to update policy for missing role', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:default/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .put('/policies/role/default/missing-role')
+        .send({
+          oldPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'read',
+              effect: 'allow',
+            },
+          ],
+          newPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'delete',
+              effect: 'allow',
+            },
+          ],
+        });
+
+      expect(result.statusCode).toEqual(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:default/missing-role was not found`,
       });
     });
 

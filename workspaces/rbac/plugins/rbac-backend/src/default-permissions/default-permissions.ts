@@ -30,6 +30,7 @@ import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
 import {
   validateSource,
   validateEntityReference,
+  validatePolicy,
 } from '../validation/policies-validation';
 
 const DEFAULT_ROLE_DESCRIPTION =
@@ -98,6 +99,15 @@ export class DefaultPermissionsReader {
           policy: action || 'use',
           effect: 'allow',
         };
+      });
+
+      policies.forEach(policy => {
+        const validationError = validatePolicy(policy);
+        if (validationError) {
+          throw new Error(
+            `Invalid default permission policy for role '${role}': ${validationError.message}`,
+          );
+        }
       });
     }
 

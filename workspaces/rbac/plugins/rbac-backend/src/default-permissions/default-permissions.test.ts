@@ -274,6 +274,30 @@ describe('DefaultPermissionsReader', () => {
         "Invalid action 'invalid-action' for permission 'catalog.entity.read'.",
       );
     });
+
+    it('throws when default permission is invalid for policy storage', () => {
+      const config = mockServices.rootConfig({
+        data: {
+          permission: {
+            rbac: {
+              defaultPermissions: {
+                defaultRole: 'role:default/guest',
+                basicPermissions: [
+                  {
+                    permission: 'catalog-entity"fuzz',
+                    action: 'read',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      });
+      const reader = new DefaultPermissionsReader(config);
+      expect(() => reader.readPolicies()).toThrow(
+        `Invalid default permission policy for role 'role:default/guest': 'permission' contains double quotes (") which are not supported by the RBAC policy persistence format.`,
+      );
+    });
   });
 });
 
