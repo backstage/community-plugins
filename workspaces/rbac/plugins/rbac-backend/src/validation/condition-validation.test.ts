@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { InputError } from '@backstage/errors';
 
 import type {
   PermissionAction,
@@ -983,6 +984,75 @@ describe('condition-validation', () => {
         unexpectedErr = err;
       }
       expect(unexpectedErr).toBeUndefined();
+    });
+  });
+
+  describe('validation limits', () => {
+    it('should fail when permission mapping exceeds max items', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: Array.from({ length: 65 }, () => 'read'),
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' can have at most 64 items`,
+      );
+    });
+
+    it('should fail when criteria depth exceeds max value', () => {
+      let nestedCondition: any = {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: { claims: ['group:default/team-a'] },
+      };
+      for (let i = 0; i < 13; i++) {
+        nestedCondition = { not: nestedCondition };
+      }
+
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read'],
+        conditions: nestedCondition,
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `Conditional criteria depth exceeds maximum of 12`,
+      );
+    });
+
+    it('should fail when criteria array has too many items', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read'],
+        conditions: {
+          anyOf: Array.from({ length: 65 }, () => ({
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: { claims: ['group:default/team-a'] },
+          })),
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `roleCondition.conditions.anyOf criteria supports at most 64 items`,
+      );
     });
   });
 });

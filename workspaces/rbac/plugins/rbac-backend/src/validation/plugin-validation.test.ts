@@ -41,4 +41,31 @@ describe('validatePermissionDependentPlugin', () => {
       validatePermissionDependentPlugin({ ids: ['plugin-a', 123] } as any),
     ).toThrow(`'ids' must be an array of string plugin ID values`);
   });
+
+  it('throws if ids is an empty array', () => {
+    expect(() => validatePermissionDependentPlugin({ ids: [] })).toThrow(
+      `'ids' must contain at least one plugin ID`,
+    );
+  });
+
+  it('throws if ids contains duplicates', () => {
+    expect(() =>
+      validatePermissionDependentPlugin({ ids: ['plugin-a', 'plugin-a'] }),
+    ).toThrow(`'ids' contains duplicate plugin ID 'plugin-a'`);
+  });
+
+  it('allows plugin ids with varied characters and casing', () => {
+    expect(() =>
+      validatePermissionDependentPlugin({
+        ids: ['Catalog.API', 'catalog/api', 'catalog plugin'],
+      }),
+    ).not.toThrow();
+  });
+
+  it('throws if an id is too long', () => {
+    const longId = 'a'.repeat(65);
+    expect(() => validatePermissionDependentPlugin({ ids: [longId] })).toThrow(
+      `plugin ID '${longId}' must be between 1 and 64 characters`,
+    );
+  });
 });

@@ -3624,6 +3624,23 @@ describe('REST policies API', () => {
       expect(mockHttpAuth.credentials).toHaveBeenCalledTimes(1);
     });
 
+    it('should return 400 when condition validation fails', async () => {
+      validateRoleConditionMock.mockImplementationOnce(() => {
+        throw new InputError(`Invalid condition payload`);
+      });
+
+      const result = await request(app).post('/roles/conditions').send({
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+      });
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: 'Invalid condition payload',
+      });
+    });
+
     it('should create condition with the correct permission name for different resource types but similar actions', async () => {
       conditionalStorageMock.createCondition = jest
         .fn()
@@ -3907,6 +3924,23 @@ describe('REST policies API', () => {
       expect(result.body.error).toEqual({
         message: 'Condition with id 2 was not found',
         name: 'NotFoundError',
+      });
+    });
+
+    it('should return 400 on update when condition validation fails', async () => {
+      validateRoleConditionMock.mockImplementationOnce(() => {
+        throw new InputError(`Invalid condition payload`);
+      });
+
+      const result = await request(app).put('/roles/conditions/1').send({
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+      });
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: 'Invalid condition payload',
       });
     });
   });
