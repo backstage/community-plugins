@@ -217,6 +217,19 @@ For more information on the available permissions, refer to the [RBAC permission
 
 We also have a fairly strict validation for permission policies and roles based on the originating role's source information, refer to the [api documentation](./docs/apis.md).
 
+#### Policy validation and compatibility (hardening)
+
+Recent releases tighten validation so malformed or unsafe policy data cannot poison the Casbin store (which uses CSV-shaped persistence for database-backed policies). In practice:
+
+- **`permission` values must not contain double quotes (`"`)** on REST writes, CSV file import, providers, and configured `defaultPermissions.basicPermissions`. Values that previously slipped through could break policy loading; they are now rejected up front. See [API documentation](./docs/apis.md) for the REST contract.
+- **Full policy reload failures are surfaced correctly**: if the enforcer cannot reload policies from storage (for example due to legacy poisoned rows), errors propagate after audit logging instead of leaving a stale model and misleading follow-on errors.
+- **Policy write APIs** expect bodies in the documented shapes (for example, `POST`/`DELETE` `/policies` bodies must be JSON **arrays**). Invalid shapes return `400` with clear messages where applicable.
+- **Configured admins and default permissions** are validated with the same policy rules as runtime writes where relevant, so bad config fails early at startup or sync instead of corrupting storage.
+- **Plugin ID registration** (`POST`/`DELETE` `/plugins/id`) enforces sensible bounds (list size, per-ID length, no duplicates). Very large registrations may need to be split into multiple requests.
+- **CSV policy files** (`policies-csv-file`) are parsed **line by line**. Lines that are syntactically invalid for CSV parsing are **skipped with a warning** so the rest of the file can still be applied; fix or remove bad lines in the file for a fully consistent load. Semantic validation (invalid entity refs, duplicates, source mismatches) continues to skip individual rows with warnings, as before.
+
+For conditional policies and YAML file size limits, use the optional `permission.rbac.validation.*` settings in the section below.
+
 ### Configuring conditional policies via file
 
 The RBAC plugin allows you to import conditional policies from an external file. User can defined conditional policies for roles created with the help of the policies-csv-file. Conditional policies should be defined as object sequences in the YAML format.
@@ -310,6 +323,8 @@ Field descriptions:
 - `permission.rbac.validation.conditionalPoliciesFile.maxDocuments`: Maximum number of YAML documents allowed in `conditionalPoliciesFile`.
 
 All values must be positive integers.
+
+If you already use very large conditional payloads or YAML files, raise these limits in config during upgrade rather than relying on defaults.
 
 ### Configuring Database Storage for policies
 

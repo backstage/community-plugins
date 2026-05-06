@@ -2,13 +2,22 @@
 '@backstage-community/plugin-rbac-backend': patch
 ---
 
-This patch hardens RBAC policy loading and validation to prevent CSV-poisoning failures and improve recovery behavior.
+Hardens RBAC policy handling to prevent Casbin CSV poisoning and improve error visibility.
 
-It now rejects policy permission strings containing double quotes before persistence, rethrows `loadPolicy` failures after audit logging so root causes are surfaced, and parses RBAC CSV input line-by-line with skip-and-warn handling for malformed rows so one invalid line does not block policy file processing.
+Key fixes:
 
-It also improves API validation and error clarity by requiring policy write bodies to be arrays, returning `NotFoundError` when role-scoped policy updates reference missing roles, validating configured default permissions with the same policy validator used by REST writes, failing fast on invalid configured admin entity references, tightening plugin ID payload validation, and aligning ownership filter checks with `IS_OWNER` semantics for default-role handling.
+- Rejects permission policy `permission` values containing `"` before persistence (prevents known CSV parse failures).
+- Rethrows `loadPolicy` failures after audit logging so mutation/read paths surface the root cause instead of secondary errors.
+- Improves policy API request validation and missing-role handling (`400`/`404` where appropriate).
+- Validates default configured permissions/admin refs with the same stricter checks used by runtime write paths.
+- Strengthens conditional and plugin-id payload validation and aligns owner filtering behavior for default roles.
 
-Conditional policy validation and file-ingestion limits are now configurable for safer upgrades in environments with larger policy sets:
+Compatibility notes:
+
+- Requests/config entries using `permission` values with embedded `"` are now rejected.
+- Conditional policy payloads and conditional YAML ingestion now enforce limits.
+- Plugin ID registration payloads now enforce count/length/duplicate checks.
+- For larger existing payloads, limits are configurable via:
 
 - `permission.rbac.validation.conditionalPolicies.maxPermissionMappingItems`
 - `permission.rbac.validation.conditionalPolicies.maxConditionDepth`
@@ -16,3 +25,7 @@ Conditional policy validation and file-ingestion limits are now configurable for
 - `permission.rbac.validation.conditionalPolicies.maxCriteriaItems`
 - `permission.rbac.validation.conditionalPoliciesFile.maxBytes`
 - `permission.rbac.validation.conditionalPoliciesFile.maxDocuments`
+
+Operational note:
+
+- CSV policy files are parsed line-by-line; malformed lines are skipped with warnings instead of aborting the entire file load.
