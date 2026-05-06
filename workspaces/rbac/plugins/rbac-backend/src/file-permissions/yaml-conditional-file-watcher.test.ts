@@ -275,6 +275,62 @@ describe('YamlConditionalFileWatcher', () => {
     ]);
   });
 
+  test('handles error when yaml conditional policies file exceeds max size', async () => {
+    const watcher = createWatcher(csvFileName);
+    jest
+      .spyOn(watcher, 'getCurrentContents')
+      .mockReturnValue('x'.repeat(1024 * 1024 + 1));
+
+    await watcher.onChange();
+
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new Error(
+            'conditional policies file exceeds maximum size of 1048576 bytes',
+          ),
+        },
+      },
+    ]);
+  });
+
+  test('handles error when yaml conditional policies exceeds max documents', async () => {
+    const watcher = createWatcher(csvFileName);
+    const conditionalPolicyDocument = [
+      'result: CONDITIONAL',
+      'roleEntityRef: role:default/test',
+      'pluginId: catalog',
+      'resourceType: catalog-entity',
+      'permissionMapping:',
+      '  - read',
+      'conditions:',
+      '  rule: IS_ENTITY_OWNER',
+      '  resourceType: catalog-entity',
+      '  params:',
+      '    claims:',
+      '      - group:default/team-a',
+    ].join('\n');
+    const yamlDocument = Array.from(
+      { length: 257 },
+      () => conditionalPolicyDocument,
+    ).join('\n---\n');
+    jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(yamlDocument);
+
+    await watcher.onChange();
+
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new Error(
+            'conditional policies file exceeds maximum of 256 YAML documents',
+          ),
+        },
+      },
+    ]);
+  });
+
   test('should handle error on create condition', async () => {
     conditionalStorageMock.filterConditions = jest
       .fn()

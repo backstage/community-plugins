@@ -18,6 +18,7 @@ import type {
   AuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
 
 import yaml from 'js-yaml';
 import { omit } from 'lodash';
@@ -42,6 +43,9 @@ type ConditionalPoliciesDiff = {
   addedConditions: RoleConditionalPolicyDecision<PermissionAction>[];
   removedConditions: RoleConditionalPolicyDecision<PermissionAction>[];
 };
+
+const MAX_CONDITIONAL_POLICY_FILE_BYTES = 1024 * 1024;
+const MAX_CONDITIONAL_POLICY_DOCUMENTS = 256;
 
 export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
   RoleConditionalPolicyDecision<PermissionAction>[]
@@ -173,17 +177,35 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
    */
   parse(): RoleConditionalPolicyDecision<PermissionAction>[] {
     const fileContents = this.getCurrentContents();
-    const data = yaml
-      .loadAll(fileContents)
-      .filter(
-        doc => doc !== null,
-      ) as RoleConditionalPolicyDecision<PermissionAction>[];
+    const fileSizeInBytes = Buffer.byteLength(fileContents, 'utf8');
+    if (fileSizeInBytes > MAX_CONDITIONAL_POLICY_FILE_BYTES) {
+      throw new InputError(
+        `conditional policies file exceeds maximum size of ${MAX_CONDITIONAL_POLICY_FILE_BYTES} bytes`,
+      );
+    }
 
-    for (const condition of data) {
+    const parsedDocuments: RoleConditionalPolicyDecision<PermissionAction>[] =
+      [];
+    yaml.loadAll(fileContents, doc => {
+      if (doc === null) {
+        return;
+      }
+
+      parsedDocuments.push(
+        doc as RoleConditionalPolicyDecision<PermissionAction>,
+      );
+      if (parsedDocuments.length > MAX_CONDITIONAL_POLICY_DOCUMENTS) {
+        throw new InputError(
+          `conditional policies file exceeds maximum of ${MAX_CONDITIONAL_POLICY_DOCUMENTS} YAML documents`,
+        );
+      }
+    });
+
+    for (const condition of parsedDocuments) {
       validateRoleCondition(condition);
     }
 
-    return data;
+    return parsedDocuments;
   }
 
   private async handleFileChanges(): Promise<void> {
