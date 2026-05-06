@@ -94,6 +94,45 @@ export interface Config {
           action: 'create' | 'read' | 'update' | 'delete' | 'use';
         }>;
       };
+      /**
+       * Optional validation tuning for conditional policies.
+       */
+      validation?: {
+        /**
+         * Limits for conditional policy payload shape and nesting.
+         */
+        conditionalPolicies?: {
+          /**
+           * Maximum number of permission actions in `permissionMapping`.
+           */
+          maxPermissionMappingItems?: number;
+          /**
+           * Maximum nesting depth for conditional criteria trees.
+           */
+          maxConditionDepth?: number;
+          /**
+           * Maximum total number of criteria nodes in a condition tree.
+           */
+          maxConditionNodeCount?: number;
+          /**
+           * Maximum number of items in `allOf`/`anyOf` criteria arrays.
+           */
+          maxCriteriaItems?: number;
+        };
+        /**
+         * Limits for YAML-based conditional policy file ingestion.
+         */
+        conditionalPoliciesFile?: {
+          /**
+           * Maximum size in bytes for the conditional policies YAML file.
+           */
+          maxBytes?: number;
+          /**
+           * Maximum number of YAML documents allowed in the conditional file.
+           */
+          maxDocuments?: number;
+        };
+      };
     };
   };
 }

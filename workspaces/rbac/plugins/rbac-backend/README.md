@@ -279,6 +279,38 @@ conditions:
 
 Information about condition policies format you can find in the doc: [Conditional policies documentation](./docs/conditions.md). There is only one difference: yaml format compare to json. But yaml and json are back convertiable.
 
+### Optional validation limits for conditional policies
+
+The RBAC backend now supports configurable limits for conditional policy payload complexity and conditional YAML file ingestion size. Defaults are chosen to be protective while still supporting typical policy definitions.
+
+Use these settings if your environment has larger policy sets and needs temporary tuning during upgrades:
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    validation:
+      conditionalPolicies:
+        maxPermissionMappingItems: 64
+        maxConditionDepth: 12
+        maxConditionNodeCount: 256
+        maxCriteriaItems: 64
+      conditionalPoliciesFile:
+        maxBytes: 1048576
+        maxDocuments: 256
+```
+
+Field descriptions:
+
+- `permission.rbac.validation.conditionalPolicies.maxPermissionMappingItems`: Maximum number of actions in `permissionMapping`.
+- `permission.rbac.validation.conditionalPolicies.maxConditionDepth`: Maximum nesting depth in a conditional criteria tree.
+- `permission.rbac.validation.conditionalPolicies.maxConditionNodeCount`: Maximum number of criteria nodes in a conditional criteria tree.
+- `permission.rbac.validation.conditionalPolicies.maxCriteriaItems`: Maximum number of entries allowed per `allOf`/`anyOf`.
+- `permission.rbac.validation.conditionalPoliciesFile.maxBytes`: Maximum allowed byte size for `conditionalPoliciesFile`.
+- `permission.rbac.validation.conditionalPoliciesFile.maxDocuments`: Maximum number of YAML documents allowed in `conditionalPoliciesFile`.
+
+All values must be positive integers.
+
 ### Configuring Database Storage for policies
 
 The RBAC plugin offers the option to store policies in a database. It supports two database storage options:

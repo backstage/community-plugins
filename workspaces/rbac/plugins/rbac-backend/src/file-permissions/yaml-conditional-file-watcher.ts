@@ -44,13 +44,23 @@ type ConditionalPoliciesDiff = {
   removedConditions: RoleConditionalPolicyDecision<PermissionAction>[];
 };
 
-const MAX_CONDITIONAL_POLICY_FILE_BYTES = 1024 * 1024;
-const MAX_CONDITIONAL_POLICY_DOCUMENTS = 256;
+export type ConditionalPoliciesFileLimits = {
+  maxBytes: number;
+  maxDocuments: number;
+};
+
+export const DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS: ConditionalPoliciesFileLimits =
+  {
+    maxBytes: 1024 * 1024,
+    maxDocuments: 256,
+  };
 
 export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
   RoleConditionalPolicyDecision<PermissionAction>[]
 > {
   private conditionsDiff: ConditionalPoliciesDiff;
+  private readonly maxFileBytes: number;
+  private readonly maxFileDocuments: number;
 
   constructor(
     filePath: string | undefined,
@@ -62,6 +72,7 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
     private readonly pluginMetadataCollector: PluginPermissionMetadataCollector,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly roleEventEmitter: RoleEventEmitter<RoleEvents>,
+    limits: Partial<ConditionalPoliciesFileLimits> = {},
   ) {
     super(filePath, allowReload, logger);
 
@@ -69,6 +80,11 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       addedConditions: [],
       removedConditions: [],
     };
+    this.maxFileBytes =
+      limits.maxBytes ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxBytes;
+    this.maxFileDocuments =
+      limits.maxDocuments ??
+      DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments;
   }
 
   async initialize(): Promise<void> {
@@ -178,9 +194,9 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
   parse(): RoleConditionalPolicyDecision<PermissionAction>[] {
     const fileContents = this.getCurrentContents();
     const fileSizeInBytes = Buffer.byteLength(fileContents, 'utf8');
-    if (fileSizeInBytes > MAX_CONDITIONAL_POLICY_FILE_BYTES) {
+    if (fileSizeInBytes > this.maxFileBytes) {
       throw new InputError(
-        `conditional policies file exceeds maximum size of ${MAX_CONDITIONAL_POLICY_FILE_BYTES} bytes`,
+        `conditional policies file exceeds maximum size of ${this.maxFileBytes} bytes`,
       );
     }
 
@@ -194,9 +210,9 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       parsedDocuments.push(
         doc as RoleConditionalPolicyDecision<PermissionAction>,
       );
-      if (parsedDocuments.length > MAX_CONDITIONAL_POLICY_DOCUMENTS) {
+      if (parsedDocuments.length > this.maxFileDocuments) {
         throw new InputError(
-          `conditional policies file exceeds maximum of ${MAX_CONDITIONAL_POLICY_DOCUMENTS} YAML documents`,
+          `conditional policies file exceeds maximum of ${this.maxFileDocuments} YAML documents`,
         );
       }
     });

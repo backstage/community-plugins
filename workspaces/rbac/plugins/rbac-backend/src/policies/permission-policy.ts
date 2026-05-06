@@ -53,9 +53,17 @@ import { replaceAliases } from '../conditional-aliases/alias-resolver';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
-import { YamlConditinalPoliciesFileWatcher } from '../file-permissions/yaml-conditional-file-watcher';
+import {
+  ConditionalPoliciesFileLimits,
+  DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS,
+  YamlConditinalPoliciesFileWatcher,
+} from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
+import {
+  ConditionValidationLimits,
+  configureConditionValidationLimits,
+} from '../validation/condition-validation';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
@@ -91,6 +99,13 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const conditionalPoliciesFile = configApi.getOptionalString(
       'permission.rbac.conditionalPoliciesFile',
     );
+
+    const conditionValidationLimits =
+      RBACPermissionPolicy.readConditionValidationLimits(configApi);
+    configureConditionValidationLimits(conditionValidationLimits);
+
+    const conditionalFileLimits =
+      RBACPermissionPolicy.readConditionalFileLimits(configApi);
 
     const preferPermissionPolicy =
       (configApi.getOptionalString(
@@ -142,6 +157,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       pluginMetadataCollector,
       roleMetadataStorage,
       enforcerDelegate,
+      conditionalFileLimits,
     );
     await conditionalFile.initialize();
 
@@ -380,5 +396,57 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       return result;
     }
     return undefined;
+  }
+
+  private static readConditionValidationLimits(
+    configApi: ConfigApi,
+  ): Partial<ConditionValidationLimits> {
+    const limits: Partial<ConditionValidationLimits> = {};
+    const maxPermissionMappingItems = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPolicies.maxPermissionMappingItems',
+    );
+    if (maxPermissionMappingItems !== undefined) {
+      limits.maxPermissionMappingItems = maxPermissionMappingItems;
+    }
+
+    const maxConditionDepth = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPolicies.maxConditionDepth',
+    );
+    if (maxConditionDepth !== undefined) {
+      limits.maxConditionDepth = maxConditionDepth;
+    }
+
+    const maxConditionNodeCount = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPolicies.maxConditionNodeCount',
+    );
+    if (maxConditionNodeCount !== undefined) {
+      limits.maxConditionNodeCount = maxConditionNodeCount;
+    }
+
+    const maxCriteriaItems = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPolicies.maxCriteriaItems',
+    );
+    if (maxCriteriaItems !== undefined) {
+      limits.maxCriteriaItems = maxCriteriaItems;
+    }
+
+    return limits;
+  }
+
+  private static readConditionalFileLimits(
+    configApi: ConfigApi,
+  ): Partial<ConditionalPoliciesFileLimits> {
+    const maxBytes = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
+    );
+    const maxDocuments = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
+    );
+
+    return {
+      maxBytes: maxBytes ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxBytes,
+      maxDocuments:
+        maxDocuments ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments,
+    };
   }
 }

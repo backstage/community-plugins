@@ -21,7 +21,11 @@ import type {
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
-import { validateRoleCondition } from './condition-validation';
+import {
+  configureConditionValidationLimits,
+  DEFAULT_CONDITION_VALIDATION_LIMITS,
+  validateRoleCondition,
+} from './condition-validation';
 
 describe('condition-validation', () => {
   describe('validation common fields', () => {
@@ -1053,6 +1057,45 @@ describe('condition-validation', () => {
       expect(() => validateRoleCondition(condition)).toThrow(
         `roleCondition.conditions.anyOf criteria supports at most 64 items`,
       );
+    });
+
+    it('should apply configured validation limits', () => {
+      configureConditionValidationLimits({
+        ...DEFAULT_CONDITION_VALIDATION_LIMITS,
+        maxPermissionMappingItems: 2,
+      });
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read', 'update', 'delete'],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' can have at most 2 items`,
+      );
+
+      configureConditionValidationLimits(DEFAULT_CONDITION_VALIDATION_LIMITS);
+    });
+
+    it('should fail when configured validation limits are invalid', () => {
+      expect(() =>
+        configureConditionValidationLimits({ maxConditionDepth: 0 }),
+      ).toThrow(InputError);
+      expect(() =>
+        configureConditionValidationLimits({ maxConditionDepth: 0 }),
+      ).toThrow(
+        `'maxConditionDepth' must be a positive integer for conditional policy validation`,
+      );
+
+      configureConditionValidationLimits(DEFAULT_CONDITION_VALIDATION_LIMITS);
     });
   });
 });

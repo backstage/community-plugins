@@ -27,14 +27,62 @@ import type {
 
 import { isPermissionAction } from '../helper';
 
-const MAX_PERMISSION_MAPPING_ITEMS = 64;
-const MAX_CONDITION_DEPTH = 12;
-const MAX_CONDITION_NODE_COUNT = 256;
-const MAX_CRITERIA_ITEMS = 64;
+export type ConditionValidationLimits = {
+  maxPermissionMappingItems: number;
+  maxConditionDepth: number;
+  maxConditionNodeCount: number;
+  maxCriteriaItems: number;
+};
+
+export const DEFAULT_CONDITION_VALIDATION_LIMITS: ConditionValidationLimits = {
+  maxPermissionMappingItems: 64,
+  maxConditionDepth: 12,
+  maxConditionNodeCount: 256,
+  maxCriteriaItems: 64,
+};
+
+let conditionValidationLimits: ConditionValidationLimits = {
+  ...DEFAULT_CONDITION_VALIDATION_LIMITS,
+};
+
+export function configureConditionValidationLimits(
+  limits: Partial<ConditionValidationLimits>,
+): void {
+  const nextLimits = {
+    ...conditionValidationLimits,
+    ...limits,
+  };
+
+  assertPositiveInteger(
+    nextLimits.maxPermissionMappingItems,
+    'maxPermissionMappingItems',
+  );
+  assertPositiveInteger(nextLimits.maxConditionDepth, 'maxConditionDepth');
+  assertPositiveInteger(
+    nextLimits.maxConditionNodeCount,
+    'maxConditionNodeCount',
+  );
+  assertPositiveInteger(nextLimits.maxCriteriaItems, 'maxCriteriaItems');
+
+  conditionValidationLimits = nextLimits;
+}
+
+function getConditionValidationLimits(): ConditionValidationLimits {
+  return conditionValidationLimits;
+}
+
+function assertPositiveInteger(value: number, fieldName: string): void {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new InputError(
+      `'${fieldName}' must be a positive integer for conditional policy validation`,
+    );
+  }
+}
 
 export function validateRoleCondition(
   condition: RoleConditionalPolicyDecision<PermissionAction>,
 ) {
+  const limits = getConditionValidationLimits();
   if (!condition.roleEntityRef) {
     throw new InputError(
       `'roleEntityRef' must be specified in the role condition`,
@@ -60,9 +108,9 @@ export function validateRoleCondition(
       `'permissionMapping' must be non empty array in the role condition`,
     );
   }
-  if (condition.permissionMapping.length > MAX_PERMISSION_MAPPING_ITEMS) {
+  if (condition.permissionMapping.length > limits.maxPermissionMappingItems) {
     throw new InputError(
-      `'permissionMapping' can have at most ${MAX_PERMISSION_MAPPING_ITEMS} items`,
+      `'permissionMapping' can have at most ${limits.maxPermissionMappingItems} items`,
     );
   }
   const nonActionValue = condition.permissionMapping.find(
@@ -94,6 +142,7 @@ export function validateRoleCondition(
       'roleCondition.conditions',
       1,
       { nodeCount: 0 },
+      limits,
     );
   }
 }
@@ -111,16 +160,17 @@ function validatePermissionCondition(
   jsonPathLocator: string,
   currentDepth: number,
   state: { nodeCount: number },
+  limits: ConditionValidationLimits,
 ) {
-  if (currentDepth > MAX_CONDITION_DEPTH) {
+  if (currentDepth > limits.maxConditionDepth) {
     throw new InputError(
-      `Conditional criteria depth exceeds maximum of ${MAX_CONDITION_DEPTH}`,
+      `Conditional criteria depth exceeds maximum of ${limits.maxConditionDepth}`,
     );
   }
   state.nodeCount += 1;
-  if (state.nodeCount > MAX_CONDITION_NODE_COUNT) {
+  if (state.nodeCount > limits.maxConditionNodeCount) {
     throw new InputError(
-      `Conditional criteria exceeds maximum of ${MAX_CONDITION_NODE_COUNT} nodes`,
+      `Conditional criteria exceeds maximum of ${limits.maxConditionNodeCount} nodes`,
     );
   }
 
@@ -132,6 +182,7 @@ function validatePermissionCondition(
       `${jsonPathLocator}.not`,
       currentDepth + 1,
       state,
+      limits,
     );
     return;
   }
@@ -145,9 +196,9 @@ function validatePermissionCondition(
         `${jsonPathLocator}.allOf criteria must be non empty array`,
       );
     }
-    if (conditionOrCriteria.allOf.length > MAX_CRITERIA_ITEMS) {
+    if (conditionOrCriteria.allOf.length > limits.maxCriteriaItems) {
       throw new InputError(
-        `${jsonPathLocator}.allOf criteria supports at most ${MAX_CRITERIA_ITEMS} items`,
+        `${jsonPathLocator}.allOf criteria supports at most ${limits.maxCriteriaItems} items`,
       );
     }
     for (const [index, elem] of conditionOrCriteria.allOf.entries()) {
@@ -156,6 +207,7 @@ function validatePermissionCondition(
         `${jsonPathLocator}.allOf[${index}]`,
         currentDepth + 1,
         state,
+        limits,
       );
     }
     return;
@@ -170,9 +222,9 @@ function validatePermissionCondition(
         `${jsonPathLocator}.anyOf criteria must be non empty array`,
       );
     }
-    if (conditionOrCriteria.anyOf.length > MAX_CRITERIA_ITEMS) {
+    if (conditionOrCriteria.anyOf.length > limits.maxCriteriaItems) {
       throw new InputError(
-        `${jsonPathLocator}.anyOf criteria supports at most ${MAX_CRITERIA_ITEMS} items`,
+        `${jsonPathLocator}.anyOf criteria supports at most ${limits.maxCriteriaItems} items`,
       );
     }
     for (const [index, elem] of conditionOrCriteria.anyOf.entries()) {
@@ -181,6 +233,7 @@ function validatePermissionCondition(
         `${jsonPathLocator}.anyOf[${index}]`,
         currentDepth + 1,
         state,
+        limits,
       );
     }
   }

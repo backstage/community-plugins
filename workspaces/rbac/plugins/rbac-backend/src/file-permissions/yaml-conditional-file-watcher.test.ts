@@ -242,6 +242,28 @@ describe('YamlConditionalFileWatcher', () => {
     );
   }
 
+  function createWatcherWithLimits(
+    filePath: string | undefined,
+    maxBytes: number,
+    maxDocuments: number,
+  ): YamlConditinalPoliciesFileWatcher {
+    return new YamlConditinalPoliciesFileWatcher(
+      filePath,
+      false,
+      mockLoggerService,
+      conditionalStorageMock as DataBaseConditionalStorage,
+      mockAuditorService,
+      mockAuthService,
+      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+      roleMetadataStorageMock,
+      roleEventEmitterMock,
+      {
+        maxBytes,
+        maxDocuments,
+      },
+    );
+  }
+
   test('handles errors for invalid file paths', async () => {
     const invalidFilePath = 'invalid-file-path.yaml';
     const watcher = createWatcher(invalidFilePath);
@@ -325,6 +347,42 @@ describe('YamlConditionalFileWatcher', () => {
         fail: {
           error: new Error(
             'conditional policies file exceeds maximum of 256 YAML documents',
+          ),
+        },
+      },
+    ]);
+  });
+
+  test('handles error when configured yaml document limit is exceeded', async () => {
+    const watcher = createWatcherWithLimits(csvFileName, 1024 * 1024, 1);
+    const conditionalPolicyDocument = [
+      'result: CONDITIONAL',
+      'roleEntityRef: role:default/test',
+      'pluginId: catalog',
+      'resourceType: catalog-entity',
+      'permissionMapping:',
+      '  - read',
+      'conditions:',
+      '  rule: IS_ENTITY_OWNER',
+      '  resourceType: catalog-entity',
+      '  params:',
+      '    claims:',
+      '      - group:default/team-a',
+    ].join('\n');
+    const yamlDocument = [
+      conditionalPolicyDocument,
+      conditionalPolicyDocument,
+    ].join('\n---\n');
+    jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(yamlDocument);
+
+    await watcher.onChange();
+
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new Error(
+            'conditional policies file exceeds maximum of 1 YAML documents',
           ),
         },
       },
