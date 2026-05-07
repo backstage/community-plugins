@@ -178,7 +178,7 @@ No manual wiring in `EntityPage.tsx` or `App.tsx` is required — the extensions
 
 ### Customizing via `app-config.yaml`
 
-You can configure the maturity extensions in your `app-config.yaml`. For example, to disable specific extensions:
+You can configure the maturity extensions in your `app-config.yaml`. For example, to configure or disable specific extensions:
 
 ```yaml
 app:
@@ -186,7 +186,7 @@ app:
     - entity-card:tech-insights-maturity/summary:
         config:
           filter: { kind: 'Component' }
-    - entity-content:tech-insights-maturity/scorecards:
+    - entity-content:tech-insights-maturity/maturity:
         disabled: true
 ```
 
