@@ -84,6 +84,8 @@ export interface MCPServerConfig {
   args?: string[];
   /** URL endpoint (for HTTP servers) */
   url?: string;
+  /** List of tool names to disable on this server */
+  disabledTools?: string[];
 }
 
 /**
