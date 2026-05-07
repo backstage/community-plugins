@@ -1,0 +1,106 @@
+# Coverage baseline for backstage/community-plugins
+#
+# Runs on push to main and uploads coverage for changed workspaces that
+# have opted in via "codecov": true in their bcp.json. This establishes
+# the per-workspace baselines that Codecov uses to calculate coverage
+# deltas in PRs (via carryforward).
+#
+# PR-level coverage is handled by the upload step in ci.yml; this
+# workflow only covers push events so the two never duplicate work.
+
+name: Coverage Baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "workspaces/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  detect-workspaces:
+    name: Detect changed codecov workspaces
+    runs-on: ubuntu-latest
+    outputs:
+      workspaces: ${{ steps.filter.outputs.workspaces }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Find changed workspaces with codecov enabled
+        id: filter
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD | grep '^workspaces/' | cut -d/ -f2 | sort -u)
+          CODECOV_WORKSPACES="[]"
+          for ws in $CHANGED; do
+            BCP="workspaces/$ws/bcp.json"
+            if [ -f "$BCP" ] && [ "$(jq -r '.codecov // false' "$BCP")" = "true" ]; then
+              CODECOV_WORKSPACES=$(echo "$CODECOV_WORKSPACES" | jq -c --arg w "$ws" '. + [$w]')
+            fi
+          done
+          echo "workspaces=$CODECOV_WORKSPACES" >> "$GITHUB_OUTPUT"
+          echo "Codecov workspaces: $CODECOV_WORKSPACES"
+
+  coverage:
+    name: Coverage — ${{ matrix.workspace }}
+    runs-on: ubuntu-latest
+    needs: detect-workspaces
+    if: ${{ needs.detect-workspaces.outputs.workspaces != '[]' }}
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.detect-workspaces.outputs.workspaces) }}
+      fail-fast: false
+    defaults:
+      run:
+        working-directory: ./workspaces/${{ matrix.workspace }}
+
+    env:
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=8192
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run tests with coverage
+        # TODO: Remove the Jest 30 detection once all workspaces have migrated to Jest 30
+        run: |
+          if node -e "const p = require('./package.json'); process.exit(p.devDependencies?.jest ? 0 : 1)"; then
+            echo "Using Jest 30"
+            ./node_modules/.bin/backstage-cli repo test --coverage --maxWorkers=3
+          else
+            echo "Using Jest 29 from the Backstage CLI"
+            yarn backstage-cli repo test --coverage --maxWorkers=3
+          fi
+        env:
+          BACKSTAGE_TEST_DISABLE_DOCKER: 1
+
+      - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+        with:
+          flags: ${{ matrix.workspace }}
+          directory: ./workspaces/${{ matrix.workspace }}/plugins
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false

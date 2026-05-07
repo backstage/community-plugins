@@ -199,6 +199,25 @@ jobs:
           yarn playwright install --with-deps chromium chrome
           yarn playwright test
 
+      - name: Read codecov flag from bcp.json
+        id: bcpCodecov
+        run: |
+          if [ -f bcp.json ]; then
+            CODECOV=$(jq -r '.["codecov"] // "false"' bcp.json)
+            echo "codecov=$CODECOV" >> $GITHUB_OUTPUT
+          else
+            echo "codecov=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload coverage to Codecov
+        if: ${{ steps.bcpCodecov.outputs.codecov == 'true' }}
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+        with:
+          flags: ${{ matrix.workspaceNodeMatrix.workspace }}
+          directory: ./workspaces/${{ matrix.workspaceNodeMatrix.workspace }}/plugins
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
       - name: ensure clean working directory
         run: |
           if files=$(git ls-files --exclude-standard --others --modified) && [[ -z "$files" ]]; then
