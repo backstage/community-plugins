@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.12.2
+
+### Patch Changes
+
+- daac56e: Migrate to Jest 30
+
 ## 2.12.1
 
 ### Patch Changes
