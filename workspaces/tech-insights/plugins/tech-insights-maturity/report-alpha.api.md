@@ -41,9 +41,9 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-card:tech-insights-maturity/summary': OverridableExtensionDefinition<{
+    'entity-card:tech-insights-maturity/maturity-summary': OverridableExtensionDefinition<{
       kind: 'entity-card';
-      name: 'summary';
+      name: 'maturity-summary';
       config: {
         filter: FilterPredicate | undefined;
         type: 'content' | 'info' | undefined;
@@ -319,6 +319,4 @@ const techInsightsMaturityPlugin: OverridableFrontendPlugin<
   }
 >;
 export default techInsightsMaturityPlugin;
-
-// (No @packageDocumentation comment for this package)
 ```

@@ -14,4 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * Alpha public API surface for the Tech Insights Maturity plugin.
+ *
+ * @packageDocumentation
+ */
 export { default } from './alpha/index';

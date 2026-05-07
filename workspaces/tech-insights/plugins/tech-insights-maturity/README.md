@@ -185,7 +185,7 @@ app:
   extensions:
     - entity-card:tech-insights-maturity/summary:
         config:
-          filter: { kind: 'Component' }
+          filter: { kind: 'System' }
     - entity-content:tech-insights-maturity/maturity:
         disabled: true
 ```

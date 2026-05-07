@@ -22,9 +22,10 @@ import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
  * @alpha
  */
 export const entityMaturitySummaryCard = EntityCardBlueprint.make({
-  name: 'summary',
+  name: 'maturity-summary',
   params: {
     type: 'info',
+    filter: { kind: { $in: ['System', 'Domain', 'Group'] } },
     loader: () =>
       import('../components/MaturitySummaryInfoCard').then(m =>
         compatWrapper(<m.MaturitySummaryInfoCard />),
