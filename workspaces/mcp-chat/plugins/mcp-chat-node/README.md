@@ -1,4 +1,4 @@
-# @@backstage-community/plugin-mcp-chat-node
+# @backstage-community/plugin-mcp-chat-node
 
 Welcome to the Node.js library package for the mcp-chat plugin!
 
