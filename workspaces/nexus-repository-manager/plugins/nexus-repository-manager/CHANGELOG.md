@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.23.2
+
+### Patch Changes
+
+- 24acada: Updated dependency `@hey-api/openapi-ts` to `0.97.1`.
+
 ## 1.23.1
 
 ### Patch Changes
