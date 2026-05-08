@@ -1,5 +1,16 @@
 # @backstage-community/plugin-copilot
 
+## 0.20.0
+
+### Minor Changes
+
+- b5e72fb: Backstage version bump to v1.50.3
+
+### Patch Changes
+
+- Updated dependencies [b5e72fb]
+  - @backstage-community/plugin-copilot-common@0.18.0
+
 ## 0.19.1
 
 ### Patch Changes
