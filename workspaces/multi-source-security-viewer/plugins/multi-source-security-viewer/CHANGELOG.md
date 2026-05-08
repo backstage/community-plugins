@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.15.3
+
+### Patch Changes
+
+- 58cda68: Updated dependency `@immobiliarelabs/backstage-plugin-gitlab` to `^7.0.0`.
+
 ## 0.15.2
 
 ### Patch Changes
