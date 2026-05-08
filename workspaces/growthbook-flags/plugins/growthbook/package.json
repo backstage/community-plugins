@@ -44,7 +44,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage-community/plugin-growthbook-common": "^0.1.0",
+    "@backstage-community/plugin-growthbook-common": "workspace:^",
     "@backstage/catalog-model": "^1.7.6",
     "@backstage/core-compat-api": "^0.5.8",
     "@backstage/core-components": "^0.18.6",
