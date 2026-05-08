@@ -5481,6 +5481,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gitbeaker/core@npm:^43.8.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/core@npm:43.8.0"
+  dependencies:
+    "@gitbeaker/requester-utils": "npm:^43.8.0"
+    qs: "npm:^6.14.0"
+    xcase: "npm:^2.0.1"
+  checksum: 10/1c935ffec246c854d7d543cc4ccb97271c322ea506c02ccf60774bffd42462c36cd3324d6876082da706d25e444878f76714746b1fbd77c202b0e3766ef5f4ae
+  languageName: node
+  linkType: hard
+
+"@gitbeaker/requester-utils@npm:^43.8.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/requester-utils@npm:43.8.0"
+  dependencies:
+    picomatch-browser: "npm:^2.2.6"
+    qs: "npm:^6.14.0"
+    rate-limiter-flexible: "npm:^8.0.1"
+    xcase: "npm:^2.0.1"
+  checksum: 10/529685994676068a18f4bf6329252c66a62c1ef160f6e9d4b3a916330189cc1628fb30c983625d38295cef2999438e14ecb611fcd8a484b7c479b6dcf29f7679
+  languageName: node
+  linkType: hard
+
+"@gitbeaker/rest@npm:^43.8.0":
+  version: 43.8.0
+  resolution: "@gitbeaker/rest@npm:43.8.0"
+  dependencies:
+    "@gitbeaker/core": "npm:^43.8.0"
+    "@gitbeaker/requester-utils": "npm:^43.8.0"
+  checksum: 10/a29493ee1e0e789a0fa4307108c616bb287f33a390262a57025461140a284ae1284918ff4d4e91d3351e61b050eea55ffe2ca7551ffcb6be29ae22c67136a463
+  languageName: node
+  linkType: hard
+
 "@google-cloud/container@npm:^5.0.0":
   version: 5.19.0
   resolution: "@google-cloud/container@npm:5.19.0"
@@ -5845,6 +5878,7 @@ __metadata:
     "@backstage/e2e-test-utils": "npm:^0.1.2"
     "@backstage/repo-tools": "npm:^0.17.0"
     "@changesets/cli": "npm:^2.27.1"
+    "@gitbeaker/rest": "npm:^43.8.0"
     "@jest/environment-jsdom-abstract": "npm:^30.0.0"
     "@playwright/test": "npm:^1.57.0"
     "@types/jest": "npm:^30.0.0"
@@ -28840,6 +28874,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picomatch-browser@npm:^2.2.6":
+  version: 2.2.6
+  resolution: "picomatch-browser@npm:2.2.6"
+  checksum: 10/0136abee4bbef256e9b6b20676873807e11cc6d04d52d4cd4e9e5c7b48b0888e67f224873eb7eaba6da2a5356647e5aa9a2ef62ad98a675c7940344bfae0238e
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
@@ -30004,6 +30045,13 @@ __metadata:
   peerDependencies:
     express-rate-limit: ">= 6"
   checksum: 10/c36c50cfca992cbd14c97c08bb01c7d1d340d27b5fa1a2c1154275fec0b59c187eb6fb207da3d035c7c87e7629c92324cd53074f854dbb16548faf94f5a41351
+  languageName: node
+  linkType: hard
+
+"rate-limiter-flexible@npm:^8.0.1":
+  version: 8.3.0
+  resolution: "rate-limiter-flexible@npm:8.3.0"
+  checksum: 10/9c8d7a3224e3a57fdf7da721dabdb4942eb7dd7b5f3aa4cd57e2185928d5842855a8dc2e1db5e0403987d369972d0567e98aade2c2daa71436ebdae704e5a8ff
   languageName: node
   linkType: hard
 
@@ -35742,6 +35790,13 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/70dfe53f23ff4368d46e4c0b1d4ca734db2c4149c6f68bc62cb16fc21f753c47b35fcc6e582f3bdfba0eaeb1c488cddab3c2255755a5c3eecb251431e42b3ff6
+  languageName: node
+  linkType: hard
+
+"xcase@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "xcase@npm:2.0.1"
+  checksum: 10/00f84e1a4a79277cd54a818ab5d8e40e2407644275e3af3d18fc25199086d29d1ebeb5e75a3e51b1013b69dfe366dd580ca164524a32a062b4ddee0d766a9650
   languageName: node
   linkType: hard
 
