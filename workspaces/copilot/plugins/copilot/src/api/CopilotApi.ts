@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
+import { ApiRef, createApiRef } from '@backstage/core-plugin-api';
 import {
   EngagementMetrics,
   Metric,
@@ -23,7 +23,7 @@ import {
   SeatAnalysis,
 } from '@backstage-community/plugin-copilot-common';
 
-export const copilotApiRef = createApiRef<CopilotApi>({
+export const copilotApiRef: ApiRef<CopilotApi> = createApiRef<CopilotApi>({
   id: 'plugin.copilot.service',
 });
 
