@@ -21,11 +21,11 @@ import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
 import { LiteLLMProvider } from './litellm-provider';
+import { AzureOpenAIProvider } from './azure-openai-provider';
 import {
   RootConfigService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
-import { AzureOpenAIProvider } from './azure-openai-provider';
 
 /**
  * Factory class for creating LLM provider instances.
