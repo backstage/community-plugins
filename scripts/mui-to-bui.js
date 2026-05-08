@@ -50,11 +50,12 @@ const CONFIG = {
     'build',
     '.git',
     'coverage',
+    'packages',
     '.yarn',
   ],
 
   // Excluded workspaces (same as list-workspaces.js)
-  excludedWorkspaces: ['.claude', 'noop', 'repo-tools'],
+  excludedWorkspaces: ['noop', 'repo-tools'],
 
   // MUI import patterns to track
   muiPatterns: {
@@ -146,6 +147,7 @@ class CommunityPluginsMigrationAnalyzer {
       .readdirSync(workspacesDir, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name)
+      .filter(name => !name.startsWith('.'))
       .filter(name => !CONFIG.excludedWorkspaces.includes(name))
       .sort();
 
