@@ -1,5 +1,13 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- c43e80c: Add Azure OpenAI provider to support newer Azure OpenAI models like `gpt-5.1`.
+
+  This provider filters the models returned during the connection test to only show the status of the model of the configured deployment. It also uses `max_completion_tokens` correctly, fixing compatibility with newer models.
+
 ## 0.10.0
 
 ### Minor Changes
