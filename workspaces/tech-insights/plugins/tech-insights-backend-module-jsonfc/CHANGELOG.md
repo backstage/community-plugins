@@ -1,5 +1,19 @@
 # @backstage-community/plugin-tech-insights-backend-module-jsonfc
 
+## 0.8.0
+
+### Minor Changes
+
+- 756e05a: - Backstage version bump to v1.50.2.
+  - `techInsightsNavItem` has been removed as it's no longer needed.
+  - `EntityPredicate` has been replaced with `FilterPredicate` from `@backstage/filter-predicates`.
+
+### Patch Changes
+
+- Updated dependencies [756e05a]
+  - @backstage-community/plugin-tech-insights-common@0.9.0
+  - @backstage-community/plugin-tech-insights-node@2.7.0
+
 ## 0.7.2
 
 ### Patch Changes

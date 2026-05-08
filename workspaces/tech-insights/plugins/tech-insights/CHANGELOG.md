@@ -1,5 +1,21 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.3.0
+
+### Minor Changes
+
+- 756e05a: - Backstage version bump to v1.50.2.
+  - `techInsightsNavItem` has been removed as it's no longer needed.
+  - `EntityPredicate` has been replaced with `FilterPredicate` from `@backstage/filter-predicates`.
+
+### Patch Changes
+
+- 60cfba4: Update correct param name in README.
+- 51846ac: Documented how to disable and configure the Tech Insights entity tab and overview card via `app-config.yaml`, and clarified that registering any `TechInsightsScorecardBlueprint` extension replaces the built-in fallback scorecard on the Tech Insights tab.
+- Updated dependencies [756e05a]
+  - @backstage-community/plugin-tech-insights-common@0.9.0
+  - @backstage-community/plugin-tech-insights-react@1.5.0
+
 ## 1.2.0
 
 ### Minor Changes

@@ -1,5 +1,22 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.7.0
+
+### Minor Changes
+
+- 756e05a: - Backstage version bump to v1.50.2.
+  - `techInsightsNavItem` has been removed as it's no longer needed.
+  - `EntityPredicate` has been replaced with `FilterPredicate` from `@backstage/filter-predicates`.
+- e4d7130: add ability to customize rank titles and descriptions via app-config
+
+### Patch Changes
+
+- 3dbf0ae: Make tooltip and reference icon optional so it doesn't show when there is no link configured for the check
+- Updated dependencies [756e05a]
+  - @backstage-community/plugin-tech-insights-common@0.9.0
+  - @backstage-community/plugin-tech-insights-maturity-common@0.5.0
+  - @backstage-community/plugin-tech-insights-react@1.5.0
+
 ## 0.6.5
 
 ### Patch Changes
