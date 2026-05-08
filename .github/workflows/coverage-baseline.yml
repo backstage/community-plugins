@@ -33,15 +33,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Find changed workspaces with codecov enabled
         id: filter
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD | grep '^workspaces/' | cut -d/ -f2 | sort -u)
+          CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | { grep '^workspaces/' || true; } | cut -d/ -f2 | sort -u)
           CODECOV_WORKSPACES="[]"
           for ws in $CHANGED; do
+            [ -z "$ws" ] && continue
             BCP="workspaces/$ws/bcp.json"
             if [ -f "$BCP" ] && [ "$(jq -r '.codecov // false' "$BCP")" = "true" ]; then
               CODECOV_WORKSPACES=$(echo "$CODECOV_WORKSPACES" | jq -c --arg w "$ws" '. + [$w]')
