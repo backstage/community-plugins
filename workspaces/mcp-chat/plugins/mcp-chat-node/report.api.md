@@ -64,6 +64,7 @@ export const llmProviderExtensionPoint: ExtensionPoint<LlmProviderExtensionPoint
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  deploymentName?: string;
   logger?: LoggerService;
   maxTokens?: number;
   model: string;

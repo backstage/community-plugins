@@ -177,46 +177,6 @@ export interface MCPServerStatusData {
 // =============================================================================
 
 /**
- * Configuration for an LLM provider.
- *
- * @example
- * ```typescript
- * const openaiConfig: ProviderConfig = {
- *   type: 'openai',
- *   apiKey: 'sk-...',
- *   baseUrl: 'https://api.openai.com/v1',
- *   model: 'gpt-4'
- * };
- *
- * const ollamaConfig: ProviderConfig = {
- *   type: 'ollama',
- *   baseUrl: 'http://localhost:11434',
- *   model: 'llama2'
- * };
- * ```
- *
- * @public
- */
-export interface ProviderConfig {
-  /** Provider type identifier */
-  type: string;
-  /** API key for authentication (optional for local providers like Ollama) */
-  apiKey?: string;
-  /** Base URL for the provider's API */
-  baseUrl: string;
-  /** Model identifier to use */
-  model: string;
-  /** Azure OpenAI deployment name. Required when using the `azure-openai` provider type. */
-  deploymentName?: string;
-  /** Logger for debugging */
-  logger?: LoggerService;
-  /** Maximum number of tokens to generate (default: 1000 for OpenAI-compatible, 4096 for Claude, 8192 for Gemini) */
-  maxTokens?: number;
-  /** Temperature for response randomness, between 0 and 1 (default: 0.7) */
-  temperature?: number;
-}
-
-/**
  * Runtime information about an active LLM provider.
  * Used for status display and monitoring.
  *

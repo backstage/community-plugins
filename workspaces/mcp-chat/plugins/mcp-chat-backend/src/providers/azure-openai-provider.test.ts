@@ -15,7 +15,8 @@
  */
 
 import { AzureOpenAIProvider } from './azure-openai-provider';
-import { ProviderConfig, ChatMessage } from '../types';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
 
 global.fetch = jest.fn();
 

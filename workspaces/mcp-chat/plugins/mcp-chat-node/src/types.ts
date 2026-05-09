@@ -50,6 +50,8 @@ export interface ProviderConfig {
   baseUrl: string;
   /** Model identifier to use */
   model: string;
+  /** Azure OpenAI deployment name. Required when using the `azure-openai` provider type. */
+  deploymentName?: string;
   /** Logger for debugging */
   logger?: LoggerService;
   /** Maximum number of tokens to generate (default: 1000 for OpenAI-compatible, 4096 for Claude, 8192 for Gemini) */
