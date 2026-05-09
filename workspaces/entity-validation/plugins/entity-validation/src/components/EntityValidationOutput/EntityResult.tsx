@@ -72,7 +72,7 @@ export const EntityResult = ({
 
   return (
     <>
-      <ListItem key={safeEntityDisplayName(item.entity)}>
+      <ListItem>
         <ListItemIcon>
           {Icon && (
             <Icon
