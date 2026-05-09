@@ -65,6 +65,15 @@ describe('serviceUtils', () => {
         password: undefined,
       } as Instance);
     });
+
+    it('should strip trailing slashes from url', () => {
+      const instanceConfig = new ConfigReader({
+        name: 'test',
+        url: 'https://test.com/',
+      });
+      const result: Instance = toInstance(instanceConfig);
+      expect(result.url).toEqual('https://test.com');
+    });
   });
 
   describe('processFetch', () => {
@@ -107,6 +116,16 @@ describe('serviceUtils', () => {
       expect(url).toEqual(
         'https://test-instance.com/api/v1/applications/test-app?selector=test%3Dtrue&appNamespace=test&project=testing',
       );
+    });
+
+    it('should normalize a trailing slash on the base URL', () => {
+      const url = buildArgoUrl(
+        'https://test-instance.com/',
+        'applications',
+        {},
+      );
+      expect(url).toEqual('https://test-instance.com/api/v1/applications');
+      expect(new URL(url).pathname).not.toMatch(/^\/\//);
     });
   });
 });

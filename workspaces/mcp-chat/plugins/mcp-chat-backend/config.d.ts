@@ -25,19 +25,34 @@ export interface Config {
       /**
        * Unique identifier for the provider
        * @visibility backend
-       * @enum { 'openai' | 'claude' | 'gemini' | 'ollama' }
+       * @enum { 'openai' | 'openai-responses' | 'azure-openai' | 'claude' | 'gemini' | 'ollama' | 'litellm' }
        */
-      id: 'openai' | 'claude' | 'gemini' | 'ollama';
+      id:
+        | 'openai'
+        | 'openai-responses'
+        | 'azure-openai'
+        | 'claude'
+        | 'gemini'
+        | 'ollama'
+        | 'litellm';
       /**
        * API token for the provider
        * @visibility secret
        */
       token?: string;
       /**
-       * Model name to use for this provider
+       * Model name to use for this provider.
+       * For `azure-openai` this should be the underlying model name (e.g. `gpt-4o-mini`),
+       * used only for capability detection. The actual API calls use `deploymentName`.
        * @visibility backend
        */
       model: string;
+      /**
+       * Azure OpenAI deployment name.
+       * Required for the `azure-openai` provider.
+       * @visibility backend
+       */
+      deploymentName?: string;
       /**
        * Base URL for the provider's API
        * @visibility backend

@@ -1,5 +1,14 @@
 # @backstage-community/plugin-rbac
 
+## 1.52.4
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+
 ## 1.52.3
 
 ### Patch Changes

@@ -26,6 +26,21 @@ import { ToolCall } from '@backstage-community/plugin-mcp-chat-common';
 import { ToolExecutionResult } from '@backstage-community/plugin-mcp-chat-common';
 
 // @public
+export class AzureOpenAIProvider extends OpenAIProvider {
+  constructor(config: ProviderConfig);
+  // (undocumented)
+  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
+  testConnection(): Promise<{
+    connected: boolean;
+    models?: string[];
+    error?: string;
+  }>;
+}
+
+// @public
 export class ChatConversationStore {
   static create(
     options: ChatConversationStoreOptions,

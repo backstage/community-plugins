@@ -21,6 +21,7 @@ import {
   getProviderInfo,
 } from './provider-factory';
 import { OpenAIProvider } from './openai-provider';
+import { AzureOpenAIProvider } from './azure-openai-provider';
 import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
@@ -32,6 +33,7 @@ describe('ProviderFactory', () => {
     it('should create correct provider instances for supported types', () => {
       const testCases = [
         { type: 'openai', expectedClass: OpenAIProvider },
+        { type: 'azure-openai', expectedClass: AzureOpenAIProvider },
         { type: 'claude', expectedClass: ClaudeProvider },
         { type: 'gemini', expectedClass: GeminiProvider },
         { type: 'ollama', expectedClass: OllamaProvider },
@@ -44,6 +46,9 @@ describe('ProviderFactory', () => {
           apiKey: 'test-key',
           baseUrl: 'https://example.com',
           model: 'test-model',
+          ...(type === 'azure-openai'
+            ? { deploymentName: 'test-deployment' }
+            : {}),
           logger: mockServices.logger.mock(),
         };
 
@@ -98,7 +103,7 @@ describe('getProviderConfig', () => {
     mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
 
     expect(() => getProviderConfig(mockConfig)).toThrow(
-      'Unsupported provider id: unsupported. Allowed values are: openai, openai-responses, claude, gemini, ollama, litellm',
+      'Unsupported provider id: unsupported. Allowed values are: openai, openai-responses, azure-openai, claude, gemini, ollama, litellm',
     );
   });
 
@@ -259,6 +264,62 @@ describe('getProviderConfig', () => {
     expect(result.baseUrl).toBe('http://localhost:4000');
     expect(result.type).toBe('litellm');
     expect(result.apiKey).toBeUndefined();
+  });
+
+  it('should configure azure-openai provider with deploymentName', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'azure-openai';
+        if (key === 'model') return 'gpt-5.1';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'token') return 'azure-key';
+        if (key === 'baseUrl')
+          return 'https://myresource.openai.azure.com/openai/v1';
+        if (key === 'deploymentName') return 'my-gpt-5.1-deployment';
+        return undefined;
+      }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderConfig(mockConfig);
+
+    expect(result).toEqual({
+      type: 'azure-openai',
+      apiKey: 'azure-key',
+      baseUrl: 'https://myresource.openai.azure.com/openai/v1',
+      model: 'gpt-5.1',
+      deploymentName: 'my-gpt-5.1-deployment',
+      maxTokens: undefined,
+      temperature: undefined,
+    });
+  });
+
+  it('should throw error when deploymentName is missing for azure-openai', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'azure-openai';
+        if (key === 'model') return 'gpt-5.1';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'token') return 'azure-key';
+        if (key === 'baseUrl')
+          return 'https://myresource.openai.azure.com/openai/v1';
+        if (key === 'deploymentName') return undefined;
+        return undefined;
+      }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    expect(() => getProviderConfig(mockConfig)).toThrow(
+      'Deployment name is required for the azure-openai provider.',
+    );
   });
 
   it('should throw error when API key is missing for non-Ollama/LiteLLM providers', () => {
@@ -530,5 +591,55 @@ describe('getProviderInfo', () => {
     mockConfig.getOptionalConfigArray.mockReturnValue([]);
 
     expect(() => getProviderInfo(mockConfig)).toThrow();
+  });
+
+  it('should include deploymentName for azure-openai provider', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'azure-openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl')
+          return 'https://my-resource.openai.azure.com/openai/v1';
+        if (key === 'deploymentName') return 'my-gpt4-deployment';
+        return 'test-key';
+      }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderInfo(mockConfig);
+
+    expect(result).toEqual({
+      provider: 'azure-openai',
+      model: 'gpt-4',
+      baseURL: 'https://my-resource.openai.azure.com/openai/v1',
+      deploymentName: 'my-gpt4-deployment',
+    });
+  });
+
+  it('should not include deploymentName when not set', () => {
+    const mockProviderConfig = {
+      getString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'id') return 'openai';
+        if (key === 'model') return 'gpt-4';
+        throw new Error(`Unexpected key: ${key}`);
+      }),
+      getOptionalString: jest.fn().mockImplementation((key: string) => {
+        if (key === 'baseUrl') return 'https://api.openai.com/v1';
+        if (key === 'deploymentName') return undefined;
+        return 'test-key';
+      }),
+      getOptionalNumber: jest.fn().mockReturnValue(undefined),
+    } as any;
+
+    mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+    const result = getProviderInfo(mockConfig);
+
+    expect(result).not.toHaveProperty('deploymentName');
   });
 });

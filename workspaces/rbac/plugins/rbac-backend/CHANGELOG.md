@@ -1,5 +1,14 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.12.4
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+  - @backstage-community/plugin-rbac-node@1.20.1
+
 ## 7.12.3
 
 ### Patch Changes

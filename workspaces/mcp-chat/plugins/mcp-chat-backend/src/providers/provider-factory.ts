@@ -21,6 +21,7 @@ import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
 import { LiteLLMProvider } from './litellm-provider';
+import { AzureOpenAIProvider } from './azure-openai-provider';
 import {
   RootConfigService,
   LoggerService,
@@ -28,7 +29,7 @@ import {
 
 /**
  * Factory class for creating LLM provider instances.
- * Supports OpenAI, Claude, Gemini, Ollama, LiteLLM, and OpenAI Responses API.
+ * Supports OpenAI, Azure OpenAI, Claude, Gemini, Ollama, LiteLLM, and OpenAI Responses API.
  *
  * @public
  */
@@ -51,6 +52,9 @@ export class ProviderFactory {
 
       case 'openai-responses':
         return new OpenAIResponsesProvider(configWithLogger);
+
+      case 'azure-openai':
+        return new AzureOpenAIProvider(configWithLogger);
 
       case 'claude':
         return new ClaudeProvider(configWithLogger);
@@ -106,6 +110,7 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const allowedProviders = [
     'openai',
     'openai-responses',
+    'azure-openai',
     'claude',
     'gemini',
     'ollama',
@@ -136,6 +141,16 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: providerConfig.getOptionalString('baseUrl') || '',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
+    },
+
+    'azure-openai': {
+      type: 'azure-openai',
+      apiKey: token,
+      baseUrl: providerConfig.getOptionalString('baseUrl') || '',
+      model: model,
+      deploymentName: providerConfig.getOptionalString('deploymentName'),
       maxTokens: maxTokens,
       temperature: temperature,
     },
@@ -196,6 +211,11 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   if (!configTemplate.model) {
     throw new Error(`Model is required for provider: ${providerId}`);
   }
+  if (providerId === 'azure-openai' && !configTemplate.deploymentName) {
+    throw new Error(
+      'Deployment name is required for the azure-openai provider.',
+    );
+  }
 
   return configTemplate as ProviderConfig;
 }
@@ -213,5 +233,8 @@ export function getProviderInfo(config: RootConfigService) {
     provider: providerConfig.type,
     model: providerConfig.model,
     baseURL: providerConfig.baseUrl,
+    ...(providerConfig.deploymentName && {
+      deploymentName: providerConfig.deploymentName,
+    }),
   };
 }

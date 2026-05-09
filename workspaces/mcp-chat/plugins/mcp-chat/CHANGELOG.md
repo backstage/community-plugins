@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat
 
+## 0.7.1
+
+### Patch Changes
+
+- c43e80c: Updated the list of supported providers in the README
+
 ## 0.7.0
 
 ### Minor Changes

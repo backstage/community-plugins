@@ -18,7 +18,6 @@ import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendPlugin,
-  NavItemBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { copilotApiRef, CopilotClient } from '../api';
@@ -55,6 +54,8 @@ export const copilotApi = ApiBlueprint.make({
 export const copilotPage = PageBlueprint.make({
   params: {
     path: '/copilot',
+    title: 'Copilot',
+    icon: <SupportAgentIcon />,
     routeRef: convertLegacyRouteRef(copilotRouteRef),
     loader: () =>
       import('../components/Pages').then(m =>
@@ -63,21 +64,10 @@ export const copilotPage = PageBlueprint.make({
   },
 });
 
-/**
- * @alpha
- */
-export const copilotNavItem = NavItemBlueprint.make({
-  params: {
-    title: 'Copilot',
-    routeRef: convertLegacyRouteRef(copilotRouteRef),
-    icon: SupportAgentIcon,
-  },
-});
-
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'copilot',
-  extensions: [copilotApi, copilotPage, copilotNavItem],
+  extensions: [copilotApi, copilotPage],
   routes: convertLegacyRouteRefs({
     copilot: copilotRouteRef,
     enterprise: enterpriseRouteRef,

@@ -39,6 +39,9 @@
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/multi-source-security-viewer"
   },
+  "dependencies": {
+    "@gitbeaker/rest": "^43.8.0"
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "^0.36.0",
