@@ -26,8 +26,11 @@ import { LLMProvider } from './base-provider';
 export interface LlmProviderExtensionPoint {
   /**
    * Register an LLM provider instance keyed by type string.
-   * If a provider with the same type is already registered, it is replaced
-   * and a warning is logged.
+   *
+   * @remarks
+   * The backend plugin implementation (`plugin.ts` in `mcp-chat-backend`)
+   * replaces any previously registered provider for the same type and emits
+   * a warning when this occurs.
    */
   registerProvider(type: string, provider: LLMProvider): void;
 }
