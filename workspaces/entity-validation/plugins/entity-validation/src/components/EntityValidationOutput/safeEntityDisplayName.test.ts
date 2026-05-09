@@ -17,7 +17,7 @@ import { Entity } from '@backstage/catalog-model';
 import { safeEntityDisplayName, safeEntityKind } from './safeEntityDisplayName';
 
 describe('safeEntityDisplayName', () => {
-  it('should return humanized ref for a well-formed entity', () => {
+  it('should return kind:name for a well-formed entity', () => {
     const entity = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',
@@ -110,8 +110,6 @@ describe('safeEntityDisplayName', () => {
       metadata: { name: 'my-service', namespace: true },
     } as unknown as Entity;
     expect(() => safeEntityDisplayName(entity)).not.toThrow();
-    // Falls back to non-humanized kind:name format because the
-    // humanizeEntityRef path would crash on the non-string namespace.
     expect(safeEntityDisplayName(entity)).toBe('component:my-service');
   });
 });

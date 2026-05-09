@@ -14,38 +14,24 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0;
 }
 
-function isStringOrAbsent(value: unknown): boolean {
-  return value === undefined || value === null || typeof value === 'string';
-}
-
 /**
  * Safely produce a display name for an entity, falling back gracefully
- * when kind or metadata.name are missing or not strings (which would
- * crash humanizeEntityRef). The fallback labels which field is missing
- * so the user can tell what is wrong with the entity.
+ * when kind or metadata.name are missing or not strings. The fallback
+ * labels which field is missing so the user can tell what is wrong with
+ * the entity.
  *
  * Non-string values (e.g. YAML 1.1 booleans like `kind: on`) are treated
- * as missing rather than stringified, since they cannot be safely passed
- * to humanizeEntityRef and rarely match the intent of the YAML author.
+ * as missing rather than stringified, since they rarely match the intent
+ * of the YAML author.
  */
 export function safeEntityDisplayName(entity: Entity): string {
   const kind = entity?.kind;
   const name = entity?.metadata?.name;
-  const namespace = entity?.metadata?.namespace;
-
-  if (
-    isNonEmptyString(kind) &&
-    isNonEmptyString(name) &&
-    isStringOrAbsent(namespace)
-  ) {
-    return humanizeEntityRef(entity);
-  }
 
   const kindLabel = isNonEmptyString(kind)
     ? kind.toLocaleLowerCase('en-US')
