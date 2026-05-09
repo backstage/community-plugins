@@ -56,6 +56,8 @@ import {
 export type Options = {
   logger: LoggerService;
   config: RootConfigService;
+  /** LLM providers registered via the llmProviderExtensionPoint */
+  extensionProviders?: Map<string, LLMProvider>;
 };
 
 /**
@@ -76,10 +78,12 @@ export class MCPClientServiceImpl implements MCPClientService {
   private serverConfigs: MCPServerFullConfig[] = [];
   private allowedToolsByServer: Map<string, string[]> = new Map();
   private readonly toolCallTimeout: number;
+  private readonly extensionProviders: Map<string, LLMProvider>;
 
   constructor(options: Options) {
     this.logger = options.logger;
     this.config = options.config;
+    this.extensionProviders = options.extensionProviders ?? new Map();
     this.toolCallTimeout =
       this.config.getOptionalNumber('mcpChat.toolCallTimeout') ??
       DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS;
@@ -93,6 +97,18 @@ export class MCPClientServiceImpl implements MCPClientService {
   private initializeLLMProvider(): LLMProvider {
     try {
       const providerConfig = getConfig(this.config);
+
+      // Check if an extension-point provider was registered for this type
+      const extensionProvider = this.extensionProviders.get(
+        providerConfig.type,
+      );
+      if (extensionProvider) {
+        this.logger.info(
+          `Using extension-point LLM Provider: ${providerConfig.type}, Model: ${providerConfig.model}`,
+        );
+        return extensionProvider;
+      }
+
       const llmProvider = ProviderFactory.createProvider(
         providerConfig,
         this.logger,
