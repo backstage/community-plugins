@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.11.1
+
+### Patch Changes
+
+- 85f6e69: Bump axios to 1.16.0 to include different security fixes.
+
 ## 1.11.0
 
 ### Minor Changes
