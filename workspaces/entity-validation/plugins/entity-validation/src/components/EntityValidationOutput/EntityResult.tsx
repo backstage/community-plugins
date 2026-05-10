@@ -25,7 +25,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
-import { safeEntityDisplayName, safeEntityKind } from './safeEntityDisplayName';
+import { safeEntityKind } from './safeEntityDisplayName';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MarkdownContent } from '@backstage/core-components';
