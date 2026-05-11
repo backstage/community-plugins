@@ -1,5 +1,11 @@
 # @backstage-community/plugin-n8n-common
 
+## 0.4.0
+
+### Minor Changes
+
+- 3f1835e: Backstage version bump to v1.50.2
+
 ## 0.3.0
 
 ### Minor Changes
