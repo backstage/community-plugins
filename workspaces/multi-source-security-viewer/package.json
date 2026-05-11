@@ -39,6 +39,12 @@
     "url": "https://github.com/backstage/community-plugins",
     "directory": "workspaces/multi-source-security-viewer"
   },
+  "dependencies": {
+    "@react-aria/interactions": "^3.28.0",
+    "@react-stately/layout": "^3.4.0",
+    "@react-stately/overlays": "^3.7.0",
+    "@react-types/table": "^3.12.0"
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "^0.36.1",
