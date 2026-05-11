@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay
 
+## 1.32.1
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+
 ## 1.32.0
 
 ### Minor Changes
