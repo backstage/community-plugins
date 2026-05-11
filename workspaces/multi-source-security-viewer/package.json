@@ -40,7 +40,11 @@
     "directory": "workspaces/multi-source-security-viewer"
   },
   "dependencies": {
-    "@gitbeaker/rest": "^43.8.0"
+    "@gitbeaker/rest": "^43.8.0",
+    "@react-aria/interactions": "^3.28.0",
+    "@react-stately/layout": "^3.4.0",
+    "@react-stately/overlays": "^3.7.0",
+    "@react-types/table": "^3.12.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
