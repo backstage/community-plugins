@@ -1,0 +1,39 @@
+.bar {
+  display: flex;
+  height: 12px;
+  width: 120px;
+  border-radius: var(--bui-radius-full);
+  overflow: hidden;
+  background-color: var(--bui-bg-neutral-1);
+  border: 1px solid var(--bui-border-1);
+}
+
+.segment {
+  height: 100%;
+  min-width: 4px;
+  transition: width 0.2s ease;
+}
+
+.succeeded {
+  background-color: var(--bui-fg-success);
+}
+
+.running {
+  background-color: var(--bui-fg-info);
+}
+
+.pending {
+  background-color: var(--bui-fg-secondary);
+}
+
+.failed {
+  background-color: var(--bui-fg-danger);
+}
+
+.error {
+  background-color: var(--bui-fg-danger);
+}
+
+.count {
+  white-space: nowrap;
+}

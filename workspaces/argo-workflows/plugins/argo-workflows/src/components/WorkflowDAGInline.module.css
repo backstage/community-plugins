@@ -1,0 +1,76 @@
+.root {
+  width: 100%;
+}
+
+.container {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 300px;
+  overflow: hidden;
+}
+
+.svg {
+  cursor: grab;
+}
+
+.svg.panning {
+  cursor: grabbing;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node:focus {
+  outline: none;
+}
+
+.node:focus-visible > rect {
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+.empty {
+  padding: var(--bui-space-4);
+  color: var(--bui-fg-secondary);
+}
+
+.tooltip {
+  position: absolute;
+  background: var(--bui-bg-neutral-1, #fff);
+  color: var(--bui-fg-primary, #1a1a1a);
+  border: 1px solid var(--bui-border-1, #d4d4d4);
+  border-radius: var(--bui-radius-2);
+  padding: var(--bui-space-2) var(--bui-space-3);
+  font-size: var(--bui-font-size-1);
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 10;
+  max-width: 280px;
+  white-space: nowrap;
+}
+
+.tooltipTitle {
+  font-weight: var(--bui-font-weight-bold);
+  margin-bottom: var(--bui-space-1);
+}
+
+.tooltipLabel {
+  color: var(--bui-fg-secondary);
+}
+
+.tooltipStatus {
+  font-weight: 500;
+}
+
+.controls {
+  position: absolute;
+  bottom: var(--bui-space-3);
+  left: var(--bui-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-1);
+  z-index: 5;
+}

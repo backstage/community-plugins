@@ -1,0 +1,61 @@
+.panel {
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+  background-color: var(--bui-bg-neutral-1, #fff);
+  overflow: hidden;
+  min-width: 280px;
+  max-width: 360px;
+}
+
+.header {
+  padding: var(--bui-space-3) var(--bui-space-4);
+  border-bottom: 1px solid var(--bui-border-1);
+  background-color: var(--bui-bg-neutral-1);
+}
+
+.body {
+  padding: var(--bui-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-3);
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--bui-space-2);
+}
+
+.label {
+  color: var(--bui-fg-secondary);
+  font-weight: var(--bui-font-weight-bold);
+  min-width: 5rem;
+  flex-shrink: 0;
+}
+
+.messageDanger {
+  color: var(--bui-fg-danger);
+}
+
+.messageBox {
+  padding: var(--bui-space-3);
+  border-radius: var(--bui-radius-2);
+  background-color: var(--bui-bg-neutral-2, #f5f5f5);
+}
+
+.messageBoxDanger {
+  padding: var(--bui-space-3);
+  border-radius: var(--bui-radius-2);
+  background-color: var(--bui-bg-danger-subtle, #fde8e8);
+}
+
+.messageText {
+  font-family: var(--bui-font-family-mono, monospace);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.messageBoxDanger .messageText {
+  color: var(--bui-fg-danger);
+}

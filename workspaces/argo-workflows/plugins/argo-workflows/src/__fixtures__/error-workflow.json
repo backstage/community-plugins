@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "name": "nightly-backup-20260429",
+    "namespace": "ops",
+    "uid": "wf-uid-004",
+    "labels": { "app": "my-service", "type": "backup" },
+    "creationTimestamp": "2026-04-29T02:00:00Z"
+  },
+  "status": {
+    "phase": "Error",
+    "startedAt": "2026-04-29T02:00:05Z",
+    "finishedAt": "2026-04-29T02:00:12Z",
+    "message": "Failed to create pod: insufficient resources",
+    "nodes": {
+      "nightly-backup-20260429": {
+        "id": "nightly-backup-20260429",
+        "name": "nightly-backup-20260429",
+        "displayName": "nightly-backup",
+        "type": "Pod",
+        "phase": "Error",
+        "startedAt": "2026-04-29T02:00:05Z",
+        "finishedAt": "2026-04-29T02:00:12Z",
+        "message": "Failed to create pod: insufficient resources",
+        "templateName": "pg-backup"
+      }
+    }
+  }
+}
