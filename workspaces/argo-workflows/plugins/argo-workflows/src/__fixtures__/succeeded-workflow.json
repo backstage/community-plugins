@@ -1,0 +1,210 @@
+{
+  "metadata": {
+    "name": "site-backup-92llq",
+    "namespace": "corporate-website",
+    "uid": "994a96dc-a706-4798-8c1e-f55991cd28be",
+    "creationTimestamp": "2026-04-15T14:33:18Z",
+    "labels": {
+      "workflows.argoproj.io/completed": "true",
+      "workflows.argoproj.io/phase": "Succeeded",
+      "workflows.argoproj.io/resubmitted-from-workflow": "site-backup-2zp2g"
+    },
+    "annotations": {
+      "workflows.argoproj.io/pod-name-format": "v2"
+    }
+  },
+  "status": {
+    "phase": "Succeeded",
+    "startedAt": "2026-04-15T14:33:18Z",
+    "finishedAt": "2026-04-15T14:57:34Z",
+    "nodes": {
+      "site-backup-92llq": {
+        "id": "site-backup-92llq",
+        "name": "site-backup-92llq",
+        "displayName": "site-backup-92llq",
+        "type": "DAG",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:18Z",
+        "finishedAt": "2026-04-15T14:57:34Z",
+        "children": [
+          "site-backup-92llq-4215557867",
+          "site-backup-92llq-2513871097",
+          "site-backup-92llq-4142456944",
+          "site-backup-92llq-691475418"
+        ]
+      },
+      "site-backup-92llq-4215557867": {
+        "id": "site-backup-92llq-4215557867",
+        "name": "site-backup-92llq.scalezero-liferay",
+        "displayName": "scalezero-liferay",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:18Z",
+        "finishedAt": "2026-04-15T14:33:24Z",
+        "templateName": "scale",
+        "children": [
+          "site-backup-92llq-4101311697",
+          "site-backup-92llq-3119783821"
+        ]
+      },
+      "site-backup-92llq-2513871097": {
+        "id": "site-backup-92llq-2513871097",
+        "name": "site-backup-92llq.scaleone-mysql",
+        "displayName": "scaleone-mysql",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:18Z",
+        "finishedAt": "2026-04-15T14:33:24Z",
+        "templateName": "scale",
+        "children": [
+          "site-backup-92llq-3119783821",
+          "site-backup-92llq-677618373"
+        ]
+      },
+      "site-backup-92llq-4142456944": {
+        "id": "site-backup-92llq-4142456944",
+        "name": "site-backup-92llq.scaleone-maintenance-page",
+        "displayName": "scaleone-maintenance-page",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:19Z",
+        "finishedAt": "2026-04-15T14:33:24Z",
+        "templateName": "scale",
+        "children": ["site-backup-92llq-2452176568"]
+      },
+      "site-backup-92llq-691475418": {
+        "id": "site-backup-92llq-691475418",
+        "name": "site-backup-92llq.scalezero-elasticsearch",
+        "displayName": "scalezero-elasticsearch",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:19Z",
+        "finishedAt": "2026-04-15T14:33:24Z",
+        "templateName": "scale"
+      },
+      "site-backup-92llq-2452176568": {
+        "id": "site-backup-92llq-2452176568",
+        "name": "site-backup-92llq.redirect-to-maintenance-page",
+        "displayName": "redirect-to-maintenance-page",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:29Z",
+        "finishedAt": "2026-04-15T14:33:33Z",
+        "templateName": "patch-ingress"
+      },
+      "site-backup-92llq-4101311697": {
+        "id": "site-backup-92llq-4101311697",
+        "name": "site-backup-92llq.dump-liferay",
+        "displayName": "dump-liferay",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:28Z",
+        "finishedAt": "2026-04-15T14:56:12Z",
+        "templateName": "dump-liferay",
+        "children": [
+          "site-backup-92llq-1708383985",
+          "site-backup-92llq-673990288"
+        ]
+      },
+      "site-backup-92llq-3119783821": {
+        "id": "site-backup-92llq-3119783821",
+        "name": "site-backup-92llq.dump-mysql",
+        "displayName": "dump-mysql",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:29Z",
+        "finishedAt": "2026-04-15T14:33:41Z",
+        "templateName": "dump-mysql",
+        "children": [
+          "site-backup-92llq-1599418221",
+          "site-backup-92llq-1562458486",
+          "site-backup-92llq-4090820863",
+          "site-backup-92llq-673990288"
+        ]
+      },
+      "site-backup-92llq-1708383985": {
+        "id": "site-backup-92llq-1708383985",
+        "name": "site-backup-92llq.publish-liferay-dump",
+        "displayName": "publish-liferay-dump",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:56:22Z",
+        "finishedAt": "2026-04-15T14:57:21Z",
+        "templateName": "publish-liferay-dump"
+      },
+      "site-backup-92llq-1599418221": {
+        "id": "site-backup-92llq-1599418221",
+        "name": "site-backup-92llq.publish-mysql-dump",
+        "displayName": "publish-mysql-dump",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:49Z",
+        "finishedAt": "2026-04-15T14:33:57Z",
+        "templateName": "publish-mysql-dump"
+      },
+      "site-backup-92llq-1562458486": {
+        "id": "site-backup-92llq-1562458486",
+        "name": "site-backup-92llq.scaleone-mysql-only",
+        "displayName": "scaleone-mysql-only",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:49Z",
+        "finishedAt": "2026-04-15T14:33:54Z",
+        "templateName": "scale"
+      },
+      "site-backup-92llq-4090820863": {
+        "id": "site-backup-92llq-4090820863",
+        "name": "site-backup-92llq.validate-mysql-grants",
+        "displayName": "validate-mysql-grants",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:33:49Z",
+        "finishedAt": "2026-04-15T14:33:55Z",
+        "templateName": "validate-mysql-grants"
+      },
+      "site-backup-92llq-673990288": {
+        "id": "site-backup-92llq-673990288",
+        "name": "site-backup-92llq.scaleone-elasticsearch",
+        "displayName": "scaleone-elasticsearch",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:56:23Z",
+        "finishedAt": "2026-04-15T14:56:28Z",
+        "templateName": "scale",
+        "children": ["site-backup-92llq-677618373"]
+      },
+      "site-backup-92llq-677618373": {
+        "id": "site-backup-92llq-677618373",
+        "name": "site-backup-92llq.scaleone-liferay",
+        "displayName": "scaleone-liferay",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:56:33Z",
+        "finishedAt": "2026-04-15T14:56:40Z",
+        "templateName": "scale",
+        "children": ["site-backup-92llq-2817420397"]
+      },
+      "site-backup-92llq-2817420397": {
+        "id": "site-backup-92llq-2817420397",
+        "name": "site-backup-92llq.redirect-to-liferay",
+        "displayName": "redirect-to-liferay",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:56:53Z",
+        "finishedAt": "2026-04-15T14:57:13Z",
+        "templateName": "patch-ingress",
+        "children": ["site-backup-92llq-2766297502"]
+      },
+      "site-backup-92llq-2766297502": {
+        "id": "site-backup-92llq-2766297502",
+        "name": "site-backup-92llq.scalezero-maintenance-page",
+        "displayName": "scalezero-maintenance-page",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-15T14:57:23Z",
+        "finishedAt": "2026-04-15T14:57:28Z",
+        "templateName": "scale"
+      }
+    }
+  }
+}
