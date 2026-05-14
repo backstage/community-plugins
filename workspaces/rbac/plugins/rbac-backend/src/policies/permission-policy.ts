@@ -55,7 +55,7 @@ import { RoleMetadataStorage } from '../database/role-metadata';
 import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
 import {
   ConditionalPoliciesFileLimits,
-  DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS,
+  resolveConditionalPoliciesFileLimits,
   YamlConditionalPoliciesFileWatcher,
 } from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
@@ -405,7 +405,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
   private static readConditionalFileLimits(
     configApi: ConfigApi,
-  ): Partial<ConditionalPoliciesFileLimits> {
+  ): ConditionalPoliciesFileLimits {
     const maxBytes = configApi.getOptionalNumber(
       'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
     );
@@ -413,10 +413,16 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
     );
 
-    return {
-      maxBytes: maxBytes ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxBytes,
-      maxDocuments:
-        maxDocuments ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments,
-    };
+    return resolveConditionalPoliciesFileLimits(
+      {
+        ...(maxBytes !== undefined ? { maxBytes } : {}),
+        ...(maxDocuments !== undefined ? { maxDocuments } : {}),
+      },
+      {
+        maxBytes: 'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
+        maxDocuments:
+          'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
+      },
+    );
   }
 }

@@ -58,6 +58,45 @@ export const DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS: ConditionalPoliciesFileLi
     maxDocuments: 256,
   };
 
+function assertPositiveIntegerConditionalPoliciesFileLimit(
+  value: number,
+  fieldRef: string,
+): void {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new InputError(
+      `'${fieldRef}' must be a positive integer for conditional policies file validation`,
+    );
+  }
+}
+
+/**
+ * Merges optional overrides with defaults and validates both limits are positive integers.
+ */
+export function resolveConditionalPoliciesFileLimits(
+  partial: Partial<ConditionalPoliciesFileLimits> = {},
+  errorFieldRefs?: {
+    maxBytes: string;
+    maxDocuments: string;
+  },
+): ConditionalPoliciesFileLimits {
+  const resolved: ConditionalPoliciesFileLimits = {
+    maxBytes:
+      partial.maxBytes ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxBytes,
+    maxDocuments:
+      partial.maxDocuments ??
+      DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments,
+  };
+  assertPositiveIntegerConditionalPoliciesFileLimit(
+    resolved.maxBytes,
+    errorFieldRefs?.maxBytes ?? 'maxBytes',
+  );
+  assertPositiveIntegerConditionalPoliciesFileLimit(
+    resolved.maxDocuments,
+    errorFieldRefs?.maxDocuments ?? 'maxDocuments',
+  );
+  return resolved;
+}
+
 export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   RoleConditionalPolicyDecision<PermissionAction>[]
 > {
@@ -85,11 +124,9 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
       addedConditions: [],
       removedConditions: [],
     };
-    this.maxFileBytes =
-      limits.maxBytes ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxBytes;
-    this.maxFileDocuments =
-      limits.maxDocuments ??
-      DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments;
+    const resolvedLimits = resolveConditionalPoliciesFileLimits(limits);
+    this.maxFileBytes = resolvedLimits.maxBytes;
+    this.maxFileDocuments = resolvedLimits.maxDocuments;
     this.conditionValidationLimits = conditionValidationLimits;
   }
 

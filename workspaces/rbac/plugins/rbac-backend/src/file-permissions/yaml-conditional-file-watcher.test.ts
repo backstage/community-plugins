@@ -29,7 +29,10 @@ import {
 } from '../database/role-metadata';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { YamlConditionalPoliciesFileWatcher } from './yaml-conditional-file-watcher';
+import {
+  resolveConditionalPoliciesFileLimits,
+  YamlConditionalPoliciesFileWatcher,
+} from './yaml-conditional-file-watcher';
 import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
@@ -268,6 +271,48 @@ describe('YamlConditionalFileWatcher', () => {
       },
     );
   }
+
+  describe('conditional policies file limit validation', () => {
+    it('throws InputError when maxBytes is zero', () => {
+      expect(() => createWatcherWithLimits(csvFileName, 0, 256)).toThrow(
+        InputError,
+      );
+      expect(() => createWatcherWithLimits(csvFileName, 0, 256)).toThrow(
+        `'maxBytes' must be a positive integer for conditional policies file validation`,
+      );
+    });
+
+    it('throws InputError when maxDocuments is zero', () => {
+      expect(() => createWatcherWithLimits(csvFileName, 1024, 0)).toThrow(
+        InputError,
+      );
+      expect(() => createWatcherWithLimits(csvFileName, 1024, 0)).toThrow(
+        `'maxDocuments' must be a positive integer for conditional policies file validation`,
+      );
+    });
+
+    it('throws InputError when maxBytes is not an integer', () => {
+      expect(() => createWatcherWithLimits(csvFileName, 1024.5, 10)).toThrow(
+        InputError,
+      );
+    });
+
+    it('includes config key path in InputError when provided', () => {
+      expect(() =>
+        resolveConditionalPoliciesFileLimits(
+          { maxBytes: 0 },
+          {
+            maxBytes:
+              'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
+            maxDocuments:
+              'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
+          },
+        ),
+      ).toThrow(
+        `'permission.rbac.validation.conditionalPoliciesFile.maxBytes' must be a positive integer for conditional policies file validation`,
+      );
+    });
+  });
 
   test('handles errors for invalid file paths', async () => {
     const invalidFilePath = 'invalid-file-path.yaml';
