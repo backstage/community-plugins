@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.12.3
+
+### Patch Changes
+
+- 790e405: Fix pod status icon and label alignment in Pods table
+
 ## 2.12.2
 
 ### Patch Changes
