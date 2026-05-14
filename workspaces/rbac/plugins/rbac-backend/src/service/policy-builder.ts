@@ -205,9 +205,12 @@ export class PolicyBuilder {
     });
 
     const isPluginEnabled = env.config.getOptionalBoolean('permission.enabled');
-    const conditionValidationLimits = resolveConditionValidationLimits(
-      readConditionValidationLimitsFromConfig(env.config),
-    );
+    // Invalid permission.rbac.validation.* must not prevent startup when RBAC is off.
+    const conditionValidationLimits = isPluginEnabled
+      ? resolveConditionValidationLimits(
+          readConditionValidationLimitsFromConfig(env.config),
+        )
+      : resolveConditionValidationLimits({});
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
