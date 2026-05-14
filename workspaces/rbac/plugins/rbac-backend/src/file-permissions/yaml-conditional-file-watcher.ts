@@ -36,7 +36,10 @@ import { RoleMetadataStorage } from '../database/role-metadata';
 import { deepSortEqual, processConditionMapping } from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { validateRoleCondition } from '../validation/condition-validation';
+import {
+  type ConditionValidationLimits,
+  validateRoleCondition,
+} from '../validation/condition-validation';
 import { AbstractFileWatcher } from './file-watcher';
 
 type ConditionalPoliciesDiff = {
@@ -61,6 +64,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   private conditionsDiff: ConditionalPoliciesDiff;
   private readonly maxFileBytes: number;
   private readonly maxFileDocuments: number;
+  private readonly conditionValidationLimits: ConditionValidationLimits;
 
   constructor(
     filePath: string | undefined,
@@ -72,6 +76,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     private readonly pluginMetadataCollector: PluginPermissionMetadataCollector,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly roleEventEmitter: RoleEventEmitter<RoleEvents>,
+    conditionValidationLimits: ConditionValidationLimits,
     limits: Partial<ConditionalPoliciesFileLimits> = {},
   ) {
     super(filePath, allowReload, logger);
@@ -85,6 +90,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     this.maxFileDocuments =
       limits.maxDocuments ??
       DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments;
+    this.conditionValidationLimits = conditionValidationLimits;
   }
 
   async initialize(): Promise<void> {
@@ -218,7 +224,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     });
 
     for (const condition of parsedDocuments) {
-      validateRoleCondition(condition);
+      validateRoleCondition(condition, this.conditionValidationLimits);
     }
 
     return parsedDocuments;

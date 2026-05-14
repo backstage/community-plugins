@@ -22,8 +22,8 @@ import type {
 } from '@backstage-community/plugin-rbac-common';
 
 import {
-  configureConditionValidationLimits,
   DEFAULT_CONDITION_VALIDATION_LIMITS,
+  resolveConditionValidationLimits,
   validateRoleCondition,
 } from './condition-validation';
 
@@ -1097,7 +1097,7 @@ describe('condition-validation', () => {
     });
 
     it('should apply configured validation limits for criteria', () => {
-      configureConditionValidationLimits({
+      const limits = resolveConditionValidationLimits({
         ...DEFAULT_CONDITION_VALIDATION_LIMITS,
         maxCriteriaItems: 2,
       });
@@ -1128,25 +1128,23 @@ describe('condition-validation', () => {
         },
       };
 
-      expect(() => validateRoleCondition(condition)).toThrow(InputError);
-      expect(() => validateRoleCondition(condition)).toThrow(
+      expect(() => validateRoleCondition(condition, limits)).toThrow(
+        InputError,
+      );
+      expect(() => validateRoleCondition(condition, limits)).toThrow(
         `roleCondition.conditions.anyOf criteria supports at most 2 items`,
       );
-
-      configureConditionValidationLimits(DEFAULT_CONDITION_VALIDATION_LIMITS);
     });
 
     it('should fail when configured validation limits are invalid', () => {
       expect(() =>
-        configureConditionValidationLimits({ maxConditionDepth: 0 }),
+        resolveConditionValidationLimits({ maxConditionDepth: 0 }),
       ).toThrow(InputError);
       expect(() =>
-        configureConditionValidationLimits({ maxConditionDepth: 0 }),
+        resolveConditionValidationLimits({ maxConditionDepth: 0 }),
       ).toThrow(
         `'maxConditionDepth' must be a positive integer for conditional policy validation`,
       );
-
-      configureConditionValidationLimits(DEFAULT_CONDITION_VALIDATION_LIMITS);
     });
   });
 });

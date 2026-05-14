@@ -30,6 +30,7 @@ import {
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { YamlConditionalPoliciesFileWatcher } from './yaml-conditional-file-watcher';
+import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
 import {
@@ -241,6 +242,7 @@ describe('YamlConditionalFileWatcher', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       roleEventEmitterMock,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
     );
   }
 
@@ -259,6 +261,7 @@ describe('YamlConditionalFileWatcher', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       roleEventEmitterMock,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
       {
         maxBytes,
         maxDocuments,

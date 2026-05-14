@@ -63,6 +63,7 @@ import {
   extendablePluginIdProviderMock,
 } from '../../__fixtures__/mock-utils';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 
 jest.setTimeout(60000);
 
@@ -72,7 +73,11 @@ jest.mock('@backstage/plugin-auth-node', () => ({
 
 const validateRoleConditionMock = jest.fn().mockImplementation();
 jest.mock('../validation/condition-validation', () => {
+  const actual = jest.requireActual(
+    '../validation/condition-validation',
+  ) as typeof import('../validation/condition-validation');
   return {
+    ...actual,
     validateRoleCondition: jest
       .fn()
       .mockImplementation(
@@ -259,6 +264,7 @@ describe('REST policies API', () => {
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
       undefined,
     );
     const router = await server.serve();
@@ -3971,6 +3977,7 @@ describe('REST policies API', () => {
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
         extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+        DEFAULT_CONDITION_VALIDATION_LIMITS,
         [providerMock],
       );
       const router = await server.serve();

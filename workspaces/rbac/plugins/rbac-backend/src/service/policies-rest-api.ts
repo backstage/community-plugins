@@ -65,7 +65,10 @@ import {
   processConditionMapping,
   matches,
 } from '../helper';
-import { validateRoleCondition } from '../validation/condition-validation';
+import {
+  type ConditionValidationLimits,
+  validateRoleCondition,
+} from '../validation/condition-validation';
 import {
   validateEntityReference,
   validatePolicy,
@@ -142,6 +145,7 @@ export class PoliciesServer {
     private readonly roleMetadata: RoleMetadataStorage,
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly pluginIdProvider: ExtendablePluginIdProvider,
+    private readonly conditionValidationLimits: ConditionValidationLimits,
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
@@ -863,7 +867,10 @@ export class PoliciesServer {
 
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
-        validateRoleCondition(roleConditionPolicy);
+        validateRoleCondition(
+          roleConditionPolicy,
+          this.conditionValidationLimits,
+        );
 
         const conditionToCreate = await processConditionMapping(
           roleConditionPolicy,
@@ -1016,7 +1023,10 @@ export class PoliciesServer {
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
 
-        validateRoleCondition(roleConditionPolicy);
+        validateRoleCondition(
+          roleConditionPolicy,
+          this.conditionValidationLimits,
+        );
 
         const conditionToUpdate = await processConditionMapping(
           roleConditionPolicy,

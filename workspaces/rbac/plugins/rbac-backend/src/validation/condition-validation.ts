@@ -40,16 +40,36 @@ export const DEFAULT_CONDITION_VALIDATION_LIMITS: ConditionValidationLimits = {
   maxCriteriaItems: 64,
 };
 
-let conditionValidationLimits: ConditionValidationLimits = {
-  ...DEFAULT_CONDITION_VALIDATION_LIMITS,
+/** Minimal config surface for reading optional validation limits. */
+export type ConditionValidationLimitsConfig = {
+  getOptionalNumber(key: string): number | undefined;
 };
 
-export function configureConditionValidationLimits(
-  limits: Partial<ConditionValidationLimits>,
-): void {
-  const nextLimits = {
-    ...conditionValidationLimits,
-    ...limits,
+export function readConditionValidationLimitsFromConfig(
+  config: ConditionValidationLimitsConfig,
+): Partial<ConditionValidationLimits> {
+  const baseKey = 'permission.rbac.validation.conditionalPolicies';
+  const limitKeys: (keyof ConditionValidationLimits)[] = [
+    'maxConditionDepth',
+    'maxConditionNodeCount',
+    'maxCriteriaItems',
+  ];
+  const limits: Partial<ConditionValidationLimits> = {};
+  for (const key of limitKeys) {
+    const value = config.getOptionalNumber(`${baseKey}.${key}`);
+    if (value !== undefined) {
+      limits[key] = value;
+    }
+  }
+  return limits;
+}
+
+export function resolveConditionValidationLimits(
+  partial: Partial<ConditionValidationLimits> = {},
+): ConditionValidationLimits {
+  const nextLimits: ConditionValidationLimits = {
+    ...DEFAULT_CONDITION_VALIDATION_LIMITS,
+    ...partial,
   };
 
   assertPositiveInteger(nextLimits.maxConditionDepth, 'maxConditionDepth');
@@ -59,11 +79,7 @@ export function configureConditionValidationLimits(
   );
   assertPositiveInteger(nextLimits.maxCriteriaItems, 'maxCriteriaItems');
 
-  conditionValidationLimits = nextLimits;
-}
-
-function getConditionValidationLimits(): ConditionValidationLimits {
-  return conditionValidationLimits;
+  return nextLimits;
 }
 
 function assertPositiveInteger(value: number, fieldName: string): void {
@@ -76,8 +92,9 @@ function assertPositiveInteger(value: number, fieldName: string): void {
 
 export function validateRoleCondition(
   condition: RoleConditionalPolicyDecision<PermissionAction>,
-) {
-  const limits = getConditionValidationLimits();
+  limits?: Partial<ConditionValidationLimits>,
+): void {
+  const resolvedLimits = resolveConditionValidationLimits(limits ?? {});
   if (!condition.roleEntityRef) {
     throw new InputError(
       `'roleEntityRef' must be specified in the role condition`,
@@ -148,7 +165,7 @@ export function validateRoleCondition(
       'roleCondition.conditions',
       1,
       { nodeCount: 0 },
-      limits,
+      resolvedLimits,
     );
   }
 }

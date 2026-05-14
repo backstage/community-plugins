@@ -52,6 +52,7 @@ import request from 'supertest';
 import { RoleMetadataDao } from '../database/role-metadata';
 import { RBACFilters } from '../permissions/rules';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 
 jest.setTimeout(60000);
 
@@ -61,7 +62,11 @@ jest.mock('@backstage/plugin-auth-node', () => ({
 
 const validateRoleConditionMock = jest.fn().mockImplementation();
 jest.mock('../validation/condition-validation', () => {
+  const actual = jest.requireActual(
+    '../validation/condition-validation',
+  ) as typeof import('../validation/condition-validation');
   return {
+    ...actual,
     validateRoleCondition: jest
       .fn()
       .mockImplementation(
@@ -315,6 +320,7 @@ describe('REST policies api with conditions', () => {
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
       undefined,
     );
 

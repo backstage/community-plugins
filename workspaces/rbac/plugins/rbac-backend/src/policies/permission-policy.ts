@@ -62,7 +62,8 @@ import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import {
   ConditionValidationLimits,
-  configureConditionValidationLimits,
+  readConditionValidationLimitsFromConfig,
+  resolveConditionValidationLimits,
 } from '../validation/condition-validation';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
@@ -79,6 +80,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
     auth: AuthService,
+    conditionValidationLimits?: ConditionValidationLimits,
   ): Promise<RBACPermissionPolicy> {
     const superUserList: string[] = [];
     const adminUsers = configApi.getOptionalConfigArray(
@@ -100,9 +102,11 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       'permission.rbac.conditionalPoliciesFile',
     );
 
-    const conditionValidationLimits =
-      RBACPermissionPolicy.readConditionValidationLimits(configApi);
-    configureConditionValidationLimits(conditionValidationLimits);
+    const resolvedConditionValidationLimits =
+      conditionValidationLimits ??
+      resolveConditionValidationLimits(
+        readConditionValidationLimitsFromConfig(configApi),
+      );
 
     const conditionalFileLimits =
       RBACPermissionPolicy.readConditionalFileLimits(configApi);
@@ -157,6 +161,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       pluginMetadataCollector,
       roleMetadataStorage,
       enforcerDelegate,
+      resolvedConditionValidationLimits,
       conditionalFileLimits,
     );
     await conditionalFile.initialize();
@@ -396,25 +401,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       return result;
     }
     return undefined;
-  }
-
-  private static readConditionValidationLimits(
-    configApi: ConfigApi,
-  ): Partial<ConditionValidationLimits> {
-    const baseKey = 'permission.rbac.validation.conditionalPolicies';
-    const limitKeys: (keyof ConditionValidationLimits)[] = [
-      'maxConditionDepth',
-      'maxConditionNodeCount',
-      'maxCriteriaItems',
-    ];
-    const limits: Partial<ConditionValidationLimits> = {};
-    for (const key of limitKeys) {
-      const value = configApi.getOptionalNumber(`${baseKey}.${key}`);
-      if (value !== undefined) {
-        limits[key] = value;
-      }
-    }
-    return limits;
   }
 
   private static readConditionalFileLimits(
