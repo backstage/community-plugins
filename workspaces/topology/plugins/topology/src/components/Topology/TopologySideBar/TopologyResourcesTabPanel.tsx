@@ -54,8 +54,7 @@ const TranslatedStatus = ({
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-      <Status status={status} iconOnly />
-      <span>{translateFn(status)}</span>
+      <Status status={status} displayStatusText={translateFn(status)} />
     </div>
   );
 };
