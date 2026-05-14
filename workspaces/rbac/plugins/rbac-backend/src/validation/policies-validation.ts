@@ -30,10 +30,11 @@ import {
 import { RoleMetadataDao } from '../database/role-metadata';
 
 /**
- * TypeORM adapter wraps every value in quotes before passing it to Casbin CSV
- * parser. Unescaped embedded quotes break parsing in that path.
+ * Returns whether `permission` contains any double-quote character (`"`).
+ * The RBAC persistence path does not support `"` in this field; any occurrence is
+ * rejected (there is no separate handling for escaped quotes).
  */
-function permissionContainsUnescapedQuote(permission: string): boolean {
+function permissionContainsDoubleQuote(permission: string): boolean {
   return permission.includes('"');
 }
 
@@ -78,7 +79,7 @@ export function validatePolicy(policy: RoleBasedPolicy): Error | undefined {
     return new Error(`'permission' field must not be empty`);
   }
 
-  if (permissionContainsUnescapedQuote(policy.permission)) {
+  if (permissionContainsDoubleQuote(policy.permission)) {
     return new InputError(
       `'permission' contains double quotes (") which are not supported by the RBAC policy persistence format.`,
     );
