@@ -38,7 +38,7 @@ import {
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 import { JsonObject } from '@backstage/types';
-import { NotFoundError } from '@backstage/errors';
+import { InputError, NotFoundError } from '@backstage/errors';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -294,7 +294,7 @@ describe('YamlConditionalFileWatcher', () => {
       {
         event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
         fail: {
-          error: new Error(
+          error: new InputError(
             `'roleEntityRef' must be specified in the role condition`,
           ),
         },
@@ -314,7 +314,7 @@ describe('YamlConditionalFileWatcher', () => {
       {
         event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
         fail: {
-          error: new Error(
+          error: new InputError(
             'conditional policies file exceeds maximum size of 1048576 bytes',
           ),
         },
@@ -350,7 +350,7 @@ describe('YamlConditionalFileWatcher', () => {
       {
         event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
         fail: {
-          error: new Error(
+          error: new InputError(
             'conditional policies file exceeds maximum of 256 YAML documents',
           ),
         },
@@ -386,7 +386,7 @@ describe('YamlConditionalFileWatcher', () => {
       {
         event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
         fail: {
-          error: new Error(
+          error: new InputError(
             'conditional policies file exceeds maximum of 1 YAML documents',
           ),
         },
