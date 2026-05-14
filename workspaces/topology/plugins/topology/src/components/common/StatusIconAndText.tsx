@@ -26,16 +26,18 @@ const DASH = '-';
 
 const useStyles = makeStyles({
   iconAndText: {
-    alignItems: 'baseline',
+    alignItems: 'center',
     display: 'flex',
     fontWeight: 400,
     fontSize: '14px',
+    '& svg': {
+      top: 0,
+    },
   },
 
   flexChild: {
-    flex: ' 0 0 auto',
+    flex: '0 0 auto',
     position: 'relative',
-    top: '0.125em',
   },
 });
 
