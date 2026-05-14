@@ -39,7 +39,11 @@ jobs:
       - name: Find changed workspaces with codecov enabled
         id: filter
         run: |
-          CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | { grep '^workspaces/' || true; } | cut -d/ -f2 | sort -u)
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            CHANGED=$(git diff --name-only HEAD~1 HEAD | { grep '^workspaces/' || true; } | cut -d/ -f2 | sort -u)
+          else
+            CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | { grep '^workspaces/' || true; } | cut -d/ -f2 | sort -u)
+          fi
           CODECOV_WORKSPACES="[]"
           for ws in $CHANGED; do
             [ -z "$ws" ] && continue
@@ -68,6 +72,30 @@ jobs:
       CI: true
       NODE_OPTIONS: --max-old-space-size=8192
 
+    services:
+      postgres18:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432/tcp
+      postgres14:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432/tcp
+
     steps:
       - name: Checkout
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
@@ -78,7 +106,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
-          node-version: 24
+          node-version: 22.x
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
@@ -86,6 +114,7 @@ jobs:
 
       - name: Run tests with coverage
         # TODO: Remove the Jest 30 detection once all workspaces have migrated to Jest 30
+        # NOTE: This block is duplicated from ci.yml — update both if changing
         run: |
           if node -e "const p = require('./package.json'); process.exit(p.devDependencies?.jest ? 0 : 1)"; then
             echo "Using Jest 30"
@@ -96,9 +125,10 @@ jobs:
           fi
         env:
           BACKSTAGE_TEST_DISABLE_DOCKER: 1
+          BACKSTAGE_TEST_DATABASE_POSTGRES18_CONNECTION_STRING: postgresql://postgres:postgres@localhost:${{ job.services.postgres18.ports[5432] }}
+          BACKSTAGE_TEST_DATABASE_POSTGRES14_CONNECTION_STRING: postgresql://postgres:postgres@localhost:${{ job.services.postgres14.ports[5432] }}
 
       - name: Upload coverage to Codecov
-        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           flags: ${{ matrix.workspace }}
