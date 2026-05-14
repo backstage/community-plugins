@@ -228,7 +228,7 @@ Recent releases tighten validation so malformed or unsafe policy data cannot poi
 - **Plugin ID registration** (`POST`/`DELETE` `/plugins/id`) enforces sensible bounds (list size, per-ID length, no duplicates). Very large registrations may need to be split into multiple requests.
 - **CSV policy files** (`policies-csv-file`) are parsed **line by line**. Lines that are syntactically invalid for CSV parsing are **skipped with a warning** so the rest of the file can still be applied; fix or remove bad lines in the file for a fully consistent load. Semantic validation (invalid entity refs, duplicates, source mismatches) continues to skip individual rows with warnings, as before.
 
-For conditional policies and YAML file size limits, use the optional `permission.rbac.validation.*` settings in the section below.
+- **Conditional policies**: `permissionMapping` must list **distinct** Backstage permission actions only (no duplicates), with at most one entry per supported action (`create`, `read`, `update`, `delete`, `use`). Criteria trees and YAML conditional files still support optional `permission.rbac.validation.*` limits described below.
 
 ### Configuring conditional policies via file
 
@@ -304,7 +304,6 @@ permission:
   rbac:
     validation:
       conditionalPolicies:
-        maxPermissionMappingItems: 64
         maxConditionDepth: 12
         maxConditionNodeCount: 256
         maxCriteriaItems: 64
@@ -315,7 +314,6 @@ permission:
 
 Field descriptions:
 
-- `permission.rbac.validation.conditionalPolicies.maxPermissionMappingItems`: Maximum number of actions in `permissionMapping`.
 - `permission.rbac.validation.conditionalPolicies.maxConditionDepth`: Maximum nesting depth in a conditional criteria tree.
 - `permission.rbac.validation.conditionalPolicies.maxConditionNodeCount`: Maximum number of criteria nodes in a conditional criteria tree.
 - `permission.rbac.validation.conditionalPolicies.maxCriteriaItems`: Maximum number of entries allowed per `allOf`/`anyOf`.

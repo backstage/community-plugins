@@ -992,13 +992,13 @@ describe('condition-validation', () => {
   });
 
   describe('validation limits', () => {
-    it('should fail when permission mapping exceeds max items', () => {
+    it('should fail when permission mapping has duplicate actions', () => {
       const condition: any = {
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
         roleEntityRef: 'role:default/test',
         result: AuthorizeResult.CONDITIONAL,
-        permissionMapping: Array.from({ length: 65 }, () => 'read'),
+        permissionMapping: ['read', 'read'],
         conditions: {
           rule: 'IS_ENTITY_OWNER',
           resourceType: 'catalog-entity',
@@ -1008,8 +1008,45 @@ describe('condition-validation', () => {
 
       expect(() => validateRoleCondition(condition)).toThrow(InputError);
       expect(() => validateRoleCondition(condition)).toThrow(
-        `'permissionMapping' can have at most 64 items`,
+        `'permissionMapping' must not contain duplicate permission action 'read'`,
       );
+    });
+
+    it('should fail when permission mapping exceeds distinct action count', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: Array.from({ length: 6 }, () => 'read'),
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' can have at most 5 items (one entry per distinct permission action)`,
+      );
+    });
+
+    it('should accept permission mapping with all distinct supported actions', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['create', 'read', 'update', 'delete', 'use'],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).not.toThrow();
     });
 
     it('should fail when criteria depth exceeds max value', () => {
@@ -1059,27 +1096,41 @@ describe('condition-validation', () => {
       );
     });
 
-    it('should apply configured validation limits', () => {
+    it('should apply configured validation limits for criteria', () => {
       configureConditionValidationLimits({
         ...DEFAULT_CONDITION_VALIDATION_LIMITS,
-        maxPermissionMappingItems: 2,
+        maxCriteriaItems: 2,
       });
       const condition: any = {
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
         roleEntityRef: 'role:default/test',
         result: AuthorizeResult.CONDITIONAL,
-        permissionMapping: ['read', 'update', 'delete'],
+        permissionMapping: ['read'],
         conditions: {
-          rule: 'IS_ENTITY_OWNER',
-          resourceType: 'catalog-entity',
-          params: { claims: ['group:default/team-a'] },
+          anyOf: [
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['group:default/team-a'] },
+            },
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['group:default/team-b'] },
+            },
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['group:default/team-c'] },
+            },
+          ],
         },
       };
 
       expect(() => validateRoleCondition(condition)).toThrow(InputError);
       expect(() => validateRoleCondition(condition)).toThrow(
-        `'permissionMapping' can have at most 2 items`,
+        `roleCondition.conditions.anyOf criteria supports at most 2 items`,
       );
 
       configureConditionValidationLimits(DEFAULT_CONDITION_VALIDATION_LIMITS);

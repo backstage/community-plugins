@@ -403,7 +403,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   ): Partial<ConditionValidationLimits> {
     const baseKey = 'permission.rbac.validation.conditionalPolicies';
     const limitKeys: (keyof ConditionValidationLimits)[] = [
-      'maxPermissionMappingItems',
       'maxConditionDepth',
       'maxConditionNodeCount',
       'maxCriteriaItems',

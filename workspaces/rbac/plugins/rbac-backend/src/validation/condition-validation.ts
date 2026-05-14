@@ -20,22 +20,21 @@ import {
 } from '@backstage/plugin-permission-common';
 import { InputError } from '@backstage/errors';
 
-import type {
-  PermissionAction,
-  RoleConditionalPolicyDecision,
+import {
+  PermissionActionValues,
+  type PermissionAction,
+  type RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
 import { isPermissionAction } from '../helper';
 
 export type ConditionValidationLimits = {
-  maxPermissionMappingItems: number;
   maxConditionDepth: number;
   maxConditionNodeCount: number;
   maxCriteriaItems: number;
 };
 
 export const DEFAULT_CONDITION_VALIDATION_LIMITS: ConditionValidationLimits = {
-  maxPermissionMappingItems: 64,
   maxConditionDepth: 12,
   maxConditionNodeCount: 256,
   maxCriteriaItems: 64,
@@ -53,10 +52,6 @@ export function configureConditionValidationLimits(
     ...limits,
   };
 
-  assertPositiveInteger(
-    nextLimits.maxPermissionMappingItems,
-    'maxPermissionMappingItems',
-  );
   assertPositiveInteger(nextLimits.maxConditionDepth, 'maxConditionDepth');
   assertPositiveInteger(
     nextLimits.maxConditionNodeCount,
@@ -108,9 +103,10 @@ export function validateRoleCondition(
       `'permissionMapping' must be non empty array in the role condition`,
     );
   }
-  if (condition.permissionMapping.length > limits.maxPermissionMappingItems) {
+  const maxDistinctPermissionActions = PermissionActionValues.length;
+  if (condition.permissionMapping.length > maxDistinctPermissionActions) {
     throw new InputError(
-      `'permissionMapping' can have at most ${limits.maxPermissionMappingItems} items`,
+      `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
     );
   }
   const nonActionValue = condition.permissionMapping.find(
@@ -120,6 +116,16 @@ export function validateRoleCondition(
     throw new InputError(
       `'permissionMapping' array contains non action value: '${nonActionValue}'`,
     );
+  }
+
+  const seenActions = new Set<PermissionAction>();
+  for (const action of condition.permissionMapping) {
+    if (seenActions.has(action)) {
+      throw new InputError(
+        `'permissionMapping' must not contain duplicate permission action '${action}'`,
+      );
+    }
+    seenActions.add(action);
   }
 
   if (

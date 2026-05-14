@@ -103,10 +103,6 @@ export interface Config {
          */
         conditionalPolicies?: {
           /**
-           * Maximum number of permission actions in `permissionMapping`.
-           */
-          maxPermissionMappingItems?: number;
-          /**
            * Maximum nesting depth for conditional criteria trees.
            */
           maxConditionDepth?: number;

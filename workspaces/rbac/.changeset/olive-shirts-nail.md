@@ -16,10 +16,10 @@ Compatibility notes:
 
 - Requests/config entries using `permission` values with embedded `"` are now rejected.
 - Conditional policy payloads and conditional YAML ingestion now enforce limits.
+- Conditional `permissionMapping` must list distinct Backstage permission actions (no duplicates); at most one entry per supported action (`create`, `read`, `update`, `delete`, `use`).
 - Plugin ID registration payloads now enforce count/length/duplicate checks.
 - For larger existing payloads, limits are configurable via:
 
-- `permission.rbac.validation.conditionalPolicies.maxPermissionMappingItems`
 - `permission.rbac.validation.conditionalPolicies.maxConditionDepth`
 - `permission.rbac.validation.conditionalPolicies.maxConditionNodeCount`
 - `permission.rbac.validation.conditionalPolicies.maxCriteriaItems`
