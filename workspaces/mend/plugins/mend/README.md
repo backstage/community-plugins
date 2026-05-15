@@ -187,13 +187,13 @@ For detailed installation instructions, refer to the [Portal documentation](http
 5. **(Optional)** Configure the **Permission Control** section as needed to filter Mend projects using ids
 6. Save your configuration by clicking the **Save** button
 7. **Start** the plugin and wait for the confirmation message indicating successful installation.
-8. To start the Catalog annotation module for Mend, navigate to the _Plugins_ section.
+8. To start the Catalog backend module (Mend Entity Processor), navigate to the _Plugins_ section.
 9. Select the **Catalog Plugin** to open the Catalog configuration page.
 10. Click the **Modules** tab.
 11. Search for the `@backstage-community/plugin-catalog-backend-module-mend-entity-processor` card and select **Manage module**.
 12. This plugin does not require any additional configuration. To enable it, click the **Start** button.
 13. A pulsing message saying _Applying new configuration…_ will appear in the top-right corner while the settings are being saved. Once complete, the message will update to _New configuration applied successfully._ Click **Reload** to apply the updated configuration.
-14. The Mend Plugin with Catalog Annotation Processor is now installed and running successfully.
+14. The Mend Plugin with the Catalog backend module (Mend Entity Processor) is now installed and running successfully.
 
 Once completed, you will be able to see the Mend plugin on the sidebar navigation.
 
