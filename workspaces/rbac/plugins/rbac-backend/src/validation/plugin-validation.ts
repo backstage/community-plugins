@@ -19,31 +19,37 @@ import { InputError } from '@backstage/errors';
 const MAX_PLUGIN_IDS = 100;
 const MAX_PLUGIN_ID_LENGTH = 64;
 
-export function validatePermissionDependentPlugin(
-  plugin: PermissionDependentPluginList,
-) {
-  if (!plugin.ids) {
+export function validatePermissionDependentPlugin(plugin: unknown): void {
+  if (!plugin || typeof plugin !== 'object') {
+    throw new InputError(
+      `'ids' must be specified in the permission dependent plugin`,
+    );
+  }
+
+  const list = plugin as PermissionDependentPluginList;
+
+  if (!list.ids) {
     throw new InputError(
       `'ids' must be specified in the permission dependent plugin`,
     );
   }
   if (
-    !Array.isArray(plugin.ids) ||
-    !plugin.ids.every(id => typeof id === 'string')
+    !Array.isArray(list.ids) ||
+    !list.ids.every(id => typeof id === 'string')
   ) {
     throw new InputError(`'ids' must be an array of string plugin ID values`);
   }
-  if (plugin.ids.length === 0) {
+  if (list.ids.length === 0) {
     throw new InputError(`'ids' must contain at least one plugin ID`);
   }
-  if (plugin.ids.length > MAX_PLUGIN_IDS) {
+  if (list.ids.length > MAX_PLUGIN_IDS) {
     throw new InputError(
       `'ids' can include at most ${MAX_PLUGIN_IDS} plugin IDs`,
     );
   }
 
   const uniqueIds = new Set<string>();
-  for (const id of plugin.ids) {
+  for (const id of list.ids) {
     if (id.length === 0 || id.length > MAX_PLUGIN_ID_LENGTH) {
       throw new InputError(
         `plugin ID '${id}' must be between 1 and ${MAX_PLUGIN_ID_LENGTH} characters`,

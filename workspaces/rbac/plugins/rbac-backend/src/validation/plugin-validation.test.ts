@@ -30,6 +30,27 @@ describe('validatePermissionDependentPlugin', () => {
     );
   });
 
+  it('throws if plugin body is undefined', () => {
+    expect(() => validatePermissionDependentPlugin(undefined)).toThrow(
+      `'ids' must be specified in the permission dependent plugin`,
+    );
+  });
+
+  it('throws if plugin body is null', () => {
+    expect(() => validatePermissionDependentPlugin(null)).toThrow(
+      `'ids' must be specified in the permission dependent plugin`,
+    );
+  });
+
+  it('throws if plugin body is not an object', () => {
+    expect(() => validatePermissionDependentPlugin('not-json')).toThrow(
+      `'ids' must be specified in the permission dependent plugin`,
+    );
+    expect(() => validatePermissionDependentPlugin(42)).toThrow(
+      `'ids' must be specified in the permission dependent plugin`,
+    );
+  });
+
   it('throws if ids is not an array', () => {
     expect(() =>
       validatePermissionDependentPlugin({ ids: 'plugin-a' } as any),
