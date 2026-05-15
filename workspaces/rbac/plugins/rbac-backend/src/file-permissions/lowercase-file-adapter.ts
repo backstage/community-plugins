@@ -65,8 +65,8 @@ export class LowercaseFileAdapter extends FileAdapter {
         handler(lowercasedLine, model);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        this.logger?.warn(
-          `Skipping invalid policy line ${lineNumber} in ${this.filePath}: ${message}; line=${trimmed.slice(
+        this.logger?.debug(
+          `Skipping invalid policy line ${lineNumber} in ${this.filePath} while loading Casbin model: ${message}; line=${trimmed.slice(
             0,
             120,
           )}`,
