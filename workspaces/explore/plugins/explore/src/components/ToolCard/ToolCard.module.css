@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-@layer components {
-  .media {
-    height: 128px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
+.media {
+  height: 128px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
-  .mediaContain {
-    background-size: contain;
-  }
+.mediaContain {
+  background-size: contain;
+}
 
-  .titleRow {
-    display: flex;
-    align-items: center;
-    gap: var(--bui-space-2);
-    flex-wrap: wrap;
-  }
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--bui-space-2);
+  flex-wrap: wrap;
+}
 
-  .lifecycle {
-    text-transform: lowercase;
-  }
+.lifecycle {
+  text-transform: lowercase;
+}
 
-  .tags {
-    margin-top: var(--bui-space-2);
-  }
+.tags {
+  margin-top: var(--bui-space-2);
 }

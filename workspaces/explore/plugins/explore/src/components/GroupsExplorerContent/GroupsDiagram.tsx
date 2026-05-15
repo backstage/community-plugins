@@ -43,7 +43,6 @@ import styles from './GroupsDiagram.module.css';
 function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
   const nodeWidth = 180;
   const nodeHeight = 60;
-  const borderRadius = 4;
   const catalogEntityRoute = useRouteRef(entityRouteRef);
 
   if (props.node.id === 'root') {
@@ -52,7 +51,6 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
         <rect
           width={nodeWidth}
           height={nodeHeight}
-          rx={borderRadius}
           className={styles.organizationNode}
         />
         <title>{props.node.name}</title>
@@ -79,7 +77,6 @@ function RenderNode(props: DependencyGraphTypes.RenderNodeProps<any>) {
       <rect
         width={nodeWidth}
         height={nodeHeight}
-        rx={borderRadius}
         className={styles.groupNode}
       />
       <title>

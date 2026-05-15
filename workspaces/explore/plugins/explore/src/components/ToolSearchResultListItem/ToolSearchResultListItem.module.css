@@ -14,8 +14,31 @@
  * limitations under the License.
  */
 
-.root {
-  height: 100%;
-  max-height: 100%;
-  min-height: 0;
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bui-space-2);
+  width: 100%;
+}
+
+.listItemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: var(--bui-space-1);
+}
+
+.flexContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+  gap: var(--bui-space-2);
+}
+
+.itemText {
+  width: 100%;
+  word-break: break-word;
+  margin-bottom: var(--bui-space-2);
 }
