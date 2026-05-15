@@ -21,6 +21,7 @@ import type {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { parseEntityRef } from '@backstage/catalog-model';
 import {
   ConflictError,
   InputError,
@@ -1272,7 +1273,8 @@ export class PoliciesServer {
       );
 
       if (!metadata) {
-        if (policy.entityReference?.startsWith('role:default')) {
+        const { kind } = parseEntityRef(policy.entityReference!);
+        if (kind === 'role') {
           throw new NotFoundError(
             `Corresponding role ${policy.entityReference} was not found`,
           );

@@ -627,6 +627,42 @@ describe('REST policies API', () => {
       });
     });
 
+    it('should fail to create policy for missing role outside default namespace', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:team/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .post('/policies')
+        .send([
+          {
+            entityReference: 'role:team/missing-role',
+            permission: 'policy-entity',
+            policy: 'delete',
+            effect: 'deny',
+          },
+        ]);
+
+      expect(result.statusCode).toBe(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:team/missing-role was not found`,
+      });
+    });
+
     it('should fail to create permission policy - duplication in req body', async () => {
       const result = await request(app)
         .post('/policies')
@@ -1334,6 +1370,50 @@ describe('REST policies API', () => {
       expect(result.body.error).toEqual({
         name: 'NotFoundError',
         message: `Corresponding role role:default/missing-role was not found`,
+      });
+    });
+
+    it('should fail to update policy for missing role outside default namespace', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:team/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .put('/policies/role/team/missing-role')
+        .send({
+          oldPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'read',
+              effect: 'allow',
+            },
+          ],
+          newPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'delete',
+              effect: 'allow',
+            },
+          ],
+        });
+
+      expect(result.statusCode).toEqual(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:team/missing-role was not found`,
       });
     });
 
