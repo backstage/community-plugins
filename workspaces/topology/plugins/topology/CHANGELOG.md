@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.13.0
+
+### Minor Changes
+
+- edaf521: Backstage version bump to v1.50.4
+
 ## 2.12.3
 
 ### Patch Changes
