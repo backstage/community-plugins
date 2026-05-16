@@ -13,19 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import {
-  jfrogArtifactoryEntityContent,
-  jfrogArtifactoryApiExtension,
-} from './alpha/index';
-import { rootRouteRef } from './routes';
-
-/** @alpha */
-export default createFrontendPlugin({
-  pluginId: 'jfrog-artifactory',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
-  extensions: [jfrogArtifactoryApiExtension, jfrogArtifactoryEntityContent],
-});
+export * from './apis';
+export * from './entityContent';

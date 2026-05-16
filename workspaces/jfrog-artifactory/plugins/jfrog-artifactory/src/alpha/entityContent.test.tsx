@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import {
-  jfrogArtifactoryEntityContent,
-  jfrogArtifactoryApiExtension,
-} from './alpha/index';
-import { rootRouteRef } from './routes';
+import alphaPlugin from '../alpha';
 
-/** @alpha */
-export default createFrontendPlugin({
-  pluginId: 'jfrog-artifactory',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
-  extensions: [jfrogArtifactoryApiExtension, jfrogArtifactoryEntityContent],
+describe('Alpha plugin', () => {
+  it('should have correct plugin metadata', () => {
+    expect(alphaPlugin.pluginId).toBe('jfrog-artifactory');
+    expect(alphaPlugin.routes.root).toBeDefined();
+  });
+
+  it('should export the entity content extension', () => {
+    expect(
+      alphaPlugin.getExtension('entity-content:jfrog-artifactory/dashboard'),
+    ).toBeDefined();
+  });
+
+  it('should export the API extension', () => {
+    expect(alphaPlugin.getExtension('api:jfrog-artifactory')).toBeDefined();
+  });
 });

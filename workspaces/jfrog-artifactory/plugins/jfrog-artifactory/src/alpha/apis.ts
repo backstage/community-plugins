@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
-  jfrogArtifactoryEntityContent,
-  jfrogArtifactoryApiExtension,
-} from './alpha/index';
-import { rootRouteRef } from './routes';
+  ApiBlueprint,
+  configApiRef,
+  discoveryApiRef,
+  identityApiRef,
+} from '@backstage/frontend-plugin-api';
+import { JfrogArtifactoryApiClient, jfrogArtifactoryApiRef } from '../api';
 
 /** @alpha */
-export default createFrontendPlugin({
-  pluginId: 'jfrog-artifactory',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
-  extensions: [jfrogArtifactoryApiExtension, jfrogArtifactoryEntityContent],
+export const jfrogArtifactoryApiExtension = ApiBlueprint.make({
+  params: defineParams =>
+    defineParams({
+      api: jfrogArtifactoryApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        configApi: configApiRef,
+        identityApi: identityApiRef,
+      },
+      factory: ({ discoveryApi, configApi, identityApi }) =>
+        new JfrogArtifactoryApiClient({ discoveryApi, configApi, identityApi }),
+    }),
 });
