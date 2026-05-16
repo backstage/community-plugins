@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton-react
 
+## 0.6.0
+
+### Minor Changes
+
+- 91220cb: Backstage version bump to v1.50.4
+
 ## 0.5.0
 
 ### Minor Changes

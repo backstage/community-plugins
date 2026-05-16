@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tekton
 
+## 3.38.0
+
+### Minor Changes
+
+- 91220cb: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [91220cb]
+  - @backstage-community/plugin-tekton-common@1.21.0
+  - @backstage-community/plugin-tekton-react@0.6.0
+
 ## 3.37.0
 
 ### Minor Changes
