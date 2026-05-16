@@ -17,7 +17,7 @@ import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-
 import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
 import catalogPlugin from '@backstage/plugin-catalog-backend';
 import type { EntityProvider } from '@backstage/plugin-catalog-node';
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 
 import { catalogModuleOCMEntityProvider } from './module';
 

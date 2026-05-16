@@ -77,12 +77,19 @@ export const ProductInsights = ({
     async function onSelectAsync(
       product: Product,
       duration: Duration,
+      customDateRange?: { start: string; end: string },
     ): Promise<Entity> {
       return client.getProductInsights({
         group: group,
         project: project,
         product: product.kind,
-        intervals: intervalsOf(duration, lastCompleteBillingDate),
+        intervals: intervalsOf(
+          duration,
+          lastCompleteBillingDate,
+          2,
+          customDateRange,
+          true, // Use comparison mode for ProductInsights to split periods
+        ),
       });
     },
     [client, group, project, lastCompleteBillingDate],

@@ -25,16 +25,18 @@ import { formatPercent, formatCurrency } from '../../utils/formatters';
 import { indefiniteArticleOf } from '../../utils/grammar';
 import { useConfig, useCurrency } from '../../hooks';
 import { notEmpty } from '../../utils/assert';
+import { DateTime } from 'luxon';
 
 /** @public */
 export type CostGrowthProps = {
   change: ChangeStatistic;
   duration: Duration;
+  customDateRange?: { start: string; end: string };
 };
 
 /** @public */
 export const CostGrowth = (props: CostGrowthProps) => {
-  const { change, duration } = props;
+  const { change, duration, customDateRange } = props;
 
   const styles = useStyles();
   const { engineerCost, engineerThreshold } = useConfig();
@@ -44,7 +46,19 @@ export const CostGrowth = (props: CostGrowthProps) => {
   const amount = Math.abs(change.amount);
   const ratio = Math.abs(change.ratio ?? NaN);
 
-  const rate = rateOf(engineerCost, duration);
+  // Calculate customDays if we have a custom date range
+  // For custom ranges, we use floor division to get the first period length
+  // (the rate calculation uses the average period length)
+  let customDays: number | undefined;
+  if (duration === Duration.CUSTOM && customDateRange) {
+    const startDate = DateTime.fromISO(customDateRange.start);
+    const endDate = DateTime.fromISO(customDateRange.end);
+    const totalDays = Math.round(endDate.diff(startDate, 'days').days) + 1;
+    // Use floor division for consistent period calculation
+    customDays = Math.floor(totalDays / 2);
+  }
+
+  const rate = rateOf(engineerCost, duration, customDays);
   const engineers = amount / rate;
   const converted = amount / (currency.rate ?? rate);
 

@@ -19,7 +19,7 @@ import { createTranslationRef } from '@backstage/core-plugin-api/alpha';
  * Messages object containing all English translations.
  * This is the main source of truth for translations.
  */
-export const ArgoCDMessages = {
+export const argocdMessages = {
   appStatus: {
     appHealthStatus: {
       Healthy: 'Healthy',
@@ -193,6 +193,8 @@ export const ArgoCDMessages = {
     deploymentSummary: {
       tableTitle: 'Deployment Summary',
       columns: {
+        application: 'Application',
+        namespace: 'Namespace',
         instance: 'Instance',
         server: 'Server',
         revision: 'Revision',
@@ -210,5 +212,5 @@ export const ArgoCDMessages = {
  */
 export const argocdTranslationRef = createTranslationRef({
   id: 'plugin.argocd',
-  messages: ArgoCDMessages,
+  messages: argocdMessages,
 });

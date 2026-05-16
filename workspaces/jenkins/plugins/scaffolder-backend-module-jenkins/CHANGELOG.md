@@ -1,5 +1,57 @@
 # @backstage-community/plugin-scaffolder-backend-module-jenkins
 
+## 0.21.0
+
+### Minor Changes
+
+- 6e513d2: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [6e513d2]
+  - @backstage-community/plugin-jenkins-common@0.19.0
+
+## 0.20.0
+
+### Minor Changes
+
+- 54da0c1: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [54da0c1]
+  - @backstage-community/plugin-jenkins-common@0.18.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 5b10e9e: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [5b10e9e]
+  - @backstage-community/plugin-jenkins-common@0.17.0
+
+## 0.18.1
+
+### Patch Changes
+
+- fc25522: remove unused dependencies
+- Updated dependencies [fc25522]
+  - @backstage-community/plugin-jenkins-common@0.16.1
+
+## 0.18.0
+
+### Minor Changes
+
+- fea4a0b: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [fea4a0b]
+  - @backstage-community/plugin-jenkins-common@0.16.0
+
 ## 0.17.0
 
 ### Minor Changes
@@ -44,6 +96,10 @@
 ### Minor Changes
 
 - f5374b3: Backstage version bump to v1.43.2
+
+### Patch Changes
+
+- 172d01b: Fixed typos in `README` and code
 
 ## 0.12.0
 

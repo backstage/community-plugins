@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { nexusRepositoryManagerTranslationRef } from './ref';
 
+/**
+ * es translation for plugin.nexus-repository-manager.
+ * @public
+ */
 const nexusRepositoryManagerTranslationEs = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
-  full: true,
   messages: {
-    'table.title': 'Nexus Repository Manager: {{title}}',
+    'table.title': 'Administrador del repositorio de Nexus: {{title}}',
     'table.searchPlaceholder': 'Filtrar',
     'table.labelRowsSelect': 'Filas',
     'table.columns.version': 'Versión',
@@ -29,10 +33,10 @@ const nexusRepositoryManagerTranslationEs = createTranslationMessages({
     'table.columns.checksum': 'Suma de verificación',
     'table.columns.modified': 'Modificado',
     'table.columns.size': 'Tamaño',
-    'table.emptyValue': 'N/D',
-    'table.emptyContent.message': 'Aún no se han agregado datos,',
-    'table.emptyContent.linkText': 'aprende cómo agregar datos',
-    'entityContent.title': 'Artefactos de compilación',
+    'table.emptyValue': 'N/A',
+    'table.emptyContent.message': 'Aún no se agregaron datos,',
+    'table.emptyContent.linkText': 'aprenda a agregar datos',
+    'entityContent.title': 'Construir artefactos',
   },
 });
 

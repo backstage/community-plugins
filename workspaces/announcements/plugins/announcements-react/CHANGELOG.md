@@ -1,5 +1,75 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.25.0
+
+### Minor Changes
+
+- 510c863: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [510c863]
+  - @backstage-community/plugin-announcements-common@0.20.0
+
+## 0.24.0
+
+### Minor Changes
+
+- e0c2eb4: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [e0c2eb4]
+  - @backstage-community/plugin-announcements-common@0.19.0
+
+## 0.23.0
+
+### Minor Changes
+
+- 8403fca: Backstage version bump to v1.49.1. This release also includes migration from `AlertApi` to the new `ToastApi`.
+
+## 0.22.0
+
+### Minor Changes
+
+- 8b42b6b: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [8b42b6b]
+  - @backstage-community/plugin-announcements-common@0.18.0
+
+## 0.21.0
+
+### Minor Changes
+
+- 57c349e: `AnnouncementsOptions` has been dropped as an optional arg for the `useAnnouncements` hook in favor of handling state and dependencies internally.
+
+## 0.20.0
+
+### Minor Changes
+
+- 99b4b52: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 44a0337: Add translation support for error message when trying to create a category that already exists
+- 6f6d4c8: Add missing translation for "Send notification" in the announcement form
+- Updated dependencies [99b4b52]
+  - @backstage-community/plugin-announcements-common@0.17.0
+
+## 0.19.0
+
+### Minor Changes
+
+- c299df2: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- 14ea727: Lowercases announcement in the "Create Announcement" button label translation. This now matches category and tag buttons.
+- Updated dependencies [c299df2]
+  - @backstage-community/plugin-announcements-common@0.16.0
+
 ## 0.18.2
 
 ### Patch Changes

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import { ProgressColor } from '@backstage-community/plugin-manage-react';
 import { ManageTechInsightsMapTitle } from '../title';
 
-export function defaultGetPercentColor(percent: number): ProgressColor {
-  if (percent >= 100) return 'success';
-  else if (percent > 50) return 'warning';
-  return 'error';
+export function defaultGetPercentColor(percent: number): string {
+  if (percent >= 100) return 'var(--bui-fg-success)';
+  else if (percent > 50) return 'var(--bui-fg-warning)';
+  return 'var(--bui-fg-danger)';
 }
 
 export const defaultMapTitle: ManageTechInsightsMapTitle = check => ({

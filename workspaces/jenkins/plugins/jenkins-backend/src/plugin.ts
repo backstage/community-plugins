@@ -18,10 +18,13 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 
 import { DefaultJenkinsInfoProvider } from './service/jenkinsInfoProvider';
 import { JenkinsBuilder } from './service/JenkinsBuilder';
+import { jenkinsPermissions } from '@backstage-community/plugin-jenkins-common';
+import { createJenkinsActions } from './actions';
 
 /**
  * Jenkins backend plugin
@@ -35,23 +38,29 @@ export const jenkinsPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         permissions: coreServices.permissions,
+        permissionsRegistry: coreServices.permissionsRegistry,
         httpRouter: coreServices.httpRouter,
         config: coreServices.rootConfig,
         catalog: catalogServiceRef,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
         httpAuth: coreServices.httpAuth,
+        actionsRegistry: actionsRegistryServiceRef,
       },
       async init({
         logger,
         permissions,
+        permissionsRegistry,
         httpRouter,
         config,
         catalog,
         discovery,
         auth,
         httpAuth,
+        actionsRegistry,
       }) {
+        permissionsRegistry.addPermissions(jenkinsPermissions);
+
         const jenkinsInfoProvider = DefaultJenkinsInfoProvider.fromConfig({
           auth,
           httpAuth,
@@ -73,6 +82,12 @@ export const jenkinsPlugin = createBackendPlugin({
 
         const { router } = await builder.build();
         httpRouter.use(router);
+
+        createJenkinsActions({
+          actionsRegistry,
+          jenkinsInfoProvider,
+          permissions,
+        });
       },
     });
   },

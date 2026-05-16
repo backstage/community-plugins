@@ -18,7 +18,7 @@ import { SearchType } from '@backstage/plugin-search';
 import { SearchResult, SearchPagination } from '@backstage/plugin-search-react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { AnnouncementSearchResultListItem } from '@backstage-community/plugin-announcements';
-import RecordVoiceOverOutlined from '@material-ui/icons/RecordVoiceOverOutlined';
+import { RiMegaphoneLine } from '@remixicon/react';
 
 const SearchPage = () => {
   return (
@@ -34,7 +34,7 @@ const SearchPage = () => {
                 {
                   value: 'announcements',
                   name: 'Announcements',
-                  icon: <RecordVoiceOverOutlined />,
+                  icon: <RiMegaphoneLine />,
                 },
               ]}
             />

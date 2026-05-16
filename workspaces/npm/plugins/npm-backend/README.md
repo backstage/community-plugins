@@ -91,6 +91,53 @@ you must install also the backend plugin and [configure it](./registries.md).
 
 ### Frontend plugin
 
+### Load plugin via the new frontend system (alpha)
+
+Ensure that your Backstage frontend app is using that new frontend system.
+
+1. Install the frontend dependency:
+
+   ```sh
+   yarn workspace app add @backstage-community/plugin-npm
+   ```
+
+2. Add the package to your `packages/app/src/App.tsx`.
+
+   ```tsx
+   import npmPlugin from '@backstage-community/plugin-npm/alpha';
+   ```
+
+   And extend your createApp:
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       // ...other plugins
+       npmPlugin,
+     ],
+   });
+   ```
+
+3. Optionally enable translation via an `app` module that adds one `TranslationBlueprint` extension:
+
+   ```tsx
+   import npmPlugin, {
+     npmTranslationsModule,
+   } from '@backstage-community/plugin-npm/alpha';
+   ```
+
+   ```tsx
+   export default createApp({
+     features: [
+       // ...other plugins
+       npmPlugin,
+       npmTranslationsModule,
+     ],
+   });
+   ```
+
+### Manual wiring the frontend plugin ("Old Frontend System")
+
 1. Install the frontend dependency:
 
    ```sh
@@ -140,44 +187,12 @@ you must install also the backend plugin and [configure it](./registries.md).
    </EntityLayout.Route>
    ```
 
-### Alternative: Use the new frontend system (alpha)
-
-For early adaopters of the new frontend system.
-
-Your Backstage frontend app must use that new frontend system which isn't the default at the moment.
-
-1. Install the frontend dependency:
-
-   ```sh
-   yarn workspace app-next add @backstage-community/plugin-npm
-   ```
-
-2. Add the package to your `packages/app[-next]/src/App.tsx`.
-
-   ```tsx
-   import npmPlugin from '@backstage-community/plugin-npm/alpha';
-   ```
-
-   And extend your createApp:
-
-   ```tsx
-   export const app = createApp({
-     features: [
-       catalogPlugin,
-       catalogImportPlugin,
-       userSettingsPlugin,
-       npmPlugin,
-       // ...
-     ],
-   });
-   ```
-
 ### Optional: Backend plugin (req. for private packages or alternative registries)
 
 1. Install the backend plugin:
 
    ```sh
-   yarn workspace backend add @backstage-community/plugin-npm
+   yarn workspace backend add @backstage-community/plugin-npm-backend
    ```
 
 2. Add it to `packages/backend/src/index.ts`:

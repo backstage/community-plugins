@@ -147,19 +147,20 @@ export class VaultBuilder {
   }
 
   private getConfigSchedule(): SchedulerServiceTaskScheduleDefinition {
-    const schedule = this.env.config.getOptional<
-      SchedulerServiceTaskScheduleDefinitionConfig | boolean
-    >('vault.schedule');
+    const schedule =
+      this.env.config.getOptional<SchedulerServiceTaskScheduleDefinitionConfig>(
+        'vault.schedule',
+      );
 
     const scheduleCfg =
-      schedule !== undefined && schedule !== false
-        ? {
+      schedule !== undefined
+        ? readSchedulerServiceTaskScheduleDefinitionFromConfig(
+            this.env.config.getConfig('vault.schedule'),
+          )
+        : {
             frequency: { hours: 1 },
             timeout: { hours: 1 },
-          }
-        : readSchedulerServiceTaskScheduleDefinitionFromConfig(
-            this.env.config.getConfig('vault.schedule'),
-          );
+          };
 
     return scheduleCfg;
   }
@@ -178,6 +179,19 @@ export class VaultBuilder {
       res.json({ status: 'ok' });
     });
 
+    router.get('/v1/secrets/:path/create-url', (req, res) => {
+      const { path } = req.params;
+      const { engine } = req.query;
+      if (typeof path !== 'string') {
+        throw new InputError(`Invalid path: ${path}`);
+      }
+      if (engine && typeof engine !== 'string') {
+        throw new InputError(`Invalid engine: ${engine}`);
+      }
+      const createUrl = vaultApi.getCreateSecretUrl(path, engine);
+      res.json({ createUrl });
+    });
+
     router.get('/v1/secrets/:path', async (req, res) => {
       const { path } = req.params;
       const { engine } = req.query;
@@ -192,7 +206,8 @@ export class VaultBuilder {
       const secrets = await vaultApi.listSecrets(path, {
         secretEngine: engine,
       });
-      res.json({ items: secrets });
+      const vaultUrl = vaultApi.getFrontendSecretsUrl();
+      res.json({ items: secrets, vaultUrl });
     });
 
     router.use(MiddlewareFactory.create(this.env).error());

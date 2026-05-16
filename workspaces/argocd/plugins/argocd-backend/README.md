@@ -109,6 +109,166 @@ argocd:
 > [!Note]
 > When using multiple instances, specify the target instances (comma separated) in your entity using the `argocd/instance-name` annotation. If not specified, the plugin will search all available Argo CD instances. It is advised to add this annotation for better performance. To display multiple ArgoCD applications per entity, use `argocd/app-selector` annotation. More information about available Argo CD annotations can be found in this [documentation](../argocd/README.md#how-to-add-argo-cd-frontend-plugin-to-backstage-app).
 
+## Actions API
+
+This plugin automatically registers actions with the [Backstage Actions API](https://backstage.io/docs/backend-system/core-services/actions-registry) when installed. These actions are discoverable and invokable by any service, AI tools via MCP, and other plugins not limited to scaffolder template workflows. They are also automatically available as scaffolder actions, so they can be used in Software Templates.
+
+To enable action discovery, add the plugin to `backend.actions.pluginSources` in your `app-config.yaml`:
+
+```yaml
+backend:
+  actions:
+    pluginSources:
+      - backstage-community-argocd
+```
+
+This tells the Backstage Actions Service to query this plugin for its registered actions, making them available to the Scaffolder and other consumers.
+
+### Available Actions
+
+#### `backstage-community-argocd:create-resources`
+
+Creates ArgoCD resources (project and application) for a given repository.
+
+**Input Parameters:**
+
+| Parameter      | Type   | Required | Description                                                              |
+| -------------- | ------ | -------- | ------------------------------------------------------------------------ |
+| `appName`      | string | Yes      | The name of the application to be created                                |
+| `argoInstance` | string | Yes      | The name of the Argo CD instance                                         |
+| `namespace`    | string | Yes      | The namespace Argo CD will use for resource deployment                   |
+| `repoUrl`      | string | Yes      | The repo URL used in the Argo CD project and application                 |
+| `path`         | string | Yes      | The path of the resources in the repository that Argo CD will watch      |
+| `label`        | string | No       | The label used by Backstage to find applications (defaults to `appName`) |
+| `projectName`  | string | No       | The name of the project (defaults to `appName`)                          |
+
+**Output:**
+
+| Parameter        | Type   | Description                       |
+| ---------------- | ------ | --------------------------------- |
+| `applicationUrl` | string | The URL to the ArgoCD application |
+
+**Attributes:** `destructive: false`, `idempotent: false`, `readOnly: false`
+
+---
+
+#### `backstage-community-argocd:argocd:find-applications`
+
+Find all ArgoCD applications across all configured instances by application name. Returns sync status, health, and deployment details.
+
+**Input Parameters:**
+
+| Parameter      | Type   | Required | Description                           |
+| -------------- | ------ | -------- | ------------------------------------- |
+| `appName`      | string | Yes      | ArgoCD application name to search for |
+| `project`      | string | No       | Filter by ArgoCD project name         |
+| `appNamespace` | string | No       | Filter by application namespace       |
+
+**Output:**
+
+| Parameter   | Type  | Description                                                                                                                  |
+| ----------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `instances` | array | List of instances, each containing `instanceName`, `instanceUrl`, and `applications` (name, sync/health status, destination) |
+
+**Attributes:** `destructive: false`, `idempotent: true`, `readOnly: true`
+
+---
+
+#### `backstage-community-argocd:argocd:get-application`
+
+Get full details of a specific ArgoCD application from a named instance, including sync status, health, resources, and operation state.
+
+**Input Parameters:**
+
+| Parameter      | Type   | Required | Description                                                                         |
+| -------------- | ------ | -------- | ----------------------------------------------------------------------------------- |
+| `instanceName` | string | Yes      | Name of the ArgoCD instance as configured in `argocd.appLocatorMethods[].instances` |
+| `appName`      | string | Yes      | ArgoCD application name                                                             |
+| `appNamespace` | string | No       | Namespace of the application                                                        |
+| `project`      | string | No       | ArgoCD project name                                                                 |
+
+**Output:**
+
+| Parameter          | Type   | Description                      |
+| ------------------ | ------ | -------------------------------- |
+| `name`             | string | Application name                 |
+| `namespace`        | string | Application namespace            |
+| `project`          | string | ArgoCD project                   |
+| `syncStatus`       | string | Sync status                      |
+| `healthStatus`     | string | Health status                    |
+| `revision`         | string | Current revision SHA             |
+| `operationPhase`   | string | Current operation phase          |
+| `operationMessage` | string | Current operation message        |
+| `destination`      | object | Target server and namespace      |
+| `resourcesCount`   | number | Number of managed resources      |
+| `historyCount`     | number | Number of deploy history entries |
+
+**Attributes:** `destructive: false`, `idempotent: true`, `readOnly: true`
+
+---
+
+#### `backstage-community-argocd:argocd:get-revision-details`
+
+Fetch Git commit metadata (author, date, message) for a specific revision of an ArgoCD application deployment.
+
+**Input Parameters:**
+
+| Parameter      | Type   | Required | Description                              |
+| -------------- | ------ | -------- | ---------------------------------------- |
+| `instanceName` | string | Yes      | Name of the ArgoCD instance              |
+| `appName`      | string | Yes      | ArgoCD application name                  |
+| `revisionID`   | string | Yes      | Git commit SHA or tag to get details for |
+| `appNamespace` | string | No       | Namespace of the application             |
+
+**Output:**
+
+| Parameter    | Type   | Description         |
+| ------------ | ------ | ------------------- |
+| `author`     | string | Commit author       |
+| `date`       | string | Commit date (ISO)   |
+| `message`    | string | Commit message      |
+| `revisionID` | string | Revision identifier |
+
+**Attributes:** `destructive: false`, `idempotent: true`, `readOnly: true`
+
+---
+
+#### `backstage-community-argocd:argocd:list-applications`
+
+List ArgoCD applications on a specific instance, optionally filtered by label selector, project, or namespace. Returns sync and health status for each app.
+
+**Input Parameters:**
+
+| Parameter      | Type   | Required | Description                                                                         |
+| -------------- | ------ | -------- | ----------------------------------------------------------------------------------- |
+| `instanceName` | string | Yes      | Name of the ArgoCD instance as configured in `argocd.appLocatorMethods[].instances` |
+| `selector`     | string | No       | Label selector to filter applications, e.g. `app.kubernetes.io/part-of=my-app`      |
+| `project`      | string | No       | Filter by ArgoCD project name                                                       |
+| `appNamespace` | string | No       | Filter by application namespace                                                     |
+
+**Output:**
+
+| Parameter      | Type   | Description                                                                   |
+| -------------- | ------ | ----------------------------------------------------------------------------- |
+| `totalCount`   | number | Total number of matching applications                                         |
+| `applications` | array  | List of applications with name, sync/health status, revision, and destination |
+
+**Attributes:** `destructive: false`, `idempotent: true`, `readOnly: true`
+
+### Using in Scaffolder Templates
+
+Actions registered via the Actions API are automatically available in Scaffolder templates. Example templates for each action:
+
+- [`examples/templates/argocd-create-resources.yaml`](../../examples/templates/argocd-create-resources.yaml) - Create ArgoCD project and application
+- [`examples/templates/argocd-find-applications.yaml`](../../examples/templates/argocd-find-applications.yaml) - Find applications across instances
+- [`examples/templates/argocd-get-application.yaml`](../../examples/templates/argocd-get-application.yaml) - Get full application details
+- [`examples/templates/argocd-get-revision-details.yaml`](../../examples/templates/argocd-get-revision-details.yaml) - Get revision commit metadata
+- [`examples/templates/argocd-list-applications.yaml`](../../examples/templates/argocd-list-applications.yaml) - List applications on an instance
+
+Standalone action invocation examples (without scaffolder UI) are in [`examples/`](../../examples/).
+
+> **Tip:** You can also browse all available actions at `/create/actions` in the Backstage UI.
+
 ## Notifications Integration
 
 You can configure ArgoCD to send real-time notifications to Backstage when application sync events occur (sync succeeded, sync failed, health degraded, etc.). This allows your team to receive alerts directly in the Backstage UI when deployments happen or issues arise.

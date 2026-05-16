@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-devops-backend",
-  "version": "0.24.0",
+  "version": "0.29.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -56,9 +56,8 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
-    "@types/lodash": "^4.14.151",
     "@types/mime-types": "^2.1.0",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "supertest": "^7.0.0"
   },
   "files": [

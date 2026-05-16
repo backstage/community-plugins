@@ -13,46 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IdentityApi } from '@backstage/core-plugin-api';
+import { FetchApi } from '@backstage/core-plugin-api';
+import { mockApis } from '@backstage/test-utils';
 
 import { ArgoCDApiClient } from '..';
 import { mockApplication, multiSourceArgoApp } from '../../../dev/__data__';
 
-const getIdentityApiStub: IdentityApi = {
-  getProfileInfo: jest.fn(),
-  getBackstageIdentity: jest.fn(),
-  async getCredentials() {
-    return { token: 'fake-jwt-token' };
-  },
-  signOut: jest.fn(),
-};
-
 describe('API calls', () => {
-  let fetchSpy: jest.SpyInstance;
+  const fetchMock = jest.fn();
+  const fetchApi: FetchApi = {
+    fetch: fetchMock,
+  };
 
-  beforeEach(() => {
-    fetchSpy = jest.spyOn(global, 'fetch');
-  });
+  const discoveryApi = mockApis.discovery({ baseUrl: 'https://test.com' });
 
   afterEach(() => {
-    fetchSpy.mockRestore();
+    fetchMock.mockClear();
   });
 
   describe('listApps', () => {
     beforeEach(() => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: true,
           json: () => Promise.resolve({ items: [] }),
+          text: () => Promise.resolve('OK'),
         } as Response),
       );
     });
 
     test('fetches app based on provided projectName', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.listApps({
@@ -62,21 +56,20 @@ describe('API calls', () => {
         appNamespace: 'my-test-ns',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/applications/selector/janus.io%253Dquarkus-app?selector=janus.io%25253Dquarkus-app&project=test',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/applications/selector/janus.io%253Dquarkus-app?selector=janus.io%25253Dquarkus-app&project=test',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer fake-jwt-token`,
           },
         }),
       );
     });
     test('fetches app based on provided appSelector', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.listApps({
@@ -84,31 +77,31 @@ describe('API calls', () => {
         appSelector: 'my-test-app-selector',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/applications/selector/my-test-app-selector?selector=my-test-app-selector',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/applications/selector/my-test-app-selector?selector=my-test-app-selector',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer fake-jwt-token`,
           },
         }),
       );
     });
 
     test('Should throw error incase of any internal API failure', async () => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: false,
           status: 'Internal server error',
           statusText: 'Something went wrong',
           json: () => Promise.reject({ status: 'Internal server error' }),
+          text: () => Promise.resolve('OK'),
         } as unknown as Response),
       );
 
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
       let error;
       try {
@@ -124,62 +117,35 @@ describe('API calls', () => {
         );
       }
     });
-
-    test('should not pass the token for the guest user', async () => {
-      const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
-        useNamespacedApps: false,
-        identityApi: {
-          ...getIdentityApiStub,
-          getCredentials: async () => {
-            return {};
-          },
-        },
-      });
-
-      await client.listApps({
-        url: '',
-        projectName: 'test',
-        appSelector: 'janus.io%253Dquarkus-app',
-        appNamespace: 'my-test-ns',
-      });
-
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/applications/selector/janus.io%253Dquarkus-app?selector=janus.io%25253Dquarkus-app&project=test',
-        expect.objectContaining({
-          headers: undefined,
-        }),
-      );
-    });
   });
 
   describe('findApplications', () => {
     beforeEach(() => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: true,
           json: () => Promise.resolve([]),
+          text: () => Promise.resolve('OK'),
         } as Response),
       );
     });
 
     test('should fetch applications by appName', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.findApplications({
         appName: 'my-test-app',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/find/name/my-test-app',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/find/name/my-test-app',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer fake-jwt-token',
           },
         }),
       );
@@ -187,9 +153,9 @@ describe('API calls', () => {
 
     test('should fetch applications with expand when passed', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.findApplications({
@@ -197,12 +163,11 @@ describe('API calls', () => {
         expand: 'applications',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/find/name/my-test-app?expand=applications',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/find/name/my-test-app?expand=applications',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer fake-jwt-token',
           },
         }),
       );
@@ -210,9 +175,9 @@ describe('API calls', () => {
 
     test('should fetch applications with expand, appNamespace and project when passed', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: true,
-        identityApi: getIdentityApiStub,
       });
 
       await client.findApplications({
@@ -222,12 +187,11 @@ describe('API calls', () => {
         expand: 'applications',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/find/name/my-test-app?appNamespace=my-namespace&project=my-project&expand=applications',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/find/name/my-test-app?appNamespace=my-namespace&project=my-project&expand=applications',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer fake-jwt-token',
           },
         }),
       );
@@ -235,9 +199,9 @@ describe('API calls', () => {
 
     test('should fetch applications without appNamespace when useNamespacedApps is false', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.findApplications({
@@ -246,31 +210,31 @@ describe('API calls', () => {
         project: 'my-project',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/find/name/my-test-app?project=my-project',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/find/name/my-test-app?project=my-project',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer fake-jwt-token',
           },
         }),
       );
     });
 
     test('should throw error in case of any internal API failure', async () => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: false,
           status: 'Internal server error',
           statusText: 'Something went wrong',
           json: () => Promise.reject({ status: 'Internal server error' }),
+          text: () => Promise.resolve('OK'),
         } as unknown as Response),
       );
 
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await expect(
@@ -285,19 +249,20 @@ describe('API calls', () => {
 
   describe('getApplication', () => {
     beforeEach(() => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: true,
           json: () => Promise.resolve({}),
+          text: () => Promise.resolve('OK'),
         } as Response),
       );
     });
 
     test('should return empty object as response', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       const data = await client.getApplication({
@@ -309,17 +274,18 @@ describe('API calls', () => {
     });
 
     test('should return application object', async () => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: true,
           json: () => Promise.resolve(mockApplication),
+          text: () => Promise.resolve('OK'),
         } as Response),
       );
 
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       const data = await client.getApplication({
@@ -339,19 +305,20 @@ describe('API calls', () => {
 
   describe('getRevisionDetails', () => {
     beforeEach(() => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: true,
           json: () => Promise.resolve({ items: [] }),
+          text: () => Promise.resolve('OK'),
         } as Response),
       );
     });
 
     test('should return the revision details', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.getRevisionDetails({
@@ -360,12 +327,11 @@ describe('API calls', () => {
         revisionID: '12345',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/argoInstance/main/applications/name/my-test-app/revisions/12345/metadata',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/my-test-app/revisions/12345/metadata',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer fake-jwt-token`,
           },
         }),
       );
@@ -374,19 +340,20 @@ describe('API calls', () => {
 
   describe('getRevisionDetailsList', () => {
     beforeEach(() => {
-      fetchSpy.mockImplementation(() =>
+      fetchMock.mockImplementation(() =>
         Promise.resolve<Response>({
           ok: true,
           json: () => Promise.resolve({ items: [] }),
+          text: () => Promise.resolve('OK'),
         } as Response),
       );
     });
 
     test('should return empty list if the revisionIds are not passed', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       const data = await client.getRevisionDetailsList({
@@ -399,9 +366,9 @@ describe('API calls', () => {
 
     test('should return the list of revision details', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.getRevisionDetailsList({
@@ -410,12 +377,11 @@ describe('API calls', () => {
         appNamespace: '',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/argoInstance/main/applications/name/quarkus-app-dev/revisions/90f9758b7033a4bbb7c33a35ee474d61091644bc/metadata',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/quarkus-app-dev/revisions/90f9758b7033a4bbb7c33a35ee474d61091644bc/metadata',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer fake-jwt-token`,
           },
         }),
       );
@@ -423,9 +389,9 @@ describe('API calls', () => {
 
     test('should return the list of revision details for multi-source apps', async () => {
       const client = new ArgoCDApiClient({
-        backendBaseUrl: 'https://test.com',
+        discoveryApi,
+        fetchApi,
         useNamespacedApps: false,
-        identityApi: getIdentityApiStub,
       });
 
       await client.getRevisionDetailsList({
@@ -437,22 +403,20 @@ describe('API calls', () => {
         appNamespace: '',
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/argoInstance/main/applications/name/demo/revisions/331386ce09e4536a730a16f10d1bce8dfca0c8b1/metadata?sourceIndex=0',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/demo/revisions/331386ce09e4536a730a16f10d1bce8dfca0c8b1/metadata?sourceIndex=0',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer fake-jwt-token`,
           },
         }),
       );
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.com/api/argocd/argoInstance/main/applications/name/demo/revisions/de1631a6d84f35d826235a933657baca77c2ca9c/metadata?sourceIndex=1',
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/demo/revisions/de1631a6d84f35d826235a933657baca77c2ca9c/metadata?sourceIndex=1',
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer fake-jwt-token`,
           },
         }),
       );

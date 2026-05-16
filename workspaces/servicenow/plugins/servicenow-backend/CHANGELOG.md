@@ -1,5 +1,57 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.11.1
+
+### Patch Changes
+
+- 85f6e69: Bump axios to 1.16.0 to include different security fixes.
+
+## 1.11.0
+
+### Minor Changes
+
+- 8754ccb: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [8754ccb]
+  - @backstage-community/plugin-servicenow-common@1.10.0
+
+## 1.10.0
+
+### Minor Changes
+
+- a229130: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [a229130]
+  - @backstage-community/plugin-servicenow-common@1.9.0
+
+## 1.9.0
+
+### Minor Changes
+
+- d578507: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [d578507]
+  - @backstage-community/plugin-servicenow-common@1.8.0
+
+## 1.8.0
+
+### Minor Changes
+
+- 5a2919f: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- Updated dependencies [5a2919f]
+  - @backstage-community/plugin-servicenow-common@1.7.0
+
 ## 1.7.0
 
 ### Minor Changes

@@ -1,5 +1,35 @@
 # @backstage-community/plugin-bazaar
 
+## 0.22.0
+
+### Minor Changes
+
+- 9b67e93: Backstage version bump to v1.50.2
+
+## 0.21.0
+
+### Minor Changes
+
+- a8871db: Backstage version bump to v1.49.2
+
+## 0.20.0
+
+### Minor Changes
+
+- 0d6a0e6: Backstage version bump to v1.48.2
+
+## 0.19.1
+
+### Patch Changes
+
+- 350db52: Make the project search case insensitive
+
+## 0.19.0
+
+### Minor Changes
+
+- 244ef07: Backstage version bump to v1.47.2
+
 ## 0.18.2
 
 ### Patch Changes

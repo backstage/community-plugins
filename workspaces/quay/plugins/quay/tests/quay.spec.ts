@@ -137,4 +137,26 @@ test.describe('Quay plugin', () => {
       ).toBeEnabled();
     });
   });
+
+  test('Multi-instance uses configured non-default instance for URL and data', async () => {
+    await page.goto('/quay/multi-instance');
+    const repositoryLink = page.getByRole('link', {
+      name: 'backstage-test/test-images',
+    });
+    await expect(repositoryLink).toBeVisible();
+    await expect(repositoryLink).toHaveAttribute(
+      'href',
+      'https://quay-devel.io/repository/backstage-test/test-images',
+    );
+
+    await expect(
+      page.getByRole('cell', { name: 'v5-devel-only' }),
+    ).toBeVisible();
+    const rows = page
+      .locator('tbody')
+      .getByRole('row')
+      .filter({ hasText: 'sha' });
+    await expect(rows).toHaveCount(1);
+    await expect(page.getByText('Unsupported')).toBeVisible();
+  });
 });

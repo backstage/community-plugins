@@ -18,3 +18,17 @@ Once everything is started, you can access:
 - Keycloak Admin UI at http://localhost:8080/admin/master/console/#/backstage-community-realm
   - Username: `admin`
   - Password: `admin`
+
+**Alternatively:**
+
+- To start only Keycloak:
+
+  ```console
+  yarn start:keycloak
+  ```
+
+- To start only the plugin:
+
+  ```console
+    yarn start:plugin
+  ```

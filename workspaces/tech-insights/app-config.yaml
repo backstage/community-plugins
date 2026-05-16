@@ -1,6 +1,12 @@
 app:
   title: Tech insights Example App
   baseUrl: http://localhost:3000
+  # extensions:
+  #   - entity-content:tech-insights/scorecards-content:
+  #       config:
+  #         title: My Scorecards
+  #         description: Check compliance status
+  #         checkIds: ['groupOwnerCheck']
 
 permission:
   enabled: true

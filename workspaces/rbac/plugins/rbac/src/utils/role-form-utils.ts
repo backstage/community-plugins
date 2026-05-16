@@ -24,7 +24,7 @@ import {
   UpdatedConditionsData,
 } from '../types';
 import { NavigateFunction } from 'react-router-dom';
-import { rbacTranslationRef } from '../translations';
+import { rbacTranslationRef } from '../alpha/translations';
 
 export const createPermissions = async (
   newPermissions: RoleBasedPolicy[],

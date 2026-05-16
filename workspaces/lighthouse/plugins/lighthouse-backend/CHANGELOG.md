@@ -1,5 +1,68 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.23.0
+
+### Minor Changes
+
+- 2e6c13e: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [2e6c13e]
+  - @backstage-community/plugin-lighthouse-common@0.19.0
+
+## 0.22.0
+
+### Minor Changes
+
+- 233c7f0: Backstage version bump to v1.50.1
+
+### Patch Changes
+
+- Updated dependencies [233c7f0]
+  - @backstage-community/plugin-lighthouse-common@0.18.0
+
+## 0.21.0
+
+### Minor Changes
+
+- c69f1ec: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [c69f1ec]
+  - @backstage-community/plugin-lighthouse-common@0.17.0
+
+## 0.20.0
+
+### Minor Changes
+
+- accd69f: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [accd69f]
+  - @backstage-community/plugin-lighthouse-common@0.16.0
+
+## 0.19.1
+
+### Patch Changes
+
+- 2cd7e22: remove unused dependencies
+- Updated dependencies [2cd7e22]
+  - @backstage-community/plugin-lighthouse-common@0.15.1
+
+## 0.19.0
+
+### Minor Changes
+
+- cdeb384: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [cdeb384]
+  - @backstage-community/plugin-lighthouse-common@0.15.0
+
 ## 0.18.0
 
 ### Minor Changes

@@ -1,8 +1,28 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { Tag, TagColor, type TableRowProjectProps } from '../../../components';
+import {
+  Tag,
+  Tooltip,
+  TagColor,
+  type TableRowProjectProps,
+} from '../../../components';
 import { dateTimeFormat, getObjValue } from '../../../utils';
 import { ProjectTableLanguages } from './ProjectTableLanguages';
 
@@ -42,6 +62,7 @@ const classes: Record<string, CSSProperties> = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    display: 'inline-block',
   },
 };
 
@@ -76,6 +97,8 @@ export const projectColumn = [
     title: 'Application',
     field: PROJECT_FIELD.APPLICATION_NAME,
     ...textColumn,
+    width: '200px',
+    minWidth: '200px',
   },
   {
     title: 'Total Findings',
@@ -110,6 +133,7 @@ export const projectColumn = [
       padding: '6px 20px',
       display: 'flex',
       scrollbarWidth: 'none',
+      align: 'center',
       height: '100%',
     } as Record<string, CSSProperties>, // NOTE: scrollbarWidth is not recoginized
     width: '310px',
@@ -163,7 +187,7 @@ export const projectTableColumnSchema = projectColumn.map(rowData => {
       const value = getObjValue(row, rowData.field) as any;
       switch (rowData.field) {
         case PROJECT_FIELD.NAME: {
-          const uri = `/${row.entity?.source}/${row.entity?.namespace}/${row.entity?.kind}/${row.entity?.params.repo}/mend?filter=${row.name}`;
+          const uri = `${row?.entityUrl}/mend?filter=${row.uuid}`;
 
           return (
             <Link to={uri}>
@@ -191,13 +215,15 @@ export const projectTableColumnSchema = projectColumn.map(rowData => {
         }
         default: {
           return (
-            <Typography
-              component="span"
-              style={classes.ellipsis}
-              variant="body2"
-            >
-              {value}
-            </Typography>
+            <Tooltip tooltipContent={value} isAlwaysVisible={false}>
+              <Typography
+                component="span"
+                style={classes.ellipsis}
+                variant="body2"
+              >
+                {value}
+              </Typography>
+            </Tooltip>
           );
         }
       }

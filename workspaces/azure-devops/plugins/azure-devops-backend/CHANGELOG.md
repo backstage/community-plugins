@@ -1,5 +1,74 @@
 # @backstage-community/plugin-azure-devops-backend
 
+## 0.29.0
+
+### Minor Changes
+
+- 7067acc: Added multi-org support to the Azure Pull Request Dashboard Page
+
+### Patch Changes
+
+- Updated dependencies [7067acc]
+  - @backstage-community/plugin-azure-devops-common@0.23.0
+
+## 0.28.0
+
+### Minor Changes
+
+- f2f1e66: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [f2f1e66]
+  - @backstage-community/plugin-azure-devops-common@0.22.0
+
+## 0.27.0
+
+### Minor Changes
+
+- 7c1dfa3: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [7c1dfa3]
+  - @backstage-community/plugin-azure-devops-common@0.21.0
+
+## 0.26.1
+
+### Patch Changes
+
+- a5203e4: Backstage version bump to v1.48.4
+- Updated dependencies [a5203e4]
+  - @backstage-community/plugin-azure-devops-common@0.20.1
+
+## 0.26.0
+
+### Minor Changes
+
+- 00555dc: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [00555dc]
+  - @backstage-community/plugin-azure-devops-common@0.20.0
+
+## 0.25.0
+
+### Minor Changes
+
+- 5f512a6: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [5f512a6]
+  - @backstage-community/plugin-azure-devops-common@0.19.0
+
+## 0.24.1
+
+### Patch Changes
+
+- 7c297d4: Updated dependency `azure-devops-node-api` to `^15.0.0`.
+
 ## 0.24.0
 
 ### Minor Changes

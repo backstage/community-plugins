@@ -20,12 +20,12 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
-import CloseIcon from '@material-ui/icons/Close';
 import { useApi } from '@backstage/core-plugin-api';
 import { azureDevOpsApiRef } from '../../../../api';
 import { getAnnotationValuesFromEntity } from '@backstage-community/plugin-azure-devops-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { RiCloseLine } from '@remixicon/react';
 
 const useDrawerStyles = makeStyles(theme => ({
   logDrawer: {
@@ -136,7 +136,7 @@ export const BuildLogDrawer = ({
             Build Logs {buildId ? `(Build #${buildId})` : ''}
           </Typography>
           <IconButton onClick={onClose} aria-label="close">
-            <CloseIcon />
+            <RiCloseLine />
           </IconButton>
         </div>
 

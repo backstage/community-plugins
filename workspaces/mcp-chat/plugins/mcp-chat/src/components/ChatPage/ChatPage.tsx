@@ -19,7 +19,12 @@ import Box from '@mui/material/Box';
 import { Content, Page, ResponseErrorPanel } from '@backstage/core-components';
 import { ChatContainer, type ChatContainerRef } from '../ChatContainer';
 import { RightPane } from '../RightPane';
-import { useProviderStatus, useMcpServers } from '../../hooks';
+import {
+  useProviderStatus,
+  useMcpServers,
+  useConversations,
+} from '../../hooks';
+import type { ConversationRecord } from '../../types';
 
 interface Message {
   id: string;
@@ -40,10 +45,29 @@ export const ChatPage = () => {
     error: mcpServersError,
     handleServerToggle,
   } = useMcpServers();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const {
+    starredConversations,
+    recentConversations,
+    loading: conversationsLoading,
+    error: conversationsError,
+    searchQuery,
+    setSearchQuery,
+    clearSearch,
+    loadConversation,
+    refreshConversations,
+    deleteConversation,
+    toggleStar,
+  } = useConversations();
 
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<
+    string | undefined
+  >();
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | undefined
+  >();
   const chatContainerRef = useRef<ChatContainerRef>(null);
 
   // Combine errors from different sources
@@ -61,10 +85,52 @@ export const ChatPage = () => {
 
     setError(null);
     setMessages([]);
+    setCurrentConversationId(undefined);
+    setSelectedConversationId(undefined);
   };
 
   const handleMessagesChange = (newMessages: Message[]) => {
     setMessages(newMessages);
+  };
+
+  const handleConversationUpdated = (conversationId: string) => {
+    setCurrentConversationId(conversationId);
+    if (!selectedConversationId) {
+      setSelectedConversationId(conversationId);
+    }
+    // Refresh the conversation list
+    refreshConversations();
+  };
+
+  const handleSelectConversation = async (conversation: ConversationRecord) => {
+    try {
+      // Cancel any ongoing request first
+      if (chatContainerRef.current) {
+        chatContainerRef.current.cancelOngoingRequest();
+      }
+
+      // Load the full conversation
+      const fullConversation = await loadConversation(conversation.id);
+
+      // Convert conversation messages to UI messages
+      const uiMessages: Message[] = fullConversation.messages.map(
+        (msg, index) => ({
+          id: `${conversation.id}-${index}`,
+          text: msg.content,
+          isUser: msg.role === 'user',
+          timestamp: new Date(fullConversation.updatedAt),
+          toolsUsed:
+            msg.role === 'assistant' ? fullConversation.toolsUsed : undefined,
+        }),
+      );
+
+      setMessages(uiMessages);
+      setSelectedConversationId(conversation.id);
+      setCurrentConversationId(conversation.id);
+      setError(null);
+    } catch (err) {
+      setError(`Failed to load conversation: ${err}`);
+    }
   };
 
   return (
@@ -112,6 +178,8 @@ export const ChatPage = () => {
                   mcpServers={mcpServers}
                   messages={messages}
                   onMessagesChange={handleMessagesChange}
+                  conversationId={currentConversationId}
+                  onConversationUpdated={handleConversationUpdated}
                 />
 
                 {/* Sidebar - Right Side */}
@@ -122,6 +190,17 @@ export const ChatPage = () => {
                   mcpServers={mcpServers}
                   onServerToggle={handleServerToggle}
                   providerStatus={providerStatus}
+                  starredConversations={starredConversations}
+                  recentConversations={recentConversations}
+                  conversationsLoading={conversationsLoading}
+                  conversationsError={conversationsError}
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  onSearchClear={clearSearch}
+                  onSelectConversation={handleSelectConversation}
+                  onToggleStar={toggleStar}
+                  onDeleteConversation={deleteConversation}
+                  selectedConversationId={selectedConversationId}
                 />
               </>
             )}

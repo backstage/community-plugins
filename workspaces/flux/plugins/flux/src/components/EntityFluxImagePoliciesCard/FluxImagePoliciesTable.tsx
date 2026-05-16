@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TableColumn } from '@backstage/core-components';
 import {
   clusterNameFilteringColumn,
   idColumn,
@@ -22,15 +21,15 @@ import {
   updatedColumn,
   actionColumn,
   typeColumn,
-  filters,
   imageRepository,
   policy,
   latestImageSelected,
 } from '../helpers';
+import { FluxColumn } from '../FluxEntityTable';
 import { ImagePolicy } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
-export const defaultColumns: TableColumn<ImagePolicy>[] = [
+export const defaultColumns: FluxColumn<ImagePolicy>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
@@ -44,13 +43,15 @@ export const defaultColumns: TableColumn<ImagePolicy>[] = [
 ];
 
 type Props = {
+  title: string;
   imagePolicies: ImagePolicy[];
   isLoading: boolean;
-  columns: TableColumn<ImagePolicy>[];
+  columns: FluxColumn<ImagePolicy>[];
   many?: boolean;
 };
 
 export const FluxImagePoliciesTable = ({
+  title,
   imagePolicies,
   isLoading,
   columns,
@@ -86,10 +87,10 @@ export const FluxImagePoliciesTable = ({
 
   return (
     <FluxEntityTable
+      title={title}
       columns={columns}
       data={data}
       isLoading={isLoading}
-      filters={filters}
       many={many}
     />
   );

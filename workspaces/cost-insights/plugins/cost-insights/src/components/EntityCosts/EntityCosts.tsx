@@ -78,6 +78,9 @@ export const EntityCostsCard = () => {
         const intervals = intervalsOf(
           pageFilters.duration,
           lastCompleteBillingDate,
+          2,
+          pageFilters.customDateRange,
+          false, // Don't use comparison mode for entity costs
         );
 
         const fetchedDailyCost = await client.getCatalogEntityDailyCost!(

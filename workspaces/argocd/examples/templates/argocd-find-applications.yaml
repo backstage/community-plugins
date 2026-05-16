@@ -1,0 +1,45 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-find-applications
+  title: Find ArgoCD Applications
+  description: Find all ArgoCD applications across all configured instances by application name
+  tags:
+    - argocd
+    - deployment
+    - kubernetes
+spec:
+  owner: group:default/infrastructure
+  type: deployment
+  parameters:
+    - title: Find ArgoCD Applications
+      required:
+        - appName
+      properties:
+        appName:
+          title: Application Name
+          type: string
+          description: The ArgoCD application name to search for
+        project:
+          title: Project Name
+          type: string
+          description: Filter by ArgoCD project name
+        appNamespace:
+          title: Application Namespace
+          type: string
+          description: Filter by application namespace
+  steps:
+    - id: find-applications
+      name: Find ArgoCD Applications
+      action: backstage-community-argocd:argocd:find-applications
+      input:
+        appName: ${{ parameters.appName }}
+        project: ${{ parameters.project }}
+        appNamespace: ${{ parameters.appNamespace }}
+  output:
+    text:
+      - title: Found Instances
+        content: |
+          ```json
+          ${{ steps['find-applications'].output.instances | dump }}
+          ```

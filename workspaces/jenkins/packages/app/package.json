@@ -43,24 +43,18 @@
     "@backstage/plugin-techdocs-react": "backstage:^",
     "@backstage/plugin-user-settings": "backstage:^",
     "@backstage/theme": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
-    "history": "^5.0.0",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
-    "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0",
-    "react-use": "^17.2.4"
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@backstage/test-utils": "backstage:^",
     "@playwright/test": "^1.32.3",
-    "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.0.0",
-    "@types/react-dom": "*",
-    "cross-env": "^10.0.0"
+    "@types/react-dom": "*"
   },
   "browserslist": {
     "production": [

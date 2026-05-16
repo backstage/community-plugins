@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IdentityApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { ArgoCDApi, FindApplicationsOptions, GetApplicationOptions } from '.';
 import {
   Application,
@@ -22,8 +22,8 @@ import {
 } from '@backstage-community/plugin-argocd-common';
 
 export type Options = {
-  backendBaseUrl: string;
-  identityApi: IdentityApi;
+  discoveryApi: DiscoveryApi;
+  fetchApi: FetchApi;
   proxyPath?: string;
   useNamespacedApps: boolean;
 };
@@ -35,18 +35,36 @@ interface QueryParams {
 }
 
 export class ArgoCDApiClient implements ArgoCDApi {
-  private readonly backendBaseUrl: string;
-  private readonly identityApi: IdentityApi;
+  private readonly discoveryApi: DiscoveryApi;
+  private readonly fetchApi: FetchApi;
   private readonly useNamespacedApps: boolean;
 
+  /**
+   * This `pluginId` is used to determine which backend plugin is used.
+   * It is evaluated at runtime by checking if the 'backstage-community-argocd' plugin is available in the discovery API
+   * and fallbacks to 'argocd' if not. This allows users to have both plugins installed and migrate at their own pace.
+   */
+  private pluginId: 'backstage-community-argocd' | 'argocd' | null = null;
+
   constructor(options: Options) {
-    this.backendBaseUrl = options.backendBaseUrl;
-    this.identityApi = options.identityApi;
+    this.discoveryApi = options.discoveryApi;
+    this.fetchApi = options.fetchApi;
     this.useNamespacedApps = options.useNamespacedApps;
   }
 
   async getBaseUrl() {
-    return `${this.backendBaseUrl}/api/argocd`;
+    if (!this.pluginId) {
+      const baseUrl = await this.discoveryApi.getBaseUrl(
+        'backstage-community-argocd',
+      );
+      const response = await this.fetchApi.fetch(`${baseUrl}/check`);
+      if (response.ok && (await response.text()) === 'OK') {
+        this.pluginId = 'backstage-community-argocd';
+      } else {
+        this.pluginId = 'argocd';
+      }
+    }
+    return this.discoveryApi.getBaseUrl(this.pluginId);
   }
 
   getQueryParams(params: QueryParams) {
@@ -68,14 +86,10 @@ export class ArgoCDApiClient implements ArgoCDApi {
   }
 
   async fetcher(url: string) {
-    const { token } = await this.identityApi.getCredentials();
-    const response = await fetch(url, {
-      headers: token
-        ? {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          }
-        : undefined,
+    const response = await this.fetchApi.fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     if (!response.ok) {
       throw new Error(

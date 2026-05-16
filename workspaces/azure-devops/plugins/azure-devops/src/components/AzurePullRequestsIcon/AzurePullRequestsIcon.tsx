@@ -16,7 +16,10 @@
 
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-/** @public */
+/**
+ * @public
+ * @deprecated use `RiGitPullRequestLine` from `@remixicon/react`, this will be removed in an upcoming release
+ */
 export const AzurePullRequestsIcon = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 512 512">
     <circle

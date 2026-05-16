@@ -10,7 +10,7 @@ kubectl create namespace argocd || echo "Namespace argocd already exists"
 kubectl create namespace demo-apps || echo "Namespace demo-apps already exists"
 
 echo "=== Installing ArgoCD ==="
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 echo "=== Waiting for ArgoCD pods to exist ==="
 # Wait until at least one pod exists

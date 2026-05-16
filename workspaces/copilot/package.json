@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -42,12 +42,15 @@
     "@backstage/errors": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
+    "@types/node": "^24.9.1",
+    "@types/webpack-env": "^1.18.8",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.9.3"
   },
   "resolutions": {
+    "@types/node": "^24",
     "@types/react": "^18",
     "@types/react-dom": "^18"
   },

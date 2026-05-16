@@ -14,40 +14,39 @@
  * limitations under the License.
  */
 
-import { createTranslationMessages } from '@backstage/frontend-plugin-api';
-
+import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { npmTranslationRef } from './ref';
 
+/**
+ * de translation for plugin.npm.translation-ref.
+ * @public
+ */
 const de = createTranslationMessages({
   ref: npmTranslationRef,
-  full: true, // False means that this is a partial translation
   messages: {
-    'infoCard.title': 'NPM Paket {{packageName}}',
-    'infoCard.latestVersion': 'Aktuelle Version',
+    'infoCard.title': 'NPM-Paket {{packageName}}',
+    'infoCard.latestVersion': 'Neueste Version',
     'infoCard.publishedAt': 'Veröffentlicht am',
     'infoCard.license': 'Lizenz',
     'infoCard.description': 'Beschreibung',
-    'infoCard.keywords': 'Stichwörter',
-    'infoCard.registryName': 'Registry Name',
-    'infoCard.npmRepository': 'NPM Repository',
-    'infoCard.codeRepository': 'Quellcode Repository',
-    'infoCard.issueTracker': 'Fehlerverfolgung',
-    'infoCard.homepage': 'Webseite',
-
+    'infoCard.keywords': 'Schlüsselwörter',
+    'infoCard.registryName': 'Registry-Name',
+    'infoCard.npmRepository': 'NPM-Repository',
+    'infoCard.codeRepository': 'Code-Repository',
+    'infoCard.issueTracker': 'Problemverfolgung',
+    'infoCard.homepage': 'Startseite',
     'releaseOverviewCard.title': 'Aktuelle Tags',
-    'releaseOverviewCard.toolbar.searchPlaceholder': 'Suche',
+    'releaseOverviewCard.toolbar.searchPlaceholder': 'Suchen',
     'releaseOverviewCard.columns.tag': 'Tag',
     'releaseOverviewCard.columns.version': 'Version',
     'releaseOverviewCard.columns.published': 'Veröffentlicht',
-
-    'releaseTableCard.title': 'Aktuelle Versionen',
-    'releaseTableCard.toolbar.searchPlaceholder': 'Suche',
+    'releaseTableCard.title': 'Aktuelle Tags',
+    'releaseTableCard.toolbar.searchPlaceholder': 'Suchen',
     'releaseTableCard.columns.tag': 'Tag',
     'releaseTableCard.columns.version': 'Version',
     'releaseTableCard.columns.published': 'Veröffentlicht',
-
     'versionHistoryCard.title': 'Versionsverlauf',
-    'versionHistoryCard.toolbar.searchPlaceholder': 'Suche',
+    'versionHistoryCard.toolbar.searchPlaceholder': 'Suchen',
     'versionHistoryCard.columns.version': 'Version',
     'versionHistoryCard.columns.published': 'Veröffentlicht',
   },

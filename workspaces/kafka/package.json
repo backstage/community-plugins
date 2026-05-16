@@ -36,16 +36,18 @@
     "directory": "workspaces/kafka"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.35.1",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.16.1",
+    "@backstage/cli": "^0.36.0",
+    "@backstage/cli-defaults": "^0.1.0",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@backstage/repo-tools": "^0.17.0",
     "@changesets/cli": "^2.27.1",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.8.0"
   },
   "resolutions": {
+    "@backstage/frontend-plugin-api": "^0.16.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "csstype@npm:^3.0.2": "3.0.9",

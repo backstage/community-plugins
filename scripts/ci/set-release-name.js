@@ -20,6 +20,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
 import { EOL } from 'os';
+import semver from 'semver';
 
 async function getBackstageVersion(workspace) {
   const rootPath = path.resolve(`workspaces/${workspace}/backstage.json`);
@@ -65,26 +66,13 @@ async function fetchWithRetry(url, retries = 1, delayMs = 60000) {
   return null;
 }
 
-async function getLatestRelease() {
-  return fetchWithRetry(
-    'https://api.github.com/repos/backstage/backstage/releases/latest',
+async function getGitHubReleases() {
+  const releases = await fetchWithRetry(
+    'https://api.github.com/repos/backstage/backstage/releases?per_page=100',
   );
-}
-
-async function getLatestPreRelease() {
-  const json = await fetchWithRetry(
-    'https://api.github.com/repos/backstage/backstage/releases',
+  return releases.filter(
+    release => semver.valid(release.name) && !release.draft,
   );
-
-  const preReleasesOnly = json.filter(release => {
-    return release.prerelease === true;
-  });
-
-  const latestPreRelease = preReleasesOnly.sort((a, b) => {
-    return new Date(b.published_at) - new Date(a.published_at);
-  })[0];
-
-  return latestPreRelease;
 }
 
 async function main() {
@@ -96,10 +84,15 @@ async function main() {
 
   // Get the current Backstage version from the backstage.json file
   const backstageVersion = await getBackstageVersion(workspace);
-  // Get the latest Backstage Release from the GitHub API
-  const latestRelease = await getLatestRelease();
-  // Get the latest Backstage Pre-release from the GitHub API
-  const latestPreRelease = await getLatestPreRelease();
+  // Get the latest Backstage Releases from the GitHub API
+  const gitHubReleases = await getGitHubReleases();
+  // Sort releases by version in descending order to ensure that the
+  // latest release (highest version) is first, regardless of publish date.
+  const orderedReleases = gitHubReleases.sort((a, b) =>
+    semver.compare(b.name, a.name),
+  );
+  const latestRelease = orderedReleases.find(release => !release.prerelease);
+  const latestPreRelease = orderedReleases.find(release => release.prerelease);
 
   console.log(`Current Backstage version is: v${backstageVersion}`);
   console.log(

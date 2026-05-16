@@ -1,5 +1,35 @@
 # @backstage-community/plugin-gocd
 
+## 0.18.0
+
+### Minor Changes
+
+- 24bac5a: Backstage version bump to v1.50.2
+
+## 0.17.0
+
+### Minor Changes
+
+- 5a4279f: Backstage version bump to v1.49.2
+
+## 0.16.0
+
+### Minor Changes
+
+- 1ef7750: Backstage version bump to v1.48.2
+
+## 0.15.0
+
+### Minor Changes
+
+- b1d6c48: Backstage version bump to v1.47.2
+
+## 0.14.2
+
+### Patch Changes
+
+- db2dd2b: remove unused dependencies
+
 ## 0.14.1
 
 ### Patch Changes

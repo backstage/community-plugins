@@ -15,3 +15,4 @@
  */
 
 export { PeriodSelect } from './PeriodSelect';
+export { DateRangePicker } from './DateRangePicker';

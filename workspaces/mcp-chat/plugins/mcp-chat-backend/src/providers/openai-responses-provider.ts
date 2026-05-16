@@ -34,15 +34,21 @@ import {
  */
 export class OpenAIResponsesProvider extends LLMProvider {
   private mcpServerConfigs: MCPServerFullConfig[] = [];
+  private allowedToolsByServer: Map<string, string[]> = new Map();
 
   /**
    * Sets the MCP server configurations for native tool support.
    * These servers will be passed to the OpenAI Responses API.
    *
    * @param configs - Array of MCP server configurations
+   * @param allowedToolsByServer - Map of server ID to allowed tool names
    */
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void {
+  setMcpServerConfigs(
+    configs: MCPServerFullConfig[],
+    allowedToolsByServer: Map<string, string[]> = new Map(),
+  ): void {
     this.mcpServerConfigs = configs;
+    this.allowedToolsByServer = allowedToolsByServer;
   }
 
   async sendMessage(
@@ -141,6 +147,10 @@ export class OpenAIResponsesProvider extends LLMProvider {
           server_url: config.url!,
           server_label: config.id,
           require_approval: 'never' as const,
+          // Only restrict tools if allowed tools were computed during server init
+          ...(this.allowedToolsByServer.has(config.id)
+            ? { allowed_tools: this.allowedToolsByServer.get(config.id)! }
+            : {}),
         };
 
         // Add headers if present in server config
@@ -163,6 +173,14 @@ export class OpenAIResponsesProvider extends LLMProvider {
 
     if (instructions) {
       request.instructions = instructions;
+    }
+
+    if (this.maxTokens !== undefined) {
+      request.max_output_tokens = this.maxTokens;
+    }
+
+    if (this.temperature !== undefined) {
+      request.temperature = this.temperature;
     }
 
     return request;
@@ -229,20 +247,34 @@ export class OpenAIResponsesProvider extends LLMProvider {
   private lastResponseOutput: ResponsesApiResponse['output'] | null = null;
 
   protected async makeRequest(endpoint: string, body: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const url = `${this.baseUrl}${endpoint}`;
+    this.logger?.debug(`[${this.type}] Request to ${url}`, {
+      body: this.truncateForLogging(JSON.stringify(body)),
+    });
+
+    const startTime = Date.now();
+    const response = await fetch(url, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(body),
     });
+    const duration = Date.now() - startTime;
 
     if (!response.ok) {
       const errorText = await response.text();
+      this.logger?.error(
+        `[${this.type}] Request failed (${response.status}) after ${duration}ms`,
+        { responseData: errorText },
+      );
       throw new Error(
         `HTTP ${response.status}: ${errorText.substring(0, 200)}`,
       );
     }
 
     const jsonResponse = await response.json();
+    this.logger?.debug(`[${this.type}] Response received in ${duration}ms`, {
+      data: this.truncateForLogging(JSON.stringify(jsonResponse)),
+    });
 
     // Store the output for later retrieval
     if (jsonResponse.output) {

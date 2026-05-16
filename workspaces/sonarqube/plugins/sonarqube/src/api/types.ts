@@ -28,6 +28,15 @@ export interface FindingsWrapper {
   measures: Measure[];
 }
 
+export interface SummaryWrapper {
+  findings: {
+    analysisDate: string;
+    measures: Measure[];
+  } | null;
+  instanceUrl: string;
+  componentKey: string;
+}
+
 /**
  * @deprecated use the same type from `@backstage-community/plugin-sonarqube-react` instead
  */

@@ -1,4 +1,69 @@
-### Dependencies
+# @backstage-community/plugin-nexus-repository-manager
+
+## 1.23.2
+
+### Patch Changes
+
+- 24acada: Updated dependency `@hey-api/openapi-ts` to `0.97.1`.
+
+## 1.23.1
+
+### Patch Changes
+
+- e9a32f2: Updated dependency `@hey-api/openapi-ts` to `0.95.0`.
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+
+## 1.23.0
+
+### Minor Changes
+
+- f3daead: Backstage version bump to v1.49.2
+
+## 1.22.3
+
+### Patch Changes
+
+- da31305: Updated dependency `filesize` to `^11.0.0`.
+
+## 1.22.2
+
+### Patch Changes
+
+- c7283a1: Updated dependency `@hey-api/openapi-ts` to `0.93.1`.
+
+## 1.22.1
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+
+## 1.22.0
+
+### Minor Changes
+
+- 3dd6884: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+- 9f0798f: Updated dependency `@hey-api/openapi-ts` to `0.92.4`.
+
+## 1.21.0
+
+### Minor Changes
+
+- 401af6d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+
+## 1.20.1
+
+### Patch Changes
+
+- c074f91: Updated fr, it and ja translation files.
+- d567697: Updated dependency `@hey-api/openapi-ts` to `0.90.9`.
 
 ## 1.20.0
 
@@ -10,6 +75,12 @@
 
 - fb94653: Updated dependency `@hey-api/openapi-ts` to `0.90.2`.
 - b2c4feb: Updated dependency `@hey-api/openapi-ts` to `0.90.1`.
+
+## 1.19.4
+
+### Patch Changes
+
+- 5cbde4b: Updated fr, it and ja translation files
 
 ## 1.19.3
 

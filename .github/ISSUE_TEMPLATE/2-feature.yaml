@@ -25,6 +25,7 @@ body:
         - analytics
         - announcements
         - apache-airflow
+        - apiiro
         - apollo-explorer
         - argocd
         - azure-devops
@@ -37,6 +38,7 @@ body:
         - bitrise
         - blackduck
         - bookmarks
+        - catalog
         - cicd-statistics
         - cloudbuild
         - code-climate
@@ -49,6 +51,7 @@ body:
         - entity-feedback
         - entity-validation
         - explore
+        - fairwinds-insights
         - feedback
         - firehydrant
         - flux
@@ -56,16 +59,13 @@ body:
         - gcalendar
         - gcp-projects
         - git-release-manager
-        - github-actions
-        - github-deployments
-        - github-discussions
-        - github-issues
-        - github-pull-requests-board
+        - github
         - gitops-profiles
         - gocd
         - grafana
         - graphiql
         - graphql-voyager
+        - growthbook-flags
         - ilert
         - jaeger
         - jenkins
@@ -82,6 +82,7 @@ body:
         - microsoft-calendar
         - mta
         - multi-source-security-viewer
+        - n8n
         - newrelic
         - nexus-repository-manager
         - nomad

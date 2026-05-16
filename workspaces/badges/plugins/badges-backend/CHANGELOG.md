@@ -1,5 +1,35 @@
 # @backstage-community/plugin-badges-backend
 
+## 0.23.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
+## 0.23.0
+
+### Minor Changes
+
+- a6cf3cc: Backstage version bump to v1.50.2
+
+## 0.22.0
+
+### Minor Changes
+
+- 87a4cec: Backstage version bump to v1.49.2
+
+## 0.21.0
+
+### Minor Changes
+
+- 0d67d72: Backstage version bump to v1.48.2
+
+## 0.20.0
+
+### Minor Changes
+
+- 5914b94: Backstage version bump to v1.47.2
+
 ## 0.19.2
 
 ### Patch Changes

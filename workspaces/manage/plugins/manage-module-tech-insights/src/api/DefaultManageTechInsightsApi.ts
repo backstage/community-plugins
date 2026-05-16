@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import type { Check } from '@backstage-community/plugin-tech-insights-common';
-import type { ProgressColor } from '@backstage-community/plugin-manage-react';
 
 import type { ManageTechInsights } from './ManageTechInsights';
 import { ManageProviderTechInsights } from '../components/ManageProvider';
@@ -38,7 +37,7 @@ export interface DefaultManageApiOptions {
    *
    * @param percent - number between 0 and 100
    */
-  getPercentColor?: (percent: number) => ProgressColor;
+  getPercentColor?: (percent: number) => string;
 
   /**
    * The default mapping of checks to titles for the
@@ -55,7 +54,7 @@ export interface DefaultManageApiOptions {
  */
 export class DefaultManageTechInsightsApi implements ManageTechInsights {
   readonly checkFilter: (check: Check) => boolean;
-  readonly getPercentColor: (percent: number) => ProgressColor;
+  readonly getPercentColor: (percent: number) => string;
   readonly mapTitle: ManageTechInsightsMapTitle;
 
   public constructor(options: DefaultManageApiOptions = {}) {

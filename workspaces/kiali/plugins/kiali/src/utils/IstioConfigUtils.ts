@@ -212,13 +212,28 @@ export function getIstioObjectGVK(
   apiVersion?: string,
   kind?: string,
 ): GroupVersionKind {
-  if (!apiVersion || !kind) {
+  if (!kind) {
     return { Group: '', Version: '', Kind: '' };
+  }
+  if (!apiVersion?.trim()) {
+    return (
+      dicTypeToGVK[kind as gvkType] ?? {
+        Group: '',
+        Version: '',
+        Kind: kind,
+      }
+    );
   }
   const parts = apiVersion.split('/');
   if (parts.length !== 2) {
     // should not happen, but not the best way, only an alternative
-    return dicTypeToGVK[kind as gvkType];
+    return (
+      dicTypeToGVK[kind as gvkType] ?? {
+        Group: '',
+        Version: '',
+        Kind: kind,
+      }
+    );
   }
   return { Group: parts[0], Version: parts[1], Kind: kind! };
 }

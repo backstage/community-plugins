@@ -1,5 +1,55 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.19.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 0.19.0
+
+### Minor Changes
+
+- 3fee6eb: Backstage version bump to v1.50.3
+
+## 0.18.0
+
+### Minor Changes
+
+- a34e621: Migrate `AnalyticsImplementationBlueprint` from `@backstage/frontend-plugin-api` to `@backstage/plugin-app-react`.
+
+## 0.17.0
+
+### Minor Changes
+
+- 4fca047: Backstage version bump to v1.49.2
+
+## 0.16.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
+## 0.16.1
+
+### Patch Changes
+
+- 5416340: Allow custom endpoint values to support internal proxies
+
+## 0.16.0
+
+### Minor Changes
+
+- 616b66c: Backstage version bump to v1.48.2
+
+## 0.15.0
+
+### Minor Changes
+
+- b41b95d: Backstage version bump to v1.47.2
+
 ## 0.14.0
 
 ### Minor Changes

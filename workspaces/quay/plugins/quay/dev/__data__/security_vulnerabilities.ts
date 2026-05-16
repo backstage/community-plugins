@@ -388,3 +388,16 @@ export const v4securityDetails: SecurityDetailsResponse = {
     } as Layer,
   },
 };
+
+export const digestSecurityDetails: Record<string, SecurityDetailsResponse> = {
+  'sha256:29c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775d':
+    v4securityDetails,
+  'sha256:79c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775d':
+    v3securityDetails,
+  'sha256:89c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775e':
+    v2securityDetails,
+  'sha256:99c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775f':
+    v1securityDetails,
+  'sha256:69c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775c':
+    securityDetails,
+};

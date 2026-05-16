@@ -1,4 +1,132 @@
-### Dependencies
+# @backstage-community/plugin-rbac
+
+## 1.52.4
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+
+## 1.52.3
+
+### Patch Changes
+
+- c1b8a19: Expanded checkbox click targets in the permission policies form to include the associated label text. Clicking the permission name or policy action text now toggles the corresponding checkbox.
+
+## 1.52.2
+
+### Patch Changes
+
+- 3fc1a9e: Fix RBAC role creation form UI text consistency and accuracy
+
+## 1.52.1
+
+### Patch Changes
+
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+
+## 1.52.0
+
+### Minor Changes
+
+- 8993474: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [8993474]
+  - @backstage-community/plugin-rbac-common@1.26.0
+
+## 1.51.0
+
+### Minor Changes
+
+- 50e194d: Add support for a default role and permissions for authenticated users in RBAC backend
+
+  - Introduced a new `defaultRole` and `basicPermissions` configuration options to assign a default role to all authenticated users.
+
+    ```diff
+    permission:
+      rbac:
+    +   defaultPermissions:
+    +     defaultRole: role:default/my-default-role
+    +     basicPermissions:
+    +       - permission: catalog.entity.read
+    +         action: read
+    ```
+
+  - Updated the RBAC permission policy to include the default role in user roles if not already present.
+
+### Patch Changes
+
+- Updated dependencies [50e194d]
+  - @backstage-community/plugin-rbac-common@1.25.0
+
+## 1.50.2
+
+### Patch Changes
+
+- d737494: Backstage version bump to v1.48.5
+- Updated dependencies [d737494]
+  - @backstage-community/plugin-rbac-common@1.24.1
+
+## 1.50.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
+## 1.50.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- d22bce2: Updated dependency `start-server-and-test` to `2.1.5`.
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+
+## 1.49.0
+
+### Minor Changes
+
+- 8c7bddb: Added NFS support
+
+### Patch Changes
+
+- 42c05f7: exported rbacPlugin as a default and other minor updates
+- a55af54: Updated the translation of a Japanese word.
+- 1d15595: Translation updated for German and Spanish
+
+## 1.48.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
+## 1.48.0
+
+### Minor Changes
+
+- e6dbf70: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 658c2c9: Updated dependency `start-server-and-test` to `2.1.3`.
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+- Updated dependencies [e6dbf70]
+  - @backstage-community/plugin-rbac-common@1.23.0
+
+## 1.47.4
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
 
 ## 1.47.3
 

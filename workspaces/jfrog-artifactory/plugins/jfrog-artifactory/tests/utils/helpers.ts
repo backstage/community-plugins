@@ -44,10 +44,12 @@ export class Common {
     });
   }
 
-  async switchToLocale(page: Page, locale: string): Promise<void> {
+  async switchToLocale(locale: string): Promise<void> {
     if (locale !== 'en') {
-      await page.getByRole('button', { name: 'Language' }).click();
-      await page.getByRole('menuitem', { name: locale }).click();
+      const names = new Intl.DisplayNames([locale], { type: 'language' });
+      const localeString = names.of(locale) || locale;
+      await this.page.getByRole('button', { name: 'Language' }).click();
+      await this.page.getByRole('menuitem', { name: localeString }).click();
     }
   }
 }

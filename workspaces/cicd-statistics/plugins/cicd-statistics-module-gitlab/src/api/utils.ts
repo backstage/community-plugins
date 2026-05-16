@@ -20,7 +20,7 @@ import {
   TriggerReason,
   Stage,
 } from '@backstage-community/plugin-cicd-statistics';
-import { Types } from '@gitbeaker/core';
+import { PipelineSchema, JobSchema } from '@gitbeaker/core';
 
 const statusMap: Record<string, FilterStatusType> = {
   manual: 'unknown',
@@ -51,9 +51,7 @@ const triggerReasonMap: Record<string, TriggerReason> = {
  *
  * @public
  */
-export function pipelinesToBuilds(
-  pipelines: Array<Types.PipelineSchema>,
-): Build[] {
+export function pipelinesToBuilds(pipelines: Array<PipelineSchema>): Build[] {
   return pipelines.map(pipeline => {
     return {
       id: pipeline.id.toString(),
@@ -84,7 +82,7 @@ export function pipelinesToBuilds(
  * Furthermore, we don't add the job to the sub-stage if it is has the same name as the parent stage
  * We then assume that the stage has no sub-stages
  */
-export function jobsToStages(jobs: Array<Types.JobSchema>): Stage[] {
+export function jobsToStages(jobs: Array<JobSchema>): Stage[] {
   return jobs.map(job => {
     const status = statusMap[job.status] ? statusMap[job.status] : 'unknown';
     const duration = job.duration ? ((job.duration * 1000) as number) : 0;

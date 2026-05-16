@@ -1,4 +1,34 @@
-# @janus-idp/backstage-plugin-tekton-common
+# @backstage-community/plugin-tekton-common
+
+## 1.20.0
+
+### Minor Changes
+
+- 701b9e7: Backstage version bump to v1.49.2
+
+## 1.19.1
+
+### Patch Changes
+
+- f5dd5e1: Backstage version bump to v1.48.5
+
+## 1.19.0
+
+### Minor Changes
+
+- 1f270b5: Backstage version bump to v1.48.4
+
+## 1.18.1
+
+### Patch Changes
+
+- 4818f35: Updated the `repository.url` value to just be an HTTP URL in the `package.json` file following the common convention in this repo.
+
+## 1.18.0
+
+### Minor Changes
+
+- d3e6dbe: Backstage version bump to v1.47.2
 
 ## 1.17.0
 

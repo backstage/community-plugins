@@ -1,5 +1,72 @@
 # @backstage-community/plugin-mcp-chat
 
+## 0.7.1
+
+### Patch Changes
+
+- c43e80c: Updated the list of supported providers in the README
+
+## 0.7.0
+
+### Minor Changes
+
+- 81aead2: Backstage version bump to v1.50.2
+
+## 0.6.0
+
+### Minor Changes
+
+- 3e01b82: Backstage version bump to v1.49.2
+
+  Updated `uuid` and `@types/uuid` to ^11.0.0, `@backstage/plugin-catalog-node` to ^2.1.0, and deduplicated yarn.lock
+
+## 0.5.0
+
+### Minor Changes
+
+- 805e6fd: Add support for new frontend system
+
+## 0.4.0
+
+### Minor Changes
+
+- 158dbf4: Backstage version bump to v1.48.5
+
+## 0.3.1
+
+### Patch Changes
+
+- a4dddac: enable knip report
+
+## 0.3.0
+
+### Minor Changes
+
+- 207781a: ### Added Conversation History Feature
+
+  - **Conversation Persistence**: Chat sessions are automatically saved for authenticated users
+  - **Starring**: Mark important conversations as favorites for quick access
+  - **Search**: Filter conversations by title using client-side search
+  - **Delete**: Remove individual conversations or clear all history
+  - **AI-Generated Titles**: Conversations get auto-generated titles using the LLM (with fallback to first message)
+
+  ### Backend Improvements
+
+  - Refactored router into domain-specific modules (status, chat, conversations) for better maintainability
+  - Added authentication and validation middleware
+  - New API endpoints for conversation management (list, get, delete, star, update title)
+  - Added `ChatConversationStore` and `SummarizationService` to public exports
+  - Comprehensive unit tests for `ChatConversationStore`
+
+  ### Configuration Options
+
+  New `conversationHistory` config section with `displayLimit`, `autoSummarize`, and `summarizeTimeout` options.
+
+  ### Notes
+
+  - Guest users (`user:development/guest`) do not have conversations saved
+  - Conversations stored in `mcp_chat_conversations` database table with automatic migrations
+
 ## 0.2.0
 
 ### Minor Changes

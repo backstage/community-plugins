@@ -19,19 +19,60 @@ import { mockArgocdConfig, mockRevisions } from '../../dev/__data__';
 import {
   Application,
   History,
+  Instance,
 } from '@backstage-community/plugin-argocd-common';
+import type { ArgoCDMessages } from './translations';
 
-export const verifyHeader = async (app: Application, card: Locator) => {
+export const getInstanceAppUrl = (
+  app: Application,
+  instanceName: string,
+  config: {
+    argocd?: {
+      baseUrl?: string;
+      appLocatorMethods?: Array<{
+        type?: string;
+        instances?: Array<Pick<Instance, 'name' | 'url'>>;
+      }>;
+    };
+  },
+) => {
+  const instanceBaseUrl =
+    config.argocd?.appLocatorMethods
+      ?.find(method => method.type === 'config')
+      ?.instances?.find(instance => instance.name === instanceName)?.url ??
+    config.argocd?.baseUrl;
+
+  if (!instanceBaseUrl) {
+    throw new Error(
+      `Unable to resolve ArgoCD instance URL for application "${app.metadata.name}" and instance "${instanceName}"`,
+    );
+  }
+
+  const appPath = app.metadata.namespace
+    ? `/applications/${app.metadata.namespace}/${app.metadata.name}`
+    : `/applications/${app.metadata.name}`;
+  return `${instanceBaseUrl}${appPath}`;
+};
+
+export const verifyHeader = async (
+  app: Application,
+  card: Locator,
+  t: ArgoCDMessages,
+) => {
   const header = card.locator('.MuiCardHeader-content');
   await expect(header.getByText(`${app.metadata.name}`)).toBeVisible();
 
   const appUrl = `${mockArgocdConfig.argocd.baseUrl}/applications/${app.metadata.name}`;
   await expect(header.getByRole('link')).toHaveAttribute('href', appUrl);
+
+  const syncStatusLabel = t.appStatus.appSyncStatus[app.status.sync.status];
+  const healthStatusLabel =
+    t.appStatus.appHealthStatus[app.status.health.status];
   await expect(header.getByTestId('app-sync-status-chip')).toHaveText(
-    app.status.sync.status,
+    syncStatusLabel,
   );
   await expect(header.getByTestId('app-health-status-chip')).toHaveText(
-    app.status.health.status,
+    healthStatusLabel,
   );
 };
 
@@ -50,12 +91,15 @@ export const verifyDeployments = async (
   app: Application,
   sideBar: Locator,
   index: number,
+  t: ArgoCDMessages,
 ) => {
   const imageUrl = `https://${app.status.summary.images[0]}`;
   const image = imageUrl.split('/').pop();
   const latestDeploy = app.status.history?.slice(-1)[0];
   const deployHistory = app.status.history?.slice(0, -1) as History[];
   const shortRevision = `${latestDeploy?.revision?.substring(0, 7)}`;
+  const deploymentHistoryText =
+    t.deploymentLifecycle.sidebar.resources.resource.deploymentHistory.bodyText;
 
   const latest = sideBar.locator('.MuiGrid-item', {
     hasText: 'Latest deployment',
@@ -76,9 +120,11 @@ export const verifyDeployments = async (
   ).toHaveAttribute('href', `${revisionUrl}`);
 
   const history = sideBar.locator('.MuiGrid-item', {
-    hasText: 'Deployment history',
+    hasText: deploymentHistoryText,
   });
-  const items = history.locator('.MuiCard-root', { hasText: 'Deployment' });
+  const items = history.locator('.MuiCard-root', {
+    hasText: 'Deployment',
+  });
   await expect(items).toHaveCount(deployHistory.length);
 
   for (const item of await items.all()) {
@@ -92,20 +138,22 @@ export const verifyAppCard = async (
   app: Application,
   card: Locator,
   index: number,
+  t: ArgoCDMessages,
 ) => {
-  await verifyHeader(app, card);
-  await verifyItem('Instance', 'main', card);
+  const cardLabels = t.deploymentLifecycle.deploymentLifecycleCard;
+  await verifyHeader(app, card, t);
+  await verifyItem(cardLabels.instance, 'main', card);
   await verifyItem(
-    'Server',
+    cardLabels.server,
     `${app.spec.destination.server} (in-cluster)`,
     card,
   );
-  await verifyItem('Namespace', app.spec.destination.namespace, card);
+  await verifyItem(cardLabels.namespace, app.spec.destination.namespace, card);
 
   const revision = app.status.history
     ?.slice(-1)[0]
     .revision?.substring(0, 7) as string;
-  await verifyItem('Commit', `${revision}`, card);
+  await verifyItem(cardLabels.commit, `${revision}`, card);
 
   const image = app.status.summary.images[0].split('/').pop();
 };
@@ -114,23 +162,32 @@ export const verifyAppSidebar = async (
   app: Application,
   sideBar: Locator,
   index: number,
+  t: ArgoCDMessages,
 ) => {
+  const drawerLabels = t.deploymentLifecycle.deploymentLifecycleDrawer;
+  const syncStatusLabel = t.appStatus.appSyncStatus[app.status.sync.status];
+  const healthStatusLabel =
+    t.appStatus.appHealthStatus[app.status.health.status];
   await verifyItem(
     `${app.metadata.name}`,
-    `${app.status.sync.status}${app.status.health.status}`,
+    `${syncStatusLabel}${healthStatusLabel}`,
     sideBar,
     false,
   );
-  await verifyItem('Instance', 'main', sideBar);
+  await verifyItem(drawerLabels.instance, 'main', sideBar);
   await verifyItem(
-    'Cluster',
+    drawerLabels.cluster,
     `${app.spec.destination.server} (in-cluster)`,
     sideBar,
   );
-  await verifyItem('Namespace', app.spec.destination.namespace, sideBar);
+  await verifyItem(
+    drawerLabels.namespace,
+    app.spec.destination.namespace,
+    sideBar,
+  );
 
   const revision = app.status.history
     ?.slice(-1)[0]
     ?.revision?.substring(0, 7) as string;
-  await verifyItem('Commit', `${revision}`, sideBar, false);
+  await verifyItem(drawerLabels.commit, `${revision}`, sideBar, false);
 };

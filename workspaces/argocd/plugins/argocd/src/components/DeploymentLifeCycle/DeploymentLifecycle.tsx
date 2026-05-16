@@ -41,6 +41,11 @@ import { ArgoResourcesProvider } from './sidebar/rollouts/RolloutContext';
 import { DrawerProvider } from './DrawerContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
+export interface DeploymentLifecycleProps {
+  showInstance?: boolean;
+  showServer?: boolean;
+}
+
 const useDrawerStyles = makeStyles<Theme>(theme =>
   createStyles({
     lifecycle: {
@@ -59,7 +64,10 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
   }),
 );
 
-const DeploymentLifecycle = () => {
+const DeploymentLifecycle = ({
+  showInstance = true,
+  showServer = true,
+}: DeploymentLifecycleProps) => {
   const { t } = useTranslation();
   const { entity } = useEntity();
   const classes = useDrawerStyles();
@@ -105,6 +113,7 @@ const DeploymentLifecycle = () => {
         .getRevisionDetailsList({
           apps: apps,
           revisionIDs: uniqRevisions,
+          appNamespace: appNamespace,
         })
         .then(data => {
           // By default, the data returned can contain copies of the same revision, depending on
@@ -122,6 +131,7 @@ const DeploymentLifecycle = () => {
   }, [
     api,
     apps,
+    appNamespace,
     entity,
     uniqRevisions,
     keepDuplicateRevisions,
@@ -166,6 +176,8 @@ const DeploymentLifecycle = () => {
             app={app}
             key={app.metadata.uid ?? idx}
             revisions={revisionCache.current}
+            showInstance={showInstance}
+            showServer={showServer}
             onclick={() => {
               toggleDrawer();
               setActiveItem(app.metadata.uid);
@@ -181,6 +193,8 @@ const DeploymentLifecycle = () => {
           <DeploymentLifecycleDrawer
             isOpen={open}
             onClose={() => setOpen(false)}
+            showInstance={showInstance}
+            showServer={showServer}
           />
         </ArgoResourcesProvider>
       </DrawerProvider>

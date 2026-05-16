@@ -15,6 +15,7 @@
  */
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
@@ -87,23 +88,27 @@ const PermissionPoliciesFormNestedRow = ({
               alignItems: 'center',
             }}
           >
-            <Checkbox
-              onChange={e => {
-                if (e.target.checked) {
-                  onSelectPermission(
-                    plugin,
-                    permissionPolicy.permission,
-                    permissionPolicy.isResourced,
-                    permissionPolicy.actions,
-                    permissionPolicy.resourceType,
-                  );
-                } else {
-                  onRemovePermission(permissionPolicyRowIndex);
-                }
-              }}
-              checked={permissionPolicyRowIndex >= 0}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={e => {
+                    if (e.target.checked) {
+                      onSelectPermission(
+                        plugin,
+                        permissionPolicy.permission,
+                        permissionPolicy.isResourced,
+                        permissionPolicy.actions,
+                        permissionPolicy.resourceType,
+                      );
+                    } else {
+                      onRemovePermission(permissionPolicyRowIndex);
+                    }
+                  }}
+                  checked={permissionPolicyRowIndex >= 0}
+                />
+              }
+              label={permissionPolicy.permission}
             />
-            {permissionPolicy.permission}
             {permissionPolicy.resourceType ? (
               <Tooltip
                 title={t('permissionPolicies.resourceTypeTooltip' as any, {
@@ -132,14 +137,31 @@ const PermissionPoliciesFormNestedRow = ({
               sx={{ display: 'flex', alignItems: 'center' }}
               key={`${permissionPolicy.permission}-${p.policy}`}
             >
-              <Checkbox
-                onChange={(_e, checked) =>
-                  onSelectPolicy(checked, pIndex, permissionPolicyRowIndex)
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={() => {
+                      if (permissionPolicyRowIndex < 0) {
+                        onSelectPermission(
+                          plugin,
+                          permissionPolicy.permission,
+                          permissionPolicy.isResourced,
+                          permissionPolicy.actions,
+                          permissionPolicy.resourceType,
+                        );
+                      } else {
+                        onSelectPolicy(
+                          p.effect !== 'allow',
+                          pIndex,
+                          permissionPolicyRowIndex,
+                        );
+                      }
+                    }}
+                    checked={p.effect === 'allow'}
+                  />
                 }
-                checked={p.effect === 'allow'}
-                disabled={permissionPolicyRowIndex < 0}
+                label={p.policy}
               />
-              {p.policy}
             </Box>
           ))}
         </TableCell>

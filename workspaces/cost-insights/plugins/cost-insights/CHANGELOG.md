@@ -1,5 +1,33 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.28.0
+
+### Minor Changes
+
+- ea7c464: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [ea7c464]
+  - @backstage-community/plugin-cost-insights-common@0.13.0
+
+## 0.27.0
+
+### Minor Changes
+
+- 8a5c766: The product insights and the cost insights graph support date ranges to add custom time frames
+
+## 0.26.0
+
+### Minor Changes
+
+- 649ffe1: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [649ffe1]
+  - @backstage-community/plugin-cost-insights-common@0.12.0
+
 ## 0.25.0
 
 ### Minor Changes

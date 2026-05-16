@@ -1,5 +1,29 @@
 # @backstage-community/plugin-linguist-common
 
+## 0.19.0
+
+### Minor Changes
+
+- 6e429f0: Backstage version bump to v1.50.3
+
+## 0.18.0
+
+### Minor Changes
+
+- d2a62e0: Backstage version bump to v1.49.2
+
+## 0.17.0
+
+### Minor Changes
+
+- f14e600: Backstage version bump to v1.48.2
+
+## 0.16.0
+
+### Minor Changes
+
+- a9545aa: Backstage version bump to v1.47.2
+
 ## 0.15.0
 
 ### Minor Changes

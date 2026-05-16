@@ -39,8 +39,8 @@ import {
   useApi,
   identityApiRef,
   useRouteRef,
-  alertApiRef,
 } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { Member, BazaarProject } from '../../types';
 import { bazaarApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
@@ -85,7 +85,7 @@ export const HomePageBazaarInfoCard = ({
   const entityLink = useRouteRef(entityRouteRef);
   const bazaarApi = useApi(bazaarApiRef);
   const identity = useApi(identityApiRef);
-  const alertApi = useApi(alertApiRef);
+  const alertApi = useApi(toastApiRef);
   const catalogApi = useApi(catalogApiRef);
   const [openEdit, setOpenEdit] = useState(false);
   const [openProjectSelector, setOpenProjectSelector] = useState(false);
@@ -217,11 +217,10 @@ export const HomePageBazaarInfoCard = ({
       setOpenUnlink(false);
       fetchBazaarProject();
       alertApi.post({
-        message: `Unlinked entity '${
+        title: `Unlinked entity '${
           parseEntityRef(bazaarProject.value?.entityRef!).name
         }' from the project ${bazaarProject.value?.title}`,
-        severity: 'success',
-        display: 'transient',
+        status: 'success',
       });
     }
   };

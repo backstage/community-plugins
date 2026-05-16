@@ -38,10 +38,12 @@ export class Common {
     await this.waitForSideBarVisible();
   }
 
-  async switchToLocale(page: Page, locale: string): Promise<void> {
+  async switchToLocale(locale: string): Promise<void> {
     if (locale !== 'en') {
-      await page.getByRole('button', { name: 'Language' }).click();
-      await page.getByRole('menuitem', { name: locale }).click();
+      const names = new Intl.DisplayNames([locale], { type: 'language' });
+      const localeString = names.of(locale) || locale;
+      await this.page.getByRole('button', { name: 'Language' }).click();
+      await this.page.getByRole('menuitem', { name: localeString }).click();
     }
   }
 
@@ -68,13 +70,16 @@ export class Common {
       - heading "Pods"
       - list:
         - listitem:
-          - text: P test-deployment-645f8d4887-8dmrr ${translations.status.running}
+          - text: P test-deployment-645f8d4887-8dmrr
+          - paragraph: ${translations.status.running}
           - button "view logs": ${translations.common.viewLogs}
         - listitem:
-          - text: P test-deployment-645f8d4887-d77ff ${translations.status.running}
+          - text: P test-deployment-645f8d4887-d77ff
+          - paragraph: ${translations.status.running}
           - button "view logs": ${translations.common.viewLogs}
         - listitem:
-          - text: P test-deployment-645f8d4887-n8644 ${translations.status.running}
+          - text: P test-deployment-645f8d4887-n8644
+          - paragraph: ${translations.status.running}
           - button "view logs": ${translations.common.viewLogs}
       `);
 

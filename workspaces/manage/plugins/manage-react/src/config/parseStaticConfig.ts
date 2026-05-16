@@ -16,7 +16,7 @@
 
 import { ConfigApi } from '@backstage/frontend-plugin-api';
 
-import { ManageStaticConfig } from './types';
+import { defaultKinds, ManageStaticConfig } from './types';
 
 /**
  * This is an internal utility function
@@ -26,6 +26,7 @@ import { ManageStaticConfig } from './types';
 export function parseStaticConfig(
   config: ConfigApi | undefined,
 ): ManageStaticConfig {
+  const kinds = config?.getOptionalStringArray('manage.kinds') ?? defaultKinds;
   const title = config?.getOptionalString('manage.title');
   const subtitle = config?.getOptionalString('manage.subtitle');
   const themeId = config?.getOptionalString('manage.themeId');
@@ -55,7 +56,12 @@ export function parseStaticConfig(
     config?.getOptionalStringArray('manage.order.columns') ?? []
   ).map(prefixColumnNodeId);
 
+  const lcKinds = Array.from(
+    new Set(kinds.map(kind => kind.toLocaleLowerCase('en-US'))),
+  );
+
   return {
+    kinds: lcKinds,
     title,
     subtitle,
     combined,

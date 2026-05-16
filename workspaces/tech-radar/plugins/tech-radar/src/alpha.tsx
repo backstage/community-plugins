@@ -48,7 +48,6 @@ export const techRadarNavItem = NavItemBlueprint.make({
 export const techRadarPage = PageBlueprint.makeWithOverrides({
   config: {
     schema: {
-      title: z => z.string().default('Tech Radar'),
       subtitle: z =>
         z
           .string()

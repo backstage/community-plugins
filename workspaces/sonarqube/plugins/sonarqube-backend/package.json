@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube-backend",
-  "version": "0.16.0",
+  "version": "1.1.1",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "sonarqube",
@@ -40,8 +40,10 @@
   "dependencies": {
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
     "@types/express": "*",
     "express": "^4.18.1",
     "express-promise-router": "^4.1.0",
@@ -54,7 +56,7 @@
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@types/node-fetch": "^2.5.12",
-    "@types/supertest": "^6.0.0",
+    "@types/supertest": "^7.0.0",
     "msw": "^1.0.0",
     "supertest": "^7.0.0"
   },

@@ -1,5 +1,53 @@
 # @backstage-community/plugin-copilot-backend
 
+## 0.19.0
+
+### Minor Changes
+
+- b5e72fb: Backstage version bump to v1.50.3
+
+### Patch Changes
+
+- Updated dependencies [b5e72fb]
+  - @backstage-community/plugin-copilot-common@0.18.0
+
+## 0.18.4
+
+### Patch Changes
+
+- b5e5991: Updated better-sqlite3 to v12
+
+## 0.18.3
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
+## 0.18.2
+
+### Patch Changes
+
+- bc6b0b6: Backstage version bump to v1.48.4
+- Updated dependencies [bc6b0b6]
+  - @backstage-community/plugin-copilot-common@0.17.1
+
+## 0.18.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+
+## 0.18.0
+
+### Minor Changes
+
+- c8ad8f8: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [c8ad8f8]
+  - @backstage-community/plugin-copilot-common@0.17.0
+
 ## 0.17.1
 
 ### Patch Changes

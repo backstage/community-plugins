@@ -1,5 +1,35 @@
 # @backstage-community/plugin-newrelic-dashboard
 
+## 0.23.0
+
+### Minor Changes
+
+- c43ea3a: Backstage version bump to v1.50.2
+
+## 0.22.0
+
+### Minor Changes
+
+- ab9413d: Backstage version bump to v1.49.2
+
+## 0.21.1
+
+### Patch Changes
+
+- 637b38a: Fixed an issue causing dashboards not to display
+
+## 0.21.0
+
+### Minor Changes
+
+- 806a57f: Backstage version bump to v1.48.2
+
+## 0.20.0
+
+### Minor Changes
+
+- 7e9b070: Backstage version bump to v1.47.2
+
 ## 0.19.0
 
 ### Minor Changes

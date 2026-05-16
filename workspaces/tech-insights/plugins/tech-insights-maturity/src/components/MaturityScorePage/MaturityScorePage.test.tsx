@@ -29,15 +29,8 @@ const entity = {
   kind: 'Component',
   metadata: {
     namespace: 'default',
-    name: 'bingaux-sources',
-    title: 'Bingaux Sources',
-    stakeholders: [
-      {
-        role: 'architect',
-        email: 'jcarres@mdsol.com',
-      },
-    ],
-    tags: ['python', 'csharp'],
+    name: 'mock-name',
+    title: 'Mock Title',
   },
   spec: {
     type: 'service',
@@ -82,11 +75,11 @@ const result: MaturityScore = {
         links: [
           {
             title: 'ownership doc1',
-            url: 'https://test.net/docs/ownership/authoring-factbook/#ownership',
+            url: 'https://test.net/docs/ownership/authoring-factbook/#ownership1',
           },
           {
             title: 'ownership doc2',
-            url: 'https://test.net/docs/ownership/authoring-factbook/#ownership',
+            url: 'https://test.net/docs/ownership/authoring-factbook/#ownership2',
           },
         ],
         metadata: {
@@ -251,7 +244,7 @@ describe('<MaturityScorePage />', () => {
     getFacts: jest.fn().mockResolvedValue(facts),
   };
 
-  afterEach(() => jest.resetAllMocks());
+  afterEach(() => jest.clearAllMocks());
 
   it('shows maturity score page', async () => {
     const { getByText, queryByText, getAllByText, getAllByAltText } =
@@ -273,9 +266,9 @@ describe('<MaturityScorePage />', () => {
 
     // Maturity Check Table
     expect(queryByText('Checks')).toBeInTheDocument(); // title
-    expect(getAllByAltText(/Bronze/)).toHaveLength(3); // Bronze Accordion + Maturity Summary chip
-    expect(getAllByText(/Silver/)).toHaveLength(2); // Silver Accordion + Maturity Summary chip
-    expect(getAllByText(/Gold/)).toHaveLength(2); // Gold Accordion + Maturity Summary chip
+    expect(queryByText(/Bronze/)).toBeInTheDocument(); // Bronze Accordion
+    expect(queryByText(/Silver/)).toBeInTheDocument(); // Silver Accordion
+    expect(getAllByAltText(/Gold/)).toHaveLength(2); // Gold Accordion + 0% to Gold
     expect(getByText(/Product Owner Check/)).toBeInTheDocument();
     expect(
       getByText(
@@ -290,5 +283,33 @@ describe('<MaturityScorePage />', () => {
     expect(
       getByText(/Technical owners are currently present: maica@hotmail.com/),
     ).toBeInTheDocument(); // display failed check fact
+  });
+
+  it('does not show Reference icon and tooltip when check has no links', async () => {
+    const { getByText, container } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
+        <EntityProvider entity={entity}>
+          <MaturityScorePage />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    expect(
+      getByText(/Technical owners are currently present/),
+    ).toBeInTheDocument();
+
+    const menuBookIcons = container.querySelectorAll(
+      'svg[data-testid="MenuBookIcon"]',
+    );
+    const checksWithLinks = result.checks.filter(
+      c => c.check.links && c.check.links.length > 0,
+    ).length;
+
+    expect(menuBookIcons.length).toBe(checksWithLinks);
   });
 });

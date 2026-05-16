@@ -44,10 +44,7 @@ const mockUsePermission = usePermission as jest.MockedFunction<
 >;
 
 const mockQuayApi: Partial<QuayApiV1> = {
-  getQuayInstance: jest.fn().mockReturnValue({
-    name: 'default',
-    apiUrl: 'https://quay.example.com',
-  }),
+  getQuayInstance: jest.fn(),
 };
 
 describe('QuayRepository', () => {
@@ -60,6 +57,10 @@ describe('QuayRepository', () => {
 
   beforeEach(() => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });
+    (mockQuayApi.getQuayInstance as jest.Mock).mockReturnValue({
+      name: 'default',
+      apiUrl: 'https://quay.example.com',
+    });
   });
 
   afterAll(() => {
@@ -82,7 +83,8 @@ describe('QuayRepository', () => {
     expect(getByTestId('quay-repo-progress')).not.toBeNull();
   });
 
-  it('should show empty table if loaded and data is not present', async () => {
+  it('should show empty table and no title links if loaded and data is not present', async () => {
+    (mockQuayApi.getQuayInstance as jest.Mock).mockReturnValue(undefined);
     (useTags as jest.Mock).mockReturnValue({ loading: false, data: [] });
     const { getByTestId, queryByText } = await renderComponent();
     expect(getByTestId('quay-repo-table')).not.toBeNull();
@@ -94,9 +96,14 @@ describe('QuayRepository', () => {
         "This repository doesn't contain any images yet, or there might be an access issue.",
       ),
     ).toBeInTheDocument();
+    expect(
+      queryByText('backstage-community/redhat-backstage-build', {
+        selector: 'a',
+      }),
+    ).not.toBeInTheDocument();
   });
 
-  it('should show table if loaded and data is present', async () => {
+  it('should show table and title links if loaded and data is present', async () => {
     (useTags as jest.Mock).mockReturnValue({
       loading: false,
       data: [
@@ -116,6 +123,17 @@ describe('QuayRepository', () => {
     expect(
       queryByText('There are no images available.'),
     ).not.toBeInTheDocument();
+    const repositoryLink = queryByText(
+      'backstage-community/redhat-backstage-build',
+      {
+        selector: 'a',
+      },
+    );
+    expect(repositoryLink).toBeInTheDocument();
+    expect(repositoryLink).toHaveAttribute(
+      'href',
+      'https://quay.example.com/repository/backstage-community/redhat-backstage-build',
+    );
   });
 
   it('should show table if loaded and data is present but shows progress if security scan is not loaded', async () => {

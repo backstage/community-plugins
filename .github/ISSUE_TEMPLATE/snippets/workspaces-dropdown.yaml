@@ -15,6 +15,7 @@ attributes:
     - analytics
     - announcements
     - apache-airflow
+    - apiiro
     - apollo-explorer
     - argocd
     - azure-devops
@@ -27,6 +28,7 @@ attributes:
     - bitrise
     - blackduck
     - bookmarks
+    - catalog
     - cicd-statistics
     - cloudbuild
     - code-climate
@@ -39,6 +41,7 @@ attributes:
     - entity-feedback
     - entity-validation
     - explore
+    - fairwinds-insights
     - feedback
     - firehydrant
     - flux
@@ -46,16 +49,13 @@ attributes:
     - gcalendar
     - gcp-projects
     - git-release-manager
-    - github-actions
-    - github-deployments
-    - github-discussions
-    - github-issues
-    - github-pull-requests-board
+    - github
     - gitops-profiles
     - gocd
     - grafana
     - graphiql
     - graphql-voyager
+    - growthbook-flags
     - ilert
     - jaeger
     - jenkins
@@ -72,6 +72,7 @@ attributes:
     - microsoft-calendar
     - mta
     - multi-source-security-viewer
+    - n8n
     - newrelic
     - nexus-repository-manager
     - nomad

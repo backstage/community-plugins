@@ -47,9 +47,51 @@ export default defineConfig({
 
   projects: [
     {
-      testDir: 'plugins/tekton/tests',
+      name: 'en',
+      testDir: './plugins/tekton/tests',
       use: {
         channel: 'chrome',
+        locale: 'en',
+      },
+    },
+    {
+      name: 'fr',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'fr',
+      },
+    },
+    {
+      name: 'it',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'ja',
+      },
+    },
+    {
+      name: 'de',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      testDir: './plugins/tekton/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
       },
     },
   ],

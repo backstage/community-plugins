@@ -1,5 +1,172 @@
 # @backstage-community/plugin-announcements
 
+## 2.9.0
+
+### Minor Changes
+
+- 510c863: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [510c863]
+  - @backstage-community/plugin-announcements-common@0.20.0
+  - @backstage-community/plugin-announcements-react@0.25.0
+
+## 2.8.0
+
+### Minor Changes
+
+- daaeefa: Migrated `AnnouncementsCard` component to Backstage UI.
+
+### Patch Changes
+
+- ebf4891: Updated dependency `slugify` to `1.6.9`.
+
+## 2.7.0
+
+### Minor Changes
+
+- e0c2eb4: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- a24a1d0: Improved jsdocs for all alpha exports
+- Updated dependencies [e0c2eb4]
+  - @backstage-community/plugin-announcements-common@0.19.0
+  - @backstage-community/plugin-announcements-react@0.24.0
+
+## 2.6.0
+
+### Minor Changes
+
+- 8403fca: Backstage version bump to v1.49.1. This release also includes migration from `AlertApi` to the new `ToastApi`.
+
+### Patch Changes
+
+- 7397465: Updated dependency `slugify` to `1.6.8`.
+- Updated dependencies [8403fca]
+  - @backstage-community/plugin-announcements-react@0.23.0
+
+## 2.5.1
+
+### Patch Changes
+
+- c4d2f14: Ensure that Announcement banner is always on top of the page. It fixes the issue where the banner could be hidden behind existing page content.
+
+## 2.5.0
+
+### Minor Changes
+
+- a598f92: Migrate Announcements Banner to the Backstage UI using the Alert component.
+
+  This change also removes the `variant` React prop. If you were using the prop with the `block` or `floating` values, it can be safely removed, as the banner now uses the Backstage UI Alert default style.
+
+### Patch Changes
+
+- 693fc2f: Replace Announcements plugin icon from Material UI's RecordVoiceOverIcon to Remix Icon's RiMegaphoneLine. This change is made in the SearchPage component, the search result list item component, the search result type blueprint and use by default for nav blueprint.
+
+## 2.4.0
+
+### Minor Changes
+
+- 8b42b6b: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [8b42b6b]
+  - @backstage-community/plugin-announcements-common@0.18.0
+  - @backstage-community/plugin-announcements-react@0.22.0
+
+## 2.3.0
+
+### Minor Changes
+
+- 5a984ed: - Added support for overriding `title`, `hideStartAt` and `markdownRenderer` via app-config for announcements page.
+  - `category` and `defaultInactive` props are now deprecated and will be removed in future releases. Use URL state to filter by category (e.g. `?category=...`). Inactive announcements are now hidden by default.
+  - Update @uiw/react-md-editor dependency to version 4.0.11.
+
+## 2.2.0
+
+### Minor Changes
+
+- 57c349e: `AnnouncementsOptions` has been dropped as an optional arg for the `useAnnouncements` hook in favor of handling state and dependencies internally.
+
+### Patch Changes
+
+- Updated dependencies [57c349e]
+  - @backstage-community/plugin-announcements-react@0.21.0
+
+## 2.1.0
+
+### Minor Changes
+
+- 99b4b52: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 1a71b9a: The On Behalf Of form component is now rewritten with `@backstage/ui`. The announcements table will now display the on behalf of group alongside publisher if present.
+- 3e53912: The tags select component in the announcements form has been swapped with our new `@backstage/ui` select implementation
+- 44a0337: The category selection in the announcements form has been refactored to use the new `CategorySelectInput` and `CreateCategoryDialog` components written with `@backstage/ui`. Category creation is now handled through the same mechanism as the categories table.
+- 64a82b0: Updates all non-date related text inputs to use the `TextField` from `@backstage/ui`.
+- 6f6d4c8: Switch components in the announcements form have been migrated to use `@backstage/ui`. The "Send notifications" label now includes support for translations.
+- 41f738e: Updates the announcements form to use `@backstage/ui` for the following components:
+
+  - Box
+  - Button
+  - InfoCard -> Card, CardBody, CardHeader
+  - Grid
+  - Typography -> Text
+  - Paper -> _removed_
+  - Divider -> _removed_
+
+  These are minor changes that do not affect the functionality of the announcements form.
+
+- Updated dependencies [44a0337]
+- Updated dependencies [6f6d4c8]
+- Updated dependencies [99b4b52]
+  - @backstage-community/plugin-announcements-react@0.20.0
+  - @backstage-community/plugin-announcements-common@0.17.0
+
+## 2.0.0
+
+### Major Changes
+
+- ad6eb1b: Refactor legacy announcements frontend to use the new (NFS) components built with `@backstage/ui`.
+
+  ## Breaking Changes
+
+  - `AnnouncementsPage` **no longer supports** the following props:
+
+    - `themeId`
+    - `subtitle`
+    - `hideContextMenu`
+    - `cardOptions`
+    - `buttonOptions`
+    - `hideInactive`
+
+    If your app passed any of these props, you must remove them (or migrate to new equivalents if/when they are reintroduced by the NFS implementation).
+
+  - `AdminPortal` is now implemented via the new announcements admin page and no longer supports customization via props such as `themeId`, `title`, `subtitle`, or `defaultInactive`.
+
+### Patch Changes
+
+- 89bf3ae: Updated the Search components for the New Frontend System to use the `RecordVoiceOverIcon` to match the existing experince
+
+## 1.4.0
+
+### Minor Changes
+
+- c299df2: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- 9c5efc7: Tables built with `@backstage/ui` now incorporate the new `useTable` hook.
+- 14ea727: The create announcements button in the admin portal now matches same style as category and tags for users of the new frontend system. This release does not affect users on the existing frontend system.
+- Updated dependencies [c299df2]
+- Updated dependencies [14ea727]
+  - @backstage-community/plugin-announcements-common@0.16.0
+  - @backstage-community/plugin-announcements-react@0.19.0
+
 ## 1.3.2
 
 ### Patch Changes

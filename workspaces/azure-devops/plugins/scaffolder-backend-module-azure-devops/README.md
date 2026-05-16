@@ -508,3 +508,26 @@ spec:
         workItemId: 12345
         token: ${{ secrets.USER_OAUTH_TOKEN }}
 ```
+
+### Example: Create a new Pull Request, specifying the merge strategy
+
+```yaml
+spec:
+  steps:
+    - id: createPR
+      name: Create PR
+      action: azure:pr:create
+      input:
+        organization: org
+        sourceBranch: scaffolder/new-branch
+        targetBranch: 'main'
+        repoName: repo
+        title: My PR
+        project: my-project
+        supportsIterations: true
+        description: 'Created by Backstage Scaffolder'
+        autoComplete: true
+        mergeStrategy: 'Squash'
+        workItemId: 12345
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+```

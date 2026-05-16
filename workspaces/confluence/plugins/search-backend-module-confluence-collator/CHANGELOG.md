@@ -1,5 +1,19 @@
 # @backstage-community/plugin-search-backend-module-confluence-collator
 
+## 0.17.2
+
+### Patch Changes
+
+- 53d1ad6: Restore the support for the combination of 'spaces' and 'query' parameters introduced by #4017
+- ea6b80e: Lowercase the document type passed to the collator factory to prevent OpenSearch invalid_index_name_exception in multi-instance configurations
+- d7ee0fe: Backstage version bump to v1.48.4
+
+## 0.17.1
+
+### Patch Changes
+
+- cdebdf7: Fixed an issue causing the confluence collator to fail when using the legacy config format.
+
 ## 0.17.0
 
 ### Minor Changes

@@ -22,7 +22,7 @@
     "@backstage-community/plugin-manage": "workspace:^",
     "@backstage-community/plugin-manage-module-tech-insights": "workspace:^",
     "@backstage-community/plugin-manage-react": "workspace:^",
-    "@backstage-community/plugin-tech-insights": "^0.6.2",
+    "@backstage-community/plugin-tech-insights": "^1.1.0",
     "@backstage/app-defaults": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/cli": "backstage:^",
@@ -35,6 +35,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/integration-react": "backstage:^",
     "@backstage/plugin-api-docs": "backstage:^",
+    "@backstage/plugin-app-react": "backstage:^",
     "@backstage/plugin-app-visualizer": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/plugin-catalog-common": "backstage:^",
@@ -64,7 +65,7 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/react-dom": "*",
-    "cross-env": "^7.0.0"
+    "cross-env": "^10.0.0"
   },
   "browserslist": {
     "production": [

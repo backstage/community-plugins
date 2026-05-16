@@ -25,7 +25,7 @@ import {
   createBackendModule,
   createExtensionPoint,
 } from '@backstage/backend-plugin-api';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
 import {
   DefaultAdrCollatorFactory,
@@ -101,7 +101,6 @@ export default createBackendModule({
         auth: coreServices.auth,
         cache: coreServices.cache,
         config: coreServices.rootConfig,
-        discovery: coreServices.discovery,
         logger: coreServices.rootLogger,
         reader: coreServices.urlReader,
         scheduler: coreServices.scheduler,
@@ -112,7 +111,6 @@ export default createBackendModule({
         auth,
         cache,
         config,
-        discovery,
         logger,
         reader,
         scheduler,
@@ -127,7 +125,6 @@ export default createBackendModule({
             auth,
             cache,
             config,
-            discovery,
             logger,
             reader,
             adrFilePathFilterFn,

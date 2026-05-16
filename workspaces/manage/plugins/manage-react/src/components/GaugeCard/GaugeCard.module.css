@@ -1,0 +1,12 @@
+.card {
+  width: 140px;
+  background-color: var(--bui-bg-neutral-2);
+}
+
+.cardBody {
+  align-content: end;
+}
+
+.cardContent {
+  margin-inline: auto;
+}

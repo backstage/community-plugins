@@ -23,6 +23,12 @@ jest.mock('../../../../AppStatus/StatusIcons', () => ({
   AppHealthIcon: jest.fn(() => <span>Mocked Health Icon</span>),
 }));
 
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key.split('.').pop(),
+  }),
+}));
+
 describe('ResourceHealthStatus Component', () => {
   const renderComponent = (healthStatus: string) => {
     render(<ResourceHealthStatus healthStatus={healthStatus} />);

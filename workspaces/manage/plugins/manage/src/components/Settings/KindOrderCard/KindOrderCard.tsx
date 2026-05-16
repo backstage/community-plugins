@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { useCallback, useMemo } from 'react';
 
-import { capitalize } from '@mui/material/utils';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { upperFirst } from 'lodash';
+import ResetIcon from '@mui/icons-material/RestartAlt';
+
+import { Box, Button } from '@backstage/ui';
 
 import {
   pluralizeKind,
@@ -26,6 +28,7 @@ import {
   useOwnedKinds,
   useSetKindOrder,
 } from '@backstage-community/plugin-manage-react';
+
 import { SettingsCard } from '../SettingsCard/SettingsCard';
 
 /**
@@ -47,7 +50,7 @@ export function KindOrderCard() {
     () =>
       orderedKinds.map(kind => ({
         id: kind,
-        title: capitalize(pluralizeKind(kind)),
+        title: upperFirst(pluralizeKind(kind)),
       })),
     [orderedKinds],
   );
@@ -58,7 +61,12 @@ export function KindOrderCard() {
         title: 'Kind order',
         subtitle: 'Reorder the entity kinds to your liking by dragging them',
         action: (
-          <Button aria-label="reset" onClick={onReset}>
+          <Button
+            aria-label="reset"
+            variant="secondary"
+            iconStart={<ResetIcon />}
+            onClick={onReset}
+          >
             Reset
           </Button>
         ),

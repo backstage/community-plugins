@@ -28,9 +28,11 @@ import { EntityBookmarksContent } from '../src/components/EntityBookmarksContent
 import { bookmarksPlugin } from '../src/plugin';
 import { AVAILABLE_LANGUAGES } from '../src/translations/translations';
 import { testEntities, testEntity } from './testData';
-
-import '@backstage/ui/css/styles.css';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+
+// This is a dev Backstage instance and not part of the plugin
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 
 const PluginTestPage = () => (
   <EntityLayout>

@@ -23,7 +23,7 @@ import {
   FetchBuildsOptions,
   Stage,
 } from '@backstage-community/plugin-cicd-statistics';
-import { Gitlab } from '@gitbeaker/browser';
+import { Gitlab, JobSchema, PipelineSchema } from '@gitbeaker/rest';
 import { OAuthApi } from '@backstage/core-plugin-api';
 import limiterFactory from 'p-limit';
 import { Entity, getEntitySourceLocation } from '@backstage/catalog-model';
@@ -80,11 +80,10 @@ export class CicdStatisticsApiGitlab implements CicdStatisticsApi {
     owner: string,
     build: Build,
   ): Promise<Stage[]> {
-    const jobs = await gitbeaker.Jobs.showPipelineJobs(
-      owner,
-      parseInt(build.id, 10),
-    );
-    const stages = jobsToStages(jobs);
+    const jobs = await gitbeaker.Jobs.all(owner, {
+      pipelineId: parseInt(build.id, 10),
+    });
+    const stages = jobsToStages(jobs as JobSchema[]);
     return stages;
   }
 
@@ -97,7 +96,7 @@ export class CicdStatisticsApiGitlab implements CicdStatisticsApi {
       owner,
       parseInt(build.id, 10),
     );
-    return parseInt(pipeline.duration as string, 10) * 1000;
+    return pipeline.duration * 1000;
   }
 
   private static async getDefaultBranch(
@@ -126,21 +125,23 @@ export class CicdStatisticsApiGitlab implements CicdStatisticsApi {
         : undefined;
     const pipelines = await api.Pipelines.all(owner, {
       perPage: 25,
-      updated_after: timeFrom.toISOString(),
-      updated_before: timeTo.toISOString(),
+      updatedAfter: timeFrom.toISOString(),
+      updatedBefore: timeTo.toISOString(),
       ref: branch,
     });
 
     const limiter = limiterFactory(10);
-    const builds = pipelinesToBuilds(pipelines).map(async build => ({
-      ...build,
-      duration: await limiter(() =>
-        CicdStatisticsApiGitlab.getDurationOfBuild(api, owner, build),
-      ),
-      stages: await limiter(() =>
-        CicdStatisticsApiGitlab.updateBuildWithStages(api, owner, build),
-      ),
-    }));
+    const builds = pipelinesToBuilds(pipelines as PipelineSchema[]).map(
+      async build => ({
+        ...build,
+        duration: await limiter(() =>
+          CicdStatisticsApiGitlab.getDurationOfBuild(api, owner, build),
+        ),
+        stages: await limiter(() =>
+          CicdStatisticsApiGitlab.updateBuildWithStages(api, owner, build),
+        ),
+      }),
+    );
     const promisedBuilds = (await Promise.all(builds)).filter(b =>
       filterStatus.includes(b.status),
     );

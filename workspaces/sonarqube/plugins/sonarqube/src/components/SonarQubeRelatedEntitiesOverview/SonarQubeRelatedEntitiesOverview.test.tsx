@@ -24,7 +24,7 @@ import {
 import { SonarQubeRelatedEntitiesOverview } from './SonarQubeRelatedEntitiesOverview.tsx';
 
 const sonarQubeApi = {
-  getFindingSummaries: jest.fn(),
+  getSummaries: jest.fn(),
 };
 
 const catalogApi = {
@@ -150,8 +150,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, any>([['foo.bar', mockMetrics]]);
-    sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
+    sonarQubeApi.getSummaries.mockResolvedValue([mockMetrics]);
 
     const rendered = await renderInTestApp(
       <Providers>
@@ -167,11 +166,28 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
 
   it('renders properly if multiple instances are present', async () => {
     const mockEntities: Entity[] = [
-      createMockEntity(SONARQUBE_PROJECT_KEY_ANNOTATION, 'component-key.1'),
-      createMockEntity(
-        SONARQUBE_PROJECT_KEY_ANNOTATION,
-        'instance-key/component-key.2',
-      ),
+      {
+        metadata: {
+          name: 'mock-1',
+          namespace: 'default',
+          annotations: {
+            [SONARQUBE_PROJECT_KEY_ANNOTATION]: 'component-key.1',
+          },
+        },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'component',
+      },
+      {
+        metadata: {
+          name: 'mock-2',
+          namespace: 'default',
+          annotations: {
+            [SONARQUBE_PROJECT_KEY_ANNOTATION]: 'instance-key/component-key.2',
+          },
+        },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'component',
+      },
     ];
     catalogApi.getEntitiesByRefs.mockResolvedValue({
       items: mockEntities,
@@ -183,11 +199,7 @@ describe('<SonarQubeRelatedEntitiesOverview />', () => {
         alert_status: 'OK',
       },
     };
-    const mockData = new Map<string, any>([
-      ['component-key.1', mockMetrics],
-      ['component-key.2', mockMetrics],
-    ]);
-    sonarQubeApi.getFindingSummaries.mockResolvedValue(mockData);
+    sonarQubeApi.getSummaries.mockResolvedValue([mockMetrics, mockMetrics]);
 
     const rendered = await renderInTestApp(
       <Providers>

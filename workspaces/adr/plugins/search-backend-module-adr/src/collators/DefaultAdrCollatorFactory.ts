@@ -15,11 +15,7 @@
  */
 
 import { Readable } from 'stream';
-import {
-  CATALOG_FILTER_EXISTS,
-  CatalogApi,
-  CatalogClient,
-} from '@backstage/catalog-client';
+import { CATALOG_FILTER_EXISTS } from '@backstage/catalog-client';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { NotModifiedError, stringifyError } from '@backstage/errors';
 import {
@@ -42,11 +38,11 @@ import {
 import {
   AuthService,
   CacheService,
-  DiscoveryService,
   LoggerService,
   RootConfigService,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 
 /**
  * Options to configure the AdrCollatorFactory
@@ -67,13 +63,9 @@ export type AdrCollatorFactoryOptions = {
    */
   config: RootConfigService;
   /**
-   * Catalog API client. Defaults to CatalogClient.
+   * Catalog service client.
    */
-  catalogClient?: CatalogApi;
-  /**
-   * Plugin Endpoint Discovery client
-   */
-  discovery: DiscoveryService;
+  catalogClient: CatalogService;
   /**
    * Logger
    */
@@ -100,7 +92,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
   public readonly type: string = 'adr';
   private readonly adrFilePathFilterFn: AdrFilePathFilterFn;
   private readonly cacheClient: CacheService;
-  private readonly catalogClient: CatalogApi;
+  private readonly catalogClient: CatalogService;
   private readonly logger: LoggerService;
   private readonly parser: AdrParser;
   private readonly reader: UrlReaderService;
@@ -111,9 +103,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
     this.adrFilePathFilterFn =
       options.adrFilePathFilterFn ?? madrFilePathFilter;
     this.cacheClient = options.cache;
-    this.catalogClient =
-      options.catalogClient ??
-      new CatalogClient({ discoveryApi: options.discovery });
+    this.catalogClient = options.catalogClient;
     this.logger = options.logger.child({ documentType: this.type });
     this.parser = options.parser ?? createMadrParser();
     this.reader = options.reader;
@@ -131,10 +121,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
   }
 
   async *execute(): AsyncGenerator<AdrDocument> {
-    const { token } = await this.auth.getPluginRequestToken({
-      onBehalfOf: await this.auth.getOwnServiceCredentials(),
-      targetPluginId: 'catalog',
-    });
+    const credentials = await this.auth.getOwnServiceCredentials();
 
     const entities = (
       await this.catalogClient.getEntities(
@@ -151,7 +138,7 @@ export class DefaultAdrCollatorFactory implements DocumentCollatorFactory {
             'metadata.title',
           ],
         },
-        { token },
+        { credentials },
       )
     ).items;
 

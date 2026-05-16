@@ -3,3 +3,4 @@ dist-types
 coverage
 .vscode
 packages/cli/src/lib/workspaces/templates
+knip-report.md

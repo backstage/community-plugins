@@ -1,10 +1,23 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { Entity } from '@backstage/catalog-model';
 import { match } from 'path-to-regexp';
 import type { QueryParams } from '../api';
 import {
   ProjectStatisticsSuccessResponseData,
-  EntityURL,
-  OrganizationProjectSuccessResponseData,
   PaginationQueryParams,
   Project,
   CodeFindingSuccessResponseData,
@@ -29,19 +42,13 @@ type OverviewData = {
 
 export const dataProjectParser = (
   projectStatistics: Array<
-    ProjectStatisticsSuccessResponseData & { entity: EntityURL }
+    ProjectStatisticsSuccessResponseData & { entityUrl?: string }
   >,
-  organizationProjects: OrganizationProjectSuccessResponseData[],
 ) => {
-  const organizationData = organizationProjects.reduce((prev, next) => {
-    prev[next.uuid] = next;
-    return prev;
-  }, {} as { [key: string]: OrganizationProjectSuccessResponseData });
-
   const projectData = projectStatistics.reduce(
     (
       prev: OverviewData,
-      next: ProjectStatisticsSuccessResponseData & { entity: EntityURL },
+      next: ProjectStatisticsSuccessResponseData & { entityUrl?: string },
     ) => {
       const dependenciesCritical =
         next.statistics[FINDING_TYPE.DEPENDENCIES]
@@ -116,9 +123,8 @@ export const dataProjectParser = (
         statistics,
         uuid: next.uuid,
         name: next.name,
-        path: next.path,
-        entity: next.entity,
-        applicationName: organizationData[next.uuid].applicationName,
+        entityUrl: next.entityUrl,
+        applicationName: next.path,
         applicationUuid: next.applicationUuid,
         lastScan: next.statistics[FINDING_TYPE.LAST_SCAN].lastScanTime,
         languages: next.statistics?.LIBRARY_TYPE_HISTOGRAM
@@ -149,7 +155,9 @@ export const parseEntityURL = (entityUrl?: string) => {
       return null;
     }
 
-    const matches = entityUrl.match(
+    // Extract the base URL (remove "url:" prefix if present)
+    const cleanUrl = entityUrl.replace(/^url:/, '');
+    const matches = cleanUrl.match(
       /https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(:[0-9]{1,5})?(\/.*)?/g,
     );
 
@@ -158,131 +166,65 @@ export const parseEntityURL = (entityUrl?: string) => {
     }
     const url = new URL(matches[0]);
     const hostname = url.host.toLowerCase();
-    let matcher = match('/:org/:repo', { end: false });
 
+    // Handle different SCM providers using path-to-regexp patterns
+    let path;
     if (hostname === AZURE_HOST_NAME) {
-      matcher = match('/:org/:project/_git/:repo', { end: false });
+      // Azure DevOps format: /org/project/_git/repo
+      const matcher = match('/:org/:project/_git/:repo', { end: false });
+      const extracted = matcher(url.pathname);
+      if (extracted) {
+        path = `/${extracted.params.org}/${extracted.params.project}/_git/${extracted.params.repo}`;
+      }
+    } else if (hostname.includes('gitlab')) {
+      // GitLab format: /org/repo or /group/subgroup/.../repo
+      // Remove GitLab-specific parts like /-/tree/branch
+      const cleanPath = url.pathname.replace(/\/-\/(tree|blob)\/[^\/]+.*$/, '');
+
+      // Use a pattern that matches any number of segments between org and repo
+      const matcher = match('/:org/:repo', { end: false });
+      const extracted = matcher(cleanPath);
+
+      if (extracted) {
+        // For GitLab, preserve the full path structure to support subgroups
+        path = cleanPath;
+      }
+    } else {
+      // GitHub and Bitbucket format: /org/repo
+      const matcher = match('/:org/:repo', { end: false });
+      const extracted = matcher(url.pathname);
+      if (extracted) {
+        path = `/${extracted.params.org}/${extracted.params.repo}`;
+      }
     }
-    const extractedContent = matcher(url.pathname);
-    if (extractedContent) {
-      return { ...extractedContent, host: hostname };
-    }
-    return null;
+
+    return path ? { host: hostname, path } : null;
   } catch (error) {
     return null;
   }
 };
 
-export const dataMatcher = (
-  entities: Entity[],
-  projects: ProjectStatisticsSuccessResponseData[],
-) => {
-  const projectSourceURL = getSourceURLWiseProject(projects);
-  return entities.reduce(
-    (
-      prev: Array<
-        ProjectStatisticsSuccessResponseData & {
-          entity: EntityURL;
-        }
-      >,
-      next: Entity,
-    ) => {
-      const entityURL = parseEntityURL(
-        next?.metadata?.annotations?.['backstage.io/source-location'],
-      );
-
-      if (!entityURL) {
-        return prev;
-      }
-
-      // NOTE: Find project based on Github URL
-      const relatedProjects =
-        projectSourceURL[`${entityURL?.host}${entityURL?.path}`]?.projectObjs;
-
-      if (!relatedProjects) {
-        return prev;
-      }
-
-      const entity = {
-        path: entityURL.path,
-        params: entityURL.params,
-        namespace: next.metadata.namespace,
-        kind: 'component',
-        source: 'catalog',
-      };
-
-      relatedProjects.forEach(project => prev.push({ ...project, entity }));
-
-      return prev;
-    },
-    [],
-  );
-};
-
 /**
- * Extracts the source URL details from each project and returns a dictionary
- * where each key is a combination of the URL's host and pathname,
- * and the value is an object containing the original project and the parsed source URL data.
- *
- * @param projects Array of ProjectStatisticsSuccessResponseData
- * @returns A dictionary object with keys as `${host}${pathname}` strings extracted from sourceUrl and values as:
- *          {
- *            projectObjs: ProjectStatisticsSuccessResponseData[];
-              sourceUrl: string | null;
-              host: string | null;
-              pathname: string | null;
- *          }
+ * Generates entity URL for Backstage navigation
+ * @param entity - Backstage entity
+ * @returns Entity URL string or null if unable to generate
  */
-export function getSourceURLWiseProject(
-  projects: ProjectStatisticsSuccessResponseData[],
-) {
-  return projects.reduce(
-    (acc, project) => {
-      const projectTags = project.tags as Array<{ key: string; value: string }>;
-      const sourceUrlTag = projectTags?.find(tag => tag.key === 'sourceUrl');
-      let host = null;
-      let pathname = null;
-      let sourceUrl = null;
+export const generateEntityUrl = (entity: Entity): string | null => {
+  try {
+    const source = 'catalog';
+    const namespace = entity?.metadata?.namespace;
+    const kind = entity?.kind?.toLowerCase();
+    const entityName = entity?.metadata?.name;
 
-      if (sourceUrlTag && typeof sourceUrlTag.value === 'string') {
-        sourceUrl = sourceUrlTag.value;
-        const urlString = sourceUrl.startsWith('http')
-          ? sourceUrl
-          : `https://${sourceUrl}`;
+    if (!namespace || !kind || !entityName) {
+      return null;
+    }
 
-        try {
-          const urlObj = new URL(urlString);
-          host = urlObj.host.toLocaleLowerCase();
-          // Remove leading/trailing slashes and split
-          pathname = urlObj.pathname;
-        } catch (e) {
-          // fallback: leave as nulls
-        }
-      }
-
-      if (acc[`${host}${pathname}`]) {
-        acc[`${host}${pathname}`].projectObjs.push(project);
-      } else {
-        acc[`${host}${pathname}`] = {
-          projectObjs: [project],
-          sourceUrl,
-          host,
-          pathname,
-        };
-      }
-      return acc;
-    },
-    {} as Record<
-      string,
-      {
-        projectObjs: ProjectStatisticsSuccessResponseData[];
-        sourceUrl: string | null;
-        host: string | null;
-        pathname: string | null;
-      }
-    >,
-  );
-}
+    return `/${source}/${namespace}/${kind}/${entityName}`;
+  } catch (error) {
+    return null;
+  }
+};
 
 const getIssueStatus = (
   engine: StatisticsEngine,

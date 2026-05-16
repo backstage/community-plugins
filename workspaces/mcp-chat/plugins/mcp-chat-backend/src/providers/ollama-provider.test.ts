@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { mockServices } from '@backstage/backend-test-utils';
 import { OllamaProvider } from './ollama-provider';
 import { ProviderConfig, ChatMessage, Tool } from '../types';
 import { Ollama } from 'ollama';
@@ -27,10 +28,13 @@ describe('OllamaProvider', () => {
   let provider: OllamaProvider;
   let mockOllama: jest.Mocked<Ollama>;
 
+  const mockLogger = mockServices.logger.mock();
+
   const config: ProviderConfig = {
     type: 'ollama',
     baseUrl: 'http://localhost:11434',
     model: 'llama2',
+    logger: mockLogger,
   };
 
   beforeEach(() => {
@@ -83,6 +87,11 @@ describe('OllamaProvider', () => {
   });
 
   describe('sendMessage', () => {
+    const defaultChatOptions = {
+      model: 'llama2',
+      options: { temperature: 0.7, num_predict: 1000 },
+    };
+
     it('should send simple message without tools', async () => {
       const messages: ChatMessage[] = [
         { role: 'user', content: 'Hello, how are you?' },
@@ -105,7 +114,7 @@ describe('OllamaProvider', () => {
       const result = await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'user',
@@ -149,7 +158,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'user',
@@ -207,7 +216,7 @@ describe('OllamaProvider', () => {
       const result = await provider.sendMessage(messages, tools);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'user',
@@ -259,7 +268,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'assistant',
@@ -311,7 +320,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'assistant',
@@ -354,7 +363,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'tool',

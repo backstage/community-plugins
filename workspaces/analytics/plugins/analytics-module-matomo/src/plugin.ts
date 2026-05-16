@@ -13,9 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPlugin } from '@backstage/core-plugin-api';
+
+import {
+  analyticsApiRef,
+  createApiFactory,
+  createPlugin,
+} from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  createFrontendPlugin,
+  identityApiRef,
+} from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
+import { MatomoAnalytics } from './api';
+
+/**
+ * @public
+ */
+export const MatomoAnalyticsApi = createApiFactory({
+  api: analyticsApiRef,
+  deps: { configApi: configApiRef, identityApi: identityApiRef },
+  factory: ({ configApi, identityApi }) =>
+    MatomoAnalytics.fromConfig(configApi, { identityApi }),
+});
 
 /** @public */
 export const analyticsModuleMatomoPlugin = createPlugin({
   id: 'analytics-module-matomo',
+  apis: [MatomoAnalyticsApi],
+});
+
+const matomoImplementation = AnalyticsImplementationBlueprint.make({
+  params: defineParams =>
+    defineParams({
+      deps: { configApi: configApiRef, identityApi: identityApiRef },
+      factory: ({ configApi, identityApi }) =>
+        MatomoAnalytics.fromConfig(configApi, { identityApi }),
+    }),
+});
+
+/**
+ * @public
+ */
+export const analyticsProviderMatomoPlugin = createFrontendPlugin({
+  pluginId: 'analytics-module-matomo',
+  extensions: [matomoImplementation],
 });

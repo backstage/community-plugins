@@ -1,5 +1,11 @@
 # @backstage-community/plugin-git-release-manager
 
+## 0.13.2
+
+### Patch Changes
+
+- 7bd69c0: Backstage version bump to v1.48.4
+
 ## 0.13.1
 
 ### Patch Changes

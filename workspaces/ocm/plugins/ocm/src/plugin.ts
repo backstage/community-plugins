@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ComponentType } from 'react';
+
 import {
   configApiRef,
   createApiFactory,
   createPlugin,
   createRoutableExtension,
-  IconComponent,
   identityApiRef,
 } from '@backstage/core-plugin-api';
 
@@ -63,4 +64,6 @@ export const OcmPage = ocmPlugin.provide(
 /**
  * @public
  */
-export const OcmIcon = HubOutlinedIcon as IconComponent;
+export const OcmIcon = HubOutlinedIcon as ComponentType<{
+  fontSize?: 'medium' | 'large' | 'small' | 'inherit';
+}>;

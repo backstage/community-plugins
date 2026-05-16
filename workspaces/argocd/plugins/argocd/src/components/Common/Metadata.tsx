@@ -16,14 +16,15 @@
 import type { FC } from 'react';
 
 import { HTMLAttributes, ReactElement } from 'react';
-import MetadataItem from './MetadataItem';
 import { Typography } from '@material-ui/core';
 import { Flex, FlexProps } from '@patternfly/react-core';
 
 type MetadataProps = {
   children:
-    | ReactElement<typeof MetadataItem>
-    | ReactElement<typeof MetadataItem>[];
+    | ReactElement
+    | (ReactElement | null | false | undefined)[]
+    | null
+    | false;
   direction?: FlexProps['direction'];
   gap?: FlexProps['gap'];
 } & HTMLAttributes<HTMLDivElement>;

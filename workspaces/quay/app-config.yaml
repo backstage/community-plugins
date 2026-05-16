@@ -68,4 +68,3 @@ catalog:
 
 quay:
   apiUrl: 'https://quay.io'
-  apiKey: ''

@@ -16,8 +16,8 @@ export const EmbeddedRouter: () => JSX_2.Element;
 
 // @public (undocumented)
 export const EntityLastLighthouseAuditCard: (props: {
-  dense?: boolean | undefined;
-  variant?: InfoCardVariants | undefined;
+  dense?: boolean;
+  variant?: InfoCardVariants;
 }) => JSX_2.Element;
 
 // @public (undocumented)

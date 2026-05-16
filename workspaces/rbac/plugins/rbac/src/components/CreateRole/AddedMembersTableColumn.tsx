@@ -23,7 +23,7 @@ import { FormikErrors } from 'formik';
 
 import { RoleFormValues, SelectedMember } from './types';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const reviewStepMemebersTableColumns = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,

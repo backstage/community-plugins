@@ -210,7 +210,9 @@ export class JenkinsApiImpl {
       // permission api returns always at least one item, we need to check only one result since we do not expect any additional results
       const { result } = response[0];
       if (result === AuthorizeResult.DENY) {
-        return 401;
+        // Return 403 (Forbidden) specifically for Backstage permission denials,
+        // so callers can distinguish this from Jenkins returning 401 (bad credentials).
+        return 403;
       }
     }
 

@@ -1,1 +1,24 @@
+#!/usr/bin/env sh
+set -e
+
 yarn lint-staged
+
+
+# Please keep this section at the bottom of the file.
+#
+# Run the pre-commit hook in the default the hooks directory if it exits.
+#
+# Husky overrides 'core.hooksPath' which doesn't allow running
+# the user's existing local hooks (like hooks they've configured in
+# 'init.templateDir'). This allows them to run both the project's hooks and
+# their own local hooks. If they do not have a local hook defined, this is
+# ignored.
+#
+# See https://git-scm.com/docs/githooks for more information.
+#
+hooks_dir="${GIT_DIR:-"$(git rev-parse --absolute-git-dir)"}/hooks"
+pre_commit_path="${hooks_dir}/pre-commit"
+if [ -x "${pre_commit_path}" ]
+then
+	exec "${pre_commit_path}"
+fi

@@ -17,7 +17,7 @@ import { Link, TableColumn } from '@backstage/core-components';
 
 import { MembersData } from '../../types';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const getColumns = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,

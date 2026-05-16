@@ -1,4 +1,46 @@
-### Dependencies
+# @backstage-community/plugin-topology
+
+## 2.12.3
+
+### Patch Changes
+
+- 790e405: Fix pod status icon and label alignment in Pods table
+
+## 2.12.2
+
+### Patch Changes
+
+- daac56e: Migrate to Jest 30
+
+## 2.12.1
+
+### Patch Changes
+
+- 045e3b1: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.5.0`.
+
+## 2.12.0
+
+### Minor Changes
+
+- 9deb41e: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- 29fd2da: Add (already used) Material UI v4 and mobx-react dependency to resolve linter issues.
+- 9c24b43: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.4.0`.
+- 1d15595: Translation updated for German and Spanish
+
+## 2.11.0
+
+### Minor Changes
+
+- 3be1d2b: Backstage version bump to v1.47.2
+
+## 2.10.2
+
+### Patch Changes
+
+- c074f91: Added ja and updated fr, it translation files.
 
 ## 2.10.1
 
@@ -12,6 +54,12 @@
 ### Minor Changes
 
 - f738017: Backstage version bump to v1.46.2
+
+## 2.9.4
+
+### Patch Changes
+
+- a9477e3: Added ja and updated fr, it translation files.
 
 ## 2.9.3
 

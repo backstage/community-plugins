@@ -22,7 +22,12 @@ import { TEST_IDS } from '../../../consts/testids';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from '../../../hooks/useTranslation';
 
-export const BookmarkViewerFrame = memo(({ src }: { src: string }) => {
+type FrameProps = {
+  src: string;
+  title?: string;
+};
+
+export const BookmarkViewerFrame = memo(({ src, title }: FrameProps) => {
   const { t } = useTranslation();
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -60,6 +65,7 @@ export const BookmarkViewerFrame = memo(({ src }: { src: string }) => {
       )}
 
       <Box
+        aria-label={title}
         component="iframe"
         data-testid={TEST_IDS.BookmarkViewerFrame.iframe}
         ref={iframeRef}
@@ -75,6 +81,7 @@ export const BookmarkViewerFrame = memo(({ src }: { src: string }) => {
           width: '100%',
           height: '100%',
         }}
+        tabIndex={0}
       />
     </>
   );

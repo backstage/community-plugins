@@ -1,5 +1,34 @@
 # @backstage-community/plugin-manage-react
 
+## 2.2.1
+
+### Patch Changes
+
+- 57d32c5: Use 'manage.kinds' config for deciding what kinds to use
+
+## 2.2.0
+
+### Minor Changes
+
+- 884e720: Bump to depend on Backstage 1.48
+
+## 2.1.0
+
+### Minor Changes
+
+- 0b7e3de: Updated UI - moved most of the UI from MUI to BUI.
+
+  Also introduced a new 'linear' progress style, and implemented new circular progress styles.
+
+  Support for the old frontend system is marked as deprecated for all manage plugins
+
+- 334c2e0: Backstage version bump to v1.47.1
+
+### Patch Changes
+
+- Updated dependencies [334c2e0]
+  - @backstage-community/plugin-manage-common@1.5.0
+
 ## 2.0.0
 
 ### Major Changes

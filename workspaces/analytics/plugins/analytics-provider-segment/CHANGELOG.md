@@ -1,4 +1,65 @@
-### Dependencies
+# @backstage-community/plugin-analytics-provider-segment
+
+## 1.28.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 1.28.0
+
+### Minor Changes
+
+- 3fee6eb: Backstage version bump to v1.50.3
+
+## 1.27.0
+
+### Minor Changes
+
+- a34e621: Migrate `AnalyticsImplementationBlueprint` from `@backstage/frontend-plugin-api` to `@backstage/plugin-app-react`.
+
+  The `alpha` export returns now an `app` module instead of a plugin to be aligned with this changes and Backstage 1.49.
+
+## 1.26.0
+
+### Minor Changes
+
+- 4fca047: Backstage version bump to v1.49.2
+
+## 1.25.2
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+
+## 1.25.1
+
+### Patch Changes
+
+- 6ac83bc: Removed all unused direct dependencies (Material UI v4, prop-types and react-use)
+- 6ac83bc: Remove unused dev dependencies for @types/node and msw
+
+## 1.25.0
+
+### Minor Changes
+
+- 616b66c: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+
+## 1.24.0
+
+### Minor Changes
+
+- b41b95d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- a184943: Updated dependency `@types/node` to `22.19.7`.
 
 ## 1.23.0
 

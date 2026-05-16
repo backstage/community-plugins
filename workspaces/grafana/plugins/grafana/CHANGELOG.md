@@ -1,5 +1,35 @@
 # @backstage-community/plugin-grafana
 
+## 0.19.0
+
+### Minor Changes
+
+- 25ddfa9: Added support for multiple Grafana instances. Organizations with multiple Grafana deployments can now configure them all under the `grafana.hosts` config key and associate entities to specific instances via the `grafana/host-id` annotation. The legacy single-instance `grafana.domain` configuration remains fully supported.
+
+## 0.18.0
+
+### Minor Changes
+
+- e86cf28: Backstage version bump to v1.50.2
+
+## 0.17.0
+
+### Minor Changes
+
+- 7c226ff: Backstage version bump to v1.49.2
+
+## 0.16.0
+
+### Minor Changes
+
+- 538e0f5: Backstage version bump to v1.48.2
+
+## 0.15.0
+
+### Minor Changes
+
+- 6a9a915: Backstage version bump to v1.47.2
+
 ## 0.14.1
 
 ### Patch Changes

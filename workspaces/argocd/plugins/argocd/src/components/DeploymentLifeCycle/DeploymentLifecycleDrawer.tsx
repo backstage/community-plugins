@@ -45,6 +45,8 @@ import { useTranslation } from '../../hooks/useTranslation';
 interface DeploymentLifecycleDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  showInstance?: boolean;
+  showServer?: boolean;
 }
 
 const useDrawerStyles = makeStyles<Theme>(theme =>
@@ -71,6 +73,8 @@ const useDrawerStyles = makeStyles<Theme>(theme =>
 const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
   isOpen,
   onClose,
+  showInstance = true,
+  showServer = true,
 }) => {
   const {
     application: app,
@@ -125,35 +129,40 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
 
           <Grid item xs={12}>
             <Metadata>
-              <MetadataItem
-                title={t(
-                  'deploymentLifecycle.deploymentLifecycleDrawer.instance',
-                )}
-              >
-                {app?.metadata?.instance?.name ??
-                  t(
-                    'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue',
+              {showInstance && (
+                <MetadataItem
+                  key="instance"
+                  title={t(
+                    'deploymentLifecycle.deploymentLifecycleDrawer.instance',
                   )}
-              </MetadataItem>
-
+                >
+                  {app?.metadata?.instance?.name ??
+                    t(
+                      'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue',
+                    )}
+                </MetadataItem>
+              )}
+              {showServer && (
+                <MetadataItem
+                  key="cluster"
+                  title={t(
+                    'deploymentLifecycle.deploymentLifecycleDrawer.cluster',
+                  )}
+                >
+                  <AppServerLink application={app} />
+                </MetadataItem>
+              )}
               <MetadataItem
-                title={t(
-                  'deploymentLifecycle.deploymentLifecycleDrawer.cluster',
-                )}
-              >
-                <AppServerLink application={app} />
-              </MetadataItem>
-
-              <MetadataItem
+                key="namespace"
                 title={t(
                   'deploymentLifecycle.deploymentLifecycleDrawer.namespace',
                 )}
               >
                 <AppNamespace app={app} />
               </MetadataItem>
-
-              {!isAppHelmChartType(app) ? (
+              {!isAppHelmChartType(app) && (
                 <MetadataItem
+                  key="commit"
                   title={t(
                     'deploymentLifecycle.deploymentLifecycleDrawer.commit',
                   )}
@@ -166,11 +175,9 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                     showAuthor
                   />
                 </MetadataItem>
-              ) : (
-                <></>
               )}
-
               <MetadataItem
+                key="revision"
                 title={t(
                   'deploymentLifecycle.deploymentLifecycleDrawer.revision',
                 )}

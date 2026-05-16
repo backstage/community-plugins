@@ -152,17 +152,8 @@ export function createAzureDevopsRunPipelineAction(options: {
 
       // Add template parameters to RunPipelineParameters if available
       if (templateParameters) {
-        // Log the templateParameters if available
-        ctx.logger.info(
-          `Template parameters: ${JSON.stringify(templateParameters, null, 2)}`,
-        );
         createOptions.templateParameters = templateParameters;
       }
-
-      // Log the createOptions object in a readable format
-      ctx.logger.debug('Create options for running the pipeline:', {
-        RunPipelineParameters: JSON.stringify(createOptions, null, 2),
-      });
 
       const pipelineIdAsInt = parseInt(pipelineId, 10);
 
@@ -212,7 +203,11 @@ export function createAzureDevopsRunPipelineAction(options: {
       // Log the pipeline run result if available
       if (pipelineRun.result) {
         ctx.logger.info(
-          `Pipeline run result: ${pipelineRun.result.toString()}`,
+          `Pipeline run result: ${
+            pipelineRun.result
+              ? RunResult[pipelineRun.result]
+              : RunResult.Unknown
+          }`,
         );
       }
 
@@ -227,7 +222,10 @@ export function createAzureDevopsRunPipelineAction(options: {
 
       ctx.output('pipelineRunUrl', pipelineRun._links.web.href);
       ctx.output('pipelineRunId', pipelineRun.id!);
-      ctx.output('pipelineRunStatus', pipelineRun.result?.toString());
+      ctx.output(
+        'pipelineRunStatus',
+        pipelineRun.result ? RunResult[pipelineRun.result] : RunResult.Unknown,
+      );
       ctx.output('pipelineTimeoutExceeded', timeoutExceeded);
       ctx.output('pipelineOutput', pipelineRun.variables);
     },

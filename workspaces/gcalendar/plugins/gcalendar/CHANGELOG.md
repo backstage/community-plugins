@@ -1,5 +1,35 @@
 # @backstage-community/plugin-gcalendar
 
+## 0.20.0
+
+### Minor Changes
+
+- 7498800: Backstage version bump to v1.50.2
+
+## 0.19.1
+
+### Patch Changes
+
+- 90d745b: Updated dependency `dompurify` to `^3.4.0`.
+
+## 0.19.0
+
+### Minor Changes
+
+- 41cb714: Backstage version bump to v1.49.2
+
+## 0.18.0
+
+### Minor Changes
+
+- 1f23033: Backstage version bump to v1.48.2
+
+## 0.17.0
+
+### Minor Changes
+
+- 7534362: Backstage version bump to v1.47.2
+
 ## 0.16.1
 
 ### Patch Changes

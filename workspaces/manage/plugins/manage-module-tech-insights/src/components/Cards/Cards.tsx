@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import { makeStyles } from '@mui/styles';
-import Box from '@mui/material/Box';
-import Grid, { GridOwnProps } from '@mui/material/Grid';
+import { GridOwnProps } from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 
-import { GaugePropsGetColor } from '@backstage/core-components';
+import { Box, Flex } from '@backstage/ui';
 import {
   useCurrentKinds,
   useOwnedEntities,
   GaugeCard,
   GaugeCardProps,
   ManageAccordion,
+  useParseColor,
 } from '@backstage-community/plugin-manage-react';
 
 import {
@@ -54,6 +54,7 @@ const useStyles = makeStyles({
  * @public
  */
 export interface ManageTechInsightsCardsProps {
+  /** @deprecated Use the new frontend system instead */
   containerProps?: Pick<
     GridOwnProps,
     | 'classes'
@@ -66,6 +67,7 @@ export interface ManageTechInsightsCardsProps {
     | 'wrap'
     | 'zeroMinWidth'
   >;
+  /** @deprecated Use the new frontend system instead */
   gaugeCardProps?: GaugeCardProps;
 
   /**
@@ -109,7 +111,7 @@ function Title({
  * @public
  */
 export function ManageTechInsightsCards(props: ManageTechInsightsCardsProps) {
-  const { containerProps, gaugeCardProps, inAccordion } = props;
+  const { inAccordion } = props;
 
   const kinds = useCurrentKinds();
   const entities = useOwnedEntities(kinds);
@@ -129,36 +131,33 @@ export function ManageTechInsightsCards(props: ManageTechInsightsCardsProps) {
     return tot === 0 ? 1 : succ / tot;
   };
 
-  const getColor = useCallback<GaugePropsGetColor>(
-    args => {
-      const rawColor = getPercentColor(args.value);
-      const muiColor =
-        rawColor === 'inherit' ? 'inherit' : args.palette[rawColor].main;
+  const parseColor = useParseColor();
 
-      return muiColor;
-    },
-    [getPercentColor],
+  const checksWithColors = useMemo(
+    () =>
+      checks.map(item => {
+        const progress = getRatio(responsesForCheck.get(item.uniq) ?? []);
+        const color = parseColor(getPercentColor(progress * 100));
+
+        return {
+          ...item,
+          progress,
+          color,
+        };
+      }),
+    [checks, responsesForCheck, getPercentColor, parseColor],
   );
 
   const grid = (
-    <Grid
-      spacing={0}
-      sx={{ gap: 2 }}
-      marginBottom={2}
-      {...containerProps}
-      container
-    >
-      {checks.map(({ check, uniq }) => (
-        <Grid item key={uniq} padding={0}>
-          <GaugeCard
-            progress={getRatio(responsesForCheck.get(uniq) ?? [])}
-            gaugeCardProps={gaugeCardProps}
-            title={<Title titleInfo={mapTitle(check)} />}
-            getColor={getColor}
-          />
-        </Grid>
+    <Flex mt="1">
+      {checksWithColors.map(({ check, progress, color }) => (
+        <GaugeCard
+          progress={progress}
+          title={<Title titleInfo={mapTitle(check)} />}
+          color={color}
+        />
       ))}
-    </Grid>
+    </Flex>
   );
 
   const accordionTitle = useAccordionTitle();

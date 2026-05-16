@@ -1,5 +1,35 @@
 # @backstage-community/plugin-jenkins-common
 
+## 0.19.0
+
+### Minor Changes
+
+- 6e513d2: Backstage version bump to v1.50.2
+
+## 0.18.0
+
+### Minor Changes
+
+- 54da0c1: Backstage version bump to v1.49.2
+
+## 0.17.0
+
+### Minor Changes
+
+- 5b10e9e: Backstage version bump to v1.48.2
+
+## 0.16.1
+
+### Patch Changes
+
+- fc25522: remove unused dependencies
+
+## 0.16.0
+
+### Minor Changes
+
+- fea4a0b: Backstage version bump to v1.47.2
+
 ## 0.15.0
 
 ### Minor Changes

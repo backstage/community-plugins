@@ -28,6 +28,7 @@ import { BookmarkViewerFrame } from './helpers/BookmarkViewerFrame';
 import { NavButton } from './helpers/NavButton';
 import { TableOfContents } from './helpers/TableOfContents';
 import { useCustomProtocol } from '../../hooks/useCustomProtocol';
+import { PATH_SEPARATOR } from '../../consts/consts';
 
 /** Props for layout components */
 export type BookmarkViewerLayoutProps = {
@@ -49,6 +50,8 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
 
   const isDesktop = useIsDesktop();
   const View = isDesktop ? BookmarkDesktopView : BookmarkMobileView;
+
+  const currentTitle = currentNode.key.split(PATH_SEPARATOR).pop();
 
   const currentFlattenedIndex = useMemo(() => {
     return flattenedTree.findIndex(url => url.key === currentNode.key);
@@ -82,7 +85,7 @@ export const BookmarksViewer = memo(({ tree }: { tree: UrlTree }) => {
     ) : null;
   }, [flattenedTree, setCurrentNode, currentFlattenedIndex]);
 
-  const viewer = <BookmarkViewerFrame src={src} />;
+  const viewer = <BookmarkViewerFrame title={currentTitle} src={src} />;
 
   const toc = (
     <TableOfContents

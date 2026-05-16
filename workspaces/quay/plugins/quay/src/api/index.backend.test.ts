@@ -256,6 +256,27 @@ describe('QuayApiClient-Backend', () => {
     );
   });
 
+  it('should throw when a non-existent instance is requested', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [
+              { name: 'devel', apiUrl: 'https://quay.devel.example.io' },
+              { name: 'staging', apiUrl: 'https://quay.staging.example.io' },
+            ],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    await expect(quayApi.getTags('unknown', 'foo', 'bar')).rejects.toEqual(
+      new Error('Quay instance "unknown" not found in configuration.'),
+    );
+  });
+
   it('should throw an error when the response is not ok', async () => {
     await expect(quayApi.getTags(undefined, 'not', 'found')).rejects.toEqual(
       new Error('failed to fetch data, status 404: Not Found'),

@@ -84,6 +84,20 @@ export interface Check {
    * more about the check.
    */
   links?: CheckLink[];
+
+  /**
+   * An optional filter to indicate which entities this check should run against.
+   * If omitted, the check will run against all entities.
+   *
+   * Filters can be defined to match entity properties, for example:
+   * - \{ kind: 'component' \} - Only run check on components
+   * - \{ kind: 'component', 'spec.lifecycle': 'production' \} - Only run on production components
+   *
+   * Multiple filter objects can be provided as an array to match any of the filters.
+   */
+  filter?:
+    | Record<string, string | symbol | (string | symbol)[]>[]
+    | Record<string, string | symbol | (string | symbol)[]>;
 }
 
 /**

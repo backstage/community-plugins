@@ -22,7 +22,7 @@ import {
 import express from 'express';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import Router from 'express-promise-router';
-import { ArgoCDService } from './services/ArgoCDService';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 import { argocdViewPermission } from '@backstage-community/plugin-argocd-common';
 
 interface RouterOptions {
@@ -66,6 +66,10 @@ export async function createRouter(
   };
 
   router.use(checkPermission);
+
+  router.get('/check', async (_req: express.Request, res: express.Response) => {
+    res.send('OK');
+  });
 
   router.get(
     '/find/name/:appName',

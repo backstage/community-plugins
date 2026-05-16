@@ -27,4 +27,6 @@ export type {
   MCPServerType,
   Provider,
   ProviderConnectionStatus,
+  ConversationRecord,
+  ConversationsResponse,
 } from './types';

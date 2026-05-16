@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
+import { z } from 'zod';
 import {
   ApiBlueprint,
   createExtensionBlueprint,
   createExtensionDataRef,
   createExtensionInput,
   createFrontendPlugin,
-  NavItemBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -41,17 +41,10 @@ export const graphiqlPage = PageBlueprint.make({
   params: {
     path: '/graphiql',
     routeRef: convertLegacyRouteRef(graphiQLRouteRef),
+    title: 'GraphiQL',
+    icon: <GraphiQLIcon />,
     loader: () =>
       import('./components').then(m => compatWrapper(<m.GraphiQLPage />)),
-  },
-});
-
-/** @alpha */
-export const graphiqlNavItem = NavItemBlueprint.make({
-  params: {
-    title: 'GraphiQL',
-    routeRef: convertLegacyRouteRef(graphiQLRouteRef),
-    icon: GraphiQLIcon,
   },
 });
 
@@ -94,12 +87,10 @@ const graphiqlGitlabGraphiQLEndpointExtension =
   GraphiQLEndpointBlueprint.makeWithOverrides({
     name: 'gitlab',
     disabled: true,
-    config: {
-      schema: {
-        id: z => z.string().default('gitlab'),
-        title: z => z.string().default('GitLab'),
-        url: z => z.string().default('https://gitlab.com/api/graphql'),
-      },
+    configSchema: {
+      id: z.string().default('gitlab'),
+      title: z.string().default('GitLab'),
+      url: z.string().default('https://gitlab.com/api/graphql'),
     },
 
     factory: (originalFactory, { config }) =>
@@ -111,7 +102,6 @@ export default createFrontendPlugin({
   pluginId: 'graphiql',
   extensions: [
     graphiqlPage,
-    graphiqlNavItem,
     graphiqlBrowseApi,
     graphiqlGitlabGraphiQLEndpointExtension,
   ],

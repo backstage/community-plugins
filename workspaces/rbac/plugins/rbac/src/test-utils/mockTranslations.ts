@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rbacMessages } from '../translations/ref';
+import { rbacMessages } from '../alpha/translations/ref';
 
 function flattenMessages(obj: any, prefix = ''): Record<string, string> {
   const flattened: Record<string, string> = {};

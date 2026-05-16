@@ -55,5 +55,37 @@ export default defineConfig({
         locale: 'fr',
       },
     },
+    {
+      name: 'it',
+      testDir: './plugins/topology/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      testDir: './plugins/topology/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'ja',
+      },
+    },
+    {
+      name: 'de',
+      testDir: './plugins/topology/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      testDir: './plugins/topology/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
+      },
+    },
   ],
 });

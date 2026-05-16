@@ -1,4 +1,74 @@
-### Dependencies
+# @backstage-community/plugin-ocm
+
+## 5.17.0
+
+### Minor Changes
+
+- a6cd71c: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [a6cd71c]
+  - @backstage-community/plugin-ocm-common@3.21.0
+
+## 5.16.0
+
+### Minor Changes
+
+- 10dc05b: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [10dc05b]
+  - @backstage-community/plugin-ocm-common@3.20.0
+
+## 5.15.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- 4632846: Backstage version bump to v1.48.5
+- Updated dependencies [4632846]
+  - @backstage-community/plugin-ocm-common@3.19.1
+
+## 5.15.0
+
+### Minor Changes
+
+- 5f6f816: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 926c09e: Show loading indicator and error panel if needed on the cluster info and cluster resource cards.
+- 13684ea: ClusterAvailableResourceCard components returns now a JSX element instead of any but this should be fine in most cases.
+- 926c09e: Fix crash when cluster entity and cluster resources doesn't match.
+- 926c09e: Improve OCM cluster page when an error is displayed and removed unnecessary home plugin dependency.
+- Updated dependencies [5f6f816]
+  - @backstage-community/plugin-ocm-common@3.19.0
+
+## 5.14.0
+
+### Minor Changes
+
+- 3134355: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- Updated dependencies [3134355]
+  - @backstage-community/plugin-ocm-common@3.18.0
+
+## 5.13.0
+
+### Minor Changes
+
+- 92c7a8d: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [92c7a8d]
+  - @backstage-community/plugin-ocm-common@3.17.0
 
 ## 5.12.0
 

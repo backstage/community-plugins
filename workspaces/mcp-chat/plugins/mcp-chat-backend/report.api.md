@@ -5,10 +5,63 @@
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { Config } from '@backstage/config';
+import { DatabaseService } from '@backstage/backend-plugin-api';
 import express from 'express';
-import { GenerateContentResult } from '@google/generative-ai';
+import { GenerateContentResponse } from '@google/genai';
+import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
+
+// @public
+export class AzureOpenAIProvider extends OpenAIProvider {
+  constructor(config: ProviderConfig);
+  // (undocumented)
+  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
+  testConnection(): Promise<{
+    connected: boolean;
+    models?: string[];
+    error?: string;
+  }>;
+}
+
+// @public
+export class ChatConversationStore {
+  static create(
+    options: ChatConversationStoreOptions,
+  ): Promise<ChatConversationStore>;
+  deleteConversation(userId: string, id: string): Promise<boolean>;
+  deleteUserConversations(userId: string): Promise<void>;
+  getConversationById(
+    userId: string,
+    id: string,
+  ): Promise<ConversationRecord | null>;
+  getConversations(
+    userId: string,
+    limit?: number,
+  ): Promise<ConversationRecord[]>;
+  saveConversation(
+    userId: string,
+    messages: ChatMessage[],
+    toolsUsed?: string[],
+    conversationId?: string,
+  ): Promise<ConversationRecord>;
+  toggleStarred(userId: string, id: string): Promise<boolean>;
+  updateTitle(userId: string, id: string, title: string): Promise<void>;
+}
+
+// @public
+export interface ChatConversationStoreOptions {
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  database: DatabaseService;
+  // (undocumented)
+  logger: LoggerService;
+}
 
 // @public
 export interface ChatMessage {
@@ -55,19 +108,29 @@ export class ClaudeProvider extends LLMProvider {
 }
 
 // @public
-export function createRouter({
-  logger,
-  mcpClientService,
-}: {
-  logger: LoggerService;
-  mcpClientService: MCPClientService;
-}): Promise<express.Router>;
+export interface ConversationRecord {
+  createdAt: Date;
+  id: string;
+  isStarred: boolean;
+  messages: ChatMessage[];
+  title?: string;
+  toolsUsed?: string[];
+  updatedAt: Date;
+  userId: string;
+}
+
+// @public
+export function createRouter(options: RouterOptions): Promise<express.Router>;
+
+// @public
+export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
 
 // @public
 export function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
+  toolCallTimeout?: number,
 ): Promise<ToolExecutionResult>;
 
 // @public
@@ -81,7 +144,7 @@ export class GeminiProvider extends LLMProvider {
   // (undocumented)
   protected getHeaders(): Record<string, string>;
   // (undocumented)
-  protected parseResponse(result: GenerateContentResult): ChatResponse;
+  protected parseResponse(result: GenerateContentResponse): ChatResponse;
   // (undocumented)
   sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
@@ -97,6 +160,7 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig;
 
 // @public
 export function getProviderInfo(config: RootConfigService): {
+  deploymentName?: string | undefined;
   provider: string;
   model: string;
   baseURL: string;
@@ -135,7 +199,11 @@ export abstract class LLMProvider {
   // (undocumented)
   protected abstract getHeaders(): Record<string, string>;
   // (undocumented)
+  protected logger?: LoggerService;
+  // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
+  // (undocumented)
+  protected maxTokens?: number;
   // (undocumented)
   protected model: string;
   // (undocumented)
@@ -146,11 +214,15 @@ export abstract class LLMProvider {
     tools?: Tool[],
   ): Promise<ChatResponse>;
   // (undocumented)
+  protected temperature?: number;
+  // (undocumented)
   abstract testConnection(): Promise<{
     connected: boolean;
     models?: string[];
     error?: string;
   }>;
+  // (undocumented)
+  protected truncateForLogging(data: string, maxLength?: number): string;
   // (undocumented)
   protected type: string;
 }
@@ -159,6 +231,7 @@ export abstract class LLMProvider {
 export type LLMProviderType =
   | 'openai'
   | 'openai-responses'
+  | 'azure-openai'
   | 'claude'
   | 'gemini'
   | 'ollama'
@@ -221,6 +294,7 @@ export type MCPServer = MCPServerConfig & {
 // @public
 export interface MCPServerConfig {
   args?: string[];
+  disabledTools?: string[];
   id: string;
   name: string;
   npxCommand?: string;
@@ -289,6 +363,8 @@ export class OpenAIProvider extends LLMProvider {
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
   sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
@@ -311,7 +387,10 @@ export class OpenAIResponsesProvider extends LLMProvider {
   protected parseResponse(response: ResponsesApiResponse): ChatResponse;
   // (undocumented)
   sendMessage(messages: ChatMessage[], _tools?: Tool[]): Promise<ChatResponse>;
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void;
+  setMcpServerConfigs(
+    configs: MCPServerFullConfig[],
+    allowedToolsByServer?: Map<string, string[]>,
+  ): void;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -324,7 +403,11 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  deploymentName?: string;
+  logger?: LoggerService;
+  maxTokens?: number;
   model: string;
+  temperature?: number;
   type: string;
 }
 
@@ -337,7 +420,10 @@ export interface ProviderConnectionStatus {
 
 // @public
 export class ProviderFactory {
-  static createProvider(config: ProviderConfig): LLMProvider;
+  static createProvider(
+    config: ProviderConfig,
+    logger?: LoggerService,
+  ): LLMProvider;
 }
 
 // @public
@@ -451,8 +537,38 @@ export interface ResponsesApiResponse {
 }
 
 // @public
+export interface RouterOptions {
+  // (undocumented)
+  conversationStore: ChatConversationStore;
+  // (undocumented)
+  httpAuth: HttpAuthService;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
+  mcpClientService: MCPClientService;
+  // (undocumented)
+  summarizationService: SummarizationService;
+}
+
+// @public
 export interface ServerTool extends Tool {
   serverId: string;
+}
+
+// @public
+export class SummarizationService {
+  constructor(options: SummarizationServiceOptions);
+  summarizeConversation(messages: ChatMessage[]): Promise<string>;
+}
+
+// @public
+export interface SummarizationServiceOptions {
+  // (undocumented)
+  config: Config;
+  // (undocumented)
+  logger: LoggerService;
+  // (undocumented)
+  mcpClientService: MCPClientService;
 }
 
 // @public

@@ -15,15 +15,17 @@
  */
 import {
   ApiBlueprint,
+  createFrontendModule,
   createFrontendPlugin,
   discoveryApiRef,
   fetchApiRef,
-  TranslationBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
   EntityCardBlueprint,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
+
 import { isNpmAvailable } from '@backstage-community/plugin-npm-common';
 
 import { NpmBackendApiRef, NpmBackendClient } from './api';
@@ -62,7 +64,7 @@ export const npmBackendApi = ApiBlueprint.make({
  *
  * @alpha
  */
-export const entityNpmInfoCard: any = EntityCardBlueprint.make({
+export const entityNpmInfoCard = EntityCardBlueprint.make({
   name: 'EntityNpmInfoCard',
   params: {
     filter: isNpmAvailable,
@@ -79,7 +81,7 @@ export const entityNpmInfoCard: any = EntityCardBlueprint.make({
  *
  * @alpha
  */
-export const entityNpmReleaseOverviewCard: any = EntityCardBlueprint.make({
+export const entityNpmReleaseOverviewCard = EntityCardBlueprint.make({
   name: 'EntityNpmReleaseOverviewCard',
   params: {
     filter: isNpmAvailable,
@@ -97,7 +99,7 @@ export const entityNpmReleaseOverviewCard: any = EntityCardBlueprint.make({
  *
  * @alpha
  */
-export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
+export const entityNpmReleaseTableCard = EntityContentBlueprint.make({
   name: 'EntityNpmReleaseTableCard',
   params: {
     path: 'npm-releases',
@@ -107,16 +109,6 @@ export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
       import('./components/EntityNpmReleaseTableCard').then(m => (
         <m.EntityNpmReleaseTableCard />
       )),
-  },
-});
-
-/**
- * @alpha
- */
-export const npmTranslation = TranslationBlueprint.make({
-  name: 'npmTranslation',
-  params: {
-    resource: npmTranslations,
   },
 });
 
@@ -132,6 +124,25 @@ export default createFrontendPlugin({
     entityNpmReleaseTableCard,
     entityNpmInfoCard,
     entityNpmReleaseOverviewCard,
-    npmTranslation,
   ],
+});
+
+/**
+ * Extension for npm translations.
+ */
+const npmTranslation = TranslationBlueprint.make({
+  name: 'npmTranslations',
+  params: {
+    resource: npmTranslations,
+  },
+});
+
+/**
+ * App module that automatically registers npm plugin translations.
+ *
+ * @alpha
+ */
+export const npmTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [npmTranslation],
 });

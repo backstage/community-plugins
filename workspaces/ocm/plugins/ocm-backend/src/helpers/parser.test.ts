@@ -53,7 +53,7 @@ describe('getClaim', () => {
   });
 
   it("should return undefined when cluster claim doesn't exist", () => {
-    const cluster: any = {
+    const cluster = {
       status: {
         clusterClaims: [
           {
@@ -74,7 +74,7 @@ describe('getClaim', () => {
   });
 
   it('should return empty string when clusterClaims is undefined', () => {
-    const cluster: any = {
+    const cluster = {
       status: {
         clusterClaims: undefined,
       },

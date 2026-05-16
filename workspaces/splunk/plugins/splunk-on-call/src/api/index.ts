@@ -18,5 +18,6 @@ export {
   SplunkOnCallClient,
   splunkOnCallApiRef,
   UnauthorizedError,
+  MissingEventsRestEndpointError,
 } from './client';
 export * from './types';

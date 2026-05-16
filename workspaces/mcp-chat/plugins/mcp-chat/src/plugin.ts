@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ComponentType } from 'react';
 import {
   createPlugin,
   createRoutableExtension,
   createApiFactory,
   discoveryApiRef,
   fetchApiRef,
-  IconComponent,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -66,4 +66,6 @@ export const McpChatPage = mcpChatPlugin.provide(
  * MCP Chat Icon
  * @public
  */
-export const MCPChatIcon: IconComponent = BotIconComponent;
+export const MCPChatIcon: ComponentType<{
+  fontSize?: 'medium' | 'large' | 'small' | 'inherit';
+}> = BotIconComponent;

@@ -1,10 +1,13 @@
-# [Backstage](https://backstage.io)
+# Azure Sites
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins related to Azure App Services and web hosting.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+[azure-sites](plugins/azure-sites)
+[azure-sites-backend](plugins/azure-sites-backend)
+[azure-sites-common](plugins/azure-sites-common)
+
+## About this workspace
+
+These plugins help teams observe deployed services in Azure.

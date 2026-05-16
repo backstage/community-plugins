@@ -17,8 +17,16 @@ import {
   SearchFilterResultTypeBlueprint,
   SearchResultListItemBlueprint,
 } from '@backstage/plugin-search-react/alpha';
-import NewReleasesIcon from '@material-ui/icons/NewReleases';
+import { RiMegaphoneLine } from '@remixicon/react';
 
+/**
+ * Search result list item that renders announcement search results.
+ *
+ * @remarks
+ * Extension ID: `search-result-list-item:announcements`
+ *
+ * @alpha
+ */
 export const announcementsSearchResultListItem =
   SearchResultListItemBlueprint.make({
     params: {
@@ -27,14 +35,25 @@ export const announcementsSearchResultListItem =
           m => m.AnnouncementSearchResultListItem,
         ),
       predicate: result => result.type === 'announcements',
+      icon: <RiMegaphoneLine />,
     },
   });
 
+/**
+ * Search filter result type that adds "Announcements" as a filterable
+ * result type in the search page.
+ *
+ * @remarks
+ * Extension ID: `search-filter-result-type:announcements/announcements-results-type`
+ *
+ * @alpha
+ */
 export const announcementsSearchFilterResultType =
   SearchFilterResultTypeBlueprint.make({
+    name: 'announcements-results-type',
     params: {
       name: 'Announcements',
       value: 'announcements',
-      icon: <NewReleasesIcon />,
+      icon: <RiMegaphoneLine />,
     },
   });

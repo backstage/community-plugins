@@ -132,6 +132,9 @@ export const CostInsightsPage = () => {
           const intervals = intervalsOf(
             pageFilters.duration,
             lastCompleteBillingDate,
+            2,
+            pageFilters.customDateRange,
+            false, // Don't use comparison mode for the main cost overview graph
           );
           const [
             fetchedProjects,

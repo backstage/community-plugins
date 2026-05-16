@@ -30,7 +30,7 @@ import {
 describe('Entity content extension', () => {
   it('should render Sentry tab', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[sentryApiRef, new MockSentryApi()]]}>
+      <TestApiProvider apis={[[sentryApiRef, new MockSentryApi()]] as const}>
         <EntityProvider entity={sampleEntity}>
           {createExtensionTester(entitySentryContent).reactElement()}
         </EntityProvider>
@@ -47,7 +47,7 @@ describe('Entity content extension', () => {
 
   it('should render missing state without Sentry annotation', async () => {
     renderInTestApp(
-      <TestApiProvider apis={[[sentryApiRef, new MockSentryApi()]]}>
+      <TestApiProvider apis={[[sentryApiRef, new MockSentryApi()]] as const}>
         <EntityProvider entity={sampleEntityWithoutAnnotation}>
           {createExtensionTester(entitySentryContent).reactElement()}
         </EntityProvider>

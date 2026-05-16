@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  ConfigApi,
-  createApiRef,
-  DiscoveryApi,
-  FetchApi,
-} from '@backstage/core-plugin-api';
+import { ConfigApi, DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import { AuthenticationError, ResponseError } from '@backstage/errors';
 import { DateTime as dt } from 'luxon';
 import {
@@ -44,7 +40,7 @@ import {
 } from './types';
 
 /** @public */
-export const ilertApiRef = createApiRef<ILertApi>({
+export const ilertApiRef = createApiRef<ILertApi>().with({
   id: 'plugin.ilert.service',
 });
 
@@ -83,7 +79,7 @@ export class ILertClient implements ILertApi {
     fetchApi: FetchApi;
 
     /**
-     * URL used by users to access iLert web UI.
+     * URL used by users to access ilert web UI.
      * Example: https://my-org.ilert.com/
      */
     baseUrl: string;
@@ -382,7 +378,7 @@ export class ILertClient implements ILertApi {
       body: JSON.stringify({
         start: dt.utc().toISO(),
         end: dt.utc().plus({ minutes }).toISO(),
-        description: `Immediate maintenance window for ${minutes} minutes. Backstage — iLert plugin.`,
+        description: `Immediate maintenance window for ${minutes} minutes. Backstage — ilert plugin.`,
         createdBy: 'Backstage',
         timezone: dt.local().zoneName,
         alertSources: [{ id: alertSourceId }],

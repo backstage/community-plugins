@@ -1,0 +1,245 @@
+/*
+ * Copyright 2020 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { useState } from 'react';
+import { DateTime } from 'luxon';
+import useAsyncRetry from 'react-use/esm/useAsyncRetry';
+import { githubActionsApiRef, GithubActionsApi } from '../api/GithubActionsApi';
+import { useApi, errorApiRef, ErrorApi } from '@backstage/core-plugin-api';
+import { Branch } from '../api';
+
+export type WorkflowRun = {
+  workflowName?: string;
+  id: string;
+  message?: string;
+  url?: string;
+  githubUrl?: string;
+  source: {
+    branchName?: string;
+    commit: {
+      hash?: string;
+      url?: string;
+    };
+  };
+  status?: string;
+  statusDate?: string;
+  statusAge?: string;
+  conclusion?: string;
+  onReRunClick: () => void;
+};
+
+export type FetchWorkflowRunsParams = {
+  api: GithubActionsApi;
+  errorApi: ErrorApi;
+  hostname?: string;
+  owner: string;
+  repo: string;
+  branch?: string;
+  page: number;
+  pageSize: number;
+};
+
+export async function fetchWorkflowRuns({
+  api,
+  errorApi,
+  hostname,
+  owner,
+  repo,
+  branch,
+  page,
+  pageSize,
+}: FetchWorkflowRunsParams): Promise<{
+  runs: WorkflowRun[];
+  totalCount: number;
+}> {
+  let selectedBranch = branch;
+  if (branch === 'default') {
+    const fetchedDefaultBranch = await api.getDefaultBranch({
+      hostname,
+      owner,
+      repo,
+    });
+    selectedBranch = fetchedDefaultBranch;
+  }
+
+  const workflowRunsData = await api.listWorkflowRuns({
+    hostname,
+    owner,
+    repo,
+    pageSize,
+    page,
+    branch: selectedBranch,
+  });
+
+  const runs: WorkflowRun[] = workflowRunsData.workflow_runs.map(run => ({
+    workflowName: run.name ?? undefined,
+    message: run.head_commit?.message,
+    id: `${run.id}`,
+    onReRunClick: async () => {
+      try {
+        await api.reRunWorkflow({
+          hostname,
+          owner,
+          repo,
+          runId: run.id,
+        });
+      } catch (e) {
+        errorApi.post(
+          new Error(`Failed to rerun the workflow: ${(e as Error).message}`),
+        );
+      }
+    },
+    source: {
+      branchName: run.head_branch ?? undefined,
+      commit: {
+        hash: run.head_commit?.id,
+        url: run.head_repository?.branches_url?.replace(
+          '{/branch}',
+          run.head_branch ?? '',
+        ),
+      },
+    },
+    status: run.status ?? undefined,
+    statusDate: run.updated_at,
+    statusAge:
+      (run.updated_at
+        ? DateTime.fromISO(run.updated_at)
+        : DateTime.now()
+      ).toRelative() ?? undefined,
+    conclusion: run.conclusion ?? undefined,
+    url: run.url,
+    githubUrl: run.html_url,
+  }));
+
+  return {
+    runs,
+    totalCount: workflowRunsData.total_count,
+  };
+}
+
+export function useWorkflowRuns({
+  hostname,
+  owner,
+  repo,
+  branch,
+  initialPageSize = 6,
+  fetchAllBranches = true,
+}: {
+  hostname?: string;
+  owner: string;
+  repo: string;
+  branch?: string | undefined;
+  initialPageSize?: number;
+  fetchAllBranches?: boolean;
+}) {
+  const api = useApi(githubActionsApiRef);
+  const errorApi = useApi(errorApiRef);
+
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(initialPageSize);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [defaultBranch, setDefaultBranch] = useState<string>('');
+
+  const {
+    loading,
+    value: runs,
+    retry,
+    error,
+  } = useAsyncRetry<WorkflowRun[]>(async () => {
+    const fetchedDefaultBranch = await api.getDefaultBranch({
+      hostname,
+      owner,
+      repo,
+    });
+
+    setDefaultBranch(fetchedDefaultBranch);
+
+    const fetchBranches = async () => {
+      let next = true;
+      let iteratePage = 1;
+      const branchSet: Branch[] = [];
+
+      while (next) {
+        const branchesData = await api.listBranches({
+          hostname,
+          owner,
+          repo,
+          page: iteratePage,
+        });
+        if (branchesData.length === 0) {
+          next = false;
+        }
+        iteratePage++;
+        branchSet.push(...branchesData);
+      }
+
+      return branchSet;
+    };
+
+    // Fetching branches is expensive and not needed in many cases
+    if (fetchAllBranches) {
+      const branchSet = await fetchBranches();
+      setBranches(branchSet);
+    }
+
+    // GitHub API pagination count starts from 1
+    const { runs: workflowRuns, totalCount } = await fetchWorkflowRuns({
+      api,
+      errorApi,
+      hostname,
+      owner,
+      repo,
+      branch: branch === 'default' ? fetchedDefaultBranch : branch,
+      page: page + 1,
+      pageSize,
+    });
+
+    setTotal(totalCount);
+    return workflowRuns;
+  }, [
+    page,
+    pageSize,
+    repo,
+    owner,
+    hostname,
+    branch,
+    fetchAllBranches,
+    api,
+    errorApi,
+  ]);
+
+  return [
+    {
+      page,
+      pageSize,
+      loading,
+      runs,
+      branches,
+      defaultBranch,
+      projectName: `${owner}/${repo}`,
+      total,
+      error,
+      api,
+      errorApi,
+    },
+    {
+      runs,
+      setPage,
+      setPageSize,
+      retry,
+    },
+  ] as const;
+}

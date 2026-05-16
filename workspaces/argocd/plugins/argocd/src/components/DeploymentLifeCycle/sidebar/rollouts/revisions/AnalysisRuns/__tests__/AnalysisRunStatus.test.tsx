@@ -39,7 +39,7 @@ describe('AnalysisRunStatus Component', () => {
 
     const icon = screen.getByTestId('analysisrun-successful-icon');
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveStyle({ color: 'green' });
+    expect(icon).toHaveStyle({ color: 'rgb(0, 128, 0)' });
   });
 
   it('renders the correct icon for Running status', () => {

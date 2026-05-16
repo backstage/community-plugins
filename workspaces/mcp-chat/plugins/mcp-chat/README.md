@@ -15,6 +15,7 @@ The MCP Chat plugin brings conversational AI capabilities directly into your Bac
 - 🛠️ **Tool Management**: Browse and dynamically enable/disable tools from connected MCP servers
 - 💬 **Rich Chat Interface**: Beautiful, responsive chat UI with markdown support
 - ⚡ **Quick Setup**: Configurable QuickStart prompts for common use cases
+- 📜 **Conversation History**: View, search, star, and manage your chat sessions
 
 ## Supported AI Providers
 
@@ -142,7 +143,7 @@ Add the following configuration to your `app-config.yaml`:
 ```yaml
 mcpChat:
   # Configure AI providers (currently only the first provider is used)
-  # Supported Providers: OpenAI, Gemini, Claude, and Ollama
+  # Supported Providers: OpenAI, OpenAI Responses API, Azure OpenAI, Gemini, Claude, Ollama, and LiteLLM
   providers:
     - id: openai # OpenAI provider
       token: ${OPENAI_API_KEY}
@@ -226,8 +227,16 @@ export KUBECONFIG="/path/to/your/kubeconfig.yaml"
    - Tool management controls for enabling/disabling specific servers
 
 3. **Start Chatting**: Begin a conversation by:
+
    - Selecting from the provided quick prompts, or
    - Typing your own queries directly into the chat input field
+
+4. **Manage Conversation History**: Access your chat history from the right sidebar:
+   - View past conversations ordered by recent activity
+   - Star important conversations for quick access
+   - Search through conversation titles
+   - Delete conversations you no longer need
+   - Click any conversation to restore and continue it
 
 ### Example Queries
 
@@ -318,6 +327,25 @@ Use these endpoints for debugging:
 - **Provider Status**: `/api/mcp-chat/provider/status`
 - **MCP Server Status**: `/api/mcp-chat/mcp/status`
 - **Available Tools**: `/api/mcp-chat/tools`
+
+### Debug LLM discussion
+
+Depending on your need to see what is going on at the LLM level:
+
+- You can trace LLM calls with some external tooling acting as an OpenAI compatible gateway
+- You can set the following to debug `mcp-chat`:
+
+```
+backend:
+  logger:
+    level: info
+    overrides:
+      - matchers:
+          plugin: mcp-chat
+        level: debug
+```
+
+> **Security note:** Debug logging includes raw LLM request and response payloads (truncated to 4 KB), which may contain user messages and tool results. Only enable in development or controlled environments.
 
 ## API Reference
 

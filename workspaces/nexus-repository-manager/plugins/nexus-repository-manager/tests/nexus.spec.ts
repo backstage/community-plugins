@@ -35,7 +35,7 @@ test.describe('Nexus Repository Manager plugin', () => {
       () => globalThis.navigator.language,
     );
     translations = getTranslations(currentLocale);
-    await common.switchToLocale(page, currentLocale);
+    await common.switchToLocale(currentLocale);
   });
 
   test('Heading is visible', async ({ browser }, testInfo) => {

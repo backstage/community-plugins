@@ -27,7 +27,7 @@ backend.add(
 
 ```tsx
 import { AnnouncementSearchResultListItem } from '@backstage-community/plugin-announcements';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import { RiMegaphoneLine } from '@remixicon/react';
 
 // ...
 <SearchType.Accordion
@@ -38,7 +38,7 @@ import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
     {
       value: 'announcements',
       name: 'Announcements',
-      icon: <RecordVoiceOverIcon />,
+      icon: <RiMegaphoneLine />,
     },
   ]}
 />

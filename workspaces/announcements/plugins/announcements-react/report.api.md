@@ -6,7 +6,7 @@
 import { Announcement } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsFilters } from '@backstage-community/plugin-announcements-common';
 import { AnnouncementsList } from '@backstage-community/plugin-announcements-common';
-import { ApiRef } from '@backstage/frontend-plugin-api';
+import { ApiRef } from '@backstage/core-plugin-api';
 import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -68,16 +68,7 @@ export class AnnouncementsClient implements AnnouncementsApi {
   // (undocumented)
   announcementByID(id: string): Promise<Announcement>;
   // (undocumented)
-  announcements({
-    max,
-    page,
-    category,
-    active,
-    sortBy,
-    order,
-    current,
-    tags,
-  }: {
+  announcements(input: {
     max?: number;
     page?: number;
     category?: string;
@@ -120,11 +111,6 @@ export type AnnouncementsClientOptions = {
   identityApi: IdentityApi;
   errorApi: ErrorApi;
   fetchApi: FetchApi;
-};
-
-// @public
-export type AnnouncementsOptions = {
-  dependencies?: any[];
 };
 
 // @public
@@ -200,6 +186,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementForm.title': 'Title';
     readonly 'announcementForm.submit': 'Submit';
     readonly 'announcementForm.excerpt': 'Excerpt';
+    readonly 'announcementForm.sendNotification': 'Send Notification';
     readonly 'announcementForm.editAnnouncement': 'Edit announcement';
     readonly 'announcementForm.newAnnouncement': 'New announcement';
     readonly 'announcementForm.startAt': 'Announcement start date';
@@ -249,6 +236,7 @@ export const announcementsTranslationRef: TranslationRef<
     readonly 'announcementsTimeline.error': 'Error';
     readonly 'announcementsTimeline.noAnnouncements': 'No announcements';
     readonly 'categoriesForm.submit': 'Submit';
+    readonly 'categoriesForm.errors.alreadyExists': 'A category with this name already exists.';
     readonly 'categoriesForm.newCategory': 'New category';
     readonly 'categoriesForm.editCategory': 'Edit category';
     readonly 'categoriesForm.titleLabel': 'Title';
@@ -321,10 +309,7 @@ export type CreateTagRequest = {
 };
 
 // @public
-export const useAnnouncements: (
-  props: AnnouncementsFilters,
-  options?: AnnouncementsOptions,
-) => {
+export const useAnnouncements: (props: AnnouncementsFilters) => {
   announcements: AnnouncementsList;
   loading: boolean;
   error: Error | undefined;

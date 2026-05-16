@@ -27,6 +27,7 @@ export const jfrogArtifactoryTranslations = createTranslationResource({
     fr: () => import('./fr'),
     it: () => import('./it'),
     es: () => import('./es'),
+    ja: () => import('./ja'),
   },
 });
 

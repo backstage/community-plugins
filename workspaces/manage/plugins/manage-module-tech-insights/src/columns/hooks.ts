@@ -16,7 +16,7 @@
 
 import { useApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights';
+import { techInsightsApiRef } from '@backstage-community/plugin-tech-insights-react';
 import type { Check } from '@backstage-community/plugin-tech-insights-common';
 
 import { useManageTechInsights } from '../components/ManageProvider';

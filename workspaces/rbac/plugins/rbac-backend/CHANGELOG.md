@@ -1,4 +1,151 @@
-### Dependencies
+# @backstage-community/plugin-rbac-backend
+
+## 7.12.4
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+  - @backstage-community/plugin-rbac-node@1.20.1
+
+## 7.12.3
+
+### Patch Changes
+
+- fb2a770: Made postgres username and password optional in casbin adapter factory to support passwordless authentication
+
+## 7.12.2
+
+### Patch Changes
+
+- 39272f8: Updated dependency `csv-parse` to `^6.0.0`.
+- 70e6333: Updated dependency `@dagrejs/graphlib` to `^4.0.0`.
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+- 8846adf: Updated dependency `qs` to `6.15.1`.
+
+## 7.12.1
+
+### Patch Changes
+
+- 40e44bb: Updated dependency `qs` to `6.14.2`.
+
+## 7.12.0
+
+### Minor Changes
+
+- 8993474: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [8993474]
+  - @backstage-community/plugin-rbac-common@1.26.0
+  - @backstage-community/plugin-rbac-node@1.20.0
+
+## 7.11.0
+
+### Minor Changes
+
+- 50e194d: Add support for a default role and permissions for authenticated users in RBAC backend
+
+  - Introduced a new `defaultRole` and `basicPermissions` configuration options to assign a default role to all authenticated users.
+
+    ```diff
+    permission:
+      rbac:
+    +   defaultPermissions:
+    +     defaultRole: role:default/my-default-role
+    +     basicPermissions:
+    +       - permission: catalog.entity.read
+    +         action: read
+    ```
+
+  - Updated the RBAC permission policy to include the default role in user roles if not already present.
+
+### Patch Changes
+
+- Updated dependencies [50e194d]
+  - @backstage-community/plugin-rbac-common@1.25.0
+  - @backstage-community/plugin-rbac-node@1.19.1
+
+## 7.10.0
+
+### Minor Changes
+
+- 133eae6: Add support for loading conditional permissions from a remote provider (fix #6412)
+
+### Patch Changes
+
+- Updated dependencies [133eae6]
+  - @backstage-community/plugin-rbac-node@1.19.0
+
+## 7.9.1
+
+### Patch Changes
+
+- d737494: Backstage version bump to v1.48.5
+- Updated dependencies [d737494]
+  - @backstage-community/plugin-rbac-common@1.24.1
+  - @backstage-community/plugin-rbac-node@1.18.1
+
+## 7.9.0
+
+### Minor Changes
+
+- da170a1: Add support for group reference in superUsers list, using direct membership only
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+
+## 7.8.0
+
+### Minor Changes
+
+- 843bbe2: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- Updated dependencies [843bbe2]
+  - @backstage-community/plugin-rbac-common@1.24.0
+  - @backstage-community/plugin-rbac-node@1.18.0
+
+## 7.7.2
+
+### Patch Changes
+
+- 8c7bddb: Added NFS support
+- af998b7: Updated dependency `supertest` to `7.2.2`.
+
+## 7.7.1
+
+### Patch Changes
+
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+- 9c7ae87: Fix - stop error on upgrade v1.47.x - allow all plugins in the arry to show
+
+## 7.7.0
+
+### Minor Changes
+
+- e6dbf70: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- e6dbf70: updated the permissionFactory to use the `FetchUrlReader.fromConfig`
+- a184943: Updated dependency `@types/node` to `22.19.7`.
+- Updated dependencies [e6dbf70]
+  - @backstage-community/plugin-rbac-common@1.23.0
+  - @backstage-community/plugin-rbac-node@1.17.0
+
+## 7.6.2
+
+### Patch Changes
+
+- 9a07184: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issue when @backstage/backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
 
 ## 7.6.1
 
@@ -21,6 +168,14 @@
   - @backstage-community/plugin-rbac-common@1.22.0
   - @backstage-community/plugin-rbac-node@1.16.0
 
+## 7.5.1
+
+### Patch Changes
+
+- 0743ffa: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issues when @backstage backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
+
 ## 7.5.0
 
 ### Minor Changes
@@ -32,6 +187,14 @@
 - Updated dependencies [2d1f63f]
   - @backstage-community/plugin-rbac-common@1.21.0
   - @backstage-community/plugin-rbac-node@1.15.0
+
+## 7.4.3
+
+### Patch Changes
+
+- 05801c1: Backport: Remove usage of breaking imports from @backstage/backend-defaults
+
+  This backports the fix from commit 9c7ae87 to avoid compatibility issues when @backstage backend-defaults resolves to 0.13.2, which introduced breaking changes to address a CVE. By removing the problematic import, this plugin remains compatible with both 0.13.1 and 0.13.2 and does not use the code containing the CVE.
 
 ## 7.4.2
 

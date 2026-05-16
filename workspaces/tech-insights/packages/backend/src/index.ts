@@ -24,6 +24,7 @@ import {
   techInsightsFactRetrieversExtensionPoint,
 } from '@backstage-community/plugin-tech-insights-node';
 import { JsonRulesEngineFactCheckerFactory } from '@backstage-community/plugin-tech-insights-backend-module-jsonfc';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { apiDefinitionFactRetriever, checks } from './plugins/tech-insights';
 
 const backend = createBackend();
@@ -67,12 +68,16 @@ backend.add(
       env.registerInit({
         deps: {
           logger: coreServices.logger,
+          catalog: catalogServiceRef,
+          auth: coreServices.auth,
           techInsightsFactCheckerFactory:
             techInsightsFactCheckerFactoryExtensionPoint,
           techInsightsFactRetrievers: techInsightsFactRetrieversExtensionPoint,
         },
         async init({
           logger,
+          catalog,
+          auth,
           techInsightsFactCheckerFactory,
           techInsightsFactRetrievers,
         }) {
@@ -83,6 +88,8 @@ backend.add(
             new JsonRulesEngineFactCheckerFactory({
               logger: logger,
               checks: checks,
+              catalog: catalog,
+              auth: auth,
             }),
           );
         },

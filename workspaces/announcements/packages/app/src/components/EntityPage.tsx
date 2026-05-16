@@ -35,7 +35,7 @@ import { EntityCatalogGraphCard } from '@backstage/plugin-catalog-graph';
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     <Grid item md={6}>
-      <EntityAboutCard variant="gridItem" />
+      <EntityAboutCard />
     </Grid>
   </Grid>
 );
@@ -60,10 +60,10 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/dependencies" title="Dependencies">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
-          <EntityDependsOnComponentsCard variant="gridItem" />
+          <EntityDependsOnComponentsCard />
         </Grid>
         <Grid item md={6}>
-          <EntityDependsOnResourcesCard variant="gridItem" />
+          <EntityDependsOnResourcesCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>
@@ -93,16 +93,16 @@ const systemPage = (
     <EntityLayout.Route path="/" title="Overview">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
-          <EntityAboutCard variant="gridItem" />
+          <EntityAboutCard />
         </Grid>
         <Grid item md={6} xs={12}>
-          <EntityCatalogGraphCard variant="gridItem" height={400} />
+          <EntityCatalogGraphCard height={400} />
         </Grid>
         <Grid item md={4} xs={12}>
           <EntityLinksCard />
         </Grid>
         <Grid item md={8}>
-          <EntityHasComponentsCard variant="gridItem" />
+          <EntityHasComponentsCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>
@@ -114,10 +114,10 @@ const domainPage = (
     <EntityLayout.Route path="/" title="Overview">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
-          <EntityAboutCard variant="gridItem" />
+          <EntityAboutCard />
         </Grid>
         <Grid item md={6}>
-          <EntityHasSystemsCard variant="gridItem" />
+          <EntityHasSystemsCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

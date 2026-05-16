@@ -37,16 +37,31 @@ import {
   RoleMetadataStorage,
 } from '../database/role-metadata';
 import { BackstageRoleManager } from '../role-manager/role-manager';
+import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { Connection, connectRBACProviders } from './connect-providers';
-import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
+import {
+  catalogMock,
+  mockAuditorService,
+  createEventMock,
+} from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLog,
 } from '../../__fixtures__/auditor-test-utils';
-import { ActionType, PermissionEvents } from '../auditor/auditor';
-import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
+import {
+  ActionType,
+  ConditionEvents,
+  PermissionEvents,
+} from '../auditor/auditor';
+import {
+  PermissionAction,
+  PermissionInfo,
+  RoleConditionalPolicyDecision,
+} from '@backstage-community/plugin-rbac-common';
+import { ConditionalStorage } from '../database/conditional-storage';
+import { ConflictError } from '@backstage/errors';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -105,6 +120,9 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   createRoleMetadata: jest.fn().mockImplementation(),
   updateRoleMetadata: jest.fn().mockImplementation(),
   removeRoleMetadata: jest.fn().mockImplementation(),
+  getCachedDefaultRoleMetadata: jest.fn().mockImplementation(),
+  getDefaultRole: jest.fn().mockResolvedValue(undefined),
+  syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockAuthService = mockServices.auth();
@@ -136,6 +154,50 @@ const existingRoleMetadata = {
 const existingPolicy = [
   ['role:default/existing-provider-role', 'catalog-entity', 'read', 'allow'],
 ];
+const existingConditionalPermission: RoleConditionalPolicyDecision<PermissionInfo>[] =
+  [
+    {
+      id: 1,
+      result: 'CONDITIONAL',
+      roleEntityRef: 'role:default/existing',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [{ name: 'read', action: 'read' }],
+      conditions: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: {
+          claims: ['group:default/existing-team'],
+        },
+      },
+    },
+  ];
+
+const conditionalStorageMock: ConditionalStorage = {
+  filterConditions: jest
+    .fn()
+    .mockImplementation(() => existingConditionalPermission),
+  createCondition: jest.fn().mockImplementation(),
+  checkConflictedConditions: jest
+    .fn()
+    .mockImplementation(
+      async (
+        roleEntityRef: string,
+        _resourceType: string,
+        _pluginId: string,
+        _queryConditionActions: PermissionAction[],
+        _idToExclude: number,
+        _trx?: Knex.Knex.Transaction,
+      ) => {
+        if (roleEntityRef === 'role:default/conflicting-role') {
+          throw new ConflictError(`Found conditional permission conflict.`);
+        }
+      },
+    ),
+  getCondition: jest.fn().mockImplementation(),
+  deleteCondition: jest.fn().mockImplementation(),
+  updateCondition: jest.fn().mockImplementation(),
+};
 
 const config = mockServices.rootConfig({
   data: {
@@ -187,10 +249,15 @@ describe('Connection', () => {
 
     await enforcerDelegate.addPolicies(existingPolicy);
 
+    for (const conditionalPermission of existingConditionalPermission) {
+      await conditionalStorageMock.createCondition(conditionalPermission);
+    }
+
     provider = new Connection(
       id,
       enforcerDelegate,
       roleMetadataStorageMock,
+      conditionalStorageMock,
       mockLoggerService,
       mockAuditorService,
     );
@@ -240,24 +307,24 @@ describe('Connection', () => {
         ['user:default/Adam', 'role:default/test-provider'], // to add
       ];
 
-      const roleMeta = {
-        createdAt: new Date().toUTCString(),
-        lastModified: new Date().toUTCString(),
-        modifiedBy: 'test',
-        source: 'test',
-        roleEntityRef: roles[0][1],
-      };
-
       await provider.applyRoles(roles);
       expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
         1,
         ['user:default/test', 'role:default/test-provider'],
-        roleMeta,
+        expect.objectContaining({
+          modifiedBy: 'test',
+          source: 'test',
+          roleEntityRef: 'role:default/test-provider',
+        }),
       );
       expect(enfAddGroupingPolicySpy).toHaveBeenNthCalledWith(
         2,
         ['user:default/adam', 'role:default/test-provider'],
-        roleMeta,
+        expect.objectContaining({
+          modifiedBy: 'test',
+          source: 'test',
+          roleEntityRef: 'role:default/test-provider',
+        }),
       );
     });
 
@@ -359,21 +426,19 @@ describe('Connection', () => {
 
       const failingRoleToAdd = `user:default/test,role:default/`;
       const roleToAdd = [['user:default/test', 'role:default/test-provider']];
-      const roleMeta = {
-        createdAt: new Date().toUTCString(),
-        lastModified: new Date().toUTCString(),
-        modifiedBy: 'test',
-        source: 'test',
-        roleEntityRef: roleToAdd[0][1],
-      };
 
       await provider.applyRoles(roles);
       expect(mockLoggerService.warn).toHaveBeenCalledWith(
         `Failed to validate group policy ${failingRoleToAdd}. Cause: Entity reference "role:default/" was not on the form [<kind>:][<namespace>/]<name>`,
       );
+      // Verify the call was made with the correct role, but ignore timestamp fields
       expect(enfAddGroupingPolicySpy).toHaveBeenCalledWith(
         ...roleToAdd,
-        roleMeta,
+        expect.objectContaining({
+          modifiedBy: 'test',
+          source: 'test',
+          roleEntityRef: roleToAdd[0][1],
+        }),
       );
     });
   });
@@ -492,8 +557,230 @@ describe('Connection', () => {
       ]);
     });
 
-    it('should still add new permission, even if there is an invalid permission in array', () => {
-      expect('').toEqual('');
+    it('should still add new permission, even if there is an invalid permission in array', async () => {
+      enfAddPolicySpy = jest.spyOn(enforcerDelegate, 'addPolicy');
+
+      const policies = [
+        ...existingPolicy, // Keep existing policy to avoid removal event
+        ['role:default/provider-role', 'catalog-entity', 'read', 'temp'], // invalid
+        ['role:default/provider-role', 'catalog-entity', 'create', 'allow'], // valid
+      ];
+
+      const invalidPolicy = policies[1];
+      const validPolicyToAdd = [policies[2]];
+
+      await provider.applyPermissions(policies);
+
+      // Verify that the invalid permission triggered a fail event
+      const failedEvents = createEventMock.fail.mock.calls;
+      const invalidPolicyFailed = failedEvents.some(
+        call =>
+          call[0].error?.message ===
+            `'effect' has invalid value: 'temp'. It should be: 'allow' or 'deny'` &&
+          call[0].meta?.policies?.[0] === invalidPolicy,
+      );
+      expect(invalidPolicyFailed).toBe(true);
+
+      // Verify that the valid permission was still added despite the invalid one
+      expect(enfAddPolicySpy).toHaveBeenCalledWith(...validPolicyToAdd);
+      // Verify that only the valid policy was added (not the invalid one)
+      expect(enfAddPolicySpy).toHaveBeenCalledTimes(1);
+
+      // Verify that a success event was also logged for the valid permission
+      const succeededEvents = createEventMock.success.mock.calls;
+      const validPolicySucceeded = succeededEvents.some(
+        call => call[0].meta?.policies?.[0] === validPolicyToAdd[0],
+      );
+      expect(validPolicySucceeded).toBe(true);
+    });
+  });
+
+  describe('applyConditionalPermissions', () => {
+    beforeEach(() => {
+      (conditionalStorageMock.createCondition as jest.Mock).mockReset();
+      (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
+    });
+
+    afterEach(() => {
+      (mockLoggerService.warn as jest.Mock).mockReset();
+      (conditionalStorageMock.createCondition as jest.Mock).mockReset();
+      (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
+    });
+
+    it('should create conditional permissions', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: 0,
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/test',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'read', action: 'read' }],
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['group:default/team-a'],
+            },
+          },
+        },
+      ];
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledWith(
+        ...policies,
+      );
+    });
+
+    it('should remove old conditional permissions', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: 0,
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/test',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'read', action: 'read' }],
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['group:default/team-a'],
+            },
+          },
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledWith(
+        ...existingConditionalPermission.map(it => it.id),
+      );
+    });
+
+    it('should not add policies that exist already, if not changed', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        ...existingConditionalPermission,
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
+    });
+
+    it('should not remove existing policies if not changed', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: 0,
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/test',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'read', action: 'read' }],
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['group:default/team-a'],
+            },
+          },
+        },
+        ...existingConditionalPermission,
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(0);
+    });
+
+    it('should replace changed policies', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: existingConditionalPermission[0].id,
+          result: existingConditionalPermission[0].result,
+          roleEntityRef: existingConditionalPermission[0].roleEntityRef,
+          pluginId: existingConditionalPermission[0].pluginId,
+          resourceType: existingConditionalPermission[0].resourceType,
+          permissionMapping: [
+            { name: 'read', action: 'read' },
+            { name: 'delete', action: 'delete' },
+          ],
+          conditions: existingConditionalPermission[0].conditions,
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+    });
+    it('should replace permissions with changed condition', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: existingConditionalPermission[0].id,
+          result: existingConditionalPermission[0].result,
+          roleEntityRef: existingConditionalPermission[0].roleEntityRef,
+          pluginId: existingConditionalPermission[0].pluginId,
+          resourceType: existingConditionalPermission[0].resourceType,
+          permissionMapping: existingConditionalPermission[0].permissionMapping,
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: [
+                'group:default/existing-team',
+                'group:default/one-more-team',
+              ],
+            },
+          },
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+    });
+    it('should reject policies from an invalid source', async () => {
+      const anotherProvider = new Connection(
+        'another-provider',
+        enforcerDelegate,
+        roleMetadataStorageMock,
+        conditionalStorageMock,
+        mockLoggerService,
+        mockAuditorService,
+      );
+
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: 0,
+          result: 'CONDITIONAL',
+          roleEntityRef: 'role:default/existing-provider-role',
+          pluginId: 'catalog',
+          resourceType: 'catalog-entity',
+          permissionMapping: [{ name: 'read', action: 'read' }],
+          conditions: {
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: {
+              claims: ['group:default/team-a'],
+            },
+          },
+        },
+        ...existingConditionalPermission,
+      ];
+
+      await anotherProvider.applyConditionalPermissions(policies);
+      expectAuditorLog([
+        {
+          event: {
+            eventId: ConditionEvents.CONDITION_WRITE,
+            meta: { actionType: ActionType.CREATE, source: 'another-provider' },
+          },
+          fail: {
+            error: new Error(
+              `source does not match originating role role:default/existing-provider-role, consider making changes to the 'TEST'`,
+            ),
+            meta: {
+              policies: [policies[0]],
+            },
+          },
+        },
+      ]);
     });
   });
 });
@@ -529,6 +816,7 @@ describe('connectRBACProviders', () => {
       [providerMock],
       enforcerDelegate,
       roleMetadataStorageMock,
+      conditionalStorageMock,
       mockLoggerService,
       mockAuditorService,
     );
@@ -553,6 +841,7 @@ async function createEnforcer(
     rbacDBClient,
     config,
     mockAuthService,
+    new DefaultPermissionsReader(config),
   );
   enf.setRoleManager(rm);
   enf.enableAutoBuildRoleLinks(false);

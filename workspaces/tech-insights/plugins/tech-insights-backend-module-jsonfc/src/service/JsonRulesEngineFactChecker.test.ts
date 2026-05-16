@@ -26,6 +26,7 @@ import { TechInsightJsonRuleCheck } from '../types';
 import { Operator } from 'json-rules-engine';
 import { mockServices } from '@backstage/backend-test-utils';
 import { FactSchema } from '@backstage-community/plugin-tech-insights-common';
+import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 
 const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
   broken: [
@@ -302,6 +303,288 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
       },
     },
   ],
+
+  // Filter test cases
+  filterMatchingSingleField: [
+    {
+      id: 'filterMatchingSingleFieldCheck',
+      name: 'filterMatchingSingleFieldCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with filter matching single field',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'Component' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterNotMatching: [
+    {
+      id: 'filterNotMatchingCheck',
+      name: 'filterNotMatchingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with filter not matching',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'API' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterMultipleObjects: [
+    {
+      id: 'filterMultipleObjectsCheck',
+      name: 'filterMultipleObjectsCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with multiple filter objects (OR logic)',
+      factIds: ['test-factretriever'],
+      filter: [{ kind: 'API' }, { kind: 'Component' }],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterArrayValues: [
+    {
+      id: 'filterArrayValuesCheck',
+      name: 'filterArrayValuesCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with array values in filter',
+      factIds: ['test-factretriever'],
+      filter: { kind: ['Component', 'Service'] },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterNestedProperty: [
+    {
+      id: 'filterNestedPropertyCheck',
+      name: 'filterNestedPropertyCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with nested property access',
+      factIds: ['test-factretriever'],
+      filter: { 'spec.lifecycle': 'production' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterCaseInsensitive: [
+    {
+      id: 'filterCaseInsensitiveCheck',
+      name: 'filterCaseInsensitiveCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with case-insensitive matching',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'component' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterMultipleFields: [
+    {
+      id: 'filterMultipleFieldsCheck',
+      name: 'filterMultipleFieldsCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with multiple fields in filter (AND logic)',
+      factIds: ['test-factretriever'],
+      filter: { kind: 'Component', 'spec.type': 'service' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  filterEntityArrayProperty: [
+    {
+      id: 'filterEntityArrayPropertyCheck',
+      name: 'filterEntityArrayPropertyCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check matching against entity array property',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.tags': 'backend' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterArrayValueNotMatching: [
+    {
+      id: 'filterArrayValueNotMatchingCheck',
+      name: 'filterArrayValueNotMatchingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with array values that dont match',
+      factIds: ['test-factretriever'],
+      filter: { kind: ['API', 'System'] }, // Component won't match
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterUndefinedProperty: [
+    {
+      id: 'filterUndefinedPropertyCheck',
+      name: 'filterUndefinedPropertyCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with filter for undefined property',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.tags': 'backend' }, // incomplete-entity has no tags
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterAnnotationValue: [
+    {
+      id: 'filterAnnotationValueCheck',
+      name: 'filterAnnotationValueCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check matching specific annotation value',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.annotations.deployment-env': 'production' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterAnnotationValueNotMatching: [
+    {
+      id: 'filterAnnotationValueNotMatchingCheck',
+      name: 'filterAnnotationValueNotMatchingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check with annotation value that does not match',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.annotations.deployment-env': 'staging' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  filterAnnotationMissing: [
+    {
+      id: 'filterAnnotationMissingCheck',
+      name: 'filterAnnotationMissingCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Check for annotation on entity with no annotations',
+      factIds: ['test-factretriever'],
+      filter: { 'metadata.annotations.some-key': 'some-value' },
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+        },
+      },
+    },
+  ],
 };
 
 const latestSchemasMock = jest.fn().mockImplementation((...args) => {
@@ -397,6 +680,91 @@ const mockRepository: TechInsightsStore = {
   getLatestSchemas: latestSchemasMock,
 } as unknown as TechInsightsStore;
 
+// Mock catalog entities for filter testing
+const mockCatalogEntities: Record<string, any> = {
+  'component:default/test-service': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'test-service',
+      namespace: 'default',
+      tags: ['backend', 'typescript'],
+    },
+    spec: {
+      type: 'service',
+      lifecycle: 'production',
+      owner: 'team-a',
+    },
+  },
+  'api:default/test-api': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'API',
+    metadata: {
+      name: 'test-api',
+      namespace: 'default',
+      tags: ['rest', 'public'],
+    },
+    spec: {
+      type: 'openapi',
+      lifecycle: 'experimental',
+      owner: 'team-b',
+    },
+  },
+  'component:default/test-library': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'test-library',
+      namespace: 'default',
+      tags: ['frontend', 'react'],
+    },
+    spec: {
+      type: 'library',
+      lifecycle: 'production',
+      owner: 'team-a',
+    },
+  },
+  // Add entity with missing properties for edge case testing
+  'component:default/incomplete-entity': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'incomplete-entity',
+      namespace: 'default',
+      // No tags
+    },
+    spec: {
+      // No type, lifecycle
+      owner: 'team-c',
+    },
+  },
+  // Add entity with annotations for annotation filter testing
+  'component:default/annotated-service': {
+    apiVersion: 'backstage.io/v1alpha1',
+    kind: 'Component',
+    metadata: {
+      name: 'annotated-service',
+      namespace: 'default',
+      annotations: {
+        'backstage.io/techdocs-ref': 'dir:.',
+        'github.com/project-slug': 'my-org/my-repo',
+        'deployment-env': 'production',
+      },
+    },
+    spec: {
+      type: 'service',
+      lifecycle: 'production',
+      owner: 'team-a',
+    },
+  },
+};
+
+const mockCatalogService = catalogServiceMock.mock({
+  getEntityByRef: jest.fn((entityRef: string) => {
+    return Promise.resolve(mockCatalogEntities[entityRef] || undefined);
+  }),
+});
+
 describe('JsonRulesEngineFactChecker', () => {
   const factChecker = new JsonRulesEngineFactCheckerFactory({
     checkRegistry: mockCheckRegistry,
@@ -405,6 +773,8 @@ describe('JsonRulesEngineFactChecker', () => {
       new Operator<number, number>('isDivisibleBy', (a, b) => a % b === 0),
     ],
     logger: mockServices.logger.mock(),
+    catalog: mockCatalogService,
+    auth: mockServices.auth.mock(),
   }).construct(mockRepository);
 
   describe('when running checks', () => {
@@ -798,5 +1168,259 @@ describe('JsonRulesEngineFactChecker', () => {
         });
       },
     );
+  });
+
+  describe('when filtering checks by entity criteria', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('basic filtering', () => {
+      it('should run check when filter matches entity kind', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterMatchingSingleField'],
+        );
+
+        expect(mockCatalogService.getEntityByRef).toHaveBeenCalledWith(
+          'component:default/test-service',
+          expect.any(Object),
+        );
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterMatchingSingleFieldCheck');
+        expect(results[0].result).toBe(true);
+      });
+
+      it('should not run check when filter does not match entity kind', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterNotMatching'],
+        );
+
+        expect(mockCatalogService.getEntityByRef).toHaveBeenCalledWith(
+          'component:default/test-service',
+          expect.any(Object),
+        );
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('multiple filter objects (OR logic)', () => {
+      it('should run check when any filter object matches', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterMultipleObjects'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterMultipleObjectsCheck');
+      });
+    });
+
+    describe('array values in filters', () => {
+      it('should run check when entity matches one value in filter array', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterArrayValues'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterArrayValuesCheck');
+      });
+
+      it('should not run check when entity does not match any value in filter array', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterArrayValueNotMatching'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('nested properties', () => {
+      it('should support nested property access in filters', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterNestedProperty'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterNestedPropertyCheck');
+      });
+
+      it('should not run check when nested property does not match', async () => {
+        const results = await factChecker.runChecks('api:default/test-api', [
+          'filterNestedProperty',
+        ]);
+
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('string matching', () => {
+      it('should perform case-insensitive matching for string values', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterCaseInsensitive'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterCaseInsensitiveCheck');
+      });
+    });
+
+    describe('multiple fields (AND logic)', () => {
+      it('should match when all fields in filter match', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterMultipleFields'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterMultipleFieldsCheck');
+      });
+
+      it('should not match when one field in filter does not match', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-library',
+          ['filterMultipleFields'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('entity array properties', () => {
+      it('should match filter value against entity array property', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterEntityArrayProperty'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterEntityArrayPropertyCheck');
+      });
+
+      it('should not match when filter value not in entity array property', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-library',
+          ['filterEntityArrayProperty'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('annotation filtering', () => {
+      it('should run check when annotation value matches', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/annotated-service',
+          ['filterAnnotationValue'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('filterAnnotationValueCheck');
+      });
+
+      it('should not run check when annotation value does not match', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/annotated-service',
+          ['filterAnnotationValueNotMatching'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+
+      it('should not run check when entity has no annotations', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterAnnotationMissing'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('edge cases and error handling', () => {
+      it('should not run check when entity property is undefined', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/incomplete-entity',
+          ['filterUndefinedProperty'],
+        );
+
+        expect(results).toHaveLength(0);
+      });
+
+      it('should run all checks when entity cannot be fetched from catalog', async () => {
+        mockCatalogService.getEntityByRef.mockResolvedValueOnce(undefined);
+
+        const results = await factChecker.runChecks(
+          'component:default/non-existent',
+          ['filterMatchingSingleField', 'simple'],
+        );
+
+        expect(results).toHaveLength(2);
+      });
+
+      it('should handle catalog service error gracefully and run all checks', async () => {
+        mockCatalogService.getEntityByRef.mockRejectedValueOnce(
+          new Error('Catalog unavailable'),
+        );
+
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterMatchingSingleField', 'simple'],
+        );
+
+        expect(results).toHaveLength(2);
+      });
+    });
+
+    describe('mixed scenarios', () => {
+      it('should run checks without filter regardless of entity', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['simple', 'filterNotMatching'],
+        );
+
+        expect(results).toHaveLength(1);
+        expect(results[0].check.id).toBe('simpleTestCheck');
+      });
+
+      it('should handle multiple checks with different filter results', async () => {
+        const results = await factChecker.runChecks(
+          'component:default/test-service',
+          ['filterMatchingSingleField', 'filterNotMatching', 'simple'],
+        );
+
+        expect(results).toHaveLength(2);
+        expect(results.map(r => r.check.id)).toEqual([
+          'filterMatchingSingleFieldCheck',
+          'simpleTestCheck',
+        ]);
+      });
+    });
+
+    describe('performance considerations', () => {
+      it('should only fetch entity once even with multiple filtered checks', async () => {
+        await factChecker.runChecks('component:default/test-service', [
+          'filterMatchingSingleField',
+          'filterArrayValues',
+          'filterNestedProperty',
+        ]);
+
+        expect(mockCatalogService.getEntityByRef).toHaveBeenCalledTimes(1);
+      });
+
+      it('should not fetch entity when no checks have filters', async () => {
+        await factChecker.runChecks('component:default/test-service', [
+          'simple',
+          'simple2',
+        ]);
+
+        expect(mockCatalogService.getEntityByRef).not.toHaveBeenCalled();
+      });
+    });
   });
 });

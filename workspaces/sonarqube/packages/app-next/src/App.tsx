@@ -19,13 +19,16 @@ import { createApp } from '@backstage/frontend-defaults';
 import {
   createFrontendModule,
   PageBlueprint,
-  SignInPageBlueprint,
 } from '@backstage/frontend-plugin-api';
+import {
+  SignInPageBlueprint,
+  type SignInPageProps,
+} from '@backstage/plugin-app-react';
 import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import { Navigate, Route } from 'react-router';
+import { Navigate, Route } from 'react-router-dom';
 
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from '@backstage/core-components';
@@ -34,7 +37,7 @@ import sonarQubePlugin from '@backstage-community/plugin-sonarqube/alpha';
 
 const signInPage = SignInPageBlueprint.make({
   params: {
-    loader: async () => props =>
+    loader: async () => (props: SignInPageProps) =>
       <SignInPage {...props} providers={['guest']} />,
   },
 });

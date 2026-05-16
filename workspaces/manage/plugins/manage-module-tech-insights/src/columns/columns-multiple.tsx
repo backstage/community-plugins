@@ -29,6 +29,7 @@ import { eqCheck } from '../utils';
 
 import { useEntityInsights } from './hooks';
 import { useTableColumnTitle } from './title';
+import { Cell } from './Cell';
 
 export function makeGetColumns(
   customCheckFilter: ((check: Check) => boolean) | undefined,
@@ -65,13 +66,15 @@ export function makeGetColumns(
               }
 
               return (
-                <ResultCheckIcon
-                  result={foundCheck}
-                  entity={entity}
-                  missingRendererComponent={
-                    <ColumnIconError title="No renderer found for this check" />
-                  }
-                />
+                <Cell>
+                  <ResultCheckIcon
+                    result={foundCheck}
+                    entity={entity}
+                    missingRendererComponent={
+                      <ColumnIconError title="No renderer found for this check" />
+                    }
+                  />
+                </Cell>
               );
             },
           }),

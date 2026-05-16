@@ -23,6 +23,12 @@ jest.mock('../../../../AppStatus/StatusIcons', () => ({
   SyncIcon: jest.fn(() => <span>Mocked Sync Icon</span>),
 }));
 
+jest.mock('../../../../../hooks/useTranslation', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key.split('.').pop(),
+  }),
+}));
+
 describe('ResourceSyncStatus Component', () => {
   const renderComponent = (syncStatus: string) => {
     render(<ResourceSyncStatus syncStatus={syncStatus} />);

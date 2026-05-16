@@ -1,5 +1,40 @@
 # backend
 
+## 0.0.26
+
+### Patch Changes
+
+- Updated dependencies [c120454]
+  - @backstage-community/plugin-playlist-backend@0.20.1
+
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [62fb3be]
+  - @backstage-community/plugin-playlist-backend@0.20.0
+
+## 0.0.24
+
+### Patch Changes
+
+- Updated dependencies [d60015e]
+  - @backstage-community/plugin-playlist-backend@0.19.0
+
+## 0.0.23
+
+### Patch Changes
+
+- Updated dependencies [c9de461]
+  - @backstage-community/plugin-playlist-backend@0.18.0
+
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies [f019cee]
+  - @backstage-community/plugin-playlist-backend@0.17.0
+
 ## 0.0.21
 
 ### Patch Changes

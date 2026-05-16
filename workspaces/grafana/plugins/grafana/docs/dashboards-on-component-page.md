@@ -34,6 +34,14 @@ const overviewContent = (
 Grafana dashboards are correlated to Backstage entities using a selector defined by an annotation added in the entity's `catalog-info.yaml` file.
 The `EntityGrafanaDashboardsCard` component will then display dashboards matching the given selector.
 
+If you have [multiple Grafana instances configured](setup.md#multiple-instances-configuration), add the `grafana/host-id` annotation to select which instance to query:
+
+```yaml
+annotations:
+  grafana/dashboard-selector: my-service
+  grafana/host-id: production
+```
+
 The following selector will return dashboards that have a `my-service` or a `my-service-slo` tag and have a `generated` tag.
 
 ```yml

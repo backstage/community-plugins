@@ -1,5 +1,23 @@
 # @backstage-community/plugin-catalog-backend-module-pingidentity
 
+## 0.11.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 0.11.0
+
+### Minor Changes
+
+- 1a8dad8: Backstage version bump to v1.49.3
+
+## 0.10.0
+
+### Minor Changes
+
+- 74486ec: Backstage version bump to v1.47.3
+
 ## 0.9.0
 
 ### Minor Changes

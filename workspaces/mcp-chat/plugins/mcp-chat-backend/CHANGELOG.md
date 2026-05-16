@@ -1,5 +1,87 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- c43e80c: Add Azure OpenAI provider to support newer Azure OpenAI models like `gpt-5.1`.
+
+  This provider filters the models returned during the connection test to only show the status of the model of the configured deployment. It also uses `max_completion_tokens` correctly, fixing compatibility with newer models.
+
+## 0.10.0
+
+### Minor Changes
+
+- 8db17fe: Added support for max_tokens and temperature customization
+- 371fbad: Implement tool-level filtering using plugin configuration
+- 2cb7b1b: Add support for configuring MCP tool call timeout
+- 8db17fe: Added support for O-series and GPT-5 models
+
+### Patch Changes
+
+- 371fbad: Remove allowedTools from public MCPServerConfig API surface and improve disabledTools validation
+
+## 0.9.0
+
+### Minor Changes
+
+- 81aead2: Backstage version bump to v1.50.2
+
+## 0.8.0
+
+### Minor Changes
+
+- 1b22981: Migrating away from deprecated @google/generative-ai npm package to new @google/genai for gemini provider
+- a81325a: Added support for debugging LLM calls
+- 3e01b82: Backstage version bump to v1.49.2
+
+  Updated `uuid` and `@types/uuid` to ^11.0.0, `@backstage/plugin-catalog-node` to ^2.1.0, and deduplicated yarn.lock
+
+## 0.7.0
+
+### Minor Changes
+
+- 158dbf4: Backstage version bump to v1.48.5
+
+### Patch Changes
+
+- 8a6b81c: Updated dependency `@types/supertest` to `^7.0.0`.
+
+## 0.6.1
+
+### Patch Changes
+
+- a4dddac: enable knip report
+
+## 0.6.0
+
+### Minor Changes
+
+- 207781a: ### Added Conversation History Feature
+
+  - **Conversation Persistence**: Chat sessions are automatically saved for authenticated users
+  - **Starring**: Mark important conversations as favorites for quick access
+  - **Search**: Filter conversations by title using client-side search
+  - **Delete**: Remove individual conversations or clear all history
+  - **AI-Generated Titles**: Conversations get auto-generated titles using the LLM (with fallback to first message)
+
+  ### Backend Improvements
+
+  - Refactored router into domain-specific modules (status, chat, conversations) for better maintainability
+  - Added authentication and validation middleware
+  - New API endpoints for conversation management (list, get, delete, star, update title)
+  - Added `ChatConversationStore` and `SummarizationService` to public exports
+  - Comprehensive unit tests for `ChatConversationStore`
+
+  ### Configuration Options
+
+  New `conversationHistory` config section with `displayLimit`, `autoSummarize`, and `summarizeTimeout` options.
+
+  ### Notes
+
+  - Guest users (`user:development/guest`) do not have conversations saved
+  - Conversations stored in `mcp_chat_conversations` database table with automatic migrations
+
 ## 0.5.0
 
 ### Minor Changes

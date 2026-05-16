@@ -54,5 +54,37 @@ export default defineConfig({
         locale: 'fr',
       },
     },
+    {
+      name: 'it',
+      testDir: 'plugins/jfrog-artifactory/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      testDir: 'plugins/jfrog-artifactory/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'ja',
+      },
+    },
+    {
+      name: 'de',
+      testDir: 'plugins/jfrog-artifactory/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      testDir: 'plugins/jfrog-artifactory/tests',
+      use: {
+        channel: 'chrome',
+        locale: 'es',
+      },
+    },
   ],
 });

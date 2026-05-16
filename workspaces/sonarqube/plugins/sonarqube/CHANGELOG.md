@@ -1,5 +1,42 @@
 # @backstage-community/plugin-sonarqube
 
+## 1.1.0
+
+### Minor Changes
+
+- 188e3e6: Backstage version bump to v1.49.3
+
+### Patch Changes
+
+- Updated dependencies [188e3e6]
+  - @backstage-community/plugin-sonarqube-react@1.1.0
+
+## 1.0.0
+
+### Major Changes
+
+- 39ef4af: A new `GET /entities/:kind/:namespace/:name/summary` endpoint has been introduced, which resolves the entity, reads the `sonarqube.org/project-key` annotation, and fetches findings and instance URL server-side. This replaces the old `/findings` and `/instanceUrl` endpoints (now deprecated), removing the need for the frontend to parse annotations or pass project keys directly.
+
+  **BREAKING**: The `SonarQubeApi` interface has been consolidated from two methods (`getFindingSummary` and `getFindingSummaries`) into a single `getSummaries` method that accepts an array of `Entity` objects (instead of `componentKey`/`projectInstance` options).
+
+  The `<SonarQubeCard />` component now displays more specific error messages.
+
+### Patch Changes
+
+- Updated dependencies [39ef4af]
+  - @backstage-community/plugin-sonarqube-react@1.0.0
+
+## 0.23.0
+
+### Minor Changes
+
+- 3b18fd5: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [3b18fd5]
+  - @backstage-community/plugin-sonarqube-react@0.15.0
+
 ## 0.22.2
 
 ### Patch Changes

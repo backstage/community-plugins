@@ -18,7 +18,7 @@ import { TableColumn } from '@backstage/core-components';
 import { PermissionsData } from '../../types';
 import { getRulesNumber } from '../../utils/create-role-utils';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const getColumns = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,

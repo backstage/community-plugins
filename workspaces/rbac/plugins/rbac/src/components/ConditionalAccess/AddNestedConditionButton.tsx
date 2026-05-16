@@ -20,7 +20,7 @@ import Typography from '@mui/material/Typography';
 import { MarkdownContent } from '@backstage/core-components';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 import { useTranslation } from '../../hooks/useTranslation';
-import { rbacTranslationRef } from '../../translations';
+import { rbacTranslationRef } from '../../alpha/translations';
 
 export const tooltipTitle = (
   t: TranslationFunction<typeof rbacTranslationRef.T>,

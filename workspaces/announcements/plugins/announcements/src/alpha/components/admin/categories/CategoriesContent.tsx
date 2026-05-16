@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { useState } from 'react';
-import { useApi, alertApiRef } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
+import { toastApiRef } from '@backstage/frontend-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
   CreateCategoryRequest,
@@ -29,7 +30,7 @@ import {
   useDeleteConfirmationDialogState,
   DeleteConfirmationDialog,
 } from '../shared';
-import { CreateCatagoryDialog } from './CreateCatagoryDialog';
+import { CreateCategoryDialog } from './CreateCategoryDialog';
 import { CategoriesTableCard } from './CategoriesTableCard';
 
 /**
@@ -37,7 +38,7 @@ import { CategoriesTableCard } from './CategoriesTableCard';
  */
 export const CategoriesContent = () => {
   const announcementsApi = useApi(announcementsApiRef);
-  const alertApi = useApi(alertApiRef);
+  const toastApi = useApi(toastApiRef);
 
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const { t } = useAnnouncementsTranslation();
@@ -60,15 +61,16 @@ export const CategoriesContent = () => {
         title,
       });
 
-      alertApi.post({
-        message: `${title} ${t('admin.categoriesContent.createdMessage')}`,
-        severity: 'success',
+      toastApi.post({
+        title: `${title} ${t('admin.categoriesContent.createdMessage')}`,
+        status: 'success',
+        timeout: 5000,
       });
 
       setShowNewCategoryForm(false);
       refresh();
     } catch (err) {
-      alertApi.post({ message: (err as Error).message, severity: 'error' });
+      toastApi.post({ title: (err as Error).message, status: 'danger' });
     }
   };
 
@@ -90,14 +92,15 @@ export const CategoriesContent = () => {
     try {
       await announcementsApi.deleteCategory(categoryToDelete!.slug);
 
-      alertApi.post({
-        message: t('admin.categoriesContent.table.categoryDeleted'),
-        severity: 'success',
+      toastApi.post({
+        title: t('admin.categoriesContent.table.categoryDeleted'),
+        status: 'success',
+        timeout: 5000,
       });
     } catch (err) {
-      alertApi.post({
-        message: (err as ResponseError).body.error.message,
-        severity: 'error',
+      toastApi.post({
+        title: (err as ResponseError).body.error.message,
+        status: 'danger',
       });
     }
 
@@ -121,7 +124,7 @@ export const CategoriesContent = () => {
         canDelete={canDelete}
       />
 
-      <CreateCatagoryDialog
+      <CreateCategoryDialog
         open={showNewCategoryForm}
         onConfirm={onConfirmCreate}
         onCancel={onCancelCreate}

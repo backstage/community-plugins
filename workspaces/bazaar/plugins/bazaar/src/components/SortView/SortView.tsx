@@ -117,7 +117,9 @@ export const SortView = (props: SortViewProps) => {
 
   const getSearchResults = () => {
     return bazaarProjects.value
-      ?.filter(project => project.title.includes(searchValue))
+      ?.filter(project =>
+        project.title.toLowerCase().includes(searchValue.toLowerCase()),
+      )
       .sort(sortMethods[sortMethodNbr]);
   };
 

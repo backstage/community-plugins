@@ -28,6 +28,9 @@ import { MarkdownRendererTypeProps } from '../../../components';
 export type AnnouncementsPageProps = {
   title: string;
   maxPerPage?: number;
+  /**
+   * @deprecated Use URL state (e.g. ?category=...) to filter category instead.
+   */
   category?: string;
   tags?: string[];
   hideStartAt?: boolean;

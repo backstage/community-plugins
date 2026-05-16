@@ -51,7 +51,7 @@ const mockJfrogArtifactoryApi = new MockJfrogArtifactoryApi();
 createDevApp()
   .registerPlugin(jfrogArtifactoryPlugin)
   .addTranslationResource(jfrogArtifactoryTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es'])
+  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .setDefaultLanguage('en')
   .addPage({
     element: (

@@ -1,4 +1,55 @@
-### Dependencies
+# @backstage-community/plugin-catalog-backend-module-keycloak
+
+## 3.19.2
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 3.19.1
+
+### Patch Changes
+
+- e8b7471: Fixes group fetching to default to the recursive subgroup strategy when the Keycloak server version cannot be determined from `serverInfo`. Previously, the version check could silently produce an unexpected result if `systemInfo.version` was absent; now the plugin defaults to `processGroupsRecursively` for all versions except those explicitly detected as 22 or lower, which continue to use the flat `traverseGroups` approach.
+
+## 3.19.0
+
+### Minor Changes
+
+- 4fc4345: Backstage version bump to v1.49.3
+
+## 3.18.0
+
+### Minor Changes
+
+- e8105de: Backstage version bump to v1.48.4
+
+### Patch Changes
+
+- 95eca61: Updated dependency `@types/lodash` to `4.17.24`.
+- f788dc3: Updated dependency `@keycloak/keycloak-admin-client` to `26.5.6`.
+
+## 3.17.2
+
+### Patch Changes
+
+- 5c9737a: Updated dependency `@keycloak/keycloak-admin-client` to `26.5.4`.
+
+## 3.17.1
+
+### Patch Changes
+
+- 26fee66: Removed unused "pg-format" dependency
+
+## 3.17.0
+
+### Minor Changes
+
+- 4716bd5: Backstage version bump to v1.47.3
+
+### Patch Changes
+
+- fc2a6fc: Updated dependency `@types/lodash` to `4.17.23`.
 
 ## 3.16.0
 

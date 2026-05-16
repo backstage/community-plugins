@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-import {
-  createFrontendPlugin,
-  TranslationBlueprint,
-} from '@backstage/frontend-plugin-api';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { compatWrapper } from '@backstage/core-compat-api';
 import { isBookmarksAvailable } from './utils/isBookmarksAvailable';
-import { bookmarksTranslations } from './translations/translations';
 
 const bookmarksEntityContent = EntityContentBlueprint.make({
   params: {
@@ -31,16 +27,9 @@ const bookmarksEntityContent = EntityContentBlueprint.make({
     loader:
       /* istanbul ignore next: very difficult to test this in Jest */
       async () =>
-        import(
-          './components/EntityBookmarksContent/EntityBookmarksContent'
-        ).then(m => compatWrapper(<m.EntityBookmarksContent />)),
-  },
-});
-
-const bookmarksTranslationsExtension = TranslationBlueprint.make({
-  name: 'bookmarksTranslations',
-  params: {
-    resource: bookmarksTranslations,
+        import('./components/EntityBookmarksContent/EntityBookmarksContent').then(
+          m => compatWrapper(<m.EntityBookmarksContent />),
+        ),
   },
 });
 
@@ -56,7 +45,7 @@ const bookmarksPlugin = createFrontendPlugin({
       /* istanbul ignore next: very difficult to test this in Jest */
       () => import('../package.json'),
   },
-  extensions: [bookmarksEntityContent, bookmarksTranslationsExtension],
+  extensions: [bookmarksEntityContent],
 });
 
 export default bookmarksPlugin;

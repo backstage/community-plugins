@@ -165,6 +165,13 @@ function readCheckFromCheckConfig(
   const rule = readRuleFromRuleConfig(config.getConfig('rule'));
   const links = readLinksForCheck(config.getOptionalConfigArray('links'), opts);
 
+  const filter = config
+    .getOptionalConfig('filter')
+    ?.get<
+      | Record<string, string | symbol | (string | symbol)[]>[]
+      | Record<string, string | symbol | (string | symbol)[]>
+    >();
+
   return {
     description,
     factIds,
@@ -176,6 +183,7 @@ function readCheckFromCheckConfig(
     successMetadata,
     type,
     links,
+    filter,
   };
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-jenkins",
-  "version": "0.27.0",
+  "version": "0.31.0",
   "description": "A Backstage plugin that integrates towards Jenkins",
   "backstage": {
     "role": "frontend-plugin",
@@ -68,18 +68,17 @@
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.0.0",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
-    "@types/testing-library__jest-dom": "^6.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"

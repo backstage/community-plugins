@@ -39,7 +39,7 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
-import { rbacTranslationRef } from '../translations';
+import { rbacTranslationRef } from '../alpha/translations';
 
 import { criterias } from '../components/ConditionalAccess/const';
 import { ConditionsData } from '../components/ConditionalAccess/types';

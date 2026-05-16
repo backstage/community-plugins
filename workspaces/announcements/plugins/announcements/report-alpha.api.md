@@ -8,12 +8,15 @@
 import { AnyApiFactory } from '@backstage/frontend-plugin-api';
 import { AnyRouteRefParams } from '@backstage/frontend-plugin-api';
 import { ApiFactory } from '@backstage/frontend-plugin-api';
+import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { ExtensionInput } from '@backstage/frontend-plugin-api';
+import { FilterPredicate } from '@backstage/filter-predicates';
 import { IconComponent } from '@backstage/frontend-plugin-api';
+import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
@@ -23,7 +26,7 @@ import { SearchResultItemExtensionComponent } from '@backstage/plugin-search-rea
 import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-react/alpha';
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
-// @alpha (undocumented)
+// @alpha
 const _default: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
@@ -49,15 +52,13 @@ const _default: OverridableFrontendPlugin<
     }>;
     'app-root-element:announcements/banner': OverridableExtensionDefinition<{
       config: {
-        variant: 'block' | 'floating';
-        max: number | undefined;
+        max: number;
         category: string | undefined;
         active: boolean | undefined;
         current: boolean | undefined;
         tags: string[] | undefined;
       };
       configInput: {
-        variant?: 'block' | 'floating' | undefined;
         max?: number | undefined;
         active?: boolean | undefined;
         current?: boolean | undefined;
@@ -76,12 +77,12 @@ const _default: OverridableFrontendPlugin<
       kind: 'entity-card';
       name: 'announcements';
       config: {
-        filter: EntityPredicate | undefined;
-        type: 'content' | 'summary' | 'info' | undefined;
+        filter: FilterPredicate | undefined;
+        type: 'content' | 'info' | undefined;
       };
       configInput: {
-        filter?: EntityPredicate | undefined;
-        type?: 'content' | 'summary' | 'info' | undefined;
+        filter?: FilterPredicate | undefined;
+        type?: 'content' | 'info' | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -109,15 +110,19 @@ const _default: OverridableFrontendPlugin<
       inputs: {};
       params: {
         loader: () => Promise<JSX.Element>;
-        filter?: EntityPredicate | ((entity: Entity) => boolean) | undefined;
+        filter?: FilterPredicate | ((entity: Entity) => boolean) | undefined;
         type?: EntityCardType | undefined;
       };
     }>;
     'nav-item:announcements': OverridableExtensionDefinition<{
       kind: 'nav-item';
       name: undefined;
-      config: {};
-      configInput: {};
+      config: {
+        title: string | undefined;
+      };
+      configInput: {
+        title?: string | undefined;
+      };
       output: ExtensionDataRef<
         {
           title: string;
@@ -135,13 +140,21 @@ const _default: OverridableFrontendPlugin<
       };
     }>;
     'page:announcements': OverridableExtensionDefinition<{
-      kind: 'page';
-      name: undefined;
       config: {
+        category: string | undefined;
+        hideStartAt: boolean | undefined;
+        markdownRenderer: 'backstage' | 'md-editor' | undefined;
+        defaultInactive: boolean | undefined;
         path: string | undefined;
+        title: string | undefined;
       };
       configInput: {
+        category?: string | undefined;
+        defaultInactive?: boolean | undefined;
+        hideStartAt?: boolean | undefined;
+        markdownRenderer?: 'backstage' | 'md-editor' | undefined;
         path?: string | undefined;
+        title?: string | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -152,18 +165,67 @@ const _default: OverridableFrontendPlugin<
             {
               optional: true;
             }
+          >
+        | ExtensionDataRef<
+            string,
+            'core.title',
+            {
+              optional: true;
+            }
+          >
+        | ExtensionDataRef<
+            IconElement,
+            'core.icon',
+            {
+              optional: true;
+            }
           >;
-      inputs: {};
+      inputs: {
+        pages: ExtensionInput<
+          | ConfigurableExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+          | ConfigurableExtensionDataRef<string, 'core.routing.path', {}>
+          | ConfigurableExtensionDataRef<
+              RouteRef<AnyRouteRefParams>,
+              'core.routing.ref',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              string,
+              'core.title',
+              {
+                optional: true;
+              }
+            >
+          | ConfigurableExtensionDataRef<
+              IconElement,
+              'core.icon',
+              {
+                optional: true;
+              }
+            >,
+          {
+            singleton: false;
+            optional: false;
+            internal: false;
+          }
+        >;
+      };
+      kind: 'page';
+      name: undefined;
       params: {
-        defaultPath?: [Error: "Use the 'path' param instead"] | undefined;
         path: string;
-        loader: () => Promise<JSX.Element>;
+        title?: string | undefined;
+        icon?: IconElement | undefined;
+        loader?: (() => Promise<JSX_2.Element>) | undefined;
         routeRef?: RouteRef<AnyRouteRefParams> | undefined;
+        noHeader?: boolean | undefined;
       };
     }>;
-    'search-filter-result-type:announcements': OverridableExtensionDefinition<{
+    'search-filter-result-type:announcements/announcements-results-type': OverridableExtensionDefinition<{
       kind: 'search-filter-result-type';
-      name: undefined;
+      name: 'announcements-results-type';
       config: {};
       configInput: {};
       output: ExtensionDataRef<

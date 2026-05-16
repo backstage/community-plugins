@@ -1,0 +1,52 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-list-applications
+  title: List ArgoCD Applications
+  description: List ArgoCD applications on a specific instance with optional filtering
+  tags:
+    - argocd
+    - deployment
+    - kubernetes
+spec:
+  owner: group:default/infrastructure
+  type: deployment
+  parameters:
+    - title: List ArgoCD Applications
+      required:
+        - instanceName
+      properties:
+        instanceName:
+          title: ArgoCD Instance
+          type: string
+          description: Name of the ArgoCD instance as configured in argocd.appLocatorMethods[].instances
+        selector:
+          title: Label Selector
+          type: string
+          description: 'Label selector to filter applications, e.g. app.kubernetes.io/part-of=my-app'
+        project:
+          title: Project Name
+          type: string
+          description: Filter by ArgoCD project name
+        appNamespace:
+          title: Application Namespace
+          type: string
+          description: Filter by application namespace
+  steps:
+    - id: list-applications
+      name: List ArgoCD Applications
+      action: backstage-community-argocd:argocd:list-applications
+      input:
+        instanceName: ${{ parameters.instanceName }}
+        selector: ${{ parameters.selector }}
+        project: ${{ parameters.project }}
+        appNamespace: ${{ parameters.appNamespace }}
+  output:
+    text:
+      - title: Applications Found
+        content: |
+          Total: ${{ steps['list-applications'].output.totalCount }}
+
+          ```json
+          ${{ steps['list-applications'].output.applications | dump }}
+          ```

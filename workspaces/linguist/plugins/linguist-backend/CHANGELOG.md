@@ -1,5 +1,49 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.26.0
+
+### Minor Changes
+
+- 6e429f0: Backstage version bump to v1.50.3
+
+### Patch Changes
+
+- Updated dependencies [6e429f0]
+  - @backstage-community/plugin-linguist-common@0.19.0
+
+## 0.25.0
+
+### Minor Changes
+
+- d2a62e0: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [d2a62e0]
+  - @backstage-community/plugin-linguist-common@0.18.0
+
+## 0.24.0
+
+### Minor Changes
+
+- f14e600: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- Updated dependencies [f14e600]
+  - @backstage-community/plugin-linguist-common@0.17.0
+
+## 0.23.0
+
+### Minor Changes
+
+- a9545aa: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- Updated dependencies [a9545aa]
+  - @backstage-community/plugin-linguist-common@0.16.0
+
 ## 0.22.0
 
 ### Minor Changes

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 export type PaginationQueryParams = {
   cursor?: string;
   limit?: string;
@@ -20,23 +35,6 @@ type BodyParams = {
 type PathParams = {
   uuid: string;
 };
-
-export type GetOrganizationProjectRequestData = {
-  queryParams?: PaginationQueryParams;
-};
-
-export type OrganizationProjectSuccessResponseData = {
-  uuid: string;
-  name: string;
-  path: string;
-  applicationName: string;
-  applicationUuid: string;
-};
-
-export type GetOrganizationProjectSuccessResponseData = {
-  supportToken: string;
-  response: OrganizationProjectSuccessResponseData[];
-} & PaginationSuccessResponseData;
 
 export type GetProjectStatisticsRequestData = {
   queryParams?: PaginationQueryParams;
@@ -144,17 +142,6 @@ export type GetProjectStatisticsSuccessResponseData = {
   response: ProjectStatisticsSuccessResponseData[];
 } & PaginationSuccessResponseData;
 
-export type EntityURL = {
-  path: string;
-  params: {
-    org?: string;
-    repo?: string;
-  };
-  namespace?: string;
-  kind: string;
-  source: string;
-};
-
 export enum StatisticsName {
   CRITICAL = 'critical',
   HIGH = 'high',
@@ -189,12 +176,11 @@ export type Project = {
   statistics: Statistics;
   uuid: string;
   name: string;
-  path: string;
   applicationName: string;
   applicationUuid: string;
   lastScan: number;
   languages: Array<[string, number]>;
-  entity: EntityURL;
+  entityUrl?: string;
 };
 
 // Code Finding API Data

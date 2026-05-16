@@ -1,4 +1,28 @@
-### Dependencies
+# @backstage-community/plugin-scaffolder-backend-module-kubernetes
+
+## 2.17.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 2.17.0
+
+### Minor Changes
+
+- d1e083d: Backstage version bump to v1.49.3
+
+## 2.16.0
+
+### Minor Changes
+
+- 5a697e5: Backstage version bump to v1.48.4
+
+## 2.15.0
+
+### Minor Changes
+
+- 08529af: Backstage version bump to v1.47.3
 
 ## 2.14.0
 

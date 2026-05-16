@@ -56,7 +56,7 @@ describe('TechRadarPage', () => {
           [
             techRadarApiRef,
             new DefaultTechRadarApi({ discoveryApi, fetchApi, identityApi }),
-          ],
+          ] as const,
         ]}
       >
         {createExtensionTester(techRadarPage).reactElement()}

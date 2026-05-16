@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
+import { FilterPredicate } from '@backstage/filter-predicates';
 
 /**
  * @alpha
  */
-export const entityFeedbackAllPredicate: EntityPredicate = {
+export const entityFeedbackAllPredicate: FilterPredicate = {
   $all: [
     {
       $not: {
@@ -39,7 +39,7 @@ export const entityFeedbackAllPredicate: EntityPredicate = {
   ],
 };
 
-export const entityFeedbackOwnerPredicate: EntityPredicate = {
+export const entityFeedbackOwnerPredicate: FilterPredicate = {
   $any: [
     {
       kind: 'user',

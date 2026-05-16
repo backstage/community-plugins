@@ -1,4 +1,35 @@
-### Dependencies
+# @backstage-community/plugin-kiali
+
+## 1.50.2
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+
+## 1.50.1
+
+### Patch Changes
+
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+
+## 1.50.0
+
+### Minor Changes
+
+- 93d62a4: Fix JS error. Update dependencies
+
+### Patch Changes
+
+- Updated dependencies [93d62a4]
+  - @backstage-community/plugin-kiali-common@0.10.0
+  - @backstage-community/plugin-kiali-react@0.7.1
+
+## 1.49.1
+
+### Patch Changes
+
+- 497d5c6: Updated dependency `@types/node` to `22.19.11`.
+- a184943: Updated dependency `@types/node` to `22.19.7`.
 
 ## 1.49.0
 

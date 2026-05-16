@@ -38,8 +38,8 @@ import {
   Page,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import { AzureDevOpsWikiArticleSearchResultListItem } from '@backstage-community/plugin-azure-devops';
+import { RiBookShelfLine } from '@remixicon/react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -89,7 +89,7 @@ const SearchPage = () => {
                 {
                   value: 'azure-devops-wiki-article',
                   name: 'Azure DevOps Wiki',
-                  icon: <LibraryBooksIcon />,
+                  icon: <RiBookShelfLine />,
                 },
               ]}
             />
@@ -135,7 +135,7 @@ const SearchPage = () => {
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
               <AzureDevOpsWikiArticleSearchResultListItem
-                icon={<LibraryBooksIcon />}
+                icon={<RiBookShelfLine />}
               />
             </SearchResult>
           </Grid>

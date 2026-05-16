@@ -232,7 +232,7 @@ describe('ConfluenceCollatorFactory', () => {
             token: 'AA',
             email: 'user@example.com',
           },
-          query: 'type = page',
+          query: '() and (type = page)',
         },
       },
     });

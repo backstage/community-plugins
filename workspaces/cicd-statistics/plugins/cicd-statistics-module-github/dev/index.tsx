@@ -29,7 +29,8 @@ import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { cicdStatisticsApiRef } from '@backstage-community/plugin-cicd-statistics';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { CicdStatisticsApiGithub } from '../src/api';
-import { configApiRef, githubAuthApiRef } from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
+import { scmAuthApiRef } from '@backstage/integration-react';
 
 createDevApp()
   // We need the catalog plugin to get the example entities and make the front entity page functional
@@ -84,26 +85,34 @@ createDevApp()
     }),
   )
   .registerApi({
-    api: githubAuthApiRef,
+    api: scmAuthApiRef,
     deps: {},
     factory: () => {
       return {
-        getAccessToken: async () => {
+        getCredentials: async () => {
           // This nonsense is only here to make been able to locally test this plugin without having to setup a backend app
-          return 'THIS_IS_ONLY_FOR_TESTING_LOCALLY_PLEASE_DO_NOT_NEVER_USE_THIS_IN_PRODUCTION';
+          return {
+            token:
+              'THIS_IS_ONLY_FOR_TESTING_LOCALLY_PLEASE_DO_NOT_NEVER_USE_THIS_IN_PRODUCTION',
+            headers: {},
+          };
         },
-      } as typeof githubAuthApiRef.T;
+      } as typeof scmAuthApiRef.T;
     },
   })
   .registerApi({
     api: cicdStatisticsApiRef,
     deps: {
       catalogApiMock: catalogApiRef,
-      githubAuthApi: githubAuthApiRef,
+      scmAuthApi: scmAuthApiRef,
       configApi: configApiRef,
     },
-    factory: ({ githubAuthApi, configApi }) => {
-      return new CicdStatisticsApiGithub(githubAuthApi, configApi, {});
+    factory: ({ scmAuthApi, configApi }) => {
+      return new CicdStatisticsApiGithub({
+        scmAuthApi,
+        configApi,
+        cicdDefaults: {},
+      });
     },
   })
   .render();

@@ -52,8 +52,8 @@ export const ILertPage = () => {
 
   return (
     <Page themeId="website">
-      <Header title="iLert" type="tool">
-        <HeaderLabel label="Owner" value="iLert" />
+      <Header title="ilert" type="tool">
+        <HeaderLabel label="Owner" value="ilert" />
         <HeaderLabel label="Lifecycle" value="Alpha" />
       </Header>
       <HeaderTabs

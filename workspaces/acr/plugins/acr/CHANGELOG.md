@@ -1,10 +1,63 @@
-### Dependencies
+# @backstage-community/plugin-acr
+
+## 1.24.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 1.24.0
+
+### Minor Changes
+
+- b24127b: Backstage version bump to v1.49.2
+
+## 1.23.1
+
+### Patch Changes
+
+- 0467b33: Updated dependency `@testing-library/react` to `^16.0.0`.
+  Updated dependency `@testing-library/dom` to `10.4.1`.
+  Updated dependency `@testing-library/jest-dom` to `^6.0.0`.
+- 9fbefb3: Backstage version bump to v1.48.5
+
+## 1.23.0
+
+### Minor Changes
+
+- e9e547f: Backstage version bump to v1.48.2
+
+### Patch Changes
+
+- 1d15595: Translation updated for German and Spanish
+
+## 1.22.0
+
+### Minor Changes
+
+- 1eff7b7: Backstage version bump to v1.47.2
+
+### Patch Changes
+
+- 8167727: remove unused dependencies
+
+## 1.21.1
+
+### Patch Changes
+
+- c074f91: Updated fr, it and ja translation files.
 
 ## 1.21.0
 
 ### Minor Changes
 
 - 264c598: Backstage version bump to v1.46.2
+
+## 1.20.2
+
+### Patch Changes
+
+- 78a304d: Updated fr, it and ja translation files.
 
 ## 1.20.1
 

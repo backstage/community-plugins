@@ -16,6 +16,8 @@
 import Tooltip from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
+import { useColumnIconStyles } from './styles';
+
 /**
  * Props for {@link ColumnIconError}
  *
@@ -34,11 +36,13 @@ export interface ColumnIconErrorProps {
  * @public
  */
 export function ColumnIconError(props: ColumnIconErrorProps) {
+  const { icon } = useColumnIconStyles();
+
   return props.title ? (
     <Tooltip title={props.title}>
-      <ErrorOutlineIcon />
+      <ErrorOutlineIcon className={icon} />
     </Tooltip>
   ) : (
-    <ErrorOutlineIcon />
+    <ErrorOutlineIcon className={icon} />
   );
 }

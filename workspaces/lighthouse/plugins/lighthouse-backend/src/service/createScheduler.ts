@@ -15,7 +15,7 @@
  */
 
 import { SchedulerService } from '@backstage/backend-plugin-api';
-import { CATALOG_FILTER_EXISTS, CatalogApi } from '@backstage/catalog-client';
+import { CATALOG_FILTER_EXISTS } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { LighthouseRestApi } from '@backstage-community/plugin-lighthouse-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
@@ -25,6 +25,7 @@ import {
   DiscoveryService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 
 /** @internal */
 export interface CreateLighthouseSchedulerOptions {
@@ -32,7 +33,7 @@ export interface CreateLighthouseSchedulerOptions {
   config: Config;
   discovery: DiscoveryService;
   scheduler?: SchedulerService;
-  catalogClient: CatalogApi;
+  catalogClient: CatalogService;
   auth: AuthService;
 }
 
@@ -81,15 +82,12 @@ export async function createScheduler(
 
         logger.info('Running Lighthouse Audit Task');
 
-        const { token } = await auth.getPluginRequestToken({
-          onBehalfOf: await auth.getOwnServiceCredentials(),
-          targetPluginId: 'catalog',
-        });
+        const credentials = await auth.getOwnServiceCredentials();
         const websitesWithUrl = await catalogClient.getEntities(
           {
             filter: [filter],
           },
-          { token },
+          { credentials },
         );
 
         let index = 0;

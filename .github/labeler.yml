@@ -31,6 +31,9 @@ workspace/announcements:
 workspace/apache-airflow:
   - "Workspace\\s*apache-airflow"
 
+workspace/apiiro:
+  - "Workspace\\s*apiiro"
+
 workspace/apollo-explorer:
   - "Workspace\\s*apollo-explorer"
 
@@ -66,6 +69,9 @@ workspace/blackduck:
 
 workspace/bookmarks:
   - "Workspace\\s*bookmarks"
+
+workspace/catalog:
+  - "Workspace\\s*catalog"
 
 workspace/cicd-statistics:
   - "Workspace\\s*cicd-statistics"
@@ -103,6 +109,9 @@ workspace/entity-validation:
 workspace/explore:
   - "Workspace\\s*explore"
 
+workspace/fairwinds-insights:
+  - "Workspace\\s*fairwinds-insights"
+
 workspace/feedback:
   - "Workspace\\s*feedback"
 
@@ -124,20 +133,8 @@ workspace/gcp-projects:
 workspace/git-release-manager:
   - "Workspace\\s*git-release-manager"
 
-workspace/github-actions:
-  - "Workspace\\s*github-actions"
-
-workspace/github-deployments:
-  - "Workspace\\s*github-deployments"
-
-workspace/github-discussions:
-  - "Workspace\\s*github-discussions"
-
-workspace/github-issues:
-  - "Workspace\\s*github-issues"
-
-workspace/github-pull-requests-board:
-  - "Workspace\\s*github-pull-requests-board"
+workspace/github:
+  - "Workspace\\s*github"
 
 workspace/gitops-profiles:
   - "Workspace\\s*gitops-profiles"
@@ -153,6 +150,9 @@ workspace/graphiql:
 
 workspace/graphql-voyager:
   - "Workspace\\s*graphql-voyager"
+
+workspace/growthbook-flags:
+  - "Workspace\\s*growthbook-flags"
 
 workspace/ilert:
   - "Workspace\\s*ilert"
@@ -201,6 +201,9 @@ workspace/mta:
 
 workspace/multi-source-security-viewer:
   - "Workspace\\s*multi-source-security-viewer"
+
+workspace/n8n:
+  - "Workspace\\s*n8n"
 
 workspace/newrelic:
   - "Workspace\\s*newrelic"

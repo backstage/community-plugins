@@ -1,0 +1,48 @@
+# ArgoCD List Applications Action
+#
+# Action ID: backstage-community-argocd:argocd:list-applications
+#
+# This action is automatically registered by the @backstage-community/plugin-argocd-backend
+# plugin via the Backstage Actions API. No additional setup is required beyond
+# installing the backend plugin.
+#
+# Prerequisites:
+#   - ArgoCD backend plugin installed and configured
+#   - ArgoCD instance(s) configured in app-config.yaml under argocd.appLocatorMethods
+
+---
+# Minimal example (required fields only)
+actionId: backstage-community-argocd:argocd:list-applications
+input:
+  instanceName: local
+
+---
+# Full example (all fields)
+actionId: backstage-community-argocd:argocd:list-applications
+input:
+  instanceName: local
+  selector: app.kubernetes.io/part-of=my-app # Label selector to filter applications
+  project: my-project # Filter by ArgoCD project name
+  appNamespace: argocd # Filter by application namespace
+
+# Expected output:
+#   totalCount: 2
+#   applications:
+#     - name: my-service
+#       namespace: argocd
+#       project: my-project
+#       syncStatus: Synced
+#       healthStatus: Healthy
+#       revision: abc123def
+#       destination:
+#         server: https://kubernetes.default.svc
+#         namespace: my-namespace
+#     - name: my-other-service
+#       namespace: argocd
+#       project: my-project
+#       syncStatus: OutOfSync
+#       healthStatus: Degraded
+#       revision: def456ghi
+#       destination:
+#         server: https://kubernetes.default.svc
+#         namespace: other-namespace

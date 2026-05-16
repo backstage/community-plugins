@@ -20,7 +20,6 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress } from '@material-ui/core';
 import { default as React } from 'react';
-import { useAsyncFn, useDebounce } from 'react-use';
 import { IstioConfigInfo } from '../../pages/IstioConfigDetails/IstioConfigInfo';
 import { kialiApiRef } from '../../services/Api';
 import { KialiAppState, KialiContext } from '../../store';
@@ -35,15 +34,25 @@ export const IstioConfigDetailsDrawer = (props: Props) => {
   const kialiClient = useApi(kialiApiRef);
   const kialiState = React.useContext(KialiContext) as KialiAppState;
   const [istioConfig, setIstioConfig] = React.useState<IstioConfigDetails>();
+  const [loading, setLoading] = React.useState(true);
 
-  const fetchIstioConfig = async () => {
+  React.useEffect(() => {
+    let cancelled = false;
     if (!props.namespace || !props.istioType || !props.name) {
-      return;
+      setIstioConfig(undefined);
+      setLoading(false);
+      return undefined;
     }
+
+    setLoading(true);
+    setIstioConfig(undefined);
 
     kialiClient
       .getIstioConfigDetail(props.namespace, props.istioType, props.name, true)
       .then((istioConfigResponse: IstioConfigDetails) => {
+        if (cancelled) {
+          return;
+        }
         if (
           istioConfigResponse &&
           Object.keys(istioConfigResponse).length > 0
@@ -52,20 +61,28 @@ export const IstioConfigDetailsDrawer = (props: Props) => {
         }
       })
       .catch(err => {
-        kialiState.alertUtils!.add(
-          `Error fetching Istio config: ${err.message || 'Unknown error'}`,
-        );
+        if (!cancelled) {
+          kialiState.alertUtils!.add(
+            `Error fetching Istio config: ${err.message || 'Unknown error'}`,
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
       });
-  };
 
-  const [{ loading }, refresh] = useAsyncFn(
-    async () => {
-      await fetchIstioConfig();
-    },
-    [],
-    { loading: true },
-  );
-  useDebounce(refresh, 10);
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    kialiClient,
+    kialiState.alertUtils,
+    props.name,
+    props.namespace,
+    props.istioType,
+  ]);
 
   if (loading) {
     return <CircularProgress />;

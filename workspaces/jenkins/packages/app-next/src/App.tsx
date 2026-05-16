@@ -31,7 +31,7 @@ import { ApiExplorerPage } from '@backstage/plugin-api-docs';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import catalogImportPlugin from '@backstage/plugin-catalog-import/alpha';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-import { Navigate, Route } from 'react-router';
+import { Navigate, Route } from 'react-router-dom';
 
 import jenkinsPlugin from '@backstage-community/plugin-jenkins/alpha';
 
@@ -64,7 +64,7 @@ const scmIntegrationsApi = ApiBlueprint.make({
     }),
 });
 
-export const app = createApp({
+export default createApp({
   features: [
     catalogPlugin,
     catalogImportPlugin,
@@ -77,5 +77,3 @@ export const app = createApp({
     }),
   ],
 });
-
-export default app.createRoot();

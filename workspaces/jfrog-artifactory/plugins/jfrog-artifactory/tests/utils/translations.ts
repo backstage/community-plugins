@@ -21,6 +21,7 @@ import jfrogTranslationDe from '../../src/translations/de.js';
 import jfrogTranslationFr from '../../src/translations/fr.js';
 import jfrogTranslationEs from '../../src/translations/es.js';
 import jfrogTranslationIt from '../../src/translations/it.js';
+import jfrogTranslationJa from '../../src/translations/ja.js';
 /* eslint-enable @backstage/no-relative-monorepo-imports */
 
 export type JfrogMessages = typeof jfrogArtifactoryMessages;
@@ -47,13 +48,16 @@ export function getTranslations(locale: string): JfrogMessages {
     case 'en':
       return jfrogArtifactoryMessages;
     case 'fr':
-      return transform(jfrogTranslationFr.messages as unknown as FlatMessages);
+      return transform(jfrogTranslationFr.messages);
     case 'de':
-      return transform(jfrogTranslationDe.messages as unknown as FlatMessages);
+      return transform(jfrogTranslationDe.messages);
     case 'es':
-      return transform(jfrogTranslationEs.messages as unknown as FlatMessages);
+      return transform(jfrogTranslationEs.messages);
     case 'it':
-      return transform(jfrogTranslationIt.messages as unknown as FlatMessages);
+      return transform(jfrogTranslationIt.messages);
+    case 'ja':
+      return transform(jfrogTranslationJa.messages);
+
     default:
       return jfrogArtifactoryMessages;
   }

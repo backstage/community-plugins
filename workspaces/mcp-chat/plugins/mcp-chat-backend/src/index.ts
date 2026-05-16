@@ -28,6 +28,7 @@ export {
   getProviderConfig,
   getProviderInfo,
   OpenAIProvider,
+  AzureOpenAIProvider,
   OpenAIResponsesProvider,
   ClaudeProvider,
   GeminiProvider,
@@ -43,6 +44,14 @@ export {
   MCPClientServiceImpl,
   type Options as MCPClientServiceOptions,
 } from './services/MCPClientServiceImpl';
+export {
+  ChatConversationStore,
+  type ChatConversationStoreOptions,
+} from './services/ChatConversationStore';
+export {
+  SummarizationService,
+  type SummarizationServiceOptions,
+} from './services/SummarizationService';
 
 // =============================================================================
 // Types
@@ -76,6 +85,9 @@ export type {
   // Validation types
   MessageValidationResult,
 
+  // Conversation types
+  ConversationRecord,
+
   // OpenAI Responses API types
   ResponsesApiMcpTool,
   ResponsesApiMcpListTools,
@@ -97,9 +109,10 @@ export {
   loadServerConfigs,
   executeToolCall,
   findNpxPath,
+  DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
 } from './utils';
 
 // =============================================================================
 // Router
 // =============================================================================
-export { createRouter } from './router';
+export { createRouter, type RouterOptions } from './router';

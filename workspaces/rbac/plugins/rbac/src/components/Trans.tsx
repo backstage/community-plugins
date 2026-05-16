@@ -16,7 +16,7 @@
 
 import { isValidElement, Fragment } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
-import { rbacTranslationRef } from '../translations';
+import { rbacTranslationRef } from '../alpha/translations';
 
 type Messages = typeof rbacTranslationRef.T;
 

@@ -1728,7 +1728,7 @@ __metadata:
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
-    react-router: 6.0.0-beta.0 || ^6.3.0
+    react-router: 6.30.2 ^6.30.2
   languageName: unknown
   linkType: soft
 
@@ -5285,6 +5285,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@remix-run/router@npm:1.23.2":
+  version: 1.23.2
+  resolution: "@remix-run/router@npm:1.23.2"
+  checksum: 10/50eb497854881bbd2e1016d4eb83c935ecd618e1c3888b74718851317e3b04edbaae9fe1baa49ec08c5c52cfe7118f4664e37144813d9500f45f922d6602a782
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-commonjs@npm:^26.0.0":
   version: 26.0.3
   resolution: "@rollup/plugin-commonjs@npm:26.0.3"
@@ -7462,9 +7469,9 @@ __metadata:
   linkType: hard
 
 "@xmldom/xmldom@npm:^0.8.3":
-  version: 0.8.11
-  resolution: "@xmldom/xmldom@npm:0.8.11"
-  checksum: 10/f6d6ffdf71cf19d9b3c10e978fad40d2f85453bf5b2aa05be8aa0c5ad13f84690c3153316729213cc652d06ec12c605ddb0aa03886f1d73d51b974b4105d31e3
+  version: 0.8.12
+  resolution: "@xmldom/xmldom@npm:0.8.12"
+  checksum: 10/0fc20bc72a057a939ed17afc3fb35d6be2eb19e42aa9ba3c78aa8bdf471da0b4b17c2710581ce6a2cd68ce3995c2ee7d689593a70a26df1273c0c9c29dfca257
   languageName: node
   linkType: hard
 
@@ -18673,7 +18680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.30.1, react-router@npm:^6.3.0":
+"react-router@npm:6.30.1":
   version: 6.30.1
   resolution: "react-router@npm:6.30.1"
   dependencies:
@@ -18681,6 +18688,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 10/880d6cafd6376dd1e624f6f600b7a208c4142d60eaea66241980ef57260c237b3465c3ff96b28f21ae354410345bbbb1817c3bba083012aade6626027d53506f
+  languageName: node
+  linkType: hard
+
+"react-router@npm:^6.3.0":
+  version: 6.30.3
+  resolution: "react-router@npm:6.30.3"
+  dependencies:
+    "@remix-run/router": "npm:1.23.2"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10/1a51bdcc42b8d7979228dea8b5c44a28a4add9b681781f75b74f5f920d20058a92ffe5f1d0ba0621f03abe1384b36025b53b402515ecb35f27a6a2f2f25d6fbe
   languageName: node
   linkType: hard
 
@@ -21386,9 +21404,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^7.2.3":
-  version: 7.14.0
-  resolution: "undici@npm:7.14.0"
-  checksum: 10/df71e67fcc07fcc6c641d43f6a51b05f94441b7dc5e198b5cabe00b10400b0304c33f1ade5d2b48b06a7098ce1e7fbd49feecae47a531c805e1351053a8788bf
+  version: 7.24.5
+  resolution: "undici@npm:7.24.5"
+  checksum: 10/1eef66817e5bd1ee6ba908553452e8e23c6b743221f8435e838a87fcec84db901ad9bca5853e7a6e123520abd8d3dd03215b19bf57c2ffb114bfeb0b7c206027
   languageName: node
   linkType: hard
 

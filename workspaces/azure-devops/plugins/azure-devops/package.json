@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-azure-devops",
-  "version": "0.24.1",
+  "version": "0.31.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "azure-devops",
@@ -38,9 +38,6 @@
       ]
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
@@ -62,8 +59,9 @@
     "@backstage/plugin-permission-react": "backstage:^",
     "@backstage/plugin-search-common": "backstage:^",
     "@backstage/plugin-search-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
-    "@material-ui/icons": "^4.9.1",
+    "@remixicon/react": "^4.9.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "humanize-duration": "^3.27.0",
     "luxon": "^3.0.0",
@@ -86,5 +84,10 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
-  }
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
 }

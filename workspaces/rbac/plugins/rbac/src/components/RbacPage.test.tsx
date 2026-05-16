@@ -103,7 +103,11 @@ describe('RbacPage', () => {
         <RbacPage />
       </TestApiProvider>,
     );
-    expect(screen.getByText('ERROR : Not Found')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'ERROR 403: Insufficient permissions to access this page',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('should not render if loading', async () => {

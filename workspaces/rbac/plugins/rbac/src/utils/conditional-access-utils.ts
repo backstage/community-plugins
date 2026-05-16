@@ -29,7 +29,7 @@ import {
   NestedCriteriaErrors,
   NotConditionType,
 } from '../components/ConditionalAccess/types';
-import { rbacTranslationRef } from '../translations';
+import { rbacTranslationRef } from '../alpha/translations';
 import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 
 export const ruleOptionDisabled = (

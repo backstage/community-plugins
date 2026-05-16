@@ -40,7 +40,9 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import { AzurePullRequestsIcon } from '@backstage-community/plugin-azure-devops';
+import { RiGitPullRequestLine } from '@remixicon/react';
+
+const GitPullRequestLine = () => <RiGitPullRequestLine />;
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -88,7 +90,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarDivider />
         <SidebarScrollWrapper>
           <SidebarItem
-            icon={AzurePullRequestsIcon}
+            icon={GitPullRequestLine}
             to="azure-pull-requests"
             text="Azure PRs"
           />
