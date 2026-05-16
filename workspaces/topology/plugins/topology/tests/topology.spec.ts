@@ -63,6 +63,7 @@ test.describe('Topology plugin', () => {
   test.describe('Missing permissions page', () => {
     test('shows missing permissions error', async ({ browser }, testInfo) => {
       await page.goto('/missing-permissions');
+      await page.reload();
 
       const topologyTextCount = await page
         .getByText('Topology', { exact: true })
