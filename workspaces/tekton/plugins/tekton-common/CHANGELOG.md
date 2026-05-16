@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton-common
 
+## 1.21.0
+
+### Minor Changes
+
+- 91220cb: Backstage version bump to v1.50.4
+
 ## 1.20.0
 
 ### Minor Changes
