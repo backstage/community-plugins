@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.24.0
+
+### Minor Changes
+
+- 9b1570c: Backstage version bump to v1.50.4
+
 ## 1.23.2
 
 ### Patch Changes
