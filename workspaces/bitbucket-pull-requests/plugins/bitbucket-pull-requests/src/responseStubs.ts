@@ -15,8 +15,8 @@
  */
 
 import {
-  BITBUCKET_CLOUD_ANNOTATION,
   BITBUCKET_SERVER_ANNOTATION,
+  BITBUCKET_CLOUD_ANNOTATION,
 } from './utils/isBitbucketSlugSet';
 
 export const entityStub = {
@@ -50,7 +50,7 @@ export const entityCloudStub = {
     },
     name: 'sample-bitbucketpr-cloud-service',
     description:
-      'A service for testing Backstage functionality. For example, we can trigger errors\non the sample-bitbucketpr-service, these are sent to Sentry, then we can view them in the \nBackstage plugin for Sentry.\n',
+      'A service for testing Backstage functionality with Bitbucket Cloud.\n',
   },
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
@@ -60,7 +60,6 @@ export const entityCloudStub = {
     lifecycle: 'experimental',
   },
 };
-
 export const pullRequestsResponseStub = {
   size: 4,
   limit: 25,
@@ -484,14 +483,16 @@ export const pullRequestsResponseStub = {
   start: 0,
 };
 
+// Cloud response stub for testing
 export const pullRequestsCloudResponseStub = {
   pagelen: 4,
   values: [
     {
       id: 1,
       title: 'Feature implementation for homepage',
-      description:
-        '* install the plugin\n* plugin customisation\n* add the home page card',
+      summary: {
+        raw: '* install the plugin\n* plugin customisation\n* add the home page card',
+      },
       state: 'OPEN',
       created_on: '2025-01-21T10:27:50.558000+00:00',
       updated_on: '2025-01-28T14:52:02.639000+00:00',
@@ -502,34 +503,40 @@ export const pullRequestsCloudResponseStub = {
         uuid: '{user-uuid-1}',
       },
       source: {
-        branch: { name: 'feature-homepage' },
-        commit: { hash: 'e4082d48d2a0' },
+        branch: {
+          name: 'feature-homepage',
+        },
+        commit: {
+          hash: 'e4082d48d2a0',
+        },
         repository: {
           name: 'example-project',
           full_name: 'myworkspace/example-project',
-          workspace: { slug: 'myworkspace' },
+          workspace: {
+            slug: 'myworkspace',
+          },
           links: {
-            html: { href: 'https://bitbucket.org/myworkspace/example-project' },
+            html: {
+              href: 'https://bitbucket.org/myworkspace/example-project',
+            },
           },
         },
       },
-      destination: { branch: { name: 'main' } },
-      participants: [
+      destination: {
+        branch: {
+          name: 'main',
+        },
+      },
+      reviewers: [
         {
-          user: {
-            display_name: 'Jane Smith',
-            nickname: 'janesmith',
-            username: 'janesmith',
-          },
-          role: 'REVIEWER',
+          display_name: 'Jane Smith',
+          nickname: 'janesmith',
+          username: 'janesmith',
         },
         {
-          user: {
-            display_name: 'Bob Johnson',
-            nickname: 'bobjohnson',
-            username: 'bobjohnson',
-          },
-          role: 'REVIEWER',
+          display_name: 'Bob Johnson',
+          nickname: 'bobjohnson',
+          username: 'bobjohnson',
         },
       ],
       links: {
@@ -541,7 +548,9 @@ export const pullRequestsCloudResponseStub = {
     {
       id: 2,
       title: 'Feature/PROJ-255 new template implementation',
-      description: 'new template for the project',
+      summary: {
+        raw: 'new template for the project',
+      },
       state: 'OPEN',
       created_on: '2024-11-27T08:55:36.553000+00:00',
       updated_on: '2025-01-25T02:49:36.779000+00:00',
@@ -552,26 +561,35 @@ export const pullRequestsCloudResponseStub = {
         uuid: '{user-uuid-2}',
       },
       source: {
-        branch: { name: 'feature/PROJ-255-new-template' },
-        commit: { hash: '45b7853f48df' },
+        branch: {
+          name: 'feature/PROJ-255-new-template',
+        },
+        commit: {
+          hash: '45b7853f48df',
+        },
         repository: {
           name: 'example-project',
           full_name: 'myworkspace/example-project',
-          workspace: { slug: 'myworkspace' },
+          workspace: {
+            slug: 'myworkspace',
+          },
           links: {
-            html: { href: 'https://bitbucket.org/myworkspace/example-project' },
+            html: {
+              href: 'https://bitbucket.org/myworkspace/example-project',
+            },
           },
         },
       },
-      destination: { branch: { name: 'main' } },
-      participants: [
+      destination: {
+        branch: {
+          name: 'main',
+        },
+      },
+      reviewers: [
         {
-          user: {
-            display_name: 'Charlie Wilson',
-            nickname: 'charliewilson',
-            username: 'charliewilson',
-          },
-          role: 'REVIEWER',
+          display_name: 'Charlie Wilson',
+          nickname: 'charliewilson',
+          username: 'charliewilson',
         },
       ],
       links: {
