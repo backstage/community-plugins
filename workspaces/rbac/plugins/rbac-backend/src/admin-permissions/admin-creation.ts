@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AuditorService } from '@backstage/backend-plugin-api';
 import type { Config } from '@backstage/config';
+import { InputError } from '@backstage/errors';
 
 import { Knex } from 'knex';
 
@@ -26,7 +28,6 @@ import {
 import { removeTheDifference } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { validateEntityReference } from '../validation/policies-validation';
-import { AuditorService } from '@backstage/backend-plugin-api';
 
 export const ADMIN_ROLE_NAME = 'role:default/rbac_admin';
 export const ADMIN_ROLE_AUTHOR = 'application configuration';
@@ -58,7 +59,12 @@ export const useAdminsFromConfig = async (
 
   for (const admin of admins) {
     const entityRef = admin.getString('name').toLocaleLowerCase('en-US');
-    validateEntityReference(entityRef);
+    const validationError = validateEntityReference(entityRef);
+    if (validationError) {
+      throw new InputError(
+        `Invalid admin entity reference '${entityRef}': ${validationError.message}`,
+      );
+    }
 
     addedGroupPolicies.set(entityRef, ADMIN_ROLE_NAME);
 

@@ -17,6 +17,7 @@ import type {
   RoleBasedPolicy,
   Source,
 } from '@backstage-community/plugin-rbac-common';
+import { InputError } from '@backstage/errors';
 
 import { RoleMetadataDao } from '../database/role-metadata';
 import {
@@ -45,6 +46,18 @@ describe('rest data validation', () => {
       const err = validatePolicy(policy);
       expect(err).toBeTruthy();
       expect(err?.message).toEqual(`'permission' field must not be empty`);
+    });
+
+    it('should return an error when permission has embedded double quotes', () => {
+      const policy: RoleBasedPolicy = {
+        entityReference: 'role:default/dev',
+        permission: 'catalog-entity"fuzz',
+        policy: 'read',
+        effect: 'allow',
+      };
+      const err = validatePolicy(policy);
+      expect(err).toBeInstanceOf(InputError);
+      expect(err?.message).toContain(`'permission' contains double quotes (")`);
     });
 
     it('should return an error when policy is empty', () => {

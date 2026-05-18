@@ -58,6 +58,10 @@ import {
   DefaultPermissionsReader,
   DefaultPermissionsSyncher,
 } from '../default-permissions/default-permissions';
+import {
+  readConditionValidationLimitsFromConfig,
+  resolveConditionValidationLimits,
+} from '../validation/condition-validation';
 
 /**
  * @public
@@ -201,6 +205,12 @@ export class PolicyBuilder {
     });
 
     const isPluginEnabled = env.config.getOptionalBoolean('permission.enabled');
+    // Invalid permission.rbac.validation.* must not prevent startup when RBAC is off.
+    const conditionValidationLimits = isPluginEnabled
+      ? resolveConditionValidationLimits(
+          readConditionValidationLimitsFromConfig(env.config),
+        )
+      : resolveConditionValidationLimits({});
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
@@ -215,6 +225,7 @@ export class PolicyBuilder {
           databaseClient,
           pluginPermMetaData,
           env.auth,
+          conditionValidationLimits,
         ),
       );
     } else {
@@ -243,6 +254,7 @@ export class PolicyBuilder {
       roleMetadataStorage,
       extraPluginsIdStorage,
       extendablePluginIdProvider,
+      conditionValidationLimits,
       rbacProviders,
     );
     return server.serve();

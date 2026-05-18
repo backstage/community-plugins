@@ -63,6 +63,7 @@ import {
   extendablePluginIdProviderMock,
 } from '../../__fixtures__/mock-utils';
 import { ExtendablePluginIdProvider } from './extendable-id-provider';
+import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 
 jest.setTimeout(60000);
 
@@ -72,7 +73,11 @@ jest.mock('@backstage/plugin-auth-node', () => ({
 
 const validateRoleConditionMock = jest.fn().mockImplementation();
 jest.mock('../validation/condition-validation', () => {
+  const actual = jest.requireActual(
+    '../validation/condition-validation',
+  ) as typeof import('../validation/condition-validation');
   return {
+    ...actual,
     validateRoleCondition: jest
       .fn()
       .mockImplementation(
@@ -259,6 +264,7 @@ describe('REST policies API', () => {
       roleMetadataStorageMock,
       permissionDependentPluginStoreMock,
       extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
       undefined,
     );
     const router = await server.serve();
@@ -356,7 +362,17 @@ describe('REST policies API', () => {
       expect(result.statusCode).toBe(400);
       expect(result.body.error).toEqual({
         name: 'InputError',
-        message: `permission policy must be present`,
+        message: `permission policy must be provided as an array`,
+      });
+    });
+
+    it('should not be created permission policy - req body must be an array', async () => {
+      const result = await request(app).post('/policies').send({});
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: `permission policy must be provided as an array`,
       });
     });
 
@@ -573,6 +589,78 @@ describe('REST policies API', () => {
         ]);
 
       expect(result.statusCode).toBe(500);
+    });
+
+    it('should fail to create policy for missing role', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:default/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .post('/policies')
+        .send([
+          {
+            entityReference: 'role:default/missing-role',
+            permission: 'policy-entity',
+            policy: 'delete',
+            effect: 'deny',
+          },
+        ]);
+
+      expect(result.statusCode).toBe(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:default/missing-role was not found`,
+      });
+    });
+
+    it('should fail to create policy for missing role outside default namespace', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:team/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .post('/policies')
+        .send([
+          {
+            entityReference: 'role:team/missing-role',
+            permission: 'policy-entity',
+            policy: 'delete',
+            effect: 'deny',
+          },
+        ]);
+
+      expect(result.statusCode).toBe(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:team/missing-role was not found`,
+      });
     });
 
     it('should fail to create permission policy - duplication in req body', async () => {
@@ -951,7 +1039,19 @@ describe('REST policies API', () => {
       expect(result.statusCode).toEqual(400);
       expect(result.body.error).toEqual({
         name: 'InputError',
-        message: `permission policy must be present`,
+        message: `permission policy must be provided as an array`,
+      });
+    });
+
+    it('should fail to delete, request body must be an array', async () => {
+      const result = await request(app)
+        .delete('/policies/user/default/permission_admin')
+        .send({});
+
+      expect(result.statusCode).toEqual(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: `permission policy must be provided as an array`,
       });
     });
 
@@ -1226,6 +1326,94 @@ describe('REST policies API', () => {
       expect(result.body.error).toEqual({
         name: 'InputError',
         message: `'newPolicy' object must be present`,
+      });
+    });
+
+    it('should fail to update policy for missing role', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:default/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .put('/policies/role/default/missing-role')
+        .send({
+          oldPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'read',
+              effect: 'allow',
+            },
+          ],
+          newPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'delete',
+              effect: 'allow',
+            },
+          ],
+        });
+
+      expect(result.statusCode).toEqual(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:default/missing-role was not found`,
+      });
+    });
+
+    it('should fail to update policy for missing role outside default namespace', async () => {
+      roleMetadataStorageMock.findRoleMetadata = jest
+        .fn()
+        .mockImplementation(
+          async (
+            roleEntityRef: string,
+          ): Promise<RoleMetadataDao | undefined> => {
+            if (roleEntityRef === 'role:team/missing-role') {
+              return undefined;
+            }
+            return {
+              source: 'rest',
+              roleEntityRef,
+              modifiedBy,
+            };
+          },
+        );
+
+      const result = await request(app)
+        .put('/policies/role/team/missing-role')
+        .send({
+          oldPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'read',
+              effect: 'allow',
+            },
+          ],
+          newPolicy: [
+            {
+              permission: 'policy-entity',
+              policy: 'delete',
+              effect: 'allow',
+            },
+          ],
+        });
+
+      expect(result.statusCode).toEqual(404);
+      expect(result.body.error).toEqual({
+        name: 'NotFoundError',
+        message: `Corresponding role role:team/missing-role was not found`,
       });
     });
 
@@ -3522,6 +3710,23 @@ describe('REST policies API', () => {
       expect(mockHttpAuth.credentials).toHaveBeenCalledTimes(1);
     });
 
+    it('should return 400 when condition validation fails', async () => {
+      validateRoleConditionMock.mockImplementationOnce(() => {
+        throw new InputError(`Invalid condition payload`);
+      });
+
+      const result = await request(app).post('/roles/conditions').send({
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+      });
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: 'Invalid condition payload',
+      });
+    });
+
     it('should create condition with the correct permission name for different resource types but similar actions', async () => {
       conditionalStorageMock.createCondition = jest
         .fn()
@@ -3807,6 +4012,23 @@ describe('REST policies API', () => {
         name: 'NotFoundError',
       });
     });
+
+    it('should return 400 on update when condition validation fails', async () => {
+      validateRoleConditionMock.mockImplementationOnce(() => {
+        throw new InputError(`Invalid condition payload`);
+      });
+
+      const result = await request(app).put('/roles/conditions/1').send({
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+      });
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: 'Invalid condition payload',
+      });
+    });
   });
 
   describe('POST /refresh/:id', () => {
@@ -3835,6 +4057,7 @@ describe('REST policies API', () => {
         roleMetadataStorageMock,
         permissionDependentPluginStoreMock,
         extendablePluginIdProviderMock as ExtendablePluginIdProvider,
+        DEFAULT_CONDITION_VALIDATION_LIMITS,
         [providerMock],
       );
       const router = await server.serve();

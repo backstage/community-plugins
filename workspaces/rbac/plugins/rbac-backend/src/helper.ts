@@ -350,5 +350,18 @@ export const matches = (
     return !matches(role, filters.not);
   }
 
-  return filters.values.includes(role.owner);
+  // Keep filter semantics aligned with the IS_OWNER permission rule.
+  if (role.isDefault) {
+    return true;
+  }
+
+  if (!role.owner) {
+    return false;
+  }
+
+  if (filters.key === 'owners' || filters.key === 'owner') {
+    return filters.values.includes(role.owner);
+  }
+
+  return false;
 };

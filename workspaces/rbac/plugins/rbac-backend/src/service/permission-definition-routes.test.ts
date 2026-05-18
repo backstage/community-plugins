@@ -281,6 +281,20 @@ describe('REST plugin policies metadata API', () => {
     expect(result.body.ids).toContain('scaffolder');
   });
 
+  it('should fail to add plugin ids when ids array is empty', async () => {
+    mockedAuthorize.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+
+    const result = await request(app).post('/plugins/id').send({ ids: [] });
+
+    expect(result.statusCode).toBe(400);
+    expect(result.body.error).toEqual({
+      message: `'ids' must contain at least one plugin ID`,
+      name: 'InputError',
+    });
+  });
+
   it('should fail to add more plugin ids, because of ConflictError', async () => {
     mockedAuthorize.mockImplementationOnce(async () => [
       { result: AuthorizeResult.ALLOW },
@@ -374,6 +388,22 @@ describe('REST plugin policies metadata API', () => {
     expect(result.body.ids).toContain('jenkins');
     expect(result.body.ids).toContain('sonarqube');
     expect(result.body.ids).not.toContain('catalog');
+  });
+
+  it('should fail to delete plugin ids with duplicate values', async () => {
+    mockedAuthorizeConditional.mockImplementationOnce(async () => [
+      { result: AuthorizeResult.ALLOW },
+    ]);
+
+    const result = await request(app)
+      .delete('/plugins/id')
+      .send({ ids: ['catalog', 'catalog'] });
+
+    expect(result.statusCode).toBe(400);
+    expect(result.body.error).toEqual({
+      message: `'ids' contains duplicate plugin ID 'catalog'`,
+      name: 'InputError',
+    });
   });
 
   it('should fail to delete plugin id with NotFoundError', async () => {
