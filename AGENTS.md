@@ -46,27 +46,7 @@ Before starting work, check whether there is already an open pull request for th
 
 ### Copyright Headers
 
-All source files must include an Apache 2.0 copyright header. When creating new files, use the current year:
-
-```ts
-/*
- * Copyright 2025 The Backstage Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-```
-
-Do NOT update the copyright year on existing files. Leave the original year as-is.
+All new TypeScript and JavaScript source files (`.ts`, `.tsx`, `.js`, `.jsx`) must include an Apache 2.0 copyright header with the current year. Do NOT update the copyright year on existing files — leave the original year as-is.
 
 ## Development Flow
 
@@ -112,8 +92,9 @@ For breaking changes, changeset messages should be longer and more detailed. Inc
 
 ## Pull Requests
 
-- Always use the PR template at `/.github/PULL_REQUEST_TEMPLATE.md`. Do NOT erase or remove the template — fill it in completely.
+- Always use the PR template at `/.github/PULL_REQUEST_TEMPLATE.md`. Do NOT erase or replace the template — fill it in and only check items on the checklist that have actually been completed.
 - PR descriptions should be short and concise. If there are extensive details to share (design rationale, migration context, investigation notes), suggest that the author open a GitHub issue first and link to it from the PR instead.
+- If the PR is related to an existing issue, link to it in the PR description.
 - All commits must include a `Signed-off-by` line (DCO requirement).
 - The standard merge strategy is squash merge.
 - Never update ESLint, Prettier, or TypeScript configuration files unless specifically requested.
