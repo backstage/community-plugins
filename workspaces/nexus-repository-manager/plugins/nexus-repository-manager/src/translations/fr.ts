@@ -24,20 +24,19 @@ import { nexusRepositoryManagerTranslationRef } from './ref';
 const nexusRepositoryManagerTranslationFr = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
   messages: {
-    'table.title': 'Nexus Repository Manager: {{title}}',
-    'table.searchPlaceholder': 'Filtre',
-    'table.labelRowsSelect': 'Lignes',
+    'table.title': 'Gestionnaire de référentiel Nexus : {{title}}',
+    'table.labelRowsSelect': 'Rangées',
     'table.columns.version': 'Version',
-    'table.columns.artifact': 'Artifact',
+    'table.columns.artifact': 'Artefact',
     'table.columns.repositoryType': 'Type de référentiel',
-    'table.columns.checksum': 'Checksum',
+    'table.columns.checksum': 'Somme de contrôle',
     'table.columns.modified': 'Modifié',
     'table.columns.size': 'Taille',
     'table.emptyValue': 'N/A',
-    'table.emptyContent.message':
-      'Aucune donnée n’a été ajouté pour l’instant,',
-    'table.emptyContent.linkText': 'apprenez comment ajouter des données.',
-    'entityContent.title': 'Build Artifacts',
+    'table.emptyContent.message': "Aucune donnée n'a encore été ajoutée.",
+    'entityContent.title': 'Créer des artefacts',
+    'table.searchPlaceholder': 'Filtre',
+    'table.emptyContent.linkText': 'apprendre à ajouter des données',
   },
 });
 

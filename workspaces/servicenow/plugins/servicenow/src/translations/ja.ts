@@ -13,38 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { servicenowTranslationRef } from './ref';
 
+/**
+ * Japanese translation for plugin.servicenow.
+ * @public
+ */
 const servicenowTranslationJa = createTranslationMessages({
   ref: servicenowTranslationRef,
   messages: {
-    'page.title': 'ServiceNowチケット',
-    'page.titleWithCount': 'ServiceNowチケット ({{count}})',
+    'page.title': 'ServiceNow チケット',
+    'page.titleWithCount': 'ServiceNow チケット ({{count}})',
+    'filter.state': '状態',
+    'filter.priority': '優先度',
+    'priority.critical': '重大',
+    'priority.high': '高',
+    'priority.moderate': '中程度',
+    'priority.low': '低',
+    'priority.planning': '計画中',
+    'incidentState.new': '新規',
+    'incidentState.inProgress': '進行中',
+    'incidentState.onHold': '保留中',
+    'incidentState.resolved': '解決済み',
+    'incidentState.closed': 'クローズ済み',
+    'incidentState.cancelled': 'キャンセル済み',
+    'errors.loadingIncidents':
+      'インシデントの読み込み中にエラーが発生: {{error}}',
     'table.searchPlaceholder': '検索',
     'table.labelRowsSelect': '{{count}} 行',
     'table.columns.incidentNumber': 'インシデント番号',
     'table.columns.description': '説明',
-    'table.columns.created': '作成日時',
+    'table.columns.created': '作成済み',
     'table.columns.priority': '優先度',
     'table.columns.state': '状態',
     'table.columns.actions': 'アクション',
     'table.emptyContent': 'レコードが見つかりません',
-    'filter.state': '状態',
-    'filter.priority': '優先度',
-    'priority.critical': 'クリティカル',
-    'priority.high': '高',
-    'priority.moderate': '中',
-    'priority.low': '低',
-    'priority.planning': '計画中',
-    'incidentState.new': '新規',
-    'incidentState.inProgress': '対応中',
-    'incidentState.onHold': '保留中',
-    'incidentState.resolved': '解決済み',
-    'incidentState.closed': 'クローズ',
-    'incidentState.cancelled': 'キャンセル',
-    'errors.loadingIncidents': 'インシデントの読み込みエラー: {{error}}',
-    'actions.openInServicenow': 'ServiceNowで開く',
+    'actions.openInServicenow': 'ServiceNow で開く',
   },
 });
 

@@ -25,7 +25,6 @@ const nexusRepositoryManagerTranslationJa = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
   messages: {
     'table.title': 'Nexus Repository Manager: {{title}}',
-    'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
     'table.columns.version': 'バージョン',
     'table.columns.artifact': 'アーティファクト',
@@ -35,8 +34,9 @@ const nexusRepositoryManagerTranslationJa = createTranslationMessages({
     'table.columns.size': 'サイズ',
     'table.emptyValue': '該当なし',
     'table.emptyContent.message': 'まだデータが追加されていません。',
-    'table.emptyContent.linkText': 'データの追加方法をご覧ください',
     'entityContent.title': 'ビルドアーティファクト',
+    'table.searchPlaceholder': 'フィルター',
+    'table.emptyContent.linkText': 'データの追加方法をご覧ください',
   },
 });
 

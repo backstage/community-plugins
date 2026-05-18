@@ -32,9 +32,9 @@ const jfrogArtifactoryTranslationDe = createTranslationMessages({
     'table.columns.manifest': 'Manifest',
     'table.columns.modified': 'Geändert',
     'table.columns.size': 'Größe',
-    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt.',
-    'table.emptyContent.learnMore': 'Erfahren Sie, wie man Daten hinzufügt.',
-    'manifest.sha256': 'SHA256',
+    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt,',
+    'table.emptyContent.learnMore': 'erfahren Sie, wie man Daten hinzufügt.',
+    'manifest.sha256': 'sha256',
   },
 });
 
