@@ -1,0 +1,13 @@
+See AGENTS.md for full repository structure, code standards, development flow, and contribution guidelines.
+
+Key points:
+
+- This repo has ~107 independent workspaces under /workspaces/, each with its own yarn.lock and node_modules.
+- Always work from within the specific workspace directory (e.g., workspaces/linguist/), not the repo root.
+- Run yarn install, yarn tsc, yarn test, yarn lint from the workspace root.
+- Include changesets for published package changes (run yarn changeset from workspace root).
+- New files must have Apache 2.0 copyright headers with the current year.
+- Do NOT update the copyright year on existing files.
+- Do NOT run yarn build, yarn changeset version, or yarn changeset publish.
+- Do NOT modify ESLint, Prettier, or TypeScript configs unless specifically requested.
+- Before creating PRs, check for existing open PRs addressing the same issue.
