@@ -16,7 +16,7 @@
 
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/index.mock.tsx) or 'nfs' (dev/alpha/index.mock.tsx)
+// APP_MODE: 'legacy' (dev/index.mock.tsx) or 'alpha' (dev/alpha/index.mock.tsx)
 const appMode = process.env.APP_MODE || 'legacy';
 const startCommand =
   appMode === 'legacy' ? 'yarn start:mock' : 'yarn start:alpha:mock';

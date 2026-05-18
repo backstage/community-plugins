@@ -19,7 +19,7 @@ import { TopologyMessages, templateToPattern } from './translations';
 
 /** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
 export function isNfsAppMode(): boolean {
-  return process.env.APP_MODE === 'nfs';
+  return process.env.APP_MODE === 'alpha';
 }
 
 /**

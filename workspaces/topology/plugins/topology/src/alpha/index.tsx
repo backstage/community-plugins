@@ -16,7 +16,7 @@
 import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { topologyTranslations } from '../translations';
-import { topologyEntityContent } from './extensions/entityTab';
+import { topologyCatalogModule } from './extensions/entityTab';
 
 const topologyTranslation = TranslationBlueprint.make({
   params: {
@@ -24,11 +24,7 @@ const topologyTranslation = TranslationBlueprint.make({
   },
 });
 
-/** @alpha */
-export const topologyCatalogModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [topologyEntityContent],
-});
+export { topologyCatalogModule };
 
 /** @alpha */
 export const topologyTranslationsModule = createFrontendModule({
