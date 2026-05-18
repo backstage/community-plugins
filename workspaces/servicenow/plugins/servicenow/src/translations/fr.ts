@@ -24,7 +24,7 @@ import { servicenowTranslationRef } from './ref';
 const servicenowTranslationFr = createTranslationMessages({
   ref: servicenowTranslationRef,
   messages: {
-    'page.title': 'Billets ServiceNow',
+    'page.title': 'Tickets ServiceNow',
     'page.titleWithCount': 'Tickets ServiceNow ({{count}})',
     'filter.state': 'État',
     'filter.priority': 'Priorité',
