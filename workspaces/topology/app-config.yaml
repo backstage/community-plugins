@@ -9,7 +9,6 @@ app:
           availableLanguages: ['en', 'de', 'fr', 'it', 'es', 'ja']
           defaultLanguage: 'en'
 
-    #
     - entity-content:catalog/entity-content-topology:
         config:
           allowedFilters:

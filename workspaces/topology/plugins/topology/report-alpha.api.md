@@ -4,8 +4,8 @@
 
 ```ts
 import { FrontendModule } from '@backstage/frontend-plugin-api';
-import { TranslationRef } from '@backstage/frontend-plugin-api';
-import { TranslationResource } from '@backstage/frontend-plugin-api';
+import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationResource } from '@backstage/core-plugin-api/alpha';
 
 // @alpha (undocumented)
 export const topologyCatalogModule: FrontendModule;
