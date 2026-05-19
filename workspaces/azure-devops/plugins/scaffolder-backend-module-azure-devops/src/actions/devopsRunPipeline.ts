@@ -24,6 +24,22 @@ import {
   RunResult,
 } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
 import { getAuthHandler } from './helpers';
+
+const pipelineRunStatusByResult: Record<
+  RunResult,
+  'canceled' | 'failed' | 'succeeded' | 'unknown'
+> = {
+  [RunResult.Canceled]: 'canceled',
+  [RunResult.Failed]: 'failed',
+  [RunResult.Succeeded]: 'succeeded',
+  [RunResult.Unknown]: 'unknown',
+};
+
+function getPipelineRunStatus(result: RunResult | undefined) {
+  return result === undefined
+    ? 'unknown'
+    : pipelineRunStatusByResult[result] ?? 'unknown';
+}
 /**
  * Creates an `azure:pipeline:run` Scaffolder action.
  *
@@ -222,10 +238,7 @@ export function createAzureDevopsRunPipelineAction(options: {
 
       ctx.output('pipelineRunUrl', pipelineRun._links.web.href);
       ctx.output('pipelineRunId', pipelineRun.id!);
-      ctx.output(
-        'pipelineRunStatus',
-        pipelineRun.result ? RunResult[pipelineRun.result] : RunResult.Unknown,
-      );
+      ctx.output('pipelineRunStatus', getPipelineRunStatus(pipelineRun.result));
       ctx.output('pipelineTimeoutExceeded', timeoutExceeded);
       ctx.output('pipelineOutput', pipelineRun.variables);
     },

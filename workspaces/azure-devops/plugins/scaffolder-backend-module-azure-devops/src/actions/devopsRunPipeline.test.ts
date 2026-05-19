@@ -312,7 +312,61 @@ describe('publish:azure', () => {
     );
     expect(mockContext.output).toHaveBeenCalledWith(
       'pipelineRunStatus',
-      'Succeeded',
+      'succeeded',
+    );
+  });
+
+  it('should output failed pipelineRunStatus without throwing', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      id: 1,
+      result: RunResult.Failed,
+      state: RunState.Completed,
+    }));
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+      },
+    });
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineRunStatus',
+      'failed',
+    );
+  });
+
+  it('should output canceled pipelineRunStatus without throwing', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+      id: 1,
+      result: RunResult.Canceled,
+      state: RunState.Completed,
+    }));
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+      },
+    });
+
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'pipelineRunStatus',
+      'canceled',
     );
   });
 
