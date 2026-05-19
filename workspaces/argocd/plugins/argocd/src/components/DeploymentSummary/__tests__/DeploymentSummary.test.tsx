@@ -17,7 +17,12 @@ import { usePermission } from '@backstage/plugin-permission-react';
 
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 
-import { mockApplication, mockEntity } from '../../../../dev/__data__';
+import {
+  mockApplication,
+  mockEntity,
+  multiSourceArgoApp,
+  multiSourceHelmArgoApp,
+} from '../../../../dev/__data__';
 import { useApplications } from '../../../hooks/useApplications';
 import { useArgocdConfig } from '../../../hooks/useArgocdConfig';
 import {
@@ -328,6 +333,58 @@ describe('DeploymentSummary', () => {
       const firstRow = within(tableBody).queryAllByRole('row')[0];
 
       expect(within(firstRow).getByText('OutOfSync')).toBeInTheDocument();
+    });
+  });
+
+  test('should show combined revision for multi-source Helm+git app', async () => {
+    (useApplications as any).mockReturnValue({
+      apps: [multiSourceHelmArgoApp],
+      loading: false,
+      error: undefined,
+    });
+
+    await renderInTestApp(<DeploymentSummary />);
+
+    await waitFor(() => {
+      // Helm version in full + git SHA truncated to 7 chars
+      expect(screen.getByText('1.0.0 / abc123d')).toBeInTheDocument();
+    });
+  });
+
+  test('should link revision to git commit for multi-source Helm+git app', async () => {
+    (useApplications as any).mockReturnValue({
+      apps: [multiSourceHelmArgoApp],
+      loading: false,
+      error: undefined,
+    });
+
+    await renderInTestApp(<DeploymentSummary />);
+
+    await waitFor(() => {
+      const revisionLink = screen.getByRole('link', {
+        name: '1.0.0 / abc123d',
+      });
+      // Provider is unknown (entity annotations don't contain github/gitlab),
+      // so getCommitUrl returns the sanitized repoURL without a commit path.
+      expect(revisionLink).toHaveAttribute(
+        'href',
+        'https://github.com/example-org/gitops-values',
+      );
+    });
+  });
+
+  test('should show combined revision for multi-source git+git app', async () => {
+    (useApplications as any).mockReturnValue({
+      apps: [multiSourceArgoApp],
+      loading: false,
+      error: undefined,
+    });
+
+    await renderInTestApp(<DeploymentSummary />);
+
+    await waitFor(() => {
+      // Both git SHAs truncated to 7 chars
+      expect(screen.getByText('331386c / de1631a')).toBeInTheDocument();
     });
   });
 
