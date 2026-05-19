@@ -12,6 +12,7 @@ Skip reviews entirely for pull requests authored by any of these bot accounts:
 - **dependabot[bot]** (dependency update bot)
 - **backstage-service** (automated Backstage service account)
 - **backstage-goalie[bot]** (automated Backstage service account)
+- **github-actions[bot]** (automated GitHub Actions workflows)
 
 These PRs are managed through their own automated workflows and do not require code review from Copilot.
 
@@ -41,5 +42,5 @@ Plugins should use the `dev/index.ts` (or `dev/index.tsx`) pattern for local dev
 
 When reviewing a PR that introduces a brand new workspace:
 
-- Verify that the PR includes a change to the `/CODEOWNERS` file adding the PR author as a codeowner for the new workspace.
+- Verify that the PR includes a change to the `/CODEOWNERS` file adding the workspace's maintainers as codeowners for the new workspace.
 - Verify that all new plugin packages have `"version": "0.0.0"` in their `package.json` as the initial version.

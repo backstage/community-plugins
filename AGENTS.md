@@ -50,7 +50,7 @@ All new TypeScript and JavaScript source files (`.ts`, `.tsx`, `.js`, `.jsx`) mu
 
 ## Development Flow
 
-All commands are run from within a workspace directory (`/workspaces/<name>/`), NOT from the repository root.
+When working on a specific workspace, all commands are run from within that workspace directory (`/workspaces/<name>/`), not from the repository root. Repository-level tasks (e.g., `yarn create-workspace`, root tooling changes) are run from the root.
 
 ```bash
 # Navigate to the workspace
@@ -63,7 +63,7 @@ yarn install
 yarn test <path-to-test-file-or-directory>
 
 # Type checking
-yarn tsc
+yarn tsc:full
 
 # Linting
 yarn lint --fix
@@ -78,7 +78,7 @@ yarn build:api-reports
 yarn start
 ```
 
-Do NOT run `yarn install`, `yarn tsc`, `yarn lint`, or `yarn test` from the repository root for workspace work. Always navigate to the specific workspace first.
+Do NOT run `yarn install`, `yarn tsc:full`, `yarn lint`, or `yarn test` from the repository root for workspace work. Always navigate to the specific workspace first.
 
 Do NOT run builds or create releases by running `yarn build`, `yarn changeset version`, or `yarn changeset publish`. Builds and releases are handled by CI workflows.
 
