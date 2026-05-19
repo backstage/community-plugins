@@ -289,6 +289,7 @@ describe('publish:azure', () => {
   it('should output pipelineRunStatus if available', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
+      id: 1,
       result: '1',
     }));
     mockPipelineClient.getRun.mockImplementation(() => ({
@@ -314,11 +315,13 @@ describe('publish:azure', () => {
       'pipelineRunStatus',
       'succeeded',
     );
+    expect(mockPipelineClient.getRun).toHaveBeenCalledWith('project', 1, 1);
   });
 
   it('should output failed pipelineRunStatus without throwing', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
+      id: 1,
     }));
     mockPipelineClient.getRun.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
@@ -341,11 +344,13 @@ describe('publish:azure', () => {
       'pipelineRunStatus',
       'failed',
     );
+    expect(mockPipelineClient.getRun).toHaveBeenCalledWith('project', 1, 1);
   });
 
   it('should output canceled pipelineRunStatus without throwing', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
+      id: 1,
     }));
     mockPipelineClient.getRun.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },
@@ -368,6 +373,7 @@ describe('publish:azure', () => {
       'pipelineRunStatus',
       'canceled',
     );
+    expect(mockPipelineClient.getRun).toHaveBeenCalledWith('project', 1, 1);
   });
 
   it('should wait when polling is specified', async () => {

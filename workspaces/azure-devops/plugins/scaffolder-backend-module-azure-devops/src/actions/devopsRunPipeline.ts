@@ -25,17 +25,18 @@ import {
 } from 'azure-devops-node-api/interfaces/PipelinesInterfaces';
 import { getAuthHandler } from './helpers';
 
-const pipelineRunStatusByResult: Record<
-  RunResult,
-  'canceled' | 'failed' | 'succeeded' | 'unknown'
-> = {
+type PipelineRunStatus = 'canceled' | 'failed' | 'succeeded' | 'unknown';
+
+const pipelineRunStatusByResult: Record<RunResult, PipelineRunStatus> = {
   [RunResult.Canceled]: 'canceled',
   [RunResult.Failed]: 'failed',
   [RunResult.Succeeded]: 'succeeded',
   [RunResult.Unknown]: 'unknown',
 };
 
-function getPipelineRunStatus(result: RunResult | undefined) {
+function getPipelineRunStatus(
+  result: RunResult | undefined,
+): PipelineRunStatus {
   return result === undefined
     ? 'unknown'
     : pipelineRunStatusByResult[result] ?? 'unknown';
