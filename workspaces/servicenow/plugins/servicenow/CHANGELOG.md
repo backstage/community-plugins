@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.11.1
+
+### Patch Changes
+
+- 69b9fd3: Translations updated for de/es/fr/it/ja
+
 ## 1.11.0
 
 ### Minor Changes
