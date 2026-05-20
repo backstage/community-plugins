@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 1.29.1
+
+### Patch Changes
+
+- 69b9fd3: Translations updated for de/es/fr/it/ja
+
 ## 1.29.0
 
 ### Minor Changes
