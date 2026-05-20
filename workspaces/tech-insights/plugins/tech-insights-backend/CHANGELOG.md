@@ -1,5 +1,21 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 2.6.0
+
+### Minor Changes
+
+- 756e05a: - Backstage version bump to v1.50.2.
+  - `techInsightsNavItem` has been removed as it's no longer needed.
+  - `EntityPredicate` has been replaced with `FilterPredicate` from `@backstage/filter-predicates`.
+
+### Patch Changes
+
+- acef8bb: Remove unused uuid (and @types/uuid) dependency
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [756e05a]
+  - @backstage-community/plugin-tech-insights-common@0.9.0
+  - @backstage-community/plugin-tech-insights-node@2.7.0
+
 ## 2.5.2
 
 ### Patch Changes
