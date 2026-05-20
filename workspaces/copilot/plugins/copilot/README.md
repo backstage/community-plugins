@@ -15,7 +15,9 @@ The GitHub Copilot Plugin enhances your Backstage experience by providing featur
 - **Enterprise and Organization Integration**: Seamlessly integrate functionalities for GitHub Enterprise and GitHub Organizations.
 - **Team Metrics Comparison**: Select a team and compare its metrics with the overall data, offering more insights into individual team performance.
 
-_GitHub APIs will only show metrics for teams of 5 or more active users per day_
+_GitHub APIs will only show metrics for teams of 5 or more seated Copilot users_
+
+> **Note on data availability:** The backend pulls data from the GitHub report-based metrics API (API version `2026-03-10`). Data is available from **October 10, 2025** onwards. Older historical data from the previous `/copilot/metrics` API is not retrievable through this mechanism.
 
 ## Setup
 

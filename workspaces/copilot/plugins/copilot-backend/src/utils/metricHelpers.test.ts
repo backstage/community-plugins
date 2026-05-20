@@ -20,6 +20,7 @@ import {
   filterIdeEditorMetrics,
   filterIdeChatEditorModelMetrics,
   filterIdeCompletionLanguageMetrics,
+  filterNewDayTotals,
 } from './metricHelpers';
 import { CopilotOrgDayTotal } from '@backstage-community/plugin-copilot-common';
 
@@ -274,5 +275,76 @@ describe('metricHelperTest', () => {
         total_chat_insertion_events: 0,
       },
     ]);
+  });
+});
+
+describe('filterNewDayTotals', () => {
+  const makeTotal = (day: string): CopilotOrgDayTotal => ({
+    day,
+    organization_id: 'org1',
+    daily_active_users: 10,
+  });
+
+  it('should return all totals sorted by day when no lastDay is provided', () => {
+    const totals = [
+      makeTotal('2024-01-16'),
+      makeTotal('2024-01-14'),
+      makeTotal('2024-01-15'),
+    ];
+    const result = filterNewDayTotals(totals, undefined);
+    expect(result.map(t => t.day)).toEqual([
+      '2024-01-14',
+      '2024-01-15',
+      '2024-01-16',
+    ]);
+  });
+
+  it('should return empty array when no lastDay is provided and input is empty', () => {
+    expect(filterNewDayTotals([], undefined)).toEqual([]);
+  });
+
+  it('should exclude the lastDay itself (the day is already stored, not new)', () => {
+    // Regression: with new Date(lastDay) + DateTime.fromJSDate, the lastDay was
+    // shifted to UTC midnight which in negative-offset timezones made it appear
+    // "earlier" than DateTime.fromISO(total.day) at local midnight, incorrectly
+    // including the already-processed day.
+    const totals = [makeTotal('2024-01-15')];
+    const result = filterNewDayTotals(totals, '2024-01-15');
+    expect(result).toHaveLength(0);
+  });
+
+  it('should exclude lastDay and all days before it', () => {
+    const totals = [
+      makeTotal('2024-01-13'),
+      makeTotal('2024-01-14'),
+      makeTotal('2024-01-15'),
+    ];
+    const result = filterNewDayTotals(totals, '2024-01-15');
+    expect(result).toHaveLength(0);
+  });
+
+  it('should only include days strictly after lastDay', () => {
+    const totals = [
+      makeTotal('2024-01-14'),
+      makeTotal('2024-01-15'),
+      makeTotal('2024-01-16'),
+      makeTotal('2024-01-17'),
+    ];
+    const result = filterNewDayTotals(totals, '2024-01-15');
+    expect(result).toHaveLength(2);
+    expect(result.map(t => t.day)).toEqual(['2024-01-16', '2024-01-17']);
+    expect(result.map(t => t.day)).not.toContain('2024-01-15');
+  });
+
+  it('should return all totals when lastDay is earlier than all entries', () => {
+    const totals = [makeTotal('2024-01-15'), makeTotal('2024-01-16')];
+    const result = filterNewDayTotals(totals, '2024-01-10');
+    expect(result).toHaveLength(2);
+  });
+
+  it('should return results sorted ascending by day', () => {
+    const totals = [makeTotal('2024-01-17'), makeTotal('2024-01-16')];
+    const result = filterNewDayTotals(totals, '2024-01-15');
+    expect(result.map(t => t.day)).toEqual(['2024-01-16', '2024-01-17']);
   });
 });

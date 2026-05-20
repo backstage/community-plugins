@@ -168,6 +168,11 @@ export class GithubClient implements GithubApi {
     const allDayTotals: CopilotOrgDayTotal[] = [];
     for (const url of download_links) {
       const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(
+          `Failed to download report from ${url}: ${res.status} ${res.statusText}`,
+        );
+      }
       const reportFile = (await res.json()) as CopilotOrgReportFile;
       if (Array.isArray(reportFile.day_totals)) {
         allDayTotals.push(...reportFile.day_totals);
@@ -273,6 +278,11 @@ export class GithubClient implements GithubApi {
     const allDayTotals: CopilotOrgDayTotal[] = [];
     for (const url of download_links) {
       const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(
+          `Failed to download report from ${url}: ${res.status} ${res.statusText}`,
+        );
+      }
       const reportFile = (await res.json()) as CopilotOrgReportFile;
       if (Array.isArray(reportFile.day_totals)) {
         allDayTotals.push(...reportFile.day_totals);

@@ -162,4 +162,114 @@ describe('GithubClient', () => {
       ]);
     });
   });
+
+  describe('fetchEnterpriseCopilotMetrics', () => {
+    const mockDownloadLinks = ['https://example.com/enterprise-report1.json'];
+
+    beforeEach(() => {
+      mockOctokit.request = jest.fn().mockResolvedValue({
+        data: {
+          download_links: mockDownloadLinks,
+          report_start_day: '2024-01-01',
+          report_end_day: '2024-01-28',
+        },
+      }) as any;
+    });
+
+    it('should throw a descriptive error when a download URL returns a non-ok HTTP response', async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+      });
+
+      await expect(
+        githubClient.fetchEnterpriseCopilotMetrics(),
+      ).rejects.toThrow(
+        /Failed to download report.*https:\/\/example\.com\/enterprise-report1\.json.*401/,
+      );
+    });
+
+    it('should throw a descriptive error including the URL when the download returns 404', async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
+      });
+
+      await expect(
+        githubClient.fetchEnterpriseCopilotMetrics(),
+      ).rejects.toThrow(/https:\/\/example\.com\/enterprise-report1\.json/);
+    });
+
+    it('should return day totals from all download links when requests succeed', async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({
+          day_totals: [
+            { day: '2024-01-01', organization_id: 'test-enterprise' },
+          ],
+        }),
+      });
+
+      const result = await githubClient.fetchEnterpriseCopilotMetrics();
+      expect(result).toHaveLength(1);
+      expect(result[0].day).toBe('2024-01-01');
+    });
+  });
+
+  describe('fetchOrganizationCopilotMetrics', () => {
+    const mockDownloadLinks = ['https://example.com/org-report1.json'];
+
+    beforeEach(() => {
+      mockOctokit.request = jest.fn().mockResolvedValue({
+        data: {
+          download_links: mockDownloadLinks,
+          report_start_day: '2024-01-01',
+          report_end_day: '2024-01-28',
+        },
+      }) as any;
+    });
+
+    it('should throw a descriptive error when a download URL returns a non-ok HTTP response', async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+      });
+
+      await expect(
+        githubClient.fetchOrganizationCopilotMetrics(),
+      ).rejects.toThrow(
+        /Failed to download report.*https:\/\/example\.com\/org-report1\.json.*403/,
+      );
+    });
+
+    it('should throw a descriptive error including the URL when the download returns 500', async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
+
+      await expect(
+        githubClient.fetchOrganizationCopilotMetrics(),
+      ).rejects.toThrow(/https:\/\/example\.com\/org-report1\.json/);
+    });
+
+    it('should return day totals from all download links when requests succeed', async () => {
+      globalThis.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({
+          day_totals: [{ day: '2024-01-15', organization_id: 'test-org' }],
+        }),
+      });
+
+      const result = await githubClient.fetchOrganizationCopilotMetrics();
+      expect(result).toHaveLength(1);
+      expect(result[0].day).toBe('2024-01-15');
+    });
+  });
 });

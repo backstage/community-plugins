@@ -36,15 +36,16 @@ export function filterNewDayTotals(
   dayTotals: CopilotOrgDayTotal[],
   lastDay?: string,
 ): CopilotOrgDayTotal[] {
-  return dayTotals
+  return [...dayTotals]
     .sort(
       (a, b) =>
-        DateTime.fromISO(a.day).toMillis() - DateTime.fromISO(b.day).toMillis(),
+        DateTime.fromISO(a.day, { zone: 'utc' }).toMillis() -
+        DateTime.fromISO(b.day, { zone: 'utc' }).toMillis(),
     )
     .filter(total => {
-      const totalDate = DateTime.fromISO(total.day);
+      const totalDate = DateTime.fromISO(total.day, { zone: 'utc' });
       const lastDayDate = lastDay
-        ? DateTime.fromJSDate(new Date(lastDay))
+        ? DateTime.fromISO(lastDay, { zone: 'utc' })
         : null;
       return !lastDay || (lastDayDate?.isValid && totalDate > lastDayDate);
     });
