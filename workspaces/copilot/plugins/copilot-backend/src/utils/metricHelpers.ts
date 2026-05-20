@@ -92,17 +92,29 @@ export function filterIdeCompletionLanguageMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsLanguageDb[] {
-  return dayTotals
-    .flatMap(total =>
-      (total.totals_by_language_model ?? []).map(lm => ({
-        day: total.day,
-        type,
-        team_name: team ?? '',
-        language: lm.language,
-        total_engaged_users: lm.code_generation_activity_count ?? 0,
-      })),
-    )
-    .filter(language => language.total_engaged_users > 0);
+  // totals_by_language_model is keyed (language, model). Grouping by language
+  // before returning avoids duplicate (day, type, team_name, language) rows that
+  // would be silently dropped by the DB's onConflict().ignore().
+  const grouped = new Map<string, CopilotIdeCodeCompletionsLanguageDb>();
+  for (const total of dayTotals) {
+    for (const lm of total.totals_by_language_model ?? []) {
+      const key = `${total.day}|${type}|${team ?? ''}|${lm.language}`;
+      const existing = grouped.get(key);
+      const count = lm.code_generation_activity_count ?? 0;
+      if (existing) {
+        existing.total_engaged_users += count;
+      } else {
+        grouped.set(key, {
+          day: total.day,
+          type,
+          team_name: team ?? '',
+          language: lm.language,
+          total_engaged_users: count,
+        });
+      }
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeCompletionEditorMetrics(
@@ -128,18 +140,30 @@ export function filterIdeCompletionEditorModelMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelsDb[] {
-  return dayTotals
-    .flatMap(total =>
-      (total.totals_by_language_model ?? []).map(lm => ({
-        day: total.day,
-        type,
-        team_name: team ?? '',
-        editor: 'unknown',
-        model: lm.model,
-        total_engaged_users: lm.code_generation_activity_count ?? 0,
-      })),
-    )
-    .filter(model => model.total_engaged_users > 0);
+  // totals_by_language_model is keyed (language, model). Grouping by model
+  // before returning avoids duplicate (day, type, team_name, editor, model) rows
+  // that would be silently dropped by the DB's onConflict().ignore().
+  const grouped = new Map<string, CopilotIdeCodeCompletionsEditorModelsDb>();
+  for (const total of dayTotals) {
+    for (const lm of total.totals_by_language_model ?? []) {
+      const key = `${total.day}|${type}|${team ?? ''}|unknown|${lm.model}`;
+      const existing = grouped.get(key);
+      const count = lm.code_generation_activity_count ?? 0;
+      if (existing) {
+        existing.total_engaged_users += count;
+      } else {
+        grouped.set(key, {
+          day: total.day,
+          type,
+          team_name: team ?? '',
+          editor: 'unknown',
+          model: lm.model,
+          total_engaged_users: count,
+        });
+      }
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeCompletionEditorModelLanguageMetrics(
@@ -209,21 +233,34 @@ export function filterIdeChatEditorModelMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeChatsEditorModelDb[] {
-  return dayTotals
-    .flatMap(total =>
-      (total.totals_by_model_feature ?? []).map(mf => ({
-        day: total.day,
-        type,
-        team_name: team ?? '',
-        editor: 'unknown',
-        model: mf.model,
-        total_engaged_users: mf.user_initiated_interaction_count ?? 0,
-        total_chats: mf.user_initiated_interaction_count ?? 0,
-        total_chat_copy_events: 0,
-        total_chat_insertion_events: 0,
-      })),
-    )
-    .filter(model => model.total_engaged_users > 0);
+  // totals_by_model_feature is keyed (model, feature). Grouping by model before
+  // returning avoids duplicate (day, type, team_name, editor, model) rows that
+  // would be silently dropped by the DB's onConflict().ignore().
+  const grouped = new Map<string, CopilotIdeChatsEditorModelDb>();
+  for (const total of dayTotals) {
+    for (const mf of total.totals_by_model_feature ?? []) {
+      const key = `${total.day}|${type}|${team ?? ''}|unknown|${mf.model}`;
+      const existing = grouped.get(key);
+      const count = mf.user_initiated_interaction_count ?? 0;
+      if (existing) {
+        existing.total_engaged_users += count;
+        existing.total_chats += count;
+      } else {
+        grouped.set(key, {
+          day: total.day,
+          type,
+          team_name: team ?? '',
+          editor: 'unknown',
+          model: mf.model,
+          total_engaged_users: count,
+          total_chats: count,
+          total_chat_copy_events: 0,
+          total_chat_insertion_events: 0,
+        });
+      }
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function convertToSeatAnalysis(

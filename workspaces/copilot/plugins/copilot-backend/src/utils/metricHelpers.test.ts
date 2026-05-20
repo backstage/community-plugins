@@ -348,3 +348,160 @@ describe('filterNewDayTotals', () => {
     expect(result.map(t => t.day)).toEqual(['2024-01-16', '2024-01-17']);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Aggregation regression tests
+// Each function reads from totals_by_language_model (keyed by language×model)
+// or totals_by_model_feature (keyed by model×feature). Without grouping, the
+// same DB conflict key appears multiple times and onConflict().ignore() silently
+// drops all but the first row, losing data.
+// ---------------------------------------------------------------------------
+
+describe('filterIdeCompletionLanguageMetrics - multi-model aggregation', () => {
+  it('should produce one row per language and sum counts across models', () => {
+    const totals: CopilotOrgDayTotal[] = [
+      {
+        day: '2024-01-01',
+        organization_id: 'org1',
+        daily_active_users: 30,
+        totals_by_language_model: [
+          {
+            language: 'TypeScript',
+            model: 'gpt-4',
+            code_generation_activity_count: 10,
+          },
+          {
+            language: 'TypeScript',
+            model: 'gpt-3.5',
+            code_generation_activity_count: 5,
+          },
+          {
+            language: 'JavaScript',
+            model: 'gpt-4',
+            code_generation_activity_count: 8,
+          },
+        ],
+      },
+    ];
+
+    const result = filterIdeCompletionLanguageMetrics(
+      totals,
+      'organization',
+      'team1',
+    );
+
+    // Must be exactly 2 rows — one per distinct language, not one per (language, model)
+    expect(result).toHaveLength(2);
+    const ts = result.find(r => r.language === 'TypeScript');
+    const js = result.find(r => r.language === 'JavaScript');
+    expect(ts?.total_engaged_users).toBe(15); // 10 + 5
+    expect(js?.total_engaged_users).toBe(8);
+  });
+
+  it('should exclude languages whose summed count is zero', () => {
+    const totals: CopilotOrgDayTotal[] = [
+      {
+        day: '2024-01-01',
+        organization_id: 'org1',
+        totals_by_language_model: [
+          {
+            language: 'Rust',
+            model: 'gpt-4',
+            code_generation_activity_count: 0,
+          },
+        ],
+      },
+    ];
+
+    const result = filterIdeCompletionLanguageMetrics(
+      totals,
+      'organization',
+      'team1',
+    );
+    expect(result).toHaveLength(0);
+  });
+});
+
+describe('filterIdeCompletionEditorModelMetrics - multi-language aggregation', () => {
+  it('should produce one row per model and sum counts across languages', () => {
+    const totals: CopilotOrgDayTotal[] = [
+      {
+        day: '2024-01-01',
+        organization_id: 'org1',
+        daily_active_users: 30,
+        totals_by_language_model: [
+          {
+            language: 'TypeScript',
+            model: 'gpt-4',
+            code_generation_activity_count: 10,
+          },
+          {
+            language: 'JavaScript',
+            model: 'gpt-4',
+            code_generation_activity_count: 8,
+          },
+          {
+            language: 'TypeScript',
+            model: 'gpt-3.5',
+            code_generation_activity_count: 5,
+          },
+        ],
+      },
+    ];
+
+    const result = filterIdeCompletionEditorModelMetrics(
+      totals,
+      'organization',
+      'team1',
+    );
+
+    // Must be exactly 2 rows — one per distinct model, not one per (language, model)
+    expect(result).toHaveLength(2);
+    const gpt4 = result.find(r => r.model === 'gpt-4');
+    const gpt35 = result.find(r => r.model === 'gpt-3.5');
+    expect(gpt4?.total_engaged_users).toBe(18); // 10 + 8
+    expect(gpt35?.total_engaged_users).toBe(5);
+  });
+});
+
+describe('filterIdeChatEditorModelMetrics - multi-feature aggregation', () => {
+  it('should produce one row per model and sum counts across features', () => {
+    const totals: CopilotOrgDayTotal[] = [
+      {
+        day: '2024-01-01',
+        organization_id: 'org1',
+        totals_by_model_feature: [
+          {
+            model: 'gpt-4',
+            feature: 'chat_panel',
+            user_initiated_interaction_count: 10,
+          },
+          {
+            model: 'gpt-4',
+            feature: 'inline_chat',
+            user_initiated_interaction_count: 5,
+          },
+          {
+            model: 'gpt-3.5',
+            feature: 'chat_panel',
+            user_initiated_interaction_count: 3,
+          },
+        ],
+      },
+    ];
+
+    const result = filterIdeChatEditorModelMetrics(
+      totals,
+      'organization',
+      'team1',
+    );
+
+    // Must be exactly 2 rows — one per distinct model, not one per (model, feature)
+    expect(result).toHaveLength(2);
+    const gpt4 = result.find(r => r.model === 'gpt-4');
+    const gpt35 = result.find(r => r.model === 'gpt-3.5');
+    expect(gpt4?.total_engaged_users).toBe(15); // 10 + 5
+    expect(gpt4?.total_chats).toBe(15);
+    expect(gpt35?.total_engaged_users).toBe(3);
+  });
+});
