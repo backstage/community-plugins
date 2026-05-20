@@ -108,6 +108,111 @@ techInsights:
                 value: true
 ```
 
+## Inserting facts from an external module (e.g. incremental ingestion)
+
+The `FactRetriever` pipeline collects all facts for a given retriever in a
+single in-memory batch. For very large data sources — for example, an
+incremental ingestion engine that walks catalog entities in bursts — it is
+useful to write facts directly to the store, one batch at a time, without
+registering a `FactRetriever`.
+
+The tech insights backend exposes a plugin-scoped service for this:
+`techInsightsFactInsertServiceRef` (defined in
+`@backstage-community/plugin-tech-insights-node`). The factory is registered
+automatically when you add this package to your backend — no extra wiring is
+required:
+
+```ts title="packages/backend/src/index.ts"
+backend.add(import('@backstage-community/plugin-tech-insights-backend'));
+```
+
+> If you prefer to opt in explicitly (for example, when consuming the named
+> `techInsightsPlugin` export directly instead of the default), the factory
+> is also exported as `techInsightsFactInsertServiceFactory` and can be added
+> separately with `backend.add(techInsightsFactInsertServiceFactory)`.
+
+The service exposes a narrow write-only surface:
+
+```ts
+interface TechInsightsFactInsertService {
+  insertFactSchema(schemaDefinition: FactSchemaDefinition): Promise<void>;
+  insertFacts(options: {
+    id: string;
+    facts: TechInsightFact[];
+    lifecycle?: FactLifecycle;
+  }): Promise<void>;
+}
+```
+
+### Pattern
+
+`techInsightsFactInsertServiceRef` is plugin-scoped to `tech-insights`, so
+its factory only binds inside a `pluginId: 'tech-insights'` module. Many
+external triggers — incremental ingestion in particular — live on the
+`catalog` plugin, so the two cannot be wired in a single module. The
+recommended shape is **one module per plugin scope, communicating via a
+shared module-level holder**:
+
+```ts
+// Captured by the tech-insights module, read by the catalog module.
+const factInsertHolder: { current?: TechInsightsFactInsertService } = {};
+
+// Module on `tech-insights`: register the schema once and stash the service.
+createBackendModule({
+  pluginId: 'tech-insights',
+  moduleId: 'my-fact-capture',
+  register(env) {
+    env.registerInit({
+      deps: { factInsert: techInsightsFactInsertServiceRef },
+      async init({ factInsert }) {
+        factInsertHolder.current = factInsert;
+        await factInsert.insertFactSchema({
+          id: 'my-incremental-facts',
+          version: '0.1.0',
+          entityFilter: [{ kind: 'Component' }],
+          schema: {
+            myCount: { type: 'integer', description: 'A counted value' },
+          },
+        });
+      },
+    });
+  },
+});
+
+// Module on `catalog`: register an incremental provider whose `next()`
+// reads from `factInsertHolder.current` and writes via `insertFacts`.
+```
+
+Two caveats worth knowing before copying this:
+
+1. The catalog module's `init` may resolve before the tech-insights
+   module's `init`. The provider's `next()` must defend against an empty
+   holder — throwing explicitly is preferable so the incremental engine
+   surfaces the misconfiguration instead of silently skipping facts.
+2. The holder retains a reference across hot-reloads in dev, which can
+   keep a stale service alive longer than expected. Don't store anything
+   in it other than the service itself.
+
+`insertFactSchema` is idempotent for a given `(id, version)` pair and only
+needs to be called once at startup; `insertFacts` may be called repeatedly
+(once per entity in a single-entity iteration pattern).
+
+### Runnable example
+
+A complete, runnable version of this pattern — including the catalog
+module that drives the incremental provider — lives in this repository at
+[`workspaces/tech-insights/packages/backend/src/plugins/incrementalFactExample.ts`](../../packages/backend/src/plugins/incrementalFactExample.ts).
+It is wired into the example backend's
+[`index.ts`](../../packages/backend/src/index.ts) alongside
+`@backstage/plugin-catalog-backend-module-incremental-ingestion`. Use it as
+the canonical reference; the snippet above only shows the cross-plugin
+glue.
+
+> The example uses incremental ingestion as a **scheduler over catalog
+> entities** rather than as a source of catalog entities — its `next()`
+> returns `entities: []` so it never mutates the catalog. The actual write
+> goes to the tech insights store via `factInsert.insertFacts`.
+
 ## Creating custom implementations of FactRetrievers
 
 ### Creating Fact Retrievers
