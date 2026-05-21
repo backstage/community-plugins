@@ -107,9 +107,7 @@ export async function createRouter(
         z.object({
           entityRef: z
             .string()
-            .describe(
-              'The entity ref, e.g. component:default/my-service',
-            ),
+            .describe('The entity ref, e.g. component:default/my-service'),
         }),
       output: z =>
         z.object({
