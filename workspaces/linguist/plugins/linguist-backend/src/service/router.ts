@@ -105,7 +105,7 @@ export async function createRouter(
     title: 'Get Entity Languages',
     description:
       'Returns the language breakdown for a catalog entity, including language names, percentages, bytes, and types',
-    attributes: { readOnly: true, idempotent: true },
+    attributes: { readOnly: true, idempotent: true, destructive: false },
     visibilityPermission: linguistReadPermission,
     schema: {
       input: z =>
@@ -143,6 +143,7 @@ export async function createRouter(
     title: 'Process Entities',
     description:
       'Triggers Linguist processing for all pending and stale entities',
+    attributes: { readOnly: false, idempotent: false, destructive: false },
     visibilityPermission: linguistProcessPermission,
     schema: {
       input: z => z.object({}),

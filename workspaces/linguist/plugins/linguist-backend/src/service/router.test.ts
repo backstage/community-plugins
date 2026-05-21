@@ -101,8 +101,11 @@ describe('createRouter', () => {
       )?.[0];
       expect(reg).toBeDefined();
       expect(reg.title).toBe('Get Entity Languages');
-      expect(reg.attributes.readOnly).toBe(true);
-      expect(reg.attributes.idempotent).toBe(true);
+      expect(reg.attributes).toEqual({
+        readOnly: true,
+        idempotent: true,
+        destructive: false,
+      });
       expect(reg.visibilityPermission).toBe(linguistReadPermission);
     });
 
@@ -112,6 +115,11 @@ describe('createRouter', () => {
       )?.[0];
       expect(reg).toBeDefined();
       expect(reg.title).toBe('Process Entities');
+      expect(reg.attributes).toEqual({
+        readOnly: false,
+        idempotent: false,
+        destructive: false,
+      });
       expect(reg.visibilityPermission).toBe(linguistProcessPermission);
     });
 
