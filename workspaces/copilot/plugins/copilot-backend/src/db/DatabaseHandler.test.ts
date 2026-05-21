@@ -475,4 +475,97 @@ describe('DatabaseHandler', () => {
     }
     return date;
   }
+
+  describe.each(databases.eachSupportedId())(
+    'getBreakdown - database: %s',
+    databaseId => {
+      let knex: Knex;
+      let databaseHandler: DatabaseHandler;
+
+      if (databaseId.startsWith('MYSQL')) {
+        // eslint-disable-next-line jest/no-disabled-tests, jest/expect-expect
+        it.skip('tests for MySQL due to pre-existing migration issue', () => {});
+        return;
+      }
+
+      beforeEach(async () => {
+        knex = await createDatabase(databaseId);
+        databaseHandler = await DatabaseHandler.create({
+          database: {
+            getClient: async () => knex,
+            migrations: { skip: true },
+          } as any,
+        });
+
+        await knex('copilot_metrics').insert({
+          day: '2024-05-01',
+          type: 'organization',
+          team_name: '',
+          total_engaged_users: 10,
+          total_active_users: 12,
+        });
+
+        await knex('ide_completions_language_editors_model_language').insert([
+          {
+            day: '2024-05-01',
+            type: 'organization',
+            team_name: '',
+            editor: 'VSCode',
+            model: 'gpt-4',
+            language: 'TypeScript',
+            total_engaged_users: 5,
+            total_code_acceptances: 2,
+            total_code_suggestions: 8,
+            total_code_lines_accepted: 40,
+            total_code_lines_suggested: 60,
+          },
+          {
+            day: '2024-05-01',
+            type: 'organization',
+            team_name: '',
+            editor: 'VSCode',
+            model: 'gpt-3.5',
+            language: 'TypeScript',
+            total_engaged_users: 3,
+            total_code_acceptances: 1,
+            total_code_suggestions: 5,
+            total_code_lines_accepted: 20,
+            total_code_lines_suggested: 30,
+          },
+        ]);
+      });
+
+      afterEach(async () => {
+        await knex?.destroy();
+      });
+
+      it('should return breakdown rows for real model names (not just "default")', async () => {
+        const result = await databaseHandler.getBreakdown(
+          '2024-05-01',
+          '2024-05-01',
+          'organization',
+        );
+
+        // Should aggregate both model rows into one (day, editor, language) row
+        expect(result).toHaveLength(1);
+        expect(normalizeDate(result[0].day)).toBe('2024-05-01');
+        expect(result[0].editor).toBe('VSCode');
+        expect(result[0].language).toBe('TypeScript');
+        expect(result[0].active_users).toBe(8);
+        expect(result[0].acceptances_count).toBe(3);
+        expect(result[0].suggestions_count).toBe(13);
+        expect(result[0].lines_accepted).toBe(60);
+        expect(result[0].lines_suggested).toBe(90);
+      });
+
+      it('should return empty when no rows exist in date range', async () => {
+        const result = await databaseHandler.getBreakdown(
+          '2024-06-01',
+          '2024-06-30',
+          'organization',
+        );
+        expect(result).toHaveLength(0);
+      });
+    },
+  );
 });

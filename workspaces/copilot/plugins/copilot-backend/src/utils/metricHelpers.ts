@@ -56,15 +56,27 @@ export function filterBaseMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotMetricsDb[] {
-  return dayTotals.map(total => ({
-    day: total.day,
-    type,
-    team_name: team ?? '',
-    total_active_users:
-      total.daily_active_users ?? total.monthly_active_users ?? 0,
-    total_engaged_users:
-      total.daily_active_users ?? total.monthly_active_users ?? 0,
-  }));
+  // Multiple CopilotOrgDayTotal entries may share the same day (enterprise
+  // multi-org). Group by the DB conflict key (day, type, team_name) and sum.
+  const grouped = new Map<string, CopilotMetricsDb>();
+  for (const total of dayTotals) {
+    const key = `${total.day}|${type}|${team ?? ''}`;
+    const users = total.daily_active_users ?? total.monthly_active_users ?? 0;
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.total_active_users += users;
+      existing.total_engaged_users += users;
+    } else {
+      grouped.set(key, {
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        total_active_users: users,
+        total_engaged_users: users,
+      });
+    }
+  }
+  return [...grouped.values()];
 }
 
 export function filterIdeCompletionMetrics(
@@ -72,19 +84,31 @@ export function filterIdeCompletionMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsDb[] {
-  return dayTotals
-    .filter(
-      total =>
-        total.code_generation_activity_count !== undefined ||
-        (total.totals_by_ide && total.totals_by_ide.length > 0),
-    )
-    .map(total => ({
-      day: total.day,
-      type,
-      team_name: team ?? '',
-      total_engaged_users: total.daily_active_users ?? 0,
-    }))
-    .filter(completion => completion.total_engaged_users > 0);
+  // Multiple CopilotOrgDayTotal entries may share the same day (enterprise
+  // multi-org). Group by the DB conflict key (day, type, team_name) and sum.
+  const grouped = new Map<string, CopilotIdeCodeCompletionsDb>();
+  for (const total of dayTotals) {
+    if (
+      total.code_generation_activity_count === undefined &&
+      !(total.totals_by_ide && total.totals_by_ide.length > 0)
+    ) {
+      continue;
+    }
+    const key = `${total.day}|${type}|${team ?? ''}`;
+    const users = total.daily_active_users ?? 0;
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.total_engaged_users += users;
+    } else {
+      grouped.set(key, {
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        total_engaged_users: users,
+      });
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeCompletionLanguageMetrics(
@@ -122,17 +146,28 @@ export function filterIdeCompletionEditorMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsEditorsDb[] {
-  return dayTotals
-    .flatMap(total =>
-      (total.totals_by_ide ?? []).map(ide => ({
-        day: total.day,
-        type,
-        team_name: team ?? '',
-        editor: ide.ide,
-        total_engaged_users: ide.code_generation_activity_count ?? 0,
-      })),
-    )
-    .filter(editor => editor.total_engaged_users > 0);
+  // Multiple CopilotOrgDayTotal entries may share the same day (enterprise
+  // multi-org). Group by the DB conflict key (day, type, team_name, editor) and sum.
+  const grouped = new Map<string, CopilotIdeCodeCompletionsEditorsDb>();
+  for (const total of dayTotals) {
+    for (const ide of total.totals_by_ide ?? []) {
+      const key = `${total.day}|${type}|${team ?? ''}|${ide.ide}`;
+      const existing = grouped.get(key);
+      const count = ide.code_generation_activity_count ?? 0;
+      if (existing) {
+        existing.total_engaged_users += count;
+      } else {
+        grouped.set(key, {
+          day: total.day,
+          type,
+          team_name: team ?? '',
+          editor: ide.ide,
+          total_engaged_users: count,
+        });
+      }
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeCompletionEditorModelMetrics(
@@ -171,23 +206,45 @@ export function filterIdeCompletionEditorModelLanguageMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeCodeCompletionsEditorModelLanguagesDb[] {
-  return dayTotals
-    .flatMap(total =>
-      (total.totals_by_language_model ?? []).map(lm => ({
-        day: total.day,
-        type,
-        team_name: team ?? '',
-        editor: 'unknown',
-        model: lm.model,
-        language: lm.language,
-        total_engaged_users: lm.code_generation_activity_count ?? 0,
-        total_code_acceptances: lm.code_acceptance_activity_count ?? 0,
-        total_code_suggestions: lm.code_generation_activity_count ?? 0,
-        total_code_lines_accepted: lm.loc_added_sum ?? 0,
-        total_code_lines_suggested: lm.loc_suggested_to_add_sum ?? 0,
-      })),
-    )
-    .filter(language => language.total_engaged_users > 0);
+  // Multiple CopilotOrgDayTotal entries may share the same day (enterprise
+  // multi-org). Group by the DB conflict key (day, type, team_name, editor,
+  // model, language) and sum all numeric fields.
+  const grouped = new Map<
+    string,
+    CopilotIdeCodeCompletionsEditorModelLanguagesDb
+  >();
+  for (const total of dayTotals) {
+    for (const lm of total.totals_by_language_model ?? []) {
+      const key = `${total.day}|${type}|${team ?? ''}|unknown|${lm.model}|${
+        lm.language
+      }`;
+      const existing = grouped.get(key);
+      if (existing) {
+        existing.total_engaged_users += lm.code_generation_activity_count ?? 0;
+        existing.total_code_acceptances +=
+          lm.code_acceptance_activity_count ?? 0;
+        existing.total_code_suggestions +=
+          lm.code_generation_activity_count ?? 0;
+        existing.total_code_lines_accepted += lm.loc_added_sum ?? 0;
+        existing.total_code_lines_suggested += lm.loc_suggested_to_add_sum ?? 0;
+      } else {
+        grouped.set(key, {
+          day: total.day,
+          type,
+          team_name: team ?? '',
+          editor: 'unknown',
+          model: lm.model,
+          language: lm.language,
+          total_engaged_users: lm.code_generation_activity_count ?? 0,
+          total_code_acceptances: lm.code_acceptance_activity_count ?? 0,
+          total_code_suggestions: lm.code_generation_activity_count ?? 0,
+          total_code_lines_accepted: lm.loc_added_sum ?? 0,
+          total_code_lines_suggested: lm.loc_suggested_to_add_sum ?? 0,
+        });
+      }
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeChatMetrics(
@@ -195,19 +252,31 @@ export function filterIdeChatMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeChatsDb[] {
-  return dayTotals
-    .filter(
-      total =>
-        total.monthly_active_chat_users !== undefined ||
-        (total.totals_by_feature && total.totals_by_feature.length > 0),
-    )
-    .map(total => ({
-      day: total.day,
-      type,
-      team_name: team ?? '',
-      total_engaged_users: total.monthly_active_chat_users ?? 0,
-    }))
-    .filter(chat => chat.total_engaged_users > 0);
+  // Multiple CopilotOrgDayTotal entries may share the same day (enterprise
+  // multi-org). Group by the DB conflict key (day, type, team_name) and sum.
+  const grouped = new Map<string, CopilotIdeChatsDb>();
+  for (const total of dayTotals) {
+    if (
+      total.monthly_active_chat_users === undefined &&
+      !(total.totals_by_feature && total.totals_by_feature.length > 0)
+    ) {
+      continue;
+    }
+    const key = `${total.day}|${type}|${team ?? ''}`;
+    const users = total.monthly_active_chat_users ?? 0;
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.total_engaged_users += users;
+    } else {
+      grouped.set(key, {
+        day: total.day,
+        type,
+        team_name: team ?? '',
+        total_engaged_users: users,
+      });
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeEditorMetrics(
@@ -215,17 +284,28 @@ export function filterIdeEditorMetrics(
   type: MetricsType,
   team?: string,
 ): CopilotIdeChatsEditorsDb[] {
-  return dayTotals
-    .flatMap(total =>
-      (total.totals_by_ide ?? []).map(ide => ({
-        day: total.day,
-        type,
-        team_name: team ?? '',
-        editor: ide.ide,
-        total_engaged_users: ide.user_initiated_interaction_count ?? 0,
-      })),
-    )
-    .filter(editor => editor.total_engaged_users > 0);
+  // Multiple CopilotOrgDayTotal entries may share the same day (enterprise
+  // multi-org). Group by the DB conflict key (day, type, team_name, editor) and sum.
+  const grouped = new Map<string, CopilotIdeChatsEditorsDb>();
+  for (const total of dayTotals) {
+    for (const ide of total.totals_by_ide ?? []) {
+      const key = `${total.day}|${type}|${team ?? ''}|${ide.ide}`;
+      const existing = grouped.get(key);
+      const count = ide.user_initiated_interaction_count ?? 0;
+      if (existing) {
+        existing.total_engaged_users += count;
+      } else {
+        grouped.set(key, {
+          day: total.day,
+          type,
+          team_name: team ?? '',
+          editor: ide.ide,
+          total_engaged_users: count,
+        });
+      }
+    }
+  }
+  return [...grouped.values()].filter(r => r.total_engaged_users > 0);
 }
 
 export function filterIdeChatEditorModelMetrics(

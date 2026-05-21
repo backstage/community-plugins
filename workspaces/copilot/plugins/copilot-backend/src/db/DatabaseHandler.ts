@@ -136,6 +136,17 @@ export type CopilotIdeCodeCompletionsEditorsDb = Omit<
 
 export type CopilotIdeChatsDb = Omit<CopilotChats, 'day' | 'editors'> & {
   day: string;
+  /**
+   * The type of the metrics data.
+   * Can be 'enterprise', 'organization'.
+   */
+  type: MetricsType;
+
+  /**
+   * The name of the team, applicable when the metric is for a specific team.
+   * When null, it indicates metrics for all teams, aggregated at the 'enterprise' or 'organization' level.
+   */
+  team_name?: string;
 };
 
 export type CopilotIdeChatsEditorsDb = Omit<
@@ -662,7 +673,6 @@ export class DatabaseHandler {
         },
       )
       .whereBetween('cm.day', [startDate, endDate])
-      .where('icleml.model', 'default')
       .where('cm.type', type)
       .where('cm.team_name', teamName ?? '')
       .groupBy('cm.day', 'icleml.editor', 'icleml.language')

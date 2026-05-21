@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 import {
+  filterBaseMetrics,
+  filterIdeCompletionMetrics,
   filterIdeCompletionEditorMetrics,
   filterIdeCompletionEditorModelMetrics,
   filterIdeCompletionEditorModelLanguageMetrics,
   filterIdeEditorMetrics,
+  filterIdeChatMetrics,
   filterIdeChatEditorModelMetrics,
   filterIdeCompletionLanguageMetrics,
   filterNewDayTotals,
@@ -275,6 +278,115 @@ describe('metricHelperTest', () => {
         total_chat_insertion_events: 0,
       },
     ]);
+  });
+
+  describe('multi-org aggregation (enterprise): same day, multiple CopilotOrgDayTotal entries', () => {
+    // Enterprise endpoint can return multiple CopilotOrgDayTotal entries for the
+    // same day (one per org). The helper functions must group by their DB conflict
+    // key and sum numeric fields so only one row per key is returned.
+
+    const multiOrgSameDay: CopilotOrgDayTotal[] = [
+      {
+        day: '2024-03-01',
+        organization_id: 'org1',
+        daily_active_users: 30,
+        monthly_active_chat_users: 10,
+        totals_by_ide: [
+          {
+            ide: 'VSCode',
+            code_generation_activity_count: 5,
+            user_initiated_interaction_count: 4,
+          },
+        ],
+        totals_by_language_model: [
+          {
+            language: 'TypeScript',
+            model: 'gpt-4',
+            code_generation_activity_count: 8,
+            code_acceptance_activity_count: 3,
+            loc_suggested_to_add_sum: 100,
+            loc_added_sum: 60,
+          },
+        ],
+      },
+      {
+        day: '2024-03-01',
+        organization_id: 'org2',
+        daily_active_users: 20,
+        monthly_active_chat_users: 7,
+        totals_by_ide: [
+          {
+            ide: 'VSCode',
+            code_generation_activity_count: 3,
+            user_initiated_interaction_count: 2,
+          },
+        ],
+        totals_by_language_model: [
+          {
+            language: 'TypeScript',
+            model: 'gpt-4',
+            code_generation_activity_count: 5,
+            code_acceptance_activity_count: 2,
+            loc_suggested_to_add_sum: 70,
+            loc_added_sum: 40,
+          },
+        ],
+      },
+    ];
+
+    it('filterBaseMetrics: two orgs same day → one row with summed active/engaged users', () => {
+      const result = filterBaseMetrics(multiOrgSameDay, 'enterprise');
+      expect(result).toHaveLength(1);
+      expect(result[0].day).toBe('2024-03-01');
+      expect(result[0].total_active_users).toBe(50);
+      expect(result[0].total_engaged_users).toBe(50);
+    });
+
+    it('filterIdeCompletionMetrics: two orgs same day → one row with summed engaged users', () => {
+      const result = filterIdeCompletionMetrics(multiOrgSameDay, 'enterprise');
+      expect(result).toHaveLength(1);
+      expect(result[0].day).toBe('2024-03-01');
+      expect(result[0].total_engaged_users).toBe(50);
+    });
+
+    it('filterIdeCompletionEditorMetrics: two orgs same day, same editor → one row with summed users', () => {
+      const result = filterIdeCompletionEditorMetrics(
+        multiOrgSameDay,
+        'enterprise',
+      );
+      expect(result).toHaveLength(1);
+      expect(result[0].editor).toBe('VSCode');
+      expect(result[0].total_engaged_users).toBe(8);
+    });
+
+    it('filterIdeChatMetrics: two orgs same day → one row with summed engaged users', () => {
+      const result = filterIdeChatMetrics(multiOrgSameDay, 'enterprise');
+      expect(result).toHaveLength(1);
+      expect(result[0].day).toBe('2024-03-01');
+      expect(result[0].total_engaged_users).toBe(17);
+    });
+
+    it('filterIdeEditorMetrics: two orgs same day, same editor → one row with summed users', () => {
+      const result = filterIdeEditorMetrics(multiOrgSameDay, 'enterprise');
+      expect(result).toHaveLength(1);
+      expect(result[0].editor).toBe('VSCode');
+      expect(result[0].total_engaged_users).toBe(6);
+    });
+
+    it('filterIdeCompletionEditorModelLanguageMetrics: two orgs same day, same model+language → one row with all fields summed', () => {
+      const result = filterIdeCompletionEditorModelLanguageMetrics(
+        multiOrgSameDay,
+        'enterprise',
+      );
+      expect(result).toHaveLength(1);
+      expect(result[0].model).toBe('gpt-4');
+      expect(result[0].language).toBe('TypeScript');
+      expect(result[0].total_engaged_users).toBe(13);
+      expect(result[0].total_code_acceptances).toBe(5);
+      expect(result[0].total_code_suggestions).toBe(13);
+      expect(result[0].total_code_lines_suggested).toBe(170);
+      expect(result[0].total_code_lines_accepted).toBe(100);
+    });
   });
 });
 
