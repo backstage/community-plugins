@@ -27,6 +27,13 @@ export {
   TechRadarComponent,
 } from './plugin';
 
+export { type TechRadarComponentProps } from './components/TechRadarComponent';
+export { type TechRadarPageProps } from './components/TechRadarPage';
+export {
+  type ComponentContextProps,
+  defaultComponents,
+} from './components/hooks/useComponents';
+
 /**
  * The TypeScript API for configuring Tech Radar.
  */
