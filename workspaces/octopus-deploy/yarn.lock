@@ -362,6 +362,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-scaffolder-react": "backstage:^"
     "@material-ui/core": "npm:^4.9.13"
@@ -1251,6 +1252,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-catalog-common@backstage:^::backstage=1.51.0&npm=1.1.10, @backstage/plugin-catalog-common@npm:^1.1.10":
+  version: 1.1.10
+  resolution: "@backstage/plugin-catalog-common@npm:1.1.10"
+  dependencies:
+    "@backstage/catalog-model": "npm:^1.9.0"
+    "@backstage/plugin-permission-common": "npm:^0.9.9"
+    "@backstage/plugin-search-common": "npm:^1.2.24"
+  checksum: 10/c9321921bba0f76b7431fe615799016bc8acdcf59560b1dd3d82565235316c150091b6aad1f932cded47a2317b4d6a527691cc6035e620f1bdebade3e12a3f5d
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-catalog-react@backstage:^::backstage=1.51.0&npm=3.0.0, @backstage/plugin-catalog-react@npm:^3.0.0":
   version: 3.0.0
   resolution: "@backstage/plugin-catalog-react@npm:3.0.0"
@@ -1423,6 +1435,16 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/6724040c8b2b66d97069d57061393c8a1422a3f01876ec9ae9a07a9709b2a4c41bc729955a977b0a696712e1b6e81ddf8a097986b7e9c202d9ef4c5661258fcc
+  languageName: node
+  linkType: hard
+
+"@backstage/plugin-search-common@npm:^1.2.24":
+  version: 1.2.24
+  resolution: "@backstage/plugin-search-common@npm:1.2.24"
+  dependencies:
+    "@backstage/plugin-permission-common": "npm:^0.9.9"
+    "@backstage/types": "npm:^1.2.2"
+  checksum: 10/fabeca15dcc560b37bee9566a99659f3e2a3c502d0ec84ff2c66eb093c0489a2def92ebc9e3b20a666fc4aa5543272bc7821f7a132e313a42a2ec718c283eccd
   languageName: node
   linkType: hard
 
@@ -4174,21 +4196,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remixicon/react@npm:>=4.6.0 <4.9.0":
+"@remixicon/react@npm:>=4.6.0 <4.9.0, @remixicon/react@npm:^4.6.0":
   version: 4.8.0
   resolution: "@remixicon/react@npm:4.8.0"
   peerDependencies:
     react: ">=18.2.0"
   checksum: 10/10241f2e07826ce7d595cf9687a35c96cc9cf9eb68a9431d7dfa1b9df479dbef302874d28c0502cee2a536cf34722de7c49ed12d10a2b071e4e42ba4a278c516
-  languageName: node
-  linkType: hard
-
-"@remixicon/react@npm:^4.6.0":
-  version: 4.7.0
-  resolution: "@remixicon/react@npm:4.7.0"
-  peerDependencies:
-    react: ">=18.2.0"
-  checksum: 10/9ecee093dd4aec3744bcc7562eddb987bf9c7c059787dfecfbcc25a64c2f4833dc815dff715aa2a7f75011d65f877b3751a401d19cf2d725b5bcc685587d37f4
   languageName: node
   linkType: hard
 
