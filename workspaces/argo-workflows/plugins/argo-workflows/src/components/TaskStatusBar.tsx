@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Flex, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
+import { Text, Tooltip, TooltipTrigger } from '@backstage/ui';
 import type { WorkflowStatus } from '@backstage-community/plugin-argo-workflows-common';
 import type { WorkflowNode } from '@backstage-community/plugin-argo-workflows-common';
 import styles from './TaskStatusBar.module.css';
@@ -66,7 +66,7 @@ function countByStatus(
 
 /**
  * A horizontal stacked bar showing the proportion of task statuses
- * in a workflow, similar to the Tekton pipeline task status bar.
+ * in a workflow with a leading success-rate percentage.
  *
  * Each segment is colored by status and sized proportionally.
  * Hovering shows a tooltip with the exact counts.
@@ -83,6 +83,8 @@ export function TaskStatusBar({ nodes }: TaskStatusBarProps) {
     );
   }
 
+  const successRate = Math.round((counts.Succeeded / total) * 100);
+
   const tooltipText = statusConfig
     .filter(s => counts[s.status] > 0)
     .map(s => `${s.label}: ${counts[s.status]}`)
@@ -90,12 +92,13 @@ export function TaskStatusBar({ nodes }: TaskStatusBarProps) {
 
   return (
     <TooltipTrigger>
-      <Flex align="center" style={{ gap: 'var(--bui-space-1)' }}>
-        <div
-          className={styles.bar}
-          role="img"
-          aria-label={`Task status: ${tooltipText}`}
-        >
+      <div
+        className={styles.container}
+        role="img"
+        aria-label={`Task status: ${successRate}% succeeded. ${tooltipText}`}
+      >
+        <span className={styles.percentage}>{successRate}%</span>
+        <div className={styles.bar}>
           {statusConfig.map(({ status, className }) => {
             const count = counts[status];
             if (count === 0) return null;
@@ -109,10 +112,7 @@ export function TaskStatusBar({ nodes }: TaskStatusBarProps) {
             );
           })}
         </div>
-        <Text variant="body-x-small" color="secondary" className={styles.count}>
-          {total}
-        </Text>
-      </Flex>
+      </div>
       <Tooltip>{tooltipText}</Tooltip>
     </TooltipTrigger>
   );
