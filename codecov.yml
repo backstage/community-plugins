@@ -38,7 +38,6 @@ ignore:
   - "**/*.test.tsx"
   - "**/*.spec.ts"
   - "**/*.spec.tsx"
-  - "**/index.ts"
   - "**/setupTests.*"
   - "**/playwright.config.ts"
   - "**/dev/**"
