@@ -37,9 +37,9 @@ describe('RingLegend', () => {
       />,
     );
 
-    expect(screen.getByText('adopt')).toBeInTheDocument();
-    expect(screen.getByText('assess')).toBeInTheDocument();
-    expect(screen.getByText('hold')).toBeInTheDocument();
-    expect(screen.getByText('trial')).toBeInTheDocument();
+    expect(screen.getByText('ADOPT')).toBeInTheDocument();
+    expect(screen.getByText('ASSESS')).toBeInTheDocument();
+    expect(screen.getByText('HOLD')).toBeInTheDocument();
+    expect(screen.getByText('TRIAL')).toBeInTheDocument();
   });
 });
