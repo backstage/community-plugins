@@ -35,6 +35,7 @@ import {
   TooltipTrigger,
 } from '@backstage/ui';
 
+/** @public */
 export const defaultComponents = {
   Accordion,
   AccordionGroup,
@@ -56,6 +57,7 @@ export const defaultComponents = {
   TooltipTrigger,
 } as const;
 
+/** @public */
 export type ComponentContextProps = typeof defaultComponents;
 
 export const ComponentContext =

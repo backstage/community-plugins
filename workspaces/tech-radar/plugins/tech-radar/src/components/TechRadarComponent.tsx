@@ -31,6 +31,7 @@ import {
   RADAR_DIAMETER,
 } from './RadarPlot/radarPlotUtils';
 
+/** @public */
 export type TechRadarComponentProps = {
   customComponents?: Partial<ComponentContextProps>;
 } & HTMLAttributes<HTMLDivElement>;
