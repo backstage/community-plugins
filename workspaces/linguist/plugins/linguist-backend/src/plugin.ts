@@ -19,6 +19,7 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
+import { linguistPermissions } from '@backstage-community/plugin-linguist-common';
 
 import { createRouter } from './service/router';
 
@@ -41,6 +42,7 @@ export const linguistPlugin = createBackendPlugin({
         scheduler: coreServices.scheduler,
         httpRouter: coreServices.httpRouter,
         actionsRegistry: actionsRegistryServiceRef,
+        permissionsRegistry: coreServices.permissionsRegistry,
       },
       async init({
         auth,
@@ -52,7 +54,9 @@ export const linguistPlugin = createBackendPlugin({
         scheduler,
         httpRouter,
         actionsRegistry,
+        permissionsRegistry,
       }) {
+        permissionsRegistry.addPermissions(linguistPermissions);
         httpRouter.use(
           await createRouter({
             auth,

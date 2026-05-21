@@ -1769,6 +1769,7 @@ __metadata:
   resolution: "@backstage-community/plugin-linguist-common@workspace:plugins/linguist-common"
   dependencies:
     "@backstage/cli": "backstage:^"
+    "@backstage/plugin-permission-common": "backstage:^"
   languageName: unknown
   linkType: soft
 
@@ -3122,7 +3123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-common@npm:^0.9.8, @backstage/plugin-permission-common@npm:^0.9.9":
+"@backstage/plugin-permission-common@backstage:^::backstage=1.50.3&npm=0.9.8, @backstage/plugin-permission-common@npm:^0.9.8, @backstage/plugin-permission-common@npm:^0.9.9":
   version: 0.9.9
   resolution: "@backstage/plugin-permission-common@npm:0.9.9"
   dependencies:
