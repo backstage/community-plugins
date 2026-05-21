@@ -20,7 +20,11 @@ import { Server } from 'http';
 import { createRouter } from './router';
 import { wrapServer } from '@backstage/backend-openapi-utils/testUtils';
 import { LinguistBackendApi } from '../api';
-import { mockServices, TestDatabases } from '@backstage/backend-test-utils';
+import {
+  mockCredentials,
+  mockServices,
+  TestDatabases,
+} from '@backstage/backend-test-utils';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 const mockUrlReader: UrlReaderService = {
@@ -41,11 +45,10 @@ describe('createRouter', () => {
     {} as jest.Mocked<LinguistBackendApi>;
   let app: express.Express | Server;
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe('GET /health', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
     beforeAll(async () => {
       const knex = await databases.init('SQLITE_3');
       const getClient = jest.fn(async () => knex);
@@ -65,6 +68,104 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ status: 'ok' });
+    });
+  });
+
+  describe('actions registry', () => {
+    const mockActionsRegistry = { register: jest.fn() };
+    const actionsApi: jest.Mocked<LinguistBackendApi> =
+      {} as jest.Mocked<LinguistBackendApi>;
+
+    beforeAll(async () => {
+      const knex = await databases.init('SQLITE_3');
+      const getClient = jest.fn(async () => knex);
+      await createRouter({
+        linguistBackendApi: actionsApi,
+        discovery: mockServices.discovery.mock(),
+        database: mockServices.database.mock({ getClient }),
+        reader: mockUrlReader,
+        logger: mockServices.logger.mock(),
+        config: mockServices.rootConfig(),
+        auth: mockServices.auth(),
+        actionsRegistry: mockActionsRegistry as any,
+      });
+    });
+
+    it('registers the get-entity-languages action', () => {
+      const reg = mockActionsRegistry.register.mock.calls.find(
+        (c: any[]) => c[0].name === 'get-entity-languages',
+      )?.[0];
+      expect(reg).toBeDefined();
+      expect(reg.title).toBe('Get Entity Languages');
+      expect(reg.attributes.readOnly).toBe(true);
+      expect(reg.attributes.idempotent).toBe(true);
+    });
+
+    it('registers the process-entities action', () => {
+      const reg = mockActionsRegistry.register.mock.calls.find(
+        (c: any[]) => c[0].name === 'process-entities',
+      )?.[0];
+      expect(reg).toBeDefined();
+      expect(reg.title).toBe('Process Entities');
+    });
+
+    it('get-entity-languages action calls getEntityLanguages', async () => {
+      const mockLanguages = {
+        languageCount: 2,
+        totalBytes: 1000,
+        processedDate: '2026-01-01T00:00:00Z',
+        breakdown: [
+          {
+            name: 'TypeScript',
+            percentage: 80,
+            bytes: 800,
+            type: 'programming' as const,
+            color: '#3178c6',
+          },
+          {
+            name: 'JavaScript',
+            percentage: 20,
+            bytes: 200,
+            type: 'programming' as const,
+            color: '#f1e05a',
+          },
+        ],
+      };
+      actionsApi.getEntityLanguages = jest
+        .fn()
+        .mockResolvedValue(mockLanguages);
+
+      const reg = mockActionsRegistry.register.mock.calls.find(
+        (c: any[]) => c[0].name === 'get-entity-languages',
+      )?.[0];
+
+      const result = await reg.action({
+        input: { entityRef: 'component:default/my-service' },
+        credentials: mockCredentials.user(),
+        logger: mockServices.logger.mock(),
+      });
+
+      expect(actionsApi.getEntityLanguages).toHaveBeenCalledWith(
+        'component:default/my-service',
+      );
+      expect(result.output).toEqual(mockLanguages);
+    });
+
+    it('process-entities action calls processEntities', async () => {
+      actionsApi.processEntities = jest.fn().mockResolvedValue(undefined);
+
+      const reg = mockActionsRegistry.register.mock.calls.find(
+        (c: any[]) => c[0].name === 'process-entities',
+      )?.[0];
+
+      const result = await reg.action({
+        input: {},
+        credentials: mockCredentials.user(),
+        logger: mockServices.logger.mock(),
+      });
+
+      expect(actionsApi.processEntities).toHaveBeenCalled();
+      expect(result.output).toEqual({});
     });
   });
 });
