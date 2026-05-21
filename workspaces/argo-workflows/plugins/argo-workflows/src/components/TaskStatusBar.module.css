@@ -1,17 +1,28 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--bui-space-1);
+}
+
+.percentage {
+  min-width: 36px;
+}
+
 .bar {
   display: flex;
-  height: 12px;
-  width: 120px;
+  height: 10px;
+  width: 100px;
   border-radius: var(--bui-radius-full);
   overflow: hidden;
-  background-color: var(--bui-bg-neutral-1);
-  border: 1px solid var(--bui-border-1);
+  gap: 2px;
 }
 
 .segment {
   height: 100%;
   min-width: 4px;
+  border-radius: var(--bui-radius-full);
   transition: width 0.2s ease;
+  height: var(--bui-space-1_5);
 }
 
 .succeeded {
@@ -32,8 +43,4 @@
 
 .error {
   background-color: var(--bui-fg-danger);
-}
-
-.count {
-  white-space: nowrap;
 }
