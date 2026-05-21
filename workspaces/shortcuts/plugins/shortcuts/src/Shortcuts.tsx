@@ -18,7 +18,7 @@ import type { MouseEvent } from 'react';
 
 import { useState } from 'react';
 import useObservable from 'react-use/esm/useObservable';
-import PlayListAddIcon from '@material-ui/icons/PlaylistAdd';
+import { RiPlayListAddLine } from '@remixicon/react';
 import { ShortcutItem } from './ShortcutItem';
 import { AddShortcut } from './AddShortcut';
 import { shortcutsApiRef } from './api';
@@ -57,7 +57,7 @@ export const Shortcuts = (props: ShortcutsProps) => {
   return (
     <SidebarScrollWrapper>
       <SidebarItem
-        icon={props.icon ?? PlayListAddIcon}
+        icon={props.icon ?? RiPlayListAddLine}
         text="Add Shortcuts"
         onClick={handleClick}
       />

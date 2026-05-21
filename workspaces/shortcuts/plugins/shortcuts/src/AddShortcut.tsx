@@ -17,27 +17,12 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Popover from '@material-ui/core/Popover';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Card } from '@backstage/ui';
 import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
 import { ShortcutApi } from './api';
 import { alertApiRef, useApi, useAnalytics } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  card: {
-    maxWidth: 400,
-  },
-  header: {
-    marginBottom: theme.spacing(1),
-  },
-  button: {
-    marginTop: theme.spacing(1),
-  },
-}));
+import styles from './AddShortcut.module.css';
 
 type Props = {
   onClose: () => void;
@@ -53,7 +38,6 @@ export const AddShortcut = ({
   api,
   allowExternalLinks,
 }: Props) => {
-  const classes = useStyles();
   const alertApi = useApi(alertApiRef);
   const { pathname, search } = useLocation();
   const [formValues, setFormValues] = useState<FormValues>();
@@ -90,34 +74,43 @@ export const AddShortcut = ({
     onClose();
   };
 
+  if (!open) {
+    return null;
+  }
+
   return (
-    <Popover
-      open={open}
-      anchorEl={anchorEl}
-      TransitionProps={{ onExit: handleClose }}
-      onClose={onClose}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1300,
       }}
+      onClick={handleClose}
     >
-      <Card className={classes.card}>
-        <CardHeader
-          className={classes.header}
-          title="Add Shortcut"
-          titleTypographyProps={{ variant: 'subtitle2' }}
-          action={
-            <Button
-              className={classes.button}
-              variant="text"
-              size="small"
-              color="primary"
-              onClick={handlePaste}
-            >
-              Use current page
-            </Button>
-          }
-        />
+      <Card className={styles.card}
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1400,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={styles.header} style={{ padding: 'var(--bui-space-4)', paddingBottom: 'var(--bui-space-2)', borderBottom: '1px solid var(--bui-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0, fontSize: 'var(--bui-font-size-2)', fontWeight: 'var(--bui-font-weight-bold)' }}>Add Shortcut</h3>
+          <Button
+            className={styles.button}
+            variant="secondary"
+            onClick={handlePaste}
+          >
+            Use current page
+          </Button>
+        </div>
         <ShortcutForm
           onClose={handleClose}
           onSave={handleSave}
@@ -125,6 +118,6 @@ export const AddShortcut = ({
           allowExternalLinks={allowExternalLinks}
         />
       </Card>
-    </Popover>
+    </div>
   );
 };

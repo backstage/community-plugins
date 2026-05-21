@@ -14,28 +14,34 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+import { Avatar } from '@backstage/ui';
+import styles from './ShortcutIcon.module.css';
 
 type Props = {
   text: string;
   color: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  avatar: (props: Props) => ({
-    color: theme.palette.getContrastText(props.color),
-    backgroundColor: props.color,
-    width: 28,
-    height: 28,
-    fontWeight: 'bold',
-    fontSize: 13,
-    filter: 'contrast(150%) brightness(1.4)',
-  }),
-}));
-
 export const ShortcutIcon = (props: Props) => {
-  const classes = useStyles(props);
+  return (
+    <Avatar
+      className={styles.avatar}
+      style={{
+        backgroundColor: props.color,
+        color: getContrastColor(props.color),
+      }}
+    >
+      {props.text}
+    </Avatar>
+  );
+};
 
-  return <Avatar className={classes.avatar}>{props.text}</Avatar>;
+// Helper function to calculate contrast color (black or white based on background)
+const getContrastColor = (hexColor: string): string => {
+  const hex = hexColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#ffffff';
 };

@@ -1,0 +1,9 @@
+@layer components {
+  .avatar {
+    width: 28px;
+    height: 28px;
+    font-weight: bold;
+    font-size: 13px;
+    filter: contrast(150%) brightness(1.4);
+  }
+}

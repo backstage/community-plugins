@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import '@backstage/ui/css/styles.css';
 import { DefaultShortcutsApi, shortcutsApiRef } from './api';
 import {
   createApiFactory,

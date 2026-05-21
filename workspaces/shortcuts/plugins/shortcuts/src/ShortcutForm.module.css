@@ -1,0 +1,11 @@
+@layer components {
+  .field {
+    margin-bottom: var(--bui-space-4);
+  }
+
+  .actionRoot {
+    padding-left: var(--bui-space-4);
+    padding-bottom: var(--bui-space-6);
+    justify-content: flex-start;
+  }
+}
