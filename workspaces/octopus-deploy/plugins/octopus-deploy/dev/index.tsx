@@ -54,7 +54,7 @@ class MockOctopusDeployApiClient implements OctopusDeployApi {
     this.resources = fixtureData;
   }
 
-  async getReleaseProgression(opts: {
+  async getReleaseProgression(_: {
     projectReference: ProjectReference;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression> {
@@ -104,9 +104,7 @@ class MockOctopusDeployApiClient implements OctopusDeployApi {
       ],
     };
   }
-  async getProjectInfo(
-    projectReference: ProjectReference,
-  ): Promise<OctopusProject> {
+  async getProjectInfo(_: ProjectReference): Promise<OctopusProject> {
     return {
       Name: 'Backstage',
       Slug: 'backstage',
