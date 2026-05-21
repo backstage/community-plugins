@@ -128,6 +128,28 @@ linguist:
 
 **Note:** This has the potential to cause a lot of processing, be very thoughtful about this before hand
 
+## Actions Registry
+
+The Linguist backend registers actions with the Backstage [Actions Registry](https://backstage.io/docs/backend-system/core-services/actions-registry), allowing other backend plugins and AI agents to invoke Linguist's language detection programmatically without going through the REST API.
+
+### Available Actions
+
+| Action ID | Description | Attributes |
+| --- | --- | --- |
+| `linguist:get-entity-languages` | Returns the language breakdown for a catalog entity | `readOnly`, `idempotent` |
+| `linguist:process-entities` | Triggers processing for all pending and stale entities | — |
+
+### Exposing via MCP
+
+To expose Linguist actions to AI clients via the [Model Context Protocol](https://backstage.io/docs/ai/mcp-actions), add `linguist` to the actions plugin sources in your `app-config.yaml`:
+
+```yaml
+backend:
+  actions:
+    pluginSources:
+      - linguist
+```
+
 ## Links
 
 - [Frontend part of the plugin](https://github.com/backstage/community-plugins/tree/main/workspaces/linguist/plugins/linguist)
