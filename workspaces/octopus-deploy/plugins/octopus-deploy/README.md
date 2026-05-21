@@ -164,11 +164,13 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   # ...
-parameters:
-  - title: Octopus Project Group
-    properties:
-      projectName:
-        title: Octopus Project Group
-        type: string
-        ui:field: OctopusDeployProjectGroupDropdown
+spec:
+  # ...
+  parameters:
+    - title: Octopus Project Group
+      properties:
+        projectName:
+          title: Octopus Project Group
+          type: string
+          ui:field: OctopusDeployProjectGroupDropdown
 ```
