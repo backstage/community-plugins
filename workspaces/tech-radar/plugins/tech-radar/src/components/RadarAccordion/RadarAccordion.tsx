@@ -27,7 +27,7 @@ import { RadarBlipDetails } from '../RadarBlipDetails/RadarBlipDetails';
 import color from 'color';
 import { appThemeApiRef } from '@backstage/frontend-plugin-api';
 import { useApi } from '@backstage/core-plugin-api';
-import { useObservable } from 'react-use';
+import useObservable from 'react-use/esm/useObservable';
 
 import styles from './RadarAccordion.module.css';
 import { cn } from '../../util/cn';
