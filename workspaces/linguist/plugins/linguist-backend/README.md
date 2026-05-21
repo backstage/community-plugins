@@ -134,10 +134,10 @@ The Linguist backend registers actions with the Backstage [Actions Registry](htt
 
 ### Available Actions
 
-| Action ID | Description | Attributes |
-| --- | --- | --- |
-| `linguist:get-entity-languages` | Returns the language breakdown for a catalog entity | `readOnly`, `idempotent` |
-| `linguist:process-entities` | Triggers processing for all pending and stale entities | — |
+| Action ID                       | Description                                            | Attributes               |
+| ------------------------------- | ------------------------------------------------------ | ------------------------ |
+| `linguist:get-entity-languages` | Returns the language breakdown for a catalog entity    | `readOnly`, `idempotent` |
+| `linguist:process-entities`     | Triggers processing for all pending and stale entities | —                        |
 
 ### Exposing via MCP
 
