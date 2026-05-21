@@ -33,6 +33,10 @@ import { LinguistBackendClient } from '../api/LinguistBackendClient';
 import { Config } from '@backstage/config';
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import {
+  linguistReadPermission,
+  linguistProcessPermission,
+} from '@backstage-community/plugin-linguist-common';
 
 /**
  * @internal
@@ -102,6 +106,7 @@ export async function createRouter(
     description:
       'Returns the language breakdown for a catalog entity, including language names, percentages, bytes, and types',
     attributes: { readOnly: true, idempotent: true },
+    visibilityPermission: linguistReadPermission,
     schema: {
       input: z =>
         z.object({
@@ -138,6 +143,7 @@ export async function createRouter(
     title: 'Process Entities',
     description:
       'Triggers Linguist processing for all pending and stale entities',
+    visibilityPermission: linguistProcessPermission,
     schema: {
       input: z => z.object({}),
       output: z => z.object({}),

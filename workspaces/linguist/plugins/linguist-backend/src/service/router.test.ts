@@ -25,6 +25,10 @@ import {
   mockServices,
   TestDatabases,
 } from '@backstage/backend-test-utils';
+import {
+  linguistReadPermission,
+  linguistProcessPermission,
+} from '@backstage-community/plugin-linguist-common';
 import { UrlReaderService } from '@backstage/backend-plugin-api';
 
 const mockUrlReader: UrlReaderService = {
@@ -99,6 +103,7 @@ describe('createRouter', () => {
       expect(reg.title).toBe('Get Entity Languages');
       expect(reg.attributes.readOnly).toBe(true);
       expect(reg.attributes.idempotent).toBe(true);
+      expect(reg.visibilityPermission).toBe(linguistReadPermission);
     });
 
     it('registers the process-entities action', () => {
@@ -107,6 +112,7 @@ describe('createRouter', () => {
       )?.[0];
       expect(reg).toBeDefined();
       expect(reg.title).toBe('Process Entities');
+      expect(reg.visibilityPermission).toBe(linguistProcessPermission);
     });
 
     it('get-entity-languages action calls getEntityLanguages', async () => {

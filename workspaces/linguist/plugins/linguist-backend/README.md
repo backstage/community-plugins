@@ -139,6 +139,15 @@ The Linguist backend registers actions with the Backstage [Actions Registry](htt
 | `linguist:get-entity-languages` | Returns the language breakdown for a catalog entity    | `readOnly`, `idempotent` |
 | `linguist:process-entities`     | Triggers processing for all pending and stale entities | —                        |
 
+### Permissions
+
+Both actions are protected by permissions from `@backstage-community/plugin-linguist-common`. Adopters can configure their [permission policy](https://backstage.io/docs/permissions/overview) to control access.
+
+| Permission                  | Action   | Description                               |
+| --------------------------- | -------- | ----------------------------------------- |
+| `linguist.entities.read`    | `read`   | Controls access to `get-entity-languages` |
+| `linguist.entities.process` | `update` | Controls access to `process-entities`     |
+
 ### Exposing via MCP
 
 To expose Linguist actions to AI clients via the [Model Context Protocol](https://backstage.io/docs/ai/mcp-actions), add `linguist` to the actions plugin sources in your `app-config.yaml`:
