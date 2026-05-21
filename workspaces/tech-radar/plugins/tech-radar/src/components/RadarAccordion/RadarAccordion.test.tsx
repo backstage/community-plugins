@@ -17,6 +17,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { RadarAccordion } from './RadarAccordion';
+
+jest.mock('@backstage/core-plugin-api', () => ({
+  ...jest.requireActual('@backstage/core-plugin-api'),
+  useApi: jest.fn().mockReturnValue({
+    activeThemeId$: () => ({ subscribe: () => ({ unsubscribe: () => {} }) }),
+    getActiveThemeId: () => undefined,
+    getInstalledThemes: () => [],
+  }),
+}));
 import {
   RadarFilterContext,
   RadarFilterContextType,
