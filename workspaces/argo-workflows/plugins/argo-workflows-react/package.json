@@ -38,7 +38,7 @@
     "dagre": "^0.8.5"
   },
   "peerDependencies": {
-    "@backstage/core-plugin-api": "^1.12.5",
+    "@backstage/core-plugin-api": "^1.12.6",
     "react": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
