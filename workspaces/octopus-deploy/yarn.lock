@@ -365,6 +365,7 @@ __metadata:
     "@backstage/plugin-catalog-common": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/plugin-scaffolder-react": "backstage:^"
+    "@backstage/test-utils": "backstage:^"
     "@material-ui/core": "npm:^4.9.13"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
