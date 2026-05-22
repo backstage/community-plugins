@@ -1,0 +1,152 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: service-with-sonarcloud
+  title: Create Service with SonarCloud
+  description: >
+    Scaffolds a new service repository, provisions SonarCloud analysis
+    with ALM binding, quality gate, and new code definition, then
+    registers the component in the Backstage catalog.
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+    - title: Service Details
+      required:
+        - name
+        - repoName
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Human-readable name for the service
+          ui:autofocus: true
+        repoName:
+          title: Repository Name
+          type: string
+          description: Name for the GitHub repository
+        description:
+          title: Description
+          type: string
+          description: Short description of the service
+
+    - title: SonarCloud Configuration
+      required:
+        - sonarcloudOrg
+      properties:
+        sonarcloudOrg:
+          title: SonarCloud Organization
+          type: string
+          description: Your SonarCloud organization key
+        sonarcloudVisibility:
+          title: Project Visibility
+          type: string
+          description: SonarCloud project visibility
+          enum:
+            - public
+            - private
+          default: private
+        qualityGateName:
+          title: Quality Gate
+          type: string
+          description: Quality gate to assign (case-sensitive)
+          default: Sonar way
+        newCodeDefinition:
+          title: New Code Definition
+          type: string
+          description: Strategy for determining what counts as new code
+          enum:
+            - previous_version
+            - number_of_days
+            - reference_branch
+          default: previous_version
+
+  steps:
+    # 1. Fetch the service template skeleton
+    - id: fetch
+      action: fetch:template
+      name: Fetch Template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+
+    # 2. Publish the repository to GitHub
+    - id: publish
+      action: publish:github
+      name: Publish to GitHub
+      input:
+        allowedHosts:
+          - github.com
+        repoUrl: github.com?owner=my-org&repo=${{ parameters.repoName }}
+        description: ${{ parameters.description }}
+        defaultBranch: main
+        repoVisibility: private
+
+    # 3. Create the SonarCloud project (must run before all other sonarcloud actions)
+    - id: sonarcloud-create
+      action: sonarcloud:create-project
+      name: Create SonarCloud Project
+      input:
+        organization: ${{ parameters.sonarcloudOrg }}
+        name: ${{ parameters.name }}
+        key: ${{ parameters.repoName }}
+        visibility: ${{ parameters.sonarcloudVisibility }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+    # 4. Set the default branch to match the repository
+    - id: sonarcloud-branch
+      action: sonarcloud:set-default-branch
+      name: Set Default Branch
+      input:
+        projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+    # 5. Bind the SonarCloud project to the GitHub repository
+    - id: sonarcloud-bind
+      action: sonarcloud:bind-project
+      name: Bind to GitHub
+      input:
+        projectId: ${{ steps['sonarcloud-create'].output.projectId }}
+        projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+        repositoryId: my-org/${{ parameters.repoName }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+    # 6. Assign the quality gate
+    - id: sonarcloud-gate
+      action: sonarcloud:set-quality-gate
+      name: Set Quality Gate
+      input:
+        projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+        qualityGateName: ${{ parameters.qualityGateName }}
+        organization: ${{ parameters.sonarcloudOrg }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+    # 7. Configure the new code definition
+    - id: sonarcloud-newcode
+      action: sonarcloud:set-new-code-definition
+      name: Set New Code Definition
+      input:
+        projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+        type: ${{ parameters.newCodeDefinition }}
+        token: ${{ secrets.SONARCLOUD_TOKEN }}
+
+    # 8. Register the component in the Backstage catalog
+    - id: register
+      action: catalog:register
+      name: Register in Catalog
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: SonarCloud Project
+        url: ${{ steps['sonarcloud-create'].output.projectUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
