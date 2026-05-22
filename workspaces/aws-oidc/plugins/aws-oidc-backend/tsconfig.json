@@ -1,8 +1,0 @@
-{
-  "extends": "@backstage/cli/config/tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../../dist-types/plugins/aws-oidc-backend",
-    "rootDir": "."
-  },
-  "include": ["src", "dev"]
-}
