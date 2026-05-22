@@ -54,10 +54,12 @@ export const Shortcuts = (props: ShortcutsProps) => {
     setAnchorEl(undefined);
   };
 
+  const DefaultIcon = () => <RiPlayListAddLine size={24} />;
+
   return (
     <SidebarScrollWrapper>
       <SidebarItem
-        icon={props.icon ?? RiPlayListAddLine}
+        icon={props.icon ?? DefaultIcon}
         text="Add Shortcuts"
         onClick={handleClick}
       />

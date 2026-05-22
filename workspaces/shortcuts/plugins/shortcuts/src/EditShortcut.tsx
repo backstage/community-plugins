@@ -105,8 +105,23 @@ export const EditShortcut = ({
         zIndex: 1300,
       }}
       onClick={handleClose}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleClose();
+        }
+      }}
     >
-      <Card className={styles.card}
+      <div
+        onClick={e => e.stopPropagation()}
+        role="button"
+        tabIndex={0}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.stopPropagation();
+          }
+        }}
         style={{
           position: 'fixed',
           top: '50%',
@@ -114,26 +129,48 @@ export const EditShortcut = ({
           transform: 'translate(-50%, -50%)',
           zIndex: 1400,
         }}
-        onClick={(e) => e.stopPropagation()}
       >
-        <div className={styles.header} style={{ padding: 'var(--bui-space-4)', paddingBottom: 'var(--bui-space-2)', borderBottom: '1px solid var(--bui-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, fontSize: 'var(--bui-font-size-2)', fontWeight: 'var(--bui-font-weight-bold)' }}>Edit Shortcut</h3>
-          <Button
-            className={styles.button}
-            variant="secondary"
-            onClick={handleRemove}
+        <Card className={styles.card}>
+          <div
+            className={styles.header}
+            style={{
+              padding: 'var(--bui-space-4)',
+              paddingBottom: 'var(--bui-space-2)',
+              borderBottom: '1px solid var(--bui-border)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
           >
-            <RiDeleteBinLine size={16} style={{ marginRight: 'var(--bui-space-1)' }} />
-            Remove
-          </Button>
-        </div>
-        <ShortcutForm
-          formValues={{ url: shortcut.url, title: shortcut.title }}
-          onClose={handleClose}
-          onSave={handleSave}
-          allowExternalLinks={allowExternalLinks}
-        />
-      </Card>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 'var(--bui-font-size-2)',
+                fontWeight: 600,
+              }}
+            >
+              Edit Shortcut
+            </h3>
+            <Button
+              className={styles.button}
+              variant="secondary"
+              onClick={handleRemove}
+            >
+              <RiDeleteBinLine
+                size={16}
+                style={{ marginRight: 'var(--bui-space-1)' }}
+              />
+              Remove
+            </Button>
+          </div>
+          <ShortcutForm
+            formValues={{ url: shortcut.url, title: shortcut.title }}
+            onClose={handleClose}
+            onSave={handleSave}
+            allowExternalLinks={allowExternalLinks}
+          />
+        </Card>
+      </div>
     </div>
   );
 };

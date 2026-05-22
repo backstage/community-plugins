@@ -101,19 +101,31 @@ export const ShortcutForm = ({
                 }),
           }}
           render={({ field }) => (
-            <TextField
-              id="url"
-              label="Shortcut URL"
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              isInvalid={!!errors.url}
-              errorMessage={errors.url?.message}
-              type="text"
-              placeholder="Enter a URL"
-              autoComplete="off"
-              className={styles.field}
-            />
+            <div>
+              <TextField
+                id="url"
+                label="Shortcut URL"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                isInvalid={!!errors.url}
+                type="text"
+                placeholder="Enter a URL"
+                autoComplete="off"
+                className={styles.field}
+              />
+              {errors.url && (
+                <div
+                  style={{
+                    color: 'var(--bui-fg-danger)',
+                    fontSize: 'var(--bui-font-size-x-small)',
+                    marginTop: 'var(--bui-space-1)',
+                  }}
+                >
+                  {errors.url.message}
+                </div>
+              )}
+            </div>
           )}
         />
         <Controller
@@ -128,33 +140,42 @@ export const ShortcutForm = ({
             },
           }}
           render={({ field }) => (
-            <TextField
-              id="title"
-              label="Display Name"
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              isInvalid={!!errors.title}
-              errorMessage={errors.title?.message}
-              type="text"
-              placeholder="Enter a display name"
-              autoComplete="off"
-              className={styles.field}
-            />
+            <div>
+              <TextField
+                id="title"
+                label="Display Name"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                isInvalid={!!errors.title}
+                type="text"
+                placeholder="Enter a display name"
+                autoComplete="off"
+                className={styles.field}
+              />
+              {errors.title && (
+                <div
+                  style={{
+                    color: 'var(--bui-fg-danger)',
+                    fontSize: 'var(--bui-font-size-x-small)',
+                    marginTop: 'var(--bui-space-1)',
+                  }}
+                >
+                  {errors.title.message}
+                </div>
+              )}
+            </div>
           )}
         />
       </div>
-      <div className={styles.actionRoot} style={{ display: 'flex', gap: 'var(--bui-space-2)' }}>
-        <Button
-          variant="primary"
-          onClick={handleSubmit(onSave)}
-        >
+      <div
+        className={styles.actionRoot}
+        style={{ display: 'flex', gap: 'var(--bui-space-2)' }}
+      >
+        <Button variant="primary" onClick={handleSubmit(onSave)}>
           Save
         </Button>
-        <Button
-          variant="secondary"
-          onClick={onClose}
-        >
+        <Button variant="secondary" onClick={onClose}>
           Cancel
         </Button>
       </div>
