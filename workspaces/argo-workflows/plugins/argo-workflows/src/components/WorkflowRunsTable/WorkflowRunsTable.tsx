@@ -31,9 +31,9 @@ import {
 } from '@backstage/ui';
 import { useArgoWorkflows } from '@backstage-community/plugin-argo-workflows-react';
 import type { ArgoInstanceDetail } from '@backstage-community/plugin-argo-workflows-react';
-import { WorkflowDAGInline } from './WorkflowDAGInline';
-import { buildColumns, workflowSortFn } from './helpers';
-import { ALL_STATUSES, formatTimeAgo, type WorkflowItem } from './utils';
+import { WorkflowDAGInline } from '../WorkflowDAGInline';
+import { buildColumns, workflowSortFn } from '../helpers';
+import { ALL_STATUSES, formatTimeAgo, type WorkflowItem } from '../utils';
 import styles from './WorkflowRunsTable.module.css';
 
 /**

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import { ConfigReader, type JsonObject } from '@backstage/config';
+import { ConfigReader } from '@backstage/config';
+import { JsonObject } from '@backstage/types';
 import {
   ArgoWorkflowsService,
   validateLabelSelector,
 } from './ArgoWorkflowsService';
 
-// Mock node-fetch
-jest.mock('node-fetch', () => jest.fn());
-import fetch from 'node-fetch';
-
-const mockFetch = fetch as unknown as jest.Mock;
+// Mock global fetch
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
 
 const mockLogger = {
   info: jest.fn(),

@@ -37,6 +37,7 @@ const _default: OverridableFrontendPlugin<
         icon?: string | undefined;
       };
       output:
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
@@ -45,7 +46,6 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
@@ -84,10 +84,10 @@ const _default: OverridableFrontendPlugin<
         defaultGroup?: [Error: `Use the 'group' param instead`];
         group?:
           | (
-              | 'overview'
-              | 'documentation'
               | 'development'
               | 'deployment'
+              | 'overview'
+              | 'documentation'
               | 'operation'
               | 'observability'
             )

@@ -37,7 +37,6 @@ import type {
   AuthenticationStrategy,
   KubernetesCredential,
 } from '@backstage/plugin-kubernetes-node';
-import fetch from 'node-fetch';
 
 /** Instance configured to talk to the Argo Workflows server API. */
 interface ArgoApiInstance {

@@ -24,7 +24,7 @@ import { TaskStatusBar } from './TaskStatusBar';
 import { getInstanceTypeIcon } from '../images/icons';
 import { formatDuration, formatDate, workflowFullName } from './utils';
 import type { WorkflowItem } from './utils';
-import styles from './WorkflowRunsTable.module.css';
+import styles from './WorkflowRunsTable/WorkflowRunsTable.module.css';
 
 /** Name cell: bold namespace/name with optional instance name below. */
 export const NameLabel = ({ item }: { item: WorkflowItem }): JSX.Element => (

@@ -22,8 +22,8 @@ import {
   computeLayout,
   useDAGInteraction,
   DAG_INLINE_CONFIG,
-} from './dagHelpers';
-import { DAGCanvas } from './DAGCanvas';
+} from '../dagHelpers';
+import { DAGCanvas } from '../DAGCanvas';
 import styles from './WorkflowDAGInline.module.css';
 
 /** @public */

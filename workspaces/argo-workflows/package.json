@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "22 || 24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -42,6 +42,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/plugin-catalog-common": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
     "@playwright/test": "^1.32.3",

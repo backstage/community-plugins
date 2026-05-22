@@ -25,9 +25,9 @@ import {
   computeLayout,
   useDAGInteraction,
   DAG_VIEW_CONFIG,
-} from './dagHelpers';
-import { formatDurationSeconds } from './utils';
-import { DAGCanvas } from './DAGCanvas';
+} from '../dagHelpers';
+import { formatDurationSeconds } from '../utils';
+import { DAGCanvas } from '../DAGCanvas';
 import styles from './WorkflowDAGView.module.css';
 
 /** @public */
