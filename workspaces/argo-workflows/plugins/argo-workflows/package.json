@@ -55,7 +55,8 @@
     "@remixicon/react": "^4.9.0",
     "classnames": "^2.5.1",
     "dagre": "^0.8.5",
-    "luxon": "^3.7.2"
+    "luxon": "^3.7.2",
+    "react-stately": "^3.46.0"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
@@ -73,7 +74,6 @@
     "@types/luxon": "^3",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "cross-fetch": "4.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0"

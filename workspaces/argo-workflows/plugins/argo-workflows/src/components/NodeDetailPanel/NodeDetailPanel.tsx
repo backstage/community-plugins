@@ -18,7 +18,7 @@ import { ButtonIcon, Flex, Text } from '@backstage/ui';
 import { WorkflowStatusIcon } from '@backstage-community/plugin-argo-workflows-react';
 import type { DAGNode } from '@backstage-community/plugin-argo-workflows-react';
 import { RiCloseLine } from '@remixicon/react';
-import { formatDurationSeconds, formatDate } from './utils';
+import { formatDurationSeconds, formatDate } from '../utils';
 import styles from './NodeDetailPanel.module.css';
 
 /** Props for the NodeDetailPanel component. */
