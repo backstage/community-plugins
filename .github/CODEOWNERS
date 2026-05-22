@@ -25,6 +25,7 @@ yarn.lock                                                               @backsta
 /workspaces/apache-airflow                                              @backstage/community-plugins-maintainers
 /workspaces/apiiro                                                      @backstage/community-plugins-maintainers  @hetsaliya-crestdata @zuberc-cds @IgalKreich @shaim-apiiro
 /workspaces/apollo-explorer                                             @backstage/community-plugins-maintainers
+/workspaces/argo-workflows                                              @backstage/community-plugins-maintainers  @fjudith
 /workspaces/argocd                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar @dzemanov
 /workspaces/azure-devops                                                @backstage/community-plugins-maintainers  @awanlin
 /workspaces/azure-resources                                             @backstage/community-plugins-maintainers  @sarabadu
