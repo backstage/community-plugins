@@ -1,0 +1,68 @@
+{
+  "name": "@backstage-community/plugin-aws-oidc-backend",
+  "version": "0.1.0",
+  "description": "Backstage backend plugin — AWS OIDC credential provider. Issues short-lived AWS credentials via OIDC token exchange (AssumeRoleWithWebIdentity). Supports KMS signing (prod), local RSA key (dev), and mock mode (testing).",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./scaffolder": "./src/scaffolderModule.ts"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/aws-oidc#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/aws-oidc/plugins/aws-oidc-backend"
+  },
+  "bugs": {
+    "url": "https://github.com/backstage/community-plugins/issues"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "aws",
+    "oidc",
+    "iam",
+    "scaffolder"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "start": "backstage-cli package start",
+    "prepack": "backstage-cli package build"
+  },
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.0.0",
+    "@aws-sdk/client-sts": "^3.0.0",
+    "@aws-sdk/credential-providers": "^3.0.0",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/plugin-catalog-node": "backstage:^",
+    "@backstage/plugin-scaffolder-node": "backstage:^",
+    "express": "^4.22.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@types/express": "^4.17.25",
+    "@types/supertest": "^7.2.0",
+    "supertest": "^7.1.0",
+    "typescript": "~5.8.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "backstage": {
+    "role": "backend-plugin",
+    "supported-versions": "^1.30.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
