@@ -58,6 +58,11 @@
     "prismjs": "^1.30.0"
   },
   "prettier": "@backstage/cli/config/prettier",
+  "dependenciesMeta": {
+    "better-sqlite3": {
+      "built": true
+    }
+  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

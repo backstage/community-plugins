@@ -252,7 +252,7 @@ test.describe('Multi-Source Security Viewer', () => {
         page
           .locator('div')
           .getByLabel('Image Scan')
-          .getByText(level + ' ' + level, { exact: true }),
+          .getByText(`${level} ${level}`, { exact: true }),
       ).toBeVisible();
     }
 

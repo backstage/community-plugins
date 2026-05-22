@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -6074,7 +6074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/icons@npm:^4.9.1":
+"@material-ui/icons@npm:^4.11.3, @material-ui/icons@npm:^4.9.1":
   version: 4.11.3
   resolution: "@material-ui/icons@npm:4.11.3"
   dependencies:
@@ -12766,6 +12766,7 @@ __metadata:
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
     "@backstage/core-compat-api": "backstage:^"
+    "@backstage/core-components": "backstage:^"
     "@backstage/frontend-defaults": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/integration-react": "backstage:^"
@@ -12775,6 +12776,7 @@ __metadata:
     "@backstage/plugin-user-settings": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
+    "@material-ui/icons": "npm:^4.11.3"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^14.0.0"
     "@types/react-dom": "npm:*"

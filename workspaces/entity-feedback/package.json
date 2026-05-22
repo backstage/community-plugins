@@ -61,5 +61,10 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependenciesMeta": {
+    "better-sqlite3": {
+      "built": true
+    }
   }
 }
