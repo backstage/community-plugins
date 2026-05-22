@@ -37,7 +37,7 @@ const mockEntity: Entity = {
     name: 'backstage',
     description: 'backstage.io',
     annotations: {
-      'octopus.com/project-id': 'Project-123',
+      'octopus.com/project-id': 'Projects-123',
     },
   },
   spec: {
@@ -80,7 +80,7 @@ class MockOctopusDeployApiClient implements OctopusDeployApi {
             Version: '1.0.0',
             Links: {
               Self: 'https://octopus.com/api/space/machines/machines-123',
-              Web: 'https://octopus.com/app#/Spaces-123/projects/Project-123/releases/Releases-123',
+              Web: 'https://octopus.com/app#/Spaces-123/projects/Projects-123/releases/Releases-123',
             },
           },
           Deployments: {
