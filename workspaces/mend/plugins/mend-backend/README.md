@@ -4,7 +4,7 @@ The Mend backend plugin provides the server-side functionality for the Mend Back
 
 ## Prerequisites
 
-Required Mend Activation Key to fetch results from Mend. The steps to obtain and configure the key are described [here](../mend/README.md/#getting-started).
+- Mend Activation Key to fetch results from Mend. The steps to obtain and configure the key are described [here](../mend/README.md/#getting-started).
 
 ## Installation
 
