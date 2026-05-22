@@ -1,5 +1,12 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.19.3
+
+### Patch Changes
+
+- 203c5e6: Updated dependency `@keycloak/keycloak-admin-client` to `26.6.1`.
+- 5a7e85f: Updated dependency `open-cli` to `^9.0.0`.
+
 ## 3.19.2
 
 ### Patch Changes
