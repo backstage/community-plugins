@@ -58,6 +58,7 @@ const HEALERT_FEATURES = [
 // Do not edit this section.
 // =============================================================================
 
+/** @public */
 export const healertApiExtension = ApiBlueprint.make({
   name: 'healert',
   params: define =>
@@ -98,6 +99,7 @@ const featureExtensions = HEALERT_FEATURES.map(feature =>
 // Do not edit this section.
 // =============================================================================
 
+/** @public */
 export const healertPlugin = createFrontendPlugin({
   pluginId: 'healert',
   extensions: [healertApiExtension, ...featureExtensions],
