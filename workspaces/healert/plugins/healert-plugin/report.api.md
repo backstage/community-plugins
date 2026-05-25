@@ -122,6 +122,4 @@ export class MockHealertClient implements HealertApi {
   // (undocumented)
   getFrictionData(entityRef: string): Promise<FrictionData>;
 }
-
-// (No @packageDocumentation comment for this package)
 ```
