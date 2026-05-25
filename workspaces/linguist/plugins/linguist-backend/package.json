@@ -68,6 +68,7 @@
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-mcp-actions-backend": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@types/fs-extra": "^11.0.0",
     "@types/node-fetch": "^2.5.12",

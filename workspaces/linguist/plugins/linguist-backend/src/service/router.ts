@@ -22,6 +22,7 @@ import {
   SchedulerServiceTaskScheduleDefinition,
   UrlReaderService,
 } from '@backstage/backend-plugin-api';
+import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import express from 'express';
 import { createOpenApiRouter } from '../schema/openapi.generated';
 import { LinguistBackendApi } from '../api';
@@ -32,6 +33,10 @@ import { LinguistBackendClient } from '../api/LinguistBackendClient';
 import { Config } from '@backstage/config';
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import {
+  linguistReadPermission,
+  linguistProcessPermission,
+} from '@backstage-community/plugin-linguist-common';
 
 /**
  * @internal
@@ -45,6 +50,7 @@ export interface RouterOptions {
   config: Config;
   auth: AuthService;
   scheduler?: SchedulerService;
+  actionsRegistry?: ActionsRegistryService;
 }
 
 /**
@@ -93,6 +99,61 @@ export async function createRouter(
       kind,
       linguistJsOptions,
     );
+
+  routerOptions.actionsRegistry?.register({
+    name: 'get-entity-languages',
+    title: 'Get Entity Languages',
+    description:
+      'Returns the language breakdown for a catalog entity, including language names, percentages, bytes, and types',
+    attributes: { readOnly: true, idempotent: true, destructive: false },
+    visibilityPermission: linguistReadPermission,
+    schema: {
+      input: z =>
+        z.object({
+          entityRef: z
+            .string()
+            .describe('The entity ref, e.g. component:default/my-service'),
+        }),
+      output: z =>
+        z.object({
+          languageCount: z.number(),
+          totalBytes: z.number(),
+          processedDate: z.string(),
+          breakdown: z.array(
+            z.object({
+              name: z.string(),
+              percentage: z.number(),
+              bytes: z.number(),
+              type: z.enum(['programming', 'data', 'markup', 'prose']),
+              color: z.string().optional(),
+            }),
+          ),
+        }),
+    },
+    action: async ({ input }) => {
+      const languages = await linguistBackendClient.getEntityLanguages(
+        input.entityRef,
+      );
+      return { output: languages };
+    },
+  });
+
+  routerOptions.actionsRegistry?.register({
+    name: 'process-entities',
+    title: 'Process Entities',
+    description:
+      'Triggers Linguist processing for all pending and stale entities',
+    attributes: { readOnly: false, idempotent: false, destructive: false },
+    visibilityPermission: linguistProcessPermission,
+    schema: {
+      input: z => z.object({}),
+      output: z => z.object({}),
+    },
+    action: async () => {
+      await linguistBackendClient.processEntities();
+      return { output: {} };
+    },
+  });
 
   if (scheduler && schedule) {
     logger.info(
