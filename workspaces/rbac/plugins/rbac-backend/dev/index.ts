@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-import '@backstage/cli/asset-types';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import '@backstage/ui/css/styles.css';
+import { createBackend } from '@backstage/backend-defaults';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(App.createRoot());
+const backend = createBackend();
+
+backend.add(import('@backstage/plugin-auth-backend'));
+backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
+
+backend.add(import('@backstage/plugin-catalog-backend'));
+backend.add(
+  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
+);
+
+backend.add(import('@backstage/plugin-permission-backend'));
+backend.add(import('../src'));
+
+backend.start();

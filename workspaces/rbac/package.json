@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
-    "start:legacy": "yarn start app-legacy backend",
+    "start:alpha": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start:alpha",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",

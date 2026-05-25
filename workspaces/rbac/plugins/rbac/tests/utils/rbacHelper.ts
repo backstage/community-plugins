@@ -15,6 +15,11 @@
  */
 import { expect, type Page } from '@playwright/test';
 
+/** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
+export function isNfsAppMode(): boolean {
+  return process.env.APP_MODE === 'nfs';
+}
+
 export const verifyCellsInTable = async (
   cellIdentifier: (string | RegExp)[],
   page: Page,
@@ -81,8 +86,11 @@ export class Common {
       await dialog.accept();
     });
 
-    await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible();
-    await this.clickButton('Enter');
+    const enterButton = this.page.getByRole('button', { name: 'Enter' });
+    if (!isNfsAppMode()) {
+      await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible();
+    }
+    await enterButton.click();
     await this.waitForSideBarVisible();
   }
 
