@@ -121,8 +121,6 @@ import { useFrictionData } from '../../hooks/useFrictionData';
  *
  * Default: Cloudflare CDN — stable, fast, and globally available.
  */
-const JSPDF_CDN_URL =
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
 /**
  * Friction scoring weights — one point value per event type.
@@ -616,19 +614,12 @@ function hexToRgb(hex: string): [number, number, number] {
 /**
  * Lazily loads jsPDF from the configured CDN URL.
  * Returns a Promise that resolves with the jsPDF constructor.
- * Safe to call multiple times — reuses the cached library after first load.
+ * Uses the bundled npm jspdf package — no CDN required.
+ * Works behind corporate firewalls and strict CSPs.
  */
-function loadJsPDF(): Promise<any> {
-  return new Promise(resolve => {
-    if ((window as any).jspdf) {
-      resolve((window as any).jspdf.jsPDF);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = JSPDF_CDN_URL;
-    script.onload = () => resolve((window as any).jspdf.jsPDF);
-    document.head.appendChild(script);
-  });
+async function loadJsPDF(): Promise<any> {
+  const { default: JsPDF } = await import('jspdf');
+  return JsPDF;
 }
 
 // =============================================================================
