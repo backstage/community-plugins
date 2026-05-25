@@ -1,0 +1,1 @@
+export { FrictionScoreCard } from './FrictionScoreCard';

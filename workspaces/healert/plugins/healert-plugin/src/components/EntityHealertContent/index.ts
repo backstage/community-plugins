@@ -1,0 +1,1 @@
+export { EntityHealertContent } from './EntityHealertContent';

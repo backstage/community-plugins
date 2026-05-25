@@ -1,0 +1,77 @@
+{
+  "name": "@backstage-community/plugin-healert",
+  "version": "0.1.1",
+  "description": "Healert Friction Intelligence Platform Plugin for Backstage — surfaces Kubernetes bypass events and friction scores per service",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "Apache-2.0",
+  "homepage": "https://healert.io",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/healert/plugins/healert-plugin"
+  },
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "platform-engineering",
+    "developer-experience",
+    "friction",
+    "kubernetes",
+    "devops",
+    "ebpf",
+    "audit-log"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "start": "backstage-cli package start"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.4",
+    "@backstage/core-components": "^0.18.9",
+    "@backstage/core-plugin-api": "^1.12.5",
+    "@backstage/plugin-catalog-react": "^2.1.4",
+    "@backstage/theme": "^0.6.4",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.61"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.30.0",
+    "@backstage/dev-utils": "^1.1.6",
+    "@backstage/test-utils": "^1.7.0",
+    "@testing-library/dom": "^9.0.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/react": "^18.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2 || ^18.0.0",
+    "react-dom": "^17.0.2 || ^18.0.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "healert",
+    "pluginPackages": [
+      "@backstage-community/plugin-healert"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/backstage/community-plugins/issues"
+  }
+}

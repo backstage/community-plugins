@@ -1,0 +1,1 @@
+export { FrictionHeatmap } from './FrictionHeatmap';
