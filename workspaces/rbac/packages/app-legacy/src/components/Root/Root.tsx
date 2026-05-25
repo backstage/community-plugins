@@ -32,43 +32,46 @@ import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
 } from '@backstage/plugin-user-settings';
-import { makeStyles } from '@material-ui/core';
-import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import ExtensionIcon from '@material-ui/icons/Extension';
-import HomeIcon from '@material-ui/icons/Home';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import MenuIcon from '@material-ui/icons/Menu';
-import GroupIcon from '@material-ui/icons/People';
-import SearchIcon from '@material-ui/icons/Search';
+import Box from '@mui/material/Box';
+import CreateComponentIcon from '@mui/icons-material/AddCircleOutline';
+import ExtensionIcon from '@mui/icons-material/Extension';
+import HomeIcon from '@mui/icons-material/Home';
+import LibraryBooks from '@mui/icons-material/LibraryBooks';
+import MenuIcon from '@mui/icons-material/Menu';
+import GroupIcon from '@mui/icons-material/People';
+import SearchIcon from '@mui/icons-material/Search';
 import { PropsWithChildren } from 'react';
-import LogoFull from './LogoFull';
-import LogoIcon from './LogoIcon';
-
-const useSidebarLogoStyles = makeStyles({
-  root: {
-    width: sidebarConfig.drawerWidthClosed,
-    height: 3 * sidebarConfig.logoHeight,
-    display: 'flex',
-    flexFlow: 'row nowrap',
-    alignItems: 'center',
-    marginBottom: -14,
-  },
-  link: {
-    width: sidebarConfig.drawerWidthClosed,
-    marginLeft: 24,
-  },
-});
+import {
+  LogoFull,
+  LogoIcon,
+} from '@red-hat-developer-hub/backstage-plugin-theme';
 
 const SidebarLogo = () => {
-  const classes = useSidebarLogoStyles();
   const { isOpen } = useSidebarOpenState();
 
   return (
-    <div className={classes.root}>
-      <Link to="/" underline="none" className={classes.link} aria-label="Home">
-        {isOpen ? <LogoFull /> : <LogoIcon />}
-      </Link>
-    </div>
+    <Box
+      sx={{
+        width: sidebarConfig.drawerWidthClosed,
+        height: 3 * sidebarConfig.logoHeight,
+        display: 'flex',
+        flexFlow: 'row nowrap',
+        alignItems: 'center',
+        mb: '-14px',
+      }}
+    >
+      <Box
+        sx={{
+          width: sidebarConfig.drawerWidthClosed,
+          ml: 3,
+          '& svg g': { fill: '#fff' },
+        }}
+      >
+        <Link to="/" underline="none" aria-label="Home">
+          {isOpen ? <LogoFull /> : <LogoIcon />}
+        </Link>
+      </Box>
+    </Box>
   );
 };
 

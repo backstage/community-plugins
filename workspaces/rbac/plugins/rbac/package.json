@@ -63,7 +63,6 @@
     "@backstage/theme": "^0.7.3",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "^5.14.18",
-    "@mui/styles": "^6.1.7",
     "@rjsf/core": "^5.21.2",
     "@rjsf/mui": "^5.21.2",
     "@rjsf/utils": "^5.21.2",

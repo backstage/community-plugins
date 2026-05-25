@@ -1,1 +1,1 @@
-module.exports = require('@backstage/cli/config/eslint-factory')(__dirname);
+module.exports = require('../../eslint.frontend-shared.cjs')(__dirname);

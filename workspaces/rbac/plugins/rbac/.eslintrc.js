@@ -13,4 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module.exports = require('@backstage/cli/config/eslint-factory')(__dirname);
+// eslint-disable-next-line @backstage/no-relative-monorepo-imports -- workspace ESLint shared config
+module.exports = require('../../eslint.frontend-shared.cjs')(__dirname);
