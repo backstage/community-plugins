@@ -25,3 +25,5 @@ export type {
 } from './api/types';
 /** @public */
 export type { HealertApi } from './api/HealertClient';
+/** @public */
+export { EntityHealertContent } from './components/EntityHealertContent/EntityHealertContent';

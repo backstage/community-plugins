@@ -100,6 +100,7 @@ const useStyles = makeStyles(theme => ({
 // Do not edit below this line.
 // =============================================================================
 
+/** @public */
 export function EntityHealertContent() {
   const { entity } = useEntity();
   const classes = useStyles();

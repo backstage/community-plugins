@@ -29,6 +29,9 @@ export interface BypassEvent {
 }
 
 // @public (undocumented)
+export function EntityHealertContent(): JSX_2.Element | null;
+
+// @public (undocumented)
 export interface FrictionData {
   entityRef: string;
   fetchedAt: string;
