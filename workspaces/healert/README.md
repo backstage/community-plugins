@@ -2,8 +2,7 @@
 
 This is your newly scaffolded Backstage App, Good Luck!
 
-> [!IMPORTANT]
-> **TODO**: Consider updating your README text with relevant documentation for your plugin. See some suggested text below.
+> [!IMPORTANT] > **TODO**: Consider updating your README text with relevant documentation for your plugin. See some suggested text below.
 
 # healert
 
@@ -11,7 +10,7 @@ This workspace contains plugins for \[brief description of purpose, e.g. exposin
 
 ## Plugins
 
-- \[plugin-backend](./plugins/plugin-backend/README):  Backend plugin that provides...
+- \[plugin-backend](./plugins/plugin-backend/README): Backend plugin that provides...
 
 ## Getting Started
 

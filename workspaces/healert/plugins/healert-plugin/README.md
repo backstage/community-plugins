@@ -42,10 +42,10 @@ FrictionScoreCard + FrictionHeatmap per catalog entity
 
 This plugin requires two self-hosted components:
 
-| Component | Repository | Purpose |
-|---|---|---|
+| Component       | Repository                                                  | Purpose                           |
+| --------------- | ----------------------------------------------------------- | --------------------------------- |
 | Healert Backend | [healert-io/backend](https://github.com/healert-io/backend) | Stores and scores friction events |
-| Healert Agent | [healert-io/agent](https://github.com/healert-io/agent) | Tails Kubernetes audit log |
+| Healert Agent   | [healert-io/agent](https://github.com/healert-io/agent)     | Tails Kubernetes audit log        |
 
 Both can be deployed in under 10 minutes:
 
@@ -123,7 +123,7 @@ Open your Backstage instance and navigate to any catalog entity — the **HEALER
 proxy:
   endpoints:
     '/healert':
-      target: '${HEALERT_BACKEND_URL}'   # e.g. http://localhost:8000
+      target: '${HEALERT_BACKEND_URL}' # e.g. http://localhost:8000
       changeOrigin: true
 
 healert:
@@ -132,8 +132,8 @@ healert:
 
 ### Environment variables
 
-| Variable | Description |
-|---|---|
+| Variable              | Description                            |
+| --------------------- | -------------------------------------- |
 | `HEALERT_BACKEND_URL` | URL of the self-hosted Healert backend |
 
 ---
@@ -148,9 +148,9 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: payments-api
-  namespace: default           # must match ENTITY_NAMESPACE in agent config
+  namespace: default # must match ENTITY_NAMESPACE in agent config
   annotations:
-    backstage.io/managed-by-location: "url:..."
+    backstage.io/managed-by-location: 'url:...'
 spec:
   type: service
   lifecycle: production
@@ -171,10 +171,10 @@ weighted_total = Σ ( points × 0.5 ^ (age_days / 7) )
 ```
 
 | Severity | Points | Decay at 7d | Decay at 30d |
-|---|---|---|---|
-| high | 10 | 50% | ~3% |
-| medium | 6 | 50% | ~3% |
-| low | 3 | 50% | ~3% |
+| -------- | ------ | ----------- | ------------ |
+| high     | 10     | 50%         | ~3%          |
+| medium   | 6      | 50%         | ~3%          |
+| low      | 3      | 50%         | ~3%          |
 
 Scores decay automatically — no manual resets needed. A service with bypass events from last month will trend back to zero as the team improves behavior.
 
@@ -283,15 +283,14 @@ curl http://localhost:8000/friction/component:default/payments-api
 
 ---
 
-
 ## Related
 
-| Resource | Link |
-|---|---|
-| Healert Agent | [github.com/healert-io/agent](https://github.com/healert-io/agent) |
-| Healert Backend | [github.com/healert-io/backend](https://github.com/healert-io/backend) |
-| Healert Organization | [github.com/healert-io](https://github.com/healert-io) |
-| Issue Tracker | [community-plugins/issues](https://github.com/backstage/community-plugins/issues) |
+| Resource             | Link                                                                              |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Healert Agent        | [github.com/healert-io/agent](https://github.com/healert-io/agent)                |
+| Healert Backend      | [github.com/healert-io/backend](https://github.com/healert-io/backend)            |
+| Healert Organization | [github.com/healert-io](https://github.com/healert-io)                            |
+| Issue Tracker        | [community-plugins/issues](https://github.com/backstage/community-plugins/issues) |
 
 ---
 

@@ -40,9 +40,9 @@ import { healertApiRef, HealertClient } from './api';
 
 const HEALERT_FEATURES = [
   {
-    name:   'healert',
-    path:   '/healert',
-    title:  'Healert Platform',
+    name: 'healert',
+    path: '/healert',
+    title: 'Healert Platform',
     loader: async () => {
       const { EntityHealertContent } = await import(
         './components/EntityHealertContent/EntityHealertContent'
@@ -60,18 +60,19 @@ const HEALERT_FEATURES = [
 
 export const healertApiExtension = ApiBlueprint.make({
   name: 'healert',
-  params: (define) => define(
-    createApiFactory({
-      api: healertApiRef,
-      deps: {
-        discoveryApi: discoveryApiRef,
-        fetchApi:     fetchApiRef,
-        configApi:    configApiRef,
-      },
-      factory: ({ discoveryApi, fetchApi, configApi }) =>
-        new HealertClient({ discoveryApi, fetchApi, configApi }),
-    }),
-  ),
+  params: define =>
+    define(
+      createApiFactory({
+        api: healertApiRef,
+        deps: {
+          discoveryApi: discoveryApiRef,
+          fetchApi: fetchApiRef,
+          configApi: configApiRef,
+        },
+        factory: ({ discoveryApi, fetchApi, configApi }) =>
+          new HealertClient({ discoveryApi, fetchApi, configApi }),
+      }),
+    ),
 });
 
 // =============================================================================
@@ -82,10 +83,10 @@ export const healertApiExtension = ApiBlueprint.make({
 
 const featureExtensions = HEALERT_FEATURES.map(feature =>
   EntityContentBlueprint.make({
-    name:   feature.name,
+    name: feature.name,
     params: {
-      path:   feature.path,
-      title:  feature.title,
+      path: feature.path,
+      title: feature.title,
       loader: feature.loader,
     },
   }),
@@ -99,8 +100,5 @@ const featureExtensions = HEALERT_FEATURES.map(feature =>
 
 export const healertPlugin = createFrontendPlugin({
   pluginId: 'healert',
-  extensions: [
-    healertApiExtension,
-    ...featureExtensions,
-  ],
+  extensions: [healertApiExtension, ...featureExtensions],
 });

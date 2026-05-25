@@ -22,7 +22,13 @@ export interface BypassEvent {
   /** Human-readable description of what was bypassed */
   description: string;
   /** Workflow that was bypassed: deploy, provision, rollback, onboard, release */
-  workflow: 'deploy' | 'provision' | 'rollback' | 'onboard' | 'release' | 'other';
+  workflow:
+    | 'deploy'
+    | 'provision'
+    | 'rollback'
+    | 'onboard'
+    | 'release'
+    | 'other';
 }
 
 /** The Friction Score for a single service */

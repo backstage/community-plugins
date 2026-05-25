@@ -29,17 +29,17 @@ const mockApiWithEvents = {
     recentEvents: [
       {
         timestamp: new Date(Date.now() - 2 * 60000).toISOString(),
-        actor:       'system:admin',
-        type:        'kubectl-exec',
+        actor: 'system:admin',
+        type: 'kubectl-exec',
         description: 'kubectl exec on pod/test-service by system:admin',
-        workflow:    'deploy',
+        workflow: 'deploy',
       },
       {
         timestamp: new Date(Date.now() - 5 * 60000).toISOString(),
-        actor:       'system:admin',
-        type:        'config-drift',
+        actor: 'system:admin',
+        type: 'config-drift',
         description: 'Direct patch on deployments/test-service by system:admin',
-        workflow:    'deploy',
+        workflow: 'deploy',
       },
     ],
     sources: { kubernetesAuditLog: true, github: false, jira: false },
@@ -67,15 +67,19 @@ const mockApiEmpty = {
 
 // ── Mock API — backend error ──────────────────────────────────────────────────
 const mockApiError = {
-  getFrictionData: jest.fn().mockRejectedValue(
-    new Error('Healert API error: 504 Gateway Timeout'),
-  ),
+  getFrictionData: jest
+    .fn()
+    .mockRejectedValue(new Error('Healert API error: 504 Gateway Timeout')),
 };
 
 // Suppress jsdom @layer CSS parsing noise from @backstage/ui
 beforeAll(() => {
   jest.spyOn(console, 'error').mockImplementation(msg => {
-    if (typeof msg === 'string' && msg.includes('Could not parse CSS stylesheet')) return;
+    if (
+      typeof msg === 'string' &&
+      msg.includes('Could not parse CSS stylesheet')
+    )
+      return;
     // eslint-disable-next-line no-console
     console.warn(msg);
   });
@@ -83,7 +87,6 @@ beforeAll(() => {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 describe('FrictionHeatmap', () => {
-
   it('renders without crashing with event data', () => {
     render(
       <TestApiProvider apis={[[healertApiRef, mockApiWithEvents]]}>
@@ -128,5 +131,4 @@ describe('FrictionHeatmap', () => {
     );
     expect(document.body).toBeTruthy();
   });
-
 });

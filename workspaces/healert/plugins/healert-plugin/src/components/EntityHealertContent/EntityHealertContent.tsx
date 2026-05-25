@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
 /**
  * @file EntityHealertContent.tsx
  * @description Container for all Healert features with internal sub-tabs.
@@ -48,7 +46,6 @@ import { FrictionHeatmap } from '../FrictionHeatmap/FrictionHeatmap';
 // Example:
 //   import { MyFeature } from '../MyFeature/MyFeature';
 
-
 // =============================================================================
 // FEATURE TABS
 // Add one entry per new feature — rendered as sub-tabs in order.
@@ -59,10 +56,13 @@ import { FrictionHeatmap } from '../FrictionHeatmap/FrictionHeatmap';
 //   { key: 'myfeature', label: 'My Feature', component: <MyFeature /> },
 
 const HEALERT_TABS = [
-  { key: 'friction', label: 'Friction Score', component: <FrictionScoreCard /> },
-  { key: 'heatmap',  label: 'Heatmap',        component: <FrictionHeatmap />   },
+  {
+    key: 'friction',
+    label: 'Friction Score',
+    component: <FrictionScoreCard />,
+  },
+  { key: 'heatmap', label: 'Heatmap', component: <FrictionHeatmap /> },
 ];
-
 
 // =============================================================================
 // STYLES
@@ -97,7 +97,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 // =============================================================================
 // CONTAINER
 // Do not edit below this line.
@@ -105,7 +104,7 @@ const useStyles = makeStyles(theme => ({
 
 export function EntityHealertContent() {
   const { entity } = useEntity();
-  const classes    = useStyles();
+  const classes = useStyles();
   const [activeTab, setActiveTab] = useState(0);
 
   const kind = entity.kind?.toLowerCase();
@@ -113,9 +112,7 @@ export function EntityHealertContent() {
     entity.metadata?.annotations?.['healert.io/enabled'] === 'true';
 
   const shouldRender =
-    kind === 'component' ||
-    kind === 'service'   ||
-    hasOptInAnnotation;
+    kind === 'component' || kind === 'service' || hasOptInAnnotation;
 
   if (!shouldRender) {
     return null;
@@ -123,7 +120,6 @@ export function EntityHealertContent() {
 
   return (
     <Box style={{ width: '100%' }}>
-
       {/* ── Sub-tabs navigation ── */}
       <Tabs
         value={activeTab}
@@ -156,7 +152,6 @@ export function EntityHealertContent() {
           {activeTab === i && tab.component}
         </Box>
       ))}
-
     </Box>
   );
 }

@@ -4,15 +4,17 @@ import { FrictionScoreCard } from './FrictionScoreCard';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { healertApiRef } from '../../api/HealertClient';
 
-
 // Suppress jsdom @layer CSS parsing errors from @backstage/ui
 beforeAll(() => {
   jest.spyOn(console, 'error').mockImplementation(msg => {
-    if (typeof msg === 'string' && msg.includes('Could not parse CSS stylesheet')) return;
+    if (
+      typeof msg === 'string' &&
+      msg.includes('Could not parse CSS stylesheet')
+    )
+      return;
     console.warn(msg);
   });
 });
-
 
 const mockEntity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -44,7 +46,7 @@ describe('FrictionScoreCard', () => {
         <EntityProvider entity={mockEntity}>
           <FrictionScoreCard />
         </EntityProvider>
-      </TestApiProvider>
+      </TestApiProvider>,
     );
     expect(document.body).toBeTruthy();
   });

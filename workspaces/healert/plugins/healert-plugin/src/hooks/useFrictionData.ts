@@ -17,12 +17,12 @@ import type { FrictionData, HealertApiResponse } from '../api/types';
  *          and any error message.
  */
 export function useFrictionData(): HealertApiResponse<FrictionData> {
-  const { entity }   = useEntity();
-  const healertApi   = useApi(healertApiRef);
+  const { entity } = useEntity();
+  const healertApi = useApi(healertApiRef);
 
   const [state, setState] = useState<HealertApiResponse<FrictionData>>({
-    data:    null,
-    error:   null,
+    data: null,
+    error: null,
     loading: true,
   });
 
@@ -74,7 +74,9 @@ export function useFrictionData(): HealertApiResponse<FrictionData> {
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [entity, healertApi]);
 
   return state;

@@ -43,8 +43,8 @@ export class HealertClient implements HealertApi {
     configApi: ConfigApi;
   }) {
     this.discoveryApi = options.discoveryApi;
-    this.fetchApi     = options.fetchApi;
-    this.configApi    = options.configApi;
+    this.fetchApi = options.fetchApi;
+    this.configApi = options.configApi;
   }
 
   private async getBaseUrl(): Promise<string> {
@@ -62,9 +62,9 @@ export class HealertClient implements HealertApi {
   }
 
   async getFrictionData(entityRef: string): Promise<FrictionData> {
-    const baseUrl    = await this.getBaseUrl();
+    const baseUrl = await this.getBaseUrl();
     const encodedRef = encodeURIComponent(entityRef);
-    const url        = `${baseUrl}/friction/${encodedRef}`;
+    const url = `${baseUrl}/friction/${encodedRef}`;
 
     const response = await this.fetchApi.fetch(url);
 
@@ -86,48 +86,53 @@ export class MockHealertClient implements HealertApi {
   async getFrictionData(entityRef: string): Promise<FrictionData> {
     await new Promise(resolve => setTimeout(resolve, 600));
 
-    const score    = Math.floor(Math.random() * 60) + 30;
-    const severity = score >= 80 ? 'critical'
-                   : score >= 60 ? 'high'
-                   : score >= 40 ? 'medium' : 'low';
+    const score = Math.floor(Math.random() * 60) + 30;
+    const severity =
+      score >= 80
+        ? 'critical'
+        : score >= 60
+        ? 'high'
+        : score >= 40
+        ? 'medium'
+        : 'low';
 
     return {
       entityRef,
       frictionScore: {
         score,
         severity,
-        bypassCount:              Math.floor(score / 6),
+        bypassCount: Math.floor(score / 6),
         overheadHoursPerEngineer: parseFloat((score / 40).toFixed(1)),
-        topFrictionWorkflow:      'deploy',
-        calculatedAt:             new Date().toISOString(),
+        topFrictionWorkflow: 'deploy',
+        calculatedAt: new Date().toISOString(),
       },
       recentEvents: [
         {
-          timestamp:   new Date(Date.now() - 2 * 60000).toISOString(),
-          actor:       'platform-team',
-          type:        'kubectl-exec',
+          timestamp: new Date(Date.now() - 2 * 60000).toISOString(),
+          actor: 'platform-team',
+          type: 'kubectl-exec',
           description: 'kubectl exec into prod namespace — bypassed ArgoCD',
-          workflow:    'deploy',
+          workflow: 'deploy',
         },
         {
-          timestamp:   new Date(Date.now() - 7 * 60000).toISOString(),
-          actor:       'auth-team',
-          type:        'pipeline-skip',
+          timestamp: new Date(Date.now() - 7 * 60000).toISOString(),
+          actor: 'auth-team',
+          type: 'pipeline-skip',
           description: 'Skipped security scan in CI pipeline',
-          workflow:    'deploy',
+          workflow: 'deploy',
         },
         {
-          timestamp:   new Date(Date.now() - 23 * 60000).toISOString(),
-          actor:       'data-team',
-          type:        'platform-ticket',
+          timestamp: new Date(Date.now() - 23 * 60000).toISOString(),
+          actor: 'data-team',
+          type: 'platform-ticket',
           description: 'Manual DB provisioning request via Jira',
-          workflow:    'provision',
+          workflow: 'provision',
         },
       ],
       sources: {
         kubernetesAuditLog: true,
-        github:             false,
-        jira:               false,
+        github: false,
+        jira: false,
       },
       fetchedAt: new Date().toISOString(),
     };

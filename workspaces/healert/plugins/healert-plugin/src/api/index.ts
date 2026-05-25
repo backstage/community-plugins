@@ -1,3 +1,13 @@
-export { healertApiRef, HealertClient, MockHealertClient } from './HealertClient';
+export {
+  healertApiRef,
+  HealertClient,
+  MockHealertClient,
+} from './HealertClient';
 export type { HealertApi } from './HealertClient';
-export type { FrictionData, FrictionScore, FrictionSeverity, BypassEvent, HealertApiResponse } from './types';
+export type {
+  FrictionData,
+  FrictionScore,
+  FrictionSeverity,
+  BypassEvent,
+  HealertApiResponse,
+} from './types';

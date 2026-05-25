@@ -21,10 +21,10 @@ const mockApi = {
     recentEvents: [
       {
         timestamp: new Date().toISOString(),
-        actor:       'system:admin',
-        type:        'kubectl-exec',
+        actor: 'system:admin',
+        type: 'kubectl-exec',
         description: 'kubectl exec on pod/test-service by system:admin',
-        workflow:    'deploy',
+        workflow: 'deploy',
       },
     ],
     sources: { kubernetesAuditLog: true, github: false, jira: false },
@@ -35,7 +35,11 @@ const mockApi = {
 // Suppress jsdom @layer CSS parsing noise from @backstage/ui
 beforeAll(() => {
   jest.spyOn(console, 'error').mockImplementation(msg => {
-    if (typeof msg === 'string' && msg.includes('Could not parse CSS stylesheet')) return;
+    if (
+      typeof msg === 'string' &&
+      msg.includes('Could not parse CSS stylesheet')
+    )
+      return;
     // eslint-disable-next-line no-console
     console.warn(msg);
   });
@@ -53,7 +57,6 @@ const renderWithEntity = (entity: object) =>
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 describe('EntityHealertContent', () => {
-
   it('renders without crashing for Component kind', () => {
     renderWithEntity({
       apiVersion: 'backstage.io/v1alpha1',
@@ -98,5 +101,4 @@ describe('EntityHealertContent', () => {
     });
     expect(document.body).toBeTruthy();
   });
-
 });
