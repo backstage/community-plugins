@@ -13,8 +13,6 @@
 // limitations under the License.
 
 /**
- * @file FrictionScoreCard.tsx
- * @description Main UI component for the Healert Backstage plugin.
  *
  * Renders a "Friction Analysis Board" card on any Backstage entity page.
  * Fetches real-time friction data from the self-hosted Healert backend and
@@ -1700,6 +1698,7 @@ function ScoreDetailsModal({
 //   All five filters are AND-combined. hasFilter drives the clear button.
 // =============================================================================
 
+/** @public */
 export function FrictionScoreCard() {
   const classes = useStyles();
   const { data, loading, error } = useFrictionData();

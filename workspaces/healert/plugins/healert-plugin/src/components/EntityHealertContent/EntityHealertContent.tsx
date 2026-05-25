@@ -13,8 +13,6 @@
 // limitations under the License.
 
 /**
- * @file EntityHealertContent.tsx
- * @description Container for all Healert features with internal sub-tabs.
  *
  * TAB ORDER:
  *   Tab 1 — Friction Score Card (default — opens first)

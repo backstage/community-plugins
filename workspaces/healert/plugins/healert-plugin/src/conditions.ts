@@ -1,8 +1,6 @@
 import { Entity } from '@backstage/catalog-model';
 
 /**
- * @file conditions.ts
- * @description Controls which Backstage entities show the Healert Platform Health tab.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * RULES
@@ -24,10 +22,6 @@ import { Entity } from '@backstage/catalog-model';
  * ─────────────────────────────────────────────────────────────────────────────
  *  import { isHealertAvailable } from './conditions';
  *
- *  <EntityLayout.Route
- *    path="/platform-health"
- *    title="Healert"
- *    if={isHealertAvailable}
  *  >
  *
  * ─────────────────────────────────────────────────────────────────────────────
@@ -39,6 +33,7 @@ import { Entity } from '@backstage/catalog-model';
  *      annotations:
  *        healert.io/enabled: 'true'
  */
+/** @public */
 export function isHealertAvailable(entity: Entity): boolean {
   const kind = entity.kind?.toLowerCase();
 

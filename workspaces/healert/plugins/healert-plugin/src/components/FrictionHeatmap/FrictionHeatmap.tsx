@@ -13,8 +13,6 @@
 // limitations under the License.
 
 /**
- * @file FrictionHeatmap.tsx
- * @description Friction Heatmap — Workflow × Event Type grid for the current entity.
  *
  * Shows friction data scoped to the entity page currently open.
  * Each cell = one workflow × one event type intersection.
@@ -673,6 +671,7 @@ function DrillDownPanel({
 // Clicking opens the DrillDownPanel.
 // =============================================================================
 
+/** @public */
 export function FrictionHeatmap() {
   const classes = useStyles();
   const { data, loading, entityRef } = useFrictionMatrix();

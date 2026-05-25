@@ -9,9 +9,11 @@
  */
 
 /** Severity level derived from the friction score */
+/** @public */
 export type FrictionSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 /** A single golden path bypass event */
+/** @public */
 export interface BypassEvent {
   /** ISO 8601 timestamp */
   timestamp: string;
@@ -32,6 +34,7 @@ export interface BypassEvent {
 }
 
 /** The Friction Score for a single service */
+/** @public */
 export interface FrictionScore {
   /** 0-100. Higher = more friction. */
   score: number;
@@ -48,6 +51,7 @@ export interface FrictionScore {
 }
 
 /** Full friction data payload for a service */
+/** @public */
 export interface FrictionData {
   /** Backstage entity ref: kind:namespace/name */
   entityRef: string;
@@ -66,6 +70,7 @@ export interface FrictionData {
 }
 
 /** API response wrapper */
+/** @public */
 export interface HealertApiResponse<T> {
   data: T | null;
   error: string | null;

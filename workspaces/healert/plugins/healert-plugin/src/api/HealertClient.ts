@@ -10,11 +10,13 @@ import type { FrictionData } from './types';
  * The Healert API ref — used for dependency injection via Backstage's
  * ApiProvider system.
  */
+/** @public */
 export const healertApiRef = createApiRef<HealertApi>({
   id: 'plugin.healert.service',
 });
 
 /** Contract for the Healert API client */
+/** @public */
 export interface HealertApi {
   getFrictionData(entityRef: string): Promise<FrictionData>;
 }
@@ -32,6 +34,7 @@ export interface HealertApi {
  *       '/healert/api':
  *         target: 'http://your-healert-backend:8000'
  */
+/** @public */
 export class HealertClient implements HealertApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
@@ -82,6 +85,7 @@ export class HealertClient implements HealertApi {
  * Mock implementation for development and testing.
  * Returns realistic-looking data without requiring a live backend.
  */
+/** @public */
 export class MockHealertClient implements HealertApi {
   async getFrictionData(entityRef: string): Promise<FrictionData> {
     await new Promise(resolve => setTimeout(resolve, 600));
