@@ -26,12 +26,12 @@ export interface HealertApi {
  *
  * URL resolution order:
  *  1. healert.baseUrl in app-config.yaml (direct backend URL)
- *  2. Backstage proxy at /api/proxy/healert/api (default)
+ *  2. Backstage proxy at /api/proxy/healert (default)
  *
  * Self-hosted setup (app-config.yaml):
  *   proxy:
  *     endpoints:
- *       '/healert/api':
+ *       '/healert':
  *         target: 'http://your-healert-backend:8000'
  */
 /** @public */

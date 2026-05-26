@@ -12,6 +12,7 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { healertApiRef, HealertClient } from './api';
+import { isHealertAvailable } from './conditions';
 
 // =============================================================================
 // FEATURE REGISTRY
@@ -88,6 +89,7 @@ const featureExtensions = HEALERT_FEATURES.map(feature =>
     params: {
       path: feature.path,
       title: feature.title,
+      filter: isHealertAvailable,
       loader: feature.loader,
     },
   }),

@@ -33,8 +33,10 @@ const mockApi = {
 };
 
 // Suppress jsdom @layer CSS parsing noise from @backstage/ui
+let consoleSpy: jest.SpyInstance;
+
 beforeAll(() => {
-  jest.spyOn(console, 'error').mockImplementation(msg => {
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation(msg => {
     if (
       typeof msg === 'string' &&
       msg.includes('Could not parse CSS stylesheet')
@@ -43,6 +45,10 @@ beforeAll(() => {
     // eslint-disable-next-line no-console
     console.warn(msg);
   });
+});
+
+afterAll(() => {
+  consoleSpy.mockRestore();
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

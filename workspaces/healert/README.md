@@ -1,28 +1,12 @@
-# [Backstage](https://backstage.io)
+# healert workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-> [!IMPORTANT] > **TODO**: Consider updating your README text with relevant documentation for your plugin. See some suggested text below.
-
-# healert
-
-This workspace contains plugins for \[brief description of purpose, e.g. exposing data from a service].
+This workspace contains the Healert Friction Intelligence Platform plugin for Backstage.
 
 ## Plugins
 
-- \[plugin-backend](./plugins/plugin-backend/README): Backend plugin that provides...
+- [@backstage-community/plugin-healert](./plugins/healert-plugin/README.md) — Surfaces Kubernetes audit log friction events per catalog entity as Friction Scores and Heatmaps.
 
-## Getting Started
+## Related Repositories
 
-To start the app, run:
-
-```sh
-yarn install
-yarn start
-```
-
-To generate knip reports for this app, run:
-
-```sh
-yarn backstage-repo-tools knip-reports
-```
+- [healert-io/agent](https://github.com/healert-io/agent) — Go agent + DaemonSet
+- [healert-io/backend](https://github.com/healert-io/backend) — FastAPI backend

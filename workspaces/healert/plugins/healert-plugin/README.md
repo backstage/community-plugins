@@ -2,7 +2,7 @@
 
 **Friction Intelligence Platform for Backstage.**
 
-Surfaces Kubernetes audit log bypass events per catalog entity as real-timeFriction Scores and Heatmaps. Know when developers bypass the golden path before it becomes a crisis.
+Surfaces Kubernetes audit log bypass events per catalog entity as real-time Friction Scores and Heatmaps. Know when developers bypass the golden path before it becomes a crisis.
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](https://github.com/backstage/community-plugins/tree/main/workspaces/healert)
