@@ -2420,7 +2420,7 @@ export function FrictionScoreCard() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    paginated.map((event: any, i: number) => {
+                    paginated.map((event: any) => {
                       const t = getTypeStyle(event.type);
                       return (
                         <TableRow
