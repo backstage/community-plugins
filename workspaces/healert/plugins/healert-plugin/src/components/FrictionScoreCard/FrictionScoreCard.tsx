@@ -1723,6 +1723,43 @@ export function FrictionScoreCard() {
   //   "auth-error"          → API key wrong
   //   "not-found"           → no events for this entity yet
   //   null + no data        → backend returned empty / score=0 is fine (not an error)
+
+  if (error === 'not-found') {
+    return (
+      <InfoCard title="Friction Analysis Board">
+        <Box style={{ padding: '40px 16px', textAlign: 'center' }}>
+          <span style={{ fontSize: 40 }}>✅</span>
+          <Typography
+            style={{
+              fontWeight: 700,
+              fontSize: '1rem',
+              color: '#065F46',
+              marginTop: 12,
+            }}
+          >
+            No friction events recorded
+          </Typography>
+          <Typography
+            style={{ fontSize: '0.85rem', color: '#6B7280', marginTop: 6 }}
+          >
+            This service has a clean record. No platform bypass events detected
+            yet.
+          </Typography>
+          <Typography
+            style={{
+              fontSize: '0.78rem',
+              color: '#9CA3AF',
+              marginTop: 8,
+              fontFamily: 'monospace',
+            }}
+          >
+            Score: 0 — Low severity
+          </Typography>
+        </Box>
+      </InfoCard>
+    );
+  }
+
   if (error) {
     const isUnreachable = error === 'backend-unreachable';
     const isAuthError = error === 'auth-error';
@@ -2386,7 +2423,10 @@ export function FrictionScoreCard() {
                     paginated.map((event: any, i: number) => {
                       const t = getTypeStyle(event.type);
                       return (
-                        <TableRow key={i} className={classes.tableRow}>
+                        <TableRow
+                          key={`${event.timestamp}-${event.type}-${event.actor}`}
+                          className={classes.tableRow}
+                        >
                           <TableCell>
                             <span
                               className={classes.typeBadge}
