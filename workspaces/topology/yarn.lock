@@ -5796,6 +5796,8 @@ __metadata:
   dependenciesMeta:
     better-sqlite3:
       built: true
+    isolated-vm:
+      built: true
   languageName: unknown
   linkType: soft
 
