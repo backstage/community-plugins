@@ -1,13 +1,25 @@
-## Supported Regions
+# Checkmarx Plugin for Backstage
 
-| `location` | Region / Country | AST Base URL | IAM Base URL |
-| --- | --- | --- | --- |
-| `US` | United States | `https://ast.checkmarx.net` | `https://iam.checkmarx.net` |
-| `US2` | United States 2 | `https://us.ast.checkmarx.net` | `https://us.iam.checkmarx.net` |
-| `EU` | Europe | `https://eu.ast.checkmarx.net` | `https://eu.iam.checkmarx.net` |
-| `EU2` | Europe 2 | `https://eu-2.ast.checkmarx.net` | `https://eu-2.iam.checkmarx.net` |
-| `DEU` | Germany | `https://deu.ast.checkmarx.net` | `https://deu.iam.checkmarx.net` |
-| `ANZ` | Australia and New Zealand | `https://anz.ast.checkmarx.net` | `https://anz.iam.checkmarx.net` |
-| `IND` | India | `https://ind.ast.checkmarx.net` | `https://ind.iam.checkmarx.net` |
-| `SNG` | Singapore | `https://sng.ast.checkmarx.net` | `https://sng.iam.checkmarx.net` |
-| `MEA` | UAE / Middle East and Africa | `https://mea.ast.checkmarx.net` | `https://mea.iam.checkmarx.net` |
+Standalone Backstage workspace that implements a Checkmarx plugin with:
+
+- entity overview card
+- `/checkmarx` entity content page
+- related entities overview for systems
+- backend proxy that resolves the latest completed scan and its `scan-summary`
+- shared common package for annotations, types, and entity helpers
+
+The demo catalog in [examples/entities.yaml](./examples/entities.yaml) includes
+`checkmarx.org/project-id` and `checkmarx.org/default-branch` annotations.
+
+## Run
+
+```sh
+yarn install
+yarn start
+```
+
+## Packages
+
+1. [Frontend plugin](./plugins/checkmarx/README.md)
+2. [Shared common/types package](./plugins/checkmarx-react/README.md)
+3. [Backend plugin](./plugins/checkmarx-backend/README.md)
