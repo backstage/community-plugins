@@ -18,14 +18,23 @@ export interface BypassEvent {
   actor: string;
   description: string;
   timestamp: string;
-  type: 'kubectl-exec' | 'pipeline-skip' | 'manual-merge' | 'platform-ticket';
+  type:
+    | 'kubectl-exec'
+    | 'pipeline-skip'
+    | 'manual-merge'
+    | 'platform-ticket'
+    | 'config-drift'
+    | 'emergency-access'
+    | 'port-forward'
+    | string;
   workflow:
     | 'deploy'
     | 'provision'
     | 'rollback'
     | 'onboard'
     | 'release'
-    | 'other';
+    | 'other'
+    | string;
 }
 
 // @public (undocumented)
@@ -54,7 +63,7 @@ export interface FrictionScore {
   overheadHoursPerEngineer: number;
   score: number;
   severity: FrictionSeverity;
-  topFrictionWorkflow: string;
+  topFrictionWorkflow: string | null;
 }
 
 // @public (undocumented)
