@@ -61,7 +61,7 @@ export class HealertClient implements HealertApi {
 
     // Option 2: Backstage proxy (default)
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
-    return `${proxyUrl}/healert/api`;
+    return `${proxyUrl}/healert`;
   }
 
   async getFrictionData(entityRef: string): Promise<FrictionData> {
