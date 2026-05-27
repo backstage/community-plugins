@@ -107,12 +107,16 @@ export function EntityHealertContent() {
   const [activeTab, setActiveTab] = useState(0);
 
   const kind = entity.kind?.toLowerCase();
+
+  // Never show on API entities, consistent with conditions.ts
+  if (kind === 'api') {
+    return null;
+  }
+
   const hasOptInAnnotation =
     entity.metadata?.annotations?.['healert.io/enabled'] === 'true';
-
   const shouldRender =
     kind === 'component' || kind === 'service' || hasOptInAnnotation;
-
   if (!shouldRender) {
     return null;
   }
