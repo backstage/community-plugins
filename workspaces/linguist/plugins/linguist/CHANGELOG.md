@@ -1,5 +1,16 @@
 # @backstage-community/plugin-linguist
 
+## 0.21.0
+
+### Minor Changes
+
+- fc48029: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [fc48029]
+  - @backstage-community/plugin-linguist-common@0.20.0
+
 ## 0.20.0
 
 ### Minor Changes
