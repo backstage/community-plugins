@@ -20,9 +20,7 @@ Add the module package as a dependency:
 yarn --cwd packages/backend add @backstage-community/plugin-techdocs-backend-module-confluence
 ```
 
-### New Backend System
-
-This backend plugin has support for the [new backend system](https://backstage.io/docs/backend-system/). In your `packages/backend/src/index.ts`, add the module to your backend instance:
+In your `packages/backend/src/index.ts`, add the module to your backend instance:
 
 ```tsx
 import { createBackend } from '@backstage/backend-defaults';
@@ -37,68 +35,7 @@ backend.start();
 
 ## Configuration
 
-The module uses the shared `confluence` configuration section. Add the following to your `app-config.yaml`:
-
-```yaml
-confluence:
-  baseUrl: 'https://your-company.atlassian.net/wiki'
-  auth:
-    type: 'basic'
-    token: '${CONFLUENCE_TOKEN}'
-    email: 'your-email@company.org'
-```
-
-### Base URL
-
-The `baseUrl` for Confluence Cloud should include the product name which is `wiki` by default. An example `baseUrl` for Confluence Cloud would look like this: `https://example.atlassian.net/wiki`
-
-If you are using a self-hosted Confluence instance, your `baseUrl` would look something like this: `https://confluence.example.com`
-
-### Auth Methods
-
-The module supports three authentication methods: `basic`, `bearer`, and `userpass`.
-
-#### Basic (Recommended for Confluence Cloud)
-
-Confluence Cloud requires Basic authentication using your email address and an API token. API tokens for Confluence Cloud are unscoped (no specific permissions need to be selected when creating the token).
-
-```yaml
-confluence:
-  baseUrl: 'https://your-company.atlassian.net/wiki'
-  auth:
-    type: 'basic'
-    token: '${CONFLUENCE_TOKEN}'
-    email: 'example@company.org'
-```
-
-You can create an API token for Confluence Cloud at [Atlassian Account API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens).
-
-#### Bearer (For Confluence Server/Data Center)
-
-Confluence Server and Data Center support Bearer authentication using a Personal Access Token (PAT). The PAT should have `Read` permissions.
-
-```yaml
-confluence:
-  baseUrl: 'https://confluence.example.com'
-  auth:
-    type: 'bearer'
-    token: '${CONFLUENCE_TOKEN}'
-```
-
-You can create a Personal Access Token in your Confluence Server/Data Center user settings.
-
-#### Userpass (Username + Password)
-
-For Confluence Server/Data Center, you can also use username and password authentication:
-
-```yaml
-confluence:
-  baseUrl: 'https://confluence.example.com'
-  auth:
-    type: 'userpass'
-    username: '${CONFLUENCE_USERNAME}'
-    password: '${CONFLUENCE_PASSWORD}'
-```
+This module uses the shared `confluence` configuration section. See the [`@backstage-community/plugin-search-backend-module-confluence-collator`](https://github.com/backstage/community-plugins/tree/main/workspaces/confluence/plugins/search-backend-module-confluence-collator#configuration) README for full configuration details including authentication methods and multiple instance support.
 
 ### Page Tree Options
 
@@ -106,62 +43,15 @@ You can customize how the module fetches hierarchical page structures:
 
 ```yaml
 confluence:
-  baseUrl: 'https://your-company.atlassian.net/wiki'
-  auth:
-    type: 'basic'
-    token: '${CONFLUENCE_TOKEN}'
-    email: 'your-email@company.org'
+  # ...
   pageTree:
-    # Enable parallel fetching of child pages (default: true)
-    # Set to false if your Confluence API has rate limiting issues
-    parallel: true
-    # Maximum depth to traverse (default: 0 = unlimited)
-    # Useful for limiting very deep page hierarchies
-    maxDepth: 5
+    parallel: true # Enable parallel fetching of child pages (default: true)
+    maxDepth: 5 # Maximum depth to traverse (default: 0 = unlimited)
 ```
 
 ### Multiple Confluence Instances
 
-If your organization uses multiple Confluence instances (e.g., different teams or acquired companies), you can configure them all under named keys. The module will automatically route TechDocs requests to the correct instance based on the URL hostname.
-
-```yaml
-confluence:
-  # Primary instance (Confluence Cloud)
-  default:
-    baseUrl: 'https://company.atlassian.net/wiki'
-    auth:
-      type: 'basic'
-      token: '${CONFLUENCE_TOKEN}'
-      email: 'user@company.com'
-    pageTree:
-      parallel: true
-      maxDepth: 0
-
-  # Secondary instance (e.g., acquired company)
-  secondary:
-    baseUrl: 'https://other-company.atlassian.net/wiki'
-    auth:
-      type: 'basic'
-      token: '${CONFLUENCE_SECONDARY_TOKEN}'
-      email: 'user@other-company.com'
-
-  # On-premise instance
-  onprem:
-    baseUrl: 'https://confluence.internal.company.com'
-    auth:
-      type: 'userpass'
-      username: '${CONFLUENCE_ONPREM_USERNAME}'
-      password: '${CONFLUENCE_ONPREM_PASSWORD}'
-```
-
-**How URL routing works:**
-
-- When an entity has a `backstage.io/techdocs-ref` annotation pointing to a Confluence URL
-- The module extracts the hostname from the URL (e.g., `company.atlassian.net`)
-- It finds the configured instance whose `baseUrl` matches that hostname
-- The request is authenticated and processed using that instance's credentials
-
-This means you can have entities from different Confluence instances without any additional configuration on the entity side - just use the correct Confluence URL in the annotation.
+When multiple instances are configured (see the [collator README](https://github.com/backstage/community-plugins/tree/main/workspaces/confluence/plugins/search-backend-module-confluence-collator#multiple-instances)), this module automatically routes TechDocs requests to the correct instance by matching the hostname in the entity's `backstage.io/techdocs-ref` URL against each instance's `baseUrl`.
 
 ## Usage
 
@@ -225,4 +115,4 @@ metadata:
 
 ## Combining with Search Collator
 
-This module works well alongside the [search-backend-module-confluence-collator](../search-backend-module-confluence-collator/README.md) which indexes Confluence documents for search. Both modules share the same `confluence` configuration section.
+This module works well alongside the [`@backstage-community/plugin-search-backend-module-confluence-collator`](https://github.com/backstage/community-plugins/tree/main/workspaces/confluence/plugins/search-backend-module-confluence-collator) which indexes Confluence documents for search. Both modules share the same `confluence` configuration section.
