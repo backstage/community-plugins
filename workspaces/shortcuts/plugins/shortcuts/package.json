@@ -44,7 +44,6 @@
     "@backstage/ui": "backstage:^",
     "@remixicon/react": "^4.0.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-aria-components": "^1.0.0",
     "react-hook-form": "^7.12.2",
     "react-use": "^17.2.4",
     "uuid": "^13.0.0",

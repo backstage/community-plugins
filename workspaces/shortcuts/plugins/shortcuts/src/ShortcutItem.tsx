@@ -18,8 +18,7 @@ import type { MouseEvent } from 'react';
 
 import { useState } from 'react';
 import { RiEditLine } from '@remixicon/react';
-import { ButtonIcon, Tooltip } from '@backstage/ui';
-import { TooltipTrigger, PressEvent } from 'react-aria-components';
+import { ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { ShortcutIcon } from './ShortcutIcon';
 import { EditShortcut } from './EditShortcut';
 import { ShortcutApi } from './api';
@@ -51,7 +50,7 @@ type Props = {
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
   const [anchorEl, setAnchorEl] = useState<Element | undefined>();
 
-  const handleClick = (e: PressEvent) => {
+  const handleClick = (e: MouseEvent) => {
     setAnchorEl(e.target as Element);
   };
 
@@ -75,7 +74,7 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
             id="edit"
             data-testid="edit"
             type="submit"
-            onPress={handleClick}
+            onClick={handleClick}
             className={styles.button}
             icon={<RiEditLine size={16} className={styles.icon} />}
             variant="secondary"
