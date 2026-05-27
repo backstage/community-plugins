@@ -1,5 +1,16 @@
 # @backstage-community/plugin-search-backend-module-github-discussions
 
+## 0.13.0
+
+### Minor Changes
+
+- 9a217cf: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [9a217cf]
+  - @backstage-community/plugin-github-discussions-common@0.13.0
+
 ## 0.12.0
 
 ### Minor Changes
