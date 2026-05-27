@@ -617,9 +617,9 @@ function hexToRgb(hex: string): [number, number, number] {
  * Uses the bundled npm jspdf package — no CDN required.
  * Works behind corporate firewalls and strict CSPs.
  */
-async function loadJsPDF(): Promise<any> {
-  const { default: JsPDF } = await import('jspdf');
-  return JsPDF;
+async function loadJsPDF(): Promise<typeof import('jspdf').jsPDF> {
+  const jspdfModule = await import('jspdf');
+  return jspdfModule.jsPDF ?? jspdfModule.default;
 }
 
 // =============================================================================
