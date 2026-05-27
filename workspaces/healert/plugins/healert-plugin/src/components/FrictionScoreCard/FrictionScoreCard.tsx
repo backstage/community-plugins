@@ -612,11 +612,11 @@ function hexToRgb(hex: string): [number, number, number] {
 // =============================================================================
 
 /**
- * Lazily loads jsPDF from the configured CDN URL.
- * Returns a Promise that resolves with the jsPDF constructor.
- * Uses the bundled npm jspdf package — no CDN required.
- * Works behind corporate firewalls and strict CSPs.
+ * Lazily loads jsPDF via dynamic import from the bundled npm package.
+ * Only loaded when the user clicks "Download PDF Report" — keeps the
+ * initial bundle small. Works behind corporate firewalls and strict CSPs.
  */
+
 async function loadJsPDF(): Promise<typeof import('jspdf').jsPDF> {
   const jspdfModule = await import('jspdf');
   return jspdfModule.jsPDF ?? jspdfModule.default;
