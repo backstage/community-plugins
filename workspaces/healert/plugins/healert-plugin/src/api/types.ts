@@ -1,11 +1,9 @@
 /**
- * Core data types for the Healert plugin v1.
+ * Core data types for the Healert plugin v0.1.1.
  *
- * v1 focuses on a single concept: the Friction Score.
+ * v0.1.1 focuses on a single concept: the Friction Score.
  * A composite 0-100 score per service derived from:
  *   - Kubernetes Audit Log bypass events
- *   - GitHub pipeline skips / manual merges
- *   - Jira tickets filed against the platform team
  */
 
 /** Severity level derived from the friction score */
@@ -19,18 +17,31 @@ export interface BypassEvent {
   timestamp: string;
   /** Team or user who triggered the bypass */
   actor: string;
-  /** Type of bypass: kubectl-exec, pipeline-skip, manual-merge, platform-ticket */
-  type: 'kubectl-exec' | 'pipeline-skip' | 'manual-merge' | 'platform-ticket';
+  /**
+   * Type of bypass event.
+   * Known values: kubectl-exec, pipeline-skip, manual-merge,
+   * platform-ticket, config-drift, emergency-access, port-forward
+   */
+  type:
+    | 'kubectl-exec'
+    | 'pipeline-skip'
+    | 'manual-merge'
+    | 'platform-ticket'
+    | 'config-drift'
+    | 'emergency-access'
+    | 'port-forward'
+    | string;
   /** Human-readable description of what was bypassed */
   description: string;
-  /** Workflow that was bypassed: deploy, provision, rollback, onboard, release */
+  /** Workflow that was bypassed */
   workflow:
     | 'deploy'
     | 'provision'
     | 'rollback'
     | 'onboard'
     | 'release'
-    | 'other';
+    | 'other'
+    | string;
 }
 
 /** The Friction Score for a single service */
@@ -45,7 +56,7 @@ export interface FrictionScore {
   /** Estimated weekly overhead per engineer in hours */
   overheadHoursPerEngineer: number;
   /** The workflow with the most bypass events */
-  topFrictionWorkflow: string;
+  topFrictionWorkflow: string | null;
   /** ISO 8601 timestamp of when this score was last calculated */
   calculatedAt: string;
 }
