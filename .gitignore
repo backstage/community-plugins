@@ -56,6 +56,8 @@ site
 *-credentials.yaml
 
 # vscode database functionality support files
-*.session.sql.yarnrc.yml
+*.session.sql
+
+.yarnrc.yml
 app-config.yaml
 yarn.lock
