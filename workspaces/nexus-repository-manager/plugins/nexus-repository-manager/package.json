@@ -52,7 +52,7 @@
     "@backstage/frontend-plugin-api": "^0.16.2",
     "@backstage/plugin-catalog-react": "^2.1.4",
     "@backstage/theme": "^0.7.3",
-    "@material-ui/core": "^4.9.13",
+    "@backstage/ui": "^0.14.3",
     "filesize": "^11.0.0",
     "luxon": "^3.6.1",
     "react-use": "^17.4.0"
@@ -70,7 +70,6 @@
     "@backstage/frontend-defaults": "^0.5.1",
     "@backstage/plugin-catalog": "^2.0.4",
     "@backstage/test-utils": "^1.7.17",
-    "@backstage/ui": "^0.14.3",
     "@hey-api/openapi-ts": "0.97.1",
     "@playwright/test": "1.60.0",
     "@testing-library/dom": "^10.4.1",

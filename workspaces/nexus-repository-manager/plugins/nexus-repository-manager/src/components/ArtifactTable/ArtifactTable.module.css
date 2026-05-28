@@ -1,0 +1,18 @@
+@layer components {
+  .chip {
+    margin: 0;
+    margin-right: 0.2em;
+    height: 1.5em;
+  }
+
+  .variants {
+    margin-top: 0.2em;
+    flex-wrap: wrap;
+  }
+
+  .empty {
+    padding: var(--bui-space-4);
+    display: flex;
+    justify-content: center;
+  }
+}

@@ -742,7 +742,6 @@ __metadata:
     "@backstage/theme": "npm:^0.7.3"
     "@backstage/ui": "npm:^0.14.3"
     "@hey-api/openapi-ts": "npm:0.97.1"
-    "@material-ui/core": "npm:^4.9.13"
     "@playwright/test": "npm:1.60.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.9.1"
