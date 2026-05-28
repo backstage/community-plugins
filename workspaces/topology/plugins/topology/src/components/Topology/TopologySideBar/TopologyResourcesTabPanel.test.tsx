@@ -33,15 +33,6 @@ import {
 } from '../../../__fixtures__/workloadNodeData';
 import TopologyResourcesTabPanel from './TopologyResourcesTabPanel';
 
-jest.mock('@material-ui/styles', () => ({
-  ...jest.requireActual('@material-ui/styles'),
-  makeStyles: () => (_theme: any) => {
-    return {
-      ok: 'ok',
-    };
-  },
-}));
-
 describe('TopologyResourcesTabPanel', () => {
   it('Should render workload resources', () => {
     const { queryByTestId } = render(

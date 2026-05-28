@@ -1,0 +1,17 @@
+@layer components {
+  .iconAndText {
+    align-items: center;
+    display: flex;
+    font-weight: 400;
+    font-size: 14px;
+  }
+
+  .iconAndText svg {
+    top: 0;
+  }
+
+  .flexChild {
+    flex: 0 0 auto;
+    position: relative;
+  }
+}

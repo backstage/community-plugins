@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import IconButton from '@mui/material/IconButton';
-import DownloadIcon from '@mui/icons-material/GetApp';
+import { Button } from '@backstage/ui';
+import { RiDownloadLine } from '@remixicon/react';
 
 import { downloadLogFile } from '../../../../utils/download-log-file-utils';
 import { useTranslation } from '../../../../hooks/useTranslation';
@@ -28,15 +28,14 @@ const PodLogsDownload = ({ logText, fileName }: PodLogsDownloadProps) => {
   const { t } = useTranslation();
 
   return logText ? (
-    <IconButton
+    <Button
       aria-label="download logs"
+      variant="secondary"
       onClick={() => downloadLogFile(logText, `${fileName}.log`)}
-      size="small"
-      color="primary"
     >
-      <DownloadIcon fontSize="small" />
+      <RiDownloadLine size={16} />
       {t('logs.download')}
-    </IconButton>
+    </Button>
   ) : null;
 };
 

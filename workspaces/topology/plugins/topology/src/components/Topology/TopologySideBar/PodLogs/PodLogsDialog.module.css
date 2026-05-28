@@ -1,0 +1,12 @@
+@layer components {
+  .header {
+    display: flex;
+    align-items: center;
+    gap: var(--bui-space-2);
+    flex-wrap: wrap;
+  }
+
+  .permissionWrapper {
+    padding-bottom: var(--bui-space-6);
+  }
+}

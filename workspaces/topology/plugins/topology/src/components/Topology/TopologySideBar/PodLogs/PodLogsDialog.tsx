@@ -18,15 +18,8 @@ import { useContext, useEffect, useState } from 'react';
 import { ErrorBoundary } from '@backstage/core-components';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { kubernetesProxyPermission } from '@backstage/plugin-kubernetes-common';
-
+import { Dialog, DialogBody, DialogHeader, Flex } from '@backstage/ui';
 import { V1Pod } from '@kubernetes/client-node';
-import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import { SelectChangeEvent } from '@mui/material/Select';
-import DialogContent from '@mui/material/DialogContent';
-import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@patternfly/react-core';
 
 import ResourceName from '../../../common/ResourceName';
@@ -37,6 +30,7 @@ import { PodLogs } from './PodLogs';
 import PodLogsDownload from './PodLogsDownload';
 import { ContainerScope } from './types';
 import { MissingPermissionPage } from '../../permissions/MissingPermissionPage';
+import styles from './PodLogsDialog.module.css';
 
 type PodLogsDialogProps = {
   podData: V1Pod;
@@ -69,10 +63,6 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     clusterName: curCluster,
   });
 
-  const onContainerChange = (event: SelectChangeEvent) => {
-    setContainerSelected(event.target.value);
-  };
-
   useEffect(() => {
     if (containerSelected) {
       setPodScope(ps => ({
@@ -91,42 +81,38 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     podData?.status?.phase === 'Running';
 
   return (
-    <Dialog maxWidth="xl" fullWidth open onClose={onClose}>
-      <DialogTitle id="dialog-title">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Dialog
+      isOpen
+      isDismissable
+      onOpenChange={open => {
+        if (!open) onClose?.();
+      }}
+      width="90vw"
+      height="85vh"
+    >
+      <DialogHeader>
+        <Flex className={styles.header}>
           <ResourceName name={podName} kind={podData.kind as string} />
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              position: 'absolute',
-              right: 1,
-              top: 1,
-              color: 'grey.500',
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
           <ContainerSelector
             containersList={containersList}
-            onContainerChange={onContainerChange}
+            onContainerChange={setContainerSelected}
             containerSelected={containerSelected}
           />
           <PodLogsDownload
             logText={logText}
             fileName={`${podName}-${containerSelected}`}
           />
-        </Box>
-      </DialogTitle>
-      <DialogContent>
+        </Flex>
+      </DialogHeader>
+      <DialogBody>
         <RequirePermission
           permission={kubernetesProxyPermission}
           errorPage={
-            <Box pb={3}>
+            <div className={styles.permissionWrapper}>
               <MissingPermissionPage
                 permissions={[kubernetesProxyPermission]}
               />
-            </Box>
+            </div>
           }
         >
           <ErrorBoundary>
@@ -137,7 +123,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
             />
           </ErrorBoundary>
         </RequirePermission>
-      </DialogContent>
+      </DialogBody>
     </Dialog>
   );
 };

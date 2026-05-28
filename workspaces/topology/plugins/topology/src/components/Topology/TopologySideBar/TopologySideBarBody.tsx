@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { PropsWithChildren, ChangeEvent } from 'react';
-
 import { useState } from 'react';
 
-import Divider from '@mui/material/Divider';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
+import { Tab, TabList, TabPanel, Tabs } from '@backstage/ui';
 import { BaseNode } from '@patternfly/react-topology';
 
 import { useTranslation } from '../../../hooks/useTranslation';
@@ -27,48 +23,42 @@ import TopologyDetailsTabPanel from './TopologyDetailsTabPanel';
 import TopologyResourcesTabPanel from './TopologyResourcesTabPanel';
 
 import './TopologySideBarBody.css';
-
-interface TabPanelProps {
-  index: number;
-  value: number;
-}
-
-const TabPanel = (props: PropsWithChildren<TabPanelProps>) => {
-  const { children, value, index } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && (
-        <div className="topology-side-bar-tab-panel">{children}</div>
-      )}
-    </div>
-  );
-};
+import styles from './TopologySideBarContent.module.css';
 
 type TopologySideBarBodyProps = { node: BaseNode };
 
 const TopologySideBarBody = ({ node }: TopologySideBarBodyProps) => {
   const { t } = useTranslation();
-  const [value, setValue] = useState(0);
-  const handleChange = (_event: ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
-  };
+  const [selectedTab, setSelectedTab] = useState('details');
 
   return (
     <div>
       <div className="topology-side-bar-tabs">
-        <Tabs value={value} onChange={handleChange} indicatorColor="primary">
-          <Tab label={t('sideBar.details')} className="tab-button" />
-          <Tab label={t('sideBar.resources')} className="tab-button" />
+        <Tabs
+          selectedKey={selectedTab}
+          onSelectionChange={key => setSelectedTab(String(key))}
+        >
+          <TabList>
+            <Tab id="details" className="tab-button">
+              {t('sideBar.details')}
+            </Tab>
+            <Tab id="resources" className="tab-button">
+              {t('sideBar.resources')}
+            </Tab>
+          </TabList>
+          <hr className={styles.divider} />
+          <TabPanel id="details">
+            <div className="topology-side-bar-tab-panel">
+              <TopologyDetailsTabPanel node={node} />
+            </div>
+          </TabPanel>
+          <TabPanel id="resources">
+            <div className="topology-side-bar-tab-panel">
+              <TopologyResourcesTabPanel node={node} />
+            </div>
+          </TabPanel>
         </Tabs>
-        <Divider />
       </div>
-      <TabPanel value={value} index={0}>
-        <TopologyDetailsTabPanel node={node} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <TopologyResourcesTabPanel node={node} />
-      </TabPanel>
     </div>
   );
 };

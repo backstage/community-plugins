@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { PropsWithChildren } from 'react';
-
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
@@ -24,15 +22,6 @@ jest.mock('../../../../hooks/useTranslation', () => ({
   useTranslation: () => mockUseTranslation(),
 }));
 import { downloadLogFile } from '../../../../utils/download-log-file-utils';
-
-jest.mock('@mui/material', () => ({
-  ...jest.requireActual('@mui/material'),
-  IconButton: ({ children, ...rest }: PropsWithChildren<any>) => (
-    <button {...rest}>{children}</button>
-  ),
-}));
-
-jest.mock('@mui/icons-material/GetApp', () => () => <div>DownloadIcon</div>);
 
 jest.mock('../../../../utils/download-log-file-utils', () => ({
   downloadLogFile: jest.fn(),

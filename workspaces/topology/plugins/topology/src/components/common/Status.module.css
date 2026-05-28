@@ -1,0 +1,30 @@
+@layer components {
+  .iconStyles {
+    height: 0.8em;
+    width: 0.8em;
+    top: 0.125em;
+    position: relative;
+    flex-shrink: 0;
+    margin-right: var(--bui-space-2);
+  }
+
+  .success svg {
+    fill: var(--bui-fg-success, #1e8549);
+  }
+
+  .running svg {
+    fill: var(--bui-fg-link, #0366d6);
+  }
+
+  .pending svg {
+    fill: var(--bui-fg-warning, #f0ab00);
+  }
+
+  .warning svg {
+    fill: var(--bui-fg-warning, #f0ab00);
+  }
+
+  .error svg {
+    fill: var(--bui-fg-danger, #c9190b);
+  }
+}

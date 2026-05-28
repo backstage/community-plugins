@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { V1Pod, V1Service, V1ServicePort } from '@kubernetes/client-node';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import { RiArrowRightLine } from '@remixicon/react';
 import { ChartLabel } from '@patternfly/react-charts/victory';
 import { BaseNode } from '@patternfly/react-topology';
 
@@ -229,7 +229,7 @@ const TopologyResourcesTabPanel = ({
                       </span>{' '}
                       {name || `${port}-${protocol}`}
                       &nbsp;
-                      <ArrowRightAltIcon
+                      <RiArrowRightLine
                         style={{ width: '0.8em', verticalAlign: '-0.300em' }}
                       />
                       &nbsp;
