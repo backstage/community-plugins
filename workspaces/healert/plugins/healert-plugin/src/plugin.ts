@@ -1,4 +1,4 @@
-// Copyright 2026 Healert Inc.
+// Copyright 2026 Healert OÜ.
 // Licensed under the Apache License, Version 2.0
 
 import React from 'react';
