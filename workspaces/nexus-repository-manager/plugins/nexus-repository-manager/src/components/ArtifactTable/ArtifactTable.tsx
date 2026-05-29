@@ -71,10 +71,10 @@ export const ArtifactTable = ({
         field: 'hash',
         emptyValue: t('table.emptyValue'),
         render: rowData => (
-          <Flex direction="row" align="center">
-            <TagGroup>
-              <Tag className={styles.chip}>{rowData.hash?.algorithm}</Tag>
-            </TagGroup>
+          <Flex direction="row" align="center" gap="1">
+            <span className={styles.algorithmChip}>
+              {rowData.hash?.algorithm}
+            </span>
             {rowData.hash?.value.slice(0, 12)}
           </Flex>
         ),
