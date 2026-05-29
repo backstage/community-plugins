@@ -16,16 +16,11 @@
 
 import { ReactElement, CSSProperties } from 'react';
 
+import { StatusClassKey } from '@backstage/core-components';
 import {
-  StatusClassKey,
-  StatusError,
-  StatusOK,
-  StatusPending,
-  StatusRunning,
-  StatusWarning,
-} from '@backstage/core-components';
-import {
+  RiCheckboxCircleLine,
   RiCloseCircleLine,
+  RiErrorWarningLine,
   RiQuestionLine,
   RiSkipForwardLine,
   RiPauseCircleLine,
@@ -34,6 +29,7 @@ import {
 import cx from 'classnames';
 
 import { StatusIconAndText } from './StatusIconAndText';
+import { PendingStatusIcon, RunningStatusIcon } from './StatusIcons';
 import styles from './Status.module.css';
 
 const DASH = '-';
@@ -45,36 +41,46 @@ const StatusIcon = ({
   statusKey: StatusClassKey;
   className?: string;
 }) => {
+  const iconClass = cx(styles.iconStyles, className);
+
   switch (statusKey) {
     case 'ok':
       return (
-        <g className={cx(styles.success, className)}>
-          <StatusOK />{' '}
-        </g>
+        <RiCheckboxCircleLine
+          className={cx(iconClass, styles.success)}
+          data-testid="status-ok"
+          aria-hidden
+        />
       );
     case 'pending':
       return (
-        <g className={cx(styles.pending, className)}>
-          <StatusPending />{' '}
-        </g>
+        <PendingStatusIcon
+          className={cx(iconClass, styles.pending)}
+          data-testid="status-pending"
+        />
       );
     case 'running':
       return (
-        <g className={cx(styles.running, className)}>
-          <StatusRunning />{' '}
-        </g>
+        <RunningStatusIcon
+          className={cx(iconClass, styles.running)}
+          data-testid="status-running"
+        />
       );
     case 'warning':
       return (
-        <g className={cx(styles.warning, className)}>
-          <StatusWarning />{' '}
-        </g>
+        <RiErrorWarningLine
+          className={cx(iconClass, styles.warning)}
+          data-testid="status-warning"
+          aria-hidden
+        />
       );
     case 'error':
       return (
-        <g className={cx(styles.error, className)}>
-          <StatusError />{' '}
-        </g>
+        <RiCloseCircleLine
+          className={cx(iconClass, styles.error)}
+          data-testid="status-error"
+          aria-hidden
+        />
       );
     default:
       return null;
@@ -159,7 +165,7 @@ export const Status = ({
           {...statusProps}
           icon={
             <RiCloseCircleLine
-              className={styles.iconStyles}
+              className={cx(styles.iconStyles, styles.error)}
               style={iconStyles}
             />
           }

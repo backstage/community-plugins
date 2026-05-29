@@ -1,30 +1,28 @@
 @layer components {
   .iconStyles {
-    height: 0.8em;
-    width: 0.8em;
-    top: 0.125em;
-    position: relative;
+    width: 1em;
+    height: 1em;
     flex-shrink: 0;
-    margin-right: var(--bui-space-2);
+    display: block;
   }
 
-  .success svg {
-    fill: var(--bui-fg-success, #1e8549);
+  .success {
+    color: var(--bui-fg-success, #1e8549);
   }
 
-  .running svg {
+  .running {
     fill: var(--bui-fg-link, #0366d6);
   }
 
-  .pending svg {
+  .pending {
     fill: var(--bui-fg-warning, #f0ab00);
   }
 
-  .warning svg {
-    fill: var(--bui-fg-warning, #f0ab00);
+  .warning {
+    color: var(--bui-fg-warning, #f0ab00);
   }
 
-  .error svg {
-    fill: var(--bui-fg-danger, #c9190b);
+  .error {
+    color: var(--bui-fg-danger, #c9190b);
   }
 }

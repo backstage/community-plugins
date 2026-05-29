@@ -23,7 +23,6 @@ import TopologyDetailsTabPanel from './TopologyDetailsTabPanel';
 import TopologyResourcesTabPanel from './TopologyResourcesTabPanel';
 
 import './TopologySideBarBody.css';
-import styles from './TopologySideBarContent.module.css';
 
 type TopologySideBarBodyProps = { node: BaseNode };
 
@@ -38,7 +37,7 @@ const TopologySideBarBody = ({ node }: TopologySideBarBodyProps) => {
           selectedKey={selectedTab}
           onSelectionChange={key => setSelectedTab(String(key))}
         >
-          <TabList>
+          <TabList className="topology-side-bar-tab-list">
             <Tab id="details" className="tab-button">
               {t('sideBar.details')}
             </Tab>
@@ -46,7 +45,6 @@ const TopologySideBarBody = ({ node }: TopologySideBarBodyProps) => {
               {t('sideBar.resources')}
             </Tab>
           </TabList>
-          <hr className={styles.divider} />
           <TabPanel id="details">
             <div className="topology-side-bar-tab-panel">
               <TopologyDetailsTabPanel node={node} />

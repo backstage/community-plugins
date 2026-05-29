@@ -15,6 +15,7 @@
  */
 import { V1Pod, V1Service, V1ServicePort } from '@kubernetes/client-node';
 import { RiArrowRightLine } from '@remixicon/react';
+import { Flex, Text } from '@backstage/ui';
 import { ChartLabel } from '@patternfly/react-charts/victory';
 import { BaseNode } from '@patternfly/react-topology';
 
@@ -40,6 +41,7 @@ import RouteListSidebar from './Resources/RouteListSidebar';
 import TopologyResourcesTabPanelItem from './TopologyResourcesTabPaneltem';
 
 import './TopologyResourcesTabPanel.css';
+import styles from './TopologyResourcesTabPanel.module.css';
 
 type TopologyResourcesTabPanelProps = { node: BaseNode };
 
@@ -224,19 +226,29 @@ const TopologyResourcesTabPanel = ({
                 {(service.spec?.ports ?? []).map(
                   ({ name, port, protocol, targetPort }: V1ServicePort) => (
                     <li key={name || `${port}-${protocol}`}>
-                      <span className="bs-topology-text-muted">
-                        Service port:
-                      </span>{' '}
-                      {name || `${port}-${protocol}`}
-                      &nbsp;
-                      <RiArrowRightLine
-                        style={{ width: '0.8em', verticalAlign: '-0.300em' }}
-                      />
-                      &nbsp;
-                      <span className="bs-topology-text-muted">
-                        Pod port:
-                      </span>{' '}
-                      {targetPort}
+                      <Flex
+                        direction="row"
+                        align="center"
+                        gap="1"
+                        className={styles.servicePortRow}
+                      >
+                        <Text as="span" variant="body-small" color="secondary">
+                          Service port:
+                        </Text>
+                        <Text as="span" variant="body-small">
+                          {name || `${port}-${protocol}`}
+                        </Text>
+                        <RiArrowRightLine
+                          className={styles.servicePortArrow}
+                          aria-hidden
+                        />
+                        <Text as="span" variant="body-small" color="secondary">
+                          Pod port:
+                        </Text>
+                        <Text as="span" variant="body-small">
+                          {targetPort}
+                        </Text>
+                      </Flex>
                     </li>
                   ),
                 )}

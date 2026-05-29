@@ -56,18 +56,20 @@ export const StatusIconAndText = ({
 
   return (
     <Text
+      as="span"
+      variant="body-small"
       className={classNames(styles.iconAndText, className)}
       data-testid={dataTestId ?? `icon-with-title-${title}`}
       title={title}
     >
-      {cloneElement(icon, {
-        className: classNames(
-          spin && 'fa-spin',
-          icon.props.className,
-          styles.flexChild,
-        ),
-      })}
-      <CamelCaseWrap value={title} dataTest="status-text" />
+      <span className={styles.iconSlot} aria-hidden>
+        {cloneElement(icon, {
+          className: classNames(spin && 'fa-spin', icon.props.className),
+        })}
+      </span>
+      <Text as="span" variant="body-small" className={styles.statusText}>
+        <CamelCaseWrap value={title} dataTest="status-text" />
+      </Text>
     </Text>
   );
 };

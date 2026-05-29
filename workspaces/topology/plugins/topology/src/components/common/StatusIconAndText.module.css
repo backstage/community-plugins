@@ -1,17 +1,20 @@
 @layer components {
+  /* Override BUI Text inline-block (data-as="span") for flex alignment */
   .iconAndText {
+    display: inline-flex !important;
     align-items: center;
-    display: flex;
-    font-weight: 400;
-    font-size: 14px;
+    gap: var(--bui-space-2, 4px);
   }
 
-  .iconAndText svg {
-    top: 0;
-  }
-
-  .flexChild {
+  .iconSlot {
+    display: inline-flex;
+    align-items: center;
     flex: 0 0 auto;
-    position: relative;
+    line-height: 0;
+  }
+
+  .statusText {
+    display: inline-block;
+    line-height: 1;
   }
 }
