@@ -17,6 +17,15 @@
 import { filesize } from 'filesize';
 import { DateTime } from 'luxon';
 
+export function parseSizeBytes(size: string | number | undefined): number {
+  if (size === undefined || size === null || size === '') {
+    return 0;
+  }
+
+  const parsed = Number(size);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 export function formatByteSize(sizeInBytes: number | undefined): string {
   if (!sizeInBytes) return 'N/A';
 
