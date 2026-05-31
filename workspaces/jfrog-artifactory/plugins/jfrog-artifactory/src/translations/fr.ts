@@ -27,6 +27,8 @@ const jfrogArtifactoryTranslationFr = createTranslationMessages({
     'page.title': 'Référentiel JFrog Artifactory : {{image}}',
     'table.searchPlaceholder': 'Filtre',
     'table.labelRowsSelect': 'Rangées',
+    'table.pagination.showResults': 'Afficher {{count}} résultats',
+    'table.pagination.rangeLabel': '{{start}} - {{end}} sur {{total}}',
     'table.columns.version': 'Version',
     'table.columns.repositories': 'Référentiels',
     'table.columns.manifest': 'Manifeste',

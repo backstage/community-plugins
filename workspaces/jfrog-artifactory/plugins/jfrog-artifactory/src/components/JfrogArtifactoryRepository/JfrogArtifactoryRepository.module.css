@@ -37,6 +37,8 @@
   }
 
   .searchBar {
-    min-width: 240px;
+    width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
   }
 }

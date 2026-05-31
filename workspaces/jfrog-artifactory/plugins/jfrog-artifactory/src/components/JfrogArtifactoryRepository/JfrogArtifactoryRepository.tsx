@@ -21,6 +21,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import {
   Flex,
   Header,
+  PageSizeOption,
   SearchField,
   Table,
   Text,
@@ -38,6 +39,9 @@ import {
 import { formatByteSize, formatDate, parseSizeBytes } from '../../utils';
 import { useTranslation } from '../../hooks/useTranslation';
 import styles from './JfrogArtifactoryRepository.module.css';
+
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 40, 50];
+const DEFAULT_PAGE_SIZE = 10;
 
 export function JfrogArtifactoryRepository({
   image,
@@ -77,15 +81,50 @@ export function JfrogArtifactoryRepository({
 
   const columns = useMemo(() => getColumns(t), [t]);
 
+  const pageSizeOptions = useMemo<PageSizeOption[]>(
+    () =>
+      PAGE_SIZE_OPTIONS.map(value => ({
+        value,
+        label: t('table.pagination.showResults', {
+          count: String(value),
+        } as Record<string, string>),
+      })),
+    [t],
+  );
+
+  const paginationOptions = useMemo(
+    () => ({
+      pageSize: DEFAULT_PAGE_SIZE,
+      showPageSizeOptions: true,
+      pageSizeOptions,
+      getLabel: ({
+        pageSize,
+        offset,
+        totalCount,
+      }: {
+        pageSize: number;
+        offset?: number;
+        totalCount?: number;
+      }) => {
+        const fromCount = (offset ?? 0) + 1;
+        const toCount = Math.min((offset ?? 0) + pageSize, totalCount ?? 0);
+
+        return t('table.pagination.rangeLabel', {
+          start: String(fromCount),
+          end: String(toCount),
+          total: String(totalCount ?? 0),
+        } as Record<string, string>);
+      },
+    }),
+    [pageSizeOptions, t],
+  );
+
   const { tableProps, search } = useTable({
     mode: 'complete',
     data,
     searchFn: filterRepositoryRows,
     sortFn: sortRepositoryRows,
-    paginationOptions: {
-      pageSize: 10,
-      showPageSizeOptions: true,
-    },
+    paginationOptions,
   });
 
   if (loading) {
@@ -103,6 +142,7 @@ export function JfrogArtifactoryRepository({
               placeholder={t('table.searchPlaceholder')}
               value={search.value}
               onChange={search.onChange}
+              style={{ width: '100%' }}
             />
           </Flex>
         }
