@@ -52,7 +52,7 @@
     "typescript": "~5.8.0"
   },
   "resolutions": {
-    "@types/node": "22.7.8",
+    "@types/node": "22.19.19",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "csstype@npm:^3.0.2": "3.0.9",
