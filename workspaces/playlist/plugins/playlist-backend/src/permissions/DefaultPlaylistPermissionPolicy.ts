@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import {
   AuthorizeResult,
   isPermission,
@@ -24,6 +23,7 @@ import {
 import {
   PermissionPolicy,
   PolicyQuery,
+  PolicyQueryUser,
 } from '@backstage/plugin-permission-node';
 import { permissions } from '@backstage-community/plugin-playlist-common';
 
@@ -49,7 +49,7 @@ export const isPlaylistPermission = (permission: Permission) =>
 export class DefaultPlaylistPermissionPolicy implements PermissionPolicy {
   async handle(
     request: PolicyQuery,
-    user?: BackstageIdentityResponse,
+    user?: PolicyQueryUser,
   ): Promise<PolicyDecision> {
     // Reject permissions we don't know how to evaluate in case this policy was incorrectly applied
     if (!isPlaylistPermission(request.permission)) {
@@ -69,7 +69,7 @@ export class DefaultPlaylistPermissionPolicy implements PermissionPolicy {
       return createPlaylistConditionalDecision(request.permission, {
         anyOf: [
           playlistConditions.isOwner({
-            owners: user?.identity.ownershipEntityRefs ?? [],
+            owners: user?.info.ownershipEntityRefs ?? [],
           }),
           playlistConditions.isPublic(),
         ],
@@ -84,7 +84,7 @@ export class DefaultPlaylistPermissionPolicy implements PermissionPolicy {
       return createPlaylistConditionalDecision(
         request.permission,
         playlistConditions.isOwner({
-          owners: user?.identity.ownershipEntityRefs ?? [],
+          owners: user?.info.ownershipEntityRefs ?? [],
         }),
       );
     }
