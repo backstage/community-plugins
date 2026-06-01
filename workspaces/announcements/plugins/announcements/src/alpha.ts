@@ -17,7 +17,6 @@ import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { announcementsApiExtension } from './alpha/apis';
 import { entityAnnouncementsCard } from './alpha/entityCards';
-import { announcementsNavItem } from './alpha/navItems';
 import { announcementsPage } from './alpha/pages';
 import { announcementsBanner } from './alpha/banner';
 import {
@@ -33,6 +32,7 @@ import { rootRouteRef } from './routes';
  */
 export default createFrontendPlugin({
   pluginId: 'announcements',
+  title: 'Announcements',
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
@@ -40,7 +40,6 @@ export default createFrontendPlugin({
     announcementsApiExtension,
     entityAnnouncementsCard,
     announcementsPage,
-    announcementsNavItem,
     announcementsSearchResultListItem,
     announcementsSearchFilterResultType,
     announcementsBanner,
