@@ -188,6 +188,18 @@ export interface PeriodRange {
 }
 
 // @public
+export interface ReportEnvelope {
+  // (undocumented)
+  download_links: string[];
+  // (undocumented)
+  report_day?: string;
+  // (undocumented)
+  report_end_day?: string;
+  // (undocumented)
+  report_start_day?: string;
+}
+
+// @public
 export interface SeatAnalysis {
   day: string;
   seats_inactive_14_days: number;
@@ -204,5 +216,539 @@ export interface TeamInfo {
   id: number;
   name: string;
   slug: string;
+}
+
+// @public (undocumented)
+export interface V2BackfillStatus {
+  // (undocumented)
+  components_loaded: string[];
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  error_message?: string | null;
+  // (undocumented)
+  ingested_at?: string;
+  // (undocumented)
+  metrics_type: string;
+  // (undocumented)
+  source: string;
+  // (undocumented)
+  status: string;
+}
+
+// @public (undocumented)
+export interface V2CliTotals {
+  // (undocumented)
+  prompt_count: number;
+  // (undocumented)
+  request_count: number;
+  // (undocumented)
+  session_count: number;
+  // (undocumented)
+  token_usage?: {
+    avg_tokens_per_request: number;
+    output_tokens_sum: number;
+    prompt_tokens_sum: number;
+  };
+}
+
+// @public (undocumented)
+export interface V2DailyTotal {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  daily_active_cli_users?: number;
+  // (undocumented)
+  daily_active_users: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  monthly_active_agent_users?: number;
+  // (undocumented)
+  monthly_active_chat_users?: number;
+  // (undocumented)
+  monthly_active_users: number;
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  weekly_active_users: number;
+}
+
+// @public (undocumented)
+export interface V2EnterpriseDayTotal {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  daily_active_cli_users?: number;
+  // (undocumented)
+  daily_active_users: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  enterprise_id: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  monthly_active_agent_users?: number;
+  // (undocumented)
+  monthly_active_chat_users?: number;
+  // (undocumented)
+  monthly_active_users: number;
+  // (undocumented)
+  pull_requests?: V2PrMetrics;
+  // (undocumented)
+  totals_by_cli?: V2CliTotals;
+  // (undocumented)
+  totals_by_feature?: V2MetricsByFeature[];
+  // (undocumented)
+  totals_by_ide?: V2MetricsByIde[];
+  // (undocumented)
+  totals_by_language_feature?: V2MetricsByLanguageFeature[];
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  weekly_active_users: number;
+}
+
+// @public (undocumented)
+export interface V2EnterpriseDocument {
+  // (undocumented)
+  day_totals: V2EnterpriseDayTotal[];
+  // (undocumented)
+  enterprise_id: string;
+  // (undocumented)
+  report_end_day: string;
+  // (undocumented)
+  report_start_day: string;
+}
+
+// @public (undocumented)
+export interface V2IngestionLogRow {
+  // (undocumented)
+  components_loaded: string;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  error_message?: string | null;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  ingested_at?: string;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  source: 'scheduled' | 'backfill' | 'manual';
+  // (undocumented)
+  status: 'success' | 'error' | 'partial';
+}
+
+// @public (undocumented)
+export interface V2MetricsByFeature {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  user_initiated_interaction_count?: number;
+}
+
+// @public (undocumented)
+export interface V2MetricsByFeatureRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+}
+
+// @public (undocumented)
+export interface V2MetricsByIde {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  ide: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  user_initiated_interaction_count?: number;
+}
+
+// @public (undocumented)
+export interface V2MetricsByIdeRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  ide: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+}
+
+// @public (undocumented)
+export interface V2MetricsByLanguageFeature {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+}
+
+// @public (undocumented)
+export interface V2MetricsByLanguageFeatureRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  team_slug: string;
+}
+
+// @public (undocumented)
+export interface V2MetricsByLanguageModelRow {
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  language: string;
+  // (undocumented)
+  metrics_type: string;
+  // (undocumented)
+  model_id: string;
+  // (undocumented)
+  request_count: number;
+  // (undocumented)
+  team_slug: string;
+}
+
+// @public (undocumented)
+export interface V2MetricsByModelFeatureRow {
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  feature: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  metrics_type: string;
+  // (undocumented)
+  model_id: string;
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+}
+
+// @public (undocumented)
+export interface V2PrMetrics {
+  // (undocumented)
+  median_minutes_to_merge?: number;
+  // (undocumented)
+  median_minutes_to_merge_copilot_authored?: number;
+  // (undocumented)
+  median_minutes_to_merge_copilot_reviewed?: number;
+  // (undocumented)
+  total_applied_suggestions: number;
+  // (undocumented)
+  total_copilot_applied_suggestions: number;
+  // (undocumented)
+  total_copilot_suggestions: number;
+  // (undocumented)
+  total_created: number;
+  // (undocumented)
+  total_created_by_copilot: number;
+  // (undocumented)
+  total_merged: number;
+  // (undocumented)
+  total_merged_created_by_copilot: number;
+  // (undocumented)
+  total_merged_reviewed_by_copilot: number;
+  // (undocumented)
+  total_reviewed: number;
+  // (undocumented)
+  total_reviewed_by_copilot: number;
+  // (undocumented)
+  total_suggestions: number;
+}
+
+// @public (undocumented)
+export interface V2PrMetricsRow {
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  median_minutes_to_merge?: number;
+  // (undocumented)
+  median_minutes_to_merge_copilot_authored?: number;
+  // (undocumented)
+  median_minutes_to_merge_copilot_reviewed?: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  total_applied_suggestions: number;
+  // (undocumented)
+  total_copilot_applied_suggestions: number;
+  // (undocumented)
+  total_copilot_suggestions: number;
+  // (undocumented)
+  total_created: number;
+  // (undocumented)
+  total_created_by_copilot: number;
+  // (undocumented)
+  total_merged: number;
+  // (undocumented)
+  total_merged_created_by_copilot: number;
+  // (undocumented)
+  total_merged_reviewed_by_copilot: number;
+  // (undocumented)
+  total_reviewed: number;
+  // (undocumented)
+  total_reviewed_by_copilot: number;
+  // (undocumented)
+  total_suggestions: number;
+}
+
+// @public (undocumented)
+export interface V2UserMetric {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  enterprise_id?: string;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  organization_id?: string;
+  // (undocumented)
+  totals_by_feature?: V2MetricsByFeature[];
+  // (undocumented)
+  totals_by_ide?: V2MetricsByIde[];
+  // (undocumented)
+  totals_by_language_feature?: V2MetricsByLanguageFeature[];
+  // (undocumented)
+  used_agent: boolean;
+  // (undocumented)
+  used_chat: boolean;
+  // (undocumented)
+  used_cli: boolean;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public (undocumented)
+export interface V2UserMetricRow {
+  // (undocumented)
+  code_acceptance_activity_count: number;
+  // (undocumented)
+  code_generation_activity_count: number;
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  loc_added_sum: number;
+  // (undocumented)
+  loc_deleted_sum: number;
+  // (undocumented)
+  loc_suggested_to_add_sum: number;
+  // (undocumented)
+  loc_suggested_to_delete_sum: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  used_agent: boolean;
+  // (undocumented)
+  used_chat: boolean;
+  // (undocumented)
+  used_cli: boolean;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_initiated_interaction_count: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public (undocumented)
+export interface V2UserTeam {
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  enterprise_id?: string;
+  // (undocumented)
+  organization_id?: string;
+  // (undocumented)
+  slug: string;
+  // (undocumented)
+  team_id: number;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
+}
+
+// @public (undocumented)
+export interface V2UserTeamRow {
+  // (undocumented)
+  day: string;
+  // (undocumented)
+  entity_id: string;
+  // (undocumented)
+  id?: number;
+  // (undocumented)
+  metrics_type: 'enterprise' | 'organization';
+  // (undocumented)
+  team_id: number;
+  // (undocumented)
+  team_slug: string;
+  // (undocumented)
+  user_id: number;
+  // (undocumented)
+  user_login: string;
 }
 ```

@@ -23,6 +23,8 @@ const _default: OverridableFrontendPlugin<
     copilot: RouteRef<undefined>;
     enterprise: SubRouteRef<undefined>;
     organization: SubRouteRef<undefined>;
+    v2Dashboard: SubRouteRef<undefined>;
+    legacyCopilot: SubRouteRef<undefined>;
   },
   {},
   {
