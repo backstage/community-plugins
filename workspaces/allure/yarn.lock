@@ -2773,6 +2773,7 @@ __metadata:
     "@types/jest": "npm:^30"
     "@types/jsdom": "npm:^28.0.0"
     "@types/node": "npm:22.19.19"
+    "@types/webpack-env": "npm:1.18.8"
     jest: "npm:^30"
     jsdom: "npm:^27"
     knip: "npm:^5.27.4"
@@ -6774,6 +6775,13 @@ __metadata:
   version: 1.19.19
   resolution: "@types/urijs@npm:1.19.19"
   checksum: 10/ebb86a1cc1c608fb3aebf22f6a4649849566557e1d01db008783959dc874a4aceefc45767eca5ba758c1b3a9d773f5fcc45f0adbb4a84d8fe93d73a5e9933292
+  languageName: node
+  linkType: hard
+
+"@types/webpack-env@npm:1.18.8":
+  version: 1.18.8
+  resolution: "@types/webpack-env@npm:1.18.8"
+  checksum: 10/f3932f3d6c2530f644cfc898eda1ab8182d6ae57f555c2f0179d813549b639078671b71e4041831fc306c5ebe61f5cdac794fe4ceae281fce8bf67e23661a488
   languageName: node
   linkType: hard
 

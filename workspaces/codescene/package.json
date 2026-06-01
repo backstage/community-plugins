@@ -53,6 +53,7 @@
   },
   "resolutions": {
     "@types/node": "22.19.19",
+    "@types/webpack-env": "1.18.8",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "csstype@npm:^3.0.2": "3.0.9",
