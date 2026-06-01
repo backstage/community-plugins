@@ -65,33 +65,44 @@ kind: Component
 metadata:
   name: my-service
   annotations:
-    # Standard url: format - Confluence URLs are auto-detected
-    backstage.io/techdocs-ref: url:https://your-company.atlassian.net/wiki/spaces/DOCS/pages/123456789/My+Service+Docs
+    backstage.io/techdocs-ref: url:https://<your-domain>.atlassian.net/wiki/spaces/DOCS/pages/123456789/My+Service+Docs
 spec:
   type: service
   owner: my-team
 ```
 
+> **Important:** The hostname in the annotation URL must match the `baseUrl` configured for your Confluence instance. If you are using scoped or service account tokens with the `api.atlassian.com` endpoint, use that URL format in the annotation instead:
+>
+> ```yaml
+> backstage.io/techdocs-ref: url:https://api.atlassian.com/ex/confluence/<your-cloud-id>/wiki/spaces/DOCS/pages/123456789/My+Service+Docs
+> ```
+
 ### Supported URL Formats
 
 The module supports multiple Confluence URL patterns:
 
-**Confluence Cloud (spaces format):**
+**Confluence Cloud (classic token):**
 
 ```text
-https://{org}.atlassian.net/wiki/spaces/{SPACE}/pages/{pageId}/{page-title}
+https://<your-domain>.atlassian.net/wiki/spaces/{SPACE}/pages/{pageId}/{page-title}
+```
+
+**Confluence Cloud (scoped / service account token):**
+
+```text
+https://api.atlassian.com/ex/confluence/<your-cloud-id>/wiki/spaces/{SPACE}/pages/{pageId}/{page-title}
 ```
 
 **Confluence Server/Data Center (display format):**
 
 ```text
-https://confluence.example.com/display/{SPACE}/{Page+Title}
+https://<your-confluence-host>/display/{SPACE}/{Page+Title}
 ```
 
 **Direct page ID:**
 
 ```text
-https://confluence.example.com/pages/viewpage.action?pageId=123456789
+https://<your-confluence-host>/pages/viewpage.action?pageId=123456789
 ```
 
 ### Alternative Annotation Format
@@ -101,7 +112,7 @@ You can also use the explicit `confluence-url:` prefix:
 ```yaml
 metadata:
   annotations:
-    backstage.io/techdocs-ref: confluence-url:https://your-company.atlassian.net/wiki/spaces/DOCS/pages/123456789/Docs
+    backstage.io/techdocs-ref: confluence-url:https://<your-domain>.atlassian.net/wiki/spaces/DOCS/pages/123456789/Docs
 ```
 
 ## How It Works
