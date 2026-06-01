@@ -25,6 +25,11 @@ import { fireEvent, getByText, act } from '@testing-library/react';
 
 import { AddEntitiesDrawer } from './AddEntitiesDrawer';
 
+// crypto.randomUUID is not available in jsdom
+Object.defineProperty(globalThis, 'crypto', {
+  value: { randomUUID: () => '00000000-0000-0000-0000-000000000000' },
+});
+
 describe('AddEntitiesDrawer', () => {
   const catalogApi: Partial<CatalogApi> = {
     getEntityFacets: jest.fn().mockImplementation(async () => ({
