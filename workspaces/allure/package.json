@@ -45,6 +45,7 @@
     "@types/jest": "^30",
     "@types/jsdom": "^28.0.0",
     "@types/node": "22.19.19",
+    "@types/webpack-env": "1.18.8",
     "jest": "^30",
     "jsdom": "^27",
     "knip": "^5.27.4",
