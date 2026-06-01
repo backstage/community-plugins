@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { announcementsApiExtension } from './alpha/apis';
-import { entityAnnouncementsCard } from './alpha/entityCards';
-import { announcementsPage } from './alpha/pages';
-import { announcementsBanner } from './alpha/banner';
-import {
-  announcementsSearchFilterResultType,
-  announcementsSearchResultListItem,
-} from './alpha/search';
-import { rootRouteRef } from './routes';
 
-/**
- * The announcements frontend plugin for the new frontend system.
- *
- * @alpha
- */
-export default createFrontendPlugin({
-  pluginId: 'announcements',
-  title: 'Announcements',
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
-  extensions: [
-    announcementsApiExtension,
-    entityAnnouncementsCard,
-    announcementsPage,
-    announcementsSearchResultListItem,
-    announcementsSearchFilterResultType,
-    announcementsBanner,
-  ],
-});
+export { announcementsPlugin as default } from './alpha/plugin';

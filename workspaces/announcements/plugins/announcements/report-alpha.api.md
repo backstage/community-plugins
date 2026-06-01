@@ -26,7 +26,7 @@ import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-rea
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha
-const _default: OverridableFrontendPlugin<
+const announcementsPlugin: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
   },
@@ -237,7 +237,7 @@ const _default: OverridableFrontendPlugin<
     }>;
   }
 >;
-export default _default;
+export default announcementsPlugin;
 
 // (No @packageDocumentation comment for this package)
 ```
