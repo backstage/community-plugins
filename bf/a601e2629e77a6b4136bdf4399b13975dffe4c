@@ -1,0 +1,20 @@
+workspaces/playlist/plugins/playlist-backend/src/permissions/DefaultPlaylistPermissionPolicy.test.ts
+  ai_agent 17
+  s_f6e7cc3f6629e7::t_09d2d34715d766 38-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "bfa601e2629e77a6b4136bdf4399b13975dffe4c",
+  "prompts": {},
+  "sessions": {
+    "s_f6e7cc3f6629e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd5355a1-588c-4c9c-be34-3b59941d8852",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Phil Kuang <pkuang@factset.com>"
+    }
+  }
+}
