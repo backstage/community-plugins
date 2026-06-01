@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.8.0
+
+### Minor Changes
+
+- 1d4f7ea: Introduce new frontend system.
+
 ## 0.7.0
 
 ### Minor Changes
