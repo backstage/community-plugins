@@ -1,0 +1,6 @@
+@layer components {
+  .externalLinkIcon {
+    font-size: inherit;
+    vertical-align: bottom;
+  }
+}
