@@ -52,9 +52,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage-community/plugin-tech-insights-common": "workspace:^",
-    "@backstage/repo-tools": "backstage:^",
-    "msw": "2.7.0"
+    "@backstage-community/plugin-tech-insights-common": "workspace:^"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"
