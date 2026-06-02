@@ -1,0 +1,10 @@
+@layer components {
+  .titleRow {
+    align-items: center;
+    gap: var(--bui-space-2);
+  }
+
+  .titleIcon {
+    color: var(--bui-fg-primary);
+  }
+}
