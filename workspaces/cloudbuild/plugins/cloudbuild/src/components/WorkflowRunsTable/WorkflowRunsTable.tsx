@@ -59,7 +59,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Trigger Name',
     render: (row: Partial<WorkflowRun>) => (
-      <Text variant="body-medium" style={{ whiteSpace: 'nowrap' }}>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.substitutions?.TRIGGER_NAME}
       </Text>
     ),
@@ -70,7 +70,7 @@ const generatedColumns: TableColumn[] = [
     highlight: true,
     width: '200px',
     render: (row: Partial<WorkflowRun>) => (
-      <Text variant="body-medium" style={{ whiteSpace: 'nowrap' }}>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.message}
       </Text>
     ),
@@ -78,7 +78,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Ref',
     render: (row: Partial<WorkflowRun>) => (
-      <Text variant="body-medium" style={{ whiteSpace: 'nowrap' }}>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.substitutions?.REF_NAME}
       </Text>
     ),
@@ -86,7 +86,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Commit',
     render: (row: Partial<WorkflowRun>) => (
-      <Text variant="body-medium" style={{ whiteSpace: 'nowrap' }}>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.substitutions?.SHORT_SHA}
       </Text>
     ),
@@ -97,7 +97,7 @@ const generatedColumns: TableColumn[] = [
       <Text
         data-testid="cell-created"
         variant="body-medium"
-        style={{ whiteSpace: 'nowrap' }}
+        className={styles.truncate}
       >
         {DateTime.fromISO(row.createTime ?? DateTime.now().toISO()!).toFormat(
           'dd-MM-yyyy hh:mm:ss',
@@ -113,7 +113,7 @@ const generatedColumns: TableColumn[] = [
           data-testid="action-rerun"
           aria-label="Rerun workflow"
           variant="tertiary"
-          icon={<RiRestartLine />}
+          icon={<RiRestartLine aria-hidden="true" />}
           onPress={() => row.rerun?.()}
         />
         <Tooltip>Rerun workflow</Tooltip>
@@ -154,7 +154,7 @@ export const WorkflowRunsTableView = ({
       page={page}
       actions={[
         {
-          icon: () => <RiRefreshLine />,
+          icon: () => <RiRefreshLine aria-hidden="true" />,
           tooltip: 'Reload workflow runs',
           isFreeAction: true,
           onClick: () => retry(),
@@ -165,8 +165,8 @@ export const WorkflowRunsTableView = ({
       onRowsPerPageChange={onChangePageSize}
       style={{ width: '100%' }}
       title={
-        <Flex align="center" gap="2" className={styles.titleRow}>
-          <RiCloudLine className={styles.titleIcon} />
+        <Flex align="center" gap="2">
+          <RiCloudLine aria-hidden="true" className={styles.titleIcon} />
           <Text variant="title-small">{projectName}</Text>
         </Flex>
       }
