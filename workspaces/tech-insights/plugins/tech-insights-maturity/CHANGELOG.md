@@ -1,5 +1,19 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.9.0
+
+### Minor Changes
+
+- b8b1d30: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [bf48378]
+- Updated dependencies [b8b1d30]
+  - @backstage-community/plugin-tech-insights-maturity-common@0.6.0
+  - @backstage-community/plugin-tech-insights-common@0.10.0
+  - @backstage-community/plugin-tech-insights-react@1.6.0
+
 ## 0.8.0
 
 ### Minor Changes
