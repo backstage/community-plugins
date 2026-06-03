@@ -1701,9 +1701,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-healert@workspace:plugins/healert-plugin":
+"@backstage-community/plugin-healert@workspace:plugins/healert":
   version: 0.0.0-use.local
-  resolution: "@backstage-community/plugin-healert@workspace:plugins/healert-plugin"
+  resolution: "@backstage-community/plugin-healert@workspace:plugins/healert"
   dependencies:
     "@backstage/catalog-model": "npm:^1.7.4"
     "@backstage/cli": "npm:^0.30.0"
