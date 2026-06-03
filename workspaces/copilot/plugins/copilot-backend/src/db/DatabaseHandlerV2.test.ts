@@ -128,6 +128,33 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toEqual(['2026-05-02', '2026-05-03']);
     });
 
+    it('getMissingDays only skips success rows with all required components', async () => {
+      await handler.upsertIngestionLog(
+        buildIngestionLog({
+          day: '2026-05-01',
+          status: 'success',
+          components_loaded: '["totals"]',
+        }),
+      );
+      await handler.upsertIngestionLog(
+        buildIngestionLog({
+          day: '2026-05-02',
+          status: 'success',
+          components_loaded: '["totals","users","teams"]',
+        }),
+      );
+
+      const result = await handler.getMissingDays(
+        'organization',
+        'org-1',
+        '2026-05-01',
+        '2026-05-03',
+        ['totals', 'users', 'teams'],
+      );
+
+      expect(result).toEqual(['2026-05-01', '2026-05-03']);
+    });
+
     it('upsertIngestionLog inserts a new row', async () => {
       await handler.upsertIngestionLog(
         buildIngestionLog({
@@ -325,7 +352,7 @@ function buildIngestionLog(
     metrics_type: 'organization',
     entity_id: 'org-1',
     status: 'success',
-    components_loaded: '[]',
+    components_loaded: '["totals"]',
     source: 'scheduled',
     ...overrides,
   };
@@ -359,7 +386,7 @@ function normalizeDate(day: string | Date): string {
     return day.toISOString().split('T')[0];
   }
 
-  return day.match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? day;
+  return /^\d{4}-\d{2}-\d{2}/.exec(day)?.[0] ?? day;
 }
 
 function buildUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {

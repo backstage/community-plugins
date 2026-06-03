@@ -16,40 +16,12 @@
 
 import { BarChart } from '@mui/x-charts/BarChart';
 import { V2MetricsByFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { compactNumber } from './chartUtils';
+import { compactNumber, featureLabel, filterLocRowsByMode } from './chartUtils';
 
 interface Props {
   data: V2MetricsByFeatureRow[];
   /** 'user' shows Suggested vs Added; 'agent' shows Added vs Deleted */
   mode: 'user' | 'agent';
-}
-
-/** Features driven by agents performing autonomous edits (not chat) */
-function isAgentFeature(feature: string): boolean {
-  return feature === 'agent_edit';
-}
-
-/** Features to exclude from all LOC-by-feature charts */
-const DROPPED_FEATURES = new Set([
-  'chat_panel_unknown_mode',
-  'chat_panel_plan_mode',
-  'others',
-]);
-
-/** Human-readable label for a feature name */
-function featureLabel(feature: string): string {
-  const labels: Record<string, string> = {
-    chat_inline: 'Inline',
-    chat_panel_edit_mode: 'Edit',
-    chat_panel_ask_mode: 'Ask',
-    chat_panel_plan_mode: 'Plan',
-    chat_panel_agent_mode: 'Agent',
-    chat_panel_custom_mode: 'Custom',
-    code_completion: 'Completions',
-    copilot_cli: 'CLI',
-    agent_edit: 'Agent',
-  };
-  return labels[feature] ?? feature;
 }
 
 const NO_DATA = (
@@ -58,20 +30,18 @@ const NO_DATA = (
   </div>
 );
 
-export function LOCByFeatureChart({ data, mode }: Props) {
+export function LOCByFeatureChart({ data, mode }: Readonly<Props>) {
   if (data.length === 0) return NO_DATA;
+
+  const filtered = filterLocRowsByMode(data, mode);
+  if (filtered.length === 0) return NO_DATA;
 
   // Aggregate all days together per feature
   const totals = new Map<
     string,
     { suggested: number; added: number; deleted: number }
   >();
-  for (const row of data) {
-    if (DROPPED_FEATURES.has(row.feature)) continue;
-    const isAgent = isAgentFeature(row.feature);
-    if (mode === 'agent' && !isAgent) continue;
-    if (mode === 'user' && isAgent) continue;
-
+  for (const row of filtered) {
     const existing = totals.get(row.feature) ?? {
       suggested: 0,
       added: 0,

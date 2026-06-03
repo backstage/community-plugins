@@ -16,12 +16,13 @@
 
 import { PieChart } from '@mui/x-charts/PieChart';
 import { V2MetricsByModelFeatureRow } from '@backstage-community/plugin-copilot-common';
+import { getChatModelTotals } from './chartUtils';
 
 interface Props {
   data: V2MetricsByModelFeatureRow[];
 }
 
-export function ChatModelUsageDonut({ data }: Props) {
+export function ChatModelUsageDonut({ data }: Readonly<Props>) {
   if (data.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -30,13 +31,7 @@ export function ChatModelUsageDonut({ data }: Props) {
     );
   }
 
-  const totals = new Map<string, number>();
-  for (const row of data) {
-    totals.set(
-      row.model_id,
-      (totals.get(row.model_id) ?? 0) + row.user_initiated_interaction_count,
-    );
-  }
+  const totals = getChatModelTotals(data);
 
   const grandTotal = [...totals.values()].reduce((sum, v) => sum + v, 0);
 

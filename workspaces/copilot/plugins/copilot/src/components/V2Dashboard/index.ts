@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-export { SummaryCards } from './SummaryCards';
-export { FeatureBreakdownChart } from './FeatureBreakdownChart';
-export { IDEBreakdownChart } from './IDEBreakdownChart';
 export { V2DashboardPage } from './V2DashboardPage';
 export * from './hooks';

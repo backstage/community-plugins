@@ -25,8 +25,8 @@ export const CopilotIndexPage = () => (
     <Route path="/" element={<V2DashboardPage />} />
     <Route path="/v2" element={<V2DashboardPage />} />
 
-    {/* Legacy routes — the old dashboard; only reachable when showLegacyView: true
-        or by navigating directly. Enterprise/Organization paths kept for backward compat. */}
+    {/* Legacy routes remain available for backward compatibility.
+      The sidebar link is controlled by showLegacyView. */}
     <Route path="/legacy" element={<HomePage />} />
     <Route path="/enterprise" element={<EnterprisePage />} />
     <Route path="/organization" element={<OrganizationPage />} />

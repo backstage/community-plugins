@@ -44,6 +44,13 @@ describe('TaskManagementV2', () => {
     await task.runAsync();
 
     expect(db.getMissingDays).toHaveBeenCalledTimes(1);
+    expect(db.getMissingDays).toHaveBeenCalledWith(
+      'enterprise',
+      'ent-1',
+      '2026-05-10',
+      expect.any(String),
+      ['totals'],
+    );
     expect(api.fetchEnterpriseReportLinks).not.toHaveBeenCalled();
   });
 
@@ -185,11 +192,13 @@ describe('TaskManagementV2', () => {
       'org-1',
       '2026-05-12',
       '2026-05-12',
+      ['totals'],
     );
     expect(api.fetchOrganizationReportLinks).toHaveBeenCalledWith('2026-05-12');
+    expect(api.fetchOrganizationUserTeamsLinks).not.toHaveBeenCalled();
   });
 
-  it('ingestDay flow with ingestTeams false does not call user report endpoint', async () => {
+  it('ingestDay flow with ingestTeams false does not call team endpoints', async () => {
     const db = createDbMock();
     const api = createApiMock();
     const config = createConfigMock({
@@ -224,7 +233,61 @@ describe('TaskManagementV2', () => {
     await task.runAsync();
 
     expect(api.fetchEnterpriseUserReportLinks).not.toHaveBeenCalled();
-    expect(api.fetchEnterpriseUserTeamsLinks).toHaveBeenCalledTimes(1);
+    expect(api.fetchEnterpriseUserTeamsLinks).not.toHaveBeenCalled();
+  });
+
+  it('runAsync records partial status when required team components are missing', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const config = createConfigMock({
+      'copilot.enterprise': 'ent-1',
+      'copilot.backfillFromDate': '2026-05-10',
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+    const logger = createLoggerMock();
+
+    db.getMissingDays.mockResolvedValue(['2026-05-10']);
+    api.fetchEnterpriseReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/report.json'],
+    });
+    api.fetchEnterpriseUserReportLinks.mockResolvedValue({
+      download_links: [],
+    });
+    api.fetchEnterpriseUserTeamsLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/user-teams.json'],
+    });
+    api.downloadDocument.mockResolvedValueOnce(
+      makeEnterpriseDocument('2026-05-10'),
+    );
+    api.downloadNdjsonDocument.mockResolvedValueOnce(
+      makeUserTeamsDocument('2026-05-10'),
+    );
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runAsync();
+
+    expect(db.getMissingDays).toHaveBeenCalledWith(
+      'enterprise',
+      'ent-1',
+      '2026-05-10',
+      expect.any(String),
+      ['totals', 'users', 'teams'],
+    );
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        day: '2026-05-10',
+        status: 'partial',
+        components_loaded: JSON.stringify(['totals']),
+        error_message: 'Missing components: users, teams',
+      }),
+    );
   });
 
   it('idempotency: running same backfill twice skips API calls on second run', async () => {
@@ -278,6 +341,7 @@ function createDbMock() {
     insertByLanguageFeature: jest.fn().mockResolvedValue(undefined),
     insertByModelFeature: jest.fn().mockResolvedValue(undefined),
     insertByLanguageModel: jest.fn().mockResolvedValue(undefined),
+    insertByCli: jest.fn().mockResolvedValue(undefined),
     insertUserMetrics: jest.fn().mockResolvedValue(undefined),
     insertUserTeams: jest.fn().mockResolvedValue(undefined),
     upsertIngestionLog: jest.fn().mockResolvedValue(undefined),
@@ -304,7 +368,7 @@ function createLoggerMock(): LoggerService {
     error: jest.fn(),
     debug: jest.fn(),
     child: jest.fn(),
-  } as unknown as LoggerService;
+  };
 }
 
 function createConfigMock(values: Record<string, unknown>): Config {

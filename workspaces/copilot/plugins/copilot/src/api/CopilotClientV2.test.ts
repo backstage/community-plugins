@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { DiscoveryApi, FetchApi } from '@backstage/core-plugin-api';
 import { CopilotClientV2 } from './CopilotClientV2';
 
 describe('CopilotClientV2', () => {
@@ -27,8 +26,8 @@ describe('CopilotClientV2', () => {
   };
 
   const client = new CopilotClientV2({
-    discoveryApi: mockDiscovery as unknown as DiscoveryApi,
-    fetchApi: mockFetchApi as unknown as FetchApi,
+    discoveryApi: mockDiscovery,
+    fetchApi: mockFetchApi,
   });
 
   beforeEach(() => {
@@ -119,6 +118,34 @@ describe('CopilotClientV2', () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       'http://localhost/api/copilot/v2/metrics/by-language?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21&feature=code_completion',
+    );
+  });
+
+  it('getDashboardData builds dashboard URL', async () => {
+    mockFetch.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          daily: [],
+          byFeature: [],
+          byLanguage: [],
+          byModelFeature: [],
+          byLanguageModel: [],
+          prMetrics: [],
+        }),
+        { status: 200 },
+      ),
+    );
+
+    await client.getDashboardData({
+      type: 'enterprise',
+      entityId: 'ent-1',
+      from: '2026-05-01',
+      to: '2026-05-21',
+      team: 'platform',
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://localhost/api/copilot/v2/dashboard?type=enterprise&entityId=ent-1&from=2026-05-01&to=2026-05-21&team=platform',
     );
   });
 });

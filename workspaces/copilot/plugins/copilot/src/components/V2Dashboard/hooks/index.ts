@@ -14,12 +14,5 @@
  * limitations under the License.
  */
 
-export { useV2DailyMetrics } from './useV2DailyMetrics';
-export { useV2ByFeature } from './useV2ByFeature';
-export { useV2ByIde } from './useV2ByIde';
-export { useV2ByLanguage } from './useV2ByLanguage';
 export { useV2Teams } from './useV2Teams';
-export { useV2PeriodRange } from './useV2PeriodRange';
-export { useV2ByModelFeature } from './useV2ByModelFeature';
-export { useV2ByLanguageModel } from './useV2ByLanguageModel';
 export { useV2DashboardData } from './useV2DashboardData';

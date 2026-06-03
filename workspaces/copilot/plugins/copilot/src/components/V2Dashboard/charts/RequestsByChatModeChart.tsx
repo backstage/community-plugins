@@ -18,7 +18,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { V2MetricsByFeatureRow } from '@backstage-community/plugin-copilot-common';
 import {
   chatFeatureLabel,
-  DROPPED_CHAT_FEATURES,
+  filterChatRows,
   compactNumber,
   formatDay,
   DATE_TICK_LABEL_STYLE,
@@ -28,7 +28,7 @@ interface Props {
   data: V2MetricsByFeatureRow[];
 }
 
-export function RequestsByChatModeChart({ data }: Props) {
+export function RequestsByChatModeChart({ data }: Readonly<Props>) {
   if (data.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -37,10 +37,14 @@ export function RequestsByChatModeChart({ data }: Props) {
     );
   }
 
-  const filtered = data.filter(d => !DROPPED_CHAT_FEATURES.has(d.feature));
+  const filtered = filterChatRows(data);
 
-  const days = [...new Set(filtered.map(d => d.day))].sort();
-  const features = [...new Set(filtered.map(d => d.feature))].sort();
+  const days = [...new Set(filtered.map(d => d.day))].sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const features = [...new Set(filtered.map(d => d.feature))].sort((a, b) =>
+    a.localeCompare(b),
+  );
 
   const series = features.map(feature => ({
     data: days.map(day => {

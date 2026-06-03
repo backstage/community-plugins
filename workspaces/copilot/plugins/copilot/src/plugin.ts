@@ -114,7 +114,9 @@ export const V2DashboardPage = copilotPlugin.provide(
 
 /**
  * CopilotLegacyPage component for the Copilot plugin.
- * Renders the pre-v2 dashboard. Only shown when copilot.showLegacyView is true.
+ * Renders the pre-v2 dashboard. The route remains available for backward
+ * compatibility, while the sidebar link is controlled by
+ * copilot.showLegacyView.
  *
  * @public
  */

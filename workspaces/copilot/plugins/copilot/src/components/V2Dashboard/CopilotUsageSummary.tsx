@@ -20,6 +20,7 @@ import {
   V2DailyTotal,
   V2MetricsByModelFeatureRow,
 } from '@backstage-community/plugin-copilot-common';
+import { getMostUsedChatModel } from './charts/chartUtils';
 
 interface Props {
   dailyTotals: V2DailyTotal[];
@@ -30,11 +31,11 @@ function StatCard({
   title,
   value,
   subtitle,
-}: {
+}: Readonly<{
   title: string;
   value: string | number;
   subtitle?: string;
-}) {
+}>) {
   return (
     <InfoCard title={title}>
       <Flex direction="row">
@@ -49,9 +50,11 @@ function StatCard({
   );
 }
 
-export function CopilotUsageSummary({ dailyTotals, modelFeature }: Props) {
-  const latest =
-    dailyTotals.length > 0 ? dailyTotals[dailyTotals.length - 1] : null;
+export function CopilotUsageSummary({
+  dailyTotals,
+  modelFeature,
+}: Readonly<Props>) {
+  const latest = dailyTotals.at(-1) ?? null;
 
   const ideActiveUsers = latest?.monthly_active_users ?? 0;
   const agentAdoption =
@@ -63,16 +66,7 @@ export function CopilotUsageSummary({ dailyTotals, modelFeature }: Props) {
         )
       : 0;
 
-  const modelTotals = new Map<string, number>();
-  for (const row of modelFeature) {
-    modelTotals.set(
-      row.model_id,
-      (modelTotals.get(row.model_id) ?? 0) +
-        row.user_initiated_interaction_count,
-    );
-  }
-  const mostUsedModel =
-    [...modelTotals.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'N/A';
+  const mostUsedModel = getMostUsedChatModel(modelFeature);
 
   return (
     <Grid.Root columns="12" gap="4">

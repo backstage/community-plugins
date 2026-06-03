@@ -227,16 +227,20 @@ export class DatabaseHandlerV2 {
     entityId: string,
     from: string,
     to: string,
+    requiredComponents: string[] = ['totals'],
   ): Promise<string[]> {
     const successfulRows = await this.db('copilot_ingestion_log')
       .where('metrics_type', metricsType)
       .where('entity_id', entityId)
       .where('status', 'success')
       .whereBetween('day', [from, to])
-      .distinct('day');
+      .select('day', 'components_loaded');
 
     const successfulDays = new Set(
       successfulRows
+        .filter(row =>
+          this.hasRequiredComponents(row.components_loaded, requiredComponents),
+        )
         .map(row => this.normalizeDay(row.day))
         .filter((day): day is string => Boolean(day)),
     );
@@ -515,7 +519,7 @@ export class DatabaseHandlerV2 {
     }
 
     if (typeof value === 'string') {
-      const datePrefix = value.match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+      const datePrefix = /^\d{4}-\d{2}-\d{2}/.exec(value)?.[0];
       if (datePrefix) {
         return datePrefix;
       }
@@ -527,5 +531,40 @@ export class DatabaseHandlerV2 {
     }
 
     return null;
+  }
+
+  private hasRequiredComponents(
+    value: unknown,
+    requiredComponents: string[],
+  ): boolean {
+    const loadedComponents = new Set(this.parseComponentsLoaded(value));
+    return requiredComponents.every(component =>
+      loadedComponents.has(component),
+    );
+  }
+
+  private parseComponentsLoaded(value: unknown): string[] {
+    if (!value) {
+      return [];
+    }
+
+    if (Array.isArray(value)) {
+      return value.filter(
+        (entry): entry is string => typeof entry === 'string',
+      );
+    }
+
+    if (typeof value !== 'string') {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed)
+        ? parsed.filter((entry): entry is string => typeof entry === 'string')
+        : [];
+    } catch {
+      return [];
+    }
   }
 }

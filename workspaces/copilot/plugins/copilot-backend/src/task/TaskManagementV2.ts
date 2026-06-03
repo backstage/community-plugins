@@ -47,6 +47,10 @@ export type TaskManagementV2Options = {
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+function getRequiredComponents(ingestTeams: boolean): string[] {
+  return ingestTeams ? ['totals', 'users', 'teams'] : ['totals'];
+}
+
 export async function runBackfill(
   options: TaskManagementV2Options,
   fromDate: string,
@@ -103,12 +107,15 @@ export class TaskManagementV2 {
       `[TaskManagementV2] Starting gap-fill ingestion from ${backfillFromDate} to ${yesterday} for ${entities.length} entities.`,
     );
 
+    const requiredComponents = getRequiredComponents(ingestTeams);
+
     for (const entity of entities) {
       const missingDays = await this.options.db.getMissingDays(
         entity.metricsType,
         entity.entityId,
         backfillFromDate,
         yesterday,
+        requiredComponents,
       );
 
       if (!missingDays.length) {
@@ -147,12 +154,14 @@ export class TaskManagementV2 {
       this.options.config.getOptionalBoolean('copilot.ingestTeams') ?? false;
     const backfillDelayMs =
       this.options.config.getOptionalNumber('copilot.backfillDelayMs') ?? 200;
+    const requiredComponents = getRequiredComponents(ingestTeams);
 
     const missingDays = await this.options.db.getMissingDays(
       metricsType,
       entityId,
       fromDate,
       toDate,
+      requiredComponents,
     );
 
     if (!missingDays.length) {
@@ -178,127 +187,224 @@ export class TaskManagementV2 {
     }
   }
 
+  private async ingestTotals(
+    day: string,
+    metricsType: MetricsScope,
+    entityId: string,
+  ): Promise<boolean> {
+    const { api, db, logger } = this.options;
+    const reportEnvelope =
+      metricsType === 'enterprise'
+        ? await api.fetchEnterpriseReportLinks(day)
+        : await api.fetchOrganizationReportLinks(day);
+
+    const totalLinks = reportEnvelope.download_links ?? [];
+    if (totalLinks.length === 0) {
+      logger.warn(
+        `[TaskManagementV2] No download links for ${metricsType} totals on ${day} — report data may not yet be available for this period.`,
+      );
+      return false;
+    }
+
+    for (const url of totalLinks) {
+      const document = await api.downloadDocument(url);
+      const parsed =
+        metricsType === 'organization'
+          ? parseOrganizationDocument(document, metricsType, entityId)
+          : parseEnterpriseDocument(document, metricsType, entityId);
+
+      await db.insertDailyTotals(parsed.dailyTotals);
+      await db.insertPrMetrics(parsed.prMetrics);
+      await db.insertByFeature(parsed.byFeature);
+      await db.insertByIde(parsed.byIde);
+      await db.insertByLanguageFeature(parsed.byLanguageFeature);
+      await db.insertByModelFeature(parsed.byModelFeature);
+      await db.insertByLanguageModel(parsed.byLanguageModel);
+      await db.insertByCli(parsed.byCli);
+    }
+
+    return true;
+  }
+
+  private async ingestUserReports(
+    day: string,
+    metricsType: MetricsScope,
+    entityId: string,
+  ): Promise<{
+    loaded: boolean;
+    userMetrics: V2UserMetricRow[];
+    userBreakdowns: UserBreakdownData[];
+  }> {
+    const { api, db, logger } = this.options;
+    const userReportEnvelope =
+      metricsType === 'enterprise'
+        ? await api.fetchEnterpriseUserReportLinks(day)
+        : await api.fetchOrganizationUserReportLinks(day);
+
+    const userLinks = userReportEnvelope.download_links ?? [];
+    if (userLinks.length === 0) {
+      logger.warn(
+        `[TaskManagementV2] No download links for ${metricsType} users on ${day} — user metrics will be skipped.`,
+      );
+      return { loaded: false, userMetrics: [], userBreakdowns: [] };
+    }
+
+    const userMetrics: V2UserMetricRow[] = [];
+    const userBreakdowns: UserBreakdownData[] = [];
+
+    for (const url of userLinks) {
+      const rows = await api.downloadNdjsonDocument(url);
+      const parsed = parseUserDocument(rows, metricsType, entityId);
+      userMetrics.push(...parsed.userMetrics);
+      userBreakdowns.push(...parsed.userBreakdowns);
+    }
+
+    await db.insertUserMetrics(userMetrics);
+
+    return { loaded: true, userMetrics, userBreakdowns };
+  }
+
+  private async ingestTeamAggregates(
+    day: string,
+    metricsType: MetricsScope,
+    entityId: string,
+    userMetrics: V2UserMetricRow[],
+    userBreakdowns: UserBreakdownData[],
+  ): Promise<boolean> {
+    const { api, db, logger } = this.options;
+    const userTeamsEnvelope =
+      metricsType === 'enterprise'
+        ? await api.fetchEnterpriseUserTeamsLinks(day)
+        : await api.fetchOrganizationUserTeamsLinks(day);
+
+    const userTeamLinks = userTeamsEnvelope.download_links ?? [];
+    if (userTeamLinks.length === 0) {
+      logger.warn(
+        `[TaskManagementV2] No download links for ${metricsType} user-teams on ${day} — team aggregation will be skipped.`,
+      );
+      return false;
+    }
+
+    const userTeams: ReturnType<typeof parseUserTeamsDocument> = [];
+    for (const url of userTeamLinks) {
+      const rows = await api.downloadNdjsonDocument(url);
+      userTeams.push(...parseUserTeamsDocument(rows, metricsType, entityId));
+    }
+
+    await db.insertUserTeams(userTeams);
+
+    if (userMetrics.length === 0) {
+      return false;
+    }
+
+    const teamAggregates = aggregateTeamMetrics(
+      userMetrics,
+      userTeams,
+      userBreakdowns,
+      day,
+      metricsType,
+      entityId,
+    );
+
+    await db.insertDailyTotals(teamAggregates.dailyTotals);
+    await db.insertByFeature(teamAggregates.byFeature);
+    await db.insertByIde(teamAggregates.byIde);
+    await db.insertByLanguageFeature(teamAggregates.byLanguageFeature);
+    await db.insertByModelFeature(teamAggregates.byModelFeature);
+    await db.insertByLanguageModel(teamAggregates.byLanguageModel);
+
+    return true;
+  }
+
+  private async logIngestionOutcome(
+    day: string,
+    metricsType: MetricsScope,
+    entityId: string,
+    context: IngestContext,
+    componentsLoaded: string[],
+    requiredComponents: string[],
+  ): Promise<void> {
+    const { db, logger } = this.options;
+    const missingComponents = requiredComponents.filter(
+      component => !componentsLoaded.includes(component),
+    );
+    const status: 'success' | 'partial' =
+      missingComponents.length === 0 ? 'success' : 'partial';
+    const errorMessage =
+      missingComponents.length > 0
+        ? `Missing components: ${missingComponents.join(', ')}`
+        : undefined;
+
+    await db.upsertIngestionLog({
+      day,
+      metrics_type: metricsType,
+      entity_id: entityId,
+      status,
+      components_loaded: JSON.stringify(componentsLoaded),
+      error_message: errorMessage,
+      source: context.source,
+    });
+
+    if (status === 'success') {
+      logger.info(
+        `[TaskManagementV2] Ingested ${metricsType}:${entityId} for ${day} (source=${
+          context.source
+        }, components=${componentsLoaded.join(',')}).`,
+      );
+      return;
+    }
+
+    logger.warn(
+      `[TaskManagementV2] Partially ingested ${metricsType}:${entityId} for ${day} (source=${
+        context.source
+      }, components=${componentsLoaded.join(
+        ',',
+      )}, missing=${missingComponents.join(',')}).`,
+    );
+  }
+
   private async ingestDay(
     day: string,
     metricsType: MetricsScope,
     entityId: string,
     context: IngestContext,
   ): Promise<void> {
-    const { api, db, logger } = this.options;
+    const { db, logger } = this.options;
+    const requiredComponents = getRequiredComponents(context.ingestTeams);
     const componentsLoaded: string[] = [];
-    let userMetrics: V2UserMetricRow[] = [];
-    let userBreakdowns: UserBreakdownData[] = [];
 
     try {
-      const reportEnvelope =
-        metricsType === 'enterprise'
-          ? await api.fetchEnterpriseReportLinks(day)
-          : await api.fetchOrganizationReportLinks(day);
-
-      const totalLinks = reportEnvelope.download_links ?? [];
-      if (totalLinks.length === 0) {
-        logger.warn(
-          `[TaskManagementV2] No download links for ${metricsType} totals on ${day} — report data may not yet be available for this period.`,
-        );
-      } else {
-        for (const url of totalLinks) {
-          const document = await api.downloadDocument(url);
-          const parsed =
-            metricsType === 'organization'
-              ? parseOrganizationDocument(document, metricsType, entityId)
-              : parseEnterpriseDocument(document, metricsType, entityId);
-
-          await db.insertDailyTotals(parsed.dailyTotals);
-          await db.insertPrMetrics(parsed.prMetrics);
-          await db.insertByFeature(parsed.byFeature);
-          await db.insertByIde(parsed.byIde);
-          await db.insertByLanguageFeature(parsed.byLanguageFeature);
-          await db.insertByModelFeature(parsed.byModelFeature);
-          await db.insertByLanguageModel(parsed.byLanguageModel);
-          await db.insertByCli(parsed.byCli);
-        }
+      if (await this.ingestTotals(day, metricsType, entityId)) {
         componentsLoaded.push('totals');
       }
 
       if (context.ingestTeams) {
-        const userReportEnvelope =
-          metricsType === 'enterprise'
-            ? await api.fetchEnterpriseUserReportLinks(day)
-            : await api.fetchOrganizationUserReportLinks(day);
-
-        userMetrics = [];
-        userBreakdowns = [];
-        const userLinks = userReportEnvelope.download_links ?? [];
-        if (userLinks.length === 0) {
-          logger.warn(
-            `[TaskManagementV2] No download links for ${metricsType} users on ${day} — user metrics will be skipped.`,
-          );
-        } else {
-          for (const url of userLinks) {
-            const rows = await api.downloadNdjsonDocument(url);
-            const parsed = parseUserDocument(rows, metricsType, entityId);
-            userMetrics.push(...parsed.userMetrics);
-            userBreakdowns.push(...parsed.userBreakdowns);
-          }
+        const { loaded, userMetrics, userBreakdowns } =
+          await this.ingestUserReports(day, metricsType, entityId);
+        if (loaded) {
+          componentsLoaded.push('users');
         }
 
-        await db.insertUserMetrics(userMetrics);
-        componentsLoaded.push('users');
-      }
-
-      const userTeamsEnvelope =
-        metricsType === 'enterprise'
-          ? await api.fetchEnterpriseUserTeamsLinks(day)
-          : await api.fetchOrganizationUserTeamsLinks(day);
-
-      const userTeams: ReturnType<typeof parseUserTeamsDocument> = [];
-      const userTeamLinks = userTeamsEnvelope.download_links ?? [];
-      if (userTeamLinks.length === 0) {
-        logger.warn(
-          `[TaskManagementV2] No download links for ${metricsType} user-teams on ${day} — team aggregation will be skipped.`,
-        );
-      } else {
-        for (const url of userTeamLinks) {
-          const rows = await api.downloadNdjsonDocument(url);
-          userTeams.push(
-            ...parseUserTeamsDocument(rows, metricsType, entityId),
-          );
+        if (
+          await this.ingestTeamAggregates(
+            day,
+            metricsType,
+            entityId,
+            userMetrics,
+            userBreakdowns,
+          )
+        ) {
+          componentsLoaded.push('teams');
         }
       }
 
-      await db.insertUserTeams(userTeams);
-
-      const teamAggregates = aggregateTeamMetrics(
-        userMetrics,
-        userTeams,
-        userBreakdowns,
+      await this.logIngestionOutcome(
         day,
         metricsType,
         entityId,
-      );
-
-      await db.insertDailyTotals(teamAggregates.dailyTotals);
-      await db.insertByFeature(teamAggregates.byFeature);
-      await db.insertByIde(teamAggregates.byIde);
-      await db.insertByLanguageFeature(teamAggregates.byLanguageFeature);
-      await db.insertByModelFeature(teamAggregates.byModelFeature);
-      await db.insertByLanguageModel(teamAggregates.byLanguageModel);
-
-      componentsLoaded.push('teams');
-
-      await db.upsertIngestionLog({
-        day,
-        metrics_type: metricsType,
-        entity_id: entityId,
-        status: 'success',
-        components_loaded: JSON.stringify(componentsLoaded),
-        source: context.source,
-      });
-
-      logger.info(
-        `[TaskManagementV2] Ingested ${metricsType}:${entityId} for ${day} (source=${
-          context.source
-        }, components=${componentsLoaded.join(',')}).`,
+        context,
+        componentsLoaded,
+        requiredComponents,
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

@@ -16,14 +16,14 @@
 
 import { BarChart } from '@mui/x-charts/BarChart';
 import { V2MetricsByModelFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { chatFeatureLabel, DROPPED_CHAT_FEATURES } from './chartUtils';
+import { chatFeatureLabel, filterChatRows } from './chartUtils';
 
 interface Props {
   data: V2MetricsByModelFeatureRow[];
 }
 
-export function ModelUsagePerChatModeChart({ data }: Props) {
-  const filtered = data.filter(d => !DROPPED_CHAT_FEATURES.has(d.feature));
+export function ModelUsagePerChatModeChart({ data }: Readonly<Props>) {
+  const filtered = filterChatRows(data);
 
   if (filtered.length === 0) {
     return (
@@ -61,7 +61,9 @@ export function ModelUsagePerChatModeChart({ data }: Props) {
   }
 
   // One series per chat mode; each value is % of grand total
-  const presentFeatures = [...new Set(filtered.map(d => d.feature))].sort();
+  const presentFeatures = [...new Set(filtered.map(d => d.feature))].sort(
+    (a, b) => a.localeCompare(b),
+  );
 
   const series = presentFeatures.map(feature => ({
     data: displayModels.map(model =>
@@ -73,7 +75,7 @@ export function ModelUsagePerChatModeChart({ data }: Props) {
     ),
     label: chatFeatureLabel(feature),
     stack: 'total',
-    valueFormatter: (v: number | null) => (v !== null ? `${v}%` : ''),
+    valueFormatter: (v: number | null) => (v === null ? '' : `${v}%`),
   }));
 
   return (

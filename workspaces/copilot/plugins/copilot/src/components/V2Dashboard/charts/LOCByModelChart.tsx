@@ -16,23 +16,13 @@
 
 import { BarChart } from '@mui/x-charts/BarChart';
 import { V2MetricsByModelFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { compactNumber } from './chartUtils';
+import { compactNumber, filterLocRowsByMode } from './chartUtils';
 
 interface Props {
   data: V2MetricsByModelFeatureRow[];
   /** 'user' shows Suggested vs Added; 'agent' shows Added vs Deleted */
   mode: 'user' | 'agent';
 }
-
-function isAgentFeature(feature: string): boolean {
-  return feature === 'agent_edit' || feature === 'copilot_cli';
-}
-
-const DROPPED_FEATURES = new Set([
-  'chat_panel_unknown_mode',
-  'chat_panel_plan_mode',
-  'others',
-]);
 
 const DROPPED_MODELS = new Set(['others']);
 
@@ -42,16 +32,11 @@ const NO_DATA = (
   </div>
 );
 
-export function LOCByModelChart({ data, mode }: Props) {
+export function LOCByModelChart({ data, mode }: Readonly<Props>) {
   if (data.length === 0) return NO_DATA;
 
-  const filtered = data.filter(
-    r =>
-      !DROPPED_FEATURES.has(r.feature) &&
-      !DROPPED_MODELS.has(r.model_id.toLowerCase()) &&
-      (mode === 'agent'
-        ? isAgentFeature(r.feature)
-        : !isAgentFeature(r.feature)),
+  const filtered = filterLocRowsByMode(data, mode).filter(
+    row => !DROPPED_MODELS.has(row.model_id.toLowerCase()),
   );
   if (filtered.length === 0) return NO_DATA;
 

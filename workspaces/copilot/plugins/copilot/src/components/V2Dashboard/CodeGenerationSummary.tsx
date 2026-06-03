@@ -20,6 +20,7 @@ import {
   V2DailyTotal,
   V2MetricsByFeatureRow,
 } from '@backstage-community/plugin-copilot-common';
+import { filterLocRowsByMode, DROPPED_LOC_FEATURES } from './charts/chartUtils';
 
 interface Props {
   dailyTotals: V2DailyTotal[];
@@ -36,11 +37,11 @@ function StatCard({
   title,
   value,
   subtitle,
-}: {
+}: Readonly<{
   title: string;
   value: string;
   subtitle: string;
-}) {
+}>) {
   return (
     <InfoCard title={title} noPadding>
       <Flex
@@ -56,11 +57,10 @@ function StatCard({
   );
 }
 
-function isAgentFeature(feature: string): boolean {
-  return feature.includes('agent');
-}
-
-export function CodeGenerationSummary({ dailyTotals, byFeature }: Props) {
+export function CodeGenerationSummary({
+  dailyTotals,
+  byFeature,
+}: Readonly<Props>) {
   // Lines of code changed with AI = sum(loc_added + loc_deleted) across period
   const totalChanged = dailyTotals.reduce(
     (sum, d) => sum + (d.loc_added_sum ?? 0) + (d.loc_deleted_sum ?? 0),
@@ -68,13 +68,14 @@ export function CodeGenerationSummary({ dailyTotals, byFeature }: Props) {
   );
 
   // Agent contribution % = agent LOC / total LOC
-  const agentLOC = byFeature
-    .filter(r => isAgentFeature(r.feature))
-    .reduce(
-      (sum, r) => sum + (r.loc_added_sum ?? 0) + (r.loc_deleted_sum ?? 0),
-      0,
-    );
-  const totalFeatureLOC = byFeature.reduce(
+  const locEligibleRows = byFeature.filter(
+    row => !DROPPED_LOC_FEATURES.has(row.feature),
+  );
+  const agentLOC = filterLocRowsByMode(locEligibleRows, 'agent').reduce(
+    (sum, r) => sum + (r.loc_added_sum ?? 0) + (r.loc_deleted_sum ?? 0),
+    0,
+  );
+  const totalFeatureLOC = locEligibleRows.reduce(
     (sum, r) => sum + (r.loc_added_sum ?? 0) + (r.loc_deleted_sum ?? 0),
     0,
   );
@@ -84,9 +85,10 @@ export function CodeGenerationSummary({ dailyTotals, byFeature }: Props) {
       : 'N/A';
 
   // Average lines deleted by agent = total agent loc_deleted / count of days with agent activity
-  const agentDeletedTotal = byFeature
-    .filter(r => isAgentFeature(r.feature))
-    .reduce((sum, r) => sum + (r.loc_deleted_sum ?? 0), 0);
+  const agentDeletedTotal = filterLocRowsByMode(
+    locEligibleRows,
+    'agent',
+  ).reduce((sum, r) => sum + (r.loc_deleted_sum ?? 0), 0);
   const activeDays = dailyTotals.filter(
     d => (d.daily_active_users ?? 0) > 0,
   ).length;

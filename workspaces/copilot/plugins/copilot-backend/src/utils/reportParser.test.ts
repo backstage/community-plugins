@@ -170,6 +170,7 @@ describe('reportParser', () => {
         byLanguageFeature: [],
         byModelFeature: [],
         byLanguageModel: [],
+        byCli: [],
       });
     });
 
@@ -183,6 +184,7 @@ describe('reportParser', () => {
         byLanguageFeature: [],
         byModelFeature: [],
         byLanguageModel: [],
+        byCli: [],
       });
     });
 
@@ -424,6 +426,7 @@ describe('reportParser', () => {
         byLanguageFeature: [],
         byModelFeature: [],
         byLanguageModel: [],
+        byCli: [],
       });
     });
 

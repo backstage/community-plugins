@@ -16,23 +16,13 @@
 
 import { BarChart } from '@mui/x-charts/BarChart';
 import { V2MetricsByLanguageFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { compactNumber } from './chartUtils';
+import { compactNumber, filterLocRowsByMode } from './chartUtils';
 
 interface Props {
   data: V2MetricsByLanguageFeatureRow[];
   /** 'user' shows Suggested vs Added; 'agent' shows Added vs Deleted */
   mode: 'user' | 'agent';
 }
-
-function isAgentFeature(feature: string): boolean {
-  return feature === 'agent_edit' || feature === 'copilot_cli';
-}
-
-const DROPPED_FEATURES = new Set([
-  'chat_panel_unknown_mode',
-  'chat_panel_plan_mode',
-  'others',
-]);
 
 const DROPPED_LANGUAGES = new Set(['others']);
 
@@ -42,16 +32,11 @@ const NO_DATA = (
   </div>
 );
 
-export function LOCByLanguageChart({ data, mode }: Props) {
+export function LOCByLanguageChart({ data, mode }: Readonly<Props>) {
   if (data.length === 0) return NO_DATA;
 
-  const filtered = data.filter(
-    r =>
-      !DROPPED_FEATURES.has(r.feature) &&
-      !DROPPED_LANGUAGES.has(r.language.toLowerCase()) &&
-      (mode === 'agent'
-        ? isAgentFeature(r.feature)
-        : !isAgentFeature(r.feature)),
+  const filtered = filterLocRowsByMode(data, mode).filter(
+    row => !DROPPED_LANGUAGES.has(row.language.toLowerCase()),
   );
   if (filtered.length === 0) return NO_DATA;
 
