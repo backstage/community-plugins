@@ -129,3 +129,4 @@ yarn.lock                                                               @backsta
 /workspaces/vault                                                       @backstage/community-plugins-maintainers
 /workspaces/wheel-of-names                                              @backstage/community-plugins-maintainers  @philippeckelintive @johannes-kirchner
 /workspaces/xcmetrics                                                   @backstage/community-plugins-maintainers
+/workspaces/healert                                                     @backstage/community-plugins-maintainers  @amgadmag  @israa-mosad
