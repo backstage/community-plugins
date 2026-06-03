@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Popover from '@material-ui/core/Popover';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Text } from '@backstage/ui';
 import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
 import { ShortcutApi } from './api';
 import { alertApiRef, useApi, useAnalytics } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  card: {
-    maxWidth: 400,
-  },
-  header: {
-    marginBottom: theme.spacing(1),
-  },
-  button: {
-    marginTop: theme.spacing(1),
-  },
-}));
+import styles from './AddShortcut.module.css';
 
 type Props = {
   onClose: () => void;
@@ -53,11 +38,11 @@ export const AddShortcut = ({
   api,
   allowExternalLinks,
 }: Props) => {
-  const classes = useStyles();
   const alertApi = useApi(alertApiRef);
   const { pathname, search } = useLocation();
   const [formValues, setFormValues] = useState<FormValues>();
   const open = Boolean(anchorEl);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const analytics = useAnalytics();
 
   const handleSave: SubmitHandler<FormValues> = async ({ url, title }) => {
@@ -79,52 +64,72 @@ export const AddShortcut = ({
     }
 
     onClose();
+    return;
   };
 
   const handlePaste = () => {
     setFormValues({ url: `${pathname}${search}`, title: document.title });
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setFormValues(undefined);
     onClose();
-  };
+  }, [onClose]);
+
+  // Handle click outside to close popover
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target as Node) &&
+        anchorEl &&
+        !anchorEl.contains(event.target as Node)
+      ) {
+        handleClose();
+      }
+    };
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+    return undefined;
+  }, [open, anchorEl, handleClose]);
+
+  if (!open) return null;
 
   return (
-    <Popover
-      open={open}
-      anchorEl={anchorEl}
-      TransitionProps={{ onExit: handleClose }}
-      onClose={onClose}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+    <div
+      ref={popoverRef}
+      style={{
+        position: 'fixed',
+        zIndex: 1300,
+        top: anchorEl ? (anchorEl as any).getBoundingClientRect().bottom : 0,
+        right: anchorEl
+          ? window.innerWidth - (anchorEl as any).getBoundingClientRect().right
+          : 0,
       }}
     >
-      <Card className={classes.card}>
-        <CardHeader
-          className={classes.header}
-          title="Add Shortcut"
-          titleTypographyProps={{ variant: 'subtitle2' }}
-          action={
-            <Button
-              className={classes.button}
-              variant="text"
-              size="small"
-              color="primary"
-              onClick={handlePaste}
-            >
-              Use current page
-            </Button>
-          }
-        />
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <Text variant="body-medium">Add Shortcut</Text>
+          <Button
+            className={styles.button}
+            variant="secondary"
+            onClick={handlePaste}
+          >
+            Use current page
+          </Button>
+        </div>
         <ShortcutForm
           onClose={handleClose}
           onSave={handleSave}
           formValues={formValues}
           allowExternalLinks={allowExternalLinks}
         />
-      </Card>
-    </Popover>
+      </div>
+    </div>
   );
 };
