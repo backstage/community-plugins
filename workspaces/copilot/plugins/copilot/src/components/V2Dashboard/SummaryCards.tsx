@@ -75,7 +75,7 @@ export const SummaryCards = ({ totals, loading }: SummaryCardsProps) => {
           <div
             style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
           >
-            <InfoCard title={card.title} style={{ height: '100%' }}>
+            <InfoCard title={card.title}>
               <Text
                 variant="title-large"
                 style={{ textAlign: 'center', display: 'block' }}

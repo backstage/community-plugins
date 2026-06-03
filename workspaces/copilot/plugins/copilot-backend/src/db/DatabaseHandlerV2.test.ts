@@ -19,7 +19,6 @@ import { Knex } from 'knex';
 import {
   V2DailyTotal,
   V2IngestionLogRow,
-  V2UserMetricRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
@@ -361,29 +360,6 @@ function normalizeDate(day: string | Date): string {
   }
 
   return day.match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? day;
-}
-
-function buildUserMetric(
-  overrides: Partial<V2UserMetricRow> = {},
-): V2UserMetricRow {
-  return {
-    day: '2026-05-01',
-    metrics_type: 'organization',
-    entity_id: 'org-1',
-    user_id: 1,
-    user_login: 'octocat',
-    used_agent: false,
-    used_chat: false,
-    used_cli: false,
-    code_acceptance_activity_count: 5,
-    code_generation_activity_count: 10,
-    loc_added_sum: 100,
-    loc_deleted_sum: 50,
-    loc_suggested_to_add_sum: 150,
-    loc_suggested_to_delete_sum: 75,
-    user_initiated_interaction_count: 3,
-    ...overrides,
-  };
 }
 
 function buildUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {

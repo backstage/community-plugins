@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   DateRangePicker,
@@ -34,7 +34,7 @@ import { parseDate } from '@internationalized/date';
 import { DateTime } from 'luxon';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { CopilotPage } from '../Pages/CopilotPage';
-import { useV2DashboardData, useV2PeriodRange, useV2Teams } from './hooks';
+import { useV2DashboardData, useV2Teams } from './hooks';
 import { CopilotUsageSummary } from './CopilotUsageSummary';
 import { CodeGenerationSummary } from './CodeGenerationSummary';
 import {
@@ -112,7 +112,6 @@ export const V2DashboardPage = () => {
 
   const { data } = useV2DashboardData(params);
   const teams = useV2Teams(type, entityId, from, to);
-  const periodRange = useV2PeriodRange(type, entityId);
 
   const onDateRangeChange = useCallback(
     (value: RangeValue<DateValue> | null) => {
