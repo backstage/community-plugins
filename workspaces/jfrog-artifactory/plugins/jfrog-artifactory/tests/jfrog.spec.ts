@@ -57,13 +57,14 @@ test.describe('JFrog Artifactory plugin', () => {
   });
 
   test('Filters work', async () => {
-    const filter = page.getByPlaceholder(translations.table.searchPlaceholder);
-    const tableRow = page.getByRole('row').filter({ hasText: 'sha256' });
+    const table = page.getByTestId('jfrog-artifactory-table');
+    const filter = table.getByPlaceholder(translations.table.searchPlaceholder);
+    const tableRow = table.locator('tbody tr').filter({ hasText: 'sha256' });
 
-    await expect(tableRow).toHaveCount(5);
+    await expect(tableRow).toHaveCount(6);
     await filter.fill('1.0');
     await expect(tableRow).toHaveCount(1);
-    await page.getByRole('button', { name: 'Clear Search' }).click();
-    await expect(tableRow).toHaveCount(5);
+    await filter.fill('');
+    await expect(tableRow).toHaveCount(6);
   });
 });

@@ -132,7 +132,10 @@ export function JfrogArtifactoryRepository({
   }
 
   return (
-    <div className={styles.tableContainer}>
+    <div
+      className={styles.tableContainer}
+      data-testid="jfrog-artifactory-table"
+    >
       <Header
         title={title}
         customActions={
