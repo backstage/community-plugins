@@ -982,11 +982,6 @@ function newPolicyQueryUser(
 ): PolicyQueryUser | undefined {
   if (user) {
     return {
-      identity: {
-        ownershipEntityRefs: ownershipEntityRefs ?? [],
-        type: 'user',
-        userEntityRef: user,
-      },
       credentials: {
         $$type: '@backstage/BackstageCredentials',
         principal: true,
@@ -996,7 +991,6 @@ function newPolicyQueryUser(
         userEntityRef: user,
         ownershipEntityRefs: ownershipEntityRefs ?? [],
       },
-      token: 'token',
     };
   }
   return undefined;
