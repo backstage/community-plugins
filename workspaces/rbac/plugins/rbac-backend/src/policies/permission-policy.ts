@@ -19,6 +19,7 @@ import type {
   AuthService,
   BackstageUserInfo,
   LoggerService,
+  UserInfoService,
 } from '@backstage/backend-plugin-api';
 import type { ConfigApi } from '@backstage/core-plugin-api';
 import {
@@ -79,6 +80,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     roleMetadataStorage: RoleMetadataStorage,
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
+    userInfo: UserInfoService,
     auth: AuthService,
     conditionValidationLimits?: ConditionValidationLimits,
   ): Promise<RBACPermissionPolicy> {
@@ -180,6 +182,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     return new RBACPermissionPolicy(
       enforcerDelegate,
       auditor,
+      userInfo,
+      auth,
       conditionalStorage,
       preferPermissionPolicy,
       superUserList,
@@ -189,6 +193,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   private constructor(
     private readonly enforcer: EnforcerDelegate,
     private readonly auditor: AuditorService,
+    private readonly userService: UserInfoService,
+    private readonly auth: AuthService,
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
     superUserList?: string[],
@@ -201,7 +207,14 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     request: PolicyQuery,
     user?: PolicyQueryUser,
   ): Promise<PolicyDecision> {
-    const userEntityRef = user?.info.userEntityRef ?? `user without entity`;
+    let userInfo: BackstageUserInfo | undefined;
+    if (user?.credentials && this.auth.isPrincipal(user?.credentials, 'user')) {
+      userInfo = await this.userService.getUserInfo(user.credentials);
+    }
+
+    const userEntityRef = userInfo
+      ? userInfo.userEntityRef
+      : `user without entity`;
 
     const auditorEvent = await createPermissionEvaluationAuditorEvent(
       this.auditor,
@@ -213,7 +226,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       let status = false;
       const action = toPermissionAction(request.permission.attributes);
 
-      if (!user) {
+      if (!user || !userInfo) {
         await auditorEvent.success({
           meta: { result: AuthorizeResult.DENY },
         });
@@ -222,7 +235,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       if (
         this.superUserList!.includes(userEntityRef) ||
-        user.info.ownershipEntityRefs.some(ref =>
+        userInfo.ownershipEntityRefs.some(ref =>
           this.superUserList!.includes(ref),
         )
       ) {
@@ -264,7 +277,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           userEntityRef,
           request,
           roles,
-          user.info,
+          userInfo,
         );
 
         if (this.preferPermissionPolicy) {
