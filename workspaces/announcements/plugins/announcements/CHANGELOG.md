@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 2.9.1
+
+### Patch Changes
+
+- 1df945e: Remove the deprecated navItem. This component is no longer needed as a separate extension in the new frontend system
+
 ## 2.9.0
 
 ### Minor Changes
