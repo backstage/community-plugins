@@ -24,6 +24,7 @@ import {
 } from '@backstage/plugin-permission-node';
 
 import { AllowAllPolicy } from './allow-all-policy';
+import { mockCredentials } from '@backstage/backend-test-utils';
 
 describe('Allow All Policy', () => {
   describe('Allow all policy should allow all', () => {
@@ -61,11 +62,7 @@ function newPolicyQueryUser(
 ): PolicyQueryUser | undefined {
   if (user) {
     return {
-      credentials: {
-        $$type: '@backstage/BackstageCredentials',
-        principal: true,
-        expiresAt: new Date('2021-01-01T00:00:00Z'),
-      },
+      credentials: mockCredentials.user(user),
       info: {
         userEntityRef: user,
         ownershipEntityRefs: ownershipEntityRefs ?? [],
