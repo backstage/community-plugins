@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-sonarqube-backend",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "sonarqube",
