@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IconComponent } from '@backstage/core-plugin-api';
+import type { ComponentType } from 'react';
 import {
   RiAddCircleLine,
   RiBookOpenLine,
@@ -27,7 +27,7 @@ import {
 const createSidebarIcon = (
   Icon: typeof RiHomeLine,
   size = 24,
-): IconComponent => {
+): ComponentType => {
   const SidebarIcon = () => <Icon size={size} />;
   return SidebarIcon;
 };
