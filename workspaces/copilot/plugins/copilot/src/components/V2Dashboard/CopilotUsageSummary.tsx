@@ -58,7 +58,9 @@ export function CopilotUsageSummary({
 
   const ideActiveUsers = latest?.monthly_active_users ?? 0;
   const agentAdoption =
-    latest && latest.monthly_active_users > 0
+    latest &&
+    latest.monthly_active_users !== undefined &&
+    latest.monthly_active_users > 0
       ? Math.round(
           ((latest.monthly_active_agent_users ?? 0) /
             latest.monthly_active_users) *

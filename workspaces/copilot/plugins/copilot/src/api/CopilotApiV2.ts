@@ -48,7 +48,7 @@ export interface CopilotApiV2 {
   getPrMetrics(params: V2MetricsParams): Promise<V2PrMetricsRow[]>;
   getByFeature(params: V2MetricsParams): Promise<V2MetricsByFeatureRow[]>;
   getByIde(params: V2MetricsParams): Promise<V2MetricsByIdeRow[]>;
-  getByLanguage(
+  getLanguageByFeature(
     params: V2MetricsParams & { feature?: string },
   ): Promise<V2MetricsByLanguageFeatureRow[]>;
   getTeams(

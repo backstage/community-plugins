@@ -852,8 +852,18 @@ export interface V2DailyTotal {
   entity_id: string;
   team_slug: string;
   daily_active_users: number;
-  weekly_active_users: number;
-  monthly_active_users: number;
+  /**
+   * Weekly rolling window active users count.
+   * Only available for organization/enterprise-level aggregates.
+   * Undefined for team-level aggregates (which use daily user data only).
+   */
+  weekly_active_users?: number;
+  /**
+   * Monthly rolling window active users count.
+   * Only available for organization/enterprise-level aggregates.
+   * Undefined for team-level aggregates (which use daily user data only).
+   */
+  monthly_active_users?: number;
   daily_active_cli_users?: number;
   monthly_active_agent_users?: number;
   monthly_active_chat_users?: number;

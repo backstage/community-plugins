@@ -35,8 +35,25 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
       byDay.set(row.day, { ...row, team_slug: '' });
     } else {
       existing.daily_active_users += row.daily_active_users;
-      existing.weekly_active_users += row.weekly_active_users;
-      existing.monthly_active_users += row.monthly_active_users;
+      // Only aggregate weekly/monthly if both values are defined (not for team-level rows)
+      if (
+        existing.weekly_active_users !== undefined &&
+        row.weekly_active_users !== undefined
+      ) {
+        existing.weekly_active_users += row.weekly_active_users;
+      } else if (existing.weekly_active_users !== undefined) {
+        // If we had a value but the new row doesn't, clear it
+        existing.weekly_active_users = undefined;
+      }
+      if (
+        existing.monthly_active_users !== undefined &&
+        row.monthly_active_users !== undefined
+      ) {
+        existing.monthly_active_users += row.monthly_active_users;
+      } else if (existing.monthly_active_users !== undefined) {
+        // If we had a value but the new row doesn't, clear it
+        existing.monthly_active_users = undefined;
+      }
       existing.daily_active_cli_users =
         (existing.daily_active_cli_users ?? 0) +
         (row.daily_active_cli_users ?? 0);
@@ -59,5 +76,7 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
     }
   }
 
-  return [...byDay.values()];
+  // Sort by day to ensure deterministic ordering. Charts expect chronologically
+  // sorted data for consistent x-axis labeling and hover behavior.
+  return [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day));
 }

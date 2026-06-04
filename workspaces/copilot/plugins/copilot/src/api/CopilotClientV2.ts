@@ -68,7 +68,7 @@ export class CopilotClientV2 implements CopilotApiV2 {
     );
   }
 
-  public async getByLanguage(
+  public async getLanguageByFeature(
     params: V2MetricsParams & { feature?: string },
   ): Promise<V2MetricsByLanguageFeatureRow[]> {
     const queryString = this.buildMetricsQuery(params);

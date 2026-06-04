@@ -102,12 +102,12 @@ describe('CopilotClientV2', () => {
     ).rejects.toThrow();
   });
 
-  it('getByLanguage includes feature param when provided', async () => {
+  it('getLanguageByFeature includes feature param when provided', async () => {
     mockFetch.mockResolvedValueOnce(
       new Response(JSON.stringify([]), { status: 200 }),
     );
 
-    client.getByLanguage({
+    await client.getLanguageByFeature({
       type: 'enterprise',
       entityId: 'ent-1',
       from: '2026-05-01',
