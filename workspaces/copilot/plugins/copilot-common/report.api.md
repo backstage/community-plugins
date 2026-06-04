@@ -287,14 +287,12 @@ export interface V2DailyTotal {
   monthly_active_agent_users?: number;
   // (undocumented)
   monthly_active_chat_users?: number;
-  // (undocumented)
-  monthly_active_users: number;
+  monthly_active_users?: number;
   // (undocumented)
   team_slug: string;
   // (undocumented)
   user_initiated_interaction_count: number;
-  // (undocumented)
-  weekly_active_users: number;
+  weekly_active_users?: number;
 }
 
 // @public
