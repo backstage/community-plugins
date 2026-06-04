@@ -24,8 +24,8 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--bui-space-2);
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--bui-white) ;
+    color: var(--bui-black);
   }
 
   .actionRoot :global(button) {
@@ -34,8 +34,8 @@
 
   @media (prefers-color-scheme: dark) {
     .actionRoot {
-      background-color: #424242 !important;
-      color: #ffffff;
+     background-color: var(--bui-gray-8) !important;
+      color: var(--bui-white);
     }
 
     .actionRoot :global(button) {
@@ -45,8 +45,8 @@
 
   /* Support for data-theme attribute */
   [data-theme="dark"] .actionRoot {
-    background-color: #424242 !important;
-    color: #ffffff;
+     background-color: var(--bui-gray-8) !important;
+      color: var(--bui-white);
   }
 
   [data-theme="dark"] .actionRoot :global(button) {
