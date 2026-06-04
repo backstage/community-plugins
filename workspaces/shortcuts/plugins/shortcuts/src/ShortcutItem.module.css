@@ -1,9 +1,9 @@
 @layer components {
-  .root:hover #edit {
+  .root:hover .editButton {
     visibility: visible;
   }
 
-  .button {
+  .editButton {
     visibility: hidden;
   }
 

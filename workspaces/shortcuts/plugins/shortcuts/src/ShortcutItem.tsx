@@ -49,7 +49,14 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
   const [anchorEl, setAnchorEl] = useState<Element | undefined>();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleClick = () => {
+  const handleClick = (e?: any) => {
+    // Prevent event propagation to parent SidebarItem link
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     if (buttonRef.current) {
       setAnchorEl(buttonRef.current);
     }
@@ -73,9 +80,8 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
           >
             <ButtonIcon
               ref={buttonRef}
-              id="edit"
               data-testid="edit"
-              className={styles.button}
+              className={styles.editButton}
               icon={<RiEdit2Line className={styles.icon} size={16} />}
               onPress={handleClick}
               aria-label="edit"
