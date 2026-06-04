@@ -17,8 +17,6 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-
-import { PolicyBuilder } from './service/policy-builder';
 import {
   PluginIdProvider,
   PluginIdProviderExtensionPoint,
@@ -28,6 +26,8 @@ import {
 } from '@backstage-community/plugin-rbac-node';
 
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+
+import { PolicyBuilder } from './service/policy-builder';
 
 /**
  * @public

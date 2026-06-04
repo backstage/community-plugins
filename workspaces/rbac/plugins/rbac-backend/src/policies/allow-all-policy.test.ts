@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { mockCredentials } from '@backstage/backend-test-utils';
 import {
   AuthorizeResult,
   createPermission,
@@ -24,7 +25,6 @@ import {
 } from '@backstage/plugin-permission-node';
 
 import { AllowAllPolicy } from './allow-all-policy';
-import { mockCredentials } from '@backstage/backend-test-utils';
 
 describe('Allow All Policy', () => {
   describe('Allow all policy should allow all', () => {
