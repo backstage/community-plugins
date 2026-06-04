@@ -1565,6 +1565,7 @@ __metadata:
     "@backstage/cli": "npm:^0.36.0"
     "@backstage/plugin-auth-node": "npm:^0.7.0"
     "@types/express": "npm:^5.0.6"
+    jose: "npm:^5.0.0"
     openid-client: "npm:^5.6.5"
     zod: "npm:^3.25.76 || ^4.0.0"
   languageName: unknown

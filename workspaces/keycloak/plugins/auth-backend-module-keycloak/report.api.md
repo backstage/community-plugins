@@ -55,5 +55,20 @@ export namespace keycloakSignInResolvers {
       }
     | undefined
   >;
+  const oidcSubClaimMatchingKeycloakUserId: SignInResolverFactory<
+    OAuthAuthenticatorResult<UserinfoResponse>,
+    | {
+        dangerouslyAllowSignInWithoutUserInCatalog?: boolean | undefined;
+      }
+    | undefined
+  >;
+  const ldapUuidMatchingAnnotation: SignInResolverFactory<
+    OAuthAuthenticatorResult<UserinfoResponse>,
+    | {
+        dangerouslyAllowSignInWithoutUserInCatalog?: boolean | undefined;
+        ldapUuidKey?: string | undefined;
+      }
+    | undefined
+  >;
 }
 ```
