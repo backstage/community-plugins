@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-common
 
+## 0.21.0
+
+### Minor Changes
+
+- ea738a2: Backstage version bump to v1.51.0
+
 ## 0.20.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 2.10.0
+
+### Minor Changes
+
+- ea738a2: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [ea738a2]
+  - @backstage-community/plugin-announcements-common@0.21.0
+  - @backstage-community/plugin-announcements-react@0.26.0
+
 ## 2.9.1
 
 ### Patch Changes
