@@ -134,7 +134,7 @@ export async function createRouter(
       } catch (error) {
         const statusCode = getStatusCodeForError(error);
         const message =
-          error instanceof Error ? error.message : 'Erreur interne du serveur';
+          error instanceof Error ? error.message : 'Internal server error';
         logger.error(`GET /workflows failed (${statusCode}): ${message}`);
         res.status(statusCode).json({ error: message });
       }
@@ -160,7 +160,7 @@ export async function createRouter(
       } catch (error) {
         const statusCode = getStatusCodeForError(error);
         const message =
-          error instanceof Error ? error.message : 'Erreur interne du serveur';
+          error instanceof Error ? error.message : 'Internal server error';
         logger.error(
           `GET /workflows/${namespace}/${name} failed (${statusCode}): ${message}`,
         );
