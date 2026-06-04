@@ -106,13 +106,18 @@ export const AddShortcut = ({
       style={{
         position: 'fixed',
         zIndex: 1300,
-        top: anchorEl ? (anchorEl as any).getBoundingClientRect().bottom : 0,
-        right: anchorEl
-          ? window.innerWidth - (anchorEl as any).getBoundingClientRect().right
+        top: anchorEl ? (anchorEl as any).getBoundingClientRect().top : 0,
+        left: anchorEl
+          ? (anchorEl as any).getBoundingClientRect().right + 10
           : 0,
       }}
     >
-      <div className={styles.card}>
+      <div
+        className={styles.card}
+        style={{
+          backgroundColor: 'light-dark(#ffffff, #424242)',
+        }}
+      >
         <div className={styles.header}>
           <Text variant="body-medium">Add Shortcut</Text>
           <Button

@@ -16,7 +16,7 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import { Button, Text } from '@backstage/ui';
+import { Text } from '@backstage/ui';
 import { ButtonIcon } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 import { ShortcutForm } from './ShortcutForm';
@@ -123,13 +123,18 @@ export const EditShortcut = ({
       style={{
         position: 'fixed',
         zIndex: 1300,
-        top: anchorEl ? (anchorEl as any).getBoundingClientRect().bottom : 0,
-        right: anchorEl
-          ? window.innerWidth - (anchorEl as any).getBoundingClientRect().right
+        top: anchorEl ? (anchorEl as any).getBoundingClientRect().top : 0,
+        left: anchorEl
+          ? (anchorEl as any).getBoundingClientRect().right + 10
           : 0,
       }}
     >
-      <div className={styles.card}>
+      <div
+        className={styles.card}
+        style={{
+          backgroundColor: 'light-dark(#ffffff, #424242)',
+        }}
+      >
         <div className={styles.header}>
           <Text variant="body-medium">Edit Shortcut</Text>
           <ButtonIcon
