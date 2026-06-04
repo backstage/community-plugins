@@ -28,9 +28,8 @@ import {
   V2UserMetricRow,
   V2UserTeam,
   V2UserTeamRow,
+  MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
-
-type MetricsScope = 'enterprise' | 'organization';
 
 export interface ParsedEnterpriseDocument {
   dailyTotals: V2DailyTotal[];

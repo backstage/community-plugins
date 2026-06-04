@@ -17,9 +17,10 @@
 import useAsync from 'react-use/lib/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { copilotApiV2Ref } from '../../../api';
+import { MetricsScope } from '@backstage-community/plugin-copilot-common';
 
 export function useV2Teams(
-  type: 'enterprise' | 'organization',
+  type: MetricsScope,
   entityId: string,
   from?: string,
   to?: string,

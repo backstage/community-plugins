@@ -71,7 +71,7 @@ export interface Breakdown {
  *
  * @public
  */
-export type MetricsType = 'enterprise' | 'organization';
+export type MetricsType = MetricsScope;
 
 /**
  * Represents a detailed breakdown of metrics by language and editor.
@@ -848,7 +848,7 @@ export interface V2UserTeam {
 export interface V2DailyTotal {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   daily_active_users: number;
@@ -870,7 +870,7 @@ export interface V2DailyTotal {
 export interface V2PrMetricsRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   total_created: number;
@@ -893,7 +893,7 @@ export interface V2PrMetricsRow {
 export interface V2MetricsByFeatureRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   feature: string;
@@ -910,7 +910,7 @@ export interface V2MetricsByFeatureRow {
 export interface V2MetricsByIdeRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   ide: string;
@@ -927,7 +927,7 @@ export interface V2MetricsByIdeRow {
 export interface V2MetricsByLanguageFeatureRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   language: string;
@@ -944,7 +944,7 @@ export interface V2MetricsByLanguageFeatureRow {
 export interface V2MetricsByModelFeatureRow {
   id?: number;
   day: string;
-  metrics_type: string;
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   model_id: string;
@@ -962,7 +962,7 @@ export interface V2MetricsByModelFeatureRow {
 export interface V2MetricsByLanguageModelRow {
   id?: number;
   day: string;
-  metrics_type: string;
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   language: string;
@@ -981,7 +981,7 @@ export interface V2MetricsByLanguageModelRow {
 export interface V2MetricsByCliRow {
   id?: number;
   day: string;
-  metrics_type: string;
+  metrics_type: MetricsScope;
   entity_id: string;
   team_slug: string;
   prompt_count: number;
@@ -996,7 +996,7 @@ export interface V2MetricsByCliRow {
 export interface V2UserMetricRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   user_id: number;
   user_login: string;
@@ -1016,7 +1016,7 @@ export interface V2UserMetricRow {
 export interface V2UserTeamRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   user_id: number;
   user_login: string;
@@ -1028,7 +1028,7 @@ export interface V2UserTeamRow {
 export interface V2IngestionLogRow {
   id?: number;
   day: string;
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   entity_id: string;
   ingested_at?: string;
   status: 'success' | 'error' | 'partial';
@@ -1063,3 +1063,10 @@ export interface V2DashboardData {
   byLanguageModel: V2MetricsByLanguageModelRow[];
   prMetrics: V2PrMetricsRow[];
 }
+
+/**
+ * Represents the scope of metrics data, either at the enterprise level or organization level.
+ *
+ * @public
+ */
+export type MetricsScope = 'enterprise' | 'organization';

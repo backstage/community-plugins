@@ -179,7 +179,10 @@ export interface Metric {
 }
 
 // @public
-export type MetricsType = 'enterprise' | 'organization';
+export type MetricsScope = 'enterprise' | 'organization';
+
+// @public
+export type MetricsType = MetricsScope;
 
 // @public
 export interface PeriodRange {
@@ -279,7 +282,7 @@ export interface V2DailyTotal {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   monthly_active_agent_users?: number;
   // (undocumented)
@@ -381,7 +384,7 @@ export interface V2IngestionLogRow {
   // (undocumented)
   ingested_at?: string;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   source: 'scheduled' | 'backfill' | 'manual';
   // (undocumented)
@@ -399,7 +402,7 @@ export interface V2MetricsByCliRow {
   // (undocumented)
   id?: number;
   // (undocumented)
-  metrics_type: string;
+  metrics_type: MetricsScope;
   // (undocumented)
   output_tokens_sum: number;
   // (undocumented)
@@ -457,7 +460,7 @@ export interface V2MetricsByFeatureRow {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   team_slug: string;
   // (undocumented)
@@ -507,7 +510,7 @@ export interface V2MetricsByIdeRow {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   team_slug: string;
   // (undocumented)
@@ -559,7 +562,7 @@ export interface V2MetricsByLanguageFeatureRow {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   team_slug: string;
 }
@@ -587,7 +590,7 @@ export interface V2MetricsByLanguageModelRow {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: string;
+  metrics_type: MetricsScope;
   // (undocumented)
   model_id: string;
   // @deprecated (undocumented)
@@ -619,7 +622,7 @@ export interface V2MetricsByModelFeatureRow {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: string;
+  metrics_type: MetricsScope;
   // (undocumented)
   model_id: string;
   // (undocumented)
@@ -675,7 +678,7 @@ export interface V2PrMetricsRow {
   // (undocumented)
   median_minutes_to_merge_copilot_reviewed?: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   team_slug: string;
   // (undocumented)
@@ -786,7 +789,7 @@ export interface V2UserMetricRow {
   // (undocumented)
   loc_suggested_to_delete_sum: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   used_agent: boolean;
   // (undocumented)
@@ -828,7 +831,7 @@ export interface V2UserTeamRow {
   // (undocumented)
   id?: number;
   // (undocumented)
-  metrics_type: 'enterprise' | 'organization';
+  metrics_type: MetricsScope;
   // (undocumented)
   team_id: number;
   // (undocumented)

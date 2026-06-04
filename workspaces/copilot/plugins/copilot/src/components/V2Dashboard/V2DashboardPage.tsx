@@ -54,6 +54,7 @@ import {
   LOCByModelChart,
   LOCByLanguageChart,
 } from './charts';
+import { MetricsScope } from '@backstage-community/plugin-copilot-common';
 
 function ChartCard({
   title,
@@ -79,14 +80,14 @@ export const V2DashboardPage = () => {
     | 'organization'
     | undefined;
 
-  const preferredType: 'enterprise' | 'organization' = (() => {
+  const preferredType: MetricsScope = (() => {
     if (defaultView === 'enterprise' || defaultView === 'organization') {
       return defaultView;
     }
     return enterprise ? 'enterprise' : 'organization';
   })();
 
-  const type: 'enterprise' | 'organization' = (() => {
+  const type: MetricsScope = (() => {
     if (preferredType === 'enterprise') {
       return enterprise ? 'enterprise' : 'organization';
     }

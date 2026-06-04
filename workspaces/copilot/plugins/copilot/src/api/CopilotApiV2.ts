@@ -26,6 +26,7 @@ import {
   V2BackfillStatus,
   V2DashboardData,
   PeriodRange,
+  MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
 
 export const copilotApiV2Ref: ApiRef<CopilotApiV2> = createApiRef<CopilotApiV2>(
@@ -35,7 +36,7 @@ export const copilotApiV2Ref: ApiRef<CopilotApiV2> = createApiRef<CopilotApiV2>(
 );
 
 export interface V2MetricsParams {
-  type: 'enterprise' | 'organization';
+  type: MetricsScope;
   entityId: string;
   from: string;
   to: string;

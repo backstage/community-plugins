@@ -23,6 +23,7 @@ import {
   V2MetricsByLanguageModelRow,
   V2UserMetricRow,
   V2UserTeamRow,
+  MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
 import { UserBreakdownData } from '../utils/reportParser';
 
@@ -45,7 +46,7 @@ export function aggregateTeamMetrics(
   userTeams: V2UserTeamRow[],
   userBreakdowns: UserBreakdownData[],
   day: string,
-  metricsType: 'enterprise' | 'organization',
+  metricsType: MetricsScope,
   entityId: string,
 ): TeamAggregates {
   const filteredUserMetrics = userMetrics.filter(
@@ -315,7 +316,7 @@ export function aggregateTeamMetrics(
       entity_id: entityId,
       team_slug: teamSlug,
       daily_active_users: activeUsers.size,
-      weekly_active_users: 0,
+      weekly_active_users: activeUsers.size,
       monthly_active_users: activeUsers.size,
       monthly_active_agent_users: agentUsers,
       monthly_active_chat_users: chatUsers,

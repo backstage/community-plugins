@@ -54,7 +54,7 @@
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/theme": "backstage:^",
-    "@backstage/ui": "^0.15.0",
+    "@backstage/ui": "backstage:^",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@internationalized/date": "^3.12.1",

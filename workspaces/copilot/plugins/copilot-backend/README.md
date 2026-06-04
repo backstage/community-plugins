@@ -169,10 +169,10 @@ Legacy read endpoints remain mounted under `/api/copilot/legacy/*` while users v
 
 GitHub supports different auth methods depending on which API you are using.
 
-- Enterprise API: [only supports classic PAT tokens](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage?apiVersion=2022-11-28#get-a-summary-of-copilot-usage-for-enterprise-members)
-- Organization API: [supports app tokens, classic PATs, and fine-grained PATs](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage?apiVersion=2022-11-28#get-a-summary-of-copilot-usage-for-organization-members)
+- Enterprise API: [supports GitHub Apps, classic PAT tokens, and fine-grained PATs](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage?apiVersion=2022-11-28#get-a-summary-of-copilot-usage-for-enterprise-members)
+- Organization API: [supports GitHub Apps, classic PATs, and fine-grained PATs](https://docs.github.com/en/enterprise-cloud@latest/rest/copilot/copilot-usage?apiVersion=2022-11-28#get-a-summary-of-copilot-usage-for-organization-members)
 
-This plugin supports both schemes and detects the best scheme based on which API scopes are configured.
+This plugin uses the report-based API and supports both credential types. Authentication is configured via the integrations config in your app-config.
 
 ## GitHub Token And App Scopes
 

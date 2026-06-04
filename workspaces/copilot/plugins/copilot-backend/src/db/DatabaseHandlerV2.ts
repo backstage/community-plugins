@@ -29,13 +29,12 @@ import {
   V2PrMetricsRow,
   V2UserMetricRow,
   V2UserTeamRow,
+  MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
 import { DateTime } from 'luxon';
 import { Knex } from 'knex';
 import { migrationsDir } from './DatabaseHandler';
 import { batchInsertInChunks } from '../utils/batchInsert';
-
-type MetricsScope = 'enterprise' | 'organization';
 
 type Options = {
   database: DatabaseService;

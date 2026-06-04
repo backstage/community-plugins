@@ -19,11 +19,10 @@ import { V2DailyTotal } from '@backstage-community/plugin-copilot-common';
 /**
  * Aggregate V2DailyTotal rows by day, summing all numeric fields.
  *
- * When "all teams" is selected the API returns one row per (day, team_slug).
- * Charts that build an x-axis from `data.map(d => d.day)` end up with
- * duplicate day labels, which breaks MUI x-charts band-scale hover behaviour.
- * This function collapses those duplicate rows into a single row per day so
- * every chart sees exactly one entry per date.
+ * Defensively aggregates duplicate day rows (which can occur from team rollups
+ * or other edge cases) into a single row per day. This prevents downstream
+ * charts from receiving duplicate day labels which breaks MUI x-charts band-scale
+ * hover behaviour.
  */
 export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
   const byDay = new Map<string, V2DailyTotal>();
@@ -31,7 +30,9 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
   for (const row of data) {
     const existing = byDay.get(row.day);
     if (!existing) {
-      byDay.set(row.day, { ...row });
+      // When creating a new aggregated row, set team_slug to empty string
+      // to indicate this is an aggregated row representing all teams
+      byDay.set(row.day, { ...row, team_slug: '' });
     } else {
       existing.daily_active_users += row.daily_active_users;
       existing.weekly_active_users += row.weekly_active_users;

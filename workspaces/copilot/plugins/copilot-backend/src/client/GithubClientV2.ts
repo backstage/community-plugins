@@ -17,7 +17,10 @@ import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Octokit } from '@octokit/rest';
 import { createAppAuth } from '@octokit/auth-app';
-import { ReportEnvelope } from '@backstage-community/plugin-copilot-common';
+import {
+  MetricsScope,
+  ReportEnvelope,
+} from '@backstage-community/plugin-copilot-common';
 import {
   CopilotConfig,
   getCopilotConfig,
@@ -59,9 +62,7 @@ export class GithubClientV2 {
     return new GithubClientV2(info, config, logger);
   }
 
-  private async getOctokit(
-    type: 'enterprise' | 'organization',
-  ): Promise<Octokit> {
+  private async getOctokit(type: MetricsScope): Promise<Octokit> {
     const credentials = await getGithubCredentials(
       this.config,
       this.copilotConfig,
@@ -218,12 +219,19 @@ export class GithubClientV2 {
   }
 
   private async downloadText(url: string): Promise<string> {
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      throw new Error(`Malformed URL: ${url}`);
+    }
+
     if (!isAllowedDownloadHost(url)) {
       throw new Error(
-        `Refused to download from disallowed host: ${new URL(url).hostname}`,
+        `Refused to download from disallowed host: ${parsedUrl.hostname}`,
       );
     }
-    const { origin, pathname } = new URL(url);
+    const { origin, pathname } = parsedUrl;
     this.logger.debug(
       `[GithubClientV2] Downloading document: ${origin}${pathname}`,
     );

@@ -17,7 +17,10 @@
 import { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { DateTime } from 'luxon';
-import { V2UserMetricRow } from '@backstage-community/plugin-copilot-common';
+import {
+  MetricsScope,
+  V2UserMetricRow,
+} from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
 import {
@@ -28,8 +31,6 @@ import {
   UserBreakdownData,
 } from '../utils/reportParser';
 import { aggregateTeamMetrics } from '../utils/teamAggregator';
-
-type MetricsScope = 'enterprise' | 'organization';
 
 type IngestSource = 'scheduled' | 'backfill';
 

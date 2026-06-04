@@ -108,7 +108,7 @@ export const V2DashboardPage = copilotPlugin.provide(
   createRoutableExtension({
     name: 'V2DashboardPage',
     component: () => import('./components').then(m => m.V2DashboardPage),
-    mountPoint: v2DashboardRouteRef as unknown as RouteRef<undefined>,
+    mountPoint: v2DashboardRouteRef as unknown as RouteRef<any>,
   }),
 );
 
@@ -124,6 +124,6 @@ export const CopilotLegacyPage = copilotPlugin.provide(
   createRoutableExtension({
     name: 'CopilotLegacyPage',
     component: () => import('./components/Pages').then(m => m.HomePage),
-    mountPoint: legacyCopilotRouteRef as unknown as RouteRef<undefined>,
+    mountPoint: legacyCopilotRouteRef as unknown as RouteRef<any>,
   }),
 );

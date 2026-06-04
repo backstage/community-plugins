@@ -107,8 +107,7 @@ describe('CopilotClientV2', () => {
       new Response(JSON.stringify([]), { status: 200 }),
     );
 
-    // eslint-disable-next-line testing-library/no-await-sync-queries
-    await client.getByLanguage({
+    client.getByLanguage({
       type: 'enterprise',
       entityId: 'ent-1',
       from: '2026-05-01',
