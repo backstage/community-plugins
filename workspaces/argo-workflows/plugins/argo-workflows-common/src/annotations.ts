@@ -23,7 +23,7 @@ export enum ArgoWorkflowsAnnotations {
   /**
    * Enables the CI/CD feature for catalog entities.
    *
-   * Key is `argoworkflows.argoproj.io/cicd`, value should be set to `"true"`.
+   * Key is `argoworkflows.argoproj.io/workflow`, value should be set to `"true"`.
    *
    * Quotes are required because catalog entity annotation values must be a string.
    */

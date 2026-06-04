@@ -23,7 +23,7 @@ import { ArgoWorkflowsAnnotations } from './annotations';
  *
  * This means that the catalog entity has one of these annotations set:
  *
- * 1. `argoworkflows.argoproj.io/cicd: "true"` (preferred), or
+ * 1. `argoworkflows.argoproj.io/workflow: "true"` (preferred), or
  * 2. `argoworkflows.argoproj.io/workflow-selector` is defined with a
  *    non-empty value, or
  * 3. `backstage.io/kubernetes-label-selector` is defined with a
