@@ -4,8 +4,22 @@
     padding: var(--bui-space-4);
     border-radius: var(--bui-radius-2);
     border: 1px solid var(--bui-border-1);
-    background-color: var(--bui-bg-surface-1);
+    background-color: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #000000;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background-color: #424242 !important;
+      color: #ffffff;
+    }
+  }
+
+  /* Support for data-theme attribute */
+  [data-theme="dark"] .card {
+    background-color: #424242 !important;
+    color: #ffffff;
   }
 
   .header {

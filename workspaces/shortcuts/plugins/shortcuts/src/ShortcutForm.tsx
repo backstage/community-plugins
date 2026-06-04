@@ -79,7 +79,12 @@ export const ShortcutForm = ({
 
   return (
     <>
-      <div style={{ padding: 'var(--bui-space-4)' }}>
+      <div
+        style={{
+          padding: 'var(--bui-space-4)',
+          backgroundColor: 'light-dark(#ffffff, #424242)',
+        }}
+      >
         <Controller
           name="url"
           control={control}
@@ -156,7 +161,12 @@ export const ShortcutForm = ({
           )}
         />
       </div>
-      <div className={styles.actionRoot}>
+      <div
+        className={styles.actionRoot}
+        style={{
+          backgroundColor: 'light-dark(#ffffff, #424242)',
+        }}
+      >
         <Button variant="primary" onClick={handleSubmit(onSave)}>
           Save
         </Button>
