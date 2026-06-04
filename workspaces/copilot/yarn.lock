@@ -1873,7 +1873,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
-    "@backstage/ui": "npm:^0.15.0"
+    "@backstage/ui": "backstage:^"
     "@emotion/react": "npm:^11.13.0"
     "@emotion/styled": "npm:^11.13.0"
     "@internationalized/date": "npm:^3.12.1"
