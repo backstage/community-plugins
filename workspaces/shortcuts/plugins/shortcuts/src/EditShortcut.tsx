@@ -94,6 +94,31 @@ export const EditShortcut = ({
   }, [onClose]);
 
   // Handle click outside to close popover
+  /**
+   * Positioning Strategy:
+   *
+   * The EditShortcut popover uses a simple fixed-position approach with `getBoundingClientRect()`
+   * for anchor positioning. This replaces the MUI Popover component from the previous implementation.
+   *
+   * Design Rationale:
+   * - The anchor button (edit icon) is in the Backstage sidebar (a stable, non-scrolling container)
+   * - User interactions are confined to the sidebar area with limited scroll/resize scenarios
+   * - The form closes when clicked outside, mitigating off-screen visibility concerns
+   * - Keeping the implementation lightweight and dependency-free improves bundle size
+   * - The current approach provides acceptable UX for this specific use case
+   *
+   * Future Improvements (if needed):
+   * - For complex scroll/viewport collision scenarios, consider @floating-ui/react
+   * - For panel flipping/shifting behavior, integrate Popper or Floating UI library
+   * - Monitor user feedback on positioning accuracy during scrolling/resizing
+   *
+   * Trade-offs Accepted:
+   * ✓ Simpler, lighter implementation
+   * ✓ Fewer external dependencies
+   * ✗ No automatic viewport collision detection
+   * ✗ No automatic repositioning on scroll/resize (but sidebar is typically fixed)
+   * ✗ Manual position updates if needed (currently not required)
+   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
