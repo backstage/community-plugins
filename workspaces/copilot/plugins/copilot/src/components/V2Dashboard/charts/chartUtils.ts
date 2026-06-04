@@ -120,6 +120,59 @@ export function isAgentCodeChangeFeature(feature: string): boolean {
   return AGENT_CODE_CHANGE_FEATURES.has(feature);
 }
 
+/**
+ * Feature keys used by the model-level LOC charts to classify agent rows.
+ * Intentionally narrower than {@link AGENT_CODE_CHANGE_FEATURES}: the model
+ * breakdown only splits on pure agent-driven features (not chat edit modes).
+ */
+export const MODEL_AGENT_FEATURES = new Set(['agent_edit', 'copilot_cli']);
+
+export function isAgentModelFeature(feature: string): boolean {
+  return MODEL_AGENT_FEATURES.has(feature);
+}
+
+/** Shared color tokens for user-initiated LOC charts. */
+export const USER_LOC_COLORS = {
+  suggested: '#81C784',
+  added: '#2E7D32',
+} as const;
+
+/** Shared color tokens for agent-initiated LOC charts. */
+export const AGENT_LOC_COLORS = {
+  added: '#CE93D8',
+  deleted: '#7B1FA2',
+} as const;
+
+interface LocRow {
+  loc_suggested_to_add_sum?: number | null;
+  loc_added_sum?: number | null;
+  loc_deleted_sum?: number | null;
+}
+
+/**
+ * Aggregates LOC metrics into a map keyed by the value returned by getKey.
+ * Returns Map<key, { suggested, added, deleted }>.
+ */
+export function aggregateLocTotals<T extends LocRow>(
+  rows: T[],
+  getKey: (row: T) => string,
+): Map<string, { suggested: number; added: number; deleted: number }> {
+  const totals = new Map<
+    string,
+    { suggested: number; added: number; deleted: number }
+  >();
+  for (const row of rows) {
+    const key = getKey(row);
+    const existing = totals.get(key) ?? { suggested: 0, added: 0, deleted: 0 };
+    totals.set(key, {
+      suggested: existing.suggested + (row.loc_suggested_to_add_sum ?? 0),
+      added: existing.added + (row.loc_added_sum ?? 0),
+      deleted: existing.deleted + (row.loc_deleted_sum ?? 0),
+    });
+  }
+  return totals;
+}
+
 export function filterChatRows<T extends FeatureRow>(rows: T[]): T[] {
   return rows.filter(row => isChatFeature(row.feature));
 }

@@ -50,9 +50,12 @@ import {
   LanguageUsageDonut,
   ModelUsagePerLanguageChart,
   DailyLOCChart,
-  LOCByFeatureChart,
-  LOCByModelChart,
-  LOCByLanguageChart,
+  UserLOCByFeatureChart,
+  AgentLOCByFeatureChart,
+  UserLOCByModelChart,
+  AgentLOCByModelChart,
+  UserLOCByLanguageChart,
+  AgentLOCByLanguageChart,
 } from './charts';
 import { MetricsScope } from '@backstage-community/plugin-copilot-common';
 
@@ -299,7 +302,7 @@ export const V2DashboardPage = () => {
                       Lines of code suggested and added by users through code
                       completions and chat panel actions
                     </Text>
-                    <LOCByFeatureChart data={data.byFeature} mode="user" />
+                    <UserLOCByFeatureChart data={data.byFeature} />
                   </ChartCard>
                 </Grid.Item>
                 <Grid.Item colSpan={{ initial: '12', md: '6' }}>
@@ -312,7 +315,7 @@ export const V2DashboardPage = () => {
                       Lines of code automatically added and deleted by agents
                       combining edit, agent, and custom modes
                     </Text>
-                    <LOCByFeatureChart data={data.byFeature} mode="agent" />
+                    <AgentLOCByFeatureChart data={data.byFeature} />
                   </ChartCard>
                 </Grid.Item>
               </Grid.Root>
@@ -329,7 +332,7 @@ export const V2DashboardPage = () => {
                       Lines of code suggested and added by users, grouped by
                       model used
                     </Text>
-                    <LOCByModelChart data={data.byModelFeature} mode="user" />
+                    <UserLOCByModelChart data={data.byModelFeature} />
                   </ChartCard>
                 </Grid.Item>
                 <Grid.Item colSpan={{ initial: '12', md: '6' }}>
@@ -342,7 +345,7 @@ export const V2DashboardPage = () => {
                       Lines of code added and deleted by agents, grouped by
                       model used
                     </Text>
-                    <LOCByModelChart data={data.byModelFeature} mode="agent" />
+                    <AgentLOCByModelChart data={data.byModelFeature} />
                   </ChartCard>
                 </Grid.Item>
               </Grid.Root>
@@ -359,7 +362,7 @@ export const V2DashboardPage = () => {
                       Lines of code suggested and added by users, grouped by
                       language used
                     </Text>
-                    <LOCByLanguageChart data={data.byLanguage} mode="user" />
+                    <UserLOCByLanguageChart data={data.byLanguage} />
                   </ChartCard>
                 </Grid.Item>
                 <Grid.Item colSpan={{ initial: '12', md: '6' }}>
@@ -372,7 +375,7 @@ export const V2DashboardPage = () => {
                       Lines of code added and deleted by agents, grouped by
                       language used
                     </Text>
-                    <LOCByLanguageChart data={data.byLanguage} mode="agent" />
+                    <AgentLOCByLanguageChart data={data.byLanguage} />
                   </ChartCard>
                 </Grid.Item>
               </Grid.Root>

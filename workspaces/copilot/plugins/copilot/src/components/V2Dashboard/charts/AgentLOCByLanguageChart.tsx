@@ -16,15 +16,18 @@
 
 import { BarChart } from '@mui/x-charts/BarChart';
 import { V2MetricsByLanguageFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { compactNumber, filterLocRowsByMode } from './chartUtils';
+import {
+  compactNumber,
+  filterLocRowsByMode,
+  aggregateLocTotals,
+  AGENT_LOC_COLORS,
+} from './chartUtils';
+
+const DROPPED_LANGUAGES = new Set(['others']);
 
 interface Props {
   data: V2MetricsByLanguageFeatureRow[];
-  /** 'user' shows Suggested vs Added; 'agent' shows Added vs Deleted */
-  mode: 'user' | 'agent';
 }
-
-const DROPPED_LANGUAGES = new Set(['others']);
 
 const NO_DATA = (
   <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -32,59 +35,21 @@ const NO_DATA = (
   </div>
 );
 
-export function LOCByLanguageChart({ data, mode }: Readonly<Props>) {
+export function AgentLOCByLanguageChart({ data }: Readonly<Props>) {
   if (data.length === 0) return NO_DATA;
 
-  const filtered = filterLocRowsByMode(data, mode).filter(
+  const filtered = filterLocRowsByMode(data, 'agent').filter(
     row => !DROPPED_LANGUAGES.has(row.language.toLowerCase()),
   );
   if (filtered.length === 0) return NO_DATA;
 
-  // Aggregate per language, sorted by suggested+added desc
-  const totals = new Map<
-    string,
-    { suggested: number; added: number; deleted: number }
-  >();
-  for (const row of filtered) {
-    const existing = totals.get(row.language) ?? {
-      suggested: 0,
-      added: 0,
-      deleted: 0,
-    };
-    totals.set(row.language, {
-      suggested: existing.suggested + (row.loc_suggested_to_add_sum ?? 0),
-      added: existing.added + (row.loc_added_sum ?? 0),
-      deleted: existing.deleted + (row.loc_deleted_sum ?? 0),
-    });
-  }
+  const totals = aggregateLocTotals(filtered, r => r.language);
   const languages = [...totals.keys()].sort(
     (a, b) =>
       totals.get(b)!.suggested +
       totals.get(b)!.added -
       (totals.get(a)!.suggested + totals.get(a)!.added),
   );
-
-  if (mode === 'user') {
-    return (
-      <BarChart
-        xAxis={[{ data: languages, scaleType: 'band' }]}
-        series={[
-          {
-            data: languages.map(l => totals.get(l)!.suggested),
-            label: 'Suggested',
-            color: '#81C784',
-          },
-          {
-            data: languages.map(l => totals.get(l)!.added),
-            label: 'Added',
-            color: '#2E7D32',
-          },
-        ]}
-        yAxis={[{ valueFormatter: compactNumber }]}
-        height={260}
-      />
-    );
-  }
 
   return (
     <BarChart
@@ -93,12 +58,12 @@ export function LOCByLanguageChart({ data, mode }: Readonly<Props>) {
         {
           data: languages.map(l => totals.get(l)!.added),
           label: 'Added',
-          color: '#CE93D8',
+          color: AGENT_LOC_COLORS.added,
         },
         {
           data: languages.map(l => totals.get(l)!.deleted),
           label: 'Deleted',
-          color: '#7B1FA2',
+          color: AGENT_LOC_COLORS.deleted,
         },
       ]}
       yAxis={[{ valueFormatter: compactNumber }]}
