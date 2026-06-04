@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { CSSProperties } from 'react';
 import styles from './ShortcutIcon.module.css';
 
 type Props = {
@@ -37,7 +38,7 @@ export const ShortcutIcon = (props: Props) => {
         {
           '--avatar-bg-color': props.color,
           '--avatar-contrast-text': contrastColor,
-        } as React.CSSProperties
+        } as CSSProperties
       }
     >
       {props.text}
