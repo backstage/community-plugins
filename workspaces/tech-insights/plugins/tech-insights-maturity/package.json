@@ -46,6 +46,7 @@
     "directory": "workspaces/tech-insights/plugins/tech-insights-maturity"
   },
   "sideEffects": false,
+  "configSchema": "config.d.ts",
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",

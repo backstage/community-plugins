@@ -211,22 +211,34 @@ const sdc = new MaturityClient({
   identityApi: mockApis.identity.mock(),
 });
 
+const sdcWithCompoundChecks = new MaturityClient({
+  catalogApi: mockCatalogApi as CatalogApi,
+  discoveryApi: mockApis.discovery.mock(),
+  identityApi: mockApis.identity.mock(),
+  enableCompoundEntityCheck: true,
+});
+
 describe('MaturityClient', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('getMaturityRank', () => {
-    it('generates a  maturity rank for a given component', async () => {
+    it('generates a maturity rank for a given component', async () => {
       const expected: MaturityRank = {
         rank: Rank.Silver,
         isMaxRank: false,
       };
       jest.spyOn(sdc, 'runChecks').mockResolvedValue(checkResults);
 
-      expect(await sdc.getMaturityRank(mockSystem)).toMatchObject(expected);
+      expect(await sdc.getMaturityRank(entity)).toMatchObject(expected);
     });
   });
 
   describe('getMaturityScore', () => {
-    jest.spyOn(sdc, 'runChecks').mockResolvedValue(checkResults);
     it('generates a maturity score for a given component', async () => {
+      jest.spyOn(sdc, 'runChecks').mockResolvedValue(checkResults);
+
       const score = await sdc.getMaturityScore(entity);
       expect(score.checks).toEqual(checkResults); // Ownership and Operations
       expect(score.rank.rank).toEqual(2); // Silver
@@ -236,10 +248,28 @@ describe('MaturityClient', () => {
   });
 
   describe('getMaturitySummary', () => {
-    jest.spyOn(sdc, 'runBulkChecks').mockResolvedValue(bulkCheckResult);
+    it('aggregates maturity summary across child components for a system by default', async () => {
+      const runBulkSpy = jest
+        .spyOn(sdc, 'runBulkChecks')
+        .mockResolvedValue(bulkCheckResult);
+      const runChecksSpy = jest.spyOn(sdc, 'runChecks');
 
-    it('generates a maturity summary for a given system', async () => {
       expect(await sdc.getMaturitySummary(mockSystem)).toEqual(maturitySummary);
+      expect(runBulkSpy).toHaveBeenCalled();
+      expect(runChecksSpy).not.toHaveBeenCalled();
+    });
+
+    it('runs checks directly against the system when enableCompoundEntityCheck is true', async () => {
+      const runChecksSpy = jest
+        .spyOn(sdcWithCompoundChecks, 'runChecks')
+        .mockResolvedValue(checkResults);
+      const runBulkSpy = jest.spyOn(sdcWithCompoundChecks, 'runBulkChecks');
+
+      expect(
+        await sdcWithCompoundChecks.getMaturitySummary(mockSystem),
+      ).toEqual(maturitySummary);
+      expect(runChecksSpy).toHaveBeenCalled();
+      expect(runBulkSpy).not.toHaveBeenCalled();
     });
   });
 });
