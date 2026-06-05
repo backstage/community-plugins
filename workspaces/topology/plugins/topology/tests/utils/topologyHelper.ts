@@ -28,6 +28,21 @@ export class Common {
     await this.page.waitForSelector('nav a', { timeout: 120000 });
   }
 
+  async waitForTopologyGraph() {
+    const anchorNodes = [
+      'test-deployment',
+      'fedora-turquoise-rooster-85',
+      'win2k22-purple-aphid-31',
+    ];
+
+    for (const nodeId of anchorNodes) {
+      await this.page.waitForSelector(`[data-test-id="${nodeId}"]`, {
+        timeout: 60000,
+        state: 'attached',
+      });
+    }
+  }
+
   async loginAsGuest() {
     await this.page.goto('/');
     this.page.on('dialog', async dialog => {
@@ -65,48 +80,40 @@ export class Common {
       .click();
 
     const resourcesTab = this.page.getByTestId('resources-tab');
+    await expect(resourcesTab.getByTestId('pod-list')).toBeVisible();
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-      - heading "Pods"
-      - list:
-        - listitem:
-          - text: P test-deployment-645f8d4887-8dmrr
-          - paragraph: ${translations.status.running}
-          - button "view logs": ${translations.common.viewLogs}
-        - listitem:
-          - text: P test-deployment-645f8d4887-d77ff
-          - paragraph: ${translations.status.running}
-          - button "view logs": ${translations.common.viewLogs}
-        - listitem:
-          - text: P test-deployment-645f8d4887-n8644
-          - paragraph: ${translations.status.running}
-          - button "view logs": ${translations.common.viewLogs}
+    await expect(resourcesTab.getByTestId('pod-list')).toMatchAriaSnapshot(`
+      - listitem:
+        - text: P test-deployment-645f8d4887-8dmrr ${translations.status.running}
+        - button "view logs": ${translations.common.viewLogs}
+      - listitem:
+        - text: P test-deployment-645f8d4887-d77ff ${translations.status.running}
+        - button "view logs": ${translations.common.viewLogs}
+      - listitem:
+        - text: P test-deployment-645f8d4887-n8644 ${translations.status.running}
+        - button "view logs": ${translations.common.viewLogs}
       `);
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-    - heading "Services"
-    - list:
+    await expect(resourcesTab.getByTestId('service-list')).toMatchAriaSnapshot(`
       - listitem:
         - text: S hello-world
         - list:
           - listitem: "/Service port: \\\\d+-TCP Pod port: \\\\d+/"
-       `);
+      `);
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-    - heading "Routes"
-    - list:
+    await expect(resourcesTab.getByTestId('routes-list')).toMatchAriaSnapshot(`
       - listitem:
         - text: "RT hello-minikube2 ${translations.common.location}:"
         - link /https:\\/\\/nodejs-ex-git-jai-test\\.apps\\.viraj-\\d+-\\d+-\\d+-0\\.devcluster\\.openshift\\.com/:
           - /url: https://nodejs-ex-git-jai-test.apps.viraj-22-05-2023-0.devcluster.openshift.com
       `);
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-      - heading "Ingresses"
-      - list:
-        - listitem:
-          - text: "I example-ingress-hello-world ${translations.common.location}:"
-          - link "http://hello-world-app.info/"
+    await expect(resourcesTab.getByTestId('ingress-list')).toMatchAriaSnapshot(`
+      - listitem:
+        - text: "I example-ingress-hello-world ${translations.common.location}:"
+        - link "http://hello-world-app.info/":
+          - /url: http://hello-world-app.info/
+        - code: "/ingressClassName: nginx/"
       `);
   }
 
