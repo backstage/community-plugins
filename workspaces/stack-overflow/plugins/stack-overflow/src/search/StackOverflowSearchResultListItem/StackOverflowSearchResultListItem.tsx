@@ -16,11 +16,7 @@
 
 import type { ReactNode } from 'react';
 import { Link } from '@backstage/core-components';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
+import { Text } from '@backstage/ui';
 import { useAnalytics } from '@backstage/core-plugin-api';
 import type { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
@@ -56,49 +52,72 @@ export const StackOverflowSearchResultListItem = (
     return null;
   }
 
+  const chipStyles: React.CSSProperties = {
+    display: 'inline-block',
+    padding: '4px 8px',
+    margin: '4px 4px 4px 0',
+    backgroundColor: 'var(--bui-bg-muted)',
+    borderRadius: '4px',
+    fontSize: '12px',
+    border: '1px solid var(--bui-border-1)',
+  };
+
   return (
     <>
-      <Box display="flex" alignItems="center">
-        {props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
-        <Box flexWrap="wrap">
-          <ListItemText
-            primaryTypographyProps={{ variant: 'h6' }}
-            primary={
-              <Link to={result.location} noTrack onClick={handleClick}>
-                {highlight?.fields?.title ? (
-                  <HighlightedSearchResultText
-                    text={decodeHtml(highlight.fields.title)}
-                    preTag={highlight.preTag}
-                    postTag={highlight.postTag}
-                  />
-                ) : (
-                  decodeHtml(result.title)
-                )}
-              </Link>
-            }
-            secondary={
-              highlight?.fields?.text ? (
-                <>
-                  Author:{' '}
-                  <HighlightedSearchResultText
-                    text={decodeHtml(highlight.fields.text)}
-                    preTag={highlight.preTag}
-                    postTag={highlight.postTag}
-                  />
-                </>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '12px',
+          padding: '8px 0',
+        }}
+      >
+        {props.icon && <div style={{ flexShrink: 0 }}>{props.icon}</div>}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Text weight="bold" as="h3">
+            <Link to={result.location} noTrack onClick={handleClick}>
+              {highlight?.fields?.title ? (
+                <HighlightedSearchResultText
+                  text={decodeHtml(highlight.fields.title)}
+                  preTag={highlight.preTag}
+                  postTag={highlight.postTag}
+                />
               ) : (
-                `Author: ${decodeHtml(result.text)}`
-              )
-            }
-          />
-          <Chip label={`Answer(s): ${result.answers}`} size="small" />
-          {result.tags &&
-            result.tags.map((tag: string) => (
-              <Chip key={tag} label={`Tag: ${tag}`} size="small" />
-            ))}
-        </Box>
-      </Box>
-      <Divider />
+                decodeHtml(result.title)
+              )}
+            </Link>
+          </Text>
+          <Text style={{ opacity: 0.7 }}>
+            Author:{' '}
+            {highlight?.fields?.text ? (
+              <HighlightedSearchResultText
+                text={decodeHtml(highlight.fields.text)}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              decodeHtml(result.text)
+            )}
+          </Text>
+          <div style={{ marginTop: '8px' }}>
+            <div style={chipStyles}>
+              <Text>Answer(s): {result.answers}</Text>
+            </div>
+            {result.tags &&
+              result.tags.map((tag: string) => (
+                <div key={tag} style={chipStyles}>
+                  <Text>Tag: {tag}</Text>
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
+      <div
+        style={{
+          borderBottom: '1px solid var(--bui-border-1)',
+          margin: '8px 0',
+        }}
+      />
     </>
   );
 };

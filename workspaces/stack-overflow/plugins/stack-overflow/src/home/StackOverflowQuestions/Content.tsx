@@ -16,14 +16,8 @@
 
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Typography from '@material-ui/core/Typography';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Text, ButtonIcon } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import useAsync from 'react-use/esm/useAsync';
 import _unescape from 'lodash/unescape';
 import {
@@ -49,34 +43,60 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
   }, []);
 
   if (loading) {
-    return <Typography paragraph>loading...</Typography>;
+    return <Text>loading...</Text>;
   }
 
   if (error || !value || !value.length) {
-    return <Typography paragraph>could not load questions</Typography>;
+    return <Text>could not load questions</Text>;
   }
 
   const getSecondaryText = (answer_count: number) =>
     answer_count > 1 ? `${answer_count} answers` : `${answer_count} answer`;
 
   return (
-    <List>
+    <div>
       {value.map(question => (
-        <Link to={question.link}>
-          <ListItem key={question.link}>
-            {props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
-            <ListItemText
-              primary={_unescape(question.title)}
-              secondary={getSecondaryText(question.answer_count)}
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="external-link">
-                <OpenInNewIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        </Link>
+        <div
+          key={question.link}
+          style={{
+            padding: '8px 0',
+            borderBottom: '1px solid var(--bui-border-1)',
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'flex-start',
+          }}
+        >
+          {props.icon && <div style={{ flexShrink: 0 }}>{props.icon}</div>}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Link to={question.link}>
+              <Text weight="bold" as="h3">
+                {_unescape(question.title)}
+              </Text>
+            </Link>
+            <Text style={{ opacity: 0.7 }}>
+              {getSecondaryText(question.answer_count)}
+            </Text>
+          </div>
+          <a
+            href={question.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="external-link"
+            style={{
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '8px',
+              cursor: 'pointer',
+              color: 'var(--bui-fg-secondary)',
+              textDecoration: 'none',
+            }}
+          >
+            <RiExternalLinkLine size={20} />
+          </a>
+        </div>
       ))}
-    </List>
+    </div>
   );
 };
