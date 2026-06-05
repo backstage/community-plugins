@@ -16,7 +16,7 @@
 
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
-import { Text, ButtonIcon } from '@backstage/ui';
+import { Text } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import useAsync from 'react-use/esm/useAsync';
 import _unescape from 'lodash/unescape';
