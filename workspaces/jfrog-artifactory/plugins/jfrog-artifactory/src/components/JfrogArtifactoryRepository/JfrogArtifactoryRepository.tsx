@@ -106,13 +106,15 @@ export function JfrogArtifactoryRepository({
         offset?: number;
         totalCount?: number;
       }) => {
-        const fromCount = (offset ?? 0) + 1;
-        const toCount = Math.min((offset ?? 0) + pageSize, totalCount ?? 0);
+        const total = totalCount ?? 0;
+        const fromCount = total === 0 ? 0 : (offset ?? 0) + 1;
+        const toCount =
+          total === 0 ? 0 : Math.min((offset ?? 0) + pageSize, total);
 
         return t('table.pagination.rangeLabel', {
           start: String(fromCount),
           end: String(toCount),
-          total: String(totalCount ?? 0),
+          total: String(total),
         } as Record<string, string>);
       },
     }),

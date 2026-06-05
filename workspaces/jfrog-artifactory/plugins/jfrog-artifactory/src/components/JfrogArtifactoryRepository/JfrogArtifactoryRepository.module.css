@@ -16,7 +16,7 @@
 
 @layer components {
   .tableContainer {
-    border: 1px solid var(--bui-border);
+    border: 1px solid var(--bui-border-1);
   }
 
   .manifestDigest {
@@ -40,5 +40,10 @@
     width: 240px;
     max-width: 240px;
     flex-shrink: 0;
+  }
+
+  .tableContainer [class*='bui-TablePagination__'] {
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }

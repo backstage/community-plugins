@@ -18,7 +18,7 @@ import { filesize } from 'filesize';
 import { DateTime } from 'luxon';
 
 export function parseSizeBytes(size: string | number | undefined): number {
-  if (size === undefined || size === null || size === '') {
+  if (size === undefined || size === '') {
     return 0;
   }
 
