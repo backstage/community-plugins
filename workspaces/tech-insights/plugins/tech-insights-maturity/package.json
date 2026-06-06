@@ -73,6 +73,8 @@
     "@mui/material": "5.18.0",
     "@mui/styles": "5.18.0",
     "@mui/x-charts": "6.19.8",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-shape": "^3.1.7",
     "rc-progress": "^4.0.0",
     "react-use": "^17.2.4"
   },
