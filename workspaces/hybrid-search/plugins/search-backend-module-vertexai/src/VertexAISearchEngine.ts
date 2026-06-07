@@ -42,12 +42,16 @@ export class VertexAISearchEngine implements SearchEngine {
   private projectId: string;
   private location: string;
   private dataStoreId: string;
+  private engineId?: string;
+  private searchOptions?: Record<string, any>;
   private logger?: LoggerService;
 
   constructor(options: {
     projectId: string;
     location: string;
     dataStoreId: string;
+    engineId?: string;
+    searchOptions?: Record<string, any>;
     logger?: LoggerService;
   }) {
     if (!options.projectId) {
@@ -67,10 +71,16 @@ export class VertexAISearchEngine implements SearchEngine {
     this.projectId = options.projectId;
     this.location = options.location;
     this.dataStoreId = options.dataStoreId;
+    this.engineId = options.engineId;
+    this.searchOptions = options.searchOptions;
     this.logger = options.logger;
 
     this.logger?.info(
-      `Initializing VertexAISearchEngine for project ${this.projectId}, location ${this.location}, dataStore ${this.dataStoreId}`,
+      `Initializing VertexAISearchEngine for project ${
+        this.projectId
+      }, location ${this.location}, dataStore ${this.dataStoreId}${
+        this.engineId ? `, engineId ${this.engineId}` : ''
+      }`,
     );
 
     // Initialize the Google Cloud Discovery Engine client
@@ -94,7 +104,9 @@ export class VertexAISearchEngine implements SearchEngine {
   }
 
   async query(query: SearchQuery): Promise<IndexableResultSet> {
-    const parent = `projects/${this.projectId}/locations/${this.location}/dataStores/${this.dataStoreId}/servingConfigs/default_search`;
+    const parent = this.engineId
+      ? `projects/${this.projectId}/locations/${this.location}/collections/default_collection/engines/${this.engineId}/servingConfigs/default_search`
+      : `projects/${this.projectId}/locations/${this.location}/dataStores/${this.dataStoreId}/servingConfigs/default_search`;
 
     this.logger?.info(`Using parent serving config: "${parent}"`);
     this.logger?.info(`Querying Vertex AI Search with term: "${query.term}"`);
@@ -103,8 +115,10 @@ export class VertexAISearchEngine implements SearchEngine {
       const [apiResults] = await this.client.search({
         servingConfig: parent,
         query: query.term,
+        ...this.searchOptions,
         relevanceScoreSpec: {
           returnRelevanceScore: true,
+          ...this.searchOptions?.relevanceScoreSpec,
         },
       });
 

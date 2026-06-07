@@ -32,9 +32,21 @@ import { LoggerService } from '@backstage/backend-plugin-api';
  * @public
  */
 export interface TypesenseEngineOptions {
+  /**
+   * The API Key used to authenticate requests to the Typesense cluster.
+   */
   apiKey: string;
+  /**
+   * The nodes config array for cluster connectivity.
+   */
   nodes: Array<{ host: string; port: number; protocol: string; path?: string }>;
+  /**
+   * Additional configuration options passed straight to the raw Typesense client.
+   */
   clientOptions?: Record<string, any>;
+  /**
+   * Optional custom field definitions and default search query options grouped by collection type.
+   */
   collections?: Record<
     string,
     {
@@ -42,11 +54,18 @@ export interface TypesenseEngineOptions {
       searchOptions?: Record<string, any>;
     }
   >;
+  /**
+   * Core Backstage logging service utility.
+   */
   logger: LoggerService;
 }
 
 /**
  * High-performance batching stream for importing documents into Typesense.
+ *
+ * Extends the Node writable stream in objectMode, buffering collated index documents
+ * and flushing them in batch sets of 100 to reduce connection roundtrips and improve ingestion throughput.
+ * Maps unique document IDs deterministically from catalog/storage location strings to prevent duplicates.
  */
 class TypesenseWritableStream extends Writable {
   private buffer: any[] = [];
@@ -60,6 +79,9 @@ class TypesenseWritableStream extends Writable {
     super({ objectMode: true });
   }
 
+  /**
+   * Writable stream internal write handler. Buffers chunk elements and flushes on batch limits.
+   */
   async _write(
     chunk: any,
     _encoding: string,
@@ -80,6 +102,9 @@ class TypesenseWritableStream extends Writable {
     }
   }
 
+  /**
+   * Writable stream internal final handler. Ensures any remaining buffered documents are flushed.
+   */
   async _final(callback: (error?: Error | null) => void): Promise<void> {
     try {
       await this.flush();
@@ -93,11 +118,14 @@ class TypesenseWritableStream extends Writable {
     }
   }
 
+  /**
+   * Flushes the current document buffer to Typesense using upsert.
+   */
   private async flush(): Promise<void> {
     if (this.buffer.length === 0) return;
 
     const batch = this.buffer.map(doc => ({
-      // GCS or Catalog paths make stable document primary IDs
+      // Use existing document ID or derive a stable deterministic ID from the file location
       id: doc.id || Buffer.from(doc.location).toString('hex'),
       title: doc.title,
       text: doc.text,
@@ -113,7 +141,7 @@ class TypesenseWritableStream extends Writable {
       `Flushing ${batch.length} documents to Typesense collection: ${this.collectionName}`,
     );
 
-    // Import using action: upsert to safely overwrite outdated assets
+    // Using 'upsert' ensures existing assets are safely overwritten without producing duplicates
     await this.client
       .collections(this.collectionName)
       .documents()
@@ -122,7 +150,11 @@ class TypesenseWritableStream extends Writable {
 }
 
 /**
- * SearchEngine implementation for Typesense.
+ * Typesense SearchEngine implementation.
+ *
+ * Orchestrates document ingestion and query handling for Backstage categories
+ * mapped to Typesense sub-routing. Registers auto-provisioned collections with
+ * fallback schemas, and maps search match score relevancy back to search queries.
  *
  * @public
  */
@@ -149,22 +181,29 @@ export class TypesenseSearchEngine implements SearchEngine {
     this.logger.info('Initialized custom Typesense Search Engine.');
   }
 
+  /**
+   * Registers a query translator. (No-op interface placeholder).
+   */
   setTranslator(_translator: QueryTranslator): void {
     // No-op: Translator not needed for raw queries, but interface requires implementation
   }
 
-  // Ensures collection exists with custom schema
+  /**
+   * Asserts that the target collection exists in Typesense, creating it with the fallback
+   * or configured schema if it returns a 404.
+   */
   private async ensureCollection(collectionName: string): Promise<void> {
     try {
       await this.client.collections(collectionName).retrieve();
     } catch (error: any) {
-      // Retrieve throws ObjectNotFound/404 error if not found
+      // Create the collection if it does not exist
       if (error.status === 404 || error.name === 'ObjectNotFound') {
         this.logger.info(
           `Creating missing Typesense collection: ${collectionName}`,
         );
         const type = collectionName.replace(/^backstage_/, '');
         const config = this.collectionsConfig?.[type];
+        // Standard wildcard fallback schema allows dynamic indexing
         const fields = config?.fields || [{ name: '.*', type: 'auto' }];
 
         await this.client.collections().create({
@@ -177,7 +216,9 @@ export class TypesenseSearchEngine implements SearchEngine {
     }
   }
 
-  // Resolves the Writable indexing stream
+  /**
+   * Resolves the custom writable stream for document ingestion.
+   */
   async getIndexer(type: string): Promise<Writable> {
     const collectionName = `backstage_${type}`;
     await this.ensureCollection(collectionName);
@@ -189,7 +230,10 @@ export class TypesenseSearchEngine implements SearchEngine {
     );
   }
 
-  // Translates and executes Backstage Search Queries
+  /**
+   * Performs federated queries across target collections, mapping Typesense scoring and documents
+   * back to the standard Backstage IndexableResultSet shape.
+   */
   async query(query: SearchQuery): Promise<IndexableResultSet> {
     const rawTypes = query.types || ['software-catalog'];
     const types = rawTypes.map(t => (t === 'catalog' ? 'software-catalog' : t));
@@ -207,7 +251,7 @@ export class TypesenseSearchEngine implements SearchEngine {
         const config = this.collectionsConfig?.[collectionType];
         const searchOptions = {
           q: query.term,
-          query_by: 'title,text,location', // Main text search index targets
+          query_by: 'title,text,location', // Standard text index search targets
           ...config?.searchOptions,
         };
 
@@ -233,7 +277,7 @@ export class TypesenseSearchEngine implements SearchEngine {
               namespace: doc.namespace,
               name: doc.name,
             } as IndexableDocument,
-            // Typesense text match scores are mapped directly back to Backstage search
+            // Direct mapping of the text match relevance score
             score: hit.text_match_info?.score ?? undefined,
           });
         }

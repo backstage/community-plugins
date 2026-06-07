@@ -22,6 +22,8 @@ export class VertexAISearchEngine implements SearchEngine {
     projectId: string;
     location: string;
     dataStoreId: string;
+    engineId?: string;
+    searchOptions?: Record<string, any>;
     logger?: LoggerService;
   });
   // (undocumented)

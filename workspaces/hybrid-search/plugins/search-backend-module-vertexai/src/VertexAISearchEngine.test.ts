@@ -108,5 +108,43 @@ describe('VertexAISearchEngine', () => {
         score: 0.95,
       });
     });
+
+    it('should merge and pass custom searchOptions to Vertex AI search API', async () => {
+      const customEngine = new VertexAISearchEngine({
+        projectId: 'my-project',
+        location: 'europe-west4',
+        dataStoreId: 'my-datastore',
+        searchOptions: {
+          summarySpec: {
+            summaryResultCount: 3,
+            includeCitations: true,
+          },
+          spellCorrectionSpec: {
+            mode: 'AUTO',
+          },
+        },
+      });
+
+      mockSearch.mockResolvedValue([[]]);
+
+      await customEngine.query({
+        term: 'test-query',
+        types: ['techdocs'],
+      });
+
+      expect(mockSearch).toHaveBeenCalledWith({
+        servingConfig:
+          'projects/my-project/locations/europe-west4/dataStores/my-datastore/servingConfigs/default_search',
+        query: 'test-query',
+        relevanceScoreSpec: { returnRelevanceScore: true },
+        summarySpec: {
+          summaryResultCount: 3,
+          includeCitations: true,
+        },
+        spellCorrectionSpec: {
+          mode: 'AUTO',
+        },
+      });
+    });
   });
 });

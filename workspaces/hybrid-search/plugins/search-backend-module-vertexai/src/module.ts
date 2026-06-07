@@ -46,13 +46,23 @@ export const searchModuleVertexAISearch = createBackendModule({
         const projectId = vertexAiConfig.getString('projectId');
         const location = vertexAiConfig.getString('location');
         const dataStoreId = vertexAiConfig.getString('dataStoreId');
+        const engineId = vertexAiConfig.getOptionalString('engineId');
+        const searchOptions = vertexAiConfig.getOptional(
+          'searchOptions',
+        ) as any;
 
-        logger.info('Initializing Vertex AI Search Engine for Hybrid Search Router.');
-        logger.info('Note: TechDocs ingestion must be configured via a companion webhook (e.g., @backstage-community/plugin-events-backend-module-gcs-eventarc) to index new documentation assets.');
+        logger.info(
+          'Initializing Vertex AI Search Engine for Hybrid Search Router.',
+        );
+        logger.info(
+          'Note: TechDocs ingestion must be configured via a companion webhook (e.g., @backstage-community/plugin-events-backend-module-gcs-eventarc) to index new documentation assets.',
+        );
         const vertexAiSearchEngine = new VertexAISearchEngine({
           projectId,
           location,
           dataStoreId,
+          engineId,
+          searchOptions,
           logger,
         });
 
@@ -88,27 +98,43 @@ export const searchModuleVertexAISearch = createBackendModule({
         // 4. Register background cleanup scheduler task if enabled
         const cleanupConfig = vertexAiConfig.getOptionalConfig('cleanup');
         if (cleanupConfig?.getOptionalBoolean('enabled') !== false) {
-          const frequencyHours = cleanupConfig?.getOptionalNumber('frequency.hours');
-          const frequencyMinutes = cleanupConfig?.getOptionalNumber('frequency.minutes');
-          const frequencySeconds = cleanupConfig?.getOptionalNumber('frequency.seconds');
+          const frequencyHours =
+            cleanupConfig?.getOptionalNumber('frequency.hours');
+          const frequencyMinutes =
+            cleanupConfig?.getOptionalNumber('frequency.minutes');
+          const frequencySeconds =
+            cleanupConfig?.getOptionalNumber('frequency.seconds');
 
-          const frequency: { hours?: number; minutes?: number; seconds?: number } = {};
+          const frequency: {
+            hours?: number;
+            minutes?: number;
+            seconds?: number;
+          } = {};
           if (frequencySeconds !== undefined) {
             frequency.seconds = frequencySeconds;
-          } else if (frequencyHours !== undefined || frequencyMinutes !== undefined) {
+          } else if (
+            frequencyHours !== undefined ||
+            frequencyMinutes !== undefined
+          ) {
             if (frequencyHours !== undefined) frequency.hours = frequencyHours;
-            if (frequencyMinutes !== undefined) frequency.minutes = frequencyMinutes;
+            if (frequencyMinutes !== undefined)
+              frequency.minutes = frequencyMinutes;
           } else {
             frequency.hours = 2;
           }
 
-          logger.info(`Registering TechDocs Catalog Cleanup task with frequency: ${JSON.stringify(frequency)}.`);
+          logger.info(
+            `Registering TechDocs Catalog Cleanup task with frequency: ${JSON.stringify(
+              frequency,
+            )}.`,
+          );
 
           await scheduler.scheduleTask({
             id: 'techdocs-orphan-sweeper',
             frequency: frequency,
             timeout: { minutes: 30 },
-            fn: () => runCatalogCleanupSweeper({ config, logger, catalog, auth }),
+            fn: () =>
+              runCatalogCleanupSweeper({ config, logger, catalog, auth }),
           });
         } else {
           logger.info('TechDocs Catalog Cleanup task is disabled in config.');

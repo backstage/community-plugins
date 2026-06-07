@@ -18,11 +18,8 @@ export { searchModuleTypesenseSearch };
 
 // @public
 export interface TypesenseEngineOptions {
-  // (undocumented)
   apiKey: string;
-  // (undocumented)
   clientOptions?: Record<string, any>;
-  // (undocumented)
   collections?: Record<
     string,
     {
@@ -30,9 +27,7 @@ export interface TypesenseEngineOptions {
       searchOptions?: Record<string, any>;
     }
   >;
-  // (undocumented)
   logger: LoggerService;
-  // (undocumented)
   nodes: Array<{
     host: string;
     port: number;
@@ -44,11 +39,8 @@ export interface TypesenseEngineOptions {
 // @public
 export class TypesenseSearchEngine implements SearchEngine {
   constructor(options: TypesenseEngineOptions);
-  // (undocumented)
   getIndexer(type: string): Promise<Writable>;
-  // (undocumented)
   query(query: SearchQuery): Promise<IndexableResultSet>;
-  // (undocumented)
   setTranslator(_translator: QueryTranslator): void;
 }
 

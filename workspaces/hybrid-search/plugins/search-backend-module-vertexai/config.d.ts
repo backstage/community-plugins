@@ -27,6 +27,11 @@ export interface Config {
         projectId: string;
         location: string;
         dataStoreId: string;
+        engineId?: string;
+        /**
+         * Additional raw options passed directly to the Discovery Engine search client call.
+         */
+        searchOptions?: Record<string, any>;
         cleanup?: {
           /**
            * Enable or disable techdocs index and GCS bucket orphan sweeping background task.
