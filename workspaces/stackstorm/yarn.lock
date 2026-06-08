@@ -2751,7 +2751,7 @@ __metadata:
     "@jest/environment-jsdom-abstract": "npm:^30"
     "@types/jest": "npm:^30"
     "@types/jsdom": "npm:^28.0.0"
-    "@types/node": "npm:22.19.17"
+    "@types/node": "npm:22.19.19"
     "@types/webpack-env": "npm:1.18.8"
     jest: "npm:^30"
     jsdom: "npm:^27"
@@ -6527,12 +6527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.19.17":
-  version: 22.19.17
-  resolution: "@types/node@npm:22.19.17"
+"@types/node@npm:*, @types/node@npm:22.19.19":
+  version: 22.19.19
+  resolution: "@types/node@npm:22.19.19"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/8adcf9c2e9e7c524196efdd5ee60ebeda980b4ec9b5b8650e2341a2cabe46d368f3a4e4c0050b3bf26eb9cf383453ea2193ec5604079cdf9493a11a742f62018
+  checksum: 10/d404eb0bc391805537a172fcc607f7f9c142e20edc01a4203ec33e33a3c4e98fbe3a7ddb63725c399dd05947fac938722a6e05afe1c3d92017ac05c9a6b3ed8f
   languageName: node
   linkType: hard
 
