@@ -131,43 +131,93 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/yo.yo'),
         ],
         10,
-        'github.com',
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
       expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
     });
 
-    it('should only fetch data for entities hosted in the same GitHub instance as is entity location', async () => {
+    it('should fetch data for repositories grouped by GitHub host', async () => {
       await api.fetchIssuesByRepoFromGithub(
         [
           entityRepository('mrwolny/yo-yo'),
           entityRepository('mrwolny/yoyo'),
           entityRepository('mrwolny/yo.yo'),
-          entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
+          entityRepository('mrwolny/another-repo', 'enterprise.github.com'),
         ],
         10,
-        'github.com',
       );
 
-      expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
-      expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
+      expect(mockGraphQLQuery).toHaveBeenCalledTimes(2);
+      expect(mockGraphQLQuery).toHaveBeenNthCalledWith(1, getFragment());
+      expect(mockGraphQLQuery).toHaveBeenNthCalledWith(
+        2,
+        expect.stringContaining(
+          'anotherrepo: repository(name: "another-repo", owner: "mrwolny")',
+        ),
+      );
     });
 
-    it("should only fetch data for entities hosted in the same GitHub instance as the plugin's first config if no config matches", async () => {
+    it('should merge issues from repositories across different GitHub hosts', async () => {
+      mockGraphQLQuery
+        .mockImplementationOnce(() =>
+          Promise.resolve({
+            yoyo: {
+              issues: {
+                totalCount: 1,
+                edges: [],
+              },
+            },
+          }),
+        )
+        .mockImplementationOnce(() =>
+          Promise.resolve({
+            anotherrepo: {
+              issues: {
+                totalCount: 2,
+                edges: [],
+              },
+            },
+          }),
+        );
+
+      const data = await api.fetchIssuesByRepoFromGithub(
+        [
+          entityRepository('mrwolny/yo-yo'),
+          entityRepository('mrwolny/another-repo', 'enterprise.github.com'),
+        ],
+        10,
+      );
+
+      expect(data).toEqual({
+        'mrwolny/yo-yo': {
+          issues: {
+            totalCount: 1,
+            edges: [],
+          },
+        },
+        'mrwolny/another-repo': {
+          issues: {
+            totalCount: 2,
+            edges: [],
+          },
+        },
+      });
+    });
+
+    it('should ignore repositories without hostname', async () => {
       await api.fetchIssuesByRepoFromGithub(
         [
           entityRepository('mrwolny/yo-yo'),
-          entityRepository('mrwolny/yoyo'),
-          entityRepository('mrwolny/yo.yo'),
-          entityRepository('mrwolny/another-repo', 'enterprise.github.com'), // This one should be filtered out
+          {
+            name: 'mrwolny/no-hostname',
+            locationHostname: '',
+          },
         ],
         10,
-        'enterprise.github.com',
       );
 
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
-      expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
     });
 
     it('should call Github API with the correct filterBy and orderBy clauses', async () => {
@@ -178,7 +228,6 @@ describe('githubIssuesApi', () => {
           entityRepository('mrwolny/yo.yo'),
         ],
         10,
-        'github.com',
         {
           filterBy: {
             labels: ['bug'],
@@ -290,7 +339,6 @@ describe('githubIssuesApi', () => {
     const data = await api.fetchIssuesByRepoFromGithub(
       [entityRepository('mrwolny/yo-yo'), entityRepository('mrwolny/notfound')],
       10,
-      'github.com',
     );
 
     expect(data).toEqual({
@@ -361,7 +409,6 @@ describe('githubIssuesApi', () => {
     const data = await api.fetchIssuesByRepoFromGithub(
       [entityRepository('mrwolny/notfound')],
       10,
-      'github.com',
     );
 
     expect(data).toEqual({});
@@ -403,7 +450,6 @@ describe('githubIssuesApi', () => {
     await api.fetchIssuesByRepoFromGithub(
       [entityRepository('mrwolny/notfound')],
       10,
-      'github.com',
     );
 
     expect(mockErrorApi.post).toHaveBeenCalledTimes(1);

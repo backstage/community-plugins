@@ -21,8 +21,6 @@ import {
   githubIssuesApiRef,
   GithubIssuesByRepoOptions,
 } from '../api';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { getHostnameFromEntity } from './useEntityGithubRepositories';
 
 export const useGetIssuesByRepoFromGithub = (
   repos: Array<Repository>,
@@ -30,8 +28,6 @@ export const useGetIssuesByRepoFromGithub = (
   options?: GithubIssuesByRepoOptions,
 ) => {
   const githubIssuesApi = useApi(githubIssuesApiRef);
-  const { entity } = useEntity();
-  const hostname = getHostnameFromEntity(entity);
 
   const {
     value: issues,
@@ -42,7 +38,6 @@ export const useGetIssuesByRepoFromGithub = (
       return await githubIssuesApi.fetchIssuesByRepoFromGithub(
         repos,
         itemsPerRepo,
-        hostname,
         options,
       );
     }
