@@ -9,9 +9,10 @@ import { ApiRef } from '@backstage/frontend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
+import { default as React_2 } from 'react';
 
 // @public (undocumented)
 export interface BypassEvent {
@@ -54,7 +55,7 @@ export interface FrictionData {
 }
 
 // @public (undocumented)
-export function FrictionHeatmap(): JSX_2.Element;
+export function FrictionHeatmap(): React_2.JSX.Element;
 
 // @public (undocumented)
 export interface FrictionScore {
