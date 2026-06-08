@@ -18,10 +18,12 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import { DefaultSonarqubeInfoProvider } from './service/sonarqubeInfoProvider';
 import { createRouter } from './service/router';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
+import { createSonarqubeActions } from './actions';
 
 /**
  * Sonarqube backend plugin
@@ -38,8 +40,19 @@ export const sonarqubePlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         httpAuth: coreServices.httpAuth,
         catalog: catalogServiceRef,
+        actionsRegistry: actionsRegistryServiceRef,
       },
-      async init({ logger, config, httpRouter, httpAuth, catalog }) {
+      async init({
+        logger,
+        config,
+        httpRouter,
+        httpAuth,
+        catalog,
+        actionsRegistry,
+      }) {
+        const sonarqubeInfoProvider =
+          DefaultSonarqubeInfoProvider.fromConfig(config);
+
         const router = await createRouter({
           /**
            * Logger for logging purposes
@@ -48,8 +61,7 @@ export const sonarqubePlugin = createBackendPlugin({
           /**
            * Info provider to be able to get all necessary information for the APIs
            */
-          sonarqubeInfoProvider:
-            DefaultSonarqubeInfoProvider.fromConfig(config),
+          sonarqubeInfoProvider,
           catalog,
           httpAuth,
         });
@@ -58,6 +70,12 @@ export const sonarqubePlugin = createBackendPlugin({
         router.use(factory.error());
 
         httpRouter.use(router);
+
+        createSonarqubeActions({
+          actionsRegistry,
+          sonarqubeInfoProvider,
+          catalog,
+        });
       },
     });
   },
