@@ -1,5 +1,12 @@
 # @backstage-community/plugin-kiali
 
+## 1.50.3
+
+### Patch Changes
+
+- be8bfc4: Updated dependency `cytoscape` to `3.34.0`.
+- b46bf84: Updated dependency `cytoscape` to `3.33.3`.
+
 ## 1.50.2
 
 ### Patch Changes
