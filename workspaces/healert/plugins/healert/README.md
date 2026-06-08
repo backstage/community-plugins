@@ -182,7 +182,9 @@ Scores decay automatically — no manual resets needed. A service with bypass ev
 
 ## Development
 
-### Run locally
+### Local Dev Environment
+
+The plugin ships with a dev environment that runs without a real Healert backend or Backstage instance. It uses mock data so you can develop and test UI changes instantly.
 
 ```bash
 # Clone community-plugins
@@ -192,21 +194,72 @@ cd community-plugins/workspaces/healert
 # Install dependencies
 yarn install
 
-# Start the plugin in development mode
-yarn start
+# Start the plugin dev server with mock data
+yarn workspace @backstage-community/plugin-healert start
+```
+
+Open `http://localhost:3000/healert` to see the plugin running with mock friction data including:
+
+- A service with friction score 72 (high severity)
+- recent bypass event (kubectl-exec)
+- A populated FrictionHeatmap
+
+The mock API is defined in `dev/index.tsx` — edit it to test different score values, severities, and event types.
+
+### Run against a real backend
+
+To run against your own Healert backend, update `app-config.yaml` in the workspace root:
+
+```yaml
+app:
+  title: Healert Dev App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+
+healert:
+  baseUrl: http://localhost:8000
+```
+
+Then start your Healert backend and run:
+
+```bash
+yarn workspace @backstage-community/plugin-healert start
 ```
 
 ### Run tests
 
 ```bash
-yarn test --watchAll=false
+yarn workspace @backstage-community/plugin-healert test --watchAll=false
+```
+
+### Run all tests in workspace
+
+```bash
+cd workspaces/healert
+yarn test
+```
+
+### Type check
+
+```bash
+cd workspaces/healert
+yarn tsc --noEmit
 ```
 
 ### Build
 
 ```bash
-yarn tsc
-yarn build
+cd workspaces/healert
+yarn build:all
+```
+
+### API reports
+
+```bash
+cd workspaces/healert
+yarn build:api-reports
 ```
 
 ---
