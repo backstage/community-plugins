@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import fs from 'fs-extra';
 import { getPackages } from '@manypkg/get-packages';
 import { resolve } from 'path';
 import arrayToTable from 'array-to-table';
@@ -30,16 +31,12 @@ async function main(args) {
 
   const backendFeatureReports = [];
 
-  // Get `CODEOWNERS` entries
   const codeownersPath = resolve(rootPath, '.github', 'CODEOWNERS');
   const codeOwnerEntries = await codeowners.loadOwners(codeownersPath);
 
-  // Get workspaces
   const workspaces = await listWorkspaces();
 
-  // Loop through workspaces
   for (const workspace of workspaces) {
-    // Find the owner by looking up the workspace in the `CODEOWNERS` file
     const owners = codeOwnerEntries
       .filter(c => c.pattern === `/workspaces/${workspace}`)
       .map(o => o.owners)
@@ -68,7 +65,6 @@ async function main(args) {
     const currentWorkspacePath = resolve(workspacePath, workspace);
     const { packages } = await getPackages(currentWorkspacePath);
 
-    // Loop through packages in each workspace
     for (const pkg of packages) {
       if (pkg.packageJson.private) {
         continue;
@@ -89,10 +85,31 @@ async function main(args) {
     }
   }
 
-  const table = args.includes('--table');
+  const tableContent = arrayToTable(backendFeatureReports);
+  const tableFlag = args.includes('--table');
+  const saveFlag = args.includes('--save');
 
-  if (table) {
-    console.log(arrayToTable(backendFeatureReports));
+  if (saveFlag) {
+    const targetFile = resolve(rootPath, 'docs', 'README.md');
+    try {
+      const fileContent = await fs.readFile(targetFile, 'utf8');
+      
+       
+      const newContent = fileContent.replace(
+        /[\s\S]*/,
+        `\n${tableContent}\n`
+      );
+      
+      await fs.writeFile(targetFile, newContent);
+      console.log(`Successfully updated workspaces table in docs/README.md`);
+      
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Failed to update documentation: ${message}`);
+      process.exit(1);
+    }
+  } else if (tableFlag) {
+    console.log(tableContent);
   } else {
     console.log(backendFeatureReports);
   }
