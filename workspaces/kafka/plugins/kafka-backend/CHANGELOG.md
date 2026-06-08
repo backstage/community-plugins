@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kafka-backend
 
+## 0.11.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.11.0
 
 ### Minor Changes
