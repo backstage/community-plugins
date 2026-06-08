@@ -55,7 +55,10 @@ export const AddedMembersTable = ({
       options={{ emptyRowsWhenPaging: false }}
       localization={{
         toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-        pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+        pagination: {
+          labelRowsSelect: t('table.labelRowsSelect'),
+          labelDisplayedRows: t('table.labelDisplayedRows'),
+        },
       }}
     />
   );

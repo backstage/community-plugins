@@ -247,6 +247,13 @@ const PermissionPoliciesFormTable = ({
         showLastButton
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage={t('table.labelRowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) =>
+          t('table.labelDisplayedRows')
+            .replace('{from}', String(from))
+            .replace('{to}', String(to))
+            .replace('{count}', count !== -1 ? String(count) : '?')
+        }
       />
     </Paper>
   );

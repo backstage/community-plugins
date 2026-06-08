@@ -24,6 +24,8 @@ export const rbacMessages = {
   table: {
     searchPlaceholder: 'Filter',
     labelRowsSelect: 'Rows',
+    labelDisplayedRows: '{from}-{to} of {count}',
+    labelRowsPerPage: 'Rows per page:',
     title: 'All roles',
     titleWithCount: 'All roles ({{count}})',
     headers: {
