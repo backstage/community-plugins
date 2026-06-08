@@ -1,5 +1,16 @@
 # @backstage-community/plugin-fairwinds-insights-backend
 
+## 0.3.0
+
+### Minor Changes
+
+- f4316aa: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [f4316aa]
+  - @backstage-community/plugin-fairwinds-insights-common@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
