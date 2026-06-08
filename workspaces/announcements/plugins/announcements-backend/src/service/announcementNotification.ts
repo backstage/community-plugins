@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { RootConfigService } from '@backstage/backend-plugin-api';
 import { NotificationService } from '@backstage/plugin-notifications-node';
 import { AnnouncementModel } from './model';
 
 export const sendAnnouncementNotification = async (
   announcement: AnnouncementModel,
   notifications?: NotificationService,
+  config?: RootConfigService,
 ) => {
   if (!notifications) {
     return;
   }
+
+  const link = `${
+    config?.getOptionalString('app.baseUrl') ?? ''
+  }/announcements/view/${announcement.id}`;
 
   await notifications.send({
     recipients: {
@@ -31,7 +37,7 @@ export const sendAnnouncementNotification = async (
     payload: {
       title: `New Announcement "${announcement.title}"`,
       description: announcement.excerpt,
-      link: `/announcements/view/${announcement.id}`,
+      link,
     },
   });
 };
