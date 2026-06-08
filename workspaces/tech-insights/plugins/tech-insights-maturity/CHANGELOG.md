@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.9.2
+
+### Patch Changes
+
+- a2decf5: Fixed a build failure caused by a missing configuration definition.
+
 ## 0.9.1
 
 ### Patch Changes
