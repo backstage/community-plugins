@@ -34,7 +34,7 @@ import { techInsightsPlugin } from '@backstage-community/plugin-tech-insights';
 
 import { navigationExtension } from './components/Sidebar';
 import { SignInPage } from './components/auth/SignInPage';
-import manageExtensions from './extensions/manage';
+import customExtensions from './extensions';
 
 const signInPage = SignInPageBlueprint.make({
   params: {
@@ -69,7 +69,7 @@ export const app = createApp({
         signInPage,
         homePageExtension,
         navigationExtension,
-        ...manageExtensions,
+        ...customExtensions,
       ],
     }),
   ],

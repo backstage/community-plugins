@@ -118,6 +118,11 @@ export function createUserSettingsContext<T extends JsonValue>(
     return <ctx.Provider value={value} children={children} />;
   };
 
+  if (process.env.NODE_ENV === 'development') {
+    // Helps navigating the component tree in React DevTools
+    Provider.displayName = `UserSettingsProvider [${feature} - ${settingsKey}]`;
+  }
+
   return {
     Provider,
     useSetting,

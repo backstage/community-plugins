@@ -49,4 +49,7 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 backend.add(import('@backstage-community/plugin-tech-insights-backend'));
 backend.add(import('./plugins/tech-insights'));
 
+// user settings
+backend.add(import('@backstage/plugin-user-settings-backend'));
+
 backend.start();

@@ -29,11 +29,7 @@ import {
   ColumnConfig,
 } from '@backstage/ui';
 import { TableOptions as MuiTableOptions } from '@backstage/core-components';
-import {
-  Entity,
-  parseEntityRef,
-  stringifyEntityRef,
-} from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 
 import {
@@ -49,6 +45,7 @@ import {
 import { ColumnInfo, TableRow } from './types';
 import { LifecycleIcon } from './LifecycleIcon';
 import styles from './EntitiesTable.module.css';
+import { useGetOwnerEntity } from './useGetOwnerEntity';
 
 /** @public */
 export interface TableOptions {
@@ -72,6 +69,8 @@ const defaultPageSizeOptions = [defaultPageSize, 20, 30, 40, 50, 100];
 /** @internal */
 export function EntitiesTable(props: EntitiesTableProps) {
   const { columns, kind, starred, options, entities, title, subtitle } = props;
+
+  const getOwnerEntity = useGetOwnerEntity();
 
   const buiColumns: ColumnInfo[] = [];
 
@@ -135,11 +134,9 @@ export function EntitiesTable(props: EntitiesTableProps) {
     id: 'owner',
     title: 'Owner',
     render: data => {
-      if (data.entity.spec?.owner) {
-        const owner = parseEntityRef(`${data.entity.spec.owner}`, {
-          defaultKind: 'group',
-        });
-        return <EntityRefLink entityRef={owner} />;
+      const ownerEntity = getOwnerEntity(data.entity.spec?.owner);
+      if (ownerEntity) {
+        return <EntityRefLink entityRef={ownerEntity} />;
       }
       return <></>;
     },

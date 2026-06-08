@@ -118,7 +118,7 @@ describe('ManagePage', () => {
           combined={false}
           kinds={['component']}
           providers={[]}
-          dynamicConfig={{ primeUserSettings: [] }}
+          primeUserSettings={[]}
         >
           <ManagePage
             config={mockConfig}

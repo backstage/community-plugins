@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
 import { useMemo } from 'react';
 
 import { useUserSettings } from '@backstage-community/plugin-manage-react';
+import { useManagePageCombined } from '../ManagePageHeaderActions';
 
-export function usePrimeUserSettings(userSettings: [string, string][]): void {
-  // The initial set of user settings shouldn't change, but if they would, the
-  // changes will be ignored.
+function usePrimeUserSettingsOnce(userSettings: [string, string][]): void {
+  // The initial set of user settings shouldn't change - it's configured by the
+  // extensions. In any odd case they would change, the changes will be ignored.
+  //
   // This way, it's possible to iterate over the initial array and prime (and
   // keep listening to changes) for the initial settings using hooks in a loop.
   // After all, this is just an optimization to have settings pre-fetched when
@@ -35,4 +37,21 @@ export function usePrimeUserSettings(userSettings: [string, string][]): void {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useUserSettings(userSetting[0], userSetting[1]);
   }
+}
+
+export interface PrimeUserSettingsProps {
+  combined: boolean | undefined;
+  userSettings: [string, string][];
+}
+
+export function PrimeUserSettings(props: PrimeUserSettingsProps) {
+  const { combined, userSettings } = props;
+
+  // Initialize the user settings
+  usePrimeUserSettingsOnce(userSettings);
+
+  // Initialize the state, set default value
+  useManagePageCombined(combined);
+
+  return null;
 }
