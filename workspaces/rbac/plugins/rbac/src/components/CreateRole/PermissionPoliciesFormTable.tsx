@@ -240,7 +240,7 @@ const PermissionPoliciesFormTable = ({
       <TablePagination
         rowsPerPageOptions={[5, 10, 20]}
         component="div"
-        count={data.length}
+        count={filteredData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         showFirstButton
