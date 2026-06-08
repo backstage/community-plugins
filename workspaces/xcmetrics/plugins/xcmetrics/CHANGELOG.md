@@ -1,5 +1,15 @@
 # @backstage-community/plugin-xcmetrics
 
+## 0.20.0
+
+### Minor Changes
+
+- 08f9100: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- 5427339: Updated dependency `lodash` to `^4.18.1`.
+
 ## 0.19.0
 
 ### Minor Changes
