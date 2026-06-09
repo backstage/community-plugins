@@ -17,7 +17,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
 import { Text } from '@backstage/ui';
-import { RiExternalLinkLine } from '@remixicon/react';
 import useAsync from 'react-use/esm/useAsync';
 import _unescape from 'lodash/unescape';
 import {
@@ -54,10 +53,11 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
     answer_count > 1 ? `${answer_count} answers` : `${answer_count} answer`;
 
   return (
-    <div>
+    <div role="list">
       {value.map(question => (
         <div
           key={question.link}
+          role="listitem"
           style={{
             padding: '8px 0',
             borderBottom: '1px solid var(--bui-border-1)',
@@ -68,7 +68,12 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
         >
           {props.icon && <div style={{ flexShrink: 0 }}>{props.icon}</div>}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <Link to={question.link}>
+            <Link
+              to={question.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Opens in new tab"
+            >
               <Text weight="bold" as="h3">
                 {_unescape(question.title)}
               </Text>
@@ -77,24 +82,6 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
               {getSecondaryText(question.answer_count)}
             </Text>
           </div>
-          <a
-            href={question.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="external-link"
-            style={{
-              flexShrink: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '8px',
-              cursor: 'pointer',
-              color: 'var(--bui-fg-secondary)',
-              textDecoration: 'none',
-            }}
-          >
-            <RiExternalLinkLine size={20} />
-          </a>
         </div>
       ))}
     </div>

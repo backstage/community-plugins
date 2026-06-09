@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { ReactNode } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 import { Link } from '@backstage/core-components';
 import { Text } from '@backstage/ui';
 import { useAnalytics } from '@backstage/core-plugin-api';
@@ -52,7 +52,7 @@ export const StackOverflowSearchResultListItem = (
     return null;
   }
 
-  const chipStyles: React.CSSProperties = {
+  const chipStyles: CSSProperties = {
     display: 'inline-block',
     padding: '4px 8px',
     margin: '4px 4px 4px 0',
@@ -65,6 +65,7 @@ export const StackOverflowSearchResultListItem = (
   return (
     <>
       <div
+        role="listitem"
         style={{
           display: 'flex',
           alignItems: 'flex-start',
