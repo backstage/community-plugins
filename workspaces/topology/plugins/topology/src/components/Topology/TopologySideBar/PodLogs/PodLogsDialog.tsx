@@ -84,6 +84,7 @@ const ViewLogs = ({ podData, onClose }: ViewLogsProps) => {
     <Dialog
       isOpen
       isDismissable
+      className={styles.dialog}
       onOpenChange={open => {
         if (!open) onClose?.();
       }}

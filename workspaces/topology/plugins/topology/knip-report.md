@@ -1,10 +1,9 @@
 # Knip report
 
-## Unused dependencies (3)
+## Unused dependencies (2)
 
-| Name                  | Location          | Severity |
-| :-------------------- | :---------------- | :------- |
-| react-aria-components | package.json:71:6 | error    |
-| style-inject          | package.json:73:6 | error    |
-| victory               | package.json:74:6 | error    |
+| Name         | Location          | Severity |
+| :----------- | :---------------- | :------- |
+| style-inject | package.json:72:6 | error    |
+| victory      | package.json:73:6 | error    |
 

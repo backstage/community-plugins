@@ -1928,7 +1928,7 @@ __metadata:
     "@backstage/plugin-permission-react": "npm:^0.5.1"
     "@backstage/test-utils": "npm:^1.7.18"
     "@backstage/theme": "npm:^0.7.3"
-    "@backstage/ui": "npm:^0.14.3"
+    "@backstage/ui": "npm:^0.15.0"
     "@kubernetes/client-node": "npm:1.4.0"
     "@patternfly/patternfly": "npm:^6.1.0"
     "@patternfly/react-charts": "npm:^8.1.0"
@@ -1950,7 +1950,6 @@ __metadata:
     lodash: "npm:^4.17.21"
     mobx-react: "npm:^7.6.0"
     react: "npm:^18.3.1"
-    react-aria-components: "npm:^1.3.0"
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^6.26.2"
     react-use: "npm:^17.4.0"
@@ -4415,30 +4414,6 @@ __metadata:
   version: 1.2.2
   resolution: "@backstage/types@npm:1.2.2"
   checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
-  languageName: node
-  linkType: hard
-
-"@backstage/ui@npm:^0.14.3":
-  version: 0.14.3
-  resolution: "@backstage/ui@npm:0.14.3"
-  dependencies:
-    "@backstage/version-bridge": "npm:^1.0.12"
-    "@remixicon/react": "npm:^4.6.0"
-    "@tanstack/react-table": "npm:^8.21.3"
-    clsx: "npm:^2.1.1"
-    react-aria: "npm:~3.48.0"
-    react-aria-components: "npm:~1.17.0"
-    react-stately: "npm:~3.46.0"
-    use-sync-external-store: "npm:^1.4.0"
-  peerDependencies:
-    "@types/react": ^18.0.0
-    react: ^18.0.0
-    react-dom: ^18.0.0
-    react-router-dom: ^6.30.2
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/c8815399f0f60c2b87d196d150f4225d50b2f1afaad82ccafe0f7e50cee3f77d2f82a6d76e305fdd559dd456102f7559ba92c41dbe025111f4e91109f3a61a6f
   languageName: node
   linkType: hard
 
@@ -27794,7 +27769,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria-components@npm:^1.14.0, react-aria-components@npm:^1.3.0, react-aria-components@npm:~1.17.0":
+"react-aria-components@npm:^1.14.0, react-aria-components@npm:~1.17.0":
   version: 1.17.0
   resolution: "react-aria-components@npm:1.17.0"
   dependencies:

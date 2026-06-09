@@ -35,9 +35,7 @@ describe('PodLogsDownload', () => {
 
   it('renders the component with Download button when logText is provided', () => {
     render(<PodLogsDownload logText="Some logs" fileName="example" />);
-    const downloadButton = screen.getByRole('button', {
-      name: /download logs/i,
-    });
+    const downloadButton = screen.getByRole('button', { name: 'Download' });
     expect(downloadButton).toBeInTheDocument();
     expect(downloadButton).toHaveTextContent('Download');
   });
@@ -46,9 +44,7 @@ describe('PodLogsDownload', () => {
     const logText = 'Some logs';
     const fileName = 'example';
     render(<PodLogsDownload logText={logText} fileName={fileName} />);
-    const downloadButton = screen.getByRole('button', {
-      name: /download logs/i,
-    });
+    const downloadButton = screen.getByRole('button', { name: 'Download' });
 
     fireEvent.click(downloadButton);
     expect(downloadLogFile).toHaveBeenCalledWith(logText, `${fileName}.log`);

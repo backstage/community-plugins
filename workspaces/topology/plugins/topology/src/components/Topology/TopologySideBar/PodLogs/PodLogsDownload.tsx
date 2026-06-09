@@ -29,7 +29,6 @@ const PodLogsDownload = ({ logText, fileName }: PodLogsDownloadProps) => {
 
   return logText ? (
     <Button
-      aria-label="download logs"
       variant="secondary"
       onClick={() => downloadLogFile(logText, `${fileName}.log`)}
     >

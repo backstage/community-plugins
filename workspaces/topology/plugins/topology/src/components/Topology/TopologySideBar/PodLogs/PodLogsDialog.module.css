@@ -1,4 +1,8 @@
 @layer components {
+  :global([data-theme-mode='dark']) .dialog[class*='bui-Dialog'] {
+    background: var(--bui-bg-app);
+  }
+
   .header {
     display: flex;
     align-items: center;

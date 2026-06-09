@@ -3,9 +3,9 @@
     height: 100%;
     width: 100%;
     min-height: 30rem;
-    background-color: var(--bui-bg-surface-1);
+    background-color: var(--bui-bg-app);
     border-radius: var(--bui-radius-2);
-    border: 1px solid var(--bui-border);
+    border: 1px solid var(--bui-border-1);
   }
 
   .skeleton {

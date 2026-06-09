@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ComponentType } from 'react';
+import type { ComponentType, SVGProps } from 'react';
 import {
   RiAddCircleLine,
   RiBookOpenLine,
@@ -24,11 +24,22 @@ import {
   RiSearchLine,
 } from '@remixicon/react';
 
+type SidebarIconProps = Omit<SVGProps<SVGSVGElement>, 'children'> & {
+  size?: string | number;
+  color?: string;
+};
+
 const createSidebarIcon = (
   Icon: typeof RiHomeLine,
-  size = 24,
-): ComponentType => {
-  const SidebarIcon = () => <Icon size={size} />;
+  defaultSize = 24,
+): ComponentType<SidebarIconProps> => {
+  const SidebarIcon = ({ size, fontSize, ...props }: SidebarIconProps) => (
+    <Icon
+      {...props}
+      fontSize={fontSize}
+      size={size ?? (fontSize !== undefined ? undefined : defaultSize)}
+    />
+  );
   return SidebarIcon;
 };
 
