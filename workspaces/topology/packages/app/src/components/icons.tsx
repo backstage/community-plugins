@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { IconComponent } from '@backstage/core-plugin-api';
 import {
   RiAddCircleLine,
   RiBookOpenLine,
@@ -24,11 +23,12 @@ import {
   RiSearchLine,
 } from '@remixicon/react';
 
-const createSidebarIcon = (
-  Icon: typeof RiHomeLine,
-  defaultSize = 24,
-): IconComponent => {
-  const SidebarIcon: IconComponent = ({ fontSize }) => (
+type SidebarIconProps = {
+  fontSize?: 'medium' | 'large' | 'small' | 'inherit';
+};
+
+const createSidebarIcon = (Icon: typeof RiHomeLine, defaultSize = 24) => {
+  const SidebarIcon = ({ fontSize }: SidebarIconProps) => (
     <Icon
       fontSize={fontSize}
       size={fontSize !== undefined ? undefined : defaultSize}
