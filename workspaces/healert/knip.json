@@ -2,10 +2,7 @@
   "workspaces": {
     ".": {},
     "{packages,plugins}/*": {
-      "entry": [
-        "dev/**/*.{ts,tsx}",
-        "src/index.{ts,tsx}"
-      ],
+      "entry": ["dev/**/*.{ts,tsx}", "src/index.{ts,tsx}"],
       "ignore": [
         ".eslintrc.js",
         "config.d.ts",
@@ -18,10 +15,7 @@
     }
   },
   "jest": {
-    "entry": [
-      "src/setupTests.ts",
-      "src/**/*.test.{ts,tsx}"
-    ]
+    "entry": ["src/setupTests.ts", "src/**/*.test.{ts,tsx}"]
   },
   "storybook": {
     "entry": "src/components/**/*.stories.tsx"
