@@ -70,14 +70,20 @@ export const ArtifactTable = ({
         title: t('table.columns.checksum'),
         field: 'hash',
         emptyValue: t('table.emptyValue'),
-        render: rowData => (
-          <Flex direction="row" align="center" gap="1">
-            <span className={styles.algorithmChip}>
-              {rowData.hash?.algorithm}
-            </span>
-            {rowData.hash?.value.slice(0, 12)}
-          </Flex>
-        ),
+        render: rowData => {
+          if (!rowData.hash) {
+            return t('table.emptyValue');
+          }
+
+          return (
+            <Flex direction="row" align="center" gap="1">
+              <span className={styles.algorithmChip}>
+                {rowData.hash.algorithm}
+              </span>
+              {rowData.hash.value.slice(0, 12)}
+            </Flex>
+          );
+        },
         customFilterAndSearch: (term, rowData) => {
           if (!rowData.hash) {
             return false;
