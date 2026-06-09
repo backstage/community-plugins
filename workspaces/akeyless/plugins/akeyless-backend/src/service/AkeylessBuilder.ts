@@ -24,11 +24,19 @@ import { getAkeylessConfig } from '../config';
 import { assertPathAllowed, joinSecretPath, normalizePath } from '../pathUtils';
 import { AkeylessApi, AkeylessClient } from './akeylessApi';
 
+/**
+ * Environment values needed by the AkeylessBuilder.
+ * @public
+ */
 export interface AkeylessEnvironment {
   logger: LoggerService;
   config: Config;
 }
 
+/**
+ * The object returned by AkeylessBuilder.build().
+ * @public
+ */
 export type AkeylessBuilderReturn = {
   router: express.Router;
 };
@@ -39,6 +47,9 @@ type StaticSecretRequest = {
   contextPath?: string;
 };
 
+/**
+ * @public
+ */
 export class AkeylessBuilder {
   private akeylessApi?: AkeylessApi;
   private allowCrud = true;

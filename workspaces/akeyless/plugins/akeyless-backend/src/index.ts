@@ -17,4 +17,10 @@
 export * from './service/router';
 export * from './service/AkeylessBuilder';
 export * from './service/akeylessApi';
+export type {
+  AkeylessConfig,
+  AuthMethod,
+  CloudProvider,
+  DeploymentProfile,
+} from './config';
 export { akeylessPlugin as default } from './service/plugin';

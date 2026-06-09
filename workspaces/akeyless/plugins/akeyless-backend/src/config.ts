@@ -16,10 +16,23 @@
 
 import { Config } from '@backstage/config';
 
+/**
+ * @public
+ */
 export type DeploymentProfile = 'saas' | 'onprem' | 'cloud';
+/**
+ * @public
+ */
 export type AuthMethod = 'accessKey' | 'universalIdentity' | 'cloudIam';
+/**
+ * @public
+ */
 export type CloudProvider = 'aws_iam' | 'azure_ad' | 'gcp';
 
+/**
+ * Resolved Akeyless plugin configuration.
+ * @public
+ */
 export type AkeylessConfig = {
   deploymentProfile: DeploymentProfile;
   gatewayUrl: string;

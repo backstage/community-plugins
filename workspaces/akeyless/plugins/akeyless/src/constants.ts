@@ -29,9 +29,14 @@ export const AKEYLESS_SECRET_TYPES_ANNOTATION = 'akeyless.io/secret-types';
 
 /**
  * Set to "false" to hide in-Backstage CRUD controls (list + Console links remain).
+ * @public
  */
 export const AKEYLESS_ALLOW_CRUD_ANNOTATION = 'akeyless.io/allow-crud';
 
+/**
+ * Default item types when `akeyless.io/secret-types` is not set.
+ * @public
+ */
 export const DEFAULT_SECRET_TYPES = [
   'static-secret',
   'dynamic-secret',

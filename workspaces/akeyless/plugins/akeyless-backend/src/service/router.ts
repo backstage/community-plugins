@@ -19,11 +19,18 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { AkeylessBuilder } from './AkeylessBuilder';
 
+/**
+ * @public
+ */
 export interface RouterOptions {
   logger: LoggerService;
   config: Config;
 }
 
+/**
+ * Creates the routes used for Akeyless.
+ * @public
+ */
 export function createRouter(options: RouterOptions): express.Router {
   const { router } = AkeylessBuilder.createBuilder(options).build();
   return router;

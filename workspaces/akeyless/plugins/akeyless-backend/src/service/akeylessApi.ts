@@ -21,6 +21,9 @@ import plimit from 'p-limit';
 import { AkeylessConfig } from '../config';
 import { normalizePath } from '../pathUtils';
 
+/**
+ * @public
+ */
 export type AkeylessSecret = {
   name: string;
   fullPath: string;
@@ -30,6 +33,9 @@ export type AkeylessSecret = {
   editUrl: string;
 };
 
+/**
+ * @public
+ */
 export interface AkeylessApi {
   getConsoleUrl(): string;
   listSecrets(
@@ -73,6 +79,9 @@ function toAkeylessError(error: unknown, fallbackMessage: string): Error {
   return error instanceof Error ? error : new Error(String(error));
 }
 
+/**
+ * @public
+ */
 export class AkeylessClient implements AkeylessApi {
   private readonly config: AkeylessConfig;
   private readonly api: {
