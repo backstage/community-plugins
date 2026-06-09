@@ -47,5 +47,9 @@ export const useDarkTheme = () => {
     } else {
       htmlTagElement.classList.remove(THEME_DARK_CLASS);
     }
+
+    return () => {
+      htmlTagElement.classList.remove(THEME_DARK_CLASS);
+    };
   }, [isDark]);
 };

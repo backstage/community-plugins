@@ -86,4 +86,21 @@ describe('useDarkTheme', () => {
       document.documentElement.classList.contains('pf-v6-theme-dark'),
     ).toBe(false);
   });
+
+  it('should remove dark theme class from html tag on unmount', () => {
+    useApiMock.mockImplementation(apiRef => {
+      if (apiRef === appThemeApiRef) {
+        return createAppThemeApi('dark');
+      }
+      throw new Error('Unexpected api ref');
+    });
+    const { unmount } = renderHook(() => useDarkTheme());
+    expect(
+      document.documentElement.classList.contains('pf-v6-theme-dark'),
+    ).toBe(true);
+    unmount();
+    expect(
+      document.documentElement.classList.contains('pf-v6-theme-dark'),
+    ).toBe(false);
+  });
 });
