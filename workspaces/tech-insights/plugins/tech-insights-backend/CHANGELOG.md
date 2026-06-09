@@ -1,6 +1,6 @@
 # @backstage-community/plugin-tech-insights-backend
 
-## 3.0.0
+## 3.0.1
 
 ### Major Changes
 
