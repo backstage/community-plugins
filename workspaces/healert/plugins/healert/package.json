@@ -7,7 +7,9 @@
   "license": "Apache-2.0",
   "homepage": "https://healert.io",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
   },
   "repository": {
     "type": "git",
