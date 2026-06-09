@@ -62,6 +62,11 @@ catalog:
         - allow: [User, Group]
 
 techInsights:
+  maturity:
+    # Flip this to true to opt entities (System/Domain/Group/API/Resource) into
+    # having their own maturity scorecard alongside the children rollup on the
+    # Maturity Summary page.
+    enableCompoundEntityCheck: false
   factRetrievers:
     entityOwnershipFactRetriever:
       cadence: '*/15 * * * *'

@@ -40,6 +40,7 @@
   "dependencies": {
     "@backstage/backend-plugin-api": "^1.9.1",
     "@backstage/plugin-auth-node": "^0.7.1",
+    "jose": "^5.0.0",
     "openid-client": "^5.6.5",
     "zod": "^3.25.76 || ^4.0.0"
   },

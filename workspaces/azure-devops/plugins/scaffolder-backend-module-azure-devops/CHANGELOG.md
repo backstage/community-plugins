@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.24.1
+
+### Patch Changes
+
+- 0036704: Removed logging of `templateParameters` when executing `azure:pipeline:run`
+
 ## 0.24.0
 
 ### Minor Changes
