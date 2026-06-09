@@ -42,12 +42,14 @@
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
     "start:alpha": "backstage-cli package start --entrypoint dev/alpha/index.tsx",
+    "start:mock": "backstage-cli package start --entrypoint dev/index.mock.tsx",
+    "start:alpha:mock": "backstage-cli package start --entrypoint dev/alpha/index.mock.tsx",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
-    "ui-test": "start-server-and-test start localhost:3000 'playwright test'",
-    "ui-test:alpha": "start-server-and-test start:alpha localhost:3000 'playwright test'"
+    "ui-test": "start-server-and-test start:mock localhost:3000 'APP_MODE=legacy playwright test -c ../../playwright.config.ts'",
+    "ui-test:alpha": "start-server-and-test start:alpha:mock localhost:3000 'APP_MODE=alpha playwright test -c ../../playwright.config.ts'"
   },
   "dependencies": {
     "@backstage-community/plugin-rbac-common": "workspace:^",

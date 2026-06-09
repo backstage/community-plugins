@@ -16,8 +16,8 @@
 import { expect, type Page } from '@playwright/test';
 
 /** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
-export function isNfsAppMode(): boolean {
-  return process.env.APP_MODE === 'nfs';
+export function isAlphaAppMode(): boolean {
+  return process.env.APP_MODE === 'alpha';
 }
 
 export const verifyCellsInTable = async (
@@ -87,7 +87,7 @@ export class Common {
     });
 
     const enterButton = this.page.getByRole('button', { name: 'Enter' });
-    if (!isNfsAppMode()) {
+    if (!isAlphaAppMode()) {
       await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible();
     }
     await enterButton.click();

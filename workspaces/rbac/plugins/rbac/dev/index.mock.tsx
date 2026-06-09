@@ -15,15 +15,20 @@
  */
 
 /**
- * Legacy dev mode for the RBAC plugin.
+ * Legacy dev mode for the RBAC plugin using mock API data (e2e / UI-only).
  */
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
+import { configApiRef } from '@backstage/core-plugin-api';
 import { createDevApp } from '@backstage/dev-utils';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
+import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { RbacPage, rbacPlugin } from '../src/plugin';
 import { rbacTranslations } from '../src/alpha/translations';
+import { mockConfigApi, mockRBACApi } from './mocks';
 import { devAppThemes } from './shared';
 
 createDevApp()
@@ -33,7 +38,17 @@ createDevApp()
   .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
   .setDefaultLanguage('en')
   .addPage({
-    element: <RbacPage />,
+    element: (
+      <TestApiProvider
+        apis={[
+          [permissionApiRef, mockApis.permission()],
+          [rbacApiRef, mockRBACApi],
+          [configApiRef, mockConfigApi],
+        ]}
+      >
+        <RbacPage />
+      </TestApiProvider>
+    ),
     title: 'RBAC',
     path: '/rbac',
   })

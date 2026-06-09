@@ -26,9 +26,9 @@ module.exports = function materialUiMigrationEslintConfig(packageDir) {
         message: 'Use @mui/material or @mui/lab instead of Material UI v4.',
       },
       {
-        name: 'makeStyles',
+        name: '@mui/styles',
         message:
-          'Use @mui/material sx/styled, or Backstage UI instead makeStyles.',
+          'Avoid @mui/styles/makeStyles. Use @mui/material sx/styled, or Backstage UI instead of makeStyles.',
       },
       {
         name: '@material-ui/icons',

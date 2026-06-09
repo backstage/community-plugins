@@ -38,7 +38,7 @@ test.describe('RBAC plugin', () => {
 
   const navigateToRole = async (roleName: string) => {
     await common.verifyHeading(
-      replaceTemplate(translations.table.titleWithCount, { count: '3' }),
+      replaceTemplate(translations.table.titleWithCount, { count: '2' }),
     );
     await page
       .locator(`a`)
@@ -85,9 +85,9 @@ test.describe('RBAC plugin', () => {
     await browser.close();
   });
 
-  test('Should show 3 roles in the list, column headings and cells', async () => {
+  test('Should show 2 roles in the list, column headings and cells', async () => {
     await common.verifyHeading(
-      replaceTemplate(translations.table.titleWithCount, { count: '3' }),
+      replaceTemplate(translations.table.titleWithCount, { count: '2' }),
     );
     await runAccessibilityTests(page);
     const columns = [
@@ -127,7 +127,7 @@ test.describe('RBAC plugin', () => {
   test('View details of role', async ({}, testInfo) => {
     // Skipping Japanese tests due to https://issues.redhat.com/browse/RHDHBUGS-2598
     test.fixme(testInfo.project.name === 'ja', 'Skip Japanese test');
-    const roleName = 'role:default/dev_admin';
+    const roleName = 'role:default/rbac_admin';
     await page.locator(`a`).filter({ hasText: roleName }).click();
     await common.verifyHeading(roleName);
     await runAccessibilityTests(page);
@@ -179,7 +179,7 @@ test.describe('RBAC plugin', () => {
   });
 
   test('Edit an existing role', async () => {
-    const roleName = 'role:default/dev_admin';
+    const roleName = 'role:default/rbac_admin';
     await page.locator(`a`).filter({ hasText: roleName }).click();
     await common.verifyHeading(roleName);
     await page.getByRole('tab', { name: translations.common.overview }).click();
@@ -214,7 +214,7 @@ test.describe('RBAC plugin', () => {
     await common.clickButton(translations.roleForm.steps.save);
     await verifyText(
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/dev_admin',
+        roleName: 'role:default/rbac_admin',
         action: 'updated',
       }),
       page,
@@ -305,7 +305,7 @@ test.describe('RBAC plugin', () => {
     await common.clickButton(translations.roleForm.steps.save);
     await verifyText(
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/dev_admin',
+        roleName: 'role:default/rbac_admin',
         action: 'updated',
       }),
       page,
@@ -490,7 +490,7 @@ test.describe('RBAC plugin', () => {
   });
 
   test('Edit existing nested conditional policy', async () => {
-    await navigateToRole('dev_admin');
+    await navigateToRole('rbac_admin');
 
     await page.getByTestId('expand-row-catalog').click();
     await page
@@ -519,14 +519,14 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.save,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/dev_admin',
+        roleName: 'role:default/rbac_admin',
         action: 'updated',
       }),
     );
   });
 
   test('Remove existing nested conditional policy', async () => {
-    await navigateToRole('dev_admin');
+    await navigateToRole('rbac_admin');
 
     await page.getByTestId('expand-row-catalog').click();
     await page
@@ -539,7 +539,7 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.save,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/dev_admin',
+        roleName: 'role:default/rbac_admin',
         action: 'updated',
       }),
     );

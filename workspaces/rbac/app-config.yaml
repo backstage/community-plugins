@@ -142,10 +142,6 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
-    - type: file
-      target: ../../examples/dev-catalog-org.yaml
-      rules:
-        - allow: [User, Group]
 
     ## Uncomment these lines to add more example data
     # - type: url
@@ -160,13 +156,10 @@ catalog:
 permission:
   enabled: true
   rbac:
-    policies-csv-file: ../../examples/rbac-policy.csv
-    conditionalPoliciesFile: ../../examples/rbac-conditions.yaml
-    policyFileReload: true
     pluginsWithPermission:
       - catalog
       - permission
       - scaffolder
     admin:
       users:
-        - name: user:default/guest
+        - name: user:development/guest

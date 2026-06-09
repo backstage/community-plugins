@@ -15,23 +15,16 @@
  */
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/index.tsx) or 'nfs' (dev/alpha/index.tsx)
+// APP_MODE: 'legacy' (dev/index.mock.tsx) or 'alpha' (dev/alpha/index.mock.tsx)
 const appMode = process.env.APP_MODE || 'legacy';
 const frontendStartCommand =
-  appMode === 'legacy' ? 'yarn start' : 'yarn start:alpha';
+  appMode === 'legacy' ? 'yarn start:mock' : 'yarn start:alpha:mock';
 
 export default defineConfig({
   testDir: './plugins/rbac/tests/',
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
-        {
-          command: 'yarn start',
-          cwd: 'plugins/rbac-backend',
-          port: 7007,
-          reuseExistingServer: true,
-          timeout: 120_000,
-        },
         {
           command: frontendStartCommand,
           cwd: 'plugins/rbac',

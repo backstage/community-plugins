@@ -1866,7 +1866,7 @@ __metadata:
     "@backstage/ui": "npm:^0.14.3"
     "@mui/icons-material": "npm:5.18.0"
     "@mui/material": "npm:^5.14.18"
-    "@playwright/test": "npm:^1.56.1"
+    "@playwright/test": "npm:1.60.0"
     "@rjsf/core": "npm:^5.21.2"
     "@rjsf/mui": "npm:^5.21.2"
     "@rjsf/utils": "npm:^5.21.2"
@@ -6859,9 +6859,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.56.1":
-  version: 1.58.1
-  resolution: "@playwright/test@npm:1.58.1"
+"@playwright/test@npm:1.60.0":
+  version: 1.60.0
+  resolution: "@playwright/test@npm:1.60.0"
   dependencies:
     playwright: "npm:1.60.0"
   bin:
