@@ -633,7 +633,7 @@ The Azure DevOps plugin currently support the New Frontend System via an `/alpha
    After all other imports:
 
    ```tsx
-   import azureDevOpsPlugin from '@backstage-community/plugin-azure-devops';
+   import azureDevOpsPlugin from '@backstage-community/plugin-azure-devops/alpha';
    ```
 
    ```tsx
@@ -648,7 +648,7 @@ The Azure DevOps plugin currently support the New Frontend System via an `/alpha
    });
    ```
 
-   Alternatively you can simply use feature discover and skip the above step by adding the following yo your `app-config.yaml` file:
+   Alternatively you can simply use feature discovery and skip the above step by adding the following yo your `app-config.yaml` file:
 
    ```yaml
    app:
