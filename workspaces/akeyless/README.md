@@ -5,7 +5,7 @@ The [Akeyless](https://www.akeyless.io) Backstage plugin lists secrets and other
 ## Plugins
 
 - [akeyless](./plugins/akeyless/README.md) — frontend entity card and Development tab
-- [akeyless-backend](./plugins/akeyless-backend/README.md) — backend list-only API
+- [akeyless-backend](./plugins/akeyless-backend/README.md) — backend API (list + optional CRUD)
 
 ## Developing
 
