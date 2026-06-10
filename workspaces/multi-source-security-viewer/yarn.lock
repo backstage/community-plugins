@@ -2392,7 +2392,7 @@ __metadata:
     "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-tokens": "npm:^6.0.0"
-    "@playwright/test": "npm:^1.60.0"
+    "@playwright/test": "npm:1.60.0"
     "@tanstack/react-query": "npm:^5.62.7"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -6642,7 +6642,7 @@ __metadata:
     "@changesets/cli": "npm:^2.27.1"
     "@gitbeaker/rest": "npm:^43.8.0"
     "@jest/environment-jsdom-abstract": "npm:^30.0.0"
-    "@playwright/test": "npm:^1.57.0"
+    "@playwright/test": "npm:1.60.0"
     "@react-aria/interactions": "npm:^3.28.0"
     "@react-stately/layout": "npm:^3.4.0"
     "@react-stately/overlays": "npm:^3.7.0"
@@ -9260,7 +9260,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.32.3, @playwright/test@npm:^1.57.0, @playwright/test@npm:^1.60.0":
+"@playwright/test@npm:1.60.0":
   version: 1.60.0
   resolution: "@playwright/test@npm:1.60.0"
   dependencies:
@@ -15149,7 +15149,7 @@ __metadata:
     "@backstage/ui": "npm:^0.15.0"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
-    "@playwright/test": "npm:^1.32.3"
+    "@playwright/test": "npm:1.60.0"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"

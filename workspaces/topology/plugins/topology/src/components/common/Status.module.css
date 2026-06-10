@@ -1,0 +1,28 @@
+@layer components {
+  .iconStyles {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .success {
+    color: var(--bui-fg-success, #1e8549);
+  }
+
+  .running {
+    fill: var(--bui-fg-link, #0366d6);
+  }
+
+  .pending {
+    fill: var(--bui-fg-warning, #f0ab00);
+  }
+
+  .warning {
+    color: var(--bui-fg-warning, #f0ab00);
+  }
+
+  .error {
+    color: var(--bui-fg-danger, #c9190b);
+  }
+}
