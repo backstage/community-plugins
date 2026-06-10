@@ -74,7 +74,11 @@ export class AkeylessBuilder {
       logger.warn(
         'Failed to initialize Akeyless backend: akeyless config is missing',
       );
-      return { router: Router() };
+      const router = Router();
+      router.get('/health', (_, response) => {
+        response.json({ status: 'disabled', reason: 'missing config' });
+      });
+      return { router };
     }
 
     const akeylessConfig = getAkeylessConfig(config);

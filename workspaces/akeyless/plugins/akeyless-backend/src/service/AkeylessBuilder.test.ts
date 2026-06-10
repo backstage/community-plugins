@@ -57,6 +57,22 @@ describe('AkeylessBuilder', () => {
     expect(response.body).toEqual({ status: 'ok', allowCrud: true });
   });
 
+  it('returns disabled health when config is missing', async () => {
+    const builder = AkeylessBuilder.createBuilder({
+      logger: mockServices.logger.mock(),
+      config: new ConfigReader({}),
+    });
+    const { router } = builder.build();
+    const disabledApp = express().use(router);
+
+    const response = await request(disabledApp).get('/health');
+    expect(response.status).toEqual(200);
+    expect(response.body).toEqual({
+      status: 'disabled',
+      reason: 'missing config',
+    });
+  });
+
   it('rejects CRUD when disabled', async () => {
     const disabledBuilder = AkeylessBuilder.createBuilder({
       logger: mockServices.logger.mock(),

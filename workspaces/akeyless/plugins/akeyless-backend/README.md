@@ -1,6 +1,6 @@
 # @backstage-community/plugin-akeyless-backend
 
-Backend plugin that authenticates to Akeyless and exposes a list-only API for the frontend.
+Backend plugin that authenticates to Akeyless and exposes list and static-secret CRUD APIs for the frontend.
 
 ## Installation
 

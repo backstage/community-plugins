@@ -39,8 +39,7 @@ export const akeylessPlugin = createBackendPlugin({
           config,
         }).build();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        httpRouter.use(router as any);
+        httpRouter.use(router);
         httpRouter.addAuthPolicy({
           path: '/health',
           allow: 'unauthenticated',

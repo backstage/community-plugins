@@ -19,7 +19,6 @@ export const AKEYLESS_SECRET_TYPES_ANNOTATION = 'akeyless.io/secret-types';
 
 // @public (undocumented)
 export interface AkeylessApi {
-  // (undocumented)
   createStaticSecret(
     name: string,
     value: string,
@@ -27,21 +26,17 @@ export interface AkeylessApi {
   ): Promise<{
     name: string;
   }>;
-  // (undocumented)
   deleteStaticSecret(name: string, contextPath: string): Promise<void>;
-  // (undocumented)
   getStaticSecretValue(
     name: string,
     contextPath: string,
   ): Promise<StaticSecretValueResponse>;
-  // (undocumented)
   listSecrets(
     secretPath: string,
     options?: {
       itemTypes?: string[];
     },
   ): Promise<ListSecretsResponse>;
-  // (undocumented)
   updateStaticSecretValue(
     name: string,
     value: string,

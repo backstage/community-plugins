@@ -15,6 +15,7 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
+import { MissingAnnotationEmptyState } from '@backstage/plugin-catalog-react';
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import { alertApiRef, useApi } from '@backstage/core-plugin-api';
 import Box from '@material-ui/core/Box';
@@ -59,11 +60,14 @@ export const akeylessSecretConfig = (entity: Entity) => {
 
   const typesAnnotation =
     entity.metadata.annotations?.[AKEYLESS_SECRET_TYPES_ANNOTATION];
-  const itemTypes = typesAnnotation
+  const parsedItemTypes = typesAnnotation
     ? typesAnnotation
         .split(',')
         .map(type => type.trim())
         .filter(Boolean)
+    : [];
+  const itemTypes = parsedItemTypes.length
+    ? parsedItemTypes
     : [...DEFAULT_SECRET_TYPES];
 
   const allowCrud =
@@ -95,33 +99,38 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
     setReloadToken(current => current + 1);
   }, []);
 
-  if (!secretPaths.length) {
-    throw Error(
-      `The secret path is undefined. Please define the annotation ${AKEYLESS_SECRET_PATH_ANNOTATION}`,
-    );
-  }
-
   const {
     value: listResults,
     loading,
     error,
   } = useAsync(async () => {
+    if (!secretPaths.length) {
+      return [];
+    }
+
     const results = await Promise.all(
       secretPaths.map(async path => {
-        const response = await akeylessApi
-          .listSecrets(path, { itemTypes })
-          .catch(() => ({
+        try {
+          const response = await akeylessApi.listSecrets(path, { itemTypes });
+          return {
+            path,
+            secrets: response.secrets,
+            consoleUrl: response.consoleUrl,
+            allowCrud: response.allowCrud ?? false,
+            error: undefined as string | undefined,
+          };
+        } catch (pathError) {
+          return {
+            path,
             secrets: [],
             consoleUrl: undefined,
             allowCrud: false,
-          }));
-
-        return {
-          path,
-          secrets: response.secrets,
-          consoleUrl: response.consoleUrl,
-          allowCrud: response.allowCrud ?? false,
-        };
+            error:
+              pathError instanceof Error
+                ? pathError.message
+                : 'Failed to load secrets',
+          };
+        }
       }),
     );
     return results;
@@ -175,90 +184,124 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
 
   const data: Array<Record<string, unknown>> = [];
 
-  (listResults || []).forEach(({ path, secrets, consoleUrl }) => {
-    if (secrets.length === 0) {
-      data.push({
-        path,
-        item: (
-          <Typography variant="body2" color="textSecondary">
-            No items found.{' '}
-            {consoleUrl ? (
-              <Link to={consoleUrl} target="_blank">
-                Open in Akeyless Console
-              </Link>
-            ) : null}
-          </Typography>
-        ),
-        type: null,
-        view: null,
-        edit: null,
-        actions: null,
-      });
-      return;
-    }
-
-    secrets.forEach((secret, index) => {
-      const isStaticSecret = secret.itemType === STATIC_SECRET_TYPE;
-      const row: Record<string, unknown> = {
-        path: index === 0 ? path : '',
-        item: secret.fullPath,
-        type: secret.itemType,
-        view: (
-          <Link to={secret.showUrl} target="_blank">
-            <OpenInNew fontSize="small" />
-          </Link>
-        ),
-        edit: (
-          <Link to={secret.editUrl} target="_blank">
-            <OpenInNew fontSize="small" />
-          </Link>
-        ),
-      };
-
-      if (crudEnabled) {
-        row.actions = isStaticSecret ? (
-          <Box display="flex">
-            <Tooltip title="View value">
-              <IconButton size="small" onClick={() => openViewDialog(secret)}>
-                <VisibilityIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Edit value">
-              <IconButton
-                size="small"
-                onClick={async () => {
-                  setEditSecret(secret);
-                  setEditInitialValue('');
-                  try {
-                    const response = await akeylessApi.getStaticSecretValue(
-                      secret.fullPath,
-                      secret.path,
-                    );
-                    setEditInitialValue(response.value);
-                  } catch {
-                    setEditInitialValue('');
-                  }
-                }}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton size="small" onClick={() => setDeleteSecret(secret)}>
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        ) : (
-          <Typography variant="caption" color="textSecondary">
-            Console only
-          </Typography>
-        );
+  (listResults || []).forEach(
+    ({ path, secrets, consoleUrl, error: pathError }) => {
+      if (pathError) {
+        data.push({
+          path,
+          item: (
+            <Alert severity="error">
+              Failed to load secrets from &apos;{path}&apos;: {pathError}
+            </Alert>
+          ),
+          type: null,
+          view: null,
+          edit: null,
+          actions: null,
+        });
+        return;
       }
 
-      data.push(row);
-    });
-  });
+      if (secrets.length === 0) {
+        data.push({
+          path,
+          item: (
+            <Typography variant="body2" color="textSecondary">
+              No items found.{' '}
+              {consoleUrl ? (
+                <Link to={consoleUrl} target="_blank" rel="noopener noreferrer">
+                  Open in Akeyless Console
+                </Link>
+              ) : null}
+            </Typography>
+          ),
+          type: null,
+          view: null,
+          edit: null,
+          actions: null,
+        });
+        return;
+      }
+
+      secrets.forEach((secret, index) => {
+        const isStaticSecret = secret.itemType === STATIC_SECRET_TYPE;
+        const row: Record<string, unknown> = {
+          path: index === 0 ? path : '',
+          item: secret.fullPath,
+          type: secret.itemType,
+          view: (
+            <Link to={secret.showUrl} target="_blank" rel="noopener noreferrer">
+              <OpenInNew fontSize="small" />
+            </Link>
+          ),
+          edit: (
+            <Link to={secret.editUrl} target="_blank" rel="noopener noreferrer">
+              <OpenInNew fontSize="small" />
+            </Link>
+          ),
+        };
+
+        if (crudEnabled) {
+          row.actions = isStaticSecret ? (
+            <Box display="flex">
+              <Tooltip title="View value">
+                <IconButton size="small" onClick={() => openViewDialog(secret)}>
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit value">
+                <IconButton
+                  size="small"
+                  onClick={async () => {
+                    try {
+                      const response = await akeylessApi.getStaticSecretValue(
+                        secret.fullPath,
+                        secret.path,
+                      );
+                      setEditInitialValue(response.value);
+                      setEditSecret(secret);
+                    } catch (editError) {
+                      alertApi.post({
+                        message:
+                          editError instanceof Error
+                            ? editError.message
+                            : 'Failed to load secret value',
+                        severity: 'error',
+                      });
+                    }
+                  }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton
+                  size="small"
+                  onClick={() => setDeleteSecret(secret)}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          ) : (
+            <Typography variant="caption" color="textSecondary">
+              Console only
+            </Typography>
+          );
+        }
+
+        data.push(row);
+      });
+    },
+  );
+
+  if (!secretPaths.length) {
+    return (
+      <MissingAnnotationEmptyState
+        annotation={AKEYLESS_SECRET_PATH_ANNOTATION}
+      />
+    );
+  }
 
   if (error) {
     return (

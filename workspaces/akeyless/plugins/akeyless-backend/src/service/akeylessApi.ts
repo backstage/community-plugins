@@ -214,9 +214,11 @@ export class AkeylessClient implements AkeylessApi {
       });
     }
 
-    for (const folder of response.folders ?? []) {
-      await this.listAtPath(folder, itemTypes, basePath, secrets);
-    }
+    await Promise.all(
+      (response.folders ?? []).map(folder =>
+        this.listAtPath(folder, itemTypes, basePath, secrets),
+      ),
+    );
   }
 
   async listSecrets(

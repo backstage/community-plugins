@@ -61,24 +61,29 @@ export type StaticSecretValueResponse = {
  * @public
  */
 export interface AkeylessApi {
+  /** Lists Akeyless items under the given path, optionally filtered by type. */
   listSecrets(
     secretPath: string,
     options?: { itemTypes?: string[] },
   ): Promise<ListSecretsResponse>;
+  /** Reads the value of a static secret scoped to the entity context path. */
   getStaticSecretValue(
     name: string,
     contextPath: string,
   ): Promise<StaticSecretValueResponse>;
+  /** Creates a static secret under the given context path. */
   createStaticSecret(
     name: string,
     value: string,
     contextPath: string,
   ): Promise<{ name: string }>;
+  /** Updates the value of an existing static secret. */
   updateStaticSecretValue(
     name: string,
     value: string,
     contextPath: string,
   ): Promise<{ name: string }>;
+  /** Deletes a static secret scoped to the entity context path. */
   deleteStaticSecret(name: string, contextPath: string): Promise<void>;
 }
 

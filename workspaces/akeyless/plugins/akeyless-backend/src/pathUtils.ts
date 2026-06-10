@@ -45,12 +45,7 @@ export function assertPathAllowed(itemPath: string, contextPath: string): void {
   const context = normalizePath(contextPath).replace(/\/$/, '');
 
   if (context === '' || context === '/') {
-    if (item.startsWith('/')) {
-      return;
-    }
-    throw new NotAllowedError(
-      `Secret path '${itemPath}' is outside the allowed context '${contextPath}'`,
-    );
+    return;
   }
 
   if (item === context || item.startsWith(`${context}/`)) {

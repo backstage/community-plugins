@@ -22,7 +22,7 @@ import { AKEYLESS_SECRET_PATH_ANNOTATION } from './constants';
  * @public
  */
 export function isAkeylessAvailable(entity: Entity): boolean {
-  return Boolean(
-    entity.metadata.annotations?.[AKEYLESS_SECRET_PATH_ANNOTATION],
-  );
+  const annotation =
+    entity.metadata.annotations?.[AKEYLESS_SECRET_PATH_ANNOTATION];
+  return Boolean(annotation?.trim());
 }
