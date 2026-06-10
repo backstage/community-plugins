@@ -123,7 +123,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
           }
           localization={{
             toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-            pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+            pagination: {
+              labelRowsSelect: t('table.labelRowsSelect'),
+              labelDisplayedRows: t('table.labelDisplayedRows'),
+            },
           }}
           onSearchChange={setSearchText}
         />
