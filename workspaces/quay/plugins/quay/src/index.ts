@@ -13,5 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { quayPlugin, QuayPage } from './plugin';
+
+/**
+ * A Backstage plugin for Quay container registry
+ *
+ * @packageDocumentation
+ */
+
+export { default } from './plugin';
 export { isQuayAvailable } from './components/Router';

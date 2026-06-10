@@ -4,6 +4,11 @@ app:
   experimental:
     packages: 'all'
   extensions:
+    - app/routes:
+        config:
+          redirects:
+            - from: /
+              to: /catalog
     - entity-card:catalog/about
     - entity-card:catalog/labels
     - entity-card:catalog/links:

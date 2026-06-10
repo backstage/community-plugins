@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { quayPlugin } from './plugin';
+import quayPlugin from './plugin';
 
 describe('quay', () => {
   it('should export plugin', () => {

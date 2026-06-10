@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-import ReactDOM from 'react-dom/client';
-
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
-import { createApp } from '@backstage/frontend-defaults';
-import {
-  ApiBlueprint,
-  createFrontendModule,
-} from '@backstage/frontend-plugin-api';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
-import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { createDevApp } from '@backstage/dev-utils';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { quayApiRef, QuayApiV1, QuayInstanceConfig } from '../src/api';
-import quayPlugin from '../src/plugin';
+import { QuayPage, quayPlugin } from '../src/legacy';
 import { mockQuayEntity, mockQuayInstanceDevelEntity } from './__data__/entity';
 import { labels } from './__data__/labels';
 import { manifestDigest } from './__data__/manifest_digest';
@@ -40,22 +34,29 @@ import {
 } from './__data__/security_vulnerabilities';
 import { tags } from './__data__/tags';
 
-class MockQuayApiClient implements QuayApiV1 {
+export class MockQuayApiClient implements QuayApiV1 {
   getQuayInstance(instanceName?: string): QuayInstanceConfig | undefined {
     if (instanceName === 'devel') {
       return { name: 'devel', apiUrl: 'https://quay-devel.io' };
     }
+
     return { name: 'default', apiUrl: 'https://quay.io' };
   }
 
   async getTags(instanceName?: string) {
     if (instanceName === 'devel') {
       return {
-        tags: [{ ...tags.tags[0], name: 'v5-devel-only' }],
+        tags: [
+          {
+            ...tags.tags[0],
+            name: 'v5-devel-only',
+          },
+        ],
         page: 1,
         has_additional: false,
       };
     }
+
     return tags;
   }
 
@@ -76,45 +77,46 @@ class MockQuayApiClient implements QuayApiV1 {
     if (instanceName === 'devel') {
       return { ...v1securityDetails };
     }
+
     return digestSecurityDetails[digest] ?? securityDetails;
   }
 }
 
-const quayDevModule = createFrontendModule({
-  pluginId: 'quay',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'quay-mock',
-      params: defineParams =>
-        defineParams({
-          api: quayApiRef,
-          deps: {},
-          factory: () => new MockQuayApiClient(),
-        }),
-    }),
-  ],
-});
-
-const catalogDevModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'catalog-mock',
-      params: defineParams =>
-        defineParams({
-          api: catalogApiRef,
-          deps: {},
-          factory: () =>
-            catalogApiMock({
-              entities: [mockQuayEntity, mockQuayInstanceDevelEntity],
-            }),
-        }),
-    }),
-  ],
-});
-
-const app = createApp({
-  features: [catalogPlugin, quayPlugin, quayDevModule, catalogDevModule],
-});
-
-ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
+createDevApp()
+  .registerPlugin(quayPlugin)
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [quayApiRef, new MockQuayApiClient()],
+          [permissionApiRef, mockApis.permission()],
+        ]}
+      >
+        <EntityProvider entity={mockQuayEntity}>
+          <QuayPage />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Root Page',
+    path: '/quay',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [quayApiRef, new MockQuayApiClient()],
+          [permissionApiRef, mockApis.permission()],
+        ]}
+      >
+        <EntityProvider
+          key="multi-instance"
+          entity={mockQuayInstanceDevelEntity}
+        >
+          <QuayPage />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Multi-instance',
+    path: '/quay/multi-instance',
+  })
+  .render();
