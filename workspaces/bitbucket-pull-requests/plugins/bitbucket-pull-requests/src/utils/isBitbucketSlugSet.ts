@@ -16,10 +16,13 @@
 
 import { Entity } from '@backstage/catalog-model';
 
-export const BITBUCKET_PULL_REQUESTS_ANNOTATION = 'bitbucket.com/project-slug';
+export const BITBUCKET_SERVER_ANNOTATION = 'bitbucket.com/project-slug';
+export const BITBUCKET_CLOUD_ANNOTATION = 'bitbucket.com/repo-slug';
 
 export const isBitbucketSlugSet = (entity: Entity) => {
   return (
-    entity?.metadata.annotations?.[BITBUCKET_PULL_REQUESTS_ANNOTATION] ?? ''
+    entity?.metadata.annotations?.[BITBUCKET_CLOUD_ANNOTATION] ??
+    entity?.metadata.annotations?.[BITBUCKET_SERVER_ANNOTATION] ??
+    ''
   );
 };

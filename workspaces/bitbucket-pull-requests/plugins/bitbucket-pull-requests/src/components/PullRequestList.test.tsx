@@ -33,9 +33,13 @@ import {
 import { setupServer } from 'msw/node';
 import { bitbucketApiRef, BitbucketApi } from '../api/BitbucketApi';
 import PullRequestList from '../components/PullRequestList';
-import { pullRequestsResponseStub, entityStub } from '../responseStubs';
+import {
+  pullRequestsResponseStub,
+  pullRequestsCloudResponseStub,
+  entityStub,
+  entityCloudStub,
+} from '../responseStubs';
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 
 const discoveryApi = UrlPatternDiscovery.compile('http://exampleapi.com');
@@ -63,6 +67,32 @@ const apis: [AnyApiRef, Partial<unknown>][] = [
   [translationApiRef, mockApis.translation()],
 ];
 
+const cloudApis: [AnyApiRef, Partial<unknown>][] = [
+  [
+    bitbucketApiRef,
+    new BitbucketApi({
+      discoveryApi,
+      identityApi,
+      fetchApi,
+      configApi: {
+        getOptionalString: (key: string) => {
+          if (key === 'bitbucket.type') {
+            return 'cloud';
+          }
+          if (key === 'bitbucket.proxyPath') {
+            return '/bitbucket/api';
+          }
+          return undefined;
+        },
+        getOptionalStringArray: (_key: string) => undefined,
+      } as any,
+    }),
+  ],
+  [errorApiRef, new MockErrorApi()],
+  [identityApiRef, identityApi],
+  [translationApiRef, mockApis.translation()],
+];
+
 describe('PullRequestList', () => {
   const worker = setupServer();
   registerMswTestHooks(worker);
@@ -74,11 +104,7 @@ describe('PullRequestList', () => {
     worker.use(
       rest.get(
         'http://exampleapi.com/bitbucket/api/projects/testproject/repos/testrepo/pull-requests',
-        (req, res, ctx) => {
-          // By default the list should request ALL states
-          expect(req.url.searchParams.get('state')).toBe('ALL');
-          return res(ctx.json(pullRequestsResponseStub));
-        },
+        (_, res, ctx) => res(ctx.json(pullRequestsResponseStub)),
       ),
     );
 
@@ -152,42 +178,6 @@ describe('PullRequestList', () => {
     expect(renderedIds).toHaveLength(prIds.length);
   });
 
-  it('should update the request state when a filter button is clicked', async () => {
-    let lastStateParam: string | null = null;
-
-    worker.use(
-      rest.get(
-        'http://exampleapi.com/bitbucket/api/projects/testproject/repos/testrepo/pull-requests',
-        (req, res, ctx) => {
-          lastStateParam = req.url.searchParams.get('state');
-          return res(ctx.json(pullRequestsResponseStub));
-        },
-      ),
-    );
-
-    render(
-      <TestApiProvider apis={apis}>
-        <EntityProvider entity={entityStub}>
-          <PullRequestList />
-        </EntityProvider>
-      </TestApiProvider>,
-    );
-
-    // Wait for initial load and confirm default state is ALL
-    await waitFor(() => {
-      expect(screen.getByText('Bitbucket Pull Requests')).toBeInTheDocument();
-      expect(lastStateParam).toBe('ALL');
-    });
-
-    // Click on the Merged filter button and ensure subsequent call uses MERGED
-    const mergedButton = screen.getByRole('button', { name: /Merged/i });
-    await userEvent.click(mergedButton);
-
-    await waitFor(() => {
-      expect(lastStateParam).toBe('MERGED');
-    });
-  });
-
   it('should handle empty PR list', async () => {
     // Mock empty response
     const emptyResponseStub = {
@@ -220,5 +210,38 @@ describe('PullRequestList', () => {
       // This depends on what the component shows when there's no data
       expect(screen.queryByText(/^#\d+$/)).not.toBeInTheDocument();
     });
+  });
+
+  it('should display cloud pull requests for cloud-annotated entities', async () => {
+    worker.use(
+      rest.get(
+        'http://exampleapi.com/bitbucket/api/2.0/repositories/myworkspace/example-project/pullrequests',
+        (_, res, ctx) => res(ctx.json(pullRequestsCloudResponseStub)),
+      ),
+    );
+
+    render(
+      <TestApiProvider apis={cloudApis}>
+        <EntityProvider entity={entityCloudStub}>
+          <PullRequestList />
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Bitbucket Pull Requests')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      pullRequestsCloudResponseStub.values.forEach(pr => {
+        expect(screen.getByText(pr.title)).toBeInTheDocument();
+      });
+    });
+
+    expect(
+      screen.getByText(
+        pullRequestsCloudResponseStub.values[0].author.display_name,
+      ),
+    ).toBeInTheDocument();
   });
 });

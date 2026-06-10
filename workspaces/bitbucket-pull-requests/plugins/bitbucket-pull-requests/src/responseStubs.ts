@@ -14,17 +14,43 @@
  * limitations under the License.
  */
 
+import {
+  BITBUCKET_SERVER_ANNOTATION,
+  BITBUCKET_CLOUD_ANNOTATION,
+} from './utils/isBitbucketSlugSet';
+
 export const entityStub = {
   metadata: {
     namespace: 'default',
     annotations: {
       'backstage.io/managed-by-location':
         'url:https://github.com/mcalus3/sample-service/blob/master/backstage3.yaml',
-      'bitbucket.com/project-slug': 'testproject/testrepo',
+      [BITBUCKET_SERVER_ANNOTATION]: 'testproject/testrepo',
     },
     name: 'sample-bitbucketpr-service',
     description:
       'A service for testing Backstage functionality. For example, we can trigger errors\non the sample-bitbucketpr-service, these are sent to Sentry, then we can view them in the \nBackstage plugin for Sentry.\n',
+  },
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  spec: {
+    type: 'service',
+    owner: 'guest@backstage.io',
+    lifecycle: 'experimental',
+  },
+};
+
+export const entityCloudStub = {
+  metadata: {
+    namespace: 'default',
+    annotations: {
+      'backstage.io/managed-by-location':
+        'url:https://github.com/mcalus3/sample-service/blob/master/backstage3.yaml',
+      [BITBUCKET_CLOUD_ANNOTATION]: 'myworkspace/example-project',
+    },
+    name: 'sample-bitbucketpr-cloud-service',
+    description:
+      'A service for testing Backstage functionality with Bitbucket Cloud.\n',
   },
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
@@ -455,4 +481,123 @@ export const pullRequestsResponseStub = {
     },
   ],
   start: 0,
+};
+
+// Cloud response stub for testing
+export const pullRequestsCloudResponseStub = {
+  pagelen: 4,
+  values: [
+    {
+      id: 1,
+      title: 'Feature implementation for homepage',
+      summary: {
+        raw: '* install the plugin\n* plugin customisation\n* add the home page card',
+      },
+      state: 'OPEN',
+      created_on: '2025-01-21T10:27:50.558000+00:00',
+      updated_on: '2025-01-28T14:52:02.639000+00:00',
+      author: {
+        display_name: 'John Doe',
+        nickname: 'johndoe',
+        username: 'johndoe',
+        uuid: '{user-uuid-1}',
+      },
+      source: {
+        branch: {
+          name: 'feature-homepage',
+        },
+        commit: {
+          hash: 'e4082d48d2a0',
+        },
+        repository: {
+          name: 'example-project',
+          full_name: 'myworkspace/example-project',
+          workspace: {
+            slug: 'myworkspace',
+          },
+          links: {
+            html: {
+              href: 'https://bitbucket.org/myworkspace/example-project',
+            },
+          },
+        },
+      },
+      destination: {
+        branch: {
+          name: 'main',
+        },
+      },
+      reviewers: [
+        {
+          display_name: 'Jane Smith',
+          nickname: 'janesmith',
+          username: 'janesmith',
+        },
+        {
+          display_name: 'Bob Johnson',
+          nickname: 'bobjohnson',
+          username: 'bobjohnson',
+        },
+      ],
+      links: {
+        html: {
+          href: 'https://bitbucket.org/myworkspace/example-project/pull-requests/1',
+        },
+      },
+    },
+    {
+      id: 2,
+      title: 'Feature/PROJ-255 new template implementation',
+      summary: {
+        raw: 'new template for the project',
+      },
+      state: 'OPEN',
+      created_on: '2024-11-27T08:55:36.553000+00:00',
+      updated_on: '2025-01-25T02:49:36.779000+00:00',
+      author: {
+        display_name: 'Alice Brown',
+        nickname: 'alicebrown',
+        username: 'alicebrown',
+        uuid: '{user-uuid-2}',
+      },
+      source: {
+        branch: {
+          name: 'feature/PROJ-255-new-template',
+        },
+        commit: {
+          hash: '45b7853f48df',
+        },
+        repository: {
+          name: 'example-project',
+          full_name: 'myworkspace/example-project',
+          workspace: {
+            slug: 'myworkspace',
+          },
+          links: {
+            html: {
+              href: 'https://bitbucket.org/myworkspace/example-project',
+            },
+          },
+        },
+      },
+      destination: {
+        branch: {
+          name: 'main',
+        },
+      },
+      reviewers: [
+        {
+          display_name: 'Charlie Wilson',
+          nickname: 'charliewilson',
+          username: 'charliewilson',
+        },
+      ],
+      links: {
+        html: {
+          href: 'https://bitbucket.org/myworkspace/example-project/pull-requests/2',
+        },
+      },
+    },
+  ],
+  page: 1,
 };
