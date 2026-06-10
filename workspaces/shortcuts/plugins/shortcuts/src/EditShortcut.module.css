@@ -1,0 +1,35 @@
+@layer components {
+  .card {
+    width: 400px;
+    padding: var(--bui-space-4);
+    border-radius: var(--bui-radius-2);
+    border: 1px solid var(--bui-border-1);
+    background-color: var(--bui-white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: var(--bui-black);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background-color: var(--bui-gray-8) !important;
+      color: var(--bui-white);
+    }
+  }
+
+  /* Support for data-theme attribute */
+  [data-theme="dark"] .card {
+    background-color: var(--bui-gray-8) !important;
+    color: var(--bui-white);
+  }
+
+  .header {
+    margin-bottom: var(--bui-space-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .button {
+    margin-top: var(--bui-space-2);
+  }
+}

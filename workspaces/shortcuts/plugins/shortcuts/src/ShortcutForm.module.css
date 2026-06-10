@@ -1,0 +1,55 @@
+@layer components {
+  .field {
+    margin-bottom: var(--bui-space-4);
+  }
+
+  .field :global(input) {
+    border: 1px solid #cccccc !important;
+    border-radius: 4px !important;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .field :global(input) {
+      border: 1px solid #666666 !important;
+    }
+  }
+
+  [data-theme="dark"] .field :global(input) {
+    border: 1px solid #666666 !important;
+  }
+
+  .actionRoot {
+    padding-left: var(--bui-space-4);
+    padding-bottom: var(--bui-space-6);
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--bui-space-2);
+    background-color: var(--bui-white) ;
+    color: var(--bui-black);
+  }
+
+  .actionRoot :global(button) {
+    border: 1px solid #cccccc;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .actionRoot {
+     background-color: var(--bui-gray-8) !important;
+      color: var(--bui-white);
+    }
+
+    .actionRoot :global(button) {
+      border: 1px solid #666666;
+    }
+  }
+
+  /* Support for data-theme attribute */
+  [data-theme="dark"] .actionRoot {
+     background-color: var(--bui-gray-8) !important;
+      color: var(--bui-white);
+  }
+
+  [data-theme="dark"] .actionRoot :global(button) {
+    border: 1px solid #666666;
+  }
+}
