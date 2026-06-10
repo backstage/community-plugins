@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2020 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-/**
- * A Backstage plugin that helps you keep track of your code coverage
- *
- * @packageDocumentation
- */
+import { AggregateCoverage } from '../types';
 
-import { isCodeCoverageAvailable } from './components/Router';
-
-export {
-  codeCoveragePlugin,
-  EntityCodeCoverageContent,
-  EntityCodeCoverageCard,
-} from './plugin';
-export type { CoverageCardProps } from './components/CoverageCard';
-export { isCodeCoverageAvailable };
+export type CoverageType = 'line' | 'branch';
 
 /**
- * @public
- * @deprecated Use `isPluginApplicableToEntity` instead.
+ * Computes percentage change between the oldest and latest coverage snapshots.
+ * Returns 0 if there is no baseline to compare against.
  */
-export const isPluginApplicableToEntity = isCodeCoverageAvailable;
+export function getTrendForCoverage(
+  latest: AggregateCoverage,
+  oldest: AggregateCoverage,
+  type: CoverageType,
+): number {
+  const base = oldest[type].percentage;
+  if (!base) return 0;
+  return ((latest[type].percentage - base) / base) * 100;
+}

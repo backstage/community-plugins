@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2020 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,5 @@
  * limitations under the License.
  */
 
-/**
- * A Backstage plugin that helps you keep track of your code coverage
- *
- * @packageDocumentation
- */
-
-import { isCodeCoverageAvailable } from './components/Router';
-
-export {
-  codeCoveragePlugin,
-  EntityCodeCoverageContent,
-  EntityCodeCoverageCard,
-} from './plugin';
-export type { CoverageCardProps } from './components/CoverageCard';
-export { isCodeCoverageAvailable };
-
-/**
- * @public
- * @deprecated Use `isPluginApplicableToEntity` instead.
- */
-export const isPluginApplicableToEntity = isCodeCoverageAvailable;
+export { CoverageCard } from './CoverageCard';
+export type { CoverageCardProps } from './CoverageCard';
