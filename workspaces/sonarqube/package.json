@@ -26,12 +26,10 @@
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "postinstall": "cd ../../ && yarn install"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "plugins/*"
-    ]
-  },
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
