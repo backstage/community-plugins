@@ -15,22 +15,16 @@
  */
 
 import { JSX } from 'react';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import { EntitySplunkOnCallCard } from './EntitySplunkOnCallCard';
 import {
   Content,
   ContentHeader,
   Page,
   Header,
   SupportButton,
+  EmptyState,
 } from '@backstage/core-components';
-
-const useStyles = makeStyles(() => ({
-  overflowXScroll: {
-    overflowX: 'scroll',
-  },
-}));
+import { Box, Button, Flex } from '@backstage/ui';
+import styles from './SplunkOnCallPage.module.css';
 
 /** @public */
 export type SplunkOnCallPageProps = {
@@ -41,22 +35,36 @@ export type SplunkOnCallPageProps = {
 
 export const SplunkOnCallPage = (props: SplunkOnCallPageProps): JSX.Element => {
   const { title, subtitle, pageTitle } = props;
-  const classes = useStyles();
+
+  const handleNavigateToCatalog = () => {
+    window.location.href = '/catalog';
+  };
 
   return (
     <Page themeId="tool">
       <Header title={title} subtitle={subtitle} />
-      <Content className={classes.overflowXScroll}>
+      <Content className={styles.overflowXScroll}>
         <ContentHeader title={pageTitle}>
           <SupportButton>
             This is used to help you automate incident management.
           </SupportButton>
         </ContentHeader>
-        <Grid container spacing={3} direction="row">
-          <Grid item xs={12} sm={6} md={4}>
-            <EntitySplunkOnCallCard />
-          </Grid>
-        </Grid>
+        <Box className={styles.container}>
+          <Box className={styles.cardWrapper}>
+            <Flex direction="column" className={styles.cardContent}>
+              <EmptyState
+                title="View Splunk On-Call from an Entity"
+                missing="data"
+                description="The Splunk On-Call card is designed to be used as a catalog entity card. Please navigate to an entity in the catalog that has the Splunk On-Call annotations configured."
+                action={
+                  <Button variant="primary" onClick={handleNavigateToCatalog}>
+                    Go to Catalog
+                  </Button>
+                }
+              />
+            </Flex>
+          </Box>
+        </Box>
       </Content>
     </Page>
   );

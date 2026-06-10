@@ -1,0 +1,26 @@
+@layer components {
+  .overflowXScroll {
+    overflow-x: auto;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    gap: var(--bui-space-6);
+    padding: var(--bui-space-4);
+  }
+
+  .cardWrapper {
+    flex: 1;
+    min-width: 320px;
+    /* max-width: 600px; */
+    padding: var(--bui-space-4);
+    background-color: var(--bui-bg-surface-1);
+    border-radius: var(--bui-radius-2);
+    border: 1px solid var(--bui-border);
+  }
+
+  .cardContent {
+    gap: var(--bui-space-4);
+  }
+}
