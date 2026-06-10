@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
 import {
+  ApiBlueprint,
   configApiRef,
-  createApiFactory,
-  createPlugin,
-  createRoutableExtension,
+  createFrontendPlugin,
   discoveryApiRef,
+  FrontendPlugin,
   identityApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 import { QuayApiClient, quayApiRef } from './api';
-import { QUAY_ANNOTATION_REPOSITORY } from './hooks';
+import { isQuayAvailable } from './lib/isQuayAvailable';
 import { rootRouteRef, tagRouteRef } from './routes';
 
-/**
- * Quay plugin
- *
- * @public
- */
-export const quayPlugin = createPlugin({
-  id: 'quay',
-  routes: {
-    root: rootRouteRef,
-    tag: tagRouteRef,
-  },
-  apis: [
-    createApiFactory({
+const quayApi = ApiBlueprint.make({
+  name: 'quay',
+  params: defineParams =>
+    defineParams({
       api: quayApiRef,
       deps: {
         discoveryApi: discoveryApiRef,
@@ -49,26 +40,31 @@ export const quayPlugin = createPlugin({
       factory: ({ discoveryApi, configApi, identityApi }) =>
         QuayApiClient.fromConfig({ discoveryApi, configApi, identityApi }),
     }),
-  ],
+});
+
+const quayEntityContent = EntityContentBlueprint.make({
+  name: 'quay',
+  params: {
+    path: '/quay',
+    title: 'Quay',
+    routeRef: rootRouteRef,
+    filter: isQuayAvailable,
+    loader: async () => import('./components/Router').then(m => <m.Router />),
+  },
 });
 
 /**
- * Quay page
+ * Quay plugin
  *
  * @public
  */
-export const QuayPage = quayPlugin.provide(
-  createRoutableExtension({
-    name: 'QuayPage',
-    component: () => import('./components/Router').then(m => m.Router),
-    mountPoint: rootRouteRef,
-  }),
-);
+const plugin: FrontendPlugin = createFrontendPlugin({
+  pluginId: 'quay',
+  extensions: [quayApi, quayEntityContent],
+  routes: {
+    root: rootRouteRef,
+    tag: tagRouteRef,
+  },
+});
 
-/**
- * Returns true if the catalog entity contains the quay annotation `quay.io/repository-slug`.
- *
- * @public
- */
-export const isQuayAvailable = (entity: Entity) =>
-  Boolean(entity?.metadata.annotations?.[QUAY_ANNOTATION_REPOSITORY]);
+export default plugin;
