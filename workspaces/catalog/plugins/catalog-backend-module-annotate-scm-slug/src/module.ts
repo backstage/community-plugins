@@ -18,6 +18,7 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
+import { readAnnotateScmSlugProcessorConfig } from './config';
 import { AnnotateScmSlugEntityProcessor } from './processor/AnnotateScmSlugEntityProcessor';
 
 /** @public */
@@ -31,7 +32,10 @@ export const catalogModuleAnnotateScmSlug = createBackendModule({
         catalog: catalogProcessingExtensionPoint,
       },
       async init({ catalog, config }) {
-        catalog.addProcessor(AnnotateScmSlugEntityProcessor.fromConfig(config));
+        const processorConfig = readAnnotateScmSlugProcessorConfig(config);
+        catalog.addProcessor(
+          AnnotateScmSlugEntityProcessor.fromConfig(config, processorConfig),
+        );
       },
     });
   },
