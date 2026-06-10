@@ -1,0 +1,7 @@
+@layer components {
+  .divider {
+    border: none;
+    border-top: 1px solid var(--pf-t--global--border--color--default);
+    margin: 0;
+  }
+}
