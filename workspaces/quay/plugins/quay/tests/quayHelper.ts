@@ -16,6 +16,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, TestInfo, type Locator, type Page } from '@playwright/test';
 
+const isLegacy = process.env.APP_MODE === 'legacy';
+
 export class Common {
   page: Page;
 
@@ -52,15 +54,32 @@ export class Common {
   }
 
   async loginAsGuest() {
-    await this.page.goto('/');
-    // TODO - Remove it after https://issues.redhat.com/browse/RHIDP-2043. A Dynamic plugin for Guest Authentication Provider needs to be created
     this.page.on('dialog', async dialog => {
       await dialog.accept();
     });
+    await this.page.goto('/');
 
-    await this.verifyHeading('Select a sign-in method');
-    await this.clickButton('Enter');
+    if (isLegacy) {
+      await this.verifyHeading('Select a sign-in method');
+      await this.clickButton('Enter');
+    } else {
+      await this.page.getByRole('button', { name: 'Enter' }).click();
+    }
+
     await this.waitForSideBarVisible();
+  }
+
+  async navigateToQuay(instance: 'default' | 'multi-instance' = 'default') {
+    if (isLegacy) {
+      const path =
+        instance === 'multi-instance' ? '/quay/multi-instance' : '/quay';
+      await this.page.goto(path);
+    } else {
+      const entityName =
+        instance === 'multi-instance' ? 'quay-instance-devel' : 'quay-instance';
+      await this.page.goto(`/catalog/default/component/${entityName}`);
+      await this.page.getByRole('tab', { name: 'Quay' }).click();
+    }
   }
 
   async a11yCheck(testInfo: TestInfo) {

@@ -92,22 +92,6 @@ createDevApp()
           [permissionApiRef, mockApis.permission()],
         ]}
       >
-        <EntityProvider entity={mockQuayEntity}>
-          <QuayPage />
-        </EntityProvider>
-      </TestApiProvider>
-    ),
-    title: 'Root Page',
-    path: '/quay',
-  })
-  .addPage({
-    element: (
-      <TestApiProvider
-        apis={[
-          [quayApiRef, new MockQuayApiClient()],
-          [permissionApiRef, mockApis.permission()],
-        ]}
-      >
         <EntityProvider
           key="multi-instance"
           entity={mockQuayInstanceDevelEntity}
@@ -118,5 +102,21 @@ createDevApp()
     ),
     title: 'Multi-instance',
     path: '/quay/multi-instance',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [quayApiRef, new MockQuayApiClient()],
+          [permissionApiRef, mockApis.permission()],
+        ]}
+      >
+        <EntityProvider entity={mockQuayEntity}>
+          <QuayPage />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Root Page',
+    path: '/quay',
   })
   .render();

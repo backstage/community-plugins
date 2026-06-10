@@ -18,6 +18,7 @@ import {
   configApiRef,
   createFrontendPlugin,
   discoveryApiRef,
+  FrontendPlugin,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
@@ -56,7 +57,7 @@ const quayEntityContent = EntityContentBlueprint.make({
  *
  * @public
  */
-export default createFrontendPlugin({
+const plugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'quay',
   extensions: [quayApi, quayEntityContent],
   routes: {
@@ -64,3 +65,5 @@ export default createFrontendPlugin({
     tag: tagRouteRef,
   },
 });
+
+export default plugin;

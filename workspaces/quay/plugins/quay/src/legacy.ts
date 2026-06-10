@@ -31,7 +31,7 @@ import { rootRouteRef, tagRouteRef } from './routes';
  * Quay plugin (legacy frontend system)
  *
  * @public
- * @deprecated Use the default export from the package root instead.
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const quayPlugin = createPlugin({
   id: 'quay',
@@ -57,7 +57,7 @@ export const quayPlugin = createPlugin({
  * Quay page (legacy frontend system)
  *
  * @public
- * @deprecated Use the default export from the package root instead.
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const QuayPage = quayPlugin.provide(
   createRoutableExtension({

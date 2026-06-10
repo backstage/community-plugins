@@ -18,6 +18,10 @@ app:
 organization:
   name: Quay Example
 
+auth:
+  providers:
+    guest: {}
+
 backend:
   baseUrl: http://localhost:7007
 

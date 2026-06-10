@@ -5,9 +5,7 @@
   "types": "src/index.ts",
   "license": "Apache-2.0",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -49,7 +47,8 @@
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
-    "ui-test": "start-server-and-test start localhost:3000 'playwright test'"
+    "ui-test": "start-server-and-test start localhost:3000 'playwright test'",
+    "ui-test:legacy": "APP_MODE=legacy start-server-and-test start:legacy localhost:3000 'playwright test'"
   },
   "dependencies": {
     "@backstage-community/plugin-quay-common": "workspace:^",

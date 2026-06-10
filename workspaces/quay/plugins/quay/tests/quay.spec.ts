@@ -26,6 +26,7 @@ test.describe('Quay plugin', () => {
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
+    await common.navigateToQuay();
     await expect(
       page.getByRole('link', { name: 'backstage-test/test-images' }),
     ).toBeEnabled();
@@ -139,7 +140,7 @@ test.describe('Quay plugin', () => {
   });
 
   test('Multi-instance uses configured non-default instance for URL and data', async () => {
-    await page.goto('/quay/multi-instance');
+    await common.navigateToQuay('multi-instance');
     const repositoryLink = page.getByRole('link', {
       name: 'backstage-test/test-images',
     });
