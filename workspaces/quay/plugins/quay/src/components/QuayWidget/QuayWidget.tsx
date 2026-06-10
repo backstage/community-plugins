@@ -21,8 +21,8 @@ import {
 import { Card, CardBody, CardHeader, Text } from '@backstage/ui';
 
 import { QUAY_ANNOTATION_REPOSITORY } from '../../hooks';
-import { isQuayAvailable } from '../../plugin';
 import { QuayRepository } from '../QuayRepository';
+import { isQuayAvailable } from '../Router';
 
 const Widget = () => {
   return (
