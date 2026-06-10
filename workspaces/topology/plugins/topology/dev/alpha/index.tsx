@@ -139,32 +139,24 @@ function SidebarThemeSwitcher() {
 
 const devSidebarContent = NavContentBlueprint.make({
   params: {
-    component: props => (
-      <Sidebar>
-        <SidebarGroup label="Menu">
-          <SidebarScrollWrapper>
-            {props.navItems
-              ? props.navItems
-                  .rest()
-                  .map((item, index) => (
-                    <SidebarItem
-                      key={index}
-                      icon={() => item.icon}
-                      to={item.href}
-                      text={item.title}
-                    />
-                  ))
-              : (props as any).items?.map((item: any, index: number) => (
-                  <SidebarItem key={index} {...item} />
-                ))}
-          </SidebarScrollWrapper>
-        </SidebarGroup>
-        <SidebarSpace />
-        <SidebarThemeSwitcher />
-        <SidebarLanguageSwitcher />
-        <SidebarSignOutButton />
-      </Sidebar>
-    ),
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+      return (
+        <Sidebar>
+          <SidebarGroup label="Menu">
+            <SidebarScrollWrapper>
+              {nav.take('page:catalog')}
+            </SidebarScrollWrapper>
+          </SidebarGroup>
+          <SidebarSpace />
+          <SidebarThemeSwitcher />
+          <SidebarLanguageSwitcher />
+          <SidebarSignOutButton />
+        </Sidebar>
+      );
+    },
   },
 });
 

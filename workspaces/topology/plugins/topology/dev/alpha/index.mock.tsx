@@ -66,7 +66,6 @@ const catalogDevModule = createFrontendModule({
   pluginId: 'catalog',
   extensions: [
     ApiBlueprint.make({
-      name: 'catalog',
       params: defineParams =>
         defineParams({
           api: catalogApiRef,
@@ -77,11 +76,10 @@ const catalogDevModule = createFrontendModule({
   ],
 });
 
-const kubernetesDevModule = createFrontendModule({
-  pluginId: 'app',
+const kubernetesMockModule = createFrontendModule({
+  pluginId: 'kubernetes',
   extensions: [
     ApiBlueprint.make({
-      name: 'kubernetes',
       params: defineParams =>
         defineParams({
           api: kubernetesApiRef,
@@ -90,7 +88,7 @@ const kubernetesDevModule = createFrontendModule({
         }),
     }),
     ApiBlueprint.make({
-      name: 'kubernetes-auth-providers',
+      name: 'auth-providers',
       params: defineParams =>
         defineParams({
           api: kubernetesAuthProvidersApiRef,
@@ -98,6 +96,12 @@ const kubernetesDevModule = createFrontendModule({
           factory: () => mockKubernetesAuthProviderApi,
         }),
     }),
+  ],
+});
+
+const appDevModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
     ApiBlueprint.make({
       name: 'permission',
       params: defineParams =>
@@ -129,31 +133,23 @@ const kubernetesDevModule = createFrontendModule({
 
 const devSidebarContent = NavContentBlueprint.make({
   params: {
-    component: props => (
-      <Sidebar>
-        <SidebarGroup label="Menu">
-          <SidebarScrollWrapper>
-            {props.navItems
-              ? props.navItems
-                  .rest()
-                  .map((item, index) => (
-                    <SidebarItem
-                      key={index}
-                      icon={() => item.icon}
-                      to={item.href}
-                      text={item.title}
-                    />
-                  ))
-              : (props as any).items?.map((item: any, index: number) => (
-                  <SidebarItem key={index} {...item} />
-                ))}
-          </SidebarScrollWrapper>
-        </SidebarGroup>
-        <SidebarSpace />
-        <SidebarLanguageSwitcher />
-        <SidebarSignOutButton />
-      </Sidebar>
-    ),
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+      return (
+        <Sidebar>
+          <SidebarGroup label="Menu">
+            <SidebarScrollWrapper>
+              {nav.take('page:catalog')}
+            </SidebarScrollWrapper>
+          </SidebarGroup>
+          <SidebarSpace />
+          <SidebarLanguageSwitcher />
+          <SidebarSignOutButton />
+        </Sidebar>
+      );
+    },
   },
 });
 
@@ -168,7 +164,8 @@ const app = createApp({
     topologyCatalogModule,
     topologyTranslationsModule,
     catalogDevModule,
-    kubernetesDevModule,
+    kubernetesMockModule,
+    appDevModule,
   ],
 });
 

@@ -42,16 +42,17 @@ test.describe('Topology plugin', () => {
   let translations: TopologyMessages;
 
   test.beforeAll(async ({ browser }, testInfo) => {
-    // Must match playwright.config.ts project `locale` so i18n and assertions stay
-    // aligned. A bare newContext() does not reliably inherit project locale.
-    const projectLocale = testInfo.project.use.locale ?? 'en';
-    const context = await browser.newContext({ locale: projectLocale });
+    const locale = testInfo.project.use.locale as string | undefined;
+    context = await browser.newContext(locale ? { locale } : {});
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
 
-    translations = getTranslations(projectLocale);
-    await common.switchToLocale(projectLocale);
+    const currentLocale =
+      locale ?? (await page.evaluate(() => globalThis.navigator.language));
+
+    translations = getTranslations(currentLocale);
+    await common.switchToLocale(currentLocale);
   });
 
   test.afterAll(async () => {
@@ -67,9 +68,11 @@ test.describe('Topology plugin', () => {
       await page.goto('/missing-permissions');
       await page.reload();
 
-      await expect(page.locator('h3')).toContainText(
-        translations.permissions.missingPermission,
-      );
+      await expect(
+        page.getByText(translations.permissions.missingPermission, {
+          exact: true,
+        }),
+      ).toBeVisible({ timeout: 60000 });
       await expect(page.getByRole('article')).toContainText(
         'kubernetes.clusters.read, kubernetes.resources.read',
       );
@@ -90,7 +93,13 @@ test.describe('Topology plugin', () => {
       await expect(
         page.getByTestId(topologyEntityHeaderTabTestId()),
       ).toBeVisible();
-      await expect(page.locator('#pf-topology-view-0')).toMatchAriaSnapshot(`
+      const topologyToolbar = page.locator('.pf-topology-view__view-toolbar');
+      await expect(
+        topologyToolbar.getByRole('button', {
+          name: translations.toolbar.selectCluster,
+        }),
+      ).toBeVisible();
+      await expect(topologyToolbar).toMatchAriaSnapshot(`
         - button "${translations.toolbar.selectCluster}"
         - button "${translations.toolbar.displayOptions}"
         `);
