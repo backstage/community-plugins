@@ -10,6 +10,10 @@ This plugin provides:
 - a component to display the latest announcements, for example on a homepage
 - a component to display the latest announcement as a banner, if there is one
 - an admin portal to manage announcements
+- organize announcements with categories and tags
+- publish announcements on behalf of a team
+- link announcements to catalog entities
+- schedule announcements with start and end dates
 
 ## Installation
 
