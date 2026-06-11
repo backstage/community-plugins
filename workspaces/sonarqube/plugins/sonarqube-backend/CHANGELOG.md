@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 1.2.0
+
+### Minor Changes
+
+- 65ec51e: Backstage version bump to v1.50.2
+
 ## 1.1.1
 
 ### Patch Changes
