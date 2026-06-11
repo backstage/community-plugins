@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.14.1
+
+### Patch Changes
+
+- 70da59a: Migrated the topology plugin UI from Material UI to Backstage UI (`@backstage/ui`). Removed direct MUI dependencies; no breaking API changes.
+
 ## 2.14.0
 
 ### Minor Changes
