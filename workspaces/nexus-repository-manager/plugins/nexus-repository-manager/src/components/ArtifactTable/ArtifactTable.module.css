@@ -21,18 +21,6 @@
     height: 1.5em;
   }
 
-  .algorithmChip {
-    display: inline-flex;
-    align-items: center;
-    padding: 0 var(--bui-space-2);
-    margin-right: 0.2em;
-    height: 1.5em;
-    font-size: var(--bui-font-size-1);
-    color: var(--bui-fg-primary);
-    background-color: var(--bui-bg-neutral-2);
-    border-radius: var(--bui-radius-2);
-  }
-
   .variants {
     margin-top: 0.2em;
     flex-wrap: wrap;

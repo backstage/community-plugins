@@ -77,9 +77,9 @@ export const ArtifactTable = ({
 
           return (
             <Flex direction="row" align="center" gap="1">
-              <span className={styles.algorithmChip}>
-                {rowData.hash.algorithm}
-              </span>
+              <TagGroup>
+                <Tag className={styles.chip}>{rowData.hash.algorithm}</Tag>
+              </TagGroup>
               {rowData.hash.value.slice(0, 12)}
             </Flex>
           );
