@@ -6,6 +6,7 @@
     "node": "22 || 24"
   },
   "scripts": {
+    "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-xcmetrics --parallel -v -i run start",
     "start": "backstage-cli repo start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
