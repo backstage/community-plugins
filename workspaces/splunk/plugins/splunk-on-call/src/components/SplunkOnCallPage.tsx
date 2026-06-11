@@ -15,6 +15,7 @@
  */
 
 import { JSX } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Content,
   ContentHeader,
@@ -35,9 +36,10 @@ export type SplunkOnCallPageProps = {
 
 export const SplunkOnCallPage = (props: SplunkOnCallPageProps): JSX.Element => {
   const { title, subtitle, pageTitle } = props;
+  const navigate = useNavigate();
 
   const handleNavigateToCatalog = () => {
-    window.location.href = '/catalog';
+    navigate('/catalog');
   };
 
   return (

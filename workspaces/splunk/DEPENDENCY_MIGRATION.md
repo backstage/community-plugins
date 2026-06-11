@@ -13,10 +13,12 @@
 Add to `dependencies` section in `plugins/splunk-on-call/package.json`:
 
 ```json
-"@backstage/ui": "backstage:^",
+"@backstage/ui": "^1.7.0",
 "@remixicon/react": "^4.3.0",
 "react-aria-components": "^1.4.0"
 ```
+
+> **Note:** If you're in the Backstage monorepo, use `"@backstage/ui": "backstage:^"` instead. The `backstage:` protocol is a monorepo-specific version resolver and is not valid for standard npm/yarn registries outside Backstage's monorepo setup.
 
 ## Recommended Migration Checklist
 
@@ -44,14 +46,13 @@ Add to `dependencies` section in `plugins/splunk-on-call/package.json`:
 
 1. MissingApiKeyOrApiIdError.tsx
 2. IncidentEmptyState.tsx
-3. MissingApiKeyOrApiIdError.tsx
-4. EscalationUsersEmptyState.tsx
-5. EntitySplunkOnCallCard.tsx
-6. EscalationPolicy.tsx
-7. EscalationUser.tsx
-8. Incidents.tsx
-9. IncidentListItem.tsx
-10. TriggerDialog.tsx (most complex)
+3. EscalationUsersEmptyState.tsx
+4. EntitySplunkOnCallCard.tsx
+5. EscalationPolicy.tsx
+6. EscalationUser.tsx
+7. Incidents.tsx
+8. IncidentListItem.tsx
+9. TriggerDialog.tsx (most complex)
 
 ### 4. Test Migration
 
@@ -68,14 +69,22 @@ Add to `dependencies` section in `plugins/splunk-on-call/package.json`:
 
 ## Installation Command
 
-Once migration is planned, run:
+For **standard npm/yarn registries** (recommended for most setups):
 
 ```bash
 cd plugins/splunk-on-call
-yarn add @backstage/ui @remixicon/react react-aria-components
+yarn add @backstage/ui@^1.7.0 @remixicon/react@^4.3.0 react-aria-components@^1.4.0
 yarn remove @material-ui/core @material-ui/icons @material-ui/lab
 yarn install
 ```
+
+For **Backstage monorepo** setups only, update `package.json` manually:
+
+```json
+"@backstage/ui": "backstage:^",
+```
+
+Then run: `yarn install`
 
 ## Version Compatibility
 
