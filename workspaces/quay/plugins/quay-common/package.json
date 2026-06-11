@@ -51,11 +51,11 @@
     "dist"
   ],
   "peerDependencies": {
-    "@backstage/plugin-permission-common": "^0.9.8",
+    "@backstage/plugin-permission-common": "^0.9.9",
     "react": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.1",
-    "@backstage/plugin-permission-common": "^0.9.8"
+    "@backstage/cli": "^0.36.2",
+    "@backstage/plugin-permission-common": "^0.9.9"
   }
 }
