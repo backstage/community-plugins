@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,17 @@
 @layer components {
   .tableContainer {
     border: 1px solid var(--bui-border-1);
+  }
+
+  /* TablePagination is always the last child of the BUI Table wrapper */
+  .table > :last-child {
+    align-items: center;
+    padding-top: var(--bui-space-3);
+    padding-bottom: var(--bui-space-3);
+  }
+
+  .table > :last-child > * {
+    align-items: center;
   }
 
   .manifestDigest {
@@ -40,10 +51,5 @@
     width: 240px;
     max-width: 240px;
     flex-shrink: 0;
-  }
-
-  .tableContainer [class*='bui-TablePagination__'] {
-    padding-top: 10px;
-    padding-bottom: 10px;
   }
 }

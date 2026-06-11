@@ -166,6 +166,7 @@ export function JfrogArtifactoryRepository({
           </div>
         }
         {...tableProps}
+        className={styles.table}
       />
     </div>
   );

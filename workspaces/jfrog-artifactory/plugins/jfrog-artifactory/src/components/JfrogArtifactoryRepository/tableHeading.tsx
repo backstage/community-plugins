@@ -48,6 +48,10 @@ export const sortRepositoryRows = (
   items: RepositoryRowData[],
   sort: SortDescriptor,
 ) => {
+  if (!sort?.column) {
+    return items;
+  }
+
   const sorted = [...items].sort((a, b) => {
     switch (String(sort.column)) {
       case 'name':
