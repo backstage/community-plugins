@@ -1,5 +1,21 @@
 # @backstage-community/plugin-copilot
 
+## 1.0.0
+
+### Major Changes
+
+- 95bf1ed: BREAKING CHANGE - Implemented a V2 API that uses the new Copilot Metrics API and replaces the existing implementation. Leaving the existing database tables and a legacy UI in place for existing data.
+
+### Minor Changes
+
+- 6cf8553: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [95bf1ed]
+- Updated dependencies [6cf8553]
+  - @backstage-community/plugin-copilot-common@1.0.0
+
 ## 0.20.0
 
 ### Minor Changes
