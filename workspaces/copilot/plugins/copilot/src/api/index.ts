@@ -16,3 +16,5 @@
 
 export * from './CopilotApi';
 export * from './CopilotClient';
+export * from './CopilotApiV2';
+export * from './CopilotClientV2';

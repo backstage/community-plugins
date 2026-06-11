@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Routes, Route } from 'react-router';
+import { Routes, Route } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import { EnterprisePage } from './EnterprisePage';
 import { OrganizationPage } from './OrganizationPage';
+import { V2DashboardPage } from '../V2Dashboard';
 
 export const CopilotIndexPage = () => (
   <Routes>
-    <Route path="/" element={<HomePage />} />
+    {/* V2 is now the default dashboard */}
+    <Route path="/" element={<V2DashboardPage />} />
+    <Route path="/v2" element={<V2DashboardPage />} />
+
+    {/* Legacy routes remain available for backward compatibility.
+      The sidebar link is controlled by showLegacyView. */}
+    <Route path="/legacy" element={<HomePage />} />
     <Route path="/enterprise" element={<EnterprisePage />} />
     <Route path="/organization" element={<OrganizationPage />} />
   </Routes>

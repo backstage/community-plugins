@@ -17,7 +17,9 @@ backend:
     credentials: true
   database:
     client: better-sqlite3
-    connection: ':memory:'
+    connection:
+      directory: '../../database/'
+    useNullAsDefault: true
 
 techdocs:
   builder: 'local'
@@ -47,14 +49,35 @@ catalog:
       rules:
         - allow: [User, Group]
 
+# integrations:
+#   github:
+#     - host: github.com
+#       token: ${GITHUB_TOKEN}
+
+integrations:
+  github:
+    - host: github.com
+      apps:
+        - appId: ${AUTH_GITHUB_APP_ID}
+          clientId: ${AUTH_GITHUB_CLIENT_ID}
+          clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+          webhookSecret: not_required
+          privateKey: ${AUTH_GITHUB_PRIVATE_KEY}
+
 copilot:
+  host: github.com
+  # enterprise: ${ENTERPRISE}
+  organization: ${ORGANIZATION}
+  backfillFromDate: '2026-05-20'
+  backfillDelayMs: 300
+  ingestTeams: true
+  showUserMetrics: false
+  showLegacyView: false
+  defaultView: enterprise
   schedule:
     frequency:
-      hours: 2
+      hours: 24
     timeout:
-      minutes: 2
+      minutes: 30
     initialDelay:
-      seconds: 15
-  host: abc.github.com
-  enterprise: YOUR_ENTERPRISE_NAME_HERE
-  # organization: YOUR_ORGANIZATION_NAME_HERE
+      seconds: 5

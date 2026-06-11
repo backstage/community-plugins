@@ -23,6 +23,8 @@ const _default: OverridableFrontendPlugin<
     copilot: RouteRef<undefined>;
     enterprise: SubRouteRef<undefined>;
     organization: SubRouteRef<undefined>;
+    v2Dashboard: SubRouteRef<undefined>;
+    legacyCopilot: SubRouteRef<undefined>;
   },
   {},
   {
@@ -53,7 +55,6 @@ const _default: OverridableFrontendPlugin<
         title?: string | undefined;
       };
       output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
@@ -62,6 +63,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >
+        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             string,
             'core.title',

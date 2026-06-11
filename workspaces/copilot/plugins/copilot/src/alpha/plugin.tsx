@@ -20,7 +20,12 @@ import {
   createFrontendPlugin,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
-import { copilotApiRef, CopilotClient } from '../api';
+import {
+  copilotApiRef,
+  copilotApiV2Ref,
+  CopilotClient,
+  CopilotClientV2,
+} from '../api';
 
 import {
   compatWrapper,
@@ -34,6 +39,8 @@ import {
   copilotRouteRef,
   enterpriseRouteRef,
   organizationRouteRef,
+  v2DashboardRouteRef,
+  legacyCopilotRouteRef,
 } from '../routes';
 
 /** @alpha */
@@ -47,6 +54,20 @@ export const copilotApi = ApiBlueprint.make({
       },
       factory: ({ discoveryApi, fetchApi }) =>
         new CopilotClient({ discoveryApi, fetchApi }),
+    }),
+});
+
+/** @alpha */
+export const copilotApiV2 = ApiBlueprint.make({
+  params: defineParams =>
+    defineParams({
+      api: copilotApiV2Ref,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new CopilotClientV2({ discoveryApi, fetchApi }),
     }),
 });
 
@@ -65,12 +86,44 @@ export const copilotPage = PageBlueprint.make({
 });
 
 /** @alpha */
+export const copilotV2Page = PageBlueprint.make({
+  params: {
+    path: '/copilot/v2',
+    title: 'Copilot V2',
+    icon: <SupportAgentIcon />,
+    routeRef: convertLegacyRouteRef(v2DashboardRouteRef as any),
+    loader: () =>
+      import('../components').then(m => compatWrapper(<m.V2DashboardPage />)),
+  },
+});
+
+/** @alpha */
+export const copilotLegacyPage = PageBlueprint.make({
+  params: {
+    path: '/copilot/legacy',
+    title: 'Copilot Legacy',
+    icon: <SupportAgentIcon />,
+    routeRef: convertLegacyRouteRef(legacyCopilotRouteRef as any),
+    loader: () =>
+      import('../components/Pages').then(m => compatWrapper(<m.HomePage />)),
+  },
+});
+
+/** @alpha */
 export default createFrontendPlugin({
   pluginId: 'copilot',
-  extensions: [copilotApi, copilotPage],
+  extensions: [
+    copilotApi,
+    copilotApiV2,
+    copilotPage,
+    copilotV2Page,
+    copilotLegacyPage,
+  ],
   routes: convertLegacyRouteRefs({
     copilot: copilotRouteRef,
     enterprise: enterpriseRouteRef,
     organization: organizationRouteRef,
+    v2Dashboard: v2DashboardRouteRef,
+    legacyCopilot: legacyCopilotRouteRef,
   }),
 });

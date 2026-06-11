@@ -61,17 +61,16 @@ export const EngagementCharts = ({
           xAxis={[
             {
               data: metrics.map(x => new Date(x.day)),
+              position: 'bottom',
               scaleType: 'band',
               valueFormatter: date =>
                 DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              tickLabelStyle: {
+                angle: 30,
+                textAnchor: 'start',
+              },
             },
           ]}
-          bottomAxis={{
-            tickLabelStyle: {
-              angle: 30,
-              textAnchor: 'start',
-            },
-          }}
           series={baseSeriesData}
           height={300}
         />
@@ -100,17 +99,16 @@ export const EngagementCharts = ({
           xAxis={[
             {
               data: seats.map(x => new Date(x.day)),
+              position: 'bottom',
               scaleType: 'band',
               valueFormatter: date =>
                 DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              tickLabelStyle: {
+                angle: 30,
+                textAnchor: 'start',
+              },
             },
           ]}
-          bottomAxis={{
-            tickLabelStyle: {
-              angle: 30,
-              textAnchor: 'start',
-            },
-          }}
           series={seatTotalSeries}
           height={300}
         />
@@ -120,17 +118,16 @@ export const EngagementCharts = ({
           xAxis={[
             {
               data: seats.map(x => new Date(x.day)),
+              position: 'bottom',
               scaleType: 'band',
               valueFormatter: date =>
                 DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+              tickLabelStyle: {
+                angle: 30,
+                textAnchor: 'start',
+              },
             },
           ]}
-          bottomAxis={{
-            tickLabelStyle: {
-              angle: 30,
-              textAnchor: 'start',
-            },
-          }}
           series={seatsUnusedSeries}
           height={300}
         />
