@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-pingidentity
 
+## 0.12.0
+
+### Minor Changes
+
+- 1ae0fc8: Added a new PingFederate auth provider.
+
 ## 0.11.1
 
 ### Patch Changes
