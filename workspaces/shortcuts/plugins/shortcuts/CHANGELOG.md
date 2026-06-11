@@ -1,5 +1,11 @@
 # @backstage-community/plugin-shortcuts
 
+## 0.21.0
+
+### Minor Changes
+
+- c1a0011: Backstage version bump to v1.51.0
+
 ## 0.20.0
 
 ### Minor Changes
