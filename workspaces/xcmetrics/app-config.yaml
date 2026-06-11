@@ -1,0 +1,15 @@
+app:
+  title: XCMetrics Example App
+  baseUrl: http://localhost:3000
+
+organization:
+  name: XCMetrics Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+
+proxy:
+  '/xcmetrics':
+    target: http://127.0.0.1:8080/v1
