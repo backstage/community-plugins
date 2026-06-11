@@ -32,6 +32,9 @@ const xCMetricsPage = PageBlueprint.make({
   },
 });
 
+/**
+ * @alpha
+ */
 export const xCRMetricsApiExtension = ApiBlueprint.make({
   name: 'xcmetrics-api',
   params: defineParams =>
