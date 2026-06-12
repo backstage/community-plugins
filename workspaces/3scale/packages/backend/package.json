@@ -22,18 +22,18 @@
   },
   "dependencies": {
     "@backstage-community/plugin-3scale-backend": "workspace:^",
-    "@backstage/backend-defaults": "^0.16.0",
-    "@backstage/plugin-app-backend": "^0.5.12",
-    "@backstage/plugin-auth-backend": "^0.27.3",
-    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.17",
-    "@backstage/plugin-catalog-backend": "^3.5.0",
-    "@backstage/plugin-catalog-backend-module-logs": "^0.1.20",
-    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.18",
-    "@backstage/plugin-scaffolder-backend": "^3.2.0",
+    "@backstage/backend-defaults": "^0.17.0",
+    "@backstage/plugin-app-backend": "^0.5.13",
+    "@backstage/plugin-auth-backend": "^0.28.0",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.18",
+    "@backstage/plugin-catalog-backend": "^3.6.0",
+    "@backstage/plugin-catalog-backend-module-logs": "^0.1.21",
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.19",
+    "@backstage/plugin-scaffolder-backend": "^3.4.0",
     "better-sqlite3": "^12.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.0"
+    "@backstage/cli": "^0.36.1"
   },
   "files": [
     "dist"
