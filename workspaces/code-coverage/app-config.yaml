@@ -1,0 +1,9 @@
+app:
+  title: Code Coverage Plugin Dev
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+
+organization:
+  name: Dev

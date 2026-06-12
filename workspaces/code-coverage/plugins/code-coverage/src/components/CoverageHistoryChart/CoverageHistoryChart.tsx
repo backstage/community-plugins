@@ -20,12 +20,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import Alert from '@material-ui/lab/Alert';
-import { ClassNameMap } from '@material-ui/styles/withStyles';
 import useAsync from 'react-use/esm/useAsync';
 import {
   CartesianGrid,
@@ -38,34 +33,13 @@ import {
   YAxis,
 } from 'recharts';
 import { codeCoverageApiRef } from '../../api';
+import { getTrendForCoverage } from '../../utils/coverageTrend';
+import { TrendIcon } from '../../utils/TrendIcon';
 
 import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { DateTime } from 'luxon';
-
-type Coverage = 'line' | 'branch';
-
-const useStyles = makeStyles(theme => ({
-  trendDown: {
-    color: theme.palette.status.warning,
-  },
-  trendUp: {
-    color: theme.palette.status.ok,
-  },
-}));
-
-const getTrendIcon = (trend: number, classes: ClassNameMap) => {
-  switch (true) {
-    case trend > 0:
-      return <TrendingUpIcon className={classes.trendUp} />;
-    case trend < 0:
-      return <TrendingDownIcon className={classes.trendDown} />;
-    case trend === 0:
-    default:
-      return <TrendingFlatIcon />;
-  }
-};
 
 // convert timestamp to human friendly form
 function formatDateToHuman(timeStamp: string | number) {
@@ -89,7 +63,6 @@ export const CoverageHistoryChart = () => {
         name: entity.metadata.name,
       }),
   );
-  const classes = useStyles();
 
   if (loadingHistory) {
     return <Progress />;
@@ -112,19 +85,12 @@ export const CoverageHistoryChart = () => {
   const [oldestCoverage] = valueHistory.history.slice(-1);
   const latestCoverage = valueHistory.history[0];
 
-  const getTrendForCoverage = (type: Coverage) => {
-    if (!oldestCoverage[type].percentage) {
-      return 0;
-    }
-    return (
-      ((latestCoverage[type].percentage - oldestCoverage[type].percentage) /
-        oldestCoverage[type].percentage) *
-      100
-    );
-  };
-
-  const lineTrend = getTrendForCoverage('line');
-  const branchTrend = getTrendForCoverage('branch');
+  const lineTrend = getTrendForCoverage(latestCoverage, oldestCoverage, 'line');
+  const branchTrend = getTrendForCoverage(
+    latestCoverage,
+    oldestCoverage,
+    'branch',
+  );
 
   return (
     <Card>
@@ -132,7 +98,7 @@ export const CoverageHistoryChart = () => {
       <CardContent>
         <Box px={6} display="flex">
           <Box display="flex" mr={4}>
-            {getTrendIcon(lineTrend, classes)}
+            <TrendIcon trend={lineTrend} />
             <Typography>
               Current line: {latestCoverage.line.percentage}%<br />(
               {Math.floor(lineTrend)}% change over {valueHistory.history.length}{' '}
@@ -140,7 +106,7 @@ export const CoverageHistoryChart = () => {
             </Typography>
           </Box>
           <Box display="flex">
-            {getTrendIcon(branchTrend, classes)}
+            <TrendIcon trend={branchTrend} />
             <Typography>
               Current branch: {latestCoverage.branch.percentage}%<br />(
               {Math.floor(branchTrend)}% change over{' '}
