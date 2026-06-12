@@ -55,7 +55,7 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@asyncapi/protobuf-schema-parser": "3.4.0",
+    "@asyncapi/protobuf-schema-parser": "3.6.0",
     "protobufjs": "7.5.4",
     "@protobufjs/inquire": "1.1.0"
   },

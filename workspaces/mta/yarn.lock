@@ -182,14 +182,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asyncapi/protobuf-schema-parser@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@asyncapi/protobuf-schema-parser@npm:3.4.0"
+"@asyncapi/protobuf-schema-parser@npm:3.6.0":
+  version: 3.6.0
+  resolution: "@asyncapi/protobuf-schema-parser@npm:3.6.0"
   dependencies:
     "@asyncapi/parser": "npm:^3.4.0"
     "@types/protocol-buffers-schema": "npm:^3.4.3"
     protobufjs: "npm:^7.4.0"
-  checksum: 10/e04ab346e0145d735a4d4238d7adc74ea469b588be10507363e6e216822b3501b786f2c33d0451ace20ac9e6dace411458b6b8045388bed0300278e7fa2e3822
+  checksum: 10/595b5daf8a6162a5c67ad86b95657064b29a2a2f34223b825a22496969d2cebf64ba1c23336cfc323e1e0ae6a42e8418aa66eea06d0479bfc6b679250fdb5833
   languageName: node
   linkType: hard
 
