@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 import { createDevApp } from '@backstage/dev-utils';
+import { createApiFactory } from '@backstage/core-plugin-api';
+import { xcmetricsApiRef } from '../src/api';
 import { xcmetricsPlugin, XcmetricsPage } from '../src/plugin';
+import { DevXcmetricsApi } from './DevXcmetricsApi';
 
 createDevApp()
   .registerPlugin(xcmetricsPlugin)
+  // Override the real HTTP client with an in-memory mock so the plugin is
+  // fully functional locally without a running XCMetrics backend.
+  .registerApi(
+    createApiFactory({
+      api: xcmetricsApiRef,
+      deps: {},
+      factory: () => new DevXcmetricsApi(),
+    }),
+  )
   .addPage({
     element: <XcmetricsPage />,
     title: 'Root Page',

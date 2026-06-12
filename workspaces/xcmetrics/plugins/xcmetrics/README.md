@@ -35,3 +35,26 @@ proxy:
 ```
 
 Start Backstage and navigate to `/xcmetrics` to view your build metrics!
+
+## New Frontend System
+
+If you are using Backstage feature discovery, the plugin can be discovered automatically. Otherwise, you can register the alpha entry manually in your app:
+
+```tsx
+import { createApp } from '@backstage/app-defaults';
+import xcmetricsPlugin from '@backstage-community/plugin-xcmetrics/alpha';
+
+const app = createApp({
+  features: [
+    // ...other features
+    xcmetricsPlugin,
+  ],
+});
+```
+
+This plugin provides the following new frontend system extensions:
+
+- A page extension for the XCMetrics dashboard
+- An API extension for `xcmetricsApiRef`
+
+Use `@backstage-community/plugin-xcmetrics/alpha` to enable the plugin through the new frontend system.
