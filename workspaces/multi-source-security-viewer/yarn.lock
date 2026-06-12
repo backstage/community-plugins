@@ -2378,7 +2378,7 @@ __metadata:
     "@aonic-ui/pipelines": "npm:^3.1.1"
     "@axe-core/playwright": "npm:^4.11.3"
     "@backstage-community/plugin-azure-devops": "npm:^0.31.0"
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.21.0"
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.23.0"
     "@backstage-community/plugin-github-actions": "npm:^0.22.0"
     "@backstage-community/plugin-jenkins": "npm:^0.30.0"
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^"
