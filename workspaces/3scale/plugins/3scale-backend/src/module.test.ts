@@ -38,6 +38,10 @@ const PROVIDER_CONFIG = {
 describe('catalogModule3ScaleEntityProvider', () => {
   let addedProviders: EntityProvider[] | EntityProvider[][] | undefined;
 
+  beforeEach(() => {
+    addedProviders = undefined;
+  });
+
   const extensionPoint = {
     addEntityProvider: (
       ...providers: EntityProvider[] | EntityProvider[][]

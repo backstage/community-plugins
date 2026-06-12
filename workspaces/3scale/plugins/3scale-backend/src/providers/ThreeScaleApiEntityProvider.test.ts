@@ -40,6 +40,11 @@ type DeferredEntity = {
 function mockFetchResponses(...responses: unknown[]): jest.SpyInstance {
   const queue = [...responses];
   return jest.spyOn(global, 'fetch').mockImplementation(() => {
+    if (queue.length === 0) {
+      return Promise.reject(
+        new Error('Unexpected fetch call: no more mocked responses in queue'),
+      );
+    }
     const data = queue.shift();
     return Promise.resolve({
       ok: true,
@@ -137,9 +142,7 @@ describe('ThreeScaleApiEntityProvider', () => {
 
       ThreeScaleApiEntityProvider.fromConfig({ config, logger: loggerMock }, {
         scheduler,
-      } as unknown as Parameters<
-        typeof ThreeScaleApiEntityProvider.fromConfig
-      >[1]);
+      } as unknown as Parameters<typeof ThreeScaleApiEntityProvider.fromConfig>[1]);
 
       expect(scheduler.createScheduledTaskRunner).toHaveBeenCalledWith({
         frequency: { hours: 1 },
@@ -193,9 +196,7 @@ describe('ThreeScaleApiEntityProvider', () => {
       expect(() =>
         ThreeScaleApiEntityProvider.fromConfig({ config, logger: loggerMock }, {
           scheduler,
-        } as unknown as Parameters<
-          typeof ThreeScaleApiEntityProvider.fromConfig
-        >[1]),
+        } as unknown as Parameters<typeof ThreeScaleApiEntityProvider.fromConfig>[1]),
       ).toThrow(
         new InputError(
           'No schedule provided via config for ThreeScaleApiEntityProvider:test.',
@@ -479,8 +480,8 @@ function createAPIDoc(
       skip_swagger_validations: false,
       body: JSON.stringify(apiDocBody),
       service_id: 2,
-      created_at: new Date('2024-09-17T10:09:04Z'),
-      updated_at: new Date('2024-09-17T10:09:04Z'),
+      created_at: '2024-09-17T10:09:04Z',
+      updated_at: '2024-09-17T10:09:04Z',
     },
   };
 }

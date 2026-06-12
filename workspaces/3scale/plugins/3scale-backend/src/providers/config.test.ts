@@ -90,4 +90,32 @@ describe('readThreeScaleApiEntityConfigs', () => {
       },
     ]);
   });
+
+  it('parses addLabels: false when explicitly configured', () => {
+    const config = new ConfigReader({
+      catalog: {
+        providers: {
+          threeScaleApiEntity: {
+            dev: {
+              baseUrl: 'https://example-admin.3scale.net',
+              accessToken: 'test-token',
+              addLabels: false,
+            },
+          },
+        },
+      },
+    });
+
+    expect(readThreeScaleApiEntityConfigs(config)).toEqual([
+      {
+        id: 'dev',
+        baseUrl: 'https://example-admin.3scale.net',
+        accessToken: 'test-token',
+        systemLabel: undefined,
+        ownerLabel: undefined,
+        addLabels: false,
+        schedule: undefined,
+      },
+    ]);
+  });
 });
