@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import { useTheme } from '@material-ui/core/styles';
 import { Circle } from 'rc-progress';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: theme.spacing(3),
-    width: theme.spacing(3),
-  },
-}));
+import styles from './Percentage.module.css';
 
 export const Percentage = ({ value }: { value?: string }) => {
-  const classes = useStyles();
-  const theme = useTheme();
+  const okColor = '#1db679';
+  const errorColor = '#e82c3c';
 
   return (
     <Circle
       strokeLinecap="butt"
       percent={+(value || 0)}
       strokeWidth={16}
-      strokeColor={theme.palette.status.ok}
-      trailColor={theme.palette.status.error}
+      strokeColor={okColor}
+      trailColor={errorColor}
       trailWidth={16}
-      className={classes.root}
+      className={styles.root}
     />
   );
 };

@@ -1,0 +1,6 @@
+@layer components {
+  .root {
+    height: var(--bui-space-6);
+    width: var(--bui-space-6);
+  }
+}

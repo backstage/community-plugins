@@ -1,0 +1,34 @@
+@layer components {
+  .root {
+    margin: var(--bui-space-2) 0;
+    min-width: 140px;
+  }
+
+  .upper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--bui-space-2);
+  }
+
+  .cardTitle {
+    text-align: center;
+    margin-top: var(--bui-space-2);
+  }
+
+  .wrapIcon {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bui-space-1);
+    vertical-align: baseline;
+  }
+
+  .left {
+    display: flex;
+  }
+
+  .right {
+    display: flex;
+    margin-left: var(--bui-space-1);
+  }
+}

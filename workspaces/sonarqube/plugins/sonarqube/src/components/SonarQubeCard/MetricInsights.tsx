@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 import { useMemo } from 'react';
-import Chip from '@material-ui/core/Chip';
-import { makeStyles } from '@material-ui/core/styles';
+import { Tag, Text, Tooltip } from '@backstage/ui';
+import { TooltipTrigger } from 'react-aria-components';
+import {
+  RiBugLine,
+  RiLockLine,
+  RiLockUnlockLine,
+  RiCheckLine,
+  RiAlertLine,
+  RiShieldLine,
+  RiExternalLinkLine,
+} from '@remixicon/react';
 import { defaultDuplicationRatings } from '../SonarQubeTable/types';
-import BugReport from '@material-ui/icons/BugReport';
-import Lock from '@material-ui/icons/Lock';
-import Typography from '@material-ui/core/Typography';
-import LockOpen from '@material-ui/icons/LockOpen';
-import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentVerySatisfied from '@material-ui/icons/SentimentVerySatisfied';
-import Security from '@material-ui/icons/Security';
 import { DateTime } from 'luxon';
 import { Percentage } from './Percentage';
 import { Rating } from './Rating';
@@ -32,8 +34,7 @@ import { Value } from './Value';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { sonarqubeTranslationRef } from '../../translation';
-import Tooltip from '@material-ui/core/Tooltip';
-import LinkIcon from '@material-ui/icons/Link';
+import styles from './MetricInsights.module.css';
 
 type MetricInsightsProps = {
   value: FindingSummary | any;
@@ -42,63 +43,46 @@ type MetricInsightsProps = {
   sonarQubeComponentKey?: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  badgeLabel: {
-    color: theme.palette.common.white,
-  },
-  badgeCompact: {
-    margin: 0,
-    height: 28,
-  },
-  badgeError: {
-    backgroundColor: theme.palette.error.main,
-  },
-  badgeSuccess: {
-    backgroundColor: theme.palette.success.main,
-  },
-  badgeUnknown: {
-    backgroundColor: theme.palette.grey[500],
-  },
-}));
-
 export const QualityBadge = (props: MetricInsightsProps) => {
-  const classes = useStyles();
   const { t } = useTranslationRef(sonarqubeTranslationRef);
 
   const { value } = props;
   let gateLabel: string = t('sonarQubeCard.qualityBadgeLabel.notComputed');
-  let gateColor = classes.badgeUnknown;
-  let gateLinkToolTip = '';
+  let badgeClass = styles.badgeUnknown;
+  const gateLinkToolTip = '';
   if (value?.metrics.alert_status) {
     const gatePassed = value?.metrics.alert_status === 'OK';
     gateLabel = gatePassed
       ? t('sonarQubeCard.qualityBadgeLabel.gatePassed')
       : t('sonarQubeCard.qualityBadgeLabel.gateFailed');
-    gateColor = gatePassed ? classes.badgeSuccess : classes.badgeError;
+    badgeClass = gatePassed ? styles.badgeSuccess : styles.badgeError;
   }
-  let clickableAttrs = {};
-  if (value.projectUrl) {
-    gateLinkToolTip = t('sonarQubeCard.qualityBadgeTooltip');
-    clickableAttrs = {
-      component: 'a',
-      href: value.projectUrl,
-      target: '_blank',
-      rel: 'noopener noreferrer',
-      clickable: true,
-    };
-  }
+
   const qualityBadge = (
-    <Tooltip title={gateLinkToolTip}>
-      <Chip
-        label={gateLabel}
-        {...clickableAttrs}
-        className={props.compact ? classes.badgeCompact : ''}
-        classes={{ root: gateColor, label: classes.badgeLabel }}
-        icon={value.projectUrl ? <LinkIcon /> : undefined}
-      />
-    </Tooltip>
+    <Tag
+      className={`${badgeClass} ${props.compact ? styles.badgeCompact : ''}`}
+    >
+      {value.projectUrl ? <RiExternalLinkLine size={16} /> : null}
+      {gateLabel}
+    </Tag>
   );
-  return qualityBadge;
+
+  if (!gateLinkToolTip && !value.projectUrl) {
+    return qualityBadge;
+  }
+
+  return (
+    <TooltipTrigger>
+      {value.projectUrl ? (
+        <a href={value.projectUrl} target="_blank" rel="noopener noreferrer">
+          {qualityBadge}
+        </a>
+      ) : (
+        qualityBadge
+      )}
+      {gateLinkToolTip && <Tooltip>{gateLinkToolTip}</Tooltip>}
+    </TooltipTrigger>
+  );
 };
 
 export const BugReportRatingCard = (props: MetricInsightsProps) => {
@@ -106,7 +90,7 @@ export const BugReportRatingCard = (props: MetricInsightsProps) => {
   return (
     <RatingCard
       compact={props.compact}
-      titleIcon={<BugReport />}
+      titleIcon={<RiBugLine size={20} />}
       title={title}
       link={value.getIssuesUrl('BUG')}
       leftSlot={<Value value={value.metrics.bugs} compact={props.compact} />}
@@ -121,7 +105,11 @@ export const VulnerabilitiesRatingCard = (props: MetricInsightsProps) => {
     <RatingCard
       compact={props.compact}
       titleIcon={
-        value.metrics.vulnerabilities === '0' ? <Lock /> : <LockOpen />
+        value.metrics.vulnerabilities === '0' ? (
+          <RiLockLine size={20} />
+        ) : (
+          <RiLockUnlockLine size={20} />
+        )
       }
       title={title}
       link={value.getIssuesUrl('VULNERABILITY')}
@@ -140,9 +128,9 @@ export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
       compact={props.compact}
       titleIcon={
         value.metrics.code_smells === '0' ? (
-          <SentimentVerySatisfied />
+          <RiCheckLine size={20} />
         ) : (
-          <SentimentVeryDissatisfied />
+          <RiAlertLine size={20} />
         )
       }
       title={title}
@@ -161,7 +149,7 @@ export const HotspotsReviewed = (props: MetricInsightsProps) => {
     value.metrics.security_review_rating && (
       <RatingCard
         compact={props.compact}
-        titleIcon={<Security />}
+        titleIcon={<RiShieldLine size={20} />}
         title={title}
         link={value.getSecurityHotspotsUrl()}
         leftSlot={
@@ -249,13 +237,13 @@ export const NoSonarQubeCard = (props: MetricInsightsProps) => {
   const { value, sonarQubeComponentKey } = props;
   const { t } = useTranslationRef(sonarqubeTranslationRef);
   return (
-    <Typography color="textSecondary" variant="subtitle2">
+    <Text color="secondary" variant="body-small">
       {value?.isSonarQubeAnnotationEnabled &&
         t('sonarQubeCard.noSonarQubeError.hasAnnotation', {
           project: sonarQubeComponentKey || '',
         })}
       {!value?.isSonarQubeAnnotationEnabled &&
         t('sonarQubeCard.noSonarQubeError.noAnnotation')}
-    </Typography>
+    </Text>
   );
 };
