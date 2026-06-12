@@ -2176,29 +2176,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-azure-devops-backend@npm:^0.27.0":
-  version: 0.27.0
-  resolution: "@backstage-community/plugin-azure-devops-backend@npm:0.27.0"
+"@backstage-community/plugin-azure-devops-backend@npm:^0.29.0":
+  version: 0.29.0
+  resolution: "@backstage-community/plugin-azure-devops-backend@npm:0.29.0"
   dependencies:
-    "@backstage-community/plugin-azure-devops-common": "npm:^0.21.0"
-    "@backstage/backend-defaults": "npm:^0.16.0"
-    "@backstage/backend-plugin-api": "npm:^1.8.0"
-    "@backstage/catalog-model": "npm:^1.7.7"
-    "@backstage/config": "npm:^1.3.6"
-    "@backstage/errors": "npm:^1.2.7"
-    "@backstage/integration": "npm:^2.0.0"
-    "@backstage/plugin-auth-node": "npm:^0.6.14"
-    "@backstage/plugin-catalog-common": "npm:^1.1.8"
-    "@backstage/plugin-catalog-node": "npm:^2.1.0"
-    "@backstage/plugin-permission-common": "npm:^0.9.7"
-    "@backstage/plugin-permission-node": "npm:^0.10.11"
+    "@backstage-community/plugin-azure-devops-common": "npm:^0.23.0"
+    "@backstage/backend-defaults": "npm:^0.17.0"
+    "@backstage/backend-plugin-api": "npm:^1.9.0"
+    "@backstage/catalog-model": "npm:^1.8.0"
+    "@backstage/config": "npm:^1.3.7"
+    "@backstage/errors": "npm:^1.3.0"
+    "@backstage/integration": "npm:^2.0.1"
+    "@backstage/plugin-auth-node": "npm:^0.7.0"
+    "@backstage/plugin-catalog-common": "npm:^1.1.9"
+    "@backstage/plugin-catalog-node": "npm:^2.2.0"
+    "@backstage/plugin-permission-common": "npm:^0.9.8"
+    "@backstage/plugin-permission-node": "npm:^0.10.12"
     "@types/express": "npm:^4.17.6"
     azure-devops-node-api: "npm:^15.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
     mime-types: "npm:^2.1.27"
     p-limit: "npm:^3.1.0"
-  checksum: 10/2cfdedb2eb4b4ca7007905f9e0203f3b1f312a58eae94b674dd021bd3684217c72f48abc5320d7aaff21752ff0bd190e061ed0e5538a6888da46debdaed15e8b
+  checksum: 10/ee918e3588efecce1e0145c4e6e40e96ca52a10cc3a366221cb5c21b5d5456a03d5e178b6bc56a386f87bd463747ca9ac4b0eec67b6ff6b2bbe517f9c0733eba
   languageName: node
   linkType: hard
 
@@ -2541,9 +2541,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.17.1":
-  version: 0.17.1
-  resolution: "@backstage/backend-defaults@npm:0.17.1"
+"@backstage/backend-defaults@npm:^0.17.0, @backstage/backend-defaults@npm:^0.17.1":
+  version: 0.17.2
+  resolution: "@backstage/backend-defaults@npm:0.17.2"
   dependencies:
     "@aws-sdk/abort-controller": "npm:^3.347.0"
     "@aws-sdk/client-codecommit": "npm:^3.350.0"
@@ -2626,7 +2626,7 @@ __metadata:
       optional: true
     better-sqlite3:
       optional: true
-  checksum: 10/4993272dc1ad13b8a21d705b0e0656bfdf1015faa473d91eb649eb670d7afb14ea6621c16d62396747b49650a2bef225e93c5ce54b45bd69a62ced55e47f7a56
+  checksum: 10/e3370bcec5767483574d3c5da0ef0abebeb3de41e43c9e728e0566b64e5a5d91e215d5a3208b623fe70ae001df06e1b1d89e16f187ee2b7efdb9d55252d9b34c
   languageName: node
   linkType: hard
 
@@ -3541,7 +3541,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^2.0.0, @backstage/integration@npm:^2.0.2":
+"@backstage/integration@npm:^2.0.0, @backstage/integration@npm:^2.0.1, @backstage/integration@npm:^2.0.2":
   version: 2.0.2
   resolution: "@backstage/integration@npm:2.0.2"
   dependencies:
@@ -3947,7 +3947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-node@npm:^2.1.0, @backstage/plugin-catalog-node@npm:^2.2.1":
+"@backstage/plugin-catalog-node@npm:^2.1.0, @backstage/plugin-catalog-node@npm:^2.2.0, @backstage/plugin-catalog-node@npm:^2.2.1":
   version: 2.2.1
   resolution: "@backstage/plugin-catalog-node@npm:2.2.1"
   dependencies:
@@ -4333,7 +4333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-node@npm:^0.10.11":
+"@backstage/plugin-permission-node@npm:^0.10.11, @backstage/plugin-permission-node@npm:^0.10.12":
   version: 0.10.12
   resolution: "@backstage/plugin-permission-node@npm:0.10.12"
   dependencies:
@@ -15750,7 +15750,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@backstage-community/plugin-azure-devops-backend": "npm:^0.27.0"
+    "@backstage-community/plugin-azure-devops-backend": "npm:^0.29.0"
     "@backstage-community/plugin-jenkins-backend": "npm:^0.27.0"
     "@backstage-community/plugin-multi-source-security-viewer-backend": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.17.1"
