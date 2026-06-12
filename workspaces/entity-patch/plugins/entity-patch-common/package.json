@@ -1,0 +1,49 @@
+{
+  "name": "@backstage-community/plugin-entity-patch-common",
+  "version": "0.1.0",
+  "description": "Common types and utilities for the entity-patch plugin",
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "entity-patch",
+    "pluginPackages": [
+      "@backstage-community/plugin-entity-patch",
+      "@backstage-community/plugin-entity-patch-backend",
+      "@backstage-community/plugin-entity-patch-common"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/entity-patch/plugins/entity-patch-common",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/entity-patch/plugins/entity-patch-common"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/config": "backstage:^",
+    "@backstage/filter-predicates": "backstage:^",
+    "zod": "^3.0.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^"
+  }
+}
