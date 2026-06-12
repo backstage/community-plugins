@@ -18,8 +18,18 @@ import { Circle } from 'rc-progress';
 import styles from './Percentage.module.css';
 
 export const Percentage = ({ value }: { value?: string }) => {
-  const okColor = '#1db679';
-  const errorColor = '#e82c3c';
+  // Use theme tokens from CSS variables, fallback to SonarQube default colors
+  const getStyleValue = (propertyName: string, fallback: string): string => {
+    if (typeof window === 'undefined') return fallback;
+    const colorValue = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue(propertyName)
+      .trim();
+    return colorValue || fallback;
+  };
+
+  const okColor = getStyleValue('--sonarqube-percentage-ok', '#1db679');
+  const errorColor = getStyleValue('--sonarqube-percentage-error', '#e82c3c');
 
   return (
     <Circle

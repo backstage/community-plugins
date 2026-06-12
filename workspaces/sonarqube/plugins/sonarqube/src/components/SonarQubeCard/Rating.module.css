@@ -1,4 +1,12 @@
 @layer components {
+  :root {
+    --sonarqube-rating-a: var(--bui-status-ok, #1db679);
+    --sonarqube-rating-b: #a3d566;
+    --sonarqube-rating-c: var(--bui-status-pending, #f2cc0f);
+    --sonarqube-rating-d: var(--bui-status-warning, #f88d3d);
+    --sonarqube-rating-e: var(--bui-status-error, #e82c3c);
+  }
+
   .ratingDefault {
     height: var(--bui-space-6);
     width: var(--bui-space-6);
@@ -14,8 +22,8 @@
   .ratingA {
     height: var(--bui-space-6);
     width: var(--bui-space-6);
-    color: var(--bui-fg-primary);
-    background-color: #1db679;
+    color: var(--bui-white);
+    background-color: var(--sonarqube-rating-a);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,8 +34,8 @@
   .ratingB {
     height: var(--bui-space-6);
     width: var(--bui-space-6);
-    color: var(--bui-fg-primary);
-    background-color: #a3d566;
+    color: var(--bui-white);
+    background-color: var(--sonarqube-rating-b);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,8 +46,8 @@
   .ratingC {
     height: var(--bui-space-6);
     width: var(--bui-space-6);
-    color: var(--bui-fg-primary);
-    background-color: #f2cc0f;
+    color: var(--bui-white);
+    background-color: var(--sonarqube-rating-c);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,8 +58,8 @@
   .ratingD {
     height: var(--bui-space-6);
     width: var(--bui-space-6);
-    color: var(--bui-fg-primary);
-    background-color: #f88d3d;
+    color: var(--bui-white);
+    background-color: var(--sonarqube-rating-d);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,8 +70,8 @@
   .ratingE {
     height: var(--bui-space-6);
     width: var(--bui-space-6);
-    color: var(--bui-fg-primary);
-    background-color: #e82c3c;
+    color: var(--bui-white);
+    background-color: var(--sonarqube-rating-e);
     display: flex;
     align-items: center;
     justify-content: center;

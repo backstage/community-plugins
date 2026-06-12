@@ -29,6 +29,5 @@
 
   .right {
     display: flex;
-    margin-left: var(--bui-space-1);
   }
 }

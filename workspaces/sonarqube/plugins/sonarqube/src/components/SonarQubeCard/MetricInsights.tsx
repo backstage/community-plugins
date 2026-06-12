@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { useMemo } from 'react';
-import { Tag, Text, Tooltip } from '@backstage/ui';
-import { TooltipTrigger } from 'react-aria-components';
+import { Tag, Text } from '@backstage/ui';
+import { TooltipTrigger, Tooltip } from 'react-aria-components';
 import {
   RiBugLine,
   RiLockLine,
@@ -49,13 +49,18 @@ export const QualityBadge = (props: MetricInsightsProps) => {
   const { value } = props;
   let gateLabel: string = t('sonarQubeCard.qualityBadgeLabel.notComputed');
   let badgeClass = styles.badgeUnknown;
-  const gateLinkToolTip = '';
+  let gateLinkToolTip = '';
+
   if (value?.metrics.alert_status) {
     const gatePassed = value?.metrics.alert_status === 'OK';
     gateLabel = gatePassed
       ? t('sonarQubeCard.qualityBadgeLabel.gatePassed')
       : t('sonarQubeCard.qualityBadgeLabel.gateFailed');
     badgeClass = gatePassed ? styles.badgeSuccess : styles.badgeError;
+  }
+
+  if (value.projectUrl) {
+    gateLinkToolTip = t('sonarQubeCard.qualityBadgeTooltip');
   }
 
   const qualityBadge = (
@@ -67,20 +72,16 @@ export const QualityBadge = (props: MetricInsightsProps) => {
     </Tag>
   );
 
-  if (!gateLinkToolTip && !value.projectUrl) {
+  if (!value.projectUrl) {
     return qualityBadge;
   }
 
   return (
     <TooltipTrigger>
-      {value.projectUrl ? (
-        <a href={value.projectUrl} target="_blank" rel="noopener noreferrer">
-          {qualityBadge}
-        </a>
-      ) : (
-        qualityBadge
-      )}
-      {gateLinkToolTip && <Tooltip>{gateLinkToolTip}</Tooltip>}
+      <a href={value.projectUrl} target="_blank" rel="noopener noreferrer">
+        {qualityBadge}
+      </a>
+      <Tooltip>{gateLinkToolTip}</Tooltip>
     </TooltipTrigger>
   );
 };

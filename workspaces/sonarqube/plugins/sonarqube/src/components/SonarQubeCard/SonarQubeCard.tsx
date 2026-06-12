@@ -103,15 +103,12 @@ export const SonarQubeCard = (props: {
 
       {!loading && summaryFinding?.metrics && (
         <>
-          <Flex direction="column" align="center" style={{ height: '100%' }}>
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-around',
-                width: '100%',
-              }}
-            >
+          <Flex
+            direction="column"
+            align="center"
+            className={styles.metricsContainer}
+          >
+            <div className={styles.metricsGrid}>
               <BugReportRatingCard
                 value={summaryFinding}
                 title={t('sonarQubeCard.bugReportRatingCardTitle')}
@@ -128,7 +125,7 @@ export const SonarQubeCard = (props: {
                 value={summaryFinding}
                 title={t('sonarQubeCard.hotspotsReviewedTitle')}
               />
-              <div style={{ width: '100%' }} />
+              <div className={styles.clearfix} />
               <CoverageRatingCard
                 value={summaryFinding}
                 title={t('sonarQubeCard.coverageRatingCardTitle')}
