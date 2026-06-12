@@ -34,7 +34,7 @@ describe('App', () => {
       ] as any,
     };
 
-    const rendered = render(<App />);
+    const rendered = render(App.createRoot());
 
     await waitFor(() => {
       expect(rendered.baseElement).toBeInTheDocument();

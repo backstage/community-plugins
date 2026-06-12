@@ -28,7 +28,7 @@ export const CopilotIndexPage = () => (
     {/* Legacy routes remain available for backward compatibility.
       The sidebar link is controlled by showLegacyView. */}
     <Route path="/legacy" element={<HomePage />} />
-    <Route path="/enterprise" element={<EnterprisePage />} />
-    <Route path="/organization" element={<OrganizationPage />} />
+    <Route path="/legacy/enterprise" element={<EnterprisePage />} />
+    <Route path="/legacy/organization" element={<OrganizationPage />} />
   </Routes>
 );
