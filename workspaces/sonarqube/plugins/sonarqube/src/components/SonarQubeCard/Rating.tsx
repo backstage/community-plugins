@@ -14,45 +14,8 @@
  * limitations under the License.
  */
 
-import Avatar from '@material-ui/core/Avatar';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/styles/withStyles';
 import { useMemo } from 'react';
-
-const useStyles = makeStyles(theme => {
-  const commonCardRating: CSSProperties = {
-    height: theme.spacing(3),
-    width: theme.spacing(3),
-    color: theme.palette.common.white,
-  };
-
-  return {
-    ratingDefault: {
-      ...commonCardRating,
-      background: theme.palette.status.aborted,
-    },
-    ratingA: {
-      ...commonCardRating,
-      background: theme.palette.status.ok,
-    },
-    ratingB: {
-      ...commonCardRating,
-      background: lighten(theme.palette.status.ok, 0.5),
-    },
-    ratingC: {
-      ...commonCardRating,
-      background: theme.palette.status.pending,
-    },
-    ratingD: {
-      ...commonCardRating,
-      background: theme.palette.status.warning,
-    },
-    ratingE: {
-      ...commonCardRating,
-      background: theme.palette.error.main,
-    },
-  };
-});
+import styles from './Rating.module.css';
 
 export const Rating = ({
   rating,
@@ -61,51 +24,47 @@ export const Rating = ({
   rating?: string;
   hideValue?: boolean;
 }) => {
-  const classes = useStyles();
-
   const ratingProp = useMemo(() => {
     switch (rating) {
       case '1.0':
         return {
           name: 'A',
-          className: classes.ratingA,
+          className: styles.ratingA,
         };
 
       case '2.0':
         return {
           name: 'B',
-          className: classes.ratingB,
+          className: styles.ratingB,
         };
 
       case '3.0':
         return {
           name: 'C',
-          className: classes.ratingC,
+          className: styles.ratingC,
         };
 
       case '4.0':
         return {
           name: 'D',
-          className: classes.ratingD,
+          className: styles.ratingD,
         };
 
       case '5.0':
         return {
           name: 'E',
-          className: classes.ratingE,
+          className: styles.ratingE,
         };
 
       default:
         return {
           name: '',
-          className: classes.ratingDefault,
+          className: styles.ratingDefault,
         };
     }
-  }, [classes, rating]);
+  }, [rating]);
 
   return (
-    <Avatar className={ratingProp.className}>
-      {!hideValue && ratingProp.name}
-    </Avatar>
+    <div className={ratingProp.className}>{!hideValue && ratingProp.name}</div>
   );
 };

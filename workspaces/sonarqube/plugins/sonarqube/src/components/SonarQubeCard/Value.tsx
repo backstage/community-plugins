@@ -14,30 +14,16 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-
-const useStyles = makeStyles(theme => {
-  return {
-    value: {
-      fontSize: '1.5rem',
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-    compact: {
-      lineHeight: '1.0',
-    },
-  };
-});
+import { Text } from '@backstage/ui';
+import styles from './Value.module.css';
 
 export const Value = (props: { value?: string; compact?: boolean }) => {
-  const classes = useStyles();
   return (
-    <Typography
-      component="span"
-      className={props.compact ? classes.compact : ''}
-      classes={{ root: classes.value }}
+    <Text
+      as="span"
+      className={`${styles.value} ${props.compact ? styles.compact : ''}`}
     >
       {props.value}
-    </Typography>
+    </Text>
   );
 };

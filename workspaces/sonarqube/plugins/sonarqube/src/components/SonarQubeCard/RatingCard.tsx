@@ -15,38 +15,9 @@
  */
 
 import { Link } from '@backstage/core-components';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text, Flex, Box } from '@backstage/ui';
 import { ReactNode } from 'react';
-
-const useStyles = makeStyles(theme => {
-  return {
-    root: {
-      margin: theme.spacing(1, 0),
-      minWidth: '140px',
-    },
-    upper: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    cardTitle: {
-      textAlign: 'center',
-    },
-    wrapIcon: {
-      display: 'inline-flex',
-      verticalAlign: 'baseline',
-    },
-    left: {
-      display: 'flex',
-    },
-    right: {
-      display: 'flex',
-      marginLeft: theme.spacing(0.5),
-    },
-  };
-});
+import styles from './RatingCard.module.css';
 
 export const RatingCard = ({
   leftSlot,
@@ -63,27 +34,26 @@ export const RatingCard = ({
   link: string;
   compact?: boolean;
 }) => {
-  const classes = useStyles();
-
   return (
     <Link to={link} color="inherit" underline="none">
-      <Grid item className={compact ? '' : classes.root}>
-        <Grid item className={classes.upper}>
-          <Grid item className={classes.left}>
-            {leftSlot}
-          </Grid>
-          <Grid item className={classes.right}>
-            {rightSlot}
-          </Grid>
-        </Grid>
-        {compact || (
-          <Grid item className={classes.cardTitle}>
-            <Typography variant="body1" className={classes.wrapIcon}>
+      <Box className={compact ? '' : styles.root}>
+        <Flex
+          direction="row"
+          align="center"
+          justify="center"
+          className={styles.upper}
+        >
+          <div className={styles.left}>{leftSlot}</div>
+          <div className={styles.right}>{rightSlot}</div>
+        </Flex>
+        {!compact && (
+          <Box className={styles.cardTitle}>
+            <Text className={styles.wrapIcon}>
               {titleIcon} {title}
-            </Typography>
-          </Grid>
+            </Text>
+          </Box>
         )}
-      </Grid>
+      </Box>
     </Link>
   );
 };
