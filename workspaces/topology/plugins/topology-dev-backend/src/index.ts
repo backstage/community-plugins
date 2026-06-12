@@ -13,4 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { Root } from './Root';
+
+/**
+ * @internal
+ */
+export { topologyDevBackendPlugin as default } from './plugin';

@@ -13,4 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
+
+import { createBackendPlugin } from '@backstage/backend-plugin-api';
+
+/**
+ * Minimal backend plugin pairs this package with
+ * `@backstage-community/plugin-topology`.
+ * Dev-only wiring (catalog, auth, kubernetes, …) lives in `dev/index.ts`.
+ *
+ * @internal
+ */
+export const topologyDevBackendPlugin = createBackendPlugin({
+  pluginId: 'topology',
+  register(env) {
+    env.registerInit({
+      deps: {},
+      async init() {},
+    });
+  },
+});

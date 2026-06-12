@@ -11,18 +11,19 @@
     "role": "frontend-plugin",
     "pluginId": "topology",
     "pluginPackages": [
-      "@backstage-community/plugin-topology"
+      "@backstage-community/plugin-topology",
+      "@internal/plugin-topology-dev-backend"
     ]
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.ts",
+    "./alpha": "./src/alpha/index.tsx",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
-        "src/alpha.ts"
+        "src/alpha/index.tsx"
       ],
       "package.json": [
         "package.json"
@@ -41,35 +42,48 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
+    "start:mock": "backstage-cli package start --entrypoint dev/index.mock.tsx",
+    "start:alpha": "backstage-cli package start --entrypoint dev/alpha/index.tsx",
+    "start:alpha:mock": "backstage-cli package start --entrypoint dev/alpha/index.mock.tsx",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc"
   },
   "dependencies": {
     "@backstage-community/plugin-tekton-react": "^0.5.0",
     "@backstage/catalog-model": "^1.9.0",
+    "@backstage/core-compat-api": "^0.5.9",
     "@backstage/core-components": "^0.18.10",
     "@backstage/core-plugin-api": "^1.12.6",
+    "@backstage/errors": "^1.2.7",
+    "@backstage/filter-predicates": "^0.1.1",
+    "@backstage/frontend-plugin-api": "^0.16.0",
+    "@backstage/plugin-app-react": "^0.2.1",
+    "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/plugin-catalog-react": "^3.0.0",
+    "@backstage/plugin-kubernetes": "^0.12.17",
     "@backstage/plugin-kubernetes-common": "^0.9.12",
     "@backstage/plugin-kubernetes-react": "^0.5.19",
     "@backstage/plugin-permission-common": "^0.9.9",
     "@backstage/plugin-permission-react": "^0.5.1",
+    "@backstage/plugin-user-settings": "^0.9.1",
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.15.0",
     "@kubernetes/client-node": "1.4.0",
+    "@mui/icons-material": "5.18.0",
+    "@mui/material": "^5.15.17",
     "@patternfly/patternfly": "^6.1.0",
     "@patternfly/react-charts": "^8.1.0",
     "@patternfly/react-core": "^6.1.0",
     "@patternfly/react-tokens": "^6.1.0",
     "@patternfly/react-topology": "^6.1.0",
     "@remixicon/react": "^4.2.0",
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "classnames": "2.x",
     "git-url-parse": "^13.1.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
-    "style-inject": "^0.3.0",
     "victory": "^37.3.6"
   },
   "peerDependencies": {
@@ -79,15 +93,20 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
+    "@backstage/catalog-client": "^1.14.0",
     "@backstage/cli": "^0.36.2",
     "@backstage/dev-utils": "^1.1.23",
+    "@backstage/frontend-defaults": "^0.5.1",
+    "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/test-utils": "^1.7.18",
+    "@backstage/ui": "^0.13.2",
     "@playwright/test": "1.60.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@types/git-url-parse": "9.0.3",
     "@types/react": "^18.3.11",
+    "@types/react-dom": "^18",
     "cross-fetch": "4.1.0",
     "glob": "^13.0.0",
     "react": "^18.3.1",

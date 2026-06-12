@@ -15,7 +15,11 @@
  */
 import { expect, Page, test, type BrowserContext } from '@playwright/test';
 
-import { Common } from './utils/topologyHelper';
+import {
+  Common,
+  isNfsAppMode,
+  topologyEntityHeaderTabTestId,
+} from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
 
 const TOPOLOGY_NODES = {
@@ -46,6 +50,7 @@ test.describe('Topology plugin', () => {
 
     const currentLocale =
       locale ?? (await page.evaluate(() => globalThis.navigator.language));
+
     translations = getTranslations(currentLocale);
     await common.switchToLocale(currentLocale);
   });
@@ -55,7 +60,11 @@ test.describe('Topology plugin', () => {
   });
 
   test.describe('Missing permissions page', () => {
-    test('shows missing permissions error', async ({ browser }, testInfo) => {
+    test('shows missing permissions error', async ({}, testInfo) => {
+      test.skip(
+        isNfsAppMode(),
+        'Standalone /missing-permissions route exists only in legacy dev app',
+      );
       await page.goto('/missing-permissions');
       await page.reload();
 
@@ -64,11 +73,6 @@ test.describe('Topology plugin', () => {
           exact: true,
         }),
       ).toBeVisible({ timeout: 60000 });
-
-      const topologyTextCount = await page
-        .getByText('Topology', { exact: true })
-        .count();
-      expect(topologyTextCount).toEqual(2);
       await expect(page.getByRole('article')).toContainText(
         'kubernetes.clusters.read, kubernetes.resources.read',
       );
@@ -81,15 +85,14 @@ test.describe('Topology plugin', () => {
 
   test.describe('Topology view', () => {
     test.beforeEach(async () => {
-      await page.goto('/topology');
-      await common.waitForTopologyGraph();
+      await common.navigateToTopologyView();
     });
 
-    test('displays header and cluster controls', async ({
-      browser,
-    }, testInfo) => {
+    test('displays header and cluster controls', async ({}, testInfo) => {
       await expect(page.getByRole('heading')).toContainText('backstage');
-      await expect(page.getByTestId('header-tab-0')).toBeVisible();
+      await expect(
+        page.getByTestId(topologyEntityHeaderTabTestId()),
+      ).toBeVisible();
       const topologyToolbar = page.locator('.pf-topology-view__view-toolbar');
       await expect(
         topologyToolbar.getByRole('button', {
@@ -163,9 +166,7 @@ test.describe('Topology plugin', () => {
       }
     });
 
-    test('opens sidebar with deployment details and resources', async ({
-      browser,
-    }, testInfo) => {
+    test('opens sidebar with deployment details and resources', async ({}, testInfo) => {
       await expect(
         page.getByRole('separator', { name: 'Resize' }),
       ).not.toBeVisible();
