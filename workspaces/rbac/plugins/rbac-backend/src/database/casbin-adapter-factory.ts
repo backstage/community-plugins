@@ -38,24 +38,38 @@ export class CasbinDBAdapterFactory {
 
     let adapter;
     if (client === 'pg') {
+      const dbConnection = this.databaseClient.client.config.connection;
       const dbName =
-        await this.databaseClient.client.config.connection.database;
+        typeof dbConnection === 'function'
+          ? (await dbConnection()).database
+          : dbConnection.database;
       const schema =
         (await this.databaseClient.client.searchPath?.[0]) ?? 'public';
 
-      const ssl = this.handlePostgresSSL(databaseConfig!);
+      const connectionType =
+        databaseConfig?.getOptionalString('connection.type');
 
-      adapter = await TypeORMAdapter.newAdapter({
-        type: 'postgres',
-        host: databaseConfig?.getString('connection.host'),
-        port: databaseConfig?.getNumber('connection.port'),
-        username: databaseConfig?.getOptionalString('connection.user'),
-        password: databaseConfig?.getOptionalString('connection.password'),
-        ssl,
-        database: dbName,
-        schema: schema,
-        poolSize: databaseConfig?.getOptionalNumber('knexConfig.pool.max'),
-      });
+      if (connectionType === 'azure') {
+        adapter = await this.createAzureAdapter(
+          databaseConfig!,
+          dbName,
+          schema,
+        );
+      } else {
+        const ssl = this.handlePostgresSSL(databaseConfig!);
+
+        adapter = await TypeORMAdapter.newAdapter({
+          type: 'postgres',
+          host: databaseConfig?.getString('connection.host'),
+          port: databaseConfig?.getNumber('connection.port'),
+          username: databaseConfig?.getOptionalString('connection.user'),
+          password: databaseConfig?.getOptionalString('connection.password'),
+          ssl,
+          database: dbName,
+          schema: schema,
+          poolSize: databaseConfig?.getOptionalNumber('knexConfig.pool.max'),
+        });
+      }
     }
 
     if (client === 'better-sqlite3') {
@@ -79,6 +93,74 @@ export class CasbinDBAdapterFactory {
     }
 
     return adapter;
+  }
+
+  private async createAzureAdapter(
+    dbConfig: Config,
+    dbName: string,
+    schema: string,
+  ): Promise<TypeORMAdapter> {
+    // eslint-disable-next-line @backstage/no-forbidden-package-imports
+    const {
+      DefaultAzureCredential,
+      ManagedIdentityCredential,
+      ClientSecretCredential,
+    } = require('@azure/identity');
+
+    const tokenConfig = dbConfig.getOptionalConfig(
+      'connection.tokenCredential',
+    );
+
+    const clientId = tokenConfig?.getOptionalString('clientId');
+    const tenantId = tokenConfig?.getOptionalString('tenantId');
+    const clientSecret = tokenConfig?.getOptionalString('clientSecret');
+    let credential;
+
+    /**
+     * Determine which TokenCredential to use based on provided config
+     * 1. If clientId, tenantId and clientSecret are provided, use ClientSecretCredential
+     * 2. If only clientId is provided, use ManagedIdentityCredential with user-assigned identity
+     * 3. Otherwise, use DefaultAzureCredential (which may use system-assigned identity among other methods)
+     */
+    if (clientId && tenantId && clientSecret) {
+      credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+    } else if (clientId) {
+      credential = new ManagedIdentityCredential(clientId);
+    } else {
+      credential = new DefaultAzureCredential();
+    }
+
+    const ssl = this.handlePostgresSSL(dbConfig);
+
+    // Create a password function that fetches fresh Azure AD tokens
+    // The pg driver supports async password functions, enabling automatic token renewal
+    const passwordFn = async () => {
+      const token = await credential.getToken(
+        'https://ossrdbms-aad.database.windows.net/.default',
+      );
+
+      if (!token) {
+        throw new Error(
+          'Failed to acquire Azure access token for database authentication',
+        );
+      }
+
+      return token.token;
+    };
+
+    // Create adapter with Azure AD token function for automatic renewal
+    // The pg driver will call passwordFn on each new connection, ensuring fresh tokens
+    return TypeORMAdapter.newAdapter({
+      type: 'postgres',
+      host: dbConfig.getString('connection.host'),
+      port: dbConfig.getNumber('connection.port'),
+      username: dbConfig.getString('connection.user'),
+      password: passwordFn as any, // TypeORM types don't include function, but pg driver supports it
+      ssl,
+      database: dbName,
+      schema: schema,
+      poolSize: dbConfig.getOptionalNumber('knexConfig.pool.max'),
+    });
   }
 
   private handlePostgresSSL(

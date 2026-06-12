@@ -33,6 +33,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
+    "@azure/identity": "^4.0.0",
     "@backstage-community/plugin-rbac-common": "workspace:^",
     "@backstage-community/plugin-rbac-node": "workspace:^",
     "@backstage/backend-defaults": "^0.17.0",

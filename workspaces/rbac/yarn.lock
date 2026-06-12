@@ -1907,6 +1907,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-rbac-backend@workspace:plugins/rbac-backend"
   dependencies:
+    "@azure/identity": "npm:^4.0.0"
     "@backstage-community/plugin-rbac-common": "workspace:^"
     "@backstage-community/plugin-rbac-node": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.17.0"

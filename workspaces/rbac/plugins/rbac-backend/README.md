@@ -333,6 +333,14 @@ The RBAC plugin offers the option to store policies in a database. It supports t
 
 Ensure that you have already configured the database backend for your Backstage instance, as the RBAC plugin utilizes the same database configuration.
 
+#### Passwordless PostgreSQL in the Cloud
+
+The RBAC plugin stores policies in the same database configured under `backend.database`. Passwordless authentication is supported for **Azure Database for PostgreSQL with Entra authentication** only. Configure `backend.database` the same way as the rest of your Backstage instance — see [Azure with Entra authentication](https://backstage.io/docs/getting-started/config/database/#azure-with-entra-authentication) in the Backstage documentation. No additional RBAC-specific database configuration is required.
+
+Google Cloud SQL with Cloud IAM (`connection.type: cloudsql`) is not supported for RBAC policy storage yet.
+
+The RBAC backend maintains a separate Casbin policy storage connection and acquires its own Entra ID tokens for that adapter, independent of the main Backstage database connection pool.
+
 ### Optional maximum depth
 
 The RBAC plugin also includes an option max depth feature for organizations with potentially complex group hierarchy, this configuration value will ensure that the RBAC plugin will stop at a certain depth when building user graphs.
