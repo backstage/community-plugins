@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--bui-space-1);
+}
+
+.percentage {
+  min-width: 36px;
+}
+
+.bar {
+  display: flex;
+  height: 10px;
+  width: 100px;
+  border-radius: var(--bui-radius-full);
+  overflow: hidden;
+  gap: 2px;
+}
+
+.segment {
+  height: 100%;
+  min-width: 4px;
+  border-radius: var(--bui-radius-full);
+  transition: width 0.2s ease;
+  height: var(--bui-space-1_5);
+}
+
+.succeeded {
+  background-color: var(--bui-fg-success);
+}
+
+.running {
+  background-color: var(--bui-fg-info);
+}
+
+.pending {
+  background-color: var(--bui-fg-secondary);
+}
+
+.failed {
+  background-color: var(--bui-fg-danger);
+}
+
+.error {
+  background-color: var(--bui-fg-danger);
+}
