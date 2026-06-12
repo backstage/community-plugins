@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
