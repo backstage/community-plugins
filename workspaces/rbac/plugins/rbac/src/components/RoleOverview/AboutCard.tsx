@@ -20,21 +20,15 @@ import {
 } from '@backstage/core-components';
 import { AboutField } from '@backstage/plugin-catalog';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
-import { makeStyles } from '@mui/styles';
 
 import { useRole } from '../../hooks/useRole';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../hooks/useLanguage';
-
-const useStyles = makeStyles({
-  text: {
-    wordBreak: 'break-word',
-  },
-});
 
 type AboutCardProps = {
   roleName: string;
@@ -43,7 +37,6 @@ type AboutCardProps = {
 export const AboutCard = ({ roleName }: AboutCardProps) => {
   const { t } = useTranslation();
   const locale = useLanguage();
-  const classes = useStyles();
   const { role, roleError, loading } = useRole(roleName);
   if (loading) {
     return <Progress />;
@@ -94,42 +87,41 @@ export const AboutCard = ({ roleName }: AboutCardProps) => {
         }}
       >
         {roleError.name ? (
-          <div style={{ paddingBottom: '16px' }}>
+          <Box sx={{ pb: 2 }}>
             <WarningPanel
               message={roleError?.message}
               title={t('errors.fetchRole')}
               severity="error"
             />
-          </div>
+          </Box>
         ) : (
           <Grid container spacing={2}>
             <Grid item xs={3} sm={6} lg={3}>
               <AboutField label={t('common.description')}>
-                <MarkdownContent
-                  className={classes.text}
-                  content={description}
-                />
+                <Box sx={{ wordBreak: 'break-word' }}>
+                  <MarkdownContent content={description} />
+                </Box>
               </AboutField>
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
               <AboutField label={t('common.modifiedBy')}>
-                <MarkdownContent
-                  className={classes.text}
-                  content={modifiedBy}
-                />
+                <Box sx={{ wordBreak: 'break-word' }}>
+                  <MarkdownContent content={modifiedBy} />
+                </Box>
               </AboutField>
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
               <AboutField label={t('common.lastModified')}>
-                <MarkdownContent
-                  className={classes.text}
-                  content={lastModified}
-                />
+                <Box sx={{ wordBreak: 'break-word' }}>
+                  <MarkdownContent content={lastModified} />
+                </Box>
               </AboutField>
             </Grid>
             <Grid item xs={3} sm={6} lg={3}>
               <AboutField label={t('common.owner')}>
-                <MarkdownContent className={classes.text} content={owner} />
+                <Box sx={{ wordBreak: 'break-word' }}>
+                  <MarkdownContent content={owner} />
+                </Box>
               </AboutField>
             </Grid>
           </Grid>
