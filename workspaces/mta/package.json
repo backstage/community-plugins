@@ -56,7 +56,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@asyncapi/protobuf-schema-parser": "3.4.0",
-    "protobufjs": "7.5.4",
+    "protobufjs": "7.5.8",
     "@protobufjs/inquire": "1.1.0"
   },
   "prettier": "@backstage/cli/config/prettier",
