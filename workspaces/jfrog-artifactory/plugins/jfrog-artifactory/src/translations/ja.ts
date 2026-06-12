@@ -27,6 +27,8 @@ const jfrogArtifactoryTranslationJa = createTranslationMessages({
     'page.title': 'JFrog Artifactory リポジトリー: {{image}}',
     'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
+    'table.pagination.showResults': '{{count}} 件表示',
+    'table.pagination.rangeLabel': '{{total}} 件中 {{start}} - {{end}}',
     'table.columns.version': 'バージョン',
     'table.columns.repositories': 'リポジトリー',
     'table.columns.manifest': 'マニフェスト',
