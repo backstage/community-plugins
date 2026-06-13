@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse, ToolCall } from '../types';
+import { LLMProvider } from '@backstage-community/plugin-mcp-chat-node';
+import {
+  ChatMessage,
+  Tool,
+  ChatResponse,
+  ToolCall,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Anthropic Claude API provider.

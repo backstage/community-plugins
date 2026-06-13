@@ -16,7 +16,11 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { MCPClientServiceImpl } from './MCPClientServiceImpl';
-import { ChatResponse, ToolCall, MCPServerType } from '../types';
+import {
+  ChatResponse,
+  ToolCall,
+  MCPServerType,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js');
 jest.mock('@modelcontextprotocol/sdk/client/streamableHttp.js');

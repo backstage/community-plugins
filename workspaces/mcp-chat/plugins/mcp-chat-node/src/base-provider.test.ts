@@ -16,7 +16,12 @@
 
 import { mockServices } from '@backstage/backend-test-utils';
 import { LLMProvider } from './base-provider';
-import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
+import { type ProviderConfig } from './types';
+import {
+  ChatMessage,
+  Tool,
+  ChatResponse,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 global.fetch = jest.fn();
 

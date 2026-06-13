@@ -68,6 +68,11 @@ export interface Config {
        * @visibility backend
        */
       temperature?: number;
+      /**
+       * Provider-specific authentication parameters (IAM, session tokens, etc.)
+       * @visibility secret
+       */
+      auth?: { [key: string]: string };
     }>;
     /**
      * MCP (Model Context Protocol) servers configuration

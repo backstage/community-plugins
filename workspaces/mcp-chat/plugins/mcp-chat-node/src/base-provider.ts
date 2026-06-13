@@ -15,7 +15,12 @@
  */
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ResponseError } from '@backstage/errors';
-import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
+import {
+  ChatMessage,
+  Tool,
+  ChatResponse,
+} from '@backstage-community/plugin-mcp-chat-common';
+import { type ProviderConfig } from './types';
 
 /**
  * Abstract base class for all LLM providers.

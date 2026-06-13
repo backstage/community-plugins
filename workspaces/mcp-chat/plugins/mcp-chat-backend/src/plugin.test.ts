@@ -17,7 +17,7 @@ import { startTestBackend, mockServices } from '@backstage/backend-test-utils';
 import { mcpChatPlugin } from './plugin';
 import request from 'supertest';
 import { TestBackend } from '@backstage/backend-test-utils';
-import { MCPServerType } from './types';
+import { MCPServerType } from '@backstage-community/plugin-mcp-chat-common';
 
 jest.mock('./services/MCPClientServiceImpl', () => ({
   MCPClientServiceImpl: jest.fn().mockImplementation(() => ({

@@ -17,6 +17,10 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import {
+  llmProviderExtensionPoint,
+  LLMProvider,
+} from '@backstage-community/plugin-mcp-chat-node';
 import { createRouter } from './router';
 import {
   MCPClientServiceImpl,
@@ -33,6 +37,20 @@ import { validateConfig } from './utils';
 export const mcpChatPlugin = createBackendPlugin({
   pluginId: 'mcp-chat',
   register(env) {
+    const providers = new Map<string, LLMProvider>();
+
+    env.registerExtensionPoint(llmProviderExtensionPoint, {
+      registerProvider(type, provider) {
+        if (providers.has(type)) {
+          // As documented in the interface: replace and warn
+          console.warn(
+            `LLM provider with type '${type}' is already registered and will be replaced`,
+          );
+        }
+        providers.set(type, provider);
+      },
+    });
+
     env.registerInit({
       deps: {
         logger: coreServices.logger,
@@ -48,6 +66,7 @@ export const mcpChatPlugin = createBackendPlugin({
         const mcpClientService = new MCPClientServiceImpl({
           logger,
           config,
+          extensionProviders: providers,
         });
 
         const conversationStore = await ChatConversationStore.create({
