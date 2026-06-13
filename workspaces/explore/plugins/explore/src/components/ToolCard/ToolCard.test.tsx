@@ -45,7 +45,10 @@ describe('<ToolCard />', () => {
   it('should link out', async () => {
     const { container } = await renderInTestApp(<ToolCard {...minProps} />);
     const anchor = container.querySelector('a');
-    expect(anchor).toHaveAttribute('href', minProps.card.url);
+    // The Backstage UI `ButtonLink` is wrapped by `react-aria` + React Router,
+    // which can prefix absolute URLs with the router basename in tests. We
+    // assert that the original URL is present in the rendered `href`.
+    expect(anchor?.getAttribute('href')).toContain(minProps.card.url);
   });
 
   it('renders default description when missing', async () => {
@@ -58,20 +61,33 @@ describe('<ToolCard />', () => {
     expect(screen.getByText('Description missing')).toBeInTheDocument();
   });
 
-  it('renders lifecycle correctly', async () => {
+  it('renders lifecycle badge when set and not ga', async () => {
     const propsWithLifecycle = {
       card: {
         title: 'Title',
         url: 'http://spotify.com/',
         image: 'https://developer.spotify.com/assets/WebAPI_intro.png',
-        lifecycle: 'GA',
+        lifecycle: 'alpha',
       },
     };
     await renderInTestApp(<ToolCard {...propsWithLifecycle} />);
-    expect(screen.queryByText('GA')).not.toBeInTheDocument();
+    expect(screen.getByText('alpha')).toBeInTheDocument();
   });
 
-  it('renders tags correctly', async () => {
+  it('does not render lifecycle badge when ga', async () => {
+    const propsWithLifecycle = {
+      card: {
+        title: 'Title',
+        url: 'http://spotify.com/',
+        image: 'https://developer.spotify.com/assets/WebAPI_intro.png',
+        lifecycle: 'ga',
+      },
+    };
+    await renderInTestApp(<ToolCard {...propsWithLifecycle} />);
+    expect(screen.queryByText('ga')).not.toBeInTheDocument();
+  });
+
+  it('renders tags', async () => {
     await renderInTestApp(<ToolCard {...minProps} />);
     expect(screen.getByText(minProps.card.tags[0])).toBeInTheDocument();
     expect(screen.getByText(minProps.card.tags[1])).toBeInTheDocument();

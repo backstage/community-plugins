@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,7 @@ describe('<EntityCard />', () => {
     expect(getByText('artists')).toBeInTheDocument();
     expect(getByText('Everything about artists')).toBeInTheDocument();
     expect(getByText('a-tag')).toBeInTheDocument();
-    expect(getByText('Explore').parentElement).toHaveAttribute(
-      'href',
+    expect(getByText('Explore').closest('a')?.getAttribute('href')).toContain(
       '/catalog/default/domain/artists',
     );
   });

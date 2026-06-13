@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,7 @@ export const DefaultExplorePage = () => {
     configApi.getOptionalString('organization.name') ?? 'Backstage';
 
   return (
-    <ExploreLayout
-      title={`Explore the ${organizationName} ecosystem`}
-      subtitle="Discover solutions available in your ecosystem"
-    >
+    <ExploreLayout title={`Explore the ${organizationName} ecosystem`}>
       <ExploreLayout.Route path="domains" title="Domains">
         <CatalogKindExploreContent kind="domain" />
       </ExploreLayout.Route>
