@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.33.1",
-    "@backstage/plugin-auth-backend": "^0.25.2",
+    "@backstage/plugin-auth-backend": "^0.27.0",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.10",
     "@backstage/plugin-catalog-backend": "^3.0.0",
     "@types/nodemailer": "7.0.11",
