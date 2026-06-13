@@ -28,9 +28,10 @@ import { QUAY_ANNOTATION_REPOSITORY } from './hooks';
 import { rootRouteRef, tagRouteRef } from './routes';
 
 /**
- * Quay plugin
+ * Quay plugin (legacy frontend system)
  *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const quayPlugin = createPlugin({
   id: 'quay',
@@ -53,9 +54,10 @@ export const quayPlugin = createPlugin({
 });
 
 /**
- * Quay page
+ * Quay page (legacy frontend system)
  *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const QuayPage = quayPlugin.provide(
   createRoutableExtension({
