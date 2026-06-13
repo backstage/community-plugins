@@ -17,6 +17,7 @@
 export interface Config {
   auth?: {
     providers?: {
+      /** @visibility frontend */
       keycloak?: {
         [authEnv: string]: {
           /**
@@ -55,6 +56,32 @@ export interface Config {
            * @example "login"
            */
           prompt?: string;
+          signIn?: {
+            resolvers: Array<
+              | {
+                  resolver: 'emailLocalPartMatchingUserEntityName';
+                  allowedDomains?: string[];
+                  dangerouslyAllowSignInWithoutUserInCatalog?: boolean;
+                }
+              | {
+                  resolver: 'emailMatchingUserEntityProfileEmail';
+                  dangerouslyAllowSignInWithoutUserInCatalog?: boolean;
+                }
+              | {
+                  resolver: 'preferredUsernameMatchingUserEntityName';
+                  dangerouslyAllowSignInWithoutUserInCatalog?: boolean;
+                }
+              | {
+                  resolver: 'oidcSubClaimMatchingKeycloakUserId';
+                  dangerouslyAllowSignInWithoutUserInCatalog?: boolean;
+                }
+              | {
+                  resolver: 'ldapUuidMatchingAnnotation';
+                  dangerouslyAllowSignInWithoutUserInCatalog?: boolean;
+                  ldapUuidKey?: string;
+                }
+            >;
+          };
         };
       };
     };
