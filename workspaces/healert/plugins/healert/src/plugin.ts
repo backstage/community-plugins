@@ -1,0 +1,123 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Licensed under the Apache License, Version 2.0
+
+import React from 'react';
+import {
+  createFrontendPlugin,
+  createApiFactory,
+  ApiBlueprint,
+  discoveryApiRef,
+  fetchApiRef,
+  configApiRef,
+} from '@backstage/frontend-plugin-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { healertApiRef, HealertClient } from './api';
+import { isHealertAvailable } from './conditions';
+
+// =============================================================================
+// FEATURE REGISTRY
+//
+// All Healert features render inside a single "Healert Platform" tab.
+// To add a new feature — edit EntityHealertContent.tsx, not this file.
+//
+// This file only controls the tab itself (path, title).
+// The tab content is managed by EntityHealertContent.tsx.
+//
+// Example of adding a new TAB (separate from Healert Platform):
+//
+//   {
+//     name:   'healert-example',
+//     path:   '/example',
+//     title:  'Example',
+//     loader: async () => {
+//       const { ExampleComponent } = await import(
+//         './components/ExampleComponent/ExampleComponent'
+//       );
+//       return React.createElement(ExampleComponent);
+//     },
+//   },
+//
+// =============================================================================
+
+const HEALERT_FEATURES = [
+  {
+    name: 'healert',
+    path: '/healert',
+    title: 'Healert Platform',
+    loader: async () => {
+      const { EntityHealertContent } = await import(
+        './components/EntityHealertContent/EntityHealertContent'
+      );
+      return React.createElement(EntityHealertContent);
+    },
+  },
+];
+
+// =============================================================================
+// API EXTENSION
+// Registers HealertClient into the Backstage DI container.
+// Do not edit this section.
+// =============================================================================
+
+/** @public */
+export const healertApiExtension = ApiBlueprint.make({
+  name: 'healert',
+  params: define =>
+    define(
+      createApiFactory({
+        api: healertApiRef,
+        deps: {
+          discoveryApi: discoveryApiRef,
+          fetchApi: fetchApiRef,
+          configApi: configApiRef,
+        },
+        factory: ({ discoveryApi, fetchApi, configApi }) =>
+          new HealertClient({ discoveryApi, fetchApi, configApi }),
+      }),
+    ),
+});
+
+// =============================================================================
+// AUTO-GENERATED EXTENSIONS
+// Reads HEALERT_FEATURES and creates one tab per entry automatically.
+// Do not edit this section.
+// =============================================================================
+
+const featureExtensions = HEALERT_FEATURES.map(feature =>
+  EntityContentBlueprint.make({
+    name: feature.name,
+    params: {
+      path: feature.path,
+      title: feature.title,
+      filter: isHealertAvailable,
+      loader: feature.loader,
+    },
+  }),
+);
+
+// =============================================================================
+// PLUGIN
+// Registers all extensions with Backstage.
+// Do not edit this section.
+// =============================================================================
+
+/** @public */
+export const healertPlugin = createFrontendPlugin({
+  pluginId: 'healert',
+  extensions: [healertApiExtension, ...featureExtensions],
+});
