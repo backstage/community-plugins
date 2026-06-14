@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /**
  *
  * Shows friction data scoped to the entity page currently open.

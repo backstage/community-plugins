@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  *
  * Renders a "Friction Analysis Board" card on any Backstage entity page.

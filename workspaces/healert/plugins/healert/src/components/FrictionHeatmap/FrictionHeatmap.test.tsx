@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { render } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
