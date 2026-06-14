@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 /**
- * Core data types for the Healert plugin v0.1.1 Coral.
+ * Core data types for the Healert plugin v0.0.0.
  *
- * v0.1.1 Coral focuses on a single concept: the Friction Score.
+ * v0.0.0 focuses on a single concept: the Friction Score.
  * A composite 0-100 score per service derived from:
  *   - Kubernetes Audit Log bypass events
  */
