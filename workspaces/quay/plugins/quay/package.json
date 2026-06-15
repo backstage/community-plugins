@@ -46,7 +46,7 @@
     "@backstage/plugin-permission-react": "^0.5.1",
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.15.0",
-    "@remixicon/react": "^4.8.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "filesize": "^11.0.0",
     "luxon": "^3.6.1",
     "react-use": "^17.4.0"

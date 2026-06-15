@@ -76,7 +76,7 @@ export const useTags = (
         }
       }),
     );
-    setTags(prevTags => [...prevTags, ...tagsResponse.tags]);
+    setTags(tagsResponse.tags);
     return tagsResponse;
   });
 
