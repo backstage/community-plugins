@@ -1,5 +1,11 @@
 # @backstage-community/plugin-copilot
 
+## 1.1.0
+
+### Minor Changes
+
+- 00c9181: Fixed new frontend registration to work correctly
+
 ## 1.0.0
 
 ### Major Changes
