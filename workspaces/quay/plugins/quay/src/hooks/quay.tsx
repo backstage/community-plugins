@@ -22,22 +22,19 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
-import { makeStyles } from '@mui/styles';
 
 import { quayApiRef } from '../api';
 import { Layer, QuayTagData, Tag } from '../types';
 import { formatByteSize, formatDate } from '../utils';
 
-const useLocalStyles = makeStyles({
-  chip: {
-    margin: 0,
-    marginRight: '.2em',
-    height: '1.5em',
-    '& > span': {
-      padding: '.3em',
-    },
+const digestChipSx = {
+  m: 0,
+  mr: '.2em',
+  height: '1.5em',
+  '& > span': {
+    p: '.3em',
   },
-});
+};
 
 export const useTags = (
   instanceName: string | undefined,
@@ -52,7 +49,6 @@ export const useTags = (
   const [tagManifestStatuses, setTagManifestStatuses] = useState<
     Record<string, string>
   >({});
-  const localClasses = useLocalStyles();
 
   const fetchSecurityDetails = async (tag: Tag) => {
     const securityDetails = await quayClient.getSecurityDetails(
@@ -107,7 +103,7 @@ export const useTags = (
         rawSize: tag.size,
         manifest_digest: (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Chip label={hashFunc} className={localClasses.chip} />
+            <Chip label={hashFunc} sx={digestChipSx} />
             {shortHash}
           </Box>
         ),
@@ -119,7 +115,7 @@ export const useTags = (
         manifest_digest_raw: tag.manifest_digest,
       };
     });
-  }, [tags, tagManifestLayers, tagManifestStatuses, localClasses]);
+  }, [tags, tagManifestLayers, tagManifestStatuses]);
 
   return { loading, data };
 };

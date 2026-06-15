@@ -21,9 +21,9 @@ import type { RouteFunc } from '@backstage/core-plugin-api';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import LinkIcon from '@mui/icons-material/Link';
 import WarningIcon from '@mui/icons-material/Warning';
+import Box from '@mui/material/Box';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import { makeStyles } from '@mui/styles';
 
 import { SEVERITY_COLORS } from '../../lib/utils';
 import {
@@ -109,28 +109,11 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
   },
 ];
 
-const useStyles = makeStyles({
-  link: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  linkText: {
-    marginLeft: '0.5rem',
-    fontSize: '1.1rem',
-  },
-  tableHead: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '1rem',
-  },
-});
-
 export const QuayTagDetails = ({
   layer,
   rootLink,
   digest,
 }: QuayTagDetailsProps) => {
-  const classes = useStyles();
   const vulnerabilities = layer.Features.filter(
     feat => typeof feat.Vulnerabilities !== 'undefined',
   )
@@ -155,10 +138,14 @@ export const QuayTagDetails = ({
 
   return (
     <TableContainer>
-      <TableHead className={classes.tableHead}>
-        <Link to={rootLink()} className={classes.link}>
-          <KeyboardBackspaceIcon />
-          <span className={classes.linkText}>Back to repository</span>
+      <TableHead sx={{ display: 'flex', alignItems: 'center', mb: '1rem' }}>
+        <Link to={rootLink()}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <KeyboardBackspaceIcon />
+            <Box component="span" sx={{ ml: '0.5rem', fontSize: '1.1rem' }}>
+              Back to repository
+            </Box>
+          </Box>
         </Link>
       </TableHead>
       <Table
