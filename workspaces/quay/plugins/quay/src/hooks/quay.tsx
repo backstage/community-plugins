@@ -19,23 +19,11 @@ import { useAsync } from 'react-use';
 import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-
-import { Box, Chip, makeStyles } from '@material-ui/core';
+import { Flex, Tag, TagGroup, Text } from '@backstage/ui';
 
 import { quayApiRef } from '../api';
-import { Layer, QuayTagData, Tag } from '../types';
+import { Layer, Tag as QuayTag, QuayTagData } from '../types';
 import { formatByteSize, formatDate } from '../utils';
-
-const useLocalStyles = makeStyles({
-  chip: {
-    margin: 0,
-    marginRight: '.2em',
-    height: '1.5em',
-    '& > span': {
-      padding: '.3em',
-    },
-  },
-});
 
 export const useTags = (
   instanceName: string | undefined,
@@ -43,16 +31,15 @@ export const useTags = (
   repository: string,
 ) => {
   const quayClient = useApi(quayApiRef);
-  const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<QuayTag[]>([]);
   const [tagManifestLayers, setTagManifestLayers] = useState<
     Record<string, Layer>
   >({});
   const [tagManifestStatuses, setTagManifestStatuses] = useState<
     Record<string, string>
   >({});
-  const localClasses = useLocalStyles();
 
-  const fetchSecurityDetails = async (tag: Tag) => {
+  const fetchSecurityDetails = async (tag: QuayTag) => {
     const securityDetails = await quayClient.getSecurityDetails(
       instanceName,
       organization,
@@ -104,10 +91,12 @@ export const useTags = (
         size: formatByteSize(tag.size),
         rawSize: tag.size,
         manifest_digest: (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Chip label={hashFunc} className={localClasses.chip} />
-            {shortHash}
-          </Box>
+          <Flex align="center" gap="1">
+            <TagGroup>
+              <Tag size="small">{hashFunc}</Tag>
+            </TagGroup>
+            <Text variant="body-x-small">{shortHash}</Text>
+          </Flex>
         ),
         expiration: tag.expiration
           ? formatDate(tag.expiration)
@@ -115,14 +104,9 @@ export const useTags = (
         securityDetails: tagManifestLayers[tag.manifest_digest],
         securityStatus: tagManifestStatuses[tag.manifest_digest],
         manifest_digest_raw: tag.manifest_digest,
-        // is_manifest_list: tag.is_manifest_list,
-        // reversion: tag.reversion,
-        // start_ts: tag.start_ts,
-        // end_ts: tag.end_ts,
-        // manifest_list: tag.manifest_list,
       };
     });
-  }, [tags, localClasses.chip, tagManifestLayers, tagManifestStatuses]);
+  }, [tags, tagManifestLayers, tagManifestStatuses]);
 
   return { loading, data };
 };

@@ -18,8 +18,7 @@ import {
   MissingAnnotationEmptyState,
   useEntity,
 } from '@backstage/plugin-catalog-react';
-
-import { Card, CardHeader } from '@material-ui/core';
+import { Card, CardBody, CardHeader } from '@backstage/ui';
 
 import { QUAY_ANNOTATION_REPOSITORY } from '../../hooks';
 import { isQuayAvailable } from '../../plugin';
@@ -29,7 +28,9 @@ const Widget = () => {
   return (
     <Card>
       <CardHeader title="Docker Image" />
-      <QuayRepository />
+      <CardBody>
+        <QuayRepository />
+      </CardBody>
     </Card>
   );
 };

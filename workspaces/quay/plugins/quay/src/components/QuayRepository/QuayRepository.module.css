@@ -1,0 +1,9 @@
+@layer components {
+  .emptyState {
+    text-align: center;
+  }
+
+  .emptyStateSection {
+    margin-top: var(--bui-space-4);
+  }
+}

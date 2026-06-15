@@ -1,0 +1,5 @@
+@layer components {
+  .severityIcon {
+    margin-right: var(--bui-space-2);
+  }
+}
