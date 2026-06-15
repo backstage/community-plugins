@@ -41,12 +41,6 @@ class MockRBACApi implements RBACAPI {
   constructor(fixtureData: Role[]) {
     this.resources = fixtureData;
   }
-  async isLicensePluginEnabled(): Promise<boolean> {
-    return false;
-  }
-  async downloadStatistics(): Promise<Response> {
-    return { status: 200 } as Response;
-  }
 
   async getRoles(): Promise<Role[]> {
     return this.resources;
