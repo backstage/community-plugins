@@ -22,7 +22,6 @@ export const jfrogArtifactoryMessages = {
   },
   table: {
     searchPlaceholder: 'Filter',
-    labelRowsSelect: 'Rows',
     pagination: {
       showResults: 'Show {{count}} results',
       rangeLabel: '{{start}} - {{end}} of {{total}}',
