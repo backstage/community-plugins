@@ -37,7 +37,7 @@ import type {
   RBACProvider,
 } from '@backstage-community/plugin-rbac-node';
 
-import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
+import { CasbinKnexAdapter } from '../database/casbin-knex-adapter';
 import { DataBaseConditionalStorage } from '../database/conditional-storage';
 import { migrate } from '../database/migration';
 import { DataBaseRoleMetadataStorage } from '../database/role-metadata';
@@ -110,10 +110,9 @@ export class PolicyBuilder {
 
     const databaseClient = await databaseManager.getClient();
 
-    const adapter = await new CasbinDBAdapterFactory(
-      env.config,
-      databaseClient,
-    ).createAdapter();
+    await migrate(databaseManager);
+
+    const adapter = await CasbinKnexAdapter.newAdapter(databaseClient);
 
     const enf = await newEnforcer(newModelFromString(MODEL), adapter);
     await enf.loadPolicy();
@@ -138,8 +137,6 @@ export class PolicyBuilder {
     enf.setRoleManager(rm);
     enf.enableAutoBuildRoleLinks(false);
     await enf.buildRoleLinks();
-
-    await migrate(databaseManager);
 
     const conditionStorage = new DataBaseConditionalStorage(databaseClient);
 

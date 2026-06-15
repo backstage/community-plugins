@@ -31,7 +31,7 @@ import type {
   RBACProviderConnection,
 } from '@backstage-community/plugin-rbac-node';
 
-import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
+import { CasbinKnexAdapter } from '../database/casbin-knex-adapter';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -40,6 +40,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
+import { createTestCasbinKnex } from '../../__fixtures__/mock-utils';
 import { Connection, connectRBACProviders } from './connect-providers';
 import {
   catalogMock,
@@ -125,8 +126,6 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
 };
 
 const mockAuthService = mockServices.auth();
-
-const mockClientKnex = Knex.knex({ client: MockClient });
 
 const providerMock: RBACProvider = {
   getProviderName: jest.fn().mockImplementation(),
@@ -217,10 +216,8 @@ describe('Connection', () => {
 
   beforeEach(async () => {
     const id = 'test';
-    const adapter = await new CasbinDBAdapterFactory(
-      config,
-      mockClientKnex,
-    ).createAdapter();
+    const casbinKnex = await createTestCasbinKnex();
+    const adapter = await CasbinKnexAdapter.newAdapter(casbinKnex);
 
     const stringModel = newModelFromString(MODEL);
     const enf = await createEnforcer(stringModel, adapter, mockLoggerService);
@@ -912,10 +909,8 @@ describe('connectRBACProviders', () => {
   it('should initialize rbac providers', async () => {
     connectSpy = jest.spyOn(providerMock, 'connect');
 
-    const adapter = await new CasbinDBAdapterFactory(
-      config,
-      mockClientKnex,
-    ).createAdapter();
+    const casbinKnex = await createTestCasbinKnex();
+    const adapter = await CasbinKnexAdapter.newAdapter(casbinKnex);
 
     const stringModel = newModelFromString(MODEL);
     const enf = await createEnforcer(stringModel, adapter, mockLoggerService);

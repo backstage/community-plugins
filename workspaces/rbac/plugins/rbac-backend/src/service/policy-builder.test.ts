@@ -17,11 +17,10 @@ import { mockServices } from '@backstage/backend-test-utils';
 
 import type { Adapter, Enforcer } from 'casbin';
 import type { Router } from 'express';
-import type TypeORMAdapter from 'typeorm-adapter';
 
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 
-import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
+import { CasbinKnexAdapter } from '../database/casbin-knex-adapter';
 import { RBACPermissionPolicy } from '../policies/permission-policy';
 import { PluginPermissionMetadataCollector } from './plugin-endpoints';
 import { PoliciesServer } from './policies-rest-api';
@@ -55,17 +54,13 @@ jest.mock('casbin', () => {
   };
 });
 
-const dataBaseAdapterFactoryMock: Partial<CasbinDBAdapterFactory> = {
-  createAdapter: jest.fn((): Promise<TypeORMAdapter> => {
-    return Promise.resolve({} as TypeORMAdapter);
-  }),
-};
-
-jest.mock('../database/casbin-adapter-factory', () => {
+jest.mock('../database/casbin-knex-adapter', () => {
   return {
-    CasbinDBAdapterFactory: jest.fn((): Partial<CasbinDBAdapterFactory> => {
-      return dataBaseAdapterFactoryMock;
-    }),
+    CasbinKnexAdapter: {
+      newAdapter: jest.fn((): Promise<Adapter> => {
+        return Promise.resolve({} as Adapter);
+      }),
+    },
   };
 });
 
@@ -168,7 +163,7 @@ describe('PolicyBuilder', () => {
       },
       backendPluginIDsProviderMock,
     );
-    expect(CasbinDBAdapterFactory).toHaveBeenCalled();
+    expect(CasbinKnexAdapter.newAdapter).toHaveBeenCalled();
     expect(enforcerMock.loadPolicy).toHaveBeenCalled();
     expect(enforcerMock.enableAutoSave).toHaveBeenCalled();
     expect(RBACPermissionPolicy.build).toHaveBeenCalled();
@@ -216,7 +211,7 @@ describe('PolicyBuilder', () => {
       backendPluginIDsProviderMock,
       [providerMock],
     );
-    expect(CasbinDBAdapterFactory).toHaveBeenCalled();
+    expect(CasbinKnexAdapter.newAdapter).toHaveBeenCalled();
     expect(enforcerMock.loadPolicy).toHaveBeenCalled();
     expect(enforcerMock.enableAutoSave).toHaveBeenCalled();
     expect(RBACPermissionPolicy.build).toHaveBeenCalled();
@@ -261,7 +256,7 @@ describe('PolicyBuilder', () => {
       },
       backendPluginIDsProviderMock,
     );
-    expect(CasbinDBAdapterFactory).toHaveBeenCalled();
+    expect(CasbinKnexAdapter.newAdapter).toHaveBeenCalled();
     expect(enforcerMock.loadPolicy).toHaveBeenCalled();
     expect(enforcerMock.enableAutoSave).toHaveBeenCalled();
     expect(RBACPermissionPolicy.build).not.toHaveBeenCalled();

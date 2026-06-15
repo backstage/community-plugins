@@ -24,13 +24,12 @@ import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import type { Enforcer } from 'casbin';
 import * as Knex from 'knex';
-import { MockClient } from 'knex-mock-client';
+import { createTracker, MockClient } from 'knex-mock-client';
 import { resolve } from 'path';
-import type TypeORMAdapter from 'typeorm-adapter';
 
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 
-import { CasbinDBAdapterFactory } from '../src/database/casbin-adapter-factory';
+import type { CasbinKnexAdapter } from '../src/database/casbin-knex-adapter';
 import { ConditionalStorage } from '../src/database/conditional-storage';
 import { RoleMetadataStorage } from '../src/database/role-metadata';
 import {
@@ -124,9 +123,9 @@ export const enforcerDelegateMock: Partial<EnforcerDelegate> = {
   updateGroupingPolicies: jest.fn().mockImplementation(),
 };
 
-export const dataBaseAdapterFactoryMock: Partial<CasbinDBAdapterFactory> = {
-  createAdapter: jest.fn((): Promise<TypeORMAdapter> => {
-    return Promise.resolve({} as TypeORMAdapter);
+export const casbinKnexAdapterMock = {
+  newAdapter: jest.fn((): Promise<CasbinKnexAdapter> => {
+    return Promise.resolve({} as CasbinKnexAdapter);
   }),
 };
 
@@ -137,6 +136,33 @@ export const providerMock: RBACProvider = {
 };
 
 export const mockClientKnex = Knex.knex({ client: MockClient });
+
+export function setupMockCasbinRuleTracker(): ReturnType<typeof createTracker> {
+  const tracker = createTracker(mockClientKnex);
+  tracker.on.select('casbin_rule').response([]);
+  tracker.on.insert('casbin_rule').response([]);
+  tracker.on.delete('casbin_rule').response(0);
+  return tracker;
+}
+
+export async function createTestCasbinKnex(): Promise<Knex.Knex> {
+  const testKnex = Knex.knex({
+    client: 'better-sqlite3',
+    connection: { filename: ':memory:' },
+    useNullAsDefault: true,
+  });
+  await testKnex.schema.createTable('casbin_rule', table => {
+    table.increments('id').primary();
+    table.string('ptype').nullable();
+    table.string('v0').nullable();
+    table.string('v1').nullable();
+    table.string('v2').nullable();
+    table.string('v3').nullable();
+    table.string('v4').nullable();
+    table.string('v5').nullable();
+  });
+  return testKnex;
+}
 
 export const mockHttpAuth = mockServices.httpAuth();
 export const mockAuthService = mockServices.auth();
