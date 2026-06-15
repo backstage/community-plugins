@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 
-const PermissionAlert = () => {
-  return (
-    <Alert severity="warning" data-testid="no-permission-alert">
-      <AlertTitle>Permission required</AlertTitle>
-      To view quay image registry, contact your administrator to give you the
-      quay.view.read permission.
-    </Alert>
-  );
+/** @type {import('prettier').Config} */
+module.exports = {
+  ...require('@backstage/cli/config/prettier'),
+  // api-reports formats report.api.md from the workspace root; disable
+  // auto-loading prettier-plugin-sort-imports (declaration-only TS blocks).
+  pluginSearchDirs: false,
 };
-export default PermissionAlert;

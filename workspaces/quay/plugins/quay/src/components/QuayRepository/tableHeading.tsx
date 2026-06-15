@@ -17,8 +17,7 @@ import type { ReactNode } from 'react';
 
 import { Link, Progress, TableColumn } from '@backstage/core-components';
 
-import { Tooltip } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import Tooltip from '@mui/material/Tooltip';
 
 import { securityScanComparator, vulnerabilitySummary } from '../../lib/utils';
 import type { QuayTagData } from '../../types';
@@ -83,7 +82,7 @@ export const columns: TableColumn<QuayTagData>[] = [
   {
     title: 'Size',
     field: 'size',
-    type: 'numeric',
+    type: 'string',
     customSort: (a: QuayTagData, b: QuayTagData) => a.rawSize - b.rawSize,
   },
   {
@@ -100,11 +99,3 @@ export const columns: TableColumn<QuayTagData>[] = [
       a.manifest_digest_raw.localeCompare(b.manifest_digest_raw),
   },
 ];
-
-export const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));

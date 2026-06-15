@@ -18,10 +18,12 @@ import type { ReactNode } from 'react';
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import type { RouteFunc } from '@backstage/core-plugin-api';
 
-import { makeStyles, TableContainer, TableHead } from '@material-ui/core';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import LinkIcon from '@material-ui/icons/Link';
-import WarningIcon from '@material-ui/icons/Warning';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import LinkIcon from '@mui/icons-material/Link';
+import WarningIcon from '@mui/icons-material/Warning';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import { makeStyles } from '@mui/styles';
 
 import { SEVERITY_COLORS } from '../../lib/utils';
 import {
@@ -50,7 +52,7 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
           {rowData.Name}
           {rowData.Link.trim().length > 0 ? (
             <Link to={getVulnerabilityLink(rowData.Link)}>
-              <LinkIcon style={{ marginLeft: '0.5rem' }} />
+              <LinkIcon sx={{ ml: 1 }} />
             </Link>
           ) : null}
         </div>
@@ -73,9 +75,7 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <WarningIcon
             htmlColor={SEVERITY_COLORS[rowData.Severity]}
-            style={{
-              marginRight: '0.5rem',
-            }}
+            sx={{ mr: 1 }}
           />
           <span>{rowData.Severity}</span>
         </div>
@@ -135,9 +135,6 @@ export const QuayTagDetails = ({
     feat => typeof feat.Vulnerabilities !== 'undefined',
   )
     .map(feature => {
-      // TS doesn't seem to register this list as never being undefined from the above filter
-      // so we cast it into the list
-      // NOSONAR - irrelevant as per above comment
       return (feature.Vulnerabilities as Vulnerability[]).map(
         (v: Vulnerability): VulnerabilityListItem => {
           return {

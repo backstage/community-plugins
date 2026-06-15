@@ -16,7 +16,8 @@
 import { Link, Progress, Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 
-import { Box, Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 import { quayApiRef } from '../../api';
 import { DOC_LINKS } from '../../doc-links';
@@ -68,7 +69,7 @@ export function QuayRepository(_props: QuayRepositoryProps) {
         data={data}
         columns={columns}
         emptyContent={
-          <Box data-testid="quay-repo-table-empty" padding={2}>
+          <Box data-testid="quay-repo-table-empty" p={2}>
             <Typography component="h3" align="center" variant="h6" gutterBottom>
               No container images found
             </Typography>
@@ -76,7 +77,7 @@ export function QuayRepository(_props: QuayRepositoryProps) {
               component="p"
               align="center"
               variant="body1"
-              color="textSecondary"
+              color="text.secondary"
               gutterBottom
             >
               This repository doesn't contain any images yet, or there might be

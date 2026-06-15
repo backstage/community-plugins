@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { PropsWithChildren } from 'react';
+
 import {
   Link,
   Sidebar,
@@ -31,19 +33,20 @@ import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
 } from '@backstage/plugin-user-settings';
-import { makeStyles } from '@material-ui/core';
-import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import ExtensionIcon from '@material-ui/icons/Extension';
-import HomeIcon from '@material-ui/icons/Home';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import MenuIcon from '@material-ui/icons/Menu';
-import GroupIcon from '@material-ui/icons/People';
-import SearchIcon from '@material-ui/icons/Search';
-import { PropsWithChildren } from 'react';
+
+import CreateComponentIcon from '@mui/icons-material/AddCircleOutline';
+import ExtensionIcon from '@mui/icons-material/Extension';
+import HomeIcon from '@mui/icons-material/Home';
+import LibraryBooks from '@mui/icons-material/LibraryBooks';
+import MenuIcon from '@mui/icons-material/Menu';
+import GroupIcon from '@mui/icons-material/People';
+import SearchIcon from '@mui/icons-material/Search';
+import { makeStyles } from 'tss-react/mui';
+
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
 
-const useSidebarLogoStyles = makeStyles({
+const useSidebarLogoStyles = makeStyles()({
   root: {
     width: sidebarConfig.drawerWidthClosed,
     height: 3 * sidebarConfig.logoHeight,
@@ -59,7 +62,7 @@ const useSidebarLogoStyles = makeStyles({
 });
 
 const SidebarLogo = () => {
-  const classes = useSidebarLogoStyles();
+  const { classes } = useSidebarLogoStyles();
   const { isOpen } = useSidebarOpenState();
 
   return (
@@ -80,7 +83,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
-        {/* Global nav, not org-specific */}
         <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
         <MyGroupsSidebarItem
           singularTitle="My Group"
@@ -90,11 +92,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
-        {/* End global nav */}
         <SidebarDivider />
-        <SidebarScrollWrapper>
-          {/* Items in this group will be scrollable if they run out of space */}
-        </SidebarScrollWrapper>
+        <SidebarScrollWrapper />
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />

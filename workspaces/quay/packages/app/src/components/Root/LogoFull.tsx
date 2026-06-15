@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   svg: {
     width: 'auto',
     height: 30,
@@ -24,8 +24,9 @@ const useStyles = makeStyles({
     fill: '#7df3e1',
   },
 });
+
 const LogoFull = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <svg

@@ -20,7 +20,9 @@ import { Entity } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { Box, Chip, makeStyles } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import { makeStyles } from '@mui/styles';
 
 import { quayApiRef } from '../api';
 import { Layer, QuayTagData, Tag } from '../types';
@@ -115,14 +117,9 @@ export const useTags = (
         securityDetails: tagManifestLayers[tag.manifest_digest],
         securityStatus: tagManifestStatuses[tag.manifest_digest],
         manifest_digest_raw: tag.manifest_digest,
-        // is_manifest_list: tag.is_manifest_list,
-        // reversion: tag.reversion,
-        // start_ts: tag.start_ts,
-        // end_ts: tag.end_ts,
-        // manifest_list: tag.manifest_list,
       };
     });
-  }, [tags, localClasses.chip, tagManifestLayers, tagManifestStatuses]);
+  }, [tags, tagManifestLayers, tagManifestStatuses, localClasses]);
 
   return { loading, data };
 };
