@@ -201,16 +201,9 @@ export const EntityServicenowContent = () => {
   const IncidentsTableBodyComponent = () => {
     if (loading) {
       return (
-        <div style={{ display: 'table-row-group' }}>
-          <div style={{ display: 'table-row' }}>
-            <div
-              style={{
-                display: 'table-cell',
-                padding: '24px 16px 24px 20px',
-                textAlign: 'center',
-                width: '100%',
-              }}
-            >
+        <div className={styles.tableRowGroup}>
+          <div className={styles.tableRow}>
+            <div className={styles.tableCellLoading}>
               <Box className={styles.loadingRow}>
                 <Progress />
               </Box>
@@ -225,15 +218,7 @@ export const EntityServicenowContent = () => {
   const TablePaginationComponent = () => {
     const rowsPerPageOptions = [5, 10, 20, 50, 100];
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          gap: '16px',
-          marginTop: '24px',
-        }}
-      >
+      <div className={styles.paginationContainer}>
         <select
           value={String(rowsPerPage)}
           onChange={e => {
@@ -242,15 +227,7 @@ export const EntityServicenowContent = () => {
               offset: '0',
             });
           }}
-          style={{
-            padding: '4px 8px',
-            borderRadius: '4px',
-            border: '1px solid #e0e0e0',
-            backgroundColor: '#fff',
-            color: '#000',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-          }}
+          className={styles.rowsPerPageSelect}
         >
           {rowsPerPageOptions.map(n => (
             <option key={n} value={String(n)}>
@@ -258,12 +235,10 @@ export const EntityServicenowContent = () => {
             </option>
           ))}
         </select>
-        <span
-          style={{ fontSize: '0.875rem', color: 'var(--bui-fg-secondary)' }}
-        >
+        <span className={styles.paginationInfo}>
           {offset + 1}-{Math.min(offset + rowsPerPage, count)} of {count}
         </span>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className={styles.paginationButtons}>
           <ButtonIcon
             icon={<RiSkipLeftLine size={16} />}
             onPress={() => setOffset(0)}
@@ -308,29 +283,13 @@ export const EntityServicenowContent = () => {
             </Box>
           ) : (
             <div className={styles.tableContainer}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-end',
-                  marginBottom: '24px',
-                }}
-              >
-                <h3 style={{ margin: 0 }}>
+              <div className={styles.tableHeader}>
+                <h2 className={styles.titleHeading}>
                   {count === 0
                     ? t('page.title')
                     : t('page.titleWithCount', { count: String(count) })}
-                </h3>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    paddingBottom: '8px',
-                    borderBottom: '2px solid #e0e0e0',
-                    position: 'relative',
-                  }}
-                >
+                </h2>
+                <div className={styles.searchContainer}>
                   <RiSearchLine size={16} color="var(--bui-fg-secondary)" />
                   <input
                     type="text"
@@ -338,31 +297,14 @@ export const EntityServicenowContent = () => {
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     style={{
-                      padding: '0 8px 4px 0',
-                      border: 'none',
-                      background: 'transparent',
-                      fontSize: '0.875rem',
-                      outline: 'none',
-                      color: 'var(--bui-fg-primary)',
-                      minWidth: '200px',
                       paddingRight: input ? '24px' : '0',
                     }}
+                    className={styles.searchInput}
                   />
                   {input && (
                     <button
                       onClick={() => setInput('')}
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'var(--bui-fg-secondary)',
-                      }}
+                      className={styles.clearSearchButton}
                       type="button"
                       title="Clear search"
                     >
@@ -371,16 +313,7 @@ export const EntityServicenowContent = () => {
                   )}
                 </div>
               </div>
-              <div
-                style={{
-                  display: 'table',
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                  border: '1px solid #e0e0e0',
-                }}
-              >
+              <div className={styles.table}>
                 <IncidentsTableHeaderComponent />
                 <IncidentsTableBodyComponent />
               </div>

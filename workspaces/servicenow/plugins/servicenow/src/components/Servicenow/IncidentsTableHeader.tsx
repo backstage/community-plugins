@@ -45,44 +45,12 @@ export const IncidentsTableHeader = ({
     };
 
   return (
-    <div
-      className={styles.headerRow}
-      style={{
-        display: 'table-header-group',
-      }}
-    >
-      <div
-        style={{
-          display: 'table-row',
-          borderBottom: '1px solid #e0e0e0',
-          backgroundColor: '#f5f5f5',
-        }}
-      >
+    <div className={styles.headerRow}>
+      <div className={styles.headerRowContent}>
         {incidentsListColumns.map(column => (
-          <div
-            key={column.id as string}
-            className={styles.headerCell}
-            style={{
-              display: 'table-cell',
-              padding: '24px 16px 24px 20px',
-              textAlign: 'left',
-              color: 'var(--bui-fg-primary)',
-            }}
-          >
+          <div key={column.id as string} className={styles.headerCell}>
             <button
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: column.sorting === false ? 'default' : 'pointer',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '0.875rem',
-                fontWeight: 'bold',
-                color: 'inherit',
-                opacity: column.sorting === false ? 0.5 : 1,
-              }}
+              className={styles.headerButton}
               onClick={
                 column.sorting === false
                   ? undefined

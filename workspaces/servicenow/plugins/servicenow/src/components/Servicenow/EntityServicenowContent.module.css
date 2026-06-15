@@ -16,4 +16,99 @@
     justify-content: center;
     padding: var(--bui-space-6);
   }
+
+  .tableRowGroup {
+    display: table-row-group;
+  }
+
+  .tableRow {
+    display: table-row;
+  }
+
+  .tableCellLoading {
+    display: table-cell;
+    padding: 24px 16px 24px 20px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .paginationContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .rowsPerPageSelect {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: none;
+    background-color: transparent;
+    color: var(--bui-fg-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .paginationInfo {
+    font-size: 0.875rem;
+    color: var(--bui-fg-secondary);
+  }
+
+  .paginationButtons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+  }
+
+  .titleHeading {
+    margin: 0;
+  }
+
+  .searchContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e0e0e0;
+    position: relative;
+  }
+
+  .searchInput {
+    padding: 0 8px 4px 0;
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    outline: none;
+    color: var(--bui-fg-primary);
+    min-width: 200px;
+  }
+
+  .clearSearchButton {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bui-fg-secondary);
+  }
+
+  .table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+  }
 }

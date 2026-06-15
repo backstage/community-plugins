@@ -4,7 +4,7 @@
   }
 
   .tableRow:nth-child(even) {
-    background-color: #f5f5f5;
+    background-color: var(--bui-bg-neutral-1);
   }
 
   .tableRow:last-child td,
