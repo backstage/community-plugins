@@ -17,14 +17,14 @@
 import { useMemo, useCallback } from 'react';
 
 import { SelectItem } from '@backstage/core-components';
-
-import Box from '@mui/material/Box';
+import { Box } from '@backstage/ui';
 
 import { IncidentEnumFilter } from '../shared-components/IncidentEnumFilter';
 import { useIncidentStateMap, usePriorityMap } from '../../utils/incidentUtils';
 import { useQueryArrayFilter } from '../../hooks/useQueryArrayFilter';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 import { useTranslation } from '../../hooks/useTranslation';
+import styles from './IncidentsFilter.module.css';
 
 export const IncidentsFilter = () => {
   const { t } = useTranslation();
@@ -58,14 +58,7 @@ export const IncidentsFilter = () => {
   );
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        minWidth: { xs: 200, lg: 'auto' },
-      }}
-    >
+    <Box className={styles.filterContainer}>
       <IncidentEnumFilter
         label={t('filter.state')}
         filterKey="state"

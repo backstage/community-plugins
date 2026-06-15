@@ -1,0 +1,79 @@
+@layer components {
+  .filterBox {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .label {
+    transform: initial;
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: var(--bui-fg-primary);
+    margin-bottom: var(--bui-space-2);
+  }
+
+  .selectContainer {
+    position: relative;
+  }
+
+  .selectButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--bui-space-2) var(--bui-space-3);
+    border: 1px solid var(--bui-border-default);
+    border-radius: var(--bui-radius-1);
+    background-color: var(--bui-bg-surface-1);
+    color: var(--bui-fg-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .selectButton:hover {
+    border-color: var(--bui-border-strong);
+  }
+
+  .selectButton:focus {
+    outline: 2px solid var(--bui-border-focus);
+    outline-offset: 2px;
+  }
+
+  .selectValue {
+    flex: 1;
+    text-align: left;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: var(--bui-space-1);
+    background-color: var(--bui-bg-surface-1);
+    border: 1px solid var(--bui-border-default);
+    border-radius: var(--bui-radius-1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    padding: var(--bui-space-2) var(--bui-space-3);
+    gap: var(--bui-space-2);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .option:hover {
+    background-color: var(--bui-bg-surface-2);
+  }
+
+  .optionContent {
+    flex: 1;
+  }
+}

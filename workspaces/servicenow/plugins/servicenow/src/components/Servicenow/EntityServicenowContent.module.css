@@ -1,0 +1,19 @@
+@layer components {
+  .errorContainer {
+    padding: var(--bui-space-4);
+    color: var(--bui-status-error);
+  }
+
+  .emptyContent {
+    padding: var(--bui-space-4);
+    display: flex;
+    justify-content: center;
+  }
+
+  .loadingRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--bui-space-6);
+  }
+}

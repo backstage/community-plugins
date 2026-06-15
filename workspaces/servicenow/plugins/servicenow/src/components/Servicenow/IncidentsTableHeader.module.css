@@ -1,0 +1,13 @@
+@layer components {
+  .headerRow {
+    margin-left: 6px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .headerCell {
+    line-height: 1.5rem;
+    font-size: 0.875rem;
+    padding: 24px 16px 24px 20px;
+    font-weight: 700;
+  }
+}

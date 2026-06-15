@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 import { ElementType, useMemo } from 'react';
-import LabelImportantIcon from '@mui/icons-material/LabelImportant';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
-import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import {
+  RiAlertLine,
+  RiArrowUpLine,
+  RiArrowDownLine,
+  RiListOrdered2,
+  RiTimeLine,
+  RiCheckLine,
+  RiPauseLine,
+} from '@remixicon/react';
 import { ModerateIcon } from '../components/Servicenow/ModerateIcon';
 import { InProgressIcon } from '../components/Servicenow/InProgressIcon';
 import { ClosedIcon } from '../components/Servicenow/ClosedIcon';
 
-import Typography from '@mui/material/Typography';
 import { useTranslation } from '../hooks/useTranslation';
 
 export interface StatusData {
@@ -35,33 +36,30 @@ export interface StatusData {
   transform?: string;
 }
 
-const iconStyleBase = { marginRight: 8 };
-const typographyStyleBase = { display: 'flex', alignItems: 'center' };
-
 /**
  * @deprecated Use usePriorityMap hook for translated labels
  */
 export const PRIORITY_MAP: Record<number, StatusData> = {
   1: {
-    Icon: LabelImportantIcon,
+    Icon: RiAlertLine,
     color: '#C9190B',
     label: 'Critical',
     transform: 'rotate(-90deg)',
   },
-  2: { Icon: KeyboardDoubleArrowUpIcon, color: '#EC7A08', label: 'High' },
+  2: { Icon: RiArrowUpLine, color: '#EC7A08', label: 'High' },
   3: { Icon: ModerateIcon, color: '#F0AB00', label: 'Moderate' },
-  4: { Icon: KeyboardDoubleArrowDownIcon, color: '#2B9AF3', label: 'Low' },
-  5: { Icon: FormatListNumberedIcon, color: '#6A6E73', label: 'Planning' },
+  4: { Icon: RiArrowDownLine, color: '#2B9AF3', label: 'Low' },
+  5: { Icon: RiListOrdered2, color: '#6A6E73', label: 'Planning' },
 };
 
 /**
  * @deprecated Use useIncidentStateMap hook for translated labels
  */
 export const INCIDENT_STATE_MAP: Record<number, StatusData> = {
-  1: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'New' },
+  1: { Icon: RiTimeLine, color: '#6A6E73', label: 'New' },
   2: { Icon: InProgressIcon, color: '#6A6E73', label: 'In Progress' },
-  3: { Icon: PauseCircleOutlineIcon, color: '#6A6E73', label: 'On Hold' },
-  6: { Icon: CheckCircleOutlineIcon, color: '#3E8635', label: 'Resolved' },
+  3: { Icon: RiPauseLine, color: '#6A6E73', label: 'On Hold' },
+  6: { Icon: RiCheckLine, color: '#3E8635', label: 'Resolved' },
   7: { Icon: ClosedIcon, color: '#6A6E73', label: 'Closed' },
   8: { Icon: ClosedIcon, color: '#6A6E73', label: 'Cancelled' },
 };
@@ -75,13 +73,13 @@ export const usePriorityMap = (): Record<number, StatusData> => {
   return useMemo(
     () => ({
       1: {
-        Icon: LabelImportantIcon,
+        Icon: RiAlertLine,
         color: '#C9190B',
         label: t('priority.critical'),
         transform: 'rotate(-90deg)',
       },
       2: {
-        Icon: KeyboardDoubleArrowUpIcon,
+        Icon: RiArrowUpLine,
         color: '#EC7A08',
         label: t('priority.high'),
       },
@@ -91,12 +89,12 @@ export const usePriorityMap = (): Record<number, StatusData> => {
         label: t('priority.moderate'),
       },
       4: {
-        Icon: KeyboardDoubleArrowDownIcon,
+        Icon: RiArrowDownLine,
         color: '#2B9AF3',
         label: t('priority.low'),
       },
       5: {
-        Icon: FormatListNumberedIcon,
+        Icon: RiListOrdered2,
         color: '#6A6E73',
         label: t('priority.planning'),
       },
@@ -114,7 +112,7 @@ export const useIncidentStateMap = (): Record<number, StatusData> => {
   return useMemo(
     () => ({
       1: {
-        Icon: PendingOutlinedIcon,
+        Icon: RiTimeLine,
         color: '#6A6E73',
         label: t('incidentState.new'),
       },
@@ -124,12 +122,12 @@ export const useIncidentStateMap = (): Record<number, StatusData> => {
         label: t('incidentState.inProgress'),
       },
       3: {
-        Icon: PauseCircleOutlineIcon,
+        Icon: RiPauseLine,
         color: '#6A6E73',
         label: t('incidentState.onHold'),
       },
       6: {
-        Icon: CheckCircleOutlineIcon,
+        Icon: RiCheckLine,
         color: '#3E8635',
         label: t('incidentState.resolved'),
       },
@@ -152,18 +150,25 @@ export const renderStatusLabel = (data?: StatusData) => {
   if (!data) return '';
 
   const { Icon, color, label, transform } = data;
+  if (!Icon) return label;
+
+  const iconProps = {
+    size: 16,
+    style: {
+      color,
+      marginRight: 8,
+      flexShrink: 0,
+      ...(transform ? { transform } : {}),
+    },
+  };
+
   return (
-    <Typography variant="body2" style={typographyStyleBase}>
-      <Icon
-        fontSize="small"
-        style={{
-          color,
-          marginRight: iconStyleBase.marginRight,
-          ...(transform ? { transform } : {}),
-        }}
-      />
-      {label}
-    </Typography>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Icon {...iconProps} />
+      <span style={{ marginLeft: '8px', color: 'var(--bui-fg-primary)' }}>
+        {label}
+      </span>
+    </div>
   );
 };
 

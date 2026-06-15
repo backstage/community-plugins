@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-import { useEffect, useState, MouseEvent, ChangeEvent, useMemo } from 'react';
+import { useEffect, useState, MouseEvent, useMemo } from 'react';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 
 import {
   CatalogFilterLayout,
   useEntity,
 } from '@backstage/plugin-catalog-react';
-import { Table } from '@backstage/core-components';
-
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TablePagination from '@mui/material/TablePagination';
+import { Progress } from '@backstage/core-components';
+import { Box, ButtonIcon } from '@backstage/ui';
+import {
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+  RiSkipLeftLine,
+  RiSkipRightLine,
+  RiSearchLine,
+  RiCloseLine,
+} from '@remixicon/react';
 
 import {
   Order,
@@ -52,6 +54,7 @@ import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import useUserEmail from '../../hooks/useUserEmail';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 import { useTranslation } from '../../hooks/useTranslation';
+import styles from './EntityServicenowContent.module.css';
 
 export const EntityServicenowContent = () => {
   const { t } = useTranslation();
@@ -171,14 +174,6 @@ export const EntityServicenowContent = () => {
     userEmail,
   ]);
 
-  const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newLimit = parseInt(event.target.value, 10);
-    updateQueryParams({
-      limit: String(newLimit),
-      offset: '0',
-    });
-  };
-
   const handlePageChange = (_event: unknown, page: number) => {
     setOffset(page * rowsPerPage);
   };
@@ -193,51 +188,110 @@ export const EntityServicenowContent = () => {
     setOffset(0);
   };
 
-  const handleSearch = (str: string) => {
-    setInput(str);
+  const IncidentsTableHeaderComponent = () => {
+    return (
+      <IncidentsTableHeader
+        order={order}
+        orderBy={orderBy}
+        onRequestSort={handleRequestSort}
+      />
+    );
   };
 
-  const IncidentsTableHeaderComponent = () => (
-    <IncidentsTableHeader
-      order={order}
-      orderBy={orderBy}
-      onRequestSort={handleRequestSort}
-    />
-  );
-
-  const IncidentsTableBodyComponent = () =>
-    loading ? (
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={incidentsListColumns.length} align="center">
-            <Box sx={{ py: 3 }}>
-              <CircularProgress />
-            </Box>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    ) : (
-      <IncidentsTableBody rows={incidentsData} />
-    );
+  const IncidentsTableBodyComponent = () => {
+    if (loading) {
+      return (
+        <div style={{ display: 'table-row-group' }}>
+          <div style={{ display: 'table-row' }}>
+            <div
+              style={{
+                display: 'table-cell',
+                padding: '24px 16px 24px 20px',
+                textAlign: 'center',
+                width: '100%',
+              }}
+            >
+              <Box className={styles.loadingRow}>
+                <Progress />
+              </Box>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return <IncidentsTableBody rows={incidentsData} />;
+  };
 
   const TablePaginationComponent = () => {
+    const rowsPerPageOptions = [5, 10, 20, 50, 100];
     return (
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 20, 50, 100].map(n => ({
-          value: n,
-          label: t('table.labelRowsSelect', { count: String(n) }),
-        }))}
-        component="div"
-        sx={{ mr: 1 }}
-        count={count ?? 0}
-        rowsPerPage={rowsPerPage}
-        page={pageNumber}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        labelRowsPerPage={null}
-        showFirstButton
-        showLastButton
-      />
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: '16px',
+          marginTop: '24px',
+        }}
+      >
+        <select
+          value={String(rowsPerPage)}
+          onChange={e => {
+            updateQueryParams({
+              limit: e.target.value,
+              offset: '0',
+            });
+          }}
+          style={{
+            padding: '4px 8px',
+            borderRadius: '4px',
+            border: '1px solid #e0e0e0',
+            backgroundColor: '#fff',
+            color: '#000',
+            fontSize: '0.875rem',
+            cursor: 'pointer',
+          }}
+        >
+          {rowsPerPageOptions.map(n => (
+            <option key={n} value={String(n)}>
+              {t('table.labelRowsSelect', { count: String(n) })}
+            </option>
+          ))}
+        </select>
+        <span
+          style={{ fontSize: '0.875rem', color: 'var(--bui-fg-secondary)' }}
+        >
+          {offset + 1}-{Math.min(offset + rowsPerPage, count)} of {count}
+        </span>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <ButtonIcon
+            icon={<RiSkipLeftLine size={16} />}
+            onPress={() => setOffset(0)}
+            isDisabled={pageNumber === 0}
+            variant="secondary"
+          />
+          <ButtonIcon
+            icon={<RiArrowLeftSLine size={16} />}
+            onPress={() => handlePageChange(null as any, pageNumber - 1)}
+            isDisabled={pageNumber === 0}
+            variant="secondary"
+          />
+          <ButtonIcon
+            icon={<RiArrowRightSLine size={16} />}
+            onPress={() => handlePageChange(null as any, pageNumber + 1)}
+            isDisabled={(pageNumber + 1) * rowsPerPage >= count}
+            variant="secondary"
+          />
+          <ButtonIcon
+            icon={<RiSkipRightLine size={16} />}
+            onPress={() =>
+              setOffset(Math.floor((count - 1) / rowsPerPage) * rowsPerPage)
+            }
+            isDisabled={(pageNumber + 1) * rowsPerPage >= count}
+            variant="secondary"
+          />
+        </div>
+      </div>
     );
   };
 
@@ -249,43 +303,89 @@ export const EntityServicenowContent = () => {
         </CatalogFilterLayout.Filters>
         <CatalogFilterLayout.Content>
           {error ? (
-            <Box sx={{ padding: 2, color: 'error.main' }}>
+            <Box className={styles.errorContainer}>
               {t('errors.loadingIncidents', { error })}
             </Box>
           ) : (
-            <Table
-              data={loading ? [] : incidentsData}
-              columns={incidentsListColumns}
-              onSearchChange={handleSearch}
-              title={
-                count === 0
-                  ? t('page.title')
-                  : t('page.titleWithCount', { count: String(count) })
-              }
-              localization={{
-                toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-              }}
-              components={{
-                Header: IncidentsTableHeaderComponent,
-                Body: IncidentsTableBodyComponent,
-                Pagination: TablePaginationComponent,
-              }}
-              emptyContent={
-                loading ? null : (
-                  <Box
-                    data-testid="no-incidents-found"
-                    sx={{
-                      padding: 2,
-                      display: 'flex',
-                      justifyContent: 'center',
+            <div className={styles.tableContainer}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  marginBottom: '24px',
+                }}
+              >
+                <h3 style={{ margin: 0 }}>
+                  {count === 0
+                    ? t('page.title')
+                    : t('page.titleWithCount', { count: String(count) })}
+                </h3>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    paddingBottom: '8px',
+                    borderBottom: '2px solid #e0e0e0',
+                    position: 'relative',
+                  }}
+                >
+                  <RiSearchLine size={16} color="var(--bui-fg-secondary)" />
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    style={{
+                      padding: '0 8px 4px 0',
+                      border: 'none',
+                      background: 'transparent',
+                      fontSize: '0.875rem',
+                      outline: 'none',
+                      color: 'var(--bui-fg-primary)',
+                      minWidth: '200px',
+                      paddingRight: input ? '24px' : '0',
                     }}
-                  >
-                    {t('table.emptyContent')}
-                  </Box>
-                )
-              }
-              isLoading={loading}
-            />
+                  />
+                  {input && (
+                    <button
+                      onClick={() => setInput('')}
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--bui-fg-secondary)',
+                      }}
+                      type="button"
+                      title="Clear search"
+                    >
+                      <RiCloseLine size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: 'table',
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  borderRadius: '4px',
+                  overflow: 'hidden',
+                  border: '1px solid #e0e0e0',
+                }}
+              >
+                <IncidentsTableHeaderComponent />
+                <IncidentsTableBodyComponent />
+              </div>
+              <TablePaginationComponent />
+            </div>
           )}
         </CatalogFilterLayout.Content>
       </CatalogFilterLayout>

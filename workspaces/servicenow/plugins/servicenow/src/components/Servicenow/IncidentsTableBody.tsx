@@ -14,46 +14,39 @@
  * limitations under the License.
  */
 
-import Box from '@mui/material/Box';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-
-import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import styles from './IncidentsTableBody.module.css';
 
 export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
   const { t } = useTranslation();
-  const incidentsListColumns = useIncidentsListColumns();
 
   if (rows?.length > 0) {
     return (
-      <TableBody data-testid="incidents">
+      <div data-testid="incidents" style={{ display: 'table-row-group' }}>
         {rows.map(row => (
           <IncidentsTableRow key={row.sysId} data={row} />
         ))}
-      </TableBody>
+      </div>
     );
   }
 
   return (
-    <TableBody>
-      <TableRow>
-        <TableCell colSpan={incidentsListColumns.length}>
-          <Box
-            data-testid="no-incidents-found"
-            sx={{
-              p: 2,
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            {t('table.emptyContent')}
-          </Box>
-        </TableCell>
-      </TableRow>
-    </TableBody>
+    <div style={{ display: 'table-row-group' }}>
+      <div style={{ display: 'table-row', borderBottom: '1px solid #e0e0e0' }}>
+        <div
+          style={{
+            display: 'table-cell',
+            padding: '24px 16px 24px 20px',
+            textAlign: 'center',
+          }}
+          data-testid="no-incidents-found"
+          className={styles.emptyRow}
+        >
+          {t('table.emptyContent')}
+        </div>
+      </div>
+    </div>
   );
 };

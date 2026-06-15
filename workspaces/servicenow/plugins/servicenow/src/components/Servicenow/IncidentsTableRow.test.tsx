@@ -16,14 +16,22 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import {
+  RiArrowUpLine,
+  RiArrowDownLine,
+  RiAlertLine,
+  RiListOrdered2,
+  RiTimeLine,
+  RiPauseLine,
+  RiCheckLine,
+} from '@remixicon/react';
 
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
 
-jest.mock('@mui/styles', () => ({
-  makeStyles: () => () => ({}),
+jest.mock('react-aria-components', () => ({
+  TooltipTrigger: ({ children }: any) => <>{children}</>,
+  Tooltip: ({ children }: any) => <div role="tooltip">{children}</div>,
 }));
 
 jest.mock('../../hooks/useTranslation', () => ({
@@ -42,19 +50,19 @@ jest.mock('../../hooks/useTranslation', () => ({
 jest.mock('../../utils/incidentUtils', () => ({
   renderStatusLabel: jest.fn((data?: { label: string }) => data?.label || ''),
   usePriorityMap: () => ({
-    1: { Icon: PendingOutlinedIcon, color: '#C9190B', label: 'Critical' },
-    2: { Icon: KeyboardDoubleArrowUpIcon, color: '#EC7A08', label: 'High' },
-    3: { Icon: PendingOutlinedIcon, color: '#F0AB00', label: 'Moderate' },
-    4: { Icon: PendingOutlinedIcon, color: '#2B9AF3', label: 'Low' },
-    5: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'Planning' },
+    1: { Icon: RiAlertLine, color: '#C9190B', label: 'Critical' },
+    2: { Icon: RiArrowUpLine, color: '#EC7A08', label: 'High' },
+    3: { Icon: RiListOrdered2, color: '#F0AB00', label: 'Moderate' },
+    4: { Icon: RiArrowDownLine, color: '#2B9AF3', label: 'Low' },
+    5: { Icon: RiListOrdered2, color: '#6A6E73', label: 'Planning' },
   }),
   useIncidentStateMap: () => ({
-    1: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'New' },
-    2: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'In Progress' },
-    3: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'On Hold' },
-    6: { Icon: PendingOutlinedIcon, color: '#3E8635', label: 'Resolved' },
-    7: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'Closed' },
-    8: { Icon: PendingOutlinedIcon, color: '#6A6E73', label: 'Cancelled' },
+    1: { Icon: RiTimeLine, color: '#6A6E73', label: 'New' },
+    2: { Icon: RiArrowUpLine, color: '#6A6E73', label: 'In Progress' },
+    3: { Icon: RiPauseLine, color: '#6A6E73', label: 'On Hold' },
+    6: { Icon: RiCheckLine, color: '#3E8635', label: 'Resolved' },
+    7: { Icon: RiArrowDownLine, color: '#6A6E73', label: 'Closed' },
+    8: { Icon: RiArrowDownLine, color: '#6A6E73', label: 'Cancelled' },
   }),
 }));
 
