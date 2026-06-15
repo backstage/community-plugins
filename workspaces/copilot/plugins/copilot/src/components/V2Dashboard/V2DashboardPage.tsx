@@ -26,6 +26,8 @@ import {
   Tab,
   TabPanel,
   Text,
+  FullPage,
+  Container,
 } from '@backstage/ui';
 import { InfoCard } from '@backstage/core-components';
 import type { RangeValue } from '@react-types/shared';
@@ -140,249 +142,270 @@ export const V2DashboardPage = () => {
   }
 
   return (
-    <CopilotPage
-      title="Copilot Insights"
-      subtitle="GitHub Copilot usage metrics"
-      themeId="tool"
-    >
-      <Flex direction="column" style={{ gap: 'var(--bui-space-6, 24px)' }}>
-        {/* Filters row */}
+    <>
+      <FullPage>
+        <Container>
+          <Flex direction="column" style={{ gap: 'var(--bui-space-6, 24px)' }}>
+            {/* Filters row */}
 
-        <Flex direction="row" gap="4" style={{ flexWrap: 'wrap' }}>
-          <DateRangePicker
-            label="Date range"
-            size="medium"
-            value={{ start: parseDate(from), end: parseDate(to) }}
-            onChange={onDateRangeChange}
-          />
-          {teams.items.length > 0 && (
-            <Flex direction="column" style={{ minWidth: 200, flex: 1 }}>
-              <Select
-                searchable
-                label="Team"
-                selectedKey={selectedTeam ?? ''}
-                onChange={key => setSelectedTeam(key ? String(key) : undefined)}
-                options={[
-                  { value: '', label: 'All teams' },
-                  ...teams.items.map(team => ({ value: team, label: team })),
-                ]}
+            <Flex direction="row" gap="4" style={{ flexWrap: 'wrap' }}>
+              <DateRangePicker
+                label="Date range"
+                size="medium"
+                value={{ start: parseDate(from), end: parseDate(to) }}
+                onChange={onDateRangeChange}
               />
+              {teams.items.length > 0 && (
+                <Flex direction="column" style={{ minWidth: 200, flex: 1 }}>
+                  <Select
+                    searchable
+                    label="Team"
+                    selectedKey={selectedTeam ?? ''}
+                    onChange={key =>
+                      setSelectedTeam(key ? String(key) : undefined)
+                    }
+                    options={[
+                      { value: '', label: 'All teams' },
+                      ...teams.items.map(team => ({
+                        value: team,
+                        label: team,
+                      })),
+                    ]}
+                  />
+                </Flex>
+              )}
             </Flex>
-          )}
-        </Flex>
 
-        <Tabs defaultSelectedKey="copilot-usage">
-          <TabList>
-            <Tab id="copilot-usage">Copilot Usage</Tab>
-            <Tab id="code-generation">Code Generation</Tab>
-          </TabList>
+            <Tabs defaultSelectedKey="copilot-usage">
+              <TabList>
+                <Tab id="copilot-usage">Copilot Usage</Tab>
+                <Tab id="code-generation">Code Generation</Tab>
+              </TabList>
 
-          <TabPanel id="copilot-usage">
-            <Flex
-              direction="column"
-              style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
-            >
-              {/* Summary cards */}
-              <CopilotUsageSummary
-                dailyTotals={data.daily}
-                modelFeature={data.byModelFeature}
-              />
-
-              {/* IDE Daily + Weekly Active Users */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="IDE Daily Active Users">
-                    <IDEActiveUsersChart data={data.daily} variant="daily" />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="IDE Weekly Active Users">
-                    <IDEActiveUsersChart data={data.daily} variant="weekly" />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-
-              {/* Average Chat Requests per Active User */}
-              <ChartCard title="Average Chat Requests per Active User">
-                <AvgChatRequestsChart data={data.daily} />
-              </ChartCard>
-
-              {/* Requests per Chat Mode */}
-              <ChartCard title="Requests per Chat Mode">
-                <RequestsByChatModeChart data={data.byFeature} />
-              </ChartCard>
-
-              {/* Code Completions + Acceptance Rate */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Code Completions">
-                    <CodeCompletionsChart data={data.byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Code Completion Acceptance Rate">
-                    <CodeCompletionsAcceptanceChart data={data.byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-
-              {/* Model Usage per Day */}
-              <ChartCard title="Model Usage per Day">
-                <ModelUsagePerDayChart data={data.byModelFeature} />
-              </ChartCard>
-
-              {/* Chat Model Usage Donut + Model Usage per Chat Mode */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Chat Model Usage">
-                    <ChatModelUsageDonut data={data.byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Model Usage per Chat Mode">
-                    <ModelUsagePerChatModeChart data={data.byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-
-              {/* Language Usage per Day */}
-              <ChartCard title="Language Usage per Day">
-                <LanguageUsagePerDayChart data={data.byLanguage} />
-              </ChartCard>
-
-              {/* Language Donut + Model Usage per Language */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Language Usage">
-                    <LanguageUsageDonut data={data.byLanguage} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Model Usage per Language">
-                    <ModelUsagePerLanguageChart data={data.byLanguageModel} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-            </Flex>
-          </TabPanel>
-
-          <TabPanel id="code-generation">
-            <Flex
-              direction="column"
-              style={{ gap: 'var(--bui-space-6, 24px)', paddingTop: '16px' }}
-            >
-              {/* Row 1: Summary stats */}
-              <CodeGenerationSummary
-                dailyTotals={data.daily}
-                byFeature={data.byFeature}
-              />
-
-              {/* Row 2: Daily total lines added and deleted */}
-              <ChartCard title="Daily Total Lines Added and Deleted">
-                <Text
-                  variant="body-small"
-                  color="secondary"
-                  style={{ marginBottom: 8 }}
+              <TabPanel id="copilot-usage">
+                <Flex
+                  direction="column"
+                  style={{
+                    gap: 'var(--bui-space-6, 24px)',
+                    paddingTop: '16px',
+                  }}
                 >
-                  Total lines of code added and deleted from the codebase across
-                  all modes
-                </Text>
-                <DailyLOCChart data={data.daily} />
-              </ChartCard>
+                  {/* Summary cards */}
+                  <CopilotUsageSummary
+                    dailyTotals={data.daily}
+                    modelFeature={data.byModelFeature}
+                  />
 
-              {/* Row 3: User-initiated vs Agent-initiated by feature */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="User-initiated Code Changes">
-                    <Text
-                      variant="body-small"
-                      color="secondary"
-                      style={{ marginBottom: 8 }}
-                    >
-                      Lines of code suggested and added by users through code
-                      completions and chat panel actions
-                    </Text>
-                    <UserLOCByFeatureChart data={data.byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Agent-initiated Code Changes">
-                    <Text
-                      variant="body-small"
-                      color="secondary"
-                      style={{ marginBottom: 8 }}
-                    >
-                      Lines of code automatically added and deleted by agents
-                      combining edit, agent, and custom modes
-                    </Text>
-                    <AgentLOCByFeatureChart data={data.byFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
+                  {/* IDE Daily + Weekly Active Users */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="IDE Daily Active Users">
+                        <IDEActiveUsersChart
+                          data={data.daily}
+                          variant="daily"
+                        />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="IDE Weekly Active Users">
+                        <IDEActiveUsersChart
+                          data={data.daily}
+                          variant="weekly"
+                        />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
 
-              {/* Row 4: User-initiated vs Agent-initiated per model (top 5 + others) */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="User-initiated Code Changes per Model">
-                    <Text
-                      variant="body-small"
-                      color="secondary"
-                      style={{ marginBottom: 8 }}
-                    >
-                      Lines of code suggested and added by users, grouped by
-                      model used
-                    </Text>
-                    <UserLOCByModelChart data={data.byModelFeature} />
+                  {/* Average Chat Requests per Active User */}
+                  <ChartCard title="Average Chat Requests per Active User">
+                    <AvgChatRequestsChart data={data.daily} />
                   </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Agent-initiated Code Changes per Model">
-                    <Text
-                      variant="body-small"
-                      color="secondary"
-                      style={{ marginBottom: 8 }}
-                    >
-                      Lines of code added and deleted by agents, grouped by
-                      model used
-                    </Text>
-                    <AgentLOCByModelChart data={data.byModelFeature} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
 
-              {/* Row 5: User-initiated vs Agent-initiated per language (top 5 + others) */}
-              <Grid.Root columns="12" gap="4">
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="User-initiated Code Changes per Language">
+                  {/* Requests per Chat Mode */}
+                  <ChartCard title="Requests per Chat Mode">
+                    <RequestsByChatModeChart data={data.byFeature} />
+                  </ChartCard>
+
+                  {/* Code Completions + Acceptance Rate */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Code Completions">
+                        <CodeCompletionsChart data={data.byFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Code Completion Acceptance Rate">
+                        <CodeCompletionsAcceptanceChart data={data.byFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
+
+                  {/* Model Usage per Day */}
+                  <ChartCard title="Model Usage per Day">
+                    <ModelUsagePerDayChart data={data.byModelFeature} />
+                  </ChartCard>
+
+                  {/* Chat Model Usage Donut + Model Usage per Chat Mode */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Chat Model Usage">
+                        <ChatModelUsageDonut data={data.byModelFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Model Usage per Chat Mode">
+                        <ModelUsagePerChatModeChart
+                          data={data.byModelFeature}
+                        />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
+
+                  {/* Language Usage per Day */}
+                  <ChartCard title="Language Usage per Day">
+                    <LanguageUsagePerDayChart data={data.byLanguage} />
+                  </ChartCard>
+
+                  {/* Language Donut + Model Usage per Language */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Language Usage">
+                        <LanguageUsageDonut data={data.byLanguage} />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Model Usage per Language">
+                        <ModelUsagePerLanguageChart
+                          data={data.byLanguageModel}
+                        />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
+                </Flex>
+              </TabPanel>
+
+              <TabPanel id="code-generation">
+                <Flex
+                  direction="column"
+                  style={{
+                    gap: 'var(--bui-space-6, 24px)',
+                    paddingTop: '16px',
+                  }}
+                >
+                  {/* Row 1: Summary stats */}
+                  <CodeGenerationSummary
+                    dailyTotals={data.daily}
+                    byFeature={data.byFeature}
+                  />
+
+                  {/* Row 2: Daily total lines added and deleted */}
+                  <ChartCard title="Daily Total Lines Added and Deleted">
                     <Text
                       variant="body-small"
                       color="secondary"
                       style={{ marginBottom: 8 }}
                     >
-                      Lines of code suggested and added by users, grouped by
-                      language used
+                      Total lines of code added and deleted from the codebase
+                      across all modes
                     </Text>
-                    <UserLOCByLanguageChart data={data.byLanguage} />
+                    <DailyLOCChart data={data.daily} />
                   </ChartCard>
-                </Grid.Item>
-                <Grid.Item colSpan={{ initial: '12', md: '6' }}>
-                  <ChartCard title="Agent-initiated Code Changes per Language">
-                    <Text
-                      variant="body-small"
-                      color="secondary"
-                      style={{ marginBottom: 8 }}
-                    >
-                      Lines of code added and deleted by agents, grouped by
-                      language used
-                    </Text>
-                    <AgentLOCByLanguageChart data={data.byLanguage} />
-                  </ChartCard>
-                </Grid.Item>
-              </Grid.Root>
-            </Flex>
-          </TabPanel>
-        </Tabs>
-      </Flex>
-    </CopilotPage>
+
+                  {/* Row 3: User-initiated vs Agent-initiated by feature */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="User-initiated Code Changes">
+                        <Text
+                          variant="body-small"
+                          color="secondary"
+                          style={{ marginBottom: 8 }}
+                        >
+                          Lines of code suggested and added by users through
+                          code completions and chat panel actions
+                        </Text>
+                        <UserLOCByFeatureChart data={data.byFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Agent-initiated Code Changes">
+                        <Text
+                          variant="body-small"
+                          color="secondary"
+                          style={{ marginBottom: 8 }}
+                        >
+                          Lines of code automatically added and deleted by
+                          agents combining edit, agent, and custom modes
+                        </Text>
+                        <AgentLOCByFeatureChart data={data.byFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
+
+                  {/* Row 4: User-initiated vs Agent-initiated per model (top 5 + others) */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="User-initiated Code Changes per Model">
+                        <Text
+                          variant="body-small"
+                          color="secondary"
+                          style={{ marginBottom: 8 }}
+                        >
+                          Lines of code suggested and added by users, grouped by
+                          model used
+                        </Text>
+                        <UserLOCByModelChart data={data.byModelFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Agent-initiated Code Changes per Model">
+                        <Text
+                          variant="body-small"
+                          color="secondary"
+                          style={{ marginBottom: 8 }}
+                        >
+                          Lines of code added and deleted by agents, grouped by
+                          model used
+                        </Text>
+                        <AgentLOCByModelChart data={data.byModelFeature} />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
+
+                  {/* Row 5: User-initiated vs Agent-initiated per language (top 5 + others) */}
+                  <Grid.Root columns="12" gap="4">
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="User-initiated Code Changes per Language">
+                        <Text
+                          variant="body-small"
+                          color="secondary"
+                          style={{ marginBottom: 8 }}
+                        >
+                          Lines of code suggested and added by users, grouped by
+                          language used
+                        </Text>
+                        <UserLOCByLanguageChart data={data.byLanguage} />
+                      </ChartCard>
+                    </Grid.Item>
+                    <Grid.Item colSpan={{ initial: '12', md: '6' }}>
+                      <ChartCard title="Agent-initiated Code Changes per Language">
+                        <Text
+                          variant="body-small"
+                          color="secondary"
+                          style={{ marginBottom: 8 }}
+                        >
+                          Lines of code added and deleted by agents, grouped by
+                          language used
+                        </Text>
+                        <AgentLOCByLanguageChart data={data.byLanguage} />
+                      </ChartCard>
+                    </Grid.Item>
+                  </Grid.Root>
+                </Flex>
+              </TabPanel>
+            </Tabs>
+          </Flex>
+        </Container>
+      </FullPage>
+    </>
   );
 };

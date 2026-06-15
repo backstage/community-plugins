@@ -15,22 +15,17 @@ import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { RouteRef } from '@backstage/frontend-plugin-api';
-import { SubRouteRef } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 const _default: OverridableFrontendPlugin<
   {
     copilot: RouteRef<undefined>;
-    enterprise: SubRouteRef<undefined>;
-    organization: SubRouteRef<undefined>;
-    v2Dashboard: SubRouteRef<undefined>;
-    legacyCopilot: SubRouteRef<undefined>;
   },
   {},
   {
-    'api:copilot': OverridableExtensionDefinition<{
+    'api:copilot/copilot': OverridableExtensionDefinition<{
       kind: 'api';
-      name: undefined;
+      name: 'copilot';
       config: {};
       configInput: {};
       output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
@@ -43,9 +38,24 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'page:copilot': OverridableExtensionDefinition<{
+    'api:copilot/copilot-legacy': OverridableExtensionDefinition<{
+      kind: 'api';
+      name: 'copilot-legacy';
+      config: {};
+      configInput: {};
+      output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
+      inputs: {};
+      params: <
+        TApi,
+        TImpl extends TApi,
+        TDeps extends { [name in string]: unknown },
+      >(
+        params: ApiFactory<TApi, TImpl, TDeps>,
+      ) => ExtensionBlueprintParams<AnyApiFactory>;
+    }>;
+    'page:copilot/copilot': OverridableExtensionDefinition<{
       kind: 'page';
-      name: undefined;
+      name: 'copilot';
       config: {
         path: string | undefined;
         title: string | undefined;

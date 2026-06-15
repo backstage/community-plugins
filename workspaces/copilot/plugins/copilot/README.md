@@ -130,7 +130,7 @@ copilot:
 - `/copilot`: Default Copilot route. This now renders the V2 dashboard.
 - `/copilot/v2`: Explicit V2 dashboard route.
 - `/copilot/legacy`: Legacy dashboard route.
-- `/copilot/enterprise` and `/copilot/organization`: Older legacy routes kept for backward compatibility.
+- `/copilot/legacy/enterprise` and `/copilot/legacy/organization`: Older legacy routes kept for backward compatibility.
 
 The legacy dashboard is useful during migration while you verify V2 backfill coverage. The sidebar only shows a dedicated legacy entry when `copilot.showLegacyView: true`, but direct navigation to `/copilot/legacy` still works.
 
