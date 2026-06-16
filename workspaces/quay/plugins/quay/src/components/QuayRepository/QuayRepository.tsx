@@ -73,11 +73,13 @@ export function QuayRepository(_props: QuayRepositoryProps) {
             p="4"
             className={styles.emptyState}
           >
-            <Text variant="title-small">No container images found</Text>
-            <Text variant="body-medium" color="secondary">
-              This repository doesn't contain any images yet, or there might be
-              an access issue.
-            </Text>
+            <Flex direction="column" align="center" gap="2">
+              <Text variant="title-small">No container images found</Text>
+              <Text variant="body-medium" color="secondary">
+                This repository doesn't contain any images yet, or there might
+                be an access issue.
+              </Text>
+            </Flex>
             <Flex
               direction="column"
               align="center"
