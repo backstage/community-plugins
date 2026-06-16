@@ -44,31 +44,52 @@ export const IncidentsTableHeader = ({
       onRequestSort(event, property);
     };
 
+  const getSortState = (column: IncidentTableField) => {
+    if (orderBy !== column) {
+      return 'none';
+    }
+    return order === 'asc' ? 'ascending' : 'descending';
+  };
+
   return (
     <div className={styles.headerRow}>
       <div className={styles.headerRowContent}>
-        {incidentsListColumns.map(column => (
-          <div key={column.id as string} className={styles.headerCell}>
-            <button
-              className={styles.headerButton}
-              onClick={
-                column.sorting === false
-                  ? undefined
-                  : createSortHandler(column.field as IncidentTableField)
-              }
-              disabled={column.sorting === false}
-              type="button"
+        {incidentsListColumns.map(column => {
+          const isSorted = orderBy === column.field;
+          const sortState = getSortState(column.field as IncidentTableField);
+          const sortLabel =
+            sortState === 'none'
+              ? `${column.title}, not sorted`
+              : `${column.title}, sorted ${sortState}`;
+
+          return (
+            <div
+              key={column.id as string}
+              className={styles.headerCell}
+              aria-sort={sortState as 'none' | 'ascending' | 'descending'}
             >
-              {column.title}
-              {orderBy === column.field &&
-                (orderBy === column.field && order === 'asc' ? (
-                  <RiArrowUpSLine size={16} />
-                ) : (
-                  <RiArrowDownSLine size={16} />
-                ))}
-            </button>
-          </div>
-        ))}
+              <button
+                className={styles.headerButton}
+                onClick={
+                  column.sorting === false
+                    ? undefined
+                    : createSortHandler(column.field as IncidentTableField)
+                }
+                disabled={column.sorting === false}
+                type="button"
+                aria-label={sortLabel}
+              >
+                {column.title}
+                {isSorted &&
+                  (order === 'asc' ? (
+                    <RiArrowUpSLine size={16} />
+                  ) : (
+                    <RiArrowDownSLine size={16} />
+                  ))}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

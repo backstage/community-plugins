@@ -26,6 +26,7 @@ import {
 } from '../../utils/incidentUtils';
 import type { IncidentsData } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { Text } from '@backstage/ui';
 import styles from './IncidentsTableRow.module.css';
 
 export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
@@ -46,9 +47,9 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
       </div>
       <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         <TooltipTrigger>
-          <span className={styles.descriptionCell}>
+          <Text as="span" className={styles.descriptionCell}>
             {data?.shortDescription}
-          </span>
+          </Text>
           <Tooltip>{data?.description}</Tooltip>
         </TooltipTrigger>
       </div>
@@ -66,7 +67,9 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
         <TooltipTrigger>
           <ButtonIcon
             icon={<RiExternalLinkLine size={16} />}
-            onPress={() => window.open(data.url, '_blank')}
+            onPress={() =>
+              window.open(data.url, '_blank', 'noopener,noreferrer')
+            }
             variant="secondary"
           />
           <Tooltip>{t('actions.openInServicenow')}</Tooltip>

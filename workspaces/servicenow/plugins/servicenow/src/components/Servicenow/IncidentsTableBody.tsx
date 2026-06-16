@@ -16,11 +16,13 @@
 
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
+import { useIncidentsListColumns } from './IncidentsListColumns';
 import { useTranslation } from '../../hooks/useTranslation';
 import styles from './IncidentsTableBody.module.css';
 
 export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
   const { t } = useTranslation();
+  const columns = useIncidentsListColumns();
 
   if (rows?.length > 0) {
     return (
@@ -46,6 +48,15 @@ export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
         >
           {t('table.emptyContent')}
         </div>
+        {Array.from({ length: columns.length - 1 }).map((_, index) => (
+          <div
+            key={index}
+            style={{
+              display: 'table-cell',
+              padding: '24px 16px 24px 20px',
+            }}
+          />
+        ))}
       </div>
     </div>
   );

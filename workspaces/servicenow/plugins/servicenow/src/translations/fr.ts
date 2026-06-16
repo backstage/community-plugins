@@ -51,6 +51,7 @@ const servicenowTranslationFr = createTranslationMessages({
     'table.columns.actions': 'Actions',
     'table.emptyContent': 'Aucun enregistrement trouvé',
     'actions.openInServicenow': 'Ouvrir dans ServiceNow',
+    'actions.clearSearch': 'Effacer la recherche',
   },
 });
 

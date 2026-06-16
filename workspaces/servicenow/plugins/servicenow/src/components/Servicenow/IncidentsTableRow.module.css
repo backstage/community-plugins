@@ -7,9 +7,8 @@
     background-color: var(--bui-bg-neutral-1);
   }
 
-  .tableRow:last-child td,
-  .tableRow:last-child th {
-    border: 0;
+  .tableRow:last-child {
+    border-bottom: 0;
   }
 
   .tableCellStyle {

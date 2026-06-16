@@ -28,6 +28,8 @@ export interface IncidentEnumFilterProps {
   dataMap: Record<number, StatusData>;
   value: SelectItem[];
   onChange: (event: any, value: SelectItem[]) => void;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 export const IncidentEnumFilter = ({
@@ -35,8 +37,21 @@ export const IncidentEnumFilter = ({
   dataMap,
   value,
   onChange,
+  isOpen: externalIsOpen,
+  onToggle,
 }: IncidentEnumFilterProps) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [internalIsOpen, setInternalIsOpen] = React.useState(false);
+
+  // Use external isOpen if provided (controlled), otherwise use internal state (uncontrolled)
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+
+  const handleToggle = () => {
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalIsOpen(!internalIsOpen);
+    }
+  };
   const items: SelectItem[] = Object.entries(dataMap).map(
     ([key, itemValue]) => ({
       value: key,
@@ -57,7 +72,7 @@ export const IncidentEnumFilter = ({
       <div className={styles.selectContainer}>
         <button
           className={styles.selectButton}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggle}
           aria-label={label}
           type="button"
         >

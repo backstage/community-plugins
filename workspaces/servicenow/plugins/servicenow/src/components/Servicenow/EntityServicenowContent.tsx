@@ -22,7 +22,7 @@ import {
   useEntity,
 } from '@backstage/plugin-catalog-react';
 import { Progress } from '@backstage/core-components';
-import { Box, ButtonIcon } from '@backstage/ui';
+import { Box, ButtonIcon, Text } from '@backstage/ui';
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -174,7 +174,7 @@ export const EntityServicenowContent = () => {
     userEmail,
   ]);
 
-  const handlePageChange = (_event: unknown, page: number) => {
+  const handlePageChange = (page: number) => {
     setOffset(page * rowsPerPage);
   };
 
@@ -235,9 +235,14 @@ export const EntityServicenowContent = () => {
             </option>
           ))}
         </select>
-        <span className={styles.paginationInfo}>
-          {offset + 1}-{Math.min(offset + rowsPerPage, count)} of {count}
-        </span>
+        <Text as="div" className={styles.paginationInfo}>
+          {count === 0
+            ? '0 of 0'
+            : `${offset + 1}-${Math.min(
+                offset + rowsPerPage,
+                count,
+              )} of ${count}`}
+        </Text>
         <div className={styles.paginationButtons}>
           <ButtonIcon
             icon={<RiSkipLeftLine size={16} />}
@@ -247,13 +252,13 @@ export const EntityServicenowContent = () => {
           />
           <ButtonIcon
             icon={<RiArrowLeftSLine size={16} />}
-            onPress={() => handlePageChange(null as any, pageNumber - 1)}
+            onPress={() => handlePageChange(pageNumber - 1)}
             isDisabled={pageNumber === 0}
             variant="secondary"
           />
           <ButtonIcon
             icon={<RiArrowRightSLine size={16} />}
-            onPress={() => handlePageChange(null as any, pageNumber + 1)}
+            onPress={() => handlePageChange(pageNumber + 1)}
             isDisabled={(pageNumber + 1) * rowsPerPage >= count}
             variant="secondary"
           />
@@ -293,7 +298,7 @@ export const EntityServicenowContent = () => {
                   <RiSearchLine size={16} color="var(--bui-fg-secondary)" />
                   <input
                     type="text"
-                    placeholder="Search"
+                    placeholder={t('table.searchPlaceholder')}
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     style={{
@@ -302,14 +307,13 @@ export const EntityServicenowContent = () => {
                     className={styles.searchInput}
                   />
                   {input && (
-                    <button
-                      onClick={() => setInput('')}
+                    <ButtonIcon
+                      icon={<RiCloseLine size={16} />}
+                      onPress={() => setInput('')}
                       className={styles.clearSearchButton}
-                      type="button"
-                      title="Clear search"
-                    >
-                      <RiCloseLine size={16} />
-                    </button>
+                      variant="secondary"
+                      aria-label={t('actions.clearSearch')}
+                    />
                   )}
                 </div>
               </div>
