@@ -49,7 +49,10 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
         <Flex align="center">
           {rowData.Name}
           {link.length > 0 ? (
-            <Link to={getVulnerabilityLink(link)}>
+            <Link
+              to={getVulnerabilityLink(link)}
+              aria-label={`Open advisory link for ${rowData.Name}`}
+            >
               <RiLinkM size={16} style={{ marginLeft: 'var(--bui-space-2)' }} />
             </Link>
           ) : null}

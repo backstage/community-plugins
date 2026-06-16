@@ -29,7 +29,9 @@ const Widget = () => {
     <Card>
       <CardHeader title="Docker Image" />
       <CardBody>
-        <QuayRepository />
+        <CardBody>
+          <QuayRepository />
+        </CardBody>
       </CardBody>
     </Card>
   );
