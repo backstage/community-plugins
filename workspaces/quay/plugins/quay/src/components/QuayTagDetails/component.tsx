@@ -44,11 +44,12 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
     title: 'Advisory',
     field: 'name',
     render: (rowData: VulnerabilityListItem): ReactNode => {
+      const link = rowData.Link.trim();
       return (
         <Flex align="center">
           {rowData.Name}
-          {rowData.Link.trim().length > 0 ? (
-            <Link to={getVulnerabilityLink(rowData.Link)}>
+          {link.length > 0 ? (
+            <Link to={getVulnerabilityLink(link)}>
               <RiLinkM size={16} style={{ marginLeft: 'var(--bui-space-2)' }} />
             </Link>
           ) : null}

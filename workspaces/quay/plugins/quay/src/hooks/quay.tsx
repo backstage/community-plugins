@@ -69,7 +69,9 @@ export const useTags = (
     if (requestId !== requestIdRef.current) {
       return tagsResponse;
     }
-    await Promise.all(
+    setTags(tagsResponse.tags);
+
+    void Promise.all(
       tagsResponse.tags.map(async tag => {
         const securityDetails = await fetchSecurityDetails(tag);
         if (requestId !== requestIdRef.current) {
@@ -91,9 +93,6 @@ export const useTags = (
         }
       }),
     );
-    if (requestId === requestIdRef.current) {
-      setTags(tagsResponse.tags);
-    }
     return tagsResponse;
   }, [instanceName, organization, repository]);
 
