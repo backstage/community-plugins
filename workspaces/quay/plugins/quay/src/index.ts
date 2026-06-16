@@ -13,8 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui/css/styles.css';
-
 export { quayPlugin, QuayPage } from './plugin';
 export { isQuayAvailable } from './components/Router';

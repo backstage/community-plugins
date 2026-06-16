@@ -19,9 +19,7 @@
       "@backstage-community/plugin-quay-common"
     ]
   },
-  "sideEffects": [
-    "@backstage/ui/css/styles.css"
-  ],
+  "sideEffects": false,
   "scripts": {
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
