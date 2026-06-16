@@ -70,16 +70,16 @@ test.describe('Quay plugin', () => {
   });
 
   test('Filtering works', async () => {
-    const table = page.getByTestId('quay-repo-table');
-    const tbody = table.locator('tbody');
-    const rows = tbody.getByRole('row').filter({ hasText: 'sha' });
+    const table = common.getVisibleQuayTable();
 
     await table.getByPlaceholder('Filter').fill('v3');
-    await expect(rows).toHaveCount(1);
-    await expect(tbody.getByText('Passed')).toBeVisible();
+    await expect(
+      table.getByRole('cell', { name: 'v3', exact: true }),
+    ).toHaveCount(1);
+    await expect(table.getByText('Passed')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Clear Search' }).click();
-    await expect(rows).toHaveCount(5);
+    await table.getByRole('button', { name: 'Clear Search' }).click();
+    await expect(common.getQuayDataRows(table)).toHaveCount(5);
   });
 
   test.describe('Vulnerability details', () => {
@@ -141,7 +141,7 @@ test.describe('Quay plugin', () => {
 
   test('Multi-instance uses configured non-default instance for URL and data', async () => {
     await page.goto('/quay/multi-instance');
-    const table = page.getByTestId('quay-repo-table');
+    const table = common.getVisibleQuayTable();
     const repositoryLink = table.getByRole('link', {
       name: 'backstage-test/test-images',
     });
@@ -152,9 +152,9 @@ test.describe('Quay plugin', () => {
     );
 
     await expect(
-      table.getByRole('cell', { name: 'v5-devel-only' }),
-    ).toBeVisible();
-    await expect(table.locator('tbody').getByRole('row')).toHaveCount(1);
+      table.getByRole('cell', { name: 'v5-devel-only', exact: true }),
+    ).toHaveCount(1);
+    await expect(common.getQuayDataRows(table)).toHaveCount(1);
     await expect(table.getByText('Unsupported')).toBeVisible();
   });
 });

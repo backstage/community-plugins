@@ -63,6 +63,14 @@ export class Common {
     await this.waitForSideBarVisible();
   }
 
+  getVisibleQuayTable() {
+    return this.page.locator('[data-testid="quay-repo-table"]:visible');
+  }
+
+  getQuayDataRows(table: Locator) {
+    return table.locator('tbody').first().getByRole('row');
+  }
+
   async a11yCheck(testInfo: TestInfo) {
     const page = this.page;
     const accessibilityScanResults = await new AxeBuilder({ page })

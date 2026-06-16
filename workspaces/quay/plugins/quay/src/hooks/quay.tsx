@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAsync } from 'react-use';
 
 import { Entity } from '@backstage/catalog-model';
@@ -39,6 +39,12 @@ export const useTags = (
     Record<string, string>
   >({});
 
+  useEffect(() => {
+    setTags([]);
+    setTagManifestLayers({});
+    setTagManifestStatuses({});
+  }, [instanceName, organization, repository]);
+
   const fetchSecurityDetails = async (tag: QuayTag) => {
     const securityDetails = await quayClient.getSecurityDetails(
       instanceName,
@@ -57,7 +63,7 @@ export const useTags = (
       undefined,
       undefined,
     );
-    Promise.all(
+    await Promise.all(
       tagsResponse.tags.map(async tag => {
         const securityDetails = await fetchSecurityDetails(tag);
         const securityData = securityDetails.data;
@@ -78,7 +84,7 @@ export const useTags = (
     );
     setTags(tagsResponse.tags);
     return tagsResponse;
-  });
+  }, [instanceName, organization, repository]);
 
   const data: QuayTagData[] = useMemo(() => {
     return Object.values(tags)?.map(tag => {
