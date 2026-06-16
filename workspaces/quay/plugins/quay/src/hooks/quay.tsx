@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAsync } from 'react-use';
 
 import { Entity } from '@backstage/catalog-model';
@@ -31,6 +31,7 @@ export const useTags = (
   repository: string,
 ) => {
   const quayClient = useApi(quayApiRef);
+  const requestIdRef = useRef(0);
   const [tags, setTags] = useState<QuayTag[]>([]);
   const [tagManifestLayers, setTagManifestLayers] = useState<
     Record<string, Layer>
@@ -40,6 +41,7 @@ export const useTags = (
   >({});
 
   useEffect(() => {
+    requestIdRef.current += 1;
     setTags([]);
     setTagManifestLayers({});
     setTagManifestStatuses({});
@@ -56,6 +58,7 @@ export const useTags = (
   };
 
   const { loading } = useAsync(async () => {
+    const requestId = requestIdRef.current;
     const tagsResponse = await quayClient.getTags(
       instanceName,
       organization,
@@ -63,9 +66,15 @@ export const useTags = (
       undefined,
       undefined,
     );
+    if (requestId !== requestIdRef.current) {
+      return tagsResponse;
+    }
     await Promise.all(
       tagsResponse.tags.map(async tag => {
         const securityDetails = await fetchSecurityDetails(tag);
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
         const securityData = securityDetails.data;
         const securityStatus = securityDetails.status;
 
@@ -82,7 +91,9 @@ export const useTags = (
         }
       }),
     );
-    setTags(tagsResponse.tags);
+    if (requestId === requestIdRef.current) {
+      setTags(tagsResponse.tags);
+    }
     return tagsResponse;
   }, [instanceName, organization, repository]);
 

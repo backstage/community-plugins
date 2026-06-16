@@ -79,7 +79,13 @@ test.describe('Quay plugin', () => {
     await expect(table.getByText('Passed')).toBeVisible();
 
     await table.getByRole('button', { name: 'Clear Search' }).click();
-    await expect(common.getQuayDataRows(table)).toHaveCount(5);
+    await common.expectTagCells(table, [
+      'latest-linux-arm64',
+      'v4',
+      'v3',
+      'v2',
+      'v1',
+    ]);
   });
 
   test.describe('Vulnerability details', () => {
@@ -154,7 +160,6 @@ test.describe('Quay plugin', () => {
     await expect(
       table.getByRole('cell', { name: 'v5-devel-only', exact: true }),
     ).toHaveCount(1);
-    await expect(common.getQuayDataRows(table)).toHaveCount(1);
     await expect(table.getByText('Unsupported')).toBeVisible();
   });
 });

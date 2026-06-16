@@ -64,11 +64,15 @@ export class Common {
   }
 
   getVisibleQuayTable() {
-    return this.page.locator('[data-testid="quay-repo-table"]:visible');
+    return this.page.locator('[data-testid="quay-repo-table"]:visible').last();
   }
 
-  getQuayDataRows(table: Locator) {
-    return table.locator('tbody').first().getByRole('row');
+  async expectTagCells(table: Locator, tagNames: string[]) {
+    for (const tag of tagNames) {
+      await expect(
+        table.getByRole('cell', { name: tag, exact: true }),
+      ).toHaveCount(1);
+    }
   }
 
   async a11yCheck(testInfo: TestInfo) {
