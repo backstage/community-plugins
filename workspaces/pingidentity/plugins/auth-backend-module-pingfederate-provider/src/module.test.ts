@@ -71,15 +71,10 @@ describe('authModulePingFederateProvider', () => {
             ctx.json(issuerMetadata),
           ),
       ),
-      rest.get(
-        'https://oidc.test/oauth2/authorize',
-        async (req, _res, _ctx) => {
-          nonce =
-            new URL(req.url).searchParams.get('nonce') ??
-            'nonceGeneratedByAuthServer';
-        },
-      ),
       rest.get('https://oidc.test/oauth2/authorize', async (req, res, ctx) => {
+        nonce =
+          new URL(req.url).searchParams.get('nonce') ??
+          'nonceGeneratedByAuthServer';
         const callbackUrl = new URL(req.url.searchParams.get('redirect_uri')!);
         callbackUrl.searchParams.set('code', 'authorization_code');
         callbackUrl.searchParams.set(
@@ -217,15 +212,21 @@ describe('authModulePingFederateProvider', () => {
   });
 
   it('#authenticate exchanges authorization code for a access_token', async () => {
-    const agent = request.agent('');
+    const agent = request.agent(backstageServer);
     const startResponse = await agent.get(
-      `${appUrl}/api/auth/pingfederate/start?env=development`,
+      `/api/auth/pingfederate/start?env=development`,
     );
-    const authorizationResponse = await agent.get(
-      startResponse.header.location,
-    );
+    expect(startResponse.status).toBe(302);
+
+    const authorizeUrl = startResponse.get('location')!;
+    const authorizationResponse = await fetch(authorizeUrl, {
+      redirect: 'manual',
+    });
+    expect(authorizationResponse.status).toBe(302);
+
+    const callbackUrl = new URL(authorizationResponse.headers.get('location')!);
     const handlerResponse = await agent.get(
-      authorizationResponse.header.location,
+      `${callbackUrl.pathname}${callbackUrl.search}`,
     );
 
     expect(handlerResponse.text).toContain(

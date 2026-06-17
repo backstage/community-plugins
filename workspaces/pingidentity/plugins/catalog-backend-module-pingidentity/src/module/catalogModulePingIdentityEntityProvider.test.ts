@@ -20,12 +20,32 @@ import { catalogModulePingIdentityEntityProvider } from './catalogModulePingIden
 import { PingIdentityEntityProvider } from '../providers/PingIdentityEntityProvider';
 
 describe('catalogModulePingIdentityEntityProvider', () => {
+  it('should register zero providers when config is absent', async () => {
+    let addedProviders: PingIdentityEntityProvider[] | undefined;
+
+    const extensionPoint = {
+      addEntityProvider: (providers: PingIdentityEntityProvider[]) => {
+        addedProviders = providers;
+      },
+    };
+
+    await startTestBackend({
+      extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
+      features: [
+        catalogModulePingIdentityEntityProvider,
+        mockServices.rootConfig.factory({ data: {} }),
+      ],
+    });
+
+    expect(addedProviders).toEqual([]);
+  });
+
   it('should register provider at the catalog extension point', async () => {
-    let addedProviders: Array<PingIdentityEntityProvider> | undefined;
+    let addedProviders: PingIdentityEntityProvider[] | undefined;
     let usedSchedule: SchedulerServiceTaskScheduleDefinitionConfig | undefined;
 
     const extensionPoint = {
-      addEntityProvider: (providers: any) => {
+      addEntityProvider: (providers: PingIdentityEntityProvider[]) => {
         addedProviders = providers;
       },
     };
