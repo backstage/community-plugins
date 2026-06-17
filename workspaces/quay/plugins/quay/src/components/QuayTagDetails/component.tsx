@@ -46,14 +46,14 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
     render: (rowData: VulnerabilityListItem): ReactNode => {
       const link = rowData.Link.trim();
       return (
-        <Flex align="center">
+        <Flex align="center" gap="2" className={styles.cellContent}>
           {rowData.Name}
           {link.length > 0 ? (
             <Link
               to={getVulnerabilityLink(link)}
               aria-label={`Open advisory link for ${rowData.Name}`}
             >
-              <RiLinkM size={16} style={{ marginLeft: 'var(--bui-space-2)' }} />
+              <RiLinkM size={16} />
             </Link>
           ) : null}
         </Flex>
@@ -73,7 +73,7 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
     },
     render: (rowData: VulnerabilityListItem): ReactNode => {
       return (
-        <Flex align="center">
+        <Flex align="center" gap="2" className={styles.cellContent}>
           <RiAlertLine
             className={styles.severityIcon}
             color={SEVERITY_COLORS[rowData.Severity]}
