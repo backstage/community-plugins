@@ -32,8 +32,6 @@ Export these variables in your shell before starting the harness. Use local-only
 | `PING_IDENTITY_CLIENT_SECRET` | OAuth client secret                                                   |
 | `BACKSTAGE_DEV_STATIC_TOKEN`  | Static bearer token for authenticated `curl` calls to the dev backend |
 
-Example (replace placeholders with your PingOne values):
-
 Config keys are defined in [`app-config.yaml`](./app-config.yaml). You may override them in an untracked `app-config.local.yaml` beside the package if your local Backstage CLI setup supports it.
 
 ### API authentication for `curl`

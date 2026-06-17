@@ -211,7 +211,7 @@ describe('authModulePingFederateProvider', () => {
     });
   });
 
-  it('#authenticate exchanges authorization code for a access_token', async () => {
+  it('#authenticate exchanges authorization code for an access_token', async () => {
     const agent = request.agent(backstageServer);
     const startResponse = await agent.get(
       `/api/auth/pingfederate/start?env=development`,
