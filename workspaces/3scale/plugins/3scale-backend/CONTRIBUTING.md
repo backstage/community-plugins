@@ -22,16 +22,19 @@ The harness starts a minimal backend with `@backstage/plugin-catalog-backend` an
 
 ### Configuration
 
-Set environment variables before starting (see [app-config.example.yaml](./app-config.example.yaml)):
+Copy [app-config.example.yaml](./app-config.example.yaml) to `app-config.local.yaml` in this package before starting the plugin harness. That file is gitignored (`*.local.yaml`) so local tokens and overrides are not committed.
 
-| Variable                  | Purpose                                                              |
-| ------------------------- | -------------------------------------------------------------------- |
-| `THREESCALE_BASE_URL`     | 3scale Admin API base URL (e.g. `https://<tenant>-admin.3scale.net`) |
-| `THREESCALE_ACCESS_TOKEN` | Admin API access token                                               |
+For `yarn workspace @backstage-community/plugin-3scale-backend start`, config in this package is enough. If you use the full workspace app (`yarn start` from `workspaces/3scale`), put overlapping overrides in the workspace root `app-config.local.yaml` instead.
 
-Do not commit real credentials. Use placeholders in tests and local-only env injection.
+Set environment variables before starting:
 
-The workspace root `app-config.yaml` supplies backend infrastructure (database, listen port) when running from the monorepo. Provider-specific keys are documented in `app-config.example.yaml`.
+| Variable                     | Purpose                                                                                                     |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `THREESCALE_BASE_URL`        | 3scale Admin API base URL (e.g. `https://<tenant>-admin.3scale.net`)                                        |
+| `THREESCALE_ACCESS_TOKEN`    | Admin API access token                                                                                      |
+| `BACKSTAGE_DEV_STATIC_TOKEN` | Dev-only Backstage backend token for catalog API checks via curl (e.g. `local-dev-only-not-for-production`) |
+
+Do not commit real credentials. Use placeholders in tests and local-only env injection. The static Backstage token is for **local development only**—do not reuse it in production deployments.
 
 ## Validation commands
 
@@ -57,11 +60,14 @@ catalog info Discovered ApiEntity <service-name> type=plugin target=ThreeScaleAp
 catalog info Applying the mutation with <N> entities type=plugin target=ThreeScaleApiEntityProvider:dev
 ```
 
-You can also inspect ingested APIs via the catalog backend API (backend-only, no UI required):
+You can also inspect ingested APIs via the catalog backend API (backend-only, no UI required). The backend requires an `Authorization` header matching `BACKSTAGE_DEV_STATIC_TOKEN` from your local config (`app-config.local.yaml`, based on [app-config.example.yaml](./app-config.example.yaml)):
 
 ```console
-curl -s 'http://localhost:7007/api/catalog/entities?filter=kind=API' | jq .
+curl -s 'http://localhost:7007/api/catalog/entities?filter=kind=API' \
+  -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" | jq .
 ```
+
+Log lines alone are sufficient if you prefer not to configure the static Backstage token.
 
 ## When to use the full workspace app
 
