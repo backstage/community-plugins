@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
+import { Entity, ANNOTATION_SOURCE_LOCATION } from '@backstage/catalog-model';
 import {
   AZURE_DEVOPS_PROJECT_ANNOTATION,
   AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION,
@@ -38,8 +38,20 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
     entity.metadata.annotations?.[AZURE_DEVOPS_PROJECT_ANNOTATION];
   const definition =
     entity.metadata.annotations?.[AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION];
-  const readmePath =
-    entity.metadata.annotations?.[AZURE_DEVOPS_README_ANNOTATION];
+  const readmePath = (() => {
+    const explicit =
+      entity.metadata.annotations?.[AZURE_DEVOPS_README_ANNOTATION];
+    if (explicit) return explicit;
+
+    // Auto-detect README.md from backstage.io/source-location (#9188)
+    const sourceLocation =
+      entity.metadata.annotations?.[ANNOTATION_SOURCE_LOCATION];
+    if (!sourceLocation) return undefined;
+
+    // TODO(#9188): parse URL, extract path param, replace catalog-info.yaml
+    // with README.md — full implementation in Phase III
+    return undefined;
+  })();
 
   if (definition) {
     if (project) {
