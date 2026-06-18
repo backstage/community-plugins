@@ -18,11 +18,10 @@
 }
 
 .segment {
-  height: 100%;
+  height: var(--bui-space-1_5);
   min-width: 4px;
   border-radius: var(--bui-radius-full);
   transition: width 0.2s ease;
-  height: var(--bui-space-1_5);
 }
 
 .succeeded {
