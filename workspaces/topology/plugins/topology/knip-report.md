@@ -8,5 +8,5 @@
 | @backstage/filter-predicates    | package.json:58:6 | error    |
 | @backstage/core-compat-api      | package.json:54:6 | error    |
 | @backstage/errors               | package.json:57:6 | error    |
-| victory                         | package.json:87:6 | error    |
+| victory                         | package.json:85:6 | error    |
 

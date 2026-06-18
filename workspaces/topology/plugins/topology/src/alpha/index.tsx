@@ -19,6 +19,7 @@ import { topologyTranslations } from '../translations';
 import { topologyCatalogModule } from './extensions/entityTab';
 
 const topologyTranslation = TranslationBlueprint.make({
+  name: 'topology-translations',
   params: {
     resource: topologyTranslations,
   },

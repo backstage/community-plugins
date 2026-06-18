@@ -20,7 +20,7 @@
 
 import '@backstage/cli/asset-types';
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui';
+import '@backstage/ui/css/styles.css';
 
 import ReactDOM from 'react-dom/client';
 import { createApp } from '@backstage/frontend-defaults';
@@ -31,11 +31,9 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
 import useObservable from 'react-use/esm/useObservable';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import AutoIcon from '@mui/icons-material/BrightnessAuto';
+import { Box, MenuItem, MenuSection, Popover } from '@backstage/ui';
+import { RiContrastLine } from '@remixicon/react';
+import { Menu } from 'react-aria-components';
 import {
   Sidebar,
   SidebarGroup,
@@ -53,20 +51,40 @@ import {
   topologyCatalogModule,
   topologyTranslationsModule,
 } from '../../src/alpha';
-import { cloneElement, ReactElement, useCallback, useState } from 'react';
+import {
+  cloneElement,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 
-function ThemeIcon({
+function ThemeMenuIcon({
   active,
   icon,
 }: {
   active?: boolean;
   icon?: ReactElement;
 }) {
-  return icon ? (
-    cloneElement(icon, { color: active ? 'primary' : undefined })
-  ) : (
-    <AutoIcon color={active ? 'primary' : undefined} />
+  if (icon) {
+    return cloneElement(icon, {
+      fontSize: 'small',
+      color: active ? 'primary' : undefined,
+    });
+  }
+
+  return (
+    <RiContrastLine
+      size={20}
+      color={active ? 'var(--bui-fg-accent)' : undefined}
+    />
   );
+}
+
+function getThemeLabel(title: ReactNode, fallback: string): string {
+  return typeof title === 'string' ? title : fallback;
 }
 
 function SidebarThemeSwitcher() {
@@ -77,62 +95,72 @@ function SidebarThemeSwitcher() {
   );
   const themes = appThemeApi.getInstalledThemes();
   const activeTheme = themes.find(t => t.id === themeId);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement>();
-  const open = Boolean(anchorEl);
+  const anchorRef = useRef<HTMLElement | null>(null);
+  const [open, setOpen] = useState(false);
 
-  const handleOpen = (event: React.MouseEvent<Element>) => {
-    setAnchorEl(event.currentTarget as HTMLElement);
-  };
   const handleSelectTheme = (newThemeId?: string) => {
     if (newThemeId && themes.some(t => t.id === newThemeId)) {
       appThemeApi.setActiveThemeId(newThemeId);
     } else {
       appThemeApi.setActiveThemeId(undefined);
     }
-    setAnchorEl(undefined);
+    setOpen(false);
   };
-  const handleClose = () => setAnchorEl(undefined);
 
   const ActiveIcon = useCallback(
-    () => <ThemeIcon icon={activeTheme?.icon} />,
+    () => <ThemeMenuIcon icon={activeTheme?.icon} />,
     [activeTheme],
   );
 
   return (
     <>
-      <SidebarItem icon={ActiveIcon} text="Switch Theme" onClick={handleOpen} />
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{ role: 'listbox' }}
+      <SidebarItem
+        icon={ActiveIcon}
+        text="Switch Theme"
+        onClick={(event: MouseEvent) => {
+          anchorRef.current = event.currentTarget as HTMLElement;
+          setOpen(isOpen => !isOpen);
+        }}
+      />
+      <Popover
+        triggerRef={anchorRef}
+        isOpen={open}
+        onOpenChange={setOpen}
+        placement="right bottom"
+        hideArrow
       >
-        <MenuItem disabled>Choose a theme</MenuItem>
-        <MenuItem
-          selected={themeId === undefined}
-          onClick={() => handleSelectTheme(undefined)}
-        >
-          <ListItemIcon>
-            <ThemeIcon active={themeId === undefined} />
-          </ListItemIcon>
-          <ListItemText>Auto</ListItemText>
-        </MenuItem>
-        {themes.map(theme => {
-          const active = theme.id === themeId;
-          return (
-            <MenuItem
-              key={theme.id}
-              selected={active}
-              onClick={() => handleSelectTheme(theme.id)}
-            >
-              <ListItemIcon>
-                <ThemeIcon icon={theme.icon} active={active} />
-              </ListItemIcon>
-              <ListItemText>{theme.title}</ListItemText>
-            </MenuItem>
-          );
-        })}
-      </Menu>
+        <Box bg="neutral">
+          <Menu>
+            <MenuSection title="Choose a theme">
+              <MenuItem
+                id="auto"
+                textValue="Auto"
+                iconStart={<ThemeMenuIcon active={themeId === undefined} />}
+                onAction={() => handleSelectTheme(undefined)}
+              >
+                Auto
+              </MenuItem>
+              {themes.map(theme => {
+                const active = theme.id === themeId;
+                const label = getThemeLabel(theme.title, theme.id);
+                return (
+                  <MenuItem
+                    key={theme.id}
+                    id={theme.id}
+                    textValue={label}
+                    iconStart={
+                      <ThemeMenuIcon icon={theme.icon} active={active} />
+                    }
+                    onAction={() => handleSelectTheme(theme.id)}
+                  >
+                    {label}
+                  </MenuItem>
+                );
+              })}
+            </MenuSection>
+          </Menu>
+        </Box>
+      </Popover>
     </>
   );
 }

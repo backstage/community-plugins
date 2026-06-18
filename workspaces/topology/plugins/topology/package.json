@@ -69,8 +69,6 @@
     "@backstage/ui": "^0.16.0",
     "@backstage/plugin-user-settings": "^0.9.1",
     "@kubernetes/client-node": "1.4.0",
-    "@mui/icons-material": "5.18.0",
-    "@mui/material": "^5.15.17",
     "@patternfly/patternfly": "^6.1.0",
     "@patternfly/react-charts": "^8.1.0",
     "@patternfly/react-core": "^6.1.0",
@@ -110,6 +108,7 @@
     "cross-fetch": "4.1.0",
     "glob": "^13.0.0",
     "react": "^18.3.1",
+    "react-aria-components": "~1.17.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
