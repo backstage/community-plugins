@@ -239,25 +239,35 @@ export class DatabaseHandler {
   private constructor(private readonly db: Knex) {}
 
   async getPeriodRange(type: MetricsType): Promise<PeriodRange | undefined> {
-    const query = this.db<MetricDbRow>('metrics').where('type', type);
+    const row = (await this.db<MetricDbRow>('metrics')
+      .where('type', type)
+      .select(
+        this.db.raw('MIN(day) as min_day'),
+        this.db.raw('MAX(day) as max_day'),
+      )
+      .first()) as
+      | { min_day: string | null; max_day: string | null }
+      | undefined;
 
-    const minDate = await query.orderBy('day', 'asc').first('day');
-    const maxDate = await query.orderBy('day', 'desc').first('day');
+    if (!row?.min_day || !row?.max_day) return undefined;
 
-    if (!minDate?.day || !maxDate?.day) return undefined;
-
-    return { minDate: minDate.day, maxDate: maxDate.day };
+    return { minDate: row.min_day, maxDate: row.max_day };
   }
 
   async getPeriodRangeV2(type: MetricsType): Promise<PeriodRange | undefined> {
-    const query = this.db('copilot_metrics').where('type', type);
+    const row = (await this.db('copilot_metrics')
+      .where('type', type)
+      .select(
+        this.db.raw('MIN(day) as min_day'),
+        this.db.raw('MAX(day) as max_day'),
+      )
+      .first()) as
+      | { min_day: string | null; max_day: string | null }
+      | undefined;
 
-    const minDate = await query.orderBy('day', 'asc').first('day');
-    const maxDate = await query.orderBy('day', 'desc').first('day');
+    if (!row?.min_day || !row?.max_day) return undefined;
 
-    if (!minDate?.day || !maxDate?.day) return undefined;
-
-    return { minDate: minDate.day, maxDate: maxDate.day };
+    return { minDate: row.min_day, maxDate: row.max_day };
   }
 
   async getTeams(

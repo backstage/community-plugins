@@ -30,5 +30,20 @@ export interface Config {
      * @visibility frontend
      */
     organization?: string;
+    /**
+     * Whether to show user-centric metrics on v2 dashboards.
+     * @visibility frontend
+     */
+    showUserMetrics?: boolean;
+    /**
+     * Whether to show messaging that links to the legacy dashboard.
+     * @visibility frontend
+     */
+    showLegacyView?: boolean;
+    /**
+     * Preferred default scope when both enterprise and organization are configured.
+     * @visibility frontend
+     */
+    defaultView?: 'enterprise' | 'organization';
   };
 }

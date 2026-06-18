@@ -29,6 +29,8 @@ const rbacTranslationIt = createTranslationMessages({
     'page.editRole': 'Modifica ruolo',
     'table.searchPlaceholder': 'Filtra',
     'table.labelRowsSelect': 'Righe',
+    'table.labelDisplayedRows': '{from}-{to} di {count}',
+    'table.labelRowsPerPage': 'Righe per pagina:',
     'table.title': 'Tutti i ruoli',
     'table.titleWithCount': 'Tutti i ruoli ({{count}})',
     'table.headers.name': 'Nome',

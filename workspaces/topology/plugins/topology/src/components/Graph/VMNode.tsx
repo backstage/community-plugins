@@ -15,7 +15,6 @@
  */
 import type { MouseEvent } from 'react';
 
-import { makeStyles } from '@mui/styles';
 import {
   WithDragNodeProps,
   WithSelectionProps,
@@ -24,6 +23,7 @@ import {
 import { RESOURCE_NAME_TRUNCATE_LENGTH } from '../../const';
 import VirtualMachineIcon from '../Icons/VirtualMachineIcon';
 import BaseNode from './BaseNode';
+import styles from './VMNode.module.css';
 
 const VM_STATUS_GAP = 7;
 const VM_STATUS_WIDTH = 7;
@@ -70,12 +70,6 @@ const VmNode = ({
     <VirtualMachineIcon style={imageProps} x={imageProps.x} y={imageProps.y} />
   );
 
-  const useStyles = makeStyles({
-    kubevirtbg: {
-      fill: 'var(--pf-t--global--background--color--primary--default)',
-    },
-  });
-  const classes = useStyles();
   return (
     <g>
       <BaseNode
@@ -86,7 +80,7 @@ const VmNode = ({
         {...rest}
       >
         <rect
-          className={classes.kubevirtbg}
+          className={styles.kubevirtbg}
           x={VM_STATUS_GAP + VM_STATUS_WIDTH}
           y={VM_STATUS_GAP + VM_STATUS_WIDTH}
           rx={VM_STATUS_RADIUS}

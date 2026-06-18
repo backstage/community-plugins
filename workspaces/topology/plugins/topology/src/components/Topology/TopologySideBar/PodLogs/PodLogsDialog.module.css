@@ -1,0 +1,16 @@
+@layer components {
+  :global([data-theme-mode='dark']) .dialog[class*='bui-Dialog'] {
+    background: var(--bui-bg-app);
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: var(--bui-space-2);
+    flex-wrap: wrap;
+  }
+
+  .permissionWrapper {
+    padding-bottom: var(--bui-space-6);
+  }
+}

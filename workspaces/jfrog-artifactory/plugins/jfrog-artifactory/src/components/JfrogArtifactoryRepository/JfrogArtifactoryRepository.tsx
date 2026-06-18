@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAsync } from 'react-use';
 
-import { Link, Progress, Table } from '@backstage/core-components';
+import { Link, Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
-import { Box, Chip, makeStyles } from '@material-ui/core';
+import {
+  Flex,
+  Header,
+  PageSizeOption,
+  SearchField,
+  Table,
+  Text,
+  useTable,
+} from '@backstage/ui';
 
 import { jfrogArtifactoryApiRef } from '../../api';
 import { Edge } from '../../types';
-import { getColumns, useStyles } from './tableHeading';
-import { formatByteSize, formatDate } from '../../utils';
+import {
+  filterRepositoryRows,
+  getColumns,
+  RepositoryRowData,
+  sortRepositoryRows,
+} from './tableHeading';
+import { formatByteSize, formatDate, parseSizeBytes } from '../../utils';
 import { useTranslation } from '../../hooks/useTranslation';
+import styles from './JfrogArtifactoryRepository.module.css';
 
-const useLocalStyles = makeStyles({
-  chip: {
-    margin: 0,
-    marginRight: '.2em',
-    height: '1.5em',
-    '& > span': {
-      padding: '.3em',
-    },
-  },
-});
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 40, 50];
+const DEFAULT_PAGE_SIZE = 10;
 
 export function JfrogArtifactoryRepository({
   image,
@@ -44,70 +49,124 @@ export function JfrogArtifactoryRepository({
   repoFilter,
 }: RepositoryProps) {
   const jfrogArtifactoryClient = useApi(jfrogArtifactoryApiRef);
-  const classes = useStyles();
-  const localClasses = useLocalStyles();
   const { t } = useTranslation();
-  const [edges, setEdges] = useState<Edge[]>([]);
-  const titleprop = t('page.title', { image } as Record<string, string>);
+  const title = t('page.title', { image } as Record<string, string>);
 
-  const { loading } = useAsync(async () => {
-    const tagsResponse = await jfrogArtifactoryClient.getTags(
-      image,
-      target,
-      repoFilter,
-    );
+  const { loading, value: tagsResponse } = useAsync(async () => {
+    return jfrogArtifactoryClient.getTags(image, target, repoFilter);
+  }, [jfrogArtifactoryClient, image, target, repoFilter]);
 
-    setEdges(tagsResponse.data.versions.edges);
+  const data = useMemo<RepositoryRowData[]>(() => {
+    const edges = tagsResponse?.data.versions.edges ?? [];
+    return edges.map((edge: Edge) => {
+      const sizeBytes = parseSizeBytes(edge.node.size);
 
-    return tagsResponse;
-  });
+      return {
+        id: edge.node.name,
+        name: edge.node.name,
+        repositories:
+          `${edge.node.repos.length}` +
+          ' | ' +
+          `${edge.node.repos.map(repo => repo.name).join('| ')}`,
+        manifestHash: edge.node.files.find(
+          manifest => manifest.name === 'manifest.json',
+        )?.sha256,
+        modified: edge.node.modified,
+        modifiedDisplay: formatDate(edge.node.modified),
+        size: formatByteSize(sizeBytes),
+        sizeBytes,
+      };
+    });
+  }, [tagsResponse]);
 
   const columns = useMemo(() => getColumns(t), [t]);
+
+  const pageSizeOptions = useMemo<PageSizeOption[]>(
+    () =>
+      PAGE_SIZE_OPTIONS.map(value => ({
+        value,
+        label: t('table.pagination.showResults', {
+          count: String(value),
+        } as Record<string, string>),
+      })),
+    [t],
+  );
+
+  const paginationOptions = useMemo(
+    () => ({
+      pageSize: DEFAULT_PAGE_SIZE,
+      showPageSizeOptions: true,
+      pageSizeOptions,
+      getLabel: ({
+        pageSize,
+        offset,
+        totalCount,
+      }: {
+        pageSize: number;
+        offset?: number;
+        totalCount?: number;
+      }) => {
+        const total = totalCount ?? 0;
+        const fromCount = total === 0 ? 0 : (offset ?? 0) + 1;
+        const toCount =
+          total === 0 ? 0 : Math.min((offset ?? 0) + pageSize, total);
+
+        return t('table.pagination.rangeLabel', {
+          start: String(fromCount),
+          end: String(toCount),
+          total: String(total),
+        } as Record<string, string>);
+      },
+    }),
+    [pageSizeOptions, t],
+  );
+
+  const { tableProps, search } = useTable({
+    mode: 'complete',
+    data,
+    searchFn: filterRepositoryRows,
+    sortFn: sortRepositoryRows,
+    paginationOptions,
+  });
 
   if (loading) {
     return <Progress />;
   }
 
-  const data = edges?.map((edge: Edge) => {
-    const shortHash = edge.node.files
-      .find(manifest => manifest.name === 'manifest.json')
-      ?.sha256.substring(0, 12);
-    return {
-      name: edge.node.name,
-      last_modified: formatDate(edge.node.modified),
-      size: formatByteSize(Number(edge.node.size)),
-      manifest_digest: (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Chip label={t('manifest.sha256')} className={localClasses.chip} />
-          {shortHash}
-        </Box>
-      ),
-      repositories:
-        `${edge.node.repos.length}` +
-        ' | ' +
-        `${edge.node.repos.map(repo => repo.name).join('| ')}`,
-    };
-  });
-
   return (
-    <div style={{ border: '1px solid #ddd' }}>
+    <div
+      className={styles.tableContainer}
+      data-testid="jfrog-artifactory-table"
+    >
+      <Header
+        title={title}
+        customActions={
+          <Flex className={styles.searchBar}>
+            <SearchField
+              aria-label={t('table.searchPlaceholder')}
+              placeholder={t('table.searchPlaceholder')}
+              value={search.value}
+              onChange={search.onChange}
+              style={{ width: '100%' }}
+            />
+          </Flex>
+        }
+      />
       <Table
-        title={titleprop}
-        options={{ paging: true, padding: 'dense' }}
-        data={data}
-        columns={columns}
-        emptyContent={
-          <div className={classes.empty}>
-            {t('table.emptyContent.message')}&nbsp;
-            <Link to="https://backstage.io/">
-              {t('table.emptyContent.learnMore')}
-            </Link>
+        aria-label={title}
+        columnConfig={columns}
+        emptyState={
+          <div className={styles.empty}>
+            <Text>
+              {t('table.emptyContent.message')}&nbsp;
+              <Link to="https://backstage.io/">
+                {t('table.emptyContent.learnMore')}
+              </Link>
+            </Text>
           </div>
         }
-        localization={{
-          toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-          pagination: { labelRowsSelect: t('table.labelRowsSelect') },
-        }}
+        {...tableProps}
+        className={styles.table}
       />
     </div>
   );

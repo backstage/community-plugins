@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.53.1
+
+### Patch Changes
+
+- 91cce2e: Fixed RBAC table pagination text not being translated in non-English locales by adding `labelDisplayedRows` and `labelRowsPerPage` translation keys and wiring them into all table components.
+
 ## 1.53.0
 
 ### Minor Changes

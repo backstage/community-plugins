@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 
 import { Link, Table, type TableColumn } from '@backstage/core-components';
-
-import { Box, Chip, makeStyles } from '@material-ui/core';
+import { Flex, Tag, TagGroup } from '@backstage/ui';
 
 import { formatByteSize } from '../../utils/format-byte-size/format-byte-size';
 import { useTranslation } from '../../hooks/useTranslation';
 
 import type { AssetHash } from '../../types';
+
+import styles from './ArtifactTable.module.css';
 
 export type ArtifactRowData = {
   id?: string;
@@ -20,22 +21,6 @@ export type ArtifactRowData = {
   sizeBytes?: number;
 };
 
-const useStyles = makeStyles(theme => ({
-  chip: {
-    margin: 0,
-    marginRight: '.2em',
-    height: '1.5em',
-    '& > span': {
-      padding: '.3em',
-    },
-  },
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
-
 export const ArtifactTable = ({
   artifacts,
   title,
@@ -43,7 +28,6 @@ export const ArtifactTable = ({
   artifacts: ArtifactRowData[];
   title: string;
 }) => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   const columns: TableColumn<ArtifactRowData>[] = useMemo(
@@ -61,28 +45,19 @@ export const ArtifactTable = ({
         render: rowData => (
           <>
             {rowData.artifact}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                marginTop: '0.2em',
-              }}
-            >
-              {/* sort/reverse for stable order, and so we get `jar +sources` */}
-              {[...rowData.assetVariants]
-                .sort((a, b) => a.localeCompare(b))
-                .reverse()
-                .map(variant => {
-                  return (
-                    <Chip
-                      label={variant}
-                      key={variant}
-                      className={classes.chip}
-                    />
-                  );
-                })}
-            </Box>
+            <Flex className={styles.variants} direction="row" align="center">
+              <TagGroup>
+                {/* sort/reverse for stable order, and so we get `jar +sources` */}
+                {[...rowData.assetVariants]
+                  .sort((a, b) => a.localeCompare(b))
+                  .reverse()
+                  .map(variant => (
+                    <Tag key={variant} className={styles.chip}>
+                      {variant}
+                    </Tag>
+                  ))}
+              </TagGroup>
+            </Flex>
           </>
         ),
       },
@@ -95,12 +70,20 @@ export const ArtifactTable = ({
         title: t('table.columns.checksum'),
         field: 'hash',
         emptyValue: t('table.emptyValue'),
-        render: rowData => (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Chip label={rowData.hash?.algorithm} className={classes.chip} />
-            {rowData.hash?.value.slice(0, 12)}
-          </Box>
-        ),
+        render: rowData => {
+          if (!rowData.hash) {
+            return t('table.emptyValue');
+          }
+
+          return (
+            <Flex direction="row" align="center" gap="1">
+              <TagGroup>
+                <Tag className={styles.chip}>{rowData.hash.algorithm}</Tag>
+              </TagGroup>
+              {rowData.hash.value.slice(0, 12)}
+            </Flex>
+          );
+        },
         customFilterAndSearch: (term, rowData) => {
           if (!rowData.hash) {
             return false;
@@ -131,7 +114,7 @@ export const ArtifactTable = ({
         render: rowData => formatByteSize(rowData.sizeBytes),
       },
     ],
-    [t, classes.chip],
+    [t],
   );
 
   return (
@@ -146,7 +129,7 @@ export const ArtifactTable = ({
       }}
       emptyContent={
         <div
-          className={classes.empty}
+          className={styles.empty}
           data-testid="nexus-repository-manager-empty-table"
         >
           {t('table.emptyContent.message')}&nbsp;

@@ -1,0 +1,55 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .tableContainer {
+    border: 1px solid var(--bui-border-1);
+  }
+
+  /* TablePagination is always the last child of the BUI Table wrapper */
+  .table > :last-child {
+    align-items: center;
+    padding-top: var(--bui-space-3);
+    padding-bottom: var(--bui-space-3);
+  }
+
+  .table > :last-child > * {
+    align-items: center;
+  }
+
+  .manifestDigest {
+    display: flex;
+    align-items: center;
+  }
+
+  .chip {
+    margin: 0;
+    margin-right: 0.2em;
+    height: 1.5em;
+  }
+
+  .empty {
+    padding: var(--bui-space-4);
+    display: flex;
+    justify-content: center;
+  }
+
+  .searchBar {
+    width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
+  }
+}

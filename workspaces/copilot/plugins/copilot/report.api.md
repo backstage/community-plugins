@@ -13,11 +13,16 @@ import { SubRouteRef } from '@backstage/core-plugin-api';
 export const CopilotIndexPage: () => JSX_3.Element;
 
 // @public
+export const CopilotLegacyPage: () => JSX_2.Element;
+
+// @public
 export const copilotPlugin: BackstagePlugin<
   {
     copilot: RouteRef<undefined>;
     enterprise: SubRouteRef<undefined>;
     organization: SubRouteRef<undefined>;
+    v2Dashboard: SubRouteRef<undefined>;
+    legacyCopilot: SubRouteRef<undefined>;
   },
   {},
   {}
@@ -25,4 +30,10 @@ export const copilotPlugin: BackstagePlugin<
 
 // @public
 export const CopilotSidebar: () => JSX_2.Element;
+
+// @public (undocumented)
+export const CopilotV2DashboardPage: () => JSX_3.Element;
+
+// @public
+export const V2DashboardPage: () => JSX_3.Element;
 ```

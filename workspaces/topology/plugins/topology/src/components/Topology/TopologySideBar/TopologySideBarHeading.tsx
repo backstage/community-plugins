@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Typography from '@mui/material/Typography';
+import { Text } from '@backstage/ui';
 import { Split, SplitItem, Stack, StackItem } from '@patternfly/react-core';
 
 import ResourceName from '../../common/ResourceName';
@@ -43,16 +43,16 @@ const TopologySideBarHeading = ({ resource }: TopologySideBarHeadingProps) => {
             </SplitItem>
           ) : (
             <SplitItem>
-              <Typography variant="h6">{resourceName}</Typography>
+              <Text variant="title-small">{resourceName}</Text>
             </SplitItem>
           )}
         </Split>
       </StackItem>
       {!resourceModels[resourceKind] && (
         <StackItem>
-          <Typography color="textSecondary" variant="body1">
+          <Text variant="body-medium" color="secondary">
             {resourceKind}
-          </Typography>
+          </Text>
         </StackItem>
       )}
     </Stack>
