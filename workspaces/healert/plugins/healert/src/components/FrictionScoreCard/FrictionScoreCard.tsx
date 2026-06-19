@@ -606,11 +606,10 @@ function hexToRgb(hex: string): [number, number, number] {
 // =============================================================================
 // 5. PDF LOADER
 //
-// jsPDF is loaded lazily from JSPDF_CDN_URL (defined in Section 1) only when
-// the user clicks "Download PDF Report". This keeps the plugin bundle small —
-// jsPDF (~300KB) is never included in the npm package. The script tag is
-// injected once; subsequent calls reuse the already-loaded library via the
-// window.jspdf global that jsPDF sets on load.
+// jsPDF is loaded lazily via dynamic import('jspdf') only when the user clicks
+// "Download PDF Report". Most bundlers will split this into a separate chunk,
+// keeping the initial plugin bundle smaller while avoiding external CDN scripts.
+// Subsequent downloads reuse the cached module instance.
 // =============================================================================
 
 /**
