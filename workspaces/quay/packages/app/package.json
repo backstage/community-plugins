@@ -45,8 +45,7 @@
     "@backstage/plugin-user-settings": "^0.9.3",
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.15.0",
-    "@material-ui/core": "^4.12.2",
-    "@material-ui/icons": "^4.9.1",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
     "react-router-dom": "^6.3.0"
