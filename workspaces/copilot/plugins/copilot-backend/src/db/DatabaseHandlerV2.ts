@@ -311,7 +311,156 @@ export class DatabaseHandlerV2 {
 
     query.where('team_slug', teamSlug ?? '');
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+
+    // Org/enterprise-level rows already carry rolling weekly/monthly active
+    // user counts straight from GitHub's report. Team-level rows are derived
+    // from daily per-user data and have no rolling windows, so we compute them
+    // here from the persisted per-user activity tables.
+    if (teamSlug) {
+      return this.enrichTeamRollingActiveUsers(
+        rows,
+        metricsType,
+        entityId,
+        from,
+        to,
+        teamSlug,
+      );
+    }
+
+    return rows;
+  }
+
+  /**
+   * Enrich team-level daily totals with rolling weekly/monthly active-user
+   * counts derived from the persisted per-user activity tables
+   * (copilot_user_metrics joined with copilot_user_teams).
+   *
+   * Definitions follow GitHub's standard rolling windows:
+   * - weekly_active_users: distinct active users over the trailing 7 days
+   * - monthly_active_users: distinct active users over the trailing 28 days
+   * - monthly_active_agent_users / monthly_active_chat_users: distinct users
+   *   that used agent/chat over the trailing 28 days
+   *
+   * A user is "active" for the team on a given day when they have a per-user
+   * metrics row that day and a team-membership row for the same day.
+   */
+  private async enrichTeamRollingActiveUsers(
+    rows: V2DailyTotal[],
+    metricsType: MetricsScope,
+    entityId: string,
+    from: string,
+    to: string,
+    teamSlug: string,
+  ): Promise<V2DailyTotal[]> {
+    if (rows.length === 0) {
+      return rows;
+    }
+
+    const WEEKLY_WINDOW_DAYS = 7;
+    const MONTHLY_WINDOW_DAYS = 28;
+
+    // Each emitted row's rolling value is anchored at *that row's own day* and
+    // looks backwards (see distinctOverWindow). `fetchLowerBound` only widens
+    // the SQL fetch so the earliest days in [from, to] still have a full
+    // trailing window available — it is never used as the calculation anchor.
+    // The summary cards read the last row (end of range), so they reflect the
+    // rolling window ending at the end of the selected range.
+    const fetchLowerBound = DateTime.fromISO(from)
+      .minus({ days: MONTHLY_WINDOW_DAYS - 1 })
+      .toFormat('yyyy-MM-dd');
+
+    const activityRows = await this.db('copilot_user_metrics as m')
+      .join('copilot_user_teams as t', function joinOn() {
+        this.on('m.day', '=', 't.day')
+          .andOn('m.user_id', '=', 't.user_id')
+          .andOn('m.metrics_type', '=', 't.metrics_type')
+          .andOn('m.entity_id', '=', 't.entity_id');
+      })
+      .where('m.metrics_type', metricsType)
+      .where('m.entity_id', entityId)
+      .where('t.team_slug', teamSlug)
+      .whereBetween('m.day', [fetchLowerBound, to])
+      .select(
+        'm.day as day',
+        'm.user_id as user_id',
+        'm.used_agent as used_agent',
+        'm.used_chat as used_chat',
+      );
+
+    // Build per-day membership sets so rolling windows can be unioned cheaply.
+    const activeByDay = new Map<string, Set<number>>();
+    const agentByDay = new Map<string, Set<number>>();
+    const chatByDay = new Map<string, Set<number>>();
+
+    for (const row of activityRows as Array<{
+      day: string | Date;
+      user_id: number;
+      used_agent: boolean | number | null;
+      used_chat: boolean | number | null;
+    }>) {
+      const day =
+        row.day instanceof Date
+          ? DateTime.fromJSDate(row.day).toFormat('yyyy-MM-dd')
+          : String(row.day).slice(0, 10);
+      const userId = Number(row.user_id);
+
+      if (!activeByDay.has(day)) activeByDay.set(day, new Set<number>());
+      activeByDay.get(day)!.add(userId);
+
+      if (row.used_agent) {
+        if (!agentByDay.has(day)) agentByDay.set(day, new Set<number>());
+        agentByDay.get(day)!.add(userId);
+      }
+      if (row.used_chat) {
+        if (!chatByDay.has(day)) chatByDay.set(day, new Set<number>());
+        chatByDay.get(day)!.add(userId);
+      }
+    }
+
+    const distinctOverWindow = (
+      byDay: Map<string, Set<number>>,
+      endDay: string,
+      windowDays: number,
+    ): number => {
+      const start = DateTime.fromISO(endDay).minus({ days: windowDays - 1 });
+      const users = new Set<number>();
+      for (const [day, set] of byDay) {
+        const d = DateTime.fromISO(day);
+        if (d >= start && d <= DateTime.fromISO(endDay)) {
+          for (const userId of set) users.add(userId);
+        }
+      }
+      return users.size;
+    };
+
+    return rows.map(row => {
+      const day =
+        typeof row.day === 'string' ? row.day.slice(0, 10) : String(row.day);
+      return {
+        ...row,
+        weekly_active_users: distinctOverWindow(
+          activeByDay,
+          day,
+          WEEKLY_WINDOW_DAYS,
+        ),
+        monthly_active_users: distinctOverWindow(
+          activeByDay,
+          day,
+          MONTHLY_WINDOW_DAYS,
+        ),
+        monthly_active_agent_users: distinctOverWindow(
+          agentByDay,
+          day,
+          MONTHLY_WINDOW_DAYS,
+        ),
+        monthly_active_chat_users: distinctOverWindow(
+          chatByDay,
+          day,
+          MONTHLY_WINDOW_DAYS,
+        ),
+      };
+    });
   }
 
   async getPrMetrics(
