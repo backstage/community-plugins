@@ -58,11 +58,9 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * PDF DELIVERY
  * ─────────────────────────────────────────────────────────────────────────────
- *  jsPDF is loaded lazily from a CDN configured via JSPDF_CDN_URL (see Section 1).
- *  It is never bundled with the plugin — only downloaded when the user clicks
- *  "Download PDF Report" for the first time. Subsequent clicks reuse the cached
- *  library. The CDN URL defaults to Cloudflare but can be overridden to point
- *  at an internal CDN for air-gapped or CSP-restricted environments.
+ * jsPDF is loaded lazily via dynamic import('jspdf') when the user clicks
+ * "Download PDF Report". It is bundled as a separate chunk and cached by the
+ * browser; no external CDN script loading is required.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * KEY DEPENDENCIES
