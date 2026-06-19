@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-checkmarx-react",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "backstage": {
     "role": "common-library",
     "pluginId": "checkmarx",
