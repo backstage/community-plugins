@@ -18,7 +18,6 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import IconButton from '@mui/material/IconButton';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
@@ -31,15 +30,12 @@ import {
 import type { IncidentsData } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
-const useStyles = makeStyles(() => ({
-  tableCellStyle: {
-    lineHeight: '1.5rem',
-    fontSize: '0.875rem',
-  },
-}));
+const tableCellSx = {
+  lineHeight: '1.5rem',
+  fontSize: '0.875rem',
+};
 
 export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
-  const classes = useStyles();
   const { t } = useTranslation();
   const priorityMap = usePriorityMap();
   const incidentStateMap = useIncidentStateMap();
@@ -53,14 +49,14 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
         borderBottom: '1px solid #e0e0e0',
       }}
     >
-      <TableCell component="th" scope="row" className={classes.tableCellStyle}>
+      <TableCell component="th" scope="row" sx={tableCellSx}>
         {data.number}
       </TableCell>
-      <TableCell align="left" className={classes.tableCellStyle}>
+      <TableCell align="left" sx={tableCellSx}>
         <Tooltip title={data?.description} arrow placement="top">
           <Typography
             variant="body1"
-            style={{
+            sx={{
               maxWidth: 208,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -71,20 +67,20 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
           </Typography>
         </Tooltip>
       </TableCell>
-      <TableCell align="left" className={classes.tableCellStyle}>
+      <TableCell align="left" sx={tableCellSx}>
         {convertDateFormat(data?.sysCreatedOn)}
       </TableCell>
-      <TableCell align="left" className={classes.tableCellStyle}>
+      <TableCell align="left" sx={tableCellSx}>
         {renderStatusLabel(priorityMap[data?.priority])}
       </TableCell>
 
-      <TableCell align="left" className={classes.tableCellStyle}>
+      <TableCell align="left" sx={tableCellSx}>
         {renderStatusLabel(incidentStateMap[data?.incidentState])}
       </TableCell>
-      <TableCell align="left" className={classes.tableCellStyle}>
+      <TableCell align="left" sx={tableCellSx}>
         <Tooltip title={t('actions.openInServicenow')} arrow placement="top">
           <IconButton onClick={() => window.open(data.url, '_blank')}>
-            <OpenInNewIcon fontSize="small" style={{ color: 'inherit' }} />
+            <OpenInNewIcon fontSize="small" sx={{ color: 'inherit' }} />
           </IconButton>
         </Tooltip>
       </TableCell>

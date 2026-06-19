@@ -17,9 +17,6 @@ export const isMyProfile: (entity: Entity) => boolean;
 
 export { isServicenowAvailable };
 
-// @public
-export const Router: () => JSX_2.Element;
-
 // @public @deprecated (undocumented)
 export const ServicenowPage: () => JSX_2.Element;
 
