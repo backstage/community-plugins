@@ -62,6 +62,19 @@ New V2 data is stored in new plugin tables that match the GitHub report structur
 
 These tables are separate from the older schema used by the legacy dashboard. During migration, the plugin keeps legacy read endpoints available under `/api/copilot/legacy/*` while V2 backfill is validated.
 
+### AI Credits Consumption (Team-level)
+
+GitHub added a per-user `ai_credits_used` metric to the Copilot usage metrics
+report on 2026-06-19. This value is only available in the user-level
+(`users-1-day`) report and is not exposed at the organization or enterprise
+level. The plugin ingests it into `copilot_user_metrics.ai_credits_used` and,
+because team metrics are derived from user data, rolls it up into
+`copilot_daily_totals.total_ai_credits_used` for each team.
+
+In the dashboard a **Consumption** tab appears only when a team is selected from
+the team drop-down. It shows the total AI credits used over the selected
+timeframe along with a chart of daily consumption.
+
 ## Upgrade Steps
 
 ### 1. Upgrade The Plugin And Run Migrations
