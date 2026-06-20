@@ -98,6 +98,10 @@ workspace/catalog:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/catalog/**']
 
+workspace/checkmarx:
+- changed-files:
+  - any-glob-to-any-file: ['workspaces/checkmarx/**']
+
 workspace/cicd-statistics:
 - changed-files:
   - any-glob-to-any-file: ['workspaces/cicd-statistics/**']
