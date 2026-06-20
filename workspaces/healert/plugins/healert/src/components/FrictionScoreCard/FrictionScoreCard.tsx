@@ -112,15 +112,7 @@ import { useFrictionData } from '../../hooks/useFrictionData';
 // else in this file.
 // =============================================================================
 
-/**
- * CDN URL for jsPDF — loaded lazily when the user clicks "Download PDF Report".
- *
- * Override this to point at an internal CDN for air-gapped clusters or
- * environments with a Content-Security-Policy that blocks external scripts.
- * The URL must resolve to the jsPDF UMD bundle (jspdf.umd.min.js).
- *
- * Default: Cloudflare CDN — stable, fast, and globally available.
- */
+// jsPDF is loaded lazily via dynamic import('jspdf') when the user requests a PDF (see loadJsPDF below).
 
 /**
  * Friction scoring weights — one point value per event type.
