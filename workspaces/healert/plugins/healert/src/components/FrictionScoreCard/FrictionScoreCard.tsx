@@ -2268,7 +2268,14 @@ export function FrictionScoreCard() {
                 <span
                   className={classes.clearFilter}
                   onClick={clearAllFilters}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      clearAllFilters();
+                    }
+                  }}
                   role="button"
+                  tabIndex={0}
                 >
                   ✕ clear all filters
                 </span>
