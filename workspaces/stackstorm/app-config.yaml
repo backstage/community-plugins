@@ -11,7 +11,7 @@ organization:
 proxy:
   '/stackstorm':
     target: https://localhost/api
-    headers:
+    headers: {}
       
 
 backend:
@@ -41,5 +41,5 @@ backend:
     connection: ':memory:'
 
 # Customize according to your StackStorm instance
-# stackStorm:
+# stackstorm:
 #   webUrl: https://your-stackstorm-url

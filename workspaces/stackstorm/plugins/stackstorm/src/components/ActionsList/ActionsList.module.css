@@ -8,11 +8,6 @@
     border-bottom: 2px solid var(--bui-border-neutral);
   }
 
-  .nested {
-    padding-left: var(--bui-space-16);
-    padding-right: var(--bui-space-8);
-  }
-
   .icon {
     min-width: 34px;
     display: flex;
@@ -61,7 +56,7 @@
   }
 
   .collapseContentOpen {
-    max-height: 1000px;
+    max-height: none;
   }
 
   .collapseContentClosed {

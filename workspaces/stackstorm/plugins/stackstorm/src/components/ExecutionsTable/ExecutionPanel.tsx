@@ -21,7 +21,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { Execution, stackstormApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
-import { Button, Card, Table, Text } from '@backstage/ui';
+import { Button, Card, Text } from '@backstage/ui';
 import { Status } from './Status';
 import styles from './ExecutionPanel.module.css';
 
@@ -124,8 +124,13 @@ const ExecutionCard = ({ e }: { e: Execution }) => {
       />
       <div style={{ padding: 'var(--bui-space-2)' }}>
         <Button
-          href={`${st2.getExecutionHistoryUrl(e.id)}`}
-          target="_blank"
+          onClick={() =>
+            window.open(
+              `${st2.getExecutionHistoryUrl(e.id)}`,
+              '_blank',
+              'noopener,noreferrer',
+            )
+          }
           variant="secondary"
         >
           View in ST2

@@ -53,7 +53,13 @@ export const StackstormHome = (props: StackstormHomeProps) => (
           aria-label="Docs"
           icon={<RiBookOpenLine />}
           variant="primary"
-          onPress={() => window.open('https://docs.stackstorm.com/', '_blank')}
+          onPress={() =>
+            window.open(
+              'https://docs.stackstorm.com/',
+              '_blank',
+              'noopener,noreferrer',
+            )
+          }
         />
       )}
       <HeaderLabel label="Lifecycle" value="Alpha" />

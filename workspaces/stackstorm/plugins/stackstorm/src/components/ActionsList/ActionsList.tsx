@@ -17,7 +17,7 @@ import { useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { Button, Flex, Text } from '@backstage/ui';
+import { Button } from '@backstage/ui';
 import { RiArrowDownSLine, RiArrowUpSLine } from '@remixicon/react';
 import { Action, Pack, stackstormApiRef } from '../../api';
 import styles from './ActionsList.module.css';
