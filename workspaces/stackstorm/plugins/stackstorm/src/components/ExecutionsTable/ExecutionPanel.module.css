@@ -1,0 +1,30 @@
+@layer components {
+  .table {
+    max-width: 50%;
+    flex: 1;
+  }
+
+  .title {
+    padding-top: var(--bui-space-4);
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: var(--bui-space-2);
+  }
+
+  .card {
+    border-bottom: 2px solid var(--bui-border-neutral);
+  }
+
+  .tableHead {
+    padding-left: 0;
+  }
+
+  .tableRow {
+    background-color: var(--bui-bg-surface-1);
+  }
+
+  .tableRow:nth-of-type(odd) {
+    background-color: var(--bui-bg-surface-2);
+  }
+}

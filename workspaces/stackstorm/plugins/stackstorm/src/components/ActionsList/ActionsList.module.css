@@ -1,0 +1,96 @@
+@layer components {
+  .root {
+    width: 100%;
+    background-color: var(--bui-bg-surface-1);
+  }
+
+  .actions {
+    border-bottom: 2px solid var(--bui-border-neutral);
+  }
+
+  .nested {
+    padding-left: var(--bui-space-16);
+    padding-right: var(--bui-space-8);
+  }
+
+  .icon {
+    min-width: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .listItemButton {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--bui-space-2) var(--bui-space-4);
+    gap: var(--bui-space-2);
+    text-align: left;
+  }
+
+  .listItemText {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .primary {
+    font-weight: 500;
+    color: var(--bui-fg-primary);
+    margin-bottom: var(--bui-space-1);
+  }
+
+  .secondary {
+    font-size: 0.875rem;
+    color: var(--bui-fg-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .secondaryAction {
+    color: var(--bui-fg-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .collapseContent {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .collapseContentOpen {
+    max-height: 1000px;
+  }
+
+  .collapseContentClosed {
+    max-height: 0;
+  }
+
+  .nestedItem {
+    display: flex;
+    align-items: center;
+    padding: var(--bui-space-2) var(--bui-space-4);
+    padding-left: var(--bui-space-16);
+    border-bottom: 1px solid var(--bui-border-neutral);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s ease;
+  }
+
+  .nestedItem:hover {
+    background-color: var(--bui-bg-surface-2);
+  }
+
+  .nestedItemText {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .nestedItemSecondary {
+    color: var(--bui-fg-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+}
