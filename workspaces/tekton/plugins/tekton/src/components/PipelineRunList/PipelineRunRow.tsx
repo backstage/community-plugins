@@ -17,17 +17,13 @@ import type { SetStateAction, Dispatch } from 'react';
 
 import { useEffect, Fragment } from 'react';
 
-import {
-  Box,
-  Collapse,
-  IconButton,
-  makeStyles,
-  TableCell,
-  TableRow,
-  Theme,
-} from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Timestamp, Tooltip } from '@patternfly/react-core';
 
 import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
@@ -35,6 +31,7 @@ import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 import { TEKTON_SIGNED_ANNOTATION } from '../../consts/tekton-const';
 import { OpenRowStatus, tektonGroupColor } from '../../types/types';
 import { pipelineRunDuration } from '../../utils/tekton-utils';
+import { getMergedPipelineRunTableCellSx } from './pipelineRunTableColumns';
 import { PipelineRunVisualization } from '../pipeline-topology';
 import PipelineRunRowActions from './PipelineRunRowActions';
 import PipelineRunTaskStatus from './PipelineRunTaskStatus';
@@ -50,23 +47,6 @@ import SignedBadgeIcon from '../Icons/SignedBadge';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  plrRow: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: `${theme.palette.background.paper}`,
-    },
-  },
-  plrVisRow: {
-    borderBottom: `1px solid ${theme.palette.grey.A100}`,
-  },
-  signedIndicator: {
-    display: 'inline-block',
-    width: theme.spacing(2.5),
-    position: 'relative',
-    top: theme.spacing(0.5),
-  },
-}));
-
 type PipelineRunRowProps = {
   row: PipelineRunKind;
   startTime: string;
@@ -78,7 +58,6 @@ type PipelineRunRowProps = {
 type PipelineRunNameProps = { row: PipelineRunKind };
 
 const PipelineRunName = ({ row }: PipelineRunNameProps) => {
-  const classes = useStyles();
   const name = row.metadata?.name;
   const signed =
     row?.metadata?.annotations?.[TEKTON_SIGNED_ANNOTATION] === 'true';
@@ -93,15 +72,18 @@ const PipelineRunName = ({ row }: PipelineRunNameProps) => {
           suffix={
             signed ? (
               <Tooltip content="Signed">
-                <div
+                <Box
                   data-testid="pipelinerun-signed"
-                  className={classNames(
-                    classes.signedIndicator,
-                    'signed-indicator',
-                  )}
+                  className={classNames('signed-indicator')}
+                  sx={{
+                    display: 'inline-block',
+                    width: theme => theme.spacing(2.5),
+                    position: 'relative',
+                    top: theme => theme.spacing(0.5),
+                  }}
                 >
                   <SignedBadgeIcon />
-                </div>
+                </Box>
               </Tooltip>
             ) : null
           }
@@ -120,7 +102,6 @@ export const PipelineRunRow = ({
   open,
   setOpen,
 }: PipelineRunRowProps) => {
-  const classes = useStyles();
   const uid = row.metadata?.uid;
   const { t } = useTranslationRef(tektonTranslationRef);
 
@@ -146,31 +127,63 @@ export const PipelineRunRow = ({
 
   return (
     <Fragment key={uid}>
-      <TableRow className={classes.plrRow} data-testid="pipelinerun-row">
-        <TableCell data-testid="pipelinerun-expand-cell">
+      <TableRow
+        data-testid="pipelinerun-row"
+        sx={{
+          '&:nth-of-type(odd)': {
+            backgroundColor: theme => theme.palette.background.paper,
+          },
+        }}
+      >
+        <TableCell
+          data-testid="pipelinerun-expand-cell"
+          padding="checkbox"
+          sx={getMergedPipelineRunTableCellSx('expander')}
+        >
           <IconButton
             aria-label="expand row"
             size="small"
             onClick={expandCollapseClickHandler}
             role="button"
             data-testid="pipelinerun-expand-btn"
+            sx={{ p: 0.5 }}
           >
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-name-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-name-cell"
+          sx={getMergedPipelineRunTableCellSx('name')}
+        >
           <PipelineRunName row={row} />
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-vulnerabilities-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-vulnerabilities-cell"
+          sx={getMergedPipelineRunTableCellSx('vulnerabilities')}
+        >
           <PipelineRunVulnerabilities pipelineRun={row} condensed />
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-status-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-status-cell"
+          sx={getMergedPipelineRunTableCellSx('status')}
+        >
           <PlrStatus obj={row} />
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-task-status-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-task-status-cell"
+          sx={getMergedPipelineRunTableCellSx('task-status')}
+        >
           <PipelineRunTaskStatus pipelineRun={row} /> {/* Missed here */}
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-start-time-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-start-time-cell"
+          sx={getMergedPipelineRunTableCellSx('start-time')}
+        >
           {startTime ? (
             <Timestamp
               data-testid="pipelinerun-start-time"
@@ -181,16 +194,26 @@ export const PipelineRunRow = ({
             '-'
           )}
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-duration-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-duration-cell"
+          sx={getMergedPipelineRunTableCellSx('duration')}
+        >
           {pipelineRunDuration(row, t)}
         </TableCell>
-        <TableCell align="left" data-testid="pipelinerun-actions-cell">
+        <TableCell
+          align="left"
+          data-testid="pipelinerun-actions-cell"
+          sx={getMergedPipelineRunTableCellSx('actions')}
+        >
           <PipelineRunRowActions pipelineRun={row} />
         </TableCell>
       </TableRow>
       <TableRow
-        className={classes.plrVisRow}
         data-testid="pipelinerun-visualisation-row"
+        sx={{
+          borderBottom: theme => `1px solid ${theme.palette.grey.A100}`,
+        }}
       >
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>

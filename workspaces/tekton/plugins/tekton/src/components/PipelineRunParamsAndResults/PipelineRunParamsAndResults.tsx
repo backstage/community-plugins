@@ -17,7 +17,7 @@
 import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations';
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { PipelineRunParams } from './PipelineRunParams';
 import { PipelineRunResults } from './PipelineRunResults';
 

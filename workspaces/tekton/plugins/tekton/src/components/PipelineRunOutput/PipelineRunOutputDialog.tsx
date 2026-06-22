@@ -17,16 +17,12 @@ import { memo } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
 
-import {
-  Box,
-  createStyles,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import type { SxProps, Theme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 import {
@@ -40,21 +36,18 @@ import ResourceBadge from '../PipelineRunList/ResourceBadge';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  }),
-);
+const titleContainerSx = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 1,
+};
+
+const closeButtonSx: SxProps<Theme> = {
+  position: 'absolute',
+  right: 1,
+  top: 1,
+  color: (theme: Theme) => theme.palette.grey[500],
+};
 
 type PipelineRunOutputDialogProps = {
   open: boolean;
@@ -68,7 +61,6 @@ const PipelineRunOutputDialog = ({
   pipelineRun,
   taskRuns,
 }: PipelineRunOutputDialogProps) => {
-  const classes = useStyles();
   const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
@@ -80,7 +72,7 @@ const PipelineRunOutputDialog = ({
       onClose={closeDialog}
     >
       <DialogTitle id="pipelinerun-output" title={t('pipelineRunOutput.title')}>
-        <Box className={classes.titleContainer}>
+        <Box sx={titleContainerSx}>
           <ResourceBadge
             color={tektonGroupColor}
             abbr="PLR"
@@ -88,7 +80,7 @@ const PipelineRunOutputDialog = ({
           />{' '}
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
+            sx={closeButtonSx}
             onClick={closeDialog}
           >
             <CloseIcon />

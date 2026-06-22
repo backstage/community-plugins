@@ -40,15 +40,6 @@ const mockUsePermission = usePermission as jest.MockedFunction<
   typeof usePermission
 >;
 
-jest.mock('@material-ui/styles', () => ({
-  ...jest.requireActual('@material-ui/styles'),
-  makeStyles: () => (_theme: any) => {
-    return {
-      ok: 'ok',
-    };
-  },
-}));
-
 describe('PipelineRunList', () => {
   beforeEach(() => {
     mockUsePermission.mockReturnValue({ loading: false, allowed: true });

@@ -27,18 +27,15 @@ import {
 
 import { InfoCard, Progress } from '@backstage/core-components';
 
-import {
-  Box,
-  makeStyles,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TablePagination,
-  TableRow,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 import {
   ComputedStatus,
@@ -56,53 +53,36 @@ import { getPipelineRunColumnHeader } from './PipelineRunColumnHeader';
 import { PipelineRunListSearchBar } from './PipelineRunListSearchBar';
 import { PipelineRunTableBody } from './PipelineRunTableBody';
 import { EnhancedTableHead } from './PipelineTableHeader';
+import { pipelineRunTableSx } from './pipelineRunTableColumns';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
 type WrapperInfoCardProps = {
   allErrors?: ClusterErrors;
   showClusterSelector?: boolean;
-  titleClassName?: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    alignItems: 'start',
-    padding: theme.spacing(3, 0, 2.5, 2.5),
-  },
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  title: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'center',
-  },
-  footer: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: `${theme.palette.background.paper}`,
-    },
-  },
-}));
+const titleSx = {
+  display: 'flex',
+  gap: '20px',
+  alignItems: 'center',
+};
 
 const WrapperInfoCard = ({
   children,
   allErrors,
   showClusterSelector = true,
-  titleClassName,
 }: PropsWithChildren<WrapperInfoCardProps>) => (
   <>
     {allErrors && allErrors.length > 0 && <ErrorPanel allErrors={allErrors} />}
     <InfoCard
       {...(showClusterSelector && {
         title: (
-          <div className={titleClassName}>
+          <Box sx={titleSx}>
             <ClusterSelector />
             <StatusSelector />
             <TableExpandCollapse />
-          </div>
+          </Box>
         ),
       })}
     >
@@ -205,8 +185,6 @@ const PipelineRunList = () => {
         )
       : 0;
 
-  const classes = useStyles();
-
   const allErrors: ClusterErrors = [
     ...(responseError ? [{ message: responseError }] : []),
     ...(selectedClusterErrors ?? []),
@@ -223,7 +201,6 @@ const PipelineRunList = () => {
     <WrapperInfoCard
       allErrors={allErrors}
       showClusterSelector={clusters.length > 0}
-      titleClassName={classes.title}
     >
       <Box>
         <Paper>
@@ -236,7 +213,7 @@ const PipelineRunList = () => {
           <Table
             aria-labelledby="Pipeline Runs"
             size="small"
-            style={{ width: '100%' }}
+            sx={pipelineRunTableSx}
           >
             <EnhancedTableHead
               order={order}
@@ -252,7 +229,13 @@ const PipelineRunList = () => {
                     <TableCell colSpan={pipelineRunColumnHeader.length} />
                   </TableRow>
                 )}
-                <TableRow className={classes.footer}>
+                <TableRow
+                  sx={{
+                    '&:nth-of-type(odd)': {
+                      backgroundColor: theme => theme.palette.background.paper,
+                    },
+                  }}
+                >
                   <TablePagination
                     rowsPerPageOptions={[
                       {
@@ -290,12 +273,16 @@ const PipelineRunList = () => {
               <tbody>
                 <tr>
                   <td colSpan={pipelineRunColumnHeader.length}>
-                    <div
+                    <Box
                       data-testid="no-pipeline-runs"
-                      className={classes.empty}
+                      sx={{
+                        padding: 2,
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
                     >
                       {t('pipelineRunList.noPipelineRuns')}
-                    </div>
+                    </Box>
                   </td>
                 </tr>
               </tbody>

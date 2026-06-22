@@ -20,7 +20,7 @@ import { useContext, useState, memo } from 'react';
 import { kubernetesProxyPermission } from '@backstage/plugin-kubernetes-common';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { IconButton } from '@material-ui/core';
+import IconButton from '@mui/material/IconButton';
 import { Flex, FlexItem } from '@patternfly/react-core';
 import { Tooltip } from '@patternfly/react-core/dist/esm/components/Tooltip/Tooltip';
 

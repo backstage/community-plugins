@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Theme } from '@material-ui/core';
 import { screen } from '@testing-library/react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { testPipelineRunPods } from '../../../__fixtures__/pods-data';
 import PipelineRunLogDialog from '../PipelineRunLogDialog';
-
-jest.mock('@material-ui/styles', () => ({
-  ...jest.requireActual('@material-ui/styles'),
-  makeStyles: (cb: any) => (theme: Theme) =>
-    cb({
-      ...theme,
-      spacing: () => 0,
-      palette: { grey: { 500: 'grey' } },
-    }),
-}));
 
 jest.mock('@backstage/core-components', () => ({
   ErrorBoundary: (props: any) => <>{props.children}</>,

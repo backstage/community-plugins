@@ -18,16 +18,12 @@ import { useState, useEffect, memo } from 'react';
 import { ErrorBoundary } from '@backstage/core-components';
 
 import { V1Pod } from '@kubernetes/client-node';
-import {
-  Box,
-  createStyles,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import type { SxProps, Theme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 import {
@@ -42,21 +38,18 @@ import PipelineRunLogs from './PipelineRunLogs';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  }),
-);
+const titleContainerSx = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 1,
+};
+
+const closeButtonSx: SxProps<Theme> = {
+  position: 'absolute',
+  right: 1,
+  top: 1,
+  color: (theme: Theme) => theme.palette.grey[500],
+};
 
 type PipelineRunLogDialogProps = {
   open: boolean;
@@ -76,8 +69,6 @@ const PipelineRunLogDialog = ({
   activeTask,
   forSBOM,
 }: PipelineRunLogDialogProps) => {
-  const classes = useStyles();
-
   const [task, setTask] = useState(activeTask);
   const { t } = useTranslationRef(tektonTranslationRef);
 
@@ -97,7 +88,7 @@ const PipelineRunLogDialog = ({
       onClose={closeDialog}
     >
       <DialogTitle id="pipelinerun-logs" title={t('pipelineRunLogs.title')}>
-        <Box className={classes.titleContainer}>
+        <Box sx={titleContainerSx}>
           <ResourceBadge
             color={tektonGroupColor}
             abbr="PLR"
@@ -105,7 +96,7 @@ const PipelineRunLogDialog = ({
           />
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
+            sx={closeButtonSx}
             onClick={closeDialog}
           >
             <CloseIcon />

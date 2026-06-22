@@ -17,7 +17,7 @@ import { useContext } from 'react';
 
 import { Select, SelectedItems } from '@backstage/core-components';
 
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 
 import './StatusSelector.css';
 
@@ -27,17 +27,14 @@ import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
-const useStyles = makeStyles<Theme>(theme => ({
-  label: {
-    color: theme.palette.text.primary,
-    fontSize: '1rem',
-    paddingRight: '10px',
-    fontWeight: 'bold',
-  },
-}));
+const labelSx = {
+  color: 'text.primary',
+  fontSize: '1rem',
+  paddingRight: '10px',
+  fontWeight: 'bold',
+};
 
 export const StatusSelector = () => {
-  const classes = useStyles();
   const { selectedStatus, setSelectedStatus } = useContext(
     TektonResourcesContext,
   );
@@ -62,9 +59,7 @@ export const StatusSelector = () => {
 
   return (
     <div className="bs-tkn-status-selector">
-      <Typography className={classes.label}>
-        {t('statusSelector.label')}
-      </Typography>
+      <Typography sx={labelSx}>{t('statusSelector.label')}</Typography>
       <Select
         onChange={onStatusChange}
         label=""

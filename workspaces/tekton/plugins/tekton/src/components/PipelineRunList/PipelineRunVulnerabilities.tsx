@@ -15,7 +15,7 @@
  */
 import type { FC } from 'react';
 
-import { makeStyles, Theme } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import AngleDoubleDownIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
 import AngleDoubleUpIcon from '@mui/icons-material/KeyboardDoubleArrowUpOutlined';
 import { Tooltip } from '@patternfly/react-core';
@@ -31,47 +31,6 @@ import EqualsIcon from '../Icons/EqualsIcon';
 import { tektonTranslationRef } from '../../translations/index.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-const useVStyles = makeStyles((theme: Theme) => ({
-  pipelineVulnerabilities: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: theme.spacing(1),
-  },
-  severityContainer: {
-    alignItems: 'center',
-    display: 'flex',
-    flexWrap: 'nowrap',
-    gap: theme.spacing(0.5),
-  },
-  severityStatus: {
-    alignItems: 'center',
-    display: 'flex',
-    flexWrap: 'nowrap',
-    gap: theme.spacing(0.5),
-  },
-  severityCount: {
-    fontWeight: 'bold',
-  },
-  criticalStatus: {
-    height: '1em',
-    width: '1em',
-  },
-  highStatus: {
-    color: highColor.value,
-    height: '0.8em',
-    width: '0.8em',
-  },
-  mediumStatus: {
-    color: mediumColor.value,
-    height: '1.3em',
-    width: '1.3em',
-  },
-  lowStatus: {
-    height: '0.8em',
-    width: '0.8em',
-  },
-}));
-
 type PipelineRunVulnerabilitiesProps = {
   pipelineRun: PipelineRunKind;
   condensed?: boolean;
@@ -81,46 +40,95 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
   pipelineRun,
   condensed,
 }) => {
-  const classes = useVStyles();
   const scanResults = usePipelineRunScanResults(pipelineRun);
   const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
-    <div className={classes.pipelineVulnerabilities}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 1,
+      }}
+    >
       {scanResults?.vulnerabilities ? (
         <>
-          <div className={classNames(classes.severityContainer, 'severity')}>
-            <span className={classes.severityStatus}>
+          <Box
+            className={classNames('severity')}
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              flexWrap: 'nowrap',
+              gap: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                flexWrap: 'nowrap',
+                gap: 0.5,
+              }}
+            >
               <Tooltip
                 content={t(
                   'pipelineRunList.vulnerabilitySeverityTitle.critical',
                 )}
               >
-                <CriticalRiskIcon
-                  className={classes.criticalStatus}
-                  title={t(
-                    'pipelineRunList.vulnerabilitySeverityTitle.critical',
-                  )}
-                />
+                <Box
+                  component="span"
+                  sx={{
+                    display: 'inline-flex',
+                    height: '1em',
+                    width: '1em',
+                  }}
+                >
+                  <CriticalRiskIcon
+                    className=""
+                    title={t(
+                      'pipelineRunList.vulnerabilitySeverityTitle.critical',
+                    )}
+                  />
+                </Box>
               </Tooltip>
               {!condensed
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.critical')
                 : null}
-            </span>
-            <span
-              className={classes.severityCount}
+            </Box>
+            <Box
+              component="span"
+              sx={{ fontWeight: 'bold' }}
               data-testid="pipelinerun-critical-vulnerabilities-count"
             >
               {scanResults.vulnerabilities.critical || 0}
-            </span>
-          </div>
-          <div className={classNames(classes.severityContainer, 'severity')}>
-            <span className={classes.severityStatus}>
+            </Box>
+          </Box>
+          <Box
+            className={classNames('severity')}
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              flexWrap: 'nowrap',
+              gap: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                flexWrap: 'nowrap',
+                gap: 0.5,
+              }}
+            >
               <Tooltip
                 content={t('pipelineRunList.vulnerabilitySeverityTitle.high')}
               >
                 <AngleDoubleUpIcon
-                  className={classes.highStatus}
+                  sx={{
+                    color: highColor.value,
+                    height: '0.8em',
+                    width: '0.8em',
+                  }}
                   titleAccess={t(
                     'pipelineRunList.vulnerabilitySeverityTitle.high',
                   )}
@@ -129,42 +137,86 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
               {!condensed
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.high')
                 : null}
-            </span>
-            <span
-              className={classes.severityCount}
+            </Box>
+            <Box
+              component="span"
+              sx={{ fontWeight: 'bold' }}
               data-testid="pipelinerun-high-vulnerabilities-count"
             >
               {scanResults.vulnerabilities.high || 0}
-            </span>
-          </div>
-          <div className={classNames(classes.severityContainer, 'severity')}>
-            <span className={classes.severityStatus}>
+            </Box>
+          </Box>
+          <Box
+            className={classNames('severity')}
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              flexWrap: 'nowrap',
+              gap: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                flexWrap: 'nowrap',
+                gap: 0.5,
+              }}
+            >
               <Tooltip
                 content={t('pipelineRunList.vulnerabilitySeverityTitle.medium')}
               >
-                <EqualsIcon
-                  className={classes.mediumStatus}
-                  title={t('pipelineRunList.vulnerabilitySeverityTitle.medium')}
-                />
+                <Box
+                  component="span"
+                  sx={{
+                    color: mediumColor.value,
+                    display: 'inline-flex',
+                    height: '1.3em',
+                    width: '1.3em',
+                  }}
+                >
+                  <EqualsIcon
+                    className=""
+                    title={t(
+                      'pipelineRunList.vulnerabilitySeverityTitle.medium',
+                    )}
+                  />
+                </Box>
               </Tooltip>
               {!condensed
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.medium')
                 : null}
-            </span>
-            <span
-              className={classes.severityCount}
+            </Box>
+            <Box
+              component="span"
+              sx={{ fontWeight: 'bold' }}
               data-testid="pipelinerun-medium-vulnerabilities-count"
             >
               {scanResults.vulnerabilities.medium || 0}
-            </span>
-          </div>
-          <div className={classNames(classes.severityContainer, 'severity')}>
-            <span className={classes.severityStatus}>
+            </Box>
+          </Box>
+          <Box
+            className={classNames('severity')}
+            sx={{
+              alignItems: 'center',
+              display: 'flex',
+              flexWrap: 'nowrap',
+              gap: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex',
+                flexWrap: 'nowrap',
+                gap: 0.5,
+              }}
+            >
               <Tooltip
                 content={t('pipelineRunList.vulnerabilitySeverityTitle.low')}
               >
                 <AngleDoubleDownIcon
-                  className={classes.lowStatus}
+                  sx={{ height: '0.8em', width: '0.8em' }}
                   titleAccess={t(
                     'pipelineRunList.vulnerabilitySeverityTitle.low',
                   )}
@@ -173,19 +225,20 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
               {!condensed
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.low')
                 : null}
-            </span>
-            <span
-              className={classes.severityCount}
+            </Box>
+            <Box
+              component="span"
+              sx={{ fontWeight: 'bold' }}
               data-testid="pipelinerun-low-vulnerabilities-count"
             >
               {scanResults.vulnerabilities.low || 0}
-            </span>
-          </div>
+            </Box>
+          </Box>
         </>
       ) : (
         '-'
       )}
-    </div>
+    </Box>
   );
 };
 
