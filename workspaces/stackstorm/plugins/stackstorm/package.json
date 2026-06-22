@@ -46,9 +46,10 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
-    "@material-ui/core": "^4.12.2",
-    "@material-ui/icons": "^4.9.1",
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": "^4.3.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-aria-components": "^1.5.0",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
