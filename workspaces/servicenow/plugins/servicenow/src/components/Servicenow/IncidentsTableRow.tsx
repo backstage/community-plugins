@@ -79,7 +79,10 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
       </TableCell>
       <TableCell align="left" sx={tableCellSx}>
         <Tooltip title={t('actions.openInServicenow')} arrow placement="top">
-          <IconButton onClick={() => window.open(data.url, '_blank')}>
+          <IconButton
+            aria-label={t('actions.openInServicenow')}
+            onClick={() => window.open(data.url, '_blank')}
+          >
             <OpenInNewIcon fontSize="small" sx={{ color: 'inherit' }} />
           </IconButton>
         </Tooltip>
