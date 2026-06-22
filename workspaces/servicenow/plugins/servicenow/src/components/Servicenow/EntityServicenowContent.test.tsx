@@ -29,8 +29,6 @@ import userEvent from '@testing-library/user-event';
 
 import { MemoryRouter } from 'react-router-dom';
 
-import { ThemeProvider, createTheme } from '@material-ui/core';
-
 import { of } from 'rxjs';
 
 import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
@@ -87,8 +85,6 @@ const mockTranslationApi = {
   ),
 };
 
-const theme = createTheme();
-
 describe('ServicenowContent', () => {
   const mockServiceNowApi = {
     getIncidents: jest.fn(),
@@ -105,22 +101,20 @@ describe('ServicenowContent', () => {
   it('renders the table with incident rows', async () => {
     render(
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <TestApiProvider
-            apis={[
-              [serviceNowApiRef, mockServiceNowApi],
-              [catalogApiRef, mockCatalogApi],
-              [identityApiRef, mockIdentityApi],
-              [alertApiRef, mockAlertApi],
-              [errorApiRef, mockErrorApi],
-              [translationApiRef, mockTranslationApi as any],
-            ]}
-          >
-            <EntityProvider entity={mockEntity}>
-              <EntityServicenowContent />
-            </EntityProvider>
-          </TestApiProvider>
-        </ThemeProvider>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
       </MemoryRouter>,
     );
 
@@ -149,22 +143,20 @@ describe('ServicenowContent', () => {
   it('displays pagination dropdown', async () => {
     render(
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <TestApiProvider
-            apis={[
-              [serviceNowApiRef, mockServiceNowApi],
-              [catalogApiRef, mockCatalogApi],
-              [identityApiRef, mockIdentityApi],
-              [alertApiRef, mockAlertApi],
-              [errorApiRef, mockErrorApi],
-              [translationApiRef, mockTranslationApi as any],
-            ]}
-          >
-            <EntityProvider entity={mockEntity}>
-              <EntityServicenowContent />
-            </EntityProvider>
-          </TestApiProvider>
-        </ThemeProvider>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
       </MemoryRouter>,
     );
 
@@ -191,22 +183,20 @@ describe('ServicenowContent', () => {
 
     render(
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <TestApiProvider
-            apis={[
-              [serviceNowApiRef, mockServiceNowApi],
-              [catalogApiRef, mockCatalogApi],
-              [identityApiRef, mockIdentityApi],
-              [alertApiRef, mockAlertApi],
-              [errorApiRef, mockErrorApi],
-              [translationApiRef, mockTranslationApi as any],
-            ]}
-          >
-            <EntityProvider entity={mockEntity}>
-              <EntityServicenowContent />
-            </EntityProvider>
-          </TestApiProvider>
-        </ThemeProvider>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
       </MemoryRouter>,
     );
 
@@ -224,22 +214,20 @@ describe('ServicenowContent', () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
-        <ThemeProvider theme={theme}>
-          <TestApiProvider
-            apis={[
-              [serviceNowApiRef, mockServiceNowApi],
-              [catalogApiRef, mockCatalogApi],
-              [identityApiRef, mockIdentityApi],
-              [alertApiRef, mockAlertApi],
-              [errorApiRef, mockErrorApi],
-              [translationApiRef, mockTranslationApi as any],
-            ]}
-          >
-            <EntityProvider entity={mockEntity}>
-              <EntityServicenowContent />
-            </EntityProvider>
-          </TestApiProvider>
-        </ThemeProvider>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
       </MemoryRouter>,
     );
 

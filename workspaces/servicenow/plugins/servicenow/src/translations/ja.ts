@@ -51,6 +51,7 @@ const servicenowTranslationJa = createTranslationMessages({
     'table.columns.actions': 'アクション',
     'table.emptyContent': 'レコードが見つかりません',
     'actions.openInServicenow': 'ServiceNow で開く',
+    'actions.clearSearch': '検索をクリア',
   },
 });
 

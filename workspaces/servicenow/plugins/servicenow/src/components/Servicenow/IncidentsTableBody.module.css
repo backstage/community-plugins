@@ -1,0 +1,7 @@
+@layer components {
+  .emptyRow {
+    padding: var(--bui-space-4);
+    display: flex;
+    justify-content: center;
+  }
+}

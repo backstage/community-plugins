@@ -57,6 +57,7 @@ export const servicenowMessages = {
   },
   actions: {
     openInServicenow: 'Open in ServiceNow',
+    clearSearch: 'Clear search',
   },
 };
 

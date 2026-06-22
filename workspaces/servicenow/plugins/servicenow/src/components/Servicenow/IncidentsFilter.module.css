@@ -1,0 +1,14 @@
+@layer components {
+  .filterContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-4);
+    min-width: 200px;
+  }
+
+  @media (min-width: 1200px) {
+    .filterContainer {
+      min-width: auto;
+    }
+  }
+}

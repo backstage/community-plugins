@@ -1,0 +1,26 @@
+@layer components {
+  .tableRow {
+    font-size: 0.875rem;
+  }
+
+  .tableRow:nth-child(even) {
+    background-color: var(--bui-bg-neutral-1);
+  }
+
+  .tableRow:last-child {
+    border-bottom: 0;
+  }
+
+  .tableCellStyle {
+    line-height: 1.5rem;
+    font-size: 0.875rem;
+    padding: 24px 16px 24px 20px;
+  }
+
+  .descriptionCell {
+    max-width: 208px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

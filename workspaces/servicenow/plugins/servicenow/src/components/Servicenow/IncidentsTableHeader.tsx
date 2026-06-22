@@ -15,15 +15,13 @@
  */
 
 import { MouseEvent } from 'react';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
+import { RiArrowDownSLine, RiArrowUpSLine } from '@remixicon/react';
 
 import type { Order } from '@backstage-community/plugin-servicenow-common';
 
 import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentTableField } from '../../types';
+import styles from './IncidentsTableHeader.module.css';
 
 type IncidentsTableHeaderProps = {
   order: Order;
@@ -46,37 +44,53 @@ export const IncidentsTableHeader = ({
       onRequestSort(event, property);
     };
 
+  const getSortState = (column: IncidentTableField) => {
+    if (orderBy !== column) {
+      return 'none';
+    }
+    return order === 'asc' ? 'ascending' : 'descending';
+  };
+
   return (
-    <TableHead>
-      <TableRow sx={{ marginLeft: '6px', borderBottom: '1px solid #e0e0e0' }}>
-        {incidentsListColumns.map(column => (
-          <TableCell
-            key={column.id as string}
-            align="left"
-            padding="normal"
-            style={{
-              lineHeight: '1.5rem',
-              fontSize: '0.875rem',
-              padding: '24px 16px 24px 20px',
-              fontWeight: '700',
-            }}
-            sortDirection={orderBy === column.field ? order : 'asc'}
-          >
-            <TableSortLabel
-              active={orderBy === column.field}
-              direction={orderBy === column.field ? order : 'asc'}
-              onClick={
-                column.sorting === false
-                  ? undefined
-                  : createSortHandler(column.field as IncidentTableField)
-              }
-              disabled={column.sorting === false}
+    <div className={styles.headerRow}>
+      <div className={styles.headerRowContent}>
+        {incidentsListColumns.map(column => {
+          const isSorted = orderBy === column.field;
+          const sortState = getSortState(column.field as IncidentTableField);
+          const sortLabel =
+            sortState === 'none'
+              ? `${column.title}, not sorted`
+              : `${column.title}, sorted ${sortState}`;
+
+          return (
+            <div
+              key={column.id as string}
+              className={styles.headerCell}
+              aria-sort={sortState as 'none' | 'ascending' | 'descending'}
             >
-              {column.title}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
+              <button
+                className={styles.headerButton}
+                onClick={
+                  column.sorting === false
+                    ? undefined
+                    : createSortHandler(column.field as IncidentTableField)
+                }
+                disabled={column.sorting === false}
+                type="button"
+                aria-label={sortLabel}
+              >
+                {column.title}
+                {isSorted &&
+                  (order === 'asc' ? (
+                    <RiArrowUpSLine size={16} />
+                  ) : (
+                    <RiArrowDownSLine size={16} />
+                  ))}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
