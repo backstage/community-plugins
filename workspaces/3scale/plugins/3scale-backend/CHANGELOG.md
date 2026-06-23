@@ -1,5 +1,11 @@
 # @backstage-community/plugin-3scale-backend
 
+## 3.14.1
+
+### Patch Changes
+
+- da1312a: Added module wiring and contract tests, a contributor guide for local development, and fixed `addLabels: false` config parsing.
+
 ## 3.14.0
 
 ### Minor Changes
