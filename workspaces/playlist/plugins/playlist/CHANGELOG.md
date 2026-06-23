@@ -1,5 +1,16 @@
 # @backstage-community/plugin-playlist
 
+## 0.20.0
+
+### Minor Changes
+
+- 5b92aca: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [5b92aca]
+  - @backstage-community/plugin-playlist-common@0.19.0
+
 ## 0.19.0
 
 ### Minor Changes
