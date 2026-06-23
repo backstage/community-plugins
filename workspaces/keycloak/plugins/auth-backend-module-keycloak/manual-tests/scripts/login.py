@@ -8,6 +8,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.parse
 
 try:
@@ -41,8 +42,13 @@ def _use_manual_redirects() -> bool:
     return bool(_HOST_REWRITES)
 
 
+_MAX_REDIRECT_HOPS = 20
+
+
 def _follow_redirects(session: requests.Session, resp: requests.Response) -> requests.Response:
-    while resp.is_redirect or resp.status_code in (301, 302, 303, 307, 308):
+    for _ in range(_MAX_REDIRECT_HOPS):
+        if not (resp.is_redirect or resp.status_code in (301, 302, 303, 307, 308)):
+            break
         location = resp.headers.get("Location", "")
         if not location:
             break
@@ -51,7 +57,13 @@ def _follow_redirects(session: requests.Session, resp: requests.Response) -> req
             resp = session.get(location, allow_redirects=False)
         else:
             resp = session.request(resp.request.method, location, allow_redirects=False)
+    else:
+        raise RuntimeError(f"Too many redirects (>{_MAX_REDIRECT_HOPS})")
     return resp
+
+
+_CATALOG_USER_RETRY_SECONDS = 15
+_CATALOG_USER_RETRY_INTERVAL = 1.0
 
 
 def _assert_catalog_user_ready() -> None:
@@ -59,18 +71,26 @@ def _assert_catalog_user_ready() -> None:
     if not static_token:
         return
 
-    resp = requests.get(
-        f"{BACKSTAGE_BASE_URL}/api/catalog/entities/by-name/user/default/test",
-        headers={"Authorization": f"Bearer {static_token}"},
-        timeout=10,
-    )
-    if resp.status_code == 404:
-        raise RuntimeError(
-            "Catalog User 'test' not found — restart the auth dev harness after any "
-            "change to manual-tests/catalog/users.yaml: "
-            "yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider start"
+    deadline = time.monotonic() + _CATALOG_USER_RETRY_SECONDS
+    while True:
+        resp = requests.get(
+            f"{BACKSTAGE_BASE_URL}/api/catalog/entities/by-name/user/default/test",
+            headers={"Authorization": f"Bearer {static_token}"},
+            timeout=10,
         )
-    resp.raise_for_status()
+        if resp.status_code != 404:
+            resp.raise_for_status()
+            return
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(_CATALOG_USER_RETRY_INTERVAL)
+
+    raise RuntimeError(
+        "Catalog User 'test' not found after waiting — wait a few seconds after starting "
+        "the auth dev harness, or restart it after any change to "
+        "manual-tests/catalog/users.yaml: "
+        "yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider start"
+    )
 
 
 def get_backstage_token(username: str, password: str) -> str:
