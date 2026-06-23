@@ -471,7 +471,7 @@
         "http://localhost:7007/*",
         "http://localhost:3000/*"
       ],
-      "webOrigins": ["http://localhost:7007", "http://localhost:3000", "+"],
+      "webOrigins": ["http://localhost:7007", "http://localhost:3000"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,

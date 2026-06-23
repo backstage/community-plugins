@@ -21,7 +21,7 @@ const backend = createBackend();
 backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('../src'));
 
-// Catalog is loaded for manual-tests sign-in resolver smoke (see app-config.manual-tests.yaml).
+// Catalog is loaded for manual-tests sign-in resolver smoke (see app-config.yaml).
 backend.add(import('@backstage/plugin-catalog-backend'));
 backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
