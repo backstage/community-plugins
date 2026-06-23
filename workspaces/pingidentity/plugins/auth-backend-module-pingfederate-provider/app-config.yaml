@@ -1,0 +1,24 @@
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          subject: user:default/guest
+
+auth:
+  environment: development
+  session:
+    secret: ${AUTH_SESSION_SECRET}
+  providers:
+    pingfederate:
+      development:
+        baseUrl: ${PINGFEDERATE_BASE_URL}
+        clientId: ${PINGFEDERATE_CLIENT_ID}
+        clientSecret: ${PINGFEDERATE_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: subClaimMatchingPingIdentityUserId

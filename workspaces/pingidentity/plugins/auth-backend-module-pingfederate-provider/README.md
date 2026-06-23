@@ -4,6 +4,8 @@ This module provides a PingFederate auth provider implementation for `@backstage
 
 The provider uses OIDC authentication and includes PingFederate-specific sign-in resolvers for matching users via LDAP UUID and Ping Identity user IDs.
 
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for development harnesses, tests, and bump-review guidance.
+
 > **Note:** This provider has only been tested with LDAP catalog provider (`@backstage/plugin-catalog-backend-module-ldap`). It has not been tested with the PingOne catalog provider (`@backstage-community/plugin-catalog-backend-module-pingidentity`), though it should work with appropriate resolver configuration.
 
 ## Installation

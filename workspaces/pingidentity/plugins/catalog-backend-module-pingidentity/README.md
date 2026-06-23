@@ -2,6 +2,8 @@
 
 The PingOne backend plugin ingests organization data (users and groups) from Ping Identity's cloud offering, PingOne, into Backstage.
 
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for development harnesses, tests, and bump-review guidance.
+
 # Capabilities
 
 The Ping Identity backend plugin has the following capabilities:
