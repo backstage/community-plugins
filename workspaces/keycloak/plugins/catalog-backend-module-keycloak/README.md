@@ -2,12 +2,14 @@
 
 The Keycloak backend plugin integrates Keycloak into Backstage.
 
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for development harnesses, tests, and bump-review guidance.
+
 ## Capabilities
 
 The Keycloak backend plugin has the following capabilities:
 
-- Synchronization of Keycloak users in a realm
-- Synchronization of Keycloak groups and their users in a realm
+- Ingest Keycloak realm users and groups into the Backstage Software Catalog as `User` and `Group` entities
+- Keep group hierarchy and membership (`memberOf` / `members`) in sync on a configurable schedule
 
 ## For administrators
 

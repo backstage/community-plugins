@@ -34,7 +34,7 @@
     "lint": "backstage-cli package lint",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "start": "backstage-cli package start",
+    "start": "backstage-cli package start --config app-config.yaml",
     "test": "backstage-cli package test"
   },
   "dependencies": {
@@ -45,8 +45,12 @@
     "zod": "^3.25.76 || ^4.0.0"
   },
   "devDependencies": {
+    "@backstage/backend-defaults": "^0.17.1",
     "@backstage/backend-test-utils": "^1.11.3",
     "@backstage/cli": "^0.36.2",
+    "@backstage/plugin-auth-backend": "^0.29.0",
+    "@backstage/plugin-catalog-backend": "^3.7.0",
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.20",
     "@types/express": "^5.0.6"
   },
   "files": [
