@@ -33,14 +33,14 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.1"
+    "@backstage/cli": "^0.36.3"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@backstage-community/plugin-rbac-common": "workspace:^",
-    "@backstage/backend-plugin-api": "^1.9.0"
+    "@backstage/backend-plugin-api": "^1.9.2"
   },
   "repository": {
     "type": "git",
