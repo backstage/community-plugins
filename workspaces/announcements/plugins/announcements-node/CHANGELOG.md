@@ -1,5 +1,16 @@
 # @backstage-community/plugin-announcements-node
 
+## 0.20.0
+
+### Minor Changes
+
+- fa4b770: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [fa4b770]
+  - @backstage-community/plugin-announcements-common@0.22.0
+
 ## 0.19.0
 
 ### Minor Changes
