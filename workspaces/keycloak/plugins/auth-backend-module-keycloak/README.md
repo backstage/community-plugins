@@ -4,6 +4,8 @@ The `auth-backend-module-keycloak` enables [Keycloak](https://www.keycloak.org/)
 
 For an enhanced experience, we recommend using this module alongside the @backstage-community/plugin-catalog-backend-module-keycloak plugin. This setup allows for the synchronization of Keycloak users and groups, ensuring sign-in resolvers can locate the corresponding User entities.
 
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for the local Keycloak + auth harness flow, browserless OAuth login smoke (`login.py`), and bump-review guidance.
+
 ## Capabilities
 
 - Authentication via the Keycloak OpenID Connect `authorization_code` flow.

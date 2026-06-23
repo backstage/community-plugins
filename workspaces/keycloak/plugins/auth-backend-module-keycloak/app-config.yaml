@@ -1,0 +1,39 @@
+app:
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          subject: user:default/guest
+
+auth:
+  environment: development
+  session:
+    secret: ${AUTH_SESSION_SECRET}
+  providers:
+    keycloak:
+      development:
+        clientId: ${AUTH_KEYCLOAK_CLIENT_ID}
+        clientSecret: ${AUTH_KEYCLOAK_CLIENT_SECRET}
+        baseUrl: ${AUTH_KEYCLOAK_BASE_URL}
+        realm: ${AUTH_KEYCLOAK_REALM}
+        signIn:
+          resolvers:
+            - resolver: preferredUsernameMatchingUserEntityName
+
+# Catalog User for OAuth sign-in resolver smoke (matches Keycloak user `test` in the realm fixture).
+catalog:
+  processingInterval: { seconds: 3 }
+  rules:
+    - allow: [User, Location]
+  locations:
+    - type: file
+      target: manual-tests/catalog/users.yaml
+      rules:
+        - allow: [User]

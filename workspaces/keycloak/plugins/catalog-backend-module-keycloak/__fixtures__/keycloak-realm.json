@@ -466,8 +466,12 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "HpHnpDwbrI3QlTxEdFhDvqbTDgNPHytg",
-      "redirectUris": ["/*"],
-      "webOrigins": ["/*"],
+      "redirectUris": [
+        "http://localhost:7007/api/auth/keycloak/handler/frame",
+        "http://localhost:7007/*",
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": ["http://localhost:7007", "http://localhost:3000", "+"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -2181,7 +2185,13 @@
       "firstName": "Tester",
       "lastName": "Test",
       "email": "test@example.com",
-      "credentials": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ],
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": ["default-roles-backstage-community-realm"],
