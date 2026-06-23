@@ -19,6 +19,7 @@ import { PluginIdProvider } from '@backstage-community/plugin-rbac-node';
 import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
 import type { RBACProvider } from '@backstage-community/plugin-rbac-node';
 import type { Router } from 'express';
+import type { UserInfoService } from '@backstage/backend-plugin-api';
 
 // @public (undocumented)
 export function createRouter(options: RouterOptions): Promise<express.Router>;
@@ -30,6 +31,7 @@ export type EnvOptions = {
   discovery: DiscoveryService;
   permissions: PermissionEvaluator;
   auth: AuthService;
+  userInfo: UserInfoService;
   httpAuth: HttpAuthService;
   auditor: AuditorService;
   lifecycle: LifecycleService;
