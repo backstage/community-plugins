@@ -19,7 +19,6 @@ import Box from '@mui/material/Box';
 import AngleDoubleDownIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
 import AngleDoubleUpIcon from '@mui/icons-material/KeyboardDoubleArrowUpOutlined';
 import { Tooltip } from '@patternfly/react-core';
-import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/js/t_color_yellow_40';
 import { t_color_orange_40 as highColor } from '@patternfly/react-tokens/dist/js/t_color_orange_40';
 import classNames from 'classnames';
 
@@ -75,21 +74,13 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
                   'pipelineRunList.vulnerabilitySeverityTitle.critical',
                 )}
               >
-                <Box
-                  component="span"
-                  sx={{
-                    display: 'inline-flex',
-                    height: '1em',
-                    width: '1em',
-                  }}
-                >
-                  <CriticalRiskIcon
-                    className=""
-                    title={t(
-                      'pipelineRunList.vulnerabilitySeverityTitle.critical',
-                    )}
-                  />
-                </Box>
+                <CriticalRiskIcon
+                  height="1em"
+                  width="1em"
+                  title={t(
+                    'pipelineRunList.vulnerabilitySeverityTitle.critical',
+                  )}
+                />
               </Tooltip>
               {!condensed
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.critical')
@@ -166,22 +157,11 @@ const PipelineRunVulnerabilities: FC<PipelineRunVulnerabilitiesProps> = ({
               <Tooltip
                 content={t('pipelineRunList.vulnerabilitySeverityTitle.medium')}
               >
-                <Box
-                  component="span"
-                  sx={{
-                    color: mediumColor.value,
-                    display: 'inline-flex',
-                    height: '1.3em',
-                    width: '1.3em',
-                  }}
-                >
-                  <EqualsIcon
-                    className=""
-                    title={t(
-                      'pipelineRunList.vulnerabilitySeverityTitle.medium',
-                    )}
-                  />
-                </Box>
+                <EqualsIcon
+                  height="1.3em"
+                  width="1.3em"
+                  title={t('pipelineRunList.vulnerabilitySeverityTitle.medium')}
+                />
               </Tooltip>
               {!condensed
                 ? t('pipelineRunList.vulnerabilitySeverityTitle.medium')

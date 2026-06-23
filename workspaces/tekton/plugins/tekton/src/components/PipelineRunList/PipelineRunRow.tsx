@@ -177,7 +177,7 @@ export const PipelineRunRow = ({
           data-testid="pipelinerun-task-status-cell"
           sx={getMergedPipelineRunTableCellSx('task-status')}
         >
-          <PipelineRunTaskStatus pipelineRun={row} /> {/* Missed here */}
+          <PipelineRunTaskStatus pipelineRun={row} />
         </TableCell>
         <TableCell
           align="left"

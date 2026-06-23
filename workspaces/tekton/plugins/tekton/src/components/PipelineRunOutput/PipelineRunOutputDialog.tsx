@@ -44,8 +44,8 @@ const titleContainerSx = {
 
 const closeButtonSx: SxProps<Theme> = {
   position: 'absolute',
-  right: 1,
-  top: 1,
+  right: (theme: Theme) => theme.spacing(1),
+  top: (theme: Theme) => theme.spacing(1),
   color: (theme: Theme) => theme.palette.grey[500],
 };
 

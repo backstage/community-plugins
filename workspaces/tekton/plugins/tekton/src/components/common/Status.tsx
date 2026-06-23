@@ -45,8 +45,8 @@ const iconSx = {
   marginRight: 0.6,
 };
 
-const statusIconSx: Record<string, SxProps<Theme>> = {
-  success: {
+const statusIconSx: Partial<Record<StatusClassKey, SxProps<Theme>>> = {
+  ok: {
     '& svg': {
       fill: (theme: Theme) => theme.palette.status.ok,
     },
@@ -80,7 +80,7 @@ const StatusIcon = ({
   statusKey: StatusClassKey;
   className?: string;
 }) => {
-  const statusSx = statusIconSx[statusKey as keyof typeof statusIconSx];
+  const statusSx = statusIconSx[statusKey];
 
   switch (statusKey) {
     case 'ok':
