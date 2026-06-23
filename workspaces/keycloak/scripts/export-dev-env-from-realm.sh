@@ -103,7 +103,7 @@ if [[ "${STDOUT_ONLY}" == false ]]; then
     echo "# Re-run after realm fixture or override env changes."
     write_env_exports
   } >"${DEV_ENV_FILE}"
-  echo "export-dev-env-from-realm.sh: wrote ${DEV_ENV_FILE} — other shells: set -a && source .env.dev.local && set +a" >&2
+  echo "export-dev-env-from-realm.sh: wrote ${DEV_ENV_FILE} — other shells: set -a && source ${DEV_ENV_FILE} && set +a" >&2
 fi
 
 echo "export-dev-env-from-realm.sh: run eval in this shell, then start the dev harness (env vars must be set before backend startup)." >&2
