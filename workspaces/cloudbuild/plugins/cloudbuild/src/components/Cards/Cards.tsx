@@ -19,9 +19,8 @@ import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunsTable } from '../WorkflowRunsTable';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { makeStyles } from '@material-ui/core/styles';
-import ExternalLinkIcon from '@material-ui/icons/Launch';
+import { Skeleton } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import { CLOUDBUILD_ANNOTATION } from '../useProjectName';
 import { getLocation } from '../useLocation';
 import { getCloudbuildFilter } from '../useCloudBuildFilter';
@@ -33,13 +32,7 @@ import {
   WarningPanel,
 } from '@backstage/core-components';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles({
-  externalLinkIcon: {
-    fontSize: 'inherit',
-    verticalAlign: 'bottom',
-  },
-});
+import styles from './Cards.module.css';
 
 const WidgetContent = ({
   error,
@@ -52,10 +45,9 @@ const WidgetContent = ({
   lastRun: WorkflowRun;
   branch: string;
 }) => {
-  const classes = useStyles();
   if (error)
     return <WarningPanel>Couldn't fetch latest {branch} run</WarningPanel>;
-  if (loading) return <LinearProgress />;
+  if (loading) return <Skeleton />;
   return (
     <StructuredMetadataTable
       metadata={{
@@ -68,7 +60,10 @@ const WidgetContent = ({
         url: (
           <Link to={lastRun.googleUrl ?? ''}>
             See more on Google{' '}
-            <ExternalLinkIcon className={classes.externalLinkIcon} />
+            <RiExternalLinkLine
+              aria-hidden="true"
+              className={styles.externalLinkIcon}
+            />
           </Link>
         ),
       }}

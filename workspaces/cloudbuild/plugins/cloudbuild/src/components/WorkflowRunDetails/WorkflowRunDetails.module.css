@@ -1,0 +1,40 @@
+@layer components {
+  .root {
+    max-width: 720px;
+    margin: var(--bui-space-4);
+  }
+
+  .breadcrumbs {
+    margin-bottom: var(--bui-space-6);
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    padding: var(--bui-space-2);
+  }
+
+  .table td,
+  .table th {
+    padding: var(--bui-space-3) var(--bui-space-4);
+    border-bottom: 1px solid var(--bui-border);
+    vertical-align: top;
+    text-align: left;
+  }
+
+  .table tr:last-child td,
+  .table tr:last-child th {
+    border-bottom: none;
+  }
+
+  .label {
+    white-space: nowrap;
+    width: 1%;
+    font-weight: var(--bui-font-weight-bold);
+  }
+
+  .externalLinkIcon {
+    font-size: inherit;
+    vertical-align: bottom;
+  }
+}

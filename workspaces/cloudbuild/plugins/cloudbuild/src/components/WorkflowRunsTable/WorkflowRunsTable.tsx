@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import RetryIcon from '@material-ui/icons/Replay';
-import GoogleIcon from '@material-ui/icons/CloudCircle';
+import { ButtonIcon, Flex, Text, Tooltip, TooltipTrigger } from '@backstage/ui';
+import { RiCloudLine, RiRefreshLine, RiRestartLine } from '@remixicon/react';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import SyncIcon from '@material-ui/icons/Sync';
 import { useProjectName } from '../useProjectName';
 import { Entity } from '@backstage/catalog-model';
 import { buildRouteRef } from '../../routes';
@@ -30,6 +25,7 @@ import { Table, TableColumn, Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { getLocation } from '../useLocation';
 import { getCloudbuildFilter } from '../useCloudBuildFilter';
+import styles from './WorkflowRunsTable.module.css';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -37,9 +33,9 @@ const generatedColumns: TableColumn[] = [
     width: '150px',
 
     render: (row: Partial<WorkflowRun>) => (
-      <Box display="flex" alignItems="center">
+      <Flex align="center">
         <WorkflowRunStatus status={row.status} />
-      </Box>
+      </Flex>
     ),
   },
   {
@@ -63,9 +59,9 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Trigger Name',
     render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.substitutions?.TRIGGER_NAME}
-      </Typography>
+      </Text>
     ),
   },
   {
@@ -74,45 +70,54 @@ const generatedColumns: TableColumn[] = [
     highlight: true,
     width: '200px',
     render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.message}
-      </Typography>
+      </Text>
     ),
   },
   {
     title: 'Ref',
     render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.substitutions?.REF_NAME}
-      </Typography>
+      </Text>
     ),
   },
   {
     title: 'Commit',
     render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
+      <Text variant="body-medium" className={styles.truncate}>
         {row.substitutions?.SHORT_SHA}
-      </Typography>
+      </Text>
     ),
   },
   {
     title: 'Created',
     render: (row: Partial<WorkflowRun>) => (
-      <Typography data-testid="cell-created" variant="body2" noWrap>
+      <Text
+        data-testid="cell-created"
+        variant="body-medium"
+        className={styles.truncate}
+      >
         {DateTime.fromISO(row.createTime ?? DateTime.now().toISO()!).toFormat(
           'dd-MM-yyyy hh:mm:ss',
         )}
-      </Typography>
+      </Text>
     ),
   },
   {
     title: 'Actions',
     render: (row: Partial<WorkflowRun>) => (
-      <Tooltip title="Rerun workflow">
-        <IconButton data-testid="action-rerun" onClick={row.rerun}>
-          <RetryIcon />
-        </IconButton>
-      </Tooltip>
+      <TooltipTrigger>
+        <ButtonIcon
+          data-testid="action-rerun"
+          aria-label="Rerun workflow"
+          variant="tertiary"
+          icon={<RiRestartLine aria-hidden="true" />}
+          onPress={() => row.rerun?.()}
+        />
+        <Tooltip>Rerun workflow</Tooltip>
+      </TooltipTrigger>
     ),
     width: '10%',
   },
@@ -149,7 +154,7 @@ export const WorkflowRunsTableView = ({
       page={page}
       actions={[
         {
-          icon: () => <SyncIcon />,
+          icon: () => <RiRefreshLine aria-hidden="true" />,
           tooltip: 'Reload workflow runs',
           isFreeAction: true,
           onClick: () => retry(),
@@ -160,11 +165,10 @@ export const WorkflowRunsTableView = ({
       onRowsPerPageChange={onChangePageSize}
       style={{ width: '100%' }}
       title={
-        <Box display="flex" alignItems="center">
-          <GoogleIcon />
-          <Box mr={1} />
-          <Typography variant="h6">{projectName}</Typography>
-        </Box>
+        <Flex align="center" gap="2">
+          <RiCloudLine aria-hidden="true" className={styles.titleIcon} />
+          <Text variant="title-small">{projectName}</Text>
+        </Flex>
       }
       columns={generatedColumns}
     />
