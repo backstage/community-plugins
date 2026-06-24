@@ -103,13 +103,26 @@ yarn tsc
 
 CI exercises:
 
-- **Module wiring** — provider registration, schedules, and zero-config behavior
-- **Config contract** — provider config parsing and validation
-- **Authentication** — username/password and client-credentials grant paths to the Keycloak Admin API
+- **Module wiring** — provider registration, schedules, transformer extension point (double-set throws, custom transformers reaching `fromConfig`), and zero-config behavior
+- **Config contract** — provider config parsing and validation; missing per-provider `schedule` when using `scheduler`
+- **Authentication** — username/password and client-credentials grant paths to the Keycloak Admin API; missing credentials → `InputError`
 - **Entity provider** — read/schedule paths against mocked Keycloak responses
-- **Realm read pipeline** — user/group parsing, pagination, and transformers across Keycloak API versions
+- **Realm read pipeline** — user/group parsing, pagination, partial batch failure metrics, and transformers across Keycloak API versions
+- **Auth↔catalog contract** — paired sanitization assertions for representative usernames (see [Sign-in alignment](#sign-in-alignment-with-the-auth-module))
 
 CI does **not** replace reading [Backstage release notes](https://github.com/backstage/backstage/releases) for the `@backstage/*` packages this module depends on. After a dependency bump, review those notes and decide whether additional validation is warranted.
+
+## Sign-in alignment with the auth module
+
+When Keycloak users sign in via [`@backstage-community/plugin-auth-backend-module-keycloak-provider`](../auth-backend-module-keycloak/CONTRIBUTING.md), the auth `preferredUsernameMatchingUserEntityName` resolver must resolve the same catalog `User.metadata.name` that this module ingests from Keycloak usernames.
+
+Both packages duplicate the same sanitization regex until a shared `keycloak-common` package exists. Automated contract tests in both packages assert identical output for representative inputs (for example `Jane Doe/Admin@Example` → `Jane-Doe-Admin-Example`). **Do not change one side without updating the other and the contract tests.**
+
+For OAuth sign-in smoke beyond catalog ingestion, use the auth module harness — not a full workspace `packages/app`.
+
+## Full workspace app policy
+
+This workspace does **not** ship `packages/app` or `packages/backend`. Plugin `dev/` harnesses (this catalog module and the auth module) are sufficient for provider and resolver work. Full OIDC sign-in in a downstream Backstage application remains out of scope for routine PR validation — document and run that only when changing integration that the harnesses do not cover.
 
 ## Optional manual smoke checklist
 
@@ -136,3 +149,7 @@ Use when you change catalog integration code or are reviewing a Backstage versio
 | `401` / `Illegal token` on catalog `curl` | Wrong backend on the port, harness started before `eval`, or missing Bearer header | Run `eval` first, restart `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start`, confirm logs show this package's `app-config.yaml` and the expected listen port; if the error stack mentions another workspace (for example `workspaces/rbac`), stop that backend or use the port from the Keycloak harness log |
 | `401` on catalog `curl`                   | Bearer token mismatch                                                              | Re-run `eval "$(./scripts/export-dev-env-from-realm.sh)"` and restart the harness — the token is fixed at backend startup                                                                                                                                                                                                                     |
 | Realm changes ignored                     | Stale Podman container                                                             | Stop/remove the container and run `start:keycloak` again — import runs only on first container creation                                                                                                                                                                                                                                       |
+
+## Related packages
+
+- [Keycloak auth module](../auth-backend-module-keycloak/CONTRIBUTING.md) — OIDC sign-in and resolver smoke (separate `dev/` harness; pair with this module in production)
