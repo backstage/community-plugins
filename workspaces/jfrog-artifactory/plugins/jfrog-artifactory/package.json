@@ -46,6 +46,7 @@
     "@backstage/core-components": "^0.18.10",
     "@backstage/core-plugin-api": "^1.12.6",
     "@backstage/plugin-catalog-react": "^3.0.0",
+    "@backstage/ui": "^0.15.0",
     "filesize": "^11.0.0",
     "luxon": "^3.6.1",
     "react-use": "^17.4.0"

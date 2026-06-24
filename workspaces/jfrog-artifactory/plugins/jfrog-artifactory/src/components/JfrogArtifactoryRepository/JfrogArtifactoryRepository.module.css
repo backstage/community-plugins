@@ -15,6 +15,9 @@
  */
 
 @layer components {
+  .header {
+    max-width: 100% !important;
+  }
   .tableContainer {
     border: 1px solid var(--bui-border-1);
   }
