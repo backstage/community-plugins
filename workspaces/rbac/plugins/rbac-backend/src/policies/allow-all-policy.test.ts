@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { mockCredentials } from '@backstage/backend-test-utils';
 import {
   AuthorizeResult,
   createPermission,
@@ -61,21 +62,11 @@ function newPolicyQueryUser(
 ): PolicyQueryUser | undefined {
   if (user) {
     return {
-      identity: {
-        ownershipEntityRefs: ownershipEntityRefs ?? [],
-        type: 'user',
-        userEntityRef: user,
-      },
-      credentials: {
-        $$type: '@backstage/BackstageCredentials',
-        principal: true,
-        expiresAt: new Date('2021-01-01T00:00:00Z'),
-      },
+      credentials: mockCredentials.user(user),
       info: {
         userEntityRef: user,
         ownershipEntityRefs: ownershipEntityRefs ?? [],
       },
-      token: 'token',
     };
   }
   return undefined;

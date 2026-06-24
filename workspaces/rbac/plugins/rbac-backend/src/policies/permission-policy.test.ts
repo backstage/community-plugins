@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
 import {
   AuthorizeResult,
@@ -56,7 +56,12 @@ import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
-import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
+import {
+  catalogMock,
+  mockAuditorService,
+  mockAuthService,
+  mockUserInfoService,
+} from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLogForPermission,
@@ -100,8 +105,6 @@ const csvPermFile = resolve(
 );
 
 const mockClientKnex = Knex.knex({ client: MockClient });
-
-const mockAuthService = mockServices.auth();
 
 const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
   {
@@ -1687,6 +1690,7 @@ describe('Policy checks for conditional policies', () => {
       roleMetadataStorageMock,
       mockClientKnex,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+      mockUserInfoService,
       mockAuthService,
     );
   });
@@ -2108,22 +2112,17 @@ function newPolicyQueryUser(
   ownershipEntityRefs?: string[],
 ): PolicyQueryUser | undefined {
   if (user) {
+    mockUserInfoService.getUserInfo.mockResolvedValueOnce({
+      userEntityRef: user,
+      ownershipEntityRefs: ownershipEntityRefs ?? [],
+    });
+
     return {
-      identity: {
-        ownershipEntityRefs: ownershipEntityRefs ?? [],
-        type: 'user',
-        userEntityRef: user,
-      },
-      credentials: {
-        $$type: '@backstage/BackstageCredentials',
-        principal: true,
-        expiresAt: new Date('2021-01-01T00:00:00Z'),
-      },
+      credentials: mockCredentials.user(user),
       info: {
         userEntityRef: user,
         ownershipEntityRefs: ownershipEntityRefs ?? [],
       },
-      token: 'token',
     };
   }
   return undefined;
@@ -2316,6 +2315,7 @@ async function newPermissionPolicy(
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+    mockUserInfoService,
     mockAuthService,
   );
   clearAuditorMock();
