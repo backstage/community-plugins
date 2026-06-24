@@ -10,6 +10,7 @@ import re
 import sys
 import time
 import urllib.parse
+from typing import List, Tuple
 
 try:
     import requests
@@ -24,7 +25,7 @@ except ImportError:
 BACKSTAGE_BASE_URL = os.getenv("BASE_URL", "http://localhost:7007")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-_HOST_REWRITES: list[tuple[str, str]] = []
+_HOST_REWRITES: List[Tuple[str, str]] = []
 for _rule in os.getenv("KEYCLOAK_HOST_REWRITE", "").split(","):
     _rule = _rule.strip()
     if "=" in _rule:

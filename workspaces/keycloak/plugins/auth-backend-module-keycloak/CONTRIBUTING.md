@@ -8,7 +8,7 @@ Developer guide for `@backstage-community/plugin-auth-backend-module-keycloak-pr
 - Yarn (workspace uses the community-plugins monorepo lockfile)
 - **Podman** — local Keycloak for integration smoke (port **8080**)
 - **jq** — used by [`export-dev-env-from-realm.sh`](../../scripts/export-dev-env-from-realm.sh) to load dev harness env vars from the realm fixture
-- **Python 3** — for browserless OAuth login smoke ([`login.py`](./manual-tests/scripts/login.py)); install deps once:
+- **Python 3.9+** — for browserless OAuth login smoke ([`login.py`](./manual-tests/scripts/login.py)); install deps once:
 
   ```bash
   python3 -m pip install -r plugins/auth-backend-module-keycloak/manual-tests/requirements.txt
