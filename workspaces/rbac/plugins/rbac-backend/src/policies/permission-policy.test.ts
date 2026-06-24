@@ -1123,6 +1123,46 @@ describe('RBACPermissionPolicy Tests', () => {
       );
     });
 
+    it('should deny super user access when the user belongs only to a sub-group of a configured super user group', async () => {
+      // Catalog hierarchy (see __fixtures__/data/hierarchy/groups.ts):
+      //   data_read_admin.parent = data_parent_admin
+      //   user:default/mike is a direct member of data_read_admin
+      //
+      // superUsers checks ownershipEntityRefs for an exact match only — it does
+      // not walk the catalog group tree. A resolver therefore returns the child
+      // group ref, not the parent configured as super user.
+      const superUsersConfig = new Array<{ name: string }>();
+      superUsersConfig.push({ name: 'group:default/data_parent_admin' });
+
+      const config = newConfig(csvPermFile, admins, superUsersConfig);
+      const adapter = await newAdapter(config);
+      const enfDelegateForTest = await newEnforcerDelegate(adapter, config);
+      const policyForTest = await newPermissionPolicy(
+        config,
+        enfDelegateForTest,
+        roleMetadataStorageTest,
+      );
+
+      const decision = await policyForTest.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.delete',
+          'catalog-entity',
+          'delete',
+        ),
+        newPolicyQueryUser('user:default/mike', [
+          'group:default/data_read_admin',
+        ]),
+      );
+      expect(decision.result).toBe(AuthorizeResult.DENY);
+      expectAuditorLogForPermission(
+        'user:default/mike',
+        'catalog.entity.delete',
+        'catalog-entity',
+        'delete',
+        AuthorizeResult.DENY,
+      );
+    });
+
     it('should remove users that are no longer in the config file', async () => {
       const enfRole = await enfDelegate.getFilteredGroupingPolicy(1, adminRole);
       const enfPermission = await enfDelegate.getFilteredPolicy(0, adminRole);
