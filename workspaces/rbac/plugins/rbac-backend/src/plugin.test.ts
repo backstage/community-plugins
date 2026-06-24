@@ -42,7 +42,7 @@ const TEST_CONFIG = {
       connection: ':memory:',
     },
   },
-} as const;
+};
 
 describe('rbacPlugin', () => {
   let backend: TestBackend;
@@ -53,9 +53,9 @@ describe('rbacPlugin', () => {
         permissionBackend,
         rbacPlugin,
         mockServices.rootConfig.factory({ data: TEST_CONFIG }),
-        mockServices.httpAuth.mock({
-          credentials: async () => mockCredentials.service(),
-        }).factory,
+        mockServices.httpAuth.factory({
+          defaultCredentials: mockCredentials.service(),
+        }),
       ],
     });
   });
