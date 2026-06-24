@@ -6,6 +6,8 @@ The Backstage permission framework is a core component of the Backstage project,
 
 With the RBAC plugin, you'll have the means to efficiently administer permissions within your Backstage instance by assigning them to users and groups.
 
+For local development and CI commands, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Prerequisites
 
 Before you dive into utilizing the RBAC plugin for Backstage, there are a few essential prerequisites to ensure a seamless experience. Please review the following requirements to make sure your environment is properly set up
@@ -347,6 +349,11 @@ permission:
 The maxDepth must be greater than 0 to ensure that the graphs are built correctly. Also the graph will be built with a hierarchy of 1 + maxDepth.
 
 More information about group hierarchy can be found in the doc: [Group hierarchy](./docs/group-hierarchy.md).
+
+## Related documentation
+
+- [Contributor guide](./CONTRIBUTING.md)
+- [REST API reference](./docs/apis.md)
 
 ### Optional RBAC provider module support
 
