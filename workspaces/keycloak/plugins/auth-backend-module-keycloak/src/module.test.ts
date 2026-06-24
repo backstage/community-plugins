@@ -15,6 +15,7 @@
  */
 
 import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
+import authPlugin from '@backstage/plugin-auth-backend';
 import {
   AuthProviderRegistrationOptions,
   authProvidersExtensionPoint,
@@ -44,5 +45,28 @@ describe('authModuleKeycloakProvider', () => {
     expect(registered).toHaveLength(1);
     expect(registered[0].providerId).toBe('keycloak');
     expect(typeof registered[0].factory).toBe('function');
+  });
+
+  it('starts when composed with the auth backend plugin', async () => {
+    const backend = await startTestBackend({
+      features: [
+        authPlugin,
+        authModuleKeycloakProvider,
+        mockServices.rootConfig.factory({
+          data: {
+            app: {
+              baseUrl: 'http://localhost:3000',
+            },
+            auth: {
+              session: {
+                secret: 'test-session-secret-for-module-wiring',
+              },
+            },
+          },
+        }),
+      ],
+    });
+
+    expect(backend).toBeDefined();
   });
 });
