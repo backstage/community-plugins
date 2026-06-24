@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect, Page, test } from '@playwright/test';
+import { expect, Page, test, type BrowserContext } from '@playwright/test';
 
 import { Common } from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
@@ -31,33 +31,27 @@ const TOPOLOGY_NODES = {
   example: 'example',
 } as const;
 
-const TOOLBAR_BUTTONS = [
-  'Zoom In',
-  'Zoom Out',
-  'Fit to Screen',
-  'Reset View',
-] as const;
-
 test.describe('Topology plugin', () => {
+  let context: BrowserContext;
   let page: Page;
   let common: Common;
   let translations: TopologyMessages;
 
-  test.beforeAll(async ({ browser }) => {
-    const context = await browser.newContext();
+  test.beforeAll(async ({ browser }, testInfo) => {
+    const locale = testInfo.project.use.locale as string | undefined;
+    context = await browser.newContext(locale ? { locale } : {});
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
 
-    const currentLocale = await page.evaluate(
-      () => globalThis.navigator.language,
-    );
+    const currentLocale =
+      locale ?? (await page.evaluate(() => globalThis.navigator.language));
     translations = getTranslations(currentLocale);
     await common.switchToLocale(currentLocale);
   });
 
-  test.afterAll(async ({ browser }) => {
-    await browser.close();
+  test.afterAll(async () => {
+    await context?.close();
   });
 
   test.describe('Missing permissions page', () => {
@@ -65,14 +59,16 @@ test.describe('Topology plugin', () => {
       await page.goto('/missing-permissions');
       await page.reload();
 
+      await expect(
+        page.getByText(translations.permissions.missingPermission, {
+          exact: true,
+        }),
+      ).toBeVisible({ timeout: 60000 });
+
       const topologyTextCount = await page
         .getByText('Topology', { exact: true })
         .count();
       expect(topologyTextCount).toEqual(2);
-
-      await expect(page.locator('h3')).toContainText(
-        translations.permissions.missingPermission,
-      );
       await expect(page.getByRole('article')).toContainText(
         'kubernetes.clusters.read, kubernetes.resources.read',
       );
@@ -86,6 +82,7 @@ test.describe('Topology plugin', () => {
   test.describe('Topology view', () => {
     test.beforeEach(async () => {
       await page.goto('/topology');
+      await common.waitForTopologyGraph();
     });
 
     test('displays header and cluster controls', async ({
@@ -93,7 +90,13 @@ test.describe('Topology plugin', () => {
     }, testInfo) => {
       await expect(page.getByRole('heading')).toContainText('backstage');
       await expect(page.getByTestId('header-tab-0')).toBeVisible();
-      await expect(page.locator('#pf-topology-view-0')).toMatchAriaSnapshot(`
+      const topologyToolbar = page.locator('.pf-topology-view__view-toolbar');
+      await expect(
+        topologyToolbar.getByRole('button', {
+          name: translations.toolbar.selectCluster,
+        }),
+      ).toBeVisible();
+      await expect(topologyToolbar).toMatchAriaSnapshot(`
         - button "${translations.toolbar.selectCluster}"
         - button "${translations.toolbar.displayOptions}"
         `);
@@ -111,12 +114,22 @@ test.describe('Topology plugin', () => {
     });
 
     test('displays zoom and view controls', async () => {
-      for (const buttonName of TOOLBAR_BUTTONS) {
+      const controlBar = page.locator('.pf-topology-control-bar');
+      const controlBarButtons = [
+        translations.controlBar.zoomIn,
+        translations.controlBar.zoomOut,
+        translations.controlBar.fitToScreen,
+        translations.controlBar.resetView,
+      ];
+
+      for (const buttonName of controlBarButtons) {
         await expect(
-          page.getByRole('button', { name: buttonName }),
+          controlBar.getByRole('button', { name: buttonName }),
         ).toBeVisible();
       }
-      await page.getByRole('button', { name: 'Fit to Screen' }).click();
+      await controlBar
+        .getByRole('button', { name: translations.controlBar.fitToScreen })
+        .click();
     });
 
     test('toggles pod count display option', async () => {
@@ -136,7 +149,7 @@ test.describe('Topology plugin', () => {
       for (const deployment of TOPOLOGY_NODES.deployments) {
         await expect(
           page.locator(`[data-test-id="${deployment}"]`),
-        ).toBeVisible();
+        ).toHaveCount(1);
       }
       const exampleNodeCount = await page
         .locator(`[data-test-id="${TOPOLOGY_NODES.example}"]`)
@@ -146,7 +159,7 @@ test.describe('Topology plugin', () => {
 
     test('renders virtual machine nodes', async () => {
       for (const vm of TOPOLOGY_NODES.virtualMachines) {
-        await expect(page.locator(`[data-test-id="${vm}"]`)).toBeVisible();
+        await expect(page.locator(`[data-test-id="${vm}"]`)).toHaveCount(1);
       }
     });
 

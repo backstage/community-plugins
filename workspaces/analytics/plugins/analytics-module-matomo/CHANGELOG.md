@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-matomo
 
+## 1.29.0
+
+### Minor Changes
+
+- 2a80868: Backstage version bump to v1.51.0
+
 ## 1.28.2
 
 ### Patch Changes

@@ -29,6 +29,7 @@ attributes:
     - blackduck
     - bookmarks
     - catalog
+    - checkmarx
     - cicd-statistics
     - cloudbuild
     - code-climate

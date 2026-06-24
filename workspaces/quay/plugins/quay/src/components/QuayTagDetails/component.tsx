@@ -17,11 +17,9 @@ import type { ReactNode } from 'react';
 
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import type { RouteFunc } from '@backstage/core-plugin-api';
+import { Flex, Text } from '@backstage/ui';
 
-import { makeStyles, TableContainer, TableHead } from '@material-ui/core';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import LinkIcon from '@material-ui/icons/Link';
-import WarningIcon from '@material-ui/icons/Warning';
+import { RiAlertLine, RiArrowLeftLine, RiLinkM } from '@remixicon/react';
 
 import { SEVERITY_COLORS } from '../../lib/utils';
 import {
@@ -30,6 +28,7 @@ import {
   VulnerabilityListItem,
   VulnerabilityOrder,
 } from '../../types';
+import styles from './QuayTagDetails.module.css';
 
 type QuayTagDetailsProps = {
   layer: Layer;
@@ -45,15 +44,19 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
     title: 'Advisory',
     field: 'name',
     render: (rowData: VulnerabilityListItem): ReactNode => {
+      const link = rowData.Link.trim();
       return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Flex align="center" gap="2" className={styles.cellContent}>
           {rowData.Name}
-          {rowData.Link.trim().length > 0 ? (
-            <Link to={getVulnerabilityLink(rowData.Link)}>
-              <LinkIcon style={{ marginLeft: '0.5rem' }} />
+          {link.length > 0 ? (
+            <Link
+              to={getVulnerabilityLink(link)}
+              aria-label={`Open advisory link for ${rowData.Name}`}
+            >
+              <RiLinkM size={16} />
             </Link>
           ) : null}
-        </div>
+        </Flex>
       );
     },
     customSort: (a: VulnerabilityListItem, b: VulnerabilityListItem) =>
@@ -70,15 +73,14 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
     },
     render: (rowData: VulnerabilityListItem): ReactNode => {
       return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <WarningIcon
-            htmlColor={SEVERITY_COLORS[rowData.Severity]}
-            style={{
-              marginRight: '0.5rem',
-            }}
+        <Flex align="center" gap="2" className={styles.cellContent}>
+          <RiAlertLine
+            className={styles.severityIcon}
+            color={SEVERITY_COLORS[rowData.Severity]}
+            size={20}
           />
           <span>{rowData.Severity}</span>
-        </div>
+        </Flex>
       );
     },
   },
@@ -109,35 +111,15 @@ const columns: TableColumn<VulnerabilityListItem>[] = [
   },
 ];
 
-const useStyles = makeStyles({
-  link: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  linkText: {
-    marginLeft: '0.5rem',
-    fontSize: '1.1rem',
-  },
-  tableHead: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '1rem',
-  },
-});
-
 export const QuayTagDetails = ({
   layer,
   rootLink,
   digest,
 }: QuayTagDetailsProps) => {
-  const classes = useStyles();
   const vulnerabilities = layer.Features.filter(
     feat => typeof feat.Vulnerabilities !== 'undefined',
   )
     .map(feature => {
-      // TS doesn't seem to register this list as never being undefined from the above filter
-      // so we cast it into the list
-      // NOSONAR - irrelevant as per above comment
       return (feature.Vulnerabilities as Vulnerability[]).map(
         (v: Vulnerability): VulnerabilityListItem => {
           return {
@@ -157,19 +139,21 @@ export const QuayTagDetails = ({
     });
 
   return (
-    <TableContainer>
-      <TableHead className={classes.tableHead}>
-        <Link to={rootLink()} className={classes.link}>
-          <KeyboardBackspaceIcon />
-          <span className={classes.linkText}>Back to repository</span>
+    <>
+      <Flex align="center" mb="4">
+        <Link to={rootLink()}>
+          <Flex align="center" gap="2">
+            <RiArrowLeftLine size={20} />
+            <Text variant="body-medium">Back to repository</Text>
+          </Flex>
         </Link>
-      </TableHead>
+      </Flex>
       <Table
         title={`Vulnerabilities for ${digest.substring(0, 17)}`}
         data={vulnerabilities}
         columns={columns}
       />
-    </TableContainer>
+    </>
   );
 };
 

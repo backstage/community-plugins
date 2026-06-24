@@ -73,6 +73,9 @@ workspace/bookmarks:
 workspace/catalog:
   - "Workspace\\s*catalog"
 
+workspace/checkmarx:
+  - "Workspace\\s*checkmarx"
+
 workspace/cicd-statistics:
   - "Workspace\\s*cicd-statistics"
 

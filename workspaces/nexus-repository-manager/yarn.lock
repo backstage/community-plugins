@@ -736,19 +736,19 @@ __metadata:
     "@backstage/filter-predicates": "npm:^0.1.2"
     "@backstage/frontend-defaults": "npm:^0.5.1"
     "@backstage/frontend-plugin-api": "npm:^0.16.2"
+    "@backstage/frontend-test-utils": "npm:^0.5.2"
     "@backstage/plugin-catalog": "npm:^2.0.4"
     "@backstage/plugin-catalog-react": "npm:^2.1.4"
     "@backstage/test-utils": "npm:^1.7.17"
     "@backstage/theme": "npm:^0.7.3"
     "@backstage/ui": "npm:^0.14.3"
-    "@hey-api/openapi-ts": "npm:0.97.1"
-    "@material-ui/core": "npm:^4.9.13"
-    "@playwright/test": "npm:^1.57.0"
+    "@hey-api/openapi-ts": "npm:0.98.2"
+    "@playwright/test": "npm:1.60.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.9.1"
     "@testing-library/react": "npm:^16.3.2"
     "@testing-library/user-event": "npm:14.6.1"
-    "@types/node": "npm:22.19.17"
+    "@types/node": "npm:22.19.19"
     "@types/react": "npm:^19.1.6"
     "@types/react-dom": "npm:^19.1.6"
     cross-fetch: "npm:4.1.0"
@@ -757,7 +757,7 @@ __metadata:
     msw: "npm:1.3.5"
     react: "npm:^18.0.0"
     react-dom: "npm:^18.0.0"
-    react-router-dom: "npm:^6.0.0"
+    react-router-dom: "npm:^6.30.2"
     react-use: "npm:^17.4.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -1577,6 +1577,42 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/cba133859bc5feb099744a22694bf688b96c35fb924565f1b39123d441cdfea1348ea8301e6fe8275b1b2a2aa064943043ac49b3059f315f7b4c5efa5be1e425
+  languageName: node
+  linkType: hard
+
+"@backstage/frontend-test-utils@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@backstage/frontend-test-utils@npm:0.5.2"
+  dependencies:
+    "@backstage/config": "npm:^1.3.7"
+    "@backstage/core-app-api": "npm:^1.20.0"
+    "@backstage/core-plugin-api": "npm:^1.12.5"
+    "@backstage/filter-predicates": "npm:^0.1.2"
+    "@backstage/frontend-app-api": "npm:^0.16.2"
+    "@backstage/frontend-plugin-api": "npm:^0.16.0"
+    "@backstage/plugin-app": "npm:^0.4.3"
+    "@backstage/plugin-app-react": "npm:^0.2.2"
+    "@backstage/plugin-permission-common": "npm:^0.9.8"
+    "@backstage/plugin-permission-react": "npm:^0.5.0"
+    "@backstage/test-utils": "npm:^1.7.17"
+    "@backstage/types": "npm:^1.2.2"
+    "@backstage/version-bridge": "npm:^1.0.12"
+    i18next: "npm:^22.4.15"
+    zen-observable: "npm:^0.10.0"
+    zod: "npm:^3.25.76 || ^4.0.0"
+  peerDependencies:
+    "@testing-library/react": ^16.0.0
+    "@types/jest": "*"
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.30.2
+  peerDependenciesMeta:
+    "@types/jest":
+      optional: true
+    "@types/react":
+      optional: true
+  checksum: 10/06d3f6344c771ed8049d367153773da69e0a0b324902c4ac4d1942811525a877e3753eed573ce97139451946bf630615ddd403ee3a627cf66a12261dbb0cac8c
   languageName: node
   linkType: hard
 
@@ -2941,64 +2977,64 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/codegen-core@npm:0.8.1":
-  version: 0.8.1
-  resolution: "@hey-api/codegen-core@npm:0.8.1"
+"@hey-api/codegen-core@npm:0.9.0":
+  version: 0.9.0
+  resolution: "@hey-api/codegen-core@npm:0.9.0"
   dependencies:
     "@hey-api/types": "npm:0.1.4"
     ansi-colors: "npm:4.1.3"
     c12: "npm:3.3.4"
     color-support: "npm:1.1.3"
-  checksum: 10/5bbf9b36808daed4c19a7ce54810c7b978dd01aa91a884d7e2dfc99b91b8ba85e158bd24d90b14e242d929ce9f9dc4b701f8998cce89a58e6c871146d566ec87
+  checksum: 10/afc9a92ae35e4a2eeb43e3146695d599a4736b6c3c359dc0aec57a7d8a5aaf977b77821dce46a0bfc67ebe0edae7593401d7332900a9e8d87674e4108f8e87e1
   languageName: node
   linkType: hard
 
-"@hey-api/json-schema-ref-parser@npm:1.4.2":
-  version: 1.4.2
-  resolution: "@hey-api/json-schema-ref-parser@npm:1.4.2"
+"@hey-api/json-schema-ref-parser@npm:1.4.3":
+  version: 1.4.3
+  resolution: "@hey-api/json-schema-ref-parser@npm:1.4.3"
   dependencies:
     "@jsdevtools/ono": "npm:7.1.3"
     "@types/json-schema": "npm:7.0.15"
     js-yaml: "npm:4.1.1"
-  checksum: 10/9d8e7431961350cf38155d1df8e4aaa1bf491c6c9db1acf9c06a645270650752b220927f8581f21453ba79ed70ffad7955eca2b2e7a1253049233d8f0e316272
+  checksum: 10/0c7a9bcfe5afe5b6dbcefe4379e4e07b5c2acea74b0a6d8c1aa8bdae1a91e29d538a3305a828e782abc517205ec348feb36f2314a30b8b42d6528164a8d9f270
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.97.1":
-  version: 0.97.1
-  resolution: "@hey-api/openapi-ts@npm:0.97.1"
+"@hey-api/openapi-ts@npm:0.98.2":
+  version: 0.98.2
+  resolution: "@hey-api/openapi-ts@npm:0.98.2"
   dependencies:
-    "@hey-api/codegen-core": "npm:0.8.1"
-    "@hey-api/json-schema-ref-parser": "npm:1.4.2"
-    "@hey-api/shared": "npm:0.4.3"
+    "@hey-api/codegen-core": "npm:0.9.0"
+    "@hey-api/json-schema-ref-parser": "npm:1.4.3"
+    "@hey-api/shared": "npm:0.4.8"
     "@hey-api/spec-types": "npm:0.2.0"
     "@hey-api/types": "npm:0.1.4"
     "@lukeed/ms": "npm:2.0.2"
     ansi-colors: "npm:4.1.3"
     color-support: "npm:1.1.3"
-    commander: "npm:14.0.3"
+    commander: "npm:15.0.0"
     get-tsconfig: "npm:4.14.0"
   peerDependencies:
     typescript: ">=5.5.3 || >=6.0.0 || 6.0.1-rc"
   bin:
-    openapi-ts: bin/run.js
-  checksum: 10/143677c3a8d2e2b8e3d86f67b919b3de87793a85aae487b7bdef10468074b0777509aa498fc7950800f0f2bbff866d999ffd79d959687fd57462e5231e6de6e1
+    openapi-ts: ./bin/run.js
+  checksum: 10/9cedc2ec086cf80fd142f0fcc9deb4b13620bea532b95e095424c5e8e7e8d3841bb27f9df7710710a0f41abe129eed50fd4379a3f9502617f72473cfb91e8118
   languageName: node
   linkType: hard
 
-"@hey-api/shared@npm:0.4.3":
-  version: 0.4.3
-  resolution: "@hey-api/shared@npm:0.4.3"
+"@hey-api/shared@npm:0.4.8":
+  version: 0.4.8
+  resolution: "@hey-api/shared@npm:0.4.8"
   dependencies:
-    "@hey-api/codegen-core": "npm:0.8.1"
-    "@hey-api/json-schema-ref-parser": "npm:1.4.2"
+    "@hey-api/codegen-core": "npm:0.9.0"
+    "@hey-api/json-schema-ref-parser": "npm:1.4.3"
     "@hey-api/spec-types": "npm:0.2.0"
     "@hey-api/types": "npm:0.1.4"
     ansi-colors: "npm:4.1.3"
     cross-spawn: "npm:7.0.6"
     open: "npm:11.0.0"
-    semver: "npm:7.7.4"
-  checksum: 10/f3890c701e072525e8d9e9a4efbd853f99a563b2e52c924fea41102c6deb4a41bad24409866aede161419383435793ff8fd4355701225c7bf148adb2e4e03440
+    semver: "npm:7.8.2"
+  checksum: 10/db91ab3b550fc3a832f8cbd4f877147e8bb9979d939a014504b1fc5354d3dba7a2dcee702089e675854c07c6df28e2a27bf7ea96cf76c3cf5150069ac81743af
   languageName: node
   linkType: hard
 
@@ -3053,7 +3089,7 @@ __metadata:
     "@backstage/repo-tools": "npm:^0.17.1"
     "@changesets/cli": "npm:^2.27.1"
     "@jest/environment-jsdom-abstract": "npm:^30.0.0"
-    "@playwright/test": "npm:^1.57.0"
+    "@playwright/test": "npm:1.60.0"
     "@types/jest": "npm:^30.0.0"
     "@types/jsdom": "npm:^27.0.0"
     jest: "npm:^30.0.0"
@@ -5058,14 +5094,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.57.0":
-  version: 1.57.0
-  resolution: "@playwright/test@npm:1.57.0"
+"@playwright/test@npm:1.60.0":
+  version: 1.60.0
+  resolution: "@playwright/test@npm:1.60.0"
   dependencies:
-    playwright: "npm:1.57.0"
+    playwright: "npm:1.60.0"
   bin:
     playwright: cli.js
-  checksum: 10/07f5ba4841b2db1dea70d821004c5156b692488e13523c096ce3487d30f95f34ccf30ba6467ece60c86faac27ae382213b7eacab48a695550981b2e811e5e579
+  checksum: 10/a13d369014e1934b0aa484c5d59537f5249af0fe006ac4ecbcbe14c673221412706193ea2d9cf3b2c0cc69e3ddbb4daddb006f0bedfdeb05f687776ed8c35f5f
   languageName: node
   linkType: hard
 
@@ -5155,10 +5191,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.0":
-  version: 1.23.0
-  resolution: "@remix-run/router@npm:1.23.0"
-  checksum: 10/0a9f02c26c150d8210b05927c43d2f57ee8b7f812c81abb76df1721c7367ef692e54f4044981e756ce13d0619fb3c6a9b1514524d69aea9b32bfaf565299a8c7
+"@remix-run/router@npm:1.23.3":
+  version: 1.23.3
+  resolution: "@remix-run/router@npm:1.23.3"
+  checksum: 10/a12ae9994bf017d47392ce2be24252b4e2281f4b27eac78f0e9b48afa5f522be9c0ec64b85db013ded1fff140d9512b97ac8ea5dd182138dcd6d3ded3136cbf6
   languageName: node
   linkType: hard
 
@@ -6757,12 +6793,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.19.17":
-  version: 22.19.17
-  resolution: "@types/node@npm:22.19.17"
+"@types/node@npm:*, @types/node@npm:22.19.19":
+  version: 22.19.19
+  resolution: "@types/node@npm:22.19.19"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/8adcf9c2e9e7c524196efdd5ee60ebeda980b4ec9b5b8650e2341a2cabe46d368f3a4e4c0050b3bf26eb9cf383453ea2193ec5604079cdf9493a11a742f62018
+  checksum: 10/d404eb0bc391805537a172fcc607f7f9c142e20edc01a4203ec33e33a3c4e98fbe3a7ddb63725c399dd05947fac938722a6e05afe1c3d92017ac05c9a6b3ed8f
   languageName: node
   linkType: hard
 
@@ -9325,10 +9361,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:14.0.3, commander@npm:^14.0.3":
-  version: 14.0.3
-  resolution: "commander@npm:14.0.3"
-  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
+"commander@npm:15.0.0":
+  version: 15.0.0
+  resolution: "commander@npm:15.0.0"
+  checksum: 10/a5dab1f5c3f1bf2ea19e8089f650f7fb65c3ed88e13ddde62e490d34b20057bcb2cd3de5b6ddc8aae93286083f8256ca0b812df842f574cbebe0e40f5b2f98f7
   languageName: node
   linkType: hard
 
@@ -9350,6 +9386,13 @@ __metadata:
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
+  languageName: node
+  linkType: hard
+
+"commander@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "commander@npm:14.0.3"
+  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
   languageName: node
   linkType: hard
 
@@ -18046,27 +18089,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.57.0":
-  version: 1.57.0
-  resolution: "playwright-core@npm:1.57.0"
+"playwright-core@npm:1.60.0":
+  version: 1.60.0
+  resolution: "playwright-core@npm:1.60.0"
   bin:
     playwright-core: cli.js
-  checksum: 10/ec066602f0196f036006caee14a30d0a57533a76673bb9a0c609ef56e21decf018f0e8d402ba2fb18251393be6a1c9e193c83266f1670fe50838c5340e220de0
+  checksum: 10/66c0f83d627e673261c848dd6fe1f2856d5b5b6859268acb61a45c00f5bf926e596a351a9c481a3a4e82a45022c7c6b5d99ebc3906fc6876ac582ed6f7e16190
   languageName: node
   linkType: hard
 
-"playwright@npm:1.57.0":
-  version: 1.57.0
-  resolution: "playwright@npm:1.57.0"
+"playwright@npm:1.60.0":
+  version: 1.60.0
+  resolution: "playwright@npm:1.60.0"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.57.0"
+    playwright-core: "npm:1.60.0"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/241559210f98ef11b6bd6413f2d29da7ef67c7865b72053192f0d164fab9e0d3bd47913b3351d5de6433a8aff2d8424d4b8bd668df420bf4dda7ae9fcd37b942
+  checksum: 10/8569770637ee35d08cca3b53a5b56c21e9236bd1ac4718456d5988fb8acd51c5b3cc2cf90748363a36199529e870a9b6c68d6fc9e19571261cd867005d6331c1
   languageName: node
   linkType: hard
 
@@ -19206,27 +19249,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.0.0":
-  version: 6.30.1
-  resolution: "react-router-dom@npm:6.30.1"
+"react-router-dom@npm:^6.30.2":
+  version: 6.30.4
+  resolution: "react-router-dom@npm:6.30.4"
   dependencies:
-    "@remix-run/router": "npm:1.23.0"
-    react-router: "npm:6.30.1"
+    "@remix-run/router": "npm:1.23.3"
+    react-router: "npm:6.30.4"
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: 10/d61f04a36ca8a0a61e71bac2616f3f0d4142ced4a473d872738ca363b43d042f4d6dc249e7f7ae1c06f89599277e2fde11583d61cf6b34e999e79caf845acb37
+  checksum: 10/e220abac766bb9bcc56a99b78d30d99745cae3618f84baa92bd6ec481eccb6afb12c724d49dc68e6f870b70ff449f751f20f4aa33f1896d3f7d3bda8e47a6ce1
   languageName: node
   linkType: hard
 
-"react-router@npm:6.30.1":
-  version: 6.30.1
-  resolution: "react-router@npm:6.30.1"
+"react-router@npm:6.30.4":
+  version: 6.30.4
+  resolution: "react-router@npm:6.30.4"
   dependencies:
-    "@remix-run/router": "npm:1.23.0"
+    "@remix-run/router": "npm:1.23.3"
   peerDependencies:
     react: ">=16.8"
-  checksum: 10/880d6cafd6376dd1e624f6f600b7a208c4142d60eaea66241980ef57260c237b3465c3ff96b28f21ae354410345bbbb1817c3bba083012aade6626027d53506f
+  checksum: 10/59c1b64a210cde2f1d069ffc47dce2d58991bd4d81bb0743e22ba7c6b742e63ebbdc976c42c3a3ebd90bf38a2f05258bd0efa82c162b259be000d39787716043
   languageName: node
   linkType: hard
 
@@ -20236,12 +20279,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.4, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.7.2":
-  version: 7.7.4
-  resolution: "semver@npm:7.7.4"
+"semver@npm:7.8.2, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.7.2":
+  version: 7.8.2
+  resolution: "semver@npm:7.8.2"
   bin:
     semver: bin/semver.js
-  checksum: 10/26bdc6d58b29528f4142d29afb8526bc335f4fc04c4a10f2b98b217f277a031c66736bf82d3d3bb354a2f6a3ae50f18fd62b053c4ac3f294a3d10a61f5075b75
+  checksum: 10/52221d8f1cadacda3cc3f0a2e7f7146e0442c7f4219acb25970bed055f5d0a6afbba5f22e293b078c2e93fca3dce0a08b088485e8b75d32a165f16c3627091c8
   languageName: node
   linkType: hard
 

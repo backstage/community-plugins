@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
+import { BackstageCredentials } from '@backstage/backend-plugin-api';
 import {
   AuthorizeResult,
   createPermission,
 } from '@backstage/plugin-permission-common';
+import { PolicyQueryUser } from '@backstage/plugin-permission-node';
 import {
   permissions,
   PLAYLIST_LIST_RESOURCE_TYPE,
@@ -29,13 +30,14 @@ import { DefaultPlaylistPermissionPolicy } from './DefaultPlaylistPermissionPoli
 
 describe('DefaultPlaylistPermissionPolicy', () => {
   const policy = new DefaultPlaylistPermissionPolicy();
-  const mockUser: BackstageIdentityResponse = {
-    token: 'token',
-    identity: {
-      type: 'user',
+  const mockUser: PolicyQueryUser = {
+    info: {
       ownershipEntityRefs: ['user:default/me', 'group:default/owner'],
       userEntityRef: 'user:default/me',
     },
+    credentials: {
+      $$type: '@backstage/BackstageCredentials',
+    } as BackstageCredentials,
   };
 
   it('should deny non-playlist permissions', async () => {

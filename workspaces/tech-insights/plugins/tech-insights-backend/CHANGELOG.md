@@ -1,5 +1,23 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 3.0.1
+
+### Major Changes
+
+- 1f64cac: No breaking changes. This is a release to supersede the broken 3.0.0 version which crashes on startup with `TypeError: permissions is not iterable`.
+
+## 2.7.0
+
+### Minor Changes
+
+- b8b1d30: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [b8b1d30]
+  - @backstage-community/plugin-tech-insights-common@0.10.0
+  - @backstage-community/plugin-tech-insights-node@2.8.0
+
 ## 2.6.0
 
 ### Minor Changes

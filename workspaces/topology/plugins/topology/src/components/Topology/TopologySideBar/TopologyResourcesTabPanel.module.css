@@ -1,0 +1,9 @@
+.servicePortRow {
+  flex-wrap: wrap;
+}
+
+.servicePortArrow {
+  width: 0.8em;
+  height: 0.8em;
+  flex-shrink: 0;
+}

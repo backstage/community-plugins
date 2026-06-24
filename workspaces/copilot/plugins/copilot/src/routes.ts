@@ -22,11 +22,23 @@ export const copilotRouteRef = createRouteRef({
 export const enterpriseRouteRef = createSubRouteRef({
   id: 'enterprise-dashboard',
   parent: copilotRouteRef,
-  path: '/enterprise',
+  path: '/legacy/enterprise',
 });
 
 export const organizationRouteRef = createSubRouteRef({
   id: 'organization-dashboard',
   parent: copilotRouteRef,
-  path: '/organization',
+  path: '/legacy/organization',
+});
+
+export const v2DashboardRouteRef = createSubRouteRef({
+  id: 'v2-dashboard',
+  parent: copilotRouteRef,
+  path: '/v2',
+});
+
+export const legacyCopilotRouteRef = createSubRouteRef({
+  id: 'legacy-copilot-dashboard',
+  parent: copilotRouteRef,
+  path: '/legacy',
 });

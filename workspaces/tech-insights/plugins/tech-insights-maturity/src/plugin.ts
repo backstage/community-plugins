@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  configApiRef,
   createApiFactory,
   createComponentExtension,
   createPlugin,
@@ -39,14 +40,19 @@ export const techInsightsMaturityPlugin = createPlugin({
       api: maturityApiRef,
       deps: {
         catalogApi: catalogApiRef,
+        configApi: configApiRef,
         discoveryApi: discoveryApiRef,
         identityApi: identityApiRef,
       },
-      factory: ({ catalogApi, discoveryApi, identityApi }) =>
+      factory: ({ catalogApi, configApi, discoveryApi, identityApi }) =>
         new MaturityClient({
           catalogApi,
           discoveryApi,
           identityApi,
+          enableCompoundEntityCheck:
+            configApi.getOptionalBoolean(
+              'techInsights.maturity.enableCompoundEntityCheck',
+            ) ?? false,
         }),
     }),
   ],

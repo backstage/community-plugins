@@ -1,3 +1,20 @@
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  auth:
+    # Dev-only static token for curl and other local API checks. Do not use in production.
+    externalAccess:
+      - type: static
+        options:
+          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          subject: local-dev
+        accessRestrictions:
+          - plugin: catalog
+
 catalog:
   providers:
     threeScaleApiEntity:

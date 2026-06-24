@@ -1,4 +1,7 @@
-import { NEXUS_REPOSITORY_MANAGER_ANNOTATIONS } from '../../annotations';
+import {
+  NEXUS_REPOSITORY_MANAGER_ANNOTATIONS,
+  NEXUS_REPOSITORY_MANAGER_EXPERIMENTAL_ANNOTATIONS,
+} from '../../annotations';
 import { NexusRepositoryManagerApiV1 } from '../../api';
 import { SearchServiceQuery } from '../../types';
 
@@ -16,6 +19,11 @@ export class NexusRepositoryManagerApiClientMock
   }
 
   getAnnotations() {
-    return { ANNOTATIONS: NEXUS_REPOSITORY_MANAGER_ANNOTATIONS };
+    return {
+      ANNOTATIONS: [
+        ...NEXUS_REPOSITORY_MANAGER_ANNOTATIONS,
+        ...NEXUS_REPOSITORY_MANAGER_EXPERIMENTAL_ANNOTATIONS,
+      ],
+    };
   }
 }

@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert } from '@backstage/ui';
 
 const PermissionAlert = () => {
   return (
-    <Alert severity="warning" data-testid="no-permission-alert">
-      <AlertTitle>Permission required</AlertTitle>
-      To view quay image registry, contact your administrator to give you the
-      quay.view.read permission.
-    </Alert>
+    <Alert
+      status="warning"
+      title="Permission required"
+      description="To view quay image registry, contact your administrator to give you the quay.view.read permission."
+      data-testid="no-permission-alert"
+    />
   );
 };
 export default PermissionAlert;
