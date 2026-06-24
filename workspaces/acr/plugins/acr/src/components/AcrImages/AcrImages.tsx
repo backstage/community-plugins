@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ErrorPanel, Table } from '@backstage/core-components';
-import { Box } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import { useMemo } from 'react';
 import { formatDate } from '../../utils/acr-utils';
 
