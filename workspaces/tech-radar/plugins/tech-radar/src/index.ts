@@ -20,22 +20,19 @@
  * @packageDocumentation
  */
 
-import { RadarPage } from './components';
-
 export {
   techRadarPlugin,
   techRadarPlugin as plugin,
   TechRadarPage,
+  TechRadarComponent,
 } from './plugin';
 
-export * from './components';
-
-/**
- * @deprecated Use plugin extensions instead
- *
- * @public
- */
-export const Router = RadarPage;
+export { type TechRadarComponentProps } from './components/TechRadarComponent';
+export { type TechRadarPageProps } from './components/TechRadarPage';
+export {
+  type ComponentContextProps,
+  defaultComponents,
+} from './components/hooks/useComponents';
 
 /**
  * The TypeScript API for configuring Tech Radar.
