@@ -2,23 +2,53 @@ app:
   title: Copilot Example App
   baseUrl: http://localhost:3000
 
+  # Enable all packages by default, this will discover packages from packages/app/package.json
+  packages: all
+
+  extensions:
+    # Configure the catalog index page to be the root page, this is normally mounted on /catalog
+    - page:catalog:
+        config:
+          path: /
+
 organization:
   name: Copilot Example
 
 backend:
+  # Used for enabling authentication, secret is shared by all backend plugins
+  # See https://backstage.io/docs/auth/service-to-service-auth for
+  # information on the format
+  # auth:
+  #   keys:
+  #     - secret: ${BACKEND_SECRET}
   baseUrl: http://localhost:7007
   listen:
     port: 7007
+    # Uncomment the following host directive to bind to specific interfaces
+    # host: 127.0.0.1
   csp:
     connect-src: ["'self'", 'http:', 'https:']
+    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
+    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
     origin: http://localhost:3000
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
+  # This is for local development only, it is not recommended to use this in production
+  # The production database configuration is stored in app-config.production.yaml
   database:
     client: better-sqlite3
-    connection: ':memory:'
+    connection:
+      directory: '../../database/'
+    useNullAsDefault: true
 
+  # see https://backstage.io/docs/ai/mcp-actions#actions-configuration for more details
+  actions:
+    pluginSources:
+      - auth
+      - catalog
+      - scaffolder
+  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 techdocs:
   builder: 'local'
   generator:
@@ -47,14 +77,39 @@ catalog:
       rules:
         - allow: [User, Group]
 
+# integrations:
+#   github:
+#     - host: github.com
+#       token: ${GITHUB_TOKEN}
+
+integrations:
+  github:
+    - host: github.com
+      apps:
+        - appId: ${AUTH_GITHUB_APP_ID}
+          clientId: ${AUTH_GITHUB_CLIENT_ID}
+          clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+          webhookSecret: not_required
+          privateKey: ${AUTH_GITHUB_PRIVATE_KEY}
+
+permission:
+  # setting this to `false` will disable permissions
+  enabled: true
+
 copilot:
+  host: github.com
+  # enterprise: ${ENTERPRISE}
+  organization: ${ORGANIZATION}
+  backfillFromDate: '2026-05-20'
+  backfillDelayMs: 300
+  ingestTeams: true
+  showUserMetrics: false
+  showLegacyView: false
+  defaultView: enterprise
   schedule:
     frequency:
-      hours: 2
+      hours: 24
     timeout:
-      minutes: 2
+      minutes: 30
     initialDelay:
-      seconds: 15
-  host: abc.github.com
-  enterprise: YOUR_ENTERPRISE_NAME_HERE
-  # organization: YOUR_ORGANIZATION_NAME_HERE
+      seconds: 5

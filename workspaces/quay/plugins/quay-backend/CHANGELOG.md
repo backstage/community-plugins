@@ -1,5 +1,16 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.16.0
+
+### Minor Changes
+
+- d4e8668: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [d4e8668]
+  - @backstage-community/plugin-quay-common@1.21.0
+
 ## 1.15.0
 
 ### Minor Changes

@@ -240,13 +240,20 @@ const PermissionPoliciesFormTable = ({
       <TablePagination
         rowsPerPageOptions={[5, 10, 20]}
         component="div"
-        count={data.length}
+        count={filteredData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         showFirstButton
         showLastButton
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage={t('table.labelRowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) =>
+          t('table.labelDisplayedRows')
+            .replace('{from}', String(from))
+            .replace('{to}', String(to))
+            .replace('{count}', count !== -1 ? String(count) : '?')
+        }
       />
     </Paper>
   );

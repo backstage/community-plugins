@@ -1,0 +1,17 @@
+@layer components {
+  .bar {
+    padding: var(--bui-space-2) 0;
+  }
+
+  .filters {
+    padding: var(--bui-space-4);
+    margin-top: var(--bui-space-4);
+    background-color: var(--bui-bg-surface-1);
+    border-radius: var(--bui-radius-3);
+    border: 1px solid var(--bui-border-1);
+  }
+
+  .filter + .filter {
+    margin-top: var(--bui-space-5);
+  }
+}

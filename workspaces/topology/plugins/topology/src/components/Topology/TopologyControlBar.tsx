@@ -48,9 +48,13 @@ export const TopologyControlBar = ({ controller }: TopologyControlBarProps) => {
         }),
         legend: false,
         zoomInTip: t('controlBar.zoomIn'),
+        zoomInAriaLabel: t('controlBar.zoomIn'),
         zoomOutTip: t('controlBar.zoomOut'),
+        zoomOutAriaLabel: t('controlBar.zoomOut'),
         fitToScreenTip: t('controlBar.fitToScreen'),
+        fitToScreenAriaLabel: t('controlBar.fitToScreen'),
         resetViewTip: t('controlBar.resetView'),
+        resetViewAriaLabel: t('controlBar.resetView'),
       })}
     />
   );

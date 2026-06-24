@@ -1,5 +1,16 @@
 # @backstage-community/plugin-tech-insights-node
 
+## 2.8.0
+
+### Minor Changes
+
+- b8b1d30: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [b8b1d30]
+  - @backstage-community/plugin-tech-insights-common@0.10.0
+
 ## 2.7.0
 
 ### Minor Changes

@@ -15,10 +15,9 @@
  */
 import { useLayoutEffect } from 'react';
 
-import { useTheme } from '@mui/material/styles';
-
 import { FilterContext } from '../../hooks/FilterContext';
 import { K8sResourcesContext } from '../../hooks/K8sResourcesContext';
+import { useDarkTheme } from '../../hooks/useDarkTheme';
 import { useFilterContextValues } from '../../hooks/useFilterContextValues';
 import { useK8sObjectsResponse } from '../../hooks/useK8sObjectsResponse';
 import { ModelsPlural } from '../../models';
@@ -32,19 +31,13 @@ import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
 import './TopologyComponent.css';
 import { RequireKubernetesReadPermissions } from './permissions/requireKubernetesReadPermissions';
 
-const THEME_DARK = 'dark';
-const THEME_DARK_CLASS = 'pf-v6-theme-dark';
-
 const savedStylesheets = new Set<HTMLLinkElement>();
 const firstLinkOrScript = document.head.querySelector('link, script');
 
 export const TopologyComponent = () => {
-  const {
-    palette: { mode },
-  } = useTheme();
-  useLayoutEffect(() => {
-    const htmlTagElement = document.documentElement;
+  useDarkTheme();
 
+  useLayoutEffect(() => {
     const scalprumStyles = Array.from(
       document.querySelectorAll('link[rel="stylesheet"]'),
     ).filter(link =>
@@ -67,24 +60,14 @@ export const TopologyComponent = () => {
       }
     });
 
-    if (mode === THEME_DARK) {
-      htmlTagElement.classList.add(THEME_DARK_CLASS);
-    } else {
-      htmlTagElement.classList.remove(THEME_DARK_CLASS);
-    }
-
     return () => {
       savedStylesheets.forEach(link => {
         if (document.head.contains(link)) {
           document.head.removeChild(link);
         }
       });
-
-      if (htmlTagElement.classList.contains(THEME_DARK_CLASS)) {
-        htmlTagElement.classList.remove(THEME_DARK_CLASS);
-      }
     };
-  }, [mode]);
+  }, []);
 
   const watchedResources = [
     ModelsPlural.deployments,

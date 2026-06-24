@@ -16415,7 +16415,7 @@ __metadata:
     "@types/express-serve-static-core": "npm:^5.0.0"
     "@types/luxon": "npm:^3.0.0"
     app: "link:../app"
-    better-sqlite3: "npm:^9.0.0"
+    better-sqlite3: "npm:^12.0.0"
     node-gyp: "npm:^9.0.0"
     pg: "npm:^8.11.3"
     winston: "npm:^3.2.1"
@@ -16572,17 +16572,6 @@ __metadata:
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.1"
   checksum: 10/e8133786677e88a2526c965658178e2e057e4b40ff554895a71ecb5e617e062fea619f31389ffbd6fc1f3396ef598812302be56c32e0f01fcb82610785d18186
-  languageName: node
-  linkType: hard
-
-"better-sqlite3@npm:^9.0.0":
-  version: 9.6.0
-  resolution: "better-sqlite3@npm:9.6.0"
-  dependencies:
-    bindings: "npm:^1.5.0"
-    node-gyp: "npm:latest"
-    prebuild-install: "npm:^7.1.1"
-  checksum: 10/06b3d95221071a06c2e22a9746d9b7049c0bce7962e5e3290ccf088fffbf4d4d52868f0d98b8ae2565fe33b1adab89823145f23c6f6eb63ecc4fc1b883f9082c
   languageName: node
   linkType: hard
 
@@ -21177,12 +21166,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.6":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 

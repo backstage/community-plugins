@@ -1,0 +1,49 @@
+app:
+  title: Checkmarx Backstage Example
+  baseUrl: http://localhost:3000
+
+organization:
+  name: your organization example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  providers:
+    guest: {}
+
+checkmarx:
+  location: US2
+  tenant: ${CHECKMARX_TENANT}
+  apiKey: ${CHECKMARX_API_KEY}
+  # externalBaseUrl: https://us.ast.checkmarx.net
+  # astBaseUrlOverride: https://us.ast.checkmarx.net
+  # iamBaseUrlOverride: https://us.iam.checkmarx.net
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]

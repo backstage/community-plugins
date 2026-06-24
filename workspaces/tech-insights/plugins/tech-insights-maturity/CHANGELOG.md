@@ -1,5 +1,42 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.9.2
+
+### Patch Changes
+
+- a2decf5: Fixed a build failure caused by a missing configuration definition.
+
+## 0.9.1
+
+### Patch Changes
+
+- 43f04bb: Remove unused `msw` dependency
+- 832bfe3: Add a `techInsights.maturity.enableCompoundEntityCheck` config option that lets
+  non-Component entities (System, Domain, Group, API, Resource, etc.) have their
+  own maturity scorecard. When enabled, the Maturity Summary page additionally
+  renders the entity's own scorecard alongside the rollup of its related
+  components. Defaults to `false`, preserving existing behavior.
+
+## 0.9.0
+
+### Minor Changes
+
+- b8b1d30: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [bf48378]
+- Updated dependencies [b8b1d30]
+  - @backstage-community/plugin-tech-insights-maturity-common@0.6.0
+  - @backstage-community/plugin-tech-insights-common@0.10.0
+  - @backstage-community/plugin-tech-insights-react@1.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 1d4f7ea: Introduce new frontend system.
+
 ## 0.7.0
 
 ### Minor Changes

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ReactNode } from 'react';
 import { useContext } from 'react';
 
 import { V1Pod } from '@kubernetes/client-node';
@@ -36,32 +37,6 @@ jest.mock('react', () => ({
   useContext: jest.fn(),
 }));
 
-jest.mock('@emotion/react', () => ({
-  ...jest.requireActual('@emotion/react'),
-  Styled: (props: any) => <div {...props} />,
-}));
-
-jest.mock('@mui/material/Dialog', () => (props: any) => (
-  <div data-testid="dialog">{props.children}</div>
-));
-jest.mock('@mui/material/DialogContent', () => (props: any) => (
-  <div data-testid="dialog-content">{props.children}</div>
-));
-jest.mock('@mui/material/DialogTitle', () => (props: any) => (
-  <div data-testid="dialog-title">{props.children}</div>
-));
-jest.mock('@mui/material/Box', () => (props: any) => (
-  <div data-testid="box">{props.children}</div>
-));
-jest.mock('@mui/material/Select', () => (props: any) => (
-  <div data-testid="select">{props.children}</div>
-));
-jest.mock('@mui/material/IconButton', () => (props: any) => (
-  <div data-testid="icon-button">{props.children}</div>
-));
-jest.mock('@mui/material/MenuItem', () => (props: any) => (
-  <div data-testid="menu-item">{props.children}</div>
-));
 jest.mock('@backstage/core-components', () => ({
   ...jest.requireActual('@backstage/core-components'),
   WarningPanel: (props: any) => (
@@ -71,10 +46,30 @@ jest.mock('@backstage/core-components', () => ({
     <div data-testid="error-boundary">{props.children}</div>
   ),
 }));
+
 jest.mock('./PodLogs', () => ({
   PodLogs: () => <div data-testid="pod-logs" />,
 }));
-jest.mock('@mui/icons-material/Close', () => () => <span>Close Icon</span>);
+
+jest.mock('@backstage/ui', () => {
+  const actual = jest.requireActual('@backstage/ui');
+  return {
+    ...actual,
+    Dialog: ({ children }: { children: ReactNode }) => (
+      <div data-testid="dialog">{children}</div>
+    ),
+    DialogHeader: ({ children }: { children: ReactNode }) => (
+      <div data-testid="dialog-header">{children}</div>
+    ),
+    DialogBody: ({ children }: { children: ReactNode }) => (
+      <div data-testid="dialog-body">{children}</div>
+    ),
+    Flex: ({ children, ...props }: { children: ReactNode }) => (
+      <div {...props}>{children}</div>
+    ),
+  };
+});
+
 const RequirePermissionMock = RequirePermission as jest.MockedFunction<
   typeof RequirePermission
 >;
@@ -93,7 +88,7 @@ describe('PodLogsDialog', () => {
 
     fireEvent.click(button);
     expect(queryByText(/View Logs/i)).toBeInTheDocument();
-    expect(queryByTestId('dialog')).toBeInTheDocument();
+    expect(queryByTestId('pod-logs')).toBeInTheDocument();
   });
 
   it('should not show Dialog & View logs', () => {
@@ -105,6 +100,6 @@ describe('PodLogsDialog', () => {
       <PodLogsDialog podData={mockKubernetesResponse.pods[0] as V1Pod} />,
     );
     expect(queryByText(/View Logs/i)).not.toBeInTheDocument();
-    expect(queryByTestId('dialog')).not.toBeInTheDocument();
+    expect(queryByTestId('pod-logs')).not.toBeInTheDocument();
   });
 });

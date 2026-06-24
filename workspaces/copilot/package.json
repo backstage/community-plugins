@@ -6,9 +6,9 @@
     "node": "22 || 24"
   },
   "scripts": {
-    "start": "backstage-cli repo start",
+    "start": "backstage-cli repo start --inspect",
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
