@@ -41,6 +41,8 @@ import {
   transformArrayToPolicy,
   transformRolesGroupToLowercase,
   typedPoliciesToString,
+  abortConditionalPolicyReconcile,
+  diffConditionalPolicies,
 } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
@@ -126,42 +128,50 @@ export class Connection implements RBACProviderConnection {
     const storedConditionalPermissions =
       await this.conditionStorage.filterConditions();
 
-    const conditionsToBeAdded: RoleConditionalPolicyDecision<PermissionInfo>[] =
-      conditionalPermissions.filter(
-        conditionalPermission =>
-          !storedConditionalPermissions.some(
-            stored =>
-              conditionalPermission.roleEntityRef === stored.roleEntityRef &&
-              conditionalPermission.pluginId === stored.pluginId &&
-              conditionalPermission.resourceType === stored.resourceType &&
-              isEqual(
-                conditionalPermission.permissionMapping,
-                stored.permissionMapping,
-              ) &&
-              isEqual(conditionalPermission.conditions, stored.conditions),
-          ),
-      );
+    const diff = diffConditionalPolicies(
+      storedConditionalPermissions,
+      conditionalPermissions,
+      (stored, desired) =>
+        stored.roleEntityRef === desired.roleEntityRef &&
+        stored.pluginId === desired.pluginId &&
+        stored.resourceType === desired.resourceType &&
+        isEqual(stored.permissionMapping, desired.permissionMapping) &&
+        isEqual(stored.conditions, desired.conditions),
+    );
 
-    // Updated policies fails the 'some' check due to permissionMapping differences
-    const conditionsToBeRemoved: RoleConditionalPolicyDecision<PermissionInfo>[] =
-      storedConditionalPermissions.filter(
-        stored =>
-          !conditionalPermissions.some(
-            conditionalPermission =>
-              stored.roleEntityRef === conditionalPermission.roleEntityRef &&
-              stored.pluginId === conditionalPermission.pluginId &&
-              stored.resourceType === conditionalPermission.resourceType &&
-              isEqual(
-                stored.permissionMapping,
-                conditionalPermission.permissionMapping,
-              ) &&
-              isEqual(stored.conditions, conditionalPermission.conditions),
-          ),
-      );
+    if (diff.toAdd.length === 0 && diff.toRemove.length === 0) {
+      return;
+    }
 
-    await this.removeConditionalPermissions(conditionsToBeRemoved);
+    // Validate and persist all additions before any removals so a failed add does not
+    // delete stored conditions.
+    try {
+      for (const condition of diff.toAdd) {
+        const metadata = await this.roleMetadataStorage.findRoleMetadata(
+          condition.roleEntityRef,
+        );
+        const err = await validateSource(this.id, metadata);
+        if (err) {
+          throw err;
+        }
+        await this.persistConditionalAddition(condition);
+      }
 
-    await this.addConditionalPermissions(conditionsToBeAdded);
+      for (const condition of diff.toRemove) {
+        await this.persistConditionalRemoval(condition);
+      }
+    } catch (error) {
+      await abortConditionalPolicyReconcile({
+        logger: this.logger,
+        auditor: this.auditor,
+        source: this.id,
+        abortEventId: ConditionEvents.CONDITION_WRITE,
+        pendingAdds: diff.toAdd.length,
+        pendingRemoves: diff.toRemove.length,
+        pluginIds: [...new Set(diff.toAdd.map(c => c.pluginId))],
+        error,
+      });
+    }
   }
 
   private async addRoles(roles: string[][]): Promise<void> {
@@ -338,65 +348,55 @@ export class Connection implements RBACProviderConnection {
     }
   }
 
-  private async addConditionalPermissions(
-    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+  private async persistConditionalAddition(
+    condition: RoleConditionalPolicyDecision<PermissionInfo>,
   ): Promise<void> {
-    for (const condition of conditionalPermissions) {
-      const auditorMeta = {
-        policies: [condition],
-      };
-      const auditorEvent = await this.auditor.createEvent({
-        eventId: ConditionEvents.CONDITION_WRITE,
-        severityLevel: 'medium',
-        meta: {
-          actionType: ActionType.CREATE,
-          source: this.id,
-        },
-      });
-      try {
-        const metadata = await this.roleMetadataStorage.findRoleMetadata(
-          condition.roleEntityRef,
-        );
-        const err = await validateSource(this.id, metadata);
-        if (err) {
-          throw err;
-        }
-        await this.conditionStorage.createCondition(condition);
-        await auditorEvent.success({ meta: auditorMeta });
-      } catch (error) {
-        await auditorEvent.fail({ error, meta: auditorMeta });
-      }
+    const auditorMeta = {
+      policies: [condition],
+    };
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: {
+        actionType: ActionType.CREATE,
+        source: this.id,
+      },
+    });
+    try {
+      await this.conditionStorage.createCondition(condition);
+      await auditorEvent.success({ meta: auditorMeta });
+    } catch (error) {
+      await auditorEvent.fail({ error, meta: auditorMeta });
+      throw error;
     }
   }
 
-  private async removeConditionalPermissions(
-    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+  private async persistConditionalRemoval(
+    conditionalPermission: RoleConditionalPolicyDecision<PermissionInfo>,
   ): Promise<void> {
-    for (const conditionalPermission of conditionalPermissions) {
-      const auditorMeta = {
-        policies: [conditionalPermission],
-      };
-      const auditorEvent = await this.auditor.createEvent({
-        eventId: ConditionEvents.CONDITION_WRITE,
-        severityLevel: 'medium',
-        meta: { actionType: ActionType.DELETE, source: this.id },
-      });
-      try {
-        const metadata = await this.roleMetadataStorage.findRoleMetadata(
-          conditionalPermission.roleEntityRef,
-        );
-        const err = await validateSource(this.id, metadata);
-        if (err) {
-          throw err;
-        }
-        await this.conditionStorage.deleteCondition(conditionalPermission.id);
-        await auditorEvent.success({ meta: auditorMeta });
-      } catch (error) {
-        await auditorEvent.fail({
-          error,
-          meta: auditorMeta,
-        });
+    const auditorMeta = {
+      policies: [conditionalPermission],
+    };
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.DELETE, source: this.id },
+    });
+    try {
+      const metadata = await this.roleMetadataStorage.findRoleMetadata(
+        conditionalPermission.roleEntityRef,
+      );
+      const err = await validateSource(this.id, metadata);
+      if (err) {
+        throw err;
       }
+      await this.conditionStorage.deleteCondition(conditionalPermission.id!);
+      await auditorEvent.success({ meta: auditorMeta });
+    } catch (error) {
+      await auditorEvent.fail({
+        error,
+        meta: auditorMeta,
+      });
     }
   }
 

@@ -735,6 +735,34 @@ describe('Connection', () => {
       expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
       expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
     });
+
+    it('should preserve existing conditional policies when replacement add fails (#9429)', async () => {
+      (conditionalStorageMock.createCondition as jest.Mock).mockImplementation(
+        () => {
+          throw new Error('create failed');
+        },
+      );
+
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: existingConditionalPermission[0].id,
+          result: existingConditionalPermission[0].result,
+          roleEntityRef: existingConditionalPermission[0].roleEntityRef,
+          pluginId: existingConditionalPermission[0].pluginId,
+          resourceType: existingConditionalPermission[0].resourceType,
+          permissionMapping: [
+            { name: 'read', action: 'read' },
+            { name: 'delete', action: 'delete' },
+          ],
+          conditions: existingConditionalPermission[0].conditions,
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+    });
+
     it('should reject policies from an invalid source', async () => {
       const anotherProvider = new Connection(
         'another-provider',
@@ -769,14 +797,22 @@ describe('Connection', () => {
         {
           event: {
             eventId: ConditionEvents.CONDITION_WRITE,
-            meta: { actionType: ActionType.CREATE, source: 'another-provider' },
+            meta: {
+              source: 'another-provider',
+              pendingAdds: 1,
+              pendingRemoves: 0,
+              pluginIds: ['catalog'],
+            },
           },
           fail: {
             error: new Error(
               `source does not match originating role role:default/existing-provider-role, consider making changes to the 'TEST'`,
             ),
             meta: {
-              policies: [policies[0]],
+              source: 'another-provider',
+              pendingAdds: 1,
+              pendingRemoves: 0,
+              pluginIds: ['catalog'],
             },
           },
         },

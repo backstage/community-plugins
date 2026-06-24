@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AuditorService, AuthService } from '@backstage/backend-plugin-api';
+import {
+  AuditorService,
+  AuthService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import type { MetadataResponse } from '@backstage/plugin-permission-common';
 
 import {
@@ -36,7 +40,7 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import { ActionType, RoleEvents } from './auditor/auditor';
+import { ActionType, ConditionEvents, RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
@@ -81,6 +85,86 @@ export function metadataStringToPolicy(policy: string): string[] {
  */
 function policyArraysEqual(a: string[], b: string[]): boolean {
   return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+export type ConditionalPolicyDiff<TAdd> = {
+  toAdd: TAdd[];
+  toRemove: RoleConditionalPolicyDecision<PermissionInfo>[];
+};
+
+export type ConditionalPolicyReconcileAbortContext = {
+  logger: LoggerService;
+  auditor: AuditorService;
+  source: string;
+  abortEventId?: string;
+  pendingAdds: number;
+  pendingRemoves: number;
+  pluginIds: string[];
+  error: unknown;
+};
+
+/**
+ * Computes additions and removals between stored and desired conditional policies.
+ */
+export function diffConditionalPolicies<TAdd>(
+  stored: RoleConditionalPolicyDecision<PermissionInfo>[],
+  desired: TAdd[],
+  equals: (
+    storedItem: RoleConditionalPolicyDecision<PermissionInfo>,
+    desiredItem: TAdd,
+  ) => boolean,
+): ConditionalPolicyDiff<TAdd> {
+  const toAdd = desired.filter(
+    desiredItem => !stored.some(storedItem => equals(storedItem, desiredItem)),
+  );
+  const toRemove = stored.filter(
+    storedItem => !desired.some(desiredItem => equals(storedItem, desiredItem)),
+  );
+  return { toAdd, toRemove };
+}
+
+/**
+ * Logs and audits a failed conditional reconcile. Callers must complete the full
+ * add path (validation, metadata mapping, and createCondition) before running
+ * removals, and invoke this from a catch block when that add path throws so
+ * stored conditions are not deleted.
+ */
+export async function abortConditionalPolicyReconcile(
+  context: ConditionalPolicyReconcileAbortContext,
+): Promise<void> {
+  const {
+    logger,
+    auditor,
+    source,
+    abortEventId = ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE,
+    pendingAdds,
+    pendingRemoves,
+    pluginIds,
+    error,
+  } = context;
+
+  const abortMeta = {
+    source,
+    pendingAdds,
+    pendingRemoves,
+    pluginIds,
+  };
+
+  logger.error(
+    'Conditional policy reconcile aborted; stored conditions preserved. Retry reconciliation once the add failure is resolved.',
+    {
+      event: 'conditional_reconcile_aborted',
+      ...abortMeta,
+      error: String(error),
+    },
+  );
+
+  const auditorEvent = await auditor.createEvent({
+    eventId: abortEventId,
+    severityLevel: 'medium',
+    meta: abortMeta,
+  });
+  await auditorEvent.fail({ error, meta: abortMeta });
 }
 
 /**

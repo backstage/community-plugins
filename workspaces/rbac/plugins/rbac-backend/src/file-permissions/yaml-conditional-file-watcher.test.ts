@@ -458,7 +458,7 @@ describe('YamlConditionalFileWatcher', () => {
     const watcher = createWatcher(csvFileName);
     await watcher.initialize();
 
-    expect(conditionalStorageMock.createCondition).toHaveBeenCalled();
+    expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
     expectAuditorLog([
       {
         event: {
@@ -472,12 +472,22 @@ describe('YamlConditionalFileWatcher', () => {
       },
       {
         event: {
-          eventId: ConditionEvents.CONDITION_WRITE,
-          meta: { actionType: ActionType.CREATE },
+          eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE,
+          meta: {
+            source: 'conditional-policies-file',
+            pendingAdds: 2,
+            pendingRemoves: 0,
+            pluginIds: ['catalog'],
+          },
         },
         fail: {
-          error: new Error('unknown error message 2'),
-          ...mappedConditionMeta(conditionToStore2),
+          error: new Error('unknown error message 1'),
+          meta: {
+            source: 'conditional-policies-file',
+            pendingAdds: 2,
+            pendingRemoves: 0,
+            pluginIds: ['catalog'],
+          },
         },
       },
     ]);
@@ -729,6 +739,58 @@ describe('YamlConditionalFileWatcher', () => {
         },
       },
     ]);
+  });
+
+  test('should preserve existing conditions when catalog metadata is unavailable during reload (#9429)', async () => {
+    const storedCondition = {
+      id: 1,
+      result: AuthorizeResult.CONDITIONAL,
+      roleEntityRef: 'role:default/test',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
+      conditions: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: {
+          claims: ['group:default/team-a'],
+        },
+      },
+    };
+
+    conditionalStorageMock.filterConditions = jest
+      .fn()
+      .mockImplementation(() => [storedCondition]);
+    roleMetadataStorageMock.filterRoleMetadata = jest
+      .fn()
+      .mockImplementation(() => csvFileRoles);
+    pluginMetadataCollectorMock.getMetadataByPluginId = jest
+      .fn()
+      .mockResolvedValue(undefined);
+
+    const updatedYaml = [
+      'result: CONDITIONAL',
+      'roleEntityRef: role:default/test',
+      'pluginId: catalog',
+      'resourceType: catalog-entity',
+      'permissionMapping:',
+      '  - read',
+      'conditions:',
+      '  rule: IS_ENTITY_OWNER',
+      '  resourceType: catalog-entity',
+      '  params:',
+      '    claims:',
+      '      - group:default/team-a',
+      '      - group:default/team-b',
+    ].join('\n');
+
+    const watcher = createWatcher(csvFileName);
+    jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(updatedYaml);
+    await watcher.onChange();
+
+    expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
+    expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
+    expect(mockLoggerService.error).toHaveBeenCalled();
   });
 
   test('should clean up conditions if conditional file was not specified', async () => {

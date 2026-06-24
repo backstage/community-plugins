@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import { mockServices } from '@backstage/backend-test-utils';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
 import { mockAuditorService } from '../__fixtures__/mock-utils';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
+  abortConditionalPolicyReconcile,
   deepSortedEqual,
+  diffConditionalPolicies,
   isPermissionAction,
   matches,
   mergeRoleMetadata,
@@ -838,5 +842,83 @@ describe('mergeRoleMetadata', () => {
     expect(result.description).toEqual(newMetadata.description);
     expect(result.roleEntityRef).toEqual(newMetadata.roleEntityRef);
     expect(result.source).toEqual(newMetadata.source);
+  });
+});
+
+describe('diffConditionalPolicies', () => {
+  const stored = [
+    {
+      id: 1,
+      result: AuthorizeResult.CONDITIONAL,
+      roleEntityRef: 'role:default/test',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+      ],
+      conditions: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: { claims: ['group:default/team-a'] },
+      },
+    },
+  ];
+
+  it('returns empty diff when stored matches desired', () => {
+    const diff = diffConditionalPolicies(
+      stored,
+      stored,
+      (a, b) => a.id === b.id,
+    );
+    expect(diff.toAdd).toHaveLength(0);
+    expect(diff.toRemove).toHaveLength(0);
+  });
+
+  it('returns additions and removals for replace diff', () => {
+    const desired = [
+      {
+        ...stored[0],
+        permissionMapping: [
+          { name: 'catalog.entity.read', action: 'read' as const },
+          { name: 'catalog.entity.delete', action: 'delete' as const },
+        ],
+      },
+    ];
+    const diff = diffConditionalPolicies(
+      stored,
+      desired,
+      (a, b) =>
+        a.roleEntityRef === b.roleEntityRef &&
+        a.pluginId === b.pluginId &&
+        a.resourceType === b.resourceType &&
+        JSON.stringify(a.permissionMapping) ===
+          JSON.stringify(b.permissionMapping) &&
+        JSON.stringify(a.conditions) === JSON.stringify(b.conditions),
+    );
+    expect(diff.toAdd).toHaveLength(1);
+    expect(diff.toRemove).toHaveLength(1);
+  });
+});
+
+describe('abortConditionalPolicyReconcile', () => {
+  const mockLogger = mockServices.logger.mock();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    clearAuditorMock();
+  });
+
+  it('logs and audits a batch abort without mutating storage', async () => {
+    await abortConditionalPolicyReconcile({
+      logger: mockLogger,
+      auditor: mockAuditorService,
+      source: 'test',
+      pendingAdds: 1,
+      pendingRemoves: 1,
+      pluginIds: ['catalog'],
+      error: new Error('metadata unavailable'),
+    });
+
+    expect(mockLogger.error).toHaveBeenCalled();
   });
 });
