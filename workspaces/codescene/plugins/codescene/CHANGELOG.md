@@ -1,5 +1,11 @@
 # @backstage-community/plugin-codescene
 
+## 0.19.0
+
+### Minor Changes
+
+- c149adb: Backstage version bump to v1.52.0
+
 ## 0.18.0
 
 ### Minor Changes
