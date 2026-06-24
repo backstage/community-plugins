@@ -104,12 +104,8 @@ def get_backstage_token(username: str, password: str) -> str:
         f"&origin={urllib.parse.quote(FRONTEND_URL)}&flow=popup"
     )
 
-    if _use_manual_redirects():
-        resp = session.get(start_url, allow_redirects=False)
-        resp = _follow_redirects(session, resp)
-    else:
-        resp = session.get(start_url, allow_redirects=False)
-        resp = _follow_redirects(session, resp)
+    resp = session.get(start_url, allow_redirects=False)
+    resp = _follow_redirects(session, resp)
 
     action_match = re.search(r'action="([^"]+)"', resp.text)
     if not action_match:
