@@ -1768,6 +1768,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-auth-backend-module-keycloak-provider@workspace:plugins/auth-backend-module-keycloak"
   dependencies:
+    "@backstage-community/plugin-catalog-backend-module-keycloak": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.17.3"
     "@backstage/backend-plugin-api": "npm:^1.9.2"
     "@backstage/backend-test-utils": "npm:^1.11.4"
@@ -1783,7 +1784,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-catalog-backend-module-keycloak@workspace:plugins/catalog-backend-module-keycloak":
+"@backstage-community/plugin-catalog-backend-module-keycloak@workspace:^, @backstage-community/plugin-catalog-backend-module-keycloak@workspace:plugins/catalog-backend-module-keycloak":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-catalog-backend-module-keycloak@workspace:plugins/catalog-backend-module-keycloak"
   dependencies:

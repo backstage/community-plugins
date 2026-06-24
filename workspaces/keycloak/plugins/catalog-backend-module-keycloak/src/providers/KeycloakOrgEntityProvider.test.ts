@@ -122,6 +122,22 @@ describe.each([
     expect(result).toEqual([undefined]);
   });
 
+  it('throws InputError when scheduler is provided without per-provider schedule in config', () => {
+    expect(() =>
+      KeycloakOrgEntityProvider.fromConfig(
+        {
+          config: mockServices.rootConfig({ data: CONFIG }),
+          logger,
+        },
+        {
+          scheduler: mockServices.scheduler.mock(),
+        },
+      ),
+    ).toThrow(
+      'No schedule provided via config for KeycloakOrgEntityProvider:default.',
+    );
+  });
+
   it('should not read without a connection', async () => {
     const keycloak = createProvider(CONFIG);
 

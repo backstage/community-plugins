@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import {
+  createBackendModule,
+  type SchedulerServiceTaskScheduleDefinition,
+} from '@backstage/backend-plugin-api';
 import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
 import catalogPlugin from '@backstage/plugin-catalog-backend';
 import type { EntityProvider } from '@backstage/plugin-catalog-node';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 
 import { CONFIG } from '../../__fixtures__/helpers';
+import { keycloakTransformerExtensionPoint } from '../extensions';
+import type { GroupTransformer, UserTransformer } from '../lib/types';
+import { KeycloakOrgEntityProvider } from '../providers/KeycloakOrgEntityProvider';
 import { catalogModuleKeycloakEntityProvider } from './catalogModuleKeycloakEntityProvider';
 
 describe('catalogModuleKeycloakEntityProvider', () => {
@@ -182,5 +188,111 @@ describe('catalogModuleKeycloakEntityProvider', () => {
     expect(
       (addedProviders as EntityProvider[][])[0][0].getProviderName(),
     ).toEqual('KeycloakOrgEntityProvider:default');
+  });
+});
+
+describe('keycloakTransformerExtensionPoint', () => {
+  const customUserTransformer: UserTransformer = async entity => entity;
+  const customGroupTransformer: GroupTransformer = async entity => entity;
+
+  const keycloakTransformerTestModule = createBackendModule({
+    pluginId: 'catalog',
+    moduleId: 'test-keycloak-transformer',
+    register(reg) {
+      reg.registerInit({
+        deps: { keycloak: keycloakTransformerExtensionPoint },
+        async init({ keycloak }) {
+          keycloak.setUserTransformer(customUserTransformer);
+          keycloak.setGroupTransformer(customGroupTransformer);
+        },
+      });
+    },
+  });
+
+  it('passes transformers set via the extension point to KeycloakOrgEntityProvider', async () => {
+    const fromConfigSpy = jest.spyOn(KeycloakOrgEntityProvider, 'fromConfig');
+
+    try {
+      await startTestBackend({
+        extensionPoints: [
+          [
+            catalogProcessingExtensionPoint,
+            {
+              addEntityProvider: jest.fn(),
+            },
+          ],
+        ],
+        features: [
+          keycloakTransformerTestModule,
+          catalogModuleKeycloakEntityProvider,
+          mockServices.rootConfig.factory({ data: CONFIG }),
+        ],
+      });
+
+      expect(fromConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          config: expect.anything(),
+          logger: expect.anything(),
+        }),
+        expect.objectContaining({
+          userTransformer: customUserTransformer,
+          groupTransformer: customGroupTransformer,
+        }),
+      );
+    } finally {
+      fromConfigSpy.mockRestore();
+    }
+  });
+
+  it('rejects setting the user transformer more than once', async () => {
+    const duplicateUserTransformerModule = createBackendModule({
+      pluginId: 'catalog',
+      moduleId: 'test-duplicate-user-transformer',
+      register(reg) {
+        reg.registerInit({
+          deps: { keycloak: keycloakTransformerExtensionPoint },
+          async init({ keycloak }) {
+            keycloak.setUserTransformer(async entity => entity);
+            keycloak.setUserTransformer(async entity => entity);
+          },
+        });
+      },
+    });
+
+    await expect(
+      startTestBackend({
+        features: [
+          catalogModuleKeycloakEntityProvider,
+          duplicateUserTransformerModule,
+          mockServices.rootConfig.factory({ data: CONFIG }),
+        ],
+      }),
+    ).rejects.toThrow('User transformer may only be set once');
+  });
+
+  it('rejects setting the group transformer more than once', async () => {
+    const duplicateGroupTransformerModule = createBackendModule({
+      pluginId: 'catalog',
+      moduleId: 'test-duplicate-group-transformer',
+      register(reg) {
+        reg.registerInit({
+          deps: { keycloak: keycloakTransformerExtensionPoint },
+          async init({ keycloak }) {
+            keycloak.setGroupTransformer(async entity => entity);
+            keycloak.setGroupTransformer(async entity => entity);
+          },
+        });
+      },
+    });
+
+    await expect(
+      startTestBackend({
+        features: [
+          catalogModuleKeycloakEntityProvider,
+          duplicateGroupTransformerModule,
+          mockServices.rootConfig.factory({ data: CONFIG }),
+        ],
+      }),
+    ).rejects.toThrow('Group transformer may only be set once');
   });
 });

@@ -25,6 +25,7 @@ import {
   topLevelGroupsLowerThan23,
   users as usersFixture,
 } from '../../__fixtures__/data';
+import { assertLogMustNotInclude } from '../../__fixtures__/helpers';
 import {
   KeycloakAdminClientMockServerv18,
   KeycloakAdminClientMockServerv24,
@@ -380,6 +381,20 @@ describe('parseUser', () => {
     expect(entity).toBeDefined();
     expect(entity?.metadata.name).toEqual('jamesdoe_test');
   });
+
+  it('sanitizes invalid username characters with the default transformer contract input', async () => {
+    const entity = await parseUser(
+      {
+        ...usersFixture[0],
+        username: 'Jane Doe/Admin@Example',
+      },
+      'test',
+      [],
+      new Map(),
+    );
+
+    expect(entity?.metadata.name).toBe('Jane-Doe-Admin-Example');
+  });
 });
 
 describe('getEntitiesUser', () => {
@@ -476,6 +491,55 @@ describe('getEntitiesUser', () => {
     );
 
     expect(client.users.find).toHaveBeenCalledTimes(3);
+  });
+
+  it('continues after a page failure and increments dataBatchFailureCounter', async () => {
+    const batchFailureCounter = {
+      add: jest.fn(),
+    } as unknown as Counter<Attributes>;
+    const batchTaskInstanceId = 'batch-failure-task-id';
+    const clientSecret = 'mock-client-secret'; // NOSONAR
+
+    const client =
+      new KeycloakAdminClientMockServerv24() as unknown as KeycloakAdminClient;
+    client.users.count = jest.fn().mockResolvedValue(3);
+    client.users.find = jest.fn().mockImplementation(({ first }) => {
+      if (first === 0) {
+        return Promise.resolve([usersFixture[0]]);
+      }
+      if (first === 1) {
+        return Promise.reject(new Error('Keycloak page fetch failed'));
+      }
+      if (first === 2) {
+        return Promise.resolve([usersFixture[2]]);
+      }
+      return Promise.resolve([]);
+    });
+
+    const users = await getEntities(
+      async () => client.users,
+      {
+        id: 'default',
+        baseUrl: 'http://mock-url',
+        realm: 'myrealm',
+        clientSecret,
+      },
+      logger,
+      batchFailureCounter,
+      batchTaskInstanceId,
+      mockPLimit as unknown as LimitFunction,
+      1,
+    );
+
+    expect(users).toHaveLength(2);
+    expect(users.map(u => u.username)).toEqual(['jamesdoe', 'johndoe']);
+    expect(batchFailureCounter.add).toHaveBeenCalledWith(1, {
+      taskInstanceId: batchTaskInstanceId,
+    });
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining(batchTaskInstanceId),
+    );
+    assertLogMustNotInclude(logger, [clientSecret]);
   });
 });
 
