@@ -1,5 +1,16 @@
 # @backstage-community/plugin-lighthouse-backend
 
+## 0.24.0
+
+### Minor Changes
+
+- eda36eb: Backstage version bump to v1.51.1
+
+### Patch Changes
+
+- Updated dependencies [eda36eb]
+  - @backstage-community/plugin-lighthouse-common@0.20.0
+
 ## 0.23.0
 
 ### Minor Changes
