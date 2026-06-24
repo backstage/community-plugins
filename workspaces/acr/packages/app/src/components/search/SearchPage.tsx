@@ -75,6 +75,9 @@ const SearchPage = () => {
               sx={{
                 padding: theme => theme.spacing(2),
                 marginTop: theme => theme.spacing(2),
+                '& .filter + .filter': {
+                  marginTop: theme => theme.spacing(2.5),
+                },
               }}
             >
               {types.includes('techdocs') && (
