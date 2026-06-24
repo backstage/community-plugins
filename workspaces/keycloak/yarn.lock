@@ -1761,6 +1761,7 @@ __metadata:
     "@backstage/backend-defaults": "npm:^0.17.1"
     "@backstage/backend-plugin-api": "npm:^1.9.1"
     "@backstage/backend-test-utils": "npm:^1.11.3"
+    "@backstage/catalog-model": "npm:^1.9.0"
     "@backstage/cli": "npm:^0.36.2"
     "@backstage/plugin-auth-backend": "npm:^0.29.0"
     "@backstage/plugin-auth-node": "npm:^0.7.1"
