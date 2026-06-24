@@ -239,6 +239,9 @@ export async function abortConditionalPolicyReconcile(
     pendingAdds,
     pendingRemoves,
     pluginIds,
+    ...(abortEventId === ConditionEvents.CONDITION_WRITE
+      ? { actionType: ActionType.RECONCILE_ABORT }
+      : {}),
   };
 
   logger.error(

@@ -16,8 +16,12 @@
 import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 import { mockServices } from '@backstage/backend-test-utils';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
+import {
+  clearAuditorMock,
+  expectAuditorLog,
+} from '../__fixtures__/auditor-test-utils';
 import { mockAuditorService } from '../__fixtures__/mock-utils';
+import { ActionType, ConditionEvents } from './auditor/auditor';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
@@ -1008,5 +1012,43 @@ describe('abortConditionalPolicyReconcile', () => {
     });
 
     expect(mockLogger.error).toHaveBeenCalled();
+  });
+
+  it('includes reconcile_abort actionType for condition-write aborts', async () => {
+    await abortConditionalPolicyReconcile({
+      logger: mockLogger,
+      auditor: mockAuditorService,
+      source: 'test-provider',
+      abortEventId: ConditionEvents.CONDITION_WRITE,
+      pendingAdds: 2,
+      pendingRemoves: 1,
+      pluginIds: ['catalog'],
+      error: new Error('reconcile failed'),
+    });
+
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: {
+            source: 'test-provider',
+            actionType: ActionType.RECONCILE_ABORT,
+            pendingAdds: 2,
+            pendingRemoves: 1,
+            pluginIds: ['catalog'],
+          },
+        },
+        fail: {
+          error: new Error('reconcile failed'),
+          meta: {
+            source: 'test-provider',
+            actionType: ActionType.RECONCILE_ABORT,
+            pendingAdds: 2,
+            pendingRemoves: 1,
+            pluginIds: ['catalog'],
+          },
+        },
+      },
+    ]);
   });
 });

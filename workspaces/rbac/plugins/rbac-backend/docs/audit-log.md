@@ -131,12 +131,12 @@ Failed events contain `error` information.
   **Permission Event meta for `policy-write`:**
 
   - source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
-  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `reconcile_abort`)
 
   **Permission Event fail/success meta for `policy-write`:**
 
   - source: string (source emitting the event, `rest`, `csv-file`, `configuration`, `externalProviderPluginId`)
-  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `reconcile_abort`)
   - policies: string[][] (modified permissions)
 
   Filter on `actionType`.
@@ -178,12 +178,12 @@ Failed events contain `error` information.
   **Condition Event meta for `condition-write`:**
 
   - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
-  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `reconcile_abort`)
 
   **Condition Event fail/success meta for `condition-write`:**
 
   - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
-  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `reconcile_abort`)
   - condition: RoleConditionalPolicyDecision<"create" | "read" | "update" | "delete" | "use">
 
   Filter on `actionType`.
@@ -191,6 +191,14 @@ Failed events contain `error` information.
   - **`create`**: Creates conditions. (POST `/roles/conditions`, extension point `applyPermissions`)
   - **`update`**: Updates conditions. (PUT `/roles/conditions`)
   - **`delete`**: Deletes conditions. (DELETE `/roles/conditions`, extension point `applyPermissions`)
+  - **`reconcile_abort`**: Provider conditional reconcile failed before completion; stored conditions preserved. (extension point `applyConditionalPermissions`)
+
+    **Condition Event fail meta for `reconcile_abort`:**
+
+    - source: string (provider id)
+    - pendingAdds: number
+    - pendingRemoves: number
+    - pluginIds: string[]
 
 - **`condition-read`**: Reads conditions. (GET `/roles/conditions`)
 

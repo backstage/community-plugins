@@ -831,6 +831,7 @@ describe('Connection', () => {
             eventId: ConditionEvents.CONDITION_WRITE,
             meta: {
               source: 'another-provider',
+              actionType: ActionType.RECONCILE_ABORT,
               pendingAdds: 1,
               pendingRemoves: 0,
               pluginIds: ['catalog'],
@@ -842,6 +843,7 @@ describe('Connection', () => {
             ),
             meta: {
               source: 'another-provider',
+              actionType: ActionType.RECONCILE_ABORT,
               pendingAdds: 1,
               pendingRemoves: 0,
               pluginIds: ['catalog'],
