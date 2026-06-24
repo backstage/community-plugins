@@ -119,9 +119,7 @@ const _default: OverridableFrontendPlugin<
 >;
 export default _default;
 
-// Warning: (ae-missing-release-tag) "xCRMetricsApiExtension" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export const xCRMetricsApiExtension: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'xcmetrics-api';
