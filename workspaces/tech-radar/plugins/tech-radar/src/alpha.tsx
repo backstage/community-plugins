@@ -21,7 +21,6 @@ import {
 } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
-  NavItemBlueprint,
   PageBlueprint,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
@@ -34,15 +33,6 @@ import {
 } from '@backstage/core-compat-api';
 import MapIcon from '@material-ui/icons/MyLocation';
 import { rootRouteRef } from './plugin';
-
-/** @alpha */
-export const techRadarNavItem = NavItemBlueprint.make({
-  params: {
-    icon: MapIcon,
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    title: 'Tech Radar',
-  },
-});
 
 /** @alpha */
 export const techRadarPage = PageBlueprint.makeWithOverrides({
@@ -60,6 +50,8 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
   factory(originalFactory, { config }) {
     return originalFactory({
       path: '/tech-radar',
+      title: 'Tech Radar',
+      icon: <MapIcon />,
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
         import('./components').then(m =>
@@ -92,7 +84,7 @@ export const techRadarApi = ApiBlueprint.make({
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'tech-radar',
-  extensions: [techRadarPage, techRadarApi, techRadarNavItem],
+  extensions: [techRadarPage, techRadarApi],
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),

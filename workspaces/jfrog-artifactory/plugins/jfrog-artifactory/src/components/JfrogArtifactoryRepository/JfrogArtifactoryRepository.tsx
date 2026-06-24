@@ -139,6 +139,7 @@ export function JfrogArtifactoryRepository({
       data-testid="jfrog-artifactory-table"
     >
       <Header
+        className={styles.header}
         title={title}
         customActions={
           <Flex className={styles.searchBar}>
