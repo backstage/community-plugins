@@ -92,6 +92,29 @@ export type ConditionalPolicyDiff<TAdd> = {
   toRemove: RoleConditionalPolicyDecision<PermissionInfo>[];
 };
 
+export type ConditionalResourceKey = {
+  roleEntityRef: string;
+  pluginId: string;
+  resourceType: string;
+};
+
+export type ConditionalPolicyReplacement<
+  TAdd extends ConditionalResourceKey,
+  TRemove extends ConditionalResourceKey & { id?: number },
+> = {
+  stored: TRemove;
+  desired: TAdd;
+};
+
+export type ConditionalPolicyReconcilePlan<
+  TAdd extends ConditionalResourceKey,
+  TRemove extends ConditionalResourceKey & { id?: number },
+> = {
+  updates: ConditionalPolicyReplacement<TAdd, TRemove>[];
+  creates: TAdd[];
+  deletes: TRemove[];
+};
+
 export type ConditionalPolicyReconcileAbortContext = {
   logger: LoggerService;
   auditor: AuditorService;
@@ -123,11 +146,79 @@ export function diffConditionalPolicies<TAdd>(
   return { toAdd, toRemove };
 }
 
+export function permissionMappingToActions(
+  mapping: PermissionInfo[] | PermissionAction[],
+): PermissionAction[] {
+  return mapping.map(entry =>
+    typeof entry === 'string' ? entry : entry.action,
+  );
+}
+
+export function sameConditionalResource(
+  a: ConditionalResourceKey,
+  b: ConditionalResourceKey,
+): boolean {
+  return (
+    a.roleEntityRef === b.roleEntityRef &&
+    a.pluginId === b.pluginId &&
+    a.resourceType === b.resourceType
+  );
+}
+
+export function conditionalActionsOverlap(
+  actionsA: PermissionAction[],
+  actionsB: PermissionAction[],
+): boolean {
+  return actionsA.some(action => actionsB.includes(action));
+}
+
 /**
- * Logs and audits a failed conditional reconcile. Callers must complete the full
- * add path (validation, metadata mapping, and createCondition) before running
- * removals, and invoke this from a catch block when that add path throws so
- * stored conditions are not deleted.
+ * Splits a conditional diff into in-place updates, net-new creates, and pure
+ * deletes. Overlapping add/remove pairs for the same role/plugin/resourceType
+ * are treated as updates so createCondition is not called while the stored row
+ * still exists.
+ */
+export function planConditionalReconcile<
+  TAdd extends ConditionalResourceKey,
+  TRemove extends ConditionalResourceKey & { id?: number },
+>(
+  toAdd: TAdd[],
+  toRemove: TRemove[],
+  getActions: (item: TAdd | TRemove) => PermissionAction[],
+): ConditionalPolicyReconcilePlan<TAdd, TRemove> {
+  const matchedRemoveIds = new Set<number>();
+  const updates: ConditionalPolicyReplacement<TAdd, TRemove>[] = [];
+  const creates: TAdd[] = [];
+
+  for (const desired of toAdd) {
+    const stored = toRemove.find(
+      item =>
+        item.id !== undefined &&
+        !matchedRemoveIds.has(item.id) &&
+        sameConditionalResource(item, desired) &&
+        conditionalActionsOverlap(getActions(item), getActions(desired)),
+    );
+
+    if (stored?.id !== undefined) {
+      matchedRemoveIds.add(stored.id);
+      updates.push({ stored, desired });
+    } else {
+      creates.push(desired);
+    }
+  }
+
+  const deletes = toRemove.filter(
+    item => item.id === undefined || !matchedRemoveIds.has(item.id),
+  );
+
+  return { updates, creates, deletes };
+}
+
+/**
+ * Logs and audits a failed conditional reconcile. Callers must finish staging
+ * and validation for all pending additions, then persist updates/creates before
+ * deletes. Invoke from a catch block when that persist phase throws so stored
+ * conditions are not deleted.
  */
 export async function abortConditionalPolicyReconcile(
   context: ConditionalPolicyReconcileAbortContext,

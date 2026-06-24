@@ -43,6 +43,8 @@ import {
   typedPoliciesToString,
   abortConditionalPolicyReconcile,
   diffConditionalPolicies,
+  permissionMappingToActions,
+  planConditionalReconcile,
 } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
@@ -143,8 +145,8 @@ export class Connection implements RBACProviderConnection {
       return;
     }
 
-    // Validate and persist all additions before any removals so a failed add does not
-    // delete stored conditions.
+    // Stage all additions, then apply updates/creates before deletes so a failed
+    // persist does not delete stored conditions (#9429).
     try {
       for (const condition of diff.toAdd) {
         const metadata = await this.roleMetadataStorage.findRoleMetadata(
@@ -154,10 +156,21 @@ export class Connection implements RBACProviderConnection {
         if (err) {
           throw err;
         }
+      }
+
+      const plan = planConditionalReconcile(diff.toAdd, diff.toRemove, item =>
+        permissionMappingToActions(item.permissionMapping),
+      );
+
+      for (const { stored, desired } of plan.updates) {
+        await this.persistConditionalUpdate(stored.id!, desired);
+      }
+
+      for (const condition of plan.creates) {
         await this.persistConditionalAddition(condition);
       }
 
-      for (const condition of diff.toRemove) {
+      for (const condition of plan.deletes) {
         await this.persistConditionalRemoval(condition);
       }
     } catch (error) {
@@ -345,6 +358,30 @@ export class Connection implements RBACProviderConnection {
           });
         }
       }
+    }
+  }
+
+  private async persistConditionalUpdate(
+    id: number,
+    condition: RoleConditionalPolicyDecision<PermissionInfo>,
+  ): Promise<void> {
+    const auditorMeta = {
+      policies: [condition],
+    };
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: {
+        actionType: ActionType.UPDATE,
+        source: this.id,
+      },
+    });
+    try {
+      await this.conditionStorage.updateCondition(id, condition);
+      await auditorEvent.success({ meta: auditorMeta });
+    } catch (error) {
+      await auditorEvent.fail({ error, meta: auditorMeta });
+      throw error;
     }
   }
 

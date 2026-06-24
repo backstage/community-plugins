@@ -599,12 +599,14 @@ describe('Connection', () => {
     beforeEach(() => {
       (conditionalStorageMock.createCondition as jest.Mock).mockReset();
       (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
+      (conditionalStorageMock.updateCondition as jest.Mock).mockReset();
     });
 
     afterEach(() => {
       (mockLoggerService.warn as jest.Mock).mockReset();
       (conditionalStorageMock.createCondition as jest.Mock).mockReset();
       (conditionalStorageMock.deleteCondition as jest.Mock).mockReset();
+      (conditionalStorageMock.updateCondition as jest.Mock).mockReset();
     });
 
     it('should create conditional permissions', async () => {
@@ -706,8 +708,13 @@ describe('Connection', () => {
       ];
 
       await provider.applyConditionalPermissions(policies);
-      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
-      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.updateCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.updateCondition).toHaveBeenCalledWith(
+        existingConditionalPermission[0].id,
+        policies[0],
+      );
+      expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
+      expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     });
     it('should replace permissions with changed condition', async () => {
       const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
@@ -732,14 +739,38 @@ describe('Connection', () => {
       ];
 
       await provider.applyConditionalPermissions(policies);
-      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
-      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.updateCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.updateCondition).toHaveBeenCalledWith(
+        existingConditionalPermission[0].id,
+        policies[0],
+      );
+      expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
+      expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     });
 
-    it('should preserve existing conditional policies when replacement add fails (#9429)', async () => {
-      (conditionalStorageMock.createCondition as jest.Mock).mockImplementation(
+    it('should create then delete when replacement actions do not overlap', async () => {
+      const policies: RoleConditionalPolicyDecision<PermissionInfo>[] = [
+        {
+          id: existingConditionalPermission[0].id,
+          result: existingConditionalPermission[0].result,
+          roleEntityRef: existingConditionalPermission[0].roleEntityRef,
+          pluginId: existingConditionalPermission[0].pluginId,
+          resourceType: existingConditionalPermission[0].resourceType,
+          permissionMapping: [{ name: 'delete', action: 'delete' }],
+          conditions: existingConditionalPermission[0].conditions,
+        },
+      ];
+
+      await provider.applyConditionalPermissions(policies);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.updateCondition).not.toHaveBeenCalled();
+    });
+
+    it('should preserve existing conditional policies when replacement update fails (#9429)', async () => {
+      (conditionalStorageMock.updateCondition as jest.Mock).mockImplementation(
         () => {
-          throw new Error('create failed');
+          throw new Error('update failed');
         },
       );
 
@@ -760,7 +791,8 @@ describe('Connection', () => {
 
       await provider.applyConditionalPermissions(policies);
       expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
-      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.updateCondition).toHaveBeenCalledTimes(1);
+      expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     });
 
     it('should reject policies from an invalid source', async () => {

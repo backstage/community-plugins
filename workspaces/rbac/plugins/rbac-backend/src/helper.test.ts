@@ -22,10 +22,13 @@ import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
   abortConditionalPolicyReconcile,
+  conditionalActionsOverlap,
   deepSortedEqual,
   diffConditionalPolicies,
   isPermissionAction,
   matches,
+  permissionMappingToActions,
+  planConditionalReconcile,
   mergeRoleMetadata,
   metadataStringToPolicy,
   policiesToString,
@@ -897,6 +900,91 @@ describe('diffConditionalPolicies', () => {
     );
     expect(diff.toAdd).toHaveLength(1);
     expect(diff.toRemove).toHaveLength(1);
+  });
+});
+
+describe('planConditionalReconcile', () => {
+  const stored = {
+    id: 1,
+    result: AuthorizeResult.CONDITIONAL,
+    roleEntityRef: 'role:default/test',
+    pluginId: 'catalog',
+    resourceType: 'catalog-entity',
+    permissionMapping: [
+      { name: 'catalog.entity.read', action: 'read' as const },
+    ],
+    conditions: {
+      rule: 'IS_ENTITY_OWNER',
+      resourceType: 'catalog-entity',
+      params: { claims: ['group:default/team-a'] },
+    },
+  };
+
+  it('routes overlapping replacements to updates', () => {
+    const desired = {
+      ...stored,
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(1);
+    expect(plan.updates[0].stored.id).toBe(1);
+    expect(plan.creates).toHaveLength(0);
+    expect(plan.deletes).toHaveLength(0);
+  });
+
+  it('routes non-overlapping replacement to create and delete', () => {
+    const desired = {
+      roleEntityRef: stored.roleEntityRef,
+      pluginId: stored.pluginId,
+      resourceType: stored.resourceType,
+      permissionMapping: [
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(0);
+    expect(plan.creates).toHaveLength(1);
+    expect(plan.deletes).toHaveLength(1);
+  });
+
+  it('routes net-new additions to creates only', () => {
+    const desired = {
+      roleEntityRef: 'role:default/other',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(0);
+    expect(plan.creates).toHaveLength(1);
+    expect(plan.deletes).toHaveLength(1);
+  });
+});
+
+describe('conditionalActionsOverlap', () => {
+  it('returns true when action sets intersect', () => {
+    expect(conditionalActionsOverlap(['read'], ['read', 'delete'])).toBe(true);
+  });
+
+  it('returns false when action sets are disjoint', () => {
+    expect(conditionalActionsOverlap(['read'], ['delete'])).toBe(false);
   });
 });
 

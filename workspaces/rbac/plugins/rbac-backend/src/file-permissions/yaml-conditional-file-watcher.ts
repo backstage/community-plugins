@@ -37,6 +37,8 @@ import { RoleMetadataStorage } from '../database/role-metadata';
 import {
   abortConditionalPolicyReconcile,
   deepSortEqual,
+  permissionMappingToActions,
+  planConditionalReconcile,
   processConditionMapping,
 } from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
@@ -279,8 +281,8 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
       return;
     }
 
-    // Map and persist all additions before any removals so a failed add does not
-    // delete stored conditions (for example when permission metadata is unavailable).
+    // Map all additions, then apply updates/creates before deletes so a failed
+    // persist does not delete stored conditions (#9429).
     try {
       const stagedAdditions: RoleConditionalPolicyDecision<PermissionInfo>[] =
         [];
@@ -294,11 +296,21 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
         );
       }
 
-      for (const conditionToCreate of stagedAdditions) {
+      const plan = planConditionalReconcile(
+        stagedAdditions,
+        removedConditions,
+        item => permissionMappingToActions(item.permissionMapping),
+      );
+
+      for (const { stored, desired } of plan.updates) {
+        await this.persistConditionUpdate(stored.id!, desired);
+      }
+
+      for (const conditionToCreate of plan.creates) {
         await this.persistConditionAddition(conditionToCreate);
       }
 
-      for (const condition of removedConditions) {
+      for (const condition of plan.deletes) {
         await this.persistConditionRemoval(condition);
       }
 
@@ -317,6 +329,44 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
         pluginIds: [...new Set(addedConditions.map(c => c.pluginId))],
         error,
       });
+    }
+  }
+
+  private async persistConditionUpdate(
+    id: number,
+    conditionToUpdate: RoleConditionalPolicyDecision<PermissionInfo>,
+  ): Promise<void> {
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.UPDATE },
+    });
+
+    try {
+      await this.conditionalStorage.updateCondition(id, conditionToUpdate);
+      await auditorEvent.success({
+        meta: {
+          condition: {
+            ...conditionToUpdate,
+            permissionMapping: conditionToUpdate.permissionMapping.map(
+              pm => pm.action,
+            ),
+          },
+        },
+      });
+    } catch (error) {
+      await auditorEvent.fail({
+        error,
+        meta: {
+          condition: {
+            ...conditionToUpdate,
+            permissionMapping: conditionToUpdate.permissionMapping.map(
+              pm => pm.action,
+            ),
+          },
+        },
+      });
+      throw error;
     }
   }
 
