@@ -741,7 +741,7 @@ __metadata:
     "@backstage/plugin-catalog-react": "npm:^3.0.0"
     "@backstage/test-utils": "npm:^1.7.18"
     "@backstage/theme": "npm:^0.7.3"
-    "@backstage/ui": "npm:^0.14.3"
+    "@backstage/ui": "npm:^0.15.0"
     "@hey-api/openapi-ts": "npm:0.97.1"
     "@playwright/test": "npm:1.60.0"
     "@testing-library/dom": "npm:^10.4.1"
@@ -2495,30 +2495,6 @@ __metadata:
   version: 1.2.2
   resolution: "@backstage/types@npm:1.2.2"
   checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
-  languageName: node
-  linkType: hard
-
-"@backstage/ui@npm:^0.14.3":
-  version: 0.14.3
-  resolution: "@backstage/ui@npm:0.14.3"
-  dependencies:
-    "@backstage/version-bridge": "npm:^1.0.12"
-    "@remixicon/react": "npm:^4.6.0"
-    "@tanstack/react-table": "npm:^8.21.3"
-    clsx: "npm:^2.1.1"
-    react-aria: "npm:~3.48.0"
-    react-aria-components: "npm:~1.17.0"
-    react-stately: "npm:~3.46.0"
-    use-sync-external-store: "npm:^1.4.0"
-  peerDependencies:
-    "@types/react": ^18.0.0
-    react: ^18.0.0
-    react-dom: ^18.0.0
-    react-router-dom: ^6.30.2
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/c8815399f0f60c2b87d196d150f4225d50b2f1afaad82ccafe0f7e50cee3f77d2f82a6d76e305fdd559dd456102f7559ba92c41dbe025111f4e91109f3a61a6f
   languageName: node
   linkType: hard
 
@@ -5595,15 +5571,6 @@ __metadata:
   peerDependencies:
     react: ">=18.2.0"
   checksum: 10/10241f2e07826ce7d595cf9687a35c96cc9cf9eb68a9431d7dfa1b9df479dbef302874d28c0502cee2a536cf34722de7c49ed12d10a2b071e4e42ba4a278c516
-  languageName: node
-  linkType: hard
-
-"@remixicon/react@npm:^4.6.0":
-  version: 4.9.0
-  resolution: "@remixicon/react@npm:4.9.0"
-  peerDependencies:
-    react: ">=18.2.0"
-  checksum: 10/3d8f1d86b2bb20ab5e44d15f18811e928b0886f7710eb7a1516afb9913ba72e46facec5dfee382825139d800bcbb6704c15d0c760d0f977c12257d4af8db3295
   languageName: node
   linkType: hard
 

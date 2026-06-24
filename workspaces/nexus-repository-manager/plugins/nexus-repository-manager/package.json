@@ -52,7 +52,7 @@
     "@backstage/frontend-plugin-api": "^0.17.0",
     "@backstage/plugin-catalog-react": "^3.0.0",
     "@backstage/theme": "^0.7.3",
-    "@backstage/ui": "^0.14.3",
+    "@backstage/ui": "^0.15.0",
     "filesize": "^11.0.0",
     "luxon": "^3.6.1",
     "react-use": "^17.4.0"
