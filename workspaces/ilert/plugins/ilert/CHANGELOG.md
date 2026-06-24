@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ilert
 
+## 0.22.0
+
+### Minor Changes
+
+- aebd310: Backstage version bump to v1.52.0
+
 ## 0.21.0
 
 ### Minor Changes
