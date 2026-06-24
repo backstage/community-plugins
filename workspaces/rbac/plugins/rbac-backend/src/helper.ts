@@ -123,8 +123,24 @@ export type ConditionalPolicyReconcileAbortContext = {
   pendingAdds: number;
   pendingRemoves: number;
   pluginIds: string[];
-  error: unknown;
+  error: Error;
 };
+
+function serializeErrorForLog(error: Error): {
+  name: string;
+  message: string;
+  stack?: string;
+} {
+  return {
+    name: error.name,
+    message: error.message,
+    stack: error.stack,
+  };
+}
+
+export function toError(value: unknown): Error {
+  return value instanceof Error ? value : new Error(String(value));
+}
 
 /**
  * Computes additions and removals between stored and desired conditional policies.
@@ -249,7 +265,7 @@ export async function abortConditionalPolicyReconcile(
     {
       event: 'conditional_reconcile_aborted',
       ...abortMeta,
-      error: String(error),
+      error: serializeErrorForLog(error),
     },
   );
 

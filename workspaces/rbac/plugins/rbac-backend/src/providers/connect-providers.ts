@@ -45,6 +45,7 @@ import {
   diffConditionalPolicies,
   permissionMappingToActions,
   planConditionalReconcile,
+  toError,
 } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
@@ -182,7 +183,7 @@ export class Connection implements RBACProviderConnection {
         pendingAdds: diff.toAdd.length,
         pendingRemoves: diff.toRemove.length,
         pluginIds: [...new Set(diff.toAdd.map(c => c.pluginId))],
-        error,
+        error: toError(error),
       });
     }
   }

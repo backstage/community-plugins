@@ -40,6 +40,7 @@ import {
   permissionMappingToActions,
   planConditionalReconcile,
   processConditionMapping,
+  toError,
 } from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
@@ -327,7 +328,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
         pendingAdds: addedConditions.length,
         pendingRemoves: removedConditions.length,
         pluginIds: [...new Set(addedConditions.map(c => c.pluginId))],
-        error,
+        error: toError(error),
       });
     }
   }

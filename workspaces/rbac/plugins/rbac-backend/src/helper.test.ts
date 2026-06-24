@@ -33,6 +33,7 @@ import {
   matches,
   permissionMappingToActions,
   planConditionalReconcile,
+  toError,
   mergeRoleMetadata,
   metadataStringToPolicy,
   policiesToString,
@@ -992,6 +993,19 @@ describe('conditionalActionsOverlap', () => {
   });
 });
 
+describe('toError', () => {
+  it('returns Error instances unchanged', () => {
+    const error = new Error('failed');
+    expect(toError(error)).toBe(error);
+  });
+
+  it('wraps non-Error values', () => {
+    const error = toError('failed');
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe('failed');
+  });
+});
+
 describe('abortConditionalPolicyReconcile', () => {
   const mockLogger = mockServices.logger.mock();
 
@@ -1001,6 +1015,8 @@ describe('abortConditionalPolicyReconcile', () => {
   });
 
   it('logs and audits a batch abort without mutating storage', async () => {
+    const reconcileError = new Error('metadata unavailable');
+
     await abortConditionalPolicyReconcile({
       logger: mockLogger,
       auditor: mockAuditorService,
@@ -1008,10 +1024,20 @@ describe('abortConditionalPolicyReconcile', () => {
       pendingAdds: 1,
       pendingRemoves: 1,
       pluginIds: ['catalog'],
-      error: new Error('metadata unavailable'),
+      error: reconcileError,
     });
 
-    expect(mockLogger.error).toHaveBeenCalled();
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        event: 'conditional_reconcile_aborted',
+        error: {
+          name: reconcileError.name,
+          message: reconcileError.message,
+          stack: reconcileError.stack,
+        },
+      }),
+    );
   });
 
   it('includes reconcile_abort actionType for condition-write aborts', async () => {
