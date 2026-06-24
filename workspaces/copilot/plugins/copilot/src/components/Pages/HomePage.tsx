@@ -86,9 +86,9 @@ export const HomePage = (): JSX.Element => {
     const hasOrganization = !!organizationConfig;
 
     if (hasEnterprise && !hasOrganization) {
-      navigate('/copilot/enterprise', { replace: true });
+      navigate('/copilot/legacy/enterprise', { replace: true });
     } else if (hasOrganization && !hasEnterprise) {
-      navigate('/copilot/organization', { replace: true });
+      navigate('/copilot/legacy/organization', { replace: true });
     }
   }, [enterpriseConfig, organizationConfig, navigate]);
 
@@ -120,7 +120,7 @@ export const HomePage = (): JSX.Element => {
                 'You can also explore metrics broken down by individual teams to gain more insights.',
               ]}
               buttonText="Go to Enterprise"
-              onClick={() => handleNavigate('/copilot/enterprise')}
+              onClick={() => handleNavigate('/copilot/legacy/enterprise')}
               warning={
                 enterpriseConfig
                   ? null
@@ -137,7 +137,7 @@ export const HomePage = (): JSX.Element => {
                 'Additionally, view metrics by teams to get a granular understanding of adoption patterns.',
               ]}
               buttonText="Go to Organization"
-              onClick={() => handleNavigate('/copilot/organization')}
+              onClick={() => handleNavigate('/copilot/legacy/organization')}
               warning={
                 organizationConfig
                   ? null

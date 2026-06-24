@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button, Grid } from '@material-ui/core';
+import { ButtonLink } from '@backstage/ui';
+
+import styles from './EntityPage.module.css';
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,
@@ -83,29 +85,19 @@ const techdocsContent = (
 );
 
 const cicdContent = (
-  // This is an example of how you can implement your company's logic in entity page.
-  // You can for example enforce that all components of type 'service' should use GitHubActions
   <EntitySwitch>
-    {/*
-      Here you can add support for different CI/CD services, for example
-      using @backstage-community/plugin-github-actions as follows:
-      <EntitySwitch.Case if={isGithubActionsAvailable}>
-        <EntityGithubActionsContent />
-      </EntitySwitch.Case>
-     */}
     <EntitySwitch.Case>
       <EmptyState
         title="No CI/CD available for this entity"
         missing="info"
         description="You need to add an annotation to your component if you want to enable CI/CD for it. You can read more about annotations in Backstage by clicking the button below."
         action={
-          <Button
-            variant="contained"
-            color="primary"
+          <ButtonLink
+            variant="primary"
             href="https://backstage.io/docs/features/software-catalog/well-known-annotations"
           >
             Read more
-          </Button>
+          </ButtonLink>
         }
       />
     </EntitySwitch.Case>
@@ -116,47 +108,46 @@ const entityWarningContent = (
   <>
     <EntitySwitch>
       <EntitySwitch.Case if={isOrphan}>
-        <Grid item xs={12}>
+        <div className={styles.col12}>
           <EntityOrphanWarning />
-        </Grid>
+        </div>
       </EntitySwitch.Case>
     </EntitySwitch>
 
     <EntitySwitch>
       <EntitySwitch.Case if={hasRelationWarnings}>
-        <Grid item xs={12}>
+        <div className={styles.col12}>
           <EntityRelationWarning />
-        </Grid>
+        </div>
       </EntitySwitch.Case>
     </EntitySwitch>
 
     <EntitySwitch>
       <EntitySwitch.Case if={hasCatalogProcessingErrors}>
-        <Grid item xs={12}>
+        <div className={styles.col12}>
           <EntityProcessingErrorsPanel />
-        </Grid>
+        </div>
       </EntitySwitch.Case>
     </EntitySwitch>
   </>
 );
 
 const overviewContent = (
-  <Grid container spacing={3} alignItems="stretch">
+  <div className={styles.entityGrid}>
     {entityWarningContent}
-    <Grid item md={6}>
+    <div className={styles.colMd6}>
       <EntityAboutCard />
-    </Grid>
-    <Grid item md={6} xs={12}>
+    </div>
+    <div className={styles.colMd6}>
       <EntityCatalogGraphCard height={400} />
-    </Grid>
-
-    <Grid item md={4} xs={12}>
+    </div>
+    <div className={styles.colMd4}>
       <EntityLinksCard />
-    </Grid>
-    <Grid item md={8} xs={12}>
+    </div>
+    <div className={styles.colMd8}>
       <EntityHasSubcomponentsCard />
-    </Grid>
-  </Grid>
+    </div>
+  </div>
 );
 
 const serviceEntityPage = (
@@ -182,25 +173,25 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/api" title="API">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+      <div className={styles.entityGrid}>
+        <div className={styles.colMd6}>
           <EntityProvidedApisCard />
-        </Grid>
-        <Grid item md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityConsumedApisCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+      <div className={styles.entityGrid}>
+        <div className={styles.colMd6}>
           <EntityDependsOnComponentsCard />
-        </Grid>
-        <Grid item md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityDependsOnResourcesCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/docs" title="Docs">
@@ -228,14 +219,14 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/dependencies" title="Dependencies">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={6}>
+      <div className={styles.entityGrid}>
+        <div className={styles.colMd6}>
           <EntityDependsOnComponentsCard />
-        </Grid>
-        <Grid item md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityDependsOnResourcesCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/docs" title="Docs">
@@ -243,13 +234,6 @@ const websiteEntityPage = (
     </EntityLayout.Route>
   </EntityLayout>
 );
-
-/**
- * NOTE: This page is designed to work on small screens such as mobile devices.
- * This is based on Material UI Grid. If breakpoints are used, each grid item must set the `xs` prop to a column size or to `true`,
- * since this does not default. If no breakpoints are used, the items will equitably share the available space.
- * https://material-ui.com/components/grid/#basic-grid.
- */
 
 const defaultEntityPage = (
   <EntityLayout>
@@ -280,34 +264,36 @@ const componentPage = (
 const apiPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
+      <div className={styles.entityGrid}>
         {entityWarningContent}
-        <Grid item md={6}>
+        <div className={styles.colMd6}>
           <EntityAboutCard />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityCatalogGraphCard height={400} />
-        </Grid>
-        <Grid item md={4} xs={12}>
+        </div>
+        <div className={styles.colMd4}>
           <EntityLinksCard />
-        </Grid>
-        <Grid container item md={12}>
-          <Grid item md={6}>
-            <EntityProvidingComponentsCard />
-          </Grid>
-          <Grid item md={6}>
-            <EntityConsumingComponentsCard />
-          </Grid>
-        </Grid>
-      </Grid>
+        </div>
+        <div className={styles.colMd12}>
+          <div className={styles.entityGrid}>
+            <div className={styles.colMd6}>
+              <EntityProvidingComponentsCard />
+            </div>
+            <div className={styles.colMd6}>
+              <EntityConsumingComponentsCard />
+            </div>
+          </div>
+        </div>
+      </div>
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/definition" title="Definition">
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <div className={styles.entityGrid}>
+        <div className={styles.col12}>
           <EntityApiDefinitionCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -315,15 +301,15 @@ const apiPage = (
 const userPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
+      <div className={styles.entityGrid}>
         {entityWarningContent}
-        <Grid item xs={12} md={6}>
+        <div className={styles.colMd6}>
           <EntityUserProfileCard />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityOwnershipCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -331,21 +317,21 @@ const userPage = (
 const groupPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3}>
+      <div className={styles.entityGrid}>
         {entityWarningContent}
-        <Grid item xs={12} md={6}>
+        <div className={styles.colMd6}>
           <EntityGroupProfileCard />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityOwnershipCard />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityMembersListCard />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityLinksCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -353,27 +339,27 @@ const groupPage = (
 const systemPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3} alignItems="stretch">
+      <div className={styles.entityGrid}>
         {entityWarningContent}
-        <Grid item md={6}>
+        <div className={styles.colMd6}>
           <EntityAboutCard />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityCatalogGraphCard height={400} />
-        </Grid>
-        <Grid item md={4} xs={12}>
+        </div>
+        <div className={styles.colMd4}>
           <EntityLinksCard />
-        </Grid>
-        <Grid item md={8}>
+        </div>
+        <div className={styles.colMd8}>
           <EntityHasComponentsCard />
-        </Grid>
-        <Grid item md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityHasApisCard />
-        </Grid>
-        <Grid item md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityHasResourcesCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
     <EntityLayout.Route path="/diagram" title="Diagram">
       <EntityCatalogGraphCard
@@ -399,18 +385,18 @@ const systemPage = (
 const domainPage = (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3} alignItems="stretch">
+      <div className={styles.entityGrid}>
         {entityWarningContent}
-        <Grid item md={6}>
+        <div className={styles.colMd6}>
           <EntityAboutCard />
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityCatalogGraphCard height={400} />
-        </Grid>
-        <Grid item md={6}>
+        </div>
+        <div className={styles.colMd6}>
           <EntityHasSystemsCard />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </EntityLayout.Route>
   </EntityLayout>
 );

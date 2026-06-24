@@ -24,14 +24,16 @@ import {
   SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
-import { NotFoundError } from '@backstage/errors';
+import { InputError, NotFoundError } from '@backstage/errors';
 import {
   Metric,
   PeriodRange,
+  V2BackfillStatus,
 } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
-import TaskManagement from '../task/TaskManagement';
-import { GithubClient } from '../client/GithubClient';
+import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
+import { TaskManagementV2 } from '../task/TaskManagementV2';
+import { GithubClientV2 } from '../client/GithubClientV2';
 import { validateQuery } from './validation/validateQuery';
 import {
   MetricsQuery,
@@ -40,6 +42,17 @@ import {
   periodRangeQuerySchema,
   TeamQuery,
   teamQuerySchema,
+  v2BackfillBodySchema,
+  V2BackfillStatusQuery,
+  v2BackfillStatusQuerySchema,
+  V2FeatureQuery,
+  v2FeatureQuerySchema,
+  V2MetricsQuery,
+  v2MetricsQuerySchema,
+  V2PeriodRangeQuery,
+  v2PeriodRangeQuerySchema,
+  V2TeamsQuery,
+  v2TeamsQuerySchema,
 } from './validation/schema';
 import { DateTime } from 'luxon';
 
@@ -123,13 +136,19 @@ async function createRouter(
   const { schedule } = pluginOptions;
 
   const db = await DatabaseHandler.create({ database });
-  const api = await GithubClient.fromConfig(config, logger);
+  const dbV2 = await DatabaseHandlerV2.create({ database });
+  const apiV2 = await GithubClientV2.fromConfig(config, logger);
+  const taskV2 = TaskManagementV2.create({
+    db: dbV2,
+    api: apiV2,
+    config,
+    logger,
+  });
 
   await scheduler.scheduleTask({
-    id: 'copilot-metrics',
+    id: 'copilot-metrics-v2',
     ...(schedule ?? defaultSchedule),
-    fn: async () =>
-      await TaskManagement.create({ db, logger, api, config }).runAsync(),
+    fn: async () => await taskV2.runAsync(),
   });
 
   const router = Router();
@@ -140,14 +159,20 @@ async function createRouter(
     response.json({ status: 'ok' });
   });
 
-  router.get(
+  // ---------------------------------------------------------------------------
+  // Legacy read endpoints — serve data from the pre-v2 schema.
+  // These are deprecated and will be removed once the v2 backfill is confirmed
+  // complete for all historical periods. Surface them only via /legacy/*.
+  // ---------------------------------------------------------------------------
+  const legacyRouter = express.Router();
+
+  legacyRouter.get(
     '/metrics',
     validateQuery(metricsQuerySchema),
     async (req, res) => {
       const { startDate, endDate, type, team } = req.query as MetricsQuery;
       let metrics: Metric[] = [];
 
-      // if startDate is earlier than last date of MetricsV1, fetch the old data
       const lastDayOfOldMetrics = await db.getMostRecentDayFromMetrics(
         type,
         team,
@@ -166,7 +191,6 @@ async function createRouter(
         }));
       }
 
-      // if endDate is later or equal to first day of new metrics, fetch those also and merge into metrics
       const firstDayOfNewMetrics = await db.getEarliestDayFromMetricsV2(
         type,
         team,
@@ -189,7 +213,6 @@ async function createRouter(
           }),
         }));
 
-        // Merge new metrics with old metrics
         metrics = [...metrics, ...newMetrics];
       }
 
@@ -197,7 +220,7 @@ async function createRouter(
     },
   );
 
-  router.get(
+  legacyRouter.get(
     '/engagements',
     validateQuery(metricsQuerySchema),
     async (req, res) => {
@@ -217,18 +240,22 @@ async function createRouter(
     },
   );
 
-  router.get('/seats', validateQuery(metricsQuerySchema), async (req, res) => {
-    const { startDate, endDate, type, team } = req.query as MetricsQuery;
+  legacyRouter.get(
+    '/seats',
+    validateQuery(metricsQuerySchema),
+    async (req, res) => {
+      const { startDate, endDate, type, team } = req.query as MetricsQuery;
 
-    const seats = await db.getSeatMetrics(startDate, endDate, type, team);
-    if (!seats) {
-      throw new NotFoundError();
-    }
+      const seats = await db.getSeatMetrics(startDate, endDate, type, team);
+      if (!seats) {
+        throw new NotFoundError();
+      }
 
-    return res.json(seats);
-  });
+      return res.json(seats);
+    },
+  );
 
-  router.get(
+  legacyRouter.get(
     '/metrics/period-range',
     validateQuery(periodRangeQuerySchema),
     async (req, res) => {
@@ -240,34 +267,295 @@ async function createRouter(
         throw new NotFoundError();
       }
 
-      // Determine the minDate, prioritizing oldMetricRange if available
       const minDate = oldMetricRange?.minDate || newMetricRange?.minDate;
-
-      // Determine the maxDate, prioritizing newMetricRange if available
       const maxDate = newMetricRange?.maxDate || oldMetricRange?.maxDate;
 
-      // Make sure both minDate and maxDate are defined
       if (!minDate || !maxDate) {
         throw new NotFoundError('Unable to determine metric date range');
       }
 
       const result: PeriodRange = { minDate, maxDate };
+      return res.json(result);
+    },
+  );
+
+  legacyRouter.get(
+    '/teams',
+    validateQuery(teamQuerySchema),
+    async (req, res) => {
+      const { type, startDate, endDate } = req.query as TeamQuery;
+
+      const result = await db.getTeams(type, startDate, endDate);
+
+      if (!result) {
+        throw new NotFoundError();
+      }
 
       return res.json(result);
     },
   );
 
-  router.get('/teams', validateQuery(teamQuerySchema), async (req, res) => {
-    const { type, startDate, endDate } = req.query as TeamQuery;
+  router.use('/legacy', legacyRouter);
 
-    const result = await db.getTeams(type, startDate, endDate);
+  // ---------------------------------------------------------------------------
+  // V2 endpoints — new report-based API (GitHub API version 2026-03-10)
+  // ---------------------------------------------------------------------------
+  const v2Router = express.Router();
 
-    if (!result) {
-      throw new NotFoundError();
+  v2Router.get(
+    '/metrics/daily',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        const result = await dbV2.getDailyTotals(
+          type,
+          entityId,
+          from,
+          to,
+          team,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/pull-requests',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        const result = await dbV2.getPrMetrics(type, entityId, from, to, team);
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/by-feature',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByFeature(type, entityId, from, to, team);
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/by-ide',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByIde(type, entityId, from, to, team);
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/by-language',
+    validateQuery(v2FeatureQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team, feature } =
+          req.query as V2FeatureQuery;
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByLanguageFeature(
+          type,
+          entityId,
+          from,
+          to,
+          team,
+          feature,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/by-model-feature',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByModelFeature(
+          type,
+          entityId,
+          from,
+          to,
+          team,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/by-language-model',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        // eslint-disable-next-line testing-library/no-await-sync-queries
+        const result = await dbV2.getByLanguageModel(
+          type,
+          entityId,
+          from,
+          to,
+          team,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/teams',
+    validateQuery(v2TeamsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to } = req.query as V2TeamsQuery;
+        const result = await dbV2.getTeams(type, entityId, from, to);
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/metrics/period-range',
+    validateQuery(v2PeriodRangeQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId } = req.query as V2PeriodRangeQuery;
+        const result = await dbV2.getPeriodRange(type, entityId);
+        if (!result) {
+          return res.status(404).json({ error: 'No data found' });
+        }
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.get(
+    '/backfill/status',
+    validateQuery(v2BackfillStatusQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to } = req.query as V2BackfillStatusQuery;
+        const rows = await dbV2.getIngestionLog(type, entityId, from, to);
+        const result: V2BackfillStatus[] = rows.map(row => ({
+          ...row,
+          components_loaded: JSON.parse(row.components_loaded || '[]'),
+        }));
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  v2Router.post('/backfill', async (req, res, next) => {
+    try {
+      const body = v2BackfillBodySchema.parse(req.body);
+      const { fromDate, type, entityId } = body;
+      const toDate = body.toDate;
+
+      if (fromDate < '2025-10-10') {
+        return res.status(400).json({
+          error: 'fromDate must be greater than or equal to 2025-10-10',
+        });
+      }
+
+      if (toDate) {
+        const today = DateTime.utc().toISODate();
+        if (today && toDate > today) {
+          return res
+            .status(400)
+            .json({ error: 'toDate cannot be in the future' });
+        }
+      }
+
+      const yesterday = DateTime.utc().minus({ days: 1 }).toISODate();
+      if (!yesterday) {
+        throw new Error('Unable to compute yesterday date');
+      }
+
+      const effectiveToDate = toDate ?? yesterday;
+      void taskV2
+        .runBackfill(fromDate, effectiveToDate, type, entityId)
+        .catch(error => logger.error('[router:v2] Backfill failed', error));
+
+      return res.status(202).json({
+        message: 'Backfill started',
+        from: fromDate,
+        to: effectiveToDate,
+      });
+    } catch (err) {
+      return next(err);
     }
-
-    return res.json(result);
   });
+
+  v2Router.get(
+    '/dashboard',
+    validateQuery(v2MetricsQuerySchema),
+    async (req, res, next) => {
+      try {
+        const { type, entityId, from, to, team } = req.query as V2MetricsQuery;
+        const result = await dbV2.getDashboardData(
+          type,
+          entityId,
+          from,
+          to,
+          team,
+        );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  router.use('/v2', v2Router);
+
+  router.use(
+    (
+      err: Error,
+      _req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      if (err instanceof InputError) {
+        return res.status(400).json({ error: err.message });
+      }
+      return next(err);
+    },
+  );
 
   router.use(MiddlewareFactory.create({ config, logger }).error);
   return router;

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-gitops-profiles
 
+## 0.22.0
+
+### Minor Changes
+
+- 7165633: Backstage version bump to v1.52.0
+
+## 0.21.0
+
+### Minor Changes
+
+- a9e5e52: Backstage version bump to v1.51.0
+
 ## 0.20.0
 
 ### Minor Changes

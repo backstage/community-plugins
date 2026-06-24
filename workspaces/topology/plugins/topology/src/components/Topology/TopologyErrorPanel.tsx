@@ -15,8 +15,7 @@
  */
 import { WarningPanel } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-
-import Typography from '@mui/material/Typography';
+import { Text } from '@backstage/ui';
 
 import { ClusterError, ClusterErrors } from '../../types/types';
 
@@ -39,7 +38,7 @@ const TopologyErrorPanel = ({ allErrors }: TopologyErrorPanelProps) => {
         <div>
           Errors:
           {allErrors.map((err: ClusterError, index) => (
-            <Typography variant="body2" key={index}>
+            <Text variant="body-small" key={index}>
               {
                 // eslint-disable-next-line no-nested-ternary
                 err.errorType === 'FETCH_ERROR'
@@ -48,7 +47,7 @@ const TopologyErrorPanel = ({ allErrors }: TopologyErrorPanelProps) => {
                   ? `${err.message}`
                   : `Error fetching Kubernetes resource: '${err.resourcePath}', error: ${err.errorType}, status code: ${err.statusCode}`
               }
-            </Typography>
+            </Text>
           ))}
         </div>
       </WarningPanel>

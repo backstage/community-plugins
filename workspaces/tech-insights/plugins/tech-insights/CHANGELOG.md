@@ -1,5 +1,17 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.4.0
+
+### Minor Changes
+
+- b8b1d30: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [b8b1d30]
+  - @backstage-community/plugin-tech-insights-common@0.10.0
+  - @backstage-community/plugin-tech-insights-react@1.6.0
+
 ## 1.3.0
 
 ### Minor Changes

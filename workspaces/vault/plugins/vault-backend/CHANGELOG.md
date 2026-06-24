@@ -1,5 +1,27 @@
 # @backstage-community/plugin-vault-backend
 
+## 0.24.0
+
+### Minor Changes
+
+- a8e2c0f: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [a8e2c0f]
+  - @backstage-community/plugin-vault-node@0.21.0
+
+## 0.23.0
+
+### Minor Changes
+
+- 1f04258: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [1f04258]
+  - @backstage-community/plugin-vault-node@0.20.0
+
 ## 0.22.1
 
 ### Patch Changes

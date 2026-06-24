@@ -56,6 +56,7 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     catalogApi: CatalogApi;
+    enableCompoundEntityCheck?: boolean;
   });
   // (undocumented)
   readonly catalogApi: CatalogApi;

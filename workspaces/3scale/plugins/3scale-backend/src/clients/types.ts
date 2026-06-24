@@ -39,8 +39,8 @@ export interface ServiceService {
   mandatory_app_key: boolean;
   buyer_can_select_plan: boolean;
   buyer_plan_change_permission: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   links: Link[];
 }
 
@@ -64,8 +64,8 @@ export interface APIDoc {
   published: boolean;
   skip_swagger_validations: boolean;
   body: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   description?: string;
   service_id?: number;
 }
@@ -98,8 +98,8 @@ export interface ProxyElement {
   sandbox_endpoint: string;
   api_test_path: string;
   policies_config: PoliciesConfig[];
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   deployment_option: string;
   lock_version: number;
   links: Link[];

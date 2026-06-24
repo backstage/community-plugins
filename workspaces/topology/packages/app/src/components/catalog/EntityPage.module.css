@@ -1,0 +1,34 @@
+@layer components {
+  .entityGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--bui-space-6);
+    align-items: stretch;
+  }
+
+  .col12 {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 900px) {
+    .entityGrid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .colMd4 {
+      grid-column: span 4;
+    }
+
+    .colMd6 {
+      grid-column: span 6;
+    }
+
+    .colMd8 {
+      grid-column: span 8;
+    }
+
+    .colMd12 {
+      grid-column: span 12;
+    }
+  }
+}
