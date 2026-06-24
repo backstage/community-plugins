@@ -73,6 +73,16 @@ const statusIconSx: Partial<Record<StatusClassKey, SxProps<Theme>>> = {
   },
 };
 
+const statusIconWrapperSx: SxProps<Theme> = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  lineHeight: 0,
+};
+
+const getStatusIconSx = (statusKey: StatusClassKey): SxProps<Theme> =>
+  [statusIconWrapperSx, statusIconSx[statusKey] ?? {}] as SxProps<Theme>;
+
 const StatusIcon = ({
   statusKey,
   className,
@@ -80,37 +90,55 @@ const StatusIcon = ({
   statusKey: StatusClassKey;
   className?: string;
 }) => {
-  const statusSx = statusIconSx[statusKey];
-
   switch (statusKey) {
     case 'ok':
       return (
-        <Box component="g" sx={statusSx} className={className}>
-          <StatusOK />{' '}
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusOK />
         </Box>
       );
     case 'pending':
       return (
-        <Box component="g" sx={statusSx} className={className}>
-          <StatusPending />{' '}
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusPending />
         </Box>
       );
     case 'running':
       return (
-        <Box component="g" sx={statusSx} className={className}>
-          <StatusRunning />{' '}
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusRunning />
         </Box>
       );
     case 'warning':
       return (
-        <Box component="g" sx={statusSx} className={className}>
-          <StatusWarning />{' '}
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusWarning />
         </Box>
       );
     case 'error':
       return (
-        <Box component="g" sx={statusSx} className={className}>
-          <StatusError />{' '}
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusError />
         </Box>
       );
     default:
