@@ -120,7 +120,7 @@ const _default: OverridableFrontendPlugin<
 export default _default;
 
 // @alpha (undocumented)
-export const xCRMetricsApiExtension: OverridableExtensionDefinition<{
+export const xcrmetricsApiExtension: OverridableExtensionDefinition<{
   kind: 'api';
   name: 'xcmetrics-api';
   config: {};

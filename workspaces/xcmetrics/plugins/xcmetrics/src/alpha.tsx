@@ -23,7 +23,7 @@ import {
 import { rootRouteRef } from './routes';
 import { xcmetricsApiRef, XcmetricsClient } from './api';
 
-const xCMetricsPage = PageBlueprint.make({
+const xcmetricsPage = PageBlueprint.make({
   params: {
     path: '/xcmetrics',
     routeRef: rootRouteRef,
@@ -35,7 +35,7 @@ const xCMetricsPage = PageBlueprint.make({
 /**
  * @alpha
  */
-export const xCRMetricsApiExtension = ApiBlueprint.make({
+export const xcmetricsApiExtension = ApiBlueprint.make({
   name: 'xcmetrics-api',
   params: defineParams =>
     defineParams({
@@ -52,7 +52,7 @@ export const xCRMetricsApiExtension = ApiBlueprint.make({
 
 export default createFrontendPlugin({
   pluginId: 'xcmetrics',
-  extensions: [xCMetricsPage, xCRMetricsApiExtension],
+  extensions: [xcmetricsPage, xcmetricsApiExtension],
   routes: {
     root: rootRouteRef,
   },
