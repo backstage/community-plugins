@@ -17,7 +17,7 @@
 # Flags:
 #   --stdout-only   print exports only; do not write DEV_ENV_FILE
 #
-# Requires: jq
+# Requires: jq, shasum or sha256sum
 
 set -euo pipefail
 
@@ -48,6 +48,17 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
+sha256_digest() {
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256
+  elif command -v sha256sum >/dev/null 2>&1; then
+    sha256sum
+  else
+    echo "export-dev-env-from-realm.sh: shasum or sha256sum is required" >&2
+    exit 1
+  fi
+}
+
 if [[ ! -f "${REALM_JSON}" ]]; then
   echo "export-dev-env-from-realm.sh: realm fixture not found at ${REALM_JSON}" >&2
   exit 1
@@ -77,7 +88,7 @@ fi
 if [[ -z "${BACKSTAGE_DEV_STATIC_TOKEN:-}" ]]; then
   BACKSTAGE_DEV_STATIC_TOKEN="$(
     printf '%s:%s:%s' "${KEYCLOAK_REALM}" "${KEYCLOAK_CLIENT_ID}" "${KEYCLOAK_CLIENT_SECRET}" \
-      | shasum -a 256 \
+      | sha256_digest \
       | awk '{print $1}'
   )"
 fi

@@ -15,11 +15,26 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import jwt from 'jsonwebtoken';
 
 import { KeycloakProviderConfig } from './config';
-import { authenticate } from './authenticate';
+import { authenticate, ensureTokenValid } from './authenticate';
+
+jest.mock('jsonwebtoken', () => ({
+  decode: jest.fn(),
+}));
+
+const mockedDecode = jwt.decode as jest.Mock;
 
 const logger = mockServices.logger.mock();
+
+const passwordProvider: KeycloakProviderConfig = {
+  id: 'default',
+  realm: 'myrealm',
+  baseUrl: 'http://localhost:8080',
+  username: 'myusername',
+  password: 'mypassword', // NOSONAR
+};
 
 describe('authenticate', () => {
   beforeEach(() => {
@@ -31,15 +46,7 @@ describe('authenticate', () => {
       auth: jest.fn().mockResolvedValue(undefined),
     } as unknown as KeycloakAdminClient;
 
-    const provider: KeycloakProviderConfig = {
-      id: 'default',
-      realm: 'myrealm',
-      baseUrl: 'http://localhost:8080',
-      username: 'myusername',
-      password: 'mypassword', // NOSONAR
-    };
-
-    await authenticate(client, provider, logger);
+    await authenticate(client, passwordProvider, logger);
 
     expect(client.auth).toHaveBeenCalledWith({
       grantType: 'password',
@@ -54,7 +61,7 @@ describe('authenticate', () => {
       auth: jest.fn().mockResolvedValue(undefined),
     } as unknown as KeycloakAdminClient;
 
-    const provider: KeycloakProviderConfig = {
+    const clientCredentialsProvider: KeycloakProviderConfig = {
       id: 'default',
       realm: 'myrealm',
       baseUrl: 'http://localhost:8080',
@@ -62,7 +69,7 @@ describe('authenticate', () => {
       clientSecret: 'myclientsecret', // NOSONAR
     };
 
-    await authenticate(client, provider, logger);
+    await authenticate(client, clientCredentialsProvider, logger);
 
     expect(client.auth).toHaveBeenCalledWith({
       grantType: 'client_credentials',
@@ -76,15 +83,73 @@ describe('authenticate', () => {
       auth: jest.fn(),
     } as unknown as KeycloakAdminClient;
 
-    const provider: KeycloakProviderConfig = {
+    const providerWithoutCredentials: KeycloakProviderConfig = {
       id: 'default',
       realm: 'myrealm',
       baseUrl: 'http://localhost:8080',
     };
 
-    await expect(authenticate(client, provider, logger)).rejects.toThrow(
+    await expect(
+      authenticate(client, providerWithoutCredentials, logger),
+    ).rejects.toThrow(
       'username and password or clientId and clientSecret must be provided.',
     );
     expect(client.auth).not.toHaveBeenCalled();
+  });
+});
+
+describe('ensureTokenValid', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('authenticates when the access token is missing', async () => {
+    const client = {
+      accessToken: undefined,
+      auth: jest.fn().mockResolvedValue(undefined),
+    } as unknown as KeycloakAdminClient;
+
+    await ensureTokenValid(client, passwordProvider, logger);
+
+    expect(client.auth).toHaveBeenCalledTimes(1);
+    expect(mockedDecode).not.toHaveBeenCalled();
+  });
+
+  it('does not re-authenticate when the JWT expires more than 30 seconds from now', async () => {
+    const client = {
+      accessToken: 'valid-token',
+      auth: jest.fn().mockResolvedValue(undefined),
+    } as unknown as KeycloakAdminClient;
+
+    mockedDecode.mockReturnValue({
+      exp: Math.floor((Date.now() + 60_000) / 1000),
+    });
+
+    await ensureTokenValid(client, passwordProvider, logger);
+
+    expect(mockedDecode).toHaveBeenCalledWith('valid-token');
+    expect(client.auth).not.toHaveBeenCalled();
+  });
+
+  it('re-authenticates when the JWT is within 30 seconds of expiry', async () => {
+    const client = {
+      accessToken: 'near-expiry-token',
+      auth: jest.fn().mockResolvedValue(undefined),
+    } as unknown as KeycloakAdminClient;
+
+    mockedDecode.mockReturnValue({
+      exp: Math.floor((Date.now() + 10_000) / 1000),
+    });
+
+    await ensureTokenValid(client, passwordProvider, logger);
+
+    expect(mockedDecode).toHaveBeenCalledWith('near-expiry-token');
+    expect(client.auth).toHaveBeenCalledTimes(1);
+    expect(client.auth).toHaveBeenCalledWith({
+      grantType: 'password',
+      clientId: 'admin-cli',
+      username: 'myusername',
+      password: 'mypassword', // NOSONAR
+    });
   });
 });
