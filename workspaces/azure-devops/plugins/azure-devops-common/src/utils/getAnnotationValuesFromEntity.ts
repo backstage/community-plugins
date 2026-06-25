@@ -57,7 +57,7 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
       const parsed = new URL(rawUrl);
 
       // Only derive paths for Azure DevOps URLs
-      if (!parsed.hostname.includes('dev.azure.com')) return undefined;
+      if (parsed.hostname !== 'dev.azure.com') return undefined;
 
       // "path" query param holds the repo-relative path (URL-decoded by the URL API)
       const pathParam = parsed.searchParams.get('path');
@@ -70,7 +70,9 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
 
       // If the last segment looks like a file (has a dot), use its parent dir
       const dir = lastSegment.includes('.')
-        ? cleanPath.slice(0, lastSlash)
+        ? lastSlash >= 0
+          ? cleanPath.slice(0, lastSlash)
+          : ''
         : cleanPath;
 
       return `${dir}/README.md`;
