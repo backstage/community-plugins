@@ -211,7 +211,7 @@ export interface AppListItem {
     // (undocumented)
     health: AppHealth;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioReferences: ObjectReference[];
     // (undocumented)
@@ -247,7 +247,7 @@ export interface AppQuery {
 // @public (undocumented)
 export interface AppWorkload {
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioSidecar: boolean;
     // (undocumented)
@@ -376,6 +376,9 @@ export type BucketDataPoint = {
     y: number[];
     style?: Style;
 };
+
+// @public (undocumented)
+export const buildReporter: (direction: Direction, includeWaypoint: boolean) => string;
 
 // @public (undocumented)
 export interface CanaryUpgradeStatus {
@@ -1199,6 +1202,9 @@ export interface GatewaySpec {
     // (undocumented)
     servers?: Server[];
 }
+
+// @public (undocumented)
+export const getStatsReporters: (direction: Direction, includeWaypoint?: boolean) => StatsReporter[];
 
 // @public (undocumented)
 export interface GrafanaInfo {
@@ -4017,7 +4023,7 @@ export interface ServiceOverview {
     // (undocumented)
     health: ServiceHealth;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioReferences: ObjectReference[];
     // (undocumented)
@@ -4206,6 +4212,9 @@ export interface Stat {
     // (undocumented)
     value: number;
 }
+
+// @public (undocumented)
+export type StatsReporter = 'source' | 'destination' | 'waypoint';
 
 // @public (undocumented)
 export interface Status {
@@ -4790,6 +4799,9 @@ export interface WEInfo {
 }
 
 // @public (undocumented)
+export const withWaypoint: (reporter: string, includeWaypoint: boolean) => string;
+
+// @public (undocumented)
 export interface Workload {
     // (undocumented)
     additionalDetails: AdditionalItem[];
@@ -4808,7 +4820,7 @@ export interface Workload {
     // (undocumented)
     health?: WorkloadHealthResponse;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioInjectionAnnotation?: boolean;
     // (undocumented)
@@ -4953,7 +4965,7 @@ export interface WorkloadOverview {
     // (undocumented)
     health: WorkloadHealth;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioReferences: ObjectReference[];
     // (undocumented)
@@ -4977,7 +4989,7 @@ export interface WorkloadOverviewServiceView {
     // (undocumented)
     createdAt: string;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioSidecar: boolean;
     // (undocumented)
