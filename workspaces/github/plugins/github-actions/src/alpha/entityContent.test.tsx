@@ -86,6 +86,6 @@ describe('Entity content extension', () => {
     await expect(
       screen.findByText('Rerun workflow'),
     ).resolves.toBeInTheDocument();
-    expect(screen.queryByText('Age')).toBe(null);
+    expect(screen.queryByText('Actions')).toBe(null);
   });
 });

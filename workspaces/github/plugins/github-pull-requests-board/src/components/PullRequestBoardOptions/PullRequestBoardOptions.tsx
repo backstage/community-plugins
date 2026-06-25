@@ -15,7 +15,7 @@
  */
 import { ReactNode, FunctionComponent } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import { Tooltip, Box } from '@material-ui/core';
+import { Tooltip, Flex, TooltipTrigger } from '@backstage/ui';
 import { PRCardFormating } from '../../utils/types';
 
 type Option = {
@@ -43,13 +43,15 @@ const PullRequestBoardOptions: FunctionComponent<Props> = (props: Props) => {
         <ToggleButton
           value={toggleValue}
           aria-label={ariaLabel}
+          title={ariaLabel}
           key={`${ariaLabel}-${index}`}
         >
-          <Tooltip title={ariaLabel}>
-            <Box display="flex" justifyContent="center" alignItems="center">
+          <TooltipTrigger>
+            <Flex justify="center" align="center">
               {icon}
-            </Box>
-          </Tooltip>
+            </Flex>
+            <Tooltip>{ariaLabel}</Tooltip>
+          </TooltipTrigger>
         </ToggleButton>
       ))}
     </ToggleButtonGroup>

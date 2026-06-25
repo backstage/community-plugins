@@ -19,7 +19,8 @@ import {
   createExtensionDataRef,
   createExtensionBlueprint,
 } from '@backstage/frontend-plugin-api';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
+import { FilterPredicate } from '@backstage/filter-predicates';
+import { z } from 'zod';
 
 /**
  * @internal
@@ -41,7 +42,7 @@ export const techInsightsScorecardExtensionData = {
   /**
    * A filter to determine if a scorecard should be shown for an entity.
    */
-  entityFilter: createExtensionDataRef<EntityPredicate>().with({
+  entityFilter: createExtensionDataRef<FilterPredicate>().with({
     id: 'tech-insights-scorecard.entity-filter',
   }),
 };
@@ -54,7 +55,7 @@ export type TechInsightsScorecardBlueprintParams = {
   description?: string;
   checkIds?: string[];
   dense?: boolean;
-  entityFilter?: EntityPredicate;
+  entityFilter?: FilterPredicate;
   checkFilter?: (check: Check) => boolean;
 };
 
@@ -71,14 +72,12 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
     props: techInsightsScorecardExtensionData.props,
     entityFilter: techInsightsScorecardExtensionData.entityFilter,
   },
-  config: {
-    schema: {
-      title: z => z.string().optional(),
-      description: z => z.string().optional(),
-      checkIds: z => z.array(z.string()).optional(),
-      dense: z => z.boolean().optional(),
-      entityFilter: z => z.record(z.unknown()).optional(),
-    },
+  configSchema: {
+    title: z.string().optional(),
+    description: z.string().optional(),
+    checkIds: z.array(z.string()).optional(),
+    dense: z.boolean().optional(),
+    entityFilter: z.record(z.string(), z.unknown()).optional(),
   },
   output: [
     techInsightsScorecardExtensionData.props,
@@ -94,7 +93,7 @@ export const TechInsightsScorecardBlueprint = createExtensionBlueprint({
     });
 
     const entityFilter =
-      (config.entityFilter as EntityPredicate | undefined) ??
+      (config.entityFilter as FilterPredicate | undefined) ??
       params.entityFilter;
     if (entityFilter) {
       yield techInsightsScorecardExtensionData.entityFilter(entityFilter);

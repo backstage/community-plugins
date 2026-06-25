@@ -107,6 +107,26 @@ catalog:
       rules:
         - allow: [Template]
 
+    - type: file
+      target: ../../examples/templates/argocd-find-applications.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ../../examples/templates/argocd-get-application.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ../../examples/templates/argocd-get-revision-details.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: ../../examples/templates/argocd-list-applications.yaml
+      rules:
+        - allow: [Template]
+
     # Local example organizational data
     - type: file
       target: ../../examples/org.yaml

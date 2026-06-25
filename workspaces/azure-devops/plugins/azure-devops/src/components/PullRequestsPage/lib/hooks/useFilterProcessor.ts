@@ -17,9 +17,12 @@
 import { Filter, FilterType } from '../filters';
 import { useUserEmail, useUserTeamIds } from '../../../../hooks';
 
-export function useFilterProcessor(): (filters: Filter[]) => Filter[] {
+export function useFilterProcessor(
+  host?: string,
+  org?: string,
+): (filters: Filter[]) => Filter[] {
   const userEmail = useUserEmail();
-  const { teamIds } = useUserTeamIds(userEmail);
+  const { teamIds } = useUserTeamIds(userEmail, host, org);
 
   return (filters: Filter[]): Filter[] => {
     for (const filter of filters) {

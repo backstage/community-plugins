@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "22 || 24"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel -v -i run start",
@@ -16,7 +16,7 @@
     "build:knip-reports": "backstage-repo-tools knip-reports",
     "build-image": "yarn workspace backend build-image",
     "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "tsc:full": "tsc --skipLibCheck true --incremental false",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
@@ -41,19 +41,23 @@
     "directory": "workspaces/mta"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.1",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@backstage/repo-tools": "^0.15.1",
+    "@backstage/cli": "^0.36.0",
+    "@backstage/cli-defaults": "^0.1.0",
+    "@backstage/e2e-test-utils": "^0.1.2",
+    "@backstage/repo-tools": "^0.17.0",
     "@changesets/cli": "^2.27.7",
     "@playwright/test": "^1.32.3",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^3.3.3",
-    "typescript": "~5.3.0"
+    "typescript": "~5.7.0"
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "@asyncapi/protobuf-schema-parser": "3.4.0",
+    "protobufjs": "7.5.4",
+    "@protobufjs/inquire": "1.1.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

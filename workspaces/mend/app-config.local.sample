@@ -5,3 +5,4 @@ mend:
     ids:
       - component:default/example-website
     exclude: true
+  cacheRefresh: 240

@@ -16,7 +16,7 @@
 export interface Config {
   ilert?: {
     /**
-     * Domain used by users to access iLert web UI.
+     * Domain used by users to access ilert web UI.
      * Example: https://my-app.ilert.com/
      * @visibility frontend
      */

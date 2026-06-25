@@ -14,49 +14,30 @@
  * limitations under the License.
  */
 
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Avatar from '@material-ui/core/Avatar';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text, Flex, Avatar } from '@backstage/ui';
+import styles from './Assignees.module.css';
 
 type AssigneesProps = {
   name?: string;
   avatar?: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  small: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-    marginLeft: theme.spacing(1),
-  },
-  noAssignees: {
-    height: theme.spacing(4),
-  },
-}));
-
 export const Assignees = (props: AssigneesProps) => {
   const { name, avatar } = props;
-  const classes = useStyles();
 
   // todo: many assignees -> NUM assignees + stock images on each other
   return name ? (
-    <Box display="flex" alignItems="center" marginX={1}>
-      <Typography color="primary" variant="body2" component="p">
+    <Flex align="center" mx="2">
+      <Text variant="body-small" color="primary">
         {name}
-      </Typography>
-      <Avatar alt={name} src={avatar} className={classes.small} />
-    </Box>
+      </Text>
+      <Avatar src={avatar ?? ''} name={name} className={styles.small} />
+    </Flex>
   ) : (
-    <Box display="flex" alignItems="center" marginX={1}>
-      <Typography
-        color="primary"
-        variant="body2"
-        component="p"
-        className={classes.noAssignees}
-      >
+    <Flex align="center" mx="2">
+      <Text variant="body-small" color="primary" className={styles.noAssignees}>
         No assignees
-      </Typography>
-    </Box>
+      </Text>
+    </Flex>
   );
 };

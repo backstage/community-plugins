@@ -30,6 +30,7 @@ import {
 import { mendApiRef, MendClient } from '../api';
 import { rootRouteRef } from '../routes';
 import { MendIcon } from '../components/Sidebar';
+import { MEND_PROJECT_ANNOTATION } from '../utils';
 
 /**
  * An API to communicate via the proxy to an Mend Instance
@@ -89,11 +90,16 @@ export const mendNavItem: any = NavItemBlueprint.make({
  * @alpha
  */
 export const mendTab: any = EntityContentBlueprint.make({
-  name: 'acrImagesEntityContent',
+  name: 'mendEntityContent',
   params: {
     path: 'mend',
     title: 'Mend.io',
-    filter: 'kind:component',
+    filter: (entity: any) => {
+      if (entity.kind !== 'Component') {
+        return false;
+      }
+      return !!entity.metadata?.annotations?.[MEND_PROJECT_ANNOTATION];
+    },
     loader: () => import('../pages/tab/').then(m => <m.MendTab />),
   },
 });

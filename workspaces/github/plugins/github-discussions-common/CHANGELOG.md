@@ -1,5 +1,23 @@
 # @backstage-community/plugin-github-discussions-common
 
+## 0.14.0
+
+### Minor Changes
+
+- 7e98f23: Backstage version bump to v1.52.0
+
+## 0.13.0
+
+### Minor Changes
+
+- 9a217cf: Backstage version bump to v1.51.0
+
+## 0.12.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
 ## 0.11.0
 
 ### Minor Changes

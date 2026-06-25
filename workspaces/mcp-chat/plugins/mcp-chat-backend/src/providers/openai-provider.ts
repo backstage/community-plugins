@@ -22,6 +22,10 @@ import { ChatMessage, Tool, ChatResponse } from '../types';
  * @public
  */
 export class OpenAIProvider extends LLMProvider {
+  protected get providerName(): string {
+    return 'OpenAI';
+  }
+
   async sendMessage(
     messages: ChatMessage[],
     tools?: Tool[],
@@ -44,7 +48,7 @@ export class OpenAIProvider extends LLMProvider {
 
       if (!response.ok) {
         const errorText = await response.text();
-        let errorMessage = `OpenAI API error (${response.status})`;
+        let errorMessage = `${this.providerName} API error (${response.status})`;
 
         try {
           const errorData = JSON.parse(errorText);
@@ -61,11 +65,9 @@ export class OpenAIProvider extends LLMProvider {
 
         // Provide user-friendly messages for common errors
         if (response.status === 401) {
-          errorMessage =
-            'Invalid API key. Please check your OpenAI API key configuration.';
+          errorMessage = `Invalid API key. Please check your ${this.providerName} API key configuration.`;
         } else if (response.status === 429) {
-          errorMessage =
-            'Rate limit exceeded. Please try again later or check your OpenAI usage limits.';
+          errorMessage = `Rate limit exceeded. Please try again later or check your ${this.providerName} usage limits.`;
         } else if (response.status === 403) {
           errorMessage =
             'Access forbidden. Please check your API key permissions.';
@@ -105,12 +107,21 @@ export class OpenAIProvider extends LLMProvider {
   }
 
   protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any {
+    const maxTokens = this.maxTokens ?? 1000;
+    const useMaxCompletionTokens = /^(o[0-9]|gpt-5)/.test(this.model);
+
     const request: any = {
       model: this.model,
       messages,
-      max_tokens: 1000,
-      temperature: 0.7,
+      ...(useMaxCompletionTokens
+        ? { max_completion_tokens: maxTokens }
+        : { max_tokens: maxTokens }),
     };
+
+    // O-series and GPT-5 models do not support the temperature parameter
+    if (!useMaxCompletionTokens) {
+      request.temperature = this.temperature ?? 0.7;
+    }
 
     if (tools && tools.length > 0) {
       request.tools = tools;

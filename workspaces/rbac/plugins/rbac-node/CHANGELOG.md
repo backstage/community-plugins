@@ -1,5 +1,39 @@
 ## @backstage-community/plugin-rbac-node [1.4.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-node@1.3.1...@backstage-community/plugin-rbac-node@1.4.0) (2024-07-26)
 
+## 1.22.0
+
+### Minor Changes
+
+- 091ec86: Backstage version bump to v1.51.0.
+
+  The RBAC backend plugin now resolves user identity through Backstage's `UserInfoService` when evaluating conditional permissions, as part of aligning with the Backstage 1.51 permission framework. **No action is required** if you install RBAC with `backend.add(import('@backstage-community/plugin-rbac-backend'))` and manage access through app-config as documented.
+
+  If you extend RBAC at a lower level (for example by constructing `PolicyBuilder` directly), ensure `UserInfoService` is wired through your backend integration.
+
+### Patch Changes
+
+- Updated dependencies [091ec86]
+  - @backstage-community/plugin-rbac-common@1.28.0
+
+## 1.21.0
+
+### Minor Changes
+
+- 6a916a1: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [6a916a1]
+  - @backstage-community/plugin-rbac-common@1.27.0
+
+## 1.20.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+
 ## 1.20.0
 
 ### Minor Changes

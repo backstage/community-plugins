@@ -22,16 +22,22 @@ export const mockRevision: RevisionInfo = {
   revisionID: '90f9758b7033a4bbb7c33a35ee474d61091644bc',
 };
 
-export const mockRevisionTwo = {
+export const mockRevisionTwo: RevisionInfo = {
   author: 'author-name',
-  date: '2023-10-11T05:28:38Z',
+  date: new Date('2023-10-11T05:28:38Z'),
   message: 'Commit v1.0.0 tag release',
 };
 
-export const mockRevisionThree = {
+export const mockRevisionThree: RevisionInfo = {
   author: 'author-name',
-  date: '2023-10-13T05:28:38Z',
+  date: new Date('2023-10-13T05:28:38Z'),
   message: 'Initial commit',
 };
 
 export const mockRevisions = [mockRevision, mockRevisionTwo, mockRevisionThree];
+
+export const mockIdRevisions: Record<string, RevisionInfo> = {
+  '90f9758b7033a4bbb7c33a35ee474d61091644bc': mockRevision,
+  '80f9758b7033a4bbb7c33a35ee474d61091644bc': mockRevisionTwo,
+  '70f9758b7033a4bbb7c33a35ee474d61091644bc': mockRevisionThree,
+};

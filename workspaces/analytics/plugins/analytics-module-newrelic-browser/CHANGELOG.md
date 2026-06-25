@@ -1,5 +1,29 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.20.0
+
+### Minor Changes
+
+- 2a80868: Backstage version bump to v1.51.0
+
+## 0.19.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
+## 0.19.0
+
+### Minor Changes
+
+- 3fee6eb: Backstage version bump to v1.50.3
+
+## 0.18.0
+
+### Minor Changes
+
+- a34e621: Migrate `AnalyticsImplementationBlueprint` from `@backstage/frontend-plugin-api` to `@backstage/plugin-app-react`.
+
 ## 0.17.0
 
 ### Minor Changes

@@ -1,5 +1,27 @@
 # @backstage-community/plugin-n8n
 
+## 0.4.0
+
+### Minor Changes
+
+- 3f1835e: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [3f1835e]
+  - @backstage-community/plugin-n8n-common@0.4.0
+
+## 0.3.0
+
+### Minor Changes
+
+- fb2bc62: Backstage version bump to v1.49.2
+
+### Patch Changes
+
+- Updated dependencies [fb2bc62]
+  - @backstage-community/plugin-n8n-common@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

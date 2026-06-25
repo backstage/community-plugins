@@ -24,7 +24,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
+import { EntityDisplayName } from '@backstage/plugin-catalog-react';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MarkdownContent } from '@backstage/core-components';
@@ -71,7 +71,11 @@ export const EntityResult = ({
 
   return (
     <>
-      <ListItem key={humanizeEntityRef(item.entity)}>
+      <ListItem
+        key={`${item.entity.kind}:${
+          item.entity.metadata.namespace ?? 'default'
+        }/${item.entity.metadata.name}`}
+      >
         <ListItemIcon>
           {Icon && (
             <Icon
@@ -84,7 +88,7 @@ export const EntityResult = ({
           )}
         </ListItemIcon>
         <ListItemText
-          primary={humanizeEntityRef(item.entity)}
+          primary={<EntityDisplayName entityRef={item.entity} />}
           onClick={() => setExpanded(!expanded)}
         />
         {!item.response.valid && (

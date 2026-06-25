@@ -48,6 +48,16 @@ annotations:
 
 The `EntityGrafanaAlertsCard` component will then display alerts matching the given label and value.
 
+### Multiple Grafana instances
+
+If you have [multiple Grafana instances configured](setup.md#multiple-instances-configuration), add the `grafana/host-id` annotation to select which instance to query:
+
+```yaml
+annotations:
+  grafana/alert-label-selector: 'service=my-service'
+  grafana/host-id: production
+```
+
 ## With Grafana Legacy Alerting enabled
 
 If Grafana's [Unified Alerting](https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/) is NOT enabled, alerts are selected by a tag present on the dashboards defining them:

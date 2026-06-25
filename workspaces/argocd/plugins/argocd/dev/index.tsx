@@ -15,7 +15,6 @@
  */
 // eslint-disable-next-line
 import '@backstage/ui/css/styles.css';
-import { Entity } from '@backstage/catalog-model';
 import { ConfigReader } from '@backstage/config';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
@@ -34,99 +33,164 @@ import { Box } from '@material-ui/core';
 import {
   ArgoCDApi,
   argoCDApiRef,
-  ArgoCDInstanceApi,
+  ArgoCDAppDeployRevisionDetails,
+  ArgoCDInstanceApiClient,
   argoCDInstanceApiRef,
   FindApplicationsOptions,
   GetApplicationOptions,
   ListAppsOptions,
   RevisionDetailsListOptions,
   RevisionDetailsOptions,
-  SearchApplicationsOptions,
 } from '../src/api';
 import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
   argocdPlugin,
 } from '../src/plugin';
-import { Application } from '@backstage-community/plugin-argocd-common';
+import {
+  Application,
+  InstanceApplications,
+} from '@backstage-community/plugin-argocd-common';
 import { customResourceTypes } from '../src/types/resources';
 import {
-  mockApplication,
   mockArgocdConfig,
-  mockQuarkusApplication,
-  mockRevision,
-  mockRevisions,
-  preProdApplication,
-  prodApplication,
+  mockArgocdMultiInstanceConfig,
+  mockArgoMultiInstanceAppNameEntity,
+  mockArgoMultiInstanceSelectorEntity,
+  mockEntity,
+  mockIdRevisions,
+  DEV_INSTANCE_APPLICATIONS,
+  mockArgoOneAppEntity,
 } from './__data__';
 import { mockArgoResources } from './__data__/argoRolloutsObjects';
 import { argocdTranslations } from '../src/translations';
+import { getArgocdInstances } from '../src/hooks/useArgocdConfig';
+import { DeploymentLifecycle } from '../src/components/DeploymentLifeCycle';
+import { DeploymentSummary } from '../src/components/DeploymentSummary';
 
-const mockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage-argocd',
-    description: 'rhtap argocd plugin',
-    annotations: {
-      'argocd/app-selector': 'rht.gitops.com/quarks-app-bootstrap',
-      'backstage.io/kubernetes-id': 'quarkus-app',
-    },
-  },
-  spec: {
-    lifecycle: 'production',
-    type: 'service',
-    owner: 'user:guest',
-  },
+const getInstanceNameFromUrl = (url: string): string => {
+  return url.replace('/argoInstance/', '');
 };
 
 export class MockArgoCDApiClient implements ArgoCDApi {
-  async listApps(_options: ListAppsOptions): Promise<any> {
+  async listApps(options: ListAppsOptions): Promise<{ items: Application[] }> {
+    const instanceName = getInstanceNameFromUrl(options.url);
+    let apps = DEV_INSTANCE_APPLICATIONS[instanceName] ?? [];
+
+    if (options.appSelector) {
+      const decodedSelector = decodeURIComponent(options.appSelector);
+      const [labelKey, labelValue] = decodedSelector.split('=', 2);
+      apps = apps.filter(app => app.metadata.labels?.[labelKey] === labelValue);
+    }
+
     return {
-      items: [
-        mockApplication,
-        preProdApplication,
-        prodApplication,
-        mockQuarkusApplication,
-      ],
+      items: apps,
     };
   }
 
-  async getRevisionDetails(_options: RevisionDetailsOptions): Promise<any> {
-    return mockRevision;
+  async getRevisionDetails(
+    options: RevisionDetailsOptions,
+  ): Promise<ArgoCDAppDeployRevisionDetails> {
+    return mockIdRevisions[options.revisionID];
   }
+
   async getRevisionDetailsList(
-    _options: RevisionDetailsListOptions,
-  ): Promise<any> {
-    return mockRevisions;
-  }
-  async getApplication(_options: GetApplicationOptions): Promise<Application> {
-    return mockApplication;
+    options: RevisionDetailsListOptions,
+  ): Promise<ArgoCDAppDeployRevisionDetails[]> {
+    if (!options.revisionIDs || options.revisionIDs.length < 1) {
+      return Promise.resolve([]);
+    }
+    const promises: Promise<ArgoCDAppDeployRevisionDetails>[] = [];
+
+    options.revisionIDs.forEach((revisionID: string) => {
+      const application = options.apps.find(app =>
+        app?.status?.history?.find(h => h.revision === revisionID),
+      );
+
+      if (application) {
+        promises.push(
+          this.getRevisionDetails({
+            app: application.metadata.name as string,
+            appNamespace: options.appNamespace,
+            instanceName: application.metadata.instance.name,
+            revisionID,
+          }),
+        );
+      }
+
+      const multiSourceApp = options.apps.find(app => {
+        return app?.status?.history?.find(h => {
+          return h?.revisions?.includes(revisionID);
+        });
+      });
+
+      if (multiSourceApp) {
+        const history = multiSourceApp.status?.history ?? [];
+        const relevantHistories = history.filter(h =>
+          h?.revisions?.includes(revisionID),
+        );
+
+        relevantHistories.forEach(h => {
+          const revisionSourceIndex = h.revisions?.indexOf(revisionID);
+          promises.push(
+            this.getRevisionDetails({
+              app: multiSourceApp.metadata.name as string,
+              appNamespace: options.appNamespace,
+              instanceName: multiSourceApp.metadata.instance.name,
+              revisionID: revisionID,
+              sourceIndex: revisionSourceIndex,
+            }),
+          );
+        });
+      }
+    });
+    return Promise.all(promises);
   }
 
-  async findApplications(_options: FindApplicationsOptions): Promise<any> {
-    return {
-      items: [
-        mockApplication,
-        preProdApplication,
-        prodApplication,
-        mockQuarkusApplication,
-      ],
-    };
-  }
-}
+  async getApplication(options: GetApplicationOptions): Promise<Application> {
+    const instanceName = getInstanceNameFromUrl(options.url);
 
-class MockArgoCDInstanceApiClient implements ArgoCDInstanceApi {
-  async searchApplications(
-    _instanceNames: string[],
-    _options: SearchApplicationsOptions,
-  ): Promise<Application[]> {
-    return [
-      mockApplication,
-      preProdApplication,
-      prodApplication,
-      mockQuarkusApplication,
-    ];
+    if (!DEV_INSTANCE_APPLICATIONS[instanceName]) {
+      throw new Error(
+        `Failed to fetch Application from Instance ${instanceName} : ArgoCD Instance ${instanceName} not found`,
+      );
+    }
+
+    const result = DEV_INSTANCE_APPLICATIONS[instanceName].filter(
+      app => app.metadata.name === options.appName,
+    )[0];
+    if (!result) {
+      throw new Error(
+        `Failed to fetch data, status 403: Insufficient permissions for ArgoCD server`,
+      );
+    }
+
+    return result;
+  }
+
+  async findApplications(
+    options: FindApplicationsOptions,
+  ): Promise<InstanceApplications[]> {
+    const result: InstanceApplications[] = [];
+    for (const [instanceName, apps] of Object.entries(
+      DEV_INSTANCE_APPLICATIONS,
+    )) {
+      const matchingApps = apps.filter(
+        app =>
+          app.metadata.name === options.appName &&
+          app.metadata.name !== undefined,
+      );
+
+      if (matchingApps.length !== 0) {
+        result.push({
+          name: instanceName,
+          url: matchingApps[0].metadata.instance.url,
+          appName: [options.appName],
+          applications: matchingApps,
+        });
+      }
+    }
+    return result;
   }
 }
 
@@ -232,6 +296,10 @@ class MockKubernetesClient implements KubernetesApi {
   }
 }
 
+const configApi = new ConfigReader(mockArgocdConfig);
+const multiInstanceConfigApi = new ConfigReader(mockArgocdMultiInstanceConfig);
+const argoCDApi = new MockArgoCDApiClient();
+
 createDevApp()
   .registerPlugin(argocdPlugin)
   .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja'])
@@ -241,9 +309,15 @@ createDevApp()
       <TestApiProvider
         apis={[
           [kubernetesApiRef, new MockKubernetesClient(mockArgoResources)],
-          [configApiRef, new ConfigReader(mockArgocdConfig)],
-          [argoCDApiRef, new MockArgoCDApiClient()],
-          [argoCDInstanceApiRef, new MockArgoCDInstanceApiClient()],
+          [configApiRef, configApi],
+          [argoCDApiRef, argoCDApi],
+          [
+            argoCDInstanceApiRef,
+            new ArgoCDInstanceApiClient({
+              argoCDApi,
+              instances: getArgocdInstances(configApi),
+            }),
+          ],
           [permissionApiRef, mockApis.permission()],
           [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
@@ -263,9 +337,15 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [configApiRef, new ConfigReader(mockArgocdConfig)],
-          [argoCDApiRef, new MockArgoCDApiClient()],
-          [argoCDInstanceApiRef, new MockArgoCDInstanceApiClient()],
+          [configApiRef, configApi],
+          [argoCDApiRef, argoCDApi],
+          [
+            argoCDInstanceApiRef,
+            new ArgoCDInstanceApiClient({
+              argoCDApi,
+              instances: getArgocdInstances(configApi),
+            }),
+          ],
           [permissionApiRef, mockApis.permission()],
           [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
         ]}
@@ -284,5 +364,122 @@ createDevApp()
     ),
     title: 'Summary',
     path: 'argocd/deployment-summary',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, new MockKubernetesClient(mockArgoResources)],
+          [configApiRef, multiInstanceConfigApi],
+          [argoCDApiRef, argoCDApi],
+          [
+            argoCDInstanceApiRef,
+            new ArgoCDInstanceApiClient({
+              argoCDApi,
+              instances: getArgocdInstances(multiInstanceConfigApi),
+            }),
+          ],
+          [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+        ]}
+      >
+        <EntityProvider
+          key="multi-instance-selector"
+          entity={mockArgoMultiInstanceSelectorEntity}
+        >
+          <Page themeId="service">
+            <Header type="component — service" title="quarkus-app" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <>
+                  <DeploymentLifecycle />
+                  <DeploymentSummary />
+                </>
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Multi Selector',
+    path: 'argocd/multi-instance-selector',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, new MockKubernetesClient(mockArgoResources)],
+          [configApiRef, multiInstanceConfigApi],
+          [argoCDApiRef, argoCDApi],
+          [
+            argoCDInstanceApiRef,
+            new ArgoCDInstanceApiClient({
+              argoCDApi,
+              instances: getArgocdInstances(multiInstanceConfigApi),
+            }),
+          ],
+          [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+        ]}
+      >
+        <EntityProvider
+          key="multi-instance-app-name"
+          entity={mockArgoMultiInstanceAppNameEntity}
+        >
+          <Page themeId="service">
+            <Header type="component — service" title="quarkus-app" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <>
+                  <DeploymentLifecycle />
+                  <DeploymentSummary />
+                </>
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Multi App Name',
+    path: 'argocd/multi-instance-app-name',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, new MockKubernetesClient(mockArgoResources)],
+          [configApiRef, multiInstanceConfigApi],
+          [argoCDApiRef, argoCDApi],
+          [
+            argoCDInstanceApiRef,
+            new ArgoCDInstanceApiClient({
+              argoCDApi,
+              instances: getArgocdInstances(multiInstanceConfigApi),
+            }),
+          ],
+          [permissionApiRef, mockApis.permission()],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+        ]}
+      >
+        <EntityProvider
+          key="multi-instance-one-app-name"
+          entity={mockArgoOneAppEntity}
+        >
+          <Page themeId="service">
+            <Header type="component — service" title="basic-app" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <>
+                  <DeploymentLifecycle />
+                  <DeploymentSummary />
+                </>
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Multi One App Name',
+    path: 'argocd/multi-instance-one-app-name',
   })
   .render();

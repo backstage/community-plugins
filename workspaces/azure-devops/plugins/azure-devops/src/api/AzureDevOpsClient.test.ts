@@ -105,4 +105,17 @@ describe('AzureDevOpsClient', () => {
       'http://mocked-url/builds/project/build/8/log?entityRef=some-entity-ref&host=host',
     );
   });
+
+  it('should encode userId (email) in the getUserTeamIds URL path', async () => {
+    await azureDevOpsClient.getUserTeamIds(
+      'user@example.com',
+      'host.com',
+      'myOrg',
+    );
+
+    expect(fetchApiMock.fetch).toHaveBeenCalledTimes(1);
+    expect(fetchApiMock.fetch).toHaveBeenCalledWith(
+      'http://mocked-url/users/user%40example.com/team-ids?host=host.com&org=myOrg',
+    );
+  });
 });

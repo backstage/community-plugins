@@ -14,36 +14,96 @@
  * limitations under the License.
  */
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { GITHUB_ACTIONS_ANNOTATION } from '../getProjectNameFromEntity';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import {
+  Tooltip,
+  Text,
+  Flex,
+  TooltipTrigger,
+  Card,
+  CardHeader,
+  CardBody,
+  Table,
+  useTable,
+  Cell,
+  CellText,
+  type ColumnConfig,
+  type TableItem,
+} from '@backstage/ui';
 
 import { errorApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
-import {
-  ErrorPanel,
-  InfoCard,
-  InfoCardVariants,
-  Link,
-  Table,
-} from '@backstage/core-components';
+import { ErrorPanel, Link } from '@backstage/core-components';
 import { buildRouteRef } from '../../routes';
 import { getHostnameFromEntity } from '../getHostnameFromEntity';
-import Box from '@material-ui/core/Box';
 
 const firstLine = (message: string): string => message.split('\n')[0];
+
+type WorkflowRunWithId = WorkflowRun & TableItem;
+
+const createColumns = (
+  routeLink: (params: { id: string }) => string,
+): ColumnConfig<WorkflowRunWithId>[] => [
+  {
+    id: 'message',
+    label: 'Commit Message',
+    isRowHeader: true,
+    cell: item => (
+      <Cell>
+        <Link component={RouterLink} to={routeLink({ id: String(item.id!) })}>
+          {firstLine(item.message ?? '')}
+        </Link>
+      </Cell>
+    ),
+  },
+  {
+    id: 'branch',
+    label: 'Branch',
+    cell: item => {
+      const text = item.source?.branchName ?? '';
+      return <CellText title={text}>{text}</CellText>;
+    },
+  },
+  {
+    id: 'status',
+    label: 'Status',
+    cell: item => (
+      <Cell>
+        <Flex>
+          <WorkflowRunStatus
+            status={item.status}
+            conclusion={item.conclusion}
+          />
+        </Flex>
+      </Cell>
+    ),
+  },
+  {
+    id: 'age',
+    label: 'Age',
+    cell: item => (
+      <Cell>
+        <Flex>
+          <TooltipTrigger>
+            <Text>{item.statusAge}</Text>
+            <Tooltip>{item.statusDate ?? ''}</Tooltip>
+          </TooltipTrigger>
+        </Flex>
+      </Cell>
+    ),
+  },
+];
 
 /** @public */
 export const RecentWorkflowRunsCard = (props: {
   branch?: string;
   dense?: boolean;
   limit?: number;
-  variant?: InfoCardVariants;
 }) => {
-  const { branch, dense = false, limit = 5, variant } = props;
+  const { branch, limit = 5 } = props;
 
   const { entity } = useEntity();
   const errorApi = useApi(errorApiRef);
@@ -71,72 +131,63 @@ export const RecentWorkflowRunsCard = (props: {
   const githubHost = hostname || 'github.com';
   const routeLink = useRouteRef(buildRouteRef);
 
+  const runsWithId: WorkflowRunWithId[] = useMemo(
+    () =>
+      runs.map((run, index) => ({
+        ...run,
+        id: run.id ?? `workflow-${index}`,
+      })),
+    [runs],
+  );
+
+  const columnConfig = useMemo(() => createColumns(routeLink), [routeLink]);
+
+  const { tableProps } = useTable({
+    mode: 'complete',
+    data: runsWithId,
+  });
+
   if (error) {
     return <ErrorPanel title={error.message} error={error} />;
   }
 
   return (
-    <InfoCard
-      title="Recent Workflow Runs"
-      subheader={branch ? `Branch: ${branch}` : 'All Branches'}
-      noPadding
-      variant={variant}
-    >
-      {!runs.length ? (
-        <div style={{ textAlign: 'center' }}>
-          <Typography variant="body1">
-            This component has GitHub Actions enabled, but no workflows were
-            found.
-          </Typography>
-          <Typography variant="body2">
-            <Link to={`https://${githubHost}/${owner}/${repo}/actions/new`}>
-              Create a new workflow
-            </Link>
-          </Typography>
-        </div>
-      ) : (
-        <Table<WorkflowRun>
-          isLoading={loading}
-          options={{
-            search: false,
-            paging: false,
-            padding: dense ? 'dense' : 'default',
-            toolbar: false,
-          }}
-          columns={[
-            {
-              title: 'Commit Message',
-              field: 'message',
-              render: data => (
-                <Link component={RouterLink} to={routeLink({ id: data.id! })}>
-                  {firstLine(data.message ?? '')}
+    <Card>
+      <CardHeader>
+        <Flex direction="column" gap="1">
+          <Text variant="title-medium">Recent Workflow Runs</Text>
+          {branch && (
+            <Text variant="body-small" color="secondary">
+              Branch: {branch}
+            </Text>
+          )}
+          {!branch && (
+            <Text variant="body-small" color="secondary">
+              All Branches
+            </Text>
+          )}
+        </Flex>
+      </CardHeader>
+      <CardBody>
+        <Table
+          columnConfig={columnConfig}
+          {...tableProps}
+          loading={loading}
+          emptyState={
+            <div style={{ textAlign: 'center', padding: 'var(--bui-space-4)' }}>
+              <Text variant="body-medium">
+                This component has GitHub Actions enabled, but no workflows were
+                found.
+              </Text>
+              <Text variant="body-small">
+                <Link to={`https://${githubHost}/${owner}/${repo}/actions/new`}>
+                  Create a new workflow
                 </Link>
-              ),
-            },
-            { title: 'Branch', field: 'source.branchName' },
-            {
-              title: 'Status',
-              field: 'status',
-              render: p => (
-                <Box display="flex">
-                  <WorkflowRunStatus {...p} />
-                </Box>
-              ),
-            },
-            {
-              title: 'Age',
-              render: row => (
-                <Box display="flex">
-                  <Tooltip title={row.statusDate ?? ''}>
-                    <Box>{row.statusAge}</Box>
-                  </Tooltip>
-                </Box>
-              ),
-            },
-          ]}
-          data={runs}
+              </Text>
+            </div>
+          }
         />
-      )}
-    </InfoCard>
+      </CardBody>
+    </Card>
   );
 };

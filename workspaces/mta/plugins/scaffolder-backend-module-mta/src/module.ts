@@ -2,7 +2,7 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
+import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
 import { createMTAApplicationAction } from './actions/mta/create-application';
 /*
  * A backend module that integrates with the scaffolder to provide MTA application creation.

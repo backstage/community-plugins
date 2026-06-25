@@ -1,5 +1,17 @@
 # @backstage-community/plugin-kiali
 
+## 1.50.2
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+
+## 1.50.1
+
+### Patch Changes
+
+- a559dfb: Updated dependency `@types/node` to `22.19.17`.
+
 ## 1.50.0
 
 ### Minor Changes

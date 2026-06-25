@@ -25,24 +25,49 @@ export interface Config {
       /**
        * Unique identifier for the provider
        * @visibility backend
-       * @enum { 'openai' | 'claude' | 'gemini' | 'ollama' }
+       * @enum { 'openai' | 'openai-responses' | 'azure-openai' | 'claude' | 'gemini' | 'ollama' | 'litellm' }
        */
-      id: 'openai' | 'claude' | 'gemini' | 'ollama';
+      id:
+        | 'openai'
+        | 'openai-responses'
+        | 'azure-openai'
+        | 'claude'
+        | 'gemini'
+        | 'ollama'
+        | 'litellm';
       /**
        * API token for the provider
        * @visibility secret
        */
       token?: string;
       /**
-       * Model name to use for this provider
+       * Model name to use for this provider.
+       * For `azure-openai` this should be the underlying model name (e.g. `gpt-4o-mini`),
+       * used only for capability detection. The actual API calls use `deploymentName`.
        * @visibility backend
        */
       model: string;
+      /**
+       * Azure OpenAI deployment name.
+       * Required for the `azure-openai` provider.
+       * @visibility backend
+       */
+      deploymentName?: string;
       /**
        * Base URL for the provider's API
        * @visibility backend
        */
       baseUrl?: string;
+      /**
+       * Maximum number of tokens to generate in the response
+       * @visibility backend
+       */
+      maxTokens?: number;
+      /**
+       * Sampling temperature for the model
+       * @visibility backend
+       */
+      temperature?: number;
     }>;
     /**
      * MCP (Model Context Protocol) servers configuration
@@ -90,12 +115,25 @@ export interface Config {
        */
       args?: string[];
       /**
+       * List of tool names to disable for this MCP server.
+       * Disabled tools are filtered out at discovery time and never exposed to the LLM or frontend.
+       * @visibility backend
+       */
+      disabledTools?: string[];
+      /**
        * Type of MCP server connection
        * @visibility backend
        * @enum { 'stdio' | 'streamable-http' }
        */
       type?: 'stdio' | 'streamable-http'; // Note: Use MCPServerType enum in code
     }>;
+    /**
+     * Timeout in milliseconds for MCP tool call requests.
+     * Increase this for long-running tools such as scaffolder templates.
+     * @visibility backend
+     * @default 60000
+     */
+    toolCallTimeout?: number;
     /**
      * Custom system prompt for the AI assistant
      * @visibility backend

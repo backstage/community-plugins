@@ -16,28 +16,13 @@
 
 import { ReactElement, cloneElement } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@mui/material/Typography';
+import { Text } from '@backstage/ui';
 import classNames from 'classnames';
 
 import CamelCaseWrap from './CamelCaseWrap';
+import styles from './StatusIconAndText.module.css';
 
 const DASH = '-';
-
-const useStyles = makeStyles({
-  iconAndText: {
-    alignItems: 'baseline',
-    display: 'flex',
-    fontWeight: 400,
-    fontSize: '14px',
-  },
-
-  flexChild: {
-    flex: ' 0 0 auto',
-    position: 'relative',
-    top: '0.125em',
-  },
-});
 
 export const StatusIconAndText = ({
   icon,
@@ -54,7 +39,6 @@ export const StatusIconAndText = ({
   spin?: boolean;
   dataTestId?: string;
 }): ReactElement => {
-  const styles = useStyles();
   if (!title) {
     return <>{DASH}</>;
   }
@@ -71,20 +55,22 @@ export const StatusIconAndText = ({
   }
 
   return (
-    <Typography
+    <Text
+      as="span"
+      variant="body-small"
       className={classNames(styles.iconAndText, className)}
       data-testid={dataTestId ?? `icon-with-title-${title}`}
       title={title}
     >
-      {cloneElement(icon, {
-        className: classNames(
-          spin && 'fa-spin',
-          icon.props.className,
-          styles.flexChild,
-        ),
-      })}
-      <CamelCaseWrap value={title} dataTest="status-text" />
-    </Typography>
+      <span className={styles.iconSlot} aria-hidden>
+        {cloneElement(icon, {
+          className: classNames(spin && 'fa-spin', icon.props.className),
+        })}
+      </span>
+      <Text as="span" variant="body-small" className={styles.statusText}>
+        <CamelCaseWrap value={title} dataTest="status-text" />
+      </Text>
+    </Text>
   );
 };
 

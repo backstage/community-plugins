@@ -772,7 +772,7 @@ describe('JenkinsApi', () => {
         resourceRef,
         { credentials: await auth.getOwnServiceCredentials() },
       );
-      expect(status).toEqual(401);
+      expect(status).toEqual(403);
     });
   });
   describe('getJobBuilds', () => {

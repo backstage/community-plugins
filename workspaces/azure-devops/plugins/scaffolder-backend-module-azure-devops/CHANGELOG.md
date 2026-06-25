@@ -1,5 +1,24 @@
 # @backstage-community/plugin-scaffolder-backend-module-azure-devops
 
+## 0.25.0
+
+### Minor Changes
+
+- 9f8f870: Backstage version bump to v1.51.0
+- 5b83efb: Backstage version bump to v1.52.0
+
+## 0.24.1
+
+### Patch Changes
+
+- 0036704: Removed logging of `templateParameters` when executing `azure:pipeline:run`
+
+## 0.24.0
+
+### Minor Changes
+
+- f2f1e66: Backstage version bump to v1.50.2
+
 ## 0.23.0
 
 ### Minor Changes

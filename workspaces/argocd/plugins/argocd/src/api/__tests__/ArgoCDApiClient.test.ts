@@ -17,7 +17,11 @@ import { FetchApi } from '@backstage/core-plugin-api';
 import { mockApis } from '@backstage/test-utils';
 
 import { ArgoCDApiClient } from '..';
-import { mockApplication, multiSourceArgoApp } from '../../../dev/__data__';
+import {
+  mockApplication,
+  multiSourceArgoApp,
+  multiSourceHelmArgoApp,
+} from '../../../dev/__data__';
 
 describe('API calls', () => {
   const fetchMock = jest.fn();
@@ -419,6 +423,37 @@ describe('API calls', () => {
             'Content-Type': 'application/json',
           },
         }),
+      );
+    });
+
+    test('should skip revision metadata calls for Helm chart sources in multi-source apps', async () => {
+      const client = new ArgoCDApiClient({
+        discoveryApi,
+        fetchApi,
+        useNamespacedApps: false,
+      });
+
+      // Both the Helm chart version and the git SHA are in history
+      await client.getRevisionDetailsList({
+        apps: [multiSourceHelmArgoApp],
+        revisionIDs: ['1.0.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
+        appNamespace: '',
+      });
+
+      // The git SHA at sourceIndex=1 should be fetched
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://test.com/api/backstage-community-argocd/argoInstance/main/applications/name/helm-git-app/revisions/abc123def456ghi789jkl012mno345pqr678stu901/metadata?sourceIndex=1',
+        expect.objectContaining({
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }),
+      );
+
+      // The Helm chart version at sourceIndex=0 should NOT trigger a fetch
+      expect(fetchMock).not.toHaveBeenCalledWith(
+        expect.stringContaining('/revisions/1.0.0/metadata'),
+        expect.anything(),
       );
     });
   });

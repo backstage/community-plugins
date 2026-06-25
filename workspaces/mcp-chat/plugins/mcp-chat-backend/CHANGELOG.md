@@ -1,5 +1,32 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.11.0
+
+### Minor Changes
+
+- c43e80c: Add Azure OpenAI provider to support newer Azure OpenAI models like `gpt-5.1`.
+
+  This provider filters the models returned during the connection test to only show the status of the model of the configured deployment. It also uses `max_completion_tokens` correctly, fixing compatibility with newer models.
+
+## 0.10.0
+
+### Minor Changes
+
+- 8db17fe: Added support for max_tokens and temperature customization
+- 371fbad: Implement tool-level filtering using plugin configuration
+- 2cb7b1b: Add support for configuring MCP tool call timeout
+- 8db17fe: Added support for O-series and GPT-5 models
+
+### Patch Changes
+
+- 371fbad: Remove allowedTools from public MCPServerConfig API surface and improve disabledTools validation
+
+## 0.9.0
+
+### Minor Changes
+
+- 81aead2: Backstage version bump to v1.50.2
+
 ## 0.8.0
 
 ### Minor Changes

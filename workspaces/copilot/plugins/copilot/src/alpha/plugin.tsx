@@ -18,27 +18,25 @@ import { discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendPlugin,
-  NavItemBlueprint,
+  createRouteRef,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
-import { copilotApiRef, CopilotClient } from '../api';
-
 import {
-  compatWrapper,
-  convertLegacyRouteRef,
-  convertLegacyRouteRefs,
-} from '@backstage/core-compat-api';
+  copilotApiRef,
+  copilotApiV2Ref,
+  CopilotClient,
+  CopilotClientV2,
+} from '../api';
 
-import { SupportAgent as SupportAgentIcon } from '@mui/icons-material';
+import { compatWrapper } from '@backstage/core-compat-api';
 
-import {
-  copilotRouteRef,
-  enterpriseRouteRef,
-  organizationRouteRef,
-} from '../routes';
+import { RiCopilotLine as CopilotIcon } from '@remixicon/react';
+
+export const copilotRouteRef = createRouteRef();
 
 /** @alpha */
-export const copilotApi = ApiBlueprint.make({
+export const copilotLegacyApi = ApiBlueprint.make({
+  name: 'copilot-legacy',
   params: defineParams =>
     defineParams({
       api: copilotApiRef,
@@ -52,35 +50,38 @@ export const copilotApi = ApiBlueprint.make({
 });
 
 /** @alpha */
-export const copilotPage = PageBlueprint.make({
-  params: {
-    path: '/copilot',
-    routeRef: convertLegacyRouteRef(copilotRouteRef),
-    loader: () =>
-      import('../components/Pages').then(m =>
-        compatWrapper(<m.CopilotIndexPage />),
-      ),
-  },
+export const copilotApi = ApiBlueprint.make({
+  name: 'copilot',
+  params: defineParams =>
+    defineParams({
+      api: copilotApiV2Ref,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new CopilotClientV2({ discoveryApi, fetchApi }),
+    }),
 });
 
-/**
- * @alpha
- */
-export const copilotNavItem = NavItemBlueprint.make({
+/** @alpha */
+export const copilotPage = PageBlueprint.make({
+  name: 'copilot',
   params: {
-    title: 'Copilot',
-    routeRef: convertLegacyRouteRef(copilotRouteRef),
-    icon: SupportAgentIcon,
+    path: '/copilot',
+    title: 'Copilot Insights',
+    icon: <CopilotIcon />,
+    routeRef: copilotRouteRef,
+    loader: () =>
+      import('../components').then(m => compatWrapper(<m.CopilotIndexPage />)),
   },
 });
 
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'copilot',
-  extensions: [copilotApi, copilotPage, copilotNavItem],
-  routes: convertLegacyRouteRefs({
+  extensions: [copilotLegacyApi, copilotApi, copilotPage],
+  routes: {
     copilot: copilotRouteRef,
-    enterprise: enterpriseRouteRef,
-    organization: organizationRouteRef,
-  }),
+  },
 });

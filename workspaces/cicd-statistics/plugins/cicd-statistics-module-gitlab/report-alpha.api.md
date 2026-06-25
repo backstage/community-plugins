@@ -25,9 +25,7 @@ export const cicdStatisticsGitlabExtension: OverridableExtensionDefinition<{
   params: <
     TApi,
     TImpl extends TApi,
-    TDeps extends {
-      [x: string]: unknown;
-    },
+    TDeps extends { [name in string]: unknown },
   >(
     params: ApiFactory<TApi, TImpl, TDeps>,
   ) => ExtensionBlueprintParams<AnyApiFactory>;

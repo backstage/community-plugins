@@ -1,10 +1,21 @@
 # GitHub Pull Requests Board Plugin
 
+> [!Note]
+> Backstage UI (BUI) is now required for the GitHub Pull Requests Board plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 The GitHub Pull Requests Board Plugin helps to visualise all **Open Pull Requests** related to the owned team repository.
 
-![github-pull-requests-board](./docs/pull-requests-board.png)
-
 It will help you and your team stay on top of open pull requests, hopefully reducing the time from open to merged. It's particularly useful when your team deals with many repositories.
+
+## Screenshots
+
+### Card View
+
+![GitHub Pull Requests Board Card](docs/github-pull-requests-board-card.png)
+
+### Tab View
+
+![GitHub Pull Requests Board Tab](docs/github-pull-requests-board-tab.png)
 
 ## Prerequisites
 

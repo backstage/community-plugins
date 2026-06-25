@@ -87,6 +87,11 @@ describe('OllamaProvider', () => {
   });
 
   describe('sendMessage', () => {
+    const defaultChatOptions = {
+      model: 'llama2',
+      options: { temperature: 0.7, num_predict: 1000 },
+    };
+
     it('should send simple message without tools', async () => {
       const messages: ChatMessage[] = [
         { role: 'user', content: 'Hello, how are you?' },
@@ -109,7 +114,7 @@ describe('OllamaProvider', () => {
       const result = await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'user',
@@ -153,7 +158,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'user',
@@ -211,7 +216,7 @@ describe('OllamaProvider', () => {
       const result = await provider.sendMessage(messages, tools);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'user',
@@ -263,7 +268,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'assistant',
@@ -315,7 +320,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'assistant',
@@ -358,7 +363,7 @@ describe('OllamaProvider', () => {
       await provider.sendMessage(messages);
 
       expect(mockOllama.chat).toHaveBeenCalledWith({
-        model: 'llama2',
+        ...defaultChatOptions,
         messages: [
           {
             role: 'tool',

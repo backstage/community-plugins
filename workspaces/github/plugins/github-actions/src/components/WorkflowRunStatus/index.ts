@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { WorkflowRunStatus } from './WorkflowRunStatus';
+export { WorkflowRunStatus, WorkflowIcon } from './WorkflowRunStatus';

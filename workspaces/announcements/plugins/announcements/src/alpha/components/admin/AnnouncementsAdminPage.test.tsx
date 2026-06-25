@@ -50,12 +50,12 @@ describe('AnnouncementsAdminPage', () => {
       },
     });
 
-    // Check for breadcrumb link with href="/announcements"
-    const breadcrumbLink = screen.getByRole('link', {
-      name: 'Announcements',
-    });
-    expect(breadcrumbLink).toBeInTheDocument();
-    expect(breadcrumbLink).toHaveAttribute('href', '/announcements');
+    const breadcrumbLink = screen
+      .getAllByRole('link', { name: 'Announcements' })
+      .find(link => link.getAttribute('href') === '/announcements');
+
+    expect(breadcrumbLink).toBeDefined();
+    expect(breadcrumbLink?.getAttribute('href')).toBe('/announcements');
   });
 
   it('should render all tabs', async () => {

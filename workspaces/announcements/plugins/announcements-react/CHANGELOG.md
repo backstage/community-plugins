@@ -1,5 +1,38 @@
 # @backstage-community/plugin-announcements-react
 
+## 0.27.0
+
+### Minor Changes
+
+- fa4b770: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [fa4b770]
+  - @backstage-community/plugin-announcements-common@0.22.0
+
+## 0.26.0
+
+### Minor Changes
+
+- ea738a2: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [ea738a2]
+  - @backstage-community/plugin-announcements-common@0.21.0
+
+## 0.25.0
+
+### Minor Changes
+
+- 510c863: Backstage version bump to v1.50.2
+
+### Patch Changes
+
+- Updated dependencies [510c863]
+  - @backstage-community/plugin-announcements-common@0.20.0
+
 ## 0.24.0
 
 ### Minor Changes

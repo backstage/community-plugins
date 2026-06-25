@@ -25,7 +25,7 @@ import {
 import { CatalogIcon, Content, Header, Page } from '@backstage/core-components';
 
 import { GithubDiscussionsSearchResultListItem } from '@backstage-community/plugin-github-discussions';
-import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+import { RiDiscussLine } from '@remixicon/react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -65,7 +65,7 @@ const SearchPage = () => {
                 {
                   value: 'github-discussions',
                   name: 'GitHub Discussions',
-                  icon: <SpeakerNotesIcon />,
+                  icon: <RiDiscussLine />,
                 },
               ]}
             />

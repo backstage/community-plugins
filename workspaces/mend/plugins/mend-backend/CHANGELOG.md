@@ -1,5 +1,19 @@
 # @backstage-community/plugin-mend-backend
 
+## 2.0.0
+
+### Major Changes
+
+- 7b0afd3: Improved performance using Cache Service and removed unused Proxy API. The backend now requires the `mend.io/project-ids` annotation on entities.
+
+  **BREAKING CHANGE**: The Mend project mapping has changed from runtime resolution based on `backstage.io/source-location` to annotation-based lookup using `mend.io/project-ids`.
+
+  **Migration Required**: Install `@backstage-community/plugin-catalog-backend-module-mend-entity-processor` to automatically populate the `mend.io/project-ids` annotation on your entities based on their `backstage.io/source-location`.
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 1.1.1
 
 ### Patch Changes

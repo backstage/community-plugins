@@ -1,5 +1,11 @@
 # @backstage-community/plugin-azure-sites-common
 
+## 0.13.0
+
+### Minor Changes
+
+- 07f3ff6: Backstage version bump to v1.47.2
+
 ## 0.12.0
 
 ### Minor Changes

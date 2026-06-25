@@ -34,5 +34,6 @@ export const ProjectTable = ({
     tableDataLoading={projectDataLoading}
     tableTitle="Projects"
     totalTitle="Projects Overview"
+    useFullDataForStatistics
   />
 );

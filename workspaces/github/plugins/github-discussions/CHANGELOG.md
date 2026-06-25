@@ -1,5 +1,44 @@
 # @backstage-community/plugin-github-discussions
 
+## 1.2.0
+
+### Minor Changes
+
+- 7e98f23: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [7e98f23]
+  - @backstage-community/plugin-github-discussions-common@0.14.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 9a217cf: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [9a217cf]
+  - @backstage-community/plugin-github-discussions-common@0.13.0
+
+## 1.0.0
+
+### Major Changes
+
+- dc9bb36: **BREAKING** Migrated from Material UI (MUI) to Backstage UI (BUI). This means that Backstage UI is now a requirement for this plugin, see the Backstage UI [installation documentation](https://ui.backstage.io/get-started/installation) for more details.
+
+## 0.11.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
+### Patch Changes
+
+- Updated dependencies [df6b360]
+  - @backstage-community/plugin-github-discussions-common@0.12.0
+
 ## 0.10.0
 
 ### Minor Changes

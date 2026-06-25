@@ -627,7 +627,7 @@ describe('helper.ts', () => {
     const anyOfFilter: RBACFilters = {
       anyOf: [
         {
-          key: 'owner',
+          key: 'owners',
           values: ['user:default/some_user'],
         },
       ],
@@ -636,7 +636,7 @@ describe('helper.ts', () => {
     const allOfFilter: RBACFilters = {
       allOf: [
         {
-          key: 'owner',
+          key: 'owners',
           values: ['user:default/some_user'],
         },
       ],
@@ -644,7 +644,7 @@ describe('helper.ts', () => {
 
     const notFilter: RBACFilters = {
       not: {
-        key: 'owner',
+        key: 'owners',
         values: ['user:default/some_user'],
       },
     };
@@ -687,6 +687,21 @@ describe('helper.ts', () => {
 
     it('shoule return true with not filter where role owner does not match filter owner', () => {
       expect(matches(noMatchedRole, notFilter)).toBeTruthy();
+    });
+
+    it('should return true for default role regardless of owner filters', () => {
+      const defaultRole: RoleMetadata = {
+        isDefault: true,
+      };
+      expect(matches(defaultRole, anyOfFilter)).toBeTruthy();
+    });
+
+    it('should return false for unknown filter keys', () => {
+      const unknownKeyFilter: RBACFilters = {
+        key: 'unknown',
+        values: ['user:default/some_user'],
+      };
+      expect(matches(matchedRole, unknownKeyFilter)).toBeFalsy();
     });
   });
 });

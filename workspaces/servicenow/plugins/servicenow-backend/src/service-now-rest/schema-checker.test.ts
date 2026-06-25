@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { AxiosHeaders, type RawAxiosHeaders } from 'axios';
+
 import { ServiceNowSchemaChecker } from './schema-checker';
 import { ServiceNowConnection } from './connection';
 
@@ -49,47 +51,61 @@ describe('ServiceNowSchemaChecker', () => {
       expect(mockAxiosInstance.get).not.toHaveBeenCalled();
     });
 
-    it('should return true when all fields exist', async () => {
-      mockConnection.getAuthHeaders.mockResolvedValue({
-        Authorization: 'Bearer token',
-      });
+    const headerCases: {
+      name: string;
+      headers: AxiosHeaders | RawAxiosHeaders;
+    }[] = [
+      {
+        name: 'string header',
+        headers: { 'content-type': 'application/json' },
+      },
+      {
+        name: 'array header',
+        headers: AxiosHeaders.from({ 'content-type': 'application/json' }),
+      },
+    ];
 
-      mockAxiosInstance.get.mockResolvedValue({
-        status: 200,
-        headers: {
-          'content-type': 'application/json',
-        },
-        data: {
-          result: [
-            { element: 'u_backstage_entity_id' },
-            { element: 'u_service' },
-            { element: 'category' },
-          ],
-        },
-      });
+    headerCases.forEach(headerCase => {
+      it(`should return true when all fields exist with ${headerCase.name}`, async () => {
+        mockConnection.getAuthHeaders.mockResolvedValue({
+          Authorization: 'Bearer token',
+        });
 
-      const checker = new ServiceNowSchemaChecker(mockConnection);
-      const result = await checker.fieldExists(
-        'u_backstage_entity_id',
-        'u_service',
-        'category',
-      );
+        mockAxiosInstance.get.mockResolvedValue({
+          status: 200,
+          headers: headerCase.headers,
+          data: {
+            result: [
+              { element: 'u_backstage_entity_id' },
+              { element: 'u_service' },
+              { element: 'category' },
+            ],
+          },
+        });
 
-      expect(result).toBe(true);
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith(
-        expect.stringContaining('api/now/table/sys_dictionary'),
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            Authorization: 'Bearer token',
-            Accept: 'application/json',
+        const checker = new ServiceNowSchemaChecker(mockConnection);
+        const result = await checker.fieldExists(
+          'u_backstage_entity_id',
+          'u_service',
+          'category',
+        );
+
+        expect(result).toBe(true);
+        expect(mockAxiosInstance.get).toHaveBeenCalledWith(
+          expect.stringContaining('api/now/table/sys_dictionary'),
+          expect.objectContaining({
+            headers: expect.objectContaining({
+              Authorization: 'Bearer token',
+              Accept: 'application/json',
+            }),
+            params: expect.objectContaining({
+              sysparm_query: 'name=incident',
+              sysparm_fields: 'element',
+              sysparm_limit: 500,
+            }),
           }),
-          params: expect.objectContaining({
-            sysparm_query: 'name=incident',
-            sysparm_fields: 'element',
-            sysparm_limit: 500,
-          }),
-        }),
-      );
+        );
+      });
     });
 
     it('should return false when one or more fields do not exist', async () => {
@@ -199,24 +215,61 @@ describe('ServiceNowSchemaChecker', () => {
       );
     });
 
-    it('should throw error when response is not JSON', async () => {
-      mockConnection.getAuthHeaders.mockResolvedValue({
-        Authorization: 'Bearer token',
+    const headerCases: {
+      name: string;
+      headers: AxiosHeaders | RawAxiosHeaders;
+      errorMessage: string;
+    }[] = [
+      {
+        name: 'missing content-type header',
+        headers: {},
+        errorMessage:
+          'Failed to fetch incident schema: Expected JSON response but got Content-Type: undefined',
+      },
+      {
+        name: 'string header',
+        headers: { 'content-type': 'text/html' },
+        errorMessage:
+          'Failed to fetch incident schema: Expected JSON response but got Content-Type: text/html',
+      },
+      {
+        name: 'number header',
+        headers: { 'content-type': 123 },
+        errorMessage:
+          'Failed to fetch incident schema: ServiceNow API returned invalid JSON response',
+      },
+      {
+        name: 'array header',
+        headers: { 'content-type': ['text/html'] },
+        errorMessage:
+          'Failed to fetch incident schema: Expected JSON response but got Content-Type: text/html',
+      },
+      {
+        name: 'array header',
+        headers: AxiosHeaders.from({ 'content-type': 'text/html' }),
+        errorMessage:
+          'Failed to fetch incident schema: Expected JSON response but got Content-Type: text/html',
+      },
+    ];
+
+    headerCases.forEach(headerCase => {
+      it(`should throw error when response is not JSON (${headerCase.name})`, async () => {
+        mockConnection.getAuthHeaders.mockResolvedValue({
+          Authorization: 'Bearer token',
+        });
+
+        mockAxiosInstance.get.mockResolvedValue({
+          status: 200,
+          headers: headerCase.headers,
+          data: '<html>...</html>',
+        });
+
+        const checker = new ServiceNowSchemaChecker(mockConnection);
+
+        await expect(checker.fieldExists('field1')).rejects.toThrow(
+          headerCase.errorMessage,
+        );
       });
-
-      mockAxiosInstance.get.mockResolvedValue({
-        status: 200,
-        headers: {
-          'content-type': 'text/html',
-        },
-        data: '<html>...</html>',
-      });
-
-      const checker = new ServiceNowSchemaChecker(mockConnection);
-
-      await expect(checker.fieldExists('field1')).rejects.toThrow(
-        'Failed to fetch incident schema: Expected JSON response but got Content-Type: text/html',
-      );
     });
 
     it('should throw error when response data is invalid', async () => {

@@ -21,9 +21,6 @@ import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
 import { TestApiProvider } from '@backstage/test-utils';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 
-import Wifi from '@material-ui/icons/WifiSharp';
-import OfflineIcon from '@material-ui/icons/WifiOff';
-
 import { EntityTeamPullRequestsContent } from '../src';
 import { githubAuthApiRef } from '@backstage/frontend-plugin-api';
 
@@ -164,7 +161,6 @@ createDevApp()
       </TestApiProvider>
     ),
     title: 'Entity Todo Content',
-    icon: OfflineIcon,
   })
   .addPage({
     element: (
@@ -187,7 +183,6 @@ createDevApp()
       </TestApiProvider>
     ),
     title: 'Live Pull Requests Board',
-    icon: Wifi,
   })
 
   .render();

@@ -64,7 +64,7 @@ export const npmBackendApi = ApiBlueprint.make({
  *
  * @alpha
  */
-export const entityNpmInfoCard: any = EntityCardBlueprint.make({
+export const entityNpmInfoCard = EntityCardBlueprint.make({
   name: 'EntityNpmInfoCard',
   params: {
     filter: isNpmAvailable,
@@ -81,7 +81,7 @@ export const entityNpmInfoCard: any = EntityCardBlueprint.make({
  *
  * @alpha
  */
-export const entityNpmReleaseOverviewCard: any = EntityCardBlueprint.make({
+export const entityNpmReleaseOverviewCard = EntityCardBlueprint.make({
   name: 'EntityNpmReleaseOverviewCard',
   params: {
     filter: isNpmAvailable,
@@ -99,7 +99,7 @@ export const entityNpmReleaseOverviewCard: any = EntityCardBlueprint.make({
  *
  * @alpha
  */
-export const entityNpmReleaseTableCard: any = EntityContentBlueprint.make({
+export const entityNpmReleaseTableCard = EntityContentBlueprint.make({
   name: 'EntityNpmReleaseTableCard',
   params: {
     path: 'npm-releases',

@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import { Link } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
+import { Text, Flex, Link } from '@backstage/ui';
 import { DateTime } from 'luxon';
 import { Assignees } from './Assignees';
 import { CommentsCount } from './CommentsCount';
@@ -54,42 +49,81 @@ export const IssueCard = (props: IssueCardProps) => {
     commentsCount,
   } = props;
 
+  const handleCardClick = () => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
-    <Box marginBottom={1} data-testid={`issue-${url}`}>
-      <Paper variant="outlined">
-        <CardActionArea href={url} target="_blank">
-          <Box padding={1}>
-            <Box display="flex" justifyContent="space-between">
-              <Link to={`${url.substring(0, url.lastIndexOf('/'))}`}>
-                {repositoryName}
-              </Link>
-              <Assignees name={assigneeName} avatar={assigneeAvatar} />
-            </Box>
-            <Box>
-              <Typography component="h2">
-                <b>{title}</b>
-              </Typography>
-            </Box>
-            <Divider variant="middle" />
-            <Box display="flex" justifyContent="space-between">
-              <Box marginY={1}>
-                <Typography variant="body2" component="p">
-                  Created at: <strong>{getElapsedTime(createdAt)}</strong> by{' '}
-                  <strong>{authorName}</strong>
-                </Typography>
-                {updatedAt && (
-                  <Typography variant="body2" component="p">
-                    Last update at: <strong>{getElapsedTime(updatedAt)}</strong>
-                  </Typography>
-                )}
-              </Box>
-              {commentsCount > 0 && (
-                <CommentsCount commentsCount={commentsCount} />
-              )}
-            </Box>
-          </Box>
-        </CardActionArea>
-      </Paper>
-    </Box>
+    <div
+      style={{
+        marginBottom: 'var(--bui-space-2)',
+        border: '1px solid rgba(0, 0, 0, 0.12)',
+        borderRadius: '5px',
+        cursor: 'pointer',
+      }}
+      data-testid={`issue-${url}`}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+    >
+      <div style={{ padding: 'var(--bui-space-2)' }}>
+        <Flex justify="between">
+          <Link
+            href={`${url.substring(0, url.lastIndexOf('/'))}`}
+            target="_blank"
+            color="primary"
+            onClick={e => e.stopPropagation()}
+          >
+            {repositoryName}
+          </Link>
+          <Assignees name={assigneeName} avatar={assigneeAvatar} />
+        </Flex>
+        <div>
+          <Link
+            href={url}
+            target="_blank"
+            color="primary"
+            onClick={e => e.stopPropagation()}
+          >
+            <Text>
+              <b>{title}</b>
+            </Text>
+          </Link>
+        </div>
+        <Flex justify="between">
+          <div
+            style={{
+              marginTop: 'var(--bui-space-2)',
+              marginBottom: 'var(--bui-space-2)',
+            }}
+          >
+            <Text variant="body-small" style={{ display: 'block' }}>
+              Created at: <strong>{getElapsedTime(createdAt)}</strong> by{' '}
+              <strong>{authorName}</strong>
+            </Text>
+            {updatedAt && (
+              <Text
+                variant="body-small"
+                style={{
+                  display: 'block',
+                  marginTop: 'var(--bui-space-1)',
+                }}
+              >
+                Last update at: <strong>{getElapsedTime(updatedAt)}</strong>
+              </Text>
+            )}
+          </div>
+          {commentsCount > 0 && <CommentsCount commentsCount={commentsCount} />}
+        </Flex>
+      </div>
+    </div>
   );
 };

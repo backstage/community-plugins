@@ -47,6 +47,9 @@ catalog:
     - type: file
       target: ../../examples/mend-repos.yaml
 
+    - type: file
+      target: ../../examples/mend-performance-repos.yaml
+
     # Local example template
     - type: file
       target: ../../examples/template/template.yaml

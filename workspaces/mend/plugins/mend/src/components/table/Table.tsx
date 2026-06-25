@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { ReactElement, ReactNode, Ref } from 'react';
-import { useRef, forwardRef, useState, useMemo } from 'react';
+import { useRef, forwardRef, useState, useMemo, useEffect } from 'react';
 import {
   Table as TableBackstage,
   SelectItem,
@@ -24,11 +24,13 @@ import { useTheme } from '@mui/material/styles';
 import { ProjectFilterComponent } from './ProjectFilterComponent';
 import { Project, Finding, Statistics } from '../../models';
 import { TableMessage } from './TableMessage';
+import { BackendNotInstalledMessage } from './BackendNotInstalledMessage';
 import { TableHeader } from './TableHeader';
 import { TablePagination } from './TablePagination';
 import { tableBackstageIcons, TableIcon } from './table.icons';
 import { TableBar } from './TableBar';
 import { TablePaper } from './TablePaper';
+import { isMendBackendNotInstalled } from '../../utils';
 
 type MaterialTable = {
   dataManager?: {
@@ -74,7 +76,9 @@ type TableProps = {
   tableTitle: string;
   totalTitle: string;
   projectList?: Project[] | null;
-  selectedProject?: string | null;
+  selectedProjectId?: string | null;
+  onProjectChange?: (projectId: string) => void;
+  useFullDataForStatistics?: boolean;
 };
 
 export const Table = ({
@@ -89,41 +93,42 @@ export const Table = ({
   tableTitle,
   totalTitle,
   projectList = null,
-  selectedProject = null,
+  selectedProjectId = null,
+  onProjectChange,
+  useFullDataForStatistics = false,
 }: TableProps) => {
   const theme = useTheme();
   const tableRef = useRef<MaterialTable>(null);
 
-  const ALL_OPTION = useMemo(() => ({ label: 'All', value: '__ALL__' }), []);
-  const projectNameOptionsWithoutAll = projectList
-    ? projectList.map(d => ({ label: d.name, value: d.name }))
+  const projectOptions: SelectItem[] = projectList
+    ? projectList.map(d => ({ label: d.name, value: d.uuid }))
     : [];
-  const projectNameOptions: SelectItem[] = [
-    ALL_OPTION,
-    ...projectNameOptionsWithoutAll,
-  ];
-  const [projectNameFilter, setProjectNameFilter] = useState<string[]>([
-    selectedProject || ALL_OPTION.value,
-  ]);
+
+  const [projectIdFilter, setProjectIdFilter] = useState<string>('');
+
+  // Update filter when selectedProjectId or projectList changes
+  useEffect(() => {
+    const defaultProjectId =
+      selectedProjectId ?? (projectList?.[0]?.uuid || '');
+    setProjectIdFilter(defaultProjectId);
+  }, [selectedProjectId, projectList]);
+
+  // Handle project filter change
+  const handleProjectFilterChange = (newProjectId: string) => {
+    setProjectIdFilter(newProjectId);
+    if (onProjectChange) {
+      onProjectChange(newProjectId);
+    }
+  };
 
   const filteredData = useMemo(() => {
     let data = tableData;
 
-    if (
-      projectNameFilter.length > 0 &&
-      !projectNameFilter.includes(ALL_OPTION.value)
-    ) {
+    // Filter by selected project if a project is selected
+    if (projectIdFilter) {
       data = tableData.filter(row => {
-        // Filter by Project Name multi-select
-        const projectName = (row as any).projectName;
-        if (
-          projectNameFilter.length > 0 &&
-          !projectNameFilter.includes(projectName)
-        ) {
-          return false;
-        }
-
-        return true;
+        const projectId = (row as any).projectId;
+        return projectId === projectIdFilter;
       });
     }
 
@@ -132,7 +137,7 @@ export const Table = ({
       ...row,
       id: (row as any).uuid || `row-${index}`,
     }));
-  }, [tableData, ALL_OPTION, projectNameFilter]);
+  }, [tableData, projectIdFilter]);
 
   return (
     <TableBackstage
@@ -140,6 +145,11 @@ export const Table = ({
         body: {
           emptyDataSourceMessage: tableDataError ? (
             (() => {
+              // Check if backend plugin is not installed
+              if (isMendBackendNotInstalled(tableDataError)) {
+                return <BackendNotInstalledMessage />;
+              }
+
               const errorStatus = (tableDataError as any).status;
               let icon = TableIcon.ERROR;
               let title = 'Oops! Something Went Wrong';
@@ -227,20 +237,24 @@ export const Table = ({
         ),
         // NOTE: This component contain search/filter input and total statistics rendered at the top of page.
         Toolbar: props => {
+          // Use full dataset for statistics if useFullDataForStatistics is true (for Overview page)
+          // Otherwise use filtered/sorted data (for entity-specific pages)
+          const statisticsData = useFullDataForStatistics
+            ? tableData
+            : tableRef.current?.dataManager?.sortedData;
           return (
             <TableHeader
               clientName={clientName}
-              data={getStatistics(tableRef.current?.dataManager?.sortedData)}
+              data={getStatistics(statisticsData as (Project | Finding)[])}
               dataLoading={tableDataLoading}
               headerTitle={headerTitle}
               toolbar={props}
               ProjectFilterComponent={() => (
                 <ProjectFilterComponent
                   projectList={projectList}
-                  projectNameFilter={projectNameFilter}
-                  setProjectNameFilter={setProjectNameFilter}
-                  projectNameOptions={projectNameOptions}
-                  ALL_OPTION={ALL_OPTION}
+                  projectIdFilter={projectIdFilter}
+                  setProjectIdFilter={handleProjectFilterChange}
+                  projectOptions={projectOptions}
                 />
               )}
               totalTitle={totalTitle}

@@ -36,23 +36,6 @@ type PathParams = {
   uuid: string;
 };
 
-export type GetOrganizationProjectRequestData = {
-  queryParams?: PaginationQueryParams;
-};
-
-export type OrganizationProjectSuccessResponseData = {
-  uuid: string;
-  name: string;
-  path: string;
-  applicationName: string;
-  applicationUuid: string;
-};
-
-export type GetOrganizationProjectSuccessResponseData = {
-  supportToken: string;
-  response: OrganizationProjectSuccessResponseData[];
-} & PaginationSuccessResponseData;
-
 export type GetProjectStatisticsRequestData = {
   queryParams?: PaginationQueryParams;
   bodyParams?: BodyParams;
@@ -193,7 +176,6 @@ export type Project = {
   statistics: Statistics;
   uuid: string;
   name: string;
-  path: string;
   applicationName: string;
   applicationUuid: string;
   lastScan: number;

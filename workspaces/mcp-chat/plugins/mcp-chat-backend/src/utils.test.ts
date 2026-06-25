@@ -310,6 +310,49 @@ describe('Utils', () => {
 
       expect(() => validateConfig(mockConfig)).not.toThrow();
     });
+
+    it('should throw when toolCallTimeout is 0', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            toolCallTimeout: 0,
+          },
+        },
+      });
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'mcpChat.toolCallTimeout must be a strictly positive number, got: 0',
+      );
+    });
+
+    it('should throw when toolCallTimeout is negative', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            toolCallTimeout: -1000,
+          },
+        },
+      });
+
+      expect(() => validateConfig(mockConfig)).toThrow(
+        'mcpChat.toolCallTimeout must be a strictly positive number, got: -1000',
+      );
+    });
+
+    it('should pass when toolCallTimeout is a positive number', () => {
+      const mockConfig = mockServices.rootConfig({
+        data: {
+          mcpChat: {
+            providers: [{ id: 'test' }],
+            toolCallTimeout: 30000,
+          },
+        },
+      });
+
+      expect(() => validateConfig(mockConfig)).not.toThrow();
+    });
   });
 
   describe('validateMessages', () => {
@@ -718,6 +761,52 @@ describe('Utils', () => {
         executeToolCall(toolCall, mockTools, mockClients),
       ).rejects.toThrow('Tool execution failed');
     });
+
+    it('should forward the provided toolCallTimeout to client.callTool', async () => {
+      const toolCall = {
+        id: 'call_123',
+        type: 'function' as const,
+        function: {
+          name: 'test_tool',
+          arguments: JSON.stringify({ param: 'value' }),
+        },
+      };
+
+      mockClient.callTool.mockResolvedValue({
+        content: [{ type: 'text', text: 'ok' }],
+      });
+
+      await executeToolCall(toolCall, mockTools, mockClients, 30000);
+
+      expect(mockClient.callTool).toHaveBeenCalledWith(
+        { name: 'test_tool', arguments: { param: 'value' } },
+        undefined,
+        { timeout: 30000 },
+      );
+    });
+
+    it('should use 60000ms as the default timeout when toolCallTimeout is omitted', async () => {
+      const toolCall = {
+        id: 'call_123',
+        type: 'function' as const,
+        function: {
+          name: 'test_tool',
+          arguments: JSON.stringify({ param: 'value' }),
+        },
+      };
+
+      mockClient.callTool.mockResolvedValue({
+        content: [{ type: 'text', text: 'ok' }],
+      });
+
+      await executeToolCall(toolCall, mockTools, mockClients);
+
+      expect(mockClient.callTool).toHaveBeenCalledWith(
+        { name: 'test_tool', arguments: { param: 'value' } },
+        undefined,
+        { timeout: 60000 },
+      );
+    });
   });
 
   describe('validateConfig - systemPrompt validation', () => {
@@ -758,6 +847,7 @@ describe('Utils', () => {
           }
           return undefined;
         }),
+        getOptionalNumber: jest.fn(),
       } as any;
 
       expect(() => validateConfig(mockConfig)).not.toThrow();
@@ -800,6 +890,7 @@ describe('Utils', () => {
           }
           return undefined;
         }),
+        getOptionalNumber: jest.fn(),
       } as any;
 
       expect(() => validateConfig(mockConfig)).not.toThrow();
@@ -842,6 +933,7 @@ describe('Utils', () => {
           }
           return undefined;
         }),
+        getOptionalNumber: jest.fn(),
       } as any;
 
       expect(() => validateConfig(mockConfig)).toThrow(
@@ -886,6 +978,7 @@ describe('Utils', () => {
           }
           return undefined;
         }),
+        getOptionalNumber: jest.fn(),
       } as any;
 
       expect(() => validateConfig(mockConfig)).toThrow(
@@ -930,6 +1023,7 @@ describe('Utils', () => {
           }
           return undefined;
         }),
+        getOptionalNumber: jest.fn(),
       } as any;
 
       expect(() => validateConfig(mockConfig)).toThrow(

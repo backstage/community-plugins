@@ -14,6 +14,21 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 // @public
+export class AzureOpenAIProvider extends OpenAIProvider {
+  constructor(config: ProviderConfig);
+  // (undocumented)
+  protected formatRequest(messages: ChatMessage[], tools?: Tool[]): any;
+  // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
+  testConnection(): Promise<{
+    connected: boolean;
+    models?: string[];
+    error?: string;
+  }>;
+}
+
+// @public
 export class ChatConversationStore {
   static create(
     options: ChatConversationStoreOptions,
@@ -108,10 +123,14 @@ export interface ConversationRecord {
 export function createRouter(options: RouterOptions): Promise<express.Router>;
 
 // @public
+export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 60000;
+
+// @public
 export function executeToolCall(
   toolCall: ToolCall,
   tools: ServerTool[],
   mcpClients: Map<string, Client>,
+  toolCallTimeout?: number,
 ): Promise<ToolExecutionResult>;
 
 // @public
@@ -141,6 +160,7 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig;
 
 // @public
 export function getProviderInfo(config: RootConfigService): {
+  deploymentName?: string | undefined;
   provider: string;
   model: string;
   baseURL: string;
@@ -183,6 +203,8 @@ export abstract class LLMProvider {
   // (undocumented)
   protected makeRequest(endpoint: string, body: any): Promise<any>;
   // (undocumented)
+  protected maxTokens?: number;
+  // (undocumented)
   protected model: string;
   // (undocumented)
   protected abstract parseResponse(response: any): ChatResponse;
@@ -191,6 +213,8 @@ export abstract class LLMProvider {
     messages: ChatMessage[],
     tools?: Tool[],
   ): Promise<ChatResponse>;
+  // (undocumented)
+  protected temperature?: number;
   // (undocumented)
   abstract testConnection(): Promise<{
     connected: boolean;
@@ -207,6 +231,7 @@ export abstract class LLMProvider {
 export type LLMProviderType =
   | 'openai'
   | 'openai-responses'
+  | 'azure-openai'
   | 'claude'
   | 'gemini'
   | 'ollama'
@@ -269,6 +294,7 @@ export type MCPServer = MCPServerConfig & {
 // @public
 export interface MCPServerConfig {
   args?: string[];
+  disabledTools?: string[];
   id: string;
   name: string;
   npxCommand?: string;
@@ -337,6 +363,8 @@ export class OpenAIProvider extends LLMProvider {
   // (undocumented)
   protected parseResponse(response: any): ChatResponse;
   // (undocumented)
+  protected get providerName(): string;
+  // (undocumented)
   sendMessage(messages: ChatMessage[], tools?: Tool[]): Promise<ChatResponse>;
   // (undocumented)
   testConnection(): Promise<{
@@ -359,7 +387,10 @@ export class OpenAIResponsesProvider extends LLMProvider {
   protected parseResponse(response: ResponsesApiResponse): ChatResponse;
   // (undocumented)
   sendMessage(messages: ChatMessage[], _tools?: Tool[]): Promise<ChatResponse>;
-  setMcpServerConfigs(configs: MCPServerFullConfig[]): void;
+  setMcpServerConfigs(
+    configs: MCPServerFullConfig[],
+    allowedToolsByServer?: Map<string, string[]>,
+  ): void;
   // (undocumented)
   testConnection(): Promise<{
     connected: boolean;
@@ -372,8 +403,11 @@ export class OpenAIResponsesProvider extends LLMProvider {
 export interface ProviderConfig {
   apiKey?: string;
   baseUrl: string;
+  deploymentName?: string;
   logger?: LoggerService;
+  maxTokens?: number;
   model: string;
+  temperature?: number;
   type: string;
 }
 

@@ -20,9 +20,7 @@ import { TechInsightsApi } from '@backstage-community/plugin-tech-insights-react
 import { TechInsightsClient } from '@backstage-community/plugin-tech-insights-react';
 
 // @public (undocumented)
-export const EntityMaturityRankWidget: ({
-  entity,
-}: {
+export const EntityMaturityRankWidget: (input: {
   entity: Entity;
 }) => JSX_2.Element;
 
@@ -58,6 +56,7 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     catalogApi: CatalogApi;
+    enableCompoundEntityCheck?: boolean;
   });
   // (undocumented)
   readonly catalogApi: CatalogApi;

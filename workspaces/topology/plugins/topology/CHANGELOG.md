@@ -1,5 +1,29 @@
 # @backstage-community/plugin-topology
 
+## 2.14.0
+
+### Minor Changes
+
+- e68c41c: Backstage version bump to v1.51.0
+
+## 2.13.0
+
+### Minor Changes
+
+- edaf521: Backstage version bump to v1.50.4
+
+## 2.12.3
+
+### Patch Changes
+
+- 790e405: Fix pod status icon and label alignment in Pods table
+
+## 2.12.2
+
+### Patch Changes
+
+- daac56e: Migrate to Jest 30
+
 ## 2.12.1
 
 ### Patch Changes

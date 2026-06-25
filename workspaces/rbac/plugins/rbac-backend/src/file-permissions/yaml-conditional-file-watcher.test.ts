@@ -29,7 +29,11 @@ import {
 } from '../database/role-metadata';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { YamlConditinalPoliciesFileWatcher } from './yaml-conditional-file-watcher'; // Adjust the import path as necessary
+import {
+  resolveConditionalPoliciesFileLimits,
+  YamlConditionalPoliciesFileWatcher,
+} from './yaml-conditional-file-watcher';
+import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
 import {
@@ -37,7 +41,7 @@ import {
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 import { JsonObject } from '@backstage/types';
-import { NotFoundError } from '@backstage/errors';
+import { InputError, NotFoundError } from '@backstage/errors';
 
 const mockLoggerService = mockServices.logger.mock();
 
@@ -228,8 +232,10 @@ describe('YamlConditionalFileWatcher', () => {
     jest.clearAllMocks();
   });
 
-  function createWatcher(filePath?: string): YamlConditinalPoliciesFileWatcher {
-    return new YamlConditinalPoliciesFileWatcher(
+  function createWatcher(
+    filePath?: string,
+  ): YamlConditionalPoliciesFileWatcher {
+    return new YamlConditionalPoliciesFileWatcher(
       filePath,
       false,
       mockLoggerService,
@@ -239,8 +245,74 @@ describe('YamlConditionalFileWatcher', () => {
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       roleEventEmitterMock,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
     );
   }
+
+  function createWatcherWithLimits(
+    filePath: string | undefined,
+    maxBytes: number,
+    maxDocuments: number,
+  ): YamlConditionalPoliciesFileWatcher {
+    return new YamlConditionalPoliciesFileWatcher(
+      filePath,
+      false,
+      mockLoggerService,
+      conditionalStorageMock as DataBaseConditionalStorage,
+      mockAuditorService,
+      mockAuthService,
+      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+      roleMetadataStorageMock,
+      roleEventEmitterMock,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
+      {
+        maxBytes,
+        maxDocuments,
+      },
+    );
+  }
+
+  describe('conditional policies file limit validation', () => {
+    it('throws InputError when maxBytes is zero', () => {
+      expect(() => createWatcherWithLimits(csvFileName, 0, 256)).toThrow(
+        InputError,
+      );
+      expect(() => createWatcherWithLimits(csvFileName, 0, 256)).toThrow(
+        `'maxBytes' must be a positive integer for conditional policies file validation`,
+      );
+    });
+
+    it('throws InputError when maxDocuments is zero', () => {
+      expect(() => createWatcherWithLimits(csvFileName, 1024, 0)).toThrow(
+        InputError,
+      );
+      expect(() => createWatcherWithLimits(csvFileName, 1024, 0)).toThrow(
+        `'maxDocuments' must be a positive integer for conditional policies file validation`,
+      );
+    });
+
+    it('throws InputError when maxBytes is not an integer', () => {
+      expect(() => createWatcherWithLimits(csvFileName, 1024.5, 10)).toThrow(
+        InputError,
+      );
+    });
+
+    it('includes config key path in InputError when provided', () => {
+      expect(() =>
+        resolveConditionalPoliciesFileLimits(
+          { maxBytes: 0 },
+          {
+            maxBytes:
+              'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
+            maxDocuments:
+              'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
+          },
+        ),
+      ).toThrow(
+        `'permission.rbac.validation.conditionalPoliciesFile.maxBytes' must be a positive integer for conditional policies file validation`,
+      );
+    });
+  });
 
   test('handles errors for invalid file paths', async () => {
     const invalidFilePath = 'invalid-file-path.yaml';
@@ -267,8 +339,100 @@ describe('YamlConditionalFileWatcher', () => {
       {
         event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
         fail: {
-          error: new Error(
+          error: new InputError(
             `'roleEntityRef' must be specified in the role condition`,
+          ),
+        },
+      },
+    ]);
+  });
+
+  test('handles error when yaml conditional policies file exceeds max size', async () => {
+    const watcher = createWatcher(csvFileName);
+    jest
+      .spyOn(watcher, 'getCurrentContents')
+      .mockReturnValue('x'.repeat(1024 * 1024 + 1));
+
+    await watcher.onChange();
+
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new InputError(
+            'conditional policies file exceeds maximum size of 1048576 bytes',
+          ),
+        },
+      },
+    ]);
+  });
+
+  test('handles error when yaml conditional policies exceeds max documents', async () => {
+    const watcher = createWatcher(csvFileName);
+    const conditionalPolicyDocument = [
+      'result: CONDITIONAL',
+      'roleEntityRef: role:default/test',
+      'pluginId: catalog',
+      'resourceType: catalog-entity',
+      'permissionMapping:',
+      '  - read',
+      'conditions:',
+      '  rule: IS_ENTITY_OWNER',
+      '  resourceType: catalog-entity',
+      '  params:',
+      '    claims:',
+      '      - group:default/team-a',
+    ].join('\n');
+    const yamlDocument = Array.from(
+      { length: 257 },
+      () => conditionalPolicyDocument,
+    ).join('\n---\n');
+    jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(yamlDocument);
+
+    await watcher.onChange();
+
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new InputError(
+            'conditional policies file exceeds maximum of 256 YAML documents',
+          ),
+        },
+      },
+    ]);
+  });
+
+  test('handles error when configured yaml document limit is exceeded', async () => {
+    const watcher = createWatcherWithLimits(csvFileName, 1024 * 1024, 1);
+    const conditionalPolicyDocument = [
+      'result: CONDITIONAL',
+      'roleEntityRef: role:default/test',
+      'pluginId: catalog',
+      'resourceType: catalog-entity',
+      'permissionMapping:',
+      '  - read',
+      'conditions:',
+      '  rule: IS_ENTITY_OWNER',
+      '  resourceType: catalog-entity',
+      '  params:',
+      '    claims:',
+      '      - group:default/team-a',
+    ].join('\n');
+    const yamlDocument = [
+      conditionalPolicyDocument,
+      conditionalPolicyDocument,
+    ].join('\n---\n');
+    jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(yamlDocument);
+
+    await watcher.onChange();
+
+    expectAuditorLog([
+      {
+        event: { eventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE },
+        fail: {
+          error: new InputError(
+            'conditional policies file exceeds maximum of 1 YAML documents',
           ),
         },
       },

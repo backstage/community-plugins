@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { z } from 'zod';
 import {
   ApiBlueprint,
   createExtensionBlueprint,
@@ -86,12 +87,10 @@ const graphiqlGitlabGraphiQLEndpointExtension =
   GraphiQLEndpointBlueprint.makeWithOverrides({
     name: 'gitlab',
     disabled: true,
-    config: {
-      schema: {
-        id: z => z.string().default('gitlab'),
-        title: z => z.string().default('GitLab'),
-        url: z => z.string().default('https://gitlab.com/api/graphql'),
-      },
+    configSchema: {
+      id: z.string().default('gitlab'),
+      title: z.string().default('GitLab'),
+      url: z.string().default('https://gitlab.com/api/graphql'),
     },
 
     factory: (originalFactory, { config }) =>

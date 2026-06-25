@@ -6,14 +6,12 @@
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { TableColumn } from '@backstage/core-components';
 
 // @public (undocumented)
 export const EntityGithubDeploymentsCard: (props: {
   environments?: string[];
   last?: number;
   lastStatuses?: number;
-  columns?: TableColumn<GithubDeployment>[];
 }) => JSX_2.Element;
 
 // @public (undocumented)
@@ -44,22 +42,11 @@ export type GithubDeployment = {
 export const githubDeploymentsPlugin: BackstagePlugin<{}, {}, {}>;
 
 // @public (undocumented)
-export const GithubDeploymentsTable: {
-  (props: {
-    deployments: GithubDeployment[];
-    isLoading: boolean;
-    reload: () => void;
-    columns: TableColumn<GithubDeployment>[];
-  }): JSX_2.Element;
-  columns: Readonly<{
-    createEnvironmentColumn(): TableColumn<GithubDeployment>;
-    createStatusColumn(): TableColumn<GithubDeployment>;
-    createCommitColumn(): TableColumn<GithubDeployment>;
-    createCreatorColumn(): TableColumn<GithubDeployment>;
-    createLastUpdatedColumn(): TableColumn<GithubDeployment>;
-  }>;
-  defaultDeploymentColumns: TableColumn<GithubDeployment>[];
-};
+export const GithubDeploymentsTable: (props: {
+  deployments: GithubDeployment[];
+  isLoading: boolean;
+  reload: () => void;
+}) => JSX_2.Element;
 
 // @public (undocumented)
 export const isGithubDeploymentsAvailable: (entity: Entity) => boolean;

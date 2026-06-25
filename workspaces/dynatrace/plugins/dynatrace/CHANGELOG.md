@@ -1,5 +1,35 @@
 # @backstage-community/plugin-dynatrace
 
+## 10.21.0
+
+### Minor Changes
+
+- a38d1cb: Backstage version bump to v1.52.0
+
+## 10.20.0
+
+### Minor Changes
+
+- 34ae5c0: Backstage version bump to v1.51.1
+
+## 10.19.1
+
+### Patch Changes
+
+- 7922e56: Removed duplicate `@backstage/plugin-catalog-react` peer dependency
+
+## 10.19.0
+
+### Minor Changes
+
+- c7ab6f2: Added support for the new frontend system via the `./alpha` entrypoint.
+
+## 10.18.0
+
+### Minor Changes
+
+- 7b15e77: Backstage version bump to v1.50.2
+
 ## 10.17.0
 
 ### Minor Changes

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
-import { Entity } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
@@ -23,40 +24,39 @@ import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { quayApiRef, QuayApiV1, QuayInstanceConfig } from '../src/api';
 import { QuayPage, quayPlugin } from '../src/plugin';
+import { mockQuayEntity, mockQuayInstanceDevelEntity } from './__data__/entity';
 import { labels } from './__data__/labels';
 import { manifestDigest } from './__data__/manifest_digest';
 import {
+  digestSecurityDetails,
   securityDetails,
   v1securityDetails,
-  v2securityDetails,
-  v3securityDetails,
-  v4securityDetails,
 } from './__data__/security_vulnerabilities';
 import { tags } from './__data__/tags';
 
-const mockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage',
-    description: 'backstage.io',
-    annotations: {
-      'quay.io/repository-slug': 'backstage-test/test-images',
-    },
-  },
-  spec: {
-    lifecycle: 'production',
-    type: 'service',
-    owner: 'user:guest',
-  },
-};
-
 export class MockQuayApiClient implements QuayApiV1 {
-  getQuayInstance(_?: string): QuayInstanceConfig | undefined {
+  getQuayInstance(instanceName?: string): QuayInstanceConfig | undefined {
+    if (instanceName === 'devel') {
+      return { name: 'devel', apiUrl: 'https://quay-devel.io' };
+    }
+
     return { name: 'default', apiUrl: 'https://quay.io' };
   }
 
-  async getTags() {
+  async getTags(instanceName?: string) {
+    if (instanceName === 'devel') {
+      return {
+        tags: [
+          {
+            ...tags.tags[0],
+            name: 'v5-devel-only',
+          },
+        ],
+        page: 1,
+        has_additional: false,
+      };
+    }
+
     return tags;
   }
 
@@ -68,35 +68,17 @@ export class MockQuayApiClient implements QuayApiV1 {
     return manifestDigest;
   }
 
-  async getSecurityDetails(_: string, __: string, ___: string, digest: string) {
-    if (
-      digest ===
-      'sha256:79c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775d'
-    ) {
-      return v3securityDetails;
+  async getSecurityDetails(
+    instanceName: string | undefined,
+    _: string,
+    __: string,
+    digest: string,
+  ) {
+    if (instanceName === 'devel') {
+      return { ...v1securityDetails };
     }
 
-    if (
-      digest ===
-      'sha256:89c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775e'
-    ) {
-      return v2securityDetails;
-    }
-    if (
-      digest ===
-      'sha256:99c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775f'
-    ) {
-      return v1securityDetails;
-    }
-
-    if (
-      digest ===
-      'sha256:29c96c750aa532d92d9cb56cad59159b7cc26b10e39ff4a895c28345d2cd775d'
-    ) {
-      return v4securityDetails;
-    }
-
-    return securityDetails;
+    return digestSecurityDetails[digest] ?? securityDetails;
   }
 }
 
@@ -110,12 +92,31 @@ createDevApp()
           [permissionApiRef, mockApis.permission()],
         ]}
       >
-        <EntityProvider entity={mockEntity}>
+        <EntityProvider entity={mockQuayEntity}>
           <QuayPage />
         </EntityProvider>
       </TestApiProvider>
     ),
     title: 'Root Page',
     path: '/quay',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [quayApiRef, new MockQuayApiClient()],
+          [permissionApiRef, mockApis.permission()],
+        ]}
+      >
+        <EntityProvider
+          key="multi-instance"
+          entity={mockQuayInstanceDevelEntity}
+        >
+          <QuayPage />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Multi-instance',
+    path: '/quay/multi-instance',
   })
   .render();

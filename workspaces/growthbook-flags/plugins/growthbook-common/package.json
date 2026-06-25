@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-growthbook-common",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Common types for the GrowthBook feature flags plugin",
   "backstage": {
     "role": "common-library",

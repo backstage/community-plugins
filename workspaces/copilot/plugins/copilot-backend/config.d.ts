@@ -38,5 +38,24 @@ export interface Config {
      * The host for GitHub Copilot integration.
      */
     host: string;
+    /**
+     * Earliest date to ingest for v2. Must be >= '2025-10-10' (GitHub API limit).
+     * On first run the task backfills every calendar day from this date to yesterday.
+     * @default '2025-10-10'
+     */
+    backfillFromDate?: string;
+    /**
+     * Milliseconds to wait between per-day requests during backfill.
+     * Increase if you encounter GitHub API rate limits.
+     * @default 200
+     */
+    backfillDelayMs?: number;
+    /**
+     * Opt-in to ingesting per-user and team membership metrics (users-1-day and
+     * user-teams-1-day reports). Required for team-level filtering in the UI.
+     * Increases storage and ingestion time.
+     * @default false
+     */
+    ingestTeams?: boolean;
   };
 }

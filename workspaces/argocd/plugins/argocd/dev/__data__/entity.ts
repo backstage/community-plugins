@@ -25,7 +25,7 @@ export const mockEntity: Entity = {
       'argocd/app-selector':
         'rht-gitops.com/janus-argocd=quarkus-app-bootstrap',
       'argocd/project-name': 'project-name',
-      'argocd/instance-name': 'instance-1',
+      'argocd/instance-name': 'main',
       'backstage.io/kubernetes-id': 'quarkus-app',
     },
   },
@@ -33,5 +33,44 @@ export const mockEntity: Entity = {
     lifecycle: 'production',
     type: 'service',
     owner: 'user:guest',
+  },
+};
+
+export const mockArgoMultiInstanceSelectorEntity: Entity = {
+  ...mockEntity,
+  metadata: {
+    name: 'backstage-argocd-multi-selector',
+    description: 'argocd plugin multi-instance selector',
+    annotations: {
+      'argocd/app-selector':
+        'rht-gitops.com/janus-argocd=quarkus-app-bootstrap',
+      'argocd/instance-name': 'argoInstance1,argoInstance2',
+      'backstage.io/kubernetes-id': 'quarkus-app',
+    },
+  },
+};
+
+export const mockArgoMultiInstanceAppNameEntity: Entity = {
+  ...mockEntity,
+  metadata: {
+    name: 'backstage-argocd-multi-app-name',
+    description: 'argocd plugin multi-instance app name',
+    annotations: {
+      'argocd/app-name': 'quarkus-app',
+      'argocd/instance-name': 'argoInstance1,argoInstance2',
+      'backstage.io/kubernetes-id': 'quarkus-app',
+    },
+  },
+};
+
+export const mockArgoOneAppEntity: Entity = {
+  ...mockEntity,
+  metadata: {
+    name: 'backstage-argocd-multi-one-app-name',
+    description: 'argocd plugin multi-instance one app name',
+    annotations: {
+      'argocd/app-name': 'basic-app',
+      'backstage.io/kubernetes-id': 'basic-app',
+    },
   },
 };

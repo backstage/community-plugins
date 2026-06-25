@@ -1,5 +1,33 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.17.0
+
+### Minor Changes
+
+- 6a61be0: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [6a61be0]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.15.0
+
+## 0.16.0
+
+### Minor Changes
+
+- 7d45b9d: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [7d45b9d]
+  - @backstage-community/plugin-multi-source-security-viewer-common@0.14.0
+
+## 0.15.3
+
+### Patch Changes
+
+- 58cda68: Updated dependency `@immobiliarelabs/backstage-plugin-gitlab` to `^7.0.0`.
+
 ## 0.15.2
 
 ### Patch Changes

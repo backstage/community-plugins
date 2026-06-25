@@ -18,6 +18,7 @@ import type {
   AuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
 
 import yaml from 'js-yaml';
 import { omit } from 'lodash';
@@ -35,7 +36,10 @@ import { RoleMetadataStorage } from '../database/role-metadata';
 import { deepSortEqual, processConditionMapping } from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
-import { validateRoleCondition } from '../validation/condition-validation';
+import {
+  type ConditionValidationLimits,
+  validateRoleCondition,
+} from '../validation/condition-validation';
 import { AbstractFileWatcher } from './file-watcher';
 
 type ConditionalPoliciesDiff = {
@@ -43,10 +47,63 @@ type ConditionalPoliciesDiff = {
   removedConditions: RoleConditionalPolicyDecision<PermissionAction>[];
 };
 
-export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
+export type ConditionalPoliciesFileLimits = {
+  maxBytes: number;
+  maxDocuments: number;
+};
+
+export const DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS: ConditionalPoliciesFileLimits =
+  {
+    maxBytes: 1024 * 1024,
+    maxDocuments: 256,
+  };
+
+function assertPositiveIntegerConditionalPoliciesFileLimit(
+  value: number,
+  fieldRef: string,
+): void {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new InputError(
+      `'${fieldRef}' must be a positive integer for conditional policies file validation`,
+    );
+  }
+}
+
+/**
+ * Merges optional overrides with defaults and validates both limits are positive integers.
+ */
+export function resolveConditionalPoliciesFileLimits(
+  partial: Partial<ConditionalPoliciesFileLimits> = {},
+  errorFieldRefs?: {
+    maxBytes: string;
+    maxDocuments: string;
+  },
+): ConditionalPoliciesFileLimits {
+  const resolved: ConditionalPoliciesFileLimits = {
+    maxBytes:
+      partial.maxBytes ?? DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxBytes,
+    maxDocuments:
+      partial.maxDocuments ??
+      DEFAULT_CONDITIONAL_POLICIES_FILE_LIMITS.maxDocuments,
+  };
+  assertPositiveIntegerConditionalPoliciesFileLimit(
+    resolved.maxBytes,
+    errorFieldRefs?.maxBytes ?? 'maxBytes',
+  );
+  assertPositiveIntegerConditionalPoliciesFileLimit(
+    resolved.maxDocuments,
+    errorFieldRefs?.maxDocuments ?? 'maxDocuments',
+  );
+  return resolved;
+}
+
+export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   RoleConditionalPolicyDecision<PermissionAction>[]
 > {
   private conditionsDiff: ConditionalPoliciesDiff;
+  private readonly maxFileBytes: number;
+  private readonly maxFileDocuments: number;
+  private readonly conditionValidationLimits: ConditionValidationLimits;
 
   constructor(
     filePath: string | undefined,
@@ -58,6 +115,8 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
     private readonly pluginMetadataCollector: PluginPermissionMetadataCollector,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly roleEventEmitter: RoleEventEmitter<RoleEvents>,
+    conditionValidationLimits: ConditionValidationLimits,
+    limits: Partial<ConditionalPoliciesFileLimits> = {},
   ) {
     super(filePath, allowReload, logger);
 
@@ -65,6 +124,10 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
       addedConditions: [],
       removedConditions: [],
     };
+    const resolvedLimits = resolveConditionalPoliciesFileLimits(limits);
+    this.maxFileBytes = resolvedLimits.maxBytes;
+    this.maxFileDocuments = resolvedLimits.maxDocuments;
+    this.conditionValidationLimits = conditionValidationLimits;
   }
 
   async initialize(): Promise<void> {
@@ -173,17 +236,35 @@ export class YamlConditinalPoliciesFileWatcher extends AbstractFileWatcher<
    */
   parse(): RoleConditionalPolicyDecision<PermissionAction>[] {
     const fileContents = this.getCurrentContents();
-    const data = yaml
-      .loadAll(fileContents)
-      .filter(
-        doc => doc !== null,
-      ) as RoleConditionalPolicyDecision<PermissionAction>[];
-
-    for (const condition of data) {
-      validateRoleCondition(condition);
+    const fileSizeInBytes = Buffer.byteLength(fileContents, 'utf8');
+    if (fileSizeInBytes > this.maxFileBytes) {
+      throw new InputError(
+        `conditional policies file exceeds maximum size of ${this.maxFileBytes} bytes`,
+      );
     }
 
-    return data;
+    const parsedDocuments: RoleConditionalPolicyDecision<PermissionAction>[] =
+      [];
+    yaml.loadAll(fileContents, doc => {
+      if (doc === null) {
+        return;
+      }
+
+      parsedDocuments.push(
+        doc as RoleConditionalPolicyDecision<PermissionAction>,
+      );
+      if (parsedDocuments.length > this.maxFileDocuments) {
+        throw new InputError(
+          `conditional policies file exceeds maximum of ${this.maxFileDocuments} YAML documents`,
+        );
+      }
+    });
+
+    for (const condition of parsedDocuments) {
+      validateRoleCondition(condition, this.conditionValidationLimits);
+    }
+
+    return parsedDocuments;
   }
 
   private async handleFileChanges(): Promise<void> {

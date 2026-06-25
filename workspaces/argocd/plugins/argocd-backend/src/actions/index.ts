@@ -13,23 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  LoggerService,
-  RootConfigService,
-} from '@backstage/backend-plugin-api';
 import { ActionsRegistryService } from '@backstage/backend-plugin-api/alpha';
 import { createArgoCDResourceAction } from './createArgoCDResourceAction';
 
-export { createArgoCDResourceAction } from './createArgoCDResourceAction';
+import {
+  LoggerService,
+  PermissionsService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
+import { createFindApplicationsAction } from './createFindApplicationsAction';
+import { createGetApplicationAction } from './createGetApplicationAction';
+import { createGetRevisionDetailsAction } from './createGetRevisionDetailsAction';
+import { createListApplicationsAction } from './createListApplicationsAction';
 
 /**
- * Registers all ArgoCD actions with the Actions API.
- * @public
+ * Registers all ArgoCD actions with the ActionsRegistryService.
+ *
+ * @internal
  */
 export function createArgoCDActions(options: {
   actionsRegistry: ActionsRegistryService;
-  config: RootConfigService;
+  argoCDService: ArgoCDService;
+  permissions: PermissionsService;
   logger: LoggerService;
+  config: RootConfigService;
 }) {
   createArgoCDResourceAction(options);
+  createFindApplicationsAction(options);
+  createGetApplicationAction(options);
+  createGetRevisionDetailsAction(options);
+  createListApplicationsAction(options);
 }

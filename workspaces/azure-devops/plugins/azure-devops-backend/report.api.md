@@ -29,7 +29,11 @@ export class AzureDevOpsApi {
     },
   ): AzureDevOpsApi;
   // (undocumented)
-  getAllTeams(options?: { limit?: number }): Promise<Team[]>;
+  getAllTeams(options?: {
+    limit?: number;
+    host?: string;
+    org?: string;
+  }): Promise<Team[]>;
   // (undocumented)
   getBuildList(
     projectName: string,
@@ -67,6 +71,8 @@ export class AzureDevOpsApi {
   getDashboardPullRequests(
     projectName: string,
     options: PullRequestOptions,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]>;
   // (undocumented)
   getGitRepository(
@@ -107,6 +113,8 @@ export class AzureDevOpsApi {
   getTeamMembers(options: {
     projectId: string;
     teamId: string;
+    host?: string;
+    org?: string;
   }): Promise<TeamMember[] | undefined>;
 }
 

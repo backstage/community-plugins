@@ -16,7 +16,7 @@
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   catalogApiRef,
-  humanizeEntityRef,
+  defaultEntityPresentation,
 } from '@backstage/plugin-catalog-react';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
@@ -43,7 +43,9 @@ const useStyles = makeStyles(theme => ({
 
 function sortResults(items: Array<ValidationOutputOk>) {
   return items.sort((a, b) =>
-    humanizeEntityRef(a.entity).localeCompare(humanizeEntityRef(b.entity)),
+    defaultEntityPresentation(a.entity).primaryTitle.localeCompare(
+      defaultEntityPresentation(b.entity).primaryTitle,
+    ),
   );
 }
 

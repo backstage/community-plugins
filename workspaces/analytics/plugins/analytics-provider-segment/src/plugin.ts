@@ -15,16 +15,17 @@
  */
 import { createPlugin } from '@backstage/core-plugin-api';
 import {
-  AnalyticsImplementationBlueprint,
   configApiRef,
   createFrontendPlugin,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
+import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
+
 import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
 
 /**
- *
- * @public Importing and including this plugin in an app has no effect.
+ * Importing and including this plugin in an app has no effect.
+ * @public
  */
 export const analyticsModuleSegment = createPlugin({
   id: 'analytics-provider-segment',

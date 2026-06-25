@@ -5,9 +5,9 @@
 ```ts
 import { Check } from '@backstage-community/plugin-tech-insights-common';
 import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
-import { EntityPredicate } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprint } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
+import { FilterPredicate } from '@backstage/filter-predicates';
 
 // @alpha (undocumented)
 export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
@@ -26,7 +26,7 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
         {}
       >
     | ExtensionDataRef<
-        EntityPredicate,
+        FilterPredicate,
         'tech-insights-scorecard.entity-filter',
         {
           optional: true;
@@ -43,9 +43,9 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
   configInput: {
     title?: string | undefined;
     description?: string | undefined;
+    checkIds?: string[] | undefined;
     dense?: boolean | undefined;
     entityFilter?: Record<string, unknown> | undefined;
-    checkIds?: string[] | undefined;
   };
   dataRefs: {
     props: ConfigurableExtensionDataRef<
@@ -60,7 +60,7 @@ export const TechInsightsScorecardBlueprint: ExtensionBlueprint<{
       {}
     >;
     entityFilter: ConfigurableExtensionDataRef<
-      EntityPredicate,
+      FilterPredicate,
       'tech-insights-scorecard.entity-filter',
       {}
     >;
@@ -73,7 +73,7 @@ export type TechInsightsScorecardBlueprintParams = {
   description?: string;
   checkIds?: string[];
   dense?: boolean;
-  entityFilter?: EntityPredicate;
+  entityFilter?: FilterPredicate;
   checkFilter?: (check: Check) => boolean;
 };
 

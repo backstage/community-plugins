@@ -1,5 +1,11 @@
 # @backstage-community/plugin-apiiro-backend
 
+## 1.0.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 1.0.0
 
 ### Major Changes

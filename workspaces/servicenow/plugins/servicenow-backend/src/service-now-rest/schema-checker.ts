@@ -51,8 +51,17 @@ export class ServiceNowSchemaChecker {
         throw new Error(`ServiceNow API returned status ${response.status}`);
       }
 
-      const contentType = response.headers['content-type'] ?? '';
-      if (!contentType.includes('application/json')) {
+      const contentType = response.headers['content-type'];
+      if (
+        !contentType ||
+        (typeof contentType === 'string' &&
+          !contentType.includes('application/json')) ||
+        (Array.isArray(contentType) &&
+          !contentType.some(ct => ct.includes('application/json'))) ||
+        (!Array.isArray(contentType) &&
+          typeof contentType === 'object' &&
+          !contentType.hasContentType('application/json'))
+      ) {
         throw new Error(
           `Expected JSON response but got Content-Type: ${contentType}`,
         );

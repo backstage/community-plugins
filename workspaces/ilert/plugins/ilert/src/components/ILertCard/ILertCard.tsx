@@ -89,7 +89,7 @@ export const ILertCard = () => {
     <>
       <Card data-testid="ilert-card">
         <CardHeader
-          title="iLert"
+          title="ilert"
           subheader={
             <ILertCardActionsHeader
               alertSource={alertSource}

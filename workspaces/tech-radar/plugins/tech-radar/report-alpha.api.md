@@ -10,7 +10,6 @@ import { ConfigurableExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
-import { IconComponent } from '@backstage/frontend-plugin-api';
 import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -39,27 +38,6 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'nav-item:tech-radar': OverridableExtensionDefinition<{
-      kind: 'nav-item';
-      name: undefined;
-      config: {};
-      configInput: {};
-      output: ExtensionDataRef<
-        {
-          title: string;
-          icon: IconComponent;
-          routeRef: RouteRef<undefined>;
-        },
-        'core.nav-item.target',
-        {}
-      >;
-      inputs: {};
-      params: {
-        title: string;
-        icon: IconComponent;
-        routeRef: RouteRef<undefined>;
-      };
-    }>;
     'page:tech-radar': OverridableExtensionDefinition<{
       config: {
         subtitle: string;
@@ -74,8 +52,8 @@ const _default: OverridableFrontendPlugin<
         width?: number | undefined;
         subtitle?: string | undefined;
         pageTitle?: string | undefined;
-        title?: string | undefined | undefined;
         path?: string | undefined | undefined;
+        title?: string | undefined | undefined;
       };
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
@@ -166,29 +144,6 @@ export const techRadarApi: OverridableExtensionDefinition<{
 }>;
 
 // @alpha (undocumented)
-export const techRadarNavItem: OverridableExtensionDefinition<{
-  kind: 'nav-item';
-  name: undefined;
-  config: {};
-  configInput: {};
-  output: ExtensionDataRef<
-    {
-      title: string;
-      icon: IconComponent;
-      routeRef: RouteRef<undefined>;
-    },
-    'core.nav-item.target',
-    {}
-  >;
-  inputs: {};
-  params: {
-    title: string;
-    icon: IconComponent;
-    routeRef: RouteRef<undefined>;
-  };
-}>;
-
-// @alpha (undocumented)
 export const techRadarPage: OverridableExtensionDefinition<{
   config: {
     subtitle: string;
@@ -203,8 +158,8 @@ export const techRadarPage: OverridableExtensionDefinition<{
     width?: number | undefined;
     subtitle?: string | undefined;
     pageTitle?: string | undefined;
-    title?: string | undefined | undefined;
     path?: string | undefined | undefined;
+    title?: string | undefined | undefined;
   };
   output:
     | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>

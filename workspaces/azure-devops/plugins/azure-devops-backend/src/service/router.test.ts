@@ -19,6 +19,7 @@ import {
   BuildResult,
   BuildRun,
   BuildStatus,
+  DashboardPullRequest,
   GitTag,
   PullRequest,
   PullRequestStatus,
@@ -68,6 +69,8 @@ describe('createRouter', () => {
       getTeamMembers: jest.fn(),
       getReadme: jest.fn(),
       getBuildRunLog: jest.fn(),
+      getProjects: jest.fn(),
+      getDashboardPullRequests: jest.fn(),
     } as any;
 
     const config = new ConfigReader({
@@ -76,6 +79,14 @@ describe('createRouter', () => {
         host: 'host.com',
         organization: 'myOrg',
         top: 5,
+        pullRequestDashboard: {
+          organizations: [
+            {
+              host: 'host.com',
+              organization: 'myOrg',
+            },
+          ],
+        },
       },
     });
 
@@ -114,6 +125,97 @@ describe('createRouter', () => {
 
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ status: 'ok' });
+    });
+  });
+
+  describe('GET /projects', () => {
+    it('fetches projects for configured organization', async () => {
+      const projects = [
+        { id: 'project1', name: 'Project 1' },
+        { id: 'project2', name: 'Project 2' },
+      ];
+
+      azureDevOpsApi.getProjects.mockResolvedValueOnce(projects);
+
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/projects')
+        .query({ host: 'host.com', org: 'myOrg' });
+
+      expect(azureDevOpsApi.getProjects).toHaveBeenCalledWith(
+        'host.com',
+        'myOrg',
+      );
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(projects);
+    });
+
+    it('throws InputError when host is missing', async () => {
+      const response = await request(app)
+        .get('/projects')
+        .query({ org: 'myOrg' });
+
+      expect(azureDevOpsApi.getProjects).not.toHaveBeenCalled();
+      expect(response.status).toEqual(400);
+      expect(response.body.error.message).toContain(
+        'host and org query parameters are required',
+      );
+    });
+
+    it('throws InputError when org is missing', async () => {
+      const response = await request(app)
+        .get('/projects')
+        .query({ host: 'host.com' });
+
+      expect(azureDevOpsApi.getProjects).not.toHaveBeenCalled();
+      expect(response.status).toEqual(400);
+      expect(response.body.error.message).toContain(
+        'host and org query parameters are required',
+      );
+    });
+
+    it('throws InputError when organization is not configured', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/projects')
+        .query({ host: 'unconfigured.com', org: 'unconfiguredOrg' });
+
+      expect(azureDevOpsApi.getProjects).not.toHaveBeenCalled();
+      expect(response.status).toEqual(400);
+      expect(response.body.error.message).toContain('is not configured');
+    });
+
+    it('throws InputError when host matches but org does not', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/projects')
+        .query({ host: 'host.com', org: 'wrongOrg' });
+
+      expect(azureDevOpsApi.getProjects).not.toHaveBeenCalled();
+      expect(response.status).toEqual(400);
+      expect(response.body.error.message).toContain('is not configured');
+    });
+
+    it('returns 403 before revealing org config status to unauthorized user', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.DENY },
+      ]);
+
+      const response = await request(app)
+        .get('/projects')
+        .query({ host: 'unconfigured.com', org: 'unconfiguredOrg' });
+
+      expect(azureDevOpsApi.getProjects).not.toHaveBeenCalled();
+      expect(response.status).toEqual(403);
     });
   });
 
@@ -501,11 +603,94 @@ describe('createRouter', () => {
     });
   });
 
+  describe('GET /dashboard-pull-requests/:projectName', () => {
+    it('returns 400 when host/org not in configured organizations', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/dashboard-pull-requests/myProject')
+        .query({ host: 'unconfigured.com', org: 'unconfiguredOrg' });
+
+      expect(azureDevOpsApi.getDashboardPullRequests).not.toHaveBeenCalled();
+      expect(response.status).toEqual(400);
+      expect(response.body.error.message).toContain('is not configured');
+    });
+
+    it('returns 400 with clear message when only host is provided without org', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/dashboard-pull-requests/myProject')
+        .query({ host: 'host.com' });
+
+      expect(azureDevOpsApi.getDashboardPullRequests).not.toHaveBeenCalled();
+      expect(response.status).toEqual(400);
+      expect(response.body.error.message).toContain('required');
+    });
+
+    it('fetches dashboard pull requests for configured organization', async () => {
+      const pullRequests: DashboardPullRequest[] = [];
+      azureDevOpsApi.getDashboardPullRequests.mockResolvedValueOnce(
+        pullRequests,
+      );
+      azureDevOpsApi.getAllTeams.mockResolvedValueOnce([]);
+
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/dashboard-pull-requests/myProject')
+        .query({ host: 'host.com', org: 'myOrg' });
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(pullRequests);
+    });
+  });
+
+  describe('GET /all-teams', () => {
+    it('returns 403 before revealing org config status to unauthorized user', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.DENY },
+      ]);
+
+      const response = await request(app)
+        .get('/all-teams')
+        .query({ host: 'unconfigured.com', org: 'unconfiguredOrg' });
+
+      expect(response.status).toEqual(403);
+    });
+  });
+
   describe('GET /users/:userId/team-ids', () => {
     it('fetches a a list of teams', async () => {
       azureDevOpsApi.getAllTeams.mockResolvedValue([]);
-      const response = await request(app).get('/users/user1/team-ids');
+
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get('/users/user1/team-ids')
+        .query({ host: 'host.com', org: 'myOrg' });
+
       expect(response.status).toEqual(200);
+    });
+
+    it('returns 403 before revealing org config status to unauthorized user', async () => {
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.DENY },
+      ]);
+
+      const response = await request(app)
+        .get('/users/user1/team-ids')
+        .query({ host: 'unconfigured.com', org: 'unconfiguredOrg' });
+
+      expect(response.status).toEqual(403);
     });
   });
 

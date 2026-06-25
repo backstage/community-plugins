@@ -1,5 +1,14 @@
 # @backstage-community/backstage-plugin-mta-backend
 
+## 0.5.3
+
+### Patch Changes
+
+- 5adec44: Bumped Backstage dependencies to 1.49.4 for RHDH 1.10 compatibility.
+- 6d3ed24: Updated dependency `supertest` to `^7.0.0`.
+- b133c9d: Updated dependency `@types/supertest` to `^6.0.0`.
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.5.2
 
 ### Patch Changes

@@ -20,7 +20,10 @@ const commonMetadata = {
   labels: {
     'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
   },
-  instance: { name: 'main', url: 'https:/kubernetes.default.svc' },
+  instance: {
+    name: 'main',
+    url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+  },
   name: 'quarkus-app-dev',
 };
 
@@ -148,6 +151,16 @@ export const mockApplication: Application = {
   status: commonStatus,
 };
 
+export const mockBasicApplication: Application = {
+  ...mockApplication,
+  metadata: {
+    ...mockApplication.metadata,
+    uid: '0791efe1-164a-48f8-b1ed-11310efa6bef',
+    name: 'basic-app',
+    labels: { 'backstage.io/kubernetes-id': 'basic-app' },
+  },
+};
+
 export const mockQuarkusApplication: Application = {
   metadata: {
     ...commonMetadata,
@@ -197,6 +210,14 @@ export const mockQuarkusApplication: Application = {
         },
       },
     ],
+  },
+};
+
+export const mockQuarkus2Application: Application = {
+  ...mockQuarkusApplication,
+  metadata: {
+    ...mockQuarkusApplication.metadata,
+    uid: '142880cc-931f-48b0-84d0-909b78680f51',
   },
 };
 
@@ -320,7 +341,10 @@ export const prodApplication: Application = {
     labels: {
       'rht-gitops.com/janus-argocd': 'quarkus-app-bootstrap',
     },
-    instance: { name: 'main', url: 'https://kubernetes.default.svc' },
+    instance: {
+      name: 'main',
+      url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
+    },
     name: 'quarkus-app-prod',
   },
   spec: {
@@ -408,6 +432,80 @@ export const prodApplication: Application = {
   },
 };
 
+export const multiSourceHelmArgoApp: Application = {
+  metadata: {
+    name: 'helm-git-app',
+    namespace: 'argocd',
+    uid: '9abc1234-5678-90ef-ghij-klmnopqrstuv',
+    instance: {
+      name: 'main',
+      url: 'https://kubernetes.default.svc',
+    },
+  },
+  spec: {
+    destination: {
+      server: 'https://kubernetes.example.cluster:6443',
+      namespace: 'demo',
+    },
+    project: 'demo',
+    source: {
+      repoURL: '',
+    },
+    sources: [
+      {
+        repoURL: 'https://charts.example.com/helm-charts',
+        chart: 'example-chart',
+        targetRevision: '1.0.0',
+      },
+      {
+        repoURL: 'https://github.com/example-org/gitops-values.git',
+        path: 'values',
+        targetRevision: 'HEAD',
+      },
+    ],
+  },
+  status: {
+    health: {
+      status: 'Healthy',
+    },
+    sync: {
+      status: 'Synced',
+    },
+    operationState: {
+      operation: {
+        sync: {},
+      },
+      phase: 'Succeeded',
+    },
+    summary: {
+      images: [],
+    },
+    history: [
+      {
+        deployedAt: '2025-02-20T16:40:32Z',
+        id: 0,
+        source: {
+          repoURL: '',
+        },
+        deployStartedAt: '2025-02-20T16:40:31Z',
+        sources: [
+          {
+            repoURL: 'https://charts.example.com/helm-charts',
+            chart: 'example-chart',
+            targetRevision: '1.0.0',
+          },
+          {
+            repoURL: 'https://github.com/example-org/gitops-values.git',
+            path: 'values',
+            targetRevision: 'HEAD',
+          },
+        ],
+        revisions: ['1.0.0', 'abc123def456ghi789jkl012mno345pqr678stu901'],
+      },
+    ],
+  },
+};
+
 export const multiSourceArgoApp = {
   metadata: {
     name: 'demo',
@@ -421,7 +519,7 @@ export const multiSourceArgoApp = {
     },
     instance: {
       name: 'main',
-      url: 'https://kubernetes.default.svc',
+      url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com',
     },
   },
   spec: {

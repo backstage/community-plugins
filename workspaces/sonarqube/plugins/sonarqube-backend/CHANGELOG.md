@@ -1,5 +1,11 @@
 # @backstage-community/plugin-sonarqube-backend
 
+## 1.1.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 1.1.0
 
 ### Minor Changes

@@ -22,6 +22,15 @@ import {
 } from '@backstage/errors';
 
 /**
+ * Removes trailing slashes from the configured Argo CD base URL so path joins
+ * do not produce an empty path segment (e.g. `https://host/` + `/api/v1/...`
+ * → `//api/v1/...`), which breaks routing and can yield non-JSON errors such as 405.
+ */
+function normalizeArgoInstanceUrl(url: string): string {
+  return url.replace(/\/+$/, '');
+}
+
+/**
  * Retrieves an instance by it's name from a list of instances
  *
  * @param {Object} params - The parameters
@@ -51,7 +60,7 @@ export const getInstanceByName = ({
 export const toInstance = (el: Config): Instance => {
   return {
     name: el.getString('name'),
-    url: el.getString('url'),
+    url: normalizeArgoInstanceUrl(el.getString('url')),
     token: el.getOptionalString('token'),
     username: el.getOptionalString('username'),
     password: el.getOptionalString('password'),
@@ -133,7 +142,7 @@ export const buildArgoUrl = (
   path: string,
   params: Record<string, string> = {},
 ): string => {
-  const url = new URL(`${baseUrl}/api/v1/${path}`);
+  const url = new URL(`${normalizeArgoInstanceUrl(baseUrl)}/api/v1/${path}`);
   Object.entries(params).forEach(([key, value]) => {
     if (value) {
       url.searchParams.set(key, value);

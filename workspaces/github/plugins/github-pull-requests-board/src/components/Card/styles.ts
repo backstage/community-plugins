@@ -14,26 +14,4 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core';
-
-export const useFormClasses = makeStyles(() => ({
-  labelItem: {
-    display: 'flex',
-    position: 'relative',
-    boxSizing: 'border-box',
-    textAlign: 'left',
-    alignItems: 'center',
-    paddingTop: 2,
-    paddingBottom: 2,
-    justifyContent: 'flex-start',
-    textDecoration: 'none',
-    paddingLeft: 2,
-    paddingRight: 2,
-  },
-  tagBox: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    maxWidth: 750,
-  },
-}));
+// Styles have been migrated to styles.module.css

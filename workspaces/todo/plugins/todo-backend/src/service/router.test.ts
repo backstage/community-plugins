@@ -31,14 +31,11 @@ const mockListBody = {
 };
 
 function matchErrorResponse(status: number, name: string, message: string) {
-  return {
-    status,
-    body: expect.objectContaining({
+  return (res: { body: unknown }) => {
+    expect(res.body).toMatchObject({
       error: { name, message },
-      response: {
-        statusCode: status,
-      },
-    }),
+      response: { statusCode: status },
+    });
   };
 }
 
@@ -152,18 +149,18 @@ describe('createRouter', () => {
     });
 
     it('rejects invalid queries', async () => {
-      request(app)
+      await request(app)
         .get('/v1/todos?entity=k:n&entity=k:n')
         .expect(400)
         .expect(
           matchErrorResponse(
             400,
             'InputError',
-            'entity query must be a string',
+            'request/query/entity must be string',
           ),
         );
 
-      request(app)
+      await request(app)
         .get('/v1/todos?entity=:n')
         .expect(400)
         .expect(
@@ -174,14 +171,14 @@ describe('createRouter', () => {
           ),
         );
 
-      request(app)
+      await request(app)
         .get('/v1/todos?offset=1.5')
         .expect(400)
         .expect(
           matchErrorResponse(
             400,
             'InputError',
-            'invalid offset query, not an integer',
+            'request/query/offset must be integer',
           ),
         );
 

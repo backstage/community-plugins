@@ -1,5 +1,23 @@
 # @backstage-community/plugin-acr
 
+## 1.25.1
+
+### Patch Changes
+
+- 69b9fd3: Translations updated for de/es/fr/it/ja
+
+## 1.25.0
+
+### Minor Changes
+
+- 999fd93: Backstage version bump to v1.50.4
+
+## 1.24.1
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30
+
 ## 1.24.0
 
 ### Minor Changes

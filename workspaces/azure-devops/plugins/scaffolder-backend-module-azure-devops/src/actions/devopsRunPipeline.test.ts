@@ -178,6 +178,54 @@ describe('publish:azure', () => {
     );
   });
 
+  it('should not log template parameter values to prevent secret exposure', async () => {
+    mockPipelineClient.runPipeline.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+    mockPipelineClient.getRun.mockImplementation(() => ({
+      _links: { web: { href: 'http://pipeline-run-url.com' } },
+    }));
+
+    const logMessages: string[] = [];
+    const mockLogger = {
+      info: (msg: string) => logMessages.push(msg),
+      debug: (msg: string, obj?: any) => {
+        logMessages.push(msg);
+        if (obj) logMessages.push(JSON.stringify(obj));
+      },
+      warn: (msg: string) => logMessages.push(msg),
+      error: (msg: string) => logMessages.push(msg),
+    };
+
+    const secretValue = 'my-super-secret-password-123';
+    const templateParameters = {
+      normalParam: 'visible-value',
+      secretKV: secretValue,
+    };
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        host: 'dev.azure.com',
+        organization: 'org',
+        pipelineId: '1',
+        project: 'project',
+        token: 'input-token',
+        templateParameters,
+      },
+      logger: mockLogger as any,
+    });
+
+    const allLogs = logMessages.join(' ');
+
+    // Verify that template parameter values are NOT logged at all
+    expect(allLogs).not.toContain(secretValue);
+    expect(allLogs).not.toContain('my-super-secret-password-123');
+    expect(allLogs).not.toContain('visible-value');
+    expect(allLogs).not.toContain('normalParam');
+    expect(allLogs).not.toContain('secretKV');
+  });
+
   it('should use branch branch if provided', async () => {
     mockPipelineClient.runPipeline.mockImplementation(() => ({
       _links: { web: { href: 'http://pipeline-run-url.com' } },

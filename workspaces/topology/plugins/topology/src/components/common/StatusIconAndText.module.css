@@ -1,0 +1,20 @@
+@layer components {
+  /* Override BUI Text inline-block (data-as="span") for flex alignment */
+  .iconAndText {
+    display: inline-flex !important;
+    align-items: center;
+    gap: var(--bui-space-2, 4px);
+  }
+
+  .iconSlot {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    line-height: 0;
+  }
+
+  .statusText {
+    display: inline-block;
+    line-height: 1;
+  }
+}

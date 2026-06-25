@@ -2,6 +2,9 @@
 
 Welcome to the GitHub Issues plugin!
 
+> [!Note]
+> Backstage UI (BUI) is now required for the GitHub Issues plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 Based on the [well-known GitHub slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations#githubcomproject-slug) associated with the Entity, it renders the list of Open issues in GitHub.
 The plugin will attempt to determine the source code location using the [well-known Source location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiosource-location) or [Managed by location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiomanaged-by-location) associated with the Entity.
 If no configured Github provider will match, the first one will be used.
@@ -28,6 +31,16 @@ app:
 ```
 
 **Issues are sorted from the recently updated DESC order (the plugin might not render all issues from a single repo next to each other).**
+
+## Screenshots
+
+### Card View
+
+![GitHub Issues Card](docs/github-issues-card.png)
+
+### Tab View
+
+![GitHub Issues Tab](docs/github-issues-tab.png)
 
 ## Prerequisites
 

@@ -1,5 +1,63 @@
 # @backstage-community/plugin-rbac
 
+## 1.54.0
+
+### Minor Changes
+
+- 091ec86: Backstage version bump to v1.51.0.
+
+  The RBAC backend plugin now resolves user identity through Backstage's `UserInfoService` when evaluating conditional permissions, as part of aligning with the Backstage 1.51 permission framework. **No action is required** if you install RBAC with `backend.add(import('@backstage-community/plugin-rbac-backend'))` and manage access through app-config as documented.
+
+  If you extend RBAC at a lower level (for example by constructing `PolicyBuilder` directly), ensure `UserInfoService` is wired through your backend integration.
+
+### Patch Changes
+
+- 387d2e9: Updated dependency `@types/node` to `22.19.19`.
+- 6d964f2: Migrated MUI-v4 references to MUI-v5
+
+  Adds New Frontend System dev entrypoints and removes workspace example apps in favor of the plugin `dev/` pattern. Dev backend wiring lives in `plugins/rbac-backend/dev/` (same approach as linguist, feedback, and other FE+BE plugins).
+
+- Updated dependencies [091ec86]
+  - @backstage-community/plugin-rbac-common@1.28.0
+
+## 1.53.1
+
+### Patch Changes
+
+- 91cce2e: Fixed RBAC table pagination text not being translated in non-English locales by adding `labelDisplayedRows` and `labelRowsPerPage` translation keys and wiring them into all table components.
+
+## 1.53.0
+
+### Minor Changes
+
+- 6a916a1: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [6a916a1]
+  - @backstage-community/plugin-rbac-common@1.27.0
+
+## 1.52.4
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+
+## 1.52.3
+
+### Patch Changes
+
+- c1b8a19: Expanded checkbox click targets in the permission policies form to include the associated label text. Clicking the permission name or policy action text now toggles the corresponding checkbox.
+
+## 1.52.2
+
+### Patch Changes
+
+- 3fc1a9e: Fix RBAC role creation form UI text consistency and accuracy
+
 ## 1.52.1
 
 ### Patch Changes

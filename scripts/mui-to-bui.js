@@ -50,6 +50,7 @@ const CONFIG = {
     'build',
     '.git',
     'coverage',
+    'packages',
     '.yarn',
   ],
 
@@ -146,6 +147,7 @@ class CommunityPluginsMigrationAnalyzer {
       .readdirSync(workspacesDir, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name)
+      .filter(name => !name.startsWith('.'))
       .filter(name => !CONFIG.excludedWorkspaces.includes(name))
       .sort();
 
@@ -244,12 +246,8 @@ class CommunityPluginsMigrationAnalyzer {
 
     // Find all relevant files in the workspace
     const files = [];
-    const packagesDir = path.join(workspacePath, 'packages');
     const pluginsDir = path.join(workspacePath, 'plugins');
 
-    if (fs.existsSync(packagesDir)) {
-      files.push(...this.findRelevantFiles(packagesDir));
-    }
     if (fs.existsSync(pluginsDir)) {
       files.push(...this.findRelevantFiles(pluginsDir));
     }

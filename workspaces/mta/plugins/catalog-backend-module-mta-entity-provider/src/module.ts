@@ -2,7 +2,7 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 import { MTAProvider } from './provider/MTAEntityProvider';
 /**
  * A backend module that integrates with the catalog to provide MTA entities.

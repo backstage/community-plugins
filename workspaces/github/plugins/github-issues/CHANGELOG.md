@@ -1,5 +1,29 @@
 # @backstage-community/plugin-github-issues
 
+## 1.2.0
+
+### Minor Changes
+
+- 7e98f23: Backstage version bump to v1.52.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 9a217cf: Backstage version bump to v1.51.0
+
+## 1.0.0
+
+### Major Changes
+
+- dc9bb36: **BREAKING** Migrated from Material UI (MUI) to Backstage UI (BUI). This means that Backstage UI is now a requirement for this plugin, see the Backstage UI [installation documentation](https://ui.backstage.io/get-started/installation) for more details.
+
+## 0.22.0
+
+### Minor Changes
+
+- df6b360: Backstage version bump to v1.50.3
+
 ## 0.21.0
 
 ### Minor Changes

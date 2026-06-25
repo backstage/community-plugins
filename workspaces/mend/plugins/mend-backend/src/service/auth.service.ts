@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import jwt from 'jsonwebtoken';
-import { post } from '../api';
 import { caesarCipherDecrypt } from './auth.service.helpers';
 import {
   JwtAuthToken,
@@ -139,49 +138,65 @@ export class MendAuthSevice {
   }
 
   private static async login(): Promise<void> {
-    return post<LoginSuccessResponseData>(AuthRoutes.LOGIN, {
-      body: {
+    const response = await fetch(`${this.baseUrl}${AuthRoutes.LOGIN}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'agent-name': 'pi-backstage',
+        'agent-version': '24.8.2',
+      },
+      body: JSON.stringify({
         email: this.clientEmail,
         userKey: this.clientKey,
-      },
-    })
-      .then(data => {
-        if (!data?.response?.refreshToken) {
-          throw new Error('Login failed: missing refreshToken in response');
-        }
-        this.refreshToken = data.response.refreshToken;
-        return Promise.resolve();
-      })
-      .catch(err => {
-        this.refreshToken = '';
-        return Promise.reject(err);
-      });
+      }),
+    });
+
+    if (!response.ok) {
+      this.refreshToken = '';
+      throw new Error(
+        `Login failed: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const data = (await response.json()) as LoginSuccessResponseData;
+    if (!data?.response?.refreshToken) {
+      this.refreshToken = '';
+      throw new Error('Login failed: missing refreshToken in response');
+    }
+    this.refreshToken = data.response.refreshToken;
   }
 
   private static async refreshAccessToken(): Promise<void> {
-    return post<RefreshAccessTokenSuccessResponseData>(
-      AuthRoutes.REFRESH_TOKEN,
-      {
-        headers: {
-          'wss-refresh-token': this.refreshToken,
-        },
+    const response = await fetch(`${this.baseUrl}${AuthRoutes.REFRESH_TOKEN}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'agent-name': 'pi-backstage',
+        'agent-version': '24.8.2',
+        'wss-refresh-token': this.refreshToken,
       },
-    )
-      .then(data => {
-        if (!data?.response?.jwtToken) {
-          throw new Error('Refresh token failed: missing jwtToken in response');
-        }
-        this.authToken = data.response.jwtToken;
-        this.clientName = data.response.orgName ?? '';
-        this.clientUuid = data.response.orgUuid ?? '';
-        return Promise.resolve();
-      })
-      .catch(err => {
-        this.authToken = '';
-        this.clientName = '';
-        this.clientUuid = '';
-        return Promise.reject(err);
-      });
+    });
+
+    if (!response.ok) {
+      this.authToken = '';
+      this.clientName = '';
+      this.clientUuid = '';
+      throw new Error(
+        `Refresh token failed: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const data =
+      (await response.json()) as RefreshAccessTokenSuccessResponseData;
+    if (!data?.response?.jwtToken) {
+      this.authToken = '';
+      this.clientName = '';
+      this.clientUuid = '';
+      throw new Error('Refresh token failed: missing jwtToken in response');
+    }
+    this.authToken = data.response.jwtToken;
+    this.clientName = data.response.orgName ?? '';
+    this.clientUuid = data.response.orgUuid ?? '';
   }
 
   static async connect(): Promise<void> {
@@ -203,20 +218,30 @@ export class MendAuthSevice {
       return this.connect();
     }
 
-    const decoded = jwt.decode(this.authToken);
-    if (!decoded || typeof decoded !== 'object' || !('exp' in decoded)) {
+    try {
+      const decoded = jwt.decode(this.authToken);
+      if (!decoded || typeof decoded !== 'object' || !('exp' in decoded)) {
+        return this.connect();
+      }
+
+      const token = decoded as JwtAuthToken;
+      const expMs = Number(token.exp) * 1000;
+      if (Number.isNaN(expMs) || expMs - Date.now() < 0) {
+        return this.connect();
+      }
+
+      return Promise.resolve();
+    } catch (err) {
+      this.logger?.error(
+        `Failed to decode auth token: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+      // Clear invalid token and reconnect
+      this.authToken = '';
       return this.connect();
     }
-
-    const token = decoded as JwtAuthToken;
-    const expMs = Number(token.exp) * 1000;
-    if (Number.isNaN(expMs) || expMs - Date.now() < 0) {
-      return this.connect();
-    }
-
-    return Promise.resolve();
   }
-
   static getAuthToken(): string {
     return MendAuthSevice.authToken;
   }

@@ -162,6 +162,12 @@ export interface DashboardPullRequest {
 }
 
 /** @public */
+export type DashboardOrganizationHost = {
+  organization: string;
+  host: string;
+};
+
+/** @public */
 export interface Reviewer {
   id?: string;
   displayName?: string;

@@ -143,7 +143,7 @@ Add the following configuration to your `app-config.yaml`:
 ```yaml
 mcpChat:
   # Configure AI providers (currently only the first provider is used)
-  # Supported Providers: OpenAI, Gemini, Claude, and Ollama
+  # Supported Providers: OpenAI, OpenAI Responses API, Azure OpenAI, Gemini, Claude, Ollama, and LiteLLM
   providers:
     - id: openai # OpenAI provider
       token: ${OPENAI_API_KEY}

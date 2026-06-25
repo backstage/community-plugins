@@ -1,5 +1,18 @@
 # @backstage-community/plugin-catalog-backend-module-annotate-scm-slug
 
+## 0.4.0
+
+### Minor Changes
+
+- 3d772bb: Backstage version bump to v1.51.0
+- 91db3c1: Backstage version bump to v1.52.0
+
+## 0.3.0
+
+### Minor Changes
+
+- c0e3399: Backstage version bump to v1.50.2
+
 ## 0.2.0
 
 ### Minor Changes

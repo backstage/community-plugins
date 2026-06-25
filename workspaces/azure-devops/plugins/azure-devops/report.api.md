@@ -63,7 +63,7 @@ export type AssignedToUserFilter = BaseFilter &
 // @public (undocumented)
 export interface AzureDevOpsApi {
   // (undocumented)
-  getAllTeams(limit?: number): Promise<Team[]>;
+  getAllTeams(limit?: number, host?: string, org?: string): Promise<Team[]>;
   // (undocumented)
   getBuildRunLog(
     projectName: string,
@@ -90,6 +90,8 @@ export interface AzureDevOpsApi {
   getDashboardPullRequests(
     projectName: string,
     teamsLimit?: number,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]>;
   // (undocumented)
   getGitTags(
@@ -101,6 +103,8 @@ export interface AzureDevOpsApi {
   ): Promise<{
     items: GitTag[];
   }>;
+  // (undocumented)
+  getProjects(host?: string, org?: string): Promise<string[]>;
   // (undocumented)
   getPullRequests(
     projectName: string,
@@ -115,7 +119,11 @@ export interface AzureDevOpsApi {
   // (undocumented)
   getReadme(opts: ReadmeConfig): Promise<Readme>;
   // (undocumented)
-  getUserTeamIds(userId: string): Promise<string[]>;
+  getUserTeamIds(
+    userId: string,
+    host?: string,
+    org?: string,
+  ): Promise<string[]>;
 }
 
 // @public (undocumented)
@@ -125,7 +133,7 @@ export const azureDevOpsApiRef: ApiRef<AzureDevOpsApi>;
 export class AzureDevOpsClient implements AzureDevOpsApi {
   constructor(options: { discoveryApi: DiscoveryApi; fetchApi: FetchApi });
   // (undocumented)
-  getAllTeams(limit?: number): Promise<Team[]>;
+  getAllTeams(limit?: number, host?: string, org?: string): Promise<Team[]>;
   // (undocumented)
   getBuildRunLog(
     projectName: string,
@@ -152,6 +160,8 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   getDashboardPullRequests(
     projectName: string,
     teamsLimit?: number,
+    host?: string,
+    org?: string,
   ): Promise<DashboardPullRequest[]>;
   // (undocumented)
   getGitTags(
@@ -163,6 +173,8 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   ): Promise<{
     items: GitTag[];
   }>;
+  // (undocumented)
+  getProjects(host?: string, org?: string): Promise<string[]>;
   // (undocumented)
   getPullRequests(
     projectName: string,
@@ -177,7 +189,11 @@ export class AzureDevOpsClient implements AzureDevOpsApi {
   // (undocumented)
   getReadme(opts: ReadmeConfig): Promise<Readme>;
   // (undocumented)
-  getUserTeamIds(userId: string): Promise<string[]>;
+  getUserTeamIds(
+    userId: string,
+    host?: string,
+    org?: string,
+  ): Promise<string[]>;
 }
 
 // @public (undocumented)

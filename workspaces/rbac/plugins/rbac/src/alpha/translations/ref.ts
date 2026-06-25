@@ -24,6 +24,8 @@ export const rbacMessages = {
   table: {
     searchPlaceholder: 'Filter',
     labelRowsSelect: 'Rows',
+    labelDisplayedRows: '{from}-{to} of {count}',
+    labelRowsPerPage: 'Rows per page:',
     title: 'All roles',
     titleWithCount: 'All roles ({{count}})',
     headers: {
@@ -78,7 +80,7 @@ export const rbacMessages = {
     titles: {
       createRole: 'Create Role',
       editRole: 'Edit Role',
-      nameAndDescription: 'Enter name and description of role',
+      nameAndDescription: 'Enter name, description, and owner of role',
       usersAndGroups: 'Add users and groups',
       permissionPolicies: 'Add permission policies',
     },
@@ -104,7 +106,7 @@ export const rbacMessages = {
       description: {
         label: 'Description',
         helperText:
-          'Enter a brief description about the role (The purpose of the role)',
+          'Optional: Enter a brief description about the role (the purpose of the role)',
       },
       owner: {
         label: 'Owner',

@@ -21,6 +21,7 @@ import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { createRouter } from './router';
 import { createArgoCDActions } from './actions';
 import { argocdPermissions } from '@backstage-community/plugin-argocd-common';
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
 
 /**
  * ArgoCD backend plugin
@@ -51,8 +52,6 @@ export const argoCDPlugin = createBackendPlugin({
       }) {
         permissionsRegistry.addPermissions(argocdPermissions);
 
-        createArgoCDActions({ actionsRegistry, config, logger });
-
         httpRouter.use(
           await createRouter({
             config,
@@ -61,6 +60,15 @@ export const argoCDPlugin = createBackendPlugin({
             permissions,
           }),
         );
+
+        const argoCDService = new ArgoCDService(config, logger);
+        createArgoCDActions({
+          actionsRegistry,
+          argoCDService,
+          permissions,
+          config,
+          logger,
+        });
       },
     });
   },

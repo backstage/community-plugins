@@ -53,7 +53,7 @@ export const ILertCardEmptyState = () => {
 
   return (
     <Card data-testid="ilert-empty-card">
-      <CardHeader title="iLert" className={classes.header} />
+      <CardHeader title="ilert" className={classes.header} />
       <Divider />
       <CardContent>
         <Typography variant="body1">

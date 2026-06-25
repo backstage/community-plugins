@@ -646,6 +646,102 @@ describe('OpenAIResponsesProvider', () => {
     });
   });
 
+  describe('disabledTools / allowed_tools', () => {
+    it('should include allowed_tools when allowedToolsByServer map has entry', async () => {
+      const configsWithAllowed: MCPServerFullConfig[] = [
+        {
+          id: 'k8s',
+          name: 'Kubernetes Server',
+          type: MCPServerType.STREAMABLE_HTTP,
+          url: 'https://k8s.example.com/mcp',
+          disabledTools: ['pods_delete'],
+        },
+      ];
+
+      const allowedToolsByServer = new Map<string, string[]>();
+      allowedToolsByServer.set('k8s', ['pods_list', 'pods_get']);
+
+      provider.setMcpServerConfigs(configsWithAllowed, allowedToolsByServer);
+
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+
+      const mockResponse: ResponsesApiResponse = {
+        id: 'resp_allowed',
+        object: 'response',
+        created_at: Date.now(),
+        model: 'gemini/models/gemini-2.5-flash',
+        status: 'completed',
+        output: [
+          {
+            id: 'msg_1',
+            type: 'message',
+            role: 'assistant',
+            status: 'completed',
+            content: [{ type: 'output_text', text: 'Response' }],
+          },
+        ],
+      };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response);
+
+      await provider.sendMessage(messages);
+
+      const callArgs = mockFetch.mock.calls[0];
+      const bodyObj = JSON.parse(callArgs[1]?.body as string);
+
+      expect(bodyObj.tools).toHaveLength(1);
+      expect(bodyObj.tools[0].allowed_tools).toEqual(['pods_list', 'pods_get']);
+    });
+
+    it('should not include allowed_tools when allowedToolsByServer has no entry', async () => {
+      const configsWithoutAllowed: MCPServerFullConfig[] = [
+        {
+          id: 'k8s',
+          name: 'Kubernetes Server',
+          type: MCPServerType.STREAMABLE_HTTP,
+          url: 'https://k8s.example.com/mcp',
+        },
+      ];
+
+      provider.setMcpServerConfigs(configsWithoutAllowed);
+
+      const messages: ChatMessage[] = [{ role: 'user', content: 'Test' }];
+
+      const mockResponse: ResponsesApiResponse = {
+        id: 'resp_no_allowed',
+        object: 'response',
+        created_at: Date.now(),
+        model: 'gemini/models/gemini-2.5-flash',
+        status: 'completed',
+        output: [
+          {
+            id: 'msg_1',
+            type: 'message',
+            role: 'assistant',
+            status: 'completed',
+            content: [{ type: 'output_text', text: 'Response' }],
+          },
+        ],
+      };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response);
+
+      await provider.sendMessage(messages);
+
+      const callArgs = mockFetch.mock.calls[0];
+      const bodyObj = JSON.parse(callArgs[1]?.body as string);
+
+      expect(bodyObj.tools).toHaveLength(1);
+      expect(bodyObj.tools[0].allowed_tools).toBeUndefined();
+    });
+  });
+
   describe('testConnection', () => {
     it('should return connected when API is reachable', async () => {
       const mockResponse: ResponsesApiResponse = {
@@ -755,6 +851,51 @@ describe('OpenAIResponsesProvider', () => {
     it('should return null before any message is sent', () => {
       const output = provider.getLastResponseOutput();
       expect(output).toBeNull();
+    });
+  });
+
+  describe('maxTokens and temperature in formatRequest', () => {
+    it('should include max_output_tokens when maxTokens is configured', () => {
+      const p = new OpenAIResponsesProvider({ ...config, maxTokens: 4096 });
+      p.setMcpServerConfigs(mockMCPServerFullConfigs);
+      const messages: ChatMessage[] = [{ role: 'user', content: 'test' }];
+      const request = (p as any).formatRequest(messages);
+      expect(request.max_output_tokens).toBe(4096);
+    });
+
+    it('should not include max_output_tokens when maxTokens is not configured', () => {
+      const request = (provider as any).formatRequest([
+        { role: 'user', content: 'test' },
+      ]);
+      expect(request.max_output_tokens).toBeUndefined();
+    });
+
+    it('should include temperature when configured', () => {
+      const p = new OpenAIResponsesProvider({ ...config, temperature: 0.3 });
+      p.setMcpServerConfigs(mockMCPServerFullConfigs);
+      const messages: ChatMessage[] = [{ role: 'user', content: 'test' }];
+      const request = (p as any).formatRequest(messages);
+      expect(request.temperature).toBe(0.3);
+    });
+
+    it('should not include temperature when not configured', () => {
+      const request = (provider as any).formatRequest([
+        { role: 'user', content: 'test' },
+      ]);
+      expect(request.temperature).toBeUndefined();
+    });
+
+    it('should include both max_output_tokens and temperature when both configured', () => {
+      const p = new OpenAIResponsesProvider({
+        ...config,
+        maxTokens: 2048,
+        temperature: 0.5,
+      });
+      p.setMcpServerConfigs(mockMCPServerFullConfigs);
+      const messages: ChatMessage[] = [{ role: 'user', content: 'test' }];
+      const request = (p as any).formatRequest(messages);
+      expect(request.max_output_tokens).toBe(2048);
+      expect(request.temperature).toBe(0.5);
     });
   });
 

@@ -31,40 +31,38 @@ import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
 } from '@backstage/plugin-user-settings';
-import { makeStyles } from '@material-ui/core';
-import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import ExtensionIcon from '@material-ui/icons/Extension';
-import HomeIcon from '@material-ui/icons/Home';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
-import MenuIcon from '@material-ui/icons/Menu';
-import GroupIcon from '@material-ui/icons/People';
-import SearchIcon from '@material-ui/icons/Search';
 import { PropsWithChildren } from 'react';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
-
-const useSidebarLogoStyles = makeStyles({
-  root: {
-    width: sidebarConfig.drawerWidthClosed,
-    height: 3 * sidebarConfig.logoHeight,
-    display: 'flex',
-    flexFlow: 'row nowrap',
-    alignItems: 'center',
-    marginBottom: -14,
-  },
-  link: {
-    width: sidebarConfig.drawerWidthClosed,
-    marginLeft: 24,
-  },
-});
+import styles from './Root.module.css';
+import {
+  CreateComponentIcon,
+  ExtensionIcon,
+  GroupIcon,
+  HomeIcon,
+  LibraryBooks,
+  MenuIcon,
+  SearchIcon,
+} from './sidebarIcons';
 
 const SidebarLogo = () => {
-  const classes = useSidebarLogoStyles();
   const { isOpen } = useSidebarOpenState();
 
   return (
-    <div className={classes.root}>
-      <Link to="/" underline="none" className={classes.link} aria-label="Home">
+    <div
+      className={styles.root}
+      style={{
+        width: sidebarConfig.drawerWidthClosed,
+        height: 3 * sidebarConfig.logoHeight,
+      }}
+    >
+      <Link
+        to="/"
+        underline="none"
+        className={styles.link}
+        style={{ width: sidebarConfig.drawerWidthClosed }}
+        aria-label="Home"
+      >
         {isOpen ? <LogoFull /> : <LogoIcon />}
       </Link>
     </div>

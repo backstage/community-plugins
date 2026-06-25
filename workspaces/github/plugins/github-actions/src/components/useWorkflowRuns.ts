@@ -16,8 +16,8 @@
 import { useState } from 'react';
 import { DateTime } from 'luxon';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
-import { githubActionsApiRef } from '../api/GithubActionsApi';
-import { useApi, errorApiRef } from '@backstage/core-plugin-api';
+import { githubActionsApiRef, GithubActionsApi } from '../api/GithubActionsApi';
+import { useApi, errorApiRef, ErrorApi } from '@backstage/core-plugin-api';
 import { Branch } from '../api';
 
 export type WorkflowRun = {
@@ -40,6 +40,95 @@ export type WorkflowRun = {
   onReRunClick: () => void;
 };
 
+export type FetchWorkflowRunsParams = {
+  api: GithubActionsApi;
+  errorApi: ErrorApi;
+  hostname?: string;
+  owner: string;
+  repo: string;
+  branch?: string;
+  page: number;
+  pageSize: number;
+};
+
+export async function fetchWorkflowRuns({
+  api,
+  errorApi,
+  hostname,
+  owner,
+  repo,
+  branch,
+  page,
+  pageSize,
+}: FetchWorkflowRunsParams): Promise<{
+  runs: WorkflowRun[];
+  totalCount: number;
+}> {
+  let selectedBranch = branch;
+  if (branch === 'default') {
+    const fetchedDefaultBranch = await api.getDefaultBranch({
+      hostname,
+      owner,
+      repo,
+    });
+    selectedBranch = fetchedDefaultBranch;
+  }
+
+  const workflowRunsData = await api.listWorkflowRuns({
+    hostname,
+    owner,
+    repo,
+    pageSize,
+    page,
+    branch: selectedBranch,
+  });
+
+  const runs: WorkflowRun[] = workflowRunsData.workflow_runs.map(run => ({
+    workflowName: run.name ?? undefined,
+    message: run.head_commit?.message,
+    id: `${run.id}`,
+    onReRunClick: async () => {
+      try {
+        await api.reRunWorkflow({
+          hostname,
+          owner,
+          repo,
+          runId: run.id,
+        });
+      } catch (e) {
+        errorApi.post(
+          new Error(`Failed to rerun the workflow: ${(e as Error).message}`),
+        );
+      }
+    },
+    source: {
+      branchName: run.head_branch ?? undefined,
+      commit: {
+        hash: run.head_commit?.id,
+        url: run.head_repository?.branches_url?.replace(
+          '{/branch}',
+          run.head_branch ?? '',
+        ),
+      },
+    },
+    status: run.status ?? undefined,
+    statusDate: run.updated_at,
+    statusAge:
+      (run.updated_at
+        ? DateTime.fromISO(run.updated_at)
+        : DateTime.now()
+      ).toRelative() ?? undefined,
+    conclusion: run.conclusion ?? undefined,
+    url: run.url,
+    githubUrl: run.html_url,
+  }));
+
+  return {
+    runs,
+    totalCount: workflowRunsData.total_count,
+  };
+}
+
 export function useWorkflowRuns({
   hostname,
   owner,
@@ -56,7 +145,6 @@ export function useWorkflowRuns({
   fetchAllBranches?: boolean;
 }) {
   const api = useApi(githubActionsApiRef);
-
   const errorApi = useApi(errorApiRef);
 
   const [total, setTotal] = useState(0);
@@ -78,10 +166,6 @@ export function useWorkflowRuns({
     });
 
     setDefaultBranch(fetchedDefaultBranch);
-    let selectedBranch = branch;
-    if (branch === 'default') {
-      selectedBranch = fetchedDefaultBranch;
-    }
 
     const fetchBranches = async () => {
       let next = true;
@@ -112,56 +196,30 @@ export function useWorkflowRuns({
     }
 
     // GitHub API pagination count starts from 1
-    const workflowRunsData = await api.listWorkflowRuns({
+    const { runs: workflowRuns, totalCount } = await fetchWorkflowRuns({
+      api,
+      errorApi,
       hostname,
       owner,
       repo,
-      pageSize,
+      branch: branch === 'default' ? fetchedDefaultBranch : branch,
       page: page + 1,
-      branch: selectedBranch,
+      pageSize,
     });
-    setTotal(workflowRunsData.total_count);
-    // Transformation here
-    return workflowRunsData.workflow_runs.map(run => ({
-      workflowName: run.name ?? undefined,
-      message: run.head_commit?.message,
-      id: `${run.id}`,
-      onReRunClick: async () => {
-        try {
-          await api.reRunWorkflow({
-            hostname,
-            owner,
-            repo,
-            runId: run.id,
-          });
-        } catch (e) {
-          errorApi.post(
-            new Error(`Failed to rerun the workflow: ${(e as Error).message}`),
-          );
-        }
-      },
-      source: {
-        branchName: run.head_branch ?? undefined,
-        commit: {
-          hash: run.head_commit?.id,
-          url: run.head_repository?.branches_url?.replace(
-            '{/branch}',
-            run.head_branch ?? '',
-          ),
-        },
-      },
-      status: run.status ?? undefined,
-      statusDate: run.updated_at,
-      statusAge:
-        (run.updated_at
-          ? DateTime.fromISO(run.updated_at)
-          : DateTime.now()
-        ).toRelative() ?? undefined,
-      conclusion: run.conclusion ?? undefined,
-      url: run.url,
-      githubUrl: run.html_url,
-    }));
-  }, [page, pageSize, repo, owner]);
+
+    setTotal(totalCount);
+    return workflowRuns;
+  }, [
+    page,
+    pageSize,
+    repo,
+    owner,
+    hostname,
+    branch,
+    fetchAllBranches,
+    api,
+    errorApi,
+  ]);
 
   return [
     {
@@ -174,6 +232,8 @@ export function useWorkflowRuns({
       projectName: `${owner}/${repo}`,
       total,
       error,
+      api,
+      errorApi,
     },
     {
       runs,

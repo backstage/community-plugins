@@ -29,6 +29,8 @@ const rbacTranslationDe = createTranslationMessages({
     'page.editRole': 'Rolle bearbeiten',
     'table.searchPlaceholder': 'Filter',
     'table.labelRowsSelect': 'Zeilen',
+    'table.labelDisplayedRows': '{from}-{to} von {count}',
+    'table.labelRowsPerPage': 'Zeilen pro Seite:',
     'table.title': 'Alle Rollen',
     'table.titleWithCount': 'Alle Rollen ({{count}})',
     'table.headers.name': 'Name',
@@ -76,7 +78,7 @@ const rbacTranslationDe = createTranslationMessages({
     'roleForm.titles.createRole': 'Rolle erstellen',
     'roleForm.titles.editRole': 'Rolle bearbeiten',
     'roleForm.titles.nameAndDescription':
-      'Name und Beschreibung der Rolle eingeben',
+      'Name, Beschreibung und Eigentümer der Rolle eingeben',
     'roleForm.titles.usersAndGroups': 'Benutzer und Gruppen hinzufügen',
     'roleForm.titles.permissionPolicies': 'Berechtigungsrichtlinien hinzufügen',
     'roleForm.review.reviewAndCreate': 'Überprüfen und erstellen',
@@ -95,7 +97,7 @@ const rbacTranslationDe = createTranslationMessages({
     'roleForm.fields.name.helperText': 'Geben Sie den Namen der Rolle ein',
     'roleForm.fields.description.label': 'Beschreibung',
     'roleForm.fields.description.helperText':
-      'Geben Sie eine kurze Beschreibung der Rolle ein (Zweck der Rolle)',
+      'Optional: Geben Sie eine kurze Beschreibung der Rolle ein (Zweck der Rolle)',
     'roleForm.fields.owner.label': 'Eigentümer',
     'roleForm.fields.owner.helperText':
       'Optional: Geben Sie einen Benutzer oder eine Gruppe ein, der bzw. die die Berechtigung haben soll, diese Rolle zu bearbeiten und zusätzliche Rollen zu erstellen. Im nächsten Schritt legen Sie fest, welchen Benutzern sie ihre Rollen zuweisen können und auf welche Plugins sie Zugriff erteilen können. Wird hier keine Angabe gemacht, wird bei der Erstellung automatisch der Autor zugewiesen.',

@@ -47,7 +47,6 @@ export type Project = {
   statistics: Statistics;
   uuid: string;
   name: string;
-  path: string;
   applicationName: string;
   applicationUuid: string;
   lastScan: number;

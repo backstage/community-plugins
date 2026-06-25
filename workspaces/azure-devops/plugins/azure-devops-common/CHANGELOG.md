@@ -1,5 +1,24 @@
 # @backstage-community/plugin-azure-devops-common
 
+## 0.24.0
+
+### Minor Changes
+
+- 9f8f870: Backstage version bump to v1.51.0
+- 5b83efb: Backstage version bump to v1.52.0
+
+## 0.23.0
+
+### Minor Changes
+
+- 7067acc: Added multi-org support to the Azure Pull Request Dashboard Page
+
+## 0.22.0
+
+### Minor Changes
+
+- f2f1e66: Backstage version bump to v1.50.2
+
 ## 0.21.0
 
 ### Minor Changes

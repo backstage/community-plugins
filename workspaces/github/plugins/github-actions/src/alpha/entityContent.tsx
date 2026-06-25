@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { z } from 'zod';
 import {
   compatWrapper,
   convertLegacyRouteRef,
@@ -26,10 +27,8 @@ import { rootRouteRef } from '../routes';
  */
 export const entityGithubActionsContent =
   EntityContentBlueprint.makeWithOverrides({
-    config: {
-      schema: {
-        layout: z => z.enum(['table', 'cards']).default('table'),
-      },
+    configSchema: {
+      layout: z.enum(['table', 'cards']).default('table'),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
