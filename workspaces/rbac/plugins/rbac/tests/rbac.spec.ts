@@ -400,7 +400,7 @@ test.describe('RBAC plugin', () => {
       .getByLabel(translations.permissionPolicies.selectPlugins)
       .last()
       .click();
-    await page.getByText('catalog').click();
+    await page.getByTestId('Catalog').click();
     await page.getByTestId('expand-row-catalog').click();
     await page
       .getByRole('cell', { name: 'catalog.entity.read' })
