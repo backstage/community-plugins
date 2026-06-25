@@ -59,8 +59,17 @@ export const buildReporter = (
 export const withWaypoint = (
   reporter: string,
   includeWaypoint: boolean,
-): string =>
-  includeWaypoint && reporter !== 'both' ? `${reporter},waypoint` : reporter;
+): string => {
+  // Strip any existing waypoint suffix before conditionally re-adding it
+  const base = reporter
+    .split(',')
+    .filter(r => r !== 'waypoint')
+    .join(',');
+  if (includeWaypoint && base !== 'both') {
+    return `${base},waypoint`;
+  }
+  return base;
+};
 
 export const getStatsReporters = (
   direction: Direction,

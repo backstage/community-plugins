@@ -148,7 +148,9 @@ export const AppDetailsPage = (props: { entity?: boolean }) => {
             cluster={appItem?.cluster}
             objectType={MetricsObjectTypes.APP}
             direction="inbound"
-            includeWaypoint={serverConfig?.ambientEnabled ?? false} // TODO: replace with actual isAmbient when available for app
+            includeWaypoint={
+              appItem?.workloads?.some(w => w.isAmbient) ?? false
+            }
           />
         )}
       </>
@@ -167,7 +169,9 @@ export const AppDetailsPage = (props: { entity?: boolean }) => {
             cluster={appItem?.cluster}
             objectType={MetricsObjectTypes.APP}
             direction="outbound"
-            includeWaypoint={serverConfig?.ambientEnabled ?? false} // TODO: replace with actual isAmbient when available for app
+            includeWaypoint={
+              appItem?.workloads?.some(w => w.isAmbient) ?? false
+            }
           />
         )}
       </>

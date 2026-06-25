@@ -133,7 +133,7 @@ export const IstioMetrics = (props: Props) => {
     MetricsHelper.timeRangeToOptions(timeRange, options);
     const opts = { ...options };
 
-    if (opts.reporter === 'both') {
+    if (opts.reporter === 'both' || opts.reporter.includes(',')) {
       opts.byLabels = (opts.byLabels ?? []).concat('reporter');
     }
 
@@ -352,7 +352,7 @@ export const IstioMetrics = (props: Props) => {
           <MetricsReporter
             onChanged={onReporterChanged}
             direction={props.direction}
-            reporter={options.reporter}
+            reporter={options.reporter.split(',')[0]}
           />
 
           <FormControlLabel
