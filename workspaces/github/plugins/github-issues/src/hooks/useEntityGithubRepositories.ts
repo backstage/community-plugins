@@ -30,9 +30,18 @@ export const getProjectNameFromEntity = (entity: Entity): string => {
   return entity?.metadata.annotations?.[GITHUB_PROJECT_SLUG_ANNOTATION] ?? '';
 };
 
-export const getHostnameFromEntity = (entity: Entity): string => {
-  const { target } = getEntitySourceLocation(entity);
-  return new URL(target).hostname;
+export const getHostnameFromEntity = (entity: Entity): string | undefined => {
+  try {
+    const { type, target } = getEntitySourceLocation(entity);
+    return type === 'url' ? new URL(target).hostname : undefined;
+  } catch {
+    // The entity has no usable `url:` source/managed-by location (e.g. it was
+    // registered from a non-URL location such as `file:`, or has no location
+    // annotation at all). The GitHub host is resolved from the configured
+    // integration instead, so fall back to `undefined` rather than throwing
+    // and crashing the card with "Failed to construct 'URL': Invalid URL".
+    return undefined;
+  }
 };
 
 export function useEntityGithubRepositories() {
