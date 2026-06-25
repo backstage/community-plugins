@@ -221,7 +221,7 @@ export const WorkloadDescription: React.FC<WorkloadDescriptionProps> = (
               </span>
 
               {!props.workload.istioSidecar &&
-                !props.workload.istioAmbient &&
+                !props.workload.isAmbient &&
                 !isWaypoint(props.workload.labels) && (
                   <MissingSidecar
                     namespace={props.namespace}
@@ -231,7 +231,7 @@ export const WorkloadDescription: React.FC<WorkloadDescriptionProps> = (
                   />
                 )}
 
-              {props.workload.istioAmbient &&
+              {props.workload.isAmbient &&
                 !isWaypoint(props.workload.labels) && (
                   <AmbientLabel
                     tooltip

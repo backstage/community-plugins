@@ -84,7 +84,7 @@
       "createdAt": "2024-02-26T09:51:07Z",
       "resourceVersion": "24571",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "reviews",
@@ -117,7 +117,7 @@
       "createdAt": "2024-02-26T09:51:07Z",
       "resourceVersion": "24577",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "reviews",
@@ -150,7 +150,7 @@
       "createdAt": "2024-02-26T09:51:07Z",
       "resourceVersion": "24584",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "reviews",
@@ -199,7 +199,7 @@
       "namespace": "",
       "istioSidecar": false,
       "cluster": "",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,

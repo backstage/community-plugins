@@ -14,7 +14,7 @@
       "createdAt": "2024-01-29T20:10:15Z",
       "resourceVersion": "26835",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "details",
@@ -57,7 +57,7 @@
       "createdAt": "2024-01-29T20:11:02Z",
       "resourceVersion": "26851",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "kiali-traffic-generator",
@@ -93,7 +93,7 @@
       "createdAt": "2024-01-29T20:10:15Z",
       "resourceVersion": "26856",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "productpage",
@@ -140,7 +140,7 @@
       "createdAt": "2024-01-29T20:10:15Z",
       "resourceVersion": "26849",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "ratings",
@@ -183,7 +183,7 @@
       "createdAt": "2024-01-29T20:10:15Z",
       "resourceVersion": "26845",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "reviews",
@@ -226,7 +226,7 @@
       "createdAt": "2024-01-29T20:10:15Z",
       "resourceVersion": "26828",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "reviews",
@@ -273,7 +273,7 @@
       "createdAt": "2024-01-29T20:10:15Z",
       "resourceVersion": "26840",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "reviews",

@@ -97,7 +97,7 @@ export const AppDetailsPage = (props: { entity?: boolean }) => {
           {
             rateInterval: duration,
             hasSidecar: appResponse.workloads.some(w => w.istioSidecar),
-            hasAmbient: appResponse.workloads.some(w => w.istioAmbient),
+            hasAmbient: appResponse.workloads.some(w => w.isAmbient),
           },
           serverConfig,
         );
@@ -148,6 +148,7 @@ export const AppDetailsPage = (props: { entity?: boolean }) => {
             cluster={appItem?.cluster}
             objectType={MetricsObjectTypes.APP}
             direction="inbound"
+            includeWaypoint={serverConfig?.ambientEnabled ?? false} // TODO: replace with actual isAmbient when available for app
           />
         )}
       </>
@@ -166,6 +167,7 @@ export const AppDetailsPage = (props: { entity?: boolean }) => {
             cluster={appItem?.cluster}
             objectType={MetricsObjectTypes.APP}
             direction="outbound"
+            includeWaypoint={serverConfig?.ambientEnabled ?? false} // TODO: replace with actual isAmbient when available for app
           />
         )}
       </>

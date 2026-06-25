@@ -2009,9 +2009,7 @@ export interface IstioMetricsOptions extends MetricsQuery {
     // (undocumented)
     filters?: string[];
     // (undocumented)
-    includeAmbient?: boolean;
-    // (undocumented)
-    reporter: Reporter;
+    reporter: string;
     // (undocumented)
     requestProtocol?: string;
 }
@@ -3589,9 +3587,6 @@ export interface References {
 
 // @public (undocumented)
 export type RegexConfig = string | RegExp;
-
-// @public (undocumented)
-export type Reporter = 'source' | 'destination' | 'both';
 
 // @public (undocumented)
 export interface RequestAuthentication extends IstioObject {
