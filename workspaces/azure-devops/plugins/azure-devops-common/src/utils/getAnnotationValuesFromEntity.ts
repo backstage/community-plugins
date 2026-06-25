@@ -48,9 +48,36 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
       entity.metadata.annotations?.[ANNOTATION_SOURCE_LOCATION];
     if (!sourceLocation) return undefined;
 
-    // TODO(#9188): parse URL, extract path param, replace catalog-info.yaml
-    // with README.md — full implementation in Phase III
-    return undefined;
+    try {
+      // source-location values are prefixed with "url:" per Backstage convention
+      const rawUrl = sourceLocation.startsWith('url:')
+        ? sourceLocation.slice(4)
+        : sourceLocation;
+
+      const parsed = new URL(rawUrl);
+
+      // Only derive paths for Azure DevOps URLs
+      if (!parsed.hostname.includes('dev.azure.com')) return undefined;
+
+      // "path" query param holds the repo-relative path (URL-decoded by the URL API)
+      const pathParam = parsed.searchParams.get('path');
+      if (!pathParam) return undefined;
+
+      // Strip trailing slash, then get the directory of the catalog file
+      const cleanPath = pathParam.replace(/\/$/, '');
+      const lastSlash = cleanPath.lastIndexOf('/');
+      const lastSegment = cleanPath.slice(lastSlash + 1);
+
+      // If the last segment looks like a file (has a dot), use its parent dir
+      const dir = lastSegment.includes('.')
+        ? cleanPath.slice(0, lastSlash)
+        : cleanPath;
+
+      return `${dir}/README.md`;
+    } catch {
+      // Malformed URL — fail gracefully
+      return undefined;
+    }
   })();
 
   if (definition) {
