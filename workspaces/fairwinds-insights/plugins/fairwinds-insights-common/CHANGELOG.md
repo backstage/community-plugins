@@ -1,5 +1,11 @@
 # @backstage-community/plugin-fairwinds-insights-common
 
+## 0.4.0
+
+### Minor Changes
+
+- 8afe798: Backstage version bump to v1.52.0
+
 ## 0.3.0
 
 ### Minor Changes
