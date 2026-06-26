@@ -16,6 +16,7 @@
 
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isArgoWorkflowsAvailable } from '@backstage-community/plugin-argo-workflows-common';
 import { RiFlowChart } from '@remixicon/react';
 
 /**
@@ -26,7 +27,7 @@ const argoWorkflowsEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/argo-workflows',
     title: 'CI/CD',
-    filter: 'has:argoworkflows.argoproj.io/workflow-selector',
+    filter: isArgoWorkflowsAvailable,
     loader: () => import('./components/Router').then(m => <m.Router />),
   },
 });

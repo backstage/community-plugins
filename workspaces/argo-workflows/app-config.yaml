@@ -47,7 +47,3 @@ argoWorkflows:
     - name: k8s-staging
       kubernetes:
         clusterName: staging
-  # Node status visualization style in the workflow table.
-  # 'dots' (default): colored squares, one per node
-  # 'bar': horizontal stacked bar proportional to phase counts
-  nodeStatusStyle: bar

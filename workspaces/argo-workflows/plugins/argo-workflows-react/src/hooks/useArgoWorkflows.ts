@@ -24,6 +24,16 @@ import { parseWorkflow } from '@backstage-community/plugin-argo-workflows-common
 import type { Workflow } from '@backstage-community/plugin-argo-workflows-common';
 
 /**
+ * A workflow enriched with the source instance name.
+ *
+ * @public
+ */
+export interface WorkflowWithSource extends Workflow {
+  /** The instance this workflow was fetched from. */
+  sourceInstance?: string;
+}
+
+/**
  * Hook to fetch the list of Argo Workflows filtered by label selector.
  *
  * Supports querying a single instance, multiple instances (fetched in
@@ -42,7 +52,7 @@ export function useArgoWorkflows(options: {
   instanceNames?: string[];
   namespace?: string;
 }): {
-  workflows: Workflow[];
+  workflows: WorkflowWithSource[];
   loading: boolean;
   error: Error | undefined;
   retry: () => void;
@@ -51,7 +61,7 @@ export function useArgoWorkflows(options: {
   const fetchApi = useApi(fetchApiRef);
   const discoveryApi = useApi(discoveryApiRef);
 
-  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [workflows, setWorkflows] = useState<WorkflowWithSource[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const [retryCount, setRetryCount] = useState<number>(0);
@@ -121,17 +131,19 @@ export function useArgoWorkflows(options: {
         const results = await Promise.all(
           names.map(async name => {
             const wfs = await fetchForInstance(baseUrl, name);
-            return wfs.map(wf => ({ ...wf, _sourceInstance: name }));
+            return wfs.map(wf => ({ ...wf, sourceInstance: name }));
           }),
         );
 
         // Merge and deduplicate by uid
         const seen = new Set<string>();
-        const merged: Array<Workflow & { _sourceInstance?: string }> = [];
+        const merged: WorkflowWithSource[] = [];
         for (const batch of results) {
           for (const wf of batch) {
-            if (!seen.has(wf.metadata.uid)) {
-              seen.add(wf.metadata.uid);
+            const key =
+              wf.metadata.uid || `${wf.metadata.namespace}/${wf.metadata.name}`;
+            if (!seen.has(key)) {
+              seen.add(key);
               merged.push(wf);
             }
           }

@@ -105,12 +105,12 @@ function splitSelectorExpressions(selector: string): string[] {
  */
 export function validateLabelSelector(selector: string): string | undefined {
   if (selector.trim().length === 0) {
-    return 'le sélecteur ne peut pas être vide';
+    return 'selector must not be empty';
   }
   const expressions = splitSelectorExpressions(selector);
   const invalid = expressions.filter(e => !isValidSelectorExpression(e));
   if (invalid.length > 0) {
-    return `expressions invalides : ${invalid
+    return `invalid expressions: ${invalid
       .map(e => `"${e.trim()}"`)
       .join(', ')}`;
   }
@@ -170,7 +170,7 @@ export class ArgoWorkflowsService {
     if (!argoConfig) {
       this.defaultInstance = undefined;
       this.logger.warn(
-        'Aucune configuration argoWorkflows trouvée dans app-config.yaml',
+        'No argoWorkflows configuration found in app-config.yaml',
       );
       return;
     }
@@ -180,7 +180,7 @@ export class ArgoWorkflowsService {
     const instanceConfigs = argoConfig.getOptionalConfigArray('instances');
     if (!instanceConfigs || instanceConfigs.length === 0) {
       this.logger.warn(
-        'Aucune instance Argo Workflows configurée dans argoWorkflows.instances',
+        'No Argo Workflows instances configured in argoWorkflows.instances',
       );
       return;
     }
@@ -245,7 +245,7 @@ export class ArgoWorkflowsService {
 
     const validationError = validateLabelSelector(labelSelector);
     if (validationError) {
-      throw new InputError(`Sélecteur de labels invalide : ${validationError}`);
+      throw new InputError(`Invalid label selector: ${validationError}`);
     }
 
     if (instance.kind === 'kubernetes') {
@@ -332,7 +332,7 @@ export class ArgoWorkflowsService {
       return parseWorkflow(body);
     } catch (error) {
       throw new ForwardedError(
-        'Réponse invalide du serveur Argo : champs manquants',
+        'Invalid Argo server response: missing required fields',
         error,
       );
     }
@@ -364,7 +364,7 @@ export class ArgoWorkflowsService {
         .map(e => ('message' in e ? e.message : String(e.errorType)))
         .join('; ');
       throw new ForwardedError(
-        `Erreur lors de la récupération des CRDs Workflow : ${errorMessages}`,
+        `Failed to fetch Workflow CRDs: ${errorMessages}`,
         new Error(errorMessages),
       );
     }
@@ -398,7 +398,7 @@ export class ArgoWorkflowsService {
 
     const workflow = workflows.find(w => w.metadata.name === name);
     if (!workflow) {
-      throw new NotFoundError(`Workflow '${namespace}/${name}' non trouvé`);
+      throw new NotFoundError(`Workflow '${namespace}/${name}' not found`);
     }
 
     return workflow;
@@ -413,13 +413,13 @@ export class ArgoWorkflowsService {
   }> {
     if (!this.clusterSupplier || !this.fetcher || !this.authStrategy) {
       throw new ServiceUnavailableError(
-        `L'instance '${instance.name}' utilise kubernetes.clusterName mais le plugin Kubernetes n'est pas configuré`,
+        `Instance '${instance.name}' uses kubernetes.clusterName but the Kubernetes plugin is not configured`,
       );
     }
 
     if (!credentials) {
       throw new InputError(
-        'Les credentials Backstage sont requises pour les instances Kubernetes',
+        'Backstage credentials are required for Kubernetes instances',
       );
     }
 
@@ -428,7 +428,7 @@ export class ArgoWorkflowsService {
 
     if (!clusterDetails) {
       throw new NotFoundError(
-        `Cluster Kubernetes '${instance.clusterName}' non trouvé`,
+        `Kubernetes cluster '${instance.clusterName}' not found`,
       );
     }
 
@@ -443,7 +443,7 @@ export class ArgoWorkflowsService {
   private resolveInstance(instanceName: string): ArgoInstance {
     if (this.instances.length === 0) {
       throw new ServiceUnavailableError(
-        'Aucune instance Argo Workflows configurée',
+        'No Argo Workflows instances configured',
       );
     }
 
@@ -451,14 +451,14 @@ export class ArgoWorkflowsService {
 
     if (!targetName) {
       throw new InputError(
-        "Aucun nom d'instance fourni et aucune instance par défaut configurée",
+        'No instance name provided and no default instance configured',
       );
     }
 
     const instance = this.instances.find(i => i.name === targetName);
     if (!instance) {
       throw new NotFoundError(
-        `Instance Argo Workflows '${targetName}' non trouvée`,
+        `Argo Workflows instance '${targetName}' not found`,
       );
     }
 
@@ -471,7 +471,7 @@ export class ArgoWorkflowsService {
         return parseWorkflow(raw);
       } catch (error) {
         throw new ForwardedError(
-          'Réponse invalide : champs manquants dans le Workflow',
+          'Invalid response: missing required fields in Workflow',
           error,
         );
       }
@@ -498,14 +498,14 @@ export class ArgoWorkflowsService {
         },
       });
     } catch (error) {
-      this.logger.error(`Erreur de connexion (${instanceName}): ${error}`);
-      throw new ForwardedError('Le serveur est indisponible', error);
+      this.logger.error(`Connection error (${instanceName}): ${error}`);
+      throw new ForwardedError('Server is unavailable', error);
     }
 
     if (!response.ok) {
       const statusCode = response.status;
-      this.logger.error(`Erreur HTTP ${statusCode} (${instanceName}): ${url}`);
-      const err = new Error(`Erreur du serveur (HTTP ${statusCode})`);
+      this.logger.error(`HTTP error ${statusCode} (${instanceName}): ${url}`);
+      const err = new Error(`Server error (HTTP ${statusCode})`);
       (err as any).statusCode = statusCode;
       throw err;
     }

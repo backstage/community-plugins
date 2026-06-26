@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Button,
@@ -30,7 +30,10 @@ import {
   useTable,
 } from '@backstage/ui';
 import { useArgoWorkflows } from '@backstage-community/plugin-argo-workflows-react';
-import type { ArgoInstanceDetail } from '@backstage-community/plugin-argo-workflows-react';
+import type {
+  ArgoInstanceDetail,
+  WorkflowWithSource,
+} from '@backstage-community/plugin-argo-workflows-react';
 import { WorkflowDAGInline } from '../WorkflowDAGInline';
 import { buildColumns, workflowSortFn } from '../helpers';
 import { ALL_STATUSES, formatTimeAgo, type WorkflowItem } from '../utils';
@@ -68,6 +71,17 @@ export const WorkflowRunsTable = ({
     instanceName ? [instanceName] : allInstanceNames,
   );
 
+  // Sync selectedInstances when availableInstances loads asynchronously
+  useEffect(() => {
+    if (
+      !instanceName &&
+      allInstanceNames.length > 0 &&
+      selectedInstances.length === 0
+    ) {
+      setSelectedInstances(allInstanceNames);
+    }
+  }, [allInstanceNames, instanceName, selectedInstances.length]);
+
   const effectiveInstances =
     selectedInstances.length > 0 ? selectedInstances : allInstanceNames;
 
@@ -82,7 +96,14 @@ export const WorkflowRunsTable = ({
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [statusFilters, setStatusFilters] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
-  const [lastUpdated] = useState(() => new Date());
+  const [lastUpdated, setLastUpdated] = useState(() => new Date());
+
+  // Update lastUpdated whenever workflows data changes (loading completes)
+  useEffect(() => {
+    if (!loading && !error) {
+      setLastUpdated(new Date());
+    }
+  }, [loading, error]);
 
   const instanceTypeMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -117,8 +138,8 @@ export const WorkflowRunsTable = ({
 
   const data: WorkflowItem[] = filteredWorkflows.map(wf => ({
     ...wf,
-    id: wf.metadata.name,
-    sourceInstance: (wf as any)._sourceInstance,
+    id: wf.metadata.uid || `${wf.metadata.namespace}/${wf.metadata.name}`,
+    sourceInstance: (wf as WorkflowWithSource).sourceInstance,
   }));
 
   const { tableProps } = useTable({
@@ -151,7 +172,7 @@ export const WorkflowRunsTable = ({
   }
 
   const selectedWorkflow = expandedRow
-    ? data.find(wf => wf.metadata.name === expandedRow)
+    ? data.find(wf => wf.id === expandedRow)
     : undefined;
 
   return (
@@ -170,7 +191,7 @@ export const WorkflowRunsTable = ({
                       value: inst.name,
                       label: inst.name,
                     }))}
-                    value={selectedInstances}
+                    value={effectiveInstances}
                     onChange={keys => {
                       const values = Array.isArray(keys) ? keys : [keys];
                       setSelectedInstances(
@@ -181,7 +202,7 @@ export const WorkflowRunsTable = ({
                     }}
                     size="small"
                   />
-                  {selectedInstances.length < availableInstances.length && (
+                  {effectiveInstances.length < availableInstances.length && (
                     <Button
                       variant="tertiary"
                       size="small"
@@ -234,9 +255,7 @@ export const WorkflowRunsTable = ({
         }
         rowConfig={{
           onClick: item => {
-            setExpandedRow(prev =>
-              prev === item.metadata.name ? null : item.metadata.name,
-            );
+            setExpandedRow(prev => (prev === item.id ? null : item.id));
           },
         }}
       />

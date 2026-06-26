@@ -26,6 +26,13 @@ import { createRouter } from './router';
  * Registers the Argo Workflows API router with the Backstage backend,
  * providing proxy endpoints to communicate with Argo Workflows server instances.
  *
+ * **Note:** Instances configured with `kubernetes.clusterName` require the
+ * Kubernetes plugin integration dependencies (`clusterSupplier`, `fetcher`,
+ * `authStrategy`). These are not automatically wired in the new backend system.
+ * For Kubernetes-backed instances, use the legacy `createRouter` export and
+ * provide the dependencies manually. Argo server API instances (`baseUrl` +
+ * `token`) work without additional configuration.
+ *
  * @public
  */
 export const argoWorkflowsBackendPlugin = createBackendPlugin({

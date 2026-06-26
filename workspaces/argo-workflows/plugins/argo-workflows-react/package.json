@@ -34,8 +34,7 @@
     "@backstage-community/plugin-argo-workflows-common": "workspace:^",
     "@backstage/ui": "backstage:^",
     "@remixicon/react": "^4.9.0",
-    "classnames": "^2.5.1",
-    "dagre": "^0.8.5"
+    "classnames": "^2.5.1"
   },
   "peerDependencies": {
     "@backstage/core-plugin-api": "^1.12.6",
@@ -43,8 +42,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@types/dagre": "^0.7.52"
+    "@testing-library/jest-dom": "^6.0.0"
   },
   "files": [
     "dist"

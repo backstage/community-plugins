@@ -41,12 +41,9 @@
     "express-promise-router": "^4.1.0"
   },
   "devDependencies": {
-    "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/types": "backstage:^",
-    "@types/express": "^4.17.6",
-    "@types/supertest": "^7.0.0",
-    "supertest": "^7.0.0"
+    "@types/express": "^4.17.6"
   },
   "files": [
     "dist",

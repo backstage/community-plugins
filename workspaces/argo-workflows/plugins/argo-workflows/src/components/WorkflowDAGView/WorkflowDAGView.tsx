@@ -57,17 +57,20 @@ export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
   const layout = useMemo(() => {
     if (!workflow) return null;
     const workflowNodes = workflow.status.nodes ?? {};
-    if (Object.keys(workflowNodes).length === 0) return null;
+    if (Object.keys(workflowNodes).length === 0)
+      return { empty: true as const };
     try {
       const graph = buildDAG(workflow);
       return computeLayout(graph, DAG_VIEW_CONFIG);
     } catch {
-      return null;
+      return { error: true as const };
     }
   }, [workflow]);
 
   const handleFit = useCallback(() => {
-    if (layout) interaction.fitToView(layout);
+    if (layout && !('empty' in layout) && !('error' in layout)) {
+      interaction.fitToView(layout);
+    }
   }, [layout, interaction]);
 
   if (loading) {
@@ -95,7 +98,7 @@ export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
     );
   }
 
-  if (!workflow || !layout) {
+  if (!workflow || !layout || 'empty' in layout) {
     return (
       <div data-testid="workflow-dag-empty" role="status">
         <Alert
@@ -103,6 +106,19 @@ export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
           icon
           title="No tasks"
           description="This workflow does not contain any tasks."
+        />
+      </div>
+    );
+  }
+
+  if ('error' in layout) {
+    return (
+      <div data-testid="workflow-dag-empty" role="status">
+        <Alert
+          status="warning"
+          icon
+          title="DAG rendering failed"
+          description="Unable to render DAG visualization for this workflow."
         />
       </div>
     );

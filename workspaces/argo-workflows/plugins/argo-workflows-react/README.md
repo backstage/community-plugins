@@ -22,10 +22,10 @@ import { WorkflowStatusIcon } from '@backstage-community/plugin-argo-workflows-r
 <WorkflowStatusIcon status="Succeeded" size="medium" />;
 ```
 
-| Prop     | Type                             | Default    | Description                           |
-| -------- | -------------------------------- | ---------- | ------------------------------------- |
-| `status` | `WorkflowStatus`                 | —          | The workflow status to display.       |
-| `size`   | `'small' \| 'medium' \| 'large'` | `'medium'` | Icon size variant (16px, 24px, 32px). |
+| Prop     | Type                             | Default    | Description                                                 |
+| -------- | -------------------------------- | ---------- | ----------------------------------------------------------- |
+| `status` | `WorkflowStatus`                 | —          | The workflow status to display.                             |
+| `size`   | `'small' \| 'medium' \| 'large'` | `'medium'` | Reserved for future use. Currently renders at a fixed 20px. |
 
 ### WorkflowStatusBadge
 

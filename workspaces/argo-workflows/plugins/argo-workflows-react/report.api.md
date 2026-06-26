@@ -82,7 +82,7 @@ export function useArgoWorkflows(options: {
   instanceNames?: string[];
   namespace?: string;
 }): {
-  workflows: Workflow[];
+  workflows: WorkflowWithSource[];
   loading: boolean;
   error: Error | undefined;
   retry: () => void;
@@ -107,5 +107,10 @@ export const WorkflowStatusIcon: (
 export interface WorkflowStatusIconProps {
   size?: 'small' | 'medium' | 'large';
   status: WorkflowStatus;
+}
+
+// @public
+export interface WorkflowWithSource extends Workflow {
+  sourceInstance?: string;
 }
 ```
