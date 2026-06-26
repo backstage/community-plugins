@@ -92,14 +92,14 @@ describe('ArgoWorkflowsService', () => {
     it('logs a warning when no argoWorkflows config is present', () => {
       createService({});
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining('Aucune configuration argoWorkflows'),
+        expect.stringContaining('No argoWorkflows configuration found'),
       );
     });
 
     it('logs a warning when no instances are configured', () => {
       createService({ argoWorkflows: { instances: [] } });
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining('Aucune instance Argo Workflows configurée'),
+        expect.stringContaining('No Argo Workflows instances configured'),
       );
     });
 
@@ -141,7 +141,7 @@ describe('ArgoWorkflowsService', () => {
     it('throws 503 when no instances are configured', async () => {
       const service = createService({});
       await expect(service.listWorkflows('', 'app=test')).rejects.toThrow(
-        'Aucune instance Argo Workflows configurée',
+        'No Argo Workflows instances configured',
       );
     });
 
@@ -156,7 +156,7 @@ describe('ArgoWorkflowsService', () => {
       });
       await expect(
         service.listWorkflows('unknown', 'app=test'),
-      ).rejects.toThrow("Instance Argo Workflows 'unknown' non trouvée");
+      ).rejects.toThrow("Argo Workflows instance 'unknown' not found");
     });
 
     it('uses default instance when instanceName is empty', async () => {
@@ -210,7 +210,7 @@ describe('ArgoWorkflowsService', () => {
     it('rejects invalid label selectors', async () => {
       const service = createArgoService();
       await expect(service.listWorkflows('main', '')).rejects.toThrow(
-        'Sélecteur de labels invalide',
+        'Invalid label selector',
       );
     });
 
@@ -286,7 +286,7 @@ describe('ArgoWorkflowsService', () => {
       mockFetch.mockRejectedValueOnce(new Error('ECONNREFUSED'));
 
       await expect(service.listWorkflows('main', 'app=test')).rejects.toThrow(
-        'Le serveur est indisponible',
+        'Server is unavailable',
       );
     });
 
@@ -295,7 +295,7 @@ describe('ArgoWorkflowsService', () => {
       mockFetch.mockResolvedValueOnce({ ok: false, status: 403 });
 
       await expect(service.listWorkflows('main', 'app=test')).rejects.toThrow(
-        'Erreur du serveur (HTTP 403)',
+        'Server error (HTTP 403)',
       );
     });
   });
@@ -345,7 +345,7 @@ describe('ArgoWorkflowsService', () => {
 
       await expect(
         service.getWorkflow('main', 'default', 'wf-1'),
-      ).rejects.toThrow('Le serveur est indisponible');
+      ).rejects.toThrow('Server is unavailable');
     });
 
     it('propagates HTTP error codes', async () => {
@@ -354,7 +354,7 @@ describe('ArgoWorkflowsService', () => {
 
       await expect(
         service.getWorkflow('main', 'default', 'wf-1'),
-      ).rejects.toThrow('Erreur du serveur (HTTP 404)');
+      ).rejects.toThrow('Server error (HTTP 404)');
     });
   });
 
@@ -491,7 +491,7 @@ describe('ArgoWorkflowsService', () => {
           undefined,
           mockCredentials as any,
         ),
-      ).rejects.toThrow("Cluster Kubernetes 'production' non trouvé");
+      ).rejects.toThrow("Kubernetes cluster 'production' not found");
     });
 
     it('throws when kubernetes plugin is not configured', async () => {
@@ -512,13 +512,13 @@ describe('ArgoWorkflowsService', () => {
           undefined,
           mockCredentials as any,
         ),
-      ).rejects.toThrow("plugin Kubernetes n'est pas configuré");
+      ).rejects.toThrow('Kubernetes plugin is not configured');
     });
 
     it('throws when credentials are not provided', async () => {
       const service = createK8sService();
       await expect(service.listWorkflows('k8s', 'app=test')).rejects.toThrow(
-        'credentials Backstage sont requises',
+        'Backstage credentials are required',
       );
     });
   });

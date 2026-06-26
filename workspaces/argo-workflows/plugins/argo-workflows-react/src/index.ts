@@ -33,6 +33,8 @@ export {
   useArgoInstances,
 } from './hooks';
 
+export type { WorkflowWithSource } from './hooks/useArgoWorkflows';
+
 export type {
   ArgoInstanceType,
   ArgoInstanceDetail,

@@ -144,7 +144,7 @@ export function buildDAG(workflow: Workflow): DAGGraph {
   // Build nodes and edges
   for (const [nodeId, wfNode] of Object.entries(workflowNodes)) {
     nodes.push({
-      id: wfNode.id,
+      id: nodeId,
       label: wfNode.displayName,
       status: wfNode.phase,
       startedAt: wfNode.startedAt,

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Alert } from '@backstage/ui';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   isArgoWorkflowsAvailable,
@@ -29,9 +30,9 @@ import { WorkflowRunsTable } from './WorkflowRunsTable';
  * is present. If the annotation is present, renders the workflow runs table
  * with inline expandable DAG views. Returns null if the annotation is absent.
  *
- * Label selector resolution order:
- * 1. `backstage.io/kubernetes-label-selector` (custom label selector, highest priority)
- * 2. `argoworkflows.argoproj.io/workflow-selector` (plugin-specific selector)
+ * Label selector resolution order (highest priority first):
+ * 1. `argoworkflows.argoproj.io/workflow-selector` (plugin-specific selector)
+ * 2. `backstage.io/kubernetes-label-selector` (standard Kubernetes label selector)
  * 3. `backstage.io/kubernetes-id` (converted to `backstage.io/kubernetes-id=<value>`)
  */
 export const Router = () => {
@@ -44,19 +45,36 @@ export const Router = () => {
 
   const annotations = entity.metadata.annotations ?? {};
 
-  // Resolve label selector with Tekton-style precedence
+  // Resolve label selector — Argo-specific annotations take precedence
+  const workflowSelector = annotations[ArgoWorkflowsAnnotations.LABEL_SELECTOR];
   const k8sLabelSelector =
     annotations[ArgoWorkflowsAnnotations.KUBERNETES_LABEL_SELECTOR];
-  const workflowSelector = annotations[ArgoWorkflowsAnnotations.LABEL_SELECTOR];
   const k8sId = annotations[ArgoWorkflowsAnnotations.KUBERNETES_ID];
 
   let labelSelector = '';
-  if (k8sLabelSelector) {
-    labelSelector = k8sLabelSelector;
-  } else if (workflowSelector) {
+  if (workflowSelector) {
     labelSelector = workflowSelector;
+  } else if (k8sLabelSelector) {
+    labelSelector = k8sLabelSelector;
   } else if (k8sId) {
     labelSelector = `backstage.io/kubernetes-id=${k8sId}`;
+  }
+
+  if (!labelSelector) {
+    return (
+      <Alert
+        status="info"
+        icon
+        title="No label selector configured"
+        description={
+          'The Argo Workflows plugin is enabled but no label selector could be resolved. ' +
+          'Add one of the following annotations to your entity: ' +
+          `"${ArgoWorkflowsAnnotations.LABEL_SELECTOR}", ` +
+          `"${ArgoWorkflowsAnnotations.KUBERNETES_LABEL_SELECTOR}", or ` +
+          `"${ArgoWorkflowsAnnotations.KUBERNETES_ID}".`
+        }
+      />
+    );
   }
 
   const instanceName = annotations[ArgoWorkflowsAnnotations.INSTANCE_NAME];

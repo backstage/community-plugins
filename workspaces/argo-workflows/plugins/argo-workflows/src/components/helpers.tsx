@@ -99,7 +99,7 @@ export const expandColumn = (
   label: '',
   width: 25,
   cell: item => {
-    const isExpanded = expandedRow === item.metadata.name;
+    const isExpanded = expandedRow === item.id;
     return (
       <Cell>
         <RiArrowRightSLine

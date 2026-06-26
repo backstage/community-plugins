@@ -40,24 +40,37 @@ export const WorkflowDAGInline = ({ workflow }: WorkflowDAGInlineProps) => {
 
   const layout = useMemo(() => {
     const workflowNodes = workflow.status.nodes ?? {};
-    if (Object.keys(workflowNodes).length === 0) return null;
+    if (Object.keys(workflowNodes).length === 0)
+      return { empty: true as const };
     try {
       const graph = buildDAG(workflow);
       return computeLayout(graph, DAG_INLINE_CONFIG);
     } catch {
-      return null;
+      return { error: true as const };
     }
   }, [workflow]);
 
   const handleFit = useCallback(() => {
-    if (layout) interaction.fitToView(layout);
+    if (layout && !('empty' in layout) && !('error' in layout)) {
+      interaction.fitToView(layout);
+    }
   }, [layout, interaction]);
 
-  if (!layout) {
+  if (!layout || 'empty' in layout) {
     return (
       <div data-testid="workflow-dag-inline-empty" className={styles.empty}>
         <Text variant="body-small" color="secondary">
           This workflow does not contain any tasks.
+        </Text>
+      </div>
+    );
+  }
+
+  if ('error' in layout) {
+    return (
+      <div data-testid="workflow-dag-inline-empty" className={styles.empty}>
+        <Text variant="body-small" color="secondary">
+          Unable to render DAG visualization for this workflow.
         </Text>
       </div>
     );
