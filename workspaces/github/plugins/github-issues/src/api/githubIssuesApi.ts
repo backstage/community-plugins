@@ -115,7 +115,7 @@ export const githubIssuesApi = (
   configApi: ConfigApi,
   errorApi: ErrorApi,
 ) => {
-  const getOctokit = async (hostname: string) => {
+  const getOctokit = async (hostname?: string) => {
     const configs = readGithubIntegrationConfigs(
       configApi.getOptionalConfigArray('integrations.github') ?? [],
     );
