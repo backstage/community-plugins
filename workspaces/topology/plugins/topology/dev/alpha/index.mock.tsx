@@ -20,7 +20,7 @@
 
 import '@backstage/cli/asset-types';
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui';
+import '@backstage/ui/css/styles.css';
 
 import ReactDOM from 'react-dom/client';
 
@@ -30,19 +30,6 @@ import {
   createFrontendModule,
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
-import {
-  Sidebar,
-  SidebarGroup,
-  SidebarItem,
-  SidebarScrollWrapper,
-  SidebarSpace,
-} from '@backstage/core-components';
-import { NavContentBlueprint } from '@backstage/plugin-app-react';
-import {
-  SidebarLanguageSwitcher,
-  SidebarSignOutButton,
-} from '@backstage/dev-utils';
-
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import {
   kubernetesApiRef,
@@ -55,6 +42,7 @@ import {
   topologyCatalogModule,
   topologyTranslationsModule,
 } from '../../src/alpha';
+import { devSidebarContent } from './shared';
 
 import {
   mockCatalogApi,
@@ -129,28 +117,6 @@ const appDevModule = createFrontendModule({
         }),
     }),
   ],
-});
-
-const devSidebarContent = NavContentBlueprint.make({
-  params: {
-    component: ({ navItems }) => {
-      const nav = navItems.withComponent(item => (
-        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
-      ));
-      return (
-        <Sidebar>
-          <SidebarGroup label="Menu">
-            <SidebarScrollWrapper>
-              {nav.take('page:catalog')}
-            </SidebarScrollWrapper>
-          </SidebarGroup>
-          <SidebarSpace />
-          <SidebarLanguageSwitcher />
-          <SidebarSignOutButton />
-        </Sidebar>
-      );
-    },
-  },
 });
 
 const devNavModule = createFrontendModule({
