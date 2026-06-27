@@ -21,14 +21,6 @@
   margin-bottom: var(--bui-space-2);
 }
 
-.toolbar {
-  padding: var(--bui-space-3) var(--bui-space-4);
-  border: 1px solid var(--bui-border-1);
-  border-bottom: none;
-  border-radius: var(--bui-radius-2) var(--bui-radius-2) 0 0;
-  background-color: var(--bui-bg-neutral-1);
-}
-
 .updatedDot {
   width: 8px;
   height: 8px;

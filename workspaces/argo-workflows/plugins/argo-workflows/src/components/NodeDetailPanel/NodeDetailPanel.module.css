@@ -34,9 +34,6 @@
   flex-shrink: 0;
 }
 
-.messageDanger {
-  color: var(--bui-fg-danger);
-}
 
 .messageBox {
   padding: var(--bui-space-3);
