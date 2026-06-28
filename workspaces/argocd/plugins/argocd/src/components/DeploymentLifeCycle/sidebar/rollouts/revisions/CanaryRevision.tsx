@@ -53,11 +53,11 @@ const CanaryRevision: FC<RevisionCardProps> = ({
   return (
     <Card
       elevation={2}
-      sx={theme => ({
-        width: theme.spacing(60),
+      sx={{
+        width: '500px',
         overflowY: 'auto',
         margin: '1px',
-      })}
+      }}
       data-testid={`${revision?.metadata?.name}`}
     >
       <CardContent>

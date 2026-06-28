@@ -32,6 +32,5 @@ export const useDarkTheme = () => {
     } else {
       htmlTagElement.classList.remove(THEME_DARK_CLASS);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 };

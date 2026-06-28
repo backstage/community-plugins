@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { CSSProperties } from 'react';
 import { keyframes, styled } from '@mui/material/styles';
 
 const spinAnimation = keyframes`
@@ -20,7 +21,7 @@ const spinAnimation = keyframes`
   100% { transform: rotate(359deg); }
 `;
 
-export const iconStyle: React.CSSProperties = {
+export const iconStyle: CSSProperties = {
   marginLeft: '4.8px',
   width: '1em',
   height: '1em',

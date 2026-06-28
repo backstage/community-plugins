@@ -18,6 +18,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import type { SxProps, Theme } from '@mui/material/styles';
 import moment from 'moment';
 import {
   Application,
@@ -27,7 +28,7 @@ import { useTranslation } from '../../../../../hooks/useTranslation';
 
 type DeploymentHistoryCommitProps = {
   deploymentHistory: History;
-  styleClasses: Record<'commitMessage', Record<string, unknown>>;
+  styleClasses: Record<'commitMessage', SxProps<Theme>>;
   application: Application;
   commitMessage: string;
   commitUrl: string | null;

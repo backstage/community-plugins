@@ -56,7 +56,6 @@ const LifecycleContainer = styled('div')(({ theme }) => ({
       ? theme.palette.grey[700]
       : theme.palette.grey[200],
   color: 'black',
-  margin: '1px solid red',
   padding: '20px',
   borderRadius: '10px',
 }));

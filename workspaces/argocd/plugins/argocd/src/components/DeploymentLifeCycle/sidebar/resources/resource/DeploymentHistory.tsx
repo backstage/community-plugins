@@ -15,6 +15,7 @@
  */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import type { SxProps, Theme } from '@mui/material/styles';
 import type { FC } from 'react';
 import { getCommitUrl } from '../../../../../utils/utils';
 import {
@@ -29,10 +30,7 @@ type DeploymentHistoryProps = {
   application: Application;
   revisions: RevisionInfo[];
   appHistory: History[];
-  styleClasses: Record<
-    'commitMessage' | 'deploymentHistory',
-    Record<string, unknown>
-  >;
+  styleClasses: Record<'commitMessage' | 'deploymentHistory', SxProps<Theme>>;
   annotations: any;
   showFullDeploymentHistory?: boolean;
 };

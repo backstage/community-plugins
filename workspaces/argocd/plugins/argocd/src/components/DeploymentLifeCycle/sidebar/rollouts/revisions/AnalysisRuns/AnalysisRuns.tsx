@@ -76,7 +76,6 @@ const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
               <Chip
                 variant="outlined"
                 size="small"
-                color="primary"
                 icon={<AnalysisRunStatus status={analysisRunStatus} />}
                 label={`${t(
                   'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.chipLabel',

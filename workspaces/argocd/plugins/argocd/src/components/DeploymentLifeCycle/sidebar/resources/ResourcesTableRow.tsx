@@ -86,7 +86,7 @@ export const ResourcesTableRow: FC<ResourcesTableRowProps> = ({ uid, row }) => {
           )}
         </TableCell>
       </TableRow>
-      <TableRow sx={{ p: '10px' }}>
+      <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: '10px' }}>
