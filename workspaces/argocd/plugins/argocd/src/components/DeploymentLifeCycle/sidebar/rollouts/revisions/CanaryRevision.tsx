@@ -17,15 +17,11 @@ import type { FC } from 'react';
 
 import { memo } from 'react';
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 import useCanaryMetadata from '../../../../../hooks/useCanaryMetadata';
 import { Revision } from '../../../../../types/revision';
@@ -41,20 +37,10 @@ interface RevisionCardProps {
   animateProgressBar: boolean;
 }
 
-const useCanaryRevisionStyles = makeStyles((theme: Theme) => ({
-  canaryItem: {
-    // minHeight: theme.spacing(30),
-    width: theme.spacing(60),
-    overflowY: 'auto',
-    margin: '1px',
-  },
-}));
-
 const CanaryRevision: FC<RevisionCardProps> = ({
   revision,
   animateProgressBar = true,
 }) => {
-  const styles = useCanaryRevisionStyles();
   const { percentage, isStableRevision, isCanaryRevision } = useCanaryMetadata({
     revision,
   });
@@ -67,8 +53,11 @@ const CanaryRevision: FC<RevisionCardProps> = ({
   return (
     <Card
       elevation={2}
-      className={styles.canaryItem}
-      style={{ width: '500px' }}
+      sx={theme => ({
+        width: theme.spacing(60),
+        overflowY: 'auto',
+        margin: '1px',
+      })}
       data-testid={`${revision?.metadata?.name}`}
     >
       <CardContent>

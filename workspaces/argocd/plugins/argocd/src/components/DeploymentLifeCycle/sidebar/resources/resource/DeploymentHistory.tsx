@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Box, Typography } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/styles';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import type { FC } from 'react';
 import { getCommitUrl } from '../../../../../utils/utils';
 import {
@@ -29,7 +29,10 @@ type DeploymentHistoryProps = {
   application: Application;
   revisions: RevisionInfo[];
   appHistory: History[];
-  styleClasses: ClassNameMap<'commitMessage' | 'deploymentHistory'>;
+  styleClasses: Record<
+    'commitMessage' | 'deploymentHistory',
+    Record<string, unknown>
+  >;
   annotations: any;
   showFullDeploymentHistory?: boolean;
 };
@@ -55,7 +58,7 @@ export const DeploymentHistory: FC<DeploymentHistoryProps> = ({
           'deploymentLifecycle.sidebar.resources.resource.deploymentHistory.bodyText',
         )}
       </Typography>
-      <Box className={styleClasses.deploymentHistory}>
+      <Box sx={styleClasses.deploymentHistory}>
         {history.flatMap(dep => {
           const revisionShas =
             dep?.revisions || (dep?.revision ? [dep.revision] : []);

@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { keyframes, styled } from '@mui/material/styles';
 
-const useIconStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    icon: {
-      marginLeft: theme.spacing(0.6),
-      width: '1em',
-      height: '1em',
-    },
-    'icon-spin': {
-      animation: '$spin-animation 0.5s infinite',
-      display: 'inline-block',
-    },
+const spinAnimation = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+`;
 
-    '@keyframes spin-animation': {
-      '0%': {
-        transform: 'rotate(0deg)',
-      },
-      '100%': {
-        transform: 'rotate(359deg)',
-      },
-    },
-  }),
-);
+export const iconStyle: React.CSSProperties = {
+  marginLeft: '4.8px',
+  width: '1em',
+  height: '1em',
+};
 
-export default useIconStyles;
+export const SpinWrapper = styled('span')({
+  animation: `${spinAnimation} 0.5s infinite`,
+  display: 'inline-block',
+});

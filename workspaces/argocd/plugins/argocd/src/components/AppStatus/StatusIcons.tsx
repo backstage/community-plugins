@@ -29,36 +29,34 @@ import {
   SyncStatusCode,
   SyncStatuses,
 } from '@backstage-community/plugin-argocd-common';
-import useIconStyles from '../../hooks/useIconStyles';
+import { iconStyle, SpinWrapper } from '../../hooks/useIconStyles';
 
 export const SyncIcon: FC<{ status: SyncStatusCode }> = ({
   status,
 }): ReactNode => {
-  const classes = useIconStyles();
   switch (status) {
     case SyncStatuses.Synced:
       return (
         <CheckCircleIcon
           data-testid="synced-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: 'green' }}
+          style={{ ...iconStyle, color: 'green' }}
         />
       );
     case SyncStatuses.OutOfSync:
       return (
         <ArrowCircleUpIcon
           data-testid="outofsync-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#f4c030' }}
+          style={{ ...iconStyle, color: '#f4c030' }}
         />
       );
     case SyncStatuses.Unknown:
       return (
-        <CircleNotchIcon
-          data-testid="unknown-icon"
-          className={`${classes.icon} ${classes['icon-spin']}`}
-          style={{ height: '1em', color: '#0DADEA' }}
-        />
+        <SpinWrapper>
+          <CircleNotchIcon
+            data-testid="unknown-icon"
+            style={{ ...iconStyle, color: '#0DADEA' }}
+          />
+        </SpinWrapper>
       );
     default:
       return null;
@@ -68,54 +66,49 @@ export const SyncIcon: FC<{ status: SyncStatusCode }> = ({
 export const AppHealthIcon: FC<{ status: HealthStatus }> = ({
   status,
 }): ReactNode => {
-  const classes = useIconStyles();
-
   switch (status) {
     case HealthStatus.Healthy:
       return (
         <HeartIcon
           data-testid="healthy-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: 'green' }}
+          style={{ ...iconStyle, color: 'green' }}
         />
       );
     case HealthStatus.Suspended:
       return (
         <PauseCircleIcon
           data-testid="suspended-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#766f94' }}
+          style={{ ...iconStyle, color: '#766f94' }}
         />
       );
     case HealthStatus.Degraded:
       return (
         <HeartBrokenIcon
           data-testid="degraded-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#E96D76' }}
+          style={{ ...iconStyle, color: '#E96D76' }}
         />
       );
     case HealthStatus.Progressing:
       return (
-        <CircleNotchIcon
-          data-testid="progressing-icon"
-          className={`${classes.icon} ${classes['icon-spin']}`}
-          style={{ height: '1em', color: '#0DADEA' }}
-        />
+        <SpinWrapper>
+          <CircleNotchIcon
+            data-testid="progressing-icon"
+            style={{ ...iconStyle, color: '#0DADEA' }}
+          />
+        </SpinWrapper>
       );
     case HealthStatus.Missing:
       return (
         <GhostIcon
           data-testid="missing-icon"
-          className={`${classes.icon}`}
-          style={{ height: '1em', color: '#f4c030' }}
+          style={{ ...iconStyle, color: '#f4c030' }}
         />
       );
     default:
       return (
         <QuestionCircleIcon
           data-testid="unknown-icon"
-          style={{ height: '1em', color: 'green' }}
+          style={{ ...iconStyle, color: 'green' }}
         />
       );
   }

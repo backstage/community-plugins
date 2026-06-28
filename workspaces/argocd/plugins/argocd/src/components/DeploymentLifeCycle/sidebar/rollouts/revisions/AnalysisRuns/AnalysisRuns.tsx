@@ -15,7 +15,10 @@
  */
 import type { FC } from 'react';
 
-import { Box, Chip, Tooltip, Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import moment from 'moment';
 
 import { AnalysisRun } from '../../../../../../types/analysisRuns';
@@ -73,7 +76,7 @@ const AnalysisRuns: FC<AnalysisRunsProps> = ({ analysisruns }) => {
               <Chip
                 variant="outlined"
                 size="small"
-                color="default"
+                color="primary"
                 icon={<AnalysisRunStatus status={analysisRunStatus} />}
                 label={`${t(
                   'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.chipLabel',

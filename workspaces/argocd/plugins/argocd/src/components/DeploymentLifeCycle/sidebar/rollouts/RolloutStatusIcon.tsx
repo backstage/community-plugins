@@ -22,7 +22,7 @@ import {
   PauseCircleIcon,
 } from '@patternfly/react-icons';
 
-import useIconStyles from '../../../../hooks/useIconStyles';
+import { iconStyle, SpinWrapper } from '../../../../hooks/useIconStyles';
 import {
   AnalysisRunPhase,
   AnalysisRunPhases,
@@ -48,19 +48,16 @@ export const getStatusColor = (
     case AnalysisRunPhases.Running:
       return '#0DADEA';
     default:
-      return 'gray'; // Default color
+      return 'gray';
   }
 };
 
 const RolloutStatusIcon: FC<{ status: keyof typeof RolloutPhase }> = ({
   status,
 }): ReactNode => {
-  const classes = useIconStyles();
-
   const commonProps = {
     ['data-testid']: `rollout-${status.toLocaleLowerCase('en-US')}-icon`,
-    className: classes.icon,
-    style: { color: getStatusColor(status) },
+    style: { ...iconStyle, color: getStatusColor(status) },
   };
 
   switch (status) {
@@ -74,10 +71,9 @@ const RolloutStatusIcon: FC<{ status: keyof typeof RolloutPhase }> = ({
       return <ErrorCircleOIcon {...commonProps} />;
     case RolloutPhase.Progressing:
       return (
-        <CircleNotchIcon
-          {...commonProps}
-          className={`${classes.icon} ${classes['icon-spin']}`}
-        />
+        <SpinWrapper>
+          <CircleNotchIcon {...commonProps} />
+        </SpinWrapper>
       );
     default:
       return null;
