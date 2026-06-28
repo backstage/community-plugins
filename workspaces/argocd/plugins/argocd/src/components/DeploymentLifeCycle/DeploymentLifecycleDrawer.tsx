@@ -73,6 +73,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
       open={isOpen}
       onClose={onClose}
       PaperProps={{
+        'data-testid': `${app?.metadata?.name}-sidebar`,
         sx: {
           width: '75%',
           p: 2.5,
