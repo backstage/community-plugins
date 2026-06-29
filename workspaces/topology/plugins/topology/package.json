@@ -65,7 +65,7 @@
     "@remixicon/react": "^4.2.0",
     "classnames": "2.x",
     "git-url-parse": "^13.1.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.2.0",
     "lodash": "^4.17.21",
     "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
