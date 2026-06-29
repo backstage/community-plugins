@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
+import { Flex, Tag, TagGroup } from '@backstage/ui';
+
+import styles from './ManifestDigestChip.module.css';
 
 type ManifestDigestChipProps = {
   label: string;
@@ -26,19 +27,13 @@ export const ManifestDigestChip = ({
   hash,
 }: ManifestDigestChipProps) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Chip
-        label={label}
-        sx={{
-          margin: 0,
-          marginRight: '.2em',
-          height: '1.5em',
-          '& > span': {
-            padding: '.3em',
-          },
-        }}
-      />
+    <Flex align="center">
+      <TagGroup>
+        <Tag size="small" className={styles.chip}>
+          {label}
+        </Tag>
+      </TagGroup>
       {hash}
-    </Box>
+    </Flex>
   );
 };

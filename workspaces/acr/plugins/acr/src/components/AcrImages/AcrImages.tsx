@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ErrorPanel, Table } from '@backstage/core-components';
-import Box from '@mui/material/Box';
+import { Box } from '@backstage/ui';
 import { useMemo } from 'react';
 import { formatDate } from '../../utils/acr-utils';
 
@@ -47,7 +47,7 @@ export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
   });
 
   const emptyContent = error ? (
-    <Box padding={2}>
+    <Box p="4">
       <ErrorPanel error={error} />
     </Box>
   ) : null;
