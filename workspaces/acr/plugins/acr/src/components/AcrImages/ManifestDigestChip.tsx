@@ -28,7 +28,7 @@ export const ManifestDigestChip = ({
 }: ManifestDigestChipProps) => {
   return (
     <Flex align="center">
-      <TagGroup aria-label="digest" className={styles.tagGroup}>
+      <TagGroup aria-label="digest">
         <Tag size="small" className={styles.chip}>
           {label}
         </Tag>
