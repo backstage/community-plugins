@@ -47,7 +47,7 @@ export const AcrImages = ({ image, registryName }: AcrImagesProps) => {
   });
 
   const emptyContent = error ? (
-    <Box style={{ padding: 'var(--bui-space-4)' }}>
+    <Box p="4">
       <ErrorPanel error={error} />
     </Box>
   ) : null;
