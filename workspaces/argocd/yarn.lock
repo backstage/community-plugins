@@ -2183,7 +2183,7 @@ __metadata:
     "@backstage/theme": "npm:^0.7.3"
     "@backstage/ui": "npm:^0.14.3"
     "@kubernetes/client-node": "npm:^1.0.0"
-    "@mui/icons-material": "npm:^6.0.0"
+    "@mui/icons-material": "npm:^5.15.16"
     "@mui/material": "npm:^5.15.16"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-icons": "npm:^6.0.0"
@@ -7893,22 +7893,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/f55f3da3c375ec3bad5417f5588122587ccf6a02093de286ca723bb6d01692f2cdf81dea413abc396eba87d6f7ab7443cc51e3dd024da8099764e55e12fa4176
-  languageName: node
-  linkType: hard
-
-"@mui/icons-material@npm:^6.0.0":
-  version: 6.4.6
-  resolution: "@mui/icons-material@npm:6.4.6"
-  dependencies:
-    "@babel/runtime": "npm:^7.26.0"
-  peerDependencies:
-    "@mui/material": ^6.4.6
-    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
-    react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10/d0e60c1276a5919496264a36a0fd7caf5e937a16da0e86ddbc2ae609c2cd399d6e75d90c97f91af6be68288dc2ad7623d71ce96b0b8dbffc6985894cef1bbb3d
   languageName: node
   linkType: hard
 
