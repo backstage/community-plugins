@@ -33,6 +33,7 @@ export const ActionType = {
   CREATE_OR_UPDATE: 'create_or_update',
   UPDATE: 'update',
   DELETE: 'delete',
+  RECONCILE_ABORT: 'reconcile_abort',
 };
 
 export const RoleEvents = {

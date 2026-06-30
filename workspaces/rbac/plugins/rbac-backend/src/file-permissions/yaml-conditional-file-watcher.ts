@@ -25,6 +25,7 @@ import { omit } from 'lodash';
 
 import type {
   PermissionAction,
+  PermissionInfo,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
@@ -33,7 +34,14 @@ import fs from 'fs';
 import { ActionType, ConditionEvents } from '../auditor/auditor';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
-import { deepSortEqual, processConditionMapping } from '../helper';
+import {
+  abortConditionalPolicyReconcile,
+  deepSortEqual,
+  permissionMappingToActions,
+  planConditionalReconcile,
+  processConditionMapping,
+  toError,
+} from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import {
@@ -268,65 +276,164 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   }
 
   private async handleFileChanges(): Promise<void> {
-    await this.removeConditions();
-    await this.addConditions();
-  }
+    const { addedConditions, removedConditions } = this.conditionsDiff;
 
-  private async addConditions(): Promise<void> {
-    for (const condition of this.conditionsDiff.addedConditions) {
-      const auditorEvent = await this.auditor.createEvent({
-        eventId: ConditionEvents.CONDITION_WRITE,
-        severityLevel: 'medium',
-        meta: { actionType: ActionType.CREATE },
-      });
+    if (addedConditions.length === 0 && removedConditions.length === 0) {
+      return;
+    }
 
-      try {
-        const conditionToCreate = await processConditionMapping(
-          condition,
-          this.pluginMetadataCollector,
-          this.auth,
+    // Map all additions, then apply updates/creates before deletes so a failed
+    // persist does not delete stored conditions (#9429).
+    try {
+      const stagedAdditions: RoleConditionalPolicyDecision<PermissionInfo>[] =
+        [];
+      for (const condition of addedConditions) {
+        stagedAdditions.push(
+          await processConditionMapping(
+            condition,
+            this.pluginMetadataCollector,
+            this.auth,
+          ),
         );
-
-        await this.conditionalStorage.createCondition(conditionToCreate);
-        await auditorEvent.success({
-          meta: { condition },
-        });
-      } catch (error) {
-        await auditorEvent.fail({ error, meta: { condition } });
       }
-    }
 
-    this.conditionsDiff.addedConditions = [];
+      const plan = planConditionalReconcile(
+        stagedAdditions,
+        removedConditions,
+        item => permissionMappingToActions(item.permissionMapping),
+      );
+
+      for (const { stored, desired } of plan.updates) {
+        await this.persistConditionUpdate(stored.id!, desired);
+      }
+
+      for (const conditionToCreate of plan.creates) {
+        await this.persistConditionAddition(conditionToCreate);
+      }
+
+      for (const condition of plan.deletes) {
+        await this.persistConditionRemoval(condition);
+      }
+
+      this.conditionsDiff = {
+        addedConditions: [],
+        removedConditions: [],
+      };
+    } catch (error) {
+      await abortConditionalPolicyReconcile({
+        logger: this.logger,
+        auditor: this.auditor,
+        source: 'conditional-policies-file',
+        abortEventId: ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE,
+        pendingAdds: addedConditions.length,
+        pendingRemoves: removedConditions.length,
+        pluginIds: [...new Set(addedConditions.map(c => c.pluginId))],
+        error: toError(error),
+      });
+    }
   }
 
-  private async removeConditions(): Promise<void> {
-    for (const condition of this.conditionsDiff.removedConditions) {
-      const auditorEvent = await this.auditor.createEvent({
-        eventId: ConditionEvents.CONDITION_WRITE,
-        severityLevel: 'medium',
-        meta: { actionType: ActionType.DELETE },
+  private async persistConditionUpdate(
+    id: number,
+    conditionToUpdate: RoleConditionalPolicyDecision<PermissionInfo>,
+  ): Promise<void> {
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.UPDATE },
+    });
+
+    try {
+      await this.conditionalStorage.updateCondition(id, conditionToUpdate);
+      await auditorEvent.success({
+        meta: {
+          condition: {
+            ...conditionToUpdate,
+            permissionMapping: conditionToUpdate.permissionMapping.map(
+              pm => pm.action,
+            ),
+          },
+        },
       });
-
-      try {
-        const conditionToDelete = (
-          await this.conditionalStorage.filterConditions(
-            condition.roleEntityRef,
-            condition.pluginId,
-            condition.resourceType,
-            condition.permissionMapping,
-          )
-        )[0];
-        await this.conditionalStorage.deleteCondition(conditionToDelete.id!);
-        await auditorEvent.success({ meta: { condition } });
-      } catch (error) {
-        await auditorEvent.fail({
-          error,
-          meta: { condition },
-        });
-      }
+    } catch (error) {
+      await auditorEvent.fail({
+        error,
+        meta: {
+          condition: {
+            ...conditionToUpdate,
+            permissionMapping: conditionToUpdate.permissionMapping.map(
+              pm => pm.action,
+            ),
+          },
+        },
+      });
+      throw error;
     }
+  }
 
-    this.conditionsDiff.removedConditions = [];
+  private async persistConditionAddition(
+    conditionToCreate: RoleConditionalPolicyDecision<PermissionInfo>,
+  ): Promise<void> {
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.CREATE },
+    });
+
+    try {
+      await this.conditionalStorage.createCondition(conditionToCreate);
+      await auditorEvent.success({
+        meta: {
+          condition: {
+            ...conditionToCreate,
+            permissionMapping: conditionToCreate.permissionMapping.map(
+              pm => pm.action,
+            ),
+          },
+        },
+      });
+    } catch (error) {
+      await auditorEvent.fail({
+        error,
+        meta: {
+          condition: {
+            ...conditionToCreate,
+            permissionMapping: conditionToCreate.permissionMapping.map(
+              pm => pm.action,
+            ),
+          },
+        },
+      });
+      throw error;
+    }
+  }
+
+  private async persistConditionRemoval(
+    condition: RoleConditionalPolicyDecision<PermissionAction>,
+  ): Promise<void> {
+    const auditorEvent = await this.auditor.createEvent({
+      eventId: ConditionEvents.CONDITION_WRITE,
+      severityLevel: 'medium',
+      meta: { actionType: ActionType.DELETE },
+    });
+
+    try {
+      const conditionToDelete = (
+        await this.conditionalStorage.filterConditions(
+          condition.roleEntityRef,
+          condition.pluginId,
+          condition.resourceType,
+          condition.permissionMapping,
+        )
+      )[0];
+      await this.conditionalStorage.deleteCondition(conditionToDelete.id!);
+      await auditorEvent.success({ meta: { condition } });
+    } catch (error) {
+      await auditorEvent.fail({
+        error,
+        meta: { condition },
+      });
+    }
   }
 
   async cleanUpConditionalPolicies(): Promise<void> {
@@ -343,6 +450,9 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
       };
     });
     this.conditionsDiff.removedConditions = existedFileConds;
-    await this.removeConditions();
+    for (const condition of this.conditionsDiff.removedConditions) {
+      await this.persistConditionRemoval(condition);
+    }
+    this.conditionsDiff.removedConditions = [];
   }
 }

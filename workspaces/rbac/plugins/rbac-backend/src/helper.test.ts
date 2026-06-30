@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
-import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
+import { mockServices } from '@backstage/backend-test-utils';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import {
+  clearAuditorMock,
+  expectAuditorLog,
+} from '../__fixtures__/auditor-test-utils';
 import { mockAuditorService } from '../__fixtures__/mock-utils';
+import { ActionType, ConditionEvents } from './auditor/auditor';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
+  abortConditionalPolicyReconcile,
+  conditionalActionsOverlap,
   deepSortedEqual,
+  diffConditionalPolicies,
   isPermissionAction,
   matches,
+  permissionMappingToActions,
+  planConditionalReconcile,
+  toError,
   mergeRoleMetadata,
   metadataStringToPolicy,
   policiesToString,
@@ -838,5 +850,231 @@ describe('mergeRoleMetadata', () => {
     expect(result.description).toEqual(newMetadata.description);
     expect(result.roleEntityRef).toEqual(newMetadata.roleEntityRef);
     expect(result.source).toEqual(newMetadata.source);
+  });
+});
+
+describe('diffConditionalPolicies', () => {
+  const stored = [
+    {
+      id: 1,
+      result: AuthorizeResult.CONDITIONAL,
+      roleEntityRef: 'role:default/test',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+      ],
+      conditions: {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: { claims: ['group:default/team-a'] },
+      },
+    },
+  ];
+
+  it('returns empty diff when stored matches desired', () => {
+    const diff = diffConditionalPolicies(
+      stored,
+      stored,
+      (a, b) => a.id === b.id,
+    );
+    expect(diff.toAdd).toHaveLength(0);
+    expect(diff.toRemove).toHaveLength(0);
+  });
+
+  it('returns additions and removals for replace diff', () => {
+    const desired = [
+      {
+        ...stored[0],
+        permissionMapping: [
+          { name: 'catalog.entity.read', action: 'read' as const },
+          { name: 'catalog.entity.delete', action: 'delete' as const },
+        ],
+      },
+    ];
+    const diff = diffConditionalPolicies(
+      stored,
+      desired,
+      (a, b) =>
+        a.roleEntityRef === b.roleEntityRef &&
+        a.pluginId === b.pluginId &&
+        a.resourceType === b.resourceType &&
+        JSON.stringify(a.permissionMapping) ===
+          JSON.stringify(b.permissionMapping) &&
+        JSON.stringify(a.conditions) === JSON.stringify(b.conditions),
+    );
+    expect(diff.toAdd).toHaveLength(1);
+    expect(diff.toRemove).toHaveLength(1);
+  });
+});
+
+describe('planConditionalReconcile', () => {
+  const stored = {
+    id: 1,
+    result: AuthorizeResult.CONDITIONAL,
+    roleEntityRef: 'role:default/test',
+    pluginId: 'catalog',
+    resourceType: 'catalog-entity',
+    permissionMapping: [
+      { name: 'catalog.entity.read', action: 'read' as const },
+    ],
+    conditions: {
+      rule: 'IS_ENTITY_OWNER',
+      resourceType: 'catalog-entity',
+      params: { claims: ['group:default/team-a'] },
+    },
+  };
+
+  it('routes overlapping replacements to updates', () => {
+    const desired = {
+      ...stored,
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(1);
+    expect(plan.updates[0].stored.id).toBe(1);
+    expect(plan.creates).toHaveLength(0);
+    expect(plan.deletes).toHaveLength(0);
+  });
+
+  it('routes non-overlapping replacement to create and delete', () => {
+    const desired = {
+      roleEntityRef: stored.roleEntityRef,
+      pluginId: stored.pluginId,
+      resourceType: stored.resourceType,
+      permissionMapping: [
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(0);
+    expect(plan.creates).toHaveLength(1);
+    expect(plan.deletes).toHaveLength(1);
+  });
+
+  it('routes net-new additions to creates only', () => {
+    const desired = {
+      roleEntityRef: 'role:default/other',
+      pluginId: 'catalog',
+      resourceType: 'catalog-entity',
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(0);
+    expect(plan.creates).toHaveLength(1);
+    expect(plan.deletes).toHaveLength(1);
+  });
+});
+
+describe('conditionalActionsOverlap', () => {
+  it('returns true when action sets intersect', () => {
+    expect(conditionalActionsOverlap(['read'], ['read', 'delete'])).toBe(true);
+  });
+
+  it('returns false when action sets are disjoint', () => {
+    expect(conditionalActionsOverlap(['read'], ['delete'])).toBe(false);
+  });
+});
+
+describe('toError', () => {
+  it('returns Error instances unchanged', () => {
+    const error = new Error('failed');
+    expect(toError(error)).toBe(error);
+  });
+
+  it('wraps non-Error values', () => {
+    const error = toError('failed');
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe('failed');
+  });
+});
+
+describe('abortConditionalPolicyReconcile', () => {
+  const mockLogger = mockServices.logger.mock();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    clearAuditorMock();
+  });
+
+  it('logs and audits a batch abort without mutating storage', async () => {
+    const reconcileError = new Error('metadata unavailable');
+
+    await abortConditionalPolicyReconcile({
+      logger: mockLogger,
+      auditor: mockAuditorService,
+      source: 'test',
+      pendingAdds: 1,
+      pendingRemoves: 1,
+      pluginIds: ['catalog'],
+      error: reconcileError,
+    });
+
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        event: 'conditional_reconcile_aborted',
+        error: {
+          name: reconcileError.name,
+          message: reconcileError.message,
+          stack: reconcileError.stack,
+        },
+      }),
+    );
+  });
+
+  it('includes reconcile_abort actionType for condition-write aborts', async () => {
+    await abortConditionalPolicyReconcile({
+      logger: mockLogger,
+      auditor: mockAuditorService,
+      source: 'test-provider',
+      abortEventId: ConditionEvents.CONDITION_WRITE,
+      pendingAdds: 2,
+      pendingRemoves: 1,
+      pluginIds: ['catalog'],
+      error: new Error('reconcile failed'),
+    });
+
+    expectAuditorLog([
+      {
+        event: {
+          eventId: ConditionEvents.CONDITION_WRITE,
+          meta: {
+            source: 'test-provider',
+            actionType: ActionType.RECONCILE_ABORT,
+            pendingAdds: 2,
+            pendingRemoves: 1,
+            pluginIds: ['catalog'],
+          },
+        },
+        fail: {
+          error: new Error('reconcile failed'),
+          meta: {
+            source: 'test-provider',
+            actionType: ActionType.RECONCILE_ABORT,
+            pendingAdds: 2,
+            pendingRemoves: 1,
+            pluginIds: ['catalog'],
+          },
+        },
+      },
+    ]);
   });
 });
