@@ -15,31 +15,14 @@
  */
 
 import { ReactNode } from 'react';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
+import { Tag, TagGroup, Text } from '@backstage/ui';
 import { Link } from '@backstage/core-components';
 import {
   IndexableDocument,
   ResultHighlight,
 } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
-
-const useStyles = makeStyles(
-  {
-    flexContainer: {
-      flexWrap: 'wrap',
-    },
-    itemText: {
-      width: '100%',
-      wordBreak: 'break-all',
-      marginBottom: '1rem',
-    },
-  },
-  { name: 'ExploreToolSearchResultListItem' },
-);
+import styles from './ToolSearchResultListItem.module.css';
 
 /**
  * Props for {@link ToolSearchResultListItem}.
@@ -57,22 +40,18 @@ export interface ToolSearchResultListItemProps {
 export function ToolSearchResultListItem(props: ToolSearchResultListItemProps) {
   const result = props.result as any;
 
-  const classes = useStyles();
-
   if (!result) return null;
 
   return (
-    <>
+    <div className={styles.item}>
       {props.icon && (
-        <ListItemIcon>
+        <div className={styles.listItemIcon}>
           {typeof props.icon === 'function' ? props.icon(result) : props.icon}
-        </ListItemIcon>
+        </div>
       )}
-      <div className={classes.flexContainer}>
-        <ListItemText
-          className={classes.itemText}
-          primaryTypographyProps={{ variant: 'h6' }}
-          primary={
+      <div className={styles.flexContainer}>
+        <div className={styles.itemText}>
+          <Text variant="title-small">
             <Link noTrack to={result.location}>
               {props.highlight?.fields.title ? (
                 <HighlightedSearchResultText
@@ -84,9 +63,9 @@ export function ToolSearchResultListItem(props: ToolSearchResultListItemProps) {
                 result.title
               )}
             </Link>
-          }
-          secondary={
-            props.highlight?.fields.text ? (
+          </Text>
+          <Text variant="body-small" color="secondary">
+            {props.highlight?.fields.text ? (
               <HighlightedSearchResultText
                 text={props.highlight.fields.text}
                 preTag={props.highlight.preTag}
@@ -94,15 +73,19 @@ export function ToolSearchResultListItem(props: ToolSearchResultListItemProps) {
               />
             ) : (
               result.text
-            )
-          }
-        />
-        <Box>
-          {result.tags?.map((tag: string) => (
-            <Chip label={tag} size="small" />
-          ))}
-        </Box>
+            )}
+          </Text>
+        </div>
+        {result.tags?.length ? (
+          <TagGroup>
+            {result.tags.map((tag: string) => (
+              <Tag key={tag} size="small">
+                {tag}
+              </Tag>
+            ))}
+          </TagGroup>
+        ) : null}
       </div>
-    </>
+    </div>
   );
 }

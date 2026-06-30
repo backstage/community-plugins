@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,14 @@ import ReactDOM from 'react-dom/client';
 
 import { createApp } from '@backstage/frontend-defaults';
 
+// The dev harness bootstraps a standalone app, so it needs the BUI styles
+// even though this package is a frontend-plugin.
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
 import {
   ApiBlueprint,
+  configApiRef,
   createFrontendModule,
 } from '@backstage/frontend-plugin-api';
 
@@ -27,6 +33,7 @@ import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 
 import explorePlugin from '../src/alpha';
+import { exploreApiRef } from '../src/api';
 
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 
@@ -143,8 +150,42 @@ const catalogPluginOverrides = createFrontendModule({
   ],
 });
 
+const explorePluginOverrides = createFrontendModule({
+  pluginId: 'explore',
+  extensions: [
+    ApiBlueprint.make({
+      params: defineParams =>
+        defineParams({
+          api: exploreApiRef,
+          deps: { configApi: configApiRef },
+          factory: ({ configApi }) => ({
+            async getTools() {
+              const tools =
+                configApi
+                  .getOptionalConfigArray('explore.tools')
+                  ?.map(toolConfig => ({
+                    title: toolConfig.getString('title'),
+                    description: toolConfig.getOptionalString('description'),
+                    url: toolConfig.getString('url'),
+                    image: toolConfig.getString('image'),
+                    tags: toolConfig.getOptionalStringArray('tags'),
+                    lifecycle: toolConfig.getOptionalString('lifecycle'),
+                  })) ?? [];
+              return { tools };
+            },
+          }),
+        }),
+    }),
+  ],
+});
+
 const app = createApp({
-  features: [explorePlugin, catalogPlugin, catalogPluginOverrides],
+  features: [
+    explorePlugin,
+    catalogPlugin,
+    catalogPluginOverrides,
+    explorePluginOverrides,
+  ],
 });
 
 const root = app.createRoot();

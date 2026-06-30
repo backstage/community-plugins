@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,17 @@ import {
   getEntityRelations,
   entityRouteRef,
 } from '@backstage/plugin-catalog-react';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Chip from '@material-ui/core/Chip';
+import {
+  ButtonLink,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Tag,
+  TagGroup,
+} from '@backstage/ui';
 
-import { LinkButton, ItemCardHeader } from '@backstage/core-components';
+import { ItemCardHeader } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
 
 /** @public */
@@ -49,27 +52,29 @@ export const EntityCard = (props: { entity: Entity }) => {
 
   return (
     <Card>
-      <CardMedia>
+      <CardHeader style={{ padding: 0 }}>
         <ItemCardHeader
           title={entity.metadata.title ?? entity.metadata.name}
           subtitle={owner}
         />
-      </CardMedia>
-      <CardContent>
+      </CardHeader>
+      <CardBody style={{ overflow: 'visible' }}>
         {entity.metadata.tags?.length ? (
-          <Box>
+          <TagGroup style={{ marginBottom: 'var(--bui-space-2)' }}>
             {entity.metadata.tags.map(tag => (
-              <Chip size="small" label={tag} key={tag} />
+              <Tag key={tag} size="small">
+                {tag}
+              </Tag>
             ))}
-          </Box>
+          </TagGroup>
         ) : null}
         {entity.metadata.description}
-      </CardContent>
-      <CardActions>
-        <LinkButton to={url} color="primary">
+      </CardBody>
+      <CardFooter style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <ButtonLink href={url} variant="primary">
           Explore
-        </LinkButton>
-      </CardActions>
+        </ButtonLink>
+      </CardFooter>
     </Card>
   );
 };

@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import { Header, Page, RoutedTabs } from '@backstage/core-components';
 import {
   attachComponentData,
   useElementFilter,
+  useRouteRef,
 } from '@backstage/core-plugin-api';
-import { TabProps } from '@material-ui/core/Tab';
-import { default as React } from 'react';
+import { HeaderTab, PluginHeader } from '@backstage/ui';
+import React, { useMemo } from 'react';
+import { useRoutes } from 'react-router-dom';
+import { exploreRouteRef } from '../../routes';
 
 // TODO: This layout could be a shared based component if it was possible to create custom TabbedLayouts
 //    A generalized version of createSubRoutesFromChildren, etc. would be required
@@ -29,22 +31,39 @@ export type SubRoute = {
   path: string;
   title: string;
   children: JSX.Element;
-  tabProps?: TabProps<React.ElementType, { component?: React.ElementType }>;
+  /**
+   * @deprecated The Backstage UI `PluginHeader` does not forward extra MUI tab
+   * props. This field is kept for backwards compatibility but is no longer
+   * used.
+   */
+  tabProps?: Record<string, unknown>;
 };
 
 const dataKey = 'plugin.explore.exploreLayoutRoute';
 
-const Route: (props: SubRoute) => null = () => null;
-attachComponentData(Route, dataKey, true);
+const RouteData: (props: SubRoute) => null = () => null;
+attachComponentData(RouteData, dataKey, true);
 
 // This causes all mount points that are discovered within this route to use the path of the route itself
-attachComponentData(Route, 'core.gatherMountPoints', true);
+attachComponentData(RouteData, 'core.gatherMountPoints', true);
 
 /** @public */
 export type ExploreLayoutProps = {
   title?: string;
+  /**
+   * @deprecated The Backstage UI `PluginHeader` does not render a subtitle.
+   * This prop is kept for backwards compatibility but is no longer displayed.
+   */
   subtitle?: string;
   children?: React.ReactNode;
+};
+
+const stripLeadingSlash = (path: string) => path.replace(/^\/+/, '');
+
+const joinPaths = (base: string, sub: string) => {
+  const trimmedBase = base.replace(/\/+$/, '');
+  const trimmedSub = stripLeadingSlash(sub);
+  return trimmedSub ? `${trimmedBase}/${trimmedSub}` : trimmedBase;
 };
 
 /**
@@ -62,7 +81,9 @@ export type ExploreLayoutProps = {
  * @public
  */
 export const ExploreLayout = (props: ExploreLayoutProps) => {
-  const { title, subtitle, children } = props;
+  const { title, children } = props;
+
+  const exploreRoutePath = useRouteRef(exploreRouteRef);
 
   const routes = useElementFilter(children, elements =>
     elements
@@ -75,15 +96,46 @@ export const ExploreLayout = (props: ExploreLayoutProps) => {
       .map(child => child.props),
   );
 
+  const basePath = exploreRoutePath ? exploreRoutePath() : '';
+
+  const tabs = useMemo<HeaderTab[]>(
+    () =>
+      routes.map(route => ({
+        id: route.path,
+        label: route.title,
+        href: joinPaths(basePath, route.path),
+        matchStrategy: 'prefix',
+      })),
+    [routes, basePath],
+  );
+
+  // Render the matching sub-route's content inline, falling back to the first
+  // tab's content if no sub-path is present (matching the legacy RoutedTabs
+  // behavior). We intentionally don't redirect, so the layout still works when
+  // it is mounted at the root path.
+  const element = useRoutes(
+    routes.map(route => ({
+      path: `${stripLeadingSlash(route.path)}/*`,
+      element: route.children,
+    })),
+  );
+
   return (
-    <Page themeId="home">
-      <Header
-        title={title ?? 'Explore our ecosystem'}
-        subtitle={subtitle ?? 'Discover solutions available in our ecosystem'}
-      />
-      <RoutedTabs routes={routes} />
-    </Page>
+    <>
+      <PluginHeader title={title ?? 'Explore our ecosystem'} tabs={tabs} />
+      <div
+        style={{
+          padding: 'var(--bui-space-6)',
+          height: '100%',
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {element ?? routes[0]?.children ?? null}
+      </div>
+    </>
   );
 };
 
-ExploreLayout.Route = Route;
+ExploreLayout.Route = RouteData;
