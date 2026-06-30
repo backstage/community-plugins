@@ -1,5 +1,15 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.29.0
+
+### Minor Changes
+
+- 2a80868: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- 1ca070a: Updated dependency `@types/react` to `18.3.31`.
+
 ## 1.28.1
 
 ### Patch Changes

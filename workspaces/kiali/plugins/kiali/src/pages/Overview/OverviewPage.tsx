@@ -29,6 +29,7 @@ import {
   IstioMetricsOptions,
   NOT_READY,
   SortField,
+  buildReporter,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
 import {
@@ -363,8 +364,10 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       step: rateParams.step,
       rateInterval: rateParams.rateInterval,
       direction: directionType,
-      reporter: directionType === 'inbound' ? 'destination' : 'source',
-      includeAmbient: serverConfig?.ambientEnabled ?? false,
+      reporter: buildReporter(
+        directionType,
+        serverConfig?.ambientEnabled ?? false,
+      ),
     };
 
     // Group namespaces by cluster if multi-cluster

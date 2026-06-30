@@ -71,7 +71,7 @@
       "createdAt": "2024-02-27T13:11:53Z",
       "resourceVersion": "53917",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "control",
@@ -116,7 +116,7 @@
       "namespace": "",
       "istioSidecar": false,
       "cluster": "",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,
