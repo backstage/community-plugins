@@ -18,6 +18,7 @@ import { rootRouteRef } from './routes';
 
 import {
   createApiFactory,
+  createComponentExtension,
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
@@ -52,5 +53,20 @@ export const EntityCodeCoverageContent = codeCoveragePlugin.provide(
     name: 'EntityCodeCoverageContent',
     component: () => import('./components/Router').then(m => m.Router),
     mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * A compact overview card showing current line and branch coverage with trend.
+ * Intended for use on an entity's overview page.
+ *
+ * @public
+ */
+export const EntityCodeCoverageCard = codeCoveragePlugin.provide(
+  createComponentExtension({
+    name: 'EntityCodeCoverageCard',
+    component: {
+      lazy: () => import('./components/CoverageCard').then(m => m.CoverageCard),
+    },
   }),
 );

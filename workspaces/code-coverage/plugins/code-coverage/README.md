@@ -30,6 +30,30 @@ Finally you need to import and render the code coverage entity, in `packages/app
  );
 ```
 
+### Overview card (optional)
+
+You can also display a compact summary of line and branch coverage on the entity overview page using `EntityCodeCoverageCard`. The card shows the current percentages along with the trend versus the previous build, and links to the full report.
+
+```diff
+@@ EntityPage.tsx
++import { EntityCodeCoverageCard } from '@backstage-community/plugin-code-coverage';
+
+ const overviewContent = (
+   <Grid container spacing={3} alignItems="stretch">
+     {/* ...other cards... */}
++    <EntitySwitch>
++      <EntitySwitch.Case if={isCodeCoverageAvailable}>
++        <Grid item md={6} xs={12}>
++          <EntityCodeCoverageCard variant="gridItem" />
++        </Grid>
++      </EntitySwitch.Case>
++    </EntitySwitch>
+   </Grid>
+ );
+```
+
+`isCodeCoverageAvailable` is exported from the same package and checks for the `backstage.io/code-coverage` annotation.
+
 ## Configuring your entity
 
 In order to use this plugin, you must set the `backstage.io/code-coverage` annotation on entities for which coverage ingestion has been enabled.
