@@ -31,8 +31,11 @@ export const getProjectNameFromEntity = (entity: Entity): string => {
 };
 
 export const getHostnameFromEntity = (entity: Entity): string => {
-  const { target } = getEntitySourceLocation(entity);
-  return new URL(target).hostname;
+  const { type, target } = getEntitySourceLocation(entity);
+  if (type === 'url') {
+    return new URL(target).hostname;
+  }
+  return 'github.com';
 };
 
 export function useEntityGithubRepositories() {
