@@ -1,0 +1,29 @@
+@layer components {
+  .header {
+    padding: var(--bui-space-4) var(--bui-space-4) var(--bui-space-4) var(--bui-space-5);
+  }
+
+  .action {
+    margin: 0;
+  }
+
+  .metricsContainer {
+    height: 100%;
+  }
+
+  .metricsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  .clearfix {
+    width: 100%;
+  }
+
+  .lastAnalyzed {
+    color: var(--bui-fg-secondary);
+    padding: var(--bui-space-2) 0;
+  }
+}
