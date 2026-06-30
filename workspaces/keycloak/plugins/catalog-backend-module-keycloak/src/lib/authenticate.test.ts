@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { mockServices } from '@backstage/backend-test-utils';
+import { InputError } from '@backstage/errors';
 import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import jwt from 'jsonwebtoken';
 
@@ -89,6 +90,9 @@ describe('authenticate', () => {
       baseUrl: 'http://localhost:8080',
     };
 
+    await expect(
+      authenticate(client, providerWithoutCredentials, logger),
+    ).rejects.toThrow(InputError);
     await expect(
       authenticate(client, providerWithoutCredentials, logger),
     ).rejects.toThrow(
