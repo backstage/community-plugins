@@ -46,6 +46,7 @@ import type {
   DecoratedSubRouteTab,
 } from '../../components/ManagePage/types';
 import type { HeaderLabelItem } from '../../components/ManagePageHeader';
+import { getPrimeUserSettings } from './prime-user-settings';
 
 export const managePage = PageBlueprint.makeWithOverrides({
   inputs: {
@@ -182,12 +183,18 @@ export const managePage = PageBlueprint.makeWithOverrides({
           };
         });
 
+        const primeUserSettings = getPrimeUserSettings(
+          contentWidgets,
+          staticConfig,
+          dynamicConfig,
+        );
+
         return compatWrapper(
           <ManagePageProviders
             kinds={staticConfig.kinds}
             combined={staticConfig.combined}
             providers={providers}
-            dynamicConfig={dynamicConfig}
+            primeUserSettings={primeUserSettings}
           >
             <ManagePage
               pluginNode={pluginNode}
