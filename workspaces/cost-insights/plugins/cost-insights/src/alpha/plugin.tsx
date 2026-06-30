@@ -44,6 +44,7 @@ export const CostInsightsApi = ApiBlueprint.make({
 export const CostInsightsPage = PageBlueprint.make({
   params: {
     path: '/cost-insights',
+    title: 'Cost Insights',
     icon: <MoneyIcon />,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
