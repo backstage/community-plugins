@@ -16,7 +16,6 @@
 
 import {
   PageBlueprint,
-  NavItemBlueprint,
   createFrontendPlugin,
   ApiBlueprint,
 } from '@backstage/frontend-plugin-api';
@@ -45,6 +44,7 @@ export const CostInsightsApi = ApiBlueprint.make({
 export const CostInsightsPage = PageBlueprint.make({
   params: {
     path: '/cost-insights',
+    icon: <MoneyIcon />,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('./router').then(m => compatWrapper(<m.CostInsightsRouter />)),
@@ -64,20 +64,9 @@ export const EntityCostInsightsContent = EntityContentBlueprint.make({
   },
 });
 
-/**
- * @alpha
- */
-export const CostInsightsNavItem = NavItemBlueprint.make({
-  params: {
-    title: 'Cost Insights',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    icon: MoneyIcon,
-  },
-});
-
 export default createFrontendPlugin({
   pluginId: 'cost-insights',
-  extensions: [CostInsightsApi, CostInsightsPage, CostInsightsNavItem],
+  extensions: [CostInsightsApi, CostInsightsPage],
   routes: convertLegacyRouteRefs({
     root: rootRouteRef,
   }),
