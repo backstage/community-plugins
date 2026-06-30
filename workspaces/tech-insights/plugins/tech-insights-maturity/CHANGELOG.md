@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tech-insights-maturity
 
+## 0.10.0
+
+### Minor Changes
+
+- efd82d4: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [efd82d4]
+  - @backstage-community/plugin-tech-insights-common@0.11.0
+  - @backstage-community/plugin-tech-insights-maturity-common@0.7.0
+  - @backstage-community/plugin-tech-insights-react@1.7.0
+
 ## 0.9.2
 
 ### Patch Changes
