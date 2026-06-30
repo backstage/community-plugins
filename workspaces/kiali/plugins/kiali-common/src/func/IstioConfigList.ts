@@ -30,7 +30,11 @@ import {
   Validations,
   VirtualService as VS,
 } from '../types';
-import { getGVKTypeString, getIstioObjectGVK } from '../utils/IstioConfigUtils';
+import {
+  getGVKTypeString,
+  getIstioObjectGVK,
+  stringToGVK,
+} from '../utils/IstioConfigUtils';
 
 export function validationKey(name: string, namespace?: string): string {
   if (namespace !== undefined) {
@@ -190,15 +194,24 @@ export const toIstioItems = (
       return;
     }
 
+    // Derive apiVersion from the field key (format: "group/version, Kind=Kind")
+    // as fallback when the resource object doesn't have apiVersion set (e.g. K8s Gateways)
+    const fieldGVK = stringToGVK(field);
+    const fieldApiVersion =
+      fieldGVK.Group && fieldGVK.Version
+        ? `${fieldGVK.Group}/${fieldGVK.Version}`
+        : '';
+
     entries.forEach((entry: IstioObject) => {
+      const resolvedApiVersion = entry.apiVersion || fieldApiVersion;
       const gvkString = getGVKTypeString(
-        getIstioObjectGVK(entry.apiVersion, entry.kind),
+        getIstioObjectGVK(resolvedApiVersion, entry.kind),
       );
       const item = {
         namespace: entry.metadata.namespace ?? '',
         cluster: cluster,
         kind: entry.kind,
-        apiVersion: entry.apiVersion,
+        apiVersion: resolvedApiVersion,
         name: entry.metadata.name,
         creationTimestamp: entry.metadata.creationTimestamp,
         resource: entry,

@@ -27,6 +27,7 @@ import { KialiAppState, KialiContext } from '../../store';
 type Props = {
   namespace: string;
   istioType: string;
+  apiVersion?: string;
   name: string;
 };
 
@@ -48,7 +49,14 @@ export const IstioConfigDetailsDrawer = (props: Props) => {
     setIstioConfig(undefined);
 
     kialiClient
-      .getIstioConfigDetail(props.namespace, props.istioType, props.name, true)
+      .getIstioConfigDetail(
+        props.namespace,
+        props.istioType,
+        props.name,
+        true,
+        undefined,
+        props.apiVersion,
+      )
       .then((istioConfigResponse: IstioConfigDetails) => {
         if (cancelled) {
           return;
@@ -82,6 +90,7 @@ export const IstioConfigDetailsDrawer = (props: Props) => {
     props.name,
     props.namespace,
     props.istioType,
+    props.apiVersion,
   ]);
 
   if (loading) {

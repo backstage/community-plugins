@@ -166,7 +166,7 @@ export class MockKialiClient implements KialiApi {
           cluster: w.cluster,
           type: w.type,
           istioSidecar: w.istioSidecar,
-          istioAmbient: w.istioAmbient,
+          isAmbient: w.isAmbient,
           additionalDetailSample: undefined,
           appLabel: w.appLabel,
           versionLabel: w.versionLabel,
@@ -180,7 +180,7 @@ export class MockKialiClient implements KialiApi {
             {
               rateInterval: duration,
               hasSidecar: w.istioSidecar,
-              hasAmbient: w.istioAmbient,
+              hasAmbient: w.isAmbient,
             },
             serverConfig,
           ),

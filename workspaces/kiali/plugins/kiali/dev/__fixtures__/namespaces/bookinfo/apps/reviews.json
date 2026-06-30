@@ -15,7 +15,7 @@
     {
       "workloadName": "reviews-v1",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "reviews",
         "version": "v1"
@@ -25,7 +25,7 @@
     {
       "workloadName": "reviews-v2",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "reviews",
         "version": "v2"
@@ -35,7 +35,7 @@
     {
       "workloadName": "reviews-v3",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "reviews",
         "version": "v3"

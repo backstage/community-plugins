@@ -1,5 +1,20 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 1.30.0
+
+### Minor Changes
+
+- 7485585: Backstage version bump to v1.51.0
+- ec5bab3: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- a938525: Migrated the JFrog Artifactory plugin UI from Material UI to Backstage UI (`@backstage/ui`). The repository table now uses BUI `Table`, `SearchField`, and pagination controls. Removed direct MUI dependencies; no breaking API changes.
+
+  Also fixed the filter input growing when typing, and added i18n support for pagination labels (page size selector and result range) in all supported locales.
+
+  **Note for consuming apps:** import `@backstage/ui/css/styles.css` in your app entry point if it is not already included.
+
 ## 1.29.1
 
 ### Patch Changes

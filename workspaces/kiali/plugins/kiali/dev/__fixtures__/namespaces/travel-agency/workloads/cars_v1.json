@@ -5,7 +5,7 @@
   "createdAt": "2024-02-16T11:27:38Z",
   "resourceVersion": "56786",
   "istioSidecar": true,
-  "istioAmbient": false,
+  "isAmbient": false,
   "additionalDetailSample": null,
   "labels": {
     "app": "cars",
@@ -101,7 +101,7 @@
       "namespace": "travel-agency",
       "istioSidecar": true,
       "cluster": "Kubernetes",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": true,
       "additionalDetailSample": null,
       "annotations": null,
