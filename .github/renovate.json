@@ -26,15 +26,15 @@
     {
       "matchManagers": ["npm"],
       "enabled": false,
-      "matchPackagePatterns": ["^@backstage/"],
       "vulnerabilityAlerts": {
         "enabled": false
-      }
+      },
+      "matchPackageNames": ["/^@backstage//"]
     },
     {
       "enabled": false,
-      "matchPackagePatterns": ["^@material-ui/"],
-      "matchUpdateTypes": ["replacement"]
+      "matchUpdateTypes": ["replacement"],
+      "matchPackageNames": ["/^@material-ui//"]
     },
     {
       "matchPackageNames": ["node-fetch"],
