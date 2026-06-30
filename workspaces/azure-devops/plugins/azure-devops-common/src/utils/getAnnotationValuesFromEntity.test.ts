@@ -535,4 +535,124 @@ describe('getAnnotationValuesFromEntity', () => {
       });
     });
   });
+
+  describe('readme path auto-detection from source-location (#9188)', () => {
+    it('returns explicit readme-path annotation when both annotations are present', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'dev.azure.com/readme-path': '/explicit/README.md',
+            'backstage.io/source-location':
+              'url:https://dev.azure.com/org/proj/_git/repo?path=%2Fsvc%2Fcatalog-info.yaml',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBe('/explicit/README.md');
+    });
+
+    it('derives readme path when source-location points to a catalog file', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://dev.azure.com/org/proj/_git/repo?path=%2Fservices%2Fmy-svc%2Fcatalog-info.yaml',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBe('/services/my-svc/README.md');
+    });
+
+    it('derives readme path when source-location points to a directory (no filename)', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://dev.azure.com/org/proj/_git/repo?path=%2Fservices%2Fmy-svc',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBe('/services/my-svc/README.md');
+    });
+
+    it('derives readme path when source-location path has a trailing slash', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://dev.azure.com/org/proj/_git/repo?path=%2Fservices%2Fmy-svc%2F',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBe('/services/my-svc/README.md');
+    });
+
+    it('returns undefined when neither readme-path nor source-location annotation is present', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBeUndefined();
+    });
+
+    it('returns undefined when source-location is a non-Azure DevOps URL', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://github.com/org/repo/blob/main/catalog-info.yaml',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBeUndefined();
+    });
+
+    it('returns undefined when source-location Azure DevOps URL has no path query parameter', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://dev.azure.com/org/proj/_git/repo',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBeUndefined();
+    });
+
+    it('returns undefined gracefully when source-location is a malformed URL', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location': 'not-a-valid-url',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBeUndefined();
+    });
+  });
 });
