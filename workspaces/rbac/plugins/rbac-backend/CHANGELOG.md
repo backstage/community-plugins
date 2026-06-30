@@ -1,5 +1,27 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.14.0
+
+### Minor Changes
+
+- 091ec86: Backstage version bump to v1.51.0.
+
+  The RBAC backend plugin now resolves user identity through Backstage's `UserInfoService` when evaluating conditional permissions, as part of aligning with the Backstage 1.51 permission framework. **No action is required** if you install RBAC with `backend.add(import('@backstage-community/plugin-rbac-backend'))` and manage access through app-config as documented.
+
+  If you extend RBAC at a lower level (for example by constructing `PolicyBuilder` directly), ensure `UserInfoService` is wired through your backend integration.
+
+### Patch Changes
+
+- c9d4e50: Updated dependency `qs` to `6.15.2`.
+- 387d2e9: Updated dependency `@types/node` to `22.19.19`.
+- 6d964f2: Migrated MUI-v4 references to MUI-v5
+
+  Adds New Frontend System dev entrypoints and removes workspace example apps in favor of the plugin `dev/` pattern. Dev backend wiring lives in `plugins/rbac-backend/dev/` (same approach as linguist, feedback, and other FE+BE plugins).
+
+- Updated dependencies [091ec86]
+  - @backstage-community/plugin-rbac-common@1.28.0
+  - @backstage-community/plugin-rbac-node@1.22.0
+
 ## 7.13.0
 
 ### Minor Changes

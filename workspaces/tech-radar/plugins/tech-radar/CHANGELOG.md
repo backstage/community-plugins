@@ -1,5 +1,27 @@
 # @backstage-community/plugin-tech-radar
 
+## 1.20.0
+
+### Minor Changes
+
+- 06d5baf: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [06d5baf]
+  - @backstage-community/plugin-tech-radar-common@1.19.0
+
+## 1.19.0
+
+### Minor Changes
+
+- 08875f9: Backstage version bump to v1.51.1
+
+### Patch Changes
+
+- Updated dependencies [08875f9]
+  - @backstage-community/plugin-tech-radar-common@1.18.0
+
 ## 1.18.0
 
 ### Minor Changes

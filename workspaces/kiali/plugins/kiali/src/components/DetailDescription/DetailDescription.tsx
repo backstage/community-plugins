@@ -269,7 +269,7 @@ export const DetailDescription: React.FC<Props> = (props: Props) => {
           <KialiIcon.Info className={infoStyle} />
         </Tooltip>
         {((!workload.istioSidecar &&
-          !workload.istioAmbient &&
+          !workload.isAmbient &&
           !isWaypoint(workload.labels) &&
           serverConfig.ambientEnabled) ||
           (!workload.istioSidecar && !serverConfig.ambientEnabled)) && (
@@ -350,7 +350,7 @@ export const DetailDescription: React.FC<Props> = (props: Props) => {
           </Tooltip>
 
           {((!workload.istioSidecar &&
-            !workload.istioAmbient &&
+            !workload.isAmbient &&
             serverConfig.ambientEnabled) ||
             (!workload.istioSidecar && !serverConfig.ambientEnabled)) && (
             <MissingSidecar

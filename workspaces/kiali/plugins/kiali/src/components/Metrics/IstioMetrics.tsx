@@ -25,9 +25,9 @@ import {
   MetricsObjectTypes,
   Overlay,
   RawOrBucket,
-  Reporter,
   TimeInMilliseconds,
   TimeRange,
+  withWaypoint,
 } from '@backstage-community/plugin-kiali-common/types';
 import { useApi } from '@backstage/core-plugin-api';
 import { Checkbox, FormControlLabel, Toolbar } from '@material-ui/core';
@@ -56,6 +56,7 @@ type ObjectId = {
 
 type IstioMetricsProps = ObjectId & {
   direction: Direction;
+  includeWaypoint?: boolean;
   objectType: MetricsObjectTypes;
 } & {
   lastRefreshAt: TimeInMilliseconds;
@@ -105,8 +106,9 @@ export const IstioMetrics = (props: Props) => {
   const prevLastRefreshAt = React.useRef(props.lastRefreshAt);
 
   const initOptions = (settingsI: MetricsSettings): IstioMetricsOptions => {
+    const initialReporter = MetricsReporter.initialReporter(props.direction);
     const options: IstioMetricsOptions = {
-      reporter: MetricsReporter.initialReporter(props.direction),
+      reporter: withWaypoint(initialReporter, !!props.includeWaypoint),
       direction: props.direction,
     };
 
@@ -131,7 +133,7 @@ export const IstioMetrics = (props: Props) => {
     MetricsHelper.timeRangeToOptions(timeRange, options);
     const opts = { ...options };
 
-    if (opts.reporter === 'both') {
+    if (opts.reporter === 'both' || opts.reporter.includes(',')) {
       opts.byLabels = (opts.byLabels ?? []).concat('reporter');
     }
 
@@ -268,8 +270,8 @@ export const IstioMetrics = (props: Props) => {
     setLabelsSettings(labelsFilters);
   };
 
-  const onReporterChanged = (reporter: Reporter): void => {
-    options.reporter = reporter;
+  const onReporterChanged = (reporter: string): void => {
+    options.reporter = withWaypoint(reporter, !!props.includeWaypoint);
     fetchMetrics();
   };
 
@@ -350,7 +352,7 @@ export const IstioMetrics = (props: Props) => {
           <MetricsReporter
             onChanged={onReporterChanged}
             direction={props.direction}
-            reporter={options.reporter}
+            reporter={options.reporter.split(',')[0]}
           />
 
           <FormControlLabel

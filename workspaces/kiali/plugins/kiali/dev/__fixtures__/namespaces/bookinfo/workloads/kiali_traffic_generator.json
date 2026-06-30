@@ -5,7 +5,7 @@
   "createdAt": "2024-02-15T09:26:32Z",
   "resourceVersion": "16299",
   "istioSidecar": true,
-  "istioAmbient": false,
+  "isAmbient": false,
   "additionalDetailSample": null,
   "labels": {
     "app": "kiali-traffic-generator",

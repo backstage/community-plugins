@@ -44,7 +44,7 @@ export interface Workload {
   resourceVersion: string;
   istioInjectionAnnotation?: boolean;
   istioSidecar: boolean;
-  istioAmbient: boolean;
+  isAmbient: boolean;
   labels: { [key: string]: string };
   appLabel: boolean;
   versionLabel: boolean;
@@ -78,7 +78,7 @@ export const emptyWorkload: Workload = {
   createdAt: '',
   resourceVersion: '',
   istioSidecar: true, // true until proven otherwise
-  istioAmbient: false,
+  isAmbient: false,
   labels: {},
   appLabel: false,
   versionLabel: false,
@@ -109,7 +109,7 @@ export interface WorkloadOverview {
   cluster?: string;
   type: string;
   istioSidecar: boolean;
-  istioAmbient: boolean;
+  isAmbient: boolean;
   additionalDetailSample?: AdditionalItem;
   appLabel: boolean;
   versionLabel: boolean;

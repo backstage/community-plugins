@@ -17,8 +17,6 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-
-import { PolicyBuilder } from '@backstage-community/plugin-rbac-backend';
 import {
   PluginIdProvider,
   PluginIdProviderExtensionPoint,
@@ -28,6 +26,8 @@ import {
 } from '@backstage-community/plugin-rbac-node';
 
 import { policyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
+
+import { PolicyBuilder } from './service/policy-builder';
 
 /**
  * @public
@@ -85,6 +85,7 @@ export const rbacPlugin = createBackendModule({
         discovery,
         permissions,
         auth,
+        userInfo,
         httpAuth,
         auditor,
         lifecycle,
@@ -99,6 +100,7 @@ export const rbacPlugin = createBackendModule({
               discovery,
               permissions,
               auth,
+              userInfo,
               httpAuth,
               auditor,
               lifecycle,

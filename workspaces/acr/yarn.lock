@@ -1899,8 +1899,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "npm:^0.17.2"
     "@backstage/plugin-catalog-react": "npm:^3.1.0"
     "@backstage/test-utils": "npm:^1.7.19"
-    "@backstage/theme": "npm:^0.7.3"
-    "@material-ui/core": "npm:^4.9.13"
+    "@backstage/ui": "npm:^0.16.0"
     "@playwright/test": "npm:1.60.0"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:16.3.2"
@@ -5650,6 +5649,11 @@ __metadata:
     node-gyp: "npm:^9.0.0"
     prettier: "npm:^2.3.2"
     typescript: "npm:~5.8.0"
+  dependenciesMeta:
+    better-sqlite3:
+      built: true
+    isolated-vm:
+      built: true
   languageName: unknown
   linkType: soft
 
@@ -7021,7 +7025,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.12.2":
+"@mui/icons-material@npm:^5.18.0":
+  version: 5.18.0
+  resolution: "@mui/icons-material@npm:5.18.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.9"
+  peerDependencies:
+    "@mui/material": ^5.0.0
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/f55f3da3c375ec3bad5417f5588122587ccf6a02093de286ca723bb6d01692f2cdf81dea413abc396eba87d6f7ab7443cc51e3dd024da8099764e55e12fa4176
+  languageName: node
+  linkType: hard
+
+"@mui/material@npm:^5.12.2, @mui/material@npm:^5.14.18":
   version: 5.18.0
   resolution: "@mui/material@npm:5.18.0"
   dependencies:
@@ -12937,8 +12957,8 @@ __metadata:
     "@backstage/plugin-signals": "npm:^0.0.32"
     "@backstage/plugin-user-settings": "npm:^0.9.4"
     "@backstage/ui": "npm:^0.16.0"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
+    "@mui/icons-material": "npm:^5.18.0"
+    "@mui/material": "npm:^5.14.18"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -12979,8 +12999,8 @@ __metadata:
     "@backstage/plugin-user-settings": "npm:^0.9.4"
     "@backstage/theme": "npm:^0.7.3"
     "@backstage/ui": "npm:^0.16.0"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
+    "@mui/icons-material": "npm:^5.18.0"
+    "@mui/material": "npm:^5.14.18"
     "@playwright/test": "npm:1.60.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.0.0"

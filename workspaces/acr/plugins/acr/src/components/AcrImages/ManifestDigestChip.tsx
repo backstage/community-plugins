@@ -13,18 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Box, Chip, makeStyles } from '@material-ui/core';
+import { Flex, Tag, TagGroup } from '@backstage/ui';
 
-const useLocalStyles = makeStyles({
-  chip: {
-    margin: 0,
-    marginRight: '.2em',
-    height: '1.5em',
-    '& > span': {
-      padding: '.3em',
-    },
-  },
-});
+import styles from './ManifestDigestChip.module.css';
 
 type ManifestDigestChipProps = {
   label: string;
@@ -35,11 +26,14 @@ export const ManifestDigestChip = ({
   label,
   hash,
 }: ManifestDigestChipProps) => {
-  const localClasses = useLocalStyles();
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Chip label={label} className={localClasses.chip} />
+    <Flex align="center">
+      <TagGroup>
+        <Tag size="small" className={styles.chip}>
+          {label}
+        </Tag>
+      </TagGroup>
       {hash}
-    </Box>
+    </Flex>
   );
 };

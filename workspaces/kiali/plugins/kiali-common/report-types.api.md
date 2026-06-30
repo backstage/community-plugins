@@ -211,7 +211,7 @@ export interface AppListItem {
     // (undocumented)
     health: AppHealth;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioReferences: ObjectReference[];
     // (undocumented)
@@ -247,7 +247,7 @@ export interface AppQuery {
 // @public (undocumented)
 export interface AppWorkload {
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioSidecar: boolean;
     // (undocumented)
@@ -376,6 +376,9 @@ export type BucketDataPoint = {
     y: number[];
     style?: Style;
 };
+
+// @public (undocumented)
+export const buildReporter: (direction: Direction, includeWaypoint: boolean) => string;
 
 // @public (undocumented)
 export interface CanaryUpgradeStatus {
@@ -1201,6 +1204,9 @@ export interface GatewaySpec {
 }
 
 // @public (undocumented)
+export const getStatsReporters: (direction: Direction, includeWaypoint?: boolean) => StatsReporter[];
+
+// @public (undocumented)
 export interface GrafanaInfo {
     // (undocumented)
     externalLinks: ExternalLink[];
@@ -2009,9 +2015,7 @@ export interface IstioMetricsOptions extends MetricsQuery {
     // (undocumented)
     filters?: string[];
     // (undocumented)
-    includeAmbient?: boolean;
-    // (undocumented)
-    reporter: Reporter;
+    reporter: string;
     // (undocumented)
     requestProtocol?: string;
 }
@@ -3591,9 +3595,6 @@ export interface References {
 export type RegexConfig = string | RegExp;
 
 // @public (undocumented)
-export type Reporter = 'source' | 'destination' | 'both';
-
-// @public (undocumented)
 export interface RequestAuthentication extends IstioObject {
     // (undocumented)
     spec: RequestAuthenticationSpec;
@@ -4022,7 +4023,7 @@ export interface ServiceOverview {
     // (undocumented)
     health: ServiceHealth;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioReferences: ObjectReference[];
     // (undocumented)
@@ -4211,6 +4212,9 @@ export interface Stat {
     // (undocumented)
     value: number;
 }
+
+// @public (undocumented)
+export type StatsReporter = 'source' | 'destination' | 'waypoint';
 
 // @public (undocumented)
 export interface Status {
@@ -4795,6 +4799,9 @@ export interface WEInfo {
 }
 
 // @public (undocumented)
+export const withWaypoint: (reporter: string, includeWaypoint: boolean) => string;
+
+// @public (undocumented)
 export interface Workload {
     // (undocumented)
     additionalDetails: AdditionalItem[];
@@ -4813,7 +4820,7 @@ export interface Workload {
     // (undocumented)
     health?: WorkloadHealthResponse;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioInjectionAnnotation?: boolean;
     // (undocumented)
@@ -4958,7 +4965,7 @@ export interface WorkloadOverview {
     // (undocumented)
     health: WorkloadHealth;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioReferences: ObjectReference[];
     // (undocumented)
@@ -4982,7 +4989,7 @@ export interface WorkloadOverviewServiceView {
     // (undocumented)
     createdAt: string;
     // (undocumented)
-    istioAmbient: boolean;
+    isAmbient: boolean;
     // (undocumented)
     istioSidecar: boolean;
     // (undocumented)
