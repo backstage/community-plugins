@@ -18,7 +18,6 @@ import { HomePageStackOverflowQuestions } from '../../plugin';
 import { wrapInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/config';
-import Grid from '@material-ui/core/Grid';
 import { ComponentType, PropsWithChildren } from 'react';
 import { StackOverflowIcon } from '../../icons';
 import { stackOverflowApiRef } from '../../api';
@@ -71,7 +70,7 @@ export default {
 
 export const Default = () => {
   return (
-    <Grid item xs={12} md={6}>
+    <div style={{ width: '100%', maxWidth: '600px' }}>
       <HomePageStackOverflowQuestions
         requestParams={{
           tagged: 'backstage',
@@ -79,13 +78,13 @@ export const Default = () => {
           pagesize: 5,
         }}
       />
-    </Grid>
+    </div>
   );
 };
 
 export const WithIcon = () => {
   return (
-    <Grid item xs={12} md={6}>
+    <div style={{ width: '100%', maxWidth: '600px' }}>
       <HomePageStackOverflowQuestions
         requestParams={{
           tagged: 'backstage',
@@ -94,6 +93,6 @@ export const WithIcon = () => {
         }}
         icon={<StackOverflowIcon />}
       />
-    </Grid>
+    </div>
   );
 };
