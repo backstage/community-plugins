@@ -455,6 +455,7 @@ describe('reportParser', () => {
           loc_suggested_to_add_sum: 15,
           loc_suggested_to_delete_sum: 16,
           user_initiated_interaction_count: 17,
+          ai_credits_used: 78,
         },
       ];
 
@@ -477,6 +478,7 @@ describe('reportParser', () => {
           loc_suggested_to_add_sum: 15,
           loc_suggested_to_delete_sum: 16,
           user_initiated_interaction_count: 17,
+          ai_credits_used: 78,
         },
       ]);
       expect(result.userBreakdowns).toHaveLength(1);
