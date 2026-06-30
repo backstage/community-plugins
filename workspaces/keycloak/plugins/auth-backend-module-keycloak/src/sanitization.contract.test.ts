@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Intentional cross-plugin devDependency (`workspace:^` → always local source).
+// Both plugins duplicate the same sanitization regex; this import lets the test
+// catch drift between resolvers.ts and transformers.ts at build time.
 import { sanitizeUserNameTransformer } from '@backstage-community/plugin-catalog-backend-module-keycloak';
 import type { UserEntity } from '@backstage/catalog-model';
 import { AuthResolverContext, SignInInfo } from '@backstage/plugin-auth-node';
@@ -75,8 +78,10 @@ describe('auth↔catalog username sanitization contract', () => {
 
     expect(catalogEntity).toBeDefined();
     expect(catalogEntity!.metadata.name).toBe(CONTRACT_SANITIZED_NAME);
+
+    // If this fails, the regex in resolvers.ts and transformers.ts has diverged.
     expect(ctx.signInWithCatalogUser).toHaveBeenCalledWith(
-      { entityRef: { name: CONTRACT_SANITIZED_NAME } },
+      { entityRef: { name: catalogEntity!.metadata.name } },
       { dangerousEntityRefFallback: undefined },
     );
   });
