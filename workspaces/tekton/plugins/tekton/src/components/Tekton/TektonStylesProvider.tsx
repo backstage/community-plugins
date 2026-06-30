@@ -13,25 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useEffect } from 'react';
+import type { PropsWithChildren } from 'react';
 
-import { useTheme } from '@mui/material/styles';
+import { StylesProvider } from '@mui/styles';
 
-const THEME_DARK = 'dark';
-const THEME_DARK_CLASS = 'pf-v6-theme-dark';
+import { tektonGenerateClassName } from '../../styles/tektonGenerateClassName';
 
-export const useDarkTheme = () => {
-  const {
-    palette: { mode },
-  } = useTheme();
-
-  useEffect(() => {
-    const htmlTagElement = document.documentElement;
-    if (mode === THEME_DARK) {
-      htmlTagElement.classList.add(THEME_DARK_CLASS);
-    } else {
-      htmlTagElement.classList.remove(THEME_DARK_CLASS);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode]);
-};
+export const TektonStylesProvider = ({ children }: PropsWithChildren) => (
+  <StylesProvider generateClassName={tektonGenerateClassName}>
+    {children}
+  </StylesProvider>
+);

@@ -17,7 +17,7 @@ import { useContext, useState } from 'react';
 
 import { Select, SelectedItems } from '@backstage/core-components';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 
@@ -25,17 +25,14 @@ import './ClusterSelector.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations';
 
-const useStyles = makeStyles<Theme>(theme => ({
-  label: {
-    color: theme.palette.text.primary,
-    fontSize: '1rem',
-    paddingRight: '10px',
-    fontWeight: 'bold',
-  },
-}));
+const labelSx = {
+  color: 'text.primary',
+  fontSize: '1rem',
+  paddingRight: '10px',
+  fontWeight: 'bold',
+};
 
 export const ClusterSelector = () => {
-  const classes = useStyles();
   const {
     clusters: k8sClusters,
     selectedCluster,
@@ -62,9 +59,7 @@ export const ClusterSelector = () => {
   };
   return (
     <div className="bs-tkn-cluster-selector">
-      <Typography className={classes.label}>
-        {t('clusterSelector.label')}
-      </Typography>
+      <Typography sx={labelSx}>{t('clusterSelector.label')}</Typography>
       <Select
         onChange={onClusterChange}
         label=""
