@@ -6,12 +6,3 @@ backend:
       port: ${POSTGRES_PORT}
       user: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
-
-auth:
-  providers:
-    # allows you to select a user and group to be the owner of the announcement
-    # when creating announcements locally
-    guest:
-      userEntityRef: user:default/user-1
-      ownershipEntityRefs: [group:default/team-a]
-      dangerouslyAllowOutsideDevelopment: false

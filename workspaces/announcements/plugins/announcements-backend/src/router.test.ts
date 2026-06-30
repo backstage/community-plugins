@@ -348,5 +348,495 @@ describe('createRouter', () => {
       expect(response.body.count).toEqual(0);
       expectAuditorSuccess();
     });
+
+    it('filters announcements by entityRef', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [
+          {
+            id: 'uuid1',
+            title: 'Entity Announcement',
+            excerpt: 'Linked to entity',
+            body: 'Full content',
+            publisher: 'user:default/name',
+            created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            until_date: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            updated_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            entityRefs: ['component:default/service-a'],
+          },
+        ],
+        count: 1,
+      });
+
+      const response = await request(app).get(
+        '/announcements?entityRef=component:default/service-a',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: false,
+        sortBy: 'created_at',
+        order: 'desc',
+        current: undefined,
+        entityRef: 'component:default/service-a',
+      });
+
+      expect(response.body.results).toHaveLength(1);
+      expect(response.body.results[0].entityRefs).toEqual([
+        'component:default/service-a',
+      ]);
+      expectAuditorSuccess();
+    });
+
+    it('returns empty results when entityRef has no matches', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [],
+        count: 0,
+      });
+
+      const response = await request(app).get(
+        '/announcements?entityRef=component:default/nonexistent',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: false,
+        sortBy: 'created_at',
+        order: 'desc',
+        current: undefined,
+        entityRef: 'component:default/nonexistent',
+      });
+
+      expect(response.body.results).toHaveLength(0);
+      expect(response.body.count).toEqual(0);
+      expectAuditorSuccess();
+    });
+
+    it('combines entityRef filter with other filters', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [
+          {
+            id: 'uuid1',
+            title: 'Active Entity Announcement',
+            excerpt: 'Active and linked',
+            body: 'Full content',
+            publisher: 'user:default/name',
+            created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            until_date: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            updated_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            entityRefs: ['component:default/service-a'],
+          },
+        ],
+        count: 1,
+      });
+
+      const response = await request(app).get(
+        '/announcements?entityRef=component:default/service-a&active=true',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(announcementsMock).toHaveBeenCalledWith({
+        category: undefined,
+        max: undefined,
+        offset: undefined,
+        active: true,
+        sortBy: 'created_at',
+        order: 'desc',
+        current: undefined,
+        entityRef: 'component:default/service-a',
+      });
+
+      expect(response.body.results).toHaveLength(1);
+      expect(response.body.results[0].entityRefs).toEqual([
+        'component:default/service-a',
+      ]);
+      expectAuditorSuccess();
+    });
+
+    it('returns announcements with multiple entityRefs', async () => {
+      announcementsMock.mockReturnValueOnce({
+        results: [
+          {
+            id: 'uuid1',
+            title: 'Multi-entity Announcement',
+            excerpt: 'Linked to multiple entities',
+            body: 'Full content',
+            publisher: 'user:default/name',
+            created_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            start_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            until_date: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            updated_at: DateTime.fromISO('2023-01-01T10:00:00.000Z'),
+            entityRefs: [
+              'component:default/service-a',
+              'component:default/service-b',
+            ],
+          },
+        ],
+        count: 1,
+      });
+
+      const response = await request(app).get(
+        '/announcements?entityRef=component:default/service-a',
+      );
+
+      expect(response.status).toEqual(200);
+      expect(response.body.results).toHaveLength(1);
+      expect(response.body.results[0].entityRefs).toEqual([
+        'component:default/service-a',
+        'component:default/service-b',
+      ]);
+      expectAuditorSuccess();
+    });
+  });
+
+  describe('GET /announcements/:id', () => {
+    it('returns announcement with entityRefs', async () => {
+      announcementByIDMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const response = await request(app).get('/announcements/uuid');
+
+      expect(response.status).toEqual(200);
+      expect(response.body.entityRefs).toEqual(['component:default/service-a']);
+      expectAuditorSuccess();
+    });
+
+    it('returns announcement with empty entityRefs', async () => {
+      announcementByIDMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'title',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        entityRefs: [],
+      });
+
+      const response = await request(app).get('/announcements/uuid');
+
+      expect(response.status).toEqual(200);
+      expect(response.body.entityRefs).toEqual([]);
+      expectAuditorSuccess();
+    });
+  });
+
+  describe('POST /announcements', () => {
+    beforeEach(() => {
+      (mockPermissions.authorize as jest.Mock).mockReturnValue([
+        { result: 'ALLOW' },
+      ]);
+    });
+
+    it('creates announcement with entityRefs', async () => {
+      insertAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'New Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const response = await request(app)
+        .post('/announcements')
+        .send({
+          title: 'New Announcement',
+          excerpt: 'excerpt',
+          body: 'body',
+          publisher: 'user:default/name',
+          start_at: '2022-11-02T15:28:08.539Z',
+          until_date: '2022-12-02T15:28:08.539Z',
+          active: true,
+          sendNotification: false,
+          entityRefs: ['component:default/service-a'],
+        });
+
+      expect(response.status).toEqual(201);
+      expect(response.body.entityRefs).toEqual(['component:default/service-a']);
+      expectAuditorSuccess();
+    });
+
+    it('creates announcement with multiple entityRefs', async () => {
+      insertAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'New Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        entityRefs: [
+          'component:default/service-a',
+          'component:default/service-b',
+        ],
+      });
+
+      const response = await request(app)
+        .post('/announcements')
+        .send({
+          title: 'New Announcement',
+          excerpt: 'excerpt',
+          body: 'body',
+          publisher: 'user:default/name',
+          start_at: '2022-11-02T15:28:08.539Z',
+          until_date: '2022-12-02T15:28:08.539Z',
+          active: true,
+          sendNotification: false,
+          entityRefs: [
+            'component:default/service-a',
+            'component:default/service-b',
+          ],
+        });
+
+      expect(response.status).toEqual(201);
+      expect(response.body.entityRefs).toEqual([
+        'component:default/service-a',
+        'component:default/service-b',
+      ]);
+      expectAuditorSuccess();
+    });
+
+    it('creates announcement without entityRefs', async () => {
+      insertAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'New Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        entityRefs: [],
+      });
+
+      const response = await request(app).post('/announcements').send({
+        title: 'New Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        start_at: '2022-11-02T15:28:08.539Z',
+        until_date: '2022-12-02T15:28:08.539Z',
+        active: true,
+        sendNotification: false,
+      });
+
+      expect(response.status).toEqual(201);
+      expect(response.body.entityRefs).toEqual([]);
+      expectAuditorSuccess();
+    });
+
+    it('creates announcement with empty entityRefs array', async () => {
+      insertAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'New Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        entityRefs: [],
+      });
+
+      const response = await request(app).post('/announcements').send({
+        title: 'New Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        start_at: '2022-11-02T15:28:08.539Z',
+        until_date: '2022-12-02T15:28:08.539Z',
+        active: true,
+        sendNotification: false,
+        entityRefs: [],
+      });
+
+      expect(response.status).toEqual(201);
+      expect(response.body.entityRefs).toEqual([]);
+      expectAuditorSuccess();
+    });
+  });
+
+  describe('PUT /announcements/:id', () => {
+    beforeEach(() => {
+      (mockPermissions.authorize as jest.Mock).mockReturnValue([
+        { result: 'ALLOW' },
+      ]);
+    });
+
+    it('updates announcement to add entityRefs', async () => {
+      announcementByIDMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'Existing Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        active: true,
+        entityRefs: [],
+      });
+
+      updateAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'Updated Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        active: true,
+        entityRefs: ['component:default/service-a'],
+      });
+
+      const response = await request(app)
+        .put('/announcements/uuid')
+        .send({
+          title: 'Updated Announcement',
+          excerpt: 'excerpt',
+          body: 'body',
+          publisher: 'user:default/name',
+          start_at: '2022-11-02T15:28:08.539Z',
+          until_date: '2022-12-02T15:28:08.539Z',
+          active: true,
+          entityRefs: ['component:default/service-a'],
+        });
+
+      expect(response.status).toEqual(200);
+      expect(response.body.entityRefs).toEqual(['component:default/service-a']);
+      expectAuditorSuccess();
+    });
+
+    it('updates announcement to change entityRefs', async () => {
+      announcementByIDMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'Existing Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        active: true,
+        entityRefs: ['component:default/service-a'],
+      });
+
+      updateAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'Updated Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        active: true,
+        entityRefs: [
+          'component:default/service-b',
+          'component:default/service-c',
+        ],
+      });
+
+      const response = await request(app)
+        .put('/announcements/uuid')
+        .send({
+          title: 'Updated Announcement',
+          excerpt: 'excerpt',
+          body: 'body',
+          publisher: 'user:default/name',
+          start_at: '2022-11-02T15:28:08.539Z',
+          until_date: '2022-12-02T15:28:08.539Z',
+          active: true,
+          entityRefs: [
+            'component:default/service-b',
+            'component:default/service-c',
+          ],
+        });
+
+      expect(response.status).toEqual(200);
+      expect(response.body.entityRefs).toEqual([
+        'component:default/service-b',
+        'component:default/service-c',
+      ]);
+      expectAuditorSuccess();
+    });
+
+    it('updates announcement to remove entityRefs', async () => {
+      announcementByIDMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'Existing Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        active: true,
+        entityRefs: ['component:default/service-a'],
+      });
+
+      updateAnnouncementMock.mockReturnValueOnce({
+        id: 'uuid',
+        title: 'Updated Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        created_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        start_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        until_date: DateTime.fromISO('2022-12-02T15:28:08.539Z'),
+        updated_at: DateTime.fromISO('2022-11-02T15:28:08.539Z'),
+        active: true,
+        entityRefs: [],
+      });
+
+      const response = await request(app).put('/announcements/uuid').send({
+        title: 'Updated Announcement',
+        excerpt: 'excerpt',
+        body: 'body',
+        publisher: 'user:default/name',
+        start_at: '2022-11-02T15:28:08.539Z',
+        until_date: '2022-12-02T15:28:08.539Z',
+        active: true,
+        entityRefs: [],
+      });
+
+      expect(response.status).toEqual(200);
+      expect(response.body.entityRefs).toEqual([]);
+      expectAuditorSuccess();
+    });
   });
 });

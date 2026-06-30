@@ -44,7 +44,7 @@ type AnnouncementUpsert = Omit<
  */
 type DbAnnouncement = Omit<
   Announcement,
-  'category' | 'tags' | 'start_at' | 'until_date'
+  'category' | 'tags' | 'start_at' | 'until_date' | 'entityRefs'
 > & {
   category?: string;
   tags?: string | string[];
@@ -172,6 +172,7 @@ const DBToAnnouncementWithCategory = (
       : null,
     updated_at: timestampToDateTime(announcementDb.updated_at),
     on_behalf_of: announcementDb.on_behalf_of,
+    entityRefs: [],
   };
 };
 
@@ -194,9 +195,10 @@ export class AnnouncementsDatabase {
       sortBy = 'created_at',
       order = 'desc',
       current,
+      entityRef,
     } = request;
 
-    const filterState = <TRecord extends {}, TResult>(
+    const filterBase = <TRecord extends {}, TResult>(
       qb: Knex.QueryBuilder<TRecord, TResult>,
     ) => {
       if (category) {
@@ -204,6 +206,14 @@ export class AnnouncementsDatabase {
       }
       if (active) {
         qb.where('active', active);
+      }
+      if (entityRef) {
+        // Filter by entity using join table
+        qb.innerJoin(
+          'announcement_entities',
+          'announcements.id',
+          'announcement_entities.announcement_id',
+        ).where('announcement_entities.entity_ref', entityRef);
       }
       if (current) {
         const today = DateTime.now().toISO();
@@ -249,7 +259,7 @@ export class AnnouncementsDatabase {
       )
       .orderBy(sortBy, order)
       .leftJoin('categories', 'announcements.category', 'categories.slug');
-    filterState(queryBuilder);
+    filterBase(queryBuilder);
     filterRange(queryBuilder);
 
     const announcementRows = await queryBuilder;
@@ -257,6 +267,24 @@ export class AnnouncementsDatabase {
     const announcementsWithInitialTags = announcementRows.map(row =>
       DBToAnnouncementWithCategory(row),
     );
+
+    // Fetch entity references for all announcements
+    const announcementIds = announcementsWithInitialTags.map(a => a.id);
+    const entityRefs: Array<{ announcement_id: string; entity_ref: string }> =
+      announcementIds.length > 0
+        ? await this.db('announcement_entities')
+            .select('announcement_id', 'entity_ref')
+            .whereIn('announcement_id', announcementIds)
+        : [];
+
+    // Build a map of announcement_id -> entityRefs[]
+    const entityRefMap = new Map<string, string[]>();
+    entityRefs.forEach(row => {
+      if (!entityRefMap.has(row.announcement_id)) {
+        entityRefMap.set(row.announcement_id, []);
+      }
+      entityRefMap.get(row.announcement_id)!.push(row.entity_ref);
+    });
 
     const allTagSlugs = new Set<string>();
     announcementsWithInitialTags.forEach(announcement => {
@@ -287,16 +315,23 @@ export class AnnouncementsDatabase {
           slug: tag.slug,
           title: tagTitleMap.get(tag.slug) || tag.slug,
         }));
-        return { ...announcement, tags: updatedTags };
+        return {
+          ...announcement,
+          tags: updatedTags,
+          entityRefs: entityRefMap.get(announcement.id) || [],
+        };
       }
-      return announcement;
+      return {
+        ...announcement,
+        entityRefs: entityRefMap.get(announcement.id) || [],
+      };
     });
 
     const countQueryBuilder = this.db<DbAnnouncement>(announcementsTable).count(
       'id',
       { as: 'total' },
     );
-    filterState(countQueryBuilder);
+    filterBase(countQueryBuilder);
     const countResult = await countQueryBuilder.first();
     const count =
       countResult && countResult.total
@@ -337,6 +372,15 @@ export class AnnouncementsDatabase {
 
     const announcementBase = DBToAnnouncementWithCategory(dbAnnouncement);
 
+    // Fetch entity references from join table
+    const entityRefs: Array<{ entity_ref: string }> = await this.db(
+      'announcement_entities',
+    )
+      .select('entity_ref')
+      .where('announcement_id', id);
+
+    announcementBase.entityRefs = entityRefs.map(row => row.entity_ref);
+
     if (announcementBase.tags && announcementBase.tags.length > 0) {
       const tagSlugs = announcementBase.tags.map(t => t.slug);
       const tagDetailsFromDb: Array<{ slug: string; title: string }> =
@@ -362,9 +406,21 @@ export class AnnouncementsDatabase {
   async insertAnnouncement(
     announcement: AnnouncementUpsert,
   ): Promise<AnnouncementModel> {
-    await this.db<DbAnnouncement>(announcementsTable).insert(
-      announcementUpsertToDB(announcement),
-    );
+    await this.db.transaction(async trx => {
+      await trx<DbAnnouncement>(announcementsTable).insert(
+        announcementUpsertToDB(announcement),
+      );
+
+      // Insert entity relationships if present
+      if (announcement.entityRefs && announcement.entityRefs.length > 0) {
+        await trx('announcement_entities').insert(
+          announcement.entityRefs.map(entity_ref => ({
+            announcement_id: announcement.id,
+            entity_ref,
+          })),
+        );
+      }
+    });
 
     const newAnnouncement = await this.announcementByID(announcement.id);
 
@@ -378,9 +434,25 @@ export class AnnouncementsDatabase {
   async updateAnnouncement(
     announcement: AnnouncementUpsert,
   ): Promise<AnnouncementModel> {
-    await this.db<DbAnnouncement>(announcementsTable)
-      .where('id', announcement.id)
-      .update(announcementUpsertToDB(announcement));
+    await this.db.transaction(async trx => {
+      await trx<DbAnnouncement>(announcementsTable)
+        .where('id', announcement.id)
+        .update(announcementUpsertToDB(announcement));
+
+      // Update entity relationships: delete all existing and insert new ones
+      await trx('announcement_entities')
+        .where('announcement_id', announcement.id)
+        .delete();
+
+      if (announcement.entityRefs && announcement.entityRefs.length > 0) {
+        await trx('announcement_entities').insert(
+          announcement.entityRefs.map(entity_ref => ({
+            announcement_id: announcement.id,
+            entity_ref,
+          })),
+        );
+      }
+    });
 
     const updatedAnnouncement = await this.announcementByID(announcement.id);
 
