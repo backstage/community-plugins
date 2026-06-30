@@ -134,13 +134,13 @@ export const githubIssuesApi = (
     });
 
     const baseUrl = githubIntegrationConfig?.apiBaseUrl;
-    return { octokit: new Octokit({ auth: token, baseUrl }), host };
+    return { octokit: new Octokit({ auth: token, baseUrl }) };
   };
 
-  const fetchIssuesByRepoFromGithub = async (
+  const fetchIssuesByRepoFromHost = async (
+    hostname: string,
     repos: Array<Repository>,
     itemsPerRepo: number,
-    hostname: string,
     {
       filterBy,
       orderBy = {
@@ -149,35 +149,29 @@ export const githubIssuesApi = (
       },
     }: GithubIssuesByRepoOptions = {},
   ): Promise<IssuesByRepo> => {
-    const { octokit, host } = await getOctokit(hostname);
+    const { octokit } = await getOctokit(hostname);
     const safeNames: Array<string> = [];
-    const repositories = repos
-      // only tries to fetch issues from repositories that are hosted on the same GitHub instance as the octokit
-      .filter(repo => repo.locationHostname === host)
-      .map(repo => {
-        const [owner, name] = repo.name.split('/');
+    const repositories = repos.map(repo => {
+      const [owner, name] = repo.name.split('/');
 
-        const safeNameRegex = /-|\./gi;
-        let safeName = name.replace(safeNameRegex, '');
+      const safeNameRegex = /-|\./gi;
+      let safeName = name.replace(safeNameRegex, '');
 
-        while (safeNames.includes(safeName)) {
-          safeName += 'x';
-        }
+      while (safeNames.includes(safeName)) {
+        safeName += 'x';
+      }
 
-        safeNames.push(safeName);
+      safeNames.push(safeName);
 
-        return {
-          safeName,
-          name,
-          owner,
-        };
-      });
+      return {
+        safeName,
+        name,
+        owner,
+      };
+    });
 
     let issuesByRepo: IssuesByRepo = {};
     try {
-      if (repositories.length === 0) {
-        throw new Error(`No repositories found for ${host}`);
-      }
       issuesByRepo = await octokit.graphql(
         createIssueByRepoQuery(repositories, itemsPerRepo, {
           filterBy,
@@ -199,6 +193,37 @@ export const githubIssuesApi = (
 
       return acc;
     }, {} as IssuesByRepo);
+  };
+
+  const fetchIssuesByRepoFromGithub = async (
+    repos: Array<Repository>,
+    itemsPerRepo: number,
+    options: GithubIssuesByRepoOptions = {},
+  ): Promise<IssuesByRepo> => {
+    const reposByHost = repos.reduce<Record<string, Array<Repository>>>(
+      (acc, repo) => {
+        if (!repo.locationHostname) {
+          return acc;
+        }
+
+        acc[repo.locationHostname] = acc[repo.locationHostname] ?? [];
+        acc[repo.locationHostname].push(repo);
+
+        return acc;
+      },
+      {},
+    );
+
+    const issuesByRepoByHost = await Promise.all(
+      Object.entries(reposByHost).map(([hostname, hostRepos]) =>
+        fetchIssuesByRepoFromHost(hostname, hostRepos, itemsPerRepo, options),
+      ),
+    );
+
+    return issuesByRepoByHost.reduce(
+      (acc, issuesByRepo) => ({ ...acc, ...issuesByRepo }),
+      {},
+    );
   };
 
   return { fetchIssuesByRepoFromGithub };
