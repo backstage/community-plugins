@@ -16,24 +16,34 @@
 
 import { defineConfig } from '@playwright/test';
 
+// APP_MODE: 'legacy' (dev/index.mock.tsx) or 'alpha' (dev/alpha/index.mock.tsx)
+const appMode = process.env.APP_MODE || 'legacy';
+const startCommand =
+  appMode === 'legacy' ? 'yarn start:mock' : 'yarn start:alpha:mock';
+
 export default defineConfig({
   webServer: process.env.PLAYWRIGHT_URL
     ? []
-    : {
-        command: 'yarn start',
-        cwd: 'plugins/topology',
-        port: 3000,
-        reuseExistingServer: true,
-      },
+    : [
+        {
+          command: startCommand,
+          cwd: 'plugins/topology',
+          port: 3000,
+          reuseExistingServer: true,
+        },
+      ],
 
   retries: process.env.CI ? 2 : 0,
 
-  reporter: [['html', { open: 'never', outputFolder: 'e2e-test-report' }]],
+  reporter: [
+    ['html', { open: 'never', outputFolder: `e2e-test-report-${appMode}` }],
+  ],
 
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
   },
 
   outputDir: 'node_modules/.cache/e2e-test-results',

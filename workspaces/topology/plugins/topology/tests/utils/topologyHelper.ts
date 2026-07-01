@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 import AxeBuilder from '@axe-core/playwright';
-import { expect, TestInfo, type Locator, type Page } from '@playwright/test';
+import { expect, TestInfo, type Page } from '@playwright/test';
 import { TopologyMessages, templateToPattern } from './translations';
+
+/** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
+export function isNfsAppMode(): boolean {
+  return process.env.APP_MODE === 'alpha';
+}
+
+/**
+ * Entity page tab `data-testid` for the Topology tab — legacy TabbedLayout uses
+ * index 0; NFS entity tabs use the route path (see EntityContentBlueprint path).
+ */
+export function topologyEntityHeaderTabTestId(): string {
+  return isNfsAppMode() ? 'header-tab-/topology' : 'header-tab-0';
+}
 
 export class Common {
   page: Page;
@@ -60,6 +73,25 @@ export class Common {
       await this.page.getByRole('button', { name: 'Language' }).click();
       await this.page.getByRole('menuitem', { name: localeString }).click();
     }
+  }
+
+  /**
+   * Opens the Topology workload view. Legacy dev exposes `/topology`; NFS dev
+   * mounts Topology on the entity page (catalog → entity → Topology tab).
+   */
+  async navigateToTopologyView() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/topology');
+      return;
+    }
+    await this.page.goto('/catalog');
+    await this.page
+      .getByRole('link', { name: 'backstage', exact: true })
+      .first()
+      .click();
+    const tabTestId = topologyEntityHeaderTabTestId();
+    await expect(this.page.getByTestId(tabTestId)).toBeVisible();
+    await this.page.getByTestId(tabTestId).click();
   }
 
   async a11yCheck(testInfo: TestInfo) {
