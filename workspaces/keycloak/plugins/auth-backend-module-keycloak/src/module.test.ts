@@ -62,7 +62,7 @@ describe('authModuleKeycloakProvider', () => {
     };
 
     // Act
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[authProvidersExtensionPoint, extensionPoint]],
       features: [
         authModuleKeycloakProvider,
@@ -74,6 +74,8 @@ describe('authModuleKeycloakProvider', () => {
     expect(registered).toHaveLength(1);
     expect(registered[0].providerId).toBe('keycloak');
     expect(typeof registered[0].factory).toBe('function');
+
+    await backend.stop();
   });
 
   it('exposes the keycloak start endpoint when composed with the auth backend plugin', async () => {
@@ -122,5 +124,7 @@ describe('authModuleKeycloakProvider', () => {
 
     expect(res.status).toBe(302);
     expect(res.headers.get('location')).toMatch(/authorize|keycloak\.test/);
+
+    await backend.stop();
   });
 });
