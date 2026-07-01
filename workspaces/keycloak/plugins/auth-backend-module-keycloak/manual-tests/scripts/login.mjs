@@ -30,7 +30,8 @@ const HOST_REWRITES = (process.env.KEYCLOAK_HOST_REWRITE || '')
   .map(r => {
     const [old, replacement] = r.split('=', 2);
     return [old.trim(), replacement.trim()];
-  });
+  })
+  .filter(([old]) => old.length > 0);
 
 function rewriteUrl(url) {
   let rewritten = url;
@@ -69,8 +70,11 @@ class CookieJar {
   }
 }
 
-async function followRedirects(jar, response) {
+async function followRedirects(jar, response, method = 'GET', body = null) {
   let resp = response;
+  let currentMethod = method;
+  let currentBody = body;
+
   for (let i = 0; i < MAX_REDIRECT_HOPS; i++) {
     const status = resp.status;
     if (![301, 302, 303, 307, 308].includes(status)) break;
@@ -83,8 +87,17 @@ async function followRedirects(jar, response) {
     const cookie = jar.header();
     if (cookie) headers.cookie = cookie;
 
-    // 301/302/303 → GET; 307/308 → preserve method
-    resp = await fetch(target, { redirect: 'manual', headers });
+    if ([301, 302, 303].includes(status)) {
+      currentMethod = 'GET';
+      currentBody = null;
+    }
+
+    resp = await fetch(target, {
+      method: currentMethod,
+      body: currentBody,
+      redirect: 'manual',
+      headers,
+    });
     jar.update(resp);
   }
   return resp;
@@ -104,6 +117,13 @@ async function assertCatalogUserReady() {
     });
 
     if (resp.status !== 404) {
+      if (resp.status === 401) {
+        throw new Error(
+          'Catalog check failed: 401 Unauthorized — restart the auth dev harness after ' +
+            'eval "$(./scripts/export-dev-env-from-realm.sh)" and confirm startup loads ' +
+            'plugins/auth-backend-module-keycloak/app-config.yaml (not only workspace root app-config.yaml)',
+        );
+      }
       if (!resp.ok) {
         throw new Error(
           `Catalog check failed: ${resp.status} ${resp.statusText}`,
@@ -169,7 +189,12 @@ async function getBackstageToken(username, password) {
     redirect: 'manual',
   });
   jar.update(loginResp);
-  loginResp = await followRedirects(jar, loginResp);
+  loginResp = await followRedirects(
+    jar,
+    loginResp,
+    'POST',
+    loginBody.toString(),
+  );
 
   if (!loginResp.ok) {
     throw new Error(

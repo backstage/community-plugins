@@ -112,6 +112,7 @@ if [[ "${STDOUT_ONLY}" == false ]]; then
     echo "# Re-run after realm fixture or override env changes."
     write_env_exports
   } >"${DEV_ENV_FILE}"
+  chmod 600 "${DEV_ENV_FILE}"
   echo "export-dev-env-from-realm.sh: wrote ${DEV_ENV_FILE} — other shells: set -a && source ${DEV_ENV_FILE} && set +a" >&2
 fi
 
