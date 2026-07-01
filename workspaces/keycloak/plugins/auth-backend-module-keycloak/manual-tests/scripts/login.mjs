@@ -16,6 +16,9 @@
 
 /**
  * Obtain Backstage bearer tokens via the Keycloak OAuth flow (no frontend required).
+ *
+ * Usage:
+ *   node login.mjs --user test --password test
  */
 
 import { parseArgs } from 'node:util';
@@ -42,8 +45,6 @@ function rewriteUrl(url) {
 }
 
 const MAX_REDIRECT_HOPS = 20;
-const CATALOG_USER_RETRY_SECONDS = 15;
-const CATALOG_USER_RETRY_INTERVAL_MS = 1000;
 
 class CookieJar {
   constructor() {
@@ -101,46 +102,6 @@ async function followRedirects(jar, response, method = 'GET', body = null) {
     jar.update(resp);
   }
   return resp;
-}
-
-async function assertCatalogUserReady() {
-  const staticToken = process.env.BACKSTAGE_DEV_STATIC_TOKEN;
-  if (!staticToken) return;
-
-  const deadline = Date.now() + CATALOG_USER_RETRY_SECONDS * 1000;
-  const url = `${BACKSTAGE_BASE_URL}/api/catalog/entities/by-name/user/default/test`;
-
-  while (Date.now() < deadline) {
-    const resp = await fetch(url, {
-      headers: { Authorization: `Bearer ${staticToken}` },
-      signal: AbortSignal.timeout(10_000),
-    });
-
-    if (resp.status !== 404) {
-      if (resp.status === 401) {
-        throw new Error(
-          'Catalog check failed: 401 Unauthorized — restart the auth dev harness after ' +
-            'eval "$(./scripts/export-dev-env-from-realm.sh)" and confirm startup loads ' +
-            'plugins/auth-backend-module-keycloak/app-config.yaml (not only workspace root app-config.yaml)',
-        );
-      }
-      if (!resp.ok) {
-        throw new Error(
-          `Catalog check failed: ${resp.status} ${resp.statusText}`,
-        );
-      }
-      return;
-    }
-
-    await new Promise(r => setTimeout(r, CATALOG_USER_RETRY_INTERVAL_MS));
-  }
-
-  throw new Error(
-    "Catalog User 'test' not found after waiting — wait a few seconds after starting " +
-      'the auth dev harness, or restart it after any change to ' +
-      'manual-tests/catalog/users.yaml: ' +
-      'yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider start',
-  );
 }
 
 async function getBackstageToken(username, password) {
@@ -234,7 +195,6 @@ async function main() {
     },
   });
 
-  await assertCatalogUserReady();
   const token = await getBackstageToken(values.user, values.password);
   process.stdout.write(`${token}\n`);
 }

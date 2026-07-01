@@ -9,20 +9,20 @@ backend:
     externalAccess:
       - type: static
         options:
-          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          token: 59c1631b9ed609e00601363ab8732013a8e3deec0504a518c072b6d9625be01b
           subject: user:default/guest
 
 auth:
   environment: development
   session:
-    secret: ${AUTH_SESSION_SECRET}
+    secret: dev-auth-session-secret
   providers:
     keycloak:
       development:
-        clientId: ${AUTH_KEYCLOAK_CLIENT_ID}
-        clientSecret: ${AUTH_KEYCLOAK_CLIENT_SECRET}
-        baseUrl: ${AUTH_KEYCLOAK_BASE_URL}
-        realm: ${AUTH_KEYCLOAK_REALM}
+        clientId: backstage
+        clientSecret: HpHnpDwbrI3QlTxEdFhDvqbTDgNPHytg
+        baseUrl: http://localhost:8080
+        realm: backstage-community-realm
         signIn:
           resolvers:
             - resolver: preferredUsernameMatchingUserEntityName
