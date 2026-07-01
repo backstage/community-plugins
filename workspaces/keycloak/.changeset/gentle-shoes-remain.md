@@ -7,4 +7,4 @@ Add contributor guides, dev harnesses, and bump-trust test coverage for the Keyc
 
 - Auth: `dev/` harness, browserless OAuth smoke (`login.mjs`), module wiring and auth↔catalog sanitization contract tests
 - Catalog: transformer extension-point, schedule contract, batch-failure metrics, and `ensureTokenValid` tests
-- Workspace: `export-dev-env-from-realm.sh`, README index, and CONTRIBUTING guides with validation/smoke checklists
+- Workspace: README index and CONTRIBUTING guides with validation/smoke checklists

@@ -15,5 +15,4 @@ From the workspace root:
 yarn install
 yarn tsc
 yarn test
-eval "$(./scripts/export-dev-env-from-realm.sh)"   # writes .env.dev.local; source it in other shells for curl
 ```

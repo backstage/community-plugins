@@ -32,7 +32,7 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start --config app-config.yaml",
-    "start:keycloak": "docker run --name keycloak-dev -p 8080:8080 -e 'KEYCLOAK_ADMIN=admin' -e 'KEYCLOAK_ADMIN_PASSWORD=admin' -v ./__fixtures__/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json$([ $(uname -s) = 'Linux' ] && echo ':z') quay.io/keycloak/keycloak:22.0.1 start-dev --import-realm",
+    "start:keycloak": "docker run --rm --name keycloak-dev -p 8080:8080 -e 'KEYCLOAK_ADMIN=admin' -e 'KEYCLOAK_ADMIN_PASSWORD=admin' -v ./__fixtures__/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json$([ $(uname -s) = 'Linux' ] && echo ':z') quay.io/keycloak/keycloak:22.0.1 start-dev --import-realm",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc"
   },
