@@ -15,7 +15,7 @@
  */
 import { mockServices } from '@backstage/backend-test-utils';
 import { InputError } from '@backstage/errors';
-import KeycloakAdminClient from '@keycloak/keycloak-admin-client';
+import type KeycloakAdminClient from '@keycloak/keycloak-admin-client';
 import jwt from 'jsonwebtoken';
 
 import { KeycloakProviderConfig } from './config';

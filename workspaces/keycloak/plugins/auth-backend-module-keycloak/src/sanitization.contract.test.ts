@@ -19,8 +19,11 @@
 // catch drift between resolvers.ts and transformers.ts at build time.
 import { sanitizeUserNameTransformer } from '@backstage-community/plugin-catalog-backend-module-keycloak';
 import type { UserEntity } from '@backstage/catalog-model';
-import { AuthResolverContext, SignInInfo } from '@backstage/plugin-auth-node';
-import type { OAuthAuthenticatorResult } from '@backstage/plugin-auth-node';
+import type {
+  AuthResolverContext,
+  OAuthAuthenticatorResult,
+  SignInInfo,
+} from '@backstage/plugin-auth-node';
 import type { UserinfoResponse } from 'openid-client';
 
 import { keycloakSignInResolvers } from './resolvers';
