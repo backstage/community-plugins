@@ -6,7 +6,7 @@ backend:
     externalAccess:
       - type: static
         options:
-          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          token: 59c1631b9ed609e00601363ab8732013a8e3deec0504a518c072b6d9625be01b
           subject: user:default/guest
 
 catalog:
@@ -17,11 +17,11 @@ catalog:
   providers:
     keycloakOrg:
       default:
-        baseUrl: ${KEYCLOAK_BASE_URL}
-        loginRealm: ${KEYCLOAK_REALM}
-        realm: ${KEYCLOAK_REALM}
-        clientId: ${KEYCLOAK_CLIENT_ID}
-        clientSecret: ${KEYCLOAK_CLIENT_SECRET}
+        baseUrl: http://localhost:8080
+        loginRealm: backstage-community-realm
+        realm: backstage-community-realm
+        clientId: backstage
+        clientSecret: HpHnpDwbrI3QlTxEdFhDvqbTDgNPHytg
         schedule:
           frequency: { minutes: 30 }
           timeout: { minutes: 3 }
