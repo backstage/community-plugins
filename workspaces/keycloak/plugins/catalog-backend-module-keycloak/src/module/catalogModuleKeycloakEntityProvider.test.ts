@@ -41,7 +41,7 @@ describe('catalogModuleKeycloakEntityProvider', () => {
   };
 
   it('should return an empty array if no providers are configured', async () => {
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
       features: [
         catalogModuleKeycloakEntityProvider,
@@ -49,10 +49,12 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    // Only the Keycloak provider should be in the array
-    expect((addedProviders as EntityProvider[][]).length).toEqual(1);
-    // Keycloak returns an array of entity providers
-    expect((addedProviders as EntityProvider[][])[0].length).toEqual(0);
+    try {
+      expect((addedProviders as EntityProvider[][]).length).toEqual(1);
+      expect((addedProviders as EntityProvider[][])[0].length).toEqual(0);
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should not run without a baseUrl', async () => {
@@ -89,7 +91,7 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       },
     });
 
-    await startTestBackend({
+    const backend = await startTestBackend({
       features: [
         catalogPlugin,
         catalogModuleKeycloakEntityProvider,
@@ -98,8 +100,12 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    expect(usedSchedule?.frequency).toEqual({ minutes: 30 });
-    expect(usedSchedule?.timeout).toEqual({ minutes: 3 });
+    try {
+      expect(usedSchedule?.frequency).toEqual({ minutes: 30 });
+      expect(usedSchedule?.timeout).toEqual({ minutes: 3 });
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should return a single provider with a specified schedule', async () => {
@@ -112,7 +118,7 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       },
     });
 
-    await startTestBackend({
+    const backend = await startTestBackend({
       features: [
         catalogPlugin,
         catalogModuleKeycloakEntityProvider,
@@ -137,12 +143,16 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    expect(usedSchedule?.frequency).toEqual({ months: 1 });
-    expect(usedSchedule?.timeout).toEqual({ minutes: 5 });
+    try {
+      expect(usedSchedule?.frequency).toEqual({ months: 1 });
+      expect(usedSchedule?.timeout).toEqual({ minutes: 5 });
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should return multiple providers', async () => {
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
       features: [
         catalogModuleKeycloakEntityProvider,
@@ -165,14 +175,16 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    // Only the Keycloak provider should be in the array
-    expect((addedProviders as EntityProvider[][]).length).toEqual(1);
-    // Keycloak returns an array of entity providers
-    expect((addedProviders as EntityProvider[][])[0].length).toEqual(2);
+    try {
+      expect((addedProviders as EntityProvider[][]).length).toEqual(1);
+      expect((addedProviders as EntityProvider[][])[0].length).toEqual(2);
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should return provider name', async () => {
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
       features: [
         catalogModuleKeycloakEntityProvider,
@@ -182,12 +194,14 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    // Only the Keycloak provider should be in the array
-    expect((addedProviders as EntityProvider[][]).length).toEqual(1);
-    // Keycloak returns an array of entity providers
-    expect(
-      (addedProviders as EntityProvider[][])[0][0].getProviderName(),
-    ).toEqual('KeycloakOrgEntityProvider:default');
+    try {
+      expect((addedProviders as EntityProvider[][]).length).toEqual(1);
+      expect(
+        (addedProviders as EntityProvider[][])[0][0].getProviderName(),
+      ).toEqual('KeycloakOrgEntityProvider:default');
+    } finally {
+      await backend.stop();
+    }
   });
 });
 
@@ -212,8 +226,9 @@ describe('keycloakTransformerExtensionPoint', () => {
   it('passes transformers set via the extension point to KeycloakOrgEntityProvider', async () => {
     const fromConfigSpy = jest.spyOn(KeycloakOrgEntityProvider, 'fromConfig');
 
+    let backend;
     try {
-      await startTestBackend({
+      backend = await startTestBackend({
         extensionPoints: [
           [
             catalogProcessingExtensionPoint,
@@ -240,6 +255,7 @@ describe('keycloakTransformerExtensionPoint', () => {
         }),
       );
     } finally {
+      await backend?.stop();
       fromConfigSpy.mockRestore();
     }
   });
