@@ -1,0 +1,39 @@
+app:
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: 59c1631b9ed609e00601363ab8732013a8e3deec0504a518c072b6d9625be01b
+          subject: user:default/guest
+
+auth:
+  environment: development
+  session:
+    secret: dev-auth-session-secret
+  providers:
+    keycloak:
+      development:
+        clientId: backstage
+        clientSecret: HpHnpDwbrI3QlTxEdFhDvqbTDgNPHytg
+        baseUrl: http://localhost:8080
+        realm: backstage-community-realm
+        signIn:
+          resolvers:
+            - resolver: preferredUsernameMatchingUserEntityName
+
+# Catalog User for OAuth sign-in resolver smoke (matches Keycloak user `test` in the realm fixture).
+catalog:
+  processingInterval: { seconds: 3 }
+  rules:
+    - allow: [User, Location]
+  locations:
+    - type: file
+      target: manual-tests/catalog/users.yaml
+      rules:
+        - allow: [User]
