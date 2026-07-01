@@ -271,7 +271,7 @@ export function parseEnterpriseDocument(
             metrics_type: metricsType,
             entity_id: entityId,
             team_slug: '',
-            feature: row.feature,
+            feature: toStringValue(row.feature)!,
             code_acceptance_activity_count: toNumber(
               row.code_acceptance_activity_count,
             ),
@@ -303,7 +303,7 @@ export function parseEnterpriseDocument(
             metrics_type: metricsType,
             entity_id: entityId,
             team_slug: '',
-            ide: row.ide,
+            ide: toStringValue(row.ide)!,
             code_acceptance_activity_count: toNumber(
               row.code_acceptance_activity_count,
             ),
@@ -341,8 +341,8 @@ export function parseEnterpriseDocument(
             metrics_type: metricsType,
             entity_id: entityId,
             team_slug: '',
-            language: row.language,
-            feature: row.feature,
+            language: toStringValue(row.language)!,
+            feature: toStringValue(row.feature)!,
             code_acceptance_activity_count: toNumber(
               row.code_acceptance_activity_count,
             ),
