@@ -220,6 +220,65 @@ describe('reportParser', () => {
       expect(result.byIde).toEqual([]);
       expect(result.byLanguageFeature).toEqual([]);
     });
+    it('parses a flat V2EnterpriseDayTotal object (GitHub 2026-03-10 API shape)', () => {
+      // Regression test for: https://github.com/backstage/community-plugins/issues/9458
+      // GitHub's report API returns a single flat object per download URL, not a
+      // V2EnterpriseDocument wrapper with a day_totals array.
+      const doc = {
+        day: '2026-06-22',
+        enterprise_id: '1',
+        daily_active_users: 120,
+        weekly_active_users: 530,
+        monthly_active_users: 1400,
+        daily_active_cli_users: 5,
+        monthly_active_agent_users: 10,
+        monthly_active_chat_users: 50,
+        code_acceptance_activity_count: 80,
+        code_generation_activity_count: 200,
+        loc_added_sum: 500,
+        loc_deleted_sum: 100,
+        loc_suggested_to_add_sum: 700,
+        loc_suggested_to_delete_sum: 150,
+        user_initiated_interaction_count: 300,
+        totals_by_ide: [
+          {
+            ide: 'vscode',
+            code_acceptance_activity_count: 40,
+            code_generation_activity_count: 100,
+            loc_added_sum: 250,
+            loc_deleted_sum: 50,
+            loc_suggested_to_add_sum: 350,
+            loc_suggested_to_delete_sum: 75,
+            user_initiated_interaction_count: 150,
+          },
+        ],
+      };
+
+      const result = parseEnterpriseDocument(doc, 'enterprise', 'ent-1');
+
+      expect(result.dailyTotals).toHaveLength(1);
+      expect(result.dailyTotals[0]).toEqual(
+        expect.objectContaining({
+          day: '2026-06-22',
+          metrics_type: 'enterprise',
+          entity_id: 'ent-1',
+          team_slug: '',
+          daily_active_users: 120,
+          weekly_active_users: 530,
+          monthly_active_users: 1400,
+          user_initiated_interaction_count: 300,
+        }),
+      );
+      expect(result.byIde).toHaveLength(1);
+      expect(result.byIde[0]).toEqual(
+        expect.objectContaining({
+          day: '2026-06-22',
+          metrics_type: 'enterprise',
+          entity_id: 'ent-1',
+          ide: 'vscode',
+        }),
+      );
+    });
   });
 
   describe('parseOrganizationDocument', () => {

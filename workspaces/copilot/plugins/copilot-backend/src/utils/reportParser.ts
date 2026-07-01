@@ -16,7 +16,6 @@
 
 import {
   V2DailyTotal,
-  V2EnterpriseDocument,
   V2MetricsByCliRow,
   V2MetricsByFeatureRow,
   V2MetricsByIdeRow,
@@ -124,8 +123,10 @@ function toStringValue(value: unknown): string | null {
 }
 
 /**
- * Parse an enterprise or org report document (array of EnterpriseDocument items).
- * The document is the downloaded JSON from a signed enterprise-1-day or organization-1-day URL.
+ * Parse an enterprise report document downloaded from a signed enterprise-1-day URL.
+ * The GitHub report API (2026-03-10) returns a single flat V2EnterpriseDayTotal object
+ * per file. Both flat objects and legacy V2EnterpriseDocument arrays (with a day_totals
+ * wrapper) are accepted for robustness.
  */
 export function parseEnterpriseDocument(
   doc: unknown,
@@ -143,28 +144,41 @@ export function parseEnterpriseDocument(
     byCli: [],
   };
 
-  if (!Array.isArray(doc)) {
-    logWarn('Expected enterprise document array, received non-array payload.');
+  // Normalize: the GitHub report API (2026-03-10) downloads a single flat
+  // V2EnterpriseDayTotal object per file — not a V2EnterpriseDocument with a
+  // day_totals wrapper. Accept both shapes for robustness.
+  const rawDocs: unknown[] = Array.isArray(doc)
+    ? doc
+    : isRecord(doc)
+    ? [doc]
+    : [];
+
+  if (rawDocs.length === 0) {
+    logWarn('Expected enterprise document object, received invalid payload.');
     return parsed;
   }
 
-  for (const enterpriseDoc of doc as V2EnterpriseDocument[]) {
-    if (!isRecord(enterpriseDoc) || !Array.isArray(enterpriseDoc.day_totals)) {
-      logWarn(
-        'Skipping enterprise document item with missing day_totals array.',
-      );
-      continue;
-    }
+  for (const rawDoc of rawDocs) {
+    // Unwrap V2EnterpriseDocument (day_totals wrapper) if present;
+    // otherwise treat the item itself as the day's metrics object.
+    const dayTotals: unknown[] =
+      isRecord(rawDoc) && Array.isArray(rawDoc.day_totals)
+        ? (rawDoc.day_totals as unknown[])
+        : isRecord(rawDoc)
+        ? [rawDoc]
+        : [];
 
-    for (const dayTotal of enterpriseDoc.day_totals) {
+    for (const dayTotal of dayTotals) {
       if (!isRecord(dayTotal)) {
-        logWarn('Skipping day_totals item because it is not an object.');
+        logWarn(
+          'Skipping enterprise document item because it is not an object.',
+        );
         continue;
       }
 
       const day = toStringValue(dayTotal.day);
       if (!day) {
-        logWarn('Skipping day_totals item with missing day field.');
+        logWarn('Skipping enterprise document item with missing day field.');
         continue;
       }
 
