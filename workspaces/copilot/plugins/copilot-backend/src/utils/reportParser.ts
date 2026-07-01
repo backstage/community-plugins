@@ -154,7 +154,9 @@ export function parseEnterpriseDocument(
     : [];
 
   if (rawDocs.length === 0) {
-    logWarn('Expected enterprise document object, received invalid payload.');
+    logWarn(
+      'Expected enterprise document object or array, received invalid or empty payload.',
+    );
     return parsed;
   }
 
