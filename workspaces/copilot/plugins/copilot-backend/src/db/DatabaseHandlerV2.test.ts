@@ -293,6 +293,69 @@ describe('DatabaseHandlerV2', () => {
       expect(rows[0].monthly_active_chat_users).toBe(1);
     });
 
+    it('getDailyTotals anchors rolling windows to each returned day', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-08', team_slug: 'team-a' }),
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      const activity: Array<{
+        day: string;
+        user_id: number;
+        used_agent?: boolean;
+        used_chat?: boolean;
+      }> = [
+        { day: '2026-05-02', user_id: 1 },
+        { day: '2026-05-04', user_id: 2, used_agent: true },
+        { day: '2026-05-08', user_id: 3, used_chat: true },
+        { day: '2026-05-10', user_id: 4 },
+      ];
+
+      await handler.insertUserMetrics(
+        activity.map(a =>
+          buildUserMetric({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            used_agent: a.used_agent ?? false,
+            used_chat: a.used_chat ?? false,
+          }),
+        ),
+      );
+      await handler.insertUserTeams(
+        activity.map(a =>
+          buildUserTeam({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ),
+      );
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-08',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(2);
+      expect(normalizeDate(rows[0].day)).toBe('2026-05-08');
+      expect(rows[0].weekly_active_users).toBe(3);
+      expect(rows[0].monthly_active_users).toBe(3);
+      expect(rows[0].monthly_active_agent_users).toBe(1);
+      expect(rows[0].monthly_active_chat_users).toBe(1);
+
+      expect(normalizeDate(rows[1].day)).toBe('2026-05-10');
+      expect(rows[1].weekly_active_users).toBe(3);
+      expect(rows[1].monthly_active_users).toBe(4);
+      expect(rows[1].monthly_active_agent_users).toBe(1);
+      expect(rows[1].monthly_active_chat_users).toBe(1);
+    });
+
     it('getDailyTotals computes rolling users when dates come back as Date objects', async () => {
       const originalDb = (handler as any).db;
       const fakeActivityRows = [

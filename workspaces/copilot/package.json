@@ -49,7 +49,7 @@
     "@types/node": "^24.9.1",
     "@types/webpack-env": "^1.18.8",
     "jest": "^30",
-    "jest-environment-jsdom": "^29",
+    "jest-environment-jsdom": "^30",
     "jsdom": "^27",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
