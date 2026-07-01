@@ -163,12 +163,14 @@ export function parseEnterpriseDocument(
   for (const rawDoc of rawDocs) {
     // Unwrap V2EnterpriseDocument (day_totals wrapper) if present;
     // otherwise treat the item itself as the day's metrics object.
-    const dayTotals: unknown[] =
-      isRecord(rawDoc) && Array.isArray(rawDoc.day_totals)
-        ? (rawDoc.day_totals as unknown[])
-        : isRecord(rawDoc)
-        ? [rawDoc]
-        : [];
+    if (!isRecord(rawDoc)) {
+      logWarn('Skipping enterprise document item because it is not an object.');
+      continue;
+    }
+
+    const dayTotals: unknown[] = Array.isArray(rawDoc.day_totals)
+      ? (rawDoc.day_totals as unknown[])
+      : [rawDoc];
 
     for (const dayTotal of dayTotals) {
       if (!isRecord(dayTotal)) {
