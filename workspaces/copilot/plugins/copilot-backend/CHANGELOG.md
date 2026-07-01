@@ -1,5 +1,17 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.1.0
+
+### Minor Changes
+
+- 7a4ea48: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- fca2146: Fix enterprise v2 metrics ingestion: correct MiddlewareFactory.error() invocation, handle flat V2EnterpriseDayTotal response shape from GitHub 2026-03-10 report API, and prevent false-success log entry when 0 rows are parsed
+- Updated dependencies [7a4ea48]
+  - @backstage-community/plugin-copilot-common@1.1.0
+
 ## 1.0.0
 
 ### Major Changes
