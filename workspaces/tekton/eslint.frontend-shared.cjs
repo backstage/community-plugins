@@ -33,11 +33,6 @@ const materialUiMigrationEslintConfig = {
       message:
         'Use @mui/styles, @mui/material (sx/styled), or Backstage UI instead of Material UI v4.',
     },
-    {
-      name: '@mui/styles',
-      message:
-        'Avoid @mui/styles/makeStyles. Use @mui/material sx/styled, or Backstage UI instead of makeStyles.',
-    },
   ],
   restrictedImportPatterns: ['@material-ui/*'],
 };

@@ -36,7 +36,7 @@ const materialUiMigrationEslintConfig = {
     {
       name: '@mui/styles',
       message:
-        'Avoid @mui/styles/makeStyles. Use @backstage/ui or CSS modules instead of makeStyles.',
+        'Use @backstage/ui or CSS modules instead of @mui/styles (legacy MUI styling).',
     },
   ],
   restrictedImportPatterns: ['@material-ui/*'],
