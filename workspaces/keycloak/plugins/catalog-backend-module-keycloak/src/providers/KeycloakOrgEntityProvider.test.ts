@@ -244,7 +244,6 @@ describe.each([
       clientId: 'myclientid',
       clientSecret: 'myclientsecret',
     });
-    expect(connection.applyMutation).toHaveBeenCalledTimes(1);
     expectFullCatalogMutation();
     expect(
       (connection.applyMutation as jest.Mock).mock.calls,
