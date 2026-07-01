@@ -293,6 +293,61 @@ describe('DatabaseHandlerV2', () => {
       expect(rows[0].monthly_active_chat_users).toBe(1);
     });
 
+    it('getDailyTotals computes rolling users when dates come back as Date objects', async () => {
+      const originalDb = (handler as any).db;
+      const fakeActivityRows = [
+        {
+          day: new Date('2026-05-04T00:00:00.000Z'),
+          user_id: 1,
+          used_agent: true,
+          used_chat: false,
+        },
+        {
+          day: new Date('2026-05-08T00:00:00.000Z'),
+          user_id: 2,
+          used_agent: false,
+          used_chat: true,
+        },
+        {
+          day: new Date('2026-05-10T00:00:00.000Z'),
+          user_id: 1,
+          used_agent: false,
+          used_chat: false,
+        },
+      ];
+      const fakeQuery = {
+        join: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        whereBetween: jest.fn().mockReturnThis(),
+        select: jest.fn().mockResolvedValue(fakeActivityRows),
+      };
+      (handler as any).db = jest.fn().mockReturnValue(fakeQuery);
+
+      try {
+        const rows = await (handler as any).enrichTeamRollingActiveUsers(
+          [
+            buildDailyTotal({
+              day: new Date('2026-05-10T00:00:00.000Z') as any,
+              team_slug: 'team-a',
+            }),
+          ],
+          'organization',
+          'org-1',
+          '2026-05-10',
+          '2026-05-10',
+          'team-a',
+        );
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].weekly_active_users).toBe(2);
+        expect(rows[0].monthly_active_users).toBe(2);
+        expect(rows[0].monthly_active_agent_users).toBe(1);
+        expect(rows[0].monthly_active_chat_users).toBe(1);
+      } finally {
+        (handler as any).db = originalDb;
+      }
+    });
+
     it('getDailyTotals only counts users active within the selected team', async () => {
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),

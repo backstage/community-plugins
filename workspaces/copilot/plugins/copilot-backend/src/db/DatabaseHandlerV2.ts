@@ -399,10 +399,10 @@ export class DatabaseHandlerV2 {
       used_agent: boolean | number | null;
       used_chat: boolean | number | null;
     }>) {
-      const day =
-        row.day instanceof Date
-          ? DateTime.fromJSDate(row.day).toFormat('yyyy-MM-dd')
-          : String(row.day).slice(0, 10);
+      const day = this.normalizeDay(row.day);
+      if (!day) {
+        continue;
+      }
       const userId = Number(row.user_id);
 
       if (!activeByDay.has(day)) activeByDay.set(day, new Set<number>());
@@ -435,8 +435,11 @@ export class DatabaseHandlerV2 {
     };
 
     return rows.map(row => {
-      const day =
-        typeof row.day === 'string' ? row.day.slice(0, 10) : String(row.day);
+      const day = this.normalizeDay(row.day);
+      if (!day) {
+        return row;
+      }
+
       return {
         ...row,
         weekly_active_users: distinctOverWindow(
