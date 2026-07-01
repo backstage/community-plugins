@@ -64,3 +64,22 @@ metadata:
   annotations:
     firehydrant.com/service-name: <firehydrant-service-name>
 ```
+
+## New Frontend System Setup
+
+Follow this section if you are using Backstage's new frontend system.
+
+Import the plugin in your `App.tsx` and add it to your app's features array:
+
+```ts
+import firehydrantPlugin from '@backstage-community/plugin-firehydrant/alpha';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ... other features
+    firehydrantPlugin,
+  ],
+});
+```
