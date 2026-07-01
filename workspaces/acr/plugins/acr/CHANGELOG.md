@@ -1,5 +1,16 @@
 # @backstage-community/plugin-acr
 
+## 1.26.0
+
+### Minor Changes
+
+- 94f9df2: Backstage version bump to v1.51.0
+- 35d5828: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- 7201af5: Migrated from Material UI (`@mui/material`) to Backstage UI (`@backstage/ui`). Replaced `Box` and `Chip` components with BUI equivalents (`Box`, `Flex`, `Tag`, `TagGroup`). Removed `@mui/material` and `@backstage/theme` dependencies.
+
 ## 1.25.2
 
 ### Patch Changes
