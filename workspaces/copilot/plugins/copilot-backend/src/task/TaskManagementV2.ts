@@ -207,6 +207,8 @@ export class TaskManagementV2 {
       return false;
     }
 
+    let totalRowsParsed = 0;
+
     for (const url of totalLinks) {
       const document = await api.downloadDocument(url);
       const parsed =
@@ -222,6 +224,15 @@ export class TaskManagementV2 {
       await db.insertByModelFeature(parsed.byModelFeature);
       await db.insertByLanguageModel(parsed.byLanguageModel);
       await db.insertByCli(parsed.byCli);
+
+      totalRowsParsed += parsed.dailyTotals.length;
+    }
+
+    if (totalRowsParsed === 0) {
+      logger.warn(
+        `[TaskManagementV2] Parsed 0 daily rows for ${metricsType} totals on ${day} — not marking as success.`,
+      );
+      return false;
     }
 
     return true;

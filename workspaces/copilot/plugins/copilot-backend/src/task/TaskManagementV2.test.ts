@@ -331,6 +331,52 @@ describe('TaskManagementV2', () => {
   });
 });
 
+it('ingestTotals returns partial status when downloaded document yields 0 parsed rows', async () => {
+  // Regression test for: https://github.com/backstage/community-plugins/issues/9458
+  // Before the fix, ingestTotals always returned true even when 0 rows were parsed,
+  // causing the ingestion log to record status='success' and getMissingDays to
+  // permanently skip those days on future runs.
+  const db = createDbMock();
+  const api = createApiMock();
+  const config = createConfigMock({
+    'copilot.enterprise': 'ent-1',
+    'copilot.backfillFromDate': '2026-05-10',
+    'copilot.backfillDelayMs': 0,
+    'copilot.ingestTeams': false,
+  });
+  const logger = createLoggerMock();
+
+  db.getMissingDays.mockResolvedValue(['2026-05-10']);
+  api.fetchEnterpriseReportLinks.mockResolvedValue({
+    download_links: ['https://downloads.github.com/report.json'],
+  });
+  // Return a payload that is structurally valid (an object) but has no 'day' field,
+  // so parseEnterpriseDocument produces 0 dailyTotals rows.
+  api.downloadDocument.mockResolvedValueOnce({ not_a_day: 'malformed' });
+
+  const task = TaskManagementV2.create({
+    db: db as unknown as DatabaseHandlerV2,
+    api: api as unknown as GithubClientV2,
+    config,
+    logger,
+  });
+
+  await task.runAsync();
+
+  // Should NOT be logged as success — totals component was not loaded
+  expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+    expect.objectContaining({
+      day: '2026-05-10',
+      metrics_type: 'enterprise',
+      entity_id: 'ent-1',
+      status: 'partial',
+    }),
+  );
+  expect(db.upsertIngestionLog).not.toHaveBeenCalledWith(
+    expect.objectContaining({ status: 'success' }),
+  );
+});
+
 function createDbMock() {
   return {
     getMissingDays: jest.fn(),

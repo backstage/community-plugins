@@ -557,6 +557,6 @@ async function createRouter(
     },
   );
 
-  router.use(MiddlewareFactory.create({ config, logger }).error);
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
