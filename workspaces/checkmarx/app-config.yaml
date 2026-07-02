@@ -25,8 +25,8 @@ auth:
 
 checkmarx:
   location: US2
-  tenant: example-tenant
-  apiKey: example-api-key
+  tenant: ${CHECKMARX_TENANT}
+  apiKey: ${CHECKMARX_API_KEY}
   # externalBaseUrl: https://us.ast.checkmarx.net
   # astBaseUrlOverride: https://us.ast.checkmarx.net
   # iamBaseUrlOverride: https://us.iam.checkmarx.net
