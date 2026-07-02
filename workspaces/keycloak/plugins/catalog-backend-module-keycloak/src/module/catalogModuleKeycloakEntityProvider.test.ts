@@ -226,7 +226,7 @@ describe('keycloakTransformerExtensionPoint', () => {
   it('passes transformers set via the extension point to KeycloakOrgEntityProvider', async () => {
     const fromConfigSpy = jest.spyOn(KeycloakOrgEntityProvider, 'fromConfig');
 
-    let backend;
+    let backend: Awaited<ReturnType<typeof startTestBackend>> | undefined;
     try {
       backend = await startTestBackend({
         extensionPoints: [
