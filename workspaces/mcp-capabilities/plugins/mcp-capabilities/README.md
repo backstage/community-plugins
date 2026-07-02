@@ -63,3 +63,7 @@ export default createApp({
 - default — the frontend plugin
 - `mcpCapabilitiesApiRef`, `McpCapabilitiesClient`, `McpCapabilitiesApi` — the
   read-only client for `/api/mcp-capabilities/spec`
+
+## Credits
+
+Made at [EPAM](https://www.epam.com), with love for the community. ❤️

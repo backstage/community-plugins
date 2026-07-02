@@ -71,11 +71,23 @@ Verify:
 curl 'http://localhost:7007/api/mcp-capabilities/spec?entityRef=api:default/aws-docs'
 ```
 
-## Known limitation
+## Limitations
 
-Remotes requiring per-request auth (e.g. AWS Bedrock AgentCore Gateway, SigV4)
-are not yet signed — discovery skips them gracefully, and `/spec` returns an error
-for them. Per-remote auth is a planned enhancement.
+- **Network reachability (backend egress).** Discovery runs from the Backstage
+  **backend** — the catalog processor and the `/spec` route — which connect
+  _outbound_ to each server's `spec.remotes[].url` over the MCP streamable-http
+  transport. Your backend must therefore be able to reach every MCP server you
+  register. Servers on a private network, behind a VPN, or firewalled need the
+  backend to have a route to them (VPC/peering, allow-listed egress, or an HTTP
+  proxy). The browser never connects to the MCP server directly, so this is a
+  backend-egress concern, not a CORS one.
+- **Unreachable or slow servers.** Discovery is time-boxed (15s in the catalog
+  processor, 30s for the on-demand `/spec` route). A server that is unreachable or
+  times out is skipped gracefully: the processor leaves the entity unchanged, and
+  `/spec` returns an error that the Capabilities tab surfaces.
+- **Per-request auth.** Remotes requiring signed requests (e.g. AWS Bedrock
+  AgentCore Gateway, SigV4) are not yet signed — those remotes are skipped by the
+  processor and error from `/spec`. Per-remote auth is a possible enhancement (depends on how future backstage shift to `connections` plays out).
 
 ## Development
 
@@ -85,3 +97,7 @@ for them. Per-remote auth is a planned enhancement.
 
 - default — the backend plugin (mounts the `/spec` router)
 - `catalogModuleMcpCapabilities` — the enrichment catalog module
+
+## Credits
+
+Made at [EPAM](https://www.epam.com), with love for the community. ❤️

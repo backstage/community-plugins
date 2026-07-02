@@ -41,3 +41,7 @@ backend.add(
 - Types: `MCPToolInfo`, `MCPResourceInfo`, `MCPPromptInfo`, `MCPServerInfo`,
   `MCPServerSpec`, `MCPServerEnrichmentSpec`, `MCPCapabilities`,
   `MCPToolAnnotations`
+
+## Credits
+
+Made at [EPAM](https://www.epam.com), with love for the community. ❤️
