@@ -25,7 +25,7 @@ import {
   ServerTool,
   ToolExecutionResult,
   MessageValidationResult,
-} from './types';
+} from '@backstage-community/plugin-mcp-chat-common';
 import { RootConfigService } from '@backstage/backend-plugin-api';
 
 /**

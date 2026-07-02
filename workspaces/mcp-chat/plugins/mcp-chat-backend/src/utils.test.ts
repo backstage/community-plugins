@@ -20,7 +20,7 @@ import {
   validateConfig,
   validateMessages,
 } from './utils';
-import { MCPServerType } from './types';
+import { MCPServerType } from '@backstage-community/plugin-mcp-chat-common';
 
 jest.mock('@modelcontextprotocol/sdk/client/index.js', () => ({
   Client: jest.fn(),

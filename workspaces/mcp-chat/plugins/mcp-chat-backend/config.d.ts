@@ -25,16 +25,9 @@ export interface Config {
       /**
        * Unique identifier for the provider
        * @visibility backend
-       * @enum { 'openai' | 'openai-responses' | 'azure-openai' | 'claude' | 'gemini' | 'ollama' | 'litellm' }
+       * @enum { 'openai' | 'claude' | 'gemini' | 'ollama' }
        */
-      id:
-        | 'openai'
-        | 'openai-responses'
-        | 'azure-openai'
-        | 'claude'
-        | 'gemini'
-        | 'ollama'
-        | 'litellm';
+      id: 'openai' | 'claude' | 'gemini' | 'ollama';
       /**
        * API token for the provider
        * @visibility secret
@@ -68,6 +61,11 @@ export interface Config {
        * @visibility backend
        */
       temperature?: number;
+      /**
+       * Provider-specific authentication parameters (IAM, session tokens, etc.)
+       * @visibility secret
+       */
+      auth?: { [key: string]: string };
     }>;
     /**
      * MCP (Model Context Protocol) servers configuration
