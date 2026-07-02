@@ -22,4 +22,5 @@
  */
 
 export * from './types';
+export * from './remote';
 export { mcpServerEnrichmentModelLayer } from './model/mcpServerEnrichmentModelLayer';

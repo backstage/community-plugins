@@ -20,7 +20,11 @@ import {
   CatalogProcessor,
   CatalogProcessorCache,
 } from '@backstage/plugin-catalog-node';
-import { MCPServerEnrichmentSpec } from '@backstage-community/plugin-mcp-capabilities-common';
+import {
+  MCPServerEnrichmentSpec,
+  isSupportedMcpRemoteUrl,
+  selectMcpServerRemote,
+} from '@backstage-community/plugin-mcp-capabilities-common';
 import { MCPClient } from '../lib/MCPClient';
 
 interface CacheItem {
@@ -29,11 +33,6 @@ interface CacheItem {
 }
 
 const DEFAULT_TTL_MS = 10 * 60 * 1000;
-
-interface McpServerSpec {
-  type?: string;
-  remotes?: Array<{ type?: string; url: string }>;
-}
 
 /**
  * Catalog processor that enriches native `API` / `spec.type: 'mcp-server'`
@@ -49,13 +48,11 @@ interface McpServerSpec {
  */
 export class McpServerCapabilitiesProcessor implements CatalogProcessor {
   private readonly logger: LoggerService;
-  private readonly ttlMs: number;
 
-  constructor(options: { logger: LoggerService; ttlMs?: number }) {
+  constructor(options: { logger: LoggerService }) {
     this.logger = options.logger.child({
       component: 'McpServerCapabilitiesProcessor',
     });
-    this.ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
   }
 
   getProcessorName(): string {
@@ -69,15 +66,15 @@ export class McpServerCapabilitiesProcessor implements CatalogProcessor {
     _originLocation: unknown,
     cache: CatalogProcessorCache,
   ): Promise<Entity> {
-    const spec = (entity.spec ?? {}) as McpServerSpec;
-    if (entity.kind !== 'API' || spec.type !== 'mcp-server') {
+    if (
+      entity.kind !== 'API' ||
+      (entity.spec as { type?: string } | undefined)?.type !== 'mcp-server'
+    ) {
       return entity;
     }
 
-    const remote =
-      (spec.remotes ?? []).find(r => r.type === 'streamable-http') ??
-      (spec.remotes ?? [])[0];
-    if (!remote?.url) {
+    const remote = selectMcpServerRemote(entity);
+    if (!remote?.url || !isSupportedMcpRemoteUrl(remote.url)) {
       return entity;
     }
 
@@ -105,7 +102,7 @@ export class McpServerCapabilitiesProcessor implements CatalogProcessor {
     const cached = (await cache.get<JsonObject>(cacheKey)) as
       | CacheItem
       | undefined;
-    if (cached && Date.now() - cached.cachedAt < this.ttlMs) {
+    if (cached && Date.now() - cached.cachedAt < DEFAULT_TTL_MS) {
       return cached.summary;
     }
 

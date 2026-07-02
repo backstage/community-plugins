@@ -84,7 +84,10 @@ export class MCPClient {
         (result.capabilities as Record<string, unknown> | undefined) ?? {};
       const instructions = result.instructions as string | undefined;
 
-      await this.sendNotification('notifications/initialized');
+      await this.sendNotification(
+        'notifications/initialized',
+        controller.signal,
+      );
 
       const capabilities = {
         tools: Boolean(rawCapabilities.tools),
@@ -230,12 +233,16 @@ export class MCPClient {
     return JSON.parse(text) as JsonRpcResponse;
   }
 
-  private async sendNotification(method: string): Promise<void> {
+  private async sendNotification(
+    method: string,
+    signal?: AbortSignal,
+  ): Promise<void> {
     try {
       await fetch(this.config.url, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ jsonrpc: '2.0', method, params: {} }),
+        signal,
       });
     } catch {
       // Notifications are fire-and-forget.

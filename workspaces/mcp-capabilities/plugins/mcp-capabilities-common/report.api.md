@@ -4,7 +4,11 @@
 
 ```ts
 import { CatalogModelLayer } from '@backstage/catalog-model/alpha';
+import { Entity } from '@backstage/catalog-model';
 import { JsonObject } from '@backstage/types';
+
+// @public
+export function isSupportedMcpRemoteUrl(url: string): boolean;
 
 // @public
 export interface MCPCapabilities {
@@ -77,6 +81,14 @@ export interface MCPServerInfo {
 }
 
 // @public
+export interface McpServerRemote {
+  // (undocumented)
+  type?: string;
+  // (undocumented)
+  url: string;
+}
+
+// @public
 export interface MCPServerSpec {
   // (undocumented)
   capabilities?: MCPCapabilities;
@@ -123,4 +135,9 @@ export interface MCPToolInfo {
   // (undocumented)
   outputSchema?: JsonObject;
 }
+
+// @public
+export function selectMcpServerRemote(
+  entity: Entity,
+): McpServerRemote | undefined;
 ```
