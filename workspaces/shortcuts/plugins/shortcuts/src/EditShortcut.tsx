@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
+import { useRef, useEffect, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Popover from '@material-ui/core/Popover';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
+import { ButtonIcon } from '@backstage/ui';
+import { RiDeleteBinLine } from '@remixicon/react';
 import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { ShortcutApi } from './api';
 import { alertApiRef, useApi, useAnalytics } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  card: {
-    width: 400,
-  },
-  header: {
-    marginBottom: theme.spacing(1),
-  },
-  button: {
-    marginTop: theme.spacing(1),
-  },
-}));
+import styles from './EditShortcut.module.css';
 
 type Props = {
   shortcut: Shortcut;
@@ -53,9 +40,9 @@ export const EditShortcut = ({
   api,
   allowExternalLinks,
 }: Props) => {
-  const classes = useStyles();
   const alertApi = useApi(alertApiRef);
   const open = Boolean(anchorEl);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const analytics = useAnalytics();
 
   const handleSave: SubmitHandler<FormValues> = async ({ url, title }) => {
@@ -81,6 +68,7 @@ export const EditShortcut = ({
     }
 
     onClose();
+    return;
   };
 
   const handleRemove = async () => {
@@ -101,45 +89,94 @@ export const EditShortcut = ({
     }
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     onClose();
-  };
+  }, [onClose]);
+
+  // Handle click outside to close popover
+  /**
+   * Positioning Strategy:
+   *
+   * The EditShortcut popover uses a simple fixed-position approach with `getBoundingClientRect()`
+   * for anchor positioning. This replaces the MUI Popover component from the previous implementation.
+   *
+   * Design Rationale:
+   * - The anchor button (edit icon) is in the Backstage sidebar (a stable, non-scrolling container)
+   * - User interactions are confined to the sidebar area with limited scroll/resize scenarios
+   * - The form closes when clicked outside, mitigating off-screen visibility concerns
+   * - Keeping the implementation lightweight and dependency-free improves bundle size
+   * - The current approach provides acceptable UX for this specific use case
+   *
+   * Future Improvements (if needed):
+   * - For complex scroll/viewport collision scenarios, consider @floating-ui/react
+   * - For panel flipping/shifting behavior, integrate Popper or Floating UI library
+   * - Monitor user feedback on positioning accuracy during scrolling/resizing
+   *
+   * Trade-offs Accepted:
+   * ✓ Simpler, lighter implementation
+   * ✓ Fewer external dependencies
+   * ✗ No automatic viewport collision detection
+   * ✗ No automatic repositioning on scroll/resize (but sidebar is typically fixed)
+   * ✗ Manual position updates if needed (currently not required)
+   */
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target as Node) &&
+        anchorEl &&
+        !anchorEl.contains(event.target as Node)
+      ) {
+        handleClose();
+      }
+    };
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+    return undefined;
+  }, [open, anchorEl, handleClose]);
+
+  if (!open) return null;
 
   return (
-    <Popover
-      open={open}
-      anchorEl={anchorEl}
-      onClose={onClose}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+    <div
+      ref={popoverRef}
+      style={{
+        position: 'fixed',
+        zIndex: 1300,
+        top: anchorEl ? (anchorEl as any).getBoundingClientRect().top : 0,
+        left: anchorEl
+          ? (anchorEl as any).getBoundingClientRect().right + 10
+          : 0,
       }}
     >
-      <Card className={classes.card}>
-        <CardHeader
-          className={classes.header}
-          title="Edit Shortcut"
-          titleTypographyProps={{ variant: 'subtitle2' }}
-          action={
-            <Button
-              className={classes.button}
-              variant="text"
-              size="small"
-              color="secondary"
-              startIcon={<DeleteIcon />}
-              onClick={handleRemove}
-            >
-              Remove
-            </Button>
-          }
-        />
+      <div
+        className={styles.card}
+        style={{
+          backgroundColor: 'light-dark(#ffffff, #424242)',
+        }}
+      >
+        <div className={styles.header}>
+          <Text variant="body-medium">Edit Shortcut</Text>
+          <ButtonIcon
+            className={styles.button}
+            aria-label="delete"
+            icon={<RiDeleteBinLine size={16} />}
+            onPress={handleRemove}
+            variant="secondary"
+          />
+        </div>
         <ShortcutForm
           formValues={{ url: shortcut.url, title: shortcut.title }}
           onClose={handleClose}
           onSave={handleSave}
           allowExternalLinks={allowExternalLinks}
         />
-      </Card>
-    </Popover>
+      </div>
+    </div>
   );
 };
