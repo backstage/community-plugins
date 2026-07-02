@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
 import {
   configApiRef,
   createApiFactory,
@@ -24,13 +23,13 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { QuayApiClient, quayApiRef } from './api';
-import { QUAY_ANNOTATION_REPOSITORY } from './hooks';
 import { rootRouteRef, tagRouteRef } from './routes';
 
 /**
- * Quay plugin
+ * Quay plugin (legacy frontend system)
  *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const quayPlugin = createPlugin({
   id: 'quay',
@@ -53,9 +52,10 @@ export const quayPlugin = createPlugin({
 });
 
 /**
- * Quay page
+ * Quay page (legacy frontend system)
  *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const QuayPage = quayPlugin.provide(
   createRoutableExtension({
@@ -65,10 +65,4 @@ export const QuayPage = quayPlugin.provide(
   }),
 );
 
-/**
- * Returns true if the catalog entity contains the quay annotation `quay.io/repository-slug`.
- *
- * @public
- */
-export const isQuayAvailable = (entity: Entity) =>
-  Boolean(entity?.metadata.annotations?.[QUAY_ANNOTATION_REPOSITORY]);
+export { isQuayAvailable } from './lib/isQuayAvailable';
