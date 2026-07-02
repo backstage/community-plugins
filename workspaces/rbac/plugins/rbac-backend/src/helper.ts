@@ -270,7 +270,7 @@ export async function abortConditionalPolicyReconcile(
   };
 
   logger.error(
-    'Conditional policy reconcile aborted; stored conditions preserved. Retry reconciliation once the add failure is resolved.',
+    'Conditional policy reconcile aborted; stored conditions preserved. Retry reconciliation once the underlying staging or persistence failure is resolved.',
     {
       event: 'conditional_reconcile_aborted',
       ...abortMeta,

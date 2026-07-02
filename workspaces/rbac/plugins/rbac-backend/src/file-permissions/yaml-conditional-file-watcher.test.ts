@@ -839,6 +839,58 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
   });
 
+  test('should not reconcile when only array element order differs', async () => {
+    const storedWithReorderedArrays = {
+      id: 2,
+      ...conditionToStore2,
+      permissionMapping: [
+        { name: 'catalog.entity.delete', action: 'delete' },
+        { name: 'catalog.entity.read', action: 'read' },
+      ],
+      conditions: {
+        ...conditionToStore2.conditions,
+        params: {
+          claims: ['group:default/team-b', 'group:default/team-a'],
+        },
+      },
+    };
+
+    conditionalStorageMock.filterConditions = jest
+      .fn()
+      .mockImplementation(() => [storedWithReorderedArrays]);
+    roleMetadataStorageMock.filterRoleMetadata = jest
+      .fn()
+      .mockImplementation(() => csvFileRoles);
+
+    const yamlWithCanonicalOrder = [
+      'result: CONDITIONAL',
+      'roleEntityRef: role:default/test',
+      'pluginId: catalog',
+      'resourceType: catalog-entity',
+      'permissionMapping:',
+      '  - read',
+      '  - delete',
+      'conditions:',
+      '  rule: IS_ENTITY_OWNER',
+      '  resourceType: catalog-entity',
+      '  params:',
+      '    claims:',
+      '      - group:default/team-a',
+      '      - group:default/team-b',
+    ].join('\n');
+
+    const watcher = createWatcher(csvFileName);
+    jest
+      .spyOn(watcher, 'getCurrentContents')
+      .mockReturnValue(yamlWithCanonicalOrder);
+    await watcher.onChange();
+
+    expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
+    expect(conditionalStorageMock.updateCondition).not.toHaveBeenCalled();
+    expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
+    expectAuditorLog([]);
+  });
+
   test('should handle error on delete condition', async () => {
     conditionalStorageMock.filterConditions = jest
       .fn()

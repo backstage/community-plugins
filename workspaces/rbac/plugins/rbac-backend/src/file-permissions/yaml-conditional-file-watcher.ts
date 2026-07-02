@@ -21,7 +21,7 @@ import type {
 import { InputError } from '@backstage/errors';
 
 import yaml from 'js-yaml';
-import { isEqual, omit } from 'lodash';
+import { omit } from 'lodash';
 
 import type {
   PermissionAction,
@@ -39,6 +39,7 @@ import {
 } from '../database/role-metadata';
 import {
   abortConditionalPolicyReconcile,
+  deepSortEqual,
   diffConditionalPolicies,
   pendingDeleteIdsFromPlan,
   permissionMappingToActions,
@@ -112,7 +113,7 @@ function yamlConditionEquals(
     ...omit(stored, ['id']),
     permissionMapping: permissionMappingToActions(stored.permissionMapping),
   };
-  return isEqual(storedComparable, omit(desired, ['id']));
+  return deepSortEqual(storedComparable, omit(desired, ['id']));
 }
 
 export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
