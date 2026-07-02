@@ -1,0 +1,60 @@
+.textOverflow {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  direction: rtl;
+  max-width: 300px;
+}
+
+.nameLabel {
+  font-weight: 600;
+}
+
+.detailPanel {
+  margin-top: var(--bui-space-4);
+  padding: var(--bui-space-4);
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+  background-color: var(--bui-bg-neutral-1);
+}
+
+.detailTitle {
+  margin-bottom: var(--bui-space-2);
+}
+
+.toolbar {
+  padding: var(--bui-space-3) var(--bui-space-4);
+  border: 1px solid var(--bui-border-1);
+  border-bottom: none;
+  border-radius: var(--bui-radius-2) var(--bui-radius-2) 0 0;
+  background-color: var(--bui-bg-neutral-1);
+}
+
+.updatedDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--bui-fg-success);
+  flex-shrink: 0;
+}
+
+.updatedText {
+  color: var(--bui-fg-secondary);
+  white-space: nowrap;
+}
+
+.expandIndicator {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  color: var(--bui-text-2);
+}
+
+.expandIndicator[data-expanded] {
+  transform: rotate(90deg);
+}
+
+.instanceIcon {
+  color: var(--bui-fg-primary);
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}

@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "name": "lint-check-v12",
+    "namespace": "default",
+    "uid": "wf-uid-006",
+    "labels": { "app": "my-service", "env": "ci" },
+    "creationTimestamp": "2026-04-30T09:10:00Z"
+  },
+  "status": {
+    "phase": "Succeeded",
+    "startedAt": "2026-04-30T09:10:02Z",
+    "finishedAt": "2026-04-30T09:10:48Z",
+    "nodes": {
+      "lint-check-v12": {
+        "id": "lint-check-v12",
+        "name": "lint-check-v12",
+        "displayName": "lint-check-v12",
+        "type": "DAG",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-30T09:10:02Z",
+        "finishedAt": "2026-04-30T09:10:48Z",
+        "children": ["lint-eslint", "lint-prettier"]
+      },
+      "lint-eslint": {
+        "id": "lint-eslint",
+        "name": "lint-check-v12.eslint",
+        "displayName": "ESLint",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-30T09:10:05Z",
+        "finishedAt": "2026-04-30T09:10:35Z",
+        "templateName": "eslint"
+      },
+      "lint-prettier": {
+        "id": "lint-prettier",
+        "name": "lint-check-v12.prettier",
+        "displayName": "Prettier",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-30T09:10:05Z",
+        "finishedAt": "2026-04-30T09:10:48Z",
+        "templateName": "prettier"
+      }
+    }
+  }
+}
