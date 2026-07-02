@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-checkmarx",
   "version": "0.0.0",
-  "description": "",
+  "description": "Backstage frontend plugin for displaying Checkmarx scan data on catalog entities",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "checkmarx",
@@ -65,7 +65,6 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
-    "@backstage/frontend-app-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@material-ui/core": "^4.12.2",
@@ -79,12 +78,11 @@
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",
     "@types/react-dom": "^18.2.19",
-    "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
