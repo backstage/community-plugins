@@ -4,4 +4,4 @@
 '@backstage-community/plugin-checkmarx-react': patch
 ---
 
-Initial community release of the Checkmarx workspace, including the frontend plugin, backend plugin, and shared common package.
+Finalize the Checkmarx workspace for community-plugins by removing the embedded example app and backend, adopting isolated `dev/index` entrypoints for frontend and backend development, and cleaning up unused dependencies and docs.

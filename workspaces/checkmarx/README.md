@@ -15,7 +15,7 @@ The demo catalog in [examples/entities.yaml](./examples/entities.yaml) includes
 
 ```sh
 yarn install
-yarn start
+yarn dev
 ```
 
 ## Packages
