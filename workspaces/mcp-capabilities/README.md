@@ -1,28 +1,41 @@
-# [Backstage](https://backstage.io)
+# MCP Capabilities for Backstage
 
-This is your newly scaffolded Backstage App, Good Luck!
-
-> [!IMPORTANT] > **TODO**: Consider updating your README text with relevant documentation for your plugin. See some suggested text below.
-
-# mcp-capabilities
-
-This workspace contains plugins for \[brief description of purpose, e.g. exposing data from a service].
+Plugins that enrich native MCP server catalog entities (`kind: API`,
+`spec.type: mcp-server`) with their live **capabilities** — the tools,
+resources, and prompts each server exposes.
 
 ## Plugins
 
-- \[plugin-backend](./plugins/plugin-backend/README): Backend plugin that provides...
+- [mcp-capabilities](./plugins/mcp-capabilities/README.md) — frontend (new
+  frontend system, [Backstage UI](https://backstage.io/docs/getting-started/ui)):
+  an overview card and a **Capabilities** tab on the entity page.
+- [mcp-capabilities-backend](./plugins/mcp-capabilities-backend/README.md) —
+  backend: connects to each MCP server, enriches its catalog entity, and serves
+  live tool/resource/prompt detail.
+- [mcp-capabilities-common](./plugins/mcp-capabilities-common/README.md) — shared
+  types and the schema-extension catalog model layer.
 
-## Getting Started
+## How it works
 
-To start the app, run:
+Each `mcp-server` API entity declares its endpoint in `spec.remotes`. The backend
+connects over the MCP streamable-http transport to discover what the server
+exposes:
+
+- a catalog **processor** writes a summary (capabilities, counts, and tool names
+  for search) onto the entity — powering the overview card and catalog search;
+- an on-demand endpoint, `GET /api/mcp-capabilities/spec?entityRef=…`, returns the
+  full live tool/resource/prompt detail — powering the Capabilities tab.
+
+The common package's catalog model layer **extends** the native `mcp-server`
+schema additively (via `updateKind`), so entities that haven't been enriched yet
+remain valid.
+
+> **Frontend system:** these plugins target the **new** Backstage frontend
+> system. Legacy-frontend-system support is a planned follow-up.
+
+## Local development
 
 ```sh
 yarn install
 yarn start
-```
-
-To generate knip reports for this app, run:
-
-```sh
-yarn backstage-repo-tools knip-reports
 ```

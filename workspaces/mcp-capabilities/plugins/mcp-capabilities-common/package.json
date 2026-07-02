@@ -1,9 +1,16 @@
 {
   "name": "@backstage-community/plugin-mcp-capabilities-common",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "Apache-2.0",
-  "private": true,
-  "description": "Common functionalities for the mcp-capabilities plugin",
+  "description": "Shared types and the schema-extension catalog model layer for MCP server capability enrichment",
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-capabilities/plugins/mcp-capabilities-common",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {
@@ -12,9 +19,19 @@
     "module": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-capabilities/plugins/mcp-capabilities-common"
+  },
   "backstage": {
     "role": "common-library",
-    "pluginId": "mcp-capabilities"
+    "pluginId": "mcp-capabilities",
+    "pluginPackages": [
+      "@backstage-community/plugin-mcp-capabilities",
+      "@backstage-community/plugin-mcp-capabilities-backend",
+      "@backstage-community/plugin-mcp-capabilities-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -24,6 +41,10 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.9.0",
+    "@backstage/types": "^1.2.2"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.3"

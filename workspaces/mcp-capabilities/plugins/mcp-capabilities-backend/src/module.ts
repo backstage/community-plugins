@@ -15,31 +15,28 @@
  */
 import {
   coreServices,
-  createBackendPlugin,
+  createBackendModule,
 } from '@backstage/backend-plugin-api';
-import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { createRouter } from './service/createRouter';
+import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
+import { McpServerCapabilitiesProcessor } from './processor/McpServerCapabilitiesProcessor';
 
 /**
- * Backend plugin (pluginId `mcp-capabilities`) that exposes live MCP server
- * discovery for native `API` / `spec.type: 'mcp-server'` catalog entities.
- *
- * Routes are mounted under `/api/mcp-capabilities`.
+ * Catalog module that enriches native `mcp-server` API entities with a
+ * discovered summary (capabilities, counts, server identity, tool names).
  *
  * @public
  */
-export const mcpCapabilitiesPlugin = createBackendPlugin({
-  pluginId: 'mcp-capabilities',
+export const catalogModuleMcpCapabilities = createBackendModule({
+  pluginId: 'catalog',
+  moduleId: 'mcp-capabilities',
   register(env) {
     env.registerInit({
       deps: {
-        httpAuth: coreServices.httpAuth,
-        httpRouter: coreServices.httpRouter,
+        catalog: catalogProcessingExtensionPoint,
         logger: coreServices.logger,
-        catalog: catalogServiceRef,
       },
-      async init({ httpAuth, httpRouter, logger, catalog }) {
-        httpRouter.use(await createRouter({ httpAuth, catalog, logger }));
+      async init({ catalog, logger }) {
+        catalog.addProcessor(new McpServerCapabilitiesProcessor({ logger }));
       },
     });
   },

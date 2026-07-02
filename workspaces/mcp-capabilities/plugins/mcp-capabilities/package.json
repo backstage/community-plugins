@@ -1,8 +1,16 @@
 {
   "name": "@backstage-community/plugin-mcp-capabilities",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "Apache-2.0",
-  "private": true,
+  "description": "Frontend enrichment for native MCP server (API/mcp-server) entities: an overview card and a live tools/resources/prompts tab, in Backstage UI (BUI)",
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-capabilities/plugins/mcp-capabilities",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {
@@ -10,9 +18,19 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-capabilities/plugins/mcp-capabilities"
+  },
   "backstage": {
     "role": "frontend-plugin",
-    "pluginId": "mcp-capabilities"
+    "pluginId": "mcp-capabilities",
+    "pluginPackages": [
+      "@backstage-community/plugin-mcp-capabilities",
+      "@backstage-community/plugin-mcp-capabilities-backend",
+      "@backstage-community/plugin-mcp-capabilities-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -25,14 +43,18 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-components": "^0.18.11",
+    "@backstage-community/plugin-mcp-capabilities-common": "workspace:^",
+    "@backstage/catalog-model": "^1.9.0",
     "@backstage/frontend-plugin-api": "^0.17.2",
-    "@backstage/theme": "^0.7.3",
+    "@backstage/plugin-catalog-react": "^3.1.0",
+    "@backstage/types": "^1.2.2",
     "@backstage/ui": "^0.16.0",
-    "react-use": "^17.2.4"
+    "react-markdown": "^8.0.7",
+    "remark-gfm": "^3.0.1"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.3",
@@ -43,7 +65,8 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
     "msw": "^1.0.0",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
   },
   "files": [
     "dist"
