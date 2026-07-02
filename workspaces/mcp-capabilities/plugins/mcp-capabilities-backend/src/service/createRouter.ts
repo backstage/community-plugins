@@ -17,6 +17,11 @@ import { HttpAuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { CatalogService } from '@backstage/plugin-catalog-node';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { Entity } from '@backstage/catalog-model';
+import {
+  McpServerRemote,
+  isSupportedMcpRemoteUrl,
+  selectMcpServerRemote,
+} from '@backstage-community/plugin-mcp-capabilities-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { MCPClient } from '../lib/MCPClient';
@@ -27,22 +32,22 @@ export interface RouterOptions {
   logger: LoggerService;
 }
 
-interface McpRemote {
-  type?: string;
-  url: string;
-}
-
-function getRemote(entity: Entity): McpRemote {
-  const spec = (entity.spec ?? {}) as { type?: string; remotes?: McpRemote[] };
-  if (spec.type !== 'mcp-server') {
-    throw new InputError(
-      `Entity ${entity.kind}:${entity.metadata.namespace}/${entity.metadata.name} is not an mcp-server API`,
-    );
+function getRemote(entity: Entity): McpServerRemote {
+  const ref = `${entity.kind}:${entity.metadata.namespace}/${entity.metadata.name}`;
+  if (entity.kind !== 'API') {
+    throw new InputError(`Entity ${ref} is not an API`);
   }
-  const remotes = spec.remotes ?? [];
-  const remote = remotes.find(r => r.type === 'streamable-http') ?? remotes[0];
+  if ((entity.spec as { type?: string } | undefined)?.type !== 'mcp-server') {
+    throw new InputError(`Entity ${ref} is not an mcp-server API`);
+  }
+  const remote = selectMcpServerRemote(entity);
   if (!remote?.url) {
     throw new InputError('mcp-server entity has no usable remote URL');
+  }
+  if (!isSupportedMcpRemoteUrl(remote.url)) {
+    throw new InputError(
+      `mcp-server entity remote URL is not a valid http(s) URL: "${remote.url}"`,
+    );
   }
   return remote;
 }
