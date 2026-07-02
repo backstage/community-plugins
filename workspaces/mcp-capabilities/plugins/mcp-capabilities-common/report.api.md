@@ -97,8 +97,6 @@ export interface MCPServerSpec {
   // (undocumented)
   prompts: MCPPromptInfo[];
   // (undocumented)
-  protocolVersion?: string;
-  // (undocumented)
   resources: MCPResourceInfo[];
   // (undocumented)
   serverInfo?: MCPServerInfo;
