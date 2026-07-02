@@ -1,0 +1,42 @@
+---
+# Example user for ownership
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+  namespace: default
+spec:
+  memberOf: [guests]
+
+---
+# Top-level group — exercises group-details patch
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: guests
+  namespace: default
+  description: Default guest group for local development.
+  annotations:
+    slack/channel: '#dev-guests'
+spec:
+  type: team
+  profile:
+    email: guests@example.com
+  children: [platform-team]
+
+---
+# Nested team group — exercises group-details + team-ownership patches
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-team
+  namespace: default
+  description: Platform engineering team responsible for developer infrastructure.
+  annotations:
+    slack/channel: '#platform'
+spec:
+  type: team
+  profile:
+    email: platform@example.com
+  parent: guests
+  children: []
