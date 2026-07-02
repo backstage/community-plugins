@@ -15,7 +15,8 @@
  */
 import type { FC } from 'react';
 
-import { Chip, Typography } from '@material-ui/core';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 import { Flex, FlexItem } from '@patternfly/react-core';
 
 import { Application } from '@backstage-community/plugin-argocd-common';
@@ -32,7 +33,7 @@ const AppNamespace: FC<{ app: Application }> = ({ app }) => {
       <FlexItem>
         <Chip
           size="small"
-          variant="default"
+          variant="filled"
           color="primary"
           label="NS"
           style={{ background: 'green' }}

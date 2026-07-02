@@ -18,7 +18,8 @@ import { useMemo, type ReactNode } from 'react';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { IconButton, Link } from '@material-ui/core';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import moment from 'moment';
 

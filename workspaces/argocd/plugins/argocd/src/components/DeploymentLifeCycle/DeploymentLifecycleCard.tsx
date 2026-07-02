@@ -17,15 +17,10 @@ import type { FC } from 'react';
 
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  createStyles,
-  Divider,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Divider from '@mui/material/Divider';
 
 import {
   Application,
@@ -41,16 +36,6 @@ import AppServerLink from '../Common/AppServerLink';
 import AppCommitLink from '../Common/AppCommitLink';
 import MetadataItemWithTooltip from '../Common/MetadataItemWithTooltip';
 import { useTranslation } from '../../hooks/useTranslation';
-
-const useCardStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    card: {
-      flex: '0 0 auto',
-      marginRight: theme.spacing(2.5),
-      maxWidth: '300px',
-    },
-  }),
-);
 
 interface DeploymentLifecycleCardProps {
   app: Application;
@@ -70,7 +55,6 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
   const appName = app?.metadata?.instance?.name ?? 'default';
   const appHistory = app?.status?.history ?? [];
   const latestRevision = appHistory.at(-1);
-  const classes = useCardStyles();
   const { entity } = useEntity();
   const { t } = useTranslation();
 
@@ -82,8 +66,10 @@ const DeploymentLifecycleCard: FC<DeploymentLifecycleCardProps> = ({
     <Card
       data-testid={`${app?.metadata?.name}-card`}
       key={app?.metadata?.uid}
-      className={classes.card}
-      style={{
+      sx={{
+        flex: '0 0 auto',
+        mr: 2.5,
+        maxWidth: '300px',
         cursor: onclick ? 'pointer' : 'default',
         justifyContent: 'space-between',
       }}
