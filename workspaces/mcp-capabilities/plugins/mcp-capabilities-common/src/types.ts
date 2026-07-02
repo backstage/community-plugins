@@ -97,7 +97,6 @@ export interface MCPCapabilities {
  */
 export interface MCPServerSpec {
   serverInfo?: MCPServerInfo;
-  protocolVersion?: string;
   capabilities?: MCPCapabilities;
   instructions?: string;
   tools: MCPToolInfo[];
