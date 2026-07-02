@@ -14,40 +14,78 @@
  * limitations under the License.
  */
 
-const materialUiMigrationEslintConfig = {
-  restrictedImports: [
-    {
-      name: '@material-ui/core',
-      message: 'Use @backstage/ui instead of Material UI v4.',
-    },
-    {
-      name: '@material-ui/icons',
-      message:
-        'Use @remixicon/react, @backstage/ui, or @mui/icons-material instead of Material UI v4.',
-    },
-    {
-      name: '@material-ui/lab',
-      message: 'Use @backstage/ui instead of Material UI v4.',
-    },
-    {
-      name: '@material-ui/styles',
-      message: 'Use @backstage/ui or CSS modules instead of Material UI v4.',
-    },
-    {
-      name: '@mui/styles',
-      message:
-        'Use @backstage/ui or CSS modules instead of @mui/styles (legacy MUI styling).',
-    },
-  ],
-  restrictedImportPatterns: ['@material-ui/*'],
+const muiV4RestrictedImports = [
+  {
+    name: '@material-ui/core',
+    message: 'Use @backstage/ui instead of Material UI v4.',
+  },
+  {
+    name: '@material-ui/icons',
+    message: 'Use @remixicon/react or @backstage/ui instead of Material UI v4.',
+  },
+  {
+    name: '@material-ui/lab',
+    message: 'Use @backstage/ui instead of Material UI v4.',
+  },
+  {
+    name: '@material-ui/styles',
+    message: 'Use @backstage/ui or CSS modules instead of Material UI v4.',
+  },
+];
+
+const muiV5RestrictedImports = [
+  {
+    name: '@mui/material',
+    message: 'Use @backstage/ui instead of MUI v5.',
+  },
+  {
+    name: '@mui/icons-material',
+    message: 'Use @remixicon/react or @backstage/ui instead of MUI v5.',
+  },
+  {
+    name: '@mui/lab',
+    message: 'Use @backstage/ui instead of MUI v5.',
+  },
+  {
+    name: '@mui/styles',
+    message:
+      'Use @backstage/ui or CSS modules instead of @mui/styles (legacy MUI styling).',
+  },
+];
+
+const legacyJssRestrictedImport = {
+  name: '@mui/styles',
+  message:
+    'Use @backstage/ui or CSS modules instead of @mui/styles (legacy MUI styling).',
 };
 
 /**
- * ESLint config for frontend packages in this workspace (Material UI v4 migration guards).
+ * ESLint config for frontend packages in this workspace.
+ *
+ * @param {string} packageDir
+ * @param {{ buiPlugin?: boolean }} [options]
+ *   When `buiPlugin` is true, block both MUI v4 and MUI v5 (for plugins migrated to BUI).
+ *   Otherwise only block MUI v4 re-introduction (for app packages still on MUI v5).
  */
-module.exports = function createEslintConfig(packageDir) {
-  return require('@backstage/cli/config/eslint-factory')(
-    packageDir,
-    materialUiMigrationEslintConfig,
-  );
+module.exports = function createEslintConfig(
+  packageDir,
+  { buiPlugin = false } = {},
+) {
+  const config = buiPlugin
+    ? {
+        restrictedImports: [
+          ...muiV4RestrictedImports,
+          ...muiV5RestrictedImports,
+        ],
+        restrictedImportPatterns: ['@material-ui/*', '@mui/*'],
+      }
+    : {
+        restrictedImports: [
+          ...muiV4RestrictedImports,
+          legacyJssRestrictedImport,
+        ],
+        restrictedImportPatterns: ['@material-ui/*'],
+      };
+
+  return require('@backstage/cli/config/eslint-factory')(packageDir, config);
 };
