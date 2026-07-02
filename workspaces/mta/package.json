@@ -57,7 +57,7 @@
     "@types/react-dom": "^18",
     "@asyncapi/protobuf-schema-parser": "3.4.0",
     "protobufjs": "7.5.4",
-    "@protobufjs/inquire": "1.1.0"
+    "@protobufjs/inquire": "1.1.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
