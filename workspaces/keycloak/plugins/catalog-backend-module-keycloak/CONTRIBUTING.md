@@ -18,15 +18,40 @@ yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start
 
 This imports [`backstage-community-realm`](./__fixtures__/keycloak-realm.json). The realm contains the `backstage` client, groups, and user profiles (for example `test` / `test`) that the catalog provider ingests as `User` and `Group` entities.
 
+### Environment setup
+
+The dev [`app-config.yaml`](./app-config.yaml) uses `${ENV_VAR}` placeholders for credentials. You can provide them via environment variables or an untracked `app-config.local.yaml` file.
+
+All values can be found in [`__fixtures__/keycloak-realm.json`](./__fixtures__/keycloak-realm.json) — look for the `backstage` client entry. `BACKSTAGE_DEV_STATIC_TOKEN` can be any arbitrary string — it just needs to match between `app-config.yaml` and your `curl` commands.
+
+**Option A — `app-config.local.yaml`** (recommended, one-time setup):
+
+Create `plugins/catalog-backend-module-keycloak/app-config.local.yaml` (gitignored via `*.local.yaml`) and fill in values matching the env var table below.
+
+**Option B — environment variables:**
+
+Export the variables listed below before starting the harness.
+
+| Variable                     | Purpose                                            |
+| ---------------------------- | -------------------------------------------------- |
+| `KEYCLOAK_BASE_URL`          | Keycloak server URL (e.g. `http://localhost:8080`) |
+| `KEYCLOAK_REALM`             | Realm to synchronize from the realm fixture        |
+| `KEYCLOAK_CLIENT_ID`         | OAuth client ID from the realm fixture             |
+| `KEYCLOAK_CLIENT_SECRET`     | Client secret from the realm fixture               |
+| `BACKSTAGE_DEV_STATIC_TOKEN` | Static bearer token for authenticated `curl` calls |
+
+### Starting the harness
+
 Start the catalog module harness (terminal 2, after Keycloak is healthy):
 
 ```bash
+# With default app-config.yaml
 yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start
+# Or alternative command to use additional app-config.local.yaml
+yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start --config app-config.local.yaml
 ```
 
 This runs a minimal backend with `@backstage/plugin-catalog-backend` and the Keycloak entity provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`. Use it for ingestion, transformers, and Keycloak Admin API client work.
-
-All dev fixture values (client ID, client secret, static token) are hardcoded in [`app-config.yaml`](./app-config.yaml) — no environment setup is needed.
 
 On startup the log must include `Loading config from ... plugins/catalog-backend-module-keycloak/app-config.yaml` (the package `app-config.yaml` passed via `--config` in `package.json`, **not** the workspace root [`app-config.yaml`](../../app-config.yaml)). Also expect `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it or the harness may bind another port — use that port in smoke `curl` commands.
 
@@ -34,12 +59,12 @@ Only one plugin `dev/` harness should run on port **7007** at a time.
 
 ### API authentication for `curl`
 
-The dev [`app-config.yaml`](./app-config.yaml) registers a **static** backend access token (see [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth)). The token is `sha256(realm:clientId:clientSecret)` derived from the dev realm fixture.
+The dev [`app-config.yaml`](./app-config.yaml) registers a **static** backend access token (see [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth)).
 
 Authenticated catalog API requests must send that token:
 
 ```bash
-curl -H "Authorization: Bearer 59c1631b9ed609e00601363ab8732013a8e3deec0504a518c072b6d9625be01b" \
+curl -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" \
   "http://localhost:7007/api/catalog/entities?filter=kind=User"
 ```
 
@@ -84,11 +109,11 @@ This workspace does **not** ship `packages/app` or `packages/backend`. Plugin `d
 
 Use when you change catalog integration code or are reviewing a Backstage version bump:
 
-1. Start Keycloak (`start:keycloak`), then start this harness.
+1. Start Keycloak (`start:keycloak`), set up environment (see [Environment setup](#environment-setup)), then start this harness.
 2. List ingested users (requires Bearer token):
 
    ```bash
-   curl -H "Authorization: Bearer 59c1631b9ed609e00601363ab8732013a8e3deec0504a518c072b6d9625be01b" \
+   curl -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" \
      "http://localhost:7007/api/catalog/entities?filter=kind=User"
    ```
 
