@@ -39,3 +39,7 @@ remain valid.
 yarn install
 yarn start
 ```
+
+## Credits
+
+Made at [EPAM](https://www.epam.com), with love for the community. ❤️
