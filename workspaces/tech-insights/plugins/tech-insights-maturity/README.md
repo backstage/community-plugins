@@ -140,6 +140,30 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 );
 ```
 
+## Grouping Checks by Category
+
+By default, the Maturity Scorecards page groups checks by rank tier (Bronze / Silver / Gold). You can switch to category-based grouping using the `groupBy` prop:
+
+```tsx
+<EntityMaturityScorecardContent groupBy="category" />
+```
+
+When `groupBy="category"`, checks are grouped by their `metadata.category` value. Categories with failing checks are automatically expanded.
+
+You can also control the order of categories with `categoryOrder`. Any categories not listed are appended in the order they appear in the data:
+
+```tsx
+<EntityMaturityScorecardContent
+  groupBy="category"
+  categoryOrder={['Security', 'Engineering', 'Documentation']}
+/>
+```
+
+| Prop            | Type                   | Default     | Description                                              |
+| --------------- | ---------------------- | ----------- | -------------------------------------------------------- |
+| `groupBy`       | `'rank' \| 'category'` | `'rank'`    | How to group checks                                      |
+| `categoryOrder` | `string[]`             | `undefined` | Custom category ordering (only for `groupBy="category"`) |
+
 ## Maturity Rank Description
 
 Additionally, you can configure the title and description for the maturity ranks. As default, these values are already set so there is no need to configure unless you want to customize it.

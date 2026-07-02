@@ -312,4 +312,67 @@ describe('<MaturityScorePage />', () => {
 
     expect(menuBookIcons.length).toBe(checksWithLinks);
   });
+
+  it('groups checks by category when groupBy is category', async () => {
+    const { getAllByText, queryByText } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
+        <EntityProvider entity={entity}>
+          <MaturityScorePage groupBy="category" />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    // Category names should appear instead of rank chips
+    expect(getAllByText('Operations').length).toBeGreaterThan(0);
+    expect(getAllByText('Ownership').length).toBeGreaterThan(0);
+    expect(queryByText(/Bronze/)).not.toBeInTheDocument();
+    expect(queryByText(/Silver/)).not.toBeInTheDocument();
+  });
+
+  it('respects categoryOrder prop when groupBy is category', async () => {
+    const { container } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
+        <EntityProvider entity={entity}>
+          <MaturityScorePage
+            groupBy="category"
+            categoryOrder={['Ownership', 'Operations']}
+          />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    const chips = container.querySelectorAll('[data-testid^="category-chip-"]');
+    const labels = Array.from(chips).map(el => el.textContent);
+    expect(labels).toEqual(['Ownership', 'Operations']);
+  });
+
+  it('appends unlisted categories after categoryOrder entries', async () => {
+    const { container } = await renderInTestApp(
+      <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
+        <EntityProvider entity={entity}>
+          <MaturityScorePage groupBy="category" categoryOrder={['Ownership']} />
+        </EntityProvider>
+      </TestApiProvider>,
+      {
+        mountedRoutes: {
+          '/catalog/:namespace/:kind/:name': entityRouteRef,
+        },
+      },
+    );
+
+    const chips = container.querySelectorAll('[data-testid^="category-chip-"]');
+    const labels = Array.from(chips).map(el => el.textContent);
+    // Operations is not in categoryOrder, so it is appended after Ownership
+    expect(labels).toEqual(['Ownership', 'Operations']);
+  });
 });

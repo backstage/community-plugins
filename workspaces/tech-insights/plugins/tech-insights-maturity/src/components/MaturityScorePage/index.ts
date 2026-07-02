@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { MaturityScorePage } from './MaturityScorePage';
+export type { MaturityScorePageProps } from './MaturityScorePage';
