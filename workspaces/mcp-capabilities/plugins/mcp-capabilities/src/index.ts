@@ -13,4 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+export { mcpCapabilitiesApiRef, McpCapabilitiesClient } from './api';
+export type { McpCapabilitiesApi } from './api';
 export { mcpCapabilitiesPlugin as default } from './plugin';
