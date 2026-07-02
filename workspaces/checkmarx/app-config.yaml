@@ -25,8 +25,8 @@ auth:
 
 checkmarx:
   location: US2
-  tenant: ${CHECKMARX_TENANT}
-  apiKey: ${CHECKMARX_API_KEY}
+  tenant: example-tenant
+  apiKey: example-api-key
   # externalBaseUrl: https://us.ast.checkmarx.net
   # astBaseUrlOverride: https://us.ast.checkmarx.net
   # iamBaseUrlOverride: https://us.iam.checkmarx.net
@@ -38,7 +38,7 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # Local example data, file locations are relative to the backend dev entrypoint
     - type: file
       target: ../../examples/entities.yaml
 
