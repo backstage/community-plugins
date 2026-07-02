@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bitbucket-pull-requests
 
+## 3.0.3
+
+### Patch Changes
+
+- 727d405: Updated dependency `react-router` to `6.30.2 ^6.30.2`.
+
 ## 3.0.2
 
 ### Patch Changes
