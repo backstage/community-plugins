@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createGenerateClassName } from '@mui/styles';
+import createCache from '@emotion/cache';
 
-export const tektonGenerateClassName = createGenerateClassName({
-  productionPrefix: 'tekton',
-  seed: 'tekton',
+/** Scoped Emotion cache so Tekton sx/styled classes don't collide with the host app. */
+export const tektonEmotionCache = createCache({
+  key: 'tekton',
+  prepend: true,
 });
