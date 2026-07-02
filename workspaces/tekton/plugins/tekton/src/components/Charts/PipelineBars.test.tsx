@@ -17,15 +17,9 @@ import { mockKubernetesPlrResponse } from '../../__fixtures__/1-pipelinesData';
 import PipelineBars from './PipelineBars';
 import { renderInTestApp } from '@backstage/test-utils';
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: () => () => {
-    return {
-      titleContainer: 'title',
-      closeButton: 'close',
-    };
-  },
-  Dialog: () => <div data-testid="dialog" />,
+jest.mock('@mui/material/Dialog', () => ({
+  __esModule: true,
+  default: () => <div data-testid="dialog" />,
 }));
 
 describe('PipelineBars', () => {

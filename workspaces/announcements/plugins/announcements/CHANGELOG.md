@@ -1,5 +1,35 @@
 # @backstage-community/plugin-announcements
 
+## 2.11.0
+
+### Minor Changes
+
+- fa4b770: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [fa4b770]
+  - @backstage-community/plugin-announcements-common@0.22.0
+  - @backstage-community/plugin-announcements-react@0.27.0
+
+## 2.10.0
+
+### Minor Changes
+
+- ea738a2: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [ea738a2]
+  - @backstage-community/plugin-announcements-common@0.21.0
+  - @backstage-community/plugin-announcements-react@0.26.0
+
+## 2.9.1
+
+### Patch Changes
+
+- 1df945e: Remove the deprecated navItem. This component is no longer needed as a separate extension in the new frontend system
+
 ## 2.9.0
 
 ### Minor Changes

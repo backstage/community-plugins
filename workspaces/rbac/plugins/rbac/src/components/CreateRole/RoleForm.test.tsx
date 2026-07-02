@@ -29,11 +29,6 @@ jest.mock('../../hooks/useLanguage', () => ({
   useLanguage: mockUseLanguage,
 }));
 
-jest.mock('@mui/styles', () => ({
-  ...jest.requireActual('@mui/styles'),
-  makeStyles: jest.fn().mockReturnValue(() => ({})),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Link: forwardRef<

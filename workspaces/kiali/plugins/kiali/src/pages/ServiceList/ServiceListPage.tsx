@@ -122,7 +122,7 @@ export const ServiceListPage = (props: {
       return data.services.map(service => ({
         name: service.name,
         istioSidecar: service.istioSidecar,
-        istioAmbient: service.istioAmbient,
+        isAmbient: service.isAmbient,
         namespace: service.namespace,
         cluster: service.cluster,
         health: ServiceHealth.fromJson(
@@ -132,7 +132,7 @@ export const ServiceListPage = (props: {
           {
             rateInterval: rateInterval,
             hasSidecar: service.istioSidecar,
-            hasAmbient: service.istioAmbient,
+            hasAmbient: service.isAmbient,
           },
           serverConfig,
         ),

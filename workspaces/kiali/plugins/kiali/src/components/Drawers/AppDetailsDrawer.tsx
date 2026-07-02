@@ -55,7 +55,7 @@ export const AppDetailsDrawer = (props: Props) => {
           {
             rateInterval: 60,
             hasSidecar: appResponse.workloads.some(w => w.istioSidecar),
-            hasAmbient: appResponse.workloads.some(w => w.istioAmbient),
+            hasAmbient: appResponse.workloads.some(w => w.isAmbient),
           },
           serverConfig,
         );

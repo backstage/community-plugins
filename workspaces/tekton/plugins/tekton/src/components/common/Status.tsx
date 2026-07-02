@@ -24,58 +24,64 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import type { SxProps, Theme } from '@mui/material/styles';
 import OffIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
 import UnknownIcon from '@mui/icons-material/HelpOutline';
 import AngleDoubleRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import BanIcon from '@mui/icons-material/NotInterestedOutlined';
 import PauseIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
-import cx from 'classnames';
 
 import { StatusIconAndText } from './StatusIconAndText';
 
-const useStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    iconStyles: {
-      height: '0.8em',
-      width: '0.8em',
-      top: '0.125em',
-      position: 'relative',
-      flexShrink: 0,
-      marginRight: theme.spacing(0.6),
-    },
-  }),
-);
-
 const DASH = '-';
 
-const useStatusStyles = makeStyles(theme => ({
-  success: {
+const iconSx = {
+  height: '0.8em',
+  width: '0.8em',
+  top: '0.125em',
+  position: 'relative',
+  flexShrink: 0,
+  marginRight: 0.6,
+};
+
+const statusIconSx: Partial<Record<StatusClassKey, SxProps<Theme>>> = {
+  ok: {
     '& svg': {
-      fill: theme.palette.status.ok,
+      fill: (theme: Theme) => theme.palette.status.ok,
     },
   },
   running: {
     '& svg': {
-      fill: theme.palette.status.running,
+      fill: (theme: Theme) => theme.palette.status.running,
     },
   },
   pending: {
     '& svg': {
-      fill: theme.palette.status.pending,
+      fill: (theme: Theme) => theme.palette.status.pending,
     },
   },
   warning: {
     '& svg': {
-      fill: theme.palette.status.warning,
+      fill: (theme: Theme) => theme.palette.status.warning,
     },
   },
   error: {
     '& svg': {
-      fill: theme.palette.status.error,
+      fill: (theme: Theme) => theme.palette.status.error,
     },
   },
-}));
+};
+
+const statusIconWrapperSx: SxProps<Theme> = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  lineHeight: 0,
+};
+
+const getStatusIconSx = (statusKey: StatusClassKey): SxProps<Theme> =>
+  [statusIconWrapperSx, statusIconSx[statusKey] ?? {}] as SxProps<Theme>;
 
 const StatusIcon = ({
   statusKey,
@@ -84,38 +90,56 @@ const StatusIcon = ({
   statusKey: StatusClassKey;
   className?: string;
 }) => {
-  const statusStyles = useStatusStyles();
-
   switch (statusKey) {
     case 'ok':
       return (
-        <g className={cx(statusStyles.success, className)}>
-          <StatusOK />{' '}
-        </g>
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusOK />
+        </Box>
       );
     case 'pending':
       return (
-        <g className={cx(statusStyles.pending, className)}>
-          <StatusPending />{' '}
-        </g>
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusPending />
+        </Box>
       );
     case 'running':
       return (
-        <g className={cx(statusStyles.running, className)}>
-          <StatusRunning />{' '}
-        </g>
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusRunning />
+        </Box>
       );
     case 'warning':
       return (
-        <g className={cx(statusStyles.warning, className)}>
-          <StatusWarning />{' '}
-        </g>
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusWarning />
+        </Box>
       );
     case 'error':
       return (
-        <g className={cx(statusStyles.error, className)}>
-          <StatusError />{' '}
-        </g>
+        <Box
+          component="span"
+          sx={getStatusIconSx(statusKey)}
+          className={className}
+        >
+          <StatusError />
+        </Box>
       );
     default:
       return null;
@@ -151,7 +175,6 @@ export const Status = ({
   iconStyles?: CSSProperties;
   iconClassName?: string;
 }): ReactElement => {
-  const classes = useStyles();
   const statusProps = {
     title: displayStatusText || status || '',
     iconOnly,
@@ -199,7 +222,7 @@ export const Status = ({
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={<BanIcon className={classes.iconStyles} style={iconStyles} />}
+          icon={<BanIcon sx={iconSx} style={iconStyles} />}
         />
       );
 
@@ -239,26 +262,21 @@ export const Status = ({
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={
-            <AngleDoubleRightIcon
-              className={classes.iconStyles}
-              style={iconStyles}
-            />
-          }
+          icon={<AngleDoubleRightIcon sx={iconSx} style={iconStyles} />}
         />
       );
     case 'Paused':
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={<PauseIcon className={classes.iconStyles} style={iconStyles} />}
+          icon={<PauseIcon sx={iconSx} style={iconStyles} />}
         />
       );
     case 'Stopped':
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={<OffIcon className={classes.iconStyles} style={iconStyles} />}
+          icon={<OffIcon sx={iconSx} style={iconStyles} />}
         />
       );
 
@@ -266,9 +284,7 @@ export const Status = ({
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={
-            <UnknownIcon className={classes.iconStyles} style={iconStyles} />
-          }
+          icon={<UnknownIcon sx={iconSx} style={iconStyles} />}
         />
       );
 

@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-import { formatByteSize, formatDate } from './utils';
+import { formatByteSize, formatDate, parseSizeBytes } from './utils';
 import { DateTime } from 'luxon';
+
+describe('parseSizeBytes', () => {
+  it('parses string sizes from the API', () => {
+    expect(parseSizeBytes('4757')).toEqual(4757);
+  });
+
+  it('returns 0 for invalid values', () => {
+    expect(parseSizeBytes(undefined)).toEqual(0);
+    expect(parseSizeBytes('')).toEqual(0);
+    expect(parseSizeBytes('not-a-number')).toEqual(0);
+  });
+});
 
 describe('formatByteSize', () => {
   it('should return N/A if sizeInBytes is not defined', () => {
@@ -42,6 +54,7 @@ describe('formatByteSize', () => {
     expect(formatByteSize(500)).toEqual('500 B');
     expect(formatByteSize(1500)).toMatch('1.5 kB');
     expect(formatByteSize(1048576)).toMatch('1.05 MB');
+    expect(formatByteSize(4757)).toEqual('4.76 kB');
   });
 });
 

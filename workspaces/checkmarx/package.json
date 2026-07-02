@@ -1,0 +1,77 @@
+{
+  "name": "@internal/checkmarx",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "yarn@4.14.1",
+  "engines": {
+    "node": "22 || 24"
+  },
+  "scripts": {
+    "start": "backstage-cli repo start",
+    "build:backend": "yarn workspace backend build",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "build:all": "backstage-cli repo build --all",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "new": "backstage-cli new --scope @backstage-community",
+    "build:api-reports": "yarn build:api-reports:only --tsc",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
+    "postinstall": "cd ../../ && yarn install"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/checkmarx"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
+    "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
+    "@changesets/cli": "^2.27.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.30",
+    "@types/webpack-env": "^1.18.8",
+    "eslint": "^8.57.0",
+    "globby": "^14.1.0",
+    "jest": "^29.7.0",
+    "jest-cli": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
+    "jest-runtime": "^29.7.0",
+    "knip": "^5.27.4",
+    "node-gyp": "^10.0.0",
+    "prettier": "^2.3.2",
+    "typescript": "~5.8.0",
+    "yaml": "^2.8.1"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "csstype@^3.0.2": "3.0.9"
+  },
+  "prettier": "@backstage/cli/config/prettier",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

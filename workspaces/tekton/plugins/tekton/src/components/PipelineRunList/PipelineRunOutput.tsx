@@ -28,7 +28,9 @@ import {
   TaskRunKind as TaskRunV1Kind,
   usePipelineRunOutput,
 } from '@aonic-ui/pipelines';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 import {
   PipelineRunKind,

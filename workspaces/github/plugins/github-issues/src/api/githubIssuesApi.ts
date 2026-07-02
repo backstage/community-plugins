@@ -24,7 +24,7 @@ import { ScmAuthApi } from '@backstage/integration-react';
 /** @internal */
 export type Repository = {
   name: string;
-  locationHostname: string;
+  locationHostname?: string;
 };
 /** @internal */
 export type Assignee = {
@@ -115,7 +115,7 @@ export const githubIssuesApi = (
   configApi: ConfigApi,
   errorApi: ErrorApi,
 ) => {
-  const getOctokit = async (hostname: string) => {
+  const getOctokit = async (hostname?: string) => {
     const configs = readGithubIntegrationConfigs(
       configApi.getOptionalConfigArray('integrations.github') ?? [],
     );
@@ -140,7 +140,7 @@ export const githubIssuesApi = (
   const fetchIssuesByRepoFromGithub = async (
     repos: Array<Repository>,
     itemsPerRepo: number,
-    hostname: string,
+    hostname?: string,
     {
       filterBy,
       orderBy = {
@@ -152,8 +152,11 @@ export const githubIssuesApi = (
     const { octokit, host } = await getOctokit(hostname);
     const safeNames: Array<string> = [];
     const repositories = repos
-      // only tries to fetch issues from repositories that are hosted on the same GitHub instance as the octokit
-      .filter(repo => repo.locationHostname === host)
+      // Only fetch issues from repositories hosted on the same GitHub instance
+      // as the octokit. Repositories whose host could not be determined (no
+      // usable location annotation) are assumed to live on the resolved host,
+      // so they are kept rather than silently dropped.
+      .filter(repo => !repo.locationHostname || repo.locationHostname === host)
       .map(repo => {
         const [owner, name] = repo.name.split('/');
 

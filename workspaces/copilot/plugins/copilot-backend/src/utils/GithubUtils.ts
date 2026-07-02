@@ -47,9 +47,9 @@ export const getCopilotConfig = (config: Config): CopilotConfig => {
     );
   }
 
-  if (enterprise && !githubConfig.token) {
+  if (enterprise && !(githubConfig.token || githubConfig.apps)) {
     throw new Error(
-      `Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "${host}" in the config.`,
+      `Enterprise API for copilot works with both classic and fine grained PAT tokens or GitHub apps. No token or app is configured for "${host}" in the config.`,
     );
   }
 
@@ -88,13 +88,39 @@ export const getGithubCredentials = async (
   };
 
   if (enterprise) {
-    if (!githubConfig.token) {
-      throw new Error(
-        `Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "${host}" in the config.`,
+    if (githubConfig.apps && githubConfig.apps.length > 0) {
+      // Filter apps that allow this enterprise (case-insensitive comparison)
+      const enterpriseLower = enterprise.toLowerCase();
+      const allowedApp = githubConfig.apps.find(
+        app =>
+          !app.allowedInstallationOwners ||
+          app.allowedInstallationOwners.length === 0 ||
+          app.allowedInstallationOwners.some(
+            owner => owner.toLowerCase() === enterpriseLower,
+          ),
       );
-    } else {
-      // Use token string for enterprise (PAT tokens) - Octokit will handle it
+
+      if (allowedApp) {
+        // Use app auth strategy for GitHub Apps - handles automatic token refresh
+        credentials.enterprise = {
+          appId: allowedApp.appId,
+          privateKey: allowedApp.privateKey,
+        };
+      } else if (githubConfig.token) {
+        // No app covers this enterprise — fall back to PAT token
+        credentials.enterprise = githubConfig.token;
+      } else {
+        throw new Error(
+          `No GitHub App configured for enterprise "${enterprise}" and no PAT token is available. Check allowedInstallationOwners in your GitHub integration config or add a token.`,
+        );
+      }
+    } else if (githubConfig.token) {
+      // Use token string for enterprise (PAT tokens)
       credentials.enterprise = githubConfig.token;
+    } else {
+      throw new Error(
+        `Enterprise API for copilot requires either a PAT token or a GitHub App. No token or app is configured for "${host}" in the config.`,
+      );
     }
   }
 

@@ -15,7 +15,7 @@
     {
       "workloadName": "flights-v1",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "flights",
         "version": "v1"

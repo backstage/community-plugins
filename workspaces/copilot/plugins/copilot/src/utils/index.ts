@@ -66,8 +66,8 @@ export function getLanguageStats(metricsArray: Metric[]): LanguageStats[] {
 }
 
 export const mappingRoutes: Record<string, MetricsType> = {
-  '/copilot/enterprise': 'enterprise',
-  '/copilot/organization': 'organization',
+  '/copilot/legacy/enterprise': 'enterprise',
+  '/copilot/legacy/organization': 'organization',
 };
 
 export function findMetricsTypeFromPath(
