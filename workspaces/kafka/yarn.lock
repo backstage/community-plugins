@@ -1656,7 +1656,7 @@ __metadata:
     "@types/supertest": "npm:^7.0.0"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
-    jest-when: "npm:^3.1.0"
+    jest-when: "npm:^4.0.0"
     kafkajs: "npm:^2.0.0"
     lodash: "npm:^4.17.21"
     supertest: "npm:^7.0.0"
@@ -1686,7 +1686,7 @@ __metadata:
     "@testing-library/react": "npm:^15.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
-    jest-when: "npm:^3.1.0"
+    jest-when: "npm:^4.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
@@ -16689,12 +16689,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-when@npm:^3.1.0":
-  version: 3.6.0
-  resolution: "jest-when@npm:3.6.0"
+"jest-when@npm:^4.0.0":
+  version: 4.0.3
+  resolution: "jest-when@npm:4.0.3"
   peerDependencies:
-    jest: ">= 25"
-  checksum: 10/0cb92738ccfa5711a685107f4437f18aefbe3cda120c912a9d49b612eeef03a910481ab40fe753fd42c4e617ffbb3d84c6bd66a76d963dac7f1ad9e9e5059359
+    jest: ">= 27"
+  checksum: 10/71b35080b6d9cadf0828da440e3d3799d50aaa806ef8a1ad36fe89be5a93b2340c987b12a253cab66f7937a515252a5e3cbd839e88785f9d6d926452377c08eb
   languageName: node
   linkType: hard
 
