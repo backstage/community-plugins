@@ -1,0 +1,41 @@
+app:
+  title: Akeyless Backstage App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    - type: file
+      target: ../../examples/entities.yaml
+
+akeyless:
+  deploymentProfile: saas
+  gatewayUrl: https://api.akeyless.io
+  consoleUrl: https://console.akeyless.io
+  authentication:
+    method: accessKey
+    accessKey:
+      accessId: ${AKEYLESS_ACCESS_ID}
+      accessKey: ${AKEYLESS_ACCESS_KEY}

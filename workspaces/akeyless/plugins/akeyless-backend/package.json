@@ -1,0 +1,68 @@
+{
+  "name": "@backstage-community/plugin-akeyless-backend",
+  "version": "0.1.0",
+  "description": "A Backstage backend plugin that integrates with Akeyless",
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "akeyless",
+    "pluginPackages": [
+      "@backstage-community/plugin-akeyless",
+      "@backstage-community/plugin-akeyless-backend"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "keywords": [
+    "backstage",
+    "akeyless",
+    "secrets"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/akeyless/plugins/akeyless-backend"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@types/express": "*",
+    "akeyless": "^3.0.0",
+    "akeyless-cloud-id": "^1.0.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "p-limit": "^3.1.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
+    "@types/supertest": "^7.0.0",
+    "supertest": "^7.0.0"
+  },
+  "configSchema": "config.d.ts"
+}
