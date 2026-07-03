@@ -4,8 +4,6 @@
 
 ```ts
 
-/// <reference types="react" />
-
 import type { AceOptions } from 'react-ace/types';
 import type { Annotation } from 'react-ace/types';
 import type { AxiosError } from 'axios';
