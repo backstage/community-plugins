@@ -1,5 +1,11 @@
 # @backstage-community/plugin-entity-validation
 
+## 0.21.1
+
+### Patch Changes
+
+- 086eec6: Handle missing `kind` and `metadata` without crashing when validating entities. Previously the plugin crashed on entities missing these fields, hiding the underlying validation errors from the user. The plugin now surfaces those errors and labels which field is missing (for example `component:<missing name>`) in the results list.
+
 ## 0.21.0
 
 ### Minor Changes
