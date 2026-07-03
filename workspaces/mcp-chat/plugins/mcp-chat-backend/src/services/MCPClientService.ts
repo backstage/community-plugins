@@ -21,7 +21,7 @@ import {
   ProviderStatusData,
   QueryResponse,
   ServerTool,
-} from '../types';
+} from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Service interface for MCP (Model Context Protocol) client operations.

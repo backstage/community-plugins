@@ -19,7 +19,7 @@ import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { LiteLLMProvider } from './litellm-provider';
 import { OllamaProvider } from './ollama-provider';
-import { ChatMessage } from '../types';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
 
 describe('Provider maxTokens and temperature configuration', () => {
   const testMessages: ChatMessage[] = [

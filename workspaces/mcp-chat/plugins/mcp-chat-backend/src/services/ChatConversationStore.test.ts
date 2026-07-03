@@ -17,7 +17,10 @@
 import { mockServices } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
 import { ChatConversationStore } from './ChatConversationStore';
-import { ChatMessage, ConversationRow } from '../types';
+import {
+  ChatMessage,
+  ConversationRow,
+} from '@backstage-community/plugin-mcp-chat-common';
 
 // Helper to create a mock Knex query builder
 const createMockQueryBuilder = () => {

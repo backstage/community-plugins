@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LLMProvider } from './base-provider';
+import {
+  LLMProvider,
+  type ProviderConfig,
+} from '@backstage-community/plugin-mcp-chat-node';
 import {
   ChatMessage,
   Tool,
   ChatResponse,
   ToolCall,
-  ProviderConfig,
-} from '../types';
+} from '@backstage-community/plugin-mcp-chat-common';
 import {
   GenerateContentConfig,
   GoogleGenAI,

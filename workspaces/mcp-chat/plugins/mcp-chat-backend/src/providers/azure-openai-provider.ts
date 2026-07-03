@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import { OpenAIProvider } from './openai-provider';
-import { ChatMessage, Tool, ProviderConfig } from '../types';
+import { type ProviderConfig } from '@backstage-community/plugin-mcp-chat-node';
+import { ChatMessage, Tool } from '@backstage-community/plugin-mcp-chat-common';
 
 /**
  * Azure OpenAI Chat Completions API provider.

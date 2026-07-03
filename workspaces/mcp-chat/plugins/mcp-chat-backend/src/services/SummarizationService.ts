@@ -17,7 +17,7 @@
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
 import { MCPClientService } from './MCPClientService';
-import { ChatMessage } from '../types';
+import { ChatMessage } from '@backstage-community/plugin-mcp-chat-common';
 
 /** Default timeout for summarization requests in milliseconds */
 const DEFAULT_SUMMARIZE_TIMEOUT = 3000;
