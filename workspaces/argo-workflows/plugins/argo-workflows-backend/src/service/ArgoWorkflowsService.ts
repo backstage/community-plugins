@@ -55,6 +55,20 @@ interface KubernetesClusterInstance {
 
 type ArgoInstance = ArgoApiInstance | KubernetesClusterInstance;
 
+/**
+ * An error thrown when an upstream Argo Workflows API call fails with a
+ * non-2xx HTTP status, carrying the status code so the router can forward it.
+ */
+class HttpStatusError extends Error {
+  readonly statusCode: number;
+
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.name = 'HttpStatusError';
+    this.statusCode = statusCode;
+  }
+}
+
 const LABEL_KEY_PATTERN =
   '([a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\\/)?[a-zA-Z_]([a-zA-Z0-9._-]*[a-zA-Z0-9_])?';
 const LABEL_VALUE_PATTERN = '[a-zA-Z0-9]([a-zA-Z0-9._-]{0,61}[a-zA-Z0-9])?';
@@ -505,9 +519,10 @@ export class ArgoWorkflowsService {
     if (!response.ok) {
       const statusCode = response.status;
       this.logger.error(`HTTP error ${statusCode} (${instanceName}): ${url}`);
-      const err = new Error(`Server error (HTTP ${statusCode})`);
-      (err as any).statusCode = statusCode;
-      throw err;
+      throw new HttpStatusError(
+        `Server error (HTTP ${statusCode})`,
+        statusCode,
+      );
     }
 
     return response;

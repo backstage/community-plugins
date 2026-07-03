@@ -52,6 +52,18 @@ export interface RouterOptions {
 }
 
 /**
+ * Type guard for errors that carry a numeric `statusCode` property,
+ * such as those thrown by {@link ArgoWorkflowsService}'s HTTP client.
+ */
+function hasStatusCode(error: unknown): error is { statusCode: number } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    typeof (error as Record<string, unknown>).statusCode === 'number'
+  );
+}
+
+/**
  * Maps a caught error to an appropriate HTTP status code.
  */
 function getStatusCodeForError(error: unknown): number {
@@ -67,13 +79,8 @@ function getStatusCodeForError(error: unknown): number {
   if (error instanceof ForwardedError) {
     return 502;
   }
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'statusCode' in error &&
-    typeof (error as any).statusCode === 'number'
-  ) {
-    return (error as any).statusCode;
+  if (hasStatusCode(error)) {
+    return error.statusCode;
   }
   return 500;
 }
