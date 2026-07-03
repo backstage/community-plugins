@@ -34,7 +34,6 @@ import {
   WithContextMenuProps,
   WithSelectionProps,
 } from '@patternfly/react-topology';
-// eslint-disable-next-line @backstage/no-undeclared-imports
 import { observer } from 'mobx-react';
 
 import {
