@@ -89,7 +89,12 @@ const components: Components = {
     </Text>
   ),
   em: ({ children }) => <Text as="em">{children}</Text>,
-  a: ({ href, children }) => <Link href={href ?? '#'}>{children}</Link>,
+  a: ({ href, children }) =>
+    href && /^(https?:|mailto:)/i.test(href) ? (
+      <Link href={href}>{children}</Link>
+    ) : (
+      <Text as="span">{children}</Text>
+    ),
   ul: ({ children }) => (
     <ul style={{ margin: '0 0 0.5em', paddingLeft: '1.4em' }}>{children}</ul>
   ),

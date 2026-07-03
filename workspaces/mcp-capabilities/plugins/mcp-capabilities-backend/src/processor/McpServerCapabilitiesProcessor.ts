@@ -22,7 +22,7 @@ import {
 } from '@backstage/plugin-catalog-node';
 import {
   MCPServerEnrichmentSpec,
-  isSupportedMcpRemoteUrl,
+  parseMcpRemoteUrl,
   selectMcpServerRemote,
 } from '@backstage-community/plugin-mcp-capabilities-common';
 import { MCPClient } from '../lib/MCPClient';
@@ -74,7 +74,7 @@ export class McpServerCapabilitiesProcessor implements CatalogProcessor {
     }
 
     const remote = selectMcpServerRemote(entity);
-    if (!remote?.url || !isSupportedMcpRemoteUrl(remote.url)) {
+    if (!remote?.url || !parseMcpRemoteUrl(remote.url)) {
       return entity;
     }
 

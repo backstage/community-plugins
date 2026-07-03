@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import { isSupportedMcpRemoteUrl, selectMcpServerRemote } from './remote';
+import { parseMcpRemoteUrl, selectMcpServerRemote } from './remote';
 
 function apiEntity(remotes?: Array<{ type?: string; url: string }>): Entity {
   return {
@@ -54,16 +54,18 @@ describe('selectMcpServerRemote', () => {
   });
 });
 
-describe('isSupportedMcpRemoteUrl', () => {
-  it('accepts http(s) URLs', () => {
-    expect(isSupportedMcpRemoteUrl('http://example.com/mcp')).toBe(true);
-    expect(isSupportedMcpRemoteUrl('https://example.com/mcp')).toBe(true);
+describe('parseMcpRemoteUrl', () => {
+  it('returns the parsed URL for http(s) links', () => {
+    expect(parseMcpRemoteUrl('http://example.com/mcp')?.protocol).toBe('http:');
+    expect(parseMcpRemoteUrl('https://example.com/mcp')?.origin).toBe(
+      'https://example.com',
+    );
   });
 
-  it('rejects non-http(s) schemes and malformed URLs (SSRF guard)', () => {
-    expect(isSupportedMcpRemoteUrl('file:///etc/passwd')).toBe(false);
-    expect(isSupportedMcpRemoteUrl('ftp://example.com')).toBe(false);
-    expect(isSupportedMcpRemoteUrl('not a url')).toBe(false);
-    expect(isSupportedMcpRemoteUrl('')).toBe(false);
+  it('returns undefined for non-http(s) schemes and malformed URLs (SSRF guard)', () => {
+    expect(parseMcpRemoteUrl('file:///etc/passwd')).toBeUndefined();
+    expect(parseMcpRemoteUrl('ftp://example.com')).toBeUndefined();
+    expect(parseMcpRemoteUrl('not a url')).toBeUndefined();
+    expect(parseMcpRemoteUrl('')).toBeUndefined();
   });
 });

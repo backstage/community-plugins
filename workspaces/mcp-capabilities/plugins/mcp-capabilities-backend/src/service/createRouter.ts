@@ -19,7 +19,7 @@ import { InputError, NotFoundError } from '@backstage/errors';
 import { Entity } from '@backstage/catalog-model';
 import {
   McpServerRemote,
-  isSupportedMcpRemoteUrl,
+  parseMcpRemoteUrl,
   selectMcpServerRemote,
 } from '@backstage-community/plugin-mcp-capabilities-common';
 import express from 'express';
@@ -32,7 +32,7 @@ export interface RouterOptions {
   logger: LoggerService;
 }
 
-function getRemote(entity: Entity): McpServerRemote {
+function getRemote(entity: Entity): { remote: McpServerRemote; url: URL } {
   const ref = `${entity.kind}:${entity.metadata.namespace}/${entity.metadata.name}`;
   if (entity.kind !== 'API') {
     throw new InputError(`Entity ${ref} is not an API`);
@@ -44,12 +44,13 @@ function getRemote(entity: Entity): McpServerRemote {
   if (!remote?.url) {
     throw new InputError('mcp-server entity has no usable remote URL');
   }
-  if (!isSupportedMcpRemoteUrl(remote.url)) {
+  const url = parseMcpRemoteUrl(remote.url);
+  if (!url) {
     throw new InputError(
       `mcp-server entity remote URL is not a valid http(s) URL: "${remote.url}"`,
     );
   }
-  return remote;
+  return { remote, url };
 }
 
 export async function createRouter(
@@ -77,8 +78,8 @@ export async function createRouter(
       throw new NotFoundError(`No entity found for ref "${entityRef}"`);
     }
 
-    const remote = getRemote(entity);
-    logger.info(`Discovering MCP server ${entityRef} at ${remote.url}`);
+    const { remote, url } = getRemote(entity);
+    logger.info(`Discovering MCP server ${entityRef} at ${url.origin}`);
 
     const client = new MCPClient({ url: remote.url }, logger);
     const spec = await client.discover();
