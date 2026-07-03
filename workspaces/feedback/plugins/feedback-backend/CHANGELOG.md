@@ -1,5 +1,13 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.1.8
+
+### Patch Changes
+
+- 932f80b: Updated dependency `@types/nodemailer` to `8.0.0`.
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+- 724aa40: Updated dependency `nodemailer` to `^9.0.0`.
+
 ## 2.1.7
 
 ### Patch Changes
