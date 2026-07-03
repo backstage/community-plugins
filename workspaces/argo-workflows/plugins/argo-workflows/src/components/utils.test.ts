@@ -24,6 +24,7 @@ import {
   workflowFullName,
 } from './utils';
 import type { WorkflowItem } from './utils';
+import type { WorkflowStatus } from '@backstage-community/plugin-argo-workflows-common';
 import { makeWorkflowItem } from './testUtils';
 import { succeededWorkflow } from '../__fixtures__';
 
@@ -178,7 +179,9 @@ describe('statusColor', () => {
   });
 
   it('returns secondary color for unknown status', () => {
-    expect(statusColor('Unknown' as any)).toBe('var(--bui-fg-secondary)');
+    expect(statusColor('Unknown' as WorkflowStatus)).toBe(
+      'var(--bui-fg-secondary)',
+    );
   });
 });
 
