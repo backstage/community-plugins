@@ -34,7 +34,6 @@
   flex-shrink: 0;
 }
 
-
 .messageBox {
   padding: var(--bui-space-3);
   border-radius: var(--bui-radius-2);
