@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import type { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { ConfigReader } from '@backstage/config';
 import { JsonObject } from '@backstage/types';
 import {
@@ -359,7 +360,10 @@ describe('ArgoWorkflowsService', () => {
   });
 
   describe('Kubernetes path via clusterName', () => {
-    const mockCredentials = { $$type: '@backstage/BackstageCredentials' };
+    const mockCredentials: BackstageCredentials = {
+      $$type: '@backstage/BackstageCredentials',
+      principal: { type: 'service', subject: 'test-service' },
+    };
 
     const mockFetcher = {
       fetchObjectsForService: jest.fn(),
@@ -434,7 +438,7 @@ describe('ArgoWorkflowsService', () => {
         'k8s',
         'app=test',
         undefined,
-        mockCredentials as any,
+        mockCredentials,
       );
 
       expect(result).toHaveLength(1);
@@ -466,7 +470,7 @@ describe('ArgoWorkflowsService', () => {
         'k8s',
         'app=test',
         'staging',
-        mockCredentials as any,
+        mockCredentials,
       );
 
       expect(mockFetcher.fetchObjectsForService).toHaveBeenCalledWith(
@@ -485,12 +489,7 @@ describe('ArgoWorkflowsService', () => {
 
       const service = createK8sService();
       await expect(
-        service.listWorkflows(
-          'k8s',
-          'app=test',
-          undefined,
-          mockCredentials as any,
-        ),
+        service.listWorkflows('k8s', 'app=test', undefined, mockCredentials),
       ).rejects.toThrow("Kubernetes cluster 'production' not found");
     });
 
@@ -506,12 +505,7 @@ describe('ArgoWorkflowsService', () => {
       // No clusterSupplier/fetcher/authStrategy provided
 
       await expect(
-        service.listWorkflows(
-          'k8s',
-          'app=test',
-          undefined,
-          mockCredentials as any,
-        ),
+        service.listWorkflows('k8s', 'app=test', undefined, mockCredentials),
       ).rejects.toThrow('Kubernetes plugin is not configured');
     });
 
