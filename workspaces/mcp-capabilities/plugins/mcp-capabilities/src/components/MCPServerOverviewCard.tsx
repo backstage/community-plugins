@@ -18,11 +18,11 @@ import { Badge, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
 import {
   MCPCapabilities,
   MCPServerInfo,
+  selectMcpServerRemote,
 } from '@backstage-community/plugin-mcp-capabilities-common';
 
 interface EnrichedSpec {
   lifecycle?: string;
-  remotes?: Array<{ type?: string; url: string }>;
   capabilities?: MCPCapabilities;
   serverInfo?: MCPServerInfo;
   toolCount?: number;
@@ -49,7 +49,7 @@ export function MCPServerOverviewCard() {
   const { entity } = useEntity();
   const spec = (entity.spec ?? {}) as EnrichedSpec;
   const caps = spec.capabilities ?? {};
-  const remote = spec.remotes?.[0];
+  const remote = selectMcpServerRemote(entity);
 
   const capabilityBadges = (
     [

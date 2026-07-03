@@ -55,7 +55,7 @@ const mcpServerOverviewCard = EntityCardBlueprint.make({
 const mcpToolsContent = EntityContentBlueprint.make({
   name: 'mcp-tools',
   params: {
-    path: '/mcp-capabilities',
+    path: 'mcp-capabilities',
     title: 'Capabilities',
     filter: isMcpServer,
     loader: async () =>

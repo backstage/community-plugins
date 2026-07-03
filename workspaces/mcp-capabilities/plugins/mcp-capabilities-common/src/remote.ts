@@ -40,15 +40,21 @@ export function selectMcpServerRemote(
 }
 
 /**
- * Whether a remote URL is a well-formed `http(s)` URL. Guards against SSRF via
- * non-http(s) schemes (e.g. `file:`, `gopher:`) and malformed URLs.
+ * Parses a remote URL, returning it only if it is a well-formed `http(s)` URL,
+ * else `undefined`. Guards against SSRF via non-http(s) schemes (e.g. `file:`,
+ * `gopher:`) and malformed URLs, and lets callers reuse the parsed URL (e.g. its
+ * `origin`) rather than parsing again.
  *
  * @public
  */
-export function isSupportedMcpRemoteUrl(url: string): boolean {
+export function parseMcpRemoteUrl(url: string): URL | undefined {
+  let parsed: URL;
   try {
-    return ['http:', 'https:'].includes(new URL(url).protocol);
+    parsed = new URL(url);
   } catch {
-    return false;
+    return undefined;
   }
+  return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+    ? parsed
+    : undefined;
 }

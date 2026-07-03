@@ -8,9 +8,6 @@ import { Entity } from '@backstage/catalog-model';
 import { JsonObject } from '@backstage/types';
 
 // @public
-export function isSupportedMcpRemoteUrl(url: string): boolean;
-
-// @public
 export interface MCPCapabilities {
   // (undocumented)
   prompts?: boolean;
@@ -133,6 +130,9 @@ export interface MCPToolInfo {
   // (undocumented)
   outputSchema?: JsonObject;
 }
+
+// @public
+export function parseMcpRemoteUrl(url: string): URL | undefined;
 
 // @public
 export function selectMcpServerRemote(
