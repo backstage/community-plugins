@@ -391,7 +391,7 @@ export class ArgoWorkflowsService {
     // since the fetcher doesn't support single-resource GET.
     const workflows = await this.listWorkflowsViaKubernetes(
       instance,
-      `metadata.name=${name}`,
+      '',
       namespace,
       credentials,
     );
