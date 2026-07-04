@@ -1968,17 +1968,17 @@ __metadata:
     "@backstage/plugin-permission-react": "npm:^0.5.1"
     "@backstage/test-utils": "npm:^1.7.18"
     "@backstage/theme": "npm:^0.7.3"
+    "@emotion/cache": "npm:^11.14.0"
+    "@emotion/react": "npm:^11.11.4"
     "@kubernetes/client-node": "npm:1.4.0"
-    "@material-ui/core": "npm:^4.9.13"
-    "@material-ui/icons": "npm:^4.11.3"
-    "@material-ui/lab": "npm:^4.0.0-alpha.45"
-    "@mui/icons-material": "npm:5.18.0"
+    "@mui/icons-material": "npm:^5.18.0"
+    "@mui/material": "npm:^5.18.0"
     "@patternfly/patternfly": "npm:^6.0.0"
     "@patternfly/react-core": "npm:^6.0.0"
     "@patternfly/react-table": "npm:^6.3.1"
     "@patternfly/react-tokens": "npm:^6.0.0"
     "@patternfly/react-topology": "npm:^6.0.0"
-    "@playwright/test": "npm:^1.57.0"
+    "@playwright/test": "npm:1.60.0"
     "@tanstack/react-query": "npm:^5.62.7"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:6.9.1"
@@ -1989,6 +1989,7 @@ __metadata:
     cross-fetch: "npm:4.1.0"
     dagre: "npm:^0.8.5"
     lodash: "npm:^4.17.21"
+    mobx-react: "npm:^7.6.0"
     react-use: "npm:^17.4.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
@@ -5107,7 +5108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/cache@npm:^11.13.5, @emotion/cache@npm:^11.14.0":
+"@emotion/cache@npm:*, @emotion/cache@npm:^11.13.5, @emotion/cache@npm:^11.14.0":
   version: 11.14.0
   resolution: "@emotion/cache@npm:11.14.0"
   dependencies:
@@ -5166,7 +5167,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.10.5":
+"@emotion/react@npm:^11.10.5, @emotion/react@npm:^11.11.4":
   version: 11.14.0
   resolution: "@emotion/react@npm:11.14.0"
   dependencies:
@@ -5187,7 +5188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/serialize@npm:^1.3.3":
+"@emotion/serialize@npm:*, @emotion/serialize@npm:^1.3.3":
   version: 1.3.3
   resolution: "@emotion/serialize@npm:1.3.3"
   dependencies:
@@ -5207,7 +5208,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.10.5":
+"@emotion/styled@npm:^11.10.5, @emotion/styled@npm:^11.13.0":
   version: 11.14.1
   resolution: "@emotion/styled@npm:11.14.1"
   dependencies:
@@ -5243,7 +5244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/utils@npm:^1.4.2":
+"@emotion/utils@npm:*, @emotion/utils@npm:^1.4.2":
   version: 1.4.2
   resolution: "@emotion/utils@npm:1.4.2"
   checksum: 10/e5f3b8bca066b3361a7ad9064baeb9d01ed1bf51d98416a67359b62cb3affec6bb0249802c4ed11f4f8030f93cc4b67506909420bdb110adec6983d712897208
@@ -5500,41 +5501,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "@floating-ui/core@npm:1.7.3"
+"@floating-ui/core@npm:^1.7.5":
+  version: 1.7.5
+  resolution: "@floating-ui/core@npm:1.7.5"
   dependencies:
-    "@floating-ui/utils": "npm:^0.2.10"
-  checksum: 10/a8952ff2673ddf28f12feeb86d90c54949e45bcb1af5758b7672850ac0dadb36d4bd61aa45dad1b6a35ba40d4756d3573afac6610b90502639d7266b91e0864e
+    "@floating-ui/utils": "npm:^0.2.11"
+  checksum: 10/fecdc9b3ce93f02bf78a6114b93730a4cb9fa8234c62f9a949016186297a039c9f9cd3c5c81ff74b93ebddf0b32048c4af7a528afe7904b75423ed2e7491b888
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.7.4":
-  version: 1.7.4
-  resolution: "@floating-ui/dom@npm:1.7.4"
+"@floating-ui/dom@npm:^1.7.6":
+  version: 1.7.6
+  resolution: "@floating-ui/dom@npm:1.7.6"
   dependencies:
-    "@floating-ui/core": "npm:^1.7.3"
-    "@floating-ui/utils": "npm:^0.2.10"
-  checksum: 10/d3d6a23e7b9804ba56338c7c666590258683af14b6026270d32afc1202f72b5b82cca359004bdc7830bf2463a045da6c7bd4e7d5351218cf270ff94206197971
+    "@floating-ui/core": "npm:^1.7.5"
+    "@floating-ui/utils": "npm:^0.2.11"
+  checksum: 10/84dff2ffdf85c8b92d7edafc543c55869abbeaeb3007fa983159467e050153b507a0f5fe8e84f88c3f28c35a82de9df9c20a6eef5560cbba3afae19141444ff2
   languageName: node
   linkType: hard
 
 "@floating-ui/react-dom@npm:^2.0.0":
-  version: 2.1.6
-  resolution: "@floating-ui/react-dom@npm:2.1.6"
+  version: 2.1.8
+  resolution: "@floating-ui/react-dom@npm:2.1.8"
   dependencies:
-    "@floating-ui/dom": "npm:^1.7.4"
+    "@floating-ui/dom": "npm:^1.7.6"
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 10/fbfd3319b42edb9c156e4e872f500d2edb112bc9cfd1b45892bff16ccf21c2484ddc9c416f7631c2aaaadec1b2f98b205db8a3f89eb78ca870905fcfe3917c35
+  checksum: 10/39c3e3e5538a111a3eadf1b9ca486d7dc17c7eb24b83a0ea9b4c189fa7dbe5abe01357388d8cf6a4badb2d3fec2b1090e10529537bde91acbcfe19b0a8d10f90
   languageName: node
   linkType: hard
 
-"@floating-ui/utils@npm:^0.2.10":
-  version: 0.2.10
-  resolution: "@floating-ui/utils@npm:0.2.10"
-  checksum: 10/b635ea865a8be2484b608b7157f5abf9ed439f351011a74b7e988439e2898199a9a8b790f52291e05bdcf119088160dc782d98cff45cc98c5a271bc6f51327ae
+"@floating-ui/utils@npm:^0.2.11":
+  version: 0.2.11
+  resolution: "@floating-ui/utils@npm:0.2.11"
+  checksum: 10/72150138ba1c274d757a1da85233202fa9fdfd2272ec1fb0883eb0ffdf138863af81573049ed2c20b98adb4b7ae2236065541ce14037fe328955089831a678d5
   languageName: node
   linkType: hard
 
@@ -5834,7 +5835,7 @@ __metadata:
     "@backstage/repo-tools": "npm:^0.17.2"
     "@changesets/cli": "npm:^2.27.1"
     "@jest/environment-jsdom-abstract": "npm:^30.0.0"
-    "@playwright/test": "npm:^1.57.0"
+    "@playwright/test": "npm:1.60.0"
     "@types/jest": "npm:^30.0.0"
     "@types/jsdom": "npm:^27.0.0"
     jest: "npm:^30.0.0"
@@ -6743,7 +6744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/lab@npm:4.0.0-alpha.61, @material-ui/lab@npm:^4.0.0-alpha.45, @material-ui/lab@npm:^4.0.0-alpha.61":
+"@material-ui/lab@npm:4.0.0-alpha.61, @material-ui/lab@npm:^4.0.0-alpha.61":
   version: 4.0.0-alpha.61
   resolution: "@material-ui/lab@npm:4.0.0-alpha.61"
   dependencies:
@@ -7286,7 +7287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:5.18.0":
+"@mui/icons-material@npm:^5.18.0":
   version: 5.18.0
   resolution: "@mui/icons-material@npm:5.18.0"
   dependencies:
@@ -7302,7 +7303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.12.2":
+"@mui/material@npm:^5.12.2, @mui/material@npm:^5.18.0":
   version: 5.18.0
   resolution: "@mui/material@npm:5.18.0"
   dependencies:
@@ -8330,14 +8331,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.32.3, @playwright/test@npm:^1.57.0":
-  version: 1.57.0
-  resolution: "@playwright/test@npm:1.57.0"
+"@playwright/test@npm:1.60.0":
+  version: 1.60.0
+  resolution: "@playwright/test@npm:1.60.0"
   dependencies:
-    playwright: "npm:1.57.0"
+    playwright: "npm:1.60.0"
   bin:
     playwright: cli.js
-  checksum: 10/07f5ba4841b2db1dea70d821004c5156b692488e13523c096ce3487d30f95f34ccf30ba6467ece60c86faac27ae382213b7eacab48a695550981b2e811e5e579
+  checksum: 10/a13d369014e1934b0aa484c5d59537f5249af0fe006ac4ecbcbe14c673221412706193ea2d9cf3b2c0cc69e3ddbb4daddb006f0bedfdeb05f687776ed8c35f5f
   languageName: node
   linkType: hard
 
@@ -13829,9 +13830,11 @@ __metadata:
     "@backstage/plugin-user-settings": "npm:^0.9.3"
     "@backstage/theme": "npm:^0.7.3"
     "@backstage/ui": "npm:^0.15.0"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
-    "@playwright/test": "npm:^1.32.3"
+    "@emotion/react": "npm:^11.11.4"
+    "@emotion/styled": "npm:^11.13.0"
+    "@mui/icons-material": "npm:^5.18.0"
+    "@mui/material": "npm:^5.18.0"
+    "@playwright/test": "npm:1.60.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^16.0.0"
@@ -13839,6 +13842,7 @@ __metadata:
     react: "npm:^18.0.2"
     react-dom: "npm:^18.0.2"
     react-router-dom: "npm:^6.30.2"
+    tss-react: "npm:^4.9.10"
   languageName: unknown
   linkType: soft
 
@@ -26840,27 +26844,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.57.0":
-  version: 1.57.0
-  resolution: "playwright-core@npm:1.57.0"
+"playwright-core@npm:1.60.0":
+  version: 1.60.0
+  resolution: "playwright-core@npm:1.60.0"
   bin:
     playwright-core: cli.js
-  checksum: 10/ec066602f0196f036006caee14a30d0a57533a76673bb9a0c609ef56e21decf018f0e8d402ba2fb18251393be6a1c9e193c83266f1670fe50838c5340e220de0
+  checksum: 10/66c0f83d627e673261c848dd6fe1f2856d5b5b6859268acb61a45c00f5bf926e596a351a9c481a3a4e82a45022c7c6b5d99ebc3906fc6876ac582ed6f7e16190
   languageName: node
   linkType: hard
 
-"playwright@npm:1.57.0":
-  version: 1.57.0
-  resolution: "playwright@npm:1.57.0"
+"playwright@npm:1.60.0":
+  version: 1.60.0
+  resolution: "playwright@npm:1.60.0"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.57.0"
+    playwright-core: "npm:1.60.0"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/241559210f98ef11b6bd6413f2d29da7ef67c7865b72053192f0d164fab9e0d3bd47913b3351d5de6433a8aff2d8424d4b8bd668df420bf4dda7ae9fcd37b942
+  checksum: 10/8569770637ee35d08cca3b53a5b56c21e9236bd1ac4718456d5988fb8acd51c5b3cc2cf90748363a36199529e870a9b6c68d6fc9e19571261cd867005d6331c1
   languageName: node
   linkType: hard
 
@@ -31641,6 +31645,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tss-react@npm:^4.9.10":
+  version: 4.9.21
+  resolution: "tss-react@npm:4.9.21"
+  dependencies:
+    "@emotion/cache": "npm:*"
+    "@emotion/serialize": "npm:*"
+    "@emotion/utils": "npm:*"
+  peerDependencies:
+    "@emotion/react": ^11.4.1
+    "@emotion/server": ^11.4.0
+    "@mui/material": ^5.0.0 || ^6.0.0 || ^7.0.0 || ^9.0.0
+    "@types/react": ^16.8.0 || ^17.0.2 || ^18.0.0 || ^19.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/server":
+      optional: true
+    "@mui/material":
+      optional: true
+  checksum: 10/69f86e93db6338e5166e6d738d16af1ee961897a7349436caa62b971e2716b99eb93e19e14df8a30f2e789832369479484a2179055fb11f69dfcd43de51bee12
+  languageName: node
+  linkType: hard
+
 "tsyringe@npm:^4.10.0":
   version: 4.10.0
   resolution: "tsyringe@npm:4.10.0"
@@ -32608,14 +32634,14 @@ __metadata:
   linkType: hard
 
 "vm2@npm:^3.10.0":
-  version: 3.11.2
-  resolution: "vm2@npm:3.11.2"
+  version: 3.11.5
+  resolution: "vm2@npm:3.11.5"
   dependencies:
     acorn: "npm:^8.15.0"
     acorn-walk: "npm:^8.3.4"
   bin:
     vm2: bin/vm2
-  checksum: 10/d4d643b5b3df6cf67fd86206ed2b108c5451c743d4f92503d871dec8ed70e152b242f56611a5161d64878dbbc79e72f7168b9dbe130c049fca493dc696503ab9
+  checksum: 10/aaaea54b3c51e61bcefb38a1c67c2779efb73a83c1dd73e371652f704097ce71822df510e694a523aa8a3fc47b9ef394c1917b7457f30ef6c6fe62f757442dd4
   languageName: node
   linkType: hard
 

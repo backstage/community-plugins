@@ -16,21 +16,17 @@
 import { useState, memo } from 'react';
 import useInterval from 'react-use/lib/useInterval';
 
-import {
-  CircularProgress,
-  createStyles,
-  makeStyles,
-  StepButton,
-  StepIconProps,
-  Theme,
-} from '@material-ui/core';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Stepper from '@material-ui/core/Stepper';
-import Typography from '@material-ui/core/Typography';
-import Cancel from '@material-ui/icons/Cancel';
-import Check from '@material-ui/icons/Check';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
+import StepLabel from '@mui/material/StepLabel';
+import type { StepIconProps } from '@mui/material/StepIcon';
+import Stepper from '@mui/material/Stepper';
+import Typography from '@mui/material/Typography';
+import Cancel from '@mui/icons-material/Cancel';
+import Check from '@mui/icons-material/Check';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import classNames from 'classnames';
 
 import { ComputedStatus } from '@backstage-community/plugin-tekton-react';
@@ -39,34 +35,6 @@ import { TaskStep } from '../../utils/taskRun-utils';
 import { calculateDuration } from '../../utils/tekton-utils';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-    },
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-    labelWrapper: {
-      display: 'flex',
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    stepWrapper: {
-      width: '100%',
-    },
-  }),
-);
 
 const StepTimeTicker = ({ step }: { step: TaskStep }) => {
   const [time, setTime] = useState('');
@@ -84,26 +52,7 @@ const StepTimeTicker = ({ step }: { step: TaskStep }) => {
   return <Typography variant="caption">{time}</Typography>;
 };
 
-const useStepIconStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      color: theme.palette.text.disabled,
-      display: 'flex',
-      height: 22,
-      alignItems: 'center',
-    },
-    completed: {
-      color: theme.palette.status.ok,
-    },
-    error: {
-      color: theme.palette.status.error,
-    },
-  }),
-);
-
 const TaskStepIconComponent = ({ active, completed, error }: StepIconProps) => {
-  const classes = useStepIconStyles();
-
   const getMiddle = () => {
     if (active) {
       return <CircularProgress size="24px" />;
@@ -118,14 +67,26 @@ const TaskStepIconComponent = ({ active, completed, error }: StepIconProps) => {
   };
 
   return (
-    <div
-      className={classNames(classes.root, {
-        [classes.completed]: completed,
-        [classes.error]: error,
+    <Box
+      sx={{
+        color: theme => theme.palette.text.disabled,
+        display: 'flex',
+        height: 22,
+        alignItems: 'center',
+        ...(completed && {
+          color: theme => theme.palette.status.ok,
+        }),
+        ...(error && {
+          color: theme => theme.palette.status.error,
+        }),
+      }}
+      className={classNames({
+        completed,
+        error,
       })}
     >
       {getMiddle()}
-    </div>
+    </Box>
   );
 };
 
@@ -140,11 +101,10 @@ type TaskStatusStepperProps = {
 
 export const TaskStatusStepper = memo((props: TaskStatusStepperProps) => {
   const { steps, currentStepId, onUserStepChange } = props;
-  const classes = useStyles(props);
   const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
-    <div className={classes.root}>
+    <Box className={props.classes?.root} sx={{ width: '100%' }}>
       <Stepper
         activeStep={steps.findIndex(s => s.id === currentStepId)}
         orientation="vertical"
@@ -167,9 +127,16 @@ export const TaskStatusStepper = memo((props: TaskStatusStepperProps) => {
                     active: isActive,
                   }}
                   StepIconComponent={TaskStepIconComponent}
-                  className={classes.stepWrapper}
+                  sx={{ width: '100%' }}
                 >
-                  <div className={classes.labelWrapper}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flex: 1,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <Typography variant="subtitle2">{step.name}</Typography>
                     {isSkipped ? (
                       <Typography variant="caption">
@@ -178,13 +145,13 @@ export const TaskStatusStepper = memo((props: TaskStatusStepperProps) => {
                     ) : (
                       <StepTimeTicker step={step} />
                     )}
-                  </div>
+                  </Box>
                 </StepLabel>
               </StepButton>
             </Step>
           );
         })}
       </Stepper>
-    </div>
+    </Box>
   );
 });

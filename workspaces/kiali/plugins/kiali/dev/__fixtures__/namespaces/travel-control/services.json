@@ -12,7 +12,7 @@
       "namespace": "travel-control",
       "istioSidecar": true,
       "cluster": "Kubernetes",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": true,
       "additionalDetailSample": null,
       "annotations": null,

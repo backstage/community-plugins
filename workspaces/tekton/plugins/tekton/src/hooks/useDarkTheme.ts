@@ -15,23 +15,23 @@
  */
 import { useEffect } from 'react';
 
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 
 const THEME_DARK = 'dark';
 const THEME_DARK_CLASS = 'pf-v6-theme-dark';
 
 export const useDarkTheme = () => {
   const {
-    palette: { type },
+    palette: { mode },
   } = useTheme();
 
   useEffect(() => {
     const htmlTagElement = document.documentElement;
-    if (type === THEME_DARK) {
+    if (mode === THEME_DARK) {
       htmlTagElement.classList.add(THEME_DARK_CLASS);
     } else {
       htmlTagElement.classList.remove(THEME_DARK_CLASS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  }, [mode]);
 };

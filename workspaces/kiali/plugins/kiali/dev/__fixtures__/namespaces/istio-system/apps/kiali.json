@@ -15,7 +15,7 @@
     {
       "workloadName": "kiali",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "kiali",
         "app.kubernetes.io/instance": "kiali",

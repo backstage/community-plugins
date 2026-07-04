@@ -37,6 +37,7 @@ yarn.lock                                                               @backsta
 /workspaces/blackduck                                                   @backstage/community-plugins-maintainers  @deepan10
 /workspaces/bookmarks                                                   @backstage/community-plugins-maintainers  @logonoff @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @hopehadfield
 /workspaces/catalog                                                     @backstage/community-plugins-maintainers  @awanlin @freben
+/workspaces/checkmarx                                                   @backstage/community-plugins-maintainers  @Samu-izq
 /workspaces/cicd-statistics                                             @backstage/community-plugins-maintainers
 /workspaces/cloudbuild                                                  @backstage/community-plugins-maintainers
 /workspaces/code-climate                                                @backstage/community-plugins-maintainers
@@ -120,8 +121,8 @@ yarn.lock                                                               @backsta
 /workspaces/splunk                                                      @backstage/community-plugins-maintainers
 /workspaces/stack-overflow                                              @backstage/community-plugins-maintainers
 /workspaces/stackstorm                                                  @backstage/community-plugins-maintainers
-/workspaces/tech-insights/plugins/tech-insights-maturity                @backstage/community-plugins-maintainers  @xantier @punkle @kurtaking @maicaballangan
 /workspaces/tech-insights                                               @backstage/community-plugins-maintainers  @xantier @punkle @kurtaking
+/workspaces/tech-insights/plugins/tech-insights-maturity                @backstage/community-plugins-maintainers  @xantier @punkle @kurtaking @maicaballangan
 /workspaces/tech-radar                                                  @backstage/community-plugins-maintainers
 /workspaces/tekton                                                      @backstage/community-plugins-maintainers  @caugello @cryptorodeo @djanickova @Eswaraiahsapram @christoph-jerolimov @ciiay @debsmita1 @divyanshiGupta @its-mitesh-kumar @lokanandaprabhu @rohitkrai03 @jrichter1 @HusneShabbir @karthikjeeyar 
 /workspaces/todo                                                        @backstage/community-plugins-maintainers

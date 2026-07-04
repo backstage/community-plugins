@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Divider from '@mui/material/Divider';
 import { BaseNode } from '@patternfly/react-topology';
 
 import TopologySideBarBody from './TopologySideBarBody';
 import TopologySideBarHeading from './TopologySideBarHeading';
 
 import './TopologySideBarContent.css';
+import styles from './TopologySideBarContent.module.css';
 
 type TopologySideBarContentProps = { node: BaseNode };
 
@@ -27,7 +27,7 @@ const TopologySideBarContent = ({ node }: TopologySideBarContentProps) => {
   return (
     <div className="topology-side-bar-content">
       <TopologySideBarHeading resource={node.getData().resource} />
-      <Divider />
+      <hr className={styles.divider} />
       <TopologySideBarBody node={node} />
     </div>
   );

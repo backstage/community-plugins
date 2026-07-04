@@ -25,6 +25,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
+import { safeEntityKind } from './safeEntityDisplayName';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MarkdownContent } from '@backstage/core-components';
@@ -59,7 +60,7 @@ export const EntityResult = ({
   const [expanded, setExpanded] = useState(isFirstError);
 
   const Icon = app.getSystemIcon(
-    `kind:${item.entity.kind.toLocaleLowerCase('en-US')}`,
+    `kind:${safeEntityKind(item.entity)}`,
   ) as typeof SvgIcon;
 
   const fetchErrorMessages = (response: ValidateEntityResponse) => {
@@ -71,11 +72,7 @@ export const EntityResult = ({
 
   return (
     <>
-      <ListItem
-        key={`${item.entity.kind}:${
-          item.entity.metadata.namespace ?? 'default'
-        }/${item.entity.metadata.name}`}
-      >
+      <ListItem>
         <ListItemIcon>
           {Icon && (
             <Icon

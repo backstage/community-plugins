@@ -124,6 +124,7 @@ const DrawerDiv = ({
             <IstioConfigDetailsDrawer
               namespace={namespace}
               istioType={(resource as IstioConfigItem).kind}
+              apiVersion={(resource as IstioConfigItem).apiVersion}
               name={name}
             />
           )}
