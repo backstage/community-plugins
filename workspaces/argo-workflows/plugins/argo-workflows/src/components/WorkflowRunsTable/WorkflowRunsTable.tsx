@@ -139,7 +139,7 @@ export const WorkflowRunsTable = ({
   const data: WorkflowItem[] = filteredWorkflows.map(wf => ({
     ...wf,
     id: wf.metadata.uid || `${wf.metadata.namespace}/${wf.metadata.name}`,
-    sourceInstance: (wf as WorkflowWithSource).sourceInstance,
+    sourceInstance: wf.sourceInstance,
   }));
 
   const { tableProps } = useTable({
