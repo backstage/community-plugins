@@ -30,10 +30,7 @@ import {
   useTable,
 } from '@backstage/ui';
 import { useArgoWorkflows } from '@backstage-community/plugin-argo-workflows-react';
-import type {
-  ArgoInstanceDetail,
-  WorkflowWithSource,
-} from '@backstage-community/plugin-argo-workflows-react';
+import type { ArgoInstanceDetail } from '@backstage-community/plugin-argo-workflows-react';
 import { WorkflowDAGInline } from '../WorkflowDAGInline';
 import { buildColumns, workflowSortFn } from '../helpers';
 import { ALL_STATUSES, formatTimeAgo, type WorkflowItem } from '../utils';
