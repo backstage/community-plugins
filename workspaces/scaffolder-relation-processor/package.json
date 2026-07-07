@@ -59,10 +59,10 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@backstage/plugin-events-node": "0.4.20",
-    "@backstage/plugin-signals-node": "0.1.29",
-    "@backstage/plugin-notifications-node": "0.2.24",
-    "@backstage/plugin-notifications-common": "0.2.1"
+    "@backstage/plugin-events-node": "0.4.23",
+    "@backstage/plugin-signals-node": "0.2.2",
+    "@backstage/plugin-notifications-node": "0.2.27",
+    "@backstage/plugin-notifications-common": "0.2.3"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
