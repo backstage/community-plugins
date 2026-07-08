@@ -125,9 +125,12 @@ export async function createRouter(
   router.get(
     '/workflows',
     async (req: express.Request, res: express.Response) => {
-      const labelSelector = (req.query.labelSelector as string) ?? '';
-      const instanceName = (req.query.instanceName as string) ?? '';
-      const namespace = (req.query.namespace as string) || undefined;
+      const labelSelector =
+        typeof req.query.labelSelector === 'string' ? req.query.labelSelector : '';
+      const instanceName =
+        typeof req.query.instanceName === 'string' ? req.query.instanceName : '';
+      const namespace =
+        typeof req.query.namespace === 'string' ? req.query.namespace : undefined;
 
       try {
         const credentials = await httpAuth.credentials(req);
