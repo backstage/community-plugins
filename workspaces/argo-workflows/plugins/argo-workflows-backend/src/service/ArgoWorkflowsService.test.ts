@@ -79,6 +79,7 @@ describe('validateLabelSelector', () => {
 
   it('rejects invalid selectors', () => {
     expect(validateLabelSelector('=value')).toBeDefined();
+    expect(validateLabelSelector('app=my-service,')).toBeDefined();
     expect(validateLabelSelector('key=')).toBeDefined();
     expect(validateLabelSelector('key in ()')).toBeDefined();
   });
