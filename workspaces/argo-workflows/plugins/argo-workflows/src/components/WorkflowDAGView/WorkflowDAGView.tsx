@@ -41,10 +41,10 @@ export interface WorkflowDAGViewProps {
  * an interactive SVG with zoom/pan, status-colored nodes, and a detail panel.
  */
 export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
-  const { namespace = '', name = '' } = useParams<{
-    namespace: string;
-    name: string;
-  }>();
+  const { namespace = '', name = '' } = useParams() as {
+    namespace?: string;
+    name?: string;
+  };
 
   const { workflow, loading, error } = useArgoWorkflowDetail({
     namespace,
