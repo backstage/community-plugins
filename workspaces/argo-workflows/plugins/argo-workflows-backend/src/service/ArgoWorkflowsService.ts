@@ -324,8 +324,9 @@ export class ArgoWorkflowsService {
       instance.token,
     );
     const body = (await response.json()) as Record<string, unknown>;
-    const rawItems =
-      (body.items as Record<string, unknown>[] | undefined) ?? [];
+    const rawItems = Array.isArray(body.items)
+      ? (body.items as Record<string, unknown>[])
+      : [];
 
     return this.parseWorkflowItems(rawItems);
   }
