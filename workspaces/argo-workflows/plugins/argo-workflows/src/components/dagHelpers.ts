@@ -334,16 +334,23 @@ export function useDAGInteraction(config: DAGLayoutConfig): DAGInteraction {
     }));
   }, [config.minScale]);
 
-  const fitToView = useCallback((layout: LayoutResult) => {
-    if (!svgRef.current) return;
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const scaleX = svgRect.width / layout.width;
-    const scaleY = svgRect.height / layout.height;
-    const newScale = Math.min(scaleX, scaleY, 1) * FIT_SCALE_MARGIN;
-    const newX = (svgRect.width - layout.width * newScale) / 2;
-    const newY = (svgRect.height - layout.height * newScale) / 2;
-    setTransform({ x: newX, y: newY, scale: newScale });
-  }, []);
+  const fitToView = useCallback(
+    (layout: LayoutResult) => {
+      if (!svgRef.current) return;
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const scaleX = svgRect.width / layout.width;
+      const scaleY = svgRect.height / layout.height;
+      const unclampedScale = Math.min(scaleX, scaleY, 1) * FIT_SCALE_MARGIN;
+      const newScale = Math.min(
+        Math.max(unclampedScale, config.minScale),
+        config.maxScale,
+      );
+      const newX = (svgRect.width - layout.width * newScale) / 2;
+      const newY = (svgRect.height - layout.height * newScale) / 2;
+      setTransform({ x: newX, y: newY, scale: newScale });
+    },
+    [config.minScale, config.maxScale],
+  );
 
   return {
     svgRef,
