@@ -139,6 +139,90 @@ describe('buildDAG', () => {
     expect(dag.nodes[0].duration).toBe(60);
   });
 
+  it('sets duration to undefined when startedAt is an invalid timestamp', () => {
+    const wf: Workflow = {
+      metadata: {
+        name: 'test-wf',
+        namespace: 'default',
+        uid: 'uid-1',
+        creationTimestamp: '2024-01-01T00:00:00Z',
+      },
+      status: {
+        phase: 'Succeeded',
+        nodes: {
+          a: {
+            id: 'a',
+            name: 'a',
+            displayName: 'Step A',
+            type: 'Pod',
+            phase: 'Succeeded',
+            startedAt: 'not-a-real-date',
+            finishedAt: '2024-01-01T00:01:00Z',
+          },
+        },
+      },
+    };
+
+    const dag = buildDAG(wf);
+    expect(dag.nodes[0].duration).toBeUndefined();
+  });
+
+  it('sets duration to undefined when finishedAt is an invalid timestamp', () => {
+    const wf: Workflow = {
+      metadata: {
+        name: 'test-wf',
+        namespace: 'default',
+        uid: 'uid-1',
+        creationTimestamp: '2024-01-01T00:00:00Z',
+      },
+      status: {
+        phase: 'Succeeded',
+        nodes: {
+          a: {
+            id: 'a',
+            name: 'a',
+            displayName: 'Step A',
+            type: 'Pod',
+            phase: 'Succeeded',
+            startedAt: '2024-01-01T00:00:00Z',
+            finishedAt: 'not-a-real-date',
+          },
+        },
+      },
+    };
+
+    const dag = buildDAG(wf);
+    expect(dag.nodes[0].duration).toBeUndefined();
+  });
+
+  it('sets duration to undefined when finishedAt is before startedAt', () => {
+    const wf: Workflow = {
+      metadata: {
+        name: 'test-wf',
+        namespace: 'default',
+        uid: 'uid-1',
+        creationTimestamp: '2024-01-01T00:00:00Z',
+      },
+      status: {
+        phase: 'Succeeded',
+        nodes: {
+          a: {
+            id: 'a',
+            name: 'a',
+            displayName: 'Step A',
+            type: 'Pod',
+            phase: 'Succeeded',
+            startedAt: '2024-01-01T00:05:00Z',
+            finishedAt: '2024-01-01T00:00:00Z',
+          },
+        },
+      },
+    };
+
+    const dag = buildDAG(wf);
+    expect(dag.nodes[0].duration).toBeUndefined();
+  });
+
   it('sets duration to undefined when finishedAt is missing', () => {
     const wf: Workflow = {
       metadata: {
