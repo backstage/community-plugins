@@ -113,7 +113,7 @@ export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
 
   if ('error' in layout) {
     return (
-      <div data-testid="workflow-dag-empty" role="status">
+      <div data-testid="workflow-dag-render-error" role="status">
         <Alert
           status="warning"
           icon
