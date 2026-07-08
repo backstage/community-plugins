@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2024 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  AnyApiFactory,
-  configApiRef,
-  createApiFactory,
-} from '@backstage/core-plugin-api';
-import {
-  ScmAuth,
-  ScmIntegrationsApi,
-  scmIntegrationsApiRef,
-} from '@backstage/integration-react';
+import quayPlugin from './plugin';
 
-export const apis: AnyApiFactory[] = [
-  createApiFactory({
-    api: scmIntegrationsApiRef,
-    deps: { configApi: configApiRef },
-    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-  }),
-  ScmAuth.createDefaultApiFactory(),
-];
+describe('quay', () => {
+  it('should export plugin', () => {
+    expect(quayPlugin).toBeDefined();
+  });
+});

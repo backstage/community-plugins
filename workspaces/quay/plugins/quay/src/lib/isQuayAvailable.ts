@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { Root } from './Root';
+import { Entity } from '@backstage/catalog-model';
+
+import { QUAY_ANNOTATION_REPOSITORY } from '../hooks';
+
+/**
+ * Returns true if the catalog entity contains the quay annotation `quay.io/repository-slug`.
+ *
+ * @public
+ */
+export const isQuayAvailable = (entity: Entity) =>
+  Boolean(entity?.metadata.annotations?.[QUAY_ANNOTATION_REPOSITORY]);
