@@ -17,6 +17,7 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
 import { Text } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import useAsync from 'react-use/esm/useAsync';
 import _unescape from 'lodash/unescape';
 import {
@@ -74,9 +75,18 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
               rel="noopener noreferrer"
               title="Opens in new tab"
             >
-              <Text weight="bold" as="h3">
-                {_unescape(question.title)}
-              </Text>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Text weight="bold" as="h3">
+                  {_unescape(question.title)}
+                </Text>
+                <RiExternalLinkLine
+                  size={16}
+                  style={{ flexShrink: 0, opacity: 0.7 }}
+                  aria-label="External link"
+                />
+              </div>
             </Link>
             <Text style={{ opacity: 0.7 }}>
               {getSecondaryText(question.answer_count)}
