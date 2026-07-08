@@ -62,7 +62,10 @@ export const verifyHeader = async (
   await expect(card.getByText(`${app.metadata.name}`).first()).toBeVisible();
 
   const appUrl = `${mockArgocdConfig.argocd.baseUrl}/applications/${app.metadata.name}`;
-  await expect(card.getByRole('link').first()).toHaveAttribute('href', appUrl);
+  await expect(card.getByTestId(`${app.metadata.name}-link`)).toHaveAttribute(
+    'href',
+    appUrl,
+  );
 
   const syncStatusLabel = t.appStatus.appSyncStatus[app.status.sync.status];
   const healthStatusLabel =
