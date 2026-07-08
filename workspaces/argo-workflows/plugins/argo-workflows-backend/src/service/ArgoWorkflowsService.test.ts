@@ -516,4 +516,146 @@ describe('ArgoWorkflowsService', () => {
       );
     });
   });
+
+  describe('getWorkflow (Kubernetes)', () => {
+    const mockCredentials: BackstageCredentials = {
+      $$type: '@backstage/BackstageCredentials',
+      principal: { type: 'service', subject: 'test-service' },
+    };
+
+    const mockFetcher = {
+      fetchObjectsForService: jest.fn(),
+      fetchPodMetricsByNamespaces: jest.fn(),
+    };
+
+    const mockClusterSupplier = {
+      getClusters: jest.fn(),
+    };
+
+    const mockAuthStrategy = {
+      getCredential: jest.fn(),
+      validateCluster: jest.fn().mockReturnValue([]),
+      presentAuthMetadata: jest.fn().mockImplementation(m => m),
+    };
+
+    function createK8sService() {
+      return createService(
+        {
+          argoWorkflows: {
+            defaultInstance: 'k8s',
+            instances: [
+              { name: 'k8s', kubernetes: { clusterName: 'production' } },
+            ],
+          },
+        },
+        {
+          clusterSupplier: mockClusterSupplier,
+          fetcher: mockFetcher,
+          authStrategy: mockAuthStrategy,
+        },
+      );
+    }
+
+    beforeEach(() => {
+      mockClusterSupplier.getClusters.mockResolvedValue([
+        {
+          name: 'production',
+          url: 'https://k8s-prod.example.com',
+          authMetadata: { serviceAccountToken: 'prod-token' },
+        },
+      ]);
+      mockAuthStrategy.getCredential.mockResolvedValue({
+        type: 'bearer token',
+        token: 'prod-token',
+      });
+    });
+
+    it('fetches all workflows in the namespace and returns the one matching name', async () => {
+      mockFetcher.fetchObjectsForService.mockResolvedValueOnce({
+        errors: [],
+        responses: [
+          {
+            type: 'customresources',
+            resources: [
+              {
+                metadata: {
+                  name: 'wf-other',
+                  namespace: 'default',
+                  uid: 'uid-other',
+                  creationTimestamp: '2024-01-01T00:00:00Z',
+                },
+                status: { phase: 'Failed' },
+              },
+              {
+                metadata: {
+                  name: 'wf-k8s',
+                  namespace: 'default',
+                  uid: 'uid-k8s',
+                  creationTimestamp: '2024-01-01T00:00:00Z',
+                },
+                status: { phase: 'Succeeded' },
+              },
+            ],
+          },
+        ],
+      });
+
+      const service = createK8sService();
+      const result = await service.getWorkflow(
+        'k8s',
+        'default',
+        'wf-k8s',
+        mockCredentials,
+      );
+
+      expect(result.metadata.name).toBe('wf-k8s');
+      expect(result.status.phase).toBe('Succeeded');
+      expect(mockFetcher.fetchObjectsForService).toHaveBeenCalledWith(
+        expect.objectContaining({
+          serviceId: 'k8s',
+          labelSelector: '',
+          namespace: 'default',
+        }),
+      );
+    });
+
+    it('throws NotFoundError when no workflow in the namespace matches the name', async () => {
+      mockFetcher.fetchObjectsForService.mockResolvedValueOnce({
+        errors: [],
+        responses: [
+          {
+            type: 'customresources',
+            resources: [
+              {
+                metadata: {
+                  name: 'wf-other',
+                  namespace: 'default',
+                  uid: 'uid-other',
+                  creationTimestamp: '2024-01-01T00:00:00Z',
+                },
+                status: { phase: 'Failed' },
+              },
+            ],
+          },
+        ],
+      });
+
+      const service = createK8sService();
+      await expect(
+        service.getWorkflow('k8s', 'default', 'wf-missing', mockCredentials),
+      ).rejects.toThrow("Workflow 'default/wf-missing' not found");
+    });
+
+    it('throws NotFoundError when the namespace has no workflows', async () => {
+      mockFetcher.fetchObjectsForService.mockResolvedValueOnce({
+        errors: [],
+        responses: [{ type: 'customresources', resources: [] }],
+      });
+
+      const service = createK8sService();
+      await expect(
+        service.getWorkflow('k8s', 'empty-namespace', 'wf-1', mockCredentials),
+      ).rejects.toThrow("Workflow 'empty-namespace/wf-1' not found");
+    });
+  });
 });
