@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Box, Flex, Text } from '@backstage/ui';
+import { Box, Flex } from '@backstage/ui';
 import type { WorkflowStatus } from '@backstage-community/plugin-argo-workflows-common';
 import { WorkflowStatusIcon } from '../WorkflowStatusIcon';
 import styles from './WorkflowStatusBadge.module.css';
