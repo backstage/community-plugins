@@ -84,7 +84,7 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
                 <RiExternalLinkLine
                   size={16}
                   style={{ flexShrink: 0, opacity: 0.7 }}
-                  aria-label="External link"
+                  aria-label="External link (opens in new tab)"
                 />
               </div>
             </Link>

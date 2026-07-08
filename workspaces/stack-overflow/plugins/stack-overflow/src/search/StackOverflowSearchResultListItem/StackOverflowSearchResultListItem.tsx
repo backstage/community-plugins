@@ -114,6 +114,8 @@ export const StackOverflowSearchResultListItem = (
         </div>
       </div>
       <div
+        role="separator"
+        aria-label="Divider"
         style={{
           borderBottom: '1px solid var(--bui-border-1)',
           margin: '8px 0',
