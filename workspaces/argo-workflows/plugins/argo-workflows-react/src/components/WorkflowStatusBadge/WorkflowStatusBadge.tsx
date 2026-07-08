@@ -37,14 +37,6 @@ const statusClassMap: Record<WorkflowStatus, string> = {
   Error: styles.error,
 };
 
-const statusLabelMap: Record<WorkflowStatus, string> = {
-  Pending: 'Pending',
-  Running: 'Running',
-  Succeeded: 'Succeeded',
-  Failed: 'Failed',
-  Error: 'Error',
-};
-
 /**
  * Displays a workflow status as a badge containing an icon and a text label.
  *
@@ -53,7 +45,6 @@ const statusLabelMap: Record<WorkflowStatus, string> = {
  * @public
  */
 export const WorkflowStatusBadge = ({ status }: WorkflowStatusBadgeProps) => {
-  const label = statusLabelMap[status] ?? status;
   const colorClass = statusClassMap[status] ?? styles.pending;
 
   return (
@@ -63,9 +54,6 @@ export const WorkflowStatusBadge = ({ status }: WorkflowStatusBadgeProps) => {
     >
       <Flex align="center" style={{ gap: 'var(--bui-space-1)' }}>
         <WorkflowStatusIcon status={status} size="small" />
-        <Text variant="body-small" weight="bold">
-          {label}
-        </Text>
       </Flex>
     </Box>
   );
