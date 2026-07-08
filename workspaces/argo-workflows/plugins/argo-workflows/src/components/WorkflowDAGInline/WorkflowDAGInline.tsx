@@ -68,7 +68,7 @@ export const WorkflowDAGInline = ({ workflow }: WorkflowDAGInlineProps) => {
 
   if ('error' in layout) {
     return (
-      <div data-testid="workflow-dag-inline-empty" className={styles.empty}>
+      <div data-testid="workflow-dag-inline-error" className={styles.empty}>
         <Text variant="body-small" color="secondary">
           Unable to render DAG visualization for this workflow.
         </Text>
