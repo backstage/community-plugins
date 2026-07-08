@@ -99,14 +99,26 @@ export function parseWorkflow(raw: Record<string, unknown>): Workflow {
   const rawMetadata = raw.metadata as Record<string, unknown>;
   const rawStatus = raw.status as Record<string, unknown>;
 
+  const uid = rawMetadata.uid;
+  const creationTimestamp = rawMetadata.creationTimestamp;
+
+  if (typeof uid !== 'string') {
+    throw new Error(
+      'Invalid workflow response: missing or invalid required fields: metadata.uid',
+    );
+  }
+
+  if (typeof creationTimestamp !== 'string') {
+    throw new Error(
+      'Invalid workflow response: missing or invalid required fields: metadata.creationTimestamp',
+    );
+  }
+
   const metadata: WorkflowMetadata = {
     name: rawMetadata.name as string,
     namespace: rawMetadata.namespace as string,
-    uid: typeof rawMetadata.uid === 'string' ? rawMetadata.uid : '',
-    creationTimestamp:
-      typeof rawMetadata.creationTimestamp === 'string'
-        ? rawMetadata.creationTimestamp
-        : '',
+    uid,
+    creationTimestamp,
   };
 
   if (
