@@ -39,12 +39,14 @@ import {
 } from '../database/role-metadata';
 import {
   abortConditionalPolicyReconcile,
+  type ConditionalMetadataRetryOptions,
   deepSortEqual,
   diffConditionalPolicies,
   pendingDeleteIdsFromPlan,
   permissionMappingToActions,
   planConditionalReconcile,
   processConditionMapping,
+  resolveConditionalMetadataRetryOptions,
   toError,
 } from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
@@ -122,6 +124,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   private readonly maxFileBytes: number;
   private readonly maxFileDocuments: number;
   private readonly conditionValidationLimits: ConditionValidationLimits;
+  private readonly metadataRetryOptions: ConditionalMetadataRetryOptions;
 
   constructor(
     filePath: string | undefined,
@@ -135,6 +138,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     private readonly roleEventEmitter: RoleEventEmitter<RoleEvents>,
     conditionValidationLimits: ConditionValidationLimits,
     limits: Partial<ConditionalPoliciesFileLimits> = {},
+    metadataRetry: Partial<ConditionalMetadataRetryOptions> = {},
   ) {
     super(filePath, allowReload, logger);
 
@@ -142,6 +146,8 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     this.maxFileBytes = resolvedLimits.maxBytes;
     this.maxFileDocuments = resolvedLimits.maxDocuments;
     this.conditionValidationLimits = conditionValidationLimits;
+    this.metadataRetryOptions =
+      resolveConditionalMetadataRetryOptions(metadataRetry);
   }
 
   async initialize(): Promise<void> {
@@ -247,6 +253,10 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
             condition,
             this.pluginMetadataCollector,
             this.auth,
+            {
+              metadataRetry: this.metadataRetryOptions,
+              logger: this.logger,
+            },
           ),
         );
       }
