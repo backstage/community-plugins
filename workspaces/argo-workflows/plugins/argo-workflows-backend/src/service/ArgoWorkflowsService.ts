@@ -118,10 +118,14 @@ function splitSelectorExpressions(selector: string): string[] {
  * Returns an error message if invalid, or undefined if valid.
  */
 export function validateLabelSelector(selector: string): string | undefined {
-  if (selector.trim().length === 0) {
+  const trimmed = selector.trim();
+  if (trimmed.length === 0) {
     return 'selector must not be empty';
   }
-  const expressions = splitSelectorExpressions(selector);
+  if (trimmed.endsWith(',')) {
+    return 'selector must not end with a comma';
+  }
+  const expressions = splitSelectorExpressions(trimmed);
   const invalid = expressions.filter(e => !isValidSelectorExpression(e));
   if (invalid.length > 0) {
     return `invalid expressions: ${invalid
