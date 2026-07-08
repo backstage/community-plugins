@@ -26,6 +26,8 @@ export const kubernetes = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     role="img"
+    aria-label="Kubernetes"
+    focusable="false"
     viewBox="9.70 9.20 210.86 204.86"
     height="20px"
   >
@@ -43,6 +45,9 @@ export const kubernetes = (
 export const argo = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="Argo Workflows"
+    focusable="false"
     fill="none"
     viewBox="0 0 522 673"
     height="20px"
