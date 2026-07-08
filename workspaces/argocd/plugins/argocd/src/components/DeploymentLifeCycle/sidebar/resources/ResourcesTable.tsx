@@ -16,6 +16,7 @@
 import type { MouseEvent, ChangeEvent } from 'react';
 
 import { useMemo, FC, useCallback, useState } from 'react';
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -245,10 +246,10 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
           <tbody>
             <tr>
               <td colSpan={resourcesColumnHeaders.length}>
-                <div
+                <Box
                   data-testid="no-resources"
-                  style={{
-                    padding: '16px',
+                  sx={{
+                    p: 2,
                     display: 'flex',
                     justifyContent: 'center',
                   }}
@@ -256,7 +257,7 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
                   {t(
                     'deploymentLifecycle.sidebar.resources.resourcesTable.noneFound',
                   )}
-                </div>
+                </Box>
               </td>
             </tr>
           </tbody>

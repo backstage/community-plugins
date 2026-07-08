@@ -38,8 +38,8 @@ const deploymentStyles = {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    mt: 1,
-    mb: 1,
+    marginTop: '8px',
+    marginBottom: '8px',
   },
   commitMessage: {
     wordBreak: 'break-word',

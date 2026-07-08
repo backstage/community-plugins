@@ -17,6 +17,7 @@ import type { FC } from 'react';
 import Rollouts from './sidebar/rollouts/Rollouts';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Drawer from '@mui/material/Drawer';
@@ -84,8 +85,8 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
       <CardContent>
         <Grid container alignItems="stretch">
           <Grid item xs={12}>
-            <div
-              style={{
+            <Box
+              sx={{
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -106,7 +107,7 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
               >
                 <Close sx={{ fontSize: 20 }} />
               </IconButton>
-            </div>
+            </Box>
             <div style={{ display: 'flex' }}>
               <StatusHeading app={app} />
             </div>

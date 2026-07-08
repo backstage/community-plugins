@@ -19,6 +19,7 @@ import {
   RevisionInfo,
   History,
 } from '@backstage-community/plugin-argocd-common';
+import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
@@ -75,7 +76,7 @@ const AppCommitLink: FC<CommitLinkProps> = ({
   };
 
   return revisions && latestRevision ? (
-    <div style={{ maxWidth: '280px' }}>
+    <Box sx={{ maxWidth: theme => theme.spacing(35) }}>
       <Chip
         data-testid={`${latestRevisionSha.slice(0, 5)}-commit-link`}
         size="small"
@@ -106,7 +107,7 @@ const AppCommitLink: FC<CommitLinkProps> = ({
           <Skeleton />
         )}
       </Typography>
-    </div>
+    </Box>
   ) : (
     <>-</>
   );

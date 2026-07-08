@@ -45,7 +45,7 @@ export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
       sx={theme => ({
         border: `1px solid ${theme.palette.grey.A100}`,
         ml: 1.875,
-        borderRadius: '4px',
+        borderRadius: theme.spacing(0.5),
       })}
       InputProps={{
         startAdornment: (
