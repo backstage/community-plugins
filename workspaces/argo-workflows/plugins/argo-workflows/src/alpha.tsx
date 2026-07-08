@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**
+ * Argo Workflows frontend plugin (new frontend system).
+ *
+ * @packageDocumentation
+ */
+
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isArgoWorkflowsAvailable } from '@backstage-community/plugin-argo-workflows-common';
