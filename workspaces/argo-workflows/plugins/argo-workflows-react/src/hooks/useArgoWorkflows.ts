@@ -127,13 +127,28 @@ export function useArgoWorkflows(options: {
             ? instanceNames
             : [instanceName];
 
-        // Fetch all instances in parallel
-        const results = await Promise.all(
-          names.map(async name => {
+        // Fetch all instances in parallel (tolerate partial failures)
+        const settled = await Promise.allSettled(
+          names.map(async (name): Promise<WorkflowWithSource[]> => {
             const wfs = await fetchForInstance(baseUrl, name);
             return wfs.map(wf => ({ ...wf, sourceInstance: name }));
           }),
         );
+        const fulfilled = settled.filter(
+          (r): r is PromiseFulfilledResult<WorkflowWithSource[]> =>
+            r.status === 'fulfilled',
+        );
+        if (fulfilled.length === 0) {
+          const firstRejected = settled.find(
+            (r): r is PromiseRejectedResult => r.status === 'rejected',
+          );
+          throw firstRejected?.reason instanceof Error
+            ? firstRejected.reason
+            : new Error(
+                String(firstRejected?.reason ?? 'Failed to fetch workflows'),
+              );
+        }
+        const results = fulfilled.map(r => r.value);
 
         // Merge and deduplicate by uid
         const seen = new Set<string>();
