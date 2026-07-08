@@ -57,7 +57,8 @@ export interface DAGGraph {
 
 /**
  * Calculate duration in seconds between two ISO date strings.
- * Returns undefined if either date is missing.
+ * Returns undefined if either date is missing, either date is not a valid
+ * timestamp, or the resulting duration would be negative.
  */
 function calculateDuration(
   startedAt?: string,
@@ -68,6 +69,11 @@ function calculateDuration(
   }
   const start = new Date(startedAt).getTime();
   const end = new Date(finishedAt).getTime();
+
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
+    return undefined;
+  }
+
   return Math.round((end - start) / 1000);
 }
 
