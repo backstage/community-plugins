@@ -38,7 +38,11 @@ const statusClassMap: Record<WorkflowStatus, string> = {
 };
 
 /**
- * Displays a workflow status as a badge containing an icon and a text label.
+ * Displays a workflow status as a pill-shaped badge with a colored border.
+ *
+ * Renders the icon and text label via {@link WorkflowStatusIcon}, which
+ * includes the status label alongside its icon — do not add a separate
+ * `<Text>` label here, or the status will be rendered twice.
  *
  * Uses BUI components and CSS modules with BUI tokens for styling.
  *
