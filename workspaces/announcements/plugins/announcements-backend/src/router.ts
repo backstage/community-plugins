@@ -552,7 +552,7 @@ export async function createRouter(
       request: req,
       severityLevel: 'medium',
       meta: {
-        actionType: AUDITOR_ACTION_UPDATE,
+        actionType: AUDITOR_ACTION_CREATE,
       },
     });
 
