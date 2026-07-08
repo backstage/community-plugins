@@ -121,20 +121,20 @@ export function parseWorkflow(raw: Record<string, unknown>): Workflow {
     creationTimestamp,
   };
 
-  if (
-    rawMetadata.labels !== undefined &&
-    rawMetadata.labels !== null &&
-    typeof rawMetadata.labels === 'object'
-  ) {
-    metadata.labels = rawMetadata.labels as Record<string, string>;
+  if (rawMetadata.labels && typeof rawMetadata.labels === 'object') {
+    metadata.labels = Object.fromEntries(
+      Object.entries(rawMetadata.labels as Record<string, unknown>).filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string',
+      ),
+    );
   }
 
-  if (
-    rawMetadata.annotations !== undefined &&
-    rawMetadata.annotations !== null &&
-    typeof rawMetadata.annotations === 'object'
-  ) {
-    metadata.annotations = rawMetadata.annotations as Record<string, string>;
+  if (rawMetadata.annotations && typeof rawMetadata.annotations === 'object') {
+    metadata.annotations = Object.fromEntries(
+      Object.entries(rawMetadata.annotations as Record<string, unknown>).filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string',
+      ),
+    );
   }
 
   const status: WorkflowStatusDetail = {
