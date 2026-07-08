@@ -228,12 +228,14 @@ export const WorkflowRunsTable = ({
                 value={searchQuery}
                 onChange={setSearchQuery}
               />
-              <Flex align="center" style={{ gap: 'var(--bui-space-1)' }}>
-                <div className={styles.updatedDot} />
-                <Text variant="body-small" className={styles.updatedText}>
-                  {formatTimeAgo(lastUpdated)}
-                </Text>
-              </Flex>
+              {!loading && (
+                <Flex align="center" style={{ gap: 'var(--bui-space-1)' }}>
+                  <div className={styles.updatedDot} />
+                  <Text variant="body-small" className={styles.updatedText}>
+                    {formatTimeAgo(lastUpdated)}
+                  </Text>
+                </Flex>
+              )}
             </Flex>
           </>
         }
@@ -241,7 +243,7 @@ export const WorkflowRunsTable = ({
       <Table
         columnConfig={columns}
         {...tableProps}
-        loading={loading}
+        isPending={loading}
         emptyState={
           <Alert
             status="info"
