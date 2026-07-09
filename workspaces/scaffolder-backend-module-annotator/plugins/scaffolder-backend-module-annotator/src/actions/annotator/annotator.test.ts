@@ -23,11 +23,20 @@ import * as yaml from 'yaml';
 import { getCurrentTimestamp } from '../../utils/getCurrentTimestamp';
 import { createAnnotatorAction } from './annotator';
 
-const catalogEntity =
-  'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
+type TestCatalogEntity = {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name?: string;
+    namespace?: string;
+    labels?: Record<string, string>;
+    annotations?: Record<string, string>;
+  };
+  spec?: Record<string, string>;
+};
 
 const catalogEntityContent = fs.readFileSync(
-  resolveSafeChildPath(catalogEntity, './catalog-info.yaml'),
+  resolveSafeChildPath(__dirname, './mocks/catalog-info.yaml'),
   'utf8',
 );
 
@@ -95,19 +104,22 @@ describe('catalog annotator', () => {
       },
     );
 
+    const inputLabels = {
+      label1: 'value1',
+      label2: 'value2',
+      label3: 'value3',
+    };
+    const inputAnnotations = {
+      annotation1: 'value1',
+      annotation2: 'value2',
+      annotation3: 'value3',
+    };
+
     const ctx = createMockActionContext({
       workspacePath,
       input: {
-        labels: {
-          label1: 'value1',
-          label2: 'value2',
-          label3: 'value3',
-        },
-        annotations: {
-          annotation1: 'value1',
-          annotation2: 'value2',
-          annotation3: 'value3',
-        },
+        labels: inputLabels,
+        annotations: inputAnnotations,
       },
     });
 
@@ -115,26 +127,40 @@ describe('catalog annotator', () => {
 
     await action.handler(ctx);
 
-    let entity: { [key: string]: any } = yaml.parse(catalogEntityContent);
-    entity = {
-      ...entity,
+    const updatedCatalogInfoYaml = await fs.readFile(
+      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
+      'utf8',
+    );
+    const writtenEntity = yaml.parse(
+      updatedCatalogInfoYaml,
+    ) as TestCatalogEntity;
+
+    const parsedEntity = yaml.parse(catalogEntityContent) as TestCatalogEntity;
+    const expectedEntity: TestCatalogEntity = {
+      ...parsedEntity,
       metadata: {
-        ...entity.metadata,
+        ...parsedEntity.metadata,
         labels: {
-          ...entity.metadata.labels,
-          ...ctx.input.labels,
+          ...parsedEntity.metadata.labels,
+          ...inputLabels,
         },
         annotations: {
-          ...entity.metadata.annotations,
-          ...ctx.input.annotations,
+          ...parsedEntity.metadata.annotations,
+          ...inputAnnotations,
         },
       },
     };
 
     expect(ctx.logger.info).toHaveBeenCalledWith('Annotating your object');
+    expect(writtenEntity.metadata.labels).toEqual(
+      expectedEntity.metadata.labels,
+    );
+    expect(writtenEntity.metadata.annotations).toEqual(
+      expectedEntity.metadata.annotations,
+    );
     expect(ctx.output).toHaveBeenCalledWith(
       'annotatedObject',
-      yaml.stringify(entity),
+      yaml.stringify(expectedEntity),
     );
   });
 
@@ -154,7 +180,18 @@ describe('catalog annotator', () => {
       },
     );
 
-    const obj: { [key: string]: any } = {
+    const inputLabels = {
+      label1: 'value1',
+      label2: 'value2',
+      label3: 'value3',
+    };
+    const inputAnnotations = {
+      annotation1: 'value1',
+      annotation2: 'value2',
+      annotation3: 'value3',
+    };
+
+    const obj: TestCatalogEntity = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',
       metadata: {
@@ -171,16 +208,8 @@ describe('catalog annotator', () => {
     const ctx = createMockActionContext({
       workspacePath,
       input: {
-        labels: {
-          label1: 'value1',
-          label2: 'value2',
-          label3: 'value3',
-        },
-        annotations: {
-          annotation1: 'value1',
-          annotation2: 'value2',
-          annotation3: 'value3',
-        },
+        labels: inputLabels,
+        annotations: inputAnnotations,
         objectYaml: obj,
       },
     });
@@ -189,17 +218,17 @@ describe('catalog annotator', () => {
 
     await action.handler(ctx);
 
-    const entity = {
+    const expectedEntity: TestCatalogEntity = {
       ...obj,
       metadata: {
         ...obj.metadata,
         labels: {
-          ...(obj.metadata.labels || {}),
-          ...ctx.input.labels,
+          ...(obj.metadata.labels ?? {}),
+          ...inputLabels,
         },
         annotations: {
-          ...(obj.metadata.annotations || {}),
-          ...ctx.input.annotations,
+          ...obj.metadata.annotations,
+          ...inputAnnotations,
         },
       },
     };
@@ -207,7 +236,7 @@ describe('catalog annotator', () => {
     expect(ctx.logger.info).toHaveBeenCalledWith('some logger info message');
     expect(ctx.output).toHaveBeenCalledWith(
       'annotatedObject',
-      yaml.stringify(entity),
+      yaml.stringify(expectedEntity),
     );
   });
 

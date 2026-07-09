@@ -2,6 +2,8 @@
 
 The annotator module for [@backstage/plugin-scaffolder-backend](https://www.npmjs.com/package/@backstage/plugin-scaffolder-backend).
 
+For contributor setup and local development, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 This module allows users to create custom actions for annotating their entity objects. Additionally, it enables users to utilize existing custom actions provided by the module for annotating entities with timestamps and scaffolder entity references.
 
 ## Installation
