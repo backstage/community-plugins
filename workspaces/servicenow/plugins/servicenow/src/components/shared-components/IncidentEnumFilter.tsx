@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { SelectItem } from '@backstage/core-components';
-import { Box, Checkbox, TextField } from '@backstage/ui';
+import { Box, Checkbox } from '@backstage/ui';
 import { RiArrowDownSLine } from '@remixicon/react';
 import { renderStatusLabel, StatusData } from '../../utils/incidentUtils';
 import styles from './IncidentEnumFilter.module.css';
@@ -49,7 +49,7 @@ export const IncidentEnumFilter = ({
     if (onToggle) {
       onToggle();
     } else {
-      setInternalIsOpen(!internalIsOpen);
+      setInternalIsOpen(prev => !prev);
     }
   };
   const items: SelectItem[] = Object.entries(dataMap).map(

@@ -249,18 +249,21 @@ export const EntityServicenowContent = () => {
             onPress={() => setOffset(0)}
             isDisabled={pageNumber === 0}
             variant="secondary"
+            aria-label={t('table.pagination.first')}
           />
           <ButtonIcon
             icon={<RiArrowLeftSLine size={16} />}
             onPress={() => handlePageChange(pageNumber - 1)}
             isDisabled={pageNumber === 0}
             variant="secondary"
+            aria-label={t('table.pagination.previous')}
           />
           <ButtonIcon
             icon={<RiArrowRightSLine size={16} />}
             onPress={() => handlePageChange(pageNumber + 1)}
             isDisabled={(pageNumber + 1) * rowsPerPage >= count}
             variant="secondary"
+            aria-label={t('table.pagination.next')}
           />
           <ButtonIcon
             icon={<RiSkipRightLine size={16} />}
@@ -269,6 +272,7 @@ export const EntityServicenowContent = () => {
             }
             isDisabled={(pageNumber + 1) * rowsPerPage >= count}
             variant="secondary"
+            aria-label={t('table.pagination.last')}
           />
         </div>
       </div>
@@ -299,6 +303,7 @@ export const EntityServicenowContent = () => {
                   <input
                     type="text"
                     placeholder={t('table.searchPlaceholder')}
+                    aria-label={t('table.searchPlaceholder')}
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     style={{

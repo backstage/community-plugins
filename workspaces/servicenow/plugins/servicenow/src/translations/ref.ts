@@ -32,6 +32,12 @@ export const servicenowMessages = {
       actions: 'Actions',
     },
     emptyContent: 'No records found',
+    pagination: {
+      first: 'Go to first page',
+      previous: 'Go to previous page',
+      next: 'Go to next page',
+      last: 'Go to last page',
+    },
   },
   filter: {
     state: 'State',

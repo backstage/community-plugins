@@ -165,9 +165,7 @@ export const renderStatusLabel = (data?: StatusData) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <Icon {...iconProps} />
-      <span style={{ marginLeft: '8px', color: 'var(--bui-fg-primary)' }}>
-        {label}
-      </span>
+      <span style={{ color: 'var(--bui-fg-primary)' }}>{label}</span>
     </div>
   );
 };

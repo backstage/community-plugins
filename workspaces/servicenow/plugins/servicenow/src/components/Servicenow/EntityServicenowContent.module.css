@@ -1,4 +1,10 @@
 @layer components {
+  .tableContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-4);
+  }
+
   .errorContainer {
     padding: var(--bui-space-4);
     color: var(--bui-status-error);

@@ -39,7 +39,6 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
       className={styles.tableRow}
       style={{
         display: 'table-row',
-        borderBottom: '1px solid #e0e0e0',
       }}
     >
       <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
@@ -66,6 +65,7 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
       <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         <TooltipTrigger>
           <ButtonIcon
+            aria-label={t('actions.openInServicenow')}
             icon={<RiExternalLinkLine size={16} />}
             onPress={() =>
               window.open(data.url, '_blank', 'noopener,noreferrer')
