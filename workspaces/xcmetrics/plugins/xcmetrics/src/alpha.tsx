@@ -23,6 +23,7 @@ import {
 import {
   compatWrapper,
   convertLegacyRouteRef,
+  convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
 import { rootRouteRef } from './routes';
 import { xcmetricsApiRef, XcmetricsClient } from './api';
@@ -64,7 +65,7 @@ export const xcmetricsApiExtension = ApiBlueprint.make({
 export default createFrontendPlugin({
   pluginId: 'xcmetrics',
   extensions: [xcmetricsPage, xcmetricsApiExtension],
-  routes: {
+  routes: convertLegacyRouteRefs({
     root: rootRouteRef,
-  },
+  }),
 });
