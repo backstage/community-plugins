@@ -41,7 +41,7 @@ Start Backstage and navigate to `/xcmetrics` to view your build metrics!
 If you are using Backstage feature discovery, the plugin can be discovered automatically. Otherwise, you can register the alpha entry manually in your app:
 
 ```tsx
-import { createApp } from '@backstage/app-defaults';
+import { createApp } from '@backstage/frontend-defaults';
 import xcmetricsPlugin from '@backstage-community/plugin-xcmetrics/alpha';
 
 const app = createApp({
