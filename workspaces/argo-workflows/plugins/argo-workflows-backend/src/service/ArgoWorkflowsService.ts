@@ -285,21 +285,36 @@ export class ArgoWorkflowsService {
    * @param namespace - The Kubernetes namespace of the workflow
    * @param name - The name of the workflow
    * @param credentials - Backstage credentials (required for Kubernetes path)
+   * @param labelSelector - Optional Kubernetes label selector used to narrow
+   * the underlying fetch on the Kubernetes path, where there is no
+   * single-resource GET and the call would otherwise fetch every Workflow
+   * CRD in the namespace. Ignored on the Argo server API path, which already
+   * fetches a single resource directly. If provided, it is validated the
+   * same way as {@link ArgoWorkflowsService.listWorkflows}.
    */
   async getWorkflow(
     instanceName: string,
     namespace: string,
     name: string,
     credentials?: BackstageCredentials,
+    labelSelector?: string,
   ): Promise<Workflow> {
     const instance = this.resolveInstance(instanceName);
 
     if (instance.kind === 'kubernetes') {
+      if (labelSelector) {
+        const validationError = validateLabelSelector(labelSelector);
+        if (validationError) {
+          throw new InputError(`Invalid label selector: ${validationError}`);
+        }
+      }
+
       return this.getWorkflowViaKubernetes(
         instance,
         namespace,
         name,
         credentials,
+        labelSelector,
       );
     }
 
@@ -405,12 +420,16 @@ export class ArgoWorkflowsService {
     namespace: string,
     name: string,
     credentials?: BackstageCredentials,
+    labelSelector?: string,
   ): Promise<Workflow> {
-    // Fetch all workflows in the namespace and filter by name,
-    // since the fetcher doesn't support single-resource GET.
+    // The Kubernetes fetcher has no single-resource GET, so this fetches
+    // every Workflow CRD matching the selector in the namespace and filters
+    // by name. Callers that know a label selector narrowing the workflow set
+    // (e.g. the same one used to list workflows for an entity) should pass
+    // it in to avoid fetching the entire namespace on large clusters.
     const workflows = await this.listWorkflowsViaKubernetes(
       instance,
-      '',
+      labelSelector ?? '',
       namespace,
       credentials,
     );

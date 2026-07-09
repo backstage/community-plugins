@@ -33,6 +33,13 @@ import styles from './WorkflowDAGView.module.css';
 /** @public */
 export interface WorkflowDAGViewProps {
   instanceName?: string;
+  /**
+   * Optional Kubernetes label selector used to narrow the backend's
+   * underlying fetch when there is no single-resource GET (the Kubernetes
+   * path otherwise scans every workflow in the namespace). Pass the same
+   * selector used to list workflows for the entity, when known.
+   */
+  labelSelector?: string;
 }
 
 /**
@@ -40,7 +47,10 @@ export interface WorkflowDAGViewProps {
  * Fetches the workflow by namespace/name from route params, then renders
  * an interactive SVG with zoom/pan, status-colored nodes, and a detail panel.
  */
-export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
+export const WorkflowDAGView = ({
+  instanceName,
+  labelSelector,
+}: WorkflowDAGViewProps) => {
   const { namespace = '', name = '' } = useParams() as {
     namespace?: string;
     name?: string;
@@ -50,6 +60,7 @@ export const WorkflowDAGView = ({ instanceName }: WorkflowDAGViewProps) => {
     namespace,
     name,
     instanceName,
+    labelSelector,
   });
 
   const interaction = useDAGInteraction(DAG_VIEW_CONFIG);

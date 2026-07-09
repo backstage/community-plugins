@@ -658,5 +658,75 @@ describe('ArgoWorkflowsService', () => {
         service.getWorkflow('k8s', 'empty-namespace', 'wf-1', mockCredentials),
       ).rejects.toThrow("Workflow 'empty-namespace/wf-1' not found");
     });
+
+    it('narrows the fetch with a provided label selector', async () => {
+      mockFetcher.fetchObjectsForService.mockResolvedValueOnce({
+        errors: [],
+        responses: [
+          {
+            type: 'customresources',
+            resources: [
+              {
+                metadata: {
+                  name: 'wf-k8s',
+                  namespace: 'default',
+                  uid: 'uid-k8s',
+                  creationTimestamp: '2024-01-01T00:00:00Z',
+                },
+                status: { phase: 'Succeeded' },
+              },
+            ],
+          },
+        ],
+      });
+
+      const service = createK8sService();
+      const result = await service.getWorkflow(
+        'k8s',
+        'default',
+        'wf-k8s',
+        mockCredentials,
+        'app=test',
+      );
+
+      expect(result.metadata.name).toBe('wf-k8s');
+      expect(mockFetcher.fetchObjectsForService).toHaveBeenCalledWith(
+        expect.objectContaining({
+          serviceId: 'k8s',
+          labelSelector: 'app=test',
+          namespace: 'default',
+        }),
+      );
+    });
+
+    it('throws InputError when the provided label selector is invalid', async () => {
+      const service = createK8sService();
+      await expect(
+        service.getWorkflow(
+          'k8s',
+          'default',
+          'wf-k8s',
+          mockCredentials,
+          'app=my-service,',
+        ),
+      ).rejects.toThrow('Invalid label selector');
+      expect(mockFetcher.fetchObjectsForService).not.toHaveBeenCalled();
+    });
+
+    it('falls back to fetching the whole namespace when no label selector is provided', async () => {
+      mockFetcher.fetchObjectsForService.mockResolvedValueOnce({
+        errors: [],
+        responses: [{ type: 'customresources', resources: [] }],
+      });
+
+      const service = createK8sService();
+      await expect(
+        service.getWorkflow('k8s', 'default', 'wf-1', mockCredentials),
+      ).rejects.toThrow("Workflow 'default/wf-1' not found");
+
+      expect(mockFetcher.fetchObjectsForService).toHaveBeenCalledWith(
+        expect.objectContaining({ labelSelector: '' }),
+      );
+    });
   });
 });
