@@ -20,6 +20,10 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
+import {
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
 import { rootRouteRef } from './routes';
 import { xcmetricsApiRef, XcmetricsClient } from './api';
 
@@ -28,11 +32,13 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 const xcmetricsPage = PageBlueprint.make({
   params: {
     path: '/xcmetrics',
-    routeRef: rootRouteRef,
+    routeRef: convertLegacyRouteRef(rootRouteRef),
     title: 'XCMetrics',
     icon: <AssessmentIcon />,
     loader: () =>
-      import('./components/XcmetricsLayout').then(m => <m.XcmetricsLayout />),
+      import('./components/XcmetricsLayout').then(m =>
+        compatWrapper(<m.XcmetricsLayout />),
+      ),
   },
 });
 
