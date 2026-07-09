@@ -141,11 +141,11 @@ describe('catalog annotator', () => {
       metadata: {
         ...parsedEntity.metadata,
         labels: {
-          ...parsedEntity.metadata.labels,
+          ...(parsedEntity.metadata.labels ?? {}),
           ...inputLabels,
         },
         annotations: {
-          ...parsedEntity.metadata.annotations,
+          ...(parsedEntity.metadata.annotations ?? {}),
           ...inputAnnotations,
         },
       },
@@ -227,7 +227,7 @@ describe('catalog annotator', () => {
           ...inputLabels,
         },
         annotations: {
-          ...obj.metadata.annotations,
+          ...(obj.metadata.annotations ?? {}),
           ...inputAnnotations,
         },
       },
