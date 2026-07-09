@@ -91,7 +91,7 @@ export function getReadmePath(
   annotations?: Record<string, string>,
 ): string | undefined {
   const explicit = annotations?.[AZURE_DEVOPS_README_ANNOTATION];
-  if (explicit) return explicit;
+  if (explicit !== undefined) return explicit;
 
   // Auto-detect README.md from backstage.io/source-location (#9188)
   const sourceLocation = annotations?.[ANNOTATION_SOURCE_LOCATION];
@@ -105,6 +105,9 @@ export function getReadmePath(
 
     const parsed = new URL(rawUrl);
 
+    // Only attempt auto-detection for Azure DevOps repo URLs (Cloud or Server)
+    if (!parsed.pathname.includes('/_git/')) return undefined;
+
     // "path" query param holds the repo-relative path (URL-decoded by the URL API)
     const pathParam = parsed.searchParams.get('path');
     if (!pathParam) return undefined;
@@ -114,8 +117,12 @@ export function getReadmePath(
     const lastSlash = cleanPath.lastIndexOf('/');
     const lastSegment = cleanPath.slice(lastSlash + 1);
 
-    // If the last segment looks like a file (has a dot), use its parent dir
-    const dir = lastSegment.includes('.')
+    // Only known catalog file names are treated as files; otherwise assume
+    // the path already points to a directory (dots in directory names, e.g.
+    // "services/my.service", should not be mistaken for a file extension)
+    const isCatalogFile =
+      lastSegment === 'catalog-info.yaml' || lastSegment === 'catalog-info.yml';
+    const dir = isCatalogFile
       ? lastSlash >= 0
         ? cleanPath.slice(0, lastSlash)
         : ''

@@ -626,6 +626,35 @@ describe('getAnnotationValuesFromEntity', () => {
       expect(result.readmePath).toBeUndefined();
     });
 
+    it('returns undefined for non-Azure DevOps URLs even when they have a path query parameter', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://github.com/org/repo?path=%2Fservices%2Fmy-svc%2Fcatalog-info.yaml',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBeUndefined();
+    });
+
+    it('returns empty string when the explicit readme-path annotation is an empty string', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'dev.azure.com/readme-path': '',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBe('');
+    });
+
     it('derives readme path for on-prem Azure DevOps Server URLs (non dev.azure.com hostname)', () => {
       const entity = {
         metadata: {
