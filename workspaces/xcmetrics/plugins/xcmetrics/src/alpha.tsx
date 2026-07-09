@@ -23,10 +23,14 @@ import {
 import { rootRouteRef } from './routes';
 import { xcmetricsApiRef, XcmetricsClient } from './api';
 
+import AssessmentIcon from '@material-ui/icons/Assessment';
+
 const xcmetricsPage = PageBlueprint.make({
   params: {
     path: '/xcmetrics',
     routeRef: rootRouteRef,
+    title: 'XCMetrics',
+    icon: <AssessmentIcon />,
     loader: () =>
       import('./components/XcmetricsLayout').then(m => <m.XcmetricsLayout />),
   },
