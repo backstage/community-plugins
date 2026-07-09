@@ -1,5 +1,15 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.16.0
+
+### Minor Changes
+
+- 895009c: add support for Azure PostgreSQL passwordless authentication with managed identity
+
+### Patch Changes
+
+- 058e6a2: Conditional policy reconciliation preserves stored conditions when staging or persistence fails, and correctly merges sibling conditions for the same role and resource without conflict errors during reload.
+
 ## 7.15.0
 
 ### Minor Changes
