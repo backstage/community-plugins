@@ -611,7 +611,7 @@ describe('getAnnotationValuesFromEntity', () => {
       expect(result.readmePath).toBeUndefined();
     });
 
-    it('returns undefined when source-location is a non-Azure DevOps URL', () => {
+    it('returns undefined when source-location URL has no path query parameter (e.g. GitHub-style URLs)', () => {
       const entity = {
         metadata: {
           annotations: {
@@ -624,6 +624,21 @@ describe('getAnnotationValuesFromEntity', () => {
 
       const result = getAnnotationValuesFromEntity(entity);
       expect(result.readmePath).toBeUndefined();
+    });
+
+    it('derives readme path for on-prem Azure DevOps Server URLs (non dev.azure.com hostname)', () => {
+      const entity = {
+        metadata: {
+          annotations: {
+            'dev.azure.com/project-repo': 'myproject/myrepo',
+            'backstage.io/source-location':
+              'url:https://azuredevops.mycompany.com/org/proj/_git/repo?path=%2Fservices%2Fmy-svc%2Fcatalog-info.yaml',
+          },
+        },
+      } as unknown as Entity;
+
+      const result = getAnnotationValuesFromEntity(entity);
+      expect(result.readmePath).toBe('/services/my-svc/README.md');
     });
 
     it('returns undefined when source-location Azure DevOps URL has no path query parameter', () => {

@@ -38,49 +38,7 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
     entity.metadata.annotations?.[AZURE_DEVOPS_PROJECT_ANNOTATION];
   const definition =
     entity.metadata.annotations?.[AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION];
-  const readmePath = (() => {
-    const explicit =
-      entity.metadata.annotations?.[AZURE_DEVOPS_README_ANNOTATION];
-    if (explicit) return explicit;
-
-    // Auto-detect README.md from backstage.io/source-location (#9188)
-    const sourceLocation =
-      entity.metadata.annotations?.[ANNOTATION_SOURCE_LOCATION];
-    if (!sourceLocation) return undefined;
-
-    try {
-      // source-location values are prefixed with "url:" per Backstage convention
-      const rawUrl = sourceLocation.startsWith('url:')
-        ? sourceLocation.slice(4)
-        : sourceLocation;
-
-      const parsed = new URL(rawUrl);
-
-      // Only derive paths for Azure DevOps URLs
-      if (parsed.hostname !== 'dev.azure.com') return undefined;
-
-      // "path" query param holds the repo-relative path (URL-decoded by the URL API)
-      const pathParam = parsed.searchParams.get('path');
-      if (!pathParam) return undefined;
-
-      // Strip trailing slash, then get the directory of the catalog file
-      const cleanPath = pathParam.replace(/\/$/, '');
-      const lastSlash = cleanPath.lastIndexOf('/');
-      const lastSegment = cleanPath.slice(lastSlash + 1);
-
-      // If the last segment looks like a file (has a dot), use its parent dir
-      const dir = lastSegment.includes('.')
-        ? lastSlash >= 0
-          ? cleanPath.slice(0, lastSlash)
-          : ''
-        : cleanPath;
-
-      return `${dir}/README.md`;
-    } catch {
-      // Malformed URL — fail gracefully
-      return undefined;
-    }
-  })();
+  const readmePath = getReadmePath(entity.metadata.annotations);
 
   if (definition) {
     if (project) {
@@ -121,6 +79,53 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
   }
 
   throw new Error('Expected "dev.azure.com" annotations were not found');
+}
+
+/**
+ * Resolves the README path for an entity, preferring the explicit
+ * dev.azure.com/readme-path annotation, and falling back to deriving
+ * it from backstage.io/source-location when that annotation is absent (#9188).
+ * @public
+ */
+export function getReadmePath(
+  annotations?: Record<string, string>,
+): string | undefined {
+  const explicit = annotations?.[AZURE_DEVOPS_README_ANNOTATION];
+  if (explicit) return explicit;
+
+  // Auto-detect README.md from backstage.io/source-location (#9188)
+  const sourceLocation = annotations?.[ANNOTATION_SOURCE_LOCATION];
+  if (!sourceLocation) return undefined;
+
+  try {
+    // source-location values are prefixed with "url:" per Backstage convention
+    const rawUrl = sourceLocation.startsWith('url:')
+      ? sourceLocation.slice(4)
+      : sourceLocation;
+
+    const parsed = new URL(rawUrl);
+
+    // "path" query param holds the repo-relative path (URL-decoded by the URL API)
+    const pathParam = parsed.searchParams.get('path');
+    if (!pathParam) return undefined;
+
+    // Strip trailing slash, then get the directory of the catalog file
+    const cleanPath = pathParam.replace(/\/$/, '');
+    const lastSlash = cleanPath.lastIndexOf('/');
+    const lastSegment = cleanPath.slice(lastSlash + 1);
+
+    // If the last segment looks like a file (has a dot), use its parent dir
+    const dir = lastSegment.includes('.')
+      ? lastSlash >= 0
+        ? cleanPath.slice(0, lastSlash)
+        : ''
+      : cleanPath;
+
+    return `${dir}/README.md`;
+  } catch {
+    // Malformed URL — fail gracefully
+    return undefined;
+  }
 }
 
 function getProjectRepo(annotations?: Record<string, string>): {
