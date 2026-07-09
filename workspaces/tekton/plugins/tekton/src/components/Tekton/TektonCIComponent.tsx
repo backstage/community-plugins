@@ -22,6 +22,7 @@ import { useTektonViewPermission } from '../../hooks/useTektonViewPermission';
 import { ModelsPlural } from '../../models';
 import PermissionAlert from '../common/PermissionAlert';
 import PipelineRunList from '../PipelineRunList/PipelineRunList';
+import { TektonStylesProvider } from './TektonStylesProvider';
 
 import '@patternfly/react-core/dist/styles/base-no-reset.css';
 import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
@@ -78,8 +79,10 @@ export const TektonCIComponent = () => {
     return <PermissionAlert />;
   }
   return (
-    <TektonResourcesContext.Provider value={tektonResourcesContextData}>
-      <PipelineRunList />
-    </TektonResourcesContext.Provider>
+    <TektonStylesProvider>
+      <TektonResourcesContext.Provider value={tektonResourcesContextData}>
+        <PipelineRunList />
+      </TektonResourcesContext.Provider>
+    </TektonStylesProvider>
   );
 };

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-common
 
+## 0.11.0
+
+### Minor Changes
+
+- 9ae7745: Adapt Ambient changes
+
 ## 0.10.0
 
 ### Minor Changes

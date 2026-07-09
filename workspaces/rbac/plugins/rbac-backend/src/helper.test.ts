@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
 import { mockAuditorService } from '../__fixtures__/mock-utils';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
@@ -28,6 +29,11 @@ import {
   policyToString,
   removeTheDifference,
   syncRolePolicies,
+  conditionalActionsOverlap,
+  permissionMappingToActions,
+  planConditionalReconcile,
+  pendingDeleteIdsFromPlan,
+  toError,
   transformArrayToPolicy,
   transformPolicyGroupToLowercase,
   transformRolesGroupToLowercase,
@@ -838,5 +844,121 @@ describe('mergeRoleMetadata', () => {
     expect(result.description).toEqual(newMetadata.description);
     expect(result.roleEntityRef).toEqual(newMetadata.roleEntityRef);
     expect(result.source).toEqual(newMetadata.source);
+  });
+});
+
+describe('planConditionalReconcile', () => {
+  const stored = {
+    id: 1,
+    result: AuthorizeResult.CONDITIONAL,
+    roleEntityRef: 'role:default/test',
+    pluginId: 'catalog',
+    resourceType: 'catalog-entity',
+    permissionMapping: [
+      { name: 'catalog.entity.read', action: 'read' as const },
+    ],
+    conditions: {
+      rule: 'IS_ENTITY_OWNER',
+      resourceType: 'catalog-entity',
+      params: { claims: ['group:default/team-a'] },
+    },
+  };
+
+  it('routes overlapping replacements to updates', () => {
+    const desired = {
+      ...stored,
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(1);
+    expect(plan.updates[0].stored.id).toBe(1);
+    expect(plan.creates).toHaveLength(0);
+    expect(plan.deletes).toHaveLength(0);
+  });
+
+  it('merges sibling rows into update and delete', () => {
+    const siblingDelete = {
+      id: 2,
+      result: AuthorizeResult.CONDITIONAL,
+      roleEntityRef: stored.roleEntityRef,
+      pluginId: stored.pluginId,
+      resourceType: stored.resourceType,
+      permissionMapping: [
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+      conditions: stored.conditions,
+    };
+    const desired = {
+      roleEntityRef: stored.roleEntityRef,
+      pluginId: stored.pluginId,
+      resourceType: stored.resourceType,
+      permissionMapping: [
+        { name: 'catalog.entity.read', action: 'read' as const },
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+      conditions: stored.conditions,
+    };
+
+    const plan = planConditionalReconcile(
+      [desired],
+      [stored, siblingDelete],
+      item => permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(1);
+    expect(plan.updates[0].stored.id).toBe(1);
+    expect(plan.creates).toHaveLength(0);
+    expect(plan.deletes).toHaveLength(1);
+    expect(plan.deletes[0].id).toBe(2);
+    expect(pendingDeleteIdsFromPlan(plan)).toEqual(new Set([2]));
+  });
+
+  it('routes non-overlapping replacement to create and delete', () => {
+    const desired = {
+      roleEntityRef: stored.roleEntityRef,
+      pluginId: stored.pluginId,
+      resourceType: stored.resourceType,
+      permissionMapping: [
+        { name: 'catalog.entity.delete', action: 'delete' as const },
+      ],
+    };
+
+    const plan = planConditionalReconcile([desired], [stored], item =>
+      permissionMappingToActions(item.permissionMapping),
+    );
+
+    expect(plan.updates).toHaveLength(0);
+    expect(plan.creates).toHaveLength(1);
+    expect(plan.deletes).toHaveLength(1);
+  });
+});
+
+describe('conditionalActionsOverlap', () => {
+  it('returns true when action sets intersect', () => {
+    expect(conditionalActionsOverlap(['read'], ['read', 'delete'])).toBe(true);
+  });
+
+  it('returns false when action sets are disjoint', () => {
+    expect(conditionalActionsOverlap(['read'], ['delete'])).toBe(false);
+  });
+});
+
+describe('toError', () => {
+  it('returns Error instances unchanged', () => {
+    const error = new Error('failed');
+    expect(toError(error)).toBe(error);
+  });
+
+  it('wraps non-Error values', () => {
+    const error = toError('failed');
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe('failed');
   });
 });

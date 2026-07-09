@@ -20,4 +20,11 @@
  * @packageDocumentation
  */
 
-export { copilotPlugin, CopilotSidebar, CopilotIndexPage } from './plugin';
+export {
+  copilotPlugin,
+  CopilotSidebar,
+  CopilotIndexPage,
+  V2DashboardPage,
+  CopilotLegacyPage,
+} from './plugin';
+export { V2DashboardPage as CopilotV2DashboardPage } from './components';

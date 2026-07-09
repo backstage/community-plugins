@@ -18,8 +18,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { LogViewer, Progress } from '@backstage/core-components';
 
 import { V1Pod } from '@kubernetes/client-node';
-import { Paper } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 
 import {
   getTaskRunsForPipelineRun,

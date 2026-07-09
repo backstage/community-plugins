@@ -15,6 +15,7 @@
  */
 
 import {
+  BackendFeature,
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
@@ -30,24 +31,25 @@ import { ApiiroAnnotationProcessor } from './processor';
  *
  * @public
  */
-export const catalogModuleApiiroEntityProcessor = createBackendModule({
-  pluginId: 'catalog',
-  moduleId: 'apiiro-entity-processor',
-  register(reg) {
-    reg.registerInit({
-      deps: {
-        catalog: catalogProcessingExtensionPoint,
-        config: coreServices.rootConfig,
-        discovery: coreServices.discovery,
-        auth: coreServices.auth,
-        cache: coreServices.cache,
-      },
-      async init({ catalog, config, discovery, auth, cache }) {
-        const catalogApi = new CatalogClient({ discoveryApi: discovery });
-        catalog.addProcessor(
-          new ApiiroAnnotationProcessor(config, { catalogApi, auth, cache }),
-        );
-      },
-    });
-  },
-});
+export const catalogModuleApiiroEntityProcessor: BackendFeature =
+  createBackendModule({
+    pluginId: 'catalog',
+    moduleId: 'apiiro-entity-processor',
+    register(reg) {
+      reg.registerInit({
+        deps: {
+          catalog: catalogProcessingExtensionPoint,
+          config: coreServices.rootConfig,
+          discovery: coreServices.discovery,
+          auth: coreServices.auth,
+          cache: coreServices.cache,
+        },
+        async init({ catalog, config, discovery, auth, cache }) {
+          const catalogApi = new CatalogClient({ discoveryApi: discovery });
+          catalog.addProcessor(
+            new ApiiroAnnotationProcessor(config, { catalogApi, auth, cache }),
+          );
+        },
+      });
+    },
+  });

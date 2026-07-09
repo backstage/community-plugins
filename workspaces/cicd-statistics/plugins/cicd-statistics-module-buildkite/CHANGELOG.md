@@ -1,5 +1,16 @@
 # @backstage-community/plugin-cicd-statistics-module-buildkite
 
+## 0.17.0
+
+### Minor Changes
+
+- bbed3c8: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [bbed3c8]
+  - @backstage-community/plugin-cicd-statistics@0.18.0
+
 ## 0.16.0
 
 ### Minor Changes

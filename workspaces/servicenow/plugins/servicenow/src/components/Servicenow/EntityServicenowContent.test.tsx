@@ -21,10 +21,10 @@ import {
   errorApiRef,
 } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
-import { TestApiProvider } from '@backstage/test-utils';
+import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicenow-common';
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { MemoryRouter } from 'react-router-dom';
@@ -89,6 +89,24 @@ describe('ServicenowContent', () => {
   const mockServiceNowApi = {
     getIncidents: jest.fn(),
   };
+
+  const renderContent = () =>
+    renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [serviceNowApiRef, mockServiceNowApi],
+          [catalogApiRef, mockCatalogApi],
+          [identityApiRef, mockIdentityApi],
+          [alertApiRef, mockAlertApi],
+          [errorApiRef, mockErrorApi],
+          [translationApiRef, mockTranslationApi as any],
+        ]}
+      >
+        <EntityProvider entity={mockEntity}>
+          <EntityServicenowContent />
+        </EntityProvider>
+      </TestApiProvider>,
+    );
 
   beforeEach(() => {
     mockServiceNowApi.getIncidents.mockReset();

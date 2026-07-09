@@ -280,6 +280,64 @@ describe('GithubIssues', () => {
       );
     });
 
+    it('should render Group issues when the group has no annotations (no team-slug or location)', async () => {
+      // Regression test: a Group with no annotations at all. Previously the card
+      // crashed with "Failed to construct 'URL': Invalid URL" because it parsed
+      // the group's source/managed-by location to determine the host. The host
+      // is now resolved from the configured integration, and the repositories
+      // come from the components owned by the group (their github.com/project-slug),
+      // so neither github.com/team-slug nor a location annotation is required.
+      const testIssue = getTestIssue({
+        repository: { nameWithOwner: 'backstage/owned-repo' },
+      });
+
+      const ownedComponent = makeEntityWithKind('Component', {
+        name: 'owned-repo',
+        spec: { type: 'service', lifecycle: 'production', owner: 'my-team' },
+      });
+
+      const catalogApiWithOwned = {
+        getEntities: async () => ({ items: [ownedComponent] }),
+      } as CatalogApi;
+
+      const groupWithoutAnnotations = {
+        metadata: {
+          name: 'my-team',
+        },
+        spec: { type: 'team', children: [] },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Group',
+      } as unknown as Entity;
+
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          'owned-repo': {
+            issues: {
+              totalCount: 1,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, catalogApiWithOwned],
+      ] as const;
+
+      const { getByTestId } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={groupWithoutAnnotations}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+        testIssue.node.title,
+      );
+    });
+
     it('should render correctly when there are no issues in GitHub for kind: User', async () => {
       const ownedComponent = makeEntityWithKind('Component', {
         name: 'owned-repo',

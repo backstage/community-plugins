@@ -6,7 +6,7 @@
   "resourceVersion": "16310",
   "istioInjectionAnnotation": false,
   "istioSidecar": false,
-  "istioAmbient": false,
+  "isAmbient": false,
   "additionalDetailSample": null,
   "labels": {
     "app": "kiali",
@@ -87,7 +87,7 @@
       "namespace": "istio-system",
       "istioSidecar": true,
       "cluster": "Kubernetes",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,
