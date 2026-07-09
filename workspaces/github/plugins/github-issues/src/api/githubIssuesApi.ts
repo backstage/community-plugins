@@ -53,9 +53,6 @@ export type Issue = {
   };
   title: string;
   url: string;
-  participants: {
-    totalCount: number;
-  };
   createdAt: string;
   updatedAt: string;
   comments: {
@@ -108,6 +105,19 @@ export interface GithubIssuesByRepoOptions {
 export const githubIssuesApiRef = createApiRef<GithubIssuesApi>().with({
   id: 'plugin.githubissues.service',
 });
+
+// Maximum number of repositories requested in a single GraphQL query. Keeping
+// this small avoids GitHub's per-request resource limit (`RESOURCE_LIMITS_EXCEEDED`)
+// when an entity owns many repositories.
+const REPOS_PER_QUERY = 5;
+
+function chunk<T>(items: Array<T>, size: number): Array<Array<T>> {
+  const chunks: Array<Array<T>> = [];
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size));
+  }
+  return chunks;
+}
 
 /** @internal */
 export const githubIssuesApi = (
@@ -177,27 +187,60 @@ export const githubIssuesApi = (
       });
 
     let issuesByRepo: IssuesByRepo = {};
-    try {
-      if (repositories.length === 0) {
-        throw new Error(`No repositories found for ${host}`);
-      }
-      issuesByRepo = await octokit.graphql(
-        createIssueByRepoQuery(repositories, itemsPerRepo, {
-          filterBy,
-          orderBy,
+    if (repositories.length === 0) {
+      errorApi.post(
+        new ForwardedError(
+          'GitHub Issues Plugin failure',
+          new Error(`No repositories found for ${host}`),
+        ),
+      );
+    } else {
+      // GitHub's GraphQL API enforces a per-request resource/complexity limit.
+      // Requesting many repositories (each with nested issue and assignee
+      // connections) in a single query can exceed it, in which case GitHub
+      // responds with `RESOURCE_LIMITS_EXCEEDED` errors and `null` nodes for
+      // every issue. Split the repositories into smaller batches so each
+      // request stays within the limit, then merge the results.
+      const batches = chunk(repositories, REPOS_PER_QUERY);
+
+      const batchResults = await Promise.all(
+        batches.map(async batch => {
+          try {
+            return (await octokit.graphql(
+              createIssueByRepoQuery(batch, itemsPerRepo, {
+                filterBy,
+                orderBy,
+              }),
+            )) as IssuesByRepo;
+          } catch (e) {
+            errorApi.post(
+              new ForwardedError('GitHub Issues Plugin failure', e),
+            );
+            // GitHub may still return partial data for the batch alongside the
+            // errors; keep whatever resolved successfully.
+            return (e.data ?? {}) as IssuesByRepo;
+          }
         }),
       );
-    } catch (e) {
-      if (e.data) {
-        issuesByRepo = e.data;
-      }
 
-      errorApi.post(new ForwardedError('GitHub Issues Plugin failure', e));
+      issuesByRepo = Object.assign({}, ...batchResults);
     }
 
     return repositories.reduce((acc, { safeName, name, owner }) => {
-      if (issuesByRepo[safeName]) {
-        acc[`${owner}/${name}`] = issuesByRepo[safeName];
+      const repoIssues = issuesByRepo[safeName];
+      if (repoIssues) {
+        acc[`${owner}/${name}`] = {
+          ...repoIssues,
+          issues: {
+            ...repoIssues.issues,
+            totalCount: repoIssues.issues?.totalCount ?? 0,
+            // When GitHub responds with partial data alongside errors (e.g.
+            // "Resource limits for this query exceeded"), some edges can come
+            // back with a `null` node. Drop those here so downstream consumers
+            // never read properties off a null node.
+            edges: (repoIssues.issues?.edges ?? []).filter(edge => edge?.node),
+          },
+        };
       }
 
       return acc;
@@ -255,7 +298,7 @@ function createIssueByRepoQuery(
         totalCount
         edges {
           node {
-            assignees(first: 10) {
+            assignees(first: 1) {
               edges {
                 node {
                   avatarUrl
@@ -271,9 +314,6 @@ function createIssueByRepoQuery(
             }
             title
             url
-            participants {
-              totalCount
-            }
             updatedAt
             createdAt
             comments(last: 1) {
