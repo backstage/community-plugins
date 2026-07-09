@@ -51,6 +51,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
