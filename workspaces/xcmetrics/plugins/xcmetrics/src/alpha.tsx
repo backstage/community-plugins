@@ -30,6 +30,10 @@ import { xcmetricsApiRef, XcmetricsClient } from './api';
 
 import AssessmentIcon from '@material-ui/icons/Assessment';
 
+// This is a dev Backstage instance and not part of the plugin
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
 const xcmetricsPage = PageBlueprint.make({
   params: {
     path: '/xcmetrics',
