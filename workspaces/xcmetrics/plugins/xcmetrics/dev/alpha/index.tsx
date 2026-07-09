@@ -15,6 +15,9 @@
  */
 
 import ReactDOM from 'react-dom/client';
+// This is a dev Backstage instance and not part of the plugin
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 
 import { createApp } from '@backstage/frontend-defaults';
 import { mockApis } from '@backstage/frontend-test-utils';
