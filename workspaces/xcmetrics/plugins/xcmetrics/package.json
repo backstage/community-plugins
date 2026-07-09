@@ -47,6 +47,7 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "start": "backstage-cli package start",
+    "start:alpha": "backstage-cli package start --entrypoint dev/alpha",
     "test": "backstage-cli package test"
   },
   "dependencies": {
