@@ -56,7 +56,6 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
-    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -68,6 +67,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
