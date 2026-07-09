@@ -1,6 +1,6 @@
 # Annotator custom action for Scaffolder Backstage
 
-The annotator module for [@backstage/plugin-scaffolder-backend](https://www.npmjs.com/package/@backstage/plugin-scaffolder-backend).
+The annotator module for `@backstage/plugin-scaffolder-backend`.
 
 For contributor setup and local development, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
