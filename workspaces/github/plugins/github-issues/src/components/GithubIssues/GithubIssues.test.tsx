@@ -46,9 +46,6 @@ const getTestIssue = (overwrites: Partial<Issue> = {}): { node: Issue } => ({
       },
       title: 'quasi labore qui',
       url: 'http://flowery-muscatel.net',
-      participants: {
-        totalCount: 3,
-      },
       updatedAt: '2022-05-02T09:46:35.885Z',
       createdAt: '2022-06-03T07:11:22.320Z',
       comments: {

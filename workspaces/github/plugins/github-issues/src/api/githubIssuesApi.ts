@@ -111,12 +111,41 @@ export const githubIssuesApiRef = createApiRef<GithubIssuesApi>().with({
 // when an entity owns many repositories.
 const REPOS_PER_QUERY = 5;
 
+// Maximum number of batched GraphQL queries executed at the same time. Bounding
+// the concurrency avoids firing a large burst of parallel requests for entities
+// that own many repositories, which could trip GitHub's secondary rate limits.
+const MAX_CONCURRENT_QUERIES = 4;
+
 function chunk<T>(items: Array<T>, size: number): Array<Array<T>> {
   const chunks: Array<Array<T>> = [];
   for (let i = 0; i < items.length; i += size) {
     chunks.push(items.slice(i, i + size));
   }
   return chunks;
+}
+
+// Runs `fn` over `items` with at most `limit` invocations in flight at once,
+// preserving input order in the returned results.
+async function mapWithConcurrency<T, R>(
+  items: Array<T>,
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<Array<R>> {
+  const results: Array<R> = new Array(items.length);
+  let cursor = 0;
+
+  const worker = async (): Promise<void> => {
+    while (cursor < items.length) {
+      const index = cursor++;
+      results[index] = await fn(items[index]);
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, worker),
+  );
+
+  return results;
 }
 
 /** @internal */
@@ -203,8 +232,10 @@ export const githubIssuesApi = (
       // request stays within the limit, then merge the results.
       const batches = chunk(repositories, REPOS_PER_QUERY);
 
-      const batchResults = await Promise.all(
-        batches.map(async batch => {
+      const batchResults = await mapWithConcurrency(
+        batches,
+        MAX_CONCURRENT_QUERIES,
+        async batch => {
           try {
             return (await octokit.graphql(
               createIssueByRepoQuery(batch, itemsPerRepo, {
@@ -220,7 +251,7 @@ export const githubIssuesApi = (
             // errors; keep whatever resolved successfully.
             return (e.data ?? {}) as IssuesByRepo;
           }
-        }),
+        },
       );
 
       issuesByRepo = Object.assign({}, ...batchResults);

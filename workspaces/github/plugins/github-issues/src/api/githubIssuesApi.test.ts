@@ -209,6 +209,58 @@ describe('githubIssuesApi', () => {
       expect(mockGraphQLQuery).toHaveBeenCalledTimes(3);
     });
 
+    it('should not exceed the concurrent request limit', async () => {
+      const flush = () => new Promise<void>(resolve => setTimeout(resolve, 0));
+      let inFlight = 0;
+      let maxInFlight = 0;
+      const resolvers: Array<() => void> = [];
+
+      try {
+        mockGraphQLQuery.mockImplementation(
+          () =>
+            new Promise(resolve => {
+              inFlight += 1;
+              maxInFlight = Math.max(maxInFlight, inFlight);
+              resolvers.push(() => {
+                inFlight -= 1;
+                resolve({});
+              });
+            }),
+        );
+
+        const repos = Array.from({ length: 30 }, (_, i) =>
+          entityRepository(`mrwolny/repo-${i}`),
+        );
+        // 30 repositories / 5 per query => 6 batches, at most 4 in flight.
+
+        const resultPromise = api.fetchIssuesByRepoFromGithub(
+          repos,
+          10,
+          'github.com',
+        );
+
+        await flush();
+        // Only the concurrency limit's worth of requests should have started.
+        expect(inFlight).toBe(4);
+
+        // Release requests one at a time; each frees a worker to start the
+        // next batch until all batches have run.
+        while (resolvers.length > 0) {
+          resolvers.shift()!();
+          await flush();
+        }
+
+        await resultPromise;
+
+        expect(maxInFlight).toBe(4);
+        expect(mockGraphQLQuery).toHaveBeenCalledTimes(6);
+      } finally {
+        // Restore the default implementation so it doesn't leak into other
+        // tests (the shared afterEach only clears calls, not implementations).
+        mockGraphQLQuery.mockImplementation(() => ({}));
+      }
+    });
+
     describe('filterBy', () => {
       const cases: [GithubIssuesFilters | undefined, string][] = [
         [{}, ''],
@@ -255,9 +307,6 @@ describe('githubIssuesApi', () => {
                     },
                     title: "It's the ISSUE!",
                     url: 'https://github.com/mrwolny/yo-yo/issues/1',
-                    participants: {
-                      totalCount: 1,
-                    },
                     updatedAt: '2022-07-04T18:47:33Z',
                     createdAt: '2022-06-23T18:14:26Z',
                     comments: {
@@ -319,9 +368,6 @@ describe('githubIssuesApi', () => {
                 },
                 title: "It's the ISSUE!",
                 url: 'https://github.com/mrwolny/yo-yo/issues/1',
-                participants: {
-                  totalCount: 1,
-                },
                 updatedAt: '2022-07-04T18:47:33Z',
                 createdAt: '2022-06-23T18:14:26Z',
                 comments: {
@@ -356,9 +402,6 @@ describe('githubIssuesApi', () => {
                     },
                     title: "It's the ISSUE!",
                     url: 'https://github.com/mrwolny/yo-yo/issues/1',
-                    participants: {
-                      totalCount: 1,
-                    },
                     updatedAt: '2022-07-04T18:47:33Z',
                     createdAt: '2022-06-23T18:14:26Z',
                     comments: {
@@ -414,9 +457,6 @@ describe('githubIssuesApi', () => {
                 },
                 title: "It's the ISSUE!",
                 url: 'https://github.com/mrwolny/yo-yo/issues/1',
-                participants: {
-                  totalCount: 1,
-                },
                 updatedAt: '2022-07-04T18:47:33Z',
                 createdAt: '2022-06-23T18:14:26Z',
                 comments: {
