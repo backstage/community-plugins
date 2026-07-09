@@ -60,10 +60,7 @@ const WidgetContent = ({
         url: (
           <Link to={lastRun.googleUrl ?? ''}>
             See more on Google{' '}
-            <RiExternalLinkLine
-              aria-hidden="true"
-              className={styles.externalLinkIcon}
-            />
+            <RiExternalLinkLine className={styles.externalLinkIcon} />
           </Link>
         ),
       }}

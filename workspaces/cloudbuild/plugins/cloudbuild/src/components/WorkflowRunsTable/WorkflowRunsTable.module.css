@@ -1,13 +1,10 @@
 @layer components {
-  .titleIcon {
-    color: var(--bui-fg-primary);
+  .titleRow {
+    align-items: center;
+    gap: var(--bui-space-2);
   }
 
-  .truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    max-width: 100%;
+  .titleIcon {
+    color: var(--bui-fg-primary);
   }
 }

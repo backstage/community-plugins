@@ -60,49 +60,46 @@ export const WorkflowRunDetails = (props: { entity: Entity }) => {
         <table className={styles.table}>
           <tbody>
             <tr>
-              <th scope="row" className={styles.label}>
+              <td className={styles.label}>
                 <Text>Ref</Text>
-              </th>
+              </td>
               <td>{details.value?.substitutions.REF_NAME}</td>
             </tr>
             <tr>
-              <th scope="row" className={styles.label}>
+              <td className={styles.label}>
                 <Text>Message</Text>
-              </th>
+              </td>
               <td>{details.value?.substitutions.REPO_NAME}</td>
             </tr>
             <tr>
-              <th scope="row" className={styles.label}>
+              <td className={styles.label}>
                 <Text>Commit ID</Text>
-              </th>
+              </td>
               <td>{details.value?.substitutions.COMMIT_SHA}</td>
             </tr>
             <tr>
-              <th scope="row" className={styles.label}>
+              <td className={styles.label}>
                 <Text>Status</Text>
-              </th>
+              </td>
               <td>
                 <WorkflowRunStatus status={details.value?.status} />
               </td>
             </tr>
             <tr>
-              <th scope="row" className={styles.label}>
+              <td className={styles.label}>
                 <Text>Service Account</Text>
-              </th>
+              </td>
               <td>{`${serviceAccount}`}@cloudbuild.gserviceaccount.com</td>
             </tr>
             <tr>
-              <th scope="row" className={styles.label}>
+              <td className={styles.label}>
                 <Text>Links</Text>
-              </th>
+              </td>
               <td>
                 {details.value?.logUrl && (
                   <Link to={details.value.logUrl}>
                     Workflow runs on Google{' '}
-                    <RiExternalLinkLine
-                      aria-hidden="true"
-                      className={styles.externalLinkIcon}
-                    />
+                    <RiExternalLinkLine className={styles.externalLinkIcon} />
                   </Link>
                 )}
               </td>
