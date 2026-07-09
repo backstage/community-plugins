@@ -37,6 +37,9 @@ app:
 
 **Issues are sorted from the recently updated DESC order (the plugin might not render all issues from a single repo next to each other).**
 
+> [!Note]
+> When an Entity owns many repositories, the plugin fetches issues from GitHub in several smaller batched requests instead of a single large query. This keeps each request within GitHub's GraphQL [per-request resource limit](https://docs.github.com/en/graphql/overview/rate-limits-and-node-limits-for-the-graphql-api) — a single query spanning many repositories would otherwise fail with `RESOURCE_LIMITS_EXCEEDED`. If GitHub still returns a partial response for a batch, the issues that were fetched successfully are shown and the rest are skipped, rather than failing the whole card.
+
 ## Screenshots
 
 ### Card View
@@ -96,7 +99,7 @@ Both `GithubIssuesPage` and `GithubIssuesCard` provide default configuration. It
 However, you can configure the plugin with props:
 
 - `itemsPerPage: number = 10` - Issues in the list are paginated, number of issues on a single page is controlled with this prop
-- `itemsPerRepo: number = 40` - the plugin doesn't download all Issues available on GitHub. By default, it will get at most 40 Issues - this prop controls this behaviour
+- `itemsPerRepo: number = 40` - the plugin doesn't download all Issues available on GitHub. By default, it will get at most 40 Issues **per repository** - this prop controls this behaviour
 - `filterBy: object` - the plugin can be configured to filter the query by `assignee`, `createdBy`, `labels`, `states`, `mentioned` or `milestone`.
 - `orderBy: object = { field: 'UPDATED_AT', direction: 'DESC' }` - The ordering that the issues are returned can be configured by the `orderBy` field.
 
