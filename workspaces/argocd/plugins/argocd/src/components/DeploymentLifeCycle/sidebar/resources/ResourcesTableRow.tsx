@@ -16,14 +16,11 @@
 import type { FC } from 'react';
 
 import { useState, useMemo } from 'react';
-import {
-  Box,
-  Collapse,
-  IconButton,
-  makeStyles,
-  TableCell,
-  TableRow,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -39,29 +36,14 @@ type ResourcesTableRowProps = {
   row: Resource;
 };
 
-const useStyles = makeStyles(theme => ({
-  resourceRow: {
-    '& > *': { borderBottom: 'unset' },
-    '&:nth-of-type(odd)': {
-      backgroundColor: 'inherit',
-    },
-  },
-  expandedRow: {
-    padding: 10,
-  },
-  tableCell: {
-    padding: theme.spacing(1, 0),
-    height: 50,
-  },
-  icon: {
-    marginLeft: theme.spacing(0.6),
-    width: '0.8em',
-    height: '0.8em',
-  },
-}));
+const resourceRowSx = {
+  '& > *': { borderBottom: 'unset' },
+  '&:nth-of-type(odd)': { backgroundColor: 'inherit' },
+};
+
+const tableCellSx = { py: 1, px: 0, height: 50 };
 
 export const ResourcesTableRow: FC<ResourcesTableRowProps> = ({ uid, row }) => {
-  const classes = useStyles();
   const [open, setOpen] = useState(false);
 
   const formattedTimestamp = useMemo(
@@ -73,7 +55,7 @@ export const ResourcesTableRow: FC<ResourcesTableRowProps> = ({ uid, row }) => {
 
   return (
     <>
-      <TableRow className={classes.resourceRow}>
+      <TableRow sx={resourceRowSx}>
         <TableCell>
           <IconButton
             data-testid={`expander-${uid}`}
@@ -86,28 +68,28 @@ export const ResourcesTableRow: FC<ResourcesTableRowProps> = ({ uid, row }) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell className={classes.tableCell} align="left">
+        <TableCell sx={tableCellSx} align="left">
           {row.name}
         </TableCell>
-        <TableCell className={classes.tableCell} align="left">
+        <TableCell sx={tableCellSx} align="left">
           {row.kind}
         </TableCell>
-        <TableCell className={classes.tableCell} align="left">
+        <TableCell sx={tableCellSx} align="left">
           {row?.createTimestamp ? formattedTimestamp : <>-</>}
         </TableCell>
-        <TableCell className={classes.tableCell} align="left">
+        <TableCell sx={tableCellSx} align="left">
           {row.status && <ResourceSyncStatus syncStatus={row.status} />}
         </TableCell>
-        <TableCell className={classes.tableCell} align="left">
+        <TableCell sx={tableCellSx} align="left">
           {row.health?.status && (
             <ResourceHealthStatus healthStatus={row.health?.status} />
           )}
         </TableCell>
       </TableRow>
-      <TableRow className={classes.expandedRow}>
+      <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 10 }}>
+            <Box sx={{ margin: '10px' }}>
               <ResourceMetadata resource={row} />
             </Box>
           </Collapse>

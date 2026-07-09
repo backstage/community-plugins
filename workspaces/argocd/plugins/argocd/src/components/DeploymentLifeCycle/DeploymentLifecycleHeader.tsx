@@ -15,7 +15,7 @@
  */
 import type { FC } from 'react';
 
-import { IconButton } from '@material-ui/core';
+import IconButton from '@mui/material/IconButton';
 import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';

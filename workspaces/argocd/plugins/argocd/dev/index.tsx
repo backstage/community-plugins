@@ -28,7 +28,7 @@ import {
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
-import { Box } from '@material-ui/core';
+import Box from '@mui/material/Box';
 
 import {
   ArgoCDApi,
