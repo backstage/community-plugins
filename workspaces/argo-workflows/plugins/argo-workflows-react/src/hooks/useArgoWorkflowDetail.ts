@@ -38,12 +38,19 @@ export function useArgoWorkflowDetail(options: {
   namespace: string;
   name: string;
   instanceName?: string;
+  /**
+   * Optional Kubernetes label selector used to narrow the backend's
+   * underlying fetch when there is no single-resource GET (the Kubernetes
+   * path otherwise scans every workflow in the namespace). Pass the same
+   * selector used to list workflows for the entity, when known.
+   */
+  labelSelector?: string;
 }): {
   workflow: Workflow | undefined;
   loading: boolean;
   error: Error | undefined;
 } {
-  const { namespace, name, instanceName } = options;
+  const { namespace, name, instanceName, labelSelector } = options;
   const fetchApi = useApi(fetchApiRef);
   const discoveryApi = useApi(discoveryApiRef);
 
@@ -63,6 +70,9 @@ export function useArgoWorkflowDetail(options: {
         const params = new URLSearchParams();
         if (instanceName) {
           params.set('instanceName', instanceName);
+        }
+        if (labelSelector) {
+          params.set('labelSelector', labelSelector);
         }
 
         const queryString = params.toString();
@@ -104,7 +114,7 @@ export function useArgoWorkflowDetail(options: {
     return () => {
       cancelled = true;
     };
-  }, [namespace, name, instanceName, fetchApi, discoveryApi]);
+  }, [namespace, name, instanceName, labelSelector, fetchApi, discoveryApi]);
 
   return { workflow, loading, error };
 }

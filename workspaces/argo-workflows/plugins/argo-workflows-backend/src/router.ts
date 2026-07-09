@@ -126,11 +126,17 @@ export async function createRouter(
     '/workflows',
     async (req: express.Request, res: express.Response) => {
       const labelSelector =
-        typeof req.query.labelSelector === 'string' ? req.query.labelSelector : '';
+        typeof req.query.labelSelector === 'string'
+          ? req.query.labelSelector
+          : '';
       const instanceName =
-        typeof req.query.instanceName === 'string' ? req.query.instanceName : '';
+        typeof req.query.instanceName === 'string'
+          ? req.query.instanceName
+          : '';
       const namespace =
-        typeof req.query.namespace === 'string' ? req.query.namespace : undefined;
+        typeof req.query.namespace === 'string'
+          ? req.query.namespace
+          : undefined;
 
       try {
         const credentials = await httpAuth.credentials(req);
@@ -156,7 +162,17 @@ export async function createRouter(
     '/workflows/:namespace/:name',
     async (req: express.Request, res: express.Response) => {
       const { namespace, name } = req.params;
-      const instanceName = (req.query.instanceName as string) ?? '';
+      const instanceName =
+        typeof req.query.instanceName === 'string'
+          ? req.query.instanceName
+          : '';
+      // Optional — narrows the underlying Kubernetes fetch (which has no
+      // single-resource GET) instead of scanning every workflow in the
+      // namespace. Ignored on the Argo server API path.
+      const labelSelector =
+        typeof req.query.labelSelector === 'string'
+          ? req.query.labelSelector
+          : undefined;
 
       try {
         const credentials = await httpAuth.credentials(req);
@@ -165,6 +181,7 @@ export async function createRouter(
           namespace,
           name,
           credentials,
+          labelSelector,
         );
         res.json(workflow);
       } catch (error) {
