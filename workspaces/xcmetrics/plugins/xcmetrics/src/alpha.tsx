@@ -60,6 +60,7 @@ export const xcmetricsApiExtension = ApiBlueprint.make({
     }),
 });
 
+/** @alpha */
 export default createFrontendPlugin({
   pluginId: 'xcmetrics',
   extensions: [xcmetricsPage, xcmetricsApiExtension],
