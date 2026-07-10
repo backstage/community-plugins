@@ -63,7 +63,7 @@ function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
  * Parses a raw JSON response from the Argo Workflows API into a typed
  * {@link Workflow} object.
  *
- * Required fields: `metadata.name`, `metadata.namespace`, `status.phase`.
+ * Required fields: `metadata.name`, `metadata.namespace`, `metadata.uid`, `metadata.creationTimestamp`, `status.phase`.
  * Unknown fields in the raw JSON are silently ignored.
  *
  * @param raw - The raw JSON object from the Argo API
