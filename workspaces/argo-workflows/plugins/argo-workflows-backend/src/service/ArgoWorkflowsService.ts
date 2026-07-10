@@ -71,7 +71,7 @@ class HttpStatusError extends Error {
 
 const LABEL_KEY_PATTERN =
   '([a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\\/)?[a-zA-Z_]([a-zA-Z0-9._-]*[a-zA-Z0-9_])?';
-const LABEL_VALUE_PATTERN = '[a-zA-Z0-9]([a-zA-Z0-9._-]{0,61}[a-zA-Z0-9])?';
+const LABEL_VALUE_PATTERN = '([a-zA-Z0-9]([a-zA-Z0-9._-]{0,61}[a-zA-Z0-9])?)?';
 
 const EQUALITY_EXPR = new RegExp(
   `^${LABEL_KEY_PATTERN}\\s*(==?|!=)\\s*${LABEL_VALUE_PATTERN}$`,
