@@ -69,6 +69,7 @@ export function useArgoWorkflowDetail(options: {
   namespace: string;
   name: string;
   instanceName?: string;
+  labelSelector?: string;
 }): {
   workflow: Workflow | undefined;
   loading: boolean;
