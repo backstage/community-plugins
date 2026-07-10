@@ -14,28 +14,37 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+import { CSSProperties } from 'react';
+import styles from './ShortcutIcon.module.css';
 
 type Props = {
   text: string;
   color: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  avatar: (props: Props) => ({
-    color: theme.palette.getContrastText(props.color),
-    backgroundColor: props.color,
-    width: 28,
-    height: 28,
-    fontWeight: 'bold',
-    fontSize: 13,
-    filter: 'contrast(150%) brightness(1.4)',
-  }),
-}));
-
 export const ShortcutIcon = (props: Props) => {
-  const classes = useStyles(props);
+  const contrastColor = isLight(props.color) ? '#000000' : '#ffffff';
 
-  return <Avatar className={classes.avatar}>{props.text}</Avatar>;
+  return (
+    <div
+      className={styles.avatar}
+      style={
+        {
+          '--avatar-bg-color': props.color,
+          '--avatar-contrast-text': contrastColor,
+        } as CSSProperties
+      }
+    >
+      {props.text}
+    </div>
+  );
 };
+
+function isLight(color: string): boolean {
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 155;
+}

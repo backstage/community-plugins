@@ -17,25 +17,11 @@
 import { useEffect, useRef } from 'react';
 import useObservable from 'react-use/esm/useObservable';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import Button from '@material-ui/core/Button';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, TextField, Text } from '@backstage/ui';
 import { FormValues } from './types';
 import { shortcutsApiRef } from './api';
 import { useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  field: {
-    marginBottom: theme.spacing(2),
-  },
-  actionRoot: {
-    paddingLeft: theme.spacing(2),
-    paddingBottom: theme.spacing(3),
-    justifyContent: 'flex-start',
-  },
-}));
+import styles from './ShortcutForm.module.css';
 
 type Props = {
   formValues?: FormValues;
@@ -50,16 +36,16 @@ export const ShortcutForm = ({
   onClose,
   allowExternalLinks,
 }: Props) => {
-  const classes = useStyles();
   const shortcutApi = useApi(shortcutsApiRef);
   const shortcutData = useObservable(
     shortcutApi.shortcut$(),
-    shortcutApi.get(),
+    shortcutApi.get() ?? [],
   );
-  const { current: originalValues } = useRef({
+  const originalValuesRef = useRef<FormValues>({
     url: formValues?.url ?? '',
     title: formValues?.title ?? '',
   });
+  const originalValues = originalValuesRef.current;
   const {
     handleSubmit,
     reset,
@@ -94,7 +80,7 @@ export const ShortcutForm = ({
 
   return (
     <>
-      <CardContent>
+      <div style={{ padding: 'var(--bui-space-4)' }}>
         <Controller
           name="url"
           control={control}
@@ -116,21 +102,23 @@ export const ShortcutForm = ({
                 }),
           }}
           render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.url}
-              helperText={errors.url?.message}
-              type="text"
-              placeholder="Enter a URL"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className={classes.field}
-              fullWidth
-              label="Shortcut URL"
-              variant="outlined"
-              autoComplete="off"
-            />
+            <>
+              <TextField
+                {...field}
+                type="text"
+                placeholder="Enter a URL"
+                label="Shortcut URL"
+                className={styles.field}
+              />
+              {errors.url && (
+                <Text
+                  variant="body-small"
+                  style={{ color: 'var(--bui-fg-danger)' }}
+                >
+                  {errors.url.message}
+                </Text>
+              )}
+            </>
           )}
         />
         <Controller
@@ -145,37 +133,34 @@ export const ShortcutForm = ({
             },
           }}
           render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.title}
-              helperText={errors.title?.message}
-              type="text"
-              placeholder="Enter a display name"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              className={classes.field}
-              fullWidth
-              label="Display Name"
-              variant="outlined"
-              autoComplete="off"
-            />
+            <>
+              <TextField
+                {...field}
+                type="text"
+                placeholder="Enter a display name"
+                label="Display Name"
+                className={styles.field}
+              />
+              {errors.title && (
+                <Text
+                  variant="body-small"
+                  style={{ color: 'var(--bui-fg-danger)' }}
+                >
+                  {errors.title.message}
+                </Text>
+              )}
+            </>
           )}
         />
-      </CardContent>
-      <CardActions classes={{ root: classes.actionRoot }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleSubmit(onSave)}
-        >
+      </div>
+      <div className={styles.actionRoot}>
+        <Button variant="primary" onPress={() => void handleSubmit(onSave)()}>
           Save
         </Button>
-        <Button variant="outlined" size="large" onClick={onClose}>
+        <Button variant="secondary" onPress={onClose}>
           Cancel
         </Button>
-      </CardActions>
+      </div>
     </>
   );
 };

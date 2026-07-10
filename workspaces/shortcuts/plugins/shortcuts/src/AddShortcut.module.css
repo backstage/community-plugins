@@ -1,0 +1,13 @@
+@layer components {
+  .card {
+    max-width: 400px;
+  }
+
+  .header {
+    margin-bottom: var(--bui-space-2);
+  }
+
+  .button {
+    margin-top: var(--bui-space-2);
+  }
+}

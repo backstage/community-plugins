@@ -14,33 +14,18 @@
  * limitations under the License.
  */
 
-import type { MouseEvent } from 'react';
+import type { ReactNode } from 'react';
 
-import { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import EditIcon from '@material-ui/icons/Edit';
+import { useState, useRef } from 'react';
+import { ButtonIcon, Tooltip } from '@backstage/ui';
+import { TooltipTrigger } from 'react-aria-components';
+import { RiEditLine } from '@remixicon/react';
 import { ShortcutIcon } from './ShortcutIcon';
 import { EditShortcut } from './EditShortcut';
 import { ShortcutApi } from './api';
 import { Shortcut } from './types';
 import { SidebarItem } from '@backstage/core-components';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    '&:hover #edit': {
-      visibility: 'visible',
-    },
-  },
-  button: {
-    visibility: 'hidden',
-  },
-  icon: {
-    color: theme.palette.common.white,
-    fontSize: 16,
-  },
-}));
+import styles from './ShortcutItem.module.css';
 
 const getIconText = (title: string) =>
   title.split(' ').length === 1
@@ -64,12 +49,13 @@ type Props = {
 };
 
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<Element | undefined>();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleClick = (event: MouseEvent<Element>) => {
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
+  const handleClick = () => {
+    if (buttonRef.current) {
+      setAnchorEl(buttonRef.current);
+    }
   };
 
   const handleClose = () => {
@@ -81,23 +67,24 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
 
   return (
     <>
-      <Tooltip title={shortcut.title} enterDelay={500}>
+      <TooltipTrigger>
         <SidebarItem
-          className={classes.root}
+          className={styles.root}
           to={shortcut.url}
           text={shortcut.title}
           icon={() => <ShortcutIcon text={text} color={color} />}
         >
-          <IconButton
+          <ButtonIcon
+            ref={buttonRef}
             id="edit"
             data-testid="edit"
-            onClick={handleClick}
-            className={classes.button}
-          >
-            <EditIcon className={classes.icon} />
-          </IconButton>
+            onPress={handleClick}
+            className={styles.button}
+            icon={<RiEditLine className={styles.icon} />}
+          />
         </SidebarItem>
-      </Tooltip>
+        <Tooltip>{shortcut.title}</Tooltip>
+      </TooltipTrigger>
       <EditShortcut
         onClose={handleClose}
         anchorEl={anchorEl}
