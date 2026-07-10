@@ -29,14 +29,19 @@ import {
 /**
  * A backend module that registers SonarCloud scaffolder actions.
  *
- * Reads default token and organization from app-config:
+ * Reuses the shared `sonarqube` config block:
  * ```yaml
- * sonarcloud:
- *   token: ${SONARCLOUD_TOKEN}
- *   organization: my-org
+ * sonarqube:
+ *   apiKey: ${SONARCLOUD_TOKEN}
+ *   organizationName: my-org
+ *   instances:
+ *     - name: production
+ *       apiKey: ${SONARCLOUD_PROD_TOKEN}
+ *       organizationName: prod-org
  * ```
  *
- * Actions use config values by default. Input values override config when provided.
+ * Actions resolve token and organization from the default (top-level) config,
+ * or from a named instance when `instanceName` input is provided.
  *
  * @public
  */
@@ -50,10 +55,10 @@ export const scaffolderModule = createBackendModule({
         config: coreServices.rootConfig,
       },
       async init({ scaffolderActions, config }) {
-        const sonarcloudConfig = config.getOptionalConfig('sonarcloud');
+        const sonarqubeConfig = config.getOptionalConfig('sonarqube');
         const defaults = {
-          token: sonarcloudConfig?.getOptionalString('token'),
-          organization: sonarcloudConfig?.getOptionalString('organization'),
+          token: sonarqubeConfig?.getOptionalString('apiKey'),
+          organization: sonarqubeConfig?.getOptionalString('organizationName'),
         };
 
         scaffolderActions.addActions(

@@ -23,14 +23,12 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:setQualityGate',
+          action: 'sonarcloud:qualityGate:assign',
           id: 'set-quality-gate',
           name: 'Set Quality Gate',
           input: {
             projectKey: 'my-org_my-service',
             qualityGateName: 'Sonar way',
-            organization: 'my-org',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],

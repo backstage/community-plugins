@@ -17,6 +17,7 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { SonarCloudClient } from '../lib';
 import type { SonarCloudDefaults } from '../lib';
+import { requireToken } from './resolve';
 import { examples } from './setDefaultBranch.examples';
 
 /**
@@ -25,14 +26,14 @@ import { examples } from './setDefaultBranch.examples';
  * @public
  * @example
  * ```
- * action: sonarcloud:setDefaultBranch
+ * action: sonarcloud:defaultBranch:rename
  * ```
  */
 export function createSonarCloudSetDefaultBranchAction(
   defaults: SonarCloudDefaults = {},
 ) {
   return createTemplateAction({
-    id: 'sonarcloud:setDefaultBranch',
+    id: 'sonarcloud:defaultBranch:rename',
     description: 'Sets the default branch for a SonarCloud project',
     examples,
     schema: {
@@ -43,23 +44,13 @@ export function createSonarCloudSetDefaultBranchAction(
             .string()
             .optional()
             .describe('Branch name to set as default (defaults to main)'),
-        token: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud API token (defaults to app-config)'),
       },
       output: {
         branchName: z => z.string().describe('The branch name set as default'),
       },
     },
     async handler(ctx) {
-      const token = ctx.input.token || defaults.token;
-      if (!token) {
-        throw new Error(
-          "Missing SonarCloud token: provide 'token' input or set sonarcloud.token in app-config",
-        );
-      }
+      const token = requireToken(defaults);
 
       const { projectKey } = ctx.input;
       const name = ctx.input.name || 'main';

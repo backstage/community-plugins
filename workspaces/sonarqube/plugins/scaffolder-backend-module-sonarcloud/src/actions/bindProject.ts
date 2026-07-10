@@ -17,7 +17,10 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { SonarCloudClient } from '../lib';
 import type { SonarCloudDefaults } from '../lib';
+import { requireToken } from './resolve';
 import { examples } from './bindProject.examples';
+
+const SONARCLOUD_BASE_URL = 'https://sonarcloud.io';
 
 /**
  * Creates a scaffolder action that binds a SonarCloud project to a repository.
@@ -25,14 +28,14 @@ import { examples } from './bindProject.examples';
  * @public
  * @example
  * ```
- * action: sonarcloud:bindProject
+ * action: sonarcloud:project:bind
  * ```
  */
 export function createSonarCloudBindProjectAction(
   defaults: SonarCloudDefaults = {},
 ) {
   return createTemplateAction({
-    id: 'sonarcloud:bindProject',
+    id: 'sonarcloud:project:bind',
     description: 'Binds a SonarCloud project to a repository',
     examples,
     schema: {
@@ -41,7 +44,7 @@ export function createSonarCloudBindProjectAction(
           z
             .string()
             .min(1)
-            .describe('SonarCloud project UUID from create-project output'),
+            .describe('SonarCloud project UUID'),
         projectKey: z =>
           z
             .string()
@@ -52,13 +55,8 @@ export function createSonarCloudBindProjectAction(
             .string()
             .min(1)
             .describe(
-              'Repository as "owner/repo" (e.g., "Cibahealth/my-service")',
+              'Repository as "owner/repo" (e.g., "my-org/my-service")',
             ),
-        token: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud API token (defaults to app-config)'),
       },
       output: {
         repositoryId: z => z.string().describe('The repository that was bound'),
@@ -67,12 +65,7 @@ export function createSonarCloudBindProjectAction(
       },
     },
     async handler(ctx) {
-      const token = ctx.input.token || defaults.token;
-      if (!token) {
-        throw new Error(
-          "Missing SonarCloud token: provide 'token' input or set sonarcloud.token in app-config",
-        );
-      }
+      const token = requireToken(defaults);
 
       const { projectId, projectKey, repositoryId } = ctx.input;
       const client = new SonarCloudClient({ token });
@@ -86,7 +79,7 @@ export function createSonarCloudBindProjectAction(
       ctx.output('repositoryId', repositoryId);
       ctx.output(
         'projectUrl',
-        `https://sonarcloud.io/project/overview?id=${encodeURIComponent(
+        `${SONARCLOUD_BASE_URL}/project/overview?id=${encodeURIComponent(
           projectKey,
         )}`,
       );

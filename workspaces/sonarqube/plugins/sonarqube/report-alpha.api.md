@@ -99,7 +99,6 @@ const _default: OverridableFrontendPlugin<
       output:
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
-        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
         | ExtensionDataRef<
             RouteRef<AnyRouteRefParams>,
             'core.routing.ref',
@@ -121,6 +120,7 @@ const _default: OverridableFrontendPlugin<
               optional: true;
             }
           >
+        | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
         | ExtensionDataRef<
             string,
             'catalog.entity-content-group',
@@ -144,10 +144,10 @@ const _default: OverridableFrontendPlugin<
         defaultGroup?: [Error: `Use the 'group' param instead`];
         group?:
           | (
-              | 'development'
-              | 'deployment'
               | 'overview'
               | 'documentation'
+              | 'development'
+              | 'deployment'
               | 'operation'
               | 'observability'
             )

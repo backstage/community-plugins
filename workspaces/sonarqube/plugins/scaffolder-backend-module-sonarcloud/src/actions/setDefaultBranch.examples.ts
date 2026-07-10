@@ -23,12 +23,11 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:setDefaultBranch',
+          action: 'sonarcloud:defaultBranch:rename',
           id: 'set-default-branch',
           name: 'Set Default Branch',
           input: {
             projectKey: 'my-org_my-service',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],
@@ -39,13 +38,12 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:setDefaultBranch',
+          action: 'sonarcloud:defaultBranch:rename',
           id: 'set-custom-branch',
           name: 'Set Custom Default Branch',
           input: {
             projectKey: 'my-org_my-service',
             name: 'develop',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],

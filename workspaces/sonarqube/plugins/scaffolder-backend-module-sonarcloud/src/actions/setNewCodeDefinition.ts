@@ -17,6 +17,7 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { SonarCloudClient } from '../lib';
 import type { SonarCloudDefaults } from '../lib';
+import { requireToken } from './resolve';
 import { examples } from './setNewCodeDefinition.examples';
 
 /**
@@ -25,14 +26,14 @@ import { examples } from './setNewCodeDefinition.examples';
  * @public
  * @example
  * ```
- * action: sonarcloud:setNewCodeDefinition
+ * action: sonarcloud:newCodeDefinition:set
  * ```
  */
 export function createSonarCloudSetNewCodeDefinitionAction(
   defaults: SonarCloudDefaults = {},
 ) {
   return createTemplateAction({
-    id: 'sonarcloud:setNewCodeDefinition',
+    id: 'sonarcloud:newCodeDefinition:set',
     description: 'Sets the new code definition for a SonarCloud project',
     examples,
     schema: {
@@ -47,11 +48,6 @@ export function createSonarCloudSetNewCodeDefinitionAction(
             .string()
             .optional()
             .describe('Value for the definition (days count or branch name)'),
-        token: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud API token (defaults to app-config)'),
       },
       output: {
         type: z =>
@@ -64,12 +60,7 @@ export function createSonarCloudSetNewCodeDefinitionAction(
       },
     },
     async handler(ctx) {
-      const token = ctx.input.token || defaults.token;
-      if (!token) {
-        throw new Error(
-          "Missing SonarCloud token: provide 'token' input or set sonarcloud.token in app-config",
-        );
-      }
+      const token = requireToken(defaults);
 
       const { projectKey, type, value } = ctx.input;
 

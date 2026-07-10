@@ -8,11 +8,14 @@ Example Backstage Software Templates demonstrating the SonarCloud scaffolder act
 
 Minimal template that creates a SonarCloud project and sets the default branch.
 
-**Actions used**: `sonarcloud:createProject`, `sonarcloud:setDefaultBranch`
+**Actions used**: `sonarcloud:project:create`, `sonarcloud:defaultBranch:rename`
 
-## Usage
+## Prerequisites
 
-These templates are meant to be copied and adapted for your organization. Before using them:
+Configure `sonarqube.apiKey` and `sonarqube.organizationName` in your `app-config.yaml`:
 
-1. Configure `sonarcloud.token` and `sonarcloud.organization` in your `app-config.yaml`
-2. Or provision `SONARCLOUD_TOKEN` as a Backstage secret and pass it as input
+```yaml
+sonarqube:
+  apiKey: ${SONARCLOUD_TOKEN}
+  organizationName: my-org
+```

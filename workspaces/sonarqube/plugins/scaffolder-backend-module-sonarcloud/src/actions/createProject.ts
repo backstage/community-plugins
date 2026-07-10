@@ -17,7 +17,10 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { SonarCloudClient, SonarCloudApiError } from '../lib';
 import type { SonarCloudDefaults } from '../lib';
+import { requireToken, requireOrganization } from './resolve';
 import { examples } from './createProject.examples';
+
+const SONARCLOUD_BASE_URL = 'https://sonarcloud.io';
 
 /**
  * Creates a scaffolder action that provisions a new SonarCloud project.
@@ -25,23 +28,18 @@ import { examples } from './createProject.examples';
  * @public
  * @example
  * ```
- * action: sonarcloud:createProject
+ * action: sonarcloud:project:create
  * ```
  */
 export function createSonarCloudCreateProjectAction(
   defaults: SonarCloudDefaults = {},
 ) {
   return createTemplateAction({
-    id: 'sonarcloud:createProject',
+    id: 'sonarcloud:project:create',
     description: 'Creates a new project in SonarCloud',
     examples,
     schema: {
       input: {
-        organization: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud organization key (defaults to app-config)'),
         name: z => z.string().min(1).describe('Project display name'),
         key: z => z.string().min(1).describe('Project key (unique within org)'),
         visibility: z =>
@@ -49,11 +47,6 @@ export function createSonarCloudCreateProjectAction(
             .enum(['private', 'public'])
             .optional()
             .describe('Project visibility (defaults to org setting)'),
-        token: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud API token (defaults to app-config)'),
       },
       output: {
         projectKey: z => z.string().describe('The created project key'),
@@ -65,19 +58,8 @@ export function createSonarCloudCreateProjectAction(
       },
     },
     async handler(ctx) {
-      const token = ctx.input.token || defaults.token;
-      const organization = ctx.input.organization || defaults.organization;
-
-      if (!token) {
-        throw new Error(
-          "Missing SonarCloud token: provide 'token' input or set sonarcloud.token in app-config",
-        );
-      }
-      if (!organization) {
-        throw new Error(
-          "Missing SonarCloud organization: provide 'organization' input or set sonarcloud.organization in app-config",
-        );
-      }
+      const token = requireToken(defaults);
+      const organization = requireOrganization(defaults);
 
       const { name, key, visibility } = ctx.input;
       const client = new SonarCloudClient({ token });
@@ -106,7 +88,7 @@ export function createSonarCloudCreateProjectAction(
           ctx.output('projectId', existingId);
           ctx.output(
             'projectUrl',
-            `https://sonarcloud.io/project/overview?id=${encodeURIComponent(
+            `${SONARCLOUD_BASE_URL}/project/overview?id=${encodeURIComponent(
               key,
             )}`,
           );

@@ -30,15 +30,6 @@ export type NewCodeDefinitionType =
   | 'reference_branch';
 
 /**
- * Discriminated union of new code definition parameters per strategy type.
- * @public
- */
-export type NewCodeDefinitionParams =
-  | { type: 'previous_version'; projectKey: string }
-  | { type: 'number_of_days'; projectKey: string; value: string }
-  | { type: 'reference_branch'; projectKey: string; value: string };
-
-/**
  * Parameters for creating a new SonarCloud project.
  * @public
  */
@@ -108,13 +99,12 @@ export interface QualityGateListResponse {
 }
 
 /**
- * Default values read from app-config (`sonarcloud.*`).
- * Actions use these unless overridden by input.
+ * Default values read from app-config (`sonarqube.*`).
  * @public
  */
 export interface SonarCloudDefaults {
-  /** Default API token from `sonarcloud.token`. */
+  /** Default API token from `sonarqube.apiKey`. */
   token?: string;
-  /** Default organization from `sonarcloud.organization`. */
+  /** Default organization from `sonarqube.organizationName`. */
   organization?: string;
 }

@@ -23,14 +23,12 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:createProject',
+          action: 'sonarcloud:project:create',
           id: 'create-sonarcloud-project',
           name: 'Create SonarCloud Project',
           input: {
-            organization: 'my-org',
             name: 'My Service',
             key: 'my-org_my-service',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],
@@ -41,15 +39,13 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:createProject',
+          action: 'sonarcloud:project:create',
           id: 'create-private-project',
           name: 'Create Private SonarCloud Project',
           input: {
-            organization: 'my-org',
             name: 'Internal Service',
             key: 'my-org_internal-service',
             visibility: 'private',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],

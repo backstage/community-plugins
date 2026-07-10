@@ -18,8 +18,11 @@ import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-
 import { createSonarCloudSetQualityGateAction } from './setQualityGate';
 import { SonarCloudApiError } from '../lib';
 
-describe('sonarcloud:setQualityGate', () => {
-  const action = createSonarCloudSetQualityGateAction();
+describe('sonarcloud:qualityGate:assign', () => {
+  const action = createSonarCloudSetQualityGateAction({
+    token: 'tok',
+    organization: 'my-org',
+  });
   let fetchSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -32,8 +35,6 @@ describe('sonarcloud:setQualityGate', () => {
   const defaultInput = {
     projectKey: 'my-proj',
     qualityGateName: 'Sonar way',
-    organization: 'my-org',
-    token: 'tok',
   };
 
   const listResponse = {
@@ -44,11 +45,9 @@ describe('sonarcloud:setQualityGate', () => {
   };
 
   it('should assign the matching quality gate and output both fields', async () => {
-    // First call: list quality gates (GET)
     fetchSpy.mockResolvedValueOnce(
       new Response(JSON.stringify(listResponse), { status: 200 }),
     );
-    // Second call: select quality gate (POST)
     fetchSpy.mockResolvedValueOnce(
       new Response(JSON.stringify({}), { status: 200 }),
     );
@@ -130,11 +129,9 @@ describe('sonarcloud:setQualityGate', () => {
   });
 
   it('should throw when select API fails after successful list (no partial outputs)', async () => {
-    // list succeeds
     fetchSpy.mockResolvedValueOnce(
       new Response(JSON.stringify(listResponse), { status: 200 }),
     );
-    // select fails
     fetchSpy.mockResolvedValueOnce(
       new Response(JSON.stringify({ errors: [{ msg: 'Server error' }] }), {
         status: 500,
@@ -148,7 +145,6 @@ describe('sonarcloud:setQualityGate', () => {
       }),
     ).rejects.toThrow(SonarCloudApiError);
 
-    // Verify no outputs were emitted (output is called only after select succeeds)
     expect(mockContext.output).not.toHaveBeenCalled();
   });
 
@@ -165,12 +161,37 @@ describe('sonarcloud:setQualityGate', () => {
       input: defaultInput,
     });
 
-    // Both outputs should be set
     expect(mockContext.output).toHaveBeenCalledTimes(2);
     expect(mockContext.output).toHaveBeenCalledWith('qualityGateId', 1);
     expect(mockContext.output).toHaveBeenCalledWith(
       'qualityGateName',
       'Sonar way',
     );
+  });
+
+  it('should throw when token is missing from defaults', async () => {
+    const noTokenAction = createSonarCloudSetQualityGateAction({
+      organization: 'my-org',
+    });
+
+    await expect(
+      noTokenAction.handler({
+        ...mockContext,
+        input: defaultInput,
+      }),
+    ).rejects.toThrow(/Missing SonarCloud token/);
+  });
+
+  it('should throw when organization is missing from defaults', async () => {
+    const noOrgAction = createSonarCloudSetQualityGateAction({
+      token: 'tok',
+    });
+
+    await expect(
+      noOrgAction.handler({
+        ...mockContext,
+        input: defaultInput,
+      }),
+    ).rejects.toThrow(/Missing SonarCloud organization/);
   });
 });

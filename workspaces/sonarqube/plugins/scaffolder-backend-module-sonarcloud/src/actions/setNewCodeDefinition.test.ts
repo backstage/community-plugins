@@ -17,8 +17,8 @@
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 import { createSonarCloudSetNewCodeDefinitionAction } from './setNewCodeDefinition';
 
-describe('sonarcloud:setNewCodeDefinition', () => {
-  const action = createSonarCloudSetNewCodeDefinitionAction();
+describe('sonarcloud:newCodeDefinition:set', () => {
+  const action = createSonarCloudSetNewCodeDefinitionAction({ token: 'tok' });
   let fetchSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -30,7 +30,6 @@ describe('sonarcloud:setNewCodeDefinition', () => {
 
   const baseInput = {
     projectKey: 'my-proj',
-    token: 'tok',
   };
 
   it('should reset both keys for previous_version (inherit org default)', async () => {
@@ -170,5 +169,19 @@ describe('sonarcloud:setNewCodeDefinition', () => {
         },
       }),
     ).resolves.not.toThrow();
+  });
+
+  it('should throw when token is missing from defaults', async () => {
+    const noTokenAction = createSonarCloudSetNewCodeDefinitionAction();
+
+    await expect(
+      noTokenAction.handler({
+        ...mockContext,
+        input: {
+          ...baseInput,
+          type: 'previous_version' as const,
+        },
+      }),
+    ).rejects.toThrow(/Missing SonarCloud token/);
   });
 });

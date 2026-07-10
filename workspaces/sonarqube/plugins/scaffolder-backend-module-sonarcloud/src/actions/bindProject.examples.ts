@@ -23,7 +23,7 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:bindProject',
+          action: 'sonarcloud:project:bind',
           id: 'bind-to-github',
           name: 'Bind SonarCloud to GitHub',
           input: {

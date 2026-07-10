@@ -20,7 +20,6 @@ export type {
   BindProjectParams,
   CreateProjectParams,
   CreateProjectResult,
-  NewCodeDefinitionParams,
   NewCodeDefinitionType,
   ProjectVisibility,
   QualityGate,

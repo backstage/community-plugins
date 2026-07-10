@@ -18,8 +18,8 @@ import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-
 import { createSonarCloudSetDefaultBranchAction } from './setDefaultBranch';
 import { SonarCloudApiError } from '../lib';
 
-describe('sonarcloud:setDefaultBranch', () => {
-  const action = createSonarCloudSetDefaultBranchAction();
+describe('sonarcloud:defaultBranch:rename', () => {
+  const action = createSonarCloudSetDefaultBranchAction({ token: 'tok' });
   let fetchSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -38,8 +38,7 @@ describe('sonarcloud:setDefaultBranch', () => {
       ...mockContext,
       input: {
         projectKey: 'my-proj',
-        token: 'tok',
-      } as any,
+      },
     });
 
     const init = fetchSpy.mock.calls[0][1] as RequestInit;
@@ -58,7 +57,6 @@ describe('sonarcloud:setDefaultBranch', () => {
       input: {
         projectKey: 'my-proj',
         name: 'develop',
-        token: 'tok',
       },
     });
 
@@ -78,7 +76,6 @@ describe('sonarcloud:setDefaultBranch', () => {
         input: {
           projectKey: 'my-proj',
           name: 'main',
-          token: 'tok',
         },
       }),
     ).resolves.not.toThrow();
@@ -97,7 +94,6 @@ describe('sonarcloud:setDefaultBranch', () => {
         input: {
           projectKey: 'nonexistent',
           name: 'main',
-          token: 'tok',
         },
       }),
     ).rejects.toThrow(SonarCloudApiError);
@@ -113,10 +109,22 @@ describe('sonarcloud:setDefaultBranch', () => {
       input: {
         projectKey: 'my-proj',
         name: 'release',
-        token: 'tok',
       },
     });
 
     expect(mockContext.output).toHaveBeenCalledWith('branchName', 'release');
+  });
+
+  it('should throw when token is missing from defaults', async () => {
+    const noTokenAction = createSonarCloudSetDefaultBranchAction();
+
+    await expect(
+      noTokenAction.handler({
+        ...mockContext,
+        input: {
+          projectKey: 'my-proj',
+        },
+      }),
+    ).rejects.toThrow(/Missing SonarCloud token/);
   });
 });

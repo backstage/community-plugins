@@ -6,13 +6,13 @@ Backstage scaffolder backend module providing actions for SonarCloud project onb
 
 Five scaffolder actions that automate the full SonarCloud project onboarding flow within Backstage Software Templates:
 
-| Action                            | Purpose                                                                    |
-| --------------------------------- | -------------------------------------------------------------------------- |
-| `sonarcloud:createProject`        | Creates a new project in SonarCloud                                        |
-| `sonarcloud:bindProject`          | Binds a project to a GitHub, GitLab, Bitbucket, or Azure DevOps repository |
-| `sonarcloud:setDefaultBranch`     | Renames the default branch tracked by SonarCloud                           |
-| `sonarcloud:setQualityGate`       | Assigns a quality gate to the project (by name)                            |
-| `sonarcloud:setNewCodeDefinition` | Configures the new code period boundary                                    |
+| Action                               | Purpose                                                                    |
+| ------------------------------------ | -------------------------------------------------------------------------- |
+| `sonarcloud:project:create`          | Creates a new project in SonarCloud                                        |
+| `sonarcloud:project:bind`            | Binds a project to a GitHub, GitLab, Bitbucket, or Azure DevOps repository |
+| `sonarcloud:defaultBranch:rename`    | Renames the default branch tracked by SonarCloud                           |
+| `sonarcloud:qualityGate:assign`      | Assigns a quality gate to the project (by name)                            |
+| `sonarcloud:newCodeDefinition:set`   | Configures the new code period boundary                                    |
 
 ## Difference from the SonarQube plugin
 
@@ -49,71 +49,64 @@ backend.add(
 
 ## Configuration
 
-The plugin can optionally read defaults from `app-config.yaml`:
+The plugin reads defaults from the shared `sonarqube` config block in `app-config.yaml`:
 
 ```yaml
-sonarcloud:
-  token: ${SONARCLOUD_TOKEN}
-  organization: my-org
+sonarqube:
+  apiKey: ${SONARCLOUD_TOKEN}
+  organizationName: my-org
 ```
 
-When configured, `token` and `organization` inputs can be omitted from template steps — the plugin uses app-config values as defaults. Input values override config when provided.
-
-If no app-config is set, pass `token` and `organization` directly in each action input.
+`token` and `organization` are read exclusively from app-config. Neither field should appear in template inputs — they are not available as action input parameters.
 
 ## Actions
 
-### `sonarcloud:createProject`
+### `sonarcloud:project:create`
 
 Creates a new project in SonarCloud.
 
 #### Input
 
-| Field          | Type                    | Required | Default     | Description                                |
-| -------------- | ----------------------- | -------- | ----------- | ------------------------------------------ |
-| `organization` | `string`                | Yes      | --          | SonarCloud organization key                |
-| `name`         | `string`                | Yes      | --          | Human-readable project display name        |
-| `key`          | `string`                | Yes      | --          | Unique project key within the organization |
-| `visibility`   | `'public' \| 'private'` | No       | Org default | Project visibility level                   |
-| `token`        | `string`                | Yes      | --          | SonarCloud API token                       |
+| Field        | Type                    | Required | Default     | Description                                |
+| ------------ | ----------------------- | -------- | ----------- | ------------------------------------------ |
+| `name`       | `string`                | Yes      | --          | Human-readable project display name        |
+| `key`        | `string`                | Yes      | --          | Unique project key within the organization |
+| `visibility` | `'public' \| 'private'` | No       | Org default | Project visibility level                   |
 
 #### Output
 
 | Field        | Type     | Description                                                |
 | ------------ | -------- | ---------------------------------------------------------- |
 | `projectKey` | `string` | The key assigned to the created project                    |
-| `projectId`  | `string` | Internal project UUID (needed by `sonarcloud:bindProject`) |
+| `projectId`  | `string` | Internal project UUID (needed by `sonarcloud:project:bind`) |
 | `projectUrl` | `string` | Direct URL to the project overview in SonarCloud           |
 
 #### Example
 
 ```yaml
 steps:
-  - id: sonarcloud-create
-    action: sonarcloud:createProject
+  - id: sonarcloudCreate
+    action: sonarcloud:project:create
     name: Create SonarCloud Project
     input:
-      organization: my-org
       name: My Service
       key: my-org_my-service
       visibility: private
-      token: ${{ secrets.SONARCLOUD_TOKEN }}
 ```
 
 ---
 
-### `sonarcloud:bindProject`
+### `sonarcloud:project:bind`
 
 Binds a SonarCloud project to an ALM (Application Lifecycle Management) repository. This enables automatic analysis of pull requests and branch tracking.
 
 #### Input
 
-| Field          | Type     | Required | Default    | Description                                            |
-| -------------- | -------- | -------- | ---------- | ------------------------------------------------------ |
-| `projectId`    | `string` | Yes      | --         | SonarCloud project UUID from `create-project` output   |
-| `projectKey`   | `string` | Yes      | --         | SonarCloud project key (for building project URL)      |
-| `repositoryId` | `string` | Yes      | --         | Repository as `owner/repo` (e.g., `my-org/my-service`) |
-| `token`        | `string` | No       | app-config | SonarCloud API token                                   |
+| Field          | Type     | Required | Description                                            |
+| -------------- | -------- | -------- | ------------------------------------------------------ |
+| `projectId`    | `string` | Yes      | SonarCloud project UUID                                |
+| `projectKey`   | `string` | Yes      | SonarCloud project key (for building project URL)      |
+| `repositoryId` | `string` | Yes      | Repository as `owner/repo` (e.g., `my-org/my-service`) |
 
 #### Output
 
@@ -126,18 +119,18 @@ Binds a SonarCloud project to an ALM (Application Lifecycle Management) reposito
 
 ```yaml
 steps:
-  - id: sonarcloud-bind
-    action: sonarcloud:bindProject
+  - id: sonarcloudBind
+    action: sonarcloud:project:bind
     name: Bind SonarCloud to GitHub
     input:
-      projectId: ${{ steps['sonarcloud-create'].output.projectId }}
-      projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+      projectId: ${{ steps['sonarcloudCreate'].output.projectId }}
+      projectKey: ${{ steps['sonarcloudCreate'].output.projectKey }}
       repositoryId: my-org/my-service
 ```
 
 ---
 
-### `sonarcloud:setDefaultBranch`
+### `sonarcloud:defaultBranch:rename`
 
 Renames the default branch tracked by SonarCloud. SonarCloud initially names the default branch `main`, so use this action when your repository uses a different convention (e.g., `develop`, `trunk`).
 
@@ -147,7 +140,6 @@ Renames the default branch tracked by SonarCloud. SonarCloud initially names the
 | ------------ | -------- | -------- | ------- | ----------------------------- |
 | `projectKey` | `string` | Yes      | --      | SonarCloud project key        |
 | `name`       | `string` | No       | `main`  | Branch name to set as default |
-| `token`      | `string` | Yes      | --      | SonarCloud API token          |
 
 #### Output
 
@@ -159,30 +151,27 @@ Renames the default branch tracked by SonarCloud. SonarCloud initially names the
 
 ```yaml
 steps:
-  - id: sonarcloud-branch
-    action: sonarcloud:setDefaultBranch
+  - id: sonarcloudBranch
+    action: sonarcloud:defaultBranch:rename
     name: Set Default Branch
     input:
-      projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
-      token: ${{ secrets.SONARCLOUD_TOKEN }}
+      projectKey: ${{ steps['sonarcloudCreate'].output.projectKey }}
 ```
 
 > **Note**: When omitted, `name` defaults to `main`. Only include it if your repository uses a different default branch.
 
 ---
 
-### `sonarcloud:setQualityGate`
+### `sonarcloud:qualityGate:assign`
 
 Assigns a quality gate to a SonarCloud project. The gate is resolved by **name** -- the action looks up the numeric ID automatically.
 
 #### Input
 
-| Field             | Type     | Required | Default | Description                                         |
-| ----------------- | -------- | -------- | ------- | --------------------------------------------------- |
-| `projectKey`      | `string` | Yes      | --      | SonarCloud project key                              |
-| `qualityGateName` | `string` | Yes      | --      | Name of the quality gate to assign (case-sensitive) |
-| `organization`    | `string` | Yes      | --      | SonarCloud organization key                         |
-| `token`           | `string` | Yes      | --      | SonarCloud API token                                |
+| Field             | Type     | Required | Description                                         |
+| ----------------- | -------- | -------- | --------------------------------------------------- |
+| `projectKey`      | `string` | Yes      | SonarCloud project key                              |
+| `qualityGateName` | `string` | Yes      | Name of the quality gate to assign (case-sensitive) |
 
 #### Output
 
@@ -195,21 +184,19 @@ Assigns a quality gate to a SonarCloud project. The gate is resolved by **name**
 
 ```yaml
 steps:
-  - id: sonarcloud-gate
-    action: sonarcloud:setQualityGate
+  - id: sonarcloudGate
+    action: sonarcloud:qualityGate:assign
     name: Set Quality Gate
     input:
-      projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+      projectKey: ${{ steps['sonarcloudCreate'].output.projectKey }}
       qualityGateName: Sonar way
-      organization: my-org
-      token: ${{ secrets.SONARCLOUD_TOKEN }}
 ```
 
 > **Note**: Quality gate names are **case-sensitive**. Check the exact name in SonarCloud > Quality Gates.
 
 ---
 
-### `sonarcloud:setNewCodeDefinition`
+### `sonarcloud:newCodeDefinition:set`
 
 Configures the new code period boundary for a SonarCloud project. This determines what SonarCloud considers "new code" for quality gate evaluation.
 
@@ -220,7 +207,6 @@ Configures the new code period boundary for a SonarCloud project. This determine
 | `projectKey` | `string`                                                       | Yes         | --      | SonarCloud project key                                                                                        |
 | `type`       | `'previous_version' \| 'number_of_days' \| 'reference_branch'` | Yes         | --      | New code definition strategy                                                                                  |
 | `value`      | `string`                                                       | Conditional | --      | Required for `number_of_days` (integer) and `reference_branch` (branch name). Omitted for `previous_version`. |
-| `token`      | `string`                                                       | Yes         | --      | SonarCloud API token                                                                                          |
 
 #### Output
 
@@ -233,27 +219,25 @@ Configures the new code period boundary for a SonarCloud project. This determine
 
 ```yaml
 steps:
-  - id: sonarcloud-newcode
-    action: sonarcloud:setNewCodeDefinition
+  - id: sonarcloudNewcode
+    action: sonarcloud:newCodeDefinition:set
     name: Set New Code Definition
     input:
-      projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+      projectKey: ${{ steps['sonarcloudCreate'].output.projectKey }}
       type: previous_version
-      token: ${{ secrets.SONARCLOUD_TOKEN }}
 ```
 
 #### Example -- number of days
 
 ```yaml
 steps:
-  - id: sonarcloud-newcode
-    action: sonarcloud:setNewCodeDefinition
+  - id: sonarcloudNewcode
+    action: sonarcloud:newCodeDefinition:set
     name: Set New Code Definition (30 days)
     input:
-      projectKey: ${{ steps['sonarcloud-create'].output.projectKey }}
+      projectKey: ${{ steps['sonarcloudCreate'].output.projectKey }}
       type: number_of_days
       value: '30'
-      token: ${{ secrets.SONARCLOUD_TOKEN }}
 ```
 
 ## Examples
@@ -262,7 +246,7 @@ See the [`examples/`](./examples/) directory for usage templates, including a mi
 
 ### Action ordering
 
-`sonarcloud:createProject` **must run first** — all other actions reference the project key and ID it outputs. After that, the remaining four actions can run in any order. All actions except `createProject` are optional.
+`sonarcloud:project:create` **must run first** — all other actions reference the project key and ID it outputs. After that, the remaining four actions can run in any order. All actions except `createProject` are optional.
 
 ## Troubleshooting
 
@@ -270,10 +254,10 @@ See the [`examples/`](./examples/) directory for usage templates, including a mi
 Token lacks permissions or has expired. Generate a new token at [sonarcloud.io > My Account > Security](https://sonarcloud.io/account/security). The token must have `Administer` permission on the target organization.
 
 **Organization not found (404)**
-Verify that the `organization` value matches the SonarCloud organization key exactly (lowercase, hyphens allowed). You can find it in the URL: `sonarcloud.io/organizations/<org-key>`.
+Verify that the `organizationName` value in app-config matches the SonarCloud organization key exactly (lowercase, hyphens allowed). You can find it in the URL: `sonarcloud.io/organizations/<org-key>`.
 
 **Branch rename fails**
-The project may not exist yet in SonarCloud. Ensure `sonarcloud:createProject` runs before `sonarcloud:setDefaultBranch`.
+The project may not exist yet in SonarCloud. Ensure `sonarcloud:project:create` runs before `sonarcloud:defaultBranch:rename`.
 
 **Quality gate not found**
 Gate names are case-sensitive. If the action fails, the error message lists all available gates in the organization. Check the exact name at SonarCloud > Quality Gates.

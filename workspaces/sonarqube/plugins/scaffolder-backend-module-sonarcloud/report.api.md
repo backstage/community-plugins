@@ -14,7 +14,6 @@ export function createSonarCloudBindProjectAction(
     projectId: string;
     projectKey: string;
     repositoryId: string;
-    token?: string | undefined;
   },
   {
     repositoryId: string;
@@ -30,9 +29,7 @@ export function createSonarCloudCreateProjectAction(
   {
     name: string;
     key: string;
-    organization?: string | undefined;
     visibility?: 'private' | 'public' | undefined;
-    token?: string | undefined;
   },
   {
     projectKey: string;
@@ -49,7 +46,6 @@ export function createSonarCloudSetDefaultBranchAction(
   {
     projectKey: string;
     name?: string | undefined;
-    token?: string | undefined;
   },
   {
     branchName: string;
@@ -65,7 +61,6 @@ export function createSonarCloudSetNewCodeDefinitionAction(
     projectKey: string;
     type: 'previous_version' | 'number_of_days' | 'reference_branch';
     value?: string | undefined;
-    token?: string | undefined;
   },
   {
     type: string;
@@ -81,8 +76,6 @@ export function createSonarCloudSetQualityGateAction(
   {
     projectKey: string;
     qualityGateName: string;
-    organization?: string | undefined;
-    token?: string | undefined;
   },
   {
     qualityGateId: number;

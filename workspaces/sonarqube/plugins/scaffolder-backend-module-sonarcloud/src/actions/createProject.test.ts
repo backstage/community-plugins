@@ -18,8 +18,11 @@ import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-
 import { createSonarCloudCreateProjectAction } from './createProject';
 import { SonarCloudApiError } from '../lib';
 
-describe('sonarcloud:createProject', () => {
-  const action = createSonarCloudCreateProjectAction();
+describe('sonarcloud:project:create', () => {
+  const action = createSonarCloudCreateProjectAction({
+    token: 'secret-token',
+    organization: 'my-org',
+  });
   let fetchSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -34,10 +37,8 @@ describe('sonarcloud:createProject', () => {
   });
 
   const defaultInput = {
-    organization: 'my-org',
     name: 'My Project',
     key: 'my-proj',
-    token: 'secret-token',
   };
 
   it('should create a project and output projectKey and projectUrl', async () => {
@@ -206,5 +207,31 @@ describe('sonarcloud:createProject', () => {
     expect(body.get('name')).toBe('My Project');
     expect(body.get('organization')).toBe('my-org');
     expect(body.get('project')).toBe('my-proj');
+  });
+
+  it('should throw when token is missing from defaults', async () => {
+    const noTokenAction = createSonarCloudCreateProjectAction({
+      organization: 'my-org',
+    });
+
+    await expect(
+      noTokenAction.handler({
+        ...mockContext,
+        input: defaultInput,
+      }),
+    ).rejects.toThrow(/Missing SonarCloud token/);
+  });
+
+  it('should throw when organization is missing from defaults', async () => {
+    const noOrgAction = createSonarCloudCreateProjectAction({
+      token: 'secret-token',
+    });
+
+    await expect(
+      noOrgAction.handler({
+        ...mockContext,
+        input: defaultInput,
+      }),
+    ).rejects.toThrow(/Missing SonarCloud organization/);
   });
 });

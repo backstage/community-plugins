@@ -23,13 +23,12 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:setNewCodeDefinition',
+          action: 'sonarcloud:newCodeDefinition:set',
           id: 'set-new-code-previous',
           name: 'Set New Code Definition',
           input: {
             projectKey: 'my-org_my-service',
             type: 'previous_version',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],
@@ -40,14 +39,13 @@ export const examples: TemplateExample[] = [
     example: yaml.stringify({
       steps: [
         {
-          action: 'sonarcloud:setNewCodeDefinition',
+          action: 'sonarcloud:newCodeDefinition:set',
           id: 'set-new-code-days',
           name: 'Set New Code Definition (30 days)',
           input: {
             projectKey: 'my-org_my-service',
             type: 'number_of_days',
             value: '30',
-            token: '${{ secrets.SONARCLOUD_TOKEN }}',
           },
         },
       ],

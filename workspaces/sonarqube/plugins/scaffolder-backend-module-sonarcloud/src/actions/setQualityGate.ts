@@ -17,6 +17,7 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { SonarCloudClient } from '../lib';
 import type { SonarCloudDefaults } from '../lib';
+import { requireToken, requireOrganization } from './resolve';
 import { examples } from './setQualityGate.examples';
 
 /**
@@ -25,14 +26,14 @@ import { examples } from './setQualityGate.examples';
  * @public
  * @example
  * ```
- * action: sonarcloud:setQualityGate
+ * action: sonarcloud:qualityGate:assign
  * ```
  */
 export function createSonarCloudSetQualityGateAction(
   defaults: SonarCloudDefaults = {},
 ) {
   return createTemplateAction({
-    id: 'sonarcloud:setQualityGate',
+    id: 'sonarcloud:qualityGate:assign',
     description: 'Assigns a quality gate to a SonarCloud project',
     examples,
     schema: {
@@ -40,16 +41,6 @@ export function createSonarCloudSetQualityGateAction(
         projectKey: z => z.string().min(1).describe('SonarCloud project key'),
         qualityGateName: z =>
           z.string().min(1).describe('Name of the quality gate to assign'),
-        organization: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud organization key (defaults to app-config)'),
-        token: z =>
-          z
-            .string()
-            .optional()
-            .describe('SonarCloud API token (defaults to app-config)'),
       },
       output: {
         qualityGateId: z =>
@@ -59,19 +50,8 @@ export function createSonarCloudSetQualityGateAction(
       },
     },
     async handler(ctx) {
-      const token = ctx.input.token || defaults.token;
-      const organization = ctx.input.organization || defaults.organization;
-
-      if (!token) {
-        throw new Error(
-          "Missing SonarCloud token: provide 'token' input or set sonarcloud.token in app-config",
-        );
-      }
-      if (!organization) {
-        throw new Error(
-          "Missing SonarCloud organization: provide 'organization' input or set sonarcloud.organization in app-config",
-        );
-      }
+      const token = requireToken(defaults);
+      const organization = requireOrganization(defaults);
 
       const { projectKey, qualityGateName } = ctx.input;
       const client = new SonarCloudClient({ token });
