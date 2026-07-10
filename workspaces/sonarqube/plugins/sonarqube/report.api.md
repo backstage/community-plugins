@@ -95,6 +95,8 @@ export const sonarqubeTranslationRef: TranslationRef<
   {
     readonly title: 'SonarQube Dashboard';
     readonly 'sonarQubeCard.title': 'Code Quality';
+    readonly 'sonarQubeCard.emptyState.title': 'No information to display';
+    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
     readonly 'sonarQubeCard.deepLinkTitle': 'View more';
     readonly 'sonarQubeCard.bugReportRatingCardTitle': 'Bugs';
     readonly 'sonarQubeCard.vulnerabilitiesRatingCardTitle': 'Vulnerabilities';
@@ -103,8 +105,6 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
     readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
     readonly 'sonarQubeCard.qualityBadgeTooltip': 'View SonarQube Dashboard';
-    readonly 'sonarQubeCard.emptyState.title': 'No information to display';
-    readonly 'sonarQubeCard.emptyState.description': "There is no SonarQube project with key '{{ projectTitle }}', check that project exists and permissions.";
     readonly 'sonarQubeCard.unauthorizedError.title': 'Unauthorized';
     readonly 'sonarQubeCard.unauthorizedError.description': 'Your authentication token for SonarQube is missing or invalid. Please verify your SonarQube token configuration.';
     readonly 'sonarQubeCard.notFoundError.title': 'SonarQube project not found';
@@ -116,11 +116,11 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.qualityBadgeLabel.notComputed': 'Not computed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gatePassed': 'Gate passed';
     readonly 'sonarQubeCard.qualityBadgeLabel.gateFailed': 'Gate failed';
-    readonly 'sonarQubeTable.columnsTitle.bugs': 'Bugs';
+    readonly 'sonarQubeTable.columnsTitle.name': 'Name';
     readonly 'sonarQubeTable.columnsTitle.vulnerabilities': 'Vulnerabilities';
+    readonly 'sonarQubeTable.columnsTitle.bugs': 'Bugs';
     readonly 'sonarQubeTable.columnsTitle.coverage': 'Coverage';
     readonly 'sonarQubeTable.columnsTitle.lastAnalysis': 'Last Analysis';
-    readonly 'sonarQubeTable.columnsTitle.name': 'Name';
     readonly 'sonarQubeTable.columnsTitle.qualityGate': 'Quality Gate';
     readonly 'sonarQubeTable.columnsTitle.codeSmells': 'Code Smells';
     readonly 'sonarQubeTable.columnsTitle.hotspotsReviewed': 'Hotspots Reviewed';
