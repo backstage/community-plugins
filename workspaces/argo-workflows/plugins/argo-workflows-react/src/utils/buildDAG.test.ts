@@ -250,6 +250,71 @@ describe('buildDAG', () => {
     expect(dag.nodes[0].duration).toBeUndefined();
   });
 
+  it('falls back to name when displayName is an empty string', () => {
+    const wf: Workflow = {
+      metadata: {
+        name: 'test-wf',
+        namespace: 'default',
+        uid: 'uid-1',
+        creationTimestamp: '2024-01-01T00:00:00Z',
+      },
+      status: {
+        phase: 'Succeeded',
+        nodes: {
+          'node-1': {
+            id: 'node-1',
+            name: 'test-wf-node-1',
+            displayName: '',
+            type: 'Pod',
+            phase: 'Succeeded',
+          },
+        },
+      },
+    };
+
+    const dag = buildDAG(wf);
+    expect(dag.nodes[0].label).toBe('test-wf-node-1');
+  });
+
+  it('falls back to the node id when both displayName and name are empty', () => {
+    const wf: Workflow = {
+      metadata: {
+        name: 'test-wf',
+        namespace: 'default',
+        uid: 'uid-1',
+        creationTimestamp: '2024-01-01T00:00:00Z',
+      },
+      status: {
+        phase: 'Succeeded',
+        nodes: {
+          'node-1': {
+            id: 'node-1',
+            name: '',
+            displayName: '',
+            type: 'Pod',
+            phase: 'Succeeded',
+          },
+        },
+      },
+    };
+
+    const dag = buildDAG(wf);
+    expect(dag.nodes[0].label).toBe('node-1');
+  });
+
+  it('skips edges to child ids that do not exist in status.nodes', () => {
+    const wf = makeWorkflow({
+      a: { displayName: 'Step A', children: ['b', 'missing-child'] },
+      b: { displayName: 'Step B' },
+    });
+
+    const dag = buildDAG(wf);
+    expect(dag.nodes).toHaveLength(2);
+    expect(dag.edges).toHaveLength(1);
+    expect(dag.edges).toContainEqual({ source: 'a', target: 'b' });
+    expect(dag.edges.some(e => e.target === 'missing-child')).toBe(false);
+  });
+
   it('maps node properties correctly', () => {
     const wf: Workflow = {
       metadata: {

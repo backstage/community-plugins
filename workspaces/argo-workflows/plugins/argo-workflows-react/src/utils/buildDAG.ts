@@ -151,7 +151,7 @@ export function buildDAG(workflow: Workflow): DAGGraph {
   for (const [nodeId, wfNode] of Object.entries(workflowNodes)) {
     nodes.push({
       id: nodeId,
-      label: wfNode.displayName,
+      label: wfNode.displayName || wfNode.name || nodeId,
       status: wfNode.phase,
       startedAt: wfNode.startedAt,
       finishedAt: wfNode.finishedAt,
@@ -162,6 +162,9 @@ export function buildDAG(workflow: Workflow): DAGGraph {
 
     if (wfNode.children) {
       for (const childId of wfNode.children) {
+        if (!workflowNodes[childId]) {
+          continue;
+        }
         edges.push({
           source: nodeId,
           target: childId,
