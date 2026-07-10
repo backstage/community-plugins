@@ -148,7 +148,8 @@ export function buildColumns(
 ): ColumnConfig<WorkflowItem>[] {
   const cols: ColumnConfig<WorkflowItem>[] = [expandColumn(expandedRow)];
 
-  if (instanceTypeMap.size > 1) {
+  const uniqueTypes = new Set(instanceTypeMap.values());
+  if (uniqueTypes.size > 1) {
     cols.push(instanceTypeColumn(instanceTypeMap));
   }
 
@@ -168,13 +169,9 @@ export function workflowSortFn(
       return workflowFullName(a).localeCompare(workflowFullName(b));
     }
     if (col === 'startDate') {
-      const dateA = a.status.startedAt
-        ? new Date(a.status.startedAt).getTime()
-        : 0;
-      const dateB = b.status.startedAt
-        ? new Date(b.status.startedAt).getTime()
-        : 0;
-      return dateA - dateB;
+      const dateA = Date.parse(a.status.startedAt ?? '');
+      const dateB = Date.parse(b.status.startedAt ?? '');
+      return (Number.isFinite(dateA) ? dateA : 0) - (Number.isFinite(dateB) ? dateB : 0);
     }
     return 0;
   });
