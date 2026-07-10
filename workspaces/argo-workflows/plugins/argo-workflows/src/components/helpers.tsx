@@ -171,7 +171,10 @@ export function workflowSortFn(
     if (col === 'startDate') {
       const dateA = Date.parse(a.status.startedAt ?? '');
       const dateB = Date.parse(b.status.startedAt ?? '');
-      return (Number.isFinite(dateA) ? dateA : 0) - (Number.isFinite(dateB) ? dateB : 0);
+      return (
+        (Number.isFinite(dateA) ? dateA : 0) -
+        (Number.isFinite(dateB) ? dateB : 0)
+      );
     }
     return 0;
   });
