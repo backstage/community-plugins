@@ -40,17 +40,7 @@ const devPagesPlugin = createFrontendPlugin({
       name: 'embed-example',
       params: {
         path: '/xcmetrics-embed',
-        loader: () =>
-          import('@backstage/core-components').then(
-            ({ Page, Header, Content }) => (
-              <Page themeId="tool">
-                <Header title="Embed Example" />
-                <Content>
-                  <XcmetricsLayout />
-                </Content>
-              </Page>
-            ),
-          ),
+        loader: async () => <XcmetricsLayout />,
       },
     }),
   ],
