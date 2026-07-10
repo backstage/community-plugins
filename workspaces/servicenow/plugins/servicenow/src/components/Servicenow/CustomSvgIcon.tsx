@@ -26,6 +26,7 @@ export const CustomSvgIcon = ({
       viewBox={viewBox}
       width={size}
       height={size}
+      fill="currentColor"
       style={{ display: 'inline-block', ...style }}
       {...props}
     >
