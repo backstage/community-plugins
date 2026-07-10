@@ -40,11 +40,7 @@ export function createSonarCloudBindProjectAction(
     examples,
     schema: {
       input: {
-        projectId: z =>
-          z
-            .string()
-            .min(1)
-            .describe('SonarCloud project UUID'),
+        projectId: z => z.string().min(1).describe('SonarCloud project UUID'),
         projectKey: z =>
           z
             .string()
@@ -54,9 +50,7 @@ export function createSonarCloudBindProjectAction(
           z
             .string()
             .min(1)
-            .describe(
-              'Repository as "owner/repo" (e.g., "my-org/my-service")',
-            ),
+            .describe('Repository as "owner/repo" (e.g., "my-org/my-service")'),
       },
       output: {
         repositoryId: z => z.string().describe('The repository that was bound'),

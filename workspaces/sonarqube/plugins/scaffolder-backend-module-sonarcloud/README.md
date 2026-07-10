@@ -6,13 +6,13 @@ Backstage scaffolder backend module providing actions for SonarCloud project onb
 
 Five scaffolder actions that automate the full SonarCloud project onboarding flow within Backstage Software Templates:
 
-| Action                               | Purpose                                                                    |
-| ------------------------------------ | -------------------------------------------------------------------------- |
-| `sonarcloud:project:create`          | Creates a new project in SonarCloud                                        |
-| `sonarcloud:project:bind`            | Binds a project to a GitHub, GitLab, Bitbucket, or Azure DevOps repository |
-| `sonarcloud:defaultBranch:rename`    | Renames the default branch tracked by SonarCloud                           |
-| `sonarcloud:qualityGate:assign`      | Assigns a quality gate to the project (by name)                            |
-| `sonarcloud:newCodeDefinition:set`   | Configures the new code period boundary                                    |
+| Action                             | Purpose                                                                    |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| `sonarcloud:project:create`        | Creates a new project in SonarCloud                                        |
+| `sonarcloud:project:bind`          | Binds a project to a GitHub, GitLab, Bitbucket, or Azure DevOps repository |
+| `sonarcloud:defaultBranch:rename`  | Renames the default branch tracked by SonarCloud                           |
+| `sonarcloud:qualityGate:assign`    | Assigns a quality gate to the project (by name)                            |
+| `sonarcloud:newCodeDefinition:set` | Configures the new code period boundary                                    |
 
 ## Difference from the SonarQube plugin
 
@@ -75,11 +75,11 @@ Creates a new project in SonarCloud.
 
 #### Output
 
-| Field        | Type     | Description                                                |
-| ------------ | -------- | ---------------------------------------------------------- |
-| `projectKey` | `string` | The key assigned to the created project                    |
+| Field        | Type     | Description                                                 |
+| ------------ | -------- | ----------------------------------------------------------- |
+| `projectKey` | `string` | The key assigned to the created project                     |
 | `projectId`  | `string` | Internal project UUID (needed by `sonarcloud:project:bind`) |
-| `projectUrl` | `string` | Direct URL to the project overview in SonarCloud           |
+| `projectUrl` | `string` | Direct URL to the project overview in SonarCloud            |
 
 #### Example
 
