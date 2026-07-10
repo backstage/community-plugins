@@ -80,8 +80,16 @@ describe('validateLabelSelector', () => {
   it('rejects invalid selectors', () => {
     expect(validateLabelSelector('=value')).toBeDefined();
     expect(validateLabelSelector('app=my-service,')).toBeDefined();
-    expect(validateLabelSelector('key=')).toBeDefined();
-    expect(validateLabelSelector('key in ()')).toBeDefined();
+  });
+
+  it('accepts selectors with an empty label value', () => {
+    expect(validateLabelSelector('key=')).toBeUndefined();
+    expect(validateLabelSelector('key==')).toBeUndefined();
+    expect(validateLabelSelector('key!=')).toBeUndefined();
+  });
+
+  it('accepts set-based selectors with an empty value set', () => {
+    expect(validateLabelSelector('key in ()')).toBeUndefined();
   });
 });
 
