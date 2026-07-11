@@ -88,9 +88,8 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
  * (#9188). source-location points at the folder containing the
  * entity's actual source code (repo root, or a subfolder in a
  * monorepo) — the README is resolved directly in that folder.
- * @public
  */
-export function getReadmePath(
+function getReadmePath(
   annotations?: Record<string, string>,
 ): string | undefined {
   const explicit = annotations?.[AZURE_DEVOPS_README_ANNOTATION];
