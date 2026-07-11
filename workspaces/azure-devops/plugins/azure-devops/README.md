@@ -121,14 +121,14 @@ dev.azure.com/readme-path: /<path-to>/<my-readme-file>.md
 
 > Note: this annotation does not support relative paths as the API we use from Azure DevOps to power this feature does not support relative paths. If you use something like this `dev.azure.com/readme-path: ./docs/index.md` the frontend will throw an error with details about why.
 
-If the `dev.azure.com/readme-path` annotation is not set, the plugin will automatically try to detect the README using the `backstage.io/source-location` annotation. When this annotation points to an Azure DevOps URL, the plugin resolves `README.md` in the same directory as the `catalog-info.yaml` file, so no extra configuration is needed.
+If the `dev.azure.com/readme-path` annotation is not set, the plugin will automatically try to detect the README using the `backstage.io/managed-by-location` annotation. This annotation always points to the exact file (e.g. `catalog-info.yaml`) used to register the entity in the catalog, so the plugin resolves `README.md` in that file's parent directory — no extra configuration needed.
 
-This is especially handy in monorepo setups. For example, if your entity has:
+This is especially handy in monorepo setups. For example, if your entity's `catalog-info.yaml` is registered from:
 
 ```yaml
 metadata:
   annotations:
-    backstage.io/source-location: url:https://dev.azure.com/org/project/_git/repo?path=%2Fservices%2Fmy-service%2Fcatalog-info.yaml
+    backstage.io/managed-by-location: url:https://dev.azure.com/org/project/_git/repo?path=%2Fservices%2Fmy-service%2Fcatalog-info.yaml
 ```
 
 The plugin will automatically render `/services/my-service/README.md`.

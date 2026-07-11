@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Entity, ANNOTATION_SOURCE_LOCATION } from '@backstage/catalog-model';
+import { Entity, ANNOTATION_LOCATION } from '@backstage/catalog-model';
 import {
   AZURE_DEVOPS_PROJECT_ANNOTATION,
   AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION,
@@ -84,7 +84,10 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
 /**
  * Resolves the README path for an entity, preferring the explicit
  * dev.azure.com/readme-path annotation, and falling back to deriving
- * it from backstage.io/source-location when that annotation is absent (#9188).
+ * it from backstage.io/managed-by-location when that annotation is
+ * absent (#9188). managed-by-location always points at the exact file
+ * (e.g. catalog-info.yaml) used to register the entity, so the README
+ * is resolved in that file's parent directory.
  * @public
  */
 export function getReadmePath(
@@ -93,40 +96,31 @@ export function getReadmePath(
   const explicit = annotations?.[AZURE_DEVOPS_README_ANNOTATION];
   if (explicit !== undefined) return explicit;
 
-  // Auto-detect README.md from backstage.io/source-location (#9188)
-  const sourceLocation = annotations?.[ANNOTATION_SOURCE_LOCATION];
-  if (!sourceLocation) return undefined;
+  // Auto-detect README.md from backstage.io/managed-by-location (#9188)
+  const managedByLocation = annotations?.[ANNOTATION_LOCATION];
+  if (!managedByLocation) return undefined;
 
   try {
-    // source-location values are prefixed with "url:" per Backstage convention
-    const rawUrl = sourceLocation.startsWith('url:')
-      ? sourceLocation.slice(4)
-      : sourceLocation;
+    // managed-by-location values are prefixed with "url:" per Backstage convention
+    const rawUrl = managedByLocation.startsWith('url:')
+      ? managedByLocation.slice(4)
+      : managedByLocation;
 
     const parsed = new URL(rawUrl);
 
     // Only attempt auto-detection for Azure DevOps repo URLs (Cloud or Server)
     if (!parsed.pathname.includes('/_git/')) return undefined;
 
-    // "path" query param holds the repo-relative path (URL-decoded by the URL API)
+    // "path" query param holds the repo-relative path to the file that
+    // defines this entity (URL-decoded by the URL API)
     const pathParam = parsed.searchParams.get('path');
     if (!pathParam) return undefined;
 
-    // Strip trailing slash, then get the directory of the catalog file
+    // managed-by-location always points at a file, so the README lives
+    // in that file's parent directory
     const cleanPath = pathParam.replace(/\/$/, '');
     const lastSlash = cleanPath.lastIndexOf('/');
-    const lastSegment = cleanPath.slice(lastSlash + 1);
-
-    // Only known catalog file names are treated as files; otherwise assume
-    // the path already points to a directory (dots in directory names, e.g.
-    // "services/my.service", should not be mistaken for a file extension)
-    const isCatalogFile =
-      lastSegment === 'catalog-info.yaml' || lastSegment === 'catalog-info.yml';
-    const dir = isCatalogFile
-      ? lastSlash >= 0
-        ? cleanPath.slice(0, lastSlash)
-        : ''
-      : cleanPath;
+    const dir = lastSlash >= 0 ? cleanPath.slice(0, lastSlash) : '';
 
     return `${dir}/README.md`;
   } catch {
