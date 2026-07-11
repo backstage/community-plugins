@@ -28,6 +28,7 @@ describe('SonarCloudClient', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   const mockResponse = (

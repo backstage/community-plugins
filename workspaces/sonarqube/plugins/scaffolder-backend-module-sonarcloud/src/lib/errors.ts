@@ -42,7 +42,7 @@ export class SonarCloudTimeoutError extends Error {
   public readonly status = 504;
 
   constructor(
-    /** The API endpoint path that timed out. */
+    /** The API endpoint path or URL that timed out. */
     public readonly endpoint: string,
   ) {
     super(`SonarCloud request to ${endpoint} timed out after 30s`);

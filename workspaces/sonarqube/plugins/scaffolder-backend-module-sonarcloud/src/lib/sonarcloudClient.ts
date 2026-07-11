@@ -232,6 +232,11 @@ export class SonarCloudClient {
           `Unexpected response: quality gate id is not a number (got ${typeof gate.id})`,
         ]);
       }
+      if (typeof gate.name !== 'string') {
+        throw new SonarCloudApiError(200, [
+          `Unexpected response: quality gate name is not a string (got ${typeof gate.name})`,
+        ]);
+      }
       return { id: gate.id, name: gate.name };
     });
   }

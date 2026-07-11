@@ -65,7 +65,7 @@ export interface CreateProjectResult {
 export interface BindProjectParams {
   /** Internal project UUID from create-project result. */
   projectId: string;
-  /** Repository identifier as "owner/repo" (e.g., "Cibahealth/my-service"). */
+  /** Repository identifier as "owner/repo" (e.g., "example-org/my-service"). */
   repositoryId: string;
 }
 

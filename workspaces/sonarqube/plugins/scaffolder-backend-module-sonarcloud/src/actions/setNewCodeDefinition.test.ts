@@ -26,6 +26,10 @@ describe('sonarcloud:newCodeDefinition:set', () => {
     fetchSpy = jest.spyOn(global, 'fetch');
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const mockContext = createMockActionContext();
 
   const baseInput = {

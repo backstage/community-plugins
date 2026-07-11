@@ -36,6 +36,10 @@ describe('sonarcloud:project:create', () => {
     mockContext = createMockActionContext();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const defaultInput = {
     name: 'My Project',
     key: 'my-proj',

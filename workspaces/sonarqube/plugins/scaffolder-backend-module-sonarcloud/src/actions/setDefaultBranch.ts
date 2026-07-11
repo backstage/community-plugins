@@ -42,6 +42,7 @@ export function createSonarCloudSetDefaultBranchAction(
         name: z =>
           z
             .string()
+            .min(1)
             .optional()
             .describe('Branch name to set as default (defaults to main)'),
       },

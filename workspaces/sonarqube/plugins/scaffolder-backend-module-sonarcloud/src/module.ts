@@ -34,14 +34,9 @@ import {
  * sonarqube:
  *   apiKey: ${SONARCLOUD_TOKEN}
  *   organizationName: my-org
- *   instances:
- *     - name: production
- *       apiKey: ${SONARCLOUD_PROD_TOKEN}
- *       organizationName: prod-org
  * ```
  *
- * Actions resolve token and organization from the default (top-level) config,
- * or from a named instance when `instanceName` input is provided.
+ * Actions resolve token and organization from the top-level config.
  *
  * @public
  */

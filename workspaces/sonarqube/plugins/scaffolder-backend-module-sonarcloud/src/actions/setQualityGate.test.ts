@@ -30,6 +30,10 @@ describe('sonarcloud:qualityGate:assign', () => {
     fetchSpy = jest.spyOn(global, 'fetch');
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const mockContext = createMockActionContext();
 
   const defaultInput = {

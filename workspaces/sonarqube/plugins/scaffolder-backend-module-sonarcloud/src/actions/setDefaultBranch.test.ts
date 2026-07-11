@@ -27,6 +27,10 @@ describe('sonarcloud:defaultBranch:rename', () => {
     fetchSpy = jest.spyOn(global, 'fetch');
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const mockContext = createMockActionContext();
 
   it('should use default branch name "main" when name not provided', async () => {

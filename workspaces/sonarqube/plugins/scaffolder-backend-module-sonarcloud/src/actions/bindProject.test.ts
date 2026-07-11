@@ -26,6 +26,10 @@ describe('sonarcloud:bindProject', () => {
     fetchSpy = jest.spyOn(global, 'fetch');
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const mockContext = createMockActionContext();
 
   it('should bind project via v2 API with JSON body', async () => {
