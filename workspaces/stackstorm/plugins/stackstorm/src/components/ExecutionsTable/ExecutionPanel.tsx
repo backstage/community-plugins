@@ -21,129 +21,73 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { Execution, stackstormApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { Button, Card, CardBody, CardFooter, Text } from '@backstage/ui';
 import { Status } from './Status';
-
-const useStyles = makeStyles(theme => ({
-  table: {
-    maxWidth: '50%',
-    flex: 'i',
-  },
-  title: {
-    paddingTop: theme.spacing(2),
-    fontSize: 14,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-  },
-  card: {
-    borderBottom: `2px solid ${theme.palette.divider}`,
-  },
-}));
-
-const THead = withStyles(() => ({
-  root: {
-    paddingLeft: 0,
-  },
-}))(TableCell);
-
-const TRow = withStyles(theme => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))(TableRow);
+import styles from './ExecutionPanel.module.css';
 
 const ExecutionCard = ({ e }: { e: Execution }) => {
   const st2 = useApi(stackstormApiRef);
-  const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
-      <CardContent>
-        <Table className={classes.table} size="small">
-          <TableBody>
-            <TRow>
-              <THead component="th" scope="row">
-                Name
-              </THead>
-              <TableCell>{e.action.ref}</TableCell>
-            </TRow>
-            <TRow>
-              <THead component="th" scope="row">
-                Status
-              </THead>
-              <TableCell>
+    <Card className={styles.card}>
+      <CardBody>
+        <table className={styles.table}>
+          <tbody>
+            <tr>
+              <th scope="row">Name</th>
+              <td>{e.action.ref}</td>
+            </tr>
+            <tr>
+              <th scope="row">Status</th>
+              <td>
                 <Status status={e.status} />
-              </TableCell>
-            </TRow>
-            <TRow>
-              <THead component="th" scope="row">
-                Execution ID
-              </THead>
-              <TableCell>{e.id}</TableCell>
-            </TRow>
-            <TRow>
-              <THead component="th" scope="row">
-                Started
-              </THead>
-              <TableCell>{new Date(e.start_timestamp).toUTCString()}</TableCell>
-            </TRow>
-            <TRow>
-              <THead component="th" scope="row">
-                Finished
-              </THead>
-              <TableCell>{new Date(e.end_timestamp).toUTCString()}</TableCell>
-            </TRow>
-            <TRow>
-              <THead component="th" scope="row">
-                Execution Time
-              </THead>
-              <TableCell>{Math.round(e.elapsed_seconds)} s</TableCell>
-            </TRow>
-            <TRow>
-              <THead component="th" scope="row">
-                Runner
-              </THead>
-              <TableCell>{e.action.runner_type}</TableCell>
-            </TRow>
-          </TableBody>
-        </Table>
-        <Typography className={classes.title} gutterBottom>
-          Action Output
-        </Typography>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Execution ID</th>
+              <td>{e.id}</td>
+            </tr>
+            <tr>
+              <th scope="row">Started</th>
+              <td>{new Date(e.start_timestamp).toUTCString()}</td>
+            </tr>
+            <tr>
+              <th scope="row">Finished</th>
+              <td>{new Date(e.end_timestamp).toUTCString()}</td>
+            </tr>
+            <tr>
+              <th scope="row">Execution Time</th>
+              <td>{Math.round(e.elapsed_seconds)} s</td>
+            </tr>
+            <tr>
+              <th scope="row">Runner</th>
+              <td>{e.action.runner_type}</td>
+            </tr>
+          </tbody>
+        </table>
+        <Text className={styles.sectionTitle}>Action Output</Text>
         <CodeSnippet
           text={JSON.stringify(e.result, null, 2)}
           language="json"
           customStyle={{ width: 800 }}
         />
-        <Typography className={classes.title} gutterBottom>
-          Action Input
-        </Typography>
+        <Text className={styles.sectionTitle}>Action Input</Text>
         <CodeSnippet
           text={JSON.stringify(e.parameters, null, 2)}
           language="json"
           customStyle={{ width: 800 }}
         />
-      </CardContent>
-      <CardActions>
+      </CardBody>
+      <CardFooter>
         <Button
-          size="small"
-          href={`${st2.getExecutionHistoryUrl(e.id)}`}
-          target="_blank"
+          variant="secondary"
+          onPress={() =>
+            window.open(st2.getExecutionHistoryUrl(e.id), '_blank')
+          }
         >
           View in ST2
         </Button>
-      </CardActions>
+      </CardFooter>
     </Card>
   );
 };
