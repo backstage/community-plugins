@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import type { ReactNode } from 'react';
-
 import { useState, useRef } from 'react';
 import { ButtonIcon, Tooltip } from '@backstage/ui';
 import { TooltipTrigger } from 'react-aria-components';
