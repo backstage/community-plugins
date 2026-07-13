@@ -78,7 +78,7 @@ export const exploreSearchResultListItem = SearchResultListItemBlueprint.make({
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'explore',
-  icon: <LayersIcon />,
+  icon: <RiStackLine />,
   extensions: [exploreApi, explorePage, exploreSearchResultListItem],
   routes: convertLegacyRouteRefs({
     explore: exploreRouteRef,
