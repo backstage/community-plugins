@@ -100,13 +100,13 @@ export const SecretCrudDialog = ({
         <Button
           color="primary"
           variant="contained"
-          disabled={submitting || !name.trim() || !value.trim()}
+          disabled={submitting || !name.trim() || value.length === 0}
           onClick={async () => {
             setSubmitting(true);
             setError(undefined);
             let succeeded = false;
             try {
-              await onSubmit({ name: name.trim(), value: value.trim() });
+              await onSubmit({ name: name.trim(), value });
               succeeded = true;
             } catch (submitError) {
               setError(

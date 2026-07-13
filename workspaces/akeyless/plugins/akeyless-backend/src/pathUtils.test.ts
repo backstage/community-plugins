@@ -30,6 +30,14 @@ describe('pathUtils', () => {
     it('preserves leading slash', () => {
       expect(normalizePath('/demo/app')).toEqual('/demo/app');
     });
+
+    it('trims surrounding whitespace', () => {
+      expect(normalizePath(' /demo/app ')).toEqual('/demo/app');
+    });
+
+    it('returns root for whitespace-only input', () => {
+      expect(normalizePath('   ')).toEqual('/');
+    });
   });
 
   describe('joinSecretPath', () => {

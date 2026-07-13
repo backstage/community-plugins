@@ -405,7 +405,6 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
               message: `Updated static secret '${editSecret.fullPath}'`,
               severity: 'success',
             });
-            setEditSecret(undefined);
             reload();
           }}
         />

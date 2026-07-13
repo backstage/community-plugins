@@ -146,7 +146,16 @@ export class AkeylessClient implements AkeylessApi {
       return (await response.json()) as T;
     }
     if (response.status === 404) {
-      throw new NotFoundError(`Akeyless resource was not found for '${path}'`);
+      const displayPath = (() => {
+        try {
+          return decodeURIComponent(path);
+        } catch {
+          return path;
+        }
+      })();
+      throw new NotFoundError(
+        `Akeyless resource was not found for '${displayPath}'`,
+      );
     }
     throw await ResponseError.fromResponse(response);
   }

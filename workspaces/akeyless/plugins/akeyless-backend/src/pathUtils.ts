@@ -17,10 +17,11 @@
 import { InputError, NotAllowedError } from '@backstage/errors';
 
 export function normalizePath(path: string): string {
-  if (!path) {
+  const trimmed = path.trim();
+  if (!trimmed) {
     return '/';
   }
-  return path.startsWith('/') ? path : `/${path}`;
+  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
 }
 
 export function joinSecretPath(
