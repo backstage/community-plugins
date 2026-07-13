@@ -378,7 +378,34 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
         contextPath={selectedPath}
         onClose={() => setCreateOpen(false)}
         onSubmit={async ({ name, value: secretValue }) => {
-          await akeylessApi.createStaticSecret(name, secretValue, selectedPath);
+          const normalizedPaths = secretPaths.map(p =>
+            p === '/' ? '/' : p.replace(/\/+$/, ''),
+          );
+
+          const selectedBase =
+            selectedPath === '/' ? '' : selectedPath.replace(/\/+$/, '');
+          const fullName = name.startsWith('/')
+            ? name
+            : `${selectedBase}/${name}`;
+
+          const matchingContextPath =
+            normalizedPaths
+              .filter(
+                p => p !== '/' && (fullName === p || fullName.startsWith(`${p}/`)),
+              )
+              .sort((a, b) => b.length - a.length)[0] ?? selectedPath;
+
+          if (matchingContextPath === '/') {
+            throw new Error(
+              'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
+            );
+          }
+
+          await akeylessApi.createStaticSecret(
+            name,
+            secretValue,
+            matchingContextPath,
+          );
           alertApi.post({
             message: `Created static secret '${name}'`,
             severity: 'success',
