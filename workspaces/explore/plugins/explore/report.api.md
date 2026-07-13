@@ -14,7 +14,7 @@ import { FetchApi } from '@backstage/core-plugin-api';
 import { GetExploreToolsRequest } from '@backstage-community/plugin-explore-common';
 import { GetExploreToolsResponse } from '@backstage-community/plugin-explore-common';
 import { IndexableDocument } from '@backstage/plugin-search-common';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX as JSX_2 } from 'react';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
@@ -66,7 +66,7 @@ export class ExploreClient implements ExploreApi {
 
 // @public
 export const ExploreLayout: {
-  (props: ExploreLayoutProps): default_2.JSX.Element;
+  (props: ExploreLayoutProps): React_2.JSX.Element;
   Route: (props: SubRoute) => null;
 };
 

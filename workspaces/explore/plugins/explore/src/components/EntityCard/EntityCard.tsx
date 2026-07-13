@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,9 @@ export const EntityCard = (props: { entity: Entity }) => {
           subtitle={owner}
         />
       </CardHeader>
-      <CardBody style={{ overflow: 'visible' }}>
+      <CardBody
+        style={{ overflow: 'visible', paddingTop: 'var(--bui-space-3)' }}
+      >
         {entity.metadata.tags?.length ? (
           <TagGroup style={{ marginBottom: 'var(--bui-space-2)' }}>
             {entity.metadata.tags.map(tag => (
