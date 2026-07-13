@@ -39,15 +39,9 @@ const mockUsePermission = usePermission as jest.MockedFunction<
   typeof usePermission
 >;
 
-jest.mock('@material-ui/core', () => ({
-  ...jest.requireActual('@material-ui/core'),
-  makeStyles: () => () => {
-    return {
-      titleContainer: 'title',
-      closeButton: 'close',
-    };
-  },
-  Dialog: (props: any) => (
+jest.mock('@mui/material/Dialog', () => ({
+  __esModule: true,
+  default: (props: any) => (
     <div data-testid={props['data-testid']}>
       {props.open && <span>Logs modal content</span>}
     </div>

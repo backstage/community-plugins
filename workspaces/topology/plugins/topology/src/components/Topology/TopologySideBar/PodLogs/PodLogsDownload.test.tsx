@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { PropsWithChildren } from 'react';
-
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
@@ -24,15 +22,6 @@ jest.mock('../../../../hooks/useTranslation', () => ({
   useTranslation: () => mockUseTranslation(),
 }));
 import { downloadLogFile } from '../../../../utils/download-log-file-utils';
-
-jest.mock('@mui/material', () => ({
-  ...jest.requireActual('@mui/material'),
-  IconButton: ({ children, ...rest }: PropsWithChildren<any>) => (
-    <button {...rest}>{children}</button>
-  ),
-}));
-
-jest.mock('@mui/icons-material/GetApp', () => () => <div>DownloadIcon</div>);
 
 jest.mock('../../../../utils/download-log-file-utils', () => ({
   downloadLogFile: jest.fn(),
@@ -46,9 +35,7 @@ describe('PodLogsDownload', () => {
 
   it('renders the component with Download button when logText is provided', () => {
     render(<PodLogsDownload logText="Some logs" fileName="example" />);
-    const downloadButton = screen.getByRole('button', {
-      name: /download logs/i,
-    });
+    const downloadButton = screen.getByRole('button', { name: 'Download' });
     expect(downloadButton).toBeInTheDocument();
     expect(downloadButton).toHaveTextContent('Download');
   });
@@ -57,9 +44,7 @@ describe('PodLogsDownload', () => {
     const logText = 'Some logs';
     const fileName = 'example';
     render(<PodLogsDownload logText={logText} fileName={fileName} />);
-    const downloadButton = screen.getByRole('button', {
-      name: /download logs/i,
-    });
+    const downloadButton = screen.getByRole('button', { name: 'Download' });
 
     fireEvent.click(downloadButton);
     expect(downloadLogFile).toHaveBeenCalledWith(logText, `${fileName}.log`);

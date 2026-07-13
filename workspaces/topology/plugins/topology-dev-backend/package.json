@@ -1,0 +1,41 @@
+{
+  "name": "@internal/plugin-topology-dev-backend",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "topology",
+    "pluginPackages": [
+      "@backstage-community/plugin-topology",
+      "@internal/plugin-topology-dev-backend"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/topology/plugins/topology-dev-backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "start:alpha": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "clean": "backstage-cli package clean"
+  },
+  "dependencies": {
+    "@backstage/backend-defaults": "^0.16.0",
+    "@backstage/backend-plugin-api": "^1.8.0",
+    "@backstage/plugin-auth-backend": "^0.27.3",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.17",
+    "@backstage/plugin-catalog-backend": "^3.5.0",
+    "@backstage/plugin-kubernetes-backend": "^0.21.2",
+    "@backstage/plugin-permission-backend": "^0.7.10",
+    "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.2.17",
+    "better-sqlite3": "^12.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.36.0"
+  }
+}

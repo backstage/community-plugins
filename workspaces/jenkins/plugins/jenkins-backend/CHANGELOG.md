@@ -1,5 +1,31 @@
 # @backstage-community/plugin-jenkins-backend
 
+## 0.29.0
+
+### Minor Changes
+
+- cdc918c: Backstage version bump to v1.51.0
+- 26a0c8f: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [cdc918c]
+- Updated dependencies [26a0c8f]
+  - @backstage-community/plugin-jenkins-common@0.20.0
+
+## 0.28.1
+
+### Patch Changes
+
+- 1cf4218: Added new actions for Jenkins build management.
+
+  Added four actions that expose Jenkins backend capabilities via MCP and scaffolder templates:
+
+  - `list-builds` — list all Jenkins projects/jobs for a catalog entity
+  - `get-build` — fetch details of a specific build by job name and number
+  - `get-build-logs` — return the full console output of a build
+  - `trigger-build` — replay a build (enforces `jenkins.execute` permission)
+
 ## 0.28.0
 
 ### Minor Changes

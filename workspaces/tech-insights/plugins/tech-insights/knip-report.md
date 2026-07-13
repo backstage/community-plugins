@@ -2,15 +2,15 @@
 
 ## Unused dependencies (2)
 
-| Name              | Location     | Severity |
-| :---------------- | :----------- | :------- |
-| @backstage/errors | package.json | error    |
-| @backstage/types  | package.json | error    |
+| Name              | Location          | Severity |
+| :---------------- | :---------------- | :------- |
+| @backstage/errors | package.json:64:6 | error    |
+| @backstage/types  | package.json:68:6 | error    |
 
-## Unused devDependencies (3)
+## Unused devDependencies (2)
 
-| Name                   | Location     | Severity |
-| :--------------------- | :----------- | :------- |
-| @testing-library/react | package.json | error    |
-| @testing-library/dom   | package.json | error    |
-| canvas                 | package.json | error    |
+| Name                   | Location          | Severity |
+| :--------------------- | :---------------- | :------- |
+| @testing-library/react | package.json:83:6 | error    |
+| @testing-library/dom   | package.json:81:6 | error    |
+

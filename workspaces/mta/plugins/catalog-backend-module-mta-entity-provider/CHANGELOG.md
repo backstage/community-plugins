@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-catalog-backend-module-mta-entity-provider
 
+## 0.4.1
+
+### Patch Changes
+
+- 5adec44: Bumped Backstage dependencies to 1.49.4 for RHDH 1.10 compatibility.
+
 ## 0.4.0
 
 ### Minor Changes

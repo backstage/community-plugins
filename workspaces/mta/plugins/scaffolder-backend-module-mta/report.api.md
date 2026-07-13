@@ -8,11 +8,15 @@ import { BackendFeature } from '@backstage/backend-plugin-api';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
 
 // @public (undocumented)
-export function createMTAApplicationAction(opts: any): TemplateAction<    {
-[x: string]: any;
-}, {
-[x: string]: any;
-}, "v2">;
+export function createMTAApplicationAction(opts: any): TemplateAction<
+ {
+ [x: string]: any;
+ },
+ {
+ [x: string]: any;
+ },
+ 'v2'
+>;
 
 // @public (undocumented)
 const mtaScaffolderModule: BackendFeature;

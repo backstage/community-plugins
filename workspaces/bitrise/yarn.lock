@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@aashutoshrathi/word-wrap@npm:^1.2.3":
@@ -6484,9 +6484,9 @@ __metadata:
   linkType: hard
 
 "@xmldom/xmldom@npm:^0.8.3":
-  version: 0.8.10
-  resolution: "@xmldom/xmldom@npm:0.8.10"
-  checksum: 10/62400bc5e0e75b90650e33a5ceeb8d94829dd11f9b260962b71a784cd014ddccec3e603fe788af9c1e839fa4648d8c521ebd80d8b752878d3a40edabc9ce7ccf
+  version: 0.8.13
+  resolution: "@xmldom/xmldom@npm:0.8.13"
+  checksum: 10/f8f3d56fa91d5026885c0c5c00b07eae47647bda0d742ecbf8e51e06bb287ab30222977b20529ee15c364031606225ebca58907a8ecc76a3add6b3f10e6ddfc6
   languageName: node
   linkType: hard
 
@@ -10515,13 +10515,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.4.1":
-  version: 4.5.4
-  resolution: "fast-xml-parser@npm:4.5.4"
+  version: 4.5.6
+  resolution: "fast-xml-parser@npm:4.5.6"
   dependencies:
     strnum: "npm:^1.0.5"
   bin:
     fxparser: src/cli/cli.js
-  checksum: 10/991f11a15d82be778c3452e5f1109975d66276bb951ba4db87417507da15d0b1c09d15a4e4db15a216cf3315b4325f66ff3b7f9b7557d6a2055103755fb39cce
+  checksum: 10/dd77cce4b1b322400339147b72b2d315bddc12c6ed3ca82bfc87543ced6dd8d81a6e0b429489e2f048f39258aa2023580654c8934881c633b9d58a6e79672349
   languageName: node
   linkType: hard
 
@@ -16593,11 +16593,11 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.12.3, qs@npm:^6.9.4, qs@npm:^6.9.6":
-  version: 6.15.0
-  resolution: "qs@npm:6.15.0"
+  version: 6.15.2
+  resolution: "qs@npm:6.15.2"
   dependencies:
     side-channel: "npm:^1.1.0"
-  checksum: 10/a3458f2f389285c3512e0ebc55522ee370ac7cb720ba9f0eff3e30fb2bb07631caf556c08e2a3d4481a371ac14faa9ceb7442a0610c5a7e55b23a5bdee7b701c
+  checksum: 10/7a934b2dba40654cf9878dab7c1e7ad56c6186265509727fbece67dadc38fd5d67715b61b6ef938e5a0475faeee701d18ec0a7ce420ad64367caad7f1bdb66e2
   languageName: node
   linkType: hard
 

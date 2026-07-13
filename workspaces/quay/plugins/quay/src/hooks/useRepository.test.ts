@@ -17,27 +17,55 @@ import { renderHook } from '@testing-library/react';
 
 import { useRepository } from './quay';
 
+const mockUseEntity = jest.fn();
+
 jest.mock('@backstage/plugin-catalog-react', () => ({
-  useEntity: () => ({
-    entity: {
-      apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
-      metadata: {
-        name: 'foo',
-        annotations: {
-          'quay.io/repository-slug': 'foo/bar',
-          'quay.io/instance-name': 'devel',
-        },
-      },
-    },
-  }),
+  useEntity: () => mockUseEntity(),
 }));
 
 describe('useRepository', () => {
+  beforeEach(() => {
+    mockUseEntity.mockReturnValue({
+      entity: {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+        metadata: {
+          name: 'foo',
+          annotations: {
+            'quay.io/repository-slug': 'foo/bar',
+            'quay.io/instance-name': 'devel',
+          },
+        },
+      },
+    });
+  });
+
   it('should return instanceName, organization and repository', () => {
     const { result } = renderHook(() => useRepository());
     expect(result.current).toEqual({
       instanceName: 'devel',
+      organization: 'foo',
+      repository: 'bar',
+    });
+  });
+
+  it('should return undefined instanceName when not set', () => {
+    mockUseEntity.mockReturnValue({
+      entity: {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Component',
+        metadata: {
+          name: 'foo',
+          annotations: {
+            'quay.io/repository-slug': 'foo/bar',
+          },
+        },
+      },
+    });
+
+    const { result } = renderHook(() => useRepository());
+    expect(result.current).toEqual({
+      instanceName: undefined,
       organization: 'foo',
       repository: 'bar',
     });

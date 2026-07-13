@@ -28,6 +28,7 @@ export {
   getProviderConfig,
   getProviderInfo,
   OpenAIProvider,
+  AzureOpenAIProvider,
   OpenAIResponsesProvider,
   ClaudeProvider,
   GeminiProvider,
@@ -108,6 +109,7 @@ export {
   loadServerConfigs,
   executeToolCall,
   findNpxPath,
+  DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
 } from './utils';
 
 // =============================================================================

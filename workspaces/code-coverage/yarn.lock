@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -1247,7 +1247,7 @@ __metadata:
     "@types/body-parser-xml": "npm:^2.0.2"
     "@types/express": "npm:^4.17.6"
     "@types/supertest": "npm:^7.0.0"
-    body-parser: "npm:^1.20.0"
+    body-parser: "npm:^2.0.0"
     body-parser-xml: "npm:^2.0.5"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
@@ -1269,6 +1269,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/errors": "backstage:^"
+    "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
@@ -2186,7 +2187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/frontend-plugin-api@npm:^0.15.0":
+"@backstage/frontend-plugin-api@backstage:^::backstage=1.49.2&npm=0.15.1, @backstage/frontend-plugin-api@npm:^0.15.0, @backstage/frontend-plugin-api@npm:^0.15.1":
   version: 0.15.1
   resolution: "@backstage/frontend-plugin-api@npm:0.15.1"
   dependencies:
@@ -3514,6 +3515,9 @@ __metadata:
     node-gyp: "npm:^10.0.0"
     prettier: "npm:^2.3.2"
     typescript: "npm:~5.8.0"
+  dependenciesMeta:
+    better-sqlite3:
+      built: true
   languageName: unknown
   linkType: soft
 
@@ -11144,7 +11148,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^1.20.0, body-parser@npm:~1.20.3":
+"body-parser@npm:^2.0.0":
+  version: 2.2.2
+  resolution: "body-parser@npm:2.2.2"
+  dependencies:
+    bytes: "npm:^3.1.2"
+    content-type: "npm:^1.0.5"
+    debug: "npm:^4.4.3"
+    http-errors: "npm:^2.0.0"
+    iconv-lite: "npm:^0.7.0"
+    on-finished: "npm:^2.4.1"
+    qs: "npm:^6.14.1"
+    raw-body: "npm:^3.0.1"
+    type-is: "npm:^2.0.1"
+  checksum: 10/69671f67d4d5ae5974593901a92d639757231da1725ed6de4d35e86cde9ce7650afdf1cd28df9b6f7892ea7f9eb03ccb30c70fe27d679275ae4cb4aae5ce1b21
+  languageName: node
+  linkType: hard
+
+"body-parser@npm:~1.20.3":
   version: 1.20.4
   resolution: "body-parser@npm:1.20.4"
   dependencies:
@@ -11448,7 +11469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bytes@npm:3.1.2, bytes@npm:~3.1.2":
+"bytes@npm:3.1.2, bytes@npm:^3.1.2, bytes@npm:~3.1.2":
   version: 3.1.2
   resolution: "bytes@npm:3.1.2"
   checksum: 10/a10abf2ba70c784471d6b4f58778c0beeb2b5d405148e66affa91f23a9f13d07603d0a0354667310ae1d6dc141474ffd44e2a074be0f6e2254edb8fc21445388
@@ -16142,6 +16163,15 @@ __metadata:
   dependencies:
     safer-buffer: "npm:>= 2.1.2 < 3.0.0"
   checksum: 10/24e3292dd3dadaa81d065c6f8c41b274a47098150d444b96e5f53b4638a9a71482921ea6a91a1f59bb71d9796de25e04afd05919fa64c360347ba65d3766f10f
+  languageName: node
+  linkType: hard
+
+"iconv-lite@npm:^0.7.0, iconv-lite@npm:~0.7.0":
+  version: 0.7.2
+  resolution: "iconv-lite@npm:0.7.2"
+  dependencies:
+    safer-buffer: "npm:>= 2.1.2 < 3.0.0"
+  checksum: 10/24c937b532f868e938386b62410b303b7c767ce3d08dc2829cbe59464d5a26ef86ae5ad1af6b34eec43ddfea39e7d101638644b0178d67262fa87015d59f983a
   languageName: node
   linkType: hard
 
@@ -21346,7 +21376,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.11.0, qs@npm:^6.11.2, qs@npm:^6.12.3, qs@npm:^6.9.4, qs@npm:~6.14.0":
+"qs@npm:^6.11.0, qs@npm:^6.11.2, qs@npm:^6.12.3, qs@npm:^6.14.1, qs@npm:^6.9.4":
+  version: 6.15.1
+  resolution: "qs@npm:6.15.1"
+  dependencies:
+    side-channel: "npm:^1.1.0"
+  checksum: 10/ec10b9957446b3f4a38000940f6374720b4e2985209b89df197066038c951472ea24cd98d6bc6df73a0cbec75bc056f638032e3fb447345017ff7e0f0a2693ac
+  languageName: node
+  linkType: hard
+
+"qs@npm:~6.14.0":
   version: 6.14.1
   resolution: "qs@npm:6.14.1"
   dependencies:
@@ -21427,6 +21466,18 @@ __metadata:
     iconv-lite: "npm:~0.4.24"
     unpipe: "npm:~1.0.0"
   checksum: 10/f35759fe5a6548e7c529121ead1de4dd163f899749a5896c42e278479df2d9d7f98b5bb17312737c03617765e5a1433e586f717616e5cfbebc13b4738b820601
+  languageName: node
+  linkType: hard
+
+"raw-body@npm:^3.0.1":
+  version: 3.0.2
+  resolution: "raw-body@npm:3.0.2"
+  dependencies:
+    bytes: "npm:~3.1.2"
+    http-errors: "npm:~2.0.1"
+    iconv-lite: "npm:~0.7.0"
+    unpipe: "npm:~1.0.0"
+  checksum: 10/4168c82157bd69175d5bd960e59b74e253e237b358213694946a427a6f750a18b8e150f036fed3421b3e83294b071a4e2bb01037a79ccacdac05360c63d3ebba
   languageName: node
   linkType: hard
 
@@ -25258,20 +25309,20 @@ __metadata:
   linkType: hard
 
 "uuid@npm:^11.0.0":
-  version: 11.0.5
-  resolution: "uuid@npm:11.0.5"
+  version: 11.1.1
+  resolution: "uuid@npm:11.1.1"
   bin:
     uuid: dist/esm/bin/uuid
-  checksum: 10/0594ecdff3051e15d4a2c614b4c72e73af373bde0a5d156512353c01156975295d024ae8d7151846d7bd4d22ccd251b16ed51b4318fa71505fb20ad984102dc1
+  checksum: 10/16411d3dc12a08d6691616c09a75e66a7f900ba1beef6628a76fe0602f82fae2ee537b564d0b7bc95c24f58d059ca9b58c75a1e806118efb50e17822ff00ddd2
   languageName: node
   linkType: hard
 
 "uuid@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "uuid@npm:13.0.0"
+  version: 13.0.2
+  resolution: "uuid@npm:13.0.2"
   bin:
     uuid: dist-node/bin/uuid
-  checksum: 10/2742b24d1e00257e60612572e4d28679423469998cafbaf1fe9f1482e3edf9c40754b31bfdb3d08d71b29239f227a304588f75210b3b48f2609f0673f1feccef
+  checksum: 10/567dddca18a8520796dd3cd1e4513f4c7c522f25602c15381615395d60c7892f330366680fc21373f19fb83c991f3da8413f57dbd85bf976069cf0818aa6c61c
   languageName: node
   linkType: hard
 

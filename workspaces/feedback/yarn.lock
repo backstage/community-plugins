@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -2944,7 +2944,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^3.0.0"
     "@backstage/plugin-notifications-node": "npm:^0.2.17"
     "@types/express": "npm:*"
-    "@types/nodemailer": "npm:7.0.11"
+    "@types/nodemailer": "npm:8.0.0"
     "@types/supertest": "npm:7.2.0"
     axios: "npm:^1.6.4"
     express: "npm:^4.17.1"
@@ -2952,7 +2952,7 @@ __metadata:
     knex: "npm:^3.1.0"
     msw: "npm:1.3.5"
     node-fetch: "npm:^2.6.7"
-    nodemailer: "npm:^7.0.7"
+    nodemailer: "npm:^9.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-dom: "npm:^18"
     react-router-dom: "npm:^6.26.1"
@@ -10203,12 +10203,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:7.0.11":
-  version: 7.0.11
-  resolution: "@types/nodemailer@npm:7.0.11"
+"@types/nodemailer@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@types/nodemailer@npm:8.0.0"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10/a657038e919603f1e7136bd47c631c4ef2857576f57d5024d37a2581d4993ef352681e9264604747db7055347e19818add8ab9f964be0f116dd437f5d31ff0e5
+  checksum: 10/d1178b557e8c547018e708459af06fdf2e9cfd6d65fed109517cddfe6b5add6201d941882a2e4eeede529de08ae71a68fb2a1d8f1c41cb3761d3a6c2458025fe
   languageName: node
   linkType: hard
 
@@ -11742,13 +11742,14 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.6.4, axios@npm:^1.7.4":
-  version: 1.15.0
-  resolution: "axios@npm:1.15.0"
+  version: 1.18.1
+  resolution: "axios@npm:1.18.1"
   dependencies:
-    follow-redirects: "npm:^1.15.11"
+    follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.5"
+    https-proxy-agent: "npm:^5.0.1"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10/d39a2c0ebc7ff4739401b282e726cc2673377949d6c46d60eb619458f8d7a2f7eadbcada7097f4dbc7d5c59abb4d3bf6fac33d474412bc3415d3f5aa7ed45530
+  checksum: 10/c4cdced3ee0a9bf7dcae189fbc74a124aa079d4f04dbd995e602d39c1419476e8d021f87ee39ac8d8398e5a55e6d0b986238b3645f0d9177ac80de87c2a73f18
   languageName: node
   linkType: hard
 
@@ -16480,13 +16481,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11, follow-redirects@npm:^1.15.6":
-  version: 1.15.11
-  resolution: "follow-redirects@npm:1.15.11"
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.6, follow-redirects@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10/07372fd74b98c78cf4d417d68d41fdaa0be4dcacafffb9e67b1e3cf090bc4771515e65020651528faab238f10f9b9c0d9707d6c1574a6c0387c5de1042cde9ba
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 
@@ -22273,10 +22274,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^7.0.7":
-  version: 7.0.11
-  resolution: "nodemailer@npm:7.0.11"
-  checksum: 10/2ad4dd56a4caf84a83aa6f4378ded26d5ef8a644ca3be09c3b4fb2255d861369e620f29be6c3c97148ac4a50aa5fdff6240b9d60805362bd99ca15f2ea62e8a2
+"nodemailer@npm:^9.0.0":
+  version: 9.0.3
+  resolution: "nodemailer@npm:9.0.3"
+  checksum: 10/0118b6fc1e2f459b2b953c4827167a8c8422e1df2fb5055df3af307f4eff4fc71e7c19eb5aff923a6dcc26242e9c1008d63595117b4519a2698591dac64ee82c
   languageName: node
   linkType: hard
 

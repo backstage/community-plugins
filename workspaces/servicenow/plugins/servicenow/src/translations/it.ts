@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
 import { servicenowTranslationRef } from './ref';
 
+/**
+ * Italian translation for plugin.servicenow.
+ * @public
+ */
 const servicenowTranslationIt = createTranslationMessages({
   ref: servicenowTranslationRef,
   messages: {
-    'page.title': 'Ticket ServiceNow',
-    'page.titleWithCount': 'Ticket ServiceNow ({{count}})',
-    'table.searchPlaceholder': 'Cerca',
-    'table.labelRowsSelect': '{{count}} righe',
-    'table.columns.incidentNumber': 'Numero incidente',
-    'table.columns.description': 'Descrizione',
-    'table.columns.created': 'Creato',
-    'table.columns.priority': 'Priorità',
-    'table.columns.state': 'Stato',
-    'table.columns.actions': 'Azioni',
-    'table.emptyContent': 'Nessun record trovato',
+    'page.title': 'Ticket di ServiceNow',
+    'page.titleWithCount': 'Ticket di ServiceNow ({{count}})',
     'filter.state': 'Stato',
     'filter.priority': 'Priorità',
-    'priority.critical': 'Critica',
-    'priority.high': 'Alta',
-    'priority.moderate': 'Moderata',
+    'priority.critical': 'Critico',
+    'priority.high': 'Elevata',
+    'priority.moderate': 'Moderato',
     'priority.low': 'Bassa',
     'priority.planning': 'Pianificazione',
     'incidentState.new': 'Nuovo',
@@ -44,7 +40,16 @@ const servicenowTranslationIt = createTranslationMessages({
     'incidentState.closed': 'Chiuso',
     'incidentState.cancelled': 'Annullato',
     'errors.loadingIncidents':
-      'Errore durante il caricamento degli incidenti: {{error}}',
+      'Errore durante il caricamento incidenti: {{error}}',
+    'table.searchPlaceholder': 'Ricerca',
+    'table.labelRowsSelect': '{{count}} righe',
+    'table.columns.incidentNumber': 'Numero incidente',
+    'table.columns.description': 'Descrizione',
+    'table.columns.created': 'Creato',
+    'table.columns.priority': 'Priorità',
+    'table.columns.state': 'Stato',
+    'table.columns.actions': 'Azioni',
+    'table.emptyContent': 'Nessun risultato trovato',
     'actions.openInServicenow': 'Apri in ServiceNow',
   },
 });

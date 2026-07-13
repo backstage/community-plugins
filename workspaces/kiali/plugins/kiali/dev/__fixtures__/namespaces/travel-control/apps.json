@@ -12,7 +12,7 @@
       "name": "control",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "control",
         "version": "v1"

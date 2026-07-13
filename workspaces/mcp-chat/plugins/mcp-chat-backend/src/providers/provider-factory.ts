@@ -21,6 +21,7 @@ import { ClaudeProvider } from './claude-provider';
 import { GeminiProvider } from './gemini-provider';
 import { OllamaProvider } from './ollama-provider';
 import { LiteLLMProvider } from './litellm-provider';
+import { AzureOpenAIProvider } from './azure-openai-provider';
 import {
   RootConfigService,
   LoggerService,
@@ -28,7 +29,7 @@ import {
 
 /**
  * Factory class for creating LLM provider instances.
- * Supports OpenAI, Claude, Gemini, Ollama, LiteLLM, and OpenAI Responses API.
+ * Supports OpenAI, Azure OpenAI, Claude, Gemini, Ollama, LiteLLM, and OpenAI Responses API.
  *
  * @public
  */
@@ -51,6 +52,9 @@ export class ProviderFactory {
 
       case 'openai-responses':
         return new OpenAIResponsesProvider(configWithLogger);
+
+      case 'azure-openai':
+        return new AzureOpenAIProvider(configWithLogger);
 
       case 'claude':
         return new ClaudeProvider(configWithLogger);
@@ -86,10 +90,27 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   const providerId = providerConfig.getString('id');
   const token = providerConfig.getOptionalString('token');
   const model = providerConfig.getString('model');
+  const maxTokens = providerConfig.getOptionalNumber('maxTokens');
+  const temperature = providerConfig.getOptionalNumber('temperature');
+
+  if (
+    maxTokens !== undefined &&
+    (maxTokens <= 0 || !Number.isInteger(maxTokens))
+  ) {
+    throw new Error(
+      `Invalid maxTokens value: ${maxTokens}. Must be a positive integer.`,
+    );
+  }
+  if (temperature !== undefined && (temperature < 0 || temperature > 2)) {
+    throw new Error(
+      `Invalid temperature value: ${temperature}. Must be between 0 and 2.`,
+    );
+  }
 
   const allowedProviders = [
     'openai',
     'openai-responses',
+    'azure-openai',
     'claude',
     'gemini',
     'ollama',
@@ -111,6 +132,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
         providerConfig.getOptionalString('baseUrl') ||
         'https://api.openai.com/v1',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     'openai-responses': {
@@ -118,6 +141,18 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: providerConfig.getOptionalString('baseUrl') || '',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
+    },
+
+    'azure-openai': {
+      type: 'azure-openai',
+      apiKey: token,
+      baseUrl: providerConfig.getOptionalString('baseUrl') || '',
+      model: model,
+      deploymentName: providerConfig.getOptionalString('deploymentName'),
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     claude: {
@@ -125,6 +160,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: 'https://api.anthropic.com/v1',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     gemini: {
@@ -132,6 +169,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       apiKey: token,
       baseUrl: 'https://generativelanguage.googleapis.com',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     ollama: {
@@ -140,6 +179,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       baseUrl:
         providerConfig.getOptionalString('baseUrl') || 'http://localhost:11434',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
 
     litellm: {
@@ -148,6 +189,8 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       baseUrl:
         providerConfig.getOptionalString('baseUrl') || 'http://localhost:4000',
       model: model,
+      maxTokens: maxTokens,
+      temperature: temperature,
     },
   };
 
@@ -168,6 +211,11 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
   if (!configTemplate.model) {
     throw new Error(`Model is required for provider: ${providerId}`);
   }
+  if (providerId === 'azure-openai' && !configTemplate.deploymentName) {
+    throw new Error(
+      'Deployment name is required for the azure-openai provider.',
+    );
+  }
 
   return configTemplate as ProviderConfig;
 }
@@ -185,5 +233,8 @@ export function getProviderInfo(config: RootConfigService) {
     provider: providerConfig.type,
     model: providerConfig.model,
     baseURL: providerConfig.baseUrl,
+    ...(providerConfig.deploymentName && {
+      deploymentName: providerConfig.deploymentName,
+    }),
   };
 }

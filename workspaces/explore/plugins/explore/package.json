@@ -65,7 +65,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
-    "@backstage/frontend-plugin-api": "^0.16.1",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/plugin-search-common": "backstage:^",
     "@backstage/plugin-search-react": "backstage:^",

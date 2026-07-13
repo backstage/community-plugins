@@ -59,7 +59,7 @@ export const WorkloadDetailsDrawer = (props: Props) => {
           {
             rateInterval: 60,
             hasSidecar: workloadResponse.istioSidecar,
-            hasAmbient: workloadResponse.istioAmbient,
+            hasAmbient: workloadResponse.isAmbient,
           },
           serverConfig,
         );

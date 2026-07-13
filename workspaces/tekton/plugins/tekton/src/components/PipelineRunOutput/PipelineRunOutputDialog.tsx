@@ -17,16 +17,12 @@ import { memo } from 'react';
 
 import { ErrorBoundary } from '@backstage/core-components';
 
-import {
-  Box,
-  createStyles,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import type { SxProps, Theme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 import {
@@ -40,21 +36,33 @@ import ResourceBadge from '../PipelineRunList/ResourceBadge';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    titleContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: theme.spacing(1),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  }),
-);
+const titleContainerSx = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 1,
+};
+
+const closeButtonSx: SxProps<Theme> = {
+  position: 'absolute',
+  right: (theme: Theme) => theme.spacing(1),
+  top: (theme: Theme) => theme.spacing(1),
+  color: (theme: Theme) => theme.palette.grey[500],
+};
+
+const dialogPaperSx: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '90vh',
+  maxHeight: '90vh',
+};
+
+const dialogContentSx: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+  minHeight: 0,
+  overflow: 'hidden',
+};
 
 type PipelineRunOutputDialogProps = {
   open: boolean;
@@ -68,7 +76,6 @@ const PipelineRunOutputDialog = ({
   pipelineRun,
   taskRuns,
 }: PipelineRunOutputDialogProps) => {
-  const classes = useStyles();
   const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
@@ -78,9 +85,10 @@ const PipelineRunOutputDialog = ({
       fullWidth
       open={open}
       onClose={closeDialog}
+      PaperProps={{ sx: dialogPaperSx }}
     >
       <DialogTitle id="pipelinerun-output" title={t('pipelineRunOutput.title')}>
-        <Box className={classes.titleContainer}>
+        <Box sx={titleContainerSx}>
           <ResourceBadge
             color={tektonGroupColor}
             abbr="PLR"
@@ -88,14 +96,14 @@ const PipelineRunOutputDialog = ({
           />{' '}
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
+            sx={closeButtonSx}
             onClick={closeDialog}
           >
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={dialogContentSx}>
         <ErrorBoundary>
           <PipelineRunOutput pipelineRun={pipelineRun} taskRuns={taskRuns} />
         </ErrorBoundary>

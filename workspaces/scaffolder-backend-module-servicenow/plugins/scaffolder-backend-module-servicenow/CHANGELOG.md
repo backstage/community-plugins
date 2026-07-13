@@ -1,5 +1,25 @@
 # @backstage-community/plugin-scaffolder-backend-module-servicenow
 
+## 2.16.0
+
+### Minor Changes
+
+- 5e1ae58: Backstage version bump to v1.52.0
+
+## 2.15.2
+
+### Patch Changes
+
+- a4d0ef7: Updated dependency `@hey-api/openapi-ts` to `0.98.2`.
+
+## 2.15.1
+
+### Patch Changes
+
+- 85f6e69: Bump axios to 1.16.0 to include different security fixes.
+- 24acada: Updated dependency `@hey-api/openapi-ts` to `0.97.1`.
+- e9a32f2: Updated dependency `@hey-api/openapi-ts` to `0.95.0`.
+
 ## 2.15.0
 
 ### Minor Changes

@@ -320,6 +320,8 @@ Request parameters:
 | policy          | Policy action for the permission, `create`, `read`, `update`, `delete`, `use` | String |
 | effect          | `allow` or `deny`                                                             | String |
 
+The `permission` string must not contain double quotes (`"`). Embedded quotes are not handled safely in the current Casbin DB persistence path.
+
 body:
 
 ```json

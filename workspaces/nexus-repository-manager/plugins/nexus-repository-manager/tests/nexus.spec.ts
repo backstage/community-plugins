@@ -60,7 +60,10 @@ test.describe('Nexus Repository Manager plugin', () => {
 
   test('Filters work', async () => {
     const filter = page.getByPlaceholder(translations.table.searchPlaceholder);
-    const tableRow = page.getByRole('row').filter({ hasText: 'sha256' });
+    const tableRow = page
+      .getByTestId('nexus-repository-manager-table')
+      .locator('tbody tr')
+      .filter({ hasText: 'sha256' });
 
     await expect(tableRow).toHaveCount(3);
     await filter.fill('latest');

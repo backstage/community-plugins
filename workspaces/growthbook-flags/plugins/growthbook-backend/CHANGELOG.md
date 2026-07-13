@@ -1,5 +1,11 @@
 # @backstage-community/plugin-growthbook-backend
 
+## 0.1.1
+
+### Patch Changes
+
+- 83c9f32: Use workspace protocol for internal dependency on plugin-growthbook-common
+
 ## 0.1.0
 
 ### Minor Changes

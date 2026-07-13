@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Config } from '@backstage/config';
+import { InputError } from '@backstage/errors';
 
 import {
   RoleBasedPolicy,
@@ -30,6 +31,7 @@ import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
 import {
   validateSource,
   validateEntityReference,
+  validatePolicy,
 } from '../validation/policies-validation';
 
 const DEFAULT_ROLE_DESCRIPTION =
@@ -50,14 +52,14 @@ export class DefaultPermissionsReader {
       role = defPermissionsConfig.getOptionalString('defaultRole');
 
       if (!role) {
-        throw new Error(
+        throw new InputError(
           'Default role is mandatory for defaultPermissions configuration. Please set a valid default role in the configuration.',
         );
       }
 
       const validationError = validateEntityReference(role, true);
       if (validationError) {
-        throw new Error(
+        throw new InputError(
           `Invalid default role '${role}': ${validationError.message}`,
         );
       }
@@ -77,7 +79,7 @@ export class DefaultPermissionsReader {
       const basicPermissions =
         defPermissionsConfig.getOptionalConfigArray('basicPermissions');
       if (!basicPermissions || basicPermissions.length === 0) {
-        throw new Error(
+        throw new InputError(
           `The default role '${role}' requires at least one entry in permission.rbac.defaultPermissions.basicPermissions.`,
         );
       }
@@ -87,7 +89,7 @@ export class DefaultPermissionsReader {
         const action = permission.getOptionalString('action');
 
         if (action && !isValidPermissionAction(action)) {
-          throw new Error(
+          throw new InputError(
             `Invalid action '${action}' for permission '${permissionName}'.`,
           );
         }
@@ -98,6 +100,15 @@ export class DefaultPermissionsReader {
           policy: action || 'use',
           effect: 'allow',
         };
+      });
+
+      policies.forEach(policy => {
+        const validationError = validatePolicy(policy);
+        if (validationError) {
+          throw new InputError(
+            `Invalid default permission policy for role '${role}': ${validationError.message}`,
+          );
+        }
       });
     }
 

@@ -1,5 +1,11 @@
 # @backstage-community/backstage-plugin-scaffolder-backend-module-mta
 
+## 0.5.1
+
+### Patch Changes
+
+- 5adec44: Bumped Backstage dependencies to 1.49.4 for RHDH 1.10 compatibility.
+
 ## 0.5.0
 
 ### Minor Changes

@@ -6,7 +6,7 @@
   "resourceVersion": "1095",
   "istioInjectionAnnotation": false,
   "istioSidecar": false,
-  "istioAmbient": false,
+  "isAmbient": false,
   "additionalDetailSample": null,
   "labels": {
     "app": "grafana",
@@ -77,7 +77,7 @@
       "namespace": "istio-system",
       "istioSidecar": true,
       "cluster": "Kubernetes",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,

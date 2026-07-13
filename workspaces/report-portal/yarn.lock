@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -11577,10 +11577,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.2":
-  version: 1.23.2
-  resolution: "@remix-run/router@npm:1.23.2"
-  checksum: 10/50eb497854881bbd2e1016d4eb83c935ecd618e1c3888b74718851317e3b04edbaae9fe1baa49ec08c5c52cfe7118f4664e37144813d9500f45f922d6602a782
+"@remix-run/router@npm:1.23.3":
+  version: 1.23.3
+  resolution: "@remix-run/router@npm:1.23.3"
+  checksum: 10/a12ae9994bf017d47392ce2be24252b4e2281f4b27eac78f0e9b48afa5f522be9c0ec64b85db013ded1fff140d9512b97ac8ea5dd182138dcd6d3ded3136cbf6
   languageName: node
   linkType: hard
 
@@ -16415,7 +16415,7 @@ __metadata:
     "@types/express-serve-static-core": "npm:^5.0.0"
     "@types/luxon": "npm:^3.0.0"
     app: "link:../app"
-    better-sqlite3: "npm:^9.0.0"
+    better-sqlite3: "npm:^12.0.0"
     node-gyp: "npm:^9.0.0"
     pg: "npm:^8.11.3"
     winston: "npm:^3.2.1"
@@ -16572,17 +16572,6 @@ __metadata:
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.1"
   checksum: 10/e8133786677e88a2526c965658178e2e057e4b40ff554895a71ecb5e617e062fea619f31389ffbd6fc1f3396ef598812302be56c32e0f01fcb82610785d18186
-  languageName: node
-  linkType: hard
-
-"better-sqlite3@npm:^9.0.0":
-  version: 9.6.0
-  resolution: "better-sqlite3@npm:9.6.0"
-  dependencies:
-    bindings: "npm:^1.5.0"
-    node-gyp: "npm:latest"
-    prebuild-install: "npm:^7.1.1"
-  checksum: 10/06b3d95221071a06c2e22a9746d9b7049c0bce7962e5e3290ccf088fffbf4d4d52868f0d98b8ae2565fe33b1adab89823145f23c6f6eb63ecc4fc1b883f9082c
   languageName: node
   linkType: hard
 
@@ -21177,12 +21166,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.6":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10/70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 
@@ -22592,8 +22581,8 @@ __metadata:
   linkType: hard
 
 "http-proxy-middleware@npm:^2.0.0, http-proxy-middleware@npm:^2.0.3":
-  version: 2.0.9
-  resolution: "http-proxy-middleware@npm:2.0.9"
+  version: 2.0.10
+  resolution: "http-proxy-middleware@npm:2.0.10"
   dependencies:
     "@types/http-proxy": "npm:^1.17.8"
     http-proxy: "npm:^1.18.1"
@@ -22605,13 +22594,13 @@ __metadata:
   peerDependenciesMeta:
     "@types/express":
       optional: true
-  checksum: 10/4ece416a91d52e96f8136c5f4abfbf7ac2f39becbad21fa8b158a12d7e7d8f808287ff1ae342b903fd1f15f2249dee87fabc09e1f0e73106b83331c496d67660
+  checksum: 10/efa8b5d4dec112fba5f6741df33a926818f87156f44dee425e653284c20844f3a9f2af88042a7d4ef297161479e1549302dea693bce23123fa2da07420fa2214
   languageName: node
   linkType: hard
 
 "http-proxy-middleware@npm:^3.0.0":
-  version: 3.0.5
-  resolution: "http-proxy-middleware@npm:3.0.5"
+  version: 3.0.7
+  resolution: "http-proxy-middleware@npm:3.0.7"
   dependencies:
     "@types/http-proxy": "npm:^1.17.15"
     debug: "npm:^4.3.6"
@@ -22619,7 +22608,7 @@ __metadata:
     is-glob: "npm:^4.0.3"
     is-plain-object: "npm:^5.0.0"
     micromatch: "npm:^4.0.8"
-  checksum: 10/83c1956be6451a5f4a2f3c7b3d84085dbd47e1efb5bb684c1ed668a6606c18c7c07be823b0dbba1326955b64cf88de2672492940b0b48d140215fbdb06105c9a
+  checksum: 10/a44135de721e55517b0fca596855e1e4da92b5fdad247425b4253a345fface37b2a800fcfe37dc28863e9021d8c56cf9cb33ebd20d63c9eca6918a46b39082d4
   languageName: node
   linkType: hard
 
@@ -30242,13 +30231,13 @@ __metadata:
   linkType: hard
 
 "react-router@npm:^6.3.0":
-  version: 6.30.3
-  resolution: "react-router@npm:6.30.3"
+  version: 6.30.4
+  resolution: "react-router@npm:6.30.4"
   dependencies:
-    "@remix-run/router": "npm:1.23.2"
+    "@remix-run/router": "npm:1.23.3"
   peerDependencies:
     react: ">=16.8"
-  checksum: 10/1a51bdcc42b8d7979228dea8b5c44a28a4add9b681781f75b74f5f920d20058a92ffe5f1d0ba0621f03abe1384b36025b53b402515ecb35f27a6a2f2f25d6fbe
+  checksum: 10/59c1b64a210cde2f1d069ffc47dce2d58991bd4d81bb0743e22ba7c6b742e63ebbdc976c42c3a3ebd90bf38a2f05258bd0efa82c162b259be000d39787716043
   languageName: node
   linkType: hard
 

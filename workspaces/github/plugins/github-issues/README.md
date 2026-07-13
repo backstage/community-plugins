@@ -6,8 +6,13 @@ Welcome to the GitHub Issues plugin!
 > Backstage UI (BUI) is now required for the GitHub Issues plugin to function, BUI has been included as part of Backstage since `1.41.0` which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
 
 Based on the [well-known GitHub slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations#githubcomproject-slug) associated with the Entity, it renders the list of Open issues in GitHub.
-The plugin will attempt to determine the source code location using the [well-known Source location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiosource-location) or [Managed by location slug annotation](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiomanaged-by-location) associated with the Entity.
-If no configured Github provider will match, the first one will be used.
+
+The GitHub host (and therefore which `integrations.github` credentials are used) is resolved depending on the Entity kind:
+
+- **Group / User**: the host is taken from the configured GitHub integration, **not** from the owner entity's location annotation. This means owners ingested from a non-GitHub source — e.g. Microsoft Entra / Microsoft Graph (`msgraph:`), LDAP, or a static `org.yaml` — work correctly and no longer crash the card. The repositories are taken from the [`github.com/project-slug`](https://backstage.io/docs/features/software-catalog/well-known-annotations#githubcomproject-slug) annotation of the Components the Entity owns, so a `github.com/team-slug` annotation on the Group/User is not required.
+- **All other kinds** (e.g. Component): the host is determined from the entity's [Source location](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiosource-location) or [Managed by location](https://backstage.io/docs/features/software-catalog/well-known-annotations/#backstageiomanaged-by-location) annotation.
+
+If no configured GitHub provider matches the resolved host, the first configured integration is used.
 
 The plugin is designed to work with any Entity kind, and it behaves a bit differently depending on the target kind:
 

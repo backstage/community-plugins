@@ -152,17 +152,8 @@ export function createAzureDevopsRunPipelineAction(options: {
 
       // Add template parameters to RunPipelineParameters if available
       if (templateParameters) {
-        // Log the templateParameters if available
-        ctx.logger.info(
-          `Template parameters: ${JSON.stringify(templateParameters, null, 2)}`,
-        );
         createOptions.templateParameters = templateParameters;
       }
-
-      // Log the createOptions object in a readable format
-      ctx.logger.debug('Create options for running the pipeline:', {
-        RunPipelineParameters: JSON.stringify(createOptions, null, 2),
-      });
 
       const pipelineIdAsInt = parseInt(pipelineId, 10);
 

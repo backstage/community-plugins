@@ -1,5 +1,16 @@
 # @backstage-community/plugin-acs
 
+## 0.2.0
+
+### Minor Changes
+
+- 54e5879: Backstage version bump to v1.49.4
+
+### Patch Changes
+
+- f99931a: Updated dependency `@apollo/client` to `^4.0.0`.
+- 9881304: Updated dependency `@patternfly/react-topology` to `6.4.0`.
+
 ## 0.1.1
 
 ### Patch Changes

@@ -40,7 +40,18 @@ export function expectAuditorLog(
       expect(succeededEvents[i][0]).toEqual(events[i].success);
     }
     if (events[i].fail) {
-      expect(failedEvents[i][0]).toEqual(events[i].fail);
+      const actual = failedEvents[i][0] as {
+        error: Error;
+        meta?: JsonObject;
+      };
+      const expected = events[i].fail!;
+      const { error: expectedError, ...expectedRest } = expected;
+      const { error: actualError, ...actualRest } = actual;
+      expect(actualError).toMatchObject({
+        name: expectedError.name,
+        message: expectedError.message,
+      });
+      expect(actualRest).toEqual(expectedRest);
     }
   }
 }

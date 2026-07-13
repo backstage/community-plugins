@@ -29,7 +29,7 @@ const acrTranslationJa = createTranslationMessages({
     'table.labelRowsSelect': '行',
     'table.columns.tag': 'タグ',
     'table.columns.created': '作成済み',
-    'table.columns.lastModified': '最終更新',
+    'table.columns.lastModified': '最終変更日',
     'table.columns.manifest': 'マニフェスト',
   },
 });

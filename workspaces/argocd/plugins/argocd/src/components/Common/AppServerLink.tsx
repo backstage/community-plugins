@@ -15,8 +15,8 @@
  */
 import type { FC } from 'react';
 import { Application } from '@backstage-community/plugin-argocd-common';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import { useTranslation } from '../../hooks/useTranslation';
 
 interface AppServerLinkProps {

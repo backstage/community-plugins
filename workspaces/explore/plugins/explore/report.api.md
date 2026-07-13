@@ -66,7 +66,7 @@ export class ExploreClient implements ExploreApi {
 
 // @public
 export const ExploreLayout: {
-  (props: ExploreLayoutProps): JSX_2.Element;
+  (props: ExploreLayoutProps): default_2.JSX.Element;
   Route: (props: SubRoute) => null;
 };
 

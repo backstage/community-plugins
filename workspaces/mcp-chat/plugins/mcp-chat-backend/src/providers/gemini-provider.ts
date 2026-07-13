@@ -48,8 +48,8 @@ export class GeminiProvider extends LLMProvider {
 
     this.genAI = new GoogleGenAI({ apiKey: this.apiKey });
     this.baseModelConfig = {
-      temperature: 0.7,
-      maxOutputTokens: 8192,
+      temperature: this.temperature ?? 0.7,
+      maxOutputTokens: this.maxTokens ?? 8192,
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,

@@ -2,6 +2,24 @@
   margin: 0 0 24px;
 }
 
+/* TabList wrapper: full-width divider below tabs + indicator */
+.topology-side-bar-tabs .topology-side-bar-tab-list {
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+  overflow: visible;
+}
+
+/* Active indicator: thicker bar layered on top of the divider (MUI-like) */
+.topology-side-bar-tabs [class*='bui-TabActive'] {
+  bottom: -1px;
+  height: 2px;
+  z-index: 2;
+  background-color: var(
+    --bui-fg-link,
+    var(--pf-t--global--color--brand--default)
+  );
+  border-radius: 0;
+}
+
 .topology-side-bar-tabs .tab-button {
   background: transparent !important;
   padding: 12px 16px;

@@ -16,6 +16,7 @@
     "outDir": "dist-types",
     "rootDir": ".",
     "moduleResolution": "node",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "skipLibCheck": true
   }
 }

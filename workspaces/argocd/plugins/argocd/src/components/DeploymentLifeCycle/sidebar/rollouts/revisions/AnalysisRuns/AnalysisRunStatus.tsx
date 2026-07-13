@@ -21,7 +21,7 @@ import {
   ExclamationCircleIcon,
 } from '@patternfly/react-icons';
 
-import useIconStyles from '../../../../../../hooks/useIconStyles';
+import { iconStyle, SpinWrapper } from '../../../../../../hooks/useIconStyles';
 import {
   AnalysisRunPhase,
   AnalysisRunPhases,
@@ -31,15 +31,12 @@ import { getStatusColor } from '../../RolloutStatusIcon';
 const AnalysisRunStatus: FC<{ status: AnalysisRunPhase | undefined }> = ({
   status,
 }) => {
-  const classes = useIconStyles();
-
   if (!status) {
     return null;
   }
   const commonProps = {
     ['data-testid']: `analysisrun-${status.toLocaleLowerCase('en-US')}-icon`,
-    className: classes.icon,
-    style: { color: getStatusColor(status) },
+    style: { ...iconStyle, color: getStatusColor(status) },
   };
 
   switch (status) {
@@ -47,10 +44,9 @@ const AnalysisRunStatus: FC<{ status: AnalysisRunPhase | undefined }> = ({
       return <CheckCircleIcon {...commonProps} />;
     case AnalysisRunPhases.Running:
       return (
-        <CircleNotchIcon
-          {...commonProps}
-          className={`${classes.icon} ${classes['icon-spin']}`}
-        />
+        <SpinWrapper>
+          <CircleNotchIcon {...commonProps} />
+        </SpinWrapper>
       );
     case AnalysisRunPhases.Failed:
       return <ExclamationCircleIcon {...commonProps} />;

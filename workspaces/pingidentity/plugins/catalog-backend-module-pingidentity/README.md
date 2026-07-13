@@ -1,6 +1,8 @@
-# Ping Identity Backend Plugin for Backstage
+# PingOne Backend Plugin for Backstage
 
-The Ping Identity backend plugin integrates Ping Identity into Backstage.
+The PingOne backend plugin ingests organization data (users and groups) from Ping Identity's cloud offering, PingOne, into Backstage.
+
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for development harnesses, tests, and bump-review guidance.
 
 # Capabilities
 
@@ -8,8 +10,8 @@ The Ping Identity backend plugin has the following capabilities:
 
 ### User and group ingestion
 
-- Synchronization of Ping Identity users in an environment
-- Synchronization of Ping Identity groups and their users in the environment
+- Synchronization of PingOne users in an environment
+- Synchronization of PingOne groups and their users in the environment
 
 ### Default User Transformer
 

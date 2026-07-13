@@ -1,5 +1,101 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.16.0
+
+### Minor Changes
+
+- 895009c: add support for Azure PostgreSQL passwordless authentication with managed identity
+
+### Patch Changes
+
+- 058e6a2: Conditional policy reconciliation preserves stored conditions when staging or persistence fails, and correctly merges sibling conditions for the same role and resource without conflict errors during reload.
+
+## 7.15.0
+
+### Minor Changes
+
+- 845383a: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [845383a]
+  - @backstage-community/plugin-rbac-common@1.29.0
+  - @backstage-community/plugin-rbac-node@1.23.0
+
+## 7.14.0
+
+### Minor Changes
+
+- 091ec86: Backstage version bump to v1.51.0.
+
+  The RBAC backend plugin now resolves user identity through Backstage's `UserInfoService` when evaluating conditional permissions, as part of aligning with the Backstage 1.51 permission framework. **No action is required** if you install RBAC with `backend.add(import('@backstage-community/plugin-rbac-backend'))` and manage access through app-config as documented.
+
+  If you extend RBAC at a lower level (for example by constructing `PolicyBuilder` directly), ensure `UserInfoService` is wired through your backend integration.
+
+### Patch Changes
+
+- c9d4e50: Updated dependency `qs` to `6.15.2`.
+- 387d2e9: Updated dependency `@types/node` to `22.19.19`.
+- 6d964f2: Migrated MUI-v4 references to MUI-v5
+
+  Adds New Frontend System dev entrypoints and removes workspace example apps in favor of the plugin `dev/` pattern. Dev backend wiring lives in `plugins/rbac-backend/dev/` (same approach as linguist, feedback, and other FE+BE plugins).
+
+- Updated dependencies [091ec86]
+  - @backstage-community/plugin-rbac-common@1.28.0
+  - @backstage-community/plugin-rbac-node@1.22.0
+
+## 7.13.0
+
+### Minor Changes
+
+- 6a916a1: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [6a916a1]
+  - @backstage-community/plugin-rbac-common@1.27.0
+  - @backstage-community/plugin-rbac-node@1.21.0
+
+## 7.12.5
+
+### Patch Changes
+
+- 39a3942: Hardens RBAC policy handling to prevent Casbin CSV poisoning and improve error visibility.
+
+  Key fixes:
+
+  - Rejects permission policy `permission` values containing `"` before persistence (prevents known CSV parse failures).
+  - Rethrows `loadPolicy` failures after audit logging so mutation/read paths surface the root cause instead of secondary errors.
+  - Improves policy API request validation and missing-role handling (`400`/`404` where appropriate).
+  - Validates default configured permissions/admin refs with the same stricter checks used by runtime write paths.
+  - Strengthens conditional and plugin-id payload validation and aligns owner filtering behavior for default roles.
+
+  Compatibility notes:
+
+  - Requests/config entries using `permission` values with embedded `"` are now rejected.
+  - Conditional policy payloads and conditional YAML ingestion now enforce limits.
+  - Conditional `permissionMapping` must list distinct Backstage permission actions (no duplicates); at most one entry per supported action (`create`, `read`, `update`, `delete`, `use`).
+  - Plugin ID registration payloads now enforce count/length/duplicate checks.
+  - For larger existing payloads, limits are configurable via:
+  - `permission.rbac.validation.conditionalPolicies.maxConditionDepth`
+  - `permission.rbac.validation.conditionalPolicies.maxConditionNodeCount`
+  - `permission.rbac.validation.conditionalPolicies.maxCriteriaItems`
+  - `permission.rbac.validation.conditionalPoliciesFile.maxBytes`
+  - `permission.rbac.validation.conditionalPoliciesFile.maxDocuments`
+
+  Operational note:
+
+  - CSV policy files are parsed line-by-line; malformed lines are skipped with warnings instead of aborting the entire file load.
+
+## 7.12.4
+
+### Patch Changes
+
+- 170f85d: Migrate to Jest 30 and fix backend test assertion compatibility
+- Updated dependencies [170f85d]
+  - @backstage-community/plugin-rbac-common@1.26.1
+  - @backstage-community/plugin-rbac-node@1.20.1
+
 ## 7.12.3
 
 ### Patch Changes

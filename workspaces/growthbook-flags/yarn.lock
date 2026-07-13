@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -1248,7 +1248,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-growthbook-backend@workspace:plugins/growthbook-backend"
   dependencies:
-    "@backstage-community/plugin-growthbook-common": "npm:^0.0.0"
+    "@backstage-community/plugin-growthbook-common": "workspace:^"
     "@backstage/backend-defaults": "npm:^0.7.0"
     "@backstage/backend-plugin-api": "npm:^1.6.2"
     "@backstage/backend-test-utils": "npm:^1.10.4"
@@ -1261,7 +1261,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@backstage-community/plugin-growthbook-common@npm:^0.0.0, @backstage-community/plugin-growthbook-common@workspace:plugins/growthbook-common":
+"@backstage-community/plugin-growthbook-common@workspace:^, @backstage-community/plugin-growthbook-common@workspace:plugins/growthbook-common":
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-growthbook-common@workspace:plugins/growthbook-common"
   dependencies:
@@ -1273,7 +1273,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-growthbook@workspace:plugins/growthbook"
   dependencies:
-    "@backstage-community/plugin-growthbook-common": "npm:^0.0.0"
+    "@backstage-community/plugin-growthbook-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.7.6"
     "@backstage/cli": "npm:^0.35.3"
     "@backstage/config": "npm:^1.3.6"
@@ -14823,9 +14823,9 @@ __metadata:
   linkType: hard
 
 "flatted@npm:^3.2.7, flatted@npm:^3.2.9":
-  version: 3.3.3
-  resolution: "flatted@npm:3.3.3"
-  checksum: 10/8c96c02fbeadcf4e8ffd0fa24983241e27698b0781295622591fc13585e2f226609d95e422bcf2ef044146ffacb6b68b1f20871454eddf75ab3caa6ee5f4a1fe
+  version: 3.4.2
+  resolution: "flatted@npm:3.4.2"
+  checksum: 10/a9e78fe5c2c1fcd98209a015ccee3a6caa953e01729778e83c1fe92e68601a63e1e69cd4e573010ca99eaf585a581b80ccf1018b99283e6cbc2117bcba1e030f
   languageName: node
   linkType: hard
 
@@ -25896,12 +25896,12 @@ __metadata:
   linkType: hard
 
 "yauzl@npm:^3.0.0":
-  version: 3.2.0
-  resolution: "yauzl@npm:3.2.0"
+  version: 3.3.0
+  resolution: "yauzl@npm:3.3.0"
   dependencies:
     buffer-crc32: "npm:~0.2.3"
     pend: "npm:~1.2.0"
-  checksum: 10/a3cd2bfcf7590673bb35750f2a4e5107e3cc939d32d98a072c0673fe42329e390f471b4a53dbbd72512229099b18aa3b79e6ddb87a73b3a17446080c903a2c4b
+  checksum: 10/ac8ae5276a3fb89b80464fc828aadcb5f888af7306a7920e699b9de05aead0490ac6698bc71952ea867c3f2a2c73ed8df91f18f5b6a67ce3231065327817c08f
   languageName: node
   linkType: hard
 

@@ -18,63 +18,154 @@ import {
   PermissionCriteria,
   PermissionRuleParams,
 } from '@backstage/plugin-permission-common';
+import { InputError } from '@backstage/errors';
 
-import type {
-  PermissionAction,
-  RoleConditionalPolicyDecision,
+import {
+  PermissionActionValues,
+  type PermissionAction,
+  type RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
 import { isPermissionAction } from '../helper';
 
+export type ConditionValidationLimits = {
+  maxConditionDepth: number;
+  maxConditionNodeCount: number;
+  maxCriteriaItems: number;
+};
+
+export const DEFAULT_CONDITION_VALIDATION_LIMITS: ConditionValidationLimits = {
+  maxConditionDepth: 12,
+  maxConditionNodeCount: 256,
+  maxCriteriaItems: 64,
+};
+
+/** Minimal config surface for reading optional validation limits. */
+export type ConditionValidationLimitsConfig = {
+  getOptionalNumber(key: string): number | undefined;
+};
+
+export function readConditionValidationLimitsFromConfig(
+  config: ConditionValidationLimitsConfig,
+): Partial<ConditionValidationLimits> {
+  const baseKey = 'permission.rbac.validation.conditionalPolicies';
+  const limitKeys: (keyof ConditionValidationLimits)[] = [
+    'maxConditionDepth',
+    'maxConditionNodeCount',
+    'maxCriteriaItems',
+  ];
+  const limits: Partial<ConditionValidationLimits> = {};
+  for (const key of limitKeys) {
+    const value = config.getOptionalNumber(`${baseKey}.${key}`);
+    if (value !== undefined) {
+      limits[key] = value;
+    }
+  }
+  return limits;
+}
+
+export function resolveConditionValidationLimits(
+  partial: Partial<ConditionValidationLimits> = {},
+): ConditionValidationLimits {
+  const nextLimits: ConditionValidationLimits = {
+    ...DEFAULT_CONDITION_VALIDATION_LIMITS,
+    ...partial,
+  };
+
+  assertPositiveInteger(nextLimits.maxConditionDepth, 'maxConditionDepth');
+  assertPositiveInteger(
+    nextLimits.maxConditionNodeCount,
+    'maxConditionNodeCount',
+  );
+  assertPositiveInteger(nextLimits.maxCriteriaItems, 'maxCriteriaItems');
+
+  return nextLimits;
+}
+
+function assertPositiveInteger(value: number, fieldName: string): void {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new InputError(
+      `'${fieldName}' must be a positive integer for conditional policy validation`,
+    );
+  }
+}
+
 export function validateRoleCondition(
   condition: RoleConditionalPolicyDecision<PermissionAction>,
-) {
+  limits?: Partial<ConditionValidationLimits>,
+): void {
+  const resolvedLimits = resolveConditionValidationLimits(limits ?? {});
   if (!condition.roleEntityRef) {
-    throw new Error(`'roleEntityRef' must be specified in the role condition`);
+    throw new InputError(
+      `'roleEntityRef' must be specified in the role condition`,
+    );
   }
   if (!condition.result) {
-    throw new Error(`'result' must be specified in the role condition`);
+    throw new InputError(`'result' must be specified in the role condition`);
   }
   if (!condition.pluginId) {
-    throw new Error(`'pluginId' must be specified in the role condition`);
+    throw new InputError(`'pluginId' must be specified in the role condition`);
   }
   if (!condition.resourceType) {
-    throw new Error(`'resourceType' must be specified in the role condition`);
+    throw new InputError(
+      `'resourceType' must be specified in the role condition`,
+    );
   }
 
   if (
     !condition.permissionMapping ||
     condition.permissionMapping.length === 0
   ) {
-    throw new Error(
+    throw new InputError(
       `'permissionMapping' must be non empty array in the role condition`,
+    );
+  }
+  const maxDistinctPermissionActions = PermissionActionValues.length;
+  if (condition.permissionMapping.length > maxDistinctPermissionActions) {
+    throw new InputError(
+      `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
     );
   }
   const nonActionValue = condition.permissionMapping.find(
     action => !isPermissionAction(action),
   );
   if (nonActionValue) {
-    throw new Error(
+    throw new InputError(
       `'permissionMapping' array contains non action value: '${nonActionValue}'`,
     );
+  }
+
+  const seenActions = new Set<PermissionAction>();
+  for (const action of condition.permissionMapping) {
+    if (seenActions.has(action)) {
+      throw new InputError(
+        `'permissionMapping' must not contain duplicate permission action '${action}'`,
+      );
+    }
+    seenActions.add(action);
   }
 
   if (
     condition.resourceType === 'policy-entity' &&
     condition.permissionMapping.includes('create')
   ) {
-    throw new Error(
+    throw new InputError(
       `Conditional policy can not be created for resource type 'policy-entity' with the permission action 'create'`,
     );
   }
 
   if (!condition.conditions) {
-    throw new Error(`'conditions' must be specified in the role condition`);
+    throw new InputError(
+      `'conditions' must be specified in the role condition`,
+    );
   }
   if (condition.conditions) {
     validatePermissionCondition(
       condition.conditions,
       'roleCondition.conditions',
+      1,
+      { nodeCount: 0 },
+      resolvedLimits,
     );
   }
 }
@@ -90,13 +181,31 @@ function validatePermissionCondition(
     PermissionCondition<string, PermissionRuleParams>
   >,
   jsonPathLocator: string,
+  currentDepth: number,
+  state: { nodeCount: number },
+  limits: ConditionValidationLimits,
 ) {
+  if (currentDepth > limits.maxConditionDepth) {
+    throw new InputError(
+      `Conditional criteria depth exceeds maximum of ${limits.maxConditionDepth}`,
+    );
+  }
+  state.nodeCount += 1;
+  if (state.nodeCount > limits.maxConditionNodeCount) {
+    throw new InputError(
+      `Conditional criteria exceeds maximum of ${limits.maxConditionNodeCount} nodes`,
+    );
+  }
+
   validateCriteria(conditionOrCriteria, jsonPathLocator);
 
   if ('not' in conditionOrCriteria) {
     validatePermissionCondition(
       conditionOrCriteria.not,
       `${jsonPathLocator}.not`,
+      currentDepth + 1,
+      state,
+      limits,
     );
     return;
   }
@@ -106,12 +215,23 @@ function validatePermissionCondition(
       !Array.isArray(conditionOrCriteria.allOf) ||
       conditionOrCriteria.allOf.length === 0
     ) {
-      throw new Error(
+      throw new InputError(
         `${jsonPathLocator}.allOf criteria must be non empty array`,
       );
     }
+    if (conditionOrCriteria.allOf.length > limits.maxCriteriaItems) {
+      throw new InputError(
+        `${jsonPathLocator}.allOf criteria supports at most ${limits.maxCriteriaItems} items`,
+      );
+    }
     for (const [index, elem] of conditionOrCriteria.allOf.entries()) {
-      validatePermissionCondition(elem, `${jsonPathLocator}.allOf[${index}]`);
+      validatePermissionCondition(
+        elem,
+        `${jsonPathLocator}.allOf[${index}]`,
+        currentDepth + 1,
+        state,
+        limits,
+      );
     }
     return;
   }
@@ -121,12 +241,23 @@ function validatePermissionCondition(
       !Array.isArray(conditionOrCriteria.anyOf) ||
       conditionOrCriteria.anyOf.length === 0
     ) {
-      throw new Error(
+      throw new InputError(
         `${jsonPathLocator}.anyOf criteria must be non empty array`,
       );
     }
+    if (conditionOrCriteria.anyOf.length > limits.maxCriteriaItems) {
+      throw new InputError(
+        `${jsonPathLocator}.anyOf criteria supports at most ${limits.maxCriteriaItems} items`,
+      );
+    }
     for (const [index, elem] of conditionOrCriteria.anyOf.entries()) {
-      validatePermissionCondition(elem, `${jsonPathLocator}.anyOf[${index}]`);
+      validatePermissionCondition(
+        elem,
+        `${jsonPathLocator}.anyOf[${index}]`,
+        currentDepth + 1,
+        state,
+        limits,
+      );
     }
   }
 }
@@ -143,12 +274,12 @@ function validateRule(
   jsonPathLocator: string,
 ) {
   if (!('resourceType' in conditionOrCriteria)) {
-    throw new Error(
+    throw new InputError(
       `'resourceType' must be specified in the ${jsonPathLocator}.condition`,
     );
   }
   if (!('rule' in conditionOrCriteria)) {
-    throw new Error(
+    throw new InputError(
       `'rule' must be specified in the ${jsonPathLocator}.condition`,
     );
   }
@@ -181,7 +312,7 @@ function validateCriteria(
   }
 
   if (found.length > 1) {
-    throw new Error(
+    throw new InputError(
       `RBAC plugin does not support parallel conditions, consider reworking request to include nested condition criteria. Conditional criteria causing the error ${found}.`,
     );
   } else if (found.length === 0) {
@@ -189,7 +320,7 @@ function validateCriteria(
   }
 
   if (found.length === 1 && 'rule' in conditionOrCriteria) {
-    throw new Error(
+    throw new InputError(
       `RBAC plugin does not support parallel conditions alongside rules, consider reworking request to include nested condition criteria. Conditional criteria causing the error ${found}, 'rule: ${conditionOrCriteria.rule}'.`,
     );
   }

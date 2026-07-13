@@ -22,10 +22,6 @@ import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
 
-jest.mock('@mui/styles', () => ({
-  makeStyles: () => () => ({}),
-}));
-
 jest.mock('../../hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => {
