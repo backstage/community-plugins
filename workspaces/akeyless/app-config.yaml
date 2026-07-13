@@ -27,6 +27,7 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
+    # Local example data, file locations are relative to the backend process (e.g. packages/backend or plugins/akeyless-backend)
     - type: file
       target: ../../examples/entities.yaml
 
