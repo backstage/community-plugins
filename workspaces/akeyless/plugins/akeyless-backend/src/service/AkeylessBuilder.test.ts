@@ -146,6 +146,17 @@ describe('AkeylessBuilder', () => {
     expect(mockApi.createStaticSecret).not.toHaveBeenCalled();
   });
 
+  it('returns allowCrud false when listing the root path', async () => {
+    const mockApi = createMockApi();
+    const crudApp = createCrudApp(mockApi);
+
+    const response = await request(crudApp).get('/v1/secrets/%2F');
+
+    expect(response.status).toEqual(200);
+    expect(response.body.allowCrud).toEqual(false);
+    expect(mockApi.listSecrets).toHaveBeenCalled();
+  });
+
   describe('path scoping', () => {
     const contextPath = '/demo/app';
 

@@ -48,6 +48,12 @@ import { SecretCrudDialog } from '../SecretCrudDialog';
 
 const STATIC_SECRET_TYPE = 'static-secret';
 
+export const isRootContextPath = (path: string): boolean =>
+  path === '/' || path.trim() === '/';
+
+export const firstNonRootSecretPath = (paths: string[]): string | undefined =>
+  paths.find(path => !isRootContextPath(path));
+
 export const akeylessSecretConfig = (entity: Entity) => {
   const secretPathAnnotation =
     entity.metadata.annotations?.[AKEYLESS_SECRET_PATH_ANNOTATION];
@@ -85,7 +91,9 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
     allowCrud: entityAllowCrud,
   } = akeylessSecretConfig(entity);
   const [reloadToken, setReloadToken] = useState(0);
-  const [selectedPath, setSelectedPath] = useState(secretPaths[0] ?? '/');
+  const [selectedPath, setSelectedPath] = useState(
+    () => firstNonRootSecretPath(secretPaths) ?? secretPaths[0] ?? '/',
+  );
   const [createOpen, setCreateOpen] = useState(false);
   const [editSecret, setEditSecret] = useState<AkeylessSecret>();
   const [editInitialValue, setEditInitialValue] = useState('');
@@ -139,6 +147,8 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
   const backendAllowCrud =
     listResults?.some(result => result.allowCrud) ?? false;
   const crudEnabled = entityAllowCrud && backendAllowCrud;
+  const crudCreatePaths = secretPaths.filter(path => !isRootContextPath(path));
+  const crudCreateEnabled = crudEnabled && crudCreatePaths.length > 0;
 
   const openViewDialog = async (secret: AkeylessSecret) => {
     setViewSecret(secret);
@@ -252,7 +262,9 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
         };
 
         if (crudEnabled) {
-          row.actions = isStaticSecret ? (
+          const pathCrudEnabled =
+            isStaticSecret && !isRootContextPath(secret.path);
+          row.actions = pathCrudEnabled ? (
             <Box display="flex">
               <Tooltip title="View value">
                 <IconButton
@@ -349,13 +361,15 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
               : 'Secret values are not shown here. Use the links to view or manage items in the Akeyless Console.'}
           </Typography>
         </Box>
-        {crudEnabled ? (
+        {crudCreateEnabled ? (
           <Button
             color="primary"
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => {
-              setSelectedPath(secretPaths[0] ?? '/');
+              setSelectedPath(
+                firstNonRootSecretPath(secretPaths) ?? secretPaths[0] ?? '/',
+              );
               setCreateOpen(true);
             }}
           >

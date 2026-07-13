@@ -35,6 +35,8 @@ import { akeylessApiRef, AkeylessClient, AkeylessSecret } from '../../api';
 import {
   akeylessSecretConfig,
   EntityAkeylessTable,
+  firstNonRootSecretPath,
+  isRootContextPath,
 } from './EntityAkeylessTable';
 
 describe('akeylessSecretConfig', () => {
@@ -115,6 +117,19 @@ describe('akeylessSecretConfig', () => {
       itemTypes: [...DEFAULT_SECRET_TYPES],
       allowCrud: false,
     });
+  });
+});
+
+describe('root context path helpers', () => {
+  it('detects root paths', () => {
+    expect(isRootContextPath('/')).toBe(true);
+    expect(isRootContextPath(' / ')).toBe(true);
+    expect(isRootContextPath('/demo')).toBe(false);
+  });
+
+  it('selects the first non-root annotated path', () => {
+    expect(firstNonRootSecretPath(['/', '/demo', '/other'])).toEqual('/demo');
+    expect(firstNonRootSecretPath(['/'])).toBeUndefined();
   });
 });
 

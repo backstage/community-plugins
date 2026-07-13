@@ -158,10 +158,11 @@ export class AkeylessBuilder {
       }
 
       const items = await akeylessApi.listSecrets(path, itemTypes);
+      const listPath = normalizePath(path);
       response.json({
         items,
         consoleUrl: akeylessApi.getConsoleUrl(),
-        allowCrud: this.allowCrud,
+        allowCrud: this.allowCrud && listPath !== '/',
       });
     });
 
