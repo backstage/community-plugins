@@ -83,6 +83,7 @@ const PodStatus = ({
 }: PodStatusProps) => {
   const { t } = useTranslation();
   const [updateOnEnd, setUpdateOnEnd] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const translatePodStatus = (status: string) => {
     switch (status) {
@@ -227,8 +228,19 @@ const PodStatus = ({
       </div>
     );
     return (
-      <Tooltip content={tipContent} triggerRef={chartTriggerRef}>
-        <g ref={chartTriggerRef}>{chartDonut}</g>
+      <Tooltip
+        content={tipContent}
+        triggerRef={chartTriggerRef}
+        isVisible={isHovered}
+        trigger="manual"
+      >
+        <g
+          ref={chartTriggerRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {chartDonut}
+        </g>
       </Tooltip>
     );
   }
