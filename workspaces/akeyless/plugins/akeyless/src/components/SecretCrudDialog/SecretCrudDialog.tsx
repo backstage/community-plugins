@@ -85,7 +85,7 @@ export const SecretCrudDialog = ({
           label="Secret value"
           fullWidth
           multiline
-          minRows={3}
+          rows={3}
           value={value}
           onChange={event => setValue(event.target.value)}
         />
