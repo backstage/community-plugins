@@ -46,11 +46,17 @@ const columnWidths = {
 
 type TodoRow = TodoItem & { id: string };
 
-const toRow = (item: TodoItem, index: number): TodoRow => ({
+const toRowId = (item: TodoItem): string => {
+  const repoFilePath = item.repoFilePath ?? 'unknown';
+  const lineNumber =
+    item.lineNumber !== undefined ? String(item.lineNumber) : 'n';
+
+  return `${repoFilePath}:${lineNumber}:${item.tag}:${item.text}`;
+};
+
+const toRow = (item: TodoItem): TodoRow => ({
   ...item,
-  id: `${item.repoFilePath ? item.repoFilePath : 'unknown'}:${
-    item.lineNumber ? item.lineNumber : 'n'
-  }:${item.tag}:${index}`,
+  id: toRowId(item),
 });
 
 type TodoFilters = {
