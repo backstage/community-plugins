@@ -13,7 +13,6 @@
     "lib": ["DOM", "DOM.Iterable", "ScriptHost", "ES2022"],
     "target": "ES2022",
     "useUnknownInCatchVariables": false,
-    "jsx": "react-jsx",
-    "ignoreDeprecations": "6.0"
+    "jsx": "react-jsx"
   }
 }
