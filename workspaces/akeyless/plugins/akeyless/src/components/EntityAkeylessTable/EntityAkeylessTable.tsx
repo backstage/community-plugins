@@ -134,7 +134,7 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
       }),
     );
     return results;
-  }, [secretPaths.join(','), itemTypes.join(','), reloadToken]);
+  }, [JSON.stringify(secretPaths), JSON.stringify(itemTypes), reloadToken]);
 
   const backendAllowCrud =
     listResults?.some(result => result.allowCrud) ?? false;
@@ -230,12 +230,22 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
           item: secret.fullPath,
           type: secret.itemType,
           view: (
-            <Link to={secret.showUrl} target="_blank" rel="noopener noreferrer">
+            <Link
+              to={secret.showUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${secret.fullPath} in Akeyless Console`}
+            >
               <OpenInNew fontSize="small" />
             </Link>
           ),
           edit: (
-            <Link to={secret.editUrl} target="_blank" rel="noopener noreferrer">
+            <Link
+              to={secret.editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Manage ${secret.fullPath} in Akeyless Console`}
+            >
               <OpenInNew fontSize="small" />
             </Link>
           ),
@@ -245,13 +255,18 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
           row.actions = isStaticSecret ? (
             <Box display="flex">
               <Tooltip title="View value">
-                <IconButton size="small" onClick={() => openViewDialog(secret)}>
+                <IconButton
+                  size="small"
+                  aria-label={`View value of ${secret.fullPath}`}
+                  onClick={() => openViewDialog(secret)}
+                >
                   <VisibilityIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Edit value">
                 <IconButton
                   size="small"
+                  aria-label={`Edit value of ${secret.fullPath}`}
                   onClick={async () => {
                     try {
                       const response = await akeylessApi.getStaticSecretValue(
@@ -277,6 +292,7 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
               <Tooltip title="Delete">
                 <IconButton
                   size="small"
+                  aria-label={`Delete ${secret.fullPath}`}
                   onClick={() => setDeleteSecret(secret)}
                 >
                   <DeleteIcon fontSize="small" />
@@ -456,6 +472,9 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
               </Typography>
               <IconButton
                 size="small"
+                aria-label={
+                  viewVisible ? 'Hide secret value' : 'Show secret value'
+                }
                 onClick={() => setViewVisible(current => !current)}
               >
                 {viewVisible ? (

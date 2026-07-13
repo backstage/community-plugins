@@ -172,25 +172,48 @@ export class AkeylessClient implements AkeylessApi {
     return this.token;
   }
 
+  private invalidateToken(): void {
+    this.token = undefined;
+  }
+
+  private isUnauthorized(error: unknown): boolean {
+    return (error as { status?: number }).status === 401;
+  }
+
+  private async withAuthRetry<T>(
+    operation: (token: string) => Promise<T>,
+  ): Promise<T> {
+    try {
+      return await operation(await this.getToken());
+    } catch (error) {
+      if (this.isUnauthorized(error) && this.token) {
+        this.invalidateToken();
+        return await operation(await this.getToken());
+      }
+      throw error;
+    }
+  }
+
   private async listAtPath(
     path: string,
     itemTypes: string[],
     basePath: string,
     secrets: AkeylessSecret[],
   ): Promise<void> {
-    const token = await this.getToken();
     let response: { items?: ListItem[]; folders?: string[] };
 
     try {
-      response = await this.limit(() =>
-        this.api.listItems(
-          akeyless.ListItems.constructFromObject({
-            path: normalizePath(path),
-            type: itemTypes,
-            token,
-            currentFolder: true,
-            autoPagination: 'enabled',
-          }),
+      response = await this.withAuthRetry(token =>
+        this.limit(() =>
+          this.api.listItems(
+            akeyless.ListItems.constructFromObject({
+              path: normalizePath(path),
+              type: itemTypes,
+              token,
+              currentFolder: true,
+              autoPagination: 'enabled',
+            }),
+          ),
         ),
       );
     } catch (error: unknown) {
@@ -237,14 +260,14 @@ export class AkeylessClient implements AkeylessApi {
   }
 
   async getStaticSecretValue(name: string): Promise<string> {
-    const token = await this.getToken();
-
     try {
-      const response = await this.api.getSecretValue(
-        akeyless.GetSecretValue.constructFromObject({
-          name: normalizePath(name),
-          token,
-        }),
+      const response = await this.withAuthRetry(token =>
+        this.api.getSecretValue(
+          akeyless.GetSecretValue.constructFromObject({
+            name: normalizePath(name),
+            token,
+          }),
+        ),
       );
       return response.value ?? '';
     } catch (error: unknown) {
@@ -253,15 +276,15 @@ export class AkeylessClient implements AkeylessApi {
   }
 
   async createStaticSecret(name: string, value: string): Promise<void> {
-    const token = await this.getToken();
-
     try {
-      await this.api.createSecret(
-        akeyless.CreateSecret.constructFromObject({
-          name: normalizePath(name),
-          value,
-          token,
-        }),
+      await this.withAuthRetry(token =>
+        this.api.createSecret(
+          akeyless.CreateSecret.constructFromObject({
+            name: normalizePath(name),
+            value,
+            token,
+          }),
+        ),
       );
     } catch (error: unknown) {
       throw toAkeylessError(error, `Failed to create static secret '${name}'`);
@@ -269,15 +292,15 @@ export class AkeylessClient implements AkeylessApi {
   }
 
   async updateStaticSecretValue(name: string, value: string): Promise<void> {
-    const token = await this.getToken();
-
     try {
-      await this.api.updateSecretVal(
-        akeyless.UpdateSecretVal.constructFromObject({
-          name: normalizePath(name),
-          value,
-          token,
-        }),
+      await this.withAuthRetry(token =>
+        this.api.updateSecretVal(
+          akeyless.UpdateSecretVal.constructFromObject({
+            name: normalizePath(name),
+            value,
+            token,
+          }),
+        ),
       );
     } catch (error: unknown) {
       throw toAkeylessError(error, `Failed to update static secret '${name}'`);
@@ -285,14 +308,14 @@ export class AkeylessClient implements AkeylessApi {
   }
 
   async deleteItem(name: string): Promise<void> {
-    const token = await this.getToken();
-
     try {
-      await this.api.deleteItem(
-        akeyless.DeleteItem.constructFromObject({
-          name: normalizePath(name),
-          token,
-        }),
+      await this.withAuthRetry(token =>
+        this.api.deleteItem(
+          akeyless.DeleteItem.constructFromObject({
+            name: normalizePath(name),
+            token,
+          }),
+        ),
       );
     } catch (error: unknown) {
       throw toAkeylessError(error, `Failed to delete item '${name}'`);
