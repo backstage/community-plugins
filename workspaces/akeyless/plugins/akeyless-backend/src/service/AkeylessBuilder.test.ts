@@ -236,5 +236,23 @@ describe('AkeylessBuilder', () => {
       expect(response.body.error.name).toEqual(NotAllowedError.name);
       expect(mockApi.createStaticSecret).not.toHaveBeenCalled();
     });
+
+    it('returns normalized secret paths from create', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp).post('/v1/static-secrets').send({
+        name: 'foo/../bar',
+        value: 'secret',
+        contextPath: '/demo',
+      });
+
+      expect(response.status).toEqual(201);
+      expect(response.body.name).toEqual('/demo/bar');
+      expect(mockApi.createStaticSecret).toHaveBeenCalledWith(
+        '/demo/bar',
+        'secret',
+      );
+    });
   });
 });

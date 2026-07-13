@@ -49,6 +49,7 @@ export type AkeylessConfig = {
 const DEFAULT_GATEWAY_URL = 'https://api.akeyless.io';
 const DEFAULT_CONSOLE_URL = 'https://console.akeyless.io';
 const DEPLOYMENT_PROFILES: DeploymentProfile[] = ['saas', 'onprem', 'cloud'];
+const CLOUD_PROVIDERS: CloudProvider[] = ['aws_iam', 'azure_ad', 'gcp'];
 
 function parseDeploymentProfile(value: string | undefined): DeploymentProfile {
   if (!value) {
@@ -59,6 +60,17 @@ function parseDeploymentProfile(value: string | undefined): DeploymentProfile {
   }
   throw new Error(
     `Invalid akeyless.deploymentProfile '${value}'. Allowed values: ${DEPLOYMENT_PROFILES.join(
+      ', ',
+    )}`,
+  );
+}
+
+function parseCloudProvider(value: string): CloudProvider {
+  if (CLOUD_PROVIDERS.includes(value as CloudProvider)) {
+    return value as CloudProvider;
+  }
+  throw new Error(
+    `Invalid akeyless.authentication.cloudIam.provider '${value}'. Allowed values: ${CLOUD_PROVIDERS.join(
       ', ',
     )}`,
   );
@@ -130,9 +142,9 @@ export function getAkeylessConfig(config: Config): AkeylessConfig {
   if (method === 'cloudIam') {
     authentication.cloudIam = {
       accessId: config.getString('akeyless.authentication.cloudIam.accessId'),
-      provider: config.getString(
-        'akeyless.authentication.cloudIam.provider',
-      ) as CloudProvider,
+      provider: parseCloudProvider(
+        config.getString('akeyless.authentication.cloudIam.provider'),
+      ),
     };
   }
 

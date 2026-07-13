@@ -62,4 +62,26 @@ describe('getAkeylessConfig', () => {
       "Invalid akeyless.deploymentProfile 'foo'. Allowed values: saas, onprem, cloud",
     );
   });
+
+  it('rejects invalid cloud IAM providers with a clear error', () => {
+    expect(() =>
+      getAkeylessConfig(
+        new ConfigReader({
+          akeyless: {
+            deploymentProfile: 'cloud',
+            gatewayUrl: 'https://api.akeyless.io',
+            authentication: {
+              method: 'cloudIam',
+              cloudIam: {
+                accessId: 'test-id',
+                provider: 'invalid',
+              },
+            },
+          },
+        }),
+      ),
+    ).toThrow(
+      "Invalid akeyless.authentication.cloudIam.provider 'invalid'. Allowed values: aws_iam, azure_ad, gcp",
+    );
+  });
 });

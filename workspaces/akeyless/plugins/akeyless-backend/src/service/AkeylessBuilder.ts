@@ -124,7 +124,8 @@ export class AkeylessBuilder {
       throw new InputError('name is required');
     }
 
-    const name = joinSecretPath(contextPath, body.name);
+    const joinedName = joinSecretPath(contextPath, body.name);
+    const name = normalizePath(joinedName);
     assertPathAllowed(name, contextPath);
 
     return {
