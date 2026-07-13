@@ -54,6 +54,7 @@ const STATIC_SECRET_TYPE = 'static-secret';
 
 type AkeylessTableRow = {
   path: string;
+  hidePathInCell?: boolean;
   item: string;
   itemRender?: ReactNode;
   type: string;
@@ -201,7 +202,12 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
 
   const columns: TableColumn<AkeylessTableRow>[] = useMemo(() => {
     const baseColumns: TableColumn<AkeylessTableRow>[] = [
-      { title: 'Path', field: 'path', width: '12%' },
+      {
+        title: 'Path',
+        field: 'path',
+        width: '12%',
+        render: row => (row.hidePathInCell ? null : row.path),
+      },
       {
         title: 'Item',
         field: 'item',
@@ -361,7 +367,8 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
       secrets.forEach((secret, index) => {
         const isStaticSecret = secret.itemType === STATIC_SECRET_TYPE;
         data.push({
-          path: index === 0 ? path : '',
+          path,
+          hidePathInCell: index > 0,
           item: secret.fullPath,
           type: secret.itemType,
           viewUrl: secret.showUrl,
