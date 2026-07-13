@@ -45,7 +45,10 @@ import {
   DEFAULT_SECRET_TYPES,
 } from '../../constants';
 import { SecretCrudDialog } from '../SecretCrudDialog';
-import { resolveCreateSecretRequest } from './createSecretUtils';
+import {
+  normalizeAnnotatedPath,
+  resolveCreateSecretRequest,
+} from './createSecretUtils';
 
 const STATIC_SECRET_TYPE = 'static-secret';
 
@@ -67,7 +70,7 @@ const nonInteractiveColumn = {
 } as const;
 
 export const isRootContextPath = (path: string): boolean =>
-  path === '/' || path.trim() === '/';
+  normalizeAnnotatedPath(path) === '/';
 
 export const firstNonRootSecretPath = (paths: string[]): string | undefined =>
   paths.find(path => !isRootContextPath(path));

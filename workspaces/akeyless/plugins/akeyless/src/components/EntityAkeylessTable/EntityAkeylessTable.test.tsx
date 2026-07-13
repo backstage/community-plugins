@@ -124,11 +124,15 @@ describe('root context path helpers', () => {
   it('detects root paths', () => {
     expect(isRootContextPath('/')).toBe(true);
     expect(isRootContextPath(' / ')).toBe(true);
+    expect(isRootContextPath('////')).toBe(true);
     expect(isRootContextPath('/demo')).toBe(false);
   });
 
   it('selects the first non-root annotated path', () => {
     expect(firstNonRootSecretPath(['/', '/demo', '/other'])).toEqual('/demo');
+    expect(firstNonRootSecretPath(['////', '/demo', '/other'])).toEqual(
+      '/demo',
+    );
     expect(firstNonRootSecretPath(['/'])).toBeUndefined();
   });
 });
