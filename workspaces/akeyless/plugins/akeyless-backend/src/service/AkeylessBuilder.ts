@@ -178,7 +178,8 @@ export class AkeylessBuilder {
         throw new InputError('name is required');
       }
 
-      const fullName = normalizePath(name);
+      const joinedName = joinSecretPath(parsedContextPath, name);
+      const fullName = normalizePath(joinedName);
       assertPathAllowed(fullName, parsedContextPath);
 
       const value = await akeylessApi.getStaticSecretValue(fullName);

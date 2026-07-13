@@ -206,6 +206,22 @@ describe('AkeylessBuilder', () => {
       expect(mockApi.deleteItem).not.toHaveBeenCalled();
     });
 
+    it('reads relative secret names within contextPath', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp)
+        .get('/v1/static-secrets/value')
+        .query({
+          name: 'secret',
+          contextPath: '/demo',
+        });
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({ name: '/demo/secret', value: 'value' });
+      expect(mockApi.getStaticSecretValue).toHaveBeenCalledWith('/demo/secret');
+    });
+
     it('rejects read outside contextPath', async () => {
       const mockApi = createMockApi();
       const crudApp = createCrudApp(mockApi);

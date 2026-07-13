@@ -446,13 +446,13 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
             secretPaths,
           });
 
-          await akeylessApi.createStaticSecret(
+          const created = await akeylessApi.createStaticSecret(
             absoluteName,
             secretValue,
             contextPath,
           );
           alertApi.post({
-            message: `Created static secret '${absoluteName}'`,
+            message: `Created static secret '${created.name}'`,
             severity: 'success',
           });
           reload();
