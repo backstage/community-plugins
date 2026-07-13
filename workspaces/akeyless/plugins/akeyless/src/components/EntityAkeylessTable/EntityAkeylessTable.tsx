@@ -396,6 +396,13 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
               )
               .sort((a, b) => b.length - a.length)[0] ?? selectedPath;
 
+          const absoluteName = (() => {
+            if (name.startsWith('/')) {
+              return name;
+            }
+            return fullName.startsWith('/') ? fullName : `/${fullName}`;
+          })();
+
           if (matchingContextPath === '/') {
             throw new Error(
               'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
@@ -403,12 +410,12 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
           }
 
           await akeylessApi.createStaticSecret(
-            name,
+            absoluteName,
             secretValue,
             matchingContextPath,
           );
           alertApi.post({
-            message: `Created static secret '${name}'`,
+            message: `Created static secret '${absoluteName}'`,
             severity: 'success',
           });
           reload();

@@ -24,5 +24,12 @@ import { AKEYLESS_SECRET_PATH_ANNOTATION } from './constants';
 export function isAkeylessAvailable(entity: Entity): boolean {
   const annotation =
     entity.metadata.annotations?.[AKEYLESS_SECRET_PATH_ANNOTATION];
-  return Boolean(annotation?.trim());
+  if (!annotation?.trim()) {
+    return false;
+  }
+
+  return annotation
+    .split(',')
+    .map(path => path.trim())
+    .some(Boolean);
 }

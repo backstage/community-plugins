@@ -152,8 +152,8 @@ export class AkeylessBuilder {
 
       let itemTypes: string[] | undefined;
       if (Array.isArray(types)) {
-        itemTypes = types.map(String);
-      } else if (typeof types === 'string') {
+        itemTypes = types.map(String).filter(Boolean);
+      } else if (typeof types === 'string' && types.trim()) {
         itemTypes = [types];
       }
 

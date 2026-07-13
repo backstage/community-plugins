@@ -48,6 +48,21 @@ export type AkeylessConfig = {
 
 const DEFAULT_GATEWAY_URL = 'https://api.akeyless.io';
 const DEFAULT_CONSOLE_URL = 'https://console.akeyless.io';
+const DEPLOYMENT_PROFILES: DeploymentProfile[] = ['saas', 'onprem', 'cloud'];
+
+function parseDeploymentProfile(value: string | undefined): DeploymentProfile {
+  if (!value) {
+    return 'saas';
+  }
+  if (DEPLOYMENT_PROFILES.includes(value as DeploymentProfile)) {
+    return value as DeploymentProfile;
+  }
+  throw new Error(
+    `Invalid akeyless.deploymentProfile '${value}'. Allowed values: ${DEPLOYMENT_PROFILES.join(
+      ', ',
+    )}`,
+  );
+}
 
 function resolveAuthMethod(config: Config): AuthMethod {
   const explicit = config.getOptionalString(
@@ -72,19 +87,19 @@ function validateProfile(profile: DeploymentProfile, method: AuthMethod): void {
     cloud: ['accessKey', 'cloudIam'],
   };
 
-  if (!allowed[profile].includes(method)) {
+  const allowedMethods = allowed[profile];
+  if (!allowedMethods?.includes(method)) {
     throw new Error(
       `Authentication method '${method}' is not valid for deployment profile '${profile}'. ` +
-        `Allowed methods: ${allowed[profile].join(', ')}`,
+        `Allowed methods: ${allowedMethods?.join(', ') ?? 'none'}`,
     );
   }
 }
 
 export function getAkeylessConfig(config: Config): AkeylessConfig {
-  const deploymentProfile =
-    (config.getOptionalString('akeyless.deploymentProfile') as
-      | DeploymentProfile
-      | undefined) ?? 'saas';
+  const deploymentProfile = parseDeploymentProfile(
+    config.getOptionalString('akeyless.deploymentProfile'),
+  );
   const gatewayUrl =
     config.getOptionalString('akeyless.gatewayUrl') ?? DEFAULT_GATEWAY_URL;
   const consoleUrl =
