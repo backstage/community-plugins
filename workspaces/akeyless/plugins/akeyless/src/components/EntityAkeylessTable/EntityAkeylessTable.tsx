@@ -391,7 +391,8 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
           const matchingContextPath =
             normalizedPaths
               .filter(
-                p => p !== '/' && (fullName === p || fullName.startsWith(`${p}/`)),
+                p =>
+                  p !== '/' && (fullName === p || fullName.startsWith(`${p}/`)),
               )
               .sort((a, b) => b.length - a.length)[0] ?? selectedPath;
 
