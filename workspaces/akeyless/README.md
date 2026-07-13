@@ -93,7 +93,7 @@ Open the entity in Backstage — the Akeyless card appears on **Overview** (new 
 - List Akeyless items under catalog-annotated paths (recursive folder listing)
 - Deep links to view or manage items in the Akeyless Console
 - Optional CRUD for static secrets (create, read value, update value, delete)
-- Path scoping — CRUD operations are limited to the entity's annotated path
+- Path scoping — the UI sends CRUD requests with the entity's annotated path as `contextPath`; the backend rejects targets outside that caller-provided scope (root `/` is not allowed)
 - Global or per-entity CRUD disable via config and annotations
 
 ## Permissions
@@ -105,7 +105,7 @@ The Akeyless credential configured in `app-config.yaml` is shared by the Backsta
 | List only (`allowCrud: false`) | Read/list on the annotated paths                                      |
 | CRUD enabled (default)         | Read/list plus create/update/delete for static secrets on those paths |
 
-Backstage users who can open an entity page can trigger these operations through the plugin. Use `akeyless.allowCrud: false` and/or `akeyless.io/allow-crud: "false"` when you want discovery and Console links without in-app secret management.
+Backstage users who can open an entity page can trigger these operations through the plugin using the shared backend credential. The backend does not verify `contextPath` against the catalog — restrict catalog access, scope the Akeyless credential narrowly, and use `akeyless.allowCrud: false` and/or `akeyless.io/allow-crud: "false"` when you want discovery and Console links without in-app secret management.
 
 ## Developing this workspace
 

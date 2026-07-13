@@ -96,11 +96,20 @@ export class AkeylessBuilder {
     }
   }
 
-  private parseContextPath(contextPath: unknown): string {
+  private parseContextPath(
+    contextPath: unknown,
+    options?: { rejectRoot?: boolean },
+  ): string {
     if (typeof contextPath !== 'string' || !contextPath.trim()) {
       throw new InputError('contextPath is required');
     }
-    return normalizePath(contextPath);
+    const normalized = normalizePath(contextPath);
+    if (options?.rejectRoot && normalized === '/') {
+      throw new InputError(
+        'contextPath must be a non-root path for scoped CRUD operations',
+      );
+    }
+    return normalized;
   }
 
   private parseSecretRequest(body: StaticSecretRequest): {
@@ -108,7 +117,9 @@ export class AkeylessBuilder {
     value?: string;
     contextPath: string;
   } {
-    const contextPath = this.parseContextPath(body.contextPath);
+    const contextPath = this.parseContextPath(body.contextPath, {
+      rejectRoot: true,
+    });
     if (typeof body.name !== 'string' || !body.name.trim()) {
       throw new InputError('name is required');
     }
@@ -158,7 +169,9 @@ export class AkeylessBuilder {
       this.ensureCrudEnabled();
 
       const { name, contextPath } = request.query;
-      const parsedContextPath = this.parseContextPath(contextPath);
+      const parsedContextPath = this.parseContextPath(contextPath, {
+        rejectRoot: true,
+      });
       if (typeof name !== 'string' || !name.trim()) {
         throw new InputError('name is required');
       }

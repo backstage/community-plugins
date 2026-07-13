@@ -112,4 +112,30 @@ describe('AkeylessBuilder', () => {
     expect(response.status).toEqual(403);
     expect(response.body.error.name).toEqual(NotAllowedError.name);
   });
+
+  it('rejects CRUD with root contextPath', async () => {
+    const mockApi: AkeylessApi = {
+      getConsoleUrl: () => 'https://console.akeyless.io',
+      listSecrets: async () => [],
+      getStaticSecretValue: async () => 'value',
+      createStaticSecret: async () => undefined,
+      updateStaticSecretValue: async () => undefined,
+      deleteItem: async () => undefined,
+    };
+    const builder = AkeylessBuilder.createBuilder({
+      logger: mockServices.logger.mock(),
+      config,
+    });
+    const { router } = builder.setAkeylessClient(mockApi).build();
+    const crudApp = express().use(router);
+
+    const response = await request(crudApp).post('/v1/static-secrets').send({
+      name: 'demo',
+      value: 'secret',
+      contextPath: '/',
+    });
+
+    expect(response.status).toEqual(400);
+    expect(response.body.error.message).toContain('non-root path');
+  });
 });

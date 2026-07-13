@@ -8,7 +8,7 @@ This plugin:
 
 - Authenticates to Akeyless using access key, Universal Identity (UID), or cloud IAM
 - Lists items under a given path (recursive folder traversal)
-- Optionally exposes CRUD endpoints for static secrets, scoped to a `contextPath` that must match the catalog entity's annotated path
+- Optionally exposes CRUD endpoints for static secrets, with path checks against a caller-provided `contextPath`
 
 When `akeyless` configuration is missing, the plugin still mounts a `/health` endpoint that reports `{ "status": "disabled", "reason": "missing config" }` to simplify troubleshooting.
 
@@ -115,7 +115,9 @@ Optional query param on list: `types` (repeatable) to filter item types.
 
 ### Path scoping
 
-CRUD routes require `contextPath` in the request body or query. The backend normalizes paths and rejects any operation where the target secret is outside the `contextPath` scope. This aligns with the catalog annotation `akeyless.io/secrets-path` used by the frontend.
+CRUD routes require `contextPath` in the request body or query. The backend normalizes paths and rejects any operation where the target secret is outside the caller-provided `contextPath` scope. Root `/` is not accepted as a CRUD `contextPath`.
+
+The frontend passes `contextPath` from the entity's `akeyless.io/secrets-path` annotation, but the backend does **not** verify that value against the catalog. A caller who can reach these endpoints could supply a different `contextPath`. Treat the shared Akeyless credential scope and Backstage catalog access controls as the real security boundary — not `contextPath` alone.
 
 ### Disable CRUD
 
@@ -146,7 +148,7 @@ Grant the configured Akeyless credential only what Backstage needs:
 | Read static secret value                | Read on target static secrets                |
 | Create / update / delete static secrets | Create, update, delete on paths within scope |
 
-The credential is shared across all Backstage users who can reach the plugin UI.
+The credential is shared across all Backstage users who can reach the plugin API. Limit the credential to the smallest Akeyless paths your deployment needs, and restrict catalog visibility so only intended users can open annotated entities.
 
 ## Health check
 

@@ -111,6 +111,7 @@ export class AkeylessClient implements AkeylessApi {
       method?: string;
       query?: Record<string, string | string[] | undefined>;
       body?: unknown;
+      notFoundMessage?: string;
     } = {},
   ): Promise<T> {
     const params = new URLSearchParams();
@@ -146,6 +147,9 @@ export class AkeylessClient implements AkeylessApi {
       return (await response.json()) as T;
     }
     if (response.status === 404) {
+      if (options.notFoundMessage) {
+        throw new NotFoundError(options.notFoundMessage);
+      }
       const displayPath = (() => {
         try {
           return decodeURIComponent(path);
@@ -173,7 +177,10 @@ export class AkeylessClient implements AkeylessApi {
       items: AkeylessSecret[];
       consoleUrl?: string;
       allowCrud?: boolean;
-    }>(`v1/secrets/${encodeURIComponent(secretPath)}`, { query });
+    }>(`v1/secrets/${encodeURIComponent(secretPath)}`, {
+      query,
+      notFoundMessage: `No secrets found in path '${secretPath}'`,
+    });
 
     return {
       secrets: result.items,

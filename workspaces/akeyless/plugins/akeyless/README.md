@@ -165,13 +165,14 @@ When CRUD is enabled, a **Create static secret** button adds a new static secret
 | `static-secret`                                           | List, view value, create, update, delete (when CRUD enabled) |
 | `dynamic-secret`, `rotated-secret`, `certificate`, others | List + Console link only                                     |
 
-All CRUD requests are scoped to the entity's annotated path. The backend rejects operations on paths outside that scope.
+The frontend sends the entity's annotated path as `contextPath`. The backend rejects operations on secrets outside that caller-provided scope (root `/` is not allowed). The backend does not verify `contextPath` against the catalog — see [Security notes](#security-notes).
 
 ## Security notes
 
 - Secret values for static secrets are only fetched when a user explicitly opens the view or edit dialog — they are not shown in the list by default.
 - The Akeyless API credential lives in the Backstage backend configuration, not in the browser.
-- Any Backstage user who can view an annotated entity can use the plugin with the permissions of that shared credential. Restrict catalog access and/or disable CRUD if needed.
+- `contextPath` is a caller-provided guard, not a catalog-enforced security boundary. Any Backstage user who can reach the plugin API could supply a different `contextPath` within the limits enforced by the backend and the shared credential.
+- Any Backstage user who can view an annotated entity can use the plugin with the permissions of that shared credential. Restrict catalog access, scope the Akeyless credential narrowly, and/or disable CRUD if needed.
 
 ## Troubleshooting
 
