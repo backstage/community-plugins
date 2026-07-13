@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-akeyless",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "A Backstage plugin that integrates with Akeyless for secrets discovery",
   "backstage": {
     "role": "frontend-plugin",
