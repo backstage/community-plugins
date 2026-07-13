@@ -153,11 +153,10 @@ describe('EntityAkeylessTable', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     akeylessClient = new AkeylessClient({ discoveryApi, fetchApi });
-    apis = TestApiRegistry.from([
-      akeylessApiRef,
-      akeylessClient,
+    apis = TestApiRegistry.from(
+      [akeylessApiRef, akeylessClient],
       [alertApiRef, { post: jest.fn() }],
-    ]);
+    );
     listSecretsSpy = jest.spyOn(akeylessClient, 'listSecrets');
   });
 

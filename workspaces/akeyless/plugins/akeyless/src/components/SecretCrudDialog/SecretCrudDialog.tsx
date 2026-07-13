@@ -104,9 +104,10 @@ export const SecretCrudDialog = ({
           onClick={async () => {
             setSubmitting(true);
             setError(undefined);
+            let succeeded = false;
             try {
               await onSubmit({ name: name.trim(), value: value.trim() });
-              onClose();
+              succeeded = true;
             } catch (submitError) {
               setError(
                 submitError instanceof Error
@@ -115,6 +116,9 @@ export const SecretCrudDialog = ({
               );
             } finally {
               setSubmitting(false);
+              if (succeeded) {
+                onClose();
+              }
             }
           }}
         >

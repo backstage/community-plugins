@@ -27,20 +27,20 @@ Install the [frontend plugin](../akeyless/README.md) to consume these APIs from 
 
 ## Configuration reference
 
-| Key                                                  | Required       | Default                       | Description                                                |
-| ---------------------------------------------------- | -------------- | ----------------------------- | ---------------------------------------------------------- |
-| `akeyless.deploymentProfile`                         | No             | `saas`                        | `saas`, `onprem`, or `cloud` — controls valid auth methods |
-| `akeyless.gatewayUrl`                                | Yes\*          | —                             | Akeyless API gateway URL                                   |
-| `akeyless.consoleUrl`                                | No             | `https://console.akeyless.io` | Base URL for Console deep links                            |
-| `akeyless.allowCrud`                                 | No             | `true`                        | When `false`, only list endpoints are active               |
-| `akeyless.authentication.method`                     | Yes\*          | —                             | `accessKey`, `universalIdentity`, or `cloudIam`            |
-| `akeyless.authentication.accessKey.accessId`         | For access key | —                             | Akeyless access ID                                         |
-| `akeyless.authentication.accessKey.accessKey`        | For access key | —                             | Akeyless access key                                        |
-| `akeyless.authentication.universalIdentity.uidToken` | For UID        | —                             | Universal Identity token                                   |
-| `akeyless.authentication.cloudIam.accessId`          | For cloud IAM  | —                             | Akeyless access ID                                         |
-| `akeyless.authentication.cloudIam.provider`          | For cloud IAM  | —                             | `aws_iam`, `azure_ad`, or `gcp`                            |
+| Key                                                  | Required       | Default                       | Description                                                                                              |
+| ---------------------------------------------------- | -------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `akeyless.deploymentProfile`                         | No             | `saas`                        | `saas`, `onprem`, or `cloud` — controls valid auth methods                                               |
+| `akeyless.gatewayUrl`                                | No             | `https://api.akeyless.io`     | Akeyless API gateway URL                                                                                 |
+| `akeyless.consoleUrl`                                | No             | `https://console.akeyless.io` | Base URL for Console deep links                                                                          |
+| `akeyless.allowCrud`                                 | No             | `true`                        | When `false`, only list endpoints are active                                                             |
+| `akeyless.authentication.method`                     | No             | inferred                      | `accessKey`, `universalIdentity`, or `cloudIam`. Inferred from configured credential fields when omitted |
+| `akeyless.authentication.accessKey.accessId`         | For access key | —                             | Akeyless access ID                                                                                       |
+| `akeyless.authentication.accessKey.accessKey`        | For access key | —                             | Akeyless access key                                                                                      |
+| `akeyless.authentication.universalIdentity.uidToken` | For UID        | —                             | Universal Identity token                                                                                 |
+| `akeyless.authentication.cloudIam.accessId`          | For cloud IAM  | —                             | Akeyless access ID                                                                                       |
+| `akeyless.authentication.cloudIam.provider`          | For cloud IAM  | —                             | `aws_iam`, `azure_ad`, or `gcp`                                                                          |
 
-\*Required when the `akeyless` block is present.
+When the `akeyless` block is present, the matching credential fields for the active auth method are required (for example access ID/key for access key auth).
 
 ### Deployment profiles and auth methods
 
