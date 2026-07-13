@@ -80,4 +80,29 @@ describe('resolveCreateSecretRequest', () => {
       'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
     );
   });
+
+  it('normalizes repeated slashes in annotated paths', () => {
+    expect(
+      resolveCreateSecretRequest({
+        name: 'secret',
+        selectedPath: '/demo////prod///',
+        secretPaths: ['/demo////prod///'],
+      }),
+    ).toEqual({
+      absoluteName: '/demo/prod/secret',
+      contextPath: '/demo/prod',
+    });
+  });
+
+  it('treats slash-only paths as root', () => {
+    expect(() =>
+      resolveCreateSecretRequest({
+        name: 'secret',
+        selectedPath: '////',
+        secretPaths: ['/demo'],
+      }),
+    ).toThrow(
+      'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
+    );
+  });
 });

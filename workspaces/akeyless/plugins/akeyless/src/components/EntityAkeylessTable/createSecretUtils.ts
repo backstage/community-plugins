@@ -25,18 +25,24 @@ export type ResolveCreateSecretRequestResult = {
   contextPath: string;
 };
 
+export function normalizeAnnotatedPath(path: string): string {
+  const segments = path.trim().split('/').filter(Boolean);
+  return segments.length === 0 ? '/' : `/${segments.join('/')}`;
+}
+
 export function resolveCreateSecretRequest({
   name,
   selectedPath,
   secretPaths,
 }: ResolveCreateSecretRequestInput): ResolveCreateSecretRequestResult {
-  const normalizedPaths = secretPaths.map(path =>
-    path === '/' ? '/' : path.replace(/\/+$/, ''),
-  );
+  const normalizedSelectedPath = normalizeAnnotatedPath(selectedPath);
+  const normalizedPaths = secretPaths.map(normalizeAnnotatedPath);
 
   const selectedBase =
-    selectedPath === '/' ? '' : selectedPath.replace(/\/+$/, '');
-  const fullName = name.startsWith('/') ? name : `${selectedBase}/${name}`;
+    normalizedSelectedPath === '/' ? '' : normalizedSelectedPath;
+  const fullName = name.startsWith('/')
+    ? normalizeAnnotatedPath(name)
+    : normalizeAnnotatedPath(`${selectedBase}/${name}`);
 
   const matchingContextPath =
     normalizedPaths
@@ -45,14 +51,9 @@ export function resolveCreateSecretRequest({
           path !== '/' &&
           (fullName === path || fullName.startsWith(`${path}/`)),
       )
-      .sort((a, b) => b.length - a.length)[0] ?? selectedPath;
+      .sort((a, b) => b.length - a.length)[0] ?? normalizedSelectedPath;
 
-  const absoluteName = (() => {
-    if (name.startsWith('/')) {
-      return name;
-    }
-    return fullName.startsWith('/') ? fullName : `/${fullName}`;
-  })();
+  const absoluteName = fullName;
 
   if (matchingContextPath === '/') {
     throw new Error(

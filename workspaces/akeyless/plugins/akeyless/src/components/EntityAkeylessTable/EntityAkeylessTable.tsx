@@ -502,18 +502,20 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
               if (!deleteSecret) {
                 return;
               }
+              const secretToDelete = deleteSecret;
+              setDeleteSecret(undefined);
               try {
                 await akeylessApi.deleteStaticSecret(
-                  deleteSecret.fullPath,
-                  deleteSecret.path,
+                  secretToDelete.fullPath,
+                  secretToDelete.path,
                 );
                 alertApi.post({
-                  message: `Deleted static secret '${deleteSecret.fullPath}'`,
+                  message: `Deleted static secret '${secretToDelete.fullPath}'`,
                   severity: 'success',
                 });
-                setDeleteSecret(undefined);
                 reload();
               } catch (deleteError) {
+                setDeleteSecret(secretToDelete);
                 alertApi.post({
                   message:
                     deleteError instanceof Error
