@@ -55,10 +55,18 @@ export const SecretCrudDialog = ({
     setError(undefined);
   };
 
+  const handleClose = () => {
+    if (submitting) {
+      return;
+    }
+    onClose();
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
+      disableEscapeKeyDown={submitting}
       onEnter={handleOpen}
       maxWidth="sm"
       fullWidth
@@ -96,7 +104,9 @@ export const SecretCrudDialog = ({
         ) : null}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleClose} disabled={submitting}>
+          Cancel
+        </Button>
         <Button
           color="primary"
           variant="contained"
