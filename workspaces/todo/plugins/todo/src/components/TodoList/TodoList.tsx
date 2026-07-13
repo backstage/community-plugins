@@ -92,6 +92,7 @@ const columns: (ColumnConfig<TodoRow> & { id: TodoListFields })[] = [
           <Link
             href={item.viewUrl}
             target="_blank"
+            rel="noopener noreferrer"
             truncate
             title={item.repoFilePath ? item.repoFilePath : '-'}
           >
@@ -212,6 +213,7 @@ export const TodoList = () => {
         <Table<TodoRow>
           columnConfig={columns}
           {...tableProps}
+          aria-label="TODOs"
           emptyState={
             <Text variant="body-medium">
               {hasActiveFilter
