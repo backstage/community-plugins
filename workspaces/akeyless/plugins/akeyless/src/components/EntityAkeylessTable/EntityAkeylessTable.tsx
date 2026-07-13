@@ -35,7 +35,7 @@ import OpenInNew from '@material-ui/icons/OpenInNew';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import Alert from '@material-ui/lab/Alert';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { akeylessApiRef, AkeylessSecret } from '../../api';
 import {
@@ -47,6 +47,23 @@ import {
 import { SecretCrudDialog } from '../SecretCrudDialog';
 
 const STATIC_SECRET_TYPE = 'static-secret';
+
+type AkeylessTableRow = {
+  path: string;
+  item: string;
+  itemRender?: ReactNode;
+  type: string;
+  viewUrl?: string;
+  editUrl?: string;
+  secret?: AkeylessSecret;
+  pathCrudEnabled?: boolean;
+  actionsKey?: string;
+};
+
+const nonInteractiveColumn = {
+  sorting: false,
+  searchable: false,
+} as const;
 
 export const isRootContextPath = (path: string): boolean =>
   path === '/' || path.trim() === '/';
@@ -150,121 +167,84 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
   const crudCreatePaths = secretPaths.filter(path => !isRootContextPath(path));
   const crudCreateEnabled = crudEnabled && crudCreatePaths.length > 0;
 
-  const openViewDialog = async (secret: AkeylessSecret) => {
-    setViewSecret(secret);
-    setViewVisible(false);
-    setViewValue(undefined);
-    setViewLoading(true);
-    try {
-      const response = await akeylessApi.getStaticSecretValue(
-        secret.fullPath,
-        secret.path,
-      );
-      setViewValue(response.value);
-    } catch (viewError) {
-      alertApi.post({
-        message:
-          viewError instanceof Error
-            ? viewError.message
-            : 'Failed to load secret value',
-        severity: 'error',
-      });
-      setViewSecret(undefined);
-    } finally {
-      setViewLoading(false);
-    }
-  };
+  const openViewDialog = useCallback(
+    async (secret: AkeylessSecret) => {
+      setViewSecret(secret);
+      setViewVisible(false);
+      setViewValue(undefined);
+      setViewLoading(true);
+      try {
+        const response = await akeylessApi.getStaticSecretValue(
+          secret.fullPath,
+          secret.path,
+        );
+        setViewValue(response.value);
+      } catch (viewError) {
+        alertApi.post({
+          message:
+            viewError instanceof Error
+              ? viewError.message
+              : 'Failed to load secret value',
+          severity: 'error',
+        });
+        setViewSecret(undefined);
+      } finally {
+        setViewLoading(false);
+      }
+    },
+    [akeylessApi, alertApi],
+  );
 
-  const columns: TableColumn[] = useMemo(() => {
-    const baseColumns: TableColumn[] = [
+  const columns: TableColumn<AkeylessTableRow>[] = useMemo(() => {
+    const baseColumns: TableColumn<AkeylessTableRow>[] = [
       { title: 'Path', field: 'path', width: '12%' },
-      { title: 'Item', field: 'item', highlight: true, width: '30%' },
+      {
+        title: 'Item',
+        field: 'item',
+        highlight: true,
+        width: '30%',
+        render: row => row.itemRender ?? row.item,
+      },
       { title: 'Type', field: 'type', width: '12%' },
-      { title: 'View in Akeyless', field: 'view', width: '10%' },
+      {
+        title: 'View in Akeyless',
+        field: 'viewUrl',
+        width: '10%',
+        ...nonInteractiveColumn,
+        render: row =>
+          row.viewUrl ? (
+            <Link
+              to={row.viewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${row.item} in Akeyless Console`}
+            >
+              <OpenInNew fontSize="small" />
+            </Link>
+          ) : null,
+      },
     ];
 
     if (crudEnabled) {
-      baseColumns.push({ title: 'Actions', field: 'actions', width: '16%' });
-    } else {
-      baseColumns.push({ title: 'Manage', field: 'edit', width: '10%' });
-    }
+      baseColumns.push({
+        title: 'Actions',
+        field: 'actionsKey',
+        width: '16%',
+        ...nonInteractiveColumn,
+        render: row => {
+          if (!row.secret) {
+            return null;
+          }
+          if (!row.pathCrudEnabled) {
+            return (
+              <Typography variant="caption" color="textSecondary">
+                Console only
+              </Typography>
+            );
+          }
 
-    return baseColumns;
-  }, [crudEnabled]);
-
-  const data: Array<Record<string, unknown>> = [];
-
-  (listResults || []).forEach(
-    ({ path, secrets, consoleUrl, error: pathError }) => {
-      if (pathError) {
-        data.push({
-          path,
-          item: (
-            <Alert severity="error">
-              Failed to load secrets from &apos;{path}&apos;: {pathError}
-            </Alert>
-          ),
-          type: null,
-          view: null,
-          edit: null,
-          actions: null,
-        });
-        return;
-      }
-
-      if (secrets.length === 0) {
-        data.push({
-          path,
-          item: (
-            <Typography variant="body2" color="textSecondary">
-              No items found.{' '}
-              {consoleUrl ? (
-                <Link to={consoleUrl} target="_blank" rel="noopener noreferrer">
-                  Open in Akeyless Console
-                </Link>
-              ) : null}
-            </Typography>
-          ),
-          type: null,
-          view: null,
-          edit: null,
-          actions: null,
-        });
-        return;
-      }
-
-      secrets.forEach((secret, index) => {
-        const isStaticSecret = secret.itemType === STATIC_SECRET_TYPE;
-        const row: Record<string, unknown> = {
-          path: index === 0 ? path : '',
-          item: secret.fullPath,
-          type: secret.itemType,
-          view: (
-            <Link
-              to={secret.showUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View ${secret.fullPath} in Akeyless Console`}
-            >
-              <OpenInNew fontSize="small" />
-            </Link>
-          ),
-          edit: (
-            <Link
-              to={secret.editUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Manage ${secret.fullPath} in Akeyless Console`}
-            >
-              <OpenInNew fontSize="small" />
-            </Link>
-          ),
-        };
-
-        if (crudEnabled) {
-          const pathCrudEnabled =
-            isStaticSecret && !isRootContextPath(secret.path);
-          row.actions = pathCrudEnabled ? (
+          const secret = row.secret;
+          return (
             <Box display="flex">
               <Tooltip title="View value">
                 <IconButton
@@ -311,14 +291,81 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
                 </IconButton>
               </Tooltip>
             </Box>
-          ) : (
-            <Typography variant="caption" color="textSecondary">
-              Console only
-            </Typography>
           );
-        }
+        },
+      });
+    } else {
+      baseColumns.push({
+        title: 'Manage',
+        field: 'editUrl',
+        width: '10%',
+        ...nonInteractiveColumn,
+        render: row =>
+          row.editUrl ? (
+            <Link
+              to={row.editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Manage ${row.item} in Akeyless Console`}
+            >
+              <OpenInNew fontSize="small" />
+            </Link>
+          ) : null,
+      });
+    }
 
-        data.push(row);
+    return baseColumns;
+  }, [alertApi, akeylessApi, crudEnabled, openViewDialog]);
+
+  const data: AkeylessTableRow[] = [];
+
+  (listResults || []).forEach(
+    ({ path, secrets, consoleUrl, error: pathError }) => {
+      if (pathError) {
+        data.push({
+          path,
+          item: `Failed to load secrets from '${path}': ${pathError}`,
+          itemRender: (
+            <Alert severity="error">
+              Failed to load secrets from &apos;{path}&apos;: {pathError}
+            </Alert>
+          ),
+          type: '',
+        });
+        return;
+      }
+
+      if (secrets.length === 0) {
+        data.push({
+          path,
+          item: 'No items found',
+          itemRender: (
+            <Typography variant="body2" color="textSecondary">
+              No items found.{' '}
+              {consoleUrl ? (
+                <Link to={consoleUrl} target="_blank" rel="noopener noreferrer">
+                  Open in Akeyless Console
+                </Link>
+              ) : null}
+            </Typography>
+          ),
+          type: '',
+        });
+        return;
+      }
+
+      secrets.forEach((secret, index) => {
+        const isStaticSecret = secret.itemType === STATIC_SECRET_TYPE;
+        data.push({
+          path: index === 0 ? path : '',
+          item: secret.fullPath,
+          type: secret.itemType,
+          viewUrl: secret.showUrl,
+          editUrl: secret.editUrl,
+          secret,
+          pathCrudEnabled: isStaticSecret && !isRootContextPath(secret.path),
+          actionsKey: secret.fullPath,
+        });
       });
     },
   );

@@ -158,8 +158,8 @@ export class AkeylessBuilder {
         itemTypes = [types];
       }
 
-      const items = await akeylessApi.listSecrets(path, itemTypes);
       const listPath = normalizePath(path);
+      const items = await akeylessApi.listSecrets(listPath, itemTypes);
       response.json({
         items,
         consoleUrl: akeylessApi.getConsoleUrl(),

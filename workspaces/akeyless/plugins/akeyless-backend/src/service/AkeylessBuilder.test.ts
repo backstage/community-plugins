@@ -154,7 +154,7 @@ describe('AkeylessBuilder', () => {
 
     expect(response.status).toEqual(200);
     expect(response.body.allowCrud).toEqual(false);
-    expect(mockApi.listSecrets).toHaveBeenCalled();
+    expect(mockApi.listSecrets).toHaveBeenCalledWith('/', undefined);
   });
 
   describe('path scoping', () => {
