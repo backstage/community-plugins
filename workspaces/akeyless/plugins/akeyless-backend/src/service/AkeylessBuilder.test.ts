@@ -39,6 +39,24 @@ describe('AkeylessBuilder', () => {
     },
   });
 
+  const createMockApi = () => ({
+    getConsoleUrl: () => 'https://console.akeyless.io',
+    listSecrets: jest.fn().mockResolvedValue([]),
+    getStaticSecretValue: jest.fn().mockResolvedValue('value'),
+    createStaticSecret: jest.fn().mockResolvedValue(undefined),
+    updateStaticSecretValue: jest.fn().mockResolvedValue(undefined),
+    deleteItem: jest.fn().mockResolvedValue(undefined),
+  });
+
+  const createCrudApp = (mockApi: AkeylessApi) => {
+    const builder = AkeylessBuilder.createBuilder({
+      logger: mockServices.logger.mock(),
+      config,
+    });
+    const { router } = builder.setAkeylessClient(mockApi).build();
+    return express().use(router);
+  };
+
   let app: express.Express;
 
   beforeAll(() => {
@@ -114,20 +132,8 @@ describe('AkeylessBuilder', () => {
   });
 
   it('rejects CRUD with root contextPath', async () => {
-    const mockApi: AkeylessApi = {
-      getConsoleUrl: () => 'https://console.akeyless.io',
-      listSecrets: async () => [],
-      getStaticSecretValue: async () => 'value',
-      createStaticSecret: async () => undefined,
-      updateStaticSecretValue: async () => undefined,
-      deleteItem: async () => undefined,
-    };
-    const builder = AkeylessBuilder.createBuilder({
-      logger: mockServices.logger.mock(),
-      config,
-    });
-    const { router } = builder.setAkeylessClient(mockApi).build();
-    const crudApp = express().use(router);
+    const mockApi = createMockApi();
+    const crudApp = createCrudApp(mockApi);
 
     const response = await request(crudApp).post('/v1/static-secrets').send({
       name: 'demo',
@@ -137,5 +143,87 @@ describe('AkeylessBuilder', () => {
 
     expect(response.status).toEqual(400);
     expect(response.body.error.message).toContain('non-root path');
+    expect(mockApi.createStaticSecret).not.toHaveBeenCalled();
+  });
+
+  describe('path scoping', () => {
+    const contextPath = '/demo/app';
+
+    it('rejects create outside contextPath', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp).post('/v1/static-secrets').send({
+        name: '/other/secret',
+        value: 'secret',
+        contextPath,
+      });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.error.name).toEqual(NotAllowedError.name);
+      expect(mockApi.createStaticSecret).not.toHaveBeenCalled();
+    });
+
+    it('rejects update outside contextPath', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp).put('/v1/static-secrets').send({
+        name: '/other/secret',
+        value: 'secret',
+        contextPath,
+      });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.error.name).toEqual(NotAllowedError.name);
+      expect(mockApi.updateStaticSecretValue).not.toHaveBeenCalled();
+    });
+
+    it('rejects delete outside contextPath', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp)
+        .delete('/v1/static-secrets')
+        .send({
+          name: '/other/secret',
+          contextPath,
+        });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.error.name).toEqual(NotAllowedError.name);
+      expect(mockApi.deleteItem).not.toHaveBeenCalled();
+    });
+
+    it('rejects read outside contextPath', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp)
+        .get('/v1/static-secrets/value')
+        .query({
+          name: '/other/secret',
+          contextPath,
+        });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.error.name).toEqual(NotAllowedError.name);
+      expect(mockApi.getStaticSecretValue).not.toHaveBeenCalled();
+    });
+
+    it('rejects traversal attempts outside contextPath', async () => {
+      const mockApi = createMockApi();
+      const crudApp = createCrudApp(mockApi);
+
+      const response = await request(crudApp).post('/v1/static-secrets').send({
+        name: '../outside',
+        value: 'secret',
+        contextPath: '/allowed',
+      });
+
+      expect(response.status).toEqual(403);
+      expect(response.body.error.name).toEqual(NotAllowedError.name);
+      expect(mockApi.createStaticSecret).not.toHaveBeenCalled();
+    });
   });
 });
