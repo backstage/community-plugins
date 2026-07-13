@@ -195,6 +195,7 @@ export class AkeylessClient implements AkeylessApi {
   ): Promise<StaticSecretValueResponse> {
     return this.callApi<StaticSecretValueResponse>('v1/static-secrets/value', {
       query: { name, contextPath },
+      notFoundMessage: `Static secret '${name}' was not found`,
     });
   }
 

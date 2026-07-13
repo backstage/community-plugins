@@ -21,7 +21,25 @@ export function normalizePath(path: string): string {
   if (!trimmed) {
     return '/';
   }
-  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+
+  const segments = trimmed.split('/').filter(Boolean);
+  const resolved: string[] = [];
+
+  for (const segment of segments) {
+    if (segment === '.') {
+      continue;
+    }
+    if (segment === '..') {
+      if (resolved.length === 0) {
+        throw new InputError('Invalid path: cannot traverse above root');
+      }
+      resolved.pop();
+      continue;
+    }
+    resolved.push(segment);
+  }
+
+  return resolved.length === 0 ? '/' : `/${resolved.join('/')}`;
 }
 
 export function joinSecretPath(

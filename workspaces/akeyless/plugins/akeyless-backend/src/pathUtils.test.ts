@@ -38,6 +38,14 @@ describe('pathUtils', () => {
     it('returns root for whitespace-only input', () => {
       expect(normalizePath('   ')).toEqual('/');
     });
+
+    it('canonicalizes parent directory segments', () => {
+      expect(normalizePath('/demo/app/../secret')).toEqual('/demo/secret');
+    });
+
+    it('rejects traversal above root', () => {
+      expect(() => normalizePath('/../outside')).toThrow(InputError);
+    });
   });
 
   describe('joinSecretPath', () => {
@@ -73,6 +81,12 @@ describe('pathUtils', () => {
       expect(() => assertPathAllowed('/other/secret', '/demo/app')).toThrow(
         NotAllowedError,
       );
+    });
+
+    it('rejects traversal attempts outside the context', () => {
+      expect(() =>
+        assertPathAllowed('/allowed/../outside', '/allowed'),
+      ).toThrow(NotAllowedError);
     });
   });
 });

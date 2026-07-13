@@ -221,8 +221,7 @@ export class AkeylessBuilder {
       response.status(204).send();
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    router.use(MiddlewareFactory.create(this.env).error() as any);
+    router.use(MiddlewareFactory.create(this.env).error());
     return router;
   }
 }
