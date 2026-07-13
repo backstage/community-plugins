@@ -45,6 +45,7 @@ import {
   DEFAULT_SECRET_TYPES,
 } from '../../constants';
 import { SecretCrudDialog } from '../SecretCrudDialog';
+import { resolveCreateSecretRequest } from './createSecretUtils';
 
 const STATIC_SECRET_TYPE = 'static-secret';
 
@@ -439,41 +440,16 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
         contextPath={selectedPath}
         onClose={() => setCreateOpen(false)}
         onSubmit={async ({ name, value: secretValue }) => {
-          const normalizedPaths = secretPaths.map(p =>
-            p === '/' ? '/' : p.replace(/\/+$/, ''),
-          );
-
-          const selectedBase =
-            selectedPath === '/' ? '' : selectedPath.replace(/\/+$/, '');
-          const fullName = name.startsWith('/')
-            ? name
-            : `${selectedBase}/${name}`;
-
-          const matchingContextPath =
-            normalizedPaths
-              .filter(
-                p =>
-                  p !== '/' && (fullName === p || fullName.startsWith(`${p}/`)),
-              )
-              .sort((a, b) => b.length - a.length)[0] ?? selectedPath;
-
-          const absoluteName = (() => {
-            if (name.startsWith('/')) {
-              return name;
-            }
-            return fullName.startsWith('/') ? fullName : `/${fullName}`;
-          })();
-
-          if (matchingContextPath === '/') {
-            throw new Error(
-              'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
-            );
-          }
+          const { absoluteName, contextPath } = resolveCreateSecretRequest({
+            name,
+            selectedPath,
+            secretPaths,
+          });
 
           await akeylessApi.createStaticSecret(
             absoluteName,
             secretValue,
-            matchingContextPath,
+            contextPath,
           );
           alertApi.post({
             message: `Created static secret '${absoluteName}'`,
