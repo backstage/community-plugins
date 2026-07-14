@@ -9,6 +9,7 @@ It describes how to run the application locally, how to prepare an OpenShift-bas
 
 - [Setting up the local development environment](#setting-up-the-local-development-environment)
 - [Setting up the OpenShift development environment](#setting-up-the-openshift-development-environment)
+- [Red Hat Developer Hub compatibility](#red-hat-developer-hub-compatibility)
 - [Considerations when upgrading Backstage](#considerations-when-upgrading-backstage)
 
 ## Setting up the local development environment
@@ -180,7 +181,7 @@ And add the network_mode:
 ```bash
 rhdh:
   container_name: rhdh
-  image: ${RHDH_IMAGE:-quay.io/rhdh-community/rhdh:1.8}
+  image: ${RHDH_IMAGE:-quay.io/rhdh-community/rhdh:1.10}
   network_mode: host
 ```
 
@@ -210,6 +211,20 @@ We can check if everything is working on:
 
 http://localhost:7007/
 
+## Red Hat Developer Hub compatibility
+
+This workspace tracks the Backstage version bundled with [Red Hat Developer Hub (RHDH)](https://developers.redhat.com/products/rhdh). The canonical compatibility matrix for all dynamic plugins is maintained in [rhdh-plugin-export-overlays](https://github.com/redhat-developer/rhdh-plugin-export-overlays?tab=readme-ov-file#backstage-compatibility).
+
+| RHDH version | Backstage version | Kiali workspace status |
+| ------------ | ----------------- | ---------------------- |
+| 1.9          | 1.45.3            | Previous baseline      |
+| 1.10         | 1.49.4            | Current target         |
+| ~1.11        | 1.52.0            | Planned future bump    |
+
+When validating changes for RHDH, use [rhdh-local](https://github.com/redhat-developer/rhdh-local) with `RHDH_IMAGE=quay.io/rhdh-community/rhdh:1.10` and export the dynamic plugins with `@red-hat-developer-hub/cli`.
+
+After merging a Backstage bump, open a PR in [rhdh-plugin-export-overlays](https://github.com/redhat-developer/rhdh-plugin-export-overlays) to update `workspaces/kiali/source.json` with the new commit and `repo-backstage-version`.
+
 ## Considerations when upgrading backstage
 
 Before upgrading, it is important to [check the compatibility](https://github.com/redhat-developer/rhdh-plugin-export-overlays?tab=readme-ov-file#backstage-compatibility) with the RHDH version.
@@ -217,9 +232,9 @@ Before upgrading, it is important to [check the compatibility](https://github.co
 Once checked, follow the steps:
 
 ```bash
-# 1. Run the version bump
+# 1. Run the version bump (use the target Backstage version for your RHDH release)
 cd workspaces/kiali
-yarn backstage-cli versions:bump --release main
+yarn backstage-cli versions:bump --release 1.49.4
 
 # 2. Clean duplicate dependencies
 yarn dedupe
