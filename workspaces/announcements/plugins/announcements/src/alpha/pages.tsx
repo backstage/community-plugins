@@ -18,6 +18,7 @@ import {
   convertLegacyRouteRef,
 } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
+import { RiMegaphoneLine } from '@remixicon/react';
 import { rootRouteRef } from '../routes';
 
 /**
@@ -46,6 +47,8 @@ export const announcementsPage = PageBlueprint.makeWithOverrides({
   factory: (originalFactory, { config }) =>
     originalFactory({
       path: '/announcements',
+      title: 'Announcements',
+      icon: <RiMegaphoneLine />,
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
         import('../Router').then(m =>

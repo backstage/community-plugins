@@ -18,7 +18,7 @@ import { PropsWithChildren } from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { usePermission } from '@backstage/plugin-permission-react';
 
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { mockApplication, mockEntity } from '../../../../dev/__data__';
@@ -161,7 +161,7 @@ describe('DeploymentLifecycle', () => {
 
   const theme = createTheme({
     palette: {
-      type: 'dark',
+      mode: 'dark',
     },
   });
 

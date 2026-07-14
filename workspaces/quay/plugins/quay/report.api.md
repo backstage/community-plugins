@@ -5,6 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PathParams } from '@backstage/core-plugin-api';
 import { RouteRef } from '@backstage/core-plugin-api';
@@ -12,6 +13,10 @@ import { SubRouteRef } from '@backstage/core-plugin-api';
 
 // @public
 export const isQuayAvailable: (entity: Entity) => boolean;
+
+// @public
+const plugin: FrontendPlugin;
+export default plugin;
 
 // @public
 export const QuayPage: () => JSX_2.Element;
@@ -25,6 +30,4 @@ export const quayPlugin: BackstagePlugin<
   {},
   {}
 >;
-
-// (No @packageDocumentation comment for this package)
 ```
