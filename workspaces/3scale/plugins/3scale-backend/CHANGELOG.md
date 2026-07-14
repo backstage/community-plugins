@@ -1,5 +1,23 @@
 # @backstage-community/plugin-3scale-backend
 
+## 3.15.0
+
+### Minor Changes
+
+- 6a5aadf: Backstage version bump to v1.52.0
+
+## 3.14.1
+
+### Patch Changes
+
+- da1312a: Added module wiring and contract tests, a contributor guide for local development, and fixed `addLabels: false` config parsing.
+
+## 3.14.0
+
+### Minor Changes
+
+- 8f89c50: Backstage version bump to v1.51.0
+
 ## 3.13.0
 
 ### Minor Changes

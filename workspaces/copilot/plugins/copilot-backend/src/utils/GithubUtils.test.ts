@@ -62,7 +62,7 @@ describe('getCopilotConfig', () => {
     });
 
     expect(() => getCopilotConfig(mockConfig)).toThrow(
-      'Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "github.com" in the config.',
+      'Enterprise API for copilot works with both classic and fine grained PAT tokens or GitHub apps. No token or app is configured for "github.com" in the config.',
     );
   });
 
@@ -121,7 +121,7 @@ describe('getGithubCredentials', () => {
         apiBaseUrl: '',
       }),
     ).rejects.toThrow(
-      'Enterprise API for copilot only works with "classic PAT" tokens. No token is configured for "github.com" in the config.',
+      'Enterprise API for copilot requires either a PAT token or a GitHub App. No token or app is configured for "github.com" in the config.',
     );
   });
 
@@ -243,6 +243,75 @@ describe('getGithubCredentials', () => {
     expect(typeof result.organization).toBe('object');
     expect(result.organization).toHaveProperty('appId', 1234);
     expect(result.organization).toHaveProperty('privateKey');
+  });
+
+  it('should return enterprise credentials with app config when enterprise is in allowedInstallationOwners', async () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [
+            {
+              host: 'github.com',
+              apps: [
+                {
+                  appId: 5678,
+                  clientId: 'test',
+                  clientSecret: 'test',
+                  privateKey: 'test',
+                  webhookSecret: 'shhh',
+                  allowedInstallationOwners: ['my-enterprise'],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    const result = await getGithubCredentials(mockConfig, {
+      host: 'github.com',
+      enterprise: 'my-enterprise',
+      apiBaseUrl: '',
+    });
+
+    expect(result.organization).toBeUndefined();
+    expect(typeof result.enterprise).toBe('object');
+    expect(result.enterprise).toHaveProperty('appId', 5678);
+    expect(result.enterprise).toHaveProperty('privateKey');
+  });
+
+  it('should fall back to token for enterprise when app does not cover enterprise', async () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [
+            {
+              host: 'github.com',
+              token: 'fallback-token',
+              apps: [
+                {
+                  appId: 1234,
+                  clientId: 'test',
+                  clientSecret: 'test',
+                  privateKey: 'test',
+                  webhookSecret: 'shhh',
+                  allowedInstallationOwners: ['my-org'],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    const result = await getGithubCredentials(mockConfig, {
+      host: 'github.com',
+      enterprise: 'my-enterprise',
+      apiBaseUrl: '',
+    });
+
+    expect(result.enterprise).toBe('fallback-token');
+    expect(result.organization).toBeUndefined();
   });
 
   it('should return organization credentials with app config and enterprise credentials with token config', async () => {

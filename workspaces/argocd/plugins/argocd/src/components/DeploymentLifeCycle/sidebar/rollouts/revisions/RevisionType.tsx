@@ -15,7 +15,7 @@
  */
 import type { FC } from 'react';
 
-import { Chip } from '@material-ui/core';
+import Chip from '@mui/material/Chip';
 import {
   CheckCircleIcon,
   DoveIcon,
@@ -35,7 +35,6 @@ const RevisionType: FC<{ label: string }> = ({ label }) => {
       <Chip
         variant="outlined"
         size="small"
-        color="default"
         icon={<CheckCircleIcon style={{ ...iconStyle, fill: 'green' }} />}
         label={label}
       />
@@ -47,7 +46,6 @@ const RevisionType: FC<{ label: string }> = ({ label }) => {
       <Chip
         variant="outlined"
         size="small"
-        color="default"
         icon={
           <OutlinedCheckCircleIcon style={{ ...iconStyle, fill: 'green' }} />
         }
@@ -71,7 +69,6 @@ const RevisionType: FC<{ label: string }> = ({ label }) => {
     <Chip
       variant="outlined"
       size="small"
-      color="default"
       icon={<SearchIcon style={{ ...iconStyle, fill: 'gray' }} />}
       label={label}
     />

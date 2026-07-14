@@ -15,16 +15,14 @@
  */
 import type { MouseEvent } from 'react';
 
-import {
-  makeStyles,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-} from '@material-ui/core';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
 
 import { Order } from '../../types/types';
 import { getPipelineRunColumnHeader } from './PipelineRunColumnHeader';
+import { getMergedPipelineRunTableHeaderCellSx } from './pipelineRunTableColumns';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
@@ -39,18 +37,6 @@ type EnhancedTableProps = {
   orderById: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  header: {
-    padding: theme.spacing(1, 2, 1, 2.5),
-    borderTop: `1px solid ${theme.palette.grey.A100}`,
-    borderBottom: `1px solid ${theme.palette.grey.A100}`,
-    // withStyles hasn't a generic overload for theme
-    fontWeight: 'bold',
-    position: 'static',
-    wordBreak: 'normal',
-  },
-}));
-
 export const EnhancedTableHead = ({
   order,
   orderBy,
@@ -61,7 +47,6 @@ export const EnhancedTableHead = ({
     (property: string, id: string) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property, id);
     };
-  const classes = useStyles();
   const { t } = useTranslationRef(tektonTranslationRef);
   const pipelineRunColumnHeader = getPipelineRunColumnHeader(t);
 
@@ -69,12 +54,15 @@ export const EnhancedTableHead = ({
     <TableHead>
       <TableRow>
         {pipelineRunColumnHeader.map(headCell => {
+          const columnId = headCell.id as string;
+          const isExpander = columnId === 'expander';
+
           return (
             <TableCell
-              className={classes.header}
-              key={headCell.id as string}
+              sx={getMergedPipelineRunTableHeaderCellSx(columnId)}
+              key={columnId}
               align="left"
-              padding="normal"
+              padding={isExpander ? 'checkbox' : 'normal'}
               sortDirection={
                 orderBy === headCell.field ? headCell.defaultSort : false
               }

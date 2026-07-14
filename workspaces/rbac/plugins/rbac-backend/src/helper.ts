@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AuditorService, AuthService } from '@backstage/backend-plugin-api';
+import {
+  AuditorService,
+  AuthService,
+  LoggerService,
+} from '@backstage/backend-plugin-api';
 import type { MetadataResponse } from '@backstage/plugin-permission-common';
 
 import {
@@ -36,7 +40,7 @@ import {
   Source,
 } from '@backstage-community/plugin-rbac-common';
 
-import { ActionType, RoleEvents } from './auditor/auditor';
+import { ActionType, ConditionEvents, RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
@@ -81,6 +85,205 @@ export function metadataStringToPolicy(policy: string): string[] {
  */
 function policyArraysEqual(a: string[], b: string[]): boolean {
   return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+export type ConditionalPolicyDiff<TAdd> = {
+  toAdd: TAdd[];
+  toRemove: RoleConditionalPolicyDecision<PermissionInfo>[];
+};
+
+export type ConditionalResourceKey = {
+  roleEntityRef: string;
+  pluginId: string;
+  resourceType: string;
+};
+
+export type ConditionalPolicyReplacement<
+  TAdd extends ConditionalResourceKey,
+  TRemove extends ConditionalResourceKey & { id?: number },
+> = {
+  stored: TRemove;
+  desired: TAdd;
+};
+
+export type ConditionalPolicyReconcilePlan<
+  TAdd extends ConditionalResourceKey,
+  TRemove extends ConditionalResourceKey & { id?: number },
+> = {
+  updates: ConditionalPolicyReplacement<TAdd, TRemove>[];
+  creates: TAdd[];
+  deletes: TRemove[];
+};
+
+export type ConditionalPolicyReconcileAbortContext = {
+  logger: LoggerService;
+  auditor: AuditorService;
+  source: string;
+  abortEventId?: string;
+  pendingAdds: number;
+  pendingRemoves: number;
+  pluginIds: string[];
+  error: Error;
+};
+
+function serializeErrorForLog(error: Error): {
+  name: string;
+  message: string;
+  stack?: string;
+} {
+  return {
+    name: error.name,
+    message: error.message,
+    stack: error.stack,
+  };
+}
+
+export function toError(value: unknown): Error {
+  return value instanceof Error ? value : new Error(String(value));
+}
+
+/**
+ * Computes additions and removals between stored and desired conditional policies.
+ */
+export function diffConditionalPolicies<TAdd>(
+  stored: RoleConditionalPolicyDecision<PermissionInfo>[],
+  desired: TAdd[],
+  equals: (
+    storedItem: RoleConditionalPolicyDecision<PermissionInfo>,
+    desiredItem: TAdd,
+  ) => boolean,
+): ConditionalPolicyDiff<TAdd> {
+  const toAdd = desired.filter(
+    desiredItem => !stored.some(storedItem => equals(storedItem, desiredItem)),
+  );
+  const toRemove = stored.filter(
+    storedItem => !desired.some(desiredItem => equals(storedItem, desiredItem)),
+  );
+  return { toAdd, toRemove };
+}
+
+export function permissionMappingToActions(
+  mapping: PermissionInfo[] | PermissionAction[],
+): PermissionAction[] {
+  return mapping.map(entry =>
+    typeof entry === 'string' ? entry : entry.action,
+  );
+}
+
+export function sameConditionalResource(
+  a: ConditionalResourceKey,
+  b: ConditionalResourceKey,
+): boolean {
+  return (
+    a.roleEntityRef === b.roleEntityRef &&
+    a.pluginId === b.pluginId &&
+    a.resourceType === b.resourceType
+  );
+}
+
+export function conditionalActionsOverlap(
+  actionsA: PermissionAction[],
+  actionsB: PermissionAction[],
+): boolean {
+  return actionsA.some(action => actionsB.includes(action));
+}
+
+/**
+ * Splits a conditional diff into in-place updates, net-new creates, and pure
+ * deletes. Overlapping add/remove pairs for the same role/plugin/resourceType
+ * are treated as updates so createCondition is not called while the stored row
+ * still exists.
+ */
+export function planConditionalReconcile<
+  TAdd extends ConditionalResourceKey,
+  TRemove extends ConditionalResourceKey & { id?: number },
+>(
+  toAdd: TAdd[],
+  toRemove: TRemove[],
+  getActions: (item: TAdd | TRemove) => PermissionAction[],
+): ConditionalPolicyReconcilePlan<TAdd, TRemove> {
+  const matchedRemoveIds = new Set<number>();
+  const updates: ConditionalPolicyReplacement<TAdd, TRemove>[] = [];
+  const creates: TAdd[] = [];
+
+  for (const desired of toAdd) {
+    const stored = toRemove.find(
+      item =>
+        item.id !== undefined &&
+        !matchedRemoveIds.has(item.id) &&
+        sameConditionalResource(item, desired) &&
+        conditionalActionsOverlap(getActions(item), getActions(desired)),
+    );
+
+    if (stored?.id !== undefined) {
+      matchedRemoveIds.add(stored.id);
+      updates.push({ stored, desired });
+    } else {
+      creates.push(desired);
+    }
+  }
+
+  const deletes = toRemove.filter(
+    item => item.id === undefined || !matchedRemoveIds.has(item.id),
+  );
+
+  return { updates, creates, deletes };
+}
+
+export function pendingDeleteIdsFromPlan(plan: {
+  deletes: ReadonlyArray<{ id?: number }>;
+}): ReadonlySet<number> {
+  const ids = plan.deletes
+    .map(item => item.id)
+    .filter((id): id is number => id !== undefined);
+  return new Set(ids);
+}
+
+/**
+ * Logs and audits a failed conditional reconcile. Callers must finish staging
+ * and validation for all pending additions, then persist updates/creates before
+ * deletes. Invoke from a catch block when that persist phase throws so stored
+ * conditions are not deleted.
+ */
+export async function abortConditionalPolicyReconcile(
+  context: ConditionalPolicyReconcileAbortContext,
+): Promise<void> {
+  const {
+    logger,
+    auditor,
+    source,
+    abortEventId = ConditionEvents.CONDITIONAL_POLICIES_FILE_CHANGE,
+    pendingAdds,
+    pendingRemoves,
+    pluginIds,
+    error,
+  } = context;
+
+  const abortMeta = {
+    source,
+    pendingAdds,
+    pendingRemoves,
+    pluginIds,
+    ...(abortEventId === ConditionEvents.CONDITION_WRITE
+      ? { actionType: ActionType.RECONCILE_ABORT }
+      : {}),
+  };
+
+  logger.error(
+    'Conditional policy reconcile aborted; stored conditions preserved. Retry reconciliation once the underlying staging or persistence failure is resolved.',
+    {
+      event: 'conditional_reconcile_aborted',
+      ...abortMeta,
+      error: serializeErrorForLog(error),
+    },
+  );
+
+  const auditorEvent = await auditor.createEvent({
+    eventId: abortEventId,
+    severityLevel: 'medium',
+    meta: abortMeta,
+  });
+  await auditorEvent.fail({ error, meta: abortMeta });
 }
 
 /**

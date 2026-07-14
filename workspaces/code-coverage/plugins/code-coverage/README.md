@@ -9,7 +9,32 @@ This is the frontend part of the code-coverage plugin. It displays code coverage
 yarn --cwd packages/app add @backstage-community/plugin-code-coverage
 ```
 
-Finally you need to import and render the code coverage entity, in `packages/app/src/components/catalog/EntityPage.tsx` add the following:
+### New Frontend System
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import codeCoveragePlugin from '@backstage-community/plugin-code-coverage/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    codeCoveragePlugin,
+  ],
+});
+```
+
+#### Extensions
+
+The following extensions are available in the plugin:
+
+- `api:code-coverage`
+- `entity-content:code-coverage`
+
+### Legacy Frontend System
+
+Import and render the code coverage entity, in `packages/app/src/components/catalog/EntityPage.tsx` add the following:
 
 ```diff
 @@ -70,6 +70,7 @@ import {

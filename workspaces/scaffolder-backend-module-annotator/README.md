@@ -1,16 +1,7 @@
-# [Backstage](https://backstage.io)
+# Annotator scaffolder backend module workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+Publishable plugins in this workspace:
 
-To start the app, run:
+- [@backstage-community/plugin-scaffolder-backend-module-annotator](./plugins/scaffolder-backend-module-annotator/) — operator docs: [README](./plugins/scaffolder-backend-module-annotator/README.md); contributors: [CONTRIBUTING](./plugins/scaffolder-backend-module-annotator/CONTRIBUTING.md)
 
-```sh
-yarn install
-yarn start
-```
-
-To generate knip reports for this app, run:
-
-```sh
-yarn backstage-repo-tools knip-reports
-```
+Day-to-day plugin work uses the package's `dev/` harness — see the contributor guide above.

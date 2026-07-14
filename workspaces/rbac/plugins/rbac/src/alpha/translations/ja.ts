@@ -29,6 +29,8 @@ const rbacTranslationJa = createTranslationMessages({
     'page.editRole': 'ロールの編集',
     'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
+    'table.labelDisplayedRows': '{from}-{to} / {count}',
+    'table.labelRowsPerPage': 'ページあたりの行数:',
     'table.title': 'すべてのロール',
     'table.titleWithCount': 'すべてのロール ({{count}})',
     'table.headers.name': '名前',

@@ -1,5 +1,23 @@
 # @backstage-community/plugin-announcements
 
+## 2.11.1
+
+### Patch Changes
+
+- 908d9af: Added title and icon to the announcements page extension for the new frontend system.
+
+## 2.11.0
+
+### Minor Changes
+
+- fa4b770: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [fa4b770]
+  - @backstage-community/plugin-announcements-common@0.22.0
+  - @backstage-community/plugin-announcements-react@0.27.0
+
 ## 2.10.0
 
 ### Minor Changes

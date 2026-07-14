@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 import { RunStatus } from '@patternfly/react-topology';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined';
+import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutline from '@mui/icons-material/ErrorOutline';
+import HourglassEmptyOutlined from '@mui/icons-material/HourglassEmptyOutlined';
+import KeyboardDoubleArrowRight from '@mui/icons-material/KeyboardDoubleArrowRight';
+import NotInterestedOutlined from '@mui/icons-material/NotInterestedOutlined';
+import ReportProblemOutlined from '@mui/icons-material/ReportProblemOutlined';
 import classNames from 'classnames';
 
-import { Status } from '../common/Status';
 import { StepStatus } from '../../types/taskRun';
 
 import './PipelineVisualizationStepList.css';
@@ -35,11 +43,94 @@ type TooltipColoredStatusIconProps = {
   status: RunStatus;
 };
 
+const tooltipStatusIconSx = {
+  display: 'block',
+  fontSize: '1rem',
+  height: '1rem',
+  width: '1rem',
+};
+
 const TooltipColoredStatusIcon = ({
   status,
 }: TooltipColoredStatusIconProps) => {
-  const icon = <Status status={status} iconOnly />;
-  return icon;
+  const theme = useTheme();
+  const statusLabel = String(status);
+
+  switch (statusLabel) {
+    case 'Succeeded':
+    case 'Completed':
+    case 'Synced':
+      return (
+        <CheckCircleOutline
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.status.ok }}
+        />
+      );
+    case 'Failed':
+    case 'Failure':
+    case 'Error':
+    case 'ImagePullBackOff':
+    case 'CrashLoopBackOff':
+    case 'ErrImagePull':
+      return (
+        <ErrorOutline
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.status.error }}
+        />
+      );
+    case 'Warning':
+    case 'RequiresApproval':
+      return (
+        <ReportProblemOutlined
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.status.warning }}
+        />
+      );
+    case 'In Progress':
+    case 'Progress':
+    case 'Progressing':
+    case 'Running':
+    case 'Installing':
+    case 'Updating':
+      return (
+        <AutorenewOutlined
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.status.running }}
+        />
+      );
+    case 'Pending':
+    case 'New':
+    case 'Idle':
+    case 'PipelineNotStarted':
+      return (
+        <HourglassEmptyOutlined
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.status.pending }}
+        />
+      );
+    case 'Cancelled':
+    case 'Cancelling':
+    case 'Deleting':
+    case 'Terminating':
+    case 'Uninstalling':
+      return (
+        <NotInterestedOutlined
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.status.aborted }}
+        />
+      );
+    case 'Skipped':
+      return (
+        <KeyboardDoubleArrowRight
+          sx={{ ...tooltipStatusIconSx, color: theme.palette.text.secondary }}
+        />
+      );
+    default:
+      return (
+        <Box
+          component="span"
+          sx={{
+            ...tooltipStatusIconSx,
+            borderRadius: '50%',
+            backgroundColor: theme.palette.status.aborted,
+          }}
+        />
+      );
+  }
 };
 
 export const PipelineVisualizationStepList = ({

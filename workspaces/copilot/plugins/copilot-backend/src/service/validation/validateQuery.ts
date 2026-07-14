@@ -22,7 +22,7 @@ export function validateQuery(schema: ZodSchema) {
     const { error, data } = schema.safeParse(req.query);
 
     if (error) {
-      throw new InputError(error.errors[0].message, error);
+      return next(new InputError(error.errors[0].message, error));
     }
 
     req.query = data;

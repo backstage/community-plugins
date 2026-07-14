@@ -71,6 +71,7 @@ import {
   createApiRef,
   DiscoveryApi,
   IdentityApi,
+  type ApiRef,
 } from '@backstage/core-plugin-api';
 import { AxiosError } from 'axios';
 import { Record } from 'victory-core/lib/victory-util/immutable-types';
@@ -202,6 +203,7 @@ export interface KialiApi {
     object: string,
     validate: boolean,
     cluster?: string,
+    apiVersion?: string,
   ): Promise<IstioConfigDetails>;
   setEntity(entity?: Entity): void;
   setAnnotation(key: string, value: string): void;
@@ -276,7 +278,7 @@ export interface KialiApi {
   getGraphElements(params: GraphElementsQuery): Promise<GraphDefinition>;
 }
 
-export const kialiApiRef = createApiRef<KialiApi>({
+export const kialiApiRef: ApiRef<KialiApi> = createApiRef<KialiApi>({
   id: 'plugin.kiali.service',
 });
 
@@ -373,6 +375,12 @@ export class KialiApiClient implements KialiApi {
       Telemetry: 'telemetry.istio.io/v1',
       EnvoyFilter: 'networking.istio.io/v1alpha3',
       WasmPlugin: 'extensions.istio.io/v1alpha1',
+      HTTPRoute: 'gateway.networking.k8s.io/v1',
+      GRPCRoute: 'gateway.networking.k8s.io/v1',
+      TCPRoute: 'gateway.networking.k8s.io/v1alpha2',
+      TLSRoute: 'gateway.networking.k8s.io/v1',
+      GatewayClass: 'gateway.networking.k8s.io/v1',
+      ReferenceGrant: 'gateway.networking.k8s.io/v1beta1',
     };
 
     return apiVersionMap[objectType] || 'networking.istio.io/v1';
@@ -691,6 +699,7 @@ export class KialiApiClient implements KialiApi {
     object: string,
     validate: boolean,
     cluster?: string,
+    apiVersion?: string,
   ): Promise<IstioConfigDetails> => {
     const queryParams: QueryParams<IstioConfigDetailsQuery> = {};
 
@@ -703,12 +712,13 @@ export class KialiApiClient implements KialiApi {
       queryParams.help = true;
     }
 
-    const apiVersion = this.getApiVersionForObjectType(objectType);
+    const resolvedApiVersion =
+      apiVersion || this.getApiVersionForObjectType(objectType);
     const url = urls.istioConfigDetail(
       namespace,
       objectType,
       object,
-      apiVersion,
+      resolvedApiVersion,
     );
 
     return this.newRequest<IstioConfigDetails>(
@@ -727,10 +737,6 @@ export class KialiApiClient implements KialiApi {
       ...params,
       namespaces: namespaces,
     };
-    // Only include includeAmbient if it's explicitly set to true
-    if (params.includeAmbient === true) {
-      queryParams.includeAmbient = true;
-    }
     // Ensure filters is an array for customParams formatting
     if (queryParams.filters && !Array.isArray(queryParams.filters)) {
       queryParams.filters = [queryParams.filters];

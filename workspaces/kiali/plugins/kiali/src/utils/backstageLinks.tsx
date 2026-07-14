@@ -135,6 +135,11 @@ const DrawerContent = ({
               objectGVK?.Kind ||
               (name.includes('gateway') ? 'Gateway' : 'VirtualService')
             }
+            apiVersion={
+              objectGVK?.Group && objectGVK?.Version
+                ? `${objectGVK.Group}/${objectGVK.Version}`
+                : undefined
+            }
             name={name}
           />
         )}

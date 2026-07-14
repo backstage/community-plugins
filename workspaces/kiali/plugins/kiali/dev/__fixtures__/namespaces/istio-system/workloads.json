@@ -14,7 +14,7 @@
       "createdAt": "2024-01-29T20:09:28Z",
       "resourceVersion": "756",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app.kubernetes.io/instance": "grafana",
@@ -54,7 +54,7 @@
       "createdAt": "2024-01-29T20:09:17Z",
       "resourceVersion": "26870",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "istio-egressgateway",
@@ -101,7 +101,7 @@
       "createdAt": "2024-01-29T20:09:17Z",
       "resourceVersion": "26868",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "istio-ingressgateway",
@@ -152,7 +152,7 @@
       "createdAt": "2024-01-29T20:09:07Z",
       "resourceVersion": "541",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "istiod",
@@ -194,7 +194,7 @@
       "createdAt": "2024-01-29T20:09:28Z",
       "resourceVersion": "772",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "jaeger",
@@ -233,7 +233,7 @@
       "createdAt": "2024-01-29T20:10:06Z",
       "resourceVersion": "1056",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "kiali",
@@ -279,7 +279,7 @@
       "createdAt": "2024-01-29T20:09:28Z",
       "resourceVersion": "26771",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app.kubernetes.io/component": "server",

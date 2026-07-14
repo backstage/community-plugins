@@ -30,7 +30,7 @@ export const getAppItems = (
       namespace: app.namespace,
       name: app.name,
       istioSidecar: app.istioSidecar,
-      istioAmbient: app.istioAmbient,
+      isAmbient: app.isAmbient,
       health: AppHealth.fromJson(
         app.namespace,
         app.name,
@@ -38,7 +38,7 @@ export const getAppItems = (
         {
           rateInterval: rateInterval,
           hasSidecar: app.istioSidecar,
-          hasAmbient: app.istioAmbient,
+          hasAmbient: app.isAmbient,
         },
         serverConfig,
       ),
