@@ -46,8 +46,10 @@
     "yaml": "^2.0.0"
   },
   "devDependencies": {
+    "@backstage/backend-defaults": "^0.17.3",
     "@backstage/backend-test-utils": "^1.11.4",
     "@backstage/cli": "^0.36.3",
+    "@backstage/plugin-scaffolder-backend": "^4.0.1",
     "@backstage/plugin-scaffolder-node-test-utils": "^0.3.12",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.13"
