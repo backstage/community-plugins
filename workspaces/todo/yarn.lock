@@ -2024,7 +2024,6 @@ __metadata:
     "@backstage/backend-openapi-utils": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/backend-test-utils": "backstage:^"
-    "@backstage/catalog-client": "backstage:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/config": "backstage:^"
@@ -2037,7 +2036,6 @@ __metadata:
     express: "npm:^4.17.1"
     leasot: "npm:^12.0.0"
     supertest: "npm:^7.0.0"
-    yn: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -2056,7 +2054,6 @@ __metadata:
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@material-ui/icons": "npm:^4.9.1"
-    "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0"
@@ -2291,7 +2288,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/catalog-client@backstage:^::backstage=1.52.0&npm=1.16.0, @backstage/catalog-client@npm:^1.16.0":
+"@backstage/catalog-client@npm:^1.16.0":
   version: 1.16.0
   resolution: "@backstage/catalog-client@npm:1.16.0"
   dependencies:
