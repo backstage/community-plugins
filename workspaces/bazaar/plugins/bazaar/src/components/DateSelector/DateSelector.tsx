@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import FormControl from '@material-ui/core/FormControl';
 import { Controller, Control, UseFormSetValue } from 'react-hook-form';
 import { FormValues } from '../../types';
 import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
 import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
 import LuxonUtils from '@date-io/luxon';
-import IconButton from '@material-ui/core/IconButton';
-import ClearIcon from '@material-ui/icons/Clear';
+import { ButtonIcon } from '@backstage/ui';
+import { RiCloseLine } from '@remixicon/react';
 
 type Props = {
   name: 'startDate' | 'endDate';
@@ -39,29 +38,30 @@ export const DateSelector = ({ name, control, setValue }: Props) => {
       name={name}
       control={control}
       render={({ field }) => (
-        <FormControl>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <KeyboardDatePicker
-              disableToolbar
-              format="dd-MM-yyyy"
-              label={label}
-              value={field.value}
-              onChange={date => {
-                setValue(name, date?.toISO());
-              }}
-              InputProps={{
-                endAdornment: (
-                  <IconButton onClick={() => setValue(name, null)}>
-                    <ClearIcon />
-                  </IconButton>
-                ),
-              }}
-              InputAdornmentProps={{
-                position: 'start',
-              }}
-            />
-          </MuiPickersUtilsProvider>
-        </FormControl>
+        <MuiPickersUtilsProvider utils={LuxonUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            format="dd-MM-yyyy"
+            label={label}
+            value={field.value}
+            onChange={date => {
+              setValue(name, date?.toISO());
+            }}
+            InputProps={{
+              endAdornment: (
+                <ButtonIcon
+                  aria-label="clear date"
+                  icon={<RiCloseLine size={16} />}
+                  variant="secondary"
+                  onPress={() => setValue(name, null)}
+                />
+              ),
+            }}
+            InputAdornmentProps={{
+              position: 'start',
+            }}
+          />
+        </MuiPickersUtilsProvider>
       )}
     />
   );

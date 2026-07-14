@@ -15,7 +15,7 @@
  */
 
 import { JSX } from 'react';
-import Button from '@material-ui/core/Button';
+import { Button } from '@backstage/ui';
 import Dialog from '@material-ui/core/Dialog';
 import {
   CustomDialogTitle,
@@ -53,7 +53,7 @@ export const ConfirmationDialog = ({
       <DialogContent dividers>{message}</DialogContent>
 
       <DialogActions>
-        <Button onClick={handleSubmit} color="primary" type="submit">
+        <Button onPress={handleSubmit} variant="primary">
           {type}
         </Button>
       </DialogActions>

@@ -15,40 +15,31 @@
  */
 
 import { useState, useEffect } from 'react';
-import CardHeader from '@material-ui/core/CardHeader';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { ButtonIcon, Text } from '@backstage/ui';
 import {
   HeaderIconLinkRow,
   IconLinkVerticalProps,
 } from '@backstage/core-components';
-import EditIcon from '@material-ui/icons/Edit';
-import ChatIcon from '@material-ui/icons/Chat';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import LinkOffIcon from '@material-ui/icons/LinkOff';
-import Description from '@material-ui/icons/Description';
+import {
+  RiEditLine,
+  RiChat1Line,
+  RiUserAddLine,
+  RiDashboardLine,
+  RiLinkUnlink2Line,
+  RiFileTextLine,
+  RiDoorOpenLine,
+} from '@remixicon/react';
 import { EditProjectDialog } from '../EditProjectDialog';
 import { useApi, identityApiRef } from '@backstage/core-plugin-api';
 import { BazaarProject, Member } from '../../types';
 import { bazaarApiRef } from '../../api';
 import Alert from '@material-ui/lab/Alert';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { ConfirmationDialog } from '../ConfirmationDialog';
 import { CardContentFields } from '../CardContentFields';
 import { fetchProjectMembers } from '../../util/fetchMethods';
-
-const useStyles = makeStyles({
-  wordBreak: {
-    wordBreak: 'break-all',
-    whiteSpace: 'normal',
-    margin: '-0.25rem 0',
-  },
-});
+import styles from './EntityBazaarInfoContent.module.css';
 
 type Props = {
   bazaarProject: BazaarProject | null | undefined;
@@ -59,7 +50,6 @@ export const EntityBazaarInfoContent = ({
   bazaarProject,
   fetchBazaarProject,
 }: Props) => {
-  const classes = useStyles();
   const bazaarApi = useApi(bazaarApiRef);
   const identity = useApi(identityApiRef);
   const [openEdit, setOpenEdit] = useState(false);
@@ -107,12 +97,12 @@ export const EntityBazaarInfoContent = ({
   const links: IconLinkVerticalProps[] = [
     {
       label: 'Entity page',
-      icon: <DashboardIcon />,
+      icon: <RiDashboardLine size={20} />,
       disabled: true,
     },
     {
       label: 'Unlink project',
-      icon: <LinkOffIcon />,
+      icon: <RiLinkUnlink2Line size={20} />,
       disabled: false,
       onClick: () => {
         setOpenUnlink(true);
@@ -120,7 +110,11 @@ export const EntityBazaarInfoContent = ({
     },
     {
       label: isMember ? 'Leave' : 'Join',
-      icon: isMember ? <ExitToAppIcon /> : <PersonAddIcon />,
+      icon: isMember ? (
+        <RiDoorOpenLine size={20} />
+      ) : (
+        <RiUserAddLine size={20} />
+      ),
       href: '',
       onClick: async () => {
         handleMembersClick();
@@ -128,13 +122,13 @@ export const EntityBazaarInfoContent = ({
     },
     {
       label: 'Community',
-      icon: <ChatIcon />,
+      icon: <RiChat1Line size={20} />,
       href: bazaarProject?.community,
       disabled: bazaarProject?.community === '' || !isMember,
     },
     {
       label: 'Docs',
-      icon: <Description />,
+      icon: <RiFileTextLine size={20} />,
       href: bazaarProject?.docs,
       disabled: bazaarProject?.docs === null || bazaarProject?.docs === '',
     },
@@ -180,11 +174,11 @@ export const EntityBazaarInfoContent = ({
             handleClose={handleUnlinkClose}
             message={[
               'Are you sure you want to unlink ',
-              <b className={classes.wordBreak}>
+              <b className={styles.wordBreak}>
                 {parseEntityRef(bazaarProject.entityRef!).name}
               </b>,
               ' from ',
-              <b className={classes.wordBreak}>{bazaarProject.title}</b>,
+              <b className={styles.wordBreak}>{bazaarProject.title}</b>,
               ' ?',
             ]}
             type="unlink"
@@ -192,26 +186,21 @@ export const EntityBazaarInfoContent = ({
           />
         )}
 
-        <CardHeader
-          title={
-            <Typography paragraph className={classes.wordBreak}>
-              {bazaarProject?.title!}
-            </Typography>
-          }
-          action={
-            <div>
-              <IconButton
-                onClick={() => {
-                  setOpenEdit(true);
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-            </div>
-          }
-          subheader={<HeaderIconLinkRow links={links} />}
-        />
-        <Divider />
+        <div className={styles.cardHeader}>
+          <div className={styles.headerMain}>
+            <Text className={styles.wordBreak}>{bazaarProject?.title!}</Text>
+            <HeaderIconLinkRow links={links} />
+          </div>
+          <div className={styles.headerAction}>
+            <ButtonIcon
+              aria-label="edit"
+              icon={<RiEditLine size={16} />}
+              variant="secondary"
+              onPress={() => setOpenEdit(true)}
+            />
+          </div>
+        </div>
+        <hr className={styles.divider} />
 
         <CardContentFields
           bazaarProject={bazaarProject}

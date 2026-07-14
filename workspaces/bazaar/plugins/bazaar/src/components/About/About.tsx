@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Text } from '@backstage/ui';
 import { InfoCard, Link } from '@backstage/core-components';
-
-const useStyles = makeStyles({
-  subheader: {
-    fontWeight: 'bold',
-  },
-});
+import styles from './About.module.css';
 
 export const About = () => {
-  const classes = useStyles();
   return (
-    <Grid container spacing={4}>
-      <Grid item xs={5}>
+    <Grid.Root columns={{ sm: '12' }} gap="8">
+      <Grid.Item colSpan={{ sm: '5' }}>
         <InfoCard title="About Bazaar">
-          <Typography className={classes.subheader} variant="body1">
+          <Text variant="body-medium" className={styles.subheader}>
             What is the Bazaar?
-          </Typography>
-          <Typography paragraph>
+          </Text>
+          <p>
             The Bazaar is a place where teams can propose projects for
             cross-functional team development. Essentially a marketplace for
             internal projects suitable for{' '}
@@ -46,11 +38,11 @@ export const About = () => {
             </Link>
             . With "Inner Sourcing", we mean projects that are developed
             internally within a company, but with Open Source best practices.
-          </Typography>
-          <Typography className={classes.subheader} variant="body1">
+          </p>
+          <Text variant="body-medium" className={styles.subheader}>
             Why?
-          </Typography>
-          <Typography paragraph>
+          </Text>
+          <p>
             Many companies today are of high need to increase the ease of
             cross-team cooperation. In large organizations, engineers often have
             limited ways of discovering or announcing the projects which could
@@ -58,11 +50,11 @@ export const About = () => {
             expertise, experiences, and teams spread across the organization.
             With no good way to find these existing internal projects to join,
             the possibility of working with Inner Sourcing practices suffers.
-          </Typography>
-          <Typography className={classes.subheader} variant="body1">
+          </p>
+          <Text variant="body-medium" className={styles.subheader}>
             How?
-          </Typography>
-          <Typography paragraph>
+          </Text>
+          <p>
             The Bazaar allows engineers and teams to open up and announce their
             new and exciting projects for transparent cooperation in other parts
             of larger organizations. The Bazaar ensures that new Inner Sourcing
@@ -71,9 +63,9 @@ export const About = () => {
             contribute with their specific skill set. The Bazaar also provides
             an easy way to manage, catalog, and browse these Inner Sourcing
             friendly projects and components.
-          </Typography>
+          </p>
         </InfoCard>
-      </Grid>
-    </Grid>
+      </Grid.Item>
+    </Grid.Root>
   );
 };

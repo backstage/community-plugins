@@ -15,7 +15,7 @@
  */
 
 import { useEffect, useState, JSX } from 'react';
-import Button from '@material-ui/core/Button';
+import { Button } from '@backstage/ui';
 import Dialog from '@material-ui/core/Dialog';
 import { useForm, UseFormReset, UseFormGetValues } from 'react-hook-form';
 import { InputField } from '../InputField/InputField';
@@ -173,11 +173,7 @@ export const ProjectDialog = ({
 
         <DialogActions>
           {!isAddForm && deleteButton}
-          <Button
-            onClick={handleSubmit(handleSaveForm)}
-            color="primary"
-            type="submit"
-          >
+          <Button onPress={handleSubmit(handleSaveForm)} variant="primary">
             Submit
           </Button>
         </DialogActions>

@@ -22,8 +22,8 @@ import { BazaarProject, FormValues } from '../../types';
 import { bazaarApiRef } from '../../api';
 import { UseFormGetValues } from 'react-hook-form';
 import { ConfirmationDialog } from '../ConfirmationDialog';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@backstage/ui';
+import styles from './EditProjectDialog.module.css';
 
 type Props = {
   bazaarProject: BazaarProject;
@@ -33,17 +33,7 @@ type Props = {
   fetchBazaarProject: () => Promise<BazaarProject | null>;
 };
 
-const useStyles = makeStyles({
-  button: {
-    marginLeft: '0',
-    marginRight: 'auto',
-  },
-  wordBreak: {
-    wordBreak: 'break-all',
-    whiteSpace: 'normal',
-    margin: '-0.25rem 0',
-  },
-});
+const buttonClass = styles.button;
 
 export const EditProjectDialog = ({
   bazaarProject,
@@ -52,7 +42,6 @@ export const EditProjectDialog = ({
   handleCardClose,
   fetchBazaarProject,
 }: Props) => {
-  const classes = useStyles();
   const bazaarApi = useApi(bazaarApiRef);
   const alertApi = useApi(toastApiRef);
   const [openDelete, setOpenDelete] = useState(false);
@@ -117,7 +106,7 @@ export const EditProjectDialog = ({
         handleClose={handleDeleteClose}
         message={[
           'Are you sure you want to delete ',
-          <b key={bazaarProject.id} className={classes.wordBreak}>
+          <b key={bazaarProject.id} className={styles.wordBreak}>
             {bazaarProject.title}
           </b>,
           ' from the Bazaar?',
@@ -135,10 +124,9 @@ export const EditProjectDialog = ({
         handleClose={handleEditClose}
         deleteButton={
           <Button
-            color="primary"
-            type="submit"
-            className={classes.button}
-            onClick={() => {
+            variant="secondary"
+            className={buttonClass}
+            onPress={() => {
               setOpenDelete(true);
             }}
           >

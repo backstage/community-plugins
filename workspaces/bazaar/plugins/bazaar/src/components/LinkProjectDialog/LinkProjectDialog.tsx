@@ -16,12 +16,10 @@
 
 import { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
 import DialogContent from '@material-ui/core/DialogContent';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@backstage/ui';
 import { ProjectSelector } from '../ProjectSelector';
-import { CustomDialogTitle } from '../CustomDialogTitle';
+import { CustomDialogTitle, DialogActions } from '../CustomDialogTitle';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 
 import { bazaarApiRef } from '../../api';
@@ -29,6 +27,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
 
 import { BazaarProject } from '../../types';
+import styles from './LinkProjectDialog.module.css';
 
 type Props = {
   openProjectSelector: boolean;
@@ -39,10 +38,6 @@ type Props = {
   initEntity: Entity;
 };
 
-const useStyles = makeStyles({
-  content: { padding: '0 1rem' },
-});
-
 export const LinkProjectDialog = ({
   openProjectSelector,
   handleProjectSelectorClose,
@@ -51,7 +46,6 @@ export const LinkProjectDialog = ({
   fetchBazaarProject,
   initEntity,
 }: Props) => {
-  const classes = useStyles();
   const bazaarApi = useApi(bazaarApiRef);
   const alertApi = useApi(toastApiRef);
   const [selectedEntity, setSelectedEntity] = useState(initEntity);
@@ -85,7 +79,7 @@ export const LinkProjectDialog = ({
       >
         Select entity
       </CustomDialogTitle>
-      <DialogContent className={classes.content} dividers>
+      <DialogContent className={styles.content} dividers>
         <ProjectSelector
           label=""
           onChange={handleEntityClick}
@@ -96,7 +90,7 @@ export const LinkProjectDialog = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleSubmit} color="primary" type="submit">
+        <Button onPress={handleSubmit} variant="primary">
           OK
         </Button>
       </DialogActions>

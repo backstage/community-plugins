@@ -18,8 +18,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { Content, SupportButton } from '@backstage/core-components';
 import { AddProjectDialog } from '../AddProjectDialog';
 import { ProjectPreview } from '../ProjectPreview/ProjectPreview';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@backstage/ui';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
@@ -37,27 +36,7 @@ import {
 import { SortMethodSelector } from '../SortMethodSelector';
 import { fetchCatalogItems } from '../../util/fetchMethods';
 import { parseBazaarProject } from '../../util/parseMethods';
-
-const useStyles = makeStyles({
-  button: { minWidth: '11rem' },
-  container: {
-    marginTop: '2rem',
-  },
-  header: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: '0 auto',
-    marginBottom: '1.2rem',
-  },
-  search: {
-    marginRight: '1rem',
-    height: '2.5rem',
-    width: '35rem',
-  },
-});
+import styles from './SortView.module.css';
 
 const getUnlinkedCatalogEntities = (
   bazaarProjects: BazaarProject[],
@@ -83,7 +62,6 @@ export const SortView = (props: SortViewProps) => {
   const { fullWidth = true, fullHeight = true } = props;
   const bazaarApi = useApi(bazaarApiRef);
   const catalogApi = useApi(catalogApiRef);
-  const classes = useStyles();
   const sortMethods = [
     sortByDate,
     sortByTitle,
@@ -178,14 +156,14 @@ export const SortView = (props: SortViewProps) => {
 
   return (
     <Content noPadding>
-      <div className={classes.header}>
+      <div className={styles.header}>
         <SortMethodSelector
           sortMethodNbr={sortMethodNbr}
           handleSortMethodChange={handleSortMethodChange}
         />
 
         <SearchBar
-          className={classes.search}
+          className={styles.search}
           value={searchValue}
           onChange={newSortMethod => {
             setSearchValue(newSortMethod);
@@ -195,10 +173,9 @@ export const SortView = (props: SortViewProps) => {
           }}
         />
         <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={() => {
+          className={styles.button}
+          variant="primary"
+          onPress={() => {
             setOpenAdd(true);
           }}
         >
@@ -222,7 +199,7 @@ export const SortView = (props: SortViewProps) => {
         gridSize={fullWidth ? 2 : 4}
         height={fullHeight ? 'large' : 'small'}
       />
-      <Content noPadding className={classes.container} />
+      <Content noPadding className={styles.container} />
     </Content>
   );
 };

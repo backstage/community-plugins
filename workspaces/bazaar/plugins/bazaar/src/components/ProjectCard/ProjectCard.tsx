@@ -16,17 +16,14 @@
 
 import { useState } from 'react';
 import { ItemCardHeader } from '@backstage/core-components';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
 import Dialog from '@material-ui/core/Dialog';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
 import { StatusTag } from '../StatusTag/StatusTag';
 import { BazaarProject } from '../../types';
 import { DateTime } from 'luxon';
 import { HomePageBazaarInfoCard } from '../HomePageBazaarInfoCard';
 import { Entity } from '@backstage/catalog-model';
+import styles from './ProjectCard.module.css';
 
 type Props = {
   project: BazaarProject;
@@ -35,40 +32,12 @@ type Props = {
   height: 'large' | 'small';
 };
 
-type StyleProps = {
-  height: 'large' | 'small';
-};
-
-const useStyles = makeStyles(theme => ({
-  description: (props: StyleProps) => ({
-    height: props.height === 'large' ? '10rem' : '4rem',
-    WebkitBackgroundClip: 'text',
-    backgroundImage: `linear-gradient(180deg, ${theme.palette.textContrast} 0%, ${theme.palette.textContrast} 60%, transparent 100%)`,
-    color: 'transparent',
-  }),
-  statusTag: {
-    display: 'inline-block',
-    whiteSpace: 'nowrap',
-    marginBottom: '0.8rem',
-  },
-  memberCount: {
-    float: 'right',
-  },
-  header: {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    height: '5rem',
-  },
-}));
-
 export const ProjectCard = ({
   project,
   fetchBazaarProjects,
   catalogEntities,
   height,
 }: Props) => {
-  const classes = useStyles({ height });
   const [openCard, setOpenCard] = useState(false);
   const { id, title, status, updatedAt, description, membersCount } = project;
 
@@ -87,30 +56,40 @@ export const ProjectCard = ({
         />
       </Dialog>
 
-      <Card key={id}>
-        <CardActionArea onClick={() => setOpenCard(true)}>
-          <ItemCardHeader
-            classes={{ root: classes.header }}
-            title={title}
-            subtitle={`updated ${DateTime.fromISO(
-              new Date(updatedAt!).toISOString(),
-            ).toRelative({
-              base: DateTime.now(),
-            })}`}
-          />
-          <CardContent>
-            <StatusTag styles={classes.statusTag} status={status} />
-            <Typography variant="body2" className={classes.memberCount}>
-              {Number(membersCount) === Number(1)
-                ? `${membersCount} member`
-                : `${membersCount} members`}
-            </Typography>
-            <Typography variant="body2" className={classes.description}>
-              {description}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
+      <button
+        type="button"
+        key={id}
+        className={styles.card}
+        onClick={() => setOpenCard(true)}
+      >
+        <ItemCardHeader
+          classes={{ root: styles.header }}
+          title={title}
+          subtitle={`updated ${DateTime.fromISO(
+            new Date(updatedAt!).toISOString(),
+          ).toRelative({
+            base: DateTime.now(),
+          })}`}
+        />
+        <div className={styles.cardContent}>
+          <StatusTag styles={styles.statusTag} status={status} />
+          <Text variant="body-small" className={styles.memberCount}>
+            {Number(membersCount) === Number(1)
+              ? `${membersCount} member`
+              : `${membersCount} members`}
+          </Text>
+          <Text
+            variant="body-small"
+            className={`${styles.descriptionBase} ${
+              height === 'large'
+                ? styles.descriptionLarge
+                : styles.descriptionSmall
+            }`}
+          >
+            {description}
+          </Text>
+        </div>
+      </button>
     </div>
   );
 };

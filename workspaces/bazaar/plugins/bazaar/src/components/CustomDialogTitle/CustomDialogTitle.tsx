@@ -14,74 +14,49 @@
  * limitations under the License.
  */
 
-import * as React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
+import type { ReactNode, ComponentProps } from 'react';
+import { ButtonIcon, Text } from '@backstage/ui';
+import { RiCloseLine } from '@remixicon/react';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import {
-  Theme,
-  WithStyles,
-  withStyles,
-  createStyles,
-} from '@material-ui/core/styles';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
+import styles from './CustomDialogTitle.module.css';
 
 /*
-  DialogTitleProps, DialogTitle, DialogContent and DialogActions 
+  DialogTitleProps, DialogTitle, DialogContent and DialogActions
   are copied from the git-release plugin
 */
 
-export interface DialogTitleProps extends WithStyles<typeof styles> {
+export interface DialogTitleProps {
   id: string;
-  children: React.ReactNode;
+  children: ReactNode;
   onClose: () => void;
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  });
+export const DialogContent = (
+  props: ComponentProps<typeof MuiDialogContent>,
+) => <MuiDialogContent classes={{ root: styles.dialogContent }} {...props} />;
 
-export const DialogContent = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
+export const DialogActions = (
+  props: ComponentProps<typeof MuiDialogActions>,
+) => <MuiDialogActions classes={{ root: styles.dialogActions }} {...props} />;
 
-export const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
-
-export const CustomDialogTitle = withStyles(styles)(
-  (props: DialogTitleProps) => {
-    const { children, classes, onClose, ...other } = props;
-    return (
-      <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        <Typography variant="h6">{children}</Typography>
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </MuiDialogTitle>
-    );
-  },
-);
+export const CustomDialogTitle = (props: DialogTitleProps) => {
+  const { children, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={styles.root} {...other}>
+      <Text variant="title-small" className={styles.title}>
+        {children}
+      </Text>
+      {onClose ? (
+        <ButtonIcon
+          aria-label="close"
+          className={styles.closeButton}
+          icon={<RiCloseLine size={16} />}
+          variant="secondary"
+          onPress={onClose}
+        />
+      ) : null}
+    </MuiDialogTitle>
+  );
+};

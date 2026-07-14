@@ -1738,11 +1738,12 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@date-io/luxon": "npm:1.x"
     "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@material-ui/pickers": "npm:^3.3.10"
+    "@remixicon/react": "npm:^4.7.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
@@ -3312,7 +3313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.16.0":
+"@backstage/ui@backstage:^::backstage=1.52.0&npm=0.16.0, @backstage/ui@npm:^0.16.0":
   version: 0.16.0
   resolution: "@backstage/ui@npm:0.16.0"
   dependencies:
@@ -6416,7 +6417,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remixicon/react@npm:^4.6.0":
+"@remixicon/react@npm:^4.6.0, @remixicon/react@npm:^4.7.0":
   version: 4.9.0
   resolution: "@remixicon/react@npm:4.9.0"
   peerDependencies:

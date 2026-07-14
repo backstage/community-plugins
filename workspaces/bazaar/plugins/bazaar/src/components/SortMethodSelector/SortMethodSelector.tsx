@@ -18,15 +18,7 @@ import { ChangeEvent, ReactNode } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles({
-  select: {
-    fontSize: 'xx-large',
-    fontWeight: 'bold',
-    width: '16rem',
-  },
-});
+import styles from './SortMethodSelector.module.css';
 
 type Props = {
   sortMethodNbr: number;
@@ -42,11 +34,10 @@ export const SortMethodSelector = ({
   sortMethodNbr,
   handleSortMethodChange,
 }: Props) => {
-  const classes = useStyles();
   return (
     <FormControl fullWidth>
       <Select
-        className={classes.select}
+        className={styles.select}
         disableUnderline
         value={sortMethodNbr}
         onChange={handleSortMethodChange}

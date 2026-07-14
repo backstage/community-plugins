@@ -26,8 +26,7 @@ import { fetchCatalogItems } from '../../util/fetchMethods';
 import { parseBazaarProject } from '../../util/parseMethods';
 import { ErrorPanel, InfoCard, Link } from '@backstage/core-components';
 import { bazaarPlugin } from '../../plugin';
-import IconButton from '@material-ui/core/IconButton';
-import StorefrontIcon from '@material-ui/icons/Storefront';
+import { RiStore2Line } from '@remixicon/react';
 
 /** @public */
 export type BazaarOverviewCardProps = {
@@ -133,11 +132,9 @@ export const BazaarOverviewCard = (props: BazaarOverviewCardProps) => {
     <InfoCard
       title={title ?? defaultTitle}
       action={
-        <IconButton>
-          <Link to={bazaarLink.link} title={bazaarLink.title}>
-            <StorefrontIcon />
-          </Link>
-        </IconButton>
+        <Link to={bazaarLink.link} title={bazaarLink.title}>
+          <RiStore2Line size={24} />
+        </Link>
       }
     >
       <ProjectPreview

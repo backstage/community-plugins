@@ -15,28 +15,9 @@
  */
 
 import { useElementFilter } from '@backstage/core-plugin-api';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import * as React from 'react';
-
-const useStyles = makeStyles(theme => ({
-  value: {
-    fontWeight: 'bold',
-    overflow: 'hidden',
-    lineHeight: '24px',
-    wordBreak: 'break-word',
-  },
-  label: {
-    color: theme.palette.text.secondary,
-    textTransform: 'uppercase',
-    fontSize: '10px',
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-  },
-}));
+import { Text } from '@backstage/ui';
+import type { ReactNode } from 'react';
+import styles from './AboutField.module.css';
 
 /**
  * Props for {@link AboutField}.
@@ -44,13 +25,11 @@ const useStyles = makeStyles(theme => ({
 export interface AboutFieldProps {
   label: string;
   value?: string;
-  gridSizes?: Record<string, number>;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export function AboutField(props: AboutFieldProps) {
-  const { label, value, gridSizes, children } = props;
-  const classes = useStyles();
+  const { label, value, children } = props;
 
   const childElements = useElementFilter(children, c => c.getElements());
 
@@ -59,16 +38,14 @@ export function AboutField(props: AboutFieldProps) {
     childElements.length > 0 ? (
       childElements
     ) : (
-      <Typography variant="body2" className={classes.value}>
+      <Text variant="body-small" className={styles.value}>
         {value || `unknown`}
-      </Typography>
+      </Text>
     );
   return (
-    <Grid item {...gridSizes}>
-      <Typography variant="h2" className={classes.label}>
-        {label}
-      </Typography>
+    <div>
+      <Text className={styles.label}>{label}</Text>
       {content}
-    </Grid>
+    </div>
   );
 }

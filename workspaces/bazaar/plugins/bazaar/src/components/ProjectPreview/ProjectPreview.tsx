@@ -16,42 +16,20 @@
 
 import { ChangeEvent, useState } from 'react';
 import { ProjectCard } from '../ProjectCard/ProjectCard';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import TablePagination from '@material-ui/core/TablePagination';
-import { GridSize } from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import { BazaarProject } from '../../types';
 import { Entity } from '@backstage/catalog-model';
+import styles from './ProjectPreview.module.css';
 
 type Props = {
   bazaarProjects: BazaarProject[];
   fetchBazaarProjects: () => Promise<BazaarProject[]>;
   catalogEntities: Entity[];
   useTablePagination?: boolean;
-  gridSize?: GridSize;
+  gridSize?: number;
   height: 'large' | 'small';
 };
-
-const useStyles = makeStyles({
-  content: {
-    width: '100%',
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  empty: {
-    height: '10rem',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    lineHeight: '10rem',
-  },
-  pagination: {
-    marginTop: '1rem',
-    marginLeft: 'auto',
-    marginRight: '0',
-  },
-});
 
 export const ProjectPreview = ({
   bazaarProjects,
@@ -61,7 +39,6 @@ export const ProjectPreview = ({
   gridSize = 2,
   height = 'large',
 }: Props) => {
-  const classes = useStyles();
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState(12);
 
@@ -78,18 +55,18 @@ export const ProjectPreview = ({
 
   if (!bazaarProjects.length) {
     return (
-      <div className={classes.empty}>Please add projects to the Bazaar.</div>
+      <div className={styles.empty}>Please add projects to the Bazaar.</div>
     );
   }
 
   return (
-    <Box className={classes.content}>
-      <Grid wrap="wrap" container spacing={3}>
+    <div className={styles.content}>
+      <Grid.Root columns={{ sm: '12' }} gap="6">
         {bazaarProjects
           .slice((page - 1) * rows, rows * page)
           .map((bazaarProject: BazaarProject, i: number) => {
             return (
-              <Grid key={i} item xs={gridSize}>
+              <Grid.Item key={i} colSpan={{ sm: String(gridSize) as any }}>
                 <ProjectCard
                   project={bazaarProject}
                   key={i}
@@ -97,15 +74,15 @@ export const ProjectPreview = ({
                   catalogEntities={catalogEntities}
                   height={height}
                 />
-              </Grid>
+              </Grid.Item>
             );
           })}
-      </Grid>
+      </Grid.Root>
 
       {useTablePagination && (
         <TablePagination
           component="div"
-          className={classes.pagination}
+          className={styles.pagination}
           rowsPerPageOptions={[12, 24, 48, 96]}
           count={bazaarProjects?.length}
           page={page - 1}
@@ -118,6 +95,6 @@ export const ProjectPreview = ({
           }}
         />
       )}
-    </Box>
+    </div>
   );
 };

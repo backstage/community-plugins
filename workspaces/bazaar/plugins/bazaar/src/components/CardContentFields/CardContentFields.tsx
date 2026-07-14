@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-import { GridSize } from '@material-ui/core/Grid';
+import { Grid, Card, CardBody, Text } from '@backstage/ui';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Avatar, Link } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
@@ -29,33 +23,15 @@ import { AboutField } from './AboutField';
 import { StatusTag } from '../StatusTag';
 import { Member, BazaarProject } from '../../types';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import styles from './CardContentFields.module.css';
 
 type Props = {
   bazaarProject: BazaarProject;
   members: Member[];
-  descriptionSize: GridSize;
-  membersSize: GridSize;
+  descriptionSize: number;
+  membersSize: number;
   isMember: boolean;
 };
-
-const useStyles = makeStyles(
-  {
-    avatar: {
-      width: '19px',
-      height: '19px',
-      float: 'left',
-      marginRight: '0.3rem',
-      marginTop: '0rem',
-      marginBottom: '0rem',
-      alignItems: 'left',
-    },
-    avatarText: {
-      fontSize: '8px',
-      textAlign: 'left',
-    },
-  },
-  { name: 'CardContentFields' },
-);
 
 export const CardContentFields = ({
   bazaarProject,
@@ -67,31 +43,26 @@ export const CardContentFields = ({
   const catalogEntityRoute = useRouteRef(entityRouteRef);
   const currentPage = window.location.pathname;
   const isEntityPage = currentPage.includes('/catalog/');
-  const classes = useStyles();
   return (
     <div>
       <Card>
-        <CardContent>
-          <Grid container>
-            <Grid item xs={descriptionSize}>
+        <CardBody>
+          <Grid.Root columns={{ sm: '12' }}>
+            <Grid.Item colSpan={{ sm: String(descriptionSize) as any }}>
               <AboutField label="Description">
                 {bazaarProject.description
                   .split('\n')
                   .map((str: string, i: number) => (
-                    <Typography key={i} variant="body2" paragraph>
+                    <Text key={i} variant="body-small">
                       {str}
-                    </Typography>
+                    </Text>
                   ))}
               </AboutField>
-            </Grid>
+            </Grid.Item>
 
-            <Grid
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-              }}
-              item
-              xs={membersSize}
+            <Grid.Item
+              colSpan={{ sm: String(membersSize) as any }}
+              className={styles.membersJustifyEnd}
             >
               <AboutField label="Latest members">
                 {members.length ? (
@@ -100,7 +71,6 @@ export const CardContentFields = ({
                       <div
                         style={{
                           textAlign: 'left',
-                          backgroundColor: '',
                           marginBottom: '0.3rem',
                           marginTop: '0.3rem',
                           display: 'block',
@@ -109,7 +79,10 @@ export const CardContentFields = ({
                       >
                         <Avatar
                           displayName={member.userId}
-                          classes={classes}
+                          classes={{
+                            avatar: styles.avatar,
+                            avatarText: styles.avatarText,
+                          }}
                           picture={member.picture}
                         />
                         <Link
@@ -131,52 +104,52 @@ export const CardContentFields = ({
                   <div />
                 )}
               </AboutField>
-            </Grid>
+            </Grid.Item>
 
             {!isEntityPage && isMember && (
-              <Grid item xs={12}>
+              <Grid.Item colSpan={{ sm: '12' }}>
                 <AboutField label="I've joined the project, what's next?">
-                  <Typography variant="body2" paragraph>
+                  <Text variant="body-small">
                     To learn more about this project, click the "Entity Page"
                     link, where you can view more information about the effort
                     and navigate to the source code itself to begin
                     collaborating.
-                  </Typography>
+                  </Text>
                 </AboutField>
-              </Grid>
+              </Grid.Item>
             )}
 
-            <Grid item xs={2}>
+            <Grid.Item colSpan={{ sm: '2' }}>
               <AboutField label="Status">
                 <StatusTag status={bazaarProject.status} />
               </AboutField>
-            </Grid>
+            </Grid.Item>
 
-            <Grid item xs={2}>
+            <Grid.Item colSpan={{ sm: '2' }}>
               <AboutField label="size">
-                <Typography variant="body2">{bazaarProject.size}</Typography>
+                <Text variant="body-small">{bazaarProject.size}</Text>
               </AboutField>
-            </Grid>
+            </Grid.Item>
 
-            <Grid item xs={2}>
+            <Grid.Item colSpan={{ sm: '2' }}>
               <AboutField label="Start date">
-                <Typography variant="body2">
+                <Text variant="body-small">
                   {bazaarProject.startDate?.substring(0, 10) || ''}
-                </Typography>
+                </Text>
               </AboutField>
-            </Grid>
+            </Grid.Item>
 
-            <Grid item xs={2}>
+            <Grid.Item colSpan={{ sm: '2' }}>
               <AboutField label="End date">
-                <Typography variant="body2">
+                <Text variant="body-small">
                   {bazaarProject.endDate?.substring(0, 10) || ''}
-                </Typography>
+                </Text>
               </AboutField>
-            </Grid>
+            </Grid.Item>
 
-            <Grid item xs={4}>
+            <Grid.Item colSpan={{ sm: '4' }}>
               <AboutField label="Responsible">
-                <Typography variant="body2">
+                <Text variant="body-small">
                   {(() => {
                     try {
                       parseEntityRef(bazaarProject.responsible);
@@ -187,11 +160,11 @@ export const CardContentFields = ({
                       return bazaarProject.responsible || '';
                     }
                   })()}{' '}
-                </Typography>
+                </Text>
               </AboutField>
-            </Grid>
-          </Grid>
-        </CardContent>
+            </Grid.Item>
+          </Grid.Root>
+        </CardBody>
       </Card>
     </div>
   );

@@ -15,10 +15,10 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import styles from './ProjectSelector.module.css';
 
 type Props = {
   catalogEntities: Entity[];
@@ -28,11 +28,6 @@ type Props = {
   label: string;
 };
 
-const useStyles = makeStyles({
-  container: { width: '100%', minWidth: '22rem' },
-  autocomplete: { overflow: 'hidden' },
-});
-
 export const ProjectSelector = ({
   catalogEntities,
   onChange,
@@ -40,18 +35,17 @@ export const ProjectSelector = ({
   defaultValue,
   label,
 }: Props) => {
-  const classes = useStyles();
   return (
-    <div className={classes.container}>
+    <div className={styles.container}>
       <Autocomplete
-        className={classes.autocomplete}
+        className={styles.autocomplete}
         fullWidth
         disableClearable={disableClearable}
         defaultValue={defaultValue}
         options={catalogEntities}
         getOptionLabel={option => option?.metadata?.name}
         renderOption={option => (
-          <Typography component="span">{option?.metadata?.name}</Typography>
+          <Text variant="body-small">{option?.metadata?.name}</Text>
         )}
         renderInput={params => <TextField {...params} label={label} />}
         onChange={(_, data) => {

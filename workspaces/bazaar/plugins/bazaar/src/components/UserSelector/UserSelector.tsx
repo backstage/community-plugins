@@ -19,7 +19,7 @@ import Autocomplete, {
   createFilterOptions,
 } from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import styles from './UserSelector.module.css';
 import { Controller, Control } from 'react-hook-form';
 import { FormValues } from '../../types';
 import { useApi } from '@backstage/core-plugin-api';
@@ -40,11 +40,6 @@ type Props = {
   rules?: Record<string, any>;
 };
 
-const useStyles = makeStyles({
-  container: { width: '100%', minWidth: '22rem' },
-  autocomplete: { overflow: 'hidden' },
-});
-
 export const UserSelector = ({
   users,
   disableClearable,
@@ -54,7 +49,6 @@ export const UserSelector = ({
   control,
   rules,
 }: Props) => {
-  const classes = useStyles();
   const entityPresentationApi = useApi(entityPresentationApiRef);
 
   const { value: entityData, loading } = useAsync(async () => {
@@ -96,7 +90,7 @@ export const UserSelector = ({
   });
 
   return (
-    <div className={classes.container}>
+    <div className={styles.container}>
       <Controller
         name={name}
         control={control}
@@ -104,7 +98,7 @@ export const UserSelector = ({
         defaultValue={defaultValue ?? ''}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <Autocomplete
-            className={classes.autocomplete}
+            className={styles.autocomplete}
             loading={loading}
             fullWidth
             freeSolo

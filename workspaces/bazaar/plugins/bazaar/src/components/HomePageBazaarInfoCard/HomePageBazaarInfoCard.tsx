@@ -15,26 +15,23 @@
  */
 
 import { useState, useEffect } from 'react';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Card, ButtonIcon, Text } from '@backstage/ui';
 import {
   HeaderIconLinkRow,
   IconLinkVerticalProps,
 } from '@backstage/core-components';
-import EditIcon from '@material-ui/icons/Edit';
-import ChatIcon from '@material-ui/icons/Chat';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import InsertLinkIcon from '@material-ui/icons/InsertLink';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import CloseIcon from '@material-ui/icons/Close';
-import LinkOffIcon from '@material-ui/icons/LinkOff';
-import Description from '@material-ui/icons/Description';
+import {
+  RiEditLine,
+  RiChat1Line,
+  RiUserAddLine,
+  RiLink2Line,
+  RiDashboardLine,
+  RiCloseLine,
+  RiLinkUnlink2Line,
+  RiFileTextLine,
+  RiDoorOpenLine,
+} from '@remixicon/react';
 import { EditProjectDialog } from '../EditProjectDialog';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {
   useApi,
   identityApiRef,
@@ -61,14 +58,7 @@ import {
   fetchProjectMembers,
 } from '../../util/fetchMethods';
 import { parseBazaarResponse } from '../../util/parseMethods';
-
-const useStyles = makeStyles({
-  wordBreak: {
-    wordBreak: 'break-all',
-    whiteSpace: 'normal',
-    margin: '-0.25rem 0',
-  },
-});
+import styles from './HomePageBazaarInfoCard.module.css';
 
 type Props = {
   initProject: BazaarProject;
@@ -81,7 +71,6 @@ export const HomePageBazaarInfoCard = ({
   handleClose,
   initEntity,
 }: Props) => {
-  const classes = useStyles();
   const entityLink = useRouteRef(entityRouteRef);
   const bazaarApi = useApi(bazaarApiRef);
   const identity = useApi(identityApiRef);
@@ -171,22 +160,26 @@ export const HomePageBazaarInfoCard = ({
   const links: IconLinkVerticalProps[] = [
     {
       label: 'Entity page',
-      icon: <DashboardIcon />,
+      icon: <RiDashboardLine size={20} />,
       href: bazaarProject.value?.entityRef ? getEntityPageLink() : '',
       disabled: bazaarProject.value?.entityRef === null,
     },
     {
       label: bazaarProject.value?.entityRef ? 'Unlink project' : 'Link project',
       icon: bazaarProject.value?.entityRef ? (
-        <LinkOffIcon />
+        <RiLinkUnlink2Line size={20} />
       ) : (
-        <InsertLinkIcon />
+        <RiLink2Line size={20} />
       ),
       onClick: handleLink,
     },
     {
       label: isMember ? 'Leave' : 'Join',
-      icon: isMember ? <ExitToAppIcon /> : <PersonAddIcon />,
+      icon: isMember ? (
+        <RiDoorOpenLine size={20} />
+      ) : (
+        <RiUserAddLine size={20} />
+      ),
       href: '',
       onClick: async () => {
         handleMembersClick();
@@ -194,13 +187,13 @@ export const HomePageBazaarInfoCard = ({
     },
     {
       label: 'Community',
-      icon: <ChatIcon />,
+      icon: <RiChat1Line size={20} />,
       href: bazaarProject.value?.community,
       disabled: !bazaarProject.value?.community || !isMember,
     },
     {
       label: 'Docs',
-      icon: <Description />,
+      icon: <RiFileTextLine size={20} />,
       href: bazaarProject.value?.docs,
       disabled:
         bazaarProject.value?.docs === null || bazaarProject.value?.docs === '',
@@ -248,11 +241,11 @@ export const HomePageBazaarInfoCard = ({
           handleClose={() => setOpenUnlink(false)}
           message={[
             'Are you sure you want to unlink ',
-            <b className={classes.wordBreak}>
+            <b className={styles.wordBreak}>
               {parseEntityRef(bazaarProject.value?.entityRef!).name}
             </b>,
             ' from ',
-            <b className={classes.wordBreak}>{bazaarProject.value?.title}</b>,
+            <b className={styles.wordBreak}>{bazaarProject.value?.title}</b>,
             ' ?',
           ]}
           type="unlink"
@@ -269,25 +262,29 @@ export const HomePageBazaarInfoCard = ({
           fetchBazaarProject={fetchBazaarProject}
         />
 
-        <CardHeader
-          title={
-            <Typography paragraph className={classes.wordBreak}>
+        <div className={styles.cardHeader}>
+          <div className={styles.headerMain}>
+            <Text className={styles.wordBreak}>
               {bazaarProject.value?.title || initProject.title}
-            </Typography>
-          }
-          action={
-            <div>
-              <IconButton onClick={() => setOpenEdit(true)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton onClick={handleClose}>
-                <CloseIcon />
-              </IconButton>
-            </div>
-          }
-          subheader={<HeaderIconLinkRow links={links} />}
-        />
-        <Divider />
+            </Text>
+            <HeaderIconLinkRow links={links} />
+          </div>
+          <div className={styles.headerActions}>
+            <ButtonIcon
+              aria-label="edit"
+              icon={<RiEditLine size={16} />}
+              variant="secondary"
+              onPress={() => setOpenEdit(true)}
+            />
+            <ButtonIcon
+              aria-label="close"
+              icon={<RiCloseLine size={16} />}
+              variant="secondary"
+              onPress={handleClose}
+            />
+          </div>
+        </div>
+        <hr className={styles.divider} />
 
         <CardContentFields
           bazaarProject={bazaarProject.value || initProject}
