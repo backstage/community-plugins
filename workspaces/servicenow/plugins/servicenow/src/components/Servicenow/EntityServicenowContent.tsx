@@ -38,7 +38,6 @@ import {
 } from '@backstage-community/plugin-servicenow-common';
 
 import { IncidentsFilter } from './IncidentsFilter';
-import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentsTableBody } from './IncidentsTableBody';
 import { IncidentsTableHeader } from './IncidentsTableHeader';
 import {
@@ -60,7 +59,6 @@ export const EntityServicenowContent = () => {
   const { t } = useTranslation();
   const { entity } = useEntity();
   const serviceNowApi = useApi(serviceNowApiRef);
-  const incidentsListColumns = useIncidentsListColumns();
 
   const [search, setSearch] = useQueryState<string>('search', '');
   const [input, setInput] = useState(search);
