@@ -244,11 +244,13 @@ export const OverviewPage = (props: { entity?: Entity }) => {
             if (sortField.id !== 'health') {
               return prevNamespaces;
             }
-            return Sorts.sortFunc(
+            const sorted = Sorts.sortFunc(
               prevNamespaces.slice(),
               sortField,
               isAscending,
             );
+            setActiveNs(filterActiveNamespaces(sorted));
+            return sorted;
           });
         });
     });
@@ -508,6 +510,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                 return prevNs;
               });
 
+              setActiveNs(filterActiveNamespaces(updated));
+
               return updated;
             });
           }
@@ -559,6 +563,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         });
 
         setNamespaces(namespacesWithMetrics);
+        setActiveNs(filterActiveNamespaces(namespacesWithMetrics));
 
         fetchHealth(isAscending, sortField, overviewType, sortNs);
         fetchTLS(sortNs, isAscending, sortField);
@@ -574,11 +579,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         );
       });
   };
-
-  React.useEffect(() => {
-    setActiveNs(filterActiveNamespaces(namespaces));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [namespaces, activeNsKey]);
 
   React.useEffect(() => {
     if (
