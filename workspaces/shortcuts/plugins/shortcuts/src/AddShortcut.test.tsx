@@ -26,6 +26,22 @@ import {
 import { AlertDisplay } from '@backstage/core-components';
 import { analyticsApiRef } from '@backstage/core-plugin-api';
 
+// Suppress jsdom CSS parsing errors from @backstage/ui that don't affect tests
+// eslint-disable-next-line no-console
+const originalError = console.error;
+// eslint-disable-next-line no-console
+console.error = (...args) => {
+  if (
+    !(
+      args[0] &&
+      typeof args[0] === 'string' &&
+      args[0].includes('Could not parse CSS stylesheet')
+    )
+  ) {
+    originalError(...args);
+  }
+};
+
 describe('AddShortcut', () => {
   const api = new DefaultShortcutsApi(MockStorageApi.create());
 
@@ -34,23 +50,6 @@ describe('AddShortcut', () => {
     anchorEl: document.createElement('div'),
     api,
   };
-
-  beforeAll(() => {
-    // Suppress jsdom CSS parsing errors from @backstage/ui that don't affect tests
-    // eslint-disable-next-line no-console
-    const originalError = console.error;
-    // eslint-disable-next-line no-console
-    jest.spyOn(console, 'error').mockImplementation((...args) => {
-      if (
-        args[0] &&
-        typeof args[0] === 'string' &&
-        args[0].includes('Could not parse CSS stylesheet')
-      ) {
-        return;
-      }
-      originalError(...args);
-    });
-  });
 
   beforeEach(() => {
     jest.clearAllMocks();
