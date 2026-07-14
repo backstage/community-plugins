@@ -62,12 +62,15 @@ import {
 } from './OverviewToolbar';
 import * as Sorts from './Sorts';
 
+const isSameNamespace = (a: NamespaceInfo, b: NamespaceInfo): boolean =>
+  a.name === b.name && a.cluster === b.cluster;
+
 export const getNamespaces = (
   namespacesResponse: NamespaceInfo[],
   namespaces: NamespaceInfo[],
 ): NamespaceInfo[] => {
   return namespacesResponse.map(ns => {
-    const previous = namespaces.find(prev => prev.name === ns.name);
+    const previous = namespaces.find(prev => isSameNamespace(prev, ns));
     return {
       name: ns.name,
       cluster: ns.cluster,
@@ -121,9 +124,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
   const mergeNamespace = (ns: NamespaceInfo) => {
     setNamespaces(prevNamespaces => {
-      const index = prevNamespaces.findIndex(
-        prev => prev.name === ns.name && prev.cluster === ns.cluster,
-      );
+      const index = prevNamespaces.findIndex(prev => isSameNamespace(prev, ns));
       if (index === -1) {
         return prevNamespaces;
       }
@@ -240,12 +241,14 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         )
         .then(() => {
           setNamespaces(prevNamespaces => {
-            const sorted =
-              sortField.id === 'health'
-                ? Sorts.sortFunc(prevNamespaces.slice(), sortField, isAscending)
-                : prevNamespaces;
-            setActiveNs(filterActiveNamespaces(sorted));
-            return sortField.id === 'health' ? sorted : prevNamespaces;
+            if (sortField.id !== 'health') {
+              return prevNamespaces;
+            }
+            return Sorts.sortFunc(
+              prevNamespaces.slice(),
+              sortField,
+              isAscending,
+            );
           });
         });
     });
@@ -489,8 +492,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
               // Only update namespaces that are in the updated chunk
               // Preserve all other data including metrics from other chunks
               const updated = prevNamespaces.map(prevNs => {
-                const updatedNs = updatedChunk.find(
-                  n => n.name === prevNs.name,
+                const updatedNs = updatedChunk.find(n =>
+                  isSameNamespace(n, prevNs),
                 );
                 if (updatedNs && updatedNs.metrics) {
                   // Only update if we have new metrics, preserve everything else
@@ -504,9 +507,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                 // Keep existing namespace with all its data (including metrics)
                 return prevNs;
               });
-
-              // Update activeNs with the updated namespaces
-              setActiveNs(filterActiveNamespaces(updated));
 
               return updated;
             });
@@ -544,7 +544,9 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         const sortNs = sortedNamespaces(allNamespaces);
 
         const namespacesWithMetrics = sortNs.map(ns => {
-          const previous = prevNamespaces.find(prev => prev.name === ns.name);
+          const previous = prevNamespaces.find(prev =>
+            isSameNamespace(prev, ns),
+          );
           return {
             ...ns,
             status: previous?.status,
@@ -557,7 +559,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         });
 
         setNamespaces(namespacesWithMetrics);
-        setActiveNs(filterActiveNamespaces(namespacesWithMetrics));
 
         fetchHealth(isAscending, sortField, overviewType, sortNs);
         fetchTLS(sortNs, isAscending, sortField);
@@ -573,6 +574,11 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         );
       });
   };
+
+  React.useEffect(() => {
+    setActiveNs(filterActiveNamespaces(namespaces));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [namespaces, activeNsKey]);
 
   React.useEffect(() => {
     if (
