@@ -34,7 +34,7 @@ jest.mock('react-aria-components', () => {
   return {
     TooltipTrigger: ({ children }: any) => {
       const [isOpen, setIsOpen] = React.useState(false);
-      const triggerRef = React.useRef<HTMLDivElement>(null);
+      const triggerRef: React.RefObject<HTMLDivElement> = React.useRef(null);
 
       return (
         <div
@@ -42,7 +42,7 @@ jest.mock('react-aria-components', () => {
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
         >
-          {React.Children.map(children, child => {
+          {React.Children.map(children, (child: any) => {
             if (React.isValidElement(child) && child.type.name !== 'Tooltip') {
               return React.cloneElement(child);
             }
