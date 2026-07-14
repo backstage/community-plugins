@@ -119,90 +119,105 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   );
 
   const lastFetchedKey = useRef<string>('');
+  const graphRequestIdRef = useRef(0);
 
-  const fetchGraph = useCallback(async () => {
-    kialiClient.setAnnotation(
-      KIALI_PROVIDER,
-      props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
-        kialiState.providers.activeProvider,
-    );
+  const fetchGraph = useCallback(
+    async (requestId: number) => {
+      const isCurrentRequest = () => requestId === graphRequestIdRef.current;
 
-    if (activeNamespaces.length === 0) {
-      setModel({ nodes: [], edges: [], graph: graphConfig });
-      return;
-    }
+      kialiClient.setAnnotation(
+        KIALI_PROVIDER,
+        props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+          kialiState.providers.activeProvider,
+      );
 
-    const graphQueryElements = {
-      appenders: 'health,deadNode,istio,serviceEntry,meshCheck,workloadEntry',
-      activeNamespaces: activeNamespaces.join(','),
-      namespaces: activeNamespaces.join(','),
-      // Kiali graph API expects duration (e.g. "600s"). This makes the "From: 10m" dropdown actually affect the graph.
-      duration: `${duration}s`,
-      graphType: GraphType.VERSIONED_APP,
-      injectServiceNodes: true,
-      boxByNamespace: true,
-      boxByCluster: true,
-      showOutOfMesh: false,
-      showSecurity: false,
-      showVirtualServices: false,
-      edgeLabels: [
-        EdgeLabelMode.TRAFFIC_RATE,
-        EdgeLabelMode.TRAFFIC_DISTRIBUTION,
-      ],
-      trafficRates: [
-        TrafficRate.HTTP_REQUEST,
-        TrafficRate.GRPC_TOTAL,
-        TrafficRate.TCP_TOTAL,
-      ],
-    };
-
-    try {
-      const response = await kialiClient.getGraphElements(graphQueryElements);
-
-      if ('verify' in response) {
-        setErrorProvider(
-          `Error providing namespaces for ${activeProvider}, verify configuration for this provider: ${response.verify}`,
-        );
+      if (activeNamespaces.length === 0) {
+        if (isCurrentRequest()) {
+          setModel({ nodes: [], edges: [], graph: graphConfig });
+        }
         return;
       }
 
-      const graphData = decorateGraphData(
-        (response as GraphDefinition).elements,
-        (response as GraphDefinition).duration,
-      );
-      const g = generateDataModel(graphData, graphQueryElements);
-      setModel({
-        nodes: g.nodes,
-        edges: g.edges,
-        graph: graphConfig,
-      });
-    } catch (error: any) {
-      setErrorProvider(error.toString());
-      alertUtilsRef.current?.add(
-        `Could not fetch services: ${getErrorString(error)}`,
-      );
-    }
-  }, [
-    activeNamespaces,
-    activeProvider,
-    duration,
-    props.entity,
-    kialiClient,
-    kialiState.providers.activeProvider,
-  ]);
+      const graphQueryElements = {
+        appenders: 'health,deadNode,istio,serviceEntry,meshCheck,workloadEntry',
+        activeNamespaces: activeNamespaces.join(','),
+        namespaces: activeNamespaces.join(','),
+        // Kiali graph API expects duration (e.g. "600s"). This makes the "From: 10m" dropdown actually affect the graph.
+        duration: `${duration}s`,
+        graphType: GraphType.VERSIONED_APP,
+        injectServiceNodes: true,
+        boxByNamespace: true,
+        boxByCluster: true,
+        showOutOfMesh: false,
+        showSecurity: false,
+        showVirtualServices: false,
+        edgeLabels: [
+          EdgeLabelMode.TRAFFIC_RATE,
+          EdgeLabelMode.TRAFFIC_DISTRIBUTION,
+        ],
+        trafficRates: [
+          TrafficRate.HTTP_REQUEST,
+          TrafficRate.GRPC_TOTAL,
+          TrafficRate.TCP_TOTAL,
+        ],
+      };
+
+      try {
+        const response = await kialiClient.getGraphElements(graphQueryElements);
+
+        if (!isCurrentRequest()) {
+          return;
+        }
+
+        if ('verify' in response) {
+          setErrorProvider(
+            `Error providing namespaces for ${activeProvider}, verify configuration for this provider: ${response.verify}`,
+          );
+          return;
+        }
+
+        const graphData = decorateGraphData(
+          (response as GraphDefinition).elements,
+          (response as GraphDefinition).duration,
+        );
+        const g = generateDataModel(graphData, graphQueryElements);
+        setModel({
+          nodes: g.nodes,
+          edges: g.edges,
+          graph: graphConfig,
+        });
+      } catch (error: any) {
+        if (!isCurrentRequest()) {
+          return;
+        }
+        setErrorProvider(error.toString());
+        alertUtilsRef.current?.add(
+          `Could not fetch services: ${getErrorString(error)}`,
+        );
+      }
+    },
+    [
+      activeNamespaces,
+      activeProvider,
+      duration,
+      props.entity,
+      kialiClient,
+      kialiState.providers.activeProvider,
+    ],
+  );
 
   // Fetch graph when dependencies change
   useEffect(() => {
     const currentKey = `${activeNamespacesKey}|${duration}|${activeProvider}`;
-    let cancelled = false;
+    const requestId = ++graphRequestIdRef.current;
 
     if (currentKey !== lastFetchedKey.current) {
       lastFetchedKey.current = currentKey;
       setErrorProvider(undefined);
       setLoading(true);
 
-      fetchGraph().finally(() => {
-        if (!cancelled) {
+      fetchGraph(requestId).finally(() => {
+        if (requestId === graphRequestIdRef.current) {
           setLoading(false);
         }
       });
@@ -211,16 +226,19 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
     }
 
     return () => {
-      cancelled = true;
+      graphRequestIdRef.current += 1;
     };
   }, [activeNamespacesKey, duration, activeProvider, fetchGraph]);
 
   const refresh = useCallback(async () => {
     lastFetchedKey.current = '';
+    const requestId = ++graphRequestIdRef.current;
     setLoading(true);
     setErrorProvider(undefined);
-    await fetchGraph();
-    setLoading(false);
+    await fetchGraph(requestId);
+    if (requestId === graphRequestIdRef.current) {
+      setLoading(false);
+    }
   }, [fetchGraph]);
 
   if (loading) {

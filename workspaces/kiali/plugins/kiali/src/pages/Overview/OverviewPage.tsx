@@ -241,16 +241,12 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         )
         .then(() => {
           setNamespaces(prevNamespaces => {
-            if (sortField.id !== 'health') {
-              return prevNamespaces;
-            }
-            const sorted = Sorts.sortFunc(
-              prevNamespaces.slice(),
-              sortField,
-              isAscending,
-            );
-            setActiveNs(filterActiveNamespaces(sorted));
-            return sorted;
+            const nextNamespaces =
+              sortField.id === 'health'
+                ? Sorts.sortFunc(prevNamespaces.slice(), sortField, isAscending)
+                : prevNamespaces;
+            setActiveNs(filterActiveNamespaces(nextNamespaces));
+            return sortField.id === 'health' ? nextNamespaces : prevNamespaces;
           });
         });
     });
