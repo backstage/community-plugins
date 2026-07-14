@@ -71,6 +71,7 @@ import {
   createApiRef,
   DiscoveryApi,
   IdentityApi,
+  type ApiRef,
 } from '@backstage/core-plugin-api';
 import { AxiosError } from 'axios';
 import { Record } from 'victory-core/lib/victory-util/immutable-types';
@@ -277,7 +278,7 @@ export interface KialiApi {
   getGraphElements(params: GraphElementsQuery): Promise<GraphDefinition>;
 }
 
-export const kialiApiRef = createApiRef<KialiApi>({
+export const kialiApiRef: ApiRef<KialiApi> = createApiRef<KialiApi>({
   id: 'plugin.kiali.service',
 });
 
