@@ -25,7 +25,7 @@ import {
   RiChat1Line,
   RiUserAddLine,
   RiDashboardLine,
-  RiLinkUnlink2Line,
+  RiLinkUnlink,
   RiFileTextLine,
   RiDoorOpenLine,
 } from '@remixicon/react';
@@ -102,7 +102,7 @@ export const EntityBazaarInfoContent = ({
     },
     {
       label: 'Unlink project',
-      icon: <RiLinkUnlink2Line size={20} />,
+      icon: <RiLinkUnlink size={20} />,
       disabled: false,
       onClick: () => {
         setOpenUnlink(true);

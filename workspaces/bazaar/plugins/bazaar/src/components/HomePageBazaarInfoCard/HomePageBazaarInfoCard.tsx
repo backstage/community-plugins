@@ -24,10 +24,10 @@ import {
   RiEditLine,
   RiChat1Line,
   RiUserAddLine,
-  RiLink2Line,
+  RiLinksLine,
   RiDashboardLine,
   RiCloseLine,
-  RiLinkUnlink2Line,
+  RiLinkUnlink,
   RiFileTextLine,
   RiDoorOpenLine,
 } from '@remixicon/react';
@@ -167,9 +167,9 @@ export const HomePageBazaarInfoCard = ({
     {
       label: bazaarProject.value?.entityRef ? 'Unlink project' : 'Link project',
       icon: bazaarProject.value?.entityRef ? (
-        <RiLinkUnlink2Line size={20} />
+        <RiLinkUnlink size={20} />
       ) : (
-        <RiLink2Line size={20} />
+        <RiLinksLine size={20} />
       ),
       onClick: handleLink,
     },

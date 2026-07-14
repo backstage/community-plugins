@@ -173,7 +173,10 @@ export const ProjectDialog = ({
 
         <DialogActions>
           {!isAddForm && deleteButton}
-          <Button onPress={handleSubmit(handleSaveForm)} variant="primary">
+          <Button
+            onPress={() => handleSubmit(handleSaveForm)()}
+            variant="primary"
+          >
             Submit
           </Button>
         </DialogActions>
