@@ -30,7 +30,16 @@ Add to `dependencies` section in `plugins/splunk-on-call/package.json`:
 - [ ] Add react-aria-components
 - [ ] Run: `yarn install`
 
-### 2. Create CSS Module Files
+### 2. Import BUI Base Stylesheet
+
+- [ ] Add the following import in your consuming app's main entry point (e.g., `packages/app/src/App.tsx` or the root app component):
+  ```typescript
+  import '@backstage/ui/css/styles.css';
+  ```
+- [ ] This must be imported **once** and **early** in the app initialization (before BUI components render)
+- [ ] Without this import, BUI components will render without expected styling (colors, spacing, typography, etc.)
+
+### 3. Create CSS Module Files
 
 - [ ] EntitySplunkOnCallCard.module.css
 - [ ] TriggerDialog.module.css
@@ -42,7 +51,7 @@ Add to `dependencies` section in `plugins/splunk-on-call/package.json`:
 - [ ] IncidentEmptyState.module.css
 - [ ] MissingApiKeyOrApiIdError.module.css
 
-### 3. Migrate Components (Recommended Order)
+### 4. Migrate Components (Recommended Order)
 
 1. MissingApiKeyOrApiIdError.tsx
 2. IncidentEmptyState.tsx
@@ -54,14 +63,14 @@ Add to `dependencies` section in `plugins/splunk-on-call/package.json`:
 8. IncidentListItem.tsx
 9. TriggerDialog.tsx (most complex)
 
-### 4. Test Migration
+### 5. Test Migration
 
 - [ ] Run: `yarn build`
 - [ ] Run: `yarn test`
 - [ ] Manual testing in dev app
 - [ ] Verify all component interactions
 
-### 5. Cleanup
+### 6. Cleanup
 
 - [ ] Remove old test mocks for MUI components
 - [ ] Update documentation
