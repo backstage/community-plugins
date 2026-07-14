@@ -154,6 +154,8 @@ export const renderStatusLabel = (data?: StatusData) => {
 
   const iconProps = {
     size: 16,
+    'aria-hidden': true,
+    focusable: false,
     style: {
       color,
       marginRight: 8,

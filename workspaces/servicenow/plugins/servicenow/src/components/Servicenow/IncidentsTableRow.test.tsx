@@ -29,10 +29,34 @@ import {
 import { IncidentsTableRow } from './IncidentsTableRow';
 import type { IncidentsData } from '../../types';
 
-jest.mock('react-aria-components', () => ({
-  TooltipTrigger: ({ children }: any) => <>{children}</>,
-  Tooltip: ({ children }: any) => <div role="tooltip">{children}</div>,
-}));
+jest.mock('react-aria-components', () => {
+  const React = require('react');
+  return {
+    TooltipTrigger: ({ children }: any) => {
+      const [isOpen, setIsOpen] = React.useState(false);
+      const triggerRef = React.useRef<HTMLDivElement>(null);
+
+      return (
+        <div
+          ref={triggerRef}
+          onMouseEnter={() => setIsOpen(true)}
+          onMouseLeave={() => setIsOpen(false)}
+        >
+          {React.Children.map(children, child => {
+            if (React.isValidElement(child) && child.type.name !== 'Tooltip') {
+              return React.cloneElement(child);
+            }
+            if (React.isValidElement(child) && isOpen) {
+              return child;
+            }
+            return null;
+          })}
+        </div>
+      );
+    },
+    Tooltip: ({ children }: any) => <div role="tooltip">{children}</div>,
+  };
+});
 
 jest.mock('../../hooks/useTranslation', () => ({
   useTranslation: () => ({
@@ -117,13 +141,19 @@ describe('IncidentsTableRow', () => {
     const tooltipTarget = screen.getByText('Network issue in HQ');
     await user.hover(tooltipTarget);
 
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      mockData.description,
+    const tooltips = screen.getAllByRole('tooltip');
+    const descriptionTooltip = tooltips.find(t =>
+      t.textContent?.includes(mockData.description),
     );
+    expect(descriptionTooltip).toHaveTextContent(mockData.description);
 
     await user.unhover(tooltipTarget);
     await waitFor(() => {
-      expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+      const remainingTooltips = screen.queryAllByRole('tooltip');
+      const tooltip = remainingTooltips.find(t =>
+        t.textContent?.includes(mockData.description),
+      );
+      expect(tooltip).toBeUndefined();
     });
   });
 
@@ -146,6 +176,7 @@ describe('IncidentsTableRow', () => {
     expect(windowOpenMock).toHaveBeenCalledWith(
       expect.stringContaining('incident.do'),
       '_blank',
+      'noopener,noreferrer',
     );
 
     windowOpenMock.mockRestore();

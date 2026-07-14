@@ -66,6 +66,7 @@ export const IncidentsTableHeader = ({
             <div
               key={column.id as string}
               className={styles.headerCell}
+              role="columnheader"
               aria-sort={sortState as 'none' | 'ascending' | 'descending'}
             >
               <button

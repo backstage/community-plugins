@@ -28,15 +28,11 @@ describe('IncidentsTableHeader', () => {
     orderBy: IncidentTableField | undefined,
   ) => {
     return render(
-      <table>
-        <thead>
-          <IncidentsTableHeader
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={mockOnRequestSort}
-          />
-        </thead>
-      </table>,
+      <IncidentsTableHeader
+        order={order}
+        orderBy={orderBy}
+        onRequestSort={mockOnRequestSort}
+      />,
     );
   };
 
@@ -53,8 +49,10 @@ describe('IncidentsTableHeader', () => {
 
   it('activates sort only for the selected column', () => {
     renderComponent('desc', IncidentTableFieldEnum.Number);
-    const activeSortLabel = screen.getByText('Incident Number').closest('th');
-    expect(activeSortLabel).toHaveAttribute('aria-sort', 'descending');
+    const activeHeader = screen
+      .getByText('Incident Number')
+      .closest('[role="columnheader"]');
+    expect(activeHeader).toHaveAttribute('aria-sort', 'descending');
   });
 
   it('calls onRequestSort when a sortable column is clicked', () => {

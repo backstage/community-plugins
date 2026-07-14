@@ -37,6 +37,7 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
   return (
     <div
       className={styles.tableRow}
+      role="row"
       style={{
         display: 'table-row',
       }}
@@ -46,7 +47,7 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
       </div>
       <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         <TooltipTrigger>
-          <Text as="span" className={styles.descriptionCell}>
+          <Text as="span" tabIndex={0} className={styles.descriptionCell}>
             {data?.shortDescription}
           </Text>
           <Tooltip>{data?.description}</Tooltip>

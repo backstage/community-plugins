@@ -26,7 +26,11 @@ export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
 
   if (rows?.length > 0) {
     return (
-      <div data-testid="incidents" style={{ display: 'table-row-group' }}>
+      <div
+        data-testid="incidents"
+        role="rowgroup"
+        style={{ display: 'table-row-group' }}
+      >
         {rows.map(row => (
           <IncidentsTableRow key={row.sysId} data={row} />
         ))}
@@ -35,7 +39,7 @@ export const IncidentsTableBody = ({ rows }: { rows: IncidentsData[] }) => {
   }
 
   return (
-    <div style={{ display: 'table-row-group' }}>
+    <div role="rowgroup" style={{ display: 'table-row-group' }}>
       <div style={{ display: 'table-row', borderBottom: '1px solid #e0e0e0' }}>
         <div
           style={{

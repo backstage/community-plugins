@@ -226,6 +226,9 @@ export const EntityServicenowContent = () => {
             });
           }}
           className={styles.rowsPerPageSelect}
+          aria-label={t('table.labelRowsSelect', {
+            count: 'Select rows per page',
+          })}
         >
           {rowsPerPageOptions.map(n => (
             <option key={n} value={String(n)}>
@@ -235,11 +238,16 @@ export const EntityServicenowContent = () => {
         </select>
         <Text as="div" className={styles.paginationInfo}>
           {count === 0
-            ? '0 of 0'
-            : `${offset + 1}-${Math.min(
-                offset + rowsPerPage,
-                count,
-              )} of ${count}`}
+            ? t('table.paginationInfo', {
+                start: '0',
+                end: '0',
+                total: '0',
+              })
+            : t('table.paginationInfo', {
+                start: String(offset + 1),
+                end: String(Math.min(offset + rowsPerPage, count)),
+                total: String(count),
+              })}
         </Text>
         <div className={styles.paginationButtons}>
           <ButtonIcon
@@ -320,7 +328,7 @@ export const EntityServicenowContent = () => {
                   )}
                 </div>
               </div>
-              <div className={styles.table}>
+              <div className={styles.table} role="table">
                 <IncidentsTableHeaderComponent />
                 <IncidentsTableBodyComponent />
               </div>

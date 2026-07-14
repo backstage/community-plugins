@@ -19,6 +19,7 @@ import { SelectItem } from '@backstage/core-components';
 import { Box, Checkbox } from '@backstage/ui';
 import { RiArrowDownSLine } from '@remixicon/react';
 import { renderStatusLabel, StatusData } from '../../utils/incidentUtils';
+import { useTranslation } from '../../hooks/useTranslation';
 import styles from './IncidentEnumFilter.module.css';
 
 export interface IncidentEnumFilterProps {
@@ -40,6 +41,7 @@ export const IncidentEnumFilter = ({
   isOpen: externalIsOpen,
   onToggle,
 }: IncidentEnumFilterProps) => {
+  const { t } = useTranslation();
   const [internalIsOpen, setInternalIsOpen] = React.useState(false);
 
   // Use external isOpen if provided (controlled), otherwise use internal state (uncontrolled)
@@ -77,7 +79,9 @@ export const IncidentEnumFilter = ({
           type="button"
         >
           <span className={styles.selectValue}>
-            {value.length > 0 ? `${value.length} selected` : 'Select...'}
+            {value.length > 0
+              ? t('table.itemsSelected', { count: String(value.length) })
+              : t('table.selectPlaceholder')}
           </span>
           <RiArrowDownSLine
             size={20}
@@ -91,6 +95,7 @@ export const IncidentEnumFilter = ({
                 <Checkbox
                   isSelected={value.some(v => v.value === item.value)}
                   onChange={() => handleSelect(item)}
+                  aria-label={item.label}
                 />
                 <div className={styles.optionContent}>
                   {renderStatusLabel(dataMap[Number(item.value)])}

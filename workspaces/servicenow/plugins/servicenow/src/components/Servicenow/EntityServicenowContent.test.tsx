@@ -23,6 +23,10 @@ import {
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { TestApiProvider } from '@backstage/test-utils';
 import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicenow-common';
+// eslint-disable-next-line @backstage/no-undeclared-imports
+import { ThemeProvider } from '@material-ui/core/styles';
+// eslint-disable-next-line @backstage/no-undeclared-imports
+import { createTheme } from '@material-ui/core/styles';
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -85,6 +89,12 @@ const mockTranslationApi = {
   ),
 };
 
+const theme = createTheme();
+
+const renderWithTheme = (component: React.ReactElement) => {
+  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+};
+
 describe('ServicenowContent', () => {
   const mockServiceNowApi = {
     getIncidents: jest.fn(),
@@ -99,7 +109,7 @@ describe('ServicenowContent', () => {
   });
 
   it('renders the table with incident rows', async () => {
-    render(
+    renderWithTheme(
       <MemoryRouter>
         <TestApiProvider
           apis={[
@@ -141,7 +151,7 @@ describe('ServicenowContent', () => {
   });
 
   it('displays pagination dropdown', async () => {
-    render(
+    renderWithTheme(
       <MemoryRouter>
         <TestApiProvider
           apis={[
@@ -181,7 +191,7 @@ describe('ServicenowContent', () => {
       totalCount: 0,
     });
 
-    render(
+    renderWithTheme(
       <MemoryRouter>
         <TestApiProvider
           apis={[
@@ -212,7 +222,7 @@ describe('ServicenowContent', () => {
 
   it('handles search input updates', async () => {
     const user = userEvent.setup();
-    render(
+    renderWithTheme(
       <MemoryRouter>
         <TestApiProvider
           apis={[

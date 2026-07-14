@@ -23,6 +23,9 @@ export const servicenowMessages = {
   table: {
     searchPlaceholder: 'Search',
     labelRowsSelect: '{{count}} rows',
+    selectPlaceholder: 'Select...',
+    itemsSelected: '{{count}} selected',
+    paginationInfo: '{{start}}-{{end}} of {{total}}',
     columns: {
       incidentNumber: 'Incident Number',
       description: 'Description',

@@ -15,7 +15,7 @@
  */
 
 import { createElement, ElementType } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SelectItem } from '@backstage/core-components';
 
@@ -84,7 +84,9 @@ describe('IncidentEnumFilter', () => {
     );
 
     expect(screen.getByText('Priority')).toBeInTheDocument();
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Priority' }),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('select-priority')).toBeInTheDocument();
   });
 
@@ -102,15 +104,15 @@ describe('IncidentEnumFilter', () => {
       />,
     );
 
-    const combo = screen.getByRole('combobox');
-    await userEvent.click(combo);
+    const selectButton = screen.getByRole('button', { name: 'State' });
+    await userEvent.click(selectButton);
 
     expect(await screen.findByText('New')).toBeInTheDocument();
     expect(screen.getByText('In Progress')).toBeInTheDocument();
-
-    const newItem = screen.getByText('New').closest('li')!;
-    const checkbox = within(newItem).getByRole('checkbox');
-    expect(checkbox).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'New' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', { name: 'In Progress' }),
+    ).not.toBeChecked();
   });
 
   it('calls filter.set on selection', async () => {
@@ -128,18 +130,15 @@ describe('IncidentEnumFilter', () => {
       />,
     );
 
-    const combo = screen.getByRole('combobox');
-    await userEvent.click(combo);
+    const selectButton = screen.getByRole('button', { name: 'Priority' });
+    await userEvent.click(selectButton);
 
     const item = await screen.findByText('Critical');
     await userEvent.click(item);
 
-    expect(mockOnChange).toHaveBeenCalledWith(
-      expect.anything(),
-      [{ label: 'Critical', value: '1' }],
-      'selectOption',
-      { option: { label: 'Critical', value: '1' } },
-    );
+    expect(mockOnChange).toHaveBeenCalledWith(null, [
+      { label: 'Critical', value: '1' },
+    ]);
   });
 
   it('marks checkbox as checked if item is in current filter', async () => {
@@ -158,13 +157,10 @@ describe('IncidentEnumFilter', () => {
       />,
     );
 
-    const combo = screen.getByRole('combobox');
-    await userEvent.click(combo);
+    const selectButton = screen.getByRole('button', { name: 'Priority' });
+    await userEvent.click(selectButton);
 
-    const listbox = screen.getByRole('listbox');
-    const highItem = within(listbox).getByText('High').closest('li')!;
-
-    const checkbox = within(highItem).getByRole('checkbox');
+    const checkbox = screen.getByRole('checkbox', { name: 'High' });
     expect(checkbox).toBeChecked();
   });
 });

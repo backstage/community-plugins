@@ -19,12 +19,14 @@ import { getPriorityValue, getIncidentStateValue } from './incidentUtils';
 describe('incidentUtils', () => {
   describe('getPriorityValue', () => {
     it('renders Critical priority (1)', () => {
-      render(getPriorityValue(1));
+      const { container } = render(getPriorityValue(1));
       expect(screen.getByText('Critical')).toBeInTheDocument();
 
-      const icon = screen.getByTestId('LabelImportantIcon');
-      expect(icon).toHaveStyle('color: #C9190B');
+      // Check for the SVG icon with critical color
+      const icon = container.querySelector('svg');
+      expect(icon).toHaveStyle('color: rgb(201, 25, 11)');
       expect(icon).toHaveStyle('transform: rotate(-90deg)');
+      expect(icon).toHaveAttribute('aria-hidden', 'true');
     });
 
     it('renders Planning priority (5)', () => {
