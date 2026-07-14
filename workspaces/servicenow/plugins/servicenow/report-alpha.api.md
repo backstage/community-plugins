@@ -226,6 +226,9 @@ export const servicenowTranslationRef: TranslationRef<
   {
     readonly 'table.searchPlaceholder': string;
     readonly 'table.labelRowsSelect': string;
+    readonly 'table.selectPlaceholder': string;
+    readonly 'table.itemsSelected': string;
+    readonly 'table.paginationInfo': string;
     readonly 'table.columns.description': string;
     readonly 'table.columns.priority': string;
     readonly 'table.columns.incidentNumber': string;
