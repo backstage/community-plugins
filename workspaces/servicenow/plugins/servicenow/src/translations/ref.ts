@@ -23,6 +23,7 @@ export const servicenowMessages = {
   table: {
     searchPlaceholder: 'Search',
     labelRowsSelect: '{{count}} rows',
+    rowsPerPageLabel: 'Rows per page',
     selectPlaceholder: 'Select...',
     itemsSelected: '{{count}} selected',
     paginationInfo: '{{start}}-{{end}} of {{total}}',

@@ -43,6 +43,7 @@ const servicenowTranslationJa = createTranslationMessages({
       'インシデントの読み込み中にエラーが発生: {{error}}',
     'table.searchPlaceholder': '検索',
     'table.labelRowsSelect': '{{count}} 行',
+    'table.rowsPerPageLabel': 'ページあたりの行数',
     'table.selectPlaceholder': '選択...',
     'table.itemsSelected': '{{count}} 件選択',
     'table.paginationInfo': '{{start}}-{{end}} / {{total}}',

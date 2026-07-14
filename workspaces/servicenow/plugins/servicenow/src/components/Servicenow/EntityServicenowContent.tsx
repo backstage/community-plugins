@@ -226,9 +226,7 @@ export const EntityServicenowContent = () => {
             });
           }}
           className={styles.rowsPerPageSelect}
-          aria-label={t('table.labelRowsSelect', {
-            count: 'Select rows per page',
-          })}
+          aria-label={t('table.rowsPerPageLabel')}
         >
           {rowsPerPageOptions.map(n => (
             <option key={n} value={String(n)}>

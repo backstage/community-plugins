@@ -42,6 +42,7 @@ const servicenowTranslationEs = createTranslationMessages({
     'errors.loadingIncidents': 'Error al cargar incidentes: {{error}}',
     'table.searchPlaceholder': 'Buscar',
     'table.labelRowsSelect': '{{count}} filas',
+    'table.rowsPerPageLabel': 'Filas por página',
     'table.selectPlaceholder': 'Seleccionar...',
     'table.itemsSelected': '{{count}} seleccionados',
     'table.paginationInfo': '{{start}}-{{end}} de {{total}}',

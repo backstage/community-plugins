@@ -23,10 +23,6 @@ import {
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 import { TestApiProvider } from '@backstage/test-utils';
 import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicenow-common';
-// eslint-disable-next-line @backstage/no-undeclared-imports
-import { ThemeProvider } from '@material-ui/core/styles';
-// eslint-disable-next-line @backstage/no-undeclared-imports
-import { createTheme } from '@material-ui/core/styles';
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -34,6 +30,11 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 
 import { of } from 'rxjs';
+
+// Mock Material-UI's useMediaQuery to avoid theme-related errors in tests
+jest.mock('@material-ui/core/useMediaQuery', () => ({
+  default: () => false,
+}));
 
 import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import { mockRefinedIncidentData } from '../../__fixtures__/mockRefinedIncidentData';
@@ -89,10 +90,8 @@ const mockTranslationApi = {
   ),
 };
 
-const theme = createTheme();
-
 const renderWithTheme = (component: React.ReactElement) => {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  return render(component);
 };
 
 describe('ServicenowContent', () => {

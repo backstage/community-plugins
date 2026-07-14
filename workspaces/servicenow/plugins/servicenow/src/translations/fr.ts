@@ -43,6 +43,7 @@ const servicenowTranslationFr = createTranslationMessages({
       'Erreur lors du chargement des incidents : {{error}}',
     'table.searchPlaceholder': 'Recherche',
     'table.labelRowsSelect': '{{count}} lignes',
+    'table.rowsPerPageLabel': 'Lignes par page',
     'table.selectPlaceholder': 'Sélectionner...',
     'table.itemsSelected': '{{count}} sélectionnés',
     'table.paginationInfo': '{{start}}-{{end}} sur {{total}}',
