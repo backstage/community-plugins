@@ -171,7 +171,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
     return healthPromise
       .then(results => {
-        namespacesInfo.forEach((nsInfo, index) => {
+        namespacesInfo.forEach(nsInfo => {
           const nsStatus: NamespaceInfoStatus = {
             inNotReady: [],
             inError: [],
