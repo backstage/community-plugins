@@ -50,6 +50,12 @@ const renderTodoList = (mockApi: jest.Mocked<TodoApi>) =>
     </TestApiProvider>,
   );
 
+const flushPendingTimers = async () => {
+  await act(async () => {
+    jest.runOnlyPendingTimers();
+  });
+};
+
 describe('TodoList', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -94,9 +100,7 @@ describe('TodoList', () => {
       target: { value: 'Rugvip' },
     });
 
-    await act(async () => {
-      jest.advanceTimersByTime(300);
-    });
+    await flushPendingTimers();
 
     await screen.findByText('FIXME');
 
@@ -123,9 +127,7 @@ describe('TodoList', () => {
 
     fireEvent.click(screen.getByRole('columnheader', { name: 'Author' }));
 
-    await act(async () => {
-      jest.advanceTimersByTime(300);
-    });
+    await flushPendingTimers();
 
     await screen.findByText('FIXME');
 
@@ -139,9 +141,7 @@ describe('TodoList', () => {
 
     fireEvent.click(screen.getByRole('columnheader', { name: 'Author' }));
 
-    await act(async () => {
-      jest.advanceTimersByTime(300);
-    });
+    await flushPendingTimers();
 
     await screen.findByText('FIXME');
 

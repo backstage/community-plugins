@@ -60,7 +60,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@types/react": "^16.13.1 || ^17.0.0"
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",

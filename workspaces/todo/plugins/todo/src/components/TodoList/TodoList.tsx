@@ -54,9 +54,9 @@ const toRowId = (item: TodoItem): string => {
   return `${repoFilePath}:${lineNumber}:${item.tag}:${item.text}`;
 };
 
-const toRow = (item: TodoItem): TodoRow => ({
+const toRow = (item: TodoItem, offset: number, index: number): TodoRow => ({
   ...item,
-  id: toRowId(item),
+  id: `${toRowId(item)}:${offset}:${index}`,
 });
 
 type TodoFilters = {
@@ -156,7 +156,7 @@ export const TodoList = () => {
         });
 
         return {
-          data: result.items.map(toRow),
+          data: result.items.map((item, index) => toRow(item, offset, index)),
           totalCount: result.totalCount,
         };
       } catch (loadingError) {
