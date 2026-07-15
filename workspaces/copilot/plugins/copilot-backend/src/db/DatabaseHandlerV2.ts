@@ -296,7 +296,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -317,7 +317,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -338,7 +338,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -359,7 +359,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -380,7 +380,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -408,7 +408,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -429,7 +429,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -450,7 +450,7 @@ export class DatabaseHandlerV2 {
     const rows = await query.orderBy('day', 'asc').select('*');
     return rows.map(row => ({
       ...row,
-      day: this.normalizeDay(row.day) as string,
+      day: this.normalizeRequiredDay(row.day),
     }));
   }
 
@@ -561,6 +561,23 @@ export class DatabaseHandlerV2 {
     }
 
     return null;
+  }
+  /**
+   * Like normalizeDay, but throws if the value can't be normalized.
+   * Use this for DB columns that are NOT NULL — if this ever throws,
+   * it means the data violates an invariant we assume elsewhere
+   * (e.g. the frontend requires a valid day string to render charts).
+   */
+  private normalizeRequiredDay(value: unknown): string {
+    const normalized = this.normalizeDay(value);
+    if (normalized === null) {
+      throw new Error(
+        `Expected a valid 'day' value from the database but got: ${JSON.stringify(
+          value,
+        )}`,
+      );
+    }
+    return normalized;
   }
 
   private hasRequiredComponents(
