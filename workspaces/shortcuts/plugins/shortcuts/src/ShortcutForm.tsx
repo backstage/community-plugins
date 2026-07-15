@@ -119,7 +119,7 @@ export const ShortcutForm = ({
               {errors.url && (
                 <Text
                   variant="body-small"
-                  style={{ color: 'var(--bui-fg-danger)' }}
+                  style={{ color: 'var(--bui-semantic-intent-error)' }}
                 >
                   {errors.url.message}
                 </Text>
@@ -152,7 +152,7 @@ export const ShortcutForm = ({
               {errors.title && (
                 <Text
                   variant="body-small"
-                  style={{ color: 'var(--bui-fg-danger)' }}
+                  style={{ color: 'var(--bui-semantic-intent-error)' }}
                 >
                   {errors.title.message}
                 </Text>
