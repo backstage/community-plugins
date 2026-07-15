@@ -98,7 +98,7 @@
     "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/test-utils": "^1.7.19",
     "@backstage/ui": "^0.13.2",
-    "@playwright/test": "1.60.0",
+    "@playwright/test": "1.61.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
