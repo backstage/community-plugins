@@ -8,25 +8,23 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { Observable } from '@backstage/types';
-import { Shortcut as Shortcut_2 } from '@backstage-community/plugin-shortcuts';
-import { ShortcutApi as ShortcutApi_2 } from '@backstage-community/plugin-shortcuts';
 import type { StorageApi } from '@backstage/core-plugin-api';
 
 // @public
-export class DefaultShortcutsApi implements ShortcutApi_2 {
+export class DefaultShortcutsApi implements ShortcutApi {
   constructor(storageApi: StorageApi);
   // (undocumented)
-  add(shortcut: Omit<Shortcut_2, 'id'>): Promise<void>;
+  add(shortcut: Omit<Shortcut, 'id'>): Promise<void>;
   // (undocumented)
-  get(): Shortcut_2[];
+  get(): Shortcut[];
   // (undocumented)
   getColor(url: string): string;
   // (undocumented)
   remove(id: string): Promise<void>;
   // (undocumented)
-  shortcut$(): Observable<Shortcut_2[]>;
+  shortcut$(): Observable<Shortcut[]>;
   // (undocumented)
-  update(shortcut: Shortcut_2): Promise<void>;
+  update(shortcut: Shortcut): Promise<void>;
 }
 
 // @public @deprecated (undocumented)
