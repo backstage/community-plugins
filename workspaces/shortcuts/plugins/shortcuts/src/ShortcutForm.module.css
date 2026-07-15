@@ -5,7 +5,7 @@
 
   .field :global(input) {
     border: 1px solid var(--bui-border-2);
-    border-radius: 4px ;
+    border-radius: 4px;
   }
 
   @media (prefers-color-scheme: dark) {
