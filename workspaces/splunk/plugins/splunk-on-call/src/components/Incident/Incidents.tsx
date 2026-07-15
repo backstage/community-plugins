@@ -13,102 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { useEffect } from 'react';
-import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { IncidentListItem } from './IncidentListItem';
-import { IncidentsEmptyState } from './IncidentEmptyState';
-import useAsyncFn from 'react-use/esm/useAsyncFn';
-import { splunkOnCallApiRef } from '../../api';
-import Alert from '@material-ui/lab/Alert';
-
-import { useApi } from '@backstage/core-plugin-api';
+import { Box, Text } from '@backstage/ui';
+import useAsync from 'react-use/esm/useAsync';
 import { Progress } from '@backstage/core-components';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      maxHeight: '400px',
-      overflow: 'auto',
-    },
-    subheader: {
-      backgroundColor: theme.palette.background.paper,
-    },
-    progress: {
-      margin: theme.spacing(0, 2),
-    },
-  }),
-);
+import { IncidentListItem } from './IncidentListItem';
+import { splunkOnCallApiRef } from '../../api';
+import { useApi } from '@backstage/core-plugin-api';
+import styles from './Incidents.module.css';
 
 type Props = {
-  refreshIncidents: boolean;
   team: string;
   readOnly: boolean;
+  refreshIncidents?: boolean;
 };
 
-export const Incidents = ({ readOnly, refreshIncidents, team }: Props) => {
-  const classes = useStyles();
+export const Incidents = ({ team, readOnly, refreshIncidents }: Props) => {
   const api = useApi(splunkOnCallApiRef);
 
-  const [{ value: incidents, loading, error }, getIncidents] = useAsyncFn(
-    async () => {
-      // For some reason the changes applied to incidents (trigger-resolve-acknowledge)
-      // may take some time to actually be applied after receiving the response from the server.
-      // The timeout compensates for this latency.
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const allIncidents = await api.getIncidents();
-      const teams = await api.getTeams();
-      const teamSlug = teams.find(teamValue => teamValue.name === team)?.slug;
-      const filteredIncidents = teamSlug
-        ? allIncidents.filter(incident =>
-            incident.pagedTeams?.includes(teamSlug),
-          )
-        : [];
-      return filteredIncidents;
-    },
-  );
-
-  useEffect(() => {
-    getIncidents();
-  }, [refreshIncidents, getIncidents]);
+  const {
+    value: incidents,
+    loading,
+    error,
+  } = useAsync(async () => {
+    const allIncidents = await api.getIncidents();
+    return allIncidents;
+  }, [team, refreshIncidents]);
 
   if (error) {
     return (
-      <Alert severity="error">
-        Error encountered while fetching information. {error.message}
-      </Alert>
+      <Box>
+        <Text>
+          Error encountered while fetching information. {error.message}
+        </Text>
+      </Box>
     );
   }
 
-  if (!loading && !incidents?.length) {
-    return <IncidentsEmptyState />;
-  }
-
   return (
-    <List
-      className={classes.root}
-      dense
-      subheader={
-        <ListSubheader className={classes.subheader}>
-          CRITICAL INCIDENTS
-        </ListSubheader>
-      }
-    >
-      {loading ? (
-        <Progress className={classes.progress} />
-      ) : (
-        incidents!.map((incident, index) => (
-          <IncidentListItem
-            onIncidentAction={() => getIncidents()}
-            key={index}
-            team={team}
-            incident={incident}
-            readOnly={readOnly}
-          />
-        ))
-      )}
-    </List>
+    <>
+      <Box className={styles.root}>
+        {!loading && <div className={styles.header}>INCIDENTS</div>}
+        {loading && <Progress style={{ margin: 'var(--bui-space-4)' }} />}
+        {!loading &&
+          incidents &&
+          incidents.length > 0 &&
+          incidents.map((incident, index) => (
+            <IncidentListItem
+              key={index}
+              incident={incident}
+              readOnly={readOnly}
+            />
+          ))}
+        {!loading && (!incidents || incidents.length === 0) && (
+          <Text style={{ padding: 'var(--bui-space-4)' }}>
+            No incidents found
+          </Text>
+        )}
+      </Box>
+    </>
   );
 };

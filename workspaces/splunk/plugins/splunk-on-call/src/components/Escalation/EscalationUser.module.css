@@ -1,5 +1,4 @@
-/*
- * Copyright 2020 The Backstage Authors
+/* Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Flex, Text } from '@backstage/ui';
-import { StatusWarning } from '@backstage/core-components';
-import styles from './EscalationUsersEmptyState.module.css';
+@layer components {
+  .denseListIcon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0;
+  }
 
-export const EscalationUsersEmptyState = () => (
-  <Flex align="center" style={{ paddingBottom: 'var(--bui-space-2)' }}>
-    <div className={styles.denseListIcon}>
-      <StatusWarning />
-    </div>
-    <Text>No users on-call</Text>
-  </Flex>
-);
+  .listItemPrimary {
+    font-weight: bold;
+  }
+}

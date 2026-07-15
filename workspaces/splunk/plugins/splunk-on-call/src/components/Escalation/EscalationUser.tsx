@@ -13,52 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Tooltip from '@material-ui/core/Tooltip';
-import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import EmailIcon from '@material-ui/icons/Email';
+import { Flex, Text, ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
+import { RiMailLine } from '@remixicon/react';
+import styles from './EscalationUser.module.css';
 import { User } from '../types';
-
-const useStyles = makeStyles({
-  listItemPrimary: {
-    fontWeight: 'bold',
-  },
-});
 
 type Props = {
   user: User;
 };
 
 export const EscalationUser = ({ user }: Props) => {
-  const classes = useStyles();
-
   return (
-    <ListItem>
-      <ListItemIcon>
-        <Avatar alt="User" />
-      </ListItemIcon>
-      <ListItemText
-        primary={
-          <Typography className={classes.listItemPrimary}>
-            {user.firstName} {user.lastName}
-          </Typography>
-        }
-        secondary={user.email}
-      />
-      <ListItemSecondaryAction>
-        <Tooltip title="Send e-mail to user" placement="top">
-          <IconButton href={`mailto:${user.email}`}>
-            <EmailIcon color="primary" />
-          </IconButton>
-        </Tooltip>
-      </ListItemSecondaryAction>
-    </ListItem>
+    <Flex
+      align="center"
+      style={{
+        paddingBottom: 'var(--bui-space-2)',
+        paddingTop: 'var(--bui-space-2)',
+      }}
+    >
+      <div
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          backgroundColor: 'var(--bui-bg-surface-2)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 'var(--bui-space-2)',
+          fontSize: '12px',
+          fontWeight: 'bold',
+        }}
+      >
+        {(user.displayName ?? user.firstName ?? 'U')?.charAt(0).toUpperCase()}
+      </div>
+      <Flex direction="column" style={{ flex: 1 }}>
+        <Text className={styles.listItemPrimary}>
+          {user.displayName ?? user.firstName ?? 'User'}
+        </Text>
+        {user.email && (
+          <Text variant="body-small" color="secondary">
+            {user.email}
+          </Text>
+        )}
+      </Flex>
+      {user.email && (
+        <TooltipTrigger>
+          <ButtonIcon
+            variant="secondary"
+            icon={<RiMailLine size={16} />}
+            aria-label="email"
+          />
+          <Tooltip>
+            Send email to {user.displayName || user.firstName || 'User'}
+          </Tooltip>
+        </TooltipTrigger>
+      )}
+    </Flex>
   );
 };

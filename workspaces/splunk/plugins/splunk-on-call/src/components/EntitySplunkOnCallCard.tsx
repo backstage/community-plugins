@@ -20,15 +20,7 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import AlarmAddIcon from '@material-ui/icons/AlarmAdd';
-import WebIcon from '@material-ui/icons/Web';
-import Alert from '@material-ui/lab/Alert';
+import { Card, CardHeader, CardBody, Text } from '@backstage/ui';
 import { splunkOnCallApiRef, UnauthorizedError } from '../api';
 import { MissingApiKeyOrApiIdError } from './Errors';
 import { EscalationPolicy } from './Escalation';
@@ -37,23 +29,19 @@ import { TriggerDialog } from './TriggerDialog';
 import { RoutingKey, User } from './types';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-import {
-  EmptyState,
-  HeaderIconLinkRow,
-  IconLinkVerticalProps,
-  Progress,
-} from '@backstage/core-components';
+import { EmptyState, Progress } from '@backstage/core-components';
+import styles from './EntitySplunkOnCallCard.module.css';
 
 export const SPLUNK_ON_CALL_TEAM = 'splunk.com/on-call-team';
 export const SPLUNK_ON_CALL_ROUTING_KEY = 'splunk.com/on-call-routing-key';
 
 export const MissingAnnotation = () => (
   <div>
-    <Typography>
+    <Text>
       The Splunk On Call plugin requires setting either the{' '}
       <code>{SPLUNK_ON_CALL_TEAM}</code> or the{' '}
       <code>{SPLUNK_ON_CALL_ROUTING_KEY}</code> annotation.
-    </Typography>
+    </Text>
     <MissingAnnotationEmptyState annotation={SPLUNK_ON_CALL_TEAM} />
   </div>
 );
@@ -78,37 +66,31 @@ export const InvalidAnnotation = ({
   return (
     <Card>
       <CardHeader title="Splunk On-Call" />
-      <CardContent>
+      <CardBody>
         <EmptyState
           title={`Splunk On-Call API returned no record of teams associated with the ${titleSuffix}`}
           missing="info"
           description="Escalation Policy and incident information unavailable. Splunk On-Call requires a valid team name or routing key."
         />
-      </CardContent>
+      </CardBody>
     </Card>
   );
 };
 
 export const MissingEventsRestEndpoint = () => (
-  <CardContent>
+  <CardBody>
     <EmptyState
       title="No Splunk On-Call REST endpoint available."
       missing="info"
       description="You need to add a valid REST endpoint to your 'app-config.yaml' if you want to enable Splunk On-Call."
     />
-  </CardContent>
+  </CardBody>
 );
 
 /** @public */
 export const isSplunkOnCallAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[SPLUNK_ON_CALL_TEAM]) ||
   Boolean(entity.metadata.annotations?.[SPLUNK_ON_CALL_ROUTING_KEY]);
-
-const useStyles = makeStyles({
-  onCallCard: {
-    marginBottom: '1em',
-  },
-});
 
 /** @public */
 export type EntitySplunkOnCallCardProps = {
@@ -118,7 +100,6 @@ export type EntitySplunkOnCallCardProps = {
 /** @public */
 export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
   const { readOnly } = props;
-  const classes = useStyles();
   const config = useApi(configApiRef);
   const api = useApi(splunkOnCallApiRef);
   const { entity } = useEntity();
@@ -200,9 +181,13 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
 
   if (error) {
     return (
-      <Alert severity="error">
-        Error encountered while fetching information. {error.message}
-      </Alert>
+      <Card>
+        <CardBody>
+          <Text>
+            Error encountered while fetching information. {error.message}
+          </Text>
+        </CardBody>
+      </Card>
     );
   }
 
@@ -219,19 +204,6 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
     );
   }
 
-  const triggerLink: IconLinkVerticalProps = {
-    label: 'Create Incident',
-    onClick: handleDialog,
-    color: 'secondary',
-    icon: <AlarmAddIcon />,
-  };
-
-  const serviceLink = {
-    label: 'Portal',
-    href: 'https://portal.victorops.com/',
-    icon: <WebIcon />,
-  };
-
   const teams = entityData?.foundTeams || [];
 
   return (
@@ -239,21 +211,10 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
       {teams.map((team, i) => {
         const teamName = team?.name ?? '';
         return (
-          <Card key={i} className={classes.onCallCard}>
-            <CardHeader
-              title="Splunk On-Call"
-              subheader={[
-                <Typography key="team_name">
-                  Team: {team && team.name ? team.name : ''}
-                </Typography>,
-                <HeaderIconLinkRow
-                  key="incident_trigger"
-                  links={!readOnly ? [serviceLink, triggerLink] : [serviceLink]}
-                />,
-              ]}
-            />
-            <Divider />
-            <CardContent>
+          <Card key={i} className={styles.onCallCard}>
+            <CardHeader title="Splunk On-Call" />
+            <hr style={{ borderColor: 'var(--bui-border-1)' }} />
+            <CardBody>
               <Incidents
                 readOnly={readOnly || false}
                 team={teamName}
@@ -271,7 +232,7 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
                 handleDialog={handleDialog}
                 onIncidentCreated={handleRefresh}
               />
-            </CardContent>
+            </CardBody>
           </Card>
         );
       })}
