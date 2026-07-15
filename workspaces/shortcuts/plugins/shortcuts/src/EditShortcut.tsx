@@ -16,8 +16,7 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import { Text } from '@backstage/ui';
-import { ButtonIcon } from '@backstage/ui';
+import { Text, Button } from '@backstage/ui';
 import { RiDeleteBinLine } from '@remixicon/react';
 import { ShortcutForm } from './ShortcutForm';
 import { FormValues, Shortcut } from './types';
@@ -162,13 +161,14 @@ export const EditShortcut = ({
       >
         <div className={styles.header}>
           <Text variant="body-medium">Edit Shortcut</Text>
-          <ButtonIcon
+          <Button
             className={styles.button}
-            aria-label="delete"
-            icon={<RiDeleteBinLine size={16} />}
-            onPress={handleRemove}
+            onClick={handleRemove}
             variant="secondary"
-          />
+          >
+            <RiDeleteBinLine size={16} style={{ marginRight: '4px' }} />
+            Remove
+          </Button>
         </div>
         <ShortcutForm
           formValues={{ url: shortcut.url, title: shortcut.title }}

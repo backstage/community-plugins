@@ -45,11 +45,16 @@ type Props = {
   allowExternalLinks?: boolean;
 };
 
+interface PressEventLike {
+  stopPropagation?: () => void;
+  preventDefault?: () => void;
+}
+
 export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
   const [anchorEl, setAnchorEl] = useState<Element | undefined>();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleClick = (e?: any) => {
+  const handleClick = (e?: PressEventLike) => {
     // Prevent event propagation to parent SidebarItem link
     if (e && e.stopPropagation) {
       e.stopPropagation();
@@ -83,7 +88,7 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
               data-testid="edit"
               className={styles.editButton}
               icon={<RiEdit2Line className={styles.icon} size={16} />}
-              onPress={handleClick}
+              onClick={handleClick}
               aria-label="edit"
               variant="secondary"
             />

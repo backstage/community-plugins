@@ -4,18 +4,18 @@
   }
 
   .field :global(input) {
-    border: 1px solid #cccccc !important;
-    border-radius: 4px !important;
+    border: 1px solid var(--bui-border-2);
+    border-radius: 4px ;
   }
 
   @media (prefers-color-scheme: dark) {
     .field :global(input) {
-      border: 1px solid #666666 !important;
+      border: 1px solid var(--bui-border-2);
     }
   }
 
-  [data-theme="dark"] .field :global(input) {
-    border: 1px solid #666666 !important;
+  [data-theme='dark'] .field :global(input) {
+    border: 1px solid var(--bui-border-2);
   }
 
   .actionRoot {
@@ -24,32 +24,32 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--bui-space-2);
-    background-color: var(--bui-white) ;
+    background-color: var(--bui-white);
     color: var(--bui-black);
   }
 
   .actionRoot :global(button) {
-    border: 1px solid #cccccc;
+    border: 1px solid var(--bui-border-2);
   }
 
   @media (prefers-color-scheme: dark) {
     .actionRoot {
-     background-color: var(--bui-gray-8) !important;
+      background-color: var(--bui-gray-8);
       color: var(--bui-white);
     }
 
     .actionRoot :global(button) {
-      border: 1px solid #666666;
+      border: 1px solid var(--bui-border-2);
     }
   }
 
   /* Support for data-theme attribute */
-  [data-theme="dark"] .actionRoot {
-     background-color: var(--bui-gray-8) !important;
-      color: var(--bui-white);
+  [data-theme='dark'] .actionRoot {
+    background-color: var(--bui-gray-8);
+    color: var(--bui-white);
   }
 
-  [data-theme="dark"] .actionRoot :global(button) {
-    border: 1px solid #666666;
+  [data-theme='dark'] .actionRoot :global(button) {
+    border: 1px solid var(--bui-border-2);
   }
 }

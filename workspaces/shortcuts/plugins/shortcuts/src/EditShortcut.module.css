@@ -17,7 +17,7 @@
   }
 
   /* Support for data-theme attribute */
-  [data-theme="dark"] .card {
+  [data-theme='dark'] .card {
     background-color: var(--bui-gray-8) !important;
     color: var(--bui-white);
   }
