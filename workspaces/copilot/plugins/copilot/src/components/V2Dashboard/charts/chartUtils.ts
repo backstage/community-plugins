@@ -36,7 +36,7 @@ export function compactNumber(v: number | null): string {
 
 /**
  * Safely formats a date string into 'MMM D' (e.g., "May 26").
- * Slices the first 10 characters to gracefully handle both standard "YYYY-MM-DD" 
+ * Slices the first 10 characters to gracefully handle both standard "YYYY-MM-DD"
  * inputs and full ISO 8601 timestamps returned by Postgres databases.
  */
 export function formatDay(day: string): string {
