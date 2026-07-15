@@ -19,6 +19,7 @@ import { Knex } from 'knex';
 import {
   V2DailyTotal,
   V2IngestionLogRow,
+  V2UserMetricRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
@@ -234,6 +235,244 @@ describe('DatabaseHandlerV2', () => {
       expect(rows.every(r => r.team_slug === 'team-a')).toBe(true);
     });
 
+    it('getDailyTotals computes rolling weekly/monthly active users for teams', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      // user 1: active 05-04 (agent) and again 05-10 — distinct counts once
+      // user 2: active 05-08 (chat)
+      // user 3: active 05-01 — inside 28-day window, outside 7-day window
+      const activity: Array<{
+        day: string;
+        user_id: number;
+        used_agent?: boolean;
+        used_chat?: boolean;
+      }> = [
+        { day: '2026-05-04', user_id: 1, used_agent: true },
+        { day: '2026-05-10', user_id: 1 },
+        { day: '2026-05-08', user_id: 2, used_chat: true },
+        { day: '2026-05-01', user_id: 3 },
+      ];
+
+      await handler.insertUserMetrics(
+        activity.map(a =>
+          buildUserMetric({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            used_agent: a.used_agent ?? false,
+            used_chat: a.used_chat ?? false,
+          }),
+        ),
+      );
+      await handler.insertUserTeams(
+        activity.map(a =>
+          buildUserTeam({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ),
+      );
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(2);
+      expect(rows[0].monthly_active_users).toBe(3);
+      expect(rows[0].monthly_active_agent_users).toBe(1);
+      expect(rows[0].monthly_active_chat_users).toBe(1);
+    });
+
+    it('getDailyTotals anchors rolling windows to each returned day', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-08', team_slug: 'team-a' }),
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      const activity: Array<{
+        day: string;
+        user_id: number;
+        used_agent?: boolean;
+        used_chat?: boolean;
+      }> = [
+        { day: '2026-05-02', user_id: 1 },
+        { day: '2026-05-04', user_id: 2, used_agent: true },
+        { day: '2026-05-08', user_id: 3, used_chat: true },
+        { day: '2026-05-10', user_id: 4 },
+      ];
+
+      await handler.insertUserMetrics(
+        activity.map(a =>
+          buildUserMetric({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            used_agent: a.used_agent ?? false,
+            used_chat: a.used_chat ?? false,
+          }),
+        ),
+      );
+      await handler.insertUserTeams(
+        activity.map(a =>
+          buildUserTeam({
+            day: a.day,
+            user_id: a.user_id,
+            user_login: `u${a.user_id}`,
+            team_slug: 'team-a',
+            team_id: 1,
+          }),
+        ),
+      );
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-08',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(2);
+      expect(normalizeDate(rows[0].day)).toBe('2026-05-08');
+      expect(rows[0].weekly_active_users).toBe(3);
+      expect(rows[0].monthly_active_users).toBe(3);
+      expect(rows[0].monthly_active_agent_users).toBe(1);
+      expect(rows[0].monthly_active_chat_users).toBe(1);
+
+      expect(normalizeDate(rows[1].day)).toBe('2026-05-10');
+      expect(rows[1].weekly_active_users).toBe(3);
+      expect(rows[1].monthly_active_users).toBe(4);
+      expect(rows[1].monthly_active_agent_users).toBe(1);
+      expect(rows[1].monthly_active_chat_users).toBe(1);
+    });
+
+    it('getDailyTotals computes rolling users when dates come back as Date objects', async () => {
+      const originalDb = (handler as any).db;
+      const fakeActivityRows = [
+        {
+          day: new Date('2026-05-04T00:00:00.000Z'),
+          user_id: 1,
+          used_agent: true,
+          used_chat: false,
+        },
+        {
+          day: new Date('2026-05-08T00:00:00.000Z'),
+          user_id: 2,
+          used_agent: false,
+          used_chat: true,
+        },
+        {
+          day: new Date('2026-05-10T00:00:00.000Z'),
+          user_id: 1,
+          used_agent: false,
+          used_chat: false,
+        },
+      ];
+      const fakeQuery = {
+        join: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        whereBetween: jest.fn().mockReturnThis(),
+        select: jest.fn().mockResolvedValue(fakeActivityRows),
+      };
+      (handler as any).db = jest.fn().mockReturnValue(fakeQuery);
+
+      try {
+        const rows = await (handler as any).enrichTeamRollingActiveUsers(
+          [
+            buildDailyTotal({
+              day: new Date('2026-05-10T00:00:00.000Z') as any,
+              team_slug: 'team-a',
+            }),
+          ],
+          'organization',
+          'org-1',
+          '2026-05-10',
+          '2026-05-10',
+          'team-a',
+        );
+
+        expect(rows).toHaveLength(1);
+        expect(rows[0].weekly_active_users).toBe(2);
+        expect(rows[0].monthly_active_users).toBe(2);
+        expect(rows[0].monthly_active_agent_users).toBe(1);
+        expect(rows[0].monthly_active_chat_users).toBe(1);
+      } finally {
+        (handler as any).db = originalDb;
+      }
+    });
+
+    it('getDailyTotals only counts users active within the selected team', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-10', team_slug: 'team-a' }),
+      ]);
+
+      await handler.insertUserMetrics([
+        buildUserMetric({ day: '2026-05-10', user_id: 1, user_login: 'u1' }),
+        buildUserMetric({ day: '2026-05-10', user_id: 2, user_login: 'u2' }),
+      ]);
+      // user 1 is in team-a, user 2 is in team-b
+      await handler.insertUserTeams([
+        buildUserTeam({
+          day: '2026-05-10',
+          user_id: 1,
+          user_login: 'u1',
+          team_slug: 'team-a',
+          team_id: 1,
+        }),
+        buildUserTeam({
+          day: '2026-05-10',
+          user_id: 2,
+          user_login: 'u2',
+          team_slug: 'team-b',
+          team_id: 2,
+        }),
+      ]);
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+        'team-a',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(1);
+      expect(rows[0].monthly_active_users).toBe(1);
+    });
+
+    it('getDailyTotals leaves org-level rolling counts untouched', async () => {
+      await handler.insertDailyTotals([
+        buildDailyTotal({
+          day: '2026-05-10',
+          team_slug: '',
+          weekly_active_users: 42,
+          monthly_active_users: 99,
+        }),
+      ]);
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-10',
+        '2026-05-10',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].weekly_active_users).toBe(42);
+      expect(rows[0].monthly_active_users).toBe(99);
+    });
+
     it('getPeriodRange returns min/max day from daily totals', async () => {
       await handler.insertDailyTotals([
         buildDailyTotal({ day: '2026-05-03', team_slug: '' }),
@@ -398,6 +637,29 @@ function buildUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {
     user_login: 'octocat',
     team_id: 100,
     team_slug: 'alpha',
+    ...overrides,
+  };
+}
+
+function buildUserMetric(
+  overrides: Partial<V2UserMetricRow> = {},
+): V2UserMetricRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    used_agent: false,
+    used_chat: false,
+    used_cli: false,
+    code_acceptance_activity_count: 0,
+    code_generation_activity_count: 0,
+    loc_added_sum: 0,
+    loc_deleted_sum: 0,
+    loc_suggested_to_add_sum: 0,
+    loc_suggested_to_delete_sum: 0,
+    user_initiated_interaction_count: 0,
     ...overrides,
   };
 }
