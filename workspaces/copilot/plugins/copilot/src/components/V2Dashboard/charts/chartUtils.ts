@@ -36,9 +36,23 @@ export function compactNumber(v: number | null): string {
 
 /**
  * Formats a YYYY-MM-DD date string as "Month Day" e.g. "May 22".
+ *
+ * TEMPORARILY REVERTED to the original, buggy implementation to reproduce
+ * https://github.com/backstage/community-plugins/issues/9540 (Postgres
+ * returns `day` as a full ISO timestamp, e.g. "2026-05-26T00:00:00.000Z",
+ * which breaks this string interpolation and produces "Invalid Date").
+ * The fix is commented out below — restore it once the bug has been
+ * confirmed locally.
  */
+// export function formatDay(day: string): string {
+//   const date = new Date(`${day}T00:00:00`);
+//   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+// }
+
+// --- Fix for #9540 (restore this and delete the function above once verified) ---
 export function formatDay(day: string): string {
-  const date = new Date(`${day}T00:00:00`);
+  const dateStr = day.slice(0, 10);
+  const date = new Date(`${dateStr}T00:00:00`);
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 

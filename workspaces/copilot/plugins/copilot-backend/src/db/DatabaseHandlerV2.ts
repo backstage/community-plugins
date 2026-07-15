@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { DatabaseService } from '@backstage/backend-plugin-api';
 import {
   PeriodRange,
@@ -294,7 +293,11 @@ export class DatabaseHandlerV2 {
       query.where('day', '<=', to);
     }
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getDailyTotals(
@@ -311,7 +314,11 @@ export class DatabaseHandlerV2 {
 
     query.where('team_slug', teamSlug ?? '');
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getPrMetrics(
@@ -328,7 +335,11 @@ export class DatabaseHandlerV2 {
 
     query.where('team_slug', teamSlug ?? '');
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getByFeature(
@@ -345,7 +356,11 @@ export class DatabaseHandlerV2 {
 
     query.where('team_slug', teamSlug ?? '');
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getByIde(
@@ -362,7 +377,11 @@ export class DatabaseHandlerV2 {
 
     query.where('team_slug', teamSlug ?? '');
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getByLanguageFeature(
@@ -386,7 +405,11 @@ export class DatabaseHandlerV2 {
       query.where('feature', feature);
     }
 
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getByModelFeature(
@@ -403,7 +426,11 @@ export class DatabaseHandlerV2 {
       .where('entity_id', entityId)
       .whereBetween('day', [from, to]);
     query.where('team_slug', teamSlug ?? '');
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getByLanguageModel(
@@ -420,7 +447,11 @@ export class DatabaseHandlerV2 {
       .where('entity_id', entityId)
       .whereBetween('day', [from, to]);
     query.where('team_slug', teamSlug ?? '');
-    return query.orderBy('day', 'asc').select('*');
+    const rows = await query.orderBy('day', 'asc').select('*');
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeDay(row.day) as string,
+    }));
   }
 
   async getDashboardData(
