@@ -6,7 +6,7 @@
 import { ApiRef } from '@backstage/frontend-plugin-api';
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { IconComponent } from '@backstage/core-plugin-api';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX as JSX_2 } from 'react';
 import { Observable } from '@backstage/types';
 import { Shortcut as Shortcut_2 } from '@backstage-community/plugin-shortcuts';
 import { ShortcutApi as ShortcutApi_2 } from '@backstage-community/plugin-shortcuts';
