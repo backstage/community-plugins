@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-import type { MouseEvent } from 'react';
-
-import { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import EditIcon from '@material-ui/icons/Edit';
+import { useState, useRef } from 'react';
+import { RiEdit2Line } from '@remixicon/react';
+import { ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { ShortcutIcon } from './ShortcutIcon';
 import { EditShortcut } from './EditShortcut';
 import { ShortcutApi } from './api';
 import { Shortcut } from './types';
 import { SidebarItem } from '@backstage/core-components';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    '&:hover #edit': {
-      visibility: 'visible',
-    },
-  },
-  button: {
-    visibility: 'hidden',
-  },
-  icon: {
-    color: theme.palette.common.white,
-    fontSize: 16,
-  },
-}));
+import styles from './ShortcutItem.module.css';
 
 const getIconText = (title: string) =>
   title.split(' ').length === 1
@@ -63,13 +45,26 @@ type Props = {
   allowExternalLinks?: boolean;
 };
 
-export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState<Element | undefined>();
+interface PressEventLike {
+  stopPropagation?: () => void;
+  preventDefault?: () => void;
+}
 
-  const handleClick = (event: MouseEvent<Element>) => {
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
+export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
+  const [anchorEl, setAnchorEl] = useState<Element | undefined>();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleClick = (e?: PressEventLike) => {
+    // Prevent event propagation to parent SidebarItem link
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+    if (buttonRef.current) {
+      setAnchorEl(buttonRef.current);
+    }
   };
 
   const handleClose = () => {
@@ -81,23 +76,26 @@ export const ShortcutItem = ({ shortcut, api, allowExternalLinks }: Props) => {
 
   return (
     <>
-      <Tooltip title={shortcut.title} enterDelay={500}>
-        <SidebarItem
-          className={classes.root}
-          to={shortcut.url}
-          text={shortcut.title}
-          icon={() => <ShortcutIcon text={text} color={color} />}
-        >
-          <IconButton
-            id="edit"
-            data-testid="edit"
-            onClick={handleClick}
-            className={classes.button}
+      <TooltipTrigger delay={500}>
+        <div className={styles.root}>
+          <SidebarItem
+            to={shortcut.url}
+            text={shortcut.title}
+            icon={() => <ShortcutIcon text={text} color={color} />}
           >
-            <EditIcon className={classes.icon} />
-          </IconButton>
-        </SidebarItem>
-      </Tooltip>
+            <ButtonIcon
+              ref={buttonRef}
+              data-testid="edit"
+              className={styles.editButton}
+              icon={<RiEdit2Line className={styles.icon} size={16} />}
+              onClick={handleClick}
+              aria-label="edit"
+              variant="secondary"
+            />
+          </SidebarItem>
+        </div>
+        <Tooltip>{shortcut.title}</Tooltip>
+      </TooltipTrigger>
       <EditShortcut
         onClose={handleClose}
         anchorEl={anchorEl}
