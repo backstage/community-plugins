@@ -68,7 +68,12 @@ type PackListItemProps = {
 export const PackListItem = ({ pack, opened, onClick }: PackListItemProps) => {
   return (
     <li>
-      <button className={styles.packButton} onClick={() => onClick(pack.ref)}>
+      <button
+        type="button"
+        className={styles.packButton}
+        aria-expanded={opened}
+        onClick={() => onClick(pack.ref)}
+      >
         <span className={styles.icon}>
           {opened ? (
             <RiArrowUpSLine size={20} />
@@ -112,11 +117,7 @@ export const ActionsList = () => {
   }
 
   return (
-    <ul
-      className={styles.root}
-      role="navigation"
-      aria-labelledby="nested-list-subheader"
-    >
+    <ul className={styles.root} role="navigation" aria-label="Actions by pack">
       {(value || []).map(p => (
         <PackListItem
           key={p.ref}

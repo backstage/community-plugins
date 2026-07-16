@@ -82,7 +82,11 @@ const ExecutionCard = ({ e }: { e: Execution }) => {
         <Button
           variant="secondary"
           onPress={() =>
-            window.open(st2.getExecutionHistoryUrl(e.id), '_blank')
+            window.open(
+              st2.getExecutionHistoryUrl(e.id),
+              '_blank',
+              'noopener,noreferrer',
+            )
           }
         >
           View in ST2
