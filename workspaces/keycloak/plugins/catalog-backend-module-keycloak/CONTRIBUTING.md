@@ -97,7 +97,7 @@ CI does **not** replace reading [Backstage release notes](https://github.com/bac
 
 When Keycloak users sign in via [`@backstage-community/plugin-auth-backend-module-keycloak-provider`](../auth-backend-module-keycloak/CONTRIBUTING.md), the auth `preferredUsernameMatchingUserEntityName` resolver must resolve the same catalog `User.metadata.name` that this module ingests from Keycloak usernames.
 
-Both packages duplicate the same sanitization regex until a shared `keycloak-common` package exists. Automated contract tests in both packages assert identical output for representative inputs (for example `Jane Doe/Admin@Example` → `Jane-Doe-Admin-Example`). **Do not change one side without updating the other and the contract tests.**
+Both packages duplicate the same sanitization regex until a shared `keycloak-common` package exists. Automated contract tests in both packages assert identical output for representative inputs (for example `jane.doe_x-y/Admin@Example` → `jane.doe_x-y-Admin-Example`). **Do not change one side without updating the other and the contract tests.**
 
 For OAuth sign-in smoke beyond catalog ingestion, use the auth module harness — not a full workspace `packages/app`.
 

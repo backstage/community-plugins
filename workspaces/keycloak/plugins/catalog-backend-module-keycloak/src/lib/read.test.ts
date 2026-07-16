@@ -386,14 +386,14 @@ describe('parseUser', () => {
     const entity = await parseUser(
       {
         ...usersFixture[0],
-        username: 'Jane Doe/Admin@Example',
+        username: 'jane.doe_x-y/Admin@Example',
       },
       'test',
       [],
       new Map(),
     );
 
-    expect(entity?.metadata.name).toBe('Jane-Doe-Admin-Example');
+    expect(entity?.metadata.name).toBe('jane.doe_x-y-Admin-Example');
   });
 });
 
