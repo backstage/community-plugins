@@ -50,21 +50,25 @@ const SampleEntityPage = ({ children }: PropsWithChildren) => (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-    <EntitySwitch>
-      <EntitySwitch.Case if={isCheckmarxAvailable}>
-        <EntityLayout.Route path="/checkmarx" title="Checkmarx">
-          <EntityCheckmarxContentPage />
-        </EntityLayout.Route>
-      </EntitySwitch.Case>
-      <EntitySwitch.Case if={isSystemEntity}>
-        <EntityLayout.Route path="/system-overview" title="System overview">
-          <EntityCheckmarxRelatedEntitiesOverview
-            relationType="hasPart"
-            entityKind="component"
-          />
-        </EntityLayout.Route>
-      </EntitySwitch.Case>
-    </EntitySwitch>
+
+    <EntityLayout.Route
+      path="/checkmarx"
+      title="Checkmarx"
+      if={isCheckmarxAvailable}
+    >
+      <EntityCheckmarxContentPage />
+    </EntityLayout.Route>
+
+    <EntityLayout.Route
+      path="/system-overview"
+      title="System overview"
+      if={isSystemEntity}
+    >
+      <EntityCheckmarxRelatedEntitiesOverview
+        relationType="hasPart"
+        entityKind="component"
+      />
+    </EntityLayout.Route>
   </EntityLayout>
 );
 
