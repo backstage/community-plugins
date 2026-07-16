@@ -125,7 +125,12 @@ describe('authModuleKeycloakProvider', () => {
 
     try {
       expect(res.status).toBe(302);
-      expect(res.headers.get('location')).toMatch(/authorize|keycloak\.test/);
+      expect(res.headers.get('location')).toContain(
+        'https://keycloak.test/realms/test-realm/protocol/openid-connect/auth',
+      );
+      expect(openIdMocks.mockDiscover).toHaveBeenCalledWith(
+        expect.stringContaining('https://keycloak.test/realms/test-realm'),
+      );
     } finally {
       await backend.stop();
     }

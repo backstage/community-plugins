@@ -29,8 +29,8 @@ import type { UserinfoResponse } from 'openid-client';
 import { keycloakSignInResolvers } from './resolvers';
 
 /** Representative input spanning auth resolver and catalog default transformer. */
-const CONTRACT_USERNAME = 'Jane Doe/Admin@Example';
-const CONTRACT_SANITIZED_NAME = 'Jane-Doe-Admin-Example';
+const CONTRACT_USERNAME = 'jane.doe_x-y/Admin@Example';
+const CONTRACT_SANITIZED_NAME = 'jane.doe_x-y-Admin-Example';
 
 const createMockContext = (): jest.Mocked<AuthResolverContext> => ({
   issueToken: jest.fn(),
