@@ -11,7 +11,7 @@ This backend plugin resolves Checkmarx One data for a Backstage catalog entity b
 ## Installation
 
 ```bash
-yarn add @backstage-community/plugin-checkmarx-backend
+yarn --cwd packages/backend add @backstage-community/plugin-checkmarx-backend
 ```
 
 Add the plugin to your Backstage backend:
