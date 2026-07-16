@@ -7,8 +7,8 @@
     "node": "22 || 24"
   },
   "scripts": {
-    "dev": "yarn workspaces foreach -A --include @backstage-community/plugin-checkmarx --include @backstage-community/plugin-checkmarx-backend --parallel -v -i run start",
-    "start": "yarn dev",
+    "start": "backstage-cli repo start",
+    "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -28,6 +28,7 @@
   },
   "workspaces": {
     "packages": [
+      "packages/*",
       "plugins/*"
     ]
   },
