@@ -21,13 +21,20 @@ import {
   errorApiRef,
 } from '@backstage/core-plugin-api';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { TestApiProvider } from '@backstage/test-utils';
 import { ServiceAnnotationFieldName } from '@backstage-community/plugin-servicenow-common';
 
-import { screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { MemoryRouter } from 'react-router-dom';
+
 import { of } from 'rxjs';
+
+// Mock Material-UI's useMediaQuery to avoid theme-related errors in tests
+jest.mock('@material-ui/core/useMediaQuery', () => ({
+  default: () => false,
+}));
 
 import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import { mockRefinedIncidentData } from '../../__fixtures__/mockRefinedIncidentData';
@@ -83,28 +90,14 @@ const mockTranslationApi = {
   ),
 };
 
+const renderWithTheme = (component: React.ReactElement) => {
+  return render(component);
+};
+
 describe('ServicenowContent', () => {
   const mockServiceNowApi = {
     getIncidents: jest.fn(),
   };
-
-  const renderContent = () =>
-    renderInTestApp(
-      <TestApiProvider
-        apis={[
-          [serviceNowApiRef, mockServiceNowApi],
-          [catalogApiRef, mockCatalogApi],
-          [identityApiRef, mockIdentityApi],
-          [alertApiRef, mockAlertApi],
-          [errorApiRef, mockErrorApi],
-          [translationApiRef, mockTranslationApi as any],
-        ]}
-      >
-        <EntityProvider entity={mockEntity}>
-          <EntityServicenowContent />
-        </EntityProvider>
-      </TestApiProvider>,
-    );
 
   beforeEach(() => {
     mockServiceNowApi.getIncidents.mockReset();
@@ -115,7 +108,24 @@ describe('ServicenowContent', () => {
   });
 
   it('renders the table with incident rows', async () => {
-    await renderContent();
+    renderWithTheme(
+      <MemoryRouter>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
       expect(mockServiceNowApi.getIncidents).toHaveBeenCalled();
@@ -140,7 +150,24 @@ describe('ServicenowContent', () => {
   });
 
   it('displays pagination dropdown', async () => {
-    await renderContent();
+    renderWithTheme(
+      <MemoryRouter>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
       expect(
@@ -163,7 +190,24 @@ describe('ServicenowContent', () => {
       totalCount: 0,
     });
 
-    await renderContent();
+    renderWithTheme(
+      <MemoryRouter>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
       expect(mockServiceNowApi.getIncidents).toHaveBeenCalled();
@@ -177,7 +221,24 @@ describe('ServicenowContent', () => {
 
   it('handles search input updates', async () => {
     const user = userEvent.setup();
-    await renderContent();
+    renderWithTheme(
+      <MemoryRouter>
+        <TestApiProvider
+          apis={[
+            [serviceNowApiRef, mockServiceNowApi],
+            [catalogApiRef, mockCatalogApi],
+            [identityApiRef, mockIdentityApi],
+            [alertApiRef, mockAlertApi],
+            [errorApiRef, mockErrorApi],
+            [translationApiRef, mockTranslationApi as any],
+          ]}
+        >
+          <EntityProvider entity={mockEntity}>
+            <EntityServicenowContent />
+          </EntityProvider>
+        </TestApiProvider>
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
       expect(mockServiceNowApi.getIncidents).toHaveBeenCalled();

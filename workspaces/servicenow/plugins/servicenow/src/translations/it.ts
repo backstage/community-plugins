@@ -43,6 +43,10 @@ const servicenowTranslationIt = createTranslationMessages({
       'Errore durante il caricamento incidenti: {{error}}',
     'table.searchPlaceholder': 'Ricerca',
     'table.labelRowsSelect': '{{count}} righe',
+    'table.rowsPerPageLabel': 'Righe per pagina',
+    'table.selectPlaceholder': 'Seleziona...',
+    'table.itemsSelected': '{{count}} selezionati',
+    'table.paginationInfo': '{{start}}-{{end}} di {{total}}',
     'table.columns.incidentNumber': 'Numero incidente',
     'table.columns.description': 'Descrizione',
     'table.columns.created': 'Creato',
@@ -50,7 +54,12 @@ const servicenowTranslationIt = createTranslationMessages({
     'table.columns.state': 'Stato',
     'table.columns.actions': 'Azioni',
     'table.emptyContent': 'Nessun risultato trovato',
+    'table.pagination.first': 'Vai alla prima pagina',
+    'table.pagination.previous': 'Vai alla pagina precedente',
+    'table.pagination.next': 'Vai alla pagina successiva',
+    'table.pagination.last': "Vai all'ultima pagina",
     'actions.openInServicenow': 'Apri in ServiceNow',
+    'actions.clearSearch': 'Cancella ricerca',
   },
 });
 

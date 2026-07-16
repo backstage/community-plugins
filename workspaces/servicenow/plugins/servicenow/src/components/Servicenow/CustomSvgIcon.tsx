@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-import SvgIcon from '@mui/material/SvgIcon';
-
 export const CustomSvgIcon = ({
   path,
   viewBox = '0 0 24 24',
+  size = 16,
+  style = {},
   ...props
 }: any) => {
   return (
-    <SvgIcon viewBox={viewBox} {...props}>
+    <svg
+      viewBox={viewBox}
+      width={size}
+      height={size}
+      fill="currentColor"
+      style={{ display: 'inline-block', ...style }}
+      {...props}
+    >
       {path}
-    </SvgIcon>
+    </svg>
   );
 };

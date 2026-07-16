@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-import { useEffect, useState, MouseEvent, ChangeEvent, useMemo } from 'react';
+import { useEffect, useState, MouseEvent, useMemo } from 'react';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 
 import {
   CatalogFilterLayout,
   useEntity,
 } from '@backstage/plugin-catalog-react';
-import { Table } from '@backstage/core-components';
-
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TablePagination from '@mui/material/TablePagination';
+import { Progress } from '@backstage/core-components';
+import { Box, ButtonIcon, Text } from '@backstage/ui';
+import {
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+  RiSkipLeftLine,
+  RiSkipRightLine,
+  RiSearchLine,
+  RiCloseLine,
+} from '@remixicon/react';
 
 import {
   Order,
@@ -36,7 +38,6 @@ import {
 } from '@backstage-community/plugin-servicenow-common';
 
 import { IncidentsFilter } from './IncidentsFilter';
-import { useIncidentsListColumns } from './IncidentsListColumns';
 import { IncidentsTableBody } from './IncidentsTableBody';
 import { IncidentsTableHeader } from './IncidentsTableHeader';
 import {
@@ -52,12 +53,12 @@ import { serviceNowApiRef } from '../../api/ServiceNowBackendClient';
 import useUserEmail from '../../hooks/useUserEmail';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 import { useTranslation } from '../../hooks/useTranslation';
+import styles from './EntityServicenowContent.module.css';
 
 export const EntityServicenowContent = () => {
   const { t } = useTranslation();
   const { entity } = useEntity();
   const serviceNowApi = useApi(serviceNowApiRef);
-  const incidentsListColumns = useIncidentsListColumns();
 
   const [search, setSearch] = useQueryState<string>('search', '');
   const [input, setInput] = useState(search);
@@ -171,15 +172,7 @@ export const EntityServicenowContent = () => {
     userEmail,
   ]);
 
-  const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newLimit = parseInt(event.target.value, 10);
-    updateQueryParams({
-      limit: String(newLimit),
-      offset: '0',
-    });
-  };
-
-  const handlePageChange = (_event: unknown, page: number) => {
+  const handlePageChange = (page: number) => {
     setOffset(page * rowsPerPage);
   };
 
@@ -193,51 +186,100 @@ export const EntityServicenowContent = () => {
     setOffset(0);
   };
 
-  const handleSearch = (str: string) => {
-    setInput(str);
+  const IncidentsTableHeaderComponent = () => {
+    return (
+      <IncidentsTableHeader
+        order={order}
+        orderBy={orderBy}
+        onRequestSort={handleRequestSort}
+      />
+    );
   };
 
-  const IncidentsTableHeaderComponent = () => (
-    <IncidentsTableHeader
-      order={order}
-      orderBy={orderBy}
-      onRequestSort={handleRequestSort}
-    />
-  );
-
-  const IncidentsTableBodyComponent = () =>
-    loading ? (
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={incidentsListColumns.length} align="center">
-            <Box sx={{ py: 3 }}>
-              <CircularProgress />
-            </Box>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    ) : (
-      <IncidentsTableBody rows={incidentsData} />
-    );
+  const IncidentsTableBodyComponent = () => {
+    if (loading) {
+      return (
+        <div className={styles.tableRowGroup}>
+          <div className={styles.tableRow}>
+            <div className={styles.tableCellLoading}>
+              <Box className={styles.loadingRow}>
+                <Progress />
+              </Box>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return <IncidentsTableBody rows={incidentsData} />;
+  };
 
   const TablePaginationComponent = () => {
+    const rowsPerPageOptions = [5, 10, 20, 50, 100];
     return (
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 20, 50, 100].map(n => ({
-          value: n,
-          label: t('table.labelRowsSelect', { count: String(n) }),
-        }))}
-        component="div"
-        sx={{ mr: 1 }}
-        count={count ?? 0}
-        rowsPerPage={rowsPerPage}
-        page={pageNumber}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        labelRowsPerPage={null}
-        showFirstButton
-        showLastButton
-      />
+      <div className={styles.paginationContainer}>
+        <select
+          value={String(rowsPerPage)}
+          onChange={e => {
+            updateQueryParams({
+              limit: e.target.value,
+              offset: '0',
+            });
+          }}
+          className={styles.rowsPerPageSelect}
+          aria-label={t('table.rowsPerPageLabel')}
+        >
+          {rowsPerPageOptions.map(n => (
+            <option key={n} value={String(n)}>
+              {t('table.labelRowsSelect', { count: String(n) })}
+            </option>
+          ))}
+        </select>
+        <Text as="div" className={styles.paginationInfo}>
+          {count === 0
+            ? t('table.paginationInfo', {
+                start: '0',
+                end: '0',
+                total: '0',
+              })
+            : t('table.paginationInfo', {
+                start: String(offset + 1),
+                end: String(Math.min(offset + rowsPerPage, count)),
+                total: String(count),
+              })}
+        </Text>
+        <div className={styles.paginationButtons}>
+          <ButtonIcon
+            icon={<RiSkipLeftLine size={16} />}
+            onPress={() => setOffset(0)}
+            isDisabled={pageNumber === 0}
+            variant="secondary"
+            aria-label={t('table.pagination.first')}
+          />
+          <ButtonIcon
+            icon={<RiArrowLeftSLine size={16} />}
+            onPress={() => handlePageChange(pageNumber - 1)}
+            isDisabled={pageNumber === 0}
+            variant="secondary"
+            aria-label={t('table.pagination.previous')}
+          />
+          <ButtonIcon
+            icon={<RiArrowRightSLine size={16} />}
+            onPress={() => handlePageChange(pageNumber + 1)}
+            isDisabled={(pageNumber + 1) * rowsPerPage >= count}
+            variant="secondary"
+            aria-label={t('table.pagination.next')}
+          />
+          <ButtonIcon
+            icon={<RiSkipRightLine size={16} />}
+            onPress={() =>
+              setOffset(Math.floor((count - 1) / rowsPerPage) * rowsPerPage)
+            }
+            isDisabled={(pageNumber + 1) * rowsPerPage >= count}
+            variant="secondary"
+            aria-label={t('table.pagination.last')}
+          />
+        </div>
+      </div>
     );
   };
 
@@ -249,43 +291,47 @@ export const EntityServicenowContent = () => {
         </CatalogFilterLayout.Filters>
         <CatalogFilterLayout.Content>
           {error ? (
-            <Box sx={{ padding: 2, color: 'error.main' }}>
+            <Box className={styles.errorContainer}>
               {t('errors.loadingIncidents', { error })}
             </Box>
           ) : (
-            <Table
-              data={loading ? [] : incidentsData}
-              columns={incidentsListColumns}
-              onSearchChange={handleSearch}
-              title={
-                count === 0
-                  ? t('page.title')
-                  : t('page.titleWithCount', { count: String(count) })
-              }
-              localization={{
-                toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-              }}
-              components={{
-                Header: IncidentsTableHeaderComponent,
-                Body: IncidentsTableBodyComponent,
-                Pagination: TablePaginationComponent,
-              }}
-              emptyContent={
-                loading ? null : (
-                  <Box
-                    data-testid="no-incidents-found"
-                    sx={{
-                      padding: 2,
-                      display: 'flex',
-                      justifyContent: 'center',
+            <div className={styles.tableContainer}>
+              <div className={styles.tableHeader}>
+                <h2 className={styles.titleHeading}>
+                  {count === 0
+                    ? t('page.title')
+                    : t('page.titleWithCount', { count: String(count) })}
+                </h2>
+                <div className={styles.searchContainer}>
+                  <RiSearchLine size={16} color="var(--bui-fg-secondary)" />
+                  <input
+                    type="text"
+                    placeholder={t('table.searchPlaceholder')}
+                    aria-label={t('table.searchPlaceholder')}
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    style={{
+                      paddingRight: input ? '24px' : '0',
                     }}
-                  >
-                    {t('table.emptyContent')}
-                  </Box>
-                )
-              }
-              isLoading={loading}
-            />
+                    className={styles.searchInput}
+                  />
+                  {input && (
+                    <ButtonIcon
+                      icon={<RiCloseLine size={16} />}
+                      onPress={() => setInput('')}
+                      className={styles.clearSearchButton}
+                      variant="secondary"
+                      aria-label={t('actions.clearSearch')}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className={styles.table} role="table">
+                <IncidentsTableHeaderComponent />
+                <IncidentsTableBodyComponent />
+              </div>
+              <TablePaginationComponent />
+            </div>
           )}
         </CatalogFilterLayout.Content>
       </CatalogFilterLayout>

@@ -23,6 +23,10 @@ export const servicenowMessages = {
   table: {
     searchPlaceholder: 'Search',
     labelRowsSelect: '{{count}} rows',
+    rowsPerPageLabel: 'Rows per page',
+    selectPlaceholder: 'Select...',
+    itemsSelected: '{{count}} selected',
+    paginationInfo: '{{start}}-{{end}} of {{total}}',
     columns: {
       incidentNumber: 'Incident Number',
       description: 'Description',
@@ -32,6 +36,12 @@ export const servicenowMessages = {
       actions: 'Actions',
     },
     emptyContent: 'No records found',
+    pagination: {
+      first: 'Go to first page',
+      previous: 'Go to previous page',
+      next: 'Go to next page',
+      last: 'Go to last page',
+    },
   },
   filter: {
     state: 'State',
@@ -57,6 +67,7 @@ export const servicenowMessages = {
   },
   actions: {
     openInServicenow: 'Open in ServiceNow',
+    clearSearch: 'Clear search',
   },
 };
 

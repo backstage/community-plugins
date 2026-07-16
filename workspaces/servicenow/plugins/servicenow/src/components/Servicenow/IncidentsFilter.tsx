@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 
 import { SelectItem } from '@backstage/core-components';
-
-import Box from '@mui/material/Box';
+import { Box } from '@backstage/ui';
 
 import { IncidentEnumFilter } from '../shared-components/IncidentEnumFilter';
 import { useIncidentStateMap, usePriorityMap } from '../../utils/incidentUtils';
 import { useQueryArrayFilter } from '../../hooks/useQueryArrayFilter';
 import { useUpdateQueryParams } from '../../hooks/useQueryHelpers';
 import { useTranslation } from '../../hooks/useTranslation';
+import styles from './IncidentsFilter.module.css';
 
 export const IncidentsFilter = () => {
   const { t } = useTranslation();
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const stateFilter = useQueryArrayFilter('state');
   const priorityFilter = useQueryArrayFilter('priority');
   const updateQueryParams = useUpdateQueryParams();
@@ -57,21 +58,24 @@ export const IncidentsFilter = () => {
     [updateQueryParams],
   );
 
+  const handleStateToggle = useCallback(() => {
+    setOpenDropdown(openDropdown === 'state' ? null : 'state');
+  }, [openDropdown]);
+
+  const handlePriorityToggle = useCallback(() => {
+    setOpenDropdown(openDropdown === 'priority' ? null : 'priority');
+  }, [openDropdown]);
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        minWidth: { xs: 200, lg: 'auto' },
-      }}
-    >
+    <Box className={styles.filterContainer}>
       <IncidentEnumFilter
         label={t('filter.state')}
         filterKey="state"
         dataMap={incidentStateMap}
         value={stateValue}
         onChange={handleStateChange}
+        isOpen={openDropdown === 'state'}
+        onToggle={handleStateToggle}
       />
       <IncidentEnumFilter
         label={t('filter.priority')}
@@ -79,6 +83,8 @@ export const IncidentsFilter = () => {
         dataMap={priorityMap}
         value={priorityValue}
         onChange={handlePriorityChange}
+        isOpen={openDropdown === 'priority'}
+        onToggle={handlePriorityToggle}
       />
     </Box>
   );

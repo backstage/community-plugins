@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import IconButton from '@mui/material/IconButton';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
+import { RiExternalLinkLine } from '@remixicon/react';
+import { ButtonIcon } from '@backstage/ui';
+import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { convertDateFormat } from '../../utils/stringUtils';
 import {
@@ -29,11 +26,8 @@ import {
 } from '../../utils/incidentUtils';
 import type { IncidentsData } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
-
-const tableCellSx = {
-  lineHeight: '1.5rem',
-  fontSize: '0.875rem',
-};
+import { Text } from '@backstage/ui';
+import styles from './IncidentsTableRow.module.css';
 
 export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
   const { t } = useTranslation();
@@ -41,52 +35,47 @@ export const IncidentsTableRow = ({ data }: { data: IncidentsData }) => {
   const incidentStateMap = useIncidentStateMap();
 
   return (
-    <TableRow
-      hover
-      sx={{
-        fontSize: '0.875rem',
-        '&:last-child td, &:last-child th': { border: 0 },
-        borderBottom: '1px solid #e0e0e0',
+    <div
+      className={styles.tableRow}
+      role="row"
+      style={{
+        display: 'table-row',
       }}
     >
-      <TableCell component="th" scope="row" sx={tableCellSx}>
+      <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         {data.number}
-      </TableCell>
-      <TableCell align="left" sx={tableCellSx}>
-        <Tooltip title={data?.description} arrow placement="top">
-          <Typography
-            variant="body1"
-            sx={{
-              maxWidth: 208,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
+      </div>
+      <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
+        <TooltipTrigger>
+          <Text as="span" tabIndex={0} className={styles.descriptionCell}>
             {data?.shortDescription}
-          </Typography>
-        </Tooltip>
-      </TableCell>
-      <TableCell align="left" sx={tableCellSx}>
+          </Text>
+          <Tooltip>{data?.description}</Tooltip>
+        </TooltipTrigger>
+      </div>
+      <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         {convertDateFormat(data?.sysCreatedOn)}
-      </TableCell>
-      <TableCell align="left" sx={tableCellSx}>
+      </div>
+      <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         {renderStatusLabel(priorityMap[data?.priority])}
-      </TableCell>
+      </div>
 
-      <TableCell align="left" sx={tableCellSx}>
+      <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
         {renderStatusLabel(incidentStateMap[data?.incidentState])}
-      </TableCell>
-      <TableCell align="left" sx={tableCellSx}>
-        <Tooltip title={t('actions.openInServicenow')} arrow placement="top">
-          <IconButton
+      </div>
+      <div className={styles.tableCellStyle} style={{ display: 'table-cell' }}>
+        <TooltipTrigger>
+          <ButtonIcon
             aria-label={t('actions.openInServicenow')}
-            onClick={() => window.open(data.url, '_blank')}
-          >
-            <OpenInNewIcon fontSize="small" sx={{ color: 'inherit' }} />
-          </IconButton>
-        </Tooltip>
-      </TableCell>
-    </TableRow>
+            icon={<RiExternalLinkLine size={16} />}
+            onPress={() =>
+              window.open(data.url, '_blank', 'noopener,noreferrer')
+            }
+            variant="secondary"
+          />
+          <Tooltip>{t('actions.openInServicenow')}</Tooltip>
+        </TooltipTrigger>
+      </div>
+    </div>
   );
 };

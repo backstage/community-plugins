@@ -46,6 +46,7 @@ describe('IncidentsFilter', () => {
       </MemoryRouter>,
     );
     const box = container.querySelector('div');
-    expect(box).toHaveStyle('flex-direction: column');
+    // Verify the filter container renders with the correct class
+    expect(box).toHaveClass('filterContainer');
   });
 });

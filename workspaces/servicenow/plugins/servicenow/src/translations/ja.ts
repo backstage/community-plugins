@@ -43,6 +43,10 @@ const servicenowTranslationJa = createTranslationMessages({
       'インシデントの読み込み中にエラーが発生: {{error}}',
     'table.searchPlaceholder': '検索',
     'table.labelRowsSelect': '{{count}} 行',
+    'table.rowsPerPageLabel': 'ページあたりの行数',
+    'table.selectPlaceholder': '選択...',
+    'table.itemsSelected': '{{count}} 件選択',
+    'table.paginationInfo': '{{start}}-{{end}} / {{total}}',
     'table.columns.incidentNumber': 'インシデント番号',
     'table.columns.description': '説明',
     'table.columns.created': '作成済み',
@@ -50,7 +54,12 @@ const servicenowTranslationJa = createTranslationMessages({
     'table.columns.state': '状態',
     'table.columns.actions': 'アクション',
     'table.emptyContent': 'レコードが見つかりません',
+    'table.pagination.first': '最初のページに移動',
+    'table.pagination.previous': '前のページに移動',
+    'table.pagination.next': '次のページに移動',
+    'table.pagination.last': '最後のページに移動',
     'actions.openInServicenow': 'ServiceNow で開く',
+    'actions.clearSearch': '検索をクリア',
   },
 });
 

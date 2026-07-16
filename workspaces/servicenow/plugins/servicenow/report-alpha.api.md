@@ -226,6 +226,9 @@ export const servicenowTranslationRef: TranslationRef<
   {
     readonly 'table.searchPlaceholder': string;
     readonly 'table.labelRowsSelect': string;
+    readonly 'table.selectPlaceholder': string;
+    readonly 'table.itemsSelected': string;
+    readonly 'table.paginationInfo': string;
     readonly 'table.columns.description': string;
     readonly 'table.columns.priority': string;
     readonly 'table.columns.incidentNumber': string;
@@ -233,6 +236,10 @@ export const servicenowTranslationRef: TranslationRef<
     readonly 'table.columns.state': string;
     readonly 'table.columns.actions': string;
     readonly 'table.emptyContent': string;
+    readonly 'table.pagination.first': string;
+    readonly 'table.pagination.previous': string;
+    readonly 'table.pagination.next': string;
+    readonly 'table.pagination.last': string;
     readonly 'filter.priority': string;
     readonly 'filter.state': string;
     readonly 'priority.critical': string;
@@ -243,6 +250,7 @@ export const servicenowTranslationRef: TranslationRef<
     readonly 'page.title': string;
     readonly 'page.titleWithCount': string;
     readonly 'actions.openInServicenow': string;
+    readonly 'actions.clearSearch': string;
     readonly 'incidentState.new': string;
     readonly 'incidentState.inProgress': string;
     readonly 'incidentState.onHold': string;

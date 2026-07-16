@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
+import React from 'react';
 import { SelectItem } from '@backstage/core-components';
-import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
+import { Box, Checkbox } from '@backstage/ui';
+import { RiArrowDownSLine } from '@remixicon/react';
 import { renderStatusLabel, StatusData } from '../../utils/incidentUtils';
+import { useTranslation } from '../../hooks/useTranslation';
+import styles from './IncidentEnumFilter.module.css';
 
 export interface IncidentEnumFilterProps {
   label: string;
@@ -32,6 +29,8 @@ export interface IncidentEnumFilterProps {
   dataMap: Record<number, StatusData>;
   value: SelectItem[];
   onChange: (event: any, value: SelectItem[]) => void;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 export const IncidentEnumFilter = ({
@@ -39,7 +38,22 @@ export const IncidentEnumFilter = ({
   dataMap,
   value,
   onChange,
+  isOpen: externalIsOpen,
+  onToggle,
 }: IncidentEnumFilterProps) => {
+  const { t } = useTranslation();
+  const [internalIsOpen, setInternalIsOpen] = React.useState(false);
+
+  // Use external isOpen if provided (controlled), otherwise use internal state (uncontrolled)
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+
+  const handleToggle = () => {
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalIsOpen(prev => !prev);
+    }
+  };
   const items: SelectItem[] = Object.entries(dataMap).map(
     ([key, itemValue]) => ({
       value: key,
@@ -47,51 +61,50 @@ export const IncidentEnumFilter = ({
     }),
   );
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <InputLabel
-        sx={{
-          transform: 'initial',
-          fontWeight: 'bold',
-          fontSize: theme => theme.typography.body2.fontSize,
-          fontFamily: theme => theme.typography.fontFamily,
-          color: theme => theme.palette.text.primary,
-        }}
-      >
-        {label}
-      </InputLabel>
-      <Autocomplete
-        multiple
-        disableCloseOnSelect
-        aria-label={label}
-        options={items}
-        isOptionEqualToValue={(option, val) => option.value === val.value}
-        getOptionLabel={option => option.label}
-        onChange={onChange}
-        renderOption={(renderProps, option, { selected }) => {
-          const { key, ...optionProps } = renderProps;
-          const statusData = dataMap[Number(option.value)];
+  const handleSelect = (item: SelectItem) => {
+    const newValue = value.some(v => v.value === item.value)
+      ? value.filter(v => v.value !== item.value)
+      : [...value, item];
+    onChange(null, newValue);
+  };
 
-          return (
-            <li key={key} {...optionProps}>
-              <Checkbox
-                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                checkedIcon={<CheckBoxIcon fontSize="small" />}
-                checked={selected}
-              />
-              {renderStatusLabel(statusData)}
-            </li>
-          );
-        }}
-        size="small"
-        value={value}
-        popupIcon={
-          <ExpandMoreIcon
+  return (
+    <Box className={styles.filterBox}>
+      <label className={styles.label}>{label}</label>
+      <div className={styles.selectContainer}>
+        <button
+          className={styles.selectButton}
+          onClick={handleToggle}
+          aria-label={label}
+          type="button"
+        >
+          <span className={styles.selectValue}>
+            {value.length > 0
+              ? t('table.itemsSelected', { count: String(value.length) })
+              : t('table.selectPlaceholder')}
+          </span>
+          <RiArrowDownSLine
+            size={20}
             data-testid={`select-${label.toLowerCase().replace(/\s/g, '-')}`}
           />
-        }
-        renderInput={params => <TextField {...params} variant="outlined" />}
-      />
+        </button>
+        {isOpen && (
+          <div className={styles.dropdown}>
+            {items.map(item => (
+              <label key={item.value} className={styles.option}>
+                <Checkbox
+                  isSelected={value.some(v => v.value === item.value)}
+                  onChange={() => handleSelect(item)}
+                  aria-label={item.label}
+                />
+                <div className={styles.optionContent}>
+                  {renderStatusLabel(dataMap[Number(item.value)])}
+                </div>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
     </Box>
   );
 };

@@ -1,0 +1,42 @@
+@layer components {
+  .headerRow {
+    display: table-header-group;
+    margin-left: 6px;
+    border-bottom: 1px solid var(--bui-border-2);
+  }
+
+  .headerRowContent {
+    display: table-row;
+    border-bottom: 1px solid var(--bui-border-2);
+    background-color: var(--bui-bg-app);
+  }
+
+  .headerCell {
+    display: table-cell;
+    padding: 24px 16px 24px 20px;
+    text-align: left;
+    color: var(--bui-fg-secondary);
+    line-height: 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .headerButton {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: inherit;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .headerButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
