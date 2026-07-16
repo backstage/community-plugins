@@ -166,6 +166,15 @@ describe('SplunkOnCallCard', () => {
     mockSplunkOnCallApi.getTeams = jest
       .fn()
       .mockImplementation(async () => [MOCK_TEAM]);
+    mockSplunkOnCallApi.getIncidents = jest
+      .fn()
+      .mockImplementation(async () => [MOCK_INCIDENT]);
+    mockSplunkOnCallApi.getOnCallUsers = jest
+      .fn()
+      .mockImplementation(async () => MOCKED_ON_CALL);
+    mockSplunkOnCallApi.getEscalationPolicies = jest
+      .fn()
+      .mockImplementation(async () => ESCALATION_POLICIES);
     const mockTriggerAlarmFn = jest.fn();
     mockSplunkOnCallApi.incidentAction = mockTriggerAlarmFn;
 

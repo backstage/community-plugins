@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Button from '@material-ui/core/Button';
+import { Button, Link } from '@backstage/ui';
 import { EmptyState } from '@backstage/core-components';
 
 export const MissingApiKeyOrApiIdError = () => (
@@ -22,13 +22,13 @@ export const MissingApiKeyOrApiIdError = () => (
     title="Missing or invalid Splunk On-Call API key and/or API id"
     description="The request to fetch data needs a valid api id and a valid api key. See README for more details."
     action={
-      <Button
-        color="primary"
-        variant="contained"
+      <Link
         href="https://github.com/backstage/backstage/blob/master/plugins/splunk-on-call/README.md"
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        Read More
-      </Button>
+        <Button variant="primary">Read More</Button>
+      </Link>
     }
   />
 );
