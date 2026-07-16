@@ -16,10 +16,7 @@
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { InputError } from '@backstage/errors';
 
-import type {
-  PermissionAction,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+import type { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 
 import {
   DEFAULT_CONDITION_VALIDATION_LIMITS,
@@ -573,7 +570,7 @@ describe('condition-validation', () => {
     });
 
     it('should validate role-condition.conditions.anyOf without errors', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -758,7 +755,7 @@ describe('condition-validation', () => {
     });
 
     it('should success validation role-condition.conditions.allOf', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -794,7 +791,7 @@ describe('condition-validation', () => {
 
   describe('complex conditions', () => {
     it('should fail validation of role-condition.conditions in parallel with condition rule', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -829,7 +826,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (allOf, not) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -866,7 +863,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (allOf, anyOf) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -910,7 +907,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (not, anyOf) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -947,7 +944,7 @@ describe('condition-validation', () => {
     });
 
     it('should validate role-condition.conditions that are nested', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',

@@ -21,7 +21,6 @@ import {
 } from '@backstage/plugin-permission-common';
 
 import {
-  PermissionAction,
   PluginPermissionMetaData,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
@@ -436,8 +435,7 @@ describe('getConditionalPermissionsData', () => {
   });
 
   it('should return empty array if no conditional permissions provided', () => {
-    const conditionalPermissions: RoleConditionalPolicyDecision<PermissionAction>[] =
-      [];
+    const conditionalPermissions: RoleConditionalPolicyDecision[] = [];
     const permissionPolicies = {
       plugins: ['catalog'],
       pluginsPermissions: {
@@ -474,7 +472,7 @@ describe('getConditionalPermissionsData', () => {
           allOf: [mockConditions[1].conditions, mockConditions[0].conditions],
         } as AllOfCriteria<PermissionCondition>,
       },
-    ] as RoleConditionalPolicyDecision<PermissionAction>[];
+    ] as RoleConditionalPolicyDecision[];
 
     const permissionPolicies = {
       plugins: ['catalog'],

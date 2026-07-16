@@ -60,7 +60,6 @@ import {
   YamlConditionalPoliciesFileWatcher,
 } from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
-import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import {
   ConditionValidationLimits,
   readConditionValidationLimitsFromConfig,
@@ -79,7 +78,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     enforcerDelegate: EnforcerDelegate,
     roleMetadataStorage: RoleMetadataStorage,
     knex: Knex,
-    pluginMetadataCollector: PluginPermissionMetadataCollector,
     userInfo: UserInfoService,
     auth: AuthService,
     conditionValidationLimits?: ConditionValidationLimits,
@@ -159,8 +157,6 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       logger,
       conditionalStorage,
       auditor,
-      auth,
-      pluginMetadataCollector,
       roleMetadataStorage,
       enforcerDelegate,
       resolvedConditionValidationLimits,
@@ -370,7 +366,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
         undefined,
         resourceType,
         [action],
-        [permissionName],
+        permissionName,
       );
 
       if (conditionalDecisions.length === 1) {
