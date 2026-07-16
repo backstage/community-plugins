@@ -50,6 +50,7 @@ const SampleEntityPage = ({ children }: PropsWithChildren) => (
         </Grid>
       </Grid>
     </EntityLayout.Route>
+
     <EntityLayout.Route
       path="/checkmarx"
       title="Checkmarx"
