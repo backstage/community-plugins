@@ -35,7 +35,7 @@ const rbacTranslationDe = createTranslationMessages({
     'table.titleWithCount': 'Alle Rollen ({{count}})',
     'table.headers.name': 'Name',
     'table.headers.usersAndGroups': 'Benutzer und Gruppen',
-    'table.headers.accessiblePlugins': 'Barrierefreie Plugins',
+    'table.headers.accessiblePlugins': 'Zugängliche Plugins',
     'table.headers.actions': 'Aktionen',
     'table.defaultRoleUsersAndGroups': 'Alle Benutzer und alle Gruppen',
     'table.emptyContent': 'Keine Datensätze gefunden',

@@ -17,12 +17,23 @@
 import {
   filterChatRows,
   filterLocRowsByMode,
+  formatDay,
   getChatModelTotals,
   getMostUsedChatModel,
   isAgentCodeChangeFeature,
 } from './chartUtils';
 
 describe('chartUtils', () => {
+  describe('formatDay', () => {
+    it('formats a plain YYYY-MM-DD string', () => {
+      expect(formatDay('2026-05-26')).toBe('May 26');
+    });
+
+    it('formats a full ISO timestamp string as returned by an unnormalized Postgres date column (regression test for #9540)', () => {
+      expect(formatDay('2026-05-26T00:00:00.000Z')).toBe('May 26');
+    });
+  });
+
   it('classifies agent code change features consistently', () => {
     expect(isAgentCodeChangeFeature('agent_edit')).toBe(true);
     expect(isAgentCodeChangeFeature('chat_panel_edit_mode')).toBe(true);

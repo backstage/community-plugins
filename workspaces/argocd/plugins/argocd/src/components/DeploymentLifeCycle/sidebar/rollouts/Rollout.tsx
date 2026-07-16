@@ -17,7 +17,7 @@ import type { FC } from 'react';
 
 import { useState, useEffect, memo } from 'react';
 
-import { Box, makeStyles, Theme } from '@material-ui/core';
+import Box from '@mui/material/Box';
 
 import { Revision, RolloutUI } from '../../../../types/revision';
 import BlueGreenRevision from './revisions/BlueGreenRevision';
@@ -26,29 +26,11 @@ import MetadataItem from '../../../Common/MetadataItem';
 import Metadata from '../../../Common/Metadata';
 import { useTranslation } from '../../../../hooks/useTranslation';
 
-const useRevisionStyles = makeStyles((theme: Theme) => ({
-  revisionContainer: {
-    flex: 1,
-    gap: 10,
-    width: '100%',
-    marginTop: 10,
-    padding: '0',
-    minHeight: 0,
-    maxHeight: theme.spacing(40),
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'column',
-    overflowX: 'auto',
-    marginBottom: theme.spacing(1),
-  },
-}));
-
 interface RolloutProps {
   rollout: RolloutUI;
 }
 
 const Rollout: FC<RolloutProps> = ({ rollout }) => {
-  const classes = useRevisionStyles();
   const [isFirstRender, setIsFirstRender] = useState(true);
   const { t } = useTranslation();
 
@@ -74,7 +56,22 @@ const Rollout: FC<RolloutProps> = ({ rollout }) => {
       <MetadataItem
         title={t('deploymentLifecycle.sidebar.rollouts.rollOut.title')}
       >
-        <Box className={classes.revisionContainer}>
+        <Box
+          sx={theme => ({
+            flex: 1,
+            gap: '10px',
+            width: '100%',
+            mt: '10px',
+            p: 0,
+            minHeight: 0,
+            maxHeight: theme.spacing(40),
+            display: 'flex',
+            flexWrap: 'wrap',
+            flexDirection: 'column',
+            overflowX: 'auto',
+            mb: 1,
+          })}
+        >
           {[...rollout.revisions].map((revision: Revision) => {
             return rollout.spec?.strategy?.canary ? (
               <CanaryRevision

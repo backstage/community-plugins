@@ -15,12 +15,10 @@
  */
 import type { PropsWithChildren } from 'react';
 
-import { StylesProvider } from '@mui/styles';
+import { CacheProvider } from '@emotion/react';
 
-import { tektonGenerateClassName } from '../../styles/tektonGenerateClassName';
+import { tektonEmotionCache } from '../../styles/tektonEmotionCache';
 
 export const TektonStylesProvider = ({ children }: PropsWithChildren) => (
-  <StylesProvider generateClassName={tektonGenerateClassName}>
-    {children}
-  </StylesProvider>
+  <CacheProvider value={tektonEmotionCache}>{children}</CacheProvider>
 );

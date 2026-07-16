@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cost-insights
 
+## 0.29.1
+
+### Patch Changes
+
+- 582443e: Removed NavItemBlueprint that was removed in Backstage 1.51.0
+
 ## 0.29.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-servicenow
 
+## 2.16.0
+
+### Minor Changes
+
+- 5e1ae58: Backstage version bump to v1.52.0
+
 ## 2.15.2
 
 ### Patch Changes

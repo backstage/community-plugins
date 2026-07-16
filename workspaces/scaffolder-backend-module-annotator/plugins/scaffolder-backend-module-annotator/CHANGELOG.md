@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-annotator
 
+## 2.18.1
+
+### Patch Changes
+
+- 704b94a: Add module wiring and utility unit tests, a local dev/ harness, and contributor documentation so Backstage dependency bumps are caught by scoped automated tests.
+
+## 2.18.0
+
+### Minor Changes
+
+- 8592e1b: Backstage version bump to v1.52.0
+
 ## 2.17.0
 
 ### Minor Changes

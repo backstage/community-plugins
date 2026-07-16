@@ -72,8 +72,11 @@
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+    "*.{js,jsx,ts,tsx,mjs}": [
       "eslint --fix",
+      "prettier --write"
+    ],
+    "*.cjs": [
       "prettier --write"
     ],
     "*.{json,md}": [

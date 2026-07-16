@@ -1,5 +1,18 @@
 # @backstage-community/plugin-copilot
 
+## 1.2.0
+
+### Minor Changes
+
+- 20bcf3c: Fix V2 dashboard 'Invalid Date' bug on PostgreSQL by normalizing date API outputs and adding defensive frontend parsing.
+- 7a4ea48: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- 4e8bd66: Updated dependency `react-router` to `^6.30.4`.
+- Updated dependencies [7a4ea48]
+  - @backstage-community/plugin-copilot-common@1.1.0
+
 ## 1.1.0
 
 ### Minor Changes

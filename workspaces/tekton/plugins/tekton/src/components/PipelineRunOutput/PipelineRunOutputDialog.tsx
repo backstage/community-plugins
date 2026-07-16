@@ -49,6 +49,21 @@ const closeButtonSx: SxProps<Theme> = {
   color: (theme: Theme) => theme.palette.grey[500],
 };
 
+const dialogPaperSx: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  height: '90vh',
+  maxHeight: '90vh',
+};
+
+const dialogContentSx: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+  minHeight: 0,
+  overflow: 'hidden',
+};
+
 type PipelineRunOutputDialogProps = {
   open: boolean;
   closeDialog: () => void;
@@ -70,6 +85,7 @@ const PipelineRunOutputDialog = ({
       fullWidth
       open={open}
       onClose={closeDialog}
+      PaperProps={{ sx: dialogPaperSx }}
     >
       <DialogTitle id="pipelinerun-output" title={t('pipelineRunOutput.title')}>
         <Box sx={titleContainerSx}>
@@ -87,7 +103,7 @@ const PipelineRunOutputDialog = ({
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={dialogContentSx}>
         <ErrorBoundary>
           <PipelineRunOutput pipelineRun={pipelineRun} taskRuns={taskRuns} />
         </ErrorBoundary>

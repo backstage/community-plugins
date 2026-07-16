@@ -333,6 +333,28 @@ The RBAC plugin offers the option to store policies in a database. It supports t
 
 Ensure that you have already configured the database backend for your Backstage instance, as the RBAC plugin utilizes the same database configuration.
 
+#### Database connections and pool limits
+
+The RBAC backend currently uses **two separate PostgreSQL connection paths** for the database:
+
+1. **Knex** — conditional policies, role metadata, etc for the permission plugin
+2. **TypeORM (Casbin adapter)** — Casbin policy storage for RBAC
+
+Each path maintains its own connection pool. In horizontally scaled (HA) deployments, this extra pool can contribute to maxing out connection resources.
+
+**Mitigations today:**
+
+- Lower `backend.database.knexConfig.pool.max` to reduce per-plugin pool size.
+- Size your PostgreSQL instance to account for total connections across all Backstage core plugins and RBAC's Casbin pool.
+
+Consolidating RBAC onto a single shared database connection for both Knex and Casbin is a known improvement area to be addressed in the future.
+
+#### Passwordless PostgreSQL in the Cloud
+
+The RBAC plugin stores policies in the same database configured under `backend.database`. Passwordless authentication is supported when Backstage configures a dynamic Knex connection resolver, including **Azure Database for PostgreSQL with Entra authentication** (`connection.type: azure`) and **AWS RDS with IAM authentication** (`connection.type: rds`). Configure `backend.database` the same way as the rest of your Backstage instance — see [Passwordless PostgreSQL in the Cloud](https://backstage.io/docs/getting-started/config/database/#passwordless-postgresql-in-the-cloud) in the Backstage documentation. No additional RBAC-specific database configuration is required.
+
+Google Cloud SQL with Cloud IAM (`connection.type: cloudsql`) is not supported for RBAC policy storage yet.
+
 ### Optional maximum depth
 
 The RBAC plugin also includes an option max depth feature for organizations with potentially complex group hierarchy, this configuration value will ensure that the RBAC plugin will stop at a certain depth when building user graphs.

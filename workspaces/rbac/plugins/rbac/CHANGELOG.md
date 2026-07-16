@@ -1,5 +1,22 @@
 # @backstage-community/plugin-rbac
 
+## 1.55.1
+
+### Patch Changes
+
+- dc80f66: Updated dependency `start-server-and-test` to `3.0.11`.
+
+## 1.55.0
+
+### Minor Changes
+
+- 845383a: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [845383a]
+  - @backstage-community/plugin-rbac-common@1.29.0
+
 ## 1.54.0
 
 ### Minor Changes

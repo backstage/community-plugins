@@ -56,20 +56,21 @@ const graphConfig = {
   layout: 'Dagre',
 };
 
-const getNamespaces = (
+const getActiveNamespaceNames = (
   entity: Entity | undefined,
-  kialiState: KialiAppState,
+  activeNamespaces: KialiAppState['namespaces']['activeNamespaces'],
 ) => {
   if (entity) {
     return getEntityNs(entity);
   }
-  return kialiState.namespaces.activeNamespaces.map(ns => ns.name);
+  return activeNamespaces.map(ns => ns.name);
 };
 
-const getProvider = (entity: Entity | undefined, kialiState: KialiAppState) => {
-  return entity?.metadata?.annotations
-    ? entity.metadata.annotations[KIALI_PROVIDER]
-    : kialiState.providers.activeProvider;
+const getActiveProvider = (
+  entity: Entity | undefined,
+  defaultProvider: string,
+) => {
+  return entity?.metadata?.annotations?.[KIALI_PROVIDER] ?? defaultProvider;
 };
 function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   const kialiState = useContext(KialiContext) as KialiAppState;
@@ -78,6 +79,8 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   );
   const kialiClient = useApi(kialiApiRef);
   const theme = useTheme();
+  const alertUtilsRef = useRef(kialiState.alertUtils);
+  alertUtilsRef.current = kialiState.alertUtils;
 
   const htmlElement = document.getElementsByTagName('html')[0];
   if (htmlElement) {
@@ -96,113 +99,146 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
   });
   const [loading, setLoading] = useState(true);
 
-  // Memoize to prevent unnecessary re-renders
-  const activeNamespaces = useMemo(
-    () => getNamespaces(props.entity, kialiState),
-    [props.entity, kialiState],
+  const activeNamespacesKey = useMemo(
+    () =>
+      getActiveNamespaceNames(
+        props.entity,
+        kialiState.namespaces.activeNamespaces,
+      ).join(','),
+    [props.entity, kialiState.namespaces.activeNamespaces],
   );
+
+  const activeNamespaces = useMemo(
+    () => (activeNamespacesKey ? activeNamespacesKey.split(',') : []),
+    [activeNamespacesKey],
+  );
+
   const activeProvider = useMemo(
-    () => getProvider(props.entity, kialiState),
-    [props.entity, kialiState],
+    () => getActiveProvider(props.entity, kialiState.providers.activeProvider),
+    [props.entity, kialiState.providers.activeProvider],
   );
 
   const lastFetchedKey = useRef<string>('');
+  const graphRequestIdRef = useRef(0);
 
-  const fetchGraph = useCallback(async () => {
-    kialiClient.setAnnotation(
-      KIALI_PROVIDER,
-      props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
-        kialiState.providers.activeProvider,
-    );
+  const fetchGraph = useCallback(
+    async (requestId: number) => {
+      const isCurrentRequest = () => requestId === graphRequestIdRef.current;
 
-    if (activeNamespaces.length === 0) {
-      setModel({ nodes: [], edges: [], graph: graphConfig });
-      return;
-    }
+      kialiClient.setAnnotation(
+        KIALI_PROVIDER,
+        props.entity?.metadata.annotations?.[KIALI_PROVIDER] ||
+          kialiState.providers.activeProvider,
+      );
 
-    const graphQueryElements = {
-      appenders: 'health,deadNode,istio,serviceEntry,meshCheck,workloadEntry',
-      activeNamespaces: activeNamespaces.join(','),
-      namespaces: activeNamespaces.join(','),
-      // Kiali graph API expects duration (e.g. "600s"). This makes the "From: 10m" dropdown actually affect the graph.
-      duration: `${duration}s`,
-      graphType: GraphType.VERSIONED_APP,
-      injectServiceNodes: true,
-      boxByNamespace: true,
-      boxByCluster: true,
-      showOutOfMesh: false,
-      showSecurity: false,
-      showVirtualServices: false,
-      edgeLabels: [
-        EdgeLabelMode.TRAFFIC_RATE,
-        EdgeLabelMode.TRAFFIC_DISTRIBUTION,
-      ],
-      trafficRates: [
-        TrafficRate.HTTP_REQUEST,
-        TrafficRate.GRPC_TOTAL,
-        TrafficRate.TCP_TOTAL,
-      ],
-    };
-
-    try {
-      const response = await kialiClient.getGraphElements(graphQueryElements);
-
-      if ('verify' in response) {
-        setErrorProvider(
-          `Error providing namespaces for ${activeProvider}, verify configuration for this provider: ${response.verify}`,
-        );
+      if (activeNamespaces.length === 0) {
+        if (isCurrentRequest()) {
+          setModel({ nodes: [], edges: [], graph: graphConfig });
+        }
         return;
       }
 
-      const graphData = decorateGraphData(
-        (response as GraphDefinition).elements,
-        (response as GraphDefinition).duration,
-      );
-      const g = generateDataModel(graphData, graphQueryElements);
-      setModel({
-        nodes: g.nodes,
-        edges: g.edges,
-        graph: graphConfig,
-      });
-    } catch (error: any) {
-      setErrorProvider(error.toString());
-      kialiState.alertUtils?.add(
-        `Could not fetch services: ${getErrorString(error)}`,
-      );
-    }
-  }, [
-    activeNamespaces,
-    activeProvider,
-    duration,
-    props.entity,
-    kialiClient,
-    kialiState,
-  ]);
+      const graphQueryElements = {
+        appenders: 'health,deadNode,istio,serviceEntry,meshCheck,workloadEntry',
+        activeNamespaces: activeNamespaces.join(','),
+        namespaces: activeNamespaces.join(','),
+        // Kiali graph API expects duration (e.g. "600s"). This makes the "From: 10m" dropdown actually affect the graph.
+        duration: `${duration}s`,
+        graphType: GraphType.VERSIONED_APP,
+        injectServiceNodes: true,
+        boxByNamespace: true,
+        boxByCluster: true,
+        showOutOfMesh: false,
+        showSecurity: false,
+        showVirtualServices: false,
+        edgeLabels: [
+          EdgeLabelMode.TRAFFIC_RATE,
+          EdgeLabelMode.TRAFFIC_DISTRIBUTION,
+        ],
+        trafficRates: [
+          TrafficRate.HTTP_REQUEST,
+          TrafficRate.GRPC_TOTAL,
+          TrafficRate.TCP_TOTAL,
+        ],
+      };
+
+      try {
+        const response = await kialiClient.getGraphElements(graphQueryElements);
+
+        if (!isCurrentRequest()) {
+          return;
+        }
+
+        if ('verify' in response) {
+          setErrorProvider(
+            `Error providing namespaces for ${activeProvider}, verify configuration for this provider: ${response.verify}`,
+          );
+          return;
+        }
+
+        const graphData = decorateGraphData(
+          (response as GraphDefinition).elements,
+          (response as GraphDefinition).duration,
+        );
+        const g = generateDataModel(graphData, graphQueryElements);
+        setModel({
+          nodes: g.nodes,
+          edges: g.edges,
+          graph: graphConfig,
+        });
+      } catch (error: any) {
+        if (!isCurrentRequest()) {
+          return;
+        }
+        setErrorProvider(error.toString());
+        alertUtilsRef.current?.add(
+          `Could not fetch services: ${getErrorString(error)}`,
+        );
+      }
+    },
+    [
+      activeNamespaces,
+      activeProvider,
+      duration,
+      props.entity,
+      kialiClient,
+      kialiState.providers.activeProvider,
+    ],
+  );
 
   // Fetch graph when dependencies change
   useEffect(() => {
-    const currentKey = `${activeNamespaces.join(',')}|${duration}|${activeProvider}`;
+    const currentKey = `${activeNamespacesKey}|${duration}|${activeProvider}`;
+    const requestId = ++graphRequestIdRef.current;
 
-    // Skip if already fetched with same key
-    if (currentKey === lastFetchedKey.current) {
-      return;
+    if (currentKey !== lastFetchedKey.current) {
+      lastFetchedKey.current = currentKey;
+      setErrorProvider(undefined);
+      setLoading(true);
+
+      fetchGraph(requestId).finally(() => {
+        if (requestId === graphRequestIdRef.current) {
+          setLoading(false);
+        }
+      });
+    } else {
+      setLoading(false);
     }
 
-    lastFetchedKey.current = currentKey;
-    setErrorProvider(undefined);
-    setLoading(true);
-
-    fetchGraph().finally(() => {
-      setLoading(false);
-    });
-  }, [activeNamespaces, duration, activeProvider, fetchGraph]);
+    return () => {
+      graphRequestIdRef.current += 1;
+    };
+  }, [activeNamespacesKey, duration, activeProvider, fetchGraph]);
 
   const refresh = useCallback(async () => {
     lastFetchedKey.current = '';
+    const requestId = ++graphRequestIdRef.current;
     setLoading(true);
     setErrorProvider(undefined);
-    await fetchGraph();
-    setLoading(false);
+    await fetchGraph(requestId);
+    if (requestId === graphRequestIdRef.current) {
+      setLoading(false);
+    }
   }, [fetchGraph]);
 
   if (loading) {
@@ -238,7 +274,11 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
               onRefresh={refresh}
             />
           )}
-          {hasGraphData && <TrafficGraph model={model} />}
+          {hasGraphData ? (
+            <TrafficGraph model={model} />
+          ) : (
+            <InfoCard>No graph data for the selected namespaces.</InfoCard>
+          )}
         </>
       )}
     </Content>
