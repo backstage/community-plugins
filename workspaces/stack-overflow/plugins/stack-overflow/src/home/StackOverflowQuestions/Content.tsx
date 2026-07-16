@@ -16,7 +16,7 @@
 
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
-import { Text } from '@backstage/ui';
+import { Text, Flex, Box } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import useAsync from 'react-use/esm/useAsync';
 import _unescape from 'lodash/unescape';
@@ -54,30 +54,26 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
     answer_count > 1 ? `${answer_count} answers` : `${answer_count} answer`;
 
   return (
-    <div role="list">
+    <Flex direction="column">
       {value.map(question => (
-        <div
+        <Flex
           key={question.link}
-          role="listitem"
+          align="start"
           style={{
             padding: '8px 0',
             borderBottom: '1px solid var(--bui-border-1)',
-            display: 'flex',
             gap: '12px',
-            alignItems: 'flex-start',
           }}
         >
-          {props.icon && <div style={{ flexShrink: 0 }}>{props.icon}</div>}
-          <div style={{ flex: 1, minWidth: 0 }}>
+          {props.icon && <Box style={{ flexShrink: 0 }}>{props.icon}</Box>}
+          <Flex direction="column" style={{ flex: 1, minWidth: 0 }}>
             <Link
               to={question.link}
               target="_blank"
               rel="noopener noreferrer"
               title="Opens in new tab"
             >
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
+              <Flex align="center" style={{ gap: '6px' }}>
                 <Text weight="bold" as="h3">
                   {_unescape(question.title)}
                 </Text>
@@ -86,14 +82,14 @@ export const Content = (props: StackOverflowQuestionsContentProps) => {
                   style={{ flexShrink: 0, opacity: 0.7 }}
                   aria-label="External link (opens in new tab)"
                 />
-              </div>
+              </Flex>
             </Link>
             <Text style={{ opacity: 0.7 }}>
               {getSecondaryText(question.answer_count)}
             </Text>
-          </div>
-        </div>
+          </Flex>
+        </Flex>
       ))}
-    </div>
+    </Flex>
   );
 };
