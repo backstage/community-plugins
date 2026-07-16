@@ -30,17 +30,25 @@ export async function expectTriggeredIncident(
   mockTriggerAlarmFn: any,
 ): Promise<void> {
   const incidentType = getByTestId('trigger-incident-type');
-  const incidentId = getByTestId('trigger-incident-id');
-  const incidentDisplayName = getByTestId('trigger-incident-displayName');
-  const incidentMessage = getByTestId('trigger-incident-message');
+
+  // For BUI TextField components, find by specific IDs
+  const incidentIdInput = document.getElementById(
+    'incident-id',
+  ) as HTMLInputElement;
+  const incidentDisplayNameInput = document.getElementById(
+    'incident-displayName',
+  ) as HTMLInputElement;
+  const incidentMessageInput = getByTestId(
+    'trigger-incident-message',
+  ) as HTMLTextAreaElement;
 
   await act(async () => {
     fireEvent.change(incidentType, { target: { value: 'CRITICAL' } });
-    fireEvent.change(incidentId, { target: { value: 'incident-id' } });
-    fireEvent.change(incidentDisplayName, {
+    fireEvent.change(incidentIdInput, { target: { value: 'incident-id' } });
+    fireEvent.change(incidentDisplayNameInput, {
       target: { value: 'incident-display-name' },
     });
-    fireEvent.change(incidentMessage, {
+    fireEvent.change(incidentMessageInput, {
       target: { value: 'incident-message' },
     });
   });

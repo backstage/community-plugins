@@ -107,6 +107,7 @@ export const IncidentListItem = ({
           <div
             className={styles.denseListIcon}
             aria-label="Status warning"
+            title={getStatusLabel()}
             role="img"
           >
             {statusIcon()}
@@ -120,47 +121,58 @@ export const IncidentListItem = ({
           <Text variant="body-small" color="secondary">
             {incident.entityDisplayName || incident.service || 'Incident'}
           </Text>
+          {incident.monitorName && (
+            <Text variant="body-small" color="secondary">
+              {incident.monitorName}
+            </Text>
+          )}
         </Flex>
         <div style={{ display: 'flex', gap: 'var(--bui-space-1)' }}>
-          <TooltipTrigger>
-            <ButtonIcon
-              variant="secondary"
-              icon={<RiExternalLinkLine size={16} />}
-              aria-label="view incident"
-              onClick={() =>
-                incident.incidentLink &&
-                window.open(
-                  incident.incidentLink,
-                  '_blank',
-                  'noopener,noreferrer',
-                )
-              }
-            />
-            <Tooltip>View in Splunk On-Call</Tooltip>
-          </TooltipTrigger>
-          {!readOnly && incident.currentPhase !== 'ACKED' && (
+          <div title="View in Splunk On-Call">
             <TooltipTrigger>
               <ButtonIcon
                 variant="secondary"
-                icon={<RiCheckLine size={16} />}
-                aria-label="acknowledge"
-                isDisabled={acknowledgeLoading}
-                onClick={acknowledgeIncident}
+                icon={<RiExternalLinkLine size={16} />}
+                aria-label="view incident"
+                onClick={() =>
+                  incident.incidentLink &&
+                  window.open(
+                    incident.incidentLink,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }
               />
-              <Tooltip>Acknowledge</Tooltip>
+              <Tooltip>View in Splunk On-Call</Tooltip>
             </TooltipTrigger>
+          </div>
+          {!readOnly && incident.currentPhase !== 'ACKED' && (
+            <div title="Acknowledge">
+              <TooltipTrigger>
+                <ButtonIcon
+                  variant="secondary"
+                  icon={<RiCheckLine size={16} />}
+                  aria-label="acknowledge"
+                  isDisabled={acknowledgeLoading}
+                  onClick={acknowledgeIncident}
+                />
+                <Tooltip>Acknowledge</Tooltip>
+              </TooltipTrigger>
+            </div>
           )}
           {!readOnly && incident.currentPhase !== 'RESOLVED' && (
-            <TooltipTrigger>
-              <ButtonIcon
-                variant="secondary"
-                icon={<RiCheckDoubleLine size={16} />}
-                aria-label="resolve"
-                isDisabled={resolveLoading}
-                onClick={resolveIncident}
-              />
-              <Tooltip>Resolve</Tooltip>
-            </TooltipTrigger>
+            <div title="Resolve">
+              <TooltipTrigger>
+                <ButtonIcon
+                  variant="secondary"
+                  icon={<RiCheckDoubleLine size={16} />}
+                  aria-label="resolve"
+                  isDisabled={resolveLoading}
+                  onClick={resolveIncident}
+                />
+                <Tooltip>Resolve</Tooltip>
+              </TooltipTrigger>
+            </div>
           )}
         </div>
       </Flex>

@@ -34,12 +34,8 @@ const apis = TestApiRegistry.from(
 );
 
 describe('Incidents', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
   afterEach(() => {
     jest.resetAllMocks();
-    jest.useRealTimers();
   });
 
   it('Renders an empty state when there are no incidents', async () => {
@@ -51,7 +47,6 @@ describe('Incidents', () => {
         <Incidents refreshIncidents={false} team="test" />
       </ApiProvider>,
     );
-    jest.advanceTimersByTime(2000);
     await waitFor(() => expect(screen.queryByTestId('progress')).toBe(null));
     await waitFor(() =>
       expect(screen.getByText('Nice! No incidents found!')).toBeInTheDocument(),
@@ -67,7 +62,6 @@ describe('Incidents', () => {
         <Incidents team="test" refreshIncidents={false} />
       </ApiProvider>,
     );
-    jest.advanceTimersByTime(2000);
     await waitFor(() => expect(screen.queryByTestId('progress')).toBe(null));
     await waitFor(() =>
       expect(
@@ -93,7 +87,6 @@ describe('Incidents', () => {
         <Incidents team="test" refreshIncidents={false} />
       </ApiProvider>,
     );
-    jest.advanceTimersByTime(2000);
     await waitFor(() => expect(screen.queryByTestId('progress')).toBe(null));
     await waitFor(() =>
       expect(
@@ -120,7 +113,6 @@ describe('Incidents', () => {
         <Incidents team="test" refreshIncidents={false} />
       </ApiProvider>,
     );
-    jest.advanceTimersByTime(2000);
     await waitFor(() => expect(screen.queryByTestId('progress')).toBe(null));
     await waitFor(() =>
       expect(
