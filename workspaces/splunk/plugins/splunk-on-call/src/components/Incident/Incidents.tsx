@@ -17,18 +17,26 @@ import { Box, Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { Progress } from '@backstage/core-components';
 import { IncidentListItem } from './IncidentListItem';
+import { IncidentsEmptyState } from './IncidentEmptyState';
 import { splunkOnCallApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import styles from './Incidents.module.css';
+import React from 'react';
 
 type Props = {
   team: string;
-  readOnly: boolean;
+  readOnly?: boolean;
   refreshIncidents?: boolean;
 };
 
-export const Incidents = ({ team, readOnly, refreshIncidents }: Props) => {
+export const Incidents = ({
+  team,
+  readOnly = false,
+  refreshIncidents,
+}: Props) => {
   const api = useApi(splunkOnCallApiRef);
+  const [incidentsRefreshCounter, setIncidentsRefreshCounter] =
+    React.useState(0);
 
   const {
     value: incidents,
@@ -36,8 +44,11 @@ export const Incidents = ({ team, readOnly, refreshIncidents }: Props) => {
     error,
   } = useAsync(async () => {
     const allIncidents = await api.getIncidents();
-    return allIncidents;
-  }, [team, refreshIncidents]);
+    // Filter incidents by team - check if team is in pagedTeams array
+    return allIncidents.filter(
+      incident => incident.pagedTeams && incident.pagedTeams.includes(team),
+    );
+  }, [team, refreshIncidents, incidentsRefreshCounter]);
 
   if (error) {
     return (
@@ -57,17 +68,16 @@ export const Incidents = ({ team, readOnly, refreshIncidents }: Props) => {
         {!loading &&
           incidents &&
           incidents.length > 0 &&
-          incidents.map((incident, index) => (
+          incidents.map(incident => (
             <IncidentListItem
-              key={index}
+              key={incident.entityId}
               incident={incident}
               readOnly={readOnly}
+              onIncidentUpdated={() => setIncidentsRefreshCounter(c => c + 1)}
             />
           ))}
         {!loading && (!incidents || incidents.length === 0) && (
-          <Text style={{ padding: 'var(--bui-space-4)' }}>
-            No incidents found
-          </Text>
+          <IncidentsEmptyState />
         )}
       </Box>
     </>

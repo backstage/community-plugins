@@ -22,6 +22,6 @@ export const EscalationUsersEmptyState = () => (
     <div className={styles.denseListIcon}>
       <StatusWarning />
     </div>
-    <Text>No users on-call</Text>
+    <Text>Empty escalation policy</Text>
   </Flex>
 );

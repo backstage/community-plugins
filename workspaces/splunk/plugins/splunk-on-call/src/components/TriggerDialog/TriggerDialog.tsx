@@ -79,7 +79,7 @@ export const TriggerDialog = ({
     setIncidentMessage(message);
   };
 
-  const handleIncidentStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIncidentStartTime = (e: { target: { value: string } }) => {
     const dateTime = new Date(e.target.value).getTime();
     const dateTimeInSeconds = Math.floor(dateTime / 1000);
     setIncidentStartTime(dateTimeInSeconds);
@@ -103,11 +103,11 @@ export const TriggerDialog = ({
   }
 
   return (
-    <DialogTrigger
-      isOpen={showDialog}
-      onOpenChange={open => !open && handleDialog()}
-    >
-      <Dialog>
+    <DialogTrigger>
+      <Dialog
+        isOpen={showDialog}
+        onOpenChange={open => !open && handleDialog()}
+      >
         <DialogHeader>This action will trigger an incident</DialogHeader>
         <DialogBody>
           <Text
@@ -281,7 +281,12 @@ export const TriggerDialog = ({
           >
             {triggerLoading ? 'Creating...' : 'Trigger Incident'}
           </Button>
-          <Button id="close" variant="secondary" onPress={handleDialog}>
+          <Button
+            id="close"
+            variant="secondary"
+            slot="close"
+            onClick={handleDialog}
+          >
             Close
           </Button>
         </DialogFooter>

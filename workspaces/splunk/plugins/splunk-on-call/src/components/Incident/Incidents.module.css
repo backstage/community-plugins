@@ -18,7 +18,7 @@
     overflow: auto;
   }
 
-  .subheader {
+  .header {
     background-color: var(--bui-bg-surface-1);
     padding: var(--bui-space-2);
     margin: 0;

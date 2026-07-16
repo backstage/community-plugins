@@ -26,9 +26,10 @@ import { ApiProvider } from '@backstage/core-app-api';
 const mockSplunkOnCallApi = {
   getIncidents: jest.fn(),
   getTeams: jest.fn(),
+  incidentAction: jest.fn(),
 };
 const apis = TestApiRegistry.from(
-  [toastApiRef, {}],
+  [toastApiRef, { post: jest.fn() }],
   [splunkOnCallApiRef, mockSplunkOnCallApi],
 );
 
@@ -47,7 +48,7 @@ describe('Incidents', () => {
 
     await renderInTestApp(
       <ApiProvider apis={apis}>
-        <Incidents readOnly={false} refreshIncidents={false} team="test" />
+        <Incidents refreshIncidents={false} team="test" />
       </ApiProvider>,
     );
     jest.advanceTimersByTime(2000);
@@ -63,7 +64,7 @@ describe('Incidents', () => {
 
     await renderInTestApp(
       <ApiProvider apis={apis}>
-        <Incidents readOnly={false} team="test" refreshIncidents={false} />
+        <Incidents team="test" refreshIncidents={false} />
       </ApiProvider>,
     );
     jest.advanceTimersByTime(2000);
@@ -83,13 +84,13 @@ describe('Incidents', () => {
     expect(screen.getAllByTitle('View in Splunk On-Call').length).toEqual(1);
   });
 
-  it('does not render incident action buttons in read only mode', async () => {
+  it('renders incident view button regardless of read only mode', async () => {
     mockSplunkOnCallApi.getIncidents.mockResolvedValue([MOCK_INCIDENT]);
     mockSplunkOnCallApi.getTeams.mockResolvedValue([MOCK_TEAM]);
 
     await renderInTestApp(
       <ApiProvider apis={apis}>
-        <Incidents readOnly team="test" refreshIncidents={false} />
+        <Incidents team="test" refreshIncidents={false} />
       </ApiProvider>,
     );
     jest.advanceTimersByTime(2000);
@@ -103,14 +104,8 @@ describe('Incidents', () => {
     );
     expect(screen.getByText('test-incident')).toBeInTheDocument();
     expect(screen.getByLabelText('Status warning')).toBeInTheDocument();
-    expect(() => screen.getAllByTitle('Acknowledge')).toThrow(
-      'Unable to find an element with the title: Acknowledge.',
-    );
-    expect(() => screen.getAllByTitle('Resolve')).toThrow(
-      'Unable to find an element with the title: Resolve.',
-    );
 
-    // assert links, mailto and hrefs, date calculation
+    // View button is always rendered now
     expect(screen.getAllByTitle('View in Splunk On-Call').length).toEqual(1);
   });
 
@@ -122,7 +117,7 @@ describe('Incidents', () => {
 
     await renderInTestApp(
       <ApiProvider apis={apis}>
-        <Incidents readOnly={false} team="test" refreshIncidents={false} />
+        <Incidents team="test" refreshIncidents={false} />
       </ApiProvider>,
     );
     jest.advanceTimersByTime(2000);

@@ -23,6 +23,20 @@ type Props = {
 };
 
 export const EscalationUser = ({ user }: Props) => {
+  const getUserDisplayName = () => {
+    if (user.displayName) return user.displayName;
+    if (user.firstName && user.lastName)
+      return `${user.firstName} ${user.lastName}`;
+    if (user.firstName) return user.firstName;
+    return 'User';
+  };
+
+  const handleEmailClick = () => {
+    if (user.email) {
+      window.location.href = `mailto:${user.email}`;
+    }
+  };
+
   return (
     <Flex
       align="center"
@@ -45,12 +59,10 @@ export const EscalationUser = ({ user }: Props) => {
           fontWeight: 'bold',
         }}
       >
-        {(user.displayName ?? user.firstName ?? 'U')?.charAt(0).toUpperCase()}
+        {getUserDisplayName()?.charAt(0).toUpperCase()}
       </div>
       <Flex direction="column" style={{ flex: 1 }}>
-        <Text className={styles.listItemPrimary}>
-          {user.displayName ?? user.firstName ?? 'User'}
-        </Text>
+        <Text className={styles.listItemPrimary}>{getUserDisplayName()}</Text>
         {user.email && (
           <Text variant="body-small" color="secondary">
             {user.email}
@@ -63,10 +75,9 @@ export const EscalationUser = ({ user }: Props) => {
             variant="secondary"
             icon={<RiMailLine size={16} />}
             aria-label="email"
+            onClick={handleEmailClick}
           />
-          <Tooltip>
-            Send email to {user.displayName || user.firstName || 'User'}
-          </Tooltip>
+          <Tooltip>Send email to {getUserDisplayName()}</Tooltip>
         </TooltipTrigger>
       )}
     </Flex>

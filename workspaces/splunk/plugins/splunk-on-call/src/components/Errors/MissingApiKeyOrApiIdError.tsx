@@ -25,6 +25,7 @@ export const MissingApiKeyOrApiIdError = () => (
       <Link
         href="https://github.com/backstage/backstage/blob/master/plugins/splunk-on-call/README.md"
         target="_blank"
+        rel="noopener noreferrer"
       >
         <Button variant="primary">Read More</Button>
       </Link>

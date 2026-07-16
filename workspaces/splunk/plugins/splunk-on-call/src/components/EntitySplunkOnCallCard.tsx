@@ -20,7 +20,8 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import { Card, CardHeader, CardBody, Text } from '@backstage/ui';
+import { Card, CardHeader, CardBody, Text, Button } from '@backstage/ui';
+import { RiAlarmAddLine } from '@remixicon/react';
 import { splunkOnCallApiRef, UnauthorizedError } from '../api';
 import { MissingApiKeyOrApiIdError } from './Errors';
 import { EscalationPolicy } from './Escalation';
@@ -213,13 +214,35 @@ export const EntitySplunkOnCallCard = (props: EntitySplunkOnCallCardProps) => {
         return (
           <Card key={i} className={styles.onCallCard}>
             <CardHeader title="Splunk On-Call" />
-            <hr style={{ borderColor: 'var(--bui-border-1)' }} />
+            <div
+              style={{
+                padding: 'var(--bui-space-2)',
+                borderBottom: '1px solid var(--bui-border-1)',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: 'var(--bui-space-2)',
+              }}
+            >
+              {!readOnly && (
+                <Button
+                  variant="primary"
+                  onClick={handleDialog}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--bui-space-1)',
+                  }}
+                >
+                  <RiAlarmAddLine size={16} />
+                  Create Incident
+                </Button>
+              )}
+            </div>
             <CardBody>
-              <Incidents
-                readOnly={readOnly || false}
-                team={teamName}
-                refreshIncidents={refreshIncidents}
-              />
+              <Text style={{ marginBottom: 'var(--bui-space-3)' }}>
+                Team: {teamName}
+              </Text>
+              <Incidents team={teamName} refreshIncidents={refreshIncidents} />
               {entityData?.usersHashMap && team && (
                 <EscalationPolicy
                   team={teamName}
