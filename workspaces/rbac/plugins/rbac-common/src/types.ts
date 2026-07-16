@@ -174,15 +174,35 @@ export type PermissionInfo = {
 
 /**
  * @public
- * Frontend should use RoleConditionalPolicyDecision<PermissionAction>
  */
-export type RoleConditionalPolicyDecision<
-  T extends PermissionAction | PermissionInfo,
-> = ConditionalPolicyDecision & {
+export type PermissionMapping = PermissionAction | PermissionInfo;
+
+/**
+ * @public
+ */
+export function isPermissionInfo(
+  entry: PermissionMapping,
+): entry is PermissionInfo {
+  return typeof entry === 'object' && 'name' in entry && 'action' in entry;
+}
+
+/**
+ * @public
+ */
+export function permissionMappingAction(
+  entry: PermissionMapping,
+): PermissionAction {
+  return typeof entry === 'string' ? entry : entry.action;
+}
+
+/**
+ * @public
+ */
+export type RoleConditionalPolicyDecision = ConditionalPolicyDecision & {
   id: number;
   roleEntityRef: string;
 
-  permissionMapping: T[];
+  permissionMapping: PermissionMapping[];
 };
 
 /**
