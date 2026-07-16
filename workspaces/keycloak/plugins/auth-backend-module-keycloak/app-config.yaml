@@ -34,6 +34,6 @@ catalog:
     - allow: [User, Location]
   locations:
     - type: file
-      target: manual-tests/catalog/users.yaml
+      target: dev/catalog/users.yaml
       rules:
         - allow: [User]

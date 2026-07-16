@@ -52,15 +52,13 @@ yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider
 yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider start --config app-config.local.yaml
 ```
 
-This runs a minimal backend with `@backstage/plugin-auth-backend`, `@backstage/plugin-catalog-backend`, and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`. The dev config registers a catalog `User` entity named `test` (from [`manual-tests/catalog/users.yaml`](./manual-tests/catalog/users.yaml)) so `preferredUsernameMatchingUserEntityName` can resolve during OAuth sign-in.
+This runs a minimal backend with `@backstage/plugin-auth-backend`, `@backstage/plugin-catalog-backend`, and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`. The dev config registers a catalog `User` entity named `test` (from [`dev/catalog/users.yaml`](./dev/catalog/users.yaml)) so `preferredUsernameMatchingUserEntityName` can resolve during OAuth sign-in.
 
 On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it or the harness may bind another port — use that port in smoke commands.
 
 Only one plugin `dev/` harness should run on port **7007** at a time. To work on the catalog module instead, stop this process and start the [catalog module harness](../catalog-backend-module-keycloak/CONTRIBUTING.md).
 
-### OAuth login smoke (no frontend)
-
-[`manual-tests/scripts/login.mjs`](./manual-tests/scripts/login.mjs) performs the full Keycloak authorization-code flow against `/api/auth/keycloak/start`.
+### OAuth redirect smoke
 
 Prerequisites: Keycloak healthy and this auth harness running.
 
@@ -70,41 +68,18 @@ Quick redirect check (no password required):
 curl -i "http://localhost:7007/api/auth/keycloak/start?env=development"
 ```
 
-Expect `302` with a `Location` header pointing at the Keycloak authorize URL.
+Expect `302` with a `Location` header pointing at the Keycloak authorize URL (`.../realms/<realm>/protocol/openid-connect/auth`). This confirms the module is wired correctly, the Keycloak issuer discovery succeeded, and the OAuth client config is valid.
 
-Before full login, confirm the catalog fixture user is loaded (use your `BACKSTAGE_DEV_STATIC_TOKEN`):
+Confirm the catalog fixture user is loaded (use your `BACKSTAGE_DEV_STATIC_TOKEN`):
 
 ```bash
 curl -s -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" \
   "http://localhost:7007/api/catalog/entities/by-name/user/default/test"
 ```
 
-Expect a `User` entity — if you get `404`, wait a few seconds after harness startup (catalog `processingInterval` is 3s in dev config) and retry. If it still fails, restart the auth harness (not the catalog module harness).
+Expect a `User` entity — if you get `404`, wait a few seconds after harness startup (catalog `processingInterval` is 3s in dev config) and retry.
 
-Full login → Backstage user bearer token (terminal 3):
-
-```bash
-node plugins/auth-backend-module-keycloak/manual-tests/scripts/login.mjs --user test --password test
-```
-
-Verify the token against the catalog endpoint:
-
-```bash
-TOKEN=$(node plugins/auth-backend-module-keycloak/manual-tests/scripts/login.mjs --user test --password test)
-
-curl -s -H "Authorization: Bearer ${TOKEN}" \
-  "http://localhost:7007/api/catalog/entities/by-name/user/default/test"
-```
-
-Backend logs should show a successful Keycloak token exchange and sign-in resolver pass.
-
-| Variable                | Default                 | Description                                                           |
-| ----------------------- | ----------------------- | --------------------------------------------------------------------- |
-| `BASE_URL`              | `http://localhost:7007` | Backstage backend URL                                                 |
-| `FRONTEND_URL`          | `http://localhost:3000` | Auth flow `origin` parameter (no UI required)                         |
-| `KEYCLOAK_HOST_REWRITE` | _(empty)_               | e.g. `keycloak:8080=localhost:8080` when Keycloak is not on localhost |
-
-**Note:** User bearer tokens are tied to the running backend instance. After every harness restart, re-run `login.mjs` before using a saved token.
+> **Full OAuth flow limitation:** This workspace does not ship `packages/app` (community-plugins policy). The full authorization-code flow (login → token exchange → resolver) requires either a Backstage frontend or a headless login script. Automated tests in `module.test.ts` cover the redirect, discovery URL, and module wiring; the sign-in resolver logic is tested separately in `resolvers.test.ts`.
 
 ### API authentication for `curl` (static token)
 
@@ -117,7 +92,7 @@ curl -s -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" \
   http://localhost:7007/.backstage/health/v1/readiness
 ```
 
-OAuth sign-in smoke uses the **user** token from `login.mjs`, not the static token.
+The static token is for service-to-service API checks; it does not exercise the OAuth sign-in flow.
 
 ## Validation commands
 
@@ -144,20 +119,20 @@ CI does **not** replace reading [Backstage release notes](https://github.com/bac
 
 The `preferredUsernameMatchingUserEntityName` resolver sanitizes Keycloak `preferred_username` to match catalog `User.metadata.name` from [`@backstage-community/plugin-catalog-backend-module-keycloak`](../catalog-backend-module-keycloak/CONTRIBUTING.md). Both packages duplicate the same regex until a shared `keycloak-common` package exists — contract tests must stay in sync when either side changes.
 
-## When a full Backstage app e2e is required
+## When downstream app validation is needed
 
-This module's `dev/` harness and [`login.mjs`](./manual-tests/scripts/login.mjs) cover backend OAuth token exchange and resolver wiring **without** a Backstage frontend. That is sufficient for routine plugin PRs and Backstage dependency bumps.
+The `dev/` harness and automated tests cover module wiring, OAuth redirect, and resolver logic. That is sufficient for routine plugin PRs and Backstage dependency bumps.
 
-Validate in a **downstream Backstage application** (your own `packages/app` deployment) when you change:
+Validate in a **downstream Backstage application** (your own deployment with `packages/app`) when you change:
 
 - Frontend sign-in UI, redirect URLs bound to a real app origin, or cookie/session behavior in the browser
 - Auth or catalog configuration that this workspace harness does not model
 
-Document that validation in the PR; do not add `packages/app` to this workspace for that purpose.
+Document that validation in the PR; do not add `packages/app` to this workspace.
 
 ## Full workspace app policy
 
-This workspace does **not** ship `packages/app` or `packages/backend`. Use this auth harness plus the [catalog module harness](../catalog-backend-module-keycloak/CONTRIBUTING.md) for module-level work.
+This workspace does **not** ship `packages/app` or `packages/backend` (community-plugins repo policy). Use this auth harness plus the [catalog module harness](../catalog-backend-module-keycloak/CONTRIBUTING.md) for module-level work.
 
 ## Optional manual smoke checklist
 
@@ -165,20 +140,18 @@ Use when you change auth integration code or are reviewing a Backstage version b
 
 1. Start Keycloak (`start:keycloak`).
 2. Start this auth harness (`start`).
-3. Confirm catalog user `test` is present, then run `login.mjs` (see [OAuth login smoke](#oauth-login-smoke-no-frontend)).
+3. Verify `302` redirect: `curl -i "http://localhost:7007/api/auth/keycloak/start?env=development"`.
+4. Confirm catalog user `test` is present via static-token `curl` (see [OAuth redirect smoke](#oauth-redirect-smoke)).
 
 ### Troubleshooting
 
-| Symptom                                                | Likely cause                                                                          | Fix                                                                                                                                                                                |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ECONNREFUSED` on port 8080                            | Keycloak not running                                                                  | Run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak`                                                                                    |
-| `No Keycloak login form found` in `login.mjs`          | Backend not running or wrong port                                                     | Confirm harness log shows `Listening on :7007`; set `BASE_URL` if needed                                                                                                           |
-| `Auth error` / invalid credentials                     | Stale Keycloak container from before fixture password was added                       | Stop/remove the container and run `start:keycloak` again — import runs only on first container creation                                                                            |
-| `Invalid parameter: redirect_uri` from Keycloak        | Stale Keycloak container with old client config                                       | Stop/remove the container and run `start:keycloak` again to re-import the realm fixture                                                                                            |
-| `unable to resolve user identity` after Keycloak login | Catalog `User` not loaded (wrong harness, stale process, or fixture still processing) | Run the **auth** harness, wait a few seconds, confirm `user/default/test` via static-token `curl`, then retry `login.mjs`                                                          |
-| `401` / `Illegal token`                                | Wrong backend on the port or stale token                                              | Stop other backends on **7007**; re-run `login.mjs` after harness restart                                                                                                          |
-| Resolver mismatch                                      | Username sanitization vs catalog entity name                                          | Ensure catalog `User` metadata.name matches sanitized Keycloak `preferred_username`; see [Sign-in alignment](#sign-in-alignment-with-the-catalog-module)                           |
-| Realm changes ignored                                  | Stale Docker container                                                                | Stop/remove the container and run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak` again — import runs only on first container creation |
+| Symptom                                         | Likely cause                                    | Fix                                                                                                                                                                                |
+| ----------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ECONNREFUSED` on port 8080                     | Keycloak not running                            | Run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak`                                                                                    |
+| `Invalid parameter: redirect_uri` from Keycloak | Stale Keycloak container with old client config | Stop/remove the container and run `start:keycloak` again to re-import the realm fixture                                                                                            |
+| `401` / `Illegal token`                         | Wrong backend on the port                       | Stop other backends on **7007**                                                                                                                                                    |
+| Resolver mismatch                               | Username sanitization vs catalog entity name    | Ensure catalog `User` metadata.name matches sanitized Keycloak `preferred_username`; see [Sign-in alignment](#sign-in-alignment-with-the-catalog-module)                           |
+| Realm changes ignored                           | Stale Docker container                          | Stop/remove the container and run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak` again — import runs only on first container creation |
 
 ## Related packages
 
