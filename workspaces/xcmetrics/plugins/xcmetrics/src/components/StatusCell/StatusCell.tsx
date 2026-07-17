@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Tooltip } from '@backstage/ui';
-import { TooltipTrigger } from 'react-aria-components';
+import { useState } from 'react';
 import { BuildStatus, BuildStatusResult, xcmetricsApiRef } from '../../api';
 import { cn, formatDuration, formatStatus } from '../../utils';
 import useAsync from 'react-use/esm/useAsync';
@@ -69,6 +68,7 @@ interface StatusCellProps {
 }
 
 export const StatusCell = (props: StatusCellProps) => {
+  const [visible, setVisible] = useState(false);
   const { buildStatus, size, spacing } = props;
   const cellStyle = {
     width: size,
@@ -82,7 +82,7 @@ export const StatusCell = (props: StatusCellProps) => {
   }
 
   return (
-    <TooltipTrigger delay={0}>
+    <div className={styles.wrapper}>
       <button
         data-testid={buildStatus.id}
         className={cn(
@@ -91,10 +91,16 @@ export const StatusCell = (props: StatusCellProps) => {
         )}
         style={cellStyle}
         aria-label={formatStatus(buildStatus.buildStatus)}
+        onMouseEnter={() => setVisible(true)}
+        onMouseLeave={() => setVisible(false)}
+        onFocus={() => setVisible(true)}
+        onBlur={() => setVisible(false)}
       />
-      <Tooltip>
-        <TooltipContent buildId={buildStatus.id} />
-      </Tooltip>
-    </TooltipTrigger>
+      {visible && (
+        <div role="tooltip" className={styles.tooltip}>
+          <TooltipContent buildId={buildStatus.id} />
+        </div>
+      )}
+    </div>
   );
 };

@@ -1,4 +1,9 @@
 @layer components {
+  .wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
   .root {
     display: inline-block;
     padding: 0;
@@ -21,5 +26,20 @@
 
   .stopped {
     background-color: var(--bui-fg-warning);
+  }
+
+  .tooltip {
+    position: absolute;
+    z-index: 100;
+    bottom: calc(100% + var(--bui-space-2));
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bui-bg-neutral-1);
+    border: 1px solid var(--bui-border-1);
+    border-radius: var(--bui-radius-2);
+    padding: var(--bui-space-2) var(--bui-space-3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    pointer-events: none;
   }
 }
