@@ -1,0 +1,24 @@
+@layer components {
+  .container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .sidebar {
+    width: 33.333%;
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--bui-border-1);
+    margin-top: var(--bui-space-4);
+    margin-bottom: var(--bui-space-4);
+  }
+}

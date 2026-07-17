@@ -1,0 +1,17 @@
+@layer components {
+  .root {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .loading {
+    animation: loadingOpacity 900ms ease-in-out infinite;
+  }
+
+  @keyframes loadingOpacity {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+  }
+}

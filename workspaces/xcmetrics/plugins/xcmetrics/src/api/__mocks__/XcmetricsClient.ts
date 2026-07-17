@@ -38,7 +38,7 @@ export const mockBuild: Build = {
   startTimestamp: '2021-01-01T00:00:00Z',
   isCi: true,
   startTimestampMicroseconds: 0,
-  category: '',
+  category: 'release',
   endTimestampMicroseconds: 10000,
   day: '2021-01-01',
   compilationEndTimestamp: '2021-01-01T00:00:01Z',

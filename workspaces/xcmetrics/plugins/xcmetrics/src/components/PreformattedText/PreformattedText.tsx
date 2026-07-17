@@ -14,38 +14,20 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import CloseIcon from '@material-ui/icons/Close';
+import {
+  Button,
+  ButtonIcon,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@backstage/ui';
+import { DialogTrigger } from 'react-aria-components';
+import { RiCloseLine } from '@remixicon/react';
 import type { KeyboardEvent } from 'react';
 import { useState } from 'react';
 import { cn } from '../../utils';
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    pre: {
-      whiteSpace: 'pre-line',
-      wordBreak: 'break-all',
-    },
-    expandable: {
-      cursor: 'pointer',
-    },
-    fullPre: {
-      whiteSpace: 'pre-wrap',
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  }),
-);
+import styles from './PreformattedText.module.css';
 
 interface PreformattedTextProps {
   text: string;
@@ -69,7 +51,6 @@ export const PreformattedText = ({
   title,
 }: NonExpandableProps | ExpandableProps) => {
   const [open, setOpen] = useState(false);
-  const classes = useStyles();
 
   const handleKeyUp = (event: KeyboardEvent<HTMLDivElement>) => {
     if (expandable && event.key === 'Enter') {
@@ -85,40 +66,40 @@ export const PreformattedText = ({
         onKeyUp={handleKeyUp}
         tabIndex={expandable ? 0 : undefined}
       >
-        <pre className={cn(classes.pre, expandable && classes.expandable)}>
+        <pre className={cn(styles.pre, expandable && styles.expandable)}>
           {text.slice(0, maxChars - 1).trim()}
           {text.length > maxChars - 1 && '…'}
         </pre>
       </div>
 
       {expandable && (
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          maxWidth="xl"
-          fullWidth
-        >
-          <DialogTitle id="dialog-title">
-            {title}
-            <IconButton
-              aria-label="close"
-              className={classes.closeButton}
-              onClick={() => setOpen(false)}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <pre className={classes.fullPre}>{text}</pre>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={() => setOpen(false)}>
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <DialogTrigger>
+          <Dialog
+            isOpen={open}
+            isDismissable
+            onOpenChange={isOpen => {
+              if (!isOpen) setOpen(false);
+            }}
+          >
+            <DialogHeader>
+              <span>{title}</span>
+              <ButtonIcon
+                aria-label="close"
+                icon={<RiCloseLine size={16} />}
+                variant="secondary"
+                onPress={() => setOpen(false)}
+              />
+            </DialogHeader>
+            <DialogBody>
+              <pre className={styles.fullPre}>{text}</pre>
+            </DialogBody>
+            <DialogFooter>
+              <Button variant="primary" onClick={() => setOpen(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </Dialog>
+        </DialogTrigger>
       )}
     </>
   );

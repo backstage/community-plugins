@@ -14,38 +14,20 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
 import { xcmetricsApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import useMeasure from 'react-use/esm/useMeasure';
 import { cn } from '../../utils';
 import { useApi } from '@backstage/core-plugin-api';
-import Alert from '@material-ui/lab/Alert';
+import { ErrorPanel } from '@backstage/core-components';
 import { StatusCell } from '../StatusCell';
+import styles from './StatusMatrix.module.css';
 
 const CELL_SIZE = 12;
 const CELL_MARGIN = 4;
 const MAX_ROWS = 4;
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    marginTop: 8,
-    display: 'flex',
-    flexWrap: 'wrap',
-    width: '100%',
-  },
-  loading: {
-    animation: `$loadingOpacity 900ms ${theme.transitions.easing.easeInOut}`,
-    animationIterationCount: 'infinite',
-  },
-  '@keyframes loadingOpacity': {
-    '0%': { opacity: 0.3 },
-    '100%': { opacity: 0.8 },
-  },
-}));
-
 export const StatusMatrix = () => {
-  const classes = useStyles();
   const [measureRef, { width: rootWidth }] = useMeasure<HTMLDivElement>();
   const client = useApi(xcmetricsApiRef);
   const {
@@ -55,14 +37,14 @@ export const StatusMatrix = () => {
   } = useAsync(async () => client.getBuildStatuses(300), []);
 
   if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <ErrorPanel error={error} />;
   }
 
   const cols = Math.trunc(rootWidth / (CELL_SIZE + CELL_MARGIN)) || 1;
 
   return (
     <div
-      className={cn(classes.root, loading && classes.loading)}
+      className={cn(styles.root, loading && styles.loading)}
       ref={measureRef}
     >
       {loading &&

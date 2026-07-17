@@ -1,0 +1,18 @@
+@layer components {
+  .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--bui-space-6);
+  }
+
+  .mainContent {
+    flex: 3;
+    min-width: 0;
+  }
+
+  .sidebar {
+    flex: 1;
+    min-width: 200px;
+  }
+}

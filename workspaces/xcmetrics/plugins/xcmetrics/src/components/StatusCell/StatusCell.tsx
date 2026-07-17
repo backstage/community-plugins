@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Tooltip } from '@backstage/ui';
+import { TooltipTrigger } from 'react-aria-components';
 import { BuildStatus, BuildStatusResult, xcmetricsApiRef } from '../../api';
 import { cn, formatDuration, formatStatus } from '../../utils';
 import useAsync from 'react-use/esm/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { Progress } from '@backstage/core-components';
+import styles from './StatusCell.module.css';
 
 interface TooltipContentProps {
   buildId: string;
@@ -67,59 +68,32 @@ interface StatusCellProps {
   spacing: number;
 }
 
-type StatusStyle = {
-  [key in BuildStatus]: any;
-};
-
-const useStyles = makeStyles<Theme, StatusCellProps>(theme => ({
-  root: {
-    width: ({ size }) => size,
-    height: ({ size }) => size,
-    marginRight: ({ spacing }) => spacing,
-    marginBottom: ({ spacing }) => spacing,
-    backgroundColor: theme.palette.grey[600],
-    '&:hover': {
-      transform: 'scale(1.2)',
-    },
-  },
-  ...({
-    succeeded: {
-      backgroundColor:
-        theme.palette.type === 'light'
-          ? theme.palette.success.light
-          : theme.palette.success.main,
-    },
-  } as StatusStyle), // Make sure that key matches a status
-  ...({
-    failed: {
-      backgroundColor: theme.palette.error[theme.palette.type],
-    },
-  } as StatusStyle),
-  ...({
-    stopped: {
-      backgroundColor: theme.palette.warning[theme.palette.type],
-    },
-  } as StatusStyle),
-}));
-
 export const StatusCell = (props: StatusCellProps) => {
-  const classes = useStyles(props);
-  const { buildStatus } = props;
+  const { buildStatus, size, spacing } = props;
+  const cellStyle = {
+    width: size,
+    height: size,
+    marginRight: spacing,
+    marginBottom: spacing,
+  };
 
   if (!buildStatus) {
-    return <div className={classes.root} />;
+    return <div className={styles.root} style={cellStyle} />;
   }
 
   return (
-    <Tooltip
-      title={<TooltipContent buildId={buildStatus.id} />}
-      enterNextDelay={500}
-      arrow
-    >
+    <TooltipTrigger delay={500}>
       <div
         data-testid={buildStatus.id}
-        className={cn(classes.root, classes[buildStatus.buildStatus])}
+        className={cn(
+          styles.root,
+          styles[buildStatus.buildStatus as BuildStatus],
+        )}
+        style={cellStyle}
       />
-    </Tooltip>
+      <Tooltip>
+        <TooltipContent buildId={buildStatus.id} />
+      </Tooltip>
+    </TooltipTrigger>
   );
 };

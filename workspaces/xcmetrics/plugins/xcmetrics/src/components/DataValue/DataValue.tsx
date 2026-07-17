@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
-import { GridSize } from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
+import styles from './DataValue.module.css';
 
 interface DataValueProps {
   field: string;
@@ -24,21 +23,25 @@ interface DataValueProps {
 
 export const DataValue = ({ field, value }: DataValueProps) => {
   return (
-    <div>
-      <Typography variant="caption">{field}</Typography>
-      <Typography variant="subtitle1">{value ?? '--'}</Typography>
+    <div className={styles.root}>
+      <Text className={styles.label} variant="body-small">
+        {field}
+      </Text>
+      <Text className={styles.value} variant="body-medium">
+        {value ?? '--'}
+      </Text>
     </div>
   );
 };
 
 interface GridProps {
-  xs?: GridSize;
-  md?: GridSize;
-  lg?: GridSize;
+  xs?: number;
+  md?: number;
+  lg?: number;
 }
 
 export const DataValueGridItem = (props: DataValueProps & GridProps) => (
-  <Grid item xs={props.xs ?? 6} md={props.md ?? 6} lg={props.lg ?? 4}>
+  <div>
     <DataValue {...props} />
-  </Grid>
+  </div>
 );

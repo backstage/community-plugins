@@ -1,0 +1,10 @@
+@layer components {
+  .heading {
+    flex-basis: 33.33%;
+    flex-shrink: 0;
+  }
+
+  .secondaryHeading {
+    color: var(--bui-fg-secondary);
+  }
+}

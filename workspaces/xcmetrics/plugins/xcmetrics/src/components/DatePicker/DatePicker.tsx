@@ -14,67 +14,32 @@
  * limitations under the License.
  */
 
-import { createStyles } from '@material-ui/core/styles';
-import { InputProps } from '@material-ui/core/Input';
-import withStyles from '@material-ui/core/styles/withStyles';
-import { Theme } from '@material-ui/core/styles/createTheme';
-import InputBase from '@material-ui/core/InputBase/InputBase';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography/Typography';
-
-const BootstrapInput = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      margin: theme.spacing(1, 0),
-      maxWidth: 300,
-      'label + &': {
-        marginTop: theme.spacing(3),
-      },
-    },
-    input: {
-      borderRadius: 4,
-      position: 'relative',
-      backgroundColor: theme.palette.background.paper,
-      border: '1px solid #ced4da',
-      fontSize: 16,
-      padding: '10px 26px 10px 12px',
-      transition: theme.transitions.create(['border-color', 'box-shadow']),
-      fontFamily: 'Helvetica Neue',
-      height: 25,
-      '&:focus': {
-        background: theme.palette.background.paper,
-        borderRadius: 4,
-      },
-    },
-  }),
-)(InputBase);
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-});
+import React from 'react';
+import styles from './DatePicker.module.css';
 
 interface DatePickerProps {
   label: string;
+  value?: string;
   onDateChange?: (date: string) => void;
 }
 
 export const DatePicker = ({
   label,
   onDateChange,
+  value,
   ...inputProps
-}: InputProps & DatePickerProps) => {
-  const classes = useStyles();
-
+}: DatePickerProps & React.InputHTMLAttributes<HTMLInputElement>) => {
   return (
-    <div className={classes.root}>
-      <Typography variant="button">{label}</Typography>
-      <BootstrapInput
-        inputProps={{ 'aria-label': label }}
+    <div className={styles.root}>
+      <label className={styles.label} htmlFor={`date-picker-${label}`}>
+        {label}
+      </label>
+      <input
+        id={`date-picker-${label}`}
+        className={styles.input}
+        aria-label={label}
         type="date"
-        fullWidth
+        value={value}
         onChange={event => onDateChange?.(event.target.value)}
         {...inputProps}
       />

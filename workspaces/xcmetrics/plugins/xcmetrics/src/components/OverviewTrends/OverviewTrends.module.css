@@ -1,0 +1,17 @@
+@layer components {
+  .spacingTop {
+    margin-top: var(--bui-space-2);
+  }
+
+  .spacingVertical {
+    margin-top: var(--bui-space-2);
+    margin-bottom: var(--bui-space-2);
+  }
+
+  .dataGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--bui-space-4);
+    margin-top: var(--bui-space-4);
+  }
+}

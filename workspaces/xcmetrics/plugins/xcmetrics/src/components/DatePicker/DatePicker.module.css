@@ -1,0 +1,35 @@
+@layer components {
+  .root {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .label {
+    font-size: var(--bui-font-size-1);
+    font-weight: var(--bui-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--bui-space-2);
+    color: var(--bui-fg-primary);
+  }
+
+  .input {
+    margin: var(--bui-space-2) 0;
+    max-width: 300px;
+    border-radius: 4px;
+    position: relative;
+    background-color: var(--bui-bg-neutral-1);
+    border: 1px solid #ced4da;
+    font-size: 16px;
+    padding: 10px 26px 10px 12px;
+    height: 25px;
+    box-sizing: content-box;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--bui-ring);
+    background-color: var(--bui-bg-neutral-1);
+    border-radius: 4px;
+  }
+}

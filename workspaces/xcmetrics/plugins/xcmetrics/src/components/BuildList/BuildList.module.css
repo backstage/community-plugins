@@ -1,0 +1,12 @@
+@layer components {
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-6);
+  }
+
+  .detailPanel {
+    padding: var(--bui-space-4);
+    background-color: var(--bui-bg-neutral-1);
+  }
+}

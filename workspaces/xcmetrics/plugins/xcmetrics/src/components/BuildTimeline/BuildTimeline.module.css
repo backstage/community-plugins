@@ -1,0 +1,7 @@
+@layer components {
+  .toolTip {
+    background-color: var(--bui-bg-neutral-1);
+    opacity: 0.8;
+    padding: 8px;
+  }
+}

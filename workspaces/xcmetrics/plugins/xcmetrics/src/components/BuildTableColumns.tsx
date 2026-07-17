@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import Chip from '@material-ui/core/Chip';
 import { TableColumn } from '@backstage/core-components';
 import { Build } from '../api';
 import { formatTime, formatDuration } from '../utils';
 import { StatusIcon } from './StatusIcon';
+import styles from './BuildTableColumns.module.css';
 
 const baseColumns: TableColumn<Build>[] = [
   {
@@ -52,8 +52,7 @@ const baseColumns: TableColumn<Build>[] = [
 
 const isCi: TableColumn<Build> = {
   field: 'isCI',
-  render: data => data.isCi && <Chip label="CI" size="small" />,
-  width: '10',
+  render: data => data.isCi && <span className={styles.badge}>CI</span>,
   sorting: false,
 };
 
@@ -72,7 +71,10 @@ export const buildPageColumns: TableColumn<Build>[] = [
   {
     title: 'Category',
     field: 'category',
-    render: data => <Chip label={data.category} size="small" />,
+    render: data =>
+      data.category ? (
+        <span className={styles.badge}>{data.category}</span>
+      ) : null,
   },
   isCi,
 ];

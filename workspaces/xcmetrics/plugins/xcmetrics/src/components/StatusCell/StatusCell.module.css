@@ -1,0 +1,21 @@
+@layer components {
+  .root {
+    background-color: var(--bui-fg-disabled);
+  }
+
+  .root:hover {
+    transform: scale(1.2);
+  }
+
+  .succeeded {
+    background-color: var(--bui-fg-success);
+  }
+
+  .failed {
+    background-color: var(--bui-fg-danger);
+  }
+
+  .stopped {
+    background-color: var(--bui-fg-warning);
+  }
+}

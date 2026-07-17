@@ -1,0 +1,14 @@
+@layer components {
+  .pre {
+    white-space: pre-line;
+    word-break: break-all;
+  }
+
+  .expandable {
+    cursor: pointer;
+  }
+
+  .fullPre {
+    white-space: pre-wrap;
+  }
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { TrendLine } from '@backstage/core-components';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 
 interface TrendProps {
   data?: number[];
@@ -28,7 +28,7 @@ export const Trend = ({ data, title, color }: TrendProps) => {
 
   return (
     <>
-      <Typography variant="overline">{title}</Typography>
+      <Text variant="body-small">{title}</Text>
       <TrendLine
         data={data ?? emptyData}
         title={title}

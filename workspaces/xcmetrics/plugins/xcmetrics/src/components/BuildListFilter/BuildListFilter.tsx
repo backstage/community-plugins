@@ -15,26 +15,18 @@
  */
 
 import { useEffect, useState } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
-import FilterList from '@material-ui/icons/FilterList';
+import { ButtonIcon, Button } from '@backstage/ui';
+import { RiFilter3Line } from '@remixicon/react';
 import { InfoCard, Select } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import { BuildFilters, BuildStatus, xcmetricsApiRef } from '../../api';
 import { DatePicker } from '../DatePicker';
+import styles from './BuildListFilter.module.css';
 
 const toSelectItems = (strings: string[]) => {
   return strings.map(str => ({ label: str, value: str }));
 };
-
-const useStyles = makeStyles(theme => ({
-  filtersContent: {
-    padding: theme.spacing(2, 2, 2, 2.5),
-  },
-}));
 
 type FilterOption<T> = T | 'all';
 
@@ -48,7 +40,6 @@ export const BuildListFilter = ({
   initialValues,
 }: FiltersProps) => {
   const client = useApi(xcmetricsApiRef);
-  const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState(initialValues);
 
@@ -61,15 +52,15 @@ export const BuildListFilter = ({
 
   const title = (
     <>
-      <IconButton
-        onClick={() => setOpen(!open)}
+      <ButtonIcon
         aria-label={`${open ? 'hide' : 'show'} filters`}
-      >
-        <FilterList />
-      </IconButton>
+        icon={<RiFilter3Line size={18} />}
+        variant="secondary"
+        onPress={() => setOpen(!open)}
+      />
       Filters ({numFilters})
       {!!numFilters && (
-        <Button color="primary" onClick={() => setValues(initialValues)}>
+        <Button variant="secondary" onClick={() => setValues(initialValues)}>
           Clear all
         </Button>
       )}
@@ -88,27 +79,22 @@ export const BuildListFilter = ({
   }, []);
 
   const content = (
-    <Grid
-      container
-      spacing={3}
-      direction="row"
-      className={classes.filtersContent}
-    >
-      <Grid item sm={6} md={4} lg={2}>
+    <div className={styles.filtersContent}>
+      <div className={styles.filterItem}>
         <DatePicker
           label="From"
           value={values.from}
           onDateChange={date => setValues({ ...values, from: date })}
         />
-      </Grid>
-      <Grid item sm={6} md={4} lg={2}>
+      </div>
+      <div className={styles.filterItem}>
         <DatePicker
           label="To"
           value={values.to}
           onDateChange={date => setValues({ ...values, to: date })}
         />
-      </Grid>
-      <Grid item sm={6} md={4} lg={2}>
+      </div>
+      <div className={styles.filterItem}>
         <Select
           label="Status"
           items={statusItems}
@@ -119,8 +105,8 @@ export const BuildListFilter = ({
             setValues({ ...values, buildStatus });
           }}
         />
-      </Grid>
-      <Grid item sm={6} md={4} lg={2}>
+      </div>
+      <div className={styles.filterItem}>
         {loading ? (
           <Select
             label="Project"
@@ -142,8 +128,8 @@ export const BuildListFilter = ({
             }
           />
         )}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 
   return (

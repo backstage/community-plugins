@@ -20,15 +20,15 @@ import {
   Table,
   EmptyState,
   InfoCard,
+  ErrorPanel,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { xcmetricsApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
-import Alert from '@material-ui/lab/Alert';
 import { StatusMatrix } from '../StatusMatrix';
-import Grid from '@material-ui/core/Grid';
 import { OverviewTrends } from '../OverviewTrends';
 import { overviewColumns } from '../BuildTableColumns';
+import styles from './Overview.module.css';
 
 export const Overview = () => {
   const client = useApi(xcmetricsApiRef);
@@ -41,7 +41,7 @@ export const Overview = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <ErrorPanel error={error} />;
   }
 
   if (!builds || !builds.length) {
@@ -59,8 +59,8 @@ export const Overview = () => {
       <ContentHeader title="XCMetrics Dashboard">
         <SupportButton>Dashboard for XCMetrics</SupportButton>
       </ContentHeader>
-      <Grid container spacing={3} direction="row">
-        <Grid item xs={12} md={8} lg={8} xl={9}>
+      <div className={styles.container}>
+        <div className={styles.mainContent}>
           <Table
             options={{
               paging: false,
@@ -77,13 +77,13 @@ export const Overview = () => {
               </>
             }
           />
-        </Grid>
-        <Grid item xs={12} md={4} lg={4} xl={3}>
+        </div>
+        <div className={styles.sidebar}>
           <InfoCard>
             <OverviewTrends />
           </InfoCard>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </>
   );
 };
