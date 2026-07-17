@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "backstage-cli package start --config app-config.yaml",
+    "start:keycloak": "docker run --rm --name keycloak-dev -p 8080:8080 -e 'KEYCLOAK_ADMIN=admin' -e 'KEYCLOAK_ADMIN_PASSWORD=admin' -v ./manual-tests/keycloak/backstage-realm.json:/opt/keycloak/data/import/backstage-realm.json$([ $(uname -s) = 'Linux' ] && echo ':z') quay.io/keycloak/keycloak:22.0.1 start-dev --import-realm",
     "start:manual-tests": "backstage-cli package start --config app-config.yaml --config app-config.manual-tests.yaml",
     "build": "backstage-cli package build",
     "tsc": "tsc",

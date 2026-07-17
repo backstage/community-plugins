@@ -6,6 +6,7 @@ Developer guide for `@backstage-community/plugin-rbac-backend`. For operator ins
 
 - Node.js **22+** (see workspace `engines` in the workspace root `package.json`)
 - Yarn (community-plugins monorepo lockfile)
+- **Docker** — local Keycloak for multi-user permission smoke (port **8080**)
 
 ## Development harness
 
@@ -18,27 +19,37 @@ yarn workspace @backstage-community/plugin-rbac-backend start
 
 Sample non-secret config keys live in [`app-config.yaml`](./app-config.yaml) beside this package. Optional overrides: untracked `app-config.local.yaml` in the same directory.
 
-For OIDC-backed manual permission checks (Keycloak + superhero CSV policies):
+The default harness uses **guest auth** — the guest user (`user:development/guest`) is configured as the RBAC admin.
+
+### Multi-user permission testing (Keycloak + OIDC)
+
+Start Keycloak with realm import (terminal 1):
+
+```bash
+yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
+```
+
+Start the backend with OIDC overlay (terminal 2, after Keycloak is healthy):
 
 ```bash
 yarn workspace @backstage-community/plugin-rbac-backend start:manual-tests
 ```
 
-See [manual-tests/README.md](./manual-tests/README.md) for that flow.
+This loads the OIDC provider config, superhero catalog entities, and CSV policies. See [manual-tests/README.md](./manual-tests/README.md) for the full flow (login, permission checks for 42 users).
 
 Only one backend `dev/` harness should listen on port **7007** at a time.
 
 ### Recommended workflows
 
-| Goal                         | Command                                                                                                                           |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Backend / REST / policy work | `yarn workspace @backstage-community/plugin-rbac-backend start`                                                                   |
-| UI work (mocked APIs)        | `yarn workspace @backstage-community/plugin-rbac start:mock`                                                                      |
-| Multi-user permission smoke  | `yarn workspace @backstage-community/plugin-rbac-backend start:manual-tests` + [manual-tests/README.md](./manual-tests/README.md) |
+| Goal                         | Command                                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------- |
+| Backend / REST / policy work | `yarn workspace @backstage-community/plugin-rbac-backend start`                              |
+| UI work (mocked APIs)        | `yarn workspace @backstage-community/plugin-rbac start:mock`                                 |
+| Multi-user permission smoke  | `start:keycloak` + `start:manual-tests` + [manual-tests/README.md](./manual-tests/README.md) |
 
 ### Full workspace evaluation
 
-There is no in-repo full Backstage app (`packages/app`, `packages/backend`). Day-to-day development uses plugin `dev/` harnesses plus automated tests. Legacy NFS-related CI in this workspace was evaluated and remains unchanged — backend `dev/` plus unit/integration tests cover module init and permission route registration.
+There is no in-repo full Backstage app (`packages/app`, `packages/backend`). Day-to-day development uses plugin `dev/` harnesses plus automated tests.
 
 ## Validation commands
 
@@ -64,7 +75,7 @@ Shared types and permission constants are covered in [`@backstage-community/plug
 
 After changing route registration or bumping `@backstage/*` dependencies:
 
-1. Start the backend harness (`start` or `start:manual-tests`).
+1. Start the backend harness (`start`).
 2. Readiness:
 
    ```bash
@@ -81,8 +92,6 @@ After changing route registration or bumping `@backstage/*` dependencies:
    ```
 
 REST endpoint reference: [docs/apis.md](./docs/apis.md).
-
-Multi-user, credential-backed, or production-like end-to-end testing belongs in a consumer Backstage deployment — not a newly scaffolded in-repo full app.
 
 ## Related packages
 
