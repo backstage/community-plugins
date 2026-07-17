@@ -26,8 +26,30 @@ export type ResolveCreateSecretRequestResult = {
 };
 
 export function normalizeAnnotatedPath(path: string): string {
-  const segments = path.trim().split('/').filter(Boolean);
-  return segments.length === 0 ? '/' : `/${segments.join('/')}`;
+  const trimmed = path.trim();
+  if (!trimmed) {
+    return '/';
+  }
+
+  const segments = trimmed.split('/').filter(Boolean);
+  const resolved: string[] = [];
+
+  for (const segment of segments) {
+    if (segment === '.') {
+      continue;
+    }
+    if (segment === '..') {
+      if (resolved.length === 0) {
+        // Treat traversal above root as root to avoid producing invalid paths
+        return '/';
+      }
+      resolved.pop();
+      continue;
+    }
+    resolved.push(segment);
+  }
+
+  return resolved.length === 0 ? '/' : `/${resolved.join('/')}`;
 }
 
 export function resolveCreateSecretRequest({
