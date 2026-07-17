@@ -1,5 +1,16 @@
 # @backstage-community/plugin-quay
 
+## 1.37.0
+
+### Minor Changes
+
+- 07a0064: Migrate Quay plugin to the new frontend system (NFS). Legacy (OFS) exports remain available from the main entry point.
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- dc80f66: Updated dependency `start-server-and-test` to `3.0.11`.
+
 ## 1.36.0
 
 ### Minor Changes
