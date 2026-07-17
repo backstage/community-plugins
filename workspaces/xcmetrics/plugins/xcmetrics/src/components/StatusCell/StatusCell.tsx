@@ -83,13 +83,14 @@ export const StatusCell = (props: StatusCellProps) => {
 
   return (
     <TooltipTrigger delay={500}>
-      <div
+      <button
         data-testid={buildStatus.id}
         className={cn(
           styles.root,
           styles[buildStatus.buildStatus as BuildStatus],
         )}
         style={cellStyle}
+        aria-label={formatStatus(buildStatus.buildStatus)}
       />
       <Tooltip>
         <TooltipContent buildId={buildStatus.id} />

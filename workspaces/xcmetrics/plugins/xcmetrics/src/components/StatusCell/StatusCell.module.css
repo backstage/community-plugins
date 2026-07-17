@@ -1,5 +1,9 @@
 @layer components {
   .root {
+    display: inline-block;
+    padding: 0;
+    border: none;
+    cursor: default;
     background-color: var(--bui-fg-disabled);
   }
 
