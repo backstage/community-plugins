@@ -102,14 +102,14 @@ Point `gatewayUrl` at your gateway (port 8080 with `/v2` or port 8081 without pr
 
 All routes are prefixed with `/api/akeyless`.
 
-| Endpoint                       | Description                                                     |
-| ------------------------------ | --------------------------------------------------------------- |
-| `GET /health`                  | Health check; includes `allowCrud` when configured              |
-| `GET /v1/secrets/:path`        | List items under path (URL-encode `/...` paths, e.g. `%2Fdemo%2Fprod`)       |
-| `GET /v1/static-secrets/value` | Read a static secret value (`name`, `contextPath` query params) |
-| `POST /v1/static-secrets`      | Create a static secret (`name`, `value`, `contextPath` in body) |
-| `PUT /v1/static-secrets`       | Update a static secret value                                    |
-| `DELETE /v1/static-secrets`    | Delete a static secret                                          |
+| Endpoint                       | Description                                                            |
+| ------------------------------ | ---------------------------------------------------------------------- |
+| `GET /health`                  | Health check; includes `allowCrud` when configured                     |
+| `GET /v1/secrets/:path`        | List items under path (URL-encode `/...` paths, e.g. `%2Fdemo%2Fprod`) |
+| `GET /v1/static-secrets/value` | Read a static secret value (`name`, `contextPath` query params)        |
+| `POST /v1/static-secrets`      | Create a static secret (`name`, `value`, `contextPath` in body)        |
+| `PUT /v1/static-secrets`       | Update a static secret value                                           |
+| `DELETE /v1/static-secrets`    | Delete a static secret                                                 |
 
 Optional query param on list: `types` (repeatable) to filter item types.
 
