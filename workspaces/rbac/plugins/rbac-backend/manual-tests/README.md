@@ -9,8 +9,7 @@ Run RBAC permission checks against all **42** superhero catalog users without a 
 ## Prerequisites
 
 - Node.js 22+ and Yarn
-- Python 3 with `requests` (`python3 -m pip install requests`)
-- Docker or Podman (for Keycloak)
+- **Docker** (for Keycloak)
 - Optional: PostgreSQL via `plugins/rbac-backend/app-config.local.yaml` (default harness uses in-memory SQLite from `plugins/rbac-backend/app-config.yaml`)
 
 ## Quick start
@@ -27,11 +26,11 @@ yarn install
 Start Keycloak **before** the Backstage backend so OIDC metadata is available on first login.
 
 ```bash
-chmod +x plugins/rbac-backend/manual-tests/scripts/*
-./plugins/rbac-backend/manual-tests/scripts/start-keycloak.sh
+yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
 ```
 
-Uses Docker when it is running, otherwise Podman. Keycloak admin: http://localhost:8080/admin (`admin` / `admin`)
+Keycloak admin: http://localhost:8080/admin (`admin` / `admin`).
+Realm `backstage` is auto-imported from `manual-tests/keycloak/backstage-realm.json`.
 
 All test users use password `test` (for example `ant_man@example.com`).
 
@@ -57,19 +56,19 @@ curl -sf http://localhost:7007/.backstage/health/v1/readiness
 
 ```bash
 python3 plugins/rbac-backend/manual-tests/scripts/generate-userinfo.py
-python3 plugins/rbac-backend/manual-tests/scripts/login.py \
+node plugins/rbac-backend/manual-tests/scripts/login.mjs \
   --csv plugins/rbac-backend/manual-tests/userinfo.csv
 ```
 
 Or a single user:
 
 ```bash
-python3 plugins/rbac-backend/manual-tests/scripts/login.py --user ant_man
+node plugins/rbac-backend/manual-tests/scripts/login.mjs --user ant_man
 ```
 
-The login script performs the OIDC redirect flow against `/api/auth/oidc/start` — no browser or frontend required. `FRONTEND_URL` defaults to `http://localhost:3000` and is only used as the auth `origin` parameter.
+The login script performs the OIDC redirect flow against `/api/auth/oidc/start` using only Node.js built-ins (no npm dependencies). `FRONTEND_URL` defaults to `http://localhost:3000` and is only used as the auth `origin` parameter.
 
-**Important:** bearer tokens in `userinfo.csv` are tied to the running backend instance. After every backend restart (in-memory SQLite resets auth keys), re-run `login.py` before `test-permissions.sh`. A `401 Failed user token verification` error means the tokens are stale.
+**Important:** bearer tokens in `userinfo.csv` are tied to the running backend instance. After every backend restart (in-memory SQLite resets auth keys), re-run `login.mjs` before `test-permissions.sh`. A `401 Failed user token verification` error means the tokens are stale.
 
 Regenerate `userinfo.csv` after changing expected results:
 
@@ -92,8 +91,8 @@ python3 plugins/rbac-backend/manual-tests/scripts/generate-userinfo.py
 | `plugins/rbac-backend/manual-tests/rbac/users.yaml`, `groups.yaml` | Catalog entities                                 |
 | `plugins/rbac-backend/manual-tests/keycloak/backstage-realm.json`  | Keycloak realm with matching users               |
 | `plugins/rbac-backend/manual-tests/userinfo.csv`                   | Login + test matrix for all 42 users             |
-| `plugins/rbac-backend/manual-tests/scripts/start-keycloak.sh`      | Run Keycloak with realm import                   |
-| `plugins/rbac-backend/manual-tests/scripts/login.py`               | OIDC login → Backstage bearer token              |
+| `start:keycloak` script in `package.json`                          | Run Keycloak with realm import (Docker)          |
+| `plugins/rbac-backend/manual-tests/scripts/login.mjs`              | OIDC login → Backstage bearer token (Node.js)    |
 | `plugins/rbac-backend/manual-tests/scripts/generate-userinfo.py`   | Regenerate `userinfo.csv` from test expectations |
 | `plugins/rbac-backend/manual-tests/scripts/test-permissions.sh`    | POST `/api/permission/authorize` for every user  |
 | `plugins/rbac-backend/app-config.manual-tests.yaml`                | Backend overlay config                           |

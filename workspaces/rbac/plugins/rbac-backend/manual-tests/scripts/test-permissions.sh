@@ -7,7 +7,7 @@ BASE_URL="${BASE_URL:-http://localhost:7007}"
 
 if [[ ! -f "$CSV_FILE" ]]; then
   echo "ERROR: CSV not found: $CSV_FILE" >&2
-  echo "Run: python3 $SCRIPT_DIR/login.py --csv $CSV_FILE" >&2
+  echo "Run: node $SCRIPT_DIR/login.mjs --csv $CSV_FILE" >&2
   exit 1
 fi
 
@@ -50,7 +50,7 @@ with open(csv_path, newline="", encoding="utf-8") as handle:
         expected = row[2] if len(row) > 2 else ""
         token = row[3] if len(row) > 3 else ""
         if not token or token == "token":
-            print(f"SKIP {email} (no token — run login.py first)")
+            print(f"SKIP {email} (no token — run login.mjs first)")
             continue
 
         request = urllib.request.Request(
@@ -72,8 +72,8 @@ with open(csv_path, newline="", encoding="utf-8") as handle:
                     auth_hint_shown = True
                     print(
                         "FAIL auth: tokens rejected (backend restarted or expired). "
-                        "Re-run login.py against the running backend (from workspaces/rbac):\n"
-                        "  python3 plugins/rbac-backend/manual-tests/scripts/login.py "
+                        "Re-run login.mjs against the running backend (from workspaces/rbac):\n"
+                        "  node plugins/rbac-backend/manual-tests/scripts/login.mjs"
                         "--csv plugins/rbac-backend/manual-tests/userinfo.csv\n"
                     )
                 print(f"FAIL {email} HTTP 401: token verification failed")
@@ -91,7 +91,7 @@ with open(csv_path, newline="", encoding="utf-8") as handle:
             failures += 1
 
 if auth_failures:
-    print(f"{auth_failures} token(s) rejected — refresh with login.py before re-testing")
+    print(f"{auth_failures} token(s) rejected — refresh with login.mjs before re-testing")
     sys.exit(1)
 
 if failures:
