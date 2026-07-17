@@ -65,7 +65,7 @@ type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
 /**
  * Group, user, role, and permission information can be found under `__fixtures__/data/hierarchy/`
- * More information can be found at `manual-tests/rbac` in the rbac-backend plugin
+ * More information can be found at `__fixtures__/rbac` in the rbac-backend plugin
  * Included is a txt file with charts for the hierarchy levels for visualization
  */
 describe('Policy checks for users and groups', () => {
