@@ -25,7 +25,7 @@ auth:
       development:
         metadataUrl: http://localhost:8080/realms/backstage
         clientId: backstage
-        clientSecret: 5Mpv83xSyJkBVnP1Oi28u9RrbGAMRps3
+        clientSecret: backstage-dev-client-secret
         prompt: auto
         signIn:
           resolvers:

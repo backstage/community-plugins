@@ -550,7 +550,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "5Mpv83xSyJkBVnP1Oi28u9RrbGAMRps3",
+      "secret": "backstage-dev-client-secret",
       "redirectUris": [
         "http://localhost:3000/*",
         "http://localhost:7007/*",
