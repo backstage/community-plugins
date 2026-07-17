@@ -32,7 +32,7 @@ Install the [frontend plugin](../akeyless/README.md) to consume these APIs from 
 | `akeyless.deploymentProfile`                         | No             | `saas`                        | `saas`, `onprem`, or `cloud` — controls valid auth methods                                               |
 | `akeyless.gatewayUrl`                                | No             | `https://api.akeyless.io`     | Akeyless API gateway URL                                                                                 |
 | `akeyless.consoleUrl`                                | No             | `https://console.akeyless.io` | Base URL for Console deep links                                                                          |
-| `akeyless.allowCrud`                                 | No             | `true`                        | When `false`, only list endpoints are active                                                             |
+| `akeyless.allowCrud`                                 | No             | `false`                       | When `true`, enables static-secret CRUD endpoints. Defaults to off for safer secrets-plugin defaults     |
 | `akeyless.authentication.method`                     | No             | inferred                      | `accessKey`, `universalIdentity`, or `cloudIam`. Inferred from configured credential fields when omitted |
 | `akeyless.authentication.accessKey.accessId`         | For access key | —                             | Akeyless access ID                                                                                       |
 | `akeyless.authentication.accessKey.accessKey`        | For access key | —                             | Akeyless access key                                                                                      |
@@ -119,16 +119,16 @@ CRUD routes require `contextPath` in the request body or query. The backend norm
 
 The frontend passes `contextPath` from the entity's `akeyless.io/secrets-path` annotation, but the backend does **not** verify that value against the catalog. A caller who can reach these endpoints could supply a different `contextPath`. Treat the shared Akeyless credential scope and Backstage catalog access controls as the real security boundary — not `contextPath` alone.
 
-### Disable CRUD
+### Enable CRUD
 
-Globally:
+> **Security note:** CRUD is **disabled by default**. Leaving it off is recommended for most deployments — users can still list secrets and open them in the Akeyless Console. Only enable CRUD if you intentionally want create/update/delete of static secrets from Backstage, and you understand that any user who can reach the plugin API can attempt those operations within the shared credential's scope.
 
 ```yaml
 akeyless:
-  allowCrud: false
+  allowCrud: true
 ```
 
-Per entity (frontend hides controls; backend still enforces global setting):
+To hide CRUD controls for a single entity while CRUD remains enabled globally:
 
 ```yaml
 metadata:
@@ -136,7 +136,7 @@ metadata:
     akeyless.io/allow-crud: 'false'
 ```
 
-When CRUD is disabled, CRUD endpoints return `403 Not Allowed`.
+When CRUD is disabled (the default), CRUD endpoints return `403 Not Allowed`.
 
 ## Permissions
 
@@ -159,7 +159,7 @@ curl http://localhost:7007/api/akeyless/health
 Configured and healthy:
 
 ```json
-{ "status": "ok", "allowCrud": true }
+{ "status": "ok", "allowCrud": false }
 ```
 
 Missing configuration:

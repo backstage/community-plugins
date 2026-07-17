@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-export {
-  AKEYLESS_SECRET_PATH_ANNOTATION,
-  AKEYLESS_SECRET_TYPES_ANNOTATION,
-  AKEYLESS_ALLOW_CRUD_ANNOTATION,
-  DEFAULT_SECRET_TYPES,
-} from '@backstage-community/plugin-akeyless-common';
+/**
+ * An Akeyless item listed for a catalog entity path.
+ * @public
+ */
+export type AkeylessSecret = {
+  name: string;
+  fullPath: string;
+  itemType: string;
+  path: string;
+  showUrl: string;
+  editUrl: string;
+};

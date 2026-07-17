@@ -7,7 +7,8 @@
     "pluginId": "akeyless",
     "pluginPackages": [
       "@backstage-community/plugin-akeyless",
-      "@backstage-community/plugin-akeyless-backend"
+      "@backstage-community/plugin-akeyless-backend",
+      "@backstage-community/plugin-akeyless-common"
     ]
   },
   "publishConfig": {
@@ -43,6 +44,7 @@
     "test": "backstage-cli package test"
   },
   "dependencies": {
+    "@backstage-community/plugin-akeyless-common": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/config": "backstage:^",

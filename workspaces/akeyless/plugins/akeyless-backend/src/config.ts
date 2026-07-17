@@ -152,7 +152,7 @@ export function getAkeylessConfig(config: Config): AkeylessConfig {
     deploymentProfile,
     gatewayUrl,
     consoleUrl,
-    allowCrud: config.getOptionalBoolean('akeyless.allowCrud') ?? true,
+    allowCrud: config.getOptionalBoolean('akeyless.allowCrud') ?? false,
     authentication,
   };
 }

@@ -2,6 +2,8 @@
 
 Frontend plugin for the [Akeyless](https://www.akeyless.io) Backstage integration. Shows Akeyless items linked to a catalog entity and optionally manages static secrets in Backstage.
 
+![Screenshot of the Akeyless secrets table](images/akeyless-table.png)
+
 > **Requires the backend plugin.** Install and configure [@backstage-community/plugin-akeyless-backend](../akeyless-backend/README.md) first.
 
 ## Introduction
@@ -16,8 +18,7 @@ Dynamic secrets, rotated secrets, and certificates are listed with Console links
 
 ## Prerequisites
 
-- Backstage 1.51+ recommended for the new frontend system (`/alpha` entry point)
-- `@backstage-community/plugin-akeyless-backend` installed and configured
+- [@backstage-community/plugin-akeyless-backend](../akeyless-backend/README.md) installed and configured
 - Akeyless credentials with access to the paths you will annotate on catalog entities
 
 ## Installation
@@ -30,7 +31,7 @@ yarn --cwd packages/app add @backstage-community/plugin-akeyless
 
 ### 2. Register the plugin
 
-#### New frontend system (Backstage 1.51+)
+#### Frontend system
 
 The alpha plugin registers the API client, an **overview card**, and a **Development → Akeyless** entity tab automatically:
 
@@ -45,7 +46,7 @@ export default createApp({
 
 No further entity-page wiring is required. The card and tab appear only for entities that have `akeyless.io/secrets-path`.
 
-#### Classic frontend system
+#### Legacy frontend system
 
 ```tsx
 // packages/app/src/App.tsx
@@ -138,9 +139,11 @@ metadata:
     akeyless.io/allow-crud: 'false'
 ```
 
-Global CRUD disable is also available via `akeyless.allowCrud: false` in `app-config.yaml` — see the [backend README](../akeyless-backend/README.md#disable-crud).
+Global CRUD is **off by default**. Enable it with `akeyless.allowCrud: true` in `app-config.yaml` — see the [backend README](../akeyless-backend/README.md#enable-crud).
 
 ### Missing annotation
+
+![Screenshot of the Akeyless plugin with missing annotation](images/annotation-missing.png)
 
 If `akeyless.io/secrets-path` is absent or blank, the card shows Backstage's standard missing-annotation empty state prompting you to add the annotation.
 
@@ -172,17 +175,17 @@ The frontend sends the entity's annotated path as `contextPath`. The backend rej
 - Secret values for static secrets are only fetched when a user explicitly opens the view or edit dialog — they are not shown in the list by default.
 - The Akeyless API credential lives in the Backstage backend configuration, not in the browser.
 - `contextPath` is a caller-provided guard, not a catalog-enforced security boundary. Any Backstage user who can reach the plugin API could supply a different `contextPath` within the limits enforced by the backend and the shared credential.
-- Any Backstage user who can view an annotated entity can use the plugin with the permissions of that shared credential. Restrict catalog access, scope the Akeyless credential narrowly, and/or disable CRUD if needed.
+- Any Backstage user who can view an annotated entity can use the plugin with the permissions of that shared credential. Restrict catalog access, scope the Akeyless credential narrowly, and keep CRUD disabled unless you need it.
 
 ## Troubleshooting
 
-| Symptom                                 | What to check                                                                                           |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Card/tab not visible                    | Entity missing `akeyless.io/secrets-path`; classic frontend may need manual `EntityAkeylessCard` wiring |
-| "Failed to load secrets" row for a path | Akeyless credential lacks list permission on that path, or path does not exist                          |
-| No CRUD buttons                         | `akeyless.allowCrud: false` in config or `akeyless.io/allow-crud: "false"` on entity                    |
-| Edit dialog does not open               | Value fetch failed — check read permissions on the static secret                                        |
-| API errors / 404                        | Backend plugin not installed; verify `GET /api/akeyless/health`                                         |
+| Symptom                                 | What to check                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Card/tab not visible                    | Entity missing `akeyless.io/secrets-path`; legacy frontend may need manual `EntityAkeylessCard` wiring |
+| "Failed to load secrets" row for a path | Akeyless credential lacks list permission on that path, or path does not exist                         |
+| No CRUD buttons                         | CRUD is off by default — set `akeyless.allowCrud: true`, and check `akeyless.io/allow-crud` on entity  |
+| Edit dialog does not open               | Value fetch failed — check read permissions on the static secret                                       |
+| API errors / 404                        | Backend plugin not installed; verify `GET /api/akeyless/health`                                        |
 
 ## Related documentation
 

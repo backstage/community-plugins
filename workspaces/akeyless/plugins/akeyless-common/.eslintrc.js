@@ -13,10 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export {
-  AKEYLESS_SECRET_PATH_ANNOTATION,
-  AKEYLESS_SECRET_TYPES_ANNOTATION,
-  AKEYLESS_ALLOW_CRUD_ANNOTATION,
-  DEFAULT_SECRET_TYPES,
-} from '@backstage-community/plugin-akeyless-common';
+module.exports = require('@backstage/cli/config/eslint-factory')(__dirname);

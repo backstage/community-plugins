@@ -14,9 +14,5 @@
  * limitations under the License.
  */
 
-export {
-  AKEYLESS_SECRET_PATH_ANNOTATION,
-  AKEYLESS_SECRET_TYPES_ANNOTATION,
-  AKEYLESS_ALLOW_CRUD_ANNOTATION,
-  DEFAULT_SECRET_TYPES,
-} from '@backstage-community/plugin-akeyless-common';
+export * from './types';
+export * from './constants';

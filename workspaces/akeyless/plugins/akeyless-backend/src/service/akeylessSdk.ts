@@ -14,45 +14,56 @@
  * limitations under the License.
  */
 
-declare module 'akeyless' {
-  export const ApiClient: new () => {
-    basePath: string;
-  };
-  export const V2Api: new (client: unknown) => {
-    auth: (body: unknown) => Promise<{ token: string }>;
-    listItems: (body: unknown) => Promise<{
-      items?: Array<{ item_name?: string; item_type?: string }>;
-      folders?: string[];
-    }>;
-    getSecretValue: (body: unknown) => Promise<{ value?: string }>;
-    createSecret: (body: unknown) => Promise<unknown>;
-    updateSecretVal: (body: unknown) => Promise<unknown>;
-    deleteItem: (body: unknown) => Promise<unknown>;
-  };
-  export const Auth: {
+type AkeylessApiClient = {
+  basePath: string;
+};
+
+type AkeylessV2Api = {
+  auth: (body: unknown) => Promise<{ token: string }>;
+  listItems: (body: unknown) => Promise<{
+    items?: Array<{ item_name?: string; item_type?: string }>;
+    folders?: string[];
+  }>;
+  getSecretValue: (body: unknown) => Promise<{ value?: string }>;
+  createSecret: (body: unknown) => Promise<unknown>;
+  updateSecretVal: (body: unknown) => Promise<unknown>;
+  deleteItem: (body: unknown) => Promise<unknown>;
+};
+
+type AkeylessSdk = {
+  ApiClient: new () => AkeylessApiClient;
+  V2Api: new (client: unknown) => AkeylessV2Api;
+  Auth: {
     constructFromObject: (obj: Record<string, string>) => unknown;
   };
-  export const ListItems: {
+  ListItems: {
     constructFromObject: (obj: Record<string, unknown>) => unknown;
   };
-  export const GetSecretValue: {
+  GetSecretValue: {
     constructFromObject: (obj: Record<string, string>) => unknown;
   };
-  export const CreateSecret: {
+  CreateSecret: {
     constructFromObject: (obj: Record<string, string>) => unknown;
   };
-  export const UpdateSecretVal: {
+  UpdateSecretVal: {
     constructFromObject: (obj: Record<string, string>) => unknown;
   };
-  export const DeleteItem: {
+  DeleteItem: {
     constructFromObject: (obj: Record<string, string>) => unknown;
   };
-}
+};
 
-declare module 'akeyless-cloud-id' {
-  export function getCloudId(
+type AkeylessCloudIdSdk = {
+  getCloudId: (
     provider: string,
     param: string,
     callback: (err: Error | undefined, res: string | undefined) => void,
-  ): void;
-}
+  ) => void;
+};
+
+// The akeyless npm packages ship without TypeScript types; wrap them locally.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+export const akeyless = require('akeyless') as AkeylessSdk;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+export const akeylessCloudId =
+  require('akeyless-cloud-id') as AkeylessCloudIdSdk;

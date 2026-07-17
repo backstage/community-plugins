@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * Copyright 2026 The Backstage Authors
  *

@@ -39,8 +39,9 @@ export interface Config {
     consoleUrl?: string;
 
     /**
-     * When false, CRUD endpoints are disabled and only list operations are allowed.
-     * Defaults to true.
+     * When true, CRUD endpoints for static secrets are enabled.
+     * Defaults to false so the plugin is list-and-Console-link only out of the box.
+     * Enable only if you intentionally want in-Backstage create/update/delete.
      */
     allowCrud?: boolean;
 
@@ -51,15 +52,31 @@ export interface Config {
       method?: 'accessKey' | 'universalIdentity' | 'cloudIam';
 
       accessKey?: {
+        /**
+         * Akeyless access ID.
+         * @visibility secret
+         */
         accessId: string;
+        /**
+         * Akeyless access key.
+         * @visibility secret
+         */
         accessKey: string;
       };
 
       universalIdentity?: {
+        /**
+         * Universal Identity token.
+         * @visibility secret
+         */
         uidToken: string;
       };
 
       cloudIam?: {
+        /**
+         * Akeyless access ID used with cloud IAM auth.
+         * @visibility secret
+         */
         accessId: string;
         provider: 'aws_iam' | 'azure_ad' | 'gcp';
       };

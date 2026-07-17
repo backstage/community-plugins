@@ -10,6 +10,7 @@ When CRUD is enabled, **static secrets** can also be viewed, created, updated, a
 | ------------------------------------------------------------------------------------ | --------------------------------------------------- |
 | [@backstage-community/plugin-akeyless](./plugins/akeyless/README.md)                 | Frontend — entity overview card and Development tab |
 | [@backstage-community/plugin-akeyless-backend](./plugins/akeyless-backend/README.md) | Backend — list API and optional static-secret CRUD  |
+| [@backstage-community/plugin-akeyless-common](./plugins/akeyless-common/README.md)   | Shared types and catalog annotation constants       |
 
 ## Quick start
 
@@ -44,7 +45,7 @@ Verify the backend is reachable:
 
 ```bash
 curl http://localhost:7007/api/akeyless/health
-# {"status":"ok","allowCrud":true}
+# {"status":"ok","allowCrud":false}
 ```
 
 ### 3. Install the frontend
@@ -53,7 +54,7 @@ curl http://localhost:7007/api/akeyless/health
 yarn --cwd packages/app add @backstage-community/plugin-akeyless
 ```
 
-**New frontend system (Backstage 1.51+):** register the alpha plugin in `App.tsx`. It automatically adds an overview card and a **Development → Akeyless** tab for annotated entities.
+**Frontend system:** register the alpha plugin in `App.tsx`. It automatically adds an overview card and a **Development → Akeyless** tab for annotated entities.
 
 ```tsx
 import akeylessPlugin from '@backstage-community/plugin-akeyless/alpha';
@@ -63,7 +64,7 @@ export default createApp({
 });
 ```
 
-**Classic frontend system:** register `akeylessPlugin` and add `EntityAkeylessCard` to your entity page. See the [frontend README](./plugins/akeyless/README.md).
+**Legacy frontend system:** register `akeylessPlugin` and add `EntityAkeylessCard` to your entity page. See the [frontend README](./plugins/akeyless/README.md).
 
 ### 4. Annotate catalog entities
 
@@ -76,7 +77,7 @@ metadata:
     akeyless.io/secrets-path: /my-team/my-service/prod
 ```
 
-Open the entity in Backstage — the Akeyless card appears on **Overview** (new frontend system) or wherever you mounted the card (classic), and the full table is also available under **Development → Akeyless**.
+Open the entity in Backstage — the Akeyless card appears on **Overview** (frontend system) or wherever you mounted the card (legacy), and the full table is also available under **Development → Akeyless**.
 
 ## Catalog annotations
 
@@ -100,12 +101,12 @@ Open the entity in Backstage — the Akeyless card appears on **Overview** (new 
 
 The Akeyless credential configured in `app-config.yaml` is shared by the Backstage backend. Grant it only the Akeyless permissions your organization allows Backstage to perform:
 
-| Mode                           | Typical Akeyless permissions                                          |
-| ------------------------------ | --------------------------------------------------------------------- |
-| List only (`allowCrud: false`) | Read/list on the annotated paths                                      |
-| CRUD enabled (default)         | Read/list plus create/update/delete for static secrets on those paths |
+| Mode                             | Typical Akeyless permissions                                          |
+| -------------------------------- | --------------------------------------------------------------------- |
+| List only (default)              | Read/list on the annotated paths                                      |
+| CRUD enabled (`allowCrud: true`) | Read/list plus create/update/delete for static secrets on those paths |
 
-Backstage users who can open an entity page can trigger these operations through the plugin using the shared backend credential. The backend does not verify `contextPath` against the catalog — restrict catalog access, scope the Akeyless credential narrowly, and use `akeyless.allowCrud: false` and/or `akeyless.io/allow-crud: "false"` when you want discovery and Console links without in-app secret management.
+Backstage users who can open an entity page can trigger these operations through the plugin using the shared backend credential. The backend does not verify `contextPath` against the catalog — restrict catalog access, scope the Akeyless credential narrowly, and keep `akeyless.allowCrud` off (the default) and/or set `akeyless.io/allow-crud: "false"` when you want discovery and Console links without in-app secret management.
 
 ## Developing this workspace
 

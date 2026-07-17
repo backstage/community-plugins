@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { AkeylessSecret } from '@backstage-community/plugin-akeyless-common';
 import {
   DiscoveryApi,
   createApiRef,
@@ -21,24 +22,14 @@ import {
 } from '@backstage/core-plugin-api';
 import { NotFoundError, ResponseError } from '@backstage/errors';
 
+export type { AkeylessSecret };
+
 /**
  * @public
  */
 export const akeylessApiRef = createApiRef<AkeylessApi>({
   id: 'plugin.akeyless.service',
 });
-
-/**
- * @public
- */
-export type AkeylessSecret = {
-  name: string;
-  fullPath: string;
-  itemType: string;
-  path: string;
-  showUrl: string;
-  editUrl: string;
-};
 
 /**
  * @public

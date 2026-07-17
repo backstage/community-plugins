@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
+import {
+  AkeylessSecret,
+  DEFAULT_SECRET_TYPES,
+} from '@backstage-community/plugin-akeyless-common';
 import { NotAllowedError, NotFoundError } from '@backstage/errors';
-import * as akeyless from 'akeyless';
-import * as akeylessCloudId from 'akeyless-cloud-id';
 import plimit from 'p-limit';
 import { AkeylessConfig } from '../config';
 import { normalizePath } from '../pathUtils';
+import { akeyless, akeylessCloudId } from './akeylessSdk';
 
-/**
- * @public
- */
-export type AkeylessSecret = {
-  name: string;
-  fullPath: string;
-  itemType: string;
-  path: string;
-  showUrl: string;
-  editUrl: string;
-};
+export type { AkeylessSecret };
 
 /**
  * @public
@@ -246,12 +239,7 @@ export class AkeylessClient implements AkeylessApi {
 
   async listSecrets(
     secretPath: string,
-    itemTypes: string[] = [
-      'static-secret',
-      'dynamic-secret',
-      'rotated-secret',
-      'certificate',
-    ],
+    itemTypes: string[] = [...DEFAULT_SECRET_TYPES],
   ): Promise<AkeylessSecret[]> {
     const normalizedPath = normalizePath(secretPath);
     const secrets: AkeylessSecret[] = [];

@@ -52,7 +52,7 @@ type StaticSecretRequest = {
  */
 export class AkeylessBuilder {
   private akeylessApi?: AkeylessApi;
-  private allowCrud = true;
+  private allowCrud = false;
 
   static createBuilder(env: AkeylessEnvironment) {
     return new AkeylessBuilder(env);
