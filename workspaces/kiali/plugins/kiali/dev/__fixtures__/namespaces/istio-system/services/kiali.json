@@ -80,7 +80,7 @@
       "createdAt": "2024-02-26T09:50:58Z",
       "resourceVersion": "24613",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "kiali",
@@ -132,7 +132,7 @@
       "namespace": "",
       "istioSidecar": false,
       "cluster": "",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,

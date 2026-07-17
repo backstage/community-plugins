@@ -1,0 +1,40 @@
+# ArgoCD Find Applications Action
+#
+# Action ID: backstage-community-argocd:argocd:find-applications
+#
+# This action is automatically registered by the @backstage-community/plugin-argocd-backend
+# plugin via the Backstage Actions API. No additional setup is required beyond
+# installing the backend plugin.
+#
+# Prerequisites:
+#   - ArgoCD backend plugin installed and configured
+#   - ArgoCD instance(s) configured in app-config.yaml under argocd.appLocatorMethods
+
+---
+# Minimal example (required fields only)
+actionId: backstage-community-argocd:argocd:find-applications
+input:
+  appName: my-service
+
+---
+# Full example (all fields)
+actionId: backstage-community-argocd:argocd:find-applications
+input:
+  appName: my-service
+  project: my-project # Filter by ArgoCD project name
+  appNamespace: argocd # Filter by application namespace
+
+# Expected output:
+#   instances:
+#     - instanceName: production
+#       instanceUrl: https://argocd.example.com
+#       applications:
+#         - name: my-service
+#           namespace: argocd
+#           project: my-project
+#           syncStatus: Synced
+#           healthStatus: Healthy
+#           revision: abc123def
+#           destination:
+#             server: https://kubernetes.default.svc
+#             namespace: my-namespace

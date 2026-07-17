@@ -26,7 +26,6 @@ import {
   fetchApiRef,
   ApiBlueprint,
   PageBlueprint,
-  NavItemBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 import { exploreApiRef, ExploreClient } from './api';
@@ -59,15 +58,6 @@ const explorePage = PageBlueprint.make({
 });
 
 /** @alpha */
-const exploreNavItem = NavItemBlueprint.make({
-  params: {
-    icon: LayersIcon,
-    routeRef: convertLegacyRouteRef(exploreRouteRef),
-    title: 'Explore',
-  },
-});
-
-/** @alpha */
 export const exploreSearchResultListItem = SearchResultListItemBlueprint.make({
   params: {
     predicate: result => result.type === 'tools',
@@ -81,12 +71,8 @@ export const exploreSearchResultListItem = SearchResultListItemBlueprint.make({
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'explore',
-  extensions: [
-    exploreApi,
-    explorePage,
-    exploreNavItem,
-    exploreSearchResultListItem,
-  ],
+  icon: <LayersIcon />,
+  extensions: [exploreApi, explorePage, exploreSearchResultListItem],
   routes: convertLegacyRouteRefs({
     explore: exploreRouteRef,
   }),

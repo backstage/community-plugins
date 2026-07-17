@@ -2,6 +2,8 @@
 
 The 3scale Backstage provider plugin synchronizes the 3scale content into the [Backstage](https://backstage.io/) catalog.
 
+For local development and contributor workflows, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## For administrators
 
 ### Installation

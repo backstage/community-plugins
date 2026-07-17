@@ -64,8 +64,8 @@ const _default: OverridableFrontendPlugin<
         title: string | undefined;
       };
       configInput: {
-        title?: string | undefined;
         path?: string | undefined;
+        title?: string | undefined;
       };
       output:
         | ExtensionDataRef<string, 'core.routing.path', {}>
@@ -149,6 +149,8 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'table.title': string;
     readonly 'table.searchPlaceholder': string;
     readonly 'table.labelRowsSelect': string;
+    readonly 'table.labelDisplayedRows': string;
+    readonly 'table.labelRowsPerPage': string;
     readonly 'table.titleWithCount': string;
     readonly 'table.headers.name': string;
     readonly 'table.headers.usersAndGroups': string;

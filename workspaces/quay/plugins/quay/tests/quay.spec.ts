@@ -26,6 +26,7 @@ test.describe('Quay plugin', () => {
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
+    await common.navigateToQuay();
     await expect(
       page.getByRole('link', { name: 'backstage-test/test-images' }),
     ).toBeEnabled();
@@ -70,15 +71,22 @@ test.describe('Quay plugin', () => {
   });
 
   test('Filtering works', async () => {
-    const tbody = page.locator('tbody');
-    const rows = tbody.getByRole('row').filter({ hasText: 'sha' });
+    const table = common.getVisibleQuayTable();
 
-    await page.getByPlaceholder('Filter').fill('v3');
-    await expect(rows).toHaveCount(1);
-    await expect(tbody.getByText('Passed')).toBeVisible();
+    await table.getByPlaceholder('Filter').fill('v3');
+    await expect(
+      table.getByRole('cell', { name: 'v3', exact: true }),
+    ).toHaveCount(1);
+    await expect(table.getByText('Passed')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Clear Search' }).click();
-    await expect(rows).toHaveCount(5);
+    await table.getByRole('button', { name: 'Clear Search' }).click();
+    await common.expectTagCells(table, [
+      'latest-linux-arm64',
+      'v4',
+      'v3',
+      'v2',
+      'v1',
+    ]);
   });
 
   test.describe('Vulnerability details', () => {
@@ -136,5 +144,23 @@ test.describe('Quay plugin', () => {
         page.getByRole('link', { name: 'backstage-test/test-images' }),
       ).toBeEnabled();
     });
+  });
+
+  test('Multi-instance uses configured non-default instance for URL and data', async () => {
+    await common.navigateToQuay('multi-instance');
+    const table = common.getVisibleQuayTable();
+    const repositoryLink = table.getByRole('link', {
+      name: 'backstage-test/test-images',
+    });
+    await expect(repositoryLink).toBeVisible();
+    await expect(repositoryLink).toHaveAttribute(
+      'href',
+      'https://quay-devel.io/repository/backstage-test/test-images',
+    );
+
+    await expect(
+      table.getByRole('cell', { name: 'v5-devel-only', exact: true }),
+    ).toHaveCount(1);
+    await expect(table.getByText('Unsupported')).toBeVisible();
   });
 });

@@ -1,0 +1,59 @@
+{
+  "name": "@backstage-community/plugin-checkmarx-react",
+  "version": "0.0.0",
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "checkmarx",
+    "pluginPackages": [
+      "@backstage-community/plugin-checkmarx",
+      "@backstage-community/plugin-checkmarx-backend",
+      "@backstage-community/plugin-checkmarx-react"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "backstage",
+    "checkmarx"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/checkmarx/plugins/checkmarx-react"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "backstage:^"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^"
+  }
+}

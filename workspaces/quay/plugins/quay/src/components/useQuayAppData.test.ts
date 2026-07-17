@@ -18,22 +18,48 @@ import { Entity } from '@backstage/catalog-model';
 import { useQuayAppData } from '../hooks';
 
 describe('useQuayAppData', () => {
-  it('should correctly get the repository flag from the entity', () => {
+  it('should correctly get the repository and instance flag from the entity', () => {
     const entity: Entity = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',
       metadata: {
         name: 'foo',
-        annotations: { 'quay.io/repository-slug': 'foo/bar' },
+        annotations: {
+          'quay.io/repository-slug': 'foo/bar',
+          'quay.io/instance-name': 'devel',
+        },
       },
     };
 
     const result = useQuayAppData({ entity });
 
-    expect(result).toEqual({ repositorySlug: 'foo/bar' });
+    expect(result).toEqual({
+      repositorySlug: 'foo/bar',
+      instanceSlug: 'devel',
+    });
   });
 
-  it('should throw an error when the annotation is not present', () => {
+  it('should return undefined instance slug if not set', () => {
+    const entity: Entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        name: 'foo',
+        annotations: {
+          'quay.io/repository-slug': 'foo/bar',
+        },
+      },
+    };
+
+    const result = useQuayAppData({ entity });
+
+    expect(result).toEqual({
+      repositorySlug: 'foo/bar',
+      instanceSlug: undefined,
+    });
+  });
+
+  it('should throw an error when the repository annotation is not present', () => {
     const entity: Entity = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',

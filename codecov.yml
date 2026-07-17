@@ -1,0 +1,59 @@
+# codecov.yml — per-workspace opt-in coverage for community-plugins
+# Docs: https://docs.codecov.com/docs/codecov-yaml
+
+codecov:
+  require_ci_to_pass: false
+
+coverage:
+  precision: 2
+  round: down
+  range: "40...80"
+
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+        paths:
+          - "workspaces/*/plugins/*/src/**"
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+        paths:
+          - "workspaces/*/plugins/*/src/**"
+
+comment:
+  layout: "header, diff, flags, footer"
+  behavior: default
+  require_changes: true
+  show_carryforward_flags: true
+
+ignore:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/setupTests.*"
+  - "**/playwright.config.ts"
+  - "**/dev/**"
+  - "**/test-utils/**"
+  - "**/__fixtures__/**"
+  - "**/__tests__/**"
+  - "**/__mocks__/**"
+  - "**/examples/**"
+
+flag_management:
+  default_rules:
+    carryforward: true
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+      - type: patch
+        target: auto
+        threshold: 1%

@@ -24,7 +24,7 @@ import { acrTranslationRef } from './ref';
 const acrTranslationDe = createTranslationMessages({
   ref: acrTranslationRef,
   messages: {
-    'page.title': 'Azure Container Registry-Repository: {{image}}',
+    'page.title': 'Repository der Azure-Containerregistrierung: {{image}}',
     'table.searchPlaceholder': 'Filter',
     'table.labelRowsSelect': 'Zeilen',
     'table.columns.tag': 'Tag',

@@ -15,26 +15,17 @@
  */
 import { useContext } from 'react';
 
-import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
-import Collapse from '@material-ui/icons/UnfoldLess';
-import Expand from '@material-ui/icons/UnfoldMore';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Collapse from '@mui/icons-material/UnfoldLess';
+import Expand from '@mui/icons-material/UnfoldMore';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
-const useStyles = makeStyles({
-  expandCollapse: {
-    flexGrow: 1,
-    textAlign: 'end',
-  },
-  iconButton: {
-    padding: '2px',
-  },
-});
-
 export const TableExpandCollapse = () => {
-  const classes = useStyles();
   const { isExpanded, setIsExpanded } = useContext(TektonResourcesContext);
   const { t } = useTranslationRef(tektonTranslationRef);
 
@@ -42,13 +33,13 @@ export const TableExpandCollapse = () => {
     setIsExpanded(!isExpanded);
   };
   return (
-    <div className={classes.expandCollapse}>
+    <Box sx={{ flexGrow: 1, textAlign: 'end' }}>
       <Tooltip title={t('tableExpandCollapse.collapseAll')} placement="top">
         <span>
           <IconButton
             onClick={() => handleExpandCollaspse()}
             disabled={!isExpanded}
-            className={classes.iconButton}
+            sx={{ padding: '2px' }}
           >
             <Collapse />
           </IconButton>
@@ -59,12 +50,12 @@ export const TableExpandCollapse = () => {
           <IconButton
             onClick={() => handleExpandCollaspse()}
             disabled={isExpanded}
-            className={classes.iconButton}
+            sx={{ padding: '2px' }}
           >
             <Expand />
           </IconButton>
         </span>
       </Tooltip>
-    </div>
+    </Box>
   );
 };

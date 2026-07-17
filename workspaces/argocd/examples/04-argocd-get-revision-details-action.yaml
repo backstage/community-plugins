@@ -1,0 +1,34 @@
+# ArgoCD Get Revision Details Action
+#
+# Action ID: backstage-community-argocd:argocd:get-revision-details
+#
+# This action is automatically registered by the @backstage-community/plugin-argocd-backend
+# plugin via the Backstage Actions API. No additional setup is required beyond
+# installing the backend plugin.
+#
+# Prerequisites:
+#   - ArgoCD backend plugin installed and configured
+#   - ArgoCD instance(s) configured in app-config.yaml under argocd.appLocatorMethods
+
+---
+# Minimal example (required fields only)
+actionId: backstage-community-argocd:argocd:get-revision-details
+input:
+  instanceName: local
+  appName: my-service
+  revisionID: abc123def456
+
+---
+# Full example (all fields)
+actionId: backstage-community-argocd:argocd:get-revision-details
+input:
+  instanceName: local
+  appName: my-service
+  revisionID: abc123def456
+  appNamespace: argocd # Namespace of the application
+
+# Expected output:
+#   author: Jane Developer
+#   date: 2026-04-15T10:30:00Z
+#   message: "feat: add new deployment config"
+#   revisionID: abc123def456

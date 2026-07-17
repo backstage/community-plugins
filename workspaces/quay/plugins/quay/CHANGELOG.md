@@ -1,5 +1,52 @@
 # @backstage-community/plugin-quay
 
+## 1.36.0
+
+### Minor Changes
+
+- 03eff44: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [03eff44]
+  - @backstage-community/plugin-quay-common@1.22.0
+
+## 1.35.0
+
+### Minor Changes
+
+- c58c3c0: Migrated the Quay plugin and dev app from Material UI to Backstage UI (BUI). Replaced `@material-ui/*` with `@backstage/ui` components and `@remixicon/react` icons. Removed direct MUI dependencies; no breaking API changes to plugin exports.
+
+  **Note for consuming apps:** import `@backstage/ui/css/styles.css` in your app entry point if it is not already included.
+
+## 1.34.0
+
+### Minor Changes
+
+- d4e8668: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [d4e8668]
+  - @backstage-community/plugin-quay-common@1.21.0
+
+## 1.33.0
+
+### Minor Changes
+
+- 07b8314: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [07b8314]
+  - @backstage-community/plugin-quay-common@1.20.0
+
+## 1.32.1
+
+### Patch Changes
+
+- a63b0b6: Updated dependency `start-server-and-test` to `3.0.2`.
+
 ## 1.32.0
 
 ### Minor Changes

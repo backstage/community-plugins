@@ -1,5 +1,45 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.1.0
+
+### Minor Changes
+
+- 20bcf3c: Fix V2 dashboard 'Invalid Date' bug on PostgreSQL by normalizing date API outputs and adding defensive frontend parsing.
+- 7a4ea48: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- fca2146: Fix enterprise v2 metrics ingestion: correct MiddlewareFactory.error() invocation, handle flat V2EnterpriseDayTotal response shape from GitHub 2026-03-10 report API, and prevent false-success log entry when 0 rows are parsed
+- Updated dependencies [7a4ea48]
+  - @backstage-community/plugin-copilot-common@1.1.0
+
+## 1.0.0
+
+### Major Changes
+
+- 95bf1ed: BREAKING CHANGE - Implemented a V2 API that uses the new Copilot Metrics API and replaces the existing implementation. Leaving the existing database tables and a legacy UI in place for existing data.
+
+### Minor Changes
+
+- 6cf8553: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [95bf1ed]
+- Updated dependencies [6cf8553]
+  - @backstage-community/plugin-copilot-common@1.0.0
+
+## 0.19.0
+
+### Minor Changes
+
+- b5e72fb: Backstage version bump to v1.50.3
+
+### Patch Changes
+
+- Updated dependencies [b5e72fb]
+  - @backstage-community/plugin-copilot-common@0.18.0
+
 ## 0.18.4
 
 ### Patch Changes

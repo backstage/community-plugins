@@ -1,5 +1,34 @@
 # @backstage-community/plugin-topology
 
+## 2.15.0
+
+### Minor Changes
+
+- 13db2ee: Added support for the New Frontend System (NFS), including alpha exports with `EntityContentBlueprint` and `TranslationBlueprint`, plus dedicated dev entrypoints for backend and mock modes. Added explicit mock-only dev entry files for both legacy and NFS flows (`dev/index.mock.tsx` and `dev/alpha/index.mock.tsx`) so local development and e2e can run without backend dependencies. Removed packages/app and packages/backend to eliminate the need for a full Backstage app setup, and introduced a lightweight Topology backend that imports and relies on the Kubernetes backend plugin for real data integration when using backend mode.
+- 73d37f1: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- 70da59a: Migrated the topology plugin UI from Material UI to Backstage UI (`@backstage/ui`). Removed direct MUI dependencies; no breaking API changes.
+
+## 2.14.0
+
+### Minor Changes
+
+- e68c41c: Backstage version bump to v1.51.0
+
+## 2.13.0
+
+### Minor Changes
+
+- edaf521: Backstage version bump to v1.50.4
+
+## 2.12.3
+
+### Patch Changes
+
+- 790e405: Fix pod status icon and label alignment in Pods table
+
 ## 2.12.2
 
 ### Patch Changes

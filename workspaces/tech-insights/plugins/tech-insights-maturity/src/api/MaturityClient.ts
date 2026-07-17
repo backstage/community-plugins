@@ -47,14 +47,24 @@ const SDF = new ScoringDataFormatter();
  */
 export class MaturityClient extends TechInsightsClient implements MaturityApi {
   readonly catalogApi: CatalogApi;
+  private readonly enableCompoundEntityCheck: boolean;
 
   constructor(options: {
     discoveryApi: DiscoveryApi;
     identityApi: IdentityApi;
     catalogApi: CatalogApi;
+    /**
+     * When true, runs maturity checks directly against any entity (including
+     * System / Domain / Group / API / Resource), in addition to the existing
+     * behavior that aggregates child component results for entities that
+     * have related components. Defaults to false to preserve existing
+     * behavior.
+     */
+    enableCompoundEntityCheck?: boolean;
   }) {
     super(options);
     this.catalogApi = options.catalogApi;
+    this.enableCompoundEntityCheck = options.enableCompoundEntityCheck ?? false;
   }
 
   public async getMaturityRank(entity: Entity): Promise<MaturityRank> {
@@ -115,7 +125,7 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
   private async getCheckResults(
     entity: Entity,
   ): Promise<MaturityCheckResult[]> {
-    if (isComponentEntity(entity)) {
+    if (this.enableCompoundEntityCheck || isComponentEntity(entity)) {
       return (await this.runChecks(
         getCompoundEntityRef(entity),
       )) as MaturityCheckResult[];
@@ -123,23 +133,6 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
 
     const entities = await this.getRelatedComponents(entity);
     return await this.getGroupCheckResults(entities);
-  }
-
-  private async getBulkCheckResults(entities: CompoundEntityRef[]) {
-    const bulkResponse = await this.runBulkChecks(entities);
-    return Promise.all(
-      bulkResponse.map(async x => {
-        const checks = x.results as MaturityCheckResult[];
-        const rank = SDF.getMaturityRank(checks);
-
-        return {
-          entity: x.entity,
-          rank: rank.rank,
-          isMaxRank: rank.isMaxRank,
-          checks,
-        };
-      }),
-    );
   }
 
   private async getGroupCheckResults(
@@ -161,6 +154,23 @@ export class MaturityClient extends TechInsightsClient implements MaturityApi {
     }
 
     return results;
+  }
+
+  private async getBulkCheckResults(entities: CompoundEntityRef[]) {
+    const bulkResponse = await this.runBulkChecks(entities);
+    return Promise.all(
+      bulkResponse.map(async x => {
+        const checks = x.results as MaturityCheckResult[];
+        const rank = SDF.getMaturityRank(checks);
+
+        return {
+          entity: x.entity,
+          rank: rank.rank,
+          isMaxRank: rank.isMaxRank,
+          checks,
+        };
+      }),
+    );
   }
 
   private async getRelatedComponents(

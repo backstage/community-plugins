@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION } from './constants';
 import { octopusDeployEntityContentRouteRef } from './routes';
 
 import { OctopusDeployClient, octopusDeployApiRef } from './api';
@@ -29,12 +28,9 @@ import {
 
 import { createScaffolderFieldExtension } from '@backstage/plugin-scaffolder-react';
 
-import { Entity } from '@backstage/catalog-model';
 import { ProjectGroupDropdown } from './components/ScaffolderDropdown';
 
-/** @public */
-export const isOctopusDeployAvailable = (entity: Entity) =>
-  Boolean(entity.metadata.annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION]);
+export { isOctopusDeployAvailable } from './utils/isOctopusDeployAvailable';
 
 /** @public */
 export const octopusDeployPlugin = createPlugin({

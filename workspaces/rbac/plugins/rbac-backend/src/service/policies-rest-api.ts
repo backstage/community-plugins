@@ -21,6 +21,7 @@ import type {
   HttpAuthService,
   PermissionsService,
 } from '@backstage/backend-plugin-api';
+import { parseEntityRef } from '@backstage/catalog-model';
 import {
   ConflictError,
   InputError,
@@ -65,7 +66,10 @@ import {
   processConditionMapping,
   matches,
 } from '../helper';
-import { validateRoleCondition } from '../validation/condition-validation';
+import {
+  type ConditionValidationLimits,
+  validateRoleCondition,
+} from '../validation/condition-validation';
 import {
   validateEntityReference,
   validatePolicy,
@@ -142,6 +146,7 @@ export class PoliciesServer {
     private readonly roleMetadata: RoleMetadataStorage,
     private readonly extraPluginsIdStorage: PermissionDependentPluginStore,
     private readonly pluginIdProvider: ExtendablePluginIdProvider,
+    private readonly conditionValidationLimits: ConditionValidationLimits,
     private readonly rbacProviders?: RBACProvider[],
   ) {}
 
@@ -308,10 +313,7 @@ export class PoliciesServer {
 
         const entityRef = this.getEntityReference(request);
 
-        const policyRaw: RoleBasedPolicy[] = request.body;
-        if (isEmpty(policyRaw)) {
-          throw new InputError(`permission policy must be present`); // 400
-        }
+        const policyRaw = this.getPolicyArrayFromBody(request.body);
 
         policyRaw.forEach(element => {
           element.entityReference = entityRef;
@@ -342,24 +344,13 @@ export class PoliciesServer {
           this.options,
         );
 
-        const policyRaw: RoleBasedPolicy[] = request.body;
-
-        if (isEmpty(policyRaw)) {
-          throw new InputError(`permission policy must be present`); // 400
-        }
+        const policyRaw = this.getPolicyArrayFromBody(request.body);
 
         const processedPolicies = await this.processPolicies(
           policyRaw,
           false,
           undefined,
         );
-
-        const entityRef = processedPolicies[0][0];
-        const roleMetadata =
-          await this.roleMetadata.findRoleMetadata(entityRef);
-        if (entityRef.startsWith('role:default') && !roleMetadata) {
-          throw new Error(`Corresponding role ${entityRef} was not found`);
-        }
 
         await this.enforcer.addPolicies(processedPolicies);
 
@@ -435,12 +426,6 @@ export class PoliciesServer {
           'new policy',
           conditionsFilter,
         );
-
-        const roleMetadata =
-          await this.roleMetadata.findRoleMetadata(entityRef);
-        if (entityRef.startsWith('role:default') && !roleMetadata) {
-          throw new Error(`Corresponding role ${entityRef} was not found`);
-        }
 
         await this.enforcer.updatePolicies(
           processedOldPolicy,
@@ -883,7 +868,10 @@ export class PoliciesServer {
 
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
-        validateRoleCondition(roleConditionPolicy);
+        validateRoleCondition(
+          roleConditionPolicy,
+          this.conditionValidationLimits,
+        );
 
         const conditionToCreate = await processConditionMapping(
           roleConditionPolicy,
@@ -1036,7 +1024,10 @@ export class PoliciesServer {
         const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> =
           request.body;
 
-        validateRoleCondition(roleConditionPolicy);
+        validateRoleCondition(
+          roleConditionPolicy,
+          this.conditionValidationLimits,
+        );
 
         const conditionToUpdate = await processConditionMapping(
           roleConditionPolicy,
@@ -1247,6 +1238,18 @@ export class PoliciesServer {
     );
   }
 
+  getPolicyArrayFromBody(body: unknown): RoleBasedPolicy[] {
+    if (!Array.isArray(body)) {
+      throw new InputError(`permission policy must be provided as an array`);
+    }
+
+    if (isEmpty(body)) {
+      throw new InputError(`permission policy must be present`);
+    }
+
+    return body as RoleBasedPolicy[];
+  }
+
   async processPolicies(
     policyArray: RoleBasedPolicy[],
     isOld?: boolean,
@@ -1269,7 +1272,16 @@ export class PoliciesServer {
         policy.entityReference!,
       );
 
-      if (!metadata || !matches(daoToMetadata(metadata), filter)) {
+      if (!metadata) {
+        const { kind } = parseEntityRef(policy.entityReference!);
+        if (kind === 'role') {
+          throw new NotFoundError(
+            `Corresponding role ${policy.entityReference} was not found`,
+          );
+        }
+        throw new NotAllowedError(); // 403
+      }
+      if (!matches(daoToMetadata(metadata), filter)) {
         throw new NotAllowedError(); // 403
       }
 

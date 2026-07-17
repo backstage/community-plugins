@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.4.0":
@@ -1453,7 +1453,7 @@ __metadata:
     "@mui/x-data-grid": "npm:^7.25.0"
     "@patternfly/react-charts": "npm:7.4.9"
     "@patternfly/react-component-groups": "npm:^6.0.0"
-    "@patternfly/react-core": "npm:5.4.14"
+    "@patternfly/react-core": "npm:6.4.3"
     "@patternfly/react-icons": "npm:5.4.2"
     "@patternfly/react-styles": "npm:5.4.1"
     "@patternfly/react-table": "npm:5.4.16"
@@ -7806,7 +7806,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@patternfly/react-core@npm:5.4.14, @patternfly/react-core@npm:^5.4.14":
+"@patternfly/react-core@npm:6.4.3, @patternfly/react-core@npm:^6.0.0, @patternfly/react-core@npm:^6.4.0":
+  version: 6.4.3
+  resolution: "@patternfly/react-core@npm:6.4.3"
+  dependencies:
+    "@patternfly/react-icons": "npm:^6.4.0"
+    "@patternfly/react-styles": "npm:^6.4.0"
+    "@patternfly/react-tokens": "npm:^6.4.0"
+    focus-trap: "npm:7.6.4"
+    react-dropzone: "npm:^14.3.5"
+    tslib: "npm:^2.8.1"
+  peerDependencies:
+    react: ^17 || ^18 || ^19
+    react-dom: ^17 || ^18 || ^19
+  checksum: 10/85c767d1e2d8055e41a47597dc1ab395a939e725c4fe7809933b9d8272d99cb06bf538ced1e1bc1d5b16f92ca875e36e5f8bbdfbb8dfff173a2e9890a76e44bb
+  languageName: node
+  linkType: hard
+
+"@patternfly/react-core@npm:^5.4.14":
   version: 5.4.14
   resolution: "@patternfly/react-core@npm:5.4.14"
   dependencies:
@@ -7820,23 +7837,6 @@ __metadata:
     react: ^17 || ^18
     react-dom: ^17 || ^18
   checksum: 10/14d1bdcbfa941025b9368121c1b42dd88be7bb6e42abbd3284e788bc2a9524c4efde927076527640a2da3c308d01c8ea891aefe110db3a8a284a890357b0a9ab
-  languageName: node
-  linkType: hard
-
-"@patternfly/react-core@npm:^6.0.0, @patternfly/react-core@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@patternfly/react-core@npm:6.4.0"
-  dependencies:
-    "@patternfly/react-icons": "npm:^6.4.0"
-    "@patternfly/react-styles": "npm:^6.4.0"
-    "@patternfly/react-tokens": "npm:^6.4.0"
-    focus-trap: "npm:7.6.4"
-    react-dropzone: "npm:^14.3.5"
-    tslib: "npm:^2.8.1"
-  peerDependencies:
-    react: ^17 || ^18 || ^19
-    react-dom: ^17 || ^18 || ^19
-  checksum: 10/e35bf937e6c1f4d8dc8d95d4aaf02815a151332e298d7fdedd9fd6a644c023c7eb28e79636607b7043d8da5613db79a2704ef2356cbab5131e4662c37e81e0fb
   languageName: node
   linkType: hard
 
@@ -9372,10 +9372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.2":
-  version: 1.23.2
-  resolution: "@remix-run/router@npm:1.23.2"
-  checksum: 10/50eb497854881bbd2e1016d4eb83c935ecd618e1c3888b74718851317e3b04edbaae9fe1baa49ec08c5c52cfe7118f4664e37144813d9500f45f922d6602a782
+"@remix-run/router@npm:1.23.3":
+  version: 1.23.3
+  resolution: "@remix-run/router@npm:1.23.3"
+  checksum: 10/a12ae9994bf017d47392ce2be24252b4e2281f4b27eac78f0e9b48afa5f522be9c0ec64b85db013ded1fff140d9512b97ac8ea5dd182138dcd6d3ded3136cbf6
   languageName: node
   linkType: hard
 
@@ -28266,13 +28266,13 @@ __metadata:
   linkType: hard
 
 "react-router@npm:^6.3.0":
-  version: 6.30.3
-  resolution: "react-router@npm:6.30.3"
+  version: 6.30.4
+  resolution: "react-router@npm:6.30.4"
   dependencies:
-    "@remix-run/router": "npm:1.23.2"
+    "@remix-run/router": "npm:1.23.3"
   peerDependencies:
     react: ">=16.8"
-  checksum: 10/1a51bdcc42b8d7979228dea8b5c44a28a4add9b681781f75b74f5f920d20058a92ffe5f1d0ba0621f03abe1384b36025b53b402515ecb35f27a6a2f2f25d6fbe
+  checksum: 10/59c1b64a210cde2f1d069ffc47dce2d58991bd4d81bb0743e22ba7c6b742e63ebbdc976c42c3a3ebd90bf38a2f05258bd0efa82c162b259be000d39787716043
   languageName: node
   linkType: hard
 

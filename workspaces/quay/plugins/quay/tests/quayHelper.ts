@@ -16,6 +16,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, TestInfo, type Locator, type Page } from '@playwright/test';
 
+const isLegacy = process.env.APP_MODE === 'legacy';
+
 export class Common {
   page: Page;
 
@@ -47,20 +49,48 @@ export class Common {
     await button.click(clickOpts);
   }
 
-  async waitForSideBarVisible() {
-    await this.page.waitForSelector('nav a', { timeout: 120000 });
+  async waitForAppReady() {
+    if (isLegacy) {
+      await this.page.waitForSelector('nav a', { timeout: 120000 });
+    } else {
+      await this.page.waitForLoadState('networkidle', { timeout: 120000 });
+    }
   }
 
   async loginAsGuest() {
-    await this.page.goto('/');
-    // TODO - Remove it after https://issues.redhat.com/browse/RHIDP-2043. A Dynamic plugin for Guest Authentication Provider needs to be created
     this.page.on('dialog', async dialog => {
       await dialog.accept();
     });
+    await this.page.goto('/');
+    await this.page
+      .getByRole('button', { name: 'Enter' })
+      .click({ timeout: 30000 });
+    await this.waitForAppReady();
+  }
 
-    await this.verifyHeading('Select a sign-in method');
-    await this.clickButton('Enter');
-    await this.waitForSideBarVisible();
+  getVisibleQuayTable() {
+    return this.page.locator('[data-testid="quay-repo-table"]:visible').last();
+  }
+
+  async expectTagCells(table: Locator, tagNames: string[]) {
+    for (const tag of tagNames) {
+      await expect(
+        table.getByRole('cell', { name: tag, exact: true }),
+      ).toHaveCount(1);
+    }
+  }
+
+  async navigateToQuay(instance: 'default' | 'multi-instance' = 'default') {
+    if (isLegacy) {
+      const path =
+        instance === 'multi-instance' ? '/quay/multi-instance' : '/quay';
+      await this.page.goto(path);
+    } else {
+      const entityName =
+        instance === 'multi-instance' ? 'quay-instance-devel' : 'quay-instance';
+      await this.page.goto(`/catalog/default/component/${entityName}`);
+      await this.page.getByRole('tab', { name: 'Quay' }).click();
+    }
   }
 
   async a11yCheck(testInfo: TestInfo) {

@@ -21,7 +21,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 
 import { V1Pod } from '@kubernetes/client-node';
-import { Button } from '@material-ui/core';
+import Button from '@mui/material/Button';
 import DownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import { TektonResourcesContext } from '../../hooks/TektonResourcesContext';

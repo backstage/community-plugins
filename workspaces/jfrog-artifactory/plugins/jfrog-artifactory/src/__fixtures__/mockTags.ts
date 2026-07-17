@@ -96,7 +96,7 @@ export const mockTags = {
               },
             ],
             licenses: [],
-            size: '4757',
+            size: '5500',
             stats: {
               downloadCount: 0,
             },
@@ -114,10 +114,10 @@ export const mockTags = {
                 name: 'manifest.json',
                 lead: true,
                 size: '1039',
-                md5: '579abdf9c2d5583ca73fd7dd063aae02',
-                sha1: '4baef62a3759202d46c3872e1b9e4e7bc3b7fe90',
+                md5: '689abdf9c2d5583ca73fd7dd063aae03',
+                sha1: '5baef62a3759202d46c3872e1b9e4e7bc3b7fe91',
                 sha256:
-                  'a3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc7f',
+                  'b3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc8e',
                 mimeType: 'application/json',
               },
               {
@@ -159,7 +159,7 @@ export const mockTags = {
               },
             ],
             licenses: [],
-            size: '4757',
+            size: '5300',
             stats: {
               downloadCount: 0,
             },
@@ -187,10 +187,10 @@ export const mockTags = {
                 name: 'manifest.json',
                 lead: true,
                 size: '1039',
-                md5: '579abdf9c2d5583ca73fd7dd063aae02',
-                sha1: '4baef62a3759202d46c3872e1b9e4e7bc3b7fe90',
+                md5: '789abdf9c2d5583ca73fd7dd063aae04',
+                sha1: '6baef62a3759202d46c3872e1b9e4e7bc3b7fe92',
                 sha256:
-                  'a3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc7f',
+                  'c3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc9f',
                 mimeType: 'application/json',
               },
               {
@@ -222,7 +222,7 @@ export const mockTags = {
               },
             ],
             licenses: [],
-            size: '4757',
+            size: '5120',
             stats: {
               downloadCount: 0,
             },
@@ -240,10 +240,10 @@ export const mockTags = {
                 name: 'manifest.json',
                 lead: true,
                 size: '1039',
-                md5: '579abdf9c2d5583ca73fd7dd063aae02',
-                sha1: '4baef62a3759202d46c3872e1b9e4e7bc3b7fe90',
+                md5: '889abdf9c2d5583ca73fd7dd063aae05',
+                sha1: '7baef62a3759202d46c3872e1b9e4e7bc3b7fe93',
                 sha256:
-                  'a3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc7f',
+                  'd3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dcaa',
                 mimeType: 'application/json',
               },
               {
@@ -285,7 +285,7 @@ export const mockTags = {
               },
             ],
             licenses: [],
-            size: '4757',
+            size: '4820',
             stats: {
               downloadCount: 0,
             },
@@ -303,10 +303,10 @@ export const mockTags = {
                 name: 'manifest.json',
                 lead: true,
                 size: '1039',
-                md5: '579abdf9c2d5583ca73fd7dd063aae02',
-                sha1: '4baef62a3759202d46c3872e1b9e4e7bc3b7fe90',
+                md5: '989abdf9c2d5583ca73fd7dd063aae06',
+                sha1: '8baef62a3759202d46c3872e1b9e4e7bc3b7fe94',
                 sha256:
-                  'a3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc7f',
+                  'e3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dcbb',
                 mimeType: 'application/json',
               },
               {
@@ -348,7 +348,7 @@ export const mockTags = {
               },
             ],
             licenses: [],
-            size: '4757',
+            size: '4689',
             stats: {
               downloadCount: 0,
             },
@@ -366,10 +366,10 @@ export const mockTags = {
                 name: 'manifest.json',
                 lead: true,
                 size: '1039',
-                md5: '579abdf9c2d5583ca73fd7dd063aae02',
-                sha1: '4baef62a3759202d46c3872e1b9e4e7bc3b7fe90',
+                md5: 'a89abdf9c2d5583ca73fd7dd063aae07',
+                sha1: '9baef62a3759202d46c3872e1b9e4e7bc3b7fe95',
                 sha256:
-                  'a3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dc7f',
+                  'f3f53a068794afb31f76ae82f79c71db0fb05a3ec960c62cd15027e214d7dcce',
                 mimeType: 'application/json',
               },
               {

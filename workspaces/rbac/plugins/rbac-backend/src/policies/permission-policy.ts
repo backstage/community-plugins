@@ -19,6 +19,7 @@ import type {
   AuthService,
   BackstageUserInfo,
   LoggerService,
+  UserInfoService,
 } from '@backstage/backend-plugin-api';
 import type { ConfigApi } from '@backstage/core-plugin-api';
 import {
@@ -53,9 +54,18 @@ import { replaceAliases } from '../conditional-aliases/alias-resolver';
 import { ConditionalStorage } from '../database/conditional-storage';
 import { RoleMetadataStorage } from '../database/role-metadata';
 import { CSVFileWatcher } from '../file-permissions/csv-file-watcher';
-import { YamlConditinalPoliciesFileWatcher } from '../file-permissions/yaml-conditional-file-watcher';
+import {
+  ConditionalPoliciesFileLimits,
+  resolveConditionalPoliciesFileLimits,
+  YamlConditionalPoliciesFileWatcher,
+} from '../file-permissions/yaml-conditional-file-watcher';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
+import {
+  ConditionValidationLimits,
+  readConditionValidationLimitsFromConfig,
+  resolveConditionValidationLimits,
+} from '../validation/condition-validation';
 
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
@@ -70,7 +80,9 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     roleMetadataStorage: RoleMetadataStorage,
     knex: Knex,
     pluginMetadataCollector: PluginPermissionMetadataCollector,
+    userInfo: UserInfoService,
     auth: AuthService,
+    conditionValidationLimits?: ConditionValidationLimits,
   ): Promise<RBACPermissionPolicy> {
     const superUserList: string[] = [];
     const adminUsers = configApi.getOptionalConfigArray(
@@ -91,6 +103,15 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     const conditionalPoliciesFile = configApi.getOptionalString(
       'permission.rbac.conditionalPoliciesFile',
     );
+
+    const resolvedConditionValidationLimits =
+      conditionValidationLimits ??
+      resolveConditionValidationLimits(
+        readConditionValidationLimitsFromConfig(configApi),
+      );
+
+    const conditionalFileLimits =
+      RBACPermissionPolicy.readConditionalFileLimits(configApi);
 
     const preferPermissionPolicy =
       (configApi.getOptionalString(
@@ -132,7 +153,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     );
     await csvFile.initialize();
 
-    const conditionalFile = new YamlConditinalPoliciesFileWatcher(
+    const conditionalFile = new YamlConditionalPoliciesFileWatcher(
       conditionalPoliciesFile,
       allowReload,
       logger,
@@ -142,6 +163,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       pluginMetadataCollector,
       roleMetadataStorage,
       enforcerDelegate,
+      resolvedConditionValidationLimits,
+      conditionalFileLimits,
     );
     await conditionalFile.initialize();
 
@@ -159,6 +182,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     return new RBACPermissionPolicy(
       enforcerDelegate,
       auditor,
+      userInfo,
+      auth,
       conditionalStorage,
       preferPermissionPolicy,
       superUserList,
@@ -168,6 +193,8 @@ export class RBACPermissionPolicy implements PermissionPolicy {
   private constructor(
     private readonly enforcer: EnforcerDelegate,
     private readonly auditor: AuditorService,
+    private readonly userService: UserInfoService,
+    private readonly auth: AuthService,
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
     superUserList?: string[],
@@ -180,7 +207,14 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     request: PolicyQuery,
     user?: PolicyQueryUser,
   ): Promise<PolicyDecision> {
-    const userEntityRef = user?.info.userEntityRef ?? `user without entity`;
+    let userInfo: BackstageUserInfo | undefined;
+    if (user?.credentials && this.auth.isPrincipal(user?.credentials, 'user')) {
+      userInfo = await this.userService.getUserInfo(user.credentials);
+    }
+
+    const userEntityRef = userInfo
+      ? userInfo.userEntityRef
+      : `user without entity`;
 
     const auditorEvent = await createPermissionEvaluationAuditorEvent(
       this.auditor,
@@ -192,7 +226,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       let status = false;
       const action = toPermissionAction(request.permission.attributes);
 
-      if (!user) {
+      if (!user || !userInfo) {
         await auditorEvent.success({
           meta: { result: AuthorizeResult.DENY },
         });
@@ -201,7 +235,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
 
       if (
         this.superUserList!.includes(userEntityRef) ||
-        user.info.ownershipEntityRefs.some(ref =>
+        userInfo.ownershipEntityRefs.some(ref =>
           this.superUserList!.includes(ref),
         )
       ) {
@@ -243,7 +277,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
           userEntityRef,
           request,
           roles,
-          user.info,
+          userInfo,
         );
 
         if (this.preferPermissionPolicy) {
@@ -380,5 +414,28 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       return result;
     }
     return undefined;
+  }
+
+  private static readConditionalFileLimits(
+    configApi: ConfigApi,
+  ): ConditionalPoliciesFileLimits {
+    const maxBytes = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
+    );
+    const maxDocuments = configApi.getOptionalNumber(
+      'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
+    );
+
+    return resolveConditionalPoliciesFileLimits(
+      {
+        ...(maxBytes !== undefined ? { maxBytes } : {}),
+        ...(maxDocuments !== undefined ? { maxDocuments } : {}),
+      },
+      {
+        maxBytes: 'permission.rbac.validation.conditionalPoliciesFile.maxBytes',
+        maxDocuments:
+          'permission.rbac.validation.conditionalPoliciesFile.maxDocuments',
+      },
+    );
   }
 }

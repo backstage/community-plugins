@@ -5,7 +5,6 @@
 ```ts
 import { AuthService } from '@backstage/backend-plugin-api';
 import { BackendFeature } from '@backstage/backend-plugin-api';
-import { BackstageIdentityResponse } from '@backstage/plugin-auth-node';
 import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
 import { Conditions } from '@backstage/plugin-permission-node';
 import { Config } from '@backstage/config';
@@ -24,6 +23,7 @@ import { PermissionsService } from '@backstage/backend-plugin-api';
 import { PlaylistMetadata } from '@backstage-community/plugin-playlist-common';
 import { PolicyDecision } from '@backstage/plugin-permission-common';
 import { PolicyQuery } from '@backstage/plugin-permission-node';
+import { PolicyQueryUser } from '@backstage/plugin-permission-node';
 import { ResourcePermission } from '@backstage/plugin-permission-common';
 
 // @public (undocumented)
@@ -38,10 +38,7 @@ export function createRouter(options: RouterOptions): Promise<express.Router>;
 // @public
 export class DefaultPlaylistPermissionPolicy implements PermissionPolicy {
   // (undocumented)
-  handle(
-    request: PolicyQuery,
-    user?: BackstageIdentityResponse,
-  ): Promise<PolicyDecision>;
+  handle(request: PolicyQuery, user?: PolicyQueryUser): Promise<PolicyDecision>;
 }
 
 // @public (undocumented)

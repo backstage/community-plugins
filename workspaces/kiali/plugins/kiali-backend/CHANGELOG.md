@@ -1,5 +1,17 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.29.2
+
+### Patch Changes
+
+- e9247c7: Bumped Backstage dependencies to 1.49.4 for Red Hat Developer Hub 1.10 compatibility.
+
+## 1.29.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 1.29.0
 
 ### Minor Changes

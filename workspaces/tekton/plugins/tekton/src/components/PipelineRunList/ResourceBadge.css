@@ -1,13 +1,13 @@
 .bs-tkn-pipeline-visualization__label {
-  align-items: baseline;
+  align-items: center;
 }
 
 .bs-tkn-pipeline-visualization__label .badge {
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 16px;
   margin-right: 4px;
-  min-width: 24px;
-  padding: 0 7px;
+  min-width: 20px;
+  padding: 0 5px;
   border-radius: 20px;
   color: var(--pf-t--color--white);
   display: inline-block;

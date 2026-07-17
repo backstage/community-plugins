@@ -246,6 +246,58 @@ describe('QuayApiClient', () => {
     );
   });
 
+  it('should throw when single-instance and multi-instance configs are mixed', () => {
+    expect(() =>
+      QuayApiClient.fromConfig({
+        configApi: mockApis.config({
+          data: {
+            quay: {
+              apiUrl: 'https://quay.io',
+              instances: [{ name: 'devel' }],
+            },
+          },
+        }),
+        discoveryApi: mockDiscoveryApi,
+        identityApi: identityApi,
+      }),
+    ).toThrow(
+      'Invalid Quay configuration: Cannot use both "quay.instances" (multi-instance) and "quay.apiUrl", "quay.proxyPath", "quay.uiUrl" (single-instance) at the same time.',
+    );
+  });
+
+  it('should throw when a non-existent instance is requested', async () => {
+    quayApi = QuayApiClient.fromConfig({
+      configApi: mockApis.config({
+        data: {
+          quay: {
+            instances: [{ name: 'devel' }, { name: 'staging' }],
+          },
+        },
+      }),
+      discoveryApi: mockDiscoveryApi,
+      identityApi: identityApi,
+    });
+
+    await expect(quayApi.getTags('unknown', 'foo', 'bar')).rejects.toEqual(
+      new Error('Quay instance "unknown" not found in configuration.'),
+    );
+    await expect(
+      quayApi.getLabels('unknown', 'foo', 'bar', 'sha256:123'),
+    ).rejects.toEqual(
+      new Error('Quay instance "unknown" not found in configuration.'),
+    );
+    await expect(
+      quayApi.getManifestByDigest('unknown', 'foo', 'bar', 'sha256:123'),
+    ).rejects.toEqual(
+      new Error('Quay instance "unknown" not found in configuration.'),
+    );
+    await expect(
+      quayApi.getSecurityDetails('unknown', 'foo', 'bar', 'sha256:123'),
+    ).rejects.toEqual(
+      new Error('Quay instance "unknown" not found in configuration.'),
+    );
+  });
+
   it('should throw an error when the response is not ok', async () => {
     await expect(
       quayApi.getTags(QUAY_SINGLE_INSTANCE_NAME, 'not', 'found'),

@@ -560,6 +560,38 @@ describe('DataBaseConditionalStorage', () => {
     );
 
     it.each(databases.eachSupportedId())(
+      'should update when idsToExclude includes pending sibling delete',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          conditionDao1,
+        );
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '[{"action":"delete","name":"catalog.entity.delete"}]',
+        });
+
+        const updateCondition: RoleConditionalPolicyDecision<PermissionInfo> = {
+          ...condition1,
+          permissionMapping: [
+            { name: 'catalog.entity.read', action: 'read' },
+            { name: 'catalog.entity.delete', action: 'delete' },
+          ],
+        };
+
+        await db.updateCondition(1, updateCondition, undefined, new Set([2]));
+
+        const condition = await knex
+          .table(CONDITIONAL_TABLE)
+          .select<ConditionalPolicyDecisionDAO[]>()
+          .where('id', 1);
+        expect(condition[0].permissions).toBe(
+          '[{"name":"catalog.entity.read","action":"read"},{"name":"catalog.entity.delete","action":"delete"}]',
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
       'should update condition with removed one action',
       async databasesId => {
         const { knex, db } = await createDatabase(databasesId);

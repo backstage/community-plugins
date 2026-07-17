@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { CompoundEntityRef, parseEntityRef } from '@backstage/catalog-model';
-import { NotAllowedError } from '@backstage/errors';
+import { InputError, NotAllowedError } from '@backstage/errors';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import { Enforcer } from 'casbin';
@@ -28,6 +28,15 @@ import {
 } from '@backstage-community/plugin-rbac-common';
 
 import { RoleMetadataDao } from '../database/role-metadata';
+
+/**
+ * Returns whether `permission` contains any double-quote character (`"`).
+ * The RBAC persistence path does not support `"` in this field; any occurrence is
+ * rejected (there is no separate handling for escaped quotes).
+ */
+function permissionContainsDoubleQuote(permission: string): boolean {
+  return permission.includes('"');
+}
 
 /**
  * validateSource validates the source to the role that is being modified. This includes comparing the source from the
@@ -68,6 +77,12 @@ export function validatePolicy(policy: RoleBasedPolicy): Error | undefined {
 
   if (!policy.permission) {
     return new Error(`'permission' field must not be empty`);
+  }
+
+  if (permissionContainsDoubleQuote(policy.permission)) {
+    return new InputError(
+      `'permission' contains double quotes (") which are not supported by the RBAC policy persistence format.`,
+    );
   }
 
   if (!policy.policy) {

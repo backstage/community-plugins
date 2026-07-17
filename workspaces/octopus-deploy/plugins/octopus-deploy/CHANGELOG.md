@@ -1,5 +1,13 @@
 # @backstage-community/plugin-octopus-deploy
 
+## 0.11.0
+
+### Minor Changes
+
+- 00b064b: Add New Frontend System support via a new `./alpha` entry point, exposing `EntityContentBlueprint` for the entity tab, `ApiBlueprint` for the Octopus Deploy API, and `FormFieldBlueprint` for the project group dropdown scaffolder field extension.
+- fd239c0: Backstage version bump to v1.49.2
+- 30fdca0: Backstage version bump to v1.50.2
+
 ## 0.10.0
 
 ### Minor Changes

@@ -26,15 +26,16 @@ const jfrogArtifactoryTranslationDe = createTranslationMessages({
   messages: {
     'page.title': 'JFrog Artifactory-Repository: {{image}}',
     'table.searchPlaceholder': 'Filter',
-    'table.labelRowsSelect': 'Zeilen',
+    'table.pagination.showResults': '{{count}} Ergebnisse anzeigen',
+    'table.pagination.rangeLabel': '{{start}} - {{end}} von {{total}}',
     'table.columns.version': 'Version',
     'table.columns.repositories': 'Repositorys',
     'table.columns.manifest': 'Manifest',
     'table.columns.modified': 'Geändert',
     'table.columns.size': 'Größe',
-    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt.',
-    'table.emptyContent.learnMore': 'Erfahren Sie, wie man Daten hinzufügt.',
-    'manifest.sha256': 'SHA256',
+    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt,',
+    'table.emptyContent.learnMore': 'erfahren Sie, wie man Daten hinzufügt.',
+    'manifest.sha256': 'sha256',
   },
 });
 

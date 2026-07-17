@@ -94,12 +94,12 @@ test.describe('ACR plugin', () => {
                 - cell "${image1.tag}"
                 - cell /.*2023.*/
                 - cell /.*2023.*/
-                - cell "sha256 ${image1.manifestShort}"
+                - cell /.*${image1.manifestShort}.*/
               - row:
                 - cell "${image2.tag}"
                 - cell /.*2023.*/
                 - cell /.*2023.*/
-                - cell "sha256 ${image2.manifestShort}"
+                - cell /.*${image2.manifestShort}.*/
       `);
       await common.a11yCheck(testInfo);
     });

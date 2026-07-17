@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 import AxeBuilder from '@axe-core/playwright';
-import { expect, TestInfo, type Locator, type Page } from '@playwright/test';
+import { expect, TestInfo, type Page } from '@playwright/test';
 import { TopologyMessages, templateToPattern } from './translations';
+
+/** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
+export function isNfsAppMode(): boolean {
+  return process.env.APP_MODE === 'alpha';
+}
+
+/**
+ * Entity page tab `data-testid` for the Topology tab — legacy TabbedLayout uses
+ * index 0; NFS entity tabs use the route path (see EntityContentBlueprint path).
+ */
+export function topologyEntityHeaderTabTestId(): string {
+  return isNfsAppMode() ? 'header-tab-/topology' : 'header-tab-0';
+}
 
 export class Common {
   page: Page;
@@ -26,6 +39,21 @@ export class Common {
 
   async waitForSideBarVisible() {
     await this.page.waitForSelector('nav a', { timeout: 120000 });
+  }
+
+  async waitForTopologyGraph() {
+    const anchorNodes = [
+      'test-deployment',
+      'fedora-turquoise-rooster-85',
+      'win2k22-purple-aphid-31',
+    ];
+
+    for (const nodeId of anchorNodes) {
+      await this.page.waitForSelector(`[data-test-id="${nodeId}"]`, {
+        timeout: 60000,
+        state: 'attached',
+      });
+    }
   }
 
   async loginAsGuest() {
@@ -47,6 +75,25 @@ export class Common {
     }
   }
 
+  /**
+   * Opens the Topology workload view. Legacy dev exposes `/topology`; NFS dev
+   * mounts Topology on the entity page (catalog → entity → Topology tab).
+   */
+  async navigateToTopologyView() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/topology');
+      return;
+    }
+    await this.page.goto('/catalog');
+    await this.page
+      .getByRole('link', { name: 'backstage', exact: true })
+      .first()
+      .click();
+    const tabTestId = topologyEntityHeaderTabTestId();
+    await expect(this.page.getByTestId(tabTestId)).toBeVisible();
+    await this.page.getByTestId(tabTestId).click();
+  }
+
   async a11yCheck(testInfo: TestInfo) {
     const page = this.page;
     const accessibilityScanResults = await new AxeBuilder({ page })
@@ -65,45 +112,40 @@ export class Common {
       .click();
 
     const resourcesTab = this.page.getByTestId('resources-tab');
+    await expect(resourcesTab.getByTestId('pod-list')).toBeVisible();
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-      - heading "Pods"
-      - list:
-        - listitem:
-          - text: P test-deployment-645f8d4887-8dmrr ${translations.status.running}
-          - button "view logs": ${translations.common.viewLogs}
-        - listitem:
-          - text: P test-deployment-645f8d4887-d77ff ${translations.status.running}
-          - button "view logs": ${translations.common.viewLogs}
-        - listitem:
-          - text: P test-deployment-645f8d4887-n8644 ${translations.status.running}
-          - button "view logs": ${translations.common.viewLogs}
+    await expect(resourcesTab.getByTestId('pod-list')).toMatchAriaSnapshot(`
+      - listitem:
+        - text: P test-deployment-645f8d4887-8dmrr ${translations.status.running}
+        - button "view logs": ${translations.common.viewLogs}
+      - listitem:
+        - text: P test-deployment-645f8d4887-d77ff ${translations.status.running}
+        - button "view logs": ${translations.common.viewLogs}
+      - listitem:
+        - text: P test-deployment-645f8d4887-n8644 ${translations.status.running}
+        - button "view logs": ${translations.common.viewLogs}
       `);
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-    - heading "Services"
-    - list:
+    await expect(resourcesTab.getByTestId('service-list')).toMatchAriaSnapshot(`
       - listitem:
         - text: S hello-world
         - list:
           - listitem: "/Service port: \\\\d+-TCP Pod port: \\\\d+/"
-       `);
+      `);
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-    - heading "Routes"
-    - list:
+    await expect(resourcesTab.getByTestId('routes-list')).toMatchAriaSnapshot(`
       - listitem:
         - text: "RT hello-minikube2 ${translations.common.location}:"
         - link /https:\\/\\/nodejs-ex-git-jai-test\\.apps\\.viraj-\\d+-\\d+-\\d+-0\\.devcluster\\.openshift\\.com/:
           - /url: https://nodejs-ex-git-jai-test.apps.viraj-22-05-2023-0.devcluster.openshift.com
       `);
 
-    await expect(resourcesTab).toMatchAriaSnapshot(`
-      - heading "Ingresses"
-      - list:
-        - listitem:
-          - text: "I example-ingress-hello-world ${translations.common.location}:"
-          - link "http://hello-world-app.info/"
+    await expect(resourcesTab.getByTestId('ingress-list')).toMatchAriaSnapshot(`
+      - listitem:
+        - text: "I example-ingress-hello-world ${translations.common.location}:"
+        - link "http://hello-world-app.info/":
+          - /url: http://hello-world-app.info/
+        - code: "/ingressClassName: nginx/"
       `);
   }
 

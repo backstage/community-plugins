@@ -15,7 +15,7 @@
     {
       "workloadName": "jaeger",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "jaeger",
         "sidecar.istio.io/inject": "false"

@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { InputError } from '@backstage/errors';
 
 import type {
   PermissionAction,
   RoleConditionalPolicyDecision,
 } from '@backstage-community/plugin-rbac-common';
 
-import { validateRoleCondition } from './condition-validation';
+import {
+  DEFAULT_CONDITION_VALIDATION_LIMITS,
+  resolveConditionValidationLimits,
+  validateRoleCondition,
+} from './condition-validation';
 
 describe('condition-validation', () => {
   describe('validation common fields', () => {
@@ -983,6 +988,163 @@ describe('condition-validation', () => {
         unexpectedErr = err;
       }
       expect(unexpectedErr).toBeUndefined();
+    });
+  });
+
+  describe('validation limits', () => {
+    it('should fail when permission mapping has duplicate actions', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read', 'read'],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' must not contain duplicate permission action 'read'`,
+      );
+    });
+
+    it('should fail when permission mapping exceeds distinct action count', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: Array.from({ length: 6 }, () => 'read'),
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' can have at most 5 items (one entry per distinct permission action)`,
+      );
+    });
+
+    it('should accept permission mapping with all distinct supported actions', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['create', 'read', 'update', 'delete', 'use'],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).not.toThrow();
+    });
+
+    it('should fail when criteria depth exceeds max value', () => {
+      let nestedCondition: any = {
+        rule: 'IS_ENTITY_OWNER',
+        resourceType: 'catalog-entity',
+        params: { claims: ['group:default/team-a'] },
+      };
+      for (let i = 0; i < 13; i++) {
+        nestedCondition = { not: nestedCondition };
+      }
+
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read'],
+        conditions: nestedCondition,
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `Conditional criteria depth exceeds maximum of 12`,
+      );
+    });
+
+    it('should fail when criteria array has too many items', () => {
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read'],
+        conditions: {
+          anyOf: Array.from({ length: 65 }, () => ({
+            rule: 'IS_ENTITY_OWNER',
+            resourceType: 'catalog-entity',
+            params: { claims: ['group:default/team-a'] },
+          })),
+        },
+      };
+
+      expect(() => validateRoleCondition(condition)).toThrow(InputError);
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `roleCondition.conditions.anyOf criteria supports at most 64 items`,
+      );
+    });
+
+    it('should apply configured validation limits for criteria', () => {
+      const limits = resolveConditionValidationLimits({
+        ...DEFAULT_CONDITION_VALIDATION_LIMITS,
+        maxCriteriaItems: 2,
+      });
+      const condition: any = {
+        pluginId: 'catalog',
+        resourceType: 'catalog-entity',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read'],
+        conditions: {
+          anyOf: [
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['group:default/team-a'] },
+            },
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['group:default/team-b'] },
+            },
+            {
+              rule: 'IS_ENTITY_OWNER',
+              resourceType: 'catalog-entity',
+              params: { claims: ['group:default/team-c'] },
+            },
+          ],
+        },
+      };
+
+      expect(() => validateRoleCondition(condition, limits)).toThrow(
+        InputError,
+      );
+      expect(() => validateRoleCondition(condition, limits)).toThrow(
+        `roleCondition.conditions.anyOf criteria supports at most 2 items`,
+      );
+    });
+
+    it('should fail when configured validation limits are invalid', () => {
+      expect(() =>
+        resolveConditionValidationLimits({ maxConditionDepth: 0 }),
+      ).toThrow(InputError);
+      expect(() =>
+        resolveConditionValidationLimits({ maxConditionDepth: 0 }),
+      ).toThrow(
+        `'maxConditionDepth' must be a positive integer for conditional policy validation`,
+      );
     });
   });
 });
