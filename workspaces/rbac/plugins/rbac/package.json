@@ -87,7 +87,7 @@
     "@backstage/frontend-defaults": "^0.5.3",
     "@backstage/test-utils": "^1.7.19",
     "@backstage/ui": "^0.16.0",
-    "@playwright/test": "1.60.0",
+    "@playwright/test": "1.61.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
