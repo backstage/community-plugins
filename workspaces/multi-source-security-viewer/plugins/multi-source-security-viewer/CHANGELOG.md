@@ -1,5 +1,13 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 0.17.2
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 691d8f5: Updated dependency `@backstage-community/plugin-github-actions` to `^0.23.0`.
+- 926ee34: Updated dependency `@backstage-community/plugin-azure-devops` to `^0.32.0`.
+
 ## 0.17.1
 
 ### Patch Changes
