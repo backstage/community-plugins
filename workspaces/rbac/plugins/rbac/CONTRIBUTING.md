@@ -39,7 +39,7 @@ yarn tsc
 ## Optional manual smoke checklist
 
 1. `yarn workspace @backstage-community/plugin-rbac start:mock` — confirm RBAC page renders with mock data.
-2. For real API behavior, use the [backend manual-tests flow](../rbac-backend/manual-tests/README.md) or backend harness + `curl` (see [backend CONTRIBUTING](../rbac-backend/CONTRIBUTING.md)).
+2. For real API behavior, use the backend harness + `curl` (see [backend CONTRIBUTING](../rbac-backend/CONTRIBUTING.md)).
 
 REST and policy administration APIs: [rbac-backend docs/apis.md](../rbac-backend/docs/apis.md).
 

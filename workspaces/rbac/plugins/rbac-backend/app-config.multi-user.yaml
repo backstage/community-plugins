@@ -1,8 +1,8 @@
 # Overlay for backend-only manual RBAC tests (no frontend required).
-# Usage: yarn workspace @backstage-community/plugin-rbac-backend start:manual-tests
+# Usage: yarn workspace @backstage-community/plugin-rbac-backend start:multi-user
 #
 # Merges on top of app-config.yaml in this directory.
-# See manual-tests/README.md for Keycloak + OIDC login scripts.
+# See __fixtures__/README.md for Keycloak + OIDC login scripts.
 
 discovery:
   endpoints:
@@ -13,11 +13,11 @@ discovery:
 backend:
   auth:
     keys:
-      - secret: manual-tests-backend-secret
+      - secret: multi-user-backend-secret
 
 auth:
   session:
-    secret: manual-tests-session-secret
+    secret: multi-user-session-secret
   environment: development
   providers:
     guest: {}
@@ -36,7 +36,7 @@ catalog:
     - allow: [Component, System, Group, User, Resource, Location, Template, API]
   locations:
     - type: file
-      target: manual-tests/rbac/all.yaml
+      target: __fixtures__/rbac/all.yaml
       rules:
         - allow: [User, Group]
 
@@ -47,7 +47,7 @@ permission:
       - catalog
       - permission
       - scaffolder
-    policies-csv-file: manual-tests/rbac/rbac-policy.csv
+    policies-csv-file: __fixtures__/rbac/rbac-policy.csv
     admin:
       users:
         - name: user:default/admin
