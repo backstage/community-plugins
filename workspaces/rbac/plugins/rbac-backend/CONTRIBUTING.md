@@ -71,7 +71,7 @@ This loads `app-config.yaml` + [`app-config.multi-user.yaml`](./app-config.multi
 Get a token and check a user's `catalog.entity.read` permission:
 
 ```bash
-TOKEN=$(npx @oandriie/backstage-login-helper --user ant_man --password test)
+TOKEN=$(npx @oandriie/backstage-login-helper@^0.3.0 --user ant_man --password test)
 
 curl -s -H "Authorization: Bearer $TOKEN" \
   http://localhost:7007/api/permission/authorize \
