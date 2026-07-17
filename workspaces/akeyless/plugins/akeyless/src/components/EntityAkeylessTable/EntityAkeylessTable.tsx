@@ -164,7 +164,7 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
       }),
     );
     return results;
-  }, [JSON.stringify(secretPaths), JSON.stringify(itemTypes), reloadToken]);
+  }, [akeylessApi, secretPaths.join(','), itemTypes.join(','), reloadToken]);
 
   const backendAllowCrud =
     listResults?.some(result => result.allowCrud) ?? false;

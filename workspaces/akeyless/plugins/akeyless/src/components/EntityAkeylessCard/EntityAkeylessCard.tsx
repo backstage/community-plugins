@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   MissingAnnotationEmptyState,
   useEntity,
@@ -33,5 +34,7 @@ export const EntityAkeylessCard = () => {
     );
   }
 
-  return <EntityAkeylessTable entity={entity} />;
+  return (
+    <EntityAkeylessTable key={stringifyEntityRef(entity)} entity={entity} />
+  );
 };
