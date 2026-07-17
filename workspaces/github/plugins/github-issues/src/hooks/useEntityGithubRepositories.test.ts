@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ describe('getHostnameFromEntity', () => {
     expect(getHostnameFromEntity(entity)).toBe('github.mycompany.com');
   });
 
-  it('returns github.com for file type source-location', () => {
+  it('returns undefined for file type source-location', () => {
     const entity: Entity = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',
@@ -90,10 +90,10 @@ describe('getHostnameFromEntity', () => {
         },
       },
     };
-    expect(getHostnameFromEntity(entity)).toBe('github.com');
+    expect(getHostnameFromEntity(entity)).toBeUndefined();
   });
 
-  it('returns github.com for managed-by-location fallback with file type', () => {
+  it('returns undefined for managed-by-location fallback with file type', () => {
     const entity: Entity = {
       apiVersion: 'backstage.io/v1alpha1',
       kind: 'Component',
@@ -105,6 +105,6 @@ describe('getHostnameFromEntity', () => {
         },
       },
     };
-    expect(getHostnameFromEntity(entity)).toBe('github.com');
+    expect(getHostnameFromEntity(entity)).toBeUndefined();
   });
 });
