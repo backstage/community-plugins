@@ -4903,16 +4903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-types/shared@npm:^3.34.0":
-  version: 3.35.0
-  resolution: "@react-types/shared@npm:3.35.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
-  checksum: 10/6fb5e95e3736f37edc1e472693663e83974788c348a37af98c0345be12f1bca9ebd4415f90b7f12ba7047d6a8274ddddf0aa3ff71dc9ebe56dc5ae490fec8b3b
-  languageName: node
-  linkType: hard
-
-"@react-types/shared@npm:^3.36.0":
+"@react-types/shared@npm:^3.34.0, @react-types/shared@npm:^3.36.0":
   version: 3.36.0
   resolution: "@react-types/shared@npm:3.36.0"
   peerDependencies:

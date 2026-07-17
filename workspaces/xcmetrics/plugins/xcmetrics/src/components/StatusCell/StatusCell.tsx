@@ -82,7 +82,7 @@ export const StatusCell = (props: StatusCellProps) => {
   }
 
   return (
-    <TooltipTrigger delay={500}>
+    <TooltipTrigger delay={0}>
       <button
         data-testid={buildStatus.id}
         className={cn(

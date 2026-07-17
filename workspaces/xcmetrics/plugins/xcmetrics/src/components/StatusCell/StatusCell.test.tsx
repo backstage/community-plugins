@@ -37,7 +37,7 @@ describe('StatusCell', () => {
       </TestApiProvider>,
     );
 
-    await userEvent.hover(rendered.getByTestId(client.mockBuild.id));
+    await userEvent.tab();
     expect(
       await rendered.findByText(formatStatus(client.mockBuild.buildStatus)),
     ).toBeInTheDocument();
