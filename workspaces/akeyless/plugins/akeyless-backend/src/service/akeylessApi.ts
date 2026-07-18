@@ -90,6 +90,7 @@ export class AkeylessClient implements AkeylessApi {
   };
   private readonly limit = plimit(5);
   private token?: string;
+  private tokenPromise?: Promise<string>;
 
   constructor(config: AkeylessConfig) {
     this.config = config;
@@ -159,14 +160,27 @@ export class AkeylessClient implements AkeylessApi {
   }
 
   private async getToken(): Promise<string> {
-    if (!this.token) {
-      this.token = await this.authenticate();
+    if (this.token) {
+      return this.token;
     }
-    return this.token;
+
+    if (!this.tokenPromise) {
+      this.tokenPromise = this.authenticate()
+        .then(token => {
+          this.token = token;
+          return token;
+        })
+        .finally(() => {
+          this.tokenPromise = undefined;
+        });
+    }
+
+    return this.tokenPromise;
   }
 
   private invalidateToken(): void {
     this.token = undefined;
+    this.tokenPromise = undefined;
   }
 
   private isUnauthorized(error: unknown): boolean {

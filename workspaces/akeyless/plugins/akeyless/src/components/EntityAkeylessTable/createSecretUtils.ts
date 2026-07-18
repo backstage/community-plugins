@@ -40,7 +40,7 @@ export function normalizeAnnotatedPath(path: string): string {
     }
     if (segment === '..') {
       if (resolved.length === 0) {
-        // Treat traversal above root as root to avoid producing invalid paths
+        // Match backend root semantics: traversal above root collapses to `/`.
         return '/';
       }
       resolved.pop();

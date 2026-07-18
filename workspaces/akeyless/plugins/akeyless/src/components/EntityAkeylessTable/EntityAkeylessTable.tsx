@@ -35,7 +35,7 @@ import OpenInNew from '@material-ui/icons/OpenInNew';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import Alert from '@material-ui/lab/Alert';
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { akeylessApiRef, AkeylessSecret } from '../../api';
 import {
@@ -124,6 +124,7 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
   const [viewValue, setViewValue] = useState<string>();
   const [viewLoading, setViewLoading] = useState(false);
   const [viewVisible, setViewVisible] = useState(false);
+  const viewRequestIdRef = useRef(0);
 
   const reload = useCallback(() => {
     setReloadToken(current => current + 1);
@@ -174,6 +175,7 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
 
   const openViewDialog = useCallback(
     async (secret: AkeylessSecret) => {
+      const requestId = ++viewRequestIdRef.current;
       setViewSecret(secret);
       setViewVisible(false);
       setViewValue(undefined);
@@ -183,8 +185,14 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
           secret.fullPath,
           secret.path,
         );
+        if (requestId !== viewRequestIdRef.current) {
+          return;
+        }
         setViewValue(response.value);
       } catch (viewError) {
+        if (requestId !== viewRequestIdRef.current) {
+          return;
+        }
         alertApi.post({
           message:
             viewError instanceof Error
@@ -194,7 +202,9 @@ export const EntityAkeylessTable = ({ entity }: { entity: Entity }) => {
         });
         setViewSecret(undefined);
       } finally {
-        setViewLoading(false);
+        if (requestId === viewRequestIdRef.current) {
+          setViewLoading(false);
+        }
       }
     },
     [akeylessApi, alertApi],

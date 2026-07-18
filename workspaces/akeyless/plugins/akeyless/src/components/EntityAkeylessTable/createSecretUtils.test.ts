@@ -105,4 +105,42 @@ describe('resolveCreateSecretRequest', () => {
       'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
     );
   });
+
+  it('resolves . and .. segments like the backend path normalizer', () => {
+    expect(
+      resolveCreateSecretRequest({
+        name: 'secret',
+        selectedPath: '/demo/./prod/../prod',
+        secretPaths: ['/demo/./prod'],
+      }),
+    ).toEqual({
+      absoluteName: '/demo/prod/secret',
+      contextPath: '/demo/prod',
+    });
+  });
+
+  it('treats ./ and ../ above root as root context paths', () => {
+    expect(() =>
+      resolveCreateSecretRequest({
+        name: 'secret',
+        selectedPath: '/./',
+        secretPaths: ['/demo'],
+      }),
+    ).toThrow(
+      'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
+    );
+  });
+
+  it('resolves relative traversal in secret names before context matching', () => {
+    expect(
+      resolveCreateSecretRequest({
+        name: '../sibling/secret',
+        selectedPath: '/demo/prod',
+        secretPaths: ['/demo', '/demo/prod'],
+      }),
+    ).toEqual({
+      absoluteName: '/demo/sibling/secret',
+      contextPath: '/demo',
+    });
+  });
 });
