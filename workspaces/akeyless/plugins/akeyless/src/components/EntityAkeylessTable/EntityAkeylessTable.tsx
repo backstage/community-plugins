@@ -70,8 +70,14 @@ const nonInteractiveColumn = {
   searchable: false,
 } as const;
 
-export const isRootContextPath = (path: string): boolean =>
-  normalizeAnnotatedPath(path) === '/';
+export const isRootContextPath = (path: string): boolean => {
+  try {
+    return normalizeAnnotatedPath(path) === '/';
+  } catch {
+    // Invalid traversal (e.g. `/../`) cannot be a scoped CRUD context.
+    return true;
+  }
+};
 
 export const firstNonRootSecretPath = (paths: string[]): string | undefined =>
   paths.find(path => !isRootContextPath(path));

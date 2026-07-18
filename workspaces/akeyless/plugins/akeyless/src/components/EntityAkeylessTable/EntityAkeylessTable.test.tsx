@@ -126,6 +126,7 @@ describe('root context path helpers', () => {
     expect(isRootContextPath(' / ')).toBe(true);
     expect(isRootContextPath('////')).toBe(true);
     expect(isRootContextPath('/./')).toBe(true);
+    expect(isRootContextPath('/../')).toBe(true);
     expect(isRootContextPath('/demo')).toBe(false);
   });
 

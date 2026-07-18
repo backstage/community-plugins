@@ -119,7 +119,7 @@ describe('resolveCreateSecretRequest', () => {
     });
   });
 
-  it('treats ./ and ../ above root as root context paths', () => {
+  it('treats ./ paths as root context paths', () => {
     expect(() =>
       resolveCreateSecretRequest({
         name: 'secret',
@@ -129,6 +129,16 @@ describe('resolveCreateSecretRequest', () => {
     ).toThrow(
       'Cannot create static secrets with a root contextPath; set a non-root akeyless.io/secrets-path',
     );
+  });
+
+  it('rejects secret names that traverse above root', () => {
+    expect(() =>
+      resolveCreateSecretRequest({
+        name: '../../outside',
+        selectedPath: '/demo',
+        secretPaths: ['/demo'],
+      }),
+    ).toThrow('Invalid path: cannot traverse above root');
   });
 
   it('resolves relative traversal in secret names before context matching', () => {
