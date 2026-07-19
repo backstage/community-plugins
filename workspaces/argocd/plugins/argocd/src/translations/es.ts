@@ -156,6 +156,8 @@ const argocdTranslationEs = createTranslationMessages({
       'Ciclo de vida de la implementación',
     'deploymentLifecycle.deploymentLifecycle.subtitle':
       'Revisar los componentes/sistemas implementados en el espacio de nombres mediante el complemento Argo CD',
+    'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD':
+      'Abrir {{appName}} en ArgoCD',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'Instancia',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'Servidor',
     'deploymentLifecycle.deploymentLifecycleCard.namespace':

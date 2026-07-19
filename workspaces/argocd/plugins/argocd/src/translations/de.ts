@@ -154,6 +154,8 @@ const argocdTranslationDe = createTranslationMessages({
     'deploymentLifecycle.deploymentLifecycle.title': 'Deployment-Lifecycle',
     'deploymentLifecycle.deploymentLifecycle.subtitle':
       'Überprüfen Sie die bereitgestellten Komponenten/Systeme im Namespace mithilfe des Argo CD-Plugins.',
+    'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD':
+      '{{appName}} in ArgoCD öffnen',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'Instanz',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'Server',
     'deploymentLifecycle.deploymentLifecycleCard.namespace': 'Namespace',

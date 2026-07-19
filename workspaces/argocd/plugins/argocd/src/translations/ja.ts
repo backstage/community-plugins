@@ -155,6 +155,8 @@ const argocdTranslationJa = createTranslationMessages({
       'デプロイメントライフサイクル',
     'deploymentLifecycle.deploymentLifecycle.subtitle':
       'ArgoCD プラグインを使用して、namespace にデプロイされたコンポーネント/システムをレビューします',
+    'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD':
+      'ArgoCD で {{appName}} を開く',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'インスタンス',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'サーバー',
     'deploymentLifecycle.deploymentLifecycleCard.namespace': '名前空間',

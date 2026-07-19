@@ -168,6 +168,9 @@ export const argocdMessages = {
       subtitle:
         'Review deployed components/systems in the namespace using ArgoCD plugin',
     },
+    deploymentLifecycleHeader: {
+      openInArgoCD: 'Open {{appName}} in ArgoCD',
+    },
     deploymentLifecycleCard: {
       instance: 'Instance',
       server: 'Server',
