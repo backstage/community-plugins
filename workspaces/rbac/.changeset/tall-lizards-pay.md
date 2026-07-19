@@ -11,7 +11,7 @@ Add CI bump-trust coverage and contributor dev harness documentation for the RBA
 - Add backend `dev/` harness config (`app-config.yaml`) that no longer depends on the workspace root `app-config.yaml`
 - Add `startTestBackend` smoke test for `GET /api/permission/roles`
 - Add policy contract test locking the documented `superUsers` direct-membership rule
-- Add manual backend-only test harness under `plugins/rbac-backend/manual-tests/` (Keycloak, CSV policies, login/permission scripts)
+- Add backend-only multi-user manual test fixtures/config under `plugins/rbac-backend/__fixtures__/` and `app-config.multi-user.yaml` (Keycloak realm import, catalog entities, CSV policies)
 - Add `CONTRIBUTING.md` with harness, test, and REST smoke guidance
 
 **`@backstage-community/plugin-rbac-common`**

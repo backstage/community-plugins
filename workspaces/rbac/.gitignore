@@ -57,4 +57,3 @@ e2e-test-report*/
 
 # Local CSV Policy Files
 *.local.csv
-plugins/rbac-backend/manual-tests/userinfo.csv
