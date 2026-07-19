@@ -115,11 +115,11 @@ test.describe('ServiceNow plugin', () => {
     await expect(rows).toHaveCount(1);
 
     await state.hover();
-    await state.getByRole('button', { name: 'Clear' }).click();
+    await state.locator('..').getByRole('button', { name: 'Clear' }).click();
     await expect(rows).toHaveCount(2);
 
     await priority.hover();
-    await priority.getByRole('button', { name: 'Clear' }).click();
+    await priority.locator('..').getByRole('button', { name: 'Clear' }).click();
     await expect(rows).toHaveCount(5);
   });
 });

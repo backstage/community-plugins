@@ -63,7 +63,6 @@ export const IncidentEnumFilter = ({
       <Autocomplete
         multiple
         disableCloseOnSelect
-        aria-label={label}
         options={items}
         isOptionEqualToValue={(option, val) => option.value === val.value}
         getOptionLabel={option => option.label}
@@ -90,7 +89,16 @@ export const IncidentEnumFilter = ({
             data-testid={`select-${label.toLowerCase().replace(/\s/g, '-')}`}
           />
         }
-        renderInput={params => <TextField {...params} variant="outlined" />}
+        renderInput={params => (
+          <TextField
+            {...params}
+            variant="outlined"
+            inputProps={{
+              ...params.inputProps,
+              'aria-label': label,
+            }}
+          />
+        )}
       />
     </Box>
   );
