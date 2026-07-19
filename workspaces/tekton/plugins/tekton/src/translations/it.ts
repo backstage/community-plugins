@@ -65,6 +65,7 @@ const tektonTranslationIt = createTranslationMessages({
     'pipelineRunList.tableHeaderTitle.startTime': 'Iniziata',
     'pipelineRunList.tableHeaderTitle.duration': 'DURATA',
     'pipelineRunList.tableHeaderTitle.actions': 'AZIONI',
+    'pipelineRunList.tablePagination.rowsPerPage': 'Righe per pagina',
     'pipelineRunList.tablePagination.rowsPerPageOptionLabel': '{{num}} righe',
     'pipelineRunLogs.title': 'Registri PipelineRun',
     'pipelineRunLogs.noLogs': 'Nessun registro trovato',

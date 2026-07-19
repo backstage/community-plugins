@@ -37,6 +37,7 @@ export const TableExpandCollapse = () => {
       <Tooltip title={t('tableExpandCollapse.collapseAll')} placement="top">
         <span>
           <IconButton
+            aria-label={t('tableExpandCollapse.collapseAll')}
             onClick={() => handleExpandCollaspse()}
             disabled={!isExpanded}
             sx={{ padding: '2px' }}
@@ -48,6 +49,7 @@ export const TableExpandCollapse = () => {
       <Tooltip title={t('tableExpandCollapse.expandAll')} placement="top">
         <span>
           <IconButton
+            aria-label={t('tableExpandCollapse.expandAll')}
             onClick={() => handleExpandCollaspse()}
             disabled={isExpanded}
             sx={{ padding: '2px' }}
