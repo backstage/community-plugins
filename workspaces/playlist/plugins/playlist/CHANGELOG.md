@@ -1,5 +1,16 @@
 # @backstage-community/plugin-playlist
 
+## 0.21.0
+
+### Minor Changes
+
+- ccf9763: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- Updated dependencies [ccf9763]
+  - @backstage-community/plugin-playlist-common@0.20.0
+
 ## 0.20.0
 
 ### Minor Changes
