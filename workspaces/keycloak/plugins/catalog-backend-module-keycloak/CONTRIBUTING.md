@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-catalog-backend-module-keycloak
 ## Prerequisites
 
 - Node.js **22 or 24** (see workspace `engines` in the workspace root `package.json`)
-- Yarn (workspace uses the community-plugins monorepo lockfile)
+- Yarn (this workspace uses its own `workspaces/keycloak/yarn.lock`; `yarn install` here also triggers a root install via `postinstall`)
 - **Docker** — local Keycloak for integration smoke (port **8080**)
 
 ## Development harness
