@@ -40,7 +40,7 @@ describe('regex:replace input schema', () => {
 
     expect(result.success).toBe(false);
     expect(result.error?.issues[0].message).toBe(
-      'The RegExp constructor cannot take a string pattern with a leading and trailing forward slash.',
+      'The RegExp constructor cannot take a string pattern with a leading and/or trailing forward slash.',
     );
   });
 
