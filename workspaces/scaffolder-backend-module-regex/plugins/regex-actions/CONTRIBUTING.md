@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-scaffolder-backend-module-regex
 ## Prerequisites
 
 - Node.js **22 or 24** (see workspace `engines` in the workspace root `package.json`)
-- Yarn (workspace uses the community-plugins monorepo lockfile)
+- Yarn (this workspace has its own `yarn.lock`; run commands from `workspaces/scaffolder-backend-module-regex/`)
 
 ## Development harness
 
