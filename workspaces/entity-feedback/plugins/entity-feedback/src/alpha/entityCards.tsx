@@ -15,10 +15,10 @@
  */
 
 import { InfoCard } from '@backstage/core-components';
-import { compatWrapper } from '@backstage/core-compat-api';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { z } from 'zod/v4';
 import {
   entityFeedbackAllPredicate,
   entityFeedbackOwnerPredicate,
@@ -29,22 +29,14 @@ import {
  */
 export const entityRatingsButtonsCard = EntityCardBlueprint.makeWithOverrides({
   name: 'ratings-buttons',
-  config: {
-    schema: {
-      title: z => z.string().default('Rate this entity'),
-      variant: z => z.enum(['like-dislike', 'starred']).default('like-dislike'),
-      requestResponse: z => z.boolean().optional(),
-      dialogTitle: z => z.string().optional(),
-      dialogResponses: z =>
-        z
-          .array(
-            z.object({
-              id: z.string(),
-              label: z.string(),
-            }),
-          )
-          .optional(),
-    },
+  configSchema: {
+    title: z.string().default('Rate this entity'),
+    variant: z.enum(['like-dislike', 'starred']).default('like-dislike'),
+    requestResponse: z.boolean().optional(),
+    dialogTitle: z.string().optional(),
+    dialogResponses: z
+      .array(z.object({ id: z.string(), label: z.string() }))
+      .optional(),
   },
   factory(originalFactory, { config }) {
     const { variant, title, requestResponse, dialogTitle, dialogResponses } =
@@ -62,14 +54,14 @@ export const entityRatingsButtonsCard = EntityCardBlueprint.makeWithOverrides({
           variant === 'like-dislike'
             ? LikeDislikeButtons
             : StarredRatingButtons;
-        return compatWrapper(
+        return (
           <InfoCard title={title}>
             <Buttons
               requestResponse={requestResponse}
               feedbackDialogTitle={dialogTitle}
               feedbackDialogResponses={dialogResponses}
             />
-          </InfoCard>,
+          </InfoCard>
         );
       },
     });
@@ -81,12 +73,10 @@ export const entityRatingsButtonsCard = EntityCardBlueprint.makeWithOverrides({
  */
 export const entityRatingsTableCard = EntityCardBlueprint.makeWithOverrides({
   name: 'ratings-table',
-  config: {
-    schema: {
-      title: z => z.string().optional(),
-      allEntities: z => z.boolean().optional(),
-      variant: z => z.enum(['like-dislike', 'starred']).default('like-dislike'),
-    },
+  configSchema: {
+    title: z.string().optional(),
+    allEntities: z.boolean().optional(),
+    variant: z.enum(['like-dislike', 'starred']).default('like-dislike'),
   },
   factory(originalFactory, { config }) {
     const { variant, title, allEntities } = config;
@@ -114,7 +104,7 @@ export const entityRatingsTableCard = EntityCardBlueprint.makeWithOverrides({
             />
           );
         }
-        return compatWrapper(<Component />);
+        return <Component />;
       },
     });
   },
