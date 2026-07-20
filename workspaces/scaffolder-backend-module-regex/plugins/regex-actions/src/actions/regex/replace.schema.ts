@@ -30,11 +30,10 @@ export const regExpsSchema = (z: typeof zType) =>
           // You should not parse a regex (regular language) with a regex (regular language),
           // you actually need a context free grammar to parse a regex (regular language).
           // Hence, we are using a string comparison here.
-          value => !value.startsWith('/') && !value.endsWith('/'),
           {
             message:
-              'The RegExp constructor cannot take a string pattern with a leading and trailing forward slash.',
-          },
+              'The RegExp constructor cannot take a string pattern with a leading and/or trailing forward slash.',
+          }
         )
         .describe(
           'The regex pattern to match the value like in String.prototype.replace()',
