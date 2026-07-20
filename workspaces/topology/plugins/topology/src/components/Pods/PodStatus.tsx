@@ -228,7 +228,16 @@ const PodStatus = ({
     );
     return (
       <Tooltip content={tipContent} triggerRef={chartTriggerRef}>
-        <g ref={chartTriggerRef}>{chartDonut}</g>
+        <g ref={chartTriggerRef}>
+          <rect
+            x={x || 0}
+            y={y || 0}
+            width={size}
+            height={size}
+            fill="transparent"
+          />
+          {chartDonut}
+        </g>
       </Tooltip>
     );
   }
