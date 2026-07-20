@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { entityFeedbackApi } from './apis';
 import {
@@ -36,7 +35,7 @@ export const entityFeedbackPlugin = createFrontendPlugin({
     entityRatingsTableCard,
     entityFeedbackEntityContent,
   ],
-  routes: convertLegacyRouteRefs({
+  routes: {
     root: rootRouteRef,
-  }),
+  },
 });

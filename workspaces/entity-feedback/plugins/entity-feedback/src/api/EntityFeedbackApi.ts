@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import {
   EntityRatingsData,
   FeedbackResponse,
@@ -25,8 +25,9 @@ import {
 /**
  * @public
  */
-export const entityFeedbackApiRef = createApiRef<EntityFeedbackApi>({
+export const entityFeedbackApiRef = createApiRef<EntityFeedbackApi>().with({
   id: 'plugin.entity-feedback.service',
+  pluginId: 'entity-feedback',
 });
 
 /**

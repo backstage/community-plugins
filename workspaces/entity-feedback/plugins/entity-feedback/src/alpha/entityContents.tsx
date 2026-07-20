@@ -16,10 +16,6 @@
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import {
-  compatWrapper,
-  convertLegacyRouteRef,
-} from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../routes';
 import { entityFeedbackAllPredicate } from './entityPredicates';
@@ -31,7 +27,7 @@ export const entityFeedbackEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/feedback',
     title: 'Feedback',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
+    routeRef: rootRouteRef,
     filter: entityFeedbackAllPredicate,
     async loader() {
       const { FeedbackResponseTable } = await import(
@@ -45,7 +41,7 @@ export const entityFeedbackEntityContent = EntityContentBlueprint.make({
           />
         );
       }
-      return compatWrapper(<Component />);
+      return <Component />;
     },
   },
 });

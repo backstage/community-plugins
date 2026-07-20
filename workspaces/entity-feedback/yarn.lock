@@ -1752,7 +1752,6 @@ __metadata:
     "@backstage-community/plugin-entity-feedback-common": "workspace:^"
     "@backstage/catalog-model": "npm:^1.9.0"
     "@backstage/cli": "npm:^0.36.4"
-    "@backstage/core-compat-api": "npm:^0.5.13"
     "@backstage/core-components": "npm:^0.18.12"
     "@backstage/core-plugin-api": "npm:^1.12.8"
     "@backstage/dev-utils": "npm:^1.1.25"

@@ -15,7 +15,6 @@
  */
 
 import { InfoCard } from '@backstage/core-components';
-import { compatWrapper } from '@backstage/core-compat-api';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
@@ -62,14 +61,14 @@ export const entityRatingsButtonsCard = EntityCardBlueprint.makeWithOverrides({
           variant === 'like-dislike'
             ? LikeDislikeButtons
             : StarredRatingButtons;
-        return compatWrapper(
+        return (
           <InfoCard title={title}>
             <Buttons
               requestResponse={requestResponse}
               feedbackDialogTitle={dialogTitle}
               feedbackDialogResponses={dialogResponses}
             />
-          </InfoCard>,
+          </InfoCard>
         );
       },
     });
@@ -114,7 +113,7 @@ export const entityRatingsTableCard = EntityCardBlueprint.makeWithOverrides({
             />
           );
         }
-        return compatWrapper(<Component />);
+        return <Component />;
       },
     });
   },

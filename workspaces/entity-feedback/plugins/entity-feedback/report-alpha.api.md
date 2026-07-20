@@ -11,12 +11,15 @@ import { EntityCardType } from '@backstage/plugin-catalog-react/alpha';
 import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { FilterPredicate } from '@backstage/filter-predicates';
-import { JSX as JSX_2 } from 'react';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { JSX as JSX_3 } from 'react';
 import { JSXElementConstructor } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { ReactElement } from 'react';
-import { RouteRef } from '@backstage/frontend-plugin-api';
+import { ReactNode } from 'react';
+import { RouteRef } from '@backstage/core-plugin-api';
+import { RouteRef as RouteRef_2 } from '@backstage/frontend-plugin-api';
 
 // @alpha (undocumented)
 const entityFeedbackPlugin: OverridableFrontendPlugin<
@@ -70,7 +73,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<JSX_3.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
@@ -117,7 +120,7 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type?: 'content' | 'info' | undefined | undefined;
       };
       output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<JSX_3.Element, 'core.reactElement', {}>
         | ExtensionDataRef<
             (entity: Entity) => boolean,
             'catalog.entity-filter-function',
@@ -166,10 +169,10 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         icon?: string | undefined;
       };
       output:
-        | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
+        | ExtensionDataRef<JSX_3.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
-            RouteRef<AnyRouteRefParams>,
+            RouteRef_2<AnyRouteRefParams>,
             'core.routing.ref',
             {
               optional: true;
@@ -223,13 +226,139 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
           | (string & {});
         icon?: string | ReactElement;
         loader: () => Promise<JSX.Element>;
-        routeRef?: RouteRef;
+        routeRef?: RouteRef_2;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);
       };
     }>;
   }
 >;
 export default entityFeedbackPlugin;
+
+// @public (undocumented)
+export interface EntityFeedbackResponse {
+  // (undocumented)
+  id: string;
+  // (undocumented)
+  label: string;
+}
+
+// @public (undocumented)
+export const FeedbackResponseDialog: (
+  props: FeedbackResponseDialogProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface FeedbackResponseDialogProps {
+  // (undocumented)
+  entity: Entity;
+  // (undocumented)
+  feedbackDialogResponses?: EntityFeedbackResponse[];
+  // (undocumented)
+  feedbackDialogTitle?: ReactNode;
+  // (undocumented)
+  onClose: () => void;
+  // (undocumented)
+  open: boolean;
+}
+
+// @public (undocumented)
+export const FeedbackResponseTable: (
+  props: FeedbackResponseTableProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface FeedbackResponseTableProps {
+  // (undocumented)
+  entityRef: string;
+  // (undocumented)
+  title?: string;
+}
+
+// @public (undocumented)
+export const LikeDislikeButtons: (
+  props: LikeDislikeButtonsProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface LikeDislikeButtonsProps {
+  // (undocumented)
+  feedbackDialogResponses?: EntityFeedbackResponse[];
+  // (undocumented)
+  feedbackDialogTitle?: ReactNode;
+  // (undocumented)
+  requestResponse?: boolean;
+}
+
+// @public (undocumented)
+export enum LikeDislikeFeedbackRatings {
+  // (undocumented)
+  dislike = 'DISLIKE',
+  // (undocumented)
+  like = 'LIKE',
+  // (undocumented)
+  neutral = 'NEUTRAL',
+}
+
+// @public (undocumented)
+export const LikeDislikeRatingsTable: (
+  props: LikeDislikeRatingsTableProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface LikeDislikeRatingsTableProps {
+  // (undocumented)
+  allEntities?: boolean;
+  // (undocumented)
+  ownerRef?: string;
+  // (undocumented)
+  title?: string;
+}
+
+// @public (undocumented)
+export enum StarredFeedbackRatings {
+  // (undocumented)
+  five = 5,
+  // (undocumented)
+  four = 4,
+  // (undocumented)
+  one = 1,
+  // (undocumented)
+  three = 3,
+  // (undocumented)
+  two = 2,
+}
+
+// @public (undocumented)
+export const StarredRatingButtons: (
+  props: StarredRatingButtonsProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface StarredRatingButtonsProps {
+  // (undocumented)
+  feedbackDialogResponses?: EntityFeedbackResponse[];
+  // (undocumented)
+  feedbackDialogTitle?: ReactNode;
+  // (undocumented)
+  requestResponse?: boolean;
+  // (undocumented)
+  requestResponseThreshold?: StarredFeedbackRatings;
+}
+
+// @public (undocumented)
+export const StarredRatingsTable: (
+  props: StarredRatingsTableProps,
+) => JSX_2.Element;
+
+// @public (undocumented)
+export interface StarredRatingsTableProps {
+  // (undocumented)
+  allEntities?: boolean;
+  // (undocumented)
+  ownerRef?: string;
+  // (undocumented)
+  title?: string;
+}
 
 // (No @packageDocumentation comment for this package)
 ```

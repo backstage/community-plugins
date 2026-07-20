@@ -102,6 +102,9 @@ const useStyles = makeStyles<Theme>(
   { name: 'BackstageEntityFeedbackDialog' },
 );
 
+/**
+ * @public
+ */
 export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   const {
     entity,
