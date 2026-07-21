@@ -58,6 +58,9 @@ export const TableAction = (props: {
     <IconButton
       size={props.size}
       color="inherit"
+      aria-label={
+        typeof action.tooltip === 'string' ? action.tooltip : 'Table action'
+      }
       disabled={disabled}
       onClick={handleClick}
     >
