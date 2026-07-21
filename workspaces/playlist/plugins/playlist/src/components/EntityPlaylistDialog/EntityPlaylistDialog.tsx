@@ -134,7 +134,7 @@ const EntityPlaylistDialogInner = (
       try {
         const playlistId = await playlistApi.createPlaylist(playlist);
         await playlistApi.addPlaylistEntities(playlistId, [
-          stringifyEntityRef(entity!),
+          stringifyEntityRef(entity),
         ]);
         closeDialog();
         navigate(playlistRoute({ playlistId }));
@@ -165,7 +165,7 @@ const EntityPlaylistDialogInner = (
     async (playlist: Playlist) => {
       try {
         await playlistApi.addPlaylistEntities(playlist.id, [
-          stringifyEntityRef(entity!),
+          stringifyEntityRef(entity),
         ]);
         closeDialog();
         alertApi.post({
@@ -230,7 +230,7 @@ const EntityPlaylistDialogInner = (
               error={error}
             />
           )}
-          {playlists && entity && (
+          {playlists && (
             <List>
               {createAllowed && (
                 <ListItem
@@ -305,7 +305,11 @@ const EntityPlaylistDialogFromContext = (
   props: Omit<EntityPlaylistDialogProps, 'entity'>,
 ) => {
   const { entity } = useAsyncEntity();
-  return <EntityPlaylistDialogInner {...props} entity={entity!} />;
+  if (!entity) {
+    return null;
+  }
+
+  return <EntityPlaylistDialogInner {...props} entity={entity} />;
 };
 
 export const EntityPlaylistDialog = (props: EntityPlaylistDialogProps) => {
