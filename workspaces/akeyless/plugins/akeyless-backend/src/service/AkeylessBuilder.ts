@@ -153,9 +153,15 @@ export class AkeylessBuilder {
 
       let itemTypes: string[] | undefined;
       if (Array.isArray(types)) {
-        itemTypes = types.map(String).filter(Boolean);
-      } else if (typeof types === 'string' && types.trim()) {
-        itemTypes = [types];
+        itemTypes = types
+          .map(String)
+          .map(type => type.trim())
+          .filter(Boolean);
+      } else if (typeof types === 'string') {
+        const trimmed = types.trim();
+        if (trimmed) {
+          itemTypes = [trimmed];
+        }
       }
 
       const listPath = normalizePath(path);

@@ -145,7 +145,10 @@ Global CRUD is **off by default**. Enable it with `akeyless.allowCrud: true` in 
 
 ![Screenshot of the Akeyless plugin with missing annotation](images/annotation-missing.png)
 
-If `akeyless.io/secrets-path` is absent or blank, the card shows Backstage's standard missing-annotation empty state prompting you to add the annotation.
+Behavior depends on which frontend system you use:
+
+- **Frontend system** — the overview card and Akeyless entity tab are not shown unless the entity has `akeyless.io/secrets-path`.
+- **Legacy frontend system** — if you mount `EntityAkeylessCard` unconditionally, missing or blank `akeyless.io/secrets-path` shows Backstage's standard missing-annotation empty state prompting you to add the annotation.
 
 ## Using the UI
 
