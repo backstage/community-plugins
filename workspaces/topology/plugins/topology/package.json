@@ -78,7 +78,7 @@
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "classnames": "2.x",
     "git-url-parse": "^13.1.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.2.1",
     "lodash": "^4.17.21",
     "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
