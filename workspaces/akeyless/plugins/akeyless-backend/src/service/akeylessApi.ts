@@ -210,17 +210,17 @@ export class AkeylessClient implements AkeylessApi {
     let response: { items?: ListItem[]; folders?: string[] };
 
     try {
+      // Concurrency is bounded at the folder-traversal level below so nested
+      // listAtPath calls do not stack additional limit() acquisitions.
       response = await this.withAuthRetry(token =>
-        this.limit(() =>
-          this.api.listItems(
-            akeyless.ListItems.constructFromObject({
-              path: normalizePath(path),
-              type: itemTypes,
-              token,
-              currentFolder: true,
-              autoPagination: 'enabled',
-            }),
-          ),
+        this.api.listItems(
+          akeyless.ListItems.constructFromObject({
+            path: normalizePath(path),
+            type: itemTypes,
+            token,
+            currentFolder: true,
+            autoPagination: 'enabled',
+          }),
         ),
       );
     } catch (error: unknown) {
@@ -244,9 +244,10 @@ export class AkeylessClient implements AkeylessApi {
       });
     }
 
+    const folders = response.folders ?? [];
     await Promise.all(
-      (response.folders ?? []).map(folder =>
-        this.listAtPath(folder, itemTypes, basePath, secrets),
+      folders.map(folder =>
+        this.limit(() => this.listAtPath(folder, itemTypes, basePath, secrets)),
       ),
     );
   }
