@@ -1,5 +1,15 @@
 # @backstage-community/plugin-mcp-chat
 
+## 0.8.0
+
+### Minor Changes
+
+- cacdbba: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- 4e8bd66: Updated dependency `react-router` to `^6.30.4`.
+
 ## 0.7.1
 
 ### Patch Changes

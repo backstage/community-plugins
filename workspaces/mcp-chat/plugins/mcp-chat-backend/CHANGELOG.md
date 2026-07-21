@@ -1,5 +1,11 @@
 # @backstage-community/plugin-mcp-chat-backend
 
+## 0.12.0
+
+### Minor Changes
+
+- cacdbba: Backstage version bump to v1.52.0
+
 ## 0.11.0
 
 ### Minor Changes
