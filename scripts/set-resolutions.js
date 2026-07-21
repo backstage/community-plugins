@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * Copyright 2026 The Backstage Authors
  *
@@ -66,7 +65,6 @@ const packages = [
   'workspaces/stack-overflow/package.json',
   'workspaces/stackstorm/package.json',
   'workspaces/vault/package.json',
-  'workspaces/akeyless/package.json',
   'workspaces/xcmetrics/package.json',
 ];
 
