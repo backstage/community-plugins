@@ -82,17 +82,19 @@ async function main() {
       return;
     }
 
-    const isRecent =
+    const daysSinceRelease =
       (Date.now() - new Date(minorRelease.published_at)) /
-        (1000 * 60 * 60 * 24) <=
-      7;
+      (1000 * 60 * 60 * 24);
+    const isRecent = daysSinceRelease <= 10;
     console.log(
       `Minor release ${minorReleaseTag} published: ${minorRelease.published_at}`,
     );
-    console.log(`Within the past week: ${isRecent}`);
+    console.log(
+      `Days since release: ${daysSinceRelease.toFixed(2)}, within window: ${isRecent}`,
+    );
 
     if (!isRecent) {
-      console.log('Minor release is older than 7 days');
+      console.log('Minor release is older than 10 days');
       await setOutput('false');
       return;
     }
