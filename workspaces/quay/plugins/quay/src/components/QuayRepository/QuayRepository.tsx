@@ -64,7 +64,12 @@ export function QuayRepository(_props: QuayRepositoryProps) {
     <div data-testid="quay-repo-table">
       <Table
         title={title}
-        options={{ sorting: true, paging: true, padding: 'dense' }}
+        options={{
+          sorting: true,
+          paging: true,
+          padding: 'dense',
+          draggable: false,
+        }}
         data={data}
         columns={columns}
         emptyContent={
