@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay
 
+## 1.37.1
+
+### Patch Changes
+
+- f3536fd: Fixed nested interactive controls accessibility violation in tag and security scan tables by disabling column dragging
+
 ## 1.37.0
 
 ### Minor Changes
