@@ -16,7 +16,7 @@
 
 import { renderInTestApp } from '@backstage/test-utils';
 
-import { FeedbackRatings } from '../LikeDislikeButtons';
+import { LikeDislikeFeedbackRatings } from '../LikeDislikeButtons';
 import { LikeDislikeRatingsTable } from './LikeDislikeRatingsTable';
 
 jest.mock('../FeedbackRatingsTable', () => ({
@@ -34,8 +34,12 @@ jest.mock('../FeedbackRatingsTable', () => ({
 describe('LikeDislikeRatingsTable', () => {
   it('renders like-dislike ratings correctly', async () => {
     const rendered = await renderInTestApp(<LikeDislikeRatingsTable />);
-    expect(rendered.getByText(FeedbackRatings.like)).toBeInTheDocument();
-    expect(rendered.queryByText(FeedbackRatings.neutral)).toBeNull();
-    expect(rendered.getByText(FeedbackRatings.dislike)).toBeInTheDocument();
+    expect(
+      rendered.getByText(LikeDislikeFeedbackRatings.like),
+    ).toBeInTheDocument();
+    expect(rendered.queryByText(LikeDislikeFeedbackRatings.neutral)).toBeNull();
+    expect(
+      rendered.getByText(LikeDislikeFeedbackRatings.dislike),
+    ).toBeInTheDocument();
   });
 });

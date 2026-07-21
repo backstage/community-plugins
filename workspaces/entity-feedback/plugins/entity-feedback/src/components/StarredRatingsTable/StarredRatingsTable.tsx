@@ -15,7 +15,7 @@
  */
 
 import { FeedbackRatingsTable } from '../FeedbackRatingsTable';
-import { FeedbackRatings } from '../StarredRatingButtons';
+import { StarredFeedbackRatings } from '../StarredRatingButtons';
 
 /**
  * @public
@@ -26,6 +26,9 @@ export interface StarredRatingsTableProps {
   title?: string;
 }
 
+/**
+ * @public
+ */
 export const StarredRatingsTable = (props: StarredRatingsTableProps) => {
   const { allEntities, ownerRef, title } = props;
 
@@ -33,7 +36,7 @@ export const StarredRatingsTable = (props: StarredRatingsTableProps) => {
     <FeedbackRatingsTable
       allEntities={allEntities}
       ownerRef={ownerRef}
-      ratingValues={Object.values(FeedbackRatings)
+      ratingValues={Object.values(StarredFeedbackRatings)
         .filter(o => typeof o === 'number')
         .map(r => r.toString())}
       title={title}

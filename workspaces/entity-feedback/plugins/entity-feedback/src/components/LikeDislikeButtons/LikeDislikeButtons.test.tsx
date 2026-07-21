@@ -26,7 +26,10 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import userEvent from '@testing-library/user-event';
 
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
-import { FeedbackRatings, LikeDislikeButtons } from './LikeDislikeButtons';
+import {
+  LikeDislikeFeedbackRatings,
+  LikeDislikeButtons,
+} from './LikeDislikeButtons';
 
 jest.mock('../FeedbackResponseDialog', () => ({
   FeedbackResponseDialog: ({ open }: { open: boolean }) => {
@@ -38,11 +41,11 @@ describe('LikeDislikeButtons', () => {
   const sampleRatings = [
     {
       userRef: 'user:default/me',
-      rating: FeedbackRatings.like,
+      rating: LikeDislikeFeedbackRatings.like,
     },
     {
       userRef: 'user:default/someone',
-      rating: FeedbackRatings.dislike,
+      rating: LikeDislikeFeedbackRatings.dislike,
     },
   ];
 
@@ -100,7 +103,7 @@ describe('LikeDislikeButtons', () => {
     );
     expect(feedbackApi.recordRating).toHaveBeenCalledWith(
       'component:default/test',
-      FeedbackRatings.dislike,
+      LikeDislikeFeedbackRatings.dislike,
     );
 
     jest.clearAllMocks();
@@ -108,7 +111,7 @@ describe('LikeDislikeButtons', () => {
     await userEvent.click(rendered.getByTestId('entity-feedback-like-button'));
     expect(feedbackApi.recordRating).toHaveBeenCalledWith(
       'component:default/test',
-      FeedbackRatings.like,
+      LikeDislikeFeedbackRatings.like,
     );
   });
 
@@ -118,7 +121,7 @@ describe('LikeDislikeButtons', () => {
     await userEvent.click(rendered.getByTestId('entity-feedback-like-button'));
     expect(feedbackApi.recordRating).toHaveBeenCalledWith(
       'component:default/test',
-      FeedbackRatings.neutral,
+      LikeDislikeFeedbackRatings.neutral,
     );
   });
 

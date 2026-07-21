@@ -16,7 +16,7 @@
 
 import { renderInTestApp } from '@backstage/test-utils';
 
-import { FeedbackRatings } from '../StarredRatingButtons';
+import { StarredFeedbackRatings } from '../StarredRatingButtons';
 import { StarredRatingsTable } from './StarredRatingsTable';
 
 jest.mock('../FeedbackRatingsTable', () => ({
@@ -34,10 +34,12 @@ jest.mock('../FeedbackRatingsTable', () => ({
 describe('StarredRatingsTable', () => {
   it('renders starred ratings correctly', async () => {
     const rendered = await renderInTestApp(<StarredRatingsTable />);
-    expect(rendered.getByText(FeedbackRatings.one)).toBeInTheDocument();
-    expect(rendered.getByText(FeedbackRatings.two)).toBeInTheDocument();
-    expect(rendered.getByText(FeedbackRatings.three)).toBeInTheDocument();
-    expect(rendered.getByText(FeedbackRatings.four)).toBeInTheDocument();
-    expect(rendered.getByText(FeedbackRatings.five)).toBeInTheDocument();
+    expect(rendered.getByText(StarredFeedbackRatings.one)).toBeInTheDocument();
+    expect(rendered.getByText(StarredFeedbackRatings.two)).toBeInTheDocument();
+    expect(
+      rendered.getByText(StarredFeedbackRatings.three),
+    ).toBeInTheDocument();
+    expect(rendered.getByText(StarredFeedbackRatings.four)).toBeInTheDocument();
+    expect(rendered.getByText(StarredFeedbackRatings.five)).toBeInTheDocument();
   });
 });
