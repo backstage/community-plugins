@@ -43,7 +43,7 @@
     "@backstage/backend-plugin-api": "^1.9.2",
     "@backstage/plugin-scaffolder-node": "^0.13.4",
     "abort-controller": "^3.0.0",
-    "axios": "^1.16.0",
+    "axios": "^1.18.0",
     "form-data": "^4.0.0",
     "yaml": "^2.3.3"
   },
