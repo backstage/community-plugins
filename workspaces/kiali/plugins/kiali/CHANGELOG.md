@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali
 
+## 1.51.2
+
+### Patch Changes
+
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+
 ## 1.51.1
 
 ### Patch Changes
