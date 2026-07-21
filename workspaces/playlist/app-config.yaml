@@ -1,6 +1,13 @@
 app:
   title: Backstage Example App
   baseUrl: http://localhost:3000
+  packages: all
+  extensions:
+    - app/routes:
+        config:
+          redirects:
+            - from: /
+              to: /catalog
 
 backend:
   baseUrl: http://localhost:7007

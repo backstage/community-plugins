@@ -37,6 +37,7 @@ export const EntityPlaylistDialog: (
 export type EntityPlaylistDialogProps = {
   open: boolean;
   onClose: () => void;
+  entity?: Entity;
 };
 
 // @public (undocumented)

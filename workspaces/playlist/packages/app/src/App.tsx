@@ -13,59 +13,153 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Navigate, Route } from 'react-router-dom';
-import { CatalogEntityPage, CatalogIndexPage } from '@backstage/plugin-catalog';
-import { SearchPage } from '@backstage/plugin-search';
-import { UserSettingsPage } from '@backstage/plugin-user-settings';
+import { Route } from 'react-router-dom';
 import {
   PlaylistIndexPage,
   PlaylistPage,
+  EntityPlaylistDialog,
 } from '@backstage-community/plugin-playlist';
-import { apis } from './apis';
-import { entityPage } from './components/catalog/EntityPage';
-import { searchPage } from './components/search/SearchPage';
-import { Root } from './components/Root';
+import { FlatRoutes } from '@backstage/core-app-api';
+import { convertLegacyAppRoot } from '@backstage/core-compat-api';
+import { createApp } from '@backstage/frontend-defaults';
+import {
+  createFrontendModule,
+  dialogApiRef,
+  useApi,
+} from '@backstage/frontend-plugin-api';
+import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import { useAsyncEntity } from '@backstage/plugin-catalog-react';
+import { EntityContextMenuItemBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 import {
-  AlertDisplay,
-  OAuthRequestDialog,
-  SignInPage,
+  sidebarConfig,
+  useSidebarOpenState,
+  Link,
+  Sidebar,
+  SidebarDivider,
+  SidebarGroup,
+  SidebarItem,
+  SidebarSpace,
 } from '@backstage/core-components';
-import { createApp } from '@backstage/app-defaults';
-import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
+import { SidebarSearchModal } from '@backstage/plugin-search';
+import {
+  Settings as SidebarSettings,
+  UserSettingsSignInAvatar,
+} from '@backstage/plugin-user-settings';
+import MenuIcon from '@material-ui/icons/Menu';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import PlaylistPlayIcon from '@material-ui/icons/PlaylistPlay';
+import SearchIcon from '@material-ui/icons/Search';
+import { makeStyles } from '@material-ui/core';
+import LogoFull from './components/Root/LogoFull';
+import LogoIcon from './components/Root/LogoIcon';
 
-const app = createApp({
-  apis,
-  components: {
-    SignInPage: props => <SignInPage {...props} auto providers={['guest']} />,
+const useSidebarLogoStyles = makeStyles({
+  root: {
+    width: sidebarConfig.drawerWidthClosed,
+    height: 3 * sidebarConfig.logoHeight,
+    display: 'flex',
+    flexFlow: 'row nowrap',
+    alignItems: 'center',
+    marginBottom: -14,
   },
+  link: {
+    width: sidebarConfig.drawerWidthClosed,
+    marginLeft: 24,
+  },
+});
+
+const SidebarLogo = () => {
+  const classes = useSidebarLogoStyles();
+  const { isOpen } = useSidebarOpenState();
+  return (
+    <div className={classes.root}>
+      <Link to="/" underline="none" className={classes.link} aria-label="Home">
+        {isOpen ? <LogoFull /> : <LogoIcon />}
+      </Link>
+    </div>
+  );
+};
+
+const appModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    NavContentBlueprint.make({
+      params: {
+        component: ({ navItems }) => {
+          const nav = navItems.withComponent(item => (
+            <SidebarItem
+              icon={() => item.icon}
+              to={item.href}
+              text={item.title}
+            />
+          ));
+          return (
+            <Sidebar>
+              <SidebarLogo />
+              <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
+                <SidebarSearchModal />
+              </SidebarGroup>
+              <SidebarDivider />
+              <SidebarGroup label="Menu" icon={<MenuIcon />}>
+                {nav.take('page:catalog')}
+                <SidebarDivider />
+                <SidebarItem
+                  icon={PlaylistPlayIcon}
+                  to="playlist"
+                  text="Playlists"
+                />
+              </SidebarGroup>
+              <SidebarSpace />
+              <SidebarDivider />
+              <SidebarGroup
+                label="Settings"
+                icon={<UserSettingsSignInAvatar />}
+                to="/settings"
+              >
+                <SidebarSettings />
+              </SidebarGroup>
+            </Sidebar>
+          );
+        },
+      },
+    }),
+    EntityContextMenuItemBlueprint.make({
+      name: 'add-to-playlist',
+      params: {
+        icon: <PlaylistAddIcon />,
+        useProps: () => {
+          const dialogApi = useApi(dialogApiRef);
+          const { entity } = useAsyncEntity();
+
+          return {
+            title: 'Add to playlist',
+            onClick: () => {
+              dialogApi.open(({ dialog }) => (
+                <EntityPlaylistDialog
+                  open
+                  onClose={() => dialog.close()}
+                  entity={entity}
+                />
+              ));
+            },
+          };
+        },
+      },
+    }),
+  ],
 });
 
 const routes = (
   <FlatRoutes>
-    <Route path="/" element={<Navigate to="catalog" />} />
-    <Route path="/catalog" element={<CatalogIndexPage />} />
-    <Route
-      path="/catalog/:namespace/:kind/:name"
-      element={<CatalogEntityPage />}
-    >
-      {entityPage}
-    </Route>
     <Route path="/playlist" element={<PlaylistIndexPage />} />
     <Route path="/playlist/:playlistId" element={<PlaylistPage />} />
-    <Route path="/search" element={<SearchPage />}>
-      {searchPage}
-    </Route>
-    <Route path="/settings" element={<UserSettingsPage />} />
   </FlatRoutes>
 );
 
-export default app.createRoot(
-  <>
-    <AlertDisplay />
-    <OAuthRequestDialog />
-    <AppRouter>
-      <Root>{routes}</Root>
-    </AppRouter>
-  </>,
-);
+// convertLegacyAppRoot still needed for playlist routes (no alpha export yet)
+const legacyRoot = convertLegacyAppRoot(routes);
+
+export default createApp({
+  features: [appModule, ...legacyRoot],
+});
