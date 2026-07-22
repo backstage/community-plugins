@@ -62,12 +62,13 @@
     "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@material-table/core": "^3.1.0",
-    "@material-ui/core": "^4.12.2",
+    "@backstage/ui": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.0.0",
+    "react-aria-components": "^1.0.0",
     "react-sparklines": "^1.7.0",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "remixicon-react": "^1.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",

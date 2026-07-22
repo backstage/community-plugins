@@ -1,0 +1,11 @@
+@layer components {
+  .cardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--bui-space-6);
+  }
+
+  .cardGridItem {
+    max-width: 100% !important;
+  }
+}

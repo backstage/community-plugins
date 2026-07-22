@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
-
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
 import {
   catalogApiRef,
@@ -38,24 +36,9 @@ import {
   Page,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  bar: {
-    padding: theme.spacing(1, 0),
-  },
-  filters: {
-    padding: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  },
-  filter: {
-    '& + &': {
-      marginTop: theme.spacing(2.5),
-    },
-  },
-}));
+import styles from './SearchPage.module.css';
 
 const SearchPage = () => {
-  const classes = useStyles();
   const { types } = useSearch();
   const catalogApi = useApi(catalogApiRef);
 
@@ -63,13 +46,13 @@ const SearchPage = () => {
     <Page themeId="home">
       <Header title="Search" />
       <Content>
-        <Grid container direction="row">
-          <Grid item xs={12}>
-            <Paper className={classes.bar}>
+        <div className={styles.container}>
+          <div className={styles.fullWidth}>
+            <div className={styles.bar}>
               <SearchBar />
-            </Paper>
-          </Grid>
-          <Grid item xs={3}>
+            </div>
+          </div>
+          <div className={styles.sidebar}>
             <SearchType.Accordion
               name="Result Type"
               defaultValue="software-catalog"
@@ -86,10 +69,10 @@ const SearchPage = () => {
                 },
               ]}
             />
-            <Paper className={classes.filters}>
+            <div className={styles.filters}>
               {types.includes('techdocs') && (
                 <SearchFilter.Select
-                  className={classes.filter}
+                  className={styles.filter}
                   label="Entity"
                   name="name"
                   values={async () => {
@@ -109,27 +92,27 @@ const SearchPage = () => {
                 />
               )}
               <SearchFilter.Select
-                className={classes.filter}
+                className={styles.filter}
                 label="Kind"
                 name="kind"
                 values={['Component', 'Template']}
               />
               <SearchFilter.Checkbox
-                className={classes.filter}
+                className={styles.filter}
                 label="Lifecycle"
                 name="lifecycle"
                 values={['experimental', 'production']}
               />
-            </Paper>
-          </Grid>
-          <Grid item xs={9}>
+            </div>
+          </div>
+          <div className={styles.content}>
             <SearchPagination />
             <SearchResult>
               <CatalogSearchResultListItem icon={<CatalogIcon />} />
               <TechDocsSearchResultListItem icon={<DocsIcon />} />
             </SearchResult>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </Content>
     </Page>
   );

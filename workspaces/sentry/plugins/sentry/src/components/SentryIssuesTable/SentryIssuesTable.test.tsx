@@ -31,6 +31,8 @@ describe('SentryIssuesTable', () => {
         },
         count: '1',
         userCount: 2,
+        lastSeen: DateTime.now().toISO()!,
+        firstSeen: DateTime.now().minus({ days: 7 }).toISO()!,
       },
     ];
     const table = await renderInTestApp(
@@ -38,19 +40,17 @@ describe('SentryIssuesTable', () => {
         sentryIssues={issues}
         statsFor="24h"
         tableOptions={{
-          padding: 'dense',
-          paging: true,
-          search: false,
           pageSize: 5,
         }}
       />,
     );
-    expect(await table.findByText('Error')).toBeInTheDocument();
-    expect(await table.findByText('Graph')).toBeInTheDocument();
-    expect(await table.findByText('First seen')).toBeInTheDocument();
-    expect(await table.findByText('Last seen')).toBeInTheDocument();
-    expect(await table.findByText('Events')).toBeInTheDocument();
-    expect(await table.findByText('Users')).toBeInTheDocument();
+    // Check for table headers by text content
+    expect(table.getByText('Error')).toBeInTheDocument();
+    expect(table.getByText('Graph')).toBeInTheDocument();
+    expect(table.getByText('First seen')).toBeInTheDocument();
+    expect(table.getByText('Last seen')).toBeInTheDocument();
+    expect(table.getByText('Events')).toBeInTheDocument();
+    expect(table.getByText('Users')).toBeInTheDocument();
   });
   it('should render values in a table', async () => {
     const issues: SentryIssue[] = [
@@ -63,6 +63,7 @@ describe('SentryIssuesTable', () => {
         count: '101',
         userCount: 202,
         lastSeen: DateTime.now().toISO()!,
+        firstSeen: DateTime.now().minus({ days: 7 }).toISO()!,
       },
     ];
     const table = await renderInTestApp(
@@ -70,9 +71,6 @@ describe('SentryIssuesTable', () => {
         sentryIssues={issues}
         statsFor="24h"
         tableOptions={{
-          padding: 'dense',
-          paging: true,
-          search: false,
           pageSize: 5,
         }}
       />,
@@ -81,33 +79,5 @@ describe('SentryIssuesTable', () => {
     expect(await table.findByText('exception was thrown')).toBeInTheDocument();
     expect(await table.findByText('101')).toBeInTheDocument();
     expect(await table.findByText('202')).toBeInTheDocument();
-  });
-  it('should render statsFor in table subtitle', async () => {
-    const issues: SentryIssue[] = [
-      {
-        ...mockIssue,
-        metadata: {
-          type: 'Exception',
-          value: 'exception was thrown',
-        },
-        count: '101',
-        userCount: 202,
-      },
-    ];
-    const table = await renderInTestApp(
-      <SentryIssuesTable
-        sentryIssues={issues}
-        statsFor="24h"
-        tableOptions={{
-          padding: 'dense',
-          paging: true,
-          search: false,
-          pageSize: 5,
-        }}
-      />,
-    );
-    expect(
-      await table.findByText('Graph shows the last 24h'),
-    ).toBeInTheDocument();
   });
 });

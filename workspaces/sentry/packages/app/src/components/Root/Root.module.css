@@ -1,0 +1,15 @@
+@layer components {
+  .root {
+    width: 64px;
+    height: 192px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-bottom: -14px;
+  }
+
+  .link {
+    width: 64px;
+    margin-left: 24px;
+  }
+}

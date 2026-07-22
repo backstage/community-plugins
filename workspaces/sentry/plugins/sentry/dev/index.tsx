@@ -17,7 +17,6 @@
 import { Entity } from '@backstage/catalog-model';
 import { createDevApp, EntityGridItem } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import Grid from '@material-ui/core/Grid';
 import {
   EntitySentryCard,
   EntitySentryContent,
@@ -30,6 +29,7 @@ import {
   getProjectSlug,
 } from '../src/api/annotations';
 import { Content, Header, Page } from '@backstage/core-components';
+import styles from './index.module.css';
 
 const entity = (name?: string) =>
   ({
@@ -85,23 +85,33 @@ createDevApp()
       <Page themeId="home">
         <Header title="Sentry" />
         <Content>
-          <Grid container>
-            <EntityGridItem xs={12} md={6} entity={entity('error')}>
-              <EntitySentryCard />
-            </EntityGridItem>
-            <EntityGridItem xs={12} md={6} entity={entity('empty')}>
-              <EntitySentryCard />
-            </EntityGridItem>
-            <EntityGridItem xs={12} md={6} entity={entity('never')}>
-              <EntitySentryCard />
-            </EntityGridItem>
-            <EntityGridItem xs={12} md={6} entity={entity('with-values')}>
-              <EntitySentryCard />
-            </EntityGridItem>
-            <EntityGridItem xs={12} entity={entity(undefined)}>
-              <EntitySentryCard />
-            </EntityGridItem>
-          </Grid>
+          <div className={styles.cardsContainer}>
+            <div className={styles.cardGridItem}>
+              <EntityGridItem xs={12} md={12} entity={entity('error')}>
+                <EntitySentryCard />
+              </EntityGridItem>
+            </div>
+            <div className={styles.cardGridItem}>
+              <EntityGridItem xs={12} md={12} entity={entity('empty')}>
+                <EntitySentryCard />
+              </EntityGridItem>
+            </div>
+            <div className={styles.cardGridItem}>
+              <EntityGridItem xs={12} md={12} entity={entity('never')}>
+                <EntitySentryCard />
+              </EntityGridItem>
+            </div>
+            <div className={styles.cardGridItem}>
+              <EntityGridItem xs={12} md={12} entity={entity('with-values')}>
+                <EntitySentryCard />
+              </EntityGridItem>
+            </div>
+            <div className={styles.cardGridItem}>
+              <EntityGridItem xs={12} entity={entity('no-config')}>
+                <EntitySentryCard />
+              </EntityGridItem>
+            </div>
+          </div>
         </Content>
       </Page>
     ),

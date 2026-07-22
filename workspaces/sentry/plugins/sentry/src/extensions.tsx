@@ -20,12 +20,14 @@ import {
   createComponentExtension,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-import { Options } from '@material-table/core';
+import { EmptyState } from '@backstage/core-components';
 
 /** @public */
 export type SentryPageProps = {
   statsFor?: '24h' | '14d' | '';
-  tableOptions?: Options<never>;
+  tableOptions?: {
+    pageSize?: number;
+  };
 };
 
 /** @public */
@@ -38,12 +40,18 @@ export const EntitySentryContent = sentryPlugin.provide(
         ({ SentryIssuesWidget }) => {
           const SentryPage = (props: SentryPageProps) => {
             const { entity } = useEntity();
-            const defaultOptions: Options<never> = {
-              padding: 'dense',
-              paging: true,
-              search: false,
+            const defaultOptions = {
               pageSize: 5,
             };
+            if (!entity?.metadata?.name) {
+              return (
+                <EmptyState
+                  missing="info"
+                  title="Entity not found"
+                  description="Unable to load Sentry issues for this entity."
+                />
+              );
+            }
             return (
               <SentryIssuesWidget
                 entity={entity}
@@ -68,15 +76,21 @@ export const EntitySentryCard = sentryPlugin.provide(
           ({ SentryIssuesWidget }) => {
             const SentryCard = (props: SentryPageProps) => {
               const { entity } = useEntity();
+              if (!entity?.metadata?.name) {
+                return (
+                  <EmptyState
+                    missing="info"
+                    title="Entity not found"
+                    description="Unable to load Sentry issues for this entity."
+                  />
+                );
+              }
               return (
                 <SentryIssuesWidget
                   entity={entity}
                   statsFor={props.statsFor || '24h'}
                   tableOptions={
                     props.tableOptions || {
-                      padding: 'dense',
-                      paging: true,
-                      search: false,
                       pageSize: 5,
                     }
                   }
