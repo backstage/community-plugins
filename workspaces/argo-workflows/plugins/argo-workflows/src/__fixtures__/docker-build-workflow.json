@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "name": "docker-build-v88",
+    "namespace": "default",
+    "uid": "wf-uid-008",
+    "labels": { "app": "my-service", "env": "ci" },
+    "creationTimestamp": "2026-04-30T13:45:00Z"
+  },
+  "status": {
+    "phase": "Running",
+    "startedAt": "2026-04-30T13:45:04Z",
+    "nodes": {
+      "docker-build-v88": {
+        "id": "docker-build-v88",
+        "name": "docker-build-v88",
+        "displayName": "docker-build-v88",
+        "type": "DAG",
+        "phase": "Running",
+        "startedAt": "2026-04-30T13:45:04Z",
+        "children": ["docker-checkout", "docker-build"]
+      },
+      "docker-checkout": {
+        "id": "docker-checkout",
+        "name": "docker-build-v88.checkout",
+        "displayName": "Git Checkout",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-30T13:45:08Z",
+        "finishedAt": "2026-04-30T13:45:32Z",
+        "templateName": "git-checkout",
+        "children": ["docker-build"]
+      },
+      "docker-build": {
+        "id": "docker-build",
+        "name": "docker-build-v88.build",
+        "displayName": "Build & Push Image",
+        "type": "Pod",
+        "phase": "Running",
+        "startedAt": "2026-04-30T13:45:36Z",
+        "templateName": "kaniko-build",
+        "message": "Building layer 14/23..."
+      }
+    }
+  }
+}

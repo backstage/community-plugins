@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "name": "security-scan-v19",
+    "namespace": "default",
+    "uid": "wf-uid-010",
+    "labels": { "app": "my-service", "type": "security" },
+    "creationTimestamp": "2026-04-30T06:30:00Z"
+  },
+  "status": {
+    "phase": "Error",
+    "startedAt": "2026-04-30T06:30:03Z",
+    "finishedAt": "2026-04-30T06:30:18Z",
+    "message": "Failed to pull image: ImagePullBackOff",
+    "nodes": {
+      "security-scan-v19": {
+        "id": "security-scan-v19",
+        "name": "security-scan-v19",
+        "displayName": "security-scan-v19",
+        "type": "DAG",
+        "phase": "Error",
+        "startedAt": "2026-04-30T06:30:03Z",
+        "finishedAt": "2026-04-30T06:30:18Z",
+        "children": ["trivy-scan"]
+      },
+      "trivy-scan": {
+        "id": "trivy-scan",
+        "name": "security-scan-v19.trivy",
+        "displayName": "Trivy Image Scan",
+        "type": "Pod",
+        "phase": "Error",
+        "startedAt": "2026-04-30T06:30:06Z",
+        "finishedAt": "2026-04-30T06:30:18Z",
+        "templateName": "trivy-scan",
+        "message": "Failed to pull image: ImagePullBackOff"
+      }
+    }
+  }
+}
