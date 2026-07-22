@@ -230,8 +230,8 @@ const PodStatus = ({
       <Tooltip content={tipContent} triggerRef={chartTriggerRef}>
         <g ref={chartTriggerRef}>
           <rect
-            x={x || 0}
-            y={y || 0}
+            x={x && y ? x : 0}
+            y={x && y ? y : 0}
             width={size}
             height={size}
             fill="transparent"
