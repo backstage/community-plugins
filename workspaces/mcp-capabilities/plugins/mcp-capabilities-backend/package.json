@@ -1,0 +1,66 @@
+{
+  "name": "@backstage-community/plugin-mcp-capabilities-backend",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "description": "Backend that discovers live MCP server tools/resources/prompts and enriches native mcp-server catalog entities",
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "mcp",
+    "model-context-protocol",
+    "catalog"
+  ],
+  "homepage": "https://github.com/backstage/community-plugins/tree/main/workspaces/mcp-capabilities/plugins/mcp-capabilities-backend",
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/mcp-capabilities/plugins/mcp-capabilities-backend"
+  },
+  "backstage": {
+    "role": "backend-plugin",
+    "pluginId": "mcp-capabilities",
+    "pluginPackages": [
+      "@backstage-community/plugin-mcp-capabilities",
+      "@backstage-community/plugin-mcp-capabilities-backend",
+      "@backstage-community/plugin-mcp-capabilities-common"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-mcp-capabilities-common": "workspace:^",
+    "@backstage/backend-defaults": "^0.17.3",
+    "@backstage/backend-plugin-api": "^1.9.2",
+    "@backstage/catalog-model": "^1.9.0",
+    "@backstage/errors": "^1.3.1",
+    "@backstage/plugin-catalog-node": "^2.2.2",
+    "@backstage/types": "^1.2.2",
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0"
+  },
+  "devDependencies": {
+    "@backstage/backend-test-utils": "^1.11.4",
+    "@backstage/cli": "^0.36.3",
+    "@types/express": "^4.17.6"
+  },
+  "files": [
+    "dist"
+  ]
+}
