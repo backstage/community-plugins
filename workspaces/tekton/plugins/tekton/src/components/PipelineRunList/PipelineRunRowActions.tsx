@@ -192,7 +192,9 @@ const PipelineRunRowActions: FC<{ pipelineRun: PipelineRunKind }> = ({
                 : t('pipelineRunList.rowActions.viewSBOM')
             }
           >
-            {isSbomTaskRun(sbomTaskRun) && hasExternalLink(sbomTaskRun) && /^https?:\/\//.test(getSbomLink(sbomTaskRun) ?? '') ? (
+            {isSbomTaskRun(sbomTaskRun) &&
+            hasExternalLink(sbomTaskRun) &&
+            /^https?:\/\//.test(getSbomLink(sbomTaskRun) ?? '') ? (
               <IconButton
                 component="a"
                 href={getSbomLink(sbomTaskRun)}
