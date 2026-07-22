@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { MAX_URL_LENGTH } from './url-utils';
+
 export const gitUrlRegex =
   /^((((ssh|git|https?:?):\/\/:?)(([^\s@]+@|[^@]:?)[-\w.]+(:\d\d+:?)?(\/[-\w.~/?[\]!$&'()*+,;=:@%]*:?)?:?))|([^\s@]+@[-\w.]+:[-\w.~/?[\]!$&'()*+,;=:@%]*?:?))$/;
 
@@ -33,7 +35,8 @@ export enum GitProvider {
 }
 
 export const detectGitType = (url: string): GitProvider => {
-  if (!gitUrlRegex.test(url)) {
+  // Guard against ReDoS from nested quantifiers in gitUrlRegex
+  if (url.length > MAX_URL_LENGTH || !gitUrlRegex.test(url)) {
     // Not a URL
     return GitProvider.INVALID;
   }

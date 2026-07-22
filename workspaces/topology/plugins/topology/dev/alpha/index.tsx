@@ -24,11 +24,14 @@ import '@backstage/ui/css/styles.css';
 
 import ReactDOM from 'react-dom/client';
 import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendModule,
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 
 import {
   topologyCatalogModule,
@@ -36,10 +39,33 @@ import {
 } from '../../src/alpha';
 import { devSidebarContent } from './shared';
 
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={[
+            'guest',
+            {
+              id: 'github-auth-provider',
+              title: 'GitHub',
+              message: 'Sign in using GitHub',
+              apiRef: githubAuthApiRef,
+            },
+          ]}
+        />
+      ),
+  },
+});
+
 const devNavModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
     devSidebarContent,
+    signInPage,
     ApiBlueprint.make({
       name: 'plugin-header-actions',
       params: defineParams =>
