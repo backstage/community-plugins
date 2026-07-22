@@ -18,13 +18,21 @@ import { InMemoryCatalogClient } from '@backstage/catalog-client/testUtils';
 import type { Entity } from '@backstage/catalog-model';
 import type { KubernetesApi } from '@backstage/plugin-kubernetes-react';
 import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
+import {
+  urlSecurityDeployments,
+  urlSecurityExtraServices,
+  urlSecurityIngresses,
+  urlSecurityRoutes,
+  urlSecurityServices,
+} from './url-security-fixtures';
 
 export const mockEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
   metadata: {
     name: 'backstage',
-    description: 'backstage.io',
+    description:
+      'Topology mock entity. Includes URL-security nodes: safe-https-links, unsafe-scheme-plaintext, bad-edit-url-fallback, invalid-git-uri, long-git-url.',
     annotations: {
       'backstage.io/kubernetes-id': 'backstage',
     },
@@ -143,9 +151,20 @@ export const mockKubernetesAuthProviderApi = {
   },
 };
 
-export const mockKubernetesClient = new MockKubernetesClient(
-  mockKubernetesResponse,
-);
+export const mockKubernetesClient = new MockKubernetesClient({
+  ...mockKubernetesResponse,
+  deployments: [
+    ...mockKubernetesResponse.deployments,
+    ...urlSecurityDeployments,
+  ],
+  services: [
+    ...mockKubernetesResponse.services,
+    ...urlSecurityServices,
+    ...urlSecurityExtraServices,
+  ],
+  ingresses: [...mockKubernetesResponse.ingresses, ...urlSecurityIngresses],
+  routes: [...mockKubernetesResponse.routes, ...urlSecurityRoutes],
+});
 
 export const mockCatalogApi = new InMemoryCatalogClient({
   entities: [mockEntity, permissionDeniedMockEntity],

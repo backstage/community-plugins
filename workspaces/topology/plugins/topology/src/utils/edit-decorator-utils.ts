@@ -15,6 +15,8 @@
  */
 import GitUrlParse from 'git-url-parse';
 
+import { isValidGitUrl, isValidHttpUrl } from './url-utils';
+
 export const getCheDecoratorData = (cheCluster?: any): string | undefined => {
   return cheCluster?.status?.cheURL;
 };
@@ -46,12 +48,19 @@ export const getEditURL = (
   gitBranch?: string,
   cheURL?: string,
 ): string | null => {
-  if (!vcsURI) {
+  if (!vcsURI || !isValidGitUrl(vcsURI)) {
     return null;
   }
-  // eslint-disable-next-line new-cap
-  const fullGitURL = getFullGitURL(GitUrlParse(vcsURI), gitBranch);
-  return cheURL
-    ? `${cheURL}/f?url=${fullGitURL}&policies.create=peruser`
-    : fullGitURL;
+  try {
+    // eslint-disable-next-line new-cap
+    const fullGitURL = getFullGitURL(GitUrlParse(vcsURI), gitBranch);
+    if (cheURL) {
+      return isValidHttpUrl(cheURL)
+        ? `${cheURL}/f?url=${fullGitURL}&policies.create=peruser`
+        : fullGitURL;
+    }
+    return fullGitURL;
+  } catch {
+    return null;
+  }
 };

@@ -17,6 +17,7 @@ import { render } from '@testing-library/react';
 
 import { workloadNodeData } from '../../../../__fixtures__/workloadNodeData';
 import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
+import { unsafeScriptUrl } from '../../../../test-utils/unsafeScriptUrl';
 import { RouteData } from '../../../../types/route';
 import RouteListSidebar from './RouteListSidebar';
 
@@ -37,6 +38,23 @@ describe('RouteListSidebar', () => {
         /nodejs-ex-git-jai-test.apps.viraj-22-05-2023-0.devcluster.openshift.com/,
       ),
     ).toBeInTheDocument();
+  });
+
+  it('should render invalid URL schemes as plaintext', () => {
+    const routesData = [
+      {
+        route: {
+          metadata: { uid: '1', name: 'bad-route' },
+          kind: 'Route',
+        },
+        url: unsafeScriptUrl(),
+      },
+    ] as RouteData[];
+    const { container, queryByRole } = render(
+      <RouteListSidebar routesData={routesData} />,
+    );
+    expect(container).toHaveTextContent(unsafeScriptUrl());
+    expect(queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('should not render host URL if does not exists', () => {
