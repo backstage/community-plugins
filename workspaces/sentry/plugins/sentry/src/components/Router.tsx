@@ -17,10 +17,22 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Route, Routes } from 'react-router-dom';
 import { SentryIssuesWidget } from './SentryIssuesWidget';
+import { EmptyState } from '@backstage/core-components';
 
 /** @public */
 export const Router = () => {
   const { entity } = useEntity();
+
+  if (!entity?.metadata?.name) {
+    return (
+      <EmptyState
+        missing="info"
+        title="Entity not found"
+        description="Unable to load Sentry issues for this entity."
+      />
+    );
+  }
+
   return (
     <Routes>
       <Route
@@ -30,9 +42,6 @@ export const Router = () => {
             entity={entity}
             statsFor="24h"
             tableOptions={{
-              padding: 'dense',
-              paging: true,
-              search: false,
               pageSize: 5,
             }}
           />
