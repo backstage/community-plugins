@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.13.2
+
+### Patch Changes
+
+- dcab544: Fixed WCAG accessibility violations: added accessible name to pagination select and filter inputs, and enabled assertion of zero violations in e2e accessibility scan.
+
 ## 1.13.1
 
 ### Patch Changes
