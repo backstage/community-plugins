@@ -34,6 +34,10 @@ export interface Config {
        */
       url?: string;
       /**
+       * Registry base web url for package link
+       */
+      webUrl?: string;
+      /**
        * Registry auth token
        * @visibility secret
        */
