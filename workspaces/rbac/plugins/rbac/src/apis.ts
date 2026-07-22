@@ -19,14 +19,14 @@ import {
   configApiRef,
   identityApiRef,
 } from '@backstage/frontend-plugin-api';
-import { rbacApiRef, RBACBackendClient } from '../api/RBACBackendClient';
+import { rbacApiRef, RBACBackendClient } from './api/RBACBackendClient';
 import {
   LicensedUsersAPIClient,
   licensedUsersApiRef,
-} from '../api/LicensedUsersClient';
+} from './api/LicensedUsersClient';
 
 /**
- * @alpha
+ * @public
  */
 export const rbacApi = ApiBlueprint.make({
   name: 'rbac',
@@ -43,7 +43,7 @@ export const rbacApi = ApiBlueprint.make({
 });
 
 /**
- * @alpha
+ * @public
  */
 export const licensedUsersApi = ApiBlueprint.make({
   name: 'licensed-users',

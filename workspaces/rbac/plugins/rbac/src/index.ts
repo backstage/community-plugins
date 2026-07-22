@@ -13,16 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { rbacPlugin, RbacPage, Administration } from './plugin';
-export { rbacApiRef } from './api/RBACBackendClient';
-export type { RBACAPI } from './api/RBACBackendClient';
 
-export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
-export { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
-export type {
-  MemberEntity,
-  RoleError,
-  PluginConditionRules,
-  RoleBasedConditions,
-  ConditionRule,
-} from './types';
+import {
+  createFrontendPlugin,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
+import { rbacApi, licensedUsersApi } from './apis';
+import rbacPage from './pages';
+import { rootRouteRef } from './pluginRoutes';
+import { rbacTranslations } from './alpha/translations';
+
+/**
+ * RBAC plugin
+ * @public
+ */
+
+export default createFrontendPlugin({
+  pluginId: 'rbac',
+  info: { packageJson: () => import('../package.json') },
+  extensions: [rbacApi, licensedUsersApi, rbacPage],
+  routes: {
+    root: rootRouteRef,
+  },
+});
+
+/**
+ * Translation module for the rbac plugin
+ * @public
+ */
+
+const rbacTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'rbac-translations',
+      params: {
+        resource: rbacTranslations,
+      },
+    }),
+  ],
+});
+
+export { rbacTranslationsModule };
+
+export { rbacTranslationRef, rbacTranslations } from './alpha/translations';

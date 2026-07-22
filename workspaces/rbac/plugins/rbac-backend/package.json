@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "backstage-cli package start",
-    "start:alpha": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start",
     "build": "backstage-cli package build",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
