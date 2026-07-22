@@ -231,6 +231,7 @@ const rbacTranslationEs = createTranslationMessages({
     'common.configureAccessFor': 'Configurar acceso para',
     'common.defaultResourceTypeVisible':
       'De forma predeterminada, todos los usuarios agregados pueden visualizar el tipo de recurso seleccionado. Si desea restringir u otorgar permiso a reglas de complementos específicas, selecciónelas y agregue los parámetros.',
+    'common.tableAction': 'Acción de tabla',
   },
 });
 

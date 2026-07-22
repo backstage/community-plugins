@@ -13,20 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
-export const TableAction = (props: {
-  action: any;
-  data?: any;
+import { useTranslation } from '../../hooks/useTranslation';
+
+interface TableActionDef {
+  tooltip?: string;
+  disabled?: boolean;
+  hidden?: boolean;
+  icon?: (props: Record<string, unknown>) => ReactNode;
+  iconProps?: Record<string, unknown>;
+  onClick?: (event: MouseEvent, data?: unknown) => void;
+  customComponent?: boolean;
+  action?: (data: unknown) => TableActionDef;
+}
+
+interface TableActionProps {
+  action: TableActionDef | ((data?: unknown) => TableActionDef);
+  data?: unknown;
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
-}) => {
-  let { action } = props;
-  if (typeof action === 'function') {
-    action = action(props.data);
+}
+
+export const TableAction = (props: TableActionProps) => {
+  const { t } = useTranslation();
+
+  let action: TableActionDef | undefined = undefined;
+  if (typeof props.action === 'function') {
+    action = props.action(props.data);
+  } else {
+    action = props.action;
   }
   if (action?.action) {
     action = action.action(props.data);
@@ -47,7 +66,7 @@ export const TableAction = (props: {
     return <>{icon}</>;
   }
 
-  const handleClick = (event: React.MouseEvent) => {
+  const handleClick = (event: MouseEvent) => {
     if (action.onClick) {
       action.onClick(event, props.data);
       event.stopPropagation();
@@ -59,7 +78,9 @@ export const TableAction = (props: {
       size={props.size}
       color="inherit"
       aria-label={
-        typeof action.tooltip === 'string' ? action.tooltip : 'Table action'
+        typeof action.tooltip === 'string'
+          ? action.tooltip
+          : t('common.tableAction')
       }
       disabled={disabled}
       onClick={handleClick}
