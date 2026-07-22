@@ -16,7 +16,7 @@ yarn workspace @backstage-community/plugin-scaffolder-backend-module-regex start
   --config app-config.yaml
 ```
 
-(`--config` paths are resolved from the package directory.)
+(`--config` paths are resolved from the plugins directory.)
 
 This runs a minimal backend with `@backstage/plugin-scaffolder-backend` and the regex module. Use it to verify action registration and local scaffolder integration work.
 
