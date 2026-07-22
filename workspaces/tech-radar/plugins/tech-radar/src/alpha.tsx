@@ -24,6 +24,7 @@ import {
   PageBlueprint,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
+import { z } from 'zod';
 import { techRadarApiRef } from './api';
 import { DefaultTechRadarApi } from './defaultApi';
 import {
@@ -36,16 +37,13 @@ import { rootRouteRef } from './plugin';
 
 /** @alpha */
 export const techRadarPage = PageBlueprint.makeWithOverrides({
-  config: {
-    schema: {
-      subtitle: z =>
-        z
-          .string()
-          .default('Pick the recommended technologies for your projects'),
-      pageTitle: z => z.string().default('Company Radar'),
-      width: z => z.number().optional(),
-      height: z => z.number().optional(),
-    },
+  configSchema: {
+    subtitle: z
+      .string()
+      .default('Pick the recommended technologies for your projects'),
+    pageTitle: z.string().default('Company Radar'),
+    width: z.number().optional(),
+    height: z.number().optional(),
   },
   factory(originalFactory, { config }) {
     return originalFactory({
