@@ -35,7 +35,7 @@ export type Props = {
   links?: Array<{ url: string; title: string }>;
 };
 
-const RadarDescription = (props: Props): JSX.Element => {
+const RadarDescription = (props: Props): React.JSX.Element => {
   function showDialogActions(
     url: string | undefined,
     links: Array<{ url: string; title: string }> | undefined,
