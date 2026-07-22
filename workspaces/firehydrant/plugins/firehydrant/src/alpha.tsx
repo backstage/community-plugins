@@ -25,10 +25,8 @@ import { isFireHydrantAvailable } from './components/hooks';
 
 /**
  * An API to communicate with the FireHydrant service.
- *
- * @alpha
  */
-export const firehydrantApi = ApiBlueprint.make({
+const firehydrantApi = ApiBlueprint.make({
   name: 'firehydrantApi',
   params: defineParams =>
     defineParams({
@@ -44,10 +42,8 @@ export const firehydrantApi = ApiBlueprint.make({
 
 /**
  * Card for the catalog (entity page) that shows FireHydrant service details.
- *
- * @alpha
  */
-export const entityFirehydrantCard = EntityCardBlueprint.make({
+const entityFirehydrantCard = EntityCardBlueprint.make({
   name: 'EntityFirehydrantCard',
   params: {
     filter: isFireHydrantAvailable,
