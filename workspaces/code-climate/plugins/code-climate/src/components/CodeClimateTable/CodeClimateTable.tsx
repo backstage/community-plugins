@@ -16,73 +16,17 @@
 
 import { CodeClimateData } from '../../api';
 import { Link } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
+import styles from './CodeClimateTable.module.css';
 
-const letterStyle = (theme: Theme) => ({
-  color: theme.palette.common.white,
-  border: 0,
-  borderRadius: '3px',
-  fontSize: '40px',
-  padding: '5px 20px',
-});
-
-const fontSize = {
-  fontSize: '25px',
+const letterColor = (letter: string): string => {
+  if (letter === 'A') return '#45d298';
+  if (letter === 'B') return '#a5d86e';
+  if (letter === 'C') return '#f1ce0c';
+  if (letter === 'D') return '#f29141';
+  if (letter === 'F') return '#df5869';
+  return '#45d298';
 };
-
-const letterColor = (letter: string, theme: Theme) => {
-  if (letter === 'A') {
-    return theme.palette.success.main || '#45d298';
-  } else if (letter === 'B') {
-    return theme.palette.success.light || '#a5d86e';
-  } else if (letter === 'C') {
-    return theme.palette.warning.light || '#f1ce0c';
-  } else if (letter === 'D') {
-    return theme.palette.warning.main || '#f29141';
-  } else if (letter === 'F') {
-    return theme.palette.error.light || '#df5869';
-  }
-
-  return theme.palette.success.main || '#45d298';
-};
-
-const useStyles = makeStyles<
-  Theme,
-  {
-    maintainabilityLetter: string;
-    testCoverageLetter: string;
-  }
->(theme => ({
-  spaceAround: {
-    display: 'flex',
-    justifyContent: 'space-around',
-  },
-  spaceBetween: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  maintainabilityLetterColor: {
-    ...letterStyle(theme),
-    backgroundColor: props => letterColor(props.maintainabilityLetter, theme),
-  },
-  testCoverageLetterColor: {
-    ...letterStyle(theme),
-    backgroundColor: props => letterColor(props.testCoverageLetter, theme),
-  },
-  fontSize: {
-    ...fontSize,
-  },
-  letterDetails: {
-    ...fontSize,
-    paddingLeft: '10px',
-  },
-  paddingSides20: {
-    padding: '0px 20px',
-  },
-}));
 
 export const CodeClimateTable = ({
   codeClimateData,
@@ -101,112 +45,80 @@ export const CodeClimateTable = ({
     numberOfOtherIssues,
   } = codeClimateData;
 
-  const classes = useStyles({ maintainabilityLetter, testCoverageLetter });
-
   if (!codeClimateData) {
     return null;
   }
 
   return (
     <>
-      <div className={classes.spaceAround}>
+      <div className={styles.spaceAround}>
         <div>
-          <Typography variant="h6" component="p">
+          <Text variant="title-small" as="p">
             Maintainability
-          </Typography>
-          <div className={classes.spaceBetween}>
-            <Typography
-              className={classes.maintainabilityLetterColor}
-              variant="body2"
-              component="p"
+          </Text>
+          <div className={styles.spaceBetween}>
+            <span
+              className={styles.letterBadge}
+              style={{ backgroundColor: letterColor(maintainabilityLetter) }}
             >
               {maintainabilityLetter}
-            </Typography>
+            </span>
             <Link to={`https://codeclimate.com/repos/${repoID}`}>
-              <Typography
-                className={classes.letterDetails}
-                variant="body2"
-                component="p"
-              >
+              <span className={styles.letterDetails}>
                 {maintainabilityValue}
-              </Typography>
+              </span>
             </Link>
           </div>
         </div>
         <div>
-          <Typography variant="h6" component="p">
+          <Text variant="title-small" as="p">
             Test Coverage
-          </Typography>
-          <div className={classes.spaceBetween}>
-            <Typography
-              className={classes.testCoverageLetterColor}
-              variant="body2"
-              component="p"
+          </Text>
+          <div className={styles.spaceBetween}>
+            <span
+              className={styles.letterBadge}
+              style={{ backgroundColor: letterColor(testCoverageLetter) }}
             >
               {testCoverageLetter}
-            </Typography>
+            </span>
             <Link to={`https://codeclimate.com/repos/${repoID}`}>
-              <Typography
-                className={classes.letterDetails}
-                variant="body2"
-                component="p"
-              >
-                {testCoverageValue}%
-              </Typography>
+              <span className={styles.letterDetails}>{testCoverageValue}%</span>
             </Link>
           </div>
         </div>
       </div>
-      <Box className={classes.spaceAround} paddingTop="30px">
+      <div className={`${styles.spaceAround} ${styles.paddingTop30}`}>
         <div>
-          <Typography variant="h6" component="p">
+          <Text variant="title-small" as="p">
             Code Smells:
-          </Typography>
+          </Text>
           <Link
             to={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=complexity&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
           >
-            <Typography
-              className={classes.fontSize}
-              variant="body2"
-              component="p"
-            >
-              {numberOfCodeSmells}
-            </Typography>
+            <span className={styles.fontSize}>{numberOfCodeSmells}</span>
           </Link>
         </div>
-        <Box paddingLeft="20" paddingRight="20">
-          <Typography variant="h6" component="p">
+        <div className={styles.paddingSides20}>
+          <Text variant="title-small" as="p">
             Duplication:
-          </Typography>
+          </Text>
           <Link
             to={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=duplication&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
           >
-            <Typography
-              className={classes.fontSize}
-              variant="body2"
-              component="p"
-            >
-              {numberOfDuplication}
-            </Typography>
+            <span className={styles.fontSize}>{numberOfDuplication}</span>
           </Link>
-        </Box>
+        </div>
         <div>
-          <Typography variant="h6" component="p">
+          <Text variant="title-small" as="p">
             Other Issues:
-          </Typography>
+          </Text>
           <Link
             to={`https://codeclimate.com/repos/${repoID}/issues?category%5B%5D=bugrisk&status%5B%5D=&status%5B%5D=open&status%5B%5D=confirmed`}
           >
-            <Typography
-              className={classes.fontSize}
-              variant="body2"
-              component="p"
-            >
-              {numberOfOtherIssues}
-            </Typography>
+            <span className={styles.fontSize}>{numberOfOtherIssues}</span>
           </Link>
         </div>
-      </Box>
+      </div>
     </>
   );
 };
