@@ -1,0 +1,81 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .root {
+    width: 100%;
+    background-color: var(--bui-bg-surface-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .actions {
+    border-bottom: 2px solid var(--bui-border);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .packItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--bui-space-2) var(--bui-space-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  .packItem:hover {
+    background-color: var(--bui-bg-hover);
+  }
+
+  .actionItem {
+    display: flex;
+    align-items: center;
+    padding: var(--bui-space-2) var(--bui-space-8);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .actionItem:hover {
+    background-color: var(--bui-bg-hover);
+  }
+
+  .icon {
+    min-width: 34px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .itemText {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .secondaryAction {
+    margin-left: auto;
+    padding-left: var(--bui-space-4);
+    color: var(--bui-fg-secondary);
+    flex-shrink: 0;
+  }
+}
