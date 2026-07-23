@@ -20,7 +20,8 @@ import Router from 'express-promise-router';
 import {
   AdrInfo,
   AdrInfoParser,
-  madrParser,
+  madrFilePathFilter,
+  madrParser
 } from '@backstage-community/plugin-adr-common';
 import {
   CacheService,
@@ -67,7 +68,7 @@ export async function createRouter(
       const treeGetResponse = await reader.readTree(urlToProcess, {
         etag: cachedTree?.etag,
       });
-      const files = await treeGetResponse.files();
+      const files = (await treeGetResponse.files()).filter(f => madrFilePathFilter(f.path));
       const results = await Promise.all(
         files
           .map(async file => {
