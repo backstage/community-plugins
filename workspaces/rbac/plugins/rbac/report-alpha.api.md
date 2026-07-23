@@ -311,6 +311,7 @@ export const rbacTranslationRef: TranslationRef<
     readonly 'common.expandRow': string;
     readonly 'common.configureAccessFor': string;
     readonly 'common.defaultResourceTypeVisible': string;
+    readonly 'common.tableAction': string;
   }
 >;
 

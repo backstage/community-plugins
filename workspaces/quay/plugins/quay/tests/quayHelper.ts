@@ -103,5 +103,10 @@ export class Common {
       body: JSON.stringify(accessibilityScanResults.violations, null, 2),
       contentType: 'application/json',
     });
+
+    expect(
+      accessibilityScanResults.violations,
+      `Accessibility check (${accessibilityScanResults.violations.length} violations)`,
+    ).toEqual([]);
   }
 }

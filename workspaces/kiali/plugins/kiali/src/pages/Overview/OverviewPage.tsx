@@ -44,7 +44,6 @@ import _ from 'lodash';
 import { default as React, useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { isMultiCluster } from '../../config';
-import { nsEqual } from '../../helpers/namespaces';
 import { useServerConfig } from '../../hooks/useServerConfig';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
@@ -63,12 +62,15 @@ import {
 } from './OverviewToolbar';
 import * as Sorts from './Sorts';
 
+const isSameNamespace = (a: NamespaceInfo, b: NamespaceInfo): boolean =>
+  a.name === b.name && a.cluster === b.cluster;
+
 export const getNamespaces = (
   namespacesResponse: NamespaceInfo[],
   namespaces: NamespaceInfo[],
 ): NamespaceInfo[] => {
   return namespacesResponse.map(ns => {
-    const previous = namespaces.find(prev => prev.name === ns.name);
+    const previous = namespaces.find(prev => isSameNamespace(prev, ns));
     return {
       name: ns.name,
       cluster: ns.cluster,
@@ -99,12 +101,12 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     );
   }
 
-  const activeNsName = kialiState.namespaces.activeNamespaces.map(
-    ns => ns.name,
-  );
+  const activeNsKey = kialiState.namespaces.activeNamespaces
+    .map(ns => ns.name)
+    .join(',');
   const activeProvider = kialiState.providers.activeProvider;
   const prevActiveProvider = useRef(activeProvider);
-  const prevActiveNs = useRef(activeNsName);
+  const prevActiveNsKey = useRef(activeNsKey);
   const promises = new PromisesRegistry();
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
   const [duration, setDuration] = React.useState<number>(
@@ -117,11 +119,17 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     currentDirectionType(),
   );
   const [activeNs, setActiveNs] = React.useState<NamespaceInfo[]>([]);
+  const namespacesRef = useRef(namespaces);
+  namespacesRef.current = namespaces;
 
-  const setHealth = (ns: NamespaceInfo, i: number) => {
+  const mergeNamespace = (ns: NamespaceInfo) => {
     setNamespaces(prevNamespaces => {
+      const index = prevNamespaces.findIndex(prev => isSameNamespace(prev, ns));
+      if (index === -1) {
+        return prevNamespaces;
+      }
       const newNs = [...prevNamespaces];
-      newNs[i] = { ...newNs, ...ns };
+      newNs[index] = { ...newNs[index], ...ns };
       return newNs;
     });
   };
@@ -164,7 +172,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
     return healthPromise
       .then(results => {
-        namespacesInfo.forEach((nsInfo, index) => {
+        namespacesInfo.forEach(nsInfo => {
           const nsStatus: NamespaceInfoStatus = {
             inNotReady: [],
             inError: [],
@@ -197,7 +205,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
               }
             });
             nsInfo.status = nsStatus;
-            setHealth(nsInfo, index);
+            mergeNamespace(nsInfo);
           }
         });
       })
@@ -209,7 +217,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   };
 
   const filterActiveNamespaces = (nss: NamespaceInfo[]) => {
-    return nss.filter(ns => activeNsName.includes(ns.name));
+    const activeNames = activeNsKey ? activeNsKey.split(',') : [];
+    return nss.filter(ns => activeNames.includes(ns.name));
   };
 
   const fetchHealth = (
@@ -231,16 +240,14 @@ export const OverviewPage = (props: { entity?: Entity }) => {
           fetchHealthForCluster(nsList, cluster, durationCurrent, type),
         )
         .then(() => {
-          let newNamespaces = namespaces.slice();
-          if (sortField.id === 'health') {
-            newNamespaces = Sorts.sortFunc(
-              newNamespaces,
-              sortField,
-              isAscending,
-            );
-          }
-          setActiveNs(filterActiveNamespaces(newNamespaces));
-          return { namespaces: newNamespaces };
+          setNamespaces(prevNamespaces => {
+            const nextNamespaces =
+              sortField.id === 'health'
+                ? Sorts.sortFunc(prevNamespaces.slice(), sortField, isAscending)
+                : prevNamespaces;
+            setActiveNs(filterActiveNamespaces(nextNamespaces));
+            return sortField.id === 'health' ? nextNamespaces : prevNamespaces;
+          });
         });
     });
   };
@@ -483,8 +490,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
               // Only update namespaces that are in the updated chunk
               // Preserve all other data including metrics from other chunks
               const updated = prevNamespaces.map(prevNs => {
-                const updatedNs = updatedChunk.find(
-                  n => n.name === prevNs.name,
+                const updatedNs = updatedChunk.find(n =>
+                  isSameNamespace(n, prevNs),
                 );
                 if (updatedNs && updatedNs.metrics) {
                   // Only update if we have new metrics, preserve everything else
@@ -499,7 +506,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                 return prevNs;
               });
 
-              // Update activeNs with the updated namespaces
               setActiveNs(filterActiveNamespaces(updated));
 
               return updated;
@@ -527,22 +533,22 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     await kialiClient
       .getNamespaces()
       .then(namespacesResponse => {
+        const prevNamespaces = namespacesRef.current;
         const allNamespaces: NamespaceInfo[] = getNamespaces(
           namespacesResponse,
-          namespaces,
+          prevNamespaces,
         );
 
-        // Calculate information
         const isAscending = FilterHelper.isCurrentSortAscending();
         const sortField = FilterHelper.currentSortField(Sorts.sortFields);
         const sortNs = sortedNamespaces(allNamespaces);
 
-        // Preserve existing metrics when refreshing to avoid showing "No traffic" message
         const namespacesWithMetrics = sortNs.map(ns => {
-          const previous = namespaces.find(prev => prev.name === ns.name);
+          const previous = prevNamespaces.find(prev =>
+            isSameNamespace(prev, ns),
+          );
           return {
             ...ns,
-            // Preserve all previous data, not just metrics
             status: previous?.status,
             tlsStatus: previous?.tlsStatus,
             metrics: previous?.metrics,
@@ -551,9 +557,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
             controlPlaneMetrics: previous?.controlPlaneMetrics,
           };
         });
-        setNamespaces(namespacesWithMetrics);
 
-        // Update activeNs immediately with preserved metrics
+        setNamespaces(namespacesWithMetrics);
         setActiveNs(filterActiveNamespaces(namespacesWithMetrics));
 
         fetchHealth(isAscending, sortField, overviewType, sortNs);
@@ -573,16 +578,16 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
   React.useEffect(() => {
     if (
-      !nsEqual(activeNsName, prevActiveNs.current) ||
+      activeNsKey !== prevActiveNsKey.current ||
       activeProvider !== prevActiveProvider.current
     ) {
       setErrorProvider(undefined);
-      prevActiveNs.current = activeNsName;
+      prevActiveNsKey.current = activeNsKey;
       prevActiveProvider.current = activeProvider;
       load();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNsName, activeProvider]);
+  }, [activeNsKey, activeProvider]);
 
   React.useEffect(() => {
     load();
@@ -590,6 +595,15 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   }, [duration, overviewType, directionType]);
 
   if (namespaces.length === 0) {
+    if (errorProvider) {
+      return (
+        <div className={baseStyle}>
+          <Content>
+            <InfoCard>{errorProvider}</InfoCard>
+          </Content>
+        </div>
+      );
+    }
     return <CircularProgress />;
   }
 

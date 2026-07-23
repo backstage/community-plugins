@@ -31,6 +31,21 @@ Here's how to get the module up and running:
 
 Once catalog process has ran you should see the SCM slug added as an annotation on your entities.
 
+## Configuration
+
+By default, the processor only annotates `Component` entities. You can configure which entity kinds are processed in `app-config.yaml`:
+
+```yaml
+catalog:
+  processors:
+    annotateScmSlug:
+      kinds:
+        - API
+        - Component
+        - Resource
+        - System
+```
+
 ## Slugs Added
 
 These are the current SCM tools and their related annotation and value that are being added by this processor.

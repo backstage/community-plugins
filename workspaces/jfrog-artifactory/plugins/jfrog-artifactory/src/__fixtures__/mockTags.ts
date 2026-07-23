@@ -396,6 +396,10 @@ export const mockTags = {
           },
         },
       ],
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: null,
+      },
     },
   },
 };

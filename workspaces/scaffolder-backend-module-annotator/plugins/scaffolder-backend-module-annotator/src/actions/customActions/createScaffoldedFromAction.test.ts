@@ -18,15 +18,13 @@ import { createMockDirectory } from '@backstage/backend-test-utils';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
 import * as fs from 'fs-extra';
+import * as path from 'path';
 import * as yaml from 'yaml';
 
 import { createScaffoldedFromAction } from './createScaffoldedFromAction';
 
-const catalogEntity =
-  'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
-
 const catalogEntityContent = fs.readFileSync(
-  resolveSafeChildPath(catalogEntity, './catalog-info.yaml'),
+  path.join(__dirname, '../annotator/mocks/catalog-info.yaml'),
   'utf8',
 );
 
@@ -36,42 +34,10 @@ describe('catalog annotator', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    mockDir.clear();
   });
 
   it('should call action to annotate with template entityRef', async () => {
-    mockDir.setContent({
-      [workspacePath]: {
-        'catalog-info.yaml': catalogEntityContent,
-      },
-    });
-
-    const action = createScaffoldedFromAction();
-
-    const ctx = createMockActionContext({
-      workspacePath,
-      templateInfo: {
-        entityRef: 'test-entityRef',
-      },
-    });
-
-    ctx.logger.info = jest.fn();
-
-    await action.handler(ctx);
-
-    const updatedCatalogInfoYaml = await fs.readFile(
-      resolveSafeChildPath(workspacePath, './catalog-info.yaml'),
-      'utf8',
-    );
-
-    const entity = yaml.parse(updatedCatalogInfoYaml);
-
-    expect(ctx.logger.info).toHaveBeenCalledWith(
-      'Annotating catalog-info.yaml with template entityRef',
-    );
-    expect(entity?.spec?.scaffoldedFrom).toBe('test-entityRef');
-  });
-
-  it('should call action to annotate with template entityRef where the entityRef is read from the context', async () => {
     mockDir.setContent({
       [workspacePath]: {
         'catalog-info.yaml': catalogEntityContent,

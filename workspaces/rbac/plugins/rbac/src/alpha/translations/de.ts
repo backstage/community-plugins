@@ -35,7 +35,7 @@ const rbacTranslationDe = createTranslationMessages({
     'table.titleWithCount': 'Alle Rollen ({{count}})',
     'table.headers.name': 'Name',
     'table.headers.usersAndGroups': 'Benutzer und Gruppen',
-    'table.headers.accessiblePlugins': 'Barrierefreie Plugins',
+    'table.headers.accessiblePlugins': 'Zugängliche Plugins',
     'table.headers.actions': 'Aktionen',
     'table.defaultRoleUsersAndGroups': 'Alle Benutzer und alle Gruppen',
     'table.emptyContent': 'Keine Datensätze gefunden',
@@ -236,6 +236,7 @@ const rbacTranslationDe = createTranslationMessages({
     'common.configureAccessFor': 'Zugriff konfigurieren für',
     'common.defaultResourceTypeVisible':
       'Standardmäßig ist der ausgewählte Ressourcentyp für alle hinzugefügten Benutzer sichtbar. Wenn Sie bestimmte Plugin-Regeln einschränken oder Berechtigungen dafür erteilen möchten, wählen Sie diese aus, und fügen Sie die Parameter hinzu.',
+    'common.tableAction': 'Tabellenaktion',
   },
 });
 

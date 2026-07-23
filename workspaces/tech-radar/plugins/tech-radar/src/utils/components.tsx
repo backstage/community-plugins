@@ -31,7 +31,7 @@ export const WithLink = ({
   url,
   className,
   children,
-}: WithLinkProps): JSX.Element =>
+}: WithLinkProps): React.JSX.Element =>
   isValidUrl(url) ? (
     <Link className={className} to={url}>
       {children}

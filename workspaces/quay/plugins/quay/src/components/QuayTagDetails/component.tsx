@@ -150,6 +150,7 @@ export const QuayTagDetails = ({
       </Flex>
       <Table
         title={`Vulnerabilities for ${digest.substring(0, 17)}`}
+        options={{ draggable: false }}
         data={vulnerabilities}
         columns={columns}
       />

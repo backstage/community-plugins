@@ -21,18 +21,7 @@ import {
   DependencyGraphTypes,
   SupportButton,
 } from '@backstage/core-components';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles(
-  {
-    root: {
-      height: '100%',
-      maxHeight: '100%',
-      minHeight: 0,
-    },
-  },
-  { name: 'ExploreGroupsContent' },
-);
+import styles from './GroupsExplorerContent.module.css';
 
 export const GroupsExplorerContent = (props: {
   title?: string;
@@ -40,10 +29,8 @@ export const GroupsExplorerContent = (props: {
   hideChildren?: boolean;
   namespace?: string;
 }) => {
-  const classes = useStyles();
-
   return (
-    <Content noPadding stretch className={classes.root}>
+    <Content noPadding stretch className={styles.root}>
       <ContentHeader title={props.title ?? 'Groups'}>
         <SupportButton>Explore your groups.</SupportButton>
       </ContentHeader>

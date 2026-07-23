@@ -64,7 +64,7 @@ const makeBlip = (color: string, moved?: number) => {
   return blip;
 };
 
-const RadarEntry = (props: Props): JSX.Element => {
+const RadarEntry = (props: Props): React.JSX.Element => {
   const classes = useStyles(props);
   const [open, setOpen] = React.useState(false);
 

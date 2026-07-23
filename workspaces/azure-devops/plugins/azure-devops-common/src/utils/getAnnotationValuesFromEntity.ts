@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
+import { Entity, ANNOTATION_SOURCE_LOCATION } from '@backstage/catalog-model';
 import {
   AZURE_DEVOPS_PROJECT_ANNOTATION,
   AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION,
@@ -38,8 +38,7 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
     entity.metadata.annotations?.[AZURE_DEVOPS_PROJECT_ANNOTATION];
   const definition =
     entity.metadata.annotations?.[AZURE_DEVOPS_BUILD_DEFINITION_ANNOTATION];
-  const readmePath =
-    entity.metadata.annotations?.[AZURE_DEVOPS_README_ANNOTATION];
+  const readmePath = getReadmePath(entity.metadata.annotations);
 
   if (definition) {
     if (project) {
@@ -80,6 +79,49 @@ export function getAnnotationValuesFromEntity(entity: Entity): {
   }
 
   throw new Error('Expected "dev.azure.com" annotations were not found');
+}
+
+/**
+ * Resolves the README path for an entity, preferring the explicit
+ * dev.azure.com/readme-path annotation, and falling back to deriving
+ * it from backstage.io/source-location when that annotation is absent
+ * (#9188). source-location points at the folder containing the
+ * entity's actual source code (repo root, or a subfolder in a
+ * monorepo) — the README is resolved directly in that folder.
+ */
+function getReadmePath(
+  annotations?: Record<string, string>,
+): string | undefined {
+  const explicit = annotations?.[AZURE_DEVOPS_README_ANNOTATION];
+  if (explicit !== undefined) return explicit;
+
+  // Auto-detect README.md from backstage.io/source-location (#9188)
+  const sourceLocation = annotations?.[ANNOTATION_SOURCE_LOCATION];
+  if (!sourceLocation) return undefined;
+
+  try {
+    // source-location values are prefixed with "url:" per Backstage convention
+    const rawUrl = sourceLocation.startsWith('url:')
+      ? sourceLocation.slice(4)
+      : sourceLocation;
+
+    const parsed = new URL(rawUrl);
+
+    // Only attempt auto-detection for Azure DevOps repo URLs (Cloud or Server)
+    if (!parsed.pathname.includes('/_git/')) return undefined;
+
+    // "path" query param already points at the folder containing the
+    // source code — no filename to strip, unlike managed-by-location
+    const pathParam = parsed.searchParams.get('path');
+    if (!pathParam) return undefined;
+
+    const dir = pathParam.replace(/\/$/, '');
+
+    return `${dir}/README.md`;
+  } catch {
+    // Malformed URL — fail gracefully
+    return undefined;
+  }
 }
 
 function getProjectRepo(annotations?: Record<string, string>): {

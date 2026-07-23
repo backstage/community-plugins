@@ -50,10 +50,10 @@ export const KialiTabs = () => {
     [navigate],
   );
   useEffect(() => {
-    if (currentTabIndex === 0) {
-      navigate(`/${pluginId}${tabs[0].path}`);
+    if (!matchedRoute) {
+      navigate(`/${pluginId}${tabs[0].path}`, { replace: true });
     }
-  }, [currentTabIndex, navigate]);
+  }, [matchedRoute, navigate]);
 
   return (
     <HeaderTabs

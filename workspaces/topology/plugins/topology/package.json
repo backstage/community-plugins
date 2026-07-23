@@ -49,7 +49,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage-community/plugin-tekton-react": "^0.5.0",
+    "@backstage-community/plugin-tekton-react": "^0.7.0",
     "@backstage/catalog-model": "^1.9.0",
     "@backstage/core-compat-api": "^0.5.9",
     "@backstage/core-components": "^0.18.11",
@@ -98,7 +98,7 @@
     "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/test-utils": "^1.7.19",
     "@backstage/ui": "^0.13.2",
-    "@playwright/test": "1.60.0",
+    "@playwright/test": "1.61.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
