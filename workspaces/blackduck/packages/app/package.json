@@ -49,7 +49,7 @@
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
     "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^7.0.0"
   },
   "devDependencies": {
     "@backstage/test-utils": "^1.7.15",

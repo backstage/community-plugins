@@ -42,7 +42,7 @@
     "@changesets/cli": "^2.27.1",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
-    "react-router-dom": "^6.26.1",
+    "react-router-dom": "^7.0.0",
     "typescript": "~5.8.0"
   },
   "resolutions": {
