@@ -1,6 +1,6 @@
 # AWS Config catalog plugin for Backstage
 
-This is the AWS Config catalog plugin for backstage.io which is designed to ingest AWS resource information in to the Backstage catalog.
+This is the AWS Config catalog plugin which is designed to ingest AWS resource information in to the Backstage catalog.
 
 Features:
 
@@ -13,15 +13,13 @@ _Note:_ If you are not already using AWS Config it is important to note that you
 
 ## Installing
 
-This guide assumes that you are familiar with the general [Getting Started](../../docs/getting-started.md) documentation and have assumes you have an existing Backstage application.
-
 Install the backend package in your Backstage app:
 
 ```shell
-yarn workspace backend add @backstage/plugin-catalog-backend-module-incremental-ingestion @aws/aws-config-catalog-module-for-backstage
+yarn workspace backend add @backstage/plugin-catalog-backend-module-incremental-ingestion @backstage-community/plugin-catalog-backend-module-aws-config
 ```
 
-Add the scaffolder module to the `packages/backend/src/index.ts`:
+Add the module to the `packages/backend/src/index.ts`:
 
 ```typescript
 const backend = createBackend();
@@ -29,7 +27,9 @@ const backend = createBackend();
 backend.add(
   import('@backstage/plugin-catalog-backend-module-incremental-ingestion'),
 );
-backend.add(import('@aws/aws-config-catalog-module-for-backstage'));
+backend.add(
+  import('@backstage-community/plugin-catalog-backend-module-aws-config'),
+);
 // ...
 backend.start();
 ```
@@ -39,44 +39,45 @@ backend.start();
 Add entity providers to the Backstage application configuration like so:
 
 ```yaml
-providers:
-  awsConfig:
-    default: # Name of the provider
-      accountId: # [OPTIONAL] AWS account ID to use to access AWS Config API
-      region: # [OPTIONAL] AWS region to use to access AWS Config API
-      aggregator: # [OPTIONAL] The name of the AWS Config aggregator
-      hashEntityNames: # [OPTIONAL] Generated entity names will always be hashes of the ARN
-      filters: # Filter the resources queried from AWS Config API
-        tags: # [OPTIONAL] Match by tags on the AWS resources
-          - key: 'component' # Only retrieve resources that have a 'component' tag
-          - key: environment # Only retrieve resources that have a 'environment' tag with value 'prod'
-            value: prod
-        resourceTypes: # [REQUIRED] Filter by AWS resource type
-          - AWS::ECS::Cluster
-          - AWS::ECS::Service
-          - AWS::DynamoDB::Table
-          - AWS::RDS::DBCluster
-          - AWS::Lambda::Function
-          - AWS::ElasticLoadBalancingV2::LoadBalancer
-          - AWS::ApiGatewayV2::Api
-          - AWS::S3::Bucket
-      transform: # [OPTIONAL] Apply transformations to the emitted entity
-        fields: # Modify specific fields
-          name: # Customize the name field generated (see note below)
-            expression: $join([$resource.resourceName, $resource.accountId], '-')
-          annotations: # Add to metadata.annotations
-            accountId:
-              expression: $resource.accountId # Add an annotation with the AWS account ID using JSONata expression
-          spec:
-            owner:
-              tag: owner # Set 'spec.owner' to the value of the 'owner' tag on the AWS resource
-            component:
-              tag: component # Create a 'dependencyOf' relationshop based on the 'component' tag
-            system:
-              value: my-system # Set 'spec.system' to a hard-coded value of 'my-system'
-      options: # [OPTIONAL] Configure details of the provider behavior
-        incremental:
-          restLength: { hours: 6 } # Wait 6 hours between each ingestion cycle
+catalog:
+  providers:
+    awsConfig:
+      default: # Name of the provider
+        accountId: # [OPTIONAL] AWS account ID to use to access AWS Config API
+        region: # [OPTIONAL] AWS region to use to access AWS Config API
+        aggregator: # [OPTIONAL] The name of the AWS Config aggregator
+        hashEntityNames: # [OPTIONAL] Generated entity names will always be hashes of the ARN
+        filters: # Filter the resources queried from AWS Config API
+          tags: # [OPTIONAL] Match by tags on the AWS resources
+            - key: 'component' # Only retrieve resources that have a 'component' tag
+            - key: environment # Only retrieve resources that have a 'environment' tag with value 'prod'
+              value: prod
+          resourceTypes: # [REQUIRED] Filter by AWS resource type
+            - AWS::ECS::Cluster
+            - AWS::ECS::Service
+            - AWS::DynamoDB::Table
+            - AWS::RDS::DBCluster
+            - AWS::Lambda::Function
+            - AWS::ElasticLoadBalancingV2::LoadBalancer
+            - AWS::ApiGatewayV2::Api
+            - AWS::S3::Bucket
+        transform: # [OPTIONAL] Apply transformations to the emitted entity
+          fields: # Modify specific fields
+            name: # Customize the name field generated (see note below)
+              expression: $join([$resource.resourceName, $resource.accountId], '-')
+            annotations: # Add to metadata.annotations
+              accountId:
+                expression: $resource.accountId # Add an annotation with the AWS account ID using JSONata expression
+            spec:
+              owner:
+                tag: owner # Set 'spec.owner' to the value of the 'owner' tag on the AWS resource
+              component:
+                tag: component # Create a 'dependencyOf' relationship based on the 'component' tag
+              system:
+                value: my-system # Set 'spec.system' to a hard-coded value of 'my-system'
+        options: # [OPTIONAL] Configure details of the provider behavior
+          incremental:
+            restLength: { hours: 6 } # Wait 6 hours between each ingestion cycle
 ```
 
 An entity created by the above configuration would look like this:
@@ -150,35 +151,43 @@ The Backstage [catalog Kubernetes cluster locator](https://backstage.io/docs/fea
 This entity provider can be used to generate `Resource` entities that are compatible with this plugin by using field transforms:
 
 ```yaml
-providers:
-  awsConfig:
-    eksClusters:
-      filters:
-        tags: [...]
-        resourceTypes:
-          - AWS::EKS::Cluster
-      transform:
-        fields:
-          annotations:
-            'amazonaws.com/account-id':
-              expression: $resource.accountId
-            'amazonaws.com/arn':
-              expression: $resource.arn
-            'kubernetes.io/api-server':
-              expression: $resource.configuration.Endpoint
-            'kubernetes.io/api-server-certificate-authority':
-              expression: $resource.configuration.CertificateAuthorityData
-            'kubernetes.io/x-k8s-aws-id':
-              expression: $resource.resourceName
-            'kubernetes.io/auth-provider':
-              value: aws
-          spec:
-            owner:
-              tag: owner
-            component:
-              tag: component
-            type:
-              value: kubernetes-cluster
+catalog:
+  providers:
+    awsConfig:
+      eksClusters:
+        filters:
+          tags: [...]
+          resourceTypes:
+            - AWS::EKS::Cluster
+        transform:
+          fields:
+            annotations:
+              'amazonaws.com/account-id':
+                expression: $resource.accountId
+              'amazonaws.com/arn':
+                expression: $resource.arn
+              'kubernetes.io/api-server':
+                expression: $resource.configuration.Endpoint
+              'kubernetes.io/api-server-certificate-authority':
+                expression: $resource.configuration.CertificateAuthorityData
+              'kubernetes.io/x-k8s-aws-id':
+                expression: $resource.resourceName
+              'kubernetes.io/auth-provider':
+                value: aws
+            spec:
+              owner:
+                tag: owner
+              component:
+                tag: component
+              type:
+                value: kubernetes-cluster
 ```
 
 Filter the clusters appropriately using tags.
+
+## Acknowledgements
+
+This plugin was originally developed as [`@aws/aws-config-catalog-module-for-backstage`](https://github.com/awslabs/backstage-plugins-for-aws/tree/main/plugins/core/catalog-config) in the [awslabs/backstage-plugins-for-aws](https://github.com/awslabs/backstage-plugins-for-aws) repository. Thank you to the original authors and contributors:
+
+- [AWS Labs](https://github.com/awslabs)
+- [Niall Thomson](https://github.com/niallthomson)
