@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 import { compatWrapper } from '@backstage/core-compat-api';
+import { configApiRef } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { resolveMaturityDisplayConfig } from '../helpers/maturityConfig';
 
 /**
  * Entity content extension for maturity summary.
  *
  * @alpha
  */
-export const entityMaturitySummaryContent = EntityContentBlueprint.make({
-  name: 'summary',
-  params: {
-    filter: { kind: { $in: ['System', 'Domain', 'Group'] } },
-    path: '/maturity-summary',
-    title: 'Maturity Summary',
-    loader: () =>
-      import('../SummaryRouter').then(m => compatWrapper(<m.SummaryRouter />)),
-  },
-});
+export const entityMaturitySummaryContent =
+  EntityContentBlueprint.makeWithOverrides({
+    name: 'summary',
+    factory(originalFactory, { apis }) {
+      const { title } = resolveMaturityDisplayConfig(apis.get(configApiRef));
+
+      return originalFactory({
+        filter: { kind: { $in: ['System', 'Domain', 'Group'] } },
+        path: '/maturity-summary',
+        title: `${title} Summary`,
+        loader: () =>
+          import('../SummaryRouter').then(m =>
+            compatWrapper(<m.SummaryRouter title={title} />),
+          ),
+      });
+    },
+  });

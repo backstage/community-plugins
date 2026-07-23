@@ -24,9 +24,12 @@ import { MaturitySummaryCardContent } from './MaturitySummaryCardContent';
 import { MaturityHelp } from '../../helpers/MaturityHelp';
 import { maturityApiRef } from '../../api';
 import { MaturityRankChip } from '../MaturityRankChip';
+import { MaturityDisplayProps } from '../../types';
+import { useMaturityDisplayConfig } from '../../helpers/maturityConfig';
 
-export const MaturitySummaryInfoCard = () => {
+export const MaturitySummaryInfoCard = (props: MaturityDisplayProps) => {
   const { entity } = useEntity();
+  const { title, helpUrl, helpTooltip } = useMaturityDisplayConfig(props);
 
   const api = useApi(maturityApiRef);
   const { value, loading } = useAsyncRetry(
@@ -41,8 +44,8 @@ export const MaturitySummaryInfoCard = () => {
       title={
         <Grid container>
           <Grid item md={7}>
-            Maturity
-            <MaturityHelp />
+            {title}
+            <MaturityHelp url={helpUrl} tooltip={helpTooltip} />
           </Grid>
           <Grid item md={5}>
             <MaturityRankChip value={value} entity={entity} />

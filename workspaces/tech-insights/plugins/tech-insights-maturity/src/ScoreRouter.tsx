@@ -15,9 +15,10 @@
  */
 import { Route, Routes } from 'react-router-dom';
 import { MaturityScorePage } from './components/MaturityScorePage';
+import { MaturityDisplayProps } from './types';
 
-export const ScoreRouter = () => (
+export const ScoreRouter = ({ title }: MaturityDisplayProps) => (
   <Routes>
-    <Route path="/" element={<MaturityScorePage />} />
+    <Route path="/" element={<MaturityScorePage title={title} />} />
   </Routes>
 );

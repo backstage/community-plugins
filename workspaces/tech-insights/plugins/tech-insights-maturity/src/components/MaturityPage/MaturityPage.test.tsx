@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import {
+  mockApis,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
+import { configApiRef } from '@backstage/core-plugin-api';
 
 import { MaturityPage } from './MaturityPage';
 import { MaturityApi, maturityApiRef } from '../../api';
 
 const catalogApi: Partial<CatalogApi> = {
-  getEntities: jest.fn().mockResolvedValue([]),
+  getEntities: jest.fn().mockResolvedValue({ items: [] }),
 };
 
 const scoringApi: Partial<MaturityApi> = {
@@ -43,5 +48,26 @@ describe('<MaturityPage />', () => {
     );
 
     expect(getAllByText(/Maturity/)).toHaveLength(1);
+  });
+
+  it('uses the configured title', async () => {
+    const configApi = mockApis.config({
+      data: { techInsights: { maturity: { title: 'Scorecards' } } },
+    });
+
+    const { findByText, queryByText } = await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [catalogApiRef, catalogApi],
+          [maturityApiRef, scoringApi],
+          [configApiRef, configApi],
+        ]}
+      >
+        <MaturityPage />
+      </TestApiProvider>,
+    );
+
+    expect(await findByText('Scorecards')).toBeInTheDocument();
+    expect(queryByText('Maturity')).not.toBeInTheDocument();
   });
 });
