@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@patternfly/patternfly/utilities/Accessibility/accessibility.css';
-import '@patternfly/react-core/dist/styles/base-no-reset.css';
-
 import {
   configApiRef,
   createApiFactory,
@@ -29,31 +26,24 @@ import {
 
 import { rootRouteRef } from './routes';
 import { MssvJenkinsClient, mssvJenkinsApiRef } from './api/jenkins';
-import {
-  JenkinsClient,
-  isJenkinsAvailable,
-} from '@backstage-community/plugin-jenkins';
+import { JenkinsClient } from '@backstage-community/plugin-jenkins';
 import { MssvGithubActionsClient, mssvGithubActionsApiRef } from './api/github';
-import {
-  GithubActionsClient,
-  isGithubActionsAvailable,
-} from '@backstage-community/plugin-github-actions';
+import { GithubActionsClient } from '@backstage-community/plugin-github-actions';
 import { scmAuthApiRef } from '@backstage/integration-react';
 import {
   CustomGitlabCiClient,
   MssvGitlabCIClient,
   mssvGitlabCIApiRef,
 } from './api/gitlab';
-import { isGitlabAvailable } from '@immobiliarelabs/backstage-plugin-gitlab';
-import { Entity } from '@backstage/catalog-model';
-import {
-  AzureDevOpsClient,
-  isAzurePipelinesAvailable,
-} from '@backstage-community/plugin-azure-devops';
+import { AzureDevOpsClient } from '@backstage-community/plugin-azure-devops';
 import { MssvAzureDevopsClient, mssvAzureDevopsApiRef } from './api/azure';
-import { MSSV_ENABLED_ANNOTATION } from '@backstage-community/plugin-multi-source-security-viewer-common';
 
-/** @public */
+/**
+ * Multi Source Security Viewer plugin (legacy frontend system)
+ *
+ * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
+ */
 export const multiSourceSecurityViewerPlugin = createPlugin({
   id: 'multi-source-security-viewer',
   apis: [
@@ -128,27 +118,17 @@ export const multiSourceSecurityViewerPlugin = createPlugin({
   },
 });
 
-/**
- * @public
- * Returns true if the CI provider annotations are set on component.
- */
-export const isMultiCIAvailable = (entity: Entity): boolean =>
-  isJenkinsAvailable(entity) ||
-  isGitlabAvailable(entity) ||
-  isGithubActionsAvailable(entity) ||
-  isAzurePipelinesAvailable(entity);
+export {
+  isMultiCIAvailable,
+  isMultiCIAvailableAndEnabled,
+} from './lib/isMultiCIAvailable';
 
 /**
+ * Entity content for multi-CI pipelines (legacy frontend system)
+ *
  * @public
- * Returns true if CI provider and mssv annotations are set on component.
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
-export const isMultiCIAvailableAndEnabled = (entity: Entity): boolean =>
-  Boolean(
-    entity.metadata.annotations?.[MSSV_ENABLED_ANNOTATION] === 'true' &&
-      isMultiCIAvailable(entity),
-  );
-
-/** @public */
 export const EntityMultiCIPipelinesContent =
   multiSourceSecurityViewerPlugin.provide(
     createRoutableExtension({

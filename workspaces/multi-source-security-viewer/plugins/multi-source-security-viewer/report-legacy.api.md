@@ -5,7 +5,6 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -27,7 +26,5 @@ export const multiSourceSecurityViewerPlugin: BackstagePlugin<
   {}
 >;
 
-// @public
-const plugin: FrontendPlugin;
-export default plugin;
+// (No @packageDocumentation comment for this package)
 ```

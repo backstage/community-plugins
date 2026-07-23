@@ -7,8 +7,6 @@
   },
   "scripts": {
     "start": "yarn backstage-cli repo start",
-    "start-backend": "yarn workspace backend start",
-    "build:backend": "yarn workspace backend build",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -57,7 +55,7 @@
     "@playwright/test": "1.61.1",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
-    "@types/node": "^24.10.1",
+    "@types/webpack-env": "1.18.8",
     "jest": "^30.0.0",
     "jsdom": "^27.0.0",
     "knip": "^5.27.4",
