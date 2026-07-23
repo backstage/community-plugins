@@ -24,7 +24,6 @@ import ReactDOM from 'react-dom/client';
 
 import {
   ApiBlueprint,
-  configApiRef,
   createFrontendModule,
 } from '@backstage/frontend-plugin-api';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
@@ -33,7 +32,7 @@ import { mockApis } from '@backstage/test-utils';
 import { rbacApiRef } from '../src/api/RBACBackendClient';
 import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
 import rbacPlugin, { rbacTranslationsModule } from '../src';
-import { mockConfigApi, mockLicensedUsersApi, mockRBACApi } from './mocks';
+import { mockLicensedUsersApi, mockRBACApi } from './mocks';
 import { devSidebarContent } from './shared';
 
 const rbacDevModule = createFrontendModule({
@@ -55,15 +54,6 @@ const rbacDevModule = createFrontendModule({
           api: licensedUsersApiRef,
           deps: {},
           factory: () => mockLicensedUsersApi,
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'config',
-      params: defineParams =>
-        defineParams({
-          api: configApiRef,
-          deps: {},
-          factory: () => mockConfigApi,
         }),
     }),
   ],
