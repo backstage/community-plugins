@@ -24,9 +24,9 @@ import ReactDOM from 'react-dom/client';
 
 import {
   ApiBlueprint,
+  configApiRef,
   createFrontendModule,
 } from '@backstage/frontend-plugin-api';
-import { configApiRef } from '@backstage/core-plugin-api';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import { mockApis } from '@backstage/test-utils';
 
