@@ -5,7 +5,7 @@ This is the AWS Config catalog plugin which is designed to ingest AWS resource i
 Features:
 
 1. Automatically add AWS resources from AWS Config
-1. Uses incremental ingestion to efficiently ingest
+1. Uses incremental ingestion to efficiently sync resources
 
 _Note:_ It is possible to easily configure this entity provider in a way that ingests a large amount of entities in to the Backstage catalog. Please review the [Considerations](#considerations) section below.
 
