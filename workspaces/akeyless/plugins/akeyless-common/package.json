@@ -1,0 +1,44 @@
+{
+  "name": "@backstage-community/plugin-akeyless-common",
+  "version": "0.0.0",
+  "description": "Common functionalities for the Akeyless plugin",
+  "backstage": {
+    "role": "common-library",
+    "pluginId": "akeyless",
+    "pluginPackages": [
+      "@backstage-community/plugin-akeyless",
+      "@backstage-community/plugin-akeyless-backend",
+      "@backstage-community/plugin-akeyless-common"
+    ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/akeyless/plugins/akeyless-common"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "test": "backstage-cli package test"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^"
+  }
+}
