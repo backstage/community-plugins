@@ -104,7 +104,7 @@ spec:
 
 ## Considerations
 
-Its recommended to use the configuration available to ingest the minimum entities necessary in to the Backstage catalog. AWS Config, especially in larger organizations, can be tracking a large number of AWS resources that can have a negative affect on both the ingestion mechanism as well as the user catalog experience once stored.
+It's recommended to use the configuration available to ingest the minimum entities necessary into the Backstage catalog. AWS Config, especially in larger organizations, can be tracking a large number of AWS resources that can have a negative effect on both the ingestion mechanism as well as the user catalog experience once stored.
 
 General recommendations are:
 
@@ -114,11 +114,11 @@ General recommendations are:
 
 ## JSONata expressions
 
-One of the ways the provider can transform entities is to use [JSONata](https://docs.jsonata.org/overview.html) expressions via the `expressions` fields. This is a flexible way to transform fields on the emitted entity based on any field in the AWS Config resource payload.
+One of the ways the provider can transform entities is to use [JSONata](https://docs.jsonata.org/overview.html) expressions via the `expression` fields. This is a flexible way to transform fields on the emitted entity based on any field in the AWS Config resource payload.
 
 The AWS Config resource payload is available through the `$resource` variable.
 
-Heres a simple example that sets an annotation with the resource account ID:
+Here's a simple example that sets an annotation with the resource account ID:
 
 ```yaml
 transform:

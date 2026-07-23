@@ -46,9 +46,9 @@ import { DefaultAwsCredentialsManager } from '@backstage/integration-aws-node';
 import { AwsCredentialIdentityProvider } from '@aws-sdk/types';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { merge } from 'lodash';
+import jsonata from 'jsonata';
 
 const AWS_SDK_CUSTOM_USER_AGENT = 'backstage-community-plugins';
-import jsonata from 'jsonata';
 
 interface Cursor {
   nextToken: string;
@@ -141,7 +141,7 @@ export class AwsConfigInfrastructureProvider
           Expression: query,
           ConfigurationAggregatorName: this.config.aggregator,
           Limit: this.config.options?.pageSize ?? 100,
-          NextToken: cursor?.nextToken ?? undefined,
+          NextToken: cursor?.nextToken || undefined,
         }),
       );
     } else {
@@ -149,7 +149,7 @@ export class AwsConfigInfrastructureProvider
         new SelectResourceConfigCommand({
           Expression: query,
           Limit: this.config.options?.pageSize ?? 100,
-          NextToken: cursor?.nextToken ?? undefined,
+          NextToken: cursor?.nextToken || undefined,
         }),
       );
     }

@@ -64,34 +64,35 @@ export function mockClient(ClientClass: any): AwsClientMock {
   return new AwsClientMock(ClientClass);
 }
 
-expect.extend({
-  toHaveReceivedCommandWith(
-    received: AwsClientMock,
-    CommandClass: CommandConstructor,
-    expectedInput: Record<string, any>,
-  ) {
-    const calls = received.commandCalls(CommandClass);
-    const pass = calls.some(call =>
-      Object.entries(expectedInput).every(
-        ([key, value]) => call.input?.[key] === value,
-      ),
-    );
+if (typeof expect !== 'undefined')
+  expect.extend({
+    toHaveReceivedCommandWith(
+      received: AwsClientMock,
+      CommandClass: CommandConstructor,
+      expectedInput: Record<string, any>,
+    ) {
+      const calls = received.commandCalls(CommandClass);
+      const pass = calls.some(call =>
+        Object.entries(expectedInput).every(
+          ([key, value]) => call.input?.[key] === value,
+        ),
+      );
 
-    return {
-      pass,
-      message: () =>
-        pass
-          ? `Expected mock not to have received ${
-              CommandClass.name
-            } with ${JSON.stringify(expectedInput)}`
-          : `Expected mock to have received ${
-              CommandClass.name
-            } with ${JSON.stringify(
-              expectedInput,
-            )}, but it was not called with those arguments`,
-    };
-  },
-});
+      return {
+        pass,
+        message: () =>
+          pass
+            ? `Expected mock not to have received ${
+                CommandClass.name
+              } with ${JSON.stringify(expectedInput)}`
+            : `Expected mock to have received ${
+                CommandClass.name
+              } with ${JSON.stringify(
+                expectedInput,
+              )}, but it was not called with those arguments`,
+      };
+    },
+  });
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
