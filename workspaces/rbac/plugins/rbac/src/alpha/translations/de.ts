@@ -236,6 +236,7 @@ const rbacTranslationDe = createTranslationMessages({
     'common.configureAccessFor': 'Zugriff konfigurieren für',
     'common.defaultResourceTypeVisible':
       'Standardmäßig ist der ausgewählte Ressourcentyp für alle hinzugefügten Benutzer sichtbar. Wenn Sie bestimmte Plugin-Regeln einschränken oder Berechtigungen dafür erteilen möchten, wählen Sie diese aus, und fügen Sie die Parameter hinzu.',
+    'common.tableAction': 'Tabellenaktion',
   },
 });
 

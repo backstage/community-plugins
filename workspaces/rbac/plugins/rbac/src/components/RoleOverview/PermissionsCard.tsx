@@ -26,6 +26,7 @@ import { filterTableData } from '../../utils/filter-table-data';
 import EditRole from '../EditRole';
 import { getColumns } from './PermissionsListColumns';
 import { StyledTableWrapper } from './StyledTableWrapper';
+import { TableAction } from './TableAction';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useTranslation } from '../../hooks/useTranslation';
 import { capitalizeFirstLetter } from '../../utils/string-utils';
@@ -117,6 +118,7 @@ export const PermissionsCard = ({
         ),
       isFreeAction: true,
       onClick: () => {},
+      customComponent: true,
     },
   ];
 
@@ -142,7 +144,13 @@ export const PermissionsCard = ({
         <Table
           title={title}
           actions={actions}
-          options={{ padding: 'default', search: true, paging: true }}
+          components={{ Action: TableAction }}
+          options={{
+            padding: 'default',
+            search: true,
+            paging: true,
+            draggable: false,
+          }}
           data={data}
           columns={columns}
           isLoading={loading}
