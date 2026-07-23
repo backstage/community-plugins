@@ -408,4 +408,71 @@ describe('GithubIssues', () => {
       );
     });
   });
+
+  describe('partially loaded issues', () => {
+    it('warns in the card footer when GitHub reports more issues than were returned', async () => {
+      const testIssue = getTestIssue();
+
+      // `totalCount` is 3 but only a single issue node made it back (e.g. the
+      // rest came back as `null` nodes in a `RESOURCE_LIMITS_EXCEEDED` partial
+      // response and were dropped), so 2 issues could not be loaded.
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          backstage: {
+            issues: {
+              totalCount: 3,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, mockCatalogApi],
+      ] as const;
+
+      const { getByText } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeEntityWithKind('Component')}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(
+        getByText(`2 issues couldn't be loaded and were skipped.`),
+      ).toBeInTheDocument();
+    });
+
+    it('does not warn when every issue GitHub reported was returned', async () => {
+      const testIssue = getTestIssue();
+
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          backstage: {
+            issues: {
+              totalCount: 1,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, mockCatalogApi],
+      ] as const;
+
+      const { queryByText } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeEntityWithKind('Component')}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(queryByText(/couldn't be loaded/)).toBeNull();
+    });
+  });
 });

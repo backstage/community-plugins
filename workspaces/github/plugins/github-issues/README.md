@@ -38,7 +38,7 @@ app:
 **Issues are sorted from the recently updated DESC order (the plugin might not render all issues from a single repo next to each other).**
 
 > [!Note]
-> When an Entity owns many repositories, the plugin fetches issues from GitHub in several smaller batched requests instead of a single large query. This keeps each request within GitHub's GraphQL [per-request resource limit](https://docs.github.com/en/graphql/overview/rate-limits-and-node-limits-for-the-graphql-api) — a single query spanning many repositories would otherwise fail with `RESOURCE_LIMITS_EXCEEDED`. If GitHub still returns a partial response for a batch, the issues that were fetched successfully are shown and the rest are skipped, rather than failing the whole card.
+> When an Entity owns many repositories, the plugin fetches issues from GitHub in several smaller batched requests instead of a single large query. This keeps each request within GitHub's GraphQL [per-request resource limit](https://docs.github.com/en/graphql/overview/rate-limits-and-node-limits-for-the-graphql-api) — a single query spanning many repositories would otherwise fail with `RESOURCE_LIMITS_EXCEEDED`. If GitHub still returns a partial response for a batch, the issues that were fetched successfully are shown and the rest are skipped, rather than failing the whole card. When this happens, the card footer notes how many issues couldn't be loaded so a partial result isn't mistaken for the full set.
 
 ## Screenshots
 
