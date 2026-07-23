@@ -14,4 +14,10 @@
  * limitations under the License.
  */
 
+/**
+ * The aws-config backend module for the catalog plugin.
+ *
+ * @packageDocumentation
+ */
+
 export { catalogModuleAwsConfig as default } from './module';

@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-aws-config",
   "description": "The aws-config backend module for the catalog plugin.",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
@@ -47,9 +47,7 @@
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@types/crypto-js": "^4",
-    "@types/lodash": "^4",
-    "aws-sdk-client-mock": "^4.1.0",
-    "aws-sdk-client-mock-jest": "^4.1.0"
+    "@types/lodash": "^4"
   },
   "files": [
     "config.d.ts",

@@ -16,8 +16,7 @@
 
 import { ConfigReader } from '@backstage/config';
 import { AwsConfigInfrastructureProvider } from './AwsConfigInfrastructureProvider';
-import { mockClient } from 'aws-sdk-client-mock';
-import 'aws-sdk-client-mock-jest';
+import { mockClient } from './mocks/awsClientMock';
 import {
   ConfigServiceClient,
   SelectResourceConfigCommand,

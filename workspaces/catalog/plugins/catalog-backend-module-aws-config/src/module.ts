@@ -21,6 +21,9 @@ import {
 import { AwsConfigInfrastructureProvider } from './providers/AwsConfigInfrastructureProvider';
 import { incrementalIngestionProvidersExtensionPoint } from '@backstage/plugin-catalog-backend-module-incremental-ingestion';
 
+/**
+ * @public
+ */
 export const catalogModuleAwsConfig = createBackendModule({
   pluginId: 'catalog',
   moduleId: 'aws-config-provider',
