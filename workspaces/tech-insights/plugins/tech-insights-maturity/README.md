@@ -140,6 +140,28 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 );
 ```
 
+## Customize the Maturity display
+
+The feature title and help link can be customized without patching the plugin.
+The title is used by the page header, entity cards, rank cards, summary tables,
+and the default extension titles.
+
+```yaml title="app-config.yaml"
+techInsights:
+  maturity:
+    title: 'Scorecards'
+    help:
+      url: 'https://internal.example.com/docs/scorecards'
+      tooltip: 'Learn more about our Scorecards'
+```
+
+Classic frontend system components also accept a `title` prop when an
+individual instance needs a different title:
+
+```tsx
+<EntityMaturitySummaryCard title="Scorecards" />
+```
+
 ## Maturity Rank Description
 
 Additionally, you can configure the title and description for the maturity ranks. As default, these values are already set so there is no need to configure unless you want to customize it.
@@ -183,12 +205,19 @@ You can configure the maturity extensions in your `app-config.yaml`. For example
 ```yaml
 app:
   extensions:
+    - entity-content:tech-insights-maturity/maturity:
+        config:
+          path: /scorecards
+          title: Scorecards
     - entity-card:tech-insights-maturity/summary:
         config:
           filter: { kind: 'System' }
     - entity-content:tech-insights-maturity/maturity:
         disabled: true
 ```
+
+Entity links use the scorecard extension's registered route, so they continue
+to work when its `path` is customized.
 
 ## Compatibility
 
