@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acs
 
+## 0.2.1
+
+### Patch Changes
+
+- fd1df40: Updated dependency `@patternfly/react-core` to `6.4.3`.
+
 ## 0.2.0
 
 ### Minor Changes
