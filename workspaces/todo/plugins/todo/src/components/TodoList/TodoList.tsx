@@ -37,13 +37,6 @@ import { useApi } from '@backstage/core-plugin-api';
 
 const PAGE_SIZE = 10;
 
-const columnWidths = {
-  tag: '10%',
-  text: '55%',
-  repoFilePath: '25%',
-  author: '10%',
-} as const;
-
 type TodoRow = TodoItem & { id: string };
 
 const toRowId = (item: TodoItem): string => {
@@ -69,14 +62,14 @@ const columns: (ColumnConfig<TodoRow> & { id: TodoListFields })[] = [
   {
     id: 'tag',
     label: 'Tag',
-    width: columnWidths.tag,
+    width: '10%',
     isSortable: true,
     cell: item => <CellText title={item.tag} />,
   },
   {
     id: 'text',
     label: 'Text',
-    width: columnWidths.text,
+    width: '55%',
     isRowHeader: true,
     isSortable: true,
     cell: item => (
@@ -90,7 +83,7 @@ const columns: (ColumnConfig<TodoRow> & { id: TodoListFields })[] = [
   {
     id: 'repoFilePath',
     label: 'File',
-    width: columnWidths.repoFilePath,
+    width: '25%',
     isSortable: true,
     cell: item =>
       item.viewUrl ? (
@@ -112,7 +105,7 @@ const columns: (ColumnConfig<TodoRow> & { id: TodoListFields })[] = [
   {
     id: 'author',
     label: 'Author',
-    width: columnWidths.author,
+    width: '10%',
     isSortable: true,
     cell: item => <CellText title={item.author ? item.author : '-'} />,
   },
@@ -183,8 +176,8 @@ export const TodoList = () => {
           TODOs
         </Text>
         <Flex>
-          <div style={{ width: columnWidths.tag }} />
-          <div style={{ width: columnWidths.text }}>
+          <div style={{ width: '10%' }} />
+          <div style={{ width: '55%' }}>
             <SearchField
               aria-label="Filter by text"
               value={filter.value?.text ? filter.value.text : ''}
@@ -193,7 +186,7 @@ export const TodoList = () => {
               }
             />
           </div>
-          <div style={{ width: columnWidths.repoFilePath }}>
+          <div style={{ width: '25%' }}>
             <SearchField
               aria-label="Filter by file"
               value={
@@ -204,7 +197,7 @@ export const TodoList = () => {
               }
             />
           </div>
-          <div style={{ width: columnWidths.author }}>
+          <div style={{ width: '10%' }}>
             <SearchField
               aria-label="Filter by author"
               value={filter.value?.author ? filter.value.author : ''}
