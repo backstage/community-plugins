@@ -15,30 +15,13 @@
  */
 
 import { useState } from 'react';
-import Divider from '@material-ui/core/Divider';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import { makeStyles } from '@material-ui/core/styles';
+import { Tabs, TabList, Tab } from '@backstage/ui';
 import { ApolloExplorer } from '@apollo/explorer/react';
 import { Content } from '@backstage/core-components';
 import { HandleRequest } from '@apollo/explorer/src/helpers/postMessageRelayHelpers';
 import { EndpointProps } from '../ApolloExplorerPage';
 import { useApiHolder } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  tabs: {
-    background: theme.palette.background.paper,
-  },
-  root: {
-    height: '100%',
-  },
-  content: {
-    height: '100%',
-  },
-  explorer: {
-    height: '95%',
-  },
-}));
+import styles from './ApolloExplorerBrowser.module.css';
 
 type Props = {
   endpoints: EndpointProps[];
@@ -64,7 +47,6 @@ export const handleAuthRequest = ({
 };
 
 export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
-  const classes = useStyles();
   const [tabIndex, setTabIndex] = useState(0);
 
   const apiHolder = useApiHolder();
@@ -76,21 +58,23 @@ export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={styles.root}>
       <Tabs
-        classes={{ root: classes.tabs }}
-        value={tabIndex}
-        onChange={(_, value) => setTabIndex(value)}
-        indicatorColor="primary"
+        selectedKey={String(tabIndex)}
+        onSelectionChange={key => setTabIndex(Number(key))}
       >
-        {endpoints.map(({ title }, index) => (
-          <Tab key={index} label={title} value={index} />
-        ))}
+        <TabList className={styles.tabs}>
+          {endpoints.map(({ title }, index) => (
+            <Tab key={index} id={String(index)}>
+              {title}
+            </Tab>
+          ))}
+        </TabList>
       </Tabs>
-      <Divider />
-      <Content className={classes.content}>
+      <hr className={styles.divider} />
+      <Content className={styles.content}>
         <ApolloExplorer
-          className={classes.explorer}
+          className={styles.explorer}
           graphRef={endpoints[tabIndex].graphRef}
           handleRequest={handleAuthRequest({
             authCallback: getAuthCallback(tabIndex),
