@@ -17,12 +17,17 @@ import { Entity } from '@backstage/catalog-model';
 import {
   isMultiCIAvailableAndEnabled,
   multiSourceSecurityViewerPlugin,
-} from './plugin';
+} from './legacy';
+import mssvPlugin from './plugin';
 import { MSSV_ENABLED_ANNOTATION } from '@backstage-community/plugin-multi-source-security-viewer-common';
 
 describe('multi-source-security-viewer', () => {
   it('should export plugin', () => {
     expect(multiSourceSecurityViewerPlugin).toBeDefined();
+  });
+
+  it('should export new frontend system plugin', () => {
+    expect(mssvPlugin).toBeDefined();
   });
 
   it('should display when the annotation is set to "true"', () => {

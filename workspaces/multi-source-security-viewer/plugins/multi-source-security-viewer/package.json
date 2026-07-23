@@ -3,11 +3,24 @@
   "version": "0.17.3",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./legacy": "./src/legacy.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "legacy": [
+        "src/legacy.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "license": "Apache-2.0",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -17,6 +30,7 @@
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "multi-source-security-viewer",
+    "pluginPackage": "@backstage-community/plugin-multi-source-security-viewer",
     "pluginPackages": [
       "@backstage-community/plugin-multi-source-security-viewer",
       "@backstage-community/plugin-multi-source-security-viewer-backend",
@@ -32,6 +46,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
@@ -49,6 +64,7 @@
     "@backstage/catalog-model": "^1.9.0",
     "@backstage/core-components": "^0.18.10",
     "@backstage/core-plugin-api": "^1.12.6",
+    "@backstage/frontend-plugin-api": "^0.17.1",
     "@backstage/integration-react": "^1.2.18",
     "@backstage/plugin-catalog-react": "^3.0.0",
     "@backstage/plugin-permission-react": "^0.5.1",
@@ -76,14 +92,23 @@
     "@backstage/cli": "^0.36.2",
     "@backstage/core-app-api": "^1.20.1",
     "@backstage/dev-utils": "^1.1.23",
+    "@backstage/frontend-defaults": "^0.5.2",
+    "@backstage/frontend-test-utils": "^0.6.0",
+    "@backstage/plugin-catalog": "^2.0.5",
+    "@backstage/plugin-user-settings": "^0.9.3",
     "@backstage/test-utils": "^1.7.18",
     "@playwright/test": "1.61.1",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/lodash": "^4.17.13",
+    "@types/react": "^18.2.58",
+    "@types/react-dom": "^18.2.19",
     "msw": "^1.0.0",
-    "react": "^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "files": [
     "dist"
