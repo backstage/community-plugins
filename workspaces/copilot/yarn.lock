@@ -1905,7 +1905,7 @@ __metadata:
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
     react-dom: ^18.0.2
-    react-router: ^6.30.4
+    react-router: ^7.18.0
     react-router-dom: ^6.3.0
   languageName: unknown
   linkType: soft
