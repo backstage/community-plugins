@@ -1,5 +1,12 @@
 # @backstage-community/plugin-topology
 
+## 2.15.1
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 582a859: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.7.0`.
+
 ## 2.15.0
 
 ### Minor Changes
