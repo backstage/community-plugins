@@ -1,16 +1,7 @@
-# [Backstage](https://backstage.io)
+# SonarQube scaffolder backend module workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+Publishable plugins in this workspace:
 
-To start the app, run:
+- [@backstage-community/plugin-scaffolder-backend-module-sonarqube](./plugins/scaffolder-backend-module-sonarqube/) — operator docs: [README](./plugins/scaffolder-backend-module-sonarqube/README.md); contributors: [CONTRIBUTING](./plugins/scaffolder-backend-module-sonarqube/CONTRIBUTING.md)
 
-```sh
-yarn install
-yarn start
-```
-
-To generate knip reports for this app, run:
-
-```sh
-yarn backstage-repo-tools knip-reports
-```
+Day-to-day plugin work uses the package's `dev/` harness — see the contributor guide above.
