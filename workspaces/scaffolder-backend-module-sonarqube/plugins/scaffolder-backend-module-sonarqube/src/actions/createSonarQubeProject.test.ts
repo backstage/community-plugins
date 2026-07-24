@@ -95,13 +95,104 @@ describe('sonarqube:create-project', () => {
       .spyOn(global, 'fetch')
       .mockImplementationOnce(() => Promise.resolve(response));
 
+    const baseUrl = 'http://localhost:9090';
+    const name = 'test-project';
+    const key = 'test-project';
+    const token = 'test-token';
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        baseUrl,
+        token,
+        username: '',
+        password: '',
+        name,
+        key,
+        branch: '',
+        visibility: '',
+      },
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${baseUrl}/api/projects/create?name=${name}&project=${key}`,
+      expect.objectContaining({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${Buffer.from(`${token}:`).toString('base64')}`,
+        },
+      }),
+    );
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'projectUrl',
+      `${baseUrl}/dashboard?id=${key}`,
+    );
+  });
+
+  it('should create a sonarqube project with branch, visibility, and username/password auth', async () => {
+    const response = new Response(new Blob(), { status: 200, statusText: '' });
+    const fetchMock = jest
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve(response));
+
+    const baseUrl = 'http://localhost:9090';
+    const name = 'test-project';
+    const key = 'test-project';
+    const branch = 'main';
+    const visibility = 'private';
+    const username = 'superuser';
+    const password = 'super-sEkRiT'; // gitleaks:allow NOSONAR
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        baseUrl,
+        token: '',
+        username,
+        password,
+        name,
+        key,
+        branch,
+        visibility,
+      },
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${baseUrl}/api/projects/create?name=${name}&project=${key}&mainBranch=${branch}&visibility=${visibility}`,
+      expect.objectContaining({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${Buffer.from(
+            `${username}:${password}`,
+          ).toString('base64')}`,
+        },
+      }),
+    );
+    expect(mockContext.output).toHaveBeenCalledWith(
+      'projectUrl',
+      `${baseUrl}/dashboard?id=${key}`,
+    );
+  });
+
+  it('should prefer token auth when username and password are also provided', async () => {
+    const response = new Response(new Blob(), { status: 200, statusText: '' });
+    const fetchMock = jest
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve(response));
+
+    const token = 'preferred-token';
+
     await action.handler({
       ...mockContext,
       input: {
         baseUrl: 'http://localhost:9090',
-        token: 'abcdef',
-        username: '',
-        password: '',
+        token,
+        username: 'superuser',
+        password: 'super-sEkRiT', // gitleaks:allow NOSONAR
         name: 'test-project',
         key: 'test-project',
         branch: '',
@@ -109,9 +200,46 @@ describe('sonarqube:create-project', () => {
       },
     });
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: `Basic ${Buffer.from(`${token}:`).toString('base64')}`,
+        }),
+      }),
+    );
   });
 
+  it('should throw error from SonarQube response body when statusText is empty', async () => {
+    const errorMessage = 'Could not create project';
+    const response = new Response(
+      JSON.stringify({ errors: [{ msg: errorMessage }] }),
+      { status: 400, statusText: '' },
+    );
+    const fetchMock = jest
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce(() => Promise.resolve(response));
+
+    await expect(
+      action.handler({
+        ...mockContext,
+        input: {
+          baseUrl: 'http://localhost:9000',
+          token: 'abcdef',
+          username: '',
+          password: '',
+          name: 'test-project',
+          key: 'test-project',
+          branch: '',
+          visibility: '',
+        },
+      }),
+    ).rejects.toThrow(
+      Error(`Failed to create SonarQube project, status 400 - ${errorMessage}`),
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
   it('should throw a required input validation error (baseUrl)', async () => {
     await expect(
       action.handler({
