@@ -54,6 +54,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
     readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
     readonly 'pipelineRunList.tableHeaderTitle.actions': 'ACTIONS';
+    readonly 'pipelineRunList.tablePagination.rowsPerPage': 'Rows per page';
     readonly 'pipelineRunList.tablePagination.rowsPerPageOptionLabel': '{{num}} rows';
     readonly 'pipelineRunLogs.title': 'PipelineRun Logs';
     readonly 'pipelineRunLogs.noLogs': 'No logs found';

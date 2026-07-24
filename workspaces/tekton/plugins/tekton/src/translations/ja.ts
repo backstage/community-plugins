@@ -64,6 +64,7 @@ const tektonTranslationJa = createTranslationMessages({
     'pipelineRunList.tableHeaderTitle.startTime': '開始済み',
     'pipelineRunList.tableHeaderTitle.duration': '期間',
     'pipelineRunList.tableHeaderTitle.actions': 'アクション',
+    'pipelineRunList.tablePagination.rowsPerPage': 'ページあたりの行数',
     'pipelineRunList.tablePagination.rowsPerPageOptionLabel': '{{num}} 行',
     'pipelineRunLogs.title': 'PipelineRun ログ',
     'pipelineRunLogs.noLogs': 'ログが見つかりません',

@@ -15,6 +15,7 @@
  */
 import type { ReactNode } from 'react';
 
+import { useTheme } from '@mui/material/styles';
 import { Split, SplitItem } from '@patternfly/react-core';
 
 import './ResourceBadge.css';
@@ -30,6 +31,7 @@ const ResourceBadge = ({
   name: string;
   suffix?: ReactNode;
 }) => {
+  const theme = useTheme();
   return (
     <Split className="bs-tkn-pipeline-visualization__label">
       <SplitItem style={{ marginRight: 'var(--pf-t--global--spacer--sm)' }}>
@@ -42,7 +44,12 @@ const ResourceBadge = ({
         </span>
       </SplitItem>
       <SplitItem>
-        <span data-testid="pipelinerun-name">{name}</span>
+        <span
+          data-testid="pipelinerun-name"
+          style={{ color: theme.palette.text.primary }}
+        >
+          {name}
+        </span>
       </SplitItem>
       {suffix ? (
         <SplitItem style={{ marginLeft: 'var(--pf-t--global--spacer--sm)' }}>
