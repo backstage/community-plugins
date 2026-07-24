@@ -26,8 +26,14 @@ import {
   PermissionsService,
 } from '@backstage/backend-plugin-api';
 import { mockServices } from '@backstage/backend-test-utils';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { TagsDatabase } from './service/persistence/TagsDatabase.ts';
-import { AUDITOR_FETCH_EVENT_ID } from '@backstage-community/plugin-announcements-common';
+import {
+  AUDITOR_ACTION_CREATE,
+  AUDITOR_ACTION_DELETE,
+  AUDITOR_FETCH_EVENT_ID,
+  AUDITOR_MUTATE_EVENT_ID,
+} from '@backstage-community/plugin-announcements-common';
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -39,6 +45,9 @@ describe('createRouter', () => {
   const deleteAnnouncementByIDMock = jest.fn();
   const insertAnnouncementMock = jest.fn();
   const updateAnnouncementMock = jest.fn();
+  const tagBySlugMock = jest.fn();
+  const insertTagMock = jest.fn();
+  const deleteTagMock = jest.fn();
 
   const mockPersistenceContext: PersistenceContext = {
     announcementsStore: {
@@ -49,7 +58,11 @@ describe('createRouter', () => {
       updateAnnouncement: updateAnnouncementMock,
     } as unknown as AnnouncementsDatabase,
     categoriesStore: {} as unknown as CategoriesDatabase,
-    tagsStore: {} as unknown as TagsDatabase,
+    tagsStore: {
+      tagBySlug: tagBySlugMock,
+      insert: insertTagMock,
+      delete: deleteTagMock,
+    } as unknown as TagsDatabase,
   };
 
   const mockPermissions: PermissionsService = {
@@ -346,6 +359,67 @@ describe('createRouter', () => {
 
       expect(response.body.results).toHaveLength(0);
       expect(response.body.count).toEqual(0);
+      expectAuditorSuccess();
+    });
+  });
+
+  describe('tags', () => {
+    beforeEach(() => {
+      (mockHttpAuth.credentials as jest.Mock).mockResolvedValue({
+        principal: { type: 'user', userEntityRef: 'user:default/name' },
+      });
+      (mockPermissions.authorize as jest.Mock).mockResolvedValue([
+        { result: AuthorizeResult.ALLOW },
+      ]);
+    });
+
+    it('records a create action when a tag is created', async () => {
+      tagBySlugMock.mockResolvedValueOnce(undefined);
+
+      const response = await request(app)
+        .post('/tags')
+        .send({ title: 'New Tag' });
+
+      expect(response.status).toEqual(201);
+      expect(response.body).toEqual({ title: 'New Tag', slug: 'new-tag' });
+      expect(insertTagMock).toHaveBeenCalledWith({
+        title: 'New Tag',
+        slug: 'new-tag',
+      });
+
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: expect.objectContaining({
+            actionType: AUDITOR_ACTION_CREATE,
+          }),
+        }),
+      );
+      expectAuditorSuccess();
+    });
+
+    it('records a delete action when a tag is deleted', async () => {
+      announcementsMock.mockReturnValueOnce({ results: [], count: 0 });
+      tagBySlugMock.mockResolvedValueOnce({
+        title: 'Old Tag',
+        slug: 'old-tag',
+      });
+
+      const response = await request(app).delete('/tags/old-tag');
+
+      expect(response.status).toEqual(204);
+      expect(deleteTagMock).toHaveBeenCalledWith('old-tag');
+
+      expect(auditorMock.createEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: AUDITOR_MUTATE_EVENT_ID,
+          severityLevel: 'medium',
+          meta: expect.objectContaining({
+            actionType: AUDITOR_ACTION_DELETE,
+          }),
+        }),
+      );
       expectAuditorSuccess();
     });
   });
