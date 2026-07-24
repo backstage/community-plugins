@@ -21,7 +21,6 @@ import {
 } from '@backstage/core-plugin-api';
 
 import {
-  PermissionAction,
   PluginPermissionMetaData,
   Role,
   RoleBasedPolicy,
@@ -70,7 +69,7 @@ export type RBACAPI = {
   ) => Promise<RoleError | Response>;
   getRoleConditions: (
     roleRef: string,
-  ) => Promise<RoleConditionalPolicyDecision<PermissionAction>[] | Response>;
+  ) => Promise<RoleConditionalPolicyDecision[] | Response>;
   updateConditionalPolicies: (
     conditionId: number,
     data: RoleBasedConditions,

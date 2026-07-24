@@ -15,7 +15,6 @@
  */
 import type {
   AuditorService,
-  AuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
 import { InputError } from '@backstage/errors';
@@ -23,10 +22,9 @@ import { InputError } from '@backstage/errors';
 import yaml from 'js-yaml';
 import { omit } from 'lodash';
 
-import type {
-  PermissionAction,
-  PermissionInfo,
-  RoleConditionalPolicyDecision,
+import {
+  type RoleConditionalPolicyDecision,
+  permissionMappingAction,
 } from '@backstage-community/plugin-rbac-common';
 
 import fs from 'fs';
@@ -42,13 +40,10 @@ import {
   deepSortEqual,
   diffConditionalPolicies,
   pendingDeleteIdsFromPlan,
-  permissionMappingToActions,
   planConditionalReconcile,
-  processConditionMapping,
   toError,
 } from '../helper';
 import { RoleEventEmitter, RoleEvents } from '../service/enforcer-delegate';
-import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import {
   type ConditionValidationLimits,
   validateRoleCondition,
@@ -106,18 +101,14 @@ export function resolveConditionalPoliciesFileLimits(
 }
 
 function yamlConditionEquals(
-  stored: RoleConditionalPolicyDecision<PermissionInfo>,
-  desired: RoleConditionalPolicyDecision<PermissionAction>,
+  stored: RoleConditionalPolicyDecision,
+  desired: RoleConditionalPolicyDecision,
 ): boolean {
-  const storedComparable = {
-    ...omit(stored, ['id']),
-    permissionMapping: permissionMappingToActions(stored.permissionMapping),
-  };
-  return deepSortEqual(storedComparable, omit(desired, ['id']));
+  return deepSortEqual(omit(stored, ['id']), omit(desired, ['id']));
 }
 
 export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
-  RoleConditionalPolicyDecision<PermissionAction>[]
+  RoleConditionalPolicyDecision[]
 > {
   private readonly maxFileBytes: number;
   private readonly maxFileDocuments: number;
@@ -129,8 +120,6 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     logger: LoggerService,
     private readonly conditionalStorage: ConditionalStorage,
     private readonly auditor: AuditorService,
-    private readonly auth: AuthService,
-    private readonly pluginMetadataCollector: PluginPermissionMetadataCollector,
     private readonly roleMetadataStorage: RoleMetadataStorage,
     private readonly roleEventEmitter: RoleEventEmitter<RoleEvents>,
     conditionValidationLimits: ConditionValidationLimits,
@@ -186,7 +175,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
    * Reads the current contents of the file and parses it.
    * @returns parsed data.
    */
-  parse(): RoleConditionalPolicyDecision<PermissionAction>[] {
+  parse(): RoleConditionalPolicyDecision[] {
     const fileContents = this.getCurrentContents();
     const fileSizeInBytes = Buffer.byteLength(fileContents, 'utf8');
     if (fileSizeInBytes > this.maxFileBytes) {
@@ -195,16 +184,13 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
       );
     }
 
-    const parsedDocuments: RoleConditionalPolicyDecision<PermissionAction>[] =
-      [];
+    const parsedDocuments: RoleConditionalPolicyDecision[] = [];
     yaml.loadAll(fileContents, doc => {
       if (doc === null) {
         return;
       }
 
-      parsedDocuments.push(
-        doc as RoleConditionalPolicyDecision<PermissionAction>,
-      );
+      parsedDocuments.push(doc as RoleConditionalPolicyDecision);
       if (parsedDocuments.length > this.maxFileDocuments) {
         throw new InputError(
           `conditional policies file exceeds maximum of ${this.maxFileDocuments} YAML documents`,
@@ -239,22 +225,8 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
     }
 
     try {
-      const stagedAdditions: RoleConditionalPolicyDecision<PermissionInfo>[] =
-        [];
-      for (const condition of diff.toAdd) {
-        stagedAdditions.push(
-          await processConditionMapping(
-            condition,
-            this.pluginMetadataCollector,
-            this.auth,
-          ),
-        );
-      }
-
-      const plan = planConditionalReconcile(
-        stagedAdditions,
-        diff.toRemove,
-        item => permissionMappingToActions(item.permissionMapping),
+      const plan = planConditionalReconcile(diff.toAdd, diff.toRemove, item =>
+        item.permissionMapping.map(permissionMappingAction),
       );
       const pendingDeleteIds = pendingDeleteIdsFromPlan(plan);
 
@@ -288,10 +260,10 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
   }
 
   private filterParsedToCsvFileSourcedRoles(
-    parsed: RoleConditionalPolicyDecision<PermissionAction>[],
+    parsed: RoleConditionalPolicyDecision[],
     csvFileSourcedRoles: RoleMetadataDao[],
-  ): RoleConditionalPolicyDecision<PermissionAction>[] {
-    const fileDesired: RoleConditionalPolicyDecision<PermissionAction>[] = [];
+  ): RoleConditionalPolicyDecision[] {
+    const fileDesired: RoleConditionalPolicyDecision[] = [];
 
     for (const condition of parsed) {
       const roleMetadata = csvFileSourcedRoles.find(
@@ -317,7 +289,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
 
   private async loadStoredConditionsForRoles(
     csvFileSourcedRoles: RoleMetadataDao[],
-  ): Promise<RoleConditionalPolicyDecision<PermissionInfo>[]> {
+  ): Promise<RoleConditionalPolicyDecision[]> {
     return this.conditionalStorage.filterConditions(
       csvFileSourcedRoles.map(role => role.roleEntityRef),
     );
@@ -325,7 +297,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
 
   private async persistConditionUpdate(
     id: number,
-    conditionToUpdate: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionToUpdate: RoleConditionalPolicyDecision,
     pendingDeleteIds: ReadonlySet<number>,
   ): Promise<void> {
     const auditorEvent = await this.auditor.createEvent({
@@ -342,33 +314,19 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
         pendingDeleteIds,
       );
       await auditorEvent.success({
-        meta: {
-          condition: {
-            ...conditionToUpdate,
-            permissionMapping: conditionToUpdate.permissionMapping.map(
-              pm => pm.action,
-            ),
-          },
-        },
+        meta: { condition: conditionToUpdate },
       });
     } catch (error) {
       await auditorEvent.fail({
         error,
-        meta: {
-          condition: {
-            ...conditionToUpdate,
-            permissionMapping: conditionToUpdate.permissionMapping.map(
-              pm => pm.action,
-            ),
-          },
-        },
+        meta: { condition: conditionToUpdate },
       });
       throw error;
     }
   }
 
   private async persistConditionCreate(
-    conditionToCreate: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionToCreate: RoleConditionalPolicyDecision,
     pendingDeleteIds: ReadonlySet<number>,
   ): Promise<void> {
     const auditorEvent = await this.auditor.createEvent({
@@ -383,33 +341,19 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
         pendingDeleteIds,
       );
       await auditorEvent.success({
-        meta: {
-          condition: {
-            ...conditionToCreate,
-            permissionMapping: conditionToCreate.permissionMapping.map(
-              pm => pm.action,
-            ),
-          },
-        },
+        meta: { condition: conditionToCreate },
       });
     } catch (error) {
       await auditorEvent.fail({
         error,
-        meta: {
-          condition: {
-            ...conditionToCreate,
-            permissionMapping: conditionToCreate.permissionMapping.map(
-              pm => pm.action,
-            ),
-          },
-        },
+        meta: { condition: conditionToCreate },
       });
       throw error;
     }
   }
 
   private async persistConditionDelete(
-    condition: RoleConditionalPolicyDecision<PermissionInfo>,
+    condition: RoleConditionalPolicyDecision,
   ): Promise<void> {
     const auditorEvent = await this.auditor.createEvent({
       eventId: ConditionEvents.CONDITION_WRITE,
@@ -417,12 +361,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
       meta: { actionType: ActionType.DELETE },
     });
 
-    const deleteMeta = {
-      condition: {
-        ...condition,
-        permissionMapping: condition.permissionMapping.map(pm => pm.action),
-      },
-    };
+    const deleteMeta = { condition };
 
     try {
       if (condition.id === undefined) {

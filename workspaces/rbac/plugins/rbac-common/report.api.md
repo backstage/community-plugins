@@ -19,6 +19,11 @@ export const ConditionalAliases: {
 };
 
 // @public (undocumented)
+export function isPermissionInfo(
+  entry: PermissionMapping,
+): entry is PermissionInfo;
+
+// @public (undocumented)
 export function isResourcedPolicy(
   policy: PolicyDetails,
 ): policy is ResourcedPolicy;
@@ -59,6 +64,14 @@ export type PermissionInfo = {
   name: string;
   action: PermissionAction;
 };
+
+// @public (undocumented)
+export type PermissionMapping = PermissionAction | PermissionInfo;
+
+// @public (undocumented)
+export function permissionMappingAction(
+  entry: PermissionMapping,
+): PermissionAction;
 
 // @public (undocumented)
 export type PermissionPolicyMetadata = {
@@ -125,13 +138,11 @@ export type RoleBasedPolicy = Policy & {
   metadata?: PermissionPolicyMetadata;
 };
 
-// @public
-export type RoleConditionalPolicyDecision<
-  T extends PermissionAction | PermissionInfo,
-> = ConditionalPolicyDecision & {
+// @public (undocumented)
+export type RoleConditionalPolicyDecision = ConditionalPolicyDecision & {
   id: number;
   roleEntityRef: string;
-  permissionMapping: T[];
+  permissionMapping: PermissionMapping[];
 };
 
 // @public (undocumented)

@@ -9,7 +9,6 @@ import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { GroupEntity } from '@backstage/catalog-model';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { PathParams } from '@backstage/core-plugin-api';
-import { PermissionAction } from '@backstage-community/plugin-rbac-common';
 import { PluginPermissionMetaData } from '@backstage-community/plugin-rbac-common';
 import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
 import { RJSFSchema } from '@rjsf/utils';
@@ -77,7 +76,7 @@ export type RBACAPI = {
   ) => Promise<RoleError | Response>;
   getRoleConditions: (
     roleRef: string,
-  ) => Promise<RoleConditionalPolicyDecision<PermissionAction>[] | Response>;
+  ) => Promise<RoleConditionalPolicyDecision[] | Response>;
   updateConditionalPolicies: (
     conditionId: number,
     data: RoleBasedConditions,
@@ -107,10 +106,7 @@ export const rbacPlugin: BackstagePlugin<
 >;
 
 // @public (undocumented)
-export type RoleBasedConditions = Omit<
-  RoleConditionalPolicyDecision<PermissionAction>,
-  'id'
->;
+export type RoleBasedConditions = Omit<RoleConditionalPolicyDecision, 'id'>;
 
 // @public (undocumented)
 export type RoleError = {

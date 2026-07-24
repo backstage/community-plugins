@@ -15,7 +15,6 @@
  */
 
 import {
-  PermissionAction,
   PluginPermissionMetaData,
   Role,
   RoleBasedPolicy,
@@ -124,7 +123,7 @@ class MockRBACApi implements RBACAPI {
 
   async getRoleConditions(
     roleRef: string,
-  ): Promise<RoleConditionalPolicyDecision<PermissionAction>[] | Response> {
+  ): Promise<RoleConditionalPolicyDecision[] | Response> {
     return mockConditions.filter(mc => mc.roleEntityRef === roleRef);
   }
 

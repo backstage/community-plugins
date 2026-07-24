@@ -53,7 +53,6 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
-import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
 import {
@@ -105,13 +104,6 @@ const csvPermFile = resolve(
 );
 
 const mockClientKnex = Knex.knex({ client: MockClient });
-
-const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
-  {
-    getPluginConditionRules: jest.fn().mockImplementation(),
-    getPluginPolicies: jest.fn().mockImplementation(),
-    getMetadataByPluginId: jest.fn().mockImplementation(),
-  };
 
 const modifiedBy = 'user:default/some-admin';
 
@@ -1689,7 +1681,6 @@ describe('Policy checks for conditional policies', () => {
       enfDelegate,
       roleMetadataStorageMock,
       mockClientKnex,
-      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockUserInfoService,
       mockAuthService,
     );
@@ -2314,7 +2305,6 @@ async function newPermissionPolicy(
     enfDelegate,
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
-    pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockUserInfoService,
     mockAuthService,
   );
