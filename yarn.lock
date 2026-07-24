@@ -1659,7 +1659,7 @@ __metadata:
     eslint-plugin-notice: "npm:^0.9.10"
     eslint-plugin-react: "npm:^7.28.0"
     eslint-plugin-testing-library: "npm:^6.0.0"
-    fs-extra: "npm:11.3.5"
+    fs-extra: "npm:11.3.6"
     husky: "npm:^9.0.11"
     js-yaml: "npm:^4.2.0"
     lint-staged: "npm:^16.0.0"
@@ -10593,14 +10593,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:11.3.5, fs-extra@npm:^11.2.0":
-  version: 11.3.5
-  resolution: "fs-extra@npm:11.3.5"
+"fs-extra@npm:11.3.6, fs-extra@npm:^11.2.0":
+  version: 11.3.6
+  resolution: "fs-extra@npm:11.3.6"
   dependencies:
     graceful-fs: "npm:^4.2.0"
     jsonfile: "npm:^6.0.1"
     universalify: "npm:^2.0.0"
-  checksum: 10/dc8408818eec8b03efad8742d079ecab749a2f7bc9f208e429b447fcac7632fae52e09312d6d42218efe7e2efa97f03ff232d639ade4aa7fcd8c00ebe9ad0c0c
+  checksum: 10/34a981697b199002ea3b85c3483bcf353637d33ec4c922b136a8d8a597faa0495638d69b20c181448be041c31778c2bb7f7799d589819edf33da50f75b1abde9
   languageName: node
   linkType: hard
 
@@ -12795,18 +12795,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "js-yaml@npm:4.1.1"
-  dependencies:
-    argparse: "npm:^2.0.1"
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 10/a52d0519f0f4ef5b4adc1cde466cb54c50d56e2b4a983b9d5c9c0f2f99462047007a6274d7e95617a21d3c91fde3ee6115536ed70991cd645ba8521058b78f77
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.2.0":
+"js-yaml@npm:^4.1.0, js-yaml@npm:^4.2.0":
   version: 4.2.0
   resolution: "js-yaml@npm:4.2.0"
   dependencies:
