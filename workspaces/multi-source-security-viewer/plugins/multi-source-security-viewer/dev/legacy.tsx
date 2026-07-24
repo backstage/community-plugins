@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import ReactDOM from 'react-dom/client';
-
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
-import { createApp } from '@backstage/frontend-defaults';
+import { createDevApp } from '@backstage/dev-utils';
 import {
-  ApiBlueprint,
-  createFrontendModule,
-} from '@backstage/frontend-plugin-api';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
-import catalogPlugin from '@backstage/plugin-catalog/alpha';
-import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
-
-import mssvPlugin from '../src/plugin';
+  EntityMultiCIPipelinesContent,
+  multiSourceSecurityViewerPlugin,
+} from '../src/legacy';
+import { Header, Page, TabbedLayout } from '@backstage/core-components';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { mockEntity } from '../src/__fixtures__/entity';
 import { mssvJenkinsApiRef } from '../src/api/jenkins';
+import { mockPipelineRuns } from '../src/__fixtures__/pipelineruns';
+import { mockRawLogs } from '../src/__fixtures__/rawlogs';
+import { MssvApi, MssvApiResponse } from '../src/api/mssv';
+import { PipelineRunResult } from '../src/models/pipelineRunResult';
 import { mssvGithubActionsApiRef } from '../src/api/github';
 import { mssvGitlabCIApiRef } from '../src/api/gitlab';
 import { mssvAzureDevopsApiRef } from '../src/api/azure';
-import { MssvApi, MssvApiResponse } from '../src/api/mssv';
-import { PipelineRunResult } from '../src/models/pipelineRunResult';
-import { mockPipelineRuns } from '../src/__fixtures__/pipelineruns';
-import { mockRawLogs } from '../src/__fixtures__/rawlogs';
 
 class MockMssvJenkinsApiClient implements MssvApi {
   async getPipelineSummary(): Promise<MssvApiResponse> {
@@ -50,6 +45,7 @@ class MockMssvJenkinsApiClient implements MssvApi {
           logs: mockRawLogs,
         }),
     );
+
     return { results, totalCount: results.length };
   }
 
@@ -57,7 +53,6 @@ class MockMssvJenkinsApiClient implements MssvApi {
     return this.getPipelineSummary();
   }
 }
-
 class MockMssvGithubActionsApiClient implements MssvApi {
   async getPipelineSummary(): Promise<MssvApiResponse> {
     const results = mockPipelineRuns.map(
@@ -68,6 +63,7 @@ class MockMssvGithubActionsApiClient implements MssvApi {
           logs: mockRawLogs,
         }),
     );
+
     return { results, totalCount: results.length };
   }
 
@@ -86,6 +82,7 @@ class MockMssvGitlabCIApiClient implements MssvApi {
           logs: mockRawLogs,
         }),
     );
+
     return { results, totalCount: results.length };
   }
 
@@ -104,6 +101,7 @@ class MockMssvAzureDevopsClient implements MssvApi {
           logs: mockRawLogs,
         }),
     );
+
     return { results, totalCount: results.length };
   }
 
@@ -112,74 +110,32 @@ class MockMssvAzureDevopsClient implements MssvApi {
   }
 }
 
-const mssvDevModule = createFrontendModule({
-  pluginId: 'multi-source-security-viewer',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'mssv-jenkins-mock',
-      params: defineParams =>
-        defineParams({
-          api: mssvJenkinsApiRef,
-          deps: {},
-          factory: () => new MockMssvJenkinsApiClient(),
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'mssv-github-actions-mock',
-      params: defineParams =>
-        defineParams({
-          api: mssvGithubActionsApiRef,
-          deps: {},
-          factory: () => new MockMssvGithubActionsApiClient(),
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'mssv-gitlab-ci-mock',
-      params: defineParams =>
-        defineParams({
-          api: mssvGitlabCIApiRef,
-          deps: {},
-          factory: () => new MockMssvGitlabCIApiClient(),
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'mssv-azure-devops-mock',
-      params: defineParams =>
-        defineParams({
-          api: mssvAzureDevopsApiRef,
-          deps: {},
-          factory: () => new MockMssvAzureDevopsClient(),
-        }),
-    }),
-  ],
-});
-
-const catalogDevModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'catalog-mock',
-      params: defineParams =>
-        defineParams({
-          api: catalogApiRef,
-          deps: {},
-          factory: () =>
-            catalogApiMock({
-              entities: [mockEntity],
-            }),
-        }),
-    }),
-  ],
-});
-
-const app = createApp({
-  features: [
-    catalogPlugin,
-    userSettingsPlugin,
-    mssvPlugin,
-    mssvDevModule,
-    catalogDevModule,
-  ],
-});
-
-ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
+createDevApp()
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [mssvJenkinsApiRef, new MockMssvJenkinsApiClient()],
+          [mssvGithubActionsApiRef, new MockMssvGithubActionsApiClient()],
+          [mssvGitlabCIApiRef, new MockMssvGitlabCIApiClient()],
+          [mssvAzureDevopsApiRef, new MockMssvAzureDevopsClient()],
+          [permissionApiRef, mockApis.permission()],
+        ]}
+      >
+        <EntityProvider entity={mockEntity}>
+          <Page themeId="service">
+            <Header type="component — service" title="demo-service" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <EntityMultiCIPipelinesContent />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Multi Source Security Viewer',
+    path: '/mssv',
+  })
+  .registerPlugin(multiSourceSecurityViewerPlugin)
+  .render();
