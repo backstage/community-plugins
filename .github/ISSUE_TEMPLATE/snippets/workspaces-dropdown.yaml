@@ -57,6 +57,7 @@ attributes:
     - graphiql
     - graphql-voyager
     - growthbook-flags
+    - healert
     - ilert
     - jaeger
     - jenkins
