@@ -59,6 +59,7 @@ import {
   resolveConditionalPoliciesFileLimits,
   YamlConditionalPoliciesFileWatcher,
 } from '../file-permissions/yaml-conditional-file-watcher';
+import { readConditionalMetadataRetryOptionsFromConfig } from '../helper';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import {
@@ -165,6 +166,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       enforcerDelegate,
       resolvedConditionValidationLimits,
       conditionalFileLimits,
+      readConditionalMetadataRetryOptionsFromConfig(configApi),
     );
     await conditionalFile.initialize();
 

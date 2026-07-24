@@ -34,6 +34,7 @@ import {
   YamlConditionalPoliciesFileWatcher,
 } from './yaml-conditional-file-watcher';
 import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
+import type { ConditionalMetadataRetryOptions } from '../helper';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
 import {
@@ -273,6 +274,26 @@ describe('YamlConditionalFileWatcher', () => {
         maxBytes,
         maxDocuments,
       },
+    );
+  }
+
+  function createWatcherWithMetadataRetry(
+    filePath: string | undefined,
+    metadataRetry: Partial<ConditionalMetadataRetryOptions>,
+  ): YamlConditionalPoliciesFileWatcher {
+    return new YamlConditionalPoliciesFileWatcher(
+      filePath,
+      false,
+      mockLoggerService,
+      conditionalStorageMock as DataBaseConditionalStorage,
+      mockAuditorService,
+      mockAuthService,
+      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+      roleMetadataStorageMock,
+      roleEventEmitterMock,
+      DEFAULT_CONDITION_VALIDATION_LIMITS,
+      {},
+      metadataRetry,
     );
   }
 
@@ -767,7 +788,9 @@ describe('YamlConditionalFileWatcher', () => {
       '      - group:default/team-b',
     ].join('\n');
 
-    const watcher = createWatcher(csvFileName);
+    const watcher = createWatcherWithMetadataRetry(csvFileName, {
+      maxAttempts: 1,
+    });
     jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(updatedYaml);
     await watcher.onChange();
 
@@ -775,6 +798,85 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
     expect(conditionalStorageMock.updateCondition).not.toHaveBeenCalled();
     expect(mockLoggerService.error).toHaveBeenCalled();
+  });
+
+  describe('conditional metadata retry', () => {
+    let randomSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0);
+    });
+
+    afterEach(() => {
+      randomSpy.mockRestore();
+    });
+
+    it('throws InputError when maxAttempts is not a positive integer', () => {
+      expect(() =>
+        createWatcherWithMetadataRetry(csvFileName, { maxAttempts: 0 }),
+      ).toThrow(InputError);
+      expect(() =>
+        createWatcherWithMetadataRetry(csvFileName, { baseDelayMs: -1 }),
+      ).toThrow(
+        `'baseDelayMs' must be a positive integer for 'permission.rbac.conditionalMetadataRetry'`,
+      );
+    });
+
+    it('applies conditions after transient metadata failures during startup', async () => {
+      conditionalStorageMock.filterConditions = jest
+        .fn()
+        .mockImplementation(() => []);
+      roleMetadataStorageMock.filterRoleMetadata = jest
+        .fn()
+        .mockImplementation(() => csvFileRoles);
+      pluginMetadataCollectorMock.getMetadataByPluginId = jest
+        .fn()
+        .mockResolvedValueOnce(undefined)
+        .mockResolvedValue(testPluginMetadataResp);
+
+      const watcher = createWatcherWithMetadataRetry(csvFileName, {
+        maxAttempts: 3,
+        baseDelayMs: 1,
+        maxDelayMs: 2,
+      });
+      await watcher.initialize();
+
+      expect(
+        pluginMetadataCollectorMock.getMetadataByPluginId,
+      ).toHaveBeenCalledTimes(3);
+      expect(conditionalStorageMock.createCondition).toHaveBeenCalledTimes(2);
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /Unable to get permission list for plugin catalog, retrying in \d+ms \(attempt 1 of 3\)/,
+        ),
+      );
+    });
+
+    it('preserves stored conditions when metadata stays unavailable after retries', async () => {
+      conditionalStorageMock.filterConditions = jest
+        .fn()
+        .mockImplementation(() => [conditionToRemove]);
+      roleMetadataStorageMock.filterRoleMetadata = jest
+        .fn()
+        .mockImplementation(() => csvFileRoles);
+      pluginMetadataCollectorMock.getMetadataByPluginId = jest
+        .fn()
+        .mockResolvedValue(undefined);
+
+      const watcher = createWatcherWithMetadataRetry(csvFileName, {
+        maxAttempts: 2,
+        baseDelayMs: 1,
+        maxDelayMs: 2,
+      });
+      await watcher.initialize();
+
+      expect(
+        pluginMetadataCollectorMock.getMetadataByPluginId,
+      ).toHaveBeenCalledTimes(2);
+      expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
+      expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
+      expect(mockLoggerService.error).toHaveBeenCalled();
+    });
   });
 
   test('should merge sibling yaml conditions via update and delete', async () => {

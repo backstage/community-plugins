@@ -324,6 +324,32 @@ All values must be positive integers.
 
 If you already use very large conditional payloads or YAML files, raise these limits in config during upgrade rather than relying on defaults.
 
+### Retrying permission metadata reads during conditional policy reconciliation
+
+When conditional policies are applied from `conditionalPoliciesFile`, the RBAC backend reads the permission metadata of every target plugin (for example `catalog`) to map permission actions to permission names. On a fresh boot the permission metadata route of a target plugin can mount later than the RBAC plugin starts, which previously caused the reconciliation to abort until the next file reload or restart.
+
+The RBAC backend now retries these metadata reads with exponential backoff and jitter. The defaults allow roughly 4 minutes of total retry budget (12 attempts, starting at a 2 second delay and capped at 30 seconds per delay). If the metadata endpoint stays unavailable beyond that window, the reconciliation still aborts safely and preserves the stored conditions; it is applied on a later file reload or restart. Reads triggered through the REST API are not retried and keep failing fast.
+
+The retry behavior can be tuned:
+
+```YAML
+permission:
+  enabled: true
+  rbac:
+    conditionalMetadataRetry:
+      maxAttempts: 12
+      baseDelayMs: 2000
+      maxDelayMs: 30000
+```
+
+Field descriptions:
+
+- `permission.rbac.conditionalMetadataRetry.maxAttempts`: Maximum number of read attempts before the reconciliation aborts. Set to `1` to disable retries.
+- `permission.rbac.conditionalMetadataRetry.baseDelayMs`: Initial backoff delay in milliseconds, doubled on every attempt.
+- `permission.rbac.conditionalMetadataRetry.maxDelayMs`: Upper bound in milliseconds for a single backoff delay.
+
+All values must be positive integers.
+
 ### Configuring Database Storage for policies
 
 The RBAC plugin offers the option to store policies in a database. It supports two database storage options:
