@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
 import { createDevApp } from '@backstage/dev-utils';
@@ -124,7 +124,7 @@ createDevApp()
       >
         <EntityProvider entity={mockEntity}>
           <Page themeId="service">
-            <Header type="component — service" title="demo-sevice" />
+            <Header type="component — service" title="demo-service" />
             <TabbedLayout>
               <TabbedLayout.Route path="/" title="CI/CD">
                 <EntityMultiCIPipelinesContent />
