@@ -157,6 +157,9 @@ workspace/graphql-voyager:
 workspace/growthbook-flags:
   - "Workspace\\s*growthbook-flags"
 
+workspace/healert:
+  - "Workspace\\s*healert"
+
 workspace/ilert:
   - "Workspace\\s*ilert"
 
