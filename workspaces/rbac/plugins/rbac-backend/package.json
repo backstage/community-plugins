@@ -20,8 +20,9 @@
     ]
   },
   "scripts": {
-    "start": "backstage-cli package start",
-    "start:alpha": "backstage-cli package start",
+    "start": "backstage-cli package start --config app-config.yaml",
+    "start:keycloak": "docker run --rm --name keycloak-dev -p 8080:8080 -e 'KEYCLOAK_ADMIN=admin' -e 'KEYCLOAK_ADMIN_PASSWORD=admin' -v ./__fixtures__/keycloak/backstage-realm.json:/opt/keycloak/data/import/backstage-realm.json$([ $(uname -s) = 'Linux' ] && echo ':z') quay.io/keycloak/keycloak:22.0.1 start-dev --import-realm",
+    "start:multi-user": "backstage-cli package start --config app-config.yaml --config app-config.multi-user.yaml",
     "build": "backstage-cli package build",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
@@ -62,6 +63,7 @@
     "@backstage/core-plugin-api": "^1.12.7",
     "@backstage/plugin-auth-backend": "^0.29.1",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.20",
+    "@backstage/plugin-auth-backend-module-oidc-provider": "^0.4.17",
     "@backstage/plugin-catalog-backend": "^3.8.0",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.2.21",
     "@backstage/plugin-catalog-node": "^2.2.2",
