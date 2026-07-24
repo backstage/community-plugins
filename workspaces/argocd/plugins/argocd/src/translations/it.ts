@@ -155,6 +155,8 @@ const argocdTranslationIt = createTranslationMessages({
       'Ciclo di vita della distribuzione',
     'deploymentLifecycle.deploymentLifecycle.subtitle':
       'Esaminare i componenti/sistemi distribuiti nello spazio dei nomi utilizzando il plug-in ArgoCD',
+    'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD':
+      'Apri {{appName}} in ArgoCD',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'Istanza',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'Server',
     'deploymentLifecycle.deploymentLifecycleCard.namespace': 'Spazio dei nomi',

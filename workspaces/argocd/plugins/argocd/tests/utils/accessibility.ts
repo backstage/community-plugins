@@ -37,7 +37,7 @@ export async function runAccessibilityTests(
     });
   }
 
-  if (options?.skipViolationsAssert) {
+  if (!options?.skipViolationsAssert) {
     expect(
       accessibilityScanResults.violations,
       'Accessibility violations found',
