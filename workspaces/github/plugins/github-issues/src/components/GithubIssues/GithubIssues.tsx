@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useMemo } from 'react';
 import {
   Text,
   Flex,
@@ -22,8 +23,9 @@ import {
   Card,
   CardHeader,
   CardBody,
+  CardFooter,
 } from '@backstage/ui';
-import { RiRefreshLine } from '@remixicon/react';
+import { RiRefreshLine, RiErrorWarningLine } from '@remixicon/react';
 import { Progress } from '@backstage/core-components';
 import { useEntityGithubRepositories } from '../../hooks/useEntityGithubRepositories';
 import { useGetIssuesByRepoFromGithub } from '../../hooks/useGetIssuesByRepoFromGithub';
@@ -58,6 +60,24 @@ export const GithubIssues = (props: GithubIssuesProps) => {
     orderBy,
   });
 
+  // Number of issues GitHub reported (via `totalCount`) but did not return.
+  // This happens when a batched query only partially succeeds — e.g. a
+  // `RESOURCE_LIMITS_EXCEEDED` response comes back with `null` issue nodes that
+  // are dropped downstream. `totalCount` counts every open issue, but we only
+  // request `itemsPerRepo` per repo, so the expected count is capped there;
+  // anything below that expectation is a genuinely missing (skipped) issue
+  // rather than one we simply never asked for.
+  const unloadedIssuesCount = useMemo(() => {
+    if (!issuesByRepository) {
+      return 0;
+    }
+
+    return Object.values(issuesByRepository).reduce((acc, { issues }) => {
+      const expected = Math.min(itemsPerRepo, issues.totalCount);
+      return acc + Math.max(0, expected - issues.edges.length);
+    }, 0);
+  }, [issuesByRepository, itemsPerRepo]);
+
   if (!repositories.length) {
     return <NoRepositoriesInfo />;
   }
@@ -85,6 +105,18 @@ export const GithubIssues = (props: GithubIssuesProps) => {
           itemsPerPage={itemsPerPage}
         />
       </CardBody>
+      {unloadedIssuesCount > 0 && (
+        <CardFooter>
+          <Flex align="center" gap="2">
+            <RiErrorWarningLine size={16} color="var(--bui-fg-warning)" />
+            <Text variant="body-small" color="warning">
+              {unloadedIssuesCount === 1
+                ? `1 issue couldn't be loaded and was skipped.`
+                : `${unloadedIssuesCount} issues couldn't be loaded and were skipped.`}
+            </Text>
+          </Flex>
+        </CardFooter>
+      )}
     </Card>
   );
 };

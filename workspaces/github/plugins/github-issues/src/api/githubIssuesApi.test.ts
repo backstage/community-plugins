@@ -56,7 +56,7 @@ function getFragment(
     '        totalCount\n' +
     '        edges {\n' +
     '          node {\n' +
-    '            assignees(first: 10) {\n' +
+    '            assignees(first: 1) {\n' +
     '              edges {\n' +
     '                node {\n' +
     '                  avatarUrl\n' +
@@ -72,9 +72,6 @@ function getFragment(
     '            }\n' +
     '            title\n' +
     '            url\n' +
-    '            participants {\n' +
-    '              totalCount\n' +
-    '            }\n' +
     '            updatedAt\n' +
     '            createdAt\n' +
     '            comments(last: 1) {\n' +
@@ -201,6 +198,69 @@ describe('githubIssuesApi', () => {
       );
     });
 
+    it('should split repositories into multiple queries to stay within GitHub resource limits', async () => {
+      const repos = Array.from({ length: 12 }, (_, i) =>
+        entityRepository(`mrwolny/repo-${i}`),
+      );
+
+      await api.fetchIssuesByRepoFromGithub(repos, 10, 'github.com');
+
+      // 12 repositories with a batch size of 5 => 3 GraphQL requests.
+      expect(mockGraphQLQuery).toHaveBeenCalledTimes(3);
+    });
+
+    it('should not exceed the concurrent request limit', async () => {
+      const flush = () => new Promise<void>(resolve => setTimeout(resolve, 0));
+      let inFlight = 0;
+      let maxInFlight = 0;
+      const resolvers: Array<() => void> = [];
+
+      try {
+        mockGraphQLQuery.mockImplementation(
+          () =>
+            new Promise(resolve => {
+              inFlight += 1;
+              maxInFlight = Math.max(maxInFlight, inFlight);
+              resolvers.push(() => {
+                inFlight -= 1;
+                resolve({});
+              });
+            }),
+        );
+
+        const repos = Array.from({ length: 30 }, (_, i) =>
+          entityRepository(`mrwolny/repo-${i}`),
+        );
+        // 30 repositories / 5 per query => 6 batches, at most 4 in flight.
+
+        const resultPromise = api.fetchIssuesByRepoFromGithub(
+          repos,
+          10,
+          'github.com',
+        );
+
+        await flush();
+        // Only the concurrency limit's worth of requests should have started.
+        expect(inFlight).toBe(4);
+
+        // Release requests one at a time; each frees a worker to start the
+        // next batch until all batches have run.
+        while (resolvers.length > 0) {
+          resolvers.shift()!();
+          await flush();
+        }
+
+        await resultPromise;
+
+        expect(maxInFlight).toBe(4);
+        expect(mockGraphQLQuery).toHaveBeenCalledTimes(6);
+      } finally {
+        // Restore the default implementation so it doesn't leak into other
+        // tests (the shared afterEach only clears calls, not implementations).
+        mockGraphQLQuery.mockImplementation(() => ({}));
+      }
+    });
+
     describe('filterBy', () => {
       const cases: [GithubIssuesFilters | undefined, string][] = [
         [{}, ''],
@@ -247,9 +307,6 @@ describe('githubIssuesApi', () => {
                     },
                     title: "It's the ISSUE!",
                     url: 'https://github.com/mrwolny/yo-yo/issues/1',
-                    participants: {
-                      totalCount: 1,
-                    },
                     updatedAt: '2022-07-04T18:47:33Z',
                     createdAt: '2022-06-23T18:14:26Z',
                     comments: {
@@ -311,9 +368,95 @@ describe('githubIssuesApi', () => {
                 },
                 title: "It's the ISSUE!",
                 url: 'https://github.com/mrwolny/yo-yo/issues/1',
-                participants: {
-                  totalCount: 1,
+                updatedAt: '2022-07-04T18:47:33Z',
+                createdAt: '2022-06-23T18:14:26Z',
+                comments: {
+                  totalCount: 4,
                 },
+              },
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  it('should drop null issue nodes returned in partial data (e.g. resource limits exceeded)', async () => {
+    mockGraphQLQuery.mockImplementationOnce(() =>
+      Promise.reject({
+        data: {
+          yoyo: {
+            issues: {
+              totalCount: 2,
+              edges: [
+                {
+                  node: {
+                    assignees: {
+                      edges: [],
+                    },
+                    author: {
+                      login: 'mrwolny',
+                    },
+                    repository: {
+                      nameWithOwner: 'mrwolny/yo-yo',
+                    },
+                    title: "It's the ISSUE!",
+                    url: 'https://github.com/mrwolny/yo-yo/issues/1',
+                    updatedAt: '2022-07-04T18:47:33Z',
+                    createdAt: '2022-06-23T18:14:26Z',
+                    comments: {
+                      totalCount: 4,
+                    },
+                  },
+                },
+                // GitHub returns `null` nodes for the issues it could not
+                // resolve within the query's resource budget.
+                { node: null },
+              ],
+            },
+          },
+        },
+        errors: [
+          {
+            type: 'MAX_NODE_LIMIT_EXCEEDED',
+            message: 'Resource limits for this query exceeded.',
+          },
+        ],
+      }),
+    );
+
+    const api = githubIssuesApi(
+      { getCredentials: jest.fn().mockResolvedValue({ token: mockToken }) },
+      {
+        getOptionalConfigArray: jest.fn(),
+      } as unknown as ConfigApi,
+      { post: jest.fn() } as unknown as ErrorApi,
+    );
+
+    const data = await api.fetchIssuesByRepoFromGithub(
+      [entityRepository('mrwolny/yo-yo')],
+      10,
+      'github.com',
+    );
+
+    expect(data).toEqual({
+      'mrwolny/yo-yo': {
+        issues: {
+          totalCount: 2,
+          edges: [
+            {
+              node: {
+                assignees: {
+                  edges: [],
+                },
+                author: {
+                  login: 'mrwolny',
+                },
+                repository: {
+                  nameWithOwner: 'mrwolny/yo-yo',
+                },
+                title: "It's the ISSUE!",
+                url: 'https://github.com/mrwolny/yo-yo/issues/1',
                 updatedAt: '2022-07-04T18:47:33Z',
                 createdAt: '2022-06-23T18:14:26Z',
                 comments: {
