@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-import { PageBlueprint } from '@backstage/frontend-plugin-api';
-import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
-import { rootRouteRef } from './routes';
+import rbacPlugin from '.';
 
-/**
- * @alpha
- */
-export const rbacPage = PageBlueprint.make({
-  params: {
-    path: '/rbac',
-    title: 'RBAC',
-    icon: <RbacIcon />,
-    routeRef: rootRouteRef,
-    loader: async () => import('../components/Router').then(m => <m.Router />),
-  },
+describe('RBAC plugin', () => {
+  describe('Plugin Structure', () => {
+    it('should have correct plugin metadata', () => {
+      expect(rbacPlugin.pluginId).toBe('rbac');
+      expect(rbacPlugin.routes.root).toBeDefined();
+    });
+
+    it('should export rbac page extension', () => {
+      expect(rbacPlugin.getExtension('page:rbac')).toBeDefined();
+    });
+  });
 });
-
-export default rbacPage;

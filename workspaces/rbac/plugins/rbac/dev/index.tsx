@@ -15,26 +15,33 @@
  */
 
 /**
- * Legacy dev mode for the RBAC plugin.
+ * New Frontend System dev mode for the RBAC plugin.
  */
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
+import { createApp } from '@backstage/frontend-defaults';
+import ReactDOM from 'react-dom/client';
 
-import { createDevApp } from '@backstage/dev-utils';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
 
-import { RbacPage, rbacPlugin } from '../src/plugin';
-import { rbacTranslations } from '../src/alpha/translations';
-import { devAppThemes } from './shared';
+import rbacPlugin, { rbacTranslationsModule } from '../src';
+import { devSidebarContent } from './shared';
 
-createDevApp()
-  .addThemes(devAppThemes)
-  .registerPlugin(rbacPlugin)
-  .addTranslationResource(rbacTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
-  .setDefaultLanguage('en')
-  .addPage({
-    element: <RbacPage />,
-    title: 'RBAC',
-    path: '/rbac',
-  })
-  .render();
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [devSidebarContent],
+});
+
+const defaultPage = '/rbac';
+
+const app = createApp({
+  features: [rbacPlugin, rbacTranslationsModule, devNavModule],
+});
+
+const root = app.createRoot();
+
+if (typeof window !== 'undefined' && window.location.pathname === '/') {
+  window.location.pathname = defaultPage;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);
