@@ -1,0 +1,14 @@
+@layer components {
+  .header {
+    padding: var(--bui-space-4) var(--bui-space-4) var(--bui-space-4) var(--bui-space-5);
+  }
+
+  .action {
+    margin: 0;
+  }
+
+  .lastAnalyzed {
+    color: var(--bui-fg-secondary);
+    padding: var(--bui-space-2) 0;
+  }
+}
