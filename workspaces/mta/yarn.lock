@@ -155,11 +155,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asyncapi/parser@npm:^3.1.0, @asyncapi/parser@npm:^3.3.0, @asyncapi/parser@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@asyncapi/parser@npm:3.4.0"
+"@asyncapi/parser@npm:^3.1.0, @asyncapi/parser@npm:^3.3.0, @asyncapi/parser@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "@asyncapi/parser@npm:3.6.0"
   dependencies:
-    "@asyncapi/specs": "npm:^6.8.0"
+    "@asyncapi/specs": "npm:^6.11.1"
     "@openapi-contrib/openapi-schema-to-json-schema": "npm:~3.2.0"
     "@stoplight/json": "npm:3.21.0"
     "@stoplight/json-ref-readers": "npm:^1.2.2"
@@ -175,21 +175,21 @@ __metadata:
     ajv-errors: "npm:^3.0.0"
     ajv-formats: "npm:^2.1.1"
     avsc: "npm:^5.7.5"
-    js-yaml: "npm:^4.1.0"
-    jsonpath-plus: "npm:^10.0.0"
+    js-yaml: "npm:^4.1.1"
+    jsonpath-plus: "npm:^10.0.7"
     node-fetch: "npm:2.6.7"
-  checksum: 10/67de9ca4a5257b9fb39e16349d9e3aa0f5d34b0343e5d9c0ea05f35171b604f356ab54ac769783caf580f5f3ef90914267aa60b17783ffbfa07af6af071f9f64
+  checksum: 10/adc0db543c72f5ddb674fe4f2bbc070de03dffb69749cff49bdfcb202959e089588edf4371733cd55de4194adc2b485dd1002ff37ca69065a484209e135d7f95
   languageName: node
   linkType: hard
 
-"@asyncapi/protobuf-schema-parser@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@asyncapi/protobuf-schema-parser@npm:3.4.0"
+"@asyncapi/protobuf-schema-parser@npm:3.7.0":
+  version: 3.7.0
+  resolution: "@asyncapi/protobuf-schema-parser@npm:3.7.0"
   dependencies:
-    "@asyncapi/parser": "npm:^3.4.0"
+    "@asyncapi/parser": "npm:^3.6.0"
     "@types/protocol-buffers-schema": "npm:^3.4.3"
     protobufjs: "npm:^7.4.0"
-  checksum: 10/e04ab346e0145d735a4d4238d7adc74ea469b588be10507363e6e216822b3501b786f2c33d0451ace20ac9e6dace411458b6b8045388bed0300278e7fa2e3822
+  checksum: 10/5915082414b4a7dfa338ce910ff9401013ff8f6379576140fa6dafa0a8509684de77ac1440c7a373447cf719474a8b34967021ad565da271a2b65e31dd57dfb7
   languageName: node
   linkType: hard
 
@@ -223,12 +223,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asyncapi/specs@npm:^6.8.0":
-  version: 6.8.0
-  resolution: "@asyncapi/specs@npm:6.8.0"
+"@asyncapi/specs@npm:^6.11.1":
+  version: 6.11.1
+  resolution: "@asyncapi/specs@npm:6.11.1"
   dependencies:
     "@types/json-schema": "npm:^7.0.11"
-  checksum: 10/4789e27ff134c0e426327873258da4c8b3ca4156136e698d21af5ca708adce9174ee8ceddaa36a85ed7a1ff6d7cc4bf7eaf88f0e66205f3440879d0297e76671
+  checksum: 10/51a9f8e61b85c519baee392641c83f021419f64c68e508732d6461c6b6a60d9891d84e53489a916ef0903a80dd736b0a0631bb97567488b7cc4383437806b84d
   languageName: node
   linkType: hard
 
@@ -6516,21 +6516,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsep-plugin/assignment@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@jsep-plugin/assignment@npm:1.2.1"
+"@jsep-plugin/assignment@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@jsep-plugin/assignment@npm:1.3.0"
   peerDependencies:
     jsep: ^0.4.0||^1.0.0
-  checksum: 10/d8db45f052fd95b33207ded7f49af9ae48ff5ce10cb898e28a6fca722863f4a3330892c3a2c355a1a8c94fd230eef3db9be0c45324cb526e5edff7085c1f7a37
+  checksum: 10/0c93b703d84af95b4be9fb6c23fbdbe7c7b6985b41c98fd10386cd54686ed1eb751cb39f5d54abcb621e4da2a0900a3b2a852e5bf7f2d322b756db3b22e42a45
   languageName: node
   linkType: hard
 
-"@jsep-plugin/regex@npm:^1.0.1, @jsep-plugin/regex@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@jsep-plugin/regex@npm:1.0.3"
+"@jsep-plugin/regex@npm:^1.0.1, @jsep-plugin/regex@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@jsep-plugin/regex@npm:1.0.4"
   peerDependencies:
     jsep: ^0.4.0||^1.0.0
-  checksum: 10/c08c7bd79a164995923ea799949b9f6b18dcf2bd314522ed0dcfc669fd249a06fea200606086c7d54b12d39ce3cfa61d910229e5184c667ead135f6da6997532
+  checksum: 10/0ea6ba81f03955972b762fd9fbc8e3fd7e1c1c12e52ce3d4366e23c0a63c8bff8528687b8b3d8f641cf9f626f8bf5a7841efcd31a2489fe967e1900e5738ee3a
   languageName: node
   linkType: hard
 
@@ -22390,7 +22390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:=4.1.1, js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0, js-yaml@npm:~4.1.0":
+"js-yaml@npm:=4.1.1, js-yaml@npm:~4.1.0":
   version: 4.1.1
   resolution: "js-yaml@npm:4.1.1"
   dependencies:
@@ -22410,6 +22410,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/9e22d80b4d0105b9899135365f746d47466ed53ef4223c529b3c0f7a39907743fdbd3c4379f94f1106f02755b5e90b2faaf84801a891135544e1ea475d1a1379
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0, js-yaml@npm:^4.1.1":
+  version: 4.3.0
+  resolution: "js-yaml@npm:4.3.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10/2bcec3a8118d7f744badeb04e14366578d234a736f353d41fe35d2305e4ce2409a8e041d277f07cd6bbc8aaa12128d650a68ce43247072519bede20962d2126f
   languageName: node
   linkType: hard
 
@@ -22453,10 +22464,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsep@npm:^1.1.2, jsep@npm:^1.2.0, jsep@npm:^1.3.9":
-  version: 1.3.9
-  resolution: "jsep@npm:1.3.9"
-  checksum: 10/c60d7064c3b5047f58345e65e7618bbaecf2f46338e56689244db057b0550bf8fb7c1457a7384dfd38aca9acde3ff851d062c3f182cc1fbc66c13cb2ca0b579d
+"jsep@npm:^1.1.2, jsep@npm:^1.2.0, jsep@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "jsep@npm:1.4.0"
+  checksum: 10/935824fe6ac28fcff3cd13878f508f99f6c13e7f0f53ec9fca0d3db465e6dd15f8af030bcdc75a38b07c78359c656647435923a26aceb91607027021f00c17f2
   languageName: node
   linkType: hard
 
@@ -22666,17 +22677,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonpath-plus@npm:^10.0.0":
-  version: 10.1.0
-  resolution: "jsonpath-plus@npm:10.1.0"
+"jsonpath-plus@npm:^10.0.7":
+  version: 10.4.0
+  resolution: "jsonpath-plus@npm:10.4.0"
   dependencies:
-    "@jsep-plugin/assignment": "npm:^1.2.1"
-    "@jsep-plugin/regex": "npm:^1.0.3"
-    jsep: "npm:^1.3.9"
+    "@jsep-plugin/assignment": "npm:^1.3.0"
+    "@jsep-plugin/regex": "npm:^1.0.4"
+    jsep: "npm:^1.4.0"
   bin:
     jsonpath: bin/jsonpath-cli.js
     jsonpath-plus: bin/jsonpath-cli.js
-  checksum: 10/d872af63b667c43e7563095b4c88f61be5b298c1ddc1d019b3684f0ba1addcba24857e78058b00c52511f52044e3dfea16f83869facfd6ced7430ebd6257f7ab
+  checksum: 10/0ff33c7eb6500d7c8d789ce15a63ac2c46cb01b855f1c53729ca9e3833e0253af70277fc1799ebfe0b3130ddc03c127562669b999729dd11f2621b81472248d4
   languageName: node
   linkType: hard
 
