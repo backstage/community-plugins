@@ -48,7 +48,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.2.19",
     "jest": "^30.0.0",
-    "jsdom": "^27.0.0",
+    "jsdom": "^29.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
