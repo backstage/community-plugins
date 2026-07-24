@@ -55,6 +55,7 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
       description: Backstage user or service token
   responses:
     ServerError:

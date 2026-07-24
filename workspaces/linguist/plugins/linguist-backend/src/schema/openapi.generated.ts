@@ -106,6 +106,7 @@ export const spec = {
       BearerAuth: {
         type: 'http',
         scheme: 'bearer',
+        bearerFormat: 'JWT',
         description: 'Backstage user or service token',
       },
     },
