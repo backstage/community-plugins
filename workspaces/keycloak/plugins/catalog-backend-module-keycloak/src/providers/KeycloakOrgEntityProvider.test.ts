@@ -46,6 +46,46 @@ const connection = {
   refresh: jest.fn(),
 } as unknown as EntityProviderConnection;
 
+const expectFullCatalogMutation = () => {
+  const applyMutation = connection.applyMutation as jest.Mock;
+
+  expect(applyMutation).toHaveBeenCalledTimes(1);
+
+  const [mutation] = applyMutation.mock.calls[0];
+  expect(mutation).toEqual(
+    expect.objectContaining({
+      type: 'full',
+      entities: expect.any(Array),
+    }),
+  );
+
+  const { entities } = mutation;
+  expect(entities.length).toBeGreaterThan(0);
+  expect(entities).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        locationKey: 'keycloak-org-provider:default',
+        entity: expect.objectContaining({
+          kind: 'User',
+          apiVersion: 'backstage.io/v1beta1',
+        }),
+      }),
+      expect.objectContaining({
+        locationKey: 'keycloak-org-provider:default',
+        entity: expect.objectContaining({
+          kind: 'Group',
+          apiVersion: 'backstage.io/v1beta1',
+        }),
+      }),
+    ]),
+  );
+
+  for (const { locationKey, entity } of entities) {
+    expect(locationKey).toBe('keycloak-org-provider:default');
+    expect(entity.metadata.annotations?.['keycloak.org/realm']).toBeDefined();
+  }
+};
+
 class SchedulerServiceTaskRunnerMock implements SchedulerServiceTaskRunner {
   private tasks: SchedulerServiceTaskInvocationDefinition[] = [];
   async run(task: SchedulerServiceTaskInvocationDefinition) {
@@ -122,6 +162,34 @@ describe.each([
     expect(result).toEqual([undefined]);
   });
 
+  it('throws InputError when scheduler is provided without per-provider schedule in config', () => {
+    expect(() =>
+      KeycloakOrgEntityProvider.fromConfig(
+        {
+          config: mockServices.rootConfig({ data: CONFIG }),
+          logger,
+        },
+        {
+          scheduler: mockServices.scheduler.mock(),
+        },
+      ),
+    ).toThrow(
+      'No schedule provided via config for KeycloakOrgEntityProvider:default.',
+    );
+  });
+
+  it('commits a full catalog mutation with ingested users and groups during read()', async () => {
+    const keycloak = createProvider(PASSWORD_CONFIG);
+
+    for await (const provider of keycloak) {
+      await provider.connect(connection);
+      await provider.read({ taskInstanceId: 'read-mutation-test' });
+    }
+
+    expect(authMock).toHaveBeenCalled();
+    expectFullCatalogMutation();
+  });
+
   it('should not read without a connection', async () => {
     const keycloak = createProvider(CONFIG);
 
@@ -176,7 +244,7 @@ describe.each([
       clientId: 'myclientid',
       clientSecret: 'myclientsecret',
     });
-    expect(connection.applyMutation).toHaveBeenCalledTimes(1);
+    expectFullCatalogMutation();
     expect(
       (connection.applyMutation as jest.Mock).mock.calls,
     ).toMatchSnapshot();
@@ -213,6 +281,7 @@ describe.each([
       password: 'mypassword', // NOSONAR
     });
     expect(connection.applyMutation).toHaveBeenCalled();
+    expectFullCatalogMutation();
     expect(
       (connection.applyMutation as jest.Mock).mock.calls,
     ).toMatchSnapshot();
