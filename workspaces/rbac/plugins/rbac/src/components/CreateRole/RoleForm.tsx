@@ -362,13 +362,17 @@ export const RoleForm = ({
             <Alert severity="error">{`${formik.status.submitError}`}</Alert>
           </Box>
         )}
-        <Button
-          style={{ position: 'absolute', right: '2.75rem', bottom: '2.75rem' }}
-          onClick={() => setOpenCancelDialog(true)}
-          color="primary"
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'row-reverse',
+            marginTop: '1rem',
+          }}
         >
-          {t('roleForm.steps.cancel')}
-        </Button>
+          <Button onClick={() => setOpenCancelDialog(true)} color="primary">
+            {t('roleForm.steps.cancel')}
+          </Button>
+        </Box>
       </CardContent>
       <CancelDialog
         open={openCancelDialog}
