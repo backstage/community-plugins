@@ -37,9 +37,11 @@ export const spec = {
       url: '/',
     },
   ],
+  security: [{ BearerAuth: [] }],
   paths: {
     '/health': {
       get: {
+        security: [],
         description: 'Checks if the linguist backend is hooked up properly',
         responses: {
           '200': {
@@ -100,6 +102,14 @@ export const spec = {
     headers: {},
     parameters: {},
     requestBodies: {},
+    securitySchemes: {
+      BearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Backstage user or service token',
+      },
+    },
     responses: {
       ServerError: {
         description: 'Error',
