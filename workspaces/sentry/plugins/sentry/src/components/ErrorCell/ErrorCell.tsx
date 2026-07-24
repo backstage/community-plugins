@@ -38,7 +38,7 @@ export const ErrorCell = ({ sentryIssue }: { sentryIssue: SentryIssue }) => {
           {stripText(issueType, 28)}
         </Text>
       </Link>
-      <Text variant="body-small" className={styles.text}>
+      <Text variant="body-small">
         {sentryIssue.metadata.value &&
           stripText(sentryIssue.metadata.value, 48)}
       </Text>

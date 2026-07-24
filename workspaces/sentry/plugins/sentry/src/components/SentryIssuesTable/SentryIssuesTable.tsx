@@ -66,7 +66,7 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
   const paginatedIssues = filteredIssues.slice(startIndex, endIndex);
 
   return (
-    <div>
+    <div className={styles.tableContainer}>
       <div className={styles.tableHeader}>
         <div className={styles.headerTitle}>Sentry Issues</div>
         <div className={styles.filterControl}>

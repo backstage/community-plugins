@@ -1,4 +1,10 @@
 @layer components {
+  .tableContainer{
+    background-color: var(--bui-bg-neutral-1);
+    border-radius: var(--bui-radius-2);
+    box-shadow: var(--bui-shadow);
+  }
+
   .tableHeader {
     display: flex;
     align-items: center;
@@ -6,6 +12,7 @@
     width: 100%;
     margin-bottom: var(--bui-space-4);
     flex-wrap: wrap;
+    padding: var(--bui-space-2);
   }
 
   .headerTitle {
@@ -20,7 +27,7 @@
   }
 
   .selectInput {
-    min-width: 200px;
+    min-width: 90px;
     padding: var(--bui-space-2) var(--bui-space-3);
     border: 2px solid var(--bui-border-2);
     border-radius: 8px;
@@ -92,16 +99,14 @@
   .table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--bui-bg-neutral-1);
-    border: 1px solid var(--bui-border);
-    border-radius: var(--bui-radius-2);
     overflow: hidden;
-    box-shadow: var(--bui-shadow);
   }
 
   .thead {
-    background-color: var(--bui-wh);
+    background-color: var(--bui-white);
     border-bottom: 1px solid var(--bui-border-2);
+    border-top: 1px solid var(--bui-border-2);
+
   }
 
   .th {
