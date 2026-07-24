@@ -2,7 +2,7 @@
   "name": "@internal/checkmarx",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.17.1",
   "engines": {
     "node": "22 || 24"
   },
