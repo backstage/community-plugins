@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { unsafeScriptUrl } from '../test-utils/unsafeScriptUrl';
 import {
   getCheDecoratorData,
   getEditURL,
@@ -114,5 +115,22 @@ describe('getEditURL', () => {
     expect(result).toBe(
       'https://che.example.com/f?url=https://github.com/user/repo/tree/branch&policies.create=peruser',
     );
+  });
+
+  it('should return null for unsafe or invalid vcsURI schemes', () => {
+    expect(getEditURL(unsafeScriptUrl())).toBeNull();
+    expect(getEditURL('file:///etc/passwd')).toBeNull();
+    expect(getEditURL('not a URL')).toBeNull();
+  });
+
+  it('should accept SCP-like git URLs', () => {
+    const result = getEditURL('git@github.com:user/repo.git');
+    expect(result).toBe('https://github.com/user/repo');
+  });
+
+  it('should ignore invalid cheURL schemes and return the git URL', () => {
+    const vcsURI = 'https://github.com/user/repo';
+    const result = getEditURL(vcsURI, undefined, unsafeScriptUrl());
+    expect(result).toBe('https://github.com/user/repo');
   });
 });

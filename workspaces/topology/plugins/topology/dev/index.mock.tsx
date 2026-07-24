@@ -24,13 +24,12 @@ import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
-import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
 import { TopologyPage, topologyPlugin } from '../src/plugin';
 import { topologyTranslations } from '../src/translations';
 import {
   mockEntity,
   mockKubernetesAuthProviderApi,
-  MockKubernetesClient,
+  mockKubernetesClient,
   permissionDeniedMockEntity,
 } from './mocks';
 
@@ -43,7 +42,7 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [kubernetesApiRef, new MockKubernetesClient(mockKubernetesResponse)],
+          [kubernetesApiRef, mockKubernetesClient],
           [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
           [permissionApiRef, mockApis.permission()],
         ]}
@@ -70,7 +69,7 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [kubernetesApiRef, new MockKubernetesClient(mockKubernetesResponse)],
+          [kubernetesApiRef, mockKubernetesClient],
           [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
           [
             permissionApiRef,

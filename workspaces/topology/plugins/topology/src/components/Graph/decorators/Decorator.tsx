@@ -17,6 +17,8 @@ import { Link } from 'react-router-dom';
 
 import { Decorator as PfDecorator } from '@patternfly/react-topology';
 
+import { isValidHttpUrl } from '../../../utils/url-utils';
+
 import './Decorator.css';
 
 type DecoratorTypes = {
@@ -44,21 +46,28 @@ const Decorator = ({
   );
 
   if (href) {
-    return external ? (
-      <a
-        className="bs-topology-decorator__link"
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={e => {
-          e.stopPropagation();
-        }}
-        role="button"
-        aria-label={ariaLabel}
-      >
-        {decorator}
-      </a>
-    ) : (
+    if (external) {
+      // Only render clickable external links for validated HTTP(S) URLs
+      if (!isValidHttpUrl(href)) {
+        return decorator;
+      }
+      return (
+        <a
+          className="bs-topology-decorator__link"
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={e => {
+            e.stopPropagation();
+          }}
+          role="button"
+          aria-label={ariaLabel}
+        >
+          {decorator}
+        </a>
+      );
+    }
+    return (
       <Link
         className="bs-topology-decorator__link"
         to={href}

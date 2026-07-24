@@ -24,6 +24,7 @@ import {
   getCheDecoratorData,
   getEditURL,
 } from '../../../utils/edit-decorator-utils';
+import { isValidHttpUrl } from '../../../utils/url-utils';
 import RouteDecoratorIcon from '../../Icons/RouteDecoratorIcon';
 import Decorator from './Decorator';
 
@@ -44,8 +45,17 @@ const EditDecorator: FC<DefaultDecoratorProps> = ({
   const { editURL, vcsURI, vcsRef, cheCluster } = workloadData;
   const cheURL = getCheDecoratorData(cheCluster);
   const cheEnabled = !!cheURL;
-  const editUrl = editURL || getEditURL(vcsURI, vcsRef, cheURL);
+  // Prefer annotation editURL only when it is a safe HTTP(S) URL
+  const editUrl =
+    (isValidHttpUrl(editURL) ? editURL : undefined) ||
+    getEditURL(vcsURI, vcsRef, cheURL);
   const decoratorRef = useRef<SVGGElement | null>(null);
+
+  // No safe URL to open — do not render an edit decorator
+  if (!editUrl) {
+    return null;
+  }
+
   const repoIcon = (
     <RouteDecoratorIcon
       routeURL={editUrl}

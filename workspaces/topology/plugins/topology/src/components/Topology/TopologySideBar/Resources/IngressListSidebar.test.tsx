@@ -17,6 +17,7 @@ import { render } from '@testing-library/react';
 
 import { workloadNodeData } from '../../../../__fixtures__/workloadNodeData';
 import { mockUseTranslation } from '../../../../test-utils/mockTranslations';
+import { unsafeScriptUrl } from '../../../../test-utils/unsafeScriptUrl';
 import { IngressData } from '../../../../types/ingresses';
 import IngressListSidebar from './IngressListSidebar';
 
@@ -47,6 +48,23 @@ describe('IngressListSidebar', () => {
     );
     expect(queryByText(/hello-minikube2-ingress/i)).toBeInTheDocument();
     expect(queryByText(/rules:/i)).toBeInTheDocument();
+  });
+
+  it('should render invalid URL schemes as plaintext', () => {
+    const ingressesData = [
+      {
+        ingress: {
+          metadata: { uid: '1', name: 'bad-ingress' },
+          kind: 'Ingress',
+        },
+        url: unsafeScriptUrl(),
+      },
+    ] as IngressData[];
+    const { container, queryByRole } = render(
+      <IngressListSidebar ingressesData={ingressesData} />,
+    );
+    expect(container).toHaveTextContent(unsafeScriptUrl());
+    expect(queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('should not render ingress and show empty state if does not exists', () => {
