@@ -30,6 +30,13 @@
       "@backstage-community/plugin-nexus-repository-manager"
     ]
   },
+  "scalprum": {
+    "name": "backstage-community.plugin-nexus-repository-manager",
+    "exposedModules": {
+      "PluginRoot": "./src/index.ts",
+      "Alpha": "./src/alpha/index.ts"
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "build": "backstage-cli package build",
