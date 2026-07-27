@@ -749,7 +749,7 @@ __metadata:
     "@backstage/core-components": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
-    "@material-ui/core": "npm:^4.12.2"
+    "@backstage/ui": "backstage:^"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@types/react": "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     "@types/react-dom": "npm:^18.2.19"
@@ -1849,7 +1849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.17.0":
+"@backstage/ui@backstage:^::backstage=1.53.0&npm=0.17.0, @backstage/ui@npm:^0.17.0":
   version: 0.17.0
   resolution: "@backstage/ui@npm:0.17.0"
   dependencies:
