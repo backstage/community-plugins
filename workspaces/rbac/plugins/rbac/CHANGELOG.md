@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.55.3
+
+### Patch Changes
+
+- b1d36eb: Fixed nested interactive controls accessibility violations (WCAG 4.1.2) in RBAC tables
+
 ## 1.55.2
 
 ### Patch Changes
