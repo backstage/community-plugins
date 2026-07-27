@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  argocdPlugin,
-  ArgocdDeploymentLifecycle,
-  ArgocdDeploymentSummary,
-} from './plugin';
-export { isArgocdConfigured } from './utils/isArgocdConfigured';
+
+// Old frontend system support
+export * from './legacy';
+
+export { default } from './plugin';
+
 export type { DeploymentSummaryProps } from './components/DeploymentSummary/DeploymentSummary';
 export type { DeploymentLifecycleProps } from './components/DeploymentLifeCycle/DeploymentLifecycle';
