@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
-import { Tabs, TabList, Tab } from '@backstage/ui';
+import { Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
 import { ApolloExplorer } from '@apollo/explorer/react';
 import { Content } from '@backstage/core-components';
 import { HandleRequest } from '@apollo/explorer/src/helpers/postMessageRelayHelpers';
@@ -47,8 +46,6 @@ export const handleAuthRequest = ({
 };
 
 export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
-  const [tabIndex, setTabIndex] = useState(0);
-
   const apiHolder = useApiHolder();
 
   const getAuthCallback = (index: number) => {
@@ -59,10 +56,7 @@ export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
 
   return (
     <div className={styles.root}>
-      <Tabs
-        selectedKey={String(tabIndex)}
-        onSelectionChange={key => setTabIndex(Number(key))}
-      >
+      <Tabs defaultSelectedKey="0">
         <TabList className={styles.tabs}>
           {endpoints.map(({ title }, index) => (
             <Tab key={index} id={String(index)}>
@@ -70,19 +64,22 @@ export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
             </Tab>
           ))}
         </TabList>
+        {endpoints.map((endpoint, index) => (
+          <TabPanel key={index} id={String(index)}>
+            <Content className={styles.content}>
+              <ApolloExplorer
+                className={styles.explorer}
+                graphRef={endpoint.graphRef}
+                handleRequest={handleAuthRequest({
+                  authCallback: getAuthCallback(index),
+                })}
+                persistExplorerState={endpoint.persistExplorerState}
+                initialState={endpoint.initialState}
+              />
+            </Content>
+          </TabPanel>
+        ))}
       </Tabs>
-      <hr className={styles.divider} />
-      <Content className={styles.content}>
-        <ApolloExplorer
-          className={styles.explorer}
-          graphRef={endpoints[tabIndex].graphRef}
-          handleRequest={handleAuthRequest({
-            authCallback: getAuthCallback(tabIndex),
-          })}
-          persistExplorerState={endpoints[tabIndex].persistExplorerState}
-          initialState={endpoints[tabIndex].initialState}
-        />
-      </Content>
     </div>
   );
 };

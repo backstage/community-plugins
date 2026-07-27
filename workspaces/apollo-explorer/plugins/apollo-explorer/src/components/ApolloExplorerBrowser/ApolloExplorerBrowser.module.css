@@ -23,12 +23,6 @@
     background-color: var(--bui-bg-surface-1);
   }
 
-  .divider {
-    border: none;
-    border-top: 1px solid var(--bui-border);
-    margin: 0;
-  }
-
   .content {
     height: 100%;
   }
