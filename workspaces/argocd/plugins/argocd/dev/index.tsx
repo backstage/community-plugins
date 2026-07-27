@@ -27,6 +27,8 @@ import {
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 
 import {
@@ -34,8 +36,6 @@ import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 
 import { mockArgoResources } from './__data__/argoRolloutsObjects';
 import { customResourceTypes } from '../src/types/resources';
@@ -59,6 +59,7 @@ import {
 } from '@backstage-community/plugin-argocd-common';
 import {
   mockArgocdConfig,
+  mockArgocdMultiInstanceConfig,
   mockEntity,
   mockIdRevisions,
   DEV_INSTANCE_APPLICATIONS,
@@ -191,7 +192,23 @@ class MockArgoCDApiClient implements ArgoCDApi {
   }
 }
 
-const configApi = new ConfigReader(mockArgocdConfig);
+const combinedArgocdConfig = {
+  argocd: {
+    ...mockArgocdConfig.argocd,
+    appLocatorMethods: [
+      {
+        type: 'config',
+        instances: [
+          ...mockArgocdConfig.argocd.appLocatorMethods[0].instances,
+          ...mockArgocdMultiInstanceConfig.argocd.appLocatorMethods[0]
+            .instances,
+        ],
+      },
+    ],
+  },
+};
+
+const configApi = new ConfigReader(combinedArgocdConfig);
 const mockArgoCDApi = new MockArgoCDApiClient();
 
 const argocdDevModule = createFrontendModule({
