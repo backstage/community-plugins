@@ -20,13 +20,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.ts",
+    "./legacy": "./src/legacy.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "alpha": [
-        "src/alpha.ts"
+      "legacy": [
+        "src/legacy.ts"
       ],
       "package.json": [
         "package.json"
@@ -41,6 +41,7 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc",
     "ui-test": "yarn playwright test"
@@ -66,6 +67,7 @@
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
@@ -79,6 +81,8 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/pluralize": "^0.0.33",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^18",
     "react-router-dom": "^6.3.0"
@@ -91,8 +95,7 @@
   "scalprum": {
     "name": "backstage-community.plugin-argocd",
     "exposedModules": {
-      "PluginRoot": "./src/index.ts",
-      "Alpha": "./src/alpha.ts"
+      "PluginRoot": "./src/index.ts"
     }
   },
   "configSchema": "config.d.ts",
