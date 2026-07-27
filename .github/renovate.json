@@ -47,6 +47,10 @@
     {
       "matchPackageNames": ["yn"],
       "allowedVersions": "<5.0.0"
+    },
+    {
+      "matchPackageNames": ["react-router", "react-router-dom"],
+      "allowedVersions": "<7.0.0"
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"],
