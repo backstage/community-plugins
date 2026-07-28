@@ -28,5 +28,9 @@ export type {
   StarredRatingButtonsProps,
   StarredRatingsTableProps,
 } from './components';
+export {
+  LikeDislikeFeedbackRatings,
+  StarredFeedbackRatings,
+} from './components';
 export * from './plugin';
 export * from './api';
