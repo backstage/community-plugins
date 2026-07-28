@@ -1,5 +1,16 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.2.0
+
+### Minor Changes
+
+- 59725e0: Registered Model Context Protocol (MCP) actions (`list-feedbacks`, `get-feedback`, `create-feedback`, `update-feedback`, `delete-feedback`) with respective state attributes (`idempotent`, `readOnly`, `destructive`) for granular tooling safety. Secured router endpoints using Backstage permissions.
+
+### Patch Changes
+
+- Updated dependencies [59725e0]
+  - @backstage-community/plugin-feedback-common@1.0.0
+
 ## 2.1.8
 
 ### Patch Changes
