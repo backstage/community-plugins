@@ -39,8 +39,7 @@
   .button:active {
     color: #3b2492;
     background-color: #b2a6e3;
-    box-shadow:
-      rgb(59, 36, 146) 0px 0px 0px 1px inset,
+    box-shadow: rgb(59, 36, 146) 0px 0px 0px 1px inset,
       rgb(141, 134, 188) 3px 3px 0px 0px inset;
   }
 
