@@ -47,6 +47,12 @@
     {
       "matchPackageNames": ["yn"],
       "allowedVersions": "<5.0.0"
+    },
+    {
+      "description": "akeyless: @types/node >=22.10.9 conflicts with @types/webpack-env during tsc:full",
+      "matchPackageNames": ["@types/node"],
+      "matchFileNames": ["workspaces/akeyless/**"],
+      "allowedVersions": "<=22.10.8"
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"],
