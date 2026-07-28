@@ -50,7 +50,7 @@
     "@backstage/cli": "^0.36.2",
     "@backstage/dev-utils": "^1.1.23",
     "@backstage/test-utils": "^1.7.18",
-    "@testing-library/react": "^12.1.5",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
