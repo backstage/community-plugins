@@ -24,6 +24,8 @@ import type { KeycloakProviderConfig } from './config';
 
 const logger = mockServices.logger.mock();
 
+const BASE_TIME = new Date('2026-01-01T00:00:00Z').getTime();
+
 function createMockKcClient(
   overrides: Partial<KeycloakAdminClient> = {},
 ): KeycloakAdminClient {
@@ -48,14 +50,11 @@ const clientCredProvider: KeycloakProviderConfig = {
   clientSecret: 'secret',
 } as KeycloakProviderConfig;
 
-function createExpiredToken(expiresInMs: number = -60000): string {
-  const exp = Math.floor((Date.now() + expiresInMs) / 1000);
-  return jwt.sign({ exp, sub: 'test' }, 'test-secret');
-}
-
-function createValidToken(expiresInMs: number = 3600000): string {
-  const exp = Math.floor((Date.now() + expiresInMs) / 1000);
-  return jwt.sign({ exp, sub: 'test' }, 'test-secret');
+function createTokenWithExp(expMs: number): string {
+  return jwt.sign(
+    { exp: Math.floor(expMs / 1000), sub: 'test' },
+    'test-secret',
+  );
 }
 
 describe('authenticate', () => {
@@ -99,6 +98,15 @@ describe('authenticate', () => {
 });
 
 describe('ensureTokenValid', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(BASE_TIME);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('authenticates when no access token is present', async () => {
     const kc = createMockKcClient();
     await ensureTokenValid(kc, passwordProvider, logger);
@@ -108,25 +116,34 @@ describe('ensureTokenValid', () => {
 
   it('does not re-authenticate when token is still valid', async () => {
     const kc = createMockKcClient({
-      accessToken: createValidToken(),
+      accessToken: createTokenWithExp(BASE_TIME + 3_600_000),
     });
     await ensureTokenValid(kc, passwordProvider, logger);
 
     expect(kc.auth).not.toHaveBeenCalled();
   });
 
-  it('refreshes when token is near expiry', async () => {
+  it('refreshes when token is near expiry (within 30s window)', async () => {
     const kc = createMockKcClient({
-      accessToken: createExpiredToken(),
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
     });
     await ensureTokenValid(kc, passwordProvider, logger);
 
     expect(kc.auth).toHaveBeenCalledTimes(1);
   });
 
-  it('does not trigger multiple refreshes when called concurrently with a near-expiry token', async () => {
+  it('refreshes when token is already expired', async () => {
     const kc = createMockKcClient({
-      accessToken: createExpiredToken(),
+      accessToken: createTokenWithExp(BASE_TIME - 60_000),
+    });
+    await ensureTokenValid(kc, passwordProvider, logger);
+
+    expect(kc.auth).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not trigger multiple refreshes when called concurrently', async () => {
+    const kc = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
     });
 
     await Promise.all([
@@ -136,5 +153,22 @@ describe('ensureTokenValid', () => {
     ]);
 
     expect(kc.auth).toHaveBeenCalledTimes(1);
+  });
+
+  it('refreshes independently for different clients', async () => {
+    const clientA = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
+    });
+    const clientB = createMockKcClient({
+      accessToken: createTokenWithExp(BASE_TIME + 15_000),
+    });
+
+    await Promise.all([
+      ensureTokenValid(clientA, passwordProvider, logger),
+      ensureTokenValid(clientB, passwordProvider, logger),
+    ]);
+
+    expect(clientA.auth).toHaveBeenCalledTimes(1);
+    expect(clientB.auth).toHaveBeenCalledTimes(1);
   });
 });
