@@ -102,4 +102,30 @@ export class Common {
       await this.page.getByRole('menuitem', { name: localeString }).click();
     }
   }
+
+  async openRbacPage(title: string) {
+    await this.page
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: 'RBAC' })
+      .click();
+    await expect(
+      this.page.getByRole('progressbar', { name: 'Loading' }),
+    ).toBeHidden({ timeout: 60_000 });
+    await this.verifyHeading(title);
+  }
+}
+
+/** Wait until the rbac-backend HTTP server is accepting requests. */
+export async function waitForRbacBackend(page: Page) {
+  await expect
+    .poll(
+      async () => {
+        const response = await page.request.get(
+          'http://localhost:7007/api/auth/.well-known/jwks.json',
+        );
+        return response.ok();
+      },
+      { timeout: 120_000 },
+    )
+    .toBe(true);
 }
