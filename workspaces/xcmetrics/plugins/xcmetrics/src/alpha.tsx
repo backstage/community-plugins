@@ -35,7 +35,7 @@ const xcmetricsPage = PageBlueprint.make({
     path: '/xcmetrics',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     title: 'XCMetrics',
-    icon: <AssessmentIcon />,
+    icon: <AssessmentIcon fontSize="inherit" />,
     loader: () =>
       import('./components/XcmetricsLayout').then(m =>
         compatWrapper(<m.XcmetricsLayout />),
