@@ -57,8 +57,8 @@
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
-    "ui-test": "start-server-and-test start:mock localhost:3000 'playwright test -c ../../playwright.config.ts'",
-    "ui-test:legacy": "start-server-and-test start:legacy:mock localhost:3000 'APP_MODE=legacy playwright test -c ../../playwright.config.ts'"
+    "ui-test": "start-server-and-test start:mock localhost:3000 'APP_MODE=legacy playwright test -c ../../playwright.mock.config.ts'",
+    "ui-test:alpha": "start-server-and-test start:alpha:mock localhost:3000 'APP_MODE=alpha playwright test -c ../../playwright.mock.config.ts'"
   },
   "dependencies": {
     "@backstage-community/plugin-rbac-common": "workspace:^",
