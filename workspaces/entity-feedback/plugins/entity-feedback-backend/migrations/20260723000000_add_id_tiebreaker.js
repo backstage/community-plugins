@@ -23,9 +23,11 @@
 // An auto-incrementing id gives those queries an unambiguous tie-breaker.
 //
 // SQLite cannot ALTER TABLE ADD an autoincrementing primary key column onto
-// an existing table, so on that dialect each table is rebuilt instead, with
-// existing rows re-inserted in their original (rowid) order so the newly
-// assigned ids preserve prior insertion order.
+// an existing table, and other dialects don't guarantee that backfilling an
+// auto-increment column onto existing rows assigns values in recency order
+// (e.g. MySQL may assign them in clustered-index order). So every dialect
+// rebuilds the table instead, re-inserting existing rows ordered by
+// `timestamp` so the newly assigned ids reflect recency.
 
 /**
  * @param { import("knex").Knex } knex
@@ -98,26 +100,18 @@ const TABLES = {
  * @param { { columns: string[], define: (knex: import("knex").Knex, table: import("knex").Knex.CreateTableBuilder) => void } } table
  */
 async function addIdColumn(knex, tableName, { columns, define }) {
-  if (knex.client.config.client.includes('sqlite')) {
-    const tmpTableName = `${tableName}_pre_id_migration`;
-    await knex.schema.renameTable(tableName, tmpTableName);
-    await knex.schema.createTable(tableName, table => {
-      table.increments('id').comment('Auto-incrementing id');
-      define(knex, table);
-    });
-    const columnList = columns.join(', ');
-    await knex.raw(
-      `insert into ?? (${columnList}) select ${columnList} from ?? order by rowid`,
-      [tableName, tmpTableName],
-    );
-    await knex.schema.dropTable(tmpTableName);
-  } else {
-    await knex.schema.alterTable(tableName, table => {
-      table
-        .increments('id', { primaryKey: false })
-        .comment('Auto-incrementing id');
-    });
-  }
+  const tmpTableName = `${tableName}_pre_id_migration`;
+  await knex.schema.renameTable(tableName, tmpTableName);
+  await knex.schema.createTable(tableName, table => {
+    table.increments('id').comment('Auto-incrementing id');
+    define(knex, table);
+  });
+  const columnList = columns.join(', ');
+  await knex.raw(
+    `insert into ?? (${columnList}) select ${columnList} from ?? order by timestamp`,
+    [tableName, tmpTableName],
+  );
+  await knex.schema.dropTable(tmpTableName);
 }
 
 /**
