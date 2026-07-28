@@ -25,7 +25,7 @@ export const entityGithubIssuesContent = EntityContentBlueprint.make({
   params: {
     path: 'github-issues',
     title: 'GitHub Issues',
-    filter: 'kind:component',
+    filter: { kind: 'component' },
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/GithubIssues').then(m => <m.GithubIssues />),
