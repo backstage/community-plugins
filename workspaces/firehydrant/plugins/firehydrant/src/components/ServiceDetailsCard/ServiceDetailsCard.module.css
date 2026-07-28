@@ -1,0 +1,112 @@
+/*
+ * Copyright 2021 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .button {
+    color: #3b2492;
+    display: grid;
+    grid-gap: 4px;
+    text-align: center;
+    justify-items: center;
+    width: 105px;
+    background-color: transparent;
+    border: 1px solid #3b2492;
+    border-radius: 5px;
+    padding: 8px 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button:hover,
+  .button:focus {
+    background-color: #f1edff;
+    color: #614ab6;
+  }
+
+  .button:active {
+    color: #3b2492;
+    background-color: #b2a6e3;
+    box-shadow:
+      rgb(59, 36, 146) 0px 0px 0px 1px inset,
+      rgb(141, 134, 188) 3px 3px 0px 0px inset;
+  }
+
+  .buttonLink {
+    background-color: #3b2492;
+    color: white;
+    text-decoration: none;
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bui-space-2);
+    font-size: 0.875rem;
+  }
+
+  .buttonLink:hover {
+    background-color: #614ab6;
+    color: white;
+  }
+
+  .buttonContainer {
+    display: grid;
+    grid-gap: 24px;
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+    margin-top: 10px;
+  }
+
+  .icon {
+    color: #f1642d;
+    display: flex;
+  }
+
+  .link {
+    text-decoration: underline;
+    font-size: 16px;
+    line-height: 27px;
+    color: #3b2492;
+  }
+
+  .link:hover,
+  .link:focus {
+    font-weight: 500;
+  }
+
+  .linksContainer {
+    border-bottom: 1px solid #d5d5d5;
+    padding: 10px 0px 10px 20px;
+    background-color: #f1edff;
+    margin-bottom: 20px;
+  }
+
+  .warning {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #f1edff;
+    color: #3b2492;
+  }
+
+  .headerRow {
+    border-bottom: 1px solid #d5d5d5;
+  }
+
+  .viewSection {
+    padding-left: 16px;
+    margin-top: 10px;
+  }
+}

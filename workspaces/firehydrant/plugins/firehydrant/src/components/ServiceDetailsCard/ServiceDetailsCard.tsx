@@ -16,15 +16,14 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { ServiceAnalytics } from '../ServiceAnalytics/ServiceAnalytics';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import NotesIcon from '@material-ui/icons/Notes';
-import WhatshotIcon from '@material-ui/icons/Whatshot';
-import WarningIcon from '@material-ui/icons/Warning';
-import AddIcon from '@material-ui/icons/Add';
+import { Flex, Text } from '@backstage/ui';
+import {
+  RiExternalLinkLine,
+  RiFileTextLine,
+  RiFireLine,
+  RiAlertLine,
+  RiAddLine,
+} from '@remixicon/react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Incident } from '../types';
 import { ServiceIncidentsResponse } from '../../api/types';
@@ -38,74 +37,7 @@ import {
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { isFireHydrantAvailable, getFireHydrantServiceName } from '../hooks';
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    color: '#3b2492',
-    display: 'grid',
-    gridGap: '4px',
-    textAlign: 'center',
-    justifyItems: 'center',
-    width: '105px',
-    backgroundColor: theme.palette.type === 'dark' ? '#f1edff' : '',
-    '&:hover, &:focus': {
-      backgroundColor: '#f1edff',
-      color: '#614ab6',
-    },
-    '&:active': {
-      color: '#3b2492',
-      backgroundColor: '#b2a6e3',
-      boxShadow:
-        'rgb(59, 36, 146) 0px 0px 0px 1px inset, rgb(141, 134, 188) 3px 3px 0px 0px inset;',
-    },
-    border: '1px solid #3b2492',
-    borderRadius: '5px',
-    padding: '8px 10px',
-    textTransform: 'none',
-  },
-  buttonLink: {
-    backgroundColor: '#3b2492',
-    color: theme.palette.common.white,
-    textTransform: 'none',
-    '&:hover': {
-      backgroundColor: '#614ab6',
-    },
-  },
-  buttonContainer: {
-    display: 'grid',
-    gridGap: '24px',
-    gridAutoFlow: 'column',
-    gridAutoColumns: 'min-content',
-  },
-  icon: {
-    color: '#f1642d',
-  },
-  link: {
-    textDecoration: 'underline',
-    fontSize: '16px',
-    lineHeight: '27px',
-    color: '#3b2492',
-    '&:hover, &:focus': {
-      fontWeight: '500',
-    },
-  },
-  linksContainer: {
-    borderBottom: '1px solid #d5d5d5',
-    padding: '10px 0px 10px 20px',
-    backgroundColor: '#f1edff',
-    marginBottom: '20px',
-  },
-  table: {
-    width: '100%',
-  },
-  warning: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '10px',
-    background: '#f1edff',
-    color: '#3b2492',
-  },
-}));
+import styles from './ServiceDetailsCard.module.css';
 
 const ServiceAnalyticsView = ({
   serviceId,
@@ -137,7 +69,6 @@ const ServiceAnalyticsView = ({
 
 export const ServiceDetailsCard = () => {
   const { entity } = useEntity();
-  const classes = useStyles();
   const [showServiceDetails, setShowServiceDetails] = useState(false);
   const configApi = useApi(configApiRef);
 
@@ -189,45 +120,37 @@ export const ServiceDetailsCard = () => {
   return (
     <InfoCard>
       {!showServiceDetails && !loading && (
-        <div className={classes.warning}>
-          <WarningIcon />
+        <div className={styles.warning}>
+          <RiAlertLine size={20} />
           &nbsp;&nbsp;
-          <Typography component="span">
-            This service does not exist in FireHydrant.
-          </Typography>
+          <Text as="span">This service does not exist in FireHydrant.</Text>
         </div>
       )}
       {showServiceDetails && (
-        <Box
-          alignItems="center"
-          display="flex"
-          justifyContent="space-between"
-          borderBottom="1px solid #d5d5d5"
-        >
-          <Box>
+        <Flex align="center" justify="between" className={styles.headerRow}>
+          <div>
             <h2>{headerText}</h2>
-          </Box>
-          <Box>
-            <Button
-              className={classes.buttonLink}
-              color="default"
+          </div>
+          <div>
+            <a
+              className={styles.buttonLink}
               href={serviceIncidentsLink}
-              startIcon={<ExitToAppIcon />}
               target="_blank"
-              variant="outlined"
+              rel="noopener noreferrer"
             >
+              <RiExternalLinkLine size={16} />
               View service incidents
-            </Button>
-          </Box>
-        </Box>
+            </a>
+          </div>
+        </Flex>
       )}
       {activeIncidents && activeIncidents?.length > 0 && (
-        <Box className={classes.linksContainer}>
+        <div className={styles.linksContainer}>
           {incidents &&
             incidents?.slice(0, 5).map((incident: Incident, index: number) => (
               <div key={index}>
                 <Link
-                  className={classes.link}
+                  className={styles.link}
                   to={incident.incident_url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -236,71 +159,56 @@ export const ServiceDetailsCard = () => {
                 </Link>
               </div>
             ))}
-        </Box>
+        </div>
       )}
-      <Box paddingLeft="16px" marginTop="10px">
-        <Typography variant="subtitle1">View in FireHydrant </Typography>
-        <Box className={classes.buttonContainer} marginTop="10px">
-          <Button
-            component={Link}
+      <div className={styles.viewSection}>
+        <Text variant="body-medium">View in FireHydrant </Text>
+        <div className={styles.buttonContainer}>
+          <a
+            className={styles.button}
+            href={`${BASE_URL}/incidents/new`}
             target="_blank"
-            rel="noopener"
-            className={classes.button}
-            to={`${BASE_URL}/incidents/new`}
+            rel="noopener noreferrer"
           >
-            <Box flexDirection="column">
-              <Box>
-                <AddIcon className={classes.icon} />
-              </Box>
-              <Box>
-                <Typography component="span">Declare an incident</Typography>
-              </Box>
-            </Box>
-          </Button>
-          <Button
-            component={Link}
+            <span className={styles.icon}>
+              <RiAddLine size={20} />
+            </span>
+            <span>Declare an incident</span>
+          </a>
+          <a
+            className={styles.button}
+            href={`${BASE_URL}/incidents`}
             target="_blank"
-            rel="noopener"
-            className={classes.button}
-            to={`${BASE_URL}/incidents`}
+            rel="noopener noreferrer"
           >
-            <Box flexDirection="column">
-              <Box>
-                <WhatshotIcon className={classes.icon} />
-              </Box>
-              <Box>
-                <Typography component="span">View all incidents</Typography>
-              </Box>
-            </Box>
-          </Button>
+            <span className={styles.icon}>
+              <RiFireLine size={20} />
+            </span>
+            <span>View all incidents</span>
+          </a>
           {showServiceDetails && (
-            <Button
-              component={Link}
+            <a
+              className={styles.button}
+              href={`${BASE_URL}/services/${value?.service?.id}`}
               target="_blank"
-              rel="noopener"
-              className={classes.button}
-              to={`${BASE_URL}/services/${value?.service?.id}`}
+              rel="noopener noreferrer"
             >
-              <Box flexDirection="column">
-                <Box>
-                  <NotesIcon className={classes.icon} />
-                </Box>
-                <Box>
-                  <Typography component="span">View Service Details</Typography>
-                </Box>
-              </Box>
-            </Button>
+              <span className={styles.icon}>
+                <RiFileTextLine size={20} />
+              </span>
+              <span>View Service Details</span>
+            </a>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
       {showServiceDetails && (
-        <Box>
+        <div>
           <ServiceAnalyticsView
             serviceId={serviceId}
             startDate={startDate}
             endDate={endDate}
           />
-        </Box>
+        </div>
       )}
     </InfoCard>
   );
