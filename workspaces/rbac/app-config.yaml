@@ -160,6 +160,7 @@ permission:
       - catalog
       - permission
       - scaffolder
+    policies-csv-file: ../rbac/tests/fixtures/rbac-policy.csv
     admin:
       users:
         - name: user:development/guest
