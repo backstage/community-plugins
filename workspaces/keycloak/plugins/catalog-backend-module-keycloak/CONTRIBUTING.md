@@ -18,6 +18,8 @@ yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start
 
 This imports [`backstage-community-realm`](./__fixtures__/keycloak-realm.json). The realm contains the `backstage` client, groups, and user profiles (for example `test` / `test`) that the catalog provider ingests as `User` and `Group` entities.
 
+> **Warning:** The realm fixture is intentionally insecure (SSL disabled, plaintext passwords, non-temporary credentials). It is strictly for local development and smoke testing — do not use it in any non-dev environment.
+
 ### Environment setup
 
 The dev [`app-config.yaml`](./app-config.yaml) uses `${ENV_VAR}` placeholders for credentials. You can provide them via environment variables or an untracked `app-config.local.yaml` file.
@@ -53,7 +55,7 @@ yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start
 
 This runs a minimal backend with `@backstage/plugin-catalog-backend` and the Keycloak entity provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`. Use it for ingestion, transformers, and Keycloak Admin API client work.
 
-On startup the log must include `Loading config from ... plugins/catalog-backend-module-keycloak/app-config.yaml` (the package `app-config.yaml` passed via `--config` in `package.json`, **not** the workspace root [`app-config.yaml`](../../app-config.yaml)). Also expect `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it or the harness may bind another port — use that port in smoke `curl` commands.
+On startup the log must include `Loading config from ... plugins/catalog-backend-module-keycloak/app-config.yaml` (the package `app-config.yaml` passed via `--config` in `package.json`, **not** the workspace root [`app-config.yaml`](../../app-config.yaml)). Also expect `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it first — the harness will fail with `EADDRINUSE` otherwise.
 
 Only one plugin `dev/` harness should run on port **7007** at a time.
 

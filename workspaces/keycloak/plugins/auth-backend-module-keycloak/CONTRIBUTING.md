@@ -6,7 +6,7 @@ Developer guide for `@backstage-community/plugin-auth-backend-module-keycloak-pr
 
 - Node.js **22 or 24** (see workspace `engines` in the workspace root `package.json`)
 - Yarn (this workspace uses its own `workspaces/keycloak/yarn.lock`; `yarn install` here also triggers a root install via `postinstall`)
-- **Docker** — local Keycloak for integration smoke (port **8080**)
+- **Docker** _(optional)_ — only needed for [OAuth redirect smoke](#oauth-redirect-smoke) with a local Keycloak (port **8080**)
 
 ## Development harness
 
@@ -17,6 +17,8 @@ yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start
 ```
 
 This imports [`backstage-community-realm`](../catalog-backend-module-keycloak/__fixtures__/keycloak-realm.json). The realm contains the `backstage` OAuth client and user `test` (`test@example.com`, password `test`).
+
+> **Warning:** The realm fixture is intentionally insecure (SSL disabled, plaintext passwords, non-temporary credentials). It is strictly for local development and smoke testing — do not use it in any non-dev environment.
 
 ### Environment setup
 
@@ -54,7 +56,7 @@ yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider
 
 This runs a minimal backend with `@backstage/plugin-auth-backend`, `@backstage/plugin-catalog-backend`, and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`. The dev config registers a catalog `User` entity named `test` (from [`dev/catalog/users.yaml`](./dev/catalog/users.yaml)) so `preferredUsernameMatchingUserEntityName` can resolve during OAuth sign-in.
 
-On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it or the harness may bind another port — use that port in smoke commands.
+On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it first — the harness will fail with `EADDRINUSE` otherwise.
 
 Only one plugin `dev/` harness should run on port **7007** at a time. To work on the catalog module instead, stop this process and start the [catalog module harness](../catalog-backend-module-keycloak/CONTRIBUTING.md).
 
