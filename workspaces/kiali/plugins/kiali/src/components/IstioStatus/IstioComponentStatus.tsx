@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
-import { StatusTypes as Status } from '@backstage-community/plugin-kiali-common/types';
+import {
+  isCoreComponent,
+  StatusTypes as Status,
+} from '@backstage-community/plugin-kiali-common/types';
 import { ListItem, ListItemText } from '@material-ui/core';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -75,23 +78,23 @@ export const IstioComponentStatus = (props: Props): JSX.Element => {
     if (status === Status.NotReady) {
       compIcon = NotReadyComponent;
     }
+    // Fallback for unexpected status/isCore combinations from newer APIs.
+    if (!compIcon) {
+      compIcon = isCore ? ErrorCoreComponent : ErrorAddonComponent;
+    }
     const IconComponent = compIcon.icon;
     return <IconComponent style={{ color: compIcon.color, marginTop: 5 }} />;
   };
 
   const comp = props.componentStatus;
+  const isCore = isCoreComponent(comp);
   const state = statusMsg[comp.status];
   return (
     <ListItem>
       <ListItemText
         primary={
           <>
-            <span>
-              {renderIcon(
-                props.componentStatus.status,
-                props.componentStatus.is_core,
-              )}
-            </span>
+            <span>{renderIcon(props.componentStatus.status, isCore)}</span>
             <span style={{ marginLeft: '10px', marginRight: '10px' }}>
               {comp.name}
             </span>

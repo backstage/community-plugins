@@ -25,7 +25,7 @@ import { TrafficGraph } from '@backstage-community/plugin-kiali-react';
 import { Entity } from '@backstage/catalog-model';
 import { Content, InfoCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import { CircularProgress, useTheme } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import { Model } from '@patternfly/react-topology';
 import {
   useRef,
@@ -78,18 +78,8 @@ function TrafficGraphPage(props: { view?: string; entity?: Entity }) {
     undefined,
   );
   const kialiClient = useApi(kialiApiRef);
-  const theme = useTheme();
   const alertUtilsRef = useRef(kialiState.alertUtils);
   alertUtilsRef.current = kialiState.alertUtils;
-
-  const htmlElement = document.getElementsByTagName('html')[0];
-  if (htmlElement) {
-    if (theme.palette.type === 'dark') {
-      htmlElement.classList.add('pf-v6-theme-dark');
-    } else {
-      htmlElement.classList.remove('pf-v6-theme-dark');
-    }
-  }
 
   const [duration, setDuration] = useState(FilterHelper.currentDuration());
   const [model, setModel] = useState<Model>({

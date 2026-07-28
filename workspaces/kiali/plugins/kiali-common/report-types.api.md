@@ -519,7 +519,13 @@ export const compareResourceVersion: (
 // @public (undocumented)
 export interface ComponentStatus {
   // (undocumented)
-  is_core: boolean;
+  cluster?: string;
+  // (undocumented)
+  isCore?: boolean;
+  // @deprecated Prefer isCore
+  is_core?: boolean;
+  // (undocumented)
+  meshId?: string;
   // (undocumented)
   name: string;
   // (undocumented)
@@ -1820,6 +1826,9 @@ export const ID_LABEL_OPERATION = 'opLabel';
 
 // @public (undocumented)
 export type IntervalInMilliseconds = number;
+
+// @public (undocumented)
+export const isCoreComponent: (component: ComponentStatus) => boolean;
 
 // @public (undocumented)
 export const isGrpcRate: (rate: TrafficRate) => boolean;
