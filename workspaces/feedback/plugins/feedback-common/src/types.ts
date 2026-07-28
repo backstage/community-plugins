@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const mockJiraTicketDetailsResp = {
-  fields: {
-    status: {
-      name: 'Backlog',
-    },
-    assignee: {
-      displayName: 'John Doe',
-      avatarUrls: {
-        '10x10': [],
-      },
-    },
-  },
-};
 
-export const mockJiraUsernameResp = [{ name: 'John Doe' }];
+/**
+ * A default list of error categories/tags that users can select
+ * when submitting a feedback item of type 'BUG'.
+ *
+ * @public
+ */
+export const DEFAULT_ERROR_LIST = [
+  'Slow Loading',
+  'Not Responsive',
+  'Navigation',
+  'UI Issues',
+  'Other',
+];
 
-export const mockJiraCloudUsernameResp = [{ accountId: '12345-cloud-id' }];
-
-export const mockCreateJiraTicketResp = (key: any) => {
-  return { id: '3490987634', key: `${key}-01` };
-};
+/**
+ * A default list of experience rating categories/tags that users
+ * can select when submitting a feedback item of type 'FEEDBACK'.
+ *
+ * @public
+ */
+export const DEFAULT_EXPERIENCE_LIST = [
+  'Excellent',
+  'Good',
+  'Needs Improvement',
+  'Other',
+];

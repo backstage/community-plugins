@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const mockJiraTicketDetailsResp = {
-  fields: {
-    status: {
-      name: 'Backlog',
-    },
-    assignee: {
-      displayName: 'John Doe',
-      avatarUrls: {
-        '10x10': [],
-      },
-    },
-  },
-};
 
-export const mockJiraUsernameResp = [{ name: 'John Doe' }];
+import { createConditionExports } from '@backstage/plugin-permission-node';
+import { feedbackResourceRef } from '../resources/feedback';
+import { isFeedbackOwner } from '../rules/isFeedbackOwner';
 
-export const mockJiraCloudUsernameResp = [{ accountId: '12345-cloud-id' }];
-
-export const mockCreateJiraTicketResp = (key: any) => {
-  return { id: '3490987634', key: `${key}-01` };
-};
+export const {
+  conditions: feedbackConditions,
+  createConditionalDecision: createFeedbackConditionalDecision,
+} = createConditionExports({
+  resourceRef: feedbackResourceRef,
+  rules: { isFeedbackOwner },
+});

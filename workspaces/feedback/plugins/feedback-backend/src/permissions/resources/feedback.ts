@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const mockJiraTicketDetailsResp = {
-  fields: {
-    status: {
-      name: 'Backlog',
-    },
-    assignee: {
-      displayName: 'John Doe',
-      avatarUrls: {
-        '10x10': [],
-      },
-    },
-  },
-};
 
-export const mockJiraUsernameResp = [{ name: 'John Doe' }];
+import { RESOURCE_TYPE_FEEDBACK } from '@backstage-community/plugin-feedback-common';
+import { createPermissionResourceRef } from '@backstage/plugin-permission-node';
+import { FeedbackModel } from '../../model/feedback.model';
 
-export const mockJiraCloudUsernameResp = [{ accountId: '12345-cloud-id' }];
-
-export const mockCreateJiraTicketResp = (key: any) => {
-  return { id: '3490987634', key: `${key}-01` };
-};
+export const feedbackResourceRef = createPermissionResourceRef<
+  FeedbackModel,
+  {}
+>().with({
+  pluginId: 'feedback',
+  resourceType: RESOURCE_TYPE_FEEDBACK,
+});
