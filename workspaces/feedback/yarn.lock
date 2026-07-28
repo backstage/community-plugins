@@ -2944,7 +2944,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "npm:^3.0.0"
     "@backstage/plugin-notifications-node": "npm:^0.2.17"
     "@types/express": "npm:*"
-    "@types/nodemailer": "npm:8.0.0"
+    "@types/nodemailer": "npm:8.0.1"
     "@types/supertest": "npm:7.2.0"
     axios: "npm:^1.6.4"
     express: "npm:^4.17.1"
@@ -10203,12 +10203,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:8.0.0":
-  version: 8.0.0
-  resolution: "@types/nodemailer@npm:8.0.0"
+"@types/nodemailer@npm:8.0.1":
+  version: 8.0.1
+  resolution: "@types/nodemailer@npm:8.0.1"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10/d1178b557e8c547018e708459af06fdf2e9cfd6d65fed109517cddfe6b5add6201d941882a2e4eeede529de08ae71a68fb2a1d8f1c41cb3761d3a6c2458025fe
+  checksum: 10/ec2d9783387a0b24de0cfa76a8da6beab7342e97329fe1e2cf7a26d05e57b241f8dd45276385f1ee5bd089000f35b60beb8f31a9e2e7deaec5486ff1c640e641
   languageName: node
   linkType: hard
 
