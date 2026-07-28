@@ -60,7 +60,8 @@
     "@mui/material": "^5.15.16",
     "@mui/styles": "^5",
     "pluralize": "^8.0.0",
-    "react-use": "^17.5.0"
+    "react-use": "^17.5.0",
+    "zod": "^4.0.0"
   },
   "peerDependencies": {
     "@dnd-kit/utilities": "*",

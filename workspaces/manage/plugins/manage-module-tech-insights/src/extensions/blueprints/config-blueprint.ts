@@ -16,6 +16,8 @@
 
 import { createExtensionBlueprint } from '@backstage/frontend-plugin-api';
 
+import { z } from 'zod';
+
 import { ManageTechInsightsConfig } from './types';
 import { manageTechInsightsConfigDataRef } from './data-refs';
 
@@ -28,11 +30,10 @@ export const ManageTechInsightsBlueprint = createExtensionBlueprint({
   kind: 'manage-tech-insights',
   attachTo: { id: 'manage-provider:tech-insights/provider', input: 'config' },
   output: [manageTechInsightsConfigDataRef],
-  config: {
-    schema: {
-      showEmpty: z =>
-        z.union([z.boolean(), z.record(z.string(), z.boolean())]).optional(),
-    },
+  configSchema: {
+    showEmpty: z
+      .union([z.boolean(), z.record(z.string(), z.boolean())])
+      .optional(),
   },
   *factory(params: ManageTechInsightsConfig, { config }) {
     if (typeof params.showEmpty === 'undefined') {

@@ -19,6 +19,8 @@ import {
   createExtensionDataRef,
 } from '@backstage/frontend-plugin-api';
 
+import { z } from 'zod';
+
 import {
   GetColumnFunc,
   GetColumnsFunc,
@@ -52,24 +54,21 @@ export const ManageEntityColumnBlueprint = createExtensionBlueprint({
     attachTo: manageAttachToMultiRef,
     condition: manageConditionRef,
   },
-  config: {
-    schema: {
-      attachTo: z =>
-        z
-          .array(
-            z.union([
-              z.string(),
-              z.object({ tab: z.string(), multi: z.boolean().optional() }),
-            ]),
-          )
-          .optional()
-          .describe(
-            'Attach the columns to tabs of these kinds. ' +
-              'The special value "$entities" means the combined tab Entities, ' +
-              'the special value "$all" means all individual kinds, ' +
-              'and the special value "$starred" means the Starred tab.',
-          ),
-    },
+  configSchema: {
+    attachTo: z
+      .array(
+        z.union([
+          z.string(),
+          z.object({ tab: z.string(), multi: z.boolean().optional() }),
+        ]),
+      )
+      .optional()
+      .describe(
+        'Attach the columns to tabs of these kinds. ' +
+          'The special value "$entities" means the combined tab Entities, ' +
+          'the special value "$all" means all individual kinds, ' +
+          'and the special value "$starred" means the Starred tab.',
+      ),
   },
   *factory(
     params: {

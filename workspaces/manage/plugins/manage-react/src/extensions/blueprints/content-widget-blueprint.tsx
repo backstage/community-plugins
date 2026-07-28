@@ -21,6 +21,8 @@ import {
   ExtensionBoundary,
 } from '@backstage/frontend-plugin-api';
 
+import { z } from 'zod';
+
 import {
   ManageCondition,
   manageConditionRef,
@@ -75,24 +77,22 @@ export const ManageEntityContentWidgetBlueprint = createExtensionBlueprint({
     condition: manageConditionRef,
     element: coreExtensionData.reactElement,
   },
-  config: {
-    schema: {
-      attachTo: z =>
-        z
-          .array(z.string())
-          .optional()
-          .describe(
-            'Attach the widget to tabs of these kinds. ' +
-              'The special value "$entities" means the combined tab Entities, ' +
-              'the special value "$all" means all individual kinds, ' +
-              'and the special value "$starred" means the Starred tab.',
-          ),
-      inAccordion: z =>
-        z.union([z.boolean(), z.record(z.string(), z.boolean())]).optional(),
-      accordionDefaultExpanded: z => z.boolean().optional(),
-      accordionPerKind: z => z.boolean().optional(),
-      showTitle: z => z.boolean().optional(),
-    },
+  configSchema: {
+    attachTo: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Attach the widget to tabs of these kinds. ' +
+          'The special value "$entities" means the combined tab Entities, ' +
+          'the special value "$all" means all individual kinds, ' +
+          'and the special value "$starred" means the Starred tab.',
+      ),
+    inAccordion: z
+      .union([z.boolean(), z.record(z.string(), z.boolean())])
+      .optional(),
+    accordionDefaultExpanded: z.boolean().optional(),
+    accordionPerKind: z.boolean().optional(),
+    showTitle: z.boolean().optional(),
   },
   *factory(
     params: {

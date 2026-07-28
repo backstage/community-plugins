@@ -21,6 +21,8 @@ import {
   ExtensionBoundary,
 } from '@backstage/frontend-plugin-api';
 
+import { z } from 'zod';
+
 /** @public */
 const manageSettingsDataRef = createExtensionDataRef<{
   title: string;
@@ -44,11 +46,9 @@ export const ManageSettingsBlueprint = createExtensionBlueprint({
     data: manageSettingsDataRef,
     element: coreExtensionData.reactElement,
   },
-  config: {
-    schema: {
-      title: z => z.string().optional(),
-      subtitle: z => z.string().optional(),
-    },
+  configSchema: {
+    title: z.string().optional(),
+    subtitle: z.string().optional(),
   },
   *factory(
     params: {

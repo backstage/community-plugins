@@ -21,6 +21,8 @@ import {
   ExtensionBoundary,
 } from '@backstage/frontend-plugin-api';
 
+import { z } from 'zod';
+
 import { ManageCondition, manageConditionRef } from '../data-refs';
 
 const manageTabTitleRef = createExtensionDataRef<string>().with({
@@ -64,10 +66,8 @@ export const ManageTabBlueprint = createExtensionBlueprint({
     condition: manageConditionRef,
     element: coreExtensionData.reactElement,
   },
-  config: {
-    schema: {
-      title: z => z.string().optional(),
-    },
+  configSchema: {
+    title: z.string().optional(),
   },
   *factory(
     params: {
