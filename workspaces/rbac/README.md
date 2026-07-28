@@ -1,31 +1,51 @@
 # RBAC — Backstage community-plugins workspace
 
+Backstage community workspace for the RBAC plugin (`@backstage-community/plugin-rbac`).
+
 Publishable packages live under `plugins/` (`rbac`, `rbac-backend`, `rbac-common`, `rbac-node`).
 
-## Setup
+## Local development
+
+### Full-stack (frontend + backend)
+
+From **`workspaces/rbac`** (workspace root):
 
 ```sh
 yarn install
+yarn start          # legacy dev app + rbac-backend on :3000 / :7007
+yarn start:alpha    # New Frontend System dev app + backend
 ```
 
-## Development
+The backend dev server uses mocked auth/catalog and loads full-stack e2e seed policies from `plugins/rbac/tests/fixtures/`.
 
-There is no `packages/app` in this workspace. Use per-plugin dev harnesses:
+### Frontend-only with mocks (no backend)
+
+From `workspaces/rbac/plugins/rbac`:
 
 ```sh
-# Backend (policy, REST API)
-yarn workspace @backstage-community/plugin-rbac-backend start
-
-# Frontend UI (mocked APIs — default for UI work)
-yarn workspace @backstage-community/plugin-rbac start:mock
+yarn start:mock         # legacy UI with in-browser mockRBACApi
+yarn start:alpha:mock   # NFS UI with mocks
 ```
 
+> **Note:** `yarn start` inside `plugins/rbac` starts **only** the frontend. Use the workspace root for full-stack.
+
 See [plugins/rbac-backend/CONTRIBUTING.md](./plugins/rbac-backend/CONTRIBUTING.md) and [plugins/rbac/CONTRIBUTING.md](./plugins/rbac/CONTRIBUTING.md).
+
+## E2e tests
+
+| Command                 | What it runs                                                            |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `yarn test:e2e:ci`      | Full-stack read-only tests (`rbac-fullstack.spec.ts`), legacy + alpha   |
+| `yarn test:e2e:mock:ci` | Mock comprehensive UI tests (`rbac.spec.ts`), 6 locales, legacy + alpha |
+| `yarn playwright test`  | Both suites (CI default when `playwrightTests: true` in `bcp.json`)     |
 
 ## Other commands
 
 ```sh
-yarn test
+yarn test           # unit tests
+yarn build:all      # build all packages
 yarn lint
 yarn backstage-repo-tools knip-reports
 ```
+
+> The guest user has admin permissions in this dev app for quick setup. For production-like setups, configure dedicated admin users in `app-config.local.yaml`.
