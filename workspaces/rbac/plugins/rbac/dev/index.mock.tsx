@@ -15,41 +15,76 @@
  */
 
 /**
- * Legacy dev mode for the RBAC plugin using mock API data (e2e / UI-only).
+ * New Frontend System dev mode for the RBAC plugin using mock API data (e2e / UI-only).
  */
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
+import { createApp } from '@backstage/frontend-defaults';
+import ReactDOM from 'react-dom/client';
 
-import { configApiRef } from '@backstage/core-plugin-api';
-import { createDevApp } from '@backstage/dev-utils';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { mockApis, TestApiProvider } from '@backstage/test-utils';
+import { mockApis } from '@backstage/test-utils';
 
 import { rbacApiRef } from '../src/api/RBACBackendClient';
-import { RbacPage, rbacPlugin } from '../src/plugin';
-import { rbacTranslations } from '../src/alpha/translations';
-import { mockConfigApi, mockRBACApi } from './mocks';
-import { devAppThemes } from './shared';
+import { licensedUsersApiRef } from '../src/api/LicensedUsersClient';
+import rbacPlugin, { rbacTranslationsModule } from '../src';
+import { mockLicensedUsersApi, mockRBACApi } from './mocks';
+import { devSidebarContent } from './shared';
 
-createDevApp()
-  .addThemes(devAppThemes)
-  .registerPlugin(rbacPlugin)
-  .addTranslationResource(rbacTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
-  .setDefaultLanguage('en')
-  .addPage({
-    element: (
-      <TestApiProvider
-        apis={[
-          [permissionApiRef, mockApis.permission()],
-          [rbacApiRef, mockRBACApi],
-          [configApiRef, mockConfigApi],
-        ]}
-      >
-        <RbacPage />
-      </TestApiProvider>
-    ),
-    title: 'RBAC',
-    path: '/rbac',
-  })
-  .render();
+const rbacDevModule = createFrontendModule({
+  pluginId: 'rbac',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'rbac',
+      params: defineParams =>
+        defineParams({
+          api: rbacApiRef,
+          deps: {},
+          factory: () => mockRBACApi,
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'licensed-users',
+      params: defineParams =>
+        defineParams({
+          api: licensedUsersApiRef,
+          deps: {},
+          factory: () => mockLicensedUsersApi,
+        }),
+    }),
+  ],
+});
+
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    devSidebarContent,
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => mockApis.permission(),
+        }),
+    }),
+  ],
+});
+
+const defaultPage = '/rbac';
+
+const app = createApp({
+  features: [rbacPlugin, rbacTranslationsModule, rbacDevModule, devNavModule],
+});
+
+const root = app.createRoot();
+
+if (typeof window !== 'undefined' && window.location.pathname === '/') {
+  window.location.pathname = defaultPage;
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);
