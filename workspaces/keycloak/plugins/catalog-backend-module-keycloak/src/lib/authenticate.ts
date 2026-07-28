@@ -37,7 +37,7 @@ export async function ensureTokenValid(
       const now = Date.now();
 
       if (now > tokenExpiry - 30000) {
-        refreshTokenPromise = authenticate(
+        refreshTokenPromise ??= authenticate(
           kcAdminClient,
           provider,
           logger,
