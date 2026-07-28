@@ -56,8 +56,8 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        variant?: 'starred' | 'like-dislike' | undefined;
         title?: string | undefined;
+        variant?: 'starred' | 'like-dislike' | undefined;
         requestResponse?: boolean | undefined;
         dialogTitle?: string | undefined;
         dialogResponses?:
@@ -110,9 +110,9 @@ const entityFeedbackPlugin: OverridableFrontendPlugin<
         type: 'content' | 'info' | undefined;
       };
       configInput: {
-        variant?: 'starred' | 'like-dislike' | undefined;
         title?: string | undefined;
         allEntities?: boolean | undefined;
+        variant?: 'starred' | 'like-dislike' | undefined;
         filter?: FilterPredicate | undefined;
         type?: 'content' | 'info' | undefined | undefined;
       };
