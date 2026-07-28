@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { detectGitType, GitProvider, hasDomain } from './git-utils';
+import { MAX_URL_LENGTH } from './url-utils';
 
 describe('hasDomain', () => {
   it('should return true if URL starts with https://domain/', () => {
@@ -82,5 +83,10 @@ describe('detectGitType', () => {
 
   it('should return GitProvider.INVALID for invalid URLs', () => {
     expect(detectGitType('not a URL')).toBe(GitProvider.INVALID);
+  });
+
+  it('should return GitProvider.INVALID for URLs exceeding the length limit', () => {
+    const longUrl = `https://github.com/user/${'a'.repeat(MAX_URL_LENGTH)}`;
+    expect(detectGitType(longUrl)).toBe(GitProvider.INVALID);
   });
 });
