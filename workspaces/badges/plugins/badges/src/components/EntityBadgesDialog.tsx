@@ -15,21 +15,18 @@
  */
 
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Typography from '@material-ui/core/Typography';
-import { useTheme } from '@material-ui/core/styles';
+import {
+  Button,
+  Text,
+  Select,
+  Dialog,
+  DialogTrigger,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@backstage/ui';
 import { useState } from 'react';
+import { Key } from 'react-aria-components';
 import useAsync from 'react-use/esm/useAsync';
 import { BadgeStyle, BADGE_STYLES, badgesApiRef } from '../api';
 
@@ -45,12 +42,10 @@ export const EntityBadgesDialog = (props: {
   onClose?: () => any;
 }) => {
   const { open, onClose } = props;
-  const theme = useTheme();
   const { entity } = useAsyncEntity();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const badgesApi = useApi(badgesApiRef);
 
-  const [style, setStyle] = useState<BadgeStyle>();
+  const [style, setStyle] = useState<BadgeStyle | null>(null);
 
   const {
     value: badges,
@@ -58,71 +53,91 @@ export const EntityBadgesDialog = (props: {
     error,
   } = useAsync(async () => {
     if (open && entity) {
-      return await badgesApi.getEntityBadgeSpecs(entity, { style });
+      return await badgesApi.getEntityBadgeSpecs(entity, {
+        style: style ?? undefined,
+      });
     }
     return [];
   }, [badgesApi, entity, open, style]);
 
+  const selectOptions = [
+    { value: '', label: 'Default' },
+    ...BADGE_STYLES.map(s => ({ value: s, label: s })),
+  ];
+
+  const handleStyleChange = (value: Key | Key[] | null) => {
+    const stringValue = Array.isArray(value)
+      ? String(value[0] ?? '')
+      : String(value ?? '');
+    setStyle(stringValue === '' ? null : (stringValue as BadgeStyle));
+  };
+
   return (
-    <Dialog fullScreen={fullScreen} open={open} onClose={onClose}>
-      <DialogTitle>Entity Badges</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Embed badges in other web sites that link back to this entity. Copy
-          the relevant snippet of Markdown code to use the badge.
-        </DialogContentText>
+    <DialogTrigger
+      isOpen={open}
+      onOpenChange={(isOpen: boolean) => {
+        if (!isOpen && onClose) onClose();
+      }}
+    >
+      <Dialog isDismissable>
+        <DialogHeader>
+          <Text variant="title-large">Entity Badges</Text>
+        </DialogHeader>
+        <DialogBody>
+          <div style={{ marginBottom: 'var(--bui-space-4)' }}>
+            <Text>
+              Embed badges in other web sites that link back to this entity.
+              Copy the relevant snippet of Markdown code to use the badge.
+            </Text>
+          </div>
 
-        <Typography variant="subtitle1">Select Badge Style</Typography>
-        <FormControl
-          variant="standard"
-          style={{ width: '100%', marginBottom: '16px' }}
-        >
-          <InputLabel id="badge-style-label">Style</InputLabel>
-          <Select
-            labelId="badge-style-label"
-            id="badge-style"
-            value={style}
-            label="Style"
-            onChange={e => setStyle(e.target.value as BadgeStyle)}
-          >
-            <MenuItem value={undefined}>
-              <em>Default</em>
-            </MenuItem>
-            {BADGE_STYLES.map(s => (
-              <MenuItem key={s} value={s}>
-                {s}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          <div style={{ marginBottom: 'var(--bui-space-4)' }}>
+            <Text variant="body-medium">Select Badge Style</Text>
+            <div style={{ marginTop: 'var(--bui-space-2)' }}>
+              <Select
+                name="badge-style"
+                label={null}
+                placeholder="Select style"
+                value={style ?? ''}
+                onChange={handleStyleChange}
+                options={selectOptions}
+              />
+            </div>
+          </div>
 
-        {loading && <Progress />}
-        {error && <ResponseErrorPanel error={error} />}
+          {loading && <Progress />}
+          {error && <ResponseErrorPanel error={error} />}
 
-        {badges && (
-          <>
-            <Typography variant="subtitle1">Badge Previews</Typography>
-            {badges.map(({ badge: { description }, id, url, markdown }) => (
-              <Box marginTop={2} marginBottom={2} key={id}>
-                <DialogContentText component="div">
-                  <img alt={description || id} src={url} />
+          {badges && badges.length > 0 && (
+            <div style={{ marginTop: 'var(--bui-space-6)' }}>
+              <Text variant="body-medium">Badge Previews</Text>
+              {badges.map(({ badge: { description }, id, url, markdown }) => (
+                <div
+                  key={id}
+                  style={{
+                    marginTop: 'var(--bui-space-4)',
+                    marginBottom: 'var(--bui-space-4)',
+                  }}
+                >
+                  <div style={{ marginBottom: 'var(--bui-space-2)' }}>
+                    <img alt={description || id} src={url} />
+                  </div>
                   <CodeSnippet
                     language="markdown"
                     text={markdown}
                     showCopyCodeButton
                   />
-                </DialogContentText>
-              </Box>
-            ))}
-          </>
-        )}
-      </DialogContent>
-
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogBody>
+        <DialogFooter>
+          <Button onClick={onClose} variant="secondary">
+            Close
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };
