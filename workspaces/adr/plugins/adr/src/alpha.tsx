@@ -30,6 +30,7 @@ import {
   AdrDocument,
   isAdrAvailable,
 } from '@backstage-community/plugin-adr-common';
+import { z } from 'zod';
 import { rootRouteRef } from './routes';
 import { adrApiRef, AdrClient } from './api';
 
@@ -42,10 +43,8 @@ function isAdrDocument(result: any): result is AdrDocument {
 /** @alpha */
 export const adrSearchResultListItemExtension =
   SearchResultListItemBlueprint.makeWithOverrides({
-    config: {
-      schema: {
-        lineClamp: z => z.number().default(5),
-      },
+    configSchema: {
+      lineClamp: z.number().default(5),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
