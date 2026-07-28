@@ -1,5 +1,12 @@
 # app
 
+## 0.0.28
+
+### Patch Changes
+
+- Updated dependencies [2fd6cf6]
+  - @backstage-community/plugin-entity-feedback@0.21.1
+
 ## 0.0.27
 
 ### Patch Changes
