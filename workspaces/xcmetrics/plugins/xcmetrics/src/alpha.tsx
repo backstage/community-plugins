@@ -20,11 +20,6 @@ import {
   discoveryApiRef,
   fetchApiRef,
 } from '@backstage/frontend-plugin-api';
-import {
-  compatWrapper,
-  convertLegacyRouteRef,
-  convertLegacyRouteRefs,
-} from '@backstage/core-compat-api';
 import { rootRouteRef } from './routes';
 import { xcmetricsApiRef, XcmetricsClient } from './api';
 
@@ -33,13 +28,11 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 const xcmetricsPage = PageBlueprint.make({
   params: {
     path: '/xcmetrics',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    title: 'XCMetrics',
-    icon: <AssessmentIcon fontSize="inherit" />,
+    routeRef: rootRouteRef,
     loader: () =>
-      import('./components/XcmetricsLayout').then(m =>
-        compatWrapper(<m.XcmetricsLayout />),
-      ),
+      import('./components/XcmetricsLayout').then(m => (
+        <m.NfsXcmetricsLayout />
+      )),
   },
 });
 
@@ -64,8 +57,10 @@ export const xcmetricsApiExtension = ApiBlueprint.make({
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'xcmetrics',
+  title: 'XCMetrics',
+  icon: <AssessmentIcon fontSize="inherit" />,
   extensions: [xcmetricsPage, xcmetricsApiExtension],
-  routes: convertLegacyRouteRefs({
+  routes: {
     root: rootRouteRef,
-  }),
+  },
 });
