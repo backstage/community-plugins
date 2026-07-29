@@ -270,7 +270,7 @@ export function getWizardUpdateLabel(
 // @public (undocumented)
 export const globalChecks: (object: ObjectValidation) => ObjectCheck[];
 
-// @public (undocumented)
+// @public
 export const groupIstioConfigByNamespace: (
   response: unknown,
 ) => Map<string, IstioConfigList>;
@@ -423,7 +423,7 @@ export type NamespaceWorkloadHealth = {
   [workload: string]: WorkloadHealth;
 };
 
-// @public (undocumented)
+// @public
 export const normalizeConfigValidations: (
   response: unknown,
 ) => ValidationsByClusterAndNamespace;

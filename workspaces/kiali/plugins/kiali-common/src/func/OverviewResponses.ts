@@ -22,7 +22,7 @@ export type ValidationsByClusterAndNamespace = Map<
 
 /**
  * Newer Kiali APIs return ValidationStatus[] with namespace/cluster fields.
- * Older APIs return a nested map: { [cluster]: { [namespace]: ValidationStatus } }.
+ * Older APIs return a nested map keyed by cluster, then namespace, to ValidationStatus.
  */
 export const normalizeConfigValidations = (
   response: unknown,

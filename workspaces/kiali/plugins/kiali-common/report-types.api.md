@@ -520,10 +520,9 @@ export const compareResourceVersion: (
 export interface ComponentStatus {
   // (undocumented)
   cluster?: string;
-  // (undocumented)
-  isCore?: boolean;
-  // @deprecated Prefer isCore
+  // @deprecated (undocumented)
   is_core?: boolean;
+  isCore?: boolean;
   // (undocumented)
   meshId?: string;
   // (undocumented)
@@ -4735,7 +4734,11 @@ export type Validations = {
 // @public (undocumented)
 export interface ValidationStatus {
   // (undocumented)
+  cluster?: string;
+  // (undocumented)
   errors: number;
+  // (undocumented)
+  namespace?: string;
   // (undocumented)
   objectCount?: number;
   // (undocumented)
