@@ -21,6 +21,9 @@ import { EOL } from 'os';
 const BACKSTAGE_MANIFEST_URL =
   'https://versions.backstage.io/v1/tags/main/manifest.json';
 
+const WINDOW_DAYS = 10;
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
 async function fetchBackstageManifest() {
   const response = await fetch(BACKSTAGE_MANIFEST_URL);
 
@@ -83,18 +86,19 @@ async function main() {
     }
 
     const daysSinceRelease =
-      (Date.now() - new Date(minorRelease.published_at)) /
-      (1000 * 60 * 60 * 24);
-    const isRecent = daysSinceRelease <= 10;
+      (Date.now() - new Date(minorRelease.published_at)) / MS_PER_DAY;
+    const isRecent = daysSinceRelease <= WINDOW_DAYS;
     console.log(
       `Minor release ${minorReleaseTag} published: ${minorRelease.published_at}`,
     );
     console.log(
-      `Days since release: ${daysSinceRelease.toFixed(2)}, within window: ${isRecent}`,
+      `Days since release: ${daysSinceRelease.toFixed(
+        2,
+      )}, within window: ${isRecent}`,
     );
 
     if (!isRecent) {
-      console.log('Minor release is older than 10 days');
+      console.log(`Minor release is older than ${WINDOW_DAYS} days`);
       await setOutput('false');
       return;
     }
