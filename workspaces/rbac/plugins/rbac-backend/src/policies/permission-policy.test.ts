@@ -1164,11 +1164,12 @@ describe('useOwnershipEntityRefs', () => {
       permissionPolicies,
       groupPolicies,
     );
-    return newPermissionPolicy(config, enfDelegate);
+    const policy = await newPermissionPolicy(config, enfDelegate);
+    return { policy, enfDelegate };
   }
 
   it('should allow access when enabled and group is in ownershipEntityRefs without catalog memberOf', async () => {
-    const policy = await buildPolicy(
+    const { policy } = await buildPolicy(
       true,
       [['group:default/oncall', oncallRole]],
       oncallPolicies,
@@ -1190,7 +1191,7 @@ describe('useOwnershipEntityRefs', () => {
   });
 
   it('should deny access when disabled and group is only in ownershipEntityRefs', async () => {
-    const policy = await buildPolicy(
+    const { policy } = await buildPolicy(
       false,
       [['group:default/oncall', oncallRole]],
       oncallPolicies,
@@ -1212,7 +1213,7 @@ describe('useOwnershipEntityRefs', () => {
   });
 
   it('should merge catalog and token-derived roles', async () => {
-    const policy = await buildPolicy(
+    const { policy } = await buildPolicy(
       true,
       [
         ['group:default/oncall', oncallRole],
@@ -1245,11 +1246,12 @@ describe('useOwnershipEntityRefs', () => {
   });
 
   it('should resolve direct user-to-role bindings via ownershipEntityRefs', async () => {
-    const policy = await buildPolicy(
+    const { policy, enfDelegate } = await buildPolicy(
       true,
       [['user:default/john.doe', oncallRole]],
       oncallPolicies,
     );
+    jest.spyOn(enfDelegate, 'getRolesForUser').mockResolvedValueOnce([]);
 
     const decision = await policy.handle(
       newPolicyQueryWithResourcePermission(
@@ -1261,6 +1263,55 @@ describe('useOwnershipEntityRefs', () => {
     );
 
     expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should fall back to user entity ref when ownershipEntityRefs is empty', async () => {
+    const { policy } = await buildPolicy(
+      true,
+      [['user:default/john.doe', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', []),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should deduplicate ownership entity refs before resolving roles', async () => {
+    const { policy, enfDelegate } = await buildPolicy(
+      true,
+      [['group:default/oncall', oncallRole]],
+      oncallPolicies,
+    );
+    const getFilteredGroupingPolicySpy = jest.spyOn(
+      enfDelegate,
+      'getFilteredGroupingPolicy',
+    );
+
+    await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', [
+        'group:default/oncall',
+        'group:default/oncall',
+      ]),
+    );
+
+    expect(getFilteredGroupingPolicySpy).toHaveBeenCalledTimes(1);
+    expect(getFilteredGroupingPolicySpy).toHaveBeenCalledWith(
+      0,
+      'group:default/oncall',
+    );
   });
 });
 
