@@ -168,6 +168,27 @@ describe('condition-validation', () => {
       );
     });
 
+    it('should fail validation when permissionMapping mixes action strings and named objects', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          'read',
+          { name: 'catalog.entity.update', action: 'update' },
+        ],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' must be either all action strings or all {name, action} objects, not a mix`,
+      );
+    });
+
     it('should fail validation role condition with policy-entity resource type and create action', () => {
       const condition: any = {
         resourceType: 'policy-entity',

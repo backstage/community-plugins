@@ -54,6 +54,7 @@ import {
   validatePolicy,
   validateSource,
 } from '../validation/policies-validation';
+import { validateRoleCondition } from '../validation/condition-validation';
 import { ConditionalStorage } from '../database/conditional-storage';
 import {
   type RoleConditionalPolicyDecision,
@@ -128,6 +129,10 @@ export class Connection implements RBACProviderConnection {
   async applyConditionalPermissions(
     conditionalPermissions: RoleConditionalPolicyDecision[],
   ): Promise<void> {
+    for (const condition of conditionalPermissions) {
+      validateRoleCondition(condition);
+    }
+
     const providerRoles = await this.getProviderRoles();
     const storedConditionalPermissions =
       await this.conditionStorage.filterConditions(providerRoles);
