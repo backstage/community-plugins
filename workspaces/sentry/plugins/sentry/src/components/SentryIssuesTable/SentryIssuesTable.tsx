@@ -35,7 +35,7 @@ type SentryIssuesTableProps = {
 };
 
 const SentryIssuesTable = (props: SentryIssuesTableProps) => {
-  const { sentryIssues, statsFor, tableOptions } = props;
+  const { sentryIssues, tableOptions } = props;
   const [selected, setSelected] = useState(ONE_DAY_IN_MILLIS.toString());
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = tableOptions?.pageSize || 5;

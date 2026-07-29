@@ -122,9 +122,6 @@
     border-right: none;
   }
 
-  .tbody {
-  }
-
   .tr {
     border-bottom: 1px solid var(--bui-border);
     transition: background-color 0.2s ease;
