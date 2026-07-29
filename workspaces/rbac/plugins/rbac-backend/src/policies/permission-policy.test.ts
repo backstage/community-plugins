@@ -1133,6 +1133,139 @@ describe('RBACPermissionPolicy Tests', () => {
   });
 });
 
+describe('useOwnershipEntityRefs', () => {
+  const oncallRole = 'role:default/oncall';
+  const catalogRole = 'role:default/catalog-reader';
+  const oncallPolicies = [
+    [oncallRole, 'catalog.entity.read', 'read', 'allow'],
+    [oncallRole, 'catalog-entity', 'read', 'allow'],
+  ];
+  const catalogPolicies = [
+    [catalogRole, 'catalog.entity.create', 'use', 'allow'],
+    [catalogRole, 'catalog.entity.create', 'create', 'allow'],
+  ];
+
+  async function buildPolicy(
+    useOwnershipEntityRefs: boolean,
+    groupPolicies: string[][],
+    permissionPolicies: string[][],
+  ) {
+    const config = newConfig(
+      undefined,
+      [],
+      undefined,
+      undefined,
+      useOwnershipEntityRefs,
+    );
+    const adapter = await newAdapter(config);
+    const enfDelegate = await newEnforcerDelegate(
+      adapter,
+      config,
+      permissionPolicies,
+      groupPolicies,
+    );
+    return newPermissionPolicy(config, enfDelegate);
+  }
+
+  it('should allow access when enabled and group is in ownershipEntityRefs without catalog memberOf', async () => {
+    const policy = await buildPolicy(
+      true,
+      [['group:default/oncall', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/leonardo.vieira', [
+        'user:default/leonardo.vieira',
+        'group:default/oncall',
+      ]),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should deny access when disabled and group is only in ownershipEntityRefs', async () => {
+    const policy = await buildPolicy(
+      false,
+      [['group:default/oncall', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/leonardo.vieira', [
+        'user:default/leonardo.vieira',
+        'group:default/oncall',
+      ]),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.DENY);
+  });
+
+  it('should merge catalog and token-derived roles', async () => {
+    const policy = await buildPolicy(
+      true,
+      [
+        ['group:default/oncall', oncallRole],
+        ['user:default/catalog-user', catalogRole],
+      ],
+      [...oncallPolicies, ...catalogPolicies],
+    );
+
+    const readDecision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/catalog-user', [
+        'user:default/catalog-user',
+        'group:default/oncall',
+      ]),
+    );
+    expect(readDecision.result).toBe(AuthorizeResult.ALLOW);
+
+    const createDecision = await policy.handle(
+      newPolicyQueryWithBasicPermission('catalog.entity.create', 'create'),
+      newPolicyQueryUser('user:default/catalog-user', [
+        'user:default/catalog-user',
+        'group:default/oncall',
+      ]),
+    );
+    expect(createDecision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should resolve direct user-to-role bindings via ownershipEntityRefs', async () => {
+    const policy = await buildPolicy(
+      true,
+      [['user:default/leonardo.vieira', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/leonardo.vieira', [
+        'user:default/leonardo.vieira',
+      ]),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+});
+
 // Notice: There is corner case, when "resourced" permission policy can be defined not by resource type, but by name.
 describe('Policy checks for resourced permissions defined by name', () => {
   const roleMetadataStorageTest: RoleMetadataStorage = {
@@ -2133,6 +2266,7 @@ function newConfig(
   users?: Array<{ name: string }>,
   superUsers?: Array<{ name: string }>,
   policyDecisionPrecedence?: 'basic' | 'conditional',
+  useOwnershipEntityRefs?: boolean,
 ): Config {
   const testUsers = [
     {
@@ -2154,6 +2288,9 @@ function newConfig(
             superUsers: superUsers,
           },
           policyDecisionPrecedence: policyDecisionPrecedence ?? 'conditional',
+          ...(useOwnershipEntityRefs !== undefined
+            ? { useOwnershipEntityRefs }
+            : {}),
         },
       },
       backend: {

@@ -84,9 +84,34 @@ permission:
         - name: group:default/admins
 ```
 
-> **Note:** **Transient memberships are not supported for `superUsers`.** Meaning, when a group is specified as a super user, only direct group memberships are taken into account. Users who belong to a sub-group of a configured super user group will not be granted super user access.
+> **Note:** Only direct group memberships are supported for `superUsers`. When a group is specified as a super user, users who belong to a sub-group of that group will not be granted super user access.
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
+
+### Use ownership entity refs for role membership
+
+When users sign in without catalog `memberOf` relations (for example, via a custom sign-in resolver that issues ownership entity refs in the token), you can enable `useOwnershipEntityRefs` so group-to-role bindings are evaluated from those token claims in addition to catalog membership.
+
+```YAML
+permission:
+  rbac:
+    useOwnershipEntityRefs: true
+```
+
+With this enabled, a user whose sign-in resolver issues:
+
+```ts
+ctx.issueToken({
+  claims: {
+    sub: 'user:default/leonardo.vieira',
+    ent: ['user:default/leonardo.vieira', 'group:default/oncall'],
+  },
+});
+```
+
+will receive roles bound to `group:default/oncall` via CSV policies such as `g, group:default/oncall, role:default/oncall`, even when the user has no catalog `memberOf` relation to that group.
+
+> **Note:** Only direct bindings are supported — subgroup hierarchy is not traversed, similar to `superUsers`.
 
 ### Configure default role
 

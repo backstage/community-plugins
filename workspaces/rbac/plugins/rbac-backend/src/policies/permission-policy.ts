@@ -70,6 +70,7 @@ import {
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
   private readonly preferPermissionPolicy: boolean;
+  private readonly useOwnershipEntityRefs: boolean;
 
   public static async build(
     logger: LoggerService,
@@ -117,6 +118,10 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       (configApi.getOptionalString(
         'permission.rbac.policyDecisionPrecedence',
       ) ?? 'conditional') === 'basic';
+
+    const useOwnershipEntityRefs =
+      configApi.getOptionalBoolean('permission.rbac.useOwnershipEntityRefs') ??
+      false;
 
     if (superUsers && superUsers.length > 0) {
       for (const user of superUsers) {
@@ -186,6 +191,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       auth,
       conditionalStorage,
       preferPermissionPolicy,
+      useOwnershipEntityRefs,
       superUserList,
     );
   }
@@ -197,10 +203,12 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly auth: AuthService,
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
+    useOwnershipEntityRefs: boolean,
     superUserList?: string[],
   ) {
     this.superUserList = superUserList;
     this.preferPermissionPolicy = preferPermissionPolicy;
+    this.useOwnershipEntityRefs = useOwnershipEntityRefs;
   }
 
   async handle(
@@ -246,7 +254,16 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       }
 
       const permissionName = request.permission.name;
-      const roles = await this.enforcer.getRolesForUser(userEntityRef);
+      const catalogRoles = await this.enforcer.getRolesForUser(userEntityRef);
+      let roles = catalogRoles;
+      if (this.useOwnershipEntityRefs) {
+        const subjects =
+          userInfo.ownershipEntityRefs.length > 0
+            ? userInfo.ownershipEntityRefs
+            : [userEntityRef];
+        const transientRoles = await this.collectRolesForSubjects(subjects);
+        roles = [...new Set([...catalogRoles, ...transientRoles])];
+      }
       // handle permission with 'resource' type
       const hasNamedPermission = await this.hasImplicitPermission(
         permissionName,
@@ -317,6 +334,22 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       });
       return { result: AuthorizeResult.DENY };
     }
+  }
+
+  private async collectRolesForSubjects(subjects: string[]): Promise<string[]> {
+    const roles: string[] = [];
+    for (const subject of subjects) {
+      const groupingPolicies = await this.enforcer.getFilteredGroupingPolicy(
+        0,
+        subject,
+      );
+      for (const policy of groupingPolicies) {
+        if (policy[1]) {
+          roles.push(policy[1]);
+        }
+      }
+    }
+    return roles;
   }
 
   private async hasImplicitPermission(
