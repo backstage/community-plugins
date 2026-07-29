@@ -74,6 +74,7 @@ export interface Config {
       /**
        * When enabled, group-to-role bindings are also evaluated using ownership
        * entity refs from the sign-in token, not only catalog memberOf relations.
+       * Defaults to false.
        * @visibility frontend
        */
       useOwnershipEntityRefs?: boolean;
