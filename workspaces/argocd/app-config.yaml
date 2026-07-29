@@ -79,9 +79,23 @@ catalog:
       rules:
         - allow: [User, Group]
 
+argocd:
+  appLocatorMethods:
+    - type: 'config'
+      instances:
+        - name: main
+          url: 'https://test-openshift-gitops.apps.test.devcluster.openshift.com'
+          token: fake-jwt-token
+        - name: argoInstance1
+          url: 'https://test1-openshift-gitops.apps.test.devcluster.openshift.com'
+          token: fake-jwt-token1
+        - name: argoInstance2
+          url: 'https://test2-openshift-gitops.apps.test.devcluster.openshift.com'
+          token: fake-jwt-token2
+
 permission:
   # setting this to `false` will disable permissions
-  enabled: true
+  enabled: false
   rbac:
     pluginsWithPermission:
       - argocd
