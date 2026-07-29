@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-// Old frontend system support
-export * from './legacy';
-
 export { default } from './plugin';
 
 export type { DeploymentSummaryProps } from './components/DeploymentSummary/DeploymentSummary';
