@@ -233,6 +233,48 @@ describe('DataBaseConditionalStorage', () => {
         expect(conditions[0]).toEqual(condition1);
       },
     );
+
+    it.each(databases.eachSupportedId())(
+      'should filter by permissionName matching named entries and broad action-only entries',
+      async databaseId => {
+        const { knex, db } = await createDatabase(databaseId);
+        const namedDao: ConditionalPolicyDecisionDAO = {
+          ...conditionDao1,
+          permissions: '[{"name":"catalog.entity.read","action":"read"}]',
+        };
+        const broadDao: ConditionalPolicyDecisionDAO = {
+          ...conditionDao1,
+          roleEntityRef: 'role:default/test-broad',
+          permissions: '["read"]',
+        };
+        const otherNamedDao: ConditionalPolicyDecisionDAO = {
+          ...conditionDao1,
+          roleEntityRef: 'role:default/test-other',
+          permissions: '[{"name":"catalog.location.read","action":"read"}]',
+        };
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          namedDao,
+        );
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          broadDao,
+        );
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          otherNamedDao,
+        );
+
+        const conditions = await db.filterConditions(
+          undefined,
+          'catalog',
+          'catalog-entity',
+          ['read'],
+          'catalog.entity.read',
+        );
+
+        expect(conditions).toHaveLength(2);
+        const refs = conditions.map(c => c.roleEntityRef).sort();
+        expect(refs).toEqual(['role:default/test', 'role:default/test-broad']);
+      },
+    );
   });
 
   describe('createCondition', () => {
@@ -430,6 +472,75 @@ describe('DataBaseConditionalStorage', () => {
         expect(filterConditionsSpy).toHaveBeenCalledTimes(1);
         const result = await filterConditionsSpy.mock.results[0].value;
         expect(result).toEqual([]);
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should not conflict when named entries have different permission names but the same action',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        const storedDao: ConditionalPolicyDecisionDAO = {
+          ...conditionDao1,
+          permissions: '[{"name":"catalog.entity.read","action":"read"}]',
+        };
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          storedDao,
+        );
+
+        await expect(
+          db.checkConflictedConditions(
+            'role:default/test',
+            'catalog-entity',
+            'catalog',
+            [{ name: 'catalog.location.read', action: 'read' }],
+          ),
+        ).resolves.toBeUndefined();
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should conflict when a broad action-only entry matches a stored named entry with the same action',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        const storedDao: ConditionalPolicyDecisionDAO = {
+          ...conditionDao1,
+          permissions: '[{"name":"catalog.entity.read","action":"read"}]',
+        };
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          storedDao,
+        );
+
+        await expect(
+          db.checkConflictedConditions(
+            'role:default/test',
+            'catalog-entity',
+            'catalog',
+            ['read'],
+          ),
+        ).rejects.toThrow(
+          `Found condition with conflicted permission action '["read"]'`,
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should conflict when a named entry matches a stored broad action-only entry with the same action',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          conditionDao1,
+        );
+
+        await expect(
+          db.checkConflictedConditions(
+            'role:default/test',
+            'catalog-entity',
+            'catalog',
+            [{ name: 'catalog.entity.read', action: 'read' }],
+          ),
+        ).rejects.toThrow(
+          `Found condition with conflicted permission action '["read"]'`,
+        );
       },
     );
   });

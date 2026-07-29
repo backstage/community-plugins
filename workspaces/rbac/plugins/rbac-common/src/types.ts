@@ -183,7 +183,12 @@ export type PermissionMapping = PermissionAction | PermissionInfo;
 export function isPermissionInfo(
   entry: PermissionMapping,
 ): entry is PermissionInfo {
-  return typeof entry === 'object' && 'name' in entry && 'action' in entry;
+  return (
+    typeof entry === 'object' &&
+    entry !== null &&
+    typeof (entry as any).name === 'string' &&
+    typeof (entry as any).action === 'string'
+  );
 }
 
 /**
@@ -192,7 +197,9 @@ export function isPermissionInfo(
 export function permissionMappingAction(
   entry: PermissionMapping,
 ): PermissionAction {
-  return typeof entry === 'string' ? entry : entry.action;
+  return typeof entry === 'string'
+    ? entry
+    : ((entry as any)?.action as PermissionAction);
 }
 
 /**
