@@ -3723,6 +3723,33 @@ describe('REST policies API', () => {
       });
     });
 
+    it('should return 400 when permissionMapping contains action-only entries', async () => {
+      const roleCondition: RoleConditionalPolicyDecision = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: ['read'],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      const result = await request(app)
+        .post('/roles/conditions')
+        .send(roleCondition);
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: expect.stringContaining(
+          'REST API requires permissionMapping entries to include permission name',
+        ),
+      });
+    });
+
     it('should create condition with the correct permission name for different resource types but similar actions', async () => {
       conditionalStorageMock.createCondition = jest
         .fn()
@@ -4002,6 +4029,36 @@ describe('REST policies API', () => {
       expect(result.body.error).toEqual({
         name: 'InputError',
         message: 'Invalid condition payload',
+      });
+    });
+
+    it('should return 400 on update when permissionMapping contains action-only entries', async () => {
+      mockedAuthorizeConditional.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+      const conditionDecision: RoleConditionalPolicyDecision = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: ['read'],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      const result = await request(app)
+        .put('/roles/conditions/1')
+        .send(conditionDecision);
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error).toEqual({
+        name: 'InputError',
+        message: expect.stringContaining(
+          'REST API requires permissionMapping entries to include permission name',
+        ),
       });
     });
   });
