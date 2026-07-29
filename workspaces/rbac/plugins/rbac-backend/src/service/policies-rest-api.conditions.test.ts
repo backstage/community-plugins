@@ -902,6 +902,58 @@ describe('REST policies api with conditions', () => {
     });
   });
 
+  describe('POST /roles/conditions', () => {
+    it('should reject action-only permissionMapping via REST', async () => {
+      const conditionDecision: RoleConditionalPolicyDecision = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: ['read'],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      const result = await request(app)
+        .post('/roles/conditions')
+        .send(conditionDecision);
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error.message).toContain(
+        'REST API requires permissionMapping entries to include permission name',
+      );
+    });
+
+    it('should accept named permissionMapping via REST', async () => {
+      conditionalStorageMock.createCondition = jest
+        .fn()
+        .mockImplementation(async () => 1);
+
+      const conditionDecision: RoleConditionalPolicyDecision = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      const result = await request(app)
+        .post('/roles/conditions')
+        .send(conditionDecision);
+
+      expect(result.statusCode).toBe(201);
+      expect(result.body).toEqual({ id: 1 });
+    });
+  });
+
   describe('PUT /roles/conditions', () => {
     it('should return return 403 for condition that the user is not an owner of', async () => {
       const conditionDecision: RoleConditionalPolicyDecision = {
@@ -925,6 +977,30 @@ describe('REST policies api with conditions', () => {
         message: '',
         name: 'NotAllowedError',
       });
+    });
+
+    it('should reject action-only permissionMapping on update via REST', async () => {
+      const conditionDecision: RoleConditionalPolicyDecision = {
+        id: 1,
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        resourceType: 'catalog-entity',
+        permissionMapping: ['read'],
+        result: AuthorizeResult.CONDITIONAL,
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      const result = await request(app)
+        .put('/roles/conditions/1')
+        .send(conditionDecision);
+
+      expect(result.statusCode).toBe(400);
+      expect(result.body.error.message).toContain(
+        'REST API requires permissionMapping entries to include permission name',
+      );
     });
 
     it('should update condition decision that the user is an owner of', async () => {
