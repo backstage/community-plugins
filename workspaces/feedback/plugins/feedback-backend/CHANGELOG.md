@@ -1,5 +1,13 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.2.1
+
+### Patch Changes
+
+- e136701: patch: fix yarn lock state
+- Updated dependencies [e136701]
+  - @backstage-community/plugin-feedback-common@1.0.1
+
 ## 2.2.0
 
 ### Minor Changes
