@@ -2,7 +2,7 @@
 # Usage: yarn workspace @backstage-community/plugin-rbac-backend start:multi-user
 #
 # Merges on top of app-config.yaml in this directory.
-# See __fixtures__/README.md for Keycloak + OIDC login scripts.
+# See CONTRIBUTING.md for Keycloak + OIDC login scripts.
 
 discovery:
   endpoints:
