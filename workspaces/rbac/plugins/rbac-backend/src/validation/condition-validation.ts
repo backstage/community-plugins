@@ -128,7 +128,13 @@ export function validateRoleCondition(
       `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
     );
   }
+  const firstIsNamed = isPermissionInfo(condition.permissionMapping[0]);
   for (const entry of condition.permissionMapping) {
+    if (isPermissionInfo(entry) !== firstIsNamed) {
+      throw new InputError(
+        `'permissionMapping' must be either all action strings or all {name, action} objects, not a mix`,
+      );
+    }
     if (isPermissionInfo(entry) && (!entry.name || entry.name.trim() === '')) {
       throw new InputError(
         `'permissionMapping' entry has empty permission name`,
