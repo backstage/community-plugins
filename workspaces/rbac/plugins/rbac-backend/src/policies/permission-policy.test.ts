@@ -1180,8 +1180,8 @@ describe('useOwnershipEntityRefs', () => {
         'catalog-entity',
         'read',
       ),
-      newPolicyQueryUser('user:default/leonardo.vieira', [
-        'user:default/leonardo.vieira',
+      newPolicyQueryUser('user:default/john.doe', [
+        'user:default/john.doe',
         'group:default/oncall',
       ]),
     );
@@ -1202,8 +1202,8 @@ describe('useOwnershipEntityRefs', () => {
         'catalog-entity',
         'read',
       ),
-      newPolicyQueryUser('user:default/leonardo.vieira', [
-        'user:default/leonardo.vieira',
+      newPolicyQueryUser('user:default/john.doe', [
+        'user:default/john.doe',
         'group:default/oncall',
       ]),
     );
@@ -1247,7 +1247,7 @@ describe('useOwnershipEntityRefs', () => {
   it('should resolve direct user-to-role bindings via ownershipEntityRefs', async () => {
     const policy = await buildPolicy(
       true,
-      [['user:default/leonardo.vieira', oncallRole]],
+      [['user:default/john.doe', oncallRole]],
       oncallPolicies,
     );
 
@@ -1257,9 +1257,7 @@ describe('useOwnershipEntityRefs', () => {
         'catalog-entity',
         'read',
       ),
-      newPolicyQueryUser('user:default/leonardo.vieira', [
-        'user:default/leonardo.vieira',
-      ]),
+      newPolicyQueryUser('user:default/john.doe', ['user:default/john.doe']),
     );
 
     expect(decision.result).toBe(AuthorizeResult.ALLOW);

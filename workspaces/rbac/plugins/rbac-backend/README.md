@@ -84,7 +84,7 @@ permission:
         - name: group:default/admins
 ```
 
-> **Note:** Only direct group memberships are supported for `superUsers`. When a group is specified as a super user, users who belong to a sub-group of that group will not be granted super user access.
+> **Note:** **Transient memberships are not supported for `superUsers`.** Meaning, when a group is specified as a super user, only direct group memberships are taken into account. Users who belong to a sub-group of a configured super user group will not be granted super user access.
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
 
@@ -103,8 +103,8 @@ With this enabled, a user whose sign-in resolver issues:
 ```ts
 ctx.issueToken({
   claims: {
-    sub: 'user:default/leonardo.vieira',
-    ent: ['user:default/leonardo.vieira', 'group:default/oncall'],
+    sub: 'user:default/john.doe',
+    ent: ['user:default/john.doe', 'group:default/oncall'],
   },
 });
 ```
