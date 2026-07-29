@@ -20,7 +20,4 @@
  * @packageDocumentation
  */
 
-// Old frontend system support
-export * from './legacy';
-
 export { default } from './plugin';
