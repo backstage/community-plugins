@@ -308,7 +308,7 @@ describe('DataBaseConditionalStorage', () => {
         await expect(async () => {
           await db.createCondition(condition1);
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["read"]'. Role could have multiple conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          `Cannot create condition: permission mapping overlaps with existing condition (id: 1) for resource type 'catalog-entity'. Overlapping entries: action 'read'.`,
         );
       },
     );
@@ -344,7 +344,7 @@ describe('DataBaseConditionalStorage', () => {
             ['read'],
           );
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["read"]'. Role could have multiple conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          `Condition cannot be saved: permission mapping overlaps with existing condition (id: 1) for resource type 'catalog-entity'. Overlapping entries: action 'read'.`,
         );
       },
     );
@@ -369,7 +369,7 @@ describe('DataBaseConditionalStorage', () => {
             ['read'],
           );
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["read"]'. Role could have multiple conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          `Condition cannot be saved: permission mapping overlaps with existing condition (id: 1) for resource type 'catalog-entity'. Overlapping entries: action 'read'.`,
         );
       },
     );
@@ -394,7 +394,7 @@ describe('DataBaseConditionalStorage', () => {
             ['read', 'update'],
           );
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["read","update"]'. Role could have multiple conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          /Condition cannot be saved: permission mapping overlaps with existing condition \(id: 1\) for resource type 'catalog-entity'. Overlapping entries: action 'read'; action 'update'/,
         );
       },
     );
@@ -419,7 +419,7 @@ describe('DataBaseConditionalStorage', () => {
             ['read', 'update', 'delete'],
           );
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["read","update","delete"]'. Role could have multiple conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          /Condition cannot be saved: permission mapping overlaps with existing condition \(id: 1\) for resource type 'catalog-entity'/,
         );
       },
     );
@@ -518,7 +518,7 @@ describe('DataBaseConditionalStorage', () => {
             ['read'],
           ),
         ).rejects.toThrow(
-          `Found condition with conflicted permission action '["read"]'`,
+          `Condition cannot be saved: permission mapping overlaps with existing condition (id: 1) for resource type 'catalog-entity'. Overlapping entries: action 'read' (broad) overlaps with permission 'catalog.entity.read'.`,
         );
       },
     );
@@ -539,7 +539,32 @@ describe('DataBaseConditionalStorage', () => {
             [{ name: 'catalog.entity.read', action: 'read' }],
           ),
         ).rejects.toThrow(
-          `Found condition with conflicted permission action '["read"]'`,
+          `Condition cannot be saved: permission mapping overlaps with existing condition (id: 1) for resource type 'catalog-entity'. Overlapping entries: permission 'catalog.entity.read' overlaps with action 'read' (broad).`,
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should conflict when named entries have the same permission name and action',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+        const storedDao: ConditionalPolicyDecisionDAO = {
+          ...conditionDao1,
+          permissions: '[{"name":"catalog.entity.read","action":"read"}]',
+        };
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          storedDao,
+        );
+
+        await expect(
+          db.checkConflictedConditions(
+            'role:default/test',
+            'catalog-entity',
+            'catalog',
+            [{ name: 'catalog.entity.read', action: 'read' }],
+          ),
+        ).rejects.toThrow(
+          `Condition cannot be saved: permission mapping overlaps with existing condition (id: 1) for resource type 'catalog-entity'. Overlapping entries: permission 'catalog.entity.read'.`,
         );
       },
     );
@@ -722,7 +747,7 @@ describe('DataBaseConditionalStorage', () => {
         await expect(async () => {
           await db.updateCondition(1, updateCondition);
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["delete"]'. Role could have multiple conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          `Cannot update condition 1: permission mapping overlaps with existing condition (id: 2) for resource type 'catalog-entity'. Overlapping entries: action 'delete'.`,
         );
       },
     );
@@ -747,8 +772,91 @@ describe('DataBaseConditionalStorage', () => {
         await expect(async () => {
           await db.updateCondition(1, updateCondition);
         }).rejects.toThrow(
-          `Found condition with conflicted permission action '["read","delete"]'. Role could have multiple ` +
-            `conditions for the same resource type 'catalog-entity', but with different permission action sets.`,
+          /Cannot update condition 1: permission mapping overlaps with existing condition \(id: 2\) for resource type 'catalog-entity'. Overlapping entries: action 'read'; action 'delete'/,
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should fail to update when changing from named to broad that conflicts',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '[{"name":"catalog.entity.read","action":"read"}]',
+        });
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '[{"name":"catalog.entity.read","action":"read"}]',
+        });
+
+        const updateCondition: RoleConditionalPolicyDecision = {
+          ...condition1,
+          permissionMapping: ['read'],
+        };
+        await expect(async () => {
+          await db.updateCondition(1, updateCondition);
+        }).rejects.toThrow(
+          `Cannot update condition 1: permission mapping overlaps with existing condition (id: 2) for resource type 'catalog-entity'. Overlapping entries: action 'read' (broad) overlaps with permission 'catalog.entity.read'.`,
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should report correct conflicting condition when first condition does not conflict',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          conditionDao1,
+        );
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '["update"]',
+        });
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '["delete"]',
+        });
+
+        const updateCondition: RoleConditionalPolicyDecision = {
+          ...condition1,
+          permissionMapping: ['delete'],
+        };
+        await expect(async () => {
+          await db.updateCondition(1, updateCondition);
+        }).rejects.toThrow(
+          `Cannot update condition 1: permission mapping overlaps with existing condition (id: 3) for resource type 'catalog-entity'. Overlapping entries: action 'delete'.`,
+        );
+      },
+    );
+
+    it.each(databases.eachSupportedId())(
+      'should report all conflicting conditions when update overlaps with multiple',
+      async databasesId => {
+        const { knex, db } = await createDatabase(databasesId);
+
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert(
+          conditionDao1,
+        );
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '["update"]',
+        });
+        await knex<ConditionalPolicyDecisionDAO>(CONDITIONAL_TABLE).insert({
+          ...conditionDao1,
+          permissions: '["delete"]',
+        });
+
+        const updateCondition: RoleConditionalPolicyDecision = {
+          ...condition1,
+          permissionMapping: ['update', 'delete'],
+        };
+        await expect(async () => {
+          await db.updateCondition(1, updateCondition);
+        }).rejects.toThrow(
+          /Cannot update condition 1: permission mapping overlaps with 2 existing conditions for resource type 'catalog-entity'. Condition 2: action 'update'. Condition 3: action 'delete'/,
         );
       },
     );

@@ -28,6 +28,27 @@ import {
 
 export const CONDITIONAL_TABLE = 'role-condition-policies';
 
+function formatOverlap(
+  query: PermissionMapping,
+  stored: PermissionMapping,
+): string {
+  const queryNamed = isPermissionInfo(query);
+  const storedNamed = isPermissionInfo(stored);
+  if (!queryNamed && !storedNamed) {
+    return `action '${query}'`;
+  }
+  if (queryNamed && storedNamed) {
+    return `permission '${query.name}'`;
+  }
+  if (queryNamed) {
+    return `permission '${query.name}' overlaps with action '${stored}' (broad)`;
+  }
+  if (storedNamed) {
+    return `action '${query}' (broad) overlaps with permission '${stored.name}'`;
+  }
+  return `action '${query}'`;
+}
+
 function mappingEntriesConflict(
   a: PermissionMapping,
   b: PermissionMapping,
@@ -143,7 +164,8 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     conditionalDecision: RoleConditionalPolicyDecision,
     idsToExclude?: ReadonlySet<number>,
   ): Promise<number> {
-    await this.checkConflictedConditions(
+    await this.throwOnConflict(
+      'Cannot create condition',
       conditionalDecision.roleEntityRef,
       conditionalDecision.resourceType,
       conditionalDecision.pluginId,
@@ -174,48 +196,16 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     trx?: Knex.Transaction | Knex,
     idsToExclude?: ReadonlySet<number>,
   ): Promise<void> {
-    const db = trx ?? this.knex;
-    let conditionsForTheSameResource = await this.filterConditions(
+    await this.throwOnConflict(
+      'Condition cannot be saved',
       roleEntityRef,
-      pluginId,
       resourceType,
-      undefined,
-      undefined,
-      db,
+      pluginId,
+      queryMapping,
+      idToExclude,
+      trx,
+      idsToExclude,
     );
-    conditionsForTheSameResource = conditionsForTheSameResource.filter(
-      c =>
-        c.id !== idToExclude &&
-        (idsToExclude === undefined ||
-          c.id === undefined ||
-          !idsToExclude.has(c.id)),
-    );
-
-    if (conditionsForTheSameResource) {
-      const conflictedCondition = conditionsForTheSameResource.find(condition =>
-        queryMapping.some(queryEntry =>
-          condition.permissionMapping.some(storedEntry =>
-            mappingEntriesConflict(queryEntry, storedEntry),
-          ),
-        ),
-      );
-
-      if (conflictedCondition) {
-        const queryActions = queryMapping.map(permissionMappingAction);
-        const storedActions = conflictedCondition.permissionMapping.map(
-          permissionMappingAction,
-        );
-        const conflictedActions = queryActions.filter(action =>
-          storedActions.includes(action),
-        );
-        throw new ConflictError(
-          `Found condition with conflicted permission action '${JSON.stringify(
-            conflictedActions,
-          )}'. Role could have multiple ` +
-            `conditions for the same resource type '${conflictedCondition.resourceType}', but with different permission action sets.`,
-        );
-      }
-    }
   }
 
   async getCondition(
@@ -251,7 +241,8 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
       throw new NotFoundError(`Condition with id ${id} was not found`);
     }
 
-    await this.checkConflictedConditions(
+    await this.throwOnConflict(
+      `Cannot update condition ${id}`,
       conditionalDecision.roleEntityRef,
       conditionalDecision.resourceType,
       conditionalDecision.pluginId,
@@ -272,6 +263,76 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     if (!result || result.length === 0) {
       throw new Error(`Failed to update the condition with id: ${id}.`);
     }
+  }
+
+  private async throwOnConflict(
+    operationLabel: string,
+    roleEntityRef: string,
+    resourceType: string,
+    pluginId: string,
+    queryMapping: PermissionMapping[],
+    idToExclude?: number,
+    trx?: Knex.Transaction | Knex,
+    idsToExclude?: ReadonlySet<number>,
+  ): Promise<void> {
+    const db = trx ?? this.knex;
+    let conditionsForTheSameResource = await this.filterConditions(
+      roleEntityRef,
+      pluginId,
+      resourceType,
+      undefined,
+      undefined,
+      db,
+    );
+    conditionsForTheSameResource = conditionsForTheSameResource.filter(
+      c =>
+        c.id !== idToExclude &&
+        (idsToExclude === undefined ||
+          c.id === undefined ||
+          !idsToExclude.has(c.id)),
+    );
+
+    const conflictingConditions = conditionsForTheSameResource.filter(
+      condition =>
+        queryMapping.some(queryEntry =>
+          condition.permissionMapping.some(storedEntry =>
+            mappingEntriesConflict(queryEntry, storedEntry),
+          ),
+        ),
+    );
+
+    if (conflictingConditions.length === 0) {
+      return;
+    }
+
+    const overlapsForCondition = (cond: RoleConditionalPolicyDecision) =>
+      queryMapping
+        .flatMap(q =>
+          cond.permissionMapping
+            .filter(s => mappingEntriesConflict(q, s))
+            .map(s => formatOverlap(q, s)),
+        )
+        .join('; ');
+
+    if (conflictingConditions.length === 1) {
+      const cond = conflictingConditions[0];
+      throw new ConflictError(
+        `${operationLabel}: permission mapping overlaps with existing condition (id: ${cond.id}) ` +
+          `for resource type '${cond.resourceType}'. Overlapping entries: ${overlapsForCondition(cond)}.`,
+      );
+    }
+
+    const sorted = conflictingConditions.sort(
+      (a, b) => (a.id ?? 0) - (b.id ?? 0),
+    );
+    const condDetails = sorted
+      .map(cond => `Condition ${cond.id}: ${overlapsForCondition(cond)}`)
+      .join('. ');
+
+    throw new ConflictError(
+      `${operationLabel}: permission mapping overlaps with ${conflictingConditions.length} existing conditions ` +
+        `for resource type '${resourceType}'. ${condDetails}.`,
+    );
   }
 
   private toDAO(

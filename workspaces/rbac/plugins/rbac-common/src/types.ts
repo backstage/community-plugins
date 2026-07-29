@@ -209,7 +209,7 @@ export type RoleConditionalPolicyDecision = ConditionalPolicyDecision & {
   id: number;
   roleEntityRef: string;
 
-  permissionMapping: PermissionMapping[];
+  permissionMapping: PermissionAction[] | PermissionInfo[];
 };
 
 /**
