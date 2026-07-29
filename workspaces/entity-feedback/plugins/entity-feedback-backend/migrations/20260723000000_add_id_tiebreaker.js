@@ -117,11 +117,21 @@ async function addIdColumn(knex, tableName, { columns, define }) {
 /**
  * @param { import("knex").Knex } knex
  * @param { string } tableName
+ * @param { { columns: string[], define: (knex: import("knex").Knex, table: import("knex").Knex.CreateTableBuilder) => void } } table
  */
-async function dropIdColumn(knex, tableName) {
-  await knex.schema.alterTable(tableName, table => {
-    table.dropColumn('id');
-  });
+async function dropIdColumn(knex, tableName, { columns, define }) {
+  // `id` is the primary key, so dropping it via alterTable fails on
+  // Postgres/MySQL (the PK constraint depends on the column). Rebuild the
+  // table without it instead, mirroring the `up` migration.
+  const tmpTableName = `${tableName}_pre_id_migration`;
+  await knex.schema.renameTable(tableName, tmpTableName);
+  await knex.schema.createTable(tableName, table => define(knex, table));
+  const columnList = columns.join(', ');
+  await knex.raw(
+    `insert into ?? (${columnList}) select ${columnList} from ?? order by id`,
+    [tableName, tmpTableName],
+  );
+  await knex.schema.dropTable(tmpTableName);
 }
 
 /**
@@ -137,7 +147,7 @@ exports.up = async function up(knex) {
  * @param { import("knex").Knex } knex
  */
 exports.down = async function down(knex) {
-  for (const tableName of Object.keys(TABLES)) {
-    await dropIdColumn(knex, tableName);
+  for (const [tableName, table] of Object.entries(TABLES)) {
+    await dropIdColumn(knex, tableName, table);
   }
 };
