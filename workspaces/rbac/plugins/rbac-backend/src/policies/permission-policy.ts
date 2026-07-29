@@ -254,16 +254,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       }
 
       const permissionName = request.permission.name;
-      const catalogRoles = await this.enforcer.getRolesForUser(userEntityRef);
-      let roles = catalogRoles;
-      if (this.useOwnershipEntityRefs) {
-        const subjects =
-          userInfo.ownershipEntityRefs.length > 0
-            ? userInfo.ownershipEntityRefs
-            : [userEntityRef];
-        const transientRoles = await this.collectRolesForSubjects(subjects);
-        roles = [...new Set([...catalogRoles, ...transientRoles])];
-      }
+      const roles = await this.resolveRolesForUser(userEntityRef, userInfo);
       // handle permission with 'resource' type
       const hasNamedPermission = await this.hasImplicitPermission(
         permissionName,
@@ -334,6 +325,23 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       });
       return { result: AuthorizeResult.DENY };
     }
+  }
+
+  private async resolveRolesForUser(
+    userEntityRef: string,
+    userInfo: BackstageUserInfo,
+  ): Promise<string[]> {
+    const catalogRoles = await this.enforcer.getRolesForUser(userEntityRef);
+    if (!this.useOwnershipEntityRefs) {
+      return catalogRoles;
+    }
+
+    const subjects =
+      userInfo.ownershipEntityRefs.length > 0
+        ? userInfo.ownershipEntityRefs
+        : [userEntityRef];
+    const ownershipRoles = await this.collectRolesForSubjects(subjects);
+    return [...new Set([...catalogRoles, ...ownershipRoles])];
   }
 
   private async collectRolesForSubjects(subjects: string[]): Promise<string[]> {
