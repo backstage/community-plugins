@@ -43,8 +43,12 @@
     "yaml": "^2.3.3"
   },
   "devDependencies": {
+    "@backstage/backend-defaults": "^0.17.3",
+    "@backstage/backend-test-utils": "^1.11.4",
     "@backstage/cli": "^0.36.3",
-    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.12"
+    "@backstage/plugin-scaffolder-backend": "^4.0.1",
+    "@backstage/plugin-scaffolder-node-test-utils": "^0.3.12",
+    "zod": "^3.25.76 || ^4.0.0"
   },
   "files": [
     "dist",

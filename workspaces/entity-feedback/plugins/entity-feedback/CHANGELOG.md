@@ -1,5 +1,22 @@
 # @backstage-community/plugin-entity-feedback
 
+## 0.21.1
+
+### Patch Changes
+
+- 2fd6cf6: Update new frontend system extension definitions to remove unnecessary compatibility wrappers and export components to allow creating custom extensions to achieve parity with previous customizability with exported component extensions under the old system
+
+## 0.21.0
+
+### Minor Changes
+
+- b6d88b4: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- Updated dependencies [b6d88b4]
+  - @backstage-community/plugin-entity-feedback-common@0.19.0
+
 ## 0.20.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.13.1
+
+### Patch Changes
+
+- 27ea591: Updated dependency `axios` to `^1.18.0`.
+
 ## 1.13.0
 
 ### Minor Changes

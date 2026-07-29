@@ -22,6 +22,7 @@ import {
   mockConfig,
   mockCreateJiraTicketResp,
   mockFeedback,
+  mockJiraCloudUsernameResp,
   mockJiraTicketDetailsResp,
   mockJiraUsernameResp,
 } from '../mocks';
@@ -36,9 +37,13 @@ const handlers = [
       return res(ctx.json(mockCreateJiraTicketResp(key)));
     },
   ),
-  rest.get('https://jira.host/rest/api/latest/user/search', (_, res, ctx) =>
-    res(ctx.json(mockJiraUsernameResp)),
-  ),
+  rest.get('https://jira.host/rest/api/latest/user/search', (req, res, ctx) => {
+    const query = req.url.searchParams.get('query');
+    if (query) {
+      return res(ctx.json(mockJiraCloudUsernameResp));
+    }
+    return res(ctx.json(mockJiraUsernameResp));
+  }),
   rest.get('https://jira.host/rest/api/latest/issue/ticket-id', (_, res, ctx) =>
     res(ctx.json(mockJiraTicketDetailsResp)),
   ),
@@ -78,5 +83,38 @@ describe('JIRA issue', () => {
     const data = await jiraService.getTicketDetails('ticket-id');
     expect(data?.status).toEqual('Backlog');
     expect(data?.assignee).toEqual('John Doe');
+  });
+});
+
+describe('JIRA issue - Cloud', () => {
+  const mswMockServer = setupServer();
+  handlers.forEach(handler => mswMockServer.use(handler));
+  mswMockServer.listen({ onUnhandledRequest: 'warn' });
+  const jiraHost = mockConfig.feedback.integrations.jira[0].host;
+  const jiraToken = mockConfig.feedback.integrations.jira[0].token;
+  const jiraServiceCloud = new JiraApiService(
+    jiraHost,
+    jiraToken,
+    logger,
+    'CLOUD',
+  );
+
+  it('createJiraTicket', async () => {
+    const data = await jiraServiceCloud.createJiraTicket({
+      projectKey: 'proj-key',
+      summary: mockFeedback.summary!,
+      description: 'Submitted from Test App',
+      tag: mockFeedback.tag!,
+      feedbackType: mockFeedback.feedbackType!,
+      reporter: '12345-cloud-id',
+    });
+    expect(data.key).toEqual('proj-key-01');
+  });
+
+  it('getJiraUsernameByEmail', async () => {
+    const data = await jiraServiceCloud.getJiraUsernameByEmail(
+      'john.doe@example.com',
+    );
+    expect(data).toEqual('12345-cloud-id');
   });
 });

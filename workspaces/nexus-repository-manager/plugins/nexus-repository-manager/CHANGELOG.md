@@ -1,5 +1,14 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.25.1
+
+### Patch Changes
+
+- 60b0cea: Fixed nested interactive controls accessibility violation in artifact table by disabling column dragging
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 53f1fff: Updated dependency `@hey-api/openapi-ts` to `0.99.0`.
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+
 ## 1.25.0
 
 ### Minor Changes

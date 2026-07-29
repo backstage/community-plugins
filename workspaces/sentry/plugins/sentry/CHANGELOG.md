@@ -1,5 +1,17 @@
 # @backstage-community/plugin-sentry
 
+## 1.20.0
+
+### Minor Changes
+
+- 4e73768: Backstage version bump to v1.53.0
+
+## 1.19.1
+
+### Patch Changes
+
+- 6e92084: Clarified the Sentry Issues table subtitle to describe the sparkline graph's stats period, not the dropdown filter.
+
 ## 1.19.0
 
 ### Minor Changes

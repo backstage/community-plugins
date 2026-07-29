@@ -35,7 +35,7 @@ export type Props = {
   timeline?: EntrySnapshot[];
 };
 
-const RadarTimeline = (props: Props): JSX.Element => {
+const RadarTimeline = (props: Props): React.JSX.Element => {
   const { timeline } = props;
 
   return (

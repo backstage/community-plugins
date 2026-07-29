@@ -1,5 +1,12 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.16.1
+
+### Patch Changes
+
+- 9733799: Updated dependency `qs` to `6.15.3`.
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+
 ## 7.16.0
 
 ### Minor Changes

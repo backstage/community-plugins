@@ -1,5 +1,35 @@
 # @backstage-community/plugin-rbac
 
+## 2.0.0
+
+### Major Changes
+
+- 0150d87: **BREAKING**: The New Frontend System (NFS) plugin has been promoted from the `./alpha` subpath to the primary `.` entry point. The legacy plugin has been moved to the new `./legacy` subpath. The `./alpha` subpath now only exports translations.
+
+  Migration steps:
+
+  - If you were importing from `@backstage-community/plugin-rbac/alpha` to use the NFS plugin, update your imports to `@backstage-community/plugin-rbac`.
+  - If you were importing from `@backstage-community/plugin-rbac` (the legacy plugin), update your imports to `@backstage-community/plugin-rbac/legacy`.
+  - If you were importing translations from `@backstage-community/plugin-rbac/alpha`, those continue to work from the same path.
+
+### Patch Changes
+
+- 09d8279: Fixed cancel button position on the role form page by removing absolute positioning and placing it in the document flow after the error alert
+
+## 1.55.3
+
+### Patch Changes
+
+- b1d36eb: Fixed nested interactive controls accessibility violations (WCAG 4.1.2) in RBAC tables
+
+## 1.55.2
+
+### Patch Changes
+
+- 2b0b5be: Update German translation for accessible plugins header.
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+
 ## 1.55.1
 
 ### Patch Changes

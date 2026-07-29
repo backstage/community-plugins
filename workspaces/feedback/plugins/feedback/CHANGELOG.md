@@ -1,5 +1,21 @@
 # @backstage-community/plugin-feedback
 
+## 1.8.8
+
+### Patch Changes
+
+- e136701: patch: fix yarn lock state
+- Updated dependencies [e136701]
+  - @backstage-community/plugin-feedback-common@1.0.1
+
+## 1.8.7
+
+### Patch Changes
+
+- 59725e0: Refactored the frontend to consume feedback constants directly from the common `@backstage-community/plugin-feedback-common` package instead of local definitions.
+- Updated dependencies [59725e0]
+  - @backstage-community/plugin-feedback-common@1.0.0
+
 ## 1.8.6
 
 ### Patch Changes

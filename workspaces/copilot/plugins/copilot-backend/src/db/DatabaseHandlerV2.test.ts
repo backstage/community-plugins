@@ -166,7 +166,8 @@ describe('DatabaseHandlerV2', () => {
 
       const logs = await handler.getIngestionLog('organization', 'org-1');
       expect(logs).toHaveLength(1);
-      expect(normalizeDate(logs[0].day)).toBe('2026-05-10');
+      expect(typeof logs[0].day).toBe('string');
+      expect(logs[0].day).toBe('2026-05-10');
       expect(logs[0].status).toBe('success');
       expect(logs[0].components_loaded).toBe('["totals","users"]');
     });
@@ -227,11 +228,31 @@ describe('DatabaseHandlerV2', () => {
       );
 
       expect(rows).toHaveLength(2);
-      expect(rows.map(r => normalizeDate(r.day))).toEqual([
-        '2026-05-01',
-        '2026-05-02',
-      ]);
+      expect(rows.every(r => typeof r.day === 'string')).toBe(true);
+      expect(rows.map(r => r.day)).toEqual(['2026-05-01', '2026-05-02']);
       expect(rows.every(r => r.team_slug === 'team-a')).toBe(true);
+    });
+
+    it('getDailyTotals always returns day as a plain YYYY-MM-DD string, regardless of database driver (regression test for #9540)', async () => {
+      // On Postgres, Knex deserializes a `date` column as a JS Date object.
+      // Before the fix, that Date was returned as-is and serialized by
+      // res.json() into a full ISO timestamp, breaking the frontend's
+      // formatDay() parsing. This test guards against that regression on
+      // every database backend the suite runs against, including Postgres.
+      await handler.insertDailyTotals([
+        buildDailyTotal({ day: '2026-05-26', team_slug: '' }),
+      ]);
+
+      const rows = await handler.getDailyTotals(
+        'organization',
+        'org-1',
+        '2026-05-26',
+        '2026-05-26',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(typeof rows[0].day).toBe('string');
+      expect(rows[0].day).toBe('2026-05-26');
     });
 
     it('getPeriodRange returns min/max day from daily totals', async () => {
@@ -379,14 +400,6 @@ function buildDailyTotal(overrides: Partial<V2DailyTotal> = {}): V2DailyTotal {
     user_initiated_interaction_count: 33,
     ...overrides,
   };
-}
-
-function normalizeDate(day: string | Date): string {
-  if (day instanceof Date) {
-    return day.toISOString().split('T')[0];
-  }
-
-  return /^\d{4}-\d{2}-\d{2}/.exec(day)?.[0] ?? day;
 }
 
 function buildUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {

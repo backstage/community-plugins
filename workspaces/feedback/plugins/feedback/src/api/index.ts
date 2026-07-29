@@ -21,6 +21,10 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 
+import {
+  DEFAULT_ERROR_LIST,
+  DEFAULT_EXPERIENCE_LIST,
+} from '@backstage-community/plugin-feedback-common';
 import { FeedbackType } from '../models/feedback.model';
 
 export const feedbackApiRef = createApiRef<FeedbackAPI>({
@@ -58,29 +62,15 @@ export class FeedbackAPI {
     this.configApi = options.configApi;
   }
 
-  private readonly defaultErrorList = [
-    'Slow Loading',
-    'Not Responsive',
-    'Navigation',
-    'UI Issues',
-    'Other',
-  ];
-  private readonly defaultExperienceList = [
-    'Excellent',
-    'Good',
-    'Needs Improvement',
-    'Other',
-  ];
-
   getErrorList = () =>
     this.configApi.getOptionalStringArray(
       'feedback.customizations.errorList',
-    ) ?? this.defaultErrorList;
+    ) ?? DEFAULT_ERROR_LIST;
 
   getExperienceList = () =>
     this.configApi.getOptionalStringArray(
       'feedback.customizations.experienceList',
-    ) ?? this.defaultExperienceList;
+    ) ?? DEFAULT_EXPERIENCE_LIST;
 
   async getAllFeedbacks(
     page: number,

@@ -14,3 +14,5 @@
  * limitations under the License.
  */
 export { feedbackPlugin as default } from './plugin';
+export { registerFeedbackActions } from './actions/feedbackActions';
+export type { RegisterFeedbackActionsOptions } from './actions/feedbackActions';

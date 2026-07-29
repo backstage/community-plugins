@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import LayersIcon from '@material-ui/icons/Layers';
+import { RiStackLine } from '@remixicon/react';
 import {
   compatWrapper,
   convertLegacyRouteRef,
@@ -49,7 +49,14 @@ const exploreApi = ApiBlueprint.make({
 const explorePage = PageBlueprint.make({
   params: {
     path: '/explore',
+    title: 'Explore',
+    icon: <RiStackLine />,
     routeRef: convertLegacyRouteRef(exploreRouteRef),
+    // TODO: Revisit once Backstage core supports rendering plugin headers
+    // without the wrapping PageLayout header. For now we opt out of the
+    // default header so `PluginHeader` (used inside `ExploreLayout`) is the
+    // only header rendered.
+    noHeader: true,
     loader: async () =>
       import('./components/ExplorePage').then(m =>
         compatWrapper(<m.ExplorePage />),
@@ -71,7 +78,7 @@ export const exploreSearchResultListItem = SearchResultListItemBlueprint.make({
 /** @alpha */
 export default createFrontendPlugin({
   pluginId: 'explore',
-  icon: <LayersIcon />,
+  icon: <RiStackLine />,
   extensions: [exploreApi, explorePage, exploreSearchResultListItem],
   routes: convertLegacyRouteRefs({
     explore: exploreRouteRef,

@@ -16,6 +16,7 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
 import { examples } from './replace.example';
+import { regExpsSchema } from './replace.schema';
 
 const id = 'regex:replace';
 
@@ -30,47 +31,7 @@ export const createReplaceAction = () => {
     examples,
     schema: {
       input: {
-        regExps: z =>
-          z.array(
-            z.object({
-              pattern: z
-                .string()
-                .refine(
-                  // You should not parse a regex (regular language) with a regex (regular language),
-                  // you actually need a context free grammar to parse a regex (regular language).
-                  // Hence, we are using a string comparison here.
-                  value => !value.startsWith('/') && !value.endsWith('/'),
-                  {
-                    message:
-                      'The RegExp constructor cannot take a string pattern with a leading and trailing forward slash.',
-                  },
-                )
-                .describe(
-                  'The regex pattern to match the value like in String.prototype.replace()',
-                ),
-              flags: z
-                .array(
-                  // Prefer array over set here because input values are normally defined in YAML which doesn't support Sets.
-                  z.enum(['g', 'm', 'i', 'y', 'u', 's', 'd'], {
-                    invalid_type_error:
-                      'Invalid flag, possible values are: g, m, i, y, u, s, d',
-                  }),
-                )
-                .optional()
-                .describe('The flags for the regex'),
-              replacement: z
-                .string()
-                .describe(
-                  'The replacement value for the regex like in String.prototype.replace()',
-                ),
-              values: z.array(
-                z.object({
-                  key: z.string().describe('The key to access the regex value'),
-                  value: z.string().describe('The input value of the regex'),
-                }),
-              ),
-            }),
-          ),
+        regExps: regExpsSchema,
       },
     },
 

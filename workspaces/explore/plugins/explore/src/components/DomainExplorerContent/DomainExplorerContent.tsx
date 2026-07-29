@@ -16,7 +16,7 @@
 
 import { DomainEntity } from '@backstage/catalog-model';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import Button from '@material-ui/core/Button';
+import { ButtonLink } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import {
   Content,
@@ -62,13 +62,12 @@ const Body = () => {
         title="No domains to display"
         description="You haven't added any domains yet."
         action={
-          <Button
-            variant="contained"
-            color="primary"
+          <ButtonLink
+            variant="primary"
             href="https://backstage.io/docs/features/software-catalog/descriptor-format#kind-domain"
           >
             Read more
-          </Button>
+          </ButtonLink>
         }
       />
     );

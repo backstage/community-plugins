@@ -155,6 +155,8 @@ const argocdTranslationFr = createTranslationMessages({
       'Cycle de vie du déploiement',
     'deploymentLifecycle.deploymentLifecycle.subtitle':
       "Examiner les composants/systèmes déployés dans l'espace de noms à l'aide du plugin ArgoCD",
+    'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD':
+      'Ouvrir {{appName}} dans ArgoCD',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'Exemple',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'Serveur',
     'deploymentLifecycle.deploymentLifecycleCard.namespace': 'Espace de noms',

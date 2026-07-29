@@ -39,7 +39,12 @@ export interface EntityFeedbackApi {
 }
 
 // @public (undocumented)
-export const entityFeedbackApiRef: ApiRef<EntityFeedbackApi>;
+export const entityFeedbackApiRef: ApiRef<
+  EntityFeedbackApi,
+  'plugin.entity-feedback.service'
+> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public (undocumented)
 export class EntityFeedbackClient implements EntityFeedbackApi {
@@ -139,6 +144,16 @@ export interface LikeDislikeButtonsProps {
 }
 
 // @public (undocumented)
+export enum LikeDislikeFeedbackRatings {
+  // (undocumented)
+  dislike = 'DISLIKE',
+  // (undocumented)
+  like = 'LIKE',
+  // (undocumented)
+  neutral = 'NEUTRAL',
+}
+
+// @public (undocumented)
 export const LikeDislikeRatingsTable: (
   props: LikeDislikeRatingsTableProps,
 ) => JSX_2.Element;
@@ -151,6 +166,20 @@ export interface LikeDislikeRatingsTableProps {
   ownerRef?: string;
   // (undocumented)
   title?: string;
+}
+
+// @public (undocumented)
+export enum StarredFeedbackRatings {
+  // (undocumented)
+  five = 5,
+  // (undocumented)
+  four = 4,
+  // (undocumented)
+  one = 1,
+  // (undocumented)
+  three = 3,
+  // (undocumented)
+  two = 2,
 }
 
 // @public (undocumented)
@@ -167,7 +196,7 @@ export interface StarredRatingButtonsProps {
   // (undocumented)
   requestResponse?: boolean;
   // (undocumented)
-  requestResponseThreshold?: number;
+  requestResponseThreshold?: StarredFeedbackRatings;
 }
 
 // @public (undocumented)

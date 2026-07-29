@@ -29,6 +29,8 @@ export const mockJiraTicketDetailsResp = {
 
 export const mockJiraUsernameResp = [{ name: 'John Doe' }];
 
+export const mockJiraCloudUsernameResp = [{ accountId: '12345-cloud-id' }];
+
 export const mockCreateJiraTicketResp = (key: any) => {
   return { id: '3490987634', key: `${key}-01` };
 };
