@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-import {
-  UrlReaderService,
-  UrlReaderServiceReadTreeResponse,
-} from '@backstage/backend-plugin-api';
-import { CatalogApi } from '@backstage/catalog-client';
-import { Results } from 'linguist-js/dist/types';
 import { DateTime } from 'luxon';
-import { LinguistBackendStore } from '../db';
 import { kindOrDefault, LinguistBackendClient } from './LinguistBackendClient';
 import fs from 'fs-extra';
 import { LINGUIST_ANNOTATION } from '@backstage-community/plugin-linguist-common';
+import { ANNOTATION_SOURCE_LOCATION } from '@backstage/catalog-model';
 import { mockServices } from '@backstage/backend-test-utils';
 
 const linguistResultMock = Promise.resolve({
@@ -58,7 +52,7 @@ const linguistResultMock = Promise.resolve({
     },
     extensions: {},
   },
-} as Results);
+});
 
 describe('kindOrDefault', () => {
   it('should return default kind when undefined', () => {
@@ -75,9 +69,10 @@ describe('kindOrDefault', () => {
 describe('Linguist backend API', () => {
   const logger = mockServices.logger.mock();
 
-  const store: jest.Mocked<LinguistBackendStore> = {
+  const store = {
     insertEntityResults: jest.fn(),
     insertNewEntity: jest.fn(),
+    markEntityProcessed: jest.fn(),
     getEntityResults: jest.fn(),
     getProcessedEntities: jest.fn(),
     getUnprocessedEntities: jest.fn(),
@@ -85,22 +80,23 @@ describe('Linguist backend API', () => {
     deleteEntity: jest.fn(),
   };
 
-  const urlReader: jest.Mocked<UrlReaderService> = {
+  const urlReader = {
     readTree: jest.fn(),
     search: jest.fn(),
     readUrl: jest.fn(),
   };
 
-  const catalogApi: jest.Mocked<CatalogApi> = {
+  const catalogApi = {
     getEntities: jest.fn(),
     getEntityByRef: jest.fn(),
-  } as any;
+  };
 
   const api = new LinguistBackendClient(
     logger,
     store,
     urlReader,
     mockServices.auth(),
+    // @ts-ignore test mock only includes methods used by the client
     catalogApi,
   );
 
@@ -188,6 +184,38 @@ describe('Linguist backend API', () => {
     // Should only make 1 catalog API call (not N+1)
     expect(catalogApi.getEntities).toHaveBeenCalledTimes(1);
     expect(catalogApi.getEntityByRef).not.toHaveBeenCalled();
+  });
+
+  it('should synchronize entities using source location annotation and custom kinds', async () => {
+    const apiWithSourceLocation = new LinguistBackendClient(
+      logger,
+      store,
+      urlReader,
+      mockServices.auth(),
+      // @ts-ignore test mock only includes methods used by the client
+      catalogApi,
+      undefined,
+      undefined,
+      true,
+      ['Resource'],
+    );
+
+    catalogApi.getEntities.mockResolvedValue({ items: [] });
+    store.getAllEntities.mockResolvedValue([]);
+
+    await apiWithSourceLocation.synchronizeEntitiesWithCatalog();
+
+    expect(catalogApi.getEntities).toHaveBeenCalledWith(
+      expect.objectContaining({
+        filter: expect.objectContaining({
+          kind: ['Resource'],
+          [`metadata.annotations.${ANNOTATION_SOURCE_LOCATION}`]:
+            expect.anything(),
+        }),
+        fields: ['kind', 'metadata'],
+      }),
+      expect.anything(),
+    );
   });
 
   it('should synchronize entities with catalog - no changes needed', async () => {
@@ -298,6 +326,7 @@ describe('Linguist backend API', () => {
       store,
       urlReader,
       mockServices.auth(),
+      // @ts-ignore test mock only includes methods used by the client
       catalogApi,
       { days: 5 },
     );
@@ -334,6 +363,7 @@ describe('Linguist backend API', () => {
   it('should generate and save languages for an entity', async () => {
     const spy = jest
       .spyOn(api, 'getLinguistResults')
+      // @ts-expect-error fixture shape is sufficient for this test
       .mockImplementation(() => linguistResultMock);
 
     urlReader.readTree.mockResolvedValueOnce({
@@ -344,7 +374,7 @@ describe('Linguist backend API', () => {
         },
       ],
       dir: async () => '/temp/my-code',
-    } as UrlReaderServiceReadTreeResponse);
+    });
 
     const fsSpy = jest.spyOn(fs, 'remove');
 
@@ -356,6 +386,32 @@ describe('Linguist backend API', () => {
     expect(store.insertEntityResults).toHaveBeenCalled();
     expect(fs.remove).toHaveBeenCalled();
     spy.mockClear();
+    fsSpy.mockClear();
+  });
+
+  it('should clean up and mark an entity processed when linguist fails', async () => {
+    jest.spyOn(api, 'getLinguistResults').mockRejectedValue(new Error('boom'));
+
+    urlReader.readTree.mockResolvedValueOnce({
+      files: async () => [],
+      dir: async () => '/temp/my-code',
+    });
+
+    const fsSpy = jest.spyOn(fs, 'remove');
+
+    await expect(
+      api.generateEntityLanguages(
+        'component:default/fake-service',
+        'https://some.fake/service/',
+      ),
+    ).rejects.toThrow('boom');
+
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      'component:default/fake-service',
+      expect.any(Date),
+    );
+    expect(store.insertEntityResults).not.toHaveBeenCalled();
+    expect(fs.remove).toHaveBeenCalled();
     fsSpy.mockClear();
   });
 
@@ -392,6 +448,7 @@ describe('Linguist backend API', () => {
 
     const resultsSpy = jest
       .spyOn(api, 'getLinguistResults')
+      // @ts-expect-error fixture shape is sufficient for this test
       .mockImplementation(() => linguistResultMock);
 
     urlReader.readTree.mockResolvedValue({
@@ -402,7 +459,7 @@ describe('Linguist backend API', () => {
         },
       ],
       dir: async () => '/temp/my-code',
-    } as UrlReaderServiceReadTreeResponse);
+    });
 
     const fsSpy = jest.spyOn(fs, 'remove');
 
@@ -415,12 +472,83 @@ describe('Linguist backend API', () => {
     fsSpy.mockClear();
   });
 
+  it('should strip url prefix before generating entity languages', async () => {
+    store.getProcessedEntities.mockResolvedValue([]);
+    store.getUnprocessedEntities.mockResolvedValue([
+      'component:default/service-one',
+    ]);
+
+    catalogApi.getEntityByRef.mockResolvedValue({
+      apiVersion: 'backstage.io/v1beta1',
+      metadata: {
+        name: 'service-one',
+        annotations: {
+          [LINGUIST_ANNOTATION]: 'url:https://some.fake/service/',
+        },
+      },
+      kind: 'Component',
+    });
+
+    const generateEntityLanguages = jest
+      .spyOn(api, 'generateEntityLanguages')
+      .mockResolvedValue('ok');
+
+    await api.generateEntitiesLanguages();
+
+    expect(generateEntityLanguages).toHaveBeenCalledWith(
+      'component:default/service-one',
+      'https://some.fake/service/',
+    );
+
+    generateEntityLanguages.mockRestore();
+  });
+
+  it('should process entities by synchronizing then generating', async () => {
+    const synchronizeSpy = jest
+      .spyOn(api, 'synchronizeEntitiesWithCatalog')
+      .mockResolvedValue();
+    const generateSpy = jest
+      .spyOn(api, 'generateEntitiesLanguages')
+      .mockResolvedValue();
+
+    await api.processEntities();
+
+    expect(synchronizeSpy).toHaveBeenCalledTimes(1);
+    expect(generateSpy).toHaveBeenCalledTimes(1);
+    expect(synchronizeSpy.mock.invocationCallOrder[0]).toBeLessThan(
+      generateSpy.mock.invocationCallOrder[0],
+    );
+
+    synchronizeSpy.mockRestore();
+    generateSpy.mockRestore();
+  });
+
+  it('should mark entity processed and rethrow when reading source tree fails', async () => {
+    urlReader.readTree.mockRejectedValue(new Error('read failed'));
+    const fsSpy = jest.spyOn(fs, 'remove');
+
+    await expect(
+      api.generateEntityLanguages(
+        'component:default/fake-service',
+        'https://some.fake/service/',
+      ),
+    ).rejects.toThrow('read failed');
+
+    expect(store.markEntityProcessed).toHaveBeenCalledWith(
+      'component:default/fake-service',
+      expect.any(Date),
+    );
+    expect(fsSpy).not.toHaveBeenCalled();
+    fsSpy.mockClear();
+  });
+
   it('should generate languages for entities using defined batch size', async () => {
     const apiWithBatchSize = new LinguistBackendClient(
       logger,
       store,
       urlReader,
       mockServices.auth(),
+      // @ts-ignore test mock only includes methods used by the client
       catalogApi,
       undefined,
       2,
@@ -458,6 +586,7 @@ describe('Linguist backend API', () => {
 
     const resultsSpy = jest
       .spyOn(apiWithBatchSize, 'getLinguistResults')
+      // @ts-expect-error fixture shape is sufficient for this test
       .mockImplementation(() => linguistResultMock);
 
     urlReader.readTree.mockResolvedValue({
@@ -468,7 +597,7 @@ describe('Linguist backend API', () => {
         },
       ],
       dir: async () => '/temp/my-code',
-    } as UrlReaderServiceReadTreeResponse);
+    });
 
     const fsSpy = jest.spyOn(fs, 'remove');
 
