@@ -10,12 +10,16 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.tsx",
+    "./tekton-translations-module": "./src/tektonTranslationsModuleExport.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
         "src/alpha.tsx"
+      ],
+      "tekton-translations-module": [
+        "src/tektonTranslationsModuleExport.ts"
       ],
       "package.json": [
         "package.json"
@@ -54,6 +58,7 @@
     "@backstage/core-components": "^0.18.11",
     "@backstage/core-plugin-api": "^1.12.7",
     "@backstage/frontend-plugin-api": "^0.17.2",
+    "@backstage/plugin-app-react": "^0.2.1",
     "@backstage/plugin-catalog-react": "^3.1.0",
     "@backstage/plugin-kubernetes-common": "^0.9.12",
     "@backstage/plugin-kubernetes-react": "^0.5.20",

@@ -13,9 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
+import { tektonTranslations } from './translations';
+
 export { tektonPlugin, TektonCI } from './plugin';
 export { isTektonCIAvailable } from './utils/isTektonCIAvailable';
-export {
-  tektonTranslations,
-  tektonTranslationRef,
-} from './translations/index.ts';
+export { tektonTranslations, tektonTranslationRef } from './translations';
+
+/**
+ * Translation module for the Tekton plugin.
+ * @public
+ */
+export const tektonTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'tekton-translations',
+      params: {
+        resource: tektonTranslations,
+      },
+    }),
+  ],
+});
