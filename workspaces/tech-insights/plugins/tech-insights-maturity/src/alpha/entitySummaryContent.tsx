@@ -26,12 +26,14 @@ import { resolveMaturityDisplayConfig } from '../helpers/maturityConfig';
 export const entityMaturitySummaryContent =
   EntityContentBlueprint.makeWithOverrides({
     name: 'summary',
-    factory(originalFactory, { apis }) {
-      const { title } = resolveMaturityDisplayConfig(apis.get(configApiRef));
+    factory(originalFactory, { apis, config }) {
+      const { title } = resolveMaturityDisplayConfig(apis.get(configApiRef), {
+        title: config.title,
+      });
 
       return originalFactory({
         filter: { kind: { $in: ['System', 'Domain', 'Group'] } },
-        path: '/maturity-summary',
+        path: config.path ?? '/maturity-summary',
         title: `${title} Summary`,
         loader: () =>
           import('../SummaryRouter').then(m =>
