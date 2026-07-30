@@ -5,9 +5,12 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { isServicenowAvailable } from '@backstage-community/plugin-servicenow-common';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
 export const EntityServicenowContent: () => JSX_2.Element;
@@ -31,6 +34,46 @@ export const servicenowPlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// @alpha
+export const servicenowTranslationRef: TranslationRef<
+  'plugin.servicenow',
+  {
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.description': string;
+    readonly 'table.columns.priority': string;
+    readonly 'table.columns.incidentNumber': string;
+    readonly 'table.columns.created': string;
+    readonly 'table.columns.state': string;
+    readonly 'table.columns.actions': string;
+    readonly 'table.emptyContent': string;
+    readonly 'table.rowsPerPage': string;
+    readonly 'filter.priority': string;
+    readonly 'filter.state': string;
+    readonly 'priority.critical': string;
+    readonly 'priority.high': string;
+    readonly 'priority.moderate': string;
+    readonly 'priority.low': string;
+    readonly 'priority.planning': string;
+    readonly 'page.title': string;
+    readonly 'page.titleWithCount': string;
+    readonly 'actions.openInServicenow': string;
+    readonly 'incidentState.new': string;
+    readonly 'incidentState.inProgress': string;
+    readonly 'incidentState.onHold': string;
+    readonly 'incidentState.resolved': string;
+    readonly 'incidentState.closed': string;
+    readonly 'incidentState.cancelled': string;
+    readonly 'errors.loadingIncidents': string;
+  }
+>;
+
+// @alpha
+export const servicenowTranslations: TranslationResource<'plugin.servicenow'>;
+
+// @public
+export const servicenowTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
 ```

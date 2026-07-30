@@ -5,8 +5,11 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public (undocumented)
 export const isNexusRepositoryManagerAvailable: (entity: Entity) => boolean;
@@ -27,6 +30,32 @@ export const nexusRepositoryManagerPlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// @public
+export const nexusRepositoryManagerTranslationRef: TranslationRef<
+  'plugin.nexus-repository-manager',
+  {
+    readonly 'table.title': string;
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.version': string;
+    readonly 'table.columns.artifact': string;
+    readonly 'table.columns.repositoryType': string;
+    readonly 'table.columns.checksum': string;
+    readonly 'table.columns.modified': string;
+    readonly 'table.columns.size': string;
+    readonly 'table.emptyValue': string;
+    readonly 'table.emptyContent.message': string;
+    readonly 'table.emptyContent.linkText': string;
+    readonly 'entityContent.title': string;
+  }
+>;
+
+// @public
+export const nexusRepositoryManagerTranslations: TranslationResource<'plugin.nexus-repository-manager'>;
+
+// @public
+export const nexusRepositoryManagerTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
 ```

@@ -5,7 +5,10 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
 export const AcrImagesEntityContent: () => JSX_2.Element;
@@ -15,6 +18,26 @@ export const AcrPage: () => JSX_2.Element;
 
 // @public
 export const acrPlugin: BackstagePlugin<{}, {}, {}>;
+
+// @alpha
+export const acrTranslationRef: TranslationRef<
+  'plugin.acr',
+  {
+    readonly 'table.searchPlaceholder': string;
+    readonly 'table.labelRowsSelect': string;
+    readonly 'table.columns.tag': string;
+    readonly 'table.columns.created': string;
+    readonly 'table.columns.lastModified': string;
+    readonly 'table.columns.manifest': string;
+    readonly 'page.title': string;
+  }
+>;
+
+// @alpha
+export const acrTranslations: TranslationResource<'plugin.acr'>;
+
+// @public
+export const acrTranslationsModule: FrontendModule;
 
 // @public
 export const isAcrAvailable: (entity: Entity) => boolean;
