@@ -137,6 +137,29 @@ describe('Linguist database', () => {
     expect(unprocessedEntities).toMatchObject(validUnprocessedEntities);
   });
 
+  it('should ignore rows that already have a processed date when unprocessed', async () => {
+    await store.markEntityProcessed(
+      'template:default/create-react-app-template',
+      new Date('2023-02-16 20:10:21.378Z'),
+    );
+
+    const unprocessedEntities = await store.getUnprocessedEntities();
+
+    expect(unprocessedEntities).toMatchObject([
+      'template:default/docs-template',
+    ]);
+  });
+
+  it('should treat newly inserted entities as unprocessed', async () => {
+    const newEntityRef = 'component:default/new-entity';
+
+    await store.insertNewEntity(newEntityRef);
+
+    const unprocessedEntities = await store.getUnprocessedEntities();
+
+    expect(unprocessedEntities).toContain(newEntityRef);
+  });
+
   it('should return string[] when there is no unprocessed entities', async () => {
     await testDbClient('entity_result').delete();
     const unprocessedEntities = await store.getUnprocessedEntities();
@@ -182,6 +205,26 @@ describe('Linguist database', () => {
     const after = testDbClient.from('entity_result').count();
 
     expect(before).toEqual(after);
+  });
+
+  it('should update processed date for an entity', async () => {
+    const processedDate = new Date('2023-02-20 20:10:21.378Z');
+
+    await store.markEntityProcessed(
+      'template:default/create-react-app-template',
+      processedDate,
+    );
+
+    const processedEntities = await store.getProcessedEntities();
+
+    expect(processedEntities).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          entityRef: 'template:default/create-react-app-template',
+          processedDate,
+        }),
+      ]),
+    );
   });
 
   it('should get all entities', async () => {
