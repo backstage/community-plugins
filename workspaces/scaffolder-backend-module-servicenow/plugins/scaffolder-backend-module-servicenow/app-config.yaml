@@ -1,3 +1,14 @@
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          subject: user:default/guest
+
 servicenow:
   # The base url of the ServiceNow instance.
   baseUrl: ${SERVICENOW_BASE_URL}
