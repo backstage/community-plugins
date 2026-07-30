@@ -24,6 +24,8 @@ import { registerFeedbackActions } from './actions/feedbackActions';
 import { createRouter } from './service/router';
 
 /**
+ * The feedback backend plugin.
+ *
  * @public
  */
 export const feedbackPlugin = createBackendPlugin({

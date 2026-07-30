@@ -18,6 +18,11 @@ import { createPermissionRule } from '@backstage/plugin-permission-node';
 import { z } from 'zod/v3';
 import { feedbackResourceRef } from '../resources/feedback';
 
+/**
+ * A permission rule that checks if the user is the owner of the feedback resource.
+ *
+ * @public
+ */
 export const isFeedbackOwner = createPermissionRule({
   name: 'IS_FEEDBACK_OWNER',
   description: 'Check if claim is feedback owner',
