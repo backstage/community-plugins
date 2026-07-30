@@ -19,7 +19,6 @@ import { SentryIssue } from '../../api';
 import { DateTime, Duration } from 'luxon';
 import { ErrorCell } from '../ErrorCell/ErrorCell';
 import { ErrorGraph } from '../ErrorGraph/ErrorGraph';
-import { Button, Text } from '@backstage/ui';
 import styles from './SentryIssuesTable.module.css';
 
 const ONE_DAY_IN_MILLIS = 86400000;
@@ -128,25 +127,23 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
 
             {totalPages > 1 && (
               <div className={styles.paginationContainer}>
-                <Button
+                <button
                   onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
-                  isDisabled={currentPage === 0}
-                  variant="secondary"
+                  disabled={currentPage === 0}
                 >
                   Previous
-                </Button>
-                <Text>
+                </button>
+                <span>
                   Page {currentPage + 1} of {totalPages}
-                </Text>
-                <Button
+                </span>
+                <button
                   onClick={() =>
                     setCurrentPage(Math.min(totalPages - 1, currentPage + 1))
                   }
-                  isDisabled={currentPage === totalPages - 1}
-                  variant="secondary"
+                  disabled={currentPage === totalPages - 1}
                 >
                   Next
-                </Button>
+                </button>
               </div>
             )}
           </>

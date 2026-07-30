@@ -1,5 +1,5 @@
 @layer components {
-  .tableContainer{
+  .tableContainer {
     background-color: var(--bui-bg-neutral-1);
     border-radius: var(--bui-radius-2);
     box-shadow: var(--bui-shadow);
@@ -106,7 +106,6 @@
     background-color: var(--bui-white);
     border-bottom: 1px solid var(--bui-border-2);
     border-top: 1px solid var(--bui-border-2);
-
   }
 
   .th {

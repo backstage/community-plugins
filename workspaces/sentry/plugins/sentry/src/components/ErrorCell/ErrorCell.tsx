@@ -15,7 +15,6 @@
  */
 
 import { SentryIssue } from '../../api';
-import { Text } from '@backstage/ui';
 import { Link } from '@backstage/core-components';
 import styles from './ErrorCell.module.css';
 
@@ -34,14 +33,12 @@ export const ErrorCell = ({ sentryIssue }: { sentryIssue: SentryIssue }) => {
   return (
     <div className={styles.root}>
       <Link to={sentryIssue.permalink}>
-        <Text variant="body-medium" className={styles.text}>
-          {stripText(issueType, 28)}
-        </Text>
+        <span className={styles.text}>{stripText(issueType, 28)}</span>
       </Link>
-      <Text variant="body-small">
+      <span>
         {sentryIssue.metadata.value &&
           stripText(sentryIssue.metadata.value, 48)}
-      </Text>
+      </span>
     </div>
   );
 };

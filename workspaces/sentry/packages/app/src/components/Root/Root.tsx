@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 import { PropsWithChildren } from 'react';
-import {
-  RiHome2Line,
-  RiPlugLine,
-  RiBook2Line,
-  RiAddCircleLine,
-  RiMenuLine,
-  RiSearchLine,
-} from 'remixicon-react';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
-import {
-  Settings as SidebarSettings,
-  UserSettingsSignInAvatar,
-} from '@backstage/plugin-user-settings';
+import { Settings as SidebarSettings } from '@backstage/plugin-user-settings';
 import { SidebarSearchModal } from '@backstage/plugin-search';
 import {
   Sidebar,
-  sidebarConfig,
   SidebarDivider,
   SidebarGroup,
   SidebarItem,
@@ -39,6 +27,8 @@ import {
   SidebarSpace,
   useSidebarOpenState,
   Link,
+  CatalogIcon,
+  DocsIcon,
 } from '@backstage/core-components';
 import styles from './Root.module.css';
 
@@ -58,26 +48,22 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
   <SidebarPage>
     <Sidebar>
       <SidebarLogo />
-      <SidebarGroup label="Search" icon={<RiSearchLine />} to="/search">
+      <SidebarGroup label="Search" to="/search">
         <SidebarSearchModal />
       </SidebarGroup>
       <SidebarDivider />
-      <SidebarGroup label="Menu" icon={<RiMenuLine />}>
+      <SidebarGroup label="Menu">
         {/* Global nav, not org-specific */}
-        <SidebarItem icon={RiHome2Line} to="catalog" text="Home" />
-        <SidebarItem icon={RiPlugLine} to="api-docs" text="APIs" />
-        <SidebarItem icon={RiBook2Line} to="docs" text="Docs" />
-        <SidebarItem icon={RiAddCircleLine} to="create" text="Create..." />
+        <SidebarItem icon={CatalogIcon} to="catalog" text="Home" />
+        <SidebarItem icon={DocsIcon} to="api-docs" text="APIs" />
+        <SidebarItem icon={DocsIcon} to="docs" text="Docs" />
+        <SidebarItem icon={DocsIcon} to="create" text="Create..." />
         {/* End global nav */}
         <SidebarDivider />
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <SidebarGroup
-        label="Settings"
-        icon={<UserSettingsSignInAvatar />}
-        to="/settings"
-      >
+      <SidebarGroup label="Settings" to="/settings">
         <SidebarSettings />
       </SidebarGroup>
     </Sidebar>

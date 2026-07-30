@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button } from '@backstage/ui';
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,
@@ -95,7 +94,7 @@ const sentryContent = (
         missing="info"
         description="You need to add an annotation to your component if you want to enable CI/CD for it. You can read more about annotations in Backstage by clicking the button below."
         action={
-          <Button
+          <button
             onClick={() =>
               window.open(
                 'https://backstage.io/docs/features/software-catalog/well-known-annotations',
@@ -104,7 +103,7 @@ const sentryContent = (
             }
           >
             Read more
-          </Button>
+          </button>
         }
       />
     </EntitySwitch.Case>
