@@ -960,7 +960,6 @@ __metadata:
     "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
-    "@backstage/ui": "backstage:^"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
     "@types/luxon": "npm:^3.0.0"
@@ -968,12 +967,10 @@ __metadata:
     "@types/react-dom": "npm:^18.2.19"
     luxon: "npm:^3.0.0"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
-    react-aria-components: "npm:^1.0.0"
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
     react-sparklines: "npm:^1.7.0"
     react-use: "npm:^17.2.4"
-    remixicon-react: "npm:^1.0.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -3405,7 +3402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@backstage:^::backstage=1.53.0&npm=0.17.0, @backstage/ui@npm:^0.17.0":
+"@backstage/ui@npm:^0.17.0":
   version: 0.17.0
   resolution: "@backstage/ui@npm:0.17.0"
   dependencies:
@@ -24027,7 +24024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria-components@npm:^1.0.0, react-aria-components@npm:^1.14.0":
+"react-aria-components@npm:^1.14.0":
   version: 1.19.0
   resolution: "react-aria-components@npm:1.19.0"
   dependencies:
@@ -25003,15 +25000,6 @@ __metadata:
   bin:
     remarkable: bin/remarkable.js
   checksum: 10/3734e9cd5105b9655a993e498890d99706a86707bccabf5d64b57f0f8ec9c5e66cdd7f06aae5fe07ca8633d93377edc803318626dd581e75f5f85aba69c350fb
-  languageName: node
-  linkType: hard
-
-"remixicon-react@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "remixicon-react@npm:1.0.0"
-  peerDependencies:
-    react: ">=0.14.0"
-  checksum: 10/94f4e0cde2b1389eedd0ee04ed9b1d6ffc7d84c7808fcd57c01e42820401655b28a0badc7cdeac6fa2add0a2812adcebfb204bb4ebc65fb43cd11cd0d30a317f
   languageName: node
   linkType: hard
 
