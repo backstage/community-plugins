@@ -24,7 +24,7 @@
     "@backstage-community/plugin-manage-backend": "workspace:^",
     "@backstage-community/plugin-tech-insights-backend": "^2.5.2",
     "@backstage-community/plugin-tech-insights-backend-module-jsonfc": "^0.7.2",
-    "@backstage-community/plugin-tech-insights-common": "^0.8.2",
+    "@backstage-community/plugin-tech-insights-common": "^0.10.0",
     "@backstage-community/plugin-tech-insights-node": "^2.6.2",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
