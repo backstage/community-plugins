@@ -18,12 +18,16 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha/index.tsx",
+    "./translations": "./src/translations/exports.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
         "src/alpha/index.tsx"
+      ],
+      "translations": [
+        "src/translations/exports.ts"
       ],
       "package.json": [
         "package.json"

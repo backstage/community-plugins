@@ -21,9 +21,10 @@ createApp({
 
 // After
 import topologyPlugin from '@backstage-community/plugin-topology/alpha';
+import topologyTranslationsModule from '@backstage-community/plugin-topology/translations';
 
 createApp({
-  features: [topologyPlugin],
+  features: [topologyPlugin, topologyTranslationsModule],
 });
 ```
 

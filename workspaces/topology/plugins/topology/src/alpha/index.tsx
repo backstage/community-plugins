@@ -18,11 +18,7 @@ import {
   createFrontendPlugin,
   type FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
-
-import { rootRouteRef } from '../routes';
-import { topologyTranslations } from '../translations';
 
 const KUBERNETES_ID_ANNOTATION = 'backstage.io/kubernetes-id';
 const KUBERNETES_NAMESPACE_ANNOTATION = 'backstage.io/kubernetes-namespace';
@@ -45,7 +41,6 @@ const topologyEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/topology',
     title: 'Topology',
-    routeRef: rootRouteRef,
     filter: isTopologyAvailable,
     loader: async () => {
       const { TopologyComponent } = await import('../components/Topology');
@@ -61,18 +56,7 @@ const topologyEntityContent = EntityContentBlueprint.make({
  */
 const topologyPlugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'topology',
-  extensions: [
-    topologyEntityContent,
-    TranslationBlueprint.make({
-      name: 'topology-translations',
-      params: {
-        resource: topologyTranslations,
-      },
-    }),
-  ],
-  routes: {
-    root: rootRouteRef,
-  },
+  extensions: [topologyEntityContent],
 });
 
 export default topologyPlugin;
