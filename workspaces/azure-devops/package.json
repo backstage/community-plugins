@@ -46,7 +46,7 @@
     "@types/jest": "^30",
     "@types/jsdom": "^28.0.0",
     "jest": "^30",
-    "jsdom": "^27",
+    "jsdom": "^29.0.0",
     "knip": "^5.27.4",
     "node-gyp": "^10.0.0",
     "prettier": "^2.3.2",
