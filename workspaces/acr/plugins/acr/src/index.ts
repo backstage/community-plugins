@@ -52,5 +52,3 @@ export const acrTranslationsModule = createFrontendModule({
     }),
   ],
 });
-
-export { acrTranslations, acrTranslationRef } from './translations';

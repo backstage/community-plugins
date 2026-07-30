@@ -91,8 +91,8 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunParamsAndResults.noResults': 'No results found';
     readonly 'pipelineRunParamsAndResults.params': 'Parameters';
     readonly 'pipelineRunParamsAndResults.results': 'Results';
-    readonly 'pipelineRunParamsAndResults.outputTableColumn.value': 'Value';
     readonly 'pipelineRunParamsAndResults.outputTableColumn.name': 'Name';
+    readonly 'pipelineRunParamsAndResults.outputTableColumn.value': 'Value';
   }
 >;
 

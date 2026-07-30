@@ -37,8 +37,3 @@ export const servicenowTranslationsModule = createFrontendModule({
     }),
   ],
 });
-
-export {
-  servicenowTranslations,
-  servicenowTranslationRef,
-} from './translations';

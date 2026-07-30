@@ -15,4 +15,3 @@
  */
 export { topologyPlugin, TopologyPage } from './plugin';
 export { topologyTranslationsModule } from './alpha/index';
-export { topologyTranslations, topologyTranslationRef } from './translations';

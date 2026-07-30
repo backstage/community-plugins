@@ -151,7 +151,7 @@ export const topologyTranslationRef: TranslationRef<
 // @alpha
 export const topologyTranslations: TranslationResource<'plugin.topology'>;
 
-// @alpha (undocumented)
+// @public (undocumented)
 export const topologyTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
