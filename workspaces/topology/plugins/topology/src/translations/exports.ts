@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 import { createFrontendModule } from '@backstage/frontend-plugin-api';
-import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import { rootRouteRef } from '../../routes';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 
-const topologyEntityContent = EntityContentBlueprint.makeWithOverrides({
-  name: 'entity-content-topology',
-  factory(original) {
-    return original({
-      path: '/topology',
-      title: 'Topology',
-      routeRef: rootRouteRef,
-      loader: async () => {
-        const { TopologyComponent } = await import('../../components/Topology');
-        return <TopologyComponent />;
+import { topologyTranslations } from './index';
+
+export { topologyTranslations } from './index';
+export { topologyTranslationRef } from './ref';
+
+/**
+ * App module that automatically registers the topology plugin translations.
+ *
+ * @alpha
+ */
+const topologyTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'topology-translations',
+      params: {
+        resource: topologyTranslations,
       },
-    });
-  },
+    }),
+  ],
 });
 
-/** @alpha */
-export const topologyCatalogModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [topologyEntityContent],
-});
+export default topologyTranslationsModule;
