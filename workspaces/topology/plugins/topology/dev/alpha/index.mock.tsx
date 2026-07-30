@@ -38,10 +38,7 @@ import {
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 
-import {
-  topologyCatalogModule,
-  topologyTranslationsModule,
-} from '../../src/alpha';
+import topologyPlugin from '../../src/alpha';
 import { devSidebarContent } from './shared';
 
 import {
@@ -127,8 +124,7 @@ const devNavModule = createFrontendModule({
 const app = createApp({
   features: [
     devNavModule,
-    topologyCatalogModule,
-    topologyTranslationsModule,
+    topologyPlugin,
     catalogDevModule,
     kubernetesMockModule,
     appDevModule,

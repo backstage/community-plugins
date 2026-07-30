@@ -33,10 +33,7 @@ import {
 } from '@backstage/frontend-plugin-api';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 
-import {
-  topologyCatalogModule,
-  topologyTranslationsModule,
-} from '../../src/alpha';
+import topologyPlugin from '../../src/alpha';
 import { devSidebarContent } from './shared';
 
 const signInPage = SignInPageBlueprint.make({
@@ -81,7 +78,7 @@ const devNavModule = createFrontendModule({
 });
 
 const app = createApp({
-  features: [devNavModule, topologyCatalogModule, topologyTranslationsModule],
+  features: [devNavModule, topologyPlugin],
 });
 
 if (window.location.pathname === '/') {

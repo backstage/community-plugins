@@ -13,24 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { Entity } from '@backstage/catalog-model';
+import {
+  createFrontendPlugin,
+  type FrontendPlugin,
+} from '@backstage/frontend-plugin-api';
 import { TranslationBlueprint } from '@backstage/plugin-app-react';
-import { topologyTranslations } from '../translations';
-import { topologyCatalogModule } from './extensions/entityTab';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
-const topologyTranslation = TranslationBlueprint.make({
-  name: 'topology-translations',
+import { rootRouteRef } from '../routes';
+import { topologyTranslations } from '../translations';
+
+const KUBERNETES_ID_ANNOTATION = 'backstage.io/kubernetes-id';
+const KUBERNETES_NAMESPACE_ANNOTATION = 'backstage.io/kubernetes-namespace';
+
+/**
+ * Returns true when the entity has Kubernetes annotations used by Topology.
+ *
+ * @alpha
+ */
+export const isTopologyAvailable = (entity: Entity) => {
+  const annotations = entity.metadata.annotations;
+  return Boolean(
+    annotations?.[KUBERNETES_ID_ANNOTATION] ||
+      annotations?.[KUBERNETES_NAMESPACE_ANNOTATION],
+  );
+};
+
+const topologyEntityContent = EntityContentBlueprint.make({
+  name: 'topology',
   params: {
-    resource: topologyTranslations,
+    path: '/topology',
+    title: 'Topology',
+    routeRef: rootRouteRef,
+    filter: isTopologyAvailable,
+    loader: async () => {
+      const { TopologyComponent } = await import('../components/Topology');
+      return <TopologyComponent />;
+    },
   },
 });
 
-export { topologyCatalogModule };
-
-/** @alpha */
-export const topologyTranslationsModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [topologyTranslation],
+/**
+ * Topology plugin for the New Frontend System.
+ *
+ * @alpha
+ */
+const topologyPlugin: FrontendPlugin = createFrontendPlugin({
+  pluginId: 'topology',
+  extensions: [
+    topologyEntityContent,
+    TranslationBlueprint.make({
+      name: 'topology-translations',
+      params: {
+        resource: topologyTranslations,
+      },
+    }),
+  ],
+  routes: {
+    root: rootRouteRef,
+  },
 });
+
+export default topologyPlugin;
 
 export * from '../translations';
