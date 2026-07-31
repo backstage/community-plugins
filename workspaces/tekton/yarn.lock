@@ -1962,7 +1962,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.7"
     "@backstage/dev-utils": "npm:^1.1.24"
     "@backstage/frontend-plugin-api": "npm:^0.17.2"
-    "@backstage/plugin-app-react": "npm:^0.2.1"
+    "@backstage/plugin-app-react": "npm:^0.2.4"
     "@backstage/plugin-catalog-react": "npm:^3.1.0"
     "@backstage/plugin-kubernetes-common": "npm:^0.9.12"
     "@backstage/plugin-kubernetes-react": "npm:^0.5.20"
@@ -3056,7 +3056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-app-react@npm:^0.2.1, @backstage/plugin-app-react@npm:^0.2.4":
+"@backstage/plugin-app-react@npm:^0.2.4":
   version: 0.2.5
   resolution: "@backstage/plugin-app-react@npm:0.2.5"
   dependencies:

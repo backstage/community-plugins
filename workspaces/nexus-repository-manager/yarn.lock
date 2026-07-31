@@ -737,7 +737,7 @@ __metadata:
     "@backstage/frontend-defaults": "npm:^0.5.3"
     "@backstage/frontend-plugin-api": "npm:^0.17.2"
     "@backstage/frontend-test-utils": "npm:^0.6.1"
-    "@backstage/plugin-app-react": "npm:^0.2.1"
+    "@backstage/plugin-app-react": "npm:^0.2.4"
     "@backstage/plugin-catalog": "npm:^2.0.6"
     "@backstage/plugin-catalog-react": "npm:^3.1.0"
     "@backstage/test-utils": "npm:^1.7.19"
@@ -1679,7 +1679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-app-react@npm:^0.2.1, @backstage/plugin-app-react@npm:^0.2.4":
+"@backstage/plugin-app-react@npm:^0.2.4":
   version: 0.2.5
   resolution: "@backstage/plugin-app-react@npm:0.2.5"
   dependencies:
