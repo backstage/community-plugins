@@ -4,7 +4,6 @@
 
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
-import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -19,9 +18,6 @@ export const topologyPlugin: BackstagePlugin<
   {},
   {}
 >;
-
-// @public (undocumented)
-export const topologyTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
 ```

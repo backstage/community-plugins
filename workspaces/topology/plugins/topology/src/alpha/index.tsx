@@ -27,7 +27,7 @@ const topologyTranslation = TranslationBlueprint.make({
 
 export { topologyCatalogModule };
 
-/** @public */
+/** @alpha */
 export const topologyTranslationsModule = createFrontendModule({
   pluginId: 'app',
   extensions: [topologyTranslation],

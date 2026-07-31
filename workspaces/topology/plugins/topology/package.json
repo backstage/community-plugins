@@ -18,16 +18,12 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha/index.tsx",
-    "./topology-translations-module": "./src/topologyTranslationsModuleExport.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
         "src/alpha/index.tsx"
-      ],
-      "topology-translations-module": [
-        "src/topologyTranslationsModuleExport.ts"
       ],
       "package.json": [
         "package.json"
@@ -61,7 +57,7 @@
     "@backstage/errors": "^1.2.7",
     "@backstage/filter-predicates": "^0.1.1",
     "@backstage/frontend-plugin-api": "^0.16.0",
-    "@backstage/plugin-app-react": "^0.2.4",
+    "@backstage/plugin-app-react": "^0.2.1",
     "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/plugin-catalog-react": "^3.1.0",
     "@backstage/plugin-kubernetes": "^0.12.17",

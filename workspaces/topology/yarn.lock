@@ -1823,7 +1823,7 @@ __metadata:
     "@backstage/filter-predicates": "npm:^0.1.1"
     "@backstage/frontend-defaults": "npm:^0.5.1"
     "@backstage/frontend-plugin-api": "npm:^0.16.0"
-    "@backstage/plugin-app-react": "npm:^0.2.4"
+    "@backstage/plugin-app-react": "npm:^0.2.1"
     "@backstage/plugin-catalog": "npm:^2.0.1"
     "@backstage/plugin-catalog-react": "npm:^3.1.0"
     "@backstage/plugin-kubernetes": "npm:^0.12.17"
@@ -2938,7 +2938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-app-react@npm:^0.2.3, @backstage/plugin-app-react@npm:^0.2.4":
+"@backstage/plugin-app-react@npm:^0.2.1, @backstage/plugin-app-react@npm:^0.2.3, @backstage/plugin-app-react@npm:^0.2.4":
   version: 0.2.4
   resolution: "@backstage/plugin-app-react@npm:0.2.4"
   dependencies:
