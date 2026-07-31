@@ -18,24 +18,14 @@ import { useRef, useState } from 'react';
 import { Table } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { BuildFilters, xcmetricsApiRef } from '../../api';
-import Grid from '@material-ui/core/Grid';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { Flex } from '@backstage/ui';
 import { BuildListFilter as Filters } from '../BuildListFilter';
 import { DateTime } from 'luxon';
 import { buildPageColumns } from '../BuildTableColumns';
 import { BuildDetails, withRequest } from '../BuildDetails';
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    detailPanel: {
-      padding: theme.spacing(2),
-      backgroundColor: theme.palette.background.paper,
-    },
-  }),
-);
+import styles from './BuildList.module.css';
 
 export const BuildList = () => {
-  const classes = useStyles();
   const client = useApi(xcmetricsApiRef);
   const tableRef = useRef<any>();
 
@@ -52,7 +42,7 @@ export const BuildList = () => {
   };
 
   return (
-    <Grid container spacing={3} direction="column">
+    <Flex direction="column" gap="6">
       <Filters
         onFilterChange={handleFilterChange}
         initialValues={initialFilters}
@@ -84,12 +74,12 @@ export const BuildList = () => {
         detailPanel={rowData => {
           const BuildDetailsWithRequest = withRequest(BuildDetails);
           return (
-            <div className={classes.detailPanel}>
+            <div className={styles.detailPanel}>
               <BuildDetailsWithRequest buildId={(rowData as any).rowData.id} />
             </div>
           );
         }}
       />
-    </Grid>
+    </Flex>
   );
 };

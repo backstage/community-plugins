@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TrendLine } from '@backstage/core-components';
-import { Text } from '@backstage/ui';
 
-interface TrendProps {
-  data?: number[];
-  title: string;
-  color: string;
+@layer components {
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    padding: 0 var(--bui-space-2);
+    background-color: var(--bui-bg-neutral-2);
+    border-radius: var(--bui-radius-2);
+    font-size: var(--bui-font-size-1);
+    font-family: var(--bui-font-regular);
+    color: var(--bui-fg-primary);
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
 }
-
-export const Trend = ({ data, title, color }: TrendProps) => {
-  const emptyData = [0, 0];
-  const max = Math.max(...(data ?? emptyData));
-
-  return (
-    <>
-      <Text variant="body-small">{title}</Text>
-      <TrendLine
-        data={data ?? emptyData}
-        title={title}
-        max={max}
-        color={data && color}
-      />
-    </>
-  );
-};

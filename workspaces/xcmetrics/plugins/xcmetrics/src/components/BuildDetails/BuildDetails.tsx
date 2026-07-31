@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { BuildResponse, xcmetricsApiRef } from '../../api';
 import { Progress, StructuredMetadataTable } from '@backstage/core-components';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Grid } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { formatDuration, formatStatus, formatTime } from '../../utils';
@@ -27,15 +24,7 @@ import { StatusIcon } from '../StatusIcon';
 import { Accordion } from '../Accordion';
 import { BuildTimeline } from '../BuildTimeline';
 import { PreformattedText } from '../PreformattedText';
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    divider: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-  }),
-);
+import styles from './BuildDetails.module.css';
 
 interface BuildDetailsProps {
   buildData: BuildResponse;
@@ -46,7 +35,6 @@ export const BuildDetails = ({
   buildData: { build, targets, xcode },
   showId,
 }: BuildDetailsProps) => {
-  const classes = useStyles();
   const client = useApi(xcmetricsApiRef);
   const hostResult = useAsync(
     async () => client.getBuildHost(build.id),
@@ -84,15 +72,15 @@ export const BuildDetails = ({
   };
 
   return (
-    <Grid container item direction="row">
-      <Grid item xs={4}>
+    <Grid.Root columns={{ sm: '12' }}>
+      <Grid.Item colSpan={{ sm: '4' }}>
         <StructuredMetadataTable
           metadata={
             showId === false ? buildDetails : { id: build.id, ...buildDetails }
           }
         />
-      </Grid>
-      <Grid item xs={8}>
+      </Grid.Item>
+      <Grid.Item colSpan={{ sm: '8' }}>
         <Accordion
           id="buildHost"
           heading="Host"
@@ -122,7 +110,7 @@ export const BuildDetails = ({
                     expandable
                   />
                   {idx !== errorsResult.value.length - 1 && (
-                    <Divider className={classes.divider} />
+                    <hr className={styles.divider} />
                   )}
                 </div>
               ))}
@@ -147,7 +135,7 @@ export const BuildDetails = ({
                     expandable
                   />
                   {idx !== warningsResult.value.length - 1 && (
-                    <Divider className={classes.divider} />
+                    <hr className={styles.divider} />
                   )}
                 </div>
               ))}
@@ -168,8 +156,8 @@ export const BuildDetails = ({
         <Accordion id="buildTimeline" heading="Timeline" unmountOnExit>
           <BuildTimeline targets={targets} />
         </Accordion>
-      </Grid>
-    </Grid>
+      </Grid.Item>
+    </Grid.Root>
   );
 };
 
@@ -192,11 +180,16 @@ export const withRequest =
     }
 
     if (error) {
-      return <Alert severity="error">{error.message}</Alert>;
+      return <Alert status="danger" description={error.message} />;
     }
 
     if (!buildResponse) {
-      return <Alert severity="error">Could not load build {buildId}</Alert>;
+      return (
+        <Alert
+          status="danger"
+          description={`Could not load build ${buildId}`}
+        />
+      );
     }
 
     return <Component {...props} buildData={buildResponse} />;

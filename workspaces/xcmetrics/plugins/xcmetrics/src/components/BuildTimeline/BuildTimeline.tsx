@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import {
   Bar,
   BarChart,
@@ -28,27 +27,18 @@ import {
 } from 'recharts';
 import { Target } from '../../api';
 import { formatSecondsInterval, formatPercentage } from '../../utils';
+import styles from './BuildTimeline.module.css';
 
+const GREY_BAR_COLOR = '#bdbdbd';
+const PRIMARY_BAR_COLOR = '#1976d2';
 const EMPTY_HEIGHT = 100;
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    toolTip: {
-      backgroundColor: theme.palette.background.paper,
-      opacity: 0.8,
-      padding: 8,
-    },
-  }),
-);
-
 const TargetToolTip = ({ active, payload, label }: any) => {
-  const classes = useStyles();
-
   if (active && payload && payload.length === 2) {
     const buildTime = payload[0].value[1] - payload[0].value[0];
     const compileTime = payload[1].value[1] - payload[1].value[0];
     return (
-      <div className={classes.toolTip}>
+      <div className={styles.toolTip}>
         {`${label}: ${formatSecondsInterval(payload[0].value)}`}
         <br />
         {buildTime > 0 &&
@@ -89,8 +79,7 @@ export const BuildTimeline = ({
   height,
   width,
 }: BuildTimelineProps) => {
-  const theme = useTheme();
-  if (!targets.length) return <Typography paragraph>No Targets</Typography>;
+  if (!targets.length) return <Text as="p">No Targets</Text>;
 
   const data = getTimelineData(targets);
 
@@ -106,12 +95,8 @@ export const BuildTimeline = ({
         <YAxis type="category" dataKey="name" padding={{ top: 0, bottom: 0 }} />
         <Tooltip content={<TargetToolTip />} />
         <Legend />
-        <Bar
-          dataKey="buildTime"
-          fill={theme.palette.grey[400]}
-          minPointSize={1}
-        />
-        <Bar dataKey="compileTime" fill={theme.palette.primary.main} />
+        <Bar dataKey="buildTime" fill={GREY_BAR_COLOR} minPointSize={1} />
+        <Bar dataKey="compileTime" fill={PRIMARY_BAR_COLOR} />
       </BarChart>
     </ResponsiveContainer>
   );

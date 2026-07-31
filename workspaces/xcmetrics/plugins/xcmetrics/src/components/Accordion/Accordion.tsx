@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { PropsWithChildren } from 'react';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    heading: {
-      flexBasis: '33.33%',
-      flexShrink: 0,
-    },
-    secondaryHeading: {
-      color: theme.palette.text.secondary,
-    },
-  }),
-);
+import {
+  Accordion as BuiAccordion,
+  AccordionTrigger,
+  AccordionPanel,
+} from '@backstage/ui';
 
 interface AccordionProps {
   id: string;
@@ -42,25 +29,22 @@ interface AccordionProps {
   unmountOnExit?: boolean;
 }
 
-export const Accordion = (props: PropsWithChildren<AccordionProps>) => {
-  const classes = useStyles();
-
+export const Accordion = ({
+  id,
+  heading,
+  secondaryHeading,
+  disabled,
+  children,
+}: PropsWithChildren<AccordionProps>) => {
   return (
-    <MuiAccordion
-      disabled={props.disabled}
-      TransitionProps={{ unmountOnExit: props.unmountOnExit ?? false }}
-    >
-      <MuiAccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls={`${props.id}-content`}
-        id={`${props.id}-header`}
-      >
-        <Typography className={classes.heading}>{props.heading}</Typography>
-        <Typography className={classes.secondaryHeading}>
-          {props.secondaryHeading}
-        </Typography>
-      </MuiAccordionSummary>
-      <AccordionDetails>{props.children}</AccordionDetails>
-    </MuiAccordion>
+    <BuiAccordion id={id} isDisabled={disabled}>
+      <AccordionTrigger
+        title={heading}
+        subtitle={
+          secondaryHeading !== undefined ? String(secondaryHeading) : undefined
+        }
+      />
+      <AccordionPanel>{children}</AccordionPanel>
+    </BuiAccordion>
   );
 };

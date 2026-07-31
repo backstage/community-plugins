@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-import Grid from '@material-ui/core/Grid';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { useState } from 'react';
 import { Progress, Select } from '@backstage/core-components';
+import { Alert, Grid } from '@backstage/ui';
 import { Trend } from '../Trend';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
 import { xcmetricsApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
 import { DataValueGridItem } from '../DataValue';
+import styles from './OverviewTrends.module.css';
 import {
   formatDuration,
   formatPercentage,
@@ -34,15 +32,11 @@ import {
   sumField,
 } from '../../utils';
 
-const useStyles = makeStyles({
-  spacingTop: {
-    marginTop: 8,
-  },
-  spacingVertical: {
-    marginTop: 8,
-    marginBottom: 8,
-  },
-});
+const TREND_COLORS = {
+  buildTime: '#9c27b0',
+  errorRate: '#ed6c02',
+  buildCount: '#1976d2',
+};
 
 const DAYS_SELECT_ITEMS = [
   { label: '7 days', value: 7 },
@@ -53,8 +47,6 @@ const DAYS_SELECT_ITEMS = [
 
 export const OverviewTrends = () => {
   const [days, setDays] = useState(14);
-  const theme = useTheme();
-  const classes = useStyles();
   const client = useApi(xcmetricsApiRef);
   const buildCountsResult = useAsync(
     async () => client.getBuildCounts(days),
@@ -92,39 +84,42 @@ export const OverviewTrends = () => {
         onChange={selection => setDays(selection as number)}
       />
       {buildCountsResult.error && (
-        <Alert severity="error" className={classes.spacingVertical}>
-          <AlertTitle>Failed to fetch build counts</AlertTitle>
-          {buildCountsResult?.error?.message}
-        </Alert>
+        <Alert
+          status="danger"
+          className={styles.spacingVertical}
+          title="Failed to fetch build counts"
+          description={buildCountsResult?.error?.message}
+        />
       )}
       {buildTimesResult.error && (
-        <Alert severity="error" className={classes.spacingVertical}>
-          <AlertTitle>Failed to fetch build times</AlertTitle>
-          {buildTimesResult?.error?.message}
-        </Alert>
+        <Alert
+          status="danger"
+          className={styles.spacingVertical}
+          title="Failed to fetch build times"
+          description={buildTimesResult?.error?.message}
+        />
       )}
       {(!buildCountsResult.error || !buildTimesResult.error) && (
-        <div className={classes.spacingVertical}>
+        <div className={styles.spacingVertical}>
           <Trend
             title="Build Time"
-            color={theme.palette.secondary.main}
+            color={TREND_COLORS.buildTime}
             data={getValues(e => e.durationP50, buildTimesResult.value)}
           />
           <Trend
             title="Error Rate"
-            color={theme.palette.status.warning}
+            color={TREND_COLORS.errorRate}
             data={getErrorRatios(buildCountsResult.value)}
           />
           <Trend
             title="Build Count"
-            color={theme.palette.primary.main}
+            color={TREND_COLORS.buildCount}
             data={getValues(e => e.builds, buildCountsResult.value)}
           />
-          <Grid
-            container
-            spacing={3}
-            direction="row"
-            className={classes.spacingTop}
+          <Grid.Root
+            columns={{ sm: '12' }}
+            gap="6"
+            className={styles.spacingTop}
           >
             <DataValueGridItem field="Build Count" value={sumBuilds} />
             <DataValueGridItem field="Error Count" value={sumErrors} />
@@ -144,7 +139,7 @@ export const OverviewTrends = () => {
               field="Total Build Time"
               value={totalBuildTime && formatDuration(totalBuildTime)}
             />
-          </Grid>
+          </Grid.Root>
         </div>
       )}
     </>

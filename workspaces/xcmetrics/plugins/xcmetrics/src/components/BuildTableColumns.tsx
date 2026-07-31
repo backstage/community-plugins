@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import Chip from '@material-ui/core/Chip';
+import { Text } from '@backstage/ui';
 import { TableColumn } from '@backstage/core-components';
 import { Build } from '../api';
 import { formatTime, formatDuration } from '../utils';
 import { StatusIcon } from './StatusIcon';
+import styles from './BuildTableColumns.module.css';
 
 const baseColumns: TableColumn<Build>[] = [
   {
@@ -52,7 +53,12 @@ const baseColumns: TableColumn<Build>[] = [
 
 const isCi: TableColumn<Build> = {
   field: 'isCI',
-  render: data => data.isCi && <Chip label="CI" size="small" />,
+  render: data =>
+    data.isCi && (
+      <Text as="span" className={styles.chip}>
+        CI
+      </Text>
+    ),
   width: '10',
   sorting: false,
 };
@@ -72,7 +78,11 @@ export const buildPageColumns: TableColumn<Build>[] = [
   {
     title: 'Category',
     field: 'category',
-    render: data => <Chip label={data.category} size="small" />,
+    render: data => (
+      <Text as="span" className={styles.chip}>
+        {data.category}
+      </Text>
+    ),
   },
   isCi,
 ];

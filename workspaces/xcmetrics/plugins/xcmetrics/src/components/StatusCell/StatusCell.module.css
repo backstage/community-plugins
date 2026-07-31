@@ -1,0 +1,52 @@
+/*
+ * Copyright 2021 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .root {
+    /* Override BUI Button CSS variables */
+    --bg: var(--bui-border);
+    --bg-hover: var(--bui-border);
+    --bg-active: var(--bui-border);
+    /* Override BUI Button layout properties */
+    display: block !important;
+    cursor: default !important;
+    border-radius: 2px !important;
+    transition: transform 0.1s ease !important;
+    flex-shrink: 0;
+  }
+
+  .root:hover {
+    transform: scale(1.2);
+  }
+
+  .succeeded {
+    --bg: #4caf50;
+    --bg-hover: #4caf50;
+    --bg-active: #4caf50;
+  }
+
+  .failed {
+    --bg: #f44336;
+    --bg-hover: #f44336;
+    --bg-active: #f44336;
+  }
+
+  .stopped {
+    --bg: #ff9800;
+    --bg-hover: #ff9800;
+    --bg-active: #ff9800;
+  }
+}

@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TrendLine } from '@backstage/core-components';
-import { Text } from '@backstage/ui';
 
-interface TrendProps {
-  data?: number[];
-  title: string;
-  color: string;
+@keyframes loadingOpacity {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.8;
+  }
 }
 
-export const Trend = ({ data, title, color }: TrendProps) => {
-  const emptyData = [0, 0];
-  const max = Math.max(...(data ?? emptyData));
+@layer components {
+  .root {
+    margin-top: var(--bui-space-2);
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
 
-  return (
-    <>
-      <Text variant="body-small">{title}</Text>
-      <TrendLine
-        data={data ?? emptyData}
-        title={title}
-        max={max}
-        color={data && color}
-      />
-    </>
-  );
-};
+  .loading {
+    animation: loadingOpacity 900ms ease-in-out infinite;
+  }
+}

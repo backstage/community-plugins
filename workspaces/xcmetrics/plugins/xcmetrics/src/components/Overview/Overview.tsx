@@ -24,9 +24,8 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { xcmetricsApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Grid } from '@backstage/ui';
 import { StatusMatrix } from '../StatusMatrix';
-import Grid from '@material-ui/core/Grid';
 import { OverviewTrends } from '../OverviewTrends';
 import { overviewColumns } from '../BuildTableColumns';
 
@@ -41,7 +40,7 @@ export const Overview = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" description={error.message} />;
   }
 
   if (!builds || !builds.length) {
@@ -59,8 +58,8 @@ export const Overview = () => {
       <ContentHeader title="XCMetrics Dashboard">
         <SupportButton>Dashboard for XCMetrics</SupportButton>
       </ContentHeader>
-      <Grid container spacing={3} direction="row">
-        <Grid item xs={12} md={8} lg={8} xl={9}>
+      <Grid.Root columns={{ sm: '12' }} gap="6">
+        <Grid.Item colSpan={{ sm: '12', md: '8' }}>
           <Table
             options={{
               paging: false,
@@ -77,13 +76,13 @@ export const Overview = () => {
               </>
             }
           />
-        </Grid>
-        <Grid item xs={12} md={4} lg={4} xl={3}>
+        </Grid.Item>
+        <Grid.Item colSpan={{ sm: '12', md: '4' }}>
           <InfoCard>
             <OverviewTrends />
           </InfoCard>
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </>
   );
 };
