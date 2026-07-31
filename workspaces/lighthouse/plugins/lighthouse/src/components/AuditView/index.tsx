@@ -64,9 +64,7 @@ const AuditLinkList = ({ audits = [], selectedId }: AuditLinkListProps) => {
                 fromPath,
               )}
               className={`${styles.auditListItemLink}${
-                audit.id === selectedId
-                  ? ` ${styles.auditListItemLinkSelected}`
-                  : ''
+                audit.id === selectedId ? ` ${styles.selected}` : ''
               }`}
             >
               <span className={styles.auditListItemIcon}>

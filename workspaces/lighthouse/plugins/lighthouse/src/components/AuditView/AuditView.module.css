@@ -60,7 +60,7 @@
   }
 
   .auditListItemLink:hover,
-  .auditListItemLinkSelected {
+  .selected {
     background-color: var(--bui-bg-hover);
   }
 
