@@ -16,7 +16,6 @@
 import type { ReactNode } from 'react';
 
 import { Fragment } from 'react';
-import IconButton from '@material-ui/core/IconButton';
 import {
   Header,
   Page,
@@ -24,7 +23,8 @@ import {
   TabbedLayout,
   Content,
 } from '@backstage/core-components';
-import LibraryBooks from '@material-ui/icons/LibraryBooks';
+import { ButtonIcon } from '@backstage/ui';
+import { RiBook2Line } from '@remixicon/react';
 import { ExecutionsTable } from '../ExecutionsTable';
 import { PacksTable } from '../PacksTable/PacksTable';
 import { ActionsList } from '../ActionsList';
@@ -49,9 +49,18 @@ export const StackstormHome = (props: StackstormHomeProps) => (
           <Fragment key={idx}>{headerButton}</Fragment>
         ))
       ) : (
-        <IconButton aria-label="Docs" href="https://docs.stackstorm.com/">
-          <LibraryBooks htmlColor="white" />
-        </IconButton>
+        <ButtonIcon
+          aria-label="Docs"
+          icon={<RiBook2Line />}
+          variant="secondary"
+          onPress={() =>
+            window.open(
+              'https://docs.stackstorm.com/',
+              '_blank',
+              'noopener,noreferrer',
+            )
+          }
+        />
       )}
       <HeaderLabel label="Lifecycle" value="Alpha" />
     </Header>
