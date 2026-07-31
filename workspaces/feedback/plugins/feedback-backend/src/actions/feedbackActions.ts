@@ -58,9 +58,6 @@ async function getRequestToken(options: {
   credentials: BackstageCredentials;
 }) {
   const { auth, credentials } = options;
-  if (auth.isPrincipal(credentials, 'user')) {
-    return (await auth.getLimitedUserToken(credentials)).token;
-  }
   return (
     await auth.getPluginRequestToken({
       onBehalfOf: credentials,
