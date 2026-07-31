@@ -1783,7 +1783,7 @@ __metadata:
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.23"
     "@backstage/plugin-catalog-node": "npm:^2.2.2"
     "@backstage/types": "npm:^1.2.2"
-    "@keycloak/keycloak-admin-client": "npm:26.6.3"
+    "@keycloak/keycloak-admin-client": "npm:26.7.0"
     "@opentelemetry/api": "npm:^1.9.0"
     "@types/lodash": "npm:4.17.24"
     deepmerge: "npm:4.3.1"
@@ -4252,19 +4252,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keycloak/keycloak-admin-client@npm:26.6.3":
-  version: 26.6.3
-  resolution: "@keycloak/keycloak-admin-client@npm:26.6.3"
+"@keycloak/keycloak-admin-client@npm:26.7.0":
+  version: 26.7.0
+  resolution: "@keycloak/keycloak-admin-client@npm:26.7.0"
   dependencies:
-    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.86"
-    "@microsoft/kiota-http-fetchlibrary": "npm:^1.0.0-preview.80"
-    "@microsoft/kiota-serialization-form": "npm:^1.0.0-preview.74"
-    "@microsoft/kiota-serialization-json": "npm:^1.0.0-preview.86"
-    "@microsoft/kiota-serialization-multipart": "npm:^1.0.0-preview.67"
-    "@microsoft/kiota-serialization-text": "npm:^1.0.0-preview.79"
+    "@microsoft/kiota-abstractions": "npm:1.0.0-preview.103"
+    "@microsoft/kiota-http-fetchlibrary": "npm:1.0.0-preview.103"
+    "@microsoft/kiota-serialization-form": "npm:1.0.0-preview.103"
+    "@microsoft/kiota-serialization-json": "npm:1.0.0-preview.103"
+    "@microsoft/kiota-serialization-multipart": "npm:1.0.0-preview.103"
+    "@microsoft/kiota-serialization-text": "npm:1.0.0-preview.103"
     camelize-ts: "npm:^3.0.0"
     url-template: "npm:^3.1.1"
-  checksum: 10/e28fc3d436f44659a627df96f63696581e84b0872b1328730133f288d34f9afa3a15aa06562054a8d44213677f721664f0fcade8bf6180f01313827610ef3429
+  checksum: 10/0cb5c3e6c03ab09a399985e4fa0a900a525c7a9e554be30a74bd0ecf441aaae1ef36142904211618af586a54127efb484bc15f57ee2df2a59465cbae487d8a29
   languageName: node
   linkType: hard
 
@@ -4411,66 +4411,66 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/kiota-abstractions@npm:^1.0.0-preview.100, @microsoft/kiota-abstractions@npm:^1.0.0-preview.86":
-  version: 1.0.0-preview.100
-  resolution: "@microsoft/kiota-abstractions@npm:1.0.0-preview.100"
+"@microsoft/kiota-abstractions@npm:1.0.0-preview.103, @microsoft/kiota-abstractions@npm:^1.0.0-preview.103":
+  version: 1.0.0-preview.103
+  resolution: "@microsoft/kiota-abstractions@npm:1.0.0-preview.103"
   dependencies:
     "@opentelemetry/api": "npm:^1.7.0"
     "@std-uritemplate/std-uritemplate": "npm:^2.0.0"
     tinyduration: "npm:^3.3.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/6e45852631b96d27a97d980b129aece86141ac99135a014f2f5bb4f0efc2c2008dd63546054735e06176488215a85032f8ed62ffbd1036ce03d5deebd3a60385
+  checksum: 10/ae2cdca2bbc118378b3da749f700b1e82e44f3592f27b6e2a7c8dc46c31c4cecde289c86d7f3d35613f91eadfc065d62bba521912f3f5115f16c7358e3fe525d
   languageName: node
   linkType: hard
 
-"@microsoft/kiota-http-fetchlibrary@npm:^1.0.0-preview.80":
-  version: 1.0.0-preview.100
-  resolution: "@microsoft/kiota-http-fetchlibrary@npm:1.0.0-preview.100"
+"@microsoft/kiota-http-fetchlibrary@npm:1.0.0-preview.103":
+  version: 1.0.0-preview.103
+  resolution: "@microsoft/kiota-http-fetchlibrary@npm:1.0.0-preview.103"
   dependencies:
-    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.100"
+    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.103"
     "@opentelemetry/api": "npm:^1.7.0"
     tslib: "npm:^2.6.2"
-  checksum: 10/66499a59fe72fbee8fcc0862c9191050faaa1cbb8043c5867a0e94388fb1b77b6d8f728de323396b60bd5d092aa4afdf7dead1f640c938e679870865e2688b9d
+  checksum: 10/03e1d12ace1f9843ac82d1b626dd9e230ba5f07f33d61ffefebb4ebfc24c60b9e11d371cb701fdec1ae1c0f511c311a9e40dc7f918c0d16f8695b7dc34da6637
   languageName: node
   linkType: hard
 
-"@microsoft/kiota-serialization-form@npm:^1.0.0-preview.74":
-  version: 1.0.0-preview.100
-  resolution: "@microsoft/kiota-serialization-form@npm:1.0.0-preview.100"
+"@microsoft/kiota-serialization-form@npm:1.0.0-preview.103":
+  version: 1.0.0-preview.103
+  resolution: "@microsoft/kiota-serialization-form@npm:1.0.0-preview.103"
   dependencies:
-    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.100"
+    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.103"
     tslib: "npm:^2.6.2"
-  checksum: 10/b09026b335f956a1995865b6aa55b8bc4760898eef239063d6b70f4039a0c860828ba03c515f009164e8f6d22a97aafac7b405651b68d0c8d30d61eb71ccb1ac
+  checksum: 10/40e7dbd3a72c7f02092fc77fe24db9b8f3c4fde2a54653c8e08097a3a07eb7794dfdbf60e3cc03c1c524ee4849cc13058907240d64cc10db1b1c9708ab4eddd6
   languageName: node
   linkType: hard
 
-"@microsoft/kiota-serialization-json@npm:^1.0.0-preview.86":
-  version: 1.0.0-preview.100
-  resolution: "@microsoft/kiota-serialization-json@npm:1.0.0-preview.100"
+"@microsoft/kiota-serialization-json@npm:1.0.0-preview.103":
+  version: 1.0.0-preview.103
+  resolution: "@microsoft/kiota-serialization-json@npm:1.0.0-preview.103"
   dependencies:
-    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.100"
+    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.103"
     tslib: "npm:^2.6.2"
-  checksum: 10/5c2edf07205a18b0fd37db1d8989451c1f2fa10519178ca1fca62340950cc610aa91e8fef200af740efafac95a6a4977d68e41a3a16898000c2b09eca1d86da3
+  checksum: 10/92b1739d6df166ea48dc84300913d6e6afcdfe26288527b42873b9a4120a502a081bc723084cb5ee2f849b3b608b08ee954e4f51ea4ab10acbad3e83aa699173
   languageName: node
   linkType: hard
 
-"@microsoft/kiota-serialization-multipart@npm:^1.0.0-preview.67":
-  version: 1.0.0-preview.100
-  resolution: "@microsoft/kiota-serialization-multipart@npm:1.0.0-preview.100"
+"@microsoft/kiota-serialization-multipart@npm:1.0.0-preview.103":
+  version: 1.0.0-preview.103
+  resolution: "@microsoft/kiota-serialization-multipart@npm:1.0.0-preview.103"
   dependencies:
-    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.100"
+    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.103"
     tslib: "npm:^2.6.2"
-  checksum: 10/b5c6a53adc789290be2eb4a5b8c9c8a3ac74104f7d1f01ba3cf6bf62f04448cc93ce9bcf2bb5700d7eb54e470bf9541773db4a207fa0a7c40f1af933b1ea982d
+  checksum: 10/1aba49fe010e3dc45de4621219e7f6dfcc773a9e1a486a630b7d6d961dde0f36aace53a4fd0a1a40f5bbab64c320a210491aaaa7eea791ca6f292e4f3fe3d1e5
   languageName: node
   linkType: hard
 
-"@microsoft/kiota-serialization-text@npm:^1.0.0-preview.79":
-  version: 1.0.0-preview.100
-  resolution: "@microsoft/kiota-serialization-text@npm:1.0.0-preview.100"
+"@microsoft/kiota-serialization-text@npm:1.0.0-preview.103":
+  version: 1.0.0-preview.103
+  resolution: "@microsoft/kiota-serialization-text@npm:1.0.0-preview.103"
   dependencies:
-    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.100"
+    "@microsoft/kiota-abstractions": "npm:^1.0.0-preview.103"
     tslib: "npm:^2.6.2"
-  checksum: 10/9cddfe5d24eb53fcdbb64b13616a4a0ea71afe59579d8f2984d7ba9398e58e702b1010fea88321d7c7e47b9ec2e7c19784f239651fa18ecd49f50ff961cca44d
+  checksum: 10/4d0db85bf648bc7ac853176af48b520ff7dfdb5a51373521d888832380da470256e1dd9ded1fada788e1628d4859705fd33039c0537defc76e1ff5ea46c74dd5
   languageName: node
   linkType: hard
 
