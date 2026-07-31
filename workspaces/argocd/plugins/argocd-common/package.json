@@ -28,7 +28,7 @@
     "lint": "backstage-cli package lint",
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
-    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "test": "backstage-cli package test --coverage",
     "tsc": "tsc"
   },
   "dependencies": {
