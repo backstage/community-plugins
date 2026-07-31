@@ -1782,6 +1782,7 @@ __metadata:
     react-dom: "npm:^18.0.0"
     react-router-dom: "npm:^6.30.3"
     react-use: "npm:^17.6.0"
+    zod: "npm:^4.0.0"
   peerDependencies:
     react: ^18.0.0
     react-dom: ^18.0.0
