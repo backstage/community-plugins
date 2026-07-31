@@ -1,5 +1,11 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.2.3
+
+### Patch Changes
+
+- 6ebeace: simplify getRequestToken logic for mcp actions
+
 ## 2.2.2
 
 ### Patch Changes
