@@ -249,9 +249,7 @@ export const getConditionalPermissionPoliciesData = (
             const action = policy.policy.toLocaleLowerCase(
               locale,
             ) as PermissionAction;
-            return permission
-              ? [...pAcc, { name: permission, action }]
-              : [...pAcc, action];
+            return [...pAcc, { name: permission, action }];
           }
           return pAcc;
         },
