@@ -48,13 +48,13 @@
     "cross-fetch": "^4.0.0",
     "luxon": "^3.0.0",
     "msw": "^1.0.1",
-    "react-router": "^6.3.0",
+    "react-router": "^7.0.0",
     "react-router-dom": "^6.3.0"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router": "6.30.4 ^6.30.4"
+    "react-router": "7.18.0 ^7.18.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.33.1",
