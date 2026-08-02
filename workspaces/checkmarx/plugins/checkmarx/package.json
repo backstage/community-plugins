@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-checkmarx",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Backstage frontend plugin for displaying Checkmarx scan data on catalog entities",
   "backstage": {
     "role": "frontend-plugin",
