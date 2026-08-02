@@ -41,8 +41,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@material-ui/core": "^4.9.13",
-    "@material-ui/icons": "^4.9.1",
+    "@backstage/ui": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.3.0",
     "react-use": "^17.2.4"
