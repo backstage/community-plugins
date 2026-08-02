@@ -33,8 +33,8 @@ import {
   NOMAD_NAMESPACE_ANNOTATION,
   isNomadJobIDAvailable,
 } from '../../annotations';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import Chip from '@material-ui/core/Chip';
+import { RiExternalLinkLine } from '@remixicon/react';
+import { Tag, TagGroup } from '@backstage/ui';
 
 type rowType = Version & { nomadAddr: string };
 
@@ -47,7 +47,11 @@ const columns: TableColumn<rowType>[] = [
   {
     title: 'Stable',
     field: 'Stable',
-    render: row => <Chip label={`${row.Stable}`} />,
+    render: row => (
+      <TagGroup aria-label="stable">
+        <Tag id="stable">{`${row.Stable}`}</Tag>
+      </TagGroup>
+    ),
   },
   {
     title: 'Submitted',
@@ -132,7 +136,7 @@ export const EntityNomadJobVersionListCard = () => {
       title="Job versions"
       actions={[
         {
-          icon: () => <OpenInNewIcon />,
+          icon: () => <RiExternalLinkLine />,
           tooltip: 'Open in Nomad UI',
           isFreeAction: true,
           onClick: () => window.open(`${nomadAddr}/ui/jobs/${jobID}/versions`),
