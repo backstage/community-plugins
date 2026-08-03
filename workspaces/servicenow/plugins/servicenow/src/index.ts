@@ -14,26 +14,8 @@
  * limitations under the License.
  */
 
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
-import { TranslationBlueprint } from '@backstage/plugin-app-react';
-import { servicenowTranslations } from './translations';
-
 export { isServicenowAvailable } from '@backstage-community/plugin-servicenow-common';
 
 export * from './plugin';
 
-/**
- * Translation module for the ServiceNow plugin.
- * @public
- */
-export const servicenowTranslationsModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    TranslationBlueprint.make({
-      name: 'servicenow-translations',
-      params: {
-        resource: servicenowTranslations,
-      },
-    }),
-  ],
-});
+export { default as servicenowTranslationsModule } from './translations';

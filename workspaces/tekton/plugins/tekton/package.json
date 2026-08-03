@@ -10,7 +10,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.tsx",
-    "./tekton-translations-module": "./src/tektonTranslationsModuleExport.ts",
+    "./translations": "./src/translations/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -18,8 +18,8 @@
       "alpha": [
         "src/alpha.tsx"
       ],
-      "tekton-translations-module": [
-        "src/tektonTranslationsModuleExport.ts"
+      "translations": [
+        "src/translations/index.ts"
       ],
       "package.json": [
         "package.json"

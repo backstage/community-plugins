@@ -15,7 +15,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.ts",
-    "./servicenow-translations-module": "./src/servicenowTranslationsModuleExport.ts",
+    "./translations": "./src/translations/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -23,8 +23,8 @@
       "alpha": [
         "src/alpha.ts"
       ],
-      "servicenow-translations-module": [
-        "src/servicenowTranslationsModuleExport.ts"
+      "translations": [
+        "src/translations/index.ts"
       ],
       "package.json": [
         "package.json"

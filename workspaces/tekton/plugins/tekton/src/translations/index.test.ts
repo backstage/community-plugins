@@ -13,4 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { rbacTranslationsModule as default } from './index';
+import defaultExport from './index';
+import { tektonTranslationsModule } from '../index';
+
+describe('tektonTranslationsModule', () => {
+  it('exports the translations module as the default export', () => {
+    expect(defaultExport).toBeDefined();
+  });
+
+  it('re-exports the translations module from the main index', () => {
+    expect(tektonTranslationsModule).toBe(defaultExport);
+  });
+});

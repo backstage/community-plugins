@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
-import { TranslationBlueprint } from '@backstage/plugin-app-react';
-import { nexusRepositoryManagerTranslations } from './translations';
 
 export {
   NexusRepositoryManagerPage,
@@ -24,21 +21,7 @@ export {
   nexusRepositoryManagerPlugin,
 } from './plugin';
 
-/**
- * Translation module for the Nexus Repository Manager plugin.
- * @public
- */
-export const nexusRepositoryManagerTranslationsModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    TranslationBlueprint.make({
-      name: 'nexus-repository-manager-translations',
-      params: {
-        resource: nexusRepositoryManagerTranslations,
-      },
-    }),
-  ],
-});
+export { default as nexusRepositoryManagerTranslationsModule } from './translations';
 
 export {
   nexusRepositoryManagerTranslations,

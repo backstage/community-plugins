@@ -24,9 +24,6 @@
 export { acrPlugin, AcrImagesEntityContent } from './plugin';
 export { isAcrAvailable } from './utils/isAcrAvailable';
 
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
-import { TranslationBlueprint } from '@backstage/plugin-app-react';
-import { acrTranslations } from './translations';
 import { AcrImagesEntityContent } from './plugin';
 
 /**
@@ -37,18 +34,4 @@ import { AcrImagesEntityContent } from './plugin';
  */
 export const AcrPage = AcrImagesEntityContent;
 
-/**
- * Translation module for the ACR plugin.
- * @public
- */
-export const acrTranslationsModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    TranslationBlueprint.make({
-      name: 'acr-translations',
-      params: {
-        resource: acrTranslations,
-      },
-    }),
-  ],
-});
+export { default as acrTranslationsModule } from './translations';

@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import defaultExport from './rbacTranslationsModuleExport';
-import { rbacTranslationsModule } from './index';
+import defaultExport from './index';
+import { nexusRepositoryManagerTranslationsModule } from '../index';
 
-describe('rbacTranslationsModuleExport', () => {
-  it('re-exports the translations module as the default export', () => {
-    expect(defaultExport).toBe(rbacTranslationsModule);
+describe('nexusRepositoryManagerTranslationsModule', () => {
+  it('exports the translations module as the default export', () => {
+    expect(defaultExport).toBeDefined();
+  });
+
+  it('re-exports the translations module from the main index', () => {
+    expect(nexusRepositoryManagerTranslationsModule).toBe(defaultExport);
   });
 });
