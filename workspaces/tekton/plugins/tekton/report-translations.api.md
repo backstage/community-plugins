@@ -32,15 +32,15 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.rowActions.SBOMNotApplicable': 'View SBOM is not applicable for this PipelineRun';
     readonly 'pipelineRunList.rowActions.viewOutput': 'View output';
     readonly 'pipelineRunList.rowActions.outputNotApplicable': 'View Output is not applicable for this PipelineRun';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Medium';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.critical': 'Critical';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.high': 'High';
-    readonly 'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Medium';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.low': 'Low';
     readonly 'pipelineRunList.tableHeaderTitle.name': 'NAME';
-    readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
+    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
     readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';
     readonly 'pipelineRunList.tableHeaderTitle.taskStatus': 'TASK STATUS';
-    readonly 'pipelineRunList.tableHeaderTitle.startTime': 'STARTED';
+    readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
     readonly 'pipelineRunList.tableHeaderTitle.duration': 'DURATION';
     readonly 'pipelineRunList.tableHeaderTitle.actions': 'ACTIONS';
     readonly 'pipelineRunList.tablePagination.rowsPerPage': 'Rows per page';
@@ -54,7 +54,6 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunLogs.taskStatusStepper.skipped': 'Skipped';
     readonly 'pipelineRunOutput.title': 'PipelineRun Output';
     readonly 'pipelineRunOutput.noOutput': 'No output';
-    readonly 'pipelineRunStatus.Skipped': 'Skipped';
     readonly 'pipelineRunStatus.All': 'All';
     readonly 'pipelineRunStatus.Cancelling': 'Cancelling';
     readonly 'pipelineRunStatus.Succeeded': 'Succeeded';
@@ -63,6 +62,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunStatus.In Progress': 'In Progress';
     readonly 'pipelineRunStatus.FailedToStart': 'FailedToStart';
     readonly 'pipelineRunStatus.PipelineNotStarted': 'PipelineNotStarted';
+    readonly 'pipelineRunStatus.Skipped': 'Skipped';
     readonly 'pipelineRunStatus.Cancelled': 'Cancelled';
     readonly 'pipelineRunStatus.Pending': 'Pending';
     readonly 'pipelineRunStatus.Idle': 'Idle';
@@ -75,10 +75,10 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunDuration.second_one': '{{count}} second';
     readonly 'pipelineRunDuration.second_other': '{{count}} seconds';
     readonly 'pipelineRunParamsAndResults.title': 'PipelineRun Parameters and Results';
+    readonly 'pipelineRunParamsAndResults.results': 'Results';
     readonly 'pipelineRunParamsAndResults.noParams': 'No parameters found';
     readonly 'pipelineRunParamsAndResults.noResults': 'No results found';
     readonly 'pipelineRunParamsAndResults.params': 'Parameters';
-    readonly 'pipelineRunParamsAndResults.results': 'Results';
     readonly 'pipelineRunParamsAndResults.outputTableColumn.name': 'Name';
     readonly 'pipelineRunParamsAndResults.outputTableColumn.value': 'Value';
   }
