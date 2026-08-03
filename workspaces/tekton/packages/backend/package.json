@@ -23,7 +23,7 @@
   "dependencies": {
     "@backstage/backend-defaults": "^0.17.3",
     "@backstage/plugin-app-backend": "^0.5.15",
-    "@backstage/plugin-auth-backend": "^0.29.1",
+    "@backstage/plugin-auth-backend": "^0.29.2",
     "@backstage/plugin-auth-backend-module-github-provider": "^0.5.4",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.20",
     "@backstage/plugin-catalog-backend": "^3.8.0",
