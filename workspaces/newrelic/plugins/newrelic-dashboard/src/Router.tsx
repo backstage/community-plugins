@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Entity } from '@backstage/catalog-model';
-import Button from '@material-ui/core/Button';
 import { NewRelicDashboard } from './components/NewRelicDashboard';
 import {
   useEntity,
@@ -36,13 +35,21 @@ export const Router = () => {
   return (
     <>
       <MissingAnnotationEmptyState annotation={NEWRELIC_GUID_ANNOTATION} />
-      <Button
-        variant="contained"
-        color="primary"
+      <a
         href="https://github.com/backstage/backstage/tree/master/plugins/newrelic-dashboard"
+        style={{
+          display: 'inline-block',
+          padding: '8px 16px',
+          backgroundColor: 'var(--bui-fg-primary)',
+          color: 'white',
+          textDecoration: 'none',
+          borderRadius: 'var(--bui-radius-1)',
+          fontWeight: 500,
+          marginTop: 'var(--bui-space-3)',
+        }}
       >
         Read New Relic Dashboard Plugin Docs
-      </Button>
+      </a>
     </>
   );
 };

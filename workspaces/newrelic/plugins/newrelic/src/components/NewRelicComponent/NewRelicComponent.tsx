@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import NewRelicFetchComponent from '../NewRelicFetchComponent';
 import {
   Header,
@@ -36,11 +36,11 @@ export const NewRelicComponent = () => (
           New Relic Application Performance Monitoring
         </SupportButton>
       </ContentHeader>
-      <Grid container spacing={3} direction="column">
-        <Grid item>
+      <Grid.Root columns="12" gap="3">
+        <Grid.Item colSpan="12">
           <NewRelicFetchComponent />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </Content>
   </Page>
 );

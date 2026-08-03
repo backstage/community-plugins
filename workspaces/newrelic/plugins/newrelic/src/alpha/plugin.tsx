@@ -25,7 +25,7 @@ import {
   compatWrapper,
   convertLegacyRouteRef,
 } from '@backstage/core-compat-api';
-import ExtensionIcon from '@material-ui/icons/ExtensionOutlined';
+import { RiPlug2Line } from '@remixicon/react';
 
 import { newRelicApiRef, NewRelicClient } from '../api';
 import { rootRouteRef } from '../plugin';
@@ -50,7 +50,7 @@ export const newRelicPage = PageBlueprint.make({
     path: '/new-relic',
     routeRef: convertLegacyRouteRef(rootRouteRef),
     title: 'New Relic',
-    icon: <ExtensionIcon />,
+    icon: <RiPlug2Line />,
     loader: () =>
       import('../components/NewRelicComponent').then(m =>
         compatWrapper(<m.NewRelicComponent />),

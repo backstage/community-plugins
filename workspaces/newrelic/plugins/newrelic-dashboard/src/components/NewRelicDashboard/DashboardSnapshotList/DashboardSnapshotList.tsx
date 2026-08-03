@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactNode, ChangeEvent } from 'react';
+import type { ReactNode } from 'react';
 
 import { useState } from 'react';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Box from '@material-ui/core/Box';
 import { newRelicDashboardApiRef } from '../../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
@@ -27,29 +23,21 @@ import { Progress, ErrorPanel } from '@backstage/core-components';
 import { DashboardSnapshot } from './DashboardSnapshot';
 import { DashboardEntitySummary } from '../../../api/NewRelicDashboardApi';
 import { ResultEntity } from '../../../types/DashboardEntity';
+import styles from './DashboardSnapshotList.module.css';
 
+// eslint-disable-next-line react/forbid-elements
 interface TabPanelProps {
   children?: ReactNode;
   index: number;
   value1: number;
 }
 
-const tabPanelStyles = makeStyles(
-  theme => ({
-    tabPanel: {
-      marginTop: theme.spacing(0.5),
-    },
-  }),
-  { name: 'BackstageNewRelicDashboardTabPanel' },
-);
-
 function TabPanel(props: TabPanelProps) {
   const { children, value1, index, ...other } = props;
-  const classes = tabPanelStyles(tabPanelStyles);
 
   return (
     <div
-      className={classes.tabPanel}
+      className={`${styles.tabPanel} ${value1 === index ? styles.active : ''}`}
       role="tabpanel"
       hidden={value1 !== index}
       id={`simple-tabpanel-${index}`}
@@ -68,36 +56,8 @@ function a11yProps(index: number) {
   };
 }
 
-const useStyles = makeStyles(
-  theme => ({
-    tabsWrapper: {
-      gridArea: 'pageSubheader',
-      backgroundColor: theme.palette.background.paper,
-      paddingLeft: theme.spacing(3),
-    },
-    defaultTab: {
-      padding: theme.spacing(3, 3),
-      ...theme.typography.caption,
-      textTransform: 'uppercase',
-      fontWeight: 'bold',
-      color: theme.palette.text.secondary,
-    },
-    selected: {
-      color: theme.palette.text.primary,
-    },
-    tabRoot: {
-      '&:hover': {
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-      },
-    },
-  }),
-  { name: 'DashboardHeaderTabs' },
-);
-
 export const DashboardSnapshotList = (props: { guid: string }) => {
   const { guid } = props;
-  const styles = useStyles();
   const newRelicDashboardAPI = useApi(newRelicDashboardApiRef);
   const { value, loading, error } = useAsync(async (): Promise<
     DashboardEntitySummary | undefined
@@ -107,9 +67,6 @@ export const DashboardSnapshotList = (props: { guid: string }) => {
     return dashboardObject;
   }, [guid]);
   const [value1, setValue1] = useState<number>(0);
-  const handleChange = ({}: ChangeEvent<{}>, newValue: number) => {
-    setValue1(newValue);
-  };
 
   if (loading) {
     return <Progress />;
@@ -118,37 +75,30 @@ export const DashboardSnapshotList = (props: { guid: string }) => {
     return <ErrorPanel title={error.name} defaultExpanded error={error} />;
   }
   return (
-    <Box>
-      <Tabs
-        selectionFollowsFocus
-        indicatorColor="primary"
-        textColor="inherit"
-        variant="scrollable"
-        scrollButtons="auto"
-        aria-label="scrollable auto tabs example"
-        onChange={handleChange}
-        value={value1}
-      >
+    <div className={styles.tabsContainer}>
+      <div className={styles.tabsWrapper}>
         {value?.getDashboardEntity?.data?.actor.entitySearch.results.entities?.map(
           (Entity: ResultEntity, index: number) => {
             return (
-              <Tab
-                label={Entity.name}
-                className={styles.defaultTab}
-                classes={{
-                  selected: styles.selected,
-                  root: styles.tabRoot,
-                }}
+              // eslint-disable-next-line react/forbid-elements
+              <button
+                key={index}
+                className={`${styles.tab} ${
+                  value1 === index ? styles.active : ''
+                }`}
+                onClick={() => setValue1(index)}
                 {...a11yProps(index)}
-              />
+              >
+                {Entity.name}
+              </button>
             );
           },
         )}
-      </Tabs>
+      </div>
       {value?.getDashboardEntity?.data?.actor.entitySearch.results.entities?.map(
         (Entity: ResultEntity, index: number) => {
           return (
-            <TabPanel value1={value1} index={index}>
+            <TabPanel key={index} value1={value1} index={index}>
               <DashboardSnapshot
                 name={Entity.name}
                 permalink={Entity.permalink}
@@ -158,6 +108,6 @@ export const DashboardSnapshotList = (props: { guid: string }) => {
           );
         },
       )}
-    </Box>
+    </div>
   );
 };
