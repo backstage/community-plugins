@@ -30,6 +30,12 @@ import { ArgoCDApiClient } from './api/ArgoCDApiClient';
 import { ArgoCDInstanceApiClient } from './api/ArgoCDInstanceApiClient';
 import { getArgocdInstances } from './hooks/useArgocdConfig';
 
+/**
+ * ArgoCD plugin (legacy frontend system)
+ *
+ * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
+ */
 export const argocdPlugin = createPlugin({
   id: 'backstage-community-argocd',
   routes: {
@@ -67,6 +73,12 @@ export const argocdPlugin = createPlugin({
   ],
 });
 
+/**
+ * ArgoCD Deployment Lifecycle extension (legacy frontend system)
+ *
+ * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
+ */
 export const ArgocdDeploymentLifecycle = argocdPlugin.provide(
   createRoutableExtension({
     name: 'ArgocdDeploymentLifecycle',
@@ -78,6 +90,12 @@ export const ArgocdDeploymentLifecycle = argocdPlugin.provide(
   }),
 );
 
+/**
+ * ArgoCD Deployment Summary extension (legacy frontend system)
+ *
+ * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
+ */
 export const ArgocdDeploymentSummary = argocdPlugin.provide(
   createRoutableExtension({
     name: 'ArgocdDeploymentSummary',
@@ -86,3 +104,8 @@ export const ArgocdDeploymentSummary = argocdPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+export { isArgocdConfigured } from './utils/isArgocdConfigured';
+
+export type { DeploymentSummaryProps } from './components/DeploymentSummary/DeploymentSummary';
+export type { DeploymentLifecycleProps } from './components/DeploymentLifeCycle/DeploymentLifecycle';
