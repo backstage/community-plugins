@@ -15,12 +15,16 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.ts",
+    "./translations": "./src/translations/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
         "src/alpha.ts"
+      ],
+      "translations": [
+        "src/translations/index.ts"
       ],
       "package.json": [
         "package.json"
@@ -53,6 +57,7 @@
     "@backstage/core-components": "^0.18.11",
     "@backstage/core-plugin-api": "^1.12.7",
     "@backstage/frontend-plugin-api": "^0.17.2",
+    "@backstage/plugin-app-react": "^0.2.4",
     "@backstage/plugin-catalog-react": "^3.1.0",
     "@backstage/theme": "^0.7.3",
     "@mui/icons-material": "^5.15.17",

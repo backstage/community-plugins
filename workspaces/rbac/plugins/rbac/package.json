@@ -22,6 +22,7 @@
     ".": "./src/index.ts",
     "./alpha": "./src/alpha/index.ts",
     "./legacy": "./src/legacy/index.ts",
+    "./translations": "./src/alpha/translations/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
@@ -31,6 +32,9 @@
       ],
       "legacy": [
         "src/legacy/index.ts"
+      ],
+      "translations": [
+        "src/alpha/translations/index.ts"
       ],
       "package.json": [
         "package.json"

@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import defaultExport from './index';
+import { tektonTranslationsModule } from '../index';
 
-export {
-  NexusRepositoryManagerPage,
-  isNexusRepositoryManagerAvailable,
-  isNexusRepositoryManagerExperimentalAvailable,
-  nexusRepositoryManagerPlugin,
-} from './plugin';
+describe('tektonTranslationsModule', () => {
+  it('exports the translations module as the default export', () => {
+    expect(defaultExport).toBeDefined();
+  });
 
-export { default as nexusRepositoryManagerTranslationsModule } from './translations';
-
-export {
-  nexusRepositoryManagerTranslations,
-  nexusRepositoryManagerTranslationRef,
-} from './translations';
+  it('re-exports the translations module from the main index', () => {
+    expect(tektonTranslationsModule).toBe(defaultExport);
+  });
+});
