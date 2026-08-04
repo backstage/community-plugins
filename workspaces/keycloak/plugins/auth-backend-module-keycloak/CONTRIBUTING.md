@@ -24,7 +24,7 @@ This imports [`backstage-community-realm`](../catalog-backend-module-keycloak/__
 
 The dev [`app-config.yaml`](./app-config.yaml) uses `${ENV_VAR}` placeholders for credentials. You can provide them via environment variables or an untracked `app-config.local.yaml` file.
 
-All values can be found in [`__fixtures__/keycloak-realm.json`](../catalog-backend-module-keycloak/__fixtures__/keycloak-realm.json) — look for the `backstage` client entry. `BACKSTAGE_DEV_STATIC_TOKEN` can be any arbitrary string — it just needs to match between `app-config.yaml` and your `curl` commands.
+All values can be found in [`__fixtures__/keycloak-realm.json`](../catalog-backend-module-keycloak/__fixtures__/keycloak-realm.json) — look for the `backstage` client entry.
 
 **Option A — `app-config.local.yaml`** (recommended, one-time setup):
 
@@ -34,14 +34,14 @@ Create `plugins/auth-backend-module-keycloak/app-config.local.yaml` (gitignored 
 
 Export the variables listed below before starting the harness.
 
-| Variable                      | Purpose                                                 |
-| ----------------------------- | ------------------------------------------------------- |
-| `AUTH_KEYCLOAK_CLIENT_ID`     | OAuth client ID from the realm fixture                  |
-| `AUTH_KEYCLOAK_CLIENT_SECRET` | OAuth client secret from the realm fixture              |
-| `AUTH_KEYCLOAK_BASE_URL`      | Keycloak server URL (e.g. `http://localhost:8080`)      |
-| `AUTH_KEYCLOAK_REALM`         | Realm for sign-in from the realm fixture                |
-| `AUTH_SESSION_SECRET`         | Auth session signing secret (any string locally)        |
-| `BACKSTAGE_DEV_STATIC_TOKEN`  | Static bearer token for service-to-service `curl` calls |
+| Variable                      | Purpose                                            |
+| ----------------------------- | -------------------------------------------------- |
+| `AUTH_KEYCLOAK_CLIENT_ID`     | OAuth client ID from the realm fixture             |
+| `AUTH_KEYCLOAK_CLIENT_SECRET` | OAuth client secret from the realm fixture         |
+| `AUTH_KEYCLOAK_BASE_URL`      | Keycloak server URL (e.g. `http://localhost:8080`) |
+| `AUTH_KEYCLOAK_REALM`         | Realm for sign-in from the realm fixture           |
+| `AUTH_SESSION_SECRET`         | Auth session signing secret (any string locally)   |
+| `BACKSTAGE_DEV_PORT`          | Backend listen port (default: `7007`)              |
 
 ### Starting the harness
 
@@ -54,7 +54,7 @@ yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider
 yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider start --config app-config.local.yaml
 ```
 
-This runs a minimal backend with `@backstage/plugin-auth-backend`, `@backstage/plugin-catalog-backend`, and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`. The dev config registers a catalog `User` entity named `test` (from [`dev/catalog/users.yaml`](./dev/catalog/users.yaml)) so `preferredUsernameMatchingUserEntityName` can resolve during OAuth sign-in.
+This runs a minimal backend with `@backstage/plugin-auth-backend` and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`.
 
 On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it first — the harness will fail with `EADDRINUSE` otherwise.
 
@@ -72,29 +72,7 @@ curl -i "http://localhost:7007/api/auth/keycloak/start?env=development"
 
 Expect `302` with a `Location` header pointing at the Keycloak authorize URL (`.../realms/<realm>/protocol/openid-connect/auth`). This confirms the module is wired correctly, the Keycloak issuer discovery succeeded, and the OAuth client config is valid.
 
-Confirm the catalog fixture user is loaded (use your `BACKSTAGE_DEV_STATIC_TOKEN`):
-
-```bash
-curl -s -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" \
-  "http://localhost:7007/api/catalog/entities/by-name/user/default/test"
-```
-
-Expect a `User` entity — if you get `404`, wait a few seconds after harness startup (catalog `processingInterval` is 3s in dev config) and retry.
-
 > **Full OAuth flow limitation:** This workspace does not ship `packages/app` (community-plugins policy). The full authorization-code flow (login → token exchange → resolver) requires either a Backstage frontend or a headless login script. Automated tests in `module.test.ts` cover the redirect, discovery URL, and module wiring; the sign-in resolver logic is tested separately in `resolvers.test.ts`.
-
-### API authentication for `curl` (static token)
-
-The dev [`app-config.yaml`](./app-config.yaml) registers a **static** backend access token for service-to-service calls (see [service-to-service auth](https://backstage.io/docs/auth/service-to-service-auth)).
-
-Use this for quick API checks without going through OAuth:
-
-```bash
-curl -s -H "Authorization: Bearer ${BACKSTAGE_DEV_STATIC_TOKEN}" \
-  http://localhost:7007/.backstage/health/v1/readiness
-```
-
-The static token is for service-to-service API checks; it does not exercise the OAuth sign-in flow.
 
 ## Validation commands
 
@@ -143,7 +121,6 @@ Use when you change auth integration code or are reviewing a Backstage version b
 1. Start Keycloak (`start:keycloak`).
 2. Start this auth harness (`start`).
 3. Verify `302` redirect: `curl -i "http://localhost:7007/api/auth/keycloak/start?env=development"`.
-4. Confirm catalog user `test` is present via static-token `curl` (see [OAuth redirect smoke](#oauth-redirect-smoke)).
 
 ### Troubleshooting
 

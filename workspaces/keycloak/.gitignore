@@ -30,6 +30,7 @@ node_modules/
 # dotenv environment variables file
 .env
 .env.test
+
 # Build output
 dist
 dist-types

@@ -21,10 +21,4 @@ const backend = createBackend();
 backend.add(import('@backstage/plugin-auth-backend'));
 backend.add(import('../src'));
 
-// Catalog is loaded so the sign-in resolver can look up a User entity (see app-config.yaml).
-backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
-);
-
 backend.start();
