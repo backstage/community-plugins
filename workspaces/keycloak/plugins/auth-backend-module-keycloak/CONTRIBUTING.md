@@ -34,14 +34,14 @@ Create `plugins/auth-backend-module-keycloak/app-config.local.yaml` (gitignored 
 
 Export the variables listed below before starting the harness.
 
-| Variable                      | Purpose                                            |
-| ----------------------------- | -------------------------------------------------- |
-| `AUTH_KEYCLOAK_CLIENT_ID`     | OAuth client ID from the realm fixture             |
-| `AUTH_KEYCLOAK_CLIENT_SECRET` | OAuth client secret from the realm fixture         |
-| `AUTH_KEYCLOAK_BASE_URL`      | Keycloak server URL (e.g. `http://localhost:8080`) |
-| `AUTH_KEYCLOAK_REALM`         | Realm for sign-in from the realm fixture           |
-| `AUTH_SESSION_SECRET`         | Auth session signing secret (any string locally)   |
-| `BACKSTAGE_DEV_PORT`          | Backend listen port (default: `7007`)              |
+| Variable                      | Purpose                                                                                                                                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AUTH_KEYCLOAK_CLIENT_ID`     | OAuth client ID from the realm fixture                                                                                                                                                                                                     |
+| `AUTH_KEYCLOAK_CLIENT_SECRET` | OAuth client secret from the realm fixture                                                                                                                                                                                                 |
+| `AUTH_KEYCLOAK_BASE_URL`      | Keycloak server URL (e.g. `http://localhost:8080`)                                                                                                                                                                                         |
+| `AUTH_KEYCLOAK_REALM`         | Realm for sign-in from the realm fixture                                                                                                                                                                                                   |
+| `AUTH_SESSION_SECRET`         | Auth session signing secret (any string locally)                                                                                                                                                                                           |
+| `BACKSTAGE_DEV_PORT`          | Backend listen port (default: `7007`). If changed, update `redirectUris` and `webOrigins` in the [realm fixture](../catalog-backend-module-keycloak/__fixtures__/keycloak-realm.json) to match, and re-import the realm (`start:keycloak`) |
 
 ### Starting the harness
 
@@ -56,7 +56,7 @@ yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider
 
 This runs a minimal backend with `@backstage/plugin-auth-backend` and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`.
 
-On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use, either free it or set `BACKSTAGE_DEV_PORT` to another port (e.g. `export BACKSTAGE_DEV_PORT=7008`).
+On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use, free it or use a different port via `BACKSTAGE_DEV_PORT` (see the env var table above for realm fixture update instructions).
 
 Only one plugin `dev/` harness should run on port **7007** at a time. To work on the catalog module instead, stop this process and start the [catalog module harness](../catalog-backend-module-keycloak/CONTRIBUTING.md).
 
@@ -124,13 +124,13 @@ Use when you change auth integration code or are reviewing a Backstage version b
 
 ### Troubleshooting
 
-| Symptom                                         | Likely cause                                    | Fix                                                                                                                                                                                |
-| ----------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ECONNREFUSED` on port 8080                     | Keycloak not running                            | Run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak`                                                                                    |
-| `Invalid parameter: redirect_uri` from Keycloak | Stale Keycloak container with old client config | Stop/remove the container and run `start:keycloak` again to re-import the realm fixture                                                                                            |
-| `401` / `Illegal token`                         | Wrong backend on the port                       | Stop other backends on **7007**                                                                                                                                                    |
-| Resolver mismatch                               | Username sanitization vs catalog entity name    | Ensure catalog `User` metadata.name matches sanitized Keycloak `preferred_username`; see [Sign-in alignment](#sign-in-alignment-with-the-catalog-module)                           |
-| Realm changes ignored                           | Stale Docker container                          | Stop/remove the container and run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak` again — import runs only on first container creation |
+| Symptom                                         | Likely cause                                             | Fix                                                                                                                                                                                |
+| ----------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ECONNREFUSED` on port 8080                     | Keycloak not running                                     | Run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak`                                                                                    |
+| `Invalid parameter: redirect_uri` from Keycloak | Stale Keycloak container with old client config          | Stop/remove the container and run `start:keycloak` again to re-import the realm fixture                                                                                            |
+| `401` / `Illegal token`                         | Sending requests to a different backend on the same port | Stop other backends on **7007** and restart this harness                                                                                                                           |
+| Resolver mismatch                               | Username sanitization vs catalog entity name             | Ensure catalog `User` metadata.name matches sanitized Keycloak `preferred_username`; see [Sign-in alignment](#sign-in-alignment-with-the-catalog-module)                           |
+| Realm changes ignored                           | Stale Docker container                                   | Stop/remove the container and run `yarn workspace @backstage-community/plugin-catalog-backend-module-keycloak start:keycloak` again — import runs only on first container creation |
 
 ## Related packages
 
