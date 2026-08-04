@@ -180,9 +180,9 @@ describe('createRouter', () => {
       expect(result.output).toEqual(mockLanguages);
     });
 
-    it('get-entity-languages action throws when denied', async () => {
+    it('get-entity-languages action throws when not allowed', async () => {
       mockPermissions.authorize.mockResolvedValueOnce([
-        { result: AuthorizeResult.DENY },
+        { result: AuthorizeResult.CONDITIONAL },
       ]);
 
       const reg = mockActionsRegistry.register.mock.calls.find(
@@ -222,9 +222,9 @@ describe('createRouter', () => {
       expect(result.output).toEqual({});
     });
 
-    it('process-entities action throws when denied', async () => {
+    it('process-entities action throws when not allowed', async () => {
       mockPermissions.authorize.mockResolvedValueOnce([
-        { result: AuthorizeResult.DENY },
+        { result: AuthorizeResult.CONDITIONAL },
       ]);
 
       const reg = mockActionsRegistry.register.mock.calls.find(

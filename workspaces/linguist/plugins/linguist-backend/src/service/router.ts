@@ -140,7 +140,7 @@ export async function createRouter(
           [{ permission: linguistReadPermission }],
           { credentials },
         );
-        if (decision[0].result === AuthorizeResult.DENY) {
+        if (decision[0].result !== AuthorizeResult.ALLOW) {
           throw new NotAllowedError('Unauthorized');
         }
       }
@@ -168,7 +168,7 @@ export async function createRouter(
           [{ permission: linguistProcessPermission }],
           { credentials },
         );
-        if (decision[0].result === AuthorizeResult.DENY) {
+        if (decision[0].result !== AuthorizeResult.ALLOW) {
           throw new NotAllowedError('Unauthorized');
         }
       }
