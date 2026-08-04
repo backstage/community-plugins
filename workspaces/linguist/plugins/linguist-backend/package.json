@@ -49,6 +49,7 @@
     "@backstage/config": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
+    "@backstage/plugin-permission-common": "backstage:^",
     "@backstage/types": "backstage:^",
     "@types/express": "*",
     "express": "^4.18.1",

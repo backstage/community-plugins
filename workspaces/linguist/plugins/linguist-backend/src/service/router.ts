@@ -17,6 +17,7 @@
 import {
   DatabaseService,
   DiscoveryService,
+  PermissionsService,
   readSchedulerServiceTaskScheduleDefinitionFromConfig,
   SchedulerService,
   SchedulerServiceTaskScheduleDefinition,
@@ -33,6 +34,8 @@ import { LinguistBackendClient } from '../api/LinguistBackendClient';
 import { Config } from '@backstage/config';
 import { AuthService, LoggerService } from '@backstage/backend-plugin-api';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
+import { NotAllowedError } from '@backstage/errors';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import {
   linguistReadPermission,
   linguistProcessPermission,
@@ -51,6 +54,7 @@ export interface RouterOptions {
   auth: AuthService;
   scheduler?: SchedulerService;
   actionsRegistry?: ActionsRegistryService;
+  permissions?: PermissionsService;
 }
 
 /**
@@ -130,7 +134,16 @@ export async function createRouter(
           ),
         }),
     },
-    action: async ({ input }) => {
+    action: async ({ input, credentials }) => {
+      if (routerOptions.permissions) {
+        const decision = await routerOptions.permissions.authorize(
+          [{ permission: linguistReadPermission }],
+          { credentials },
+        );
+        if (decision[0].result === AuthorizeResult.DENY) {
+          throw new NotAllowedError('Unauthorized');
+        }
+      }
       const languages = await linguistBackendClient.getEntityLanguages(
         input.entityRef,
       );
@@ -149,7 +162,16 @@ export async function createRouter(
       input: z => z.object({}),
       output: z => z.object({}),
     },
-    action: async () => {
+    action: async ({ credentials }) => {
+      if (routerOptions.permissions) {
+        const decision = await routerOptions.permissions.authorize(
+          [{ permission: linguistProcessPermission }],
+          { credentials },
+        );
+        if (decision[0].result === AuthorizeResult.DENY) {
+          throw new NotAllowedError('Unauthorized');
+        }
+      }
       await linguistBackendClient.processEntities();
       return { output: {} };
     },

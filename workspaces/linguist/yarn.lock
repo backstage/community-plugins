@@ -1755,6 +1755,7 @@ __metadata:
     "@backstage/plugin-catalog-backend": "backstage:^"
     "@backstage/plugin-catalog-node": "backstage:^"
     "@backstage/plugin-mcp-actions-backend": "backstage:^"
+    "@backstage/plugin-permission-common": "backstage:^"
     "@backstage/repo-tools": "backstage:^"
     "@backstage/types": "backstage:^"
     "@types/express": "npm:*"

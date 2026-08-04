@@ -42,6 +42,7 @@ export const linguistPlugin = createBackendPlugin({
         scheduler: coreServices.scheduler,
         httpRouter: coreServices.httpRouter,
         actionsRegistry: actionsRegistryServiceRef,
+        permissions: coreServices.permissions,
         permissionsRegistry: coreServices.permissionsRegistry,
       },
       async init({
@@ -54,6 +55,7 @@ export const linguistPlugin = createBackendPlugin({
         scheduler,
         httpRouter,
         actionsRegistry,
+        permissions,
         permissionsRegistry,
       }) {
         permissionsRegistry.addPermissions(linguistPermissions);
@@ -67,6 +69,7 @@ export const linguistPlugin = createBackendPlugin({
             discovery,
             scheduler,
             actionsRegistry,
+            permissions,
           }),
         );
         httpRouter.addAuthPolicy({

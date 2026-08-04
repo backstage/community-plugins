@@ -29,7 +29,11 @@ import {
   linguistReadPermission,
   linguistProcessPermission,
 } from '@backstage-community/plugin-linguist-common';
-import { UrlReaderService } from '@backstage/backend-plugin-api';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import {
+  PermissionsService,
+  UrlReaderService,
+} from '@backstage/backend-plugin-api';
 
 const mockUrlReader: UrlReaderService = {
   readUrl: url =>
@@ -79,6 +83,9 @@ describe('createRouter', () => {
     const mockActionsRegistry = { register: jest.fn() };
     const actionsApi: jest.Mocked<LinguistBackendApi> =
       {} as jest.Mocked<LinguistBackendApi>;
+    const mockPermissions: jest.Mocked<PermissionsService> = {
+      authorize: jest.fn(),
+    } as unknown as jest.Mocked<PermissionsService>;
 
     beforeAll(async () => {
       const knex = await databases.init('SQLITE_3');
@@ -92,6 +99,7 @@ describe('createRouter', () => {
         config: mockServices.rootConfig(),
         auth: mockServices.auth(),
         actionsRegistry: mockActionsRegistry as any,
+        permissions: mockPermissions,
       });
     });
 
@@ -123,7 +131,7 @@ describe('createRouter', () => {
       expect(reg.visibilityPermission).toBe(linguistProcessPermission);
     });
 
-    it('get-entity-languages action calls getEntityLanguages', async () => {
+    it('get-entity-languages action calls getEntityLanguages when authorized', async () => {
       const mockLanguages = {
         languageCount: 2,
         totalBytes: 1000,
@@ -148,6 +156,9 @@ describe('createRouter', () => {
       actionsApi.getEntityLanguages = jest
         .fn()
         .mockResolvedValue(mockLanguages);
+      mockPermissions.authorize.mockResolvedValueOnce([
+        { result: AuthorizeResult.ALLOW },
+      ]);
 
       const reg = mockActionsRegistry.register.mock.calls.find(
         (c: any[]) => c[0].name === 'get-entity-languages',
@@ -159,14 +170,39 @@ describe('createRouter', () => {
         logger: mockServices.logger.mock(),
       });
 
+      expect(mockPermissions.authorize).toHaveBeenCalledWith(
+        [{ permission: linguistReadPermission }],
+        { credentials: mockCredentials.user() },
+      );
       expect(actionsApi.getEntityLanguages).toHaveBeenCalledWith(
         'component:default/my-service',
       );
       expect(result.output).toEqual(mockLanguages);
     });
 
-    it('process-entities action calls processEntities', async () => {
+    it('get-entity-languages action throws when denied', async () => {
+      mockPermissions.authorize.mockResolvedValueOnce([
+        { result: AuthorizeResult.DENY },
+      ]);
+
+      const reg = mockActionsRegistry.register.mock.calls.find(
+        (c: any[]) => c[0].name === 'get-entity-languages',
+      )?.[0];
+
+      await expect(
+        reg.action({
+          input: { entityRef: 'component:default/my-service' },
+          credentials: mockCredentials.user(),
+          logger: mockServices.logger.mock(),
+        }),
+      ).rejects.toThrow('Unauthorized');
+    });
+
+    it('process-entities action calls processEntities when authorized', async () => {
       actionsApi.processEntities = jest.fn().mockResolvedValue(undefined);
+      mockPermissions.authorize.mockResolvedValueOnce([
+        { result: AuthorizeResult.ALLOW },
+      ]);
 
       const reg = mockActionsRegistry.register.mock.calls.find(
         (c: any[]) => c[0].name === 'process-entities',
@@ -178,8 +214,30 @@ describe('createRouter', () => {
         logger: mockServices.logger.mock(),
       });
 
+      expect(mockPermissions.authorize).toHaveBeenCalledWith(
+        [{ permission: linguistProcessPermission }],
+        { credentials: mockCredentials.user() },
+      );
       expect(actionsApi.processEntities).toHaveBeenCalled();
       expect(result.output).toEqual({});
+    });
+
+    it('process-entities action throws when denied', async () => {
+      mockPermissions.authorize.mockResolvedValueOnce([
+        { result: AuthorizeResult.DENY },
+      ]);
+
+      const reg = mockActionsRegistry.register.mock.calls.find(
+        (c: any[]) => c[0].name === 'process-entities',
+      )?.[0];
+
+      await expect(
+        reg.action({
+          input: {},
+          credentials: mockCredentials.user(),
+          logger: mockServices.logger.mock(),
+        }),
+      ).rejects.toThrow('Unauthorized');
     });
   });
 });
