@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.14.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
 ## 1.13.2
 
 ### Patch Changes
