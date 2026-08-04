@@ -15,4 +15,3 @@
  */
 
 export { mcpCapabilitiesPlugin as default } from './plugin';
-export { catalogModuleMcpCapabilities } from './module';

@@ -6,9 +6,6 @@
 import { BackendFeature } from '@backstage/backend-plugin-api';
 
 // @public
-export const catalogModuleMcpCapabilities: BackendFeature;
-
-// @public
 const mcpCapabilitiesPlugin: BackendFeature;
 export default mcpCapabilitiesPlugin;
 

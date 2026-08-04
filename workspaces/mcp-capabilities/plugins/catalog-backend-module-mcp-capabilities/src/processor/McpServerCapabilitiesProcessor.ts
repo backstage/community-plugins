@@ -21,11 +21,17 @@ import {
   CatalogProcessorCache,
 } from '@backstage/plugin-catalog-node';
 import {
+  discoverFromClient,
   MCPServerEnrichmentSpec,
+  MCPServerSpec,
   parseMcpRemoteUrl,
   selectMcpServerRemote,
 } from '@backstage-community/plugin-mcp-capabilities-common';
-import { MCPClient } from '../lib/MCPClient';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+
+/** What the processor persists onto an entity. */
+export type EnrichmentFields = 'names' | 'summary';
 
 interface CacheItem {
   summary: MCPServerEnrichmentSpec;
@@ -33,26 +39,58 @@ interface CacheItem {
 }
 
 const DEFAULT_TTL_MS = 10 * 60 * 1000;
+const DISCOVERY_TIMEOUT_MS = 15_000;
+
+/**
+ * Connects to an MCP server over streamable-http and discovers what it exposes.
+ * Owns the client lifecycle; the capability-gating and mapping live in
+ * `discoverFromClient` (shared with the live `/spec` router).
+ */
+async function discoverMcpServer(
+  url: string,
+  logger: LoggerService,
+): Promise<MCPServerSpec> {
+  const client = new Client({
+    name: 'backstage-mcp-capabilities',
+    version: '1.0.0',
+  });
+  const transport = new StreamableHTTPClientTransport(new URL(url));
+  try {
+    await client.connect(transport, { timeout: DISCOVERY_TIMEOUT_MS });
+    return await discoverFromClient(client, {
+      requestOptions: { timeout: DISCOVERY_TIMEOUT_MS },
+      onListError: message => logger.debug(message),
+    });
+  } finally {
+    await client.close().catch(() => {});
+  }
+}
 
 /**
  * Catalog processor that enriches native `API` / `spec.type: 'mcp-server'`
  * entities with a discovered summary — capabilities, counts, server identity,
  * and a flat list of tool names — by connecting to the server's remote.
  *
- * The summary is what the model layer added to the schema, so the values are
- * valid on the entity. Tool *detail* (schemas etc.) is served live by the
- * discovery router and is intentionally not stored here.
- *
- * Discovery is cached per remote URL with a TTL so refreshes don't hammer the
- * servers, and any failure leaves the entity unchanged.
+ * Tool *detail* (schemas etc.) is served live by the discovery router and is
+ * intentionally not stored here. Discovery is cached per remote URL with a TTL
+ * so refreshes don't hammer the servers, and any failure leaves the entity
+ * unchanged.
  */
 export class McpServerCapabilitiesProcessor implements CatalogProcessor {
   private readonly logger: LoggerService;
+  private readonly ttlMs: number;
+  private readonly fields: EnrichmentFields;
 
-  constructor(options: { logger: LoggerService }) {
+  constructor(options: {
+    logger: LoggerService;
+    ttlMs?: number;
+    fields?: EnrichmentFields;
+  }) {
     this.logger = options.logger.child({
       component: 'McpServerCapabilitiesProcessor',
     });
+    this.ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
+    this.fields = options.fields ?? 'summary';
   }
 
   getProcessorName(): string {
@@ -102,24 +140,33 @@ export class McpServerCapabilitiesProcessor implements CatalogProcessor {
     const cached = (await cache.get<JsonObject>(cacheKey)) as
       | CacheItem
       | undefined;
-    if (cached && Date.now() - cached.cachedAt < DEFAULT_TTL_MS) {
+    if (cached && Date.now() - cached.cachedAt < this.ttlMs) {
       return cached.summary;
     }
 
-    const client = new MCPClient({ url, timeoutMs: 15_000 }, this.logger);
-    const discovered = await client.discover();
-    const summary: MCPServerEnrichmentSpec = {
-      capabilities: discovered.capabilities,
-      serverInfo: discovered.serverInfo,
-      instructions: discovered.instructions,
+    const discovered = await discoverMcpServer(url, this.logger);
+    const summary = this.toSummary(discovered);
+
+    const item: CacheItem = { summary, cachedAt: Date.now() };
+    await cache.set(cacheKey, item as unknown as JsonObject);
+    return summary;
+  }
+
+  private toSummary(discovered: MCPServerSpec): MCPServerEnrichmentSpec {
+    const base: MCPServerEnrichmentSpec = {
       toolCount: discovered.tools.length,
       resourceCount: discovered.resources.length,
       promptCount: discovered.prompts.length,
       toolNames: discovered.tools.map(t => t.name),
     };
-
-    const item: CacheItem = { summary, cachedAt: Date.now() };
-    await cache.set(cacheKey, item as unknown as JsonObject);
-    return summary;
+    if (this.fields === 'names') {
+      return base;
+    }
+    return {
+      ...base,
+      capabilities: discovered.capabilities,
+      serverInfo: discovered.serverInfo,
+      instructions: discovered.instructions,
+    };
   }
 }

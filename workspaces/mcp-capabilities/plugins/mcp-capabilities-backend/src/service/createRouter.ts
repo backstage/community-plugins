@@ -18,19 +18,24 @@ import { CatalogService } from '@backstage/plugin-catalog-node';
 import { InputError, NotFoundError } from '@backstage/errors';
 import { Entity } from '@backstage/catalog-model';
 import {
+  discoverFromClient,
   McpServerRemote,
+  MCPServerSpec,
   parseMcpRemoteUrl,
   selectMcpServerRemote,
 } from '@backstage-community/plugin-mcp-capabilities-common';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import express from 'express';
 import Router from 'express-promise-router';
-import { MCPClient } from '../lib/MCPClient';
 
 export interface RouterOptions {
   httpAuth: HttpAuthService;
   catalog: CatalogService;
   logger: LoggerService;
 }
+
+const DISCOVERY_TIMEOUT_MS = 30_000;
 
 function getRemote(entity: Entity): { remote: McpServerRemote; url: URL } {
   const ref = `${entity.kind}:${entity.metadata.namespace}/${entity.metadata.name}`;
@@ -53,6 +58,31 @@ function getRemote(entity: Entity): { remote: McpServerRemote; url: URL } {
   return { remote, url };
 }
 
+/**
+ * Connects to an MCP server over streamable-http and discovers its full
+ * tool/resource/prompt detail. Owns the client lifecycle; capability-gating
+ * and mapping live in `discoverFromClient` (shared with the catalog processor).
+ */
+async function discoverMcpServer(
+  url: string,
+  logger: LoggerService,
+): Promise<MCPServerSpec> {
+  const client = new Client({
+    name: 'backstage-mcp-capabilities',
+    version: '1.0.0',
+  });
+  const transport = new StreamableHTTPClientTransport(new URL(url));
+  try {
+    await client.connect(transport, { timeout: DISCOVERY_TIMEOUT_MS });
+    return await discoverFromClient(client, {
+      requestOptions: { timeout: DISCOVERY_TIMEOUT_MS },
+      onListError: message => logger.debug(message),
+    });
+  } finally {
+    await client.close().catch(() => {});
+  }
+}
+
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
@@ -65,7 +95,7 @@ export async function createRouter(
   // server URL lives in exactly one place (no duplicate provider config).
   router.get('/spec', async (req, res) => {
     const credentials = await httpAuth.credentials(req, {
-      allow: ['user', 'none'],
+      allow: ['user', 'service'],
     });
 
     const entityRef = req.query.entityRef;
@@ -81,8 +111,7 @@ export async function createRouter(
     const { remote, url } = getRemote(entity);
     logger.info(`Discovering MCP server ${entityRef} at ${url.origin}`);
 
-    const client = new MCPClient({ url: remote.url }, logger);
-    const spec = await client.discover();
+    const spec = await discoverMcpServer(remote.url, logger);
     res.json(spec);
   });
 

@@ -15,13 +15,9 @@
  */
 
 /**
- * Shared types and the schema-extension model layer for native MCP server
- * enrichment.
+ * The mcp-capabilities backend module for the catalog plugin.
  *
  * @packageDocumentation
  */
 
-export * from './types';
-export * from './remote';
-export * from './discovery';
-export { mcpServerEnrichmentModelLayer } from './model/mcpServerEnrichmentModelLayer';
+export { catalogModuleMcpCapabilities as default } from './module';
