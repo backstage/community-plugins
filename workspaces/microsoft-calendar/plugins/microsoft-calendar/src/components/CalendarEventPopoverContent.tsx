@@ -15,38 +15,16 @@
  */
 import { sortBy } from 'lodash';
 import DOMPurify from 'dompurify';
+import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { Link } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { ButtonIcon, Text } from '@backstage/ui';
+import { RiArrowRightSLine } from '@remixicon/react';
 
 import { AttendeeChip } from './AttendeeChip';
 import { MicrosoftCalendarEvent } from '../api';
 import { getTimePeriod, getOnlineMeetingLink } from './util';
-
-const useStyles = makeStyles(
-  theme => ({
-    description: {
-      wordBreak: 'break-word',
-      '& a': {
-        color: theme.palette.primary.main,
-        fontWeight: 500,
-      },
-    },
-    divider: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-  }),
-  {
-    name: 'MicrosoftCalendarEventPopoverContent',
-  },
-);
+import styles from './CalendarEventPopoverContent.module.css';
 
 type CalendarEventPopoverProps = {
   event: MicrosoftCalendarEvent;
@@ -55,31 +33,35 @@ type CalendarEventPopoverProps = {
 export const CalendarEventPopoverContent = ({
   event,
 }: CalendarEventPopoverProps) => {
-  const classes = useStyles();
   const onlineMeetingLink = getOnlineMeetingLink(event);
 
   return (
-    <Box display="flex" flexDirection="column" width={400} p={2}>
-      <Box display="flex" alignItems="center">
-        <Box flex={1}>
-          <Typography variant="h6">{event.subject}</Typography>
-          <Typography variant="subtitle2">{getTimePeriod(event)}</Typography>
-        </Box>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <Text variant="title-small">{event.subject}</Text>
+          <Text variant="body-small" color="secondary">
+            {getTimePeriod(event)}
+          </Text>
+        </div>
         {event.webLink && (
-          <Tooltip title="Open in Calendar">
+          <TooltipTrigger>
             <Link
               data-testid="open-calendar-link"
               to={event.webLink}
               onClick={_e => {}}
               noTrack
             >
-              <IconButton>
-                <ArrowForwardIcon />
-              </IconButton>
+              <ButtonIcon
+                icon={<RiArrowRightSLine size={16} />}
+                variant="secondary"
+                aria-label="Open in Calendar"
+              />
             </Link>
-          </Tooltip>
+            <Tooltip>Open in Calendar</Tooltip>
+          </TooltipTrigger>
         )}
-      </Box>
+      </div>
       {onlineMeetingLink && (
         <Link to={onlineMeetingLink} onClick={_e => {}} noTrack>
           Join Online Meeting
@@ -88,9 +70,9 @@ export const CalendarEventPopoverContent = ({
 
       {event.bodyPreview && (
         <>
-          <Divider className={classes.divider} variant="fullWidth" />
-          <Box
-            className={classes.description}
+          <div className={styles.divider} />
+          <div
+            className={styles.description}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 (event.body && event.body.content) || '',
@@ -105,19 +87,21 @@ export const CalendarEventPopoverContent = ({
 
       {event.attendees && (
         <>
-          <Divider className={classes.divider} variant="fullWidth" />
-          <Box>
-            <Typography variant="subtitle2">Attendees</Typography>
-            <Box mb={1} />
+          <div className={styles.divider} />
+          <div>
+            <Text variant="body-small" color="secondary">
+              Attendees
+            </Text>
+            <div className={styles.attendeeGap} />
             {sortBy(event.attendees || [], 'emailAddress').map(user => (
               <AttendeeChip
                 key={user.emailAddress?.address || ''}
                 user={user}
               />
             ))}
-          </Box>
+          </div>
         </>
       )}
-    </Box>
+    </div>
   );
 };

@@ -1,0 +1,37 @@
+@layer components {
+  .select {
+    width: 120px;
+    padding: var(--bui-space-2);
+    border: 1px solid var(--bui-border-neutral);
+    border-radius: var(--bui-radius-1);
+    background-color: var(--bui-bg-surface-1);
+    color: var(--bui-fg-primary);
+    font-size: inherit;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 150ms ease-in-out,
+      background-color 150ms ease-in-out;
+  }
+
+  .select:hover:not(:disabled) {
+    border-color: var(--bui-border-emphasis);
+  }
+
+  .select:focus {
+    outline: none;
+    border-color: var(--bui-fg-primary);
+    box-shadow: 0 0 0 2px rgba(var(--bui-fg-primary-rgb), 0.1);
+  }
+
+  .select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--bui-bg-surface-1);
+  }
+
+  .select option {
+    padding: var(--bui-space-2);
+    background-color: var(--bui-bg-surface-1);
+    color: var(--bui-fg-primary);
+  }
+}

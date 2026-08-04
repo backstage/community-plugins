@@ -1,0 +1,42 @@
+@layer components {
+  .badge {
+    position: relative;
+    display: inline-block;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px var(--bui-space-2);
+    border: 1px solid var(--bui-border-primary);
+    border-radius: 16px;
+    background-color: transparent;
+    color: var(--bui-fg-primary);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .badgeContent {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background-color: var(--bui-bg-surface-1);
+  }
+
+  .acceptedIcon {
+    color: var(--bui-fg-success, #10b981);
+  }
+
+  .declinedIcon {
+    color: var(--bui-fg-danger, #ef4444);
+  }
+}
