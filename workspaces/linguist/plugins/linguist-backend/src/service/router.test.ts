@@ -182,7 +182,7 @@ describe('createRouter', () => {
 
     it('get-entity-languages action throws when not allowed', async () => {
       mockPermissions.authorize.mockResolvedValueOnce([
-        { result: AuthorizeResult.CONDITIONAL },
+        { result: AuthorizeResult.DENY },
       ]);
 
       const reg = mockActionsRegistry.register.mock.calls.find(
@@ -224,7 +224,7 @@ describe('createRouter', () => {
 
     it('process-entities action throws when not allowed', async () => {
       mockPermissions.authorize.mockResolvedValueOnce([
-        { result: AuthorizeResult.CONDITIONAL },
+        { result: AuthorizeResult.DENY },
       ]);
 
       const reg = mockActionsRegistry.register.mock.calls.find(
