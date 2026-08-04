@@ -14,64 +14,50 @@
  * limitations under the License.
  */
 
-import { memo, useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
-import { KeyboardDatePicker } from '@material-ui/pickers/DatePicker';
-import Button from '@material-ui/core/Button';
-import LuxonUtils from '@date-io/luxon';
-import FormControl from '@material-ui/core/FormControl';
-import Link from '@material-ui/core/Link';
-import Popover from '@material-ui/core/Popover';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import { memo, useEffect, useRef, useState } from 'react';
+import { Button } from '@backstage/ui';
 import { isValid } from 'date-fns';
 import { find, get } from 'lodash';
-
-const useStyles = makeStyles({
-  dateContainer: {
-    paddingLeft: 18,
-    paddingRight: 18,
-    paddingTop: 6,
-    paddingBottom: 18,
-    display: 'flex',
-    flexFlow: 'row',
-  },
-  dateContainerColumn: {
-    display: 'flex',
-    flexFlow: 'column',
-  },
-  formControl: {
-    margin: 8,
-    width: 120,
-  },
-});
+import styles from './SelectWindow.module.css';
 
 const SelectWindow = ({ windowOptions, window, setWindow }) => {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const popoverRef = useRef(null);
+  const triggerRef = useRef(null);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [intervalString, setIntervalString] = useState(null);
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+  const handleClick = () => {
+    setOpen(prev => !prev);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setOpen(false);
   };
 
-  const handleStartDateChange = date => {
-    if (isValid(date.toJSDate())) {
-      setStartDate(date.startOf('day').toJSDate());
+  const handleStartDateChange = e => {
+    const dateStr = e.target.value;
+    if (dateStr) {
+      const date = new Date(`${dateStr}T00:00:00`);
+      if (isValid(date)) {
+        setStartDate(date);
+      }
+    } else {
+      setStartDate(null);
     }
   };
 
-  const handleEndDateChange = date => {
-    if (isValid(date.toJSDate())) {
-      setEndDate(date.endOf('day').toJSDate());
+  const handleEndDateChange = e => {
+    const dateStr = e.target.value;
+    if (dateStr) {
+      const date = new Date(`${dateStr}T23:59:59`);
+      if (isValid(date)) {
+        setEndDate(date);
+      }
+    } else {
+      setEndDate(null);
     }
   };
 
@@ -105,106 +91,99 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
     }
   }, [startDate, endDate]);
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'date-range-popover' : undefined;
+  // Close popover when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = e => {
+      if (
+        open &&
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target)
+      ) {
+        handleClose();
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [open]);
+
+  const windowLabel = get(
+    find(windowOptions, { value: window }),
+    'name',
+    'Custom',
+  );
 
   return (
-    <>
-      <FormControl className={classes.formControl}>
-        <TextField
-          id="filled-read-only-input"
-          label="Date Range"
-          value={get(find(windowOptions, { value: window }), 'name', 'Custom')}
-          onClick={e => handleClick(e)}
-          inputProps={{
-            readOnly: true,
-            style: { cursor: 'pointer' },
-          }}
+    <div className={styles.popoverWrapper}>
+      <div className={styles.windowFieldWrapper} ref={triggerRef}>
+        <label className={styles.windowLabel} htmlFor="window-field">
+          Date Range
+        </label>
+        <input
+          id="window-field"
+          className={styles.windowField}
+          readOnly
+          value={windowLabel}
+          onClick={handleClick}
+          aria-haspopup="true"
         />
-      </FormControl>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        <div className={classes.dateContainer}>
-          <div className={classes.dateContainerColumn}>
-            <MuiPickersUtilsProvider utils={LuxonUtils}>
-              <KeyboardDatePicker
-                style={{ width: '144px' }}
-                autoOk
-                disableToolbar
-                variant="inline"
-                format="MM/dd/yyyy"
-                margin="normal"
-                id="date-picker-start"
-                label="Start Date"
-                value={startDate}
-                maxDate={new Date()}
-                maxDateMessage="Date should not be after today."
-                onChange={handleStartDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-              <KeyboardDatePicker
-                style={{ width: '144px' }}
-                autoOk
-                disableToolbar
-                variant="inline"
-                format="MM/dd/yyyy"
-                margin="normal"
-                id="date-picker-end"
-                label="End Date"
-                value={endDate}
-                maxDate={new Date()}
-                maxDateMessage="Date should not be after today."
-                onChange={handleEndDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-            <div>
-              <Button
-                style={{ marginTop: 16 }}
-                variant="contained"
-                color="default"
-                onClick={handleSubmitCustomDates}
-              >
-                Apply
-              </Button>
+      </div>
+      {open && (
+        <div className={styles.popover} ref={popoverRef}>
+          <div className={styles.dateContainer}>
+            <div className={styles.dateContainerColumn}>
+              <div>
+                <label className={styles.dateLabel} htmlFor="date-picker-start">
+                  Start Date
+                </label>
+                <input
+                  id="date-picker-start"
+                  type="date"
+                  className={styles.dateInput}
+                  max={new Date().toISOString().split('T')[0]}
+                  onChange={handleStartDateChange}
+                  aria-label="Start date"
+                />
+              </div>
+              <div>
+                <label className={styles.dateLabel} htmlFor="date-picker-end">
+                  End Date
+                </label>
+                <input
+                  id="date-picker-end"
+                  type="date"
+                  className={styles.dateInput}
+                  max={new Date().toISOString().split('T')[0]}
+                  onChange={handleEndDateChange}
+                  aria-label="End date"
+                />
+              </div>
+              <div>
+                <Button
+                  variant="primary"
+                  onPress={handleSubmitCustomDates}
+                  isDisabled={intervalString === null}
+                >
+                  Apply
+                </Button>
+              </div>
             </div>
-          </div>
-          <div
-            className={classes.dateContainerColumn}
-            style={{ paddingTop: 12, marginLeft: 18 }}
-          >
-            {windowOptions.map(opt => (
-              <Typography key={opt.value}>
-                <Link
-                  style={{ cursor: 'pointer' }}
+            <div className={styles.presetList}>
+              {windowOptions.map(opt => (
+                <Button
                   key={opt.value}
-                  value={opt.value}
-                  onClick={() => handleSubmitPresetDates(opt.value)}
+                  className={styles.presetLink}
+                  onPress={() => handleSubmitPresetDates(opt.value)}
                 >
                   {opt.name}
-                </Link>
-              </Typography>
-            ))}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
-      </Popover>
-    </>
+      )}
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import styles from './Page.module.css';
+@layer components {
+  .tooltip {
+    border-radius: var(--bui-radius-2);
+    background: rgba(255, 255, 255, 0.95);
+    padding: var(--bui-space-3);
+  }
 
-const Page = props => {
-  return (
-    <div className={styles.flexGrow}>
-      <div className={styles.wrapper}>
-        <div className={styles.flexGrow}>{props.children}</div>
-      </div>
-    </div>
-  );
-};
-
-export default Page;
+  .tooltipLineItem {
+    font-size: 1rem;
+    margin: 0;
+    margin-bottom: 4px;
+    padding: 0;
+  }
+}
