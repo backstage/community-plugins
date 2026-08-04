@@ -56,7 +56,7 @@ yarn workspace @backstage-community/plugin-auth-backend-module-keycloak-provider
 
 This runs a minimal backend with `@backstage/plugin-auth-backend` and the Keycloak provider module, loading [`app-config.yaml`](./app-config.yaml) via `--config`.
 
-On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use (for example by another workspace backend), free it first — the harness will fail with `EADDRINUSE` otherwise.
+On startup the log must include `Loading config from ... app-config.yaml` (package config, not only the workspace root file) and `Listening on :7007`. If port **7007** is already in use, either free it or set `BACKSTAGE_DEV_PORT` to another port (e.g. `export BACKSTAGE_DEV_PORT=7008`).
 
 Only one plugin `dev/` harness should run on port **7007** at a time. To work on the catalog module instead, stop this process and start the [catalog module harness](../catalog-backend-module-keycloak/CONTRIBUTING.md).
 
