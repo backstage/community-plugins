@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 2.1.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module default export for `packages: all` discovery
+
 ## 2.0.0
 
 ### Major Changes
