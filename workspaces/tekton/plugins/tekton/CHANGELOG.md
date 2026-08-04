@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton
 
+## 3.41.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
 ## 3.40.1
 
 ### Patch Changes
