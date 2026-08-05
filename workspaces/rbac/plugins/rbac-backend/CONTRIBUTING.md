@@ -10,13 +10,13 @@ Developer guide for `@backstage-community/plugin-rbac-backend`. For operator ins
 
 ## Development harness
 
-| Goal                       | Command (from `workspaces/rbac`)                                |
-| -------------------------- | --------------------------------------------------------------- |
-| Frontend + backend (guest) | `yarn start`                                                    |
-| Backend-only REST work     | `yarn workspace @backstage-community/plugin-rbac-backend start` |
-| UI work (mocked APIs)      | `yarn workspace @backstage-community/plugin-rbac start:mock`    |
-| Multi-user (browser UI)    | `start:keycloak` + `yarn start:multi-user`                      |
-| Multi-user (CLI-only)      | `start:keycloak` + backend `start:multi-user`                   |
+| Goal                       | Command (from `workspaces/rbac`)                                                                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend + backend (guest) | `yarn start`                                                                                                                                          |
+| Backend-only REST work     | `yarn workspace @backstage-community/plugin-rbac-backend start`                                                                                       |
+| UI work (mocked APIs)      | `yarn workspace @backstage-community/plugin-rbac start:mock`                                                                                          |
+| Multi-user (browser UI)    | `yarn workspace @backstage-community/plugin-rbac-backend start:keycloak` + `yarn start:multi-user`                                                    |
+| Multi-user (CLI-only)      | `yarn workspace @backstage-community/plugin-rbac-backend start:keycloak` + `yarn workspace @backstage-community/plugin-rbac-backend start:multi-user` |
 
 Sample non-secret config keys live in [`app-config.yaml`](./app-config.yaml) beside this package. Optional overrides: untracked `app-config.local.yaml` in the same directory. Only one backend `dev/` harness should listen on port **7007** at a time.
 

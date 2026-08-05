@@ -49,9 +49,7 @@ const oidcAuthApiRef = createApiRef<
     ProfileInfoApi &
     BackstageIdentityApi &
     SessionApi
->({
-  id: 'internal.auth.oidc',
-});
+>().with({ id: 'internal.auth.oidc' });
 
 const devNavModule = createFrontendModule({
   pluginId: 'app',
