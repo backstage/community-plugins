@@ -19,7 +19,6 @@ import {
 } from '@backstage/backend-plugin-api';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 import { catalogModelExtensionPoint } from '@backstage/plugin-catalog-node/alpha';
-import { CatalogModelSources } from '@backstage/catalog-model/alpha';
 import { mcpServerEnrichmentModelLayer } from '@backstage-community/plugin-mcp-capabilities-common';
 import {
   EnrichmentFields,
@@ -62,9 +61,15 @@ export const catalogModuleMcpCapabilities = createBackendModule({
             fields,
           }),
         );
-        model.addModelSource(
-          CatalogModelSources.static([mcpServerEnrichmentModelLayer]),
-        );
+        // Register only the enrichment layer, as its own model source. We avoid
+        // CatalogModelSources.static(), which bundles the default entity model
+        // and would clash with the app's own static model (the default entity
+        // model would be declared more than once).
+        model.addModelSource({
+          async *read() {
+            yield { data: [{ layer: mcpServerEnrichmentModelLayer }] };
+          },
+        });
       },
     });
   },
