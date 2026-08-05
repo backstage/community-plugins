@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-regex
 
+## 2.17.1
+
+### Patch Changes
+
+- cce0831: Add module wiring tests, direct Zod schema validation coverage, a local dev/ harness, and contributor documentation so Backstage dependency bumps are caught by scoped automated tests.
+
 ## 2.17.0
 
 ### Minor Changes
