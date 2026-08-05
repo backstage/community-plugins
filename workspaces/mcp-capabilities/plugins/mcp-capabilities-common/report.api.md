@@ -8,6 +8,15 @@ import { Entity } from '@backstage/catalog-model';
 import { JsonObject } from '@backstage/types';
 
 // @public
+export function discoverFromClient(
+  client: McpDiscoveryClient,
+  options?: {
+    requestOptions?: unknown;
+    onListError?: (message: string) => void;
+  },
+): Promise<MCPServerSpec>;
+
+// @public
 export interface MCPCapabilities {
   // (undocumented)
   prompts?: boolean;
@@ -15,6 +24,48 @@ export interface MCPCapabilities {
   resources?: boolean;
   // (undocumented)
   tools?: boolean;
+}
+
+// @public
+export interface McpDiscoveryClient {
+  // (undocumented)
+  getInstructions(): string | undefined;
+  // (undocumented)
+  getServerCapabilities():
+    | {
+        tools?: unknown;
+        resources?: unknown;
+        prompts?: unknown;
+      }
+    | undefined;
+  // (undocumented)
+  getServerVersion():
+    | {
+        name?: string;
+        version?: string;
+      }
+    | undefined;
+  // (undocumented)
+  listPrompts(
+    params?: unknown,
+    options?: unknown,
+  ): Promise<{
+    prompts: unknown[];
+  }>;
+  // (undocumented)
+  listResources(
+    params?: unknown,
+    options?: unknown,
+  ): Promise<{
+    resources: unknown[];
+  }>;
+  // (undocumented)
+  listTools(
+    params?: unknown,
+    options?: unknown,
+  ): Promise<{
+    tools: unknown[];
+  }>;
 }
 
 // @public
