@@ -9,9 +9,11 @@ native `API` / `spec.type: 'mcp-server'` schema additively, using the catalog
 model `updateKind` operation (deep-merged onto the existing version), so native
 entities keep validating whether or not they've been enriched.
 
+> **Alpha API.** The model layer builds on the **Alpha** [catalog model layer system](https://backstage.io/docs/releases/v1.50.0/#catalog-model-layer-system-alpha-opt-in) — opt-in and may change in a minor release.
+
 ## What it adds to `mcp-server` entities
 
-Optional `spec` fields, populated by the backend's discovery processor:
+Optional `spec` fields, populated by the catalog module's discovery processor:
 
 - `spec.capabilities` — `{ tools, resources, prompts }` booleans
 - `spec.toolCount` / `spec.resourceCount` / `spec.promptCount`
@@ -21,26 +23,21 @@ Optional `spec` fields, populated by the backend's discovery processor:
 
 ## Usage
 
-Register the model layer alongside the native kind in your backend:
-
-```ts
-import { provideStaticCatalogModel } from '@backstage/plugin-catalog-node/alpha';
-import { mcpServerApiEntityModel } from '@backstage/catalog-model/alpha';
-import { mcpServerEnrichmentModelLayer } from '@backstage-community/plugin-mcp-capabilities-common';
-
-backend.add(
-  provideStaticCatalogModel({
-    layers: [mcpServerApiEntityModel, mcpServerEnrichmentModelLayer],
-  }),
-);
-```
+You don't register anything from this package directly — installing the
+[catalog module](../catalog-backend-module-mcp-capabilities/README.md) registers
+the model layer and runs discovery. This package just provides the shared types,
+the model layer, and the discovery helpers those plugins build on.
 
 ## Exports
 
 - `mcpServerEnrichmentModelLayer` — the schema-extension catalog model layer
+- Discovery (used by the backend consumers): `discoverFromClient`,
+  `McpDiscoveryClient` — the shared capability-gating + mapping over a connected
+  MCP client
+- Remote helpers: `selectMcpServerRemote`, `parseMcpRemoteUrl`
 - Types: `MCPToolInfo`, `MCPResourceInfo`, `MCPPromptInfo`, `MCPServerInfo`,
   `MCPServerSpec`, `MCPServerEnrichmentSpec`, `MCPCapabilities`,
-  `MCPToolAnnotations`
+  `MCPToolAnnotations`, `McpServerRemote`
 
 ## Credits
 

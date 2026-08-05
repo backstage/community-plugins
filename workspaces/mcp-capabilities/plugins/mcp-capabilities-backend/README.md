@@ -1,24 +1,20 @@
 # @backstage-community/plugin-mcp-capabilities-backend
 
-Backend for the MCP Capabilities suite. It connects to the MCP servers described
-by native `API` / `spec.type: mcp-server` catalog entities (reading their
-`spec.remotes[].url`) and exposes what they offer.
+Backend plugin for the MCP Capabilities suite. It exposes an on-demand endpoint,
+`GET /api/mcp-capabilities/spec?entityRef=<ref>`, that connects live to a native
+`API` / `spec.type: mcp-server` catalog entity's remote (read from
+`spec.remotes[].url`) and returns the full tool / resource / prompt detail that
+powers the Capabilities tab.
 
-Two parts, both reading `spec.remotes` off the catalog entity (no duplicate
-config):
+It speaks the streamable-http transport via the official
+[`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk)
+client (handshake, capability-gated `tools/list` / `resources/list` /
+`prompts/list`, SSE, session handling).
 
-1. **Catalog module** (`catalogModuleMcpCapabilities`) — a processor that writes a
-   discovered summary (capabilities, counts, `serverInfo`, and a flat list of tool
-   names for catalog search) onto each `mcp-server` entity. Failures are skipped
-   gracefully, so an unreachable server never fails catalog ingestion.
-2. **Backend plugin** — an on-demand router,
-   `GET /api/mcp-capabilities/spec?entityRef=<ref>`, returning the full live
-   tool / resource / prompt detail for the Capabilities tab.
-
-The MCP client speaks the streamable-http transport with the JSON-RPC handshake
-(`initialize` → `notifications/initialized` → capability-gated
-`tools/list` / `resources/list` / `prompts/list`), is SSE-aware, and handles the
-`Mcp-Session-Id` header.
+> Persisting a searchable summary onto entities is a **separate, opt-in**
+> concern handled by
+> [`@backstage-community/plugin-catalog-backend-module-mcp-capabilities`](../catalog-backend-module-mcp-capabilities/README.md).
+> This plugin serves live detail only.
 
 ## Installation
 
@@ -26,30 +22,23 @@ The MCP client speaks the streamable-http transport with the JSON-RPC handshake
 yarn --cwd packages/backend add @backstage-community/plugin-mcp-capabilities-backend
 ```
 
+`mcp-server` entities are native `API` entities whose specType is defined by the
+upstream `mcpServerApiEntityModel` layer (it uses `spec.remotes` in place of the
+usual `spec.definition`), so it must be registered or the entities won't
+validate. Register that layer, then add this plugin:
+
 ```ts
 // packages/backend/src/index.ts
 import { provideStaticCatalogModel } from '@backstage/plugin-catalog-node/alpha';
 import { mcpServerApiEntityModel } from '@backstage/catalog-model/alpha';
-import { mcpServerEnrichmentModelLayer } from '@backstage-community/plugin-mcp-capabilities-common';
-import { catalogModuleMcpCapabilities } from '@backstage-community/plugin-mcp-capabilities-backend';
 
-const backend = createBackend();
-
-// Native mcp-server kind + the additive enrichment model layer
-backend.add(
-  provideStaticCatalogModel({
-    layers: [mcpServerApiEntityModel, mcpServerEnrichmentModelLayer],
-  }),
-);
-
-// Discovery: enrichment processor + on-demand /spec router
+// If your app already calls provideStaticCatalogModel, add mcpServerApiEntityModel
+// to that single call instead of adding a second one.
+backend.add(provideStaticCatalogModel({ layers: [mcpServerApiEntityModel] }));
 backend.add(import('@backstage-community/plugin-mcp-capabilities-backend'));
-backend.add(catalogModuleMcpCapabilities);
-
-backend.start();
 ```
 
-Register some native `mcp-server` entities, e.g.:
+Then register some `mcp-server` entities, e.g.:
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -65,29 +54,52 @@ spec:
       url: https://your-mcp-server.example.com/mcp
 ```
 
-Verify:
+## Verify
+
+Aside from visual verification in the UI — open an `mcp-server` entity and check
+that the **Capabilities** tab lists the server's tools — you can call the API
+directly.
+
+The `/spec` endpoint is **authenticated**, so calling it directly needs a service
+token. For local testing, add a scoped static token:
+
+```yaml
+# app-config.local.yaml
+backend:
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${MCP_SPEC_TOKEN} # any sufficiently long secret
+          subject: mcp-capabilities-curl
+        accessRestrictions:
+          - plugin: mcp-capabilities
+```
 
 ```sh
-curl 'http://localhost:7007/api/mcp-capabilities/spec?entityRef=api:default/aws-docs'
+curl -H "Authorization: Bearer $MCP_SPEC_TOKEN" \
+  'http://localhost:7007/api/mcp-capabilities/spec?entityRef=api:default/aws-docs'
 ```
 
 ## Limitations
 
 - **Network reachability (backend egress).** Discovery runs from the Backstage
-  **backend** — the catalog processor and the `/spec` route — which connect
-  _outbound_ to each server's `spec.remotes[].url` over the MCP streamable-http
-  transport. Your backend must therefore be able to reach every MCP server you
-  register. Servers on a private network, behind a VPN, or firewalled need the
-  backend to have a route to them (VPC/peering, allow-listed egress, or an HTTP
-  proxy). The browser never connects to the MCP server directly, so this is a
-  backend-egress concern, not a CORS one.
-- **Unreachable or slow servers.** Discovery is time-boxed (15s in the catalog
-  processor, 30s for the on-demand `/spec` route). A server that is unreachable or
-  times out is skipped gracefully: the processor leaves the entity unchanged, and
-  `/spec` returns an error that the Capabilities tab surfaces.
-- **Per-request auth.** Remotes requiring signed requests (e.g. AWS Bedrock
-  AgentCore Gateway, SigV4) are not yet signed — those remotes are skipped by the
-  processor and error from `/spec`. Per-remote auth is a possible enhancement (depends on how future backstage shift to `connections` plays out).
+  **backend**, connecting _outbound_ to each server's `spec.remotes[].url`. Your
+  backend must be able to reach every MCP server you register — servers on a
+  private network, behind a VPN, or firewalled need a route (VPC/peering,
+  allow-listed egress, or an HTTP proxy). The browser never connects to the MCP
+  server directly, so this is a backend-egress concern, not a CORS one.
+- **Slow or unreachable servers.** Discovery is time-boxed (30s). A server that
+  is unreachable or times out returns an error that the Capabilities tab
+  surfaces.
+- **Per-request auth to remotes.** Remotes requiring signed requests (e.g. AWS
+  Bedrock AgentCore Gateway, SigV4) are not yet signed and will error from
+  `/spec`. Per-remote auth is a possible future enhancement.
+
+## Related plugins
+
+`mcp-server` API entities in the catalog are exactly the kind of server list the
+[`mcp-chat`](../../../mcp-chat/README.md) plugin configures.
 
 ## Development
 
@@ -96,7 +108,6 @@ curl 'http://localhost:7007/api/mcp-capabilities/spec?entityRef=api:default/aws-
 ## Exports
 
 - default — the backend plugin (mounts the `/spec` router)
-- `catalogModuleMcpCapabilities` — the enrichment catalog module
 
 ## Credits
 

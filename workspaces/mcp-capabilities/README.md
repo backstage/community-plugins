@@ -10,28 +10,49 @@ resources, and prompts each server exposes.
   frontend system, [Backstage UI](https://backstage.io/docs/getting-started/ui)):
   an overview card and a **Capabilities** tab on the entity page.
 - [mcp-capabilities-backend](./plugins/mcp-capabilities-backend/README.md) —
-  backend: connects to each MCP server, enriches its catalog entity, and serves
-  live tool/resource/prompt detail.
+  backend: serves live tool/resource/prompt detail on demand (`/spec`).
+- [catalog-backend-module-mcp-capabilities](./plugins/catalog-backend-module-mcp-capabilities/README.md)
+  — **opt-in** catalog module: enriches `mcp-server` entities with a searchable
+  summary (capabilities, counts, tool names) and registers the model layer.
 - [mcp-capabilities-common](./plugins/mcp-capabilities-common/README.md) — shared
-  types and the schema-extension catalog model layer.
+  types, discovery mappers, and the schema-extension catalog model layer.
 
 ## How it works
 
 Each `mcp-server` API entity declares its endpoint in `spec.remotes`. The backend
 connects over the MCP streamable-http transport to discover what the server
-exposes:
+exposes, via two independent mechanisms:
 
-- a catalog **processor** writes a summary (capabilities, counts, and tool names
-  for search) onto the entity — powering the overview card and catalog search;
-- an on-demand endpoint, `GET /api/mcp-capabilities/spec?entityRef=…`, returns the
-  full live tool/resource/prompt detail — powering the Capabilities tab.
+- an on-demand endpoint, `GET /api/mcp-capabilities/spec?entityRef=…` (the backend
+  plugin), returns the full live tool/resource/prompt detail — powering the
+  Capabilities tab;
+- a catalog **processor** (the opt-in catalog module) writes a summary
+  (capabilities, counts, and tool names) onto the entity — powering the
+  overview card and catalog search.
 
 The common package's catalog model layer **extends** the native `mcp-server`
 schema additively (via `updateKind`), so entities that haven't been enriched yet
 remain valid.
 
+> **Alpha API.** Enrichment relies on the **Alpha** [catalog model layer system](https://backstage.io/docs/releases/v1.50.0/#catalog-model-layer-system-alpha-opt-in) — opt-in and subject to change.
+
 > **Frontend system:** these plugins target the **new** Backstage frontend
 > system. Legacy-frontend-system support is a planned follow-up.
+
+## Installation
+
+Add the pieces you need (each package README has the exact snippets):
+
+1. **Native `mcp-server` kind** (prerequisite) — register `mcpServerApiEntityModel`
+   in your backend's `provideStaticCatalogModel`, or `mcp-server` entities won't
+   validate. See the [backend README](./plugins/mcp-capabilities-backend/README.md).
+2. **[Backend](./plugins/mcp-capabilities-backend/README.md)** (`plugin-mcp-capabilities-backend`)
+   — the live `/spec` endpoint powering the Capabilities tab.
+3. **[Catalog module](./plugins/catalog-backend-module-mcp-capabilities/README.md)**
+   (`plugin-catalog-backend-module-mcp-capabilities`, opt-in) — persists a
+   searchable summary onto entities.
+4. **[Frontend](./plugins/mcp-capabilities/README.md)** (`plugin-mcp-capabilities`)
+   — the overview card + Capabilities tab.
 
 ## Local development
 
