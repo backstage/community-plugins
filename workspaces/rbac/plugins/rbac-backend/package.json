@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "backstage-cli package start --config app-config.yaml",
+    "start:legacy": "backstage-cli package start",
     "start:keycloak": "docker compose -f docker-compose.keycloak.yaml up",
     "start:multi-user": "backstage-cli package start --config app-config.yaml --config app-config.multi-user.yaml",
     "build": "backstage-cli package build",
