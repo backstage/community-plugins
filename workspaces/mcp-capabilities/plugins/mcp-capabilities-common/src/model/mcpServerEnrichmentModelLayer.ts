@@ -29,8 +29,9 @@ import {
  * the native `remotes` / `lifecycle` / `owner` constraints are untouched and
  * entities that have not been enriched yet remain valid.
  *
- * Register it alongside the native layer, e.g.
- * `provideStaticCatalogModel({ layers: [mcpServerApiEntityModel, mcpServerEnrichmentModelLayer] })`.
+ * Registered by `@backstage-community/plugin-catalog-backend-module-mcp-capabilities`;
+ * it deep-merges onto the native `mcpServerApiEntityModel`, which the app must
+ * also register.
  *
  * @public
  */
