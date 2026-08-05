@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.29.1
+
+### Patch Changes
+
+- Improved error handling in LinguistBackendClient and LinguistBackendDatabase for better reliability and debugging.
+
 ## 0.29.0
 
 ### Minor Changes
