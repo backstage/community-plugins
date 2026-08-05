@@ -10,13 +10,14 @@ Developer guide for `@backstage-community/plugin-rbac-backend`. For operator ins
 
 ## Development harness
 
-The plugin has two dev harness modes — single-user with guest auth and multi-user with Keycloak OIDC. Both run without a frontend.
+The plugin has three dev harness modes:
 
-| Goal                         | Command                                                         |
-| ---------------------------- | --------------------------------------------------------------- |
-| Backend / REST / policy work | `yarn workspace @backstage-community/plugin-rbac-backend start` |
-| UI work (mocked APIs)        | `yarn workspace @backstage-community/plugin-rbac start:mock`    |
-| Multi-user permission smoke  | `start:keycloak` + `start:multi-user`                           |
+| Goal                         | Command                                                             |
+| ---------------------------- | ------------------------------------------------------------------- |
+| Backend / REST / policy work | `yarn workspace @backstage-community/plugin-rbac-backend start`     |
+| UI work (mocked APIs)        | `yarn workspace @backstage-community/plugin-rbac start:mock`        |
+| Multi-user (CLI)             | `start:keycloak` + `start:multi-user`                               |
+| Multi-user (browser UI)      | `start:keycloak` + `start:multi-user` + frontend `start:multi-user` |
 
 Sample non-secret config keys live in [`app-config.yaml`](./app-config.yaml) beside this package. Optional overrides: untracked `app-config.local.yaml` in the same directory. Only one backend `dev/` harness should listen on port **7007** at a time.
 
@@ -68,11 +69,17 @@ yarn workspace @backstage-community/plugin-rbac-backend start:multi-user
 
 This loads `app-config.yaml` + [`app-config.multi-user.yaml`](./app-config.multi-user.yaml) (OIDC provider, catalog entities from `__fixtures__/rbac/`, CSV policies, admin/superUser config).
 
-Get a token and check a user's `catalog.entity.read` permission:
+Get a token for any test user with the third-party [`@oandriie/backstage-login-helper`](https://github.com/AndrienkoAleksandr/backstage-login-helper) package. It drives the full OIDC authorization-code flow against Keycloak and extracts the Backstage identity token via `npx` (no install needed):
 
 ```bash
 TOKEN=$(npx @oandriie/backstage-login-helper@^0.3.0 --user ant_man --password test)
+```
 
+> **Note:** This is an unofficial community tool, not maintained by the RBAC workspace. It may break with future Backstage or Keycloak changes — use at your own discretion.
+
+Check a user's `catalog.entity.read` permission:
+
+```bash
 curl -s -H "Authorization: Bearer $TOKEN" \
   http://localhost:7007/api/permission/authorize \
   -X POST -H 'Content-Type: application/json' \
@@ -81,7 +88,24 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 
 Expected: `ant_man` → ALLOW, `hulk` → DENY.
 
-The login helper ([`@oandriie/backstage-login-helper`](https://github.com/AndrienkoAleksandr/backstage-login-helper)) runs via `npx` — no install needed. It performs the OIDC redirect flow against `/api/auth/oidc/start` using only Node.js built-ins.
+#### Browser-based multi-user testing
+
+To test RBAC policies through the full UI instead of `curl`, run the frontend alongside the backend. Both share the same Keycloak instance.
+
+Start all three processes in separate terminals:
+
+```bash
+# Terminal 1 — Keycloak (if not already running)
+yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
+
+# Terminal 2 — backend with OIDC
+yarn workspace @backstage-community/plugin-rbac-backend start:multi-user
+
+# Terminal 3 — frontend with OIDC sign-in
+yarn workspace @backstage-community/plugin-rbac start:multi-user
+```
+
+Open http://localhost:3000 — the sign-in page shows **Guest** and **Keycloak OIDC**. Click OIDC, log in as any test user (e.g. `admin` / `test`), and the RBAC UI loads with that user's permissions.
 
 ### Troubleshooting
 
@@ -89,7 +113,7 @@ The login helper ([`@oandriie/backstage-login-helper`](https://github.com/Andrie
 | --------------------------------- | --------------------------------- | -------------------------------------------------------- |
 | `ECONNREFUSED` on port 8080       | Keycloak not running              | Run `start:keycloak` first                               |
 | `500` on OIDC login               | Keycloak not ready at startup     | Restart the backend after Keycloak is healthy            |
-| `No Keycloak login form found`    | Backend not running or wrong port | Confirm `Listening on :7007` in backend logs             |
+| `backstage_token` returns empty   | Backend not running or wrong port | Confirm `Listening on :7007` in backend logs             |
 | `Invalid parameter: redirect_uri` | Stale Keycloak container          | Stop/remove the container and run `start:keycloak` again |
 
 ## Validation commands
@@ -106,7 +130,9 @@ yarn tsc
 
 CI exercises:
 
-- **`startTestBackend`** — RBAC module init and `GET /api/permission/roles` route registration (`src/plugin.test.ts`)
+- **Module wiring** — RBAC module init, route registration (`/roles`, `/policies`, `/health`), and startup with permission framework disabled (`src/plugin.test.ts`)
+- **Config contract** — plugin accepts all documented config keys (`admin.superUsers`, `pluginsWithPermission`, `policyDecisionPrecedence`, `validation.conditionalPolicies`, `permission.enabled` omitted) without errors (`src/plugin.test.ts`)
+- **Fixture sync** — Keycloak realm users match catalog `users.yaml` entries by username, email, and password credentials (`src/fixture-sync.test.ts`)
 - **Policy contracts** — Casbin/precedence and documented `superUsers` direct-membership rule (`src/policies/permission-policy.test.ts`)
 - **REST handlers** — role and policy CRUD with mocked dependencies (`src/service/policies-rest-api*.test.ts`)
 
