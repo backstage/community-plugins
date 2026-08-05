@@ -17,40 +17,16 @@ import { useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { Link, Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { makeStyles } from '@material-ui/core/styles';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import ExpandLess from '@material-ui/icons/ExpandLess';
+import { Flex, Text } from '@backstage/ui';
+import { RiArrowDownSLine, RiArrowUpSLine } from '@remixicon/react';
 import { Action, Pack, stackstormApiRef } from '../../api';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  actions: {
-    borderBottom: `2px solid ${theme.palette.divider}`,
-  },
-  nested: {
-    paddingLeft: theme.spacing(8),
-    paddingRight: theme.spacing(4),
-  },
-  icon: {
-    minWidth: '34px',
-  },
-}));
+import styles from './ActionsList.module.css';
 
 type ActionItemsProps = {
   pack: Pack;
 };
 
 export const ActionItems = ({ pack }: ActionItemsProps) => {
-  const classes = useStyles();
   const st2 = useApi(stackstormApiRef);
 
   const { value, loading, error } = useAsync(async (): Promise<Action[]> => {
@@ -65,24 +41,28 @@ export const ActionItems = ({ pack }: ActionItemsProps) => {
   }
 
   return (
-    <List component="div" disablePadding className={classes.actions}>
+    <ul className={styles.actions}>
       {(value || []).map(a => {
         return (
-          <ListItem
-            key={a.ref}
-            component={Link}
-            to={st2.getActionUrl(a.ref)}
-            className={classes.nested}
-            underline="none"
-            color="inherit"
-            button
-          >
-            <ListItemText primary={a.name} secondary={a.description} />
-            <ListItemSecondaryAction>{a.runner_type}</ListItemSecondaryAction>
-          </ListItem>
+          <li key={a.ref}>
+            <Link
+              to={st2.getActionUrl(a.ref)}
+              className={styles.actionItem}
+              underline="none"
+              color="inherit"
+            >
+              <Flex direction="column" className={styles.itemText}>
+                <Text>{a.name}</Text>
+                <Text variant="body-small" color="secondary">
+                  {a.description}
+                </Text>
+              </Flex>
+              <span className={styles.secondaryAction}>{a.runner_type}</span>
+            </Link>
+          </li>
         );
       })}
-    </List>
+    </ul>
   );
 };
 
@@ -93,30 +73,35 @@ type PackListItemProps = {
 };
 
 export const PackListItem = ({ pack, opened, onClick }: PackListItemProps) => {
-  const classes = useStyles();
-
   return (
     <>
-      <ListItem button onClick={() => onClick(pack.ref)}>
-        <ListItemIcon className={classes.icon}>
-          {opened ? <ExpandLess /> : <ExpandMore />}
-        </ListItemIcon>
-        <ListItemText primary={pack.ref} secondary={pack.description} />
-        <ListItemSecondaryAction>
-          version: {pack.version}
-        </ListItemSecondaryAction>
-      </ListItem>
-      <Collapse in={opened} timeout="auto" unmountOnExit>
-        <ActionItems pack={pack} />
-      </Collapse>
+      <li>
+        <button className={styles.packItem} onClick={() => onClick(pack.ref)}>
+          <span className={styles.icon}>
+            {opened ? (
+              <RiArrowUpSLine size={20} />
+            ) : (
+              <RiArrowDownSLine size={20} />
+            )}
+          </span>
+          <Flex direction="column" className={styles.itemText}>
+            <Text>{pack.ref}</Text>
+            <Text variant="body-small" color="secondary">
+              {pack.description}
+            </Text>
+          </Flex>
+          <span className={styles.secondaryAction}>
+            version: {pack.version}
+          </span>
+        </button>
+      </li>
+      {opened && <ActionItems pack={pack} />}
     </>
   );
 };
-
 export const ActionsList = () => {
   const st2 = useApi(stackstormApiRef);
 
-  const classes = useStyles();
   const [expanded, setExpanded] = useState<string[]>([]);
 
   const onClick = (ref: string) => {
@@ -137,10 +122,10 @@ export const ActionsList = () => {
   }
 
   return (
-    <List
-      component="nav"
+    <ul
+      role="navigation"
       aria-labelledby="nested-list-subheader"
-      className={classes.root}
+      className={styles.root}
     >
       {(value || []).map(p => {
         return (
@@ -152,6 +137,6 @@ export const ActionsList = () => {
           />
         );
       })}
-    </List>
+    </ul>
   );
 };
