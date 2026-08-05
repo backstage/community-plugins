@@ -141,7 +141,7 @@ The Linguist backend registers actions with the Backstage [Actions Registry](htt
 
 ### Permissions
 
-Both actions are protected by permissions from `@backstage-community/plugin-linguist-common`. Adopters can configure their [permission policy](https://backstage.io/docs/permissions/overview) to control access.
+Both actions can be protected by permissions from `@backstage-community/plugin-linguist-common`. By default, all requests are allowed. Adopters can configure their [permission policy](https://backstage.io/docs/permissions/overview) to control access.
 
 | Permission                  | Action   | Description                               |
 | --------------------------- | -------- | ----------------------------------------- |
