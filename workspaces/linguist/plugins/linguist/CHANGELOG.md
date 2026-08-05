@@ -1,5 +1,12 @@
 # @backstage-community/plugin-linguist
 
+## 0.23.1
+
+### Patch Changes
+
+- Updated dependencies [0deb115]
+  - @backstage-community/plugin-linguist-common@0.23.0
+
 ## 0.23.0
 
 ### Minor Changes
