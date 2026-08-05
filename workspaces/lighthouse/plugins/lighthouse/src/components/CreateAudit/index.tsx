@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Flex, TextField } from '@backstage/ui';
+import styles from './CreateAudit.module.css';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -43,30 +38,6 @@ import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 
 // TODO(freben): move all of this out of index
 
-const useStyles = makeStyles(theme => ({
-  input: {
-    minWidth: 300,
-    [theme.breakpoints.down('xs')]: {
-      minWidth: '100%',
-    },
-  },
-  buttonList: {
-    marginLeft: theme.spacing(-1),
-    marginRight: theme.spacing(-1),
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-    [theme.breakpoints.down('xs')]: {
-      marginLeft: 0,
-      marginRight: 0,
-      flexDirection: 'column',
-      '& > *': {
-        width: '100%',
-      },
-    },
-  },
-}));
-
 const formFactorToScreenEmulationMap: Record<
   FormFactor,
   LighthouseConfigSettings['screenEmulation']
@@ -87,7 +58,6 @@ const formFactorToScreenEmulationMap: Record<
 export const CreateAuditContent = () => {
   const errorApi = useApi(errorApiRef);
   const lighthouseApi = useApi(lighthouseApiRef);
-  const classes = useStyles();
   const query = useQuery();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
@@ -127,8 +97,8 @@ export const CreateAuditContent = () => {
       >
         <LighthouseSupportButton />
       </ContentHeader>
-      <Grid container direction="column">
-        <Grid item xs={12} sm={6}>
+      <Flex direction="column">
+        <div className={styles.formContainer}>
           <InfoCard>
             <form
               onSubmit={ev => {
@@ -136,63 +106,54 @@ export const CreateAuditContent = () => {
                 triggerAudit();
               }}
             >
-              <List>
-                <ListItem>
+              <Flex direction="column" style={{ gap: 'var(--bui-space-4)' }}>
+                <div className={styles.input}>
                   <TextField
-                    name="lighthouse-create-audit-url-tf"
-                    className={classes.input}
                     label="URL"
                     placeholder="https://spotify.com"
-                    helperText="The target URL for Lighthouse to use."
-                    required
-                    disabled={submitting}
-                    onChange={ev => setUrl(ev.target.value)}
+                    isRequired
+                    isDisabled={submitting}
+                    onChange={setUrl}
                     value={url}
-                    inputProps={{ 'aria-label': 'URL' }}
                   />
-                </ListItem>
-                <ListItem>
-                  <TextField
-                    name="lighthouse-create-audit-emulated-form-factor-tf"
-                    className={classes.input}
-                    label="Emulated Form Factor"
-                    helperText="Device to simulate when auditing"
-                    select
-                    required
+                </div>
+                <div className={styles.input}>
+                  <label htmlFor="lighthouse-create-audit-form-factor">
+                    Emulated Form Factor
+                  </label>
+                  <select
+                    id="lighthouse-create-audit-form-factor"
+                    value={formFactor}
                     disabled={submitting}
                     onChange={ev =>
                       setFormFactor(ev.target.value as FormFactor)
                     }
-                    value={formFactor}
-                    inputProps={{ 'aria-label': 'Emulated form factor' }}
                   >
-                    <MenuItem value="mobile">Mobile</MenuItem>
-                    <MenuItem value="desktop">Desktop</MenuItem>
-                  </TextField>
-                </ListItem>
-                <ListItem className={classes.buttonList}>
+                    <option value="mobile">Mobile</option>
+                    <option value="desktop">Desktop</option>
+                  </select>
+                </div>
+                <div className={styles.buttonList}>
                   <Button
-                    variant="outlined"
-                    color="primary"
+                    variant="secondary"
                     onClick={() => navigate('..')}
-                    disabled={submitting}
+                    isDisabled={submitting}
                   >
                     Cancel
                   </Button>
                   <Button
-                    variant="contained"
-                    color="primary"
+                    variant="primary"
                     type="submit"
-                    disabled={submitting}
+                    isDisabled={submitting}
                   >
                     Create Audit
                   </Button>
-                </ListItem>
-              </List>
+                </div>
+              </Flex>
             </form>
           </InfoCard>
-        </Grid>
-      </Grid>
+        </div>
+      </Flex>
     </>
   );
 };
