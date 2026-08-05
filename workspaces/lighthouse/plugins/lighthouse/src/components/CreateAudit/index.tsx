@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Button, Flex, Select, TextField } from '@backstage/ui';
+import { Button, Flex, TextField } from '@backstage/ui';
 import styles from './CreateAudit.module.css';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -118,20 +118,20 @@ export const CreateAuditContent = () => {
                   />
                 </div>
                 <div className={styles.input}>
-                  <Select
-                    label="Emulated Form Factor"
-                    isDisabled={submitting}
+                  <label htmlFor="lighthouse-create-audit-form-factor">
+                    Emulated Form Factor
+                  </label>
+                  <select
+                    id="lighthouse-create-audit-form-factor"
                     value={formFactor}
-                    onChange={selectValue => {
-                      if (selectValue !== null && !Array.isArray(selectValue)) {
-                        setFormFactor(String(selectValue) as FormFactor);
-                      }
-                    }}
-                    options={[
-                      { value: 'mobile', label: 'Mobile' },
-                      { value: 'desktop', label: 'Desktop' },
-                    ]}
-                  />
+                    disabled={submitting}
+                    onChange={ev =>
+                      setFormFactor(ev.target.value as FormFactor)
+                    }
+                  >
+                    <option value="mobile">Mobile</option>
+                    <option value="desktop">Desktop</option>
+                  </select>
                 </div>
                 <div className={styles.buttonList}>
                   <Button

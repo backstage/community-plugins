@@ -23,6 +23,28 @@
     min-width: 300px;
   }
 
+  .input label {
+    display: block;
+    margin-bottom: var(--bui-space-1);
+    font-size: var(--bui-font-size-2);
+    color: var(--bui-fg-primary);
+  }
+
+  .input select {
+    width: 100%;
+    padding: var(--bui-space-2) var(--bui-space-3);
+    border: 1px solid var(--bui-border);
+    border-radius: var(--bui-radius-2);
+    background-color: var(--bui-bg-surface-1);
+    color: var(--bui-fg-primary);
+    font-size: var(--bui-font-size-2);
+  }
+
+  .input select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   .buttonList {
     display: flex;
     flex-wrap: wrap;

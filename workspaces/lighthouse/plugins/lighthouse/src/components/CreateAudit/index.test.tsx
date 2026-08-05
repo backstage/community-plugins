@@ -160,8 +160,9 @@ describe('CreateAudit', () => {
       fireEvent.change(screen.getByLabelText(/URL/), {
         target: { value: 'https://spotify.com' },
       });
-      fireEvent.click(screen.getByText(/Mobile/));
-      fireEvent.click(await screen.findByText(/^Desktop$/));
+      fireEvent.change(screen.getByLabelText(/Emulated Form Factor/i), {
+        target: { value: 'desktop' },
+      });
       fireEvent.click(screen.getByText(/Create Audit/));
 
       await waitFor(() =>
