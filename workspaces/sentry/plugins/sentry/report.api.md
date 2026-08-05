@@ -9,8 +9,7 @@ import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { IdentityApi } from '@backstage/core-plugin-api';
 import { InfoCardVariants } from '@backstage/core-components';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { Options } from '@material-table/core';
+import { JSX as JSX_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
@@ -119,7 +118,9 @@ export type SentryIssueMetadata = {
 export const SentryIssuesWidget: (props: {
   entity: Entity;
   statsFor: '24h' | '14d' | '';
-  tableOptions: Options<never>;
+  tableOptions?: {
+    pageSize?: number;
+  };
   variant?: InfoCardVariants;
   query?: string;
 }) => JSX_2.Element;
@@ -130,7 +131,9 @@ export const SentryIssuesWidgetCard: () => JSX_2.Element;
 // @public (undocumented)
 export type SentryPageProps = {
   statsFor?: '24h' | '14d' | '';
-  tableOptions?: Options<never>;
+  tableOptions?: {
+    pageSize?: number;
+  };
 };
 
 // @public (undocumented)
