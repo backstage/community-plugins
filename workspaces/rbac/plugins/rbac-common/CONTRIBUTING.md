@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-rbac-common`. For package overv
 ## Prerequisites
 
 - Node.js **22+**
-- Yarn (community-plugins monorepo lockfile)
+- Yarn (workspace lockfile at `workspaces/rbac/yarn.lock`)
 
 ## Development
 

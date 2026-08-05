@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-rbac-backend`. For operator ins
 ## Prerequisites
 
 - Node.js **22+** (see workspace `engines` in the workspace root `package.json`)
-- Yarn (community-plugins monorepo lockfile)
+- Yarn (workspace lockfile at `workspaces/rbac/yarn.lock`)
 - **Docker** — only for multi-user permission testing with Keycloak (port **8080**)
 
 ## Development harness
@@ -50,6 +50,22 @@ curl -s -H "Authorization: Bearer $TOKEN" http://localhost:7007/api/permission/r
 ### Multi-user testing (Keycloak + OIDC)
 
 For testing RBAC policies across multiple users and group hierarchies, the workspace includes 42 superhero test users with pre-configured Casbin CSV policies covering basic RBAC test cases: direct user roles, group-based roles, hierarchical groups, bidirectional group links, and admin/superUser configuration. Test data is in [`__fixtures__/rbac/`](./__fixtures__/rbac/).
+
+The multi-user overlay reads secrets from environment variables. Set the following before starting:
+
+| Variable                 | Description                                              |
+| ------------------------ | -------------------------------------------------------- |
+| `BACKEND_SECRET`         | Backend auth key (any non-empty string for local dev)    |
+| `SESSION_SECRET`         | Auth session secret (any non-empty string for local dev) |
+| `KEYCLOAK_BASE_URL`      | Keycloak server URL (e.g. `http://localhost:8080`)       |
+| `KEYCLOAK_CLIENT_ID`     | OIDC client ID from the realm JSON                       |
+| `KEYCLOAK_CLIENT_SECRET` | OIDC client secret from the realm JSON                   |
+
+`KEYCLOAK_CLIENT_ID` and `KEYCLOAK_CLIENT_SECRET` match the `backstage` client entry in [`__fixtures__/keycloak/backstage-realm.json`](./__fixtures__/keycloak/backstage-realm.json). You can extract them with `jq`:
+
+```bash
+jq -r '.clients[] | select(.clientId=="backstage") | .clientId, .secret' plugins/rbac-backend/__fixtures__/keycloak/backstage-realm.json
+```
 
 Start Keycloak with realm import (terminal 1):
 
@@ -107,7 +123,7 @@ Open http://localhost:3000 — the sign-in page shows **Guest** and **Keycloak O
 | --------------------------------- | --------------------------------- | -------------------------------------------------------- |
 | `ECONNREFUSED` on port 8080       | Keycloak not running              | Run `start:keycloak` first                               |
 | `500` on OIDC login               | Keycloak not ready at startup     | Restart the backend after Keycloak is healthy            |
-| `backstage_token` returns empty   | Backend not running or wrong port | Confirm `Listening on :7007` in backend logs             |
+| Login helper returns empty token  | Backend not running or wrong port | Confirm `Listening on :7007` in backend logs             |
 | `Invalid parameter: redirect_uri` | Stale Keycloak container          | Stop/remove the container and run `start:keycloak` again |
 
 ## Validation commands

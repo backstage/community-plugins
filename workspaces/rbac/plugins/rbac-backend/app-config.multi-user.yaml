@@ -13,19 +13,19 @@ discovery:
 backend:
   auth:
     keys:
-      - secret: multi-user-backend-secret
+      - secret: ${BACKEND_SECRET}
 
 auth:
   session:
-    secret: multi-user-session-secret
+    secret: ${SESSION_SECRET}
   environment: development
   providers:
     guest: {}
     oidc:
       development:
-        metadataUrl: http://localhost:8080/realms/backstage
-        clientId: backstage
-        clientSecret: backstage-dev-client-secret
+        metadataUrl: ${KEYCLOAK_BASE_URL}/realms/backstage
+        clientId: ${KEYCLOAK_CLIENT_ID}
+        clientSecret: ${KEYCLOAK_CLIENT_SECRET}
         prompt: auto
         signIn:
           resolvers:

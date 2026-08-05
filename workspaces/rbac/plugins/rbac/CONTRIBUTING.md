@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-rbac`. For administrator instal
 ## Prerequisites
 
 - Node.js **22+**
-- Yarn (community-plugins monorepo lockfile)
+- Yarn (workspace lockfile at `workspaces/rbac/yarn.lock`)
 
 ## Development harness
 
@@ -15,17 +15,19 @@ Start the frontend plugin in isolation (mock backend):
 yarn workspace @backstage-community/plugin-rbac start:mock
 ```
 
-Alpha API entrypoint:
+Legacy (pre-NFS) entrypoint:
 
 ```bash
-yarn workspace @backstage-community/plugin-rbac start:alpha:mock
+yarn workspace @backstage-community/plugin-rbac start:legacy:mock
 ```
 
 This is the default frontend workflow. Playwright UI tests also use `start:mock` (no live backend).
 
 ### Multi-user testing with Keycloak
 
-To test the RBAC UI with real permissions across multiple users, start Keycloak and run both frontend + backend with a single command from `workspaces/rbac`:
+To test the RBAC UI with real permissions across multiple users. Multi-user mode requires environment variables for secrets — see the [backend CONTRIBUTING](../rbac-backend/CONTRIBUTING.md#multi-user-testing-keycloak--oidc) for the full variable list, 42 test users, and RBAC policies.
+
+After setting the variables, start Keycloak and run both frontend + backend with a single command from `workspaces/rbac`:
 
 ```bash
 # Terminal 1 — Keycloak
@@ -35,7 +37,7 @@ yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
 yarn start:multi-user
 ```
 
-Open http://localhost:3000, click **Keycloak OIDC**, and log in as any test user (e.g. `admin` / `test`). See the [backend CONTRIBUTING](../rbac-backend/CONTRIBUTING.md) for the full list of 42 test users and their RBAC policies.
+Open http://localhost:3000, click **Keycloak OIDC**, and log in as any test user (e.g. `admin` / `test`).
 
 ## Validation commands
 
