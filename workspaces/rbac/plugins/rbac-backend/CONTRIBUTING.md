@@ -10,14 +10,13 @@ Developer guide for `@backstage-community/plugin-rbac-backend`. For operator ins
 
 ## Development harness
 
-The plugin has three dev harness modes:
-
-| Goal                         | Command                                                             |
-| ---------------------------- | ------------------------------------------------------------------- |
-| Backend / REST / policy work | `yarn workspace @backstage-community/plugin-rbac-backend start`     |
-| UI work (mocked APIs)        | `yarn workspace @backstage-community/plugin-rbac start:mock`        |
-| Multi-user (CLI)             | `start:keycloak` + `start:multi-user`                               |
-| Multi-user (browser UI)      | `start:keycloak` + `start:multi-user` + frontend `start:multi-user` |
+| Goal                       | Command (from `workspaces/rbac`)                                |
+| -------------------------- | --------------------------------------------------------------- |
+| Frontend + backend (guest) | `yarn start`                                                    |
+| Backend-only REST work     | `yarn workspace @backstage-community/plugin-rbac-backend start` |
+| UI work (mocked APIs)      | `yarn workspace @backstage-community/plugin-rbac start:mock`    |
+| Multi-user (browser UI)    | `start:keycloak` + `yarn start:multi-user`                      |
+| Multi-user (CLI-only)      | `start:keycloak` + backend `start:multi-user`                   |
 
 Sample non-secret config keys live in [`app-config.yaml`](./app-config.yaml) beside this package. Optional overrides: untracked `app-config.local.yaml` in the same directory. Only one backend `dev/` harness should listen on port **7007** at a time.
 
@@ -90,22 +89,17 @@ Expected: `ant_man` → ALLOW, `hulk` → DENY.
 
 #### Browser-based multi-user testing
 
-To test RBAC policies through the full UI instead of `curl`, run the frontend alongside the backend. Both share the same Keycloak instance.
-
-Start all three processes in separate terminals:
+To test RBAC policies through the full UI, start Keycloak and run both frontend + backend with a single command:
 
 ```bash
 # Terminal 1 — Keycloak (if not already running)
 yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
 
-# Terminal 2 — backend with OIDC
-yarn workspace @backstage-community/plugin-rbac-backend start:multi-user
-
-# Terminal 3 — frontend with OIDC sign-in
-yarn workspace @backstage-community/plugin-rbac start:multi-user
+# Terminal 2 — frontend + backend with OIDC (one command)
+yarn start:multi-user
 ```
 
-Open http://localhost:3000 — the sign-in page shows **Guest** and **Keycloak OIDC**. Click OIDC, log in as any test user (e.g. `admin` / `test`), and the RBAC UI loads with that user's permissions.
+Open http://localhost:3000 — the sign-in page shows **Guest** and **Keycloak OIDC**. Click OIDC, log in as any test user (e.g. `admin` / `test`), and the RBAC UI loads with that user's permissions. The Catalog page is available in the sidebar for verifying `catalog.entity.read` permissions.
 
 ### Troubleshooting
 
