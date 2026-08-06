@@ -65,7 +65,7 @@
     "@backstage/cli": "^0.36.3",
     "@backstage/dev-utils": "^1.1.24",
     "@backstage/test-utils": "^1.7.19",
-    "@playwright/test": "1.61.1",
+    "@playwright/test": "1.62.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/luxon": "^3",
