@@ -189,6 +189,78 @@ describe('condition-validation', () => {
       );
     });
 
+    it('should fail validation when permissionMapping entry is object without name field', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry is empty object', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{}],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry has name: null', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ name: null, action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry has numeric name', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ name: 123, action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
     it('should fail validation role condition with policy-entity resource type and create action', () => {
       const condition: any = {
         resourceType: 'policy-entity',
