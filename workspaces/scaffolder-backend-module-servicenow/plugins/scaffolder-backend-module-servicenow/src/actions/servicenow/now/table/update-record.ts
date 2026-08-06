@@ -15,13 +15,9 @@
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
-import {
-  ApiError,
-  DefaultService,
-  OpenAPI,
-} from '../../../../generated/now/table';
+import { DefaultService, OpenAPI } from '../../../../generated/now/table';
 import { CreateActionOptions, ServiceNowResponses } from '../../../types';
-import { updateOpenAPIConfig } from './helpers';
+import { serviceNowApiErrorMessage, updateOpenAPIConfig } from './helpers';
 
 import { examples } from './update-record.example';
 
@@ -122,11 +118,7 @@ export const updateRecordAction = (options: CreateActionOptions) => {
           sysparmFields: input.sysparmFields?.join(','),
         })) as ServiceNowResponses['200'];
       } catch (error) {
-        const e = error as ApiError & {
-          body?: { error?: { message?: string } };
-        };
-
-        throw new Error(e.body?.error?.message);
+        throw new Error(serviceNowApiErrorMessage(error));
       }
 
       ctx.output('result', res?.result);
