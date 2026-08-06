@@ -1,4 +1,5 @@
 playwright.config.ts
+playwright.mock.config.ts
 report-alpha.api.md
 eslint.frontend-shared.cjs
 e2e-test-report-*

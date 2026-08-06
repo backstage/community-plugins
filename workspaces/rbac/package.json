@@ -6,8 +6,8 @@
     "node": "22 || 24"
   },
   "scripts": {
-    "start": "backstage-cli repo start",
-    "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start:legacy",
+    "start": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start",
+    "start:alpha": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start:alpha",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -19,13 +19,12 @@
     "test:all": "backstage-cli repo test --coverage",
     "test:nfs": "playwright test",
     "test:legacy": "APP_MODE=legacy playwright test",
-    "test:e2e:ci": "yarn test:nfs && yarn test:legacy",
-    "playwright": "sh -c 'if [ \"$1\" = test ] && [ $# -eq 1 ]; then yarn test:e2e:ci; else exec playwright \"$@\"; fi' _",
+    "test:alpha": "APP_MODE=alpha playwright test",
+    "playwright": "sh -c 'if [ \"$1\" = test ] && [ $# -eq 1 ]; then yarn test:e2e:ci && yarn test:e2e:mock:ci; else exec playwright \"$@\"; fi' _",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },

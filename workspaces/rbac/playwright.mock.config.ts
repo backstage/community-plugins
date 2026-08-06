@@ -15,34 +15,34 @@
  */
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/index.tsx) or 'alpha' (dev/alpha/index.tsx)
+// APP_MODE: 'legacy' (dev/index.mock.tsx) or 'alpha' (dev/alpha/index.mock.tsx)
 const appMode = process.env.APP_MODE || 'legacy';
-const startCommand = appMode === 'legacy' ? 'yarn start' : 'yarn start:alpha';
+const frontendStartCommand =
+  appMode === 'legacy' ? 'yarn start:mock' : 'yarn start:alpha:mock';
 
 /**
- * Full-stack Playwright config: starts frontend + backend dev servers from the
- * workspace root (npm workspace pattern).
+ * Mock Playwright config: frontend-only dev server with in-browser mockRBACApi.
+ * Used for comprehensive UI/i18n/a11y tests.
  */
 export default defineConfig({
   testDir: './plugins/rbac/tests/',
-  testMatch: '**/rbac-fullstack.spec.ts',
-  timeout: 60_000,
+  testMatch: '**/rbac.spec.ts',
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: startCommand,
-          cwd: '.',
+          command: frontendStartCommand,
+          cwd: 'plugins/rbac',
           port: 3000,
           reuseExistingServer: !process.env.CI,
-          timeout: 180_000,
+          timeout: 120_000,
         },
       ],
   retries: process.env.CI ? 2 : 0,
   reporter: [
     [
       'html',
-      { open: 'never', outputFolder: `e2e-test-report-fullstack-${appMode}` },
+      { open: 'never', outputFolder: `e2e-test-report-mock-${appMode}` },
     ],
   ],
   use: {
@@ -51,12 +51,42 @@ export default defineConfig({
     trace: 'on-first-retry',
     video: 'retain-on-failure',
   },
-  outputDir: 'node_modules/.cache/e2e-test-results-fullstack',
+  outputDir: 'node_modules/.cache/e2e-test-results-mock',
   projects: [
     {
       name: 'en',
       use: {
         locale: 'en',
+      },
+    },
+    {
+      name: 'fr',
+      use: {
+        locale: 'fr',
+      },
+    },
+    {
+      name: 'it',
+      use: {
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      use: {
+        locale: 'ja',
+      },
+    },
+    {
+      name: 'de',
+      use: {
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      use: {
+        locale: 'es',
       },
     },
   ],
