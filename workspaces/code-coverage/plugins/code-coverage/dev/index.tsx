@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { createDevApp } from '@backstage/dev-utils';
-import { codeCoveragePlugin, EntityCodeCoverageContent } from '../src/plugin';
+import {
+  codeCoveragePlugin,
+  EntityCodeCoverageContent,
+  EntityCodeCoverageCard,
+} from '../src/plugin';
+import Grid from '@material-ui/core/Grid';
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { codeCoverageApiRef, CodeCoverageApi } from '../src/api';
@@ -74,6 +79,18 @@ createDevApp()
         <EntityCodeCoverageContent />
       </EntityProvider>
     ),
-    title: 'Root Page',
+    title: 'Full Page',
+  })
+  .addPage({
+    element: (
+      <EntityProvider entity={mockEntity}>
+        <Grid container spacing={3} style={{ padding: 24 }}>
+          <Grid item md={6} xs={12}>
+            <EntityCodeCoverageCard variant="gridItem" />
+          </Grid>
+        </Grid>
+      </EntityProvider>
+    ),
+    title: 'Overview Card',
   })
   .render();

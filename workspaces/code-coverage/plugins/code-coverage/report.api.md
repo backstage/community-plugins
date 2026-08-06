@@ -5,6 +5,8 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { InfoCardVariants } from '@backstage/core-components';
+import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
@@ -15,6 +17,16 @@ export const codeCoveragePlugin: BackstagePlugin<
   {},
   {}
 >;
+
+// @public
+export type CoverageCardProps = {
+  variant?: InfoCardVariants;
+};
+
+// @public
+export const EntityCodeCoverageCard: (
+  input: CoverageCardProps,
+) => JSX_2.Element;
 
 // @public
 export const EntityCodeCoverageContent: () => JSX.Element;
