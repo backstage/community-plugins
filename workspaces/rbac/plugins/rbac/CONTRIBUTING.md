@@ -25,19 +25,7 @@ This is the default frontend workflow. Playwright UI tests also use `start:mock`
 
 ### Multi-user testing with Keycloak
 
-To test the RBAC UI with real permissions across multiple users. Multi-user mode requires environment variables for secrets — see the [backend CONTRIBUTING](../rbac-backend/CONTRIBUTING.md#multi-user-testing-keycloak--oidc) for the full variable list, 42 test users, and RBAC policies.
-
-After setting the variables, start Keycloak and run both frontend + backend with a single command from `workspaces/rbac`:
-
-```bash
-# Terminal 1 — Keycloak
-yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
-
-# Terminal 2 — frontend + backend with OIDC
-yarn start:multi-user
-```
-
-Open http://localhost:3000, click **Keycloak OIDC**, and log in as any test user (e.g. `admin` / `test`).
+To test the RBAC UI with real permissions across multiple users, see [Multi-user testing](../rbac-backend/CONTRIBUTING.md#multi-user-testing-keycloak--oidc) in the backend CONTRIBUTING for environment setup, Keycloak, and the `yarn start:multi-user` command that starts both frontend and backend together.
 
 ## Validation commands
 
