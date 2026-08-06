@@ -538,7 +538,7 @@ metadata:
   name: thing_group_b_0
   title: Thing Group B 0
 spec:
-  parent: thing_b_1
+  parent: thing_group_b_1
   children: []
   type: team
 ---
@@ -548,7 +548,7 @@ metadata:
   name: thing_group_b_1
   title: Thing Group B 1
 spec:
-  parent: thing_b_0
+  parent: thing_group_b_0
   children: []
   type: team
 ---

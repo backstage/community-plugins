@@ -52,6 +52,7 @@
     "start:legacy": "backstage-cli package start --entrypoint dev/legacy/index.tsx",
     "start:mock": "backstage-cli package start --entrypoint dev/index.mock.tsx",
     "start:legacy:mock": "backstage-cli package start --entrypoint dev/legacy/index.mock.tsx",
+    "start:multi-user": "backstage-cli package start --config ../../app-config.yaml --config app-config.multi-user.yaml",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",

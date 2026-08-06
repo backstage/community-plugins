@@ -1,0 +1,61 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: avengers-platform
+  description: Internal platform for Avengers operations
+spec:
+  owner: group:default/thor_group_0
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: mission-control
+  description: Central mission coordination dashboard
+spec:
+  type: website
+  lifecycle: production
+  owner: group:default/captain_america_group_0
+  system: avengers-platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: hero-registry
+  description: Registry of active heroes and their capabilities
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/black_widow_group_a
+  system: avengers-platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: threat-detector
+  description: Real-time threat detection and alerting
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/vision_group_0
+  system: avengers-platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: quinjet-tracker
+  description: Fleet management for Quinjets
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:default/falcon_group_a_0
+  system: avengers-platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: training-simulator
+  description: Combat training simulation engine
+spec:
+  type: library
+  lifecycle: production
+  owner: group:default/hawkeye_group_0
