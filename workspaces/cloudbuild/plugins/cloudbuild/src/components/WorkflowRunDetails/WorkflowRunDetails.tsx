@@ -15,134 +15,79 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import Box from '@material-ui/core/Box';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ExternalLinkIcon from '@material-ui/icons/Launch';
+import {
+  Breadcrumbs,
+  Link,
+  Progress,
+  StructuredMetadataTable,
+} from '@backstage/core-components';
+import { Alert, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import qs from 'qs';
+import { getLocation } from '../useLocation';
 import { useProjectName } from '../useProjectName';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
+import styles from './WorkflowRunDetails.module.css';
 import { useWorkflowRunsDetails } from './useWorkflowRunsDetails';
-import { Breadcrumbs, Link, WarningPanel } from '@backstage/core-components';
-import { getLocation } from '../useLocation';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    maxWidth: 720,
-    margin: theme.spacing(2),
-  },
-  title: {
-    padding: theme.spacing(1, 0, 2, 0),
-  },
-  table: {
-    padding: theme.spacing(1),
-  },
-  accordionDetails: {
-    padding: 0,
-  },
-  button: {
-    order: -1,
-    marginRight: 0,
-    marginLeft: '-20px',
-  },
-  externalLinkIcon: {
-    fontSize: 'inherit',
-    verticalAlign: 'bottom',
-  },
-}));
 
 export const WorkflowRunDetails = (props: { entity: Entity }) => {
   const { value: projectName, loading, error } = useProjectName(props.entity);
   const [projectId] = (projectName ?? '/').split('/');
   const location = getLocation(props.entity);
-
   const details = useWorkflowRunsDetails(projectId, location);
 
-  const classes = useStyles();
   if (error) {
     return (
-      <WarningPanel title="Error:">
-        Failed to load build, {error.message}.
-      </WarningPanel>
+      <Alert status="danger" title="Failed to load build">
+        {error.message}
+      </Alert>
     );
-  } else if (loading) {
-    return <LinearProgress />;
-  } else if (details.value?.logUrl === undefined) {
-    return <LinearProgress />;
+  }
+  if (loading || details.value?.logUrl === undefined) {
+    return <Progress />;
   }
 
-  const serviceAccount = qs.parse(new URL(details.value?.logUrl).search, {
+  const serviceAccount = qs.parse(new URL(details.value.logUrl).search, {
     ignoreQueryPrefix: true,
   }).project;
 
   return (
-    <div className={classes.root}>
-      <Box mb={3}>
+    <div className={styles.root}>
+      <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link to="..">Build history</Link>
-          <Typography>Build details</Typography>
+          <Text>Build details</Text>
         </Breadcrumbs>
-      </Box>
-      <TableContainer component={Paper} className={classes.table}>
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>
-                <Typography noWrap>Ref</Typography>
-              </TableCell>
-              <TableCell>{details.value?.substitutions.REF_NAME}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <Typography noWrap>Message</Typography>
-              </TableCell>
-              <TableCell>{details.value?.substitutions.REPO_NAME}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <Typography noWrap>Commit ID</Typography>
-              </TableCell>
-              <TableCell>{details.value?.substitutions.COMMIT_SHA}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <Typography noWrap>Status</Typography>
-              </TableCell>
-              <TableCell>
-                <WorkflowRunStatus status={details.value?.status} />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <Typography noWrap>Service Account</Typography>
-              </TableCell>
-              <TableCell>
-                {`${serviceAccount}`}@cloudbuild.gserviceaccount.com
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <Typography noWrap>Links</Typography>
-              </TableCell>
-              <TableCell>
-                {details.value?.logUrl && (
-                  <Link to={details.value.logUrl}>
-                    Workflow runs on Google{' '}
-                    <ExternalLinkIcon className={classes.externalLinkIcon} />
-                  </Link>
-                )}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+      </div>
+      <Card>
+        <CardHeader>
+          <Text variant="title-medium">Build details</Text>
+        </CardHeader>
+        <CardBody>
+          <StructuredMetadataTable
+            metadata={{
+              ref: details.value.substitutions.REF_NAME,
+              message: details.value.substitutions.REPO_NAME,
+              'commit id': details.value.substitutions.COMMIT_SHA,
+              status: (
+                <Flex>
+                  <WorkflowRunStatus status={details.value.status} />
+                </Flex>
+              ),
+              'service account': `${serviceAccount}@cloudbuild.gserviceaccount.com`,
+              links: (
+                <Link to={details.value.logUrl}>
+                  Workflow runs on Google{' '}
+                  <RiExternalLinkLine
+                    size={14}
+                    className={styles.externalLinkIcon}
+                  />
+                </Link>
+              ),
+            }}
+          />
+        </CardBody>
+      </Card>
     </div>
   );
 };
