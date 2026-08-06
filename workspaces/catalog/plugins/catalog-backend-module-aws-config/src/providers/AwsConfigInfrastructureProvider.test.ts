@@ -319,6 +319,224 @@ describe('AwsConfigInfrastructureProvider', () => {
       "SELECT resourceId, resourceName, resourceType, awsRegion, accountId, arn, tags, configuration WHERE resourceType IN ('AWS::ECS::Service')",
     );
   });
+
+  // eslint-disable-next-line jest/expect-expect
+  it('should sanitize entity names with invalid characters', async () => {
+    mock.on(SelectResourceConfigCommand).callsFake(async _ => {
+      return {
+        Results: [
+          JSON.stringify(
+            mockResource(
+              'My:Service/Name_Here',
+              '111',
+              'us-west-2',
+              'AWS::ECS::Service',
+              { PlatformVersion: 'LATEST' },
+              { component: 'app1' },
+            ),
+          ),
+        ],
+      };
+    });
+
+    return expectMutation(
+      'default',
+      {
+        filters: { resourceTypes: ['AWS::ECS::Service'] },
+      },
+      [
+        createResource({
+          arn: 'arn:aws:xxx:us-west-2:111:/My:Service/Name_Here',
+          name: 'my-service-name-here',
+          description:
+            'AWS Config Resource AWS::ECS::Service My:Service/Name_Here',
+          accountId: '111',
+          region: 'us-west-2',
+          resourceType: 'AWS::ECS::Service',
+          providerId: 'default',
+          type: 'ecs-service',
+        }),
+      ],
+    );
+  });
+
+  // eslint-disable-next-line jest/expect-expect
+  it('should fall back to hash when sanitized name is empty', async () => {
+    mock.on(SelectResourceConfigCommand).callsFake(async _ => {
+      return {
+        Results: [
+          JSON.stringify(
+            mockResource(
+              ':::',
+              '111',
+              'us-west-2',
+              'AWS::ECS::Service',
+              { PlatformVersion: 'LATEST' },
+              { component: 'app1' },
+            ),
+          ),
+        ],
+      };
+    });
+
+    const config = new ConfigReader({
+      catalog: {
+        providers: {
+          awsConfig: {
+            default: {
+              filters: { resourceTypes: ['AWS::ECS::Service'] },
+            },
+          },
+        },
+      },
+    });
+
+    const { provider } = (
+      await AwsConfigInfrastructureProvider.fromConfig(config, { logger })
+    )[0];
+
+    const result = await provider.next({}, undefined);
+
+    expect(result.entities![0].entity.metadata.name).toMatch(/^[a-f0-9]{63}$/);
+  });
+
+  // eslint-disable-next-line jest/expect-expect
+  it('should handle resources with missing tags', async () => {
+    mock.on(SelectResourceConfigCommand).callsFake(async _ => {
+      return {
+        Results: [
+          JSON.stringify({
+            resourceId: 'arn:aws:xxx:us-west-2:111:/notags',
+            resourceName: 'notags',
+            resourceType: 'AWS::S3::Bucket',
+            awsRegion: 'us-west-2',
+            accountId: '111',
+            arn: 'arn:aws:xxx:us-west-2:111:/notags',
+            configuration: {},
+          }),
+        ],
+      };
+    });
+
+    return expectMutation(
+      'default',
+      {
+        filters: { resourceTypes: ['AWS::S3::Bucket'] },
+      },
+      [
+        createResource({
+          name: 'notags',
+          accountId: '111',
+          region: 'us-west-2',
+          resourceType: 'AWS::S3::Bucket',
+          providerId: 'default',
+          type: 's3-bucket',
+        }),
+      ],
+    );
+  });
+
+  // eslint-disable-next-line jest/expect-expect
+  it('should handle resources with missing awsRegion', async () => {
+    mock.on(SelectResourceConfigCommand).callsFake(async _ => {
+      return {
+        Results: [
+          JSON.stringify({
+            resourceId: 'arn:aws:xxx::111:/global-resource',
+            resourceName: 'global-resource',
+            resourceType: 'AWS::IAM::Role',
+            accountId: '111',
+            arn: 'arn:aws:xxx::111:/global-resource',
+            tags: [],
+            configuration: {},
+          }),
+        ],
+      };
+    });
+
+    return expectMutation(
+      'default',
+      {
+        filters: { resourceTypes: ['AWS::IAM::Role'] },
+        region: 'us-east-1',
+      },
+      [
+        createResource({
+          arn: 'arn:aws:xxx::111:/global-resource',
+          name: 'global-resource',
+          description: 'AWS Config Resource AWS::IAM::Role global-resource',
+          accountId: '111',
+          region: 'us-east-1',
+          resourceType: 'AWS::IAM::Role',
+          providerId: 'default',
+          type: 'iam-role',
+        }),
+      ],
+    );
+  });
+
+  it('should escape single quotes in tag filter values', () => {
+    const config = new ConfigReader({
+      catalog: {
+        providers: {
+          awsConfig: {
+            default: {
+              filters: {
+                resourceTypes: ['AWS::S3::Bucket'],
+                tags: [{ key: "team's", value: "it's" }],
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return AwsConfigInfrastructureProvider.fromConfig(config, {
+      logger,
+    }).then(async ([{ provider }]) => {
+      mock.on(SelectResourceConfigCommand).callsFake(async _ => {
+        return { Results: [] };
+      });
+
+      await provider.next({}, undefined);
+
+      expect(mock).toHaveReceivedCommandWith(SelectResourceConfigCommand, {
+        Expression:
+          "SELECT resourceId, resourceName, resourceType, awsRegion, accountId, arn, tags, configuration WHERE resourceType IN ('AWS::S3::Bucket') AND tags.tag = 'team''s=it''s'",
+      });
+    });
+  });
+
+  it('should escape single quotes in resource type values', () => {
+    const config = new ConfigReader({
+      catalog: {
+        providers: {
+          awsConfig: {
+            default: {
+              filters: {
+                resourceTypes: ["AWS::Some'Type"],
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return AwsConfigInfrastructureProvider.fromConfig(config, {
+      logger,
+    }).then(async ([{ provider }]) => {
+      mock.on(SelectResourceConfigCommand).callsFake(async _ => {
+        return { Results: [] };
+      });
+
+      await provider.next({}, undefined);
+
+      expect(mock).toHaveReceivedCommandWith(SelectResourceConfigCommand, {
+        Expression:
+          "SELECT resourceId, resourceName, resourceType, awsRegion, accountId, arn, tags, configuration WHERE resourceType IN ('AWS::Some''Type')",
+      });
+    });
+  });
 });
 
 function createResource({
