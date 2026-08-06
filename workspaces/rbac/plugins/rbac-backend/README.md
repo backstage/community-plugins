@@ -352,7 +352,7 @@ When creating or updating conditional policies via the REST API (`POST /roles/co
 }
 ```
 
-The YAML file format additionally supports action-only entries (`['read']`) for broad matching, since YAML-sourced conditions are not editable through the UI. RBAC provider module support both formats too.
+The YAML file format additionally supports action-only entries (`['read']`) for broad matching, since YAML-sourced conditions are not editable through the UI. RBAC provider module supports both formats too.
 
 ### Optional validation limits for conditional policies
 
