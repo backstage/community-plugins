@@ -31,25 +31,58 @@ export class EntityService {
   ): Promise<{ items: Entity[]; totalItems: number }> {
     const queryOptions: QueryEntitiesRequest = {
       filter: [{ kind: 'group' }, { kind: 'user' }],
-      limit: limit,
-      offset: offset,
+      limit: limit * 2,
+      offset: 0,
       orderFields: { field: 'metadata.name', order: 'asc' },
     };
 
+    let terms = [searchTerm];
+
     if (searchTerm && searchTerm.trim() !== '') {
-      queryOptions.fullTextFilter = {
-        term: searchTerm,
-        fields: [
-          'metadata.name',
-          'kind',
-          'spec.profile.displayName',
-          'metadata.title',
-        ],
-      };
+      const words = searchTerm.trim().split(/\s+/);
+      if (words.length === 2) {
+        terms = [searchTerm, `${words[1]} ${words[0]}`];
+      }
     }
 
-    const response = await this.catalogApi.queryEntities(queryOptions);
-    return { items: response.items, totalItems: response.totalItems };
+    const allItems: Entity[] = [];
+
+    for (const term of terms) {
+      const options: QueryEntitiesRequest = {
+        ...queryOptions,
+      };
+      if (term) {
+        options.fullTextFilter = {
+          term,
+          fields: [
+            'metadata.name',
+            'kind',
+            'spec.profile.displayName',
+            'metadata.title',
+          ],
+        };
+      }
+      const response = await this.catalogApi.queryEntities(options);
+      allItems.push(...response.items);
+    }
+
+    const uniqueItems = allItems.filter(
+      (item, index, self) =>
+        item.metadata.uid &&
+        self.findIndex(i => i.metadata.uid === item.metadata.uid) === index,
+    );
+
+    uniqueItems.sort((a, b) =>
+      (a.metadata.name || '').localeCompare(b.metadata.name || ''),
+    );
+
+    const start = offset;
+    const end = start + limit;
+    const items = uniqueItems.slice(start, end);
+
+    const totalItems = uniqueItems.length;
+
+    return { items, totalItems };
   }
 
   async fetchGroupMembers(groupName: string): Promise<Entity[]> {
