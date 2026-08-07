@@ -1886,6 +1886,7 @@ __metadata:
     react-router-dom: "npm:^6.3.0"
     react-use: "npm:^17.2.4"
     slugify: "npm:1.6.9"
+    zod: "npm:^4.0.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
