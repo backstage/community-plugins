@@ -10,9 +10,22 @@
     ]
   },
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "keywords": [
     "backstage",
@@ -44,18 +57,21 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@material-ui/core": "^4.12.2",
-    "@material-ui/icons": "^4.9.1",
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": "^4.2.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "luxon": "^3.0.0",
     "qs": "^6.9.4",
+    "react-aria-components": "^1.3.0",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

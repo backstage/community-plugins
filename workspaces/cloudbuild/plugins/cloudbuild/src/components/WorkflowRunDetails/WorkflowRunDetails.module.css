@@ -1,0 +1,13 @@
+.root {
+  max-width: 720px;
+  margin: var(--bui-space-4);
+}
+
+.breadcrumbs {
+  margin-bottom: var(--bui-space-6);
+}
+
+.externalLinkIcon {
+  display: inline;
+  vertical-align: text-bottom;
+}
