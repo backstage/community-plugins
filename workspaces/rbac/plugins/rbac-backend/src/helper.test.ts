@@ -13,21 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import {
+  PermissionAction,
+  RoleConditionalPolicyDecision,
+  RoleMetadata,
+} from '@backstage-community/plugin-rbac-common';
+import { mockServices } from '@backstage/backend-test-utils';
+import { InputError } from '@backstage/errors';
+import {
+  AuthorizeResult,
+  type MetadataResponse,
+} from '@backstage/plugin-permission-common';
 import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
-import { mockAuditorService } from '../__fixtures__/mock-utils';
+import {
+  mockAuditorService,
+  mockAuthService,
+} from '../__fixtures__/mock-utils';
 import { ADMIN_ROLE_AUTHOR } from './admin-permissions/admin-creation';
 import { RoleMetadataDao } from './database/role-metadata';
 import {
+  computeConditionalMetadataBackoffDelayMs,
   deepSortedEqual,
+  DEFAULT_CONDITIONAL_METADATA_RETRY_OPTIONS,
   isPermissionAction,
   matches,
   mergeRoleMetadata,
   metadataStringToPolicy,
   policiesToString,
   policyToString,
+  processConditionMapping,
+  readConditionalMetadataRetryOptionsFromConfig,
   removeTheDifference,
+  resolveConditionalMetadataRetryOptions,
   syncRolePolicies,
   conditionalActionsOverlap,
   permissionMappingToActions,
@@ -43,6 +60,7 @@ import {
 import { RBACFilters } from './permissions';
 // Import the function to test
 import { EnforcerDelegate } from './service/enforcer-delegate';
+import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
 
 const modifiedBy = 'user:default/some-user';
 
@@ -960,5 +978,206 @@ describe('toError', () => {
     const error = toError('failed');
     expect(error).toBeInstanceOf(Error);
     expect(error.message).toBe('failed');
+  });
+});
+
+describe('resolveConditionalMetadataRetryOptions', () => {
+  it('returns defaults when no overrides are provided', () => {
+    expect(resolveConditionalMetadataRetryOptions()).toEqual({
+      maxAttempts: 12,
+      baseDelayMs: 2000,
+      maxDelayMs: 30000,
+    });
+  });
+
+  it('merges partial overrides with defaults', () => {
+    expect(resolveConditionalMetadataRetryOptions({ maxAttempts: 3 })).toEqual({
+      maxAttempts: 3,
+      baseDelayMs: 2000,
+      maxDelayMs: 30000,
+    });
+  });
+
+  it.each(['maxAttempts', 'baseDelayMs', 'maxDelayMs'] as const)(
+    'throws InputError when %s is not a positive integer',
+    field => {
+      expect(() =>
+        resolveConditionalMetadataRetryOptions({ [field]: 0 }),
+      ).toThrow(InputError);
+      expect(() =>
+        resolveConditionalMetadataRetryOptions({ [field]: 1.5 }),
+      ).toThrow(
+        `'${field}' must be a positive integer for 'permission.rbac.conditionalMetadataRetry'`,
+      );
+    },
+  );
+});
+
+describe('readConditionalMetadataRetryOptionsFromConfig', () => {
+  it('reads only defined values from config', () => {
+    const data: Record<string, number> = {
+      'permission.rbac.conditionalMetadataRetry.maxAttempts': 5,
+      'permission.rbac.conditionalMetadataRetry.maxDelayMs': 10000,
+    };
+    expect(
+      readConditionalMetadataRetryOptionsFromConfig({
+        getOptionalNumber: key => data[key],
+      }),
+    ).toEqual({ maxAttempts: 5, maxDelayMs: 10000 });
+  });
+
+  it('returns an empty object when nothing is configured', () => {
+    expect(
+      readConditionalMetadataRetryOptionsFromConfig({
+        getOptionalNumber: () => undefined,
+      }),
+    ).toEqual({});
+  });
+});
+
+describe('computeConditionalMetadataBackoffDelayMs', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('grows exponentially and caps at maxDelayMs without jitter', () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0);
+    const options = DEFAULT_CONDITIONAL_METADATA_RETRY_OPTIONS;
+    expect(computeConditionalMetadataBackoffDelayMs(1, options)).toBe(2000);
+    expect(computeConditionalMetadataBackoffDelayMs(2, options)).toBe(4000);
+    expect(computeConditionalMetadataBackoffDelayMs(3, options)).toBe(8000);
+    expect(computeConditionalMetadataBackoffDelayMs(5, options)).toBe(30000);
+    expect(computeConditionalMetadataBackoffDelayMs(10, options)).toBe(30000);
+  });
+
+  it('never exceeds maxDelayMs even with maximum jitter', () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0.999999);
+    const options = DEFAULT_CONDITIONAL_METADATA_RETRY_OPTIONS;
+    for (const attempt of [1, 2, 5, 10]) {
+      expect(
+        computeConditionalMetadataBackoffDelayMs(attempt, options),
+      ).toBeLessThanOrEqual(options.maxDelayMs);
+    }
+  });
+});
+
+describe('processConditionMapping', () => {
+  const roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction> = {
+    id: 1,
+    result: AuthorizeResult.CONDITIONAL,
+    roleEntityRef: 'role:default/test',
+    pluginId: 'catalog',
+    resourceType: 'catalog-entity',
+    permissionMapping: ['read'],
+    conditions: {
+      rule: 'IS_ENTITY_OWNER',
+      resourceType: 'catalog-entity',
+      params: { claims: ['group:default/team-a'] },
+    },
+  };
+
+  const metadata: MetadataResponse = {
+    permissions: [
+      {
+        type: 'resource',
+        name: 'catalog.entity.read',
+        attributes: { action: 'read' },
+        resourceType: 'catalog-entity',
+      },
+    ],
+    rules: [],
+  };
+
+  const loggerMock = mockServices.logger.mock();
+  let getMetadataByPluginId: jest.Mock;
+  let collector: PluginPermissionMetadataCollector;
+
+  beforeEach(() => {
+    getMetadataByPluginId = jest.fn();
+    collector = {
+      getMetadataByPluginId,
+    } as unknown as PluginPermissionMetadataCollector;
+    (loggerMock.warn as jest.Mock).mockClear();
+    jest.spyOn(Math, 'random').mockReturnValue(0);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('maps permission actions to permission names', async () => {
+    getMetadataByPluginId.mockResolvedValue(metadata);
+
+    const result = await processConditionMapping(
+      roleConditionPolicy,
+      collector,
+      mockAuthService,
+    );
+
+    expect(result.permissionMapping).toEqual([
+      { name: 'catalog.entity.read', action: 'read' },
+    ]);
+    expect(getMetadataByPluginId).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails fast without retry options when metadata is unavailable', async () => {
+    getMetadataByPluginId.mockResolvedValue(undefined);
+
+    await expect(
+      processConditionMapping(roleConditionPolicy, collector, mockAuthService),
+    ).rejects.toThrow('Unable to get permission list for plugin catalog');
+    expect(getMetadataByPluginId).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries until metadata becomes available when retry options are provided', async () => {
+    getMetadataByPluginId
+      .mockResolvedValueOnce(undefined)
+      .mockResolvedValueOnce({ rules: [] })
+      .mockResolvedValue(metadata);
+
+    const result = await processConditionMapping(
+      roleConditionPolicy,
+      collector,
+      mockAuthService,
+      {
+        metadataRetry: { maxAttempts: 5, baseDelayMs: 1, maxDelayMs: 2 },
+        logger: loggerMock,
+      },
+    );
+
+    expect(result.permissionMapping).toEqual([
+      { name: 'catalog.entity.read', action: 'read' },
+    ]);
+    expect(getMetadataByPluginId).toHaveBeenCalledTimes(3);
+    expect(loggerMock.warn).toHaveBeenCalledTimes(2);
+    expect(loggerMock.warn).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /Unable to get permission list for plugin catalog, retrying in \d+ms \(attempt 1 of 5\)/,
+      ),
+    );
+  });
+
+  it('throws after exhausting retry attempts', async () => {
+    getMetadataByPluginId.mockResolvedValue(undefined);
+
+    await expect(
+      processConditionMapping(roleConditionPolicy, collector, mockAuthService, {
+        metadataRetry: { maxAttempts: 3, baseDelayMs: 1, maxDelayMs: 2 },
+      }),
+    ).rejects.toThrow('Unable to get permission list for plugin catalog');
+    expect(getMetadataByPluginId).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not retry mapping failures once metadata was fetched', async () => {
+    getMetadataByPluginId.mockResolvedValue({ permissions: [], rules: [] });
+
+    await expect(
+      processConditionMapping(roleConditionPolicy, collector, mockAuthService, {
+        metadataRetry: { maxAttempts: 3, baseDelayMs: 1, maxDelayMs: 2 },
+      }),
+    ).rejects.toThrow(
+      `Unable to find permission to get permission name for resource type 'catalog-entity' and action "read"`,
+    );
+    expect(getMetadataByPluginId).toHaveBeenCalledTimes(1);
   });
 });

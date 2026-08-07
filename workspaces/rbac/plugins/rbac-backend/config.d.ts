@@ -95,6 +95,27 @@ export interface Config {
         }>;
       };
       /**
+       * Optional retry tuning for reading plugin permission metadata while
+       * applying conditional policies from `conditionalPoliciesFile`.
+       * Bounds the wait for permission metadata routes of target plugins
+       * that are not mounted yet during startup.
+       */
+      conditionalMetadataRetry?: {
+        /**
+         * Maximum number of read attempts before conditional policy
+         * reconciliation aborts. Set to 1 to disable retries. Defaults to 12.
+         */
+        maxAttempts?: number;
+        /**
+         * Initial backoff delay in milliseconds. Defaults to 2000.
+         */
+        baseDelayMs?: number;
+        /**
+         * Upper bound in milliseconds for a single backoff delay. Defaults to 30000.
+         */
+        maxDelayMs?: number;
+      };
+      /**
        * Optional validation tuning for conditional policies.
        */
       validation?: {

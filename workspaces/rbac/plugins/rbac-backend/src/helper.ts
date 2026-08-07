@@ -18,6 +18,7 @@ import {
   AuthService,
   LoggerService,
 } from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
 import type { MetadataResponse } from '@backstage/plugin-permission-common';
 
 import {
@@ -459,26 +460,159 @@ export function mergeRoleMetadata(
   return mergedMetaData;
 }
 
+export type ConditionalMetadataRetryOptions = {
+  maxAttempts: number;
+  baseDelayMs: number;
+  maxDelayMs: number;
+};
+
+/**
+ * With a 2s base delay, exponential backoff and a 30s cap, 12 attempts give a
+ * total retry budget of roughly 4 minutes, which covers slow cold-start mounts
+ * of permission metadata routes without retrying forever.
+ */
+export const DEFAULT_CONDITIONAL_METADATA_RETRY_OPTIONS: ConditionalMetadataRetryOptions =
+  {
+    maxAttempts: 12,
+    baseDelayMs: 2 * 1000,
+    maxDelayMs: 30 * 1000,
+  };
+
+/** Minimal config surface for reading optional metadata retry options. */
+export type ConditionalMetadataRetryConfig = {
+  getOptionalNumber(key: string): number | undefined;
+};
+
+export function readConditionalMetadataRetryOptionsFromConfig(
+  config: ConditionalMetadataRetryConfig,
+): Partial<ConditionalMetadataRetryOptions> {
+  const baseKey = 'permission.rbac.conditionalMetadataRetry';
+  const optionKeys: (keyof ConditionalMetadataRetryOptions)[] = [
+    'maxAttempts',
+    'baseDelayMs',
+    'maxDelayMs',
+  ];
+  const options: Partial<ConditionalMetadataRetryOptions> = {};
+  for (const key of optionKeys) {
+    const value = config.getOptionalNumber(`${baseKey}.${key}`);
+    if (value !== undefined) {
+      options[key] = value;
+    }
+  }
+  return options;
+}
+
+/**
+ * Merges optional overrides with defaults and validates all options are
+ * positive integers.
+ */
+export function resolveConditionalMetadataRetryOptions(
+  partial: Partial<ConditionalMetadataRetryOptions> = {},
+): ConditionalMetadataRetryOptions {
+  const resolved: ConditionalMetadataRetryOptions = {
+    ...DEFAULT_CONDITIONAL_METADATA_RETRY_OPTIONS,
+    ...partial,
+  };
+  assertPositiveIntegerRetryOption(resolved.maxAttempts, 'maxAttempts');
+  assertPositiveIntegerRetryOption(resolved.baseDelayMs, 'baseDelayMs');
+  assertPositiveIntegerRetryOption(resolved.maxDelayMs, 'maxDelayMs');
+  return resolved;
+}
+
+function assertPositiveIntegerRetryOption(
+  value: number,
+  fieldName: string,
+): void {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new InputError(
+      `'${fieldName}' must be a positive integer for 'permission.rbac.conditionalMetadataRetry'`,
+    );
+  }
+}
+
+export function computeConditionalMetadataBackoffDelayMs(
+  attempt: number,
+  options: ConditionalMetadataRetryOptions,
+): number {
+  const exponential = Math.min(
+    options.maxDelayMs,
+    options.baseDelayMs * 2 ** Math.max(0, attempt - 1),
+  );
+  const jitter = Math.floor(Math.random() * Math.max(250, exponential * 0.2));
+  return Math.min(options.maxDelayMs, exponential + jitter);
+}
+
+const sleep = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+const SINGLE_ATTEMPT: ConditionalMetadataRetryOptions = {
+  maxAttempts: 1,
+  baseDelayMs: 0,
+  maxDelayMs: 0,
+};
+
+type MetadataWithPermissions = MetadataResponse & {
+  permissions: NonNullable<MetadataResponse['permissions']>;
+};
+
+/**
+ * On fresh boot the permission metadata route of a target plugin can mount
+ * later than RBAC startup. The metadata collector swallows transient failures
+ * (network errors, 5xx) and returns a response without permissions, so a
+ * missing permission list is what gets retried here, with exponential backoff
+ * bounding the total wait.
+ */
+async function getPluginPermissionMetadataWithRetry(
+  pluginPermMetaData: PluginPermissionMetadataCollector,
+  pluginId: string,
+  token: string | undefined,
+  retry: ConditionalMetadataRetryOptions,
+  logger?: LoggerService,
+): Promise<MetadataWithPermissions> {
+  for (let attempt = 1; ; attempt++) {
+    const metadata: MetadataResponse | undefined =
+      await pluginPermMetaData.getMetadataByPluginId(pluginId, token);
+    if (metadata?.permissions) {
+      return { ...metadata, permissions: metadata.permissions };
+    }
+    if (attempt >= retry.maxAttempts) {
+      throw new Error(`Unable to get permission list for plugin ${pluginId}`);
+    }
+    const delayMs = computeConditionalMetadataBackoffDelayMs(attempt, retry);
+    logger?.warn(
+      `Unable to get permission list for plugin ${pluginId}, retrying in ${delayMs}ms (attempt ${attempt} of ${retry.maxAttempts})`,
+    );
+    await sleep(delayMs);
+  }
+}
+
+export type ProcessConditionMappingOptions = {
+  /**
+   * Retry tuning for the permission metadata read. Defaults to a single
+   * attempt so interactive callers such as the REST API keep failing fast.
+   */
+  metadataRetry?: ConditionalMetadataRetryOptions;
+  logger?: LoggerService;
+};
+
 export async function processConditionMapping(
   roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction>,
   pluginPermMetaData: PluginPermissionMetadataCollector,
   auth: AuthService,
+  options?: ProcessConditionMappingOptions,
 ): Promise<RoleConditionalPolicyDecision<PermissionInfo>> {
   const { token } = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: roleConditionPolicy.pluginId,
   });
 
-  const rule: MetadataResponse | undefined =
-    await pluginPermMetaData.getMetadataByPluginId(
-      roleConditionPolicy.pluginId,
-      token,
-    );
-  if (!rule?.permissions) {
-    throw new Error(
-      `Unable to get permission list for plugin ${roleConditionPolicy.pluginId}`,
-    );
-  }
+  const rule = await getPluginPermissionMetadataWithRetry(
+    pluginPermMetaData,
+    roleConditionPolicy.pluginId,
+    token,
+    options?.metadataRetry ?? SINGLE_ATTEMPT,
+    options?.logger,
+  );
 
   const permInfo: PermissionInfo[] = [];
   for (const action of roleConditionPolicy.permissionMapping) {
