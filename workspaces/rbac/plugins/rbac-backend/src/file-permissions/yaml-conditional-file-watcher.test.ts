@@ -16,7 +16,7 @@
 import { mockServices } from '@backstage/backend-test-utils';
 import {
   AuthorizeResult,
-  type MetadataResponse,
+  MetadataResponse,
 } from '@backstage/plugin-permission-common';
 
 import { resolve } from 'path';
@@ -36,10 +36,7 @@ import {
 import { DEFAULT_CONDITION_VALIDATION_LIMITS } from '../validation/condition-validation';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { expectAuditorLog } from '../../__fixtures__/auditor-test-utils';
-import {
-  PermissionInfo,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+import { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 import { JsonObject } from '@backstage/types';
 import { InputError, NotFoundError } from '@backstage/errors';
 
@@ -55,8 +52,6 @@ const conditionalStorageMock: Partial<DataBaseConditionalStorage> = {
   deleteCondition: jest.fn().mockImplementation(),
   updateCondition: jest.fn().mockImplementation(),
 };
-
-const mockAuthService = mockServices.auth();
 
 const testPluginMetadataResp: MetadataResponse = {
   permissions: [
@@ -117,17 +112,13 @@ const testPluginMetadataResp: MetadataResponse = {
   ],
 };
 
-const conditionToStore1: Partial<
-  RoleConditionalPolicyDecision<PermissionInfo>
-> &
-  Required<
-    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
-  > = {
+const conditionToStore1: Partial<RoleConditionalPolicyDecision> &
+  Required<Pick<RoleConditionalPolicyDecision, 'permissionMapping'>> = {
   result: AuthorizeResult.CONDITIONAL,
   roleEntityRef: 'role:default/test',
   pluginId: 'catalog',
   resourceType: 'catalog-entity',
-  permissionMapping: [{ name: 'catalog.entity.refresh', action: 'update' }],
+  permissionMapping: ['update'],
   conditions: {
     rule: 'IS_ENTITY_OWNER',
     resourceType: 'catalog-entity',
@@ -137,20 +128,13 @@ const conditionToStore1: Partial<
   },
 };
 
-const conditionToStore2: Partial<
-  RoleConditionalPolicyDecision<PermissionInfo>
-> &
-  Required<
-    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
-  > = {
+const conditionToStore2: Partial<RoleConditionalPolicyDecision> &
+  Required<Pick<RoleConditionalPolicyDecision, 'permissionMapping'>> = {
   result: AuthorizeResult.CONDITIONAL,
   roleEntityRef: 'role:default/test',
   pluginId: 'catalog',
   resourceType: 'catalog-entity',
-  permissionMapping: [
-    { name: 'catalog.entity.read', action: 'read' },
-    { name: 'catalog.entity.delete', action: 'delete' },
-  ],
+  permissionMapping: ['read', 'delete'],
   conditions: {
     rule: 'IS_ENTITY_OWNER',
     resourceType: 'catalog-entity',
@@ -160,18 +144,14 @@ const conditionToStore2: Partial<
   },
 };
 
-const conditionToRemove: Partial<
-  RoleConditionalPolicyDecision<PermissionInfo>
-> &
-  Required<
-    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
-  > = {
+const conditionToRemove: Partial<RoleConditionalPolicyDecision> &
+  Required<Pick<RoleConditionalPolicyDecision, 'permissionMapping'>> = {
   id: 2,
   result: AuthorizeResult.CONDITIONAL,
   roleEntityRef: 'role:default/dev',
   pluginId: 'catalog',
   resourceType: 'catalog-entity',
-  permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
+  permissionMapping: ['read'],
   conditions: {
     rule: 'IS_ENTITY_OWNER',
     resourceType: 'catalog-entity',
@@ -245,8 +225,6 @@ describe('YamlConditionalFileWatcher', () => {
       mockLoggerService,
       conditionalStorageMock as DataBaseConditionalStorage,
       mockAuditorService,
-      mockAuthService,
-      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       roleEventEmitterMock,
       DEFAULT_CONDITION_VALIDATION_LIMITS,
@@ -264,8 +242,6 @@ describe('YamlConditionalFileWatcher', () => {
       mockLoggerService,
       conditionalStorageMock as DataBaseConditionalStorage,
       mockAuditorService,
-      mockAuthService,
-      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       roleMetadataStorageMock,
       roleEventEmitterMock,
       DEFAULT_CONDITION_VALIDATION_LIMITS,
@@ -473,12 +449,7 @@ describe('YamlConditionalFileWatcher', () => {
         fail: {
           error: new Error('unknown error message 1'),
           meta: {
-            condition: {
-              ...conditionToStore1,
-              permissionMapping: conditionToStore1.permissionMapping.map(
-                pm => pm.action,
-              ),
-            },
+            condition: conditionToStore1,
           },
         },
       },
@@ -593,7 +564,7 @@ describe('YamlConditionalFileWatcher', () => {
       roleEntityRef: 'role:default/test-2',
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: [{ name: 'catalog.entity.refresh', action: 'update' }],
+      permissionMapping: ['update'],
       conditions: {
         rule: 'IS_ENTITY_OWNER',
         resourceType: 'catalog-entity',
@@ -607,10 +578,7 @@ describe('YamlConditionalFileWatcher', () => {
       roleEntityRef: 'role:default/test-3',
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: [
-        { name: 'catalog.entity.read', action: 'read' },
-        { name: 'catalog.entity.delete', action: 'delete' },
-      ],
+      permissionMapping: ['read', 'delete'],
       conditions: {
         rule: 'IS_ENTITY_OWNER',
         resourceType: 'catalog-entity',
@@ -724,59 +692,6 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.deleteCondition).toHaveBeenCalledWith(2);
   });
 
-  test('should preserve existing conditions when catalog metadata is unavailable during reload (#9429)', async () => {
-    const storedCondition = {
-      id: 1,
-      result: AuthorizeResult.CONDITIONAL,
-      roleEntityRef: 'role:default/test',
-      pluginId: 'catalog',
-      resourceType: 'catalog-entity',
-      permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
-      conditions: {
-        rule: 'IS_ENTITY_OWNER',
-        resourceType: 'catalog-entity',
-        params: {
-          claims: ['group:default/team-a'],
-        },
-      },
-    };
-
-    conditionalStorageMock.filterConditions = jest
-      .fn()
-      .mockImplementation(() => [storedCondition]);
-    roleMetadataStorageMock.filterRoleMetadata = jest
-      .fn()
-      .mockImplementation(() => csvFileRoles);
-    pluginMetadataCollectorMock.getMetadataByPluginId = jest
-      .fn()
-      .mockResolvedValue(undefined);
-
-    const updatedYaml = [
-      'result: CONDITIONAL',
-      'roleEntityRef: role:default/test',
-      'pluginId: catalog',
-      'resourceType: catalog-entity',
-      'permissionMapping:',
-      '  - read',
-      'conditions:',
-      '  rule: IS_ENTITY_OWNER',
-      '  resourceType: catalog-entity',
-      '  params:',
-      '    claims:',
-      '      - group:default/team-a',
-      '      - group:default/team-b',
-    ].join('\n');
-
-    const watcher = createWatcher(csvFileName);
-    jest.spyOn(watcher, 'getCurrentContents').mockReturnValue(updatedYaml);
-    await watcher.onChange();
-
-    expect(conditionalStorageMock.deleteCondition).not.toHaveBeenCalled();
-    expect(conditionalStorageMock.createCondition).not.toHaveBeenCalled();
-    expect(conditionalStorageMock.updateCondition).not.toHaveBeenCalled();
-    expect(mockLoggerService.error).toHaveBeenCalled();
-  });
-
   test('should merge sibling yaml conditions via update and delete', async () => {
     const storedRead = {
       id: 1,
@@ -784,7 +699,7 @@ describe('YamlConditionalFileWatcher', () => {
       roleEntityRef: 'role:default/test',
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
+      permissionMapping: ['read'],
       conditions: conditionToStore1.conditions,
     };
     const storedDelete = {
@@ -793,7 +708,7 @@ describe('YamlConditionalFileWatcher', () => {
       roleEntityRef: 'role:default/test',
       pluginId: 'catalog',
       resourceType: 'catalog-entity',
-      permissionMapping: [{ name: 'catalog.entity.delete', action: 'delete' }],
+      permissionMapping: ['delete'],
       conditions: conditionToStore1.conditions,
     };
 
@@ -827,10 +742,7 @@ describe('YamlConditionalFileWatcher', () => {
     expect(conditionalStorageMock.updateCondition).toHaveBeenCalledWith(
       1,
       expect.objectContaining({
-        permissionMapping: expect.arrayContaining([
-          expect.objectContaining({ action: 'read' }),
-          expect.objectContaining({ action: 'delete' }),
-        ]),
+        permissionMapping: expect.arrayContaining(['read', 'delete']),
       }),
       undefined,
       new Set([2]),
@@ -843,10 +755,7 @@ describe('YamlConditionalFileWatcher', () => {
     const storedWithReorderedArrays = {
       id: 2,
       ...conditionToStore2,
-      permissionMapping: [
-        { name: 'catalog.entity.delete', action: 'delete' },
-        { name: 'catalog.entity.read', action: 'read' },
-      ],
+      permissionMapping: ['delete', 'read'],
       conditions: {
         ...conditionToStore2.conditions,
         params: {
@@ -991,16 +900,11 @@ describe('YamlConditionalFileWatcher', () => {
 });
 
 function mappedConditionMeta(
-  condition: Required<
-    Pick<RoleConditionalPolicyDecision<PermissionInfo>, 'permissionMapping'>
-  >,
+  condition: Required<Pick<RoleConditionalPolicyDecision, 'permissionMapping'>>,
 ): JsonObject {
   return {
     meta: {
-      condition: {
-        ...condition,
-        permissionMapping: condition.permissionMapping.map(pm => pm.action),
-      },
+      condition,
     },
   };
 }

@@ -16,10 +16,7 @@
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { InputError } from '@backstage/errors';
 
-import type {
-  PermissionAction,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+import type { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 
 import {
   DEFAULT_CONDITION_VALIDATION_LIMITS,
@@ -168,6 +165,99 @@ describe('condition-validation', () => {
       };
       expect(() => validateRoleCondition(condition)).toThrow(
         `'permissionMapping' array contains non action value: 'wrong-value'`,
+      );
+    });
+
+    it('should fail validation when permissionMapping mixes action strings and named objects', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          'read',
+          { name: 'catalog.entity.update', action: 'update' },
+        ],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' must be either all action strings or all {name, action} objects, not a mix`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry is object without name field', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry is empty object', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{}],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry has name: null', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ name: null, action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry has numeric name', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ name: 123, action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' entry is an object but missing required 'name' field`,
       );
     });
 
@@ -573,7 +663,7 @@ describe('condition-validation', () => {
     });
 
     it('should validate role-condition.conditions.anyOf without errors', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -758,7 +848,7 @@ describe('condition-validation', () => {
     });
 
     it('should success validation role-condition.conditions.allOf', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -794,7 +884,7 @@ describe('condition-validation', () => {
 
   describe('complex conditions', () => {
     it('should fail validation of role-condition.conditions in parallel with condition rule', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -829,7 +919,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (allOf, not) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -866,7 +956,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (allOf, anyOf) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -910,7 +1000,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (not, anyOf) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -947,7 +1037,7 @@ describe('condition-validation', () => {
     });
 
     it('should validate role-condition.conditions that are nested', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',

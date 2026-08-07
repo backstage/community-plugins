@@ -41,7 +41,6 @@ import {
   abortConditionalPolicyReconcile,
   diffConditionalPolicies,
   pendingDeleteIdsFromPlan,
-  permissionMappingToActions,
   planConditionalReconcile,
   toError,
   transformArrayToPolicy,
@@ -55,10 +54,11 @@ import {
   validatePolicy,
   validateSource,
 } from '../validation/policies-validation';
+import { validateRoleCondition } from '../validation/condition-validation';
 import { ConditionalStorage } from '../database/conditional-storage';
 import {
-  PermissionInfo,
-  RoleConditionalPolicyDecision,
+  type RoleConditionalPolicyDecision,
+  permissionMappingAction,
 } from '@backstage-community/plugin-rbac-common';
 import { isEqual } from 'lodash';
 
@@ -127,8 +127,12 @@ export class Connection implements RBACProviderConnection {
   }
 
   async applyConditionalPermissions(
-    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+    conditionalPermissions: RoleConditionalPolicyDecision[],
   ): Promise<void> {
+    for (const condition of conditionalPermissions) {
+      validateRoleCondition(condition);
+    }
+
     const providerRoles = await this.getProviderRoles();
     const storedConditionalPermissions =
       await this.conditionStorage.filterConditions(providerRoles);
@@ -160,7 +164,7 @@ export class Connection implements RBACProviderConnection {
       }
 
       const plan = planConditionalReconcile(diff.toAdd, diff.toRemove, item =>
-        permissionMappingToActions(item.permissionMapping),
+        item.permissionMapping.map(permissionMappingAction),
       );
       const pendingDeleteIds = pendingDeleteIdsFromPlan(plan);
 
@@ -369,7 +373,7 @@ export class Connection implements RBACProviderConnection {
 
   private async persistConditionalUpdate(
     id: number,
-    condition: RoleConditionalPolicyDecision<PermissionInfo>,
+    condition: RoleConditionalPolicyDecision,
     pendingDeleteIds: ReadonlySet<number>,
   ): Promise<void> {
     const auditorMeta = {
@@ -398,7 +402,7 @@ export class Connection implements RBACProviderConnection {
   }
 
   private async persistConditionalAddition(
-    condition: RoleConditionalPolicyDecision<PermissionInfo>,
+    condition: RoleConditionalPolicyDecision,
     pendingDeleteIds: ReadonlySet<number>,
   ): Promise<void> {
     const auditorMeta = {
@@ -422,7 +426,7 @@ export class Connection implements RBACProviderConnection {
   }
 
   private async persistConditionalRemoval(
-    conditionalPermission: RoleConditionalPolicyDecision<PermissionInfo>,
+    conditionalPermission: RoleConditionalPolicyDecision,
   ): Promise<void> {
     const auditorMeta = {
       policies: [conditionalPermission],
