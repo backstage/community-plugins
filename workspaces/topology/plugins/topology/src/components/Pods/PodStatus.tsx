@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactElement } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
 
 import { useState, useRef, useMemo, memo } from 'react';
 
@@ -83,6 +83,7 @@ const PodStatus = ({
 }: PodStatusProps) => {
   const { t } = useTranslation();
   const [updateOnEnd, setUpdateOnEnd] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const translatePodStatus = (status: string) => {
     switch (status) {
@@ -226,9 +227,40 @@ const PodStatus = ({
         })}
       </div>
     );
+    // Drive visibility with React hover events. PatternFly's native mouseenter
+    // on triggerRef is unreliable for SVG nodes that may be relocated in the
+    // topology graph. A leave with no relatedTarget is treated as a DOM move,
+    // not a real pointer exit.
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = (event: MouseEvent) => {
+      if (!event.relatedTarget) {
+        return;
+      }
+      setIsHovered(false);
+    };
+
     return (
-      <Tooltip content={tipContent} triggerRef={chartTriggerRef}>
-        <g ref={chartTriggerRef}>{chartDonut}</g>
+      <Tooltip
+        content={tipContent}
+        triggerRef={chartTriggerRef}
+        isVisible={isHovered}
+        trigger="manual"
+        entryDelay={0}
+      >
+        <g
+          ref={chartTriggerRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <rect
+            x={x && y ? x : 0}
+            y={x && y ? y : 0}
+            width={size}
+            height={size}
+            fill="transparent"
+          />
+          {chartDonut}
+        </g>
       </Tooltip>
     );
   }
