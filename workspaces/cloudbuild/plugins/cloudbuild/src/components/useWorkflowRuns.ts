@@ -64,33 +64,36 @@ export function useWorkflowRuns(options: {
         ): WorkflowRun[] => {
           setTotal(workflowRunsData.builds.length);
           // Transformation here
-          return workflowRunsData.builds.map(run => ({
-            message: run.substitutions.REPO_NAME,
-            id: run.id,
-            rerun: async () => {
-              try {
-                await api.reRunWorkflow({
-                  projectId,
-                  location,
-                  runId: run.id,
-                });
-              } catch (e) {
-                errorApi.post(e);
-              }
-            },
-            substitutions: run.substitutions,
-            source: {
-              branchName: run.substitutions.REPO_NAME,
-              commit: {
-                hash: run.substitutions.COMMIT_SHA,
-                url: run.substitutions.REPO_NAME,
+          return workflowRunsData.builds.map(run => {
+            const substitutions = run.substitutions ?? ({} as Substitutions);
+            return {
+              message: substitutions.REPO_NAME,
+              id: run.id,
+              rerun: async () => {
+                try {
+                  await api.reRunWorkflow({
+                    projectId,
+                    location,
+                    runId: run.id,
+                  });
+                } catch (e) {
+                  errorApi.post(e);
+                }
               },
-            },
-            status: run.status,
-            url: run.logUrl,
-            googleUrl: run.logUrl,
-            createTime: run.createTime,
-          }));
+              substitutions,
+              source: {
+                branchName: substitutions.REPO_NAME,
+                commit: {
+                  hash: substitutions.COMMIT_SHA,
+                  url: substitutions.REPO_NAME,
+                },
+              },
+              status: run.status,
+              url: run.logUrl,
+              googleUrl: run.logUrl,
+              createTime: run.createTime,
+            };
+          });
         },
       );
   }, [page, pageSize, projectId]);
