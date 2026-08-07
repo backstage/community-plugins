@@ -1,4 +1,4 @@
-# The Plugins Folder
+# The Plugins Folder test
 
 This is where your own plugins and their associated modules live, each in a
 separate folder of its own.

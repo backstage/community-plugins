@@ -1,0 +1,11 @@
+@layer components {
+  :root {
+    --sonarqube-percentage-ok: var(--bui-status-ok, #1db679);
+    --sonarqube-percentage-error: var(--bui-status-error, #e82c3c);
+  }
+
+  .root {
+    height: var(--bui-space-6);
+    width: var(--bui-space-6);
+  }
+}

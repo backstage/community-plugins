@@ -1,0 +1,10 @@
+@layer components {
+  .value {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .compact {
+    line-height: 1;
+  }
+}
