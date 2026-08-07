@@ -1,0 +1,24 @@
+@layer components {
+  .container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+
+  .mockContent {
+    opacity: 0.3;
+    filter: blur(1.5px);
+    padding: var(--bui-space-1);
+  }
+
+  .overlay {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

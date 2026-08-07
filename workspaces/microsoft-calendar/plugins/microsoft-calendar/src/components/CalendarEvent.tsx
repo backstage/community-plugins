@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 import classnames from 'classnames';
-import {
-  bindPopover,
-  bindTrigger,
-  usePopupState,
-} from 'material-ui-popup-state/hooks';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { TooltipTrigger, Tooltip } from 'react-aria-components';
 
 import { Link } from '@backstage/core-components';
-
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import Popover from '@material-ui/core/Popover';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
 
 import webcamIcon from '../icons/webcam.svg';
 import { CalendarEventPopoverContent } from './CalendarEventPopoverContent';
@@ -39,101 +29,57 @@ import {
   isAllDay,
   isPassed,
 } from './util';
-
-const useStyles = makeStyles(
-  theme => ({
-    event: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: theme.spacing(1),
-      cursor: 'pointer',
-      paddingRight: 12,
-    },
-    declined: {
-      textDecoration: 'line-through',
-    },
-    passed: {
-      opacity: 0.6,
-      transition: 'opacity 0.15s ease-in-out',
-      '&:hover': {
-        opacity: 1,
-      },
-    },
-    link: {
-      width: 48,
-      height: 48,
-      display: 'inline-block',
-      padding: 8,
-      borderRadius: '50%',
-      '&:hover': {
-        backgroundColor: theme.palette.grey[100],
-      },
-    },
-    calendarColor: {
-      width: 8,
-      borderTopLeftRadius: 4,
-      borderBottomLeftRadius: 4,
-    },
-  }),
-  {
-    name: 'MicrosoftCalendarEvent',
-  },
-);
+import styles from './CalendarEvent.module.css';
 
 export const CalendarEvent = ({ event }: { event: MicrosoftCalendarEvent }) => {
-  const classes = useStyles();
-  const popoverState = usePopupState({
-    variant: 'popover',
-    popupId: event.id,
-    disableAutoFocus: true,
-  });
   const [hovered, setHovered] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const onlineMeetingLink = getOnlineMeetingLink(event);
 
-  const { onClick, ...restBindProps } = bindTrigger(popoverState);
-
   return (
-    <>
-      <Paper
-        onClick={e => {
-          onClick(e);
-        }}
-        {...restBindProps}
+    <div ref={containerRef} className={styles.eventWrapper}>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+      <div
+        onClick={() => setPopoverOpen(!popoverOpen)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        elevation={hovered ? 4 : 1}
-        className={classnames(classes.event, {
-          [classes.passed]: isPassed(event),
+        className={classnames(styles.event, {
+          [styles.passed]: isPassed(event),
+          [styles.hovered]: hovered,
         })}
         data-testid="microsoft-calendar-event"
       >
-        <Box className={classes.calendarColor} mr={1} alignSelf="stretch" />
-        <Box flex={1} pt={1} pb={1}>
-          <Typography
-            variant="subtitle2"
-            className={classnames({ [classes.declined]: event.isCancelled })}
+        <div className={styles.calendarColor} />
+        <div className={styles.content}>
+          <Text
+            variant="body-small"
+            className={classnames({ [styles.declined]: event.isCancelled })}
           >
             {event.subject}
-          </Typography>
+          </Text>
           {!isAllDay(event) && (
-            <Typography variant="body2" data-testid="calendar-event-time">
+            <Text
+              variant="body-x-small"
+              color="secondary"
+              data-testid="calendar-event-time"
+            >
               {getTimePeriod(event)}
-            </Typography>
+            </Text>
           )}
-        </Box>
+        </div>
 
         {event.isOnlineMeeting && (
-          <Tooltip title="Join Online Meeting">
+          <TooltipTrigger>
             <Link
               data-testid="calendar-event-online-meeting-link"
-              className={classes.link}
+              className={styles.link}
               to={onlineMeetingLink}
               onClick={e => {
                 e.stopPropagation();
               }}
               noTrack
             >
-              {/* we can use onlineMeetingProvider to show icon accordingly */}
               <img
                 height={32}
                 width={32}
@@ -141,24 +87,24 @@ export const CalendarEvent = ({ event }: { event: MicrosoftCalendarEvent }) => {
                 alt="Online Meeting link"
               />
             </Link>
-          </Tooltip>
+            <Tooltip>Join Online Meeting</Tooltip>
+          </TooltipTrigger>
         )}
-      </Paper>
+      </div>
 
-      <Popover
-        {...bindPopover(popoverState)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        data-testid="calendar-event-popover"
-      >
-        <CalendarEventPopoverContent event={event} />
-      </Popover>
-    </>
+      {popoverOpen && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+        <div className={styles.popover} onClick={e => e.stopPropagation()}>
+          <CalendarEventPopoverContent event={event} />
+        </div>
+      )}
+      {popoverOpen && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+        <div
+          className={styles.popoverBackdrop}
+          onClick={() => setPopoverOpen(false)}
+        />
+      )}
+    </div>
   );
 };
