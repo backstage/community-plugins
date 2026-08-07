@@ -28,8 +28,10 @@ import Stack from '@mui/material/Stack';
 import { MaturitySummaryCardContent } from '../MaturitySummaryInfoCard/MaturitySummaryCardContent';
 import { MaturityHelp } from '../../helpers/MaturityHelp';
 import { MaturityRankIcon } from '../MaturityRankIcon';
+import { MaturityDisplayProps } from '../../types';
+import { resolveMaturityDisplayConfig } from '../../helpers/maturityConfig';
 
-type Props = {
+type Props = MaturityDisplayProps & {
   summary: MaturitySummary;
 };
 
@@ -61,9 +63,17 @@ function getRankAvatarProgress(rank: Rank, value: MaturitySummary) {
   );
 }
 
-export const MaturityRankInfoCard = ({ summary }: Props) => {
+export const MaturityRankInfoCard = ({
+  summary,
+  title: titleOverride,
+}: Props) => {
   const configApi = useApi(configApiRef);
   const { content } = useStyles();
+  const {
+    title: displayTitle,
+    helpUrl,
+    helpTooltip,
+  } = resolveMaturityDisplayConfig(configApi, { title: titleOverride });
 
   const rankInfo = useMemo(
     () => ({
@@ -115,14 +125,14 @@ export const MaturityRankInfoCard = ({ summary }: Props) => {
     [configApi],
   );
 
-  const { title, description } = rankInfo[summary.rank];
+  const { title: rankTitle, description } = rankInfo[summary.rank];
 
   return (
     <InfoCard
       title={
         <Fragment>
-          Maturity Rank
-          <MaturityHelp />
+          {displayTitle} Rank
+          <MaturityHelp url={helpUrl} tooltip={helpTooltip} />
         </Fragment>
       }
     >
@@ -142,7 +152,7 @@ export const MaturityRankInfoCard = ({ summary }: Props) => {
           className={content}
         />
         <Typography variant="h6" align="center">
-          {title}
+          {rankTitle}
         </Typography>
         <Typography variant="subtitle2" align="center">
           {description}

@@ -68,7 +68,6 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
-    "@backstage/version-bridge": "backstage:^",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
     "@mui/styles": "5.18.0",
