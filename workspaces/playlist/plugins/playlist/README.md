@@ -132,6 +132,33 @@ const defaultEntityPage = (
 
 Note: the above only shows an example for the `defaultEntityPage` for a full example of this you can look at [this EntityPage](../../packages/app/src/components/catalog/EntityPage.tsx)
 
+## New Frontend System
+
+### Setup
+
+If you're using [feature discovery](https://backstage.io/docs/frontend-system/architecture/app/#feature-discovery), the plugin should be automatically discovered and enabled. Otherwise, you can manually enable the plugin by adding it to your app:
+
+```tsx
+// packages/app/src/App.tsx
+import playlistPlugin from '@backstage-community/plugin-playlist/alpha';
+
+const app = createApp({
+  features: [
+    // ...
+    playlistPlugin,
+  ],
+});
+```
+
+### Extensions
+
+The following extensions are available in the plugin:
+
+- `page:playlist` — the playlist index page, mounted at `/playlist`
+- `page:playlist/playlist-detail` — the individual playlist page, mounted at `/playlist/:playlistId`
+- `api:playlist/plugin.playlist.service` — the playlist API client
+- `entity-context-menu-item:playlist/add-to-playlist` — the "Add to playlist" action in the entity context menu
+
 ## Custom Title
 
 You can define a custom title to be shown in all the components of this plugin to replace the default term "playlist" in the UI. To do this you just need to add some config in your **app-config.yaml**, here's an example:
