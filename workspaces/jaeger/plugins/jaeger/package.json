@@ -48,7 +48,6 @@
   "dependencies": {
     "@backstage-community/plugin-jaeger-common": "workspace:^",
     "@backstage/catalog-model": "backstage:^",
-    "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
@@ -68,6 +67,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",

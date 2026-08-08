@@ -15,12 +15,13 @@ import { JSXElementConstructor } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { ReactElement } from 'react';
-import { RouteRef } from '@backstage/frontend-plugin-api';
+import { RouteRef } from '@backstage/core-plugin-api';
+import { RouteRef as RouteRef_2 } from '@backstage/frontend-plugin-api';
 
 // @alpha
 const jaegerPlugin: OverridableFrontendPlugin<
   {
-    entityContent: RouteRef<undefined>;
+    root: RouteRef<undefined>;
   },
   {},
   {
@@ -60,7 +61,7 @@ const jaegerPlugin: OverridableFrontendPlugin<
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
-            RouteRef<AnyRouteRefParams>,
+            RouteRef_2<AnyRouteRefParams>,
             'core.routing.ref',
             {
               optional: true;
@@ -114,7 +115,7 @@ const jaegerPlugin: OverridableFrontendPlugin<
           | (string & {});
         icon?: string | ReactElement;
         loader: () => Promise<JSX.Element>;
-        routeRef?: RouteRef;
+        routeRef?: RouteRef_2;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);
       };
     }>;

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { rootRouteRef } from '../routes';
 import { jaegerApi } from './apis';
@@ -27,7 +26,7 @@ export const jaegerPlugin = createFrontendPlugin({
   pluginId: 'jaeger',
   info: { packageJson: () => import('../../package.json') },
   extensions: [jaegerApi, jaegerEntityContent],
-  routes: convertLegacyRouteRefs({
-    entityContent: rootRouteRef,
-  }),
+  routes: {
+    root: rootRouteRef,
+  },
 });

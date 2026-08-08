@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  compatWrapper,
-  convertLegacyRouteRef,
-} from '@backstage/core-compat-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from '../routes';
 import { isJaegerAvailable } from '../utils';
@@ -28,11 +24,9 @@ export const jaegerEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/jaeger',
     title: 'Traces',
-    routeRef: convertLegacyRouteRef(rootRouteRef),
+    routeRef: rootRouteRef,
     filter: isJaegerAvailable,
     loader: async () =>
-      import('../components/JaegerComponent').then(m =>
-        compatWrapper(<m.JaegerComponent />),
-      ),
+      import('../components/JaegerComponent').then(m => <m.JaegerComponent />),
   },
 });

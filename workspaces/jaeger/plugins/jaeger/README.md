@@ -149,7 +149,7 @@ const app = createApp({
   </tr>
 </table>
 
-## Extensions config
+### Extensions config
 
 Currently, the plugin installs 2 extensions: 1 api (Jaeger) and 1 entity page content (also known as entity page tab), see below examples of how to configure the available extensions.
 
