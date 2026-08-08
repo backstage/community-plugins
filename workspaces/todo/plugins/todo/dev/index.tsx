@@ -17,8 +17,6 @@
 import { Entity, ANNOTATION_LOCATION } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import OnlineIcon from '@material-ui/icons/Cloud';
-import OfflineIcon from '@material-ui/icons/Storage';
 import { EntityTodoContent, todoApiRef, todoPlugin } from '../src';
 
 import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
@@ -73,7 +71,6 @@ createDevApp()
       </TestApiProvider>
     ),
     title: 'Entity Todo Content',
-    icon: OfflineIcon,
   })
   .addPage({
     element: (
@@ -89,6 +86,5 @@ createDevApp()
       </EntityProvider>
     ),
     title: 'Backend Connected',
-    icon: OnlineIcon,
   })
   .render();
