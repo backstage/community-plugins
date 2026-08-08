@@ -1,0 +1,8 @@
+app:
+  title: DevLake Plugin Dev
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
