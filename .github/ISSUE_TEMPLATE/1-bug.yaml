@@ -19,6 +19,7 @@ body:
         - adr
         - agent-forge
         - airbrake
+        - akeyless
         - allure
         - amplication
         - analytics
@@ -66,6 +67,7 @@ body:
         - graphiql
         - graphql-voyager
         - growthbook-flags
+        - healert
         - ilert
         - jaeger
         - jenkins
