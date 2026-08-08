@@ -290,6 +290,7 @@ export interface V2DailyTotal {
   monthly_active_users?: number;
   // (undocumented)
   team_slug: string;
+  total_ai_credits_used?: number;
   // (undocumented)
   user_initiated_interaction_count: number;
   weekly_active_users?: number;
@@ -705,6 +706,7 @@ export interface V2PrMetricsRow {
 
 // @public (undocumented)
 export interface V2UserMetric {
+  ai_credits_used?: number;
   // (undocumented)
   code_acceptance_activity_count: number;
   // (undocumented)
@@ -768,6 +770,7 @@ export interface V2UserMetric {
 
 // @public (undocumented)
 export interface V2UserMetricRow {
+  ai_credits_used?: number;
   // (undocumented)
   code_acceptance_activity_count: number;
   // (undocumented)
