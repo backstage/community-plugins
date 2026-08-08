@@ -1,0 +1,94 @@
+{
+  "name": "@backstage-community/plugin-argo-workflows",
+  "description": "Frontend plugin for Argo Workflows in Backstage",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.tsx",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.tsx"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "argo-workflows",
+    "pluginPackage": "@backstage-community/plugin-argo-workflows",
+    "pluginPackages": [
+      "@backstage-community/plugin-argo-workflows",
+      "@backstage-community/plugin-argo-workflows-backend",
+      "@backstage-community/plugin-argo-workflows-common",
+      "@backstage-community/plugin-argo-workflows-react"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test --passWithNoTests --coverage",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-argo-workflows-common": "workspace:^",
+    "@backstage-community/plugin-argo-workflows-react": "workspace:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": "^4.9.0",
+    "classnames": "^2.5.1",
+    "dagre": "^0.8.5",
+    "luxon": "^3.7.2",
+    "react-stately": "^3.46.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/dagre": "^0.7.52",
+    "@types/luxon": "^3",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/argo-workflows/plugins/argo-workflows"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "argo-workflows"
+  ]
+}
