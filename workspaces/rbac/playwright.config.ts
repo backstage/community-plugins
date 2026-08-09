@@ -15,35 +15,52 @@
  */
 import { defineConfig } from '@playwright/test';
 
-// APP_MODE: 'legacy' (dev/index.tsx) or 'alpha' (dev/alpha/index.tsx)
-const appMode = process.env.APP_MODE || 'legacy';
-const startCommand = appMode === 'legacy' ? 'yarn start' : 'yarn start:alpha';
+// APP_MODE: 'nfs' (dev/index.tsx) or 'legacy' (dev/legacy/index.tsx)
+const appMode = process.env.APP_MODE || 'nfs';
+const frontendStartCommand =
+  appMode === 'legacy' ? 'yarn start:legacy' : 'yarn start';
 
 /**
- * Full-stack Playwright config: starts frontend + backend dev servers from the
- * workspace root (npm workspace pattern).
+ * Full-stack Playwright config: frontend + backend as separate webServers
+ * so Playwright waits for both URLs before tests run.
+ * @see https://playwright.dev/docs/test-webserver
+ *
+ * Locale projects (en/fr/it/ja/de/es) share one in-memory backend; roles are
+ * seeded with a `-${locale}` suffix so projects do not collide. Projects run
+ * serially (workers: 1). Prefer `en` locally when iterating:
+ * yarn playwright test --project=en
  */
 export default defineConfig({
   testDir: './plugins/rbac/tests/',
-  testMatch: '**/rbac-fullstack.spec.ts',
+  testMatch: '**/rbac.spec.ts',
   timeout: 60_000,
+  fullyParallel: false,
+  workers: 1,
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: startCommand,
-          cwd: '.',
-          port: 3000,
-          reuseExistingServer: !process.env.CI,
+          name: 'Frontend',
+          command: frontendStartCommand,
+          cwd: 'plugins/rbac',
+          url: 'http://localhost:3000',
+          // Never reuse — another Backstage app on :3000/:7007 (e.g. quickstart)
+          // lacks this workspace's superUsers and breaks REST seeding with 403.
+          reuseExistingServer: false,
+          timeout: 180_000,
+        },
+        {
+          name: 'Backend',
+          command: 'yarn start',
+          cwd: 'plugins/rbac-backend',
+          url: 'http://localhost:7007/api/auth/.well-known/jwks.json',
+          reuseExistingServer: false,
           timeout: 180_000,
         },
       ],
   retries: process.env.CI ? 2 : 0,
   reporter: [
-    [
-      'html',
-      { open: 'never', outputFolder: `e2e-test-report-fullstack-${appMode}` },
-    ],
+    ['html', { open: 'never', outputFolder: `e2e-test-report-${appMode}` }],
   ],
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',
@@ -51,12 +68,42 @@ export default defineConfig({
     trace: 'on-first-retry',
     video: 'retain-on-failure',
   },
-  outputDir: 'node_modules/.cache/e2e-test-results-fullstack',
+  outputDir: 'node_modules/.cache/e2e-test-results',
   projects: [
     {
       name: 'en',
       use: {
         locale: 'en',
+      },
+    },
+    {
+      name: 'fr',
+      use: {
+        locale: 'fr',
+      },
+    },
+    {
+      name: 'it',
+      use: {
+        locale: 'it',
+      },
+    },
+    {
+      name: 'ja',
+      use: {
+        locale: 'ja',
+      },
+    },
+    {
+      name: 'de',
+      use: {
+        locale: 'de',
+      },
+    },
+    {
+      name: 'es',
+      use: {
+        locale: 'es',
       },
     },
   ],
