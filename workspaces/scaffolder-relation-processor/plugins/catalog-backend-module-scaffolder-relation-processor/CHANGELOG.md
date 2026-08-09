@@ -1,5 +1,21 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.16.0
+
+### Minor Changes
+
+- 1534c83: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 01d115d: Add module wiring and utility unit tests, a local dev harness, and contributor documentation so Backstage dependency bumps are caught by scoped automated tests. Also document the pullRequests.templateUpdate config option in the config schema.
+
+## 2.15.0
+
+### Minor Changes
+
+- 87577ff: Backstage version bump to v1.52.0
+
 ## 2.14.2
 
 ### Patch Changes

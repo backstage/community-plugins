@@ -27,7 +27,7 @@ export const catalogApi = catalogApiMock({
         description:
           'An example component with a Maven Nexus artifact annotation',
         annotations: {
-          'nexus-repository-manager/maven.group-id': 'org.apache.logging.log4j',
+          'nexus-repository-manager/maven.group-id': 'com.example',
         },
       },
       spec: {

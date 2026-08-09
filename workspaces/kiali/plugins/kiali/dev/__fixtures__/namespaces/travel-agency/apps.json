@@ -12,7 +12,7 @@
       "name": "insurances",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "insurances",
         "version": "v1"
@@ -39,7 +39,7 @@
       "name": "mysqldb",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "mysqldb",
         "version": "v1"
@@ -66,7 +66,7 @@
       "name": "travels",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "travels",
         "version": "v1"
@@ -93,7 +93,7 @@
       "name": "cars",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "cars",
         "version": "v1"
@@ -120,7 +120,7 @@
       "name": "discounts",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "discounts",
         "version": "v1"
@@ -147,7 +147,7 @@
       "name": "flights",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "flights",
         "version": "v1"
@@ -174,7 +174,7 @@
       "name": "hotels",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "hotels",
         "version": "v1"

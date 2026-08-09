@@ -1,5 +1,63 @@
 # @backstage-community/plugin-quay
 
+## 1.37.1
+
+### Patch Changes
+
+- f3536fd: Fixed nested interactive controls accessibility violation in tag and security scan tables by disabling column dragging
+
+## 1.37.0
+
+### Minor Changes
+
+- 07a0064: Migrate Quay plugin to the new frontend system (NFS). Legacy (OFS) exports remain available from the main entry point.
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- dc80f66: Updated dependency `start-server-and-test` to `3.0.11`.
+
+## 1.36.0
+
+### Minor Changes
+
+- 03eff44: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [03eff44]
+  - @backstage-community/plugin-quay-common@1.22.0
+
+## 1.35.0
+
+### Minor Changes
+
+- c58c3c0: Migrated the Quay plugin and dev app from Material UI to Backstage UI (BUI). Replaced `@material-ui/*` with `@backstage/ui` components and `@remixicon/react` icons. Removed direct MUI dependencies; no breaking API changes to plugin exports.
+
+  **Note for consuming apps:** import `@backstage/ui/css/styles.css` in your app entry point if it is not already included.
+
+## 1.34.0
+
+### Minor Changes
+
+- d4e8668: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [d4e8668]
+  - @backstage-community/plugin-quay-common@1.21.0
+
+## 1.33.0
+
+### Minor Changes
+
+- 07b8314: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [07b8314]
+  - @backstage-community/plugin-quay-common@1.20.0
+
 ## 1.32.1
 
 ### Patch Changes

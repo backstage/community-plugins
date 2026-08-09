@@ -21,7 +21,7 @@ import {
   CircleNotchIcon,
 } from '@patternfly/react-icons';
 
-import useIconStyles from '../../../../../hooks/useIconStyles';
+import { iconStyle, SpinWrapper } from '../../../../../hooks/useIconStyles';
 import { ReplicaSet } from '../../../../../types/resources';
 
 interface RevisionStatusProps {
@@ -29,31 +29,21 @@ interface RevisionStatusProps {
 }
 
 const RevisionStatus: FC<RevisionStatusProps> = ({ revision }) => {
-  const classes = useIconStyles();
-
   const replicas = revision?.status?.replicas || 0;
   const availableReplicas = revision?.status?.availableReplicas || 0;
 
   if (!!revision && replicas === 0) {
-    return (
-      <ArrowCircleDownIcon
-        className={classes.icon}
-        style={{ fill: '#fd8a5f' }}
-      />
-    );
+    return <ArrowCircleDownIcon style={{ ...iconStyle, fill: '#fd8a5f' }} />;
   }
   if (!!revision && availableReplicas < replicas) {
     return (
-      <CircleNotchIcon
-        className={`${classes.icon} ${classes['icon-spin']}`}
-        style={{ fill: '#0DADEA' }}
-      />
+      <SpinWrapper>
+        <CircleNotchIcon style={{ ...iconStyle, fill: '#0DADEA' }} />
+      </SpinWrapper>
     );
   }
   if (!!revision && availableReplicas === replicas) {
-    return (
-      <CheckCircleIcon className={classes.icon} style={{ fill: 'green' }} />
-    );
+    return <CheckCircleIcon style={{ ...iconStyle, fill: 'green' }} />;
   }
   return null;
 };

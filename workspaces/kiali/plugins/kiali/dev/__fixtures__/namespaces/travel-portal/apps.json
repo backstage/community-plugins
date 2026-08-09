@@ -12,7 +12,7 @@
       "name": "travels",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "travels",
         "version": "v1"
@@ -43,7 +43,7 @@
       "name": "viaggi",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "viaggi",
         "version": "v1"
@@ -74,7 +74,7 @@
       "name": "voyages",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "voyages",
         "version": "v1"

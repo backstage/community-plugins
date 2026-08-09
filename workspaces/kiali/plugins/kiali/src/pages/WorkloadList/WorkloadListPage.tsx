@@ -81,7 +81,7 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
         appLabel: deployment.appLabel,
         versionLabel: deployment.versionLabel,
         istioSidecar: deployment.istioSidecar,
-        istioAmbient: deployment.istioAmbient,
+        isAmbient: deployment.isAmbient,
         additionalDetailSample: deployment.additionalDetailSample,
         health: WorkloadHealth.fromJson(
           deployment.namespace,
@@ -90,7 +90,7 @@ export const WorkloadListPage = (props: { view?: string; entity?: Entity }) => {
           {
             rateInterval: duration,
             hasSidecar: deployment.istioSidecar,
-            hasAmbient: deployment.istioAmbient,
+            hasAmbient: deployment.isAmbient,
           },
           serverConfig,
         ),

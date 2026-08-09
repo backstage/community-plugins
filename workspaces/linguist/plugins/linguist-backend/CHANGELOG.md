@@ -1,5 +1,50 @@
 # @backstage-community/plugin-linguist-backend
 
+## 0.30.0
+
+### Minor Changes
+
+- 0deb115: Added Actions Registry actions (`get-entity-languages`, `process-entities`) with permission-gated access via new `linguist.entities.read` and `linguist.entities.process` permissions.
+
+### Patch Changes
+
+- befcf3a: Add `BearerAuth` security scheme to OpenAPI specification to reflect existing runtime auth behavior
+- Updated dependencies [0deb115]
+  - @backstage-community/plugin-linguist-common@0.23.0
+
+## 0.29.0
+
+### Minor Changes
+
+- bd381be: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- Updated dependencies [bd381be]
+  - @backstage-community/plugin-linguist-common@0.22.0
+
+## 0.28.0
+
+### Minor Changes
+
+- aa4389b: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [aa4389b]
+  - @backstage-community/plugin-linguist-common@0.21.0
+
+## 0.27.0
+
+### Minor Changes
+
+- fc48029: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [fc48029]
+  - @backstage-community/plugin-linguist-common@0.20.0
+
 ## 0.26.0
 
 ### Minor Changes

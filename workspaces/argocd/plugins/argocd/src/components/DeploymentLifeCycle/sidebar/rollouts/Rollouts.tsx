@@ -15,23 +15,14 @@
  */
 import type { FC } from 'react';
 
-import { Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 import Rollout from './Rollout';
 import { useArgoResources } from './RolloutContext';
 
-const useRolloutStyles = makeStyles((theme: Theme) => ({
-  rolloutContainer: {
-    marginBottom: theme.spacing(1),
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-  },
-}));
-
 const Rollouts: FC = () => {
   const { rollouts } = useArgoResources();
-  const rolloutClasses = useRolloutStyles();
 
   if (rollouts.length === 0) {
     return null;
@@ -40,7 +31,7 @@ const Rollouts: FC = () => {
   return (
     <Grid
       container
-      className={rolloutClasses.rolloutContainer}
+      sx={{ mb: 1, height: '100%', display: 'flex', flexDirection: 'row' }}
       data-testid="rollouts-list"
     >
       <Grid item xs={12}>

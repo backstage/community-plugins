@@ -14,7 +14,7 @@
       "createdAt": "2024-01-31T14:07:06Z",
       "resourceVersion": "81463",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "control",

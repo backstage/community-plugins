@@ -52,10 +52,13 @@ export const AddedMembersTable = ({
           {t('common.selectedUsersAndGroupsAppearHere')}
         </Box>
       }
-      options={{ emptyRowsWhenPaging: false }}
+      options={{ emptyRowsWhenPaging: false, draggable: false }}
       localization={{
         toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-        pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+        pagination: {
+          labelRowsSelect: t('table.labelRowsSelect'),
+          labelDisplayedRows: t('table.labelDisplayedRows'),
+        },
       }}
     />
   );

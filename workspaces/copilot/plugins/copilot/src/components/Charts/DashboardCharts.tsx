@@ -46,17 +46,16 @@ export const DashboardCharts = ({
           {
             id: 'days',
             data: metrics.map(x => new Date(x.day)),
+            position: 'bottom',
             scaleType: 'point',
             valueFormatter: date =>
               DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+            tickLabelStyle: {
+              angle: 30,
+              textAnchor: 'start',
+            },
           },
         ]}
-        bottomAxis={{
-          tickLabelStyle: {
-            angle: 30,
-            textAnchor: 'start',
-          },
-        }}
         series={createAcceptanceRateSeries(
           metrics,
           metricsByTeam,
@@ -72,17 +71,16 @@ export const DashboardCharts = ({
           {
             id: 'days',
             data: metrics.map(x => new Date(x.day)),
+            position: 'bottom',
             scaleType: 'point',
             valueFormatter: date =>
               DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+            tickLabelStyle: {
+              angle: 30,
+              textAnchor: 'start',
+            },
           },
         ]}
-        bottomAxis={{
-          tickLabelStyle: {
-            angle: 30,
-            textAnchor: 'start',
-          },
-        }}
         series={createTotalSuggestionsAndAcceptancesSeries(
           metrics,
           metricsByTeam,
@@ -98,17 +96,16 @@ export const DashboardCharts = ({
           {
             id: 'days',
             data: metrics.map(x => new Date(x.day)),
+            position: 'bottom',
             scaleType: 'point',
             valueFormatter: date =>
               DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+            tickLabelStyle: {
+              angle: 30,
+              textAnchor: 'start',
+            },
           },
         ]}
-        bottomAxis={{
-          tickLabelStyle: {
-            angle: 30,
-            textAnchor: 'start',
-          },
-        }}
         series={createTotalLinesSuggestedAndAcceptedSeries(
           metrics,
           metricsByTeam,
@@ -123,17 +120,16 @@ export const DashboardCharts = ({
         xAxis={[
           {
             data: metrics.map(x => new Date(x.day)),
+            position: 'bottom',
             scaleType: 'band',
             valueFormatter: date =>
               DateTime.fromJSDate(date).toFormat('dd-MM-yy'),
+            tickLabelStyle: {
+              angle: 30,
+              textAnchor: 'start',
+            },
           },
         ]}
-        bottomAxis={{
-          tickLabelStyle: {
-            angle: 30,
-            textAnchor: 'start',
-          },
-        }}
         series={createTotalActiveUsersSeries(
           metrics,
           metricsByTeam,

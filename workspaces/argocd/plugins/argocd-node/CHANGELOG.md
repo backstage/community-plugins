@@ -1,5 +1,17 @@
 # @backstage-community/plugin-argocd-node
 
+## 1.2.0
+
+### Minor Changes
+
+- ed7cb18: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- 1cc5891: Fixed handling of Argo CD instance URLs configured with a trailing slash; API requests now target paths such as `/api/v1/session` correctly instead of producing invalid double-slash URLs.
+- Updated dependencies [ed7cb18]
+  - @backstage-community/plugin-argocd-common@1.16.0
+
 ## 1.1.0
 
 ### Minor Changes

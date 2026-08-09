@@ -22,12 +22,25 @@
 }
 
 .bs-tkn-pipeline-visualization-step-list__step {
+  align-items: center;
   display: flex;
   margin-bottom: var(--pf-t--global--spacer--xs);
 }
 
 .bs-tkn-pipeline-visualization-step-list__step--task-run {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1rem 1fr auto;
   margin-bottom: var(--pf-t--global--spacer--sm);
+}
+
+.bs-tkn-pipeline-visualization-step-list__step--task-run
+  .bs-tkn-pipeline-visualization-step-list__name,
+.bs-tkn-pipeline-visualization-step-list__step--task-run
+  .bs-tkn-pipeline-visualization-step-list__duration {
+  line-height: 1rem;
+  padding-left: 0;
 }
 
 .bs-tkn-pipeline-visualization-step-list__step:last-child {
@@ -39,7 +52,11 @@
 }
 
 .bs-tkn-pipeline-visualization-step-list__icon {
-  flex: 0 0 18px;
+  align-items: center;
+  display: flex;
+  height: 1rem;
+  justify-content: center;
+  width: 1rem;
 }
 
 .bs-tkn-pipeline-visualization-step-list__icon-backdrop {
@@ -48,6 +65,8 @@
 
 .bs-tkn-pipeline-visualization-step-list__name {
   flex: 1 1 auto;
+  line-height: 1rem;
+  min-width: 0;
   overflow: hidden;
   padding-left: var(--pf-t--global--spacer--sm);
   text-align: left;
@@ -62,6 +81,8 @@
 
 .bs-tkn-pipeline-visualization-step-list__duration {
   flex: 0 0 auto;
+  line-height: 1rem;
   padding-left: var(--pf-t--global--spacer--sm);
   text-align: right;
+  white-space: nowrap;
 }

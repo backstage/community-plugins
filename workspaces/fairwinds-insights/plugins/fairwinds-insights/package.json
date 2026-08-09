@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-fairwinds-insights",
-  "version": "0.2.0",
+  "version": "0.5.1",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "fairwinds-insights",
@@ -65,7 +65,8 @@
     "@mui/styles": "5.18.0",
     "@mui/utils": "5.17.1",
     "@mui/x-charts": "7.29.1",
-    "react-use": "^17.6.0"
+    "react-use": "^17.6.0",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/app-defaults": "backstage:^",

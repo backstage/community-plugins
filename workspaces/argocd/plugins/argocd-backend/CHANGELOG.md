@@ -1,5 +1,20 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.5.0
+
+### Minor Changes
+
+- ed7cb18: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- d2cf455: Add example templates for ArgoCD plugin actions
+- 53f7107: Registered actions for ArgoCD application management: `argocd:find-applications`, `argocd:get-application`, `argocd:list-applications`, `argocd:get-revision-details`
+- Updated dependencies [1cc5891]
+- Updated dependencies [ed7cb18]
+  - @backstage-community/plugin-argocd-node@1.2.0
+  - @backstage-community/plugin-argocd-common@1.16.0
+
 ## 1.4.0
 
 ### Minor Changes

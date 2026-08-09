@@ -111,7 +111,7 @@
       "createdAt": "2024-02-26T09:50:00Z",
       "resourceVersion": "727",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "jaeger",
@@ -156,7 +156,7 @@
       "namespace": "",
       "istioSidecar": false,
       "cluster": "",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,

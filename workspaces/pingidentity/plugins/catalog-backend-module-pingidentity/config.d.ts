@@ -21,7 +21,8 @@ export interface Config {
       pingIdentityOrg?: {
         [key: string]: {
           /**
-           * pingIdentityOrgConfig
+           * PingOne organization data ingestion configuration.
+           * Ingests users and groups from Ping Identity's cloud offering (PingOne).
            */
           /**
            * The PingOne API path

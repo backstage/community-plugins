@@ -29,6 +29,8 @@ const rbacTranslationJa = createTranslationMessages({
     'page.editRole': 'ロールの編集',
     'table.searchPlaceholder': 'フィルター',
     'table.labelRowsSelect': '行',
+    'table.labelDisplayedRows': '{from}-{to} / {count}',
+    'table.labelRowsPerPage': 'ページあたりの行数:',
     'table.title': 'すべてのロール',
     'table.titleWithCount': 'すべてのロール ({{count}})',
     'table.headers.name': '名前',
@@ -217,6 +219,7 @@ const rbacTranslationJa = createTranslationMessages({
     'common.configureAccessFor': '以下に対するアクセス権を設定',
     'common.defaultResourceTypeVisible':
       'デフォルトでは、選択したリソースタイプが、追加されたすべてのユーザーに表示されます。特定のプラグインルールに対する権限を制限または付与する場合は、そのルールを選択してパラメーターを追加してください。',
+    'common.tableAction': 'テーブルアクション',
   },
 });
 

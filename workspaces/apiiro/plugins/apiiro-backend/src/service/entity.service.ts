@@ -20,6 +20,7 @@ import {
   LoggerService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
+import { Entity } from '@backstage/catalog-model';
 
 export type EntityServiceDependencies = {
   httpAuth: HttpAuthService;
@@ -48,7 +49,10 @@ export class EntityService {
   /**
    * Get all entities from the catalog
    */
-  async getAllEntities(req: Request, kind: string) {
+  async getAllEntities(
+    req: Request,
+    kind: string,
+  ): Promise<{ entities: Entity[]; token: string }> {
     const { token } = await this.getCredentialsAndToken(req);
 
     const entitiesResponse = await this.deps.catalogClient.getEntities(
@@ -68,7 +72,10 @@ export class EntityService {
   /**
    * Get an entity from the catalog
    */
-  async getEntityByRef(req: Request, entityRef: string) {
+  async getEntityByRef(
+    req: Request,
+    entityRef: string,
+  ): Promise<{ entityResponse: Entity | undefined; token: string }> {
     const { token } = await this.getCredentialsAndToken(req);
 
     const entityResponse = await this.deps.catalogClient.getEntityByRef(

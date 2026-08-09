@@ -29,6 +29,8 @@ const rbacTranslationEs = createTranslationMessages({
     'page.editRole': 'Modificar rol',
     'table.searchPlaceholder': 'Filtrar',
     'table.labelRowsSelect': 'Filas',
+    'table.labelDisplayedRows': '{from}-{to} de {count}',
+    'table.labelRowsPerPage': 'Filas por página:',
     'table.title': 'Todos los roles',
     'table.titleWithCount': 'Todos los roles ({{count}})',
     'table.headers.name': 'Nombre',
@@ -229,6 +231,7 @@ const rbacTranslationEs = createTranslationMessages({
     'common.configureAccessFor': 'Configurar acceso para',
     'common.defaultResourceTypeVisible':
       'De forma predeterminada, todos los usuarios agregados pueden visualizar el tipo de recurso seleccionado. Si desea restringir u otorgar permiso a reglas de complementos específicas, selecciónelas y agregue los parámetros.',
+    'common.tableAction': 'Acción de tabla',
   },
 });
 

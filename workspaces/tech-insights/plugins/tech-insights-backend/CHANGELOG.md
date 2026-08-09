@@ -1,5 +1,39 @@
 # @backstage-community/plugin-tech-insights-backend
 
+## 3.0.1
+
+### Major Changes
+
+- 1f64cac: No breaking changes. This is a release to supersede the broken 3.0.0 version which crashes on startup with `TypeError: permissions is not iterable`.
+
+## 2.7.0
+
+### Minor Changes
+
+- b8b1d30: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [b8b1d30]
+  - @backstage-community/plugin-tech-insights-common@0.10.0
+  - @backstage-community/plugin-tech-insights-node@2.8.0
+
+## 2.6.0
+
+### Minor Changes
+
+- 756e05a: - Backstage version bump to v1.50.2.
+  - `techInsightsNavItem` has been removed as it's no longer needed.
+  - `EntityPredicate` has been replaced with `FilterPredicate` from `@backstage/filter-predicates`.
+
+### Patch Changes
+
+- acef8bb: Remove unused uuid (and @types/uuid) dependency
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+- Updated dependencies [756e05a]
+  - @backstage-community/plugin-tech-insights-common@0.9.0
+  - @backstage-community/plugin-tech-insights-node@2.7.0
+
 ## 2.5.2
 
 ### Patch Changes

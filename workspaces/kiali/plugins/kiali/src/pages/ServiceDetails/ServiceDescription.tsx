@@ -99,7 +99,7 @@ export const ServiceDescription: React.FC<ServiceInfoDescriptionProps> = (
           workloads.push({
             workloadName: wk.name,
             istioSidecar: wk.istioSidecar,
-            istioAmbient: wk.istioAmbient,
+            isAmbient: wk.isAmbient,
             serviceAccountNames: wk.serviceAccountNames,
             labels: wk.labels ?? {},
           });

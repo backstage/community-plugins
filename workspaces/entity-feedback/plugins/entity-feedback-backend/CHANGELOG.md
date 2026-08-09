@@ -1,5 +1,44 @@
 # @backstage-community/plugin-entity-feedback-backend
 
+## 0.23.1
+
+### Patch Changes
+
+- 0710885: Fixed a bug where casting a vote and quickly changing it (e.g. clicking Like then immediately clicking Dislike) could double-count both ratings instead of replacing the earlier one with the later one, when both writes landed within the same second.
+
+## 0.23.0
+
+### Minor Changes
+
+- b6d88b4: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- Updated dependencies [b6d88b4]
+  - @backstage-community/plugin-entity-feedback-common@0.19.0
+
+## 0.22.0
+
+### Minor Changes
+
+- 52e455f: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [52e455f]
+  - @backstage-community/plugin-entity-feedback-common@0.18.0
+
+## 0.21.0
+
+### Minor Changes
+
+- c946411: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [c946411]
+  - @backstage-community/plugin-entity-feedback-common@0.17.0
+
 ## 0.20.1
 
 ### Patch Changes

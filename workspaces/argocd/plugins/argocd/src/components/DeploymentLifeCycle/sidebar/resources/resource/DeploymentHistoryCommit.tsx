@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 import type { FC } from 'react';
-import { Card, CardContent, Typography, Link } from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import type { SxProps, Theme } from '@mui/material/styles';
 import moment from 'moment';
-import { ClassNameMap } from '@material-ui/styles/withStyles';
 import {
   Application,
   History,
@@ -25,7 +28,7 @@ import { useTranslation } from '../../../../../hooks/useTranslation';
 
 type DeploymentHistoryCommitProps = {
   deploymentHistory: History;
-  styleClasses: ClassNameMap<'commitMessage'>;
+  styleClasses: Record<'commitMessage', SxProps<Theme>>;
   application: Application;
   commitMessage: string;
   commitUrl: string | null;
@@ -56,7 +59,7 @@ export const DeploymentHistoryCommit: FC<DeploymentHistoryCommitProps> = ({
         <Typography
           variant="body2"
           color="textSecondary"
-          className={styleClasses.commitMessage}
+          sx={styleClasses.commitMessage}
         >
           {commitMessage}{' '}
           <Link

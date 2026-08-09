@@ -71,7 +71,7 @@
       "createdAt": "2024-02-27T13:11:51Z",
       "resourceVersion": "53989",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "travels",
@@ -120,7 +120,7 @@
       "namespace": "",
       "istioSidecar": false,
       "cluster": "",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": false,
       "additionalDetailSample": null,
       "annotations": null,

@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  FormControl,
-  IconButton,
-  Input,
-  InputAdornment,
-  makeStyles,
-} from '@material-ui/core';
-import Clear from '@material-ui/icons/Clear';
-import Search from '@material-ui/icons/Search';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import Clear from '@mui/icons-material/Clear';
+import Search from '@mui/icons-material/Search';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
 
@@ -30,22 +27,14 @@ type PipelineRunListSearchBarProps = {
   onChange: (filter: string) => void;
 };
 
-const useStyles = makeStyles({
-  formControl: {
-    alignItems: 'flex-end',
-    flexGrow: 1,
-  },
-});
-
 export const PipelineRunListSearchBar = ({
   value,
   onChange,
 }: PipelineRunListSearchBarProps) => {
-  const classes = useStyles();
   const { t } = useTranslationRef(tektonTranslationRef);
 
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl sx={{ alignItems: 'flex-end', flexGrow: 1 }}>
       <Input
         aria-label="search"
         placeholder={t('pipelineRunList.searchBarPlaceholder')}

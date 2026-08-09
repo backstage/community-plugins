@@ -18,23 +18,25 @@ import { findMetricsTypeFromPath } from './index';
 
 describe('findMetricsTypeFromPath', () => {
   it('should return enterprise metrics type for enterprise path', () => {
-    expect(findMetricsTypeFromPath('/copilot/enterprise')).toBe('enterprise');
-    expect(findMetricsTypeFromPath('/copilot/enterprise/dashboard')).toBe(
+    expect(findMetricsTypeFromPath('/copilot/legacy/enterprise')).toBe(
       'enterprise',
     );
-    expect(findMetricsTypeFromPath('/suburl/copilot/enterprise')).toBe(
+    expect(
+      findMetricsTypeFromPath('/copilot/legacy/enterprise/dashboard'),
+    ).toBe('enterprise');
+    expect(findMetricsTypeFromPath('/suburl/copilot/legacy/enterprise')).toBe(
       'enterprise',
     );
   });
 
   it('should return organization metrics type for organization path', () => {
-    expect(findMetricsTypeFromPath('/copilot/organization')).toBe(
+    expect(findMetricsTypeFromPath('/copilot/legacy/organization')).toBe(
       'organization',
     );
-    expect(findMetricsTypeFromPath('/copilot/organization/stats')).toBe(
+    expect(findMetricsTypeFromPath('/copilot/legacy/organization/stats')).toBe(
       'organization',
     );
-    expect(findMetricsTypeFromPath('/suburl/copilot/organization')).toBe(
+    expect(findMetricsTypeFromPath('/suburl/copilot/legacy/organization')).toBe(
       'organization',
     );
   });

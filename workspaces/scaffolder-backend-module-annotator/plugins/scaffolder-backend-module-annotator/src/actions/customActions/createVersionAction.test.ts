@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,13 @@ import { createMockDirectory } from '@backstage/backend-test-utils';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
 import * as fs from 'fs-extra';
+import * as path from 'path';
 import * as yaml from 'yaml';
 
 import { createVersionAction } from './createVersionAction';
 
-const catalogEntity =
-  'plugins/scaffolder-backend-module-annotator/src/actions/annotator/mocks';
-
 const catalogEntityContent = fs.readFileSync(
-  resolveSafeChildPath(catalogEntity, './catalog-info.yaml'),
+  path.join(__dirname, '../annotator/mocks/catalog-info.yaml'),
   'utf8',
 );
 

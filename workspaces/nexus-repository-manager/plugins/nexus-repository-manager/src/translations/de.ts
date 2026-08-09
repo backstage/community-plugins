@@ -25,7 +25,6 @@ const nexusRepositoryManagerTranslationDe = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
   messages: {
     'table.title': 'Nexus Repository Manager: {{title}}',
-    'table.searchPlaceholder': 'Filter',
     'table.labelRowsSelect': 'Zeilen',
     'table.columns.version': 'Version',
     'table.columns.artifact': 'Artefakt',
@@ -34,9 +33,10 @@ const nexusRepositoryManagerTranslationDe = createTranslationMessages({
     'table.columns.modified': 'Geändert',
     'table.columns.size': 'Größe',
     'table.emptyValue': 'Nicht zutreffend',
-    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt.',
-    'table.emptyContent.linkText': 'Erfahren Sie, wie man Daten hinzufügt.',
+    'table.emptyContent.message': 'Es wurden noch keine Daten hinzugefügt,',
     'entityContent.title': 'Artefakte erstellen',
+    'table.searchPlaceholder': 'Filter',
+    'table.emptyContent.linkText': 'erfahren Sie, wie man Daten hinzufügt.',
   },
 });
 

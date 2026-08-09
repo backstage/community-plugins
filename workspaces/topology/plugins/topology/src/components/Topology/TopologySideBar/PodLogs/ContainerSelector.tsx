@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactNode } from 'react';
+import type { MouseEvent, Ref } from 'react';
+
+import { useState } from 'react';
 
 import { V1Container } from '@kubernetes/client-node';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import {
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectList,
+  SelectOption,
+} from '@patternfly/react-core';
 
-import ResourceName from '../../../common/ResourceName';
+import styles from './ContainerSelector.module.css';
 
 type ContainerSelectorType = {
   containersList: V1Container[];
   containerSelected: string;
-  onContainerChange: (event: SelectChangeEvent, child: ReactNode) => void;
+  onContainerChange: (containerName: string) => void;
 };
 
 export const ContainerSelector = ({
@@ -32,21 +39,48 @@ export const ContainerSelector = ({
   containerSelected,
   onContainerChange,
 }: ContainerSelectorType) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onSelect = (
+    _event: MouseEvent | undefined,
+    selection: string | number | undefined,
+  ) => {
+    if (typeof selection === 'string') {
+      onContainerChange(selection);
+    }
+    setIsOpen(false);
+  };
+
   return (
-    <Select
-      onChange={onContainerChange}
-      label="Container"
-      style={{ marginLeft: '20px' }}
-      value={containerSelected}
-      data-testid="container-select"
-    >
-      {containersList.map(container => {
-        return (
-          <MenuItem value={container.name} key={container.name}>
-            <ResourceName name={container.name} kind="Container" />
-          </MenuItem>
-        );
-      })}
-    </Select>
+    <div className={styles.containerSelector} data-testid="container-select">
+      <Select
+        aria-label="Container"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        onSelect={onSelect}
+        toggle={(toggleRef: Ref<MenuToggleElement>) => (
+          <MenuToggle
+            ref={toggleRef}
+            isExpanded={isOpen}
+            onClick={() => setIsOpen(!isOpen)}
+            className={styles.containerToggle}
+          >
+            {containerSelected || 'Container'}
+          </MenuToggle>
+        )}
+      >
+        <SelectList>
+          {containersList.map(container => (
+            <SelectOption
+              key={container.name}
+              value={container.name}
+              isSelected={container.name === containerSelected}
+            >
+              {container.name}
+            </SelectOption>
+          ))}
+        </SelectList>
+      </Select>
+    </div>
   );
 };

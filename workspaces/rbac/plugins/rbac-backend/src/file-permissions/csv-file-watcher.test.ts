@@ -194,6 +194,28 @@ describe('CSVFileWatcher', () => {
   }
 
   describe('parse', () => {
+    test('should skip malformed CSV lines and log a warning', () => {
+      const malformedCsvPath = resolve(
+        __dirname,
+        '../../__fixtures__/data/invalid-csv/malformed-unquoted-quote.csv',
+      );
+      const csvFileWatcher = createCSVFileWatcher(malformedCsvPath);
+      const content = csvFileWatcher.parse();
+      expect(content).toStrictEqual([
+        ['g', 'user:default/alice', 'role:default/csv-malformed-test'],
+        [
+          'p',
+          'role:default/csv-malformed-test',
+          'catalog-entity',
+          'read',
+          'allow',
+        ],
+      ]);
+      expect(mockLoggerService.warn).toHaveBeenCalledWith(
+        expect.stringMatching(/Skipping invalid CSV policy line 2 in/),
+      );
+    });
+
     test('should parse users and groups in lowercase', async () => {
       csvFileName = resolve(
         __dirname,

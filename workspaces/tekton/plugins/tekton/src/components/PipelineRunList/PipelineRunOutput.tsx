@@ -28,7 +28,9 @@ import {
   TaskRunKind as TaskRunV1Kind,
   usePipelineRunOutput,
 } from '@aonic-ui/pipelines';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 import {
   PipelineRunKind,
@@ -126,16 +128,28 @@ const PipelineRunOutput: FC<PipelineRunOutputProps> = ({
   };
 
   return (
-    <Grid>
-      <div style={{ height: '80vh' }}>
-        <Paper
-          elevation={1}
-          style={{ height: '100%', width: '100%', minHeight: '30rem' }}
-        >
-          {renderOutput()}
-        </Paper>
-      </div>
-    </Grid>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        minHeight: 0,
+        minWidth: 0,
+      }}
+    >
+      <Paper
+        elevation={1}
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+          overflow: 'auto',
+          width: '100%',
+        }}
+      >
+        {renderOutput()}
+      </Paper>
+    </Box>
   );
 };
 export default PipelineRunOutput;

@@ -15,8 +15,8 @@
  */
 import { DismissableBanner, LogViewer } from '@backstage/core-components';
 import { V1Container, V1Pod } from '@kubernetes/client-node';
-import { Paper } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import Paper from '@mui/material/Paper';
+import Skeleton from '@mui/material/Skeleton';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { usePodLogsOfPipelineRun } from '../../hooks/usePodLogsOfPipelineRun';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -64,7 +64,7 @@ const PipelineRunLogViewer = ({ pod }: PipelineRunLogViewerProps) => {
         {loading && (
           <Skeleton
             data-testid="logs-skeleton"
-            variant="rect"
+            variant="rectangular"
             width="100%"
             height="100%"
           />

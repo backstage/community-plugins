@@ -6,7 +6,7 @@
   "resourceVersion": "1113",
   "istioInjectionAnnotation": false,
   "istioSidecar": false,
-  "istioAmbient": false,
+  "isAmbient": false,
   "additionalDetailSample": null,
   "labels": {
     "app": "prometheus",
@@ -83,7 +83,7 @@
       "namespace": "istio-system",
       "istioSidecar": true,
       "cluster": "Kubernetes",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": true,
       "additionalDetailSample": null,
       "annotations": null,

@@ -29,13 +29,12 @@ From your Backstage root directory, run the following commands:
 
 ```bash
 yarn --cwd packages/app add @backstage-community/plugin-mend
-yarn --cwd packages/backend add @backstage-community/plugin-mend-backend @backstage-community/plugin-catalog-backend-module-mend-entity-processor
 ```
 
 ### Dependencies
 
 > [!IMPORTANT]
-> Please note that the frontend plugin will not function without the backend plugin.
+> Please note that the frontend plugin will not function without the [backend plugin](../mend-backend/README.md).
 
 ## Getting Started
 
@@ -180,12 +179,24 @@ For detailed installation instructions, refer to the [Portal documentation](http
 
 ### Installation Steps
 
-1. **Navigate** to the _Plugins_ section
-2. Click on the **Mend Plugin** - this will redirect you to the Mend configuration page
-3. Enter your **Mend activation key** in the `activationKey` configuration field
-4. **(Optional)** Change **Cache Refresh** value in minutes to change the refresh cycle. Default: 240 minutes (4 hours)
-5. **(Optional)** Configure the **Permission Control** section as needed to filter Mend projects using ids
-6. Save your configuration by clicking the **Save** button
-7. **Start** the plugin and wait for the confirmation message indicating successful installation
+1. **Navigate** to the _Plugins_ section.
+2. Click on the **Mend Plugin** - this will redirect you to the Mend configuration page.
+3. Enter your **Mend activation key** in the `activationKey` configuration field.
+4. **(Optional)** Change **Cache Refresh** value in minutes to change the refresh cycle. Default: 240 minutes (4 hours).
+5. **(Optional)** Configure the **Permission Control** section as needed to filter Mend projects using ids.
+6. Save your configuration by clicking the **Save** button.
+7. **Start** the plugin and wait for the confirmation message indicating successful installation.
+8. To start the Catalog backend module (Mend Entity Processor), navigate to the _Plugins_ section.
+9. Select the **Catalog Plugin** to open the Catalog configuration page.
+10. Click the **Modules** tab.
+11. Search for the `@backstage-community/plugin-catalog-backend-module-mend-entity-processor` card and select **Manage module**.
+12. This plugin does not require any additional configuration. To enable it, click the **Start** button.
+13. A pulsing message saying _Applying new configuration…_ will appear in the top-right corner while the settings are being saved. Once complete, the message will update to _New configuration applied successfully._ Click **Reload** to apply the updated configuration.
+14. The Mend Plugin with the Catalog backend module (Mend Entity Processor) is now installed and running successfully.
 
 Once completed, you will be able to see the Mend plugin on the sidebar navigation.
+
+## Links
+
+- [Backend Plugin Documentation](../mend-backend/README.md)
+- [Catalog Backend Module Mend Entity Processor Documentation](../catalog-backend-module-mend-entity-processor/README.md)

@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 import type { ChangeEvent, FC } from 'react';
-import {
-  createStyles,
-  InputAdornment,
-  makeStyles,
-  TextField,
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import ClearIcon from '@material-ui/icons/Clear';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useTranslation } from '../../../../hooks/useTranslation';
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    searchInput: {
-      border: `1px solid ${theme.palette.grey.A100}`,
-      marginLeft: theme.spacing(1.875),
-      borderRadius: theme.spacing(0.5),
-    },
-  }),
-);
 
 interface ResourcesSearchBarProps {
   value: string;
@@ -45,7 +31,6 @@ export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
   onChange,
   onSearchClear,
 }) => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   return (
@@ -57,7 +42,11 @@ export const ResourcesSearchBar: FC<ResourcesSearchBarProps> = ({
       )}
       value={value}
       onChange={onChange}
-      className={classes.searchInput}
+      sx={theme => ({
+        border: `1px solid ${theme.palette.grey.A100}`,
+        ml: 1.875,
+        borderRadius: theme.spacing(0.5),
+      })}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

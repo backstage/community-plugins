@@ -23,7 +23,9 @@ export interface AdrApi {
 }
 
 // @public
-export const adrApiRef: ApiRef<AdrApi>;
+export const adrApiRef: ApiRef<AdrApi, 'plugin.adr.api'> & {
+  readonly $$type: '@backstage/ApiRef';
+};
 
 // @public
 export class AdrClient implements AdrApi {

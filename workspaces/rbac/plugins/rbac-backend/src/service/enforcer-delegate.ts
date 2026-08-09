@@ -69,6 +69,7 @@ export class EnforcerDelegate implements RoleEventEmitter<RoleEvents> {
           severityLevel: 'medium',
         });
         await auditorEvent.fail({ error });
+        throw error;
       } finally {
         this.loadPolicyPromise = null;
       }

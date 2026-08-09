@@ -77,7 +77,7 @@ test.describe('ArgoCD plugin', () => {
       /* eslint-disable-next-line  no-loop-func */
       test(`Verify ${app.metadata.name} side bar`, async () => {
         await argocdPage.getByTestId(`${app.metadata.name}-card`).click();
-        const sideBar = argocdPage.locator(`.MuiDrawer-paper`);
+        const sideBar = argocdPage.getByTestId(`${app.metadata.name}-sidebar`);
         await expect(sideBar).toBeVisible();
         await verifyAppSidebar(app, sideBar, index, translations);
         await sideBar

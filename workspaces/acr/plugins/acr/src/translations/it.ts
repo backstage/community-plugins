@@ -24,13 +24,13 @@ import { acrTranslationRef } from './ref';
 const acrTranslationIt = createTranslationMessages({
   ref: acrTranslationRef,
   messages: {
-    'page.title': 'Repository del Registro Azure Container: {{image}}',
-    'table.searchPlaceholder': 'Filtra',
+    'page.title': 'Repository di Azure Container Registry: {{image}}',
+    'table.searchPlaceholder': 'Filtro',
     'table.labelRowsSelect': 'Righe',
     'table.columns.tag': 'Tag',
     'table.columns.created': 'Creato',
-    'table.columns.lastModified': 'Ultima modifica',
-    'table.columns.manifest': 'Manifest',
+    'table.columns.lastModified': 'Ultimo aggiornamento',
+    'table.columns.manifest': 'Manifesto',
   },
 });
 

@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { feedbackPermissions } from '@backstage-community/plugin-feedback-common';
 import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { actionsRegistryServiceRef } from '@backstage/backend-plugin-api/alpha';
 import { notificationService } from '@backstage/plugin-notifications-node';
+import { registerFeedbackActions } from './actions/feedbackActions';
 import { createRouter } from './service/router';
 
 /**
+ * The feedback backend plugin.
+ *
  * @public
  */
 export const feedbackPlugin = createBackendPlugin({
@@ -36,6 +41,9 @@ export const feedbackPlugin = createBackendPlugin({
         database: coreServices.database,
         notifications: notificationService,
         httpAuth: coreServices.httpAuth,
+        actionsRegistry: actionsRegistryServiceRef,
+        permissionsRegistry: coreServices.permissionsRegistry,
+        permissions: coreServices.permissions,
       },
       async init({
         logger,
@@ -46,7 +54,19 @@ export const feedbackPlugin = createBackendPlugin({
         database,
         notifications,
         httpAuth,
+        actionsRegistry,
+        permissionsRegistry,
+        permissions,
       }) {
+        await registerFeedbackActions({
+          actionsRegistry,
+          discovery,
+          auth,
+          config,
+        });
+
+        permissionsRegistry.addPermissions(feedbackPermissions);
+
         httpRouter.use(
           await createRouter({
             logger: logger,
@@ -56,6 +76,8 @@ export const feedbackPlugin = createBackendPlugin({
             database: database,
             notifications,
             httpAuth,
+            permissionsRegistry,
+            permissions,
           }),
         );
       },

@@ -15,10 +15,12 @@
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
 import {
+  groupIstioConfigByNamespace,
   Health,
   NamespaceAppHealth,
   NamespaceServiceHealth,
   NamespaceWorkloadHealth,
+  normalizeConfigValidations,
   nsWideMTLSStatus,
 } from '@backstage-community/plugin-kiali-common/func';
 import {
@@ -29,21 +31,16 @@ import {
   IstioMetricsOptions,
   NOT_READY,
   SortField,
+  buildReporter,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
-import {
-  CardTab,
-  Content,
-  InfoCard,
-  TabbedCard,
-} from '@backstage/core-components';
+import { CardTab, InfoCard, TabbedCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { default as React, useRef, useState } from 'react';
 import * as FilterHelper from '../../components/FilterList/FilterHelper';
 import { isMultiCluster } from '../../config';
-import { nsEqual } from '../../helpers/namespaces';
 import { useServerConfig } from '../../hooks/useServerConfig';
 import { getErrorString, kialiApiRef } from '../../services/Api';
 import { computePrometheusRateParams } from '../../services/Prometheus';
@@ -62,12 +59,15 @@ import {
 } from './OverviewToolbar';
 import * as Sorts from './Sorts';
 
+const isSameNamespace = (a: NamespaceInfo, b: NamespaceInfo): boolean =>
+  a.name === b.name && a.cluster === b.cluster;
+
 export const getNamespaces = (
   namespacesResponse: NamespaceInfo[],
   namespaces: NamespaceInfo[],
 ): NamespaceInfo[] => {
   return namespacesResponse.map(ns => {
-    const previous = namespaces.find(prev => prev.name === ns.name);
+    const previous = namespaces.find(prev => isSameNamespace(prev, ns));
     return {
       name: ns.name,
       cluster: ns.cluster,
@@ -98,12 +98,12 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     );
   }
 
-  const activeNsName = kialiState.namespaces.activeNamespaces.map(
-    ns => ns.name,
-  );
+  const activeNsKey = kialiState.namespaces.activeNamespaces
+    .map(ns => ns.name)
+    .join(',');
   const activeProvider = kialiState.providers.activeProvider;
   const prevActiveProvider = useRef(activeProvider);
-  const prevActiveNs = useRef(activeNsName);
+  const prevActiveNsKey = useRef(activeNsKey);
   const promises = new PromisesRegistry();
   const [namespaces, setNamespaces] = React.useState<NamespaceInfo[]>([]);
   const [duration, setDuration] = React.useState<number>(
@@ -116,11 +116,17 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     currentDirectionType(),
   );
   const [activeNs, setActiveNs] = React.useState<NamespaceInfo[]>([]);
+  const namespacesRef = useRef(namespaces);
+  namespacesRef.current = namespaces;
 
-  const setHealth = (ns: NamespaceInfo, i: number) => {
+  const mergeNamespace = (ns: NamespaceInfo) => {
     setNamespaces(prevNamespaces => {
+      const index = prevNamespaces.findIndex(prev => isSameNamespace(prev, ns));
+      if (index === -1) {
+        return prevNamespaces;
+      }
       const newNs = [...prevNamespaces];
-      newNs[i] = { ...newNs, ...ns };
+      newNs[index] = { ...newNs[index], ...ns };
       return newNs;
     });
   };
@@ -163,7 +169,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
     return healthPromise
       .then(results => {
-        namespacesInfo.forEach((nsInfo, index) => {
+        namespacesInfo.forEach(nsInfo => {
           const nsStatus: NamespaceInfoStatus = {
             inNotReady: [],
             inError: [],
@@ -196,7 +202,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
               }
             });
             nsInfo.status = nsStatus;
-            setHealth(nsInfo, index);
+            mergeNamespace(nsInfo);
           }
         });
       })
@@ -208,7 +214,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   };
 
   const filterActiveNamespaces = (nss: NamespaceInfo[]) => {
-    return nss.filter(ns => activeNsName.includes(ns.name));
+    const activeNames = activeNsKey ? activeNsKey.split(',') : [];
+    return nss.filter(ns => activeNames.includes(ns.name));
   };
 
   const fetchHealth = (
@@ -230,16 +237,14 @@ export const OverviewPage = (props: { entity?: Entity }) => {
           fetchHealthForCluster(nsList, cluster, durationCurrent, type),
         )
         .then(() => {
-          let newNamespaces = namespaces.slice();
-          if (sortField.id === 'health') {
-            newNamespaces = Sorts.sortFunc(
-              newNamespaces,
-              sortField,
-              isAscending,
-            );
-          }
-          setActiveNs(filterActiveNamespaces(newNamespaces));
-          return { namespaces: newNamespaces };
+          setNamespaces(prevNamespaces => {
+            const nextNamespaces =
+              sortField.id === 'health'
+                ? Sorts.sortFunc(prevNamespaces.slice(), sortField, isAscending)
+                : prevNamespaces;
+            setActiveNs(filterActiveNamespaces(nextNamespaces));
+            return sortField.id === 'health' ? nextNamespaces : prevNamespaces;
+          });
         });
     });
   };
@@ -302,18 +307,20 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       kialiClient.getAllIstioConfigs([], true, '', '', cluster),
     ])
       .then(results => {
+        const validationsByClusterAndNamespace = normalizeConfigValidations(
+          results[0],
+        );
+        const istioConfigPerNamespace = groupIstioConfigByNamespace(results[1]);
+
         nss.forEach(nsInfo => {
-          if (
-            nsInfo.cluster &&
-            nsInfo.cluster === cluster &&
-            (results[0] as any)[nsInfo.cluster]
-          ) {
-            // @ts-expect-error
-            nsInfo.validations = results[0][nsInfo.cluster][nsInfo.name];
-          }
           if (nsInfo.cluster && nsInfo.cluster === cluster) {
-            // @ts-ignore
-            nsInfo.istioConfig = results[1][nsInfo.name];
+            const clusterValidations = validationsByClusterAndNamespace.get(
+              nsInfo.cluster,
+            );
+            if (clusterValidations) {
+              nsInfo.validations = clusterValidations.get(nsInfo.name);
+            }
+            nsInfo.istioConfig = istioConfigPerNamespace.get(nsInfo.name);
           }
         });
       })
@@ -342,15 +349,25 @@ export const OverviewPage = (props: { entity?: Entity }) => {
           fetchValidationResultForCluster(nss, cluster),
         )
         .then(() => {
-          let newNamespaces = nss.slice();
-          if (sortField.id === 'validations') {
-            newNamespaces = Sorts.sortFunc(
-              newNamespaces,
-              sortField,
-              isAscending,
-            );
-          }
-          return newNamespaces;
+          setNamespaces(prevNamespaces => {
+            const merged = prevNamespaces.map(prevNs => {
+              const updatedNs = nss.find(n => isSameNamespace(n, prevNs));
+              if (!updatedNs) {
+                return prevNs;
+              }
+              return {
+                ...prevNs,
+                validations: updatedNs.validations,
+                istioConfig: updatedNs.istioConfig,
+              };
+            });
+            const nextNamespaces =
+              sortField.id === 'validations'
+                ? Sorts.sortFunc(merged.slice(), sortField, isAscending)
+                : merged;
+            setActiveNs(filterActiveNamespaces(nextNamespaces));
+            return nextNamespaces;
+          });
         });
     });
   };
@@ -363,8 +380,10 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       step: rateParams.step,
       rateInterval: rateParams.rateInterval,
       direction: directionType,
-      reporter: directionType === 'inbound' ? 'destination' : 'source',
-      includeAmbient: serverConfig?.ambientEnabled ?? false,
+      reporter: buildReporter(
+        directionType,
+        serverConfig?.ambientEnabled ?? false,
+      ),
     };
 
     // Group namespaces by cluster if multi-cluster
@@ -480,8 +499,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
               // Only update namespaces that are in the updated chunk
               // Preserve all other data including metrics from other chunks
               const updated = prevNamespaces.map(prevNs => {
-                const updatedNs = updatedChunk.find(
-                  n => n.name === prevNs.name,
+                const updatedNs = updatedChunk.find(n =>
+                  isSameNamespace(n, prevNs),
                 );
                 if (updatedNs && updatedNs.metrics) {
                   // Only update if we have new metrics, preserve everything else
@@ -496,7 +515,6 @@ export const OverviewPage = (props: { entity?: Entity }) => {
                 return prevNs;
               });
 
-              // Update activeNs with the updated namespaces
               setActiveNs(filterActiveNamespaces(updated));
 
               return updated;
@@ -524,22 +542,22 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     await kialiClient
       .getNamespaces()
       .then(namespacesResponse => {
+        const prevNamespaces = namespacesRef.current;
         const allNamespaces: NamespaceInfo[] = getNamespaces(
           namespacesResponse,
-          namespaces,
+          prevNamespaces,
         );
 
-        // Calculate information
         const isAscending = FilterHelper.isCurrentSortAscending();
         const sortField = FilterHelper.currentSortField(Sorts.sortFields);
         const sortNs = sortedNamespaces(allNamespaces);
 
-        // Preserve existing metrics when refreshing to avoid showing "No traffic" message
         const namespacesWithMetrics = sortNs.map(ns => {
-          const previous = namespaces.find(prev => prev.name === ns.name);
+          const previous = prevNamespaces.find(prev =>
+            isSameNamespace(prev, ns),
+          );
           return {
             ...ns,
-            // Preserve all previous data, not just metrics
             status: previous?.status,
             tlsStatus: previous?.tlsStatus,
             metrics: previous?.metrics,
@@ -548,9 +566,8 @@ export const OverviewPage = (props: { entity?: Entity }) => {
             controlPlaneMetrics: previous?.controlPlaneMetrics,
           };
         });
-        setNamespaces(namespacesWithMetrics);
 
-        // Update activeNs immediately with preserved metrics
+        setNamespaces(namespacesWithMetrics);
         setActiveNs(filterActiveNamespaces(namespacesWithMetrics));
 
         fetchHealth(isAscending, sortField, overviewType, sortNs);
@@ -570,16 +587,16 @@ export const OverviewPage = (props: { entity?: Entity }) => {
 
   React.useEffect(() => {
     if (
-      !nsEqual(activeNsName, prevActiveNs.current) ||
+      activeNsKey !== prevActiveNsKey.current ||
       activeProvider !== prevActiveProvider.current
     ) {
       setErrorProvider(undefined);
-      prevActiveNs.current = activeNsName;
+      prevActiveNsKey.current = activeNsKey;
       prevActiveProvider.current = activeProvider;
       load();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNsName, activeProvider]);
+  }, [activeNsKey, activeProvider]);
 
   React.useEffect(() => {
     load();
@@ -587,6 +604,13 @@ export const OverviewPage = (props: { entity?: Entity }) => {
   }, [duration, overviewType, directionType]);
 
   if (namespaces.length === 0) {
+    if (errorProvider) {
+      return (
+        <div className={baseStyle}>
+          <InfoCard>{errorProvider}</InfoCard>
+        </div>
+      );
+    }
     return <CircularProgress />;
   }
 
@@ -617,55 +641,47 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         </div>
       ) : (
         <div className={baseStyle}>
-          <Content>
-            {errorProvider ? (
-              <InfoCard>{errorProvider}</InfoCard>
-            ) : (
-              <>
-                <OverviewToolbar
-                  onRefresh={() => load()}
-                  overviewType={overviewType}
-                  setOverviewType={setOverviewType}
-                  directionType={directionType}
-                  setDirectionType={setDirectionType}
-                  duration={duration}
-                  setDuration={setDuration}
-                />
-                <Grid container spacing={2}>
-                  {activeNs.map((ns, i) => (
-                    <Grid
-                      key={`Card_${ns.name}_${i}`}
-                      item
-                      xs={
-                        serverConfig &&
-                        serverConfig.istioNamespace &&
-                        ns.name === serverConfig.istioNamespace
-                          ? 12
-                          : 4
+          {errorProvider ? (
+            <InfoCard>{errorProvider}</InfoCard>
+          ) : (
+            <>
+              <OverviewToolbar
+                onRefresh={() => load()}
+                overviewType={overviewType}
+                setOverviewType={setOverviewType}
+                directionType={directionType}
+                setDirectionType={setDirectionType}
+                duration={duration}
+                setDuration={setDuration}
+              />
+              <Grid container spacing={2} alignItems="stretch">
+                {activeNs.map((ns, i) => (
+                  <Grid
+                    key={`Card_${ns.name}_${i}`}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    style={{ display: 'flex' }}
+                  >
+                    <OverviewCard
+                      namespace={ns}
+                      istioAPIEnabled={
+                        kialiState.statusState.istioEnvironment.istioAPIEnabled
                       }
-                    >
-                      <OverviewCard
-                        namespace={ns}
-                        istioAPIEnabled={
-                          kialiState.statusState.istioEnvironment
-                            .istioAPIEnabled
-                        }
-                        type={overviewType}
-                        direction={directionType}
-                        duration={duration}
-                        refreshInterval={
-                          kialiState.userSettings.refreshInterval
-                        }
-                        certsInfo={kialiState.istioCertsInfo}
-                        minTLS={kialiState.meshTLSStatus.minTLS}
-                        istioStatus={kialiState.istioStatus}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
-            )}
-          </Content>
+                      type={overviewType}
+                      direction={directionType}
+                      duration={duration}
+                      refreshInterval={kialiState.userSettings.refreshInterval}
+                      certsInfo={kialiState.istioCertsInfo}
+                      minTLS={kialiState.meshTLSStatus.minTLS}
+                      istioStatus={kialiState.istioStatus}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
         </div>
       )}
     </>

@@ -38,6 +38,7 @@ describe('CasbinAdapterFactory', () => {
     >;
     jest.clearAllMocks();
   });
+
   it('test building an adapter using a better-sqlite3 configuration.', async () => {
     db = knex.knex({
       client: 'better-sqlite3',
@@ -307,6 +308,233 @@ describe('CasbinAdapterFactory', () => {
           rejectUnauthorized: false,
         },
       });
+    });
+  });
+
+  describe('build adapter with dynamic Knex connection resolvers', () => {
+    it('should resolve database name when knex connection is a dynamic resolver function', async () => {
+      const dynamicConnectionDb = knex.knex({
+        client: 'pg',
+        connection: async () => ({
+          host: 'myserver.postgres.database.azure.com',
+          port: 5432,
+          user: 'myuser@myserver',
+          password: 'mock-azure-token-1234567890',
+          database: 'backstage_plugin_permission',
+          ssl: { rejectUnauthorized: false },
+        }),
+      });
+
+      const config = mockServices.rootConfig({
+        data: {
+          backend: {
+            database: {
+              client: 'pg',
+              connection: {
+                type: 'azure',
+                host: 'myserver.postgres.database.azure.com',
+                port: '5432',
+                user: 'myuser@myserver',
+                ssl: {
+                  rejectUnauthorized: false,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const factory = new CasbinDBAdapterFactory(config, dynamicConnectionDb);
+      await factory.createAdapter();
+
+      expect(newAdapterMock).toHaveBeenCalled();
+      const adapterConfig = newAdapterMock.mock.calls[0][0];
+      expect(adapterConfig.database).toBe('backstage_plugin_permission');
+      expect(adapterConfig.host).toBe('myserver.postgres.database.azure.com');
+      expect(adapterConfig.username).toBe('myuser@myserver');
+      expect(adapterConfig.ssl).toEqual({ rejectUnauthorized: false });
+      expect(typeof adapterConfig.password).toBe('function');
+
+      await dynamicConnectionDb.destroy();
+    });
+
+    it('should call the dynamic resolver on each password function invocation', async () => {
+      const connectionResolver = jest.fn(async () => ({
+        host: 'myserver.postgres.database.azure.com',
+        port: 5432,
+        user: 'myuser@myserver',
+        password: 'mock-azure-token-1234567890',
+        database: 'test-database',
+        ssl: { rejectUnauthorized: false },
+      }));
+
+      const dynamicConnectionDb = knex.knex({
+        client: 'pg',
+        connection: connectionResolver,
+      });
+
+      const config = mockServices.rootConfig({
+        data: {
+          backend: {
+            database: {
+              client: 'pg',
+              connection: {
+                type: 'azure',
+                host: 'myserver.postgres.database.azure.com',
+                port: '5432',
+                user: 'myuser@myserver',
+              },
+            },
+          },
+        },
+      });
+
+      const factory = new CasbinDBAdapterFactory(config, dynamicConnectionDb);
+      await factory.createAdapter();
+
+      connectionResolver.mockClear();
+
+      const adapterConfig = newAdapterMock.mock.calls[0][0];
+      const passwordFn = adapterConfig.password;
+      const tokenResult = await passwordFn();
+
+      expect(connectionResolver).toHaveBeenCalledTimes(1);
+      expect(tokenResult).toBe('mock-azure-token-1234567890');
+
+      connectionResolver.mockResolvedValueOnce({
+        host: 'myserver.postgres.database.azure.com',
+        port: 5432,
+        user: 'myuser@myserver',
+        password: 'new-token-different',
+        database: 'test-database',
+        ssl: { rejectUnauthorized: false },
+      });
+
+      const tokenResult2 = await passwordFn();
+      expect(tokenResult2).toBe('new-token-different');
+      expect(connectionResolver).toHaveBeenCalledTimes(2);
+
+      await dynamicConnectionDb.destroy();
+    });
+
+    it('should support RDS-style dynamic connection resolvers', async () => {
+      const dynamicConnectionDb = knex.knex({
+        client: 'pg',
+        connection: async () => ({
+          host: 'mydb.abc123.us-east-1.rds.amazonaws.com',
+          port: 5432,
+          user: 'backstage',
+          password: 'mock-rds-iam-token',
+          database: 'backstage_plugin_permission',
+          ssl: { rejectUnauthorized: true },
+        }),
+      });
+
+      const config = mockServices.rootConfig({
+        data: {
+          backend: {
+            database: {
+              client: 'pg',
+              connection: {
+                type: 'rds',
+                host: 'mydb.abc123.us-east-1.rds.amazonaws.com',
+                port: '5432',
+                user: 'backstage',
+                region: 'us-east-1',
+              },
+            },
+          },
+        },
+      });
+
+      const factory = new CasbinDBAdapterFactory(config, dynamicConnectionDb);
+      await factory.createAdapter();
+
+      expect(newAdapterMock).toHaveBeenCalled();
+      const adapterConfig = newAdapterMock.mock.calls[0][0];
+      expect(adapterConfig.database).toBe('backstage_plugin_permission');
+      expect(adapterConfig.host).toBe(
+        'mydb.abc123.us-east-1.rds.amazonaws.com',
+      );
+      expect(typeof adapterConfig.password).toBe('function');
+
+      const tokenResult = await adapterConfig.password();
+      expect(tokenResult).toBe('mock-rds-iam-token');
+
+      await dynamicConnectionDb.destroy();
+    });
+
+    it('should throw error when dynamic resolver returns no password', async () => {
+      const dynamicConnectionDb = knex.knex({
+        client: 'pg',
+        connection: async () => ({
+          host: 'myserver.postgres.database.azure.com',
+          port: 5432,
+          user: 'myuser@myserver',
+          database: 'test-database',
+        }),
+      });
+
+      const config = mockServices.rootConfig({
+        data: {
+          backend: {
+            database: {
+              client: 'pg',
+              connection: {
+                type: 'azure',
+                host: 'myserver.postgres.database.azure.com',
+                port: '5432',
+                user: 'myuser@myserver',
+              },
+            },
+          },
+        },
+      });
+
+      const factory = new CasbinDBAdapterFactory(config, dynamicConnectionDb);
+      await factory.createAdapter();
+
+      const adapterConfig = newAdapterMock.mock.calls[0][0];
+      await expect(adapterConfig.password()).rejects.toThrow(
+        'missing password on resolved Knex connection',
+      );
+
+      await dynamicConnectionDb.destroy();
+    });
+
+    it('should throw error when dynamic resolver returns no database name', async () => {
+      const dynamicConnectionDb = knex.knex({
+        client: 'pg',
+        connection: async () => ({
+          host: 'myserver.postgres.database.azure.com',
+          port: 5432,
+          user: 'myuser@myserver',
+          password: 'mock-azure-token',
+        }),
+      });
+
+      const config = mockServices.rootConfig({
+        data: {
+          backend: {
+            database: {
+              client: 'pg',
+              connection: {
+                type: 'azure',
+                host: 'myserver.postgres.database.azure.com',
+                port: '5432',
+                user: 'myuser@myserver',
+              },
+            },
+          },
+        },
+      });
+
+      const factory = new CasbinDBAdapterFactory(config, dynamicConnectionDb);
+      await expect(factory.createAdapter()).rejects.toThrow(
+        'missing database name on Knex connection',
+      );
+
+      await dynamicConnectionDb.destroy();
     });
   });
 

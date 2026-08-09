@@ -14,7 +14,7 @@
       "createdAt": "2024-01-31T14:07:06Z",
       "resourceVersion": "81433",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "travels",
@@ -57,7 +57,7 @@
       "createdAt": "2024-01-31T14:07:06Z",
       "resourceVersion": "81479",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "viaggi",
@@ -100,7 +100,7 @@
       "createdAt": "2024-01-31T14:07:06Z",
       "resourceVersion": "81495",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "additionalDetailSample": null,
       "labels": {
         "app": "voyages",

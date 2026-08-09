@@ -16,7 +16,7 @@
 import type { FC } from 'react';
 
 import { HTMLAttributes, ReactElement } from 'react';
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { Flex, FlexProps } from '@patternfly/react-core';
 
 type MetadataProps = {

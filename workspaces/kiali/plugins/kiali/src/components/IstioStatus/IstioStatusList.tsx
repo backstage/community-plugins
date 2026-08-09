@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
-import { StatusTypes as Status } from '@backstage-community/plugin-kiali-common/types';
+import {
+  isCoreComponent,
+  StatusTypes as Status,
+} from '@backstage-community/plugin-kiali-common/types';
 import { List, Typography } from '@material-ui/core';
 import { IstioComponentStatus } from './IstioComponentStatus';
 
@@ -30,11 +33,15 @@ export const IstioStatusList = (props: Props) => {
   };
 
   const coreComponentsStatus = () => {
-    return nonhealthyComponents().filter((s: ComponentStatus) => s.is_core);
+    return nonhealthyComponents().filter((s: ComponentStatus) =>
+      isCoreComponent(s),
+    );
   };
 
   const addonComponentsStatus = () => {
-    return nonhealthyComponents().filter((s: ComponentStatus) => !s.is_core);
+    return nonhealthyComponents().filter(
+      (s: ComponentStatus) => !isCoreComponent(s),
+    );
   };
 
   const renderComponentList = () => {

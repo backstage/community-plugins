@@ -24,16 +24,17 @@ import { jfrogArtifactoryTranslationRef } from './ref';
 const jfrogArtifactoryTranslationIt = createTranslationMessages({
   ref: jfrogArtifactoryTranslationRef,
   messages: {
-    'page.title': 'Repository JFrog Artifactory: {{image}}',
-    'table.searchPlaceholder': 'Filtra',
-    'table.labelRowsSelect': 'Righe',
+    'page.title': 'Repository Artifactory di JFrog: {{image}}',
+    'table.searchPlaceholder': 'Filtro',
+    'table.pagination.showResults': 'Mostra {{count}} risultati',
+    'table.pagination.rangeLabel': '{{start}} - {{end}} di {{total}}',
     'table.columns.version': 'Versione',
     'table.columns.repositories': 'Repository',
-    'table.columns.manifest': 'Manifest',
+    'table.columns.manifest': 'Manifesto',
     'table.columns.modified': 'Modificato',
     'table.columns.size': 'Dimensione',
-    'table.emptyContent.message': 'Nessun dato è stato ancora aggiunto,',
-    'table.emptyContent.learnMore': 'scopri come aggiungere dati.',
+    'table.emptyContent.message': 'Non è stato ancora aggiunto alcun dato,',
+    'table.emptyContent.learnMore': 'impara come aggiungere dati.',
     'manifest.sha256': 'sha256',
   },
 });

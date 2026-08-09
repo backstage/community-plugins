@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
+import { createTranslationMessages } from '@backstage/frontend-plugin-api';
 import { topologyTranslationRef } from './ref';
 
 /**
@@ -31,6 +31,10 @@ const topologyTranslationFr = createTranslationMessages({
     'toolbar.selectCluster': 'Sélectionner un cluster',
     'toolbar.displayOptions': "Options d'affichage",
     'toolbar.currentDisplayOptions': "Options d'affichage actuelles",
+    'controlBar.zoomIn': 'Zoom avant',
+    'controlBar.zoomOut': 'Zoom arrière',
+    'controlBar.fitToScreen': "Ajuster à l'écran",
+    'controlBar.resetView': 'Réinitialiser la vue',
     'emptyState.noResourcesFound': 'Aucune ressource trouvée',
     'emptyState.noResourcesDescription':
       'Aucune ressource Kubernetes n’a été trouvée dans le cluster sélectionné.',

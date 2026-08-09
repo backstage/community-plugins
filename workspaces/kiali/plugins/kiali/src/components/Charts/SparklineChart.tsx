@@ -21,6 +21,7 @@ import type {
 import { useTheme } from '@material-ui/core/styles';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { default as React } from 'react';
+import { getChartAxisStyles } from './chartTheme';
 
 type Props = {
   ariaTitle?: string;
@@ -85,6 +86,8 @@ export const SparklineChart = (props: Props) => {
     return `${x ?? idx}`;
   };
 
+  const { axisLabelStyle, tickLabelStyle, axisSx } = getChartAxisStyles(theme);
+
   const chart = (
     <LineChart
       aria-label={props.ariaTitle ?? props.name}
@@ -95,20 +98,24 @@ export const SparklineChart = (props: Props) => {
         {
           data: xData,
           valueFormatter: xValueFormatter,
+          tickLabelStyle,
         },
       ]}
-      yAxis={props.showYAxis ? [{ label: props.labelName }] : []}
+      yAxis={
+        props.showYAxis
+          ? [
+              {
+                label: props.labelName,
+                labelStyle: axisLabelStyle,
+                tickLabelStyle,
+              },
+            ]
+          : []
+      }
       slotProps={{
         legend: props.showLegend ? undefined : { hidden: true },
       }}
-      sx={{
-        '& .MuiChartsAxis-tickLabel': {
-          fill: theme.palette.type === 'dark' ? '#dcdcdc' : '#000',
-        },
-        '& .MuiChartsAxis-label': {
-          fill: theme.palette.type === 'dark' ? '#dcdcdc' : '#000',
-        },
-      }}
+      sx={axisSx}
     />
   );
 

@@ -98,7 +98,7 @@ export const WorkloadDetailsPage = (props: { entity?: boolean }) => {
           {
             rateInterval: duration,
             hasSidecar: workloadResponse.istioSidecar,
-            hasAmbient: workloadResponse.istioAmbient,
+            hasAmbient: workloadResponse.isAmbient,
           },
           serverConfig,
         );
@@ -172,6 +172,7 @@ export const WorkloadDetailsPage = (props: { entity?: boolean }) => {
             cluster={workloadItem?.cluster}
             objectType={MetricsObjectTypes.WORKLOAD}
             direction="inbound"
+            includeWaypoint={!!workloadItem?.isAmbient}
           />
         )}
       </>
@@ -190,6 +191,7 @@ export const WorkloadDetailsPage = (props: { entity?: boolean }) => {
             cluster={workloadItem?.cluster}
             objectType={MetricsObjectTypes.WORKLOAD}
             direction="outbound"
+            includeWaypoint={!!workloadItem?.isAmbient}
           />
         )}
       </>

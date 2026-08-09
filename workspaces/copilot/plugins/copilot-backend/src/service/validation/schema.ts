@@ -55,3 +55,63 @@ export const teamQuerySchema = z.object({
   endDate: isoDateSchema,
   type: metricsTypeSchema,
 });
+
+// V2 schemas
+export const v2MetricsQuerySchema = z.object({
+  type: z.enum(['enterprise', 'organization']),
+  entityId: z.string().min(1),
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  team: z.string().optional(),
+});
+export type V2MetricsQuery = z.infer<typeof v2MetricsQuerySchema>;
+
+export const v2FeatureQuerySchema = v2MetricsQuerySchema.extend({
+  feature: z.string().optional(),
+});
+export type V2FeatureQuery = z.infer<typeof v2FeatureQuerySchema>;
+
+export const v2TeamsQuerySchema = z.object({
+  type: z.enum(['enterprise', 'organization']),
+  entityId: z.string().min(1),
+  from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD')
+    .optional(),
+  to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD')
+    .optional(),
+});
+export type V2TeamsQuery = z.infer<typeof v2TeamsQuerySchema>;
+
+export const v2PeriodRangeQuerySchema = z.object({
+  type: z.enum(['enterprise', 'organization']),
+  entityId: z.string().min(1),
+});
+export type V2PeriodRangeQuery = z.infer<typeof v2PeriodRangeQuerySchema>;
+
+export const v2BackfillStatusQuerySchema = z.object({
+  type: z.enum(['enterprise', 'organization']),
+  entityId: z.string().min(1),
+  from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD')
+    .optional(),
+  to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD')
+    .optional(),
+});
+export type V2BackfillStatusQuery = z.infer<typeof v2BackfillStatusQuerySchema>;
+
+export const v2BackfillBodySchema = z.object({
+  type: z.enum(['enterprise', 'organization']),
+  entityId: z.string().min(1),
+  fromDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  toDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD')
+    .optional(),
+});
+export type V2BackfillBody = z.infer<typeof v2BackfillBodySchema>;

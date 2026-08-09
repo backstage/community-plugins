@@ -15,67 +15,24 @@
  */
 
 import { ReactElement, CSSProperties } from 'react';
-import {
-  StatusClassKey,
-  StatusError,
-  StatusOK,
-  StatusPending,
-  StatusRunning,
-  StatusWarning,
-} from '@backstage/core-components';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import OffIcon from '@mui/icons-material/DoNotDisturbOnOutlined';
-import UnknownIcon from '@mui/icons-material/HelpOutline';
-import AngleDoubleRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import BanIcon from '@mui/icons-material/NotInterestedOutlined';
-import PauseIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
+import { StatusClassKey } from '@backstage/core-components';
+import {
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiErrorWarningLine,
+  RiQuestionLine,
+  RiSkipForwardLine,
+  RiPauseCircleLine,
+  RiStopCircleLine,
+} from '@remixicon/react';
 import cx from 'classnames';
 
 import { StatusIconAndText } from './StatusIconAndText';
-
-const useStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    iconStyles: {
-      height: '0.8em',
-      width: '0.8em',
-      top: '0.125em',
-      position: 'relative',
-      flexShrink: 0,
-      marginRight: theme.spacing(0.6),
-    },
-  }),
-);
+import { PendingStatusIcon, RunningStatusIcon } from './StatusIcons';
+import styles from './Status.module.css';
 
 const DASH = '-';
-
-const useStatusStyles = makeStyles(theme => ({
-  success: {
-    '& svg': {
-      fill: theme.palette.status.ok,
-    },
-  },
-  running: {
-    '& svg': {
-      fill: theme.palette.status.running,
-    },
-  },
-  pending: {
-    '& svg': {
-      fill: theme.palette.status.pending,
-    },
-  },
-  warning: {
-    '& svg': {
-      fill: theme.palette.status.warning,
-    },
-  },
-  error: {
-    '& svg': {
-      fill: theme.palette.status.error,
-    },
-  },
-}));
 
 const StatusIcon = ({
   statusKey,
@@ -84,38 +41,46 @@ const StatusIcon = ({
   statusKey: StatusClassKey;
   className?: string;
 }) => {
-  const statusStyles = useStatusStyles();
+  const iconClass = cx(styles.iconStyles, className);
 
   switch (statusKey) {
     case 'ok':
       return (
-        <g className={cx(statusStyles.success, className)}>
-          <StatusOK />{' '}
-        </g>
+        <RiCheckboxCircleLine
+          className={cx(iconClass, styles.success)}
+          data-testid="status-ok"
+          aria-hidden
+        />
       );
     case 'pending':
       return (
-        <g className={cx(statusStyles.pending, className)}>
-          <StatusPending />{' '}
-        </g>
+        <PendingStatusIcon
+          className={cx(iconClass, styles.pending)}
+          data-testid="status-pending"
+        />
       );
     case 'running':
       return (
-        <g className={cx(statusStyles.running, className)}>
-          <StatusRunning />{' '}
-        </g>
+        <RunningStatusIcon
+          className={cx(iconClass, styles.running)}
+          data-testid="status-running"
+        />
       );
     case 'warning':
       return (
-        <g className={cx(statusStyles.warning, className)}>
-          <StatusWarning />{' '}
-        </g>
+        <RiErrorWarningLine
+          className={cx(iconClass, styles.warning)}
+          data-testid="status-warning"
+          aria-hidden
+        />
       );
     case 'error':
       return (
-        <g className={cx(statusStyles.error, className)}>
-          <StatusError />{' '}
-        </g>
+        <RiCloseCircleLine
+          className={cx(iconClass, styles.error)}
+          data-testid="status-error"
+          aria-hidden
+        />
       );
     default:
       return null;
@@ -151,7 +116,6 @@ export const Status = ({
   iconStyles?: CSSProperties;
   iconClassName?: string;
 }): ReactElement => {
-  const classes = useStyles();
   const statusProps = {
     title: displayStatusText || status || '',
     iconOnly,
@@ -199,7 +163,12 @@ export const Status = ({
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={<BanIcon className={classes.iconStyles} style={iconStyles} />}
+          icon={
+            <RiCloseCircleLine
+              className={cx(styles.iconStyles, styles.error)}
+              style={iconStyles}
+            />
+          }
         />
       );
 
@@ -240,8 +209,8 @@ export const Status = ({
         <StatusIconAndText
           {...statusProps}
           icon={
-            <AngleDoubleRightIcon
-              className={classes.iconStyles}
+            <RiSkipForwardLine
+              className={styles.iconStyles}
               style={iconStyles}
             />
           }
@@ -251,14 +220,24 @@ export const Status = ({
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={<PauseIcon className={classes.iconStyles} style={iconStyles} />}
+          icon={
+            <RiPauseCircleLine
+              className={styles.iconStyles}
+              style={iconStyles}
+            />
+          }
         />
       );
     case 'Stopped':
       return (
         <StatusIconAndText
           {...statusProps}
-          icon={<OffIcon className={classes.iconStyles} style={iconStyles} />}
+          icon={
+            <RiStopCircleLine
+              className={styles.iconStyles}
+              style={iconStyles}
+            />
+          }
         />
       );
 
@@ -267,7 +246,7 @@ export const Status = ({
         <StatusIconAndText
           {...statusProps}
           icon={
-            <UnknownIcon className={classes.iconStyles} style={iconStyles} />
+            <RiQuestionLine className={styles.iconStyles} style={iconStyles} />
           }
         />
       );

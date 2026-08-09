@@ -24,6 +24,8 @@ export const rbacMessages = {
   table: {
     searchPlaceholder: 'Filter',
     labelRowsSelect: 'Rows',
+    labelDisplayedRows: '{from}-{to} of {count}',
+    labelRowsPerPage: 'Rows per page:',
     title: 'All roles',
     titleWithCount: 'All roles ({{count}})',
     headers: {
@@ -245,6 +247,7 @@ export const rbacMessages = {
     configureAccessFor: 'Configure access for the',
     defaultResourceTypeVisible:
       'By default, the selected resource type is visible to all added users. If you want to restrict or grant permission to specific plugin rules, select them and add the parameters.',
+    tableAction: 'Table action',
   },
 };
 

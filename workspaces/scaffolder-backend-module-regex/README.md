@@ -1,16 +1,7 @@
-# [Backstage](https://backstage.io)
+# Regex scaffolder backend module workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+Publishable plugins in this workspace:
 
-To start the app, run:
+- [@backstage-community/plugin-scaffolder-backend-module-regex](./plugins/regex-actions/) — operator docs: [README](./plugins/regex-actions/README.md); contributors: [CONTRIBUTING](./plugins/regex-actions/CONTRIBUTING.md)
 
-```sh
-yarn install
-yarn start
-```
-
-To generate knip reports for this app, run:
-
-```sh
-yarn backstage-repo-tools knip-reports
-```
+Day-to-day plugin work uses the package's `dev/` harness — see the contributor guide above.

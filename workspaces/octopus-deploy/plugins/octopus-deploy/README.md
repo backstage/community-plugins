@@ -23,10 +23,10 @@ This plugin (currently) uses the Backstage proxy to securely communicate with th
 
 To use it, you will need to generate an [API Key](https://octopus.com/docs/octopus-rest-api/how-to-create-an-api-key) within Octopus Deploy.
 
-Add the following to your app-config.yaml to enable the proxy:
+Add the following to your `app-config.yaml` to enable the proxy:
 
-```
-// app-config.yaml
+```yaml
+# app-config.yaml
 proxy:
   endpoints:
     '/octopus-deploy':
@@ -35,40 +35,21 @@ proxy:
         X-Octopus-ApiKey: ${OCTOPUS_API_KEY}
 ```
 
-Optionally, also add the following section to your app-config.yaml if you wish to enable linking to the Project Release page in the Octopus Deploy UI from the footer of the Backstage Release Table. Typically this will be the server URL above without the /api postfix.
+Optionally, also add the following section to your `app-config.yaml` if you wish to enable linking to the Project Release page in the Octopus Deploy UI from the footer of the Backstage Release Table. Typically this will be the server URL above without the `/api` postfix.
 
-```
+```yaml
 octopusdeploy:
-  webBaseUrl: "<your-octopus-web-url>"
+  webBaseUrl: '<your-octopus-web-url>'
 ```
 
-#### Adding the Entities
+#### Annotating entities
 
-Add the following to `EntityPage.tsx` to display Octopus Releases
+Add the `octopus.com/project-id` annotation in the catalog descriptor file.
 
-```
-// In packages/app/src/components/catalog/EntityPage.tsx
-import {
-  isOctopusDeployAvailable,
-  EntityOctopusDeployContent
-} from '@backstage-community/plugin-octopus-deploy';
+To obtain a project's ID you will have to query the Octopus API. In the future we'll add support for using a project's slug as well.
 
-const cicdContent = (
-    <EntitySwitch>
-      {/* other components... */}
-      <EntitySwitch.Case if={isOctopusDeployAvailable}>
-        <EntityOctopusDeployContent defaultLimit={25} />
-      </EntitySwitch.Case>
-    </EntitySwitch>
-)
-```
-
-Add `octopus.com/project-id` annotation in the catalog descriptor file.
-
-To obtain a projects ID you will have to query the Octopus API. In the future we'll add support for using a projects slug as well.
-
-```
-// catalog-info.yaml
+```yaml
+# catalog-info.yaml
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -81,8 +62,8 @@ spec:
 
 If your project is not part of the default space you can add the space ID to the annotation as a prefix. For example:
 
-```
-// catalog-info.yaml
+```yaml
+# catalog-info.yaml
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -95,15 +76,76 @@ spec:
 
 You can get the ID of the space from the URL in the Octopus Deploy UI.
 
-All set, you will be able to see the plugin in action!
+### New Frontend System
 
-### Adding Scaffolder field extensions
+If your Backstage app uses the [New Frontend System](https://backstage.io/docs/frontend-system/), import the plugin from the `/alpha` entry point and add it to your app's `features` array:
 
-To add the Octopus Deploy custom fields extensions, add the following to your `App.tsx`:
+```tsx
+// packages/app/src/App.tsx
+import octopusDeployPlugin from '@backstage-community/plugin-octopus-deploy/alpha';
+
+const app = createApp({
+  features: [
+    // ... other plugins
+    octopusDeployPlugin,
+  ],
+});
+```
+
+The entity tab and API are wired up automatically — no changes to `EntityPage.tsx` are needed.
+
+#### Adding Scaffolder field extensions (New Frontend System)
+
+The project group dropdown is included in the plugin and registered automatically. To use it in a template, add the `ui:field` to your `template.yaml` as normal:
+
+```yaml
+# template.yaml
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  # ...
+spec:
+  # ...
+  parameters:
+    - title: Octopus Project Group
+      properties:
+        projectName:
+          title: Octopus Project Group
+          type: string
+          ui:field: OctopusDeployProjectGroupDropdown
+```
+
+### Legacy Frontend System
+
+#### Adding the entity tab
+
+Add the following to `EntityPage.tsx` to display Octopus Releases:
+
+```tsx
+// In packages/app/src/components/catalog/EntityPage.tsx
+import {
+  isOctopusDeployAvailable,
+  EntityOctopusDeployContent,
+} from '@backstage-community/plugin-octopus-deploy';
+
+const cicdContent = (
+  <EntitySwitch>
+    {/* other components... */}
+    <EntitySwitch.Case if={isOctopusDeployAvailable}>
+      <EntityOctopusDeployContent defaultLimit={25} />
+    </EntitySwitch.Case>
+  </EntitySwitch>
+);
+```
+
+#### Adding Scaffolder field extensions
+
+Add the following to your `App.tsx`:
 
 ```tsx
 // In packages/app/src/App.tsx
 import { OctopusDeployDropdownFieldExtension } from '@backstage-community/plugin-octopus-deploy';
+
 const routes = (
   <FlatRoutes>
     ...
@@ -119,10 +161,12 @@ const routes = (
 To use the Octopus Deploy custom field extensions, add the following to your `template.yaml`:
 
 ```yaml
-# In the template.yaml
+# template.yaml
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
+  # ...
+spec:
   # ...
   parameters:
     - title: Octopus Project Group

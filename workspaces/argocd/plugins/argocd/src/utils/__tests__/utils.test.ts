@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mockApplication, mockEntity } from '../../../dev/__data__';
+import {
+  mockApplication,
+  mockEntity,
+  multiSourceHelmArgoApp,
+} from '../../../dev/__data__';
 import {
   Application,
   History,
@@ -30,6 +34,7 @@ import {
   getProjectName,
   getUniqueRevisions,
   getResourceCreateTimestamp,
+  isAppHelmChartType,
   sortValues,
   removeDuplicateRevisions,
   getInstanceNames,
@@ -188,6 +193,43 @@ describe('Utils', () => {
     });
   });
 
+  describe('isAppHelmChartType', () => {
+    test('should return false for a git-only single-source app', () => {
+      expect(isAppHelmChartType(mockApplication)).toBe(false);
+    });
+
+    test('should return true for a single-source Helm chart app', () => {
+      expect(
+        isAppHelmChartType({
+          ...mockApplication,
+          spec: {
+            ...mockApplication.spec,
+            source: { ...mockApplication.spec.source, chart: 'my-chart' },
+          },
+        }),
+      ).toBe(true);
+    });
+
+    test('should return false for a multi-source app with no Helm chart sources', () => {
+      expect(
+        isAppHelmChartType({
+          ...mockApplication,
+          spec: {
+            ...mockApplication.spec,
+            sources: [
+              { repoURL: 'https://github.com/org/repo.git', path: '.' },
+              { repoURL: 'https://github.com/org/values.git', path: '.' },
+            ],
+          },
+        }),
+      ).toBe(false);
+    });
+
+    test('should return true for a multi-source app with a Helm chart source', () => {
+      expect(isAppHelmChartType(multiSourceHelmArgoApp)).toBe(true);
+    });
+  });
+
   describe('getAppOperationState', () => {
     test('should return Succeeded if the operationState object is present', () => {
       expect(getAppOperationState(mockApplication).phase).toBe('Succeeded');
@@ -236,6 +278,13 @@ describe('Utils', () => {
 
     test('should return unique revision', () => {
       expect(getUniqueRevisions([mockApplication])).toHaveLength(1);
+    });
+
+    test('should exclude Helm chart revisions from multi-source apps', () => {
+      const revisions = getUniqueRevisions([multiSourceHelmArgoApp]);
+      // The Helm chart version '1.0.0' should be excluded; only the git SHA remains
+      expect(revisions).not.toContain('1.0.0');
+      expect(revisions).toContain('abc123def456ghi789jkl012mno345pqr678stu901');
     });
 
     test('should return unique revision for multiple applications', () => {

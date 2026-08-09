@@ -25,7 +25,6 @@ const nexusRepositoryManagerTranslationEs = createTranslationMessages({
   ref: nexusRepositoryManagerTranslationRef,
   messages: {
     'table.title': 'Administrador del repositorio de Nexus: {{title}}',
-    'table.searchPlaceholder': 'Filtrar',
     'table.labelRowsSelect': 'Filas',
     'table.columns.version': 'Versión',
     'table.columns.artifact': 'Artefacto',
@@ -35,8 +34,9 @@ const nexusRepositoryManagerTranslationEs = createTranslationMessages({
     'table.columns.size': 'Tamaño',
     'table.emptyValue': 'N/A',
     'table.emptyContent.message': 'Aún no se agregaron datos,',
-    'table.emptyContent.linkText': 'aprenda a agregar datos',
     'entityContent.title': 'Construir artefactos',
+    'table.searchPlaceholder': 'Filtrar',
+    'table.emptyContent.linkText': 'aprenda a agregar datos',
   },
 });
 

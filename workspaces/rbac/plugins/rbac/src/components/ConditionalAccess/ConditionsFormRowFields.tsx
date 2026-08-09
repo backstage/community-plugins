@@ -22,7 +22,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import { Theme, useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import { makeStyles } from '@mui/styles';
 import Form from '@rjsf/mui';
 import {
   RegistryFieldsType,
@@ -67,29 +66,6 @@ type ConditionFormRowFieldsProps = {
   nestedConditionRuleIndex?: number;
   updateRules?: (newCondition: Condition[] | Condition) => void;
 };
-
-interface StyleProps {
-  isNotSimpleCondition: boolean;
-  hasError: boolean;
-}
-
-const makeConditionsFormRowFieldsStyles = makeStyles<Theme, StyleProps>(() => ({
-  leftInputFieldContainer: {
-    display: 'flex',
-    flexFlow: 'row',
-    gap: '1rem',
-    flexGrow: 1,
-    paddingLeft: 0,
-    margin: ({ isNotSimpleCondition }) =>
-      isNotSimpleCondition ? '-1.5rem 0 0 1.85rem' : '0',
-  },
-  rightInputFieldContainer: {
-    width: '50%',
-    '& span > h6': {
-      display: ({ hasError }) => (hasError ? 'none' : 'block'),
-    },
-  },
-}));
 
 export const getTextFieldStyles = (theme: Theme) => ({
   '& div[class*="MuiInputBase-root"]': {
@@ -151,10 +127,6 @@ export const ConditionsFormRowFields = ({
     criteria === criterias.not && !nestedConditionCriteria;
   const theme = useTheme();
   const [hasError, setHasError] = useState(false);
-  const classes = makeConditionsFormRowFieldsStyles({
-    isNotSimpleCondition,
-    hasError,
-  });
 
   const rules = conditionRulesData?.rules ?? [];
   const paramsSchema =
@@ -391,10 +363,22 @@ export const ConditionsFormRowFields = ({
   };
 
   return (
-    <Box className={classes.leftInputFieldContainer}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexFlow: 'row',
+        gap: '1rem',
+        flexGrow: 1,
+        pl: 0,
+        m: isNotSimpleCondition ? '-1.5rem 0 0 1.85rem' : 0,
+      }}
+    >
       <Autocomplete
-        style={{ width: '50%', marginTop: '26px' }}
-        sx={getTextFieldStyles(theme)}
+        sx={{
+          ...getTextFieldStyles(theme),
+          width: '50%',
+          mt: '26px',
+        }}
         options={rules ?? []}
         value={(oldCondition as PermissionCondition)?.rule || null}
         getOptionDisabled={option =>
@@ -424,7 +408,14 @@ export const ConditionsFormRowFields = ({
           />
         )}
       />
-      <Box className={classes.rightInputFieldContainer}>
+      <Box
+        sx={{
+          width: '50%',
+          '& span > h6': {
+            display: hasError ? 'none' : 'block',
+          },
+        }}
+      >
         {schema ? (
           <Form
             schema={paramsSchema}
@@ -444,8 +435,11 @@ export const ConditionsFormRowFields = ({
           />
         ) : (
           <TextField
-            style={{ width: '100%', marginTop: '26px' }}
-            sx={getTextFieldStyles(theme)}
+            sx={{
+              ...getTextFieldStyles(theme),
+              width: '100%',
+              mt: '26px',
+            }}
             disabled
             label="string, string"
             required

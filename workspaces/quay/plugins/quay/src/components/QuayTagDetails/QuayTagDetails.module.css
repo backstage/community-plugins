@@ -1,0 +1,10 @@
+@layer components {
+  .cellContent {
+    display: inline-flex;
+    width: fit-content;
+  }
+
+  .severityIcon {
+    flex-shrink: 0;
+  }
+}

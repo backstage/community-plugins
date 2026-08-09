@@ -18,12 +18,11 @@ import type { SetStateAction, Dispatch } from 'react';
 import { useEffect } from 'react';
 
 import { DismissableBanner, LogViewer } from '@backstage/core-components';
-
-import Paper from '@mui/material/Paper';
-import { Skeleton } from '@mui/lab';
+import { Skeleton } from '@backstage/ui';
 
 import { usePodLogs } from '../../../../hooks/usePodLogs';
 import { ContainerScope } from './types';
+import styles from './PodLogs.module.css';
 
 type PodLogsProps = {
   podScope: ContainerScope;
@@ -57,20 +56,12 @@ export const PodLogs = ({
           id="pod-logs"
         />
       )}
-      <Paper
-        elevation={1}
-        style={{ height: '100%', width: '100%', minHeight: '30rem' }}
-      >
+      <div className={styles.logContainer}>
         {loading && (
-          <Skeleton
-            data-testid="logs-skeleton"
-            variant="rectangular"
-            width="100%"
-            height="100%"
-          />
+          <Skeleton data-testid="logs-skeleton" className={styles.skeleton} />
         )}
         {!loading && value !== undefined && <LogViewer text={value.text} />}
-      </Paper>
+      </div>
     </>
   );
 };

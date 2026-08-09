@@ -26,6 +26,9 @@ import '@backstage/backend-defaults/database';
 
 const DEFAULT_SQLITE3_STORAGE_FILE_NAME = 'rbac.sqlite';
 
+const UNSUPPORTED_PG_CONNECTION_STRING_ERROR =
+  'Postgres connection config in string format is not supported yet, an object is expected';
+
 export class CasbinDBAdapterFactory {
   public constructor(
     private readonly config: ConfigApi,
@@ -38,21 +41,37 @@ export class CasbinDBAdapterFactory {
 
     let adapter;
     if (client === 'pg') {
-      const dbName =
-        await this.databaseClient.client.config.connection.database;
+      const knexConnection = this.databaseClient.client.config.connection;
+      const resolved = await this.resolveKnexPgConnection();
+
+      if (!resolved.database) {
+        throw new Error('missing database name on Knex connection');
+      }
+
       const schema =
         (await this.databaseClient.client.searchPath?.[0]) ?? 'public';
 
       const ssl = this.handlePostgresSSL(databaseConfig!);
+
+      const password =
+        typeof knexConnection === 'function'
+          ? async () => {
+              const connection = await knexConnection();
+              if (connection.password === undefined) {
+                throw new Error('missing password on resolved Knex connection');
+              }
+              return String(connection.password);
+            }
+          : databaseConfig?.getOptionalString('connection.password');
 
       adapter = await TypeORMAdapter.newAdapter({
         type: 'postgres',
         host: databaseConfig?.getString('connection.host'),
         port: databaseConfig?.getNumber('connection.port'),
         username: databaseConfig?.getOptionalString('connection.user'),
-        password: databaseConfig?.getOptionalString('connection.password'),
+        password: password as any, // TypeORM types don't include function, but pg driver supports it
         ssl,
-        database: dbName,
+        database: resolved.database,
         schema: schema,
         poolSize: databaseConfig?.getOptionalNumber('knexConfig.pool.max'),
       });
@@ -81,6 +100,20 @@ export class CasbinDBAdapterFactory {
     return adapter;
   }
 
+  private async resolveKnexPgConnection(): Promise<Knex.PgConnectionConfig> {
+    const connection = this.databaseClient.client.config.connection;
+
+    if (typeof connection === 'function') {
+      return await connection();
+    }
+
+    if (typeof connection === 'string' || connection instanceof String) {
+      throw new Error(UNSUPPORTED_PG_CONNECTION_STRING_ERROR);
+    }
+
+    return connection;
+  }
+
   private handlePostgresSSL(
     dbConfig: Config,
   ): boolean | TlsOptions | undefined {
@@ -92,9 +125,7 @@ export class CasbinDBAdapterFactory {
     }
 
     if (typeof connection === 'string' || connection instanceof String) {
-      throw new Error(
-        `rbac backend plugin doesn't support postgres connection in a string format yet`,
-      );
+      throw new Error(UNSUPPORTED_PG_CONNECTION_STRING_ERROR);
     }
 
     const ssl: boolean | ConnectionOptions | undefined = connection.ssl;

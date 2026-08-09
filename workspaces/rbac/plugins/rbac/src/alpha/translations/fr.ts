@@ -29,6 +29,8 @@ const rbacTranslationFr = createTranslationMessages({
     'page.editRole': 'Modifier le rôle',
     'table.searchPlaceholder': 'Filtre',
     'table.labelRowsSelect': 'Lignes',
+    'table.labelDisplayedRows': '{from}-{to} sur {count}',
+    'table.labelRowsPerPage': 'Lignes par page :',
     'table.title': 'Tous les rôles',
     'table.titleWithCount': 'Tous les rôles ({{count}})',
     'table.headers.name': 'Nom',
@@ -235,6 +237,7 @@ const rbacTranslationFr = createTranslationMessages({
     'common.configureAccessFor': "Configurer l'accès pour le",
     'common.defaultResourceTypeVisible':
       'Par défaut, le type de ressource sélectionné est visible par tous les utilisateurs ajoutés. Si vous souhaitez restreindre ou accorder une autorisation à des règles de plugin spécifiques, sélectionnez-les et ajoutez les paramètres.',
+    'common.tableAction': 'Action de tableau',
   },
 });
 

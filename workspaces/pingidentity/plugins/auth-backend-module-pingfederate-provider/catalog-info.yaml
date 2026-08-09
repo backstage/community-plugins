@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-community-plugin-auth-backend-module-pingfederate-provider
+  title: '@backstage-community/plugin-auth-backend-module-pingfederate-provider'
+  description: The PingFederate provider backend module for the auth plugin.
+spec:
+  lifecycle: experimental
+  type: backstage-backend-plugin-module
+  owner: maintainers

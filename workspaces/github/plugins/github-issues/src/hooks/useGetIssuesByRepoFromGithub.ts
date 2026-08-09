@@ -31,7 +31,14 @@ export const useGetIssuesByRepoFromGithub = (
 ) => {
   const githubIssuesApi = useApi(githubIssuesApiRef);
   const { entity } = useEntity();
-  const hostname = getHostnameFromEntity(entity);
+  // For Group/User entities the issues come from the *owned* repositories, not
+  // from the owner entity itself. Its own source/managed-by location therefore
+  // must not constrain the GitHub host — and is frequently a non-URL location
+  // that used to crash the card. Let the API resolve the host from the
+  // configured `integrations.github`, the same way the
+  // github-pull-requests-board plugin does.
+  const isOwnerEntity = entity.kind === 'Group' || entity.kind === 'User';
+  const hostname = isOwnerEntity ? undefined : getHostnameFromEntity(entity);
 
   const {
     value: issues,

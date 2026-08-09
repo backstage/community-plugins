@@ -26,10 +26,7 @@ export const DefaultExplorePage = () => {
     configApi.getOptionalString('organization.name') ?? 'Backstage';
 
   return (
-    <ExploreLayout
-      title={`Explore the ${organizationName} ecosystem`}
-      subtitle="Discover solutions available in your ecosystem"
-    >
+    <ExploreLayout title={`Explore the ${organizationName} ecosystem`}>
       <ExploreLayout.Route path="domains" title="Domains">
         <CatalogKindExploreContent kind="domain" />
       </ExploreLayout.Route>

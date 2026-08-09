@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
 import {
   AuthorizeResult,
@@ -56,7 +56,12 @@ import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
-import { catalogMock, mockAuditorService } from '../../__fixtures__/mock-utils';
+import {
+  catalogMock,
+  mockAuditorService,
+  mockAuthService,
+  mockUserInfoService,
+} from '../../__fixtures__/mock-utils';
 import {
   clearAuditorMock,
   expectAuditorLogForPermission,
@@ -100,8 +105,6 @@ const csvPermFile = resolve(
 );
 
 const mockClientKnex = Knex.knex({ client: MockClient });
-
-const mockAuthService = mockServices.auth();
 
 const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
   {
@@ -1120,6 +1123,46 @@ describe('RBACPermissionPolicy Tests', () => {
       );
     });
 
+    it('should deny super user access when the user belongs only to a sub-group of a configured super user group', async () => {
+      // Catalog hierarchy (see __fixtures__/data/hierarchy/groups.ts):
+      //   data_read_admin.parent = data_parent_admin
+      //   user:default/mike is a direct member of data_read_admin
+      //
+      // superUsers checks ownershipEntityRefs for an exact match only — it does
+      // not walk the catalog group tree. A resolver therefore returns the child
+      // group ref, not the parent configured as super user.
+      const superUsersConfig = new Array<{ name: string }>();
+      superUsersConfig.push({ name: 'group:default/data_parent_admin' });
+
+      const config = newConfig(csvPermFile, admins, superUsersConfig);
+      const adapter = await newAdapter(config);
+      const enfDelegateForTest = await newEnforcerDelegate(adapter, config);
+      const policyForTest = await newPermissionPolicy(
+        config,
+        enfDelegateForTest,
+        roleMetadataStorageTest,
+      );
+
+      const decision = await policyForTest.handle(
+        newPolicyQueryWithResourcePermission(
+          'catalog.entity.delete',
+          'catalog-entity',
+          'delete',
+        ),
+        newPolicyQueryUser('user:default/mike', [
+          'group:default/data_read_admin',
+        ]),
+      );
+      expect(decision.result).toBe(AuthorizeResult.DENY);
+      expectAuditorLogForPermission(
+        'user:default/mike',
+        'catalog.entity.delete',
+        'catalog-entity',
+        'delete',
+        AuthorizeResult.DENY,
+      );
+    });
+
     it('should remove users that are no longer in the config file', async () => {
       const enfRole = await enfDelegate.getFilteredGroupingPolicy(1, adminRole);
       const enfPermission = await enfDelegate.getFilteredPolicy(0, adminRole);
@@ -1687,6 +1730,7 @@ describe('Policy checks for conditional policies', () => {
       roleMetadataStorageMock,
       mockClientKnex,
       pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+      mockUserInfoService,
       mockAuthService,
     );
   });
@@ -2108,22 +2152,17 @@ function newPolicyQueryUser(
   ownershipEntityRefs?: string[],
 ): PolicyQueryUser | undefined {
   if (user) {
+    mockUserInfoService.getUserInfo.mockResolvedValueOnce({
+      userEntityRef: user,
+      ownershipEntityRefs: ownershipEntityRefs ?? [],
+    });
+
     return {
-      identity: {
-        ownershipEntityRefs: ownershipEntityRefs ?? [],
-        type: 'user',
-        userEntityRef: user,
-      },
-      credentials: {
-        $$type: '@backstage/BackstageCredentials',
-        principal: true,
-        expiresAt: new Date('2021-01-01T00:00:00Z'),
-      },
+      credentials: mockCredentials.user(user),
       info: {
         userEntityRef: user,
         ownershipEntityRefs: ownershipEntityRefs ?? [],
       },
-      token: 'token',
     };
   }
   return undefined;
@@ -2316,6 +2355,7 @@ async function newPermissionPolicy(
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+    mockUserInfoService,
     mockAuthService,
   );
   clearAuditorMock();

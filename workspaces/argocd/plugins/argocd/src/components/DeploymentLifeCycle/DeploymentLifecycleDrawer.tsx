@@ -17,18 +17,14 @@ import type { FC } from 'react';
 import Rollouts from './sidebar/rollouts/Rollouts';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import {
-  Card,
-  CardContent,
-  createStyles,
-  Drawer,
-  Grid,
-  IconButton,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import Close from '@material-ui/icons/Close';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Drawer from '@mui/material/Drawer';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Close from '@mui/icons-material/Close';
 
 import { isAppHelmChartType } from '../../utils/utils';
 import AppNamespace from '../Common/AppNamespace';
@@ -49,27 +45,6 @@ interface DeploymentLifecycleDrawerProps {
   showServer?: boolean;
 }
 
-const useDrawerStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    icon: {
-      fontSize: 20,
-    },
-    paper: {
-      width: '75%',
-      padding: theme.spacing(2.5),
-      gap: '3%',
-    },
-    header: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'baseline',
-    },
-    commitMessage: {
-      wordBreak: 'break-word',
-    },
-  }),
-);
 const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
   isOpen,
   onClose,
@@ -84,7 +59,6 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
   } = useDrawerContext();
 
   const { entity } = useEntity();
-  const classes = useDrawerStyles();
 
   const firstRevision = appHistory?.[0];
   const createdAt = firstRevision?.deployedAt;
@@ -99,14 +73,26 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
       anchor="right"
       open={isOpen}
       onClose={onClose}
-      classes={{
-        paper: classes.paper,
+      PaperProps={{
+        'data-testid': `${app?.metadata?.name}-sidebar`,
+        sx: {
+          width: '75%',
+          p: 2.5,
+          gap: '3%',
+        },
       }}
     >
       <CardContent>
         <Grid container alignItems="stretch">
           <Grid item xs={12}>
-            <div className={classes.header}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+              }}
+            >
               <Typography variant="h4">
                 <DeploymentLifecycledHeader app={app} />
               </Typography>
@@ -119,9 +105,9 @@ const DeploymentLifecycleDrawer: FC<DeploymentLifecycleDrawerProps> = ({
                 onClick={onClose}
                 color="inherit"
               >
-                <Close className={classes.icon} />
+                <Close sx={{ fontSize: 20 }} />
               </IconButton>
-            </div>
+            </Box>
             <div style={{ display: 'flex' }}>
               <StatusHeading app={app} />
             </div>

@@ -1,0 +1,71 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage
+  description: backstage.io
+  annotations:
+    backstage.io/managed-by-location: url:https://github.com/backstage/backstage
+    backstage.io/managed-by-origin-location: url:https://github.com/backstage/backstage
+    backstage.io/techdocs-ref: url:https://github.com/backstage/backstage
+    checkmarx.org/project-id: 1491e6f9-0411-4b88-8271-d93d120d05df
+    checkmarx.org/default-branch: main
+spec:
+  type: website
+  lifecycle: production
+  owner: guests
+  system: examples
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: examples
+spec:
+  owner: guests
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service
+  # intentionally no checkmarx.org/project-id
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: examples
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-website
+  annotations:
+    jenkins.io/job-full-name: folder/job
+    checkmarx.org/project-id: 1491e6f9-0411-4b88-8271-d93d120d05df
+    checkmarx.org/default-branch: master
+spec:
+  type: website
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  providesApis: [example-grpc-api]
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: example-grpc-api
+spec:
+  type: grpc
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  definition: |
+    syntax = "proto3";
+    service Exampler {
+      rpc Example (ExampleMessage) returns (ExampleMessage) {};
+    }
+    message ExampleMessage {
+      string example = 1;
+    };

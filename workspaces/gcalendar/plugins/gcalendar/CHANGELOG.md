@@ -1,5 +1,23 @@
 # @backstage-community/plugin-gcalendar
 
+## 0.23.0
+
+### Minor Changes
+
+- d67e1fc: Backstage version bump to v1.53.0
+
+## 0.22.0
+
+### Minor Changes
+
+- 884b36f: Backstage version bump to v1.52.0
+
+## 0.21.0
+
+### Minor Changes
+
+- 7fee243: Backstage version bump to v1.51.0
+
 ## 0.20.0
 
 ### Minor Changes

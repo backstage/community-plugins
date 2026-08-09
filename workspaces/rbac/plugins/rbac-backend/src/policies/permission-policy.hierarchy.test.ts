@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
 import {
   AuthorizeResult,
@@ -46,6 +46,7 @@ import {
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
   catalogMock,
+  mockUserInfoService,
 } from '../../__fixtures__/mock-utils';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { RoleMetadataStorage } from '../database/role-metadata';
@@ -64,7 +65,7 @@ type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 
 /**
  * Group, user, role, and permission information can be found under `__fixtures__/data/hierarchy/`
- * More information can be found at `examples/manual-tests/rbac` at the root of the workspace
+ * More information can be found at `__fixtures__/rbac` in the rbac-backend plugin
  * Included is a txt file with charts for the hierarchy levels for visualization
  */
 describe('Policy checks for users and groups', () => {
@@ -981,22 +982,18 @@ function newPolicyQueryUser(
   ownershipEntityRefs?: string[],
 ): PolicyQueryUser | undefined {
   if (user) {
+    // Program the mock to return custom ownershipEntityRefs if provided
+    mockUserInfoService.getUserInfo.mockResolvedValueOnce({
+      userEntityRef: user,
+      ownershipEntityRefs: ownershipEntityRefs ?? [],
+    });
+
     return {
-      identity: {
-        ownershipEntityRefs: ownershipEntityRefs ?? [],
-        type: 'user',
-        userEntityRef: user,
-      },
-      credentials: {
-        $$type: '@backstage/BackstageCredentials',
-        principal: true,
-        expiresAt: new Date('2021-01-01T00:00:00Z'),
-      },
+      credentials: mockCredentials.user(user),
       info: {
         userEntityRef: user,
         ownershipEntityRefs: ownershipEntityRefs ?? [],
       },
-      token: 'token',
     };
   }
   return undefined;
@@ -1116,6 +1113,7 @@ async function newPermissionPolicy(
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+    mockUserInfoService,
     mockAuthService,
   );
   clearAuditorMock();

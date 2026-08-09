@@ -23,6 +23,7 @@ import type {
   LoggerService,
   PermissionsRegistryService,
   PermissionsService,
+  UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import type { Config } from '@backstage/config';
@@ -58,6 +59,10 @@ import {
   DefaultPermissionsReader,
   DefaultPermissionsSyncher,
 } from '../default-permissions/default-permissions';
+import {
+  readConditionValidationLimitsFromConfig,
+  resolveConditionValidationLimits,
+} from '../validation/condition-validation';
 
 /**
  * @public
@@ -68,6 +73,7 @@ export type EnvOptions = {
   discovery: DiscoveryService;
   permissions: PermissionEvaluator;
   auth: AuthService;
+  userInfo: UserInfoService;
   httpAuth: HttpAuthService;
   auditor: AuditorService;
   lifecycle: LifecycleService;
@@ -201,6 +207,12 @@ export class PolicyBuilder {
     });
 
     const isPluginEnabled = env.config.getOptionalBoolean('permission.enabled');
+    // Invalid permission.rbac.validation.* must not prevent startup when RBAC is off.
+    const conditionValidationLimits = isPluginEnabled
+      ? resolveConditionValidationLimits(
+          readConditionValidationLimitsFromConfig(env.config),
+        )
+      : resolveConditionValidationLimits({});
     if (isPluginEnabled) {
       env.logger.info('RBAC backend plugin was enabled');
 
@@ -214,7 +226,9 @@ export class PolicyBuilder {
           roleMetadataStorage,
           databaseClient,
           pluginPermMetaData,
+          env.userInfo,
           env.auth,
+          conditionValidationLimits,
         ),
       );
     } else {
@@ -243,6 +257,7 @@ export class PolicyBuilder {
       roleMetadataStorage,
       extraPluginsIdStorage,
       extendablePluginIdProvider,
+      conditionValidationLimits,
       rbacProviders,
     );
     return server.serve();

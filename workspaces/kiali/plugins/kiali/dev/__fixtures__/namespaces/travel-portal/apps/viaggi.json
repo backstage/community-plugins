@@ -15,7 +15,7 @@
     {
       "workloadName": "viaggi",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "viaggi",
         "version": "v1"

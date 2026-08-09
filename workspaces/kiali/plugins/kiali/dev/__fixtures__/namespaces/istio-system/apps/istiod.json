@@ -15,7 +15,7 @@
     {
       "workloadName": "istiod",
       "istioSidecar": false,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "istiod",
         "install.operator.istio.io/owning-resource": "unknown",

@@ -19,7 +19,7 @@ import { ObjectReference } from './IstioObjects';
 export interface AppListItem {
   cluster?: string;
   health: AppHealth;
-  istioAmbient: boolean;
+  isAmbient: boolean;
   istioReferences: ObjectReference[];
   istioSidecar: boolean;
   labels: { [key: string]: string };

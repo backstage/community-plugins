@@ -23,6 +23,12 @@ export interface Data {
 
 export interface Versions {
   edges: Edge[];
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  hasNextPage: boolean;
+  endCursor: string | null;
 }
 
 export interface Edge {

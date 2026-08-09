@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Link, makeStyles, Theme } from '@material-ui/core';
+import Link from '@mui/material/Link';
 import { useDrawerContext } from '../../../DrawerContext';
 import { Resource } from '@backstage-community/plugin-argocd-common';
 import { isAppHelmChartType } from '../../../../../utils/utils';
@@ -26,13 +26,7 @@ import AppCommitLink from '../../../../Common/AppCommitLink';
 import { DeploymentHistory } from './DeploymentHistory';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 
-const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
-  latestDeploymentContainer: {
-    marginBottom: theme.spacing(1),
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-  },
+const deploymentStyles = {
   deploymentHistory: {
     flex: 1,
     width: '400px',
@@ -44,13 +38,13 @@ const useDeploymentInfoStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: '8px',
+    marginBottom: '8px',
   },
   commitMessage: {
     wordBreak: 'break-word',
   },
-}));
+} as const;
 
 const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
   const { entity } = useEntity();
@@ -61,7 +55,6 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
 
   const { application, latestRevision, revisions, appHistory } =
     useDrawerContext();
-  const classes = useDeploymentInfoStyles();
   const ImageLinks = () => {
     const images = application?.status?.summary?.images;
     return images.map(image => {
@@ -122,7 +115,7 @@ const DeploymentMetadata = ({ resource }: { resource: Resource }) => {
           application={application}
           revisions={revisions}
           appHistory={appHistory}
-          styleClasses={classes}
+          styleClasses={deploymentStyles}
           annotations={entity?.metadata?.annotations}
           showFullDeploymentHistory={showFullDeploymentHistory}
         />

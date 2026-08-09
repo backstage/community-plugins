@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-apiiro-entity-processor
 
+## 1.1.0
+
+### Minor Changes
+
+- febea01: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [febea01]
+  - @backstage-community/plugin-apiiro-common@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

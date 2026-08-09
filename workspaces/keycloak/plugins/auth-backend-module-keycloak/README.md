@@ -9,10 +9,12 @@ For an enhanced experience, we recommend using this module alongside the @backst
 - Authentication via the Keycloak OpenID Connect `authorization_code` flow.
 - Automatic discovery of the Keycloak issuer (`/.well-known/openid-configuration`).
 - Refresh token support, including Keycloak's default refresh-token rotation.
-- Three sign-in resolvers out of the box:
+- Sign-in resolvers (configure under `auth.providers.keycloak.<env>.signIn.resolvers`):
   - `emailMatchingUserEntityProfileEmail`
   - `emailLocalPartMatchingUserEntityName`
   - `preferredUsernameMatchingUserEntityName`
+  - `oidcSubClaimMatchingKeycloakUserId` — match catalog users by `keycloak.org/id` using the OIDC `sub` claim
+  - `ldapUuidMatchingAnnotation` — match catalog users by `backstage.io/ldap-uuid`; the LDAP id claim must match in userinfo and the ID token
 - Configurable `additionalScopes` (e.g. `offline_access`, `roles`).
 - RP-initiated Single Logout: revokes the refresh token at Keycloak and returns the Keycloak
   `end_session_endpoint` URL so the browser terminates the Keycloak SSO session.
@@ -96,8 +98,11 @@ auth:
         # prompt: "login"
         signIn:
           resolvers:
-            # See https://backstage.io/docs/auth/identity-resolver for more resolvers.
+            # See "Sign-in resolvers" and "Match users by LDAP UUID" below.
             - resolver: preferredUsernameMatchingUserEntityName
+            # - resolver: oidcSubClaimMatchingKeycloakUserId
+            # - resolver: ldapUuidMatchingAnnotation
+            #   ldapUuidKey: ldap_uuid # optional; default is ldap_uuid
             # Optional: Bypass the catalog check by enabling the `dangerouslyAllowSignInWithoutUserInCatalog` option.
             # - resolver: preferredUsernameMatchingUserEntityName
             #   dangerouslyAllowSignInWithoutUserInCatalog: true
@@ -137,7 +142,10 @@ For detailed instructions, refer to the official Keycloak documentation on [clie
 
 ### Sign-in resolvers
 
-This module ships three resolvers that you can reference from `signIn.resolvers` above:
+This module ships the following resolvers for `signIn.resolvers` (see also
+[Identity resolver](https://backstage.io/docs/auth/identity-resolver) in the Backstage docs):
+
+**Shared / email / username**
 
 - `emailMatchingUserEntityProfileEmail`: matches the Keycloak `email` claim with a Catalog `User` entity that
   has the same `spec.profile.email`. Throws `NotFoundError` when no entity matches.
@@ -145,12 +153,87 @@ This module ships three resolvers that you can reference from `signIn.resolvers`
   [local part](https://en.wikipedia.org/wiki/Email_address#Local-part) of the Keycloak `email` claim with a
   Catalog `User` entity whose `metadata.name` is equal to that local part.
 - `preferredUsernameMatchingUserEntityName`: matches the Keycloak `preferred_username` claim with a Catalog
-  `User` entity whose `metadata.name` is equal to that username. Throws when the profile does not contain a
-  `preferred_username`.
+  `User` entity whose `metadata.name` is equal to that username (after the same sanitization as the Keycloak
+  catalog plugin). Throws when the profile does not contain a `preferred_username`.
+
+**Keycloak-specific**
+
+- `oidcSubClaimMatchingKeycloakUserId`: matches the OIDC `sub` from userinfo (cross-checked against the ID
+  token) to the `keycloak.org/id` annotation. Use with the Keycloak catalog module so users carry that
+  annotation.
+
+**LDAP UUID (LDAP user federation)**
+
+- `ldapUuidMatchingAnnotation`: matches a claim from userinfo to the `backstage.io/ldap-uuid` annotation. The
+  same claim must appear on the ID token with the same value. Values are checked as UUID strings.
+
+Optional factory options:
+
+- `dangerouslyAllowSignInWithoutUserInCatalog` (where supported): allow issuing a session when no catalog user
+  matches (discouraged in production).
+- `ldapUuidKey` (LDAP UUID resolvers only): claim name for the directory UUID; default `ldap_uuid`.
 
 If none of the provided resolvers fits your needs, follow the
 [Building Custom Resolvers](https://backstage.io/docs/auth/identity-resolver#building-custom-resolvers) guide
 in the Backstage documentation.
+
+### Match users by LDAP UUID (Keycloak)
+
+Use this when Keycloak federates users from LDAP and catalog `User` entities carry `backstage.io/ldap-uuid`
+(from [`@backstage/plugin-catalog-backend-module-ldap`](https://backstage.io/docs/integrations/ldap/introduction)).
+
+You need:
+
+1. Catalog users with the `backstage.io/ldap-uuid` annotation provided by the `@backstage/plugin-catalog-backend-module-ldap` catalog provider.
+2. A Keycloak **client scope** and **mapper** that copies the LDAP unique id into a token claim (default
+   name `ldap_uuid`) on **both** the ID token and userinfo.
+3. `signIn.resolvers` with `ldapUuidMatchingAnnotation`, and `ldapUuidKey` if you use a claim name other than
+   `ldap_uuid`.
+
+#### Keycloak: client scope and mapper
+
+1. **Client scopes** → **Create client scope** (for example `ldap_uuid`).
+2. On that scope → **Mappers** → **User Attribute** or **LDAP Attribute** mapper (depends on your Keycloak
+   version). Example fields:
+   - **User Attribute**: the attribute that stores the LDAP unique id in Keycloak.
+   - **Token Claim Name**: `ldap_uuid` (or your chosen name; set `ldapUuidKey` in `app-config` to match).
+   - **Claim JSON Type**: `String`
+   - **Add to ID token** and **Add to userinfo**: on
+3. **Clients** → your Backstage client → **Client scopes** → add the scope as **Default** (or **Optional**).
+
+This module reads userinfo from Keycloak and checks the ID token from the token response, so the mapper must
+emit the claim in both places.
+
+#### Optional scope on the OAuth request
+
+If the scope is **Optional** on the client, request it with `additionalScopes`:
+
+```yaml
+additionalScopes:
+  - ldap_uuid
+```
+
+#### Backstage: `app-config.yaml`
+
+```yaml
+auth:
+  providers:
+    keycloak:
+      development:
+        clientId: ${AUTH_KEYCLOAK_CLIENT_ID}
+        clientSecret: ${AUTH_KEYCLOAK_CLIENT_SECRET}
+        baseUrl: ${AUTH_KEYCLOAK_BASE_URL}
+        realm: ${AUTH_KEYCLOAK_REALM}
+        signIn:
+          resolvers:
+            - resolver: ldapUuidMatchingAnnotation
+              ldapUuidKey: ldap_uuid # optional; default is ldap_uuid
+```
+
+In production, prefer a **single** sign-in resolver (or a small ordered list you understand) so identity
+matching stays clear.
+
+Restart the Backstage backend after changing Keycloak or `app-config`.
 
 ### Integrating with the Keycloak catalog provider
 
@@ -160,7 +243,9 @@ recommended way to achieve this is to deploy the companion plugin
 synchronises Keycloak users and groups into the catalog on a schedule.
 
 When using that plugin, `preferredUsernameMatchingUserEntityName` is usually the most straightforward
-resolver because the catalog User entity names are generated from the Keycloak username by default.
+resolver because the catalog User entity names are generated from the Keycloak username by default. For
+LDAP-federated identities where the catalog stores `backstage.io/ldap-uuid`, use
+`ldapUuidMatchingAnnotation` instead (see **Match users by LDAP UUID**).
 
 ### Adding the provider to the Backstage frontend
 
@@ -275,10 +360,12 @@ served over TLS in non-local environments.
 
 - **Issuer discovery is performed once per backend start.** If the Keycloak server is unreachable at startup,
   the plugin stays unavailable until the Backstage backend is restarted.
-- **User attributes come from `userinfo`, not the ID Token claims.** The module authenticates users by
-  calling the Keycloak `userinfo` endpoint with the access token rather than trusting the `id_token`
-  payload. CSRF is enforced by the Backstage auth framework via the nonce cookie, and the ID Token `nonce`
-  claim is additionally validated against the nonce embedded in the OAuth state for replay protection.
+- **User attributes for sign-in come primarily from `userinfo`.** The module still obtains the **ID token**
+  string from the token response so resolvers such as `oidcSubClaimMatchingKeycloakUserId` and
+  `ldapUuidMatchingAnnotation` can cross-check claims against the ID token (see implementation in
+  `src/resolvers.ts`). CSRF is enforced by the Backstage auth framework via the nonce cookie, and the ID
+  token `nonce` claim is additionally validated against the nonce embedded in the OAuth state for replay
+  protection.
 - **Self-signed certificates.** If your Keycloak server presents a certificate that the Node runtime does
   not trust, set `NODE_EXTRA_CA_CERTS` to point at your CA bundle. Setting `NODE_TLS_REJECT_UNAUTHORIZED=0`
   disables all TLS validation and is strongly discouraged outside local development.

@@ -121,7 +121,7 @@ const SentryIssuesTable = (props: SentryIssuesTableProps) => {
             </Grid>
           </Grid>
         }
-        subtitle={statsFor ? `Stats for ${statsFor}` : undefined}
+        subtitle={statsFor ? `Graph shows the last ${statsFor}` : undefined}
         data={filteredIssues}
       />
     </>

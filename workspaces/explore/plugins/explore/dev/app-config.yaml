@@ -5,8 +5,31 @@ app:
     - 'nav-item:catalog': false
     - 'page:explore':
         config:
-          path: '/'
+          path: '/explore'
+    - 'app/routes':
+        config:
+          redirects:
+            - from: /
+              to: /explore
 backend:
   baseUrl: http://localhost:7007
   listen:
     port: 7007
+
+explore:
+  tools:
+    - title: 'Tech Radar'
+      description: 'Tech Radar is a list of technologies, complemented by an assessment result, called ring assignment.'
+      url: '/tech-radar'
+      image: 'https://backstage.io/img/android-chrome-192x192.png'
+      tags: ['standards', 'landscape']
+    - title: 'Cost Insights'
+      description: 'Insights into cloud costs for your organization.'
+      url: '/cost-insights'
+      image: 'https://backstage.io/img/android-chrome-192x192.png'
+      tags: ['cloud', 'finops']
+    - title: 'GraphiQL'
+      description: 'Integrates GraphiQL as a tool to browse GraphiQL endpoints inside Backstage.'
+      url: '/graphiql'
+      image: 'https://backstage.io/img/android-chrome-192x192.png'
+      tags: ['graphql', 'dev']

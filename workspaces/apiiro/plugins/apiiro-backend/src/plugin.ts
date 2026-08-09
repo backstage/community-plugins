@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import {
+  BackendFeature,
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
@@ -39,7 +40,7 @@ import {
  *
  * @public
  */
-export const apiiroBackendPlugin = createBackendPlugin({
+export const apiiroBackendPlugin: BackendFeature = createBackendPlugin({
   pluginId: 'apiiro',
   register(env) {
     env.registerInit({

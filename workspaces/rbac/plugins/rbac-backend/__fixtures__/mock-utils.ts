@@ -140,6 +140,7 @@ export const mockClientKnex = Knex.knex({ client: MockClient });
 
 export const mockHttpAuth = mockServices.httpAuth();
 export const mockAuthService = mockServices.auth();
+export const mockUserInfoService = mockServices.userInfo.mock();
 
 export const createEventMock = {
   success: jest.fn(),

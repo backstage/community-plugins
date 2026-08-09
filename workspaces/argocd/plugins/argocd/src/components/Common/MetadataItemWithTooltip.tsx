@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Typography, Tooltip } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import { FlexItem } from '@patternfly/react-core';

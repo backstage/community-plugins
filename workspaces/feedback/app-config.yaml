@@ -12,12 +12,23 @@ backend:
     allow:
       - host: localhost
 
+  actions:
+    pluginSources:
+      - feedback
+      - catalog
+      - auth
+
   database:
     pluginDivisionMode: database
     client: 'better-sqlite3'
     connection: ':memory:'
 
 auth:
+  experimentalDynamicClientRegistration:
+    enabled: false
+  experimentalClientIdMetadataDocuments:
+    enabled: false
+
   providers:
     guest:
       userEntityRef: user:default/guest
@@ -81,3 +92,13 @@ feedback:
     jira:
       - host: ${JIRA_HOST}
         token: ${JIRA_TOKEN}
+        hostType: CLOUD
+    email:
+      host: ${EMAIL_HOST}
+      port: ${EMAIL_PORT}
+      from: ${EMAIL_FROM}
+      secure: false # true if port is 465
+      caCert: ${NODE_EXTRA_CA_CERTS}
+
+mcpActions:
+  namespacedToolNames: true

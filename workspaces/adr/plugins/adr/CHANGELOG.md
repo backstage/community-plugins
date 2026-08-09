@@ -1,5 +1,46 @@
 # @backstage-community/plugin-adr
 
+## 0.28.0
+
+### Minor Changes
+
+- ce13433: Update new frontend system extension definitions to remove unnecessary compatibility wrappers
+
+  **BREAKING** The extension name for `adrEntityContentExtension` and `adrApiExtension` has been removed since it was unnecessary
+
+## 0.27.0
+
+### Minor Changes
+
+- e585d96: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- Updated dependencies [e585d96]
+  - @backstage-community/plugin-adr-common@0.22.0
+
+## 0.26.0
+
+### Minor Changes
+
+- 69dc36f: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [69dc36f]
+  - @backstage-community/plugin-adr-common@0.21.0
+
+## 0.25.0
+
+### Minor Changes
+
+- f58d4b7: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [f58d4b7]
+  - @backstage-community/plugin-adr-common@0.20.0
+
 ## 0.24.0
 
 ### Minor Changes

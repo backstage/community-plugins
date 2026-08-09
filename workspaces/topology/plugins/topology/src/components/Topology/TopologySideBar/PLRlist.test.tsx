@@ -23,15 +23,6 @@ jest.mock('../../../hooks/useTranslation', () => ({
   useTranslation: () => mockUseTranslation(),
 }));
 
-jest.mock('@material-ui/styles', () => ({
-  ...jest.requireActual('@material-ui/styles'),
-  makeStyles: () => (_theme: any) => {
-    return {
-      ok: 'ok',
-    };
-  },
-}));
-
 describe('PLRlist', () => {
   it('shows the workload pipeline', () => {
     const pipelines = mockTektonResources.pipelines;
