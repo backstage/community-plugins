@@ -40,6 +40,7 @@ import {
   entityCloudStub,
 } from '../responseStubs';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { translationApiRef } from '@backstage/core-plugin-api/alpha';
 
 const discoveryApi = UrlPatternDiscovery.compile('http://exampleapi.com');
@@ -209,6 +210,103 @@ describe('PullRequestList', () => {
       // No data text should be visible (or similar empty state indicator)
       // This depends on what the component shows when there's no data
       expect(screen.queryByText(/^#\d+$/)).not.toBeInTheDocument();
+    });
+  });
+
+  it('should send correct state query param to Server API when filter changes', async () => {
+    let capturedStateParam: string | null = null;
+
+    worker.use(
+      rest.get(
+        'http://exampleapi.com/bitbucket/api/projects/testproject/repos/testrepo/pull-requests',
+        (req, res, ctx) => {
+          capturedStateParam = req.url.searchParams.get('state');
+          return res(ctx.json(pullRequestsResponseStub));
+        },
+      ),
+    );
+
+    render(
+      <TestApiProvider apis={apis}>
+        <EntityProvider entity={entityStub}>
+          <PullRequestList />
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+
+    // Initial load — no state param (ALL is represented by omitting state)
+    await waitFor(() => {
+      expect(screen.getByText('Bitbucket Pull Requests')).toBeInTheDocument();
+    });
+    expect(capturedStateParam).toBeNull();
+
+    // Click MERGED filter
+    await userEvent.click(screen.getByRole('button', { name: /Merged/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBe('MERGED');
+    });
+
+    // Click OPEN filter
+    await userEvent.click(screen.getByRole('button', { name: /Open/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBe('OPEN');
+    });
+
+    // Click DECLINED filter
+    await userEvent.click(screen.getByRole('button', { name: /Declined/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBe('DECLINED');
+    });
+
+    // Click ALL filter — Server sends no state param when ALL
+    await userEvent.click(screen.getByRole('button', { name: /^All$/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBeNull();
+    });
+  });
+
+  it('should send correct state query param to Cloud API when filter changes', async () => {
+    let capturedStateParam: string | null = null;
+
+    worker.use(
+      rest.get(
+        'http://exampleapi.com/bitbucket/api/2.0/repositories/myworkspace/example-project/pullrequests',
+        (req, res, ctx) => {
+          capturedStateParam = req.url.searchParams.get('state');
+          return res(ctx.json(pullRequestsCloudResponseStub));
+        },
+      ),
+    );
+
+    render(
+      <TestApiProvider apis={cloudApis}>
+        <EntityProvider entity={entityCloudStub}>
+          <PullRequestList />
+        </EntityProvider>
+      </TestApiProvider>,
+    );
+
+    // Initial load — Cloud uses no state param for ALL (maps to all states)
+    await waitFor(() => {
+      expect(screen.getByText('Bitbucket Pull Requests')).toBeInTheDocument();
+    });
+
+    // Click MERGED — Cloud accepts MERGED (not ALL)
+    await userEvent.click(screen.getByRole('button', { name: /Merged/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBe('MERGED');
+    });
+
+    // Click OPEN
+    await userEvent.click(screen.getByRole('button', { name: /Open/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBe('OPEN');
+    });
+
+    // Click DECLINED
+    await userEvent.click(screen.getByRole('button', { name: /Declined/i }));
+    await waitFor(() => {
+      expect(capturedStateParam).toBe('DECLINED');
     });
   });
 
