@@ -57,8 +57,8 @@
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
-    "ui-test": "start-server-and-test start:mock localhost:3000 'APP_MODE=legacy playwright test -c ../../playwright.mock.config.ts'",
-    "ui-test:alpha": "start-server-and-test start:alpha:mock localhost:3000 'APP_MODE=alpha playwright test -c ../../playwright.mock.config.ts'"
+    "ui-test": "yarn --cwd ../.. test:nfs --project=en",
+    "ui-test:legacy": "yarn --cwd ../.. test:legacy --project=en"
   },
   "dependencies": {
     "@backstage-community/plugin-rbac-common": "workspace:^",
@@ -109,8 +109,7 @@
     "msw": "1.3.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.0.0",
-    "start-server-and-test": "3.0.12"
+    "react-router-dom": "^6.0.0"
   },
   "files": [
     "dist"
