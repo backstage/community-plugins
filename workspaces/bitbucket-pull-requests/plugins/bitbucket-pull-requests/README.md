@@ -52,8 +52,8 @@ proxy:
 bitbucket:
   # Defaults to /bitbucket/api and can be omitted if proxy is configured for that url
   proxyPath: /bitbucket/api
-  # Defaults to server, set type for cloud hosted bitbucket
-  type: cloud or server
+  # Valid values: cloud or server. Defaults to server; set to cloud for cloud-hosted Bitbucket.
+  type: cloud
 ```
 
 For token generation refer [link](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens)
@@ -67,9 +67,10 @@ For token generation refer [link](https://support.atlassian.com/bitbucket-cloud/
 ```yaml
 metadata:
   annotations:
+    # For Bitbucket Server / Data Center:
     bitbucket.com/project-slug: <example-bitbucket-project-name>/<example-bitbucket-repo-name>
-    # For Bitbucket cloud use
-    bitbucket.org/repo-slug: my-workspace/my-repo
+    # For Bitbucket Cloud:
+    bitbucket.org/repo-slug: <my-workspace>/<my-repo>
 ```
 
 ## Adding Bitbucket Pull Requests to your Homepage
