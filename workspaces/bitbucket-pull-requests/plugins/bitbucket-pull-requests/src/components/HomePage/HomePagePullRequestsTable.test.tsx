@@ -23,7 +23,10 @@ import {
   PullRequest,
   BitbucketApi,
 } from '../../api/BitbucketApi';
-import { pullRequestsResponseStub, pullRequestsCloudResponseStub } from '../../responseStubs';
+import {
+  pullRequestsResponseStub,
+  pullRequestsCloudResponseStub,
+} from '../../responseStubs';
 
 type JsonResponse = {
   ok: boolean;
@@ -385,7 +388,9 @@ describe('HomePagePullRequestsTable', () => {
   });
 
   it('should render pull requests with Cloud data format', async () => {
-    mockBitbucketApi.fetchUserPullRequests.mockResolvedValue(mockCloudPullRequests);
+    mockBitbucketApi.fetchUserPullRequests.mockResolvedValue(
+      mockCloudPullRequests,
+    );
 
     render(
       <TestApiProvider apis={apis}>
@@ -407,8 +412,10 @@ describe('HomePagePullRequestsTable', () => {
     expect(
       await screen.findByText(`PR #${mockCloudPullRequests[0].id}`),
     ).toBeInTheDocument();
-    expect(screen.getByText(mockCloudPullRequests[0].title)).toBeInTheDocument();
-    
+    expect(
+      screen.getByText(mockCloudPullRequests[0].title),
+    ).toBeInTheDocument();
+
     // Verify Cloud-specific fields are rendered correctly
     const repoLinks = screen.getAllByRole('link', {
       name: mockCloudPullRequests[0].fromRepo,
@@ -550,11 +557,15 @@ describe('HomePagePullRequestsTable', () => {
     expect(screen.queryByText('PR #222')).not.toBeInTheDocument();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/2.0/repositories/workspace-a/repo-one/pullrequests'),
+      expect.stringContaining(
+        '/2.0/repositories/workspace-a/repo-one/pullrequests',
+      ),
       expect.any(Object),
     );
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('/2.0/repositories/workspace-b/repo-two/pullrequests'),
+      expect.stringContaining(
+        '/2.0/repositories/workspace-b/repo-two/pullrequests',
+      ),
       expect.any(Object),
     );
   });

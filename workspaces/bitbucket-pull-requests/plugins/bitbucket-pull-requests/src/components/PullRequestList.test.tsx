@@ -239,7 +239,9 @@ describe('PullRequestList', () => {
     });
 
     expect(
-      screen.getByText(pullRequestsCloudResponseStub.values[0].author.display_name),
+      screen.getByText(
+        pullRequestsCloudResponseStub.values[0].author.display_name,
+      ),
     ).toBeInTheDocument();
   });
 });

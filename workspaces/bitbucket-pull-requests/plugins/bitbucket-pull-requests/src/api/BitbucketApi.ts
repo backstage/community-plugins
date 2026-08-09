@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 import {
   createApiRef,
   DiscoveryApi,
   IdentityApi,
   ConfigApi,
-  FetchApi
+  FetchApi,
 } from '@backstage/core-plugin-api';
 import { parseEntityRef } from '@backstage/catalog-model';
 
@@ -65,7 +64,7 @@ type Options = {
   discoveryApi: DiscoveryApi;
   identityApi: IdentityApi;
   configApi?: ConfigApi;
-  fetchApi: FetchApi
+  fetchApi: FetchApi;
 };
 type PullRequestRole = 'REVIEWER' | 'AUTHOR';
 type PullRequestState = 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL';
@@ -197,7 +196,9 @@ class BitbucketServerClient extends BaseBitbucketClient {
     return response.json();
   }
 
-  private async enhancePrWithBuildStatus(pr: PullRequest): Promise<PullRequest> {
+  private async enhancePrWithBuildStatus(
+    pr: PullRequest,
+  ): Promise<PullRequest> {
     if (pr.latestCommit) {
       return this.fetchBuildStatus(pr.latestCommit)
         .then(buildStatus => ({
@@ -316,7 +317,7 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     super(discoveryApi, identityApi, fetchApi, proxyPath);
   }
 
-  //Convert absolute Bitbucket Cloud API URLs to proxied URLs.
+  // Convert absolute Bitbucket Cloud API URLs to proxied URLs.
   private convertToProxiedUrl(proxyUrl: string, absoluteUrl: string): string {
     try {
       const url = new URL(absoluteUrl);
@@ -330,11 +331,14 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     }
   }
 
-  private async fetchWorkspaceRepositories(workspace: string): Promise<string[]> {
+  private async fetchWorkspaceRepositories(
+    workspace: string,
+  ): Promise<string[]> {
     const proxyUrl = await this.getProxyUrl();
     const repos: string[] = [];
-    let nextUrl: string | undefined =
-      `${proxyUrl}${this.proxyPath}/2.0/repositories/${workspace}?pagelen=100`;
+    let nextUrl:
+      | string
+      | undefined = `${proxyUrl}${this.proxyPath}/2.0/repositories/${workspace}?pagelen=100`;
 
     while (nextUrl) {
       const response: Response = await this.fetchApi.fetch(nextUrl, {
@@ -344,7 +348,9 @@ class BitbucketCloudClient extends BaseBitbucketClient {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch repositories for workspace '${workspace}'`);
+        throw new Error(
+          `Failed to fetch repositories for workspace '${workspace}'`,
+        );
       }
 
       const data: any = await response.json();
@@ -353,7 +359,9 @@ class BitbucketCloudClient extends BaseBitbucketClient {
         .filter((slug: any) => typeof slug === 'string');
       repos.push(...pageRepos);
       // Convert absolute pagination URL to proxied URL
-      nextUrl = data.next ? this.convertToProxiedUrl(proxyUrl, data.next) : undefined;
+      nextUrl = data.next
+        ? this.convertToProxiedUrl(proxyUrl, data.next)
+        : undefined;
     }
 
     return repos;
@@ -476,11 +484,14 @@ export class BitbucketApi {
   private readonly client: BitbucketClient;
 
   constructor(options: Options) {
-    const isCloud = options.configApi?.getOptionalString('bitbucket.type') === 'cloud';
+    const isCloud =
+      options.configApi?.getOptionalString('bitbucket.type') === 'cloud';
     const proxyPath =
-      options.configApi?.getOptionalString('bitbucket.proxyPath') || DEFAULT_PROXY_PATH;
+      options.configApi?.getOptionalString('bitbucket.proxyPath') ||
+      DEFAULT_PROXY_PATH;
     const cloudWorkspaces =
-      options.configApi?.getOptionalStringArray('bitbucket.cloudWorkspaces') || [];
+      options.configApi?.getOptionalStringArray('bitbucket.cloudWorkspaces') ||
+      [];
 
     this.client = isCloud
       ? new BitbucketCloudClient(

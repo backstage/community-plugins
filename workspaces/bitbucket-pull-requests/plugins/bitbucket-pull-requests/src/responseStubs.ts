@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { BITBUCKET_SERVER_ANNOTATION, BITBUCKET_CLOUD_ANNOTATION } from './utils/isBitbucketSlugSet';
+import {
+  BITBUCKET_SERVER_ANNOTATION,
+  BITBUCKET_CLOUD_ANNOTATION,
+} from './utils/isBitbucketSlugSet';
 
 export const entityStub = {
   metadata: {
