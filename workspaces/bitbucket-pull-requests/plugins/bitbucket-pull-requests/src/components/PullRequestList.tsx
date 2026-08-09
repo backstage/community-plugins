@@ -79,7 +79,7 @@ const PullRequestDetailPanel = ({ rowData }: { rowData: PullRequest }) => (
 
 const PullRequestList: FC = () => {
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
-  const [stateFilter, setStateFilter] = useState<string>('All');
+  const [stateFilter, setStateFilter] = useState<string>('ALL');
   const [loading, setLoading] = useState(true);
   const { entity } = useEntity();
   const project = isBitbucketSlugSet(entity);
@@ -93,7 +93,7 @@ const PullRequestList: FC = () => {
       .fetchPullRequestListForRepo(
         projectName,
         repoName,
-        stateFilter !== 'All' ? stateFilter : undefined,
+        stateFilter !== 'ALL' ? stateFilter : undefined,
       )
       .then(data => {
         setPullRequests(data);
