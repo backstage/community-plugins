@@ -451,21 +451,42 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     const states =
       state === 'ALL' ? ['OPEN', 'MERGED', 'DECLINED', 'SUPERSEDED'] : [state];
 
-    const allPullRequests: PullRequest[] = [];
+    // Collect all repos across all workspaces first
+    const repoTasks: Array<{ workspace: string; repo: string }> = [];
     for (const workspace of this.cloudWorkspaces) {
       const repos = await this.fetchWorkspaceRepositories(workspace);
       for (const repo of repos) {
-        const repoPullRequests = await this.fetchRepoPullRequests(
-          workspace,
-          repo,
-          states,
-          Math.min(limit, DEFAULT_LIMIT),
-        );
-        allPullRequests.push(...repoPullRequests);
+        repoTasks.push({ workspace, repo });
       }
     }
 
-    let pullRequests = allPullRequests;
+    const collected: PullRequest[] = [];
+    const CONCURRENCY = 5;
+
+    // Process repos in concurrent batches with early exit once limit is reached
+    for (let i = 0; i < repoTasks.length; i += CONCURRENCY) {
+      if (collected.length >= limit) break;
+
+      const batch = repoTasks.slice(i, i + CONCURRENCY);
+      const batchResults = await Promise.all(
+        batch.map(
+          ({ workspace, repo }) =>
+            this.fetchRepoPullRequests(
+              workspace,
+              repo,
+              states,
+              Math.min(limit, DEFAULT_LIMIT),
+            ).catch(() => [] as PullRequest[]), // skip repos that fail, don't abort entire fetch
+        ),
+      );
+
+      for (const prs of batchResults) {
+        collected.push(...prs);
+        if (collected.length >= limit * 3) break; // avoid unbounded accumulation before filtering
+      }
+    }
+
+    let pullRequests = collected;
 
     // Cloud API returns all PRs for the user, so we filter by role client-side.
     if (role === 'AUTHOR') {
