@@ -16,10 +16,14 @@
 
 import { Entity } from '@backstage/catalog-model';
 
+// Bitbucket Cloud annotation: workspace/repo-slug format
+export const BITBUCKET_CLOUD_ANNOTATION = 'bitbucket.org/repo-slug';
+
+// Bitbucket Server annotation: project-key/repo-slug format
 export const BITBUCKET_SERVER_ANNOTATION = 'bitbucket.com/project-slug';
-export const BITBUCKET_CLOUD_ANNOTATION = 'bitbucket.com/repo-slug';
 
 export const isBitbucketSlugSet = (entity: Entity) => {
+  // Try Cloud annotation first, then fall back to Server annotation
   return (
     entity?.metadata.annotations?.[BITBUCKET_CLOUD_ANNOTATION] ??
     entity?.metadata.annotations?.[BITBUCKET_SERVER_ANNOTATION] ??

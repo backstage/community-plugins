@@ -17,20 +17,18 @@
 import { FC, useState } from 'react';
 import { ButtonGroup, Button } from '@material-ui/core';
 
-export type PullRequestState = 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL';
-
 interface StatusFilterProps {
-  onFilterChange: (filter: PullRequestState) => void;
+  onFilterChange: (filter: string) => void;
 }
 const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
-  const [status, setStatus] = useState<PullRequestState>('ALL');
+  const [status, setStatus] = useState('ALL');
 
-  const handleStatusChange = (newStatus: PullRequestState) => {
+  const handleStatusChange = (newStatus: any) => {
     setStatus(newStatus);
     onFilterChange(newStatus);
   };
 
-  const buttons: { value: PullRequestState; label: string }[] = [
+  const buttons = [
     { value: 'OPEN', label: 'Open' },
     { value: 'MERGED', label: 'Merged' },
     { value: 'DECLINED', label: 'Declined' },

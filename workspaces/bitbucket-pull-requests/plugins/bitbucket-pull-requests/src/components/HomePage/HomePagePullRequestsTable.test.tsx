@@ -23,10 +23,17 @@ import {
   PullRequest,
   BitbucketApi,
 } from '../../api/BitbucketApi';
-import {
-  pullRequestsResponseStub,
-  pullRequestsCloudResponseStub,
-} from '../../responseStubs';
+import { pullRequestsResponseStub, pullRequestsCloudResponseStub } from '../../responseStubs';
+
+type JsonResponse = {
+  ok: boolean;
+  json: () => Promise<any>;
+};
+
+const makeJsonResponse = (payload: any, ok = true): JsonResponse => ({
+  ok,
+  json: async () => payload,
+});
 
 // Mock the EntityPeekAheadPopover to avoid catalog API dependencies
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -100,11 +107,11 @@ jest.mock('@material-ui/core/Tooltip', () => ({
 }));
 
 describe('HomePagePullRequestsTable', () => {
-  // Create a BitbucketApi instance just to use its mapPullRequests method
+  // Create a BitbucketApi instance just to use its mapServerPullRequests method
   const bitbucketApiMapper = new BitbucketApi({
     discoveryApi: { getBaseUrl: jest.fn() } as any,
     identityApi: { getBackstageIdentity: jest.fn() } as any,
-    fetchApi: { getBackstageIdentity: jest.fn() } as any,
+    fetchApi: { fetch: jest.fn() } as any,
   });
 
   // Map the response stub data to PullRequest objects and add buildStatus
@@ -115,6 +122,7 @@ describe('HomePagePullRequestsTable', () => {
       buildStatus: 'SUCCESSFUL' as const,
     }));
 
+  // Map Cloud response stub data
   const mockCloudPullRequests: PullRequest[] = bitbucketApiMapper
     .mapCloudPullRequests(pullRequestsCloudResponseStub)
     .map(pr => ({
@@ -377,15 +385,14 @@ describe('HomePagePullRequestsTable', () => {
   });
 
   it('should render pull requests with Cloud data format', async () => {
-    mockBitbucketApi.fetchUserPullRequests.mockResolvedValue(
-      mockCloudPullRequests,
-    );
+    mockBitbucketApi.fetchUserPullRequests.mockResolvedValue(mockCloudPullRequests);
+
     render(
       <TestApiProvider apis={apis}>
-        {' '}
-        <HomePagePullRequestsTable userRole="AUTHOR" />{' '}
+        <HomePagePullRequestsTable userRole="AUTHOR" />
       </TestApiProvider>,
     );
+
     // Wait for data to load
     await waitFor(() => {
       expect(mockBitbucketApi.fetchUserPullRequests).toHaveBeenCalledWith(
@@ -394,17 +401,161 @@ describe('HomePagePullRequestsTable', () => {
         25,
         { includeBuildStatus: true },
       );
-    }); // Verify Cloud PR content is rendered
+    });
+
+    // Verify Cloud PR content is rendered
     expect(
       await screen.findByText(`PR #${mockCloudPullRequests[0].id}`),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(mockCloudPullRequests[0].title),
-    ).toBeInTheDocument();
+    expect(screen.getByText(mockCloudPullRequests[0].title)).toBeInTheDocument();
+    
     // Verify Cloud-specific fields are rendered correctly
     const repoLinks = screen.getAllByRole('link', {
       name: mockCloudPullRequests[0].fromRepo,
     });
     expect(repoLinks.length).toBeGreaterThan(0);
+  });
+
+  it('shows a clear error when cloudWorkspaces config is missing', async () => {
+    const realBitbucketApi = new BitbucketApi({
+      discoveryApi: {
+        getBaseUrl: jest.fn().mockResolvedValue('http://exampleapi.com'),
+      } as any,
+      identityApi: {
+        getBackstageIdentity: jest
+          .fn()
+          .mockResolvedValue({ userEntityRef: 'user:default/johndoe' }),
+      } as any,
+      configApi: {
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'bitbucket.type') return 'cloud';
+          if (key === 'bitbucket.proxyPath') return '/bitbucket/api';
+          return undefined;
+        }),
+        getOptionalStringArray: jest.fn(() => undefined),
+      } as any,
+      fetchApi: {
+        fetch: jest.fn(),
+      } as any,
+    });
+
+    render(
+      <TestApiProvider
+        apis={[
+          [bitbucketApiRef, realBitbucketApi],
+          [errorApiRef, new MockErrorApi()],
+        ]}
+      >
+        <HomePagePullRequestsTable userRole="AUTHOR" />
+      </TestApiProvider>,
+    );
+
+    expect(
+      await screen.findByText(
+        /Bitbucket Cloud user pull requests require configured workspaces/i,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('aggregates cloud PRs across configured workspaces in component flow', async () => {
+    const fetchMock = jest.fn(async (url: string) => {
+      if (url.includes('/2.0/repositories/workspace-a?pagelen=100')) {
+        return makeJsonResponse({ values: [{ slug: 'repo-one' }] });
+      }
+
+      if (url.includes('/2.0/repositories/workspace-b?pagelen=100')) {
+        return makeJsonResponse({ values: [{ slug: 'repo-two' }] });
+      }
+
+      if (url.includes('/2.0/repositories/workspace-a/repo-one/pullrequests')) {
+        return makeJsonResponse({
+          ...pullRequestsCloudResponseStub,
+          values: [
+            {
+              ...pullRequestsCloudResponseStub.values[0],
+              id: 111,
+              title: 'Workspace A Author PR',
+              author: {
+                ...pullRequestsCloudResponseStub.values[0].author,
+                display_name: 'John Doe',
+                nickname: 'johndoe',
+                username: 'johndoe',
+              },
+            },
+          ],
+        });
+      }
+
+      if (url.includes('/2.0/repositories/workspace-b/repo-two/pullrequests')) {
+        return makeJsonResponse({
+          ...pullRequestsCloudResponseStub,
+          values: [
+            {
+              ...pullRequestsCloudResponseStub.values[1],
+              id: 222,
+              title: 'Workspace B Other Author PR',
+              author: {
+                ...pullRequestsCloudResponseStub.values[1].author,
+                display_name: 'Alice Brown',
+                nickname: 'alicebrown',
+                username: 'alicebrown',
+              },
+            },
+          ],
+        });
+      }
+
+      throw new Error(`Unexpected URL: ${url}`);
+    });
+
+    const realBitbucketApi = new BitbucketApi({
+      discoveryApi: {
+        getBaseUrl: jest.fn().mockResolvedValue('http://exampleapi.com'),
+      } as any,
+      identityApi: {
+        getBackstageIdentity: jest
+          .fn()
+          .mockResolvedValue({ userEntityRef: 'user:default/johndoe' }),
+      } as any,
+      configApi: {
+        getOptionalString: jest.fn((key: string) => {
+          if (key === 'bitbucket.type') return 'cloud';
+          if (key === 'bitbucket.proxyPath') return '/bitbucket/api';
+          return undefined;
+        }),
+        getOptionalStringArray: jest.fn((key: string) => {
+          if (key === 'bitbucket.cloudWorkspaces') {
+            return ['workspace-a', 'workspace-b'];
+          }
+          return undefined;
+        }),
+      } as any,
+      fetchApi: {
+        fetch: fetchMock,
+      } as any,
+    });
+
+    render(
+      <TestApiProvider
+        apis={[
+          [bitbucketApiRef, realBitbucketApi],
+          [errorApiRef, new MockErrorApi()],
+        ]}
+      >
+        <HomePagePullRequestsTable userRole="AUTHOR" />
+      </TestApiProvider>,
+    );
+
+    expect(await screen.findByText('PR #111')).toBeInTheDocument();
+    expect(screen.queryByText('PR #222')).not.toBeInTheDocument();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/2.0/repositories/workspace-a/repo-one/pullrequests'),
+      expect.any(Object),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/2.0/repositories/workspace-b/repo-two/pullrequests'),
+      expect.any(Object),
+    );
   });
 });
