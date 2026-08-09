@@ -27,6 +27,18 @@ import {
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
+// Standalone plugin serve often ends up with an empty frontend config
+// ("mock-config"), which breaks SignInPage's required app.title read.
+(window as any).__APP_CONFIG__ = {
+  app: {
+    title: 'GraphiQL Example App',
+    baseUrl: 'http://localhost:3000',
+  },
+  backend: {
+    baseUrl: 'http://localhost:7007',
+  },
+};
+
 createDevApp()
   .registerPlugin(graphiqlPlugin)
   .registerApi({
