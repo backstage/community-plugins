@@ -12,19 +12,19 @@ From **`workspaces/rbac`** (workspace root):
 
 ```sh
 yarn install
-yarn start          # legacy dev app + rbac-backend on :3000 / :7007
-yarn start:alpha    # New Frontend System dev app + backend
+yarn start          # NFS (New Frontend System) + rbac-backend on :3000 / :7007
+yarn start:legacy   # legacy frontend + rbac-backend
 ```
 
-The backend dev server uses mocked auth/catalog and loads full-stack e2e seed policies from `plugins/rbac/tests/fixtures/`.
+The backend grants the guest user super-user access for local/e2e setup. Roles used by Playwright are created via the REST API in the test `beforeAll` (editable). Catalog entities for the member picker live in `plugins/rbac/tests/fixtures/catalog-org.yaml`.
 
-### Frontend-only with mocks (no backend)
+### Frontend-only with mocks (manual UI)
 
 From `workspaces/rbac/plugins/rbac`:
 
 ```sh
-yarn start:mock         # legacy UI with in-browser mockRBACApi
-yarn start:alpha:mock   # NFS UI with mocks
+yarn start:mock          # NFS UI with in-browser mockRBACApi
+yarn start:legacy:mock   # legacy UI with mocks
 ```
 
 > **Note:** `yarn start` inside `plugins/rbac` starts **only** the frontend. Use the workspace root for full-stack.
@@ -33,11 +33,14 @@ See [plugins/rbac-backend/CONTRIBUTING.md](./plugins/rbac-backend/CONTRIBUTING.m
 
 ## E2e tests
 
-| Command                 | What it runs                                                            |
-| ----------------------- | ----------------------------------------------------------------------- |
-| `yarn test:e2e:ci`      | Full-stack read-only tests (`rbac-fullstack.spec.ts`), legacy + alpha   |
-| `yarn test:e2e:mock:ci` | Mock comprehensive UI tests (`rbac.spec.ts`), 6 locales, legacy + alpha |
-| `yarn playwright test`  | Both suites (CI default when `playwrightTests: true` in `bcp.json`)     |
+Playwright runs **`rbac.spec.ts` against the real frontend + backend** (no mock API). Locale projects (`en`/`fr`/`it`/`ja`/`de`/`es`) share one in-memory backend; seeded and created roles use a `-${locale}` suffix so projects do not collide. Japanese still skips “View details of role” ([RHDHBUGS-2598](https://issues.redhat.com/browse/RHDHBUGS-2598)).
+
+| Command                                     | What it runs                                          |
+| ------------------------------------------- | ----------------------------------------------------- |
+| `yarn test:e2e:ci` / `yarn playwright test` | Full-stack `rbac.spec.ts`, NFS + legacy (all locales) |
+| `yarn test:nfs`                             | Full-stack, NFS only                                  |
+| `yarn test:legacy`                          | Full-stack, legacy only                               |
+| `yarn ui-test` (from `plugins/rbac`)        | Same as `test:nfs --project=en`                       |
 
 ## Other commands
 

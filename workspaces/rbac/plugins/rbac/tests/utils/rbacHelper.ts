@@ -16,8 +16,8 @@
 import { expect, type Page } from '@playwright/test';
 
 /** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
-export function isAlphaAppMode(): boolean {
-  return process.env.APP_MODE === 'alpha';
+export function isLegacyAppMode(): boolean {
+  return process.env.APP_MODE === 'legacy';
 }
 
 export const verifyCellsInTable = async (
@@ -56,6 +56,20 @@ export const verifyText = async (
   await expect(element).toBeVisible();
 };
 
+export async function searchForRole(
+  page: Page,
+  roleEntityRef: string,
+  options?: { timeout?: number },
+) {
+  const timeout = options?.timeout ?? 30_000;
+  const search = page.getByRole('textbox', { name: 'Search' });
+  await expect(search).toBeVisible({ timeout });
+  await search.fill(roleEntityRef);
+  const link = page.locator('a').filter({ hasText: roleEntityRef });
+  await expect(link).toBeVisible({ timeout });
+  return link;
+}
+
 export class Common {
   page: Page;
 
@@ -77,7 +91,13 @@ export class Common {
   }
 
   async waitForSideBarVisible() {
-    await this.page.waitForSelector('nav a');
+    // await this.page.waitForSelector('nav a');
+    // await expect(this.page.getByTestId('sidebar-root')).toBeVisible({
+    //   timeout: 60_000,
+    // });
+    await expect(this.page.locator('nav a').last()).toBeVisible({
+      timeout: 60_000,
+    });
   }
 
   async loginAsGuest() {
@@ -87,9 +107,10 @@ export class Common {
     });
 
     const enterButton = this.page.getByRole('button', { name: 'Enter' });
-    if (!isAlphaAppMode()) {
+    if (isLegacyAppMode()) {
       await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible();
     }
+    await expect(enterButton).toBeVisible();
     await enterButton.click();
     await this.waitForSideBarVisible();
   }
@@ -113,19 +134,4 @@ export class Common {
     ).toBeHidden({ timeout: 60_000 });
     await this.verifyHeading(title);
   }
-}
-
-/** Wait until the rbac-backend HTTP server is accepting requests. */
-export async function waitForRbacBackend(page: Page) {
-  await expect
-    .poll(
-      async () => {
-        const response = await page.request.get(
-          'http://localhost:7007/api/auth/.well-known/jwks.json',
-        );
-        return response.ok();
-      },
-      { timeout: 120_000 },
-    )
-    .toBe(true);
 }
