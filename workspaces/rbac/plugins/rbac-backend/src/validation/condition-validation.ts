@@ -23,6 +23,7 @@ import { InputError } from '@backstage/errors';
 import {
   PermissionActionValues,
   type PermissionAction,
+  type PermissionInfo,
   type RoleConditionalPolicyDecision,
   isPermissionInfo,
   permissionMappingAction,
@@ -122,13 +123,15 @@ export function validateRoleCondition(
       `'permissionMapping' must be non empty array in the role condition`,
     );
   }
-  const maxDistinctPermissionActions = PermissionActionValues.length;
-  if (condition.permissionMapping.length > maxDistinctPermissionActions) {
-    throw new InputError(
-      `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
-    );
-  }
   const firstIsNamed = isPermissionInfo(condition.permissionMapping[0]);
+  if (!firstIsNamed) {
+    const maxDistinctPermissionActions = PermissionActionValues.length;
+    if (condition.permissionMapping.length > maxDistinctPermissionActions) {
+      throw new InputError(
+        `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
+      );
+    }
+  }
   for (const entry of condition.permissionMapping) {
     if (typeof entry === 'object' && !isPermissionInfo(entry)) {
       throw new InputError(
@@ -155,14 +158,28 @@ export function validateRoleCondition(
     );
   }
 
-  const seenActions = new Set<PermissionAction>();
-  for (const action of actions) {
-    if (seenActions.has(action)) {
-      throw new InputError(
-        `'permissionMapping' must not contain duplicate permission action '${action}'`,
-      );
+  if (firstIsNamed) {
+    const seenNames = new Set<string>();
+    for (const entry of condition.permissionMapping) {
+      const info = entry as PermissionInfo;
+      const key = `${info.name}:${info.action}`;
+      if (seenNames.has(key)) {
+        throw new InputError(
+          `'permissionMapping' must not contain duplicate permission '${info.name}' with action '${info.action}'`,
+        );
+      }
+      seenNames.add(key);
     }
-    seenActions.add(action);
+  } else {
+    const seenActions = new Set<PermissionAction>();
+    for (const action of actions) {
+      if (seenActions.has(action)) {
+        throw new InputError(
+          `'permissionMapping' must not contain duplicate permission action '${action}'`,
+        );
+      }
+      seenActions.add(action);
+    }
   }
 
   if (
