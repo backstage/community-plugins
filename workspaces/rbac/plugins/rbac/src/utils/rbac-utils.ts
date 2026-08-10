@@ -356,7 +356,11 @@ export const getConditionalPermissionsData = (
         return cp.permissionMapping.some(entry => {
           // {name, action} → match by specific permission name
           if (isPermissionInfo(entry)) {
-            return po.name === entry.name;
+            return (
+              po.name === entry.name &&
+              po.policy.toLocaleLowerCase(locale) ===
+                entry.action.toLocaleLowerCase(locale)
+            );
           }
           // plain action string → broad match, all permissions with this action
           return (
