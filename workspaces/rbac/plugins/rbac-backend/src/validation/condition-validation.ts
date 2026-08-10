@@ -132,7 +132,7 @@ export function validateRoleCondition(
   for (const entry of condition.permissionMapping) {
     if (typeof entry === 'object' && !isPermissionInfo(entry)) {
       throw new InputError(
-        `'permissionMapping' entry is an object but missing required 'name' field. Expected {name: string, action: string}, got: ${JSON.stringify(entry)}`,
+        `'permissionMapping' entry must be an action string or {name: string, action: string}, got: ${JSON.stringify(entry)}`,
       );
     }
     if (isPermissionInfo(entry) !== firstIsNamed) {
