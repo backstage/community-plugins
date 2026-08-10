@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-argocd-backend`. For operator i
 ## Prerequisites
 
 - Node.js **22 or 24** (see workspace `engines` in the workspace root `package.json`)
-- Yarn (workspace uses the community-plugins monorepo lockfile)
+- Yarn (this workspace has its own `yarn.lock` under `workspaces/argocd`)
 
 ## Development harness
 
@@ -20,7 +20,7 @@ yarn workspace @backstage-community/plugin-argocd-backend start \
 
 This runs a minimal backend via `dev/index.ts` with the Argo CD backend plugin. Use it for HTTP router, permissions, and Actions API work.
 
-The harness listens on port **7007**. Only one plugin `dev/` harness should run on that port at a time. To work on the frontend plugin instead, stop this process and start the [frontend harness](../argocd/CONTRIBUTING.md).
+The harness listens on port **7007**. Only one backend `dev/` harness should bind to that port at a time. The [frontend harness](../argocd/CONTRIBUTING.md) uses a different port (typically **3000**), so both can run together.
 
 ### Confirm the plugin loaded
 

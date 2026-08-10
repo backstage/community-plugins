@@ -5,7 +5,7 @@ Developer guide for `@backstage-community/plugin-argocd`. For operator install a
 ## Prerequisites
 
 - Node.js **22 or 24** (see workspace `engines` in the workspace root `package.json`)
-- Yarn (workspace uses the community-plugins monorepo lockfile)
+- Yarn (this workspace has its own `yarn.lock` under `workspaces/argocd`)
 
 ## Development harness
 
