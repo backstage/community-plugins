@@ -207,6 +207,9 @@ export type RoleConditionalPolicyDecision = ConditionalPolicyDecision & {
   id: number;
   roleEntityRef: string;
 
+  // Union-of-arrays (not array-of-union) is intentional:
+  // PermissionAction[] | PermissionInfo[] prevents mixing strings and objects
+  // in one array at the type level. PermissionMapping[] would allow mixed arrays.
   permissionMapping: PermissionAction[] | PermissionInfo[];
 };
 
