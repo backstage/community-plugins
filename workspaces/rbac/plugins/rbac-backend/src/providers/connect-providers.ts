@@ -129,10 +129,6 @@ export class Connection implements RBACProviderConnection {
   async applyConditionalPermissions(
     conditionalPermissions: RoleConditionalPolicyDecision[],
   ): Promise<void> {
-    for (const condition of conditionalPermissions) {
-      validateRoleCondition(condition);
-    }
-
     const providerRoles = await this.getProviderRoles();
     const storedConditionalPermissions =
       await this.conditionStorage.filterConditions(providerRoles);
@@ -153,6 +149,10 @@ export class Connection implements RBACProviderConnection {
     }
 
     try {
+      for (const condition of diff.toAdd) {
+        validateRoleCondition(condition);
+      }
+
       for (const condition of diff.toAdd) {
         const metadata = await this.roleMetadataStorage.findRoleMetadata(
           condition.roleEntityRef,
