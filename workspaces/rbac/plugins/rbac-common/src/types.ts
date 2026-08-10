@@ -197,9 +197,7 @@ export function isPermissionInfo(
 export function permissionMappingAction(
   entry: PermissionMapping,
 ): PermissionAction {
-  return typeof entry === 'string'
-    ? entry
-    : ((entry as any)?.action as PermissionAction);
+  return typeof entry === 'string' ? entry : entry.action;
 }
 
 /**

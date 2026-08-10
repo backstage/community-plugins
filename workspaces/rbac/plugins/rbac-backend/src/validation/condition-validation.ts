@@ -149,7 +149,7 @@ export function validateRoleCondition(
 
   const actions = condition.permissionMapping.map(permissionMappingAction);
   const nonActionValue = actions.find(action => !isPermissionAction(action));
-  if (nonActionValue) {
+  if (nonActionValue !== undefined) {
     throw new InputError(
       `'permissionMapping' array contains non action value: '${nonActionValue}'`,
     );
