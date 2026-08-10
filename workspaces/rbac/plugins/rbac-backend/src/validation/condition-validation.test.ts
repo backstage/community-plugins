@@ -1242,7 +1242,7 @@ describe('condition-validation', () => {
 
       expect(() => validateRoleCondition(condition)).toThrow(InputError);
       expect(() => validateRoleCondition(condition)).toThrow(
-        `'permissionMapping' can have at most 5 items (one entry per distinct permission action)`,
+        `'permissionMapping' can have at most 5 items`,
       );
     });
 

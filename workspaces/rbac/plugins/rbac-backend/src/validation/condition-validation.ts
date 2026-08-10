@@ -124,13 +124,15 @@ export function validateRoleCondition(
     );
   }
   const firstIsNamed = isPermissionInfo(condition.permissionMapping[0]);
-  if (!firstIsNamed) {
-    const maxDistinctPermissionActions = PermissionActionValues.length;
-    if (condition.permissionMapping.length > maxDistinctPermissionActions) {
-      throw new InputError(
-        `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
-      );
-    }
+  const maxDistinctPermissionActions = PermissionActionValues.length;
+  const maxNamedPermissionEntries = 25;
+  const maxEntries = firstIsNamed
+    ? maxNamedPermissionEntries
+    : maxDistinctPermissionActions;
+  if (condition.permissionMapping.length > maxEntries) {
+    throw new InputError(
+      `'permissionMapping' can have at most ${maxEntries} items`,
+    );
   }
   for (const entry of condition.permissionMapping) {
     if (typeof entry !== 'string' && !isPermissionInfo(entry)) {
