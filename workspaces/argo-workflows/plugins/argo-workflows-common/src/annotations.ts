@@ -21,13 +21,13 @@
  */
 export enum ArgoWorkflowsAnnotations {
   /**
-   * Enables the CI/CD feature for catalog entities.
+   * Enables the Argo Workflows plugin for catalog entities.
    *
    * Key is `argoworkflows.argoproj.io/workflow`, value should be set to `"true"`.
    *
    * Quotes are required because catalog entity annotation values must be a string.
    */
-  CICD = 'argoworkflows.argoproj.io/workflow',
+  WORKFLOW_ENABLED = 'argoworkflows.argoproj.io/workflow',
 
   /**
    * Kubernetes label selector used to filter Argo Workflows
@@ -77,7 +77,6 @@ export enum ArgoWorkflowsAnnotations {
  * filtering Argo Workflows associated with a catalog entity.
  *
  * @public
- * @deprecated Use {@link ArgoWorkflowsAnnotations.LABEL_SELECTOR} instead.
  */
 export const ARGO_WORKFLOWS_LABEL_SELECTOR_ANNOTATION =
   ArgoWorkflowsAnnotations.LABEL_SELECTOR;
@@ -87,7 +86,6 @@ export const ARGO_WORKFLOWS_LABEL_SELECTOR_ANNOTATION =
  * to query for a given catalog entity.
  *
  * @public
- * @deprecated Use {@link ArgoWorkflowsAnnotations.INSTANCE_NAME} instead.
  */
 export const ARGO_WORKFLOWS_INSTANCE_ANNOTATION =
   ArgoWorkflowsAnnotations.INSTANCE_NAME;

@@ -1,6 +1,6 @@
 # Argo Workflows plugin for Backstage
 
-The Argo Workflows plugin enables you to visualize Argo Workflow executions directly in the Backstage catalog, providing a CI/CD view with workflow run history, task status bars, and interactive DAG visualizations.
+The Argo Workflows plugin enables you to visualize Argo Workflow executions directly in the Backstage catalog, providing workflow run history, task status bars, and interactive DAG visualizations.
 
 | Light                                         | Dark                                               |
 | --------------------------------------------- | -------------------------------------------------- |
@@ -39,7 +39,7 @@ argoWorkflows:
 
 #### Entity annotations
 
-Add the following annotations to your entity's `catalog-info.yaml` to enable the Argo Workflows CI/CD view:
+Add the following annotations to your entity's `catalog-info.yaml` to enable the Argo Workflows view:
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -89,7 +89,7 @@ annotations:
 
 2. **New frontend system (recommended)**
 
-   If your app uses the new Backstage frontend system (`@backstage/frontend-defaults`), the plugin is automatically discovered when feature discovery is enabled (`app.packages: all` in `app-config.yaml`). No code changes needed — the plugin provides an `EntityContentBlueprint` that renders the CI/CD tab automatically when the entity has the required annotations.
+   If your app uses the new Backstage frontend system (`@backstage/frontend-defaults`), the plugin is automatically discovered when feature discovery is enabled (`app.packages: all` in `app-config.yaml`). No code changes needed — the plugin provides an `EntityContentBlueprint` that renders the Argo Workflows tab automatically when the entity has the required annotations.
 
    You can also install it explicitly:
 
@@ -104,25 +104,25 @@ annotations:
 
 3. **Legacy frontend system (deprecated)**
 
-   If your app still uses the old frontend system (`@backstage/app-defaults`), add the CI/CD tab to your entity page in `packages/app/src/components/catalog/EntityPage.tsx`:
+   If your app still uses the old frontend system (`@backstage/app-defaults`), add the Argo Workflows tab to your entity page in `packages/app/src/components/catalog/EntityPage.tsx`:
 
    ```tsx
    import {
      isArgoWorkflowsAvailable,
-     ArgoWorkflowsCI,
+     ArgoWorkflows,
    } from '@backstage-community/plugin-argo-workflows';
 
    const cicdContent = (
      <EntitySwitch>
        {/* ... */}
        <EntitySwitch.Case if={isArgoWorkflowsAvailable}>
-         <ArgoWorkflowsCI />
+         <ArgoWorkflows />
        </EntitySwitch.Case>
      </EntitySwitch>
    );
    ```
 
-   > **Note:** The `argoWorkflowsPlugin` and `ArgoWorkflowsCI` exports are deprecated and will be removed in a future major version. Migrate to the new frontend system when possible.
+   > **Note:** The `argoWorkflowsPlugin` and `ArgoWorkflows` exports are for the old frontend system. Migrate to the new frontend system when possible.
 
 ## For users
 
@@ -138,9 +138,9 @@ annotations:
 
 1. Open your Backstage application and select a component from the **Catalog** page.
 
-2. Go to the **CI/CD** tab.
+2. Go to the **Argo Workflows** tab.
 
-   The CI/CD tab displays a table of workflow runs associated with the entity. Each row shows:
+   The Argo Workflows tab displays a table of workflow runs associated with the entity. Each row shows:
 
    - **Name** — The workflow namespace and name, with the instance name below.
    - **Status** — A colored icon indicating the workflow phase (Succeeded, Running, Pending, Failed, Error).
@@ -169,7 +169,7 @@ annotations:
 
 | Package                                                                                     | Description                                                           |
 | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [`@backstage-community/plugin-argo-workflows`](./README.md)                                 | Frontend plugin — CI/CD tab with workflow table and DAG views.        |
+| [`@backstage-community/plugin-argo-workflows`](./README.md)                                 | Frontend plugin — Workflow tab with table and DAG views.              |
 | [`@backstage-community/plugin-argo-workflows-backend`](../argo-workflows-backend/README.md) | Backend plugin — proxies requests to the Argo Workflows API.          |
 | [`@backstage-community/plugin-argo-workflows-common`](../argo-workflows-common/README.md)   | Shared types, annotations, and serialization utilities.               |
 | [`@backstage-community/plugin-argo-workflows-react`](../argo-workflows-react/README.md)     | React library — reusable hooks and components (status icons, badges). |

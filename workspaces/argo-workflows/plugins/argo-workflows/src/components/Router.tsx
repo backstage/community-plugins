@@ -26,7 +26,7 @@ import { WorkflowRunsTable } from './WorkflowRunsTable';
 /**
  * Router component for the Argo Workflows plugin.
  *
- * Uses the entity context to check if the Argo Workflows CI/CD annotation
+ * Uses the entity context to check if the Argo Workflows annotation
  * is present. If the annotation is present, renders the workflow runs table
  * with inline expandable DAG views. Returns null if the annotation is absent.
  *

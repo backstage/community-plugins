@@ -18,7 +18,7 @@ import { Entity } from '@backstage/catalog-model';
 import { ArgoWorkflowsAnnotations } from './annotations';
 
 /**
- * Returns true if the given entity supports the Argo Workflows CI/CD feature
+ * Returns true if the given entity supports the Argo Workflows plugin
  * and the plugin UI should be shown.
  *
  * This means that the catalog entity has one of these annotations set:
@@ -36,8 +36,8 @@ export function isArgoWorkflowsAvailable(entity: Entity): boolean {
   const annotations = entity.metadata.annotations;
   if (!annotations) return false;
 
-  // Primary gate: explicit CI/CD opt-in (Tekton-style)
-  if (annotations[ArgoWorkflowsAnnotations.CICD] === 'true') {
+  // Primary gate: explicit opt-in (Tekton-style)
+  if (annotations[ArgoWorkflowsAnnotations.WORKFLOW_ENABLED] === 'true') {
     return true;
   }
 

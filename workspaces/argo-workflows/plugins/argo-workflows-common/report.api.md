@@ -5,22 +5,22 @@
 ```ts
 import { Entity } from '@backstage/catalog-model';
 
-// @public @deprecated
+// @public
 export const ARGO_WORKFLOWS_INSTANCE_ANNOTATION =
   ArgoWorkflowsAnnotations.INSTANCE_NAME;
 
-// @public @deprecated
+// @public
 export const ARGO_WORKFLOWS_LABEL_SELECTOR_ANNOTATION =
   ArgoWorkflowsAnnotations.LABEL_SELECTOR;
 
 // @public
 export enum ArgoWorkflowsAnnotations {
-  CICD = 'argoworkflows.argoproj.io/workflow',
   INSTANCE_NAME = 'argoworkflows.argoproj.io/instance-name',
   KUBERNETES_ID = 'backstage.io/kubernetes-id',
   KUBERNETES_LABEL_SELECTOR = 'backstage.io/kubernetes-label-selector',
   KUBERNETES_NAMESPACE = 'backstage.io/kubernetes-namespace',
   LABEL_SELECTOR = 'argoworkflows.argoproj.io/workflow-selector',
+  WORKFLOW_ENABLED = 'argoworkflows.argoproj.io/workflow',
 }
 
 // @public

@@ -34,8 +34,8 @@ function createEntity(annotations?: Record<string, string>): Entity {
 }
 
 describe('ArgoWorkflowsAnnotations enum', () => {
-  it('should have the correct CICD annotation key', () => {
-    expect(ArgoWorkflowsAnnotations.CICD).toBe(
+  it('should have the correct WORKFLOW_ENABLED annotation key', () => {
+    expect(ArgoWorkflowsAnnotations.WORKFLOW_ENABLED).toBe(
       'argoworkflows.argoproj.io/workflow',
     );
   });
@@ -95,23 +95,23 @@ describe('deprecated annotation constants', () => {
 });
 
 describe('isArgoWorkflowsAvailable', () => {
-  it('returns true when the cicd annotation is set to "true"', () => {
+  it('returns true when the workflow-enabled annotation is set to "true"', () => {
     const entity = createEntity({
-      [ArgoWorkflowsAnnotations.CICD]: 'true',
+      [ArgoWorkflowsAnnotations.WORKFLOW_ENABLED]: 'true',
     });
     expect(isArgoWorkflowsAvailable(entity)).toBe(true);
   });
 
-  it('returns false when the cicd annotation is set to "false"', () => {
+  it('returns false when the workflow-enabled annotation is set to "false"', () => {
     const entity = createEntity({
-      [ArgoWorkflowsAnnotations.CICD]: 'false',
+      [ArgoWorkflowsAnnotations.WORKFLOW_ENABLED]: 'false',
     });
     expect(isArgoWorkflowsAvailable(entity)).toBe(false);
   });
 
-  it('returns false when the cicd annotation is an empty string', () => {
+  it('returns false when the workflow-enabled annotation is an empty string', () => {
     const entity = createEntity({
-      [ArgoWorkflowsAnnotations.CICD]: '',
+      [ArgoWorkflowsAnnotations.WORKFLOW_ENABLED]: '',
     });
     expect(isArgoWorkflowsAvailable(entity)).toBe(false);
   });
@@ -123,9 +123,9 @@ describe('isArgoWorkflowsAvailable', () => {
     expect(isArgoWorkflowsAvailable(entity)).toBe(true);
   });
 
-  it('returns true when both cicd and label-selector are present', () => {
+  it('returns true when both workflow-enabled and label-selector are present', () => {
     const entity = createEntity({
-      [ArgoWorkflowsAnnotations.CICD]: 'true',
+      [ArgoWorkflowsAnnotations.WORKFLOW_ENABLED]: 'true',
       [ArgoWorkflowsAnnotations.LABEL_SELECTOR]: 'app=my-service',
     });
     expect(isArgoWorkflowsAvailable(entity)).toBe(true);

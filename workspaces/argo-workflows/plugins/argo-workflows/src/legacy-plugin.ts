@@ -20,9 +20,8 @@ import {
 } from '@backstage/core-plugin-api';
 
 /**
- * The Argo Workflows frontend plugin.
+ * The Argo Workflows frontend plugin (old frontend system).
  *
- * @deprecated Use the new frontend system instead
  * @public
  */
 export const argoWorkflowsPlugin = createPlugin({
@@ -30,15 +29,14 @@ export const argoWorkflowsPlugin = createPlugin({
 });
 
 /**
- * Component extension that renders the Argo Workflows CI/CD view
+ * Component extension that renders the Argo Workflows view
  * for a catalog entity.
  *
- * @deprecated Use the new frontend system instead
  * @public
  */
-export const ArgoWorkflowsCI = argoWorkflowsPlugin.provide(
+export const ArgoWorkflows = argoWorkflowsPlugin.provide(
   createComponentExtension({
-    name: 'ArgoWorkflowsCI',
+    name: 'ArgoWorkflows',
     component: {
       lazy: () => import('./components/Router').then(m => m.Router),
     },

@@ -22,7 +22,7 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { FullPage, PluginHeader } from '@backstage/ui';
 import { RiFlowChart } from '@remixicon/react';
 
-import { Router as ArgoWorkflowsCI } from '../src/components/Router';
+import { Router as ArgoWorkflowsRouter } from '../src/components/Router';
 import {
   succeededWorkflow,
   runningWorkflow,
@@ -37,7 +37,7 @@ import {
   allWorkflows,
 } from '../src/__fixtures__';
 
-/** Workflows returned by the Argo server instance (CI/CD pipelines). */
+/** Workflows returned by the Argo server instance. */
 const argoServerWorkflows = [
   succeededWorkflow,
   runningWorkflow,
@@ -168,9 +168,9 @@ function DevPage({ entity, title }: { entity: Entity; title: string }) {
           <PluginHeader
             title={title}
             icon={<RiFlowChart />}
-            tabs={[{ id: 'ci-cd', label: 'CI/CD', href: '#' }]}
+            tabs={[{ id: 'workflows', label: 'Workflows', href: '#' }]}
           />
-          <ArgoWorkflowsCI />
+          <ArgoWorkflowsRouter />
         </FullPage>
       </EntityProvider>
     </TestApiProvider>

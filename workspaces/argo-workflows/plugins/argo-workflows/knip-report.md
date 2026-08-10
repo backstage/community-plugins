@@ -4,4 +4,4 @@
 
 | Name                 | Location          | Severity |
 | :------------------- | :---------------- | :------- |
-| @testing-library/dom | package.json:70:6 | error    |
+| @testing-library/dom | package.json:66:6 | error    |

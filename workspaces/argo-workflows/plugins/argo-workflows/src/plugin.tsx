@@ -20,13 +20,13 @@ import { isArgoWorkflowsAvailable } from '@backstage-community/plugin-argo-workf
 import { RiFlowChart } from '@remixicon/react';
 
 /**
- * Entity content extension that renders the Argo Workflows CI/CD view.
+ * Entity content extension that renders the Argo Workflows view.
  */
 const argoWorkflowsEntityContent = EntityContentBlueprint.make({
   name: 'entity-content',
   params: {
     path: '/argo-workflows',
-    title: 'CI/CD',
+    title: 'Argo Workflows',
     filter: isArgoWorkflowsAvailable,
     loader: () => import('./components/Router').then(m => <m.Router />),
   },

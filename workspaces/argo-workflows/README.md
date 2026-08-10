@@ -1,6 +1,6 @@
 # Argo Workflows plugins for Backstage
 
-This workspace contains the Backstage plugins for [Argo Workflows](https://argoproj.github.io/workflows/), providing CI/CD visibility directly in the Backstage catalog.
+This workspace contains the Backstage plugins for [Argo Workflows](https://argoproj.github.io/workflows/), providing workflow visibility directly in the Backstage catalog.
 
 ## Features
 
@@ -16,7 +16,7 @@ This workspace contains the Backstage plugins for [Argo Workflows](https://argop
 
 | Package                                                              | Role            | Description                                   |
 | -------------------------------------------------------------------- | --------------- | --------------------------------------------- |
-| [`plugin-argo-workflows`](./plugins/argo-workflows/)                 | Frontend plugin | CI/CD tab with workflow table and DAG views.  |
+| [`plugin-argo-workflows`](./plugins/argo-workflows/)                 | Frontend plugin | Workflow tab with table and DAG views.        |
 | [`plugin-argo-workflows-backend`](./plugins/argo-workflows-backend/) | Backend plugin  | Proxies requests to the Argo Workflows API.   |
 | [`plugin-argo-workflows-common`](./plugins/argo-workflows-common/)   | Common library  | Shared types, annotations, and serialization. |
 | [`plugin-argo-workflows-react`](./plugins/argo-workflows-react/)     | React library   | Reusable hooks and components.                |
