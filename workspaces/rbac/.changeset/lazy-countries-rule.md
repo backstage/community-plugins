@@ -1,7 +1,7 @@
 ---
 '@backstage-community/plugin-rbac-backend': major
-'@backstage-community/plugin-rbac-common': minor
-'@backstage-community/plugin-rbac-node': minor
+'@backstage-community/plugin-rbac-common': major
+'@backstage-community/plugin-rbac-node': major
 '@backstage-community/plugin-rbac': minor
 ---
 
