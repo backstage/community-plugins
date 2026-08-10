@@ -532,4 +532,143 @@ describe('getConditionalPermissionsData', () => {
     expect(allOfConditions[1]).toHaveProperty('params');
     expect(result[0].conditions).toEqual(expectedResultConditions);
   });
+
+  it('should match named permission by both name and action', () => {
+    const scaffolderPermissionPolicies: PluginPermissionMetaData[] = [
+      {
+        pluginId: 'scaffolder',
+        policies: [
+          {
+            resourceType: 'scaffolder-template',
+            name: 'scaffolder.template.parameter.read',
+            policy: 'read',
+          },
+          {
+            resourceType: 'scaffolder-template',
+            name: 'scaffolder.template.step.read',
+            policy: 'read',
+          },
+        ],
+      },
+    ];
+    const conditionalPermissions: RoleConditionalPolicyDecision[] = [
+      {
+        id: 1,
+        pluginId: 'scaffolder',
+        result: AuthorizeResult.CONDITIONAL,
+        resourceType: 'scaffolder-template',
+        roleEntityRef: 'role:default/test',
+        permissionMapping: [
+          { name: 'scaffolder.template.parameter.read', action: 'read' },
+        ],
+        conditions: {
+          rule: 'HAS_TAG',
+          resourceType: 'scaffolder-template',
+          params: { tag: 'secret' },
+        },
+      },
+    ];
+    const permissionPolicies: PluginPermissionMetaData = {
+      plugins: ['scaffolder'],
+      pluginsPermissions: {
+        scaffolder: {
+          permissions: [
+            'scaffolder.template.parameter.read',
+            'scaffolder.template.step.read',
+          ],
+          policies: {
+            'scaffolder.template.parameter.read': {
+              policies: ['Read'],
+              isResourced: true,
+              resourceType: 'scaffolder-template',
+            },
+            'scaffolder.template.step.read': {
+              policies: ['Read'],
+              isResourced: true,
+              resourceType: 'scaffolder-template',
+            },
+          },
+        },
+      },
+    };
+
+    const result = getConditionalPermissionsData(
+      conditionalPermissions,
+      permissionPolicies,
+      scaffolderPermissionPolicies,
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].permission).toBe('scaffolder.template.parameter.read');
+    expect(result[0].plugin).toBe('scaffolder');
+  });
+
+  it('should match broad permission mapping to all permissions with that action', () => {
+    const scaffolderPermissionPolicies: PluginPermissionMetaData[] = [
+      {
+        pluginId: 'scaffolder',
+        policies: [
+          {
+            resourceType: 'scaffolder-template',
+            name: 'scaffolder.template.parameter.read',
+            policy: 'read',
+          },
+          {
+            resourceType: 'scaffolder-template',
+            name: 'scaffolder.template.step.read',
+            policy: 'read',
+          },
+        ],
+      },
+    ];
+    const conditionalPermissions: RoleConditionalPolicyDecision[] = [
+      {
+        id: 1,
+        pluginId: 'scaffolder',
+        result: AuthorizeResult.CONDITIONAL,
+        resourceType: 'scaffolder-template',
+        roleEntityRef: 'role:default/test',
+        permissionMapping: ['read'],
+        conditions: {
+          rule: 'HAS_TAG',
+          resourceType: 'scaffolder-template',
+          params: { tag: 'secret' },
+        },
+      },
+    ];
+    const permissionPolicies: PluginPermissionMetaData = {
+      plugins: ['scaffolder'],
+      pluginsPermissions: {
+        scaffolder: {
+          permissions: [
+            'scaffolder.template.parameter.read',
+            'scaffolder.template.step.read',
+          ],
+          policies: {
+            'scaffolder.template.parameter.read': {
+              policies: ['Read'],
+              isResourced: true,
+              resourceType: 'scaffolder-template',
+            },
+            'scaffolder.template.step.read': {
+              policies: ['Read'],
+              isResourced: true,
+              resourceType: 'scaffolder-template',
+            },
+          },
+        },
+      },
+    };
+
+    const result = getConditionalPermissionsData(
+      conditionalPermissions,
+      permissionPolicies,
+      scaffolderPermissionPolicies,
+    );
+
+    expect(result).toHaveLength(2);
+    const permissions = result.map(r => r.permission);
+    expect(permissions).toContain('scaffolder.template.parameter.read');
+    expect(permissions).toContain('scaffolder.template.step.read');
+  });
 });

@@ -133,7 +133,7 @@ export function validateRoleCondition(
     }
   }
   for (const entry of condition.permissionMapping) {
-    if (typeof entry === 'object' && !isPermissionInfo(entry)) {
+    if (typeof entry !== 'string' && !isPermissionInfo(entry)) {
       throw new InputError(
         `'permissionMapping' entry must be an action string or {name: string, action: string}, got: ${JSON.stringify(entry)}`,
       );
