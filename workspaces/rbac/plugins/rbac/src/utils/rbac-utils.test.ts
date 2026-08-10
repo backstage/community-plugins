@@ -27,6 +27,7 @@ import {
 
 import { mockConditions } from '../__fixtures__/mockConditions';
 import { mockPermissionPolicies } from '../__fixtures__/mockPermissionPolicies';
+import { PluginsPermissionPoliciesData } from '../components/CreateRole/types';
 import {
   getConditionalPermissionsData,
   getConditionsData,
@@ -568,7 +569,7 @@ describe('getConditionalPermissionsData', () => {
         },
       },
     ];
-    const permissionPolicies: PluginPermissionMetaData = {
+    const permissionPolicies: PluginsPermissionPoliciesData = {
       plugins: ['scaffolder'],
       pluginsPermissions: {
         scaffolder: {
@@ -636,7 +637,7 @@ describe('getConditionalPermissionsData', () => {
         },
       },
     ];
-    const permissionPolicies: PluginPermissionMetaData = {
+    const permissionPolicies: PluginsPermissionPoliciesData = {
       plugins: ['scaffolder'],
       pluginsPermissions: {
         scaffolder: {
