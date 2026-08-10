@@ -203,7 +203,7 @@ describe('condition-validation', () => {
         },
       };
       expect(() => validateRoleCondition(condition)).toThrow(
-        `'permissionMapping' entry is an object but missing required 'name' field`,
+        /permissionMapping' entry must be an action string or \{name: string, action: string\}/,
       );
     });
 
