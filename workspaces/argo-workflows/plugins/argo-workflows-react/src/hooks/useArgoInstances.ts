@@ -19,7 +19,7 @@ import {
   useApi,
   fetchApiRef,
   discoveryApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
 
 /**
  * Instance type returned by the backend.

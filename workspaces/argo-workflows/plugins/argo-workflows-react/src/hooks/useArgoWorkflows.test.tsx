@@ -15,7 +15,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { fetchApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
+import { fetchApiRef, discoveryApiRef } from '@backstage/frontend-plugin-api';
 import { TestApiProvider, mockApis } from '@backstage/test-utils';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useArgoWorkflows } from './useArgoWorkflows';

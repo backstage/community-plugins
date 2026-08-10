@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * Argo Workflows frontend plugin (new frontend system).
- *
- * @packageDocumentation
- */
-
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isArgoWorkflowsAvailable } from '@backstage-community/plugin-argo-workflows-common';
@@ -39,9 +33,9 @@ const argoWorkflowsEntityContent = EntityContentBlueprint.make({
 });
 
 /**
- * The Argo Workflows frontend plugin for the new frontend system.
+ * The Argo Workflows frontend plugin.
  *
- * @alpha
+ * @public
  */
 export default createFrontendPlugin({
   pluginId: 'argo-workflows',

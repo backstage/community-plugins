@@ -10,6 +10,7 @@ This workspace contains the Backstage plugins for [Argo Workflows](https://argop
 - **Node detail panel** — Click a DAG node to see task type, duration, timestamps, and error messages.
 - **Multi-instance support** — Connect to multiple Argo Workflows servers and query them by name.
 - **Search and filter** — Filter workflows by name and status.
+- **New frontend system** — Native support for the Backstage new frontend system with automatic feature discovery. Legacy (old frontend system) exports are still available but deprecated.
 
 ## Plugins
 

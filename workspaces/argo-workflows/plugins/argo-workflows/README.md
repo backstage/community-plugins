@@ -87,7 +87,24 @@ annotations:
    yarn workspace app add @backstage-community/plugin-argo-workflows
    ```
 
-2. Add the CI/CD tab to your entity page in `packages/app/src/components/catalog/EntityPage.tsx`:
+2. **New frontend system (recommended)**
+
+   If your app uses the new Backstage frontend system (`@backstage/frontend-defaults`), the plugin is automatically discovered when feature discovery is enabled (`app.packages: all` in `app-config.yaml`). No code changes needed — the plugin provides an `EntityContentBlueprint` that renders the CI/CD tab automatically when the entity has the required annotations.
+
+   You can also install it explicitly:
+
+   ```typescript
+   // packages/app/src/App.tsx
+   import argoWorkflowsPlugin from '@backstage-community/plugin-argo-workflows';
+
+   const app = createApp({
+     features: [argoWorkflowsPlugin],
+   });
+   ```
+
+3. **Legacy frontend system (deprecated)**
+
+   If your app still uses the old frontend system (`@backstage/app-defaults`), add the CI/CD tab to your entity page in `packages/app/src/components/catalog/EntityPage.tsx`:
 
    ```tsx
    import {
@@ -104,6 +121,8 @@ annotations:
      </EntitySwitch>
    );
    ```
+
+   > **Note:** The `argoWorkflowsPlugin` and `ArgoWorkflowsCI` exports are deprecated and will be removed in a future major version. Migrate to the new frontend system when possible.
 
 ## For users
 

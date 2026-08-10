@@ -19,7 +19,7 @@ import {
   useApi,
   fetchApiRef,
   discoveryApiRef,
-} from '@backstage/core-plugin-api';
+} from '@backstage/frontend-plugin-api';
 import { parseWorkflow } from '@backstage-community/plugin-argo-workflows-common';
 import type { Workflow } from '@backstage-community/plugin-argo-workflows-common';
 

@@ -32,13 +32,15 @@
   },
   "dependencies": {
     "@backstage-community/plugin-argo-workflows-common": "workspace:^",
-    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@remixicon/react": "^4.9.0",
     "classnames": "^2.5.1"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
