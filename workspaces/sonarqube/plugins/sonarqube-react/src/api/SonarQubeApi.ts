@@ -30,11 +30,13 @@ export type MetricKey =
   | 'vulnerabilities'
   | 'security_rating'
 
-  // code smells and rating (-> maintainability)
+  // code smells, rating and remediation effort (-> maintainability)
   | 'code_smells'
   | 'sqale_rating'
+  | 'sqale_index'
 
   // security hotspots
+  | 'security_hotspots'
   | 'security_hotspots_reviewed'
   | 'security_review_rating'
 

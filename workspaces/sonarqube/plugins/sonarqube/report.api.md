@@ -101,7 +101,9 @@ export const sonarqubeTranslationRef: TranslationRef<
     readonly 'sonarQubeCard.bugReportRatingCardTitle': 'Bugs';
     readonly 'sonarQubeCard.vulnerabilitiesRatingCardTitle': 'Vulnerabilities';
     readonly 'sonarQubeCard.codeSmellsRatingCardTitle': 'Code Smells';
+    readonly 'sonarQubeCard.technicalDebtCaption': 'Debt: {{debt}}';
     readonly 'sonarQubeCard.hotspotsReviewedTitle': 'Hotspots Reviewed';
+    readonly 'sonarQubeCard.hotspotsCountCaption': 'Hotspots: {{hotspots}}';
     readonly 'sonarQubeCard.coverageRatingCardTitle': 'Coverage';
     readonly 'sonarQubeCard.duplicationsRatingCard': 'Duplications';
     readonly 'sonarQubeCard.qualityBadgeTooltip': 'View SonarQube Dashboard';
