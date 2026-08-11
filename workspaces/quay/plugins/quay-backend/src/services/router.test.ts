@@ -297,6 +297,36 @@ describe('createRouter', () => {
 
         const response = await request(app).get(endpoint);
         expect(response.status).toEqual(403);
+        expect(response.body.error).toEqual(
+          'Unauthorized, please ensure you have the correct permissions.',
+        );
+      },
+    );
+
+    it.each([
+      {
+        endpoint: '/default/repository/%20/repo/tag',
+        description: 'whitespace org',
+      },
+      {
+        endpoint: '/default/repository/org/%20/tag',
+        description: 'whitespace repo',
+      },
+      {
+        endpoint: '/default/repository/%20/%20/manifest/sha256:123',
+        description: 'whitespace org and repo on manifest',
+      },
+    ])(
+      'should return 400 for missing required parameters ($description)',
+      async ({ endpoint }) => {
+        const response = await request(app).get(endpoint);
+        expect(response.status).toEqual(400);
+        expect(response.body.error).toEqual('Missing required parameters');
+        expect(mockQuayService.getQuayInstance).not.toHaveBeenCalled();
+        expect(mockQuayService.getTags).not.toHaveBeenCalled();
+        expect(mockQuayService.getLabels).not.toHaveBeenCalled();
+        expect(mockQuayService.getManifestByDigest).not.toHaveBeenCalled();
+        expect(mockQuayService.getSecurityDetails).not.toHaveBeenCalled();
       },
     );
   });
