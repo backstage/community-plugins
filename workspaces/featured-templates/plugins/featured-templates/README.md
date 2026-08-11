@@ -1,6 +1,15 @@
-# Featured Templates
+# featured-templates
 
-New Frontend System home widget for promoting Software Templates selected by one catalog tag.
+The frontend for the Featured Templates plugin, a New Frontend System home page widget for promoting Software Templates selected by one catalog tag.
+
+## Features
+
+This plugin provides:
+
+- a home page widget that showcases every Software Template carrying a configurable catalog tag
+- scrollable template cards that navigate to the scaffolder form on selection
+- loading, error, and empty states, with a retry action and a link to browse all templates
+- translatable messages via the Backstage translation API
 
 ## Installation
 

@@ -1,18 +1,24 @@
-# [Backstage](https://backstage.io)
+# Featured Templates plugin for Backstage
 
-# featured-templates
-
-This workspace contains the Featured Templates plugin, a New Frontend System home page widget that showcases Software Templates selected by a catalog tag.
+The Featured Templates plugin showcases Software Templates selected by a catalog tag on the Backstage home page.
 
 ## Plugins
 
-- [featured-templates](./plugins/featured-templates): Frontend plugin providing the `home-page-widget:featured-templates` extension.
+- [featured-templates](./plugins/featured-templates/README.md) - The frontend plugin that provides the `home-page-widget:featured-templates` extension for the New Frontend System.
 
-## Getting Started
+## Quick start
 
-To start the plugin in isolation, run:
+You will find detailed installation instructions in the plugin's readme file.
 
 ```sh
-yarn install
-yarn start
+# From your Backstage root directory
+yarn --cwd packages/app add @backstage-community/plugin-featured-templates
 ```
+
+## How does it look?
+
+![Featured Templates home page widget](./images/featured_templates_widget.png)
+
+## Previously maintained by
+
+- [DPG Media](https://github.com/DPG-Media-Development-Enablement/backstage-plugins)
