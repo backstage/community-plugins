@@ -1538,7 +1538,7 @@ __metadata:
     "@backstage/backend-plugin-api": "npm:^1.9.2"
     "@backstage/backend-test-utils": "npm:^1.11.4"
     "@backstage/cli": "npm:^0.36.3"
-    "@backstage/plugin-scaffolder-backend": "npm:^4.0.0"
+    "@backstage/plugin-scaffolder-backend": "npm:^4.0.1"
     "@backstage/plugin-scaffolder-node": "npm:^0.13.4"
     "@backstage/plugin-scaffolder-node-test-utils": "npm:^0.3.12"
     yaml: "npm:^2.6.0"
@@ -2947,7 +2947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-backend@npm:^4.0.0":
+"@backstage/plugin-scaffolder-backend@npm:^4.0.1":
   version: 4.0.2
   resolution: "@backstage/plugin-scaffolder-backend@npm:4.0.2"
   dependencies:
