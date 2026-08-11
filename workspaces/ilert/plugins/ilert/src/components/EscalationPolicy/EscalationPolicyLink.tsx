@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core/styles';
 import { EscalationPolicy } from '../../types';
 import { ilertApiRef } from '../../api';
 
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
-
-const useStyles = makeStyles({
-  link: {
-    lineHeight: '22px',
-  },
-});
 
 export const EscalationPolicyLink = ({
   escalationPolicy,
@@ -32,17 +25,13 @@ export const EscalationPolicyLink = ({
   escalationPolicy: EscalationPolicy | null;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const classes = useStyles();
 
   if (!escalationPolicy) {
     return null;
   }
 
   return (
-    <Link
-      className={classes.link}
-      to={ilertApi.getEscalationPolicyDetailsURL(escalationPolicy)}
-    >
+    <Link to={ilertApi.getEscalationPolicyDetailsURL(escalationPolicy)}>
       {escalationPolicy.name}
     </Link>
   );

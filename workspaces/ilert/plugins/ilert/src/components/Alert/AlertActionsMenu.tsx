@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Typography from '@material-ui/core/Typography';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import type { MouseEvent, ReactNode } from 'react';
+import { ButtonIcon, MenuTrigger, Menu, MenuItem, Text } from '@backstage/ui';
+import { RiMore2Line } from '@remixicon/react';
 import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { useAlertActions } from '../../hooks/useAlertActions';
@@ -42,28 +38,15 @@ export const AlertActionsMenu = ({
   const ilertApi = useApi(ilertApiRef);
   const alertApi = useApi(toastApiRef);
   const identityApi = useApi(identityApiRef);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const callback = onAlertChanged || ((_: Alert): void => {});
   const setProcessing = setIsLoading || ((_: boolean): void => {});
   const [isAssignAlertModalOpened, setIsAssignAlertModalOpened] =
     useState(false);
 
-  const [{ alertActions, isLoading }] = useAlertActions(
-    alert,
-    Boolean(anchorEl),
-  );
-
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+  const [{ alertActions, isLoading }] = useAlertActions(alert, true);
 
   const handleAccept = async (): Promise<void> => {
     try {
-      handleCloseMenu();
       setProcessing(true);
 
       const { userEntityRef } = await identityApi.getBackstageIdentity();
@@ -84,7 +67,6 @@ export const AlertActionsMenu = ({
 
   const handleResolve = async (): Promise<void> => {
     try {
-      handleCloseMenu();
       setProcessing(true);
       const { userEntityRef } = await identityApi.getBackstageIdentity();
       const { name: userName } = parseEntityRef(userEntityRef, {
@@ -103,13 +85,11 @@ export const AlertActionsMenu = ({
   };
 
   const handleAssign = () => {
-    handleCloseMenu();
     setIsAssignAlertModalOpened(true);
   };
 
   const handleTriggerAction = (action: AlertAction) => async () => {
     try {
-      handleCloseMenu();
       setProcessing(true);
       await ilertApi.triggerAlertAction(alert, action);
       alertApi.post({ title: 'Alert action triggered.' });
@@ -120,86 +100,67 @@ export const AlertActionsMenu = ({
     }
   };
 
-  const actions: ReactNode[] = alertActions.map(a => {
-    const successTrigger = a.history
-      ? a.history.find(h => h.success)
-      : undefined;
-    const triggeredBy =
-      successTrigger && successTrigger.actor
-        ? `${successTrigger.actor.firstName} ${successTrigger.actor.lastName}`
-        : '';
-    return (
-      <MenuItem
-        key={a.webhookId}
-        onClick={handleTriggerAction(a)}
-        disabled={!!successTrigger}
-      >
-        <Typography variant="inherit" noWrap>
-          {triggeredBy ? `${a.name} (by ${triggeredBy})` : a.name}
-        </Typography>
-      </MenuItem>
-    );
-  });
-
   return (
     <>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-        size="small"
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id={`alert-actions-menu-${alert.id}`}
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-        PaperProps={{
-          style: { maxHeight: 48 * 5.5 },
-        }}
-      >
-        {alert.status === 'PENDING' ? (
-          <MenuItem key="ack" onClick={handleAccept}>
-            <Typography variant="inherit" noWrap>
-              Accept
-            </Typography>
-          </MenuItem>
-        ) : null}
+      <MenuTrigger>
+        <ButtonIcon
+          aria-label="more"
+          variant="secondary"
+          icon={<RiMore2Line size={16} />}
+        />
+        <Menu>
+          {alert.status === 'PENDING' ? (
+            <MenuItem key="ack" onAction={handleAccept}>
+              <Text>Accept</Text>
+            </MenuItem>
+          ) : null}
 
-        {alert.status !== 'RESOLVED' ? (
-          <MenuItem key="close" onClick={handleResolve}>
-            <Typography variant="inherit" noWrap>
-              Resolve
-            </Typography>
-          </MenuItem>
-        ) : null}
+          {alert.status !== 'RESOLVED' ? (
+            <MenuItem key="close" onAction={handleResolve}>
+              <Text>Resolve</Text>
+            </MenuItem>
+          ) : null}
 
-        {alert.status !== 'RESOLVED' ? (
-          <MenuItem key="assign" onClick={handleAssign}>
-            <Typography variant="inherit" noWrap>
-              Assign
-            </Typography>
-          </MenuItem>
-        ) : null}
+          {alert.status !== 'RESOLVED' ? (
+            <MenuItem key="assign" onAction={handleAssign}>
+              <Text>Assign</Text>
+            </MenuItem>
+          ) : null}
 
-        {isLoading ? (
-          <MenuItem key="loading">
-            <Progress style={{ width: '100%' }} />
-          </MenuItem>
-        ) : (
-          actions
-        )}
+          {isLoading ? (
+            <MenuItem key="loading">
+              <Progress style={{ width: '100%' }} />
+            </MenuItem>
+          ) : (
+            alertActions.map(a => {
+              const successTrigger = a.history
+                ? a.history.find(h => h.success)
+                : undefined;
+              const triggeredBy =
+                successTrigger && successTrigger.actor
+                  ? `${successTrigger.actor.firstName} ${successTrigger.actor.lastName}`
+                  : '';
+              return (
+                <MenuItem
+                  key={a.webhookId}
+                  onAction={handleTriggerAction(a)}
+                  isDisabled={!!successTrigger}
+                >
+                  <Text>
+                    {triggeredBy ? `${a.name} (by ${triggeredBy})` : a.name}
+                  </Text>
+                </MenuItem>
+              );
+            })
+          )}
 
-        <MenuItem key="details" onClick={handleCloseMenu}>
-          <Typography variant="inherit" noWrap>
-            <Link to={ilertApi.getAlertDetailsURL(alert)}>View in ilert</Link>
-          </Typography>
-        </MenuItem>
-      </Menu>
+          <MenuItem key="details">
+            <Text>
+              <Link to={ilertApi.getAlertDetailsURL(alert)}>View in ilert</Link>
+            </Text>
+          </MenuItem>
+        </Menu>
+      </MenuTrigger>
       <AlertAssignModal
         alert={alert}
         setIsModalOpened={setIsAssignAlertModalOpened}

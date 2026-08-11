@@ -1,0 +1,89 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.card {
+  display: grid;
+  height: 100%;
+}
+
+.cardHeader{
+  font-size: 20px;
+  font-weight: 600;
+  color: #2e7ccc;
+}
+
+
+.cardWrapper{
+  padding-bottom: 0px;
+}
+
+.cardContent {
+  margin-left: 80px;
+  border-left: 1px solid #808289;
+  position: relative;
+  padding: 16px;
+}
+
+.indicatorNext {
+  position: absolute;
+  top: calc(40% - 10px);
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  background: #92949c !important;
+  border-radius: 50%;
+}
+
+.indicatorCurrent {
+  position: absolute;
+  top: calc(40% - 10px);
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  background: #ffb74d !important;
+  color: #ffb74d !important;
+  border-radius: 50%;
+}
+
+.indicatorCurrent::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: ripple 1.2s infinite ease-in-out;
+  border: 1px solid currentColor;
+  content: '';
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.beforeText {
+  position: absolute;
+  top: calc(31% - 10px);
+  left: -78px;
+  width: 65px;
+  height: 20px;
+  text-align: center;
+  color: #808289;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.marginBottom {
+  margin-bottom: 16px;
+}
