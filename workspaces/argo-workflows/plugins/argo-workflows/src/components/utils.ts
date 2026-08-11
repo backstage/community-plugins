@@ -120,6 +120,36 @@ export function statusColor(status: WorkflowStatus): string {
 }
 
 /**
+ * Filters workflows by status and search query.
+ *
+ * - When `statusFilters` is non-empty, only workflows whose phase matches one
+ *   of the selected statuses are included.
+ * - When `searchQuery` is non-empty, only workflows whose name contains the
+ *   query (case-insensitive) are included.
+ * - Both filters are applied together (intersection).
+ *
+ * @param workflows - The full list of workflows to filter
+ * @param statusFilters - A set of status phases to include (empty = no status filter)
+ * @param searchQuery - A name substring to match (empty = no name filter)
+ * @returns The filtered list
+ */
+export function filterWorkflows(
+  workflows: Workflow[],
+  statusFilters: Set<string>,
+  searchQuery: string,
+): Workflow[] {
+  let items = workflows;
+  if (statusFilters.size > 0) {
+    items = items.filter(wf => statusFilters.has(wf.status.phase));
+  }
+  if (searchQuery.trim()) {
+    const query = searchQuery.trim().toLowerCase();
+    items = items.filter(wf => wf.metadata.name.toLowerCase().includes(query));
+  }
+  return items;
+}
+
+/**
  * Formats milliseconds into a compact human-readable duration string.
  * Uses Luxon Duration.shiftTo for proper unit decomposition.
  */

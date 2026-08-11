@@ -33,7 +33,12 @@ import { useArgoWorkflows } from '@backstage-community/plugin-argo-workflows-rea
 import type { ArgoInstanceDetail } from '@backstage-community/plugin-argo-workflows-react';
 import { WorkflowDAGInline } from '../WorkflowDAGInline';
 import { buildColumns, workflowSortFn } from '../helpers';
-import { ALL_STATUSES, formatTimeAgo, type WorkflowItem } from '../utils';
+import {
+  ALL_STATUSES,
+  formatTimeAgo,
+  filterWorkflows,
+  type WorkflowItem,
+} from '../utils';
 import styles from './WorkflowRunsTable.module.css';
 
 /**
@@ -120,17 +125,7 @@ export const WorkflowRunsTable = ({
   }, []);
 
   const filteredWorkflows = useMemo(() => {
-    let items = workflows ?? [];
-    if (statusFilters.size > 0) {
-      items = items.filter(wf => statusFilters.has(wf.status.phase));
-    }
-    if (searchQuery.trim()) {
-      const query = searchQuery.trim().toLowerCase();
-      items = items.filter(wf =>
-        wf.metadata.name.toLowerCase().includes(query),
-      );
-    }
-    return items;
+    return filterWorkflows(workflows ?? [], statusFilters, searchQuery);
   }, [workflows, statusFilters, searchQuery]);
 
   const data: WorkflowItem[] = filteredWorkflows.map(wf => ({
