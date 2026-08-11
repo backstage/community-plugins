@@ -2,6 +2,8 @@
 
 <img src="docs/screenshot.png" alt="Screenshot of Tech Radar plugin" />
 
+> Backstage UI (BUI) is now required for the Tech Radar plugin to function. It has been included as part of Backstage since `1.41.0`, which means you're very likely to already have it installed. The [BUI documentation](https://ui.backstage.io/) has details on installation if needed, and the Backstage [User Interface documentation](https://backstage.io/docs/conf/user-interface/) has details on creating a custom BUI theme.
+
 The Backstage integration for the Tech Radar based on [Zalando's Tech Radar](https://opensource.zalando.com/tech-radar/) open sourced on [GitHub](https://github.com/zalando/tech-radar). This is used at [Spotify](https://spotify.github.io) for visualizing the official guidelines of different areas of software development such as languages, frameworks, infrastructure and processes.
 
 Read the [blog post on backstage.io about the Tech Radar](https://backstage.io/blog/2020/05/14/tech-radar-plugin).

@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-import Typography from '@material-ui/core/Typography';
 import { useState } from 'react';
 import { WithLink } from '../../utils/components';
 import { RadarDescription } from '../RadarDescription';
 import type { EntrySnapshot } from '../../utils/types';
+import styles from './RadarLegend.module.css';
 
 type RadarLegendLinkProps = {
   entryId: string;
   url?: string;
   description?: string;
   title?: string;
-  classes: ClassNameMap<string>;
   active?: boolean;
   links: Array<{ url: string; title: string }>;
   timeline: EntrySnapshot[];
@@ -36,7 +34,6 @@ export const RadarLegendLink = ({
   url,
   description,
   title,
-  classes,
   active,
   links,
   timeline,
@@ -58,22 +55,20 @@ export const RadarLegendLink = ({
   if (description) {
     return (
       <>
-        <Typography
-          component="span"
-          className={classes.entryLink}
+        <span
+          className={styles.entryLink}
           onClick={handleClickOpen}
           role="button"
           tabIndex={0}
           onKeyPress={toggle}
         >
-          <Typography
-            component="span"
+          <span
             id={entryId}
-            className={active ? classes.activeEntry : classes.entry}
+            className={active ? styles.activeEntry : styles.entry}
           >
             {title}
-          </Typography>
-        </Typography>
+          </span>
+        </span>
         {open && (
           <RadarDescription
             open={open}
@@ -89,14 +84,10 @@ export const RadarLegendLink = ({
     );
   }
   return (
-    <WithLink url={url} className={classes.entryLink}>
-      <Typography
-        component="span"
-        id={entryId}
-        className={active ? classes.activeEntry : classes.entry}
-      >
+    <WithLink url={url} className={styles.entryLink}>
+      <span id={entryId} className={active ? styles.activeEntry : styles.entry}>
         {title}
-      </Typography>
+      </span>
     </WithLink>
   );
 };

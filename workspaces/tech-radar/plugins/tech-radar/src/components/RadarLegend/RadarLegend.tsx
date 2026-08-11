@@ -14,84 +14,18 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
 import { RadarLegendQuadrant } from './RadarLegendQuadrant';
 import { RadarLegendProps } from './types';
 import { setupSegments } from './utils';
-
-const useStyles = makeStyles(theme => ({
-  quadrant: {
-    height: '100%',
-    width: '100%',
-    overflowY: 'auto',
-    scrollbarWidth: 'thin',
-  },
-  quadrantHeading: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    marginTop: 0,
-    marginBottom: theme.spacing(2),
-    fontSize: '18px',
-  },
-  rings: {
-    columns: (props: { columnCount: number }) => props.columnCount,
-  },
-  ring: {
-    breakInside: 'avoid-column',
-    pageBreakInside: 'avoid',
-    '-webkit-column-break-inside': 'avoid',
-    fontSize: '12px',
-    marginBottom: theme.spacing(2),
-  },
-  ringEmpty: {
-    color: theme.palette.text.secondary,
-    fontSize: '12px',
-  },
-  ringHeading: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    marginTop: 0,
-    marginBottom: theme.spacing(1),
-    fontSize: '12px',
-    fontWeight: 800,
-  },
-  ringList: {
-    listStylePosition: 'inside',
-    marginTop: 0,
-    paddingLeft: 0,
-    fontVariantNumeric: 'proportional-nums',
-    '-moz-font-feature-settings': 'pnum',
-    '-webkit-font-feature-settings': 'pnum',
-    'font-feature-settings': 'pnum',
-  },
-  entry: {
-    pointerEvents: 'visiblePainted',
-    userSelect: 'none',
-    fontSize: '11px',
-  },
-  activeEntry: {
-    pointerEvents: 'visiblePainted',
-    userSelect: 'none',
-    fontSize: '11px',
-    background: '#6f6f6f',
-    color: theme.palette.common.white,
-  },
-  entryLink: {
-    pointerEvents: 'visiblePainted',
-    cursor: 'pointer',
-  },
-}));
 
 const RadarLegend = ({
   quadrants,
   rings,
   entries,
+  columnCount,
   onEntryMouseEnter,
   onEntryMouseLeave,
-  ...props
 }: RadarLegendProps): React.JSX.Element => {
-  const classes = useStyles(props);
-
   return (
     <g data-testid="radar-legend">
       {quadrants.map(quadrant => (
@@ -100,7 +34,7 @@ const RadarLegend = ({
           segments={setupSegments(entries)}
           quadrant={quadrant}
           rings={rings}
-          classes={classes}
+          columnCount={columnCount}
           onEntryMouseEnter={onEntryMouseEnter}
           onEntryMouseLeave={onEntryMouseLeave}
         />

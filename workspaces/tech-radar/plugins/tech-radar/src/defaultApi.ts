@@ -252,21 +252,29 @@ export class DefaultTechRadarApi implements TechRadarApi {
   }
 
   async load() {
-    const { token: idToken } = await this.identityApi.getCredentials();
-    const apiUrl = await this.discoveryApi.getBaseUrl('tech-radar');
-    const response = await this.fetchApi.fetch(`${apiUrl}/data`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(idToken && { Authorization: `Bearer ${idToken}` }),
-      },
-    });
-    if (response.status === 200) {
-      const respJson = await response.json();
-      const validationResult =
-        TechRadarLoaderResponseParser.safeParse(respJson);
-      if (validationResult.success) {
-        return validationResult.data;
+    try {
+      const { token: idToken } = await this.identityApi.getCredentials();
+      const apiUrl = await this.discoveryApi.getBaseUrl('tech-radar');
+      const response = await this.fetchApi.fetch(`${apiUrl}/data`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(idToken && { Authorization: `Bearer ${idToken}` }),
+        },
+      });
+      if (response.status === 200) {
+        const respJson = await response.json();
+        const validationResult =
+          TechRadarLoaderResponseParser.safeParse(respJson);
+        if (validationResult.success) {
+          return validationResult.data;
+        }
       }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        'tech-radar: backend unavailable, falling back to mock data',
+        e,
+      );
     }
 
     return mock;

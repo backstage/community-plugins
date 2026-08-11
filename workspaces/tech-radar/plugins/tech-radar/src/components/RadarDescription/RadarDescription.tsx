@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import LinkIcon from '@material-ui/icons/Link';
+import { Dialog, DialogBody, DialogFooter, DialogHeader } from '@backstage/ui';
+import { RiLinkM } from '@remixicon/react';
 import { Link, MarkdownContent } from '@backstage/core-components';
 import { isValidUrl } from '../../utils/components';
 import type { EntrySnapshot } from '../../utils/types';
 import { RadarTimeline } from '../RadarTimeline';
+import styles from './RadarDescription.module.css';
 
 export type Props = {
   open: boolean;
@@ -45,48 +42,51 @@ const RadarDescription = (props: Props): React.JSX.Element => {
 
   const { open, onClose, title, description, timeline, url, links } = props;
 
+  // Controlled Dialog without DialogTrigger — matches BUI docs and avoids broken
+  // overlays when opened from SVG legend/blip clicks (no trigger element).
   return (
     <Dialog
       data-testid="radar-description"
-      open={open}
-      onClose={onClose}
-      maxWidth="lg"
-      fullWidth
+      className={styles.dialog}
+      isOpen={open}
+      isDismissable
+      width="min(960px, 90vw)"
+      onOpenChange={isOpen => {
+        if (!isOpen) onClose();
+      }}
     >
-      <DialogTitle data-testid="radar-description-dialog-title">
+      <DialogHeader data-testid="radar-description-dialog-title">
         {title}
-      </DialogTitle>
-      <DialogContent dividers>
+      </DialogHeader>
+      <DialogBody>
         <MarkdownContent content={description} />
         <RadarTimeline timeline={timeline} />
-      </DialogContent>
+      </DialogBody>
       {showDialogActions(url, links) && (
-        <DialogActions>
+        <DialogFooter>
           {links?.map(link => (
-            <Button
-              component={Link}
+            <Link
+              key={link.url}
               to={link.url}
               onClick={onClose}
-              color="primary"
-              startIcon={<LinkIcon />}
-              key={link.url}
+              className={styles.dialogLink}
             >
+              <RiLinkM size={16} />
               {link.title}
-            </Button>
+            </Link>
           ))}
           {isValidUrl(url) && (
-            <Button
-              component={Link}
-              to={url}
-              onClick={onClose}
-              color="primary"
-              startIcon={<LinkIcon />}
+            <Link
               key={url}
+              to={url!}
+              onClick={onClose}
+              className={styles.dialogLink}
             >
+              <RiLinkM size={16} />
               LEARN MORE
-            </Button>
+            </Link>
           )}
-        </DialogActions>
+        </DialogFooter>
       )}
     </Dialog>
   );
