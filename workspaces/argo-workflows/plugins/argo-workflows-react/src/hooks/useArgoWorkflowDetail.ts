@@ -59,6 +59,16 @@ export function useArgoWorkflowDetail(options: {
   const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
+    // Skip fetching when required params are missing — callers may pass empty
+    // strings (e.g. route params defaulting to '') which would produce
+    // invalid requests like /workflows//.
+    if (!namespace || !name) {
+      setWorkflow(undefined);
+      setError(undefined);
+      setLoading(false);
+      return undefined;
+    }
+
     let cancelled = false;
 
     async function fetchWorkflowDetail() {
