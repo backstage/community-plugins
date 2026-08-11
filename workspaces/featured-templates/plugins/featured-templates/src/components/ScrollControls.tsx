@@ -1,0 +1,93 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { useTranslationRef } from '@backstage/frontend-plugin-api';
+import { ButtonIcon } from '@backstage/ui';
+import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
+import { type RefObject, useEffect, useState } from 'react';
+import { featuredTemplatesTranslationRef } from '../translation';
+import styles from './ScrollControls.module.css';
+
+function cardStep(track: HTMLElement) {
+  const firstCard = track.children[0] as HTMLElement;
+  const secondCard = track.children[1] as HTMLElement | undefined;
+  return secondCard
+    ? secondCard.offsetLeft - firstCard.offsetLeft
+    : firstCard.offsetWidth;
+}
+
+export function ScrollControls({
+  trackRef,
+  count,
+}: {
+  trackRef: RefObject<HTMLDivElement>;
+  count: number;
+}) {
+  const { t } = useTranslationRef(featuredTemplatesTranslationRef);
+  const [canScrollPrevious, setCanScrollPrevious] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+    const firstCard = track.children[0];
+    const lastCard = track.children[track.children.length - 1];
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          const mostlyVisible = entry.intersectionRatio >= 0.5;
+          if (entry.target === firstCard) setCanScrollPrevious(!mostlyVisible);
+          if (entry.target === lastCard) setCanScrollNext(!mostlyVisible);
+        }
+      },
+      { root: track, threshold: 0.5 },
+    );
+    observer.observe(firstCard);
+    if (lastCard !== firstCard) observer.observe(lastCard);
+    return () => observer.disconnect();
+  }, [trackRef, count]);
+
+  const scroll = (direction: -1 | 1) => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.scrollBy({
+      left: direction * cardStep(track),
+      behavior: 'smooth',
+    });
+  };
+
+  return (
+    <>
+      {canScrollPrevious && (
+        <ButtonIcon
+          className={`${styles.control} ${styles.previous}`}
+          aria-label={t('scrollPreviousButtonTitle')}
+          variant="primary"
+          icon={<RiArrowLeftSLine />}
+          onPress={() => scroll(-1)}
+        />
+      )}
+      {canScrollNext && (
+        <ButtonIcon
+          className={`${styles.control} ${styles.next}`}
+          aria-label={t('scrollNextButtonTitle')}
+          variant="primary"
+          icon={<RiArrowRightSLine />}
+          onPress={() => scroll(1)}
+        />
+      )}
+    </>
+  );
+}
