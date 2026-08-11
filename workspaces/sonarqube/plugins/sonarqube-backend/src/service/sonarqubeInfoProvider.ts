@@ -385,6 +385,13 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       'sqale_rating',
       'coverage',
       'duplicated_lines_density',
+      // The rating metrics above carry a grade or a percentage, not the
+      // underlying figure. Consumers that want to show a hotspot count, a debt
+      // duration or a language breakdown have no other source: the list is
+      // fixed and this plugin holds the only SonarQube credential.
+      'security_hotspots',
+      'sqale_index',
+      'ncloc_language_distribution',
     ];
 
     // only retrieve wanted metrics that are supported
