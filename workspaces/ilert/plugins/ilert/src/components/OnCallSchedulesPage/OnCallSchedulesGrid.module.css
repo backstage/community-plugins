@@ -10,14 +10,13 @@
   height: 100%;
 }
 
-.cardHeader{
+.cardHeader {
   font-size: 20px;
   font-weight: 600;
   color: #2e7ccc;
 }
 
-
-.cardWrapper{
+.cardWrapper {
   padding-bottom: 0px;
 }
 
