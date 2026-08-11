@@ -1,5 +1,19 @@
 # @backstage-community/plugin-argocd
 
+## 2.11.0
+
+### Minor Changes
+
+- 730c396: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- d640871: Add CI wiring and permission-contract tests for the Argo CD backend and common packages, plus contributor guides and a minimal backend dev/ harness config so Backstage dependency bumps can be trusted without a full workspace smoke.
+- 4cd7a76: Added aria-label to icon-only external link buttons to resolve link-name accessibility violations
+- Updated dependencies [d640871]
+- Updated dependencies [730c396]
+  - @backstage-community/plugin-argocd-common@1.17.0
+
 ## 2.10.0
 
 ### Minor Changes
