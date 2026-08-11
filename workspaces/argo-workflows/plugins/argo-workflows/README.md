@@ -2,10 +2,7 @@
 
 The Argo Workflows plugin enables you to visualize Argo Workflow executions directly in the Backstage catalog, providing workflow run history, task status bars, and interactive DAG visualizations.
 
-| Light                                         | Dark                                               |
-| --------------------------------------------- | -------------------------------------------------- |
-| ![](./docs/media/workflow-table.png)          | ![](./docs/media/workflow-table-dark.png)          |
-| ![](./docs/media/workflow-table-expanded.png) | ![](./docs/media/workflow-table-expanded-dark.png) |
+![](./docs/media/workflows-table-expanded-light.png)
 
 ## For administrators
 

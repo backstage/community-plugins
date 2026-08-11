@@ -67,8 +67,16 @@ const { workflow, loading, error } = useArgoWorkflowDetail({
   namespace: 'default',
   name: 'my-workflow-abc123',
   instanceName: 'main', // optional
+  labelSelector: 'app=my-service', // optional — see note below
 });
 ```
+
+| Option          | Type     | Required | Description                                                                                                                                                                                                                                                                    |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `namespace`     | `string` | Yes      | Kubernetes namespace containing the workflow.                                                                                                                                                                                                                                  |
+| `name`          | `string` | Yes      | Name of the workflow resource.                                                                                                                                                                                                                                                 |
+| `instanceName`  | `string` | No       | Name of the Argo instance to query. Falls back to the configured default.                                                                                                                                                                                                      |
+| `labelSelector` | `string` | No       | A Kubernetes label selector that narrows the backend fetch on the Kubernetes path, which has no single-resource GET and would otherwise scan every workflow in the namespace. Pass the same selector used to list the entity's workflows. Ignored on the Argo server API path. |
 
 ## Utilities
 

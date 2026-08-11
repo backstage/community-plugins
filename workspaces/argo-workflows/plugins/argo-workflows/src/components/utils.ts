@@ -133,11 +133,11 @@ export function statusColor(status: WorkflowStatus): string {
  * @param searchQuery - A name substring to match (empty = no name filter)
  * @returns The filtered list
  */
-export function filterWorkflows(
-  workflows: Workflow[],
+export function filterWorkflows<T extends Workflow>(
+  workflows: T[],
   statusFilters: Set<string>,
   searchQuery: string,
-): Workflow[] {
+): T[] {
   let items = workflows;
   if (statusFilters.size > 0) {
     items = items.filter(wf => statusFilters.has(wf.status.phase));

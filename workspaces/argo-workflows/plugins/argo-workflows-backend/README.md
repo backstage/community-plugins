@@ -72,10 +72,43 @@ apiRouter.use('/argo-workflows', router);
 
 ## API Routes
 
-| Method | Path                          | Description                                                                               |
-| ------ | ----------------------------- | ----------------------------------------------------------------------------------------- |
-| `GET`  | `/workflows`                  | List workflows filtered by label selector. Query params: `labelSelector`, `instanceName`. |
-| `GET`  | `/workflows/:namespace/:name` | Get a single workflow by namespace and name. Query param: `instanceName`.                 |
+| Method | Path                          | Description                                     |
+| ------ | ----------------------------- | ----------------------------------------------- |
+| `GET`  | `/instances`                  | List configured instance names and their types. |
+| `GET`  | `/workflows`                  | List workflows filtered by label selector.      |
+| `GET`  | `/workflows/:namespace/:name` | Get a single workflow by namespace and name.    |
+
+### `GET /instances`
+
+Returns all configured Argo Workflows instances and the default instance name.
+
+**Response:**
+
+```json
+{
+  "instances": [{ "name": "main", "type": "argo-server" }],
+  "defaultInstance": "main"
+}
+```
+
+### `GET /workflows`
+
+Lists workflows matching a label selector, optionally scoped to a namespace.
+
+| Query Parameter | Required | Description                                                               |
+| --------------- | -------- | ------------------------------------------------------------------------- |
+| `labelSelector` | Yes      | A Kubernetes label selector string (e.g. `app=my-workflow`).              |
+| `instanceName`  | No       | Name of the Argo instance to query. Falls back to the configured default. |
+| `namespace`     | No       | Kubernetes namespace to scope the query. Omit for a cluster-wide listing. |
+
+### `GET /workflows/:namespace/:name`
+
+Retrieves a single workflow by namespace and name.
+
+| Query Parameter | Required | Description                                                                                                                                                |
+| --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `instanceName`  | No       | Name of the Argo instance to query. Falls back to the configured default.                                                                                  |
+| `labelSelector` | No       | A Kubernetes label selector to narrow the underlying fetch on the Kubernetes path (which has no single-resource GET). Ignored on the Argo server API path. |
 
 ## Configuration Schema
 
