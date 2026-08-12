@@ -1,5 +1,11 @@
 # @backstage-community/plugin-explore
 
+## 1.0.1
+
+### Patch Changes
+
+- de252c4: Fix ExploreLayout to use FullPage
+
 ## 1.0.0
 
 ### Major Changes
