@@ -1,6 +1,6 @@
 # Tech Radar plugins for Backstage
 
-This workspace contains plugins for visualizing and serving a technology radar in Backstage.
+This workspace contains plugins for visualizing technology guidelines across areas such as programming languages, frameworks, infrastructure, and processes, inspired [Zalando's Tech Radar](https://opensource.zalando.com/tech-radar/) open sourced on [GitHub](https://github.com/zalando/tech-radar) 
 
 ## Plugins
 
