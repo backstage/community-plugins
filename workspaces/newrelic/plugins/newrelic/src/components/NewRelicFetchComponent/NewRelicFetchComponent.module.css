@@ -32,10 +32,10 @@
     margin-top: var(--bui-space-2);
   }
 
-  .title{
-   margin: 0;
-   font-size: 24px;
-  } 
+  .title {
+    margin: 0;
+    font-size: 24px;
+  }
 
   .filterWrapper {
     display: flex;
