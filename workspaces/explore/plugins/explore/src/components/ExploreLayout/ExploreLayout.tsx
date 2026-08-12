@@ -123,15 +123,15 @@ export const ExploreLayout = (props: ExploreLayoutProps) => {
   return (
     <>
       <PluginHeader title={title ?? 'Explore our ecosystem'} tabs={tabs} />
-    <FullPage>
-  <div
-    style={{
-      padding: 'var(--bui-space-6)',
-    }}
-  >
-    {element ?? routes[0]?.children ?? null}
-  </div>
-</FullPage>
+      <FullPage>
+        <div
+          style={{
+            padding: 'var(--bui-space-6)',
+          }}
+        >
+          {element ?? routes[0]?.children ?? null}
+        </div>
+      </FullPage>
     </>
   );
 };
