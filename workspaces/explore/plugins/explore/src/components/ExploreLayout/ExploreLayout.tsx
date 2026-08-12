@@ -19,7 +19,7 @@ import {
   useElementFilter,
   useRouteRef,
 } from '@backstage/core-plugin-api';
-import { HeaderTab, PluginHeader } from '@backstage/ui';
+import { FullPage, HeaderTab, PluginHeader } from '@backstage/ui';
 import React, { useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { exploreRouteRef } from '../../routes';
@@ -123,17 +123,15 @@ export const ExploreLayout = (props: ExploreLayoutProps) => {
   return (
     <>
       <PluginHeader title={title ?? 'Explore our ecosystem'} tabs={tabs} />
-      <div
-        style={{
-          padding: 'var(--bui-space-6)',
-          height: '100%',
-          minHeight: 0,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {element ?? routes[0]?.children ?? null}
-      </div>
+    <FullPage>
+  <div
+    style={{
+      padding: 'var(--bui-space-6)',
+    }}
+  >
+    {element ?? routes[0]?.children ?? null}
+  </div>
+</FullPage>
     </>
   );
 };
