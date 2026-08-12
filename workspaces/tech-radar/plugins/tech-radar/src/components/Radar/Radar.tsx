@@ -43,7 +43,7 @@ const Radar = ({
   rings,
   entries,
   ...props
-}: Props): JSX.Element => {
+}: Props): React.JSX.Element => {
   const columnWidth = determineColumnWidth(width);
   const legendWidth = determineLegendWidth(width, columnWidth);
   const columnCount = determineColumnCount(legendWidth, columnWidth);

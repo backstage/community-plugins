@@ -71,6 +71,7 @@ import {
   createApiRef,
   DiscoveryApi,
   IdentityApi,
+  type ApiRef,
 } from '@backstage/core-plugin-api';
 import { AxiosError } from 'axios';
 import { Record } from 'victory-core/lib/victory-util/immutable-types';
@@ -161,7 +162,7 @@ export interface KialiApi {
   ): Promise<AppList>;
   getMeshTls(cluster?: string): Promise<TLSStatus>;
   getNamespaceTls(namespace: string, cluster?: string): Promise<TLSStatus>;
-  getConfigValidations(cluster?: string): Promise<ValidationStatus>;
+  getConfigValidations(cluster?: string): Promise<ValidationStatus[]>;
   getAllIstioConfigs(
     objects: string[],
     validate: boolean,
@@ -277,7 +278,7 @@ export interface KialiApi {
   getGraphElements(params: GraphElementsQuery): Promise<GraphDefinition>;
 }
 
-export const kialiApiRef = createApiRef<KialiApi>({
+export const kialiApiRef: ApiRef<KialiApi> = createApiRef<KialiApi>({
   id: 'plugin.kiali.service',
 });
 
@@ -648,12 +649,12 @@ export class KialiApiClient implements KialiApi {
     ).then(resp => resp);
   };
 
-  getConfigValidations = (cluster?: string): Promise<ValidationStatus> => {
+  getConfigValidations = (cluster?: string): Promise<ValidationStatus[]> => {
     const queryParams: any = {};
     if (cluster) {
       queryParams.clusterName = cluster;
     }
-    return this.newRequest<ValidationStatus>(
+    return this.newRequest<ValidationStatus[]>(
       HTTP_VERBS.GET,
       urls.configValidations(),
       queryParams,

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.13.0
+
+### Minor Changes
+
+- cb4bc78: Backstage version bump to v1.53.0
+
 ## 0.12.0
 
 ### Minor Changes

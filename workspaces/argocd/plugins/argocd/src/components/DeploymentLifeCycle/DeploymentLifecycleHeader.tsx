@@ -19,10 +19,12 @@ import IconButton from '@mui/material/IconButton';
 import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 
 import { useArgocdConfig } from '../../hooks/useArgocdConfig';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Application } from '@backstage-community/plugin-argocd-common';
 
 const DeploymentLifecycleHeader: FC<{ app: Application }> = ({ app }) => {
   const { instances, baseUrl } = useArgocdConfig();
+  const { t } = useTranslation();
 
   const supportsMultipleArgoInstances = !!instances.length;
   const getBaseUrl = (row: Application): string | undefined => {
@@ -50,6 +52,10 @@ const DeploymentLifecycleHeader: FC<{ app: Application }> = ({ app }) => {
         target="_blank"
         href={appUrl}
         onClick={e => e.stopPropagation()}
+        aria-label={t(
+          'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD',
+          { appName: app.metadata.name },
+        )}
       >
         <ExternalLinkIcon />
       </IconButton>

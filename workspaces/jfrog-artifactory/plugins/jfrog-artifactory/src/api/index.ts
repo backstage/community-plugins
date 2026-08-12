@@ -20,9 +20,10 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 
-import { TagsResponse } from '../types';
+import { Edge, PageInfo, TagsResponse } from '../types';
 
 const DEFAULT_PROXY_PATH = '/jfrog-artifactory/api';
+const MAX_PAGE_SIZE = 200;
 
 export interface JfrogArtifactoryApiV1 {
   getTags(
@@ -65,7 +66,7 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
     }`;
   }
 
-  private async fetcher(url: string, query: string) {
+  private async fetcher<T>(url: string, query: string): Promise<T> {
     const { token: idToken } = await this.identityApi.getCredentials();
     const response = await fetch(url, {
       headers: {
@@ -80,7 +81,7 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
         `failed to fetch data, status ${response.status}: ${response.statusText}`,
       );
     }
-    return await response.json();
+    return (await response.json()) as T;
   }
 
   private getSortField(): string {
@@ -109,6 +110,7 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
 
   async getTags(image: string, target?: string, repoFilter?: string) {
     const proxyUrl = await this.getBaseUrl(target);
+    const pageLimit = this.getPageLimit();
 
     const filter: any = {
       packageId: `docker://${image}`,
@@ -123,22 +125,35 @@ export class JfrogArtifactoryApiClient implements JfrogArtifactoryApiV1 {
       };
     }
 
-    const tagQuery = {
-      query:
-        'query ($filter: VersionFilter!, $first: Int, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } } }',
-      variables: {
-        filter,
-        first: this.getPageLimit(),
-        orderBy: {
-          field: this.getSortField(),
-          direction: 'DESC',
-        },
-      },
-    };
+    const edges: Edge[] = [];
+    let pageInfo: PageInfo = { hasNextPage: false, endCursor: null };
+    let after: string | undefined;
 
-    return (await this.fetcher(
-      `${proxyUrl}/metadata/api/v1/query`,
-      JSON.stringify(tagQuery),
-    )) as TagsResponse;
+    do {
+      const tagQuery = {
+        query:
+          'query ($filter: VersionFilter!, $first: Int, $after: ID, $orderBy: VersionOrder) { versions (filter: $filter, first: $first, after: $after, orderBy: $orderBy) { edges { node { name, created, modified, package { id }, repos { name, type, leadFilePath }, licenses { name, source }, size, stats { downloadCount }, vulnerabilities { critical, high, medium, low, info, unknown, skipped }, files { name, lead, size, md5, sha1, sha256, mimeType } } } pageInfo { hasNextPage, endCursor } } }',
+        variables: {
+          filter,
+          first: Math.min(MAX_PAGE_SIZE, pageLimit - edges.length),
+          after,
+          orderBy: {
+            field: this.getSortField(),
+            direction: 'DESC',
+          },
+        },
+      };
+
+      const response = await this.fetcher<TagsResponse>(
+        `${proxyUrl}/metadata/api/v1/query`,
+        JSON.stringify(tagQuery),
+      );
+      const remaining = pageLimit - edges.length;
+      edges.push(...response.data.versions.edges.slice(0, remaining));
+      pageInfo = response.data.versions.pageInfo;
+      after = pageInfo.endCursor ?? undefined;
+    } while (edges.length < pageLimit && pageInfo.hasNextPage && after);
+
+    return { data: { versions: { edges, pageInfo } } };
   }
 }

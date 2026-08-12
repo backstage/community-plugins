@@ -120,7 +120,7 @@ export const ArtifactTable = ({
   return (
     <Table
       title={t('table.title', { title } as Record<string, string>)}
-      options={{ paging: true, padding: 'dense' }}
+      options={{ paging: true, padding: 'dense', draggable: false }}
       data={artifacts}
       columns={columns}
       localization={{

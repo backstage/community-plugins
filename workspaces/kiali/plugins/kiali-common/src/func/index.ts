@@ -23,6 +23,7 @@ export * from './IstioConfigList';
 export * from './IstioObjects';
 export * from './MetricsOptions';
 export * from './Namespace';
+export * from './OverviewResponses';
 export * from './Permissions';
 export * from './ServiceInfo';
 export * from './TLSStatus';

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-report-portal-backend
 
+## 1.1.3
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 1.1.2
 
 ### Patch Changes

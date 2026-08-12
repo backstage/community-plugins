@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-azure-devops
 
+## 0.8.0
+
+### Minor Changes
+
+- 6213c8b: Backstage version bump to v1.53.0
+
 ## 0.7.0
 
 ### Minor Changes

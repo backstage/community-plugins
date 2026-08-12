@@ -11,8 +11,8 @@
 
 | Name                        | Location          | Severity |
 | :-------------------------- | :---------------- | :------- |
-| @testing-library/user-event | package.json:82:6 | error    |
-| @backstage/app-defaults     | package.json:71:6 | error    |
-| @backstage/core-app-api     | package.json:74:6 | error    |
-| msw                         | package.json:85:6 | error    |
+| @testing-library/user-event | package.json:83:6 | error    |
+| @backstage/app-defaults     | package.json:72:6 | error    |
+| @backstage/core-app-api     | package.json:75:6 | error    |
+| msw                         | package.json:86:6 | error    |
 

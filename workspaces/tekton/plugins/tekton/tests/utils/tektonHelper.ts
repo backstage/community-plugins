@@ -52,11 +52,14 @@ export class Common {
       page: this.page as any,
     })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .disableRules(['color-contrast'])
       .analyze();
 
     await testInfo.attach('accessibility-scan-results.json', {
       body: JSON.stringify(accessibilityScanResults.violations, null, 2),
       contentType: 'application/json',
     });
+
+    expect(accessibilityScanResults.violations).toEqual([]);
   }
 }

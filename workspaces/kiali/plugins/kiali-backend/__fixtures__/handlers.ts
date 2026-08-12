@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { rest } from 'msw';
+import { rest, type RestHandler } from 'msw';
 
 const LOCAL_ADDR = 'https://localhost:4000';
 
-export const handlers = [
+export const handlers: RestHandler[] = [
   rest.get(`${LOCAL_ADDR}/api/status`, (_, res, ctx) => {
     return res(
       ctx.status(200),

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 2.11.1
+
+### Patch Changes
+
+- 908d9af: Added title and icon to the announcements page extension for the new frontend system.
+
 ## 2.11.0
 
 ### Minor Changes

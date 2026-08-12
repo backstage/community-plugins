@@ -82,6 +82,7 @@ export const argocdTranslationRef: TranslationRef<
     readonly 'deploymentLifecycle.sidebar.rollouts.revisions.canaryRevision.revisionType.canary': string;
     readonly 'deploymentLifecycle.sidebar.rollouts.revisions.revisionImage.textPrimary': string;
     readonly 'deploymentLifecycle.sidebar.rollouts.rollOut.title': string;
+    readonly 'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD': string;
     readonly 'deploymentLifecycle.deploymentLifecycleCard.instance': string;
     readonly 'deploymentLifecycle.deploymentLifecycleCard.namespace': string;
     readonly 'deploymentLifecycle.deploymentLifecycleCard.resources': string;

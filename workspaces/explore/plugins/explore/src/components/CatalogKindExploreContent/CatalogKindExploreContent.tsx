@@ -16,7 +16,7 @@
 
 import { Entity } from '@backstage/catalog-model';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import Button from '@material-ui/core/Button';
+import { ButtonLink } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { EntityCard } from '../EntityCard';
 import {
@@ -65,13 +65,12 @@ const Body = (props: { kind: string }) => {
         title={`No ${kindPlural} to display`}
         description={`You haven't added any ${kindPlural} yet.`}
         action={
-          <Button
-            variant="contained"
-            color="primary"
+          <ButtonLink
+            variant="primary"
             href={`https://backstage.io/docs/features/software-catalog/descriptor-format#kind-${kind}`}
           >
             Read more
-          </Button>
+          </ButtonLink>
         }
       />
     );
