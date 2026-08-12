@@ -1,5 +1,11 @@
 # @backstage-community/plugin-microsoft-calendar
 
+## 0.21.1
+
+### Patch Changes
+
+- e1c3240: Updated dependency `dompurify` to `^3.4.13`.
+
 ## 0.21.0
 
 ### Minor Changes
