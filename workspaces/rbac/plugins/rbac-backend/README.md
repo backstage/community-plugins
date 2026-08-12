@@ -6,6 +6,8 @@ The Backstage permission framework is a core component of the Backstage project,
 
 With the RBAC plugin, you'll have the means to efficiently administer permissions within your Backstage instance by assigning them to users and groups.
 
+For local development and CI commands, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Prerequisites
 
 Before you dive into utilizing the RBAC plugin for Backstage, there are a few essential prerequisites to ensure a seamless experience. Please review the following requirements to make sure your environment is properly set up

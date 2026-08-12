@@ -18,6 +18,7 @@ import ResourceName from '../../../common/ResourceName';
 import { IngressModel } from '../../../../models';
 import { IngressData } from '../../../../types/ingresses';
 import { useTranslation } from '../../../../hooks/useTranslation';
+import { isValidHttpUrl } from '../../../../utils/url-utils';
 import TopologyResourcesTabPanelItem from '../TopologyResourcesTabPaneltem';
 import IngressRules from './IngressRules';
 
@@ -50,13 +51,17 @@ const IngressListSidebar = ({
                 <span className="bs-topology-text-muted">
                   {t('common.location')}:
                 </span>
-                <a
-                  href={ingressData.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {ingressData.url}
-                </a>
+                {isValidHttpUrl(ingressData.url) ? (
+                  <a
+                    href={ingressData.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {ingressData.url}
+                  </a>
+                ) : (
+                  <span>{ingressData.url}</span>
+                )}
               </>
             )}
             {ingressData.ingress.spec?.rules?.length && (

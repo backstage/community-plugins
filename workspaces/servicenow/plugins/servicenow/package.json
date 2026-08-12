@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-servicenow",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -15,12 +15,16 @@
   "exports": {
     ".": "./src/index.ts",
     "./alpha": "./src/alpha.ts",
+    "./translations": "./src/translations/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
         "src/alpha.ts"
+      ],
+      "translations": [
+        "src/translations/index.ts"
       ],
       "package.json": [
         "package.json"
@@ -53,6 +57,7 @@
     "@backstage/core-components": "^0.18.11",
     "@backstage/core-plugin-api": "^1.12.7",
     "@backstage/frontend-plugin-api": "^0.17.2",
+    "@backstage/plugin-app-react": "^0.2.4",
     "@backstage/plugin-catalog-react": "^3.1.0",
     "@backstage/theme": "^0.7.3",
     "@mui/icons-material": "^5.15.17",
@@ -74,7 +79,7 @@
     "@backstage/dev-utils": "^1.1.24",
     "@backstage/frontend-test-utils": "^0.6.1",
     "@backstage/test-utils": "^1.7.19",
-    "@playwright/test": "1.60.0",
+    "@playwright/test": "1.61.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",

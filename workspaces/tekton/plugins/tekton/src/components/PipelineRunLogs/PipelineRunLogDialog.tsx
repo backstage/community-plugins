@@ -42,6 +42,7 @@ const titleContainerSx = {
   display: 'flex',
   alignItems: 'center',
   gap: 1,
+  color: 'text.primary',
 };
 
 const closeButtonSx: SxProps<Theme> = {
@@ -103,7 +104,7 @@ const PipelineRunLogDialog = ({
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent tabIndex={0}>
         <ErrorBoundary>
           <PipelineRunLogDownloader
             pods={pods}

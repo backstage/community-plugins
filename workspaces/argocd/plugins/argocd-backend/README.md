@@ -2,6 +2,8 @@
 
 This plugin enables integration between Backstage and ArgoCD instances, allowing you to monitor your ArgoCD applications.
 
+For local development, the `dev/` harness, scoped test commands, and smoke checklists, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Installation
 
 This plugin is installed via the `@backstage-community/plugin-argocd-backend` package. To install it to your backend package, run:

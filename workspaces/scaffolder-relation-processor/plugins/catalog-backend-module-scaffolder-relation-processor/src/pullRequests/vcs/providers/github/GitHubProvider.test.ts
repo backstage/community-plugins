@@ -17,7 +17,10 @@
 import { GitHubProvider } from './GitHubProvider';
 import type { CatalogClient } from '@backstage/catalog-client';
 import type { Entity } from '@backstage/catalog-model';
-import { ScmIntegrations } from '@backstage/integration';
+import {
+  DefaultGithubCredentialsProvider,
+  ScmIntegrations,
+} from '@backstage/integration';
 import { mockServices } from '@backstage/backend-test-utils';
 
 // Mock dependencies
@@ -477,36 +480,15 @@ describe('GitHubProvider', () => {
   });
 
   describe('createPullRequest', () => {
-    it('should throw error when client creation fails', async () => {
-      // Mock integration that will cause issues downstream
-      const mockIntegration = {
-        github: {
-          byHost: jest.fn().mockReturnValue(undefined),
-        },
-      };
-      (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue(
-        mockIntegration,
-      );
-
-      const filesToUpdate = new Map([['README.md', 'content']]);
-      const templateInfo = {
-        owner: 'test-owner',
-        repo: 'test-repo',
-        name: 'test-template',
-        previousVersion: '1.0.0',
-        currentVersion: '2.0.0',
-        componentName: 'test-component',
-      };
-
-      await expect(
-        provider.createPullRequest(
-          'https://github.com/org/repo',
-          filesToUpdate,
-          templateInfo,
-          null,
-        ),
-      ).rejects.toThrow('GitHub authentication failed');
-    });
+    const filesToUpdate = new Map([['README.md', 'content']]);
+    const templateInfo = {
+      owner: 'test-owner',
+      repo: 'test-repo',
+      name: 'test-template',
+      previousVersion: '1.0.0',
+      currentVersion: '2.0.0',
+      componentName: 'test-component',
+    };
 
     it('should throw error when no integration is configured', async () => {
       const mockIntegration = {
@@ -518,15 +500,29 @@ describe('GitHubProvider', () => {
         mockIntegration,
       );
 
-      const filesToUpdate = new Map([['README.md', 'content']]);
-      const templateInfo = {
-        owner: 'test-owner',
-        repo: 'test-repo',
-        name: 'test-template',
-        previousVersion: '1.0.0',
-        currentVersion: '2.0.0',
-        componentName: 'test-component',
-      };
+      await expect(
+        provider.createPullRequest(
+          'https://github.com/org/repo',
+          filesToUpdate,
+          templateInfo,
+          null,
+        ),
+      ).rejects.toThrow('GitHub authentication failed');
+    });
+
+    it('should throw when authentication has no token', async () => {
+      (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue({
+        github: {
+          byHost: jest.fn().mockReturnValue({
+            config: {},
+          }),
+        },
+      });
+      (DefaultGithubCredentialsProvider.fromIntegrations as jest.Mock) = jest
+        .fn()
+        .mockReturnValue({
+          getCredentials: jest.fn().mockResolvedValue({}),
+        });
 
       await expect(
         provider.createPullRequest(
@@ -536,6 +532,36 @@ describe('GitHubProvider', () => {
           null,
         ),
       ).rejects.toThrow('GitHub authentication failed');
+    });
+
+    it('should throw when the repository URL cannot be parsed', async () => {
+      const gitUrlParse = require('git-url-parse');
+      gitUrlParse.mockReturnValue({
+        owner: null,
+        name: null,
+      });
+
+      (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue({
+        github: {
+          byHost: jest.fn().mockReturnValue({
+            config: { token: 'gh-token' },
+          }),
+        },
+      });
+      (DefaultGithubCredentialsProvider.fromIntegrations as jest.Mock) = jest
+        .fn()
+        .mockReturnValue({
+          getCredentials: jest.fn().mockResolvedValue({ token: 'gh-token' }),
+        });
+
+      await expect(
+        provider.createPullRequest(
+          'https://github.com/org/repo',
+          filesToUpdate,
+          templateInfo,
+          null,
+        ),
+      ).rejects.toThrow('Invalid repository URL');
     });
   });
 });

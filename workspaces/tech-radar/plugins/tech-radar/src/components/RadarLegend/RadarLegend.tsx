@@ -89,7 +89,7 @@ const RadarLegend = ({
   onEntryMouseEnter,
   onEntryMouseLeave,
   ...props
-}: RadarLegendProps): JSX.Element => {
+}: RadarLegendProps): React.JSX.Element => {
   const classes = useStyles(props);
 
   return (

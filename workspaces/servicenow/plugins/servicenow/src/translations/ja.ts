@@ -50,6 +50,7 @@ const servicenowTranslationJa = createTranslationMessages({
     'table.columns.state': '状態',
     'table.columns.actions': 'アクション',
     'table.emptyContent': 'レコードが見つかりません',
+    'table.rowsPerPage': 'ページあたりの行数',
     'actions.openInServicenow': 'ServiceNow で開く',
   },
 });

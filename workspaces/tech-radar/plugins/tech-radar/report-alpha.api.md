@@ -48,10 +48,10 @@ const _default: OverridableFrontendPlugin<
         title: string | undefined;
       };
       configInput: {
-        height?: number | undefined;
-        width?: number | undefined;
         subtitle?: string | undefined;
         pageTitle?: string | undefined;
+        width?: number | undefined;
+        height?: number | undefined;
         path?: string | undefined | undefined;
         title?: string | undefined | undefined;
       };
@@ -154,10 +154,10 @@ export const techRadarPage: OverridableExtensionDefinition<{
     title: string | undefined;
   };
   configInput: {
-    height?: number | undefined;
-    width?: number | undefined;
     subtitle?: string | undefined;
     pageTitle?: string | undefined;
+    width?: number | undefined;
+    height?: number | undefined;
     path?: string | undefined | undefined;
     title?: string | undefined | undefined;
   };

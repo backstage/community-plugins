@@ -49,6 +49,7 @@ const servicenowTranslationDe = createTranslationMessages({
     'table.columns.state': 'Status',
     'table.columns.actions': 'Aktionen',
     'table.emptyContent': 'Keine Datensätze gefunden',
+    'table.rowsPerPage': 'Zeilen pro Seite',
     'actions.openInServicenow': 'In ServiceNow öffnen',
   },
 });

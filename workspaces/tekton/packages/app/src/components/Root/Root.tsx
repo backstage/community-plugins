@@ -50,6 +50,7 @@ const useSidebarLogoStyles = makeStyles()({
     display: 'flex',
     flexFlow: 'row nowrap',
     alignItems: 'center',
+    marginLeft: 24,
     marginBottom: -14,
   },
   link: {

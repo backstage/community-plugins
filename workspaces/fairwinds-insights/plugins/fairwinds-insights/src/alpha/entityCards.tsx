@@ -15,6 +15,7 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { z } from 'zod';
 
 const FAIRWINDS_APP_GROUPS_ANNOTATION = 'insights.fairwinds.com/app-groups';
 
@@ -38,10 +39,8 @@ function isFairwindsInsightsAvailable(entity: Entity): boolean {
  */
 export const entityActionItemsCard = EntityCardBlueprint.makeWithOverrides({
   name: 'action-items',
-  config: {
-    schema: {
-      props: z => z.object({}).default({}),
-    },
+  configSchema: {
+    props: z.object({}).default({}),
   },
   factory(originalFactory, { config }) {
     return originalFactory({
@@ -59,10 +58,8 @@ export const entityActionItemsCard = EntityCardBlueprint.makeWithOverrides({
  */
 export const entityActionItemsTopCard = EntityCardBlueprint.makeWithOverrides({
   name: 'action-items-top',
-  config: {
-    schema: {
-      props: z => z.object({}).default({}),
-    },
+  configSchema: {
+    props: z.object({}).default({}),
   },
   factory(originalFactory, { config }) {
     return originalFactory({
@@ -80,10 +77,8 @@ export const entityActionItemsTopCard = EntityCardBlueprint.makeWithOverrides({
  */
 export const entityMTDCostOverviewCard = EntityCardBlueprint.makeWithOverrides({
   name: 'mtd-cost-overview',
-  config: {
-    schema: {
-      props: z => z.object({}).default({}),
-    },
+  configSchema: {
+    props: z.object({}).default({}),
   },
   factory(originalFactory, { config }) {
     return originalFactory({
@@ -101,10 +96,8 @@ export const entityMTDCostOverviewCard = EntityCardBlueprint.makeWithOverrides({
  */
 export const entityVulnerabilitiesCard = EntityCardBlueprint.makeWithOverrides({
   name: 'vulnerabilities',
-  config: {
-    schema: {
-      props: z => z.object({}).default({}),
-    },
+  configSchema: {
+    props: z.object({}).default({}),
   },
   factory(originalFactory, { config }) {
     return originalFactory({
@@ -123,10 +116,8 @@ export const entityVulnerabilitiesCard = EntityCardBlueprint.makeWithOverrides({
 export const entityResourcesHistoryPodCountCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'resources-history-pod-count',
-    config: {
-      schema: {
-        props: z => z.object({}).default({}),
-      },
+    configSchema: {
+      props: z.object({}).default({}),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
@@ -145,10 +136,8 @@ export const entityResourcesHistoryPodCountCard =
 export const entityResourcesHistoryCPUCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'resources-history-cpu',
-    config: {
-      schema: {
-        props: z => z.object({}).default({}),
-      },
+    configSchema: {
+      props: z.object({}).default({}),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
@@ -167,10 +156,8 @@ export const entityResourcesHistoryCPUCard =
 export const entityResourcesHistoryMemoryCard =
   EntityCardBlueprint.makeWithOverrides({
     name: 'resources-history-memory',
-    config: {
-      schema: {
-        props: z => z.object({}).default({}),
-      },
+    configSchema: {
+      props: z.object({}).default({}),
     },
     factory(originalFactory, { config }) {
       return originalFactory({

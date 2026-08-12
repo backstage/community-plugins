@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const RadarBubble = (props: Props): JSX.Element => {
+const RadarBubble = (props: Props): React.JSX.Element => {
   const classes = useStyles(props);
   const { visible, text } = props;
 

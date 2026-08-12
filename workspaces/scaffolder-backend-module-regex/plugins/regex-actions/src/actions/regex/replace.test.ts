@@ -19,7 +19,9 @@ import { createReplaceAction } from './replace';
 
 // When calling the action handler in a mock environment
 // the schema (zod) validation does not get called for some reason.
-// So, we cannot test with invalid inputs the schema would normally catch.
+// So, we cannot test with invalid inputs the schema would normally catch here.
+// See replace.schema.test.ts, which exercises the Zod schema (including the
+// `pattern` refine) directly instead of going through the action handler.
 
 // NOTE: We only need to escape the backslashes for the testing environment.
 // This is a JavaScript quirk with how it automatically serialize strings

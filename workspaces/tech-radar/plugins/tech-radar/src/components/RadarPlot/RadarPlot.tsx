@@ -36,7 +36,7 @@ export type Props = {
 };
 
 // A component that draws the radar circle.
-const RadarPlot = (props: Props): JSX.Element => {
+const RadarPlot = (props: Props): React.JSX.Element => {
   const {
     width,
     height,

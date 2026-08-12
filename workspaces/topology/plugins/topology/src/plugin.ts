@@ -15,29 +15,25 @@
  */
 import {
   createPlugin,
-  createRoutableExtension,
+  createComponentExtension,
 } from '@backstage/core-plugin-api';
-
-import { rootRouteRef } from './routes';
 
 /**
  * @public
  */
 export const topologyPlugin = createPlugin({
   id: 'topology',
-  routes: {
-    root: rootRouteRef,
-  },
 });
 
 /**
  * @public
  */
 export const TopologyPage = topologyPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'TopologyPage',
-    component: () =>
-      import('./components/Topology').then(m => m.TopologyComponent),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/Topology').then(m => m.TopologyComponent),
+    },
   }),
 );

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-airbrake
 
+## 0.23.0
+
+### Minor Changes
+
+- fed49bb: Backstage version bump to v1.53.0
+
 ## 0.22.0
 
 ### Minor Changes
