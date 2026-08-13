@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Button,
+  ButtonIcon,
   Container,
   Flex,
   Header,
@@ -29,9 +30,11 @@ import {
   ToggleButtonGroup,
   useTable,
 } from '@backstage/ui';
+import { RiAddLine, RiSubtractLine, RiFullscreenLine } from '@remixicon/react';
 import { useArgoWorkflows } from '@backstage-community/plugin-argo-workflows-react';
 import type { ArgoInstanceDetail } from '@backstage-community/plugin-argo-workflows-react';
 import { WorkflowDAGInline } from '../WorkflowDAGInline';
+import type { WorkflowDAGInlineHandle } from '../WorkflowDAGInline';
 import { buildColumns, workflowSortFn } from '../helpers';
 import {
   ALL_STATUSES,
@@ -53,6 +56,116 @@ export interface WorkflowRunsTableProps {
   namespace?: string;
   /** Available instances for the instance selector. When provided, a dropdown is shown. */
   availableInstances?: ArgoInstanceDetail[];
+}
+
+/** Horizontal bounds of the content column, in viewport coordinates. */
+interface ContentBounds {
+  left: number;
+  width: number;
+}
+
+/**
+ * Tracks the horizontal bounds of an element so a `position: fixed` overlay can
+ * be aligned to it.
+ *
+ * A fixed element is positioned against the viewport, so it cannot inherit the
+ * content column's width the way an in-flow element does. Observing the column
+ * keeps the overlay aligned across window resizes and Backstage sidebar
+ * expand/collapse, both of which change the column's offset and width.
+ */
+function useContentBounds() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [bounds, setBounds] = useState<ContentBounds | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+
+    const measure = () => {
+      const { left, width } = el.getBoundingClientRect();
+      setBounds(prev =>
+        prev && prev.left === left && prev.width === width
+          ? prev
+          : { left, width },
+      );
+    };
+
+    measure();
+    window.addEventListener('resize', measure);
+
+    // The sidebar toggling changes the column's width without firing a window
+    // resize, so observe the element itself as well.
+    const observer =
+      typeof ResizeObserver === 'undefined'
+        ? null
+        : new ResizeObserver(measure);
+    observer?.observe(el);
+
+    return () => {
+      window.removeEventListener('resize', measure);
+      observer?.disconnect();
+    };
+  }, []);
+
+  return { ref, bounds };
+}
+
+/**
+ * The DAG detail panel, pinned to the bottom of the viewport and overlaying the
+ * table. Height is capped by CSS at 45% of the screen.
+ */
+function WorkflowDAGPanel({
+  workflow,
+  onClose,
+  bounds,
+}: {
+  workflow: WorkflowItem;
+  onClose: () => void;
+  bounds: ContentBounds | null;
+}) {
+  const dagRef = useRef<WorkflowDAGInlineHandle>(null);
+
+  return (
+    <div
+      className={styles.detailPanel}
+      role="region"
+      aria-label="Workflow DAG view"
+      style={bounds ? { left: bounds.left, width: bounds.width } : undefined}
+    >
+      <div className={styles.detailPanelHeader}>
+        <Text variant="title-x-small">DAG — {workflow.metadata.name}</Text>
+        <Flex align="center" style={{ gap: 'var(--bui-space-1)' }}>
+          <ButtonIcon
+            variant="secondary"
+            icon={<RiAddLine size={16} />}
+            onPress={() => dagRef.current?.zoomIn()}
+            aria-label="Zoom in"
+          />
+          <ButtonIcon
+            variant="secondary"
+            icon={<RiSubtractLine size={16} />}
+            onPress={() => dagRef.current?.zoomOut()}
+            aria-label="Zoom out"
+          />
+          <ButtonIcon
+            variant="secondary"
+            icon={<RiFullscreenLine size={16} />}
+            onPress={() => dagRef.current?.fitToView()}
+            aria-label="Fit to view"
+          />
+          <Button
+            variant="tertiary"
+            size="small"
+            onPress={onClose}
+            aria-label="Close DAG view"
+          >
+            Close
+          </Button>
+        </Flex>
+      </div>
+      <WorkflowDAGInline ref={dagRef} workflow={workflow} />
+    </div>
+  );
 }
 
 /**
@@ -96,6 +209,7 @@ export const WorkflowRunsTable = ({
   });
 
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const { ref: contentRef, bounds: contentBounds } = useContentBounds();
   const [statusFilters, setStatusFilters] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [lastUpdated, setLastUpdated] = useState(() => new Date());
@@ -168,7 +282,7 @@ export const WorkflowRunsTable = ({
     : undefined;
 
   return (
-    <Container>
+    <Container ref={contentRef}>
       <Header
         title="Workflow runs"
         customActions={
@@ -254,12 +368,11 @@ export const WorkflowRunsTable = ({
         }}
       />
       {selectedWorkflow && (
-        <div className={styles.detailPanel}>
-          <Text variant="title-x-small" className={styles.detailTitle}>
-            DAG — {selectedWorkflow.metadata.name}
-          </Text>
-          <WorkflowDAGInline workflow={selectedWorkflow} />
-        </div>
+        <WorkflowDAGPanel
+          workflow={selectedWorkflow}
+          onClose={() => setExpandedRow(null)}
+          bounds={contentBounds}
+        />
       )}
     </Container>
   );

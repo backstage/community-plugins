@@ -76,6 +76,24 @@ export interface DAGLayoutConfig {
   maxScale: number;
 }
 
+/** X offset where a node's label text starts, clearing the accent bar and status icon. */
+export const NODE_LABEL_X = 26;
+
+/** X offset of the status icon inside a node. */
+export const NODE_ICON_X = 10;
+
+/** Rendered size of the status icon inside a node, in pixels. */
+export const NODE_ICON_SIZE = 12;
+
+/**
+ * Trailing padding reserved to the right of a node label.
+ *
+ * `labelMaxChars` in the configs below is budgeted against
+ * `nodeWidth - NODE_LABEL_X - NODE_LABEL_PADDING_RIGHT` so wide, all-caps
+ * labels do not spill past the node's right edge.
+ */
+export const NODE_LABEL_PADDING_RIGHT = 8;
+
 /** Layout config for the full-page DAG view. */
 export const DAG_VIEW_CONFIG: DAGLayoutConfig = {
   nodeWidth: 180,
@@ -84,7 +102,8 @@ export const DAG_VIEW_CONFIG: DAGLayoutConfig = {
   padding: 40,
   nodesep: 50,
   ranksep: 80,
-  labelMaxChars: 20,
+  // (180 - 34) / 12px font at ~0.6em average glyph width
+  labelMaxChars: 17,
   fontSize: 12,
   minScale: 0.1,
   maxScale: 5,
@@ -98,7 +117,8 @@ export const DAG_INLINE_CONFIG: DAGLayoutConfig = {
   padding: 30,
   nodesep: 40,
   ranksep: 60,
-  labelMaxChars: 18,
+  // (160 - 34) / 11px font at ~0.6em average glyph width
+  labelMaxChars: 15,
   fontSize: 11,
   minScale: 0.3,
   maxScale: 3,
@@ -152,13 +172,47 @@ export function computeLayout(
   return { nodes, edges, width, height };
 }
 
-/** Builds an SVG path string from an array of points. */
+/**
+ * Tension divisor for the Catmull-Rom to cubic Bezier conversion. The
+ * canonical value of 6 reproduces a standard (uniform) Catmull-Rom spline.
+ */
+const CATMULL_ROM_TENSION = 6;
+
+/**
+ * Builds an SVG path string from an array of points.
+ *
+ * - 0 points yields an empty path, 1 point yields a bare move.
+ * - 2 points yield a single cubic with horizontal control handles, which suits
+ *   the left-to-right rank direction dagre lays out.
+ * - 3 or more points are joined with a uniform Catmull-Rom spline converted to
+ *   cubic Bezier segments. Each interior waypoint shares a tangent between its
+ *   incoming and outgoing segment, so the curve passes through every waypoint
+ *   without the visible kinks that per-segment S-curves produce.
+ */
 export function buildEdgePath(points: Array<{ x: number; y: number }>): string {
   if (points.length === 0) return '';
   if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+  if (points.length === 2) {
+    const [start, end] = points;
+    const midX = (start.x + end.x) / 2;
+    return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${midX} ${end.y}, ${end.x} ${end.y}`;
+  }
+
   let d = `M ${points[0].x} ${points[0].y}`;
-  for (let i = 1; i < points.length; i++) {
-    d += ` L ${points[i].x} ${points[i].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    // Endpoints are clamped (duplicated) so the spline starts and ends exactly
+    // on the first and last point.
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? points[i + 1];
+
+    const cp1x = p1.x + (p2.x - p0.x) / CATMULL_ROM_TENSION;
+    const cp1y = p1.y + (p2.y - p0.y) / CATMULL_ROM_TENSION;
+    const cp2x = p2.x - (p3.x - p1.x) / CATMULL_ROM_TENSION;
+    const cp2y = p2.y - (p3.y - p1.y) / CATMULL_ROM_TENSION;
+
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
   }
   return d;
 }

@@ -1,13 +1,18 @@
 .root {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
   position: relative;
   flex: 1;
   min-width: 0;
-  height: 199px;
+  min-height: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .svg {
@@ -26,9 +31,10 @@
   outline: none;
 }
 
-.node:focus-visible > rect {
-  stroke: #ffffff;
-  stroke-width: 3;
+.node:focus-visible > rect:first-child {
+  stroke: var(--bui-fg-info);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px var(--bui-fg-info));
 }
 
 .empty {
@@ -65,12 +71,32 @@
   font-weight: 500;
 }
 
-.controls {
+/*
+ * Note: there is deliberately no `.controls` rule here. The inline view passes
+ * `hideControls` to DAGCanvas and renders the zoom buttons in the surrounding
+ * panel header instead, so the canvas never draws its own control cluster.
+ */
+
+.canvasArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minimap {
   position: absolute;
   bottom: var(--bui-space-3);
-  left: var(--bui-space-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--bui-space-1);
+  right: var(--bui-space-3);
+  width: 140px;
+  height: 90px;
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+  background: var(--bui-bg-neutral-1, #fff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 5;
+  overflow: hidden;
 }

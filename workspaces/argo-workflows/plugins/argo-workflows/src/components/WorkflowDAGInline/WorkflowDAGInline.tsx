@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useImperativeHandle, useMemo, forwardRef } from 'react';
 import { Text } from '@backstage/ui';
 import { buildDAG } from '@backstage-community/plugin-argo-workflows-react';
 import type { Workflow } from '@backstage-community/plugin-argo-workflows-common';
@@ -26,6 +26,13 @@ import {
 import { DAGCanvas } from '../DAGCanvas';
 import styles from './WorkflowDAGInline.module.css';
 
+/** Handle exposed by WorkflowDAGInline for external zoom control. */
+export interface WorkflowDAGInlineHandle {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  fitToView: () => void;
+}
+
 /** @public */
 export interface WorkflowDAGInlineProps {
   workflow: Workflow;
@@ -34,8 +41,12 @@ export interface WorkflowDAGInlineProps {
 /**
  * Inline DAG visualization rendered inside an expandable table row.
  * Accepts a Workflow object directly — no routing or fetching needed.
+ * Exposes zoom actions via ref (WorkflowDAGInlineHandle).
  */
-export const WorkflowDAGInline = ({ workflow }: WorkflowDAGInlineProps) => {
+export const WorkflowDAGInline = forwardRef<
+  WorkflowDAGInlineHandle,
+  WorkflowDAGInlineProps
+>(({ workflow }, ref) => {
   const interaction = useDAGInteraction(DAG_INLINE_CONFIG);
 
   const layout = useMemo(() => {
@@ -55,6 +66,20 @@ export const WorkflowDAGInline = ({ workflow }: WorkflowDAGInlineProps) => {
       interaction.fitToView(layout);
     }
   }, [layout, interaction]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      zoomIn: () => interaction.zoomIn(),
+      zoomOut: () => interaction.zoomOut(),
+      fitToView: () => {
+        if (layout && !('empty' in layout) && !('error' in layout)) {
+          interaction.fitToView(layout);
+        }
+      },
+    }),
+    [interaction, layout],
+  );
 
   if (!layout || 'empty' in layout) {
     return (
@@ -86,7 +111,10 @@ export const WorkflowDAGInline = ({ workflow }: WorkflowDAGInlineProps) => {
         markerId="arrowhead-inline"
         styles={styles}
         onFit={handleFit}
+        hideControls
       />
     </div>
   );
-};
+});
+
+WorkflowDAGInline.displayName = 'WorkflowDAGInline';

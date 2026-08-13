@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { WorkflowDAGInline } from './WorkflowDAGInline';
+export type { WorkflowDAGInlineHandle } from './WorkflowDAGInline';
