@@ -1661,7 +1661,7 @@ __metadata:
     eslint-plugin-testing-library: "npm:^6.0.0"
     fs-extra: "npm:11.3.5"
     husky: "npm:^9.0.11"
-    js-yaml: "npm:^4.2.0"
+    js-yaml: "npm:^4.3.0"
     lint-staged: "npm:^16.0.0"
     lodash.escaperegexp: "npm:^4.1.2"
     node-fetch: "npm:^2.6.7"
@@ -12806,14 +12806,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "js-yaml@npm:4.2.0"
+"js-yaml@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "js-yaml@npm:4.3.0"
   dependencies:
     argparse: "npm:^2.0.1"
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 10/51de2067a2b44b07ba5206132e56005f8b568ff279bb4d2f645068958c56fa4827d40a6841c983234671fa0a134bf094d0b0717873c2a3d319185297af145a6d
+  checksum: 10/2bcec3a8118d7f744badeb04e14366578d234a736f353d41fe35d2305e4ce2409a8e041d277f07cd6bbc8aaa12128d650a68ce43247072519bede20962d2126f
   languageName: node
   linkType: hard
 
