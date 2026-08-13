@@ -17,10 +17,7 @@
 import type { BackstageCredentials } from '@backstage/backend-plugin-api';
 import { ConfigReader } from '@backstage/config';
 import { JsonObject } from '@backstage/types';
-import {
-  ArgoWorkflowsService,
-  validateLabelSelector,
-} from './ArgoWorkflowsService';
+import { ArgoWorkflowsService } from './ArgoWorkflowsService';
 
 // Mock global fetch
 const mockFetch = jest.fn();
@@ -41,57 +38,6 @@ function createService(data: JsonObject, extras?: Record<string, unknown>) {
     ...extras,
   });
 }
-
-describe('validateLabelSelector', () => {
-  it('accepts simple equality selectors', () => {
-    expect(validateLabelSelector('app=my-service')).toBeUndefined();
-    expect(validateLabelSelector('app==my-service')).toBeUndefined();
-    expect(validateLabelSelector('app!=my-service')).toBeUndefined();
-  });
-
-  it('accepts set-based selectors', () => {
-    expect(validateLabelSelector('env in (prod,staging)')).toBeUndefined();
-    expect(validateLabelSelector('env notin (dev,test)')).toBeUndefined();
-  });
-
-  it('accepts existence selectors', () => {
-    expect(validateLabelSelector('app')).toBeUndefined();
-    expect(validateLabelSelector('!app')).toBeUndefined();
-  });
-
-  it('accepts comma-separated selectors', () => {
-    expect(validateLabelSelector('app=my-service,env=prod')).toBeUndefined();
-    expect(
-      validateLabelSelector('app=my-service,env in (prod,staging)'),
-    ).toBeUndefined();
-  });
-
-  it('accepts selectors with DNS prefix keys', () => {
-    expect(
-      validateLabelSelector('app.kubernetes.io/name=my-service'),
-    ).toBeUndefined();
-  });
-
-  it('rejects empty selectors', () => {
-    expect(validateLabelSelector('')).toBeDefined();
-    expect(validateLabelSelector('   ')).toBeDefined();
-  });
-
-  it('rejects invalid selectors', () => {
-    expect(validateLabelSelector('=value')).toBeDefined();
-    expect(validateLabelSelector('app=my-service,')).toBeDefined();
-  });
-
-  it('accepts selectors with an empty label value', () => {
-    expect(validateLabelSelector('key=')).toBeUndefined();
-    expect(validateLabelSelector('key==')).toBeUndefined();
-    expect(validateLabelSelector('key!=')).toBeUndefined();
-  });
-
-  it('accepts set-based selectors with an empty value set', () => {
-    expect(validateLabelSelector('key in ()')).toBeUndefined();
-  });
-});
 
 describe('ArgoWorkflowsService', () => {
   beforeEach(() => {

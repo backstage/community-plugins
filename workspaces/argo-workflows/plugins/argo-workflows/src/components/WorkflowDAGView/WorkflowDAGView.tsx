@@ -21,11 +21,7 @@ import {
   useArgoWorkflowDetail,
   buildDAG,
 } from '@backstage-community/plugin-argo-workflows-react';
-import {
-  computeLayout,
-  useDAGInteraction,
-  DAG_VIEW_CONFIG,
-} from '../dagHelpers';
+import { computeLayout, useDAGInteraction, DAG_VIEW_CONFIG } from '../dag';
 import { formatDurationSeconds } from '../utils';
 import { DAGCanvas } from '../DAGCanvas';
 import styles from './WorkflowDAGView.module.css';

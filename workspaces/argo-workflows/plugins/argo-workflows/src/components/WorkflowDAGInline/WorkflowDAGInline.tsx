@@ -18,11 +18,7 @@ import { useCallback, useImperativeHandle, useMemo, forwardRef } from 'react';
 import { Text } from '@backstage/ui';
 import { buildDAG } from '@backstage-community/plugin-argo-workflows-react';
 import type { Workflow } from '@backstage-community/plugin-argo-workflows-common';
-import {
-  computeLayout,
-  useDAGInteraction,
-  DAG_INLINE_CONFIG,
-} from '../dagHelpers';
+import { computeLayout, useDAGInteraction, DAG_INLINE_CONFIG } from '../dag';
 import { DAGCanvas } from '../DAGCanvas';
 import styles from './WorkflowDAGInline.module.css';
 

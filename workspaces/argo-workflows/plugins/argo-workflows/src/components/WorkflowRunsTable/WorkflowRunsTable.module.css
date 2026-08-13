@@ -52,6 +52,13 @@
   }
 }
 
+/* ZoomControls renders a bare div, so lay its buttons out here. */
+.panelZoomControls {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bui-space-1);
+}
+
 .detailPanelHeader {
   display: flex;
   align-items: center;

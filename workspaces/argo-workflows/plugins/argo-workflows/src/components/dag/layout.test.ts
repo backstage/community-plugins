@@ -21,7 +21,7 @@ import {
   DAG_INLINE_CONFIG,
   NODE_LABEL_X,
   NODE_LABEL_PADDING_RIGHT,
-} from './dagHelpers';
+} from '.';
 
 interface Pt {
   x: number;

@@ -29,6 +29,7 @@ import {
   parseWorkflow,
   type Workflow,
 } from '@backstage-community/plugin-argo-workflows-common';
+import { assertValidLabelSelector } from './labelSelector';
 import type {
   KubernetesClustersSupplier,
   KubernetesFetcher,
@@ -67,72 +68,6 @@ class HttpStatusError extends Error {
     this.name = 'HttpStatusError';
     this.statusCode = statusCode;
   }
-}
-
-const LABEL_KEY_PATTERN =
-  '([a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\\/)?[a-zA-Z_]([a-zA-Z0-9._-]*[a-zA-Z0-9_])?';
-const LABEL_VALUE_PATTERN = '([a-zA-Z0-9]([a-zA-Z0-9._-]{0,61}[a-zA-Z0-9])?)?';
-
-const EQUALITY_EXPR = new RegExp(
-  `^${LABEL_KEY_PATTERN}\\s*(==?|!=)\\s*${LABEL_VALUE_PATTERN}$`,
-);
-const SET_EXPR = new RegExp(
-  `^${LABEL_KEY_PATTERN}\\s+(in|notin)\\s+\\(\\s*${LABEL_VALUE_PATTERN}(\\s*,\\s*${LABEL_VALUE_PATTERN})*\\s*\\)$`,
-);
-const EXISTS_EXPR = new RegExp(`^!?${LABEL_KEY_PATTERN}$`);
-
-function isValidSelectorExpression(expr: string): boolean {
-  const trimmed = expr.trim();
-  if (trimmed.length === 0) return false;
-  return (
-    EQUALITY_EXPR.test(trimmed) ||
-    SET_EXPR.test(trimmed) ||
-    EXISTS_EXPR.test(trimmed)
-  );
-}
-
-function splitSelectorExpressions(selector: string): string[] {
-  const expressions: string[] = [];
-  let current = '';
-  let depth = 0;
-  for (const ch of selector) {
-    if (ch === '(') {
-      depth++;
-      current += ch;
-    } else if (ch === ')') {
-      depth = Math.max(0, depth - 1);
-      current += ch;
-    } else if (ch === ',' && depth === 0) {
-      expressions.push(current);
-      current = '';
-    } else {
-      current += ch;
-    }
-  }
-  if (current.length > 0) expressions.push(current);
-  return expressions;
-}
-
-/**
- * Validates a full Kubernetes label selector string.
- * Returns an error message if invalid, or undefined if valid.
- */
-export function validateLabelSelector(selector: string): string | undefined {
-  const trimmed = selector.trim();
-  if (trimmed.length === 0) {
-    return 'selector must not be empty';
-  }
-  if (trimmed.endsWith(',')) {
-    return 'selector must not end with a comma';
-  }
-  const expressions = splitSelectorExpressions(trimmed);
-  const invalid = expressions.filter(e => !isValidSelectorExpression(e));
-  if (invalid.length > 0) {
-    return `invalid expressions: ${invalid
-      .map(e => `"${e.trim()}"`)
-      .join(', ')}`;
-  }
-  return undefined;
 }
 
 const WORKFLOW_CUSTOM_RESOURCE: CustomResource = {
@@ -261,10 +196,7 @@ export class ArgoWorkflowsService {
   ): Promise<Workflow[]> {
     const instance = this.resolveInstance(instanceName);
 
-    const validationError = validateLabelSelector(labelSelector);
-    if (validationError) {
-      throw new InputError(`Invalid label selector: ${validationError}`);
-    }
+    assertValidLabelSelector(labelSelector);
 
     if (instance.kind === 'kubernetes') {
       return this.listWorkflowsViaKubernetes(
@@ -302,11 +234,9 @@ export class ArgoWorkflowsService {
     const instance = this.resolveInstance(instanceName);
 
     if (instance.kind === 'kubernetes') {
+      // Optional here, unlike when listing, so only validate what was supplied.
       if (labelSelector) {
-        const validationError = validateLabelSelector(labelSelector);
-        if (validationError) {
-          throw new InputError(`Invalid label selector: ${validationError}`);
-        }
+        assertValidLabelSelector(labelSelector);
       }
 
       return this.getWorkflowViaKubernetes(
