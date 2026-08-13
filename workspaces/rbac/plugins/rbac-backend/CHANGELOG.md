@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac-backend
 
+## 7.17.0
+
+### Minor Changes
+
+- 68f5f2e: Added `permission.rbac.useOwnershipEntityRefs` config option to evaluate group-to-role bindings using ownership entity refs from the sign-in token, in addition to catalog memberOf relations.
+
 ## 7.16.2
 
 ### Patch Changes
