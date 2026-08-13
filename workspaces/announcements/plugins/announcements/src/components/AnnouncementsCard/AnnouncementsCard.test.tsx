@@ -30,6 +30,8 @@ import { analyticsApiRef } from '@backstage/core-plugin-api';
 const mockAnnouncementsApi = (announcements: AnnouncementsList) => ({
   announcements: jest.fn().mockResolvedValue(announcements),
   lastSeenDate: jest.fn().mockReturnValue(DateTime.now().minus({ days: 1 })),
+  dismissAnnouncement: jest.fn(),
+  isAnnouncementDismissed: jest.fn().mockReturnValue(false),
 });
 
 type AnalyticsMock = ReturnType<typeof mockApis.analytics.mock>;

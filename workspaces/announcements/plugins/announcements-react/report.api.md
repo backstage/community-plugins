@@ -46,6 +46,8 @@ export interface AnnouncementsApi {
   deleteCategory(slug: string): Promise<void>;
   // (undocumented)
   deleteTag(slug: string): Promise<void>;
+  dismissAnnouncement(id: string): void;
+  isAnnouncementDismissed(id: string): boolean;
   // (undocumented)
   lastSeenDate(): DateTime;
   // (undocumented)
@@ -92,6 +94,10 @@ export class AnnouncementsClient implements AnnouncementsApi {
   deleteCategory(slug: string): Promise<void>;
   // (undocumented)
   deleteTag(slug: string): Promise<void>;
+  // (undocumented)
+  dismissAnnouncement(id: string): void;
+  // (undocumented)
+  isAnnouncementDismissed(id: string): boolean;
   // (undocumented)
   lastSeenDate(): DateTime;
   // (undocumented)

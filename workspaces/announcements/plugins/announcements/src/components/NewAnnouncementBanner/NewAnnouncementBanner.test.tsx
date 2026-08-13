@@ -30,6 +30,8 @@ const mockAnnouncementsApi = (announcements: AnnouncementsList) => ({
   announcements: jest.fn().mockResolvedValue(announcements),
   lastSeenDate: jest.fn().mockReturnValue(DateTime.now().minus({ days: 1 })),
   markLastSeenDate: jest.fn(),
+  dismissAnnouncement: jest.fn(),
+  isAnnouncementDismissed: jest.fn().mockReturnValue(false),
 });
 
 type AnalyticsMock = ReturnType<typeof mockApis.analytics.mock>;
@@ -121,7 +123,7 @@ describe('NewAnnouncementBanner', () => {
       expect(screen.queryAllByText('New Announcement').length).toBe(0);
     });
 
-    expect(mockApi.markLastSeenDate).toHaveBeenCalled();
+    expect(mockApi.dismissAnnouncement).toHaveBeenCalledWith('1');
   });
 
   it('does not render when there are no unseen announcements', async () => {
