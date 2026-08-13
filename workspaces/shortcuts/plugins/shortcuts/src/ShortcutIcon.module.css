@@ -1,0 +1,15 @@
+@layer components {
+  .avatar {
+    color: var(--avatar-contrast-text);
+    background-color: var(--avatar-bg-color);
+    width: 28px;
+    height: 28px;
+    font-weight: bold;
+    font-size: 13px;
+    filter: contrast(150%) brightness(1.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+}

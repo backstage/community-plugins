@@ -1,0 +1,14 @@
+@layer components {
+  .root:hover .editButton {
+    visibility: visible;
+  }
+
+  .editButton {
+    visibility: hidden;
+  }
+
+  .icon {
+    color: var(--bui-fg-disabled);
+    font-size: 16px;
+  }
+}

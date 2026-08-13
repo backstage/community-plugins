@@ -16,11 +16,9 @@
 
 import { pageTheme } from '@backstage/theme';
 import { v4 as uuid } from 'uuid';
-import {
-  ShortcutApi,
-  type Shortcut,
-} from '@backstage-community/plugin-shortcuts';
 import type { StorageApi } from '@backstage/core-plugin-api';
+import { ShortcutApi } from './ShortcutApi';
+import type { Shortcut } from '../types';
 import type { Observable } from '@backstage/types';
 import ObservableImpl from 'zen-observable';
 
