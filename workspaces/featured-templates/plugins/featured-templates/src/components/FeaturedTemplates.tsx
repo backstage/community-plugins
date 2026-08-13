@@ -30,7 +30,8 @@ import {
 import { TemplateCard } from '@backstage/plugin-scaffolder-react/alpha';
 import { Button, ButtonLink, Skeleton } from '@backstage/ui';
 import { RiErrorWarningLine, RiShapesLine } from '@remixicon/react';
-import { useRef } from 'react';
+import { useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { useNavigate } from 'react-router-dom';
 import { selectedTemplateRouteRef, templatesRouteRef } from '../routes';
@@ -49,7 +50,17 @@ export function FeaturedTemplates({ tag }: FeaturedTemplatesProps) {
   const selectedTemplateRoute = useRouteRef(selectedTemplateRouteRef);
   const templatesRoute = useRouteRef(templatesRouteRef);
   const navigate = useNavigate();
-  const trackRef = useRef<HTMLDivElement>(null);
+  const [track, setTrack] = useState<HTMLDivElement | null>(null);
+  const { ref: firstCardRef, inView: firstCardInView } = useInView({
+    root: track,
+    threshold: 0.5,
+    initialInView: true,
+  });
+  const { ref: lastCardRef, inView: lastCardInView } = useInView({
+    root: track,
+    threshold: 0.5,
+    initialInView: true,
+  });
   const { loading, error, value, retry } = useAsyncRetry(
     () =>
       catalogApi.getEntities({
@@ -113,12 +124,19 @@ export function FeaturedTemplates({ tag }: FeaturedTemplatesProps) {
   return (
     <div className={styles.root}>
       <div
-        ref={trackRef}
+        ref={setTrack}
         className={styles.track}
         data-testid="featured-templates-track"
       >
-        {templates.map(template => (
-          <div className={styles.card} key={stringifyEntityRef(template)}>
+        {templates.map((template, index) => (
+          <div
+            className={styles.card}
+            key={stringifyEntityRef(template)}
+            ref={element => {
+              if (index === 0) firstCardRef(element);
+              if (index === templates.length - 1) lastCardRef(element);
+            }}
+          >
             <TemplateCard
               template={template}
               onSelected={() => openTemplate(template)}
@@ -126,7 +144,11 @@ export function FeaturedTemplates({ tag }: FeaturedTemplatesProps) {
           </div>
         ))}
       </div>
-      <ScrollControls trackRef={trackRef} count={templates.length} />
+      <ScrollControls
+        track={track}
+        canScrollPrevious={!firstCardInView}
+        canScrollNext={!lastCardInView}
+      />
     </div>
   );
 }

@@ -16,7 +16,6 @@
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { ButtonIcon } from '@backstage/ui';
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
-import { type RefObject, useEffect, useState } from 'react';
 import { featuredTemplatesTranslationRef } from '../translation';
 import styles from './ScrollControls.module.css';
 
@@ -29,38 +28,17 @@ function cardStep(track: HTMLElement) {
 }
 
 export function ScrollControls({
-  trackRef,
-  count,
+  track,
+  canScrollPrevious,
+  canScrollNext,
 }: {
-  trackRef: RefObject<HTMLDivElement>;
-  count: number;
+  track: HTMLElement | null;
+  canScrollPrevious: boolean;
+  canScrollNext: boolean;
 }) {
   const { t } = useTranslationRef(featuredTemplatesTranslationRef);
-  const [canScrollPrevious, setCanScrollPrevious] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return undefined;
-    const firstCard = track.children[0];
-    const lastCard = track.children[track.children.length - 1];
-    const observer = new IntersectionObserver(
-      entries => {
-        for (const entry of entries) {
-          const mostlyVisible = entry.intersectionRatio >= 0.5;
-          if (entry.target === firstCard) setCanScrollPrevious(!mostlyVisible);
-          if (entry.target === lastCard) setCanScrollNext(!mostlyVisible);
-        }
-      },
-      { root: track, threshold: 0.5 },
-    );
-    observer.observe(firstCard);
-    if (lastCard !== firstCard) observer.observe(lastCard);
-    return () => observer.disconnect();
-  }, [trackRef, count]);
 
   const scroll = (direction: -1 | 1) => {
-    const track = trackRef.current;
     if (!track) return;
     track.scrollBy({
       left: direction * cardStep(track),

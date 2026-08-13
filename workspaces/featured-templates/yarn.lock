@@ -457,6 +457,7 @@ __metadata:
     "@types/react-dom": "npm:^18"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
+    react-intersection-observer: "npm:9.5.3"
     react-router-dom: "npm:^6.30.4"
     react-use: "npm:^17.6.1"
     zod: "npm:^4.0.0"
@@ -17576,6 +17577,15 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: 10/271c9320579da888ea61b3e0c2d44bbd9741ad823e0a0bb1256475a225f1b36f27bdfa6af8f5f089f6c2a5c96062bc268f68e06b206bd7ee832d29521f2e25a9
+  languageName: node
+  linkType: hard
+
+"react-intersection-observer@npm:9.5.3":
+  version: 9.5.3
+  resolution: "react-intersection-observer@npm:9.5.3"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 10/4a54c9e004568fbfee070b0e8beac50379dd8222caa15fcf7923f6fd575ca4988a88b3b0eee4108606f41ee87cd2fd7e8a537523ff5886d14b08c391aedf0c5a
   languageName: node
   linkType: hard
 

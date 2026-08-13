@@ -18,6 +18,7 @@ import { renderInTestApp } from '@backstage/frontend-test-utils';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { mockIsIntersecting } from 'react-intersection-observer/test-utils';
 import { useLocation } from 'react-router-dom';
 import { template as makeTemplate } from '../../dev/fixtures';
 import { FeaturedTemplates } from './FeaturedTemplates';
@@ -46,67 +47,6 @@ function mockScrollGeometry(region: HTMLElement) {
   Object.defineProperty(region.children[1], 'offsetLeft', { value: 264 });
   return scrollBy;
 }
-
-type ObserverRecord = {
-  callback: IntersectionObserverCallback;
-  targets: Set<Element>;
-  observer: IntersectionObserver;
-};
-
-const observerRecords = new Set<ObserverRecord>();
-
-class TestIntersectionObserver implements IntersectionObserver {
-  readonly root = null;
-  readonly rootMargin = '';
-  readonly thresholds: readonly number[] = [];
-  private readonly record: ObserverRecord;
-
-  constructor(callback: IntersectionObserverCallback) {
-    this.record = { callback, targets: new Set(), observer: this };
-    observerRecords.add(this.record);
-  }
-
-  observe(target: Element) {
-    this.record.targets.add(target);
-  }
-
-  unobserve(target: Element) {
-    this.record.targets.delete(target);
-  }
-
-  disconnect() {
-    observerRecords.delete(this.record);
-  }
-
-  takeRecords(): IntersectionObserverEntry[] {
-    return [];
-  }
-}
-
-window.IntersectionObserver = TestIntersectionObserver;
-
-function intersect(node: Element, intersectionRatio: number) {
-  for (const { callback, targets, observer } of observerRecords) {
-    if (targets.has(node)) {
-      callback(
-        [
-          {
-            target: node,
-            intersectionRatio,
-            isIntersecting: intersectionRatio > 0,
-          } as IntersectionObserverEntry,
-        ],
-        observer,
-      );
-    }
-  }
-}
-
-const io = {
-  enterNode: (node: Element) => intersect(node, 1),
-  leaveNode: (node: Element, { intersectionRatio = 0 } = {}) =>
-    intersect(node, intersectionRatio),
-};
 
 const Location = () => <output>{useLocation().pathname}</output>;
 
@@ -195,8 +135,8 @@ describe('FeaturedTemplates', () => {
     const scrollBy = mockScrollGeometry(track);
     const [firstCard, lastCard] = Array.from(track.children) as HTMLElement[];
     act(() => {
-      io.enterNode(firstCard);
-      io.leaveNode(lastCard, { intersectionRatio: 0.2 });
+      mockIsIntersecting(firstCard, 1);
+      mockIsIntersecting(lastCard, 0.2);
     });
     expect(
       screen.queryByRole('button', { name: 'Previous templates' }),
