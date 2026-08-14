@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,12 @@
  */
 import { expect, type APIRequestContext, type Page } from '@playwright/test';
 import { searchForRole } from './rbacHelper';
+import {
+  type SeedPolicy,
+  getGuestsPolicies,
+  getAdminPolicies,
+  getAdminConditions,
+} from './seedE2eData';
 
 const API_BASE = 'http://127.0.0.1:7007';
 
@@ -59,13 +65,6 @@ function policiesApiPath(roleEntityRef: string): string {
     '/api/permission/policies/',
   );
 }
-
-type SeedPolicy = {
-  entityReference: string;
-  permission: string;
-  policy: string;
-  effect: string;
-};
 
 async function apiDeleteRole(
   request: APIRequestContext,
@@ -180,7 +179,7 @@ async function apiDeleteConditionsForRole(
   }>;
   for (const condition of conditions) {
     if (
-      condition.id === null ||
+      condition.id === undefined ||
       (condition.roleEntityRef && condition.roleEntityRef !== roleEntityRef)
     ) {
       continue;
@@ -315,95 +314,8 @@ export async function seedE2eRolesViaRest(page: Page, locale: string) {
   ).toBeTruthy();
   const { request } = page;
 
-  const guestsPolicies: SeedPolicy[] = [
-    {
-      entityReference: roles.guests,
-      permission: 'catalog-entity',
-      policy: 'read',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.guests,
-      permission: 'catalog.entity.create',
-      policy: 'use',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.guests,
-      permission: 'policy-entity',
-      policy: 'create',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.guests,
-      permission: 'policy-entity',
-      policy: 'read',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.guests,
-      permission: 'policy-entity',
-      policy: 'update',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.guests,
-      permission: 'policy-entity',
-      policy: 'delete',
-      effect: 'allow',
-    },
-  ];
-
-  const adminPolicies: SeedPolicy[] = [
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'policy-entity',
-      policy: 'read',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'policy-entity',
-      policy: 'create',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'policy-entity',
-      policy: 'update',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'policy-entity',
-      policy: 'delete',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'catalog-entity',
-      policy: 'read',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'catalog.entity.create',
-      policy: 'use',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'catalog-entity',
-      policy: 'update',
-      effect: 'allow',
-    },
-    {
-      entityReference: roles.rbacAdmin,
-      permission: 'catalog-entity',
-      policy: 'delete',
-      effect: 'allow',
-    },
-  ];
+  const guestsPolicies = getGuestsPolicies(roles.guests);
+  const adminPolicies = getAdminPolicies(roles.rbacAdmin);
 
   // Legacy unsuffixed names from older seeds (same policy shapes).
   const legacyGuests = 'role:default/guests';
@@ -459,113 +371,7 @@ export async function seedE2eRolesViaRest(page: Page, locale: string) {
 
   // Catalog conditional policies only — scaffolder backend is not in the
   // rbac-backend dev app, so scaffolder condition APIs return 500.
-  const conditions = [
-    {
-      result: 'CONDITIONAL',
-      roleEntityRef: roles.rbacAdmin,
-      pluginId: 'catalog',
-      resourceType: 'catalog-entity',
-      permissionMapping: ['read'],
-      conditions: {
-        rule: 'HAS_ANNOTATION',
-        resourceType: 'catalog-entity',
-        params: { annotation: 'temp' },
-      },
-    },
-    {
-      result: 'CONDITIONAL',
-      roleEntityRef: roles.rbacAdmin,
-      pluginId: 'catalog',
-      resourceType: 'catalog-entity',
-      permissionMapping: ['delete'],
-      conditions: {
-        allOf: [
-          {
-            rule: 'HAS_LABEL',
-            resourceType: 'catalog-entity',
-            params: { label: 'temp' },
-          },
-          {
-            rule: 'HAS_METADATA',
-            resourceType: 'catalog-entity',
-            params: { key: 'status' },
-          },
-        ],
-      },
-    },
-    {
-      result: 'CONDITIONAL',
-      roleEntityRef: roles.rbacAdmin,
-      pluginId: 'catalog',
-      resourceType: 'catalog-entity',
-      permissionMapping: ['update'],
-      conditions: {
-        anyOf: [
-          {
-            rule: 'IS_ENTITY_OWNER',
-            resourceType: 'catalog-entity',
-            params: { claims: ['user:default/ciiay'] },
-          },
-          {
-            rule: 'IS_ENTITY_KIND',
-            resourceType: 'catalog-entity',
-            params: { kinds: ['Group'] },
-          },
-          {
-            allOf: [
-              {
-                rule: 'IS_ENTITY_OWNER',
-                resourceType: 'catalog-entity',
-                params: { claims: ['user:default/ciiay'] },
-              },
-              {
-                rule: 'IS_ENTITY_KIND',
-                resourceType: 'catalog-entity',
-                params: { kinds: ['User'] },
-              },
-              {
-                not: {
-                  rule: 'HAS_LABEL',
-                  resourceType: 'catalog-entity',
-                  params: { label: 'temp' },
-                },
-              },
-              {
-                anyOf: [
-                  {
-                    rule: 'HAS_TAG',
-                    resourceType: 'catalog-entity',
-                    params: { tag: 'dev' },
-                  },
-                  {
-                    rule: 'HAS_TAG',
-                    resourceType: 'catalog-entity',
-                    params: { tag: 'test' },
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            not: {
-              allOf: [
-                {
-                  rule: 'IS_ENTITY_OWNER',
-                  resourceType: 'catalog-entity',
-                  params: { claims: ['user:default/xyz'] },
-                },
-                {
-                  rule: 'IS_ENTITY_KIND',
-                  resourceType: 'catalog-entity',
-                  params: { kinds: ['User'] },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ];
+  const conditions = getAdminConditions(roles.rbacAdmin);
 
   for (const conditional of conditions) {
     await apiPost(
