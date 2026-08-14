@@ -1829,7 +1829,6 @@ __metadata:
     "@backstage-community/plugin-announcements-common": "workspace:^"
     "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
-    "@backstage/core-app-api": "backstage:^"
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/errors": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"

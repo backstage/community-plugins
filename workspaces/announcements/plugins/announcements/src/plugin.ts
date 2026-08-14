@@ -20,9 +20,9 @@ import {
   createPlugin,
   createRoutableExtension,
   discoveryApiRef,
-  errorApiRef,
   identityApiRef,
   fetchApiRef,
+  storageApiRef,
 } from '@backstage/core-plugin-api';
 import {
   createSearchResultListItemExtension,
@@ -49,15 +49,15 @@ export const announcementsPlugin = createPlugin({
       deps: {
         discoveryApi: discoveryApiRef,
         identityApi: identityApiRef,
-        errorApi: errorApiRef,
         fetchApi: fetchApiRef,
+        storageApi: storageApiRef,
       },
-      factory: ({ discoveryApi, identityApi, errorApi, fetchApi }) => {
+      factory: ({ discoveryApi, identityApi, fetchApi, storageApi }) => {
         return new AnnouncementsClient({
           discoveryApi: discoveryApi,
           identityApi: identityApi,
-          errorApi: errorApi,
           fetchApi: fetchApi,
+          storageApi: storageApi,
         });
       },
     }),

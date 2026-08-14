@@ -11,9 +11,9 @@ import { Category } from '@backstage-community/plugin-announcements-common';
 import { DateTime } from 'luxon';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { StorageApi } from '@backstage/core-plugin-api';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 
@@ -115,8 +115,8 @@ export class AnnouncementsClient implements AnnouncementsApi {
 export type AnnouncementsClientOptions = {
   discoveryApi: DiscoveryApi;
   identityApi: IdentityApi;
-  errorApi: ErrorApi;
   fetchApi: FetchApi;
+  storageApi: StorageApi;
 };
 
 // @public
