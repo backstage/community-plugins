@@ -91,10 +91,6 @@ export class Common {
   }
 
   async waitForSideBarVisible() {
-    // await this.page.waitForSelector('nav a');
-    // await expect(this.page.getByTestId('sidebar-root')).toBeVisible({
-    //   timeout: 60_000,
-    // });
     await expect(this.page.locator('nav a').last()).toBeVisible({
       timeout: 60_000,
     });
@@ -122,16 +118,5 @@ export class Common {
       await this.page.getByRole('button', { name: 'Language' }).click();
       await this.page.getByRole('menuitem', { name: localeString }).click();
     }
-  }
-
-  async openRbacPage(title: string) {
-    await this.page
-      .getByTestId('sidebar-root')
-      .getByRole('link', { name: 'RBAC' })
-      .click();
-    await expect(
-      this.page.getByRole('progressbar', { name: 'Loading' }),
-    ).toBeHidden({ timeout: 60_000 });
-    await this.verifyHeading(title);
   }
 }

@@ -258,7 +258,7 @@ test.describe('RBAC plugin', () => {
     // remove existing catalog.entity.read conditional policy
     await page.getByTestId('expand-row-catalog').click();
     await page
-      .getByRole('row', { name: /catalog\.entity\.read/ })
+      .getByRole('row', { name: 'catalog.entity.read' })
       .getByLabel('remove')
       .click();
     await page.getByTestId('remove-conditions').click();
