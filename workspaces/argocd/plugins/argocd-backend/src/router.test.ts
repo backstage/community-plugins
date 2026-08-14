@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import express from 'express';
 import request from 'supertest';
-import { createRouter } from './router';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockApplications, mockConfig } from './__data__/mockdata';
-import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
+import { createRouter } from './router';
 
 jest.mock('@backstage-community/plugin-argocd-node');
 
@@ -67,6 +67,28 @@ describe('router', () => {
     });
 
     app = express().use(router);
+  });
+
+  describe('permission denial', () => {
+    beforeEach(() => {
+      mockPermissions.authorize.mockResolvedValue([
+        { result: AuthorizeResult.DENY },
+      ]);
+    });
+
+    it('should return 403 on /check when permission is denied', async () => {
+      const response = await request(app).get('/check').expect(403);
+
+      expect(response.body).toEqual({
+        error: 'Unauthorized, please ensure you have the correct permissions',
+      });
+    });
+
+    it('should return 403 on /find/name/:appName and not invoke the handler', async () => {
+      await request(app).get('/find/name/staging-app').expect(403);
+
+      expect(mockArgoCDService.findApplications).not.toHaveBeenCalled();
+    });
   });
 
   describe('GET /find/name/:appName', () => {

@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useContext } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { useApi } from '@backstage/core-plugin-api';
+import { kubernetesProxyApiRef } from '@backstage/plugin-kubernetes-react';
 import { V1Container, V1Pod } from '@kubernetes/client-node';
-
+import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
 import { TektonResourcesContextData } from '../types/types';
 import { TektonResourcesContext } from './TektonResourcesContext';
 
@@ -50,7 +49,7 @@ export const usePodLogsOfPipelineRun = ({
   const stopPolling =
     pod?.status?.phase === 'Succeeded' || pod?.status?.phase === 'Failed';
 
-  const { data, error, isLoading, isFetching } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ['podLogs', podKey, currCluster],
     queryFn: async () => {
       const requests = containersList
@@ -78,6 +77,6 @@ export const usePodLogsOfPipelineRun = ({
   return {
     value: data,
     error,
-    loading: isLoading || isFetching,
+    loading: isLoading,
   };
 };

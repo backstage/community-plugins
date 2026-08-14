@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  NonEmptyArray,
+  toPermissionAction,
+} from '@backstage-community/plugin-rbac-common';
 import type {
   AuditorService,
   AuditorServiceEvent,
@@ -37,14 +41,7 @@ import type {
   PolicyQuery,
   PolicyQueryUser,
 } from '@backstage/plugin-permission-node';
-
 import type { Knex } from 'knex';
-
-import {
-  NonEmptyArray,
-  toPermissionAction,
-} from '@backstage-community/plugin-rbac-common';
-
 import {
   setAdminPermissions,
   useAdminsFromConfig,
@@ -70,6 +67,7 @@ import {
 export class RBACPermissionPolicy implements PermissionPolicy {
   private readonly superUserList?: string[];
   private readonly preferPermissionPolicy: boolean;
+  private readonly useOwnershipEntityRefs: boolean;
 
   public static async build(
     logger: LoggerService,
@@ -117,6 +115,10 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       (configApi.getOptionalString(
         'permission.rbac.policyDecisionPrecedence',
       ) ?? 'conditional') === 'basic';
+
+    const useOwnershipEntityRefs =
+      configApi.getOptionalBoolean('permission.rbac.useOwnershipEntityRefs') ??
+      false;
 
     if (superUsers && superUsers.length > 0) {
       for (const user of superUsers) {
@@ -186,6 +188,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       auth,
       conditionalStorage,
       preferPermissionPolicy,
+      useOwnershipEntityRefs,
       superUserList,
     );
   }
@@ -197,10 +200,12 @@ export class RBACPermissionPolicy implements PermissionPolicy {
     private readonly auth: AuthService,
     private readonly conditionStorage: ConditionalStorage,
     preferPermissionPolicy: boolean,
+    useOwnershipEntityRefs: boolean,
     superUserList?: string[],
   ) {
     this.superUserList = superUserList;
     this.preferPermissionPolicy = preferPermissionPolicy;
+    this.useOwnershipEntityRefs = useOwnershipEntityRefs;
   }
 
   async handle(
@@ -246,7 +251,7 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       }
 
       const permissionName = request.permission.name;
-      const roles = await this.enforcer.getRolesForUser(userEntityRef);
+      const roles = await this.resolveRolesForUser(userEntityRef, userInfo);
       // handle permission with 'resource' type
       const hasNamedPermission = await this.hasImplicitPermission(
         permissionName,
@@ -317,6 +322,40 @@ export class RBACPermissionPolicy implements PermissionPolicy {
       });
       return { result: AuthorizeResult.DENY };
     }
+  }
+
+  private async resolveRolesForUser(
+    userEntityRef: string,
+    userInfo: BackstageUserInfo,
+  ): Promise<string[]> {
+    const catalogRoles = await this.enforcer.getRolesForUser(userEntityRef);
+    if (!this.useOwnershipEntityRefs) {
+      return catalogRoles;
+    }
+
+    const subjects = [
+      ...new Set(
+        userInfo.ownershipEntityRefs.length > 0
+          ? userInfo.ownershipEntityRefs
+          : [userEntityRef],
+      ),
+    ];
+    const ownershipRoles = await this.collectRolesForSubjects(subjects);
+    return [...new Set([...catalogRoles, ...ownershipRoles])];
+  }
+
+  private async collectRolesForSubjects(subjects: string[]): Promise<string[]> {
+    const policyGroups = await Promise.all(
+      subjects.map(subject =>
+        this.enforcer.getFilteredGroupingPolicy(0, subject),
+      ),
+    );
+
+    return policyGroups.flatMap(policies =>
+      policies
+        .map(policy => policy[1])
+        .filter((role): role is string => !!role),
+    );
   }
 
   private async hasImplicitPermission(

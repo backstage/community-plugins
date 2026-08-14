@@ -1,12 +1,6 @@
 # Argo CD plugin for Backstage
 
-## Getting started
-
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/argocd/deployment-lifecycle](http://localhost:3000/argocd/deployment-lifecycle).
-
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+For local development, the `dev/` harness, scoped test commands, and smoke checklists, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## For Administrators
 
@@ -142,8 +136,8 @@ yarn workspace app add @backstage-community/plugin-argocd
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
 import {
-  ArgocdDeploymentSummary,
   ArgocdDeploymentLifecycle,
+  ArgocdDeploymentSummary,
   isArgocdConfigured,
 } from '@backstage-community/plugin-argocd';
 

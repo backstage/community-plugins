@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useEffect, useMemo } from 'react';
-
-import { LogViewer, Progress } from '@backstage/core-components';
-
-import { V1Pod } from '@kubernetes/client-node';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-
 import {
   getTaskRunsForPipelineRun,
   pipelineRunFilterReducer,
   PipelineRunKind,
   TaskRunKind,
 } from '@backstage-community/plugin-tekton-react';
-
+import { LogViewer, Progress } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { V1Pod } from '@kubernetes/client-node';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import { useEffect, useMemo, useState } from 'react';
+import { tektonTranslationRef } from '../../translations/index.ts';
 import { getActiveTaskRun, getSortedTaskRuns } from '../../utils/taskRun-utils';
 import { PipelineRunLogViewer } from './PipelineRunLogViewer';
 import { TaskStatusStepper } from './TaskStatusStepper';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineRunLogsProps = {
   pipelineRun: PipelineRunKind;
@@ -92,9 +88,9 @@ export const PipelineRunLogs = ({
   );
 
   return (
-    <Grid container>
+    <Grid container sx={{ gap: 2 }}>
       <Grid item xs={3}>
-        <Paper>
+        <Paper sx={{ paddingX: 2 }}>
           <TaskStatusStepper
             steps={sortedTaskRuns}
             currentStepId={currentStepId}
@@ -102,7 +98,7 @@ export const PipelineRunLogs = ({
           />
         </Paper>
       </Grid>
-      <Grid item xs={9}>
+      <Grid item xs>
         {!currentStepId && <Progress />}
         <div style={{ height: '80vh' }}>
           {!podData ? (

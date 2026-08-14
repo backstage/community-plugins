@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
-import { createApiRef } from '@backstage/core-plugin-api';
 import {
   Playlist,
   PlaylistMetadata,
 } from '@backstage-community/plugin-playlist-common';
+import { Entity } from '@backstage/catalog-model';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 /**
  * @public
  */
-export const playlistApiRef = createApiRef<PlaylistApi>({
+export const playlistApiRef = createApiRef<PlaylistApi>().with({
   id: 'plugin.playlist.service',
+  pluginId: 'playlist',
 });
 
 /**
