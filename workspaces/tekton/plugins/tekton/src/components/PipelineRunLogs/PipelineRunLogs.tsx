@@ -92,9 +92,9 @@ export const PipelineRunLogs = ({
   );
 
   return (
-    <Grid container>
+    <Grid container sx={{ gap: 2 }}>
       <Grid item xs={3}>
-        <Paper>
+        <Paper sx={{ paddingX: 2 }}>
           <TaskStatusStepper
             steps={sortedTaskRuns}
             currentStepId={currentStepId}
@@ -102,7 +102,7 @@ export const PipelineRunLogs = ({
           />
         </Paper>
       </Grid>
-      <Grid item xs={9}>
+      <Grid item xs>
         {!currentStepId && <Progress />}
         <div style={{ height: '80vh' }}>
           {!podData ? (
