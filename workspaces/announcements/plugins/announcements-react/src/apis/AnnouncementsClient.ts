@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { DateTime } from 'luxon';
-import { WebStorage } from '@backstage/core-app-api';
 import {
   DiscoveryApi,
   ErrorApi,
   IdentityApi,
   FetchApi,
+  StorageApi,
 } from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import {
@@ -49,6 +49,7 @@ export type AnnouncementsClientOptions = {
   identityApi: IdentityApi;
   errorApi: ErrorApi;
   fetchApi: FetchApi;
+  storageApi: StorageApi;
 };
 
 /**
@@ -59,13 +60,13 @@ export type AnnouncementsClientOptions = {
 export class AnnouncementsClient implements AnnouncementsApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi;
-  private readonly webStorage: WebStorage;
+  private readonly storage: StorageApi;
   private readonly fetchApi: FetchApi;
 
   constructor(opts: AnnouncementsClientOptions) {
     this.discoveryApi = opts.discoveryApi;
     this.identityApi = opts.identityApi;
-    this.webStorage = new WebStorage('announcements', opts.errorApi);
+    this.storage = opts.storageApi.forBucket('announcements');
     this.fetchApi = opts.fetchApi;
   }
 
@@ -226,29 +227,28 @@ export class AnnouncementsClient implements AnnouncementsApi {
   }
 
   lastSeenDate(): DateTime {
-    const lastSeen = this.webStorage.get<string>(lastSeenKey);
-    if (!lastSeen) {
+    const snapshot = this.storage.snapshot<string>(lastSeenKey);
+    if (snapshot.presence !== 'present' || !snapshot.value) {
       // magic default date, probably enough in the past to consider every announcement as "not seen"
       return DateTime.fromISO('1990-01-01');
     }
 
-    return DateTime.fromISO(lastSeen);
+    return DateTime.fromISO(snapshot.value);
   }
 
   markLastSeenDate(date: DateTime): void {
-    this.webStorage.set<string>(lastSeenKey, date.toISO()!);
+    this.storage.set<string>(lastSeenKey, date.toISO()!);
   }
 
   dismissAnnouncement(id: string): void {
     const dismissed = this.getDismissedIds();
     if (!dismissed.includes(id)) {
-      // Create a new array since WebStorage returns frozen objects
       const updated = [...dismissed, id];
-      // Cap at MAX_DISMISSED_IDS to prevent localStorage bloat
+      // Cap at MAX_DISMISSED_IDS to prevent storage bloat
       while (updated.length > MAX_DISMISSED_IDS) {
         updated.shift();
       }
-      this.webStorage.set<string[]>(dismissedIdsKey, updated);
+      this.storage.set<string[]>(dismissedIdsKey, updated);
     }
   }
 
@@ -257,6 +257,9 @@ export class AnnouncementsClient implements AnnouncementsApi {
   }
 
   private getDismissedIds(): string[] {
-    return this.webStorage.get<string[]>(dismissedIdsKey) ?? [];
+    const snapshot = this.storage.snapshot<string[]>(dismissedIdsKey);
+    return snapshot.presence === 'present' && snapshot.value
+      ? snapshot.value
+      : [];
   }
 }
