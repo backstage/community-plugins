@@ -76,7 +76,7 @@ export const RadarFilterContextWrapper = ({
           },
         });
       }
-      if (!blip?.visible) {
+      if (blip && !blip.visible) {
         setSearchTerm('');
       }
       setSelectedBlip(blip);

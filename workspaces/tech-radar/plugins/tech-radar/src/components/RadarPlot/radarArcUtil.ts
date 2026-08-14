@@ -33,7 +33,7 @@ export const describeArc = ({
   const innerStart = cartesian({ r: innerRadius, t: endAngle });
   const innerEnd = cartesian({ r: innerRadius, t: startAngle });
 
-  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1';
 
   return [
     'M',
@@ -82,7 +82,7 @@ export const describeArcTextLine = ({
     t: reverse ? endAngle : startAngle,
   });
 
-  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1';
   const sweepFlag = reverse ? '1' : '0';
 
   const baselineCompensationAmount = Math.sqrt(radius * 2);

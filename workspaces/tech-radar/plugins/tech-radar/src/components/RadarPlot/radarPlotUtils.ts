@@ -32,24 +32,33 @@ export const BLIP_RADIUS = 10;
 export const processRadarFileEntries = (
   loaderResponse: TechRadarLoaderResponse,
 ): ProcessedEntry[] => {
-  return loaderResponse.entries.map(entry => ({
-    id: entry.key,
-    description: entry.description || entry.timeline[0].description,
-    links: entry.links,
-    moved: entry.timeline[0].moved,
-    quadrant: loaderResponse.quadrants.find(q => q.id === entry.quadrant)!,
-    ring: loaderResponse.rings.find(r => r.id === entry.timeline[0].ringId)!,
-    timeline: entry.timeline.map(e => {
-      return {
-        date: e.date,
-        description: e.description,
-        moved: e.moved,
-        ring: loaderResponse.rings.find(a => a.id === e.ringId)!,
-      };
-    }),
-    title: entry.title,
-    url: entry.url,
-  }));
+  return loaderResponse.entries
+    .filter(entry => {
+      if (entry.timeline.length === 0) {
+        throw new Error(
+          `Tech Radar entry "${entry.key}" has no timeline entries`,
+        );
+      }
+      return true;
+    })
+    .map(entry => ({
+      id: entry.key,
+      description: entry.description || entry.timeline[0].description,
+      links: entry.links,
+      moved: entry.timeline[0].moved,
+      quadrant: loaderResponse.quadrants.find(q => q.id === entry.quadrant)!,
+      ring: loaderResponse.rings.find(r => r.id === entry.timeline[0].ringId)!,
+      timeline: entry.timeline.map(e => {
+        return {
+          date: e.date,
+          description: e.description,
+          moved: e.moved,
+          ring: loaderResponse.rings.find(a => a.id === e.ringId)!,
+        };
+      }),
+      title: entry.title,
+      url: entry.url,
+    }));
 };
 
 export const processRadarFileQuadrants = (
@@ -92,11 +101,19 @@ export const placeBlipsOnRadar = ({
 
     if (!quadrant) {
       throw new Error(
-        `Unknown quadrant ${entry.quadrant.name} for entry ${entry.id}!`,
+        `Unknown quadrant "${
+          typeof entry.quadrant === 'object'
+            ? entry.quadrant.id
+            : entry.quadrant
+        }" for entry "${entry.id}"`,
       );
     }
     if (!ring) {
-      throw new Error(`Unknown ring ${entry.ring.name} for entry ${entry.id}!`);
+      throw new Error(
+        `Unknown ring "${
+          typeof entry.ring === 'object' ? entry.ring.id : entry.ring
+        }" for entry "${entry.id}"`,
+      );
     }
     const segment = new Segment({
       nextSeed: () => seed++,
