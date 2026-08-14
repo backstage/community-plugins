@@ -16,7 +16,7 @@
 import type { TemplateCardComponentProps } from '@backstage/plugin-scaffolder-react/alpha';
 import { renderInTestApp } from '@backstage/frontend-test-utils';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
-import { act, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockIsIntersecting } from 'react-intersection-observer/test-utils';
 import { useLocation } from 'react-router-dom';
@@ -134,10 +134,8 @@ describe('FeaturedTemplates', () => {
     const track = await screen.findByTestId('featured-templates-track');
     const scrollBy = mockScrollGeometry(track);
     const [firstCard, lastCard] = Array.from(track.children) as HTMLElement[];
-    act(() => {
-      mockIsIntersecting(firstCard, 1);
-      mockIsIntersecting(lastCard, 0.6);
-    });
+    mockIsIntersecting(firstCard, 1);
+    mockIsIntersecting(lastCard, 0.6);
     expect(
       screen.queryByRole('button', { name: 'Previous templates' }),
     ).not.toBeInTheDocument();
