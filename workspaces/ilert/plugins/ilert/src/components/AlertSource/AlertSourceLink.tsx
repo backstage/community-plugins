@@ -13,28 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
 import { AlertSource } from '../../types';
 import { ilertApiRef } from '../../api';
-import { makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useApi } from '@backstage/core-plugin-api';
 import { Link } from '@backstage/core-components';
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    maxWidth: '100%',
-  },
-  image: {
-    height: 22,
-    paddingRight: 4,
-  },
-  link: {
-    lineHeight: '22px',
-  },
-});
+import styles from './AlertSourceLink.module.css';
 
 export const AlertSourceLink = ({
   alertSource,
@@ -42,30 +26,31 @@ export const AlertSourceLink = ({
   alertSource: AlertSource | null;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const classes = useStyles();
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const prefersDarkMode = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
 
   if (!alertSource) {
     return null;
   }
 
   return (
-    <Grid container spacing={0}>
-      <Grid item xs={2}>
+    <div className={styles.root}>
+      <div className={styles.imageContainer}>
         <img
           src={prefersDarkMode ? alertSource.lightIconUrl : alertSource.iconUrl}
           alt={alertSource.name}
-          className={classes.image}
+          className={styles.image}
         />
-      </Grid>
-      <Grid item xs={10}>
+      </div>
+      <div className={styles.linkContainer}>
         <Link
-          className={classes.link}
+          className={styles.link}
           to={ilertApi.getAlertSourceDetailsURL(alertSource)}
         >
           {alertSource.name}
         </Link>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };

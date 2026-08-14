@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,43 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { useState } from 'react';
+import { Text } from '@backstage/ui';
 import { ACCEPTED, AlertStatus, PENDING, RESOLVED } from '../../types';
 import { alertStatusLabels } from './StatusChip';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-  },
-  label: {
-    marginTop: 8,
-    marginRight: 4,
-  },
-  formControl: {
-    minWidth: 120,
-    maxWidth: 300,
-  },
-  grow: {
-    flexGrow: 1,
-  },
-});
+import styles from './TableTitle.module.css';
 
 export const TableTitle = ({
   alertStates,
@@ -58,39 +26,66 @@ export const TableTitle = ({
   alertStates: AlertStatus[];
   onAlertStatesChange: (states: AlertStatus[]) => void;
 }) => {
-  const classes = useStyles();
-  const handleAlertStatusSelectChange = (event: any) => {
-    onAlertStatesChange(event.target.value);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleStatusToggle = (state: AlertStatus) => {
+    if (alertStates.includes(state)) {
+      onAlertStatesChange(alertStates.filter(s => s !== state));
+    } else {
+      onAlertStatesChange([...alertStates, state]);
+    }
   };
 
+  const selectedLabels = alertStates
+    .map(state => alertStatusLabels[state])
+    .join(', ');
+
   return (
-    <div className={classes.root}>
-      <Typography noWrap className={classes.label}>
-        Status:
-      </Typography>
-      <FormControl
-        className={classes.formControl}
-        variant="outlined"
-        size="small"
-      >
-        <Select
-          id="alerts-status-select"
-          multiple
-          value={alertStates}
-          onChange={handleAlertStatusSelectChange}
-          renderValue={(selected: any) => selected.join(', ')}
-          MenuProps={MenuProps}
+    <div className={styles.root}>
+      <Text className={styles.label}>Status:</Text>
+      {/* eslint-disable-next-line react/forbid-elements */}
+      <div className={styles.selectContainer}>
+        {/* eslint-disable-next-line react/forbid-elements */}
+        <button
+          className={styles.selectField}
+          onClick={() => setIsExpanded(!isExpanded)}
         >
-          {[PENDING, ACCEPTED, RESOLVED].map(state => (
-            <MenuItem key={state} value={state}>
-              <Checkbox
-                checked={alertStates.indexOf(state as AlertStatus) > -1}
-              />
-              <ListItemText primary={alertStatusLabels[state]} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          {/* eslint-disable-next-line react/forbid-elements */}
+          <span className={styles.selectValue}>
+            {selectedLabels || 'Select status...'}
+          </span>
+          {/* eslint-disable-next-line react/forbid-elements */}
+          <span className={styles.selectArrow}>{isExpanded ? '▲' : '▼'}</span>
+        </button>
+        {isExpanded && (
+          <div className={styles.statusOptions}>
+            {([PENDING, ACCEPTED, RESOLVED] as AlertStatus[]).map(state => {
+              const isSelected = alertStates.includes(state);
+              return (
+                // eslint-disable-next-line react/forbid-elements
+                <button
+                  key={state}
+                  className={`${styles.statusButton} ${
+                    isSelected ? styles.statusButtonActive : ''
+                  }`}
+                  onClick={() => handleStatusToggle(state)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    readOnly
+                    className={styles.checkbox}
+                  />
+                  {/* eslint-disable-next-line react/forbid-elements */}
+                  <span className={styles.statusLabel}>
+                    {alertStatusLabels[state]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
