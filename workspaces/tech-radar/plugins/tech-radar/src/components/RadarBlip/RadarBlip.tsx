@@ -31,7 +31,7 @@ type RadarBlipProps = Readonly<{
   HTMLAttributes<SVGElement>;
 
 const makeBlipSvg = (
-  { moved, ring: { color: ringColor, id }, title, visible }: Blip,
+  { id: blipId, moved, ring: { color: ringColor }, title, visible }: Blip,
   {
     muted,
     selected,
@@ -60,12 +60,12 @@ const makeBlipSvg = (
 
   const text = zoomed ? (
     <>
-      <clipPath id={`clip-${id}`}>
+      <clipPath id={`clip-${blipId}`}>
         <circle r={BLIP_RADIUS - 1} />
       </clipPath>
       <text
         className={styles.blipText}
-        clipPath={`url(#clip-${id})`}
+        clipPath={`url(#clip-${blipId})`}
         dominantBaseline="middle"
         textAnchor="middle"
         y={getTextY()}

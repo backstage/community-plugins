@@ -172,9 +172,14 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
 
               <Flex direction="column" gap="1" className={styles.blipList}>
                 {visibleBlips
-                  .filter(blip => blip.timeline?.[0].ring.id === ring.id)
+                  .filter(
+                    blip =>
+                      blip.timeline &&
+                      blip.timeline.length > 0 &&
+                      blip.timeline[0].ring.id === ring.id,
+                  )
                   .map(blip => {
-                    const timeline = blip.timeline?.sort(
+                    const timeline = [...blip.timeline].sort(
                       (a, b) => b.date.getTime() - a.date.getTime(),
                     )[0];
                     const timelineDate = DateTime.fromJSDate(timeline.date);
@@ -233,7 +238,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
                                 </Flex>
                               )}
                             </Flex>
-                            <div>{blip.timeline[0].description}</div>
+                            <div>{blip.timeline[0]?.description}</div>
                             <Link
                               className={styles.detailsLink}
                               onClick={() => setOpenBlip(blip)}

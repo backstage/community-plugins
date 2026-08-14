@@ -32,7 +32,9 @@ import {
   convertLegacyRouteRef,
   convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
-import MapIcon from '@material-ui/icons/MyLocation';
+import { Radar } from 'lucide-react';
+
+const MapIcon = () => <Radar />;
 import { rootRouteRef } from './plugin';
 
 /** @alpha */
