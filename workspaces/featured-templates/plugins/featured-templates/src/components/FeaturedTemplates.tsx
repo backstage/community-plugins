@@ -144,11 +144,13 @@ export function FeaturedTemplates({ tag }: FeaturedTemplatesProps) {
           </div>
         ))}
       </div>
-      <ScrollControls
-        track={track}
-        canScrollPrevious={!firstCardInView}
-        canScrollNext={!lastCardInView}
-      />
+      {track && (
+        <ScrollControls
+          track={track}
+          canScrollPrevious={!firstCardInView}
+          canScrollNext={!lastCardInView}
+        />
+      )}
     </div>
   );
 }

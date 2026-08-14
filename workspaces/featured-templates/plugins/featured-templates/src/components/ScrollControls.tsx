@@ -32,14 +32,13 @@ export function ScrollControls({
   canScrollPrevious,
   canScrollNext,
 }: {
-  track: HTMLElement | null;
+  track: HTMLElement;
   canScrollPrevious: boolean;
   canScrollNext: boolean;
 }) {
   const { t } = useTranslationRef(featuredTemplatesTranslationRef);
 
   const scroll = (direction: -1 | 1) => {
-    if (!track) return;
     track.scrollBy({
       left: direction * cardStep(track),
       behavior: 'smooth',
