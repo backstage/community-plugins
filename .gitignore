@@ -35,6 +35,9 @@ node_modules/
 # Node version directives
 .nvmrc
 
+# Local yarn configuration (for Artifactory/private registry)
+.yarnrc.local.yml
+
 # dotenv environment variables file
 .env
 .env.test
