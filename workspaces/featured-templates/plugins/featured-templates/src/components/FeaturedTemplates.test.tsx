@@ -136,7 +136,7 @@ describe('FeaturedTemplates', () => {
     const [firstCard, lastCard] = Array.from(track.children) as HTMLElement[];
     act(() => {
       mockIsIntersecting(firstCard, 1);
-      mockIsIntersecting(lastCard, 0.2);
+      mockIsIntersecting(lastCard, 0.6);
     });
     expect(
       screen.queryByRole('button', { name: 'Previous templates' }),

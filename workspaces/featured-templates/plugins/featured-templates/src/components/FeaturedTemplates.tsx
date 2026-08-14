@@ -53,12 +53,12 @@ export function FeaturedTemplates({ tag }: FeaturedTemplatesProps) {
   const [track, setTrack] = useState<HTMLDivElement | null>(null);
   const { ref: firstCardRef, inView: firstCardInView } = useInView({
     root: track,
-    threshold: 0.5,
+    threshold: 0.99,
     initialInView: true,
   });
   const { ref: lastCardRef, inView: lastCardInView } = useInView({
     root: track,
-    threshold: 0.5,
+    threshold: 0.99,
     initialInView: true,
   });
   const { loading, error, value, retry } = useAsyncRetry(
