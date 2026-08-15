@@ -1,0 +1,49 @@
+app:
+  title: Pointing Poker Example App
+  baseUrl: http://localhost:3000
+  experimental:
+    packages: 'all'
+
+organization:
+  name: Pointing Poker Example
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    dangerouslyDisableDefaultAuthPolicy: true
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    img-src:
+      [
+        "'self'",
+        'data:',
+        'https://bolcom.atlassian.net',
+        'https://*.atlassian.net',
+        'https://secure.gravatar.com',
+      ]
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  providers:
+    guest: {}
+
+catalog:
+  locations:
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+pointingPoker:
+  jira:
+    host: https://bogdannechiporenko.atlassian.net
+    email: ${JIRA_USER_EMAIL}
+    apiToken: ${JIRA_API_TOKEN}
