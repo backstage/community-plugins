@@ -78,10 +78,17 @@ export class NpmRegistryServiceImpl implements NpmRegistryService {
       );
     }
 
+    const registryWebUrl =
+      registry?.webUrl ||
+      (!registry?.url || registry?.url === 'https://registry.npmjs.com'
+        ? 'https://www.npmjs.com/package'
+        : undefined);
+
     this.logger.info('Will use npmjs package info:', {
       entityRef,
       packageName,
       registryUrl: registry?.url,
+      registryWebUrl: registryWebUrl,
       registryToken: registry?.token ? 'yes' : 'no',
     });
 
@@ -92,6 +99,9 @@ export class NpmRegistryServiceImpl implements NpmRegistryService {
       extraRequestHeaders: registry?.extraRequestHeaders,
     });
     const packageInfo = await client.getPackageInfo(packageName);
-    return packageInfo;
+    return {
+      ...packageInfo,
+      webUrl: registryWebUrl,
+    };
   }
 }
