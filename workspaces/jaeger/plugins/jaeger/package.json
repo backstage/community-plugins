@@ -9,6 +9,21 @@
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
@@ -35,9 +50,11 @@
   "dependencies": {
     "@backstage-community/plugin-jaeger-common": "workspace:^",
     "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
