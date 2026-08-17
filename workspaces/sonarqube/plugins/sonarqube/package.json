@@ -68,13 +68,13 @@
     "@backstage/frontend-app-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/ui": "^1.7.0",
+    "@backstage/ui": "backstage:^",
     "@remixicon/react": "^4.3.0",
-    "react-aria-components": "^1.4.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "cross-fetch": "^4.0.0",
     "luxon": "^3.0.0",
     "rc-progress": "4.0.0",
+    "react-aria-components": "^1.4.0",
     "react-use": "^17.2.4"
   },
   "devDependencies": {
