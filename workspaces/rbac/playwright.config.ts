@@ -44,8 +44,6 @@ export default defineConfig({
           command: frontendStartCommand,
           cwd: 'plugins/rbac',
           url: 'http://localhost:3000',
-          // Never reuse — another Backstage app on :3000/:7007 (e.g. quickstart)
-          // lacks this workspace's superUsers and breaks REST seeding with 403.
           reuseExistingServer: false,
           timeout: 180_000,
         },
@@ -53,7 +51,7 @@ export default defineConfig({
           name: 'Backend',
           command: 'yarn start',
           cwd: 'plugins/rbac-backend',
-          url: 'http://localhost:7007/api/auth/.well-known/jwks.json',
+          wait: { stdout: /Plugin initialization complete/ },
           reuseExistingServer: false,
           timeout: 180_000,
         },
