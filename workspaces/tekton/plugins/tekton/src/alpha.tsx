@@ -15,12 +15,14 @@
  */
 import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { isTektonCIAvailable } from './utils/isTektonCIAvailable';
 
 const tektonEntityContent = EntityContentBlueprint.make({
   name: 'tektonEntityContent',
   params: {
     path: '/tekton',
     title: 'Tekton',
+    filter: isTektonCIAvailable,
     loader: () => import('./components/Router').then(m => <m.Router />),
   },
 });
