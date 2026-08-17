@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.27.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 0d0a521: Fixed the audit log recording tag creation as an update action instead of a create action.
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+
 ## 0.26.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # @backstage-community/plugin-announcements
 
+## 2.12.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 900d1b9: Migrated extension config from deprecated `config.schema` to `configSchema` with zod v4 Standard Schema
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+  - @backstage-community/plugin-announcements-react@0.28.0
+
 ## 2.11.1
 
 ### Patch Changes
