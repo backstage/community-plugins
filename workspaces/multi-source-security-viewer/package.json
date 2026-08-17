@@ -55,7 +55,7 @@
     "@playwright/test": "1.61.1",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
-    "@types/webpack-env": "1.18.8",
+    "@types/node": "^24.10.1",
     "jest": "^30.0.0",
     "jsdom": "^27.0.0",
     "knip": "^5.27.4",

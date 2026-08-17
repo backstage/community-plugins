@@ -35,82 +35,12 @@ import { mssvJenkinsApiRef } from '../src/api/jenkins';
 import { mssvGithubActionsApiRef } from '../src/api/github';
 import { mssvGitlabCIApiRef } from '../src/api/gitlab';
 import { mssvAzureDevopsApiRef } from '../src/api/azure';
-import { MssvApi, MssvApiResponse } from '../src/api/mssv';
-import { PipelineRunResult } from '../src/models/pipelineRunResult';
-import { mockPipelineRuns } from '../src/__fixtures__/pipelineruns';
-import { mockRawLogs } from '../src/__fixtures__/rawlogs';
-
-class MockMssvJenkinsApiClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-jenkins`,
-          logs: mockRawLogs,
-        }),
-    );
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
-
-class MockMssvGithubActionsApiClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-github`,
-          logs: mockRawLogs,
-        }),
-    );
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
-
-class MockMssvGitlabCIApiClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-gitlab`,
-          logs: mockRawLogs,
-        }),
-    );
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
-
-class MockMssvAzureDevopsClient implements MssvApi {
-  async getPipelineSummary(): Promise<MssvApiResponse> {
-    const results = mockPipelineRuns.map(
-      pr =>
-        new PipelineRunResult({
-          ...pr,
-          displayName: `${pr.displayName}-azure`,
-          logs: mockRawLogs,
-        }),
-    );
-    return { results, totalCount: results.length };
-  }
-
-  async getPipelineDetail(): Promise<MssvApiResponse> {
-    return this.getPipelineSummary();
-  }
-}
+import {
+  MockMssvAzureDevopsClient,
+  MockMssvGithubActionsApiClient,
+  MockMssvGitlabCIApiClient,
+  MockMssvJenkinsApiClient,
+} from './fixtures/mockClients';
 
 const mssvDevModule = createFrontendModule({
   pluginId: 'multi-source-security-viewer',

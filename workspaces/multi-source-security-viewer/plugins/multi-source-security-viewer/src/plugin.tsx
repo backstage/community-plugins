@@ -37,7 +37,7 @@ import {
 } from './api/gitlab';
 import { AzureDevOpsClient } from '@backstage-community/plugin-azure-devops';
 import { MssvAzureDevopsClient, mssvAzureDevopsApiRef } from './api/azure';
-import { isMultiCIAvailable } from './lib/isMultiCIAvailable';
+import { isMultiCIAvailableAndEnabled } from './lib/isMultiCIAvailable';
 import { rootRouteRef } from './routes';
 
 const mssvJenkinsApi = ApiBlueprint.make({
@@ -127,7 +127,7 @@ const mssvEntityContent = EntityContentBlueprint.make({
     path: '/multi-source-security-viewer',
     title: 'CI/CD Security',
     routeRef: rootRouteRef,
-    filter: isMultiCIAvailable,
+    filter: isMultiCIAvailableAndEnabled,
     loader: async () => import('./components/Router').then(m => <m.Router />),
   },
 });
@@ -139,6 +139,7 @@ const mssvEntityContent = EntityContentBlueprint.make({
  */
 const plugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'multi-source-security-viewer',
+  info: { packageJson: () => import('../package.json') },
   extensions: [
     mssvJenkinsApi,
     mssvGithubActionsApi,

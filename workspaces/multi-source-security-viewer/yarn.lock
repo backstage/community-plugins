@@ -6187,7 +6187,7 @@ __metadata:
     "@react-types/table": "npm:^3.12.0"
     "@types/jest": "npm:^30.0.0"
     "@types/jsdom": "npm:^27.0.0"
-    "@types/webpack-env": "npm:1.18.8"
+    "@types/node": "npm:^24.10.1"
     jest: "npm:^30.0.0"
     jsdom: "npm:^27.0.0"
     knip: "npm:^5.27.4"
@@ -11709,12 +11709,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 24.10.3
-  resolution: "@types/node@npm:24.10.3"
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^24.10.1":
+  version: 24.13.3
+  resolution: "@types/node@npm:24.13.3"
   dependencies:
-    undici-types: "npm:~7.16.0"
-  checksum: 10/b5f3f3431b333d077fe8f656edc2a352597a0c83a21157d7cbf2811d20ba31ecf31182aaf5013f83b72bf94e368ece736e76ff0e578ceee6a30b43a666b5071f
+    undici-types: "npm:~7.18.0"
+  checksum: 10/cfa6ed1e16c4624d1e83b09aeb72a2f50a7e17d837bf5a1259a52e346f33a693afd289402d3b6118ce3abea7aff35f2a4f13a0284b96bc5807a50f0e22e1ec77
   languageName: node
   linkType: hard
 
@@ -12030,7 +12030,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack-env@npm:1.18.8, @types/webpack-env@npm:^1.15.2":
+"@types/webpack-env@npm:^1.15.2":
   version: 1.18.8
   resolution: "@types/webpack-env@npm:1.18.8"
   checksum: 10/f3932f3d6c2530f644cfc898eda1ab8182d6ae57f555c2f0179d813549b639078671b71e4041831fc306c5ebe61f5cdac794fe4ceae281fce8bf67e23661a488
@@ -29639,10 +29639,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~7.16.0":
-  version: 7.16.0
-  resolution: "undici-types@npm:7.16.0"
-  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 10/e61a5918f624d68420c3ca9d301e9f15b61cba6e97be39fe2ce266dd6151e4afe424d679372638826cb506be33952774e0424141200111a9857e464216c009af
   languageName: node
   linkType: hard
 
