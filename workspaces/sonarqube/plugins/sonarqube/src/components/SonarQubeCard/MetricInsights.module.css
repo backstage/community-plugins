@@ -1,0 +1,22 @@
+@layer components {
+  .badgeLabel {
+    color: var(--bui-fg-primary);
+  }
+
+  .badgeCompact {
+    margin: 0;
+    height: 28px;
+  }
+
+  .badgeError {
+    background-color: var(--bui-status-error);
+  }
+
+  .badgeSuccess {
+    background-color: var(--bui-status-ok);
+  }
+
+  .badgeUnknown {
+    background-color: var(--bui-bg-surface-3);
+  }
+}

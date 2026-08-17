@@ -23,8 +23,7 @@ import {
   SONARQUBE_PROJECT_KEY_ANNOTATION,
   isSonarQubeAvailable,
 } from '@backstage-community/plugin-sonarqube-react';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Flex } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import {
   EmptyState,
@@ -46,18 +45,7 @@ import {
 import { DuplicationRating } from '../SonarQubeTable/types';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { sonarqubeTranslationRef } from '../../translation';
-
-const useStyles = makeStyles(theme => ({
-  header: {
-    padding: theme.spacing(2, 2, 2, 2.5),
-  },
-  action: {
-    margin: 0,
-  },
-  lastAnalyzed: {
-    color: theme.palette.text.secondary,
-  },
-}));
+import styles from './SonarQubeCard.module.css';
 
 /** @public */
 export const SonarQubeCard = (props: {
@@ -87,7 +75,6 @@ export const SonarQubeCard = (props: {
         }
       : undefined;
 
-  const classes = useStyles();
   return (
     <InfoCard
       title={t('sonarQubeCard.title')}
@@ -98,8 +85,8 @@ export const SonarQubeCard = (props: {
           <QualityBadge value={summaryFinding} />
         ),
         classes: {
-          root: classes.header,
-          action: classes.action,
+          root: styles.header,
+          action: styles.action,
         },
       }}
     >
@@ -116,16 +103,12 @@ export const SonarQubeCard = (props: {
 
       {!loading && summaryFinding?.metrics && (
         <>
-          <Grid
-            item
-            container
+          <Flex
             direction="column"
-            justifyContent="space-between"
-            alignItems="center"
-            style={{ height: '100%' }}
-            spacing={0}
+            align="center"
+            className={styles.metricsContainer}
           >
-            <Grid item container justifyContent="space-around">
+            <div className={styles.metricsGrid}>
               <BugReportRatingCard
                 value={summaryFinding}
                 title={t('sonarQubeCard.bugReportRatingCardTitle')}
@@ -142,7 +125,7 @@ export const SonarQubeCard = (props: {
                 value={summaryFinding}
                 title={t('sonarQubeCard.hotspotsReviewedTitle')}
               />
-              <div style={{ width: '100%' }} />
+              <div className={styles.clearfix} />
               <CoverageRatingCard
                 value={summaryFinding}
                 title={t('sonarQubeCard.coverageRatingCardTitle')}
@@ -151,11 +134,11 @@ export const SonarQubeCard = (props: {
                 value={summaryFinding}
                 title={t('sonarQubeCard.duplicationsRatingCard')}
               />
-            </Grid>
-            <Grid item className={classes.lastAnalyzed}>
+            </div>
+            <Box className={styles.lastAnalyzed}>
               <LastAnalyzedRatingCard value={summaryFinding} />
-            </Grid>
-          </Grid>
+            </Box>
+          </Flex>
         </>
       )}
     </InfoCard>
