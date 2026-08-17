@@ -22,7 +22,7 @@ import {
 } from '@backstage/frontend-test-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { screen } from '@testing-library/react';
-import cloudbuildPlugin, { entityCloudbuildContent } from './alpha';
+import cloudbuildPlugin from './alpha';
 import { CloudbuildApi, cloudbuildApiRef } from './api';
 
 const entity: Entity = {
@@ -72,7 +72,11 @@ describe('cloudbuild new frontend system plugin', () => {
     renderInTestApp(
       <TestApiProvider apis={[[cloudbuildApiRef, cloudbuildApi]]}>
         <EntityProvider entity={entity}>
-          {createExtensionTester(entityCloudbuildContent).reactElement()}
+          {createExtensionTester(
+            cloudbuildPlugin.getExtension(
+              'entity-content:cloudbuild/EntityCloudbuildContent',
+            ),
+          ).reactElement()}
         </EntityProvider>
       </TestApiProvider>,
     );

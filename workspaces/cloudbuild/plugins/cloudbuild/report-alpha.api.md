@@ -16,30 +16,13 @@ import { JSXElementConstructor } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
 import { OverridableFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { ReactElement } from 'react';
-import { RouteRef } from '@backstage/frontend-plugin-api';
-import { RouteRef as RouteRef_2 } from '@backstage/core-plugin-api';
-
-// @alpha (undocumented)
-export const cloudbuildApi: OverridableExtensionDefinition<{
-  kind: 'api';
-  name: undefined;
-  config: {};
-  configInput: {};
-  output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
-  inputs: {};
-  params: <
-    TApi,
-    TImpl extends TApi,
-    TDeps extends { [name in string]: unknown },
-  >(
-    params: ApiFactory<TApi, TImpl, TDeps>,
-  ) => ExtensionBlueprintParams<AnyApiFactory>;
-}>;
+import { RouteRef } from '@backstage/core-plugin-api';
+import { RouteRef as RouteRef_2 } from '@backstage/frontend-plugin-api';
 
 // @alpha
 const _default: OverridableFrontendPlugin<
   {
-    entityContent: RouteRef_2<undefined>;
+    entityContent: RouteRef<undefined>;
   },
   {},
   {
@@ -161,7 +144,7 @@ const _default: OverridableFrontendPlugin<
         | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
         | ExtensionDataRef<string, 'core.routing.path', {}>
         | ExtensionDataRef<
-            RouteRef<AnyRouteRefParams>,
+            RouteRef_2<AnyRouteRefParams>,
             'core.routing.ref',
             {
               optional: true;
@@ -215,180 +198,13 @@ const _default: OverridableFrontendPlugin<
           | (string & {});
         icon?: string | ReactElement;
         loader: () => Promise<JSX.Element>;
-        routeRef?: RouteRef;
+        routeRef?: RouteRef_2;
         filter?: string | FilterPredicate | ((entity: Entity) => boolean);
       };
     }>;
   }
 >;
 export default _default;
-
-// @alpha (undocumented)
-export const entityCloudbuildContent: OverridableExtensionDefinition<{
-  kind: 'entity-content';
-  name: 'EntityCloudbuildContent';
-  config: {
-    path: string | undefined;
-    title: string | undefined;
-    filter: FilterPredicate | undefined;
-    group: string | false | undefined;
-    icon: string | undefined;
-  };
-  configInput: {
-    path?: string | undefined;
-    title?: string | undefined;
-    filter?: FilterPredicate | undefined;
-    group?: string | false | undefined;
-    icon?: string | undefined;
-  };
-  output:
-    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-    | ExtensionDataRef<string, 'core.routing.path', {}>
-    | ExtensionDataRef<
-        RouteRef<AnyRouteRefParams>,
-        'core.routing.ref',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        (entity: Entity) => boolean,
-        'catalog.entity-filter-function',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        string,
-        'catalog.entity-filter-expression',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<string, 'catalog.entity-content-title', {}>
-    | ExtensionDataRef<
-        string,
-        'catalog.entity-content-group',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        string | ReactElement<any, string | JSXElementConstructor<any>>,
-        'catalog.entity-content-icon',
-        {
-          optional: true;
-        }
-      >;
-  inputs: {};
-  params: {
-    defaultPath?: [Error: `Use the 'path' param instead`];
-    path: string;
-    defaultTitle?: [Error: `Use the 'title' param instead`];
-    title: string;
-    defaultGroup?: [Error: `Use the 'group' param instead`];
-    group?:
-      | (
-          | 'development'
-          | 'deployment'
-          | 'overview'
-          | 'documentation'
-          | 'operation'
-          | 'observability'
-        )
-      | (string & {});
-    icon?: string | ReactElement;
-    loader: () => Promise<JSX.Element>;
-    routeRef?: RouteRef;
-    filter?: string | FilterPredicate | ((entity: Entity) => boolean);
-  };
-}>;
-
-// @alpha (undocumented)
-export const entityLatestCloudbuildRunCard: OverridableExtensionDefinition<{
-  kind: 'entity-card';
-  name: 'EntityLatestCloudbuildRunCard';
-  config: {
-    filter: FilterPredicate | undefined;
-    type: 'content' | 'info' | undefined;
-  };
-  configInput: {
-    filter?: FilterPredicate | undefined;
-    type?: 'content' | 'info' | undefined;
-  };
-  output:
-    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-    | ExtensionDataRef<
-        (entity: Entity) => boolean,
-        'catalog.entity-filter-function',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        string,
-        'catalog.entity-filter-expression',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        EntityCardType,
-        'catalog.entity-card-type',
-        {
-          optional: true;
-        }
-      >;
-  inputs: {};
-  params: {
-    loader: () => Promise<JSX.Element>;
-    filter?: string | FilterPredicate | ((entity: Entity) => boolean);
-    type?: EntityCardType;
-  };
-}>;
-
-// @alpha (undocumented)
-export const entityLatestCloudbuildsForBranchCard: OverridableExtensionDefinition<{
-  kind: 'entity-card';
-  name: 'EntityLatestCloudbuildsForBranchCard';
-  config: {
-    filter: FilterPredicate | undefined;
-    type: 'content' | 'info' | undefined;
-  };
-  configInput: {
-    filter?: FilterPredicate | undefined;
-    type?: 'content' | 'info' | undefined;
-  };
-  output:
-    | ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>
-    | ExtensionDataRef<
-        (entity: Entity) => boolean,
-        'catalog.entity-filter-function',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        string,
-        'catalog.entity-filter-expression',
-        {
-          optional: true;
-        }
-      >
-    | ExtensionDataRef<
-        EntityCardType,
-        'catalog.entity-card-type',
-        {
-          optional: true;
-        }
-      >;
-  inputs: {};
-  params: {
-    loader: () => Promise<JSX.Element>;
-    filter?: string | FilterPredicate | ((entity: Entity) => boolean);
-    type?: EntityCardType;
-  };
-}>;
 
 // (No @packageDocumentation comment for this package)
 ```

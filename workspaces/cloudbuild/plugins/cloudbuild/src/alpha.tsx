@@ -27,8 +27,7 @@ import { cloudbuildApiRef, CloudbuildClient } from './api';
 import { isCloudbuildAvailable } from './components/Router';
 import { rootRouteRef } from './routes';
 
-/** @alpha */
-export const cloudbuildApi = ApiBlueprint.make({
+const cloudbuildApi = ApiBlueprint.make({
   params: defineParams =>
     defineParams({
       api: cloudbuildApiRef,
@@ -37,8 +36,7 @@ export const cloudbuildApi = ApiBlueprint.make({
     }),
 });
 
-/** @alpha */
-export const entityCloudbuildContent = EntityContentBlueprint.make({
+const entityCloudbuildContent = EntityContentBlueprint.make({
   name: 'EntityCloudbuildContent',
   params: {
     path: '/cloudbuild',
@@ -50,8 +48,7 @@ export const entityCloudbuildContent = EntityContentBlueprint.make({
   },
 });
 
-/** @alpha */
-export const entityLatestCloudbuildRunCard = EntityCardBlueprint.make({
+const entityLatestCloudbuildRunCard = EntityCardBlueprint.make({
   name: 'EntityLatestCloudbuildRunCard',
   params: {
     filter: isCloudbuildAvailable,
@@ -62,8 +59,7 @@ export const entityLatestCloudbuildRunCard = EntityCardBlueprint.make({
   },
 });
 
-/** @alpha */
-export const entityLatestCloudbuildsForBranchCard = EntityCardBlueprint.make({
+const entityLatestCloudbuildsForBranchCard = EntityCardBlueprint.make({
   name: 'EntityLatestCloudbuildsForBranchCard',
   params: {
     filter: isCloudbuildAvailable,
