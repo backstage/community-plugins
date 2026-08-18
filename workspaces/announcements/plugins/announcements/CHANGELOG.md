@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements
 
+## 2.12.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filter to use the modern object form.
+
 ## 2.12.0
 
 ### Minor Changes
