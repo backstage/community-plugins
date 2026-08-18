@@ -1,7 +1,7 @@
 {
   "name": "@backstage-community/plugin-argo-workflows",
   "description": "Frontend plugin for Argo Workflows in Backstage",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
