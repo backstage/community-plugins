@@ -21,7 +21,6 @@ import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
-  KubernetesApi,
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
@@ -31,16 +30,9 @@ import { mockApis, TestApiProvider } from '@backstage/test-utils';
 import Box from '@mui/material/Box';
 
 import {
-  ArgoCDApi,
   argoCDApiRef,
-  ArgoCDAppDeployRevisionDetails,
   ArgoCDInstanceApiClient,
   argoCDInstanceApiRef,
-  FindApplicationsOptions,
-  GetApplicationOptions,
-  ListAppsOptions,
-  RevisionDetailsListOptions,
-  RevisionDetailsOptions,
 } from '../src/api';
 import {
   ArgocdDeploymentLifecycle,
@@ -48,253 +40,23 @@ import {
   argocdPlugin,
 } from '../src/legacy';
 import {
-  Application,
-  InstanceApplications,
-} from '@backstage-community/plugin-argocd-common';
-import { customResourceTypes } from '../src/types/resources';
-import {
   mockArgocdConfig,
   mockArgocdMultiInstanceConfig,
   mockArgoMultiInstanceAppNameEntity,
   mockArgoMultiInstanceSelectorEntity,
   mockEntity,
-  mockIdRevisions,
-  DEV_INSTANCE_APPLICATIONS,
   mockArgoOneAppEntity,
 } from './__data__';
 import { mockArgoResources } from './__data__/argoRolloutsObjects';
+import {
+  MockArgoCDApiClient,
+  MockKubernetesClient,
+  mockKubernetesAuthProviderApi,
+} from './__fixtures__/mockClients';
 import { argocdTranslations } from '../src/translations';
 import { getArgocdInstances } from '../src/hooks/useArgocdConfig';
 import { DeploymentLifecycle } from '../src/components/DeploymentLifeCycle';
 import { DeploymentSummary } from '../src/components/DeploymentSummary';
-
-const getInstanceNameFromUrl = (url: string): string => {
-  return url.replace('/argoInstance/', '');
-};
-
-export class MockArgoCDApiClient implements ArgoCDApi {
-  async listApps(options: ListAppsOptions): Promise<{ items: Application[] }> {
-    const instanceName = getInstanceNameFromUrl(options.url);
-    let apps = DEV_INSTANCE_APPLICATIONS[instanceName] ?? [];
-
-    if (options.appSelector) {
-      const decodedSelector = decodeURIComponent(options.appSelector);
-      const [labelKey, labelValue] = decodedSelector.split('=', 2);
-      apps = apps.filter(app => app.metadata.labels?.[labelKey] === labelValue);
-    }
-
-    return {
-      items: apps,
-    };
-  }
-
-  async getRevisionDetails(
-    options: RevisionDetailsOptions,
-  ): Promise<ArgoCDAppDeployRevisionDetails> {
-    return mockIdRevisions[options.revisionID];
-  }
-
-  async getRevisionDetailsList(
-    options: RevisionDetailsListOptions,
-  ): Promise<ArgoCDAppDeployRevisionDetails[]> {
-    if (!options.revisionIDs || options.revisionIDs.length < 1) {
-      return Promise.resolve([]);
-    }
-    const promises: Promise<ArgoCDAppDeployRevisionDetails>[] = [];
-
-    options.revisionIDs.forEach((revisionID: string) => {
-      const application = options.apps.find(app =>
-        app?.status?.history?.find(h => h.revision === revisionID),
-      );
-
-      if (application) {
-        promises.push(
-          this.getRevisionDetails({
-            app: application.metadata.name as string,
-            appNamespace: options.appNamespace,
-            instanceName: application.metadata.instance.name,
-            revisionID,
-          }),
-        );
-      }
-
-      const multiSourceApp = options.apps.find(app => {
-        return app?.status?.history?.find(h => {
-          return h?.revisions?.includes(revisionID);
-        });
-      });
-
-      if (multiSourceApp) {
-        const history = multiSourceApp.status?.history ?? [];
-        const relevantHistories = history.filter(h =>
-          h?.revisions?.includes(revisionID),
-        );
-
-        relevantHistories.forEach(h => {
-          const revisionSourceIndex = h.revisions?.indexOf(revisionID);
-          promises.push(
-            this.getRevisionDetails({
-              app: multiSourceApp.metadata.name as string,
-              appNamespace: options.appNamespace,
-              instanceName: multiSourceApp.metadata.instance.name,
-              revisionID: revisionID,
-              sourceIndex: revisionSourceIndex,
-            }),
-          );
-        });
-      }
-    });
-    return Promise.all(promises);
-  }
-
-  async getApplication(options: GetApplicationOptions): Promise<Application> {
-    const instanceName = getInstanceNameFromUrl(options.url);
-
-    if (!DEV_INSTANCE_APPLICATIONS[instanceName]) {
-      throw new Error(
-        `Failed to fetch Application from Instance ${instanceName} : ArgoCD Instance ${instanceName} not found`,
-      );
-    }
-
-    const result = DEV_INSTANCE_APPLICATIONS[instanceName].filter(
-      app => app.metadata.name === options.appName,
-    )[0];
-    if (!result) {
-      throw new Error(
-        `Failed to fetch data, status 403: Insufficient permissions for ArgoCD server`,
-      );
-    }
-
-    return result;
-  }
-
-  async findApplications(
-    options: FindApplicationsOptions,
-  ): Promise<InstanceApplications[]> {
-    const result: InstanceApplications[] = [];
-    for (const [instanceName, apps] of Object.entries(
-      DEV_INSTANCE_APPLICATIONS,
-    )) {
-      const matchingApps = apps.filter(
-        app =>
-          app.metadata.name === options.appName &&
-          app.metadata.name !== undefined,
-      );
-
-      if (matchingApps.length !== 0) {
-        result.push({
-          name: instanceName,
-          url: matchingApps[0].metadata.instance.url,
-          appName: [options.appName],
-          applications: matchingApps,
-        });
-      }
-    }
-    return result;
-  }
-}
-
-const mockKubernetesAuthProviderApiRef = {
-  decorateRequestBodyForAuth: async () => {
-    return {
-      entity: {
-        apiVersion: 'v1',
-        kind: 'xyz',
-        metadata: { name: 'hey' },
-      },
-    };
-  },
-  getCredentials: async () => {
-    return {};
-  },
-};
-
-class MockKubernetesClient implements KubernetesApi {
-  readonly resources;
-
-  constructor(fixtureData: { [resourceType: string]: any[] }) {
-    this.resources = Object.entries(fixtureData).flatMap(
-      ([type, resources]) => {
-        if (
-          customResourceTypes.map(t => t.toLocaleLowerCase()).includes(type)
-        ) {
-          return {
-            type: 'customresources',
-            resources,
-          };
-        }
-        return {
-          type: type.toLocaleLowerCase('en-US'),
-          resources,
-        };
-      },
-    );
-  }
-
-  async getWorkloadsByEntity(_request: any): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-  async getCustomObjectsByEntity(_request: any): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-
-  async getObjectsByEntity(): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-
-  async getClusters(): Promise<{ name: string; authProvider: string }[]> {
-    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
-  }
-
-  async getCluster(_clusterName: string): Promise<
-    | {
-        name: string;
-        authProvider: string;
-        oidcTokenProvider?: string;
-        dashboardUrl?: string;
-      }
-    | undefined
-  > {
-    return { name: 'mock-cluster', authProvider: 'serviceAccount' };
-  }
-
-  async proxy(_options: { clusterName: String; path: String }): Promise<any> {
-    return {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name: 'mock-ns',
-      },
-    };
-  }
-}
 
 const configApi = new ConfigReader(mockArgocdConfig);
 const multiInstanceConfigApi = new ConfigReader(mockArgocdMultiInstanceConfig);
@@ -319,7 +81,7 @@ createDevApp()
             }),
           ],
           [permissionApiRef, mockApis.permission()],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
         ]}
       >
         <EntityProvider entity={mockEntity}>
@@ -347,7 +109,7 @@ createDevApp()
             }),
           ],
           [permissionApiRef, mockApis.permission()],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
         ]}
       >
         <EntityProvider entity={mockEntity}>
@@ -380,7 +142,7 @@ createDevApp()
             }),
           ],
           [permissionApiRef, mockApis.permission()],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
         ]}
       >
         <EntityProvider
@@ -419,7 +181,7 @@ createDevApp()
             }),
           ],
           [permissionApiRef, mockApis.permission()],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
         ]}
       >
         <EntityProvider
@@ -458,7 +220,7 @@ createDevApp()
             }),
           ],
           [permissionApiRef, mockApis.permission()],
-          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApiRef],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
         ]}
       >
         <EntityProvider

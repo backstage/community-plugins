@@ -17,6 +17,12 @@ yarn workspace @backstage-community/plugin-argocd start
 
 This serves the frontend plugin via `dev/index.tsx` with mocked Argo CD data for faster iteration. Use it for UI extensions, hooks, and API client work.
 
+Legacy (pre-NFS) entrypoint:
+
+```bash
+yarn workspace @backstage-community/plugin-argocd start:legacy
+```
+
 Only one frontend `dev/` harness should run at a time on the default plugin port. Backend HTTP work belongs in the [backend harness](../argocd-backend/CONTRIBUTING.md).
 
 ### Configuration notes
@@ -51,18 +57,9 @@ Use when you change frontend integration code or are reviewing a Backstage versi
 
 1. Start this harness and open the plugin UI in the browser (path served by `dev/index.tsx`).
 2. Confirm deployment lifecycle / summary surfaces render with fixture data.
-3. Full catalog-entity + live Argo CD validation needs the backend running (plugin or full workspace) and a real or overlay Argo CD instance — not a merge gate for every bump PR.
+3. Full catalog-entity + live Argo CD validation needs the backend plugin harness and a real or overlay Argo CD instance — not a merge gate for every bump PR.
 
-## Full workspace app evaluation
-
-The workspace already ships `packages/app` and `packages/backend`. They are **optional** for cross-plugin smoke (entity page cards with a live backend, RBAC, Playwright).
-
-Default for bump-trust and day-to-day work: plugin `dev/` + scoped automated tests. Do **not** add another full Backstage application to this workspace.
-
-```bash
-# Optional — full workspace only when needed
-yarn start:backstage
-```
+Default for bump-trust and day-to-day work: plugin `dev/` + scoped automated tests.
 
 ## Related packages
 

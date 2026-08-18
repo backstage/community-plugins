@@ -104,6 +104,7 @@ const deploymentSummaryEntityContent = EntityContentBlueprint.make({
  */
 const plugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'backstage-community-argocd',
+  info: { packageJson: () => import('../package.json') },
   extensions: [
     argoCDApi,
     argoCDInstanceApi,

@@ -15,6 +15,3 @@
  */
 
 export { default } from './plugin';
-
-export type { DeploymentSummaryProps } from './components/DeploymentSummary/DeploymentSummary';
-export type { DeploymentLifecycleProps } from './components/DeploymentLifeCycle/DeploymentLifecycle';

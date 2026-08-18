@@ -299,15 +299,14 @@ argocd:
 
 ## Running the plugin
 
-Run the plugin in standalone mode:
+Run the backend plugin in standalone mode:
 
 ```bash
 yarn start
 ```
 
-Run the entire Backstage application including this plugin:
+Run the frontend plugin NFS dev app:
 
 ```bash
-# From the root workspace directory
-yarn start:backstage
+yarn workspace @backstage-community/plugin-argocd start
 ```
