@@ -16,7 +16,7 @@
 import { useMemo } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
-import { parseEntityRef, stringifyEntityRef } from '@backstage/catalog-model';
+import { parseEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { rbacApiRef } from '../api/RBACBackendClient';
@@ -64,7 +64,7 @@ const getMemberData = (
   if (memberResource) {
     return {
       name:
-        memberResource.spec.profile?.displayName ??
+        memberResource.spec?.profile?.displayName ??
         memberResource.metadata.name,
       type: memberResource.kind,
       ref: {
@@ -107,34 +107,46 @@ export const useMembers = (
     return await rbacApi.getRole(roleName);
   });
 
+  const { value: authCheck, error: authError } = useAsyncRetry(async () => {
+    return await rbacApi.getMembers(1, 1);
+  });
+
+  const canReadUsersAndGroups =
+    !authError && Array.isArray(authCheck) && authCheck.length > 0;
+
+  const memberRefs = useMemo(
+    () => (Array.isArray(role) ? role[0].memberReferences : []),
+    [role],
+  );
+
   const {
     value: members,
     retry: membersRetry,
     error: membersError,
   } = useAsyncRetry(async () => {
-    return await rbacApi.getMembers();
-  });
-
-  const canReadUsersAndGroups =
-    !membersError && Array.isArray(members) && members.length > 0;
+    if (memberRefs.length === 0) {
+      return [];
+    }
+    return await rbacApi.getMembersByRefs(memberRefs);
+  }, [memberRefs]);
 
   const loading = !roleError && !membersError && !role && !members;
 
   data = useMemo(
     () =>
-      Array.isArray(role)
-        ? role[0].memberReferences.reduce((acc: MembersData[], ref: string) => {
-            const memberResource: MemberEntity | undefined = Array.isArray(
-              members,
-            )
-              ? members.find(member => stringifyEntityRef(member) === ref)
-              : undefined;
-            const memberData = getMemberData(memberResource, ref, locale);
-            acc.push(memberData);
-            return acc;
-          }, [])
+      Array.isArray(members)
+        ? memberRefs.reduce(
+            (acc: MembersData[], ref: string, index: number) => {
+              const memberResource: MemberEntity | undefined =
+                members[index] ?? undefined;
+              const memberData = getMemberData(memberResource, ref, locale);
+              acc.push(memberData);
+              return acc;
+            },
+            [],
+          )
         : [],
-    [role, members, locale],
+    [memberRefs, members, locale],
   );
 
   useInterval(

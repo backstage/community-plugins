@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useMemo } from 'react';
 import { useAsync } from 'react-use';
 
-import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 
 import { Role } from '@backstage-community/plugin-rbac-common';
@@ -40,42 +40,70 @@ export const useSelectedMembers = (
   const rbacApi = useApi(rbacApiRef);
   const { role, loading: roleLoading, roleError } = useRole(roleName);
 
+  const memberRefs = useMemo(
+    () => (role ? (role as Role).memberReferences : []),
+    [role],
+  );
+
   const {
-    loading: membersLoading,
-    value: members,
-    error: membersError,
+    loading: authLoading,
+    value: authCheck,
+    error: authError,
   } = useAsync(async () => {
-    return await rbacApi.getMembers();
+    return await rbacApi.getMembers(1, 1);
   });
 
+  const {
+    loading: selectedLoading,
+    value: selectedEntities,
+    error: selectedError,
+  } = useAsync(async () => {
+    if (memberRefs.length === 0) {
+      return [];
+    }
+    return await rbacApi.getMembersByRefs(memberRefs);
+  }, [memberRefs]);
+
   const canReadUsersAndGroups =
-    !membersLoading &&
-    !membersError &&
-    Array.isArray(members) &&
-    members.length > 0;
+    !authLoading &&
+    !authError &&
+    Array.isArray(authCheck) &&
+    authCheck.length > 0;
 
-  const data: SelectedMember[] = role
-    ? (role as Role).memberReferences.reduce((acc: SelectedMember[], ref) => {
-        const memberResource =
-          (Array.isArray(members) &&
-            members.find(member => stringifyEntityRef(member) === ref)) ||
-          undefined;
-        acc.push(getSelectedMember(memberResource, ref));
+  const members: MemberEntity[] = useMemo(
+    () =>
+      Array.isArray(selectedEntities)
+        ? (selectedEntities.filter(Boolean) as MemberEntity[])
+        : [],
+    [selectedEntities],
+  );
 
-        return acc;
-      }, [])
-    : [];
+  const data: SelectedMember[] = useMemo(
+    () =>
+      Array.isArray(selectedEntities)
+        ? memberRefs.reduce(
+            (acc: SelectedMember[], ref: string, index: number) => {
+              const memberResource =
+                (selectedEntities[index] as MemberEntity) ?? undefined;
+              acc.push(getSelectedMember(memberResource, ref));
+              return acc;
+            },
+            [],
+          )
+        : [],
+    [memberRefs, selectedEntities],
+  );
 
   return {
     selectedMembers: data,
-    members: Array.isArray(members) ? members : ([] as MemberEntity[]),
+    members,
     role,
-    membersError: (membersError as Error) || {
-      name: (members as Response)?.status,
-      message: (members as Response)?.statusText,
+    membersError: ((authError || selectedError) as Error) || {
+      name: (authCheck as unknown as Response)?.status,
+      message: (authCheck as unknown as Response)?.statusText,
     },
     roleError: roleError,
-    loading: roleLoading || membersLoading,
+    loading: roleLoading || authLoading || selectedLoading,
     canReadUsersAndGroups,
   };
 };

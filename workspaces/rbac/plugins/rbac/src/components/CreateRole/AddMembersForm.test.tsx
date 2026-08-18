@@ -25,6 +25,15 @@ jest.mock('../../hooks/useLanguage', () => ({
   useLanguage: () => 'en',
 }));
 
+const mockSearchMembers = jest.fn();
+
+jest.mock('@backstage/core-plugin-api', () => ({
+  ...jest.requireActual('@backstage/core-plugin-api'),
+  useApi: () => ({
+    searchMembers: mockSearchMembers,
+  }),
+}));
+
 const membersData: {
   members: MemberEntity[];
   loading: boolean;
@@ -72,6 +81,14 @@ const selectedMembers = [
 
 describe('AddMembersForm', () => {
   const mockSetFieldValue = jest.fn();
+
+  beforeEach(() => {
+    mockSearchMembers.mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('displays error message when membersData.error is provided', async () => {
     const mockError = new Error('Failed to fetch');
@@ -175,12 +192,29 @@ describe('AddMembersForm', () => {
     await user.click(clearButton);
     expect(autocompleteInput).toHaveValue('');
   });
-  it('filters members as the user types in the search input', async () => {
+
+  it('calls searchMembers API when user types in search input', async () => {
     const user = userEvent.setup();
-    const { getByTestId, getAllByTestId } = render(
+    mockSearchMembers.mockResolvedValue([
+      {
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'User',
+        spec: { profile: { displayName: 'test user1' } },
+        metadata: {
+          name: 'test user1',
+          etag: 'test user1',
+          namespace: 'default',
+        },
+      },
+    ]);
+    const { getByTestId } = render(
       <AddMembersForm
         selectedMembers={[]}
-        membersData={membersData}
+        membersData={{
+          members: [],
+          loading: false,
+          error: { name: '', message: '' },
+        }}
         setFieldValue={mockSetFieldValue}
       />,
     );
@@ -190,11 +224,11 @@ describe('AddMembersForm', () => {
     if (!autocompleteInput) {
       throw new Error('Input field not found');
     }
-    await user.type(autocompleteInput, 'er1');
+    await user.type(autocompleteInput, 'test');
 
-    const elements = getAllByTestId('test user1');
-    const combinedText = elements.map(el => el.textContent).join('');
-    expect(combinedText).toBe('test user1');
+    await waitFor(() => {
+      expect(mockSearchMembers).toHaveBeenCalledWith('test');
+    });
   });
 
   it('updates the selected member and calls setFieldValue on selection', async () => {
@@ -259,27 +293,24 @@ describe('AddMembersForm', () => {
   it('keeps the search input after each selection', async () => {
     const user = userEvent.setup();
 
-    const { findByText, getByRole } = render(
+    const { findByText, getByTestId } = render(
       <AddMembersForm
         selectedMembers={[]}
         membersData={membersData}
         setFieldValue={mockSetFieldValue}
       />,
     );
-    const autocompleteInput = screen
-      .getByTestId('users-and-groups-text-field')
-      .querySelector('input');
+    const autocompleteInput = getByTestId(
+      'users-and-groups-text-field',
+    ).querySelector('input');
     if (!autocompleteInput) {
       throw new Error('Input field not found');
     }
-    // Open the dropdown
-    user.click(autocompleteInput);
+    await user.click(autocompleteInput);
 
-    await userEvent.type(autocompleteInput, 'er1');
-    const memberOptions = getByRole('listbox');
-    await user.click(memberOptions);
-    const memberOption1 = await findByText('er1');
+    const memberOption1 = await findByText('test user1');
+    await user.type(autocompleteInput, 'test');
     await user.click(memberOption1);
-    expect(autocompleteInput).toHaveValue('er1');
+    expect(autocompleteInput).toHaveValue('test');
   });
 });

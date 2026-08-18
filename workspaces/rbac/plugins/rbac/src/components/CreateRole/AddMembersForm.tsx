@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useDebounce } from 'react-use';
 
 import { stringifyEntityRef } from '@backstage/catalog-model';
+import { useApi } from '@backstage/core-plugin-api';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -25,8 +27,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import IconButton from '@mui/material/IconButton';
 import { FormikErrors } from 'formik';
 
+import { rbacApiRef } from '../../api/RBACBackendClient';
 import { MemberEntity } from '../../types';
-import { useLanguage } from '../../hooks/useLanguage';
 import {
   getChildGroupsCount,
   getMembersCount,
@@ -74,14 +76,33 @@ const getDescription = (
     : undefined;
 };
 
+const toSelectedMember = (
+  member: MemberEntity,
+  index: number,
+  t: TranslationFunction<typeof rbacTranslationRef.T>,
+): SelectedMember => {
+  const tag =
+    member.metadata.etag ?? `${member.metadata.name}-${member.kind}-${index}`;
+  return {
+    id: tag,
+    label: member.spec?.profile?.displayName ?? member.metadata.name,
+    description: getDescription(member, t),
+    etag: tag,
+    type: member.kind,
+    namespace: member.metadata.namespace,
+    members: getMembersCount(member),
+    ref: stringifyEntityRef(member),
+  };
+};
+
 export const AddMembersForm = ({
   selectedMembers,
   selectedMembersError,
   setFieldValue,
   membersData,
 }: AddMembersFormProps) => {
-  const locale = useLanguage();
   const { t } = useTranslation();
+  const rbacApi = useApi(rbacApiRef);
   const [search, setSearch] = useState<string>('');
   const [selectedMember, setSelectedMember] =
     useState<SelectedMember[]>(selectedMembers);
@@ -89,39 +110,59 @@ export const AddMembersForm = ({
     setSelectedMember(selectedMembers);
   }, [selectedMembers]);
 
+  const [searchResults, setSearchResults] = useState<MemberEntity[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const performSearch = useCallback(
+    async (term: string) => {
+      setSearchLoading(true);
+      try {
+        const result = await rbacApi.searchMembers(term);
+        if (Array.isArray(result)) {
+          setSearchResults(result);
+        }
+      } finally {
+        setSearchLoading(false);
+      }
+    },
+    [rbacApi],
+  );
+
+  useDebounce(
+    () => {
+      performSearch(search);
+    },
+    300,
+    [search],
+  );
+
   const membersOptions: SelectedMember[] = useMemo(() => {
-    return membersData.members
-      ? membersData.members.map((member: MemberEntity, index: number) => {
-          const tag =
-            member.metadata.etag ??
-            `${member.metadata.name}-${member.kind}-${index}`;
-          return {
-            id: tag,
-            label: member.spec?.profile?.displayName ?? member.metadata.name,
-            description: getDescription(member, t),
-            etag: tag,
-            type: member.kind,
-            namespace: member.metadata.namespace,
-            members: getMembersCount(member),
-            ref: stringifyEntityRef(member),
-          };
-        })
-      : ([] as SelectedMember[]);
-  }, [membersData.members, t]);
+    const searchEntities = Array.isArray(searchResults) ? searchResults : [];
+    const initialEntities = membersData.members ?? [];
+    const primary = search ? searchEntities : initialEntities;
+    const secondary = search ? initialEntities : searchEntities;
+    const seen = new Set<string>();
+    const unique: MemberEntity[] = [];
+    for (const entity of primary) {
+      const ref = stringifyEntityRef(entity);
+      if (!seen.has(ref)) {
+        seen.add(ref);
+        unique.push(entity);
+      }
+    }
+    for (const entity of secondary) {
+      const ref = stringifyEntityRef(entity);
+      if (!seen.has(ref)) {
+        seen.add(ref);
+        unique.push(entity);
+      }
+    }
+    return unique.map((member, index) => toSelectedMember(member, index, t));
+  }, [searchResults, membersData.members, search, t]);
 
   const filteredMembers = useMemo(() => {
-    if (search) {
-      return membersOptions
-        .filter(m =>
-          m.label
-            .toLocaleLowerCase(locale)
-            .includes(search.toLocaleLowerCase(locale)),
-        )
-        .slice(0, 99);
-    }
-
     return membersOptions.slice(0, 99);
-  }, [membersOptions, search, locale]);
+  }, [membersOptions]);
 
   const handleIsOptionEqualToValue = (
     option: SelectedMember,
@@ -143,7 +184,7 @@ export const AddMembersForm = ({
         options={filteredMembers || []}
         getOptionLabel={(option: SelectedMember) => option.label ?? ''}
         isOptionEqualToValue={handleIsOptionEqualToValue}
-        loading={membersData.loading}
+        loading={searchLoading}
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}
@@ -156,6 +197,7 @@ export const AddMembersForm = ({
         onInputChange={(_e, newSearch: string, reason) =>
           reason === 'input' && setSearch(newSearch)
         }
+        filterOptions={x => x}
         renderOption={(props, option: SelectedMember, state) => (
           <MembersDropdownOption props={props} option={option} state={state} />
         )}
