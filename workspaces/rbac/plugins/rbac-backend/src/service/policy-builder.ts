@@ -110,7 +110,7 @@ export class PolicyBuilder {
 
     const databaseClient = await databaseManager.getClient();
 
-    await migrate(databaseManager);
+    await migrate(databaseManager, databaseClient);
 
     const adapter = await CasbinKnexAdapter.newAdapter(databaseClient);
 
