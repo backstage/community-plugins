@@ -1,13 +1,13 @@
 # AWS Config catalog plugin for Backstage
 
-This is the AWS Config catalog plugin which is designed to ingest AWS resource information in to the Backstage catalog.
+This is the AWS Config catalog plugin which is designed to ingest AWS resource information into the Backstage catalog.
 
 Features:
 
 1. Automatically add AWS resources from AWS Config
-1. Uses incremental ingestion to efficiently sync resources
+1. Uses incremental ingestion to efficiently sync resources from AWS Config to the Backstage catalog
 
-_Note:_ It is possible to easily configure this entity provider in a way that ingests a large amount of entities in to the Backstage catalog. Please review the [Considerations](#considerations) section below.
+_Note:_ It is possible to easily configure this entity provider in a way that ingests a large amount of entities into the Backstage catalog. Please review the [Considerations](#considerations) section below.
 
 _Note:_ If you are not already using AWS Config it is important to note that you will incur costs by enabling it. Please review its pricing information before enabling in your AWS organization.
 
@@ -104,7 +104,7 @@ spec:
 
 ## Considerations
 
-It's recommended to use the configuration available to ingest the minimum entities necessary into the Backstage catalog. AWS Config, especially in larger organizations, can be tracking a large number of AWS resources that can have a negative effect on both the ingestion mechanism as well as the user catalog experience once stored.
+It's recommended to use the configuration available to ingest the minimum entities necessary into the Backstage catalog. AWS Config, especially in larger organizations, can be tracking a large number of AWS resources that can have a negative effect on both the ingestion mechanism as well as the catalog experience once stored.
 
 General recommendations are:
 
@@ -114,7 +114,7 @@ General recommendations are:
 
 ## JSONata expressions
 
-One of the ways the provider can transform entities is to use [JSONata](https://docs.jsonata.org/overview.html) expressions via the `expression` fields. This is a flexible way to transform fields on the emitted entity based on any field in the AWS Config resource payload.
+One of the ways the provider can transform entities is to use [JSONata](https://docs.jsonata.org/overview.html) via the `expression` field. This is a flexible way to transform fields on the emitted entity based on any field in the AWS Config resource payload.
 
 The AWS Config resource payload is available through the `$resource` variable.
 

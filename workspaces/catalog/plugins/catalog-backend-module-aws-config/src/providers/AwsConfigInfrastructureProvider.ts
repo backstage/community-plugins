@@ -132,7 +132,9 @@ export class AwsConfigInfrastructureProvider
 
     let entities: Entity[] = [];
 
-    let response: SelectResourceConfigCommandOutput;
+    let response:
+      | SelectResourceConfigCommandOutput
+      | SelectAggregateResourceConfigCommandOutput;
 
     // TODO: Aggregator option
     if (this.config.aggregator) {
@@ -190,7 +192,9 @@ export class AwsConfigInfrastructureProvider
   }
 
   parseResponse(
-    response: SelectAggregateResourceConfigCommandOutput,
+    response:
+      | SelectResourceConfigCommandOutput
+      | SelectAggregateResourceConfigCommandOutput,
   ): AwsConfigResource[] {
     return (
       response.Results?.map(result => {
@@ -211,8 +215,12 @@ export class AwsConfigInfrastructureProvider
       resourceTitle = resource.resourceName;
     } else {
       resourceName = resource.resourceName
-        ? resource.resourceName.replace(':', '-')
+        ? this.sanitizeEntityName(resource.resourceName)
         : SHA256(resource.arn).toString().slice(0, 63);
+
+      if (!resourceName) {
+        resourceName = SHA256(resource.arn).toString().slice(0, 63);
+      }
     }
 
     const resourceResult: Entity = {
@@ -224,7 +232,8 @@ export class AwsConfigInfrastructureProvider
           'aws.amazon.com/resource-type': resource.resourceType,
           'aws.amazon.com/resource-id': resource.resourceId,
           'aws.amazon.com/name': resourceName,
-          'aws.amazon.com/region': resource.awsRegion!,
+          'aws.amazon.com/region':
+            resource.awsRegion ?? this.config.region ?? 'unknown',
         },
         name: resourceName,
         title: resourceTitle,
@@ -266,17 +275,28 @@ export class AwsConfigInfrastructureProvider
     return type.split('::').slice(1).join('-').toLowerCase();
   }
 
+  private sanitizeEntityName(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/-{2,}/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 63);
+  }
+
   tagsToFilter(): string {
     if (!this.config.filters.tagFilters) {
       return '';
     }
 
     const clauses = this.config.filters.tagFilters.map(f => {
+      const key = f.key.replaceAll("'", "''");
       if (f.value) {
-        return `tags.tag = '${f.key}=${f.value}'`;
+        const value = f.value.replaceAll("'", "''");
+        return `tags.tag = '${key}=${value}'`;
       }
 
-      return `tags.key = '${f.key}'`;
+      return `tags.key = '${key}'`;
     });
 
     return clauses.join(' AND ');
@@ -285,7 +305,7 @@ export class AwsConfigInfrastructureProvider
   createQuery(): string {
     let whereClause = this.config.filters.resourceTypes
       .map(resourceType => {
-        return `'${resourceType}'`;
+        return `'${resourceType.replaceAll("'", "''")}'`;
       })
       .join(', ');
 
@@ -312,7 +332,7 @@ export class AwsConfigInfrastructureProvider
 
     const tagMap: any = {};
 
-    resource.tags.forEach(e => {
+    (resource.tags ?? []).forEach(e => {
       tagMap[e.key] = e.value;
     });
 
