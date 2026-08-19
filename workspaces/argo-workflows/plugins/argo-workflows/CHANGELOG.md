@@ -1,5 +1,17 @@
 # @backstage-community/plugin-argo-workflows
 
+## 0.3.0
+
+### Minor Changes
+
+- 22e936e: Backstage version bump to v1.53.1
+
+### Patch Changes
+
+- Updated dependencies [22e936e]
+  - @backstage-community/plugin-argo-workflows-common@0.2.0
+  - @backstage-community/plugin-argo-workflows-react@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes
