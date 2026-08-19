@@ -49,6 +49,7 @@ import {
   argoCDInstanceApiRef,
 } from '../src/api';
 import argocdPlugin from '../src/plugin';
+import argocdTranslationsModule from '../src/translations';
 import {
   mockArgocdConfig,
   mockArgocdMultiInstanceConfig,
@@ -192,6 +193,7 @@ const app = createApp({
     catalogPlugin,
     userSettingsPlugin,
     argocdPlugin,
+    argocdTranslationsModule,
     argocdDevModule,
     catalogDevModule,
     kubernetesStubPlugin,

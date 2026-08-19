@@ -15,3 +15,5 @@
  */
 
 export { default } from './plugin';
+export { default as argocdTranslationsModule } from './translations';
+export { argocdTranslations, argocdTranslationRef } from './translations';

@@ -133,22 +133,34 @@ yarn workspace app add @backstage-community/plugin-argocd
 
 ### New frontend system
 
-If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export to your app `features` array. The Deployment Lifecycle and Deployment Summary entity tabs are registered automatically for entities with Argo CD annotations.
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Deployment Lifecycle and Deployment Summary entity tabs are registered automatically for entities with Argo CD annotations.
 
 ```ts
-import argocdPlugin from '@backstage-community/plugin-argocd';
+import argocdPlugin, {
+  argocdTranslationsModule,
+} from '@backstage-community/plugin-argocd';
 
 export const app = createApp({
   features: [
     // ...
     argocdPlugin,
+    argocdTranslationsModule,
   ],
 });
 ```
 
 ### Legacy frontend system
 
-If you are using the legacy frontend system, import the plugin from the `/legacy` subpath and add the deployment summary and deployment lifecycle components to the `entityPage.tsx` source file:
+If you are using the legacy frontend system, import the plugin from the `/legacy` subpath and add the deployment summary and deployment lifecycle components to the `entityPage.tsx` source file. Register translations with `.addTranslationResource(argocdTranslations)` in `App.tsx`.
+
+```ts
+// packages/app/src/App.tsx
+import { argocdTranslations } from '@backstage-community/plugin-argocd/legacy';
+
+createApp({
+  // ...
+}).addTranslationResource(argocdTranslations);
+```
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx

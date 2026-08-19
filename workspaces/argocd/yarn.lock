@@ -2046,6 +2046,7 @@ __metadata:
     "@backstage/frontend-defaults": "npm:^0.5.2"
     "@backstage/frontend-plugin-api": "npm:^0.17.1"
     "@backstage/frontend-test-utils": "npm:^0.6.0"
+    "@backstage/plugin-app-react": "npm:^0.2.5"
     "@backstage/plugin-catalog": "npm:^2.0.5"
     "@backstage/plugin-catalog-react": "npm:^3.1.0"
     "@backstage/plugin-kubernetes-react": "npm:^0.5.20"

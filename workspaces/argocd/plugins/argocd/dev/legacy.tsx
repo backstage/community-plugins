@@ -38,6 +38,7 @@ import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
   argocdPlugin,
+  argocdTranslations,
 } from '../src/legacy';
 import {
   mockArgocdConfig,
@@ -53,7 +54,6 @@ import {
   MockKubernetesClient,
   mockKubernetesAuthProviderApi,
 } from './__fixtures__/mockClients';
-import { argocdTranslations } from '../src/translations';
 import { getArgocdInstances } from '../src/hooks/useArgocdConfig';
 import { DeploymentLifecycle } from '../src/components/DeploymentLifeCycle';
 import { DeploymentSummary } from '../src/components/DeploymentSummary';
