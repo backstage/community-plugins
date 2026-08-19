@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { parseEntityRef } from '@backstage/catalog-model';
@@ -114,10 +114,18 @@ export const useMembers = (
   const canReadUsersAndGroups =
     !authError && Array.isArray(authCheck) && authCheck.length > 0;
 
-  const memberRefs = useMemo(
-    () => (Array.isArray(role) ? role[0].memberReferences : []),
-    [role],
-  );
+  const prevRefs = useRef<string[]>([]);
+  const memberRefs = useMemo(() => {
+    const newRefs = Array.isArray(role) ? role[0].memberReferences : [];
+    if (
+      newRefs.length === prevRefs.current.length &&
+      newRefs.every((v, i) => v === prevRefs.current[i])
+    ) {
+      return prevRefs.current;
+    }
+    prevRefs.current = newRefs;
+    return newRefs;
+  }, [role]);
 
   const {
     value: members,
@@ -152,7 +160,6 @@ export const useMembers = (
   useInterval(
     () => {
       roleRetry();
-      membersRetry();
     },
     loading ? null : pollInterval || 10000,
   );

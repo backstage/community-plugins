@@ -112,20 +112,28 @@ export const AddMembersForm = ({
 
   const [searchResults, setSearchResults] = useState<MemberEntity[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const performSearch = useCallback(
     async (term: string) => {
       setSearchLoading(true);
+      setSearchError(null);
       try {
         const result = await rbacApi.searchMembers(term);
         if (Array.isArray(result)) {
           setSearchResults(result);
+        } else {
+          setSearchError(
+            t('common.errorFetchingUserGroups' as any, { error: '' }),
+          );
         }
+      } catch (err) {
+        setSearchError(err instanceof Error ? err.message : String(err));
       } finally {
         setSearchLoading(false);
       }
     },
-    [rbacApi],
+    [rbacApi, t],
   );
 
   useDebounce(
@@ -160,10 +168,6 @@ export const AddMembersForm = ({
     return unique.map((member, index) => toSelectedMember(member, index, t));
   }, [searchResults, membersData.members, search, t]);
 
-  const filteredMembers = useMemo(() => {
-    return membersOptions.slice(0, 99);
-  }, [membersOptions]);
-
   const handleIsOptionEqualToValue = (
     option: SelectedMember,
     value: SelectedMember,
@@ -181,7 +185,7 @@ export const AddMembersForm = ({
         data-testid="users-and-groups-autocomplete"
         sx={{ width: '30%' }}
         multiple
-        options={filteredMembers || []}
+        options={membersOptions}
         getOptionLabel={(option: SelectedMember) => option.label ?? ''}
         isOptionEqualToValue={handleIsOptionEqualToValue}
         loading={searchLoading}
@@ -241,6 +245,7 @@ export const AddMembersForm = ({
         )}
       />
       <br />
+      {searchError && <FormHelperText error>{searchError}</FormHelperText>}
       {membersData.error?.message && (
         <FormHelperText error={!!membersData.error}>
           {t('common.errorFetchingUserGroups' as any, {
