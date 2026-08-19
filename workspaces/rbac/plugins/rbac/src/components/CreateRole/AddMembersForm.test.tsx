@@ -166,6 +166,7 @@ describe('AddMembersForm', () => {
           expect.objectContaining({ label: 'test user1' }),
           expect.objectContaining({ label: 'test user2' }),
         ]),
+        false,
       );
     });
   });
@@ -267,6 +268,7 @@ describe('AddMembersForm', () => {
             label: 'test user2',
           }),
         ]),
+        false,
       );
     });
   });

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useAsync } from 'react-use';
 
 import { useApi } from '@backstage/core-plugin-api';
@@ -25,6 +25,7 @@ import { SelectedMember } from '../components/CreateRole/types';
 import { MemberEntity } from '../types';
 import { getSelectedMember } from '../utils/rbac-utils';
 import { useRole } from './useRole';
+import { useStableArray } from './useStableArray';
 
 export const useSelectedMembers = (
   roleName: string,
@@ -40,18 +41,8 @@ export const useSelectedMembers = (
   const rbacApi = useApi(rbacApiRef);
   const { role, loading: roleLoading, roleError } = useRole(roleName);
 
-  const prevRefs = useRef<string[]>([]);
-  const memberRefs = useMemo(() => {
-    const newRefs = role ? (role as Role).memberReferences : [];
-    if (
-      newRefs.length === prevRefs.current.length &&
-      newRefs.every((v, i) => v === prevRefs.current[i])
-    ) {
-      return prevRefs.current;
-    }
-    prevRefs.current = newRefs;
-    return newRefs;
-  }, [role]);
+  const rawRefs = role ? (role as Role).memberReferences : [];
+  const memberRefs = useStableArray(rawRefs);
 
   const {
     loading: authLoading,

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useAsyncRetry, useInterval } from 'react-use';
 
 import { parseEntityRef } from '@backstage/catalog-model';
@@ -23,6 +23,7 @@ import { rbacApiRef } from '../api/RBACBackendClient';
 import { MemberEntity, MembersData } from '../types';
 import { getMembersFromGroup } from '../utils/rbac-utils';
 import { useLanguage } from './useLanguage';
+import { useStableArray } from './useStableArray';
 import { useTranslation } from './useTranslation';
 
 export type MembersInfo = {
@@ -98,7 +99,6 @@ export const useMembers = (
   const rbacApi = useApi(rbacApiRef);
   const locale = useLanguage();
   const { t } = useTranslation();
-  let data: MembersData[] = [];
   const {
     value: role,
     retry: roleRetry,
@@ -114,18 +114,8 @@ export const useMembers = (
   const canReadUsersAndGroups =
     !authError && Array.isArray(authCheck) && authCheck.length > 0;
 
-  const prevRefs = useRef<string[]>([]);
-  const memberRefs = useMemo(() => {
-    const newRefs = Array.isArray(role) ? role[0].memberReferences : [];
-    if (
-      newRefs.length === prevRefs.current.length &&
-      newRefs.every((v, i) => v === prevRefs.current[i])
-    ) {
-      return prevRefs.current;
-    }
-    prevRefs.current = newRefs;
-    return newRefs;
-  }, [role]);
+  const rawRefs = Array.isArray(role) ? role[0].memberReferences : [];
+  const memberRefs = useStableArray(rawRefs);
 
   const {
     value: members,
@@ -140,7 +130,7 @@ export const useMembers = (
 
   const loading = !roleError && !membersError && !role && !members;
 
-  data = useMemo(
+  const data = useMemo(
     () =>
       Array.isArray(members)
         ? memberRefs.reduce(
