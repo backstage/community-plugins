@@ -1728,8 +1728,7 @@ __metadata:
     "@backstage/config": "backstage:^"
     "@backstage/plugin-catalog-node": "backstage:^"
     "@backstage/types": "backstage:^"
-    "@types/js-yaml": "npm:^4.0.9"
-    js-yaml: "npm:^4.1.0"
+    js-yaml: "npm:^5.2.3"
     linguist-js: "npm:^2.5.3"
     node-fetch: "npm:^2.6.7"
   languageName: unknown
@@ -9018,13 +9017,6 @@ __metadata:
   version: 2.2.6
   resolution: "@types/js-cookie@npm:2.2.6"
   checksum: 10/97c50ff6cd0a27409b028aad94b0c4eb5cc43623532a1bdbbcccdb200539593eff3cc7f0d874b6b9bee586167638e3a10093c811ff6603ff2a9639564c82b3b1
-  languageName: node
-  linkType: hard
-
-"@types/js-yaml@npm:^4.0.9":
-  version: 4.0.9
-  resolution: "@types/js-yaml@npm:4.0.9"
-  checksum: 10/a0ce595db8a987904badd21fc50f9f444cb73069f4b95a76cc222e0a17b3ff180669059c763ec314bc4c3ce284379177a9da80e83c5f650c6c1310cafbfaa8e6
   languageName: node
   linkType: hard
 
@@ -17289,6 +17281,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/2ce71b5d632abbd77da80447bf860e8a0264e54bffe94840984887d58b023761495b523727547904517a6107a1ef189854b361e0fc44995ee13a84f222d7bd42
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^5.2.3":
+  version: 5.2.3
+  resolution: "js-yaml@npm:5.2.3"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.mjs
+  checksum: 10/5d2562f2d7e7bc51bd678b43d2dbc3965129ac854222c794157369c8904d249cfc78325dff8fc64becb505a2506242548c54c8fa50cdb24554bb1a557e460004
   languageName: node
   linkType: hard
 
