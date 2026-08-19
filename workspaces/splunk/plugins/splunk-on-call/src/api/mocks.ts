@@ -24,7 +24,6 @@ import {
 
 export const MOCKED_USER: User = {
   createdAt: '2021-02-01T23:38:38Z',
-  displayName: 'Test User',
   email: 'test@example.com',
   firstName: 'FirstNameTest',
   lastName: 'LastNameTest',
@@ -59,7 +58,7 @@ export const MOCK_INCIDENT: Incident = {
   routingKey: 'routingdefault',
   service: 'test',
   startTime: '2021-02-03T00:13:11Z',
-  pagedTeams: ['team-O9SqT13fsnCstjMi'],
+  pagedTeams: ['test'],
   pagedUsers: [],
   pagedPolicies: [
     {

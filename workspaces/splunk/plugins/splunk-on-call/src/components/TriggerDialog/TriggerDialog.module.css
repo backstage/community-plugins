@@ -1,5 +1,4 @@
-/*
- * Copyright 2020 The Backstage Authors
+/* Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Flex, Text } from '@backstage/ui';
-import { StatusWarning } from '@backstage/core-components';
-import styles from './EscalationUsersEmptyState.module.css';
+@layer components {
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bui-space-2);
+  }
 
-export const EscalationUsersEmptyState = () => (
-  <Flex align="center" style={{ paddingBottom: 'var(--bui-space-2)' }}>
-    <div className={styles.denseListIcon}>
-      <StatusWarning />
-    </div>
-    <Text>Empty escalation policy</Text>
-  </Flex>
-);
+  .chip {
+    margin: var(--bui-space-1);
+  }
+
+  .formControl {
+    margin-bottom: var(--bui-space-3);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--bui-space-2);
+  }
+
+  .formHeader {
+    width: 50%;
+  }
+
+  .incidentType {
+    width: 90%;
+  }
+
+  .targets {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--bui-space-2);
+  }
+}
