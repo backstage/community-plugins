@@ -27,8 +27,6 @@ It provides an API that connects to your ServiceNow instance and returns inciden
 
 Refer to [Configuration.md](../../docs/Configuration.md) for detailed setup instructions, including authentication and ServiceNow instance configuration.
 
-## Development
+## Contributing
 
-This plugin backend can be started in a standalone mode from directly in this
-package with `yarn start`. It is a limited setup that is most convenient when
-developing the plugin backend itself.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local `dev/` harness, scoped tests, and curl smoke checklist.

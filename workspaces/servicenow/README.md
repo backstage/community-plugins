@@ -36,7 +36,7 @@ metadata:
 
 ## Dynamic Mount Configuration
 
-This plugin supports dynamic mount points via Backstage’s dynamic plugin system (e.g., in [RHDH instances](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6)).
+This plugin supports dynamic mount points via Backstage’s dynamic plugin system.
 
 ### Backend plugin configuration
 
@@ -56,4 +56,4 @@ The plugin includes a condition module (isMyProfile) that checks whether the cur
 
 ## Running the Dev App
 
-To start the dev app, refer to [plugins/servicenow/README.md](./plugins/README.md)
+From `workspaces/servicenow`, run `yarn start` to launch the frontend and backend plugin harnesses together. See [CONTRIBUTING.md](./CONTRIBUTING.md).
