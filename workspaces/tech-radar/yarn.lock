@@ -2154,7 +2154,6 @@ __metadata:
     "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/ui": "backstage:^"
-    "@material-ui/icons": "npm:^4.9.1"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
     "@testing-library/react": "npm:^15.0.0"
@@ -2175,7 +2174,6 @@ __metadata:
     react-dom: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-router-dom: "npm:6.0.0-beta.0 || ^6.3.0"
     react-use: "npm:^17.2.4"
-    zod: "npm:^4.0.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -4594,6 +4592,33 @@ __metadata:
   version: 1.2.2
   resolution: "@backstage/types@npm:1.2.2"
   checksum: 10/813129ae2f4be2765b54a16457955c8bbeb7cc6685bc2cae8b981ae7010353d9cd1110acf846f5c23cf7fbbb6bee6d56b629d5f59933247bb529f4816218c1e7
+  languageName: node
+  linkType: hard
+
+"@backstage/ui@backstage:^::backstage=1.53.0&npm=0.17.0":
+  version: 0.17.1
+  resolution: "@backstage/ui@npm:0.17.1"
+  dependencies:
+    "@backstage/version-bridge": "npm:^1.0.12"
+    "@braintree/sanitize-url": "npm:^7.1.2"
+    "@internationalized/date": "npm:^3.12.0"
+    "@remixicon/react": "npm:>=4.6.0 <4.9.0"
+    "@tanstack/react-table": "npm:^8.21.3"
+    clsx: "npm:^2.1.1"
+    marked: "npm:^15.0.12"
+    react-aria: "npm:~3.48.0"
+    react-aria-components: "npm:~1.17.0"
+    react-stately: "npm:~3.46.0"
+    use-sync-external-store: "npm:^1.4.0"
+  peerDependencies:
+    "@types/react": ^18.0.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+    react-router-dom: ^6.30.2
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/2c9ab1b9dcd85dd957b60235e489ec76fe73ecc0356798935e992a2ab6991580f993214d07b995239cb5cecec28fc485665ccaa683e117dd38a070f14409a4eb
   languageName: node
   linkType: hard
 
@@ -27374,7 +27399,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria-components@npm:^1.14.0":
+"react-aria-components@npm:^1.13.0, react-aria-components@npm:^1.14.0":
   version: 1.19.0
   resolution: "react-aria-components@npm:1.19.0"
   dependencies:
@@ -27391,7 +27416,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria-components@npm:^1.13.0, react-aria-components@npm:~1.17.0":
+"react-aria-components@npm:~1.17.0":
   version: 1.17.0
   resolution: "react-aria-components@npm:1.17.0"
   dependencies:
@@ -27408,7 +27433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria@npm:3.48.0, react-aria@npm:^3.46.0, react-aria@npm:~3.48.0":
+"react-aria@npm:3.48.0, react-aria@npm:~3.48.0":
   version: 3.48.0
   resolution: "react-aria@npm:3.48.0"
   dependencies:
@@ -27428,7 +27453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria@npm:3.50.0":
+"react-aria@npm:3.50.0, react-aria@npm:^3.46.0":
   version: 3.50.0
   resolution: "react-aria@npm:3.50.0"
   dependencies:
