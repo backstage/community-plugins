@@ -43,7 +43,7 @@ export const MembersDropdownOption = ({
   return (
     <li
       {...props}
-      key={`${etag}`}
+      key={option.ref}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -58,9 +58,9 @@ export const MembersDropdownOption = ({
         <div>
           <div>
             <Typography component="span" sx={{ marginTop: '0.5rem' }}>
-              {parts.map(part => (
+              {parts.map((part, index) => (
                 <Typography
-                  key={`${part.text}-${etag}`}
+                  key={`${index}-${etag}`}
                   component="span"
                   sx={{
                     fontWeight: !state.inputValue || part.highlight ? 400 : 700,

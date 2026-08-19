@@ -19,7 +19,9 @@ import { useDebounce } from 'react-use';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
 
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete, {
+  AutocompleteRenderOptionState,
+} from '@mui/material/Autocomplete';
 import FormHelperText from '@mui/material/FormHelperText';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
@@ -168,13 +170,42 @@ export const AddMembersForm = ({
     return unique.map((member, index) => toSelectedMember(member, index, t));
   }, [searchResults, membersData.members, search, t]);
 
-  const handleIsOptionEqualToValue = (
-    option: SelectedMember,
-    value: SelectedMember,
-  ) =>
-    value.etag
-      ? option.etag === value.etag
-      : selectedMember?.[0].etag === value.etag;
+  const handleIsOptionEqualToValue = useCallback(
+    (option: SelectedMember, value: SelectedMember) =>
+      option.etag === value.etag,
+    [],
+  );
+
+  const handleGetOptionLabel = useCallback(
+    (option: SelectedMember) => option.label ?? '',
+    [],
+  );
+
+  const handleChange = useCallback(
+    (_e: React.SyntheticEvent, value: SelectedMember[]) => {
+      setSelectedMember(value);
+      setFieldValue('selectedMembers', value, false);
+    },
+    [setFieldValue],
+  );
+
+  const handleInputChange = useCallback(
+    (_e: React.SyntheticEvent, newSearch: string, reason: string) => {
+      if (reason === 'input') setSearch(newSearch);
+    },
+    [],
+  );
+
+  const handleFilterOptions = useCallback((x: SelectedMember[]) => x, []);
+
+  const handleRenderOption = useCallback(
+    (
+      props: React.HTMLAttributes<HTMLLIElement>,
+      option: SelectedMember,
+      state: AutocompleteRenderOptionState,
+    ) => <MembersDropdownOption props={props} option={option} state={state} />,
+    [],
+  );
 
   return (
     <>
@@ -186,25 +217,18 @@ export const AddMembersForm = ({
         sx={{ width: '30%' }}
         multiple
         options={membersOptions}
-        getOptionLabel={(option: SelectedMember) => option.label ?? ''}
+        getOptionLabel={handleGetOptionLabel}
         isOptionEqualToValue={handleIsOptionEqualToValue}
         loading={searchLoading}
         loadingText={<LinearProgress />}
         disableClearable
         value={selectedMember}
-        onChange={(_e, value: SelectedMember[]) => {
-          setSelectedMember(value);
-          setFieldValue('selectedMembers', value);
-        }}
+        onChange={handleChange}
         renderTags={() => ''}
         inputValue={search}
-        onInputChange={(_e, newSearch: string, reason) =>
-          reason === 'input' && setSearch(newSearch)
-        }
-        filterOptions={x => x}
-        renderOption={(props, option: SelectedMember, state) => (
-          <MembersDropdownOption props={props} option={option} state={state} />
-        )}
+        onInputChange={handleInputChange}
+        filterOptions={handleFilterOptions}
+        renderOption={handleRenderOption}
         noOptionsText={t('common.noUsersAndGroupsFound')}
         clearOnEscape
         renderInput={params => (
