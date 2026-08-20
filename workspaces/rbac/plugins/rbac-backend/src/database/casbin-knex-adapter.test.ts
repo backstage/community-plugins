@@ -418,4 +418,58 @@ describe('CasbinKnexAdapter', () => {
       expect(after.getPolicy('g', 'g')).toHaveLength(1);
     });
   });
+
+  describe('runWithTransaction', () => {
+    it('reuses an open transaction instead of acquiring another pool connection', async () => {
+      // Mirrors EnforcerDelegate holding a trx while Casbin auto-saves.
+      // With pool max=1 this deadlocks unless the adapter joins the trx.
+      const limitedDb = knex({
+        client: 'better-sqlite3',
+        connection: ':memory:',
+        useNullAsDefault: true,
+        pool: { min: 1, max: 1 },
+        acquireConnectionTimeout: 2_000,
+      });
+      await createTable(limitedDb);
+      const limitedAdapter = await CasbinKnexAdapter.newAdapter(limitedDb);
+
+      const trx = await limitedDb.transaction();
+      expect(limitedAdapter.isSameClient(trx)).toBe(true);
+      try {
+        await limitedAdapter.runWithTransaction(trx, async () => {
+          await limitedAdapter.addPolicies('p', 'p', [
+            ['alice', 'data1', 'read', 'allow'],
+            ['bob', 'data2', 'write', 'allow'],
+          ]);
+          const model = newModelFromString(MODEL);
+          await limitedAdapter.loadPolicy(model);
+          expect(model.getPolicy('p', 'p')).toHaveLength(2);
+        });
+        await trx.commit();
+      } catch (err) {
+        await trx.rollback();
+        throw err;
+      } finally {
+        await limitedDb.destroy();
+      }
+    });
+
+    it('does not treat a transaction from another knex instance as same client', async () => {
+      const other = knex({
+        client: 'better-sqlite3',
+        connection: ':memory:',
+        useNullAsDefault: true,
+      });
+      const trx = await other.transaction();
+      try {
+        expect(adapter.isSameClient(trx)).toBe(false);
+        await trx.commit();
+      } catch (err) {
+        await trx.rollback();
+        throw err;
+      } finally {
+        await other.destroy();
+      }
+    });
+  });
 });

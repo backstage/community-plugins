@@ -55,6 +55,7 @@ function ruleToRow(ptype: string, rule: string[]): CasbinRule {
 
 export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
   private filtered = false;
+  private activeTrx?: Knex.Transaction;
 
   private constructor(private readonly knex: Knex) {}
 
@@ -62,12 +63,42 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
     return new CasbinKnexAdapter(knex);
   }
 
+  /**
+   * Runs `fn` so that all adapter queries reuse `trx` instead of taking a new
+   * pool connection. Required when EnforcerDelegate already holds a Knex
+   * transaction on the same client — SQLite pools are typically max=1, so a
+   * nested acquire deadlocks.
+   */
+  async runWithTransaction<T>(
+    trx: Knex.Transaction,
+    fn: () => Promise<T>,
+  ): Promise<T> {
+    const previous = this.activeTrx;
+    this.activeTrx = trx;
+    try {
+      return await fn();
+    } finally {
+      this.activeTrx = previous;
+    }
+  }
+
+  /** True when `trx` was opened on the same Knex instance this adapter uses. */
+  isSameClient(trx: Knex.Transaction): boolean {
+    // Transaction clients are wrappers around the parent client, so identity
+    // comparison on `client` fails. The config object is shared with the parent.
+    return trx.client.config === this.knex.client.config;
+  }
+
+  private db(): Knex | Knex.Transaction {
+    return this.activeTrx ?? this.knex;
+  }
+
   isFiltered(): boolean {
     return this.filtered;
   }
 
   async loadPolicy(model: Model): Promise<void> {
-    const rows: CasbinRule[] = await this.knex(TABLE_NAME).select(
+    const rows: CasbinRule[] = await this.db()(TABLE_NAME).select(
       POLICY_COLUMNS as unknown as string[],
     );
     for (const row of rows) {
@@ -85,7 +116,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
       return;
     }
 
-    const query = this.knex(TABLE_NAME);
+    const query = this.db()(TABLE_NAME);
 
     if (filter.length === 1) {
       query.where(filter[0]);
@@ -117,7 +148,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
       }
     }
 
-    await this.knex.transaction(async trx => {
+    await this.runInTransaction(async trx => {
       await trx(TABLE_NAME).del();
       if (rows.length > 0) {
         await trx.batchInsert(TABLE_NAME, rows, 50);
@@ -128,7 +159,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
   }
 
   async addPolicy(_sec: string, ptype: string, rule: string[]): Promise<void> {
-    await this.knex(TABLE_NAME).insert(ruleToRow(ptype, rule));
+    await this.db()(TABLE_NAME).insert(ruleToRow(ptype, rule));
   }
 
   async addPolicies(
@@ -138,7 +169,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
   ): Promise<void> {
     if (rules.length === 0) return;
     const rows = rules.map(rule => ruleToRow(ptype, rule));
-    await this.knex.transaction(async trx => {
+    await this.runInTransaction(async trx => {
       await trx.batchInsert(TABLE_NAME, rows, 50);
     });
   }
@@ -152,7 +183,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
     for (let i = 0; i < rule.length; i++) {
       where[`v${i}`] = rule[i];
     }
-    await this.knex(TABLE_NAME).where(where).del();
+    await this.db()(TABLE_NAME).where(where).del();
   }
 
   async removePolicies(
@@ -161,7 +192,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
     rules: string[][],
   ): Promise<void> {
     if (rules.length === 0) return;
-    await this.knex.transaction(async trx => {
+    await this.runInTransaction(async trx => {
       for (const rule of rules) {
         const where: Record<string, string> = { ptype };
         for (let i = 0; i < rule.length; i++) {
@@ -184,6 +215,16 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
         where[`v${fieldIndex + i}`] = fieldValues[i];
       }
     }
-    await this.knex(TABLE_NAME).where(where).del();
+    await this.db()(TABLE_NAME).where(where).del();
+  }
+
+  private async runInTransaction(
+    fn: (trx: Knex.Transaction) => Promise<void>,
+  ): Promise<void> {
+    if (this.activeTrx) {
+      await fn(this.activeTrx);
+      return;
+    }
+    await this.knex.transaction(fn);
   }
 }
