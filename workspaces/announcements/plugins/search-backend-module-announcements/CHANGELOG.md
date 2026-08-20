@@ -1,5 +1,11 @@
 # @backstage-community/plugin-search-backend-module-announcements
 
+## 0.21.0
+
+### Minor Changes
+
+- 4aa61e2: Inactive announcements are no longer indexed for search. This fixes an issue where inactive announcements were still being returned in search results.
+
 ## 0.20.0
 
 ### Minor Changes
