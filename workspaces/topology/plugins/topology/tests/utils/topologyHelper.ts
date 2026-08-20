@@ -23,11 +23,17 @@ export function isNfsAppMode(): boolean {
 }
 
 /**
- * Entity page tab `data-testid` for the Topology tab — legacy TabbedLayout uses
- * index 0; NFS entity tabs use the route path (see EntityContentBlueprint path).
+ * Locator for the Topology entity tab.
+ * Legacy TabbedLayout uses `header-tab-0`. NFS 1.54+ uses the BUI header nav
+ * (`Content navigation` links), not `header-tab-/topology`.
  */
-export function topologyEntityHeaderTabTestId(): string {
-  return isNfsAppMode() ? 'header-tab-/topology' : 'header-tab-0';
+export function topologyEntityTab(page: Page) {
+  if (isNfsAppMode()) {
+    return page
+      .getByRole('navigation', { name: 'Content navigation' })
+      .getByRole('link', { name: 'Topology', exact: true });
+  }
+  return page.getByTestId('header-tab-0');
 }
 
 export class Common {
@@ -84,14 +90,8 @@ export class Common {
       await this.page.goto('/topology');
       return;
     }
-    await this.page.goto('/catalog');
-    await this.page
-      .getByRole('link', { name: 'backstage', exact: true })
-      .first()
-      .click();
-    const tabTestId = topologyEntityHeaderTabTestId();
-    await expect(this.page.getByTestId(tabTestId)).toBeVisible();
-    await this.page.getByTestId(tabTestId).click();
+    await this.page.goto('/catalog/default/component/backstage/topology');
+    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
   }
 
   async a11yCheck(testInfo: TestInfo) {
@@ -151,7 +151,7 @@ export class Common {
 
   async verifyDeploymentDetails(translations: TopologyMessages) {
     const deploymentDetails = this.page.getByTestId('deployment-details');
-    const deploymentlist = this.page.locator('dl');
+    const deploymentlist = this.page.getByTestId('details-tab').locator('dl');
     await expect(deploymentlist).toMatchAriaSnapshot(`
       - term: ${translations.details.name}
       - definition: test-deployment
