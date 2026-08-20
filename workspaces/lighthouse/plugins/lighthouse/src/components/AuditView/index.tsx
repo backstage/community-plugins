@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import { ReactNode, useEffect, useState } from 'react';
 import {
@@ -36,6 +29,8 @@ import { lighthouseApiRef } from '../../api';
 import { formatTime } from '../../utils';
 import AuditStatusIcon from '../AuditStatusIcon';
 import LighthouseSupportButton from '../SupportButton';
+import { Button } from '@backstage/ui';
+import styles from './AuditView.module.css';
 
 import {
   Content,
@@ -51,18 +46,6 @@ import { rootRouteRef } from '../../plugin';
 
 // TODO(freben): move all of this out of index
 
-const useStyles = makeStyles({
-  contentGrid: {
-    height: '100%',
-  },
-  iframe: {
-    border: '0',
-    width: '100%',
-    height: '100%',
-  },
-  errorOutput: { whiteSpace: 'pre' },
-});
-
 interface AuditLinkListProps {
   audits?: Audit[];
   selectedId: string;
@@ -70,35 +53,33 @@ interface AuditLinkListProps {
 const AuditLinkList = ({ audits = [], selectedId }: AuditLinkListProps) => {
   const fromPath = useRouteRef(rootRouteRef)?.() ?? '../';
   return (
-    <List
-      data-testid="audit-sidebar"
-      component="nav"
-      aria-label="lighthouse audit history"
-    >
-      {audits.map(audit => (
-        <ListItem
-          key={audit.id}
-          selected={audit.id === selectedId}
-          button
-          component={Link}
-          replace
-          to={resolvePath(
-            generatePath('audit/:id', { id: audit.id }),
-            fromPath,
-          )}
-        >
-          <ListItemIcon>
-            <AuditStatusIcon audit={audit} />
-          </ListItemIcon>
-          <ListItemText primary={formatTime(audit.timeCreated)} />
-        </ListItem>
-      ))}
-    </List>
+    <nav data-testid="audit-sidebar" aria-label="lighthouse audit history">
+      <ul className={styles.auditList}>
+        {audits.map(audit => (
+          <li key={audit.id} className={styles.auditListItem}>
+            <Link
+              replace
+              to={resolvePath(
+                generatePath('audit/:id', { id: audit.id }),
+                fromPath,
+              )}
+              className={`${styles.auditListItemLink}${
+                audit.id === selectedId ? ` ${styles.selected}` : ''
+              }`}
+            >
+              <span className={styles.auditListItemIcon}>
+                <AuditStatusIcon audit={audit} />
+              </span>
+              <span>{formatTime(audit.timeCreated)}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 };
 
 const AuditView = ({ audit }: { audit?: Audit }) => {
-  const classes = useStyles();
   const params = useParams() as { id: string };
   const { url: lighthouseUrl } = useApi(lighthouseApiRef);
 
@@ -115,7 +96,7 @@ const AuditView = ({ audit }: { audit?: Audit }) => {
   return (
     <InfoCard variant="fullHeight">
       <iframe
-        className={classes.iframe}
+        className={styles.iframe}
         title={`Lighthouse audit${audit?.url ? ` for ${audit.url}` : ''}`}
         src={`${lighthouseUrl}/v1/audits/${encodeURIComponent(params.id)}`}
       />
@@ -127,7 +108,6 @@ export const AuditViewContent = () => {
   const lighthouseApi = useApi(lighthouseApiRef);
   const fromPath = useRouteRef(rootRouteRef)?.() ?? '../';
   const params = useParams() as { id: string };
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const {
@@ -148,14 +128,14 @@ export const AuditViewContent = () => {
   let content: ReactNode = null;
   if (value) {
     content = (
-      <Grid container alignItems="stretch" className={classes.contentGrid}>
-        <Grid item xs={3}>
+      <div className={styles.contentGrid}>
+        <div className={styles.sidebar}>
           <AuditLinkList audits={value?.audits} selectedId={params.id} />
-        </Grid>
-        <Grid item xs={9}>
+        </div>
+        <div className={styles.main}>
           <AuditView audit={value?.audits.find(a => a.id === params.id)} />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     );
   } else if (loading) {
     content = <Progress />;
@@ -164,7 +144,7 @@ export const AuditViewContent = () => {
       <Alert
         data-testid="error-message"
         severity="error"
-        className={classes.errorOutput}
+        className={styles.errorOutput}
       >
         {error.message}
       </Alert>
@@ -183,8 +163,7 @@ export const AuditViewContent = () => {
         description="See a history of all Lighthouse audits for your website run through Backstage."
       >
         <Button
-          variant="contained"
-          color="primary"
+          variant="primary"
           onClick={() => navigate(resolvePath(createAuditButtonUrl, fromPath))}
         >
           Create New Audit
