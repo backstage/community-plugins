@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 2.1.2
+
+### Patch Changes
+
+- 2bcaa01: Improve role page performance by replacing bulk member loading with server-side search and fetching only the members assigned to a role.
+
 ## 2.1.1
 
 ### Patch Changes
