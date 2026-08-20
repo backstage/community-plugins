@@ -29,6 +29,7 @@ env:
   TREE_HEIGHT: ${{ github.event.inputs.tree_height || '9' }}
   COMPOSE_DISABLE_LINUX: '1'
   CI: 'true'
+  YARN_ENABLE_HARDENED_MODE: '0'
 
 jobs:
   perf-test:
