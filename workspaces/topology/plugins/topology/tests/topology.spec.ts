@@ -18,7 +18,7 @@ import { expect, Page, test, type BrowserContext } from '@playwright/test';
 import {
   Common,
   isNfsAppMode,
-  topologyEntityHeaderTabTestId,
+  topologyEntityTab,
 } from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
 
@@ -89,10 +89,10 @@ test.describe('Topology plugin', () => {
     });
 
     test('displays header and cluster controls', async ({}, testInfo) => {
-      await expect(page.getByRole('heading')).toContainText('backstage');
       await expect(
-        page.getByTestId(topologyEntityHeaderTabTestId()),
+        page.getByRole('heading', { name: 'backstage' }),
       ).toBeVisible();
+      await expect(topologyEntityTab(page)).toBeVisible();
       const topologyToolbar = page.locator('.pf-topology-view__view-toolbar');
       await expect(
         topologyToolbar.getByRole('button', {
