@@ -69,4 +69,14 @@ export interface AnnouncementsApi {
 
   lastSeenDate(): DateTime;
   markLastSeenDate(date: DateTime): void;
+
+  /**
+   * Dismiss a specific announcement by ID so it no longer appears as unseen.
+   */
+  dismissAnnouncement(id: string): void;
+
+  /**
+   * Check whether a specific announcement has been dismissed.
+   */
+  isAnnouncementDismissed(id: string): boolean;
 }

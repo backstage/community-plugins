@@ -129,7 +129,9 @@ export const AnnouncementsCard = ({
               <Box
                 style={{
                   visibility:
-                    lastSeen < DateTime.fromISO(announcement.created_at)
+                    !announcementsApi.isAnnouncementDismissed(
+                      announcement.id,
+                    ) && lastSeen < DateTime.fromISO(announcement.created_at)
                       ? 'visible'
                       : 'hidden',
                 }}
