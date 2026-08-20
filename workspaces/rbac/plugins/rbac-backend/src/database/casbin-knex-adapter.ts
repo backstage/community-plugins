@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 import type { BatchAdapter, FilteredAdapter, Model } from 'casbin';
-import { Helper } from 'casbin';
-import type { Knex } from 'knex';
+import { knex as knexFactory, type Knex } from 'knex';
 
 const TABLE_NAME = 'casbin_rule';
 
 const POLICY_COLUMNS = ['ptype', 'v0', 'v1', 'v2', 'v3', 'v4', 'v5'] as const;
+
+const SELECT_COLS = POLICY_COLUMNS.join(', ');
+const SELECT_ALL = `SELECT ${SELECT_COLS} FROM "${TABLE_NAME}"`;
 
 interface CasbinRule {
   ptype: string;
@@ -33,12 +35,29 @@ interface CasbinRule {
 
 export type CasbinPolicyFilter = Array<Partial<CasbinRule>>;
 
-function rowToLine(row: CasbinRule): string {
-  const values = [row.v0, row.v1, row.v2, row.v3, row.v4, row.v5];
-  while (values.length > 0 && !values[values.length - 1]) {
-    values.pop();
-  }
-  return `${row.ptype}, ${values.join(', ')}`;
+function loadRowIntoModel(row: CasbinRule, model: Model): void {
+  const sec = row.ptype.substring(0, 1);
+  const ast = model.model.get(sec)?.get(row.ptype);
+  if (!ast) return;
+
+  let len: number;
+  if (row.v5) len = 6;
+  else if (row.v4) len = 5;
+  else if (row.v3) len = 4;
+  else if (row.v2) len = 3;
+  else if (row.v1) len = 2;
+  else if (row.v0) len = 1;
+  else return;
+
+  const rule: string[] = new Array(len);
+  if (len >= 1) rule[0] = row.v0 ?? '';
+  if (len >= 2) rule[1] = row.v1 ?? '';
+  if (len >= 3) rule[2] = row.v2 ?? '';
+  if (len >= 4) rule[3] = row.v3 ?? '';
+  if (len >= 5) rule[4] = row.v4 ?? '';
+  if (len >= 6) rule[5] = row.v5 ?? '';
+
+  ast.policy.push(rule);
 }
 
 function ruleToRow(ptype: string, rule: string[]): CasbinRule {
@@ -56,6 +75,9 @@ function ruleToRow(ptype: string, rule: string[]): CasbinRule {
 export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
   private filtered = false;
   private activeTrx?: Knex.Transaction;
+  private dedicatedPool?: Knex;
+
+  private readonly sqlCache = new Map<string, string>();
 
   private constructor(private readonly knex: Knex) {}
 
@@ -63,12 +85,29 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
     return new CasbinKnexAdapter(knex);
   }
 
-  /**
-   * Runs `fn` so that all adapter queries reuse `trx` instead of taking a new
-   * pool connection. Required when EnforcerDelegate already holds a Knex
-   * transaction on the same client — SQLite pools are typically max=1, so a
-   * nested acquire deadlocks.
-   */
+  static async newAdapterWithDedicatedPool(
+    parentKnex: Knex,
+    poolConfig?: { min?: number; max?: number },
+  ): Promise<CasbinKnexAdapter> {
+    const cfg = parentKnex.client.config;
+    const dedicatedKnex = knexFactory({
+      client: cfg.client,
+      connection: cfg.connection,
+      pool: poolConfig ?? { min: 2, max: 10 },
+      searchPath: cfg.searchPath,
+    });
+    const adapter = new CasbinKnexAdapter(dedicatedKnex);
+    adapter.dedicatedPool = dedicatedKnex;
+    return adapter;
+  }
+
+  async destroy(): Promise<void> {
+    if (this.dedicatedPool) {
+      await this.dedicatedPool.destroy();
+      this.dedicatedPool = undefined;
+    }
+  }
+
   async runWithTransaction<T>(
     trx: Knex.Transaction,
     fn: () => Promise<T>,
@@ -82,10 +121,7 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
     }
   }
 
-  /** True when `trx` was opened on the same Knex instance this adapter uses. */
   isSameClient(trx: Knex.Transaction): boolean {
-    // Transaction clients are wrappers around the parent client, so identity
-    // comparison on `client` fails. The config object is shared with the parent.
     return trx.client.config === this.knex.client.config;
   }
 
@@ -98,11 +134,10 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
   }
 
   async loadPolicy(model: Model): Promise<void> {
-    const rows: CasbinRule[] = await this.db()(TABLE_NAME).select(
-      POLICY_COLUMNS as unknown as string[],
-    );
+    const result = await this.db().raw(SELECT_ALL);
+    const rows: CasbinRule[] = Array.isArray(result) ? result : result.rows;
     for (const row of rows) {
-      Helper.loadPolicyLine(rowToLine(row), model);
+      loadRowIntoModel(row, model);
     }
     this.filtered = false;
   }
@@ -116,25 +151,49 @@ export class CasbinKnexAdapter implements FilteredAdapter, BatchAdapter {
       return;
     }
 
-    const query = this.db()(TABLE_NAME);
+    const sql = this.getFilterSQL(filter);
+    const bindings = this.getFilterBindings(filter);
+    const result = await this.db().raw(sql, bindings);
+    const rows: CasbinRule[] = Array.isArray(result) ? result : result.rows;
 
-    if (filter.length === 1) {
-      query.where(filter[0]);
-    } else {
-      query.where(function (builder) {
-        for (const f of filter) {
-          builder.orWhere(f);
-        }
-      });
-    }
-
-    const rows: CasbinRule[] = await query.select(
-      POLICY_COLUMNS as unknown as string[],
-    );
     for (const row of rows) {
-      Helper.loadPolicyLine(rowToLine(row), model);
+      loadRowIntoModel(row, model);
     }
     this.filtered = true;
+  }
+
+  private getFilterSQL(filter: CasbinPolicyFilter): string {
+    const cacheKey = this.buildCacheKey(filter);
+    let sql = this.sqlCache.get(cacheKey);
+    if (sql !== undefined) return sql;
+
+    if (filter.length === 1) {
+      const keys = Object.keys(filter[0]).sort();
+      sql = `${SELECT_ALL} WHERE ${keys.map(k => `"${k}" = ?`).join(' AND ')}`;
+    } else {
+      const groups = filter.map(f => {
+        const keys = Object.keys(f).sort();
+        return `(${keys.map(k => `"${k}" = ?`).join(' AND ')})`;
+      });
+      sql = `${SELECT_ALL} WHERE ${groups.join(' OR ')}`;
+    }
+
+    this.sqlCache.set(cacheKey, sql);
+    return sql;
+  }
+
+  private buildCacheKey(filter: CasbinPolicyFilter): string {
+    return filter.map(f => Object.keys(f).sort().join(',')).join('|');
+  }
+
+  private getFilterBindings(filter: CasbinPolicyFilter): unknown[] {
+    const bindings: unknown[] = [];
+    for (const f of filter) {
+      for (const key of Object.keys(f).sort()) {
+        bindings.push((f as Record<string, unknown>)[key]);
+      }
+    }
+    return bindings;
   }
 
   async savePolicy(model: Model): Promise<boolean> {
