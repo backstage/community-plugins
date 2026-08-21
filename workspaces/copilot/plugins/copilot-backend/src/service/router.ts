@@ -18,22 +18,30 @@ import Router from 'express-promise-router';
 import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
   DatabaseService,
+  HttpAuthService,
   LoggerService,
   readSchedulerServiceTaskScheduleDefinitionFromConfig,
   SchedulerService,
   SchedulerServiceTaskScheduleDefinition,
+  UserInfoService,
 } from '@backstage/backend-plugin-api';
+import { CatalogService } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
 import { InputError, NotFoundError } from '@backstage/errors';
 import {
   Metric,
   PeriodRange,
   V2BackfillStatus,
+  V2MyDashboardResponse,
 } from '@backstage-community/plugin-copilot-common';
 import { DatabaseHandler } from '../db/DatabaseHandler';
 import { DatabaseHandlerV2 } from '../db/DatabaseHandlerV2';
 import { TaskManagementV2 } from '../task/TaskManagementV2';
 import { GithubClientV2 } from '../client/GithubClientV2';
+import {
+  CopilotUserResolver,
+  DefaultCopilotUserResolver,
+} from '../userResolver';
 import { validateQuery } from './validation/validateQuery';
 import {
   MetricsQuery,
@@ -47,6 +55,8 @@ import {
   v2BackfillStatusQuerySchema,
   V2FeatureQuery,
   v2FeatureQuerySchema,
+  V2MeDashboardQuery,
+  v2MeDashboardQuerySchema,
   V2MetricsQuery,
   v2MetricsQuerySchema,
   V2PeriodRangeQuery,
@@ -93,6 +103,30 @@ export interface RouterOptions {
    * Configuration for the router.
    */
   config: Config;
+
+  /**
+   * Auth service used to resolve the credentials of the signed-in user
+   * calling the `/v2/me/*` routes.
+   */
+  httpAuth?: HttpAuthService;
+
+  /**
+   * Service used to resolve the signed-in user's entity ref from their
+   * credentials.
+   */
+  userInfo?: UserInfoService;
+
+  /**
+   * Catalog service, used (with the caller's own credentials) to look up the
+   * signed-in user's catalog entity.
+   */
+  catalog?: CatalogService;
+
+  /**
+   * Resolves the GitHub login to use for an individual user's metrics.
+   * Defaults to {@link DefaultCopilotUserResolver}.
+   */
+  userResolver?: CopilotUserResolver;
 }
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
@@ -132,7 +166,10 @@ async function createRouter(
   routerOptions: RouterOptions,
   pluginOptions: PluginOptions,
 ): Promise<express.Router> {
-  const { logger, database, scheduler, config } = routerOptions;
+  const { logger, database, scheduler, config, httpAuth, userInfo, catalog } =
+    routerOptions;
+  const userResolver =
+    routerOptions.userResolver ?? new DefaultCopilotUserResolver();
   const { schedule } = pluginOptions;
 
   const db = await DatabaseHandler.create({ database });
@@ -534,6 +571,58 @@ async function createRouter(
           to,
           team,
         );
+        return res.json(result);
+      } catch (err) {
+        return next(err);
+      }
+    },
+  );
+
+  // ---------------------------------------------------------------------------
+  // "Me" endpoints — strictly self-scoped individual metrics.
+  //
+  // These routes never accept a user or team identifier from the client.
+  // The caller's own GitHub login is always resolved server-side from their
+  // own credentials (httpAuth -> userInfo -> userResolver), so it is
+  // structurally impossible to request another user's metrics through this
+  // API.
+  // ---------------------------------------------------------------------------
+  v2Router.get(
+    '/me/dashboard',
+    validateQuery(v2MeDashboardQuerySchema),
+    async (req, res, next) => {
+      try {
+        if (!httpAuth || !userInfo || !catalog) {
+          return res.status(501).json({
+            error: 'Individual Copilot metrics are not configured',
+          });
+        }
+
+        const credentials = await httpAuth.credentials(req, {
+          allow: ['user'],
+        });
+        const { userEntityRef } = await userInfo.getUserInfo(credentials);
+        const userLogin = await userResolver.resolveUserLogin({
+          userEntityRef,
+          credentials,
+          services: { catalog },
+        });
+
+        if (!userLogin) {
+          const notMatched: V2MyDashboardResponse = { matched: false };
+          return res.json(notMatched);
+        }
+
+        const { type, entityId, from, to } = req.query as V2MeDashboardQuery;
+        const data = await dbV2.getUserDashboardData(
+          type,
+          entityId,
+          userLogin,
+          from,
+          to,
+        );
+
+        const result: V2MyDashboardResponse = { matched: true, ...data };
         return res.json(result);
       } catch (err) {
         return next(err);

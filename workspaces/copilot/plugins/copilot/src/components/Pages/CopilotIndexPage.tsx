@@ -18,12 +18,14 @@ import { HomePage } from './HomePage';
 import { EnterprisePage } from './EnterprisePage';
 import { OrganizationPage } from './OrganizationPage';
 import { V2DashboardPage } from '../V2Dashboard';
+import { MyMetricsContent } from '../../me';
 
 export const CopilotIndexPage = () => (
   <Routes>
     {/* V2 is now the default dashboard */}
     <Route path="/" element={<V2DashboardPage />} />
     <Route path="/v2" element={<V2DashboardPage />} />
+    <Route path="/me" element={<MyMetricsContent />} />
 
     {/* Legacy routes remain available for backward compatibility.
       The sidebar link is controlled by showLegacyView. */}

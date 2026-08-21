@@ -31,6 +31,7 @@ import {
   UserBreakdownData,
 } from '../utils/reportParser';
 import { aggregateTeamMetrics } from '../utils/teamAggregator';
+import { buildUserBreakdownRows } from '../utils/userBreakdownRows';
 
 type IngestSource = 'scheduled' | 'backfill';
 
@@ -272,6 +273,20 @@ export class TaskManagementV2 {
     }
 
     await db.insertUserMetrics(userMetrics);
+
+    const breakdownRows = buildUserBreakdownRows(
+      userBreakdowns,
+      day,
+      metricsType,
+      entityId,
+    );
+    await db.insertUserMetricsByFeature(breakdownRows.byFeature);
+    await db.insertUserMetricsByIde(breakdownRows.byIde);
+    await db.insertUserMetricsByLanguageFeature(
+      breakdownRows.byLanguageFeature,
+    );
+    await db.insertUserMetricsByModelFeature(breakdownRows.byModelFeature);
+    await db.insertUserMetricsByLanguageModel(breakdownRows.byLanguageModel);
 
     return { loaded: true, userMetrics, userBreakdowns };
   }

@@ -26,7 +26,13 @@ import {
   V2MetricsByModelFeatureRow,
   V2MetricsByLanguageModelRow,
   V2PrMetricsRow,
+  V2UserDashboardData,
   V2UserMetricRow,
+  V2UserMetricsByFeatureRow,
+  V2UserMetricsByIdeRow,
+  V2UserMetricsByLanguageFeatureRow,
+  V2UserMetricsByModelFeatureRow,
+  V2UserMetricsByLanguageModelRow,
   V2UserTeamRow,
   MetricsScope,
 } from '@backstage-community/plugin-copilot-common';
@@ -209,6 +215,93 @@ export class DatabaseHandlerV2 {
       await this.db<V2UserTeamRow>('copilot_user_teams')
         .insert(chunk)
         .onConflict(['day', 'metrics_type', 'entity_id', 'user_id', 'team_id'])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByFeature(
+    rows: V2UserMetricsByFeatureRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByFeatureRow>(
+        'copilot_user_metrics_by_feature',
+      )
+        .insert(chunk)
+        .onConflict(['day', 'metrics_type', 'entity_id', 'user_id', 'feature'])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByIde(rows: V2UserMetricsByIdeRow[]): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByIdeRow>('copilot_user_metrics_by_ide')
+        .insert(chunk)
+        .onConflict(['day', 'metrics_type', 'entity_id', 'user_id', 'ide'])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByLanguageFeature(
+    rows: V2UserMetricsByLanguageFeatureRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByLanguageFeatureRow>(
+        'copilot_user_metrics_by_language_feature',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'user_id',
+          'language',
+          'feature',
+        ])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByModelFeature(
+    rows: V2UserMetricsByModelFeatureRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByModelFeatureRow>(
+        'copilot_user_metrics_by_model_feature',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'user_id',
+          'model_id',
+          'feature',
+        ])
+        .ignore();
+    });
+  }
+
+  async insertUserMetricsByLanguageModel(
+    rows: V2UserMetricsByLanguageModelRow[],
+  ): Promise<void> {
+    if (!rows.length) return;
+    await batchInsertInChunks(rows, 100, async chunk => {
+      await this.db<V2UserMetricsByLanguageModelRow>(
+        'copilot_user_metrics_by_language_model',
+      )
+        .insert(chunk)
+        .onConflict([
+          'day',
+          'metrics_type',
+          'entity_id',
+          'user_id',
+          'language',
+          'model_id',
+        ])
         .ignore();
     });
   }
@@ -484,6 +577,210 @@ export class DatabaseHandlerV2 {
       byModelFeature,
       byLanguageModel,
       prMetrics,
+    };
+  }
+
+  /**
+   * Fetch daily per-user metric rows for a single, specific user.
+   *
+   * `userLogin` is a required parameter (not optional) by design: there is
+   * intentionally no variant of this method that returns rows for more than
+   * one user, since this data backs privacy-scoped "my metrics" APIs that
+   * must never be able to return another user's data.
+   */
+  async getUserMetrics(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricRow[]> {
+    const rows = await this.db<V2UserMetricRow>('copilot_user_metrics')
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByFeature(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByFeatureRow[]> {
+    const rows = await this.db<V2UserMetricsByFeatureRow>(
+      'copilot_user_metrics_by_feature',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByIde(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByIdeRow[]> {
+    const rows = await this.db<V2UserMetricsByIdeRow>(
+      'copilot_user_metrics_by_ide',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByLanguageFeature(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByLanguageFeatureRow[]> {
+    const rows = await this.db<V2UserMetricsByLanguageFeatureRow>(
+      'copilot_user_metrics_by_language_feature',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByModelFeature(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByModelFeatureRow[]> {
+    const rows = await this.db<V2UserMetricsByModelFeatureRow>(
+      'copilot_user_metrics_by_model_feature',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  async getUserMetricsByLanguageModel(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserMetricsByLanguageModelRow[]> {
+    const rows = await this.db<V2UserMetricsByLanguageModelRow>(
+      'copilot_user_metrics_by_language_model',
+    )
+      .where('metrics_type', metricsType)
+      .where('entity_id', entityId)
+      .whereRaw('LOWER(user_login) = ?', [userLogin.toLowerCase()])
+      .whereBetween('day', [from, to])
+      .orderBy('day', 'asc')
+      .select('*');
+
+    return rows.map(row => ({
+      ...row,
+      day: this.normalizeRequiredDay(row.day),
+    }));
+  }
+
+  /**
+   * Fetch the full set of chart data needed to render an individual user's
+   * "my metrics" dashboard, scoped strictly to `userLogin`. Backs the
+   * `/v2/me/dashboard` endpoint, whose route handler resolves `userLogin`
+   * itself from the caller's own Backstage identity — this method has no
+   * knowledge of, and cannot be called with, an unauthenticated or
+   * arbitrary user identifier from client input.
+   */
+  async getUserDashboardData(
+    metricsType: MetricsScope,
+    entityId: string,
+    userLogin: string,
+    from: string,
+    to: string,
+  ): Promise<V2UserDashboardData> {
+    const [
+      daily,
+      byFeature,
+      byIde,
+      byLanguage,
+      byModelFeature,
+      byLanguageModel,
+    ] = await Promise.all([
+      this.getUserMetrics(metricsType, entityId, userLogin, from, to),
+      this.getUserMetricsByFeature(metricsType, entityId, userLogin, from, to),
+      this.getUserMetricsByIde(metricsType, entityId, userLogin, from, to),
+      this.getUserMetricsByLanguageFeature(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+      this.getUserMetricsByModelFeature(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+      this.getUserMetricsByLanguageModel(
+        metricsType,
+        entityId,
+        userLogin,
+        from,
+        to,
+      ),
+    ]);
+
+    return {
+      userLogin,
+      daily,
+      byFeature,
+      byIde,
+      byLanguage,
+      byModelFeature,
+      byLanguageModel,
     };
   }
 

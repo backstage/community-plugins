@@ -17,7 +17,13 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { createRouterFromConfig } from './service/router';
+import {
+  copilotUserResolverExtensionPoint,
+  CopilotUserResolver,
+  DefaultCopilotUserResolver,
+} from './userResolver';
 
 /**
  * Backend plugin for Copilot.
@@ -27,6 +33,17 @@ import { createRouterFromConfig } from './service/router';
 export const copilotPlugin = createBackendPlugin({
   pluginId: 'copilot',
   register(env) {
+    let userResolver: CopilotUserResolver | undefined;
+
+    env.registerExtensionPoint(copilotUserResolverExtensionPoint, {
+      setUserResolver(resolver) {
+        if (userResolver) {
+          throw new Error('The copilot user resolver has already been set');
+        }
+        userResolver = resolver;
+      },
+    });
+
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
@@ -34,14 +51,30 @@ export const copilotPlugin = createBackendPlugin({
         database: coreServices.database,
         scheduler: coreServices.scheduler,
         config: coreServices.rootConfig,
+        httpAuth: coreServices.httpAuth,
+        userInfo: coreServices.userInfo,
+        catalog: catalogServiceRef,
       },
-      async init({ httpRouter, logger, database, scheduler, config }) {
+      async init({
+        httpRouter,
+        logger,
+        database,
+        scheduler,
+        config,
+        httpAuth,
+        userInfo,
+        catalog,
+      }) {
         httpRouter.use(
           await createRouterFromConfig({
             logger,
             database,
             scheduler,
             config,
+            httpAuth,
+            userInfo,
+            catalog,
+            userResolver: userResolver ?? new DefaultCopilotUserResolver(),
           }),
         );
         httpRouter.addAuthPolicy({
