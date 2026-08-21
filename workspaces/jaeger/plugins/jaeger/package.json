@@ -5,9 +5,7 @@
   "types": "src/index.ts",
   "license": "Apache-2.0",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -21,6 +19,21 @@
       "@backstage-community/plugin-jaeger",
       "@backstage-community/plugin-jaeger-common"
     ]
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha/index.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "sideEffects": false,
   "scripts": {
@@ -38,6 +51,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
@@ -53,6 +67,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
