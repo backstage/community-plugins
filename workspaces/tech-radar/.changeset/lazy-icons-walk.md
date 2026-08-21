@@ -1,0 +1,9 @@
+---
+'@backstage-community/plugin-tech-radar': major
+---
+
+**BREAKING** Redesigned the Tech Radar. The same JSON source can be used. The plugin now relies on BUI instead of MUI.
+
+In order to update to it your Backstage installation should have [Backstage UI](https://ui.backstage.io/) set up.
+
+**BREAKING** The deprecated `Router` export has been removed. Use `TechRadarPage` instead.
