@@ -1,0 +1,72 @@
+{
+  "name": "@internal/entity-patch",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20 || 22"
+  },
+  "scripts": {
+    "start": "backstage-cli repo start",
+    "test:e2e": "playwright test",
+    "test:e2e-ui": "playwright test --ui",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "build:all": "backstage-cli repo build --all",
+    "build:api-reports": "yarn build:api-reports:only --tsc",
+    "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented --validate-release-tags",
+    "build:knip-reports": "backstage-repo-tools knip-reports",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "new": "backstage-cli new --scope @backstage-community",
+    "postinstall": "cd ../../ && yarn install"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/entity-patch"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
+    "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
+    "@changesets/cli": "^2.31.0",
+    "@jest/environment-jsdom-abstract": "^30.3.0",
+    "@playwright/test": "^1.59.1",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.3.0",
+    "jsdom": "^27.4.0",
+    "knip": "^5.88.1",
+    "node-gyp": "^10.3.1",
+    "playwright-core": "^1.59.1",
+    "prettier": "^3.8.3",
+    "typescript": "~5.8.3"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "prettier": "@backstage/cli/config/prettier",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "yarn@4.13.0"
+}
