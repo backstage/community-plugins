@@ -2,4 +2,4 @@
 '@backstage-community/plugin-acr': patch
 ---
 
-Add tests for the new frontend system wiring: the entity content's title, route path and entity filter, and that the plugin registers both extensions. Test-only; no runtime change.
+Added tests covering the plugin's new frontend system entity content. No change in behaviour.
