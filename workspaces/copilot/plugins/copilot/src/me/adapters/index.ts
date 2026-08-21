@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * Backend functionalities for the copilot plugin.
- *
- * @packageDocumentation
- */
-
-export * from './service/router';
 export {
-  copilotUserResolverExtensionPoint,
-  DefaultCopilotUserResolver,
-} from './userResolver';
-export type {
-  CopilotUserResolver,
-  CopilotUserResolverContext,
-  CopilotUserResolverExtensionPoint,
-  CopilotUserResolverServices,
-} from './userResolver';
-export { copilotPlugin as default } from './plugin';
+  toDailyTotals,
+  toFeatureRows,
+  toIdeRows,
+  toLanguageFeatureRows,
+  toModelFeatureRows,
+  toLanguageModelRows,
+} from './toTeamShapedRows';
