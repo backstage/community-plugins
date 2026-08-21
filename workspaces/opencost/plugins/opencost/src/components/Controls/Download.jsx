@@ -15,9 +15,9 @@
  */
 import { memo } from 'react';
 import { get, forEach, reverse, round, sortBy } from 'lodash';
-import ExportIcon from '@material-ui/icons/GetApp';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { ButtonIcon, Tooltip } from '@backstage/ui';
+import { TooltipTrigger } from 'react-aria-components';
+import { RiDownloadLine } from '@remixicon/react';
 
 const columns = [
   {
@@ -99,11 +99,15 @@ const DownloadControl = ({ cumulativeData, title }) => {
   }
 
   return (
-    <Tooltip title="Download CSV">
-      <IconButton onClick={downloadReport}>
-        <ExportIcon />
-      </IconButton>
-    </Tooltip>
+    <TooltipTrigger>
+      <ButtonIcon
+        aria-label="Download CSV"
+        onPress={downloadReport}
+        icon={<RiDownloadLine size={20} />}
+        variant="secondary"
+      />
+      <Tooltip>Download CSV</Tooltip>
+    </TooltipTrigger>
   );
 };
 

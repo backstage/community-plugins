@@ -16,22 +16,12 @@
 
 import { memo, useEffect, useState } from 'react';
 import { forEach, get, reverse, round, sortBy } from 'lodash';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ClusterIcon from '@material-ui/icons/GroupWork';
-import NodeIcon from '@material-ui/icons/Memory';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { Skeleton, Text } from '@backstage/ui';
+import { RiServerLine, RiCpuLine } from '@remixicon/react';
 import Warnings from './Warnings';
 import AllocationService from '../services/allocation';
 import { bytesToString, toCurrency } from '../util';
+import styles from './Details.module.css';
 
 const Details = ({
   window,
@@ -178,9 +168,11 @@ const Details = ({
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <div style={{ paddingTop: 100, paddingBottom: 100 }}>
-          <CircularProgress />
+      <div className={styles.loadingContainer}>
+        <div className={styles.skeletonWrapper}>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
         </div>
       </div>
     );
@@ -194,92 +186,68 @@ const Details = ({
         </div>
       )}
 
-      <List>
+      <ul className={styles.list}>
         {cluster && (
-          <ListItem>
-            <ListItemIcon>
-              <ClusterIcon />
-            </ListItemIcon>
-            <ListItemText primary={cluster} />
-          </ListItem>
+          <li className={styles.listItem}>
+            <div className={styles.listItemIcon}>
+              <RiServerLine size={20} />
+            </div>
+            <Text>{cluster}</Text>
+          </li>
         )}
         {node && (
-          <ListItem>
-            <ListItemIcon>
-              <NodeIcon />
-            </ListItemIcon>
-            <ListItemText primary={node} />
-          </ListItem>
+          <li className={styles.listItem}>
+            <div className={styles.listItemIcon}>
+              <RiCpuLine size={20} />
+            </div>
+            <Text>{node}</Text>
+          </li>
         )}
-      </List>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="left" component="th" scope="row" width={200}>
-                Container
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                Hours
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                CPU
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                $/(CPU*Hr)
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                CPU cost
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                RAM
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                $/(GiB*Hr)
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                RAM cost
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                Total cost
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      </ul>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th style={{ width: 200, textAlign: 'left' }}>Container</th>
+              <th style={{ textAlign: 'right' }}>Hours</th>
+              <th style={{ textAlign: 'right' }}>CPU</th>
+              <th style={{ textAlign: 'right' }}>$/(CPU*Hr)</th>
+              <th style={{ textAlign: 'right' }}>CPU cost</th>
+              <th style={{ textAlign: 'right' }}>RAM</th>
+              <th style={{ textAlign: 'right' }}>$/(GiB*Hr)</th>
+              <th style={{ textAlign: 'right' }}>RAM cost</th>
+              <th style={{ textAlign: 'right' }}>Total cost</th>
+            </tr>
+          </thead>
+          <tbody>
             {rows.map((row, i) => (
-              <TableRow key={i} hover>
-                <TableCell align="left" component="th" scope="row" width={200}>
+              <tr key={i}>
+                <td style={{ width: 200, textAlign: 'left' }}>
                   {row.container}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {row.hours}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {row.cpu}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                </td>
+                <td style={{ textAlign: 'right' }}>{row.hours}</td>
+                <td style={{ textAlign: 'right' }}>{row.cpu}</td>
+                <td style={{ textAlign: 'right' }}>
                   {toCurrency(row.cpuCostPerCoreHr, currency, 5)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                </td>
+                <td style={{ textAlign: 'right' }}>
                   {toCurrency(row.cpuCost, currency, 3)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {bytesToString(row.ram)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                </td>
+                <td style={{ textAlign: 'right' }}>{bytesToString(row.ram)}</td>
+                <td style={{ textAlign: 'right' }}>
                   {toCurrency(row.ramCostPerGiBHr, currency, 5)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                </td>
+                <td style={{ textAlign: 'right' }}>
                   {toCurrency(row.ramCost, currency, 3)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
+                </td>
+                <td style={{ textAlign: 'right' }}>
                   {toCurrency(row.totalCost, currency, 3)}
-                </TableCell>
-              </TableRow>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

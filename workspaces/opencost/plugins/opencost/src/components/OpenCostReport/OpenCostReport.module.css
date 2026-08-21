@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,29 @@
  * limitations under the License.
  */
 
-import styles from './Page.module.css';
+@layer components {
+  .reportHeader {
+    display: flex;
+    flex-flow: row;
+    padding: var(--bui-space-6);
+    align-items: flex-start;
+  }
 
-const Page = props => {
-  return (
-    <div className={styles.flexGrow}>
-      <div className={styles.wrapper}>
-        <div className={styles.flexGrow}>{props.children}</div>
-      </div>
-    </div>
-  );
-};
+  .titles {
+    flex-grow: 1;
+  }
 
-export default Page;
+  .loadingContainer {
+    display: flex;
+    justify-content: center;
+    padding: 100px var(--bui-space-6);
+  }
+
+  .skeletonWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-3);
+    width: 100%;
+    max-width: 600px;
+  }
+}

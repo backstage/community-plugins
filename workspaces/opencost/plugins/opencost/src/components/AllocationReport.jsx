@@ -18,28 +18,14 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-import * as React from 'react';
 import { get, round } from 'lodash';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
+import { Button, Text } from '@backstage/ui';
+import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
 import AllocationChart from './AllocationChart';
 import { toCurrency } from '../util';
-
-const useStyles = makeStyles({
-  noResults: {
-    padding: 24,
-  },
-});
+import styles from './AllocationReport.module.css';
 
 function descendingComparator(a, b, orderBy) {
   if (get(b, orderBy) < get(a, orderBy)) {
@@ -82,13 +68,11 @@ const AllocationReport = ({
   totalData,
   currency,
 }) => {
-  const classes = useStyles();
-
   if (allocationData.length === 0) {
     return (
-      <Typography variant="body2" className={classes.noResults}>
+      <Text variant="body-small" className={styles.noResults}>
         No results
-      </Typography>
+      </Text>
     );
   }
 
@@ -104,21 +88,20 @@ const AllocationReport = ({
 
   const lastPage = Math.floor(numData / rowsPerPage);
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangePage = newPage => setPage(newPage);
 
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const handleRequestSort = (event, property) => {
+  const handleRequestSort = property => {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
     setOrderBy(property);
   };
 
-  const createSortHandler = property => event =>
-    handleRequestSort(event, property);
+  const createSortHandler = property => () => handleRequestSort(property);
 
   const orderedRows = stableSort(cumulativeData, getComparator(order, orderBy));
   const pageRows = orderedRows.slice(
@@ -134,38 +117,46 @@ const AllocationReport = ({
         n={10}
         height={300}
       />
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
               {headCells.map(cell => (
-                <TableCell
+                <th
                   key={cell.id}
-                  colSpan={cell.colspan}
-                  align={cell.numeric ? 'right' : 'left'}
-                  sortDirection={orderBy === cell.id ? order : false}
-                  style={{ width: cell.width }}
+                  style={{
+                    width: cell.width,
+                    textAlign: cell.numeric ? 'right' : 'left',
+                  }}
                 >
-                  <TableSortLabel
-                    active={orderBy === cell.id}
-                    direction={orderBy === cell.id ? order : 'asc'}
-                    onClick={createSortHandler(cell.id)}
+                  <Button
+                    className={styles.sortButton}
+                    onPress={createSortHandler(cell.id)}
+                    style={{
+                      justifyContent: cell.numeric ? 'flex-end' : 'flex-start',
+                      width: '100%',
+                    }}
                   >
                     {cell.label}
-                  </TableSortLabel>
-                </TableCell>
+                    {orderBy === cell.id ? (
+                      order === 'desc' ? (
+                        <RiArrowDownSLine size={16} />
+                      ) : (
+                        <RiArrowUpSLine size={16} />
+                      )
+                    ) : null}
+                  </Button>
+                </th>
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className={styles.summaryRow}>
               {headCells.map(cell => {
                 return (
-                  <TableCell
+                  <td
                     key={cell.id}
-                    colSpan={cell.colspan}
-                    align={cell.numeric ? 'right' : 'left'}
-                    style={{ fontWeight: 500 }}
+                    style={{ textAlign: cell.numeric ? 'right' : 'left' }}
                   >
                     {cell.numeric
                       ? cell.label === 'Efficiency'
@@ -176,10 +167,10 @@ const AllocationReport = ({
                           : `${round(totalData.totalEfficiency * 100, 1)}%`
                         : toCurrency(totalData[cell.id], currency)
                       : totalData[cell.id]}
-                  </TableCell>
+                  </td>
                 );
               })}
-            </TableRow>
+            </tr>
             {pageRows.map((row, key) => {
               if (row.name === '__unmounted__') {
                 row.name = 'Unmounted PVs';
@@ -202,62 +193,86 @@ const AllocationReport = ({
               // Do not allow drill-down for idle and unallocated rows
               if (isIdle || isUnallocated || isUnmounted) {
                 return (
-                  <TableRow key={key}>
-                    <TableCell align="left">{row.name}</TableCell>
-                    <TableCell align="right">
+                  <tr key={key}>
+                    <td style={{ textAlign: 'left' }}>{row.name}</td>
+                    <td style={{ textAlign: 'right' }}>
                       {toCurrency(row.cpuCost, currency)}
-                    </TableCell>
-                    <TableCell align="right">
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
                       {toCurrency(row.ramCost, currency)}
-                    </TableCell>
-                    <TableCell align="right">
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
                       {toCurrency(row.pvCost, currency)}
-                    </TableCell>
+                    </td>
                     {isIdle ? (
-                      <TableCell align="right">&mdash;</TableCell>
+                      <td style={{ textAlign: 'right' }}>&mdash;</td>
                     ) : (
-                      <TableCell align="right">{efficiency}%</TableCell>
+                      <td style={{ textAlign: 'right' }}>{efficiency}%</td>
                     )}
-                    <TableCell align="right">
+                    <td style={{ textAlign: 'right' }}>
                       {toCurrency(row.totalCost, currency)}
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 );
               }
 
               return (
-                <TableRow key={key}>
-                  <TableCell align="left">{row.name}</TableCell>
-                  <TableCell align="right">
+                <tr key={key}>
+                  <td style={{ textAlign: 'left' }}>{row.name}</td>
+                  <td style={{ textAlign: 'right' }}>
                     {toCurrency(row.cpuCost, currency)}
-                  </TableCell>
-                  <TableCell align="right">
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
                     {toCurrency(row.ramCost, currency)}
-                  </TableCell>
-                  <TableCell align="right">
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
                     {toCurrency(row.pvCost, currency)}
-                  </TableCell>
-                  <TableCell align="right">{efficiency}%</TableCell>
-                  <TableCell align="right">
+                  </td>
+                  <td style={{ textAlign: 'right' }}>{efficiency}%</td>
+                  <td style={{ textAlign: 'right' }}>
                     {toCurrency(row.totalCost, currency)}
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               );
             })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        component="div"
-        count={numData}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[10, 25, 50]}
-        page={Math.min(page, lastPage)}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+          </tbody>
+        </table>
+      </div>
+      <div className={styles.pagination}>
+        <Text variant="body-small">Rows per page:</Text>
+        <select
+          className={styles.paginationSelect}
+          value={rowsPerPage}
+          onChange={handleChangeRowsPerPage}
+        >
+          {[10, 25, 50].map(n => (
+            <option key={n} value={n}>
+              {n}
+            </option>
+          ))}
+        </select>
+        <Text variant="body-small">
+          {Math.min(page, lastPage) * rowsPerPage + 1}–
+          {Math.min((Math.min(page, lastPage) + 1) * rowsPerPage, numData)} of{' '}
+          {numData}
+        </Text>
+        <Button
+          className={styles.paginationButton}
+          isDisabled={page === 0}
+          onPress={() => handleChangePage(Math.max(0, page - 1))}
+        >
+          {'<'}
+        </Button>
+        <Button
+          className={styles.paginationButton}
+          isDisabled={page >= lastPage}
+          onPress={() => handleChangePage(Math.min(lastPage, page + 1))}
+        >
+          {'>'}
+        </Button>
+      </div>
     </div>
   );
 };
 
-export default React.memo(AllocationReport);
+export default memo(AllocationReport);

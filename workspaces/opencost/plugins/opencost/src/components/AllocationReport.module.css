@@ -1,0 +1,107 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .noResults {
+    padding: var(--bui-space-6);
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--bui-font-size-2);
+  }
+
+  .table th {
+    padding: var(--bui-space-2) var(--bui-space-3);
+    border-bottom: 2px solid var(--bui-border);
+    white-space: nowrap;
+  }
+
+  .table td {
+    padding: var(--bui-space-2) var(--bui-space-3);
+    border-bottom: 1px solid var(--bui-border);
+  }
+
+  .table tr:hover td {
+    background-color: var(--bui-bg-hover);
+  }
+
+  .sortButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bui-space-1);
+    font-size: var(--bui-font-size-2);
+    font-weight: var(--bui-font-weight-bold);
+    color: var(--bui-fg-primary);
+    padding: 0;
+  }
+
+  .sortButton:hover {
+    color: var(--bui-fg-link);
+  }
+
+  .summaryRow td {
+    font-weight: var(--bui-font-weight-bold);
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--bui-space-2);
+    padding: var(--bui-space-2) var(--bui-space-3);
+    border-top: 1px solid var(--bui-border);
+    font-size: var(--bui-font-size-2);
+    color: var(--bui-fg-secondary);
+  }
+
+  .paginationSelect {
+    padding: var(--bui-space-1) var(--bui-space-2);
+    border: 1px solid var(--bui-border);
+    border-radius: var(--bui-radius-2);
+    background-color: var(--bui-bg-surface-1);
+    color: var(--bui-fg-primary);
+    font-size: var(--bui-font-size-2);
+    cursor: pointer;
+  }
+
+  .paginationButton {
+    padding: var(--bui-space-1) var(--bui-space-3);
+    border: 1px solid var(--bui-border);
+    border-radius: var(--bui-radius-2);
+    background-color: var(--bui-bg-surface-1);
+    color: var(--bui-fg-primary);
+    font-size: var(--bui-font-size-2);
+    cursor: pointer;
+  }
+
+  .paginationButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .paginationButton:hover:not(:disabled) {
+    background-color: var(--bui-bg-hover);
+  }
+}
