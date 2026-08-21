@@ -20,7 +20,7 @@ import type {
 } from '@backstage/backend-plugin-api';
 import { InputError } from '@backstage/errors';
 
-import yaml from 'js-yaml';
+import { loadAll } from 'js-yaml';
 import { omit } from 'lodash';
 
 import type {
@@ -197,7 +197,7 @@ export class YamlConditionalPoliciesFileWatcher extends AbstractFileWatcher<
 
     const parsedDocuments: RoleConditionalPolicyDecision<PermissionAction>[] =
       [];
-    yaml.loadAll(fileContents, doc => {
+    loadAll(fileContents, doc => {
       if (doc === null) {
         return;
       }
