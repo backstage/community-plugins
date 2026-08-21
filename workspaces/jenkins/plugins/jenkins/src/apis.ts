@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 import {
-  ScmIntegrationsApi,
-  scmIntegrationsApiRef,
-  ScmAuth,
-} from '@backstage/integration-react';
-import {
-  AnyApiFactory,
-  configApiRef,
-  createApiFactory,
-} from '@backstage/core-plugin-api';
+  ApiBlueprint,
+  discoveryApiRef,
+  fetchApiRef,
+} from '@backstage/frontend-plugin-api';
+import { jenkinsApiRef, JenkinsClient } from './api';
 
-export const apis: AnyApiFactory[] = [
-  createApiFactory({
-    api: scmIntegrationsApiRef,
-    deps: { configApi: configApiRef },
-    factory: ({ configApi }) => ScmIntegrationsApi.fromConfig(configApi),
-  }),
-  ScmAuth.createDefaultApiFactory(),
-];
+/**
+ * @public
+ */
+export const jenkinsApi = ApiBlueprint.make({
+  name: 'jenkins',
+  params: defineParams =>
+    defineParams({
+      api: jenkinsApiRef,
+      deps: {
+        discoveryApi: discoveryApiRef,
+        fetchApi: fetchApiRef,
+      },
+      factory: ({ discoveryApi, fetchApi }) =>
+        new JenkinsClient({ discoveryApi, fetchApi }),
+    }),
+});
