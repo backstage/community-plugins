@@ -1,0 +1,58 @@
+{
+  "name": "@backstage-community/plugin-pointing-poker-jira",
+  "version": "0.1.0",
+  "description": "Jira ticket provider module for the Pointing Poker Backstage plugin",
+  "backstage": {
+    "role": "backend-plugin-module",
+    "pluginId": "pointing-poker",
+    "pluginPackages": [
+      "@backstage-community/plugin-pointing-poker",
+      "@backstage-community/plugin-pointing-poker-backend",
+      "@backstage-community/plugin-pointing-poker-common",
+      "@backstage-community/plugin-pointing-poker-jira"
+    ],
+    "pluginPackage": "@backstage-community/plugin-pointing-poker-backend"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/pointing-poker/plugins/pointing-poker-jira"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-pointing-poker-backend": "workspace:^",
+    "@backstage-community/plugin-pointing-poker-common": "workspace:^",
+    "@backstage/backend-plugin-api": "backstage:^",
+    "@backstage/config": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "@backstage/backend-defaults": "backstage:^",
+    "@backstage/backend-test-utils": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@types/node-fetch": "^2.5.12"
+  },
+  "configSchema": "config.d.ts"
+}

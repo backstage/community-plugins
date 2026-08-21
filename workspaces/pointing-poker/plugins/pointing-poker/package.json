@@ -1,0 +1,87 @@
+{
+  "name": "@backstage-community/plugin-pointing-poker",
+  "version": "0.1.0",
+  "description": "A Backstage plugin for planning poker / story point estimation",
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "pointing-poker",
+    "pluginPackages": [
+      "@backstage-community/plugin-pointing-poker",
+      "@backstage-community/plugin-pointing-poker-backend",
+      "@backstage-community/plugin-pointing-poker-common"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "keywords": [
+    "backstage",
+    "pointing-poker",
+    "planning-poker",
+    "scrum",
+    "estimation"
+  ],
+  "homepage": "https://backstage.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/pointing-poker/plugins/pointing-poker"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "backstage-cli package build",
+    "clean": "backstage-cli package clean",
+    "lint": "backstage-cli package lint",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack",
+    "start": "backstage-cli package start",
+    "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage-community/plugin-pointing-poker-common": "workspace:^",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/errors": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/ui": "^0.17.0",
+    "@dicebear/collection": "^9.4.3",
+    "@dicebear/core": "^9.4.3",
+    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "lucide-react": "^0.577.0",
+    "react-use": "^17.2.4"
+  },
+  "devDependencies": {
+    "@backstage/cli": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^15.0.0",
+    "@types/react-dom": "^18.2.19",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+  }
+}
