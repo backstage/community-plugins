@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { createPermissionRule } from '@backstage/plugin-permission-node';
-import { z as zod3 } from 'zod/v3';
 import { z as zod4 } from 'zod/v4';
 
 import { permissionMetadataResourceRef } from './resource';
@@ -45,8 +44,8 @@ const isOwner = createPermissionRule({
   description:
     'Should allow access to RBAC roles and Permissions through ownership',
   resourceRef: permissionMetadataResourceRef,
-  paramsSchema: zod3.object({
-    owners: zod3
+  paramsSchema: zod4.object({
+    owners: zod4
       .string()
       .array()
       .describe('List of entity refs to match against'),
