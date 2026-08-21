@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-import { useEffect } from 'react';
-import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
-import { WorkflowRunsTable } from '../WorkflowRunsTable';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { makeStyles } from '@material-ui/core/styles';
-import ExternalLinkIcon from '@material-ui/icons/Launch';
-import { CLOUDBUILD_ANNOTATION } from '../useProjectName';
-import { getLocation } from '../useLocation';
-import { getCloudbuildFilter } from '../useCloudBuildFilter';
-
 import {
-  InfoCard,
   Link,
+  Progress,
   StructuredMetadataTable,
-  WarningPanel,
 } from '@backstage/core-components';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles({
-  externalLinkIcon: {
-    fontSize: 'inherit',
-    verticalAlign: 'bottom',
-  },
-});
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
+import { useEffect } from 'react';
+import { getCloudbuildFilter } from '../useCloudBuildFilter';
+import { getLocation } from '../useLocation';
+import { CLOUDBUILD_ANNOTATION } from '../useProjectName';
+import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
+import { WorkflowRunsTable } from '../WorkflowRunsTable';
+import { WorkflowRunStatus } from '../WorkflowRunStatus';
+import styles from './Cards.module.css';
 
 const WidgetContent = ({
   error,
@@ -52,23 +43,23 @@ const WidgetContent = ({
   lastRun: WorkflowRun;
   branch: string;
 }) => {
-  const classes = useStyles();
-  if (error)
-    return <WarningPanel>Couldn't fetch latest {branch} run</WarningPanel>;
-  if (loading) return <LinearProgress />;
+  if (error) {
+    return <Text color="danger">Couldn't fetch latest {branch} run</Text>;
+  }
+  if (loading) return <Progress />;
   return (
     <StructuredMetadataTable
       metadata={{
         status: (
-          <>
+          <Flex>
             <WorkflowRunStatus status={lastRun.status} />
-          </>
+          </Flex>
         ),
         message: lastRun.message,
         url: (
           <Link to={lastRun.googleUrl ?? ''}>
             See more on Google{' '}
-            <ExternalLinkIcon className={classes.externalLinkIcon} />
+            <RiExternalLinkLine size={14} className={styles.externalLinkIcon} />
           </Link>
         ),
       }}
@@ -81,7 +72,7 @@ export const LatestWorkflowRunCard = (props: { branch: string }) => {
   const { branch = 'master' } = props;
   const { entity } = useEntity();
   const errorApi = useApi(errorApiRef);
-  const projectId = entity?.metadata.annotations?.[CLOUDBUILD_ANNOTATION] || '';
+  const projectId = entity.metadata.annotations?.[CLOUDBUILD_ANNOTATION] || '';
   const location = getLocation(entity);
   const cloudBuildFilter = getCloudbuildFilter(entity);
 
@@ -98,25 +89,29 @@ export const LatestWorkflowRunCard = (props: { branch: string }) => {
   }, [error, errorApi]);
 
   return (
-    <InfoCard title={`Last ${branch} build`}>
-      <WidgetContent
-        error={error}
-        loading={loading}
-        branch={branch}
-        lastRun={lastRun}
-      />
-    </InfoCard>
+    <Card>
+      <CardHeader>
+        <Text variant="title-medium">Last {branch} build</Text>
+      </CardHeader>
+      <CardBody>
+        <WidgetContent
+          error={error}
+          loading={loading}
+          branch={branch}
+          lastRun={lastRun}
+        />
+      </CardBody>
+    </Card>
   );
 };
 
 /** @public */
 export const LatestWorkflowsForBranchCard = (props: { branch: string }) => {
-  const { branch = 'master' } = props;
   const { entity } = useEntity();
-
   return (
-    <InfoCard title={`Last ${branch} build`}>
-      <WorkflowRunsTable entity={entity} />
-    </InfoCard>
+    <WorkflowRunsTable
+      entity={entity}
+      title={`Recent ${props.branch} builds`}
+    />
   );
 };
