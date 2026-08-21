@@ -126,6 +126,12 @@
 - Updated dependencies [6a916a1]
   - @backstage-community/plugin-rbac-common@1.27.0
 
+## 1.52.5
+
+### Patch Changes
+
+a23cb21: Improve role page performance by replacing bulk member loading with server-side search and fetching only the members assigned to a role.
+
 ## 1.52.4
 
 ### Patch Changes
