@@ -32670,7 +32670,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:7.28.0, undici@npm:^7.16.0, undici@npm:^7.2.3, undici@npm:^7.24.0, undici@npm:^7.24.2, undici@npm:^7.24.5":
+"undici@npm:7.28.0":
   version: 7.28.0
   resolution: "undici@npm:7.28.0"
   checksum: 10/154423b280d623278a61decb437f8a7e581fb18b8c95556ef956b32a58cd668eadbb812d28e20678cb2dc545a566f35a3afc0962307ca801da30f4741117986d
@@ -32683,6 +32683,13 @@ __metadata:
   dependencies:
     "@fastify/busboy": "npm:^2.0.0"
   checksum: 10/0ceca8924a32acdcc0cfb8dd2d368c217840970aa3f5e314fc169608474be6341c5b8e50cad7bd257dbe3b4e432bc5d0a0d000f83644b54fa11a48735ec52b93
+  languageName: node
+  linkType: hard
+
+"undici@npm:^7.16.0, undici@npm:^7.2.3, undici@npm:^7.24.0, undici@npm:^7.24.2, undici@npm:^7.24.5":
+  version: 7.29.0
+  resolution: "undici@npm:7.29.0"
+  checksum: 10/ca73639071bdcbc41e57be1800847fa18f86f8fbf7a5641ff9899f7bbb6f5cecdd593e225f5fd94e31703dcbfaea4a722a3b81cab90c5c4e2b406aec1ae55732
   languageName: node
   linkType: hard
 
