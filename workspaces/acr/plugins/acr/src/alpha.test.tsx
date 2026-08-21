@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,85 +15,76 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import { coreExtensionData } from '@backstage/frontend-plugin-api';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
+import {
+  createExtensionTester,
+  renderInTestApp,
+} from '@backstage/frontend-test-utils';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { screen } from '@testing-library/react';
 
+import { AzureContainerRegistryApiRef } from './api';
+import { mockAcrTagsData } from './__fixtures__/acrTagsObject';
 import { mockEntity } from './__fixtures__/mockEntity';
 import nfsPlugin, { acrImagesEntityContent } from './alpha';
+import { TagsResponse } from './types';
 
-/**
- * These assert the plugin's *wiring* under the new frontend system: the title the
- * catalog will print on the tab, the path it mounts at, and the entities it shows
- * for. Under the new frontend system those are declared by the extension rather
- * than configured by the app, so an end-to-end test that clicks the tab is really
- * checking these three facts through a browser and a deployment.
- *
- * Rendering is covered a layer down by AcrImagesEntityContent.test.tsx; the only
- * render here is through the extension itself, which is the part that test cannot
- * reach.
- */
+/** The fixture carries ISO strings where the API returns Dates. */
+const tagsResponse: TagsResponse = {
+  imageName: mockAcrTagsData.imageName,
+  registry: mockAcrTagsData.registry,
+  tags: mockAcrTagsData.tags.map(tag => ({
+    ...tag,
+    createdTime: new Date(tag.createdTime),
+    lastUpdateTime: new Date(tag.lastUpdateTime),
+  })),
+};
+
 describe('alpha (new frontend system)', () => {
-  it('declares the tab title the catalog will render', () => {
+  it('declares the tab the catalog renders, and which entities get it', () => {
     const tester = createExtensionTester(acrImagesEntityContent);
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe(
       'ACR images',
     );
-  });
-
-  it('declares the path the tab mounts at', () => {
-    const tester = createExtensionTester(acrImagesEntityContent);
-
     expect(tester.get(coreExtensionData.routePath)).toBe('acr-images');
-  });
 
-  describe('the filter that decides which entities show the tab', () => {
-    const filter = () => {
-      const fn = createExtensionTester(acrImagesEntityContent).get(
-        EntityContentBlueprint.dataRefs.filterFunction,
-      );
-      // The blueprint makes this output optional, and an extension without it
-      // shows the tab on every entity in the catalog — so its absence is a
-      // defect rather than a variant, and worth failing on by name.
-      if (!fn)
-        throw new Error('acrImagesEntityContent declares no entity filter');
-      return fn;
+    const filter = tester.get(EntityContentBlueprint.dataRefs.filterFunction);
+    if (!filter) throw new Error('the entity content declares no filter');
+    const withoutAnnotation: Entity = {
+      ...mockEntity,
+      metadata: { ...mockEntity.metadata, annotations: {} },
     };
-
-    it('shows the tab for an entity annotated with a repository name', () => {
-      expect(filter()(mockEntity)).toBe(true);
-    });
-
-    it('hides the tab for an entity with no ACR annotation', () => {
-      const withoutAnnotation: Entity = {
-        ...mockEntity,
-        metadata: { ...mockEntity.metadata, annotations: {} },
-      };
-
-      expect(filter()(withoutAnnotation)).toBe(false);
-    });
+    expect(filter(mockEntity)).toBe(true);
+    expect(filter(withoutAnnotation)).toBe(false);
   });
 
-  /**
-   * Not optional, and not covered by any assertion above.
-   *
-   * `createExtensionTester` instantiates an extension in isolation, so it cannot
-   * see whether the plugin actually registers it. Deleting `acrImagesEntityContent`
-   * from the plugin's `extensions` array leaves every test above green while the
-   * tab disappears from a real app — and because a plugin that contributes nothing
-   * still boots cleanly, nothing else would report it either.
-   */
-  describe('registration', () => {
-    it('registers the entity content and the API on the plugin', () => {
-      expect(
-        nfsPlugin.getExtension('entity-content:acr/acrImagesEntityContent'),
-      ).toBeDefined();
-      expect(nfsPlugin.getExtension('api:acr/acrApi')).toBeDefined();
-    });
+  it('is registered by the plugin under the id the app resolves', () => {
+    // Not covered by anything else here: createExtensionTester instantiates an
+    // extension in isolation, so removing it from the plugin's `extensions`
+    // leaves every other assertion in this file green while the tab disappears.
+    expect(
+      nfsPlugin.getExtension('entity-content:acr/acrImagesEntityContent'),
+    ).toBeDefined();
+    expect(nfsPlugin.getExtension('api:acr/acrApi')).toBeDefined();
+  });
 
-    it('is a frontend plugin the app can install, under the expected id', () => {
-      expect(nfsPlugin.$$type).toBe('@backstage/FrontendPlugin');
-      expect(nfsPlugin.pluginId).toBe('acr');
-    });
+  it('renders the registry through the extension', async () => {
+    // Through the blueprint's own loader, which the component's own test cannot
+    // reach — renaming the component leaves the assertions above green.
+    renderInTestApp(
+      <EntityProvider entity={mockEntity}>
+        {createExtensionTester(acrImagesEntityContent).reactElement()}
+      </EntityProvider>,
+      {
+        apis: [
+          [AzureContainerRegistryApiRef, { getTags: async () => tagsResponse }],
+        ],
+      },
+    );
+
+    expect(
+      await screen.findByText(tagsResponse.tags[0].name),
+    ).toBeInTheDocument();
   });
 });
