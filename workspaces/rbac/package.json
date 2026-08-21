@@ -6,7 +6,7 @@
     "node": "22 || 24"
   },
   "scripts": {
-    "start": "backstage-cli repo start",
+    "start": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start",
     "start:multi-user": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start:multi-user",
     "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-rbac --include @backstage-community/plugin-rbac-backend --parallel -v -i run start:legacy",
     "tsc": "tsc",
@@ -26,7 +26,6 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },
