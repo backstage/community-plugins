@@ -17,9 +17,14 @@ import { Link } from '@backstage/core-components';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutline from '@mui/icons-material/HelpOutline';
 
-export const MaturityHelp = () => (
-  <Tooltip title="Click here to learn more about Maturity!">
-    <Link to="https://github.com/backstage/community-plugins/blob/main/workspaces/tech-insights/plugins/tech-insights-maturity/README.md">
+type Props = {
+  url: string;
+  tooltip: string;
+};
+
+export const MaturityHelp = ({ url, tooltip }: Props) => (
+  <Tooltip title={tooltip}>
+    <Link to={url}>
       <HelpOutline color="info" style={{ paddingLeft: '0.2rem' }} />
     </Link>
   </Tooltip>
