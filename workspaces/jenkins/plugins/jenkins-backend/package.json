@@ -36,6 +36,7 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start",
     "test": "backstage-cli package test"
   },
   "dependencies": {
@@ -55,6 +56,11 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
+    "@backstage/plugin-auth-backend": "backstage:^",
+    "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
+    "@backstage/plugin-catalog-backend": "backstage:^",
+    "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "backstage:^",
+    "@backstage/plugin-permission-backend": "backstage:^",
     "@types/node-fetch": "^2.5.12"
   },
   "configSchema": "config.d.ts"
