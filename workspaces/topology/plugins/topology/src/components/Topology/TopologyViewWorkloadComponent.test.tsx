@@ -61,7 +61,9 @@ jest.mock('@patternfly/react-topology', () => ({
   createTopologyControlButtons: () => {},
   observer: (a: FC) => a,
   VisualizationSurface: () => <div>VisualizationSurface</div>,
-  TopologyView: () => <div>TopologyView</div>,
+  TopologyView: ({ className }: { className?: string }) => (
+    <div className={className}>TopologyView</div>
+  ),
 }));
 
 describe('TopologyViewWorkloadComponent', () => {
@@ -104,6 +106,7 @@ describe('TopologyViewWorkloadComponent', () => {
       </K8sResourcesContext.Provider>,
     );
     expect(getByText(/topologyview/i)).not.toBeNull();
+    expect(getByText(/topologyview/i)).toHaveClass('bs-topology-view');
   });
 
   it('should not render TopologyView when data is available, loading is false, but user is not allowed', () => {
