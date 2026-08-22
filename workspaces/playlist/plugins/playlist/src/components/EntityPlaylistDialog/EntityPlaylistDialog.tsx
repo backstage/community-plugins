@@ -15,6 +15,11 @@
  */
 
 import {
+  permissions,
+  Playlist,
+  PlaylistMetadata,
+} from '@backstage-community/plugin-playlist-common';
+import {
   Entity,
   parseEntityRef,
   stringifyEntityRef,
@@ -22,15 +27,10 @@ import {
 import { ResponseErrorPanel } from '@backstage/core-components';
 import { alertApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import {
-  useAsyncEntity,
   EntityDisplayName,
+  useAsyncEntity,
 } from '@backstage/plugin-catalog-react';
 import { usePermission } from '@backstage/plugin-permission-react';
-import {
-  permissions,
-  Playlist,
-  PlaylistMetadata,
-} from '@backstage-community/plugin-playlist-common';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -43,16 +43,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import ClearButton from '@material-ui/icons/Clear';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SearchIcon from '@material-ui/icons/Search';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAsyncFn from 'react-use/esm/useAsyncFn';
-
 import { playlistApiRef } from '../../api';
 import { useTitle } from '../../hooks';
 import { playlistRouteRef } from '../../routes';

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-import { createDevApp } from '@backstage/dev-utils';
-import { techRadarPlugin, TechRadarPage } from '../src';
+@layer components {
+  .overflowXScroll {
+    overflow-x: auto;
+  }
 
-// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui/css/styles.css';
+  .filterRow {
+    flex: 0 0 auto;
+  }
 
-createDevApp()
-  .registerPlugin(techRadarPlugin)
-  .addPage({
-    title: 'Tech Radar',
-    element: <TechRadarPage />,
-  })
-  .render();
+  .radarContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+  }
+}

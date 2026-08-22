@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { FC } from 'react';
-
-import { useMemo } from 'react';
-
+import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { V1Pod } from '@kubernetes/client-node';
 import { useTheme } from '@mui/material/styles';
 import { Flex, FlexItem } from '@patternfly/react-core';
-
-import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
-
+import type { FC } from 'react';
+import { useMemo } from 'react';
 import {
   TEKTON_PIPELINE_RUN,
   TEKTON_PIPELINE_TASK,
   TEKTON_PIPELINE_TASKRUN,
 } from '../../consts/tekton-const';
-import PodLogsDownloadLink from './PodLogsDownloadLink';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { tektonTranslationRef } from '../../translations/index.ts';
+import PodLogsDownloadLink from './PodLogsDownloadLink';
 
 const PipelineRunLogDownloader: FC<{
   pods: V1Pod[];

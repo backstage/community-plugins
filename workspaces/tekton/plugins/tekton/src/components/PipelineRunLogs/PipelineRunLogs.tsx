@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState, useEffect, useMemo } from 'react';
-
-import { LogViewer, Progress } from '@backstage/core-components';
-
-import { V1Pod } from '@kubernetes/client-node';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-
 import {
   getTaskRunsForPipelineRun,
   pipelineRunFilterReducer,
   PipelineRunKind,
   TaskRunKind,
 } from '@backstage-community/plugin-tekton-react';
-
+import { LogViewer, Progress } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { V1Pod } from '@kubernetes/client-node';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import { useEffect, useMemo, useState } from 'react';
+import { tektonTranslationRef } from '../../translations/index.ts';
 import { getActiveTaskRun, getSortedTaskRuns } from '../../utils/taskRun-utils';
 import { PipelineRunLogViewer } from './PipelineRunLogViewer';
 import { TaskStatusStepper } from './TaskStatusStepper';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { tektonTranslationRef } from '../../translations/index.ts';
 
 type PipelineRunLogsProps = {
   pipelineRun: PipelineRunKind;

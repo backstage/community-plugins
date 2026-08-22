@@ -22,18 +22,10 @@ import {
   SupportButton,
   Link,
 } from '@backstage/core-components';
-import Grid from '@material-ui/core/Grid';
-import Input from '@material-ui/core/Input';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Flex, SearchField, Text } from '@backstage/ui';
 import { useState } from 'react';
 import { RadarComponent, type TechRadarComponentProps } from './RadarComponent';
-
-const useStyles = makeStyles(() => ({
-  overflowXScroll: {
-    overflowX: 'scroll',
-  },
-}));
+import styles from './RadarPage.module.css';
 
 /**
  * Properties for {@link TechRadarPage}
@@ -67,22 +59,29 @@ export function RadarPage(props: TechRadarPageProps) {
     pageTitle = 'Company Radar',
     ...componentProps
   } = props;
-  const classes = useStyles();
   const [searchText, setSearchText] = useState('');
 
   return (
     <Page themeId="tool">
       <Header title={title} subtitle={subtitle} />
-      <Content className={classes.overflowXScroll}>
+      <Content className={styles.overflowXScroll}>
         <ContentHeader title={pageTitle}>
-          <Input
-            id="tech-radar-filter"
-            type="search"
-            placeholder="Filter"
-            onChange={e => setSearchText(e.target.value)}
-          />
+          <Flex
+            align="center"
+            gap="3"
+            className={styles.filterRow}
+            style={{ minWidth: 220 }}
+          >
+            <SearchField
+              id="tech-radar-filter"
+              aria-label="Filter"
+              placeholder="Filter"
+              onChange={value => setSearchText(value)}
+              style={{ width: '100%', minWidth: 200 }}
+            />
+          </Flex>
           <SupportButton>
-            <Typography paragraph>
+            <Text variant="body-medium">
               This is used for visualizing the official guidelines of different
               areas of software development such as languages, frameworks,
               infrastructure and processes. You can find an explanation for the
@@ -91,14 +90,16 @@ export function RadarPage(props: TechRadarPageProps) {
                 Zalando Tech Radar
               </Link>
               .
-            </Typography>
+            </Text>
           </SupportButton>
         </ContentHeader>
-        <Grid container spacing={3} direction="row">
-          <Grid item xs={12} sm={6} md={4}>
-            <RadarComponent searchText={searchText} {...componentProps} />
-          </Grid>
-        </Grid>
+        {/*
+          Full-width radar (demo parity). The previous MUI Grid sm=6/md=4 column
+          left a large empty region and made the filter feel "detached".
+        */}
+        <div className={styles.radarContainer}>
+          <RadarComponent searchText={searchText} {...componentProps} />
+        </div>
       </Content>
     </Page>
   );

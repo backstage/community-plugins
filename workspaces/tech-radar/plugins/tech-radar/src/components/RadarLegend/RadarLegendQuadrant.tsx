@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import { Quadrant, Ring } from '../../utils/types';
 import { RadarLegendRing } from './RadarLegendRing';
 import { RadarLegendProps, Segments } from './types';
 import { getSegment } from './utils';
+import styles from './RadarLegend.module.css';
 
 type RadarLegendQuadrantProps = {
   segments: Segments;
   quadrant: Quadrant;
   rings: Ring[];
-  classes: ClassNameMap<string>;
+  columnCount: number;
   onEntryMouseEnter: RadarLegendProps['onEntryMouseEnter'];
   onEntryMouseLeave: RadarLegendProps['onEntryMouseLeave'];
 };
@@ -33,7 +33,7 @@ export const RadarLegendQuadrant = ({
   segments,
   quadrant,
   rings,
-  classes,
+  columnCount,
   onEntryMouseEnter,
   onEntryMouseLeave,
 }: RadarLegendQuadrantProps) => {
@@ -46,14 +46,13 @@ export const RadarLegendQuadrant = ({
       height={quadrant.legendHeight}
       data-testid="radar-quadrant"
     >
-      <div className={classes.quadrant}>
-        <h2 className={classes.quadrantHeading}>{quadrant.name}</h2>
-        <div className={classes.rings}>
+      <div className={styles.quadrant}>
+        <h2 className={styles.quadrantHeading}>{quadrant.name}</h2>
+        <div className={styles.rings} style={{ columns: columnCount }}>
           {rings.map(ring => (
             <RadarLegendRing
               key={ring.id}
               ring={ring}
-              classes={classes}
               entries={getSegment(segments, quadrant, ring)}
               onEntryMouseEnter={onEntryMouseEnter}
               onEntryMouseLeave={onEntryMouseLeave}

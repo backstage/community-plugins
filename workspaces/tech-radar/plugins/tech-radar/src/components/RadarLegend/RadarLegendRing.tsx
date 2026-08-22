@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-import Typography from '@material-ui/core/Typography/Typography';
 import { Entry, Ring } from '../../utils/types';
 import { RadarLegendLink } from './RadarLegendLink';
 import { RadarLegendProps } from './types';
+import styles from './RadarLegend.module.css';
 
 type RadarLegendRingProps = {
   ring: Ring;
   entries: Entry[];
-  classes: ClassNameMap<string>;
   onEntryMouseEnter?: RadarLegendProps['onEntryMouseEnter'];
   onEntryMouseLeave?: RadarLegendProps['onEntryMouseEnter'];
 };
@@ -30,25 +28,22 @@ type RadarLegendRingProps = {
 export const RadarLegendRing = ({
   ring,
   entries,
-  classes,
   onEntryMouseEnter,
   onEntryMouseLeave,
 }: RadarLegendRingProps) => {
   return (
-    <div data-testid="radar-ring" key={ring.id} className={classes.ring}>
+    <div data-testid="radar-ring" key={ring.id} className={styles.ring}>
       <h3
-        className={classes.ringHeading}
+        className={styles.ringHeading}
         style={{ color: ring.color }}
         data-testid="radar-legend-heading"
       >
         {ring.name}
       </h3>
       {entries.length === 0 ? (
-        <Typography paragraph className={classes.ringEmpty}>
-          (empty)
-        </Typography>
+        <p className={styles.ringEmpty}>(empty)</p>
       ) : (
-        <ol className={classes.ringList}>
+        <ol className={styles.ringList}>
           {entries.map(entry => (
             <li
               key={entry.id}
@@ -61,7 +56,6 @@ export const RadarLegendRing = ({
               }
             >
               <RadarLegendLink
-                classes={classes}
                 entryId={entry.id}
                 url={entry.url}
                 title={entry.title}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
+import styles from './RadarFooter.module.css';
 
 export type Props = {
   x: number;
@@ -25,25 +25,15 @@ export type Props = {
 
 const onespace = '\u00a0';
 
-const useStyles = makeStyles(theme => ({
-  text: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    fontSize: '10px',
-    fill: theme.palette.text.secondary,
-  },
-}));
-
 const RadarFooter = (props: Props): React.JSX.Element => {
   const { x, y, spaces = 5, labels } = props;
-  const classes = useStyles(props);
   const space = onespace.repeat(spaces);
 
   return (
     <text
       data-testid="radar-footer"
       transform={`translate(${x}, ${y})`}
-      className={classes.text}
+      className={styles.text}
     >
       {`▲ moved up${space}▼ moved down`}
       {labels && space}

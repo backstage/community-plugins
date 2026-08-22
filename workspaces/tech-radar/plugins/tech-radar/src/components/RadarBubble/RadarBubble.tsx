@@ -15,7 +15,7 @@
  */
 
 import { useRef, useLayoutEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import styles from './RadarBubble.module.css';
 
 export type Props = {
   visible: boolean;
@@ -24,30 +24,7 @@ export type Props = {
   y: number;
 };
 
-const useStyles = makeStyles(theme => ({
-  bubble: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    opacity: 0,
-  },
-  visibleBubble: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    opacity: 0.8,
-  },
-  background: {
-    fill: '#333',
-  },
-  text: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    fontSize: '10px',
-    fill: theme.palette.common.white,
-  },
-}));
-
 const RadarBubble = (props: Props): React.JSX.Element => {
-  const classes = useStyles(props);
   const { visible, text } = props;
 
   const textElem = useRef<SVGTextElement>(null);
@@ -97,18 +74,14 @@ const RadarBubble = (props: Props): React.JSX.Element => {
       ref={svgElem}
       x={0}
       y={0}
-      className={visible ? classes.visibleBubble : classes.bubble}
+      className={visible ? styles.visibleBubble : styles.bubble}
       data-testid="radar-bubble"
     >
-      <rect ref={rectElem} rx={4} ry={4} className={classes.background} />
-      <text ref={textElem} className={classes.text}>
+      <rect ref={rectElem} rx={4} ry={4} className={styles.background} />
+      <text ref={textElem} className={styles.text}>
         {text}
       </text>
-      <path
-        ref={pathElem}
-        d="M 0,0 10,0 5,8 z"
-        className={classes.background}
-      />
+      <path ref={pathElem} d="M 0,0 10,0 5,8 z" className={styles.background} />
     </g>
   );
 };

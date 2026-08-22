@@ -14,43 +14,18 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
 import type { Ring } from '../../utils/types';
+import styles from './RadarGrid.module.css';
 
 export type Props = {
   radius: number;
   rings: Ring[];
 };
 
-const useStyles = makeStyles(
-  theme => ({
-    ring: {
-      fill: 'none',
-      stroke: '#bbb',
-      strokeWidth: '1px',
-    },
-    axis: {
-      fill: 'none',
-      stroke: '#bbb',
-      strokeWidth: '1px',
-    },
-    text: {
-      pointerEvents: 'none',
-      userSelect: 'none',
-      fill: theme.palette.text.primary,
-      fontSize: '25px',
-      fontWeight: 800,
-      opacity: 0.7,
-    },
-  }),
-  { name: 'PluginTechRadarGrid' },
-);
-
 // A component for the background grid of the radar, with axes, rings etc.  It will render around the origin, i.e.
 // assume that (0, 0) is in the middle of the drawing.
 const RadarGrid = (props: Props) => {
   const { radius, rings } = props;
-  const classes = useStyles(props);
 
   const makeRingNode = (ringIndex: number, ringRadius?: number) => [
     <circle
@@ -58,13 +33,13 @@ const RadarGrid = (props: Props) => {
       cx={0}
       cy={0}
       r={ringRadius}
-      className={classes.ring}
+      className={styles.ring}
     />,
     <text
       key={`t${ringIndex}`}
       y={ringRadius !== undefined ? -ringRadius + 42 : undefined}
       textAnchor="middle"
-      className={classes.text}
+      className={styles.text}
       style={{ fill: rings[ringIndex].color }}
       data-testid="radar-ring-heading"
     >
@@ -80,7 +55,7 @@ const RadarGrid = (props: Props) => {
       y1={-radius}
       x2={0}
       y2={radius}
-      className={classes.axis}
+      className={styles.axis}
       data-testid="radar-grid-x-line"
     />,
     // Y axis
@@ -90,7 +65,7 @@ const RadarGrid = (props: Props) => {
       y1={0}
       x2={radius}
       y2={0}
-      className={classes.axis}
+      className={styles.axis}
       data-testid="radar-grid-y-line"
     />,
   ];

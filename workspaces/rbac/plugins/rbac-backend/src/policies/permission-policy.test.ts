@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { resolve } from 'path';
+import type {
+  RoleBasedPolicy,
+  RoleMetadata,
+} from '@backstage-community/plugin-rbac-common';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { Config } from '@backstage/config';
@@ -24,7 +29,6 @@ import type {
   PolicyQuery,
   PolicyQueryUser,
 } from '@backstage/plugin-permission-node';
-
 import {
   Adapter,
   Enforcer,
@@ -34,14 +38,16 @@ import {
 } from 'casbin';
 import * as Knex from 'knex';
 import { MockClient } from 'knex-mock-client';
-
-import type {
-  RoleBasedPolicy,
-  RoleMetadata,
-} from '@backstage-community/plugin-rbac-common';
-
-import { resolve } from 'path';
-
+import {
+  clearAuditorMock,
+  expectAuditorLogForPermission,
+} from '../../__fixtures__/auditor-test-utils';
+import {
+  catalogMock,
+  mockAuditorService,
+  mockAuthService,
+  mockUserInfoService,
+} from '../../__fixtures__/mock-utils';
 import { ADMIN_ROLE_NAME } from '../admin-permissions/admin-creation';
 import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
 import { ConditionalStorage } from '../database/conditional-storage';
@@ -49,23 +55,15 @@ import {
   RoleMetadataDao,
   RoleMetadataStorage,
 } from '../database/role-metadata';
+import {
+  buildDefaultRoleMetadata,
+  DefaultPermissionsReader,
+} from '../default-permissions/default-permissions';
 import { BackstageRoleManager } from '../role-manager/role-manager';
-import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
 import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
-import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
-import {
-  catalogMock,
-  mockAuditorService,
-  mockAuthService,
-  mockUserInfoService,
-} from '../../__fixtures__/mock-utils';
-import {
-  clearAuditorMock,
-  expectAuditorLogForPermission,
-} from '../../__fixtures__/auditor-test-utils';
 
 type PermissionAction = 'create' | 'read' | 'update' | 'delete';
 

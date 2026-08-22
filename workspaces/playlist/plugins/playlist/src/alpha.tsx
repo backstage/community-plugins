@@ -17,17 +17,16 @@
 import {
   ApiBlueprint,
   createFrontendPlugin,
+  dialogApiRef,
   discoveryApiRef,
   fetchApiRef,
   PageBlueprint,
-  dialogApiRef,
   useApi,
 } from '@backstage/frontend-plugin-api';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityContextMenuItemBlueprint } from '@backstage/plugin-catalog-react/alpha';
-import PlaylistPlayIcon from '@material-ui/icons/PlaylistPlay';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-
+import PlaylistPlayIcon from '@material-ui/icons/PlaylistPlay';
 import { playlistApiRef, PlaylistClient } from './api';
 import { EntityPlaylistDialog } from './components/EntityPlaylistDialog';
 import { useTitle } from './hooks';

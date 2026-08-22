@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  NonEmptyArray,
+  toPermissionAction,
+} from '@backstage-community/plugin-rbac-common';
 import type {
   AuditorService,
   AuditorServiceEvent,
@@ -37,14 +41,7 @@ import type {
   PolicyQuery,
   PolicyQueryUser,
 } from '@backstage/plugin-permission-node';
-
 import type { Knex } from 'knex';
-
-import {
-  NonEmptyArray,
-  toPermissionAction,
-} from '@backstage-community/plugin-rbac-common';
-
 import {
   setAdminPermissions,
   useAdminsFromConfig,

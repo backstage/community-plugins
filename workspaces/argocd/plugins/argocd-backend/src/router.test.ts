@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import express from 'express';
 import request from 'supertest';
-import { createRouter } from './router';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { mockApplications, mockConfig } from './__data__/mockdata';
-import { ArgoCDService } from '@backstage-community/plugin-argocd-node';
+import { createRouter } from './router';
 
 jest.mock('@backstage-community/plugin-argocd-node');
 

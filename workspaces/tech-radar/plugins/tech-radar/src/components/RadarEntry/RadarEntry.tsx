@@ -15,10 +15,10 @@
  */
 
 import * as React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { WithLink } from '../../utils/components';
 import { RadarDescription } from '../RadarDescription';
 import type { EntrySnapshot } from '../../utils/types';
+import styles from './RadarEntry.module.css';
 
 export type Props = {
   x: number;
@@ -37,20 +37,6 @@ export type Props = {
   onClick?: (event: React.MouseEvent<SVGGElement, MouseEvent>) => void;
 };
 
-const useStyles = makeStyles(theme => ({
-  text: {
-    pointerEvents: 'none',
-    userSelect: 'none',
-    fontSize: '9px',
-    fill: theme.palette.common.white,
-    textAnchor: 'middle',
-  },
-
-  link: {
-    cursor: 'pointer',
-  },
-}));
-
 const makeBlip = (color: string, moved?: number) => {
   const style = { fill: color };
 
@@ -65,7 +51,6 @@ const makeBlip = (color: string, moved?: number) => {
 };
 
 const RadarEntry = (props: Props): React.JSX.Element => {
-  const classes = useStyles(props);
   const [open, setOpen] = React.useState(false);
 
   const {
@@ -122,7 +107,7 @@ const RadarEntry = (props: Props): React.JSX.Element => {
       {description ? (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <a
-          className={classes.link}
+          className={styles.link}
           onClick={handleClickOpen}
           role="button"
           href="#"
@@ -133,11 +118,11 @@ const RadarEntry = (props: Props): React.JSX.Element => {
           {blip}
         </a>
       ) : (
-        <WithLink url={url} className={classes.link} aria-labelledby={entryId}>
+        <WithLink url={url} className={styles.link} aria-labelledby={entryId}>
           {blip}
         </WithLink>
       )}
-      <text aria-labelledby={entryId} y={3} className={classes.text}>
+      <text aria-labelledby={entryId} y={3} className={styles.text}>
         {value}
       </text>
     </g>

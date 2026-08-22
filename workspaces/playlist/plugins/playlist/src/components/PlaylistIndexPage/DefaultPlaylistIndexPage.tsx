@@ -15,22 +15,21 @@
  */
 
 import {
-  PageWithHeader,
   Content,
   ContentHeader,
+  PageWithHeader,
   SupportButton,
 } from '@backstage/core-components';
-import { Header } from '@backstage/ui';
 import { CatalogFilterLayout } from '@backstage/plugin-catalog-react';
-
+import { Header } from '@backstage/ui';
+import { PlaylistListProvider } from '../../hooks/PlaylistListProvider';
+import { useTitle } from '../../hooks/useTitle';
 import { CreatePlaylistButton } from '../CreatePlaylistButton';
 import { PersonalListPicker } from '../PersonalListPicker';
 import { PlaylistList } from '../PlaylistList';
 import { PlaylistOwnerPicker } from '../PlaylistOwnerPicker';
 import { PlaylistSearchBar } from '../PlaylistSearchBar';
 import { PlaylistSortPicker } from '../PlaylistSortPicker';
-import { PlaylistListProvider } from '../../hooks/PlaylistListProvider';
-import { useTitle } from '../../hooks/useTitle';
 
 const DefaultPlaylistIndexPageContent = () => (
   <CatalogFilterLayout>
