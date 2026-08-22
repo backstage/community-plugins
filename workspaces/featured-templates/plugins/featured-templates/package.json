@@ -1,0 +1,93 @@
+{
+  "name": "@backstage-community/plugin-featured-templates",
+  "version": "0.0.0",
+  "description": "A Backstage home page widget that showcases software templates selected by a catalog tag.",
+  "keywords": [
+    "backstage",
+    "plugin"
+  ],
+  "bugs": "https://github.com/backstage/community-plugins/issues",
+  "maintainers": [
+    "@benjidotsh"
+  ],
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "featured-templates",
+    "pluginPackages": [
+      "@backstage-community/plugin-featured-templates"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/featured-templates/plugins/featured-templates"
+  },
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-home-react": "backstage:^",
+    "@backstage/plugin-scaffolder-common": "backstage:^",
+    "@backstage/plugin-scaffolder-react": "backstage:^",
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": "^4.9.0",
+    "react-intersection-observer": "9.5.3",
+    "react-use": "^17.6.1",
+    "zod": "^4.0.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.0"
+  },
+  "devDependencies": {
+    "@backstage/catalog-client": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/frontend-dev-utils": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
+    "@backstage/plugin-app": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
+    "@backstage/plugin-home": "backstage:^",
+    "@backstage/plugin-permission-react": "backstage:^",
+    "@backstage/plugin-scaffolder": "backstage:^",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.4"
+  }
+}

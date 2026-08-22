@@ -1,0 +1,52 @@
+.root {
+  --bleed: var(--bui-space-2);
+  position: relative;
+  height: 100%;
+  margin-inline: calc(-1 * var(--bleed));
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(15rem, 100%);
+  gap: var(--bui-space-4);
+  height: 100%;
+  padding: var(--bleed);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: var(--bleed);
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+}
+
+.card {
+  display: flex;
+  min-height: 0;
+  scroll-snap-align: start;
+}
+
+.card > :global(.MuiCard-root) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.card :global(.BackstageItemCardHeader-root) h4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card :global(.MuiCardContent-root) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-block: contain;
+  scrollbar-width: thin;
+}
+
+.card :global(.MuiCardActions-root) {
+  flex: 0 0 auto;
+}
