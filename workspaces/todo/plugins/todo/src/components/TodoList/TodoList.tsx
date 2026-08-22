@@ -17,51 +17,97 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useState } from 'react';
 import { todoApiRef } from '../../api';
-import { TodoItem, TodoListOptions } from '../../api/types';
-
+import { TodoItem, TodoListFields, TodoListOptions } from '../../api/types';
+import { ResponseErrorPanel } from '@backstage/core-components';
 import {
-  Table,
-  TableColumn,
-  OverflowTooltip,
+  Card,
+  CardBody,
+  CardHeader,
+  Cell,
+  CellText,
   Link,
-  ResponseErrorPanel,
-} from '@backstage/core-components';
+  SearchField,
+  Table,
+  Text,
+  Flex,
+  useTable,
+  type ColumnConfig,
+} from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 
 const PAGE_SIZE = 10;
 
-const columns: TableColumn<TodoItem>[] = [
+type TodoRow = TodoItem & { id: string };
+
+const toRowId = (item: TodoItem): string => {
+  const repoFilePath = item.repoFilePath ?? 'unknown';
+  const lineNumber =
+    item.lineNumber !== undefined ? String(item.lineNumber) : 'n';
+
+  return `${repoFilePath}:${lineNumber}:${item.tag}:${item.text}`;
+};
+
+const toRow = (item: TodoItem, offset: number, index: number): TodoRow => ({
+  ...item,
+  id: `${toRowId(item)}:${offset}:${index}`,
+});
+
+type TodoFilters = {
+  text?: string;
+  repoFilePath?: string;
+  author?: string;
+};
+
+const columns: (ColumnConfig<TodoRow> & { id: TodoListFields })[] = [
   {
-    title: 'Tag',
-    field: 'tag',
+    id: 'tag',
+    label: 'Tag',
     width: '10%',
-    filtering: false,
+    isSortable: true,
+    cell: item => <CellText title={item.tag} />,
   },
   {
-    title: 'Text',
-    field: 'text',
+    id: 'text',
+    label: 'Text',
     width: '55%',
-    highlight: true,
-    render: ({ text }) => <OverflowTooltip text={text} />,
+    isRowHeader: true,
+    isSortable: true,
+    cell: item => (
+      <Cell>
+        <Text variant="body-medium" weight="bold" truncate title={item.text}>
+          {item.text}
+        </Text>
+      </Cell>
+    ),
   },
   {
-    title: 'File',
-    field: 'repoFilePath',
+    id: 'repoFilePath',
+    label: 'File',
     width: '25%',
-    render: ({ viewUrl, repoFilePath }) =>
-      viewUrl ? (
-        <Link to={viewUrl} target="_blank">
-          <OverflowTooltip text={repoFilePath} />
-        </Link>
+    isSortable: true,
+    cell: item =>
+      item.viewUrl ? (
+        <Cell>
+          <Link
+            href={item.viewUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            truncate
+            title={item.repoFilePath ? item.repoFilePath : '-'}
+          >
+            {item.repoFilePath ? item.repoFilePath : '-'}
+          </Link>
+        </Cell>
       ) : (
-        <OverflowTooltip text={repoFilePath} />
+        <CellText title={item.repoFilePath ? item.repoFilePath : '-'} />
       ),
   },
   {
-    title: 'Author',
-    field: 'author',
+    id: 'author',
+    label: 'Author',
     width: '10%',
-    render: ({ author }) => <OverflowTooltip text={author} />,
+    isSortable: true,
+    cell: item => <CellText title={item.author ? item.author : '-'} />,
   },
 ];
 
@@ -70,54 +116,112 @@ export const TodoList = () => {
   const todoApi = useApi(todoApiRef);
   const [error, setError] = useState<Error>();
 
+  const { tableProps, filter } = useTable<TodoRow, TodoFilters>({
+    mode: 'offset',
+    paginationOptions: { pageSize: PAGE_SIZE },
+    getData: async ({ offset, pageSize, sort, filter: activeFilter }) => {
+      try {
+        const filters: TodoListOptions['filters'] = [];
+        const text = activeFilter?.text?.trim();
+        if (text) {
+          filters.push({ field: 'text', value: `*${text}*` });
+        }
+        const repoFilePath = activeFilter?.repoFilePath?.trim();
+        if (repoFilePath) {
+          filters.push({ field: 'repoFilePath', value: `*${repoFilePath}*` });
+        }
+        const author = activeFilter?.author?.trim();
+        if (author) {
+          filters.push({ field: 'author', value: `*${author}*` });
+        }
+
+        const result = await todoApi.listTodos({
+          entity,
+          offset,
+          limit: pageSize,
+          orderBy: sort
+            ? {
+                field: sort.column as TodoListFields,
+                direction: sort.direction === 'ascending' ? 'asc' : 'desc',
+              }
+            : undefined,
+          filters: filters.length ? filters : undefined,
+        });
+
+        return {
+          data: result.items.map((item, index) => toRow(item, offset, index)),
+          totalCount: result.totalCount,
+        };
+      } catch (loadingError) {
+        setError(loadingError as Error);
+        return { data: [], totalCount: 0 };
+      }
+    },
+  });
+
+  const hasActiveFilter = Boolean(
+    filter.value?.text?.trim() ||
+      filter.value?.repoFilePath?.trim() ||
+      filter.value?.author?.trim(),
+  );
+
   if (error) {
     return <ResponseErrorPanel error={error} />;
   }
 
   return (
-    <Table<TodoItem>
-      title="TODOs"
-      options={{
-        search: false,
-        pageSize: PAGE_SIZE,
-        padding: 'dense',
-        sorting: true,
-        draggable: false,
-        paging: true,
-        filtering: true,
-        debounceInterval: 500,
-        filterCellStyle: { padding: '0 16px 0 20px' },
-      }}
-      columns={columns}
-      data={async query => {
-        try {
-          const page = query?.page ?? 0;
-          const pageSize = query?.pageSize ?? PAGE_SIZE;
-          const result = await todoApi.listTodos({
-            entity,
-            offset: page * pageSize,
-            limit: pageSize,
-            orderBy:
-              query?.orderBy &&
-              ({
-                field: query.orderBy.field,
-                direction: query.orderDirection,
-              } as TodoListOptions['orderBy']),
-            filters: query?.filters?.map(filter => ({
-              field: filter.column.field!,
-              value: `*${filter.value}*`,
-            })) as TodoListOptions['filters'],
-          });
-          return {
-            data: result.items,
-            totalCount: result.totalCount,
-            page: Math.floor(result.offset / result.limit),
-          };
-        } catch (loadingError) {
-          setError(loadingError);
-          return { data: [], totalCount: 0, page: 0 };
-        }
-      }}
-    />
+    <Card>
+      <CardHeader>
+        <Text as="h2" variant="title-medium">
+          TODOs
+        </Text>
+        <Flex>
+          <div style={{ width: '10%' }} />
+          <div style={{ width: '55%' }}>
+            <SearchField
+              aria-label="Filter by text"
+              value={filter.value?.text ? filter.value.text : ''}
+              onChange={value =>
+                filter.onChange({ ...filter.value, text: value })
+              }
+            />
+          </div>
+          <div style={{ width: '25%' }}>
+            <SearchField
+              aria-label="Filter by file"
+              value={
+                filter.value?.repoFilePath ? filter.value.repoFilePath : ''
+              }
+              onChange={value =>
+                filter.onChange({ ...filter.value, repoFilePath: value })
+              }
+            />
+          </div>
+          <div style={{ width: '10%' }}>
+            <SearchField
+              aria-label="Filter by author"
+              value={filter.value?.author ? filter.value.author : ''}
+              onChange={value =>
+                filter.onChange({ ...filter.value, author: value })
+              }
+            />
+          </div>
+        </Flex>
+      </CardHeader>
+      <CardBody>
+        <Table<TodoRow>
+          columnConfig={columns}
+          {...tableProps}
+          aria-label="TODOs"
+          emptyState={
+            <Text variant="body-medium">
+              {hasActiveFilter
+                ? 'No TODOs match the current filters.'
+                : 'No TODOs found.'}
+            </Text>
+          }
+        />
+      </CardBody>
+    </Card>
   );
 };
