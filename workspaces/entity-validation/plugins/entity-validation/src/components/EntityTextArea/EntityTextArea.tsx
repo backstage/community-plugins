@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { useMemo, useState } from 'react';
+import { Box } from '@backstage/ui';
 import styles from './EntityTextArea.module.css';
 import CodeMirror from '@uiw/react-codemirror';
 import { showPanel } from '@codemirror/view';
@@ -57,7 +58,7 @@ export const EntityTextArea = ({
   );
 
   return (
-    <div className={styles.container}>
+    <Box className={styles.container}>
       <CodeMirror
         className={styles.codeMirror}
         theme="dark"
@@ -70,6 +71,6 @@ export const EntityTextArea = ({
           if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) e.preventDefault();
         }}
       />
-    </div>
+    </Box>
   );
 };

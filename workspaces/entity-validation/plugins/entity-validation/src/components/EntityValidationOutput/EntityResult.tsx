@@ -17,7 +17,7 @@ import { useState } from 'react';
 import type { ComponentType } from 'react';
 import { ValidateEntityResponse } from '@backstage/catalog-client';
 import { useApp } from '@backstage/core-plugin-api';
-import { ButtonIcon } from '@backstage/ui';
+import { Box, ButtonIcon, Flex } from '@backstage/ui';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
 import { safeEntityKind } from './safeEntityDisplayName';
 import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
@@ -51,7 +51,7 @@ export const EntityResult = ({
   return (
     <>
       <li className={styles.listItem}>
-        <div className={styles.listItemIcon}>
+        <Flex className={styles.listItemIcon}>
           {Icon && (
             <Icon
               className={
@@ -61,7 +61,7 @@ export const EntityResult = ({
               }
             />
           )}
-        </div>
+        </Flex>
         <div
           className={styles.listItemText}
           role="button"
@@ -74,7 +74,7 @@ export const EntityResult = ({
           <EntityDisplayName entityRef={item.entity} />
         </div>
         {!item.response.valid && (
-          <div className={styles.listItemAction}>
+          <Flex className={styles.listItemAction}>
             <ButtonIcon
               aria-label={expanded ? 'collapse' : 'expand'}
               onPress={() => setExpanded(!expanded)}
@@ -87,13 +87,13 @@ export const EntityResult = ({
               }
               variant="secondary"
             />
-          </div>
+          </Flex>
         )}
       </li>
       {!item.response.valid && expanded && (
-        <div className={styles.errorContainer}>
+        <Box className={styles.errorContainer}>
           <MarkdownContent content={fetchErrorMessages(item.response)} />
-        </div>
+        </Box>
       )}
     </>
   );

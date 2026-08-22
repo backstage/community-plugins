@@ -17,7 +17,7 @@
 import { useState } from 'react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { EntityTextArea } from '../EntityTextArea';
-import { Button, TextField } from '@backstage/ui';
+import { Box, Button, Flex, TextField } from '@backstage/ui';
 import { CatalogProcessorResult } from '../../types';
 import { parseEntityYaml } from '../../utils';
 import { EntityValidationOutput } from '../EntityValidationOutput';
@@ -66,11 +66,15 @@ export const EntityValidationContent = (props: {
   };
 
   return (
-    <div className={styles.mainLayout} data-testid="main-grid">
+    <Flex
+      direction="column"
+      className={styles.mainLayout}
+      data-testid="main-grid"
+    >
       {contentHead}
 
       {!hideFileLocationField && (
-        <div className={styles.locationField}>
+        <Box className={styles.locationField}>
           <TextField
             isRequired
             id="file-location"
@@ -80,32 +84,30 @@ export const EntityValidationContent = (props: {
             description="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
             onChange={(newValue: string) => setLocationUrl(newValue)}
           />
-        </div>
+        </Box>
       )}
 
-      <div className={styles.contentRow}>
-        <div className={styles.leftColumn}>
-          <div className={styles.editorContainer}>
+      <Flex className={styles.contentRow}>
+        <Flex direction="column" className={styles.leftColumn}>
+          <Box className={styles.editorContainer}>
             <EntityTextArea
               onValidate={parseYaml}
               onChange={(value: string) => setCatalogYaml(value)}
               catalogYaml={catalogYaml}
             />
-          </div>
-          <div>
-            <Button variant="primary" onClick={parseYaml}>
-              Validate
-            </Button>
-          </div>
-        </div>
-        <div className={styles.rightColumn}>
+          </Box>
+          <Button variant="primary" onClick={parseYaml}>
+            Validate
+          </Button>
+        </Flex>
+        <Box className={styles.rightColumn}>
           <EntityValidationOutput
             processorResults={yamlFiles}
             locationUrl={locationUrl}
           />
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Flex>
+    </Flex>
   );
 };
 
