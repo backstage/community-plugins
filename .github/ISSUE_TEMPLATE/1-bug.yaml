@@ -19,6 +19,7 @@ body:
         - adr
         - agent-forge
         - airbrake
+        - akeyless
         - allure
         - amplication
         - analytics
@@ -26,6 +27,7 @@ body:
         - apache-airflow
         - apiiro
         - apollo-explorer
+        - argo-workflows
         - argocd
         - azure-devops
         - azure-resources
@@ -66,6 +68,7 @@ body:
         - graphiql
         - graphql-voyager
         - growthbook-flags
+        - healert
         - ilert
         - jaeger
         - jenkins
