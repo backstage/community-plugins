@@ -6,10 +6,12 @@ This workspace contains plugins for viewing and managing [Quay](https://docs.qua
 
 This workspace is composed of several packages:
 
-- [quay](./plugins/quay/README.md) - The frontend plugin that displays information about your container images from the Quay registry on entity pages.
-- [quay-backend](./plugins/quay-backend/README.md) - The backend plugin that queries the Quay API, with support for permissions and OAuth2 access token authentication.
-- [quay-actions](./plugins/quay-actions/README.md) - A scaffolder backend module providing software template actions for Quay, such as creating a Quay repository.
-- [quay-common](./plugins/quay-common/README.md) - A common library containing shared types and utilities used by the other Quay plugins.
+- [quay](./plugins/quay/) — The frontend plugin that displays information about your container images from the Quay registry on entity pages. Operator docs: [README](./plugins/quay/README.md); contributors: [CONTRIBUTING](./plugins/quay/CONTRIBUTING.md)
+- [quay-backend](./plugins/quay-backend/) — The backend plugin that queries the Quay API, with support for permissions and OAuth2 access token authentication. Operator docs: [README](./plugins/quay-backend/README.md); contributors: [CONTRIBUTING](./plugins/quay-backend/CONTRIBUTING.md)
+- [quay-actions](./plugins/quay-actions/) — A scaffolder backend module providing software template actions for Quay, such as creating a Quay repository. Operator docs: [README](./plugins/quay-actions/README.md); contributors: [CONTRIBUTING](./plugins/quay-actions/CONTRIBUTING.md)
+- [quay-common](./plugins/quay-common/) — A common library containing shared types and utilities used by the other Quay plugins. Operator docs: [README](./plugins/quay-common/README.md); contributors: [CONTRIBUTING](./plugins/quay-common/CONTRIBUTING.md)
+
+The `packages/app` and `packages/backend` directories are leftover stubs and are **not** used for day-to-day development. Prefer each package's `dev/` harness — see the contributor guides above.
 
 ## Quick start
 

@@ -14,10 +14,30 @@
  * limitations under the License.
  */
 
+import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
+
 import { quayPlugin } from './plugin';
 
-describe('quay-backend', () => {
-  it('should export the quay backend plugin', () => {
-    expect(quayPlugin).toBeDefined();
+describe('quayPlugin', () => {
+  it('registers the quay backend plugin router', async () => {
+    const httpRouterMock = mockServices.httpRouter.mock();
+
+    await startTestBackend({
+      extensionPoints: [],
+      features: [
+        quayPlugin,
+        httpRouterMock.factory,
+        mockServices.rootConfig.factory({
+          data: {
+            quay: {
+              apiUrl: 'https://quay.example.com',
+              apiKey: 'test-token',
+            },
+          },
+        }),
+      ],
+    });
+
+    expect(httpRouterMock.use).toHaveBeenCalled();
   });
 });

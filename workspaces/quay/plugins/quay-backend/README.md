@@ -5,6 +5,8 @@ A simple plugin that queries the quay.io api, but provides additional features l
 - setting permissions
 - using OAuth2 access tokens for authentication
 
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for development harnesses, tests, and bump-review guidance.
+
 ## Setup
 
 ### Installation
