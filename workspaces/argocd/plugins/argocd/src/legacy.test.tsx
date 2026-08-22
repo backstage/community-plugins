@@ -34,7 +34,7 @@ import {
   ArgocdDeploymentLifecycle,
   ArgocdDeploymentSummary,
   argocdPlugin,
-} from './plugin';
+} from './legacy';
 import { rootRouteRef } from './routes';
 
 jest.mock('./components/DeploymentLifeCycle/DeploymentLifecycle', () => () => (
