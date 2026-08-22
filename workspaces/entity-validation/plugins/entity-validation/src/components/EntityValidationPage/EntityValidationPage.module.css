@@ -14,42 +14,40 @@
  * limitations under the License.
  */
 
-@layer components {
-  .mainLayout {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+.mainLayout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-  .locationField {
-    width: 100%;
-    margin: var(--bui-space-4) 0;
-  }
+.locationField {
+  width: 100%;
+  margin: var(--bui-space-4) 0;
+}
 
-  .contentRow {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    gap: var(--bui-space-4);
-    flex-wrap: nowrap;
-  }
+.contentRow {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  gap: var(--bui-space-4);
+  flex-wrap: nowrap;
+}
 
-  .leftColumn {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    height: 100%;
-  }
+.leftColumn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 100%;
+}
 
-  .editorContainer {
-    width: 100%;
-    flex: 1 1 auto;
-  }
+.editorContainer {
+  width: 100%;
+  flex: 1 1 auto;
+}
 
-  .rightColumn {
-    flex: 1 1 0;
-    min-width: 0;
-  }
+.rightColumn {
+  flex: 1 1 0;
+  min-width: 0;
 }

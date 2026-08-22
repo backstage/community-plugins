@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-@layer components {
-  .list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-  .emptyState {
-    padding: var(--bui-space-4);
-  }
+.emptyState {
+  padding: var(--bui-space-4);
+}
 
-  .summary {
-    margin-top: 25px;
-    text-align: center;
-  }
+.summary {
+  margin-top: 25px;
+  text-align: center;
+}
 
-  .validationOk {
-    color: var(--bui-fg-success, #1a7f5a);
-  }
+.validationOk {
+  color: var(--bui-fg-success, #1a7f5a);
+}
 
-  .validationNotOk {
-    color: var(--bui-fg-danger);
-  }
+.validationNotOk {
+  color: var(--bui-fg-danger);
 }
