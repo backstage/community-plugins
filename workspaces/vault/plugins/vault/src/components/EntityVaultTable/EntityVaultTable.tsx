@@ -16,11 +16,8 @@
 import { Entity } from '@backstage/catalog-model';
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import Edit from '@material-ui/icons/Edit';
-import Visibility from '@material-ui/icons/Visibility';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Box, Text } from '@backstage/ui';
+import { RiEditLine, RiEyeLine } from '@remixicon/react';
 import useAsync from 'react-use/esm/useAsync';
 import { VaultSecret, vaultApiRef } from '../../api';
 import {
@@ -92,9 +89,9 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
       data.push({
         path,
         secret: (
-          <Typography variant="body2" color="textSecondary">
+          <Text variant="body-small" color="secondary">
             No secrets, <Link to={createUrl || ''}>create one</Link>
-          </Typography>
+          </Text>
         ),
         view: null,
         edit: null,
@@ -113,7 +110,7 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
               title={`View ${secretName}`}
               to={secret.showUrl}
             >
-              <Visibility style={{ fontSize: 16 }} />
+              <RiEyeLine size={16} />
             </Link>
           ),
           edit: (
@@ -122,7 +119,7 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
               title={`Edit ${secretName}`}
               to={secret.editUrl}
             >
-              <Edit style={{ fontSize: 16 }} />
+              <RiEditLine size={16} />
             </Link>
           ),
         });
@@ -132,10 +129,12 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
 
   if (error) {
     return (
-      <Alert severity="error">
-        Unexpected error while fetching secrets from path(s) '
-        {secretPaths.join(', ')}': {error.message}
-      </Alert>
+      <Alert
+        status="danger"
+        title={`Unexpected error while fetching secrets from path(s) '${secretPaths.join(
+          ', ',
+        )}': ${error.message}`}
+      />
     );
   }
 
@@ -158,11 +157,11 @@ export const EntityVaultTable = ({ entity }: { entity: Entity }) => {
         search: false,
       }}
       emptyContent={
-        <Box style={{ textAlign: 'center', padding: '15px' }}>
-          <Typography variant="body1">
+        <Box style={{ textAlign: 'center', padding: 'var(--bui-space-4)' }}>
+          <Text variant="body-medium">
             No secrets found for {entity.metadata.name} in{' '}
             {secretPaths.join(', ')}
-          </Typography>
+          </Text>
         </Box>
       }
     />
