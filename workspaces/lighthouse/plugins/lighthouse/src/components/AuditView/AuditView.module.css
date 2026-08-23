@@ -1,0 +1,72 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@layer components {
+  .contentGrid {
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sidebar {
+    width: 25%;
+  }
+
+  .main {
+    flex: 1;
+  }
+
+  .iframe {
+    border: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .errorOutput {
+    white-space: pre;
+  }
+
+  .auditList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .auditListItem {
+    display: flex;
+    align-items: center;
+  }
+
+  .auditListItemLink {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--bui-space-2) var(--bui-space-4);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .auditListItemLink:hover,
+  .selected {
+    background-color: var(--bui-bg-hover);
+  }
+
+  .auditListItemIcon {
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+  }
+}
