@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import { Page, Content } from '@backstage/core-components';
 import { DashboardEntityList } from './DashboardEntityList';
 import { DashboardSnapshotList } from './DashboardSnapshotList';
@@ -25,18 +25,18 @@ export const NewRelicDashboard = () => {
   return (
     <Page themeId="home">
       <Content>
-        <Grid container spacing={6} direction="row" alignItems="stretch">
-          <Grid item xs={12}>
+        <Grid.Root columns="12" gap="6">
+          <Grid.Item colSpan="12">
             <DashboardEntityList />
-          </Grid>
-          <Grid item xs={12}>
+          </Grid.Item>
+          <Grid.Item colSpan="12">
             <DashboardSnapshotList
               guid={String(
                 entity.metadata.annotations?.[NEWRELIC_GUID_ANNOTATION],
               )}
             />
-          </Grid>
-        </Grid>
+          </Grid.Item>
+        </Grid.Root>
       </Content>
     </Page>
   );

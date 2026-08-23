@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import Box from '@material-ui/core/Box';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import { useApi, storageApiRef } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
 import {
@@ -29,20 +25,7 @@ import {
 import { newRelicDashboardApiRef } from '../../../api';
 import { DashboardSnapshotSummary } from '../../../api/NewRelicDashboardApi';
 import useObservable from 'react-use/esm/useObservable';
-
-const useStyles = makeStyles(
-  theme => ({
-    cardSelect: {
-      margin: theme.spacing(2, 1, 0, 0),
-    },
-    img: {
-      width: '100%',
-      height: 'auto',
-      border: `solid 1px ${theme.palette.common.black}`,
-    },
-  }),
-  { name: 'BackstageNewRelicDashboardSnapshot' },
-);
+import styles from './DashboardSnapshot.module.css';
 
 /**
  * @public
@@ -52,7 +35,6 @@ export const DashboardSnapshot = (props: {
   name: string;
   permalink: string;
 }) => {
-  const classes = useStyles();
   const { guid, name, permalink } = props;
   const newRelicDashboardAPI = useApi(newRelicDashboardApiRef);
   const storageApi = useApi(storageApiRef).forBucket('newrelic-dashboard');
@@ -89,40 +71,39 @@ export const DashboardSnapshot = (props: {
       variant="gridItem"
       title={name}
       action={
-        <div>
-          <Select
-            className={classes.cardSelect}
-            defaultValue={2592000000}
-            value={storageSnapshot.value}
-            onChange={event => {
-              setStorageValue(Number(event.target.value));
-            }}
-          >
-            <MenuItem value={3600000}>1 Hour</MenuItem>
-            <MenuItem value={43200000}>12 Hours</MenuItem>
-            <MenuItem value={86400000}>1 Day</MenuItem>
-            <MenuItem value={259200000}>3 Days</MenuItem>
-            <MenuItem value={604800000}>1 Week</MenuItem>
-            <MenuItem value={2592000000}>1 Month</MenuItem>
-          </Select>
-        </div>
+        // eslint-disable-next-line react/forbid-elements
+        <select
+          className={styles.cardSelect}
+          defaultValue={2592000000}
+          value={storageSnapshot.value}
+          onChange={event => {
+            setStorageValue(Number(event.target.value));
+          }}
+        >
+          <option value={3600000}>1 Hour</option>
+          <option value={43200000}>12 Hours</option>
+          <option value={86400000}>1 Day</option>
+          <option value={259200000}>3 Days</option>
+          <option value={604800000}>1 Week</option>
+          <option value={2592000000}>1 Month</option>
+        </select>
       }
     >
-      <Box display="flex">
-        <Box flexGrow="1">
+      <div className={styles.dashboardWrapper}>
+        <div className={styles.dashboardContent}>
           <Link to={permalink}>
             {url ? (
               <img
                 alt={`${name} Dashboard`}
-                className={classes.img}
+                className={styles.dashboardImg}
                 src={url}
               />
             ) : (
               'Dashboard loading... , click here to open if it did not render correctly'
             )}
           </Link>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </InfoCard>
   );
 };

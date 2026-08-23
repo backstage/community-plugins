@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Box from '@material-ui/core/Box';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
 import { newRelicDashboardApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
@@ -25,25 +22,17 @@ import {
   Link,
   ErrorPanel,
 } from '@backstage/core-components';
-import DesktopMac from '@material-ui/icons/DesktopMac';
+import { RiComputerLine } from '@remixicon/react';
 import { DashboardEntitySummary } from '../../api/NewRelicDashboardApi';
 import { ResultEntity } from '../../types/DashboardEntity';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { NEWRELIC_GUID_ANNOTATION } from '../../constants';
+import styles from './DashboardEntityList.module.css';
 
-const useStyles = makeStyles({
-  svgIcon: {
-    display: 'inline-block',
-    '& svg': {
-      display: 'inline-block',
-      fontSize: 'inherit',
-      verticalAlign: 'baseline',
-    },
-  },
-});
+// eslint-disable-next-line react/forbid-elements
+
 export const DashboardEntityList = () => {
   const { entity } = useEntity();
-  const classes = useStyles();
   const newRelicDashboardAPI = useApi(newRelicDashboardApiRef);
   const { value, loading, error } = useAsync(async (): Promise<
     DashboardEntitySummary | undefined
@@ -72,16 +61,17 @@ export const DashboardEntityList = () => {
       {value?.getDashboardEntity?.data.actor.entitySearch.results.entities?.map(
         (entityResult: ResultEntity, index: number) => {
           return (
-            <Box style={{ margin: '10px' }} display="flex" key={index}>
-              <Box mr={1} className={classes.svgIcon}>
-                <Typography component="div">
-                  <DesktopMac />
-                </Typography>
-              </Box>
-              <Box flexGrow="1">
+            // eslint-disable-next-line react/forbid-elements
+            <div className={styles.entityItem} key={index}>
+              {/* eslint-disable-next-line react/forbid-elements */}
+              <span className={styles.svgIcon}>
+                <RiComputerLine size={18} />
+              </span>
+              {/* eslint-disable-next-line react/forbid-elements */}
+              <div className={styles.entityName}>
                 <Link to={entityResult.permalink}>{entityResult.name}</Link>
-              </Box>
-            </Box>
+              </div>
+            </div>
           );
         },
       )}
