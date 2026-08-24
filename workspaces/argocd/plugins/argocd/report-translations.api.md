@@ -4,7 +4,6 @@
 
 ```ts
 import { FrontendModule } from '@backstage/frontend-plugin-api';
-import { FrontendPlugin } from '@backstage/frontend-plugin-api';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
@@ -116,11 +115,8 @@ export const argocdTranslationRef: TranslationRef<
 export const argocdTranslations: TranslationResource<'plugin.argocd'>;
 
 // @public
-export const argocdTranslationsModule: FrontendModule;
-
-// @public
-const plugin: FrontendPlugin;
-export default plugin;
+const argocdTranslationsModule: FrontendModule;
+export default argocdTranslationsModule;
 
 // (No @packageDocumentation comment for this package)
 ```

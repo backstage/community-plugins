@@ -1,9 +1,24 @@
 dynamicPlugins:
   frontend:
     backstage-community.plugin-argocd:
+      translationResources:
+        - importName: argocdTranslations
+          module: Legacy
+          ref: argocdTranslationRef
       mountPoints:
         - mountPoint: entity.page.cd/cards
-          importName: ArgocdPage
+          importName: ArgocdDeploymentLifecycle
+          module: Legacy
+          config:
+            layout:
+              gridColumn: '1 / -1'
+            if:
+              anyOf:
+                - hasAnnotation: backstage.io/kubernetes-id
+                - hasAnnotation: backstage.io/kubernetes-namespace
+        - mountPoint: entity.page.overview/cards
+          importName: ArgocdDeploymentSummary
+          module: Legacy
           config:
             layout:
               gridColumn: '1 / -1'

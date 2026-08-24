@@ -118,16 +118,7 @@ Use when you change backend integration code or are reviewing a Backstage versio
    rootHttpRouter info ... "GET /api/backstage-community-argocd/check HTTP/1.1" 200 ...
    ```
 
-## Full workspace app evaluation
-
-The workspace already ships `packages/app` and `packages/backend`. They are **optional** for cross-plugin UI/RBAC smoke (catalog entity cards, frontend + backend together).
-
-Default for bump-trust and day-to-day work: plugin `dev/` + scoped automated tests. Do **not** add another full Backstage application to this workspace.
-
-```bash
-# Optional — full workspace only when needed
-yarn start:backstage
-```
+Default for bump-trust and day-to-day work: plugin `dev/` + scoped automated tests.
 
 ## Related packages
 
