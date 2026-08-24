@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, Text } from '@backstage/ui';
 import { EscalationUsersEmptyState } from './EscalationUsersEmptyState';
 import { EscalationUser } from './EscalationUser';
 import useAsync from 'react-use/esm/useAsync';
 import { splunkOnCallApiRef } from '../../api';
-import Alert from '@material-ui/lab/Alert';
 import { User } from '../types';
-
 import { useApi } from '@backstage/core-plugin-api';
 import { Progress } from '@backstage/core-components';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      maxHeight: '400px',
-      overflow: 'auto',
-    },
-    subheader: {
-      backgroundColor: theme.palette.background.paper,
-    },
-    progress: {
-      margin: theme.spacing(0, 2),
-    },
-  }),
-);
+import styles from './EscalationPolicy.module.css';
 
 type Props = {
   users: { [key: string]: User };
@@ -48,7 +30,6 @@ type Props = {
 };
 
 export const EscalationPolicy = ({ users, team }: Props) => {
-  const classes = useStyles();
   const api = useApi(splunkOnCallApiRef);
 
   const {
@@ -71,9 +52,11 @@ export const EscalationPolicy = ({ users, team }: Props) => {
 
   if (error) {
     return (
-      <Alert severity="error">
-        Error encountered while fetching information. {error.message}
-      </Alert>
+      <Box>
+        <Text>
+          Error encountered while fetching information. {error.message}
+        </Text>
+      </Box>
     );
   }
 
@@ -82,15 +65,10 @@ export const EscalationPolicy = ({ users, team }: Props) => {
   }
 
   return (
-    <List
-      className={classes.root}
-      dense
-      subheader={
-        <ListSubheader className={classes.subheader}>ON CALL</ListSubheader>
-      }
-    >
+    <Box className={styles.root}>
+      {!loading && <div className={styles.header}>ON CALL</div>}
       {loading ? (
-        <Progress className={classes.progress} />
+        <Progress style={{ margin: 'var(--bui-space-4)' }} />
       ) : (
         userNames &&
         userNames.map(
@@ -101,6 +79,6 @@ export const EscalationPolicy = ({ users, team }: Props) => {
             ),
         )
       )}
-    </List>
+    </Box>
   );
 };

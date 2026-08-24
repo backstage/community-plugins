@@ -15,3 +15,29 @@
  */
 
 import '@testing-library/jest-dom';
+
+// Suppress JSDOM CSS parsing errors for unsupported CSS features like @layer
+if (typeof window !== 'undefined') {
+  // Mock VirtualConsole to suppress CSS parsing errors
+  // eslint-disable-next-line no-console
+  const originalError = console.error;
+  // eslint-disable-next-line no-console
+  console.error = (...args: any[]) => {
+    const errorMsg = args[0];
+
+    // Suppress CSS parsing errors (JSDOM doesn't support @layer)
+    if (
+      errorMsg instanceof Error &&
+      errorMsg.message?.includes('Could not parse CSS stylesheet')
+    ) {
+      return;
+    }
+
+    // Also check if first argument is an error with 'detail' property containing CSS
+    if (errorMsg?.detail?.includes('@layer')) {
+      return;
+    }
+
+    originalError(...args);
+  };
+}

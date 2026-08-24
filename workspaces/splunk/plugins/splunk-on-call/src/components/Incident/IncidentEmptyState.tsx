@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Flex, Text } from '@backstage/ui';
 import EmptyStateImage from '../../assets/emptystate.svg';
 
 export const IncidentsEmptyState = () => {
   return (
-    <Grid
-      container
-      justifyContent="center"
+    <Flex
       direction="column"
-      alignItems="center"
+      align="center"
+      justify="center"
+      style={{ padding: 'var(--bui-space-4)' }}
     >
-      <Grid item xs={12}>
-        <Typography variant="h5">Nice! No incidents found!</Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <img
-          src={EmptyStateImage}
-          alt="EmptyState"
-          data-testid="emptyStateImg"
-        />
-      </Grid>
-    </Grid>
+      <Text variant="title-medium">Nice! No incidents found!</Text>
+      <img
+        src={EmptyStateImage}
+        alt="EmptyState"
+        data-testid="emptyStateImg"
+        style={{ marginTop: 'var(--bui-space-4)' }}
+      />
+    </Flex>
   );
 };

@@ -13,255 +13,189 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { useEffect } from 'react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Tooltip from '@material-ui/core/Tooltip';
-import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import DoneIcon from '@material-ui/icons/Done';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
-import { DateTime, Duration } from 'luxon';
-import { Incident, IncidentPhase } from '../types';
-import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
-import { splunkOnCallApiRef } from '../../api/client';
-import useAsyncFn from 'react-use/esm/useAsyncFn';
-import { TriggerAlarmRequest } from '../../api/types';
-
+import { Flex, Text, ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
 import {
-  StatusError,
-  StatusWarning,
-  StatusOK,
-} from '@backstage/core-components';
+  RiCheckLine,
+  RiCheckDoubleLine,
+  RiExternalLinkLine,
+  RiCheckboxBlankCircleLine,
+} from '@remixicon/react';
+import { Incident } from '../types';
+import styles from './IncidentListItem.module.css';
+import useAsyncFn from 'react-use/esm/useAsyncFn';
+import { splunkOnCallApiRef } from '../../api';
 import { useApi } from '@backstage/core-plugin-api';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
 
-const useStyles = makeStyles({
-  denseListIcon: {
-    marginRight: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  listItemPrimary: {
-    fontWeight: 'bold',
-  },
-  listItemIcon: {
-    minWidth: '1em',
-  },
-  secondaryAction: {
-    paddingRight: 48,
-  },
-});
-
 type Props = {
-  team: string;
   incident: Incident;
-  onIncidentAction: () => void;
-  readOnly: boolean;
-};
-
-const IncidentPhaseStatus = ({
-  currentPhase,
-}: {
-  currentPhase: IncidentPhase;
-}) => {
-  switch (currentPhase) {
-    case 'UNACKED':
-      return <StatusError />;
-    case 'ACKED':
-      return <StatusWarning />;
-    default:
-      return <StatusOK />;
-  }
-};
-
-const incidentPhaseTooltip = (currentPhase: IncidentPhase) => {
-  switch (currentPhase) {
-    case 'UNACKED':
-      return 'Triggered';
-    case 'ACKED':
-      return 'Acknowledged';
-    default:
-      return 'Resolved';
-  }
-};
-
-const IncidentAction = ({
-  currentPhase,
-  incidentId,
-  resolveAction,
-  acknowledgeAction,
-}: {
-  currentPhase: string;
-  incidentId: string;
-  resolveAction: (args: TriggerAlarmRequest) => void;
-  acknowledgeAction: (args: TriggerAlarmRequest) => void;
-}) => {
-  switch (currentPhase) {
-    case 'UNACKED':
-      return (
-        <Tooltip title="Acknowledge" placement="top">
-          <IconButton
-            onClick={() =>
-              acknowledgeAction({ incidentId, incidentType: 'ACKNOWLEDGEMENT' })
-            }
-          >
-            <DoneIcon />
-          </IconButton>
-        </Tooltip>
-      );
-    case 'ACKED':
-      return (
-        <Tooltip title="Resolve" placement="top">
-          <IconButton
-            onClick={() =>
-              resolveAction({ incidentId, incidentType: 'RECOVERY' })
-            }
-          >
-            <DoneAllIcon />
-          </IconButton>
-        </Tooltip>
-      );
-    default:
-      return <></>;
-  }
+  readOnly?: boolean;
+  onIncidentUpdated?: () => void;
 };
 
 export const IncidentListItem = ({
   incident,
-  readOnly,
-  onIncidentAction,
-  team,
+  readOnly = false,
+  onIncidentUpdated,
 }: Props) => {
-  const classes = useStyles();
-  const duration =
-    new Date().getTime() - new Date(incident.startTime!).getTime();
-  const createdAt = DateTime.local()
-    .minus(Duration.fromMillis(duration))
-    .toRelative({ locale: 'en' });
-  const toastApi = useApi(toastApiRef);
   const api = useApi(splunkOnCallApiRef);
+  const toastApi = useApi(toastApiRef);
 
-  const hasBeenManuallyTriggered = incident.monitorName?.includes('vouser-');
-
-  const source = () => {
-    if (hasBeenManuallyTriggered) {
-      return incident.monitorName?.replace('vouser-', '');
-    }
-    if (incident.monitorType === 'API') {
-      return '{ REST }';
-    }
-
-    return incident.monitorName;
-  };
-
-  const [{ value: resolveValue, error: resolveError }, handleResolveIncident] =
-    useAsyncFn(
-      async ({ incidentId, incidentType }: TriggerAlarmRequest) =>
-        await api.incidentAction({
-          routingKey: team,
-          incidentType,
-          incidentId,
-        }),
-    );
-
-  const [
-    { value: acknowledgeValue, error: acknowledgeError },
-    handleAcknowledgeIncident,
-  ] = useAsyncFn(
-    async ({ incidentId, incidentType }: TriggerAlarmRequest) =>
+  const [{ loading: acknowledgeLoading }, acknowledgeIncident] = useAsyncFn(
+    async () => {
       await api.incidentAction({
-        routingKey: team,
-        incidentType,
-        incidentId,
-      }),
+        incidentNumber: incident.incidentNumber,
+        action: 'acknowledge',
+      } as any);
+      toastApi.post({ title: 'Incident acknowledged' });
+      onIncidentUpdated?.();
+    },
   );
 
-  useEffect(() => {
-    if (acknowledgeValue) {
-      toastApi.post({
-        title: `Incident successfully acknowledged`,
-      });
-    }
+  const [{ loading: resolveLoading }, resolveIncident] = useAsyncFn(
+    async () => {
+      await api.incidentAction({
+        incidentNumber: incident.incidentNumber,
+        action: 'resolve',
+      } as any);
+      toastApi.post({ title: 'Incident resolved' });
+      onIncidentUpdated?.();
+    },
+  );
 
-    if (resolveValue) {
-      toastApi.post({
-        title: `Incident successfully resolved`,
-      });
+  const getStatusLabel = () => {
+    switch (incident.currentPhase) {
+      case 'ACKED':
+        return 'Acknowledged';
+      case 'RESOLVED':
+        return 'Resolved';
+      default:
+        return 'Unacknowledged';
     }
-    if (resolveValue || acknowledgeValue) {
-      onIncidentAction();
+  };
+
+  const statusIcon = () => {
+    if (incident.currentPhase === 'ACKED') {
+      return <RiCheckLine size={20} />;
     }
-  }, [acknowledgeValue, resolveValue, toastApi, onIncidentAction]);
+    if (incident.currentPhase === 'RESOLVED') {
+      return <RiCheckDoubleLine size={20} />;
+    }
+    return <RiCheckboxBlankCircleLine size={20} />;
+  };
 
-  if (acknowledgeError) {
-    toastApi.post({
-      title: `Failed to acknowledge incident. ${acknowledgeError.message}`,
-      status: 'danger',
-    });
-  }
-
-  if (resolveError) {
-    toastApi.post({
-      title: `Failed to resolve incident. ${resolveError.message}`,
-      status: 'danger',
-    });
-  }
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    try {
+      return new Date(dateString).toLocaleString();
+    } catch {
+      return dateString;
+    }
+  };
 
   return (
-    <ListItem dense key={incident.entityId}>
-      <ListItemIcon className={classes.listItemIcon}>
-        <Tooltip
-          title={incidentPhaseTooltip(incident.currentPhase)}
-          placement="top"
-        >
-          <div className={classes.denseListIcon}>
-            <IncidentPhaseStatus currentPhase={incident.currentPhase} />
+    <Flex
+      direction="column"
+      style={{
+        padding: 'var(--bui-space-2) 0',
+        borderBottom: '1px solid var(--bui-border-1)',
+        gap: 'var(--bui-space-2)',
+      }}
+    >
+      <Flex align="center" style={{ gap: 'var(--bui-space-2)' }}>
+        <TooltipTrigger>
+          <div
+            className={styles.denseListIcon}
+            aria-label="Status warning"
+            title={getStatusLabel()}
+            role="img"
+          >
+            {statusIcon()}
           </div>
-        </Tooltip>
-      </ListItemIcon>
-      <ListItemText
-        primary={incident.entityDisplayName}
-        primaryTypographyProps={{
-          variant: 'body1',
-          className: classes.listItemPrimary,
-        }}
-        secondary={
-          <Typography noWrap variant="body2" color="textSecondary">
-            #{incident.incidentNumber} - Created {createdAt}{' '}
-            {source() && `by ${source()}`}
-          </Typography>
-        }
-      />
-
-      {incident.incidentLink && incident.incidentNumber && (
-        <ListItemSecondaryAction>
-          {!readOnly && (
-            <IncidentAction
-              currentPhase={incident.currentPhase || ''}
-              incidentId={incident.entityId}
-              resolveAction={handleResolveIncident}
-              acknowledgeAction={handleAcknowledgeIncident}
-            />
+          <Tooltip>{getStatusLabel()}</Tooltip>
+        </TooltipTrigger>
+        <Flex direction="column" style={{ flex: 1 }}>
+          <Text className={styles.listItemPrimary}>
+            {incident.incidentNumber}
+          </Text>
+          <Text variant="body-small" color="secondary">
+            {incident.entityDisplayName || incident.service || 'Incident'}
+          </Text>
+          {incident.monitorName && (
+            <Text variant="body-small" color="secondary">
+              {incident.monitorName}
+            </Text>
           )}
-          <Tooltip title="View in Splunk On-Call" placement="top">
-            <IconButton
-              href={incident.incidentLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              color="primary"
-            >
-              <OpenInBrowserIcon />
-            </IconButton>
-          </Tooltip>
-        </ListItemSecondaryAction>
-      )}
-    </ListItem>
+        </Flex>
+        <div style={{ display: 'flex', gap: 'var(--bui-space-1)' }}>
+          <div title="View in Splunk On-Call">
+            <TooltipTrigger>
+              <ButtonIcon
+                variant="secondary"
+                icon={<RiExternalLinkLine size={16} />}
+                aria-label="view incident"
+                onClick={() =>
+                  incident.incidentLink &&
+                  window.open(
+                    incident.incidentLink,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }
+              />
+              <Tooltip>View in Splunk On-Call</Tooltip>
+            </TooltipTrigger>
+          </div>
+          {!readOnly && incident.currentPhase !== 'ACKED' && (
+            <div title="Acknowledge">
+              <TooltipTrigger>
+                <ButtonIcon
+                  variant="secondary"
+                  icon={<RiCheckLine size={16} />}
+                  aria-label="acknowledge"
+                  isDisabled={acknowledgeLoading}
+                  onClick={acknowledgeIncident}
+                />
+                <Tooltip>Acknowledge</Tooltip>
+              </TooltipTrigger>
+            </div>
+          )}
+          {!readOnly && incident.currentPhase !== 'RESOLVED' && (
+            <div title="Resolve">
+              <TooltipTrigger>
+                <ButtonIcon
+                  variant="secondary"
+                  icon={<RiCheckDoubleLine size={16} />}
+                  aria-label="resolve"
+                  isDisabled={resolveLoading}
+                  onClick={resolveIncident}
+                />
+                <Tooltip>Resolve</Tooltip>
+              </TooltipTrigger>
+            </div>
+          )}
+        </div>
+      </Flex>
+      <Flex style={{ gap: 'var(--bui-space-3)' }}>
+        {incident.startTime && (
+          <Text
+            variant="body-small"
+            color="secondary"
+            style={{ fontSize: '0.75rem' }}
+          >
+            Started: {formatDate(incident.startTime)}
+          </Text>
+        )}
+        {incident.lastAlertTime && (
+          <Text
+            variant="body-small"
+            color="secondary"
+            style={{ fontSize: '0.75rem' }}
+          >
+            Last alert: {formatDate(incident.lastAlertTime)}
+          </Text>
+        )}
+      </Flex>
+    </Flex>
   );
 };
