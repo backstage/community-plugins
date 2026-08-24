@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2020 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
+
+/**
+ * Legacy frontend system exports for the Tech Radar plugin.
+ */
+
+import { RadarPage } from './components';
+
+export {
+  techRadarPlugin,
+  techRadarPlugin as plugin,
+  TechRadarPage,
+} from './plugin';
+
+export * from './components';
+
+/**
+ * @deprecated Use plugin extensions instead
+ *
+ * @public
+ */
+export const Router = RadarPage;
+
+/**
+ * The TypeScript API for configuring Tech Radar.
+ */
+export * from './api';

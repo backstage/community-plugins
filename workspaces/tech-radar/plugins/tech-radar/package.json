@@ -27,15 +27,15 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.tsx",
+    "./legacy": "./src/legacy.ts",
     "./package.json": "./package.json"
   },
   "main": "src/index.ts",
   "types": "src/index.ts",
   "typesVersions": {
     "*": {
-      "alpha": [
-        "src/alpha.tsx"
+      "legacy": [
+        "src/legacy.ts"
       ],
       "package.json": [
         "package.json"
@@ -52,6 +52,7 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "test": "backstage-cli package test"
   },
   "dependencies": {
@@ -71,8 +72,13 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-user-settings": "backstage:^",
     "@backstage/test-utils": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^15.0.0",

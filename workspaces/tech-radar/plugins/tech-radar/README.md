@@ -16,27 +16,45 @@ It serves and scales well for teams and companies of all sizes that want to have
 
 ## Getting Started
 
-The Tech Radar can be used in two ways:
-
-- **Simple (Recommended)** - This gives you an out-of-the-box Tech Radar experience. It lives on the `/tech-radar` URL of your Backstage installation.
-- **Advanced** - This gives you the React UI component directly. It enables you to insert the Radar on your own layout or page for a more customized feel.
-
-### Install
-
-For either simple or advanced installations, you'll need to add the dependency using Yarn:
+Install the frontend plugin:
 
 ```bash
 # From your Backstage root directory
 yarn --cwd packages/app add @backstage-community/plugin-tech-radar
 ```
 
-### Configuration
+Then add and configure the [tech-radar-backend](../tech-radar-backend) plugin if you want to load radar data from a URL. You can also provide a custom `TechRadarApi` implementation, described below.
 
-Modify your app routes to include the Router component exported from the tech radar, for example:
+### New frontend system
+
+Import `techRadarPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import techRadarPlugin from '@backstage-community/plugin-tech-radar';
+
+export const app = createApp({
+  features: [
+    // ...
+    techRadarPlugin,
+    // ...
+  ],
+});
+```
+
+The plugin automatically provides a Tech Radar page at `/tech-radar`. Page options such as `subtitle`, `pageTitle`, `width`, and `height` can be configured through the new frontend system.
+
+### Legacy frontend system
+
+The Tech Radar can be used in two ways with the legacy frontend system:
+
+- **Simple (Recommended)** - This gives you an out-of-the-box Tech Radar experience. It lives on the `/tech-radar` URL of your Backstage installation.
+- **Advanced** - This gives you the React UI component directly. It enables you to insert the Radar on your own layout or page for a more customized feel.
+
+Modify your app routes to include the page exported from the tech radar, for example:
 
 ```tsx
 // In packages/app/src/App.tsx
-import { TechRadarPage } from '@backstage-community/plugin-tech-radar';
+import { TechRadarPage } from '@backstage-community/plugin-tech-radar/legacy';
 
 const routes = (
   <FlatRoutes>
@@ -56,7 +74,7 @@ export type TechRadarPageProps = TechRadarComponentProps & {
   pageTitle?: string;
 };
 
-export interface TechRadarPageProps {
+export interface TechRadarComponentProps {
   width?: number;
   height?: number;
   svgProps?: object;
@@ -208,7 +226,7 @@ Follow the instructions [here](../tech-radar-backend/README.md) to configure the
 
 #### Option B: Implementing the TechRadarApi
 
-The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. To control how your data is loaded, you'll need to provide a class that implements the `TechRadarApi` and override the `techRadarApiRef` in the `app/src/apis.ts`.
+The `TechRadar` plugin uses the `techRadarApiRef` to get a client which implements the `TechRadarApi` interface. To control how your data is loaded, provide a class that implements `TechRadarApi` and override `techRadarApiRef`. Import `TechRadarApi` and `techRadarApiRef` from `@backstage-community/plugin-tech-radar`, or from `@backstage-community/plugin-tech-radar/legacy` in a legacy frontend app.
 
 ```ts
 // app/src/lib/MyClient.ts
@@ -257,7 +275,7 @@ export const apis: AnyApiFactory[] = [
 ];
 ```
 
-If using the [new alpha frontend system](https://backstage.io/docs/frontend-system/), the API implementation should use the ApiBlueprint syntax:
+If using the [new frontend system](https://backstage.io/docs/frontend-system/), the API implementation should use the ApiBlueprint syntax:
 
 ```ts
 // app/src/App.tsx
@@ -287,13 +305,15 @@ export const app = createApp({
 You can use the `svgProps` option to pass custom React props to the `<svg>` element we create for the Tech Radar. This complements well with the `data-testid` attribute and the `@testing-library/react` library we use in Backstage.
 
 ```tsx
+import { TechRadarComponent } from '@backstage-community/plugin-tech-radar/legacy';
+
 <TechRadarComponent
   width={1400}
   height={800}
   svgProps={{
     'data-testid': 'tech-radar-svg',
   }}
-/>
+/>;
 
 // Then, in your tests...
 // const { getByTestId } = render(...);
@@ -302,4 +322,4 @@ You can use the `svgProps` option to pass custom React props to the `<svg>` elem
 
 ### How do I support multiple radars
 
-The `TechRadarPage` and `TechRadarComponent` components both take an optional `id` prop which is subsequently passed to the `load` method of the API to distinguish which radar's data to load.
+The `TechRadarPage` and `TechRadarComponent` components (legacy frontend system) both take an optional `id` prop which is subsequently passed to the `load` method of the API to distinguish which radar's data to load.

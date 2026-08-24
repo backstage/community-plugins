@@ -20,9 +20,9 @@ import {
   TestApiProvider,
 } from '@backstage/frontend-test-utils';
 import { screen } from '@testing-library/react';
-import { techRadarPage } from './alpha';
 import { techRadarApiRef } from './api';
 import { DefaultTechRadarApi } from './defaultApi';
+import { techRadarPage } from './pages';
 
 describe('TechRadarPage', () => {
   const discoveryApi = {
