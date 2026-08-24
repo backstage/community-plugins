@@ -33,13 +33,14 @@ import {
 } from '@backstage/core-components';
 
 import { ErrorApi, errorApiRef, useApi } from '@backstage/core-plugin-api';
-import { Options } from '@material-table/core';
 
 /** @public */
 export const SentryIssuesWidget = (props: {
   entity: Entity;
   statsFor: '24h' | '14d' | '';
-  tableOptions: Options<never>;
+  tableOptions?: {
+    pageSize?: number;
+  };
   variant?: InfoCardVariants;
   query?: string;
 }) => {
@@ -100,14 +101,22 @@ export const SentryIssuesWidget = (props: {
 /** @public */
 export const SentryIssuesWidgetCard = () => {
   const { entity } = useEntity();
+
+  if (!entity?.metadata?.name) {
+    return (
+      <EmptyState
+        missing="info"
+        title="Entity not found"
+        description="Unable to load Sentry issues for this entity."
+      />
+    );
+  }
+
   return (
     <SentryIssuesWidget
       entity={entity}
       statsFor="24h"
       tableOptions={{
-        padding: 'dense',
-        paging: true,
-        search: false,
         pageSize: 5,
       }}
     />
