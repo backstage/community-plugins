@@ -33,6 +33,7 @@ test.describe('Tekton plugin', () => {
     );
     translations = getTranslations(currentLocale);
     await common.switchToLocale(currentLocale);
+    await common.navigateToTektonView();
 
     await expect(
       page.getByRole('heading', { name: translations.pipelineRunList.title }),

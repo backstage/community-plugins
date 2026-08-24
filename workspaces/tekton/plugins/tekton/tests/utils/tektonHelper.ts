@@ -16,6 +16,11 @@
 import { AxeBuilder } from '@axe-core/playwright';
 import { expect, TestInfo, type Page } from '@playwright/test';
 
+/** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
+export function isNfsAppMode(): boolean {
+  return process.env.APP_MODE === 'alpha';
+}
+
 export class Common {
   page: Page;
 
@@ -36,6 +41,24 @@ export class Common {
 
     await this.page.getByRole('button', { name: 'Enter' }).click();
     await this.waitForSideBarVisible();
+  }
+
+  /**
+   * Opens the Tekton PipelineRun list. Legacy dev exposes `/tekton`; NFS
+   * mounts Tekton on the catalog entity page.
+   */
+  async navigateToTektonView() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/tekton');
+      return;
+    }
+
+    await this.page.goto('/catalog/default/component/backstage/tekton');
+    await expect(
+      this.page
+        .getByRole('navigation', { name: 'Content navigation' })
+        .getByRole('link', { name: 'Tekton', exact: true }),
+    ).toBeVisible();
   }
 
   async switchToLocale(locale: string): Promise<void> {
