@@ -186,7 +186,20 @@ export class DatabaseHandlerV2 {
       await this.db<V2MetricsByCliRow>('copilot_metrics_by_cli')
         .insert(chunk)
         .onConflict(['day', 'metrics_type', 'entity_id', 'team_slug'])
-        .ignore();
+        // Merge (rather than ignore) on conflict so that re-ingesting a day
+        // updates any stale/zeroed row already stored for that key — e.g.
+        // rows written before the `output_tokens_sum`/`prompt_tokens_sum`
+        // columns were widened to `bigint` (see
+        // 202608240000_widen_cli_token_sum_columns.js), which would
+        // otherwise be silently skipped forever by `.ignore()`.
+        .merge([
+          'prompt_count',
+          'request_count',
+          'session_count',
+          'avg_tokens_per_request',
+          'output_tokens_sum',
+          'prompt_tokens_sum',
+        ]);
     });
   }
 
