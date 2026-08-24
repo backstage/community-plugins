@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AlertSource } from '../../types';
-import styles from './ILertCardHeaderStatus.module.css';
-
-export const ILertCardHeaderStatus = ({
-  alertSource,
-}: {
-  alertSource: AlertSource | null;
-}) => {
-  if (!alertSource) {
-    return null;
+@layer components {
+  .resolved {
+    background-color: #4caf50;
+    color: white;
   }
 
-  switch (alertSource.status) {
-    case 'IN_MAINTENANCE':
-      return <div className={styles.maintenance}>MAINTENANCE</div>;
-    case 'DISABLED':
-      return <div className={styles.maintenance}>INACTIVE</div>;
-    default:
-      return null;
+  .accepted {
+    background-color: #ffb74d;
+    color: white;
   }
-};
+
+  .pending {
+    background-color: #d32f2f;
+    color: white;
+  }
+}

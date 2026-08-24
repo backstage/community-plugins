@@ -1,0 +1,7 @@
+@layer components {
+  .maintenance {
+    background-color: #92949c;
+    color: white;
+    margin-top: 8px;
+  }
+}

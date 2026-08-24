@@ -1,0 +1,53 @@
+.root {
+  margin: 16px 0;
+}
+
+.header {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--bui-fg-muted);
+  margin: 0 0 8px 0;
+  padding: 0 16px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 0;
+  position: relative;
+}
+
+.iconContainer {
+  flex-shrink: 0;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.icon {
+  margin-left: 8px;
+  color: var(--bui-fg-muted);
+}
+
+.content {
+  flex: 1;
+  padding-left: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.repeatText {
+  font-style: italic;
+  color: var(--bui-fg-muted);
+}
