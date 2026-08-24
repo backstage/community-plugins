@@ -14,65 +14,16 @@
  * limitations under the License.
  */
 
-@layer components {
-  .loadingContainer {
-    display: flex;
-    justify-content: center;
-    padding: 100px var(--bui-space-6);
-  }
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 100px var(--bui-space-6);
+}
 
-  .skeletonWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--bui-space-3);
-    width: 100%;
-    max-width: 400px;
-  }
-
-  .list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .listItem {
-    display: flex;
-    align-items: center;
-    padding: var(--bui-space-2) var(--bui-space-4);
-  }
-
-  .listItemIcon {
-    min-width: 40px;
-    display: flex;
-    align-items: center;
-    color: var(--bui-fg-secondary);
-  }
-
-  .tableWrapper {
-    overflow-x: auto;
-  }
-
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--bui-font-size-2);
-  }
-
-  .table th {
-    padding: var(--bui-space-2) var(--bui-space-3);
-    border-bottom: 2px solid var(--bui-border);
-    text-align: left;
-    white-space: nowrap;
-    color: var(--bui-fg-primary);
-    font-weight: var(--bui-font-weight-bold);
-  }
-
-  .table td {
-    padding: var(--bui-space-2) var(--bui-space-3);
-    border-bottom: 1px solid var(--bui-border);
-  }
-
-  .table tr:hover td {
-    background-color: var(--bui-bg-hover);
-  }
+.skeletonWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-3);
+  width: 100%;
+  max-width: 400px;
 }

@@ -16,7 +16,7 @@
 
 import { memo, useEffect, useState } from 'react';
 import { forEach, get, reverse, round, sortBy } from 'lodash';
-import { Skeleton, Text } from '@backstage/ui';
+import { CellText, Flex, Skeleton, Table, Text } from '@backstage/ui';
 import { RiServerLine, RiCpuLine } from '@remixicon/react';
 import Warnings from './Warnings';
 import AllocationService from '../services/allocation';
@@ -186,68 +186,96 @@ const Details = ({
         </div>
       )}
 
-      <ul className={styles.list}>
+      <Flex direction="column" style={{ marginBottom: 'var(--bui-space-2)' }}>
         {cluster && (
-          <li className={styles.listItem}>
-            <div className={styles.listItemIcon}>
-              <RiServerLine size={20} />
-            </div>
+          <Flex
+            direction="row"
+            style={{
+              alignItems: 'center',
+              gap: 'var(--bui-space-3)',
+              padding: 'var(--bui-space-2) 0',
+            }}
+          >
+            <RiServerLine size={20} />
             <Text>{cluster}</Text>
-          </li>
+          </Flex>
         )}
         {node && (
-          <li className={styles.listItem}>
-            <div className={styles.listItemIcon}>
-              <RiCpuLine size={20} />
-            </div>
+          <Flex
+            direction="row"
+            style={{
+              alignItems: 'center',
+              gap: 'var(--bui-space-3)',
+              padding: 'var(--bui-space-2) 0',
+            }}
+          >
+            <RiCpuLine size={20} />
             <Text>{node}</Text>
-          </li>
+          </Flex>
         )}
-      </ul>
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th style={{ width: 200, textAlign: 'left' }}>Container</th>
-              <th style={{ textAlign: 'right' }}>Hours</th>
-              <th style={{ textAlign: 'right' }}>CPU</th>
-              <th style={{ textAlign: 'right' }}>$/(CPU*Hr)</th>
-              <th style={{ textAlign: 'right' }}>CPU cost</th>
-              <th style={{ textAlign: 'right' }}>RAM</th>
-              <th style={{ textAlign: 'right' }}>$/(GiB*Hr)</th>
-              <th style={{ textAlign: 'right' }}>RAM cost</th>
-              <th style={{ textAlign: 'right' }}>Total cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i}>
-                <td style={{ width: 200, textAlign: 'left' }}>
-                  {row.container}
-                </td>
-                <td style={{ textAlign: 'right' }}>{row.hours}</td>
-                <td style={{ textAlign: 'right' }}>{row.cpu}</td>
-                <td style={{ textAlign: 'right' }}>
-                  {toCurrency(row.cpuCostPerCoreHr, currency, 5)}
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  {toCurrency(row.cpuCost, currency, 3)}
-                </td>
-                <td style={{ textAlign: 'right' }}>{bytesToString(row.ram)}</td>
-                <td style={{ textAlign: 'right' }}>
-                  {toCurrency(row.ramCostPerGiBHr, currency, 5)}
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  {toCurrency(row.ramCost, currency, 3)}
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  {toCurrency(row.totalCost, currency, 3)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      </Flex>
+      <Table
+        columnConfig={[
+          {
+            id: 'container',
+            label: 'Container',
+            isRowHeader: true,
+            cell: row => <CellText title={row.container ?? ''} />,
+          },
+          {
+            id: 'hours',
+            label: 'Hours',
+            cell: row => <CellText title={String(row.hours)} />,
+          },
+          {
+            id: 'cpu',
+            label: 'CPU',
+            cell: row => <CellText title={String(row.cpu)} />,
+          },
+          {
+            id: 'cpuCostPerCoreHr',
+            label: '$/(CPU*Hr)',
+            cell: row => (
+              <CellText title={toCurrency(row.cpuCostPerCoreHr, currency, 5)} />
+            ),
+          },
+          {
+            id: 'cpuCost',
+            label: 'CPU cost',
+            cell: row => (
+              <CellText title={toCurrency(row.cpuCost, currency, 3)} />
+            ),
+          },
+          {
+            id: 'ram',
+            label: 'RAM',
+            cell: row => <CellText title={bytesToString(row.ram)} />,
+          },
+          {
+            id: 'ramCostPerGiBHr',
+            label: '$/(GiB*Hr)',
+            cell: row => (
+              <CellText title={toCurrency(row.ramCostPerGiBHr, currency, 5)} />
+            ),
+          },
+          {
+            id: 'ramCost',
+            label: 'RAM cost',
+            cell: row => (
+              <CellText title={toCurrency(row.ramCost, currency, 3)} />
+            ),
+          },
+          {
+            id: 'totalCost',
+            label: 'Total cost',
+            cell: row => (
+              <CellText title={toCurrency(row.totalCost, currency, 3)} />
+            ),
+          },
+        ]}
+        data={rows.map(row => ({ ...row, id: row.container ?? row.pod }))}
+        emptyState={<Text variant="body-small">No data</Text>}
+      />
     </div>
   );
 };

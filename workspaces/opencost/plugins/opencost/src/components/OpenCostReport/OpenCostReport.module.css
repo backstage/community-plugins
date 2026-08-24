@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-@layer components {
-  .reportHeader {
-    display: flex;
-    flex-flow: row;
-    padding: var(--bui-space-6);
-    align-items: flex-start;
-  }
+.reportHeader {
+  display: flex;
+  flex-flow: row;
+  padding: var(--bui-space-6);
+  align-items: flex-start;
+}
 
-  .titles {
-    flex-grow: 1;
-  }
+.titles {
+  flex-grow: 1;
+}
 
-  .loadingContainer {
-    display: flex;
-    justify-content: center;
-    padding: 100px var(--bui-space-6);
-  }
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 100px var(--bui-space-6);
+}
 
-  .skeletonWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--bui-space-3);
-    width: 100%;
-    max-width: 600px;
-  }
+.skeletonWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-3);
+  width: 100%;
+  max-width: 600px;
 }

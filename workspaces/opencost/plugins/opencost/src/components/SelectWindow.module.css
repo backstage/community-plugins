@@ -14,108 +14,106 @@
  * limitations under the License.
  */
 
-@layer components {
-  .formControl {
-    display: flex;
-    flex-direction: column;
-    margin: var(--bui-space-2);
-    width: 120px;
-  }
+.formControl {
+  display: flex;
+  flex-direction: column;
+  margin: var(--bui-space-2);
+  width: 120px;
+}
 
-  .dateContainer {
-    padding: var(--bui-space-3) var(--bui-space-4) var(--bui-space-4)
-      var(--bui-space-4);
-    display: flex;
-    flex-flow: row;
-    gap: var(--bui-space-4);
-    background-color: var(--bui-bg-surface-1);
-  }
+.dateContainer {
+  padding: var(--bui-space-3) var(--bui-space-4) var(--bui-space-4)
+    var(--bui-space-4);
+  display: flex;
+  flex-flow: row;
+  gap: var(--bui-space-4);
+  background-color: var(--bui-bg-surface-1);
+}
 
-  .dateContainerColumn {
-    display: flex;
-    flex-flow: column;
-    gap: var(--bui-space-3);
-  }
+.dateContainerColumn {
+  display: flex;
+  flex-flow: column;
+  gap: var(--bui-space-3);
+}
 
-  .dateInput {
-    padding: var(--bui-space-2);
-    border: 1px solid var(--bui-border);
-    border-radius: var(--bui-radius-2);
-    background-color: var(--bui-bg-surface-1);
-    color: var(--bui-fg-primary);
-    font-size: var(--bui-font-size-2);
-    width: 144px;
-  }
+.dateInput {
+  padding: var(--bui-space-2);
+  border: 1px solid var(--bui-border);
+  border-radius: var(--bui-radius-2);
+  background-color: var(--bui-bg-surface-1);
+  color: var(--bui-fg-primary);
+  font-size: var(--bui-font-size-2);
+  width: 144px;
+}
 
-  .dateLabel {
-    font-size: var(--bui-font-size-1);
-    color: var(--bui-fg-secondary);
-    margin-bottom: var(--bui-space-1);
-  }
+.dateLabel {
+  font-size: var(--bui-font-size-1);
+  color: var(--bui-fg-secondary);
+  margin-bottom: var(--bui-space-1);
+}
 
-  .presetList {
-    display: flex;
-    flex-direction: column;
-    padding-top: var(--bui-space-3);
-    margin-left: var(--bui-space-4);
-    gap: var(--bui-space-1);
-  }
+.presetList {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--bui-space-3);
+  margin-left: var(--bui-space-4);
+  gap: var(--bui-space-1);
+}
 
-  .presetLink {
-    cursor: pointer;
-    color: var(--bui-fg-link);
-    font-size: var(--bui-font-size-2);
-    background: none;
-    border: none;
-    padding: var(--bui-space-1) 0;
-    text-align: left;
-    text-decoration: none;
-  }
+.presetLink {
+  cursor: pointer;
+  color: var(--bui-fg-link);
+  font-size: var(--bui-font-size-2);
+  background: none;
+  border: none;
+  padding: var(--bui-space-1) 0;
+  text-align: left;
+  text-decoration: none;
+}
 
-  .presetLink:hover {
-    text-decoration: underline;
-  }
+.presetLink:hover {
+  text-decoration: underline;
+}
 
-  .windowFieldWrapper {
-    margin: var(--bui-space-2);
-    width: 120px;
-  }
+.windowFieldWrapper {
+  margin: var(--bui-space-2);
+  width: 120px;
+}
 
-  .windowField {
-    cursor: pointer;
-    width: 100%;
-    padding: var(--bui-space-2);
-    border: none;
-    border-bottom: 1px solid var(--bui-border);
-    background: transparent;
-    color: var(--bui-fg-primary);
-    font-size: var(--bui-font-size-2);
-  }
+.windowField {
+  cursor: pointer;
+  width: 100%;
+  padding: var(--bui-space-2);
+  border: none;
+  border-bottom: 1px solid var(--bui-border);
+  background: transparent;
+  color: var(--bui-fg-primary);
+  font-size: var(--bui-font-size-2);
+}
 
-  .windowField:hover {
-    border-bottom-color: var(--bui-fg-primary);
-  }
+.windowField:hover {
+  border-bottom-color: var(--bui-fg-primary);
+}
 
-  .windowLabel {
-    font-size: var(--bui-font-size-1);
-    color: var(--bui-fg-secondary);
-    margin-bottom: var(--bui-space-1);
-    display: block;
-  }
+.windowLabel {
+  font-size: var(--bui-font-size-1);
+  color: var(--bui-fg-secondary);
+  margin-bottom: var(--bui-space-1);
+  display: block;
+}
 
-  .popoverWrapper {
-    position: relative;
-  }
+.popoverWrapper {
+  position: relative;
+}
 
-  .popover {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1300;
-    background-color: var(--bui-bg-surface-1);
-    border: 1px solid var(--bui-border);
-    border-radius: var(--bui-radius-2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 300px;
-  }
+.popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1300;
+  background-color: var(--bui-bg-surface-1);
+  border: 1px solid var(--bui-border);
+  border-radius: var(--bui-radius-2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
 }

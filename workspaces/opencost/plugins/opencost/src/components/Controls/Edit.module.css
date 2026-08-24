@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-@layer components {
-  .wrapper {
-    display: inline-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--bui-space-2);
-  }
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bui-space-2);
+}
 
-  .formControl {
-    display: flex;
-    flex-direction: column;
-    margin: var(--bui-space-2);
-    min-width: 120px;
-  }
+.formControl {
+  display: flex;
+  flex-direction: column;
+  margin: var(--bui-space-2);
+  min-width: 120px;
 }

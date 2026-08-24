@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-@layer components {
-  .tooltip {
-    border-radius: var(--bui-radius-2);
-    background: rgba(255, 255, 255, 0.95);
-    padding: var(--bui-space-3);
-  }
+.tooltip {
+  border-radius: var(--bui-radius-2);
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--bui-space-3);
+}
 
-  .tooltipLineItem {
-    font-size: 1rem;
-    margin: 0;
-    margin-bottom: 4px;
-    padding: 0;
-  }
+.tooltipLineItem {
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: 4px;
+  padding: 0;
 }

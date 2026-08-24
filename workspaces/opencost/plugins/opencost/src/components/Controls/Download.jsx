@@ -15,8 +15,7 @@
  */
 import { memo } from 'react';
 import { get, forEach, reverse, round, sortBy } from 'lodash';
-import { ButtonIcon, Tooltip } from '@backstage/ui';
-import { TooltipTrigger } from 'react-aria-components';
+import { ButtonIcon, Tooltip, TooltipTrigger } from '@backstage/ui';
 import { RiDownloadLine } from '@remixicon/react';
 
 const columns = [
