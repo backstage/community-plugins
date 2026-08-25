@@ -11,7 +11,7 @@ This workspace is composed of several packages:
 - [quay-actions](./plugins/quay-actions/) — A scaffolder backend module providing software template actions for Quay, such as creating a Quay repository. Operator docs: [README](./plugins/quay-actions/README.md); contributors: [CONTRIBUTING](./plugins/quay-actions/CONTRIBUTING.md)
 - [quay-common](./plugins/quay-common/) — A common library containing shared types and utilities used by the other Quay plugins. Operator docs: [README](./plugins/quay-common/README.md); contributors: [CONTRIBUTING](./plugins/quay-common/CONTRIBUTING.md)
 
-The `packages/app` and `packages/backend` directories are leftover stubs and are **not** used for day-to-day development. Prefer each package's `dev/` harness — see the contributor guides above.
+For local development, see the contributor guides above. Plugin `dev/` harnesses cover the frontend, backend, and scaffolder module; `quay-common` is a library with unit tests only.
 
 ## Quick start
 

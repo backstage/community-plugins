@@ -305,6 +305,10 @@ describe('createRouter', () => {
 
     it.each([
       {
+        endpoint: '/%20/repository/org/repo/tag',
+        description: 'whitespace instanceName',
+      },
+      {
         endpoint: '/default/repository/%20/repo/tag',
         description: 'whitespace org',
       },

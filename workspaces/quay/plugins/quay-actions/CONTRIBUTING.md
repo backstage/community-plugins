@@ -42,7 +42,7 @@ From the workspace root (`workspaces/quay`):
 
 ```bash
 yarn workspace @backstage-community/plugin-scaffolder-backend-module-quay test
-yarn workspace @backstage-community/plugin-scaffolder-backend-module-quay lint
+yarn workspace @backstage-community/plugin-scaffolder-backend-module-quay lint:check
 yarn tsc
 ```
 
@@ -60,7 +60,7 @@ CI does **not** replace reading [Backstage release notes](https://github.com/bac
 Use when you change scaffolder integration code or are reviewing a Backstage version bump:
 
 1. Start this harness and confirm the backend starts without errors. In the logs, look for scaffolder listing enabled actions and verify `quay:create-repository` is present (alongside built-in actions such as `fetch:template` and `debug:log`).
-2. To run the [sample template](./examples/templates/01-quay-template.yaml) end-to-end (create a real Quay repository), use a consumer Backstage app or overlays with the catalog location from [Environment setup](#environment-setup) and a Quay OAuth token — not covered by this harness alone.
+2. To run the [sample template](./examples/templates/01-quay-template.yaml) end-to-end (create a real Quay repository), use a consumer Backstage app with the catalog location from [Environment setup](#environment-setup) and a Quay OAuth token — not covered by this harness alone.
 
 ## Related packages
 

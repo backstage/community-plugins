@@ -27,7 +27,6 @@ Configure Quay via the workspace [`app-config.yaml`](../../app-config.yaml) or a
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
 | `quay.apiUrl`                | Quay API base URL (single-instance)                                                        |
 | `quay.apiKey`                | OAuth access token / API key (placeholder locally)                                         |
-| `quay.uiUrl`                 | Quay UI base URL (optional, single-instance)                                               |
 | `quay.instances`             | Multi-instance list (`name`, `apiUrl`, `apiKey`, …) — do not mix with single-instance keys |
 | `BACKSTAGE_DEV_STATIC_TOKEN` | Optional static bearer token if you enable `backend.auth.externalAccess` for `curl`        |
 

@@ -22,7 +22,7 @@ From the workspace root (`workspaces/quay`):
 
 ```bash
 yarn workspace @backstage-community/plugin-quay-common test
-yarn workspace @backstage-community/plugin-quay-common lint
+yarn workspace @backstage-community/plugin-quay-common lint:check
 yarn tsc
 ```
 
@@ -41,13 +41,8 @@ Use when you change permission exports or are reviewing a Backstage version bump
 1. Run the package tests above.
 2. Start the [backend harness](../quay-backend/CONTRIBUTING.md) and confirm DENY/ALLOW behavior still matches `quay.view.read` policy expectations.
 
-## When a consumer app or overlays are needed
-
-- Day-to-day and bump PRs: unit tests + dependent plugin `dev/` harnesses.
-- Workspace `packages/app` / `packages/backend` are leftover stubs and are **not** the default path; do not expand them for bump trust.
-
 ## Related packages
 
 - [Quay backend](../quay-backend/CONTRIBUTING.md) — registers `quayPermissions` and enforces `quayViewPermission`
-- [Quay frontend](../quay/CONTRIBUTING.md) — UI consumers of shared constants
+- [Quay frontend](../quay/CONTRIBUTING.md) — uses `QUAY_SINGLE_INSTANCE_NAME` and `quayViewPermission`
 - [Quay scaffolder actions](../quay-actions/CONTRIBUTING.md) — template actions

@@ -37,7 +37,7 @@ From the workspace root (`workspaces/quay`):
 
 ```bash
 yarn workspace @backstage-community/plugin-quay test
-yarn workspace @backstage-community/plugin-quay lint
+yarn workspace @backstage-community/plugin-quay lint:check
 yarn tsc
 ```
 
@@ -48,6 +48,7 @@ CI exercises:
 - **API factory / config contract** — including mixed single- and multi-instance config throw
 - **Hooks** — `useTags` / related hooks with realistic API response shapes
 - **Components** — repository and tag page unit coverage
+- **Playwright** — frontend `dev/` harness UI tests (`yarn playwright test` from the workspace root)
 
 CI does **not** replace reading [Backstage release notes](https://github.com/backstage/backstage/releases) for the `@backstage/*` packages this plugin depends on. After a dependency bump, review those notes and decide whether additional validation is warranted.
 
@@ -57,13 +58,6 @@ Use when you change frontend integration code or are reviewing a Backstage versi
 
 1. Start this frontend harness alone and open a mock Quay entity (for example `quay-instance` / `quay-instance-devel`). Confirm the tag list and related views render from the fixtures in `dev/__data__/`.
 2. For live API / permissions smoke, start the [backend harness](../quay-backend/CONTRIBUTING.md) as well and confirm the tag list loads against a real Quay config (or a clear error when config/permissions fail).
-3. Exhaustive entity-page matrices and credential-backed e2e belong in a consumer app or overlays — not required for bump PR merge gates.
-
-## When a consumer app or overlays are needed
-
-- Day-to-day and bump PRs: plugin `dev/` harnesses + automated tests.
-- Workspace `packages/app` / `packages/backend` are leftover stubs and are **not** the default path; do not expand them for bump trust.
-- Live Quay tenant / overlay Playwright: consumer RHDH deployment or `rhdh-plugin-export-overlays`.
 
 ## Related packages
 

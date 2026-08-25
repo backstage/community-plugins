@@ -5,4 +5,4 @@
 '@backstage-community/plugin-quay': patch
 ---
 
-Add CI bump-trust test coverage and contributor guides for Quay plugins.
+Added contributor guides and a local scaffolder `dev/` harness. Strengthened automated tests for backend plugin mount, router validation, shared permission contracts, and `quay:create-repository` registration.
