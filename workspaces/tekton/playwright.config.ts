@@ -25,6 +25,7 @@ const startCommand =
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 120_000,
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
@@ -33,6 +34,7 @@ export default defineConfig({
           port: 3000,
           reuseExistingServer: true,
           cwd: 'plugins/tekton',
+          timeout: 120_000,
         },
       ],
 

@@ -25,11 +25,13 @@ import '@backstage/ui/css/styles.css';
 import ReactDOM from 'react-dom/client';
 
 import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
   createFrontendModule,
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha';
@@ -93,9 +95,24 @@ const kubernetesPluginOverrides = kubernetesPlugin.withOverrides({
   ],
 });
 
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={['guest']}
+        />
+      ),
+  },
+});
+
 const appDevModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
+    signInPage,
     ApiBlueprint.make({
       name: 'permission',
       params: defineParams =>

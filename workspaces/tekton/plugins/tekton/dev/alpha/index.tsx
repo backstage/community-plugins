@@ -31,6 +31,7 @@ import {
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha';
 

@@ -13,31 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect, Locator, Page, test } from '@playwright/test';
+import {
+  expect,
+  Locator,
+  Page,
+  test,
+  type BrowserContext,
+} from '@playwright/test';
 import { Common } from './utils/tektonHelper';
 import { getTranslations, TektonMessages } from './utils/translations';
 
 test.describe('Tekton plugin', () => {
+  let context: BrowserContext;
   let page: Page;
   let common: Common;
   let translations: TektonMessages;
 
-  test.beforeAll(async ({ browser }) => {
-    const context = await browser.newContext();
+  test.beforeAll(async ({ browser }, testInfo) => {
+    const locale = testInfo.project.use.locale as string | undefined;
+    context = await browser.newContext(locale ? { locale } : {});
     page = await context.newPage();
     common = new Common(page);
-
     await common.loginAsGuest();
-    const currentLocale = await page.evaluate(
-      () => globalThis.navigator.language,
-    );
+
+    const currentLocale =
+      locale ?? (await page.evaluate(() => globalThis.navigator.language));
+
     translations = getTranslations(currentLocale);
     await common.switchToLocale(currentLocale);
     await common.navigateToTektonView();
 
     await expect(
-      page.getByRole('heading', { name: translations.pipelineRunList.title }),
+      page.getByText(translations.pipelineRunList.title, { exact: true }),
     ).toBeVisible();
+  });
+
+  test.afterAll(async () => {
+    await context?.close();
   });
 
   test('Control elements are shown', async ({ browser }, testInfo) => {

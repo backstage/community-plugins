@@ -4,5 +4,5 @@
 '@backstage-community/plugin-tekton-react': minor
 ---
 
-Backstage version bump to v1.54.3
+Backstage version bump to v1.54.5
 Added New Frontend System development entrypoints and e2e coverage.

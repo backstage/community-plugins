@@ -34,7 +34,6 @@ export class Common {
 
   async loginAsGuest() {
     await this.page.goto('/');
-    // TODO - Remove it after https://issues.redhat.com/browse/RHIDP-2043. A Dynamic plugin for Guest Authentication Provider needs to be created
     this.page.on('dialog', async dialog => {
       await dialog.accept();
     });
@@ -50,15 +49,16 @@ export class Common {
   async navigateToTektonView() {
     if (!isNfsAppMode()) {
       await this.page.goto('/tekton');
-      return;
+    } else {
+      await this.page.goto('/catalog/default/component/backstage/tekton');
+      const tektonTab = this.page
+        .getByRole('navigation', { name: 'Content navigation' })
+        .getByRole('link', { name: 'Tekton', exact: true });
+      await expect(tektonTab).toBeVisible();
+      await tektonTab.click();
     }
 
-    await this.page.goto('/catalog/default/component/backstage/tekton');
-    await expect(
-      this.page
-        .getByRole('navigation', { name: 'Content navigation' })
-        .getByRole('link', { name: 'Tekton', exact: true }),
-    ).toBeVisible();
+    await expect(this.page.getByTestId('tekton-progress')).toHaveCount(0);
   }
 
   async switchToLocale(locale: string): Promise<void> {

@@ -14,8 +14,54 @@
  * limitations under the License.
  */
 
-/**
- * Legacy frontend system mock-only entrypoint.
- */
+import { Page, Header, TabbedLayout } from '@backstage/core-components';
+import { createDevApp } from '@backstage/dev-utils';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import {
+  kubernetesApiRef,
+  kubernetesProxyApiRef,
+  kubernetesAuthProvidersApiRef,
+} from '@backstage/plugin-kubernetes-react';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
+import { TestApiProvider } from '@backstage/test-utils';
+import { tektonTranslations } from '@backstage-community/plugin-tekton';
 
-import './index';
+import { TektonCI, tektonPlugin } from '../src/plugin';
+import {
+  mockEntity,
+  mockKubernetesAuthProviderApi,
+  mockKubernetesClient,
+  mockKubernetesProxyApi,
+  mockPermissionApi,
+} from './mocks';
+
+createDevApp()
+  .addTranslationResource(tektonTranslations)
+  .setAvailableLanguages(['en', 'de', 'es', 'fr', 'it', 'ja'])
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, mockKubernetesClient],
+          [kubernetesProxyApiRef, mockKubernetesProxyApi],
+          [permissionApiRef, mockPermissionApi],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
+        ]}
+      >
+        <EntityProvider entity={mockEntity}>
+          <Page themeId="service">
+            <Header type="component — service" title="demo-sevice" />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <TektonCI />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Tekton CI',
+    path: '/tekton',
+  })
+  .registerPlugin(tektonPlugin)
+  .render();
