@@ -53,9 +53,9 @@
       "allowedVersions": "<7.0.0"
     },
     {
-      "matchFileNames": ["/^workspaces\\/(?<workspace>[^/]+)\\//"],
-      "groupName": "workspace/{{workspace}} dependencies",
-      "additionalBranchPrefix": "workspace-{{workspace}}/"
+      "matchFileNames": ["workspaces/**"],
+      "groupName": "workspace/{{lookup (split packageFileDir '/') 1}} dependencies",
+      "additionalBranchPrefix": "workspace-{{lookup (split packageFileDir '/') 1}}/"
     },
     {
       "matchFileNames": [
