@@ -399,7 +399,7 @@ export const getSelectedMember = (
       id: memberResource.metadata.etag as string,
       ref: stringifyEntityRef(memberResource),
       label:
-        memberResource.spec.profile?.displayName ??
+        memberResource.spec?.profile?.displayName ??
         memberResource.metadata.name,
       etag: memberResource.metadata.etag as string,
       type: memberResource.kind,

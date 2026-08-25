@@ -1,5 +1,11 @@
 # @backstage-community/plugin-playlist
 
+## 0.22.0
+
+### Minor Changes
+
+- 57bd16a: Add new frontend system support via the `/alpha` entry point
+
 ## 0.21.0
 
 ### Minor Changes

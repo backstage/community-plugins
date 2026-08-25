@@ -1,5 +1,15 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.22.0
+
+### Minor Changes
+
+- 70d7508: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 936f69a: Updated dependency `@keycloak/keycloak-admin-client` to `26.7.0`.
+
 ## 3.21.0
 
 ### Minor Changes

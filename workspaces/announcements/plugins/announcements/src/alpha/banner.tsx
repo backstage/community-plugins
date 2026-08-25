@@ -16,6 +16,7 @@
 
 import { compatWrapper } from '@backstage/core-compat-api';
 import { AppRootElementBlueprint } from '@backstage/frontend-plugin-api';
+import { z } from 'zod';
 import { NewAnnouncementBanner } from '../components/NewAnnouncementBanner';
 
 /**
@@ -28,14 +29,12 @@ import { NewAnnouncementBanner } from '../components/NewAnnouncementBanner';
  */
 export const announcementsBanner = AppRootElementBlueprint.makeWithOverrides({
   name: 'banner',
-  config: {
-    schema: {
-      max: z => z.number().optional().default(1),
-      category: z => z.string().optional(),
-      active: z => z.boolean().optional(),
-      current: z => z.boolean().optional(),
-      tags: z => z.array(z.string()).optional(),
-    },
+  configSchema: {
+    max: z.number().optional().default(1),
+    category: z.string().optional(),
+    active: z.boolean().optional(),
+    current: z.boolean().optional(),
+    tags: z.array(z.string()).optional(),
   },
   factory: (originalFactory, { config }) => {
     return originalFactory({
