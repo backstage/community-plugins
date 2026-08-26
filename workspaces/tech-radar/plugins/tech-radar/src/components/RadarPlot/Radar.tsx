@@ -191,7 +191,9 @@ export const RadarBlipsAndLabels = ({
               href={`#${id}-label-path-${qIndex}`}
               onClick={e => {
                 e.stopPropagation();
-                setFocusedQuadrant(focusedQuadrant ? undefined : quadrant);
+                setFocusedQuadrant(
+                  focusedQuadrant?.id === quadrant.id ? undefined : quadrant,
+                );
               }}
               startOffset="50%"
               textAnchor="middle"

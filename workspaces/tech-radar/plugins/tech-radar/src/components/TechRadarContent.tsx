@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useCallback, useContext, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { Maximize, Minimize } from 'lucide-react';
 
@@ -45,6 +45,23 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
     useContext(RadarFilterContext);
 
   const ref = useRef<HTMLDivElement>(null);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const onFullscreenChange = () =>
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    return () =>
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    const request = document.fullscreenElement
+      ? document.exitFullscreen()
+      : ref.current?.requestFullscreen();
+    request?.catch(() => {});
+  }, []);
 
   const onSearch = useCallback(
     (term: string) => {
@@ -92,12 +109,10 @@ export const TechRadarContent = ({ loading, quadrants, rings }: Props) => {
             <Button
               className={styles.fullscreenButton}
               variant="tertiary"
-              aria-label="Toggle fullscreen mode"
-              onClick={() => {
-                return document.fullscreenElement
-                  ? document.exitFullscreen()
-                  : ref.current?.requestFullscreen();
-              }}
+              aria-label={
+                isFullscreen ? 'Exit fullscreen mode' : 'Enter fullscreen mode'
+              }
+              onClick={toggleFullscreen}
             >
               <Minimize className={styles.minimizeIcon} />
               <Maximize className={styles.maximizeIcon} />

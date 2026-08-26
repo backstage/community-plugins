@@ -17,6 +17,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Info, Triangle } from 'lucide-react';
 import { DateTime } from 'luxon';
+import { MovedState } from '@backstage-community/plugin-tech-radar-common';
 
 import { Box, Button, Flex, Link, Text } from '@backstage/ui';
 import { useComponents } from '../hooks/useComponents';
@@ -38,19 +39,20 @@ type Props = Readonly<{
 }>;
 
 const Moved = (props: {
-  moved?: number | undefined;
+  moved?: MovedState;
   showLabel?: boolean;
   size: number;
 }) => {
   const { moved, showLabel = false, size } = props;
-  if (!moved) {
-    return <Text as="span" />;
+
+  if (moved !== MovedState.Up && moved !== MovedState.Down) {
+    return null;
   }
 
   return (
     <Flex align="center" gap="1.5">
       {showLabel && 'Moved: '}
-      {moved === 1 ? (
+      {moved === MovedState.Up ? (
         <Triangle className={styles.triangleIcon} size={size} />
       ) : (
         <Triangle
@@ -172,12 +174,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
 
               <Flex direction="column" gap="1" className={styles.blipList}>
                 {visibleBlips
-                  .filter(
-                    blip =>
-                      blip.timeline &&
-                      blip.timeline.length > 0 &&
-                      blip.timeline[0].ring.id === ring.id,
-                  )
+                  .filter(blip => blip.ring.id === ring.id)
                   .map(blip => {
                     const timeline = [...blip.timeline].sort(
                       (a, b) => b.date.getTime() - a.date.getTime(),
@@ -238,7 +235,7 @@ export const RadarAccordion = ({ quadrants, rings }: Props) => {
                                 </Flex>
                               )}
                             </Flex>
-                            <div>{blip.timeline[0]?.description}</div>
+                            <div>{timeline.description}</div>
                             <Link
                               className={styles.detailsLink}
                               onClick={() => setOpenBlip(blip)}

@@ -64,13 +64,5 @@ export const ComponentContext =
   createContext<ComponentContextProps>(defaultComponents);
 
 export const useComponents = () => {
-  const context = useContext(ComponentContext);
-
-  if (!context) {
-    throw new Error(
-      'useComponents must be used within a <ComponentContext.Provider />',
-    );
-  }
-
-  return context;
+  return useContext(ComponentContext);
 };

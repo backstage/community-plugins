@@ -57,7 +57,9 @@ export const processRadarFileEntries = (
         };
       }),
       title: entry.title,
-      url: entry.url,
+      url: (entry as unknown as Record<string, unknown>).url as
+        | string
+        | undefined,
     }));
 };
 

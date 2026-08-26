@@ -52,7 +52,14 @@ If you'd like to configure it more, see the `TechRadarPageProps` and `TechRadarC
 export type TechRadarPageProps = {
   title?: string;
   subtitle?: string;
+  pageTitle?: string;
+  id?: string;
 };
+
+export type TechRadarComponentProps = {
+  id?: string;
+  customComponents?: Partial<ComponentContextProps>;
+} & HTMLAttributes<HTMLDivElement>;
 ```
 
 ### Radar properties

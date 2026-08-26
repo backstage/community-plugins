@@ -33,14 +33,16 @@ import {
 
 /** @public */
 export type TechRadarComponentProps = {
+  id?: string;
   customComponents?: Partial<ComponentContextProps>;
 } & HTMLAttributes<HTMLDivElement>;
 
 export const TechRadarComponent = ({
+  id,
   customComponents = {},
   ...props
 }: TechRadarComponentProps) => {
-  const { loading, value: radarFileData } = useTechRadarLoader();
+  const { loading, value: radarFileData } = useTechRadarLoader(id);
 
   const rings = useMemo(
     () =>

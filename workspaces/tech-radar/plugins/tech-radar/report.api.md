@@ -100,6 +100,7 @@ export const TechRadarComponent: (
 
 // @public (undocumented)
 export type TechRadarComponentProps = {
+  id?: string;
   customComponents?: Partial<ComponentContextProps>;
 } & HTMLAttributes<HTMLDivElement>;
 
@@ -110,6 +111,8 @@ export const TechRadarPage: (props: TechRadarPageProps) => JSX_2.Element;
 export type TechRadarPageProps = {
   title?: string;
   subtitle?: string;
+  pageTitle?: string;
+  id?: string;
 };
 
 // @public

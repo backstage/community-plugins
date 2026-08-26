@@ -21,19 +21,23 @@ import { TechRadarComponent } from './TechRadarComponent';
 export type TechRadarPageProps = {
   title?: string;
   subtitle?: string;
+  pageTitle?: string;
+  id?: string;
 };
 
 export const TechRadarPage = (props: TechRadarPageProps) => {
   const {
-    title = 'Tech Radar',
+    title,
+    pageTitle,
     subtitle = 'Pick the recommended technologies for your projects',
+    id,
   } = props;
 
   return (
     <Page themeId="tool">
-      <Header title={title} subtitle={subtitle} />
+      <Header title={pageTitle ?? title ?? 'Tech Radar'} subtitle={subtitle} />
       <Content>
-        <TechRadarComponent />
+        <TechRadarComponent id={id} />
       </Content>
     </Page>
   );
