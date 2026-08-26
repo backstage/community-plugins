@@ -1,5 +1,12 @@
 # @backstage-community/plugin-topology
 
+## 2.16.1
+
+### Patch Changes
+
+- efe2c6d: Updated dependency `@playwright/test` to `1.62.1`.
+- dc925a3: Updated dependency `react-router-dom` to `^6.30.5`.
+
 ## 2.16.0
 
 ### Minor Changes
