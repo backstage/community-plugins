@@ -1,5 +1,15 @@
 # @backstage-community/plugin-cloudbuild
 
+## 1.0.0
+
+### Major Changes
+
+- 42ec4a3: Migrated from Material UI (MUI) to the Backstage UI (BUI) design system.
+
+### Minor Changes
+
+- df37a19: Backstage version bump to v1.54.5
+
 ## 0.26.0
 
 ### Minor Changes
