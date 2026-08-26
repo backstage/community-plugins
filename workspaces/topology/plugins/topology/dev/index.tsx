@@ -14,50 +14,78 @@
  * limitations under the License.
  */
 
-import { createDevApp } from '@backstage/dev-utils';
-import {
-  CatalogEntityPage,
-  CatalogIndexPage,
-  catalogPlugin,
-  EntityLayout,
-} from '@backstage/plugin-catalog';
-import {
-  EntityKubernetesContent,
-  isKubernetesAvailable,
-} from '@backstage/plugin-kubernetes';
-import { kubernetesPlugin } from '@backstage/plugin-kubernetes';
+/**
+ * New Frontend System dev mode for the Topology plugin.
+ */
 
-import { topologyTranslations } from '../src/translations';
-import { topologyPlugin, TopologyPage } from '../src/plugin';
+import '@backstage/cli/asset-types';
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
 
-createDevApp()
-  .registerPlugin(kubernetesPlugin)
-  .registerPlugin(catalogPlugin)
-  .registerPlugin(topologyPlugin)
-  .addTranslationResource(topologyTranslations)
-  .setAvailableLanguages(['en', 'de', 'fr', 'it', 'es', 'ja'])
-  .setDefaultLanguage('en')
-  .addPage({
-    path: '/catalog',
-    title: 'Catalog',
-    element: <CatalogIndexPage />,
-  })
-  .addPage({
-    path: '/catalog/:namespace/:kind/:name',
-    element: <CatalogEntityPage />,
-    children: (
-      <EntityLayout>
-        <EntityLayout.Route path="/topology" title="Topology">
-          <TopologyPage />
-        </EntityLayout.Route>
-        <EntityLayout.Route
-          path="/kubernetes"
-          title="Kubernetes"
-          if={e => isKubernetesAvailable(e)}
-        >
-          <EntityKubernetesContent />
-        </EntityLayout.Route>
-      </EntityLayout>
-    ),
-  })
-  .render();
+import ReactDOM from 'react-dom/client';
+import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+  pluginHeaderActionsApiRef,
+} from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+
+import topologyPlugin from '../src';
+import topologyTranslationsModule from '../src/translations';
+import { devSidebarContent } from './shared';
+
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={[
+            'guest',
+            {
+              id: 'github-auth-provider',
+              title: 'GitHub',
+              message: 'Sign in using GitHub',
+              apiRef: githubAuthApiRef,
+            },
+          ]}
+        />
+      ),
+  },
+});
+
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    devSidebarContent,
+    signInPage,
+    ApiBlueprint.make({
+      name: 'plugin-header-actions',
+      params: defineParams =>
+        defineParams({
+          api: pluginHeaderActionsApiRef,
+          deps: {},
+          factory: () => ({
+            getPluginHeaderActions: () => [],
+          }),
+        }),
+    }),
+  ],
+});
+
+const app = createApp({
+  features: [devNavModule, topologyPlugin, topologyTranslationsModule],
+});
+
+if (window.location.pathname === '/') {
+  window.location.replace('/catalog');
+}
+
+const root = app.createRoot();
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);
