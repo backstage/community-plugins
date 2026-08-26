@@ -80,4 +80,4 @@ For more information how to setup the plugin, please refer to the [General](../.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local `dev/` harness, scoped tests, and notes on Playwright vs backend bump trust.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local `dev/` harness (Mock vs Backend pages), scoped tests, and notes on Playwright vs backend bump trust.

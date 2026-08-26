@@ -56,4 +56,4 @@ The plugin includes a condition module (isMyProfile) that checks whether the cur
 
 ## Running the Dev App
 
-From `workspaces/servicenow`, run `yarn start` to launch the frontend and backend plugin harnesses together. See [CONTRIBUTING.md](./CONTRIBUTING.md).
+From `workspaces/servicenow`, run `yarn start` to launch the frontend and backend plugin harnesses together. The frontend sidebar has **ServiceNow (Mock)** (fixture data) and **ServiceNow (Backend)** (calls the backend harness). See [CONTRIBUTING.md](./CONTRIBUTING.md) and [docs/Development.md](./docs/Development.md).

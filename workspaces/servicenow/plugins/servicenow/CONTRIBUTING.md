@@ -10,16 +10,25 @@ Contributor guide for `@backstage-community/plugin-servicenow`. For install and 
 
 ## Dev harness
 
-### Preferred: start frontend and backend together
+The frontend `dev/` app is a plugin harness, not a full Backstage application. After sign-in, the sidebar has two pages:
 
-From the workspace root, start both plugin harnesses (no full Backstage app required):
+| Sidebar item             | Path               | When to use                                                                     |
+| ------------------------ | ------------------ | ------------------------------------------------------------------------------- |
+| **ServiceNow (Mock)**    | `/servicenow`      | UI, filters, translations, and Playwright. Incidents come from fixtures.        |
+| **ServiceNow (Backend)** | `/servicenow-live` | Combined smoke with the backend harness and (optionally) a ServiceNow instance. |
+
+The mock page never calls the backend. The backend page uses the real frontend API client against `http://localhost:7007`.
+
+### Preferred: start frontend and backend together
 
 ```bash
 # From workspaces/servicenow
 yarn start
 ```
 
-See the [workspace CONTRIBUTING.md](../../CONTRIBUTING.md) for details.
+Open http://localhost:3000, sign in as guest, then pick **ServiceNow (Mock)** or **ServiceNow (Backend)**.
+
+For ServiceNow instance credentials on the backend page, see [plugins/servicenow-backend/CONTRIBUTING.md](../servicenow-backend/CONTRIBUTING.md) and [docs/Development.md](../../docs/Development.md).
 
 ### Frontend-only
 
@@ -28,7 +37,7 @@ See the [workspace CONTRIBUTING.md](../../CONTRIBUTING.md) for details.
 yarn workspace @backstage-community/plugin-servicenow start
 ```
 
-This uses `dev/` under this package. It is a plugin harness, not a full Backstage application.
+Use the **Mock** page. The **Backend** page will fail to load incidents unless the backend harness is also running.
 
 ## Scoped validation
 
@@ -47,12 +56,12 @@ yarn workspace @backstage-community/plugin-servicenow-common test
 
 ## Playwright note
 
-Workspace Playwright under `plugins/servicenow/tests/` is **UI mock smoke** against the frontend harness. It is **not** proof of backend integration or live ServiceNow connectivity, and it is not the merge gate for Backstage version-bump trust.
+Workspace Playwright under `plugins/servicenow/tests/` is **UI mock smoke** against the frontend harness (the Mock page). It is **not** proof of backend integration or live ServiceNow connectivity, and it is not the merge gate for Backstage version-bump trust.
 
 ## Smoke checklist (bump / PR review)
 
 1. Frontend package tests pass (includes `ServiceNowBackendClient` discovery/auth coverage).
-2. Optional: `yarn start` from the workspace (both harnesses) and exercise the UI.
+2. Optional: `yarn start` from the workspace (both harnesses). Exercise **Mock** for UI and **Backend** if you have instance credentials.
 3. Backend mount and Table API client contracts are covered by `@backstage-community/plugin-servicenow-backend` tests — run those for bump trust.
 
 ## When you need something beyond the harnesses

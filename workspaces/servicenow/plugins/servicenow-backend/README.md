@@ -29,4 +29,4 @@ Refer to [Configuration.md](../../docs/Configuration.md) for detailed setup inst
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local `dev/` harness, scoped tests, and curl smoke checklist.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local `dev/` harness, config path notes, scoped tests, and curl smoke checklist.
