@@ -20,13 +20,13 @@ import useAsync from 'react-use/lib/useAsync';
 
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 
-export const useTechRadarLoader = () => {
+export const useTechRadarLoader = (id?: string) => {
   const errorApi = useApi(errorApiRef);
   const techRadarApi = useApi(techRadarApiRef);
 
   const { error, loading, value } = useAsync(
-    async () => techRadarApi.load(''),
-    [techRadarApi],
+    async () => techRadarApi.load(id),
+    [techRadarApi, id],
   );
 
   useEffect(() => {

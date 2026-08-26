@@ -15,6 +15,7 @@
  */
 import { MovedState } from '@backstage-community/plugin-tech-radar-common';
 import { Button, Flex, Link } from '@backstage/ui';
+import { MarkdownContent } from '@backstage/core-components';
 import { useComponents } from './../hooks/useComponents';
 import { CircleDot, Triangle } from 'lucide-react';
 import { DateTime } from 'luxon';
@@ -78,7 +79,14 @@ export const RadarBlipDetails = (props: Props) => {
                   <td className={styles.dateCell}>
                     {DateTime.fromJSDate(snapshot.date).toISODate()}
                   </td>
-                  <td>{snapshot.description}</td>
+                  <td>
+                    {snapshot.description ? (
+                      <MarkdownContent
+                        dialect="gfm"
+                        content={snapshot.description}
+                      />
+                    ) : null}
+                  </td>
                 </tr>
               );
             })}
@@ -86,6 +94,12 @@ export const RadarBlipDetails = (props: Props) => {
         </table>
       </DialogBody>
       <DialogFooter>
+        {blip?.links?.map(link => (
+          <Link className={styles.learnMoreLink} href={link.url} key={link.url}>
+            {link.title}
+          </Link>
+        ))}
+
         {blip?.url ? (
           <Link className={styles.learnMoreLink} href={blip.url}>
             Learn more

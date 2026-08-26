@@ -63,6 +63,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/ui": "backstage:^",
+    "@remixicon/react": "^4.6.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "clsx": "^2.1.1",
     "color": "^4.0.1",
@@ -71,7 +72,8 @@
     "luxon": "^3.7.2",
     "react-aria": "^3.46.0",
     "react-aria-components": "^1.13.0",
-    "react-use": "^17.2.4"
+    "react-use": "^17.2.4",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",

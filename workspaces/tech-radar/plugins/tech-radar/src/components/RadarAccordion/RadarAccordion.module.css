@@ -1,6 +1,6 @@
 .container {
   border-radius: 0.25rem; /* rounded */
-  background-color: var(--bui-bg-neutral-1-0); /* bg-background */
+  background-color: var(--bui-bg-neutral-1); /* bg-background */
   padding: 0;
 }
 
