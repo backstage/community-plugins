@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-issues
 
+## 1.3.2
+
+### Patch Changes
+
+- bf583e2: Fixed the GitHub Issues card failing with `Cannot read properties of null (reading 'updatedAt')` / repeated "Resource limits for this query exceeded." errors on entities (typically groups) that own many repositories.
+
 ## 1.3.1
 
 ### Patch Changes

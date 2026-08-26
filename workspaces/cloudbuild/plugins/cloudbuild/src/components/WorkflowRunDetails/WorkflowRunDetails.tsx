@@ -21,7 +21,15 @@ import {
   Progress,
   StructuredMetadataTable,
 } from '@backstage/core-components';
-import { Alert, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
+import {
+  Alert,
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  Text,
+} from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import qs from 'qs';
 import { getLocation } from '../useLocation';
@@ -52,7 +60,7 @@ export const WorkflowRunDetails = (props: { entity: Entity }) => {
   }).project;
 
   return (
-    <div className={styles.root}>
+    <Box className={styles.root}>
       <div className={styles.breadcrumbs}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link to="..">Build history</Link>
@@ -88,6 +96,6 @@ export const WorkflowRunDetails = (props: { entity: Entity }) => {
           />
         </CardBody>
       </Card>
-    </div>
+    </Box>
   );
 };

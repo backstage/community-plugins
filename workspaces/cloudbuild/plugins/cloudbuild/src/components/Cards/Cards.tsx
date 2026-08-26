@@ -21,7 +21,7 @@ import {
 } from '@backstage/core-components';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
+import { Alert, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
 import { RiExternalLinkLine } from '@remixicon/react';
 import { useEffect } from 'react';
 import { getCloudbuildFilter } from '../useCloudBuildFilter';
@@ -44,7 +44,9 @@ const WidgetContent = ({
   branch: string;
 }) => {
   if (error) {
-    return <Text color="danger">Couldn't fetch latest {branch} run</Text>;
+    return (
+      <Alert status="danger" title={`Couldn't fetch latest ${branch} run`} />
+    );
   }
   if (loading) return <Progress />;
   return (
