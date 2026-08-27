@@ -16,9 +16,7 @@
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { safeEntityDisplayName } from './safeEntityDisplayName';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { InfoCard, Progress } from '@backstage/core-components';
 import Alert from '@material-ui/lab/Alert';
@@ -29,15 +27,7 @@ import {
   ValidationOutputOk,
 } from '../../types';
 import { EntityResult } from './EntityResult';
-
-const useStyles = makeStyles(theme => ({
-  validationOk: {
-    color: theme.palette.success.main,
-  },
-  validationNotOk: {
-    color: theme.palette.error.main,
-  },
-}));
+import styles from './EntityValidationOutput.module.css';
 
 function sortResults(items: Array<ValidationOutputOk>) {
   return items.sort((a, b) =>
@@ -56,7 +46,6 @@ export const EntityValidationOutput = ({
   processorResults,
   locationUrl,
 }: EntityValidationOutputProps) => {
-  const classes = useStyles();
   const catalogApi = useApi(catalogApiRef);
   const identityApi = useApi(identityApiRef);
 
@@ -119,8 +108,10 @@ export const EntityValidationOutput = ({
   if (errors.length !== 0) {
     return (
       <>
-        {errors.map(err => (
-          <Alert severity="error">{err.processingError}</Alert>
+        {errors.map((err, i) => (
+          <Alert key={i} severity="error">
+            {err.processingError}
+          </Alert>
         ))}
       </>
     );
@@ -129,14 +120,14 @@ export const EntityValidationOutput = ({
   return (
     <InfoCard>
       {results.length === 0 ? (
-        <div style={{ padding: '15px' }}>
-          <Typography variant="body1">
+        <div className={styles.emptyState}>
+          <Text variant="body-medium">
             No entity definitions found or validated yet
-          </Typography>
+          </Text>
         </div>
       ) : (
         <>
-          <List disablePadding dense>
+          <ul className={styles.list}>
             {results.map((item, key) => (
               <EntityResult
                 key={key}
@@ -144,16 +135,18 @@ export const EntityValidationOutput = ({
                 isFirstError={key === firstErrorIndex}
               />
             ))}
-          </List>
-          <div style={{ marginTop: '25px', textAlign: 'center' }}>
+          </ul>
+          <div className={styles.summary}>
             {results.every(r => r.response.valid) ? (
-              <Typography variant="body1" className={classes.validationOk}>
-                All the entities are valid!
-              </Typography>
+              <div className={styles.validationOk}>
+                <Text variant="body-medium">All the entities are valid!</Text>
+              </div>
             ) : (
-              <Typography variant="body1" className={classes.validationNotOk}>
-                One or more entities have validation errors
-              </Typography>
+              <div className={styles.validationNotOk}>
+                <Text variant="body-medium">
+                  One or more entities have validation errors
+                </Text>
+              </div>
             )}
           </div>
         </>

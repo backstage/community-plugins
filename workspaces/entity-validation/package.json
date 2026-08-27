@@ -63,5 +63,9 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@backstage/ui": "backstage:^",
+    "@remixicon/react": "^4.9.0"
   }
 }
