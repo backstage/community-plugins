@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content, Header, Page } from '@backstage/core-components';
+import {
+  Content,
+  ContentHeader,
+  Header,
+  Page,
+} from '@backstage/core-components';
 
 import { TechRadarComponent } from './TechRadarComponent';
 
@@ -27,16 +32,17 @@ export type TechRadarPageProps = {
 
 export const TechRadarPage = (props: TechRadarPageProps) => {
   const {
-    title,
-    pageTitle,
+    title = 'Tech Radar',
+    pageTitle = 'Company Radar',
     subtitle = 'Pick the recommended technologies for your projects',
     id,
   } = props;
 
   return (
     <Page themeId="tool">
-      <Header title={pageTitle ?? title ?? 'Tech Radar'} subtitle={subtitle} />
+      <Header title={title} subtitle={subtitle} />
       <Content>
+        <ContentHeader title={pageTitle} />
         <TechRadarComponent id={id} />
       </Content>
     </Page>
