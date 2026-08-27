@@ -20,6 +20,8 @@ export interface ConfluenceConfig {
   // (undocumented)
   email?: string;
   // (undocumented)
+  keepDataImages: boolean;
+  // (undocumented)
   pageTree: {
     parallel: boolean;
     maxDepth: number;
