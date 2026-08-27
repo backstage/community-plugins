@@ -26,6 +26,12 @@
   position: relative;
   border-bottom: 1px solid var(--bui-bg-neutral-1); /* border-muted */
   transition: all 0.2s;
+  padding: var(--bui-space-3) var(--bui-space-4);
+}
+
+.accordion :global(.bui-AccordionTriggerButton) {
+  padding-top: var(--bui-space-2);
+  padding-bottom: var(--bui-space-2);
 }
 
 .accordion:first-child {
