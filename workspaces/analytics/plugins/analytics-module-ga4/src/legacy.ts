@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2023 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 
 /**
- * Google Analytics 4 module for the new frontend system.
- *
- * @packageDocumentation
+ * Legacy frontend system exports for the Google Analytics 4 module.
  */
-export { ga4Module as default } from './module';
+export * from './apis/implementations/AnalyticsApi';

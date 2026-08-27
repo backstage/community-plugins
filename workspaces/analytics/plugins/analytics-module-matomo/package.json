@@ -9,13 +9,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.ts",
+    "./legacy": "./src/legacy.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "alpha": [
-        "src/alpha.ts"
+      "legacy": [
+        "src/legacy.ts"
       ],
       "package.json": [
         "package.json"
@@ -33,6 +33,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start --config app-config.yaml",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy --config app-config.yaml",
     "build": "backstage-cli package build",
     "prettier:check": "prettier --ignore-unknown --check .",
     "prettier:fix": "prettier --ignore-unknown --write .",
@@ -55,14 +56,21 @@
     "@backstage/plugin-app-react": "backstage:^"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
+    "@backstage/config": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@testing-library/jest-dom": "6.9.1",
-    "cross-fetch": "4.1.0"
+    "@types/react-dom": "^18.2.19",
+    "cross-fetch": "4.1.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
     "dist",

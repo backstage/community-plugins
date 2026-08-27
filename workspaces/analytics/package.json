@@ -6,6 +6,8 @@
     "node": "22 || 24"
   },
   "scripts": {
+    "start": "backstage-cli repo start",
+    "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-analytics-module-ga4 --include @backstage-community/plugin-analytics-module-matomo --include @backstage-community/plugin-analytics-module-newrelic-browser --include @backstage-community/plugin-analytics-provider-segment --parallel -v -i run start:legacy",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",

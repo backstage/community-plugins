@@ -9,13 +9,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.ts",
+    "./legacy": "./src/legacy.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "alpha": [
-        "src/alpha.ts"
+      "legacy": [
+        "src/legacy.ts"
       ],
       "package.json": [
         "package.json"
@@ -33,6 +33,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "build": "backstage-cli package build",
     "tsc": "tsc",
     "prettier:check": "prettier --ignore-unknown --check .",
@@ -62,7 +63,9 @@
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
     "@backstage/test-utils": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",

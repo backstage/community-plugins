@@ -2,6 +2,11 @@ app:
   title: Analytics Dev App
   baseUrl: http://localhost:3000
   analytics:
+    ga4:
+      measurementId: G-0000000-0
+      testMode: true
+      debug: true
+
     # Matomo analytics provider config
     matomo:
       host: ${MATOMO_HOST}

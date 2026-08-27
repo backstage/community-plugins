@@ -21,7 +21,7 @@ If your App is built using the New Frontend System, it's enough to supply this
 module to `createApp()`:
 
 ```tsx
-import ga4Module from '@backstage-community/plugin-analytics-module-ga4/alpha';
+import ga4Module from '@backstage-community/plugin-analytics-module-ga4';
 
 const app = createApp({
   features: [ga4Module],
@@ -30,7 +30,7 @@ const app = createApp({
 
 This can be skipped entirely if you have feature discovery enabled.
 
-For all other Backstage apps, wire up the API implementation like this:
+For legacy frontend apps, wire up the API implementation like this:
 
 ```tsx
 // packages/app/src/apis.ts
@@ -39,7 +39,7 @@ import {
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { GoogleAnalytics4 } from '@backstage-community/plugin-analytics-module-ga4';
+import { GoogleAnalytics4 } from '@backstage-community/plugin-analytics-module-ga4/legacy';
 
 export const apis: AnyApiFactory[] = [
   // Instantiate and register the GA Analytics API Implementation.
@@ -220,7 +220,7 @@ make and test changes is to do the following:
 3. If one does not exist, create an `app-config.local.yaml` file in the root of
    the monorepo and add config for this plugin (see below)
 4. Enter this plugin's working directory: `cd plugins/analytics-provider-ga4`
-5. Start the plugin in isolation: `yarn start`
+5. Start the plugin in isolation: `yarn start` (NFS) or `yarn start:legacy` (legacy frontend)
 6. Navigate to the playground page at `http://localhost:3000/ga4`
 7. Open the web console to see events fire when you navigate or when you
    interact with instrumented components.

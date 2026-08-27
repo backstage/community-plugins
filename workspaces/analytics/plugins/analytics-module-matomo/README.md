@@ -21,7 +21,7 @@ If your App is built using the New Frontend System, it's enough to supply this
 plugin to `createApp()`:
 
 ```tsx
-import analyticsProviderMatomoPlugin from '@backstage-community/plugin-analytics-module-matomo/alpha';
+import analyticsProviderMatomoPlugin from '@backstage-community/plugin-analytics-module-matomo';
 
 const app = createApp({
   features: [analyticsProviderMatomoPlugin],
@@ -30,7 +30,7 @@ const app = createApp({
 
 This can be skipped entirely if you have feature discovery enabled.
 
-For all other Backstage apps, wire up the API implementation like this:
+For legacy frontend apps, wire up the API implementation like this:
 
 ```tsx
 // packages/app/src/apis.ts
@@ -40,7 +40,7 @@ import {
   identityApiRef,
 } from '@backstage/core-plugin-api';
 
-import { MatomoAnalytics } from '@backstage-community/plugin-analytics-module-matomo';
+import { MatomoAnalytics } from '@backstage-community/plugin-analytics-module-matomo/legacy';
 
 export const apis: AnyApiFactory[] = [
   // Instantiate and register the Matomo Analytics API Implementation.
