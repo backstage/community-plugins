@@ -54,6 +54,10 @@ bitbucket:
   proxyPath: /bitbucket/api
   # Valid values: cloud or server. Defaults to server; set to cloud for cloud-hosted Bitbucket.
   type: cloud
+  # Required for Bitbucket Cloud when querying pull requests across one or more workspaces
+  cloudWorkspaces:
+    - my-workspace
+    - another-workspace
 ```
 
 For token generation refer [link](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens)
