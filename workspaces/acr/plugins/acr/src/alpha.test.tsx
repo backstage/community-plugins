@@ -71,7 +71,7 @@ describe('alpha (new frontend system)', () => {
 
   it('renders the registry through the extension', async () => {
     // Through the blueprint's own loader, which the component's own test cannot
-    // reach — renaming the component leaves the assertions above green.
+    // reach - renaming the component leaves the assertions above green.
     renderInTestApp(
       <EntityProvider entity={mockEntity}>
         {createExtensionTester(acrImagesEntityContent).reactElement()}
