@@ -17,6 +17,7 @@
 .noEntries {
   font-size: 0.875rem; /* text-sm */
   color: var(--bui-fg-secondary); /* text-muted-foreground */
+  padding-left: var(--bui-space-3);
 }
 
 .blipList {
