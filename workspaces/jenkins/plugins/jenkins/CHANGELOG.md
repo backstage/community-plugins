@@ -1,5 +1,17 @@
 # @backstage-community/plugin-jenkins
 
+## 0.34.0
+
+### Minor Changes
+
+- 9446879: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- ccc6c95: No functional changes; re-publish to recover from a [GitHub Actions incident](https://www.githubstatus.com/incidents/y1t7p9fzrlj2)
+- Updated dependencies [9446879]
+  - @backstage-community/plugin-jenkins-common@0.22.0
+
 ## 0.33.0
 
 ### Minor Changes
