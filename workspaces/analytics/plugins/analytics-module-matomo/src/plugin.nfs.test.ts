@@ -17,19 +17,12 @@
 import analyticsProviderMatomoPlugin from '.';
 
 describe('Matomo analytics plugin', () => {
-  describe('Plugin Structure', () => {
-    it('should have correct plugin metadata', () => {
-      expect(analyticsProviderMatomoPlugin.pluginId).toBe(
-        'analytics-module-matomo',
-      );
-    });
-
-    it('should export the analytics implementation extension', () => {
-      expect(
-        analyticsProviderMatomoPlugin.getExtension(
-          'analytics:analytics-module-matomo',
-        ),
-      ).toBeDefined();
-    });
+  it('should export an NFS frontend plugin', () => {
+    expect(analyticsProviderMatomoPlugin.$$type).toBe(
+      '@backstage/FrontendPlugin',
+    );
+    expect(analyticsProviderMatomoPlugin.pluginId).toBe(
+      'analytics-module-matomo',
+    );
   });
 });

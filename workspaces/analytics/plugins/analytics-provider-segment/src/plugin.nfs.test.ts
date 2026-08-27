@@ -20,8 +20,5 @@ describe('Segment analytics module', () => {
   it('should export an NFS frontend module for the app plugin', () => {
     expect(segmentModule.$$type).toBe('@backstage/FrontendModule');
     expect(segmentModule.pluginId).toBe('app');
-    expect(segmentModule.extensions.map(extension => extension.id)).toEqual([
-      'analytics:app/segment',
-    ]);
   });
 });

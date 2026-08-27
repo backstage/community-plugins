@@ -18,6 +18,7 @@ import {
   configApiRef,
   createFrontendPlugin,
   identityApiRef,
+  type FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
@@ -43,7 +44,8 @@ const segmentImplementation = AnalyticsImplementationBlueprint.make({
 /**
  * @public
  */
-export const analyticsProviderSegmentPlugin = createFrontendPlugin({
-  pluginId: 'analytics-provider-segment',
-  extensions: [segmentImplementation],
-});
+export const analyticsProviderSegmentPlugin: FrontendPlugin =
+  createFrontendPlugin({
+    pluginId: 'analytics-provider-segment',
+    extensions: [segmentImplementation],
+  });
