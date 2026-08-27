@@ -26,5 +26,11 @@ export interface Config {
      * @visibility frontend
      */
     proxyPath?: string;
+    /**
+     * Workspace to query for Bitbucket Cloud pull requests
+     * Required when `bitbucket.type: 'cloud'` and the homepage or API needs to filter cloud PRs by workspace
+     * @visibility frontend
+     */
+    cloudWorkspaces?: string[];
   };
 }

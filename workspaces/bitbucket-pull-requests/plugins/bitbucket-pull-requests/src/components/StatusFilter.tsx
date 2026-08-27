@@ -20,10 +20,13 @@ import { ButtonGroup, Button } from '@material-ui/core';
 interface StatusFilterProps {
   onFilterChange: (filter: string) => void;
 }
-const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
-  const [status, setStatus] = useState('ALL');
 
-  const handleStatusChange = (newStatus: any) => {
+type StatusFilterValue = 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL';
+
+const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
+  const [status, setStatus] = useState<StatusFilterValue>('ALL');
+
+  const handleStatusChange = (newStatus: StatusFilterValue) => {
     setStatus(newStatus);
     onFilterChange(newStatus);
   };
@@ -33,7 +36,7 @@ const StatusFilter: FC<StatusFilterProps> = ({ onFilterChange }) => {
     { value: 'MERGED', label: 'Merged' },
     { value: 'DECLINED', label: 'Declined' },
     { value: 'ALL', label: 'All' },
-  ];
+  ] as const satisfies readonly { value: StatusFilterValue; label: string }[];
 
   return (
     <ButtonGroup color="primary" aria-label="pull request status filter">
