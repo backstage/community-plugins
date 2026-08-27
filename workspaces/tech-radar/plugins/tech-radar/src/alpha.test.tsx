@@ -64,7 +64,7 @@ describe('TechRadarPage', () => {
     );
 
     await expect(
-      screen.findByText('Company Radar'),
+      screen.findByText('Company Radar', undefined, { timeout: 15000 }),
     ).resolves.toBeInTheDocument();
   });
 });

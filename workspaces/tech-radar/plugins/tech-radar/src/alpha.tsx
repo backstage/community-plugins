@@ -54,7 +54,13 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
         import('./components/TechRadarPage').then(m =>
-          compatWrapper(<m.TechRadarPage {...config} />),
+          compatWrapper(
+            <m.TechRadarPage
+              subtitle={config.subtitle}
+              pageTitle={config.pageTitle}
+              id={config.id}
+            />,
+          ),
         ),
     });
   },
