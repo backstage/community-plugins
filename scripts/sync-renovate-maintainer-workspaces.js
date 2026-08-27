@@ -46,15 +46,20 @@ async function main(args) {
     .map(d => d.name)
     .sort();
 
-  const maintainerWorkspaces = allWorkspaces.filter(workspace => {
-    const owners = codeOwnerEntries
-      .filter(c => c.pattern === `/workspaces/${workspace}`)
-      .flatMap(c => c.owners);
+  const isMaintainerOnly = owners =>
+    owners.length === 0 ||
+    (owners.length === 1 &&
+      owners[0] === '@backstage/community-plugins-maintainers');
 
+  const maintainerWorkspaces = allWorkspaces.filter(workspace => {
+    const prefix = `/workspaces/${workspace}`;
+    // Check all CODEOWNERS entries for the workspace root AND every sub-path.
+    // A workspace is maintainer-only only if every entry is maintainer-only.
+    const entries = codeOwnerEntries.filter(
+      c => c.pattern === prefix || c.pattern.startsWith(`${prefix}/`),
+    );
     return (
-      owners.length === 0 ||
-      (owners.length === 1 &&
-        owners[0] === '@backstage/community-plugins-maintainers')
+      entries.length === 0 || entries.every(e => isMaintainerOnly(e.owners))
     );
   });
 

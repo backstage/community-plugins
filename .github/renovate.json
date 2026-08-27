@@ -75,7 +75,6 @@
         "workspaces/firehydrant/**",
         "workspaces/gcalendar/**",
         "workspaces/gcp-projects/**",
-        "workspaces/github/**",
         "workspaces/gitops-profiles/**",
         "workspaces/gocd/**",
         "workspaces/grafana/**",
