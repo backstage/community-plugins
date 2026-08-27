@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-@layer components {
-  .container {
-    overflow: auto;
-    width: 100%;
-  }
+.container {
+  overflow: auto;
+  width: 100%;
+}
 
-  .container td {
-    min-width: 145px;
-  }
+.container td {
+  min-width: 145px;
+}
 
-  .container th {
-    min-width: 145px;
-  }
+.container th {
+  min-width: 145px;
 }
