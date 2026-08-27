@@ -38,7 +38,7 @@ export const CreateRolePage = () => {
     value: members,
     error: membersError,
   } = useAsync(async () => {
-    return await rbacApi.getMembers();
+    return await rbacApi.getMembers(1, 1);
   });
 
   const canReadUsersAndGroups =
@@ -74,8 +74,8 @@ export const CreateRolePage = () => {
             permissionPoliciesTitle: t('roleForm.titles.permissionPolicies'),
           }}
           membersData={{
-            members: Array.isArray(members) ? members : ([] as MemberEntity[]),
-            loading: membersLoading,
+            members: [] as MemberEntity[],
+            loading: false,
             error: (membersError as unknown as Error) || {
               name: (members as unknown as Response)?.status,
               message: (members as unknown as Response)?.statusText,

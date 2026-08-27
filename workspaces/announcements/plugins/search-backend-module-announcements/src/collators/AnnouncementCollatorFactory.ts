@@ -88,6 +88,10 @@ export class AnnouncementCollatorFactory implements DocumentCollatorFactory {
     this.logger.debug(`got ${results.length} announcements`);
 
     for (const result of results) {
+      if (!result.active) {
+        continue;
+      }
+
       yield this.getDocumentInfo(result);
     }
   }

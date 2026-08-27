@@ -1,5 +1,11 @@
 # @backstage-community/plugin-github-pull-requests-board
 
+## 1.3.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filters to use the modern object form.
+
 ## 1.3.0
 
 ### Minor Changes

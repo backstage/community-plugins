@@ -7,6 +7,8 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
+    "start-frontend": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only --tsc",
     "build:api-reports:only": "backstage-repo-tools api-reports -o ae-wrong-input-file-type,ae-undocumented,ae-forgotten-export --validate-release-tags",
@@ -21,6 +23,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "new": "backstage-cli new --scope @backstage-community",
     "postinstall": "cd ../../ && yarn install"
   },

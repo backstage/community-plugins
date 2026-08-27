@@ -21,7 +21,7 @@ import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 export const entityGithubIssuesCard = EntityCardBlueprint.make({
   name: 'overview',
   params: {
-    filter: 'kind:component',
+    filter: { kind: 'component' },
     loader: () =>
       import('../components/GithubIssues').then(m => <m.GithubIssues />),
   },
