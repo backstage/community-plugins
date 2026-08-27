@@ -1,0 +1,17 @@
+.item {
+  cursor: pointer;
+}
+
+.legend {
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500; /* font-medium */
+  color: var(--bui-fg-secondary); /* text-muted-foreground */
+}
+
+.triangleIcon {
+  fill: var(--bui-fg-secondary); /* fill-muted-foreground */
+}
+
+.rotate180 {
+  transform: rotate(180deg);
+}
