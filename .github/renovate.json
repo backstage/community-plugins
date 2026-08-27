@@ -6,7 +6,8 @@
     "group:linters",
     ":preserveSemverRanges"
   ],
-  "prConcurrentLimit": 50,
+  "prConcurrentLimit": 70,
+  "prHourlyLimit": 10,
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["dependencies"],
   "postUpdateOptions": ["yarnDedupeHighest"],
