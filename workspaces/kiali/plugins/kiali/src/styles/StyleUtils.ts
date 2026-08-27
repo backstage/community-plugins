@@ -52,8 +52,13 @@ export const useLinkStyle = () => {
 };
 
 export const getChipStyle = (theme: Theme) => {
+  const isDark = theme.palette.type === 'dark';
   return {
-    backgroundColor: theme.palette.type === 'dark' ? '#3d5061' : '#e7f1fa',
+    backgroundColor: isDark ? '#3d5061' : '#e7f1fa',
+    // Explicit text color: dark themes inherit white Chip text, which is
+    // unreadable on the light ambient chip background when callers forget
+    // to switch styles for dark mode.
+    color: isDark ? '#fff' : theme.palette.text.primary,
     marginLeft: '5px',
   };
 };

@@ -293,10 +293,8 @@ test.describe('Tekton plugin', () => {
 
     test('Show sbom action points to quay.io', async () => {
       const showSbom = row.getByTestId('view-sbom-icon');
-      await expect(showSbom).toBeEnabled();
-      expect(await showSbom.locator('a').getAttribute('href')).toContain(
-        'https://quay.io',
-      );
+      await expect(showSbom).toBeVisible();
+      expect(await showSbom.getAttribute('href')).toContain('https://quay.io');
     });
 
     test('View output action is enabled', async ({ browser }, testInfo) => {

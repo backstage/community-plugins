@@ -15,8 +15,10 @@
  */
 import { pluginId } from '@backstage-community/plugin-kiali-common';
 import { HeaderTabs } from '@backstage/core-components';
+import { makeStyles } from '@material-ui/core/styles';
 import { useCallback, useEffect } from 'react';
 import { matchRoutes, useNavigate, useParams } from 'react-router-dom';
+import { useHeaderTextColor } from '../../../contexts/HeaderBackgroundContext';
 import {
   appsRouteRef,
   istioConfigRouteRef,
@@ -34,9 +36,38 @@ const tabs = [
   { id: 'apps', label: 'Applications', path: appsRouteRef.path },
   { id: 'istio', label: 'Istio Config', path: istioConfigRouteRef.path },
 ];
+
+// Keep display:contents so HeaderTabs remains a Page grid child (pageSubheader).
+// Always set an explicit tab color: RHDH/OpenShift themes can make the selected
+// MUI tab use white contrast text, which disappears on a light page background
+// (e.g. "Traffic Graph" looks like a blank tab).
+const useTabStyles = makeStyles(theme => ({
+  tabs: (props: { textColor?: string }) => {
+    const color = props.textColor || theme.palette.text.primary;
+    return {
+      display: 'contents',
+      '& .MuiTab-root': {
+        color: `${color} !important`,
+        opacity: props.textColor ? 0.75 : 1,
+      },
+      '& .MuiTab-root.Mui-selected': {
+        color: `${color} !important`,
+        opacity: 1,
+      },
+      '& .MuiTabs-indicator': {
+        backgroundColor: `${
+          props.textColor || theme.palette.primary.main
+        } !important`,
+      },
+    };
+  },
+}));
+
 export const KialiTabs = () => {
   const currentPath = `/${useParams()['*']}`;
   const [matchedRoute] = matchRoutes(tabs, currentPath) ?? [];
+  const textColor = useHeaderTextColor();
+  const classes = useTabStyles({ textColor });
 
   const currentTabIndex = matchedRoute
     ? tabs.findIndex(t => t.path === matchedRoute.route.path)
@@ -56,10 +87,12 @@ export const KialiTabs = () => {
   }, [matchedRoute, navigate]);
 
   return (
-    <HeaderTabs
-      selectedIndex={currentTabIndex}
-      onChange={handleTabChange}
-      tabs={tabs}
-    />
+    <div className={classes.tabs}>
+      <HeaderTabs
+        selectedIndex={currentTabIndex}
+        onChange={handleTabChange}
+        tabs={tabs}
+      />
+    </div>
   );
 };

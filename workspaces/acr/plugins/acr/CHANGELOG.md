@@ -1,5 +1,15 @@
 # @backstage-community/plugin-acr
 
+## 1.27.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+
 ## 1.26.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-cloudbuild
 
+## 0.26.0
+
+### Minor Changes
+
+- 889c075: Added support for the new frontend system via the `/alpha` export.
+
 ## 0.25.0
 
 ### Minor Changes

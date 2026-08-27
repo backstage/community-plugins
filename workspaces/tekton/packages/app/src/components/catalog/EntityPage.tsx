@@ -173,7 +173,7 @@ const serviceEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path="/ci-cd" title="CI/CD" if={isTektonCIAvailable}>
       {cicdContent}
     </EntityLayout.Route>
 
@@ -219,7 +219,7 @@ const websiteEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path="/ci-cd" title="CI/CD" if={isTektonCIAvailable}>
       {cicdContent}
     </EntityLayout.Route>
 

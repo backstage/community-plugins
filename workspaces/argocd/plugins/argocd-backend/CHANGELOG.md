@@ -1,5 +1,19 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.6.0
+
+### Minor Changes
+
+- 730c396: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- d640871: Add CI wiring and permission-contract tests for the Argo CD backend and common packages, plus contributor guides and a minimal backend dev/ harness config so Backstage dependency bumps can be trusted without a full workspace smoke.
+- Updated dependencies [d640871]
+- Updated dependencies [730c396]
+  - @backstage-community/plugin-argocd-common@1.17.0
+  - @backstage-community/plugin-argocd-node@1.3.0
+
 ## 1.5.0
 
 ### Minor Changes

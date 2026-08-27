@@ -89,6 +89,24 @@ class MockRBACApi implements RBACAPI {
     return mockMembers;
   }
 
+  async getMembersByRefs(
+    entityRefs: string[],
+  ): Promise<(MemberEntity | undefined)[]> {
+    return entityRefs.map(ref => {
+      const name = ref.split('/').pop();
+      return mockMembers.find(m => m.metadata.name === name);
+    });
+  }
+
+  async searchMembers(searchTerm: string): Promise<MemberEntity[]> {
+    if (!searchTerm.trim()) {
+      return mockMembers;
+    }
+    return mockMembers.filter(m =>
+      m.metadata.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }
+
   async listPermissions(): Promise<PluginPermissionMetaData[]> {
     return mockPermissionPolicies;
   }

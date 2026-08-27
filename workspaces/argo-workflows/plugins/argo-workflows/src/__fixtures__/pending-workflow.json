@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "name": "scheduled-scan-v5",
+    "namespace": "default",
+    "uid": "wf-uid-005",
+    "labels": { "app": "my-service", "type": "security" },
+    "creationTimestamp": "2026-04-30T06:00:00Z"
+  },
+  "status": {
+    "phase": "Pending",
+    "nodes": {
+      "scheduled-scan-v5": {
+        "id": "scheduled-scan-v5",
+        "name": "scheduled-scan-v5",
+        "displayName": "Security Scan",
+        "type": "Pod",
+        "phase": "Pending",
+        "templateName": "trivy-scan"
+      }
+    }
+  }
+}
