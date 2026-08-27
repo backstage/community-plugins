@@ -58,7 +58,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-common": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@backstage/ui": "backstage:^",
+    "@backstage/ui": "npm:^0.17.1",
     "@codemirror/language": "^6.0.0",
     "@codemirror/legacy-modes": "^6.1.0",
     "@codemirror/view": "^6.0.0",
