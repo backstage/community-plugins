@@ -2,4 +2,4 @@
 '@backstage-community/plugin-newrelic': patch
 ---
 
-Re-trigger release pipeline after [GitHub Actions incident](https://www.githubstatus.com/incidents/y1t7p9fzrlj2)
+No functional changes; re-publish to recover from a [GitHub Actions incident](https://www.githubstatus.com/incidents/y1t7p9fzrlj2)
