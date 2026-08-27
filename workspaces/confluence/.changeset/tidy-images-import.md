@@ -1,4 +1,4 @@
-﻿---
+---
 '@backstage-community/plugin-techdocs-backend-module-confluence': patch
 ---
 
