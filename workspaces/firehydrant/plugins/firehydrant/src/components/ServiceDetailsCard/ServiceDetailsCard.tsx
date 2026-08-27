@@ -16,7 +16,7 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { ServiceAnalytics } from '../ServiceAnalytics/ServiceAnalytics';
-import { Flex, Text } from '@backstage/ui';
+import { Box, Flex, Text } from '@backstage/ui';
 import {
   RiExternalLinkLine,
   RiFileTextLine,
@@ -120,35 +120,34 @@ export const ServiceDetailsCard = () => {
   return (
     <InfoCard>
       {!showServiceDetails && !loading && (
-        <div className={styles.warning}>
+        <Flex
+          align="center"
+          style={{ gap: 'var(--bui-space-2)' }}
+          className={styles.warning}
+        >
           <RiAlertLine size={20} />
-          &nbsp;&nbsp;
           <Text as="span">This service does not exist in FireHydrant.</Text>
-        </div>
+        </Flex>
       )}
       {showServiceDetails && (
         <Flex align="center" justify="between" className={styles.headerRow}>
-          <div>
-            <h2>{headerText}</h2>
-          </div>
-          <div>
-            <a
-              className={styles.buttonLink}
-              href={serviceIncidentsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <RiExternalLinkLine size={16} />
-              View service incidents
-            </a>
-          </div>
+          <Text variant="title-medium">{headerText}</Text>
+          <a
+            className={styles.buttonLink}
+            href={serviceIncidentsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <RiExternalLinkLine size={16} />
+            View service incidents
+          </a>
         </Flex>
       )}
       {activeIncidents && activeIncidents?.length > 0 && (
-        <div className={styles.linksContainer}>
+        <Box className={styles.linksContainer}>
           {incidents &&
             incidents?.slice(0, 5).map((incident: Incident, index: number) => (
-              <div key={index}>
+              <Box key={index}>
                 <Link
                   className={styles.link}
                   to={incident.incident_url}
@@ -157,13 +156,15 @@ export const ServiceDetailsCard = () => {
                 >
                   {incident.name}
                 </Link>
-              </div>
+              </Box>
             ))}
-        </div>
+        </Box>
       )}
-      <div className={styles.viewSection}>
+      <Box className={styles.viewSection}>
         <Text variant="body-medium">View in FireHydrant </Text>
-        <div className={styles.buttonContainer}>
+        <Flex
+          style={{ marginTop: 'var(--bui-space-2)', gap: 'var(--bui-space-6)' }}
+        >
           <a
             className={styles.button}
             href={`${BASE_URL}/incidents/new`}
@@ -199,16 +200,16 @@ export const ServiceDetailsCard = () => {
               <span>View Service Details</span>
             </a>
           )}
-        </div>
-      </div>
+        </Flex>
+      </Box>
       {showServiceDetails && (
-        <div>
+        <Box>
           <ServiceAnalyticsView
             serviceId={serviceId}
             startDate={startDate}
             endDate={endDate}
           />
-        </div>
+        </Box>
       )}
     </InfoCard>
   );
