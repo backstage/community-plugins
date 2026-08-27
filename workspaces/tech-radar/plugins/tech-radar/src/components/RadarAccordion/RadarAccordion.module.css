@@ -6,7 +6,6 @@
 .ringHeader {
   margin-top: 1rem; /* mt-4 */
   margin-bottom: 0.5rem; /* mb-2 */
-  padding-left: var(--bui-space-3);
 }
 
 .ringTitle {
