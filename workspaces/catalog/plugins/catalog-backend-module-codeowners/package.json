@@ -14,8 +14,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/catalog-backend-module-codeowners"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/catalog/plugins/catalog-backend-module-codeowners"
   },
   "license": "Apache-2.0",
   "main": "src/index.ts",
