@@ -1,7 +1,7 @@
 ---
-'@backstage-community/plugin-npm': minor
-'@backstage-community/plugin-npm-backend': minor
-'@backstage-community/plugin-npm-common': minor
+'@backstage-community/plugin-npm': patch
+'@backstage-community/plugin-npm-backend': patch
+'@backstage-community/plugin-npm-common': patch
 ---
 
 Backstage version bump to v1.54.6
