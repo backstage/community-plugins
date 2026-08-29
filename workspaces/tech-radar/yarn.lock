@@ -8976,10 +8976,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.19.2":
-  version: 1.19.2
-  resolution: "@remix-run/router@npm:1.19.2"
-  checksum: 10/31b62b66ea68bd62018189047de7b262700113438f62407df019f81a9856a08a705b2b77454be9293518e2f5f3bbf3f8b858ac19f48cb7d89f8ab56b7b630c19
+"@remix-run/router@npm:1.23.4":
+  version: 1.23.4
+  resolution: "@remix-run/router@npm:1.23.4"
+  checksum: 10/1b7dd04465a542a8110ee398195ac4b9ac1de5521312f9953041874f0295bf64ff224a0ff88ff36a91c88004529667f566b95fdf94b35fc26b17b1f0d61f03d8
   languageName: node
   linkType: hard
 
@@ -27785,26 +27785,26 @@ __metadata:
   linkType: hard
 
 "react-router-dom@npm:6.0.0-beta.0 || ^6.3.0, react-router-dom@npm:^6.3.0":
-  version: 6.26.2
-  resolution: "react-router-dom@npm:6.26.2"
+  version: 6.30.6
+  resolution: "react-router-dom@npm:6.30.6"
   dependencies:
-    "@remix-run/router": "npm:1.19.2"
-    react-router: "npm:6.26.2"
+    "@remix-run/router": "npm:1.23.4"
+    react-router: "npm:6.30.6"
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: 10/4eee37839bd1a660807c090b4d272e4aa9b95d8a9a932cdcdf7c5b10735f39b6db73bad79b08a3012386a7e225ff6bf60435e2741fb7c68e137ac5a6295d4308
+  checksum: 10/6e501c45fd85894b197a84437c12cd0ab6d9c14277af41a7546f965ee0a0861aff1da5d72d56020a1ac2d4d4b1c4ec848a16554372004fdef5cdb1bce75a155e
   languageName: node
   linkType: hard
 
-"react-router@npm:6.26.2":
-  version: 6.26.2
-  resolution: "react-router@npm:6.26.2"
+"react-router@npm:6.30.6":
+  version: 6.30.6
+  resolution: "react-router@npm:6.30.6"
   dependencies:
-    "@remix-run/router": "npm:1.19.2"
+    "@remix-run/router": "npm:1.23.4"
   peerDependencies:
     react: ">=16.8"
-  checksum: 10/496e855b53e61066c1791e354f5d79eab56a128d9722fdc6486c3ecd3b3a0bf9968e927028f429893b157f3cc10fc09e890a055847723ee242663e7995fedc9d
+  checksum: 10/df751de74dc460abc9023aecfd09284170939e8ad8892373ec0015aa04187e0b9c66fffcb546bfb0f1ca5c9edb14b67c93a46306a61efcf15a7dc20eca1e16b7
   languageName: node
   linkType: hard
 
