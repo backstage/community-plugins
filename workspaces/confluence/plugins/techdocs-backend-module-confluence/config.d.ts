@@ -97,6 +97,10 @@ export interface Config {
            * Maximum depth to traverse when fetching child pages. 0 = unlimited. Default: 0
            */
           maxDepth?: number;
+          /**
+           * Preserve embedded data images when converting Confluence HTML to Markdown. Default: false
+           */
+          keepDataImages?: boolean;
         };
       }
     | {
@@ -152,6 +156,10 @@ export interface Config {
              * Maximum depth to traverse when fetching child pages. 0 = unlimited. Default: 0
              */
             maxDepth?: number;
+            /**
+             * Preserve embedded data images when converting Confluence HTML to Markdown. Default: false
+             */
+            keepDataImages?: boolean;
           };
         };
       };
