@@ -51,7 +51,10 @@
     },
     {
       "matchPackageNames": ["react-router", "react-router-dom"],
-      "allowedVersions": "<7.0.0"
+      "allowedVersions": "<7.0.0",
+      "vulnerabilityAlerts": {
+        "enabled": false
+      }
     },
     {
       "matchFileNames": ["workspaces/**"],
