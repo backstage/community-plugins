@@ -453,8 +453,15 @@ class BitbucketCloudClient extends BaseBitbucketClient {
 
     // Collect all repos across all workspaces first
     const repoTasks: Array<{ workspace: string; repo: string }> = [];
-    for (const workspace of this.cloudWorkspaces) {
-      const repos = await this.fetchWorkspaceRepositories(workspace);
+    const workspaceReposEntries = await Promise.all(
+      this.cloudWorkspaces.map(workspace =>
+        this.fetchWorkspaceRepositories(workspace).then(repos => ({
+          workspace,
+          repos,
+        })),
+      ),
+    );
+    for (const { workspace, repos } of workspaceReposEntries) {
       for (const repo of repos) {
         repoTasks.push({ workspace, repo });
       }
