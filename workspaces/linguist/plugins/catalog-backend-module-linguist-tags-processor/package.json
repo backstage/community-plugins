@@ -41,8 +41,7 @@
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
-    "@types/js-yaml": "^4.0.9",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.2.3",
     "linguist-js": "^2.5.3"
   },
   "files": [
