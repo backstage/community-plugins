@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.16.3
+
+### Patch Changes
+
+- f396218: Updated dependency `js-yaml` to `^5.0.0`.
+
 ## 2.16.2
 
 ### Patch Changes
