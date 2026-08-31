@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-tech-insights-backend': minor
+'@backstage-community/plugin-tech-insights-backend': major
 '@backstage-community/plugin-tech-insights-node': minor
 ---
 
