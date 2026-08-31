@@ -21,17 +21,25 @@ jobs:
           COMMITS: ${{ github.event.pull_request.commits }}
         run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
 
-      - name: Checkout base branch for diff purposes
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 50 # TODO(awanlin): Temporary fix
-
       - name: Checkout head branch
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
-          # Needed for diff
+          # Use GitHub's tested merge revision, falling back to the PR head for conflicted PRs.
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.event.pull_request.head.sha }}
           fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
+
+      - name: Fetch base commit for diff purposes
+        # BASE_REF is the target PR base; HEAD is the tested PR revision.
+        run: git fetch --no-tags origin "${BASE_SHA}:refs/remotes/origin/pr-base" --depth=1
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+      - name: Diagnose PR diff refs
+        run: |
+          echo "HEAD=$(git rev-parse HEAD)"
+          echo "BASE=$(git rev-parse origin/pr-base)"
+          echo "MERGE_BASE=$(git merge-base origin/pr-base HEAD || true)"
+          git rev-parse --is-shallow-repository
 
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
@@ -43,7 +51,7 @@ jobs:
         id: find-changed-workspaces
         run: node ./scripts/ci/list-workspaces-with-changes.js
         env:
-          BASE_REF: origin/${{ github.event.pull_request.base.ref }}
+          BASE_REF: origin/pr-base
 
   ci:
     name: Workspace ${{ matrix.workspaceNodeMatrix.workspace }}, CI step for node ${{ matrix.workspaceNodeMatrix.nodeVersion }}
