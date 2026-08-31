@@ -129,11 +129,18 @@ const catalogModuleIncrementalExample = createBackendModule({
 
             async around(burst) {
               const catalog = new CatalogClient({ discoveryApi: discovery });
-              await burst({ catalog });
+              // Fetched once per burst rather than per entity, since token
+              // issuance is real overhead when `next()` runs many times in
+              // a single burst.
+              const { token } = await auth.getPluginRequestToken({
+                onBehalfOf: await auth.getOwnServiceCredentials(),
+                targetPluginId: 'catalog',
+              });
+              await burst({ catalog, token });
             },
 
             async next(
-              { catalog }: { catalog: CatalogClient },
+              { catalog, token }: { catalog: CatalogClient; token: string },
               cursor: { offset: number } = { offset: 0 },
             ): Promise<EntityIteratorResult<{ offset: number }>> {
               const factInsert = factInsertHolder.current;
@@ -143,11 +150,6 @@ const catalogModuleIncrementalExample = createBackendModule({
                     'is techInsightsModuleIncrementalExample added to the backend?',
                 );
               }
-
-              const { token } = await auth.getPluginRequestToken({
-                onBehalfOf: await auth.getOwnServiceCredentials(),
-                targetPluginId: 'catalog',
-              });
 
               const { items } = await catalog.getEntities(
                 {
