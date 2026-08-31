@@ -109,7 +109,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/kiali" element={<KialiPage />} />
+    <Route path="/kiali/*" element={<KialiPage />} />
   </FlatRoutes>
 );
 

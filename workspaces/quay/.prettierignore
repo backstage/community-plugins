@@ -4,3 +4,4 @@ coverage
 knip-report.md
 .vscode
 .eslintrc.js
+report.api.md

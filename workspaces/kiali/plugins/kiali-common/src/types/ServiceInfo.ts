@@ -54,7 +54,7 @@ export interface WorkloadOverviewServiceView {
   name: string;
   type: string;
   istioSidecar: boolean;
-  istioAmbient: boolean;
+  isAmbient: boolean;
   labels?: { [key: string]: string };
   resourceVersion: string;
   createdAt: string;

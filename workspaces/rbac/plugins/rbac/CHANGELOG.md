@@ -1,5 +1,137 @@
 # @backstage-community/plugin-rbac
 
+## 2.1.2
+
+### Patch Changes
+
+- 2bcaa01: Improve role page performance by replacing bulk member loading with server-side search and fetching only the members assigned to a role.
+
+## 2.1.1
+
+### Patch Changes
+
+- a231ec3: Add CI bump-trust coverage and contributor dev harness documentation for the RBAC plugin family.
+
+  **`@backstage-community/plugin-rbac-backend`**
+
+  - Add backend `dev/` harness config (`app-config.yaml`) that no longer depends on the workspace root `app-config.yaml`
+  - Add `startTestBackend` smoke test for `GET /api/permission/roles`
+  - Add policy contract test locking the documented `superUsers` direct-membership rule
+  - Add backend-only multi-user manual test fixtures/config under `plugins/rbac-backend/__fixtures__/` and `app-config.multi-user.yaml` (Keycloak realm import, catalog entities, CSV policies)
+  - Add `CONTRIBUTING.md` with harness, test, and REST smoke guidance
+
+  **`@backstage-community/plugin-rbac-common`**
+
+  - Add minimal public API contract tests
+  - Add `CONTRIBUTING.md`
+
+  **`@backstage-community/plugin-rbac`**
+
+  - Add `CONTRIBUTING.md` and link it from the plugin README
+
+  **Workspace**
+
+  - Remove non-functional root `yarn start` and `yarn start:alpha` scripts that paired separate plugin dev servers
+
+- Updated dependencies [a231ec3]
+  - @backstage-community/plugin-rbac-common@1.29.1
+
+## 2.1.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module default export for `packages: all` discovery
+
+## 2.0.0
+
+### Major Changes
+
+- 0150d87: **BREAKING**: The New Frontend System (NFS) plugin has been promoted from the `./alpha` subpath to the primary `.` entry point. The legacy plugin has been moved to the new `./legacy` subpath. The `./alpha` subpath now only exports translations.
+
+  Migration steps:
+
+  - If you were importing from `@backstage-community/plugin-rbac/alpha` to use the NFS plugin, update your imports to `@backstage-community/plugin-rbac`.
+  - If you were importing from `@backstage-community/plugin-rbac` (the legacy plugin), update your imports to `@backstage-community/plugin-rbac/legacy`.
+  - If you were importing translations from `@backstage-community/plugin-rbac/alpha`, those continue to work from the same path.
+
+### Patch Changes
+
+- 09d8279: Fixed cancel button position on the role form page by removing absolute positioning and placing it in the document flow after the error alert
+
+## 1.55.3
+
+### Patch Changes
+
+- b1d36eb: Fixed nested interactive controls accessibility violations (WCAG 4.1.2) in RBAC tables
+
+## 1.55.2
+
+### Patch Changes
+
+- 2b0b5be: Update German translation for accessible plugins header.
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+
+## 1.55.1
+
+### Patch Changes
+
+- dc80f66: Updated dependency `start-server-and-test` to `3.0.11`.
+
+## 1.55.0
+
+### Minor Changes
+
+- 845383a: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [845383a]
+  - @backstage-community/plugin-rbac-common@1.29.0
+
+## 1.54.0
+
+### Minor Changes
+
+- 091ec86: Backstage version bump to v1.51.0.
+
+  The RBAC backend plugin now resolves user identity through Backstage's `UserInfoService` when evaluating conditional permissions, as part of aligning with the Backstage 1.51 permission framework. **No action is required** if you install RBAC with `backend.add(import('@backstage-community/plugin-rbac-backend'))` and manage access through app-config as documented.
+
+  If you extend RBAC at a lower level (for example by constructing `PolicyBuilder` directly), ensure `UserInfoService` is wired through your backend integration.
+
+### Patch Changes
+
+- 387d2e9: Updated dependency `@types/node` to `22.19.19`.
+- 6d964f2: Migrated MUI-v4 references to MUI-v5
+
+  Adds New Frontend System dev entrypoints and removes workspace example apps in favor of the plugin `dev/` pattern. Dev backend wiring lives in `plugins/rbac-backend/dev/` (same approach as linguist, feedback, and other FE+BE plugins).
+
+- Updated dependencies [091ec86]
+  - @backstage-community/plugin-rbac-common@1.28.0
+
+## 1.53.1
+
+### Patch Changes
+
+- 91cce2e: Fixed RBAC table pagination text not being translated in non-English locales by adding `labelDisplayedRows` and `labelRowsPerPage` translation keys and wiring them into all table components.
+
+## 1.53.0
+
+### Minor Changes
+
+- 6a916a1: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [6a916a1]
+  - @backstage-community/plugin-rbac-common@1.27.0
+
+## 1.52.5
+
+### Patch Changes
+
+a23cb21: Improve role page performance by replacing bulk member loading with server-side search and fetching only the members assigned to a role.
+
 ## 1.52.4
 
 ### Patch Changes

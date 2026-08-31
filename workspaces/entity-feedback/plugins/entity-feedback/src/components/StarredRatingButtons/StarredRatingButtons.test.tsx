@@ -26,7 +26,10 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import userEvent from '@testing-library/user-event';
 
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
-import { FeedbackRatings, StarredRatingButtons } from './StarredRatingButtons';
+import {
+  StarredFeedbackRatings,
+  StarredRatingButtons,
+} from './StarredRatingButtons';
 
 jest.mock('../FeedbackResponseDialog', () => ({
   FeedbackResponseDialog: ({ open }: { open: boolean }) => {
@@ -38,11 +41,11 @@ describe('StarredRatingButtons', () => {
   const sampleRatings = [
     {
       userRef: 'user:default/me',
-      rating: FeedbackRatings.two,
+      rating: StarredFeedbackRatings.two,
     },
     {
       userRef: 'user:default/someone',
-      rating: FeedbackRatings.five,
+      rating: StarredFeedbackRatings.five,
     },
   ];
 
@@ -100,7 +103,7 @@ describe('StarredRatingButtons', () => {
     );
     expect(feedbackApi.recordRating).toHaveBeenCalledWith(
       'component:default/test',
-      FeedbackRatings.three.toString(),
+      StarredFeedbackRatings.three.toString(),
     );
 
     jest.clearAllMocks();
@@ -110,7 +113,7 @@ describe('StarredRatingButtons', () => {
     );
     expect(feedbackApi.recordRating).toHaveBeenCalledWith(
       'component:default/test',
-      FeedbackRatings.five.toString(),
+      StarredFeedbackRatings.five.toString(),
     );
   });
 

@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
-import Divider from '@material-ui/core/Divider';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import { makeStyles } from '@material-ui/core/styles';
+import { Tabs, TabList, Tab, TabPanel } from '@backstage/ui';
 import { ApolloExplorer } from '@apollo/explorer/react';
 import { Content } from '@backstage/core-components';
 import { HandleRequest } from '@apollo/explorer/src/helpers/postMessageRelayHelpers';
 import { EndpointProps } from '../ApolloExplorerPage';
 import { useApiHolder } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  tabs: {
-    background: theme.palette.background.paper,
-  },
-  root: {
-    height: '100%',
-  },
-  content: {
-    height: '100%',
-  },
-  explorer: {
-    height: '95%',
-  },
-}));
+import styles from './ApolloExplorerBrowser.module.css';
 
 type Props = {
   endpoints: EndpointProps[];
@@ -64,9 +46,6 @@ export const handleAuthRequest = ({
 };
 
 export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
-  const classes = useStyles();
-  const [tabIndex, setTabIndex] = useState(0);
-
   const apiHolder = useApiHolder();
 
   const getAuthCallback = (index: number) => {
@@ -76,29 +55,31 @@ export const ApolloExplorerBrowser = ({ endpoints }: Props) => {
   };
 
   return (
-    <div className={classes.root}>
-      <Tabs
-        classes={{ root: classes.tabs }}
-        value={tabIndex}
-        onChange={(_, value) => setTabIndex(value)}
-        indicatorColor="primary"
-      >
-        {endpoints.map(({ title }, index) => (
-          <Tab key={index} label={title} value={index} />
+    <div className={styles.root}>
+      <Tabs defaultSelectedKey="0">
+        <TabList className={styles.tabs}>
+          {endpoints.map(({ title }, index) => (
+            <Tab key={index} id={String(index)}>
+              {title}
+            </Tab>
+          ))}
+        </TabList>
+        {endpoints.map((endpoint, index) => (
+          <TabPanel key={index} id={String(index)}>
+            <Content className={styles.content}>
+              <ApolloExplorer
+                className={styles.explorer}
+                graphRef={endpoint.graphRef}
+                handleRequest={handleAuthRequest({
+                  authCallback: getAuthCallback(index),
+                })}
+                persistExplorerState={endpoint.persistExplorerState}
+                initialState={endpoint.initialState}
+              />
+            </Content>
+          </TabPanel>
         ))}
       </Tabs>
-      <Divider />
-      <Content className={classes.content}>
-        <ApolloExplorer
-          className={classes.explorer}
-          graphRef={endpoints[tabIndex].graphRef}
-          handleRequest={handleAuthRequest({
-            authCallback: getAuthCallback(tabIndex),
-          })}
-          persistExplorerState={endpoints[tabIndex].persistExplorerState}
-          initialState={endpoints[tabIndex].initialState}
-        />
-      </Content>
     </div>
   );
 };

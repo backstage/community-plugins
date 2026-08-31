@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Edge, TaskEdge } from '@patternfly/react-topology';
-// eslint-disable-next-line @backstage/no-undeclared-imports
 import { observer } from 'mobx-react';
 
 import { GROUPED_PIPELINE_NODE_SEPARATION_HORIZONTAL } from '../../consts/pipeline-topology-const';

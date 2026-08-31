@@ -33,6 +33,8 @@ export const ActionType = {
   CREATE_OR_UPDATE: 'create_or_update',
   UPDATE: 'update',
   DELETE: 'delete',
+  /** Batch conditional reconcile aborted; see audit-log.md (`condition-write` / `conditional-policies-file-change`). */
+  RECONCILE_ABORT: 'reconcile_abort',
 };
 
 export const RoleEvents = {

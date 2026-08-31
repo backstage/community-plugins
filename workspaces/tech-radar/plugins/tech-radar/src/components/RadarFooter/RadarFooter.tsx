@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const RadarFooter = (props: Props): JSX.Element => {
+const RadarFooter = (props: Props): React.JSX.Element => {
   const { x, y, spaces = 5, labels } = props;
   const classes = useStyles(props);
   const space = onespace.repeat(spaces);

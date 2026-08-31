@@ -18,7 +18,7 @@ import {
   ClientSecretCredential,
 } from '@azure/identity';
 import { ResourceGraphClient } from '@azure/arm-resourcegraph';
-import { Config } from '@backstage/config';
+import type { Config } from '@backstage/config';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 /**

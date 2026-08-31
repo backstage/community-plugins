@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { fireEvent, render, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import { mockKubernetesResponse } from '../../../../__fixtures__/1-deployments';
 import { ContainerSelector } from './ContainerSelector';
@@ -47,19 +47,19 @@ const mockOnContainerChange = jest.fn();
 
 describe('ContainerSelector', () => {
   it('should render the select dropdown and show selected option', () => {
-    const { queryByText, queryByTestId } = render(
+    render(
       <ContainerSelector
         containersList={containerList}
         containerSelected="container-hello"
         onContainerChange={mockOnContainerChange}
       />,
     );
-    expect(queryByText(/container-hello/i)).toBeInTheDocument();
-    expect(queryByTestId('container-select')).toBeInTheDocument();
+    expect(screen.getByText('container-hello')).toBeInTheDocument();
+    expect(screen.getByTestId('container-select')).toBeInTheDocument();
   });
 
   it('should trigger onChange handler', () => {
-    const { queryByText, getByRole } = render(
+    render(
       <ContainerSelector
         containersList={containerList}
         containerSelected="container-hello"
@@ -67,11 +67,8 @@ describe('ContainerSelector', () => {
       />,
     );
 
-    fireEvent.mouseDown(getByRole('combobox'));
-    const listbox = within(getByRole('listbox'));
-
-    fireEvent.click(listbox.getByText(/container2/i));
-    expect(mockOnContainerChange).toHaveBeenCalled();
-    expect(queryByText(/container2/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /container-hello/i }));
+    fireEvent.click(screen.getByRole('option', { name: /container2/i }));
+    expect(mockOnContainerChange).toHaveBeenCalledWith('container2');
   });
 });

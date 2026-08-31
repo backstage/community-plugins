@@ -1,13 +1,26 @@
 {
   "name": "@backstage-community/plugin-multi-source-security-viewer",
-  "version": "0.16.0",
+  "version": "0.17.3",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./legacy": "./src/legacy.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "legacy": [
+        "src/legacy.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
+  },
   "license": "Apache-2.0",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -17,6 +30,7 @@
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "multi-source-security-viewer",
+    "pluginPackage": "@backstage-community/plugin-multi-source-security-viewer",
     "pluginPackages": [
       "@backstage-community/plugin-multi-source-security-viewer",
       "@backstage-community/plugin-multi-source-security-viewer-backend",
@@ -32,6 +46,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
@@ -41,19 +56,20 @@
   },
   "dependencies": {
     "@aonic-ui/pipelines": "^3.1.1",
-    "@backstage-community/plugin-azure-devops": "^0.29.0",
-    "@backstage-community/plugin-azure-devops-common": "^0.21.0",
-    "@backstage-community/plugin-github-actions": "^0.22.0",
-    "@backstage-community/plugin-jenkins": "^0.30.0",
+    "@backstage-community/plugin-azure-devops": "^0.32.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.24.0",
+    "@backstage-community/plugin-github-actions": "^0.23.0",
+    "@backstage-community/plugin-jenkins": "^0.32.0",
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^",
-    "@backstage/catalog-model": "^1.8.0",
-    "@backstage/core-components": "^0.18.9",
-    "@backstage/core-plugin-api": "^1.12.5",
-    "@backstage/integration-react": "^1.2.17",
-    "@backstage/plugin-catalog-react": "^2.1.4",
-    "@backstage/plugin-permission-react": "^0.5.0",
+    "@backstage/catalog-model": "^1.10.0",
+    "@backstage/core-components": "^0.18.13",
+    "@backstage/core-plugin-api": "^1.12.9",
+    "@backstage/frontend-plugin-api": "^0.18.0",
+    "@backstage/integration-react": "^1.2.21",
+    "@backstage/plugin-catalog-react": "^3.2.2",
+    "@backstage/plugin-permission-react": "^0.5.4",
     "@backstage/theme": "^0.7.3",
-    "@backstage/ui": "^0.14.3",
+    "@backstage/ui": "^0.17.1",
     "@immobiliarelabs/backstage-plugin-gitlab": "^7.0.0",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
@@ -72,16 +88,27 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.1",
-    "@backstage/core-app-api": "^1.20.0",
-    "@backstage/dev-utils": "^1.1.22",
-    "@backstage/test-utils": "^1.7.17",
+    "@axe-core/playwright": "^4.11.3",
+    "@backstage/cli": "^0.36.5",
+    "@backstage/core-app-api": "^1.20.4",
+    "@backstage/dev-utils": "^1.1.26",
+    "@backstage/frontend-defaults": "^0.5.5",
+    "@backstage/frontend-test-utils": "^0.6.3",
+    "@backstage/plugin-catalog": "^2.0.8",
+    "@backstage/plugin-user-settings": "^0.9.6",
+    "@backstage/test-utils": "^1.7.21",
+    "@playwright/test": "1.61.1",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/lodash": "^4.17.13",
+    "@types/react": "^18.2.58",
+    "@types/react-dom": "^18.2.19",
     "msw": "^1.0.0",
-    "react": "^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.0.0"
   },
   "files": [
     "dist"

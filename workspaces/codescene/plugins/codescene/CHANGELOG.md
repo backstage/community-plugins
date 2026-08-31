@@ -1,5 +1,29 @@
 # @backstage-community/plugin-codescene
 
+## 0.21.0
+
+### Minor Changes
+
+- b1b8eb9: Backstage version bump to v1.54.5
+
+## 0.20.0
+
+### Minor Changes
+
+- 1f94aab: Backstage version bump to v1.53.0
+
+## 0.19.0
+
+### Minor Changes
+
+- c149adb: Backstage version bump to v1.52.0
+
+## 0.18.0
+
+### Minor Changes
+
+- a3bb067: Backstage version bump to v1.51.1
+
 ## 0.17.0
 
 ### Minor Changes

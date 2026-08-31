@@ -179,6 +179,7 @@ export const ServiceDetailsPage = (props: { entity?: boolean }) => {
             cluster={cluster}
             objectType={MetricsObjectTypes.SERVICE}
             direction="inbound"
+            includeWaypoint={serviceItem?.isAmbient ?? false}
           />
         )}
       </>
@@ -197,6 +198,7 @@ export const ServiceDetailsPage = (props: { entity?: boolean }) => {
             cluster={cluster}
             objectType={MetricsObjectTypes.SERVICE}
             direction="outbound"
+            includeWaypoint={serviceItem?.isAmbient ?? false}
           />
         )}
       </>

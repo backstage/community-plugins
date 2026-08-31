@@ -1,5 +1,23 @@
 # @backstage-community/plugin-analytics-module-ga4
 
+## 0.22.0
+
+### Minor Changes
+
+- 70ce2a9: Backstage version bump to v1.54.5
+
+## 0.21.0
+
+### Minor Changes
+
+- bb6da15: Backstage version bump to v1.52.0
+
+## 0.20.0
+
+### Minor Changes
+
+- 2a80868: Backstage version bump to v1.51.0
+
 ## 0.19.1
 
 ### Patch Changes

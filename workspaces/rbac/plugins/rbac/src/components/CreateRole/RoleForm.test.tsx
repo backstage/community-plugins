@@ -29,11 +29,6 @@ jest.mock('../../hooks/useLanguage', () => ({
   useLanguage: mockUseLanguage,
 }));
 
-jest.mock('@mui/styles', () => ({
-  ...jest.requireActual('@mui/styles'),
-  makeStyles: jest.fn().mockReturnValue(() => ({})),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Link: forwardRef<
@@ -49,7 +44,9 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
+  useApi: jest.fn().mockReturnValue({
+    searchMembers: jest.fn().mockResolvedValue([]),
+  }),
 }));
 
 jest.mock('formik', () => ({

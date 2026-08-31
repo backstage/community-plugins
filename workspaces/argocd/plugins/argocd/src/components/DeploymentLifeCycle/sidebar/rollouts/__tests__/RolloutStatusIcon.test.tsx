@@ -76,11 +76,11 @@ describe('RolloutStatusIcon', () => {
     expect(icon).toHaveStyle('color: #E96D76');
   });
 
-  test('renders CircleNotchIcon for RolloutPhase.Progressing with correct color and spin class', () => {
+  test('renders CircleNotchIcon for RolloutPhase.Progressing with correct color inside SpinWrapper', () => {
     render(<RolloutStatusIcon status={RolloutPhase.Progressing} />);
     const icon = screen.getByTestId('rollout-progressing-icon');
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveStyle('color: #0DADEA');
-    expect(icon).toHaveClass(/\bicon-spin\b/);
+    expect(icon.parentElement?.tagName).toBe('SPAN');
   });
 });

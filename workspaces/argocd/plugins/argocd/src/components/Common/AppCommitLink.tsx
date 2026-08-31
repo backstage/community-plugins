@@ -19,15 +19,12 @@ import {
   RevisionInfo,
   History,
 } from '@backstage-community/plugin-argocd-common';
-import {
-  Chip,
-  Typography,
-  Tooltip,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Skeleton from '@mui/material/Skeleton';
 import GitLabIcon from '@patternfly/react-icons/dist/esm/icons/gitlab-icon';
-import { Skeleton } from '@material-ui/lab';
 import { getCommitUrl } from '../../utils/utils';
 import { Entity } from '@backstage/catalog-model';
 
@@ -39,17 +36,6 @@ interface CommitLinkProps {
   showAuthor?: boolean;
 }
 
-const useCommitStyles = makeStyles<Theme>(theme => ({
-  commitContainer: {
-    maxWidth: theme.spacing(35),
-  },
-  commitMessage: {
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-  },
-}));
-
 const AppCommitLink: FC<CommitLinkProps> = ({
   entity,
   application,
@@ -57,8 +43,6 @@ const AppCommitLink: FC<CommitLinkProps> = ({
   latestRevision,
   showAuthor = false,
 }) => {
-  const classes = useCommitStyles();
-
   // If we have a multi-source application,
   // lets only use the first source to keep things simple for now.
   const latestRevisionSha =
@@ -92,7 +76,7 @@ const AppCommitLink: FC<CommitLinkProps> = ({
   };
 
   return revisions && latestRevision ? (
-    <div className={classes.commitContainer}>
+    <Box sx={{ maxWidth: theme => theme.spacing(35) }}>
       <Chip
         data-testid={`${latestRevisionSha.slice(0, 5)}-commit-link`}
         size="small"
@@ -106,7 +90,11 @@ const AppCommitLink: FC<CommitLinkProps> = ({
       <Typography
         variant="body2"
         color="textSecondary"
-        className={classes.commitMessage}
+        sx={{
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+        }}
       >
         {!!revisionInfo ? (
           <Tooltip
@@ -119,7 +107,7 @@ const AppCommitLink: FC<CommitLinkProps> = ({
           <Skeleton />
         )}
       </Typography>
-    </div>
+    </Box>
   ) : (
     <>-</>
   );

@@ -19,7 +19,8 @@ import { Progress, ResponseErrorPanel } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 import { argoCDApiRef } from '../../api';
 import { useApplications } from '../../hooks/useApplications';
 import { useArgocdViewPermission } from '../../hooks/useArgocdViewPermission';
@@ -46,23 +47,18 @@ export interface DeploymentLifecycleProps {
   showServer?: boolean;
 }
 
-const useDrawerStyles = makeStyles<Theme>(theme =>
-  createStyles({
-    lifecycle: {
-      display: 'flex',
-      flexWrap: 'nowrap',
-      overflowX: 'auto',
-      background:
-        theme.palette.type === 'dark'
-          ? theme.palette.grey[700]
-          : theme.palette.grey[200],
-      color: 'black',
-      margin: '1px solid red',
-      padding: '20px',
-      borderRadius: '10px',
-    },
-  }),
-);
+const LifecycleContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'nowrap',
+  overflowX: 'auto',
+  background:
+    theme.palette.mode === 'dark'
+      ? theme.palette.grey[700]
+      : theme.palette.grey[200],
+  color: 'black',
+  padding: '20px',
+  borderRadius: '10px',
+}));
 
 const DeploymentLifecycle = ({
   showInstance = true,
@@ -70,7 +66,6 @@ const DeploymentLifecycle = ({
 }: DeploymentLifecycleProps) => {
   const { t } = useTranslation();
   const { entity } = useEntity();
-  const classes = useDrawerStyles();
 
   const api = useApi(argoCDApiRef);
   const configApi = useApi(configApiRef);
@@ -170,7 +165,7 @@ const DeploymentLifecycle = ({
         {t('deploymentLifecycle.deploymentLifecycle.subtitle')}
       </Typography>
 
-      <div className={classes.lifecycle}>
+      <LifecycleContainer>
         {apps.map((app: Application, idx: number) => (
           <DeploymentLifecycleCard
             app={app}
@@ -184,7 +179,7 @@ const DeploymentLifecycle = ({
             }}
           />
         ))}
-      </div>
+      </LifecycleContainer>
       <DrawerProvider
         application={activeApp as Application}
         revisions={revisionCache.current}

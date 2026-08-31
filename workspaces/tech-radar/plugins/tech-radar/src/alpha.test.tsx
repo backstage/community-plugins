@@ -63,6 +63,8 @@ describe('TechRadarPage', () => {
       </TestApiProvider>,
     );
 
-    await expect(screen.findByText('Tech Radar')).resolves.toBeInTheDocument();
+    await expect(
+      screen.findByText('Company Radar'),
+    ).resolves.toBeInTheDocument();
   });
 });

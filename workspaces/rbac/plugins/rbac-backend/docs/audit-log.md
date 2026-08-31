@@ -177,20 +177,32 @@ Failed events contain `error` information.
 
   **Condition Event meta for `condition-write`:**
 
-  - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
-  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
+  - source?: string (source emitting the event, `rest`, external provider id from extension point sync, or omitted for conditions from the conditional policies YAML file)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `reconcile_abort`)
 
   **Condition Event fail/success meta for `condition-write`:**
 
-  - source?: string (source emitting the event, `rest` or not included for conditions from `yaml-conditional-file`)
-  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`)
-  - condition: RoleConditionalPolicyDecision<"create" | "read" | "update" | "delete" | "use">
+  - source?: string (source emitting the event, `rest`, external provider id from extension point sync, or omitted for conditions from the conditional policies YAML file)
+  - actionType: string (further specifies type of modify action, `create`, `update`, `delete`, `reconcile_abort`)
+  - condition: RoleConditionalPolicyDecision<"create" | "read" | "update" | "delete" | "use"> (not present when `actionType` is `reconcile_abort`)
 
   Filter on `actionType`.
 
-  - **`create`**: Creates conditions. (POST `/roles/conditions`, extension point `applyPermissions`)
-  - **`update`**: Updates conditions. (PUT `/roles/conditions`)
-  - **`delete`**: Deletes conditions. (DELETE `/roles/conditions`, extension point `applyPermissions`)
+  - **`create`**: Creates conditions. (POST `/roles/conditions`, extension point `applyConditionalPermissions`, conditional policies YAML file reload)
+  - **`update`**: Updates conditions. (PUT `/roles/conditions`, conditional policies YAML file reload, extension point `applyConditionalPermissions`)
+  - **`delete`**: Deletes conditions. (DELETE `/roles/conditions`, conditional policies YAML file reload, extension point `applyConditionalPermissions`)
+  - **`reconcile_abort`**: Batch conditional policy reconcile failed after staging; stored conditions were left unchanged. (extension point `applyConditionalPermissions` only — emitted as a failed `condition-write` event, not per-row create/update/delete)
+
+    **Condition Event fail meta for `reconcile_abort` (`condition-write` only):**
+
+    - source: string (provider id emitting the event)
+    - actionType: `reconcile_abort`
+    - pendingAdds: number (conditions in the pending add set when reconcile aborted)
+    - pendingRemoves: number (conditions in the pending remove set when reconcile aborted)
+    - pluginIds: string[] (plugin ids from the pending add set)
+    - error: Error (staging or persist failure that aborted the batch)
+
+    Operational logs also emit `event: "conditional_reconcile_aborted"` with the same fields for alerting.
 
 - **`condition-read`**: Reads conditions. (GET `/roles/conditions`)
 
@@ -222,7 +234,17 @@ Failed events contain `error` information.
 
 - **`conditional-policies-file-not-found`**: Conditional policies file was not found.
 
-- **`conditional-policies-file-change`**: Conditional policies file changed.
+- **`conditional-policies-file-change`**: Conditional policies file changed or batch reconcile from the file failed.
+
+  **Conditional file Event fail meta for batch reconcile abort** (YAML reload staging or persist failure; stored conditions unchanged):
+
+  - source: `conditional-policies-file`
+  - pendingAdds: number
+  - pendingRemoves: number
+  - pluginIds: string[]
+  - error: Error
+
+  Per-row `condition-write` events (`create`, `update`, `delete`) may precede a batch abort when failure occurs mid-persist. Operational logs also emit `event: "conditional_reconcile_aborted"` with the same fields for alerting.
 
 ### Permission Evaluation Events
 

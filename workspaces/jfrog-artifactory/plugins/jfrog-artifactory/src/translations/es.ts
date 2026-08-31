@@ -26,7 +26,8 @@ const jfrogArtifactoryTranslationEs = createTranslationMessages({
   messages: {
     'page.title': 'Repositorio de JFrog Artifactory: {{image}}',
     'table.searchPlaceholder': 'Filtrar',
-    'table.labelRowsSelect': 'Filas',
+    'table.pagination.showResults': 'Mostrar {{count}} resultados',
+    'table.pagination.rangeLabel': '{{start}} - {{end}} de {{total}}',
     'table.columns.version': 'Versión',
     'table.columns.repositories': 'Repositorios',
     'table.columns.manifest': 'Manifiesto',

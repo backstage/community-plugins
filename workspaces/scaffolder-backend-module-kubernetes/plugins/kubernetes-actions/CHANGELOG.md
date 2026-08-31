@@ -1,5 +1,29 @@
 # @backstage-community/plugin-scaffolder-backend-module-kubernetes
 
+## 2.20.1
+
+### Patch Changes
+
+- 9a486a6: Add module wiring tests, scaffolder-node input schema coverage, Kubernetes API error-path tests, a local `dev/` harness, and contributor documentation so Backstage dependency bumps are caught by scoped automated tests.
+
+## 2.20.0
+
+### Minor Changes
+
+- df706be: Backstage version bump to v1.53.0
+
+## 2.19.0
+
+### Minor Changes
+
+- 6e3f2d5: Backstage version bump to v1.52.0
+
+## 2.18.0
+
+### Minor Changes
+
+- 1f964ea: Backstage version bump to v1.51.0
+
 ## 2.17.1
 
 ### Patch Changes

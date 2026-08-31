@@ -185,7 +185,7 @@ describe('ResourcesTable Component', () => {
     const initialResources = screen.getAllByText('Deployment');
     expect(initialResources.length).toBe(5);
 
-    const nextPageButton = screen.getByLabelText('Next page');
+    const nextPageButton = screen.getByLabelText('Go to next page');
     expect(nextPageButton).toBeInTheDocument();
     fireEvent.click(nextPageButton);
 

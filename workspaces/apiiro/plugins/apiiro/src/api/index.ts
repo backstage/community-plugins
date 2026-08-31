@@ -15,6 +15,7 @@
  */
 import { QueryClient } from '@tanstack/react-query';
 import {
+  ApiRef,
   ConfigApi,
   createApiRef,
   DiscoveryApi,
@@ -30,7 +31,7 @@ export type ApiiroApi = {
   getRedirectDevView: () => boolean;
 };
 
-export const apiiroApiRef = createApiRef<ApiiroApi>({
+export const apiiroApiRef: ApiRef<ApiiroApi> = createApiRef<ApiiroApi>({
   id: 'plugin.apiiro.service',
 });
 

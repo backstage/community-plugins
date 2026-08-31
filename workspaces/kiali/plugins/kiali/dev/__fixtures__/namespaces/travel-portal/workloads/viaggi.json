@@ -5,7 +5,7 @@
   "createdAt": "2024-03-13T09:49:39Z",
   "resourceVersion": "61419",
   "istioSidecar": true,
-  "istioAmbient": false,
+  "isAmbient": false,
   "additionalDetailSample": null,
   "labels": {
     "app": "viaggi",
@@ -101,7 +101,7 @@
       "namespace": "travel-portal",
       "istioSidecar": true,
       "cluster": "Kubernetes",
-      "istioAmbient": false,
+      "isAmbient": false,
       "appLabel": true,
       "additionalDetailSample": null,
       "annotations": null,

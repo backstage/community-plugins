@@ -1,5 +1,12 @@
 # @backstage-community/plugin-code-coverage-backend
 
+## 0.16.1
+
+### Patch Changes
+
+- f4dcb75: Updated dependency `body-parser` to `^2.0.0`.
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.16.0
 
 ### Minor Changes

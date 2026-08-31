@@ -1,5 +1,35 @@
 # @backstage-community/plugin-microsoft-calendar
 
+## 0.22.0
+
+### Minor Changes
+
+- c100411: Backstage version bump to v1.54.5
+
+## 0.21.1
+
+### Patch Changes
+
+- e1c3240: Updated dependency `dompurify` to `^3.4.13`.
+
+## 0.21.0
+
+### Minor Changes
+
+- a5f46a7: Backstage version bump to v1.53.0
+
+## 0.20.0
+
+### Minor Changes
+
+- dbe138c: Backstage version bump to v1.52.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 1c869eb: Backstage version bump to v1.51.0
+
 ## 0.18.0
 
 ### Minor Changes

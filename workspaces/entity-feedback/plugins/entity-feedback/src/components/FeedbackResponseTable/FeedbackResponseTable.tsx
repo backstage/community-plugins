@@ -50,6 +50,9 @@ export interface FeedbackResponseTableProps {
   title?: string;
 }
 
+/**
+ * @public
+ */
 export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
   const { entityRef, title = 'Entity Responses' } = props;
   const classes = useStyles();

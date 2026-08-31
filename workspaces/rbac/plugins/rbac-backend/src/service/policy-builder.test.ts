@@ -29,6 +29,7 @@ import { PolicyBuilder } from './policy-builder';
 import {
   extendablePluginIdProviderMock,
   mockPermissionRegistry,
+  mockUserInfoService,
 } from '../../__fixtures__/mock-utils';
 
 import { PolicyExtensionPoint } from '@backstage/plugin-permission-node/alpha';
@@ -163,6 +164,7 @@ describe('PolicyBuilder', () => {
         lifecycle: mockServices.lifecycle.mock(),
         permissionsRegistry: mockPermissionRegistry,
         policy: policyExtensionPointMock,
+        userInfo: mockUserInfoService,
       },
       backendPluginIDsProviderMock,
     );
@@ -209,6 +211,7 @@ describe('PolicyBuilder', () => {
         lifecycle: mockServices.lifecycle.mock(),
         permissionsRegistry: mockPermissionRegistry,
         policy: policyExtensionPointMock,
+        userInfo: mockUserInfoService,
       },
       backendPluginIDsProviderMock,
       [providerMock],
@@ -254,6 +257,7 @@ describe('PolicyBuilder', () => {
         lifecycle: mockServices.lifecycle.mock(),
         permissionsRegistry: mockPermissionRegistry,
         policy: policyExtensionPointMock,
+        userInfo: mockUserInfoService,
       },
       backendPluginIDsProviderMock,
     );

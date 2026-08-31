@@ -41,12 +41,6 @@ class MockRBACApi implements RBACAPI {
   constructor(fixtureData: Role[]) {
     this.resources = fixtureData;
   }
-  async isLicensePluginEnabled(): Promise<boolean> {
-    return false;
-  }
-  async downloadStatistics(): Promise<Response> {
-    return { status: 200 } as Response;
-  }
 
   async getRoles(): Promise<Role[]> {
     return this.resources;
@@ -93,6 +87,24 @@ class MockRBACApi implements RBACAPI {
 
   async getMembers(): Promise<MemberEntity[] | Response> {
     return mockMembers;
+  }
+
+  async getMembersByRefs(
+    entityRefs: string[],
+  ): Promise<(MemberEntity | undefined)[]> {
+    return entityRefs.map(ref => {
+      const name = ref.split('/').pop();
+      return mockMembers.find(m => m.metadata.name === name);
+    });
+  }
+
+  async searchMembers(searchTerm: string): Promise<MemberEntity[]> {
+    if (!searchTerm.trim()) {
+      return mockMembers;
+    }
+    return mockMembers.filter(m =>
+      m.metadata.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
   }
 
   async listPermissions(): Promise<PluginPermissionMetaData[]> {

@@ -15,12 +15,14 @@
  */
 
 import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 
 import { argocdTranslationRef } from './ref';
 
 /**
  * The translation resource for the ArgoCD plugin
- * @alpha
+ * @public
  */
 export const argocdTranslations = createTranslationResource({
   ref: argocdTranslationRef,
@@ -34,3 +36,21 @@ export const argocdTranslations = createTranslationResource({
 });
 
 export { argocdTranslationRef };
+
+/**
+ * Translation module for the ArgoCD plugin (new frontend system).
+ * @public
+ */
+const argocdTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'argocd-translations',
+      params: {
+        resource: argocdTranslations,
+      },
+    }),
+  ],
+});
+
+export default argocdTranslationsModule;

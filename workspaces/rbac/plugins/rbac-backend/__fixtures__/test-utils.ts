@@ -40,6 +40,7 @@ import {
   conditionalStorageMock,
   csvPermFile,
   mockAuthService,
+  mockUserInfoService,
   mockClientKnex,
   pluginMetadataCollectorMock,
   roleMetadataStorageMock,
@@ -166,6 +167,7 @@ export async function newPermissionPolicy(
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
     pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
+    mockUserInfoService,
     mockAuthService,
   );
   clearAuditorMock();

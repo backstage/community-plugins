@@ -17,3 +17,5 @@
 export { isServicenowAvailable } from '@backstage-community/plugin-servicenow-common';
 
 export * from './plugin';
+
+export { default as servicenowTranslationsModule } from './translations';

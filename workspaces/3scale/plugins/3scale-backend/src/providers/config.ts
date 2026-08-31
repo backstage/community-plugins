@@ -42,7 +42,7 @@ function readThreeScaleApiEntityConfig(
   const accessToken = config.getString('accessToken');
   const systemLabel = config.getOptionalString('systemLabel');
   const ownerLabel = config.getOptionalString('ownerLabel');
-  const addLabels = config.getOptionalBoolean('addLabels') || true;
+  const addLabels = config.getOptionalBoolean('addLabels') ?? true;
 
   const schedule = config.has('schedule')
     ? readSchedulerServiceTaskScheduleDefinitionFromConfig(

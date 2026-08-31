@@ -41,11 +41,11 @@ const SampleEntityPage = ({ children }: PropsWithChildren<{}>) => (
     <EntityLayout.Route path="/" title="Overview">
       <Grid container spacing={3} alignItems="stretch">
         <Grid md={12}>
-          <EntityAboutCard variant="gridItem" />
+          <EntityAboutCard />
         </Grid>
         {children}
         <Grid xs={12}>
-          <EntityHasSubcomponentsCard variant="gridItem" />
+          <EntityHasSubcomponentsCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

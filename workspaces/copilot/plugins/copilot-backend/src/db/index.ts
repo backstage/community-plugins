@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { DatabaseHandler, migrationsDir } from './DatabaseHandler';
+export { DatabaseHandlerV2 } from './DatabaseHandlerV2';

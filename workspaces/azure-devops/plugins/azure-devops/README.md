@@ -121,6 +121,18 @@ dev.azure.com/readme-path: /<path-to>/<my-readme-file>.md
 
 > Note: this annotation does not support relative paths as the API we use from Azure DevOps to power this feature does not support relative paths. If you use something like this `dev.azure.com/readme-path: ./docs/index.md` the frontend will throw an error with details about why.
 
+If the `dev.azure.com/readme-path` annotation is not set, the plugin will automatically try to detect the README using the `backstage.io/source-location` annotation. This annotation points at the folder containing the entity's source code (the repo root, or a subfolder in a monorepo), so the plugin resolves `README.md` directly in that folder — no extra configuration needed.
+
+This is especially handy in monorepo setups. For example, if your entity's source code lives at:
+
+```yaml
+metadata:
+  annotations:
+    backstage.io/source-location: url:https://dev.azure.com/org/project/_git/repo?path=%2Fservices%2Fmy-service
+```
+
+The plugin will automatically render `/services/my-service/README.md`.
+
 #### Pipeline in different project to repo
 
 If your pipeline is in a different project to the source code, you will need to specify this in the project annotation.

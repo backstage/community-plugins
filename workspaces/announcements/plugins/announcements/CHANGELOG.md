@@ -1,5 +1,72 @@
 # @backstage-community/plugin-announcements
 
+## 2.13.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [bae4489]
+  - @backstage-community/plugin-announcements-common@0.24.0
+  - @backstage-community/plugin-announcements-react@0.29.0
+
+## 2.12.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filter to use the modern object form.
+
+## 2.12.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 900d1b9: Migrated extension config from deprecated `config.schema` to `configSchema` with zod v4 Standard Schema
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+  - @backstage-community/plugin-announcements-react@0.28.0
+
+## 2.11.1
+
+### Patch Changes
+
+- 908d9af: Added title and icon to the announcements page extension for the new frontend system.
+
+## 2.11.0
+
+### Minor Changes
+
+- fa4b770: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [fa4b770]
+  - @backstage-community/plugin-announcements-common@0.22.0
+  - @backstage-community/plugin-announcements-react@0.27.0
+
+## 2.10.0
+
+### Minor Changes
+
+- ea738a2: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [ea738a2]
+  - @backstage-community/plugin-announcements-common@0.21.0
+  - @backstage-community/plugin-announcements-react@0.26.0
+
+## 2.9.1
+
+### Patch Changes
+
+- 1df945e: Remove the deprecated navItem. This component is no longer needed as a separate extension in the new frontend system
+
 ## 2.9.0
 
 ### Minor Changes

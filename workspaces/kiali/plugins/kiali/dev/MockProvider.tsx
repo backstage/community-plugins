@@ -166,7 +166,7 @@ export class MockKialiClient implements KialiApi {
           cluster: w.cluster,
           type: w.type,
           istioSidecar: w.istioSidecar,
-          istioAmbient: w.istioAmbient,
+          isAmbient: w.isAmbient,
           additionalDetailSample: undefined,
           appLabel: w.appLabel,
           versionLabel: w.versionLabel,
@@ -180,7 +180,7 @@ export class MockKialiClient implements KialiApi {
             {
               rateInterval: duration,
               hasSidecar: w.istioSidecar,
-              hasAmbient: w.istioAmbient,
+              hasAmbient: w.isAmbient,
             },
             serverConfig,
           ),
@@ -335,12 +335,19 @@ export class MockKialiClient implements KialiApi {
     return kialiData.meshIstioResourceThresholds;
   }
 
-  async getConfigValidations(cluster?: string): Promise<ValidationStatus> {
-    const queryParams: any = {};
-    if (cluster) {
-      queryParams.clusterName = cluster;
-    }
-    return kialiData.istioValidations;
+  async getConfigValidations(_cluster?: string): Promise<ValidationStatus[]> {
+    const validations = kialiData.istioValidations as Record<
+      string,
+      Record<string, ValidationStatus>
+    >;
+    // Convert legacy fixture map into the array shape returned by current Kiali APIs.
+    return Object.entries(validations).flatMap(([clusterName, byNamespace]) =>
+      Object.entries(byNamespace).map(([namespace, status]) => ({
+        ...status,
+        namespace,
+        cluster: clusterName,
+      })),
+    );
   }
 
   async getAllIstioConfigs(

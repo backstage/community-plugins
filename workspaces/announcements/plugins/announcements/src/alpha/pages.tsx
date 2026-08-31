@@ -18,6 +18,8 @@ import {
   convertLegacyRouteRef,
 } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
+import { RiMegaphoneLine } from '@remixicon/react';
+import { z } from 'zod';
 import { rootRouteRef } from '../routes';
 
 /**
@@ -29,23 +31,23 @@ import { rootRouteRef } from '../routes';
  * @alpha
  */
 export const announcementsPage = PageBlueprint.makeWithOverrides({
-  config: {
-    schema: {
-      /**
-       * @deprecated Filter by category using URL state (e.g. ?category=...). This option will be removed.
-       */
-      category: z => z.string().optional(),
-      hideStartAt: z => z.boolean().optional(),
-      markdownRenderer: z => z.enum(['backstage', 'md-editor']).optional(),
-      /**
-       * @deprecated Inactive announcement are hidden by default. This option will be removed.
-       */
-      defaultInactive: z => z.boolean().optional(),
-    },
+  configSchema: {
+    /**
+     * @deprecated Filter by category using URL state (e.g. ?category=...). This option will be removed.
+     */
+    category: z.string().optional(),
+    hideStartAt: z.boolean().optional(),
+    markdownRenderer: z.enum(['backstage', 'md-editor']).optional(),
+    /**
+     * @deprecated Inactive announcement are hidden by default. This option will be removed.
+     */
+    defaultInactive: z.boolean().optional(),
   },
   factory: (originalFactory, { config }) =>
     originalFactory({
       path: '/announcements',
+      title: 'Announcements',
+      icon: <RiMegaphoneLine />,
       routeRef: convertLegacyRouteRef(rootRouteRef),
       loader: async () =>
         import('../Router').then(m =>

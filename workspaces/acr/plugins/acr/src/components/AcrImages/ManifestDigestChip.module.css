@@ -1,0 +1,7 @@
+@layer components {
+  .chip {
+    margin: 0;
+    margin-right: 0.2em;
+    height: 1.5em;
+  }
+}

@@ -1,4 +1,17 @@
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage
+  description: Example component for Topology dev (matches mock fixtures)
+  annotations:
+    backstage.io/kubernetes-id: backstage
+spec:
+  type: service
+  lifecycle: production
+  owner: guests
+---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:

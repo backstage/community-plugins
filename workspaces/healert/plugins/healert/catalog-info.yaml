@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: healert-platform-health
+  namespace: default
+  description: Healert Friction Intelligence Platform Plugin for Backstage
+  annotations:
+    github.com/project-slug: backstage/community-plugins
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://healert.io
+      title: Healert Website
+      icon: web
+spec:
+  type: library
+  lifecycle: production
+  owner: healert

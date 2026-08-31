@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createTranslationMessages } from '@backstage/core-plugin-api/alpha';
+import { createTranslationMessages } from '@backstage/frontend-plugin-api';
 import { topologyTranslationRef } from './ref';
 
 /**
@@ -30,6 +30,10 @@ const topologyTranslationJa = createTranslationMessages({
     'toolbar.selectCluster': 'クラスターの選択',
     'toolbar.displayOptions': '表示オプション',
     'toolbar.currentDisplayOptions': '現在の表示オプション',
+    'controlBar.zoomIn': 'ズームイン',
+    'controlBar.zoomOut': 'ズームアウト',
+    'controlBar.fitToScreen': '画面に合わせる',
+    'controlBar.resetView': 'ビューをリセット',
     'emptyState.noResourcesFound': 'リソースが見つかりません',
     'emptyState.noResourcesDescription':
       '選択したクラスター内に Kubernetes リソースが見つかりませんでした。',

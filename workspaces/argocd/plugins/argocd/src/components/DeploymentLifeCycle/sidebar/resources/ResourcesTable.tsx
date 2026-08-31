@@ -16,14 +16,12 @@
 import type { MouseEvent, ChangeEvent } from 'react';
 
 import { useMemo, FC, useCallback, useState } from 'react';
-import {
-  makeStyles,
-  Table,
-  TableBody,
-  TableCell,
-  TablePagination,
-  TableRow,
-} from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
 
 import { ResourcesTableBody } from './ResourcesTableBody';
 import { ResourcesTableHeader } from './ResourcesTableHeader';
@@ -43,30 +41,10 @@ interface ResourcesTableProps {
   createdAt: string;
 }
 
-const useStyles = makeStyles(theme => ({
-  table: {
-    width: '100%',
-    marginTop: theme.spacing(2),
-    minHeight: theme.spacing(20),
-  },
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  footer: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: `${theme.palette.background.paper}`,
-    },
-  },
-}));
-
 export const ResourcesTable: FC<ResourcesTableProps> = ({
   resources,
   createdAt,
 }) => {
-  const classes = useStyles();
-
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<string | null>(null);
   const [orderById, setOrderById] = useState<string | null>(null);
@@ -221,7 +199,11 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
         aria-labelledby={t(
           'deploymentLifecycle.sidebar.resources.resourcesTable.ariaLabelledBy',
         )}
-        className={classes.table}
+        sx={theme => ({
+          width: '100%',
+          mt: 2,
+          minHeight: theme.spacing(20),
+        })}
       >
         <ResourcesTableHeader
           order={order}
@@ -237,7 +219,13 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
                 <TableCell colSpan={resourcesColumnHeaders.length} />
               </TableRow>
             )}
-            <TableRow className={classes.footer}>
+            <TableRow
+              sx={theme => ({
+                '&:nth-of-type(odd)': {
+                  backgroundColor: theme.palette.background.paper,
+                },
+              })}
+            >
               <TablePagination
                 rowsPerPageOptions={[
                   { value: 5, label: '5 rows' },
@@ -258,11 +246,18 @@ export const ResourcesTable: FC<ResourcesTableProps> = ({
           <tbody>
             <tr>
               <td colSpan={resourcesColumnHeaders.length}>
-                <div data-testid="no-resources" className={classes.empty}>
+                <Box
+                  data-testid="no-resources"
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
                   {t(
                     'deploymentLifecycle.sidebar.resources.resourcesTable.noneFound',
                   )}
-                </div>
+                </Box>
               </td>
             </tr>
           </tbody>

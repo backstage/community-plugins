@@ -106,6 +106,8 @@ describe('SentryIssuesTable', () => {
         }}
       />,
     );
-    expect(await table.findByText('Stats for 24h')).toBeInTheDocument();
+    expect(
+      await table.findByText('Graph shows the last 24h'),
+    ).toBeInTheDocument();
   });
 });

@@ -1,5 +1,46 @@
 # @backstage-community/plugin-quay-backend
 
+## 1.17.1
+
+### Patch Changes
+
+- 9e957a4: Added contributor guides and a local scaffolder `dev/` harness. Strengthened automated tests for backend plugin mount, router validation, shared permission contracts, and `quay:create-repository` registration.
+- Updated dependencies [9e957a4]
+  - @backstage-community/plugin-quay-common@1.22.1
+
+## 1.17.0
+
+### Minor Changes
+
+- 03eff44: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [03eff44]
+  - @backstage-community/plugin-quay-common@1.22.0
+
+## 1.16.0
+
+### Minor Changes
+
+- d4e8668: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [d4e8668]
+  - @backstage-community/plugin-quay-common@1.21.0
+
+## 1.15.0
+
+### Minor Changes
+
+- 07b8314: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [07b8314]
+  - @backstage-community/plugin-quay-common@1.20.0
+
 ## 1.14.0
 
 ### Minor Changes

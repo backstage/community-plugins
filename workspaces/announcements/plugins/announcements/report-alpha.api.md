@@ -15,7 +15,6 @@ import { ExtensionBlueprintParams } from '@backstage/frontend-plugin-api';
 import { ExtensionDataRef } from '@backstage/frontend-plugin-api';
 import { ExtensionInput } from '@backstage/frontend-plugin-api';
 import { FilterPredicate } from '@backstage/filter-predicates';
-import { IconComponent } from '@backstage/frontend-plugin-api';
 import { IconElement } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react';
 import { OverridableExtensionDefinition } from '@backstage/frontend-plugin-api';
@@ -27,7 +26,7 @@ import { SearchResultItemExtensionPredicate } from '@backstage/plugin-search-rea
 import { SearchResultListItemBlueprintParams } from '@backstage/plugin-search-react/alpha';
 
 // @alpha
-const _default: OverridableFrontendPlugin<
+const announcementsPlugin: OverridableFrontendPlugin<
   {
     root: RouteRef<undefined>;
   },
@@ -60,10 +59,10 @@ const _default: OverridableFrontendPlugin<
       };
       configInput: {
         max?: number | undefined;
+        category?: string | undefined;
         active?: boolean | undefined;
         current?: boolean | undefined;
         tags?: string[] | undefined;
-        category?: string | undefined;
       };
       output: ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>;
       inputs: {};
@@ -114,31 +113,6 @@ const _default: OverridableFrontendPlugin<
         type?: EntityCardType | undefined;
       };
     }>;
-    'nav-item:announcements': OverridableExtensionDefinition<{
-      kind: 'nav-item';
-      name: undefined;
-      config: {
-        title: string | undefined;
-      };
-      configInput: {
-        title?: string | undefined;
-      };
-      output: ExtensionDataRef<
-        {
-          title: string;
-          icon: IconComponent;
-          routeRef: RouteRef<undefined>;
-        },
-        'core.nav-item.target',
-        {}
-      >;
-      inputs: {};
-      params: {
-        title: string;
-        icon: IconComponent;
-        routeRef: RouteRef<undefined>;
-      };
-    }>;
     'page:announcements': OverridableExtensionDefinition<{
       config: {
         category: string | undefined;
@@ -150,9 +124,9 @@ const _default: OverridableFrontendPlugin<
       };
       configInput: {
         category?: string | undefined;
-        defaultInactive?: boolean | undefined;
         hideStartAt?: boolean | undefined;
         markdownRenderer?: 'backstage' | 'md-editor' | undefined;
+        defaultInactive?: boolean | undefined;
         path?: string | undefined;
         title?: string | undefined;
       };
@@ -263,7 +237,7 @@ const _default: OverridableFrontendPlugin<
     }>;
   }
 >;
-export default _default;
+export default announcementsPlugin;
 
 // (No @packageDocumentation comment for this package)
 ```

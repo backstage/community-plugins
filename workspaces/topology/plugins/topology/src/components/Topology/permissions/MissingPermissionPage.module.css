@@ -1,0 +1,32 @@
+@layer components {
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    min-width: 100%;
+  }
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--bui-space-8);
+    width: 100%;
+    padding: var(--bui-space-8);
+  }
+
+  @media (max-width: 960px) {
+    .content {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .textColumn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-6);
+    align-items: flex-start;
+    max-width: 36rem;
+  }
+}

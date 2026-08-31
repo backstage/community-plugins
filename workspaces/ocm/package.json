@@ -36,10 +36,10 @@
     "directory": "workspaces/ocm"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.1",
-    "@backstage/cli-defaults": "^0.1.1",
+    "@backstage/cli": "^0.36.5",
+    "@backstage/cli-defaults": "^0.1.5",
     "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.17.1",
+    "@backstage/repo-tools": "^0.19.0",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "knip": "^5.27.4",
@@ -50,6 +50,14 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18"
+  },
+  "dependenciesMeta": {
+    "better-sqlite3": {
+      "built": true
+    },
+    "isolated-vm": {
+      "built": true
+    }
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

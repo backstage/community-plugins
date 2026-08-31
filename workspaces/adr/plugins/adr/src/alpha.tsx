@@ -20,32 +20,27 @@ import {
   fetchApiRef,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import {
-  compatWrapper,
-  convertLegacyRouteRef,
-} from '@backstage/core-compat-api';
 import { SearchResultListItemBlueprint } from '@backstage/plugin-search-react/alpha';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import {
   AdrDocument,
   isAdrAvailable,
 } from '@backstage-community/plugin-adr-common';
+import { z } from 'zod/v4';
 import { rootRouteRef } from './routes';
 import { adrApiRef, AdrClient } from './api';
 
 export * from './translations';
 
 function isAdrDocument(result: any): result is AdrDocument {
-  return result.entityRef;
+  return Boolean(result?.entityRef);
 }
 
 /** @alpha */
 export const adrSearchResultListItemExtension =
   SearchResultListItemBlueprint.makeWithOverrides({
-    config: {
-      schema: {
-        lineClamp: z => z.number().default(5),
-      },
+    configSchema: {
+      lineClamp: z.number().default(5),
     },
     factory(originalFactory, { config }) {
       return originalFactory({
@@ -54,16 +49,11 @@ export const adrSearchResultListItemExtension =
           const { AdrSearchResultListItem } = await import(
             './search/AdrSearchResultListItem'
           );
+
           return ({ result, ...rest }) =>
-            compatWrapper(
-              isAdrDocument(result) ? (
-                <AdrSearchResultListItem
-                  {...rest}
-                  {...config}
-                  result={result}
-                />
-              ) : null,
-            );
+            isAdrDocument(result) ? (
+              <AdrSearchResultListItem {...rest} {...config} result={result} />
+            ) : null;
         },
       });
     },
@@ -71,12 +61,11 @@ export const adrSearchResultListItemExtension =
 
 /** @alpha */
 export const adrEntityContentExtension = EntityContentBlueprint.make({
-  name: 'entity',
   params: {
     path: '/adrs',
     title: 'ADRs',
     filter: isAdrAvailable,
-    routeRef: convertLegacyRouteRef(rootRouteRef),
+    routeRef: rootRouteRef,
     loader: async () => {
       const { EntityAdrContent } = await import(
         './components/EntityAdrContent'
@@ -88,7 +77,6 @@ export const adrEntityContentExtension = EntityContentBlueprint.make({
 
 /** @alpha */
 export const adrApiExtension = ApiBlueprint.make({
-  name: 'adr-api',
   params: defineParams =>
     defineParams({
       api: adrApiRef,

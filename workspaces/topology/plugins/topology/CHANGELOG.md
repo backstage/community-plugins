@@ -1,5 +1,67 @@
 # @backstage-community/plugin-topology
 
+## 2.16.1
+
+### Patch Changes
+
+- efe2c6d: Updated dependency `@playwright/test` to `1.62.1`.
+- dc925a3: Updated dependency `react-router-dom` to `^6.30.5`.
+
+## 2.16.0
+
+### Minor Changes
+
+- d12f713: **BREAKING CHANGE (alpha API)**
+
+  The New Frontend System entry for Topology no longer exports `topologyCatalogModule` or `topologyTranslationsModule`. Use the default `FrontendPlugin` export from `@backstage-community/plugin-topology/alpha` instead. The Topology entity tab is now gated with `isTopologyAvailable` (requires `backstage.io/kubernetes-id` or `backstage.io/kubernetes-namespace`).
+
+  Migration:
+
+  ```ts
+  // Before
+  import {
+    topologyCatalogModule,
+    topologyTranslationsModule,
+  } from '@backstage-community/plugin-topology/alpha';
+
+  createApp({
+    features: [topologyCatalogModule, topologyTranslationsModule],
+  });
+
+  // After
+  import topologyPlugin from '@backstage-community/plugin-topology/alpha';
+  import topologyTranslationsModule from '@backstage-community/plugin-topology/translations';
+
+  createApp({
+    features: [topologyPlugin, topologyTranslationsModule],
+  });
+  ```
+
+  If your app config overrides the Topology entity content extension, update the id from `entity-content:catalog/entity-content-topology` to `entity-content:topology/topology`.
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 582a859: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.7.0`.
+- 54549f2: Validate URL schemes when rendering links from Kubernetes data, and harden git URL parsing against unsafe schemes and ReDoS.
+
+## 2.15.0
+
+### Minor Changes
+
+- 13db2ee: Added support for the New Frontend System (NFS), including alpha exports with `EntityContentBlueprint` and `TranslationBlueprint`, plus dedicated dev entrypoints for backend and mock modes. Added explicit mock-only dev entry files for both legacy and NFS flows (`dev/index.mock.tsx` and `dev/alpha/index.mock.tsx`) so local development and e2e can run without backend dependencies. Removed packages/app and packages/backend to eliminate the need for a full Backstage app setup, and introduced a lightweight Topology backend that imports and relies on the Kubernetes backend plugin for real data integration when using backend mode.
+- 73d37f1: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- 70da59a: Migrated the topology plugin UI from Material UI to Backstage UI (`@backstage/ui`). Removed direct MUI dependencies; no breaking API changes.
+
+## 2.14.0
+
+### Minor Changes
+
+- e68c41c: Backstage version bump to v1.51.0
+
 ## 2.13.0
 
 ### Minor Changes

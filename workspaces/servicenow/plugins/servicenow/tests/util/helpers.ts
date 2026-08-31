@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { AxeBuilder } from '@axe-core/playwright';
-import { type TestInfo, type Page } from '@playwright/test';
+import { expect, type TestInfo, type Page } from '@playwright/test';
 
 export class Common {
   page: Page;
@@ -57,5 +57,7 @@ export class Common {
       body: JSON.stringify(accessibilityScanResults.violations, null, 2),
       contentType: 'application/json',
     });
+
+    expect(accessibilityScanResults.violations).toEqual([]);
   }
 }

@@ -28,7 +28,7 @@ export const entityCicdChartsContent = EntityContentBlueprint.make({
   params: {
     path: 'cicd-statistics',
     title: 'CI/CD Statistics',
-    filter: 'kind:component',
+    filter: { kind: 'component' },
     routeRef: convertLegacyRouteRef(rootCatalogCicdStatsRouteRef),
     loader: () =>
       import('../entity-page').then(m =>

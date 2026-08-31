@@ -1,0 +1,17 @@
+app:
+  title: Healert Dev App
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+
+organization:
+  name: Healert
+
+auth:
+  providers: {}
+
+healert:
+  baseUrl: http://localhost:8000

@@ -118,6 +118,7 @@ export const RolesList = () => {
           search: true,
           paging: true,
           emptyRowsWhenPaging: false,
+          draggable: false,
         }}
         data={data}
         isLoading={loading}
@@ -138,7 +139,10 @@ export const RolesList = () => {
         }}
         localization={{
           toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-          pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+          pagination: {
+            labelRowsSelect: t('table.labelRowsSelect'),
+            labelDisplayedRows: t('table.labelDisplayedRows'),
+          },
         }}
       />
       {isLicensePluginEnabled.isEnabled && <DownloadCSVLink />}

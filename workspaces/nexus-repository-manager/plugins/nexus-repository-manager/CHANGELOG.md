@@ -1,5 +1,49 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.0
+
+### Minor Changes
+
+- 5bb7b05: Backstage version bump to v1.54.5
+
+## 1.26.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
+## 1.25.1
+
+### Patch Changes
+
+- 60b0cea: Fixed nested interactive controls accessibility violation in artifact table by disabling column dragging
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 53f1fff: Updated dependency `@hey-api/openapi-ts` to `0.99.0`.
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+
+## 1.25.0
+
+### Minor Changes
+
+- ea029e4: Backstage version bump to v1.51.0
+- 8e77b78: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- a4d0ef7: Updated dependency `@hey-api/openapi-ts` to `0.98.2`.
+- 387d2e9: Updated dependency `@types/node` to `22.19.19`.
+- 655f29c: Migrated the Nexus Repository Manager plugin UI from Material UI to Backstage UI (`@backstage/ui`). Removed direct MUI dependencies; no breaking API changes.
+
+  Added `@backstage/frontend-test-utils` as a dev dependency so the alpha dev app (`yarn start:alpha`) can resolve `@backstage/plugin-catalog-react/testUtils`. Bumped `react-router-dom` dev dependency to `^6.30.2` to satisfy the peer requirement from `@backstage/frontend-test-utils`.
+
+  Fixed the alpha dev app so `maven-example` loads correctly: the entity-content filter now uses `isNexusRepositoryManagerExperimentalAvailable` (so Maven annotations show the Build Artifacts tab), and the dev mocks include experimental annotations plus Maven fixture data.
+
+## 1.24.1
+
+### Patch Changes
+
+- 69b9fd3: Translations updated for de/es/fr/it/ja
+
 ## 1.24.0
 
 ### Minor Changes

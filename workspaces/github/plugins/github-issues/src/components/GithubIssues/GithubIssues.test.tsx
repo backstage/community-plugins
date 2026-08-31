@@ -46,9 +46,6 @@ const getTestIssue = (overwrites: Partial<Issue> = {}): { node: Issue } => ({
       },
       title: 'quasi labore qui',
       url: 'http://flowery-muscatel.net',
-      participants: {
-        totalCount: 3,
-      },
       updatedAt: '2022-05-02T09:46:35.885Z',
       createdAt: '2022-06-03T07:11:22.320Z',
       comments: {
@@ -280,6 +277,64 @@ describe('GithubIssues', () => {
       );
     });
 
+    it('should render Group issues when the group has no annotations (no team-slug or location)', async () => {
+      // Regression test: a Group with no annotations at all. Previously the card
+      // crashed with "Failed to construct 'URL': Invalid URL" because it parsed
+      // the group's source/managed-by location to determine the host. The host
+      // is now resolved from the configured integration, and the repositories
+      // come from the components owned by the group (their github.com/project-slug),
+      // so neither github.com/team-slug nor a location annotation is required.
+      const testIssue = getTestIssue({
+        repository: { nameWithOwner: 'backstage/owned-repo' },
+      });
+
+      const ownedComponent = makeEntityWithKind('Component', {
+        name: 'owned-repo',
+        spec: { type: 'service', lifecycle: 'production', owner: 'my-team' },
+      });
+
+      const catalogApiWithOwned = {
+        getEntities: async () => ({ items: [ownedComponent] }),
+      } as CatalogApi;
+
+      const groupWithoutAnnotations = {
+        metadata: {
+          name: 'my-team',
+        },
+        spec: { type: 'team', children: [] },
+        apiVersion: 'backstage.io/v1alpha1',
+        kind: 'Group',
+      } as unknown as Entity;
+
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          'owned-repo': {
+            issues: {
+              totalCount: 1,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, catalogApiWithOwned],
+      ] as const;
+
+      const { getByTestId } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={groupWithoutAnnotations}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
+        testIssue.node.title,
+      );
+    });
+
     it('should render correctly when there are no issues in GitHub for kind: User', async () => {
       const ownedComponent = makeEntityWithKind('Component', {
         name: 'owned-repo',
@@ -351,6 +406,73 @@ describe('GithubIssues', () => {
       expect(getByTestId(`issue-${testIssue.node.url}`)).toHaveTextContent(
         testIssue.node.title,
       );
+    });
+  });
+
+  describe('partially loaded issues', () => {
+    it('warns in the card footer when GitHub reports more issues than were returned', async () => {
+      const testIssue = getTestIssue();
+
+      // `totalCount` is 3 but only a single issue node made it back (e.g. the
+      // rest came back as `null` nodes in a `RESOURCE_LIMITS_EXCEEDED` partial
+      // response and were dropped), so 2 issues could not be loaded.
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          backstage: {
+            issues: {
+              totalCount: 3,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, mockCatalogApi],
+      ] as const;
+
+      const { getByText } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeEntityWithKind('Component')}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(
+        getByText(`2 issues couldn't be loaded and were skipped.`),
+      ).toBeInTheDocument();
+    });
+
+    it('does not warn when every issue GitHub reported was returned', async () => {
+      const testIssue = getTestIssue();
+
+      const mockApi: GithubIssuesApi = {
+        fetchIssuesByRepoFromGithub: async () => ({
+          backstage: {
+            issues: {
+              totalCount: 1,
+              edges: [testIssue],
+            },
+          },
+        }),
+      } as GithubIssuesApi;
+
+      const apis = [
+        [githubIssuesApiRef, mockApi],
+        [catalogApiRef, mockCatalogApi],
+      ] as const;
+
+      const { queryByText } = await renderInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={makeEntityWithKind('Component')}>
+            <GithubIssues />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      expect(queryByText(/couldn't be loaded/)).toBeNull();
     });
   });
 });

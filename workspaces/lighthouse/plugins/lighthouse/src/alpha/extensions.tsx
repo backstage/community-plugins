@@ -16,7 +16,6 @@
 import {
   ApiBlueprint,
   configApiRef,
-  NavItemBlueprint,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -36,6 +35,8 @@ import Highlight from '@material-ui/icons/Highlight';
 export const lighthousePage = PageBlueprint.make({
   params: {
     path: '/lighthouse',
+    title: 'Lighthouse',
+    icon: <Highlight />,
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: async () =>
       import('../Router').then(m => compatWrapper(<m.Router />)),
@@ -51,14 +52,6 @@ export const lighthouseApi = ApiBlueprint.make({
       },
       factory: ({ configApi }) => LighthouseRestApi.fromConfig(configApi),
     }),
-});
-
-export const lighthouseNavItem = NavItemBlueprint.make({
-  params: {
-    icon: Highlight,
-    routeRef: convertLegacyRouteRef(rootRouteRef),
-    title: 'Lighthouse',
-  },
 });
 
 export const lighthouseEntityCard = EntityCardBlueprint.make({

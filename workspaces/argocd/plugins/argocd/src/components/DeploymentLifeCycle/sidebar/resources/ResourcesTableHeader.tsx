@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 import type { MouseEvent, FC } from 'react';
-import {
-  makeStyles,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-} from '@material-ui/core';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
 
 import { getResourcesColumnHeaders } from './ResourcesColumnHeader';
 import { Order } from '@backstage-community/plugin-argocd-common';
@@ -37,25 +34,12 @@ interface ResourcesTableHeaderProps {
   orderById: string | null;
 }
 
-const useStyles = makeStyles(theme => ({
-  header: {
-    padding: theme.spacing(1, 0),
-    fontWeight: 'bold',
-    color: theme.palette.text.primary,
-  },
-  expander: {
-    width: '80px',
-  },
-}));
-
 export const ResourcesTableHeader: FC<ResourcesTableHeaderProps> = ({
   order,
   orderBy,
   orderById,
   onRequestSort,
 }) => {
-  const classes = useStyles();
-
   const createSortHandler =
     (property: string, id: string) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property, id);
@@ -72,8 +56,15 @@ export const ResourcesTableHeader: FC<ResourcesTableHeaderProps> = ({
               align="left"
               padding="normal"
               sortDirection={orderBy === headCell.id ? order : false}
-              className={
-                headCell.id !== 'expander' ? classes.header : classes.expander
+              sx={theme =>
+                headCell.id !== 'expander'
+                  ? {
+                      py: 1,
+                      px: 0,
+                      fontWeight: 'bold',
+                      color: theme.palette.text.primary,
+                    }
+                  : { width: '80px' }
               }
             >
               {headCell.title && (

@@ -3,3 +3,5 @@ dist-types
 coverage
 .vscode
 .eslintrc.js
+# NDJSON example files (not valid JSON)
+**/user-team-example.json

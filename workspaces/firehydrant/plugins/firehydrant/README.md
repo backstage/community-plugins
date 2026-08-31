@@ -64,3 +64,44 @@ metadata:
   annotations:
     firehydrant.com/service-name: <firehydrant-service-name>
 ```
+
+## New Frontend System (Alpha)
+
+The FireHydrant plugin supports the New Frontend System via an `/alpha` export, here's how to use it:
+
+1. Add the plugin to your app, using either auto discovery or the manual option:
+
+   For auto discovery, add the following to your `app-config.yaml` file:
+
+   ```yaml
+   app:
+     packages: all
+   ```
+
+   Alternatively, add the plugin manually in your `packages/app(-next)/src/App.tsx`, after all other imports:
+
+   ```tsx
+   import firehydrantPlugin from '@backstage-community/plugin-firehydrant/alpha';
+   ```
+
+   ```tsx
+   export const app = createApp({
+     features: [
+       catalogPlugin,
+       catalogImportPlugin,
+       userSettingsPlugin,
+       firehydrantPlugin,
+       // ...
+     ],
+   });
+   ```
+
+2. Next, enable the entity card extension in your `app-config.yaml`:
+
+   ```yaml
+   app:
+     extensions:
+       - entity-card:firehydrant/EntityFirehydrantCard
+   ```
+
+   The card is shown on components annotated with `firehydrant.com/service-name`, as described above.

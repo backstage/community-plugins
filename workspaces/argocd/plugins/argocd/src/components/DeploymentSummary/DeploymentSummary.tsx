@@ -18,7 +18,8 @@ import { useMemo, type ReactNode } from 'react';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
-import { IconButton, Link } from '@material-ui/core';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import ExternalLinkIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import moment from 'moment';
 
@@ -109,7 +110,14 @@ const DeploymentSummary = ({
           getBaseUrl(row) ? (
             <Link href={`${buildAppUrl(row)}`} target="_blank" rel="noopener">
               {row.metadata.name}{' '}
-              <IconButton color="primary" size="small">
+              <IconButton
+                color="primary"
+                size="small"
+                aria-label={t(
+                  'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD',
+                  { appName: row.metadata.name },
+                )}
+              >
                 <ExternalLinkIcon />
               </IconButton>
             </Link>
@@ -255,7 +263,7 @@ const DeploymentSummary = ({
         render: (row: Application): ReactNode => <AppHealthStatus app={row} />,
       },
     ];
-  }, [baseUrl, columnTitles, entity]);
+  }, [baseUrl, columnTitles, entity, t]);
 
   const visibleColumns = useMemo(
     () =>

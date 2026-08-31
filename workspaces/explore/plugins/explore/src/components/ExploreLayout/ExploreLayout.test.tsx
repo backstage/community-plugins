@@ -23,6 +23,7 @@ import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { ExploreLayout } from './ExploreLayout';
+import { exploreRouteRef } from '../../routes';
 
 const featureFlagsApi: jest.Mocked<FeatureFlagsApi> = {
   isActive: jest.fn(),
@@ -38,6 +39,12 @@ describe('<ExploreLayout />', () => {
     </TestApiProvider>
   );
 
+  const mountedRoutes = {
+    mountedRoutes: {
+      '/explore': exploreRouteRef,
+    },
+  };
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -51,13 +58,11 @@ describe('<ExploreLayout />', () => {
           </ExploreLayout.Route>
         </ExploreLayout>
       </Wrapper>,
+      mountedRoutes,
     );
 
     await waitFor(() => {
       expect(getByText('Explore our ecosystem')).toBeInTheDocument();
-      expect(
-        getByText('Discover solutions available in our ecosystem'),
-      ).toBeInTheDocument();
     });
   });
 
@@ -70,26 +75,11 @@ describe('<ExploreLayout />', () => {
           </ExploreLayout.Route>
         </ExploreLayout>
       </Wrapper>,
+      mountedRoutes,
     );
 
     await waitFor(() =>
       expect(getByText('Explore our universe')).toBeInTheDocument(),
-    );
-  });
-
-  it('renders a custom page subtitle', async () => {
-    const { getByText } = await renderInTestApp(
-      <Wrapper>
-        <ExploreLayout subtitle="Browse the ACME Corp ecosystem">
-          <ExploreLayout.Route path="/tools" title="Tools">
-            <div>Tools Content</div>
-          </ExploreLayout.Route>
-        </ExploreLayout>
-      </Wrapper>,
-    );
-
-    await waitFor(() =>
-      expect(getByText('Browse the ACME Corp ecosystem')).toBeInTheDocument(),
     );
   });
 
@@ -98,7 +88,7 @@ describe('<ExploreLayout />', () => {
 
     const { getByText } = await renderInTestApp(
       <Wrapper>
-        <ExploreLayout subtitle="Browse the ACME Corp ecosystem">
+        <ExploreLayout>
           <FeatureFlagged with="test-flag">
             <ExploreLayout.Route path="/tools" title="Tools">
               <div>Tools Content</div>
@@ -111,6 +101,7 @@ describe('<ExploreLayout />', () => {
           </FeatureFlagged>
         </ExploreLayout>
       </Wrapper>,
+      mountedRoutes,
     );
 
     await waitFor(() => expect(getByText('Tools')).toBeInTheDocument());
@@ -121,7 +112,7 @@ describe('<ExploreLayout />', () => {
 
     const { getByText } = await renderInTestApp(
       <Wrapper>
-        <ExploreLayout subtitle="Browse the ACME Corp ecosystem">
+        <ExploreLayout>
           <FeatureFlagged with="test-flag">
             <ExploreLayout.Route path="/tools" title="Tools">
               <div>Tools Content</div>
@@ -134,6 +125,7 @@ describe('<ExploreLayout />', () => {
           </FeatureFlagged>
         </ExploreLayout>
       </Wrapper>,
+      mountedRoutes,
     );
 
     await waitFor(() => expect(getByText('Tools V2')).toBeInTheDocument());

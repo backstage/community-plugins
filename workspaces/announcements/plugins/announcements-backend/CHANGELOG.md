@@ -1,5 +1,50 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.28.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [bae4489]
+  - @backstage-community/plugin-announcements-common@0.24.0
+
+## 0.27.0
+
+### Minor Changes
+
+- 28ac778: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 0d0a521: Fixed the audit log recording tag creation as an update action instead of a create action.
+- Updated dependencies [28ac778]
+  - @backstage-community/plugin-announcements-common@0.23.0
+
+## 0.26.0
+
+### Minor Changes
+
+- fa4b770: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [fa4b770]
+  - @backstage-community/plugin-announcements-common@0.22.0
+
+## 0.25.0
+
+### Minor Changes
+
+- ea738a2: Backstage version bump to v1.51.0
+
+### Patch Changes
+
+- Updated dependencies [ea738a2]
+  - @backstage-community/plugin-announcements-common@0.21.0
+
 ## 0.24.0
 
 ### Minor Changes

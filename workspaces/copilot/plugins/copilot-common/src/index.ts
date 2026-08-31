@@ -71,7 +71,7 @@ export interface Breakdown {
  *
  * @public
  */
-export type MetricsType = 'enterprise' | 'organization';
+export type MetricsType = MetricsScope;
 
 /**
  * Represents a detailed breakdown of metrics by language and editor.
@@ -675,3 +675,408 @@ export interface SeatAnalysis {
    */
   seats_inactive_28_days: number;
 }
+
+// ============================================================
+// V2 Types — New GitHub Copilot Metrics API (2026-03-10)
+// ============================================================
+
+/**
+ * Envelope returned by the new GitHub report API.
+ * Contains signed download URLs that expire — fetch immediately.
+ * @public
+ */
+export interface ReportEnvelope {
+  download_links: string[];
+  report_day?: string;
+  report_start_day?: string;
+  report_end_day?: string;
+}
+
+/** @public */
+export interface V2PrMetrics {
+  total_created: number;
+  total_merged: number;
+  total_reviewed: number;
+  total_created_by_copilot: number;
+  total_merged_created_by_copilot: number;
+  total_merged_reviewed_by_copilot: number;
+  total_reviewed_by_copilot: number;
+  total_suggestions: number;
+  total_applied_suggestions: number;
+  total_copilot_suggestions: number;
+  total_copilot_applied_suggestions: number;
+  median_minutes_to_merge?: number;
+  median_minutes_to_merge_copilot_authored?: number;
+  median_minutes_to_merge_copilot_reviewed?: number;
+}
+
+/** @public */
+export interface V2MetricsByFeature {
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count?: number;
+}
+
+/** @public */
+export interface V2MetricsByIde {
+  ide: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count?: number;
+}
+
+/** @public */
+export interface V2MetricsByLanguageFeature {
+  language: string;
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/** @public */
+export interface V2CliTotals {
+  prompt_count: number;
+  request_count: number;
+  session_count: number;
+  token_usage?: {
+    avg_tokens_per_request: number;
+    output_tokens_sum: number;
+    prompt_tokens_sum: number;
+  };
+}
+
+/** @public */
+export interface V2EnterpriseDayTotal {
+  day: string;
+  enterprise_id: string;
+  daily_active_users: number;
+  weekly_active_users: number;
+  monthly_active_users: number;
+  daily_active_cli_users?: number;
+  monthly_active_agent_users?: number;
+  monthly_active_chat_users?: number;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+  pull_requests?: V2PrMetrics;
+  totals_by_cli?: V2CliTotals;
+  totals_by_feature?: V2MetricsByFeature[];
+  totals_by_ide?: V2MetricsByIde[];
+  totals_by_language_feature?: V2MetricsByLanguageFeature[];
+}
+
+/** @public */
+export interface V2EnterpriseDocument {
+  enterprise_id: string;
+  report_start_day: string;
+  report_end_day: string;
+  day_totals: V2EnterpriseDayTotal[];
+}
+
+/** @public */
+export interface V2UserMetric {
+  user_id: number;
+  user_login: string;
+  day: string;
+  enterprise_id?: string;
+  organization_id?: string;
+  used_agent: boolean;
+  used_chat: boolean;
+  used_cli: boolean;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+  totals_by_feature?: V2MetricsByFeature[];
+  totals_by_ide?: V2MetricsByIde[];
+  totals_by_language_feature?: V2MetricsByLanguageFeature[];
+  totals_by_model_feature?: Array<{
+    model: string;
+    feature: string;
+    user_initiated_interaction_count: number;
+    code_generation_activity_count: number;
+    code_acceptance_activity_count: number;
+    loc_suggested_to_add_sum: number;
+    loc_suggested_to_delete_sum: number;
+    loc_added_sum: number;
+    loc_deleted_sum: number;
+  }>;
+  totals_by_language_model?: Array<{
+    language: string;
+    model: string;
+    code_generation_activity_count: number;
+    code_acceptance_activity_count: number;
+    loc_suggested_to_add_sum: number;
+    loc_suggested_to_delete_sum: number;
+    loc_added_sum: number;
+    loc_deleted_sum: number;
+  }>;
+}
+
+/** @public */
+export interface V2UserTeam {
+  user_id: number;
+  user_login: string;
+  day: string;
+  enterprise_id?: string;
+  organization_id?: string;
+  team_id: number;
+  slug: string;
+}
+
+/** @public */
+export interface V2DailyTotal {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  daily_active_users: number;
+  /**
+   * Weekly rolling window active users count.
+   * Only available for organization/enterprise-level aggregates.
+   * Undefined for team-level aggregates (which use daily user data only).
+   */
+  weekly_active_users?: number;
+  /**
+   * Monthly rolling window active users count.
+   * Only available for organization/enterprise-level aggregates.
+   * Undefined for team-level aggregates (which use daily user data only).
+   */
+  monthly_active_users?: number;
+  daily_active_cli_users?: number;
+  monthly_active_agent_users?: number;
+  monthly_active_chat_users?: number;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/** @public */
+export interface V2PrMetricsRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  total_created: number;
+  total_merged: number;
+  total_reviewed: number;
+  total_created_by_copilot: number;
+  total_merged_created_by_copilot: number;
+  total_merged_reviewed_by_copilot: number;
+  total_reviewed_by_copilot: number;
+  total_suggestions: number;
+  total_applied_suggestions: number;
+  total_copilot_suggestions: number;
+  total_copilot_applied_suggestions: number;
+  median_minutes_to_merge?: number;
+  median_minutes_to_merge_copilot_authored?: number;
+  median_minutes_to_merge_copilot_reviewed?: number;
+}
+
+/** @public */
+export interface V2MetricsByFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/** @public */
+export interface V2MetricsByIdeRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  ide: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/** @public */
+export interface V2MetricsByLanguageFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  language: string;
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/** @public */
+export interface V2MetricsByModelFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  model_id: string;
+  feature: string;
+  user_initiated_interaction_count: number;
+  code_generation_activity_count: number;
+  code_acceptance_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/** @public */
+export interface V2MetricsByLanguageModelRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  language: string;
+  model_id: string;
+  /** @deprecated use code_generation_activity_count */
+  request_count: number;
+  code_generation_activity_count: number;
+  code_acceptance_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/** @public */
+export interface V2MetricsByCliRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  team_slug: string;
+  prompt_count: number;
+  request_count: number;
+  session_count: number;
+  avg_tokens_per_request: number;
+  output_tokens_sum: number;
+  prompt_tokens_sum: number;
+}
+
+/** @public */
+export interface V2UserMetricRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  used_agent: boolean;
+  used_chat: boolean;
+  used_cli: boolean;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/** @public */
+export interface V2UserTeamRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  team_id: number;
+  team_slug: string;
+}
+
+/** @public */
+export interface V2IngestionLogRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  ingested_at?: string;
+  status: 'success' | 'error' | 'partial';
+  components_loaded: string; // JSON array stored as string for SQLite compat: e.g. '["totals","users","teams"]'
+  error_message?: string | null;
+  source: 'scheduled' | 'backfill' | 'manual';
+}
+
+/** @public */
+export interface V2BackfillStatus {
+  day: string;
+  metrics_type: string;
+  entity_id: string;
+  status: string;
+  components_loaded: string[];
+  error_message?: string | null;
+  ingested_at?: string;
+  source: string;
+}
+
+/**
+ * Aggregated dashboard data returned by the /v2/dashboard BFF endpoint.
+ * Contains all chart data needed for the V2 dashboard in a single response.
+ *
+ * @public
+ */
+export interface V2DashboardData {
+  daily: V2DailyTotal[];
+  byFeature: V2MetricsByFeatureRow[];
+  byLanguage: V2MetricsByLanguageFeatureRow[];
+  byModelFeature: V2MetricsByModelFeatureRow[];
+  byLanguageModel: V2MetricsByLanguageModelRow[];
+  prMetrics: V2PrMetricsRow[];
+}
+
+/**
+ * Represents the scope of metrics data, either at the enterprise level or organization level.
+ *
+ * @public
+ */
+export type MetricsScope = 'enterprise' | 'organization';

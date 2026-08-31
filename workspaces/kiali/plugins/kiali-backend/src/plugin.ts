@@ -16,6 +16,7 @@
 import {
   coreServices,
   createBackendPlugin,
+  type BackendFeature,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './service/router';
 
@@ -24,7 +25,7 @@ import { createRouter } from './service/router';
  *
  * @public
  */
-export const kialiPlugin = createBackendPlugin({
+export const kialiPlugin: BackendFeature = createBackendPlugin({
   pluginId: 'kiali',
   register(env) {
     env.registerInit({

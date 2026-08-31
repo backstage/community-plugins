@@ -1,0 +1,23 @@
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${BACKSTAGE_DEV_STATIC_TOKEN}
+          subject: user:default/guest
+
+catalog:
+  providers:
+    pingIdentityOrg:
+      default:
+        apiPath: ${PING_IDENTITY_API_PATH}
+        authPath: ${PING_IDENTITY_AUTH_PATH}
+        envId: ${PING_IDENTITY_ENV_ID}
+        clientId: ${PING_IDENTITY_CLIENT_ID}
+        clientSecret: ${PING_IDENTITY_CLIENT_SECRET}
+        schedule:
+          frequency: { minutes: 30 }
+          timeout: { minutes: 3 }

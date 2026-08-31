@@ -26,15 +26,15 @@
     {
       "matchManagers": ["npm"],
       "enabled": false,
-      "matchPackagePatterns": ["^@backstage/"],
       "vulnerabilityAlerts": {
         "enabled": false
-      }
+      },
+      "matchPackageNames": ["/^@backstage//"]
     },
     {
       "enabled": false,
-      "matchPackagePatterns": ["^@material-ui/"],
-      "matchUpdateTypes": ["replacement"]
+      "matchUpdateTypes": ["replacement"],
+      "matchPackageNames": ["/^@material-ui//"]
     },
     {
       "matchPackageNames": ["node-fetch"],
@@ -47,6 +47,10 @@
     {
       "matchPackageNames": ["yn"],
       "allowedVersions": "<5.0.0"
+    },
+    {
+      "matchPackageNames": ["react-router", "react-router-dom"],
+      "allowedVersions": "<7.0.0"
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"],

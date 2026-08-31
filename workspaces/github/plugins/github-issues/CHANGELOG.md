@@ -1,5 +1,43 @@
 # @backstage-community/plugin-github-issues
 
+## 1.3.2
+
+### Patch Changes
+
+- bf583e2: Fixed the GitHub Issues card failing with `Cannot read properties of null (reading 'updatedAt')` / repeated "Resource limits for this query exceeded." errors on entities (typically groups) that own many repositories.
+
+## 1.3.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filters to use the modern object form.
+
+## 1.3.0
+
+### Minor Changes
+
+- d130786: Backstage version bump to v1.53.0
+
+## 1.2.1
+
+### Patch Changes
+
+- 99ab95f: Fixed the GitHub Issues card crashing with `TypeError: Failed to construct 'URL': Invalid URL` for `Group` and `User` entities whose `backstage.io/source-location` / `backstage.io/managed-by-location` is not a parseable URL (for example entities registered from a `file:` location, or with no location at all).
+
+  For owner entities (`Group`/`User`) the card now resolves the GitHub host from the configured `integrations.github` instead of the owner entity's location annotation — the same approach used by the `github-pull-requests-board` plugin — so a team simply sees the open issues of every repository it owns. `getHostnameFromEntity` is now non-throwing, and repositories whose host cannot be determined are no longer silently dropped.
+
+## 1.2.0
+
+### Minor Changes
+
+- 7e98f23: Backstage version bump to v1.52.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 9a217cf: Backstage version bump to v1.51.0
+
 ## 1.0.0
 
 ### Major Changes

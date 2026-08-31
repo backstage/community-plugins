@@ -1,5 +1,94 @@
 # @backstage-community/plugin-argocd
 
+## 3.1.0
+
+### Minor Changes
+
+- 548d597: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [548d597]
+  - @backstage-community/plugin-argocd-common@1.18.0
+
+## 3.0.0
+
+### Major Changes
+
+- 43fd19c: Migrate the Argo CD frontend plugin to the new frontend system (NFS). Legacy (OFS) exports are available from the `/legacy` subpath.
+
+  **BREAKING:** The default export is now the NFS plugin created with `createFrontendPlugin`. Named exports (`argocdPlugin`, `ArgocdDeploymentLifecycle`, `ArgocdDeploymentSummary`, `isArgocdConfigured`, `argocdTranslations`, `argocdTranslationRef`) have been moved to the `/legacy` subpath.
+
+  To migrate existing OFS usage, update imports from `@backstage-community/plugin-argocd` to `@backstage-community/plugin-argocd/legacy`:
+
+  ```ts
+  import {
+    argocdPlugin,
+    ArgocdDeploymentLifecycle,
+    ArgocdDeploymentSummary,
+    isArgocdConfigured,
+    argocdTranslations,
+  } from '@backstage-community/plugin-argocd/legacy';
+  ```
+
+  For the new frontend system, import the default export and add it to your app features together with the translations module. The Deployment Lifecycle and Deployment Summary entity tabs are registered automatically for entities with Argo CD annotations:
+
+  ```ts
+  import argocdPlugin, {
+    argocdTranslationsModule,
+  } from '@backstage-community/plugin-argocd';
+
+  export const app = createApp({
+    features: [argocdPlugin, argocdTranslationsModule],
+  });
+  ```
+
+## 2.11.0
+
+### Minor Changes
+
+- 730c396: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- d640871: Add CI wiring and permission-contract tests for the Argo CD backend and common packages, plus contributor guides and a minimal backend dev/ harness config so Backstage dependency bumps can be trusted without a full workspace smoke.
+- 4cd7a76: Added aria-label to icon-only external link buttons to resolve link-name accessibility violations
+- Updated dependencies [d640871]
+- Updated dependencies [730c396]
+  - @backstage-community/plugin-argocd-common@1.17.0
+
+## 2.10.0
+
+### Minor Changes
+
+- 328f198: Migrated from Material UI v4 (`@material-ui/*`) to MUI v5 (`@mui/material`, `@mui/icons-material`). Replaced `makeStyles`/`createStyles` with MUI v5 `styled()` and `sx` prop patterns. Removed `@material-ui/core`, `@material-ui/icons`, `@material-ui/lab`, and `@material-ui/styles` dependencies.
+
+### Patch Changes
+
+- 12fae1d: Updated dependency `react-use` to `17.6.1`.
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+
+## 2.9.0
+
+### Minor Changes
+
+- ed7cb18: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- da8d33d: Fix HTTP 500 errors and incorrect rendering for multi-source ArgoCD applications that include Helm chart sources.
+
+  When an ArgoCD Application has multiple sources and one is a Helm chart (i.e. `spec.sources[i].chart` is set), the backend was calling the ArgoCD revision metadata endpoint with the chart version string (e.g. `6.33.0`) as the revision ID. The ArgoCD API endpoint `/revisions/{revision}/metadata` only accepts git commit SHAs and returns HTTP 500 for chart version strings, producing a continuous stream of backend errors on every entity page load.
+
+  - `getRevisionDetailsList` now skips the revision metadata API call when the source at the given index is a Helm chart source.
+  - `getUniqueRevisions` now excludes Helm chart version strings from multi-source apps so they are not passed to the revision metadata endpoint.
+  - `isAppHelmChartType` now correctly returns `true` for multi-source apps that include at least one Helm chart source, fixing the revision link rendering in the Deployment Summary table.
+  - Fixed the Revision column in the Deployment Summary table for multi-source apps: the previous `pop()` call mutated the cached history array causing the column to cycle between the commit SHA, the Helm version, and blank on successive React renders. The column now shows a stable combined string (e.g. `6.49.0 / abc1234`) — Helm chart versions in full and git SHAs truncated to 7 characters — linked to the first git source commit URL.
+
+- 170f85d: Fix Jest 30 test compatibility by normalizing color style assertions in rollout status tests.
+- Updated dependencies [ed7cb18]
+  - @backstage-community/plugin-argocd-common@1.16.0
+
 ## 2.8.0
 
 ### Minor Changes

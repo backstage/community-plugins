@@ -1,5 +1,39 @@
 # @backstage-community/plugin-kiali
 
+## 1.51.2
+
+### Patch Changes
+
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+- 6d02d79: Bumped Backstage dependencies to 1.52.0 for Red Hat Developer Hub 1.11 compatibility.
+- Updated dependencies [6d02d79]
+  - @backstage-community/plugin-kiali-common@0.11.2
+  - @backstage-community/plugin-kiali-react@0.7.4
+
+## 1.51.1
+
+### Patch Changes
+
+- e9247c7: Bumped Backstage dependencies to 1.49.4 for Red Hat Developer Hub 1.10 compatibility.
+- Updated dependencies [e9247c7]
+  - @backstage-community/plugin-kiali-common@0.11.1
+  - @backstage-community/plugin-kiali-react@0.7.3
+
+## 1.51.0
+
+### Minor Changes
+
+- 9ae7745: Adapt Ambient changes
+
+### Patch Changes
+
+- be8bfc4: Updated dependency `cytoscape` to `3.34.0`.
+- b46bf84: Updated dependency `cytoscape` to `3.33.3`.
+- 387d2e9: Updated dependency `@types/node` to `22.19.19`.
+- Updated dependencies [9ae7745]
+  - @backstage-community/plugin-kiali-common@0.11.0
+  - @backstage-community/plugin-kiali-react@0.7.2
+
 ## 1.50.2
 
 ### Patch Changes

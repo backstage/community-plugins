@@ -29,6 +29,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import EditRole from '../EditRole';
 import { getColumns } from './MembersListColumns';
 import { StyledTableWrapper } from './StyledTableWrapper';
+import { TableAction } from './TableAction';
 
 type MembersCardProps = {
   roleName: string;
@@ -78,6 +79,7 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
       icon: () => getEditIcon(canReadUsersAndGroups, roleName, editTooltip),
       isFreeAction: true,
       onClick: () => {},
+      customComponent: true,
     },
   ];
   const columns = useMemo(() => getColumns(t), [t]);
@@ -109,7 +111,13 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
               : t('table.headers.usersAndGroups')
           }
           actions={actions}
-          options={{ padding: 'default', search: true, paging: true }}
+          components={{ Action: TableAction }}
+          options={{
+            padding: 'default',
+            search: true,
+            paging: true,
+            draggable: false,
+          }}
           data={data ?? []}
           isLoading={loading}
           columns={getColumns(t)}
@@ -123,7 +131,10 @@ export const MembersCard = ({ roleName, membersInfo }: MembersCardProps) => {
           }
           localization={{
             toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
-            pagination: { labelRowsSelect: t('table.labelRowsSelect') },
+            pagination: {
+              labelRowsSelect: t('table.labelRowsSelect'),
+              labelDisplayedRows: t('table.labelDisplayedRows'),
+            },
           }}
           onSearchChange={setSearchText}
         />

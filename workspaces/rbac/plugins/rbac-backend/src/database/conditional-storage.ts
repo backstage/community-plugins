@@ -47,6 +47,7 @@ export interface ConditionalStorage {
   ): Promise<RoleConditionalPolicyDecision<PermissionInfo>[]>;
   createCondition(
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    idsToExclude?: ReadonlySet<number>,
   ): Promise<number>;
   checkConflictedConditions(
     roleEntityRef: string,
@@ -54,6 +55,8 @@ export interface ConditionalStorage {
     pluginId: string,
     queryPermissionNames: string[],
     idToExclude?: number,
+    trx?: Knex.Transaction | Knex,
+    idsToExclude?: ReadonlySet<number>,
   ): Promise<void>;
   getCondition(
     id: number,
@@ -64,6 +67,7 @@ export interface ConditionalStorage {
     id: number,
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
     trx?: Knex.Transaction,
+    idsToExclude?: ReadonlySet<number>,
   ): Promise<void>;
 }
 
@@ -125,12 +129,16 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
 
   async createCondition(
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
+    idsToExclude?: ReadonlySet<number>,
   ): Promise<number> {
     await this.checkConflictedConditions(
       conditionalDecision.roleEntityRef,
       conditionalDecision.resourceType,
       conditionalDecision.pluginId,
       conditionalDecision.permissionMapping.map(permInfo => permInfo.action),
+      undefined,
+      undefined,
+      idsToExclude,
     );
 
     const conditionRaw = this.toDAO(conditionalDecision);
@@ -152,6 +160,7 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     queryConditionActions: PermissionAction[],
     idToExclude?: number,
     trx?: Knex.Transaction | Knex,
+    idsToExclude?: ReadonlySet<number>,
   ): Promise<void> {
     const db = trx ?? this.knex;
     let conditionsForTheSameResource = await this.filterConditions(
@@ -163,7 +172,11 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
       db,
     );
     conditionsForTheSameResource = conditionsForTheSameResource.filter(
-      c => c.id !== idToExclude,
+      c =>
+        c.id !== idToExclude &&
+        (idsToExclude === undefined ||
+          c.id === undefined ||
+          !idsToExclude.has(c.id)),
     );
 
     if (conditionsForTheSameResource) {
@@ -217,6 +230,7 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
     id: number,
     conditionalDecision: RoleConditionalPolicyDecision<PermissionInfo>,
     trx?: Knex.Transaction,
+    idsToExclude?: ReadonlySet<number>,
   ): Promise<void> {
     const db = trx ?? this.knex;
     const condition = await this.getCondition(id, db);
@@ -231,6 +245,7 @@ export class DataBaseConditionalStorage implements ConditionalStorage {
       conditionalDecision.permissionMapping.map(perm => perm.action),
       id,
       db,
+      idsToExclude,
     );
 
     const conditionRaw = this.toDAO(conditionalDecision);

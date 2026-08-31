@@ -1,5 +1,48 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.14.0
+
+### Minor Changes
+
+- ede61dd: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 7640966: Improve automated coverage for plugin init, Table API client query contracts, and frontend backend client wiring so Backstage version bumps fail in CI when those surfaces break. The backend client now includes the entity annotation field in ServiceNow incident queries.
+- Updated dependencies [7640966]
+- Updated dependencies [ede61dd]
+  - @backstage-community/plugin-servicenow-common@1.13.0
+
+## 1.13.1
+
+### Patch Changes
+
+- 27ea591: Updated dependency `axios` to `^1.18.0`.
+
+## 1.13.0
+
+### Minor Changes
+
+- 2603949: Backstage version bump to v1.51.0
+- 2e296d0: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- Updated dependencies [2603949]
+- Updated dependencies [2e296d0]
+  - @backstage-community/plugin-servicenow-common@1.12.0
+
+## 1.12.0
+
+### Minor Changes
+
+- 5399656: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- Updated dependencies [5399656]
+  - @backstage-community/plugin-servicenow-common@1.11.0
+
 ## 1.11.1
 
 ### Patch Changes

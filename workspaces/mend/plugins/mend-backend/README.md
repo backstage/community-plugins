@@ -4,9 +4,7 @@ The Mend backend plugin provides the server-side functionality for the Mend Back
 
 ## Prerequisites
 
-- Mend Activation Key
-- Frontend plugin `@backstage-community/plugin-mend` installed
-- Catalog Backend Module Mend Entity Processor plugin `@backstage-community/plugin-catalog-backend-module-mend-entity-processor` installed to add the Mend annotations in entities.
+- Mend Activation Key to fetch results from Mend. The steps to obtain and configure the key are described [here](../mend/README.md#getting-started).
 
 ## Installation
 

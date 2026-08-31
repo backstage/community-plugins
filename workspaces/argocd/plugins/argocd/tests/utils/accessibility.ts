@@ -22,13 +22,18 @@ export async function runAccessibilityTests(
   attachName = 'accessibility-scan-results.json',
   options?: {
     skipViolationsAssert?: boolean;
+    excludeRules?: string[];
   },
 ) {
-  const accessibilityScanResults = await new AxeBuilder({
+  const builder = new AxeBuilder({
     page: page as any,
-  })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-    .analyze();
+  }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']);
+
+  if (options?.excludeRules?.length) {
+    builder.disableRules(options.excludeRules);
+  }
+
+  const accessibilityScanResults = await builder.analyze();
 
   if (testInfo) {
     await testInfo.attach(attachName, {
@@ -37,7 +42,7 @@ export async function runAccessibilityTests(
     });
   }
 
-  if (options?.skipViolationsAssert) {
+  if (!options?.skipViolationsAssert) {
     expect(
       accessibilityScanResults.violations,
       'Accessibility violations found',

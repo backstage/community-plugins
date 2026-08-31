@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Direction,
-  Reporter,
-} from '@backstage-community/plugin-kiali-common/types';
+import { Direction } from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
 import { default as React } from 'react';
 import { HistoryManager, URLParam } from '../../app/History';
@@ -24,10 +21,12 @@ import { KialiIcon } from '../../config/KialiIcon';
 import { kialiStyle } from '../../styles/StyleUtils';
 import { ToolbarDropdown } from '../ToolbarDropdown/ToolbarDropdown';
 
+export type Reporter = 'source' | 'destination' | 'both';
+
 interface Props {
-  onChanged: (reproter: Reporter) => void;
+  onChanged: (reporter: Reporter) => void;
   direction: Direction;
-  reporter: Reporter;
+  reporter: string;
 }
 
 const infoStyle = kialiStyle({
@@ -41,10 +40,10 @@ export class MetricsReporter extends React.Component<Props> {
     both: 'Both',
   };
 
-  static initialReporter = (direction: Direction): Reporter => {
+  static initialReporter = (direction: Direction): string => {
     const reporterParam = HistoryManager.getParam(URLParam.REPORTER);
     if (reporterParam !== undefined) {
-      return reporterParam as Reporter;
+      return reporterParam;
     }
     return direction === 'inbound' ? 'destination' : 'source';
   };
@@ -85,8 +84,7 @@ export class MetricsReporter extends React.Component<Props> {
 
   onReporterChanged = (reporter: string) => {
     HistoryManager.setParam(URLParam.REPORTER, reporter);
-    const newReporter = reporter as Reporter;
-    this.props.onChanged(newReporter);
+    this.props.onChanged(reporter as Reporter);
   };
 
   render() {

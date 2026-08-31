@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button, Grid } from '@material-ui/core';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import {
   EntityApiDefinitionCard,
   EntityConsumedApisCard,
@@ -172,7 +173,7 @@ const serviceEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path="/ci-cd" title="CI/CD" if={isTektonCIAvailable}>
       {cicdContent}
     </EntityLayout.Route>
 
@@ -218,7 +219,7 @@ const websiteEntityPage = (
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path="/ci-cd" title="CI/CD" if={isTektonCIAvailable}>
       {cicdContent}
     </EntityLayout.Route>
 

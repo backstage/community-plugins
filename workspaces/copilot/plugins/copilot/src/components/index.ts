@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { CopilotIndexPage } from './Pages';
+export { V2DashboardPage } from './V2Dashboard';

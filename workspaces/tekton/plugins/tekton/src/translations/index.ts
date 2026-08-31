@@ -15,6 +15,8 @@
  */
 
 import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { tektonTranslationRef } from './ref';
 
 /**
@@ -33,3 +35,21 @@ export const tektonTranslations = createTranslationResource({
 });
 
 export { tektonTranslationRef };
+
+/**
+ * Translation module for the Tekton plugin.
+ * @public
+ */
+const tektonTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'tekton-translations',
+      params: {
+        resource: tektonTranslations,
+      },
+    }),
+  ],
+});
+
+export default tektonTranslationsModule;

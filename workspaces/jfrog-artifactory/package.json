@@ -36,13 +36,13 @@
     "directory": "workspaces/jfrog-artifactory"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.1",
-    "@backstage/cli-defaults": "^0.1.1",
+    "@backstage/cli": "^0.36.5",
+    "@backstage/cli-defaults": "^0.1.5",
     "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.17.1",
+    "@backstage/repo-tools": "^0.19.0",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30.0.0",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "1.61.1",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
     "jest": "^30.0.0",

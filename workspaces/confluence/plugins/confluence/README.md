@@ -1,35 +1,26 @@
 # Confluence
 
-This plugin adds capability to retrieve Confluence documents from the Backstage Search engine.
+This plugin provides the `<ConfluenceSearchResultListItem />` component for displaying Confluence search results in Backstage. To index Confluence documents into Backstage Search, use the [`@backstage-community/plugin-search-backend-module-confluence-collator`](https://github.com/backstage/community-plugins/tree/main/workspaces/confluence/plugins/search-backend-module-confluence-collator) backend module.
 
 ## Getting Started
 
 Before we begin make sure:
 
 - You have created your own standalone Backstage app using @backstage/create-app and not using a fork of the Backstage repository. If you haven't setup Backstage already, start [here](https://backstage.io/docs/getting-started/).
+- You have set up the search collator backend module as described in the [`@backstage-community/plugin-search-backend-module-confluence-collator` README](https://github.com/backstage/community-plugins/tree/main/workspaces/confluence/plugins/search-backend-module-confluence-collator).
 
-To use any of the functionality this plugin provides, you need to start by configuring your App with the following config:
+Add the plugin to your frontend app:
 
-```yaml
-confluence:
-  baseUrl: http://confluence.example.com
-  auth:
-    type: bearer
-    token: youApiToken
-  spaces: [] # Warning, it is highly recommended to safely list the spaces that you want to index, either all documents will be indexed.
+```bash
+# From your Backstage root directory
+yarn --cwd packages/app add @backstage-community/plugin-confluence
 ```
 
-## Areas of Responsibility
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), no extra step is required. If you are using the legacy frontend system, follow the [usage steps below](#legacy-frontend-system-usage).
 
-This confluence frontend plugin is primarily responsible for the following:
+### Legacy Frontend System Usage
 
-- Exposing Confluence related component `<ConfluenceSearchResultListItem />` which can be used for composing the search page.
-
-#### Use specific search result list itm for Confluence
-
-> Note: For Confluence specific search results to be returned, it needs to be indexed. Use the [search-backend-module-confluence-collator](../search-backend-module-confluence-collator/README.md) to index Confluence documents to search.
-
-When you have you `packages/app/src/components/search/SearchPage.tsx` file ready to make modifications, add the following code snippet to add the `ConfluenceSearchResultListItem` web the type of search results are `confluence`.
+Add the `ConfluenceSearchResultListItem` to your search page in `packages/app/src/components/search/SearchPage.tsx`:
 
 ```tsx
 import {
@@ -53,24 +44,6 @@ import {
 ...
               <ConfluenceSearchResultListItem icon={<ConfluenceSearchIcon />} />
             </SearchResult>
-```
-
-## Integrating with the new Frontend System
-
-Follow this section if you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/).
-
-Import `confluencePlugin` in your `App.tsx` and add it to your app's `features` array:
-
-```typescript
-import confluencePlugin from '@backstage-community/plugin-confluence/alpha';
-// ...
-export const app = createApp({
-  features: [
-    // ...
-    confluencePlugin,
-    // ...
-  ],
-});
 ```
 
 ## Special thanks & Disclaimer

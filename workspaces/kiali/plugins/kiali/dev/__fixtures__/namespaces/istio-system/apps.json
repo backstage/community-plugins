@@ -12,7 +12,7 @@
       "name": "details",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "details",
         "service": "details",
@@ -51,7 +51,7 @@
       "name": "kiali-traffic-generator",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "kiali-traffic-generator",
         "kiali-test": "traffic-generator"
@@ -78,7 +78,7 @@
       "name": "productpage",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "productpage",
         "service": "productpage",
@@ -127,7 +127,7 @@
       "name": "ratings",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "ratings",
         "service": "ratings",
@@ -166,7 +166,7 @@
       "name": "reviews",
       "cluster": "Kubernetes",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "reviews",
         "service": "reviews",

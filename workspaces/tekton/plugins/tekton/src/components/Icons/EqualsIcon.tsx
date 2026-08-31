@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 
 import { t_color_yellow_40 as mediumColor } from '@patternfly/react-tokens/dist/js/t_color_yellow_40';
 
 const EqualsIcon = ({
   className,
+  height,
   title,
+  width,
 }: {
-  className: string;
+  className?: string;
+  height?: CSSProperties['height'];
   title?: string;
+  width?: CSSProperties['width'];
 }): ReactElement => {
   return (
     <svg
@@ -30,6 +34,8 @@ const EqualsIcon = ({
       fill={mediumColor.value}
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      height={height}
+      width={width}
     >
       {title && <title>{title}</title>}
       <path d="M160-280v-120h640v120H160Zm0-280v-120h640v120H160Z" />

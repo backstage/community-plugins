@@ -1,5 +1,29 @@
 # @backstage-community/plugin-code-climate
 
+## 0.22.0
+
+### Minor Changes
+
+- 6f678da: Backstage version bump to v1.54.5
+
+## 0.21.0
+
+### Minor Changes
+
+- 35ff04e: Backstage version bump to v1.53.0
+
+## 0.20.0
+
+### Minor Changes
+
+- cb2fa35: Backstage version bump to v1.52.0
+
+## 0.19.0
+
+### Minor Changes
+
+- 2b3bd0d: Backstage version bump to v1.51.1
+
 ## 0.18.0
 
 ### Minor Changes

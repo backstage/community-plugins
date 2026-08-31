@@ -15,7 +15,7 @@
     {
       "workloadName": "ratings-v1",
       "istioSidecar": true,
-      "istioAmbient": false,
+      "isAmbient": false,
       "labels": {
         "app": "ratings",
         "version": "v1"

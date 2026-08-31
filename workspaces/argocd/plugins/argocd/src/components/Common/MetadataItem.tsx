@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { FlexItem } from '@patternfly/react-core';
 import type { ReactNode, FC } from 'react';
 import { HTMLAttributes } from 'react';

@@ -233,6 +233,7 @@ export const servicenowTranslationRef: TranslationRef<
     readonly 'table.columns.state': string;
     readonly 'table.columns.actions': string;
     readonly 'table.emptyContent': string;
+    readonly 'table.rowsPerPage': string;
     readonly 'filter.priority': string;
     readonly 'filter.state': string;
     readonly 'priority.critical': string;

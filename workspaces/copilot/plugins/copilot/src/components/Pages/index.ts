@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { CopilotIndexPage } from './CopilotIndexPage';
+export { HomePage } from './HomePage';

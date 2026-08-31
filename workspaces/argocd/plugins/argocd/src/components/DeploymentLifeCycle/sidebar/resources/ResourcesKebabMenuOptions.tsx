@@ -16,37 +16,13 @@
 import type { MouseEvent } from 'react';
 
 import { useState } from 'react';
-import {
-  createStyles,
-  IconButton,
-  Menu,
-  MenuItem,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from '../../../../hooks/useTranslation';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButton: {
-      color: theme.palette.grey[700],
-    },
-    menuPaper: {
-      borderRadius: '4px',
-      minWidth: '14rem',
-      padding: theme.spacing(0),
-      top: theme.spacing(1),
-    },
-    menuItem: {
-      color: theme.palette.grey[800],
-      padding: theme.spacing(1, 2),
-    },
-  }),
-);
-
 export const ResourcesKebabMenuOptions = () => {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -67,7 +43,7 @@ export const ResourcesKebabMenuOptions = () => {
         aria-controls="kebab-menu"
         aria-haspopup="true"
         onClick={handleClick}
-        className={classes.actionButton}
+        sx={theme => ({ color: theme.palette.grey[700] })}
       >
         <MoreVertIcon />
       </IconButton>
@@ -77,18 +53,28 @@ export const ResourcesKebabMenuOptions = () => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        classes={{ paper: classes.menuPaper }}
+        slotProps={{
+          paper: {
+            sx: { borderRadius: '4px', minWidth: '14rem', p: 0, mt: 1 },
+          },
+        }}
         transformOrigin={{
           vertical: -40,
           horizontal: 220,
         }}
       >
-        <MenuItem onClick={handleClose} className={classes.menuItem}>
+        <MenuItem
+          onClick={handleClose}
+          sx={theme => ({ color: theme.palette.grey[800], py: 1, px: 2 })}
+        >
           {t(
             'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh',
           )}
         </MenuItem>
-        <MenuItem onClick={handleClose} className={classes.menuItem}>
+        <MenuItem
+          onClick={handleClose}
+          sx={theme => ({ color: theme.palette.grey[800], py: 1, px: 2 })}
+        >
           {t(
             'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.sync',
           )}

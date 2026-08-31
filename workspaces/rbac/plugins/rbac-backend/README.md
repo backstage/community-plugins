@@ -6,6 +6,8 @@ The Backstage permission framework is a core component of the Backstage project,
 
 With the RBAC plugin, you'll have the means to efficiently administer permissions within your Backstage instance by assigning them to users and groups.
 
+For local development and CI commands, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Prerequisites
 
 Before you dive into utilizing the RBAC plugin for Backstage, there are a few essential prerequisites to ensure a seamless experience. Please review the following requirements to make sure your environment is properly set up
@@ -87,6 +89,35 @@ permission:
 > **Note:** **Transient memberships are not supported for `superUsers`.** Meaning, when a group is specified as a super user, only direct group memberships are taken into account. Users who belong to a sub-group of a configured super user group will not be granted super user access.
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
+
+### Use ownership entity refs for role membership
+
+When users sign in without catalog `memberOf` relations (for example, via a custom sign-in resolver that issues ownership entity refs in the token), you can enable `useOwnershipEntityRefs` so group-to-role bindings are evaluated from those token claims in addition to catalog membership.
+
+> **Warning:** When this option is enabled, RBAC trusts the ownership entity refs issued by the sign-in resolver when resolving direct role bindings. Ensure that the resolver only includes user and group refs that the authenticated user is authorized to claim, because an incorrect group ref could grant that group's permissions.
+
+```YAML
+permission:
+  rbac:
+    useOwnershipEntityRefs: true
+```
+
+With this enabled, a user whose sign-in resolver issues:
+
+```ts
+ctx.issueToken({
+  claims: {
+    sub: 'user:default/john.doe',
+    ent: ['user:default/john.doe', 'group:default/oncall'],
+  },
+});
+```
+
+will receive roles bound to `group:default/oncall` via CSV policies such as `g, group:default/oncall, role:default/oncall`, even when the user has no catalog `memberOf` relation to that group.
+
+> **Note:** Only direct bindings are supported — subgroup hierarchy is not traversed, similar to `superUsers`.
+
+Ownership entity refs do not create User or Group entities in the catalog. References that do not exist in the catalog will therefore not appear in the RBAC frontend and cannot be selected there when assigning members to roles. Administrators must define bindings for those references in the CSV policy file; the YAML application configuration only enables this behavior. Groups that already exist in the catalog can still be assigned to roles through the RBAC frontend, while membership supplied by the sign-in token is resolved at runtime.
 
 ### Configure default role
 
@@ -332,6 +363,28 @@ The RBAC plugin offers the option to store policies in a database. It supports t
 - postgres: Recommended for production environments.
 
 Ensure that you have already configured the database backend for your Backstage instance, as the RBAC plugin utilizes the same database configuration.
+
+#### Database connections and pool limits
+
+The RBAC backend currently uses **two separate PostgreSQL connection paths** for the database:
+
+1. **Knex** — conditional policies, role metadata, etc for the permission plugin
+2. **TypeORM (Casbin adapter)** — Casbin policy storage for RBAC
+
+Each path maintains its own connection pool. In horizontally scaled (HA) deployments, this extra pool can contribute to maxing out connection resources.
+
+**Mitigations today:**
+
+- Lower `backend.database.knexConfig.pool.max` to reduce per-plugin pool size.
+- Size your PostgreSQL instance to account for total connections across all Backstage core plugins and RBAC's Casbin pool.
+
+Consolidating RBAC onto a single shared database connection for both Knex and Casbin is a known improvement area to be addressed in the future.
+
+#### Passwordless PostgreSQL in the Cloud
+
+The RBAC plugin stores policies in the same database configured under `backend.database`. Passwordless authentication is supported when Backstage configures a dynamic Knex connection resolver, including **Azure Database for PostgreSQL with Entra authentication** (`connection.type: azure`) and **AWS RDS with IAM authentication** (`connection.type: rds`). Configure `backend.database` the same way as the rest of your Backstage instance — see [Passwordless PostgreSQL in the Cloud](https://backstage.io/docs/getting-started/config/database/#passwordless-postgresql-in-the-cloud) in the Backstage documentation. No additional RBAC-specific database configuration is required.
+
+Google Cloud SQL with Cloud IAM (`connection.type: cloudsql`) is not supported for RBAC policy storage yet.
 
 ### Optional maximum depth
 

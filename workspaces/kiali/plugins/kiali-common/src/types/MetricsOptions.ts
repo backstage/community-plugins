@@ -41,13 +41,44 @@ export interface IstioMetricsOptions extends MetricsQuery {
   direction: Direction;
   filters?: string[];
   requestProtocol?: string;
-  reporter: Reporter;
+  reporter: string;
   clusterName?: string;
-  includeAmbient?: boolean;
 }
 
-export type Reporter = 'source' | 'destination' | 'both';
 export type Direction = 'inbound' | 'outbound';
+export type StatsReporter = 'source' | 'destination' | 'waypoint';
+
+export const buildReporter = (
+  direction: Direction,
+  includeWaypoint: boolean,
+): string => {
+  const base = direction === 'inbound' ? 'destination' : 'source';
+  return includeWaypoint ? `${base},waypoint` : base;
+};
+
+export const withWaypoint = (
+  reporter: string,
+  includeWaypoint: boolean,
+): string => {
+  // Strip any existing waypoint suffix before conditionally re-adding it
+  const base = reporter
+    .split(',')
+    .filter(r => r !== 'waypoint')
+    .join(',');
+  if (includeWaypoint && base !== 'both') {
+    return `${base},waypoint`;
+  }
+  return base;
+};
+
+export const getStatsReporters = (
+  direction: Direction,
+  includeWaypoint = false,
+): StatsReporter[] => {
+  const sideReporter: StatsReporter =
+    direction === 'outbound' ? 'source' : 'destination';
+  return includeWaypoint ? [sideReporter, 'waypoint'] : [sideReporter];
+};
 
 export interface Target {
   namespace: string;

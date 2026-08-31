@@ -12,7 +12,8 @@ export const jfrogArtifactoryTranslationRef: TranslationRef<
   {
     readonly 'page.title': string;
     readonly 'table.searchPlaceholder': string;
-    readonly 'table.labelRowsSelect': string;
+    readonly 'table.pagination.showResults': string;
+    readonly 'table.pagination.rangeLabel': string;
     readonly 'table.columns.version': string;
     readonly 'table.columns.repositories': string;
     readonly 'table.columns.manifest': string;

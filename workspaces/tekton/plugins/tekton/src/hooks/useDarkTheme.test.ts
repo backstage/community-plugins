@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 import { renderHook } from '@testing-library/react';
 
 import { useDarkTheme } from './useDarkTheme';
 
-jest.mock('@material-ui/core/styles', () => ({
+jest.mock('@mui/material/styles', () => ({
   useTheme: jest.fn(),
 }));
 
@@ -28,7 +28,7 @@ describe('useDarkTheme', () => {
   it('should add dark theme class to html tag', () => {
     useThemeMock.mockReturnValue({
       palette: {
-        type: 'dark',
+        mode: 'dark',
       },
     });
     renderHook(() => useDarkTheme());
@@ -39,7 +39,7 @@ describe('useDarkTheme', () => {
   it('should remove dark theme class from html tag', () => {
     useThemeMock.mockReturnValue({
       palette: {
-        type: 'light',
+        mode: 'light',
       },
     });
     renderHook(() => useDarkTheme());

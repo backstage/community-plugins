@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import TopologyIcon from '@mui/icons-material/HubOutlined';
+import { RiNodeTree } from '@remixicon/react';
 import {
   EmptyState,
   EmptyStateBody,
@@ -21,6 +21,8 @@ import {
 } from '@patternfly/react-core';
 
 import { useTranslation } from '../../hooks/useTranslation';
+
+const TopologyEmptyIcon = () => <RiNodeTree size={48} />;
 
 type TopologyEmptyStateProps = {
   title?: string;
@@ -39,7 +41,7 @@ export const TopologyEmptyState = ({
       isFullHeight
       className="pf-topology-visualization-surface"
       titleText={title || t('emptyState.noResourcesFound')}
-      icon={TopologyIcon}
+      icon={TopologyEmptyIcon}
       headingLevel="h3"
     >
       <EmptyStateBody>

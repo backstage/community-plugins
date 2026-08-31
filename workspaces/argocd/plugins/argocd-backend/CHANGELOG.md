@@ -1,5 +1,46 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.7.0
+
+### Minor Changes
+
+- 548d597: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [548d597]
+  - @backstage-community/plugin-argocd-common@1.18.0
+  - @backstage-community/plugin-argocd-node@1.4.0
+
+## 1.6.0
+
+### Minor Changes
+
+- 730c396: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- d640871: Add CI wiring and permission-contract tests for the Argo CD backend and common packages, plus contributor guides and a minimal backend dev/ harness config so Backstage dependency bumps can be trusted without a full workspace smoke.
+- Updated dependencies [d640871]
+- Updated dependencies [730c396]
+  - @backstage-community/plugin-argocd-common@1.17.0
+  - @backstage-community/plugin-argocd-node@1.3.0
+
+## 1.5.0
+
+### Minor Changes
+
+- ed7cb18: Backstage version bump to v1.50.4
+
+### Patch Changes
+
+- d2cf455: Add example templates for ArgoCD plugin actions
+- 53f7107: Registered actions for ArgoCD application management: `argocd:find-applications`, `argocd:get-application`, `argocd:list-applications`, `argocd:get-revision-details`
+- Updated dependencies [1cc5891]
+- Updated dependencies [ed7cb18]
+  - @backstage-community/plugin-argocd-node@1.2.0
+  - @backstage-community/plugin-argocd-common@1.16.0
+
 ## 1.4.0
 
 ### Minor Changes

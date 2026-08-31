@@ -23,6 +23,7 @@ import type {
   LoggerService,
   PermissionsRegistryService,
   PermissionsService,
+  UserInfoService,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
 import type { Config } from '@backstage/config';
@@ -72,6 +73,7 @@ export type EnvOptions = {
   discovery: DiscoveryService;
   permissions: PermissionEvaluator;
   auth: AuthService;
+  userInfo: UserInfoService;
   httpAuth: HttpAuthService;
   auditor: AuditorService;
   lifecycle: LifecycleService;
@@ -224,6 +226,7 @@ export class PolicyBuilder {
           roleMetadataStorage,
           databaseClient,
           pluginPermMetaData,
+          env.userInfo,
           env.auth,
           conditionValidationLimits,
         ),
