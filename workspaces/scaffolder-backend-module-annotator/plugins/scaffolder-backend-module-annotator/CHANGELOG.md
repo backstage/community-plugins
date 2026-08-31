@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-annotator
 
+## 2.19.1
+
+### Patch Changes
+
+- bc49474: Installed Actions now better describes what each annotator action does and includes template examples for `catalog:annotate`.
+
 ## 2.19.0
 
 ### Minor Changes
