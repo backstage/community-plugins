@@ -22,7 +22,7 @@ import { techInsightsFactInsertServiceRef } from '@backstage-community/plugin-te
 import { initializePersistenceContext } from '../service/persistence';
 
 /**
- * A plugin-scoped service factory that provides the {@link TechInsightsFactInsertService}.
+ * A plugin-scoped service factory that provides the `TechInsightsFactInsertService`.
  *
  * Enables backend modules (such as incremental fact retrievers) to insert facts
  * and schemas into the tech insights store without requiring direct database access.
