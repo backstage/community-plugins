@@ -414,7 +414,7 @@ class BitbucketCloudClient extends BaseBitbucketClient {
       // Cloud uses different state values: OPEN, MERGED, DECLINED, SUPERSEDED
       params.append('state', state);
     }
-    params.append('pagelen', limit.toString());
+    params.append('pagelen', Math.min(limit, DEFAULT_LIMIT).toString());
 
     const response = await this.fetchApi.fetch(`${url}?${params}`, {
       headers: {
