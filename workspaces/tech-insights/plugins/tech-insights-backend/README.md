@@ -193,9 +193,13 @@ Two caveats worth knowing before copying this:
    keep a stale service alive longer than expected. Don't store anything
    in it other than the service itself.
 
-`insertFactSchema` is idempotent for a given `(id, version)` pair and only
-needs to be called once at startup; `insertFacts` may be called repeatedly
-(once per entity in a single-entity iteration pattern).
+`insertFactSchema` is a no-op for a given `(id, version)` pair that already
+exists and only needs to be called once at startup; `insertFacts` may be
+called repeatedly (once per entity in a single-entity iteration pattern).
+The check-then-insert isn't atomic, so if multiple replicas call
+`insertFactSchema` for the same new `(id, version)` concurrently, one may
+see a constraint violation — catch and ignore that case, or ensure only one
+replica registers schemas.
 
 ### Runnable example
 

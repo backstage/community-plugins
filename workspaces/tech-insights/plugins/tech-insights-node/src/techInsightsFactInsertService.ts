@@ -36,9 +36,12 @@ export interface TechInsightsFactInsertService {
    * Stores a versioned fact schema into the data store. Should be called at
    * least once before inserting facts for a given retriever id/version.
    *
-   * Idempotent for a given `(id, version)` pair: if a row already exists,
-   * this is a no-op and the existing schema is preserved untouched. To
-   * publish a changed schema, bump `version`.
+   * A no-op for a given `(id, version)` pair if a row already exists — the
+   * existing schema is preserved untouched. To publish a changed schema,
+   * bump `version`. Note this check-then-insert is not atomic, so calling
+   * this concurrently for the same `(id, version)` from multiple processes
+   * (e.g. multiple replicas starting up at once) can still race and throw a
+   * constraint violation; callers doing that should tolerate/retry on error.
    *
    * Reads of facts continue to flow through `techInsightsServiceRef`.
    */
