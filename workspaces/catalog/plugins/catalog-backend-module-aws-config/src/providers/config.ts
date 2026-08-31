@@ -223,7 +223,7 @@ function readFieldTransformDefinitionFromConfig(
   name: string,
 ): FieldTransformDefinition | undefined {
   if (!isObject(configValue)) {
-    throw new Error(`Field must be an object`);
+    throw new Error(`Field '${name}' parent must be an object`);
   }
 
   if (!(name in configValue)) {
