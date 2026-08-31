@@ -3,4 +3,4 @@
 '@backstage-community/plugin-argocd-backend': patch
 ---
 
-Allow Argo CD instance authentication via either an access token or username/password in the config schema. Username and password on each instance are no longer required, matching the documented token-based setup.
+Marked `username` and `password` as optional in config schema and fixed visibility metadata for authentication fields.
