@@ -17,7 +17,7 @@
 export interface Config {
   app: {
     analytics?: {
-      newRelic?: {
+      newRelic: {
         /**
          * Data ingestion endpoint to use. Standard New Relic endpoints are
          * bam.nr-data.net (US) or bam.eu01.nr-data.net (EU). A custom endpoint

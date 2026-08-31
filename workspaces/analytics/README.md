@@ -15,19 +15,17 @@ These plugins help track usage and adoption of Backstage.
 
 ## How to run
 
-The Analytics workspace uses each plugin's dev app as the primary testing mechanism. You can start the new frontend system (NFS) or the legacy frontend system.
-
-### New frontend system (default)
+The Analytics workspace uses each plugin's dev app as the primary testing mechanism.
 
 - Run `yarn install`
-- Run `yarn start` and choose a plugin, or start one directly:
+- Run `yarn start` and choose a plugin, or start one directly, for example:
 
 ```bash
-yarn workspace @backstage-community/plugin-analytics-module-ga4 start
+yarn workspace @backstage-community/plugin-analytics-provider-segment start
 ```
 
-### Legacy frontend system
+`@backstage-community/plugin-analytics-provider-segment` defaults to the new frontend system. To run its legacy frontend playground:
 
 ```bash
-yarn workspace @backstage-community/plugin-analytics-module-ga4 start:legacy
+yarn workspace @backstage-community/plugin-analytics-provider-segment start:legacy
 ```

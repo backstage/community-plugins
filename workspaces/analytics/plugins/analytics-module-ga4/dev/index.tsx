@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2021 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,60 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import ReactDOM from 'react-dom/client';
-
-// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui/css/styles.css';
-
-import { ConfigReader } from '@backstage/config';
-import { createApp } from '@backstage/frontend-defaults';
 import {
-  createFrontendPlugin,
-  PageBlueprint,
-} from '@backstage/frontend-plugin-api';
+  analyticsApiRef,
+  configApiRef,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
+import { createDevApp } from '@backstage/dev-utils';
 
-import ga4Module from '../src';
+import { GoogleAnalytics4 } from '../src';
 import { Playground } from './Playground';
 
-const playgroundPlugin = createFrontendPlugin({
-  pluginId: 'analytics-ga4-playground',
-  extensions: [
-    PageBlueprint.make({
-      params: {
-        path: '/ga4',
-        loader: async () => <Playground />,
-      },
-    }),
-  ],
-});
-
-const defaultPage = '/ga4';
-
-const app = createApp({
-  features: [ga4Module, playgroundPlugin],
-  advanced: {
-    configLoader: async () => ({
-      config: new ConfigReader({
-        app: {
-          title: 'GA4 Dev',
-          baseUrl: 'http://localhost:3000',
-          analytics: {
-            ga4: {
-              measurementId: 'G-0000000-0',
-              testMode: true,
-              debug: true,
-            },
-          },
-        },
-        backend: { baseUrl: 'http://localhost:7007' },
+createDevApp()
+  .registerApi({
+    api: analyticsApiRef,
+    deps: { configApi: configApiRef, identityApi: identityApiRef },
+    factory: ({ configApi, identityApi }) =>
+      GoogleAnalytics4.fromConfig(configApi, {
+        identityApi,
       }),
-    }),
-  },
-});
-
-if (typeof window !== 'undefined' && window.location.pathname === '/') {
-  window.location.pathname = defaultPage;
-}
-
-ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
+  })
+  .addPage({
+    path: '/ga4',
+    title: 'GA4 Playground',
+    element: <Playground />,
+  })
+  .render();

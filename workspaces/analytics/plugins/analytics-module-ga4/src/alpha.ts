@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 The Backstage Authors
+ * Copyright 2025 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import analyticsProviderMatomoPlugin from '.';
-
-describe('Matomo analytics plugin', () => {
-  it('should export an NFS frontend plugin', () => {
-    expect(analyticsProviderMatomoPlugin.$$type).toBe(
-      '@backstage/FrontendPlugin',
-    );
-    expect(analyticsProviderMatomoPlugin.pluginId).toBe(
-      'analytics-module-matomo',
-    );
-  });
-});
+export { ga4Module as default } from './module';

@@ -15,8 +15,8 @@
  */
 export interface Config {
   app?: {
-    analytics?: {
-      matomo?: {
+    analytics: {
+      matomo: {
         /**
          * Matomo host URL
          * @visibility frontend

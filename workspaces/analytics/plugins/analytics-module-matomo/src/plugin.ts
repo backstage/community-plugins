@@ -23,7 +23,6 @@ import {
   configApiRef,
   createFrontendPlugin,
   identityApiRef,
-  type FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 import { MatomoAnalytics } from './api';
@@ -56,8 +55,7 @@ const matomoImplementation = AnalyticsImplementationBlueprint.make({
 /**
  * @public
  */
-export const analyticsProviderMatomoPlugin: FrontendPlugin =
-  createFrontendPlugin({
-    pluginId: 'analytics-module-matomo',
-    extensions: [matomoImplementation],
-  });
+export const analyticsProviderMatomoPlugin = createFrontendPlugin({
+  pluginId: 'analytics-module-matomo',
+  extensions: [matomoImplementation],
+});

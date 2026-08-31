@@ -19,7 +19,7 @@ If your App is built using the New Frontend System, it's enough to supply this
 module to `createApp()`:
 
 ```tsx
-import newRelicBrowserModule from '@backstage-community/plugin-analytics-module-newrelic-browser';
+import newRelicBrowserModule from '@backstage-community/plugin-analytics-module-newrelic-browser/alpha';
 
 const app = createApp({
   features: [newRelicBrowserModule],
@@ -28,7 +28,7 @@ const app = createApp({
 
 This can be skipped entirely if you have feature discovery enabled.
 
-For legacy frontend apps, wire up the API implementation like this:
+For all other Backstage apps, wire up the API implementation like this:
 
 ```tsx
 // packages/app/src/apis.ts
@@ -37,7 +37,7 @@ import {
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { NewRelicBrowser } from '@backstage-community/plugin-analytics-module-newrelic-browser/legacy';
+import { NewRelicBrowser } from '@backstage-community/plugin-analytics-module-newrelic-browser';
 
 export const apis: AnyApiFactory[] = [
   // Instantiate and register the New Relic Browser API Implementation.
@@ -148,7 +148,7 @@ import {
   configApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import { NewRelicBrowser } from '@backstage-community/plugin-analytics-module-newrelic-browser/legacy';
+import { GoogleAnalytics } from '@backstage-community/plugin-analytics-module-newrelic-browser';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({
@@ -175,7 +175,7 @@ make and test changes is to do the following:
 3. If one does not exist, create an `app-config.local.yaml` file in the root of
    the monorepo and add config for this plugin (see below)
 4. Enter this plugin's working directory: `cd plugins/analytics-provider-newrelic-browser`
-5. Start the plugin in isolation: `yarn start` (NFS) or `yarn start:legacy` (legacy frontend)
+5. Start the plugin in isolation: `yarn start`
 6. Navigate to the playground page at `http://localhost:3000/newrelic`
 7. Open the web console to see events fire when you navigate or when you
    interact with instrumented components.

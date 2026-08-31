@@ -11,13 +11,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./legacy": "./src/legacy.ts",
+    "./alpha": "./src/alpha.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "legacy": [
-        "src/legacy.ts"
+      "alpha": [
+        "src/alpha.ts"
       ],
       "package.json": [
         "package.json"
@@ -44,7 +44,6 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "start": "backstage-cli package start",
-    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "test": "backstage-cli package test"
   },
   "dependencies": {
@@ -58,18 +57,14 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
-    "@backstage/frontend-defaults": "backstage:^",
-    "@backstage/ui": "backstage:^",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^18.2.58",
-    "@types/react-dom": "^18.2.19",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "configSchema": "config.d.ts"
 }

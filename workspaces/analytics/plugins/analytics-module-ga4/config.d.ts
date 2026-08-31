@@ -20,7 +20,7 @@ export interface Config {
     // context of the monorepo is too strict. Ideally, this would be marked as
     // required.
     analytics?: {
-      ga4?: {
+      ga4: {
         /**
          * Google Analytics measurement ID, e.g. G-000000-0
          * @visibility frontend
