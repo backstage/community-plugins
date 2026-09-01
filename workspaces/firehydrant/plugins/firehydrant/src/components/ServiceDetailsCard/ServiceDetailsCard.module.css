@@ -14,56 +14,6 @@
  * limitations under the License.
  */
 
-.button {
-  color: #3b2492;
-  display: grid;
-  grid-gap: 4px;
-  text-align: center;
-  justify-items: center;
-  width: 105px;
-  background-color: transparent;
-  border: 1px solid #3b2492;
-  border-radius: 5px;
-  padding: 8px 10px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.button:hover,
-.button:focus {
-  background-color: #f1edff;
-  color: #614ab6;
-}
-
-.button:active {
-  color: #3b2492;
-  background-color: #b2a6e3;
-  box-shadow: rgb(59, 36, 146) 0px 0px 0px 1px inset,
-    rgb(141, 134, 188) 3px 3px 0px 0px inset;
-}
-
-.buttonLink {
-  background-color: #3b2492;
-  color: white;
-  text-decoration: none;
-  padding: 6px 16px;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--bui-space-2);
-  font-size: 0.875rem;
-}
-
-.buttonLink:hover {
-  background-color: #614ab6;
-  color: white;
-}
-
-.icon {
-  color: #f1642d;
-  display: flex;
-}
-
 .link {
   text-decoration: underline;
   font-size: 16px;
