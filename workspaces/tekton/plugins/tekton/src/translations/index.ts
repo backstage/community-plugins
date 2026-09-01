@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendModule,
+  createTranslationResource,
+} from '@backstage/frontend-plugin-api';
 import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { tektonTranslationRef } from './ref';
 
@@ -40,7 +42,7 @@ export { tektonTranslationRef };
  * Translation module for the Tekton plugin.
  * @public
  */
-const tektonTranslationsModule = createFrontendModule({
+export const tektonTranslationsModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
     TranslationBlueprint.make({

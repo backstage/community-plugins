@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { Root } from './Root';
+
+/**
+ * Legacy frontend system API surface for the Tekton plugin.
+ *
+ * @packageDocumentation
+ */
+
+export { tektonPlugin, TektonCI } from './legacy/plugin';
+export { isTektonCIAvailable } from './utils/isTektonCIAvailable';

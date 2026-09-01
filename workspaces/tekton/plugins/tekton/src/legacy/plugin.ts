@@ -19,24 +19,26 @@ import {
 } from '@backstage/core-plugin-api';
 
 /**
- * A Tekton plugin.
+ * A Tekton plugin (legacy frontend system).
  *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const tektonPlugin = createPlugin({
   id: 'tekton',
 });
 
 /**
- * Component for the catalog entity CI/CD tab.
+ * Component for the catalog entity CI/CD tab (legacy frontend system).
  *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const TektonCI = tektonPlugin.provide(
   createComponentExtension({
     name: 'TektonCI',
     component: {
-      lazy: () => import('./components/Router').then(m => m.Router),
+      lazy: () => import('../components/Router').then(m => m.Router),
     },
   }),
 );

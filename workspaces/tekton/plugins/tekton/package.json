@@ -9,14 +9,18 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./alpha": "./src/alpha.tsx",
+    "./alpha": "./src/alpha.ts",
+    "./legacy": "./src/legacy.ts",
     "./translations": "./src/translations/index.ts",
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "alpha": [
-        "src/alpha.tsx"
+        "src/alpha.ts"
+      ],
+      "legacy": [
+        "src/legacy.ts"
       ],
       "translations": [
         "src/translations/index.ts"
@@ -42,6 +46,7 @@
   ],
   "scripts": {
     "start": "backstage-cli package start",
+    "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test --passWithNoTests --coverage",
@@ -90,19 +95,38 @@
     "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "^0.36.3",
     "@backstage/dev-utils": "^1.1.24",
+    "@backstage/frontend-defaults": "^0.5.3",
+    "@backstage/frontend-test-utils": "^0.6.1",
+    "@backstage/plugin-catalog": "^2.0.6",
+    "@backstage/plugin-permission-common": "^0.9.9",
+    "@backstage/plugin-user-settings": "^0.9.4",
     "@backstage/test-utils": "^1.7.19",
+    "@backstage/ui": "^0.16.0",
     "@playwright/test": "1.61.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/dagre": "^0.7.52",
     "@types/lodash": "4.17.24",
-    "cross-fetch": "4.1.0"
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "cross-fetch": "4.1.0",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2",
+    "react-router-dom": "^6.30.2"
   },
   "files": [
     "app-config.dynamic.yaml",
     "dist"
   ],
+  "scalprum": {
+    "name": "backstage-community.plugin-tekton",
+    "exposedModules": {
+      "PluginRoot": "./src/index.ts",
+      "Legacy": "./src/legacy.ts",
+      "Alpha": "./src/alpha.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/backstage/community-plugins",
