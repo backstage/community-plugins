@@ -21,6 +21,7 @@ import {
 } from '@backstage/core-components';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import { useApi } from '@backstage/core-plugin-api';
+import { useMemo } from 'react';
 import {
   EntityRefLink,
   useEntity,
@@ -132,16 +133,21 @@ export const CheckmarxRelatedEntitiesOverview = (
     kind: props.entityKind,
   });
 
-  const enabledEntities = (entities ?? []).filter(isCheckmarxAvailable);
+  const enabledEntities = useMemo(
+    () => (entities ?? []).filter(isCheckmarxAvailable),
+    [entities],
+  );
 
   const {
     value: summaries,
     loading: loadingSummaries,
     error: summaryError,
-  } = useAsync(
-    async () => api.getEntitySummaries(enabledEntities),
-    [api, enabledEntities],
-  );
+  } = useAsync(async () => {
+    if (loadingEntities) {
+      return undefined;
+    }
+    return api.getEntitySummaries(enabledEntities);
+  }, [api, enabledEntities, loadingEntities]);
 
   if (loadingEntities || loadingSummaries) {
     return <Progress />;
