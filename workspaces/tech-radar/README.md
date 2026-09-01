@@ -1,9 +1,19 @@
-# Tech Radar plugins for Backstage
+# [Backstage](https://backstage.io)
 
-This workspace contains plugins for visualizing technology guidelines across areas such as programming languages, frameworks, infrastructure, and processes, inspired by [Zalando's Tech Radar](https://opensource.zalando.com/tech-radar/), open sourced on [GitHub](https://github.com/zalando/tech-radar).
+This is your newly scaffolded Backstage App, Good Luck!
 
-## Plugins
+## How to run
 
-- [tech-radar](./plugins/tech-radar/README.md) - A frontend plugin for displaying the Tech Radar in Backstage.
-- [tech-radar-backend](./plugins/tech-radar-backend/README.md) - An optional backend plugin for loading Tech Radar data from a URL.
-- [tech-radar-common](./plugins/tech-radar-common/README.md) - Common types and utilities shared by the Tech Radar plugins.
+The Tech Radar workspace uses the plugin dev app as the primary testing mechanism. You can start the new frontend system (NFS) or the legacy frontend system.
+
+### New frontend system (default)
+
+- Run `yarn install`
+- Run `yarn start`
+
+This starts the NFS frontend plugin together with the Tech Radar backend plugin.
+
+### Legacy frontend system
+
+- Run `yarn install`
+- Run `yarn start:legacy`
