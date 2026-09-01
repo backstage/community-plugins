@@ -14,31 +14,6 @@
  * limitations under the License.
  */
 
-.listItem {
-  display: flex;
-  align-items: center;
-  padding: var(--bui-space-2) 0;
-}
-
-.listItemIcon {
-  min-width: 40px;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.listItemText {
-  flex: 1;
-  cursor: pointer;
-}
-
-.listItemAction {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
 .validationOk {
   color: var(--bui-fg-success, #1a7f5a);
 }

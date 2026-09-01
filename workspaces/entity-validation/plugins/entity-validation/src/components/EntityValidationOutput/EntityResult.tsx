@@ -17,7 +17,7 @@ import { useState } from 'react';
 import type { ComponentType } from 'react';
 import { ValidateEntityResponse } from '@backstage/catalog-client';
 import { useApp } from '@backstage/core-plugin-api';
-import { Box, ButtonIcon, Flex } from '@backstage/ui';
+import { Box, ButtonIcon, Flex, ListRow } from '@backstage/ui';
 import { EntityDisplayName } from '@backstage/plugin-catalog-react';
 import { safeEntityKind } from './safeEntityDisplayName';
 import { RiArrowUpSLine, RiArrowDownSLine } from '@remixicon/react';
@@ -48,53 +48,47 @@ export const EntityResult = ({
     return '';
   };
 
+  const entityId = `${item.entity.kind}:${
+    item.entity.metadata.namespace ?? 'default'
+  }/${item.entity.metadata.name}`;
+
   return (
-    <>
-      <li className={styles.listItem}>
-        <Flex className={styles.listItemIcon}>
-          {Icon && (
-            <Icon
-              className={
-                item.response.valid
-                  ? styles.validationOk
-                  : styles.validationNotOk
-              }
-            />
-          )}
-        </Flex>
-        <div
-          className={styles.listItemText}
-          role="button"
-          tabIndex={0}
-          onClick={() => setExpanded(!expanded)}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') setExpanded(!expanded);
-          }}
-        >
-          <EntityDisplayName entityRef={item.entity} />
-        </div>
-        {!item.response.valid && (
-          <Flex className={styles.listItemAction}>
-            <ButtonIcon
-              aria-label={expanded ? 'collapse' : 'expand'}
-              onPress={() => setExpanded(!expanded)}
-              icon={
-                expanded ? (
-                  <RiArrowUpSLine size={20} />
-                ) : (
-                  <RiArrowDownSLine size={20} />
-                )
-              }
-              variant="secondary"
-            />
-          </Flex>
+    <ListRow
+      id={entityId}
+      icon={
+        Icon ? (
+          <Icon
+            className={
+              item.response.valid ? styles.validationOk : styles.validationNotOk
+            }
+          />
+        ) : undefined
+      }
+      customActions={
+        !item.response.valid ? (
+          <ButtonIcon
+            aria-label={expanded ? 'collapse' : 'expand'}
+            onPress={() => setExpanded(!expanded)}
+            icon={
+              expanded ? (
+                <RiArrowUpSLine size={20} />
+              ) : (
+                <RiArrowDownSLine size={20} />
+              )
+            }
+            variant="secondary"
+          />
+        ) : undefined
+      }
+    >
+      <Flex direction="column">
+        <EntityDisplayName entityRef={item.entity} />
+        {!item.response.valid && expanded && (
+          <Box className={styles.errorContainer}>
+            <MarkdownContent content={fetchErrorMessages(item.response)} />
+          </Box>
         )}
-      </li>
-      {!item.response.valid && expanded && (
-        <Box className={styles.errorContainer}>
-          <MarkdownContent content={fetchErrorMessages(item.response)} />
-        </Box>
-      )}
-    </>
+      </Flex>
+    </ListRow>
   );
 };

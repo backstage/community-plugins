@@ -374,8 +374,6 @@ __metadata:
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/legacy-modes": "npm:^6.1.0"
     "@codemirror/view": "npm:^6.0.0"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/lab": "npm:4.0.0-alpha.61"
     "@react-hookz/web": "npm:^25.0.0"
     "@remixicon/react": "npm:^4.9.0"
     "@testing-library/jest-dom": "npm:^6.0.0"

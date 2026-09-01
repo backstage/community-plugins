@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 .emptyState {
   padding: var(--bui-space-4);
 }

@@ -16,10 +16,9 @@
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { safeEntityDisplayName } from './safeEntityDisplayName';
-import { Box, Text } from '@backstage/ui';
+import { Alert, Box, List, Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { InfoCard, Progress } from '@backstage/core-components';
-import Alert from '@material-ui/lab/Alert';
 import {
   CatalogProcessorResult,
   ValidationOutput,
@@ -109,9 +108,7 @@ export const EntityValidationOutput = ({
     return (
       <>
         {errors.map((err, i) => (
-          <Alert key={i} severity="error">
-            {err.processingError}
-          </Alert>
+          <Alert key={i} status="danger" title={err.processingError} />
         ))}
       </>
     );
@@ -127,7 +124,7 @@ export const EntityValidationOutput = ({
         </Box>
       ) : (
         <>
-          <ul className={styles.list}>
+          <List aria-label="validation results">
             {results.map((item, key) => (
               <EntityResult
                 key={key}
@@ -135,7 +132,7 @@ export const EntityValidationOutput = ({
                 isFirstError={key === firstErrorIndex}
               />
             ))}
-          </ul>
+          </List>
           <Box className={styles.summary}>
             {results.every(r => r.response.valid) ? (
               <Text variant="body-medium" className={styles.validationOk}>
