@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-import { memo, useEffect, useRef, useState } from 'react';
-import { Button } from '@backstage/ui';
+import { memo, useEffect, useState } from 'react';
+import { Button, DialogTrigger, Popover } from '@backstage/ui';
 import { isValid } from 'date-fns';
 import { find, get } from 'lodash';
 import styles from './SelectWindow.module.css';
 
 const SelectWindow = ({ windowOptions, window, setWindow }) => {
   const [open, setOpen] = useState(false);
-  const popoverRef = useRef(null);
-  const triggerRef = useRef(null);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [intervalString, setIntervalString] = useState(null);
 
-  const handleClick = () => {
-    setOpen(prev => !prev);
+  const handleSubmitPresetDates = dateString => {
+    setWindow(dateString);
+    setStartDate(null);
+    setEndDate(null);
+    setOpen(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleSubmitCustomDates = () => {
+    if (intervalString !== null) {
+      setWindow(intervalString);
+      setOpen(false);
+    }
   };
 
   const handleStartDateChange = e => {
@@ -61,20 +65,6 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
     }
   };
 
-  const handleSubmitPresetDates = dateString => {
-    setWindow(dateString);
-    setStartDate(null);
-    setEndDate(null);
-    handleClose();
-  };
-
-  const handleSubmitCustomDates = () => {
-    if (intervalString !== null) {
-      setWindow(intervalString);
-      handleClose();
-    }
-  };
-
   useEffect(() => {
     if (startDate !== null && endDate !== null) {
       // Note: getTimezoneOffset() is calculated based on current system locale, NOT date object
@@ -91,23 +81,6 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
     }
   }, [startDate, endDate]);
 
-  // Close popover when clicking outside
-  useEffect(() => {
-    const handleOutsideClick = e => {
-      if (
-        open &&
-        popoverRef.current &&
-        !popoverRef.current.contains(e.target) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(e.target)
-      ) {
-        handleClose();
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [open]);
-
   const windowLabel = get(
     find(windowOptions, { value: window }),
     'name',
@@ -115,22 +88,11 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
   );
 
   return (
-    <div className={styles.popoverWrapper}>
-      <div className={styles.windowFieldWrapper} ref={triggerRef}>
-        <label className={styles.windowLabel} htmlFor="window-field">
-          Date Range
-        </label>
-        <input
-          id="window-field"
-          className={styles.windowField}
-          readOnly
-          value={windowLabel}
-          onClick={handleClick}
-          aria-haspopup="true"
-        />
-      </div>
-      {open && (
-        <div className={styles.popover} ref={popoverRef}>
+    <div className={styles.windowFieldWrapper}>
+      <span className={styles.windowLabel}>Date Range</span>
+      <DialogTrigger isOpen={open} onOpenChange={setOpen}>
+        <Button className={styles.windowField}>{windowLabel}</Button>
+        <Popover placement="bottom left" hideArrow>
           <div className={styles.dateContainer}>
             <div className={styles.dateContainerColumn}>
               <div>
@@ -181,8 +143,8 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
               ))}
             </div>
           </div>
-        </div>
-      )}
+        </Popover>
+      </DialogTrigger>
     </div>
   );
 };

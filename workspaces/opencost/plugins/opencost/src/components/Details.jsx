@@ -16,7 +16,7 @@
 
 import { memo, useEffect, useState } from 'react';
 import { forEach, get, reverse, round, sortBy } from 'lodash';
-import { CellText, Flex, Skeleton, Table, Text } from '@backstage/ui';
+import { CellText, List, ListRow, Skeleton, Table, Text } from '@backstage/ui';
 import { RiServerLine, RiCpuLine } from '@remixicon/react';
 import Warnings from './Warnings';
 import AllocationService from '../services/allocation';
@@ -186,34 +186,20 @@ const Details = ({
         </div>
       )}
 
-      <Flex direction="column" style={{ marginBottom: 'var(--bui-space-2)' }}>
-        {cluster && (
-          <Flex
-            direction="row"
-            style={{
-              alignItems: 'center',
-              gap: 'var(--bui-space-3)',
-              padding: 'var(--bui-space-2) 0',
-            }}
-          >
-            <RiServerLine size={20} />
-            <Text>{cluster}</Text>
-          </Flex>
-        )}
-        {node && (
-          <Flex
-            direction="row"
-            style={{
-              alignItems: 'center',
-              gap: 'var(--bui-space-3)',
-              padding: 'var(--bui-space-2) 0',
-            }}
-          >
-            <RiCpuLine size={20} />
-            <Text>{node}</Text>
-          </Flex>
-        )}
-      </Flex>
+      {(cluster || node) && (
+        <List aria-label="Cluster details" selectionMode="none">
+          {cluster && (
+            <ListRow id="cluster" icon={<RiServerLine size={20} />}>
+              {cluster}
+            </ListRow>
+          )}
+          {node && (
+            <ListRow id="node" icon={<RiCpuLine size={20} />}>
+              {node}
+            </ListRow>
+          )}
+        </List>
+      )}
       <Table
         columnConfig={[
           {

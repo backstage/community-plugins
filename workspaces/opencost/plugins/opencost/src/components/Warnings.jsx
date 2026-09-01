@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { Card, CardBody } from '@backstage/ui';
+import { Card, CardBody, List, ListRow } from '@backstage/ui';
 import { RiAlertLine } from '@remixicon/react';
-import styles from './Warnings.module.css';
 
 const Warnings = ({ warnings }) => {
   if (!warnings || warnings.length === 0) {
@@ -26,23 +25,21 @@ const Warnings = ({ warnings }) => {
   return (
     <Card>
       <CardBody>
-        <ul className={styles.list}>
-          {warnings.map((warn, i) => (
-            <li key={i} className={styles.listItem}>
-              <div className={styles.listItemIcon}>
-                <RiAlertLine size={20} />
-              </div>
-              <div className={styles.listItemText}>
-                <div className={styles.listItemPrimary}>{warn.primary}</div>
-                {warn.secondary && (
-                  <div className={styles.listItemSecondary}>
-                    {warn.secondary}
-                  </div>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <List
+          aria-label="Warnings"
+          items={warnings.map((warn, i) => ({ ...warn, id: String(i) }))}
+          selectionMode="none"
+        >
+          {item => (
+            <ListRow
+              id={item.id}
+              icon={<RiAlertLine size={20} />}
+              description={item.secondary}
+            >
+              {item.primary}
+            </ListRow>
+          )}
+        </List>
       </CardBody>
     </Card>
   );

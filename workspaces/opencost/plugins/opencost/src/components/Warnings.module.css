@@ -14,38 +14,3 @@
  * limitations under the License.
  */
 
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.listItem {
-  display: flex;
-  align-items: flex-start;
-  padding: var(--bui-space-2) var(--bui-space-4);
-}
-
-.listItemIcon {
-  min-width: 40px;
-  display: flex;
-  align-items: center;
-  color: var(--bui-fg-warning, #f59e0b);
-  padding-top: 2px;
-}
-
-.listItemText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--bui-space-1);
-}
-
-.listItemPrimary {
-  color: var(--bui-fg-primary);
-  font-size: var(--bui-font-size-2);
-}
-
-.listItemSecondary {
-  color: var(--bui-fg-secondary);
-  font-size: var(--bui-font-size-1);
-}
