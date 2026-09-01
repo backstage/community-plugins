@@ -101,7 +101,7 @@
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/react-hooks": "8.0.1",
-    "@testing-library/user-event": "14.6.1",
+    "@testing-library/user-event": "14.6.3",
     "@types/autosuggest-highlight": "3.2.3",
     "@types/node": "22.20.1",
     "@types/react": "^18.3.11",
