@@ -1,5 +1,18 @@
 # @backstage-community/plugin-tekton
 
+## 3.41.1
+
+### Patch Changes
+
+- f805ea0: Added spacing to the pipeline run log viewer dialog between the task sidebar and log content area
+- 4b8f04b: Hide the CI/CD tab on entity pages when the tekton annotation is not present
+
+## 3.41.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
 ## 3.40.1
 
 ### Patch Changes

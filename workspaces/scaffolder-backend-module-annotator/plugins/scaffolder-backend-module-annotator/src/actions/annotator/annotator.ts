@@ -26,6 +26,7 @@ import { getObjectToAnnotate } from '../../utils/getObjectToAnnotate';
 import { resolveSpec } from '../../utils/resolveSpec';
 import { resolveAnnotation } from '../../utils/resolveAnnotation';
 import { Value } from '../../types';
+import { examples as defaultAnnotateExamples } from './annotator.examples';
 
 /**
  * @public
@@ -45,10 +46,12 @@ export const createAnnotatorAction = (
 ) => {
   return createTemplateAction({
     id: actionId,
-    examples,
+    examples:
+      examples ??
+      (actionId === 'catalog:annotate' ? defaultAnnotateExamples : undefined),
     description:
       actionDescription ||
-      'Creates a new scaffolder action to annotate the entity object with specified label(s), annotation(s) and spec property(ies).',
+      'Annotates the entity object with specified label(s), annotation(s) and spec property(ies).',
     schema: {
       input: {
         labels: z =>

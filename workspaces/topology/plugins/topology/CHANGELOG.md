@@ -1,5 +1,24 @@
 # @backstage-community/plugin-topology
 
+## 2.16.3
+
+### Patch Changes
+
+- f396218: Updated dependency `js-yaml` to `^5.0.0`.
+
+## 2.16.2
+
+### Patch Changes
+
+- a3b2bd8: Fixed pod tooltip so it appears when hovering anywhere on the pod and stays visible together with the node hover shadow.
+
+## 2.16.1
+
+### Patch Changes
+
+- efe2c6d: Updated dependency `@playwright/test` to `1.62.1`.
+- dc925a3: Updated dependency `react-router-dom` to `^6.30.5`.
+
 ## 2.16.0
 
 ### Minor Changes

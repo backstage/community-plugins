@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-jfrog-artifactory",
-  "version": "1.30.2",
+  "version": "1.31.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -42,11 +42,11 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.9.0",
-    "@backstage/core-components": "^0.18.11",
-    "@backstage/core-plugin-api": "^1.12.7",
-    "@backstage/plugin-catalog-react": "^3.1.0",
-    "@backstage/ui": "^0.16.0",
+    "@backstage/catalog-model": "^1.10.0",
+    "@backstage/core-components": "^0.18.13",
+    "@backstage/core-plugin-api": "^1.12.9",
+    "@backstage/plugin-catalog-react": "^3.2.2",
+    "@backstage/ui": "^0.17.1",
     "filesize": "^11.0.0",
     "luxon": "^3.6.1",
     "react-use": "^17.4.0"
@@ -57,9 +57,9 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
-    "@backstage/cli": "^0.36.3",
-    "@backstage/dev-utils": "^1.1.24",
-    "@backstage/test-utils": "^1.7.19",
+    "@backstage/cli": "^0.36.5",
+    "@backstage/dev-utils": "^1.1.26",
+    "@backstage/test-utils": "^1.7.21",
     "@playwright/test": "1.61.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

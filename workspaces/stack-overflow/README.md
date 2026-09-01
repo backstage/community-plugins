@@ -1,10 +1,8 @@
-# [Backstage](https://backstage.io)
+# Stack Overflow
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for integrating Stack Overflow content into Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [stack-overflow](./plugins/stack-overflow/README.md): Frontend plugin that surfaces Stack Overflow questions in search results and on the homepage.
+- [stack-overflow-backend](./plugins/stack-overflow-backend/README.md): Deprecated backend plugin. Use `@backstage/plugin-search-backend-module-stack-overflow-collator` instead.

@@ -22,14 +22,83 @@ import '@backstage/ui/css/styles.css';
 import { createApp } from '@backstage/frontend-defaults';
 import ReactDOM from 'react-dom/client';
 
-import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { SignInPage } from '@backstage/core-components';
+import { OAuth2 } from '@backstage/core-app-api';
+import {
+  ApiBlueprint,
+  configApiRef,
+  createApiFactory,
+  createApiRef,
+  createFrontendModule,
+  discoveryApiRef,
+  oauthRequestApiRef,
+  type BackstageIdentityApi,
+  type OAuthApi,
+  type OpenIdConnectApi,
+  type ProfileInfoApi,
+  type SessionApi,
+} from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 
 import rbacPlugin, { rbacTranslationsModule } from '../src';
 import { devSidebarContent } from './shared';
 
+const oidcAuthApiRef = createApiRef<
+  OAuthApi &
+    OpenIdConnectApi &
+    ProfileInfoApi &
+    BackstageIdentityApi &
+    SessionApi
+>().with({ id: 'internal.auth.oidc' });
+
 const devNavModule = createFrontendModule({
   pluginId: 'app',
-  extensions: [devSidebarContent],
+  extensions: [
+    devSidebarContent,
+
+    ApiBlueprint.make({
+      name: 'oidc-auth',
+      params: defineParams =>
+        defineParams(
+          createApiFactory({
+            api: oidcAuthApiRef,
+            deps: {
+              discoveryApi: discoveryApiRef,
+              oauthRequestApi: oauthRequestApiRef,
+              configApi: configApiRef,
+            },
+            factory: ({ discoveryApi, oauthRequestApi, configApi }) =>
+              OAuth2.create({
+                configApi,
+                discoveryApi,
+                oauthRequestApi,
+                provider: { id: 'oidc', title: 'OIDC', icon: () => null },
+              }),
+          }),
+        ),
+    }),
+
+    SignInPageBlueprint.make({
+      params: {
+        loader: async () => props => (
+          <SignInPage
+            {...props}
+            providers={[
+              'guest',
+              {
+                id: 'oidc',
+                title: 'Keycloak OIDC',
+                message: 'Sign in with Keycloak (multi-user testing)',
+                apiRef: oidcAuthApiRef,
+              },
+            ]}
+            title="Select a sign-in method"
+            align="center"
+          />
+        ),
+      },
+    }),
+  ],
 });
 
 const defaultPage = '/rbac';

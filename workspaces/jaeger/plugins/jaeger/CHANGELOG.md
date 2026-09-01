@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jaeger
 
+## 0.18.1
+
+### Patch Changes
+
+- 8a04a5c: Added New Frontend System support. The plugin can now be used with the new frontend system using package discovery or by importing from the `/alpha` entrypoint.
+
 ## 0.18.0
 
 ### Minor Changes

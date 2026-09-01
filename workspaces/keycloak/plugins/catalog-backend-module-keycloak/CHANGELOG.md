@@ -1,5 +1,25 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.22.1
+
+### Patch Changes
+
+- 040750f: Add contributor guides, dev harnesses, and bump-trust test coverage for the Keycloak auth and catalog backend modules.
+
+  - Auth: `dev/` harness, module wiring and auth↔catalog sanitization contract tests
+  - Catalog: transformer extension-point, schedule contract, batch-failure metrics, and `ensureTokenValid` tests
+  - Workspace: README index and CONTRIBUTING guides with validation/smoke checklists
+
+## 3.22.0
+
+### Minor Changes
+
+- 70d7508: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 936f69a: Updated dependency `@keycloak/keycloak-admin-client` to `26.7.0`.
+
 ## 3.21.0
 
 ### Minor Changes

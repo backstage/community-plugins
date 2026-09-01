@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-linguist-common",
-  "version": "0.22.0",
+  "version": "0.24.0",
   "description": "Common functionalities for the linguist plugin",
   "backstage": {
     "role": "common-library",
@@ -37,6 +37,9 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "test": "backstage-cli package test"
+  },
+  "dependencies": {
+    "@backstage/plugin-permission-common": "backstage:^"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"
