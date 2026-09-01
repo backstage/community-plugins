@@ -15,7 +15,6 @@
  */
 export { tektonPlugin, TektonCI } from './plugin';
 export { isTektonCIAvailable } from './utils/isTektonCIAvailable';
-export {
-  tektonTranslations,
-  tektonTranslationRef,
-} from './translations/index.ts';
+export { tektonTranslations, tektonTranslationRef } from './translations';
+
+export { default as tektonTranslationsModule } from './translations';

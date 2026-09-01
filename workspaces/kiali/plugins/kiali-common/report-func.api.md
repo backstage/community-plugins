@@ -271,6 +271,11 @@ export function getWizardUpdateLabel(
 export const globalChecks: (object: ObjectValidation) => ObjectCheck[];
 
 // @public
+export const groupIstioConfigByNamespace: (
+  response: unknown,
+) => Map<string, IstioConfigList>;
+
+// @public
 export function guardTimeRange<T>(
   range: TimeRange,
   ifDuration: (d: DurationInSeconds) => T,
@@ -418,6 +423,11 @@ export type NamespaceWorkloadHealth = {
   [workload: string]: WorkloadHealth;
 };
 
+// @public
+export const normalizeConfigValidations: (
+  response: unknown,
+) => ValidationsByClusterAndNamespace;
+
 // @public (undocumented)
 export const nsWideMTLSStatus: (nsStatus: string, meshStatus: string) => string;
 
@@ -543,6 +553,12 @@ export const transformEdgeResponses: (
 
 // @public (undocumented)
 export function validationKey(name: string, namespace?: string): string;
+
+// @public (undocumented)
+export type ValidationsByClusterAndNamespace = Map<
+  string,
+  Map<string, ValidationStatus>
+>;
 
 // @public (undocumented)
 export const validationToHealth: (severity: ValidationTypes) => Status;

@@ -21,10 +21,6 @@ import {
 } from '@backstage-community/plugin-kiali-common/types';
 import { serverConfig } from '../../../config';
 import { DirectionType } from '../OverviewToolbar';
-import {
-  isRemoteCluster,
-  OverviewCardControlPlaneNamespace,
-} from './OverviewCardControlPlaneNamespace';
 import { OverviewCardDataPlaneNamespace } from './OverviewCardDataPlaneNamespace';
 
 type Props = {
@@ -45,31 +41,17 @@ export const OverviewCardSparklineCharts = (props: Props) => {
     return <div>Loading...</div>;
   }
 
+  // Control plane cards no longer render sparkline charts; keep parity with data plane card size.
+  if (props.name === serverConfig.istioNamespace) {
+    return null;
+  }
+
   return (
-    <>
-      {props.name !== serverConfig.istioNamespace && (
-        <OverviewCardDataPlaneNamespace
-          metrics={props.metrics}
-          errorMetrics={props.errorMetrics}
-          duration={props.duration}
-          direction={props.direction}
-        />
-      )}
-      {props.name === serverConfig.istioNamespace &&
-        props.istioAPIEnabled &&
-        !isRemoteCluster(props.annotations) && (
-          <OverviewCardControlPlaneNamespace
-            pilotLatency={props.controlPlaneMetrics?.istiod_proxy_time}
-            istiodContainerMemory={
-              props.controlPlaneMetrics?.istiod_container_mem
-            }
-            istiodContainerCpu={props.controlPlaneMetrics?.istiod_container_cpu}
-            istiodProcessMemory={props.controlPlaneMetrics?.istiod_process_mem}
-            istiodProcessCpu={props.controlPlaneMetrics?.istiod_process_cpu}
-            duration={props.duration}
-            istiodResourceThresholds={props.istiodResourceThresholds}
-          />
-        )}
-    </>
+    <OverviewCardDataPlaneNamespace
+      metrics={props.metrics}
+      errorMetrics={props.errorMetrics}
+      duration={props.duration}
+      direction={props.direction}
+    />
   );
 };

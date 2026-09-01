@@ -39,7 +39,10 @@ import {
   FeedbackResponseDialog,
 } from '../FeedbackResponseDialog';
 
-export enum FeedbackRatings {
+/**
+ * @public
+ */
+export enum LikeDislikeFeedbackRatings {
   like = 'LIKE',
   dislike = 'DISLIKE',
   neutral = 'NEUTRAL',
@@ -54,6 +57,9 @@ export interface LikeDislikeButtonsProps {
   requestResponse?: boolean;
 }
 
+/**
+ * @public
+ */
 export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
   const {
     feedbackDialogResponses,
@@ -63,8 +69,8 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
   const errorApi = useApi(errorApiRef);
   const feedbackApi = useApi(entityFeedbackApiRef);
   const identityApi = useApi(identityApiRef);
-  const [rating, setRating] = useState<FeedbackRatings>(
-    FeedbackRatings.neutral,
+  const [rating, setRating] = useState<LikeDislikeFeedbackRatings>(
+    LikeDislikeFeedbackRatings.neutral,
   );
   const [openFeedbackDialog, setOpenFeedbackDialog] = useState(false);
   const { entity, loading: loadingEntity } = useAsyncEntity();
@@ -82,7 +88,7 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
       );
       setRating(
         (prevFeedback.find(r => r.userRef === identity.userEntityRef)?.rating ??
-          rating) as FeedbackRatings,
+          rating) as LikeDislikeFeedbackRatings,
       );
     } catch (e) {
       errorApi.post(e as ErrorApiError);
@@ -90,7 +96,7 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
   }, [entity, feedbackApi, setRating]);
 
   const [{ loading: savingFeedback }, saveFeedback] = useAsyncFn(
-    async (feedback: FeedbackRatings) => {
+    async (feedback: LikeDislikeFeedbackRatings) => {
       try {
         await feedbackApi.recordRating(stringifyEntityRef(entity!), feedback);
         setRating(feedback);
@@ -102,15 +108,15 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
   );
 
   const applyRating = useCallback(
-    (feedback: FeedbackRatings) => {
+    (feedback: LikeDislikeFeedbackRatings) => {
       // Clear rating if feedback is same as current
       if (feedback === rating) {
-        saveFeedback(FeedbackRatings.neutral);
+        saveFeedback(LikeDislikeFeedbackRatings.neutral);
         return;
       }
 
       saveFeedback(feedback);
-      if (feedback === FeedbackRatings.dislike && requestResponse) {
+      if (feedback === LikeDislikeFeedbackRatings.dislike && requestResponse) {
         setOpenFeedbackDialog(true);
       }
     },
@@ -125,9 +131,9 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
     <>
       <IconButton
         data-testid="entity-feedback-like-button"
-        onClick={() => applyRating(FeedbackRatings.like)}
+        onClick={() => applyRating(LikeDislikeFeedbackRatings.like)}
       >
-        {rating === FeedbackRatings.like ? (
+        {rating === LikeDislikeFeedbackRatings.like ? (
           <Tooltip title="Liked">
             <ThumbUpIcon fontSize="small" />
           </Tooltip>
@@ -139,9 +145,9 @@ export const LikeDislikeButtons = (props: LikeDislikeButtonsProps) => {
       </IconButton>
       <IconButton
         data-testid="entity-feedback-dislike-button"
-        onClick={() => applyRating(FeedbackRatings.dislike)}
+        onClick={() => applyRating(LikeDislikeFeedbackRatings.dislike)}
       >
-        {rating === FeedbackRatings.dislike ? (
+        {rating === LikeDislikeFeedbackRatings.dislike ? (
           <Tooltip title="Disliked">
             <ThumbDownIcon fontSize="small" />
           </Tooltip>

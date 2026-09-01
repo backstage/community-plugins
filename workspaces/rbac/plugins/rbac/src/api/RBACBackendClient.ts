@@ -51,6 +51,10 @@ export type RBACAPI = {
     page?: number,
     pageSize?: number,
   ) => Promise<MemberEntity[] | Response>;
+  getMembersByRefs: (
+    entityRefs: string[],
+  ) => Promise<(MemberEntity | undefined)[] | Response>;
+  searchMembers: (searchTerm: string) => Promise<MemberEntity[] | Response>;
   listPermissions: () => Promise<PluginPermissionMetaData[] | Response>;
   createRole: (role: Role) => Promise<RoleError | Response>;
   updateRole: (oldRole: Role, newRole: Role) => Promise<RoleError | Response>;
@@ -218,6 +222,78 @@ export class RBACBackendClient implements RBACAPI {
       return jsonResponse;
     }
     return jsonResponse.json();
+  }
+
+  async getMembersByRefs(entityRefs: string[]) {
+    if (entityRefs.length === 0) {
+      return [];
+    }
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const backendUrl = this.configApi.getString('backend.baseUrl');
+    const batchSize = 2000;
+    const results: (MemberEntity | undefined)[] = [];
+
+    for (let i = 0; i < entityRefs.length; i += batchSize) {
+      const batch = entityRefs.slice(i, i + batchSize);
+      const jsonResponse = await fetch(
+        `${backendUrl}/api/catalog/entities/by-refs`,
+        {
+          method: 'POST',
+          headers: {
+            ...(idToken && { Authorization: `Bearer ${idToken}` }),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            entityRefs: batch,
+            fields: [
+              'metadata.name',
+              'metadata.namespace',
+              'metadata.etag',
+              'kind',
+              'spec.profile',
+              'spec.members',
+              'relations',
+            ],
+          }),
+        },
+      );
+      if (jsonResponse.status !== 200 && jsonResponse.status !== 204) {
+        return jsonResponse;
+      }
+      const data = await jsonResponse.json();
+      results.push(...(data.items as (MemberEntity | undefined)[]));
+    }
+
+    return results;
+  }
+
+  async searchMembers(searchTerm: string) {
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const backendUrl = this.configApi.getString('backend.baseUrl');
+    const params = new URLSearchParams();
+    params.append('filter', 'kind=user');
+    params.append('filter', 'kind=group');
+    params.append('limit', '100');
+    params.append('orderField', 'metadata.name,asc');
+    if (searchTerm.trim()) {
+      params.append('fullTextFilterTerm', searchTerm.trim());
+      params.append('fullTextFilterFields', 'metadata.name');
+      params.append('fullTextFilterFields', 'spec.profile.displayName');
+    }
+    const jsonResponse = await fetch(
+      `${backendUrl}/api/catalog/entities/by-query?${params.toString()}`,
+      {
+        headers: {
+          ...(idToken && { Authorization: `Bearer ${idToken}` }),
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    if (jsonResponse.status !== 200 && jsonResponse.status !== 204) {
+      return jsonResponse;
+    }
+    const data = await jsonResponse.json();
+    return data.items as MemberEntity[];
   }
 
   async listPermissions() {

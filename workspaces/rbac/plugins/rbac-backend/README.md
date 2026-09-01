@@ -6,6 +6,8 @@ The Backstage permission framework is a core component of the Backstage project,
 
 With the RBAC plugin, you'll have the means to efficiently administer permissions within your Backstage instance by assigning them to users and groups.
 
+For local development and CI commands, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Prerequisites
 
 Before you dive into utilizing the RBAC plugin for Backstage, there are a few essential prerequisites to ensure a seamless experience. Please review the following requirements to make sure your environment is properly set up
@@ -87,6 +89,35 @@ permission:
 > **Note:** **Transient memberships are not supported for `superUsers`.** Meaning, when a group is specified as a super user, only direct group memberships are taken into account. Users who belong to a sub-group of a configured super user group will not be granted super user access.
 
 For more information on the available API endpoints accessible to the policy administrators, refer to the [API documentation](./docs/apis.md).
+
+### Use ownership entity refs for role membership
+
+When users sign in without catalog `memberOf` relations (for example, via a custom sign-in resolver that issues ownership entity refs in the token), you can enable `useOwnershipEntityRefs` so group-to-role bindings are evaluated from those token claims in addition to catalog membership.
+
+> **Warning:** When this option is enabled, RBAC trusts the ownership entity refs issued by the sign-in resolver when resolving direct role bindings. Ensure that the resolver only includes user and group refs that the authenticated user is authorized to claim, because an incorrect group ref could grant that group's permissions.
+
+```YAML
+permission:
+  rbac:
+    useOwnershipEntityRefs: true
+```
+
+With this enabled, a user whose sign-in resolver issues:
+
+```ts
+ctx.issueToken({
+  claims: {
+    sub: 'user:default/john.doe',
+    ent: ['user:default/john.doe', 'group:default/oncall'],
+  },
+});
+```
+
+will receive roles bound to `group:default/oncall` via CSV policies such as `g, group:default/oncall, role:default/oncall`, even when the user has no catalog `memberOf` relation to that group.
+
+> **Note:** Only direct bindings are supported — subgroup hierarchy is not traversed, similar to `superUsers`.
+
+Ownership entity refs do not create User or Group entities in the catalog. References that do not exist in the catalog will therefore not appear in the RBAC frontend and cannot be selected there when assigning members to roles. Administrators must define bindings for those references in the CSV policy file; the YAML application configuration only enables this behavior. Groups that already exist in the catalog can still be assigned to roles through the RBAC frontend, while membership supplied by the sign-in token is resolved at runtime.
 
 ### Configure default role
 

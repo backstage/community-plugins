@@ -34,6 +34,7 @@ import { IstioStatusActions } from '../actions/IstioStatusActions';
 import { MeshTlsActions } from '../actions/MeshTlsActions';
 import { ProviderActions } from '../actions/ProviderAction';
 import { ServerConfigActions } from '../actions/ServerConfigActions';
+import { useSyncPatternFlyTheme } from '../hooks/useSyncPatternFlyTheme';
 import { KialiHelper } from '../pages/Kiali/KialiHelper';
 import { KialiNoResources } from '../pages/Kiali/KialiNoResources';
 import {
@@ -91,6 +92,7 @@ export const KialiProvider: React.FC<Props> = ({
   children,
   entity,
 }): JSX.Element => {
+  useSyncPatternFlyTheme();
   const promises = new PromisesRegistry();
   const [kialiCheck, setKialiCheck] =
     React.useState<KialiChecker>(initialChecker);

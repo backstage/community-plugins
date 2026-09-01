@@ -1,5 +1,11 @@
 # @backstage-community/plugin-linguist-common
 
+## 0.23.0
+
+### Minor Changes
+
+- 0deb115: Added Actions Registry actions (`get-entity-languages`, `process-entities`) with permission-gated access via new `linguist.entities.read` and `linguist.entities.process` permissions.
+
 ## 0.22.0
 
 ### Minor Changes

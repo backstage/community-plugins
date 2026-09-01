@@ -5,19 +5,12 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
-import { RouteRef } from '@backstage/core-plugin-api';
 
 // @public (undocumented)
 export const TopologyPage: () => JSX_2.Element;
 
 // @public (undocumented)
-export const topologyPlugin: BackstagePlugin<
-  {
-    root: RouteRef<undefined>;
-  },
-  {},
-  {}
->;
+export const topologyPlugin: BackstagePlugin<{}, {}, {}>;
 
 // (No @packageDocumentation comment for this package)
 ```
