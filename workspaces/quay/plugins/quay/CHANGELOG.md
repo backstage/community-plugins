@@ -1,5 +1,13 @@
 # @backstage-community/plugin-quay
 
+## 1.37.2
+
+### Patch Changes
+
+- 9e957a4: Added contributor guides and a local scaffolder `dev/` harness. Strengthened automated tests for backend plugin mount, router validation, shared permission contracts, and `quay:create-repository` registration.
+- Updated dependencies [9e957a4]
+  - @backstage-community/plugin-quay-common@1.22.1
+
 ## 1.37.1
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-topology
 
+## 2.16.3
+
+### Patch Changes
+
+- f396218: Updated dependency `js-yaml` to `^5.0.0`.
+
+## 2.16.2
+
+### Patch Changes
+
+- a3b2bd8: Fixed pod tooltip so it appears when hovering anywhere on the pod and stays visible together with the node hover shadow.
+
 ## 2.16.1
 
 ### Patch Changes
