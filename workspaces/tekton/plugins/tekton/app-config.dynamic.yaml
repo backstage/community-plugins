@@ -1,9 +1,14 @@
 dynamicPlugins:
   frontend:
     backstage-community.plugin-tekton:
+      translationResources:
+        - importName: tektonTranslations
+          module: Legacy
+          ref: tektonTranslationRef
       mountPoints:
         - mountPoint: entity.page.ci/cards
           importName: TektonCI
+          module: Legacy
           config:
             layout:
               gridColumn: '1 / -1'

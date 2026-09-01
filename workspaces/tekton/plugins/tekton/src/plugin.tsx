@@ -28,10 +28,14 @@ const tektonEntityContent = EntityContentBlueprint.make({
 });
 
 /**
- * The Tekton backstage NFS plugin.
- * @alpha
+ * The Tekton frontend plugin for the new frontend system.
+ *
+ * @public
  */
-export default createFrontendPlugin({
+const tektonPlugin = createFrontendPlugin({
   pluginId: 'tekton',
+  info: { packageJson: () => import('../package.json') },
   extensions: [tektonEntityContent],
 });
+
+export default tektonPlugin;
