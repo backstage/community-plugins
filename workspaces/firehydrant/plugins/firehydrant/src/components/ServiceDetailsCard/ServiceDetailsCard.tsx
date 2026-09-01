@@ -16,7 +16,7 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { ServiceAnalytics } from '../ServiceAnalytics/ServiceAnalytics';
-import { Box, Flex, Text } from '@backstage/ui';
+import { Box, ButtonLink, Flex, Text } from '@backstage/ui';
 import {
   RiExternalLinkLine,
   RiFileTextLine,
@@ -132,15 +132,14 @@ export const ServiceDetailsCard = () => {
       {showServiceDetails && (
         <Flex align="center" justify="between" className={styles.headerRow}>
           <Text variant="title-medium">{headerText}</Text>
-          <a
-            className={styles.buttonLink}
+          <ButtonLink
             href={serviceIncidentsLink}
             target="_blank"
-            rel="noopener noreferrer"
+            variant="primary"
           >
             <RiExternalLinkLine size={16} />
             View service incidents
-          </a>
+          </ButtonLink>
         </Flex>
       )}
       {activeIncidents && activeIncidents?.length > 0 && (
@@ -165,40 +164,31 @@ export const ServiceDetailsCard = () => {
         <Flex
           style={{ marginTop: 'var(--bui-space-2)', gap: 'var(--bui-space-6)' }}
         >
-          <a
-            className={styles.button}
+          <ButtonLink
             href={`${BASE_URL}/incidents/new`}
             target="_blank"
-            rel="noopener noreferrer"
+            variant="secondary"
           >
-            <span className={styles.icon}>
-              <RiAddLine size={20} />
-            </span>
-            <span>Declare an incident</span>
-          </a>
-          <a
-            className={styles.button}
+            <RiAddLine size={20} />
+            Declare an incident
+          </ButtonLink>
+          <ButtonLink
             href={`${BASE_URL}/incidents`}
             target="_blank"
-            rel="noopener noreferrer"
+            variant="secondary"
           >
-            <span className={styles.icon}>
-              <RiFireLine size={20} />
-            </span>
-            <span>View all incidents</span>
-          </a>
+            <RiFireLine size={20} />
+            View all incidents
+          </ButtonLink>
           {showServiceDetails && (
-            <a
-              className={styles.button}
+            <ButtonLink
               href={`${BASE_URL}/services/${value?.service?.id}`}
               target="_blank"
-              rel="noopener noreferrer"
+              variant="secondary"
             >
-              <span className={styles.icon}>
-                <RiFileTextLine size={20} />
-              </span>
-              <span>View Service Details</span>
-            </a>
+              <RiFileTextLine size={20} />
+              View Service Details
+            </ButtonLink>
           )}
         </Flex>
       </Box>
