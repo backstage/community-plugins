@@ -61,21 +61,19 @@ test.describe('Topology plugin', () => {
 
   test.describe('Missing permissions page', () => {
     test('shows missing permissions error', async ({}, testInfo) => {
-      test.skip(
-        isNfsAppMode(),
-        'Standalone /missing-permissions route exists only in legacy dev app',
-      );
-      await page.goto('/missing-permissions');
-      await page.reload();
+      await common.navigateToMissingPermissions();
+
+      if (isNfsAppMode()) {
+        await expect(topologyEntityTab(page)).toBeVisible();
+      }
 
       await expect(
         page.getByText(translations.permissions.missingPermission, {
           exact: true,
         }),
       ).toBeVisible({ timeout: 60000 });
-      await expect(page.getByRole('article')).toContainText(
-        'kubernetes.clusters.read, kubernetes.resources.read',
-      );
+      await expect(page.getByText('kubernetes.clusters.read')).toBeVisible();
+      await expect(page.getByText('kubernetes.resources.read')).toBeVisible();
       await expect(
         page.getByRole('button', { name: translations.permissions.goBack }),
       ).toBeVisible();
@@ -93,6 +91,13 @@ test.describe('Topology plugin', () => {
         page.getByRole('heading', { name: 'backstage' }),
       ).toBeVisible();
       await expect(topologyEntityTab(page)).toBeVisible();
+      const topology = page.locator('.pf-ri__topology');
+      await expect(topology).toBeVisible();
+      const box = await topology.boundingBox();
+      const viewport = page.viewportSize();
+      expect(box?.height).toBeGreaterThan(200);
+      expect(viewport).toBeTruthy();
+      expect(viewport!.height - (box!.y + box!.height)).toBeLessThan(120);
       const topologyToolbar = page.locator('.pf-topology-view__view-toolbar');
       await expect(
         topologyToolbar.getByRole('button', {

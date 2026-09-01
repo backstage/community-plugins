@@ -144,7 +144,6 @@ const TopologyViewWorkloadComponent = ({
           <TopologyEmptyState />
         ) : (
           <TopologyView
-            className="bs-topology-view"
             controlBar={
               !isDataModelEmpty && (
                 <TopologyControlBar controller={controller} />

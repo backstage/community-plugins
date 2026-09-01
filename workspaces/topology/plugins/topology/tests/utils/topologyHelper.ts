@@ -25,13 +25,14 @@ export function isNfsAppMode(): boolean {
 /**
  * Locator for the Topology entity tab.
  * Legacy TabbedLayout uses `header-tab-0`. NFS 1.54+ uses the BUI header nav
- * (`Content navigation` links), not `header-tab-/topology`.
+ * (`Content navigation` links). Match the `/topology` path so the locator
+ * stays valid if the tab title is translated later.
  */
 export function topologyEntityTab(page: Page) {
   if (isNfsAppMode()) {
     return page
       .getByRole('navigation', { name: 'Content navigation' })
-      .getByRole('link', { name: 'Topology', exact: true });
+      .locator('a[href$="/topology"]');
   }
   return page.getByTestId('header-tab-0');
 }
@@ -41,6 +42,16 @@ export class Common {
 
   constructor(page: Page) {
     this.page = page;
+  }
+
+  /**
+   * Webpack's error overlay iframe sits on top of the page and intercepts
+   * pointer events, so Playwright clicks never reach Sign-in / Language.
+   */
+  async dismissWebpackOverlay() {
+    await this.page.evaluate(() => {
+      document.getElementById('webpack-dev-server-client-overlay')?.remove();
+    });
   }
 
   async waitForSideBarVisible() {
@@ -68,7 +79,9 @@ export class Common {
       await dialog.accept();
     });
 
-    await this.page.getByRole('button', { name: 'Enter' }).click();
+    await this.page
+      .getByRole('button', { name: 'Enter' })
+      .click({ force: true });
     await this.waitForSideBarVisible();
   }
 
@@ -76,8 +89,12 @@ export class Common {
     if (locale !== 'en') {
       const names = new Intl.DisplayNames([locale], { type: 'language' });
       const localeString = names.of(locale) || locale;
-      await this.page.getByRole('button', { name: 'Language' }).click();
-      await this.page.getByRole('menuitem', { name: localeString }).click();
+      await this.page
+        .getByRole('button', { name: 'Language' })
+        .click({ force: true });
+      await this.page.getByRole('menuitem', { name: localeString }).click({
+        force: true,
+      });
     }
   }
 
@@ -92,6 +109,30 @@ export class Common {
     }
     await this.page.goto('/catalog/default/component/backstage/topology');
     await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
+  }
+
+  /**
+   * Opens the missing-permission Topology view. Legacy uses a standalone
+   * `/missing-permissions` page. NFS lists a `permission-denied` catalog
+   * entity; opening it and selecting the Topology tab shows the same content.
+   */
+  async navigateToMissingPermissions() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/missing-permissions');
+      return;
+    }
+
+    await this.page.goto('/catalog');
+    await this.page
+      .getByRole('row', { name: /permission-denied/ })
+      .getByRole('link')
+      .first()
+      .click();
+    await expect(
+      this.page.getByRole('heading', { name: 'permission-denied' }),
+    ).toBeVisible({ timeout: 30000 });
+    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
+    await topologyEntityTab(this.page).click();
   }
 
   async a11yCheck(testInfo: TestInfo) {

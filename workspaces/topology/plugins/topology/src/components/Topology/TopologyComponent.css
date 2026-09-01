@@ -1,9 +1,7 @@
 .pf-ri__topology {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  /* NFS entity content has no definite height, so 100% would collapse. */
-  height: calc(100vh - 16rem);
-  min-height: calc(100vh - 16rem);
 }
 
 .bs-topology-text-muted {
