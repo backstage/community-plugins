@@ -1120,6 +1120,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/core-process@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@azure/core-process@npm:1.0.0"
+  checksum: 10/760913c11b3be7b80dadd9bfbbc2c4aef32d8ba3a5b13e614241ebc6573c6b0a3ccb967cc880022451fe898682ccdbc51200255d2297034e1d2bd17969ced868
+  languageName: node
+  linkType: hard
+
 "@azure/core-rest-pipeline@npm:^1.17.0, @azure/core-rest-pipeline@npm:^1.19.1, @azure/core-rest-pipeline@npm:^1.20.0, @azure/core-rest-pipeline@npm:^1.24.0":
   version: 1.24.0
   resolution: "@azure/core-rest-pipeline@npm:1.24.0"
@@ -1165,22 +1172,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/identity@npm:4.13.1, @azure/identity@npm:^4.0.0":
-  version: 4.13.1
-  resolution: "@azure/identity@npm:4.13.1"
+"@azure/identity@npm:4.13.2, @azure/identity@npm:^4.0.0":
+  version: 4.13.2
+  resolution: "@azure/identity@npm:4.13.2"
   dependencies:
     "@azure/abort-controller": "npm:^2.0.0"
     "@azure/core-auth": "npm:^1.9.0"
     "@azure/core-client": "npm:^1.9.2"
+    "@azure/core-process": "npm:^1.0.0"
     "@azure/core-rest-pipeline": "npm:^1.17.0"
     "@azure/core-tracing": "npm:^1.0.0"
     "@azure/core-util": "npm:^1.11.0"
     "@azure/logger": "npm:^1.0.0"
     "@azure/msal-browser": "npm:^5.5.0"
-    "@azure/msal-node": "npm:^5.1.0"
+    "@azure/msal-node": "npm:^5.1.5"
     open: "npm:^10.1.0"
     tslib: "npm:^2.2.0"
-  checksum: 10/f07734f811d734d29b49ad7f8345a53d680b90d075dcd9bfbc28e2e18bda3f1688de4faf44cc4727302c9aa91c13d4444ac2de6edb88a79c99c9efc660137609
+  checksum: 10/b6ec2bde20a8f95e6415c13eecdd8eaa39d9048e637f607067691953ceb825104b018862a2e62df5e23e43e63f78efc016cbdce0bc52cddc1a4467fe7ca33334
   languageName: node
   linkType: hard
 
@@ -1203,6 +1211,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/msal-common@npm:16.13.0":
+  version: 16.13.0
+  resolution: "@azure/msal-common@npm:16.13.0"
+  checksum: 10/b9280efa0cd160bf755819bca171e13586daa624cf6afdee2e60325d146e869d9ad0df8d6fda630ff37645fdcc8fa323df91bf6c2212defb593c9366a8de16dc
+  languageName: node
+  linkType: hard
+
 "@azure/msal-common@npm:16.4.1":
   version: 16.4.1
   resolution: "@azure/msal-common@npm:16.4.1"
@@ -1210,14 +1225,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-node@npm:^5.1.0":
-  version: 5.1.2
-  resolution: "@azure/msal-node@npm:5.1.2"
+"@azure/msal-node@npm:^5.1.5":
+  version: 5.6.0
+  resolution: "@azure/msal-node@npm:5.6.0"
   dependencies:
-    "@azure/msal-common": "npm:16.4.1"
+    "@azure/msal-common": "npm:16.13.0"
     jsonwebtoken: "npm:^9.0.0"
-    uuid: "npm:^8.3.0"
-  checksum: 10/23bf45220267762c9dc9b6cba9a1cdbf09d077487400d081fb96ef7e9e7402bb055026f41402a901764caa1828d992c5a4e420444611e9b31b1fb291724e3e93
+  checksum: 10/6874002465666f415076a9a7326c4c0543f954082e84454c8dcc84812efe5ea5b9544340b844ec94b0010b2c2181bc68e7cfc4560af721c770ec05b0e2815c9b
   languageName: node
   linkType: hard
 
@@ -1680,7 +1694,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@backstage-community/plugin-azure-storage-explorer-backend@workspace:plugins/azure-storage-backend"
   dependencies:
-    "@azure/identity": "npm:4.13.1"
+    "@azure/identity": "npm:4.13.2"
     "@azure/storage-blob": "npm:12.33.0"
     "@backstage/backend-defaults": "backstage:^"
     "@backstage/backend-plugin-api": "backstage:^"
@@ -32247,7 +32261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^8.0.0, uuid@npm:^8.3.0, uuid@npm:^8.3.2":
+"uuid@npm:^8.0.0, uuid@npm:^8.3.2":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:
