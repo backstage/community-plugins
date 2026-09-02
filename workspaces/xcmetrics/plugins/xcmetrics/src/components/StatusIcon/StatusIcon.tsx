@@ -20,8 +20,9 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 import { BuildStatus } from '../../api';
+import { ReactNode } from 'react';
 
-const STATUS_ICONS: { [key in BuildStatus]: JSX.Element } = {
+const STATUS_ICONS: { [key in BuildStatus]: ReactNode } = {
   succeeded: <StatusOK />,
   failed: <StatusError />,
   stopped: <StatusWarning />,
