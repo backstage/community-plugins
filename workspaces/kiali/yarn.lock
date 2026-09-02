@@ -1857,7 +1857,7 @@ __metadata:
     axios: "npm:^1.7.4"
     canvas: "npm:^3.0.0"
     cross-fetch: "npm:4.1.0"
-    cytoscape: "npm:3.34.0"
+    cytoscape: "npm:3.34.1"
     d3-format: "npm:^3.1.0"
     d3-transition: "npm:^3.0.1"
     deep-freeze: "npm:0.0.1"
@@ -16491,10 +16491,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cytoscape@npm:3.34.0":
-  version: 3.34.0
-  resolution: "cytoscape@npm:3.34.0"
-  checksum: 10/5bbc169798829b1a0eaadcad2707e7762e7ba1a2bcd5dbeaf75b89eb2d2ab9211e51d96b24c1f5807e329ac44c50913062464e2af11c528a1255969a36b45268
+"cytoscape@npm:3.34.1":
+  version: 3.34.1
+  resolution: "cytoscape@npm:3.34.1"
+  checksum: 10/e85fa2990784b8427ef4216681120891cd6080417e3ca0afb214b17370e2a6e54ae9622cf212bd921745b55350c47a4fd5b2dc93e0f8df180f4e30209c6a86da
   languageName: node
   linkType: hard
 
