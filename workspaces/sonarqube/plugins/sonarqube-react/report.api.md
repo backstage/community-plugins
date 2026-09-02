@@ -42,6 +42,8 @@ export type MetricKey =
   | 'security_rating'
   | 'code_smells'
   | 'sqale_rating'
+  | 'sqale_index'
+  | 'security_hotspots'
   | 'security_hotspots_reviewed'
   | 'security_review_rating'
   | 'coverage'

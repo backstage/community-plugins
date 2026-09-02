@@ -83,10 +83,12 @@ export class SonarQubeClient implements SonarQubeApi {
       reliability_rating: undefined,
       vulnerabilities: undefined,
       security_rating: undefined,
+      security_hotspots: undefined,
       security_hotspots_reviewed: undefined,
       security_review_rating: undefined,
       code_smells: undefined,
       sqale_rating: undefined,
+      sqale_index: undefined,
       coverage: undefined,
       duplicated_lines_density: undefined,
     };
