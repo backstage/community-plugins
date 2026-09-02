@@ -20,7 +20,7 @@ export interface Config {
     // context of the monorepo is too strict. Ideally, this would be marked as
     // required.
     analytics?: {
-      segment?:
+      segment:
         | {
             /**
              * The Segment write key.
