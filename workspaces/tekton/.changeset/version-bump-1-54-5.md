@@ -5,4 +5,4 @@
 ---
 
 Backstage version bump to v1.54.5
-Added New Frontend System development entrypoints and e2e coverage.
+Added New Frontend System development entrypoints and e2e coverage for both NFS and legacy.

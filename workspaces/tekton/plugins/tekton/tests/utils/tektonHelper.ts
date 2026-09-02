@@ -18,7 +18,7 @@ import { expect, TestInfo, type Page } from '@playwright/test';
 
 /** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
 export function isNfsAppMode(): boolean {
-  return process.env.APP_MODE === 'alpha';
+  return process.env.APP_MODE !== 'legacy';
 }
 
 export class Common {

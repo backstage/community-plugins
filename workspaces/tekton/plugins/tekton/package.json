@@ -48,8 +48,7 @@
     "start": "backstage-cli package start",
     "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "start:mock": "backstage-cli package start --entrypoint dev/index.mock.tsx",
-    "start:alpha": "backstage-cli package start --entrypoint dev/alpha/index.tsx",
-    "start:alpha:mock": "backstage-cli package start --entrypoint dev/alpha/index.mock.tsx",
+    "start:legacy:mock": "backstage-cli package start --entrypoint dev/legacy.mock.tsx",
     "build": "backstage-cli package build",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test --passWithNoTests --coverage",
@@ -114,11 +113,11 @@
     "@types/lodash": "4.17.24",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "react": "^18.0.2",
-    "react-dom": "^18.0.2",
-    "react-router-dom": "^6.30.2",
     "cross-fetch": "4.1.0",
-    "react-aria-components": "~1.17.0"
+    "react": "^18.0.2",
+    "react-aria-components": "~1.17.0",
+    "react-dom": "^18.0.2",
+    "react-router-dom": "^6.30.2"
   },
   "files": [
     "app-config.dynamic.yaml",

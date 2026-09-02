@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ReactDOM from 'react-dom/client';
 
+/**
+ * New Frontend System (NFS) dev app for the Tekton plugin, with mocked
+ * catalog and Kubernetes data.
+ */
+
+import '@backstage/cli/asset-types';
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
+import ReactDOM from 'react-dom/client';
+
 import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
   createFrontendModule,
-  createFrontendPlugin,
+  pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha';
 import {
   kubernetesApiRef,
   kubernetesAuthProvidersApiRef,
@@ -34,27 +43,33 @@ import {
 } from '@backstage/plugin-kubernetes-react';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 
 import tektonPlugin from '../src';
 import tektonTranslationsModule from '../src/translations';
+import { devSidebarContent } from './shared';
 import {
-  mockEntity,
+  mockCatalogApi,
   mockKubernetesAuthProviderApi,
   mockKubernetesClient,
   mockKubernetesProxyApi,
-} from './shared';
+} from './mocks';
 
-const kubernetesStubPlugin = createFrontendPlugin({
-  pluginId: 'kubernetes',
-  extensions: [],
+const catalogPluginOverrides = catalogPlugin.withOverrides({
+  extensions: [
+    catalogPlugin.getExtension('api:catalog').override({
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => mockCatalogApi,
+        }),
+    }),
+  ],
 });
 
-const kubernetesDevModule = createFrontendModule({
-  pluginId: 'kubernetes',
+const kubernetesPluginOverrides = kubernetesPlugin.withOverrides({
   extensions: [
-    ApiBlueprint.make({
-      name: 'kubernetes-mock',
+    kubernetesPlugin.getExtension('api:kubernetes').override({
       params: defineParams =>
         defineParams({
           api: kubernetesApiRef,
@@ -62,8 +77,7 @@ const kubernetesDevModule = createFrontendModule({
           factory: () => mockKubernetesClient,
         }),
     }),
-    ApiBlueprint.make({
-      name: 'kubernetes-proxy-mock',
+    kubernetesPlugin.getExtension('api:kubernetes/proxy').override({
       params: defineParams =>
         defineParams({
           api: kubernetesProxyApiRef,
@@ -71,19 +85,7 @@ const kubernetesDevModule = createFrontendModule({
           factory: () => mockKubernetesProxyApi,
         }),
     }),
-  ],
-});
-
-const kubernetesAuthStubPlugin = createFrontendPlugin({
-  pluginId: 'kubernetes-auth-providers',
-  extensions: [],
-});
-
-const kubernetesAuthDevModule = createFrontendModule({
-  pluginId: 'kubernetes-auth-providers',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'kubernetes-auth-mock',
+    kubernetesPlugin.getExtension('api:kubernetes/auth-providers').override({
       params: defineParams =>
         defineParams({
           api: kubernetesAuthProvidersApiRef,
@@ -94,9 +96,24 @@ const kubernetesAuthDevModule = createFrontendModule({
   ],
 });
 
-const permissionDevModule = createFrontendModule({
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={['guest']}
+        />
+      ),
+  },
+});
+
+const appDevModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
+    signInPage,
     ApiBlueprint.make({
       name: 'permission',
       params: defineParams =>
@@ -104,41 +121,48 @@ const permissionDevModule = createFrontendModule({
           api: permissionApiRef,
           deps: {},
           factory: () => ({
-            authorize: async () => ({ result: AuthorizeResult.ALLOW }),
+            authorize: async () => ({
+              result: window.location.pathname.includes('permission-denied')
+                ? AuthorizeResult.DENY
+                : AuthorizeResult.ALLOW,
+            }),
+          }),
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'plugin-header-actions',
+      params: defineParams =>
+        defineParams({
+          api: pluginHeaderActionsApiRef,
+          deps: {},
+          factory: () => ({
+            getPluginHeaderActions: () => [],
           }),
         }),
     }),
   ],
 });
 
-const catalogDevModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'catalog-mock',
-      params: defineParams =>
-        defineParams({
-          api: catalogApiRef,
-          deps: {},
-          factory: () => catalogApiMock({ entities: [mockEntity] }),
-        }),
-    }),
-  ],
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [devSidebarContent],
 });
 
 const app = createApp({
   features: [
-    catalogPlugin,
-    userSettingsPlugin,
+    catalogPluginOverrides,
+    kubernetesPluginOverrides,
     tektonPlugin,
     tektonTranslationsModule,
-    catalogDevModule,
-    kubernetesStubPlugin,
-    kubernetesDevModule,
-    kubernetesAuthStubPlugin,
-    kubernetesAuthDevModule,
-    permissionDevModule,
+    devNavModule,
+    appDevModule,
   ],
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
+if (window.location.pathname === '/') {
+  window.location.replace('/catalog');
+}
+
+const root = app.createRoot();
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);
