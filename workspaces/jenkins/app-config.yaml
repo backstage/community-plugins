@@ -66,3 +66,7 @@ jenkins:
       baseUrl: https://jenkins.example.com
       username: backstage-bot
       apiKey: 123456789abcdef0123456789abcedf012
+    - name: production
+      baseUrl: https://jenkins-production.example.com
+      username: backstage-bot
+      apiKey: 123456789abcdef0123456789abcedf012
