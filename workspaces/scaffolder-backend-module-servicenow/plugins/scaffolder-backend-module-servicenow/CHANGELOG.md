@@ -1,5 +1,20 @@
 # @backstage-community/plugin-scaffolder-backend-module-servicenow
 
+## 2.17.0
+
+### Minor Changes
+
+- 69a21f0: Backstage version bump to v1.53.0
+- 4d7fbde: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 813d384: ServiceNow Table API scaffolder actions now fall back to the HTTP status text (or a clear default) when the API error body omits `error.message`, so template failures surface a useful message instead of an empty error.
+
+  Added a contributor guide (`CONTRIBUTING.md`) and a local `dev/` harness so maintainers can smoke-test scaffolder action registration without a full workspace app. Expanded automated tests to cover module wiring, ServiceNow config fail-fast, shared MSW helpers with OpenAPI isolation, and representative API error paths.
+
+- a36cd39: Updated dependency `axios` to `^1.19.0`.
+
 ## 2.16.1
 
 ### Patch Changes
