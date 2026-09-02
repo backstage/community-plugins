@@ -1,5 +1,20 @@
 # @backstage-community/plugin-tech-insights
 
+## 1.5.0
+
+### Minor Changes
+
+- efd82d4: Backstage version bump to v1.52.0
+- 9fcbc6c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 798f441: The techinsights page did not appear in the sidebar when hosted on NFS.
+- Updated dependencies [efd82d4]
+- Updated dependencies [9fcbc6c]
+  - @backstage-community/plugin-tech-insights-common@0.11.0
+  - @backstage-community/plugin-tech-insights-react@1.7.0
+
 ## 1.4.0
 
 ### Minor Changes
