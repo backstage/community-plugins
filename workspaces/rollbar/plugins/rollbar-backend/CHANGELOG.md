@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rollbar-backend
 
+## 0.12.1
+
+### Patch Changes
+
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.12.0
 
 ### Minor Changes
