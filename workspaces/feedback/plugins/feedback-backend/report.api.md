@@ -4,10 +4,74 @@
 
 ```ts
 import { BackendFeature } from '@backstage/backend-plugin-api';
+import { ConditionalPolicyDecision } from '@backstage/plugin-permission-common';
+import { Conditions } from '@backstage/plugin-permission-node';
+import { PermissionCondition } from '@backstage/plugin-permission-common';
+import { PermissionCriteria } from '@backstage/plugin-permission-common';
+import { PermissionResourceRef } from '@backstage/plugin-permission-node';
+import { PermissionRule } from '@backstage/plugin-permission-node';
+import { ResourcePermission } from '@backstage/plugin-permission-common';
 
-// @public (undocumented)
+// @public
+export const createFeedbackConditionalDecision: (
+  permission: ResourcePermission<'feedback'>,
+  conditions: PermissionCriteria<PermissionCondition<'feedback'>>,
+) => ConditionalPolicyDecision;
+
+// @public
+export enum FeedbackCategory {
+  BUG = 'BUG',
+  FEEDBACK = 'FEEDBACK',
+}
+
+// @public
+export const feedbackConditions: Conditions<{
+  isFeedbackOwner: PermissionRule<
+    FeedbackModel,
+    {},
+    'feedback',
+    {
+      claim: string;
+    }
+  >;
+}>;
+
+// @public
+export type FeedbackModel = {
+  feedbackId?: string;
+  summary?: string;
+  projectId?: string;
+  description?: string;
+  url?: string;
+  userAgent?: string;
+  tag?: string;
+  ticketUrl?: string;
+  feedbackType?: FeedbackCategory;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+// @public
 const feedbackPlugin: BackendFeature;
 export default feedbackPlugin;
 
-// (No @packageDocumentation comment for this package)
+// @public
+export const feedbackResourceRef: PermissionResourceRef<
+  FeedbackModel,
+  {},
+  'feedback',
+  'feedback'
+>;
+
+// @public
+export const isFeedbackOwner: PermissionRule<
+  FeedbackModel,
+  {},
+  'feedback',
+  {
+    claim: string;
+  }
+>;
 ```

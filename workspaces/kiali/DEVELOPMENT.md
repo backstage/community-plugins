@@ -181,7 +181,7 @@ And add the network_mode:
 ```bash
 rhdh:
   container_name: rhdh
-  image: ${RHDH_IMAGE:-quay.io/rhdh-community/rhdh:1.10}
+  image: ${RHDH_IMAGE:-quay.io/rhdh-community/rhdh:next}
   network_mode: host
 ```
 
@@ -218,10 +218,10 @@ This workspace tracks the Backstage version bundled with [Red Hat Developer Hub 
 | RHDH version | Backstage version | Kiali workspace status |
 | ------------ | ----------------- | ---------------------- |
 | 1.9          | 1.45.3            | Previous baseline      |
-| 1.10         | 1.49.4            | Current target         |
-| ~1.11        | 1.52.0            | Planned future bump    |
+| 1.10         | 1.49.4            | Previous baseline      |
+| ~1.11        | 1.52.0            | Current target         |
 
-When validating changes for RHDH, use [rhdh-local](https://github.com/redhat-developer/rhdh-local) with `RHDH_IMAGE=quay.io/rhdh-community/rhdh:1.10` and export the dynamic plugins with `@red-hat-developer-hub/cli`.
+When validating changes for RHDH, use [rhdh-local](https://github.com/redhat-developer/rhdh-local) with `RHDH_IMAGE=quay.io/rhdh-community/rhdh:next` and export the dynamic plugins with `@red-hat-developer-hub/cli`.
 
 After merging a Backstage bump, open a PR in [rhdh-plugin-export-overlays](https://github.com/redhat-developer/rhdh-plugin-export-overlays) to update `workspaces/kiali/source.json` with the new commit and `repo-backstage-version`.
 
@@ -234,7 +234,7 @@ Once checked, follow the steps:
 ```bash
 # 1. Run the version bump (use the target Backstage version for your RHDH release)
 cd workspaces/kiali
-yarn backstage-cli versions:bump --release 1.49.4
+yarn backstage-cli versions:bump --release 1.52.0
 
 # 2. Clean duplicate dependencies
 yarn dedupe

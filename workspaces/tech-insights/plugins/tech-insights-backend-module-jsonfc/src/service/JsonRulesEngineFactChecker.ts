@@ -310,10 +310,43 @@ export class JsonRulesEngineFactChecker
     // get list of available fact names
     const factNames = flatten(schemas.map(schema => Object.keys(schema)));
 
-    const factValues = Object.values(facts).reduce(
+    // Per-fact view keyed by retriever id, used for `params.factRetrieverId`
+    // resolution.
+    const valuesByFactByRetriever: Record<string, Record<string, unknown>> = {};
+    for (const [retrieverId, row] of Object.entries(facts)) {
+      for (const [factName, value] of Object.entries(row.facts)) {
+        (valuesByFactByRetriever[factName] ||= {})[retrieverId] = value;
+      }
+    }
+
+    // Legacy flat-merge view, kept as the fallback when a condition does not
+    // set `params.factRetrieverId`. The reduce order matches the previous
+    // implementation bit-for-bit so existing checks see the same value
+    // (including the documented last-write-wins behaviour on key collisions).
+    const legacyFlat: Record<string, unknown> = Object.values(facts).reduce(
       (acc, it) => ({ ...acc, ...it.facts }),
-      {} as FlatTechInsightFact,
+      {} as Record<string, unknown>,
     );
+
+    // Register a handler fact per known fact name. The handler reads
+    // `params.factRetrieverId` from the condition; when set, it returns the
+    // named retriever's value, otherwise it falls back to the legacy merged
+    // value.
+    // Both `valuesByFactByRetriever` and `legacyFlat` are entity-specific, so
+    // handlers (and the engine instance above) must be constructed per call;
+    // they cannot be hoisted onto the class.
+    for (const factName of Object.keys(valuesByFactByRetriever)) {
+      engine.addFact(factName, params => {
+        const retrieverId =
+          params && typeof params.factRetrieverId === 'string'
+            ? params.factRetrieverId
+            : undefined;
+        if (retrieverId !== undefined) {
+          return valuesByFactByRetriever[factName]?.[retrieverId];
+        }
+        return legacyFlat[factName];
+      });
+    }
 
     filteredChecks.forEach(techInsightCheck => {
       const rule = techInsightCheck.rule;
@@ -337,10 +370,39 @@ export class JsonRulesEngineFactChecker
         );
       }
 
-      // Checks if all facts are present in the factValues
-      const hasFacts = usedFacts.every(factId =>
-        factValues.hasOwnProperty(factId),
+      // Each `params.factRetrieverId` must reference a retriever listed in the
+      // check's factIds. `validate()` catches this at registration time;
+      // at runtime we skip the offending check with a warning rather than
+      // abort the whole `runChecks` call, so an unrelated misconfiguration
+      // can never block other checks for the same entity.
+      const qualifiedRefs = this.retrieveQualifiedFactReferences(
+        techInsightCheck.rule.conditions,
       );
+      const unlistedFactRetrieverMessage =
+        this.findUnlistedFactRetrieverMessage(techInsightCheck, qualifiedRefs);
+      if (unlistedFactRetrieverMessage !== undefined) {
+        this.logger.warn(
+          `Skipping ${rule.name}: ${unlistedFactRetrieverMessage}`,
+        );
+        return;
+      }
+
+      // Checks if all referenced facts can be resolved. A condition that
+      // qualifies its fact via `params.factRetrieverId` is only satisfied when
+      // the named retriever actually produced that fact; unqualified
+      // conditions keep the legacy "present in any retriever" semantics.
+      const hasFacts = qualifiedRefs.every(({ fact, factRetrieverId }) => {
+        if (factRetrieverId !== undefined) {
+          return (
+            valuesByFactByRetriever[fact] !== undefined &&
+            Object.prototype.hasOwnProperty.call(
+              valuesByFactByRetriever[fact],
+              factRetrieverId,
+            )
+          );
+        }
+        return Object.prototype.hasOwnProperty.call(legacyFlat, fact);
+      });
       if (hasFacts) {
         engine.addRule({ ...techInsightCheck.rule, event: noopEvent });
       } else {
@@ -355,7 +417,7 @@ export class JsonRulesEngineFactChecker
     });
 
     try {
-      const results = await engine.run(factValues);
+      const results = await engine.run();
       return await this.ruleEngineResultsToCheckResponse(
         results,
         filteredChecks,
@@ -398,12 +460,24 @@ export class JsonRulesEngineFactChecker
       };
     }
 
+    const qualifiedReferences = this.retrieveQualifiedFactReferences(
+      check.rule.conditions,
+    );
+    const unlistedFactRetrieverMessage = this.findUnlistedFactRetrieverMessage(
+      check,
+      qualifiedReferences,
+    );
+    if (unlistedFactRetrieverMessage !== undefined) {
+      this.logger.warn(
+        `Validation failed for check ${check.name}. ${unlistedFactRetrieverMessage}`,
+      );
+      return { valid: false, message: unlistedFactRetrieverMessage };
+    }
+
     const existingSchemas = await this.repository.getLatestSchemas(
       check.factIds,
     );
-    const references = this.retrieveIndividualFactReferences(
-      check.rule.conditions,
-    );
+    const references = qualifiedReferences.map(ref => ref.fact);
     const results = references.map(ref => ({
       ref,
       result: existingSchemas.some(schema => schema.hasOwnProperty(ref)),
@@ -457,6 +531,53 @@ export class JsonRulesEngineFactChecker
       // ignore the ConditionReference type
     } else {
       results.push(condition.fact);
+    }
+    return results;
+  }
+
+  private findUnlistedFactRetrieverMessage(
+    check: TechInsightJsonRuleCheck,
+    qualifiedRefs: Array<{ fact: string; factRetrieverId?: string }>,
+  ): string | undefined {
+    for (const { factRetrieverId } of qualifiedRefs) {
+      if (
+        factRetrieverId !== undefined &&
+        !check.factIds.includes(factRetrieverId)
+      ) {
+        return `Condition references factRetrieverId "${factRetrieverId}" which is not in this check's factIds list: [${check.factIds.join(
+          ', ',
+        )}]`;
+      }
+    }
+    return undefined;
+  }
+
+  private retrieveQualifiedFactReferences(
+    condition:
+      | TopLevelCondition
+      | { fact: string; params?: Record<string, unknown> },
+  ): Array<{ fact: string; factRetrieverId?: string }> {
+    let results: Array<{ fact: string; factRetrieverId?: string }> = [];
+    if ('all' in condition) {
+      results = results.concat(
+        condition.all.flatMap(con => this.retrieveQualifiedFactReferences(con)),
+      );
+    } else if ('any' in condition) {
+      results = results.concat(
+        condition.any.flatMap(con => this.retrieveQualifiedFactReferences(con)),
+      );
+    } else if ('not' in condition) {
+      results = results.concat(
+        this.retrieveQualifiedFactReferences(condition.not),
+      );
+    } else if ('condition' in condition) {
+      // ignore the ConditionReference type
+    } else {
+      const factRetrieverId =
+        condition.params && typeof condition.params.factRetrieverId === 'string'
+          ? condition.params.factRetrieverId
+          : undefined;
+      results.push({ fact: condition.fact, factRetrieverId });
     }
     return results;
   }

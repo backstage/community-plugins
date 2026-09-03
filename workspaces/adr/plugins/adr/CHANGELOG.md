@@ -1,5 +1,24 @@
 # @backstage-community/plugin-adr
 
+## 0.29.0
+
+### Minor Changes
+
+- 9f1ee1a: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [9f1ee1a]
+  - @backstage-community/plugin-adr-common@0.23.0
+
+## 0.28.0
+
+### Minor Changes
+
+- ce13433: Update new frontend system extension definitions to remove unnecessary compatibility wrappers
+
+  **BREAKING** The extension name for `adrEntityContentExtension` and `adrApiExtension` has been removed since it was unnecessary
+
 ## 0.27.0
 
 ### Minor Changes

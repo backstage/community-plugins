@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-quay
 
+## 2.21.1
+
+### Patch Changes
+
+- 9e957a4: Added contributor guides and a local scaffolder `dev/` harness. Strengthened automated tests for backend plugin mount, router validation, shared permission contracts, and `quay:create-repository` registration.
+
 ## 2.21.0
 
 ### Minor Changes

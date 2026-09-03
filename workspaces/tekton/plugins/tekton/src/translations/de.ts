@@ -64,6 +64,7 @@ const tektonTranslationDe = createTranslationMessages({
     'pipelineRunList.tableHeaderTitle.startTime': 'GESTARTET',
     'pipelineRunList.tableHeaderTitle.duration': 'DAUER',
     'pipelineRunList.tableHeaderTitle.actions': 'AKTIONEN',
+    'pipelineRunList.tablePagination.rowsPerPage': 'Zeilen pro Seite',
     'pipelineRunList.tablePagination.rowsPerPageOptionLabel': '{{num}} Zeilen',
     'pipelineRunLogs.title': 'Logs der Pipeline-Ausführung',
     'pipelineRunLogs.noLogs': 'Keine Logs gefunden',

@@ -24,7 +24,7 @@ import { TranslationRef } from '@backstage/frontend-plugin-api';
 // @alpha (undocumented)
 export const adrApiExtension: OverridableExtensionDefinition<{
   kind: 'api';
-  name: 'adr-api';
+  name: undefined;
   config: {};
   configInput: {};
   output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
@@ -41,7 +41,7 @@ export const adrApiExtension: OverridableExtensionDefinition<{
 // @alpha (undocumented)
 export const adrEntityContentExtension: OverridableExtensionDefinition<{
   kind: 'entity-content';
-  name: 'entity';
+  name: undefined;
   config: {
     path: string | undefined;
     title: string | undefined;
@@ -159,9 +159,9 @@ const _default: OverridableFrontendPlugin<
   {},
   {},
   {
-    'api:adr/adr-api': OverridableExtensionDefinition<{
+    'api:adr': OverridableExtensionDefinition<{
       kind: 'api';
-      name: 'adr-api';
+      name: undefined;
       config: {};
       configInput: {};
       output: ExtensionDataRef<AnyApiFactory, 'core.api.factory', {}>;
@@ -174,9 +174,9 @@ const _default: OverridableFrontendPlugin<
         params: ApiFactory<TApi, TImpl, TDeps>,
       ) => ExtensionBlueprintParams<AnyApiFactory>;
     }>;
-    'entity-content:adr/entity': OverridableExtensionDefinition<{
+    'entity-content:adr': OverridableExtensionDefinition<{
       kind: 'entity-content';
-      name: 'entity';
+      name: undefined;
       config: {
         path: string | undefined;
         title: string | undefined;

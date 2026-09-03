@@ -15,52 +15,38 @@
  */
 
 import {
-  StatusPending,
-  StatusRunning,
-  StatusOK,
   StatusAborted,
   StatusError,
+  StatusOK,
+  StatusPending,
+  StatusRunning,
 } from '@backstage/core-components';
+import { Flex, Text } from '@backstage/ui';
 
-export const WorkflowRunStatus = (props: { status: string | undefined }) => {
-  const { status } = props;
-  if (status === undefined) return null;
+const statusContent = (status: string) => {
   switch (status.toLocaleLowerCase('en-US')) {
     case 'queued':
-      return (
-        <>
-          <StatusPending /> Queued
-        </>
-      );
+      return { icon: <StatusPending />, text: 'Queued' };
     case 'working':
-      return (
-        <>
-          <StatusRunning /> In progress
-        </>
-      );
+      return { icon: <StatusRunning />, text: 'In progress' };
     case 'success':
-      return (
-        <>
-          <StatusOK /> Completed
-        </>
-      );
+      return { icon: <StatusOK />, text: 'Completed' };
     case 'cancelled':
-      return (
-        <>
-          <StatusAborted /> Cancelled
-        </>
-      );
+      return { icon: <StatusAborted />, text: 'Cancelled' };
     case 'failure':
-      return (
-        <>
-          <StatusError /> Failed
-        </>
-      );
+      return { icon: <StatusError />, text: 'Failed' };
     default:
-      return (
-        <>
-          <StatusPending /> Pending
-        </>
-      );
+      return { icon: <StatusPending />, text: 'Pending' };
   }
+};
+
+export const WorkflowRunStatus = ({ status }: { status?: string }) => {
+  if (status === undefined) return null;
+  const content = statusContent(status);
+  return (
+    <Flex align="center" gap="1">
+      {content.icon}
+      <Text variant="body-small">{content.text}</Text>
+    </Flex>
+  );
 };

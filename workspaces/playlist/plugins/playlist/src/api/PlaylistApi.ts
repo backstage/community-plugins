@@ -15,7 +15,7 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 import {
   Playlist,
   PlaylistMetadata,
@@ -24,8 +24,9 @@ import {
 /**
  * @public
  */
-export const playlistApiRef = createApiRef<PlaylistApi>({
+export const playlistApiRef = createApiRef<PlaylistApi>().with({
   id: 'plugin.playlist.service',
+  pluginId: 'playlist',
 });
 
 /**

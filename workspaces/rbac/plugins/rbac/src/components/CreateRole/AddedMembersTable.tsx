@@ -52,7 +52,7 @@ export const AddedMembersTable = ({
           {t('common.selectedUsersAndGroupsAppearHere')}
         </Box>
       }
-      options={{ emptyRowsWhenPaging: false }}
+      options={{ emptyRowsWhenPaging: false, draggable: false }}
       localization={{
         toolbar: { searchPlaceholder: t('table.searchPlaceholder') },
         pagination: {

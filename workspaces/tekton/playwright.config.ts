@@ -24,7 +24,7 @@ export default defineConfig({
     ? []
     : [
         {
-          command: 'yarn start',
+          command: 'yarn start:legacy',
           port: 3000,
           reuseExistingServer: true,
           cwd: 'plugins/tekton',

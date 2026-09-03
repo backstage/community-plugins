@@ -1,0 +1,53 @@
+# Self-contained config for the RBAC backend dev harness.
+# Usage: yarn workspace @backstage-community/plugin-rbac-backend start
+#
+# Optional local overrides: app-config.local.yaml beside this file (gitignored).
+
+app:
+  baseUrl: http://localhost:3000
+
+organization:
+  name: RBAC Dev
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+auth:
+  environment: development
+  providers:
+    guest: {}
+
+catalog:
+  rules:
+    - allow: [Component, System, API, Resource, Location, Template, User, Group]
+  locations:
+    - type: file
+      target: ../../examples/entities.yaml
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - catalog
+      - permission
+      - scaffolder
+    admin:
+      users:
+        - name: user:development/guest

@@ -1,5 +1,17 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.0
+
+### Minor Changes
+
+- 5bb7b05: Backstage version bump to v1.54.5
+
+## 1.26.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
 ## 1.25.1
 
 ### Patch Changes

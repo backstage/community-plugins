@@ -76,6 +76,7 @@ export const tektonMessages = {
       actions: 'ACTIONS',
     },
     tablePagination: {
+      rowsPerPage: 'Rows per page',
       rowsPerPageOptionLabel: '{{num}} rows',
     },
   },

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { CustomProtocolConfig } from './src/hooks/useCustomProtocol';
-
 export interface Config {
   /**
    * Configuration for the Bookmarks plugin
@@ -29,6 +27,20 @@ export interface Config {
      *
      * @deepVisibility frontend
      */
-    customProtocols?: CustomProtocolConfig;
+    customProtocols?: {
+      /** The custom protocol to match, e.g. "myapp" for "myapp://some/path" */
+      [protocol: string]: {
+        /**
+         * The base URL to use for iframe src with %s replaced by the encoded original URL,
+         * e.g. "https://myapp-iframe-host.com/iframe?url=%s"
+         */
+        iframeBaseUrl: string;
+        /**
+         * The base URL to use for anchor href with %s replaced by the encoded original URL,
+         * e.g. "https://myapp-web-host.com/open?url=%s"
+         */
+        linkBaseUrl: string;
+      };
+    };
   };
 }

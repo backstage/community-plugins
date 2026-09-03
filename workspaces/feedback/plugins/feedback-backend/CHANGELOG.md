@@ -1,5 +1,44 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.2.3
+
+### Patch Changes
+
+- 6ebeace: simplify getRequestToken logic for mcp actions
+
+## 2.2.2
+
+### Patch Changes
+
+- 6f6ce47: refactor: Export permissions from the plugin entry point and remove the deprecated or unused feedback actions exports.
+
+## 2.2.1
+
+### Patch Changes
+
+- e136701: patch: fix yarn lock state
+- Updated dependencies [e136701]
+  - @backstage-community/plugin-feedback-common@1.0.1
+
+## 2.2.0
+
+### Minor Changes
+
+- 59725e0: Registered Model Context Protocol (MCP) actions (`list-feedbacks`, `get-feedback`, `create-feedback`, `update-feedback`, `delete-feedback`) with respective state attributes (`idempotent`, `readOnly`, `destructive`) for granular tooling safety. Secured router endpoints using Backstage permissions.
+
+### Patch Changes
+
+- Updated dependencies [59725e0]
+  - @backstage-community/plugin-feedback-common@1.0.0
+
+## 2.1.8
+
+### Patch Changes
+
+- 932f80b: Updated dependency `@types/nodemailer` to `8.0.0`.
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+- 724aa40: Updated dependency `nodemailer` to `^9.0.0`.
+
 ## 2.1.7
 
 ### Patch Changes

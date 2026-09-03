@@ -14,4 +14,24 @@
  * limitations under the License.
  */
 
+export {
+  FeedbackResponseDialog,
+  FeedbackResponseTable,
+  LikeDislikeButtons,
+  LikeDislikeFeedbackRatings,
+  LikeDislikeRatingsTable,
+  StarredFeedbackRatings,
+  StarredRatingButtons,
+  StarredRatingsTable,
+} from '../components';
+export type {
+  LikeDislikeButtonsProps,
+  LikeDislikeRatingsTableProps,
+  EntityFeedbackResponse,
+  FeedbackResponseDialogProps,
+  FeedbackResponseTableProps,
+  StarredRatingButtonsProps,
+  StarredRatingsTableProps,
+} from '../components';
+
 export { entityFeedbackPlugin as default } from './plugin';

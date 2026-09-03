@@ -1,10 +1,9 @@
-# [Backstage](https://backstage.io)
+# Entity Feedback plugins for Backstage
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for collecting and displaying feedback on catalog entities in Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [entity-feedback](./plugins/entity-feedback/README.md)
+- [entity-feedback-backend](./plugins/entity-feedback-backend/README.md)
+- [entity-feedback-common](./plugins/entity-feedback-common/README.md)

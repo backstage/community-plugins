@@ -1,5 +1,17 @@
 # @backstage-community/plugin-firehydrant
 
+## 0.23.0
+
+### Minor Changes
+
+- 5044bc7: Backstage version bump to v1.54.5
+
+## 0.22.1
+
+### Patch Changes
+
+- 970c5fc: Added New Frontend System support. The plugin can now be used with the new frontend system using package discovery or by importing from the `/alpha` entrypoint.
+
 ## 0.22.0
 
 ### Minor Changes

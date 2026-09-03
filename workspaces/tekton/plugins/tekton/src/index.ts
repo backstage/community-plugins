@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { tektonPlugin, TektonCI } from './plugin';
-export { isTektonCIAvailable } from './utils/isTektonCIAvailable';
-export {
-  tektonTranslations,
-  tektonTranslationRef,
-} from './translations/index.ts';
+
+/**
+ * A Backstage plugin for visualizing Tekton PipelineRun resources.
+ *
+ * @packageDocumentation
+ */
+
+export { default } from './plugin';
