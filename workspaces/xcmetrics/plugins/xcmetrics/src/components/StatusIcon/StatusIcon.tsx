@@ -22,7 +22,7 @@ import {
 import { BuildStatus } from '../../api';
 import type { ReactElement } from 'react';
 
-const STATUS_ICONS: { [key in BuildStatus]: ReactElement } = {
+const STATUS_ICONS: Partial<Record<BuildStatus, ReactElement>> = {
   succeeded: <StatusOK />,
   failed: <StatusError />,
   stopped: <StatusWarning />,
