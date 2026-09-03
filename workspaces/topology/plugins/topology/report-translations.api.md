@@ -148,9 +148,10 @@ export const topologyTranslationRef: TranslationRef<
 // @alpha
 export const topologyTranslations: TranslationResource<'plugin.topology'>;
 
-// @alpha
+// @public
 const topologyTranslationsModule: FrontendModule;
 export default topologyTranslationsModule;
+export { topologyTranslationsModule };
 
 // (No @packageDocumentation comment for this package)
 ```
