@@ -29,9 +29,9 @@ import {
   CellText,
   Flex,
   Link,
-  SearchField,
   Table,
   Text,
+  TextField,
   useTable,
   type ColumnConfig,
   type TableItem,
@@ -44,8 +44,6 @@ type TodoRow = TodoItem & TableItem;
 
 type TodoFilters = {
   text?: string;
-  repoFilePath?: string;
-  author?: string;
 };
 
 const toRowId = (item: TodoItem): string => {
@@ -135,14 +133,6 @@ const TodoListTable = ({ pageSize, onPageSizeChange }: TodoListTableProps) => {
         if (text) {
           filters.push({ field: 'text', value: `*${text}*` });
         }
-        const repoFilePath = activeFilter?.repoFilePath?.trim();
-        if (repoFilePath) {
-          filters.push({ field: 'repoFilePath', value: `*${repoFilePath}*` });
-        }
-        const author = activeFilter?.author?.trim();
-        if (author) {
-          filters.push({ field: 'author', value: `*${author}*` });
-        }
 
         const result = await todoApi.listTodos({
           entity,
@@ -168,11 +158,7 @@ const TodoListTable = ({ pageSize, onPageSizeChange }: TodoListTableProps) => {
     },
   });
 
-  const hasActiveFilter = Boolean(
-    filter.value?.text?.trim() ||
-      filter.value?.repoFilePath?.trim() ||
-      filter.value?.author?.trim(),
-  );
+  const hasActiveFilter = Boolean(filter.value?.text?.trim());
 
   if (error) {
     return <ResponseErrorPanel error={error} />;
@@ -181,37 +167,17 @@ const TodoListTable = ({ pageSize, onPageSizeChange }: TodoListTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <Flex direction="column" gap="3">
+        <Flex justify="between" align="center">
           <Text variant="title-medium">TODOs</Text>
-          <Flex gap="2" style={{ flexWrap: 'wrap' }}>
-            <SearchField
-              value={filter.value?.text ?? ''}
-              onChange={value =>
-                filter.onChange({ ...filter.value, text: value })
-              }
-              placeholder="Filter by text..."
-              aria-label="Filter by text"
-              style={{ width: '220px' }}
-            />
-            <SearchField
-              value={filter.value?.repoFilePath ?? ''}
-              onChange={value =>
-                filter.onChange({ ...filter.value, repoFilePath: value })
-              }
-              placeholder="Filter by file..."
-              aria-label="Filter by file"
-              style={{ width: '220px' }}
-            />
-            <SearchField
-              value={filter.value?.author ?? ''}
-              onChange={value =>
-                filter.onChange({ ...filter.value, author: value })
-              }
-              placeholder="Filter by author..."
-              aria-label="Filter by author"
-              style={{ width: '220px' }}
-            />
-          </Flex>
+          <TextField
+            value={filter.value?.text ?? ''}
+            onChange={value =>
+              filter.onChange({ ...filter.value, text: value })
+            }
+            placeholder="Filter..."
+            aria-label="Filter TODOs"
+            style={{ width: '200px' }}
+          />
         </Flex>
       </CardHeader>
       <CardBody>

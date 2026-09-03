@@ -90,14 +90,8 @@ describe('TodoList', () => {
     await renderTodoList(mockApi);
     await screen.findByText('FIXME');
 
-    fireEvent.change(screen.getByLabelText('Filter by text'), {
+    fireEvent.change(screen.getByLabelText('Filter TODOs'), {
       target: { value: ' pagination ' },
-    });
-    fireEvent.change(screen.getByLabelText('Filter by file'), {
-      target: { value: 'TodoList' },
-    });
-    fireEvent.change(screen.getByLabelText('Filter by author'), {
-      target: { value: 'Rugvip' },
     });
 
     await flushPendingTimers();
@@ -109,11 +103,7 @@ describe('TodoList', () => {
       offset: 0,
       limit: 10,
       orderBy: undefined,
-      filters: [
-        { field: 'text', value: '*pagination*' },
-        { field: 'repoFilePath', value: '*TodoList*' },
-        { field: 'author', value: '*Rugvip*' },
-      ],
+      filters: [{ field: 'text', value: '*pagination*' }],
     });
   });
 
