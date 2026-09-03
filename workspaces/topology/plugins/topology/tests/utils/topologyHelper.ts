@@ -79,9 +79,20 @@ export class Common {
       await dialog.accept();
     });
 
-    await this.page
-      .getByRole('button', { name: 'Enter' })
-      .click({ force: true });
+    await this.dismissWebpackOverlay();
+
+    const sidebarLink = this.page.locator('nav a').first();
+    if (await sidebarLink.isVisible().catch(() => false)) {
+      return;
+    }
+
+    const enterButton = this.page.getByRole('button', { name: 'Enter' });
+    if (isNfsAppMode()) {
+      await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible({
+        timeout: 120_000,
+      });
+    }
+    await enterButton.click();
     await this.waitForSideBarVisible();
   }
 
@@ -89,12 +100,13 @@ export class Common {
     if (locale !== 'en') {
       const names = new Intl.DisplayNames([locale], { type: 'language' });
       const localeString = names.of(locale) || locale;
-      await this.page
-        .getByRole('button', { name: 'Language' })
-        .click({ force: true });
-      await this.page.getByRole('menuitem', { name: localeString }).click({
-        force: true,
+      await this.dismissWebpackOverlay();
+      const languageButton = this.page.getByRole('button', {
+        name: 'Language',
       });
+      await expect(languageButton).toBeVisible({ timeout: 30_000 });
+      await languageButton.click();
+      await this.page.getByRole('menuitem', { name: localeString }).click();
     }
   }
 

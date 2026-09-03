@@ -2809,8 +2809,8 @@ __metadata:
   linkType: hard
 
 "@backstage/integration@npm:^2.1.0":
-  version: 2.1.1
-  resolution: "@backstage/integration@npm:2.1.1"
+  version: 2.1.0
+  resolution: "@backstage/integration@npm:2.1.0"
   dependencies:
     "@azure/identity": "npm:^4.0.0"
     "@azure/storage-blob": "npm:^12.5.0"
@@ -2824,7 +2824,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
     p-throttle: "npm:^4.1.1"
-  checksum: 10/a4a1790f162f5aab18bad68ee9e2a82bc585974fea06408a29949afe3d6b09f7ad9c7d02ab00d8666093d3576135e3e00ba06e5b601c16ab16f010da1ba2abbe
+  checksum: 10/f620470ca8bc8928a676be2c0dd596288159ae71437bd1f96851fe74b2b7853ec9be15393c600761c01b54d7b95a897b5d71267c1f6874ed409aad889d6b6f6f
   languageName: node
   linkType: hard
 
