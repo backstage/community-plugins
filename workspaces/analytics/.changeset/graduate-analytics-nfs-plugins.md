@@ -8,6 +8,7 @@ Migration steps:
 
 - If you were importing from `@backstage-community/plugin-analytics-provider-segment/alpha` to use the NFS module, update your imports to `@backstage-community/plugin-analytics-provider-segment`.
 - If you were importing from `@backstage-community/plugin-analytics-provider-segment` (the legacy frontend), update your imports to `@backstage-community/plugin-analytics-provider-segment/legacy`.
+- The no-op `analyticsModuleSegment` plugin export has been removed. Legacy apps should wire analytics using `SegmentAnalyticsApi` or `SegmentAnalytics.fromConfig()` instead.
 
 The `./alpha` subpath has been removed because this plugin does not ship translations.
 

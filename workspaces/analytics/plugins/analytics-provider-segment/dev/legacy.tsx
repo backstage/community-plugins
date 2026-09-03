@@ -15,11 +15,10 @@
  */
 
 import { createDevApp } from '@backstage/dev-utils';
-import { analyticsModuleSegment, SegmentAnalyticsApi } from '../src/legacy';
+import { SegmentAnalyticsApi } from '../src/legacy';
 import { Playground } from './Playground';
 
 createDevApp()
-  .registerPlugin(analyticsModuleSegment)
   .registerApi(SegmentAnalyticsApi)
   .addPage({
     path: '/segment',
