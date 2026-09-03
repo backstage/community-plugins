@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tekton-react
 
+## 0.9.0
+
+### Minor Changes
+
+- 77c4615: Backstage version bump to v1.54.5
+  Added New Frontend System development entrypoints and e2e coverage for both NFS and legacy.
+
 ## 0.8.0
 
 ### Minor Changes
