@@ -53,7 +53,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage-community/plugin-tekton-react": "^0.7.0",
+    "@backstage-community/plugin-tekton-react": "^0.8.0",
     "@backstage/catalog-model": "^1.9.0",
     "@backstage/core-compat-api": "^0.5.9",
     "@backstage/core-components": "^0.18.11",
@@ -112,7 +112,7 @@
     "cross-fetch": "4.1.0",
     "glob": "^13.0.0",
     "react": "^18.3.1",
-    "react-aria-components": "~1.17.0",
+    "react-aria-components": "~1.20.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
