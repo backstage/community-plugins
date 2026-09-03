@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "yarn start",
     "start": "backstage-cli repo start",
-    "start-backend": "yarn workspace backend start",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",
@@ -29,7 +28,6 @@
   },
   "workspaces": {
     "packages": [
-      "packages/*",
       "plugins/*"
     ]
   },

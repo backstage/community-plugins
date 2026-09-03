@@ -1,5 +1,11 @@
 # @backstage-community/plugin-acr
 
+## 1.28.0
+
+### Minor Changes
+
+- eb9f155: Backstage version bump to v1.54.6
+
 ## 1.27.0
 
 ### Minor Changes

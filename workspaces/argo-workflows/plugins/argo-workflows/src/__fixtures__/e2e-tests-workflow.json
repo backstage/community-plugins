@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "name": "e2e-tests-v7",
+    "namespace": "staging",
+    "uid": "wf-uid-007",
+    "labels": { "app": "my-service", "env": "staging" },
+    "creationTimestamp": "2026-04-30T11:00:00Z"
+  },
+  "status": {
+    "phase": "Failed",
+    "startedAt": "2026-04-30T11:00:03Z",
+    "finishedAt": "2026-04-30T11:12:17Z",
+    "message": "Step cypress-run failed: exit code 1",
+    "nodes": {
+      "e2e-tests-v7": {
+        "id": "e2e-tests-v7",
+        "name": "e2e-tests-v7",
+        "displayName": "e2e-tests-v7",
+        "type": "Steps",
+        "phase": "Failed",
+        "startedAt": "2026-04-30T11:00:03Z",
+        "finishedAt": "2026-04-30T11:12:17Z",
+        "children": ["e2e-setup"]
+      },
+      "e2e-setup": {
+        "id": "e2e-setup",
+        "name": "e2e-tests-v7.setup",
+        "displayName": "Setup Test Env",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-30T11:00:06Z",
+        "finishedAt": "2026-04-30T11:01:30Z",
+        "templateName": "setup-e2e",
+        "children": ["e2e-cypress"]
+      },
+      "e2e-cypress": {
+        "id": "e2e-cypress",
+        "name": "e2e-tests-v7.cypress-run",
+        "displayName": "Cypress Run",
+        "type": "Pod",
+        "phase": "Failed",
+        "startedAt": "2026-04-30T11:01:35Z",
+        "finishedAt": "2026-04-30T11:12:17Z",
+        "templateName": "cypress",
+        "message": "3 of 42 specs failed"
+      }
+    }
+  }
+}
