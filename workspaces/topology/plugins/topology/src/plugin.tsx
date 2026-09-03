@@ -28,7 +28,7 @@ const topologyEntityContent = EntityContentBlueprint.make({
     title: 'Topology',
     filter: isTopologyAvailable,
     loader: async () => {
-      const { TopologyEntityContent } = await import('../components/Topology');
+      const { TopologyEntityContent } = await import('./components/Topology');
       return <TopologyEntityContent />;
     },
   },
