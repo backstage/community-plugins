@@ -22,7 +22,7 @@ import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
 export const entityGithubPullRequestsCard = EntityCardBlueprint.make({
   name: 'overview',
   params: {
-    filter: 'kind:group',
+    filter: { kind: 'group' },
     loader: () =>
       import('../components/EntityTeamPullRequestsCard').then(m => (
         <m.EntityTeamPullRequestsCard />

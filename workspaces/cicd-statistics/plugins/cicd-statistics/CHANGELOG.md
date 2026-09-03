@@ -1,5 +1,17 @@
 # @backstage-community/plugin-cicd-statistics
 
+## 0.20.0
+
+### Minor Changes
+
+- 061ec29: Backstage version bump to v1.54.5
+
+## 0.19.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filter to use the modern object form.
+
 ## 0.19.0
 
 ### Minor Changes

@@ -53,7 +53,6 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
-import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import { buildDefaultRoleMetadata } from '../default-permissions/default-permissions';
 import {
@@ -105,13 +104,6 @@ const csvPermFile = resolve(
 );
 
 const mockClientKnex = Knex.knex({ client: MockClient });
-
-const pluginMetadataCollectorMock: Partial<PluginPermissionMetadataCollector> =
-  {
-    getPluginConditionRules: jest.fn().mockImplementation(),
-    getPluginPolicies: jest.fn().mockImplementation(),
-    getMetadataByPluginId: jest.fn().mockImplementation(),
-  };
 
 const modifiedBy = 'user:default/some-admin';
 
@@ -1173,6 +1165,188 @@ describe('RBACPermissionPolicy Tests', () => {
   });
 });
 
+describe('useOwnershipEntityRefs', () => {
+  const oncallRole = 'role:default/oncall';
+  const catalogRole = 'role:default/catalog-reader';
+  const oncallPolicies = [
+    [oncallRole, 'catalog.entity.read', 'read', 'allow'],
+    [oncallRole, 'catalog-entity', 'read', 'allow'],
+  ];
+  const catalogPolicies = [
+    [catalogRole, 'catalog.entity.create', 'use', 'allow'],
+    [catalogRole, 'catalog.entity.create', 'create', 'allow'],
+  ];
+
+  async function buildPolicy(
+    useOwnershipEntityRefs: boolean,
+    groupPolicies: string[][],
+    permissionPolicies: string[][],
+  ) {
+    const config = newConfig(
+      undefined,
+      [],
+      undefined,
+      undefined,
+      useOwnershipEntityRefs,
+    );
+    const adapter = await newAdapter(config);
+    const enfDelegate = await newEnforcerDelegate(
+      adapter,
+      config,
+      permissionPolicies,
+      groupPolicies,
+    );
+    const policy = await newPermissionPolicy(config, enfDelegate);
+    return { policy, enfDelegate };
+  }
+
+  it('should allow access when enabled and group is in ownershipEntityRefs without catalog memberOf', async () => {
+    const { policy } = await buildPolicy(
+      true,
+      [['group:default/oncall', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', [
+        'user:default/john.doe',
+        'group:default/oncall',
+      ]),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should deny access when disabled and group is only in ownershipEntityRefs', async () => {
+    const { policy } = await buildPolicy(
+      false,
+      [['group:default/oncall', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', [
+        'user:default/john.doe',
+        'group:default/oncall',
+      ]),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.DENY);
+  });
+
+  it('should merge catalog and token-derived roles', async () => {
+    const { policy } = await buildPolicy(
+      true,
+      [
+        ['group:default/oncall', oncallRole],
+        ['user:default/catalog-user', catalogRole],
+      ],
+      [...oncallPolicies, ...catalogPolicies],
+    );
+
+    const readDecision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/catalog-user', [
+        'user:default/catalog-user',
+        'group:default/oncall',
+      ]),
+    );
+    expect(readDecision.result).toBe(AuthorizeResult.ALLOW);
+
+    const createDecision = await policy.handle(
+      newPolicyQueryWithBasicPermission('catalog.entity.create', 'create'),
+      newPolicyQueryUser('user:default/catalog-user', [
+        'user:default/catalog-user',
+        'group:default/oncall',
+      ]),
+    );
+    expect(createDecision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should resolve direct user-to-role bindings via ownershipEntityRefs', async () => {
+    const { policy, enfDelegate } = await buildPolicy(
+      true,
+      [['user:default/john.doe', oncallRole]],
+      oncallPolicies,
+    );
+    jest.spyOn(enfDelegate, 'getRolesForUser').mockResolvedValueOnce([]);
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', ['user:default/john.doe']),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should fall back to user entity ref when ownershipEntityRefs is empty', async () => {
+    const { policy } = await buildPolicy(
+      true,
+      [['user:default/john.doe', oncallRole]],
+      oncallPolicies,
+    );
+
+    const decision = await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', []),
+    );
+
+    expect(decision.result).toBe(AuthorizeResult.ALLOW);
+  });
+
+  it('should deduplicate ownership entity refs before resolving roles', async () => {
+    const { policy, enfDelegate } = await buildPolicy(
+      true,
+      [['group:default/oncall', oncallRole]],
+      oncallPolicies,
+    );
+    const getFilteredGroupingPolicySpy = jest.spyOn(
+      enfDelegate,
+      'getFilteredGroupingPolicy',
+    );
+
+    await policy.handle(
+      newPolicyQueryWithResourcePermission(
+        'catalog.entity.read',
+        'catalog-entity',
+        'read',
+      ),
+      newPolicyQueryUser('user:default/john.doe', [
+        'group:default/oncall',
+        'group:default/oncall',
+      ]),
+    );
+
+    expect(getFilteredGroupingPolicySpy).toHaveBeenCalledTimes(1);
+    expect(getFilteredGroupingPolicySpy).toHaveBeenCalledWith(
+      0,
+      'group:default/oncall',
+    );
+  });
+});
+
 // Notice: There is corner case, when "resourced" permission policy can be defined not by resource type, but by name.
 describe('Policy checks for resourced permissions defined by name', () => {
   const roleMetadataStorageTest: RoleMetadataStorage = {
@@ -1729,7 +1903,6 @@ describe('Policy checks for conditional policies', () => {
       enfDelegate,
       roleMetadataStorageMock,
       mockClientKnex,
-      pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
       mockUserInfoService,
       mockAuthService,
     );
@@ -2173,6 +2346,7 @@ function newConfig(
   users?: Array<{ name: string }>,
   superUsers?: Array<{ name: string }>,
   policyDecisionPrecedence?: 'basic' | 'conditional',
+  useOwnershipEntityRefs?: boolean,
 ): Config {
   const testUsers = [
     {
@@ -2194,6 +2368,9 @@ function newConfig(
             superUsers: superUsers,
           },
           policyDecisionPrecedence: policyDecisionPrecedence ?? 'conditional',
+          ...(useOwnershipEntityRefs !== undefined
+            ? { useOwnershipEntityRefs }
+            : {}),
         },
       },
       backend: {
@@ -2354,7 +2531,6 @@ async function newPermissionPolicy(
     enfDelegate,
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
-    pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockUserInfoService,
     mockAuthService,
   );

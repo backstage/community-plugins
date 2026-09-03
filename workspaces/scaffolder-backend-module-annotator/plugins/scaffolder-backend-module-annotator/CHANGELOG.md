@@ -1,5 +1,15 @@
 # @backstage-community/plugin-scaffolder-backend-module-annotator
 
+## 2.19.0
+
+### Minor Changes
+
+- 4ab17c7: Backstage version bump to v1.53.0
+
+### Patch Changes
+
+- 26bfeb5: Document starting the dev harness with --config app-config.yaml and add a workspace-level app-config.yaml for parity with other harness workspaces.
+
 ## 2.18.1
 
 ### Patch Changes

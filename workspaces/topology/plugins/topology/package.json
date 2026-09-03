@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-topology",
-  "version": "2.16.0",
+  "version": "2.16.3",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -82,7 +82,7 @@
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "classnames": "2.x",
     "git-url-parse": "^13.1.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.0.0",
     "lodash": "^4.17.21",
     "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
@@ -91,7 +91,7 @@
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.0.0"
+    "react-router-dom": "^6.30.5"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
@@ -102,7 +102,7 @@
     "@backstage/plugin-catalog": "^2.0.1",
     "@backstage/test-utils": "^1.7.19",
     "@backstage/ui": "^0.13.2",
-    "@playwright/test": "1.61.1",
+    "@playwright/test": "1.62.1",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
