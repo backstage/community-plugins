@@ -25,7 +25,6 @@ import '@backstage/ui/css/styles.css';
 import ReactDOM from 'react-dom/client';
 import { createApp } from '@backstage/frontend-defaults';
 import { SignInPage } from '@backstage/core-components';
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import {
   ApiBlueprint,
   createFrontendModule,
@@ -45,15 +44,7 @@ const signInPage = SignInPageBlueprint.make({
           {...props}
           title="Select a sign-in method"
           align="center"
-          providers={[
-            'guest',
-            {
-              id: 'github-auth-provider',
-              title: 'GitHub',
-              message: 'Sign in using GitHub',
-              apiRef: githubAuthApiRef,
-            },
-          ]}
+          providers={['guest']}
         />
       ),
   },

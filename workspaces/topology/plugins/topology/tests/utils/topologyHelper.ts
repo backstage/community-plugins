@@ -23,11 +23,18 @@ export function isNfsAppMode(): boolean {
 }
 
 /**
- * Entity page tab `data-testid` for the Topology tab — legacy TabbedLayout uses
- * index 0; NFS entity tabs use the route path (see EntityContentBlueprint path).
+ * Locator for the Topology entity tab.
+ * Legacy TabbedLayout uses `header-tab-0`. NFS 1.54+ uses the BUI header nav
+ * (`Content navigation` links). Match the `/topology` path so the locator
+ * stays valid if the tab title is translated later.
  */
-export function topologyEntityHeaderTabTestId(): string {
-  return isNfsAppMode() ? 'header-tab-/topology' : 'header-tab-0';
+export function topologyEntityTab(page: Page) {
+  if (isNfsAppMode()) {
+    return page
+      .getByRole('navigation', { name: 'Content navigation' })
+      .locator('a[href$="/topology"]');
+  }
+  return page.getByTestId('header-tab-0');
 }
 
 export class Common {
@@ -35,6 +42,16 @@ export class Common {
 
   constructor(page: Page) {
     this.page = page;
+  }
+
+  /**
+   * Webpack's error overlay iframe sits on top of the page and intercepts
+   * pointer events, so Playwright clicks never reach Sign-in / Language.
+   */
+  async dismissWebpackOverlay() {
+    await this.page.evaluate(() => {
+      document.getElementById('webpack-dev-server-client-overlay')?.remove();
+    });
   }
 
   async waitForSideBarVisible() {
@@ -62,7 +79,20 @@ export class Common {
       await dialog.accept();
     });
 
-    await this.page.getByRole('button', { name: 'Enter' }).click();
+    await this.dismissWebpackOverlay();
+
+    const sidebarLink = this.page.locator('nav a').first();
+    if (await sidebarLink.isVisible().catch(() => false)) {
+      return;
+    }
+
+    const enterButton = this.page.getByRole('button', { name: 'Enter' });
+    if (isNfsAppMode()) {
+      await expect(this.page.getByText('Enter as a Guest User.')).toBeVisible({
+        timeout: 120_000,
+      });
+    }
+    await enterButton.click();
     await this.waitForSideBarVisible();
   }
 
@@ -70,7 +100,12 @@ export class Common {
     if (locale !== 'en') {
       const names = new Intl.DisplayNames([locale], { type: 'language' });
       const localeString = names.of(locale) || locale;
-      await this.page.getByRole('button', { name: 'Language' }).click();
+      await this.dismissWebpackOverlay();
+      const languageButton = this.page.getByRole('button', {
+        name: 'Language',
+      });
+      await expect(languageButton).toBeVisible({ timeout: 30_000 });
+      await languageButton.click();
       await this.page.getByRole('menuitem', { name: localeString }).click();
     }
   }
@@ -84,14 +119,32 @@ export class Common {
       await this.page.goto('/topology');
       return;
     }
+    await this.page.goto('/catalog/default/component/backstage/topology');
+    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
+  }
+
+  /**
+   * Opens the missing-permission Topology view. Legacy uses a standalone
+   * `/missing-permissions` page. NFS lists a `permission-denied` catalog
+   * entity; opening it and selecting the Topology tab shows the same content.
+   */
+  async navigateToMissingPermissions() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/missing-permissions');
+      return;
+    }
+
     await this.page.goto('/catalog');
     await this.page
-      .getByRole('link', { name: 'backstage', exact: true })
+      .getByRole('row', { name: /permission-denied/ })
+      .getByRole('link')
       .first()
       .click();
-    const tabTestId = topologyEntityHeaderTabTestId();
-    await expect(this.page.getByTestId(tabTestId)).toBeVisible();
-    await this.page.getByTestId(tabTestId).click();
+    await expect(
+      this.page.getByRole('heading', { name: 'permission-denied' }),
+    ).toBeVisible({ timeout: 30000 });
+    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
+    await topologyEntityTab(this.page).click();
   }
 
   async a11yCheck(testInfo: TestInfo) {
@@ -151,7 +204,7 @@ export class Common {
 
   async verifyDeploymentDetails(translations: TopologyMessages) {
     const deploymentDetails = this.page.getByTestId('deployment-details');
-    const deploymentlist = this.page.locator('dl');
+    const deploymentlist = this.page.getByTestId('details-tab').locator('dl');
     await expect(deploymentlist).toMatchAriaSnapshot(`
       - term: ${translations.details.name}
       - definition: test-deployment

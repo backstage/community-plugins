@@ -25,11 +25,13 @@ import '@backstage/ui/css/styles.css';
 import ReactDOM from 'react-dom/client';
 
 import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
   createFrontendModule,
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import {
   kubernetesApiRef,
@@ -47,6 +49,20 @@ import {
   mockKubernetesClient,
   mockKubernetesAuthProviderApi,
 } from './mocks';
+
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={['guest']}
+        />
+      ),
+  },
+});
 
 const catalogDevModule = createFrontendModule({
   pluginId: 'catalog',
@@ -119,7 +135,7 @@ const appDevModule = createFrontendModule({
 
 const devNavModule = createFrontendModule({
   pluginId: 'app',
-  extensions: [devSidebarContent],
+  extensions: [devSidebarContent, signInPage],
 });
 
 const app = createApp({

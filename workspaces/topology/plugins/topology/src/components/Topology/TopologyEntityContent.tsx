@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { TopologyComponent } from './TopologyComponent';
-export { TopologyEntityContent } from './TopologyEntityContent';
-export { TopologyWorkloadView } from './TopologyWorkloadView';
-export { TopologyEmptyState } from './TopologyEmptyState';
+import { FullPage } from '@backstage/ui';
+
+import { TopologyComponent } from './TopologyComponent';
+
+/**
+ * Catalog entity content for the New Frontend System.
+ *
+ * NFS entity pages do not give the outlet a definite height, so `height: 100%`
+ * on the graph would collapse. FullPage sizes from `--bui-header-height`
+ * instead of a magic viewport offset, so legacy pages can keep filling the parent.
+ */
+export const TopologyEntityContent = () => (
+  <FullPage>
+    <TopologyComponent />
+  </FullPage>
+);
