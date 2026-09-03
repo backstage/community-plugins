@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
+import { ApacheAirflowApi } from '../../api';
 import { DagRun } from '../../api/types/Dags';
 import { render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
