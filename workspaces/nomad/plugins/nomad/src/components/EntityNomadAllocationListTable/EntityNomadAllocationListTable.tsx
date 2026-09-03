@@ -16,20 +16,14 @@
 
 import { DateTime } from 'luxon';
 import {
-  Link,
   ResponseErrorPanel,
-  StatusError,
-  StatusOK,
-  StatusPending,
-  StatusRunning,
-  Table,
-  TableColumn,
+  Link as CoreLink,
 } from '@backstage/core-components';
 import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Allocation, nomadApiRef } from '../../api';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {
@@ -39,65 +33,27 @@ import {
   isNomadAllocationsAvailable,
 } from '../../annotations';
 import useAsync from 'react-use/esm/useAsync';
+import {
+  Table,
+  Cell,
+  CellText,
+  Tag,
+  TagGroup,
+  useTable,
+  Header,
+  Container,
+} from '@backstage/ui';
+import type { ColumnConfig } from '@backstage/ui';
 
-type rowType = Allocation & { nomadAddr: string };
+type rowType = Allocation & { nomadAddr: string; id: string };
 
-const columns: TableColumn<rowType>[] = [
-  {
-    title: 'ID',
-    field: 'ID',
-    render: row => (
-      <Link to={`${row.nomadAddr}/ui/allocations/${row.ID}`} underline="always">
-        {row.ID.split('-')[0]}
-      </Link>
-    ),
-  },
-  {
-    title: 'Task Group',
-    field: 'TaskGroup',
-    render: row => (
-      <Link
-        to={`${row.nomadAddr}/ui/jobs/${row.JobID}/${row.TaskGroup}`}
-        underline="always"
-      >
-        {row.TaskGroup}
-      </Link>
-    ),
-  },
-  {
-    title: 'Created',
-    field: 'CreateTime',
-    render: row =>
-      DateTime.fromMillis(row.CreateTime / 1000000).toLocaleString(
-        DateTime.DATETIME_MED_WITH_SECONDS,
-      ),
-  },
-  {
-    title: 'Status',
-    field: 'ClientStatus',
-    render: row =>
-      ({
-        pending: <StatusPending>pending</StatusPending>,
-        running: <StatusOK>running</StatusOK>,
-        failed: <StatusError>failed</StatusError>,
-        complete: <StatusRunning>complete</StatusRunning>,
-      }[row.ClientStatus] || <text>{row.ClientStatus}</text>),
-  },
-  {
-    title: 'Version',
-    field: 'JobVersion',
-    render: row => row.JobVersion,
-  },
-  {
-    title: 'Client',
-    field: 'NodeID',
-    render: row => (
-      <Link to={`${row.nomadAddr}/ui/clients/${row.NodeID}`} underline="always">
-        {row.ID.split('-')[0]}
-      </Link>
-    ),
-  },
-];
+const renderStatusTag = (status: string) => {
+  return (
+    <TagGroup>
+      <Tag>{status}</Tag>
+    </TagGroup>
+  );
+};
 
 /**
  * EntityNomadAllocationListTable is roughly based off Nomad's Allocations tab's view.
@@ -115,13 +71,6 @@ export const EntityNomadAllocationListTable = () => {
   // Store results of calling API
   const [allocations, setAllocations] = useState<rowType[]>([]);
   const [err, setErr] = useState<Error>();
-
-  // Check that attributes are available
-  if (!isNomadAllocationsAvailable(entity)) {
-    <MissingAnnotationEmptyState
-      annotation={[NOMAD_JOB_ID_ANNOTATION, NOMAD_GROUP_ANNOTATION]}
-    />;
-  }
 
   // Get plugin attributes
   const namespace =
@@ -179,25 +128,127 @@ export const EntityNomadAllocationListTable = () => {
     return () => clearTimeout(interval);
   }, [allocations, entity]);
 
+  // Build column configuration for BUI Table
+  const columnConfig: ColumnConfig<rowType>[] = useMemo(
+    () => [
+      {
+        id: 'id',
+        label: 'ID',
+        isRowHeader: true,
+        cell: (row: rowType) => (
+          <Cell>
+            <CoreLink
+              to={`${row.nomadAddr}/ui/allocations/${row.ID}`}
+              underline="always"
+            >
+              {row.ID.split('-')[0]}
+            </CoreLink>
+          </Cell>
+        ),
+        isSortable: true,
+      },
+      {
+        id: 'taskGroup',
+        label: 'Task Group',
+        cell: (row: rowType) => (
+          <Cell>
+            <CoreLink
+              to={`${row.nomadAddr}/ui/jobs/${row.JobID}/${row.TaskGroup}`}
+              underline="always"
+            >
+              {row.TaskGroup}
+            </CoreLink>
+          </Cell>
+        ),
+        isSortable: true,
+      },
+      {
+        id: 'createTime',
+        label: 'Created',
+        cell: (row: rowType) => (
+          <CellText
+            title={DateTime.fromMillis(row.CreateTime / 1000000).toLocaleString(
+              DateTime.DATETIME_MED_WITH_SECONDS,
+            )}
+          />
+        ),
+        isSortable: true,
+      },
+      {
+        id: 'clientStatus',
+        label: 'Status',
+        cell: (row: rowType) => (
+          <Cell>{renderStatusTag(row.ClientStatus)}</Cell>
+        ),
+        isSortable: true,
+      },
+      {
+        id: 'jobVersion',
+        label: 'Version',
+        cell: (row: rowType) => <CellText title={String(row.JobVersion)} />,
+        isSortable: true,
+      },
+      {
+        id: 'nodeId',
+        label: 'Client',
+        cell: (row: rowType) => (
+          <Cell>
+            <CoreLink
+              to={`${row.nomadAddr}/ui/clients/${row.NodeID}`}
+              underline="always"
+            >
+              {row.ID.split('-')[0]}
+            </CoreLink>
+          </Cell>
+        ),
+        isSortable: true,
+      },
+    ],
+    [],
+  );
+
+  // Custom search function
+  const searchFn = (items: rowType[], search: string) => {
+    const lowerSearch = search.toLowerCase();
+    return items.filter(
+      item =>
+        item.ID.toLowerCase().includes(lowerSearch) ||
+        item.TaskGroup.toLowerCase().includes(lowerSearch) ||
+        item.ClientStatus.toLowerCase().includes(lowerSearch) ||
+        item.NodeID.toLowerCase().includes(lowerSearch),
+    );
+  };
+
+  // Setup table with search and pagination
+  const { tableProps } = useTable<rowType>({
+    mode: 'complete',
+    data: allocations,
+    searchFn,
+    paginationOptions: { pageSize: 10 },
+  });
+
+  // Check that attributes are available
+  if (!isNomadAllocationsAvailable(entity)) {
+    return (
+      <MissingAnnotationEmptyState
+        annotation={[NOMAD_JOB_ID_ANNOTATION, NOMAD_GROUP_ANNOTATION]}
+      />
+    );
+  }
+
   // Store a ref to a potential error
   if (err) {
     return <ResponseErrorPanel error={err} />;
   }
 
   return (
-    <Table<rowType>
-      title="Allocations"
-      options={{
-        search: true,
-        padding: 'dense',
-        sorting: true,
-        draggable: false,
-        paging: false,
-        debounceInterval: 500,
-        filterCellStyle: { padding: '0 16px 0 20px' },
-      }}
-      columns={columns}
-      data={allocations}
-    />
+    <Container>
+      <Header title="Allocations" />
+      <Table
+        aria-label="Nomad Allocations"
+        columnConfig={columnConfig}
+        {...tableProps}
+      />
+    </Container>
   );
 };
