@@ -5,6 +5,7 @@
 ```ts
 import { BackstagePlugin } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
+import { FrontendModule } from '@backstage/frontend-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
@@ -97,6 +98,9 @@ export const tektonTranslationRef: TranslationRef<
 
 // @public
 export const tektonTranslations: TranslationResource<'tekton'>;
+
+// @public
+export const tektonTranslationsModule: FrontendModule;
 
 // (No @packageDocumentation comment for this package)
 ```

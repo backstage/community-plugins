@@ -1,0 +1,55 @@
+# Overlay for multi-user RBAC testing with Keycloak OIDC.
+# Usage: yarn start:multi-user
+#
+# Starts both frontend and backend with OIDC auth.
+# Requires Keycloak: yarn workspace @backstage-community/plugin-rbac-backend start:keycloak
+
+discovery:
+  endpoints:
+    - target:
+        internal: http://127.0.0.1:7007/api/{{pluginId}}
+      plugins: ['*']
+
+backend:
+  auth:
+    keys:
+      - secret: ${BACKEND_SECRET}
+
+auth:
+  session:
+    secret: ${SESSION_SECRET}
+  environment: development
+  providers:
+    guest: {}
+    oidc:
+      development:
+        metadataUrl: ${KEYCLOAK_BASE_URL}/realms/backstage
+        clientId: ${KEYCLOAK_CLIENT_ID}
+        clientSecret: ${KEYCLOAK_CLIENT_SECRET}
+        prompt: auto
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+
+catalog:
+  rules:
+    - allow: [Component, System, Group, User, Resource, Location, Template, API]
+  locations:
+    - type: file
+      target: plugins/rbac-backend/__fixtures__/rbac/all.yaml
+      rules:
+        - allow: [User, Group, Component, System]
+
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - catalog
+      - permission
+      - scaffolder
+    policies-csv-file: plugins/rbac-backend/__fixtures__/rbac/rbac-policy.csv
+    admin:
+      users:
+        - name: user:default/admin
+      superUsers:
+        - name: user:default/super_user

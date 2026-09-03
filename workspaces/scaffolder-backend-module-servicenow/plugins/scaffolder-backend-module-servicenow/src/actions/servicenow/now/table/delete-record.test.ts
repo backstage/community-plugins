@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { registerMswTestHooks } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
@@ -20,17 +21,16 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { deleteRecordAction } from '.';
+import {
+  ERROR_BODY_WITHOUT_MESSAGE,
+  LOCAL_ADDR,
+  SERVICENOW_CONFIG,
+  basicAuthHeader,
+  resetOpenAPIConfig,
+} from './__testUtils__/msw';
 import resSysId404 from './__fixtures__/{tableName}/{sys_id}/404.json';
 import res401 from './__fixtures__/{tableName}/401.json';
 import resTable404 from './__fixtures__/{tableName}/404.json';
-
-const LOCAL_ADDR = 'https://dev12345.service-now.com' as const;
-
-const SERVICENOW_CONFIG = {
-  baseUrl: LOCAL_ADDR,
-  username: 'admin',
-  password: 'password', // NOSONAR
-} as const;
 
 const handlers = [
   rest.delete(
@@ -38,22 +38,14 @@ const handlers = [
     (req, res, ctx) => {
       const { tableName, sys_id } = req.params;
 
-      // Check if the Authorization header is set
-      if (
-        req.headers.get('Authorization') !==
-        `Basic ${btoa(
-          `${SERVICENOW_CONFIG.username}:${SERVICENOW_CONFIG.password}`,
-        )}`
-      ) {
+      if (req.headers.get('Authorization') !== basicAuthHeader()) {
         return res(ctx.status(401), ctx.json(res401));
       }
 
-      // Check if the table name is valid
       if (tableName !== 'incident') {
         return res(ctx.status(404), ctx.json(resTable404));
       }
 
-      // Check if the sys_id is valid
       if (sys_id !== 'valid-sys-id') {
         return res(ctx.status(404), ctx.json(resSysId404));
       }
@@ -64,6 +56,7 @@ const handlers = [
 ];
 
 const server = setupServer(...handlers);
+registerMswTestHooks(server);
 
 describe('deleteRecord', () => {
   const action = deleteRecordAction({
@@ -74,17 +67,14 @@ describe('deleteRecord', () => {
 
   const mockContext = createMockActionContext();
 
-  beforeAll(() => server.listen());
-
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   afterEach(() => {
-    server.restoreHandlers();
+    server.resetHandlers();
+    resetOpenAPIConfig();
   });
-
-  afterAll(() => server.close());
 
   it('should delete a record', async () => {
     const input = {
@@ -146,9 +136,29 @@ describe('deleteRecord', () => {
     await expect(
       deleteRecordAction({
         config: new ConfigReader({
-          servicenow: { ...SERVICENOW_CONFIG, password: 'invalid-password' }, // NOSONAR
+          servicenow: { ...SERVICENOW_CONFIG, password: 'invalid-password' },
         }),
       }).handler(context),
     ).rejects.toThrow(res401.error.message);
+  });
+
+  it('should throw a useful error when the API body lacks error.message', async () => {
+    server.use(
+      rest.delete(
+        `${LOCAL_ADDR}/api/now/table/:tableName/:sys_id`,
+        (_req, res, ctx) =>
+          res(
+            ctx.status(400, 'Bad Request'),
+            ctx.json(ERROR_BODY_WITHOUT_MESSAGE),
+          ),
+      ),
+    );
+
+    const context = {
+      ...mockContext,
+      input: { tableName: 'incident', sysId: 'valid-sys-id' },
+    };
+
+    await expect(action.handler(context)).rejects.toThrow('Bad Request');
   });
 });

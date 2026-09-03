@@ -14,7 +14,7 @@ This backend plugin resolves Checkmarx One data for a Backstage catalog entity b
 yarn --cwd packages/backend add @backstage-community/plugin-checkmarx-backend
 ```
 
-Add the plugin to `packages/backend/src/index.ts`:
+Add the plugin to your Backstage backend:
 
 ```ts
 backend.add(import('@backstage-community/plugin-checkmarx-backend'));

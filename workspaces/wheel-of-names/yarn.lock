@@ -13539,9 +13539,9 @@ __metadata:
   linkType: hard
 
 "ip-address@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "ip-address@npm:10.0.1"
-  checksum: 10/09731acda32cd8e14c46830c137e7e5940f47b36d63ffb87c737331270287d631cf25aa95570907a67d3f919fdb25f4470c404eda21e62f22e0a55927f4dd0fb
+  version: 10.4.0
+  resolution: "ip-address@npm:10.4.0"
+  checksum: 10/8a286dd112a88c372b10c706caca14dcf5ed029a11c3911062ad8937ca0f951aa513ecacf82e15ffcf6343749ae6c079dd9741282fc94033a06ff1b7bd6ce69a
   languageName: node
   linkType: hard
 
@@ -14246,14 +14246,14 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.6.1, js-yaml@npm:^3.8.3":
-  version: 3.14.1
-  resolution: "js-yaml@npm:3.14.1"
+  version: 3.15.1
+  resolution: "js-yaml@npm:3.15.1"
   dependencies:
     argparse: "npm:^1.0.7"
     esprima: "npm:^4.0.0"
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 10/9e22d80b4d0105b9899135365f746d47466ed53ef4223c529b3c0f7a39907743fdbd3c4379f94f1106f02755b5e90b2faaf84801a891135544e1ea475d1a1379
+  checksum: 10/905842ce08c18b154ff2c187ff81bb41294cc5dda214331b5d9b8bcf395894e48b00fa37b9d4dd4c3ffec672b7496a94558e3876d3a8ad4d12b06248112e6d92
   languageName: node
   linkType: hard
 

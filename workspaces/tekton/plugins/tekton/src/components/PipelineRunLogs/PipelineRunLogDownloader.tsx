@@ -18,6 +18,7 @@ import type { FC } from 'react';
 import { useMemo } from 'react';
 
 import { V1Pod } from '@kubernetes/client-node';
+import { useTheme } from '@mui/material/styles';
 import { Flex, FlexItem } from '@patternfly/react-core';
 
 import { PipelineRunKind } from '@backstage-community/plugin-tekton-react';
@@ -51,6 +52,7 @@ const PipelineRunLogDownloader: FC<{
       ),
     [filteredPods],
   );
+  const theme = useTheme();
   const { t } = useTranslationRef(tektonTranslationRef);
 
   const activeTaskPod: V1Pod =
@@ -63,6 +65,7 @@ const PipelineRunLogDownloader: FC<{
     <Flex
       data-testid="pipelinerun-logs-downloader"
       justifyContent={{ default: 'justifyContentFlexEnd' }}
+      style={{ marginBottom: theme.spacing(2) }}
     >
       <FlexItem>
         <PodLogsDownloadLink

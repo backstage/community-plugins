@@ -1,12 +1,6 @@
 # Argo CD plugin for Backstage
 
-## Getting started
-
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/argocd/deployment-lifecycle](http://localhost:3000/argocd/deployment-lifecycle).
-
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+For local development, the `dev/` harness, scoped test commands, and smoke checklists, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## For Administrators
 
@@ -131,13 +125,42 @@ argocd:
 
 ## How to add Argo CD frontend plugin to Backstage app
 
-1. Install the Argo CD plugin using the following command:
+Install the Argo CD plugin using the following command:
 
 ```bash
 yarn workspace app add @backstage-community/plugin-argocd
 ```
 
-2. Add deployment summary and deployment lifecycle compoennt to the `entityPage.tsx` source file:
+### New frontend system
+
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Deployment Lifecycle and Deployment Summary entity tabs are registered automatically for entities with Argo CD annotations.
+
+```ts
+import argocdPlugin, {
+  argocdTranslationsModule,
+} from '@backstage-community/plugin-argocd';
+
+export const app = createApp({
+  features: [
+    // ...
+    argocdPlugin,
+    argocdTranslationsModule,
+  ],
+});
+```
+
+### Legacy frontend system
+
+If you are using the legacy frontend system, import the plugin from the `/legacy` subpath and add the deployment summary and deployment lifecycle components to the `entityPage.tsx` source file. Register translations with `.addTranslationResource(argocdTranslations)` in `App.tsx`.
+
+```ts
+// packages/app/src/App.tsx
+import { argocdTranslations } from '@backstage-community/plugin-argocd/legacy';
+
+createApp({
+  // ...
+}).addTranslationResource(argocdTranslations);
+```
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -145,7 +168,7 @@ import {
   ArgocdDeploymentSummary,
   ArgocdDeploymentLifecycle,
   isArgocdConfigured,
-} from '@backstage-community/plugin-argocd';
+} from '@backstage-community/plugin-argocd/legacy';
 
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">

@@ -58,6 +58,10 @@ export type RBACAPI = {
     page?: number,
     pageSize?: number,
   ) => Promise<MemberEntity[] | Response>;
+  getMembersByRefs: (
+    entityRefs: string[],
+  ) => Promise<(MemberEntity | undefined)[] | Response>;
+  searchMembers: (searchTerm: string) => Promise<MemberEntity[] | Response>;
   listPermissions: () => Promise<PluginPermissionMetaData[] | Response>;
   createRole: (role: Role) => Promise<RoleError | Response>;
   updateRole: (oldRole: Role, newRole: Role) => Promise<RoleError | Response>;

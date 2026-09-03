@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import type { SchedulerServiceTaskScheduleDefinition } from '@backstage/backend-plugin-api';
+import {
+  createBackendModule,
+  type SchedulerServiceTaskScheduleDefinition,
+} from '@backstage/backend-plugin-api';
 import { mockServices, startTestBackend } from '@backstage/backend-test-utils';
 import catalogPlugin from '@backstage/plugin-catalog-backend';
 import type { EntityProvider } from '@backstage/plugin-catalog-node';
 import { catalogProcessingExtensionPoint } from '@backstage/plugin-catalog-node';
 
 import { CONFIG } from '../../__fixtures__/helpers';
+import { keycloakTransformerExtensionPoint } from '../extensions';
+import type { GroupTransformer, UserTransformer } from '../lib/types';
+import { KeycloakOrgEntityProvider } from '../providers/KeycloakOrgEntityProvider';
 import { catalogModuleKeycloakEntityProvider } from './catalogModuleKeycloakEntityProvider';
 
 describe('catalogModuleKeycloakEntityProvider', () => {
@@ -35,7 +41,7 @@ describe('catalogModuleKeycloakEntityProvider', () => {
   };
 
   it('should return an empty array if no providers are configured', async () => {
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
       features: [
         catalogModuleKeycloakEntityProvider,
@@ -43,10 +49,12 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    // Only the Keycloak provider should be in the array
-    expect((addedProviders as EntityProvider[][]).length).toEqual(1);
-    // Keycloak returns an array of entity providers
-    expect((addedProviders as EntityProvider[][])[0].length).toEqual(0);
+    try {
+      expect((addedProviders as EntityProvider[][]).length).toEqual(1);
+      expect((addedProviders as EntityProvider[][])[0].length).toEqual(0);
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should not run without a baseUrl', async () => {
@@ -83,7 +91,7 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       },
     });
 
-    await startTestBackend({
+    const backend = await startTestBackend({
       features: [
         catalogPlugin,
         catalogModuleKeycloakEntityProvider,
@@ -92,8 +100,12 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    expect(usedSchedule?.frequency).toEqual({ minutes: 30 });
-    expect(usedSchedule?.timeout).toEqual({ minutes: 3 });
+    try {
+      expect(usedSchedule?.frequency).toEqual({ minutes: 30 });
+      expect(usedSchedule?.timeout).toEqual({ minutes: 3 });
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should return a single provider with a specified schedule', async () => {
@@ -106,7 +118,7 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       },
     });
 
-    await startTestBackend({
+    const backend = await startTestBackend({
       features: [
         catalogPlugin,
         catalogModuleKeycloakEntityProvider,
@@ -131,12 +143,16 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    expect(usedSchedule?.frequency).toEqual({ months: 1 });
-    expect(usedSchedule?.timeout).toEqual({ minutes: 5 });
+    try {
+      expect(usedSchedule?.frequency).toEqual({ months: 1 });
+      expect(usedSchedule?.timeout).toEqual({ minutes: 5 });
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should return multiple providers', async () => {
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
       features: [
         catalogModuleKeycloakEntityProvider,
@@ -159,14 +175,16 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    // Only the Keycloak provider should be in the array
-    expect((addedProviders as EntityProvider[][]).length).toEqual(1);
-    // Keycloak returns an array of entity providers
-    expect((addedProviders as EntityProvider[][])[0].length).toEqual(2);
+    try {
+      expect((addedProviders as EntityProvider[][]).length).toEqual(1);
+      expect((addedProviders as EntityProvider[][])[0].length).toEqual(2);
+    } finally {
+      await backend.stop();
+    }
   });
 
   it('should return provider name', async () => {
-    await startTestBackend({
+    const backend = await startTestBackend({
       extensionPoints: [[catalogProcessingExtensionPoint, extensionPoint]],
       features: [
         catalogModuleKeycloakEntityProvider,
@@ -176,11 +194,121 @@ describe('catalogModuleKeycloakEntityProvider', () => {
       ],
     });
 
-    // Only the Keycloak provider should be in the array
-    expect((addedProviders as EntityProvider[][]).length).toEqual(1);
-    // Keycloak returns an array of entity providers
-    expect(
-      (addedProviders as EntityProvider[][])[0][0].getProviderName(),
-    ).toEqual('KeycloakOrgEntityProvider:default');
+    try {
+      expect((addedProviders as EntityProvider[][]).length).toEqual(1);
+      expect(
+        (addedProviders as EntityProvider[][])[0][0].getProviderName(),
+      ).toEqual('KeycloakOrgEntityProvider:default');
+    } finally {
+      await backend.stop();
+    }
+  });
+});
+
+describe('keycloakTransformerExtensionPoint', () => {
+  const customUserTransformer: UserTransformer = async entity => entity;
+  const customGroupTransformer: GroupTransformer = async entity => entity;
+
+  const keycloakTransformerTestModule = createBackendModule({
+    pluginId: 'catalog',
+    moduleId: 'test-keycloak-transformer',
+    register(reg) {
+      reg.registerInit({
+        deps: { keycloak: keycloakTransformerExtensionPoint },
+        async init({ keycloak }) {
+          keycloak.setUserTransformer(customUserTransformer);
+          keycloak.setGroupTransformer(customGroupTransformer);
+        },
+      });
+    },
+  });
+
+  it('passes transformers set via the extension point to KeycloakOrgEntityProvider', async () => {
+    const fromConfigSpy = jest.spyOn(KeycloakOrgEntityProvider, 'fromConfig');
+
+    let backend: Awaited<ReturnType<typeof startTestBackend>> | undefined;
+    try {
+      backend = await startTestBackend({
+        extensionPoints: [
+          [
+            catalogProcessingExtensionPoint,
+            {
+              addEntityProvider: jest.fn(),
+            },
+          ],
+        ],
+        features: [
+          keycloakTransformerTestModule,
+          catalogModuleKeycloakEntityProvider,
+          mockServices.rootConfig.factory({ data: CONFIG }),
+        ],
+      });
+
+      expect(fromConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          config: expect.anything(),
+          logger: expect.anything(),
+        }),
+        expect.objectContaining({
+          userTransformer: customUserTransformer,
+          groupTransformer: customGroupTransformer,
+        }),
+      );
+    } finally {
+      await backend?.stop();
+      fromConfigSpy.mockRestore();
+    }
+  });
+
+  it('rejects setting the user transformer more than once', async () => {
+    const duplicateUserTransformerModule = createBackendModule({
+      pluginId: 'catalog',
+      moduleId: 'test-duplicate-user-transformer',
+      register(reg) {
+        reg.registerInit({
+          deps: { keycloak: keycloakTransformerExtensionPoint },
+          async init({ keycloak }) {
+            keycloak.setUserTransformer(async entity => entity);
+            keycloak.setUserTransformer(async entity => entity);
+          },
+        });
+      },
+    });
+
+    await expect(
+      startTestBackend({
+        features: [
+          catalogModuleKeycloakEntityProvider,
+          duplicateUserTransformerModule,
+          mockServices.rootConfig.factory({ data: CONFIG }),
+        ],
+      }),
+    ).rejects.toThrow('User transformer may only be set once');
+  });
+
+  it('rejects setting the group transformer more than once', async () => {
+    const duplicateGroupTransformerModule = createBackendModule({
+      pluginId: 'catalog',
+      moduleId: 'test-duplicate-group-transformer',
+      register(reg) {
+        reg.registerInit({
+          deps: { keycloak: keycloakTransformerExtensionPoint },
+          async init({ keycloak }) {
+            keycloak.setGroupTransformer(async entity => entity);
+            keycloak.setGroupTransformer(async entity => entity);
+          },
+        });
+      },
+    });
+
+    await expect(
+      startTestBackend({
+        features: [
+          catalogModuleKeycloakEntityProvider,
+          duplicateGroupTransformerModule,
+          mockServices.rootConfig.factory({ data: CONFIG }),
+        ],
+      }),
+    ).rejects.toThrow('Group transformer may only be set once');
   });
 });
