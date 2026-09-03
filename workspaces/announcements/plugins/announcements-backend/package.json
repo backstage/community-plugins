@@ -46,12 +46,12 @@
     "@backstage/plugin-notifications-node": "backstage:^",
     "@backstage/plugin-permission-common": "backstage:^",
     "@backstage/plugin-signals-node": "backstage:^",
-    "express": "^4.17.1",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
     "knex": "^3.0.1",
     "luxon": "^3.2.0",
     "slugify": "^1.6.6",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
