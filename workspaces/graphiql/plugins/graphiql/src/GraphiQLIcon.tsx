@@ -22,15 +22,7 @@ import { SVGProps } from 'react';
  * @public
  */
 export const GraphiQLIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    width="1em"
-    height="1em"
-    fill="currentColor"
-    focusable="false"
-    aria-hidden="true"
-    {...props}
-  >
+  <svg viewBox="0 0 24 24" {...props}>
     <g>
       <path d="M 3.449219 18.160156 L 2.585938 17.660156 L 12.195312 1.019531 L 13.058594 1.515625 Z M 3.449219 18.160156" />
       <path d="M 2.386719 16.332031 L 21.605469 16.332031 L 21.605469 17.328125 L 2.386719 17.328125 Z M 2.386719 16.332031" />
