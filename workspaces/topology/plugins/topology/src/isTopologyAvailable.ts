@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  createPlugin,
-  createComponentExtension,
-} from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
+
+const KUBERNETES_ID_ANNOTATION = 'backstage.io/kubernetes-id';
+const KUBERNETES_NAMESPACE_ANNOTATION = 'backstage.io/kubernetes-namespace';
 
 /**
+ * Returns true when the entity has Kubernetes annotations used by Topology.
+ *
  * @public
  */
-export const topologyPlugin = createPlugin({
-  id: 'topology',
-});
-
-/**
- * @public
- */
-export const TopologyPage = topologyPlugin.provide(
-  createComponentExtension({
-    name: 'TopologyPage',
-    component: {
-      lazy: () =>
-        import('./components/Topology').then(m => m.TopologyComponent),
-    },
-  }),
-);
+export const isTopologyAvailable = (entity: Entity) => {
+  const annotations = entity.metadata.annotations;
+  return Boolean(
+    annotations?.[KUBERNETES_ID_ANNOTATION] ||
+      annotations?.[KUBERNETES_NAMESPACE_ANNOTATION],
+  );
+};

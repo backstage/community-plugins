@@ -13,28 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
 import {
   createFrontendPlugin,
   type FrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
-const KUBERNETES_ID_ANNOTATION = 'backstage.io/kubernetes-id';
-const KUBERNETES_NAMESPACE_ANNOTATION = 'backstage.io/kubernetes-namespace';
-
-/**
- * Returns true when the entity has Kubernetes annotations used by Topology.
- *
- * @alpha
- */
-export const isTopologyAvailable = (entity: Entity) => {
-  const annotations = entity.metadata.annotations;
-  return Boolean(
-    annotations?.[KUBERNETES_ID_ANNOTATION] ||
-      annotations?.[KUBERNETES_NAMESPACE_ANNOTATION],
-  );
-};
+import { isTopologyAvailable } from './isTopologyAvailable';
 
 const topologyEntityContent = EntityContentBlueprint.make({
   name: 'topology',
@@ -43,7 +28,7 @@ const topologyEntityContent = EntityContentBlueprint.make({
     title: 'Topology',
     filter: isTopologyAvailable,
     loader: async () => {
-      const { TopologyComponent } = await import('../components/Topology');
+      const { TopologyComponent } = await import('./components/Topology');
       return <TopologyComponent />;
     },
   },
@@ -52,13 +37,12 @@ const topologyEntityContent = EntityContentBlueprint.make({
 /**
  * Topology plugin for the New Frontend System.
  *
- * @alpha
+ * @public
  */
 const topologyPlugin: FrontendPlugin = createFrontendPlugin({
   pluginId: 'topology',
+  info: { packageJson: () => import('../package.json') },
   extensions: [topologyEntityContent],
 });
 
 export default topologyPlugin;
-
-export * from '../translations';

@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createTranslationResource } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendModule,
+  createTranslationResource,
+} from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { topologyTranslationRef } from './ref';
 
 /**
@@ -32,3 +36,22 @@ export const topologyTranslations = createTranslationResource({
 });
 
 export { topologyTranslationRef };
+
+/**
+ * App module that automatically registers the topology plugin translations.
+ *
+ * @public
+ */
+export const topologyTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'topology-translations',
+      params: {
+        resource: topologyTranslations,
+      },
+    }),
+  ],
+});
+
+export default topologyTranslationsModule;

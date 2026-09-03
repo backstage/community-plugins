@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CodeSnippet } from '@backstage/core-components';
+import { topologyPlugin } from './legacy';
 
-import { V1Ingress } from '@kubernetes/client-node';
-import { dump } from 'js-yaml';
-
-type IngressRulesProps = { ingress: V1Ingress };
-
-const IngressRules = ({ ingress }: IngressRulesProps) => {
-  return <CodeSnippet text={dump(ingress.spec)} language="yaml" />;
-};
-
-export default IngressRules;
+describe('topology legacy', () => {
+  it('should export plugin', () => {
+    expect(topologyPlugin).toBeDefined();
+    expect(topologyPlugin.getId()).toBe('topology');
+  });
+});
