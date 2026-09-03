@@ -62,7 +62,7 @@
     "@backstage/backend-test-utils": "^1.11.4",
     "@backstage/cli": "^0.36.3",
     "@backstage/core-plugin-api": "^1.12.7",
-    "@backstage/plugin-auth-backend": "^0.29.1",
+    "@backstage/plugin-auth-backend": "^0.30.0",
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.2.20",
     "@backstage/plugin-auth-backend-module-oidc-provider": "^0.4.17",
     "@backstage/plugin-catalog-backend": "^3.8.0",
