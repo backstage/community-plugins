@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui/css/styles.css';
+
 import { Page, Header, TabbedLayout } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
@@ -24,7 +23,7 @@ import {
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { mockApis, TestApiProvider } from '@backstage/test-utils';
+import { TestApiProvider } from '@backstage/test-utils';
 
 import { tektonTranslations } from '../src/translations';
 import { TektonCI, tektonPlugin } from '../src/legacy';
@@ -33,9 +32,8 @@ import {
   mockKubernetesAuthProviderApi,
   mockKubernetesClient,
   mockKubernetesProxyApi,
+  mockPermissionApi,
 } from './mocks';
-
-const mockPermissionApi = mockApis.permission({});
 
 createDevApp()
   .addTranslationResource(tektonTranslations)

@@ -15,8 +15,10 @@
  */
 
 /**
- * New Frontend System (NFS) dev app for the Tekton plugin, with mocked
- * catalog and Kubernetes data.
+ * Playwright NFS entry. Same mocked NFS app as `yarn start` (`dev/index.tsx`).
+ *
+ * Must be self-contained: a static `import './index'` compiles under rspack
+ * but React never mounts, so Playwright sees a blank page.
  */
 
 import '@backstage/cli/asset-types';

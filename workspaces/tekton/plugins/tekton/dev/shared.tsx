@@ -13,184 +13,158 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
-import {
-  KubernetesApi,
-  KubernetesProxyApi,
-} from '@backstage/plugin-kubernetes-react';
 
-import { mockKubernetesPlrResponse } from '../src/__fixtures__/1-pipelinesData';
 import {
-  acsDeploymentCheck,
-  acsImageCheckResults,
-  acsImageScanResult,
-} from '../src/__fixtures__/advancedClusterSecurityData';
-import { enterpriseContractResult } from '../src/__fixtures__/enterpriseContractData';
+  cloneElement,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
+import { appThemeApiRef, useApi } from '@backstage/core-plugin-api';
+import useObservable from 'react-use/esm/useObservable';
+import { Box, MenuItem, MenuSection, Popover } from '@backstage/ui';
+import { RiContrastLine } from '@remixicon/react';
+import { Menu } from 'react-aria-components';
+import {
+  Sidebar,
+  SidebarGroup,
+  SidebarItem,
+  SidebarScrollWrapper,
+  SidebarSpace,
+} from '@backstage/core-components';
+import { ExtensionDefinition } from '@backstage/frontend-plugin-api';
+import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import {
+  SidebarLanguageSwitcher,
+  SidebarSignOutButton,
+} from '@backstage/dev-utils';
 
-export const mockEntity: Entity = {
-  apiVersion: 'backstage.io/v1alpha1',
-  kind: 'Component',
-  metadata: {
-    name: 'backstage',
-    description: 'backstage.io',
-    annotations: {
-      'backstage.io/kubernetes-id': 'backstage',
-      'tekton.dev/cicd': 'true',
+function ThemeMenuIcon({
+  active,
+  icon,
+}: {
+  active?: boolean;
+  icon?: ReactElement;
+}) {
+  if (icon) {
+    return cloneElement(icon, {
+      fontSize: 'small',
+      color: active ? 'primary' : undefined,
+    });
+  }
+
+  return (
+    <RiContrastLine
+      size={20}
+      color={active ? 'var(--bui-fg-accent)' : undefined}
+    />
+  );
+}
+
+function getThemeLabel(title: ReactNode, fallback: string): string {
+  return typeof title === 'string' ? title : fallback;
+}
+
+function SidebarThemeSwitcher() {
+  const appThemeApi = useApi(appThemeApiRef);
+  const themeId = useObservable(
+    appThemeApi.activeThemeId$(),
+    appThemeApi.getActiveThemeId(),
+  );
+  const themes = appThemeApi.getInstalledThemes();
+  const activeTheme = themes.find(t => t.id === themeId);
+  const anchorRef = useRef<HTMLElement | null>(null);
+  const [open, setOpen] = useState(false);
+
+  const handleSelectTheme = (newThemeId?: string) => {
+    if (newThemeId && themes.some(t => t.id === newThemeId)) {
+      appThemeApi.setActiveThemeId(newThemeId);
+    } else {
+      appThemeApi.setActiveThemeId(undefined);
+    }
+    setOpen(false);
+  };
+
+  const ActiveIcon = useCallback(
+    () => <ThemeMenuIcon icon={activeTheme?.icon} />,
+    [activeTheme],
+  );
+
+  return (
+    <>
+      <SidebarItem
+        icon={ActiveIcon}
+        text="Switch Theme"
+        onClick={(event: MouseEvent) => {
+          anchorRef.current = event.currentTarget as HTMLElement;
+          setOpen(isOpen => !isOpen);
+        }}
+      />
+      <Popover
+        triggerRef={anchorRef}
+        isOpen={open}
+        onOpenChange={setOpen}
+        placement="right bottom"
+        hideArrow
+      >
+        <Box bg="neutral">
+          <Menu>
+            <MenuSection title="Choose a theme">
+              <MenuItem
+                id="auto"
+                textValue="Auto"
+                iconStart={<ThemeMenuIcon active={themeId === undefined} />}
+                onAction={() => handleSelectTheme(undefined)}
+              >
+                Auto
+              </MenuItem>
+              {themes.map(theme => {
+                const active = theme.id === themeId;
+                const label = getThemeLabel(theme.title, theme.id);
+                return (
+                  <MenuItem
+                    key={theme.id}
+                    id={theme.id}
+                    textValue={label}
+                    iconStart={
+                      <ThemeMenuIcon icon={theme.icon} active={active} />
+                    }
+                    onAction={() => handleSelectTheme(theme.id)}
+                  >
+                    {label}
+                  </MenuItem>
+                );
+              })}
+            </MenuSection>
+          </Menu>
+        </Box>
+      </Popover>
+    </>
+  );
+}
+
+export const devSidebarContent: ExtensionDefinition = NavContentBlueprint.make({
+  params: {
+    component: ({ navItems }) => {
+      const nav = navItems.withComponent(item => (
+        <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+      ));
+      return (
+        <Sidebar>
+          <SidebarGroup label="Menu">
+            <SidebarScrollWrapper>
+              {nav.take('page:catalog')}
+            </SidebarScrollWrapper>
+          </SidebarGroup>
+          <SidebarSpace />
+          <SidebarThemeSwitcher />
+          <SidebarLanguageSwitcher />
+          <SidebarSignOutButton />
+        </Sidebar>
+      );
     },
   },
-  spec: {
-    lifecycle: 'production',
-    type: 'service',
-    owner: 'user:guest',
-  },
-};
-
-export class MockKubernetesProxyApi implements KubernetesProxyApi {
-  async getPodLogs(_request: any): Promise<any> {
-    const delayedResponse = (data: string, ms: number) =>
-      new Promise(resolve => {
-        setTimeout(() => {
-          resolve({
-            text: data,
-          });
-        }, ms);
-      });
-
-    if (_request.podName.includes('ec-task')) {
-      return delayedResponse(JSON.stringify(enterpriseContractResult), 100);
-    }
-
-    if (_request.podName.includes('image-scan-task')) {
-      return delayedResponse(JSON.stringify(acsImageScanResult), 200);
-    }
-
-    if (_request.podName.includes('image-check-task')) {
-      return delayedResponse(JSON.stringify(acsImageCheckResults), 300);
-    }
-
-    if (_request.podName.includes('deployment-check-task')) {
-      return delayedResponse(JSON.stringify(acsDeploymentCheck), 400);
-    }
-
-    const response = `\nstreaming logs from container: ${_request.containerName} \n...`;
-    return delayedResponse(response, 500);
-  }
-
-  async deletePod(): Promise<any> {
-    return {};
-  }
-
-  async getEventsByInvolvedObjectName(): Promise<any> {
-    return {};
-  }
-}
-
-export class MockKubernetesClient implements KubernetesApi {
-  readonly resources;
-
-  constructor(fixtureData: { [resourceType: string]: any[] }) {
-    this.resources = Object.entries(fixtureData).flatMap(
-      ([type, resources]) => {
-        if (type === 'pipelineruns' && resources[0]?.kind === 'PipelineRun') {
-          return {
-            type: 'customresources',
-            resources,
-          };
-        } else if (type === 'taskruns' && resources[0]?.kind === 'TaskRun') {
-          return {
-            type: 'customresources',
-            resources,
-          };
-        }
-        return {
-          type: type.toLocaleLowerCase('en-US'),
-          resources,
-        };
-      },
-    );
-  }
-
-  async getWorkloadsByEntity(_request: any): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-  async getCustomObjectsByEntity(_request: any): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-
-  async getObjectsByEntity(): Promise<any> {
-    return {
-      items: [
-        {
-          cluster: { name: 'mock-cluster' },
-          resources: this.resources,
-          podMetrics: [],
-          errors: [],
-        },
-      ],
-    };
-  }
-
-  async getClusters(): Promise<{ name: string; authProvider: string }[]> {
-    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
-  }
-
-  async getCluster(_clusterName: string): Promise<
-    | {
-        name: string;
-        authProvider: string;
-        oidcTokenProvider?: string;
-        dashboardUrl?: string;
-      }
-    | undefined
-  > {
-    return { name: 'mock-cluster', authProvider: 'serviceAccount' };
-  }
-
-  async proxy(_options: { clusterName: String; path: String }): Promise<any> {
-    return {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name: 'mock-ns',
-      },
-    };
-  }
-}
-
-export const mockKubernetesAuthProviderApi = {
-  decorateRequestBodyForAuth: async () => {
-    return {
-      entity: {
-        apiVersion: 'v1',
-        kind: 'xyz',
-        metadata: { name: 'hey' },
-      },
-    };
-  },
-  getCredentials: async () => {
-    return {};
-  },
-};
-
-export const mockKubernetesClient = new MockKubernetesClient(
-  mockKubernetesPlrResponse,
-);
-export const mockKubernetesProxyApi = new MockKubernetesProxyApi();
+});
