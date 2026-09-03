@@ -40,17 +40,17 @@
     "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@changesets/cli": "^2.27.1",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "knip": "^5.85.0",
-    "node-gyp": "^10.0.0",
-    "prettier": "^2.3.2",
+    "@changesets/cli": "^3.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "knip": "^6.0.0",
+    "node-gyp": "^13.0.0",
+    "prettier": "^3.0.0",
     "typescript": "~5.8.0"
   },
   "resolutions": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {

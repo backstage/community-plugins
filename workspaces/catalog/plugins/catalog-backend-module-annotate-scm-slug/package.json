@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@types/git-url-parse": "^9.0.3",
+    "@types/git-url-parse": "^16.0.0",
     "@types/lodash": "^4.17.13"
   },
   "files": [
