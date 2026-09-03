@@ -20,7 +20,7 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 import { BuildStatus } from '../../api';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 const STATUS_ICONS: { [key in BuildStatus]: ReactElement } = {
   succeeded: <StatusOK />,
