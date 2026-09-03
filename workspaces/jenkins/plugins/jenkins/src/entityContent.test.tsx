@@ -19,10 +19,10 @@ import {
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/frontend-test-utils';
+import * as content from './entityContent';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import * as cards from './entityCards';
-import { JenkinsApi, jenkinsApiRef } from '../api';
-import { sampleEntity } from '../__fixtures__/entity';
+import { JenkinsApi, jenkinsApiRef } from './api';
+import { sampleEntity } from './__fixtures__/entity';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   ...jest.requireActual('@backstage/plugin-catalog-react'),
@@ -38,16 +38,7 @@ describe('Entity content extensions', () => {
   const mockJenkinsApi = {
     getProjects: jest.fn(),
     getBuild: jest.fn(),
-    getJobBuilds: jest.fn().mockReturnValue({
-      name: 'main',
-      displayName: 'main',
-      description: 'description',
-      fullDisplayName: 'main',
-      inQueue: false,
-      fullName: 'main',
-      url: 'url.com',
-      builds: [],
-    }),
+    getJobBuilds: jest.fn(),
     retry: () => null,
   } as unknown as JenkinsApi;
 
@@ -65,33 +56,19 @@ describe('Entity content extensions', () => {
     },
   };
 
-  it('should render Jenkins latest run card', async () => {
+  it('should render Jenkins projects table', async () => {
     renderInTestApp(
       <TestApiProvider apis={[[jenkinsApiRef, mockJenkinsApi]] as const}>
         <EntityProvider entity={mockedEntity}>
-          {createExtensionTester(
-            cards.entityLatestJenkinsRunCard,
-          ).reactElement()}
+          {createExtensionTester(content.entityJenkinsProjects).reactElement()}
         </EntityProvider>
       </TestApiProvider>,
     );
-
-    await waitFor(() => {
-      expect(screen.getByText('Latest master build')).toBeInTheDocument();
-    });
-  });
-
-  it('should render Jenkins runs table', async () => {
-    renderInTestApp(
-      <TestApiProvider apis={[[jenkinsApiRef, mockJenkinsApi]] as const}>
-        <EntityProvider entity={mockedEntity}>
-          {createExtensionTester(cards.entityJobRunsTable).reactElement()}
-        </EntityProvider>
-      </TestApiProvider>,
+    await waitFor(
+      () => {
+        expect(screen.getByText('Projects')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
     );
-
-    await waitFor(() => {
-      expect(screen.getByText('main Runs')).toBeInTheDocument();
-    });
   });
 });
