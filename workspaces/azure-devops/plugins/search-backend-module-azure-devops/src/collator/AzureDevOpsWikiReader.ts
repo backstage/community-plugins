@@ -101,7 +101,7 @@ export class AzureDevOpsWikiReader {
   readSingleWikiPage = async (id: number): Promise<WikiPage> => {
     let rawPageContent;
     try {
-      const pageResponse = await this.fetch(`/pages/${id}?includeContent=true`);
+      const pageResponse = await this.fetch(`pages/${id}?includeContent=true`);
 
       rawPageContent = await pageResponse.json();
       return rawPageContent;

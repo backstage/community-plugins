@@ -71,7 +71,7 @@ describe('AzureDevOpsWikiReader', () => {
       await reader.readSingleWikiPage(1);
 
       expect(fetchSpy).toHaveBeenCalledWith(
-        'https://dev.azure.com/my-org/my-project/_apis/wiki/wikis/my-wiki.wiki//pages/1?includeContent=true',
+        'https://dev.azure.com/my-org/my-project/_apis/wiki/wikis/my-wiki.wiki/pages/1?includeContent=true',
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: `Basic ${Buffer.from(':my-pat-token').toString(
