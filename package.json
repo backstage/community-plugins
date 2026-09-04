@@ -21,7 +21,7 @@
     "@backstage/cli": "^0.32.0",
     "@changesets/parse": "^1.0.0",
     "@manypkg/get-packages": "^2.2.2",
-    "@octokit/rest": "^20.1.1",
+    "@octokit/rest": "^22.0.0",
     "@spotify/eslint-plugin": "^15.0.0",
     "array-to-table": "^1.0.1",
     "codeowners-utils": "^1.0.2",
