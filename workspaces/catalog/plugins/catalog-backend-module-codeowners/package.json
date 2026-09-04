@@ -42,12 +42,12 @@
     "@backstage/plugin-catalog-node": "backstage:^",
     "codeowners-utils": "^1.0.2",
     "core-js": "^3.6.5",
-    "git-url-parse": "^15.0.0"
+    "git-url-parse": "^16.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@types/core-js": "^2.5.4",
-    "@types/git-url-parse": "^9.0.3"
+    "@types/git-url-parse": "^16.0.0"
   }
 }
