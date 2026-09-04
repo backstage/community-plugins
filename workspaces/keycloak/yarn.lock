@@ -1787,7 +1787,7 @@ __metadata:
     "@backstage/plugin-catalog-backend-module-logs": "npm:^0.1.24"
     "@backstage/plugin-catalog-node": "npm:^2.2.3"
     "@backstage/types": "npm:^1.2.2"
-    "@keycloak/keycloak-admin-client": "npm:26.7.0"
+    "@keycloak/keycloak-admin-client": "npm:26.7.2"
     "@opentelemetry/api": "npm:^1.9.0"
     "@types/lodash": "npm:4.17.24"
     deepmerge: "npm:4.3.1"
@@ -4270,9 +4270,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keycloak/keycloak-admin-client@npm:26.7.0":
-  version: 26.7.0
-  resolution: "@keycloak/keycloak-admin-client@npm:26.7.0"
+"@keycloak/keycloak-admin-client@npm:26.7.2":
+  version: 26.7.2
+  resolution: "@keycloak/keycloak-admin-client@npm:26.7.2"
   dependencies:
     "@microsoft/kiota-abstractions": "npm:1.0.0-preview.103"
     "@microsoft/kiota-http-fetchlibrary": "npm:1.0.0-preview.103"
@@ -4282,7 +4282,7 @@ __metadata:
     "@microsoft/kiota-serialization-text": "npm:1.0.0-preview.103"
     camelize-ts: "npm:^3.0.0"
     url-template: "npm:^3.1.1"
-  checksum: 10/0cb5c3e6c03ab09a399985e4fa0a900a525c7a9e554be30a74bd0ecf441aaae1ef36142904211618af586a54127efb484bc15f57ee2df2a59465cbae487d8a29
+  checksum: 10/e930cdc914a4dfeb755375a038f573ee97c000d14dffb6075a8d403a807ecea2e9404f67e3d97224cf2ec70690406c398c76f3eb468c47c9f2bac861db3498f3
   languageName: node
   linkType: hard
 
