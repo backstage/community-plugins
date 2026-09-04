@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.1
+
+### Patch Changes
+
+- 4a972e2: Updated dependency `react-router-dom` to `^6.30.5`.
+
 ## 1.27.0
 
 ### Minor Changes
