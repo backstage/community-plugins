@@ -1,5 +1,12 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 1.31.1
+
+### Patch Changes
+
+- d3f442e: Updated dependency `@testing-library/react` to `16.3.3`.
+  Updated dependency `@testing-library/user-event` to `14.6.6`.
+
 ## 1.31.0
 
 ### Minor Changes
