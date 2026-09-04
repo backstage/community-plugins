@@ -74,7 +74,9 @@ describe('AzureDevOpsWikiReader', () => {
         'https://dev.azure.com/my-org/my-project/_apis/wiki/wikis/my-wiki.wiki//pages/1?includeContent=true',
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: `Basic ${btoa(':my-pat-token')}`,
+            Authorization: `Basic ${Buffer.from(':my-pat-token').toString(
+              'base64',
+            )}`,
           }),
         }),
       );
@@ -121,7 +123,9 @@ describe('AzureDevOpsWikiReader', () => {
         expect.any(String),
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: `Basic ${btoa(':my-pat-token')}`,
+            Authorization: `Basic ${Buffer.from(':my-pat-token').toString(
+              'base64',
+            )}`,
           }),
         }),
       );

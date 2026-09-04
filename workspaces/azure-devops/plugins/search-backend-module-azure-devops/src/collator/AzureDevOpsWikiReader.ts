@@ -17,10 +17,9 @@
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { AzureDevOpsCredentialsProvider } from '@backstage/integration';
 import { WikiPageDetail, WikiPage } from '../types';
-import { buildBaseUrl, fetchWithRetry } from '../utils';
+import { buildBaseUrl, convertStringToBase64, fetchWithRetry } from '../utils';
 
-/** @public */
-export interface AzureDevOpsWikiReaderOptions {
+interface AzureDevOpsWikiReaderOptions {
   baseUrl: string;
   organization: string;
   project: string;
@@ -116,7 +115,7 @@ export class AzureDevOpsWikiReader {
 
   private async getAuthHeaders(): Promise<Record<string, string>> {
     if (this.token) {
-      const credentials = btoa(`:${this.token}`);
+      const credentials = convertStringToBase64(`:${this.token}`);
       return { Authorization: `Basic ${credentials}` };
     }
 
@@ -142,7 +141,7 @@ export class AzureDevOpsWikiReader {
     );
   }
 
-  fetch: typeof fetchWithRetry = async (url, options) => {
+  private fetch: typeof fetchWithRetry = async (url, options) => {
     const authHeaders = await this.getAuthHeaders();
 
     return fetchWithRetry(
