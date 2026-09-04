@@ -90,6 +90,7 @@ export interface Project {
   fullName: string;
   inQueue: string;
   // added by us
+  instanceName?: string;
   status: string; // == inQueue ? 'queued' : lastBuild.building ? 'running' : lastBuild.result,
   onRestartClick: () => Promise<void>; // TODO rename to handle.* ? also, should this be on lastBuild?
 }
@@ -117,25 +118,27 @@ export interface JenkinsApi {
   /**
    * Get a single build.
    *
-   * This takes an entity to support selecting between multiple jenkins instances.
-   *
-   * TODO: abstract jobFullName (so we could support differentiating between the same named job on multiple instances).
+   * This takes an entity and instance name to support selecting between
+   * multiple Jenkins instances.
    */
   getBuild(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<Build>;
 
   getJobBuilds(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
+    instanceName?: string;
   }): Promise<Job>;
 
   retry(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<void>;
 
   /**
@@ -145,6 +148,7 @@ export interface JenkinsApi {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<BuildConsoleText>;
 }
 
@@ -179,11 +183,13 @@ export class JenkinsClient implements JenkinsApi {
     return (
       (await response.json()).projects?.map((p: Project) => ({
         ...p,
+        instanceName: p.instanceName ?? 'default',
         onRestartClick: () => {
           return this.retry({
             entity,
             jobFullName: p.fullName,
             buildNumber: String(p.lastBuild.number),
+            instanceName: p.instanceName ?? 'default',
           });
         },
       })) || []
@@ -194,15 +200,19 @@ export class JenkinsClient implements JenkinsApi {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<Build> {
-    const { entity, jobFullName, buildNumber } = options;
-    const url = `${await this.discoveryApi.getBaseUrl(
-      'jenkins',
-    )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
-      entity.kind,
-    )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
-      jobFullName,
-    )}/${encodeURIComponent(buildNumber)}`;
+    const { entity, jobFullName, buildNumber, instanceName } = options;
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl(
+        'jenkins',
+      )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
+        entity.kind,
+      )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
+        jobFullName,
+      )}/${encodeURIComponent(buildNumber)}`,
+    );
+    this.appendInstanceName(url, instanceName);
 
     const response = await this.fetchApi.fetch(url);
 
@@ -213,15 +223,19 @@ export class JenkinsClient implements JenkinsApi {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<void> {
-    const { entity, jobFullName, buildNumber } = options;
-    const url = `${await this.discoveryApi.getBaseUrl(
-      'jenkins',
-    )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
-      entity.kind,
-    )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
-      jobFullName,
-    )}/${encodeURIComponent(buildNumber)}`;
+    const { entity, jobFullName, buildNumber, instanceName } = options;
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl(
+        'jenkins',
+      )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
+        entity.kind,
+      )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
+        jobFullName,
+      )}/${encodeURIComponent(buildNumber)}`,
+    );
+    this.appendInstanceName(url, instanceName);
 
     const response = await this.fetchApi.fetch(url, { method: 'POST' });
 
@@ -233,15 +247,19 @@ export class JenkinsClient implements JenkinsApi {
   async getJobBuilds(options: {
     entity: CompoundEntityRef;
     jobFullName: string;
+    instanceName?: string;
   }): Promise<Job> {
-    const { entity, jobFullName } = options;
-    const url = `${await this.discoveryApi.getBaseUrl(
-      'jenkins',
-    )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
-      entity.kind,
-    )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
-      jobFullName,
-    )}`;
+    const { entity, jobFullName, instanceName } = options;
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl(
+        'jenkins',
+      )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
+        entity.kind,
+      )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
+        jobFullName,
+      )}`,
+    );
+    this.appendInstanceName(url, instanceName);
 
     const response = await this.fetchApi.fetch(url);
 
@@ -252,18 +270,28 @@ export class JenkinsClient implements JenkinsApi {
     entity: CompoundEntityRef;
     jobFullName: string;
     buildNumber: string;
+    instanceName?: string;
   }): Promise<BuildConsoleText> {
-    const { entity, jobFullName, buildNumber } = options;
-    const url = `${await this.discoveryApi.getBaseUrl(
-      'jenkins',
-    )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
-      entity.kind,
-    )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
-      jobFullName,
-    )}/${encodeURIComponent(buildNumber)}/consoleText`;
+    const { entity, jobFullName, buildNumber, instanceName } = options;
+    const url = new URL(
+      `${await this.discoveryApi.getBaseUrl(
+        'jenkins',
+      )}/v1/entity/${encodeURIComponent(entity.namespace)}/${encodeURIComponent(
+        entity.kind,
+      )}/${encodeURIComponent(entity.name)}/job/${encodeURIComponent(
+        jobFullName,
+      )}/${encodeURIComponent(buildNumber)}/consoleText`,
+    );
+    this.appendInstanceName(url, instanceName);
 
     const response = await this.fetchApi.fetch(url);
 
     return await response.json();
+  }
+
+  private appendInstanceName(url: URL, instanceName?: string): void {
+    if (instanceName) {
+      url.searchParams.set('instanceName', instanceName);
+    }
   }
 }

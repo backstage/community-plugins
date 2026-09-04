@@ -17,6 +17,7 @@
 import express from 'express';
 import Router from 'express-promise-router';
 import { JenkinsInfoProvider } from './jenkinsInfoProvider';
+import { getJenkinsInstances } from './getJenkinsInstances';
 import { JenkinsApiImpl } from './jenkinsApi';
 import {
   PermissionEvaluator,
@@ -104,7 +105,7 @@ export class JenkinsBuilder {
         : undefined;
     }
 
-    const jenkinsApi = new JenkinsApiImpl(permissionEvaluator);
+    const jenkinsApi = this.createJenkinsApi(permissionEvaluator);
 
     const router = Router();
     router.use(express.json());
@@ -114,6 +115,10 @@ export class JenkinsBuilder {
       async (request, response) => {
         const { namespace, kind, name } = request.params;
         const branch = request.query.branch;
+        const instanceName = this.getInstanceNameQuery(request, response);
+        if (instanceName === null) {
+          return;
+        }
         let branches: string[] | undefined;
 
         if (branch === undefined) {
@@ -130,33 +135,51 @@ export class JenkinsBuilder {
           return;
         }
 
-        const jenkinsInfo = await jenkinsInfoProvider.getInstance({
-          entityRef: {
-            kind,
-            namespace,
-            name,
+        const jenkinsInstances = await getJenkinsInstances(
+          jenkinsInfoProvider,
+          {
+            entityRef: {
+              kind,
+              namespace,
+              name,
+            },
+            credentials: await httpAuth.credentials(request),
+            instanceName,
           },
-          credentials: await httpAuth.credentials(request),
+        );
+
+        const projectsByInstance = await Promise.all(
+          jenkinsInstances.map(async jenkinsInfo => {
+            try {
+              const projects = await jenkinsApi.getProjects(
+                jenkinsInfo,
+                branches,
+              );
+
+              return projects.map(project => ({
+                ...project,
+                instanceName: jenkinsInfo.instanceName,
+              }));
+            } catch (error) {
+              const errorDetails =
+                error instanceof AggregateError ? error.errors : error;
+
+              // Promise.any can return an AggregateError with the unhelpful
+              // message "All promises were rejected", so include its causes.
+              throw new Error(
+                `Unable to fetch projects from Jenkins instance '${
+                  jenkinsInfo.instanceName
+                }', for ${jenkinsInfo.fullJobNames}: ${stringifyError(
+                  errorDetails,
+                )}`,
+              );
+            }
+          }),
+        );
+
+        response.json({
+          projects: projectsByInstance.flat(),
         });
-
-        try {
-          const projects = await jenkinsApi.getProjects(jenkinsInfo, branches);
-
-          response.json({
-            projects: projects,
-          });
-        } catch (err) {
-          // Promise.any, used in the getProjects call returns an Aggregate error message with a useless error message 'AggregateError: All promises were rejected'
-          // extract useful information ourselves
-          if (err.errors) {
-            throw new Error(
-              `Unable to fetch projects, for ${
-                jenkinsInfo.fullJobNames
-              }: ${stringifyError(err.errors)}`,
-            );
-          }
-          throw err;
-        }
       },
     );
 
@@ -165,6 +188,10 @@ export class JenkinsBuilder {
       async (request, response) => {
         const { namespace, kind, name, jobFullName, buildNumber } =
           request.params;
+        const instanceName = this.getInstanceNameQuery(request, response);
+        if (instanceName === null) {
+          return;
+        }
         const jobs = this.jobFullNameParamToJobs(jobFullName);
 
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
@@ -174,6 +201,7 @@ export class JenkinsBuilder {
             name,
           },
           fullJobNames: [jobFullName],
+          instanceName,
           credentials: await httpAuth.credentials(request),
         });
 
@@ -193,6 +221,10 @@ export class JenkinsBuilder {
       '/v1/entity/:namespace/:kind/:name/job/:jobFullName',
       async (request, response) => {
         const { namespace, kind, name, jobFullName } = request.params;
+        const instanceName = this.getInstanceNameQuery(request, response);
+        if (instanceName === null) {
+          return;
+        }
         const jobs = this.jobFullNameParamToJobs(jobFullName);
 
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
@@ -202,6 +234,7 @@ export class JenkinsBuilder {
             name,
           },
           fullJobNames: [jobFullName],
+          instanceName,
           credentials: await httpAuth.credentials(request),
         });
 
@@ -218,6 +251,10 @@ export class JenkinsBuilder {
       async (request, response) => {
         const { namespace, kind, name, jobFullName, buildNumber } =
           request.params;
+        const instanceName = this.getInstanceNameQuery(request, response);
+        if (instanceName === null) {
+          return;
+        }
         const jobs = this.jobFullNameParamToJobs(jobFullName);
 
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
@@ -227,6 +264,7 @@ export class JenkinsBuilder {
             name,
           },
           fullJobNames: [jobFullName],
+          instanceName,
           credentials: await httpAuth.credentials(request),
         });
 
@@ -249,6 +287,10 @@ export class JenkinsBuilder {
       async (request, response) => {
         const { namespace, kind, name, jobFullName, buildNumber } =
           request.params;
+        const instanceName = this.getInstanceNameQuery(request, response);
+        if (instanceName === null) {
+          return;
+        }
         const jobs = this.jobFullNameParamToJobs(jobFullName);
 
         const jenkinsInfo = await jenkinsInfoProvider.getInstance({
@@ -258,6 +300,7 @@ export class JenkinsBuilder {
             name,
           },
           fullJobNames: [jobFullName],
+          instanceName,
           credentials: await httpAuth.credentials(request),
         });
 
@@ -279,5 +322,29 @@ export class JenkinsBuilder {
   private jobFullNameParamToJobs(jobFullName: string): string[] {
     // jobFullName may contain a list of job names separated by '/'
     return jobFullName.split('/').map((s: string) => encodeURIComponent(s));
+  }
+
+  protected createJenkinsApi(
+    permissionEvaluator?: PermissionEvaluator,
+  ): JenkinsApiImpl {
+    return new JenkinsApiImpl(permissionEvaluator);
+  }
+
+  private getInstanceNameQuery(
+    request: express.Request,
+    response: express.Response,
+  ): string | undefined | null {
+    const instanceName = request.query.instanceName;
+    if (instanceName === undefined) {
+      return instanceName;
+    }
+    if (typeof instanceName === 'string' && instanceName.length > 0) {
+      return instanceName;
+    }
+
+    response
+      .status(400)
+      .send('Something was unexpected about the instanceName queryString');
+    return null;
   }
 }
