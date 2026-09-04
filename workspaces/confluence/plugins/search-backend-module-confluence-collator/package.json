@@ -35,14 +35,14 @@
     "@backstage/plugin-search-common": "backstage:^",
     "@backstage/types": "backstage:^",
     "node-fetch": "^2.6.7",
-    "p-limit": "^3.1.0",
-    "p-throttle": "^4.1.1"
+    "p-limit": "^7.0.0",
+    "p-throttle": "^8.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@types/node-fetch": "^2.6.11",
-    "msw": "^1.0.0"
+    "msw": "^2.0.0"
   },
   "files": [
     "dist",
