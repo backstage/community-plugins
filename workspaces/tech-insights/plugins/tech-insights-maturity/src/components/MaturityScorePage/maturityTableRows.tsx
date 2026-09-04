@@ -174,7 +174,7 @@ const MaturityCheckTableRow = ({
                   </Typography>
                 </Stack>
                 <Stack spacing={1} direction="row">
-                  <Tooltip title="Update: Last time the maturity check was updated">
+                  <Tooltip title="Update: Last time this check was updated">
                     <AccessTimeIcon color="primary" />
                   </Tooltip>
                   <Typography variant="subtitle2" className={filters}>
