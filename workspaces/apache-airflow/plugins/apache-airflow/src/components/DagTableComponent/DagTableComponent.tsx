@@ -15,6 +15,7 @@
  */
 
 import {
+  ErrorPanel,
   Link,
   Progress,
   StatusError,
@@ -24,20 +25,15 @@ import {
   WarningPanel,
 } from '@backstage/core-components';
 import { storageApiRef, useApi } from '@backstage/core-plugin-api';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import IconButton from '@material-ui/core/IconButton';
-import Switch from '@material-ui/core/Switch';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
-import Alert from '@material-ui/lab/Alert';
+import { Box, Flex, Switch } from '@backstage/ui';
+import { RiExternalLinkLine } from '@remixicon/react';
 import { useEffect, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import { apacheAirflowApiRef } from '../../api';
 import { Dag } from '../../api/types';
 import { ScheduleIntervalLabel } from '../ScheduleIntervalLabel';
 import { LatestDagRunsStatus } from '../LatestDagRunsStatus';
+import styles from './DagTableComponent.module.css';
 
 type DagTableRow = Dag & {
   id: string;
@@ -46,7 +42,7 @@ type DagTableRow = Dag & {
 
 type DenseTableProps = {
   dags: Dag[];
-  rowClick: Function;
+  rowClick: (rowData: Dag) => void;
 };
 
 export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
@@ -67,9 +63,12 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       title: 'Paused',
       field: 'is_paused',
       render: (row: Partial<DagTableRow>) => (
-        <Tooltip title="Pause/Unpause DAG">
-          <Switch checked={!row.is_paused} />
-        </Tooltip>
+        <Switch
+          className={styles.pausedSwitch}
+          aria-label="Pause/Unpause DAG"
+          isSelected={!row.is_paused}
+          onChange={() => rowClick(row as Dag)}
+        />
       ),
       width: '5%',
       hidden: hiddenColumns.some(field => field === 'is_paused'),
@@ -78,16 +77,16 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       title: 'DAG',
       field: 'id',
       render: (row: Partial<DagTableRow>) => (
-        <div>
-          <Typography variant="subtitle2" gutterBottom noWrap>
-            {row.id}
-          </Typography>
-          <Box display="flex" alignItems="center">
+        <Box className={styles.dagCell}>
+          <Box className={styles.dagName}>{row.id}</Box>
+          <Box className={styles.tagGroup}>
             {row.tags?.map((tag, ix) => (
-              <Chip label={tag.name} key={ix} size="small" />
+              <Box key={ix} className={styles.pill}>
+                {tag.name}
+              </Box>
             ))}
           </Box>
-        </div>
+        </Box>
       ),
       width: '50%',
       disableClick: true,
@@ -107,9 +106,11 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       title: 'Owner',
       field: 'owners',
       render: (row: Partial<DagTableRow>) => (
-        <Box display="flex" alignItems="center">
+        <Box className={styles.tagGroup}>
           {row.owners?.map((owner, ix) => (
-            <Chip label={owner} key={ix} size="small" />
+            <Box key={ix} className={styles.pill}>
+              {owner}
+            </Box>
           ))}
         </Box>
       ),
@@ -121,12 +122,12 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       title: 'Active',
       field: 'active',
       render: (row: Partial<DagTableRow>) => (
-        <Box display="flex" alignItems="center">
+        <Flex align="center" className={styles.statusCell}>
           {row.is_active ? <StatusOK /> : <StatusError />}
-          <Typography variant="body2">
+          <Box className={styles.activeLabel}>
             {row.is_active ? 'Active' : 'Inactive'}
-          </Typography>
-        </Box>
+          </Box>
+        </Flex>
       ),
       width: '10%',
       disableClick: true,
@@ -147,10 +148,12 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       field: 'dagUrl',
       render: (row: Partial<DagTableRow>) =>
         !row.dagUrl ? null : (
-          <Link to={row.dagUrl}>
-            <IconButton aria-label="details">
-              <OpenInBrowserIcon />
-            </IconButton>
+          <Link
+            to={row.dagUrl}
+            className={styles.linkButton}
+            aria-label="details"
+          >
+            <RiExternalLinkLine size={18} />
           </Link>
         ),
       width: '5%',
@@ -165,7 +168,6 @@ export const DenseTable = ({ dags, rowClick }: DenseTableProps) => {
       options={{ pageSize: 5, columnsButton: true }}
       columns={columns}
       data={dags}
-      onRowClick={(_event, rowData) => rowClick(rowData)}
       onChangeColumnHidden={(column, hidden) => {
         if (column.field) {
           let newHiddenColumns: string[];
@@ -233,7 +235,7 @@ export const DagTableComponent = (props: DagTableComponentProps) => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <ErrorPanel error={error} />;
   }
 
   const dagsNotFound =
@@ -245,12 +247,10 @@ export const DagTableComponent = (props: DagTableComponentProps) => {
       {dagsNotFound.length ? (
         <WarningPanel title={`${dagsNotFound.length} DAGs were not found`}>
           {dagsNotFound.map(dagId => (
-            <Typography key={dagId}>{dagId}</Typography>
+            <Box key={dagId}>{dagId}</Box>
           ))}
         </WarningPanel>
-      ) : (
-        ''
-      )}
+      ) : null}
       <DenseTable dags={dagsData} rowClick={updatePaused} />
     </>
   );

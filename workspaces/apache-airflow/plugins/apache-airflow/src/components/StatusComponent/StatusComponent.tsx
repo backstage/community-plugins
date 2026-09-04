@@ -15,12 +15,13 @@
  */
 
 import {
+  ErrorPanel,
   InfoCard,
   Progress,
   StructuredMetadataTable,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import Alert from '@material-ui/lab/Alert';
+import { Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { apacheAirflowApiRef } from '../../api';
 import { InstanceStatus } from '../../api/types';
@@ -35,7 +36,11 @@ export const StatusComponent = () => {
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return (
+      <InfoCard title="Instance Status" variant="fullHeight">
+        <ErrorPanel error={error} />
+      </InfoCard>
+    );
   }
 
   if (value) {
@@ -55,5 +60,9 @@ export const StatusComponent = () => {
       </InfoCard>
     );
   }
-  return <Alert severity="warning">No status information found...</Alert>;
+  return (
+    <InfoCard title="Instance Status" variant="fullHeight">
+      <Text>No status information found...</Text>
+    </InfoCard>
+  );
 };

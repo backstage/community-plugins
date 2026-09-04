@@ -13,54 +13,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
+import { ApacheAirflowApi } from '../../api';
 import { DagRun } from '../../api/types/Dags';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+
+const mockApi: jest.Mocked<ApacheAirflowApi> = {
+  getDagRuns: jest.fn().mockResolvedValue([
+    {
+      dag_run_id: 'mock dag run 1',
+      dag_id: 'mock_dag_1',
+      logical_date: '2022-05-27T11:25:23.251274+00:00',
+      start_date: '2022-05-27T11:25:23.251274+00:00',
+      end_date: '2022-05-27T11:25:23.251274+00:00',
+      state: 'success',
+      external_trigger: true,
+      conf: {},
+    },
+    {
+      dag_run_id: 'mock dag run 2',
+      dag_id: 'mock_dag_1',
+      logical_date: '2022-05-27T11:25:23.251274+00:00',
+      start_date: '2022-05-27T11:25:23.251274+00:00',
+      end_date: '2022-05-27T11:25:23.251274+00:00',
+      state: 'running',
+      external_trigger: true,
+      conf: {},
+    },
+    {
+      dag_run_id: 'mock dag run 3',
+      dag_id: 'mock_dag_1',
+      logical_date: '2022-05-27T11:25:23.251274+00:00',
+      start_date: '2022-05-27T11:25:23.251274+00:00',
+      end_date: '2022-05-27T11:25:23.251274+00:00',
+      state: 'failed',
+      external_trigger: true,
+      conf: {},
+    },
+    {
+      dag_run_id: 'mock dag run 4',
+      dag_id: 'mock_dag_1',
+      logical_date: '2022-05-27T11:25:23.251274+00:00',
+      start_date: '2022-05-27T11:25:23.251274+00:00',
+      end_date: '2022-05-27T11:25:23.251274+00:00',
+      state: 'queued',
+      external_trigger: true,
+      conf: {},
+    },
+  ] as DagRun[]),
+} as any;
+jest.mock('@backstage/core-plugin-api', () => ({
+  useApi: () => mockApi,
+}));
+jest.mock('@backstage/core-components', () => ({
+  Progress: () => <div>loading</div>,
+  StatusError: () => <span aria-label="Status error" />,
+  StatusOK: () => <span aria-label="Status ok" />,
+  StatusPending: () => <span aria-label="Status pending" />,
+  StatusRunning: () => <span aria-label="Status running" />,
+}));
+jest.mock('@backstage/ui', () => ({
+  Box: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+  Text: ({ children }: { children?: ReactNode }) => <span>{children}</span>,
+  Tooltip: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+}));
+jest.mock('./DagRunTooltipContent', () => ({
+  DagRunTooltipContent: () => <div>tooltip</div>,
+}));
 import { LatestDagRunsStatus } from './LatestDagRunsStatus';
 
 describe('LatestDagRunsStatus', () => {
-  const baseDagRun: Partial<DagRun> = {
-    dag_run_id: 'mock dag run 1',
-    dag_id: 'mock_dag_1',
-    logical_date: '2022-05-27T11:25:23.251274+00:00',
-    start_date: '2022-05-27T11:25:23.251274+00:00',
-    end_date: '2022-05-27T11:25:23.251274+00:00',
-    state: 'success',
-    external_trigger: true,
-    conf: {},
-  };
-  const mockApi: jest.Mocked<ApacheAirflowApi> = {
-    getDagRuns: jest.fn().mockResolvedValue([
-      baseDagRun,
-      {
-        ...baseDagRun,
-        dag_run_id: 'mock dag run 2',
-        state: 'running',
-      },
-      {
-        ...baseDagRun,
-        dag_run_id: 'mock dag run 3',
-        state: 'failed',
-      },
-      {
-        ...baseDagRun,
-        dag_run_id: 'mock dag run 3',
-        state: 'queued',
-      },
-    ] as DagRun[]),
-  } as any;
-
   it('should render the status of mock dag 1', async () => {
     const dagId = 'mock_dag_1';
 
-    const { getByLabelText } = await renderInTestApp(
-      <TestApiProvider apis={[[apacheAirflowApiRef, mockApi]]}>
-        <LatestDagRunsStatus dagId={dagId} />
-      </TestApiProvider>,
-    );
-    expect(getByLabelText('Status ok')).toBeInTheDocument();
-    expect(getByLabelText('Status running')).toBeInTheDocument();
-    expect(getByLabelText('Status error')).toBeInTheDocument();
-    expect(getByLabelText('Status pending')).toBeInTheDocument();
+    render(<LatestDagRunsStatus dagId={dagId} />);
+    expect(await screen.findByLabelText('Status ok')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Status running')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Status error')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Status pending')).toBeInTheDocument();
   });
 });

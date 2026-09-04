@@ -1,0 +1,21 @@
+@layer components {
+  .overviewGrid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--bui-space-6);
+  }
+
+  .halfWidth {
+    grid-column: span 12;
+  }
+
+  .fullWidth {
+    grid-column: span 12;
+  }
+
+  @media (min-width: 960px) {
+    .halfWidth {
+      grid-column: span 6;
+    }
+  }
+}
