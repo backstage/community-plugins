@@ -182,14 +182,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asyncapi/protobuf-schema-parser@npm:3.8.3":
-  version: 3.8.3
-  resolution: "@asyncapi/protobuf-schema-parser@npm:3.8.3"
+"@asyncapi/protobuf-schema-parser@npm:3.9.0":
+  version: 3.9.0
+  resolution: "@asyncapi/protobuf-schema-parser@npm:3.9.0"
   dependencies:
     "@asyncapi/parser": "npm:^3.6.2"
     "@types/protocol-buffers-schema": "npm:^3.4.3"
     protobufjs: "npm:^8.7.1"
-  checksum: 10/8e517e51074a1fa6baa2b4de7a95cefd187b22271db64a686fa1a002c64c8f4fa47284c222001775d318e15d24f5e06722f3559d997f6fec2fec6962ae6b0832
+  checksum: 10/7fb4d275ea87c4b38be66993cbc98238ea1af81c846a89e90cb254d8637ec9ca391ab00b88c935eb47d6a3705cc2fe3c015ed6c04a5173362df7c9d556e2eb89
   languageName: node
   linkType: hard
 
@@ -27411,9 +27411,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:7.6.5":
-  version: 7.6.5
-  resolution: "protobufjs@npm:7.6.5"
+"protobufjs@npm:7.6.6":
+  version: 7.6.6
+  resolution: "protobufjs@npm:7.6.6"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -27426,7 +27426,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.1"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.3.2"
-  checksum: 10/58a5a635fbe0632a5c48a1ab659fabfc26d5b994915a20ad623a2cfb59a2ca7411d9f4f690ca79074967b632e2db58ecc184ab507927f5b7d0852fc16568d3da
+  checksum: 10/a894f38c793a0d741f77a7fbf8595141618e8c1cb3433637d2d0309ea9baca59bd9c44ec95f46ee839d063de5d5ae1bc78ef8d474359866af52ee4ceef7fec4f
   languageName: node
   linkType: hard
 
