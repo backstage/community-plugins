@@ -15,29 +15,45 @@
  */
 
 import { LoggerService } from '@backstage/backend-plugin-api';
+import { AzureDevOpsCredentialsProvider } from '@backstage/integration';
 import { WikiPageDetail, WikiPage } from '../types';
 import { buildBaseUrl, fetchWithRetry } from '../utils';
 
+/** @public */
+export interface AzureDevOpsWikiReaderOptions {
+  baseUrl: string;
+  organization: string;
+  project: string;
+  wikiIdentifier: string;
+  logger: LoggerService;
+  titleSuffix?: string;
+  /**
+   * @deprecated Use `credentialsProvider` instead. This field will be removed
+   * in a future release.
+   */
+  token?: string;
+  credentialsProvider?: AzureDevOpsCredentialsProvider;
+}
+
 export class AzureDevOpsWikiReader {
   private readonly logger: LoggerService;
+  private readonly baseUrl: string;
   private readonly organization: string;
   private readonly project: string;
   private readonly wikiIdentifier: string;
+  private readonly token?: string;
+  private readonly credentialsProvider?: AzureDevOpsCredentialsProvider;
   public titleSuffix?: string;
-  constructor(
-    private readonly baseUrl: string,
-    organization: string,
-    project: string,
-    private readonly token: string,
-    wikiIdentifier: string,
-    logger: LoggerService,
-    titleSuffix?: string,
-  ) {
-    this.logger = logger;
-    this.titleSuffix = titleSuffix;
-    this.organization = organization;
-    this.project = project;
-    this.wikiIdentifier = wikiIdentifier;
+
+  constructor(options: AzureDevOpsWikiReaderOptions) {
+    this.baseUrl = options.baseUrl;
+    this.organization = options.organization;
+    this.project = options.project;
+    this.wikiIdentifier = options.wikiIdentifier;
+    this.logger = options.logger;
+    this.titleSuffix = options.titleSuffix;
+    this.token = options.token;
+    this.credentialsProvider = options.credentialsProvider;
   }
 
   getListOfAllWikiPages = async () => {
@@ -98,8 +114,36 @@ export class AzureDevOpsWikiReader {
     }
   };
 
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    if (this.token) {
+      const credentials = btoa(`:${this.token}`);
+      return { Authorization: `Basic ${credentials}` };
+    }
+
+    if (this.credentialsProvider) {
+      const orgUrl = `${this.baseUrl}/${this.organization}`;
+      const credentials = await this.credentialsProvider.getCredentials({
+        url: orgUrl,
+      });
+
+      if (credentials) {
+        return credentials.headers;
+      }
+
+      throw new Error(
+        `No credentials found for Azure DevOps organization at ${orgUrl}. ` +
+          "Check your 'integrations.azure' configuration in app-config.yaml. " +
+          'See https://backstage.io/docs/integrations/azure/locations for details.',
+      );
+    }
+
+    throw new Error(
+      'No authentication configured. Provide either a token or credentials provider.',
+    );
+  }
+
   fetch: typeof fetchWithRetry = async (url, options) => {
-    const credentials = btoa(`:${this.token}`);
+    const authHeaders = await this.getAuthHeaders();
 
     return fetchWithRetry(
       `${buildBaseUrl(
@@ -110,7 +154,7 @@ export class AzureDevOpsWikiReader {
       )}/${url}`,
       {
         ...options,
-        headers: { ...options?.headers, Authorization: `Basic ${credentials}` },
+        headers: { ...options?.headers, ...authHeaders },
       },
     );
   };

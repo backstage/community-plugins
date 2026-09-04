@@ -28,14 +28,21 @@ export interface Config {
          */
         schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
         /**
-         * URL of your Azure Devops instances; required
+         * URL of your Azure DevOps instance. Defaults to `https://dev.azure.com` if not provided.
          */
-        baseUrl: string;
+        baseUrl?: string;
         /**
-         * Personal Access Token to authenticate to the Azure DevOps instance; required
+         * Personal Access Token to authenticate to the Azure DevOps instance.
+         *
+         * @deprecated Use `integrations.azure` in your app-config.yaml to configure
+         * Azure DevOps credentials instead. This supports PATs, service principals,
+         * and managed identities via `DefaultAzureDevOpsCredentialsProvider`.
+         * If both `token` and `integrations.azure` credentials are present, the
+         * `token` value takes precedence for backward compatibility.
+         * This field will be removed in a future release.
          * @visibility secret
          */
-        token: string;
+        token?: string;
         /**
          * Array of one or more wikis to collate
          */
