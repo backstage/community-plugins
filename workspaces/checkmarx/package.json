@@ -2,7 +2,7 @@
   "name": "@internal/checkmarx",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.18.0",
   "engines": {
     "node": "22 || 24"
   },
@@ -62,7 +62,7 @@
   "resolutions": {
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "csstype@^3.0.2": "3.0.9"
+    "csstype@^3.0.2": "3.2.3"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
