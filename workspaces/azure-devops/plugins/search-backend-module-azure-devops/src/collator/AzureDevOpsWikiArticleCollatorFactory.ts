@@ -16,6 +16,7 @@
 
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { Config } from '@backstage/config';
+import { AzureDevOpsCredentialsProvider } from '@backstage/integration';
 import { Readable } from 'stream';
 import {
   DocumentCollatorFactory,
@@ -23,6 +24,7 @@ import {
 } from '@backstage/plugin-search-common';
 import {
   CONFIG_SECTION_NAME,
+  DEFAULT_BASE_URL,
   WikiArticleCollatorFactoryOptions,
   WikiArticleCollatorOptions,
   WikiPage,
@@ -32,15 +34,23 @@ import { AzureDevOpsWikiReader } from './AzureDevOpsWikiReader';
 export class AzureDevOpsWikiArticleCollatorFactory
   implements DocumentCollatorFactory
 {
-  private readonly baseUrl: string | undefined;
+  private readonly baseUrl: string;
   private readonly logger: LoggerService;
+  private readonly credentialsProvider?: AzureDevOpsCredentialsProvider;
+  /**
+   * @deprecated Use `credentialsProvider` instead.
+   */
   private readonly token: string | undefined;
   private readonly wikis: WikiArticleCollatorOptions[] | undefined;
   public readonly type: string = 'azure-devops-wiki-article';
 
   private constructor(options: WikiArticleCollatorFactoryOptions) {
-    this.baseUrl = options.baseUrl;
+    this.baseUrl = (options.baseUrl?.trim() || DEFAULT_BASE_URL).replace(
+      /\/+$/,
+      '',
+    );
     this.token = options.token;
+    this.credentialsProvider = options.credentialsProvider;
     this.logger = options.logger;
     this.wikis = options.wikis;
   }
@@ -81,6 +91,16 @@ export class AzureDevOpsWikiArticleCollatorFactory
       return;
     }
 
+    if (this.token) {
+      this.logger.warn(
+        `The 'token' configuration for ${CONFIG_SECTION_NAME} is deprecated. ` +
+          "Configure credentials under 'integrations.azure' in your app-config.yaml instead. " +
+          'This supports PATs, service principals, and managed identities. ' +
+          'The token field will be removed in a future release. ' +
+          'See https://backstage.io/docs/integrations/azure/locations for details.',
+      );
+    }
+
     const articles: (IndexableDocument | null)[] =
       await this.readAllArticlesFromAllWikis();
 
@@ -99,16 +119,18 @@ export class AzureDevOpsWikiArticleCollatorFactory
       this.logger.error(`No wikis configured in your app-config.yaml`);
       return false;
     }
+
+    if (!this.token && !this.credentialsProvider) {
+      this.logger.error(
+        `No credentials available: configure 'integrations.azure' in your app-config.yaml ` +
+          `or provide a '${CONFIG_SECTION_NAME}.token' (deprecated). ` +
+          'See https://backstage.io/docs/integrations/azure/locations for details.',
+      );
+      return false;
+    }
+
     if (
       [
-        this.validateSingleConfigurationOptionExists(
-          this.baseUrl,
-          `${CONFIG_SECTION_NAME}.baseUrl`,
-        ),
-        this.validateSingleConfigurationOptionExists(
-          this.token,
-          `${CONFIG_SECTION_NAME}.token`,
-        ),
         ...this.wikis.flatMap((wiki, index) => {
           return [
             this.validateSingleConfigurationOptionExists(
@@ -152,15 +174,16 @@ export class AzureDevOpsWikiArticleCollatorFactory
   private async readAllArticlesFromSingleWiki(
     wiki: WikiArticleCollatorOptions,
   ): Promise<(IndexableDocument | null)[]> {
-    const reader = new AzureDevOpsWikiReader(
-      this.baseUrl as string,
-      wiki.organization as string,
-      wiki.project as string,
-      this.token as string,
-      wiki.wikiIdentifier as string,
-      this.logger,
-      wiki.titleSuffix,
-    );
+    const reader = new AzureDevOpsWikiReader({
+      baseUrl: this.baseUrl,
+      organization: wiki.organization as string,
+      project: wiki.project as string,
+      wikiIdentifier: wiki.wikiIdentifier as string,
+      logger: this.logger,
+      titleSuffix: wiki.titleSuffix,
+      token: this.token,
+      credentialsProvider: this.credentialsProvider,
+    });
 
     const listOfAllArticles = await reader.getListOfAllWikiPages();
     this.logger.info(
