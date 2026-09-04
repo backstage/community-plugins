@@ -104,14 +104,16 @@ const AdrListContainer = (props: {
           textValue={adr.title ?? adr.name}
           description={adr.date}
           customActions={
-            statusComponent ??
-            (adr.status && (
-              <TagGroup>
-                <Tag size="small" className={getStatusClass(adr.status)}>
-                  {adr.status}
-                </Tag>
-              </TagGroup>
-            ))
+            <EntityAdrListItemContext.Provider value={{ adr }}>
+              {statusComponent ??
+                (adr.status && (
+                  <TagGroup>
+                    <Tag size="small" className={getStatusClass(adr.status)}>
+                      {adr.status}
+                    </Tag>
+                  </TagGroup>
+                ))}
+            </EntityAdrListItemContext.Provider>
           }
         >
           <EntityAdrListItemContext.Provider value={{ adr }}>
