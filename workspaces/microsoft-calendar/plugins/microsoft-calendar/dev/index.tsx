@@ -19,7 +19,7 @@ import { microsoftCalendarApiRef } from '../src';
 import responseMock from './mock.json';
 import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
 import { Content, Page } from '@backstage/core-components';
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 
 createDevApp()
   .registerPlugin(microsoftCalendarPlugin)
@@ -50,9 +50,11 @@ createDevApp()
     element: (
       <Page themeId="home">
         <Content>
-          <Grid item xs={12} md={6}>
-            <MicrosoftCalendarCard />
-          </Grid>
+          <Grid.Root columns={{ sm: '12' }} gap="6">
+            <Grid.Item colSpan={{ sm: '12', md: '6' }}>
+              <MicrosoftCalendarCard />
+            </Grid.Item>
+          </Grid.Root>
         </Content>
       </Page>
     ),
