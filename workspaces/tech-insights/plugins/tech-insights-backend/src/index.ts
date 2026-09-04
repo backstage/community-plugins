@@ -14,6 +14,33 @@
  * limitations under the License.
  */
 
-export { techInsightsPlugin as default } from './plugin';
+import { createBackendFeatureLoader } from '@backstage/backend-plugin-api';
+import {
+  techInsightsPlugin,
+  techInsightsFactInsertServiceFactory,
+} from './plugin';
+
+/**
+ * The default export bundles the tech-insights plugin together with built-in
+ * service factories (such as {@link techInsightsFactInsertServiceFactory}) so
+ * a single `backend.add(import('@backstage-community/plugin-tech-insights-backend'))`
+ * registers everything needed to read and write facts.
+ *
+ * Note: prior to this change the default export was `techInsightsPlugin`
+ * directly. The two are interchangeable when passed to `backend.add(...)`,
+ * but consumers who imported the default and used it outside of
+ * `backend.add` (for example, in custom composition or tests) may need to
+ * switch to the named `techInsightsPlugin` export.
+ *
+ * @public
+ */
+export default createBackendFeatureLoader({
+  loader: () => [techInsightsPlugin, techInsightsFactInsertServiceFactory],
+});
+
+export {
+  techInsightsPlugin,
+  techInsightsFactInsertServiceFactory,
+} from './plugin';
 export * from './deprecated';
 export * from './service';
