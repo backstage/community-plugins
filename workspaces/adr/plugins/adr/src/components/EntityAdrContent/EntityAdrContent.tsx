@@ -218,10 +218,10 @@ export const EntityAdrContent = (props: {
             <Grid.Item colSpan={{ sm: '3' }}>
               <InfoCard>
                 <div className={styles.adrMenu}>
-                  {adrListGrouped.map(([title, adrs], idx) => (
+                  {adrListGrouped.map(([title, adrs]) => (
                     <AdrListContainer
                       adrs={adrs}
-                      key={idx}
+                      key={title || 'root'}
                       selectedAdr={selectedAdr}
                       title={title}
                       statusComponent={statusComponent}
