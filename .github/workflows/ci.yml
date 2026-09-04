@@ -30,15 +30,6 @@ jobs:
           fetch-depth: 0
           filter: blob:none
 
-      - name: Diagnose PR diff refs
-        run: |
-          echo "HEAD=$(git rev-parse HEAD)"
-          echo "BASE=$(git rev-parse origin/${BASE_REF})"
-          echo "MERGE_BASE=$(git merge-base origin/${BASE_REF} HEAD || true)"
-          git rev-parse --is-shallow-repository
-        env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
-
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
