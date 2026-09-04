@@ -94,13 +94,17 @@ jobs:
       - name: Update Version Packages (${{ inputs.workspace }}) PR
         id: changesets-pr
         if: steps.release_check.outputs.needs_release != 'true' || inputs.force_release != true
-        uses: backstage/changesets-action@291bfc1f76d1dcfbf967f5810dc0423592eae09a # v2.3.1
+        uses: backstage/changesets-action@0f2ad4fd1133f2dd16197372798de8e66e7eae43 # v1.9.0 + versionBranch
         with:
           title: Version Packages (${{ inputs.workspace }})
           cwd: workspaces/${{ inputs.workspace }}
           version: yarn changeset version
           versionBranch: changesets-release/${{ inputs.workspace }}
-          skipRootChangelogUpdate: true
+          commit: |-
+            Version Packages
+
+            Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+            Generated-by: changesets/action
         env:
           GITHUB_TOKEN: ${{ secrets.GH_SERVICE_ACCOUNT_TOKEN }}
 
