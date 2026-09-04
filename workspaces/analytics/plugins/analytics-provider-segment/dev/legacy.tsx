@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { analyticsModuleSegment } from './plugin';
 
-describe('analytics-module-segment', () => {
-  it('should export plugin', () => {
-    expect(analyticsModuleSegment).toBeDefined();
-  });
-});
+import { createDevApp } from '@backstage/dev-utils';
+import { SegmentAnalyticsApi } from '../src/legacy';
+import { Playground } from './Playground';
+
+createDevApp()
+  .registerApi(SegmentAnalyticsApi)
+  .addPage({
+    path: '/segment',
+    title: 'Segment Playground',
+    element: <Playground />,
+  })
+  .render();

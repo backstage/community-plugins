@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  configApiRef,
-  createFrontendModule,
-  identityApiRef,
-} from '@backstage/frontend-plugin-api';
-import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
+/**
+ * Legacy frontend system exports for the Segment analytics module.
+ */
+import {
+  analyticsApiRef,
+  configApiRef,
+  createApiFactory,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
 import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
 
-const segmentImplementation = AnalyticsImplementationBlueprint.make({
-  name: 'segment',
-  params: defineParams =>
-    defineParams({
-      deps: { configApi: configApiRef, identityApi: identityApiRef },
-      factory: ({ configApi, identityApi }) =>
-        SegmentAnalytics.fromConfig(configApi, { identityApi }),
-    }),
-});
-
+export * from './apis/implementations/AnalyticsApi';
 /**
  * @public
  */
-export const segmentModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [segmentImplementation],
+export const SegmentAnalyticsApi = createApiFactory({
+  api: analyticsApiRef,
+  deps: { configApi: configApiRef, identityApi: identityApiRef },
+  factory: ({ configApi, identityApi }) =>
+    SegmentAnalytics.fromConfig(configApi, { identityApi }),
 });
