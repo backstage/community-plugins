@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@backstage/plugin-permission-common": "^0.9.10",
-    "@kubernetes/client-node": "^1.0.0"
+    "@kubernetes/client-node": "^2.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.5"
