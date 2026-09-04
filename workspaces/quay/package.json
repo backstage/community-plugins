@@ -45,7 +45,7 @@
     "@backstage/repo-tools": "^0.19.0",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
-    "@playwright/test": "1.61.1",
+    "@playwright/test": "1.62.1",
     "knip": "^5.27.4",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
@@ -55,7 +55,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "refractor@npm:3.6.0/prismjs": "^1.30.0",
-    "@remixicon/react": "4.8.0"
+    "@remixicon/react": "4.9.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
