@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20 || 22"
+    "node": "24"
   },
   "scripts": {
     "start": "backstage-cli repo start",
@@ -39,15 +39,15 @@
     "@backstage/cli": "^0.33.1",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@backstage/repo-tools": "^0.15.0",
-    "@changesets/cli": "^2.27.1",
-    "knip": "^5.27.4",
-    "node-gyp": "^10.0.0",
-    "prettier": "^2.3.2",
+    "@changesets/cli": "^3.0.0",
+    "knip": "^6.0.0",
+    "node-gyp": "^13.0.0",
+    "prettier": "^3.0.0",
     "typescript": "~5.3.0"
   },
   "resolutions": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
