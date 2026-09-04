@@ -45,7 +45,7 @@ export class AzureDevOpsWikiArticleCollatorFactory
   public readonly type: string = 'azure-devops-wiki-article';
 
   private constructor(options: WikiArticleCollatorFactoryOptions) {
-    this.baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
+    this.baseUrl = (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
     this.token = options.token;
     this.credentialsProvider = options.credentialsProvider;
     this.logger = options.logger;
