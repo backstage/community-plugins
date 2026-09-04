@@ -1649,7 +1649,7 @@ __metadata:
   dependencies:
     "@backstage-community/cli": "portal:./workspaces/repo-tools/packages/cli"
     "@backstage/cli": "npm:^0.32.0"
-    "@changesets/parse": "npm:^0.4.0"
+    "@changesets/parse": "npm:^1.0.0"
     "@manypkg/get-packages": "npm:^2.2.2"
     "@octokit/rest": "npm:^20.1.1"
     "@spotify/eslint-plugin": "npm:^15.0.0"
@@ -2397,13 +2397,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/parse@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@changesets/parse@npm:0.4.0"
+"@changesets/parse@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@changesets/parse@npm:1.0.0"
   dependencies:
-    "@changesets/types": "npm:^6.0.0"
-    js-yaml: "npm:^3.13.1"
-  checksum: 10/0a824582306b198cd775048876e62bd39193b921515608504777407d78f1dcc700ec15e1a6bccd8a3514c5acc6c3fb060238fbfeae94e698aa17dad1121c2d43
+    "@changesets/types": "npm:^7.0.0"
+    yaml: "npm:^2.9.0"
+  checksum: 10/f3e7d0cb03d9218abebb1e7bd2244befcddab7cd9299f88714fc2ac3f5b16850efc158f67155ccfe46ccd6e6a8371b8db02121b9c0b2ac1ce947f3634f248b64
   languageName: node
   linkType: hard
 
@@ -2414,10 +2414,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/types@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@changesets/types@npm:6.0.0"
-  checksum: 10/214c58ff3e3da019c578b94815ec6748729a38b665d950acddf53f3a23073ac7a57dce45812c4bec0cbcd6902c84a482c804457d4c903602005b2399de8a4021
+"@changesets/types@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@changesets/types@npm:7.0.0"
+  checksum: 10/7de8bfc0614cf76c0d1d699b61e1f1ba11abb9dd0f5eb0525fbddcf4bcca519151078c27e3bfa1fcf63aba23e28b744c18048eec3d4fb3eec5c763915edbaae2
   languageName: node
   linkType: hard
 
@@ -7734,14 +7734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0":
-  version: 1.0.30001769
-  resolution: "caniuse-lite@npm:1.0.30001769"
-  checksum: 10/4b7d087832d4330a8b1fa02cd9455bdb068ea67f1735f2aa6324d5b64b24f5079cf6349b13d209f268ffa59644b9f4f784266b780bafd877ceb83c9797ca80ba
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001809":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001809":
   version: 1.0.30001810
   resolution: "caniuse-lite@npm:1.0.30001810"
   checksum: 10/47d7db627c3f3d1a10e06eef9efbb84295c6ef9d959b585b64032cc293637ca7b9b6af7e5d5752972b3e690d9561f14b9561db03890fbc6e38dc1aaa54e51d97
@@ -18937,12 +18930,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.8.1":
-  version: 2.8.1
-  resolution: "yaml@npm:2.8.1"
+"yaml@npm:^2.0.0, yaml@npm:^2.8.1, yaml@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "yaml@npm:2.9.0"
   bin:
     yaml: bin.mjs
-  checksum: 10/eae07b3947d405012672ec17ce27348aea7d1fa0534143355d24a43a58f5e05652157ea2182c4fe0604f0540be71f99f1173f9d61018379404507790dff17665
+  checksum: 10/9a95e8e08651c3d292ab6a5befeb5f57b76801caa097c75bb45c9a70ce19c1b11f57e87a6ef84a579ea070ed2c2c8ac541c88c0ae684d544d5f42c7e77d11b7b
   languageName: node
   linkType: hard
 
