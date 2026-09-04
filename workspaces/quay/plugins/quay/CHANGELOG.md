@@ -1,5 +1,19 @@
 # @backstage-community/plugin-quay
 
+## 1.38.0
+
+### Minor Changes
+
+- 2f52648: Backstage version bump to v1.54.6
+
+### Patch Changes
+
+- d68f5f9: Updated dependency `start-server-and-test` to `3.0.12`.
+- 7eee6b2: Updated dependency `@remixicon/react` to `<4.10.0`.
+  Updated dependency `@playwright/test` to `1.62.1`.
+- Updated dependencies [2f52648]
+  - @backstage-community/plugin-quay-common@1.23.0
+
 ## 1.37.2
 
 ### Patch Changes
