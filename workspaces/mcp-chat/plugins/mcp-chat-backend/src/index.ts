@@ -110,6 +110,7 @@ export {
   executeToolCall,
   findNpxPath,
   DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
+  DEFAULT_MCP_MAX_TOOL_ITERATIONS,
 } from './utils';
 
 // =============================================================================
