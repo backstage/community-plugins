@@ -20,8 +20,9 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 import { BuildStatus } from '../../api';
+import type { ReactElement } from 'react';
 
-const STATUS_ICONS: { [key in BuildStatus]: JSX.Element } = {
+const STATUS_ICONS: Partial<Record<BuildStatus, ReactElement>> = {
   succeeded: <StatusOK />,
   failed: <StatusError />,
   stopped: <StatusWarning />,

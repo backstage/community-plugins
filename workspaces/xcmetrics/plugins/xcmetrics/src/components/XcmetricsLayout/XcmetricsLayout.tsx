@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 import {
   Content,
   Header,
@@ -28,7 +28,7 @@ import { BuildList } from '../BuildList';
 export interface TabConfig {
   path: string;
   title: string;
-  component: ReactChild;
+  component: ReactNode;
 }
 
 const TABS: TabConfig[] = [
