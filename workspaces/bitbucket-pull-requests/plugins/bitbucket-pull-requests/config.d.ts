@@ -16,9 +16,21 @@
 export interface Config {
   bitbucket?: {
     /**
+     * BitBucket type
+     * @visibility frontend
+     * @default server
+     */
+    type?: 'server' | 'cloud';
+    /**
      * Proxy path for BitBucket API requests
      * @visibility frontend
      */
     proxyPath?: string;
+    /**
+     * Workspace to query for Bitbucket Cloud pull requests
+     * Required when `bitbucket.type: 'cloud'` and the homepage or API needs to filter cloud PRs by workspace
+     * @visibility frontend
+     */
+    cloudWorkspaces?: string[];
   };
 }

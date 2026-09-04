@@ -9,10 +9,6 @@
 - Able to view Creator name, Created date and last update etc.
 - We can go to Particular PR by clicking ID.
 
-## Limitations
-
-This plugin currently only works with Bitbucket Data center. Bitbucket cloud uses a different API to get pull requests [documented here](https://developer.atlassian.com/cloud/bitbucket/rest/api-group-pullrequests/#api-repositories-workspace-repo-slug-pullrequests-get). Contributions are welcome to add support for Bitbucket cloud.
-
 ## How to add Bitbucket PR plugin to Backstage app
 
 1. Install the plugin into Backstage.
@@ -56,7 +52,15 @@ proxy:
 bitbucket:
   # Defaults to /bitbucket/api and can be omitted if proxy is configured for that url
   proxyPath: /bitbucket/api
+  # Valid values: cloud or server. Defaults to server; set to cloud for cloud-hosted Bitbucket.
+  type: cloud
+  # Required for Bitbucket Cloud when querying pull requests across one or more workspaces
+  cloudWorkspaces:
+    - my-workspace
+    - another-workspace
 ```
+
+For token generation refer [link](https://support.atlassian.com/bitbucket-cloud/docs/using-api-tokens)
 
 4. Run backstage app with `yarn start` and navigate to services tabs.
 
@@ -67,7 +71,10 @@ bitbucket:
 ```yaml
 metadata:
   annotations:
+    # For Bitbucket Server / Data Center:
     bitbucket.com/project-slug: <example-bitbucket-project-name>/<example-bitbucket-repo-name>
+    # For Bitbucket Cloud:
+    bitbucket.org/repo-slug: <my-workspace>/<my-repo>
 ```
 
 ## Adding Bitbucket Pull Requests to your Homepage
