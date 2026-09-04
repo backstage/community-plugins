@@ -1,5 +1,25 @@
 # @backstage-community/plugin-topology
 
+## 3.0.0
+
+### Major Changes
+
+- bf0ec02: Graduate the Topology New Frontend System plugin from `/alpha` to the main package entry point. Legacy (OFS) exports are available from the `/legacy` subpath. Translations remain on `/alpha` and `/translations`.
+
+  **BREAKING:** The default export is now the NFS plugin created with `createFrontendPlugin`. Named OFS exports (`topologyPlugin`, `TopologyPage`) have moved to `@backstage-community/plugin-topology/legacy`.
+
+  To migrate existing NFS usage from `/alpha` to the main entry point, update imports from `@backstage-community/plugin-topology/alpha` to `@backstage-community/plugin-topology`.
+
+  To migrate existing OFS usage, update imports from `@backstage-community/plugin-topology` to `@backstage-community/plugin-topology/legacy`.
+
+  Translations are now available from `/translations` and `/alpha`.
+
+### Minor Changes
+
+- 6e05bc1: Backstage version bump to v1.54.5
+  On the New Frontend System, Topology fills the catalog entity page below the header instead of collapsing.
+  Enabled the missing-permissions e2e test for NFS app.
+
 ## 2.16.3
 
 ### Patch Changes
