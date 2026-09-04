@@ -35,15 +35,15 @@
     "@backstage/cli": "^0.36.0",
     "@backstage/cli-node": "^0.3.0",
     "@backstage/errors": "^1.2.7",
-    "@manypkg/get-packages": "^2.2.1",
-    "chalk": "^4.1.2",
-    "commander": "^12.0.0",
-    "find-up": "^5.0.0",
+    "@manypkg/get-packages": "^3.0.0",
+    "chalk": "^6.0.0",
+    "commander": "^15.0.0",
+    "find-up": "^8.0.0",
     "fs-extra": "^11.2.0",
-    "inquirer": "^8.0.0",
-    "replace-in-file": "^7.1.0",
+    "inquirer": "^14.0.0",
+    "replace-in-file": "^9.0.0",
     "semver": "^7.6.0",
-    "ts-morph": "^23.0.0"
+    "ts-morph": "^28.0.0"
   },
   "nodemonConfig": {
     "watch": "./src",

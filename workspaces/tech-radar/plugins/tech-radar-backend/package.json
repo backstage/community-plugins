@@ -38,10 +38,10 @@
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/config": "backstage:^",
-    "express": "^4.17.1",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
     "node-fetch": "^2.6.7",
-    "zod": "^3.20.0"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@backstage/backend-test-utils": "backstage:^",
