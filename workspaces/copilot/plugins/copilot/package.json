@@ -58,8 +58,8 @@
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@internationalized/date": "^3.12.1",
-    "@mui/icons-material": "^5.16.7",
-    "@mui/material": "^5.16.7",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
     "@mui/x-charts": "^9.3.0",
     "@remixicon/react": ">=4.6.0 <4.9.0",
     "luxon": "^3.5.0",
@@ -68,8 +68,8 @@
     "simple-date-range-calendar": "^2.0.6"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^18.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router": "^6.30.4",
     "react-router-dom": "^6.3.0"
   },
@@ -78,13 +78,13 @@
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/d3-scale": "^4.0.8",
     "@types/d3-shape": "^3.1.6",
-    "@types/react": "^18.3.3",
-    "msw": "^1.0.0"
+    "@types/react": "^19.0.0",
+    "msw": "^2.0.0"
   },
   "files": [
     "dist",
