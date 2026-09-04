@@ -1,0 +1,26 @@
+.root {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.tabs {
+  background: var(--bui-bg-surface-1);
+  border-bottom: 1px solid var(--bui-border);
+}
+
+.tabPanel {
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 0;
+}
+
+.graphiQlWrapper {
+  flex: 1;
+  min-height: 0;
+}
+
+.graphiQlWrapper :global(.graphiql-container) {
+  box-sizing: initial;
+}
