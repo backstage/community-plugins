@@ -428,25 +428,19 @@ Ensure that you have already configured the database backend for your Backstage 
 
 #### Database connections and pool limits
 
-The RBAC backend currently uses **two separate PostgreSQL connection paths** for the database:
+Casbin policies (`casbin_rule`) use the **same Knex client** as role metadata and conditional policies (the Backstage `permission` plugin database).
 
-1. **Knex** — conditional policies, role metadata, etc for the permission plugin
-2. **TypeORM (Casbin adapter)** — Casbin policy storage for RBAC
+In horizontally scaled (HA) deployments, size PostgreSQL `max_connections` for Backstage core plugins plus this **single** RBAC pool per replica. Lower `backend.database.knexConfig.pool.max` if you need a smaller per-plugin pool.
 
-Each path maintains its own connection pool. In horizontally scaled (HA) deployments, this extra pool can contribute to maxing out connection resources.
+Existing deployments keep their `casbin_rule` rows. On upgrade, a Knex migration creates the table only if it does not already exist. No additional app-config keys are required.
 
-**Mitigations today:**
-
-- Lower `backend.database.knexConfig.pool.max` to reduce per-plugin pool size.
-- Size your PostgreSQL instance to account for total connections across all Backstage core plugins and RBAC's Casbin pool.
-
-Consolidating RBAC onto a single shared database connection for both Knex and Casbin is a known improvement area to be addressed in the future.
+Expect fewer database connections than the previous TypeORM Casbin adapter, and typically lower overhead on policy load and writes (shared pool, no extra ORM mapping). Measure in your environment if you need numbers.
 
 #### Passwordless PostgreSQL in the Cloud
 
 The RBAC plugin stores policies in the same database configured under `backend.database`. Passwordless authentication is supported when Backstage configures a dynamic Knex connection resolver, including **Azure Database for PostgreSQL with Entra authentication** (`connection.type: azure`) and **AWS RDS with IAM authentication** (`connection.type: rds`). Configure `backend.database` the same way as the rest of your Backstage instance — see [Passwordless PostgreSQL in the Cloud](https://backstage.io/docs/getting-started/config/database/#passwordless-postgresql-in-the-cloud) in the Backstage documentation. No additional RBAC-specific database configuration is required.
 
-Google Cloud SQL with Cloud IAM (`connection.type: cloudsql`) is not supported for RBAC policy storage yet.
+Casbin uses that same Knex client, so it does not need a second connection factory. Google Cloud SQL with Cloud IAM (`connection.type: cloudsql`) works for Casbin when the host Backstage database client can connect that way.
 
 ### Optional maximum depth
 
