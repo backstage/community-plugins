@@ -9,6 +9,7 @@
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "start": "backstage-cli repo start",
+    "start:mock": "yarn workspace @backstage-community/plugin-topology start:mock",
     "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-topology --include @internal/plugin-topology-dev-backend --parallel -v -i run start:legacy",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",

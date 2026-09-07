@@ -350,6 +350,8 @@ For more information about the labels and annotations, see [Guidelines for label
 
 If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Topology entity tab is registered automatically for entities with `backstage.io/kubernetes-id` or `backstage.io/kubernetes-namespace`.
 
+The Topology entity tab also uses an extension `if` predicate so it is only shown when the signed-in user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`. Users without those permissions will not see the **Topology** tab on the entity page.
+
 ```ts
 import topologyPlugin from '@backstage-community/plugin-topology';
 import topologyTranslationsModule from '@backstage-community/plugin-topology/translations';
@@ -392,7 +394,7 @@ Topology is a front-end plugin that enables you to view the workloads as nodes t
 
 - Your Backstage application is installed and running.
 - You have installed the Topology plugin. For the installation process, see [Installation](#installation).
-- If RBAC permission framework is enabled, ensure to add the following permission policies in an external permission policies configuration file named `rbac-policy.csv` to allow the rbac admins or your desired user(s)/group(s) to access the topology plugin:
+- If RBAC permission framework is enabled, ensure to add the following permission policies in an external permission policies configuration file named `rbac-policy.csv` to allow the rbac admins or your desired user(s)/group(s) to access the topology plugin. In the new frontend system, users without `kubernetes.clusters.read` and `kubernetes.resources.read` permissions will not see the **Topology** entity tab.
 
 ```csv rbac-policy.csv
 g, user:default/<YOUR_USERNAME>, role:default/topology-viewer
@@ -402,7 +404,7 @@ p, role:default/topology-viewer, kubernetes.proxy, use, allow
 p, role:default/topology-viewer, catalog-entity, read, allow
 ```
 
-`p, role:default/topology-viewer, kubernetes.clusters.read, read, allow` and `p, role:default/topology-viewer, kubernetes.resources.read, read, allow` grants the user the ability to see the Topology panel. `p, role:default/topology-viewer, kubernetes.proxy, use, allow` grants the user the ability to view the pod logs. `p, role:default/topology-viewer, catalog-entity, read, allow` grants the user the ability to see the catalog item.
+`p, role:default/topology-viewer, kubernetes.clusters.read, read, allow` and `p, role:default/topology-viewer, kubernetes.resources.read, read, allow` grant the user the ability to see the Topology tab and panel. `p, role:default/topology-viewer, kubernetes.proxy, use, allow` grants the user the ability to view the pod logs. `p, role:default/topology-viewer, catalog-entity, read, allow` grants the user the ability to see the catalog item.
 
 #### Procedure
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,13 +120,20 @@ export class Common {
       return;
     }
     await this.page.goto('/catalog/default/component/backstage/topology');
+    await this.page.waitForURL(
+      url =>
+        url.pathname.includes('/component/backstage') &&
+        !url.searchParams.has('kubernetesPermissions'),
+    );
+    await this.page.waitForLoadState('networkidle');
     await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
   }
 
   /**
    * Opens the missing-permission Topology view. Legacy uses a standalone
-   * `/missing-permissions` page. NFS lists a `permission-denied` catalog
-   * entity; opening it and selecting the Topology tab shows the same content.
+   * `/missing-permissions` page. NFS uses the `permission-denied` catalog
+   * entity; the Topology tab is hidden via the extension `if` predicate after
+   * the mock app reloads with `kubernetesPermissions=deny` in the URL.
    */
   async navigateToMissingPermissions() {
     if (!isNfsAppMode()) {
@@ -134,17 +141,12 @@ export class Common {
       return;
     }
 
-    await this.page.goto('/catalog');
-    await this.page
-      .getByRole('row', { name: /permission-denied/ })
-      .getByRole('link')
-      .first()
-      .click();
+    await this.page.goto('/catalog/default/component/permission-denied');
+    await this.page.waitForURL(/kubernetesPermissions=deny/);
+    await this.page.waitForLoadState('networkidle');
     await expect(
       this.page.getByRole('heading', { name: 'permission-denied' }),
     ).toBeVisible({ timeout: 30000 });
-    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
-    await topologyEntityTab(this.page).click();
   }
 
   async a11yCheck(testInfo: TestInfo) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,8 @@ test.describe('Topology plugin', () => {
       await common.navigateToMissingPermissions();
 
       if (isNfsAppMode()) {
-        await expect(topologyEntityTab(page)).toBeVisible();
+        await expect(topologyEntityTab(page)).not.toBeVisible();
+        return;
       }
 
       await expect(
