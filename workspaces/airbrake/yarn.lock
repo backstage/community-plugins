@@ -2011,6 +2011,7 @@ __metadata:
     "@backstage/frontend-plugin-api": "backstage:^"
     "@backstage/plugin-catalog-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
+    "@backstage/ui": "backstage:^"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@testing-library/jest-dom": "npm:^6.0.0"
@@ -3414,7 +3415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/ui@npm:^0.17.1":
+"@backstage/ui@backstage:^::backstage=1.54.5&npm=0.17.1, @backstage/ui@npm:^0.17.1":
   version: 0.17.1
   resolution: "@backstage/ui@npm:0.17.1"
   dependencies:

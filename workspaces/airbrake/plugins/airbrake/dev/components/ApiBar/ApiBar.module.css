@@ -1,0 +1,7 @@
+@layer components {
+  .root {
+    display: flex;
+    gap: var(--bui-space-4);
+    flex-wrap: wrap;
+  }
+}

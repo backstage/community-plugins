@@ -22,23 +22,14 @@ import {
   Progress,
 } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Flex, Text } from '@backstage/ui';
 import useAsync from 'react-use/esm/useAsync';
 import { airbrakeApiRef } from '../../api';
 import { MissingAnnotationEmptyState } from '@backstage/plugin-catalog-react';
 import { AIRBRAKE_PROJECT_ID_ANNOTATION, useProjectId } from '../useProjectId';
-
-const useStyles = makeStyles({
-  multilineText: {
-    whiteSpace: 'pre-wrap',
-  },
-});
+import styles from './EntityAirbrakeWidget.module.css';
 
 export const EntityAirbrakeWidget = ({ entity }: { entity: Entity }) => {
-  const classes = useStyles();
-
   const projectId = useProjectId(entity);
   const airbrakeApi = useApi(airbrakeApiRef);
 
@@ -60,19 +51,19 @@ export const EntityAirbrakeWidget = ({ entity }: { entity: Entity }) => {
     return <Progress />;
   } else if (value) {
     return (
-      <Grid container spacing={3} direction="column">
+      <Flex direction="column" gap="6">
         {value.groups?.map(group => (
-          <Grid item key={group.id}>
+          <div key={group.id}>
             {group.errors?.map((groupError, i) => (
               <InfoCard title={groupError.type} key={i}>
-                <Typography variant="body1" className={classes.multilineText}>
+                <Text variant="body-medium" className={styles.multilineText}>
                   {groupError.message}
-                </Typography>
+                </Text>
               </InfoCard>
             ))}
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </Flex>
     );
   }
 
