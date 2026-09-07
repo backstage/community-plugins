@@ -36,6 +36,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.high': 'High';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Medium';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.low': 'Low';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.unknown': 'Unknown';
     readonly 'pipelineRunList.tableHeaderTitle.name': 'NAME';
     readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
     readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';
