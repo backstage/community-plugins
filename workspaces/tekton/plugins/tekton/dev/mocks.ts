@@ -20,6 +20,8 @@ import {
   KubernetesApi,
   KubernetesProxyApi,
 } from '@backstage/plugin-kubernetes-react';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import type { PermissionApi } from '@backstage/plugin-permission-react';
 import { mockApis } from '@backstage/test-utils';
 
 import { mockKubernetesPlrResponse } from '../src/__fixtures__/1-pipelinesData';
@@ -36,6 +38,24 @@ export const mockEntity: Entity = {
   metadata: {
     name: 'backstage',
     description: 'backstage.io',
+    annotations: {
+      'backstage.io/kubernetes-id': 'backstage',
+      'tekton.dev/cicd': 'true',
+    },
+  },
+  spec: {
+    lifecycle: 'production',
+    type: 'service',
+    owner: 'user:guest',
+  },
+};
+
+export const permissionDeniedMockEntity: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'permission-denied',
+    description: 'Entity for testing Tekton permissions',
     annotations: {
       'backstage.io/kubernetes-id': 'backstage',
       'tekton.dev/cicd': 'true',
@@ -201,5 +221,96 @@ export const mockKubernetesClient = new MockKubernetesClient(
 export const mockKubernetesProxyApi = new MockKubernetesProxyApi();
 
 export const mockCatalogApi = new InMemoryCatalogClient({
-  entities: [mockEntity],
+  entities: [mockEntity, permissionDeniedMockEntity],
 });
+
+const MOCK_K8S_PERMISSIONS_QUERY_PARAM = 'kubernetesPermissions';
+const MOCK_K8S_FINALIZED_MODE_KEY = 'tekton-mock-k8s-finalized-mode';
+
+const kubernetesReadPermissionNames = new Set([
+  'kubernetes.clusters.read',
+  'kubernetes.resources.read',
+]);
+
+type MockKubernetesPermissionsMode = 'allow' | 'deny';
+
+function getMockKubernetesPermissionsMode(): MockKubernetesPermissionsMode {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get(MOCK_K8S_PERMISSIONS_QUERY_PARAM);
+
+  if (mode === 'deny' || params.has('denyKubernetesPermissions')) {
+    return 'deny';
+  }
+
+  return 'allow';
+}
+
+function getDesiredMockKubernetesPermissionsModeFromPathname(
+  pathname: string,
+): MockKubernetesPermissionsMode | undefined {
+  if (/\/component\/permission-denied(?:\/|$)/.test(pathname)) {
+    return 'deny';
+  }
+
+  if (/\/component\/backstage(?:\/|$)/.test(pathname)) {
+    return 'allow';
+  }
+
+  return undefined;
+}
+
+/** Whether kubernetes read permissions are allowed in the NFS mock dev app. */
+export function isKubernetesReadAllowedInMock(): boolean {
+  return getMockKubernetesPermissionsMode() === 'allow';
+}
+
+/**
+ * NFS extension `if` predicates are session-scoped. Keep `kubernetesPermissions`
+ * in the URL in sync with the mock catalog entity and reload when the mode
+ * changes so the Tekton tab is visible on backstage and hidden on
+ * permission-denied.
+ */
+export function syncMockKubernetesPermissionsQueryParamForEntity(): void {
+  const desiredMode = getDesiredMockKubernetesPermissionsModeFromPathname(
+    window.location.pathname,
+  );
+
+  if (!desiredMode) {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+
+  if (desiredMode === 'deny') {
+    url.searchParams.set(MOCK_K8S_PERMISSIONS_QUERY_PARAM, 'deny');
+  } else {
+    url.searchParams.delete(MOCK_K8S_PERMISSIONS_QUERY_PARAM);
+    url.searchParams.delete('denyKubernetesPermissions');
+    url.searchParams.delete('allowKubernetesPermissions');
+  }
+
+  const lastFinalizedMode = sessionStorage.getItem(MOCK_K8S_FINALIZED_MODE_KEY);
+
+  if (lastFinalizedMode === desiredMode) {
+    return;
+  }
+
+  sessionStorage.setItem(MOCK_K8S_FINALIZED_MODE_KEY, desiredMode);
+  window.location.replace(url.toString());
+}
+
+/** Mock PermissionApi used by the NFS dev app. */
+export function createMockPermissionApi(): PermissionApi {
+  return {
+    authorize: async request => {
+      if (
+        kubernetesReadPermissionNames.has(request.permission.name) &&
+        !isKubernetesReadAllowedInMock()
+      ) {
+        return { result: AuthorizeResult.DENY };
+      }
+
+      return { result: AuthorizeResult.ALLOW };
+    },
+  };
+}

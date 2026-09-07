@@ -21,6 +21,20 @@ export function isNfsAppMode(): boolean {
   return process.env.APP_MODE !== 'legacy';
 }
 
+/**
+ * Locator for the Tekton entity tab.
+ * Legacy TabbedLayout uses `header-tab-0`. NFS mounts Tekton on the entity
+ * page via Content navigation links.
+ */
+export function tektonEntityTab(page: Page) {
+  if (!isNfsAppMode()) {
+    return page.getByTestId('header-tab-0');
+  }
+  return page
+    .getByRole('navigation', { name: 'Content navigation' })
+    .locator('a[href$="/tekton"]');
+}
+
 export class Common {
   page: Page;
 
@@ -51,14 +65,38 @@ export class Common {
       await this.page.goto('/tekton');
     } else {
       await this.page.goto('/catalog/default/component/backstage/tekton');
-      const tektonTab = this.page
-        .getByRole('navigation', { name: 'Content navigation' })
-        .getByRole('link', { name: 'Tekton', exact: true });
-      await expect(tektonTab).toBeVisible();
+      await this.page.waitForURL(
+        url =>
+          url.pathname.includes('/component/backstage') &&
+          !url.searchParams.has('kubernetesPermissions'),
+      );
+      await this.page.waitForLoadState('networkidle');
+      const tektonTab = tektonEntityTab(this.page);
+      await expect(tektonTab).toBeVisible({ timeout: 30000 });
       await tektonTab.click();
     }
 
     await expect(this.page.getByTestId('tekton-progress')).toHaveCount(0);
+  }
+
+  /**
+   * Opens the missing-permission Tekton view. Legacy uses a standalone
+   * `/missing-permissions` page. NFS uses the `permission-denied` catalog
+   * entity; the Tekton tab is hidden via the extension `if` predicate after
+   * the mock app reloads with `kubernetesPermissions=deny` in the URL.
+   */
+  async navigateToMissingPermissions() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/missing-permissions');
+      return;
+    }
+
+    await this.page.goto('/catalog/default/component/permission-denied');
+    await this.page.waitForURL(/kubernetesPermissions=deny/);
+    await this.page.waitForLoadState('networkidle');
+    await expect(
+      this.page.getByRole('heading', { name: 'permission-denied' }),
+    ).toBeVisible({ timeout: 30000 });
   }
 
   async switchToLocale(locale: string): Promise<void> {
