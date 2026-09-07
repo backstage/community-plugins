@@ -53,7 +53,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
     "lodash": "^4.17.21",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@backstage/backend-defaults": "backstage:^",

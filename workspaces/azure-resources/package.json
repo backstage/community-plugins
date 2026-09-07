@@ -40,20 +40,20 @@
     "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@changesets/cli": "^2.29.7",
+    "@changesets/cli": "^3.0.0",
     "@microsoft/api-extractor-model": "^7.31.2",
     "@microsoft/tsdoc": "^0.16.0",
     "@microsoft/tsdoc-config": "^0.18.0",
     "@types/node": "24.9.1",
     "@useoptic/optic": "^1.0.9",
-    "knip": "^5.66.2",
-    "node-gyp": "^11.5.0",
-    "prettier": "^2.8.8",
+    "knip": "^6.0.0",
+    "node-gyp": "^13.0.0",
+    "prettier": "^3.0.0",
     "typescript": "~5.9.3"
   },
   "resolutions": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
