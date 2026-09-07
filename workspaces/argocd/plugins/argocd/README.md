@@ -135,6 +135,8 @@ yarn workspace app add @backstage-community/plugin-argocd
 
 If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Deployment Lifecycle and Deployment Summary entity tabs are registered automatically for entities with Argo CD annotations.
 
+The Argo CD entity tabs also use an extension `if` predicate so they are only shown when the signed-in user is authorized for `argocd.view.read`. Users without that permission will not see the **Deployment Lifecycle** or **Deployment Summary** tabs on the entity page.
+
 ```ts
 import argocdPlugin, {
   argocdTranslationsModule,

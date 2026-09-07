@@ -9,13 +9,27 @@ Developer guide for `@backstage-community/plugin-argocd`. For operator install a
 
 ## Development harness
 
-Start this plugin in isolation:
+Start this plugin with the dev backend (RBAC-backed permissions):
+
+```bash
+yarn start
+```
+
+Or from the plugin package:
 
 ```bash
 yarn workspace @backstage-community/plugin-argocd start
 ```
 
-This serves the frontend plugin via `dev/index.tsx` with mocked Argo CD data for faster iteration. Use it for UI extensions, hooks, and API client work.
+This serves the frontend via `dev/index.tsx` with mocked Argo CD and Kubernetes data, while auth and permissions are provided by `@backstage-community/plugin-argocd-backend`.
+
+For fully mocked permissions (no backend), use:
+
+```bash
+yarn workspace @backstage-community/plugin-argocd start:mock
+```
+
+Use the mock harness for faster UI iteration on extensions, hooks, and API client work.
 
 Legacy (pre-NFS) entrypoint:
 

@@ -18,7 +18,9 @@ yarn workspace @backstage-community/plugin-argocd-backend start \
 
 (`--config` paths are resolved from the plugins directory.)
 
-This runs a minimal backend via `dev/index.ts` with the Argo CD backend plugin. Use it for HTTP router, permissions, and Actions API work.
+This runs a dev backend via `dev/index.ts` with auth, catalog, Kubernetes, RBAC-backed permissions, and the Argo CD backend plugin. Use it for HTTP router, permissions, and Actions API work.
+
+When started via `yarn start` from the workspace root, the workspace [`app-config.yaml`](../../app-config.yaml) supplies RBAC policy configuration (`permission.rbac` and `examples/rbac-policy.csv`). For the minimal harness config below, add matching `permission` settings or pass the workspace config instead.
 
 The harness listens on port **7007**. Only one backend `dev/` harness should bind to that port at a time. The [frontend harness](../argocd/CONTRIBUTING.md) uses a different port (typically **3000**), so both can run together.
 

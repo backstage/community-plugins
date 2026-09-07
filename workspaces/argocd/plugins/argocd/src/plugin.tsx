@@ -32,6 +32,10 @@ import { getArgocdInstances } from './hooks/useArgocdConfig';
 import { rootRouteRef } from './routes';
 import { isArgocdConfigured } from './utils/isArgocdConfigured';
 
+const argocdReadPermissionIfPredicate = {
+  permissions: { $contains: 'argocd.view.read#read' },
+};
+
 const argoCDApi = ApiBlueprint.make({
   name: 'argocd',
   params: defineParams =>
@@ -72,6 +76,7 @@ const argoCDInstanceApi = ApiBlueprint.make({
 
 const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
   name: 'deployment-lifecycle',
+  if: argocdReadPermissionIfPredicate,
   params: {
     path: '/deployment-lifecycle',
     title: 'Deployment Lifecycle',
@@ -86,6 +91,7 @@ const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
 
 const deploymentSummaryEntityContent = EntityContentBlueprint.make({
   name: 'deployment-summary',
+  if: argocdReadPermissionIfPredicate,
   params: {
     path: '/deployment-summary',
     title: 'Deployment Summary',

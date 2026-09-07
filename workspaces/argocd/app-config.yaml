@@ -1,6 +1,7 @@
 app:
   title: ArgoCD
   baseUrl: http://localhost:3000
+  packages: all
   experimental:
     packages: 'all'
   extensions:
@@ -98,15 +99,15 @@ argocd:
           token: fake-jwt-token2
 
 permission:
-  # setting this to `false` will disable permissions
-  enabled: false
+  enabled: true
   rbac:
     pluginsWithPermission:
       - argocd
       - catalog
       - permission
       - scaffolder
-    policies-csv-file: ../../examples/rbac-policies.csv
+    policies-csv-file: ../../examples/rbac-policy.csv
+    policyFileReload: true
     admin:
       users:
         - name: user:development/guest
