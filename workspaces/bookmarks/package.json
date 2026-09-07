@@ -37,21 +37,21 @@
     "@backstage/cli": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^3.0.0",
     "@jest/environment-jsdom-abstract": "^30.0.0",
     "@playwright/test": "^1.58.1",
     "@types/jest": "^30.0.0",
-    "@types/jsdom": "^27.0.0",
+    "@types/jsdom": "^30.0.0",
     "jest": "^30.2.0",
-    "jsdom": "^27.0.0",
-    "node-gyp": "^11.4.2",
+    "jsdom": "^30.0.0",
+    "node-gyp": "^13.0.0",
     "playwright-core": "^1.58.1",
     "prettier": "^3.6.2",
     "typescript": "~5.9.3"
   },
   "resolutions": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
