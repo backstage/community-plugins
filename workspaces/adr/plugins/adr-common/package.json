@@ -44,7 +44,7 @@
     "@backstage/plugin-search-common": "^1.2.24",
     "front-matter": "^4.0.2",
     "luxon": "^3.0.0",
-    "marked": "^12.0.0"
+    "marked": "^18.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "^0.36.5"
