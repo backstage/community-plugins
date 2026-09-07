@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.28.1
+
+### Patch Changes
+
+- 54ae77b: Moved `@backstage/backend-test-utils` from `dependencies` to `devDependencies`, as it is only used in tests and the local dev harness. This stops it, and its `better-sqlite3` dependency, from being installed into consumers' production dependency trees.
+
 ## 0.28.0
 
 ### Minor Changes
