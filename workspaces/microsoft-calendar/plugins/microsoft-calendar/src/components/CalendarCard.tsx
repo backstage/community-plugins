@@ -19,12 +19,8 @@ import { DateTime } from 'luxon';
 import { useState } from 'react';
 
 import { InfoCard, Progress } from '@backstage/core-components';
-
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import PrevIcon from '@material-ui/icons/NavigateBefore';
-import NextIcon from '@material-ui/icons/NavigateNext';
+import { ButtonIcon, Text } from '@backstage/ui';
+import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
 
 import { useCalendarsQuery, useEventsQuery, useSignIn } from '../hooks';
 import calendarIcon from '../icons/calendar.svg';
@@ -33,6 +29,7 @@ import { CalendarSelect } from './CalendarSelect';
 import { SignInContent } from './SignInContent';
 import { getStartDate } from './util';
 import useAsync from 'react-use/esm/useAsync';
+import styles from './CalendarCard.module.css';
 
 export const CalendarCard = () => {
   const [date, setDate] = useState(DateTime.now());
@@ -73,28 +70,34 @@ export const CalendarCard = () => {
     <InfoCard
       noPadding
       title={
-        <Box display="flex" alignItems="center">
-          <Box height={32} width={32} mr={1}>
+        <div className={styles.titleWrapper}>
+          <div className={styles.iconWrapper}>
             <img src={calendarIcon} alt="Microsoft Calendar" />
-          </Box>
+          </div>
           {isSignedIn ? (
             <>
-              <IconButton onClick={() => changeDay(-1)} size="small">
-                <PrevIcon />
-              </IconButton>
-              <IconButton onClick={() => changeDay(1)} size="small">
-                <NextIcon />
-              </IconButton>
-              <Box mr={0.5} />
-              <Typography variant="h6">
+              <ButtonIcon
+                onClick={() => changeDay(-1)}
+                icon={<RiArrowLeftSLine size={16} />}
+                variant="secondary"
+                aria-label="Previous day"
+              />
+              <ButtonIcon
+                onClick={() => changeDay(1)}
+                icon={<RiArrowRightSLine size={16} />}
+                variant="secondary"
+                aria-label="Next day"
+              />
+              <div className={styles.spacer} />
+              <Text variant="body-medium">
                 {date.toLocaleString({
                   weekday: 'short',
                   month: 'short',
                   day: 'numeric',
                 })}
-              </Typography>
+              </Text>
 
-              <Box flex={1} />
+              <div className={styles.flex} />
 
               <CalendarSelect
                 calendars={calendars}
@@ -106,39 +109,37 @@ export const CalendarCard = () => {
               />
             </>
           ) : (
-            <Typography variant="h6">Agenda</Typography>
+            <Text variant="body-medium">Agenda</Text>
           )}
-        </Box>
+        </div>
       }
       deepLink={{
         link: 'https://outlook.office.com/calendar/',
         title: 'Go to Calendar',
       }}
     >
-      <Box>
+      <div>
         {showLoader && (
-          <Box py={2}>
+          <div className={styles.loaderContainer}>
             <Progress variant="query" />
-          </Box>
+          </div>
         )}
         {!isSignedIn && isInitialized && (
           <SignInContent handleAuthClick={() => signIn(false)} />
         )}
         {!isEventLoading && !isCalendarLoading && isSignedIn && (
-          <Box p={1} pb={0} maxHeight={602} overflow="auto">
+          <div className={styles.eventsContainer}>
             {events?.length === 0 && (
-              <Box pt={2} pb={2}>
-                <Typography align="center" variant="h6">
-                  No events
-                </Typography>
-              </Box>
+              <div className={styles.emptyState}>
+                <Text color="secondary">No events</Text>
+              </div>
             )}
             {sortBy(events, [getStartDate]).map(event => (
               <CalendarEvent key={`${event.id}`} event={event} />
             ))}
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
     </InfoCard>
   );
 };
