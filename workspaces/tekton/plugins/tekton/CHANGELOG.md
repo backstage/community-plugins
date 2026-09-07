@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton
 
+## 4.0.1
+
+### Patch Changes
+
+- 842669b: Added missing translation for "unknown" vulnerability severity
+
 ## 4.0.0
 
 ### Major Changes
