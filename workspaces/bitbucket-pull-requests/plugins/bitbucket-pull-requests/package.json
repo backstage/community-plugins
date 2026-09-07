@@ -47,13 +47,13 @@
     "@material-ui/icons": "^4.9.1",
     "cross-fetch": "^4.0.0",
     "luxon": "^3.0.0",
-    "msw": "^1.0.1",
+    "msw": "^2.0.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router": "6.30.4 ^6.30.4"
   },
   "devDependencies": {
@@ -61,14 +61,14 @@
     "@backstage/core-app-api": "^1.18.0",
     "@backstage/dev-utils": "^1.1.12",
     "@backstage/test-utils": "^1.7.10",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.0.0",
     "@types/luxon": "^3.0.0",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "react": "^18",
-    "react-dom": "^18"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "files": [
     "dist",
