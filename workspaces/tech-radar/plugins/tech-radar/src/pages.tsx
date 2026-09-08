@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,19 @@
  */
 
 import {
-  discoveryApiRef,
-  fetchApiRef,
-  identityApiRef,
-} from '@backstage/core-plugin-api';
-import {
-  ApiBlueprint,
-  PageBlueprint,
-  createFrontendPlugin,
-} from '@backstage/frontend-plugin-api';
-import { z } from 'zod';
-import { techRadarApiRef } from './api';
-import { DefaultTechRadarApi } from './defaultApi';
-import {
   compatWrapper,
   convertLegacyRouteRef,
-  convertLegacyRouteRefs,
 } from '@backstage/core-compat-api';
+import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import MapIcon from '@material-ui/icons/MyLocation';
+import { z } from 'zod';
 import { rootRouteRef } from './plugin';
 
-/** @alpha */
+/**
+ * Tech Radar page for the new frontend system.
+ *
+ * @public
+ */
 export const techRadarPage = PageBlueprint.makeWithOverrides({
   configSchema: {
     subtitle: z
@@ -57,33 +49,4 @@ export const techRadarPage = PageBlueprint.makeWithOverrides({
         ),
     });
   },
-});
-
-/** @alpha */
-export const techRadarApi = ApiBlueprint.make({
-  params: defineParams =>
-    defineParams({
-      api: techRadarApiRef,
-      deps: {
-        identityApi: identityApiRef,
-        discoveryApi: discoveryApiRef,
-        fetchApi: fetchApiRef,
-      },
-      factory: ({ identityApi, discoveryApi, fetchApi }) => {
-        return new DefaultTechRadarApi({
-          discoveryApi,
-          fetchApi,
-          identityApi,
-        });
-      },
-    }),
-});
-
-/** @alpha */
-export default createFrontendPlugin({
-  pluginId: 'tech-radar',
-  extensions: [techRadarPage, techRadarApi],
-  routes: convertLegacyRouteRefs({
-    root: rootRouteRef,
-  }),
 });

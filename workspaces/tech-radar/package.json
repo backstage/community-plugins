@@ -7,8 +7,7 @@
   },
   "scripts": {
     "start": "backstage-cli repo start",
-    "start:next": "yarn start app-next backend",
-    "build:backend": "yarn workspace backend build",
+    "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-tech-radar --include @backstage-community/plugin-tech-radar-backend --parallel -v -i run start:legacy",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "build:all": "backstage-cli repo build --all",
