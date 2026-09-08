@@ -1805,7 +1805,7 @@ __metadata:
     "@types/supertest": "npm:7.2.1"
     casbin: "npm:^5.27.1"
     chokidar: "npm:^3.6.0"
-    csv-parse: "npm:^6.0.0"
+    csv-parse: "npm:^7.0.0"
     express: "npm:^4.18.2"
     express-promise-router: "npm:^4.1.0"
     js-yaml: "npm:^4.1.0"
@@ -13457,10 +13457,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csv-parse@npm:^6.0.0":
-  version: 6.2.1
-  resolution: "csv-parse@npm:6.2.1"
-  checksum: 10/7fbde1225c6df6aaea01a202934e1f15ce16ed55e544ead0d066b0c4dc9ae1a2fc881b412889cbf115cd74cbf14ea17388b394e8a31e05cb412dd7dc6114bebd
+"csv-parse@npm:^7.0.0":
+  version: 7.0.2
+  resolution: "csv-parse@npm:7.0.2"
+  checksum: 10/66158491d25b2070908c6d28130c1d439bec0e0d1ab3fad372973909e573bcc85a46ca317ae410f0178157f272112e3741b164aaf850d8241128c30ea2137670
   languageName: node
   linkType: hard
 
