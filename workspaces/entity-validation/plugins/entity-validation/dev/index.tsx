@@ -22,7 +22,7 @@ import {
 } from '../src/plugin';
 import { CatalogApi, catalogApiRef } from '@backstage/plugin-catalog-react';
 
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 
 const EmbedExamplePage = () => {
   return (
@@ -30,7 +30,7 @@ const EmbedExamplePage = () => {
       <Header title="Embed Example" />
       <Content>
         <EntityValidationContent
-          contentHead={<Typography variant="h6">Entity Validation</Typography>}
+          contentHead={<Text variant="title-small">Entity Validation</Text>}
         />
       </Content>
     </Page>
