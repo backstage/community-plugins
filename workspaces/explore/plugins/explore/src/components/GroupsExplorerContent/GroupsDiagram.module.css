@@ -67,7 +67,7 @@
 }
 
 .textGroup {
-  color: var(--bui-fg-solid);
+  color: var(--bui-fg-solid, #fff);
 }
 
 .textWrapper {
