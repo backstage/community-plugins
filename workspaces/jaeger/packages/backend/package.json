@@ -37,8 +37,7 @@
     "@backstage/plugin-search-backend-module-catalog": "backstage:^",
     "@backstage/plugin-search-backend-module-pg": "backstage:^",
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^",
-    "@backstage/plugin-techdocs-backend": "backstage:^",
-    "better-sqlite3": "^12.0.0"
+    "@backstage/plugin-techdocs-backend": "backstage:^"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"
