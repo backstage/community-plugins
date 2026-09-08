@@ -15,9 +15,9 @@
  */
 
 /**
- * New Frontend System dev mode for the Argo CD plugin (backend-connected).
- * Uses the dev backend for auth and RBAC-backed permissions. Argo CD and
- * Kubernetes APIs remain mocked for local UI iteration.
+ * New Frontend System dev mode for the Argo CD plugin.
+ * Argo CD and Kubernetes APIs are mocked; permissions are mocked locally so
+ * extension `if` predicates work without calling the dev backend.
  */
 
 import '@backstage/cli/asset-types';
@@ -37,6 +37,8 @@ import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import { permissionApiRef } from '@backstage/plugin-permission-react';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 
 import {
@@ -104,7 +106,24 @@ const signInPage = SignInPageBlueprint.make({
 
 const devNavModule = createFrontendModule({
   pluginId: 'app',
-  extensions: [signInPage],
+  extensions: [
+    signInPage,
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => ({
+            authorize: async () => ({
+              result: window.location.pathname.includes('permission-denied')
+                ? AuthorizeResult.DENY
+                : AuthorizeResult.ALLOW,
+            }),
+          }),
+        }),
+    }),
+  ],
 });
 
 const argocdDevModule = createFrontendModule({

@@ -106,8 +106,7 @@ permission:
       - catalog
       - permission
       - scaffolder
-    policies-csv-file: ../../examples/rbac-policy.csv
-    policyFileReload: true
+    policies-csv-file: ../../examples/rbac-policies.csv
     admin:
       users:
         - name: user:development/guest
