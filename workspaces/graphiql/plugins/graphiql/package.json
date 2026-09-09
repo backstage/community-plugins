@@ -57,6 +57,7 @@
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "graphiql": "^3.0.6",

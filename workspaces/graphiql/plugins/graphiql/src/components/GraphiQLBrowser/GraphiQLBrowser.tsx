@@ -15,38 +15,16 @@
  */
 
 import { lazy, useState, Suspense } from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import { makeStyles } from '@material-ui/core/styles';
+import { Tabs, TabList, Tab, TabPanel, Text } from '@backstage/ui';
 import 'graphiql/graphiql.css';
 import { StorageBucket } from '../../lib/storage';
 import { GraphQLEndpoint } from '../../lib/api';
 import { Progress } from '@backstage/core-components';
+import styles from './GraphiQLBrowser.module.css';
 
 const GraphiQL = lazy(() =>
   import('graphiql').then(m => ({ default: m.GraphiQL })),
 );
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: '100%',
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  tabs: {
-    background: theme.palette.background.paper,
-  },
-  graphiQlWrapper: {
-    flex: 1,
-    '@global': {
-      '.graphiql-container': {
-        boxSizing: 'initial',
-      },
-    },
-  },
-}));
 
 type GraphiQLBrowserProps = {
   endpoints: GraphQLEndpoint[];
@@ -55,38 +33,43 @@ type GraphiQLBrowserProps = {
 export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
   const { endpoints } = props;
 
-  const classes = useStyles();
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabId, setTabId] = useState<string>('0');
 
   if (!endpoints.length) {
-    return <Typography variant="h4">No endpoints available</Typography>;
+    return <Text variant="title-large">No endpoints available</Text>;
   }
 
+  const tabIndex = Number(tabId);
   const { id, fetcher, plugins } = endpoints[tabIndex];
   const storage = StorageBucket.forLocalStorage(`plugin/graphiql/data/${id}`);
 
   return (
-    <div className={classes.root}>
+    <div className={styles.root}>
       <Suspense fallback={<Progress />}>
         <Tabs
-          classes={{ root: classes.tabs }}
-          value={tabIndex}
-          onChange={(_, value) => setTabIndex(value)}
-          indicatorColor="primary"
+          selectedKey={tabId}
+          onSelectionChange={key => setTabId(String(key))}
         >
-          {endpoints.map(({ title }, index) => (
-            <Tab key={index} label={title} value={index} />
+          <TabList className={styles.tabs}>
+            {endpoints.map(({ title }, index) => (
+              <Tab key={index} id={String(index)}>
+                {title}
+              </Tab>
+            ))}
+          </TabList>
+          {endpoints.map((_, index) => (
+            <TabPanel key={index} id={String(index)}>
+              <div className={styles.graphiQlWrapper}>
+                <GraphiQL
+                  key={index}
+                  fetcher={fetcher}
+                  storage={storage}
+                  plugins={plugins}
+                />
+              </div>
+            </TabPanel>
           ))}
         </Tabs>
-        <Divider />
-        <div className={classes.graphiQlWrapper}>
-          <GraphiQL
-            key={tabIndex}
-            fetcher={fetcher}
-            storage={storage}
-            plugins={plugins}
-          />
-        </div>
       </Suspense>
     </div>
   );

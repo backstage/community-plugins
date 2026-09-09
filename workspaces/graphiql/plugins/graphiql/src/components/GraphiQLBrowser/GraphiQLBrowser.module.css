@@ -1,0 +1,20 @@
+@layer components {
+  .root {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .tabs {
+    background: var(--bui-bg-surface-1);
+    border-bottom: 1px solid var(--bui-border);
+  }
+
+  .graphiQlWrapper {
+    flex: 1;
+  }
+
+  .graphiQlWrapper :global(.graphiql-container) {
+    box-sizing: initial;
+  }
+}

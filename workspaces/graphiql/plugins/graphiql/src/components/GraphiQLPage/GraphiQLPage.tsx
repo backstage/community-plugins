@@ -19,7 +19,7 @@ import useAsync from 'react-use/esm/useAsync';
 import 'graphiql/graphiql.css';
 import { graphQlBrowseApiRef } from '../../lib/api';
 import { GraphiQLBrowser } from '../GraphiQLBrowser';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import {
   Content,
   Header,
@@ -44,10 +44,10 @@ export const GraphiQLPage = () => {
   } else if (endpoints.error) {
     content = (
       <Content>
-        <Typography variant="h4" color="error">
+        <Text variant="title-large" color="danger">
           {/* TODO: provide a proper error component */}
           Failed to load GraphQL endpoints, {String(endpoints.error)}
-        </Typography>
+        </Text>
       </Content>
     );
   } else {
