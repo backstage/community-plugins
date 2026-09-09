@@ -11,7 +11,7 @@ import type { GraphiQLPlugin } from '@graphiql/react';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { OAuthApi } from '@backstage/core-plugin-api';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { SVGProps } from 'react';
 
 // @public
 export type EndpointConfig = {
@@ -37,8 +37,8 @@ export type GithubEndpointConfig = {
   plugins?: GraphiQLPlugin[];
 };
 
-// @public (undocumented)
-export const GraphiQLIcon: (props: SvgIconProps) => JSX_2.Element;
+// @public
+export const GraphiQLIcon: (props: SVGProps<SVGSVGElement>) => JSX_2.Element;
 
 // @public (undocumented)
 export const GraphiQLPage: () => JSX_2.Element;
