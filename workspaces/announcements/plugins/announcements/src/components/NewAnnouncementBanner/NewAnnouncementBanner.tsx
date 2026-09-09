@@ -33,6 +33,8 @@ import { useSignal } from '@backstage/plugin-signals-react';
 import {
   RiCloseLine,
   RiMegaphoneLine,
+  RiWrenchLine,
+  RiAlertLine,
   RiExternalLinkLine,
 } from '@remixicon/react';
 
@@ -47,6 +49,25 @@ type CardOptions = {
 type AnnouncementBannerProps = {
   announcement: Announcement;
   cardOptions?: CardOptions;
+};
+
+const getAlertStatus = (
+  until_date?: string | null,
+  categorySlug?: string,
+): 'info' | 'warning' | 'danger' | 'success' => {
+  const isPersistent =
+    categorySlug === 'maintenance' || categorySlug === 'release';
+  if (!until_date) return isPersistent ? 'warning' : 'info';
+
+  const daysUntil = DateTime.fromISO(until_date).diff(
+    DateTime.now(),
+    'days',
+  ).days;
+
+  if (daysUntil < 0) return 'success';
+  if (daysUntil <= 2) return 'danger';
+  if (daysUntil <= 3) return 'warning';
+  return isPersistent ? 'warning' : 'info';
 };
 
 const floatingStyle: React.CSSProperties = {
@@ -71,6 +92,9 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
   const { t } = useAnnouncementsTranslation();
   const [bannerOpen, setBannerOpen] = useState(true);
   const announcement = props.announcement;
+  const isPersistent =
+    announcement.category?.slug === 'maintenance' ||
+    announcement.category?.slug === 'release';
   const titleLength = props.cardOptions?.titleLength;
   const excerptLength = props.cardOptions?.excerptLength;
 
@@ -89,7 +113,9 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
       },
     });
 
-    markSeen();
+    if (!isPersistent) {
+      markSeen();
+    }
   };
 
   const handleDismiss = () => {
@@ -112,6 +138,19 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
 
   const bannerTitle = (
     <Box>
+      {announcement.category && (
+        <Box
+          as="span"
+          style={{
+            fontWeight: 'bold',
+            marginRight: 8,
+            textTransform: 'uppercase',
+            fontSize: '0.75em',
+          }}
+        >
+          {announcement.category.title}
+        </Box>
+      )}
       {title}
       <Link
         href={viewAnnouncementLink({ id: announcement.id })}
@@ -149,14 +188,24 @@ const AnnouncementBanner = (props: AnnouncementBannerProps) => {
     return null;
   }
 
+  let icon = <RiMegaphoneLine />;
+  if (announcement.category?.slug === 'maintenance') {
+    icon = <RiWrenchLine />;
+  } else if (announcement.category?.slug === 'release') {
+    icon = <RiAlertLine />;
+  }
+
   return (
     <Alert
       style={floatingStyle}
-      status="info"
-      icon={<RiMegaphoneLine />}
+      status={getAlertStatus(
+        announcement.until_date,
+        announcement.category?.slug,
+      )}
+      icon={icon}
       title={bannerTitle}
       description={excerpt}
-      customActions={closeButton}
+      customActions={isPersistent ? undefined : closeButton}
       mb="4"
     />
   );
