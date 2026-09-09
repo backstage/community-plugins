@@ -199,8 +199,16 @@ export const githubIssuesApi = (
       .map(repo => {
         const [owner, name] = repo.name.split('/');
 
-        const safeNameRegex = /-|\./gi;
-        let safeName = name.replace(safeNameRegex, '');
+        // The safe name is used as a GraphQL alias for the repository field.
+        // GraphQL names must match /[_A-Za-z][_0-9A-Za-z]*/, so strip any
+        // disallowed character and prefix an underscore when the remaining
+        // name would start with a digit (e.g. a repo named "42-tools").
+        // Without this, GitHub rejects the whole batched query with a parse
+        // error and the card fails to render.
+        let safeName = name.replace(/[^_0-9A-Za-z]/g, '');
+        if (/^[0-9]/.test(safeName)) {
+          safeName = `_${safeName}`;
+        }
 
         while (safeNames.includes(safeName)) {
           safeName += 'x';
