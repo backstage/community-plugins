@@ -423,7 +423,7 @@ describe('HomePagePullRequestsTable', () => {
     expect(repoLinks.length).toBeGreaterThan(0);
   });
 
-  it('shows a clear error when cloudWorkspaces config is missing', async () => {
+  it('shows a clear error when workspaces config is missing', async () => {
     const realBitbucketApi = new BitbucketApi({
       discoveryApi: {
         getBaseUrl: jest.fn().mockResolvedValue('http://exampleapi.com'),
@@ -531,7 +531,7 @@ describe('HomePagePullRequestsTable', () => {
           return undefined;
         }),
         getOptionalStringArray: jest.fn((key: string) => {
-          if (key === 'bitbucket.cloudWorkspaces') {
+          if (key === 'bitbucket.workspaces') {
             return ['workspace-a', 'workspace-b'];
           }
           return undefined;
