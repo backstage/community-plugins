@@ -142,10 +142,6 @@ export class PluginPermissionMetadataCollector {
   ): Promise<MetadataResponse | undefined> {
     let permMetaData: MetadataResponse | undefined;
 
-    // Work around: This is needed for start up whenever a conditional policy for the plugin permission in the yaml file
-    // will make a check to the well known endpoint
-    // However, our plugin has not completely started and as such will throw a 503 error
-    // TODO: see if we are able to remove this after we migrate to the permission registry
     if (pluginId === 'permission') {
       return rbacPermissionMetadata;
     }

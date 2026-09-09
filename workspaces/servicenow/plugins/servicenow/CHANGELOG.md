@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.15.1
+
+### Patch Changes
+
+- 4813d14: Updated dependency `@playwright/test` to `1.62.1`.
+
 ## 1.15.0
 
 ### Minor Changes

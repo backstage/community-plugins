@@ -41,7 +41,6 @@
     "@backstage-community/plugin-announcements-common": "workspace:^",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
-    "@backstage/backend-test-utils": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/plugin-events-node": "backstage:^",
     "@backstage/plugin-notifications-node": "backstage:^",
@@ -55,6 +54,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@backstage/backend-test-utils": "backstage:^",
     "@backstage/cli": "backstage:^",
     "@backstage/plugin-catalog-node": "backstage:^",
     "@types/supertest": "^7.0.0",

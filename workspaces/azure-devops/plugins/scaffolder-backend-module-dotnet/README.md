@@ -6,6 +6,11 @@ It contains the following actions:
 
 - `dotnet:new`: create a new dotnet project
 
+## Prerequisites
+
+- A [Backstage](https://backstage.io/docs/getting-started/) project
+- The [.NET SDK](https://dotnet.microsoft.com/en-us/download) installed with the `dotnet` CLI available on `PATH` where the Backstage backend is running
+
 ## Installation
 
 From your Backstage instance root folder:

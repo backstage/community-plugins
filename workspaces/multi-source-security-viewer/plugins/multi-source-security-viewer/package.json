@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-multi-source-security-viewer",
-  "version": "0.17.3",
+  "version": "1.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {

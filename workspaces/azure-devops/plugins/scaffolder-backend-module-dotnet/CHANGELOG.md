@@ -1,5 +1,11 @@
 # @backstage-community/plugin-scaffolder-backend-module-dotnet
 
+## 0.17.1
+
+### Patch Changes
+
+- 60a4083: Added prerequisites section to README documenting the .NET SDK requirement
+
 ## 0.17.0
 
 ### Minor Changes

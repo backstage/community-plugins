@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-servicenow",
-  "version": "1.15.0",
+  "version": "1.15.1",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -79,7 +79,7 @@
     "@backstage/dev-utils": "^1.1.26",
     "@backstage/frontend-test-utils": "^0.6.3",
     "@backstage/test-utils": "^1.7.21",
-    "@playwright/test": "1.61.1",
+    "@playwright/test": "1.62.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",

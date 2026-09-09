@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  AuditorService,
-  AuthService,
-  LoggerService,
-} from '@backstage/backend-plugin-api';
-import type { MetadataResponse } from '@backstage/plugin-permission-common';
-
+import { AuditorService, LoggerService } from '@backstage/backend-plugin-api';
 import {
   difference,
   fromPairs,
@@ -34,7 +28,6 @@ import {
 
 import {
   PermissionAction,
-  PermissionInfo,
   RoleBasedPolicy,
   RoleConditionalPolicyDecision,
   Source,
@@ -43,7 +36,6 @@ import {
 import { ActionType, ConditionEvents, RoleEvents } from './auditor/auditor';
 import { RoleMetadataDao, RoleMetadataStorage } from './database/role-metadata';
 import { EnforcerDelegate } from './service/enforcer-delegate';
-import { PluginPermissionMetadataCollector } from './service/plugin-endpoints';
 import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
 import { RBACFilters } from './permissions';
 
@@ -89,7 +81,7 @@ function policyArraysEqual(a: string[], b: string[]): boolean {
 
 export type ConditionalPolicyDiff<TAdd> = {
   toAdd: TAdd[];
-  toRemove: RoleConditionalPolicyDecision<PermissionInfo>[];
+  toRemove: RoleConditionalPolicyDecision[];
 };
 
 export type ConditionalResourceKey = {
@@ -146,10 +138,10 @@ export function toError(value: unknown): Error {
  * Computes additions and removals between stored and desired conditional policies.
  */
 export function diffConditionalPolicies<TAdd>(
-  stored: RoleConditionalPolicyDecision<PermissionInfo>[],
+  stored: RoleConditionalPolicyDecision[],
   desired: TAdd[],
   equals: (
-    storedItem: RoleConditionalPolicyDecision<PermissionInfo>,
+    storedItem: RoleConditionalPolicyDecision,
     desiredItem: TAdd,
   ) => boolean,
 ): ConditionalPolicyDiff<TAdd> {
@@ -160,14 +152,6 @@ export function diffConditionalPolicies<TAdd>(
     storedItem => !desired.some(desiredItem => equals(storedItem, desiredItem)),
   );
   return { toAdd, toRemove };
-}
-
-export function permissionMappingToActions(
-  mapping: PermissionInfo[] | PermissionAction[],
-): PermissionAction[] {
-  return mapping.map(entry =>
-    typeof entry === 'string' ? entry : entry.action,
-  );
 }
 
 export function sameConditionalResource(
@@ -457,58 +441,6 @@ export function mergeRoleMetadata(
   mergedMetaData.source = newMetadata.source;
   mergedMetaData.owner = newMetadata.owner ?? currentMetadata.owner;
   return mergedMetaData;
-}
-
-export async function processConditionMapping(
-  roleConditionPolicy: RoleConditionalPolicyDecision<PermissionAction>,
-  pluginPermMetaData: PluginPermissionMetadataCollector,
-  auth: AuthService,
-): Promise<RoleConditionalPolicyDecision<PermissionInfo>> {
-  const { token } = await auth.getPluginRequestToken({
-    onBehalfOf: await auth.getOwnServiceCredentials(),
-    targetPluginId: roleConditionPolicy.pluginId,
-  });
-
-  const rule: MetadataResponse | undefined =
-    await pluginPermMetaData.getMetadataByPluginId(
-      roleConditionPolicy.pluginId,
-      token,
-    );
-  if (!rule?.permissions) {
-    throw new Error(
-      `Unable to get permission list for plugin ${roleConditionPolicy.pluginId}`,
-    );
-  }
-
-  const permInfo: PermissionInfo[] = [];
-  for (const action of roleConditionPolicy.permissionMapping) {
-    const perm = rule.permissions.find(permission => {
-      if (permission.type === 'resource') {
-        const isCorrectResourceType =
-          permission.resourceType === roleConditionPolicy.resourceType;
-        const isCorrectAction = action === permission.attributes.action;
-        const undefinedAction =
-          action === 'use' && permission.attributes.action === undefined;
-
-        return isCorrectResourceType && (isCorrectAction || undefinedAction);
-      }
-      return false;
-    });
-
-    if (!perm) {
-      throw new Error(
-        `Unable to find permission to get permission name for resource type '${
-          roleConditionPolicy.resourceType
-        }' and action ${JSON.stringify(action)}`,
-      );
-    }
-    permInfo.push({ name: perm.name, action });
-  }
-
-  return {
-    ...roleConditionPolicy,
-    permissionMapping: permInfo,
-  };
 }
 
 export function deepSort(value: any): any {

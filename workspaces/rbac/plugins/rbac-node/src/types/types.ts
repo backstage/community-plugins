@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  PermissionInfo,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+import { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 
 /**
  * Used to provide a list of pluginIDs on which a permission well-known endpoint is to be searched.
@@ -43,6 +40,6 @@ export interface RBACProviderConnection {
   applyRoles(roles: string[][]): Promise<void>;
   applyPermissions(permissions: string[][]): Promise<void>;
   applyConditionalPermissions(
-    conditionalPermissions: RoleConditionalPolicyDecision<PermissionInfo>[],
+    conditionalPermissions: RoleConditionalPolicyDecision[],
   ): Promise<void>;
 }

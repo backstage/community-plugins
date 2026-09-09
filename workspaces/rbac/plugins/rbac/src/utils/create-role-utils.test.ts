@@ -435,7 +435,7 @@ describe('getConditionalPermissionPoliciesData', () => {
         roleEntityRef: 'user:default/div',
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
-        permissionMapping: ['read'],
+        permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
         conditions: {
           rule: 'HAS_LABEL',
           params: {
@@ -513,7 +513,7 @@ describe('getUpdatedConditionalPolicies', () => {
           roleEntityRef: 'user:default/div',
           pluginId: 'catalog',
           resourceType: 'catalog-entity',
-          permissionMapping: ['read'],
+          permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
           conditions: {
             allOf: [
               {
@@ -567,7 +567,7 @@ describe('getNewConditionalPolicies', () => {
         roleEntityRef: 'user:default/div',
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
-        permissionMapping: ['read'],
+        permissionMapping: [{ name: 'catalog.entity.read', action: 'read' }],
         conditions: {
           rule: 'HAS_LABEL',
           params: {

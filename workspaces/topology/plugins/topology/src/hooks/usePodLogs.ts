@@ -34,15 +34,15 @@ export const usePodLogs = ({
 }: PodLogsOptions) => {
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const kubernetesProxyApi = useApi(kubernetesProxyApiRef);
+  const { podName, podNamespace, containerName, clusterName } = podScope;
   const getLogs = useCallback(async (): Promise<{ text: string }> => {
-    const { podName, podNamespace, containerName, clusterName } = podScope;
     return await kubernetesProxyApi.getPodLogs({
-      podName: podName,
+      podName,
       namespace: podNamespace,
-      containerName: containerName,
-      clusterName: clusterName,
+      containerName,
+      clusterName,
     });
-  }, [kubernetesProxyApi, podScope]);
+  }, [kubernetesProxyApi, podName, podNamespace, containerName, clusterName]);
 
   const { value, error, loading, retry } = useAsyncRetry(
     () => getLogs(),

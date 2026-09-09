@@ -36,6 +36,49 @@ jest.mock('@backstage/plugin-permission-react', () => ({
   usePermission: jest.fn(),
 }));
 
+jest.mock('@mui/material/Dialog', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('../pipeline-topology', () => ({
+  PipelineRunVisualization: () => null,
+  PipelineVisualization: () => null,
+}));
+
+jest.mock('../PipelineRunLogs/PipelineRunLogDialog', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('./PipelineRunRowActions', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('./PipelineRunTaskStatus', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('./PipelineRunVulnerabilities', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('@patternfly/react-core', () => {
+  const actual = jest.requireActual('@patternfly/react-core');
+  return {
+    ...actual,
+    Timestamp: ({ date }: { date?: Date }) => (
+      <time data-testid="pipelinerun-start-time">
+        {date ? date.toISOString() : ''}
+      </time>
+    ),
+    Tooltip: ({ children }: { children: any }) => children,
+  };
+});
+
 const mockUsePermission = usePermission as jest.MockedFunction<
   typeof usePermission
 >;
