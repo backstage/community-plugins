@@ -29,6 +29,8 @@ type Props = {
   entity: Entity | string;
 };
 
+const DEFAULT_MATURITY_PATH = '/maturity';
+
 function joinRoutePath(basePath: string, childPath: string): string {
   return `${basePath.replace(/\/$/, '')}/${childPath.replace(/^\//, '')}`;
 }
@@ -47,54 +49,43 @@ export function resolveMaturityRoute(
     : targetEntityPath;
 }
 
-type RoutedLinkProps = PropsWithChildren<{
-  currentEntityPath: string;
-  targetEntityPath: string;
-}>;
-
-const RoutedMaturityLink = ({
-  currentEntityPath,
-  targetEntityPath,
-  children,
-}: RoutedLinkProps) => {
-  const maturityRoute = useRouteRef(rootRouteRef);
-
-  return (
-    <Link
-      to={resolveMaturityRoute(
-        maturityRoute(),
-        currentEntityPath,
-        targetEntityPath,
-      )}
-    >
-      {children}
-    </Link>
-  );
-};
+/**
+ * Resolves the maturity route, or `undefined` when it cannot be resolved from
+ * the current location.
+ *
+ * `useRouteRef` throws for a route ref that is not mounted, which is the case
+ * whenever an app installs `EntityMaturitySummaryCard` or
+ * `EntityMaturityRankWidget` without also adding one of the maturity contents
+ * to the entity page. Every hook `useRouteRef` uses runs before it throws, so
+ * catching here leaves the hook order unchanged between renders.
+ */
+function useOptionalMaturityRoute() {
+  try {
+    return useRouteRef(rootRouteRef);
+  } catch {
+    return undefined;
+  }
+}
 
 export const MaturityLink = ({
   entity,
   children,
 }: PropsWithChildren<Props>) => {
   const entityRoute = useRouteRef(entityRouteRef);
-  const targetEntityPath = entityRoute(entityRouteParams(entity));
+  const maturityRoute = useOptionalMaturityRoute();
   const { namespace, kind, name } = useParams();
+
+  const targetEntityPath = entityRoute(entityRouteParams(entity));
   const content = children ?? <EntityDisplayName entityRef={entity} />;
 
-  if (namespace && kind && name) {
-    const currentEntityPath = entityRoute({ namespace, kind, name });
+  const to =
+    maturityRoute && namespace && kind && name
+      ? resolveMaturityRoute(
+          maturityRoute(),
+          entityRoute({ namespace, kind, name }),
+          targetEntityPath,
+        )
+      : joinRoutePath(targetEntityPath, DEFAULT_MATURITY_PATH);
 
-    return (
-      <RoutedMaturityLink
-        currentEntityPath={currentEntityPath}
-        targetEntityPath={targetEntityPath}
-      >
-        {content}
-      </RoutedMaturityLink>
-    );
-  }
-
-  return (
-    <Link to={joinRoutePath(targetEntityPath, '/maturity')}>{content}</Link>
-  );
+  return <Link to={to}>{content}</Link>;
 };
