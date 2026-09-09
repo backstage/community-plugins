@@ -56,7 +56,12 @@ Lock file maintenance PRs are disabled. Each workspace has its own `yarn.lock`, 
 
 ### Vulnerability Alerts
 
-Vulnerability alerts are enabled globally. For packages with version pins (like `react-router`), vulnerability alerts are explicitly disabled when the security fix is available on the pinned version line — otherwise Renovate would create PRs to upgrade past the allowed version range.
+Vulnerability alerts are enabled globally via two independent mechanisms:
+
+- **`vulnerabilityAlerts`** — responds to GitHub Dependabot alerts. Can be disabled per package using `vulnerabilityAlerts.enabled: false` in a package rule.
+- **`osvVulnerabilityAlerts`** — queries the [OSV database](https://osv.dev) directly. This is a global boolean with no per-package toggle and bypasses `allowedVersions` constraints.
+
+For packages with version pins (like `react-router`), disabling `vulnerabilityAlerts` alone is not sufficient — `osvVulnerabilityAlerts` will still create PRs that upgrade past the allowed version range. To stop Renovate from creating remediation PRs for a pinned package, add the CVE to `ignoreCves` in the package rule alongside `vulnerabilityAlerts.enabled: false`. This only affects Renovate's PR behavior; GitHub/Dependabot alerts may still remain visible in the repository Security UI.
 
 ## Modifying the Configuration
 
