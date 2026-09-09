@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Typography from '@material-ui/core/Typography';
 import { puppetDbApiRef, PuppetDbReportEvent } from '../../api';
 import {
   ResponseErrorPanel,
@@ -22,20 +21,13 @@ import {
 } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
 import { StatusField } from '../StatusField';
+import styles from './ReportDetailsEventsTable.module.css';
 
 type ReportEventsTableProps = {
   hash: string;
 };
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 /**
  * Component for displaying PuppetDB report events.
@@ -45,7 +37,6 @@ const useStyles = makeStyles(theme => ({
 export const ReportDetailsEventsTable = (props: ReportEventsTableProps) => {
   const { hash } = props;
   const puppetDbApi = useApi(puppetDbApiRef);
-  const classes = useStyles();
   const { value, loading, error } = useAsync(async () => {
     return puppetDbApi.getPuppetDbReportEvents(hash);
   }, [puppetDbApi, hash]);
@@ -61,9 +52,9 @@ export const ReportDetailsEventsTable = (props: ReportEventsTableProps) => {
       align: 'center',
       width: '300px',
       render: rowData => (
-        <Typography noWrap>
+        <Text truncate>
           {new Date(Date.parse(rowData.run_start_time)).toLocaleString()}
-        </Typography>
+        </Text>
       ),
     },
     {
@@ -72,43 +63,43 @@ export const ReportDetailsEventsTable = (props: ReportEventsTableProps) => {
       align: 'center',
       width: '300px',
       render: rowData => (
-        <Typography noWrap>
+        <Text truncate>
           {new Date(Date.parse(rowData.run_end_time)).toLocaleString()}
-        </Typography>
+        </Text>
       ),
     },
     {
       title: 'Containing Class',
       field: 'containing_class',
       render: rowData => (
-        <Typography noWrap title={rowData.file || ''}>
+        <Text truncate title={rowData.file || ''}>
           {rowData.containing_class}
-        </Typography>
+        </Text>
       ),
     },
     {
       title: 'Resource',
       field: 'resource_title',
       render: rowData => (
-        <Typography noWrap>
+        <Text truncate>
           {rowData.resource_type}[{rowData.resource_title}]
-        </Typography>
+        </Text>
       ),
     },
     {
       title: 'Property',
       field: 'property',
-      render: rowData => <Typography noWrap>{rowData.property}</Typography>,
+      render: rowData => <Text truncate>{rowData.property}</Text>,
     },
     {
       title: 'Old Value',
       field: 'old_value',
-      render: rowData => <Typography noWrap>{rowData.old_value}</Typography>,
+      render: rowData => <Text truncate>{rowData.old_value}</Text>,
     },
     {
       title: 'New Value',
       field: 'new_value',
-      render: rowData => <Typography noWrap>{rowData.new_value}</Typography>,
+      render: rowData => <Text truncate>{rowData.new_value}</Text>,
     },
     {
       title: 'Status',
@@ -131,9 +122,9 @@ export const ReportDetailsEventsTable = (props: ReportEventsTableProps) => {
         pageSizeOptions: [10],
       }}
       emptyContent={
-        <Typography color="textSecondary" className={classes.empty}>
+        <Text color="secondary" className={styles.empty}>
           No events
-        </Typography>
+        </Text>
       }
       title="Latest events"
       columns={columns}

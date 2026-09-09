@@ -47,7 +47,7 @@
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/errors": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
-    "@material-ui/core": "^4.12.2",
+    "@backstage/ui": "backstage:^",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-use": "^17.2.4"
   },
