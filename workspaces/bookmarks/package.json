@@ -19,7 +19,7 @@
     "test:e2e": "playwright test",
     "test:e2e-ui": "playwright test --ui",
     "test:all": "backstage-cli repo test --coverage",
-    "fix": "backstage-cli repo fix",
+    "fix": "node ../../node_modules/@backstage-community/cli/bin/community-cli workspace fix",
     "lint": "backstage-cli repo lint --since origin/master",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",

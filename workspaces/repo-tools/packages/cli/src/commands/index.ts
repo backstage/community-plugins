@@ -59,10 +59,27 @@ export const registerCommands = (program: Command) => {
     .option('--force', 'Overwrite existing workspace', false)
     .action(lazy(() => import('./plugin/migrate'), 'default'));
 
-  program
+  const workspaceCommand = program
     .command('workspace')
+    .description('Workspace management commands');
+
+  workspaceCommand
     .command('create')
     .action(lazy(() => import('./workspace/create'), 'default'));
+
+  workspaceCommand
+    .command('fix')
+    .description(
+      'Run the workspace fix pipeline (repo fix, lint --fix, prettier, and more)',
+    )
+    .option('--check', 'Run backstage-cli repo fix --check only (matches CI)')
+    .option('--publish', 'Pass --publish to backstage-cli repo fix')
+    .option('--knip', 'Run knip --fix (off by default)')
+    .option(
+      '--plugin <name>',
+      'Limit lint, prettier, and markdownlint to one plugin or package',
+    )
+    .action(lazy(() => import('./workspace/fix'), 'default'));
 
   const lintCommand = program
     .command('lint [command]')
