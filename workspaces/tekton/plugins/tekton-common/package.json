@@ -18,8 +18,7 @@
     "pluginPackages": [
       "@backstage-community/plugin-tekton",
       "@backstage-community/plugin-tekton-common",
-      "@backstage-community/plugin-tekton-react",
-      "@internal/plugin-tekton-dev-backend"
+      "@backstage-community/plugin-tekton-react"
     ]
   },
   "sideEffects": false,

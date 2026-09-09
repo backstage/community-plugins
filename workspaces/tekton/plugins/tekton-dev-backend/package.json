@@ -9,8 +9,6 @@
     "pluginId": "tekton",
     "pluginPackages": [
       "@backstage-community/plugin-tekton",
-      "@backstage-community/plugin-tekton-common",
-      "@backstage-community/plugin-tekton-react",
       "@internal/plugin-tekton-dev-backend"
     ]
   },
@@ -27,7 +25,6 @@
     "clean": "backstage-cli package clean"
   },
   "dependencies": {
-    "@backstage-community/plugin-rbac-backend": "^8.0.0",
     "@backstage/backend-defaults": "backstage:^",
     "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
@@ -35,8 +32,8 @@
     "@backstage/plugin-catalog-backend": "backstage:^",
     "@backstage/plugin-kubernetes-backend": "backstage:^",
     "@backstage/plugin-permission-backend": "backstage:^",
-    "better-sqlite3": "^12.0.0",
-    "mongodb": "^7.0.0"
+    "@backstage/plugin-permission-backend-module-allow-all-policy": "backstage:^",
+    "better-sqlite3": "^12.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^"

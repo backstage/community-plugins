@@ -50,14 +50,14 @@ import tektonTranslationsModule from '../src/translations';
 import { devSidebarContent } from './shared';
 import {
   createMockPermissionApi,
+  installMockKubernetesPermissionsPathSync,
   mockCatalogApi,
   mockKubernetesAuthProviderApi,
   mockKubernetesClient,
   mockKubernetesProxyApi,
-  syncMockKubernetesPermissionsQueryParamForEntity,
 } from './mocks';
 
-syncMockKubernetesPermissionsQueryParamForEntity();
+installMockKubernetesPermissionsPathSync();
 
 const catalogPluginOverrides = catalogPlugin.withOverrides({
   extensions: [
