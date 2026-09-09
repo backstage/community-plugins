@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { convertLegacyRouteRefs } from '@backstage/core-compat-api';
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import {
-  entityJenkinsProjects,
-  entityLatestJenkinsRunCard,
-  jenkinsApi,
-} from './alpha/index';
+  compatWrapper,
+  convertLegacyRouteRef,
+} from '@backstage/core-compat-api';
+import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { rootRouteRef } from './plugin';
+import { isJenkinsAvailable } from './components/Router';
 
 /**
- * @alpha
+ * @public
  */
-export default createFrontendPlugin({
-  pluginId: 'jenkins',
-  routes: convertLegacyRouteRefs({
-    entityContent: rootRouteRef,
-  }),
-  extensions: [entityJenkinsProjects, entityLatestJenkinsRunCard, jenkinsApi],
+export const entityJenkinsProjects = EntityContentBlueprint.make({
+  name: 'projects',
+  params: {
+    path: 'jenkins',
+    title: 'Jenkins',
+    filter: isJenkinsAvailable,
+    routeRef: convertLegacyRouteRef(rootRouteRef),
+    loader: () =>
+      import('./components/Router').then(m => compatWrapper(<m.Router />)),
+  },
 });

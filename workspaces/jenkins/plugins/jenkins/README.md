@@ -1,4 +1,4 @@
-# Jenkins Plugin (Alpha)
+# Jenkins Plugin
 
 Website: [https://jenkins.io/](https://jenkins.io/)
 
@@ -19,7 +19,29 @@ yarn --cwd packages/app add @backstage-community/plugin-jenkins
 
 2. Add and configure the [jenkins-backend](../jenkins-backend) plugin according to it's instructions
 
-3. Add the `EntityJenkinsContent` extension to the `CI/CD` page and `EntityLatestJenkinsRunCard` to the `overview` page in the app (or wherever you'd prefer):
+### New frontend system
+
+Import `jenkinsPlugin` in your `App.tsx` and add it to your app's `features` array:
+
+```typescript
+import jenkinsPlugin from '@backstage-community/plugin-jenkins';
+
+// ...
+
+export const app = createApp({
+  features: [
+    // ...
+    jenkinsPlugin,
+    // ...
+  ],
+});
+```
+
+The plugin automatically provides a Jenkins entity tab and the latest run card when the entity has a Jenkins annotation.
+
+### Legacy frontend system
+
+Add the `EntityJenkinsContent` extension to the `CI/CD` page and `EntityLatestJenkinsRunCard` to the `overview` page in the app (or wherever you'd prefer):
 
 Note that if you configured a custom JenkinsInfoProvider in step 2, you may need a custom isJenkinsAvailable. Also if you're transitioning to a new default branch name, you can pass multiple branch names as a comma-separated list and it will check for each branch name.
 
@@ -29,7 +51,7 @@ import {
   EntityJenkinsContent,
   EntityLatestJenkinsRunCard,
   isJenkinsAvailable,
-} from '@backstage-community/plugin-jenkins';
+} from '@backstage-community/plugin-jenkins/legacy';
 
 // You can add the tab to any number of pages, the service page is shown as an
 // example here
@@ -61,22 +83,6 @@ const serviceEntityPage = (
     {/* ... */}
   </EntityLayout>
 );
-```
-
-If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), simply import `jenkinsPlugin` in your `App.tsx` and add it to your app's `features` array:
-
-```typescript
-import jenkinsPlugin from '@backstage-community/plugin-jenkins/alpha';
-
-// ...
-
-export const app = createApp({
-  features: [
-    // ...
-    jenkinsPlugin,
-    // ...
-  ],
-});
 ```
 
 4. Run app with `yarn start`
@@ -118,6 +124,8 @@ spec:
 - No pagination support currently
 
 ## EntityJobRunsTable
+
+These components are part of the [legacy frontend system](#legacy-frontend-system).
 
 - View all builds of a particular job
 - shows average build time for successful builds

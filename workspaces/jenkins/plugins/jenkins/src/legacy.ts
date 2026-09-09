@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2020 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '@testing-library/jest-dom';
+
+/**
+ * Legacy frontend system exports for the Jenkins plugin.
+ */
+
+export {
+  jenkinsPlugin,
+  jenkinsPlugin as plugin,
+  EntityJenkinsContent,
+  EntityLatestJenkinsRunCard,
+  EntityJobRunsTable,
+} from './plugin';
+export { LatestRunCard } from './components/Cards';
+export {
+  Router,
+  isJenkinsAvailable,
+  isJenkinsAvailable as isPluginApplicableToEntity,
+} from './components/Router';
+export { JENKINS_ANNOTATION, LEGACY_JENKINS_ANNOTATION } from './constants';
+export * from './api';

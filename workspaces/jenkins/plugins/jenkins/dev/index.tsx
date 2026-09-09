@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,67 @@
  * limitations under the License.
  */
 
-import { createDevApp } from '@backstage/dev-utils';
-import { jenkinsPlugin } from '../src/plugin';
+import ReactDOM from 'react-dom/client';
 
-createDevApp().registerPlugin(jenkinsPlugin).render();
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
+import { createApp } from '@backstage/frontend-defaults';
+import {
+  ApiBlueprint,
+  createFrontendModule,
+} from '@backstage/frontend-plugin-api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+
+import { jenkinsApiRef } from '../src/api';
+import jenkinsPlugin from '../src';
+import { mockJenkinsEntity } from './__data__/entity';
+import { MockJenkinsApi } from './__data__/jenkins';
+
+const jenkinsDevModule = createFrontendModule({
+  pluginId: 'jenkins',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'jenkins',
+      params: defineParams =>
+        defineParams({
+          api: jenkinsApiRef,
+          deps: {},
+          factory: () => new MockJenkinsApi(),
+        }),
+    }),
+  ],
+});
+
+const catalogDevModule = createFrontendModule({
+  pluginId: 'catalog',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'catalog-mock',
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () =>
+            catalogApiMock({
+              entities: [mockJenkinsEntity],
+            }),
+        }),
+    }),
+  ],
+});
+
+const app = createApp({
+  features: [
+    catalogPlugin,
+    userSettingsPlugin,
+    jenkinsPlugin,
+    jenkinsDevModule,
+    catalogDevModule,
+  ],
+});
+
+ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
