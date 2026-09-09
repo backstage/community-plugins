@@ -55,7 +55,7 @@ bitbucket:
   # Valid values: cloud or server. Defaults to server; set to cloud for cloud-hosted Bitbucket.
   type: cloud
   # Required for Bitbucket Cloud when querying pull requests across one or more workspaces
-  cloudWorkspaces:
+  workspaces:
     - my-workspace
     - another-workspace
 ```

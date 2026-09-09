@@ -31,6 +31,6 @@ export interface Config {
      * Required when `bitbucket.type: 'cloud'` and the homepage or API needs to filter cloud PRs by workspace
      * @visibility frontend
      */
-    cloudWorkspaces?: string[];
+    workspaces?: string[];
   };
 }

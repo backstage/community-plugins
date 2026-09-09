@@ -312,7 +312,7 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     identityApi: IdentityApi,
     fetchApi: FetchApi,
     proxyPath: string,
-    private readonly cloudWorkspaces: string[],
+    private readonly workspaces: string[],
   ) {
     super(discoveryApi, identityApi, fetchApi, proxyPath);
   }
@@ -435,9 +435,9 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     limit: number,
     _options: PullRequestOptions,
   ): Promise<PullRequest[]> {
-    if (this.cloudWorkspaces.length === 0) {
+    if (this.workspaces.length === 0) {
       throw new Error(
-        "Bitbucket Cloud user pull requests require configured workspaces. Set 'bitbucket.cloudWorkspaces' in app-config.",
+        "Bitbucket Cloud user pull requests require configured workspaces. Set 'bitbucket.workspaces' in app-config.",
       );
     }
 
@@ -454,7 +454,7 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     // Collect all repos across all workspaces first
     const repoTasks: Array<{ workspace: string; repo: string }> = [];
     const workspaceReposEntries = await Promise.all(
-      this.cloudWorkspaces.map(workspace =>
+      this.workspaces.map(workspace =>
         this.fetchWorkspaceRepositories(workspace).then(repos => ({
           workspace,
           repos,
@@ -517,9 +517,8 @@ export class BitbucketApi {
     const proxyPath =
       options.configApi?.getOptionalString('bitbucket.proxyPath') ||
       DEFAULT_PROXY_PATH;
-    const cloudWorkspaces =
-      options.configApi?.getOptionalStringArray('bitbucket.cloudWorkspaces') ||
-      [];
+    const workspaces =
+      options.configApi?.getOptionalStringArray('bitbucket.workspaces') || [];
 
     this.client = isCloud
       ? new BitbucketCloudClient(
@@ -527,7 +526,7 @@ export class BitbucketApi {
           options.identityApi,
           options.fetchApi,
           proxyPath,
-          cloudWorkspaces,
+          workspaces,
         )
       : new BitbucketServerClient(
           options.discoveryApi,
