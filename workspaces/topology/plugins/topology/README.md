@@ -350,7 +350,7 @@ For more information about the labels and annotations, see [Guidelines for label
 
 If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Topology entity tab is registered automatically for entities with `backstage.io/kubernetes-id` or `backstage.io/kubernetes-namespace`.
 
-The Topology entity tab also uses an extension `if` predicate so it is only shown when the signed-in user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`. Users without those permissions will not see the **Topology** tab on the entity page.
+The Topology entity tab uses an extension `if` predicate so it is only shown when the signed-in user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`. Users without those permissions will not see the **Topology** tab on the entity page.
 
 ```ts
 import topologyPlugin from '@backstage-community/plugin-topology';

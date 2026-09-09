@@ -45,13 +45,13 @@ import { devSidebarContent } from './shared';
 
 import {
   createMockPermissionApi,
+  installMockKubernetesPermissionsPathSync,
   mockCatalogApi,
   mockKubernetesClient,
   mockKubernetesAuthProviderApi,
-  syncMockKubernetesPermissionsQueryParamForEntity,
 } from './mocks';
 
-syncMockKubernetesPermissionsQueryParamForEntity();
+installMockKubernetesPermissionsPathSync();
 
 const signInPage = SignInPageBlueprint.make({
   params: {

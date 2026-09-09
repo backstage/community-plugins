@@ -172,7 +172,6 @@ export const mockCatalogApi = new InMemoryCatalogClient({
   entities: [mockEntity, permissionDeniedMockEntity],
 });
 
-const MOCK_K8S_PERMISSIONS_QUERY_PARAM = 'kubernetesPermissions';
 const MOCK_K8S_FINALIZED_MODE_KEY = 'topology-mock-k8s-finalized-mode';
 
 const kubernetesReadPermissionNames = new Set([
@@ -182,21 +181,14 @@ const kubernetesReadPermissionNames = new Set([
 
 type MockKubernetesPermissionsMode = 'allow' | 'deny';
 
-function getMockKubernetesPermissionsMode(): MockKubernetesPermissionsMode {
-  const params = new URLSearchParams(window.location.search);
-  const mode = params.get(MOCK_K8S_PERMISSIONS_QUERY_PARAM);
-
-  if (mode === 'deny' || params.has('denyKubernetesPermissions')) {
-    return 'deny';
-  }
-
-  return 'allow';
+function isPermissionDeniedEntityPath(pathname: string): boolean {
+  return /\/component\/permission-denied(?:\/|$)/.test(pathname);
 }
 
 function getDesiredMockKubernetesPermissionsModeFromPathname(
   pathname: string,
 ): MockKubernetesPermissionsMode | undefined {
-  if (/\/component\/permission-denied(?:\/|$)/.test(pathname)) {
+  if (isPermissionDeniedEntityPath(pathname)) {
     return 'deny';
   }
 
@@ -207,53 +199,62 @@ function getDesiredMockKubernetesPermissionsModeFromPathname(
   return undefined;
 }
 
-/** Whether kubernetes read permissions are allowed in the NFS mock dev app. */
-export function isKubernetesReadAllowedInMock(): boolean {
-  return getMockKubernetesPermissionsMode() === 'allow';
+/**
+ * NFS extension `if` predicates are session-scoped. Reload when navigating
+ * between the mock `backstage` and `permission-denied` catalog entities so
+ * permission checks run again and the Topology tab is shown or hidden correctly.
+ */
+export function installMockKubernetesPermissionsPathSync(): void {
+  const sync = () => {
+    const desiredMode = getDesiredMockKubernetesPermissionsModeFromPathname(
+      window.location.pathname,
+    );
+
+    if (!desiredMode) {
+      return;
+    }
+
+    const lastFinalizedMode = sessionStorage.getItem(
+      MOCK_K8S_FINALIZED_MODE_KEY,
+    );
+
+    if (lastFinalizedMode === desiredMode) {
+      return;
+    }
+
+    sessionStorage.setItem(MOCK_K8S_FINALIZED_MODE_KEY, desiredMode);
+    window.location.reload();
+  };
+
+  sync();
+
+  const originalPushState = history.pushState.bind(history);
+  const originalReplaceState = history.replaceState.bind(history);
+
+  history.pushState = (...args) => {
+    originalPushState(...args);
+    sync();
+  };
+
+  history.replaceState = (...args) => {
+    originalReplaceState(...args);
+    sync();
+  };
+
+  window.addEventListener('popstate', sync);
 }
 
 /**
- * NFS extension `if` predicates are session-scoped. Keep `kubernetesPermissions`
- * in the URL in sync with the mock catalog entity and reload when the mode
- * changes so the Topology tab is visible on backstage and hidden on
- * permission-denied.
+ * Mock PermissionApi used by the NFS dev app. The mocked catalog includes
+ * `backstage` (allowed) and `permission-denied` (denied) entities; kubernetes
+ * read permissions are denied when viewing the permission-denied entity.
  */
-export function syncMockKubernetesPermissionsQueryParamForEntity(): void {
-  const desiredMode = getDesiredMockKubernetesPermissionsModeFromPathname(
-    window.location.pathname,
-  );
-
-  if (!desiredMode) {
-    return;
-  }
-
-  const url = new URL(window.location.href);
-
-  if (desiredMode === 'deny') {
-    url.searchParams.set(MOCK_K8S_PERMISSIONS_QUERY_PARAM, 'deny');
-  } else {
-    url.searchParams.delete(MOCK_K8S_PERMISSIONS_QUERY_PARAM);
-    url.searchParams.delete('denyKubernetesPermissions');
-    url.searchParams.delete('allowKubernetesPermissions');
-  }
-
-  const lastFinalizedMode = sessionStorage.getItem(MOCK_K8S_FINALIZED_MODE_KEY);
-
-  if (lastFinalizedMode === desiredMode) {
-    return;
-  }
-
-  sessionStorage.setItem(MOCK_K8S_FINALIZED_MODE_KEY, desiredMode);
-  window.location.replace(url.toString());
-}
-
-/** Mock PermissionApi used by the NFS dev app. */
 export function createMockPermissionApi(): PermissionApi {
   return {
     authorize: async request => {
       if (
         kubernetesReadPermissionNames.has(request.permission.name) &&
-        !isKubernetesReadAllowedInMock()
+        isPermissionDeniedEntityPath(window.location.pathname)
       ) {
         return { result: AuthorizeResult.DENY };
       }
