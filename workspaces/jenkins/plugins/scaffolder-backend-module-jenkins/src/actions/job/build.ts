@@ -15,6 +15,7 @@
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { Jenkins } from '@backstage-community/plugin-jenkins-common';
+import { examples } from './build.examples';
 
 /**
  *
@@ -27,6 +28,7 @@ export function buildJob(jenkins: Jenkins) {
   return createTemplateAction({
     id: 'jenkins:job:build',
     description: 'Run an existing job jenkins given a name',
+    examples,
     schema: {
       input: {
         jobName: z => z.string({ description: 'Name of jenkins item' }),
