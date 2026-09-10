@@ -134,6 +134,8 @@ A release is automatically triggered by merging the plugins â€œVersion Packagesâ
 
 ## Creating a new Workspace
 
+> **Before creating a workspace**, read the [Contributing a New Plugin](docs/contributing-new-plugin.md) guide to understand the acceptance criteria and proposal process. A proposal issue must be opened and accepted before submitting a plugin PR.
+
 For workspaces the name should reflect the name of the plugins contained in a simple manner (e.g. for the plugins `todo` & `todo-backend` the workspace would be called `todo`).
 
 For plugins we will continue to follow the naming pattern suggested by the ADR on the main repository: <https://backstage.io/docs/architecture-decisions/adrs-adr011>.

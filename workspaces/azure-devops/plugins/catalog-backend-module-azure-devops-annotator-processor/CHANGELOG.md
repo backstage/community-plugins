@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-azure-devops-annotator-processor
 
+## 0.22.0
+
+### Minor Changes
+
+- 6c8035e: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [6c8035e]
+  - @backstage-community/plugin-azure-devops-common@0.26.0
+
 ## 0.21.0
 
 ### Minor Changes

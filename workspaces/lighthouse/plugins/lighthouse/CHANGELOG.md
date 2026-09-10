@@ -1,5 +1,17 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.26.0
+
+### Minor Changes
+
+- bcbe12d: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- ccc6c95: No functional changes; re-publish to recover from a [GitHub Actions incident](https://www.githubstatus.com/incidents/y1t7p9fzrlj2)
+- Updated dependencies [bcbe12d]
+  - @backstage-community/plugin-lighthouse-common@0.23.0
+
 ## 0.25.0
 
 ### Minor Changes

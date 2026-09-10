@@ -78,6 +78,15 @@ describe('createRouter', () => {
     app.use(mockErrorHandler());
   });
 
+  describe('GET /health', () => {
+    it('should return 200 with status ok', async () => {
+      const response = await request(app).get('/health');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ status: 'ok' });
+    });
+  });
+
   describe('GET /incidents', () => {
     const mockAuthHeader = `Bearer mock-secret-token`;
     const mockCredentials: BackstageCredentials<BackstageUserPrincipal> = {
@@ -96,6 +105,18 @@ describe('createRouter', () => {
         url: 'https://mock-instance.service-now.com/INC001',
       },
     ];
+
+    it('should return 400 for an invalid limit query parameter', async () => {
+      mockHttpAuthService.credentials.mockResolvedValue(mockCredentials);
+
+      const response = await request(app)
+        .get('/incidents?limit=abc')
+        .set('Authorization', mockAuthHeader);
+
+      expect(response.status).toBe(400);
+      expect(response.body.error.name).toBe('InputError');
+      expect(mockFetchIncidents).not.toHaveBeenCalled();
+    });
 
     it('should successfully retrieve incidents', async () => {
       mockHttpAuthService.credentials.mockResolvedValue(mockCredentials);

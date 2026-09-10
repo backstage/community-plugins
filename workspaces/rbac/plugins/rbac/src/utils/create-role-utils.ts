@@ -18,6 +18,8 @@ import { TranslationFunction } from '@backstage/core-plugin-api/alpha';
 
 import {
   isResourcedPolicy,
+  PermissionAction,
+  PermissionInfo,
   PluginPermissionMetaData,
   PolicyDetails,
   Role,
@@ -233,14 +235,26 @@ export const getConditionalPermissionPoliciesData = (
 
   return permissionPoliciesRows.reduce(
     (acc: RoleBasedConditions[], permissionPolicyRow: PermissionsData) => {
-      const { policies, isResourced, plugin, conditions, resourceType } =
-        permissionPolicyRow;
-      const permissionMapping = policies.reduce((pAcc: string[], policy) => {
-        if (policy.effect === 'allow') {
-          return [...pAcc, policy.policy.toLocaleLowerCase(locale)];
-        }
-        return pAcc;
-      }, []);
+      const {
+        policies,
+        isResourced,
+        plugin,
+        permission,
+        conditions,
+        resourceType,
+      } = permissionPolicyRow;
+      const permissionMapping: PermissionInfo[] = policies.reduce(
+        (pAcc: PermissionInfo[], policy) => {
+          if (policy.effect === 'allow') {
+            const action = policy.policy.toLocaleLowerCase(
+              locale,
+            ) as PermissionAction;
+            return [...pAcc, { name: permission, action }];
+          }
+          return pAcc;
+        },
+        [],
+      );
       return isResourced && conditions
         ? [
             ...acc,

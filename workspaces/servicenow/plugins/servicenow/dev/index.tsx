@@ -19,38 +19,62 @@ import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Header, Page, TabbedLayout } from '@backstage/core-components';
 import {
-  BackstageUserIdentity,
+  discoveryApiRef,
+  fetchApiRef,
   identityApiRef,
+  useApi,
 } from '@backstage/core-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
-import { serviceNowApiRef } from '../src/api/ServiceNowBackendClient';
+import {
+  serviceNowApiRef,
+  ServiceNowBackendClient,
+} from '../src/api/ServiceNowBackendClient';
 import { mockComponentEntity } from '../src/__fixtures__/mockEntity';
 import { mockServicenowApi } from '../src/__fixtures__/mockServicenowApi';
 
 import { servicenowPlugin, EntityServicenowContent } from '../src/plugin';
 import { servicenowTranslations } from '../src/translations';
+import { useMemo } from 'react';
 
 const mockIdentityApi = {
-  getUserId: () => 'test-user',
-  getProfile: () => ({
-    email: 'test@example.com',
-    displayName: 'Test User',
-    picture: 'https://example.com/avatar.png',
-  }),
   getProfileInfo: async () => ({
     email: 'test@example.com',
     displayName: 'Test User',
-    picture: 'https://example.com/avatar.png',
   }),
-  getIdToken: async () => 'test-user-token',
   signOut: () => Promise.resolve(),
-  getCredentials: async () => ({ token: 'test-user-token' }),
-  getBackstageIdentity: async (): Promise<BackstageUserIdentity> => ({
-    type: 'user',
+  getCredentials: async () => ({ token: 'mock-user-token' }),
+  getBackstageIdentity: async () => ({
+    type: 'user' as const,
     userEntityRef: 'user:default/test-user',
     ownershipEntityRefs: ['user:default/test-user'],
   }),
 };
+
+function LiveServicenowPage() {
+  const discoveryApi = useApi(discoveryApiRef);
+  const fetchApi = useApi(fetchApiRef);
+  const client = useMemo(
+    () => new ServiceNowBackendClient(discoveryApi, fetchApi, mockIdentityApi),
+    [discoveryApi, fetchApi],
+  );
+  return (
+    <TestApiProvider apis={[[serviceNowApiRef, client]]}>
+      <EntityProvider entity={mockComponentEntity}>
+        <Page themeId="tool">
+          <Header
+            type="component — tool"
+            title={mockComponentEntity.metadata.name}
+          />
+          <TabbedLayout>
+            <TabbedLayout.Route path="/" title="ServiceNow">
+              <EntityServicenowContent />
+            </TabbedLayout.Route>
+          </TabbedLayout>
+        </Page>
+      </EntityProvider>
+    </TestApiProvider>
+  );
+}
 
 // const mockUserEmailToSysId: { [email: string]: string } = {
 //   'test@example.com': 'user-sys-id-1',
@@ -85,6 +109,8 @@ createDevApp()
     }),
   )
   .addPage({
+    title: 'ServiceNow (Mock)',
+    path: '/servicenow',
     element: (
       <TestApiProvider
         apis={[
@@ -107,7 +133,10 @@ createDevApp()
         </EntityProvider>
       </TestApiProvider>
     ),
-    title: 'ServiceNow',
-    path: '/servicenow',
+  })
+  .addPage({
+    title: 'ServiceNow (Backend)',
+    path: '/servicenow-live',
+    element: <LiveServicenowPage />,
   })
   .render();

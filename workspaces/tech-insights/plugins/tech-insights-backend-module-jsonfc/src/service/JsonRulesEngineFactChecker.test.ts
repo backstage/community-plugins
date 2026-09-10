@@ -564,6 +564,173 @@ const testChecks: Record<string, TechInsightJsonRuleCheck[]> = {
       },
     },
   ],
+  factRetrieverIdBothPass: [
+    {
+      id: 'factRetrieverIdBothPassCheck',
+      name: 'factRetrieverIdBothPassCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Both retrievers should satisfy their conditions',
+      factIds: ['test-factretriever', 'test-factretriever-same-fact'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              params: { factRetrieverId: 'test-factretriever' },
+              operator: 'equal',
+              value: 3,
+            },
+            {
+              fact: 'testnumberfact',
+              params: { factRetrieverId: 'test-factretriever-same-fact' },
+              operator: 'equal',
+              value: 3,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  factRetrieverIdOneFails: [
+    {
+      id: 'factRetrieverIdOneFailsCheck',
+      name: 'factRetrieverIdOneFailsCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description:
+        "One retriever's value does not satisfy its qualified condition",
+      factIds: ['test-factretriever', 'test-factretriever-different-fact'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              params: { factRetrieverId: 'test-factretriever' },
+              operator: 'equal',
+              value: 3,
+            },
+            {
+              fact: 'testnumberfact',
+              params: {
+                factRetrieverId: 'test-factretriever-different-fact',
+              },
+              operator: 'equal',
+              value: 3,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  factRetrieverIdDistinctValues: [
+    {
+      id: 'factRetrieverIdDistinctValuesCheck',
+      name: 'factRetrieverIdDistinctValuesCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description:
+        'Same fact name resolved against two retrievers yields distinct values',
+      factIds: ['test-factretriever', 'test-factretriever-different-fact'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              params: { factRetrieverId: 'test-factretriever' },
+              operator: 'equal',
+              value: 3,
+            },
+            {
+              fact: 'testnumberfact',
+              params: {
+                factRetrieverId: 'test-factretriever-different-fact',
+              },
+              operator: 'equal',
+              value: 1,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  factRetrieverIdUnlistedRetriever: [
+    {
+      id: 'factRetrieverIdUnlistedRetrieverCheck',
+      name: 'factRetrieverIdUnlistedRetrieverCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'References a retriever not listed in factIds',
+      factIds: ['test-factretriever'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              params: { factRetrieverId: 'test-factretriever-same-fact' },
+              operator: 'equal',
+              value: 3,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  factRetrieverIdRetrieverMissingFact: [
+    {
+      id: 'factRetrieverIdRetrieverMissingFactCheck',
+      name: 'factRetrieverIdRetrieverMissingFactCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Named retriever did not produce the referenced fact',
+      factIds: ['test-factretriever', 'test-factretriever-no-fact'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              params: { factRetrieverId: 'test-factretriever-no-fact' },
+              operator: 'equal',
+              value: 3,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
+  factRetrieverIdMixedConditions: [
+    {
+      id: 'factRetrieverIdMixedConditionsCheck',
+      name: 'factRetrieverIdMixedConditionsCheck',
+      type: JSON_RULE_ENGINE_CHECK_TYPE,
+      description: 'Mix qualified and unqualified conditions in the same rule',
+      // Order matters here: the legacy flat-merge reduces in factIds order,
+      // so test-factretriever (value 3) is last and wins for the unqualified
+      // condition. The qualified condition explicitly reads the other
+      // retriever's value (1).
+      factIds: ['test-factretriever-different-fact', 'test-factretriever'],
+      rule: {
+        conditions: {
+          all: [
+            {
+              fact: 'testnumberfact',
+              operator: 'equal',
+              value: 3,
+            },
+            {
+              fact: 'testnumberfact',
+              params: {
+                factRetrieverId: 'test-factretriever-different-fact',
+              },
+              operator: 'equal',
+              value: 1,
+            },
+          ],
+        },
+      },
+    },
+  ],
+
   filterAnnotationMissing: [
     {
       id: 'filterAnnotationMissingCheck',
@@ -1109,6 +1276,55 @@ describe('JsonRulesEngineFactChecker', () => {
       ]);
     });
 
+    describe('params.factRetrieverId', () => {
+      it('passes when each retriever-qualified condition is satisfied', async () => {
+        const results = await factChecker.runChecks('a/a/a', [
+          'factRetrieverIdBothPass',
+        ]);
+        expect(results).toHaveLength(1);
+        expect(results[0].result).toBe(true);
+      });
+
+      it('fails when one retriever-qualified condition is not satisfied', async () => {
+        const results = await factChecker.runChecks('a/a/a', [
+          'factRetrieverIdOneFails',
+        ]);
+        expect(results).toHaveLength(1);
+        expect(results[0].result).toBe(false);
+      });
+
+      it('resolves the same fact name to different values per retriever', async () => {
+        const results = await factChecker.runChecks('a/a/a', [
+          'factRetrieverIdDistinctValues',
+        ]);
+        expect(results).toHaveLength(1);
+        expect(results[0].result).toBe(true);
+      });
+
+      it('skips and does not abort the run when factRetrieverId references a retriever not in factIds', async () => {
+        const results = await factChecker.runChecks('a/a/a', [
+          'factRetrieverIdUnlistedRetriever',
+          'simple',
+        ]);
+        expect(results.map(r => r.check.id)).toEqual(['simpleTestCheck']);
+      });
+
+      it('skips checks when the named retriever did not produce the fact', async () => {
+        const results = await factChecker.runChecks('a/a/a', [
+          'factRetrieverIdRetrieverMissingFact',
+        ]);
+        expect(results).toEqual([]);
+      });
+
+      it('mixes qualified and unqualified conditions within one rule', async () => {
+        const results = await factChecker.runChecks('a/a/a', [
+          'factRetrieverIdMixedConditions',
+        ]);
+        expect(results).toHaveLength(1);
+        expect(results[0].result).toBe(true);
+      });
+    });
+
     it('should respond with result, facts, fact schemas and checks with metadatas', async () => {
       const results = await factChecker.runChecks('a/a/a', ['metadata']);
       expect(results).toHaveLength(1);
@@ -1168,6 +1384,24 @@ describe('JsonRulesEngineFactChecker', () => {
         });
       },
     );
+
+    it('should succeed when params.factRetrieverId references a listed retriever', async () => {
+      const validationResponse = await factChecker.validate(
+        testChecks.factRetrieverIdBothPass[0],
+      );
+      expect(validationResponse.valid).toBe(true);
+    });
+
+    it('should fail when params.factRetrieverId references a retriever not in factIds', async () => {
+      const validationResponse = await factChecker.validate(
+        testChecks.factRetrieverIdUnlistedRetriever[0],
+      );
+      expect(validationResponse).toMatchObject({
+        valid: false,
+        message:
+          'Condition references factRetrieverId "test-factretriever-same-fact" which is not in this check\'s factIds list: [test-factretriever]',
+      });
+    });
   });
 
   describe('when filtering checks by entity criteria', () => {

@@ -302,6 +302,36 @@ describe('createRouter', () => {
       expect(imageData.toString('base64')).toBe(responseBody);
     });
 
+    it('returns the correct image for an Azure DevOps url with a dotted repo name', async () => {
+      const urlToProcess = encodeURIComponent(
+        'https://dev.azure.com/organization/project/_git/my.beautiful.service?path=documentation/adr-attachments/image.png',
+      );
+      const imageResponse = await request(app).get(
+        `${imageEndpointName}?url=${urlToProcess}`,
+      );
+
+      expect(imageResponse.error).toBeFalsy();
+      expect(imageResponse.status).toBe(200);
+      expect(imageResponse.body.toString('base64')).toBe(
+        Buffer.from(genericFileContent).toString('base64'),
+      );
+    });
+
+    it('returns the correct image for a GitHub url with a dotted repo name', async () => {
+      const urlToProcess = encodeURIComponent(
+        'https://github.com/org/my.beautiful.service/tree/main/documentation/adr-attachments/image.png',
+      );
+      const imageResponse = await request(app).get(
+        `${imageEndpointName}?url=${urlToProcess}`,
+      );
+
+      expect(imageResponse.error).toBeFalsy();
+      expect(imageResponse.status).toBe(200);
+      expect(imageResponse.body.toString('base64')).toBe(
+        Buffer.from(genericFileContent).toString('base64'),
+      );
+    });
+
     it('returns the image from cache', async () => {
       const urlToProcess = 'testImage.png';
       const cacheSpy = jest.spyOn(MockCacheClient.prototype, 'get');

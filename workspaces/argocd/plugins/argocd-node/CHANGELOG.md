@@ -1,5 +1,16 @@
 # @backstage-community/plugin-argocd-node
 
+## 1.4.0
+
+### Minor Changes
+
+- 548d597: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [548d597]
+  - @backstage-community/plugin-argocd-common@1.18.0
+
 ## 1.3.0
 
 ### Minor Changes

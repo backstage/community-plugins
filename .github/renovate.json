@@ -6,7 +6,8 @@
     "group:linters",
     ":preserveSemverRanges"
   ],
-  "prConcurrentLimit": 20,
+  "prConcurrentLimit": 70,
+  "prHourlyLimit": 10,
   "ignorePresets": [":pinDevDependencies", ":pinDigest", "docker:pinDigests"],
   "labels": ["dependencies"],
   "postUpdateOptions": ["yarnDedupeHighest"],
@@ -20,10 +21,12 @@
   },
   "packageRules": [
     {
+      "description": "Group all GitHub Actions updates into a single PR",
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions"
     },
     {
+      "description": "Disable @backstage/* updates — these are managed by the Backstage version bump process",
       "matchManagers": ["npm"],
       "enabled": false,
       "vulnerabilityAlerts": {
@@ -32,25 +35,99 @@
       "matchPackageNames": ["/^@backstage//"]
     },
     {
+      "description": "Disable @material-ui replacement PRs — MUI-to-BUI migration is handled separately",
       "enabled": false,
       "matchUpdateTypes": ["replacement"],
       "matchPackageNames": ["/^@material-ui//"]
     },
     {
+      "description": "Group dependency updates per workspace so each workspace gets its own PR",
+      "matchFileNames": ["workspaces/**"],
+      "groupName": "workspace/{{lookup (split packageFileDir '/') 1}} dependencies",
+      "additionalBranchPrefix": "workspace-{{lookup (split packageFileDir '/') 1}}/"
+    },
+    {
+      "description": "Override per-workspace grouping for maintainer-owned workspaces — batch into a single combined PR",
+      "matchFileNames": [
+        "workspaces/airbrake/**",
+        "workspaces/allure/**",
+        "workspaces/apache-airflow/**",
+        "workspaces/apollo-explorer/**",
+        "workspaces/badges/**",
+        "workspaces/bazaar/**",
+        "workspaces/cicd-statistics/**",
+        "workspaces/cloudbuild/**",
+        "workspaces/code-climate/**",
+        "workspaces/codescene/**",
+        "workspaces/dynatrace/**",
+        "workspaces/entity-validation/**",
+        "workspaces/firehydrant/**",
+        "workspaces/gcalendar/**",
+        "workspaces/gcp-projects/**",
+        "workspaces/gitops-profiles/**",
+        "workspaces/gocd/**",
+        "workspaces/grafana/**",
+        "workspaces/graphiql/**",
+        "workspaces/graphql-voyager/**",
+        "workspaces/ilert/**",
+        "workspaces/jaeger/**",
+        "workspaces/jenkins/**",
+        "workspaces/lighthouse/**",
+        "workspaces/linkerd/**",
+        "workspaces/microsoft-calendar/**",
+        "workspaces/newrelic/**",
+        "workspaces/nomad/**",
+        "workspaces/noop/**",
+        "workspaces/opencost/**",
+        "workspaces/periskop/**",
+        "workspaces/puppetdb/**",
+        "workspaces/repo-tools/**",
+        "workspaces/sentry/**",
+        "workspaces/shortcuts/**",
+        "workspaces/splunk/**",
+        "workspaces/stack-overflow/**",
+        "workspaces/stackstorm/**",
+        "workspaces/tech-radar/**",
+        "workspaces/todo/**",
+        "workspaces/vault/**",
+        "workspaces/xcmetrics/**"
+      ],
+      "groupName": "maintainer-owned workspace dependencies",
+      "additionalBranchPrefix": "workspace-maintainer-owned/"
+    },
+    {
+      "description": "Pin node-fetch to v2 — v3 is ESM-only and not compatible with the current build setup",
       "matchPackageNames": ["node-fetch"],
       "allowedVersions": "<3.0.0"
     },
     {
+      "description": "Pin TypeScript to ~5.3 to match the version used by the Backstage framework",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "~5.3.0"
     },
     {
+      "description": "Pin yn to v4 — v5 is ESM-only and not compatible with the current build setup",
       "matchPackageNames": ["yn"],
       "allowedVersions": "<5.0.0"
     },
     {
+      "description": "Block react-router v7 — Backstage does not yet support it. Vulnerability alerts disabled since the security fix is available on the v6 line",
       "matchPackageNames": ["react-router", "react-router-dom"],
-      "allowedVersions": "<7.0.0"
+      "allowedVersions": "<7.0.0",
+      "ignoreCves": ["CVE-2026-53668"],
+      "vulnerabilityAlerts": {
+        "enabled": false
+      }
+    },
+    {
+      "description": "Require manual approval on the Dependency Dashboard before creating major version update PRs",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Disable lock file maintenance PRs — each workspace has its own yarn.lock and bulk lock file updates can cause issues",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "enabled": false
     }
   ],
   "ignorePaths": ["**/dist-dynamic/**"],

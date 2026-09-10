@@ -1,5 +1,22 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.21.1
+
+### Patch Changes
+
+- @backstage-community/plugin-ocm-common@5.21.1
+
+## 5.21.0
+
+### Minor Changes
+
+- 2f20375: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [2f20375]
+  - @backstage-community/plugin-ocm-common@3.24.0
+
 ## 5.20.0
 
 ### Minor Changes

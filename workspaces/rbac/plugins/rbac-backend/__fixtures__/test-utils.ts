@@ -34,7 +34,6 @@ import { BackstageRoleManager } from '../src/role-manager/role-manager';
 import { DefaultPermissionsReader } from '../src/default-permissions/default-permissions';
 import { EnforcerDelegate } from '../src/service/enforcer-delegate';
 import { MODEL } from '../src/service/permission-model';
-import { PluginPermissionMetadataCollector } from '../src/service/plugin-endpoints';
 import {
   mockAuditorService,
   conditionalStorageMock,
@@ -42,7 +41,6 @@ import {
   mockAuthService,
   mockUserInfoService,
   mockClientKnex,
-  pluginMetadataCollectorMock,
   roleMetadataStorageMock,
 } from './mock-utils';
 import { clearAuditorMock } from './auditor-test-utils';
@@ -166,7 +164,6 @@ export async function newPermissionPolicy(
     enfDelegate,
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
-    pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockUserInfoService,
     mockAuthService,
   );
