@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Entity } from '@backstage/catalog-model';
+
+import { JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME } from './components/useJfrogArtifactoryAppData';
 
 /**
- * A Backstage plugin that shows container image metadata from JFrog Artifactory.
+ * Returns true when the entity has the JFrog Artifactory image-name annotation.
  *
- * @packageDocumentation
+ * @public
  */
-
-export { default } from './plugin';
-export { isJfrogArtifactoryAvailable } from './isJfrogArtifactoryAvailable';
+export const isJfrogArtifactoryAvailable = (entity: Entity) =>
+  Boolean(
+    entity?.metadata.annotations?.[JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME],
+  );

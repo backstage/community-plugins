@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Entity } from '@backstage/catalog-model';
+
+/**
+ * Legacy frontend system API surface for the JFrog Artifactory plugin.
+ *
+ * @packageDocumentation
+ */
 import {
   configApiRef,
   createApiFactory,
@@ -24,11 +29,13 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { JfrogArtifactoryApiClient, jfrogArtifactoryApiRef } from './api';
-import { JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME } from './components/useJfrogArtifactoryAppData';
 import { rootRouteRef } from './routes';
 
 /**
+ * JFrog Artifactory plugin (legacy frontend system)
+ *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const jfrogArtifactoryPlugin = createPlugin({
   id: 'jfrog-artifactory',
@@ -50,7 +57,10 @@ export const jfrogArtifactoryPlugin = createPlugin({
 });
 
 /**
+ * JFrog Artifactory page (legacy frontend system)
+ *
  * @public
+ * @remarks Prefer the default export from the package root for the new frontend system.
  */
 export const JfrogArtifactoryPage = jfrogArtifactoryPlugin.provide(
   createComponentExtension({
@@ -64,10 +74,4 @@ export const JfrogArtifactoryPage = jfrogArtifactoryPlugin.provide(
   }),
 );
 
-/**
- * @public
- */
-export const isJfrogArtifactoryAvailable = (entity: Entity) =>
-  Boolean(
-    entity?.metadata.annotations?.[JFROG_ARTIFACTORY_ANNOTATION_IMAGE_NAME],
-  );
+export { isJfrogArtifactoryAvailable } from './isJfrogArtifactoryAvailable';
