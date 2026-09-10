@@ -40,6 +40,10 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+    - type: file
+      target: ../rbac/tests/fixtures/catalog-org.yaml
+      rules:
+        - allow: [User, Group]
 
 permission:
   enabled: true

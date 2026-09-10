@@ -13,38 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Full-stack e2e — frontend + rbac-backend (no in-browser mockRBACApi).
+ * Roles are seeded via REST in beforeAll (editable source), scoped with
+ * `-${locale}` so locale projects can share one in-memory backend.
+ * Catalog members come from tests/fixtures/catalog-org.yaml + examples/org.yaml.
+ */
 import { expect, Page, test } from '@playwright/test';
 import { runAccessibilityTests } from './utils/accessibility';
 import {
   Common,
+  searchForRole,
   verifyCellsInTable,
   verifyColumnHeading,
   verifyText,
 } from './utils/rbacHelper';
+import {
+  seedE2eRolesViaRest,
+  getE2eRoles,
+  type E2eRoles,
+} from './utils/seedE2eRoles';
 import {
   RbacMessages,
   getTranslations,
   replaceTemplate,
 } from './utils/translations';
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 test.describe('RBAC plugin', () => {
+  test.describe.configure({ mode: 'serial', timeout: 120_000 });
+
   let page: Page;
   let common: Common;
   let translations: RbacMessages;
+  let locale: string;
+  let e2eRoles: E2eRoles;
   const RoleOverviewPO = {
     updatePolicies: 'button[data-testid="update-policies"]',
     updateMembers: 'button[data-testid="update-members"]',
   };
 
-  const navigateToRole = async (roleName: string) => {
-    await common.verifyHeading(
-      replaceTemplate(translations.table.titleWithCount, { count: '2' }),
-    );
+  const navigateToRole = async (roleShortName: string) => {
     await page
-      .locator(`a`)
-      .filter({ hasText: `role:default/${roleName}` })
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: translations.page.title })
       .click();
-    await common.verifyHeading(`role:default/${roleName}`);
+    const roleEntityRef = `role:default/${roleShortName}`;
+    const roleLink = await searchForRole(page, roleEntityRef);
+    await roleLink.click();
+    await common.verifyHeading(roleEntityRef);
     await page.getByRole('tab', { name: translations.common.overview }).click();
     await page.locator(RoleOverviewPO.updatePolicies).click();
     await common.verifyHeading(translations.roleForm.titles.editRole);
@@ -66,29 +87,37 @@ test.describe('RBAC plugin', () => {
     }
   };
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser }, testInfo) => {
+    test.setTimeout(180_000);
+    locale = testInfo.project.name;
+    e2eRoles = getE2eRoles(locale);
+    translations = getTranslations(locale);
+
     const context = await browser.newContext();
     page = await context.newPage();
     common = new Common(page);
     await common.loginAsGuest();
-    const currentLocale = await page.evaluate(
-      () => globalThis.navigator.language,
-    );
-    translations = getTranslations(currentLocale);
-    await common.switchToLocale(currentLocale);
-    const navSelector = 'nav [aria-label="RBAC"]';
-    await page.locator(navSelector).click();
-    await common.verifyHeading(translations.page.title);
+    await common.switchToLocale(locale);
+    await seedE2eRolesViaRest(page, locale);
   });
 
-  test.afterAll(async ({ browser }) => {
-    await browser.close();
+  test.afterAll(async () => {
+    await page?.context().close();
   });
 
-  test('Should show 2 roles in the list, column headings and cells', async () => {
-    await common.verifyHeading(
-      replaceTemplate(translations.table.titleWithCount, { count: '2' }),
-    );
+  test('Should show seeded roles in the list, column headings and cells', async () => {
+    const titlePattern = escapeRegExp(
+      replaceTemplate(translations.table.titleWithCount, {
+        count: '__COUNT__',
+      }),
+    ).replace('__COUNT__', '\\d+');
+    await expect(
+      page.getByRole('heading', { name: new RegExp(`^${titlePattern}$`) }),
+    ).toBeVisible();
+    await searchForRole(page, e2eRoles.guests);
+    await searchForRole(page, e2eRoles.rbacAdmin);
+    await page.getByRole('button', { name: 'Clear Search' }).click();
+    await expect(page.getByRole('textbox', { name: 'Search' })).toBeEmpty();
     await runAccessibilityTests(page);
     const columns = [
       translations.table.headers.name,
@@ -99,22 +128,10 @@ test.describe('RBAC plugin', () => {
     await verifyColumnHeading(columns, page);
 
     const roleName = new RegExp(/^(role|user|group):[a-zA-Z]+\/[\w@*.~-]+$/);
-    const user = translations.common.user.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-    const users = translations.common.users.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-    const group = translations.common.group.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-    const groups = translations.common.groups.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
+    const user = escapeRegExp(translations.common.user);
+    const users = escapeRegExp(translations.common.users);
+    const group = escapeRegExp(translations.common.group);
+    const groups = escapeRegExp(translations.common.groups);
     const usersAndGroups = new RegExp(
       `^(1\\s(${user}|${group})|[2-9]\\d*\\s(${users}|${groups}))(, (1\\s(${user}|${group})|[2-9]\\d*\\s(${users}|${groups})))?$`,
     );
@@ -127,8 +144,8 @@ test.describe('RBAC plugin', () => {
   test('View details of role', async ({}, testInfo) => {
     // Skipping Japanese tests due to https://issues.redhat.com/browse/RHDHBUGS-2598
     test.fixme(testInfo.project.name === 'ja', 'Skip Japanese test');
-    const roleName = 'role:default/rbac_admin';
-    await page.locator(`a`).filter({ hasText: roleName }).click();
+    const roleName = e2eRoles.rbacAdmin;
+    await (await searchForRole(page, roleName)).click();
     await common.verifyHeading(roleName);
     await runAccessibilityTests(page);
     await expect(
@@ -151,15 +168,18 @@ test.describe('RBAC plugin', () => {
     );
 
     const name = new RegExp(/^(\w+)$/);
+    // Member type comes from catalog kind labels (not i18n'd in the table).
     const type = new RegExp(/^(User|Group)$/);
     const members = /^(-|\d+)$/;
     const userGroupCellIdentifier = [name, type, members];
     await verifyCellsInTable(userGroupCellIdentifier, page);
 
-    // verify permission policy table
-    await common.verifyHeading(
-      `9 ${translations.permissionPolicies.permissions}`,
-    );
+    // verify permission policy table (count depends on REST seed + conditions)
+    await expect(
+      page.getByRole('heading').filter({
+        hasText: translations.permissionPolicies.permissions,
+      }),
+    ).toBeVisible();
     await verifyColumnHeading(
       [
         translations.permissionPolicies.plugin,
@@ -179,8 +199,8 @@ test.describe('RBAC plugin', () => {
   });
 
   test('Edit an existing role', async () => {
-    const roleName = 'role:default/rbac_admin';
-    await page.locator(`a`).filter({ hasText: roleName }).click();
+    const roleName = e2eRoles.rbacAdmin;
+    await (await searchForRole(page, roleName)).click();
     await common.verifyHeading(roleName);
     await page.getByRole('tab', { name: translations.common.overview }).click();
 
@@ -201,8 +221,9 @@ test.describe('RBAC plugin', () => {
     await common.verifyHeading(
       `1 ${translations.common.group}, 1 ${translations.common.user}`,
     );
-    await page.getByText('Guest User').click();
-    await page.getByText('Team D').click();
+    const memberOptions = page.getByRole('listbox');
+    await memberOptions.getByText('Guest User').click();
+    await memberOptions.getByText('Team D').click();
     await common.verifyHeading(
       `2 ${translations.common.groups}, 2 ${translations.common.users}`,
     );
@@ -214,7 +235,7 @@ test.describe('RBAC plugin', () => {
     await common.clickButton(translations.roleForm.steps.save);
     await verifyText(
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/rbac_admin',
+        roleName,
         action: 'updated',
       }),
       page,
@@ -230,61 +251,14 @@ test.describe('RBAC plugin', () => {
     await common.clickButton(translations.dialog.discard);
     await expect(page.getByRole('alert')).toHaveCount(0);
 
-    // edit/update policies
+    // edit/update policies — catalog only (no scaffolder backend in rbac-backend dev)
     await page.locator(RoleOverviewPO.updatePolicies).click();
     await common.verifyHeading(translations.roleForm.titles.editRole);
 
+    // remove existing catalog.entity.read conditional policy
+    await page.getByTestId('expand-row-catalog').click();
     await page
-      .getByLabel(translations.permissionPolicies.selectPlugins)
-      .last()
-      .click();
-    await page.getByTestId('expand-row-scaffolder').click();
-    await page
-      .getByRole('cell', { name: 'scaffolder.action.use' })
-      .getByRole('checkbox')
-      .click();
-    await page
-      .getByRole('row', { name: 'scaffolder.action.use' })
-      .getByLabel('remove')
-      .click();
-    await page.getByPlaceholder(translations.common.selectRule).first().click();
-    await page.getByText('HAS_ACTION_ID').click();
-    await page.getByLabel('actionId').fill('temp');
-    await page.getByTestId('save-conditions').click();
-    await expect(
-      page.locator('span[class*="MuiBadge-badge"]').filter({ hasText: '1' }),
-    ).toBeVisible();
-
-    await page
-      .getByLabel(translations.permissionPolicies.selectPlugins)
-      .first()
-      .click();
-    await expect(
-      page
-        .getByRole('option', {
-          name: replaceTemplate(translations.permissionPolicies.allPlugins, {
-            count: '3',
-          }),
-        })
-        .getByRole('checkbox'),
-    ).toBeChecked();
-    await page
-      .getByRole('option', { name: 'Permission' })
-      .getByRole('checkbox')
-      .click();
-    await expect(
-      page
-        .getByRole('option', {
-          name: replaceTemplate(translations.permissionPolicies.allPlugins, {
-            count: '3',
-          }),
-        })
-        .getByRole('checkbox'),
-    ).not.toBeChecked();
-
-    // remove existing conditional policy
-    await page
-      .getByRole('row', { name: 'scaffolder.template.read info' })
+      .getByRole('row', { name: 'catalog.entity.read' })
       .getByLabel('remove')
       .click();
     await page.getByTestId('remove-conditions').click();
@@ -293,9 +267,11 @@ test.describe('RBAC plugin', () => {
     await common.clickButton(translations.roleForm.steps.next);
     await expect(
       page.getByRole('cell', {
-        name: replaceTemplate(
-          translations.roleForm.review.permissionPoliciesWithCount,
-          { count: '7' },
+        name: new RegExp(
+          replaceTemplate(
+            translations.roleForm.review.permissionPoliciesWithCount,
+            { count: '\\d+' },
+          ).replace(/[()]/g, '\\$&'),
         ),
       }),
     ).toBeVisible();
@@ -305,7 +281,7 @@ test.describe('RBAC plugin', () => {
     await common.clickButton(translations.roleForm.steps.save);
     await verifyText(
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/rbac_admin',
+        roleName,
         action: 'updated',
       }),
       page,
@@ -318,15 +294,13 @@ test.describe('RBAC plugin', () => {
   });
 
   test('Create role from rolelist page with simple/conditional permission policies', async () => {
-    await common.verifyHeading(
-      replaceTemplate(translations.table.titleWithCount, { count: '2' }),
-    );
+    await searchForRole(page, e2eRoles.guests);
 
     // create-role
     await page.getByTestId('create-role').click();
     await common.verifyHeading(translations.roleForm.titles.createRole);
     await runAccessibilityTests(page);
-    await page.fill('input[name="name"]', 'sample-role-1');
+    await page.fill('input[name="name"]', e2eRoles.sampleRoleName);
     await page.fill('textarea[name="description"]', 'Test Description data');
     await common.clickButton(translations.roleForm.steps.next);
 
@@ -342,60 +316,28 @@ test.describe('RBAC plugin', () => {
       page.getByTestId('users-and-groups-text-field').locator('input'),
     ).toBeEmpty();
     await common.verifyHeading(translations.common.noUsersAndGroupsSelected);
-    await page.getByText('Guest User').click();
-    await page.getByText('Team D').click();
+    const memberOptions = page.getByRole('listbox');
+    await memberOptions.getByText('Guest User').click();
+    await memberOptions.getByText('Team D').click();
     await common.verifyHeading(
       `1 ${translations.common.group}, 1 ${translations.common.user}`,
     );
-    await page.getByText('infrastructure').click();
-    await page.getByText('Amelia Park').click();
+    await memberOptions.getByText('infrastructure').click();
+    await memberOptions.getByText('Amelia Park').click();
     await common.verifyHeading(
       `2 ${translations.common.groups}, 2 ${translations.common.users}`,
     );
-    const user = translations.common.user.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-    const users = translations.common.users.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-    const group = translations.common.group.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-    const groups = translations.common.groups.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
+    const user = escapeRegExp(translations.common.user);
+    const users = escapeRegExp(translations.common.users);
+    const group = escapeRegExp(translations.common.group);
+    const groups = escapeRegExp(translations.common.groups);
     const groupsAndUsers = new RegExp(
       `^(1 ${group}|[2-9]\\d* ${groups})?(, )?(1 ${user}|[2-9]\\d* ${users})?$`,
     );
     await common.verifyHeading(groupsAndUsers);
     await common.clickButton(translations.roleForm.steps.next);
 
-    await page
-      .getByLabel(translations.permissionPolicies.selectPlugins)
-      .last()
-      .click();
-    await page.getByText('scaffolder').click();
-    await page.getByTestId('expand-row-scaffolder').click();
-    await page
-      .getByRole('cell', { name: 'scaffolder.action.use' })
-      .getByRole('checkbox')
-      .click();
-    await page
-      .getByRole('row', { name: 'scaffolder.action.use' })
-      .getByLabel('remove')
-      .click();
-    await page.getByPlaceholder(translations.common.selectRule).first().click();
-    await page.getByText('HAS_ACTION_ID').click();
-    await page.getByLabel('actionId').fill('temp');
-    await page.getByTestId('save-conditions').click();
-    await expect(
-      page.locator('span[class*="MuiBadge-badge"]').filter({ hasText: '1' }),
-    ).toBeVisible();
-
+    // Catalog conditional policies only (scaffolder backend not in rbac-backend dev)
     await page
       .getByLabel(translations.permissionPolicies.selectPlugins)
       .last()
@@ -429,14 +371,18 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.create,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/sample-role-1',
+        roleName: e2eRoles.sampleRole,
         action: 'created',
       }),
     );
+    await page
+      .getByTestId('sidebar-root')
+      .getByRole('link', { name: translations.page.title })
+      .click();
   });
 
   test('Edit role to convert simple policy into conditional policy', async () => {
-    await navigateToRole('guests');
+    await navigateToRole(e2eRoles.guestsName);
 
     // update simple policy to add conditions
     await page.getByTestId('expand-row-catalog').click();
@@ -452,14 +398,14 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.save,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/guests',
+        roleName: e2eRoles.guests,
         action: 'updated',
       }),
     );
   });
 
   test('Edit role to convert conditional policy into nested conditional policy', async () => {
-    await navigateToRole('guests');
+    await navigateToRole(e2eRoles.guestsName);
 
     await page.getByTestId('expand-row-catalog').click();
     await page
@@ -483,14 +429,14 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.save,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/guests',
+        roleName: e2eRoles.guests,
         action: 'updated',
       }),
     );
   });
 
   test('Edit existing nested conditional policy', async () => {
-    await navigateToRole('rbac_admin');
+    await navigateToRole(e2eRoles.rbacAdminName);
 
     await page.getByTestId('expand-row-catalog').click();
     await page
@@ -519,18 +465,19 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.save,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/rbac_admin',
+        roleName: e2eRoles.rbacAdmin,
         action: 'updated',
       }),
     );
   });
 
   test('Remove existing nested conditional policy', async () => {
-    await navigateToRole('rbac_admin');
+    // Continues from previous test which added a nested condition on delete
+    await navigateToRole(e2eRoles.rbacAdminName);
 
     await page.getByTestId('expand-row-catalog').click();
     await page
-      .getByRole('row', { name: 'catalog.entity.update' })
+      .getByRole('row', { name: /catalog\.entity\.delete/ })
       .getByLabel('remove')
       .click();
     await page.getByTestId('remove-nested-condition').last().click();
@@ -539,7 +486,7 @@ test.describe('RBAC plugin', () => {
     await finishAndVerifyUpdate(
       translations.roleForm.steps.save,
       replaceTemplate(translations.common.roleActionSuccessfully, {
-        roleName: 'role:default/rbac_admin',
+        roleName: e2eRoles.rbacAdmin,
         action: 'updated',
       }),
     );
