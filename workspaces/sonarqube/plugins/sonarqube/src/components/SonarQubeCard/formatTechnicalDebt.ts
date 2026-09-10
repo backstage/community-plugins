@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-// SonarQube reports `sqale_index` in minutes and renders it as a work duration
-// using a working day of `sonar.technicalDebt.hoursInDay`, which defaults to 8.
-const HOURS_IN_DAY = 8;
+// SonarQube reports `sqale_index` in minutes and renders it as a work duration,
+// converting minutes into days with the working day set by
+// `sonar.technicalDebt.hoursInDay` on the instance. That setting is not exposed
+// over the web API, so the plugin takes it from `sonarqube.technicalDebt.hoursInDay`
+// and defaults to the 8 hours SonarQube itself defaults to.
+const DEFAULT_HOURS_IN_DAY = 8;
 const MINUTES_IN_HOUR = 60;
-const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
 
 /**
  * Format the `sqale_index` measure the way SonarQube does, so the value shown
@@ -26,9 +28,15 @@ const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
  *
  * Only the two most significant units are kept: `3d 4h`, `4h 30min`, `12min`.
  *
+ * @param sqaleIndex - the remediation effort, in minutes.
+ * @param hoursInDay - the working day, in hours. Defaults to 8, as SonarQube does.
+ *
  * @internal
  */
-export function formatTechnicalDebt(sqaleIndex?: string): string | undefined {
+export function formatTechnicalDebt(
+  sqaleIndex?: string,
+  hoursInDay?: number,
+): string | undefined {
   if (!sqaleIndex) {
     return undefined;
   }
@@ -38,13 +46,15 @@ export function formatTechnicalDebt(sqaleIndex?: string): string | undefined {
     return undefined;
   }
 
+  const workingDay =
+    hoursInDay && hoursInDay > 0 ? hoursInDay : DEFAULT_HOURS_IN_DAY;
+  const minutesInDay = workingDay * MINUTES_IN_HOUR;
+
   const isNegative = totalMinutes < 0;
   const absoluteMinutes = Math.abs(totalMinutes);
 
-  const days = Math.floor(absoluteMinutes / MINUTES_IN_DAY);
-  const hours = Math.floor(
-    (absoluteMinutes % MINUTES_IN_DAY) / MINUTES_IN_HOUR,
-  );
+  const days = Math.floor(absoluteMinutes / minutesInDay);
+  const hours = Math.floor((absoluteMinutes % minutesInDay) / MINUTES_IN_HOUR);
   const minutes = absoluteMinutes % MINUTES_IN_HOUR;
 
   const parts: string[] = [];

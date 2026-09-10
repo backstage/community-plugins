@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import { screen } from '@testing-library/react';
-import { renderInTestApp } from '@backstage/test-utils';
+import {
+  mockApis,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
+import { configApiRef } from '@backstage/core-plugin-api';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
 import { CodeSmellsRatingCard, HotspotsReviewed } from './MetricInsights';
 
@@ -49,6 +54,32 @@ describe('CodeSmellsRatingCard', () => {
 
     expect(await screen.findByText('340')).toBeInTheDocument();
     expect(screen.getByText('Debt: 5d 4h')).toBeInTheDocument();
+  });
+
+  it('should render the technical debt with the configured working day', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            mockApis.config({
+              data: { sonarqube: { technicalDebt: { hoursInDay: 6 } } },
+            }),
+          ],
+        ]}
+      >
+        <CodeSmellsRatingCard
+          value={createSummary({
+            code_smells: '340',
+            sqale_rating: '1.0',
+            sqale_index: '2640',
+          })}
+          title="Code Smells"
+        />
+      </TestApiProvider>,
+    );
+
+    expect(await screen.findByText('Debt: 7d 2h')).toBeInTheDocument();
   });
 
   it('should render nothing extra when the instance does not report the debt', async () => {

@@ -31,6 +31,7 @@ import { Rating } from './Rating';
 import { RatingCard } from './RatingCard';
 import { Value } from './Value';
 import { FindingSummary } from '@backstage-community/plugin-sonarqube-react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/frontend-plugin-api';
 import { sonarqubeTranslationRef } from '../../translation';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -137,7 +138,11 @@ export const VulnerabilitiesRatingCard = (props: MetricInsightsProps) => {
 export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
   const { value, title } = props;
   const { t } = useTranslationRef(sonarqubeTranslationRef);
-  const technicalDebt = formatTechnicalDebt(value.metrics.sqale_index);
+  const configApi = useApi(configApiRef);
+  const technicalDebt = formatTechnicalDebt(
+    value.metrics.sqale_index,
+    configApi.getOptionalNumber('sonarqube.technicalDebt.hoursInDay'),
+  );
   return (
     <RatingCard
       compact={props.compact}

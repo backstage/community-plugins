@@ -28,6 +28,19 @@ describe('formatTechnicalDebt', () => {
     expect(formatTechnicalDebt(sqaleIndex)).toBe(expected);
   });
 
+  it('should use the configured working day', () => {
+    // a six hour working day makes a day 360 minutes long
+    expect(formatTechnicalDebt('360', 6)).toBe('1d');
+    expect(formatTechnicalDebt('2640', 6)).toBe('7d 2h');
+  });
+
+  it.each([0, -8])(
+    'should fall back to eight hours in a day for %o',
+    hoursInDay => {
+      expect(formatTechnicalDebt('2640', hoursInDay)).toBe('5d 4h');
+    },
+  );
+
   it('should keep only the most significant units', () => {
     // days drop the minutes, and ten days or more drop the hours as well
     expect(formatTechnicalDebt('662')).toBe('1d 3h');

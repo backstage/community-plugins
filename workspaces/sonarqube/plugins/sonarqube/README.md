@@ -108,6 +108,16 @@ spec:
 
 `YOUR_INSTANCE_NAME/` is optional and will query the default instance if not provided.
 
+## Configuration
+
+The card shows the technical debt (`sqale_index`) as a work duration, the way SonarQube shows it on the project page. SonarQube turns those minutes into days using the working day set by `sonar.technicalDebt.hoursInDay`, which defaults to 8 hours. That setting is not exposed over the web API, so if your instance uses a different working day, set the same value here to keep both readings in sync:
+
+```yaml
+sonarqube:
+  technicalDebt:
+    hoursInDay: 6 # defaults to 8
+```
+
 ## New Frontend System
 
 ### Setup
