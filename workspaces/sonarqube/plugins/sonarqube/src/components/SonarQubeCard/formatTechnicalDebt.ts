@@ -24,6 +24,10 @@ import { ConfigApi } from '@backstage/core-plugin-api';
 const DEFAULT_HOURS_IN_DAY = 8;
 const MINUTES_IN_HOUR = 60;
 
+// An annotation without an instance prefix is resolved by the backend against
+// the instance named `default`, so the lookup here has to do the same.
+const DEFAULT_INSTANCE_NAME = 'default';
+
 /**
  * Read the working day for the instance a project belongs to, falling back to
  * the top level setting for deployments that share one working day.
@@ -37,12 +41,14 @@ export function resolveHoursInDay(
   config: ConfigApi,
   instanceName?: string,
 ): number | undefined {
-  const instanceHoursInDay = instanceName
-    ? config
-        .getOptionalConfigArray('sonarqube.instances')
-        ?.find(instance => instance.getOptionalString('name') === instanceName)
-        ?.getOptionalNumber('technicalDebt.hoursInDay')
-    : undefined;
+  const instanceHoursInDay = config
+    .getOptionalConfigArray('sonarqube.instances')
+    ?.find(
+      instance =>
+        instance.getOptionalString('name') ===
+        (instanceName || DEFAULT_INSTANCE_NAME),
+    )
+    ?.getOptionalNumber('technicalDebt.hoursInDay');
 
   return (
     instanceHoursInDay ??

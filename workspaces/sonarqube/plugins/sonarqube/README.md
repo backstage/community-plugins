@@ -118,7 +118,7 @@ sonarqube:
     hoursInDay: 6 # defaults to 8
 ```
 
-Each named instance can set its own working day, which takes precedence over the one above for the projects annotated with that instance:
+Each named instance can set its own working day, which takes precedence over the one above for the projects annotated with that instance. Annotations without an instance prefix use the instance named `default`, the same one the backend resolves them against:
 
 ```yaml
 sonarqube:

@@ -63,7 +63,11 @@ describe('resolveHoursInDay', () => {
       sonarqube: {
         technicalDebt: { hoursInDay: 6 },
         instances: [
-          { name: 'default', baseUrl: 'https://sonarqube.example.com' },
+          {
+            name: 'default',
+            baseUrl: 'https://sonarqube.example.com',
+            technicalDebt: { hoursInDay: 5 },
+          },
           {
             name: 'legacy',
             baseUrl: 'https://legacy-sonarqube.example.com',
@@ -78,12 +82,32 @@ describe('resolveHoursInDay', () => {
     expect(resolveHoursInDay(config, 'legacy')).toBe(7);
   });
 
-  it.each([undefined, 'default', 'unknown'])(
-    'should fall back to the top level working day for %o',
+  it.each([undefined, '', 'default'])(
+    'should read the working day of the default instance for %o',
     instanceName => {
-      expect(resolveHoursInDay(config, instanceName)).toBe(6);
+      // an annotation without an instance prefix is resolved against `default`
+      expect(resolveHoursInDay(config, instanceName)).toBe(5);
     },
   );
+
+  it('should fall back to the top level working day for an unknown instance', () => {
+    expect(resolveHoursInDay(config, 'unknown')).toBe(6);
+  });
+
+  it('should fall back to the top level working day when the instance sets none', () => {
+    const sharedConfig = mockApis.config({
+      data: {
+        sonarqube: {
+          technicalDebt: { hoursInDay: 6 },
+          instances: [
+            { name: 'default', baseUrl: 'https://sonarqube.example.com' },
+          ],
+        },
+      },
+    });
+
+    expect(resolveHoursInDay(sharedConfig)).toBe(6);
+  });
 
   it('should return undefined when nothing is configured', () => {
     expect(resolveHoursInDay(mockApis.config(), 'legacy')).toBeUndefined();
