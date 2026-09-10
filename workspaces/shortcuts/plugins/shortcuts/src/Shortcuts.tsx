@@ -23,11 +23,7 @@ import { ShortcutItem } from './ShortcutItem';
 import { AddShortcut } from './AddShortcut';
 import { shortcutsApiRef } from './api';
 
-import {
-  Progress,
-  SidebarItem,
-  SidebarScrollWrapper,
-} from '@backstage/core-components';
+import { Progress, SidebarItem } from '@backstage/core-components';
 import { IconComponent, useApi } from '@backstage/core-plugin-api';
 
 /**
@@ -55,7 +51,7 @@ export const Shortcuts = (props: ShortcutsProps) => {
   };
 
   return (
-    <SidebarScrollWrapper>
+    <>
       <SidebarItem
         icon={props.icon ?? PlayListAddIcon}
         text="Add Shortcuts"
@@ -79,6 +75,6 @@ export const Shortcuts = (props: ShortcutsProps) => {
           />
         ))
       )}
-    </SidebarScrollWrapper>
+    </>
   );
 };
