@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import Typography from '@material-ui/core/Typography';
 import { puppetDbApiRef, PuppetDbReportLog } from '../../api';
 import {
   ResponseErrorPanel,
@@ -23,28 +22,23 @@ import {
 } from '@backstage/core-components';
 import useAsync from 'react-use/esm/useAsync';
 import { useApi } from '@backstage/core-plugin-api';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
+import styles from './ReportDetailsLogsTable.module.css';
 
 type ReportLogsTableProps = {
   hash: string;
 };
 
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  level_error: {
-    color: theme.palette.error.light,
-  },
-  level_warning: {
-    color: theme.palette.warning.light,
-  },
-  level_notice: {
-    color: theme.palette.info.light,
-  },
-}));
+const levelColor = (level: string) => {
+  switch (level) {
+    case 'error':
+      return 'danger' as const;
+    case 'warning':
+      return 'warning' as const;
+    default:
+      return 'info' as const;
+  }
+};
 
 /**
  * Component for displaying PuppetDB report logs.
@@ -54,7 +48,6 @@ const useStyles = makeStyles(theme => ({
 export const ReportDetailsLogsTable = (props: ReportLogsTableProps) => {
   const { hash } = props;
   const puppetDbApi = useApi(puppetDbApiRef);
-  const classes = useStyles();
   const { value, loading, error } = useAsync(async () => {
     return puppetDbApi.getPuppetDbReportLogs(hash);
   }, [puppetDbApi, hash]);
@@ -70,16 +63,9 @@ export const ReportDetailsLogsTable = (props: ReportLogsTableProps) => {
       align: 'center',
       width: '100px',
       render: rowData => (
-        <Typography
-          noWrap
-          className={
-            (rowData.level === 'warning' && classes.level_warning) ||
-            (rowData.level === 'error' && classes.level_error) ||
-            classes.level_notice
-          }
-        >
+        <Text truncate color={levelColor(rowData.level)}>
           {rowData.level.toLocaleUpperCase('en-US')}
-        </Typography>
+        </Text>
       ),
     },
     {
@@ -88,20 +74,20 @@ export const ReportDetailsLogsTable = (props: ReportLogsTableProps) => {
       align: 'center',
       width: '300px',
       render: rowData => (
-        <Typography noWrap>
+        <Text truncate>
           {new Date(Date.parse(rowData.time)).toLocaleString()}
-        </Typography>
+        </Text>
       ),
     },
     {
       title: 'Source',
       field: 'source',
-      render: rowData => <Typography noWrap>{rowData.source}</Typography>,
+      render: rowData => <Text truncate>{rowData.source}</Text>,
     },
     {
       title: 'Message',
       field: 'message',
-      render: rowData => <Typography noWrap>{rowData.message}</Typography>,
+      render: rowData => <Text truncate>{rowData.message}</Text>,
     },
   ];
 
@@ -119,9 +105,9 @@ export const ReportDetailsLogsTable = (props: ReportLogsTableProps) => {
         pageSizeOptions: [10],
       }}
       emptyContent={
-        <Typography color="textSecondary" className={classes.empty}>
+        <Text color="secondary" className={styles.empty}>
           No logs
-        </Typography>
+        </Text>
       }
       title="Latest logs"
       columns={columns}

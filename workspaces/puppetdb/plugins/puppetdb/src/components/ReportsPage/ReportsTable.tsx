@@ -22,23 +22,15 @@ import {
   TableColumn,
 } from '@backstage/core-components';
 import { useApi, useRouteRef } from '@backstage/core-plugin-api';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import { Link as RouterLink } from 'react-router-dom';
 import { puppetDbReportRouteRef } from '../../routes';
 import { StatusField } from '../StatusField';
+import styles from './ReportsTable.module.css';
 
 type ReportsTableProps = {
   certName: string;
 };
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 /**
  * Component for displaying a table of PuppetDB reports for a given node.
@@ -49,7 +41,6 @@ export const ReportsTable = (props: ReportsTableProps) => {
   const { certName } = props;
   const puppetDbApi = useApi(puppetDbApiRef);
   const reportsRouteLink = useRouteRef(puppetDbReportRouteRef);
-  const classes = useStyles();
 
   const { value, loading, error } = useAsync(async () => {
     return puppetDbApi.getPuppetDbNodeReports(certName);
@@ -69,11 +60,11 @@ export const ReportsTable = (props: ReportsTableProps) => {
           to={reportsRouteLink({ hash: rowData.hash! })}
         >
           {rowData.configuration_version !== '' ? (
-            <Typography noWrap>{rowData.configuration_version}</Typography>
+            <Text truncate>{rowData.configuration_version}</Text>
           ) : (
-            <Typography noWrap>
+            <Text truncate>
               <em>(N/A)</em>
-            </Typography>
+            </Text>
           )}
         </Link>
       ),
@@ -84,9 +75,9 @@ export const ReportsTable = (props: ReportsTableProps) => {
       align: 'center',
       width: '300px',
       render: rowData => (
-        <Typography noWrap>
+        <Text truncate>
           {new Date(Date.parse(rowData.start_time)).toLocaleString()}
-        </Typography>
+        </Text>
       ),
     },
     {
@@ -95,9 +86,9 @@ export const ReportsTable = (props: ReportsTableProps) => {
       align: 'center',
       width: '300px',
       render: rowData => (
-        <Typography noWrap>
+        <Text truncate>
           {new Date(Date.parse(rowData.end_time)).toLocaleString()}
-        </Typography>
+        </Text>
       ),
     },
     {
@@ -109,12 +100,12 @@ export const ReportsTable = (props: ReportsTableProps) => {
         const end_date = new Date(Date.parse(rowData.end_time));
         const duration = new Date(end_date.getTime() - start_date.getTime());
         return (
-          <Typography noWrap>
+          <Text truncate>
             {duration.getUTCHours().toString().padStart(2, '0')}:
             {duration.getUTCMinutes().toString().padStart(2, '0')}:
             {duration.getUTCSeconds().toString().padStart(2, '0')}.
             {duration.getUTCMilliseconds().toString().padStart(4, '0')}
-          </Typography>
+          </Text>
         );
       },
     },
@@ -127,11 +118,7 @@ export const ReportsTable = (props: ReportsTableProps) => {
       field: 'noop',
       align: 'center',
       render: rowData =>
-        rowData.noop ? (
-          <Typography>NOOP</Typography>
-        ) : (
-          <Typography>NO-NOOP</Typography>
-        ),
+        rowData.noop ? <Text>NOOP</Text> : <Text>NO-NOOP</Text>,
     },
     {
       title: 'Status',
@@ -155,9 +142,9 @@ export const ReportsTable = (props: ReportsTableProps) => {
         pageSizeOptions: [10],
       }}
       emptyContent={
-        <Typography color="textSecondary" className={classes.empty}>
+        <Text color="secondary" className={styles.empty}>
           No reports
-        </Typography>
+        </Text>
       }
       title={`Latest PuppetDB reports from node ${certName}`}
       columns={columns}

@@ -16,38 +16,21 @@
 
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Breadcrumbs, Link } from '@backstage/core-components';
-import { makeStyles } from '@material-ui/core/styles';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { puppetDbRouteRef } from '../../routes';
-import { useState } from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import Tabs from '@material-ui/core/Tabs';
+import {
+  Card,
+  CardBody,
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Text,
+} from '@backstage/ui';
 import { ReportDetailsEventsTable } from './ReportDetailsEventsTable';
 import { ReportDetailsLogsTable } from './ReportDetailsLogsTable';
-
-const useStyles = makeStyles(theme => ({
-  cards: {
-    marginTop: theme.spacing(2),
-  },
-  tabs: {
-    borderBottom: `1px solid ${theme.palette.textVerySubtle}`,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(0, 4),
-  },
-  default: {
-    padding: theme.spacing(2),
-    fontWeight: theme.typography.fontWeightBold,
-    color: theme.palette.text.secondary,
-    textTransform: 'uppercase',
-  },
-  selected: {
-    color: theme.palette.text.primary,
-  },
-}));
+import styles from './ReportDetailsPage.module.css';
 
 /**
  * Component for displaying the details of a PuppetDB report.
@@ -56,49 +39,40 @@ const useStyles = makeStyles(theme => ({
  */
 export const ReportDetailsPage = () => {
   const { hash = '' } = useParams();
-  const classes = useStyles();
-  const [tabIndex, setTabIndex] = useState(0);
   const reportsRouteLink = useRouteRef(puppetDbRouteRef);
-  const tabs = [
-    { id: 'events', label: 'Events' },
-    { id: 'logs', label: 'Logs' },
-  ];
-  const safeTabIndex = tabIndex > tabs.length - 1 ? 0 : tabIndex;
 
   return (
-    <div>
+    <Flex direction="column">
       <Breadcrumbs aria-label="breadcrumb">
         <Link component={RouterLink} to={reportsRouteLink()}>
           PuppetDB Reports
         </Link>
-        <Typography noWrap>{hash}</Typography>
+        <Text truncate>{hash}</Text>
       </Breadcrumbs>
-      <Card
-        style={{ position: 'relative', overflow: 'visible' }}
-        className={classes.cards}
-      >
-        <CardContent>
-          <Tabs
-            indicatorColor="primary"
-            onChange={(_, index) => setTabIndex(index)}
-            value={safeTabIndex}
-          >
-            {tabs.map((tab, index) => (
-              <Tab
-                className={classes.default}
-                label={tab.label}
-                key={tab.id}
-                value={index}
-                classes={{ selected: classes.selected }}
-              />
-            ))}
+      <Card className={styles.card}>
+        <CardBody>
+          <Tabs>
+            <TabList className={styles.tabs}>
+              <Tab id="events" className={styles.tab}>
+                Events
+              </Tab>
+              <Tab id="logs" className={styles.tab}>
+                Logs
+              </Tab>
+            </TabList>
+            <TabPanel id="events">
+              <Flex direction="column" className={styles.panel}>
+                <ReportDetailsEventsTable hash={hash} />
+              </Flex>
+            </TabPanel>
+            <TabPanel id="logs">
+              <Flex direction="column" className={styles.panel}>
+                <ReportDetailsLogsTable hash={hash} />
+              </Flex>
+            </TabPanel>
           </Tabs>
-          <Box ml={2} pt={2} my={1} display="flex" flexDirection="column">
-            {safeTabIndex === 0 && <ReportDetailsEventsTable hash={hash} />}
-            {safeTabIndex === 1 && <ReportDetailsLogsTable hash={hash} />}
-          </Box>
-        </CardContent>
+        </CardBody>
       </Card>
-    </div>
+    </Flex>
   );
 };
