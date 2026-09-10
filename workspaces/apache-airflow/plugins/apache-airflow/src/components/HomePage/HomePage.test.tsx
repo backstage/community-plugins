@@ -14,32 +14,42 @@
  * limitations under the License.
  */
 
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
+import { render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+
+jest.mock('../DagTableComponent', () => ({
+  DagTableComponent: () => <div>DagTableComponent</div>,
+}));
+jest.mock('../StatusComponent', () => ({
+  StatusComponent: () => <div>StatusComponent</div>,
+}));
+jest.mock('../VersionComponent', () => ({
+  VersionComponent: () => <div>VersionComponent</div>,
+}));
+jest.mock('@backstage/core-components', () => ({
+  Content: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+  ContentHeader: ({ children }: { children?: ReactNode }) => (
+    <div>{children}</div>
+  ),
+  Header: ({ children, title }: { children?: ReactNode; title?: string }) => (
+    <header>
+      <h1>{title}</h1>
+      {children}
+    </header>
+  ),
+  HeaderLabel: ({ label, value }: { label?: string; value?: string }) => (
+    <span>{label ? `${label}: ${value}` : value}</span>
+  ),
+  Page: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+  SupportButton: ({ children }: { children?: ReactNode }) => (
+    <div>{children}</div>
+  ),
+}));
 import { HomePage } from './HomePage';
 
 describe('<HomePage />', () => {
-  const mockApi: jest.Mocked<ApacheAirflowApi> = {
-    getInstanceStatus: jest.fn().mockResolvedValue({
-      metadatabase: { status: 'healthy' },
-      scheduler: { status: 'healthy' },
-    }),
-    getInstanceVersion: jest.fn().mockResolvedValue({
-      version: 'v2.0.0',
-    }),
-    listDags: jest.fn().mockResolvedValue([
-      {
-        dag_id: 'mock_dag_1',
-      },
-    ]),
-  } as any;
-
   it('homepage should render', async () => {
-    const { getByText } = await renderInTestApp(
-      <TestApiProvider apis={[[apacheAirflowApiRef, mockApi]]}>
-        <HomePage />
-      </TestApiProvider>,
-    );
-    expect(getByText('Apache Airflow')).toBeInTheDocument();
+    render(<HomePage />);
+    expect(screen.getByText('Apache Airflow')).toBeInTheDocument();
   });
 });

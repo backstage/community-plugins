@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import Chip from '@material-ui/core/Chip';
+import { Box } from '@backstage/ui';
 import { ScheduleInterval, TimeDelta, RelativeDelta } from '../../api/types';
+import styles from './ScheduleIntervalLabel.module.css';
 
 interface Props {
   interval: ScheduleInterval | undefined;
@@ -58,5 +59,5 @@ export const ScheduleIntervalLabel = ({ interval }: Props) => {
     default:
       label = 'None';
   }
-  return <Chip label={label} size="small" />;
+  return <Box className={styles.pill}>{label}</Box>;
 };
