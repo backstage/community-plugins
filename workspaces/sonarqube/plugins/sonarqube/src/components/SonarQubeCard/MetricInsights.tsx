@@ -25,7 +25,7 @@ import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisf
 import SentimentVerySatisfied from '@material-ui/icons/SentimentVerySatisfied';
 import Security from '@material-ui/icons/Security';
 import { DateTime } from 'luxon';
-import { formatTechnicalDebt } from './formatTechnicalDebt';
+import { formatTechnicalDebt, resolveHoursInDay } from './formatTechnicalDebt';
 import { Percentage } from './Percentage';
 import { Rating } from './Rating';
 import { RatingCard } from './RatingCard';
@@ -42,6 +42,7 @@ type MetricInsightsProps = {
   compact?: boolean;
   title?: string;
   sonarQubeComponentKey?: string;
+  projectInstance?: string;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -136,12 +137,12 @@ export const VulnerabilitiesRatingCard = (props: MetricInsightsProps) => {
 };
 
 export const CodeSmellsRatingCard = (props: MetricInsightsProps) => {
-  const { value, title } = props;
+  const { value, title, projectInstance } = props;
   const { t } = useTranslationRef(sonarqubeTranslationRef);
   const configApi = useApi(configApiRef);
   const technicalDebt = formatTechnicalDebt(
     value.metrics.sqale_index,
-    configApi.getOptionalNumber('sonarqube.technicalDebt.hoursInDay'),
+    resolveHoursInDay(configApi, projectInstance),
   );
   return (
     <RatingCard

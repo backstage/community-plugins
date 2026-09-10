@@ -17,7 +17,7 @@
 import { Entity } from '@backstage/catalog-model';
 import {
   FindingSummary,
-  Metrics,
+  MetricKey,
   SonarQubeApi,
 } from '@backstage-community/plugin-sonarqube-react';
 import { SummaryWrapper } from './types';
@@ -77,7 +77,9 @@ export class SonarQubeClient implements SonarQubeApi {
       baseUrl += '/';
     }
 
-    const metrics: Metrics = {
+    // `Record` rather than `Metrics`, whose keys are optional: the client is the
+    // one place that has to account for every metric, so let the compiler say so.
+    const metrics: Record<MetricKey, string | undefined> = {
       alert_status: undefined,
       bugs: undefined,
       reliability_rating: undefined,

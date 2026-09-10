@@ -118,6 +118,21 @@ sonarqube:
     hoursInDay: 6 # defaults to 8
 ```
 
+Each named instance can set its own working day, which takes precedence over the one above for the projects annotated with that instance:
+
+```yaml
+sonarqube:
+  technicalDebt:
+    hoursInDay: 6
+  instances:
+    - name: default
+      baseUrl: https://default-sonarqube.example.com
+    - name: legacy
+      baseUrl: https://legacy-sonarqube.example.com
+      technicalDebt:
+        hoursInDay: 7.5
+```
+
 ## New Frontend System
 
 ### Setup

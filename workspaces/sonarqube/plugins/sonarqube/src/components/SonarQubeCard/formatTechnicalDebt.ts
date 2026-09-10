@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { ConfigApi } from '@backstage/core-plugin-api';
+
 // SonarQube reports `sqale_index` in minutes and renders it as a work duration,
 // converting minutes into days with the working day set by
 // `sonar.technicalDebt.hoursInDay` on the instance. That setting is not exposed
@@ -21,6 +23,32 @@
 // and defaults to the 8 hours SonarQube itself defaults to.
 const DEFAULT_HOURS_IN_DAY = 8;
 const MINUTES_IN_HOUR = 60;
+
+/**
+ * Read the working day for the instance a project belongs to, falling back to
+ * the top level setting for deployments that share one working day.
+ *
+ * @param config - the app config.
+ * @param instanceName - the instance named in the entity annotation, if any.
+ *
+ * @internal
+ */
+export function resolveHoursInDay(
+  config: ConfigApi,
+  instanceName?: string,
+): number | undefined {
+  const instanceHoursInDay = instanceName
+    ? config
+        .getOptionalConfigArray('sonarqube.instances')
+        ?.find(instance => instance.getOptionalString('name') === instanceName)
+        ?.getOptionalNumber('technicalDebt.hoursInDay')
+    : undefined;
+
+  return (
+    instanceHoursInDay ??
+    config.getOptionalNumber('sonarqube.technicalDebt.hoursInDay')
+  );
+}
 
 /**
  * Format the `sqale_index` measure the way SonarQube does, so the value shown

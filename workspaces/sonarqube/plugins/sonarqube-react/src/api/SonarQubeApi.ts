@@ -52,10 +52,12 @@ export type SonarUrlProcessorFunc = (identifier: string) => string;
 /**
  * @public
  *
- * Define a type to make sure that all metrics are used
+ * The measures reported for a project. Every key is optional: an instance only
+ * reports the measures it supports, and new keys are added over time, so
+ * requiring all of them would break every consumer that builds a summary.
  */
 export type Metrics = {
-  [key in MetricKey]: string | undefined;
+  [key in MetricKey]?: string;
 };
 
 /** @public */

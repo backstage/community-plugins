@@ -82,6 +82,44 @@ describe('CodeSmellsRatingCard', () => {
     expect(await screen.findByText('Debt: 7d 2h')).toBeInTheDocument();
   });
 
+  it('should render the technical debt with the working day of the project instance', async () => {
+    await renderInTestApp(
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            mockApis.config({
+              data: {
+                sonarqube: {
+                  technicalDebt: { hoursInDay: 8 },
+                  instances: [
+                    {
+                      name: 'legacy',
+                      baseUrl: 'https://legacy-sonarqube.example.com',
+                      technicalDebt: { hoursInDay: 6 },
+                    },
+                  ],
+                },
+              },
+            }),
+          ],
+        ]}
+      >
+        <CodeSmellsRatingCard
+          value={createSummary({
+            code_smells: '340',
+            sqale_rating: '1.0',
+            sqale_index: '2640',
+          })}
+          title="Code Smells"
+          projectInstance="legacy"
+        />
+      </TestApiProvider>,
+    );
+
+    expect(await screen.findByText('Debt: 7d 2h')).toBeInTheDocument();
+  });
+
   it('should render nothing extra when the instance does not report the debt', async () => {
     await renderInTestApp(
       <CodeSmellsRatingCard

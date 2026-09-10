@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { formatTechnicalDebt } from './formatTechnicalDebt';
+import { mockApis } from '@backstage/test-utils';
+import { formatTechnicalDebt, resolveHoursInDay } from './formatTechnicalDebt';
 
 describe('formatTechnicalDebt', () => {
   it.each([
@@ -54,4 +55,37 @@ describe('formatTechnicalDebt', () => {
       expect(formatTechnicalDebt(sqaleIndex)).toBeUndefined();
     },
   );
+});
+
+describe('resolveHoursInDay', () => {
+  const config = mockApis.config({
+    data: {
+      sonarqube: {
+        technicalDebt: { hoursInDay: 6 },
+        instances: [
+          { name: 'default', baseUrl: 'https://sonarqube.example.com' },
+          {
+            name: 'legacy',
+            baseUrl: 'https://legacy-sonarqube.example.com',
+            technicalDebt: { hoursInDay: 7 },
+          },
+        ],
+      },
+    },
+  });
+
+  it('should read the working day of the named instance', () => {
+    expect(resolveHoursInDay(config, 'legacy')).toBe(7);
+  });
+
+  it.each([undefined, 'default', 'unknown'])(
+    'should fall back to the top level working day for %o',
+    instanceName => {
+      expect(resolveHoursInDay(config, instanceName)).toBe(6);
+    },
+  );
+
+  it('should return undefined when nothing is configured', () => {
+    expect(resolveHoursInDay(mockApis.config(), 'legacy')).toBeUndefined();
+  });
 });

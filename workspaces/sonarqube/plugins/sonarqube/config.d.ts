@@ -32,7 +32,8 @@ export interface Config {
 
     /**
      * The optional technical debt settings, used to render the `sqale_index`
-     * measure the same way the SonarQube instance renders it.
+     * measure the same way the SonarQube instance renders it. Instances that
+     * set their own value override this one.
      * @visibility frontend
      */
     technicalDebt?: {
@@ -68,6 +69,21 @@ export interface Config {
        * @visibility frontend
        */
       externalBaseUrl?: string;
+
+      /**
+       * The optional technical debt settings of this instance, overriding the
+       * ones set at the top level.
+       * @visibility frontend
+       */
+      technicalDebt?: {
+        /**
+         * The working day, in hours, used to turn the remediation effort into a
+         * duration. Set it to the same value as `sonar.technicalDebt.hoursInDay`
+         * on this SonarQube instance. Defaults to 8.
+         * @visibility frontend
+         */
+        hoursInDay?: number;
+      };
     }>;
   };
 }

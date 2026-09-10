@@ -51,7 +51,7 @@ export type MetricKey =
 
 // @public
 export type Metrics = {
-  [key in MetricKey]: string | undefined;
+  [key in MetricKey]?: string;
 };
 
 // @public (undocumented)
