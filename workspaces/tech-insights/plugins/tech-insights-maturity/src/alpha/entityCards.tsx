@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 import { compatWrapper } from '@backstage/core-compat-api';
+import { configApiRef } from '@backstage/frontend-plugin-api';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
+import { resolveMaturityDisplayConfig } from '../helpers/maturityConfig';
 
 /**
  * Entity card extension for maturity summary info card.
  *
  * @alpha
  */
-export const entityMaturitySummaryCard = EntityCardBlueprint.make({
+export const entityMaturitySummaryCard = EntityCardBlueprint.makeWithOverrides({
   name: 'maturity-summary',
-  params: {
-    type: 'info',
-    filter: { kind: { $in: ['System', 'Domain', 'Group'] } },
-    loader: () =>
-      import('../components/MaturitySummaryInfoCard').then(m =>
-        compatWrapper(<m.MaturitySummaryInfoCard />),
-      ),
+  factory(originalFactory, { apis }) {
+    const { title } = resolveMaturityDisplayConfig(apis.get(configApiRef));
+
+    return originalFactory({
+      type: 'info',
+      filter: { kind: { $in: ['System', 'Domain', 'Group'] } },
+      loader: () =>
+        import('../components/MaturitySummaryInfoCard').then(m =>
+          compatWrapper(<m.MaturitySummaryInfoCard title={title} />),
+        ),
+    });
   },
 });

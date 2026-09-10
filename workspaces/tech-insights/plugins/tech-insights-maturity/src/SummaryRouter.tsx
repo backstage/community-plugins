@@ -15,9 +15,10 @@
  */
 import { Route, Routes } from 'react-router-dom';
 import { MaturitySummaryPage } from './components/MaturitySummaryPage';
+import { MaturityDisplayProps } from './types';
 
-export const SummaryRouter = () => (
+export const SummaryRouter = ({ title }: MaturityDisplayProps) => (
   <Routes>
-    <Route path="/" element={<MaturitySummaryPage />} />
+    <Route path="/" element={<MaturitySummaryPage title={title} />} />
   </Routes>
 );

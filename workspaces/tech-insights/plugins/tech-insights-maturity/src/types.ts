@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  techInsightsMaturityPlugin,
-  EntityMaturityScorecardContent,
-  EntityMaturitySummaryContent,
-  MaturityPage,
-  EntityMaturityRankWidget,
-  EntityMaturitySummaryCard,
-} from './plugin';
-export * from './api';
-export type { MaturityDisplayProps } from './types';
+
+/**
+ * Display options for Tech Insights Maturity components.
+ *
+ * @public
+ */
+export interface MaturityDisplayProps {
+  /** Overrides the configured maturity feature title. */
+  title?: string;
+}
