@@ -129,8 +129,8 @@ export class Common {
 
   /**
    * Opens the missing-permission Topology view. Legacy uses a standalone
-   * `/missing-permissions` page. NFS opens the `permission-denied` catalog
-   * entity; the Topology tab is hidden via the extension `if` predicate.
+   * `/missing-permissions` page. NFS loads the `permission-denied` catalog
+   * entity directly so permission predicates are evaluated for that URL.
    */
   async navigateToMissingPermissions() {
     if (!isNfsAppMode()) {
@@ -138,13 +138,7 @@ export class Common {
       return;
     }
 
-    await this.page.goto('/catalog');
-    await this.page
-      .getByRole('row', { name: /permission-denied/ })
-      .getByRole('link')
-      .first()
-      .click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto('/catalog/default/component/permission-denied');
     await expect(
       this.page.getByRole('heading', { name: 'permission-denied' }),
     ).toBeVisible({ timeout: 30000 });
