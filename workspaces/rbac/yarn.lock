@@ -1778,7 +1778,7 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-rbac-common": "workspace:^"
     "@backstage-community/plugin-rbac-node": "workspace:^"
-    "@backstage/backend-defaults": "npm:^0.17.7"
+    "@backstage/backend-defaults": "npm:^0.17.8"
     "@backstage/backend-plugin-api": "npm:^1.10.0"
     "@backstage/backend-test-utils": "npm:^1.11.6"
     "@backstage/catalog-client": "npm:^1.16.1"
@@ -1789,8 +1789,8 @@ __metadata:
     "@backstage/errors": "npm:^1.3.1"
     "@backstage/plugin-auth-backend": "npm:^0.30.0"
     "@backstage/plugin-auth-backend-module-guest-provider": "npm:^0.2.22"
-    "@backstage/plugin-auth-backend-module-oidc-provider": "npm:^0.4.19"
-    "@backstage/plugin-catalog-backend": "npm:^3.9.0"
+    "@backstage/plugin-auth-backend-module-oidc-provider": "npm:^0.4.20"
+    "@backstage/plugin-catalog-backend": "npm:^3.9.1"
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "npm:^0.2.23"
     "@backstage/plugin-catalog-node": "npm:^2.2.4"
     "@backstage/plugin-permission-backend": "npm:^0.7.15"
@@ -1935,9 +1935,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.17.7":
-  version: 0.17.7
-  resolution: "@backstage/backend-defaults@npm:0.17.7"
+"@backstage/backend-defaults@npm:^0.17.7, @backstage/backend-defaults@npm:^0.17.8":
+  version: 0.17.8
+  resolution: "@backstage/backend-defaults@npm:0.17.8"
   dependencies:
     "@aws-sdk/abort-controller": "npm:^3.347.0"
     "@aws-sdk/client-codecommit": "npm:^3.350.0"
@@ -1954,7 +1954,7 @@ __metadata:
     "@backstage/config": "npm:^1.3.8"
     "@backstage/config-loader": "npm:^1.11.2"
     "@backstage/errors": "npm:^1.3.1"
-    "@backstage/integration": "npm:^2.1.0"
+    "@backstage/integration": "npm:^2.1.1"
     "@backstage/integration-aws-node": "npm:^0.2.1"
     "@backstage/plugin-auth-node": "npm:^0.7.4"
     "@backstage/plugin-events-node": "npm:^0.4.25"
@@ -2020,7 +2020,7 @@ __metadata:
       optional: true
     better-sqlite3:
       optional: true
-  checksum: 10/e9ac172b73982ae3d66fcdc2039f3e7593c685aff02a6d6e6d86329a021d8f5fce25630c8f6d38dee944eaa9f257a428cf3f9a95d8fb106f1c293253645dcbc9
+  checksum: 10/c46f123991db5ad85c29d55873d37ba3bdede1a3f6fc59b48ac01499fa691556a25aff5ca4033fe4749f891df431b27b84fa348c5ef6504ebf4bcb8e573c245e
   languageName: node
   linkType: hard
 
@@ -2933,9 +2933,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@backstage/integration@npm:2.1.0"
+"@backstage/integration@npm:^2.1.0, @backstage/integration@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@backstage/integration@npm:2.1.1"
   dependencies:
     "@azure/identity": "npm:^4.0.0"
     "@azure/storage-blob": "npm:^12.5.0"
@@ -2949,7 +2949,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.0.0"
     p-throttle: "npm:^4.1.1"
-  checksum: 10/f620470ca8bc8928a676be2c0dd596288159ae71437bd1f96851fe74b2b7853ec9be15393c600761c01b54d7b95a897b5d71267c1f6874ed409aad889d6b6f6f
+  checksum: 10/a4a1790f162f5aab18bad68ee9e2a82bc585974fea06408a29949afe3d6b09f7ad9c7d02ab00d8666093d3576135e3e00ba06e5b601c16ab16f010da1ba2abbe
   languageName: node
   linkType: hard
 
@@ -3048,9 +3048,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-auth-backend-module-oidc-provider@npm:^0.4.19":
-  version: 0.4.19
-  resolution: "@backstage/plugin-auth-backend-module-oidc-provider@npm:0.4.19"
+"@backstage/plugin-auth-backend-module-oidc-provider@npm:^0.4.20":
+  version: 0.4.20
+  resolution: "@backstage/plugin-auth-backend-module-oidc-provider@npm:0.4.20"
   dependencies:
     "@backstage/backend-plugin-api": "npm:^1.10.0"
     "@backstage/config": "npm:^1.3.8"
@@ -3061,7 +3061,7 @@ __metadata:
     openid-client: "npm:^5.5.0"
     passport: "npm:^0.7.0"
     zod: "npm:^3.25.76 || ^4.0.0"
-  checksum: 10/4312274922c6200eedfaee5947405d0f2787c221eb83c1289e6fb3c3b37707faddd09395dd642d33b932b1a3b9fb6ddfbeea92617f7a177a3b5e8e59bdf3fd2e
+  checksum: 10/bcf68bf6ac6a58641b83d7299790460f043dc72fce812b5d312efa2452cf3eab374cb235e5ae8745e7ee7dd06f6f96f5d0f66caf4abba473aa1755b3011944d2
   languageName: node
   linkType: hard
 
@@ -3132,9 +3132,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-backend@npm:^3.9.0":
-  version: 3.9.0
-  resolution: "@backstage/plugin-catalog-backend@npm:3.9.0"
+"@backstage/plugin-catalog-backend@npm:^3.9.1":
+  version: 3.9.1
+  resolution: "@backstage/plugin-catalog-backend@npm:3.9.1"
   dependencies:
     "@backstage/backend-openapi-utils": "npm:^0.7.1"
     "@backstage/backend-plugin-api": "npm:^1.10.0"
@@ -3143,7 +3143,7 @@ __metadata:
     "@backstage/config": "npm:^1.3.8"
     "@backstage/errors": "npm:^1.3.1"
     "@backstage/filter-predicates": "npm:^0.1.4"
-    "@backstage/integration": "npm:^2.1.0"
+    "@backstage/integration": "npm:^2.1.1"
     "@backstage/plugin-catalog-common": "npm:^1.1.10"
     "@backstage/plugin-catalog-node": "npm:^2.2.4"
     "@backstage/plugin-events-node": "npm:^0.4.25"
@@ -3170,7 +3170,7 @@ __metadata:
     yn: "npm:^4.0.0"
     zod: "npm:^3.25.76 || ^4.0.0"
     zod-validation-error: "npm:^5.0.0"
-  checksum: 10/cc04a886d4876621680102808f7a163aa21b68829fd381f5137013afd1131b57ad0e86a6f5ac2ece8b4a494bb6660e769c8fde21f5fd73f84e1e461e5ebf9835
+  checksum: 10/75e3b6e53c5c6be12fd71bf1e5fbe269949c14076c95c6e4977ee626631ece47fac59945bf4088b3229106979f645711c32b4db81a811b49b3bcdfa6ab5d4373
   languageName: node
   linkType: hard
 
@@ -3394,12 +3394,12 @@ __metadata:
   linkType: hard
 
 "@backstage/plugin-scaffolder-common@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "@backstage/plugin-scaffolder-common@npm:2.2.2"
+  version: 2.2.3
+  resolution: "@backstage/plugin-scaffolder-common@npm:2.2.3"
   dependencies:
     "@backstage/catalog-model": "npm:^1.10.0"
     "@backstage/errors": "npm:^1.3.1"
-    "@backstage/integration": "npm:^2.1.0"
+    "@backstage/integration": "npm:^2.1.1"
     "@backstage/plugin-permission-common": "npm:^0.9.10"
     "@backstage/types": "npm:^1.2.2"
     "@microsoft/fetch-event-source": "npm:^2.0.1"
@@ -3407,7 +3407,7 @@ __metadata:
     cross-fetch: "npm:^4.0.0"
     uri-template: "npm:^2.0.0"
     zen-observable: "npm:^0.10.0"
-  checksum: 10/64cd4af0cae4589e6c14f82670773e81f9d341d76a567f3208f33aa53eca964869d3911855ce518a3a47d4a721b80e7b71957041afe3ebb1ca4f0b2f1275e64f
+  checksum: 10/f0acc429249c79b6acc64b91bde6b0155a81b754a194d0144adf8ddc34a47b8a028a66616d150e92d9e075a48714d1350eebd7d014a706922626f072413e6cdc
   languageName: node
   linkType: hard
 
