@@ -32,7 +32,7 @@ import type { Source } from '@backstage-community/plugin-rbac-common';
 import { resolve } from 'path';
 
 import { ADMIN_ROLE_AUTHOR } from '../admin-permissions/admin-creation';
-import { CasbinDBAdapterFactory } from '../database/casbin-adapter-factory';
+import { CasbinKnexAdapter } from '../database/casbin-knex-adapter';
 import {
   RoleMetadataDao,
   RoleMetadataStorage,
@@ -41,6 +41,7 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
+import { createTestCasbinKnex } from '../../__fixtures__/mock-utils';
 import { CSVFileWatcher } from './csv-file-watcher';
 import { mockAuditorService } from '../../__fixtures__/mock-utils';
 import { conditionalStorageMock } from '../../__fixtures__/mock-utils';
@@ -120,8 +121,6 @@ const roleMetadataStorageMock: RoleMetadataStorage = {
   syncDefaultRoleMetadata: jest.fn().mockResolvedValue(undefined),
 };
 
-const mockClientKnex = Knex.knex({ client: MockClient });
-
 const mockAuthService = mockServices.auth();
 
 const currentPermissionPolicies = [
@@ -154,12 +153,8 @@ describe('CSVFileWatcher', () => {
       '../../__fixtures__/data/valid-csv/rbac-policy.csv',
     );
 
-    const config = newConfig();
-
-    const adapter = await new CasbinDBAdapterFactory(
-      config,
-      mockClientKnex,
-    ).createAdapter();
+    const casbinKnex = await createTestCasbinKnex();
+    const adapter = await CasbinKnexAdapter.newAdapter(casbinKnex);
 
     const stringModel = newModelFromString(MODEL);
     const enf = await createEnforcer(stringModel, adapter, mockLoggerService);

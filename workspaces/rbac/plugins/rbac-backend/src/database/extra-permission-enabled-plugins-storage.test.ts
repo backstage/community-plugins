@@ -38,7 +38,7 @@ describe('PermissionDependentPluginDatabaseStore', () => {
       migrations: { skip: false },
     });
 
-    await migrate(mockDatabaseService);
+    await migrate(mockDatabaseService, knex);
     return {
       knex,
       db: new PermissionDependentPluginDatabaseStore(knex),

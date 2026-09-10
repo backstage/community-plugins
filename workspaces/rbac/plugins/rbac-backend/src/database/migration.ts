@@ -17,15 +17,14 @@ import {
   DatabaseService,
   resolvePackagePath,
 } from '@backstage/backend-plugin-api';
+import type { Knex } from 'knex';
 
 const migrationsDir = resolvePackagePath(
-  '@backstage-community/plugin-rbac-backend', // Package name
-  'migrations', // Migrations directory
+  '@backstage-community/plugin-rbac-backend',
+  'migrations',
 );
 
-export async function migrate(databaseManager: DatabaseService) {
-  const knex = await databaseManager.getClient();
-
+export async function migrate(databaseManager: DatabaseService, knex: Knex) {
   if (!databaseManager.migrations?.skip) {
     await knex.migrate.latest({
       directory: migrationsDir,

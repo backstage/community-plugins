@@ -45,7 +45,7 @@ describe('role-metadata-db-table', () => {
       migrations: { skip: false },
     });
 
-    await migrate(mockDatabaseService);
+    await migrate(mockDatabaseService, knex);
     const config = mockServices.rootConfig();
     return {
       knex,
@@ -61,7 +61,7 @@ describe('role-metadata-db-table', () => {
       migrations: { skip: false },
     });
 
-    await migrate(mockDatabaseService);
+    await migrate(mockDatabaseService, knex);
     const config = mockServices.rootConfig({
       data: {
         permission: {
