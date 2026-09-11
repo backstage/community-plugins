@@ -15,25 +15,20 @@
  */
 
 /**
- * New Frontend System dev mode for the Argo CD plugin.
- * Argo CD and Kubernetes APIs are mocked; permissions are mocked locally so
- * extension `if` predicates work without calling the dev backend.
+ * New Frontend System dev mode for the Argo CD plugin (mock data).
  */
-
-import '@backstage/cli/asset-types';
-// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
-import '@backstage/ui/css/styles.css';
 
 import ReactDOM from 'react-dom/client';
 
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
 import { createApp } from '@backstage/frontend-defaults';
-import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
   createFrontendModule,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
@@ -89,42 +84,6 @@ const combinedArgocdConfig = {
 
 const configApi = new ConfigReader(combinedArgocdConfig);
 const mockArgoCDApi = new MockArgoCDApiClient();
-
-const signInPage = SignInPageBlueprint.make({
-  params: {
-    loader: async () => props =>
-      (
-        <SignInPage
-          {...props}
-          title="Select a sign-in method"
-          align="center"
-          providers={['guest']}
-        />
-      ),
-  },
-});
-
-const devNavModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    signInPage,
-    ApiBlueprint.make({
-      name: 'permission',
-      params: defineParams =>
-        defineParams({
-          api: permissionApiRef,
-          deps: {},
-          factory: () => ({
-            authorize: async () => ({
-              result: window.location.pathname.includes('permission-denied')
-                ? AuthorizeResult.DENY
-                : AuthorizeResult.ALLOW,
-            }),
-          }),
-        }),
-    }),
-  ],
-});
 
 const argocdDevModule = createFrontendModule({
   pluginId: 'backstage-community-argocd',
@@ -194,6 +153,23 @@ const kubernetesAuthDevModule = createFrontendModule({
   ],
 });
 
+const permissionDevModule = createFrontendModule({
+  pluginId: 'permission',
+  extensions: [
+    ApiBlueprint.make({
+      name: 'permission-mock',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => ({
+            authorize: async () => ({ result: AuthorizeResult.ALLOW }),
+          }),
+        }),
+    }),
+  ],
+});
+
 const catalogDevModule = createFrontendModule({
   pluginId: 'catalog',
   extensions: [
@@ -219,7 +195,6 @@ const catalogDevModule = createFrontendModule({
 
 const app = createApp({
   features: [
-    devNavModule,
     catalogPlugin,
     userSettingsPlugin,
     argocdPlugin,
@@ -230,11 +205,8 @@ const app = createApp({
     kubernetesDevModule,
     kubernetesAuthStubPlugin,
     kubernetesAuthDevModule,
+    permissionDevModule,
   ],
 });
-
-if (window.location.pathname === '/') {
-  window.location.replace('/catalog');
-}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());

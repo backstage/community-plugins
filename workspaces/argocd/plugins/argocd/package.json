@@ -45,6 +45,7 @@
     "postpack": "backstage-cli package postpack",
     "prepack": "backstage-cli package prepack",
     "start": "backstage-cli package start",
+    "start:mock": "backstage-cli package start --entrypoint dev/index.mock.tsx",
     "start:legacy": "backstage-cli package start --entrypoint dev/legacy",
     "test": "backstage-cli package test --passWithNoTests --coverage",
     "tsc": "tsc",
