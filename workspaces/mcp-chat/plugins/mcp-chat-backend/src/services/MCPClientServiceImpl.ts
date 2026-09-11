@@ -31,6 +31,7 @@ import {
   findNpxPath,
   loadServerConfigs,
   DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
+  DEFAULT_MCP_MAX_TOOL_ITERATIONS,
 } from '../utils';
 import { LLMProvider } from '../providers/base-provider';
 import { OpenAIResponsesProvider } from '../providers/openai-responses-provider';
@@ -46,6 +47,8 @@ import {
   MCPServerType,
   MCPServerFullConfig,
   ResponsesApiMcpCall,
+  ToolCall,
+  ToolExecutionResult,
 } from '../types';
 
 /**
@@ -76,6 +79,7 @@ export class MCPClientServiceImpl implements MCPClientService {
   private serverConfigs: MCPServerFullConfig[] = [];
   private allowedToolsByServer: Map<string, string[]> = new Map();
   private readonly toolCallTimeout: number;
+  private readonly maxToolIterations: number;
 
   constructor(options: Options) {
     this.logger = options.logger;
@@ -83,6 +87,9 @@ export class MCPClientServiceImpl implements MCPClientService {
     this.toolCallTimeout =
       this.config.getOptionalNumber('mcpChat.toolCallTimeout') ??
       DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS;
+    this.maxToolIterations =
+      this.config.getOptionalNumber('mcpChat.maxToolIterations') ??
+      DEFAULT_MCP_MAX_TOOL_ITERATIONS;
     this.llmProvider = this.initializeLLMProvider();
     this.mcpServers = this.initializeMCPServers();
     this.systemPrompt =
@@ -520,85 +527,128 @@ export class MCPClientServiceImpl implements MCPClientService {
     // Remove serverId from tools when sending to LLM
     const llmTools: Tool[] = filteredTools.map(({ serverId, ...tool }) => tool);
 
-    const response = await this.llmProvider.sendMessage(messages, llmTools);
-    const replyMessage = response.choices[0].message;
-    this.logger.info(
-      `LLM response received with ${
-        replyMessage.tool_calls?.length || 0
-      } tool calls`,
-    );
-    const toolCalls = replyMessage.tool_calls || [];
+    const maxToolIterations = this.maxToolIterations;
+    const toolCalls: ToolCall[] = [];
+    const toolResponses: ToolExecutionResult[] = [];
+    let reply = '';
+    let completed = false;
 
-    if (toolCalls.length > 0) {
-      const toolResponses = [];
+    for (let iteration = 0; iteration < maxToolIterations; iteration++) {
+      const response = await this.llmProvider.sendMessage(messages, llmTools);
+      const replyMessage = response.choices[0].message;
+      const iterationToolCalls = replyMessage.tool_calls || [];
+      this.logger.info(
+        `LLM response (iteration ${
+          iteration + 1
+        }/${maxToolIterations}) received with ${
+          iterationToolCalls.length
+        } tool calls`,
+      );
 
-      for (const toolCall of toolCalls) {
-        try {
-          const toolResponse = await executeToolCall(
-            toolCall,
-            this.tools,
-            this.mcpClients,
-            this.toolCallTimeout,
-          );
-          toolResponses.push(toolResponse);
-
-          messages.push({
-            role: 'assistant',
-            content: null,
-            tool_calls: [toolCall],
-          });
-
-          messages.push({
-            role: 'tool',
-            content: toolResponse.result,
-            tool_call_id: toolCall.id,
-          });
-        } catch (error) {
-          const errorMessage = `Error executing tool '${
-            toolCall.function.name
-          }': ${error instanceof Error ? error.message : error}`;
-
-          this.logger.warn(errorMessage);
-
-          // Still add the tool call and error response to maintain conversation flow
-          const errorResponse = {
-            id: toolCall.id,
-            name: toolCall.function.name,
-            arguments: JSON.parse(toolCall.function.arguments || '{}'),
-            result: errorMessage,
-            serverId: 'error',
-          };
-
-          toolResponses.push(errorResponse);
-
-          messages.push({
-            role: 'assistant',
-            content: null,
-            tool_calls: [toolCall],
-          });
-
-          messages.push({
-            role: 'tool',
-            content: errorMessage,
-            tool_call_id: toolCall.id,
-          });
-        }
+      if (iterationToolCalls.length === 0) {
+        reply = replyMessage.content || '';
+        completed = true;
+        break;
       }
 
-      const followUp = await this.llmProvider.sendMessage(messages);
+      toolCalls.push(...iterationToolCalls);
 
-      return {
-        reply: followUp.choices[0].message.content || '',
-        toolCalls,
-        toolResponses,
-      };
+      // Per the OpenAI tool-calling protocol, a single assistant message holds
+      // all tool calls from this iteration, followed by one tool message per
+      // call. Keeping them in one message keeps the history valid for the
+      // next round.
+      messages.push({
+        role: 'assistant',
+        content: replyMessage.content ?? null,
+        tool_calls: iterationToolCalls,
+      });
+
+      for (const toolCall of iterationToolCalls) {
+        await this.executeAndRecordToolResult(
+          toolCall,
+          messages,
+          toolResponses,
+        );
+      }
     }
 
-    return {
-      reply: replyMessage.content || '',
-      toolCalls: [],
-      toolResponses: [],
-    };
+    if (!completed) {
+      this.logger.warn(
+        `Reached max tool iterations (${maxToolIterations}) without a final answer`,
+      );
+      reply =
+        "I gathered information using several tools but couldn't compile a final answer within the allowed number of steps. Please try rephrasing or narrowing your question.";
+    }
+
+    return { reply, toolCalls, toolResponses };
+  }
+
+  /**
+   * Executes a single tool call and appends its result (or error) as a `tool`
+   * message to the conversation. The assistant message carrying the tool calls
+   * is pushed once per iteration by the caller, so this only records the
+   * result, keeping the message history valid for the next LLM round.
+   */
+  private async executeAndRecordToolResult(
+    toolCall: ToolCall,
+    messages: ChatMessage[],
+    toolResponses: ToolExecutionResult[],
+  ): Promise<void> {
+    try {
+      const toolResponse = await executeToolCall(
+        toolCall,
+        this.tools,
+        this.mcpClients,
+        this.toolCallTimeout,
+      );
+      toolResponses.push(toolResponse);
+
+      messages.push({
+        role: 'tool',
+        content: toolResponse.result,
+        tool_call_id: toolCall.id,
+      });
+    } catch (error) {
+      const errorMessage = `Error executing tool '${toolCall.function.name}': ${
+        error instanceof Error ? error.message : error
+      }`;
+
+      this.logger.warn(errorMessage);
+
+      // Still record the error response to maintain conversation flow
+      const errorResponse: ToolExecutionResult = {
+        id: toolCall.id,
+        name: toolCall.function.name,
+        arguments: this.safeParseArguments(toolCall.function.arguments),
+        result: errorMessage,
+        serverId: 'error',
+      };
+
+      toolResponses.push(errorResponse);
+
+      messages.push({
+        role: 'tool',
+        content: errorMessage,
+        tool_call_id: toolCall.id,
+      });
+    }
+  }
+
+  /**
+   * Parses a tool call's JSON-encoded arguments without throwing. The model
+   * can emit malformed JSON; since this is used while recording a tool error,
+   * a parse failure must not escape and break the "record and continue" flow.
+   * Falls back to the raw string (or `{}` when absent) on failure.
+   */
+  private safeParseArguments(rawArguments: string): Record<string, unknown> {
+    if (!rawArguments) {
+      return {};
+    }
+    try {
+      return JSON.parse(rawArguments);
+    } catch {
+      return { _raw: rawArguments };
+    }
   }
 
   /**

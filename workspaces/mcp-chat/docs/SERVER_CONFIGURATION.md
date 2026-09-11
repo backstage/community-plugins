@@ -177,6 +177,15 @@ mcpChat:
   toolCallTimeout: 300000 # 5 minutes, in milliseconds
 ```
 
+### Max Tool Iterations
+
+When answering a question, the assistant runs an agentic loop that executes tool calls and feeds the results back to the model until it produces a final answer. This loop is capped at **8 iterations** by default to prevent runaway tool-calling. For questions that legitimately require many sequential tool calls, raise the cap with `maxToolIterations`:
+
+```yaml
+mcpChat:
+  maxToolIterations: 16
+```
+
 ---
 
 For additional setup instructions and troubleshooting, refer to the [main README](../README.md).
