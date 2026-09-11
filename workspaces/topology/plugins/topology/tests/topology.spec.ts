@@ -64,6 +64,9 @@ test.describe('Topology plugin', () => {
       await common.navigateToMissingPermissions();
 
       if (isNfsAppMode()) {
+        await expect(
+          page.getByRole('heading', { name: 'permission-denied' }),
+        ).toBeVisible({ timeout: 30000 });
         await expect(topologyEntityTab(page)).not.toBeVisible();
         return;
       }
