@@ -12,7 +12,7 @@ This plugin enables you to visualize pipeline security information from multiple
    The supported CI's are:
 
 - [Jenkins](../../../jenkins/plugins/jenkins-backend/README.md)
-- [Github Actions](../../../github-actions/plugins/github-actions/README.md)
+- [Github Actions](../../../github/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#setup)
 - [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
@@ -109,7 +109,7 @@ If you choose to display the plugin when the annotation is present along with th
 3. Ensure your CI annotations are set:
 
 - [Jenkins](../../../jenkins/plugins/jenkins/README.md)
-- [Github Actions]([../../../github-actions/plugins/github-actions/README.md)
+- [Github Actions]([../../../github/plugins/github-actions/README.md)
 - [Gitlab CI](https://github.com/immobiliare/backstage-plugin-gitlab?tab=readme-ov-file#annotations)
 - [Azure Pipelines](../../../azure-devops/plugins/azure-devops/README.md)
 
