@@ -83,6 +83,83 @@ describe('getCopilotConfig', () => {
       'Organization API for copilot works with both classic and fine grained PAT tokens or GitHub apps. No token or app is configured for "github.com" in the config.',
     );
   });
+
+  it('resolves the api base url from copilot config, the integration, then the default', () => {
+    const buildConfig = (host: string, copilot: object, integration?: object) =>
+      mockServices.rootConfig({
+        data: {
+          integrations: {
+            github: [{ host, token: 'token', ...integration }],
+          },
+          copilot: { host, organization: 'test', ...copilot },
+        },
+      });
+
+    // Nothing configured on a github.com host.
+    expect(getCopilotConfig(buildConfig('github.com', {})).apiBaseUrl).toBe(
+      'https://api.github.com',
+    );
+
+    // Nothing configured anywhere: Backstage leaves the integration's
+    // apiBaseUrl undefined for non-github.com hosts, so the default applies.
+    expect(
+      getCopilotConfig(buildConfig('octocorp.ghe.com', {})).apiBaseUrl,
+    ).toBe('https://api.github.com');
+
+    // The integration wins over the default.
+    expect(
+      getCopilotConfig(
+        buildConfig(
+          'ghes.example.com',
+          {},
+          { apiBaseUrl: 'https://ghes.example.com/api/v3' },
+        ),
+      ).apiBaseUrl,
+    ).toBe('https://ghes.example.com/api/v3');
+
+    // copilot.apiBaseUrl wins over the integration, and is trimmed.
+    expect(
+      getCopilotConfig(
+        buildConfig(
+          'octocorp.ghe.com',
+          { apiBaseUrl: '  https://api.octocorp.ghe.com/  ' },
+          { apiBaseUrl: 'https://ghes.example.com/api/v3' },
+        ),
+      ).apiBaseUrl,
+    ).toBe('https://api.octocorp.ghe.com');
+
+    // An invalid value on the plugin's own key is rejected outright rather than
+    // silently falling back to the public GitHub API.
+    for (const invalid of ['/', ' ', 'api.octocorp.ghe.com', 'ftp://ghe.com']) {
+      expect(() =>
+        getCopilotConfig(
+          buildConfig('octocorp.ghe.com', { apiBaseUrl: invalid }),
+        ),
+      ).toThrow(/Invalid "copilot.apiBaseUrl" value/);
+    }
+  });
+
+  it('supports a GHE.com data residency host', () => {
+    const mockConfig = mockServices.rootConfig({
+      data: {
+        integrations: {
+          github: [{ host: 'octocorp.ghe.com', token: 'token' }],
+        },
+        copilot: {
+          host: 'octocorp.ghe.com',
+          apiBaseUrl: 'https://api.octocorp.ghe.com',
+          enterprise: 'octocorp',
+        },
+      },
+    });
+
+    expect(getCopilotConfig(mockConfig)).toEqual({
+      host: 'octocorp.ghe.com',
+      enterprise: 'octocorp',
+      organization: undefined,
+      apiBaseUrl: 'https://api.octocorp.ghe.com',
+    });
+  });
 });
 
 describe('getGithubCredentials', () => {
