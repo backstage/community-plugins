@@ -235,6 +235,7 @@ describe('DefaultJenkinsInfoProvider', () => {
       }),
     );
     expect(info).toStrictEqual({
+      instanceName: 'default',
       baseUrl: 'https://jenkins.example.com',
       crumbIssuer: undefined,
       headers: {
@@ -244,6 +245,86 @@ describe('DefaultJenkinsInfoProvider', () => {
       },
       fullJobNames: ['teamA/artistLookup-build'],
       projectCountLimit: 50,
+    });
+  });
+
+  it('resolves identical job names independently for multiple instances', async () => {
+    const entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        name: 'bar',
+        annotations: {
+          'jenkins.io/job-full-name':
+            'prod:teamA/shared-build, dev:teamA/shared-build, teamA/default-build',
+        },
+      },
+    };
+    const provider = configureProvider(
+      {
+        jenkins: {
+          instances: [
+            {
+              name: 'default',
+              baseUrl: 'https://jenkins-default.example.com',
+              username: 'backstage-bot',
+              apiKey: 'default-token',
+            },
+            {
+              name: 'prod',
+              baseUrl: 'https://jenkins-prod.example.com',
+              username: 'backstage-bot',
+              apiKey: 'prod-token',
+            },
+            {
+              name: 'dev',
+              baseUrl: 'https://jenkins-dev.example.com',
+              username: 'backstage-bot',
+              apiKey: 'dev-token',
+            },
+          ],
+        },
+      },
+      entity,
+    );
+
+    const instances = await provider.getInstances({ entityRef });
+
+    expect(instances).toHaveLength(3);
+    expect(instances).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          instanceName: 'prod',
+          baseUrl: 'https://jenkins-prod.example.com',
+          fullJobNames: ['teamA/shared-build'],
+        }),
+        expect.objectContaining({
+          instanceName: 'dev',
+          baseUrl: 'https://jenkins-dev.example.com',
+          fullJobNames: ['teamA/shared-build'],
+        }),
+        expect.objectContaining({
+          instanceName: 'default',
+          baseUrl: 'https://jenkins-default.example.com',
+          fullJobNames: ['teamA/default-build'],
+        }),
+      ]),
+    );
+
+    mockCatalog.getEntityByRef.mockReturnValueOnce(Promise.resolve(entity));
+    await expect(
+      provider.getInstance({ entityRef, instanceName: 'dev' }),
+    ).resolves.toMatchObject({
+      instanceName: 'dev',
+      baseUrl: 'https://jenkins-dev.example.com',
+      fullJobNames: ['teamA/shared-build'],
+    });
+
+    mockCatalog.getEntityByRef.mockReturnValueOnce(Promise.resolve(entity));
+    await expect(provider.getInstance({ entityRef })).resolves.toMatchObject({
+      instanceName: 'default',
+      baseUrl: 'https://jenkins-default.example.com',
+      fullJobNames: ['teamA/default-build'],
     });
   });
 

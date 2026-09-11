@@ -78,6 +78,7 @@ describe('createGetBuildAction', () => {
         kind: 'Component',
         namespace: 'default',
         jobFullName: 'my-folder/my-pipeline',
+        instanceName: 'prod',
         buildNumber: 42,
       },
       credentials,
@@ -89,6 +90,16 @@ describe('createGetBuildAction', () => {
       ['my-folder', 'my-pipeline'],
       42,
     );
+    expect(mockJenkinsInfoProvider.getInstance).toHaveBeenCalledWith({
+      entityRef: {
+        kind: 'Component',
+        namespace: 'default',
+        name: 'my-service',
+      },
+      fullJobNames: ['my-folder/my-pipeline'],
+      instanceName: 'prod',
+      credentials,
+    });
     expect(result.output).toMatchObject({
       number: 42,
       result: 'SUCCESS',

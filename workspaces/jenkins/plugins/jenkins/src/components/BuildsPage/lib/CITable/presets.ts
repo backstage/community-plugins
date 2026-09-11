@@ -21,6 +21,7 @@ import { TableColumn } from '@backstage/core-components';
 export const defaultCITableColumns: TableColumn<Project>[] = [
   columnFactories.createTimestampColumn(),
   columnFactories.createSourceColumn(),
+  columnFactories.createInstanceColumn(),
   columnFactories.createBuildColumn(),
   columnFactories.createTestColumn(),
   columnFactories.createStatusColumn(),
