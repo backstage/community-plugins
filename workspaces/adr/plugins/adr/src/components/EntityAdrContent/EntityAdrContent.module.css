@@ -1,0 +1,17 @@
+@layer components {
+  .adrMenu {
+    background-color: var(--bui-bg-neutral-1);
+  }
+
+  .adrLabelGood {
+    color: var(--bui-fg-success);
+  }
+
+  .adrLabelWarning {
+    color: var(--bui-fg-warning);
+  }
+
+  .adrLabelDangerous {
+    color: var(--bui-fg-danger);
+  }
+}

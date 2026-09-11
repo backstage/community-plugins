@@ -15,32 +15,14 @@
  */
 
 import { ReactNode } from 'react';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Tag, TagGroup, Text } from '@backstage/ui';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link } from '@backstage/core-components';
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
 import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
 import { ResultHighlight } from '@backstage/plugin-search-common';
 import { HighlightedSearchResultText } from '@backstage/plugin-search-react';
-
-const useStyles = makeStyles({
-  item: {
-    display: 'flex',
-  },
-  flexContainer: {
-    flexWrap: 'wrap',
-  },
-  itemText: {
-    width: '100%',
-    wordBreak: 'break-all',
-    marginBottom: '1rem',
-  },
-});
+import styles from './AdrSearchResultListItem.module.css';
 
 /**
  * @public
@@ -59,18 +41,15 @@ export type AdrSearchResultListItemProps = {
  */
 export function AdrSearchResultListItem(props: AdrSearchResultListItemProps) {
   const { lineClamp = 5, highlight, icon, result } = props;
-  const classes = useStyles();
 
   if (!result) return null;
 
   return (
-    <div className={classes.item}>
-      {icon && <ListItemIcon>{icon}</ListItemIcon>}
-      <div className={classes.flexContainer}>
-        <ListItemText
-          className={classes.itemText}
-          primaryTypographyProps={{ variant: 'h6' }}
-          primary={
+    <div className={styles.item}>
+      {icon && <div>{icon}</div>}
+      <div className={styles.flexContainer}>
+        <div className={styles.itemText}>
+          <Text variant="title-small" as="div">
             <Link noTrack to={result.location}>
               {highlight?.fields.title ? (
                 <HighlightedSearchResultText
@@ -82,44 +61,37 @@ export function AdrSearchResultListItem(props: AdrSearchResultListItemProps) {
                 result.title
               )}
             </Link>
-          }
-          secondary={
-            <Typography
-              component="span"
-              style={{
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: lineClamp,
-                overflow: 'hidden',
-              }}
-              color="textSecondary"
-              variant="body2"
-            >
-              {highlight?.fields.text ? (
-                <HighlightedSearchResultText
-                  text={highlight.fields.text}
-                  preTag={highlight.preTag}
-                  postTag={highlight.postTag}
-                />
-              ) : (
-                result.text
-              )}
-            </Typography>
-          }
-        />
-        <Box>
-          <Chip
-            label={`Entity: ${
+          </Text>
+          <Text
+            as="div"
+            color="secondary"
+            variant="body-small"
+            className={styles.snippet}
+            style={{ WebkitLineClamp: lineClamp }}
+          >
+            {highlight?.fields.text ? (
+              <HighlightedSearchResultText
+                text={highlight.fields.text}
+                preTag={highlight.preTag}
+                postTag={highlight.postTag}
+              />
+            ) : (
+              result.text
+            )}
+          </Text>
+        </div>
+        <TagGroup className={styles.tags}>
+          <Tag size="small">
+            {`Entity: ${
               result.entityTitle ??
               humanizeEntityRef(parseEntityRef(result.entityRef))
             }`}
-            size="small"
-          />
+          </Tag>
           {result.status && (
-            <Chip label={`Status: ${result.status}`} size="small" />
+            <Tag size="small">{`Status: ${result.status}`}</Tag>
           )}
-          {result.date && <Chip label={`Date: ${result.date}`} size="small" />}
-        </Box>
+          {result.date && <Tag size="small">{`Date: ${result.date}`}</Tag>}
+        </TagGroup>
       </div>
     </div>
   );

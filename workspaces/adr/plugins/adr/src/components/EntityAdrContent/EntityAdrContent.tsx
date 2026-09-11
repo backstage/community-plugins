@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
-import * as React from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAsync from 'react-use/esm/useAsync';
 
 import groupBy from 'lodash/groupBy';
@@ -43,19 +42,17 @@ import {
   useEntity,
   MissingAnnotationEmptyState,
 } from '@backstage/plugin-catalog-react';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Collapse from '@material-ui/core/Collapse';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import FolderIcon from '@material-ui/icons/Folder';
+import {
+  Accordion,
+  AccordionPanel,
+  AccordionTrigger,
+  Grid,
+  List,
+  ListRow,
+  Tag,
+  TagGroup,
+  Text,
+} from '@backstage/ui';
 
 import { adrApiRef, AdrFileInfo } from '../../api';
 import { rootRouteRef } from '../../routes';
@@ -63,130 +60,79 @@ import { AdrContentDecorator, AdrReader } from '../AdrReader';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { adrTranslationRef } from '../../translations';
 import { EntityAdrListItemContext } from './EntityAdrListItemContext';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  adrMenu: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  adrLabelGood: {
-    borderColor: theme.palette.success.main,
-    color: theme.palette.success.contrastText,
-    backgroundColor: theme.palette.success.main,
-  },
-  adrLabelWarning: {
-    borderColor: theme.palette.warning.main,
-    color: theme.palette.warning.contrastText,
-    backgroundColor: theme.palette.warning.main,
-  },
-  adrLabelDangerous: {
-    borderColor: theme.palette.error.main,
-    color: theme.palette.error.contrastText,
-    backgroundColor: theme.palette.error.main,
-  },
-  adrContainerTitle: {
-    color: theme.palette.text.secondary,
-    marginBottom: theme.spacing(1),
-  },
-  adrBox: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: '10px',
-  },
-}));
+import styles from './EntityAdrContent.module.css';
 
 const AdrListContainer = (props: {
   adrs: AdrFileInfo[];
   selectedAdr: string;
   title: string;
-  statusComponent?: React.ReactNode;
+  statusComponent?: ReactNode;
 }) => {
   const { adrs, selectedAdr, title, statusComponent } = props;
-  const classes = useStyles();
   const rootLink = useRouteRef(rootRouteRef);
-  const [open, setOpen] = React.useState(true);
+  const navigate = useNavigate();
 
-  const getChipColor = (status: string) => {
-    if (!status) {
-      return '';
-    }
+  // ponytail: text color only, BUI Tag doesn't expose a background/border
+  // override prop like the previous MUI Chip did.
+  const getStatusClass = (status: string) => {
     switch (status.toLowerCase()) {
       case 'accepted':
-        return classes.adrLabelGood;
+        return styles.adrLabelGood;
       case 'deprecated':
-        return classes.adrLabelWarning;
+        return styles.adrLabelWarning;
       case 'rejected':
-        return classes.adrLabelDangerous;
+        return styles.adrLabelDangerous;
       default:
-        return '';
+        return undefined;
     }
   };
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  const list = (
+    <List
+      aria-label={title || 'ADRs'}
+      selectionMode="single"
+      selectedKeys={selectedAdr ? [selectedAdr] : []}
+      onSelectionChange={keys => {
+        const [path] = keys;
+        if (path) navigate(`${rootLink()}?record=${path}`);
+      }}
+    >
+      {adrs.map(adr => (
+        <ListRow
+          id={adr.path}
+          key={adr.path}
+          textValue={adr.title ?? adr.name}
+          description={adr.date}
+          customActions={
+            <EntityAdrListItemContext.Provider value={{ adr }}>
+              {statusComponent ??
+                (adr.status && (
+                  <TagGroup>
+                    <Tag size="small" className={getStatusClass(adr.status)}>
+                      {adr.status}
+                    </Tag>
+                  </TagGroup>
+                ))}
+            </EntityAdrListItemContext.Provider>
+          }
+        >
+          <EntityAdrListItemContext.Provider value={{ adr }}>
+            {adr.title ?? adr?.name.replace(/\.md$/, '')}
+          </EntityAdrListItemContext.Provider>
+        </ListRow>
+      ))}
+    </List>
+  );
+
+  if (!title) {
+    return list;
+  }
 
   return (
-    <>
-      {title && (
-        <ListItem
-          button
-          className={classes.adrContainerTitle}
-          onClick={handleClick}
-        >
-          <ListItemIcon>
-            <FolderIcon />
-          </ListItemIcon>
-          <ListItemText
-            title={title}
-            primary={title}
-            primaryTypographyProps={{
-              noWrap: true,
-              style: {
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              },
-            }}
-          />
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-      )}
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List dense>
-          {adrs.map((adr, idx) => (
-            <EntityAdrListItemContext.Provider value={{ adr }} key={idx}>
-              <ListItem
-                button
-                component={Link}
-                key={idx}
-                selected={selectedAdr === adr.path}
-                to={`${rootLink()}?record=${adr.path}`}
-              >
-                <ListItemText
-                  primary={adr.title ?? adr?.name.replace(/\.md$/, '')}
-                  primaryTypographyProps={{
-                    style: { whiteSpace: 'normal' },
-                  }}
-                  secondary={
-                    <Box className={classes.adrBox}>
-                      <Box>{adr.date}</Box>
-                      {statusComponent}
-                      {!statusComponent && adr.status && (
-                        <Chip
-                          label={adr.status}
-                          size="small"
-                          variant="outlined"
-                          className={getChipColor(adr.status)}
-                        />
-                      )}
-                    </Box>
-                  }
-                />
-              </ListItem>
-            </EntityAdrListItemContext.Provider>
-          ))}
-        </List>
-      </Collapse>
-    </>
+    <Accordion defaultExpanded>
+      <AccordionTrigger title={title} />
+      <AccordionPanel>{list}</AccordionPanel>
+    </Accordion>
   );
 };
 
@@ -197,10 +143,9 @@ const AdrListContainer = (props: {
 export const EntityAdrContent = (props: {
   contentDecorators?: AdrContentDecorator[];
   filePathFilterFn?: AdrFilePathFilterFn;
-  statusComponent?: React.ReactNode;
+  statusComponent?: ReactNode;
 }) => {
   const { contentDecorators, filePathFilterFn, statusComponent } = props;
-  const classes = useStyles();
   const { entity } = useEntity();
   const [adrList, setAdrList] = useState<AdrFileInfo[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -271,28 +216,28 @@ export const EntityAdrContent = (props: {
         !loading &&
         !error &&
         (adrList.length ? (
-          <Grid container direction="row">
-            <Grid item xs={3}>
+          <Grid.Root columns={{ sm: '12' }} gap="4">
+            <Grid.Item colSpan={{ sm: '3' }}>
               <InfoCard>
-                <List className={classes.adrMenu} dense>
-                  {adrListGrouped.map(([title, adrs], idx) => (
+                <div className={styles.adrMenu}>
+                  {adrListGrouped.map(([title, adrs]) => (
                     <AdrListContainer
                       adrs={adrs}
-                      key={idx}
+                      key={title || 'root'}
                       selectedAdr={selectedAdr}
                       title={title}
                       statusComponent={statusComponent}
                     />
                   ))}
-                </List>
+                </div>
               </InfoCard>
-            </Grid>
-            <Grid item xs={9}>
+            </Grid.Item>
+            <Grid.Item colSpan={{ sm: '9' }}>
               <AdrReader adr={selectedAdr} decorators={contentDecorators} />
-            </Grid>
-          </Grid>
+            </Grid.Item>
+          </Grid.Root>
         ) : (
-          <Typography>{t('notFound')}</Typography>
+          <Text>{t('notFound')}</Text>
         ))}
     </Content>
   );
