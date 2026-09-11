@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core/styles';
 import { DateTime } from 'luxon';
 import {
   ResponseErrorPanel,
@@ -21,19 +20,7 @@ import {
   TableColumn,
   Progress,
 } from '@backstage/core-components';
-
-const useStyles = makeStyles({
-  container: {
-    overflow: 'auto',
-    width: '100%',
-    '& td': {
-      minWidth: '145px',
-    },
-    '& th': {
-      minWidth: '145px',
-    },
-  },
-});
+import styles from './ServiceAnalytics.module.css';
 
 export const DenseTable = ({
   service,
@@ -44,8 +31,6 @@ export const DenseTable = ({
   startDate: DateTime;
   endDate: DateTime;
 }) => {
-  const classes = useStyles();
-
   const columns: TableColumn[] = [
     { field: 'healthiness', title: 'Healthiness' },
     { field: 'impacted', title: 'Impacted' },
@@ -57,7 +42,7 @@ export const DenseTable = ({
   ];
 
   return (
-    <div className={classes.container}>
+    <div className={styles.container}>
       <Table
         title="Incident Analytics"
         subtitle={`${startDate.toFormat('MMMM dd, yyyy')} - ${endDate.toFormat(
