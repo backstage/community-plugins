@@ -64,13 +64,20 @@ export interface Config {
          */
         url: string;
         /**
+         * Instance access token. Preferred over username/password when set.
          * @visibility secret
          */
-        username: string;
+        token?: string;
         /**
+         * Instance username. Used when token is not set.
          * @visibility secret
          */
-        password: string;
+        username?: string;
+        /**
+         * Instance password. Used when token is not set.
+         * @visibility secret
+         */
+        password?: string;
       }>;
     }>;
   };
