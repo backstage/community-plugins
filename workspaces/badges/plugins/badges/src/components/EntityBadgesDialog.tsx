@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
+  Box,
 } from '@backstage/ui';
 import { Key, useState } from 'react';
 import useAsync from 'react-use/esm/useAsync';
@@ -108,27 +109,21 @@ export const EntityBadgesDialog = (props: {
           {error && <ResponseErrorPanel error={error} />}
 
           {badges && badges.length > 0 && (
-            <div style={{ marginTop: 'var(--bui-space-6)' }}>
+            <Box mt="6">
               <Text variant="body-medium">Badge Previews</Text>
               {badges.map(({ badge: { description }, id, url, markdown }) => (
-                <div
-                  key={id}
-                  style={{
-                    marginTop: 'var(--bui-space-4)',
-                    marginBottom: 'var(--bui-space-4)',
-                  }}
-                >
-                  <div style={{ marginBottom: 'var(--bui-space-2)' }}>
+                <Box key={id} mt="4" mb="4">
+                  <Box mb="2">
                     <img alt={description || id} src={url} />
-                  </div>
+                  </Box>
                   <CodeSnippet
                     language="markdown"
                     text={markdown}
                     showCopyCodeButton
                   />
-                </div>
+                </Box>
               ))}
-            </div>
+            </Box>
           )}
         </DialogBody>
         <DialogFooter>
