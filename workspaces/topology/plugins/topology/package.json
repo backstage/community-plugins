@@ -11,8 +11,7 @@
     "role": "frontend-plugin",
     "pluginId": "topology",
     "pluginPackages": [
-      "@backstage-community/plugin-topology",
-      "@internal/plugin-topology-dev-backend"
+      "@backstage-community/plugin-topology"
     ]
   },
   "exports": {

@@ -21,8 +21,16 @@ import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 import { isTopologyAvailable } from './isTopologyAvailable';
 
+const topologyReadPermissionsIfPredicate = {
+  $all: [
+    { permissions: { $contains: 'kubernetes.clusters.read#read' } },
+    { permissions: { $contains: 'kubernetes.resources.read#read' } },
+  ],
+};
+
 const topologyEntityContent = EntityContentBlueprint.make({
   name: 'topology',
+  if: topologyReadPermissionsIfPredicate,
   params: {
     path: '/topology',
     title: 'Topology',
