@@ -1,5 +1,14 @@
 # @backstage-community/plugin-argocd
 
+## 3.1.1
+
+### Patch Changes
+
+- a1dbdf9: The Argo CD entity tabs are only shown when the user is authorized for `argocd.view.read`. If you are using a custom permission policy make sure to update it accordingly.
+- a1f8834: Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/react` to `16.3.3`.
+- 9e3b7c8: Updated dependency `@playwright/test` to `1.63.0`.
+
 ## 3.1.0
 
 ### Minor Changes
