@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => {
 });
 
 import {
-  setupRequestMockHandlers,
+  registerMswTestHooks,
   TestApiProvider,
   TestApiRegistry,
   renderInTestApp,
@@ -62,7 +62,7 @@ describe('AuditView', () => {
   let id: string;
 
   const server = setupServer();
-  setupRequestMockHandlers(server);
+  registerMswTestHooks(server);
 
   beforeEach(() => {
     server.use(
