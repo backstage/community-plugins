@@ -15,43 +15,23 @@
  */
 
 import { memo } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { Text } from '@backstage/ui';
 import { upperFirst } from 'lodash';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Typography from '@material-ui/core/Typography';
 import { toVerboseTimeRange } from '../util';
-
-const useStyles = makeStyles({
-  root: {
-    '& > * + *': {
-      marginTop: 2,
-    },
-  },
-  link: {
-    cursor: 'pointer',
-  },
-});
+import styles from './Subtitle.module.css';
 
 const Subtitle = ({ report }) => {
-  const classes = useStyles();
-
   const { aggregateBy, window } = report;
 
   return (
-    <div className={classes.root}>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-      >
-        {aggregateBy && aggregateBy.length > 0 ? (
-          <Typography>
-            {toVerboseTimeRange(window)} by {upperFirst(aggregateBy)}
-          </Typography>
-        ) : (
-          <Typography>{toVerboseTimeRange(window)}</Typography>
-        )}
-      </Breadcrumbs>
+    <div className={styles.root}>
+      {aggregateBy && aggregateBy.length > 0 ? (
+        <Text variant="body-medium">
+          {toVerboseTimeRange(window)} by {upperFirst(aggregateBy)}
+        </Text>
+      ) : (
+        <Text variant="body-medium">{toVerboseTimeRange(window)}</Text>
+      )}
     </div>
   );
 };

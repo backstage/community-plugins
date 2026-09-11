@@ -16,22 +16,12 @@
 
 import { memo, useEffect, useState } from 'react';
 import { forEach, get, reverse, round, sortBy } from 'lodash';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ClusterIcon from '@material-ui/icons/GroupWork';
-import NodeIcon from '@material-ui/icons/Memory';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { CellText, List, ListRow, Skeleton, Table, Text } from '@backstage/ui';
+import { RiServerLine, RiCpuLine } from '@remixicon/react';
 import Warnings from './Warnings';
 import AllocationService from '../services/allocation';
 import { bytesToString, toCurrency } from '../util';
+import styles from './Details.module.css';
 
 const Details = ({
   window,
@@ -178,9 +168,11 @@ const Details = ({
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <div style={{ paddingTop: 100, paddingBottom: 100 }}>
-          <CircularProgress />
+      <div className={styles.loadingContainer}>
+        <div className={styles.skeletonWrapper}>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
         </div>
       </div>
     );
@@ -194,92 +186,82 @@ const Details = ({
         </div>
       )}
 
-      <List>
-        {cluster && (
-          <ListItem>
-            <ListItemIcon>
-              <ClusterIcon />
-            </ListItemIcon>
-            <ListItemText primary={cluster} />
-          </ListItem>
-        )}
-        {node && (
-          <ListItem>
-            <ListItemIcon>
-              <NodeIcon />
-            </ListItemIcon>
-            <ListItemText primary={node} />
-          </ListItem>
-        )}
-      </List>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="left" component="th" scope="row" width={200}>
-                Container
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                Hours
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                CPU
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                $/(CPU*Hr)
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                CPU cost
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                RAM
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                $/(GiB*Hr)
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                RAM cost
-              </TableCell>
-              <TableCell align="right" component="th" scope="row">
-                Total cost
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, i) => (
-              <TableRow key={i} hover>
-                <TableCell align="left" component="th" scope="row" width={200}>
-                  {row.container}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {row.hours}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {row.cpu}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {toCurrency(row.cpuCostPerCoreHr, currency, 5)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {toCurrency(row.cpuCost, currency, 3)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {bytesToString(row.ram)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {toCurrency(row.ramCostPerGiBHr, currency, 5)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {toCurrency(row.ramCost, currency, 3)}
-                </TableCell>
-                <TableCell align="right" component="th" scope="row">
-                  {toCurrency(row.totalCost, currency, 3)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {(cluster || node) && (
+        <List aria-label="Cluster details" selectionMode="none">
+          {cluster && (
+            <ListRow id="cluster" icon={<RiServerLine size={20} />}>
+              {cluster}
+            </ListRow>
+          )}
+          {node && (
+            <ListRow id="node" icon={<RiCpuLine size={20} />}>
+              {node}
+            </ListRow>
+          )}
+        </List>
+      )}
+      <Table
+        columnConfig={[
+          {
+            id: 'container',
+            label: 'Container',
+            isRowHeader: true,
+            cell: row => <CellText title={row.container ?? ''} />,
+          },
+          {
+            id: 'hours',
+            label: 'Hours',
+            cell: row => <CellText title={String(row.hours)} />,
+          },
+          {
+            id: 'cpu',
+            label: 'CPU',
+            cell: row => <CellText title={String(row.cpu)} />,
+          },
+          {
+            id: 'cpuCostPerCoreHr',
+            label: '$/(CPU*Hr)',
+            cell: row => (
+              <CellText title={toCurrency(row.cpuCostPerCoreHr, currency, 5)} />
+            ),
+          },
+          {
+            id: 'cpuCost',
+            label: 'CPU cost',
+            cell: row => (
+              <CellText title={toCurrency(row.cpuCost, currency, 3)} />
+            ),
+          },
+          {
+            id: 'ram',
+            label: 'RAM',
+            cell: row => <CellText title={bytesToString(row.ram)} />,
+          },
+          {
+            id: 'ramCostPerGiBHr',
+            label: '$/(GiB*Hr)',
+            cell: row => (
+              <CellText title={toCurrency(row.ramCostPerGiBHr, currency, 5)} />
+            ),
+          },
+          {
+            id: 'ramCost',
+            label: 'RAM cost',
+            cell: row => (
+              <CellText title={toCurrency(row.ramCost, currency, 3)} />
+            ),
+          },
+          {
+            id: 'totalCost',
+            label: 'Total cost',
+            cell: row => (
+              <CellText title={toCurrency(row.totalCost, currency, 3)} />
+            ),
+          },
+        ]}
+        data={rows.map(row => ({ ...row, id: row.container ?? row.pod }))}
+        emptyState={<Text variant="body-small">No data</Text>}
+      />
     </div>
   );
 };
