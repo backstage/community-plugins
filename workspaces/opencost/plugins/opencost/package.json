@@ -38,29 +38,29 @@
   "dependencies": {
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
-    "@date-io/luxon": "1.x",
+    "@date-io/luxon": "3.x",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.5",
-    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "date-fns": "^3.0.0",
+    "@types/react": "^19.0.0",
+    "date-fns": "^4.0.0",
     "lodash": "^4.17.21",
-    "recharts": "^2.5.0"
+    "recharts": "^3.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@testing-library/dom": "^10.0.0",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^15.0.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/lodash": "^4.14.151",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router-dom": "*"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react": "^19.0.0",
     "react-router-dom": "*"
   },
   "configSchema": "config.d.ts"

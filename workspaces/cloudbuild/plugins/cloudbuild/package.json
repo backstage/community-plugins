@@ -62,7 +62,7 @@
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@remixicon/react": "^4.2.0",
-    "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "@types/react": "^19.0.0",
     "luxon": "^3.0.0",
     "qs": "^6.9.4",
     "react-use": "^17.2.4"
@@ -72,16 +72,16 @@
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/jest-dom": "^6.0.0",
-    "@testing-library/react": "^15.0.0",
-    "@types/react-dom": "^18.2.19",
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
   }
 }
