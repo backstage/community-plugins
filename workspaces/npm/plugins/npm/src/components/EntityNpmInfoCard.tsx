@@ -106,8 +106,8 @@ export const EntityNpmInfoCard = () => {
     entity.metadata.annotations?.[NpmAnnotation.REGISTRY_NAME];
 
   const npmLink =
-    packageInfo && !registryName
-      ? `https://www.npmjs.com/package/${packageName}`
+    packageInfo && packageInfo.webUrl
+      ? `${packageInfo.webUrl}/${packageName}`
       : null;
 
   let repositoryLink: string | undefined;

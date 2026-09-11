@@ -89,6 +89,8 @@ export interface NpmRegistryPackageInfo {
   versions: {
     [version: string]: NpmRegistryPackageInfoVersion;
   };
+  // (undocumented)
+  webUrl?: string;
 }
 
 // @public

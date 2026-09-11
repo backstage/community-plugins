@@ -73,4 +73,5 @@ export interface NpmRegistryPackageInfo {
     };
   };
   readme?: string;
+  webUrl?: string;
 }
