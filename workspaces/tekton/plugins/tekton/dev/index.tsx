@@ -15,8 +15,7 @@
  */
 
 /**
- * New Frontend System (NFS) dev app for the Tekton plugin, with mocked
- * catalog and Kubernetes data.
+ * New Frontend System dev mode for the Tekton plugin (backend data).
  */
 
 import '@backstage/cli/asset-types';
@@ -24,77 +23,27 @@ import '@backstage/cli/asset-types';
 import '@backstage/ui/css/styles.css';
 
 import ReactDOM from 'react-dom/client';
-
 import { createApp } from '@backstage/frontend-defaults';
 import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
+  configApiRef,
   createFrontendModule,
+  discoveryApiRef,
+  identityApiRef,
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha';
 import {
-  kubernetesApiRef,
-  kubernetesAuthProvidersApiRef,
-  kubernetesProxyApiRef,
-} from '@backstage/plugin-kubernetes-react';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
+  IdentityPermissionApi,
+  permissionApiRef,
+} from '@backstage/plugin-permission-react';
 
 import tektonPlugin from '../src';
 import tektonTranslationsModule from '../src/translations';
 import { devSidebarContent } from './shared';
-import {
-  mockCatalogApi,
-  mockKubernetesAuthProviderApi,
-  mockKubernetesClient,
-  mockKubernetesProxyApi,
-} from './mocks';
-
-const catalogPluginOverrides = catalogPlugin.withOverrides({
-  extensions: [
-    catalogPlugin.getExtension('api:catalog').override({
-      params: defineParams =>
-        defineParams({
-          api: catalogApiRef,
-          deps: {},
-          factory: () => mockCatalogApi,
-        }),
-    }),
-  ],
-});
-
-const kubernetesPluginOverrides = kubernetesPlugin.withOverrides({
-  extensions: [
-    kubernetesPlugin.getExtension('api:kubernetes').override({
-      params: defineParams =>
-        defineParams({
-          api: kubernetesApiRef,
-          deps: {},
-          factory: () => mockKubernetesClient,
-        }),
-    }),
-    kubernetesPlugin.getExtension('api:kubernetes/proxy').override({
-      params: defineParams =>
-        defineParams({
-          api: kubernetesProxyApiRef,
-          deps: {},
-          factory: () => mockKubernetesProxyApi,
-        }),
-    }),
-    kubernetesPlugin.getExtension('api:kubernetes/auth-providers').override({
-      params: defineParams =>
-        defineParams({
-          api: kubernetesAuthProvidersApiRef,
-          deps: {},
-          factory: () => mockKubernetesAuthProviderApi,
-        }),
-    }),
-  ],
-});
 
 const signInPage = SignInPageBlueprint.make({
   params: {
@@ -113,20 +62,18 @@ const signInPage = SignInPageBlueprint.make({
 const appDevModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
-    signInPage,
     ApiBlueprint.make({
       name: 'permission',
       params: defineParams =>
         defineParams({
           api: permissionApiRef,
-          deps: {},
-          factory: () => ({
-            authorize: async () => ({
-              result: window.location.pathname.includes('permission-denied')
-                ? AuthorizeResult.DENY
-                : AuthorizeResult.ALLOW,
-            }),
-          }),
+          deps: {
+            config: configApiRef,
+            discovery: discoveryApiRef,
+            identity: identityApiRef,
+          },
+          factory: ({ config, discovery, identity }) =>
+            IdentityPermissionApi.create({ config, discovery, identity }),
         }),
     }),
     ApiBlueprint.make({
@@ -145,17 +92,17 @@ const appDevModule = createFrontendModule({
 
 const devNavModule = createFrontendModule({
   pluginId: 'app',
-  extensions: [devSidebarContent],
+  extensions: [devSidebarContent, signInPage],
 });
 
 const app = createApp({
   features: [
-    catalogPluginOverrides,
-    kubernetesPluginOverrides,
-    tektonPlugin,
-    tektonTranslationsModule,
     devNavModule,
     appDevModule,
+    catalogPlugin,
+    kubernetesPlugin,
+    tektonPlugin,
+    tektonTranslationsModule,
   ],
 });
 
