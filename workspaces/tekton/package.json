@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "yarn start",
-    "start": "backstage-cli repo start",
+    "start": "backstage-cli repo start @backstage-community/plugin-tekton @internal/plugin-tekton-dev-backend",
     "start:mock": "yarn workspace @backstage-community/plugin-tekton start:mock",
+    "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-tekton --include @internal/plugin-tekton-dev-backend --parallel -v -i run start:legacy",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
     "build:all": "backstage-cli repo build --all",

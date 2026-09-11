@@ -52,6 +52,9 @@ test.describe('Tekton plugin', () => {
       await common.navigateToMissingPermissions();
 
       if (isNfsAppMode()) {
+        await expect(
+          page.getByRole('heading', { name: 'permission-denied' }),
+        ).toBeVisible({ timeout: 30000 });
         await expect(tektonEntityTab(page)).not.toBeVisible();
         return;
       }

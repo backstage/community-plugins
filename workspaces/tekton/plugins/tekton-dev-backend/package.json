@@ -5,12 +5,7 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "backstage": {
-    "role": "backend-plugin",
-    "pluginId": "tekton",
-    "pluginPackages": [
-      "@backstage-community/plugin-tekton",
-      "@internal/plugin-tekton-dev-backend"
-    ]
+    "role": "backend"
   },
   "repository": {
     "type": "git",
@@ -26,7 +21,6 @@
   },
   "dependencies": {
     "@backstage/backend-defaults": "backstage:^",
-    "@backstage/backend-plugin-api": "backstage:^",
     "@backstage/plugin-auth-backend": "backstage:^",
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^",
     "@backstage/plugin-catalog-backend": "backstage:^",
