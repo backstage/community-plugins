@@ -1,5 +1,15 @@
 # @backstage-community/plugin-github-issues
 
+## 1.4.0
+
+### Minor Changes
+
+- 00f747c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 745fd2f: Fixed the GitHub Issues card failing to load for entities that own a repository whose name starts with a number (for example `123-service`).
+
 ## 1.3.2
 
 ### Patch Changes
