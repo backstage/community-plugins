@@ -834,6 +834,7 @@ export function parseUserDocument(
       user_initiated_interaction_count: toNumber(
         metric.user_initiated_interaction_count,
       ),
+      ai_credits_used: toNumber(metric.ai_credits_used),
     });
 
     const breakdown: UserBreakdownData = {

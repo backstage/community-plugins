@@ -73,6 +73,9 @@ export function aggregateDailyTotals(data: V2DailyTotal[]): V2DailyTotal[] {
       existing.loc_suggested_to_delete_sum += row.loc_suggested_to_delete_sum;
       existing.user_initiated_interaction_count +=
         row.user_initiated_interaction_count;
+      existing.total_ai_credits_used =
+        (existing.total_ai_credits_used ?? 0) +
+        (row.total_ai_credits_used ?? 0);
     }
   }
 
