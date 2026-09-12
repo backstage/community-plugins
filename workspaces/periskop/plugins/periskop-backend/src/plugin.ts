@@ -23,9 +23,9 @@ import { createRouter } from './service/router';
 /**
  * The Periskop backend plugin.
  *
- * @alpha
+ * @public
  */
-export default createBackendPlugin({
+export const periskopPlugin = createBackendPlugin({
   pluginId: 'periskop',
   register(env) {
     env.registerInit({
