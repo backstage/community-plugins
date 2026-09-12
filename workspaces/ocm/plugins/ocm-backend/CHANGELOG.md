@@ -1,5 +1,11 @@
 # @backstage-community/plugin-ocm-backend
 
+## 5.21.2
+
+### Patch Changes
+
+- @backstage-community/plugin-ocm-common@5.21.2
+
 ## 5.21.1
 
 ### Patch Changes
