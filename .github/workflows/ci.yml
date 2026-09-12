@@ -21,17 +21,14 @@ jobs:
           COMMITS: ${{ github.event.pull_request.commits }}
         run: echo "NUMBER_OF_COMMITS=$(($COMMITS + 1))" >> $GITHUB_ENV
 
-      - name: Checkout base branch for diff purposes
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          fetch-depth: 50 # TODO(awanlin): Temporary fix
-
       - name: Checkout head branch
         uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
         with:
-          # Needed for diff
-          fetch-depth: ${{ env.NUMBER_OF_COMMITS }}
+          # Use GitHub's tested merge revision, falling back to the PR head for conflicted PRs.
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.event.pull_request.head.sha }}
+          # Keep the commit graph while avoiding historical file contents.
+          fetch-depth: 0
+          filter: blob:none
 
       - name: Set up Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
