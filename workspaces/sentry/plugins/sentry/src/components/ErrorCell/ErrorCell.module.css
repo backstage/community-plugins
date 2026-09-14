@@ -1,18 +1,16 @@
-@layer components {
-  .root {
-    display: flex;
-    flex-direction: column;
-    min-width: 260px;
-    position: relative;
-    padding-left: 8px;
-    border-left: 4px solid var(--bui-fg-danger);
-  }
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  position: relative;
+  padding-left: 8px;
+  border-left: 4px solid var(--bui-fg-danger);
+}
 
-  .root::before {
-    display: none;
-  }
+.root::before {
+  display: none;
+}
 
-  .text {
-    color: var(--bui-ring) !important;
-  }
+.text {
+  color: var(--bui-ring) !important;
 }
