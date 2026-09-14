@@ -1,10 +1,8 @@
-@layer components {
-  .svg {
-    width: auto;
-    height: 28px;
-  }
+.svg {
+  width: auto;
+  height: 28px;
+}
 
-  .path {
-    fill: #7df3e1;
-  }
+.path {
+  fill: #7df3e1;
 }
