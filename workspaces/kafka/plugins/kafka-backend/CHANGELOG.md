@@ -1,5 +1,12 @@
 # @backstage-community/plugin-kafka-backend
 
+## 0.11.1
+
+### Patch Changes
+
+- 688b57d: Updated dependency `jest-when` to `^4.0.0`.
+- c120454: Updated dependency `@types/supertest` to `^7.0.0`.
+
 ## 0.11.0
 
 ### Minor Changes
