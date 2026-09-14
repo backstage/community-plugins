@@ -1,5 +1,14 @@
 # @backstage-community/plugin-quay
 
+## 1.38.1
+
+### Patch Changes
+
+- 20e651a: Updated dependency `@playwright/test` to `1.63.0`.
+- de33bfd: Backstage version bump to v1.54.7
+- Updated dependencies [de33bfd]
+  - @backstage-community/plugin-quay-common@1.23.1
+
 ## 1.38.0
 
 ### Minor Changes
