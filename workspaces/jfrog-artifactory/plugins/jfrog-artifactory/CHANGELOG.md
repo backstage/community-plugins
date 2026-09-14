@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 2.0.1
+
+### Patch Changes
+
+- 0a13163: Backstage version bump to v1.54.7
+
 ## 2.0.0
 
 ### Major Changes
