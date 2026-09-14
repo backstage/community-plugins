@@ -27,10 +27,17 @@ import { createApp } from '@backstage/frontend-defaults';
 import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
+  configApiRef,
   createFrontendModule,
+  discoveryApiRef,
+  identityApiRef,
   pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
 import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+import {
+  IdentityPermissionApi,
+  permissionApiRef,
+} from '@backstage/plugin-permission-react';
 
 import topologyPlugin from '../src';
 import topologyTranslationsModule from '../src/translations';
@@ -50,11 +57,23 @@ const signInPage = SignInPageBlueprint.make({
   },
 });
 
-const devNavModule = createFrontendModule({
+const appDevModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
-    devSidebarContent,
-    signInPage,
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {
+            config: configApiRef,
+            discovery: discoveryApiRef,
+            identity: identityApiRef,
+          },
+          factory: ({ config, discovery, identity }) =>
+            IdentityPermissionApi.create({ config, discovery, identity }),
+        }),
+    }),
     ApiBlueprint.make({
       name: 'plugin-header-actions',
       params: defineParams =>
@@ -69,8 +88,18 @@ const devNavModule = createFrontendModule({
   ],
 });
 
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [devSidebarContent, signInPage],
+});
+
 const app = createApp({
-  features: [devNavModule, topologyPlugin, topologyTranslationsModule],
+  features: [
+    devNavModule,
+    appDevModule,
+    topologyPlugin,
+    topologyTranslationsModule,
+  ],
 });
 
 if (window.location.pathname === '/') {
