@@ -1,5 +1,11 @@
 # @backstage-community/plugin-airbrake
 
+## 0.24.1
+
+### Patch Changes
+
+- 9ce0f3e: Updated dependency `react-router-dom` to `6.30.6`.
+
 ## 0.24.0
 
 ### Minor Changes
