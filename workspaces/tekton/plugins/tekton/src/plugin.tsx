@@ -17,8 +17,16 @@ import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import { isTektonCIAvailable } from './utils/isTektonCIAvailable';
 
+const tektonReadPermissionsIfPredicate = {
+  $all: [
+    { permissions: { $contains: 'kubernetes.clusters.read#read' } },
+    { permissions: { $contains: 'kubernetes.resources.read#read' } },
+  ],
+};
+
 const tektonEntityContent = EntityContentBlueprint.make({
   name: 'tektonEntityContent',
+  if: tektonReadPermissionsIfPredicate,
   params: {
     path: '/tekton',
     title: 'Tekton',

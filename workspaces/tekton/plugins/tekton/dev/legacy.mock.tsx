@@ -22,8 +22,9 @@ import {
   kubernetesProxyApiRef,
   kubernetesAuthProvidersApiRef,
 } from '@backstage/plugin-kubernetes-react';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
-import { TestApiProvider } from '@backstage/test-utils';
+import { mockApis, TestApiProvider } from '@backstage/test-utils';
 
 import { tektonTranslations } from '../src/translations';
 import { TektonCI, tektonPlugin } from '../src/legacy';
@@ -33,6 +34,7 @@ import {
   mockKubernetesClient,
   mockKubernetesProxyApi,
   mockPermissionApi,
+  permissionDeniedMockEntity,
 } from './mocks';
 
 createDevApp()
@@ -62,6 +64,37 @@ createDevApp()
     ),
     title: 'Tekton CI',
     path: '/tekton',
+  })
+  .addPage({
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, mockKubernetesClient],
+          [kubernetesProxyApiRef, mockKubernetesProxyApi],
+          [
+            permissionApiRef,
+            mockApis.permission({ authorize: AuthorizeResult.DENY }),
+          ],
+          [kubernetesAuthProvidersApiRef, mockKubernetesAuthProviderApi],
+        ]}
+      >
+        <EntityProvider entity={permissionDeniedMockEntity}>
+          <Page themeId="service">
+            <Header
+              type="component — service"
+              title={permissionDeniedMockEntity.metadata.name}
+            />
+            <TabbedLayout>
+              <TabbedLayout.Route path="/" title="CI/CD">
+                <TektonCI />
+              </TabbedLayout.Route>
+            </TabbedLayout>
+          </Page>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+    title: 'Missing permissions',
+    path: '/missing-permissions',
   })
   .registerPlugin(tektonPlugin)
   .render();
