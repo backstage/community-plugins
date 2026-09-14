@@ -49,7 +49,7 @@
     "@backstage/plugin-notifications-common": "^0.2.3",
     "@backstage/plugin-notifications-node": "^0.2.29",
     "@types/express": "*",
-    "express": "^4.18.1",
+    "express": "^5.0.0",
     "express-promise-router": "^4.1.0",
     "knex": "^3.0.0",
     "node-fetch": "^2.6.7",
