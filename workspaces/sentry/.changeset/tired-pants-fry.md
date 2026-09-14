@@ -2,4 +2,4 @@
 '@backstage-community/plugin-sentry': major
 ---
 
-migration of plugin from mui to bui
+Migration of from Material UI (MUI) to Backstage UI (BUI)
