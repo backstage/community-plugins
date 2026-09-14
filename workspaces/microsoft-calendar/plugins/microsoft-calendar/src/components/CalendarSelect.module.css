@@ -8,8 +8,7 @@
   font-size: var(--bui-font-size-3);
   font-family: inherit;
   cursor: pointer;
-  transition: border-color 150ms ease-in-out,
-    background-color 150ms ease-in-out;
+  transition: border-color 150ms ease-in-out, background-color 150ms ease-in-out;
 }
 
 .select:hover:not(:disabled) {
