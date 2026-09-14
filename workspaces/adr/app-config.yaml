@@ -1,4 +1,5 @@
 app:
+  title: ADR Plugin Dev
   baseUrl: http://localhost:3000
 
 backend:

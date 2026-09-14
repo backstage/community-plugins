@@ -1,0 +1,27 @@
+@layer components {
+  .item {
+    display: flex;
+  }
+
+  .flexContainer {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+
+  .itemText {
+    width: 100%;
+    word-break: break-all;
+    margin-bottom: var(--bui-space-4);
+  }
+
+  .snippet {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tags {
+    gap: var(--bui-space-2);
+  }
+}
