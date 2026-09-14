@@ -72,6 +72,12 @@ export interface Config {
        */
       policyDecisionPrecedence?: 'basic' | 'conditional';
       /**
+       * When enabled, group-to-role bindings are also evaluated using ownership
+       * entity refs from the sign-in token, not only catalog memberOf relations.
+       * Defaults to false.
+       */
+      useOwnershipEntityRefs?: boolean;
+      /**
        * Configuration for assigning a default role with permissions
        * to all authenticated users.
        */

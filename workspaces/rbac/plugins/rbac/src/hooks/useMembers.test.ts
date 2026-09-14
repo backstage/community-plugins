@@ -22,22 +22,32 @@ jest.mock('./useLanguage', () => ({
 jest.mock('@backstage/core-plugin-api', () => {
   const { mockMembers } = require('../__fixtures__/mockMembers');
 
+  const memberRefs = [
+    'group:default/admins',
+    'user:default/amelia.park',
+    'user:default/calum.leavy',
+    'group:default/team-b',
+    'group:default/team-c',
+  ];
+
   return {
     ...jest.requireActual('@backstage/core-plugin-api'),
     useApi: jest.fn().mockReturnValue({
       getRole: jest.fn().mockReturnValue([
         {
-          memberReferences: [
-            'group:default/admins',
-            'user:default/amelia.park',
-            'user:default/calum.leavy',
-            'group:default/team-b',
-            'group:default/team-c',
-          ],
+          memberReferences: memberRefs,
           name: 'role:default/rbac_admin',
         },
       ]),
-      getMembers: jest.fn().mockReturnValue(mockMembers),
+      getMembers: jest.fn().mockReturnValue(mockMembers.slice(0, 1)),
+      getMembersByRefs: jest.fn().mockImplementation((refs: string[]) =>
+        refs.map(ref => {
+          const name = ref.split('/').pop();
+          return (
+            mockMembers.find((m: any) => m.metadata.name === name) ?? undefined
+          );
+        }),
+      ),
     }),
   };
 });

@@ -59,10 +59,10 @@ const announcementsPlugin: OverridableFrontendPlugin<
       };
       configInput: {
         max?: number | undefined;
+        category?: string | undefined;
         active?: boolean | undefined;
         current?: boolean | undefined;
         tags?: string[] | undefined;
-        category?: string | undefined;
       };
       output: ExtensionDataRef<JSX_2.Element, 'core.reactElement', {}>;
       inputs: {};
@@ -124,9 +124,9 @@ const announcementsPlugin: OverridableFrontendPlugin<
       };
       configInput: {
         category?: string | undefined;
-        defaultInactive?: boolean | undefined;
         hideStartAt?: boolean | undefined;
         markdownRenderer?: 'backstage' | 'md-editor' | undefined;
+        defaultInactive?: boolean | undefined;
         path?: string | undefined;
         title?: string | undefined;
       };

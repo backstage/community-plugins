@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { acrTranslationRef } from './ref';
 
 /**
@@ -32,3 +34,21 @@ export const acrTranslations = createTranslationResource({
 });
 
 export { acrTranslationRef };
+
+/**
+ * Translation module for the ACR plugin.
+ * @public
+ */
+const acrTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'acr-translations',
+      params: {
+        resource: acrTranslations,
+      },
+    }),
+  ],
+});
+
+export default acrTranslationsModule;

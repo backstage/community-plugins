@@ -1,0 +1,49 @@
+.status {
+  align-items: center;
+  display: flex;
+}
+
+.statusIcon {
+  flex-shrink: 0;
+  position: relative;
+  top: 0.125em;
+  margin-right: var(--bui-space-2);
+}
+
+.statusIconSize {
+  width: 20px;
+  height: 20px;
+}
+
+.pending {
+  fill: var(--bui-fg-disabled);
+}
+
+.running {
+  fill: var(--bui-fg-info);
+}
+
+.succeeded {
+  fill: var(--bui-fg-success);
+}
+
+.failed {
+  fill: var(--bui-fg-danger);
+}
+
+.error {
+  fill: var(--bui-fg-danger);
+}
+
+.spin {
+  animation: workflow-status-spin 1.5s linear infinite;
+}
+
+@keyframes workflow-status-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

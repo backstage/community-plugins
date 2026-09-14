@@ -26,7 +26,7 @@ export const entityGithubPullRequestsContent = EntityContentBlueprint.make({
   params: {
     path: 'pull-requests',
     title: 'Pull Requests',
-    filter: 'kind:group',
+    filter: { kind: 'group' },
     routeRef: convertLegacyRouteRef(rootRouteRef),
     loader: () =>
       import('../components/EntityTeamPullRequestsContent').then(m => (

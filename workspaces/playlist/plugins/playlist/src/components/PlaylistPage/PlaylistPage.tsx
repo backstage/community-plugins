@@ -42,7 +42,11 @@ const useStyles = makeStyles({
   },
 });
 
-export const PlaylistPage = () => {
+const PlaylistPageInner = ({
+  headerVariant,
+}: {
+  headerVariant: 'legacy' | 'bui';
+}) => {
   const classes = useStyles();
   const errorApi = useApi(errorApiRef);
   const playlistApi = useApi(playlistApiRef);
@@ -87,46 +91,52 @@ export const PlaylistPage = () => {
     );
   }
 
-  return (
+  const content = (
     <>
       {loading && <LinearProgress />}
-      <Page themeId="home">
-        {playlist && (
-          <>
-            <PlaylistHeader playlist={playlist} onUpdate={loadPlaylist} />
-            <Content>
-              <Card>
-                <CardHeader
-                  title="About"
-                  action={
-                    followAllowed && (
-                      <Button
-                        color="primary"
-                        size="small"
-                        variant="outlined"
-                        data-testid="playlist-page-follow-button"
-                        className={classes.followButton}
-                        disabled={loadingFollowRequest}
-                        onClick={followPlaylist}
-                      >
-                        {playlist.isFollowing ? 'Following' : 'Follow'}
-                      </Button>
-                    )
-                  }
-                />
-                <Divider />
-                <CardContent>
-                  <Typography variant="body2">
-                    {playlist.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-              <br />
-              <PlaylistEntitiesTable playlistId={playlist.id} />
-            </Content>
-          </>
-        )}
-      </Page>
+      {playlist && (
+        <>
+          <PlaylistHeader playlist={playlist} onUpdate={loadPlaylist} />
+          <Content>
+            <Card>
+              <CardHeader
+                title="About"
+                action={
+                  followAllowed && (
+                    <Button
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      data-testid="playlist-page-follow-button"
+                      className={classes.followButton}
+                      disabled={loadingFollowRequest}
+                      onClick={followPlaylist}
+                    >
+                      {playlist.isFollowing ? 'Following' : 'Follow'}
+                    </Button>
+                  )
+                }
+              />
+              <Divider />
+              <CardContent>
+                <Typography variant="body2">{playlist.description}</Typography>
+              </CardContent>
+            </Card>
+            <br />
+            <PlaylistEntitiesTable playlistId={playlist.id} />
+          </Content>
+        </>
+      )}
     </>
   );
+
+  if (headerVariant === 'bui') {
+    return content;
+  }
+
+  return <Page themeId="home">{content}</Page>;
 };
+
+export const PlaylistPage = () => <PlaylistPageInner headerVariant="legacy" />;
+
+export const NfsPlaylistPage = () => <PlaylistPageInner headerVariant="bui" />;

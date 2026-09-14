@@ -9,11 +9,14 @@ Developer guide for `@backstage-community/plugin-catalog-backend-module-pingiden
 
 ## Development harness
 
-Start this module in isolation:
+Start this module in isolation with the package's minimal harness config:
 
 ```bash
-yarn workspace @backstage-community/plugin-catalog-backend-module-pingidentity start
+yarn workspace @backstage-community/plugin-catalog-backend-module-pingidentity start \
+  --config app-config.yaml
 ```
+
+(`--config` paths are resolved from the plugin package directory.)
 
 This runs a minimal backend with `@backstage/plugin-catalog-backend` and the Ping Identity entity provider module. Use it for ingestion, transformers, and PingOne API client work.
 
@@ -32,7 +35,9 @@ Export these variables in your shell before starting the harness. Use local-only
 | `PING_IDENTITY_CLIENT_SECRET` | OAuth client secret                                                   |
 | `BACKSTAGE_DEV_STATIC_TOKEN`  | Static bearer token for authenticated `curl` calls to the dev backend |
 
-Config keys are defined in [`app-config.yaml`](./app-config.yaml). You may override them in an untracked `app-config.local.yaml` beside the package if your local Backstage CLI setup supports it.
+[`app-config.yaml`](./app-config.yaml) in this package is the **minimal** config required to run the dev harness (listen port, static auth, and PingOne provider settings). Prefer starting with `--config app-config.yaml` as shown above.
+
+By default (without `--config`), `yarn start` loads the fuller [`../../app-config.yaml`](../../app-config.yaml) from the workspace root instead. That file is for a broader local Backstage app setup, sets `auth.dangerouslyDisableDefaultAuthPolicy: true`, and does not define the static backend token used by the smoke `curl` examples below. Optional overrides can go in an untracked `app-config.local.yaml` next to whichever config file you pass (or at the workspace root when relying on the default).
 
 ### API authentication for `curl`
 

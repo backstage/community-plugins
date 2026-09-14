@@ -89,6 +89,10 @@ export const IssuesList = ({
         ? Object.values(filteredRepos)
             .map(({ issues: { edges } }) => edges)
             .flat()
+            // Guard against `null` nodes that GitHub can return in partial
+            // responses (e.g. "Resource limits for this query exceeded"), which
+            // would otherwise crash the sort/render below.
+            .filter(edge => edge?.node)
             .sort((a, b) => {
               if (a.node.updatedAt > b.node.updatedAt) {
                 return -1;

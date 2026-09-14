@@ -1,0 +1,10 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+  namespace: default
+spec:
+  profile:
+    displayName: Guest
+  memberOf: []

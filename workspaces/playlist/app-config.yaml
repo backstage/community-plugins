@@ -1,6 +1,21 @@
 app:
   title: Backstage Example App
   baseUrl: http://localhost:3000
+  packages: all
+  extensions:
+    - app/routes:
+        config:
+          redirects:
+            - from: /
+              to: /catalog
+  support:
+    url: https://github.com/backstage/backstage/issues
+    items:
+      - title: Help and Support
+        icon: help
+        links:
+          - url: https://github.com/backstage/backstage/issues
+            title: Report an issue
 
 backend:
   baseUrl: http://localhost:7007

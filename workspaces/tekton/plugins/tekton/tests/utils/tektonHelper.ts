@@ -16,6 +16,11 @@
 import { AxeBuilder } from '@axe-core/playwright';
 import { expect, TestInfo, type Page } from '@playwright/test';
 
+/** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
+export function isNfsAppMode(): boolean {
+  return process.env.APP_MODE !== 'legacy';
+}
+
 export class Common {
   page: Page;
 
@@ -29,13 +34,31 @@ export class Common {
 
   async loginAsGuest() {
     await this.page.goto('/');
-    // TODO - Remove it after https://issues.redhat.com/browse/RHIDP-2043. A Dynamic plugin for Guest Authentication Provider needs to be created
     this.page.on('dialog', async dialog => {
       await dialog.accept();
     });
 
     await this.page.getByRole('button', { name: 'Enter' }).click();
     await this.waitForSideBarVisible();
+  }
+
+  /**
+   * Opens the Tekton PipelineRun list. Legacy dev exposes `/tekton`; NFS
+   * mounts Tekton on the catalog entity page.
+   */
+  async navigateToTektonView() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/tekton');
+    } else {
+      await this.page.goto('/catalog/default/component/backstage/tekton');
+      const tektonTab = this.page
+        .getByRole('navigation', { name: 'Content navigation' })
+        .getByRole('link', { name: 'Tekton', exact: true });
+      await expect(tektonTab).toBeVisible();
+      await tektonTab.click();
+    }
+
+    await expect(this.page.getByTestId('tekton-progress')).toHaveCount(0);
   }
 
   async switchToLocale(locale: string): Promise<void> {

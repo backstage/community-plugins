@@ -1,5 +1,23 @@
 # @backstage-community/plugin-adr-backend
 
+## 0.25.1
+
+### Patch Changes
+
+- 1cf5dae: Fixed images failing to load when the source repository name contains dots, such as Azure DevOps repositories where the file path is passed as a query parameter.
+
+## 0.25.0
+
+### Minor Changes
+
+- 9f1ee1a: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [9f1ee1a]
+  - @backstage-community/plugin-adr-common@0.23.0
+  - @backstage-community/search-backend-module-adr@0.22.0
+
 ## 0.24.0
 
 ### Minor Changes

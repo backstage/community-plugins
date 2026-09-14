@@ -1,0 +1,104 @@
+.root {
+  width: 100%;
+}
+
+.container {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.svg {
+  cursor: grab;
+}
+
+.svg.panning {
+  cursor: grabbing;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node:focus {
+  outline: none;
+}
+
+.node:focus-visible > rect:first-child {
+  stroke: var(--bui-fg-info);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px var(--bui-fg-info));
+}
+
+.tooltip {
+  position: absolute;
+  background: var(--bui-bg-neutral-1, #fff);
+  color: var(--bui-fg-primary, #1a1a1a);
+  border: 1px solid var(--bui-border-1, #d4d4d4);
+  border-radius: var(--bui-radius-2);
+  padding: var(--bui-space-2) var(--bui-space-3);
+  font-size: var(--bui-font-size-1);
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 10;
+  max-width: 300px;
+  white-space: nowrap;
+}
+
+.tooltipTitle {
+  font-weight: var(--bui-font-weight-bold);
+  margin-bottom: var(--bui-space-1);
+}
+
+.tooltipLabel {
+  color: var(--bui-fg-secondary);
+}
+
+.tooltipStatus {
+  font-weight: 500;
+}
+
+.srOnly {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bui-space-2);
+  padding: var(--bui-space-2) 0;
+  flex-shrink: 0;
+}
+
+.canvasArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minimap {
+  position: absolute;
+  bottom: var(--bui-space-3);
+  right: var(--bui-space-3);
+  width: 180px;
+  height: 120px;
+  border: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-2);
+  background: var(--bui-bg-neutral-1, #fff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+  overflow: hidden;
+}

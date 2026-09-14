@@ -119,26 +119,56 @@ The Tekton plugin enables you to visualize the `PipelineRun` resources available
    yarn workspace app add @backstage-community/plugin-tekton
    ```
 
-1. To enable the PipelineRun list in the **CI/CD** tab on the entity view page, add the following snippet in the `packages/app/src/components/catalog/EntityPage.tsx`.
+### New frontend system
 
-   ```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
-   /* highlight-add-next-line */
-   import {
-     isTektonCIAvailable,
-     TektonCI,
-   } from '@backstage-community/plugin-tekton';
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Tekton entity tab is registered automatically for entities with the `tekton.dev/cicd` annotation.
 
-   const cicdContent = (
-     <EntitySwitch>
-       {/* ... */}
-       {/* highlight-add-start */}
-       <EntitySwitch.Case if={isTektonCIAvailable}>
-         <TektonCI />
-       </EntitySwitch.Case>
-       {/* highlight-add-end */}
-     </EntitySwitch>
-   );
-   ```
+```ts
+import tektonPlugin, {
+  tektonTranslationsModule,
+} from '@backstage-community/plugin-tekton';
+
+export const app = createApp({
+  features: [
+    // ...
+    tektonPlugin,
+    tektonTranslationsModule,
+  ],
+});
+```
+
+### Legacy frontend system
+
+If you are using the legacy frontend system, import the plugin from the `/legacy` subpath and add the Tekton CI/CD component to `packages/app/src/components/catalog/EntityPage.tsx`. Register translations with `.addTranslationResource(tektonTranslations)` in `App.tsx`.
+
+```ts
+// packages/app/src/App.tsx
+import { tektonTranslations } from '@backstage-community/plugin-tekton/legacy';
+
+createApp({
+  __experimentalTranslations: {
+    availableLanguages: ['en', 'de', 'es', 'fr', 'it', 'ja'],
+    resources: [tektonTranslations],
+  },
+  // ...
+});
+```
+
+```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
+import {
+  isTektonCIAvailable,
+  TektonCI,
+} from '@backstage-community/plugin-tekton/legacy';
+
+const cicdContent = (
+  <EntitySwitch>
+    {/* ... */}
+    <EntitySwitch.Case if={isTektonCIAvailable}>
+      <TektonCI />
+    </EntitySwitch.Case>
+  </EntitySwitch>
+);
+```
 
 #### Permissions
 
@@ -164,9 +194,9 @@ Tekton is a front-end plugin that enables you to view the `PipelineRun` resource
 
 1. Open your Backstage application and select a component from the **Catalog** page.
 
-1. Go to the **CI/CD** tab.
+1. Open the **Tekton** tab (new frontend system) or the **CI/CD** tab (legacy frontend system / RHDH).
 
-   The **CI/CD** tab displays the list of PipelineRun resources associated with a Kubernetes cluster. The list contains pipeline run details, such as **NAME**, **STATUS**, **TASK STATUS**, **STARTED**, and **DURATION**.
+   The tab displays the list of PipelineRun resources associated with a Kubernetes cluster. The list contains pipeline run details, such as **NAME**, **STATUS**, **TASK STATUS**, **STARTED**, and **DURATION**.
 
    ![ci-cd-tab-tekton](./docs/images/tekton-plugin-user4.png)
 

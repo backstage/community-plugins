@@ -23,6 +23,7 @@ import { createApiRef } from '@backstage/frontend-plugin-api';
 /** @public */
 export const cloudbuildApiRef = createApiRef<CloudbuildApi>().with({
   id: 'plugin.cloudbuild.service',
+  pluginId: 'cloudbuild',
 });
 
 /** @public */

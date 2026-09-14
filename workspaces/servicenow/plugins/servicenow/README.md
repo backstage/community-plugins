@@ -78,9 +78,6 @@ metadata:
 
 For more information how to setup the plugin, please refer to the [General](../../docs/index.md) and [Configuration.md](../../docs/Configuration.md) documentation.
 
-## Development
+## Contributing
 
-1. Install dependencies with `yarn install`
-2. Start the Backstage dev app with `yarn start`
-
-Your plugin has been added to the example app in this `plugins/servicenow` directory, meaning you'll be able to access it by running `yarn start` in the current directory, and then navigating to [/servicenow](http://localhost:3000/servicenow).
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the local `dev/` harness (Mock vs Backend pages), scoped tests, and notes on Playwright vs backend bump trust.

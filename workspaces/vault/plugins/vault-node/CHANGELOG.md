@@ -1,5 +1,11 @@
 # @backstage-community/plugin-vault-node
 
+## 0.23.0
+
+### Minor Changes
+
+- 333cfee: Backstage version bump to v1.54.5
+
 ## 0.22.0
 
 ### Minor Changes

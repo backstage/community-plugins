@@ -50,7 +50,7 @@ export const usePodLogsOfPipelineRun = ({
   const stopPolling =
     pod?.status?.phase === 'Succeeded' || pod?.status?.phase === 'Failed';
 
-  const { data, error, isLoading, isFetching } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ['podLogs', podKey, currCluster],
     queryFn: async () => {
       const requests = containersList
@@ -78,6 +78,6 @@ export const usePodLogsOfPipelineRun = ({
   return {
     value: data,
     error,
-    loading: isLoading || isFetching,
+    loading: isLoading,
   };
 };

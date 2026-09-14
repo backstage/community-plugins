@@ -47,8 +47,42 @@ techInsights:
 
 ### More than one `factIds` for a check
 
-When more than one is supplied, the requested fact **MUST** be present in at least one of the fact retrievers.
-The order of the fact retrievers defined in the `factIds` array has no bearing on the checks, the check will merge all facts from the various retrievers, and then check against latest fact .
+When more than one is supplied, the requested fact **MUST** be present in at least one of the fact retrievers. The check merges all facts from the listed retrievers into a single object before evaluating conditions. As long as fact names do not collide, the order of `factIds` does not affect the result. When several retrievers expose facts under the same name, the merge is last-write-wins in `factIds` order; see the next section for an explicit alternative.
+
+### Combining facts from multiple retrievers with `params.factRetrieverId`
+
+When two retrievers listed in a check's `factIds` publish a fact under the same key, the last-write-wins merge described above hides one value behind the other. To compare both values in the same check, set `params.factRetrieverId` on each condition to the id of the retriever whose value it should read:
+
+```yaml title="app-config.yaml"
+techInsights:
+  factChecker:
+    checks:
+      bothMigrationsComplete:
+        type: json-rules-engine
+        name: Both migrations complete
+        factIds:
+          - migrationStatus.a
+          - migrationStatus.b
+        rule:
+          conditions:
+            all:
+              - fact: completed
+                params:
+                  factRetrieverId: migrationStatus.a
+                operator: equal
+                value: true
+              - fact: completed
+                params:
+                  factRetrieverId: migrationStatus.b
+                operator: equal
+                value: true
+```
+
+Notes:
+
+- `params.factRetrieverId` must reference a retriever listed in the check's `factIds`; otherwise the check fails with a clear error at run time.
+- Conditions without `params.factRetrieverId` keep the legacy merge behaviour, so existing checks are unaffected.
+- If the named retriever did not produce the referenced fact, the check is skipped, the same path as any other missing fact.
 
 ### Adding filter in check
 

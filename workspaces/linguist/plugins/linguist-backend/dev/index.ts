@@ -34,4 +34,7 @@ backend.add(
   ),
 );
 
+// Needed to test the actions registry actions via MCP
+backend.add(import('@backstage/plugin-mcp-actions-backend'));
+
 backend.start();

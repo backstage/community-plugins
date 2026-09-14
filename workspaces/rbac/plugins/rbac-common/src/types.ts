@@ -174,15 +174,43 @@ export type PermissionInfo = {
 
 /**
  * @public
- * Frontend should use RoleConditionalPolicyDecision<PermissionAction>
  */
-export type RoleConditionalPolicyDecision<
-  T extends PermissionAction | PermissionInfo,
-> = ConditionalPolicyDecision & {
+export type PermissionMapping = PermissionAction | PermissionInfo;
+
+/**
+ * @public
+ */
+export function isPermissionInfo(
+  entry: PermissionMapping,
+): entry is PermissionInfo {
+  return (
+    typeof entry === 'object' &&
+    entry !== null &&
+    typeof (entry as any).name === 'string' &&
+    typeof (entry as any).action === 'string'
+  );
+}
+
+/**
+ * @public
+ */
+export function permissionMappingAction(
+  entry: PermissionMapping,
+): PermissionAction {
+  return typeof entry === 'string' ? entry : entry.action;
+}
+
+/**
+ * @public
+ */
+export type RoleConditionalPolicyDecision = ConditionalPolicyDecision & {
   id: number;
   roleEntityRef: string;
 
-  permissionMapping: T[];
+  // Union-of-arrays (not array-of-union) is intentional:
+  // PermissionAction[] | PermissionInfo[] prevents mixing strings and objects
+  // in one array at the type level. PermissionMapping[] would allow mixed arrays.
+  permissionMapping: PermissionAction[] | PermissionInfo[];
 };
 
 /**

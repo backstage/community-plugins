@@ -24,13 +24,29 @@ This plugin enables you to visualize pipeline security information from multiple
 yarn workspace app add @backstage-community/plugin-multi-source-security-viewer
 ```
 
+#### New frontend system
+
+Import the default export and add it to your app features. The CI/CD Security tab appears on entities that have a CI provider annotation and `mssv/enabled: 'true'`.
+
+```ts
+import multiSourceSecurityViewerPlugin from '@backstage-community/plugin-multi-source-security-viewer';
+```
+
+```yaml
+metadata:
+  annotations:
+    mssv/enabled: 'true'
+```
+
+#### Legacy frontend system
+
 To enable the PipelineRun list in the Security tab on the entity view page, add the following snippet in the packages/app/src/components/catalog/EntityPage.tsx.
 
 ```diff
 +import {
 +  isMultiCIAvailable,
 +  EntityMultiCIPipelinesContent,
-+} from '@backstage-community/plugin-multi-source-security-viewer';
++} from '@backstage-community/plugin-multi-source-security-viewer/legacy';
 +
 +import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
 +import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';
@@ -62,7 +78,7 @@ If you choose to display the plugin when the annotation is present along with th
 +import {
 +  isMultiCIAvailableAndEnabled,
 +  EntityMultiCIPipelinesContent,
-+} from '@backstage-community/plugin-multi-source-security-viewer';
++} from '@backstage-community/plugin-multi-source-security-viewer/legacy';
 +
 +import { EntityJenkinsContent } from '@backstage-community/plugin-jenkins';
 +import { EntityGithubActionsContent } from '@backstage-community/plugin-github-actions';

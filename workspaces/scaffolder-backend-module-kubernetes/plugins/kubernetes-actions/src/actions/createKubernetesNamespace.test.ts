@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Handler and scaffolder-node schema contract tests.
+ * Module wiring (extension-point registration) is covered in `../module.test.ts`
+ * and is not replaced by these handler-level cases.
+ */
 import type { CatalogClient } from '@backstage/catalog-client';
 import { createMockActionContext } from '@backstage/plugin-scaffolder-node-test-utils';
 
@@ -27,6 +33,15 @@ import {
 
 const LOCAL_ADDR = 'https://kube-api:5000';
 const FIXTURES_DIR = `${__dirname}/../../__fixtures__/cluster-entities`;
+
+/** Minimal JSON Schema required-field check (no extra validator dependency). */
+function missingRequiredFields(
+  schema: { required?: boolean | string[] } | undefined,
+  input: Record<string, unknown>,
+): string[] {
+  const required = Array.isArray(schema?.required) ? schema.required : [];
+  return required.filter(key => input[key] === undefined);
+}
 
 const handlers = [
   rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, async (req, res, ctx) => {
@@ -54,7 +69,7 @@ const handlers = [
 const server = setupServer(...handlers);
 
 beforeAll(() => server.listen());
-afterEach(() => server.restoreHandlers());
+afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('kubernetes:create-namespace', () => {
@@ -81,6 +96,36 @@ describe('kubernetes:create-namespace', () => {
 
   const mockContext = createMockActionContext();
 
+  describe('scaffolder-node input schema', () => {
+    it('requires namespace and token in the Zod → JSON Schema contract', () => {
+      const inputSchema = action.schema?.input;
+      expect(inputSchema).toEqual(
+        expect.objectContaining({
+          type: 'object',
+          required: expect.arrayContaining(['namespace', 'token']),
+        }),
+      );
+    });
+
+    it('rejects missing required token without invoking the handler', () => {
+      const missing = missingRequiredFields(action.schema?.input, {
+        namespace: 'foo',
+        url: LOCAL_ADDR,
+      });
+      expect(missing).toEqual(['token']);
+      expect(catalogClientFn).not.toHaveBeenCalled();
+    });
+
+    it('rejects missing required namespace without invoking the handler', () => {
+      const missing = missingRequiredFields(action.schema?.input, {
+        token: 'test-token',
+        url: LOCAL_ADDR,
+      });
+      expect(missing).toEqual(['namespace']);
+      expect(catalogClientFn).not.toHaveBeenCalled();
+    });
+  });
+
   it('should get the api url from the correct entity', async () => {
     await action.handler({
       ...mockContext,
@@ -94,6 +139,34 @@ describe('kubernetes:create-namespace', () => {
 
     expect(catalogClientFn).toHaveBeenCalledTimes(1);
     expect(catalogClientFn).toHaveBeenCalledWith('resource:foo');
+  });
+
+  it('posts namespace name and labels on the happy path', async () => {
+    let postedBody: V1Namespace | undefined;
+    server.use(
+      rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, async (req, res, ctx) => {
+        postedBody = (await req.json()) as V1Namespace;
+        return res(ctx.status(200), ctx.json({}));
+      }),
+    );
+
+    await action.handler({
+      ...mockContext,
+      input: {
+        namespace: 'happy-ns',
+        url: LOCAL_ADDR,
+        token: 'test-token',
+        skipTLSVerify: false,
+        labels: 'app.io/type=ns;app.io/managed-by=org',
+      },
+    });
+
+    expect(postedBody?.metadata?.name).toBe('happy-ns');
+    expect(postedBody?.metadata?.labels).toEqual({
+      'app.io/type': 'ns',
+      'app.io/managed-by': 'org',
+    });
+    expect(catalogClientFn).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -184,7 +257,7 @@ describe('kubernetes:create-namespace', () => {
     );
   });
 
-  it('should correctly parse a http error', async () => {
+  it('should surface a generic client HTTP error (no string body Status JSON)', async () => {
     await expect(async () => {
       await action.handler({
         ...mockContext,
@@ -196,8 +269,59 @@ describe('kubernetes:create-namespace', () => {
         },
       });
     }).rejects.toThrow(
-      `Failed to create kubernetes namespace, HTTP-Code: 401\nMessage: Unauthorized\nBody: undefined\nHeaders: {\"content-type\":\"application/json\",\"x-powered-by\":\"msw\"}`,
+      `Failed to create kubernetes namespace, HTTP-Code: 401\nMessage: Unauthorized\nBody: undefined\nHeaders: {"content-type":"application/json","x-powered-by":"msw"}`,
     );
+  });
+
+  it('should parse string body Status JSON into an API code error message', async () => {
+    const statusBody = {
+      kind: 'Status',
+      apiVersion: 'v1',
+      metadata: {},
+      status: 'Failure',
+      message: 'namespaces is forbidden',
+      reason: 'Forbidden',
+      code: 403,
+    };
+    server.use(
+      rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, (_req, res, ctx) =>
+        res(ctx.status(403), ctx.text(JSON.stringify(statusBody))),
+      ),
+    );
+
+    await expect(async () => {
+      await action.handler({
+        ...mockContext,
+        input: {
+          namespace: 'forbidden-ns',
+          url: LOCAL_ADDR,
+          token: 'test-token',
+          skipTLSVerify: false,
+        },
+      });
+    }).rejects.toThrow(
+      'Failed to create kubernetes namespace, API code: 403 -- namespaces is forbidden',
+    );
+  });
+
+  it('should fall back to the generic failure message for unparseable string body', async () => {
+    server.use(
+      rest.post(`${LOCAL_ADDR}/api/v1/namespaces`, (_req, res, ctx) =>
+        res(ctx.status(500), ctx.text('not-json')),
+      ),
+    );
+
+    await expect(async () => {
+      await action.handler({
+        ...mockContext,
+        input: {
+          namespace: 'bad-body-ns',
+          url: LOCAL_ADDR,
+          token: 'test-token',
+          skipTLSVerify: false,
+        },
+      });
+    }).rejects.toThrow(/^Failed to create kubernetes namespace,/);
   });
 
   it('should throw an error while using an invalid api url', async () => {
@@ -214,7 +338,7 @@ describe('kubernetes:create-namespace', () => {
     }).rejects.toThrow('"bar" is an invalid url');
   });
 
-  it('should throw if empty string is provided as api url', async () => {
+  it('should throw Cluster reference or url are required when url is an empty string', async () => {
     await expect(async () => {
       await action.handler({
         ...mockContext,

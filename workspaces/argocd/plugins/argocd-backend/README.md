@@ -2,6 +2,8 @@
 
 This plugin enables integration between Backstage and ArgoCD instances, allowing you to monitor your ArgoCD applications.
 
+For local development, the `dev/` harness, scoped test commands, and smoke checklists, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Installation
 
 This plugin is installed via the `@backstage-community/plugin-argocd-backend` package. To install it to your backend package, run:
@@ -297,15 +299,14 @@ argocd:
 
 ## Running the plugin
 
-Run the plugin in standalone mode:
+Run the backend plugin in standalone mode:
 
 ```bash
 yarn start
 ```
 
-Run the entire Backstage application including this plugin:
+Run the frontend plugin NFS dev app:
 
 ```bash
-# From the root workspace directory
-yarn start:backstage
+yarn workspace @backstage-community/plugin-argocd start
 ```

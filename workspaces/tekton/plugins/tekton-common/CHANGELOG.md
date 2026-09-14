@@ -1,5 +1,12 @@
 # @backstage-community/plugin-tekton-common
 
+## 1.24.0
+
+### Minor Changes
+
+- 77c4615: Backstage version bump to v1.54.5
+  Added New Frontend System development entrypoints and e2e coverage for both NFS and legacy.
+
 ## 1.23.0
 
 ### Minor Changes

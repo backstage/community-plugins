@@ -1,9 +1,0 @@
-apiVersion: backstage.io/v1alpha1
-kind: Location
-metadata:
-  description: A collection of all entities
-  name: extreme-org-flat-plane
-spec:
-  targets:
-    - ./groups.yaml
-    - ./users.yaml

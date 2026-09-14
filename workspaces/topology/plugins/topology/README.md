@@ -346,23 +346,41 @@ For more information about the labels and annotations, see [Guidelines for label
    yarn workspace app add @backstage-community/plugin-topology
    ```
 
-2. Enable **TOPOLOGY** tab in `packages/app/src/components/catalog/EntityPage.tsx`:
+##### New frontend system
 
-   ```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
-   /* highlight-add-next-line */
-   import { TopologyPage } from '@backstage-community/plugin-topology';
+If you are using Backstage's [new frontend system](https://backstage.io/docs/frontend-system/), add the default export and the translations module to your app `features` array. The Topology entity tab is registered automatically for entities with `backstage.io/kubernetes-id` or `backstage.io/kubernetes-namespace`.
 
-   const serviceEntityPage = (
-     <EntityLayout>
-       {/* ... */}
-       {/* highlight-add-start */}
-       <EntityLayout.Route path="/topology" title="Topology">
-         <TopologyPage />
-       </EntityLayout.Route>
-       {/* highlight-add-end */}
-     </EntityLayout>
-   );
-   ```
+```ts
+import topologyPlugin from '@backstage-community/plugin-topology';
+import topologyTranslationsModule from '@backstage-community/plugin-topology/translations';
+
+export const app = createApp({
+  features: [
+    // ...
+    topologyPlugin,
+    topologyTranslationsModule,
+  ],
+});
+```
+
+Translations remain available from `/alpha` and `/translations`
+
+##### Legacy frontend system
+
+If you are using the legacy frontend system, import the plugin from the `/legacy` subpath and enable the **TOPOLOGY** tab in `packages/app/src/components/catalog/EntityPage.tsx`:
+
+```tsx title="packages/app/src/components/catalog/EntityPage.tsx"
+import { TopologyPage } from '@backstage-community/plugin-topology/legacy';
+
+const serviceEntityPage = (
+  <EntityLayout>
+    {/* ... */}
+    <EntityLayout.Route path="/topology" title="Topology">
+      <TopologyPage />
+    </EntityLayout.Route>
+  </EntityLayout>
+);
+```
 
 ## For users
 

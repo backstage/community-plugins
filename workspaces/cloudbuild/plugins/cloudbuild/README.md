@@ -15,11 +15,30 @@ cd packages/app
 yarn add @backstage-community/plugin-cloudbuild
 ```
 
-### Modify EntityPage.tsx
+### New frontend system
+
+When [package discovery](https://backstage.io/docs/frontend-system/building-apps/installing-plugins/#feature-discovery) is enabled, the plugin's Cloud Build entity content and cards are discovered automatically.
+
+If package discovery is disabled, install the plugin explicitly:
+
+```tsx
+import cloudbuildPlugin from '@backstage-community/plugin-cloudbuild/alpha';
+import { createApp } from '@backstage/frontend-defaults';
+
+const app = createApp({
+  features: [cloudbuildPlugin],
+});
+```
+
+The extensions are shown only for entities containing the `google.com/cloudbuild-project-slug` annotation described below.
+
+### Legacy frontend system
+
+#### Modify EntityPage.tsx
 
 packages/app/src/components/catalog/EntityPage.tsx
 
-#### Add the Plugin import to the list of imports
+##### Add the Plugin import to the list of imports
 
 ```diff
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -30,7 +49,7 @@ import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 +import { EntityCloudbuildContent, isCloudbuildAvailable } from '@backstage-community/plugin-cloudbuild';
 ```
 
-#### In your `cicdContent` constant, add the following switch case
+##### In your `cicdContent` constant, add the following switch case
 
 ```diff
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -45,7 +64,7 @@ const cicdContent = (
     </EntitySwitch.Case>
 ```
 
-##### OPTIONAL
+###### OPTIONAL
 
 If you don't use GitHub Actions, or don't want to show it on your CI/CD page, then you can remove the switch case for it:
 

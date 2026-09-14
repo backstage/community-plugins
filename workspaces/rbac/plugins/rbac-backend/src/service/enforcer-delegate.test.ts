@@ -35,10 +35,7 @@ import {
   mockAuditorService,
 } from '../../__fixtures__/mock-utils';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import {
-  PermissionInfo,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+import { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 
 const roleMetadataStorageMock: RoleMetadataStorage = {
   filterRoleMetadata: jest.fn().mockImplementation(() => []),
@@ -982,7 +979,7 @@ describe('EnforcerDelegate', () => {
         secondGroupingPolicyWithRenamedRole,
       ]);
 
-      const updatedCondition: RoleConditionalPolicyDecision<PermissionInfo> = (
+      const updatedCondition: RoleConditionalPolicyDecision = (
         conditionalStorageMock.updateCondition as jest.Mock
       ).mock.calls[0][1];
       expect(updatedCondition).toEqual({
