@@ -1992,13 +1992,13 @@ __metadata:
   dependencies:
     "@backstage-community/plugin-argocd-common": "workspace:^"
     "@backstage-community/plugin-argocd-node": "workspace:^"
-    "@backstage/backend-defaults": "npm:^0.17.7"
+    "@backstage/backend-defaults": "npm:^0.17.8"
     "@backstage/backend-plugin-api": "npm:^1.10.0"
     "@backstage/backend-test-utils": "npm:^1.11.6"
     "@backstage/cli": "npm:^0.36.5"
     "@backstage/config": "npm:^1.3.8"
     "@backstage/errors": "npm:^1.3.1"
-    "@backstage/plugin-permission-backend": "npm:^0.7.13"
+    "@backstage/plugin-permission-backend": "npm:^0.7.15"
     "@backstage/plugin-permission-backend-module-allow-all-policy": "npm:^0.2.22"
     "@backstage/plugin-permission-common": "npm:^0.9.10"
     "@types/express": "npm:^4.17.6"
@@ -2121,7 +2121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-defaults@npm:^0.17.7":
+"@backstage/backend-defaults@npm:^0.17.7, @backstage/backend-defaults@npm:^0.17.8":
   version: 0.17.8
   resolution: "@backstage/backend-defaults@npm:0.17.8"
   dependencies:
@@ -3444,7 +3444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-permission-backend@npm:^0.7.13":
+"@backstage/plugin-permission-backend@npm:^0.7.15":
   version: 0.7.15
   resolution: "@backstage/plugin-permission-backend@npm:0.7.15"
   dependencies:
