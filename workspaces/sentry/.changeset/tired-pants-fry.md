@@ -1,5 +1,5 @@
 ---
-'@backstage-community/plugin-sentry': minor
+'@backstage-community/plugin-sentry': major
 ---
 
 migration of plugin from mui to bui
