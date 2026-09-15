@@ -64,7 +64,7 @@ const granted = (...permissions: Permission[]) => ({
   ),
 });
 
-describe('topology', () => {
+describe('topologyPlugin (new frontend system)', () => {
   it('exposes the plugin and the extension id the app resolves', () => {
     expect(topologyPlugin.pluginId).toBe('topology');
     // `getExtension` lives on the value `createFrontendPlugin` returns; the
@@ -82,7 +82,7 @@ describe('topology', () => {
     expect(isTopologyAvailable(withoutAnnotations)).toBe(false);
   });
 
-  it('declares the catalog tab, which entities get it, and what it renders', async () => {
+  it('declares the catalog tab, which entities get it, and mounts its content', async () => {
     const tester = createExtensionTester(topologyEntityContent);
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe('Topology');
@@ -104,7 +104,9 @@ describe('topology', () => {
 
   // The tab is hidden rather than failing at render time for users without
   // Kubernetes read access, so the predicate is part of the contract.
-  it('gates the tab on both kubernetes read permissions', () => {
+  it('gates the tab on both Kubernetes read permissions', () => {
+    // `if` is an internal property of the extension, so the guard below is
+    // load-bearing: it fails loudly if Backstage ever relocates it.
     const { if: predicate } = topologyEntityContent as unknown as {
       if?: FilterPredicate;
     };
