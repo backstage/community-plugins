@@ -36,6 +36,8 @@ import {
 } from './types';
 
 const lastSeenKey = 'user_last_seen_date';
+const dismissedIdsKey = 'dismissed_announcement_ids';
+const MAX_DISMISSED_IDS = 50;
 
 /**
  * Options for the AnnouncementsClient
@@ -235,5 +237,26 @@ export class AnnouncementsClient implements AnnouncementsApi {
 
   markLastSeenDate(date: DateTime): void {
     this.webStorage.set<string>(lastSeenKey, date.toISO()!);
+  }
+
+  dismissAnnouncement(id: string): void {
+    const dismissed = this.getDismissedIds();
+    if (!dismissed.includes(id)) {
+      // Create a new array since WebStorage returns frozen objects
+      const updated = [...dismissed, id];
+      // Cap at MAX_DISMISSED_IDS to prevent localStorage bloat
+      while (updated.length > MAX_DISMISSED_IDS) {
+        updated.shift();
+      }
+      this.webStorage.set<string[]>(dismissedIdsKey, updated);
+    }
+  }
+
+  isAnnouncementDismissed(id: string): boolean {
+    return this.getDismissedIds().includes(id);
+  }
+
+  private getDismissedIds(): string[] {
+    return this.webStorage.get<string[]>(dismissedIdsKey) ?? [];
   }
 }
