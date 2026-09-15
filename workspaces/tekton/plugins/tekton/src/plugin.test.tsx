@@ -18,10 +18,7 @@ import {
   evaluateFilterPredicate,
   type FilterPredicate,
 } from '@backstage/filter-predicates';
-import {
-  coreExtensionData,
-  type OverridableFrontendPlugin,
-} from '@backstage/frontend-plugin-api';
+import { coreExtensionData } from '@backstage/frontend-plugin-api';
 import {
   createExtensionTester,
   renderInTestApp,
@@ -34,7 +31,7 @@ import {
 import { Permission } from '@backstage/plugin-permission-common';
 import { screen } from '@testing-library/react';
 
-import tektonPlugin, { tektonEntityContent } from './plugin';
+import tektonPlugin from './plugin';
 
 jest.mock('./components/Router', () => ({
   Router: () => <div>tekton router</div>,
@@ -47,8 +44,15 @@ const entityWith = (annotations?: Record<string, string>): Entity => ({
 });
 
 const withCicdAnnotation = entityWith({ 'tekton.dev/cicd': 'true' });
+const withCicdDisabled = entityWith({ 'tekton.dev/cicd': 'false' });
 const withDeprecatedAnnotation = entityWith({ 'janus-idp.io/tekton': 'any' });
+const withEmptyDeprecatedAnnotation = entityWith({ 'janus-idp.io/tekton': '' });
 const withoutAnnotations = entityWith();
+
+// `getExtension` is typed from the plugin's own extension map, so an unknown id
+// fails to compile; it throws at runtime if the plugin stops registering it.
+const tektonEntityContent = () =>
+  tektonPlugin.getExtension('entity-content:tekton/tektonEntityContent');
 
 // How the app encodes a permission before matching it against the predicate.
 const granted = (...permissions: Permission[]) => ({
@@ -58,20 +62,11 @@ const granted = (...permissions: Permission[]) => ({
   ),
 });
 
-describe('tekton', () => {
-  it('exposes the plugin and the extension id the app resolves', () => {
+describe('tektonPlugin (new frontend system)', () => {
+  it('declares the catalog tab, which entities get it, and mounts its router', async () => {
     expect(tektonPlugin.pluginId).toBe('tekton');
-    // `getExtension` lives on the value `createFrontendPlugin` returns; the
-    // exported `FrontendPlugin` type does not carry it. It throws on an
-    // unknown id rather than returning undefined.
-    const plugin = tektonPlugin as OverridableFrontendPlugin;
-    expect(() =>
-      plugin.getExtension('entity-content:tekton/tektonEntityContent'),
-    ).not.toThrow();
-  });
 
-  it('declares the catalog tab, which entities get it, and what it renders', async () => {
-    const tester = createExtensionTester(tektonEntityContent);
+    const tester = createExtensionTester(tektonEntityContent());
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe('Tekton');
     expect(tester.get(coreExtensionData.routePath)).toBe('/tekton');
@@ -82,6 +77,10 @@ describe('tekton', () => {
     }
     expect(filter(withCicdAnnotation)).toBe(true);
     expect(filter(withDeprecatedAnnotation)).toBe(true);
+    // The two annotations are read differently: `tekton.dev/cicd` has to equal
+    // 'true', while the deprecated one only has to be truthy.
+    expect(filter(withCicdDisabled)).toBe(false);
+    expect(filter(withEmptyDeprecatedAnnotation)).toBe(false);
     expect(filter(withoutAnnotations)).toBe(false);
 
     renderInTestApp(tester.reactElement());
@@ -90,8 +89,10 @@ describe('tekton', () => {
 
   // The tab is hidden rather than failing at render time for users without
   // Kubernetes read access, so the predicate is part of the contract.
-  it('gates the tab on both kubernetes read permissions', () => {
-    const { if: predicate } = tektonEntityContent as unknown as {
+  it('gates the tab on both Kubernetes read permissions', () => {
+    // `if` is an internal property of the extension, so the guard below is
+    // load-bearing: it fails loudly if Backstage ever relocates it.
+    const { if: predicate } = tektonEntityContent() as unknown as {
       if?: FilterPredicate;
     };
     if (!predicate) {
