@@ -1,5 +1,12 @@
 # @backstage-community/plugin-topology
 
+## 3.0.1
+
+### Patch Changes
+
+- e61d32b: Added an extension `if` predicate so the Topology entity tab is only shown when the user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`.
+- c496121: Backstage version bump to v1.54.7
+
 ## 3.0.0
 
 ### Major Changes
