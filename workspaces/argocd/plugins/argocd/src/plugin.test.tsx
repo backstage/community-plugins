@@ -64,6 +64,8 @@ const granted = (...permissions: Permission[]) => ({
 });
 
 const gatesOnArgocdView = (extension: unknown) => {
+  // `if` is an internal property of the extension, so the guard below is
+  // load-bearing: it fails loudly if Backstage ever relocates it.
   const { if: predicate } = extension as { if?: FilterPredicate };
   if (!predicate) {
     throw new Error('the entity content declares no permission predicate');
@@ -74,7 +76,7 @@ const gatesOnArgocdView = (extension: unknown) => {
   expect(evaluateFilterPredicate(predicate, granted())).toBe(false);
 };
 
-describe('argocd', () => {
+describe('argocdPlugin (new frontend system)', () => {
   it('exposes the plugin, its route, and the extension ids the app resolves', () => {
     expect(argocdPlugin.pluginId).toBe('backstage-community-argocd');
     expect(argocdPlugin.routes.root).toBe(rootRouteRef);
@@ -93,7 +95,7 @@ describe('argocd', () => {
     }
   });
 
-  it('declares the deployment lifecycle tab, which entities get it, and what it renders', async () => {
+  it('declares the deployment lifecycle tab, which entities get it, and mounts its content', async () => {
     const tester = createExtensionTester(deploymentLifecycleEntityContent);
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe(
@@ -116,7 +118,7 @@ describe('argocd', () => {
     expect(await screen.findByText('deployment lifecycle')).toBeInTheDocument();
   });
 
-  it('declares the deployment summary tab, which entities get it, and what it renders', async () => {
+  it('declares the deployment summary tab, which entities get it, and mounts its content', async () => {
     const tester = createExtensionTester(deploymentSummaryEntityContent);
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe(
