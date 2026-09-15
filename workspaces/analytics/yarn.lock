@@ -726,6 +726,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
     "@testing-library/dom": "npm:^10.0.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
@@ -753,6 +754,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
     "@testing-library/jest-dom": "npm:6.9.1"
     cross-fetch: "npm:4.1.0"
@@ -771,6 +773,7 @@ __metadata:
     "@backstage/core-plugin-api": "backstage:^"
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
     "@newrelic/browser-agent": "npm:^1.295.0"
     "@testing-library/jest-dom": "npm:^6.0.0"
@@ -795,6 +798,7 @@ __metadata:
     "@backstage/dev-utils": "backstage:^"
     "@backstage/frontend-defaults": "backstage:^"
     "@backstage/frontend-plugin-api": "backstage:^"
+    "@backstage/frontend-test-utils": "backstage:^"
     "@backstage/plugin-app-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
@@ -1634,6 +1638,42 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/c1519238fa918a32021f0a70ccf5a556ed993a5915ebdd184bb0f4aae2a92ae282ca26ca7073869cbfd7c45adfcf55f9e5da8234eaaac7ba5c19702465e0dce8
+  languageName: node
+  linkType: hard
+
+"@backstage/frontend-test-utils@backstage:^::backstage=1.54.5&npm=0.6.3, @backstage/frontend-test-utils@npm:^0.6.3":
+  version: 0.6.3
+  resolution: "@backstage/frontend-test-utils@npm:0.6.3"
+  dependencies:
+    "@backstage/config": "npm:^1.3.8"
+    "@backstage/core-app-api": "npm:^1.20.4"
+    "@backstage/core-plugin-api": "npm:^1.12.9"
+    "@backstage/filter-predicates": "npm:^0.1.4"
+    "@backstage/frontend-app-api": "npm:^0.16.7"
+    "@backstage/frontend-plugin-api": "npm:^0.18.0"
+    "@backstage/plugin-app": "npm:^0.5.2"
+    "@backstage/plugin-app-react": "npm:^0.2.6"
+    "@backstage/plugin-permission-common": "npm:^0.9.10"
+    "@backstage/plugin-permission-react": "npm:^0.5.4"
+    "@backstage/test-utils": "npm:^1.7.21"
+    "@backstage/types": "npm:^1.2.2"
+    "@backstage/version-bridge": "npm:^1.0.12"
+    i18next: "npm:^22.4.15"
+    zen-observable: "npm:^0.10.0"
+    zod: "npm:^3.25.76 || ^4.0.0"
+  peerDependencies:
+    "@testing-library/react": ^16.0.0
+    "@types/jest": "*"
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.30.2
+  peerDependenciesMeta:
+    "@types/jest":
+      optional: true
+    "@types/react":
+      optional: true
+  checksum: 10/ea83f1c9ef07db69718622a569da6578a200d8c46768ae9ae1391683c3456eda9c46e473c4f8e60854cb4e20231a9a912667664fdab0e3f7b9607b898b740a86
   languageName: node
   linkType: hard
 
@@ -6778,11 +6818,11 @@ __metadata:
   linkType: hard
 
 "@types/react-dom@npm:^18":
-  version: 18.2.19
-  resolution: "@types/react-dom@npm:18.2.19"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/98eb760ce78f1016d97c70f605f0b1a53873a548d3c2192b40c897f694fd9c8bb12baeada16581a9c7b26f5022c1d2613547be98284d8f1b82d1611b1e3e7df0
+  version: 18.3.7
+  resolution: "@types/react-dom@npm:18.3.7"
+  peerDependencies:
+    "@types/react": ^18.0.0
+  checksum: 10/317569219366d487a3103ba1e5e47154e95a002915fdcf73a44162c48fe49c3a57fcf7f57fc6979e70d447112681e6b13c6c3c1df289db8b544df4aab2d318f3
   languageName: node
   linkType: hard
 

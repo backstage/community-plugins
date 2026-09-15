@@ -20,26 +20,26 @@ import {
 } from '@backstage/frontend-test-utils';
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
-import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
-import { segmentImplementation, segmentModule } from './module';
+import { GoogleAnalytics4 } from './apis/implementations/AnalyticsApi';
+import { ga4Implementation, ga4Module } from './module';
 
-describe('Segment analytics module', () => {
+describe('ga4 analytics module', () => {
   it('should export an NFS frontend module for the app plugin', () => {
-    expect(segmentModule.$$type).toBe('@backstage/FrontendModule');
-    expect(segmentModule.pluginId).toBe('app');
+    expect(ga4Module.$$type).toBe('@backstage/FrontendModule');
+    expect(ga4Module.pluginId).toBe('app');
 
     // The extension list is the module's internal shape; nothing public
     // reports what a module carries.
-    const { extensions } = segmentModule as unknown as {
+    const { extensions } = ga4Module as unknown as {
       extensions: { id: string }[];
     };
     expect(extensions.map(extension => extension.id)).toEqual([
-      'analytics:app/segment',
+      'analytics:app/ga4',
     ]);
   });
 
   it('builds the analytics API from the apis the app injects', () => {
-    const implementation = createExtensionTester(segmentImplementation).get(
+    const implementation = createExtensionTester(ga4Implementation).get(
       AnalyticsImplementationBlueprint.dataRefs.factory,
     );
     if (!implementation) {
@@ -53,14 +53,10 @@ describe('Segment analytics module', () => {
     expect(
       implementation.factory({
         configApi: mockApis.config({
-          data: {
-            app: {
-              analytics: { segment: { writeKey: 'key', testMode: true } },
-            },
-          },
+          data: { app: { analytics: { ga4: { measurementId: 'G-TEST' } } } },
         }),
         identityApi: mockApis.identity(),
       }),
-    ).toBeInstanceOf(SegmentAnalytics);
+    ).toBeInstanceOf(GoogleAnalytics4);
   });
 });

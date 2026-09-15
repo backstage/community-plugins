@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { webcrypto } from 'node:crypto';
+
 import { configApiRef, identityApiRef } from '@backstage/frontend-plugin-api';
 import {
   createExtensionTester,
@@ -20,28 +22,35 @@ import {
 } from '@backstage/frontend-test-utils';
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
-import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
-import { segmentImplementation, segmentModule } from './module';
+import { NewRelicBrowser } from './apis/implementations/AnalyticsApi';
+import { newRelicBrowserImplementation, newRelicBrowserModule } from './module';
 
-describe('Segment analytics module', () => {
+// The real agent boots a browser SDK, and hashing the user id needs
+// `crypto.subtle`, which jsdom does not provide.
+jest.mock('@newrelic/browser-agent/loaders/browser-agent', () => ({
+  BrowserAgent: jest.fn().mockImplementation(() => ({ setUserId: jest.fn() })),
+}));
+Object.defineProperty(window, 'crypto', { value: webcrypto });
+
+describe('New Relic browser analytics module', () => {
   it('should export an NFS frontend module for the app plugin', () => {
-    expect(segmentModule.$$type).toBe('@backstage/FrontendModule');
-    expect(segmentModule.pluginId).toBe('app');
+    expect(newRelicBrowserModule.$$type).toBe('@backstage/FrontendModule');
+    expect(newRelicBrowserModule.pluginId).toBe('app');
 
     // The extension list is the module's internal shape; nothing public
     // reports what a module carries.
-    const { extensions } = segmentModule as unknown as {
+    const { extensions } = newRelicBrowserModule as unknown as {
       extensions: { id: string }[];
     };
     expect(extensions.map(extension => extension.id)).toEqual([
-      'analytics:app/segment',
+      'analytics:app/newrelic-browser',
     ]);
   });
 
   it('builds the analytics API from the apis the app injects', () => {
-    const implementation = createExtensionTester(segmentImplementation).get(
-      AnalyticsImplementationBlueprint.dataRefs.factory,
-    );
+    const implementation = createExtensionTester(
+      newRelicBrowserImplementation,
+    ).get(AnalyticsImplementationBlueprint.dataRefs.factory);
     if (!implementation) {
       throw new Error('the extension declares no analytics implementation');
     }
@@ -55,12 +64,19 @@ describe('Segment analytics module', () => {
         configApi: mockApis.config({
           data: {
             app: {
-              analytics: { segment: { writeKey: 'key', testMode: true } },
+              analytics: {
+                newRelic: {
+                  endpoint: 'https://example.test',
+                  accountId: 'account',
+                  applicationId: 'application',
+                  licenseKey: 'license',
+                },
+              },
             },
           },
         }),
         identityApi: mockApis.identity(),
       }),
-    ).toBeInstanceOf(SegmentAnalytics);
+    ).toBeInstanceOf(NewRelicBrowser);
   });
 });

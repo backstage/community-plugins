@@ -22,7 +22,7 @@ import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
 import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
 
-const segmentImplementation = AnalyticsImplementationBlueprint.make({
+export const segmentImplementation = AnalyticsImplementationBlueprint.make({
   name: 'segment',
   params: defineParams =>
     defineParams({
