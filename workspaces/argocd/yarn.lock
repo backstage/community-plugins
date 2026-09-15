@@ -2045,6 +2045,7 @@ __metadata:
     "@backstage/core-components": "npm:^0.18.13"
     "@backstage/core-plugin-api": "npm:^1.12.9"
     "@backstage/dev-utils": "npm:^1.1.26"
+    "@backstage/filter-predicates": "npm:^0.1.4"
     "@backstage/frontend-defaults": "npm:^0.5.5"
     "@backstage/frontend-plugin-api": "npm:^0.18.0"
     "@backstage/frontend-test-utils": "npm:^0.6.3"
