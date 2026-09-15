@@ -1,5 +1,14 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.1
+
+### Patch Changes
+
+- 2501a41: Backstage version bump to v1.54.7
+- Updated dependencies [2501a41]
+  - @backstage-community/plugin-rbac-common@2.1.1
+  - @backstage-community/plugin-rbac-node@2.1.1
+
 ## 8.1.0
 
 ### Minor Changes
