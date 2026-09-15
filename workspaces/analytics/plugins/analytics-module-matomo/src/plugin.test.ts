@@ -39,7 +39,7 @@ const matomoConfig = mockApis.config({
   },
 });
 
-describe('matomo', () => {
+describe('matomo analytics', () => {
   it('should export plugin', () => {
     expect(analyticsModuleMatomoPlugin).toBeDefined();
   });
