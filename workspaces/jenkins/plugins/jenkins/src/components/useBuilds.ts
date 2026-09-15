@@ -45,9 +45,18 @@ export function useBuilds({ branch }: { branch?: string } = {}) {
     errorType: ErrorType;
   }>();
 
-  const restartBuild = async (jobFullName: string, buildNumber: string) => {
+  const restartBuild = async (
+    jobFullName: string,
+    buildNumber: string,
+    instanceName?: string,
+  ) => {
     try {
-      await api.retry({ entity: entityName, jobFullName, buildNumber });
+      await api.retry({
+        entity: entityName,
+        jobFullName,
+        buildNumber,
+        instanceName,
+      });
     } catch (e) {
       errorApi.post(e);
     }
