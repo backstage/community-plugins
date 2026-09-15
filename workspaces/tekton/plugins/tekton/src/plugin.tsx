@@ -24,7 +24,7 @@ const tektonReadPermissionsIfPredicate = {
   ],
 };
 
-const tektonEntityContent = EntityContentBlueprint.make({
+export const tektonEntityContent = EntityContentBlueprint.make({
   name: 'tektonEntityContent',
   if: tektonReadPermissionsIfPredicate,
   params: {
