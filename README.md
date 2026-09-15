@@ -20,6 +20,10 @@ For those seeking full autonomy over their plugin's development and release life
 
 Plugins that are key to the functionality and operation of Backstage will continue to reside in the `backstage/backstage` repository - ensuring the central components that underpin the platform are centrally managed and maintained.
 
+## yarn fix
+
+From a workspace directory (`workspaces/<name>`), run `yarn fix` to auto-correct fixable package, lint, and format issues. The pipeline is implemented in `@backstage-community/cli` (`community-cli workspace fix`). See [CONTRIBUTING.md](CONTRIBUTING.md#yarn-fix) for the fixer order and how to add a new fixer.
+
 If you're considering contributing a new plugin, start with the [Contributing a New Plugin](./docs/contributing-new-plugin.md) guide to understand whether community-plugins is the right fit and how the proposal process works. Once your proposal is accepted, follow the guidance in [CONTRIBUTING.md](https://github.com/backstage/community-plugins/blob/main/CONTRIBUTING.md#creating-a-new-workspace) to set up your workspace.
 
 ## Community Plugins Workflow
