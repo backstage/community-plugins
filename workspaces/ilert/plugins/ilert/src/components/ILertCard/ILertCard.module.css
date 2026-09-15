@@ -1,0 +1,7 @@
+.content {
+  padding: 0;
+}
+
+.content :global(> div) {
+  box-shadow: none !important;
+}

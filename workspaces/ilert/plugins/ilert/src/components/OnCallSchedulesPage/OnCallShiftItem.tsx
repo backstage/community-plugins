@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,14 @@
  * limitations under the License.
  */
 import { useApi } from '@backstage/core-plugin-api';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import RepeatIcon from '@material-ui/icons/Repeat';
+import { Text } from '@backstage/ui';
+import { RiRefreshLine } from '@remixicon/react';
 import { DateTime as dt } from 'luxon';
 import { useState } from 'react';
 import { ilertApiRef } from '../../api';
 import { Shift } from '../../types';
 import { ShiftOverrideModal } from '../Shift/ShiftOverrideModal';
-
-const useStyles = makeStyles({
-  button: {
-    marginTop: 4,
-    padding: 0,
-    lineHeight: 1.8,
-    '& span': {
-      lineHeight: 1.8,
-      fontSize: '0.65rem',
-    },
-    '& svg': {
-      fontSize: '0.85rem !important',
-    },
-  },
-});
+import styles from './OnCallShiftItem.module.css';
 
 export const OnCallShiftItem = ({
   scheduleId,
@@ -49,7 +32,6 @@ export const OnCallShiftItem = ({
   shift: Shift;
   refetchOnCallSchedules: () => void;
 }) => {
-  const classes = useStyles();
   const ilertApi = useApi(ilertApiRef);
   const [isModalOpened, setIsModalOpened] = useState(false);
 
@@ -59,50 +41,38 @@ export const OnCallShiftItem = ({
 
   if (!shift || !shift.start) {
     return (
-      <Grid container spacing={0}>
-        <Grid item sm={12}>
-          <Typography variant="subtitle1" color="textSecondary">
-            Nobody
-          </Typography>
-        </Grid>
-      </Grid>
+      <div className={styles.container}>
+        <Text variant="body-small">Nobody</Text>
+      </div>
     );
   }
 
   return (
-    <Grid container spacing={0}>
+    <div className={styles.container}>
       {shift && shift.user ? (
-        <Grid item sm={12}>
-          <Typography variant="subtitle1" noWrap>
-            {ilertApi.getUserInitials(shift.user)}
-          </Typography>
-        </Grid>
+        <Text variant="body-medium">
+          {ilertApi.getUserInitials(shift.user)}
+        </Text>
       ) : null}
-      <Grid item sm={12}>
-        <Typography variant="subtitle2" color="textSecondary">
-          {`${dt.fromISO(shift.start).toFormat('D MMM, HH:mm')} - ${dt
-            .fromISO(shift.end)
-            .toFormat('D MMM, HH:mm')}`}
-        </Typography>
-      </Grid>
-      <Grid item sm={12}>
-        <Button
-          color="primary"
-          size="small"
-          className={classes.button}
-          startIcon={<RepeatIcon />}
-          onClick={handleOverride}
-        >
-          <Typography variant="overline">Override shift</Typography>
-        </Button>
-        <ShiftOverrideModal
-          scheduleId={scheduleId}
-          shift={shift}
-          refetchOnCallSchedules={refetchOnCallSchedules}
-          isModalOpened={isModalOpened}
-          setIsModalOpened={setIsModalOpened}
-        />
-      </Grid>
-    </Grid>
+      <Text variant="body-small">
+        {`${dt.fromISO(shift.start).toFormat('D MMM, HH:mm')} - ${dt
+          .fromISO(shift.end)
+          .toFormat('D MMM, HH:mm')}`}
+      </Text>
+      <div className={styles.buttonWrapper}>
+        {/* eslint-disable-next-line react/forbid-elements */}
+        <button className={styles.button} onClick={handleOverride}>
+          <RiRefreshLine size={14} style={{ marginRight: 6 }} />
+          Override shift
+        </button>
+      </div>
+      <ShiftOverrideModal
+        scheduleId={scheduleId}
+        shift={shift}
+        refetchOnCallSchedules={refetchOnCallSchedules}
+        isModalOpened={isModalOpened}
+        setIsModalOpened={setIsModalOpened}
+      />
+    </div>
   );
 };
