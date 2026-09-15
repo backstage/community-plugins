@@ -16,7 +16,7 @@
 import { Entity } from '@backstage/catalog-model';
 import {
   coreExtensionData,
-  OverridableFrontendPlugin,
+  type OverridableFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import { createExtensionTester } from '@backstage/frontend-test-utils';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
@@ -24,12 +24,11 @@ import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 import topologyPlugin, { topologyEntityContent } from './plugin';
 import { isTopologyAvailable } from './isTopologyAvailable';
 
-const entityWith = (annotations?: Record<string, string>): Entity =>
-  ({
-    apiVersion: 'backstage.io/v1alpha1',
-    kind: 'Component',
-    metadata: { name: 'example', ...(annotations ? { annotations } : {}) },
-  } as Entity);
+const entityWith = (annotations?: Record<string, string>): Entity => ({
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: { name: 'example', ...(annotations ? { annotations } : {}) },
+});
 
 const withKubernetesId = entityWith({
   'backstage.io/kubernetes-id': 'example',
@@ -60,7 +59,7 @@ describe('topology', () => {
     ).toBeDefined();
   });
 
-  it('declares the catalog tab, and which entities get it', () => {
+  it('declares the catalog tab, which entities get it, and who may see it', () => {
     const tester = createExtensionTester(topologyEntityContent);
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe('Topology');
@@ -73,11 +72,9 @@ describe('topology', () => {
     expect(filter(withKubernetesId)).toBe(true);
     expect(filter(withKubernetesNamespace)).toBe(true);
     expect(filter(withoutAnnotations)).toBe(false);
-  });
 
-  // The tab is hidden rather than failing at render time for users without
-  // Kubernetes read access, so the predicate is part of the contract.
-  it('is only attached for users allowed to read kubernetes resources', () => {
+    // The tab is hidden rather than failing at render time for users without
+    // Kubernetes read access, so the predicate is part of the contract.
     expect(topologyEntityContent).toHaveProperty('if', {
       $all: [
         { permissions: { $contains: 'kubernetes.clusters.read#read' } },
