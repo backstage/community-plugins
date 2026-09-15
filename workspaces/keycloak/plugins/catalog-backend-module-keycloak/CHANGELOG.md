@@ -1,5 +1,12 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.22.2
+
+### Patch Changes
+
+- d987b27: Updated dependency `@keycloak/keycloak-admin-client` to `26.7.2`.
+  Updated dependency `@types/lodash` to `4.17.25`.
+
 ## 3.22.1
 
 ### Patch Changes
