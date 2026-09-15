@@ -13,40 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
+import { TextField } from '@backstage/ui';
 import { Context } from '../ContextProvider';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    gap: '1em',
-    flexWrap: 'wrap',
-  },
-  label: {
-    color: `${theme.palette.common.white} !important`,
-  },
-  outline: {
-    color: `${theme.palette.common.white} !important`,
-    borderColor: `${theme.palette.common.white} !important`,
-  },
-}));
+import styles from './ApiBar.module.css';
 
 export const ApiBar = () => {
-  const classes = useStyles();
-
   return (
     <Context.Consumer>
       {value => (
-        <div className={classes.root}>
+        <div className={styles.root}>
           <TextField
+            id="project-id"
             label="Project ID"
-            variant="outlined"
-            defaultValue={value.projectId}
-            InputLabelProps={{ classes: { root: classes.label } }}
-            InputProps={{ classes: { notchedOutline: classes.outline } }}
-            onChange={e =>
-              value.setProjectId?.(parseInt(e.target.value, 10) || undefined)
+            defaultValue={value.projectId?.toString()}
+            onChange={newValue =>
+              value.setProjectId?.(parseInt(newValue, 10) || undefined)
             }
           />
         </div>
