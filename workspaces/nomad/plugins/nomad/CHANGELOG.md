@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nomad
 
+## 1.0.0
+
+### Major Changes
+
+- 8a742c1: Migrated from Material-UI (MUI) to Backstage UI (BUI)
+
 ## 0.22.0
 
 ### Minor Changes
