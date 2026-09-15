@@ -18,11 +18,20 @@ import {
   coreExtensionData,
   type OverridableFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
-import { createExtensionTester } from '@backstage/frontend-test-utils';
+import {
+  createExtensionTester,
+  renderInTestApp,
+} from '@backstage/frontend-test-utils';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
+
+import { screen } from '@testing-library/react';
 
 import quayPlugin, { quayEntityContent } from './plugin';
 import { rootRouteRef, tagRouteRef } from './routes';
+
+jest.mock('./components/Router', () => ({
+  Router: () => <div>quay router</div>,
+}));
 
 const entityWith = (annotations?: Record<string, string>): Entity => ({
   apiVersion: 'backstage.io/v1alpha1',
@@ -36,9 +45,14 @@ const withRepositorySlug = entityWith({
 const withoutAnnotations = entityWith();
 
 describe('quay', () => {
-  it('should export plugin', () => {
-    expect(quayPlugin).toBeDefined();
+  it('exposes the plugin and the extension ids the app resolves', () => {
     expect(quayPlugin.pluginId).toBe('quay');
+    // `getExtension` lives on the value `createFrontendPlugin` returns; the
+    // exported `FrontendPlugin` type does not carry it. It throws on an
+    // unknown id rather than returning undefined.
+    const plugin = quayPlugin as OverridableFrontendPlugin;
+    expect(() => plugin.getExtension('api:quay/quay')).not.toThrow();
+    expect(() => plugin.getExtension('entity-content:quay/quay')).not.toThrow();
   });
 
   it('exposes the routes an app binds to', () => {
@@ -46,15 +60,7 @@ describe('quay', () => {
     expect(quayPlugin.routes.tag).toBe(tagRouteRef);
   });
 
-  it('registers its extensions under the ids the app resolves', () => {
-    // `getExtension` lives on the value `createFrontendPlugin` returns; the
-    // exported `FrontendPlugin` type does not carry it.
-    const plugin = quayPlugin as OverridableFrontendPlugin;
-    expect(plugin.getExtension('api:quay/quay')).toBeDefined();
-    expect(plugin.getExtension('entity-content:quay/quay')).toBeDefined();
-  });
-
-  it('declares the catalog tab, and which entities get it', () => {
+  it('declares the catalog tab, which entities get it, and what it renders', async () => {
     const tester = createExtensionTester(quayEntityContent);
 
     expect(tester.get(EntityContentBlueprint.dataRefs.title)).toBe('Quay');
@@ -65,9 +71,12 @@ describe('quay', () => {
 
     const filter = tester.get(EntityContentBlueprint.dataRefs.filterFunction);
     if (!filter) {
-      throw new Error('the entity content declares no filter');
+      throw new Error('the entity content declares no filter function');
     }
     expect(filter(withRepositorySlug)).toBe(true);
     expect(filter(withoutAnnotations)).toBe(false);
+
+    renderInTestApp(tester.reactElement());
+    expect(await screen.findByText('quay router')).toBeInTheDocument();
   });
 });
