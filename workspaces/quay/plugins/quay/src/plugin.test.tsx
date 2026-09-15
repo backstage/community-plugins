@@ -15,7 +15,11 @@
  */
 import { Entity } from '@backstage/catalog-model';
 import {
+  ApiBlueprint,
+  configApiRef,
   coreExtensionData,
+  discoveryApiRef,
+  identityApiRef,
   type OverridableFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -26,7 +30,8 @@ import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
 
 import { screen } from '@testing-library/react';
 
-import quayPlugin, { quayEntityContent } from './plugin';
+import { quayApiRef } from './api';
+import quayPlugin, { quayApi, quayEntityContent } from './plugin';
 import { rootRouteRef, tagRouteRef } from './routes';
 
 jest.mock('./components/Router', () => ({
@@ -42,11 +47,14 @@ const entityWith = (annotations?: Record<string, string>): Entity => ({
 const withRepositorySlug = entityWith({
   'quay.io/repository-slug': 'example/repo',
 });
-const withoutAnnotations = entityWith();
+const withoutRepositorySlug = entityWith();
 
-describe('quay', () => {
-  it('exposes the plugin and the extension ids the app resolves', () => {
+describe('quayPlugin (new frontend system)', () => {
+  it('registers the extensions and routes an app resolves', () => {
     expect(quayPlugin.pluginId).toBe('quay');
+    expect(quayPlugin.routes.root).toBe(rootRouteRef);
+    expect(quayPlugin.routes.tag).toBe(tagRouteRef);
+
     // `getExtension` lives on the value `createFrontendPlugin` returns; the
     // exported `FrontendPlugin` type does not carry it. It throws on an
     // unknown id rather than returning undefined.
@@ -55,9 +63,20 @@ describe('quay', () => {
     expect(() => plugin.getExtension('entity-content:quay/quay')).not.toThrow();
   });
 
-  it('exposes the routes an app binds to', () => {
-    expect(quayPlugin.routes.root).toBe(rootRouteRef);
-    expect(quayPlugin.routes.tag).toBe(tagRouteRef);
+  it('declares the api the tab reads the registry through', () => {
+    const api = createExtensionTester(quayApi).get(
+      ApiBlueprint.dataRefs.factory,
+    );
+    if (!api) {
+      throw new Error('the extension declares no api factory');
+    }
+
+    expect(api.api).toBe(quayApiRef);
+    expect(api.deps).toEqual({
+      discoveryApi: discoveryApiRef,
+      configApi: configApiRef,
+      identityApi: identityApiRef,
+    });
   });
 
   it('declares the catalog tab, which entities get it, and what it renders', async () => {
@@ -74,7 +93,7 @@ describe('quay', () => {
       throw new Error('the entity content declares no filter function');
     }
     expect(filter(withRepositorySlug)).toBe(true);
-    expect(filter(withoutAnnotations)).toBe(false);
+    expect(filter(withoutRepositorySlug)).toBe(false);
 
     renderInTestApp(tester.reactElement());
     expect(await screen.findByText('quay router')).toBeInTheDocument();
