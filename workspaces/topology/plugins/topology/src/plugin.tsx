@@ -28,7 +28,7 @@ const topologyReadPermissionsIfPredicate = {
   ],
 };
 
-const topologyEntityContent = EntityContentBlueprint.make({
+export const topologyEntityContent = EntityContentBlueprint.make({
   name: 'topology',
   if: topologyReadPermissionsIfPredicate,
   params: {
