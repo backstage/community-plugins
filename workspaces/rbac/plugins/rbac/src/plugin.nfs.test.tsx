@@ -61,18 +61,20 @@ describe('RBAC plugin', () => {
   it('builds both apis from the apis the app injects', () => {
     // The two blueprints differ only in name, ref and client, so a copy-paste slip
     // between them survives every assertion that only checks the ids resolve.
-    const factoryOf = (extension: typeof rbacApi) =>
-      createExtensionTester(extension).get(ApiBlueprint.dataRefs.factory);
     const apis = {
       configApi: mockApis.config(),
       identityApi: mockApis.identity(),
     };
 
-    const rbac = factoryOf(rbacApi);
+    const rbac = createExtensionTester(rbacApi).get(
+      ApiBlueprint.dataRefs.factory,
+    );
     expect(rbac.api).toBe(rbacApiRef);
     expect(rbac.factory(apis)).toBeInstanceOf(RBACBackendClient);
 
-    const licensedUsers = factoryOf(licensedUsersApi);
+    const licensedUsers = createExtensionTester(licensedUsersApi).get(
+      ApiBlueprint.dataRefs.factory,
+    );
     expect(licensedUsers.api).toBe(licensedUsersApiRef);
     expect(licensedUsers.factory(apis)).toBeInstanceOf(LicensedUsersAPIClient);
   });
