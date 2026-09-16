@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 1.0.2
+
+### Patch Changes
+
+- b4dc99d: Updates broken docs links
+
 ## 1.0.1
 
 ### Patch Changes
