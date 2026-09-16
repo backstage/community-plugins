@@ -37,13 +37,8 @@ import { screen } from '@testing-library/react';
 import topologyPlugin, { topologyEntityContent } from './plugin';
 import { isTopologyAvailable } from './isTopologyAvailable';
 
-// `TopologyComponent` is the legacy entry point exported from the same module.
-// Mocking it too keeps the failure readable if the loader is ever pointed at it:
-// the render assertion below fails on the text, instead of React throwing on an
-// undefined component type.
 jest.mock('./components/Topology', () => ({
   TopologyEntityContent: () => <div>topology entity content</div>,
-  TopologyComponent: () => <div>legacy topology component</div>,
 }));
 
 const entityWith = (annotations?: Record<string, string>): Entity => ({
