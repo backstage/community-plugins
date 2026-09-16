@@ -15,7 +15,15 @@ Start this plugin in isolation:
 yarn workspace @backstage-community/plugin-argocd start
 ```
 
-This serves the frontend plugin via `dev/index.tsx` with mocked Argo CD data for faster iteration. Use it for UI extensions, hooks, and API client work.
+This serves the frontend plugin via `dev/index.tsx` with mocked Argo CD data for faster iteration. Extension `if` predicates use a local permission mock.
+
+For the legacy mock entrypoint without guest sign-in, use:
+
+```bash
+yarn workspace @backstage-community/plugin-argocd start:mock
+```
+
+Use it for UI extensions, hooks, and API client work.
 
 Legacy (pre-NFS) entrypoint:
 

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 import defaultExport from './index';
-import { tektonTranslationsModule } from '../index';
+import { tektonTranslationsModule } from '../alpha';
 
 describe('tektonTranslationsModule', () => {
   it('exports the translations module as the default export', () => {
     expect(defaultExport).toBeDefined();
   });
 
-  it('re-exports the translations module from the main index', () => {
+  it('re-exports the translations module from alpha', () => {
     expect(tektonTranslationsModule).toBe(defaultExport);
   });
 });

@@ -1,5 +1,33 @@
 # @backstage-community/plugin-servicenow
 
+## 1.15.2
+
+### Patch Changes
+
+- 1b590ba: Updated dependency `@playwright/test` to `1.63.0`.
+- 3b2eddd: Backstage version bump to v1.54.7
+- Updated dependencies [3b2eddd]
+  - @backstage-community/plugin-servicenow-common@1.13.1
+
+## 1.15.1
+
+### Patch Changes
+
+- 4813d14: Updated dependency `@playwright/test` to `1.62.1`.
+
+## 1.15.0
+
+### Minor Changes
+
+- ede61dd: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 7640966: Improve automated coverage for plugin init, Table API client query contracts, and frontend backend client wiring so Backstage version bumps fail in CI when those surfaces break. The backend client now includes the entity annotation field in ServiceNow incident queries.
+- Updated dependencies [7640966]
+- Updated dependencies [ede61dd]
+  - @backstage-community/plugin-servicenow-common@1.13.0
+
 ## 1.14.0
 
 ### Minor Changes

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useState } from 'react';
 import useAsyncRetry from 'react-use/esm/useAsyncRetry';
 import { cloudbuildApiRef } from '../api/CloudbuildApi';
 import {
@@ -42,10 +41,6 @@ export function useWorkflowRuns(options: {
   const api = useApi(cloudbuildApiRef);
   const errorApi = useApi(errorApiRef);
 
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
-
   const {
     loading,
     value: runs,
@@ -62,8 +57,6 @@ export function useWorkflowRuns(options: {
         (
           workflowRunsData: ActionsListWorkflowRunsForRepoResponseData,
         ): WorkflowRun[] => {
-          setTotal(workflowRunsData.builds.length);
-          // Transformation here
           return workflowRunsData.builds.map(run => {
             const substitutions = run.substitutions ?? ({} as Substitutions);
             return {
@@ -96,23 +89,15 @@ export function useWorkflowRuns(options: {
           });
         },
       );
-  }, [page, pageSize, projectId]);
+  }, [api, cloudBuildFilter, errorApi, location, projectId]);
 
   return [
     {
-      page,
-      pageSize,
       loading,
       runs,
       projectName: `${projectId}`,
-      total,
       error,
     },
-    {
-      runs,
-      setPage,
-      setPageSize,
-      retry,
-    },
+    { runs, retry },
   ] as const;
 }

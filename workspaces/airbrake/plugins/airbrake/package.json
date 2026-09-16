@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-airbrake",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "airbrake",
@@ -59,11 +59,11 @@
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react-router-dom": "6.30.6"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react-router-dom": "6.30.6"
   }
 }

@@ -13,108 +13,121 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import RetryIcon from '@material-ui/icons/Replay';
-import GoogleIcon from '@material-ui/icons/CloudCircle';
+import { Entity } from '@backstage/catalog-model';
+import { Link } from '@backstage/core-components';
+import { useRouteRef } from '@backstage/core-plugin-api';
+import {
+  ButtonIcon,
+  Card,
+  CardBody,
+  CardHeader,
+  Cell,
+  CellText,
+  Flex,
+  Table,
+  Text,
+  Tooltip,
+  TooltipTrigger,
+  useTable,
+  type ColumnConfig,
+  type TableItem,
+} from '@backstage/ui';
+import { RiCloudLine, RiRefreshLine, RiRestartLine } from '@remixicon/react';
+import { DateTime } from 'luxon';
+import { ReactElement, useMemo } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { buildRouteRef } from '../../routes';
+import { getCloudbuildFilter } from '../useCloudBuildFilter';
+import { getLocation } from '../useLocation';
+import { useProjectName } from '../useProjectName';
 import { useWorkflowRuns, WorkflowRun } from '../useWorkflowRuns';
 import { WorkflowRunStatus } from '../WorkflowRunStatus';
-import SyncIcon from '@material-ui/icons/Sync';
-import { useProjectName } from '../useProjectName';
-import { Entity } from '@backstage/catalog-model';
-import { buildRouteRef } from '../../routes';
-import { DateTime } from 'luxon';
-import { Table, TableColumn, Link } from '@backstage/core-components';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { getLocation } from '../useLocation';
-import { getCloudbuildFilter } from '../useCloudBuildFilter';
 
-const generatedColumns: TableColumn[] = [
+type WorkflowRunTableItem = WorkflowRun & TableItem;
+
+const createColumns = (): ColumnConfig<WorkflowRunTableItem>[] => [
   {
-    title: 'Status',
-    width: '150px',
-
-    render: (row: Partial<WorkflowRun>) => (
-      <Box display="flex" alignItems="center">
-        <WorkflowRunStatus status={row.status} />
-      </Box>
+    id: 'status',
+    label: 'Status',
+    cell: item => (
+      <Cell>
+        <WorkflowRunStatus status={item.status} />
+      </Cell>
     ),
   },
   {
-    title: 'Build',
-    field: 'id',
-    type: 'numeric',
-    width: '150px',
-    render: (row: Partial<WorkflowRun>) => {
-      const LinkWrapper = () => {
+    id: 'id',
+    label: 'Build',
+    isRowHeader: true,
+    cell: (item): ReactElement => {
+      const BuildLink = () => {
         const routeLink = useRouteRef(buildRouteRef);
         return (
-          <Link data-testid="cell-source" to={routeLink({ id: row.id! })}>
-            {row.id?.substring(0, 8)}
+          <Link
+            component={RouterLink}
+            data-testid="cell-source"
+            to={routeLink({ id: item.id })}
+          >
+            {item.id.substring(0, 8)}
           </Link>
         );
       };
-
-      return <LinkWrapper />;
+      return (
+        <Cell>
+          <BuildLink />
+        </Cell>
+      );
     },
   },
   {
-    title: 'Trigger Name',
-    render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
-        {row.substitutions?.TRIGGER_NAME}
-      </Typography>
-    ),
+    id: 'triggerName',
+    label: 'Trigger Name',
+    cell: item => <CellText title={item.substitutions.TRIGGER_NAME ?? ''} />,
   },
   {
-    title: 'Source',
-    field: 'source',
-    highlight: true,
-    width: '200px',
-    render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
-        {row.message}
-      </Typography>
-    ),
+    id: 'source',
+    label: 'Source',
+    cell: item => <CellText title={item.message ?? ''} />,
   },
   {
-    title: 'Ref',
-    render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
-        {row.substitutions?.REF_NAME}
-      </Typography>
-    ),
+    id: 'ref',
+    label: 'Ref',
+    cell: item => <CellText title={item.substitutions.REF_NAME ?? ''} />,
   },
   {
-    title: 'Commit',
-    render: (row: Partial<WorkflowRun>) => (
-      <Typography variant="body2" noWrap>
-        {row.substitutions?.SHORT_SHA}
-      </Typography>
-    ),
+    id: 'commit',
+    label: 'Commit',
+    cell: item => <CellText title={item.substitutions.SHORT_SHA ?? ''} />,
   },
   {
-    title: 'Created',
-    render: (row: Partial<WorkflowRun>) => (
-      <Typography data-testid="cell-created" variant="body2" noWrap>
-        {DateTime.fromISO(row.createTime ?? DateTime.now().toISO()!).toFormat(
+    id: 'created',
+    label: 'Created',
+    cell: item => (
+      <CellText
+        data-testid="cell-created"
+        title={DateTime.fromISO(item.createTime).toFormat(
           'dd-MM-yyyy hh:mm:ss',
         )}
-      </Typography>
+      />
     ),
   },
   {
-    title: 'Actions',
-    render: (row: Partial<WorkflowRun>) => (
-      <Tooltip title="Rerun workflow">
-        <IconButton data-testid="action-rerun" onClick={row.rerun}>
-          <RetryIcon />
-        </IconButton>
-      </Tooltip>
+    id: 'actions',
+    label: 'Actions',
+    cell: item => (
+      <Cell>
+        <TooltipTrigger>
+          <ButtonIcon
+            aria-label="Rerun workflow"
+            data-testid="action-rerun"
+            icon={<RiRestartLine size={16} />}
+            onPress={item.rerun}
+            variant="secondary"
+          />
+          <Tooltip>Rerun workflow</Tooltip>
+        </TooltipTrigger>
+      </Cell>
     ),
-    width: '10%',
   },
 ];
 
@@ -123,60 +136,69 @@ type Props = {
   retry: () => void;
   runs?: WorkflowRun[];
   projectName: string;
-  page: number;
-  onChangePage: (page: number) => void;
-  total: number;
-  pageSize: number;
-  onChangePageSize: (pageSize: number) => void;
+  title?: string;
+  error?: Error;
 };
 
 export const WorkflowRunsTableView = ({
   projectName,
+  title,
   loading,
-  pageSize,
-  page,
   retry,
   runs,
-  onChangePage,
-  onChangePageSize,
-  total,
+  error,
 }: Props) => {
+  const columnConfig = useMemo(() => createColumns(), []);
+  const { tableProps } = useTable<WorkflowRunTableItem>({
+    mode: 'complete',
+    data: runs,
+    paginationOptions: {
+      pageSize: 5,
+      pageSizeOptions: [5, 10, 20, 50],
+    },
+  });
+
   return (
-    <Table
-      isLoading={loading}
-      options={{ paging: true, pageSize, padding: 'dense' }}
-      totalCount={total}
-      page={page}
-      actions={[
-        {
-          icon: () => <SyncIcon />,
-          tooltip: 'Reload workflow runs',
-          isFreeAction: true,
-          onClick: () => retry(),
-        },
-      ]}
-      data={runs ?? []}
-      onPageChange={onChangePage}
-      onRowsPerPageChange={onChangePageSize}
-      style={{ width: '100%' }}
-      title={
-        <Box display="flex" alignItems="center">
-          <GoogleIcon />
-          <Box mr={1} />
-          <Typography variant="h6">{projectName}</Typography>
-        </Box>
-      }
-      columns={generatedColumns}
-    />
+    <Card>
+      <CardHeader>
+        <Flex justify="between" align="center">
+          <Flex align="center" gap="2">
+            <RiCloudLine size={20} />
+            <Text variant="title-medium">{title ?? projectName}</Text>
+          </Flex>
+          <TooltipTrigger>
+            <ButtonIcon
+              aria-label="Reload workflow runs"
+              icon={<RiRefreshLine size={20} />}
+              onPress={retry}
+              variant="secondary"
+            />
+            <Tooltip>Reload workflow runs</Tooltip>
+          </TooltipTrigger>
+        </Flex>
+      </CardHeader>
+      <CardBody>
+        <Table
+          columnConfig={columnConfig}
+          {...tableProps}
+          isPending={loading}
+          error={error}
+          emptyState={<Text>No workflow runs found.</Text>}
+        />
+      </CardBody>
+    </Card>
   );
 };
 
-export const WorkflowRunsTable = (props: { entity: Entity }) => {
+export const WorkflowRunsTable = (props: {
+  entity: Entity;
+  title?: string;
+}) => {
   const { value: projectName, loading } = useProjectName(props.entity);
   const [projectId] = (projectName ?? '/').split('/');
   const location = getLocation(props.entity);
   const cloudBuildFilter = getCloudbuildFilter(props.entity);
-  const [tableProps, { retry, setPage, setPageSize }] = useWorkflowRuns({
+  const [tableProps, { retry }] = useWorkflowRuns({
     projectId,
     location,
     cloudBuildFilter,
@@ -184,11 +206,12 @@ export const WorkflowRunsTable = (props: { entity: Entity }) => {
 
   return (
     <WorkflowRunsTableView
-      {...tableProps}
       loading={loading || tableProps.loading}
+      projectName={tableProps.projectName}
+      title={props.title}
+      runs={tableProps.runs}
+      error={tableProps.error}
       retry={retry}
-      onChangePageSize={setPageSize}
-      onChangePage={setPage}
     />
   );
 };

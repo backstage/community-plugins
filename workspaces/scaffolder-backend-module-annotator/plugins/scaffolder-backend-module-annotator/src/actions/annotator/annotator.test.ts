@@ -319,4 +319,12 @@ describe('catalog annotator', () => {
     expect(ctx.logger.info).toHaveBeenCalledWith('some logger info msg');
     expect(entity?.spec?.scaffoldedFrom).toBe('test-entityRef');
   });
+
+  it('attaches default examples only for catalog:annotate', () => {
+    expect(createAnnotatorAction().examples?.length).toBeGreaterThan(0);
+    expect(
+      createAnnotatorAction('catalog:company-title', 'Adds a company title')
+        .examples,
+    ).toBeUndefined();
+  });
 });

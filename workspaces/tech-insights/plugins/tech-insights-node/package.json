@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-tech-insights-node",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "backstage": {
     "role": "node-library",
     "pluginId": "tech-insights",

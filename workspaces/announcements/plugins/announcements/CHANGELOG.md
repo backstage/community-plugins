@@ -1,5 +1,17 @@
 # @backstage-community/plugin-announcements
 
+## 2.13.0
+
+### Minor Changes
+
+- bae4489: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [bae4489]
+  - @backstage-community/plugin-announcements-common@0.24.0
+  - @backstage-community/plugin-announcements-react@0.29.0
+
 ## 2.12.1
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @backstage-community/plugin-auth-backend-module-keycloak-provider
 
+## 0.5.1
+
+### Patch Changes
+
+- 040750f: Add contributor guides, dev harnesses, and bump-trust test coverage for the Keycloak auth and catalog backend modules.
+
+  - Auth: `dev/` harness, module wiring and auth↔catalog sanitization contract tests
+  - Catalog: transformer extension-point, schedule contract, batch-failure metrics, and `ensureTokenValid` tests
+  - Workspace: README index and CONTRIBUTING guides with validation/smoke checklists
+
 ## 0.5.0
 
 ### Minor Changes
