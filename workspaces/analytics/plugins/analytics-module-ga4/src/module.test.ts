@@ -21,10 +21,11 @@ import {
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
 import { GoogleAnalytics4 } from './apis/implementations/AnalyticsApi';
-import { ga4Implementation, ga4Module } from './module';
+import ga4Module from './alpha';
+import { ga4Implementation } from './module';
 
 describe('ga4 analytics module', () => {
-  it('should export an NFS frontend module for the app plugin', () => {
+  it('exports a frontend module carrying the analytics implementation', () => {
     expect(ga4Module.$$type).toBe('@backstage/FrontendModule');
     expect(ga4Module.pluginId).toBe('app');
 
@@ -42,9 +43,6 @@ describe('ga4 analytics module', () => {
     const implementation = createExtensionTester(ga4Implementation).get(
       AnalyticsImplementationBlueprint.dataRefs.factory,
     );
-    if (!implementation) {
-      throw new Error('the extension declares no analytics implementation');
-    }
 
     expect(implementation.deps).toEqual({
       configApi: configApiRef,

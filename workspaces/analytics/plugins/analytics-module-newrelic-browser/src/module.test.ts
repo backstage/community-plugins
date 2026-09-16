@@ -23,17 +23,21 @@ import {
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
 import { NewRelicBrowser } from './apis/implementations/AnalyticsApi';
-import { newRelicBrowserImplementation, newRelicBrowserModule } from './module';
+import newRelicBrowserModule from './alpha';
+import { newRelicBrowserImplementation } from './module';
 
 // The real agent boots a browser SDK, and hashing the user id needs
 // `crypto.subtle`, which jsdom does not provide.
 jest.mock('@newrelic/browser-agent/loaders/browser-agent', () => ({
   BrowserAgent: jest.fn().mockImplementation(() => ({ setUserId: jest.fn() })),
 }));
-Object.defineProperty(window, 'crypto', { value: webcrypto });
+Object.defineProperty(window, 'crypto', {
+  value: webcrypto,
+  configurable: true,
+});
 
 describe('New Relic browser analytics module', () => {
-  it('should export an NFS frontend module for the app plugin', () => {
+  it('exports a frontend module carrying the analytics implementation', () => {
     expect(newRelicBrowserModule.$$type).toBe('@backstage/FrontendModule');
     expect(newRelicBrowserModule.pluginId).toBe('app');
 
@@ -51,9 +55,6 @@ describe('New Relic browser analytics module', () => {
     const implementation = createExtensionTester(
       newRelicBrowserImplementation,
     ).get(AnalyticsImplementationBlueprint.dataRefs.factory);
-    if (!implementation) {
-      throw new Error('the extension declares no analytics implementation');
-    }
 
     expect(implementation.deps).toEqual({
       configApi: configApiRef,

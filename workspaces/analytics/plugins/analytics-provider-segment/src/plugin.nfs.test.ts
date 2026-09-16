@@ -21,10 +21,24 @@ import {
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
 import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
-import { segmentImplementation, segmentModule } from './module';
+import segmentModule from '.';
+import { segmentImplementation } from './module';
+
+// The real constructor calls AnalyticsBrowser().load(), which leaves a worker behind in
+// jsdom. The sibling Segment.test.ts mocks it for the same reason.
+jest.mock('@segment/analytics-next', () => ({
+  AnalyticsBrowser: function AnalyticsBrowser() {
+    return {
+      load: jest.fn(),
+      identify: jest.fn(),
+      page: jest.fn(),
+      track: jest.fn(),
+    };
+  },
+}));
 
 describe('Segment analytics module', () => {
-  it('should export an NFS frontend module for the app plugin', () => {
+  it('exports a frontend module carrying the analytics implementation', () => {
     expect(segmentModule.$$type).toBe('@backstage/FrontendModule');
     expect(segmentModule.pluginId).toBe('app');
 
@@ -42,9 +56,6 @@ describe('Segment analytics module', () => {
     const implementation = createExtensionTester(segmentImplementation).get(
       AnalyticsImplementationBlueprint.dataRefs.factory,
     );
-    if (!implementation) {
-      throw new Error('the extension declares no analytics implementation');
-    }
 
     expect(implementation.deps).toEqual({
       configApi: configApiRef,
