@@ -15,24 +15,28 @@
  */
 
 /**
- * New Frontend System dev mode for the Argo CD plugin (mock data).
+ * Playwright NFS entry. Same mocked NFS app as `yarn start:mock`.
+ *
+ * Must be self-contained: a static `import './index'` compiles under rspack
+ * but React never mounts, so Playwright sees a blank page.
  */
 
-import ReactDOM from 'react-dom/client';
-
+import '@backstage/cli/asset-types';
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
+import ReactDOM from 'react-dom/client';
+
 import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
   createFrontendModule,
   createFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { permissionApiRef } from '@backstage/plugin-permission-react';
 import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
 
@@ -55,16 +59,16 @@ import {
 } from '../src/api';
 import argocdPlugin from '../src/plugin';
 import argocdTranslationsModule from '../src/translations';
-import {
-  mockArgocdConfig,
-  mockArgocdMultiInstanceConfig,
-  mockEntity,
-  mockArgoMultiInstanceSelectorEntity,
-  mockArgoMultiInstanceAppNameEntity,
-  mockArgoOneAppEntity,
-} from './__data__';
+import { mockArgocdConfig, mockArgocdMultiInstanceConfig } from './__data__';
 import { getArgocdInstances } from '../src/hooks/useArgocdConfig';
 import { ConfigReader } from '@backstage/config';
+import {
+  createMockPermissionApi,
+  installMockArgocdPermissionsPathSync,
+  mockCatalogApi,
+} from './mocks';
+
+installMockArgocdPermissionsPathSync();
 
 const combinedArgocdConfig = {
   argocd: {
@@ -84,6 +88,49 @@ const combinedArgocdConfig = {
 
 const configApi = new ConfigReader(combinedArgocdConfig);
 const mockArgoCDApi = new MockArgoCDApiClient();
+
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={['guest']}
+        />
+      ),
+  },
+});
+
+const catalogPluginOverrides = catalogPlugin.withOverrides({
+  extensions: [
+    catalogPlugin.getExtension('api:catalog').override({
+      params: defineParams =>
+        defineParams({
+          api: catalogApiRef,
+          deps: {},
+          factory: () => mockCatalogApi,
+        }),
+    }),
+  ],
+});
+
+const appDevModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    signInPage,
+    ApiBlueprint.make({
+      name: 'permission',
+      params: defineParams =>
+        defineParams({
+          api: permissionApiRef,
+          deps: {},
+          factory: () => createMockPermissionApi(),
+        }),
+    }),
+  ],
+});
 
 const argocdDevModule = createFrontendModule({
   pluginId: 'backstage-community-argocd',
@@ -153,60 +200,23 @@ const kubernetesAuthDevModule = createFrontendModule({
   ],
 });
 
-const permissionDevModule = createFrontendModule({
-  pluginId: 'permission',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'permission-mock',
-      params: defineParams =>
-        defineParams({
-          api: permissionApiRef,
-          deps: {},
-          factory: () => ({
-            authorize: async () => ({ result: AuthorizeResult.ALLOW }),
-          }),
-        }),
-    }),
-  ],
-});
-
-const catalogDevModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'catalog-mock',
-      params: defineParams =>
-        defineParams({
-          api: catalogApiRef,
-          deps: {},
-          factory: () =>
-            catalogApiMock({
-              entities: [
-                mockEntity,
-                mockArgoMultiInstanceSelectorEntity,
-                mockArgoMultiInstanceAppNameEntity,
-                mockArgoOneAppEntity,
-              ],
-            }),
-        }),
-    }),
-  ],
-});
-
 const app = createApp({
   features: [
-    catalogPlugin,
+    catalogPluginOverrides,
     userSettingsPlugin,
     argocdPlugin,
     argocdTranslationsModule,
+    appDevModule,
     argocdDevModule,
-    catalogDevModule,
     kubernetesStubPlugin,
     kubernetesDevModule,
     kubernetesAuthStubPlugin,
     kubernetesAuthDevModule,
-    permissionDevModule,
   ],
 });
+
+if (window.location.pathname === '/') {
+  window.location.replace('/catalog');
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
