@@ -19,11 +19,17 @@ import {
   type FilterPredicate,
 } from '@backstage/filter-predicates';
 import {
+  ApiBlueprint,
+  configApiRef,
   coreExtensionData,
+  discoveryApiRef,
+  fetchApiRef,
+  type ExtensionDefinition,
   type OverridableFrontendPlugin,
 } from '@backstage/frontend-plugin-api';
 import {
   createExtensionTester,
+  mockApis,
   renderInTestApp,
 } from '@backstage/frontend-test-utils';
 import { EntityContentBlueprint } from '@backstage/plugin-catalog-react/alpha';
@@ -31,7 +37,12 @@ import { Permission } from '@backstage/plugin-permission-common';
 import { argocdViewPermission } from '@backstage-community/plugin-argocd-common';
 import { screen } from '@testing-library/react';
 
-import argocdPlugin, {
+import { argoCDApiRef, argoCDInstanceApiRef } from './api';
+import { ArgoCDApiClient } from './api/ArgoCDApiClient';
+import { ArgoCDInstanceApiClient } from './api/ArgoCDInstanceApiClient';
+import argocdFrontendPlugin, {
+  argoCDApi,
+  argoCDInstanceApi,
   deploymentLifecycleEntityContent,
   deploymentSummaryEntityContent,
 } from './plugin';
@@ -55,7 +66,9 @@ const withAppSelector = entityWith({ 'argocd/app-selector': 'app=example' });
 const withAppName = entityWith({ 'argocd/app-name': 'example' });
 const withoutAnnotations = entityWith();
 
-// How the app encodes a permission before matching it against the predicate.
+// The app parses the predicate's `name#action` string back into a Permission and
+// authorizes that, so this asserts the string hardcoded in plugin.tsx still matches
+// the permission argocd-common publishes.
 const granted = (...permissions: Permission[]) => ({
   featureFlags: [],
   permissions: permissions.map(
@@ -63,7 +76,7 @@ const granted = (...permissions: Permission[]) => ({
   ),
 });
 
-const gatesOnArgocdView = (extension: unknown) => {
+const gatesOnArgocdView = (extension: ExtensionDefinition) => {
   // `if` is an internal property of the extension, so the guard below is
   // load-bearing: it fails loudly if Backstage ever relocates it.
   const { if: predicate } = extension as { if?: FilterPredicate };
@@ -78,21 +91,65 @@ const gatesOnArgocdView = (extension: unknown) => {
 
 describe('argocdPlugin (new frontend system)', () => {
   it('exposes the plugin, its route, and the extension ids the app resolves', () => {
-    expect(argocdPlugin.pluginId).toBe('backstage-community-argocd');
-    expect(argocdPlugin.routes.root).toBe(rootRouteRef);
+    expect(argocdFrontendPlugin.pluginId).toBe('backstage-community-argocd');
+    expect(argocdFrontendPlugin.routes.root).toBe(rootRouteRef);
 
     // `getExtension` lives on the value `createFrontendPlugin` returns; the
     // exported `FrontendPlugin` type does not carry it. It throws on an
     // unknown id rather than returning undefined.
-    const plugin = argocdPlugin as OverridableFrontendPlugin;
+    const overridable = argocdFrontendPlugin as OverridableFrontendPlugin;
     for (const id of [
       'api:backstage-community-argocd/argocd',
       'api:backstage-community-argocd/argocd-instance',
       'entity-content:backstage-community-argocd/deployment-lifecycle',
       'entity-content:backstage-community-argocd/deployment-summary',
     ]) {
-      expect(() => plugin.getExtension(id)).not.toThrow();
+      expect(() => overridable.getExtension(id)).not.toThrow();
     }
+  });
+
+  it('builds both apis from the apis the app injects', () => {
+    // The two blueprints differ only in name, ref and client, so a copy-paste slip
+    // between them survives every assertion that only checks the ids resolve.
+    const deps = {
+      discoveryApi: mockApis.discovery(),
+      fetchApi: mockApis.fetch(),
+      configApi: mockApis.config({
+        data: {
+          argocd: {
+            namespacedApps: true,
+            appLocatorMethods: [
+              {
+                type: 'config',
+                instances: [{ name: 'main', url: 'https://argocd.test' }],
+              },
+            ],
+          },
+        },
+      }),
+    };
+
+    const api = createExtensionTester(argoCDApi).get(
+      ApiBlueprint.dataRefs.factory,
+    );
+    expect(api.api).toBe(argoCDApiRef);
+    expect(api.deps).toEqual({
+      discoveryApi: discoveryApiRef,
+      fetchApi: fetchApiRef,
+      configApi: configApiRef,
+    });
+    expect(api.factory(deps)).toBeInstanceOf(ArgoCDApiClient);
+
+    const instanceApi = createExtensionTester(argoCDInstanceApi).get(
+      ApiBlueprint.dataRefs.factory,
+    );
+    expect(instanceApi.api).toBe(argoCDInstanceApiRef);
+    expect(
+      instanceApi.factory({
+        configApi: deps.configApi,
+        argoCDApi: api.factory(deps),
+      }),
+    ).toBeInstanceOf(ArgoCDInstanceApiClient);
   });
 
   it('declares the deployment lifecycle tab, which entities get it, and mounts its content', async () => {
@@ -125,6 +182,9 @@ describe('argocdPlugin (new frontend system)', () => {
       'Deployment Summary',
     );
     expect(tester.get(coreExtensionData.routePath)).toBe('/deployment-summary');
+    // Unlike the lifecycle tab, summary declares no route ref. Recorded so the
+    // asymmetry is a decision rather than something nobody noticed.
+    expect(tester.get(coreExtensionData.routeRef)).toBeUndefined();
 
     const filter = tester.get(EntityContentBlueprint.dataRefs.filterFunction);
     if (!filter) {
