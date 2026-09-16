@@ -1,5 +1,13 @@
 ## @backstage-community/plugin-rbac-node [1.4.0](https://github.com/janus-idp/backstage-plugins/compare/@backstage-community/plugin-rbac-node@1.3.1...@backstage-community/plugin-rbac-node@1.4.0) (2024-07-26)
 
+## 2.1.1
+
+### Patch Changes
+
+- 2501a41: Backstage version bump to v1.54.7
+- Updated dependencies [2501a41]
+  - @backstage-community/plugin-rbac-common@2.1.1
+
 ## 2.1.0
 
 ### Minor Changes
