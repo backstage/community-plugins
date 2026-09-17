@@ -20,19 +20,20 @@ import {
   StatusWarning,
 } from '@backstage/core-components';
 import { BuildStatus } from '../../api';
-import type { ReactElement } from 'react';
-
-const STATUS_ICONS: Record<BuildStatus, ReactElement> = {
-  succeeded: <StatusOK />,
-  failed: <StatusError />,
-  stopped: <StatusWarning />,
-};
 
 interface StatusIconProps {
   buildStatus: BuildStatus;
 }
 
-export const StatusIcon = ({ buildStatus }: StatusIconProps) =>
-  (STATUS_ICONS as Partial<Record<BuildStatus, ReactElement>>)[buildStatus] ?? (
-    <StatusAborted />
-  );
+export const StatusIcon = ({ buildStatus }: StatusIconProps) => {
+  switch (buildStatus) {
+    case 'succeeded':
+      return <StatusOK />;
+    case 'failed':
+      return <StatusError />;
+    case 'stopped':
+      return <StatusWarning />;
+    default:
+      return <StatusAborted />;
+  }
+};
