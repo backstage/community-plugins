@@ -187,6 +187,23 @@ export interface TechInsightsFactCheckerFactoryExtensionPoint {
 // @public
 export const techInsightsFactCheckerFactoryExtensionPoint: ExtensionPoint<TechInsightsFactCheckerFactoryExtensionPoint>;
 
+// @public
+export interface TechInsightsFactInsertService {
+  insertFacts(options: {
+    id: string;
+    facts: TechInsightFact[];
+    lifecycle?: FactLifecycle;
+  }): Promise<void>;
+  insertFactSchema(schemaDefinition: FactSchemaDefinition): Promise<void>;
+}
+
+// @public
+export const techInsightsFactInsertServiceRef: ServiceRef<
+  TechInsightsFactInsertService,
+  'plugin',
+  'singleton'
+>;
+
 // @public (undocumented)
 export interface TechInsightsFactRetrieverRegistryExtensionPoint {
   // (undocumented)
