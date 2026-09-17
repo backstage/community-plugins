@@ -5644,15 +5644,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@segment/analytics-core@npm:1.8.0":
-  version: 1.8.0
-  resolution: "@segment/analytics-core@npm:1.8.0"
+"@segment/analytics-core@npm:1.8.3":
+  version: 1.8.3
+  resolution: "@segment/analytics-core@npm:1.8.3"
   dependencies:
     "@lukeed/uuid": "npm:^2.0.0"
     "@segment/analytics-generic-utils": "npm:1.2.0"
     dset: "npm:^3.1.4"
     tslib: "npm:^2.4.1"
-  checksum: 10/3115567abe753f31d7a792cd63774426ca7ee927160f0367acc4d1caf160da3fcd697d023d028cbbd4dfd52f04f7ee42d877af735c0ceb4e7d6fefd7f99c63b9
+  checksum: 10/815b9997ebda6ac2fe03b234e20096bdb8252ac91dc2e95172bc03b8ce9749da5e39a52865d5c46f61919cf902054863797cbcd255e4bfb90ed8c6cee47f9147
   languageName: node
   linkType: hard
 
@@ -5666,20 +5666,30 @@ __metadata:
   linkType: hard
 
 "@segment/analytics-next@npm:^1.58.0":
-  version: 1.76.0
-  resolution: "@segment/analytics-next@npm:1.76.0"
+  version: 1.84.3
+  resolution: "@segment/analytics-next@npm:1.84.3"
   dependencies:
     "@lukeed/uuid": "npm:^2.0.0"
-    "@segment/analytics-core": "npm:1.8.0"
+    "@segment/analytics-core": "npm:1.8.3"
     "@segment/analytics-generic-utils": "npm:1.2.0"
+    "@segment/analytics-page-tools": "npm:1.0.0"
     "@segment/analytics.js-video-plugins": "npm:^0.2.1"
     "@segment/facade": "npm:^3.4.9"
     dset: "npm:^3.1.4"
-    js-cookie: "npm:3.0.1"
+    js-cookie: "npm:^3.0.7"
     node-fetch: "npm:^2.6.7"
     tslib: "npm:^2.4.1"
     unfetch: "npm:^4.1.0"
-  checksum: 10/9fdb4627333dc20b94b620e526185e449537bc1d2f243ef9346a850da3efe6e1651bdf39e9fddd0b89ff90bfb8055e7ef8005558ad0a2f0c077dd434628bc0e4
+  checksum: 10/91e8a8908e099a016fda31c69952f116180300ae4a96432b2cfeccce820d28ca5ec681e94f50d831a6dff1a9e0205463f9de9b5da57e8b9e7cc50ad7f5adb029
+  languageName: node
+  linkType: hard
+
+"@segment/analytics-page-tools@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@segment/analytics-page-tools@npm:1.0.0"
+  dependencies:
+    tslib: "npm:^2.4.1"
+  checksum: 10/5af7ba4c22b93a64680fd108299d536634340dc54ecb1c83ba7f2433424a846d33465c6d204ef8ab6e132702f891b32bb0a3df56c971b6bcf7d503d42eaa1cfe
   languageName: node
   linkType: hard
 
@@ -14342,14 +14352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-cookie@npm:3.0.1":
-  version: 3.0.1
-  resolution: "js-cookie@npm:3.0.1"
-  checksum: 10/f1c452f4a53f3a365e559815e971da0bd55764be24b77167c64adfb15cb38cbb05a3e7ecf5c3337cc259cf56382f44bd62acb88d1e1166d46317d5c8fdf91203
-  languageName: node
-  linkType: hard
-
-"js-cookie@npm:^3.0.0":
+"js-cookie@npm:^3.0.0, js-cookie@npm:^3.0.7":
   version: 3.0.8
   resolution: "js-cookie@npm:3.0.8"
   checksum: 10/6bc10dc1ef0ad4780cd43a0413702d0b8d9d8d167c4fb605ae66c388270dece6b4cad4c8944654cc67b6e0e7639da379a7b48e7b7ad8711a80f60aba6a915548
