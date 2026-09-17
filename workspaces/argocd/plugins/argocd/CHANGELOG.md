@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd
 
+## 3.1.2
+
+### Patch Changes
+
+- 59772de: Marked `username` and `password` as optional in config schema and fixed visibility metadata for authentication fields.
+
 ## 3.1.1
 
 ### Patch Changes
