@@ -26,15 +26,25 @@ import { NewRelicBrowser } from './apis/implementations/AnalyticsApi';
 import newRelicBrowserModule from './alpha';
 import { newRelicBrowserImplementation } from './module';
 
-// The real agent boots a browser SDK, and hashing the user id needs
-// `crypto.subtle`, which jsdom does not provide.
+// Only the agent is mocked. Everything else on the identity path is real:
+// `getBackstageIdentity`, the SHA-256 hash, and jsdom's missing `crypto.subtle`,
+// which the polyfill below supplies.
+const setUserId = jest.fn();
 jest.mock('@newrelic/browser-agent/loaders/browser-agent', () => ({
-  BrowserAgent: jest.fn().mockImplementation(() => ({ setUserId: jest.fn() })),
+  BrowserAgent: jest.fn().mockImplementation(() => ({
+    setUserId: (userId: string) => setUserId(userId),
+  })),
 }));
 Object.defineProperty(window, 'crypto', {
   value: webcrypto,
   configurable: true,
 });
+
+/** Resolve once the agent is told who the user is. */
+const userIdentified = () =>
+  new Promise<string>(resolve => {
+    setUserId.mockImplementation(resolve);
+  });
 
 describe('New Relic browser analytics module', () => {
   it('exports a frontend module carrying the analytics implementation', () => {
@@ -51,7 +61,7 @@ describe('New Relic browser analytics module', () => {
     ]);
   });
 
-  it('builds the analytics API from the apis the app injects', () => {
+  it('builds the analytics API from the apis the app injects, and identifies the user', async () => {
     const implementation = createExtensionTester(
       newRelicBrowserImplementation,
     ).get(AnalyticsImplementationBlueprint.dataRefs.factory);
@@ -60,6 +70,7 @@ describe('New Relic browser analytics module', () => {
       configApi: configApiRef,
       identityApi: identityApiRef,
     });
+    const identified = userIdentified();
     expect(
       implementation.factory({
         configApi: mockApis.config({
@@ -79,5 +90,10 @@ describe('New Relic browser analytics module', () => {
         identityApi: mockApis.identity(),
       }),
     ).toBeInstanceOf(NewRelicBrowser);
+
+    // The constructor starts getBackstageIdentity -> hash -> setUserId and returns
+    // before it settles. Awaiting it covers that path and keeps it from landing in
+    // whatever test runs next.
+    expect(await identified).toMatch(/^[0-9a-f]{64}$/);
   });
 });
