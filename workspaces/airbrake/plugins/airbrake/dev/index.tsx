@@ -30,6 +30,11 @@ import CloudOffIcon from '@material-ui/icons/CloudOff';
 import CloudIcon from '@material-ui/icons/Cloud';
 import { Context, ContextProvider } from './components/ContextProvider';
 
+// The dev harness bootstraps a standalone app, so it needs the BUI styles
+// even though this package is a frontend-plugin.
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
 createDevApp()
   .registerPlugin(airbrakePlugin)
   .addPage({
