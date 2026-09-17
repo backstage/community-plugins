@@ -36,7 +36,7 @@ const argocdReadPermissionIfPredicate = {
   permissions: { $contains: 'argocd.view.read#read' },
 };
 
-const argoCDApi = ApiBlueprint.make({
+export const argoCDApi = ApiBlueprint.make({
   name: 'argocd',
   params: defineParams =>
     defineParams({
@@ -57,7 +57,7 @@ const argoCDApi = ApiBlueprint.make({
     }),
 });
 
-const argoCDInstanceApi = ApiBlueprint.make({
+export const argoCDInstanceApi = ApiBlueprint.make({
   name: 'argocd-instance',
   params: defineParams =>
     defineParams({
@@ -74,7 +74,7 @@ const argoCDInstanceApi = ApiBlueprint.make({
     }),
 });
 
-const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
+export const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
   name: 'deployment-lifecycle',
   if: argocdReadPermissionIfPredicate,
   params: {
@@ -89,7 +89,7 @@ const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
   },
 });
 
-const deploymentSummaryEntityContent = EntityContentBlueprint.make({
+export const deploymentSummaryEntityContent = EntityContentBlueprint.make({
   name: 'deployment-summary',
   if: argocdReadPermissionIfPredicate,
   params: {
