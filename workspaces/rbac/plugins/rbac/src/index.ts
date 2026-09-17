@@ -26,3 +26,5 @@ export type {
   RoleBasedConditions,
   ConditionRule,
 } from './types';
+
+export { rbacTranslationRef, rbacTranslations } from './alpha/translations';
