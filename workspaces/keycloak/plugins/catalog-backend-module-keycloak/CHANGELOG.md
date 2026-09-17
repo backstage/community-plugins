@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-keycloak
 
+## 3.23.1
+
+### Patch Changes
+
+- c527604: Bumps `@keycloak/keycloak-admin-client` to `26.7.3`
+
 ## 3.23.0
 
 ### Minor Changes
