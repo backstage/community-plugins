@@ -6,7 +6,7 @@
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
-// @alpha
+// @public
 export const argocdTranslationRef: TranslationRef<
   'plugin.argocd',
   {
@@ -109,7 +109,7 @@ export const argocdTranslationRef: TranslationRef<
   }
 >;
 
-// @alpha
+// @public
 export const argocdTranslations: TranslationResource<'plugin.argocd'>;
 
 // (No @packageDocumentation comment for this package)
