@@ -22,7 +22,7 @@ import {
 import { BuildStatus } from '../../api';
 import type { ReactElement } from 'react';
 
-const STATUS_ICONS: Partial<Record<BuildStatus, ReactElement>> = {
+const STATUS_ICONS: Record<BuildStatus, ReactElement> = {
   succeeded: <StatusOK />,
   failed: <StatusError />,
   stopped: <StatusWarning />,
@@ -33,4 +33,6 @@ interface StatusIconProps {
 }
 
 export const StatusIcon = ({ buildStatus }: StatusIconProps) =>
-  STATUS_ICONS[buildStatus] ?? <StatusAborted />;
+  (STATUS_ICONS as Partial<Record<BuildStatus, ReactElement>>)[buildStatus] ?? (
+    <StatusAborted />
+  );
