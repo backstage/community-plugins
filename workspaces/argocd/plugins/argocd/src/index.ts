@@ -21,3 +21,4 @@ export {
 export { isArgocdConfigured } from './utils/isArgocdConfigured';
 export type { DeploymentSummaryProps } from './components/DeploymentSummary/DeploymentSummary';
 export type { DeploymentLifecycleProps } from './components/DeploymentLifeCycle/DeploymentLifecycle';
+export { argocdTranslationRef, argocdTranslations } from './translations';
