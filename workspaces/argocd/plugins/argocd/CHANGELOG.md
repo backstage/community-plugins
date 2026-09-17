@@ -1,5 +1,11 @@
 # @backstage-community/plugin-argocd
 
+## 2.8.1
+
+### Patch Changes
+
+- 3044253: Expose argocd translation resources through the public plugin entry point to prevent OFS issues caused by mixing OFS translation resources with NFS modules.
+
 ## 2.8.0
 
 ### Minor Changes
