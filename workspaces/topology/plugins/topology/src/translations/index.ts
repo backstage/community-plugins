@@ -18,7 +18,7 @@ import { topologyTranslationRef } from './ref';
 
 /**
  * Translation resources for the Topology plugin.
- * @alpha
+ * @public
  */
 export const topologyTranslations = createTranslationResource({
   ref: topologyTranslationRef,

@@ -6,7 +6,7 @@
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
-// @alpha
+// @public
 export const topologyTranslationRef: TranslationRef<
   'plugin.topology',
   {
@@ -144,7 +144,7 @@ export const topologyTranslationRef: TranslationRef<
   }
 >;
 
-// @alpha
+// @public
 export const topologyTranslations: TranslationResource<'plugin.topology'>;
 
 // (No @packageDocumentation comment for this package)
