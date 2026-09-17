@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac
 
+## 1.52.6
+
+### Patch Changes
+
+- 7393261: Expose rbac translation resources through the public plugin entry point to prevent OFS issues caused by mixing OFS translation resources with NFS modules.
+
 ## 1.52.5
 
 ### Patch Changes
