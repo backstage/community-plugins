@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 2.12.4
+
+### Patch Changes
+
+- 23e8a55: Expose topology translation resources through the public plugin entry point to prevent OFS issues caused by mixing OFS translation resources with NFS modules.
+
 ## 2.12.3
 
 ### Patch Changes
