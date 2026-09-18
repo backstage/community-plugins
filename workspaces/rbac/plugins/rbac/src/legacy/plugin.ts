@@ -25,8 +25,8 @@ import {
 import {
   LicensedUsersAPIClient,
   licensedUsersApiRef,
-} from './api/LicensedUsersClient';
-import { rbacApiRef, RBACBackendClient } from './api/RBACBackendClient';
+} from '../api/LicensedUsersClient';
+import { rbacApiRef, RBACBackendClient } from '../api/RBACBackendClient';
 import { createRoleRouteRef, roleRouteRef, rootRouteRef } from './routes';
 
 /**
@@ -67,7 +67,7 @@ export const rbacPlugin = createPlugin({
 export const RbacPage = rbacPlugin.provide(
   createRoutableExtension({
     name: 'RbacPage',
-    component: () => import('./components').then(m => m.Router),
+    component: () => import('../components').then(m => m.Router),
     mountPoint: rootRouteRef,
   }),
 );
@@ -79,7 +79,7 @@ export const Administration = rbacPlugin.provide(
   createComponentExtension({
     name: 'Administration',
     component: {
-      lazy: () => import('./components').then(m => m.Administration),
+      lazy: () => import('../components').then(m => m.Administration),
     },
   }),
 );
