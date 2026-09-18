@@ -24,7 +24,6 @@ import {
 } from '@backstage/frontend-test-utils';
 import { screen } from '@testing-library/react';
 
-import rbacPlugin from '.';
 import {
   LicensedUsersAPIClient,
   licensedUsersApiRef,
@@ -35,8 +34,8 @@ import rbacTranslationsModule, {
   rbacTranslationRef,
   rbacTranslations,
 } from './alpha/translations';
-import { rbacPage } from './pages';
-import { rootRouteRef } from './pluginRoutes';
+import { rbacPlugin, rbacPage } from './plugin';
+import { rootRouteRef } from './routes';
 
 // Mocked so the render assertion covers only what the blueprint can break: the module
 // the loader imports and the export it names. Router's own behaviour is covered by
