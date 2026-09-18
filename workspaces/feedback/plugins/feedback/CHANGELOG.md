@@ -1,5 +1,11 @@
 # @backstage-community/plugin-feedback
 
+## 1.8.9
+
+### Patch Changes
+
+- 9cadb2a: Updated dependency `react-router-dom` to `^6.30.6`.
+
 ## 1.8.8
 
 ### Patch Changes
