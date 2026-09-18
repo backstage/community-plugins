@@ -467,7 +467,7 @@ export const GROUPS_FOR_TESTS = [
     namespace: null,
     title: 'Thing Group B 0',
     children: [],
-    parent: 'thing_b_1',
+    parent: 'thing_group_b_1',
     hasMember: ['user:default/thing'],
   },
   {
@@ -475,7 +475,7 @@ export const GROUPS_FOR_TESTS = [
     namespace: null,
     title: 'Thing Group B 1',
     children: [],
-    parent: 'thing_b_0',
+    parent: 'thing_group_b_0',
     hasMember: [],
   },
   {

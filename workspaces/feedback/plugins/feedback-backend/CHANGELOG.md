@@ -1,5 +1,17 @@
 # @backstage-community/plugin-feedback-backend
 
+## 2.2.3
+
+### Patch Changes
+
+- 6ebeace: simplify getRequestToken logic for mcp actions
+
+## 2.2.2
+
+### Patch Changes
+
+- 6f6ce47: refactor: Export permissions from the plugin entry point and remove the deprecated or unused feedback actions exports.
+
 ## 2.2.1
 
 ### Patch Changes

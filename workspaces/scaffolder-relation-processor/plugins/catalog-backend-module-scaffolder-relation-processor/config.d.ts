@@ -51,5 +51,20 @@ export interface Config {
         };
       };
     };
+    /**
+     * Configuration for pull requests
+     */
+    pullRequests?: {
+      /**
+       * Configuration for template update pull requests
+       */
+      templateUpdate?: {
+        /**
+         * Whether to enable automatic template update pull requests
+         * @default false
+         */
+        enabled?: boolean;
+      };
+    };
   };
 }

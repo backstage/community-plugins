@@ -21,6 +21,7 @@ import { useSelectedMembers } from './useSelectedMembers';
 const apiMock = {
   getRole: jest.fn().mockImplementation(),
   getMembers: jest.fn().mockImplementation(),
+  getMembersByRefs: jest.fn().mockImplementation(),
 };
 
 jest.mock('@backstage/core-plugin-api', () => {
@@ -53,7 +54,19 @@ describe('useSelectedMembers', () => {
         },
       ];
     });
-    apiMock.getMembers = jest.fn().mockImplementation(async () => mockMembers);
+    apiMock.getMembers = jest
+      .fn()
+      .mockImplementation(async () => mockMembers.slice(0, 1));
+    apiMock.getMembersByRefs = jest
+      .fn()
+      .mockImplementation(async (refs: string[]) =>
+        refs.map(ref => {
+          const name = ref.split('/').pop();
+          return (
+            mockMembers.find((m: any) => m.metadata.name === name) ?? undefined
+          );
+        }),
+      );
   });
 
   it('should throw an error on get role', async () => {

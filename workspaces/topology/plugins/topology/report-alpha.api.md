@@ -4,11 +4,8 @@
 
 ```ts
 import { FrontendModule } from '@backstage/frontend-plugin-api';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
-import { TranslationResource } from '@backstage/core-plugin-api/alpha';
-
-// @alpha (undocumented)
-export const topologyCatalogModule: FrontendModule;
+import { TranslationRef } from '@backstage/frontend-plugin-api';
+import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @alpha
 export const topologyTranslationRef: TranslationRef<
@@ -151,8 +148,6 @@ export const topologyTranslationRef: TranslationRef<
 // @alpha
 export const topologyTranslations: TranslationResource<'plugin.topology'>;
 
-// @alpha (undocumented)
+// @public
 export const topologyTranslationsModule: FrontendModule;
-
-// (No @packageDocumentation comment for this package)
 ```

@@ -1,0 +1,153 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// @ts-check
+
+// The "latest rating/response per user" queries in DatabaseHandler used to
+// determine recency by comparing `timestamp`, which on SQLite is populated
+// via CURRENT_TIMESTAMP (1-second resolution). Two writes from the same user
+// within the same second tie on `timestamp` and both get treated as current.
+// An auto-incrementing id gives those queries an unambiguous tie-breaker.
+//
+// SQLite cannot ALTER TABLE ADD an autoincrementing primary key column onto
+// an existing table, and other dialects don't guarantee that backfilling an
+// auto-increment column onto existing rows assigns values in recency order
+// (e.g. MySQL may assign them in clustered-index order). So every dialect
+// rebuilds the table instead, re-inserting existing rows ordered by
+// `timestamp` so the newly assigned ids reflect recency.
+
+/**
+ * @param { import("knex").Knex } knex
+ * @param { import("knex").Knex.CreateTableBuilder } table
+ */
+function defineRatingsColumns(knex, table) {
+  table
+    .string('entity_ref')
+    .notNullable()
+    .comment('The ref of the entity being rated');
+  table
+    .string('user_ref')
+    .notNullable()
+    .comment('The user applying the rating');
+  table.string('rating').notNullable().comment('The rating value');
+  table
+    .timestamp('timestamp')
+    .defaultTo(knex.fn.now())
+    .notNullable()
+    .comment('When the rating was recorded');
+}
+
+/**
+ * @param { import("knex").Knex } knex
+ * @param { import("knex").Knex.CreateTableBuilder } table
+ */
+function defineResponsesColumns(knex, table) {
+  table
+    .string('entity_ref')
+    .notNullable()
+    .comment('The ref of the applicable entity');
+  table.string('user_ref').notNullable().comment('The user responding');
+  table.text('response').comment('The serialized response');
+  table.text('comments').comment('Additional user comments');
+  table
+    .boolean('consent')
+    .defaultTo(true)
+    .notNullable()
+    .comment('Whether user (if recorded) consents to being contacted');
+  table
+    .timestamp('timestamp')
+    .defaultTo(knex.fn.now())
+    .notNullable()
+    .comment('When the response was recorded');
+  table.text('link').comment('The entity URL link');
+}
+
+const TABLES = {
+  ratings: {
+    columns: ['entity_ref', 'user_ref', 'rating', 'timestamp'],
+    define: defineRatingsColumns,
+  },
+  responses: {
+    columns: [
+      'entity_ref',
+      'user_ref',
+      'response',
+      'comments',
+      'consent',
+      'timestamp',
+      'link',
+    ],
+    define: defineResponsesColumns,
+  },
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ * @param { string } tableName
+ * @param { { columns: string[], define: (knex: import("knex").Knex, table: import("knex").Knex.CreateTableBuilder) => void } } table
+ */
+async function addIdColumn(knex, tableName, { columns, define }) {
+  const tmpTableName = `${tableName}_pre_id_migration`;
+  await knex.schema.renameTable(tableName, tmpTableName);
+  await knex.schema.createTable(tableName, table => {
+    table.increments('id').comment('Auto-incrementing id');
+    define(knex, table);
+  });
+  const columnList = columns.join(', ');
+  await knex.raw(
+    `insert into ?? (${columnList}) select ${columnList} from ?? order by timestamp`,
+    [tableName, tmpTableName],
+  );
+  await knex.schema.dropTable(tmpTableName);
+}
+
+/**
+ * @param { import("knex").Knex } knex
+ * @param { string } tableName
+ * @param { { columns: string[], define: (knex: import("knex").Knex, table: import("knex").Knex.CreateTableBuilder) => void } } table
+ */
+async function dropIdColumn(knex, tableName, { columns, define }) {
+  // `id` is the primary key, so dropping it via alterTable fails on
+  // Postgres/MySQL (the PK constraint depends on the column). Rebuild the
+  // table without it instead, mirroring the `up` migration.
+  const tmpTableName = `${tableName}_pre_id_migration`;
+  await knex.schema.renameTable(tableName, tmpTableName);
+  await knex.schema.createTable(tableName, table => define(knex, table));
+  const columnList = columns.join(', ');
+  await knex.raw(
+    `insert into ?? (${columnList}) select ${columnList} from ?? order by id`,
+    [tableName, tmpTableName],
+  );
+  await knex.schema.dropTable(tmpTableName);
+}
+
+/**
+ * @param { import("knex").Knex } knex
+ */
+exports.up = async function up(knex) {
+  for (const [tableName, table] of Object.entries(TABLES)) {
+    await addIdColumn(knex, tableName, table);
+  }
+};
+
+/**
+ * @param { import("knex").Knex } knex
+ */
+exports.down = async function down(knex) {
+  for (const [tableName, table] of Object.entries(TABLES)) {
+    await dropIdColumn(knex, tableName, table);
+  }
+};

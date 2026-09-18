@@ -15,13 +15,9 @@
  */
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 
-import {
-  ApiError,
-  DefaultService,
-  OpenAPI,
-} from '../../../../generated/now/table';
+import { DefaultService, OpenAPI } from '../../../../generated/now/table';
 import { CreateActionOptions } from '../../../types';
-import { updateOpenAPIConfig } from './helpers';
+import { serviceNowApiErrorMessage, updateOpenAPIConfig } from './helpers';
 
 import { examples } from './delete-record.example';
 
@@ -70,11 +66,7 @@ export const deleteRecordAction = (options: CreateActionOptions) => {
       try {
         await DefaultService.deleteApiNowTableByTableNameBySysId(input);
       } catch (error) {
-        const e = error as ApiError & {
-          body?: { error?: { message?: string } };
-        };
-
-        throw new Error(e.body?.error?.message);
+        throw new Error(serviceNowApiErrorMessage(error));
       }
     },
   });

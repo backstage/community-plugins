@@ -1,5 +1,46 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.7.2
+
+### Patch Changes
+
+- 59772de: Marked `username` and `password` as optional in config schema and fixed visibility metadata for authentication fields.
+
+## 1.7.1
+
+### Patch Changes
+
+- b7e9fab: Backstage version bump to v1.54.7
+- Updated dependencies [b7e9fab]
+  - @backstage-community/plugin-argocd-common@1.18.1
+  - @backstage-community/plugin-argocd-node@1.4.1
+
+## 1.7.0
+
+### Minor Changes
+
+- 548d597: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [548d597]
+  - @backstage-community/plugin-argocd-common@1.18.0
+  - @backstage-community/plugin-argocd-node@1.4.0
+
+## 1.6.0
+
+### Minor Changes
+
+- 730c396: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- d640871: Add CI wiring and permission-contract tests for the Argo CD backend and common packages, plus contributor guides and a minimal backend dev/ harness config so Backstage dependency bumps can be trusted without a full workspace smoke.
+- Updated dependencies [d640871]
+- Updated dependencies [730c396]
+  - @backstage-community/plugin-argocd-common@1.17.0
+  - @backstage-community/plugin-argocd-node@1.3.0
+
 ## 1.5.0
 
 ### Minor Changes

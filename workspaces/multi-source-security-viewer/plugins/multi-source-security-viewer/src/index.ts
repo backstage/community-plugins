@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {
-  multiSourceSecurityViewerPlugin,
-  EntityMultiCIPipelinesContent,
-  isMultiCIAvailable,
-  isMultiCIAvailableAndEnabled,
-} from './plugin';
+
+/**
+ * A Backstage plugin for viewing CI/CD security information from multiple sources
+ *
+ * @packageDocumentation
+ */
+
+export { default } from './plugin';

@@ -6,6 +6,8 @@ The following actions are currently supported in this module:
 
 - Create a Quay repository
 
+**Contributors:** see [CONTRIBUTING.md](./CONTRIBUTING.md) for development harnesses, tests, and bump-review guidance.
+
 ## Installation
 
 Run the following command to install the action package in your Backstage project

@@ -1,5 +1,89 @@
 # @backstage-community/plugin-topology
 
+## 3.0.1
+
+### Patch Changes
+
+- e61d32b: Added an extension `if` predicate so the Topology entity tab is only shown when the user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`.
+- c496121: Backstage version bump to v1.54.7
+
+## 3.0.0
+
+### Major Changes
+
+- bf0ec02: Graduate the Topology New Frontend System plugin from `/alpha` to the main package entry point. Legacy (OFS) exports are available from the `/legacy` subpath. Translations remain on `/alpha` and `/translations`.
+
+  **BREAKING:** The default export is now the NFS plugin created with `createFrontendPlugin`. Named OFS exports (`topologyPlugin`, `TopologyPage`) have moved to `@backstage-community/plugin-topology/legacy`.
+
+  To migrate existing NFS usage from `/alpha` to the main entry point, update imports from `@backstage-community/plugin-topology/alpha` to `@backstage-community/plugin-topology`.
+
+  To migrate existing OFS usage, update imports from `@backstage-community/plugin-topology` to `@backstage-community/plugin-topology/legacy`.
+
+  Translations are now available from `/translations` and `/alpha`.
+
+### Minor Changes
+
+- 6e05bc1: Backstage version bump to v1.54.5
+  On the New Frontend System, Topology fills the catalog entity page below the header instead of collapsing.
+  Enabled the missing-permissions e2e test for NFS app.
+
+## 2.16.3
+
+### Patch Changes
+
+- f396218: Updated dependency `js-yaml` to `^5.0.0`.
+
+## 2.16.2
+
+### Patch Changes
+
+- a3b2bd8: Fixed pod tooltip so it appears when hovering anywhere on the pod and stays visible together with the node hover shadow.
+
+## 2.16.1
+
+### Patch Changes
+
+- efe2c6d: Updated dependency `@playwright/test` to `1.62.1`.
+- dc925a3: Updated dependency `react-router-dom` to `^6.30.5`.
+
+## 2.16.0
+
+### Minor Changes
+
+- d12f713: **BREAKING CHANGE (alpha API)**
+
+  The New Frontend System entry for Topology no longer exports `topologyCatalogModule` or `topologyTranslationsModule`. Use the default `FrontendPlugin` export from `@backstage-community/plugin-topology/alpha` instead. The Topology entity tab is now gated with `isTopologyAvailable` (requires `backstage.io/kubernetes-id` or `backstage.io/kubernetes-namespace`).
+
+  Migration:
+
+  ```ts
+  // Before
+  import {
+    topologyCatalogModule,
+    topologyTranslationsModule,
+  } from '@backstage-community/plugin-topology/alpha';
+
+  createApp({
+    features: [topologyCatalogModule, topologyTranslationsModule],
+  });
+
+  // After
+  import topologyPlugin from '@backstage-community/plugin-topology/alpha';
+  import topologyTranslationsModule from '@backstage-community/plugin-topology/translations';
+
+  createApp({
+    features: [topologyPlugin, topologyTranslationsModule],
+  });
+  ```
+
+  If your app config overrides the Topology entity content extension, update the id from `entity-content:catalog/entity-content-topology` to `entity-content:topology/topology`.
+
+### Patch Changes
+
+- 6622075: Updated dependency `@playwright/test` to `1.61.1`.
+- 582a859: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.7.0`.
+- 54549f2: Validate URL schemes when rendering links from Kubernetes data, and harden git URL parsing against unsafe schemes and ReDoS.
+
 ## 2.15.0
 
 ### Minor Changes

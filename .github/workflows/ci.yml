@@ -227,7 +227,7 @@ jobs:
         uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           flags: ${{ matrix.workspaceNodeMatrix.workspace }}
-          directory: ./workspaces/${{ matrix.workspaceNodeMatrix.workspace }}/plugins
+          directory: ./workspaces/${{ matrix.workspaceNodeMatrix.workspace }}
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 

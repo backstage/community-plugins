@@ -1,18 +1,31 @@
-# [Backstage](https://backstage.io)
+# RBAC — Backstage community-plugins workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+Publishable packages live under `plugins/` (`rbac`, `rbac-backend`, `rbac-common`, `rbac-node`).
 
-To start the app, run:
+## Setup
 
 ```sh
 yarn install
-yarn start
 ```
 
-To generate knip reports for this app, run:
+## Development
+
+There is no `packages/app` in this workspace. Use per-plugin dev harnesses:
 
 ```sh
-yarn backstage-repo-tools knip-reports
+# Backend (policy, REST API)
+yarn workspace @backstage-community/plugin-rbac-backend start
+
+# Frontend UI (mocked APIs — default for UI work)
+yarn workspace @backstage-community/plugin-rbac start:mock
 ```
 
-> Notice: The guest user has admin permissions in this application for quick setup. For better control, specify more users and groups in app-config.local.yaml and define a separate admin/admins permission instead of using the guest user. Using the guest user as an admin is not recommended for permission management.
+See [plugins/rbac-backend/CONTRIBUTING.md](./plugins/rbac-backend/CONTRIBUTING.md) and [plugins/rbac/CONTRIBUTING.md](./plugins/rbac/CONTRIBUTING.md).
+
+## Other commands
+
+```sh
+yarn test
+yarn lint
+yarn backstage-repo-tools knip-reports
+```

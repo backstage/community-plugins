@@ -2,6 +2,8 @@
 
 This plugin provides [Backstage](https://backstage.io/) template [actions](https://backstage.io/docs/features/software-templates/builtin-actions) for [ServiceNow](https://developer.servicenow.com/dev.do#!/reference/api/vancouver/rest).
 
+For contributor setup and local development, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 The following actions are currently supported in this plugin:
 
 - [Table API](https://developer.servicenow.com/dev.do#!/reference/api/vancouver/rest/c_TableAPI)

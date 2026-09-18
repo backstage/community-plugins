@@ -30,7 +30,7 @@ export const entityAnnouncementsCard = EntityCardBlueprint.make({
   name: 'announcements',
   disabled: true,
   params: {
-    filter: 'kind:component,system',
+    filter: { kind: { $in: ['component', 'system'] } },
     loader: async () =>
       import('../components/AnnouncementsCard').then(m =>
         compatWrapper(<m.AnnouncementsCard />),

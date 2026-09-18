@@ -20,6 +20,7 @@ import {
   ActionsGetWorkflowResponseData,
 } from '../api/types';
 import { OAuthApi } from '@backstage/core-plugin-api';
+import { ResponseError } from '@backstage/errors';
 import packageinfo from '../../package.json';
 
 /** @public */
@@ -54,10 +55,10 @@ export class CloudbuildClient implements CloudbuildApi {
       )}/builds?filter=${encodeURIComponent(options.cloudBuildFilter)}`,
     );
 
-    const builds: ActionsListWorkflowRunsForRepoResponseData =
-      await workflowRuns.json();
+    const builds =
+      (await workflowRuns.json()) as Partial<ActionsListWorkflowRunsForRepoResponseData>;
 
-    return builds;
+    return { builds: builds.builds ?? [] };
   }
 
   async getWorkflow(options: {
@@ -114,9 +115,13 @@ export class CloudbuildClient implements CloudbuildApi {
       Authorization: `Bearer ${await this.getToken()}`,
       'X-Goog-Api-Client': `backstage/cloudbuild/${packageinfo.version}`,
     };
-    return fetch(url, {
+    const response = await fetch(url, {
       method,
       headers: requestHeaders,
     });
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+    return response;
   }
 }

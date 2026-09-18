@@ -1,10 +1,8 @@
-# [Backstage](https://backstage.io)
+# Todo plugins for Backstage
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains plugins for browsing `// TODO` comments in source code from within Backstage.
 
-To start the app, run:
+## Plugins
 
-```sh
-yarn install
-yarn start
-```
+- [todo](./plugins/todo/README.md) - A frontend plugin that displays TODO comments on catalog entity pages.
+- [todo-backend](./plugins/todo-backend/README.md) - A backend plugin that scans source code repositories and provides TODO data to the frontend plugin.

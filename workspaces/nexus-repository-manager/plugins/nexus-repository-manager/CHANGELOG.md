@@ -1,5 +1,33 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.2
+
+### Patch Changes
+
+- aa39b16: Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.6`.
+- f7eb124: Updated dependency `@playwright/test` to `1.63.0`.
+- 8735687: Updated dependency `@testing-library/user-event` to `14.6.7`.
+- c031c0a: Backstage version bump to v1.54.7
+
+## 1.27.1
+
+### Patch Changes
+
+- 4a972e2: Updated dependency `react-router-dom` to `^6.30.5`.
+
+## 1.27.0
+
+### Minor Changes
+
+- 5bb7b05: Backstage version bump to v1.54.5
+
+## 1.26.0
+
+### Minor Changes
+
+- 087a229: Add NFS translations module with default export for `packages: all` discovery
+
 ## 1.25.1
 
 ### Patch Changes

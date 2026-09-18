@@ -1,5 +1,15 @@
 # @backstage-community/plugin-kiali
 
+## 1.51.2
+
+### Patch Changes
+
+- 72557ed: Updated dependency `@types/node` to `22.20.1`.
+- 6d02d79: Bumped Backstage dependencies to 1.52.0 for Red Hat Developer Hub 1.11 compatibility.
+- Updated dependencies [6d02d79]
+  - @backstage-community/plugin-kiali-common@0.11.2
+  - @backstage-community/plugin-kiali-react@0.7.4
+
 ## 1.51.1
 
 ### Patch Changes

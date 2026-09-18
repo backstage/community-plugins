@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-import {
-  createFrontendPlugin,
-  createFrontendModule,
-} from '@backstage/frontend-plugin-api';
-import { TranslationBlueprint } from '@backstage/plugin-app-react';
+import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
 import { rbacApi, licensedUsersApi } from './apis';
 import rbacPage from './pages';
 import { rootRouteRef } from './pluginRoutes';
-import { rbacTranslations } from './alpha/translations';
 
 /**
  * RBAC plugin
@@ -38,23 +33,6 @@ export default createFrontendPlugin({
   },
 });
 
-/**
- * Translation module for the rbac plugin
- * @public
- */
-
-const rbacTranslationsModule = createFrontendModule({
-  pluginId: 'app',
-  extensions: [
-    TranslationBlueprint.make({
-      name: 'rbac-translations',
-      params: {
-        resource: rbacTranslations,
-      },
-    }),
-  ],
-});
-
-export { rbacTranslationsModule };
+export { default as rbacTranslationsModule } from './alpha/translations';
 
 export { rbacTranslationRef, rbacTranslations } from './alpha/translations';

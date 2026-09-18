@@ -2,6 +2,8 @@
 
 The RBAC UI plugin offers a streamlined user interface for effectively managing permissions in your Backstage instance. It allows you to assign permissions to users and groups, empowering them to view, create, modify and delete Roles, provided they have the necessary permissions.
 
+For local development and test commands, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## For administrators
 
 ### Installation

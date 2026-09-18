@@ -1,5 +1,11 @@
 # @backstage-community/plugin-fairwinds-insights
 
+## 0.5.1
+
+### Patch Changes
+
+- eec886a: Migrated extension config from deprecated `config.schema` to `configSchema` with zod v4 Standard Schema
+
 ## 0.5.0
 
 ### Minor Changes

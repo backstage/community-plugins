@@ -19,8 +19,10 @@ import {
 } from '@backstage-community/plugin-kiali-common';
 import { Entity } from '@backstage/catalog-model';
 import { Content, Page } from '@backstage/core-components';
+import { makeStyles } from '@material-ui/core/styles';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Route, Routes } from 'react-router-dom';
+import { HeaderBackgroundProvider } from '../contexts/HeaderBackgroundContext';
 import { AppDetailsPage } from '../pages/AppDetails/AppDetailsPage';
 import { AppListPage } from '../pages/AppList/AppListPage';
 import { IstioConfigDetailsPage } from '../pages/IstioConfigDetails/IstioConfigDetailsPage';
@@ -51,6 +53,14 @@ import {
 } from '../routes';
 import { KialiProvider } from '../store/KialiProvider';
 import { TechPreviewWarning } from './Banners/TechPreviewWarning';
+
+const useStyles = makeStyles(theme => ({
+  // PatternFly global CSS can force a light page surface; pin Content to the
+  // Backstage theme so light stays white and dark follows palette.background.
+  content: {
+    backgroundColor: theme.palette.background.default,
+  },
+}));
 
 export const KIALI_PROVIDER = 'kiali.io/provider';
 
@@ -179,12 +189,15 @@ export const getRoutes = (dev?: boolean) => {
 };
 
 export const Router = () => {
+  const classes = useStyles();
   return (
     <KialiProvider>
       <Page themeId="service">
-        <KialiHeader />
-        <KialiTabs />
-        <Content>
+        <HeaderBackgroundProvider>
+          <KialiHeader />
+          <KialiTabs />
+        </HeaderBackgroundProvider>
+        <Content stretch className={classes.content}>
           <TechPreviewWarning />
           {getRoutes()}
         </Content>

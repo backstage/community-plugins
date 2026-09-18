@@ -15,10 +15,12 @@
  */
 import { KIALI_PROVIDER } from '@backstage-community/plugin-kiali-common';
 import {
+  groupIstioConfigByNamespace,
   Health,
   NamespaceAppHealth,
   NamespaceServiceHealth,
   NamespaceWorkloadHealth,
+  normalizeConfigValidations,
   nsWideMTLSStatus,
 } from '@backstage-community/plugin-kiali-common/func';
 import {
@@ -32,12 +34,7 @@ import {
   buildReporter,
 } from '@backstage-community/plugin-kiali-common/types';
 import { Entity } from '@backstage/catalog-model';
-import {
-  CardTab,
-  Content,
-  InfoCard,
-  TabbedCard,
-} from '@backstage/core-components';
+import { CardTab, InfoCard, TabbedCard } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { CircularProgress, Grid } from '@material-ui/core';
 import _ from 'lodash';
@@ -310,18 +307,20 @@ export const OverviewPage = (props: { entity?: Entity }) => {
       kialiClient.getAllIstioConfigs([], true, '', '', cluster),
     ])
       .then(results => {
+        const validationsByClusterAndNamespace = normalizeConfigValidations(
+          results[0],
+        );
+        const istioConfigPerNamespace = groupIstioConfigByNamespace(results[1]);
+
         nss.forEach(nsInfo => {
-          if (
-            nsInfo.cluster &&
-            nsInfo.cluster === cluster &&
-            (results[0] as any)[nsInfo.cluster]
-          ) {
-            // @ts-expect-error
-            nsInfo.validations = results[0][nsInfo.cluster][nsInfo.name];
-          }
           if (nsInfo.cluster && nsInfo.cluster === cluster) {
-            // @ts-ignore
-            nsInfo.istioConfig = results[1][nsInfo.name];
+            const clusterValidations = validationsByClusterAndNamespace.get(
+              nsInfo.cluster,
+            );
+            if (clusterValidations) {
+              nsInfo.validations = clusterValidations.get(nsInfo.name);
+            }
+            nsInfo.istioConfig = istioConfigPerNamespace.get(nsInfo.name);
           }
         });
       })
@@ -350,15 +349,25 @@ export const OverviewPage = (props: { entity?: Entity }) => {
           fetchValidationResultForCluster(nss, cluster),
         )
         .then(() => {
-          let newNamespaces = nss.slice();
-          if (sortField.id === 'validations') {
-            newNamespaces = Sorts.sortFunc(
-              newNamespaces,
-              sortField,
-              isAscending,
-            );
-          }
-          return newNamespaces;
+          setNamespaces(prevNamespaces => {
+            const merged = prevNamespaces.map(prevNs => {
+              const updatedNs = nss.find(n => isSameNamespace(n, prevNs));
+              if (!updatedNs) {
+                return prevNs;
+              }
+              return {
+                ...prevNs,
+                validations: updatedNs.validations,
+                istioConfig: updatedNs.istioConfig,
+              };
+            });
+            const nextNamespaces =
+              sortField.id === 'validations'
+                ? Sorts.sortFunc(merged.slice(), sortField, isAscending)
+                : merged;
+            setActiveNs(filterActiveNamespaces(nextNamespaces));
+            return nextNamespaces;
+          });
         });
     });
   };
@@ -598,9 +607,7 @@ export const OverviewPage = (props: { entity?: Entity }) => {
     if (errorProvider) {
       return (
         <div className={baseStyle}>
-          <Content>
-            <InfoCard>{errorProvider}</InfoCard>
-          </Content>
+          <InfoCard>{errorProvider}</InfoCard>
         </div>
       );
     }
@@ -634,55 +641,47 @@ export const OverviewPage = (props: { entity?: Entity }) => {
         </div>
       ) : (
         <div className={baseStyle}>
-          <Content>
-            {errorProvider ? (
-              <InfoCard>{errorProvider}</InfoCard>
-            ) : (
-              <>
-                <OverviewToolbar
-                  onRefresh={() => load()}
-                  overviewType={overviewType}
-                  setOverviewType={setOverviewType}
-                  directionType={directionType}
-                  setDirectionType={setDirectionType}
-                  duration={duration}
-                  setDuration={setDuration}
-                />
-                <Grid container spacing={2}>
-                  {activeNs.map((ns, i) => (
-                    <Grid
-                      key={`Card_${ns.name}_${i}`}
-                      item
-                      xs={
-                        serverConfig &&
-                        serverConfig.istioNamespace &&
-                        ns.name === serverConfig.istioNamespace
-                          ? 12
-                          : 4
+          {errorProvider ? (
+            <InfoCard>{errorProvider}</InfoCard>
+          ) : (
+            <>
+              <OverviewToolbar
+                onRefresh={() => load()}
+                overviewType={overviewType}
+                setOverviewType={setOverviewType}
+                directionType={directionType}
+                setDirectionType={setDirectionType}
+                duration={duration}
+                setDuration={setDuration}
+              />
+              <Grid container spacing={2} alignItems="stretch">
+                {activeNs.map((ns, i) => (
+                  <Grid
+                    key={`Card_${ns.name}_${i}`}
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    style={{ display: 'flex' }}
+                  >
+                    <OverviewCard
+                      namespace={ns}
+                      istioAPIEnabled={
+                        kialiState.statusState.istioEnvironment.istioAPIEnabled
                       }
-                    >
-                      <OverviewCard
-                        namespace={ns}
-                        istioAPIEnabled={
-                          kialiState.statusState.istioEnvironment
-                            .istioAPIEnabled
-                        }
-                        type={overviewType}
-                        direction={directionType}
-                        duration={duration}
-                        refreshInterval={
-                          kialiState.userSettings.refreshInterval
-                        }
-                        certsInfo={kialiState.istioCertsInfo}
-                        minTLS={kialiState.meshTLSStatus.minTLS}
-                        istioStatus={kialiState.istioStatus}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
-            )}
-          </Content>
+                      type={overviewType}
+                      direction={directionType}
+                      duration={duration}
+                      refreshInterval={kialiState.userSettings.refreshInterval}
+                      certsInfo={kialiState.istioCertsInfo}
+                      minTLS={kialiState.meshTLSStatus.minTLS}
+                      istioStatus={kialiState.istioStatus}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </>
+          )}
         </div>
       )}
     </>

@@ -38,7 +38,7 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    # Local example data, file locations are relative to the backend dev entrypoint
     - type: file
       target: ../../examples/entities.yaml
 

@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Backend plugin that powers the feedback system in Backstage.
+ *
+ * @packageDocumentation
+ */
+
+export * from './permissions';
 export { feedbackPlugin as default } from './plugin';
-export { registerFeedbackActions } from './actions/feedbackActions';
-export type { RegisterFeedbackActionsOptions } from './actions/feedbackActions';
+export { FeedbackCategory } from './model/feedback.model';
+export type { FeedbackModel } from './model/feedback.model';

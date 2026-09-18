@@ -211,7 +211,7 @@ export const argocdMessages = {
 
 /**
  * Translation reference for ArgoCD plugin
- * @alpha
+ * @public
  */
 export const argocdTranslationRef = createTranslationRef({
   id: 'plugin.argocd',

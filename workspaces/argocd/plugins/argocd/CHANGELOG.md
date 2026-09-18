@@ -1,5 +1,81 @@
 # @backstage-community/plugin-argocd
 
+## 3.1.2
+
+### Patch Changes
+
+- 59772de: Marked `username` and `password` as optional in config schema and fixed visibility metadata for authentication fields.
+
+## 3.1.1
+
+### Patch Changes
+
+- a25d147: Added Playwright end-to-end coverage for the missing permissions scenario in the NFS dev app.
+- a1dbdf9: The Argo CD entity tabs are only shown when the user is authorized for `argocd.view.read`. If you are using a custom permission policy make sure to update it accordingly.
+- a1f8834: Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/react` to `16.3.3`.
+- 9e3b7c8: Updated dependency `@playwright/test` to `1.63.0`.
+- b7e9fab: Backstage version bump to v1.54.7
+- Updated dependencies [b7e9fab]
+  - @backstage-community/plugin-argocd-common@1.18.1
+
+## 3.1.0
+
+### Minor Changes
+
+- 548d597: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [548d597]
+  - @backstage-community/plugin-argocd-common@1.18.0
+
+## 3.0.0
+
+### Major Changes
+
+- 43fd19c: Migrate the Argo CD frontend plugin to the new frontend system (NFS). Legacy (OFS) exports are available from the `/legacy` subpath.
+
+  **BREAKING:** The default export is now the NFS plugin created with `createFrontendPlugin`. Named exports (`argocdPlugin`, `ArgocdDeploymentLifecycle`, `ArgocdDeploymentSummary`, `isArgocdConfigured`, `argocdTranslations`, `argocdTranslationRef`) have been moved to the `/legacy` subpath.
+
+  To migrate existing OFS usage, update imports from `@backstage-community/plugin-argocd` to `@backstage-community/plugin-argocd/legacy`:
+
+  ```ts
+  import {
+    argocdPlugin,
+    ArgocdDeploymentLifecycle,
+    ArgocdDeploymentSummary,
+    isArgocdConfigured,
+    argocdTranslations,
+  } from '@backstage-community/plugin-argocd/legacy';
+  ```
+
+  For the new frontend system, import the default export and add it to your app features together with the translations module. The Deployment Lifecycle and Deployment Summary entity tabs are registered automatically for entities with Argo CD annotations:
+
+  ```ts
+  import argocdPlugin, {
+    argocdTranslationsModule,
+  } from '@backstage-community/plugin-argocd';
+
+  export const app = createApp({
+    features: [argocdPlugin, argocdTranslationsModule],
+  });
+  ```
+
+## 2.11.0
+
+### Minor Changes
+
+- 730c396: Backstage version bump to v1.52.0
+
+### Patch Changes
+
+- d640871: Add CI wiring and permission-contract tests for the Argo CD backend and common packages, plus contributor guides and a minimal backend dev/ harness config so Backstage dependency bumps can be trusted without a full workspace smoke.
+- 4cd7a76: Added aria-label to icon-only external link buttons to resolve link-name accessibility violations
+- Updated dependencies [d640871]
+- Updated dependencies [730c396]
+  - @backstage-community/plugin-argocd-common@1.17.0
+
 ## 2.10.0
 
 ### Minor Changes

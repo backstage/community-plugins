@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-catalog-backend-module-codeowners",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "description": "The codeowners backend module for the catalog plugin.",
   "backstage": {
     "role": "backend-plugin-module",
@@ -14,8 +14,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/catalog-backend-module-codeowners"
+    "url": "https://github.com/backstage/community-plugins",
+    "directory": "workspaces/catalog/plugins/catalog-backend-module-codeowners"
   },
   "license": "Apache-2.0",
   "main": "src/index.ts",

@@ -69,6 +69,28 @@ describe('router', () => {
     app = express().use(router);
   });
 
+  describe('permission denial', () => {
+    beforeEach(() => {
+      mockPermissions.authorize.mockResolvedValue([
+        { result: AuthorizeResult.DENY },
+      ]);
+    });
+
+    it('should return 403 on /check when permission is denied', async () => {
+      const response = await request(app).get('/check').expect(403);
+
+      expect(response.body).toEqual({
+        error: 'Unauthorized, please ensure you have the correct permissions',
+      });
+    });
+
+    it('should return 403 on /find/name/:appName and not invoke the handler', async () => {
+      await request(app).get('/find/name/staging-app').expect(403);
+
+      expect(mockArgoCDService.findApplications).not.toHaveBeenCalled();
+    });
+  });
+
   describe('GET /find/name/:appName', () => {
     it('should return instances with applications filtered by appName and appNamespace', async () => {
       const expectedApplicationResponse = [

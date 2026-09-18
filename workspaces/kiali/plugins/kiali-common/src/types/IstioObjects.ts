@@ -158,6 +158,8 @@ export interface ValidationStatus {
   errors: number;
   objectCount?: number;
   warnings: number;
+  namespace?: string;
+  cluster?: string;
 }
 
 export interface WorkloadReference {

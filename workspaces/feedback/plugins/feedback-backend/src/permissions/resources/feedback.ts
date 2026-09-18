@@ -18,6 +18,11 @@ import { RESOURCE_TYPE_FEEDBACK } from '@backstage-community/plugin-feedback-com
 import { createPermissionResourceRef } from '@backstage/plugin-permission-node';
 import { FeedbackModel } from '../../model/feedback.model';
 
+/**
+ * Resource reference used to identify feedback items for authorization checks.
+ *
+ * @public
+ */
 export const feedbackResourceRef = createPermissionResourceRef<
   FeedbackModel,
   {}

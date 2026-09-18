@@ -18,10 +18,21 @@ import { createConditionExports } from '@backstage/plugin-permission-node';
 import { feedbackResourceRef } from '../resources/feedback';
 import { isFeedbackOwner } from '../rules/isFeedbackOwner';
 
-export const {
-  conditions: feedbackConditions,
-  createConditionalDecision: createFeedbackConditionalDecision,
-} = createConditionExports({
+const { conditions, createConditionalDecision } = createConditionExports({
   resourceRef: feedbackResourceRef,
   rules: { isFeedbackOwner },
 });
+
+/**
+ * Rules/conditions that can be used to authorize access to feedback resources.
+ *
+ * @public
+ */
+export const feedbackConditions = conditions;
+
+/**
+ * Helper to construct a conditional decision for the feedback resource based on permission criteria.
+ *
+ * @public
+ */
+export const createFeedbackConditionalDecision = createConditionalDecision;

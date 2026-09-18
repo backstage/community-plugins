@@ -1,0 +1,29 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px 2px 6px;
+  border-radius: var(--bui-radius-full);
+  border: 1px solid currentColor;
+  background-color: transparent;
+  white-space: nowrap;
+}
+
+.pending {
+  color: var(--bui-fg-secondary);
+}
+
+.running {
+  color: var(--bui-fg-info);
+}
+
+.succeeded {
+  color: var(--bui-fg-success);
+}
+
+.failed {
+  color: var(--bui-fg-danger);
+}
+
+.error {
+  color: var(--bui-fg-danger);
+}

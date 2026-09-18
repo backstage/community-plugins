@@ -1,0 +1,101 @@
+.textOverflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+  max-width: 300px;
+}
+
+.nameLabel {
+  font-weight: 600;
+}
+
+/*
+ * Column layout for the whole plugin page. The component sets `min-height`
+ * inline to the distance from this element's top to the bottom of the viewport,
+ * which gives `.detailPanel` room to be pushed to the very bottom via
+ * `margin-top: auto` when the table is short.
+ */
+/*
+ * Pinned to the bottom of the viewport, overlaying the table. Height is capped
+ * at 45% of the screen so it never dominates the page.
+ *
+ * `left` and `width` are set inline by the component from the measured bounds
+ * of the content column, rather than `left: 0; right: 0`. A fixed element is
+ * positioned against the viewport, so spanning it edge to edge would run under
+ * the Backstage sidebar. Measuring keeps the panel aligned with the content
+ * column and correct when the sidebar expands or collapses.
+ */
+.detailPanel {
+  position: fixed;
+  bottom: 0;
+  z-index: 100;
+  height: var(--dag-panel-height, 45vh);
+  max-height: 45vh;
+  overflow: hidden;
+  padding: var(--bui-space-4);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bui-bg-neutral-1);
+  border-top: 1px solid var(--bui-border-1);
+  border-radius: var(--bui-radius-3) var(--bui-radius-3) 0 0;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+  animation: dagPanelSlideUp 0.2s ease-out;
+}
+
+@keyframes dagPanelSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ZoomControls renders a bare div, so lay its buttons out here. */
+.panelZoomControls {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bui-space-1);
+}
+
+.detailPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  margin-bottom: var(--bui-space-3);
+  background-color: var(--bui-bg-neutral-1);
+  padding-bottom: var(--bui-space-2);
+  border-bottom: 1px solid var(--bui-border-1);
+}
+
+.updatedDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--bui-fg-success);
+  flex-shrink: 0;
+}
+
+.updatedText {
+  color: var(--bui-fg-secondary);
+  white-space: nowrap;
+}
+
+.expandIndicator {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  color: var(--bui-text-2);
+}
+
+.expandIndicator[data-expanded] {
+  transform: rotate(90deg);
+}
+
+.instanceIcon {
+  color: var(--bui-fg-primary);
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}

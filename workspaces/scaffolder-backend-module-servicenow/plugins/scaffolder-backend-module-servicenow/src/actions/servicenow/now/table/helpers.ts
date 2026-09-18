@@ -15,7 +15,7 @@
  */
 import type { Config } from '@backstage/config';
 
-import type { OpenAPIConfig } from '../../../../generated/now/table';
+import type { ApiError, OpenAPIConfig } from '../../../../generated/now/table';
 
 /**
  * Update the OpenAPIConfig with the ServiceNow configuration
@@ -30,4 +30,29 @@ export function updateOpenAPIConfig(
   OpenAPI.BASE = config.getString('servicenow.baseUrl');
   OpenAPI.USERNAME = config.getString('servicenow.username');
   OpenAPI.PASSWORD = config.getString('servicenow.password');
+}
+
+/**
+ * Resolve a non-empty failure message from a ServiceNow Table API error.
+ * Prefers `body.error.message`, then HTTP status text, then the Error message.
+ */
+export function serviceNowApiErrorMessage(error: unknown): string {
+  const e = error as ApiError & {
+    body?: { error?: { message?: string } };
+  };
+
+  const fromBody = e.body?.error?.message;
+  if (typeof fromBody === 'string' && fromBody.trim() !== '') {
+    return fromBody;
+  }
+
+  if (typeof e.statusText === 'string' && e.statusText.trim() !== '') {
+    return e.statusText;
+  }
+
+  if (typeof e.message === 'string' && e.message.trim() !== '') {
+    return e.message;
+  }
+
+  return 'ServiceNow API request failed';
 }

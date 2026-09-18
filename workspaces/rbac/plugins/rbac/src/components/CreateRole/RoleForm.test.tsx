@@ -44,7 +44,9 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@backstage/core-plugin-api', () => ({
   ...jest.requireActual('@backstage/core-plugin-api'),
-  useApi: jest.fn(),
+  useApi: jest.fn().mockReturnValue({
+    searchMembers: jest.fn().mockResolvedValue([]),
+  }),
 }));
 
 jest.mock('formik', () => ({

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-airbrake",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "airbrake",
@@ -44,6 +44,7 @@
     "@backstage/frontend-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",
     "@backstage/test-utils": "backstage:^",
+    "@backstage/ui": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
@@ -59,11 +60,11 @@
     "msw": "^1.0.0",
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react-router-dom": "6.30.6"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "react-dom": "^16.13.1 || ^17.0.0 || ^18.0.0",
-    "react-router-dom": "6.0.0-beta.0 || ^6.3.0"
+    "react-router-dom": "6.30.6"
   }
 }

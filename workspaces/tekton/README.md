@@ -1,16 +1,16 @@
-# [Backstage](https://backstage.io)
+# Tekton workspace
 
-This is your newly scaffolded Backstage App, Good Luck!
+This workspace contains the Tekton plugins for Backstage.
 
-To start the app, run:
+## Development
+
+From this directory:
 
 ```sh
 yarn install
-yarn start
+yarn workspace @backstage-community/plugin-tekton start
 ```
 
-To generate knip reports for this app, run:
+Use `yarn workspace @backstage-community/plugin-tekton start:legacy` for the legacy frontend system harness.
 
-```sh
-yarn backstage-repo-tools knip-reports
-```
+See [plugins/tekton/CONTRIBUTING.md](./plugins/tekton/CONTRIBUTING.md) for details.

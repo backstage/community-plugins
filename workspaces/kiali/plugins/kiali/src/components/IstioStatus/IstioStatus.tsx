@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import type { ComponentStatus } from '@backstage-community/plugin-kiali-common/types';
-import { StatusTypes as Status } from '@backstage-community/plugin-kiali-common/types';
+import {
+  isCoreComponent,
+  StatusTypes as Status,
+} from '@backstage-community/plugin-kiali-common/types';
 import { Tooltip } from '@material-ui/core';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -64,11 +67,12 @@ export const IstioStatus = (props: Props): React.JSX.Element => {
     let notReady: boolean = false;
 
     (props.status || []).forEach(compStatus => {
-      const { status, is_core } = compStatus;
+      const { status } = compStatus;
+      const isCore = isCoreComponent(compStatus);
       const isNotReady: boolean = status === Status.NotReady;
       const isUnhealthy: boolean = status !== Status.Healthy && !isNotReady;
 
-      if (is_core) {
+      if (isCore) {
         coreUnhealthy = coreUnhealthy || isUnhealthy;
       } else {
         addonUnhealthy = addonUnhealthy || isUnhealthy;

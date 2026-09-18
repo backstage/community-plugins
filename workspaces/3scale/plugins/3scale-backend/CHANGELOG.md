@@ -1,5 +1,21 @@
 # @backstage-community/plugin-3scale-backend
 
+## 3.17.0
+
+### Minor Changes
+
+- 32e3f32: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 26bfeb5: Document starting the dev harness with the package config (--config app-config.yaml or app-config.local.yaml) and explain how that differs from the workspace root default.
+
+## 3.16.0
+
+### Minor Changes
+
+- 38d21a8: Backstage version bump to v1.53.0
+
 ## 3.15.0
 
 ### Minor Changes

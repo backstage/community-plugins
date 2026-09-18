@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { createTranslationResource } from '@backstage/core-plugin-api/alpha';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+import { TranslationBlueprint } from '@backstage/plugin-app-react';
 import { servicenowTranslationRef } from './ref';
 
 /**
@@ -32,3 +34,21 @@ export const servicenowTranslations = createTranslationResource({
 });
 
 export { servicenowTranslationRef };
+
+/**
+ * Translation module for the ServiceNow plugin.
+ * @public
+ */
+const servicenowTranslationsModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [
+    TranslationBlueprint.make({
+      name: 'servicenow-translations',
+      params: {
+        resource: servicenowTranslations,
+      },
+    }),
+  ],
+});
+
+export default servicenowTranslationsModule;

@@ -1,5 +1,27 @@
 # @backstage-community/plugin-github-issues
 
+## 1.4.0
+
+### Minor Changes
+
+- 00f747c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- 745fd2f: Fixed the GitHub Issues card failing to load for entities that own a repository whose name starts with a number (for example `123-service`).
+
+## 1.3.2
+
+### Patch Changes
+
+- bf583e2: Fixed the GitHub Issues card failing with `Cannot read properties of null (reading 'updatedAt')` / repeated "Resource limits for this query exceeded." errors on entities (typically groups) that own many repositories.
+
+## 1.3.1
+
+### Patch Changes
+
+- fcd0f1a: Updated entity extension default filters to use the modern object form.
+
 ## 1.3.0
 
 ### Minor Changes

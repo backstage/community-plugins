@@ -33,3 +33,5 @@ import { AcrImagesEntityContent } from './plugin';
  * @deprecated Please use `AcrImagesEntityContent` instead of `AcrPage`.
  */
 export const AcrPage = AcrImagesEntityContent;
+
+export { default as acrTranslationsModule } from './translations';

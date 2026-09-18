@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "name": "db-migration-v3",
+    "namespace": "production",
+    "uid": "wf-uid-009",
+    "labels": { "app": "my-service", "env": "production" },
+    "creationTimestamp": "2026-04-29T22:00:00Z"
+  },
+  "status": {
+    "phase": "Succeeded",
+    "startedAt": "2026-04-29T22:00:05Z",
+    "finishedAt": "2026-04-29T22:01:42Z",
+    "nodes": {
+      "db-migration-v3": {
+        "id": "db-migration-v3",
+        "name": "db-migration-v3",
+        "displayName": "db-migration-v3",
+        "type": "Steps",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-29T22:00:05Z",
+        "finishedAt": "2026-04-29T22:01:42Z",
+        "children": ["db-backup"]
+      },
+      "db-backup": {
+        "id": "db-backup",
+        "name": "db-migration-v3.backup",
+        "displayName": "Backup DB",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-29T22:00:08Z",
+        "finishedAt": "2026-04-29T22:00:55Z",
+        "templateName": "pg-dump",
+        "children": ["db-migrate"]
+      },
+      "db-migrate": {
+        "id": "db-migrate",
+        "name": "db-migration-v3.migrate",
+        "displayName": "Run Migrations",
+        "type": "Pod",
+        "phase": "Succeeded",
+        "startedAt": "2026-04-29T22:01:00Z",
+        "finishedAt": "2026-04-29T22:01:42Z",
+        "templateName": "flyway-migrate"
+      }
+    }
+  }
+}

@@ -72,13 +72,13 @@ export class DatabaseHandler {
           this.database('ratings')
             .as('latest_ratings')
             .select('entity_ref', 'user_ref')
-            .max('timestamp', { as: 'timestamp' })
+            .max('id', { as: 'id' })
             .whereIn('entity_ref', entityRefs)
             .groupBy('entity_ref', 'user_ref'),
           function joinClause() {
             this.on('ratings.entity_ref', '=', 'latest_ratings.entity_ref')
               .andOn('ratings.user_ref', '=', 'latest_ratings.user_ref')
-              .andOn('ratings.timestamp', '=', 'latest_ratings.timestamp');
+              .andOn('ratings.id', '=', 'latest_ratings.id');
           },
         )
         .select('ratings.entity_ref', 'rating')
@@ -107,14 +107,14 @@ export class DatabaseHandler {
           this.database('ratings')
             .as('latest_ratings')
             .select('user_ref')
-            .max('timestamp', { as: 'timestamp' })
+            .max('id', { as: 'id' })
             .where('entity_ref', entityRef)
             .groupBy('user_ref'),
           function joinClause() {
             this.on('ratings.user_ref', '=', 'latest_ratings.user_ref').andOn(
-              'ratings.timestamp',
+              'ratings.id',
               '=',
-              'latest_ratings.timestamp',
+              'latest_ratings.id',
             );
           },
         )
@@ -143,7 +143,7 @@ export class DatabaseHandler {
           this.database('responses')
             .as('latest_responses')
             .select('user_ref')
-            .max('timestamp', { as: 'timestamp' })
+            .max('id', { as: 'id' })
             .where('entity_ref', entityRef)
             .groupBy('user_ref'),
           function joinClause() {
@@ -151,7 +151,7 @@ export class DatabaseHandler {
               'responses.user_ref',
               '=',
               'latest_responses.user_ref',
-            ).andOn('responses.timestamp', '=', 'latest_responses.timestamp');
+            ).andOn('responses.id', '=', 'latest_responses.id');
           },
         )
         .select('responses.user_ref', 'response', 'comments', 'consent', 'link')
