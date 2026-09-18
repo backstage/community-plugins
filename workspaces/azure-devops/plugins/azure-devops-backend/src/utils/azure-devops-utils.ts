@@ -246,8 +246,22 @@ export function buildEncodedUrl(
   const encodedOrg = encodeURIComponent(org);
   const encodedProject = encodeURIComponent(project);
   const encodedRepo = encodeURIComponent(repo);
-  const encodedPath = encodeURIComponent(path);
-  return `https://${host}/${encodedOrg}/${encodedProject}/_git/${encodedRepo}?path=${encodedPath}`;
+
+  const versionSeparator = '&version=';
+  const versionIndex = path.indexOf(versionSeparator);
+
+  let parsedPath = path;
+  let versionQuery = '';
+
+  if (versionIndex !== -1) {
+    parsedPath = path.slice(0, versionIndex);
+    const version = path.slice(versionIndex + versionSeparator.length);
+    versionQuery = `&version=${encodeURIComponent(version)}`;
+  }
+
+  const encodedPath = encodeURIComponent(parsedPath);
+
+  return `https://${host}/${encodedOrg}/${encodedProject}/_git/${encodedRepo}?path=${encodedPath}${versionQuery}`;
 }
 
 function convertReviewer(

@@ -39,14 +39,28 @@ export function useReadme(entity: Entity): {
       );
     }
 
+    let path = readmePath;
+    const sourceLocation =
+      entity.metadata.annotations?.['backstage.io/source-location'];
+
+    if (sourceLocation && (!path || !path.includes('&version='))) {
+      const versionMatch = sourceLocation.match(/[?&]version=([^&]+)/);
+
+      if (versionMatch) {
+        const version = decodeURIComponent(versionMatch[1]);
+        path = `${path ?? '/README.md'}&version=${version}`;
+      }
+    }
+
     const entityRef = stringifyEntityRef(entity);
+
     return api.getReadme({
       project,
       repo: repo as string,
       entityRef,
       host,
       org,
-      path: readmePath,
+      path,
     });
   }, [api]);
 

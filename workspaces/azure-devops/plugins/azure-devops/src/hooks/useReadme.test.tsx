@@ -127,4 +127,73 @@ describe('useReadme', () => {
       'Invalid value for annotation "dev.azure.com/project-repo"; expected format is: <project-name>/<repo-name>, found: "fake"',
     );
   });
+
+  it('should derive version from source-location when annotation has no version', async () => {
+    const entity: Entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        namespace: 'default',
+        name: 'project-repo',
+        annotations: {
+          'dev.azure.com/project-repo': 'projectName/repoName',
+          'backstage.io/source-location':
+            'url:https://dev.azure.com/org/project/_git/repo?path=%2F&version=GBhml',
+        },
+      },
+    };
+    azureDevOpsApiMock.getReadme.mockResolvedValue({
+      item: {
+        url: '',
+        content: '',
+      },
+    });
+
+    renderHook(() => useReadme(entity), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(azureDevOpsApiMock.getReadme).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: '/README.md&version=GBhml',
+        }),
+      );
+    });
+  });
+
+  it('should respect an explicit version set on readme-path annotation', async () => {
+    const entity: Entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        namespace: 'default',
+        name: 'project-repo',
+        annotations: {
+          'dev.azure.com/project-repo': 'projectName/repoName',
+          'dev.azure.com/readme-path': '/docs/README.md&version=GBdev',
+          'backstage.io/source-location':
+            'url:https://dev.azure.com/org/project/_git/repo?path=%2F&version=GBhml',
+        },
+      },
+    };
+    azureDevOpsApiMock.getReadme.mockResolvedValue({
+      item: {
+        url: '',
+        content: '',
+      },
+    });
+
+    renderHook(() => useReadme(entity), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(azureDevOpsApiMock.getReadme).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: '/docs/README.md&version=GBdev',
+        }),
+      );
+    });
+  });
 });

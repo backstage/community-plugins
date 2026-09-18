@@ -293,8 +293,8 @@ describe('replaceReadme', () => {
 });
 
 describe('buildEncodedUrl', () => {
-  it('should not encode the colon between host and port', async () => {
-    const result = await buildEncodedUrl(
+  it('should not encode the colon between host and port', () => {
+    const result = buildEncodedUrl(
       'tfs.myorg.com:8443',
       'org',
       'project',
@@ -304,6 +304,34 @@ describe('buildEncodedUrl', () => {
 
     expect(result).toBe(
       'https://tfs.myorg.com:8443/org/project/_git/repo?path=path',
+    );
+  });
+
+  it('should extract and preserve a version query param from the path', () => {
+    const result = buildEncodedUrl(
+      'dev.azure.com',
+      'org',
+      'project',
+      'repo',
+      '/README.md&version=GBhml',
+    );
+
+    expect(result).toBe(
+      'https://dev.azure.com/org/project/_git/repo?path=%2FREADME.md&version=GBhml',
+    );
+  });
+
+  it('should encode slashes in the version query param', () => {
+    const result = buildEncodedUrl(
+      'dev.azure.com',
+      'org',
+      'project',
+      'repo',
+      '/README.md&version=GBfeature/readme-fix',
+    );
+
+    expect(result).toBe(
+      'https://dev.azure.com/org/project/_git/repo?path=%2FREADME.md&version=GBfeature%2Freadme-fix',
     );
   });
 });
