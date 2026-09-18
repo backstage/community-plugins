@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-import { PageBlueprint } from '@backstage/frontend-plugin-api';
+import {
+  createFrontendPlugin,
+  PageBlueprint,
+} from '@backstage/frontend-plugin-api';
+
 import { default as RbacIcon } from '@mui/icons-material/VpnKeyOutlined';
-import { rootRouteRef } from './pluginRoutes';
+
+import { rbacApi, licensedUsersApi } from './apis';
+import { rootRouteRef } from './routes';
 
 /**
+ * RBAC page
  * @public
  */
 export const rbacPage = PageBlueprint.make({
@@ -31,4 +38,15 @@ export const rbacPage = PageBlueprint.make({
   },
 });
 
-export default rbacPage;
+/**
+ * RBAC plugin
+ * @public
+ */
+export const rbacPlugin = createFrontendPlugin({
+  pluginId: 'rbac',
+  info: { packageJson: () => import('../package.json') },
+  extensions: [rbacApi, licensedUsersApi, rbacPage],
+  routes: {
+    root: rootRouteRef,
+  },
+});
