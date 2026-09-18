@@ -55,13 +55,13 @@
     "@backstage/plugin-app-react": "backstage:^"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
-    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/jest-dom": "7.0.1",
     "cross-fetch": "4.1.0"
   },
   "files": [
