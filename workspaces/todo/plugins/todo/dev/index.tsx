@@ -17,12 +17,18 @@
 import { Entity, ANNOTATION_LOCATION } from '@backstage/catalog-model';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import OnlineIcon from '@material-ui/icons/Cloud';
-import OfflineIcon from '@material-ui/icons/Storage';
+import { RiCloudLine, RiHardDrive2Line } from '@remixicon/react';
 import { EntityTodoContent, todoApiRef, todoPlugin } from '../src';
 
 import { Content, Header, HeaderLabel, Page } from '@backstage/core-components';
+import { IconComponent } from '@backstage/core-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
+
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
+const OfflineIcon: IconComponent = () => <RiHardDrive2Line size={24} />;
+const OnlineIcon: IconComponent = () => <RiCloudLine size={24} />;
 
 const entity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
