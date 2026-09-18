@@ -1,0 +1,38 @@
+@layer components {
+  .runsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--bui-space-1);
+  }
+
+  .statusDot {
+    width: fit-content;
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  .tooltipContent {
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-2);
+    min-width: 280px;
+  }
+
+  .tooltipItem {
+    display: flex;
+    align-items: center;
+    gap: var(--bui-space-2);
+  }
+
+  .tooltipIcon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--bui-fg-secondary);
+  }
+
+  .graphLink {
+    text-decoration: none;
+  }
+}

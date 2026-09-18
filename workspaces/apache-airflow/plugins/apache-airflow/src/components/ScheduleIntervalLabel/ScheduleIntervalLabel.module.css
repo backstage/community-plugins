@@ -1,0 +1,20 @@
+@layer components {
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--bui-space-2);
+    min-height: 18px;
+    border-radius: var(--bui-radius-full);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--bui-fg-primary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  :global([data-theme-mode='dark']) .pill {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.16);
+  }
+}

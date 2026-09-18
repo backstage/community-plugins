@@ -22,10 +22,11 @@ import {
   Page,
   SupportButton,
 } from '@backstage/core-components';
-import Grid from '@material-ui/core/Grid';
+import { Box } from '@backstage/ui';
 import { DagTableComponent } from '../DagTableComponent';
 import { StatusComponent } from '../StatusComponent';
 import { VersionComponent } from '../VersionComponent';
+import styles from './HomePage.module.css';
 
 export const HomePage = () => (
   <Page themeId="tool">
@@ -38,17 +39,17 @@ export const HomePage = () => (
           See an overview of your Apache Airflow instance, and manage workflows
         </SupportButton>
       </ContentHeader>
-      <Grid container spacing={3} direction="row">
-        <Grid item sm={12} lg={6}>
+      <Box className={styles.overviewGrid}>
+        <Box className={styles.halfWidth}>
           <VersionComponent />
-        </Grid>
-        <Grid item sm={12} lg={6}>
+        </Box>
+        <Box className={styles.halfWidth}>
           <StatusComponent />
-        </Grid>
-        <Grid item sm={12}>
+        </Box>
+        <Box className={styles.fullWidth}>
           <DagTableComponent />
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Content>
   </Page>
 );

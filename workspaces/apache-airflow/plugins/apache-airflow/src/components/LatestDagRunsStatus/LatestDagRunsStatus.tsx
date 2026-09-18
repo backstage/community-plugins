@@ -18,89 +18,28 @@ import { apacheAirflowApiRef } from '../../api';
 import useAsync from 'react-use/esm/useAsync';
 import { DagRun } from '../../api/types/Dags';
 import { useApi } from '@backstage/core-plugin-api';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Text, Tooltip } from '@backstage/ui';
 import {
-  Link,
+  Progress,
   StatusError,
   StatusOK,
   StatusPending,
   StatusRunning,
 } from '@backstage/core-components';
-import DirectionsRun from '@material-ui/icons/DirectionsRun';
-import Check from '@material-ui/icons/Check';
-import CalendarToday from '@material-ui/icons/CalendarToday';
 import qs from 'qs';
-import AccountTree from '@material-ui/icons/AccountTree';
+import { TooltipTrigger } from 'react-aria-components';
+import styles from './LatestDagRunsStatus.module.css';
+import { DagRunTooltipContent } from './DagRunTooltipContent';
 
 interface LatestDagRunsStatusProps {
   dagId: string;
   limit?: number;
 }
 
-const useStyles = makeStyles(() => ({
-  noMaxWidth: {
-    maxWidth: 'none',
-  },
-}));
-
-const DagRunTooltip = ({
-  dagRun,
-  graphUrl,
-}: {
-  dagRun: DagRun;
-  graphUrl: string;
-}) => {
-  return (
-    <List>
-      <ListItem>
-        <ListItemIcon aria-label="DAG Run ID">
-          <DirectionsRun />
-        </ListItemIcon>
-        <Typography>{dagRun.dag_run_id}</Typography>
-      </ListItem>
-      <ListItem>
-        <ListItemIcon aria-label="DAG Start Date">
-          <CalendarToday />
-        </ListItemIcon>
-        <Typography>{new Date(dagRun.start_date).toLocaleString()}</Typography>
-      </ListItem>
-      <ListItem>
-        <ListItemIcon aria-label="DAG End Date">
-          <Check />
-        </ListItemIcon>
-        <Typography>
-          {dagRun.end_date ? new Date(dagRun.end_date).toLocaleString() : '-'}
-        </Typography>
-      </ListItem>
-      <ListItem>
-        <Button
-          startIcon={<AccountTree />}
-          aria-label="Link To Detail"
-          color="primary"
-          variant="outlined"
-        >
-          <Link to={graphUrl} color="inherit">
-            Graph
-          </Link>
-        </Button>
-      </ListItem>
-    </List>
-  );
-};
-
 export const LatestDagRunsStatus = ({
   dagId,
   limit = 5,
 }: LatestDagRunsStatusProps) => {
-  const classes = useStyles();
   const apiClient = useApi(apacheAirflowApiRef);
   const { value, loading, error } = useAsync(
     async (): Promise<DagRun[]> => await apiClient.getDagRuns(dagId, { limit }),
@@ -108,15 +47,11 @@ export const LatestDagRunsStatus = ({
   );
 
   if (loading) {
-    return (
-      <Box>
-        <CircularProgress />
-      </Box>
-    );
+    return <Progress />;
   }
 
   if (error) {
-    return <Typography>Can't get dag runs</Typography>;
+    return <Text>Can't get dag runs</Text>;
   }
 
   const statusDots: JSX.Element[] | undefined = value?.map(dagRun => {
@@ -131,7 +66,7 @@ export const LatestDagRunsStatus = ({
         case 'queued':
           return <StatusPending />;
         default:
-          return <Typography>Unrecognized state</Typography>;
+          return <Text>Unrecognized state</Text>;
       }
     }
 
@@ -142,18 +77,14 @@ export const LatestDagRunsStatus = ({
     };
     const graphUrl = `${apiClient.baseUrl}graph?${qs.stringify(dagRunParams)}`;
     return (
-      <Tooltip
-        title={<DagRunTooltip dagRun={dagRun} graphUrl={graphUrl} />}
-        key={key}
-        classes={{ tooltip: classes.noMaxWidth }}
-        interactive
-      >
-        <Box width="fit-content" component="span">
-          {status()}
-        </Box>
-      </Tooltip>
+      <TooltipTrigger key={key}>
+        <Box className={styles.statusDot}>{status()}</Box>
+        <Tooltip className={styles.tooltipContent}>
+          <DagRunTooltipContent dagRun={dagRun} graphUrl={graphUrl} />
+        </Tooltip>
+      </TooltipTrigger>
     );
   });
 
-  return <Box>{statusDots}</Box>;
+  return <Box className={styles.runsContainer}>{statusDots}</Box>;
 };

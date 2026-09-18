@@ -1,0 +1,116 @@
+@layer components {
+  .dagCell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bui-space-1);
+  }
+
+  .dagName {
+    word-break: break-word;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.57;
+  }
+
+  .tagGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bui-space-1);
+    align-items: center;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--bui-space-2);
+    min-height: 18px;
+    border-radius: var(--bui-radius-full);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--bui-fg-primary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  :global([data-theme-mode='dark']) .pill {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .pausedSwitch {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .pausedSwitch :global(.bui-SwitchIndicator) {
+    width: 2rem;
+    height: 0.84rem;
+    border-radius: 999px;
+    background: #9a9a9a;
+    border: 0.75px solid #7f7f7f;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+    position: relative;
+  }
+
+  .pausedSwitch :global(.bui-SwitchIndicator)::before {
+    content: '';
+    position: absolute;
+    left: -0.02rem;
+    top: calc(50% - 0.5px);
+    width: 0.98rem;
+    height: 0.98rem;
+    background: #bebebe;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+    border-radius: var(--bui-radius-full);
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+  }
+
+  .pausedSwitch[data-selected] :global(.bui-SwitchIndicator) {
+    background: #2f7de1;
+    border-color: #2f7de1;
+  }
+
+  .pausedSwitch[data-selected] :global(.bui-SwitchIndicator)::before {
+    transform: translate(0.98rem, -50%);
+    background: #78b1ff;
+  }
+
+  .statusCell {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+  }
+
+  .activeLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .linkButton {
+    color: var(--bui-fg-primary) !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .linkButton:hover,
+  .linkButton:focus,
+  .linkButton:active,
+  .linkButton:visited {
+    text-decoration: none;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}
