@@ -64,6 +64,7 @@
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@backstage/ui": "backstage:^",
     "@testing-library/dom": "10.4.1",

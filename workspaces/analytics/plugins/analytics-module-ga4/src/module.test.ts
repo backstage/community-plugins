@@ -20,40 +20,27 @@ import {
 } from '@backstage/frontend-test-utils';
 import { AnalyticsImplementationBlueprint } from '@backstage/plugin-app-react';
 
-import { SegmentAnalytics } from './apis/implementations/AnalyticsApi';
-import segmentModule from '.';
-import { segmentImplementation } from './module';
+import { GoogleAnalytics4 } from './apis/implementations/AnalyticsApi';
+import ga4Module from './alpha';
+import { ga4Implementation } from './module';
 
-// The real constructor calls AnalyticsBrowser().load(), which leaves a worker behind in
-// jsdom. The sibling Segment.test.ts mocks it for the same reason.
-jest.mock('@segment/analytics-next', () => ({
-  AnalyticsBrowser: function AnalyticsBrowser() {
-    return {
-      load: jest.fn(),
-      identify: jest.fn(),
-      page: jest.fn(),
-      track: jest.fn(),
-    };
-  },
-}));
-
-describe('Segment analytics module', () => {
+describe('ga4 analytics module', () => {
   it('exports a frontend module carrying the analytics implementation', () => {
-    expect(segmentModule.$$type).toBe('@backstage/FrontendModule');
-    expect(segmentModule.pluginId).toBe('app');
+    expect(ga4Module.$$type).toBe('@backstage/FrontendModule');
+    expect(ga4Module.pluginId).toBe('app');
 
     // The extension list is the module's internal shape; nothing public
     // reports what a module carries.
-    const { extensions } = segmentModule as unknown as {
+    const { extensions } = ga4Module as unknown as {
       extensions: { id: string }[];
     };
     expect(extensions.map(extension => extension.id)).toEqual([
-      'analytics:app/segment',
+      'analytics:app/ga4',
     ]);
   });
 
   it('builds the analytics API from the apis the app injects', () => {
-    const implementation = createExtensionTester(segmentImplementation).get(
+    const implementation = createExtensionTester(ga4Implementation).get(
       AnalyticsImplementationBlueprint.dataRefs.factory,
     );
 
@@ -64,14 +51,10 @@ describe('Segment analytics module', () => {
     expect(
       implementation.factory({
         configApi: mockApis.config({
-          data: {
-            app: {
-              analytics: { segment: { writeKey: 'key', testMode: true } },
-            },
-          },
+          data: { app: { analytics: { ga4: { measurementId: 'G-TEST' } } } },
         }),
         identityApi: mockApis.identity(),
       }),
-    ).toBeInstanceOf(SegmentAnalytics);
+    ).toBeInstanceOf(GoogleAnalytics4);
   });
 });
