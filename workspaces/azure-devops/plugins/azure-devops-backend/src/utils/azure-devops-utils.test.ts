@@ -307,13 +307,14 @@ describe('buildEncodedUrl', () => {
     );
   });
 
-  it('should extract and preserve a version query param from the path', () => {
+  it('should append a version query param separately from the path', () => {
     const result = buildEncodedUrl(
       'dev.azure.com',
       'org',
       'project',
       'repo',
-      '/README.md&version=GBhml',
+      '/README.md',
+      'GBhml',
     );
 
     expect(result).toBe(
@@ -321,17 +322,18 @@ describe('buildEncodedUrl', () => {
     );
   });
 
-  it('should encode slashes in the version query param', () => {
+  it('should preserve host sub-paths when appending a version query param', () => {
     const result = buildEncodedUrl(
-      'dev.azure.com',
+      'tfs.myorg.com:8443/tfs',
       'org',
       'project',
       'repo',
-      '/README.md&version=GBfeature/readme-fix',
+      '/README.md',
+      'GBfeature/foo',
     );
 
     expect(result).toBe(
-      'https://dev.azure.com/org/project/_git/repo?path=%2FREADME.md&version=GBfeature%2Freadme-fix',
+      'https://tfs.myorg.com:8443/tfs/org/project/_git/repo?path=%2FREADME.md&version=GBfeature%2Ffoo',
     );
   });
 });

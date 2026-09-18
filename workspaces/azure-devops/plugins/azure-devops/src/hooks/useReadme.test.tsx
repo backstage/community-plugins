@@ -156,7 +156,8 @@ describe('useReadme', () => {
     await waitFor(() => {
       expect(azureDevOpsApiMock.getReadme).toHaveBeenCalledWith(
         expect.objectContaining({
-          path: '/README.md&version=GBhml',
+          path: '/README.md',
+          version: 'GBhml',
         }),
       );
     });
@@ -191,7 +192,43 @@ describe('useReadme', () => {
     await waitFor(() => {
       expect(azureDevOpsApiMock.getReadme).toHaveBeenCalledWith(
         expect.objectContaining({
-          path: '/docs/README.md&version=GBdev',
+          path: '/docs/README.md',
+          version: 'GBdev',
+        }),
+      );
+    });
+  });
+
+  it('should derive version from on-prem source-location with host sub-path', async () => {
+    const entity: Entity = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {
+        namespace: 'default',
+        name: 'project-repo',
+        annotations: {
+          'dev.azure.com/project-repo': 'projectName/repoName',
+          'backstage.io/source-location':
+            'url:https://tfs.myorg.com:8443/tfs/org/project/_git/repo?path=%2F&version=GBfeature/foo',
+        },
+      },
+    };
+    azureDevOpsApiMock.getReadme.mockResolvedValue({
+      item: {
+        url: '',
+        content: '',
+      },
+    });
+
+    renderHook(() => useReadme(entity), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(azureDevOpsApiMock.getReadme).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: '/README.md',
+          version: 'GBfeature/foo',
         }),
       );
     });

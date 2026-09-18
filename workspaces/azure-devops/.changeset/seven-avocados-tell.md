@@ -3,4 +3,4 @@
 '@backstage-community/plugin-azure-devops': patch
 ---
 
-Fix Azure DevOps README branch version handling
+README card feature now properly respect branch version

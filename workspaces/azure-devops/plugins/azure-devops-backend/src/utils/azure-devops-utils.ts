@@ -242,24 +242,13 @@ export function buildEncodedUrl(
   project: string,
   repo: string,
   path: string,
+  version?: string,
 ): string {
   const encodedOrg = encodeURIComponent(org);
   const encodedProject = encodeURIComponent(project);
   const encodedRepo = encodeURIComponent(repo);
-
-  const versionSeparator = '&version=';
-  const versionIndex = path.indexOf(versionSeparator);
-
-  let parsedPath = path;
-  let versionQuery = '';
-
-  if (versionIndex !== -1) {
-    parsedPath = path.slice(0, versionIndex);
-    const version = path.slice(versionIndex + versionSeparator.length);
-    versionQuery = `&version=${encodeURIComponent(version)}`;
-  }
-
-  const encodedPath = encodeURIComponent(parsedPath);
+  const encodedPath = encodeURIComponent(path);
+  const versionQuery = version ? `&version=${encodeURIComponent(version)}` : '';
 
   return `https://${host}/${encodedOrg}/${encodedProject}/_git/${encodedRepo}?path=${encodedPath}${versionQuery}`;
 }
