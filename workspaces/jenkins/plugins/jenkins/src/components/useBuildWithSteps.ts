@@ -31,9 +31,11 @@ const INTERVAL_AMOUNT = 1500;
 export function useBuildWithSteps({
   jobFullName,
   buildNumber,
+  instanceName,
 }: {
   jobFullName: string;
   buildNumber: string;
+  instanceName?: string;
 }) {
   const api = useApi(jenkinsApiRef);
   const errorApi = useApi(errorApiRef);
@@ -42,12 +44,17 @@ export function useBuildWithSteps({
   const getBuildWithSteps = useCallback(async () => {
     try {
       const entityName = await getCompoundEntityRef(entity);
-      return api.getBuild({ entity: entityName, jobFullName, buildNumber });
+      return api.getBuild({
+        entity: entityName,
+        jobFullName,
+        buildNumber,
+        instanceName,
+      });
     } catch (e) {
       errorApi.post(e);
       return Promise.reject(e);
     }
-  }, [buildNumber, jobFullName, entity, api, errorApi]);
+  }, [buildNumber, jobFullName, instanceName, entity, api, errorApi]);
 
   const { loading, value, retry } = useAsyncRetry(
     () => getBuildWithSteps(),

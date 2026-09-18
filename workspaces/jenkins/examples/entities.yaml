@@ -13,7 +13,9 @@ kind: Component
 metadata:
   name: example-website
   annotations:
-    jenkins.io/job-full-name: 'folder-name/project-name'
+    # The first job uses the default instance. The second uses the named instance.
+    # They may have the same full name because the instance is part of their identity.
+    jenkins.io/job-full-name: 'folder-name/project-name,production:folder-name/project-name'
 spec:
   type: website
   lifecycle: experimental

@@ -93,7 +93,8 @@ metadata:
   description: 'a description'
   annotations:
     jenkins.io/github-folder: 'folder-name/project-name' # deprecated
-    jenkins.io/job-full-name: 'folder-name/project-name,folder-name/project-name' # use this instead
+    # Unprefixed jobs use the default instance; prefixed jobs use that named instance.
+    jenkins.io/job-full-name: 'folder-name/project-name,production:folder-name/project-name'
 
 spec:
   type: service
@@ -111,6 +112,9 @@ spec:
 - View all runs inside a folder
 - Last build status for specified branch
 - View summary of a build
+- View and operate jobs from multiple Jenkins instances on the same entity
+
+The projects table includes the Jenkins instance name. The same job full name can appear on multiple instances; build details, run history, console logs, and retries are resolved using both the instance name and job full name.
 
 ## Limitations
 
