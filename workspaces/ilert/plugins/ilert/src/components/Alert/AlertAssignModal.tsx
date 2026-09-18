@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,45 +15,19 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import { toastApiRef } from '@backstage/frontend-plugin-api';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import MUIAlert from '@material-ui/lab/Alert';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Text,
+} from '@backstage/ui';
 import { ilertApiRef } from '../../api';
 import { useAssignAlert } from '../../hooks/useAssignAlert';
 import { Alert } from '../../types';
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  formControl: {
-    minWidth: 120,
-    width: '100%',
-  },
-  option: {
-    fontSize: 15,
-    '& > span': {
-      marginRight: 10,
-      fontSize: 18,
-    },
-  },
-  optionWrapper: {
-    display: 'flex',
-    width: '100%',
-  },
-  sourceImage: {
-    height: 22,
-    paddingRight: 4,
-  },
-}));
+import styles from './AlertAssignModal.module.css';
 
 export const AlertAssignModal = ({
   alert,
@@ -73,7 +47,6 @@ export const AlertAssignModal = ({
   const callback = onAlertChanged || ((_: Alert): void => {});
   const ilertApi = useApi(ilertApiRef);
   const alertApi = useApi(toastApiRef);
-  const classes = useStyles();
 
   const handleClose = () => {
     setAlertRespondersList([]);
@@ -102,79 +75,90 @@ export const AlertAssignModal = ({
   const canAssign = !!alertResponder;
 
   return (
-    <Dialog
-      open={isModalOpened}
-      onClose={handleClose}
-      aria-labelledby="assign-alert-form-title"
-    >
-      <DialogTitle id="assign-alert-form-title">
-        Select responder to assign
-      </DialogTitle>
-      <DialogContent>
-        <MUIAlert severity="info">
-          <Typography variant="body1" gutterBottom align="justify">
-            This action will assign the alert to the selected responder.
-          </Typography>
-        </MUIAlert>
-        <Autocomplete
-          disabled={isLoading}
-          options={alertRespondersList}
-          value={alertResponder}
-          classes={{
-            root: classes.formControl,
-            option: classes.option,
-          }}
-          onChange={(_event: any, newValue: any) => {
-            setAlertResponder(newValue);
-          }}
-          autoHighlight
-          groupBy={option => {
-            switch (option.group) {
-              case 'SUGGESTED':
-                return 'Suggested responders';
-              case 'USER':
-                return 'Users';
-              case 'ESCALATION_POLICY':
-                return 'Escalation policies';
-              case 'ON_CALL_SCHEDULE':
-                return 'Schedules';
-              default:
-                return '';
-            }
-          }}
-          getOptionLabel={a => a.name}
-          renderOption={a => (
-            <div className={classes.optionWrapper}>
-              <Typography noWrap>{a.name}</Typography>
-            </div>
-          )}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label="Responder"
-              variant="outlined"
-              margin="normal"
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: 'new-password', // disable autocomplete and autofill
+    <DialogTrigger>
+      <Dialog
+        isOpen={isModalOpened}
+        isDismissable
+        onOpenChange={open => {
+          if (!open) handleClose();
+        }}
+      >
+        <DialogHeader>Select responder to assign</DialogHeader>
+        <DialogBody>
+          <div className={styles.alertInfo}>
+            <Text>
+              This action will assign the alert to the selected responder.
+            </Text>
+          </div>
+          <div className={styles.selectWrapper}>
+            <label htmlFor="responder-select" className={styles.label}>
+              Responder
+            </label>
+            <select
+              id="responder-select"
+              disabled={isLoading}
+              value={alertResponder?.id || ''}
+              onChange={e => {
+                const selected = alertRespondersList.find(
+                  r => r.id === parseInt(e.target.value, 10),
+                );
+                setAlertResponder(selected || null);
               }}
-            />
-          )}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          disabled={!canAssign}
-          onClick={handleAssign}
-          color="primary"
-          variant="contained"
-        >
-          Assign
-        </Button>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+              className={styles.select}
+            >
+              <option value="">-- Select a responder --</option>
+              <optgroup label="Suggested responders">
+                {alertRespondersList
+                  .filter(r => r.group === 'SUGGESTED')
+                  .map(r => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
+                  ))}
+              </optgroup>
+              <optgroup label="Users">
+                {alertRespondersList
+                  .filter(r => r.group === 'USER')
+                  .map(r => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
+                  ))}
+              </optgroup>
+              <optgroup label="Escalation policies">
+                {alertRespondersList
+                  .filter(r => r.group === 'ESCALATION_POLICY')
+                  .map(r => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
+                  ))}
+              </optgroup>
+              <optgroup label="Schedules">
+                {alertRespondersList
+                  .filter(r => r.group === 'ON_CALL_SCHEDULE')
+                  .map(r => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
+                  ))}
+              </optgroup>
+            </select>
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            isDisabled={!canAssign}
+            onPress={handleAssign}
+            variant="primary"
+          >
+            Assign
+          </Button>
+          <Button onPress={handleClose} variant="secondary" slot="close">
+            Cancel
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };
