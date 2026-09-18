@@ -1,5 +1,14 @@
 # @backstage-community/plugin-rbac
 
+## 2.3.2
+
+### Patch Changes
+
+- a2a29d1: Align the new frontend system plugin with standard `plugin.tsx` and `routes.ts` file names.
+- 59d29aa: Move the legacy frontend plugin definition into the `legacy` export path.
+- 442f46e: Updated dependency `@types/node` to `22.20.2`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+
 ## 2.3.1
 
 ### Patch Changes

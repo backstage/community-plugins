@@ -1,5 +1,13 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.2
+
+### Patch Changes
+
+- dd59b2d: Updated dependency `csv-parse` to `^7.0.0`.
+- 442f46e: Updated dependency `@types/node` to `22.20.2`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+
 ## 8.1.1
 
 ### Patch Changes
