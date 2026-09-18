@@ -29,9 +29,11 @@ describe('GraphiQLEndpointBlueprint', () => {
       },
     });
 
-    expect(extension.attachTo).toEqual({
-      id: 'api:graphiql',
-      input: 'endpoints',
+    expect(extension).toMatchObject({
+      attachTo: {
+        id: 'api:graphiql',
+        input: 'endpoints',
+      },
     });
   });
 });
