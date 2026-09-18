@@ -135,6 +135,14 @@ export interface Config {
      */
     toolCallTimeout?: number;
     /**
+     * Maximum number of tool-call iterations the agentic loop will run before
+     * giving up on producing a final answer. Increase this for questions that
+     * legitimately require many sequential tool calls.
+     * @visibility backend
+     * @default 8
+     */
+    maxToolIterations?: number;
+    /**
      * Custom system prompt for the AI assistant
      * @visibility backend
      */
