@@ -24,6 +24,9 @@ import {
   GraphiQLPage,
 } from '../src';
 
+// eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
+import '@backstage/ui/css/styles.css';
+
 createDevApp()
   .registerPlugin(graphiqlPlugin)
   .registerApi({
