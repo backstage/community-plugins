@@ -1,0 +1,99 @@
+.eventWrapper {
+  position: relative;
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--bui-space-2);
+  cursor: pointer;
+  padding-right: 12px;
+  padding: var(--bui-space-2);
+  border-radius: var(--bui-radius-1);
+  background-color: var(--bui-bg-surface-1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 150ms ease-in-out;
+}
+
+.event:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.event.hovered {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.event.passed {
+  opacity: 0.6;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.event.passed:hover {
+  opacity: 1;
+}
+
+.calendarColor {
+  width: 8px;
+  height: 100%;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: var(--bui-fg-primary);
+  margin-right: var(--bui-space-2);
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  padding-top: var(--bui-space-1);
+  padding-bottom: var(--bui-space-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-1);
+}
+
+.declined {
+  text-decoration: line-through;
+}
+
+.link {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background-color 150ms ease-in-out;
+}
+
+.link:hover {
+  background-color: var(--bui-bg-surface-2);
+}
+
+.link img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.popoverBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+.popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: var(--bui-bg-surface-1);
+  border: 1px solid var(--bui-border-neutral);
+  border-radius: var(--bui-radius-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  margin-top: var(--bui-space-2);
+}
