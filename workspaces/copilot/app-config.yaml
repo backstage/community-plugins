@@ -100,7 +100,7 @@ copilot:
   host: github.com
   # enterprise: ${ENTERPRISE}
   organization: ${ORGANIZATION}
-  backfillFromDate: '2026-05-20'
+  backfillFromDate: '2026-08-01'
   backfillDelayMs: 300
   ingestTeams: true
   showUserMetrics: false
@@ -108,7 +108,7 @@ copilot:
   defaultView: enterprise
   schedule:
     frequency:
-      hours: 24
+      minutes: 10
     timeout:
       minutes: 30
     initialDelay:
