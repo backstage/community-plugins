@@ -710,12 +710,48 @@ describe('createRouter', () => {
       const response = await request(app)
         .get('/readme/myProject/myRepo?path=README.md')
         .query({ entityRef: 'component:default/mycomponent' });
+
       expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
         'host.com',
         'myOrg',
         'myProject',
         'myRepo',
         'README.md',
+        undefined,
+      );
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        content,
+        url,
+      });
+    });
+
+    it('passes version separately to the Azure DevOps API', async () => {
+      const content = getReadmeMock();
+      const url =
+        'https://host.com/myOrg/myProject/_git/myRepo?path=%2Fdocs%2FREADME.md&version=GBfeature%2Ffoo';
+
+      azureDevOpsApi.getReadme.mockResolvedValueOnce({
+        content,
+        url,
+      });
+      mockedAuthorize.mockImplementationOnce(async () => [
+        { result: AuthorizeResult.ALLOW },
+      ]);
+
+      const response = await request(app)
+        .get(
+          '/readme/myProject/myRepo?path=/docs/README.md&version=GBfeature%2Ffoo',
+        )
+        .query({ entityRef: 'component:default/mycomponent' });
+
+      expect(azureDevOpsApi.getReadme).toHaveBeenCalledWith(
+        'host.com',
+        'myOrg',
+        'myProject',
+        'myRepo',
+        '/docs/README.md',
+        'GBfeature/foo',
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({
@@ -747,6 +783,7 @@ describe('createRouter', () => {
         'myProject',
         'myRepo',
         'README_NOT_DEFAULT.md',
+        undefined,
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({
@@ -778,6 +815,7 @@ describe('createRouter', () => {
         'myProject',
         'myRepo',
         '/my-path/README.md',
+        undefined,
       );
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({

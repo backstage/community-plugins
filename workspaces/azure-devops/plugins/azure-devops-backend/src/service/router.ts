@@ -434,6 +434,7 @@ export async function createRouter(
     const org =
       req.query.org?.toString() ?? config.getString('azureDevOps.organization');
     let path = req.query.path;
+    const version = req.query.version?.toString();
 
     if (path === undefined) {
       // if the annotation is missing, default to the previous behaviour (look for README.md in the root of the repo)
@@ -477,7 +478,9 @@ export async function createRouter(
       projectName,
       repoName,
       path,
+      version,
     );
+
     res.status(200).json(readme);
   });
 
