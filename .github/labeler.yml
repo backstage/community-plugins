@@ -16,6 +16,9 @@ workspace/agent-forge:
 workspace/airbrake:
   - "Workspace\\s*airbrake"
 
+workspace/akeyless:
+  - "Workspace\\s*akeyless"
+
 workspace/allure:
   - "Workspace\\s*allure"
 
@@ -36,6 +39,9 @@ workspace/apiiro:
 
 workspace/apollo-explorer:
   - "Workspace\\s*apollo-explorer"
+
+workspace/argo-workflows:
+  - "Workspace\\s*argo-workflows"
 
 workspace/argocd:
   - "Workspace\\s*argocd"
@@ -156,6 +162,9 @@ workspace/graphql-voyager:
 
 workspace/growthbook-flags:
   - "Workspace\\s*growthbook-flags"
+
+workspace/healert:
+  - "Workspace\\s*healert"
 
 workspace/ilert:
   - "Workspace\\s*ilert"
