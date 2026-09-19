@@ -23,7 +23,7 @@ import {
   EntityHasSubcomponentsCard,
   EntityLayout,
 } from '@backstage/plugin-catalog';
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@backstage/ui';
 import { PropsWithChildren } from 'react';
 import { EntityVaultCard } from '../src/components/EntityVaultCard';
 import { vaultPlugin } from '../src/plugin';
@@ -31,15 +31,15 @@ import { vaultPlugin } from '../src/plugin';
 const SampleEntityPage = ({ children }: PropsWithChildren<{}>) => (
   <EntityLayout>
     <EntityLayout.Route path="/" title="Overview">
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={12}>
+      <Grid.Root columns={{ sm: '12' }} gap="6">
+        <Grid.Item colSpan={{ sm: '12' }}>
           <EntityAboutCard />
-        </Grid>
+        </Grid.Item>
         {children}
-        <Grid item xs={12}>
+        <Grid.Item colSpan={{ sm: '12' }}>
           <EntityHasSubcomponentsCard />
-        </Grid>
-      </Grid>
+        </Grid.Item>
+      </Grid.Root>
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -58,9 +58,9 @@ createDevApp()
     element: <CatalogEntityPage />,
     children: (
       <SampleEntityPage>
-        <Grid item md={12}>
+        <Grid.Item colSpan={{ sm: '12' }}>
           <EntityVaultCard />
-        </Grid>
+        </Grid.Item>
       </SampleEntityPage>
     ),
   })
