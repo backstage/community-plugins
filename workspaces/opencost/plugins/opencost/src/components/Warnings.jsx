@@ -14,38 +14,34 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Paper from '@material-ui/core/Paper';
-import WarningIcon from '@material-ui/icons/Warning';
-
-const useStyles = makeStyles({
-  root: {},
-});
+import { Card, CardBody, List, ListRow } from '@backstage/ui';
+import { RiAlertLine } from '@remixicon/react';
 
 const Warnings = ({ warnings }) => {
-  const classes = useStyles();
-
   if (!warnings || warnings.length === 0) {
     return null;
   }
 
   return (
-    <Paper className={classes.root}>
-      <List>
-        {warnings.map((warn, i) => (
-          <ListItem key={i}>
-            <ListItemIcon>
-              <WarningIcon />
-            </ListItemIcon>
-            <ListItemText primary={warn.primary} secondary={warn.secondary} />
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+    <Card>
+      <CardBody>
+        <List
+          aria-label="Warnings"
+          items={warnings.map((warn, i) => ({ ...warn, id: String(i) }))}
+          selectionMode="none"
+        >
+          {item => (
+            <ListRow
+              id={item.id}
+              icon={<RiAlertLine size={20} />}
+              description={item.secondary}
+            >
+              {item.primary}
+            </ListRow>
+          )}
+        </List>
+      </CardBody>
+    </Card>
   );
 };
 

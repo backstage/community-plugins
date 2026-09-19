@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import styles from './Page.module.css';
+.wrapper {
+  display: flex;
+  flex-flow: column;
+  flex-grow: 1;
+  margin: 20px 30px 0 30px;
+  min-width: 800px;
+}
 
-const Page = props => {
-  return (
-    <div className={styles.flexGrow}>
-      <div className={styles.wrapper}>
-        <div className={styles.flexGrow}>{props.children}</div>
-      </div>
-    </div>
-  );
-};
-
-export default Page;
+.flexGrow {
+  display: flex;
+  flex-flow: column;
+  flex-grow: 1;
+}
