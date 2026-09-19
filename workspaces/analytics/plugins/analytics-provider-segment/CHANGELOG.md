@@ -1,5 +1,27 @@
 # @backstage-community/plugin-analytics-provider-segment
 
+## 2.0.0
+
+### Major Changes
+
+- a67a197: **BREAKING**: The New Frontend System (NFS) Segment analytics module has been promoted from the `./alpha` subpath to the primary `.` entry point. Legacy frontend exports have been moved to the new `./legacy` subpath.
+
+  Migration steps:
+
+  - If you were importing from `@backstage-community/plugin-analytics-provider-segment/alpha` to use the NFS module, update your imports to `@backstage-community/plugin-analytics-provider-segment`.
+  - If you were importing from `@backstage-community/plugin-analytics-provider-segment` (the legacy frontend), update your imports to `@backstage-community/plugin-analytics-provider-segment/legacy`.
+  - The no-op `analyticsModuleSegment` plugin export has been removed. Legacy apps should wire analytics using `SegmentAnalyticsApi` or `SegmentAnalytics.fromConfig()` instead.
+
+  The `./alpha` subpath has been removed because this plugin does not ship translations.
+
+  The Segment analytics implementation is named `analytics:app/segment` in the New Frontend System.
+
+### Patch Changes
+
+- 7c6b73e: Export the analytics implementation extension from each module, so it can be referenced directly rather than only through the module that carries it. Added tests covering the APIs each implementation asks the app to inject and the analytics client it builds.
+- efdd3f3: Updated dependency `@testing-library/user-event` to `14.6.7`.
+- fa3c583: Updated dependency `@testing-library/dom` to `10.4.2`.
+
 ## 1.31.1
 
 ### Patch Changes
