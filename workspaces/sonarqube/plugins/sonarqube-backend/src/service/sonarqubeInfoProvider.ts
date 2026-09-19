@@ -379,10 +379,12 @@ export class DefaultSonarqubeInfoProvider implements SonarqubeInfoProvider {
       'reliability_rating',
       'vulnerabilities',
       'security_rating',
+      'security_hotspots',
       'security_hotspots_reviewed',
       'security_review_rating',
       'code_smells',
       'sqale_rating',
+      'sqale_index',
       'coverage',
       'duplicated_lines_density',
     ];

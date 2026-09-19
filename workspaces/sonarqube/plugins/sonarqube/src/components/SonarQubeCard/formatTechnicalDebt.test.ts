@@ -1,0 +1,115 @@
+/*
+ * Copyright 2026 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { mockApis } from '@backstage/test-utils';
+import { formatTechnicalDebt, resolveHoursInDay } from './formatTechnicalDebt';
+
+describe('formatTechnicalDebt', () => {
+  it.each([
+    ['12', '12min'],
+    ['60', '1h'],
+    ['270', '4h 30min'],
+    ['480', '1d'],
+    ['2640', '5d 4h'],
+    ['-2640', '-5d 4h'],
+    ['0', '0'],
+  ])('should format %s minutes as %s', (sqaleIndex, expected) => {
+    expect(formatTechnicalDebt(sqaleIndex)).toBe(expected);
+  });
+
+  it('should use the configured working day', () => {
+    // a six hour working day makes a day 360 minutes long
+    expect(formatTechnicalDebt('360', 6)).toBe('1d');
+    expect(formatTechnicalDebt('2640', 6)).toBe('7d 2h');
+  });
+
+  it.each([0, -8])(
+    'should fall back to eight hours in a day for %o',
+    hoursInDay => {
+      expect(formatTechnicalDebt('2640', hoursInDay)).toBe('5d 4h');
+    },
+  );
+
+  it('should keep only the most significant units', () => {
+    // days drop the minutes, and ten days or more drop the hours as well
+    expect(formatTechnicalDebt('662')).toBe('1d 3h');
+    expect(formatTechnicalDebt('3602')).toBe('7d 4h');
+    expect(formatTechnicalDebt('5000')).toBe('10d');
+  });
+
+  it.each([undefined, '', 'not-a-number'])(
+    'should return undefined for %o',
+    sqaleIndex => {
+      expect(formatTechnicalDebt(sqaleIndex)).toBeUndefined();
+    },
+  );
+});
+
+describe('resolveHoursInDay', () => {
+  const config = mockApis.config({
+    data: {
+      sonarqube: {
+        technicalDebt: { hoursInDay: 6 },
+        instances: [
+          {
+            name: 'default',
+            baseUrl: 'https://sonarqube.example.com',
+            technicalDebt: { hoursInDay: 5 },
+          },
+          {
+            name: 'legacy',
+            baseUrl: 'https://legacy-sonarqube.example.com',
+            technicalDebt: { hoursInDay: 7 },
+          },
+        ],
+      },
+    },
+  });
+
+  it('should read the working day of the named instance', () => {
+    expect(resolveHoursInDay(config, 'legacy')).toBe(7);
+  });
+
+  it.each([undefined, '', 'default'])(
+    'should read the working day of the default instance for %o',
+    instanceName => {
+      // an annotation without an instance prefix is resolved against `default`
+      expect(resolveHoursInDay(config, instanceName)).toBe(5);
+    },
+  );
+
+  it('should fall back to the top level working day for an unknown instance', () => {
+    expect(resolveHoursInDay(config, 'unknown')).toBe(6);
+  });
+
+  it('should fall back to the top level working day when the instance sets none', () => {
+    const sharedConfig = mockApis.config({
+      data: {
+        sonarqube: {
+          technicalDebt: { hoursInDay: 6 },
+          instances: [
+            { name: 'default', baseUrl: 'https://sonarqube.example.com' },
+          ],
+        },
+      },
+    });
+
+    expect(resolveHoursInDay(sharedConfig)).toBe(6);
+  });
+
+  it('should return undefined when nothing is configured', () => {
+    expect(resolveHoursInDay(mockApis.config(), 'legacy')).toBeUndefined();
+  });
+});

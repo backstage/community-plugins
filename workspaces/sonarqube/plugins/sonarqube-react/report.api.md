@@ -42,6 +42,8 @@ export type MetricKey =
   | 'security_rating'
   | 'code_smells'
   | 'sqale_rating'
+  | 'sqale_index'
+  | 'security_hotspots'
   | 'security_hotspots_reviewed'
   | 'security_review_rating'
   | 'coverage'
@@ -49,7 +51,7 @@ export type MetricKey =
 
 // @public
 export type Metrics = {
-  [key in MetricKey]: string | undefined;
+  [key in MetricKey]?: string;
 };
 
 // @public (undocumented)
