@@ -1,5 +1,14 @@
 # @backstage-community/plugin-topology
 
+## 3.0.2
+
+### Patch Changes
+
+- 1c6e97f: Bump `js-yaml` to v5
+- a9ae551: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.9.0`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+  Updated dependency `react-aria-components` to `~1.21.0`.
+
 ## 3.0.1
 
 ### Patch Changes
