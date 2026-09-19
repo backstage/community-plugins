@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-react
 
+## 0.8.0
+
+### Minor Changes
+
+- 6b28131: Dependency upgrade
+
 ## 0.7.4
 
 ### Patch Changes

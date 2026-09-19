@@ -1,5 +1,11 @@
 # @backstage-community/plugin-kiali-backend
 
+## 1.30.0
+
+### Minor Changes
+
+- 6b28131: Dependency upgrade
+
 ## 1.29.3
 
 ### Patch Changes
