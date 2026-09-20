@@ -22,6 +22,7 @@ import {
   FetchApi,
 } from '@backstage/core-plugin-api';
 import { parseEntityRef } from '@backstage/catalog-model';
+import { ResponseError } from '@backstage/errors';
 
 export const bitbucketApiRef = createApiRef<BitbucketApi>({
   id: 'plugin.bitbucket.service',
@@ -69,6 +70,31 @@ type Options = {
 type PullRequestRole = 'REVIEWER' | 'AUTHOR';
 type PullRequestState = 'OPEN' | 'MERGED' | 'DECLINED' | 'ALL';
 type PullRequestOptions = { includeBuildStatus?: boolean };
+
+async function fetchWithContext(
+  fetchApi: FetchApi,
+  url: string,
+  context: string,
+  init?: RequestInit,
+): Promise<Response> {
+  let response: Response;
+
+  try {
+    response = await fetchApi.fetch(url, init);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`${context}: ${message}`, { cause: error });
+  }
+
+  if (!response.ok) {
+    const responseError = await ResponseError.fromResponse(response);
+    throw new Error(`${context}: ${responseError.message}`, {
+      cause: responseError,
+    });
+  }
+
+  return response;
+}
 
 interface BitbucketClient {
   fetchPullRequestListForRepo(
@@ -184,14 +210,12 @@ abstract class BaseBitbucketClient implements BitbucketClient {
 class BitbucketServerClient extends BaseBitbucketClient {
   private async fetchBuildStatus(commitId: string): Promise<BuildStatus> {
     const proxyUrl = await this.getProxyUrl();
-    const response = await this.fetchApi.fetch(
+    const response = await fetchWithContext(
+      this.fetchApi,
       `${proxyUrl}${this.proxyPath}/rest/build-status/latest/commits/stats/${commitId}`,
+      `Failed to fetch build status for commit ${commitId}`,
       { headers: { 'Content-Type': 'application/json' } },
     );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch build status for commit ${commitId}`);
-    }
 
     return response.json();
   }
@@ -230,14 +254,16 @@ class BitbucketServerClient extends BaseBitbucketClient {
     }
     params.append('limit', limit.toString());
 
-    const response = await this.fetchApi.fetch(`${url}?${params}`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithContext(
+      this.fetchApi,
+      `${url}?${params}`,
+      'Failed to fetch pull requests from Bitbucket Server',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch pull requests');
-    }
+    );
 
     const data = await response.json();
     return mapServerPullRequests(data);
@@ -267,31 +293,16 @@ class BitbucketServerClient extends BaseBitbucketClient {
       user: name,
     });
 
-    const response = await this.fetchApi.fetch(`${url}?${params}`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithContext(
+      this.fetchApi,
+      `${url}?${params}`,
+      'Failed to fetch user pull requests from Bitbucket Server',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
-
-    if (!response.ok) {
-      let errorMessage = 'Failed to fetch pull requests from Bitbucket Server';
-
-      try {
-        const errorText = await response.text();
-        const errorJson = JSON.parse(errorText);
-
-        if (
-          response.status === 404 &&
-          errorJson.errors?.[0]?.message?.includes('does not exist')
-        ) {
-          errorMessage = `User '${name}' not found in Bitbucket Server. Please ensure your Bitbucket account exists.`;
-        }
-      } catch (e) {
-        errorMessage = e instanceof Error ? e.message : String(e);
-      }
-
-      throw new Error(errorMessage);
-    }
+    );
 
     const data = await response.json();
     const pullRequests = mapServerPullRequests(data);
@@ -341,17 +352,16 @@ class BitbucketCloudClient extends BaseBitbucketClient {
       | undefined = `${proxyUrl}${this.proxyPath}/2.0/repositories/${workspace}?pagelen=100`;
 
     while (nextUrl) {
-      const response: Response = await this.fetchApi.fetch(nextUrl, {
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetchWithContext(
+        this.fetchApi,
+        nextUrl,
+        `Failed to fetch repositories for workspace '${workspace}'`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch repositories for workspace '${workspace}'`,
-        );
-      }
+      );
 
       const data: any = await response.json();
       const pageRepos = (data.values || [])
@@ -382,17 +392,16 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     states.forEach(s => params.append('state', s));
     params.append('pagelen', pageLen.toString());
 
-    const response = await this.fetchApi.fetch(`${url}?${params}`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithContext(
+      this.fetchApi,
+      `${url}?${params}`,
+      `Failed to fetch pull requests from Bitbucket Cloud repo '${workspace}/${repo}'`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch pull requests from Bitbucket Cloud repo '${workspace}/${repo}'`,
-      );
-    }
+    );
 
     const data = await response.json();
     return mapCloudPullRequests(data);
@@ -416,14 +425,16 @@ class BitbucketCloudClient extends BaseBitbucketClient {
     }
     params.append('pagelen', Math.min(limit, DEFAULT_LIMIT).toString());
 
-    const response = await this.fetchApi.fetch(`${url}?${params}`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithContext(
+      this.fetchApi,
+      `${url}?${params}`,
+      'Failed to fetch pull requests from Bitbucket Cloud',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch pull requests from Bitbucket Cloud');
-    }
+    );
 
     const data = await response.json();
     return mapCloudPullRequests(data);
