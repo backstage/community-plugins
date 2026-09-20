@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  BITBUCKET_SERVER_ANNOTATION,
-  BITBUCKET_CLOUD_ANNOTATION,
-} from './utils/isBitbucketSlugSet';
+import { BITBUCKET_PROJECT_ANNOTATION } from './utils/isBitbucketSlugSet';
 
 export const entityStub = {
   metadata: {
@@ -25,7 +22,7 @@ export const entityStub = {
     annotations: {
       'backstage.io/managed-by-location':
         'url:https://github.com/mcalus3/sample-service/blob/master/backstage3.yaml',
-      [BITBUCKET_SERVER_ANNOTATION]: 'testproject/testrepo',
+      [BITBUCKET_PROJECT_ANNOTATION]: 'testproject/testrepo',
     },
     name: 'sample-bitbucketpr-service',
     description:
@@ -46,7 +43,7 @@ export const entityCloudStub = {
     annotations: {
       'backstage.io/managed-by-location':
         'url:https://github.com/mcalus3/sample-service/blob/master/backstage3.yaml',
-      [BITBUCKET_CLOUD_ANNOTATION]: 'myworkspace/example-project',
+      [BITBUCKET_PROJECT_ANNOTATION]: 'myworkspace/example-project',
     },
     name: 'sample-bitbucketpr-cloud-service',
     description:

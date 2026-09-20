@@ -19,8 +19,7 @@ import { Route, Routes } from 'react-router';
 import PullRequestList from './PullRequestList';
 import {
   isBitbucketSlugSet,
-  BITBUCKET_CLOUD_ANNOTATION,
-  BITBUCKET_SERVER_ANNOTATION,
+  BITBUCKET_PROJECT_ANNOTATION,
 } from '../utils/isBitbucketSlugSet';
 import {
   useEntity,
@@ -33,9 +32,7 @@ export const isBitbucketPullRequestsAvailable = (entity: Entity) =>
 export const Router = () => {
   const { entity } = useEntity();
   return !isBitbucketPullRequestsAvailable(entity) ? (
-    <MissingAnnotationEmptyState
-      annotation={`${BITBUCKET_CLOUD_ANNOTATION} or ${BITBUCKET_SERVER_ANNOTATION}`}
-    />
+    <MissingAnnotationEmptyState annotation={BITBUCKET_PROJECT_ANNOTATION} />
   ) : (
     <Routes>
       <Route path="/" element={<PullRequestList />} />
