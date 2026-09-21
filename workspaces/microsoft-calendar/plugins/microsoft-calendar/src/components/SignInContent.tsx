@@ -14,51 +14,30 @@
  * limitations under the License.
  */
 
-import type { MouseEventHandler } from 'react';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import { styled } from '@material-ui/core/styles';
+import { Button } from '@backstage/ui';
 import { CalendarEvent } from './CalendarEvent';
 import mockEvents from './eventMock.json';
 import { MicrosoftCalendarEvent } from '../api';
+import styles from './SignInContent.module.css';
 
 type Props = {
-  handleAuthClick: MouseEventHandler<HTMLElement>;
+  handleAuthClick: (e: any) => void;
 };
-
-const TransparentBox = styled(Box)({
-  opacity: 0.3,
-  filter: 'blur(1.5px)',
-});
 
 export const SignInContent = ({ handleAuthClick }: Props) => {
   return (
-    <Box position="relative" height="100%" width="100%">
-      <TransparentBox p={1}>
+    <div className={styles.container}>
+      <div className={styles.mockContent}>
         {(mockEvents as MicrosoftCalendarEvent[]).map(event => (
           <CalendarEvent key={event.id} event={event} />
         ))}
-      </TransparentBox>
+      </div>
 
-      <Box
-        height="100%"
-        width="100%"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        position="absolute"
-        left={0}
-        top={0}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAuthClick}
-          size="large"
-        >
+      <div className={styles.overlay}>
+        <Button variant="primary" onClick={handleAuthClick}>
           Sign in
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
