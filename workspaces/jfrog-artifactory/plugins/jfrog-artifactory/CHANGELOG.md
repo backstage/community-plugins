@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 2.0.2
+
+### Patch Changes
+
+- 1401bda: Assign the JFrog Artifactory entity content to the development group.
+
 ## 2.0.1
 
 ### Patch Changes
