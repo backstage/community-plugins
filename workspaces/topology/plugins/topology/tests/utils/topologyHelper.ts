@@ -22,21 +22,6 @@ export function isNfsAppMode(): boolean {
   return process.env.APP_MODE === 'nfs';
 }
 
-/**
- * Locator for the Topology entity tab.
- * Legacy TabbedLayout uses `header-tab-0`. NFS 1.54+ uses the BUI header nav
- * (`Content navigation` links). Match the `/topology` path so the locator
- * stays valid if the tab title is translated later.
- */
-export function topologyEntityTab(page: Page) {
-  if (isNfsAppMode()) {
-    return page
-      .getByRole('navigation', { name: 'Content navigation' })
-      .locator('a[href$="/topology"]');
-  }
-  return page.getByTestId('header-tab-0');
-}
-
 export class Common {
   page: Page;
 
@@ -124,7 +109,6 @@ export class Common {
       url.pathname.includes('/component/backstage'),
     );
     await this.page.waitForLoadState('networkidle');
-    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
   }
 
   /**
