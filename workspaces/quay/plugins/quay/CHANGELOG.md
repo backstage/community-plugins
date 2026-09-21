@@ -1,5 +1,11 @@
 # @backstage-community/plugin-quay
 
+## 1.38.2
+
+### Patch Changes
+
+- cc80d00: Assign the Quay entity content to the development group.
+
 ## 1.38.1
 
 ### Patch Changes
