@@ -80,6 +80,7 @@ export const deploymentLifecycleEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/deployment-lifecycle',
     title: 'Deployment Lifecycle',
+    group: 'deployment',
     routeRef: rootRouteRef,
     filter: isArgocdConfigured,
     loader: async () =>
@@ -95,6 +96,7 @@ export const deploymentSummaryEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/deployment-summary',
     title: 'Deployment Summary',
+    group: 'deployment',
     filter: isArgocdConfigured,
     loader: async () =>
       import('./components/DeploymentSummary').then(m => (
