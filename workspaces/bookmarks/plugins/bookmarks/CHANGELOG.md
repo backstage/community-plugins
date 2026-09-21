@@ -1,5 +1,11 @@
 # @backstage-community/plugin-bookmarks
 
+## 0.14.2
+
+### Patch Changes
+
+- 8a7abef: Assign the Bookmarks entity content to the documentation group.
+
 ## 0.14.1
 
 ### Patch Changes
