@@ -1,5 +1,44 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.2
+
+### Patch Changes
+
+- dd59b2d: Updated dependency `csv-parse` to `^7.0.0`.
+- 442f46e: Updated dependency `@types/node` to `22.20.2`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+
+## 8.1.1
+
+### Patch Changes
+
+- 2501a41: Backstage version bump to v1.54.7
+- Updated dependencies [2501a41]
+  - @backstage-community/plugin-rbac-common@2.1.1
+  - @backstage-community/plugin-rbac-node@2.1.1
+
+## 8.1.0
+
+### Minor Changes
+
+- 23625ae: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [23625ae]
+  - @backstage-community/plugin-rbac-common@2.1.0
+  - @backstage-community/plugin-rbac-node@2.1.0
+
+## 8.0.1
+
+### Patch Changes
+
+- a034f4c: Updated dependency `qs` to `6.16.0`.
+- c97be0d: Updated dependency `@types/supertest` to `7.2.1`.
+  Updated dependency `@playwright/test` to `1.62.1`.
+  Updated dependency `@testing-library/user-event` to `14.6.6`.
+  Updated dependency `@types/autosuggest-highlight` to `3.2.4`.
+
 ## 8.0.0
 
 ### Major Changes

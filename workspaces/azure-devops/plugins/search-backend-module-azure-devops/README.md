@@ -16,24 +16,50 @@ In the root directory of your Backstage project:
 yarn add --cwd packages/backend @backstage-community/plugin-search-backend-module-azure-devops
 ```
 
-Add the necessary configuration for this plugin to your `app-config.yaml`:
+### Authentication
+
+This plugin supports all credential types provided by `DefaultAzureDevOpsCredentialsProvider` from `@backstage/integration`, including:
+
+- **Personal Access Tokens (PATs)**
+- **Service Principals (client credentials)**
+- **Managed Identities**
+
+Credentials are configured under `integrations.azure` in your `app-config.yaml`. This is the same configuration used by other Azure DevOps plugins in the Backstage ecosystem.
 
 ```yaml
 # app-config.yaml
 
-# multiple wikis
-azureDevOpsWikiCollator:
-  baseUrl: https://my-azure-instance.com # The URL of your Azure DevOps instance. Required
-  token: ${AZURE_TOKEN} # The PAT used to authenticate to the Azure DevOps REST API. Required.
-  wikis:
-    - wikiIdentifier: Wiki-Identifier.wiki # The identifier of the wiki. This can be found by looking at the URL of the wiki in ADO. It is typically something like '{nameOfWiki}.wiki'. Required.
-      organization: MyOrganization # The name of the organization the wiki is contained in. Required.
-      project: MyProject # The name of the project the wiki is contained in. Required.
-      titleSuffix: ' - My Suffix' # A string to append to the title of articles to make them easier to identify as search results from the wiki. Optional
-    - wikiIdentifier: Wiki-Identifier2.wiki
-      organization: MyOrganization
-      project: MyProject
-      titleSuffix: ' - Suffix 2'
+integrations:
+  azure:
+    - host: dev.azure.com
+      credentials:
+        - personalAccessToken: ${AZURE_TOKEN}
+```
+
+For service principal or managed identity configuration, see the [Backstage Azure integration documentation](https://backstage.io/docs/integrations/azure/locations).
+
+### Collator configuration
+
+Add the wiki collator configuration to your `app-config.yaml`:
+
+```yaml
+# app-config.yaml
+
+search:
+  collators:
+    azureDevOpsWikiCollator:
+      # baseUrl is optional, defaults to https://dev.azure.com
+      # Only needed for Azure DevOps Server (on-premises) instances
+      # baseUrl: https://ado.mycompany.com
+      wikis:
+        - wikiIdentifier: Wiki-Identifier.wiki # The identifier of the wiki found in the ADO URL. Required.
+          organization: MyOrganization # The name of the organization the wiki is in. Required.
+          project: MyProject # The name of the project the wiki is in. Required.
+          titleSuffix: ' - My Suffix' # A string to append to article titles in search results. Optional.
+        - wikiIdentifier: Wiki-Identifier2.wiki
+          organization: MyOrganization
+          project: MyProject
+          titleSuffix: ' - Suffix 2'
 ```
 
 Add the plugin to your backend:
@@ -53,6 +79,28 @@ Add the plugin to your backend:
 From here, the collator will begin indexing all articles in the wiki into search. Once the indexing is done, the articles and their content will be searchable via the Backstage search feature.
 
 If there are any errors with indexing the articles, they will be reported in the Backstage logs.
+
+### Deprecated: Direct token configuration
+
+The previous configuration style using a `token` field directly in the collator config is deprecated and will be removed in a future release. If you are currently using this configuration:
+
+```yaml
+# app-config.yaml — DEPRECATED
+
+search:
+  collators:
+    azureDevOpsWikiCollator:
+      baseUrl: https://dev.azure.com
+      token: ${AZURE_TOKEN} # Deprecated — use integrations.azure instead
+      wikis:
+        - wikiIdentifier: Wiki-Identifier.wiki
+          organization: MyOrganization
+          project: MyProject
+```
+
+Please migrate to the `integrations.azure` configuration shown above. The `token` field still works for backward compatibility, but you will see a deprecation warning in your logs.
+
+> **Note:** Microsoft is [retiring Global PATs in Azure DevOps Services on December 1, 2026](https://devblogs.microsoft.com/devops/retirement-of-global-personal-access-tokens-in-azure-devops/). If you are using a Global PAT, you should migrate to organization-scoped PATs or Entra ID credentials (service principal or managed identity) before that date.
 
 ## Previously maintained by
 

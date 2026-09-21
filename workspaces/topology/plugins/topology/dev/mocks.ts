@@ -17,6 +17,8 @@
 import { InMemoryCatalogClient } from '@backstage/catalog-client/testUtils';
 import type { Entity } from '@backstage/catalog-model';
 import type { KubernetesApi } from '@backstage/plugin-kubernetes-react';
+import { AuthorizeResult } from '@backstage/plugin-permission-common';
+import type { PermissionApi } from '@backstage/plugin-permission-react';
 import { mockKubernetesResponse } from '../src/__fixtures__/1-deployments';
 import {
   urlSecurityDeployments,
@@ -169,3 +171,95 @@ export const mockKubernetesClient = new MockKubernetesClient({
 export const mockCatalogApi = new InMemoryCatalogClient({
   entities: [mockEntity, permissionDeniedMockEntity],
 });
+
+const MOCK_K8S_FINALIZED_MODE_KEY = 'topology-mock-k8s-finalized-mode';
+
+const kubernetesReadPermissionNames = new Set([
+  'kubernetes.clusters.read',
+  'kubernetes.resources.read',
+]);
+
+type MockKubernetesPermissionsMode = 'allow' | 'deny';
+
+function isPermissionDeniedEntityPath(pathname: string): boolean {
+  return /\/component\/permission-denied(?:\/|$)/.test(pathname);
+}
+
+function getDesiredMockKubernetesPermissionsModeFromPathname(
+  pathname: string,
+): MockKubernetesPermissionsMode | undefined {
+  if (isPermissionDeniedEntityPath(pathname)) {
+    return 'deny';
+  }
+
+  if (/\/component\/backstage(?:\/|$)/.test(pathname)) {
+    return 'allow';
+  }
+
+  return undefined;
+}
+
+/**
+ * NFS extension `if` predicates are session-scoped. Reload when navigating
+ * between the mock `backstage` and `permission-denied` catalog entities so
+ * permission checks run again and the Topology tab is shown or hidden correctly.
+ */
+export function installMockKubernetesPermissionsPathSync(): void {
+  const sync = () => {
+    const desiredMode = getDesiredMockKubernetesPermissionsModeFromPathname(
+      window.location.pathname,
+    );
+
+    if (!desiredMode) {
+      return;
+    }
+
+    const lastFinalizedMode = sessionStorage.getItem(
+      MOCK_K8S_FINALIZED_MODE_KEY,
+    );
+
+    if (lastFinalizedMode === desiredMode) {
+      return;
+    }
+
+    sessionStorage.setItem(MOCK_K8S_FINALIZED_MODE_KEY, desiredMode);
+    window.location.reload();
+  };
+
+  sync();
+
+  const originalPushState = history.pushState.bind(history);
+  const originalReplaceState = history.replaceState.bind(history);
+
+  history.pushState = (...args) => {
+    originalPushState(...args);
+    sync();
+  };
+
+  history.replaceState = (...args) => {
+    originalReplaceState(...args);
+    sync();
+  };
+
+  window.addEventListener('popstate', sync);
+}
+
+/**
+ * Mock PermissionApi used by the NFS dev app. The mocked catalog includes
+ * `backstage` (allowed) and `permission-denied` (denied) entities; kubernetes
+ * read permissions are denied when viewing the permission-denied entity.
+ */
+export function createMockPermissionApi(): PermissionApi {
+  return {
+    authorize: async request => {
+      if (
+        kubernetesReadPermissionNames.has(request.permission.name) &&
+        isPermissionDeniedEntityPath(window.location.pathname)
+      ) {
+        return { result: AuthorizeResult.DENY };
+      }
+
+      return { result: AuthorizeResult.ALLOW };
+    },
+  };
+}

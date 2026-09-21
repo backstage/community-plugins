@@ -104,6 +104,7 @@ export const entityNpmReleaseTableCard = EntityContentBlueprint.make({
   params: {
     path: 'npm-releases',
     title: 'Npm Releases',
+    group: 'development',
     filter: isNpmAvailable,
     loader: () =>
       import('./components/EntityNpmReleaseTableCard').then(m => (

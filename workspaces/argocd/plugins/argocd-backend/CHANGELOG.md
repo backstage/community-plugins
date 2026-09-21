@@ -1,5 +1,20 @@
 # @backstage-community/plugin-argocd-backend
 
+## 1.7.2
+
+### Patch Changes
+
+- 59772de: Marked `username` and `password` as optional in config schema and fixed visibility metadata for authentication fields.
+
+## 1.7.1
+
+### Patch Changes
+
+- b7e9fab: Backstage version bump to v1.54.7
+- Updated dependencies [b7e9fab]
+  - @backstage-community/plugin-argocd-common@1.18.1
+  - @backstage-community/plugin-argocd-node@1.4.1
+
 ## 1.7.0
 
 ### Minor Changes

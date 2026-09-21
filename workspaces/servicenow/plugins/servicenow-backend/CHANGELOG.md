@@ -1,5 +1,13 @@
 # @backstage-community/plugin-servicenow-backend
 
+## 1.14.1
+
+### Patch Changes
+
+- 3b2eddd: Backstage version bump to v1.54.7
+- Updated dependencies [3b2eddd]
+  - @backstage-community/plugin-servicenow-common@1.13.1
+
 ## 1.14.0
 
 ### Minor Changes

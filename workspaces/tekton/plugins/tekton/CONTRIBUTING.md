@@ -15,9 +15,9 @@ Start this plugin in isolation with the new frontend system (default):
 yarn workspace @backstage-community/plugin-tekton start
 ```
 
-This serves the frontend plugin via `dev/index.tsx` with mocked Kubernetes data. Use it for UI extensions, hooks, and entity-tab work.
+This serves the new frontend system (NFS) app via `dev/index.tsx` with mocked Kubernetes data. Use it for UI extensions, hooks, and entity-tab work.
 
-Legacy (pre-NFS) entrypoint:
+Legacy / old frontend system (OFS) entrypoint:
 
 ```bash
 yarn workspace @backstage-community/plugin-tekton start:legacy
@@ -39,6 +39,6 @@ yarn tsc
 
 ## What automated tests cover
 
-CI exercises unit tests for plugin APIs, hooks, utils, and UI components, plus Playwright e2e against the legacy `dev/` harness with mocked pipeline data.
+CI exercises unit tests for plugin APIs, hooks, utils, and UI components, plus Playwright e2e against both the NFS (`dev/index.mock.tsx`) and legacy (`dev/legacy.mock.tsx`) harnesses with mocked pipeline data.
 
 CI does **not** replace reading [Backstage release notes](https://github.com/backstage/backstage/releases) for the `@backstage/*` packages this plugin depends on. After a dependency bump, review those notes and decide whether additional validation is warranted.

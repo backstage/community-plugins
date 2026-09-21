@@ -1,5 +1,41 @@
 # @backstage-community/plugin-topology
 
+## 3.0.2
+
+### Patch Changes
+
+- 1c6e97f: Bump `js-yaml` to v5
+- a9ae551: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.9.0`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+  Updated dependency `react-aria-components` to `~1.21.0`.
+
+## 3.0.1
+
+### Patch Changes
+
+- e61d32b: Added an extension `if` predicate so the Topology entity tab is only shown when the user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`.
+- c496121: Backstage version bump to v1.54.7
+
+## 3.0.0
+
+### Major Changes
+
+- bf0ec02: Graduate the Topology New Frontend System plugin from `/alpha` to the main package entry point. Legacy (OFS) exports are available from the `/legacy` subpath. Translations remain on `/alpha` and `/translations`.
+
+  **BREAKING:** The default export is now the NFS plugin created with `createFrontendPlugin`. Named OFS exports (`topologyPlugin`, `TopologyPage`) have moved to `@backstage-community/plugin-topology/legacy`.
+
+  To migrate existing NFS usage from `/alpha` to the main entry point, update imports from `@backstage-community/plugin-topology/alpha` to `@backstage-community/plugin-topology`.
+
+  To migrate existing OFS usage, update imports from `@backstage-community/plugin-topology` to `@backstage-community/plugin-topology/legacy`.
+
+  Translations are now available from `/translations` and `/alpha`.
+
+### Minor Changes
+
+- 6e05bc1: Backstage version bump to v1.54.5
+  On the New Frontend System, Topology fills the catalog entity page below the header instead of collapsing.
+  Enabled the missing-permissions e2e test for NFS app.
+
 ## 2.16.3
 
 ### Patch Changes

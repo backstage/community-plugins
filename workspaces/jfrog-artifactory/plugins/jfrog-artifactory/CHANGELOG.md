@@ -1,5 +1,31 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 2.0.1
+
+### Patch Changes
+
+- 0a13163: Backstage version bump to v1.54.7
+
+## 2.0.0
+
+### Major Changes
+
+- d790949: The JFrog Artifactory plugin now uses the New Frontend System as its default export. The JFrog Artifactory entity tab is registered automatically for entities with the `jfrog-artifactory/image-name` annotation.
+
+  **BREAKING**: Legacy frontend apps must import `JfrogArtifactoryPage` and `jfrogArtifactoryPlugin` from `@backstage-community/plugin-jfrog-artifactory/legacy`.
+
+  The NFS translations module is exported from `/translations`. `jfrogArtifactoryTranslations` and `jfrogArtifactoryTranslationRef` remain available from both `/translations` and `/alpha`.
+
+### Patch Changes
+
+- 04cfb56: Updated dependency `@playwright/test` to `1.63.0`.
+
+## 1.31.1
+
+### Patch Changes
+
+- 7b25ecd: Updated dependency `@playwright/test` to `1.62.1`.
+
 ## 1.31.0
 
 ### Minor Changes

@@ -4,7 +4,7 @@
 
 ```ts
 import { FrontendModule } from '@backstage/frontend-plugin-api';
-import { TranslationRef } from '@backstage/core-plugin-api/alpha';
+import { TranslationRef } from '@backstage/frontend-plugin-api';
 import { TranslationResource } from '@backstage/frontend-plugin-api';
 
 // @public
@@ -36,6 +36,7 @@ export const tektonTranslationRef: TranslationRef<
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.high': 'High';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.medium': 'Medium';
     readonly 'pipelineRunList.vulnerabilitySeverityTitle.low': 'Low';
+    readonly 'pipelineRunList.vulnerabilitySeverityTitle.unknown': 'Unknown';
     readonly 'pipelineRunList.tableHeaderTitle.name': 'NAME';
     readonly 'pipelineRunList.tableHeaderTitle.vulnerabilities': 'VULNERABILITIES';
     readonly 'pipelineRunList.tableHeaderTitle.status': 'STATUS';

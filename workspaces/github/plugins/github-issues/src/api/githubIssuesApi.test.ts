@@ -135,6 +135,56 @@ describe('githubIssuesApi', () => {
       expect(mockGraphQLQuery).toHaveBeenCalledWith(getFragment());
     });
 
+    it('handles repositories whose name starts with a number by using a valid GraphQL alias and still maps the result back to owner/name', async () => {
+      const issueNode = {
+        assignees: { edges: [] },
+        author: { login: 'mrwolny' },
+        repository: { nameWithOwner: 'mrwolny/123-numeric' },
+        title: "It's the ISSUE!",
+        url: 'https://github.com/mrwolny/123-numeric/issues/1',
+        updatedAt: '2022-07-04T18:47:33Z',
+        createdAt: '2022-06-23T18:14:26Z',
+        comments: { totalCount: 0 },
+      };
+      mockGraphQLQuery.mockImplementationOnce(() => ({
+        _123numeric: {
+          issues: { totalCount: 1, edges: [{ node: issueNode }] },
+        },
+      }));
+
+      const data = await api.fetchIssuesByRepoFromGithub(
+        [
+          entityRepository('mrwolny/123-numeric'),
+          entityRepository('mrwolny/456numeric'),
+        ],
+        10,
+        'github.com',
+      );
+
+      expect(mockGraphQLQuery).toHaveBeenCalledTimes(1);
+      // GraphQL aliases must not start with a digit; they are prefixed with an
+      // underscore while the repository() argument keeps the real repo name.
+      expect(mockGraphQLQuery).toHaveBeenCalledWith(
+        expect.stringContaining(
+          '_123numeric: repository(name: "123-numeric", owner: "mrwolny")',
+        ),
+      );
+      expect(mockGraphQLQuery).toHaveBeenCalledWith(
+        expect.stringContaining(
+          '_456numeric: repository(name: "456numeric", owner: "mrwolny")',
+        ),
+      );
+      expect(mockGraphQLQuery).not.toHaveBeenCalledWith(
+        expect.stringMatching(/\s123numeric: repository/),
+      );
+
+      expect(data).toEqual({
+        'mrwolny/123-numeric': {
+          issues: { totalCount: 1, edges: [{ node: issueNode }] },
+        },
+      });
+    });
+
     it('should only fetch data for entities hosted in the same GitHub instance as is entity location', async () => {
       await api.fetchIssuesByRepoFromGithub(
         [
