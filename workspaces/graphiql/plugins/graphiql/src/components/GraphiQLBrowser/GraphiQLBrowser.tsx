@@ -15,7 +15,7 @@
  */
 
 import { lazy, useState, Suspense } from 'react';
-import { Tab, TabList, TabPanel, Tabs, Text } from '@backstage/ui';
+import { Flex, Tab, TabList, TabPanel, Tabs, Text } from '@backstage/ui';
 import 'graphiql/graphiql.css';
 import { StorageBucket } from '../../lib/storage';
 import { GraphQLEndpoint } from '../../lib/api';
@@ -39,12 +39,17 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
   }
 
   return (
-    <div className={styles.root}>
+    <Flex direction="column" style={{ height: '100%' }}>
       <Tabs
         selectedKey={selectedKey}
         onSelectionChange={key => setSelectedKey(String(key))}
       >
-        <TabList className={styles.tabs}>
+        <TabList
+          style={{
+            background: 'var(--bui-bg-surface-1)',
+            borderBottom: '1px solid var(--bui-border)',
+          }}
+        >
           {endpoints.map(({ title }, index) => (
             <Tab key={index} id={String(index)}>
               {title}
@@ -57,21 +62,25 @@ export const GraphiQLBrowser = (props: GraphiQLBrowserProps) => {
           );
 
           return (
-            <TabPanel key={id} id={String(index)} className={styles.tabPanel}>
-              <Suspense fallback={<Progress />}>
-                <div className={styles.graphiQlWrapper}>
+            <TabPanel key={id} id={String(index)}>
+              <Flex
+                direction="column"
+                className={styles.graphiQlWrapper}
+                style={{ flex: 1, minHeight: 0, height: '100%' }}
+              >
+                <Suspense fallback={<Progress />}>
                   <GraphiQL
                     key={id}
                     fetcher={fetcher}
                     storage={storage}
                     plugins={plugins}
                   />
-                </div>
-              </Suspense>
+                </Suspense>
+              </Flex>
             </TabPanel>
           );
         })}
       </Tabs>
-    </div>
+    </Flex>
   );
 };
