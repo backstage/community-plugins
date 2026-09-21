@@ -16,10 +16,9 @@
 
 import { memo } from 'react';
 import { get, round } from 'lodash';
-import { Cell, CellText, Table, Text, useTable } from '@backstage/ui';
+import { Box, CellText, Table, Text, useTable } from '@backstage/ui';
 import AllocationChart from './AllocationChart';
 import { toCurrency } from '../util';
-import styles from './AllocationReport.module.css';
 
 const AllocationReport = ({
   allocationData,
@@ -69,11 +68,7 @@ const AllocationReport = ({
       id: 'totalEfficiency',
       label: 'Efficiency',
       isSortable: true,
-      cell: row => (
-        <Cell>
-          <CellText title={efficiencyText(row)} />
-        </Cell>
-      ),
+      cell: row => <CellText title={efficiencyText(row)} />,
     },
     {
       id: 'totalCost',
@@ -120,9 +115,9 @@ const AllocationReport = ({
 
   if (allocationData.length === 0) {
     return (
-      <Text variant="body-small" className={styles.noResults}>
-        No results
-      </Text>
+      <Box p="6">
+        <Text variant="body-small">No results</Text>
+      </Box>
     );
   }
 

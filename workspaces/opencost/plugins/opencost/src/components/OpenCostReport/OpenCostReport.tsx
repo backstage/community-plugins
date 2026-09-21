@@ -16,7 +16,15 @@
 // code ported from https://github.com/opencost/opencost/blob/develop/ui/src/Reports.js
 
 import { useEffect, useState } from 'react';
-import { Card, CardBody, ButtonIcon, Text, Skeleton } from '@backstage/ui';
+import {
+  Box,
+  Card,
+  CardBody,
+  ButtonIcon,
+  Flex,
+  Text,
+  Skeleton,
+} from '@backstage/ui';
 import { RiRefreshLine } from '@remixicon/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { find, get, sortBy, toArray } from 'lodash';
@@ -34,7 +42,6 @@ import {
 } from '../../util';
 import { currencyCodes } from '../../constants/currencyCodes';
 import { useApi, configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
-import styles from './OpenCostReport.module.css';
 
 const windowOptions = [
   { name: 'Today', value: 'today' },
@@ -232,12 +239,11 @@ export const OpenCostReport = () => {
       {init && (
         <Card id="report">
           <CardBody>
-            <div className={styles.reportHeader}>
-              <div className={styles.titles}>
+            <Flex direction="row" align="start" p="6">
+              <Box grow={1}>
                 <Text variant="title-medium">{title}</Text>
                 <Subtitle report={{ window, aggregateBy, accumulate }} />
-              </div>
-
+              </Box>
               <ButtonIcon
                 aria-label="refresh"
                 onPress={() => setFetch(true)}
@@ -285,16 +291,23 @@ export const OpenCostReport = () => {
                   });
                 }}
               />
-            </div>
+            </Flex>
 
             {loading && (
-              <div className={styles.loadingContainer}>
-                <div className={styles.skeletonWrapper}>
+              <Flex
+                justify="center"
+                style={{ padding: '100px var(--bui-space-6)' }}
+              >
+                <Flex
+                  direction="column"
+                  gap="3"
+                  style={{ width: '100%', maxWidth: '600px' }}
+                >
                   <Skeleton />
                   <Skeleton />
                   <Skeleton />
-                </div>
-              </div>
+                </Flex>
+              </Flex>
             )}
             {!loading && (
               <AllocationReport

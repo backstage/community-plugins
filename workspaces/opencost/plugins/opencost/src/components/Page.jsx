@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import styles from './Page.module.css';
+import { Flex } from '@backstage/ui';
 
-const Page = props => {
-  return (
-    <div className={styles.flexGrow}>
-      <div className={styles.wrapper}>
-        <div className={styles.flexGrow}>{props.children}</div>
-      </div>
-    </div>
-  );
-};
+const Page = props => (
+  <Flex
+    direction="column"
+    grow={1}
+    style={{ margin: '20px 30px 0 30px', minWidth: '800px' }}
+  >
+    {props.children}
+  </Flex>
+);
 
 export default Page;

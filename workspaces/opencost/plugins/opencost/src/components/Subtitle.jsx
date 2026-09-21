@@ -15,16 +15,15 @@
  */
 
 import { memo } from 'react';
-import { Text } from '@backstage/ui';
+import { Box, Text } from '@backstage/ui';
 import { upperFirst } from 'lodash';
 import { toVerboseTimeRange } from '../util';
-import styles from './Subtitle.module.css';
 
 const Subtitle = ({ report }) => {
   const { aggregateBy, window } = report;
 
   return (
-    <div className={styles.root}>
+    <Box mb="1">
       {aggregateBy && aggregateBy.length > 0 ? (
         <Text variant="body-medium">
           {toVerboseTimeRange(window)} by {upperFirst(aggregateBy)}
@@ -32,7 +31,7 @@ const Subtitle = ({ report }) => {
       ) : (
         <Text variant="body-medium">{toVerboseTimeRange(window)}</Text>
       )}
-    </div>
+    </Box>
   );
 };
 

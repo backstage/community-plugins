@@ -15,10 +15,9 @@
  */
 
 import { memo, useEffect, useState } from 'react';
-import { Button, DialogTrigger, Popover } from '@backstage/ui';
+import { Box, Button, DialogTrigger, Flex, Popover, Text } from '@backstage/ui';
 import { isValid } from 'date-fns';
 import { find, get } from 'lodash';
-import styles from './SelectWindow.module.css';
 
 const SelectWindow = ({ windowOptions, window, setWindow }) => {
   const [open, setOpen] = useState(false);
@@ -88,40 +87,89 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
   );
 
   return (
-    <div className={styles.windowFieldWrapper}>
-      <span className={styles.windowLabel}>Date Range</span>
+    <Box m="2" style={{ width: '120px' }}>
+      <Text
+        as="label"
+        variant="body-small"
+        color="secondary"
+        style={{ marginBottom: 'var(--bui-space-1)', display: 'block' }}
+      >
+        Date Range
+      </Text>
       <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-        <Button className={styles.windowField}>{windowLabel}</Button>
+        <Button variant="tertiary">{windowLabel}</Button>
         <Popover placement="bottom left" hideArrow>
-          <div className={styles.dateContainer}>
-            <div className={styles.dateContainerColumn}>
-              <div>
-                <label className={styles.dateLabel} htmlFor="date-picker-start">
+          <Flex
+            direction="row"
+            gap="4"
+            style={{
+              padding:
+                'var(--bui-space-3) var(--bui-space-4) var(--bui-space-4) var(--bui-space-4)',
+              backgroundColor: 'var(--bui-bg-surface-1)',
+            }}
+          >
+            <Flex direction="column" gap="3">
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="date-picker-start"
+                  variant="body-small"
+                  color="secondary"
+                  style={{
+                    marginBottom: 'var(--bui-space-1)',
+                    display: 'block',
+                  }}
+                >
                   Start Date
-                </label>
+                </Text>
                 <input
                   id="date-picker-start"
                   type="date"
-                  className={styles.dateInput}
+                  style={{
+                    padding: 'var(--bui-space-2)',
+                    border: '1px solid var(--bui-border)',
+                    borderRadius: 'var(--bui-radius-2)',
+                    backgroundColor: 'var(--bui-bg-surface-1)',
+                    color: 'var(--bui-fg-primary)',
+                    fontSize: 'var(--bui-font-size-2)',
+                    width: '144px',
+                  }}
                   max={new Date().toISOString().split('T')[0]}
                   onChange={handleStartDateChange}
                   aria-label="Start date"
                 />
-              </div>
-              <div>
-                <label className={styles.dateLabel} htmlFor="date-picker-end">
+              </Box>
+              <Box>
+                <Text
+                  as="label"
+                  htmlFor="date-picker-end"
+                  variant="body-small"
+                  color="secondary"
+                  style={{
+                    marginBottom: 'var(--bui-space-1)',
+                    display: 'block',
+                  }}
+                >
                   End Date
-                </label>
+                </Text>
                 <input
                   id="date-picker-end"
                   type="date"
-                  className={styles.dateInput}
+                  style={{
+                    padding: 'var(--bui-space-2)',
+                    border: '1px solid var(--bui-border)',
+                    borderRadius: 'var(--bui-radius-2)',
+                    backgroundColor: 'var(--bui-bg-surface-1)',
+                    color: 'var(--bui-fg-primary)',
+                    fontSize: 'var(--bui-font-size-2)',
+                    width: '144px',
+                  }}
                   max={new Date().toISOString().split('T')[0]}
                   onChange={handleEndDateChange}
                   aria-label="End date"
                 />
-              </div>
-              <div>
+              </Box>
+              <Box>
                 <Button
                   variant="primary"
                   onPress={handleSubmitCustomDates}
@@ -129,23 +177,30 @@ const SelectWindow = ({ windowOptions, window, setWindow }) => {
                 >
                   Apply
                 </Button>
-              </div>
-            </div>
-            <div className={styles.presetList}>
+              </Box>
+            </Flex>
+            <Flex
+              direction="column"
+              gap="1"
+              style={{
+                paddingTop: 'var(--bui-space-3)',
+                marginLeft: 'var(--bui-space-4)',
+              }}
+            >
               {windowOptions.map(opt => (
                 <Button
                   key={opt.value}
-                  className={styles.presetLink}
+                  variant="tertiary"
                   onPress={() => handleSubmitPresetDates(opt.value)}
                 >
                   {opt.name}
                 </Button>
               ))}
-            </div>
-          </div>
+            </Flex>
+          </Flex>
         </Popover>
       </DialogTrigger>
-    </div>
+    </Box>
   );
 };
 

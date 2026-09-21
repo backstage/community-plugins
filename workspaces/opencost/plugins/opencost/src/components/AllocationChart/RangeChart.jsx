@@ -23,9 +23,9 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { reverse } from 'lodash';
+import { Box, Text } from '@backstage/ui';
 import { primary, greyscale, browns } from '../../constants/colors';
 import { toCurrency } from '../../util';
-import styles from './RangeChart.module.css';
 
 function toBarLabels(allocationRange) {
   const keyToFill = {};
@@ -137,21 +137,28 @@ const RangeChart = ({ data, currency, height }) => {
 
     const total = payload.reduce((sum, item) => sum + item.value, 0.0);
     if (active) {
-      /* eslint react/forbid-elements: [0, { allow: ["warning"] }] */
       return (
-        <div className={styles.tooltip}>
-          <p
-            className={styles.tooltipLineItem}
-            style={{ color: '#000000' }}
-          >{`Total: ${toCurrency(total, currency)}`}</p>
+        <Box
+          p="3"
+          style={{
+            borderRadius: 'var(--bui-radius-2)',
+            background: 'rgba(255, 255, 255, 0.95)',
+          }}
+        >
+          <Text
+            as="p"
+            variant="body-medium"
+            style={{ margin: 0, marginBottom: 4, color: '#000000' }}
+          >{`Total: ${toCurrency(total, currency)}`}</Text>
           {reverse(payload).map((item, i) => (
-            <p
+            <Text
               key={i}
-              className={styles.tooltipLineItem}
-              style={{ color: item.fill }}
-            >{`${item.name}: ${toCurrency(item.value, currency)}`}</p>
+              as="p"
+              variant="body-medium"
+              style={{ margin: 0, marginBottom: 4, color: item.fill }}
+            >{`${item.name}: ${toCurrency(item.value, currency)}`}</Text>
           ))}
-        </div>
+        </Box>
       );
     }
 

@@ -16,12 +16,19 @@
 
 import { memo, useEffect, useState } from 'react';
 import { forEach, get, reverse, round, sortBy } from 'lodash';
-import { CellText, List, ListRow, Skeleton, Table, Text } from '@backstage/ui';
+import {
+  CellText,
+  Flex,
+  List,
+  ListRow,
+  Skeleton,
+  Table,
+  Text,
+} from '@backstage/ui';
 import { RiServerLine, RiCpuLine } from '@remixicon/react';
 import Warnings from './Warnings';
 import AllocationService from '../services/allocation';
 import { bytesToString, toCurrency } from '../util';
-import styles from './Details.module.css';
 
 const Details = ({
   window,
@@ -168,13 +175,17 @@ const Details = ({
 
   if (loading) {
     return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.skeletonWrapper}>
+      <Flex justify="center" style={{ padding: '100px var(--bui-space-6)' }}>
+        <Flex
+          direction="column"
+          gap="3"
+          style={{ width: '100%', maxWidth: '400px' }}
+        >
           <Skeleton />
           <Skeleton />
           <Skeleton />
-        </div>
-      </div>
+        </Flex>
+      </Flex>
     );
   }
 
@@ -187,15 +198,21 @@ const Details = ({
       )}
 
       {(cluster || node) && (
-        <List aria-label="Cluster details" selectionMode="none">
-          {cluster && (
-            <ListRow id="cluster" icon={<RiServerLine size={20} />}>
-              {cluster}
-            </ListRow>
-          )}
-          {node && (
-            <ListRow id="node" icon={<RiCpuLine size={20} />}>
-              {node}
+        <List
+          aria-label="Cluster details"
+          selectionMode="none"
+          items={[
+            cluster && {
+              id: 'cluster',
+              icon: <RiServerLine size={20} />,
+              label: cluster,
+            },
+            node && { id: 'node', icon: <RiCpuLine size={20} />, label: node },
+          ].filter(Boolean)}
+        >
+          {item => (
+            <ListRow id={item.id} icon={item.icon}>
+              {item.label}
             </ListRow>
           )}
         </List>

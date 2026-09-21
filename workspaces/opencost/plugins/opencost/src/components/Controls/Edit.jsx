@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Select } from '@backstage/ui';
+import { Box, Flex, Select } from '@backstage/ui';
 import { memo } from 'react';
 import SelectWindow from '../SelectWindow';
-import styles from './Edit.module.css';
 
 function EditControl({
   windowOptions,
@@ -33,13 +32,13 @@ function EditControl({
   setCurrency,
 }) {
   return (
-    <div className={styles.wrapper}>
+    <Flex align="center" gap="2" style={{ flexWrap: 'wrap' }}>
       <SelectWindow
         windowOptions={windowOptions}
         window={window}
         setWindow={setWindow}
       />
-      <div className={styles.formControl}>
+      <Box m="2" minWidth="120px">
         <Select
           id="aggregation-select"
           label="Breakdown"
@@ -52,8 +51,8 @@ function EditControl({
             label: opt.name,
           }))}
         />
-      </div>
-      <div className={styles.formControl}>
+      </Box>
+      <Box m="2" minWidth="120px">
         <Select
           id="accumulate"
           label="Resolution"
@@ -66,8 +65,8 @@ function EditControl({
             label: opt.name,
           }))}
         />
-      </div>
-      <div className={styles.formControl}>
+      </Box>
+      <Box m="2" minWidth="120px">
         <Select
           id="currency"
           label="Currency"
@@ -80,8 +79,8 @@ function EditControl({
             label: currencyVal,
           }))}
         />
-      </div>
-    </div>
+      </Box>
+    </Flex>
   );
 }
 
