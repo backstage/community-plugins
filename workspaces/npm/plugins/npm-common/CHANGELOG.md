@@ -1,5 +1,7 @@
 # @backstage-community/plugin-npm-common
 
+## 1.25.3
+
 ## 1.25.2
 
 ### Patch Changes
