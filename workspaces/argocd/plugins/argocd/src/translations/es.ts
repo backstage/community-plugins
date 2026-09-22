@@ -182,7 +182,8 @@ const argocdTranslationEs = createTranslationMessages({
     'deploymentSummary.deploymentSummary.tableTitle':
       'Resumen de implementación',
     'deploymentSummary.deploymentSummary.columns.application': 'Aplicación',
-    'deploymentSummary.deploymentSummary.columns.namespace': 'Espacio de nombres',
+    'deploymentSummary.deploymentSummary.columns.namespace':
+      'Espacio de nombres',
     'deploymentSummary.deploymentSummary.columns.instance': 'Instancia',
     'deploymentSummary.deploymentSummary.columns.server': 'Servidor',
     'deploymentSummary.deploymentSummary.columns.revision': 'Revisión',

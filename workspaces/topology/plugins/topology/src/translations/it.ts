@@ -36,10 +36,13 @@ const topologyTranslationIt = createTranslationMessages({
     'controlBar.fitToScreen': 'Adatta allo schermo',
     'controlBar.resetView': 'Ripristina la vista',
     'emptyState.noResourcesFound': 'Nessuna risorsa trovata',
-    'emptyState.noResourcesDescription': 'Nel cluster selezionato non sono state trovate risorse Kubernetes.',
+    'emptyState.noResourcesDescription':
+      'Nel cluster selezionato non sono state trovate risorse Kubernetes.',
     'permissions.missingPermission': 'Autorizzazione mancante',
-    'permissions.missingPermissionDescription': "Per visualizzare la topologia, l'amministratore deve concederti le autorizzazioni {{permissions}} {{permissionText}}.",
-    'permissions.missingPermissionDescription_plural': "Per visualizzare la topologia, l'amministratore deve concederti le autorizzazioni {{permissions}} {{permissionText}}.",
+    'permissions.missingPermissionDescription':
+      "Per visualizzare la topologia, l'amministratore deve concederti le autorizzazioni {{permissions}} {{permissionText}}.",
+    'permissions.missingPermissionDescription_plural':
+      "Per visualizzare la topologia, l'amministratore deve concederti le autorizzazioni {{permissions}} {{permissionText}}.",
     'permissions.permission': 'autorizzazione',
     'permissions.permissions': 'autorizzazioni',
     'permissions.goBack': 'Torna indietro',
@@ -122,7 +125,8 @@ const topologyTranslationIt = createTranslationMessages({
     'logs.noMatchingLogs': 'Nessun log corrispondente trovato',
     'resources.noResourcesFound':
       'Nessun {{resourceType}} trovato per questa risorsa.',
-    'resources.showingLatest': 'Vengono mostrati gli ultimi {{count}} {{resourceType}}',
+    'resources.showingLatest':
+      'Vengono mostrati gli ultimi {{count}} {{resourceType}}',
     'time.seconds': 'secondi',
     'time.minutes': 'minuti',
     'time.hours': 'ore',

@@ -25,7 +25,8 @@ const topologyTranslationDe = createTranslationMessages({
   ref: topologyTranslationRef,
   messages: {
     'page.title': 'Topologie',
-    'page.subtitle': 'Visualisierung der Kubernetes-Arbeitsauslastungstopologie',
+    'page.subtitle':
+      'Visualisierung der Kubernetes-Arbeitsauslastungstopologie',
     'toolbar.cluster': 'Cluster',
     'toolbar.selectCluster': 'Cluster auswählen',
     'toolbar.displayOptions': 'Anzeigeoptionen',
@@ -38,8 +39,10 @@ const topologyTranslationDe = createTranslationMessages({
     'emptyState.noResourcesDescription':
       'Im ausgewählten Cluster wurden keine Kubernetes-Ressourcen gefunden.',
     'permissions.missingPermission': 'Fehlende Berechtigung',
-    'permissions.missingPermissionDescription': 'Zum Anzeigen der Topologie muss Ihr Administrator Ihnen {{permissions}} {{permissionText}} erteilen.',
-    'permissions.missingPermissionDescription_plural': 'Zum Anzeigen der Topologie muss Ihr Administrator Ihnen {{permissions}} {{permissionText}} erteilen.',
+    'permissions.missingPermissionDescription':
+      'Zum Anzeigen der Topologie muss Ihr Administrator Ihnen {{permissions}} {{permissionText}} erteilen.',
+    'permissions.missingPermissionDescription_plural':
+      'Zum Anzeigen der Topologie muss Ihr Administrator Ihnen {{permissions}} {{permissionText}} erteilen.',
     'permissions.permission': 'Berechtigung',
     'permissions.permissions': 'Berechtigungen',
     'permissions.goBack': 'Zurück',

@@ -106,7 +106,8 @@ const topologyTranslationJa = createTranslationMessages({
     'details.startingDeadlineSeconds': '起動の期限 (秒)',
     'details.lastScheduleTime': '最終スケジュール日時',
     'details.maxSurgeDescription': '{{replicas}} Pod より {{maxSurge}} 個多く',
-    'details.maxUnavailableDescription': '{{replicas}} Pod のうち {{maxUnavailable}}',
+    'details.maxUnavailableDescription':
+      '{{replicas}} Pod のうち {{maxUnavailable}}',
     'logs.download': 'ダウンロード',
     'logs.noLogsFound': 'ログが見つかりません',
     'logs.selectContainer': 'コンテナーを選択する',
@@ -121,8 +122,10 @@ const topologyTranslationJa = createTranslationMessages({
     'logs.logLevel': 'ログレベル',
     'logs.search': '検索',
     'logs.noMatchingLogs': '一致するログが見つかりません',
-    'resources.noResourcesFound': 'このリソースに対応する {{resourceType}} が見つかりません。',
-    'resources.showingLatest': '最新の {{count}} {{resourceType}} を表示しています',
+    'resources.noResourcesFound':
+      'このリソースに対応する {{resourceType}} が見つかりません。',
+    'resources.showingLatest':
+      '最新の {{count}} {{resourceType}} を表示しています',
     'time.seconds': '秒',
     'time.minutes': '分',
     'time.hours': '時間',

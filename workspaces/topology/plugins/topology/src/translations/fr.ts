@@ -36,7 +36,8 @@ const topologyTranslationFr = createTranslationMessages({
     'controlBar.fitToScreen': 'Adapter a l’écran',
     'controlBar.resetView': 'Réinitialiser la vue',
     'emptyState.noResourcesFound': 'Aucune ressource trouvée',
-    'emptyState.noResourcesDescription': "Aucune ressource Kubernetes n'a été trouvée dans le cluster sélectionné.",
+    'emptyState.noResourcesDescription':
+      "Aucune ressource Kubernetes n'a été trouvée dans le cluster sélectionné.",
     'permissions.missingPermission': 'Autorisation manquante',
     'permissions.missingPermissionDescription':
       'Pour afficher la topologie, votre administrateur doit vous accorder {{permissions}} {{permissionText}}.',
