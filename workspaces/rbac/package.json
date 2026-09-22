@@ -43,10 +43,10 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
-    "@backstage/cli": "^0.36.5",
-    "@backstage/cli-defaults": "^0.1.5",
+    "@backstage/cli": "^0.36.6",
+    "@backstage/cli-defaults": "^0.1.6",
     "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.19.0",
+    "@backstage/repo-tools": "^0.19.1",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@jest/environment-jsdom-abstract": "^30.0.0",
