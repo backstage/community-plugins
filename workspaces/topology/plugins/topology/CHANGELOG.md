@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 3.1.0
+
+### Minor Changes
+
+- 695b323: Backstage version bump to v1.55.1
+
 ## 3.0.3
 
 ### Patch Changes
