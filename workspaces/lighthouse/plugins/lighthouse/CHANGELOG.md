@@ -1,5 +1,17 @@
 # @backstage-community/plugin-lighthouse
 
+## 0.27.0
+
+### Minor Changes
+
+- 8e1f482: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- 2671277: Replaced deprecated setupRequestMockHandlers with registerMswTestHooks.
+- Updated dependencies [8e1f482]
+  - @backstage-community/plugin-lighthouse-common@0.24.0
+
 ## 0.26.0
 
 ### Minor Changes
