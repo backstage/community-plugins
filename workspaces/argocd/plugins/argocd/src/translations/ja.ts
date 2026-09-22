@@ -36,8 +36,7 @@ const argocdTranslationJa = createTranslationMessages({
     'common.appServer.title':
       'これは、Argo CD がインストールされているローカルクラスターです。',
     'common.permissionAlert.alertTitle': '権限が必要',
-    'common.permissionAlert.alertText':
-      'argocd プラグインを表示するには、管理者に連絡して argocd.view.read 権限を付与してもらうよう依頼してください。',
+    'common.permissionAlert.alertText': 'argocd プラグインを表示するには、管理者に問い合わせのうえ argocd.view.read 権限の付与を依頼してください。',
     'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.name': '名前',
     'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.kind': '種類',
     'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.createdAt':
@@ -58,28 +57,22 @@ const argocdTranslationJa = createTranslationMessages({
       'デプロイ済み',
     'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.metadataItemWithTooltip.title':
       'イメージ',
-    'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.metadataItemWithTooltip.tooltipText':
-      'これらは、ArgoCD アプリケーションの全デプロイメントで使用されているイメージです。',
-    'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.namespace':
-      '名前空間',
+    'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.metadataItemWithTooltip.tooltipText': 'これらは、ArgoCD アプリケーションにおけるすべてのデプロイメント用のイメージです。',
+    'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.namespace': 'Namespace',
     'deploymentLifecycle.sidebar.resources.resource.deploymentMetadata.commit':
       'コミット',
-    'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.namespace':
-      '名前空間',
+    'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.namespace': 'Namespace',
     'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.strategy':
       'ストラテジー',
     'deploymentLifecycle.sidebar.resources.resource.rolloutMetadata.status':
       'ステータス',
-    'deploymentLifecycle.sidebar.resources.resource.resourceMetadata.namespace':
-      '名前空間',
-    'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.iconButton.ariaLabel':
-      '詳細',
+    'deploymentLifecycle.sidebar.resources.resource.resourceMetadata.namespace': 'Namespace',
+    'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.iconButton.ariaLabel': 'その他',
     'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh':
       '更新',
     'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.sync':
       '同期',
-    'deploymentLifecycle.sidebar.resources.resourcesSearchBar.placeholder':
-      '種類で検索',
+    'deploymentLifecycle.sidebar.resources.resourcesSearchBar.placeholder': '種類で検索する',
     'deploymentLifecycle.sidebar.resources.resourcesSearchBar.ariaLabel':
       '検索のクリア',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.SearchByName':
@@ -90,16 +83,12 @@ const argocdTranslationJa = createTranslationMessages({
       '同期ステータス',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.HealthStatus':
       '健全性ステータス',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.Unset':
-      'フィルタリング条件',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.Unset': 'フィルター',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.searchByNameInput':
       '名前で検索',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusInput':
-      '健全性ステータスでフィルタリング',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusInput':
-      '同期ステータスでフィルタリング',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.kindInput':
-      '種類でフィルタリング',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusInput': '健全性ステータスでフィルタリングする',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusInput': '同期ステータスでフィルタリングする',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.kindInput': '種類でフィルタリングする',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.resourceFilters':
       'リソースフィルター',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.syncStatus':
@@ -124,16 +113,14 @@ const argocdTranslationJa = createTranslationMessages({
       '不明',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusSelectOptions.OutOfSync':
       '同期なし',
-    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.textPrimary':
-      '分析実行',
+    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.textPrimary': '解析実行',
     'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.name':
       '名前:',
     'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.createdAt':
       '作成日時:',
     'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.status':
       'ステータス:',
-    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.chipLabel':
-      '分析',
+    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.chipLabel': '解析',
     'deploymentLifecycle.sidebar.rollouts.revisions.blueGreenRevision.revision':
       'リビジョン',
     'deploymentLifecycle.sidebar.rollouts.revisions.blueGreenRevision.stable':
@@ -159,27 +146,25 @@ const argocdTranslationJa = createTranslationMessages({
       'ArgoCD で {{appName}} を開く',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'インスタンス',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'サーバー',
-    'deploymentLifecycle.deploymentLifecycleCard.namespace': '名前空間',
+    'deploymentLifecycle.deploymentLifecycleCard.namespace': 'Namespace',
     'deploymentLifecycle.deploymentLifecycleCard.commit': 'コミット',
-    'deploymentLifecycle.deploymentLifecycleCard.tooltipText':
-      '下に表示されているコミット SHA は、最初に定義されたアプリケーションソースの最新のコミットです。',
+    'deploymentLifecycle.deploymentLifecycleCard.tooltipText': '以下に表示されているコミット SHA は、定義された最初のアプリケーションソースからの最新コミットです。',
     'deploymentLifecycle.deploymentLifecycleCard.resources': 'リソース',
-    'deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed':
-      'デプロイ済みリソース',
+    'deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed': 'デプロイされたリソース',
     'deploymentLifecycle.deploymentLifecycleDrawer.iconButtonTitle':
       'ドロワーを閉じる',
     'deploymentLifecycle.deploymentLifecycleDrawer.instance': 'インスタンス',
     'deploymentLifecycle.deploymentLifecycleDrawer.cluster': 'クラスター',
-    'deploymentLifecycle.deploymentLifecycleDrawer.namespace': '名前空間',
+    'deploymentLifecycle.deploymentLifecycleDrawer.namespace': 'Namespace',
     'deploymentLifecycle.deploymentLifecycleDrawer.commit': 'コミット',
     'deploymentLifecycle.deploymentLifecycleDrawer.revision': 'リビジョン',
     'deploymentLifecycle.deploymentLifecycleDrawer.resources': 'リソース',
     'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue':
       'デフォルト',
-    'deploymentSummary.deploymentSummary.tableTitle': 'デプロイメントの概要',
+    'deploymentSummary.deploymentSummary.tableTitle': 'デプロイメント概要',
     'deploymentSummary.deploymentSummary.columns.application':
       'アプリケーション',
-    'deploymentSummary.deploymentSummary.columns.namespace': '名前空間',
+    'deploymentSummary.deploymentSummary.columns.namespace': 'Namespace',
     'deploymentSummary.deploymentSummary.columns.instance': 'インスタンス',
     'deploymentSummary.deploymentSummary.columns.server': 'サーバー',
     'deploymentSummary.deploymentSummary.columns.revision': 'リビジョン',

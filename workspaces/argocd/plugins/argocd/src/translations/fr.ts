@@ -24,26 +24,23 @@ import { argocdTranslationRef } from './ref';
 const argocdTranslationFr = createTranslationMessages({
   ref: argocdTranslationRef,
   messages: {
-    'appStatus.appHealthStatus.Healthy': 'En bon fonctionnement',
+    'appStatus.appHealthStatus.Healthy': 'En bonne santé',
     'appStatus.appHealthStatus.Suspended': 'Suspendu',
     'appStatus.appHealthStatus.Degraded': 'Dégradé',
-    'appStatus.appHealthStatus.Progressing': 'Progression',
+    'appStatus.appHealthStatus.Progressing': 'En cours',
     'appStatus.appHealthStatus.Missing': 'Manquant',
     'appStatus.appHealthStatus.Unknown': 'Inconnu',
     'appStatus.appSyncStatus.Unknown': 'Inconnu',
     'appStatus.appSyncStatus.Synced': 'Synchronisé',
-    'appStatus.appSyncStatus.OutOfSync': 'Désynchronisation',
+    'appStatus.appSyncStatus.OutOfSync': 'Non synchronisé',
     'common.appServer.title':
       "Il s'agit du cluster local sur lequel Argo CD est installé.",
     'common.permissionAlert.alertTitle': 'Autorisation requise',
-    'common.permissionAlert.alertText':
-      "Pour afficher le plugin argocd, contactez votre administrateur pour qu'il vous donne l'autorisation argocd.view.read.",
+    'common.permissionAlert.alertText': "Pour consulter le plugin argocd, contactez votre administrateur afin qu'il vous accorde l'autorisation argocd.view.read.",
     'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.name': 'Nom',
     'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.kind': 'Type',
-    'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.createdAt':
-      'Créé à',
-    'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.syncStatus':
-      'Statut de synchronisation',
+    'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.createdAt': 'Heure de création',
+    'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.syncStatus': 'Statut de sync',
     'deploymentLifecycle.sidebar.resources.resourcesColumnHeader.healthStatus':
       'État de fonctionnement',
     'deploymentLifecycle.sidebar.resources.resourcesTable.ariaLabelledBy':
@@ -74,46 +71,36 @@ const argocdTranslationFr = createTranslationMessages({
       'Espace de noms',
     'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.iconButton.ariaLabel':
       'davantage',
-    'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh':
-      'Rafraîchir',
-    'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.sync':
-      'Synchroniser',
+    'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.refresh': 'Actualiser',
+    'deploymentLifecycle.sidebar.resources.resourcesKebabMenuOptions.sync': 'Sync',
     'deploymentLifecycle.sidebar.resources.resourcesSearchBar.placeholder':
       'Recherche par type',
-    'deploymentLifecycle.sidebar.resources.resourcesSearchBar.ariaLabel':
-      'supprimer la recherche',
+    'deploymentLifecycle.sidebar.resources.resourcesSearchBar.ariaLabel': 'Effacer la recherche',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.SearchByName':
       'Nom',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.Kind':
       'Type',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.SyncStatus':
-      'Statut de synchronisation',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.SyncStatus': 'Statut de sync',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.HealthStatus':
       'État de fonctionnement',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.Unset':
       'Filtrer par',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.searchByNameInput':
       'Rechercher par nom',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusInput':
-      'Filtrer par état de fonctionnement',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusInput':
-      'Filtrer par statut de synchronisation',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.kindInput':
-      'Filtrer par type',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusInput': 'Filtrer par État de fonctionnement',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusInput': 'Filtrer par État de sync',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.kindInput': 'Filtrer par Type',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.resourceFilters':
       'Filtres de ressources',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.syncStatus':
-      'Statut de synchronisation',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.syncStatus': 'Statut de sync',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.ariaLabels.kind':
       'Type',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Healthy':
-      'En bon fonctionnement',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Healthy': 'En bonne santé',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Suspended':
       'Suspendu',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Degraded':
       'Dégradé',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Progressing':
-      'Progression',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Progressing': 'En cours',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Missing':
       'Manquant',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.healthStatusSelectOptions.Unknown':
@@ -122,14 +109,11 @@ const argocdTranslationFr = createTranslationMessages({
       'Synchronisé',
     'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusSelectOptions.Unknown':
       'Inconnu',
-    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusSelectOptions.OutOfSync':
-      'Désynchronisation',
+    'deploymentLifecycle.sidebar.resources.filters.resourcesFilterBy.syncStatusSelectOptions.OutOfSync': 'Non synchronisé',
     'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.textPrimary':
       "Exécutions d'analyse",
-    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.name':
-      'Nom:',
-    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.createdAt':
-      'Créé à :',
+    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.name': 'Nom :',
+    'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.createdAt': 'Heure de création',
     'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.status':
       'Statut:',
     'deploymentLifecycle.sidebar.rollouts.revisions.analysisRuns.analysisRuns.chipLabel':
@@ -153,16 +137,14 @@ const argocdTranslationFr = createTranslationMessages({
     'deploymentLifecycle.sidebar.rollouts.rollOut.title': 'Révisions',
     'deploymentLifecycle.deploymentLifecycle.title':
       'Cycle de vie du déploiement',
-    'deploymentLifecycle.deploymentLifecycle.subtitle':
-      "Examiner les composants/systèmes déployés dans l'espace de noms à l'aide du plugin ArgoCD",
+    'deploymentLifecycle.deploymentLifecycle.subtitle': "Examinez les composants/systèmes déployés dans l'espace de noms à l'aide du plugin ArgoCD",
     'deploymentLifecycle.deploymentLifecycleHeader.openInArgoCD':
       'Ouvrir {{appName}} dans ArgoCD',
     'deploymentLifecycle.deploymentLifecycleCard.instance': 'Exemple',
     'deploymentLifecycle.deploymentLifecycleCard.server': 'Serveur',
     'deploymentLifecycle.deploymentLifecycleCard.namespace': 'Espace de noms',
     'deploymentLifecycle.deploymentLifecycleCard.commit': 'Valider',
-    'deploymentLifecycle.deploymentLifecycleCard.tooltipText':
-      "Le commit SHA indiqué ci-dessous est le dernier commit de la première source d'application définie.",
+    'deploymentLifecycle.deploymentLifecycleCard.tooltipText': "Le SHA de validation affiché ci-dessous correspond à la dernière instance de validation de la première source d'application définie.",
     'deploymentLifecycle.deploymentLifecycleCard.resources': 'Ressources',
     'deploymentLifecycle.deploymentLifecycleCard.resourcesDeployed':
       'ressources déployées',
@@ -174,8 +156,7 @@ const argocdTranslationFr = createTranslationMessages({
     'deploymentLifecycle.deploymentLifecycleDrawer.commit': 'Valider',
     'deploymentLifecycle.deploymentLifecycleDrawer.revision': 'Révision',
     'deploymentLifecycle.deploymentLifecycleDrawer.resources': 'Ressources',
-    'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue':
-      'défaut',
+    'deploymentLifecycle.deploymentLifecycleDrawer.instanceDefaultValue': 'par défaut',
     'deploymentSummary.deploymentSummary.tableTitle': 'Résumé du déploiement',
     'deploymentSummary.deploymentSummary.columns.application': 'Application',
     'deploymentSummary.deploymentSummary.columns.namespace': 'Espace de noms',
@@ -184,8 +165,7 @@ const argocdTranslationFr = createTranslationMessages({
     'deploymentSummary.deploymentSummary.columns.revision': 'Révision',
     'deploymentSummary.deploymentSummary.columns.lastDeployed':
       'Dernier déploiement',
-    'deploymentSummary.deploymentSummary.columns.syncStatus':
-      'Statut de synchronisation',
+    'deploymentSummary.deploymentSummary.columns.syncStatus': 'Statut de sync',
     'deploymentSummary.deploymentSummary.columns.healthStatus':
       'État de fonctionnement',
   },
