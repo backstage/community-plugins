@@ -34,7 +34,7 @@
     "postpack": "backstage-cli package postpack"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.6",
+    "@backstage/cli": "backstage:^",
     "@backstage/plugin-permission-common": "^0.9.11"
   },
   "files": [
