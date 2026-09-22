@@ -34,7 +34,7 @@
     "@backstage/cli": "backstage:^"
   },
   "peerDependencies": {
-    "@backstage/plugin-permission-common": "^0.9.10"
+    "@backstage/plugin-permission-common": "^0.9.11"
   },
   "files": [
     "dist"
