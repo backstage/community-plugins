@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton
 
+## 4.0.3
+
+### Patch Changes
+
+- 5b03321: Assign the Tekton entity content to the deployment group.
+
 ## 4.0.2
 
 ### Patch Changes
