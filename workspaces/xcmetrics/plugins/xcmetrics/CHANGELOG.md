@@ -1,5 +1,20 @@
 # @backstage-community/plugin-xcmetrics
 
+## 0.20.0
+
+### Minor Changes
+
+- 08f9100: Backstage version bump to v1.51.0
+- 2e308bf: Backstage version bump to v1.52.0
+- 7630621: Backstage version bump to v1.53.0
+- 802f94d: Backstage version bump to v1.54.5
+- 80b2efa: Added support for the new frontend system via a `/alpha` export.
+
+### Patch Changes
+
+- 5427339: Updated dependency `lodash` to `^4.18.1`.
+- ea994d1: Added listDeprecations check to the workspaces/xcmetrics and fixed the deprecations in StatusIcon.tsx and XcmetricsLayout.tsx
+
 ## 0.19.0
 
 ### Minor Changes
