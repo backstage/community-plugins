@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,7 @@
  */
 import { expect, Page, test, type BrowserContext } from '@playwright/test';
 
-import {
-  Common,
-  isNfsAppMode,
-  topologyEntityTab,
-} from './utils/topologyHelper';
+import { Common, isNfsAppMode } from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
 
 const TOPOLOGY_NODES = {
@@ -64,7 +60,10 @@ test.describe('Topology plugin', () => {
       await common.navigateToMissingPermissions();
 
       if (isNfsAppMode()) {
-        await expect(topologyEntityTab(page)).toBeVisible();
+        await expect(
+          page.getByRole('heading', { name: 'permission-denied' }),
+        ).toBeVisible({ timeout: 30000 });
+        return;
       }
 
       await expect(
@@ -90,7 +89,6 @@ test.describe('Topology plugin', () => {
       await expect(
         page.getByRole('heading', { name: 'backstage' }),
       ).toBeVisible();
-      await expect(topologyEntityTab(page)).toBeVisible();
       const topology = page.locator('.pf-ri__topology');
       await expect(topology).toBeVisible();
       const box = await topology.boundingBox();

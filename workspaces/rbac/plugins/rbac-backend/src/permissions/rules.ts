@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { createPermissionRule } from '@backstage/plugin-permission-node';
-import { z as zod3 } from 'zod/v3';
-import { z as zod4 } from 'zod/v4';
+import { z } from 'zod/v4';
 
 import { permissionMetadataResourceRef } from './resource';
 import { RoleMetadataDao } from '../database/role-metadata';
@@ -40,17 +39,16 @@ export type RBACFilters =
   | { not: RBACFilters }
   | RBACFilter;
 
+const isOwnerParamsSchema = z.object({
+  owners: z.string().array().describe('List of entity refs to match against'),
+});
+
 const isOwner = createPermissionRule({
   name: 'IS_OWNER',
   description:
     'Should allow access to RBAC roles and Permissions through ownership',
   resourceRef: permissionMetadataResourceRef,
-  paramsSchema: zod3.object({
-    owners: zod3
-      .string()
-      .array()
-      .describe('List of entity refs to match against'),
-  }),
+  paramsSchema: isOwnerParamsSchema,
   apply: (roleMeta: RoleMetadataDao, { owners }) => {
     if (roleMeta.isDefault) {
       return true;
@@ -70,14 +68,7 @@ export const rbacRules = {
   name: isOwner.name,
   description: isOwner.description,
   resourceType: isOwner.resourceType,
-  paramsSchema: zod4
-    .object({
-      owners: zod4
-        .string()
-        .array()
-        .describe('List of entity refs to match against'),
-    })
-    .toJSONSchema(),
+  paramsSchema: isOwnerParamsSchema.toJSONSchema(),
 };
 
 export const rules = { isOwner };

@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-topology",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -11,8 +11,7 @@
     "role": "frontend-plugin",
     "pluginId": "topology",
     "pluginPackages": [
-      "@backstage-community/plugin-topology",
-      "@internal/plugin-topology-dev-backend"
+      "@backstage-community/plugin-topology"
     ]
   },
   "exports": {
@@ -57,7 +56,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@backstage-community/plugin-tekton-react": "^0.7.0",
+    "@backstage-community/plugin-tekton-react": "^0.9.0",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/core-compat-api": "backstage:^",
     "@backstage/core-components": "backstage:^",
@@ -86,7 +85,7 @@
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "classnames": "2.x",
     "git-url-parse": "^13.1.0",
-    "js-yaml": "^5.0.0",
+    "js-yaml": "^5.4.2",
     "lodash": "^4.17.21",
     "mobx-react": "^7.6.0",
     "react-use": "^17.4.0",
@@ -103,10 +102,11 @@
     "@backstage/cli": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@backstage/plugin-catalog": "backstage:^",
     "@backstage/test-utils": "backstage:^",
     "@backstage/ui": "backstage:^",
-    "@playwright/test": "1.62.1",
+    "@playwright/test": "1.63.0",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
@@ -116,7 +116,7 @@
     "cross-fetch": "4.1.0",
     "glob": "^13.0.0",
     "react": "^18.3.1",
-    "react-aria-components": "~1.17.0",
+    "react-aria-components": "~1.21.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },

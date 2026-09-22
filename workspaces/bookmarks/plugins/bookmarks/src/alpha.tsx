@@ -23,6 +23,7 @@ const bookmarksEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/bookmarks',
     title: 'Bookmarks',
+    group: 'documentation',
     filter: isBookmarksAvailable,
     loader:
       /* istanbul ignore next: very difficult to test this in Jest */

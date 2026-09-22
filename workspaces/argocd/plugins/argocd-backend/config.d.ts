@@ -17,10 +17,12 @@ export interface Config {
   /** ArgoCD Configurations for the ArgoCD backend plugin */
   argocd?: {
     /**
+     * Default username used when an instance has no token or username.
      * @visibility backend
      */
     username?: string;
     /**
+     * Default password used when an instance has no token or password.
      * @visibility secret
      */
     password?: string;
@@ -34,8 +36,8 @@ export interface Config {
      */
     appLocatorMethods?: Array<{
       /**
-       * The frontend base url of the ArgoCD instance.
-       * @vsibility backend
+       * Locator type. Use `config` to load instances from this file.
+       * @visibility backend
        */
       type: string;
       instances: Array<{
@@ -48,15 +50,18 @@ export interface Config {
          */
         url: string;
         /**
+         * Instance access token. Preferred over username/password when set.
          * @visibility secret
          */
         token?: string;
         /**
+         * Instance username. Used when token is not set.
          * @visibility secret
          */
         username?: string;
         /**
-         * @visiblity secret
+         * Instance password. Used when token is not set.
+         * @visibility secret
          */
         password?: string;
       }>;

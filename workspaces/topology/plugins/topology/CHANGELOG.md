@@ -1,5 +1,27 @@
 # @backstage-community/plugin-topology
 
+## 3.0.3
+
+### Patch Changes
+
+- c52c59a: Assign the Topology entity content to the deployment group.
+
+## 3.0.2
+
+### Patch Changes
+
+- 1c6e97f: Bump `js-yaml` to v5
+- a9ae551: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.9.0`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+  Updated dependency `react-aria-components` to `~1.21.0`.
+
+## 3.0.1
+
+### Patch Changes
+
+- e61d32b: Added an extension `if` predicate so the Topology entity tab is only shown when the user is authorized for `kubernetes.clusters.read` and `kubernetes.resources.read`.
+- c496121: Backstage version bump to v1.54.7
+
 ## 3.0.0
 
 ### Major Changes

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,6 @@ import { TopologyMessages, templateToPattern } from './translations';
 /** Matches APP_MODE in playwright.config.ts / package.json e2e scripts. */
 export function isNfsAppMode(): boolean {
   return process.env.APP_MODE === 'nfs';
-}
-
-/**
- * Locator for the Topology entity tab.
- * Legacy TabbedLayout uses `header-tab-0`. NFS 1.54+ uses the BUI header nav
- * (`Content navigation` links). Match the `/topology` path so the locator
- * stays valid if the tab title is translated later.
- */
-export function topologyEntityTab(page: Page) {
-  if (isNfsAppMode()) {
-    return page
-      .getByRole('navigation', { name: 'Content navigation' })
-      .locator('a[href$="/topology"]');
-  }
-  return page.getByTestId('header-tab-0');
 }
 
 export class Common {
@@ -120,13 +105,16 @@ export class Common {
       return;
     }
     await this.page.goto('/catalog/default/component/backstage/topology');
-    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
+    await this.page.waitForURL(url =>
+      url.pathname.includes('/component/backstage'),
+    );
+    await this.page.waitForLoadState('networkidle');
   }
 
   /**
    * Opens the missing-permission Topology view. Legacy uses a standalone
-   * `/missing-permissions` page. NFS lists a `permission-denied` catalog
-   * entity; opening it and selecting the Topology tab shows the same content.
+   * `/missing-permissions` page. NFS loads the `permission-denied` catalog
+   * entity directly so permission predicates are evaluated for that URL.
    */
   async navigateToMissingPermissions() {
     if (!isNfsAppMode()) {
@@ -134,17 +122,10 @@ export class Common {
       return;
     }
 
-    await this.page.goto('/catalog');
-    await this.page
-      .getByRole('row', { name: /permission-denied/ })
-      .getByRole('link')
-      .first()
-      .click();
+    await this.page.goto('/catalog/default/component/permission-denied');
     await expect(
       this.page.getByRole('heading', { name: 'permission-denied' }),
     ).toBeVisible({ timeout: 30000 });
-    await expect(topologyEntityTab(this.page)).toBeVisible({ timeout: 30000 });
-    await topologyEntityTab(this.page).click();
   }
 
   async a11yCheck(testInfo: TestInfo) {

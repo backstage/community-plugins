@@ -51,14 +51,36 @@ export class Common {
       await this.page.goto('/tekton');
     } else {
       await this.page.goto('/catalog/default/component/backstage/tekton');
-      const tektonTab = this.page
-        .getByRole('navigation', { name: 'Content navigation' })
-        .getByRole('link', { name: 'Tekton', exact: true });
-      await expect(tektonTab).toBeVisible();
-      await tektonTab.click();
+      await this.page.waitForURL(url =>
+        url.pathname.includes('/component/backstage'),
+      );
+      await this.page.waitForLoadState('networkidle');
     }
 
     await expect(this.page.getByTestId('tekton-progress')).toHaveCount(0);
+  }
+
+  /**
+   * Opens the missing-permission Tekton view. Legacy uses a standalone
+   * `/missing-permissions` page. NFS opens the `permission-denied` catalog
+   * entity; the Tekton tab is hidden via the extension `if` predicate.
+   */
+  async navigateToMissingPermissions() {
+    if (!isNfsAppMode()) {
+      await this.page.goto('/missing-permissions');
+      return;
+    }
+
+    await this.page.goto('/catalog');
+    await this.page
+      .getByRole('row', { name: /permission-denied/ })
+      .getByRole('link')
+      .first()
+      .click();
+    await this.page.waitForLoadState('networkidle');
+    await expect(
+      this.page.getByRole('heading', { name: 'permission-denied' }),
+    ).toBeVisible({ timeout: 30000 });
   }
 
   async switchToLocale(locale: string): Promise<void> {

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-codeowners
 
+## 0.6.1
+
+### Patch Changes
+
+- 4836d0b: Fixed repository URL in package.json to point to community-plugins, resolving NPM provenance publish failures
+
 ## 0.6.0
 
 ### Minor Changes

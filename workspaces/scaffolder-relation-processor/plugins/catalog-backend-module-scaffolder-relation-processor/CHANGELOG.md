@@ -1,5 +1,11 @@
 # @backstage-community/plugin-catalog-backend-module-scaffolder-relation-processor
 
+## 2.17.1
+
+### Patch Changes
+
+- cb68dc9: Uses the Backstage 1.54.5 versions of the events and notifications packages instead of older pinned dependencies.
+
 ## 2.17.0
 
 ### Minor Changes

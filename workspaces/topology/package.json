@@ -8,7 +8,8 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck true --incremental false",
-    "start": "backstage-cli repo start",
+    "start": "backstage-cli repo start @backstage-community/plugin-topology @internal/plugin-topology-dev-backend",
+    "start:mock": "yarn workspace @backstage-community/plugin-topology start:mock",
     "start:legacy": "yarn workspaces foreach -A --include @backstage-community/plugin-topology --include @internal/plugin-topology-dev-backend --parallel -v -i run start:legacy",
     "build:all": "backstage-cli repo build --all",
     "build:api-reports": "yarn build:api-reports:only",
@@ -47,7 +48,7 @@
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30.0.0",
-    "@playwright/test": "1.62.1",
+    "@playwright/test": "1.63.0",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
     "jest": "^30.0.0",

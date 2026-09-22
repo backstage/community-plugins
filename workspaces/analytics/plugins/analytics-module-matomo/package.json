@@ -61,6 +61,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-test-utils": "backstage:^",
     "@testing-library/jest-dom": "6.9.1",
     "cross-fetch": "4.1.0"
   },

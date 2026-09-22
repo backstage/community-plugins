@@ -1,0 +1,5 @@
+@layer components {
+  .multilineText {
+    white-space: pre-wrap;
+  }
+}

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-auth-backend-module-keycloak-provider
 
+## 0.6.0
+
+### Minor Changes
+
+- e227b30: Backstage version bump to v1.54.5
+
 ## 0.5.1
 
 ### Patch Changes
