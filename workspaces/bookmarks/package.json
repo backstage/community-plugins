@@ -35,6 +35,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
     "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.29.8",
