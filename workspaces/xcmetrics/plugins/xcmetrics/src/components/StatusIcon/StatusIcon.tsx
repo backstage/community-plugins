@@ -21,15 +21,19 @@ import {
 } from '@backstage/core-components';
 import { BuildStatus } from '../../api';
 
-const STATUS_ICONS: { [key in BuildStatus]: JSX.Element } = {
-  succeeded: <StatusOK />,
-  failed: <StatusError />,
-  stopped: <StatusWarning />,
-};
-
 interface StatusIconProps {
   buildStatus: BuildStatus;
 }
 
-export const StatusIcon = ({ buildStatus }: StatusIconProps) =>
-  STATUS_ICONS[buildStatus] ?? <StatusAborted />;
+export const StatusIcon = ({ buildStatus }: StatusIconProps) => {
+  switch (buildStatus) {
+    case 'succeeded':
+      return <StatusOK />;
+    case 'failed':
+      return <StatusError />;
+    case 'stopped':
+      return <StatusWarning />;
+    default:
+      return <StatusAborted />;
+  }
+};
