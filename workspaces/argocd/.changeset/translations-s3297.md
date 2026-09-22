@@ -2,4 +2,4 @@
 '@backstage-community/plugin-argocd': patch
 ---
 
-Updated translations for RHDH 2.1 (s3297).
+Updated included translations for Germany/Deutsch, Spain/Español, France/Français, Italy/Italiano and Japan/日本語.

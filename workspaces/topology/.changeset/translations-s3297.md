@@ -2,4 +2,4 @@
 '@backstage-community/plugin-topology': patch
 ---
 
-Updated translations for RHDH 2.1 (s3297).
+Updated included translations for Germany/Deutsch, France/Français, Italy/Italiano and Japan/日本語.

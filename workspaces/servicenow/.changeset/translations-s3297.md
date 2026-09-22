@@ -2,4 +2,4 @@
 '@backstage-community/plugin-servicenow': patch
 ---
 
-Updated translations for RHDH 2.1 (s3297).
+Updated included translations for Japan/日本語.

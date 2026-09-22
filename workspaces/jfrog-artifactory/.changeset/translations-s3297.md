@@ -2,4 +2,4 @@
 '@backstage-community/plugin-jfrog-artifactory': patch
 ---
 
-Updated translations for RHDH 2.1 (s3297).
+Updated included translations for Germany/Deutsch, Spain/Español, France/Français and Japan/日本語.
