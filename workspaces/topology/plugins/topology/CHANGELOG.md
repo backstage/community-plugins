@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 3.0.3
+
+### Patch Changes
+
+- c52c59a: Assign the Topology entity content to the deployment group.
+
 ## 3.0.2
 
 ### Patch Changes
