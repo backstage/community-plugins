@@ -130,11 +130,17 @@ test.describe('Topology plugin', () => {
 
       for (const buttonName of controlBarButtons) {
         await expect(
-          controlBar.getByRole('button', { name: buttonName }),
+          controlBar.getByRole('button', {
+            name: buttonName,
+            exact: true,
+          }),
         ).toBeVisible();
       }
       await controlBar
-        .getByRole('button', { name: translations.controlBar.fitToScreen })
+        .getByRole('button', {
+          name: translations.controlBar.fitToScreen,
+          exact: true,
+        })
         .click();
     });
 
