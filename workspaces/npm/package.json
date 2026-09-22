@@ -39,10 +39,10 @@
     "directory": "workspaces/npm"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.36.6",
-    "@backstage/cli-defaults": "^0.1.6",
-    "@backstage/e2e-test-utils": "^0.1.2",
-    "@backstage/repo-tools": "^0.19.1",
+    "@backstage/cli": "backstage:^",
+    "@backstage/cli-defaults": "backstage:^",
+    "@backstage/e2e-test-utils": "backstage:^",
+    "@backstage/repo-tools": "backstage:^",
     "@changesets/cli": "^2.27.1",
     "@jest/environment-jsdom-abstract": "^30.3.0",
     "@playwright/test": "^1.32.3",
