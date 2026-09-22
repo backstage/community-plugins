@@ -84,16 +84,16 @@ export const EntityBadgesDialog = (props: {
           <Text variant="title-large">Entity Badges</Text>
         </DialogHeader>
         <DialogBody>
-          <div style={{ marginBottom: 'var(--bui-space-4)' }}>
+          <Box mb="4">
             <Text>
               Embed badges in other web sites that link back to this entity.
               Copy the relevant snippet of Markdown code to use the badge.
             </Text>
-          </div>
+          </Box>
 
-          <div style={{ marginBottom: 'var(--bui-space-4)' }}>
+          <Box mb="4">
             <Text variant="body-medium">Select Badge Style</Text>
-            <div style={{ marginTop: 'var(--bui-space-2)' }}>
+            <Box mt="2">
               <Select
                 name="badge-style"
                 label={null}
@@ -102,8 +102,8 @@ export const EntityBadgesDialog = (props: {
                 onChange={handleStyleChange}
                 options={selectOptions}
               />
-            </div>
-          </div>
+            </Box>
+          </Box>
 
           {loading && <Progress />}
           {error && <ResponseErrorPanel error={error} />}
