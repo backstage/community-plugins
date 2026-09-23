@@ -1,4 +1,8 @@
 @layer components {
+  .icon {
+    min-width: 56px;
+  }
+
   .flexContainer {
     flex-wrap: wrap;
   }

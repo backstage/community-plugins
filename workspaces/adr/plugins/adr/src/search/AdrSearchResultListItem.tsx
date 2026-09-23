@@ -45,9 +45,9 @@ export function AdrSearchResultListItem(props: AdrSearchResultListItemProps) {
   if (!result) return null;
 
   return (
-    <Flex gap="2">
+    <Flex align="start" gap="2">
       {icon && (
-        <Flex align="center" shrink={false}>
+        <Flex shrink={false} className={styles.icon}>
           {icon}
         </Flex>
       )}

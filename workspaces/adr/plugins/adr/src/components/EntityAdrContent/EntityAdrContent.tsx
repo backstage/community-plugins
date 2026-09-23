@@ -105,7 +105,7 @@ const AdrListContainer = (props: {
           description={adr.date}
           customActions={
             <EntityAdrListItemContext.Provider value={{ adr }}>
-              {statusComponent ??
+              {statusComponent ||
                 (adr.status && (
                   <TagGroup>
                     <Tag size="small" className={getStatusClass(adr.status)}>
