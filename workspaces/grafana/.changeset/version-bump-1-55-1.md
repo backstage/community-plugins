@@ -2,4 +2,4 @@
 '@backstage-community/plugin-grafana': minor
 ---
 
-Backstage version bump to v1.54.5
+Backstage version bump to v1.55.1

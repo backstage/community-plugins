@@ -1,5 +1,11 @@
 # @backstage-community/plugin-analytics-module-newrelic-browser
 
+## 0.22.1
+
+### Patch Changes
+
+- 7c6b73e: Export the analytics implementation extension from each module, so it can be referenced directly rather than only through the module that carries it. Added tests covering the APIs each implementation asks the app to inject and the analytics client it builds.
+
 ## 0.22.0
 
 ### Minor Changes

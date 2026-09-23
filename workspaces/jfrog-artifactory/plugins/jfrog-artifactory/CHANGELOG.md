@@ -1,5 +1,11 @@
 # @backstage-community/plugin-jfrog-artifactory
 
+## 2.0.3
+
+### Patch Changes
+
+- 9eec65d: Updated included translations for Germany/Deutsch, Spain/Español, France/Français and Japan/日本語.
+
 ## 2.0.2
 
 ### Patch Changes
