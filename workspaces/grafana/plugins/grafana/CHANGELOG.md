@@ -1,5 +1,15 @@
 # @backstage-community/plugin-grafana
 
+## 1.0.0
+
+### Major Changes
+
+- 0a2a6b3: Migrated from Material UI (MUI) to Backstage UI (BUI).
+
+### Minor Changes
+
+- 36af219: Backstage version bump to v1.54.5
+
 ## 0.22.0
 
 ### Minor Changes

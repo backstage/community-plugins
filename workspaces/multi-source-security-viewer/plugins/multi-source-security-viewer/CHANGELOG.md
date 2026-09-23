@@ -1,5 +1,11 @@
 # @backstage-community/plugin-multi-source-security-viewer
 
+## 1.0.3
+
+### Patch Changes
+
+- c527983: Updated dependency `@playwright/test` to `1.63.0`.
+
 ## 1.0.2
 
 ### Patch Changes

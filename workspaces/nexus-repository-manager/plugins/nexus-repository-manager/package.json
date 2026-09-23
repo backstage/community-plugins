@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-nexus-repository-manager",
-  "version": "1.27.2",
+  "version": "1.27.4",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -82,7 +82,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "14.6.7",
-    "@types/node": "22.20.3",
+    "@types/node": "22.20.4",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "cross-fetch": "4.1.0",

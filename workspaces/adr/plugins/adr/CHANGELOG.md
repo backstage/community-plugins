@@ -1,5 +1,16 @@
 # @backstage-community/plugin-adr
 
+## 0.30.0
+
+### Minor Changes
+
+- 82fdc04: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [82fdc04]
+  - @backstage-community/plugin-adr-common@0.24.0
+
 ## 0.29.0
 
 ### Minor Changes

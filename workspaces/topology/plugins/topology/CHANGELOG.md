@@ -1,5 +1,32 @@
 # @backstage-community/plugin-topology
 
+## 3.0.5
+
+### Patch Changes
+
+- ff07f64: Align topology view with Backstage UI by using `EntityInfoCard` instead of `InfoCard`.
+
+## 3.0.4
+
+### Patch Changes
+
+- 9eec65d: Updated included translations for Germany/Deutsch, France/Français, Italy/Italiano and Japan/日本語.
+
+## 3.0.3
+
+### Patch Changes
+
+- c52c59a: Assign the Topology entity content to the deployment group.
+
+## 3.0.2
+
+### Patch Changes
+
+- 1c6e97f: Bump `js-yaml` to v5
+- a9ae551: Updated dependency `@backstage-community/plugin-tekton-react` to `^0.9.0`.
+  Updated dependency `@playwright/test` to `1.63.0`.
+  Updated dependency `react-aria-components` to `~1.21.0`.
+
 ## 3.0.1
 
 ### Patch Changes

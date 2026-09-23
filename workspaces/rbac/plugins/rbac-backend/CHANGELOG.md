@@ -1,5 +1,12 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.3
+
+### Patch Changes
+
+- 1c6e97f: Bump `js-yaml` to v5
+- e0c6404: Updated dependency `@types/node` to `22.20.3`.
+
 ## 8.1.2
 
 ### Patch Changes

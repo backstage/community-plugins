@@ -21,20 +21,6 @@ export function isNfsAppMode(): boolean {
   return process.env.APP_MODE !== 'legacy';
 }
 
-/**
- * Locator for the Tekton entity tab.
- * Legacy TabbedLayout uses `header-tab-0`. NFS mounts Tekton on the entity
- * page via Content navigation links.
- */
-export function tektonEntityTab(page: Page) {
-  if (!isNfsAppMode()) {
-    return page.getByTestId('header-tab-0');
-  }
-  return page
-    .getByRole('navigation', { name: 'Content navigation' })
-    .locator('a[href$="/tekton"]');
-}
-
 export class Common {
   page: Page;
 
@@ -69,9 +55,6 @@ export class Common {
         url.pathname.includes('/component/backstage'),
       );
       await this.page.waitForLoadState('networkidle');
-      const tektonTab = tektonEntityTab(this.page);
-      await expect(tektonTab).toBeVisible({ timeout: 30000 });
-      await tektonTab.click();
     }
 
     await expect(this.page.getByTestId('tekton-progress')).toHaveCount(0);

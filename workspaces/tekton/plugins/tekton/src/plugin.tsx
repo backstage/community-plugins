@@ -30,6 +30,7 @@ const tektonEntityContent = EntityContentBlueprint.make({
   params: {
     path: '/tekton',
     title: 'Tekton',
+    group: 'deployment',
     filter: isTektonCIAvailable,
     loader: () => import('./components/Router').then(m => <m.Router />),
   },

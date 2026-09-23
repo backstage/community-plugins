@@ -1,5 +1,23 @@
 # @backstage-community/plugin-npm
 
+## 1.26.0
+
+### Minor Changes
+
+- 6c24111: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [6c24111]
+  - @backstage-community/plugin-npm-common@1.26.0
+
+## 1.25.3
+
+### Patch Changes
+
+- 4eaa4a3: Assign the Npm Releases entity content to the development group.
+  - @backstage-community/plugin-npm-common@1.25.3
+
 ## 1.25.2
 
 ### Patch Changes

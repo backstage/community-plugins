@@ -1,5 +1,11 @@
 # @backstage-community/plugin-badges
 
+## 1.0.0
+
+### Major Changes
+
+- 2d61817: Migrated from Material UI (MUI) to Backstage UI (BUI).
+
 ## 0.24.0
 
 ### Minor Changes
