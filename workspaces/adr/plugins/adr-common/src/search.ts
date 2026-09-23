@@ -113,21 +113,27 @@ export interface ParsedMadr {
   attributes: Record<string, unknown>;
 }
 
-const FRONT_MATTER_PATTERN = /^---\r?\n((?:.*\r?\n)*?)---\r?\n?([\s\S]*)$/;
+const FRONT_MATTER_PATTERN =
+  /^---\r?\n((?:.*\r?\n)*?)---[^\S\r\n]*(?:\r?\n|$)([\s\S]*)$/;
 const FRONT_MATTER_SCHEMA = CORE_SCHEMA.withTags(timestampTag);
 
 /**
  * Utility function to parse raw markdown content for an ADR and extract any metadata found as "front matter" at the top of the Markdown document.
+ * Front matter is recognised in the MADR 3.x form only: the file must start with a `---` line, and the block ends at the next line containing only `---`.
  * @param content - Raw markdown content which may (optionally) include front matter
  * @public
  */
 export const parseMadrWithFrontmatter = (content: string): ParsedMadr => {
   const match = content.match(FRONT_MATTER_PATTERN);
-  const attributes = match
-    ? (loadAll(match[1], { schema: FRONT_MATTER_SCHEMA })[0] as
-        | Record<string, unknown>
-        | undefined) ?? {}
-    : {};
+  let attributes: Record<string, unknown> = {};
+
+  if (match) {
+    const parsedAttributes = loadAll(match[1], {
+      schema: FRONT_MATTER_SCHEMA,
+    })[0] as Record<string, unknown> | undefined;
+
+    attributes = parsedAttributes ?? {};
+  }
   const body = match ? match[2] : content;
 
   const status = attributes.status;

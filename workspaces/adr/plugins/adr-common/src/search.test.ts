@@ -114,4 +114,27 @@ describe('parseMadrWithFrontmatter', () => {
     expect(result.date).toBeUndefined();
     expect(result.content).toBe(content);
   });
+
+  it('accepts a closing delimiter with trailing whitespace and CRLF line endings', () => {
+    const content = ['---', 'status: accepted', '---  ', '# My ADR'].join(
+      '\r\n',
+    );
+
+    const result = parseMadrWithFrontmatter(content);
+
+    expect(result.attributes).toEqual({ status: 'accepted' });
+    expect(result.content).toBe('# My ADR');
+  });
+
+  it('does not treat a closing delimiter with trailing text as the end of front matter', () => {
+    const content = ['---', 'status: accepted', '---broken', '# My ADR'].join(
+      '\n',
+    );
+
+    const result = parseMadrWithFrontmatter(content);
+
+    expect(result.attributes).toEqual({});
+    expect(result.status).toBeUndefined();
+    expect(result.content).toBe(content);
+  });
 });
