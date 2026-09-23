@@ -1,5 +1,11 @@
 # @backstage-community/plugin-tekton
 
+## 4.0.4
+
+### Patch Changes
+
+- 321c4d4: Align the PipelineRuns list with Backstage UI by using EntityInfoCard.
+
 ## 4.0.3
 
 ### Patch Changes
