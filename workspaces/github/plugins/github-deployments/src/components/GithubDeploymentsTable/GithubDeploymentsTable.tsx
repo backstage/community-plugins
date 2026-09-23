@@ -161,7 +161,7 @@ export const GithubDeploymentsTable = (props: {
         <Table
           columnConfig={columnConfig}
           {...tableProps}
-          loading={isLoading}
+          isPending={isLoading}
           emptyState={
             <div className={styles.empty}>
               <Text variant="body-medium">
