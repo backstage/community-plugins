@@ -1,0 +1,4 @@
+/* Only keep CSS that BUI layout props cannot express (GraphiQL third-party root). */
+.graphiQlWrapper :global(.graphiql-container) {
+  box-sizing: initial;
+}
