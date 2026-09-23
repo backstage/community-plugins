@@ -1,5 +1,11 @@
 # @backstage-community/plugin-rbac-backend
 
+## 8.1.4
+
+### Patch Changes
+
+- cefe093: Updated dependency `@types/node` to `22.20.4`.
+
 ## 8.1.3
 
 ### Patch Changes
