@@ -1,5 +1,12 @@
 # @backstage-community/search-backend-module-adr
 
+## 0.23.1
+
+### Patch Changes
+
+- Updated dependencies [41203d6]
+  - @backstage-community/plugin-adr-common@0.25.0
+
 ## 0.23.0
 
 ### Minor Changes
