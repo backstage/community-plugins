@@ -20,6 +20,5 @@ import { Entity } from '@backstage/catalog-model';
 export const BITBUCKET_PROJECT_ANNOTATION = 'bitbucket.com/project-slug';
 
 export const isBitbucketSlugSet = (entity: Entity) => {
-  // Try Cloud annotation first, then fall back to Server annotation
   return entity?.metadata.annotations?.[BITBUCKET_PROJECT_ANNOTATION] ?? '';
 };
