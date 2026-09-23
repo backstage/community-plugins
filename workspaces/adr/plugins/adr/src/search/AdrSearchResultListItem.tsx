@@ -15,7 +15,7 @@
  */
 
 import { ReactNode } from 'react';
-import { Tag, TagGroup, Text } from '@backstage/ui';
+import { Flex, Tag, TagGroup, Text } from '@backstage/ui';
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Link } from '@backstage/core-components';
 import { AdrDocument } from '@backstage-community/plugin-adr-common';
@@ -45,9 +45,13 @@ export function AdrSearchResultListItem(props: AdrSearchResultListItemProps) {
   if (!result) return null;
 
   return (
-    <div className={styles.item}>
-      {icon && <div>{icon}</div>}
-      <div className={styles.flexContainer}>
+    <Flex gap="2">
+      {icon && (
+        <Flex align="center" shrink={false}>
+          {icon}
+        </Flex>
+      )}
+      <Flex grow className={styles.flexContainer}>
         <div className={styles.itemText}>
           <Text variant="title-small" as="div">
             <Link noTrack to={result.location}>
@@ -92,7 +96,7 @@ export function AdrSearchResultListItem(props: AdrSearchResultListItemProps) {
           )}
           {result.date && <Tag size="small">{`Date: ${result.date}`}</Tag>}
         </TagGroup>
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 }

@@ -1,11 +1,5 @@
 @layer components {
-  .item {
-    display: flex;
-  }
-
   .flexContainer {
-    display: flex;
-    flex: 1;
     flex-wrap: wrap;
   }
 
