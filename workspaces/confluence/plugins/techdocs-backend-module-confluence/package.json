@@ -1,6 +1,6 @@
 {
   "name": "@backstage-community/plugin-techdocs-backend-module-confluence",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "The confluence backend module for the techdocs plugin.",
   "backstage": {
     "role": "backend-plugin-module",
