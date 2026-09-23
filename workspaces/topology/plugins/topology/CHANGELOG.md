@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 3.0.5
+
+### Patch Changes
+
+- ff07f64: Align topology view with Backstage UI by using `EntityInfoCard` instead of `InfoCard`.
+
 ## 3.0.4
 
 ### Patch Changes
