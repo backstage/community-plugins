@@ -1,5 +1,15 @@
 # @backstage-community/plugin-airbrake
 
+## 1.0.0
+
+### Major Changes
+
+- 07b4ffb: Migrated from Material-UI (MUI) to Backstage UI (BUI)
+
+### Patch Changes
+
+- 9ce0f3e: Updated dependency `react-router-dom` to `6.30.6`.
+
 ## 0.24.0
 
 ### Minor Changes
