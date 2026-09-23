@@ -15,6 +15,49 @@
  */
 import { ApacheAirflowApi, apacheAirflowApiRef } from '../../api';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import type { ReactNode } from 'react';
+
+jest.mock('../ScheduleIntervalLabel', () => ({
+  ScheduleIntervalLabel: () => <div>schedule</div>,
+}));
+jest.mock('../LatestDagRunsStatus', () => ({
+  LatestDagRunsStatus: () => <div>runs</div>,
+}));
+jest.mock('@backstage/core-components', () => ({
+  ErrorPanel: ({ error }: { error?: unknown }) => <div>{String(error)}</div>,
+  Link: ({ children, to }: { children?: ReactNode; to?: string }) => (
+    <a href={to}>{children}</a>
+  ),
+  Progress: () => <div>loading</div>,
+  StatusError: () => <span>status-error</span>,
+  StatusOK: () => <span>status-ok</span>,
+  Table: ({
+    data,
+    title,
+  }: {
+    data?: Array<{ id?: string }>;
+    title?: string;
+  }) => (
+    <div>
+      <h2>{title}</h2>
+      {data?.map(row => (
+        <div key={row.id}>{row.id}</div>
+      ))}
+    </div>
+  ),
+  WarningPanel: ({
+    children,
+    title,
+  }: {
+    children?: ReactNode;
+    title?: string;
+  }) => (
+    <div>
+      <h3>{`Warning: ${title}`}</h3>
+      {children}
+    </div>
+  ),
+}));
 import { DagTableComponent } from './DagTableComponent';
 
 describe('DagTableComponent', () => {
