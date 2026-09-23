@@ -13,25 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Chip from '@material-ui/core/Chip';
-import { withStyles } from '@material-ui/core/styles';
 import { PRIVATE, PUBLIC, StatusPage } from '../../types';
-
-const PrivateChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#4caf50',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-
-const PublicChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#ffb74d',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
+import styles from './VisibilityChip.module.css';
 
 const statusPageVisibilityLabels = {
   [PUBLIC]: 'Public',
@@ -43,10 +26,10 @@ export const VisibilityChip = ({ statusPage }: { statusPage: StatusPage }) => {
 
   switch (statusPage.visibility) {
     case PRIVATE:
-      return <PrivateChip label={label} size="small" />;
+      return <div className={styles.private}>{label}</div>;
     case PUBLIC:
-      return <PublicChip label={label} size="small" />;
+      return <div className={styles.public}>{label}</div>;
     default:
-      return <Chip label={label} size="small" />;
+      return <div>{label}</div>;
   }
 };

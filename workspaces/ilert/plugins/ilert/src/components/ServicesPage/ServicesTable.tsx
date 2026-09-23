@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import { TableState } from '../../api';
 import { Service } from '../../types';
 import { StatusChip } from './StatusChip';
@@ -22,14 +21,6 @@ import { StatusChip } from './StatusChip';
 import { Table, TableColumn } from '@backstage/core-components';
 import { ServiceActionsMenu } from '../Service/ServiceActionsMenu';
 import { ServiceLink } from '../Service/ServiceLink';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 export const ServicesTable = ({
   services,
@@ -47,8 +38,6 @@ export const ServicesTable = ({
   onChangeRowsPerPage: (pageSize: number) => void;
   compact?: boolean;
 }) => {
-  const classes = useStyles();
-
   const smColumnStyle = {
     width: '10%',
     maxWidth: '10%',
@@ -70,7 +59,7 @@ export const ServicesTable = ({
     field: 'name',
     cellStyle: !compact ? xlColumnStyle : undefined,
     headerStyle: !compact ? xlColumnStyle : undefined,
-    render: rowData => <Typography>{rowData.name}</Typography>,
+    render: rowData => <Text>{rowData.name}</Text>,
   };
   const statusColumn: TableColumn<Service> = {
     title: 'Status',
@@ -85,7 +74,7 @@ export const ServicesTable = ({
     cellStyle: smColumnStyle,
     headerStyle: smColumnStyle,
     render: rowData => (
-      <Typography>{rowData.uptime?.uptimePercentage?.p90 || ''}</Typography>
+      <Text>{rowData.uptime?.uptimePercentage?.p90 || ''}</Text>
     ),
   };
   const actionsColumn: TableColumn<Service> = {
@@ -115,16 +104,8 @@ export const ServicesTable = ({
         showTitle: true,
         toolbar: true,
       }}
-      emptyContent={
-        <Typography color="textSecondary" className={classes.empty}>
-          No services
-        </Typography>
-      }
-      title={
-        <Typography variant="button" color="textSecondary">
-          SERVICES
-        </Typography>
-      }
+      emptyContent={<Text>No services</Text>}
+      title={<Text>SERVICES</Text>}
       page={tableState.page}
       onPageChange={onChangePage}
       onRowsPerPageChange={onChangeRowsPerPage}

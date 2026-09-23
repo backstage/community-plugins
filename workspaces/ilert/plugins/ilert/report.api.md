@@ -11,7 +11,7 @@ import { Entity } from '@backstage/catalog-model';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { RouteRef } from '@backstage/core-plugin-api';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { SVGAttributes } from 'react';
 
 // @public (undocumented)
 export const ACCEPTED = 'ACCEPTED';
@@ -531,7 +531,7 @@ export class ILertClient implements ILertApi {
 }
 
 // @public (undocumented)
-export const ILertIcon: (props: SvgIconProps) => JSX_2.Element;
+export const ILertIcon: (props: SVGAttributes<SVGSVGElement>) => JSX_2.Element;
 
 // @public (undocumented)
 export const ILertPage: () => JSX_2.Element;

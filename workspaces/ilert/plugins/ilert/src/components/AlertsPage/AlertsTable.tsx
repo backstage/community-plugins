@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '@backstage/ui';
 import humanizeDuration from 'humanize-duration';
 import { DateTime as dt, Interval } from 'luxon';
 import { ilertApiRef, TableState } from '../../api';
@@ -27,14 +26,6 @@ import { TableTitle } from './TableTitle';
 
 import { Table, TableColumn } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 export const AlertsTable = ({
   alerts,
@@ -62,7 +53,6 @@ export const AlertsTable = ({
   compact?: boolean;
 }) => {
   const ilertApi = useApi(ilertApiRef);
-  const classes = useStyles();
 
   const xsColumnStyle = {
     width: '5%',
@@ -98,7 +88,7 @@ export const AlertsTable = ({
     field: 'summary',
     cellStyle: !compact ? xlColumnStyle : undefined,
     headerStyle: !compact ? xlColumnStyle : undefined,
-    render: rowData => <Typography>{rowData.summary}</Typography>,
+    render: rowData => <Text>{rowData.summary}</Text>,
   };
   const sourceColumn: TableColumn<Alert> = {
     title: 'Source',
@@ -114,7 +104,7 @@ export const AlertsTable = ({
     cellStyle: smColumnStyle,
     headerStyle: smColumnStyle,
     render: rowData => (
-      <Typography noWrap>
+      <Text>
         {rowData.status !== 'RESOLVED'
           ? humanizeDuration(
               Interval.fromDateTimes(dt.fromISO(rowData.reportTime), dt.now())
@@ -131,7 +121,7 @@ export const AlertsTable = ({
                 .valueOf(),
               { units: ['h', 'm', 's'], largest: 2, round: true },
             )}
-      </Typography>
+      </Text>
     ),
   };
   const respondersColumn: TableColumn<Alert> = {
@@ -140,14 +130,16 @@ export const AlertsTable = ({
     cellStyle: !compact ? mdColumnStyle : lgColumnStyle,
     headerStyle: !compact ? mdColumnStyle : lgColumnStyle,
     render: rowData => (
-      <Typography>
-        {rowData.responders.map((value, i, arr) => {
-          return (
-            ilertApi.getUserInitials(value.user) +
-            (arr.length - 1 !== i ? ', ' : '')
-          );
-        })}
-      </Typography>
+      <Text>
+        {rowData.responders && rowData.responders.length > 0
+          ? rowData.responders.map((value, i, arr) => {
+              return (
+                ilertApi.getUserInitials(value.user) +
+                (arr.length - 1 !== i ? ', ' : '')
+              );
+            })
+          : '-'}
+      </Text>
     ),
   };
   const priorityColumn: TableColumn<Alert> = {
@@ -156,9 +148,7 @@ export const AlertsTable = ({
     cellStyle: smColumnStyle,
     headerStyle: smColumnStyle,
     render: rowData => (
-      <Typography noWrap>
-        {rowData.priority === 'HIGH' ? 'High' : 'Low'}
-      </Typography>
+      <Text>{rowData.priority === 'HIGH' ? 'High' : 'Low'}</Text>
     ),
   };
   const statusColumn: TableColumn<Alert> = {
@@ -216,11 +206,7 @@ export const AlertsTable = ({
         showTitle: true,
         toolbar: true,
       }}
-      emptyContent={
-        <Typography color="textSecondary" className={classes.empty}>
-          No alerts right now
-        </Typography>
-      }
+      emptyContent={<Text>No alerts right now</Text>}
       title={
         !compact ? (
           <TableTitle
@@ -228,9 +214,7 @@ export const AlertsTable = ({
             onAlertStatesChange={onAlertStatesChange}
           />
         ) : (
-          <Typography variant="button" color="textSecondary">
-            ALERTS
-          </Typography>
+          <Text>ALERTS</Text>
         )
       }
       page={tableState.page}

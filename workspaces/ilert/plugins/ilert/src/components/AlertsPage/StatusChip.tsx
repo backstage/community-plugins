@@ -13,32 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Chip from '@material-ui/core/Chip';
-import { withStyles } from '@material-ui/core/styles';
 import { ACCEPTED, Alert, PENDING, RESOLVED } from '../../types';
-
-const ResolvedChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#4caf50',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-
-const AcceptedChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#ffb74d',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
-const PendingChip = withStyles(theme => ({
-  root: {
-    backgroundColor: '#d32f2f',
-    color: theme.palette.common.white,
-    margin: 0,
-  },
-}))(Chip);
+import styles from './StatusChip.module.css';
 
 export const alertStatusLabels = {
   [RESOLVED]: 'Resolved',
@@ -51,12 +27,12 @@ export const StatusChip = ({ alert }: { alert: Alert }) => {
 
   switch (alert.status) {
     case RESOLVED:
-      return <ResolvedChip label={label} size="small" />;
+      return <div className={styles.resolved}>{label}</div>;
     case ACCEPTED:
-      return <AcceptedChip label={label} size="small" />;
+      return <div className={styles.accepted}>{label}</div>;
     case PENDING:
-      return <PendingChip label={label} size="small" />;
+      return <div className={styles.pending}>{label}</div>;
     default:
-      return <Chip label={label} size="small" />;
+      return <div>{label}</div>;
   }
 };
