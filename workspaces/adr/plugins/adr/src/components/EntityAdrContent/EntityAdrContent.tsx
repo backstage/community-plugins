@@ -223,7 +223,7 @@ export const EntityAdrContent = (props: {
                   {adrListGrouped.map(([title, adrs]) => (
                     <AdrListContainer
                       adrs={adrs}
-                      key={title || 'root'}
+                      key={title}
                       selectedAdr={selectedAdr}
                       title={title}
                       statusComponent={statusComponent}
