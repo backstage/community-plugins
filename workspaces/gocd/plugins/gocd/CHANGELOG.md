@@ -1,5 +1,11 @@
 # @backstage-community/plugin-gocd
 
+## 0.23.0
+
+### Minor Changes
+
+- 1819d8a: Backstage version bump to v1.55.1
+
 ## 0.22.0
 
 ### Minor Changes
