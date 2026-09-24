@@ -16,14 +16,18 @@
 // code ported from https://github.com/opencost/opencost/blob/develop/ui/src/Reports.js
 
 import { useEffect, useState } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import Typography from '@material-ui/core/Typography';
+import {
+  Box,
+  Card,
+  CardBody,
+  ButtonIcon,
+  Flex,
+  Text,
+  Skeleton,
+} from '@backstage/ui';
+import { RiRefreshLine } from '@remixicon/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { find, get, sortBy, toArray } from 'lodash';
-import { makeStyles } from '@material-ui/core/styles';
 import AllocationReport from '../AllocationReport';
 import AllocationService from '../../services/allocation';
 import Controls from '../Controls';
@@ -68,17 +72,6 @@ const accumulateOptions = [
   { name: 'Daily', value: false },
 ];
 
-const useStyles = makeStyles({
-  reportHeader: {
-    display: 'flex',
-    flexFlow: 'row',
-    padding: 24,
-  },
-  titles: {
-    flexGrow: 1,
-  },
-});
-
 // generateTitle generates a string title from a report object
 // @ts-ignore: implicitly has an 'any' type
 function generateTitle({ window, aggregateBy, accumulate }) {
@@ -112,7 +105,6 @@ function generateTitle({ window, aggregateBy, accumulate }) {
 }
 
 export const OpenCostReport = () => {
-  const classes = useStyles();
   // Allocation data state
   const [allocationData, setAllocationData] = useState([]);
   const [cumulativeData, setCumulativeData] = useState({});
@@ -245,75 +237,88 @@ export const OpenCostReport = () => {
         </div>
       )}
       {init && (
-        <Paper id="report">
-          <div className={classes.reportHeader}>
-            <div className={classes.titles}>
-              <Typography variant="h5">{title}</Typography>
-              <Subtitle report={{ window, aggregateBy, accumulate }} />
-            </div>
+        <Card id="report">
+          <CardBody>
+            <Flex direction="row" align="start" p="6">
+              <Box grow={1}>
+                <Text variant="title-medium">{title}</Text>
+                <Subtitle report={{ window, aggregateBy, accumulate }} />
+              </Box>
+              <ButtonIcon
+                aria-label="refresh"
+                onPress={() => setFetch(true)}
+                icon={<RiRefreshLine size={20} />}
+                variant="secondary"
+              />
 
-            <IconButton aria-label="refresh" onClick={() => setFetch(true)}>
-              <RefreshIcon />
-            </IconButton>
+              <Controls
+                windowOptions={windowOptions}
+                window={window}
+                // @ts-ignore: implicitly has an 'any' type
+                setWindow={win => {
+                  searchParams.set('window', win);
+                  routerNavigate({
+                    search: `?${searchParams.toString()}`,
+                  });
+                }}
+                aggregationOptions={aggregationOptions}
+                aggregateBy={aggregateBy}
+                // @ts-ignore: implicitly has an 'any' type
+                setAggregateBy={agg => {
+                  searchParams.set('agg', agg);
+                  routerNavigate({
+                    search: `?${searchParams.toString()}`,
+                  });
+                }}
+                accumulateOptions={accumulateOptions}
+                accumulate={accumulate}
+                // @ts-ignore: implicitly has an 'any' type
+                setAccumulate={acc => {
+                  searchParams.set('acc', acc);
+                  routerNavigate({
+                    search: `?${searchParams.toString()}`,
+                  });
+                }}
+                title={title}
+                cumulativeData={cumulativeData}
+                currency={currency}
+                currencyOptions={currencyCodes}
+                // @ts-ignore: implicitly has an 'any' type
+                setCurrency={curr => {
+                  searchParams.set('currency', curr);
+                  routerNavigate({
+                    search: `?${searchParams.toString()}`,
+                  });
+                }}
+              />
+            </Flex>
 
-            <Controls
-              windowOptions={windowOptions}
-              window={window}
-              // @ts-ignore: implicitly has an 'any' type
-              setWindow={win => {
-                searchParams.set('window', win);
-                routerNavigate({
-                  search: `?${searchParams.toString()}`,
-                });
-              }}
-              aggregationOptions={aggregationOptions}
-              aggregateBy={aggregateBy}
-              // @ts-ignore: implicitly has an 'any' type
-              setAggregateBy={agg => {
-                searchParams.set('agg', agg);
-                routerNavigate({
-                  search: `?${searchParams.toString()}`,
-                });
-              }}
-              accumulateOptions={accumulateOptions}
-              accumulate={accumulate}
-              // @ts-ignore: implicitly has an 'any' type
-              setAccumulate={acc => {
-                searchParams.set('acc', acc);
-                routerNavigate({
-                  search: `?${searchParams.toString()}`,
-                });
-              }}
-              title={title}
-              cumulativeData={cumulativeData}
-              currency={currency}
-              currencyOptions={currencyCodes}
-              // @ts-ignore: implicitly has an 'any' type
-              setCurrency={curr => {
-                searchParams.set('currency', curr);
-                routerNavigate({
-                  search: `?${searchParams.toString()}`,
-                });
-              }}
-            />
-          </div>
-
-          {loading && (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <div style={{ paddingTop: 100, paddingBottom: 100 }}>
-                <CircularProgress />
-              </div>
-            </div>
-          )}
-          {!loading && (
-            <AllocationReport
-              allocationData={allocationData}
-              cumulativeData={cumulativeData}
-              totalData={totalData}
-              currency={currency}
-            />
-          )}
-        </Paper>
+            {loading && (
+              <Flex
+                justify="center"
+                style={{ padding: '100px var(--bui-space-6)' }}
+              >
+                <Flex
+                  direction="column"
+                  gap="3"
+                  style={{ width: '100%', maxWidth: '600px' }}
+                >
+                  <Skeleton />
+                  <Skeleton />
+                  <Skeleton />
+                </Flex>
+              </Flex>
+            )}
+            {!loading && (
+              <AllocationReport
+                allocationData={allocationData}
+                cumulativeData={cumulativeData}
+                totalData={totalData}
+                currency={currency}
+              />
+            )}
+          </CardBody>
+        </Card>
       )}
     </Page>
   );

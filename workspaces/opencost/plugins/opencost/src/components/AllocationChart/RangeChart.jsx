@@ -22,24 +22,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { makeStyles } from '@material-ui/core/styles';
 import { reverse } from 'lodash';
+import { Box, Text } from '@backstage/ui';
 import { primary, greyscale, browns } from '../../constants/colors';
 import { toCurrency } from '../../util';
-
-const useStyles = makeStyles({
-  tooltip: {
-    borderRadius: 2,
-    background: 'rgba(255, 255, 255, 0.95)',
-    padding: 12,
-  },
-  tooltipLineItem: {
-    fontSize: '1rem',
-    margin: 0,
-    marginBottom: 4,
-    padding: 0,
-  },
-});
 
 function toBarLabels(allocationRange) {
   const keyToFill = {};
@@ -139,8 +125,6 @@ function toBar(datum) {
 }
 
 const RangeChart = ({ data, currency, height }) => {
-  const classes = useStyles();
-
   const barData = data.map(toBar);
   const barLabels = toBarLabels(data);
 
@@ -153,21 +137,28 @@ const RangeChart = ({ data, currency, height }) => {
 
     const total = payload.reduce((sum, item) => sum + item.value, 0.0);
     if (active) {
-      /* eslint react/forbid-elements: [0, { allow: ["warning"] }] */
       return (
-        <div className={classes.tooltip}>
-          <p
-            className={classes.tooltipLineItem}
-            style={{ color: '#000000' }}
-          >{`Total: ${toCurrency(total, currency)}`}</p>
+        <Box
+          p="3"
+          style={{
+            borderRadius: 'var(--bui-radius-2)',
+            background: 'rgba(255, 255, 255, 0.95)',
+          }}
+        >
+          <Text
+            as="p"
+            variant="body-medium"
+            style={{ margin: 0, marginBottom: 4, color: '#000000' }}
+          >{`Total: ${toCurrency(total, currency)}`}</Text>
           {reverse(payload).map((item, i) => (
-            <p
+            <Text
               key={i}
-              className={classes.tooltipLineItem}
-              style={{ color: item.fill }}
-            >{`${item.name}: ${toCurrency(item.value, currency)}`}</p>
+              as="p"
+              variant="body-medium"
+              style={{ margin: 0, marginBottom: 4, color: item.fill }}
+            >{`${item.name}: ${toCurrency(item.value, currency)}`}</Text>
           ))}
-        </div>
+        </Box>
       );
     }
 
