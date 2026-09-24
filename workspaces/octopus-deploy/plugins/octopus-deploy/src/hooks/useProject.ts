@@ -15,11 +15,14 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { octopusDeployApiRef, OctopusProject } from '../api';
+import {
+  octopusDeployApiRef,
+  OctopusProject,
+  ProjectReference,
+} from '../api';
 
 export function useProject(
-  projectId: string,
-  spaceId?: string,
+  projectReference: ProjectReference,
 ): {
   project?: OctopusProject;
   loading: boolean;
@@ -28,8 +31,8 @@ export function useProject(
   const api = useApi(octopusDeployApiRef);
 
   const { value, loading, error } = useAsync(() => {
-    return api.getProjectInfo({ projectId: projectId, spaceId: spaceId });
-  }, [api, projectId, spaceId]);
+    return api.getProjectInfo(projectReference);
+  }, [api, projectReference]);
 
   return {
     project: value,

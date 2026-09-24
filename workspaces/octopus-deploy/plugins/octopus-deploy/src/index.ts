@@ -24,4 +24,7 @@ export * from './api';
 
 export type { ProjectReference } from './utils/getAnnotationFromEntity';
 
-export { OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION } from './constants';
+export {
+  OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION,
+  OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION,
+} from './constants';

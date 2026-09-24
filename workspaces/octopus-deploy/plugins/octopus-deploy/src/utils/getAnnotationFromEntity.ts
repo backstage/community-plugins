@@ -13,27 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION } from '../constants';
-
 import { Entity } from '@backstage/catalog-model';
+import {
+  OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION,
+  OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION,
+} from '../constants';
 
 /** @public */
-export type ProjectReference = { projectId: string; spaceId?: string };
+export type ProjectReference =
+  | { projectId: string; projectSlug?: never; spaceId?: string }
+  | { projectSlug: string; projectId?: never; spaceId?: string };
 
 export function getProjectReferenceAnnotationFromEntity(
   entity: Entity,
 ): ProjectReference {
-  const annotation =
-    entity.metadata.annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION];
-  if (!annotation) {
-    throw new Error(
-      `Value for annotation ${OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION} was not found`,
-    );
+  const annotations = entity.metadata.annotations;
+  const projectIdAnnotation = annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION];
+  const projectSlugAnnotation =
+    annotations?.[OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION];
+
+  if (projectIdAnnotation) {
+    return parseProjectReference(projectIdAnnotation, 'projectId');
   }
 
-  const referencedProject = annotation.split('/', 2);
-  if (referencedProject.length === 2) {
-    return { projectId: referencedProject[1], spaceId: referencedProject[0] };
+  if (projectSlugAnnotation) {
+    return parseProjectReference(projectSlugAnnotation, 'projectSlug');
   }
-  return { projectId: referencedProject[0] };
+
+  throw new Error(
+    `Value for annotation ${OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION} or ${OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION} was not found`,
+  );
+}
+
+function parseProjectReference(
+  annotation: string,
+  referenceType: 'projectId' | 'projectSlug',
+): ProjectReference {
+  const referencedProject = annotation.split('/', 2);
+  const spaceId =
+    referencedProject.length === 2 ? referencedProject[0] : undefined;
+  const projectIdentifier =
+    referencedProject.length === 2 ? referencedProject[1] : referencedProject[0];
+
+  if (referenceType === 'projectId') {
+    return spaceId
+      ? { projectId: projectIdentifier, spaceId }
+      : { projectId: projectIdentifier };
+  }
+
+  return spaceId
+    ? { projectSlug: projectIdentifier, spaceId }
+    : { projectSlug: projectIdentifier };
 }
