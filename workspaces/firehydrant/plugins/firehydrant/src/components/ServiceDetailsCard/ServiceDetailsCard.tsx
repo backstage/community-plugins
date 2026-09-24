@@ -131,10 +131,13 @@ export const ServiceDetailsCard = () => {
       )}
       {showServiceDetails && (
         <Flex align="center" justify="between" className={styles.headerRow}>
-          <Text variant="title-medium">{headerText}</Text>
+          <Text as="h2" variant="title-medium">
+            {headerText}
+          </Text>
           <ButtonLink
             href={serviceIncidentsLink}
             target="_blank"
+            rel="noopener"
             variant="primary"
           >
             <RiExternalLinkLine size={16} />
@@ -167,6 +170,7 @@ export const ServiceDetailsCard = () => {
           <ButtonLink
             href={`${BASE_URL}/incidents/new`}
             target="_blank"
+            rel="noopener"
             variant="secondary"
           >
             <RiAddLine size={20} />
@@ -175,6 +179,7 @@ export const ServiceDetailsCard = () => {
           <ButtonLink
             href={`${BASE_URL}/incidents`}
             target="_blank"
+            rel="noopener"
             variant="secondary"
           >
             <RiFireLine size={20} />
@@ -184,6 +189,7 @@ export const ServiceDetailsCard = () => {
             <ButtonLink
               href={`${BASE_URL}/services/${value?.service?.id}`}
               target="_blank"
+              rel="noopener"
               variant="secondary"
             >
               <RiFileTextLine size={20} />
