@@ -1,5 +1,16 @@
 # @backstage-community/plugin-catalog-backend-module-linguist-tags-processor
 
+## 0.25.0
+
+### Minor Changes
+
+- 3060f0c: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [3060f0c]
+  - @backstage-community/plugin-linguist-common@0.25.0
+
 ## 0.24.0
 
 ### Minor Changes
