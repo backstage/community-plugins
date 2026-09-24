@@ -15,7 +15,7 @@
  */
 
 import {
-  MockStorageApi,
+  mockApis,
   renderInTestApp,
   TestApiProvider,
 } from '@backstage/test-utils';
@@ -24,6 +24,7 @@ import { Shortcuts } from './Shortcuts';
 import { DefaultShortcutsApi, shortcutsApiRef } from './api';
 
 import { SidebarOpenStateProvider } from '@backstage/core-components';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('Shortcuts', () => {
   it('displays an add button', async () => {
@@ -31,7 +32,8 @@ describe('Shortcuts', () => {
       <SidebarOpenStateProvider value={{ isOpen: true, setOpen: _open => {} }}>
         <TestApiProvider
           apis={[
-            [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+            [coreApis.toast, { post: jest.fn() }],
+            [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
           ]}
         >
           <Shortcuts />

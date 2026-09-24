@@ -19,13 +19,12 @@ import { EditShortcut } from './EditShortcut';
 import { Shortcut } from './types';
 import { DefaultShortcutsApi, shortcutsApiRef } from './api';
 import {
-  MockAnalyticsApi,
-  MockStorageApi,
+  mockApis,
   TestApiProvider,
   renderInTestApp,
 } from '@backstage/test-utils';
-import { AlertDisplay } from '@backstage/core-components';
 import { analyticsApiRef } from '@backstage/core-plugin-api';
+import { coreApis } from '@backstage/frontend-plugin-api';
 
 describe('EditShortcut', () => {
   const shortcut: Shortcut = {
@@ -33,7 +32,8 @@ describe('EditShortcut', () => {
     url: '/some-url',
     title: 'some title',
   };
-  const api = new DefaultShortcutsApi(MockStorageApi.create());
+  const api = new DefaultShortcutsApi(mockApis.storage());
+  const toastApi = { post: jest.fn() };
 
   const props = {
     onClose: jest.fn(),
@@ -50,7 +50,8 @@ describe('EditShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <EditShortcut {...props} />
@@ -64,7 +65,8 @@ describe('EditShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <EditShortcut {...props} />
@@ -81,7 +83,8 @@ describe('EditShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <EditShortcut {...props} />
@@ -105,14 +108,15 @@ describe('EditShortcut', () => {
   });
 
   it('should capture analytics event', async () => {
-    const analyticsSpy = new MockAnalyticsApi();
+    const analyticsSpy = mockApis.analytics.mock();
     const spy = jest.spyOn(api, 'update');
 
     await renderInTestApp(
       <TestApiProvider
         apis={[
           [analyticsApiRef, analyticsSpy],
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <EditShortcut {...props} />
@@ -134,10 +138,12 @@ describe('EditShortcut', () => {
       expect(props.onClose).toHaveBeenCalledTimes(1);
     });
 
-    expect(analyticsSpy.getEvents()[0]).toMatchObject({
-      action: 'click',
-      subject: `Clicked 'Save' in Edit Shortcut`,
-    });
+    expect(analyticsSpy.captureEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'click',
+        subject: `Clicked 'Save' in Edit Shortcut`,
+      }),
+    );
   });
 
   it('removes the shortcut', async () => {
@@ -146,7 +152,8 @@ describe('EditShortcut', () => {
     await renderInTestApp(
       <TestApiProvider
         apis={[
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <EditShortcut {...props} />
@@ -158,14 +165,15 @@ describe('EditShortcut', () => {
   });
 
   it('should capture remove analytics event', async () => {
-    const analyticsSpy = new MockAnalyticsApi();
+    const analyticsSpy = mockApis.analytics.mock();
     const spy = jest.spyOn(api, 'remove');
 
     await renderInTestApp(
       <TestApiProvider
         apis={[
           [analyticsApiRef, analyticsSpy],
-          [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
         ]}
       >
         <EditShortcut {...props} />
@@ -175,10 +183,12 @@ describe('EditShortcut', () => {
     fireEvent.click(screen.getByText('Remove'));
     expect(spy).toHaveBeenCalledWith('id');
 
-    expect(analyticsSpy.getEvents()[0]).toMatchObject({
-      action: 'click',
-      subject: `Clicked 'Remove' in Edit Shortcut`,
-    });
+    expect(analyticsSpy.captureEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'click',
+        subject: `Clicked 'Remove' in Edit Shortcut`,
+      }),
+    );
   });
 
   it('displays errors', async () => {
@@ -191,31 +201,30 @@ describe('EditShortcut', () => {
       .mockRejectedValueOnce(new Error('some remove error'));
 
     await renderInTestApp(
-      <>
-        <TestApiProvider
-          apis={[
-            [shortcutsApiRef, new DefaultShortcutsApi(MockStorageApi.create())],
-          ]}
-        >
-          <AlertDisplay />
-          <EditShortcut {...props} />
-        </TestApiProvider>
-      </>,
+      <TestApiProvider
+        apis={[
+          [coreApis.toast, toastApi],
+          [shortcutsApiRef, new DefaultShortcutsApi(mockApis.storage())],
+        ]}
+      >
+        <EditShortcut {...props} />
+      </TestApiProvider>,
     );
 
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
-      expect(
-        screen.getByText(`Updated shortcut 'some new title'`),
-      ).toBeInTheDocument();
+      expect(toastApi.post).toHaveBeenCalledWith({
+        title: 'Could not update shortcut: some update error',
+        status: 'danger',
+      });
     });
-    fireEvent.click(screen.getByTestId('error-button-close'));
 
     fireEvent.click(screen.getByText('Remove'));
     await waitFor(() => {
-      expect(
-        screen.getByText(`Updated shortcut 'some new title'`),
-      ).toBeInTheDocument();
+      expect(toastApi.post).toHaveBeenCalledWith({
+        title: 'Could not delete shortcut: some remove error',
+        status: 'danger',
+      });
     });
   });
 });
