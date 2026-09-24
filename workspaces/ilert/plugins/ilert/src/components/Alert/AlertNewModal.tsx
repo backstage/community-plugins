@@ -203,7 +203,7 @@ export const AlertNewModal = ({
           label="Details"
           fullWidth
           multiline
-          rows={4}
+          minRows={4}
           margin="normal"
           variant="outlined"
           classes={{
