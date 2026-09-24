@@ -87,6 +87,8 @@ const AdrListContainer = (props: {
     }
   };
 
+  // React Aria renders list rows outside their collection tree, so a provider
+  // around ListRow does not reach the rendered custom actions.
   const list = (
     <List
       aria-label={title || 'ADRs'}
@@ -116,9 +118,7 @@ const AdrListContainer = (props: {
             </EntityAdrListItemContext.Provider>
           }
         >
-          <EntityAdrListItemContext.Provider value={{ adr }}>
-            {adr.title ?? adr?.name.replace(/\.md$/, '')}
-          </EntityAdrListItemContext.Provider>
+          {adr.title ?? adr?.name.replace(/\.md$/, '')}
         </ListRow>
       ))}
     </List>
