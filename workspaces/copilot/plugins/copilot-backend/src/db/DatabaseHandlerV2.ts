@@ -61,8 +61,11 @@ export class DatabaseHandlerV2 {
     await batchInsertInChunks(rows, 100, async chunk => {
       await this.db<V2DailyTotal>('copilot_daily_totals')
         .insert(chunk)
+        // Merge `total_ai_credits_used` on conflict (rather than ignoring)
+        // so that re-ingesting a day that was already stored before this
+        // column existed backfills the new metric in place.
         .onConflict(['day', 'metrics_type', 'entity_id', 'team_slug'])
-        .ignore();
+        .merge(['total_ai_credits_used']);
     });
   }
 
@@ -183,7 +186,20 @@ export class DatabaseHandlerV2 {
       await this.db<V2MetricsByCliRow>('copilot_metrics_by_cli')
         .insert(chunk)
         .onConflict(['day', 'metrics_type', 'entity_id', 'team_slug'])
-        .ignore();
+        // Merge (rather than ignore) on conflict so that re-ingesting a day
+        // updates any stale/zeroed row already stored for that key — e.g.
+        // rows written before the `output_tokens_sum`/`prompt_tokens_sum`
+        // columns were widened to `bigint` (see
+        // 202608240000_widen_cli_token_sum_columns.js), which would
+        // otherwise be silently skipped forever by `.ignore()`.
+        .merge([
+          'prompt_count',
+          'request_count',
+          'session_count',
+          'avg_tokens_per_request',
+          'output_tokens_sum',
+          'prompt_tokens_sum',
+        ]);
     });
   }
 
@@ -195,8 +211,11 @@ export class DatabaseHandlerV2 {
     await batchInsertInChunks(rows, 100, async chunk => {
       await this.db<V2UserMetricRow>('copilot_user_metrics')
         .insert(chunk)
+        // Merge `ai_credits_used` on conflict (rather than ignoring) so that
+        // re-ingesting a day that was already stored before this column
+        // existed backfills the new metric in place.
         .onConflict(['day', 'metrics_type', 'entity_id', 'user_id'])
-        .ignore();
+        .merge(['ai_credits_used']);
     });
   }
 
