@@ -19,7 +19,10 @@ import {
   FetchApi,
   ConfigApi,
 } from '@backstage/core-plugin-api';
-import { ProjectReferenceWithSlug } from '../utils/getAnnotationFromEntity';
+import {
+  ProjectReference,
+  ProjectReferenceWithSlug,
+} from '../utils/getAnnotationFromEntity';
 
 export type {
   ProjectReference,
@@ -64,6 +67,7 @@ export type OctopusLinks = {
 
 /** @public */
 export type OctopusProject = {
+  Id: string;
   Name: string;
   Slug: string;
   Links: OctopusLinks;
@@ -125,7 +129,15 @@ export class OctopusDeployClient implements OctopusDeployApi {
     projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression> {
-    const url = await this.getProgressionApiUrl(opts);
+    // Octopus's /progression sub-resource only accepts the numeric project
+    // ID, not the project slug, so slug references must be resolved first.
+    const projectReference = await this.resolveProjectIdReference(
+      opts.projectReference,
+    );
+    const url = await this.getProgressionApiUrl({
+      projectReference,
+      releaseHistoryCount: opts.releaseHistoryCount,
+    });
     return this.fetchAndHandleErrors(url);
   }
 
@@ -134,6 +146,17 @@ export class OctopusDeployClient implements OctopusDeployApi {
   ): Promise<OctopusProject> {
     const url = await this.getProjectApiUrl(projectReference);
     return this.fetchAndHandleErrors(url);
+  }
+
+  private async resolveProjectIdReference(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<ProjectReference> {
+    if ('projectId' in projectReference) {
+      return projectReference;
+    }
+
+    const project = await this.getProjectInfo(projectReference);
+    return { projectId: project.Id, spaceId: projectReference.spaceId };
   }
 
   async getProjectGroups(): Promise<OctopusProjectGroup[]> {

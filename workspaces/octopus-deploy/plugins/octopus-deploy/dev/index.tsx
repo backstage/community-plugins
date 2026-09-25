@@ -106,6 +106,7 @@ class MockOctopusDeployApiClient implements OctopusDeployApi {
   }
   async getProjectInfo(_: ProjectReferenceWithSlug): Promise<OctopusProject> {
     return {
+      Id: 'Projects-123',
       Name: 'Backstage',
       Slug: 'backstage',
       Links: {
