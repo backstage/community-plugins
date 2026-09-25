@@ -32,7 +32,7 @@ export function useProject(
 
   const { value, loading, error } = useAsync(() => {
     return api.getProjectInfo(projectReference);
-  }, [api, projectReference]);
+  }, [api, projectReference.projectId, projectReference.projectSlug, projectReference.spaceId]);
 
   return {
     project: value,
