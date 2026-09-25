@@ -16,6 +16,7 @@
 
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import userEvent from '@testing-library/user-event';
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
 import { FeedbackResponseTable } from './FeedbackResponseTable';
 
@@ -86,5 +87,16 @@ describe('FeedbackResponseTable', () => {
   it('renders a custom title correctly', async () => {
     const rendered = await render({ title: 'Custom Title' });
     expect(rendered.getByText('Custom Title')).toBeInTheDocument();
+  });
+
+  it('filters responses by user', async () => {
+    const rendered = await render();
+    await userEvent.type(
+      rendered.getByRole('searchbox', { name: 'Search feedback responses' }),
+      'bar',
+    );
+
+    expect(rendered.getByText('bar')).toBeInTheDocument();
+    expect(rendered.queryByText('foo')).not.toBeInTheDocument();
   });
 });

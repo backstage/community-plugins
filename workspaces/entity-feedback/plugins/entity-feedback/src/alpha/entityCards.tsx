@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { InfoCard } from '@backstage/core-components';
+import { Card, CardBody, CardHeader } from '@backstage/ui';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { EntityCardBlueprint } from '@backstage/plugin-catalog-react/alpha';
@@ -55,13 +55,16 @@ export const entityRatingsButtonsCard = EntityCardBlueprint.makeWithOverrides({
             ? LikeDislikeButtons
             : StarredRatingButtons;
         return (
-          <InfoCard title={title}>
-            <Buttons
-              requestResponse={requestResponse}
-              feedbackDialogTitle={dialogTitle}
-              feedbackDialogResponses={dialogResponses}
-            />
-          </InfoCard>
+          <Card>
+            <CardHeader>{title}</CardHeader>
+            <CardBody>
+              <Buttons
+                requestResponse={requestResponse}
+                feedbackDialogTitle={dialogTitle}
+                feedbackDialogResponses={dialogResponses}
+              />
+            </CardBody>
+          </Card>
         );
       },
     });

@@ -52,7 +52,14 @@ Install this plugin:
 
 ```bash
 # From your Backstage root directory
-yarn --cwd packages/app add @backstage-community/plugin-entity-feedback
+yarn --cwd packages/app add @backstage-community/plugin-entity-feedback @backstage/ui
+```
+
+Import the Backstage UI stylesheet once in your app's entry point (for example,
+`packages/app/src/index.tsx`):
+
+```tsx
+import '@backstage/ui/css/styles.css';
 ```
 
 ### Entity Pages
