@@ -15,15 +15,9 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import {
-  octopusDeployApiRef,
-  OctopusProject,
-  ProjectReference,
-} from '../api';
+import { octopusDeployApiRef, OctopusProject, ProjectReference } from '../api';
 
-export function useProject(
-  projectReference: ProjectReference,
-): {
+export function useProject(projectReference: ProjectReference): {
   project?: OctopusProject;
   loading: boolean;
   error?: Error;

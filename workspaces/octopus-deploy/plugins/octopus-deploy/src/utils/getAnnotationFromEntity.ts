@@ -28,7 +28,8 @@ export function getProjectReferenceAnnotationFromEntity(
   entity: Entity,
 ): ProjectReference {
   const annotations = entity.metadata.annotations;
-  const projectIdAnnotation = annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION];
+  const projectIdAnnotation =
+    annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION];
   const projectSlugAnnotation =
     annotations?.[OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION];
 
@@ -53,7 +54,9 @@ function parseProjectReference(
   const spaceId =
     referencedProject.length === 2 ? referencedProject[0] : undefined;
   const projectIdentifier =
-    referencedProject.length === 2 ? referencedProject[1] : referencedProject[0];
+    referencedProject.length === 2
+      ? referencedProject[1]
+      : referencedProject[0];
 
   if (referenceType === 'projectId') {
     return spaceId
