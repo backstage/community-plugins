@@ -24,7 +24,8 @@ export const isOctopusDeployAvailable: (entity: Entity) => boolean;
 export const OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION = 'octopus.com/project-id';
 
 // @public (undocumented)
-export const OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION = 'octopus.com/project-slug';
+export const OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION =
+  'octopus.com/project-slug';
 
 // @public (undocumented)
 export interface OctopusDeployApi {

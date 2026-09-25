@@ -21,6 +21,8 @@ import {
 } from '@backstage/core-plugin-api';
 import { ProjectReference } from '../utils/getAnnotationFromEntity';
 
+export type { ProjectReference } from '../utils/getAnnotationFromEntity';
+
 /** @public */
 export type OctopusProgression = {
   Environments: OctopusEnvironment[];
@@ -174,12 +176,20 @@ export class OctopusDeployClient implements OctopusDeployApi {
 
   private async getProjectApiUrl(projectReference: ProjectReference) {
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
+    const projectIdentifier =
+      'projectId' in projectReference
+        ? projectReference.projectId
+        : projectReference.projectSlug;
+    if (!projectIdentifier) {
+      throw new Error('A project ID or slug is required');
+    }
+
     if (projectReference.spaceId !== undefined)
       return `${proxyUrl}${this.proxyPathBase}/${encodeURIComponent(
         projectReference.spaceId,
-      )}/projects/${encodeURIComponent(projectReference.projectId)}`;
+      )}/projects/${encodeURIComponent(projectIdentifier)}`;
     return `${proxyUrl}${this.proxyPathBase}/projects/${encodeURIComponent(
-      projectReference.projectId,
+      projectIdentifier,
     )}`;
   }
 
