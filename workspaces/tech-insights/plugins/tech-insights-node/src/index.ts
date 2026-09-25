@@ -23,3 +23,8 @@ export {
   techInsightsServiceRef,
   type TechInsightsService,
 } from './techInsightsService';
+
+export {
+  techInsightsFactInsertServiceRef,
+  type TechInsightsFactInsertService,
+} from './techInsightsFactInsertService';
