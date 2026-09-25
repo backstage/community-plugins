@@ -59,7 +59,7 @@
     "@backstage/filter-predicates": "^0.1.5",
     "@backstage/frontend-plugin-api": "^0.18.1",
     "@backstage/plugin-catalog-react": "^3.2.3",
-    "@backstage/ui": "^0.17.1",
+    "@backstage/ui": "^0.18.0",
     "@remixicon/react": "^4.6.0",
     "@types/react": "^18.0.0",
     "react-use": "^17.2.4",
