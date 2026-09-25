@@ -21,6 +21,7 @@ export {
 export type {
   JenkinsInfo,
   JenkinsInfoProvider,
+  JenkinsInfoProviderOptions,
   JenkinsInstanceConfig,
 } from './jenkinsInfoProvider';
 export * from './JenkinsBuilder';

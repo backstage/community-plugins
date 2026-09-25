@@ -79,6 +79,13 @@ For console output use \`jenkins:get-build-logs\`.
             .describe(
               'Full name of the Jenkins job, e.g. "my-folder/my-pipeline" or "my-folder/my-pipeline/main".',
             ),
+          instanceName: z
+            .string()
+            .min(1)
+            .optional()
+            .describe(
+              'Configured Jenkins instance that owns the job. Defaults to the entity default when omitted.',
+            ),
           buildNumber: z
             .number()
             .int()
@@ -164,6 +171,7 @@ For console output use \`jenkins:get-build-logs\`.
       const jenkinsInfo = await jenkinsInfoProvider.getInstance({
         entityRef,
         fullJobNames: [input.jobFullName],
+        instanceName: input.instanceName,
         credentials,
       });
 
