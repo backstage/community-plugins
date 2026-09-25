@@ -24,6 +24,9 @@ export const isOctopusDeployAvailable: (entity: Entity) => boolean;
 export const OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION = 'octopus.com/project-id';
 
 // @public (undocumented)
+export const OCTOPUS_DEPLOY_PROJECT_SLUG_ANNOTATION = 'octopus.com/project-slug';
+
+// @public (undocumented)
 export interface OctopusDeployApi {
   // (undocumented)
   getConfig(): Promise<OctopusPluginConfig>;
@@ -129,10 +132,17 @@ export type OctopusReleaseProgression = {
 };
 
 // @public (undocumented)
-export type ProjectReference = {
-  projectId: string;
-  spaceId?: string;
-};
+export type ProjectReference =
+  | {
+      projectId: string;
+      projectSlug?: never;
+      spaceId?: string;
+    }
+  | {
+      projectSlug: string;
+      projectId?: never;
+      spaceId?: string;
+    };
 
 // (No @packageDocumentation comment for this package)
 ```
