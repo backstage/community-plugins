@@ -19,7 +19,16 @@ import {
   FetchApi,
   ConfigApi,
 } from '@backstage/core-plugin-api';
-import { ProjectReference } from '../utils/getAnnotationFromEntity';
+import {
+  ProjectReference,
+  ProjectReferenceWithSlug,
+} from '../utils/getAnnotationFromEntity';
+
+export type {
+  ProjectReference,
+  ProjectReferenceWithSlug,
+  ProjectSlugReference,
+} from '../utils/getAnnotationFromEntity';
 
 /** @public */
 export type OctopusProgression = {
@@ -58,6 +67,10 @@ export type OctopusLinks = {
 
 /** @public */
 export type OctopusProject = {
+  // Optional to remain backwards compatible with existing implementers of
+  // OctopusDeployApi/OctopusProject. Populated by the real API response and
+  // required internally to resolve a project slug to its numeric ID.
+  Id?: string;
   Name: string;
   Slug: string;
   Links: OctopusLinks;
@@ -86,10 +99,12 @@ const WEB_UI_BASE_URL_CONFIG_KEY = 'octopusdeploy.webBaseUrl';
 /** @public */
 export interface OctopusDeployApi {
   getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression>;
-  getProjectInfo(projectReference: ProjectReference): Promise<OctopusProject>;
+  getProjectInfo(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<OctopusProject>;
   getProjectGroups(): Promise<OctopusProjectGroup[]>;
   getConfig(): Promise<OctopusPluginConfig>;
 }
@@ -100,6 +115,10 @@ export class OctopusDeployClient implements OctopusDeployApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly fetchApi: FetchApi;
   private readonly proxyPathBase: string;
+  private readonly projectInfoCache = new Map<
+    string,
+    Promise<OctopusProject>
+  >();
 
   constructor(options: {
     configApi: ConfigApi;
@@ -114,18 +133,64 @@ export class OctopusDeployClient implements OctopusDeployApi {
   }
 
   async getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression> {
-    const url = await this.getProgressionApiUrl(opts);
+    // Octopus's /progression sub-resource only accepts the numeric project
+    // ID, not the project slug, so slug references must be resolved first.
+    const projectReference = await this.resolveProjectIdReference(
+      opts.projectReference,
+    );
+    const url = await this.getProgressionApiUrl({
+      projectReference,
+      releaseHistoryCount: opts.releaseHistoryCount,
+    });
     return this.fetchAndHandleErrors(url);
   }
 
   async getProjectInfo(
-    projectReference: ProjectReference,
+    projectReference: ProjectReferenceWithSlug,
   ): Promise<OctopusProject> {
-    const url = await this.getProjectApiUrl(projectReference);
-    return this.fetchAndHandleErrors(url);
+    // Cache/dedupe by reference so that callers resolving the same project
+    // (e.g. useProject and getReleaseProgression's slug resolution) share a
+    // single in-flight/completed request instead of each firing their own.
+    const key = this.getProjectReferenceCacheKey(projectReference);
+    let promise = this.projectInfoCache.get(key);
+    if (!promise) {
+      promise = (async () => {
+        const url = await this.getProjectApiUrl(projectReference);
+        return this.fetchAndHandleErrors<OctopusProject>(url);
+      })();
+      this.projectInfoCache.set(key, promise);
+      // Don't cache failures, so a later retry can succeed.
+      promise.catch(() => this.projectInfoCache.delete(key));
+    }
+    return promise;
+  }
+
+  private getProjectReferenceCacheKey(
+    projectReference: ProjectReferenceWithSlug,
+  ): string {
+    const spaceId = projectReference.spaceId ?? '';
+    return 'projectId' in projectReference
+      ? `id:${spaceId}:${projectReference.projectId}`
+      : `slug:${spaceId}:${projectReference.projectSlug}`;
+  }
+
+  private async resolveProjectIdReference(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<ProjectReference> {
+    if ('projectId' in projectReference) {
+      return projectReference;
+    }
+
+    const project = await this.getProjectInfo(projectReference);
+    if (!project.Id) {
+      throw new Error(
+        `Could not resolve numeric project ID for slug "${projectReference.projectSlug}"`,
+      );
+    }
+    return { projectId: project.Id, spaceId: projectReference.spaceId };
   }
 
   async getProjectGroups(): Promise<OctopusProjectGroup[]> {
@@ -160,7 +225,7 @@ export class OctopusDeployClient implements OctopusDeployApi {
   }
 
   private async getProgressionApiUrl(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }) {
     const queryParameters = new URLSearchParams({
@@ -172,14 +237,22 @@ export class OctopusDeployClient implements OctopusDeployApi {
     return `${projectUrl}/progression?${queryParameters}`;
   }
 
-  private async getProjectApiUrl(projectReference: ProjectReference) {
+  private async getProjectApiUrl(projectReference: ProjectReferenceWithSlug) {
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
+    const projectIdentifier =
+      'projectId' in projectReference
+        ? projectReference.projectId
+        : projectReference.projectSlug;
+    if (!projectIdentifier) {
+      throw new Error('A project ID or slug is required');
+    }
+
     if (projectReference.spaceId !== undefined)
       return `${proxyUrl}${this.proxyPathBase}/${encodeURIComponent(
         projectReference.spaceId,
-      )}/projects/${encodeURIComponent(projectReference.projectId)}`;
+      )}/projects/${encodeURIComponent(projectIdentifier)}`;
     return `${proxyUrl}${this.proxyPathBase}/projects/${encodeURIComponent(
-      projectReference.projectId,
+      projectIdentifier,
     )}`;
   }
 
