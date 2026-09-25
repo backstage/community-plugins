@@ -34,10 +34,12 @@ export interface OctopusDeployApi {
   // (undocumented)
   getProjectGroups(): Promise<OctopusProjectGroup[]>;
   // (undocumented)
-  getProjectInfo(projectReference: ProjectReference): Promise<OctopusProject>;
+  getProjectInfo(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<OctopusProject>;
   // (undocumented)
   getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression>;
 }
@@ -58,10 +60,12 @@ export class OctopusDeployClient implements OctopusDeployApi {
   // (undocumented)
   getProjectGroups(): Promise<OctopusProjectGroup[]>;
   // (undocumented)
-  getProjectInfo(projectReference: ProjectReference): Promise<OctopusProject>;
+  getProjectInfo(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<OctopusProject>;
   // (undocumented)
   getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression>;
 }
@@ -133,17 +137,19 @@ export type OctopusReleaseProgression = {
 };
 
 // @public (undocumented)
-export type ProjectReference =
-  | {
-      projectId: string;
-      projectSlug?: never;
-      spaceId?: string;
-    }
-  | {
-      projectSlug: string;
-      projectId?: never;
-      spaceId?: string;
-    };
+export type ProjectReference = {
+  projectId: string;
+  spaceId?: string;
+};
+
+// @public (undocumented)
+export type ProjectReferenceWithSlug = ProjectReference | ProjectSlugReference;
+
+// @public (undocumented)
+export type ProjectSlugReference = {
+  projectSlug: string;
+  spaceId?: string;
+};
 
 // (No @packageDocumentation comment for this package)
 ```

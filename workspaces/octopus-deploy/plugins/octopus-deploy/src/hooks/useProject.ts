@@ -15,23 +15,28 @@
  */
 import { useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { octopusDeployApiRef, OctopusProject, ProjectReference } from '../api';
+import {
+  octopusDeployApiRef,
+  OctopusProject,
+  ProjectReferenceWithSlug,
+} from '../api';
 
-export function useProject(projectReference: ProjectReference): {
+export function useProject(projectReference: ProjectReferenceWithSlug): {
   project?: OctopusProject;
   loading: boolean;
   error?: Error;
 } {
   const api = useApi(octopusDeployApiRef);
+  const projectId =
+    'projectId' in projectReference ? projectReference.projectId : undefined;
+  const projectSlug =
+    'projectSlug' in projectReference
+      ? projectReference.projectSlug
+      : undefined;
 
   const { value, loading, error } = useAsync(() => {
     return api.getProjectInfo(projectReference);
-  }, [
-    api,
-    projectReference.projectId,
-    projectReference.projectSlug,
-    projectReference.spaceId,
-  ]);
+  }, [api, projectId, projectSlug, projectReference.spaceId]);
 
   return {
     project: value,

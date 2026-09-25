@@ -20,13 +20,23 @@ import {
 } from '../constants';
 
 /** @public */
-export type ProjectReference =
-  | { projectId: string; projectSlug?: never; spaceId?: string }
-  | { projectSlug: string; projectId?: never; spaceId?: string };
+export type ProjectReference = {
+  projectId: string;
+  spaceId?: string;
+};
+
+/** @public */
+export type ProjectSlugReference = {
+  projectSlug: string;
+  spaceId?: string;
+};
+
+/** @public */
+export type ProjectReferenceWithSlug = ProjectReference | ProjectSlugReference;
 
 export function getProjectReferenceAnnotationFromEntity(
   entity: Entity,
-): ProjectReference {
+): ProjectReferenceWithSlug {
   const annotations = entity.metadata.annotations;
   const projectIdAnnotation =
     annotations?.[OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION];
@@ -49,7 +59,7 @@ export function getProjectReferenceAnnotationFromEntity(
 function parseProjectReference(
   annotation: string,
   referenceType: 'projectId' | 'projectSlug',
-): ProjectReference {
+): ProjectReferenceWithSlug {
   const referencedProject = annotation.split('/', 2);
   const spaceId =
     referencedProject.length === 2 ? referencedProject[0] : undefined;

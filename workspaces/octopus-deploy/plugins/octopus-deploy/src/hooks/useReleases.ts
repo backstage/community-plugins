@@ -19,11 +19,11 @@ import {
   octopusDeployApiRef,
   OctopusEnvironment,
   OctopusReleaseProgression,
-  ProjectReference,
+  ProjectReferenceWithSlug,
 } from '../api';
 
 export function useReleases(
-  projectReference: ProjectReference,
+  projectReference: ProjectReferenceWithSlug,
   releaseHistoryCount: number,
 ): {
   environments?: OctopusEnvironment[];
@@ -32,6 +32,12 @@ export function useReleases(
   error?: Error;
 } {
   const api = useApi(octopusDeployApiRef);
+  const projectId =
+    'projectId' in projectReference ? projectReference.projectId : undefined;
+  const projectSlug =
+    'projectSlug' in projectReference
+      ? projectReference.projectSlug
+      : undefined;
 
   const { value, loading, error } = useAsync(() => {
     return api.getReleaseProgression({
@@ -40,8 +46,8 @@ export function useReleases(
     });
   }, [
     api,
-    projectReference.projectId,
-    projectReference.projectSlug,
+    projectId,
+    projectSlug,
     projectReference.spaceId,
     releaseHistoryCount,
   ]);

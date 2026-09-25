@@ -19,9 +19,13 @@ import {
   FetchApi,
   ConfigApi,
 } from '@backstage/core-plugin-api';
-import { ProjectReference } from '../utils/getAnnotationFromEntity';
+import { ProjectReferenceWithSlug } from '../utils/getAnnotationFromEntity';
 
-export type { ProjectReference } from '../utils/getAnnotationFromEntity';
+export type {
+  ProjectReference,
+  ProjectReferenceWithSlug,
+  ProjectSlugReference,
+} from '../utils/getAnnotationFromEntity';
 
 /** @public */
 export type OctopusProgression = {
@@ -88,10 +92,12 @@ const WEB_UI_BASE_URL_CONFIG_KEY = 'octopusdeploy.webBaseUrl';
 /** @public */
 export interface OctopusDeployApi {
   getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression>;
-  getProjectInfo(projectReference: ProjectReference): Promise<OctopusProject>;
+  getProjectInfo(
+    projectReference: ProjectReferenceWithSlug,
+  ): Promise<OctopusProject>;
   getProjectGroups(): Promise<OctopusProjectGroup[]>;
   getConfig(): Promise<OctopusPluginConfig>;
 }
@@ -116,7 +122,7 @@ export class OctopusDeployClient implements OctopusDeployApi {
   }
 
   async getReleaseProgression(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression> {
     const url = await this.getProgressionApiUrl(opts);
@@ -124,7 +130,7 @@ export class OctopusDeployClient implements OctopusDeployApi {
   }
 
   async getProjectInfo(
-    projectReference: ProjectReference,
+    projectReference: ProjectReferenceWithSlug,
   ): Promise<OctopusProject> {
     const url = await this.getProjectApiUrl(projectReference);
     return this.fetchAndHandleErrors(url);
@@ -162,7 +168,7 @@ export class OctopusDeployClient implements OctopusDeployApi {
   }
 
   private async getProgressionApiUrl(opts: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }) {
     const queryParameters = new URLSearchParams({
@@ -174,7 +180,7 @@ export class OctopusDeployClient implements OctopusDeployApi {
     return `${projectUrl}/progression?${queryParameters}`;
   }
 
-  private async getProjectApiUrl(projectReference: ProjectReference) {
+  private async getProjectApiUrl(projectReference: ProjectReferenceWithSlug) {
     const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
     const projectIdentifier =
       'projectId' in projectReference

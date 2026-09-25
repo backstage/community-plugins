@@ -22,7 +22,11 @@ export {
 
 export * from './api';
 
-export type { ProjectReference } from './utils/getAnnotationFromEntity';
+export type {
+  ProjectReference,
+  ProjectReferenceWithSlug,
+  ProjectSlugReference,
+} from './utils/getAnnotationFromEntity';
 
 export {
   OCTOPUS_DEPLOY_PROJECT_ID_ANNOTATION,
