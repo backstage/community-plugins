@@ -280,6 +280,8 @@ export interface ReadmeConfig {
   project: string;
   // (undocumented)
   repo: string;
+  // (undocumented)
+  version?: string;
 }
 
 // @public (undocumented)
