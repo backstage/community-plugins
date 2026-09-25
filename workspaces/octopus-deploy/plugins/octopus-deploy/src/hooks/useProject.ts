@@ -26,7 +26,12 @@ export function useProject(projectReference: ProjectReference): {
 
   const { value, loading, error } = useAsync(() => {
     return api.getProjectInfo(projectReference);
-  }, [api, projectReference.projectId, projectReference.projectSlug, projectReference.spaceId]);
+  }, [
+    api,
+    projectReference.projectId,
+    projectReference.projectSlug,
+    projectReference.spaceId,
+  ]);
 
   return {
     project: value,
