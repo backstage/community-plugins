@@ -15,11 +15,21 @@
  */
 
 import { parseEntityRef } from '@backstage/catalog-model';
-import { ErrorPanel, SubvalueCell, Table } from '@backstage/core-components';
+import {
+  Alert,
+  Cell,
+  Flex,
+  SearchField,
+  Table,
+  Text,
+  useTable,
+} from '@backstage/ui';
+import type { ColumnConfig } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { EntityRatingsData } from '@backstage-community/plugin-entity-feedback-common';
 import useAsync from 'react-use/esm/useAsync';
+import { useMemo } from 'react';
 
 import { entityFeedbackApiRef } from '../../api';
 
@@ -29,6 +39,8 @@ interface FeedbackRatingsTableProps {
   ratingValues: string[];
   title?: string;
 }
+
+type RatingRow = EntityRatingsData & { id: string };
 
 export const FeedbackRatingsTable = (props: FeedbackRatingsTableProps) => {
   const {
@@ -55,68 +67,92 @@ export const FeedbackRatingsTable = (props: FeedbackRatingsTableProps) => {
     return feedbackApi.getOwnedRatings(ownerRef);
   }, [allEntities, feedbackApi, ownerRef]);
 
-  const columns = [
-    { title: 'Title', field: 'entityTitle', hidden: true, searchable: true },
+  const columns: ColumnConfig<RatingRow>[] = [
     {
-      title: 'Entity',
-      field: 'entityRef',
-      highlight: true,
-      customSort: (a: EntityRatingsData, b: EntityRatingsData) => {
-        const titleA = a.entityTitle ?? parseEntityRef(a.entityRef).name;
-        const titleB = b.entityTitle ?? parseEntityRef(b.entityRef).name;
-        return titleA.localeCompare(titleB);
-      },
-      render: (rating: EntityRatingsData) => {
+      id: 'entity',
+      label: 'Entity',
+      isRowHeader: true,
+      isSortable: true,
+      cell: rating => {
         const compoundRef = parseEntityRef(rating.entityRef);
         return (
-          <SubvalueCell
-            value={
+          <Cell>
+            <Flex direction="column" gap="0">
               <EntityRefLink
                 entityRef={rating.entityRef}
                 defaultKind={compoundRef.kind}
                 title={rating.entityTitle}
               />
-            }
-            subvalue={compoundRef.kind}
-          />
+              <Text variant="body-small" color="secondary">
+                {compoundRef.kind}
+              </Text>
+            </Flex>
+          </Cell>
         );
       },
     },
     ...ratingValues.map(ratingVal => ({
-      title: ratingVal,
-      field: `ratings.${ratingVal}`,
+      id: ratingVal,
+      label: ratingVal,
+      cell: (rating: RatingRow) => (
+        <Cell>{rating.ratings[ratingVal] ?? ''}</Cell>
+      ),
     })),
   ];
 
   // Exclude entities that don't have applicable ratings
-  const ratingsRows = ratings?.filter(r =>
-    Object.keys(r.ratings).some(v => ratingValues.includes(v)),
+  const ratingsRows = useMemo(
+    () =>
+      ratings
+        ?.filter(r =>
+          Object.keys(r.ratings).some(v => ratingValues.includes(v)),
+        )
+        .map(r => ({ ...r, id: r.entityRef })) ?? [],
+    [ratings, ratingValues],
   );
+  const { tableProps, search } = useTable({
+    mode: 'complete',
+    data: ratingsRows,
+    searchFn: (data, query) =>
+      data.filter(row =>
+        `${row.entityTitle ?? ''} ${row.entityRef}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      ),
+    sortFn: (data, sort) =>
+      [...data].sort((a, b) => {
+        const titleA = a.entityTitle ?? parseEntityRef(a.entityRef).name;
+        const titleB = b.entityTitle ?? parseEntityRef(b.entityRef).name;
+        return (
+          titleA.localeCompare(titleB) *
+          (sort.direction === 'ascending' ? 1 : -1)
+        );
+      }),
+    paginationOptions: { pageSize: 20, pageSizeOptions: [20, 50, 100] },
+  });
 
   if (error) {
     return (
-      <ErrorPanel
-        defaultExpanded
+      <Alert
+        status="danger"
+        icon
         title="Failed to load feedback ratings"
-        error={error}
+        description={error.message}
       />
     );
   }
 
   return (
-    <Table<EntityRatingsData>
-      columns={columns}
-      data={ratingsRows ?? []}
-      isLoading={loading}
-      options={{
-        emptyRowsWhenPaging: false,
-        loadingType: 'linear',
-        pageSize: 20,
-        pageSizeOptions: [20, 50, 100],
-        paging: true,
-        showEmptyDataSourceMessage: !loading,
-      }}
-      title={title}
-    />
+    <div>
+      <Flex align="center" justify="between">
+        <Text variant="title-small">{title}</Text>
+        <SearchField
+          aria-label="Search entity ratings"
+          value={search.value}
+          onChange={search.onChange}
+        />
+      </Flex>
+      <Table columnConfig={columns} {...tableProps} isPending={loading} />
+    </div>
   );
 };

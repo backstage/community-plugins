@@ -16,6 +16,7 @@
 
 import { entityRouteRef } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import userEvent from '@testing-library/user-event';
 import { EntityFeedbackApi, entityFeedbackApiRef } from '../../api';
 import { FeedbackRatingsTable } from './FeedbackRatingsTable';
 
@@ -112,5 +113,16 @@ describe('FeedbackRatingsTable', () => {
     expect(rendered.getByText('5')).toBeInTheDocument();
 
     expect(rendered.queryByText('Hello World')).toBeNull();
+  });
+
+  it('filters ratings by entity title', async () => {
+    const rendered = await render({ allEntities: true });
+    await userEvent.type(
+      rendered.getByRole('searchbox', { name: 'Search entity ratings' }),
+      'Foo',
+    );
+
+    expect(rendered.getByText('Foo Component')).toBeInTheDocument();
+    expect(rendered.queryByText('Bar Component')).not.toBeInTheDocument();
   });
 });

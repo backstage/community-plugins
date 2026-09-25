@@ -14,33 +14,30 @@
  * limitations under the License.
  */
 
-import { ErrorPanel, Table } from '@backstage/core-components';
+import {
+  Alert,
+  Cell,
+  Flex,
+  SearchField,
+  Table,
+  Tag,
+  TagGroup,
+  Text,
+  useTable,
+} from '@backstage/ui';
+import type { ColumnConfig } from '@backstage/ui';
 import { useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { FeedbackResponse } from '@backstage-community/plugin-entity-feedback-common';
-import Chip from '@material-ui/core/Chip';
-import { makeStyles } from '@material-ui/core/styles';
-import CheckIcon from '@material-ui/icons/Check';
-import Typography from '@material-ui/core/Typography';
+import { RiCheckLine } from '@remixicon/react';
+import { useMemo } from 'react';
 import useAsync from 'react-use/esm/useAsync';
 
 import { entityFeedbackApiRef } from '../../api';
 import { Comments } from '../FeedbackResponseDialog';
+import styles from './FeedbackResponseTable.module.css';
 
-type ResponseRow = Omit<FeedbackResponse, 'entityRef'>;
-
-const useStyles = makeStyles(theme => ({
-  consentCheck: {
-    color: theme.palette.status.ok,
-  },
-  listItem: {
-    padding: '0',
-    marginTop: theme.spacing(1),
-  },
-  list: {
-    paddingLeft: '0',
-  },
-}));
+type ResponseRow = Omit<FeedbackResponse, 'entityRef'> & { id: number };
 
 /**
  * @public
@@ -55,7 +52,6 @@ export interface FeedbackResponseTableProps {
  */
 export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
   const { entityRef, title = 'Entity Responses' } = props;
-  const classes = useStyles();
   const feedbackApi = useApi(entityFeedbackApiRef);
 
   const {
@@ -70,43 +66,67 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
     return feedbackApi.getResponses(entityRef);
   }, [entityRef, feedbackApi]);
 
-  const columns = [
+  const rows = useMemo(
+    () => (responses ?? []).map((response, id) => ({ ...response, id })),
+    [responses],
+  );
+  const { tableProps, search } = useTable({
+    mode: 'complete',
+    data: rows,
+    searchFn: (data, query) =>
+      data.filter(row =>
+        `${row.userRef} ${row.response} ${row.comments}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      ),
+    paginationOptions: { pageSize: 20, pageSizeOptions: [20, 50, 100] },
+  });
+
+  const columns: ColumnConfig<ResponseRow>[] = [
     {
-      title: 'User',
-      field: 'userRef',
-      width: '15%',
-      render: (response: ResponseRow) => (
-        <EntityRefLink entityRef={response.userRef} defaultKind="user" />
+      id: 'userRef',
+      label: 'User',
+      isRowHeader: true,
+      cell: response => (
+        <Cell>
+          <EntityRefLink entityRef={response.userRef} defaultKind="user" />
+        </Cell>
       ),
     },
     {
-      title: 'OK to contact?',
-      field: 'consent',
-      width: '10%',
-      render: (response: ResponseRow) =>
-        response.consent ? <CheckIcon className={classes.consentCheck} /> : '',
-    },
-    {
-      title: 'Responses',
-      field: 'response',
-      width: '35%',
-      render: (response: ResponseRow) => (
-        <>
-          {(response.response || '')
-            .split(',')
-            .map((v: string) => v.trim()) // removes whitespace
-            .filter(Boolean) // removes accidental empty entries
-            .map((res: string) => (
-              <Chip key={res} size="small" label={res} />
-            ))}
-        </>
+      id: 'consent',
+      label: 'OK to contact?',
+      cell: response => (
+        <Cell>
+          {response.consent && (
+            <RiCheckLine className={styles.consentCheck} aria-label="Yes" />
+          )}
+        </Cell>
       ),
     },
     {
-      title: 'Comments',
-      field: 'comments',
-      width: '40%',
-      render: (response: ResponseRow) => {
+      id: 'response',
+      label: 'Responses',
+      cell: response => (
+        <Cell>
+          <TagGroup>
+            {(response.response || '')
+              .split(',')
+              .map((v: string) => v.trim()) // removes whitespace
+              .filter(Boolean) // removes accidental empty entries
+              .map((res: string) => (
+                <Tag key={res} size="small">
+                  {res}
+                </Tag>
+              ))}
+          </TagGroup>
+        </Cell>
+      ),
+    },
+    {
+      id: 'comments',
+      label: 'Comments',
+      cell: response => {
         // Check if comment is a stringified object
         let parsedComment;
         try {
@@ -117,27 +137,27 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
           parsedComment = response.comments;
         }
         return (
-          <div>
+          <Cell>
             {typeof parsedComment === 'object' ? (
-              <ul className={classes.list}>
+              <ul className={styles.list}>
                 {Object.entries<string>(parsedComment.responseComments)?.map(
                   ([key, value]) => (
-                    <li key={key} className={classes.listItem}>
+                    <li key={key} className={styles.listItem}>
                       <strong>{key}:</strong> {value}
                     </li>
                   ),
                 )}
                 {parsedComment.additionalComments && (
-                  <li className={classes.listItem}>
+                  <li className={styles.listItem}>
                     <strong>additional:</strong>{' '}
                     {parsedComment.additionalComments}
                   </li>
                 )}
               </ul>
             ) : (
-              <Typography>{parsedComment}</Typography>
+              <Text>{parsedComment}</Text>
             )}
-          </div>
+          </Cell>
         );
       },
     },
@@ -145,28 +165,26 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
 
   if (error) {
     return (
-      <ErrorPanel
-        defaultExpanded
+      <Alert
+        status="danger"
+        icon
         title="Failed to load feedback responses"
-        error={error}
+        description={error.message}
       />
     );
   }
 
   return (
-    <Table<ResponseRow>
-      columns={columns}
-      data={(responses ?? []) as ResponseRow[]}
-      isLoading={loading}
-      options={{
-        emptyRowsWhenPaging: false,
-        loadingType: 'linear',
-        pageSize: 20,
-        pageSizeOptions: [20, 50, 100],
-        paging: true,
-        showEmptyDataSourceMessage: !loading,
-      }}
-      title={title}
-    />
+    <div>
+      <Flex align="center" justify="between">
+        <Text variant="title-small">{title}</Text>
+        <SearchField
+          aria-label="Search feedback responses"
+          value={search.value}
+          onChange={search.onChange}
+        />
+      </Flex>
+      <Table columnConfig={columns} {...tableProps} isPending={loading} />
+    </div>
   );
 };

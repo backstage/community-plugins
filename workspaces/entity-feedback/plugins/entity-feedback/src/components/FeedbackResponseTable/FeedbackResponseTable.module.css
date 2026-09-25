@@ -1,0 +1,15 @@
+@layer components {
+  .consentCheck {
+    color: var(--bui-fg-success);
+  }
+
+  .list {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .listItem {
+    margin-top: var(--bui-space-2);
+  }
+}
