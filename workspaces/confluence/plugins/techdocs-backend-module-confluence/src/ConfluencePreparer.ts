@@ -46,6 +46,7 @@ export interface ConfluenceConfig {
     parallel: boolean;
     maxDepth: number;
   };
+  keepDataImages: boolean;
 }
 
 /**
@@ -276,6 +277,8 @@ export class ConfluencePreparer implements PreparerBase {
           instanceConfig.getOptionalBoolean('pageTree.parallel') ?? true,
         maxDepth: instanceConfig.getOptionalNumber('pageTree.maxDepth') ?? 0,
       },
+      keepDataImages:
+        instanceConfig.getOptionalBoolean('keepDataImages') ?? false,
     };
   }
 
@@ -384,6 +387,7 @@ export class ConfluencePreparer implements PreparerBase {
     const markdown = this.convertHtmlToMarkdown(
       page.body.export_view.value,
       pathPrefix === '' ? page.title : undefined, // Only remove title for root page
+      instanceConfig.keepDataImages,
     );
 
     // Fetch and process attachments for this page
@@ -699,9 +703,13 @@ export class ConfluencePreparer implements PreparerBase {
     return attachments;
   }
 
-  private convertHtmlToMarkdown(html: string, pageTitle?: string): string {
+  private convertHtmlToMarkdown(
+    html: string,
+    pageTitle?: string,
+    keepDataImages = false,
+  ): string {
     let markdown = NodeHtmlMarkdown.translate(html, {
-      keepDataImages: false,
+      keepDataImages,
       useLinkReferenceDefinitions: false,
       useInlineLinks: true,
     });
