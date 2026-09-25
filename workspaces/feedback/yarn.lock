@@ -1446,8 +1446,8 @@ __metadata:
     "@backstage/plugin-permission-common": "npm:^0.9.9"
     "@backstage/plugin-permission-node": "npm:^0.11.2"
     "@types/express": "npm:*"
-    "@types/nodemailer": "npm:8.0.1"
-    "@types/supertest": "npm:7.2.1"
+    "@types/nodemailer": "npm:^8.0.1"
+    "@types/supertest": "npm:^7.2.1"
     axios: "npm:^1.6.4"
     express: "npm:^4.17.1"
     express-promise-router: "npm:^4.1.0"
@@ -1495,7 +1495,7 @@ __metadata:
     "@one-platform/opc-feedback": "npm:0.2.3-alpha"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:14.3.1"
-    "@testing-library/user-event": "npm:14.6.6"
+    "@testing-library/user-event": "npm:^14.6.6"
     "@types/luxon": "npm:^3"
     axios: "npm:^1.6.4"
     luxon: "npm:^3.5.0"
@@ -8191,7 +8191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.6.6":
+"@testing-library/user-event@npm:^14.6.6":
   version: 14.6.6
   resolution: "@testing-library/user-event@npm:14.6.6"
   peerDependencies:
@@ -8668,7 +8668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:8.0.1":
+"@types/nodemailer@npm:^8.0.1":
   version: 8.0.1
   resolution: "@types/nodemailer@npm:8.0.1"
   dependencies:
@@ -8907,7 +8907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:7.2.1":
+"@types/supertest@npm:^7.2.1":
   version: 7.2.1
   resolution: "@types/supertest@npm:7.2.1"
   dependencies:
