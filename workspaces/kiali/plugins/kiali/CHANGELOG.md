@@ -1,5 +1,18 @@
 # @backstage-community/plugin-kiali
 
+## 1.52.0
+
+### Minor Changes
+
+- 6b28131: Dependency upgrade
+
+### Patch Changes
+
+- d9fdc6e: Updated dependency `cytoscape` to `3.34.1`.
+- 14363b2: Updated dependency `jest-canvas-mock` to `2.5.8`.
+- Updated dependencies [6b28131]
+  - @backstage-community/plugin-kiali-react@0.8.0
+
 ## 1.51.2
 
 ### Patch Changes
