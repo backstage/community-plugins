@@ -462,6 +462,51 @@ describe('DefaultSonarqubeInfoProvider', () => {
       });
     });
 
+    it('Requests the hotspot count and the technical debt when supported', async () => {
+      setupComponentHandler();
+      server.use(
+        rest.get(`${MOCK_BASE_URL}/api/metrics/search`, (req, res, ctx) => {
+          checkAuthToken(req);
+          return res(
+            ctx.json({
+              total: 2,
+              metrics: [{ key: 'security_hotspots' }, { key: 'sqale_index' }],
+            }),
+          );
+        }),
+        rest.get(`${MOCK_BASE_URL}/api/measures/component`, (req, res, ctx) => {
+          checkAuthToken(req);
+          expect(req.url.searchParams.toString()).toBe(
+            `component=${DUMMY_COMPONENT_KEY}&metricKeys=security_hotspots%2Csqale_index`,
+          );
+          return res(
+            ctx.json({
+              component: {
+                measures: [
+                  { metric: 'security_hotspots', value: '12' },
+                  { metric: 'sqale_index', value: '2640' },
+                ],
+              },
+            }),
+          );
+        }),
+      );
+
+      const provider = configureProvider(DUMMY_SIMPLE_CONFIG_FOR_PROVIDER);
+      expect(
+        await provider.getFindings({
+          componentKey: DUMMY_COMPONENT_KEY,
+          instanceName: 'default',
+        }),
+      ).toEqual({
+        analysisDate: DUMMY_ANALYSIS_DATE,
+        measures: [
+          { metric: 'security_hotspots', value: '12' },
+          { metric: 'sqale_index', value: '2640' },
+        ],
+      });
+    });
+
     it('Uses Bearer auth when defined', async () => {
       server.use(
         rest.get(`${MOCK_BASE_URL}/api/components/show`, (req, res, ctx) => {

@@ -22,6 +22,7 @@ import {
   sonarQubeApiRef,
   SONARQUBE_PROJECT_KEY_ANNOTATION,
   isSonarQubeAvailable,
+  useProjectInfo,
 } from '@backstage-community/plugin-sonarqube-react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -69,6 +70,7 @@ export const SonarQubeCard = (props: {
   const { entity } = useEntity();
   const sonarQubeApi = useApi(sonarQubeApiRef);
   const { t } = useTranslationRef(sonarqubeTranslationRef);
+  const { projectInstance } = useProjectInfo(entity);
 
   const {
     value: summaryFinding,
@@ -137,6 +139,7 @@ export const SonarQubeCard = (props: {
               <CodeSmellsRatingCard
                 value={summaryFinding}
                 title={t('sonarQubeCard.codeSmellsRatingCardTitle')}
+                projectInstance={projectInstance}
               />
               <HotspotsReviewed
                 value={summaryFinding}
