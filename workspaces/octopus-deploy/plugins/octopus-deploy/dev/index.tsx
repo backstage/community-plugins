@@ -27,7 +27,7 @@ import {
   OctopusProject,
   OctopusProjectGroup,
 } from '../src/api';
-import { ProjectReference } from '../src';
+import { ProjectReferenceWithSlug } from '../src';
 import { TestApiProvider } from '@backstage/test-utils';
 
 const mockEntity: Entity = {
@@ -55,7 +55,7 @@ class MockOctopusDeployApiClient implements OctopusDeployApi {
   }
 
   async getReleaseProgression(_: {
-    projectReference: ProjectReference;
+    projectReference: ProjectReferenceWithSlug;
     releaseHistoryCount: number;
   }): Promise<OctopusProgression> {
     return {
@@ -104,7 +104,7 @@ class MockOctopusDeployApiClient implements OctopusDeployApi {
       ],
     };
   }
-  async getProjectInfo(_: ProjectReference): Promise<OctopusProject> {
+  async getProjectInfo(_: ProjectReferenceWithSlug): Promise<OctopusProject> {
     return {
       Name: 'Backstage',
       Slug: 'backstage',
