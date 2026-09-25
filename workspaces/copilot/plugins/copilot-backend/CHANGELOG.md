@@ -1,5 +1,19 @@
 # @backstage-community/plugin-copilot-backend
 
+## 1.2.0
+
+### Minor Changes
+
+- 61c542e: Backstage version bump to v1.53.0
+- 23dd212: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- fc7e7f4: Upgraded `zod` from v3 to v4.
+- Updated dependencies [61c542e]
+- Updated dependencies [23dd212]
+  - @backstage-community/plugin-copilot-common@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
