@@ -35,7 +35,7 @@ proxy:
         X-Octopus-ApiKey: ${OCTOPUS_API_KEY}
 ```
 
-Optionally, also add the following section to your `app-config.yaml` if you wish to enable linking to the Project Release page in the Octopus Deploy UI from the footer of the Backstage Release Tab[...]
+Optionally, also add the following section to your `app-config.yaml` if you wish to enable linking to the Project Release page in the Octopus Deploy UI from the footer of the Backstage Release Table. Typically this will be the server URL above without the `/api` postfix.
 
 ```yaml
 octopusdeploy:

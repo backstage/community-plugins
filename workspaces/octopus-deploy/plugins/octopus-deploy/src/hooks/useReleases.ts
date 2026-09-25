@@ -38,7 +38,13 @@ export function useReleases(
       projectReference,
       releaseHistoryCount,
     });
-  }, [api, projectReference, releaseHistoryCount]);
+  }, [
+    api,
+    projectReference.projectId,
+    projectReference.projectSlug,
+    projectReference.spaceId,
+    releaseHistoryCount,
+  ]);
 
   return {
     environments: value?.Environments,
