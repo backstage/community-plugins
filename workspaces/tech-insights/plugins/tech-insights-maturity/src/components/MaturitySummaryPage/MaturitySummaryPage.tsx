@@ -25,8 +25,9 @@ import { MaturitySummaryTable } from '../MaturitySummaryTable';
 import { getSubEntityFilter } from '../../helpers/utils';
 import { maturityApiRef } from '../../api';
 import { MaturityScorePage } from '../MaturityScorePage';
+import { MaturityDisplayProps } from '../../types';
 
-export const MaturitySummaryPage = () => {
+export const MaturitySummaryPage = ({ title }: MaturityDisplayProps) => {
   const { entity } = useEntity();
   const { entities } = useRelatedEntities(entity, getSubEntityFilter(entity));
 
@@ -54,10 +55,12 @@ export const MaturitySummaryPage = () => {
     return (
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <MaturityScorePage />
+          <MaturityScorePage title={title} />
         </Grid>
         <Grid item xs={12}>
-          {entities && <MaturitySummaryTable entities={entities} />}
+          {entities && (
+            <MaturitySummaryTable entities={entities} title={title} />
+          )}
         </Grid>
       </Grid>
     );
@@ -66,10 +69,10 @@ export const MaturitySummaryPage = () => {
   return (
     <Grid container spacing={1}>
       <Grid item md={3}>
-        <MaturityRankInfoCard summary={value} />
+        <MaturityRankInfoCard summary={value} title={title} />
       </Grid>
       <Grid item md={9}>
-        {entities && <MaturitySummaryTable entities={entities} />}
+        {entities && <MaturitySummaryTable entities={entities} title={title} />}
       </Grid>
     </Grid>
   );

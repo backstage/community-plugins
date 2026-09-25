@@ -88,7 +88,7 @@ describe('<MaturityOverviewCard />', () => {
     const { getByText, getByAltText, getAllByTestId } = await renderInTestApp(
       <TestApiProvider apis={[[maturityApiRef, scoringApi]]}>
         <EntityProvider entity={entity}>
-          <MaturitySummaryInfoCard />
+          <MaturitySummaryInfoCard title="Scorecards" />
         </EntityProvider>
       </TestApiProvider>,
       {
@@ -98,7 +98,7 @@ describe('<MaturityOverviewCard />', () => {
       },
     );
 
-    expect(getByText('Maturity')).toBeInTheDocument(); // card title
+    expect(getByText('Scorecards')).toBeInTheDocument(); // card title
     expect(getByText(/Bronze/)).toBeInTheDocument(); // icon logo for overall and Total area label
     expect(getByText(/Ownership/)).toBeInTheDocument(); // Area
     expect(getByAltText(/Silver/)).toBeInTheDocument(); // icon logo for ownership area

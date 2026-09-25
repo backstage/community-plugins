@@ -18,6 +18,35 @@ export interface Config {
   techInsights?: {
     maturity?: {
       /**
+       * Display name used for maturity cards, pages, tables, and extension
+       * titles. Defaults to `Maturity`.
+       *
+       * @visibility frontend
+       */
+      title?: string;
+
+      /**
+       * Customization for the help icon shown beside maturity titles.
+       *
+       * @visibility frontend
+       */
+      help?: {
+        /**
+         * Link opened by the help icon. Defaults to the plugin README.
+         *
+         * @visibility frontend
+         */
+        url?: string;
+
+        /**
+         * Tooltip displayed for the help icon.
+         *
+         * @visibility frontend
+         */
+        tooltip?: string;
+      };
+
+      /**
        * When enabled (true), maturity checks run directly against any entity
        * (System, Domain, Group, API, Resource, etc.) so that the entity has
        * its own maturity score. The Maturity Summary page additionally
