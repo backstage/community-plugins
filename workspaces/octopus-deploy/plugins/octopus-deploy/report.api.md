@@ -109,6 +109,7 @@ export type OctopusProgression = {
 
 // @public (undocumented)
 export type OctopusProject = {
+  Id: string;
   Name: string;
   Slug: string;
   Links: OctopusLinks;
