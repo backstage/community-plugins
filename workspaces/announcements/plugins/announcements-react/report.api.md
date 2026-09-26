@@ -14,6 +14,7 @@ import { Entity } from '@backstage/catalog-model';
 import { ErrorApi } from '@backstage/core-plugin-api';
 import { FetchApi } from '@backstage/core-plugin-api';
 import { IdentityApi } from '@backstage/core-plugin-api';
+import { StorageApi } from '@backstage/core-plugin-api';
 import { Tag } from '@backstage-community/plugin-announcements-common';
 import { TranslationRef } from '@backstage/frontend-plugin-api';
 
@@ -46,6 +47,8 @@ export interface AnnouncementsApi {
   deleteCategory(slug: string): Promise<void>;
   // (undocumented)
   deleteTag(slug: string): Promise<void>;
+  dismissAnnouncement(id: string): void;
+  isAnnouncementDismissed(id: string): boolean;
   // (undocumented)
   lastSeenDate(): DateTime;
   // (undocumented)
@@ -93,6 +96,10 @@ export class AnnouncementsClient implements AnnouncementsApi {
   // (undocumented)
   deleteTag(slug: string): Promise<void>;
   // (undocumented)
+  dismissAnnouncement(id: string): void;
+  // (undocumented)
+  isAnnouncementDismissed(id: string): boolean;
+  // (undocumented)
   lastSeenDate(): DateTime;
   // (undocumented)
   markLastSeenDate(date: DateTime): void;
@@ -111,6 +118,7 @@ export type AnnouncementsClientOptions = {
   identityApi: IdentityApi;
   errorApi: ErrorApi;
   fetchApi: FetchApi;
+  storageApi: StorageApi;
 };
 
 // @public
