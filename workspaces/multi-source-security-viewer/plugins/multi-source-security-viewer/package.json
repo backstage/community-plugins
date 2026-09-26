@@ -56,10 +56,10 @@
   },
   "dependencies": {
     "@aonic-ui/pipelines": "^3.1.1",
-    "@backstage-community/plugin-azure-devops": "^0.34.0",
-    "@backstage-community/plugin-azure-devops-common": "^0.26.0",
+    "@backstage-community/plugin-azure-devops": "^0.35.0",
+    "@backstage-community/plugin-azure-devops-common": "^0.27.0",
     "@backstage-community/plugin-github-actions": "^0.23.0",
-    "@backstage-community/plugin-jenkins": "^0.34.0",
+    "@backstage-community/plugin-jenkins": "^0.35.0",
     "@backstage-community/plugin-multi-source-security-viewer-common": "workspace:^",
     "@backstage/catalog-model": "^1.10.0",
     "@backstage/core-components": "^0.18.13",
