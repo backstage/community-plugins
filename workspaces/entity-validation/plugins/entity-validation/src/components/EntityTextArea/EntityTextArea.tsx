@@ -14,34 +14,13 @@
  * limitations under the License.
  */
 import { useMemo, useState } from 'react';
-import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box } from '@backstage/ui';
+import styles from './EntityTextArea.module.css';
 import CodeMirror from '@uiw/react-codemirror';
 import { showPanel } from '@codemirror/view';
 import { StreamLanguage } from '@codemirror/language';
 import { yaml as yamlSupport } from '@codemirror/legacy-modes/mode/yaml';
 import { useKeyboardEvent } from '@react-hookz/web';
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    minHeight: '400px',
-  },
-  codeMirror: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  infoPanel: {
-    color: theme.palette.info.main,
-    lineHeight: 2,
-    margin: theme.spacing(0, 1),
-  },
-}));
 
 type TemplateTextAreaProps = {
   catalogYaml: string;
@@ -54,7 +33,6 @@ export const EntityTextArea = ({
   onChange,
   onValidate,
 }: TemplateTextAreaProps) => {
-  const classes = useStyles();
   const [close, setClose] = useState(false);
 
   const panelExtension = useMemo(() => {
@@ -63,12 +41,12 @@ export const EntityTextArea = ({
     }
 
     const dom = document.createElement('div');
-    dom.classList.add(classes.infoPanel);
+    dom.classList.add(styles.infoPanel);
     dom.textContent =
       'To validate the provided entity descriptor YAML, click the "Validate" button or use "Ctrl + S" or "Ctrl + Enter"';
     dom.onclick = () => setClose(true);
     return showPanel.of(() => ({ dom, top: true }));
-  }, [classes, close]);
+  }, [close]);
 
   // Triggers a validation when Ctrl+S or Ctrl+Enter instead of default behavior
   useKeyboardEvent(
@@ -80,9 +58,9 @@ export const EntityTextArea = ({
   );
 
   return (
-    <Box className={classes.container}>
+    <Box className={styles.container}>
       <CodeMirror
-        className={classes.codeMirror}
+        className={styles.codeMirror}
         theme="dark"
         height="100%"
         extensions={[StreamLanguage.define(yamlSupport), panelExtension]}

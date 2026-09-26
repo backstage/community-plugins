@@ -15,16 +15,13 @@
  */
 
 import { useState } from 'react';
-
-import * as React from 'react';
 import { Content, Header, Page } from '@backstage/core-components';
 import { EntityTextArea } from '../EntityTextArea';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
+import { Box, Button, Flex, TextField } from '@backstage/ui';
 import { CatalogProcessorResult } from '../../types';
 import { parseEntityYaml } from '../../utils';
 import { EntityValidationOutput } from '../EntityValidationOutput';
+import styles from './EntityValidationPage.module.css';
 
 const EXAMPLE_CATALOG_INFO_YAML = `# Provide your entity descriptor YAML to validate its structure
 apiVersion: backstage.io/v1alpha1
@@ -69,64 +66,48 @@ export const EntityValidationContent = (props: {
   };
 
   return (
-    <Grid
-      container
+    <Flex
       direction="column"
-      style={{ height: '100%' }}
-      wrap="nowrap"
+      className={styles.mainLayout}
       data-testid="main-grid"
     >
       {contentHead}
 
       {!hideFileLocationField && (
-        <TextField
-          fullWidth
-          label="File Location"
-          margin="normal"
-          variant="outlined"
-          required
-          value={locationUrl}
-          placeholder={defaultLocation}
-          helperText="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
-          onChange={e => setLocationUrl(e.target.value)}
-        />
+        <Box className={styles.locationField}>
+          <TextField
+            isRequired
+            id="file-location"
+            label="File Location"
+            value={locationUrl}
+            placeholder={defaultLocation}
+            description="Present or future location of your entity descriptor YAML file. This is not the file being validated; this merely adds location annotations to the entity descriptor file being validated."
+            onChange={(newValue: string) => setLocationUrl(newValue)}
+          />
+        </Box>
       )}
 
-      <Grid container direction="row" style={{ height: '100%' }}>
-        <Grid item md={6} xs={12}>
-          <Grid
-            container
-            direction="column"
-            alignItems="flex-end"
-            style={{ height: '100%' }}
-            wrap="nowrap"
-          >
-            <Grid item style={{ width: '100%', flex: '1 1 auto' }}>
-              <EntityTextArea
-                onValidate={parseYaml}
-                onChange={(value: string) => setCatalogYaml(value)}
-                catalogYaml={catalogYaml}
-              />
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="primary" onClick={parseYaml}>
-                Validate
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item md={6} xs={12}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <EntityValidationOutput
-                processorResults={yamlFiles}
-                locationUrl={locationUrl}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+      <Flex className={styles.contentRow}>
+        <Flex direction="column" className={styles.leftColumn}>
+          <Box className={styles.editorContainer}>
+            <EntityTextArea
+              onValidate={parseYaml}
+              onChange={(value: string) => setCatalogYaml(value)}
+              catalogYaml={catalogYaml}
+            />
+          </Box>
+          <Button variant="primary" onClick={parseYaml}>
+            Validate
+          </Button>
+        </Flex>
+        <Box className={styles.rightColumn}>
+          <EntityValidationOutput
+            processorResults={yamlFiles}
+            locationUrl={locationUrl}
+          />
+        </Box>
+      </Flex>
+    </Flex>
   );
 };
 
