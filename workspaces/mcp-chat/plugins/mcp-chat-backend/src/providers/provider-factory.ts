@@ -134,6 +134,10 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       model: model,
       maxTokens: maxTokens,
       temperature: temperature,
+      pathOverrides: {
+        inference: providerConfig.getOptionalString('pathOverrides.inference'),
+        models: providerConfig.getOptionalString('pathOverrides.models'),
+      },
     },
 
     'openai-responses': {
@@ -143,6 +147,9 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       model: model,
       maxTokens: maxTokens,
       temperature: temperature,
+      pathOverrides: {
+        inference: providerConfig.getOptionalString('pathOverrides.inference'),
+      },
     },
 
     'azure-openai': {
@@ -153,6 +160,10 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       deploymentName: providerConfig.getOptionalString('deploymentName'),
       maxTokens: maxTokens,
       temperature: temperature,
+      pathOverrides: {
+        inference: providerConfig.getOptionalString('pathOverrides.inference'),
+        models: providerConfig.getOptionalString('pathOverrides.models'),
+      },
     },
 
     claude: {
@@ -164,6 +175,9 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       model: model,
       maxTokens: maxTokens,
       temperature: temperature,
+      pathOverrides: {
+        inference: providerConfig.getOptionalString('pathOverrides.inference'),
+      },
     },
 
     gemini: {
@@ -193,6 +207,10 @@ export function getProviderConfig(config: RootConfigService): ProviderConfig {
       model: model,
       maxTokens: maxTokens,
       temperature: temperature,
+      pathOverrides: {
+        inference: providerConfig.getOptionalString('pathOverrides.inference'),
+        models: providerConfig.getOptionalString('pathOverrides.models'),
+      },
     },
   };
 
