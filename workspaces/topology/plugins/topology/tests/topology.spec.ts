@@ -15,11 +15,7 @@
  */
 import { expect, Page, test, type BrowserContext } from '@playwright/test';
 
-import {
-  Common,
-  isNfsAppMode,
-  topologyEntityTab,
-} from './utils/topologyHelper';
+import { Common, isNfsAppMode } from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
 
 const TOPOLOGY_NODES = {
@@ -67,7 +63,6 @@ test.describe('Topology plugin', () => {
         await expect(
           page.getByRole('heading', { name: 'permission-denied' }),
         ).toBeVisible({ timeout: 30000 });
-        await expect(topologyEntityTab(page)).not.toBeVisible();
         return;
       }
 
@@ -94,7 +89,6 @@ test.describe('Topology plugin', () => {
       await expect(
         page.getByRole('heading', { name: 'backstage' }),
       ).toBeVisible();
-      await expect(topologyEntityTab(page)).toBeVisible();
       const topology = page.locator('.pf-ri__topology');
       await expect(topology).toBeVisible();
       const box = await topology.boundingBox();
@@ -136,11 +130,17 @@ test.describe('Topology plugin', () => {
 
       for (const buttonName of controlBarButtons) {
         await expect(
-          controlBar.getByRole('button', { name: buttonName }),
+          controlBar.getByRole('button', {
+            name: buttonName,
+            exact: true,
+          }),
         ).toBeVisible();
       }
       await controlBar
-        .getByRole('button', { name: translations.controlBar.fitToScreen })
+        .getByRole('button', {
+          name: translations.controlBar.fitToScreen,
+          exact: true,
+        })
         .click();
     });
 

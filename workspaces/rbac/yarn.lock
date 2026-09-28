@@ -1195,7 +1195,7 @@ __metadata:
     "@dagrejs/graphlib": "npm:^4.0.0"
     "@types/express": "npm:4.17.25"
     "@types/lodash": "npm:^4.14.151"
-    "@types/node": "npm:22.20.3"
+    "@types/node": "npm:22.20.4"
     "@types/supertest": "npm:7.2.1"
     casbin: "npm:^5.27.1"
     chokidar: "npm:^3.6.0"
@@ -1273,7 +1273,7 @@ __metadata:
     "@testing-library/react-hooks": "npm:8.0.1"
     "@testing-library/user-event": "npm:14.6.7"
     "@types/autosuggest-highlight": "npm:3.2.4"
-    "@types/node": "npm:22.20.3"
+    "@types/node": "npm:22.20.4"
     "@types/react": "npm:^18.3.11"
     "@types/react-dom": "npm:^18"
     autosuggest-highlight: "npm:^3.3.4"
@@ -8427,12 +8427,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:22.20.3, @types/node@npm:>=13.7.0":
-  version: 22.20.3
-  resolution: "@types/node@npm:22.20.3"
+"@types/node@npm:*, @types/node@npm:22.20.4, @types/node@npm:>=13.7.0":
+  version: 22.20.4
+  resolution: "@types/node@npm:22.20.4"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/7e7d9107e3ee758f7a4e797384487e762e058676756417f22f4351ce90c5baf8d07158b1686b497b1304836a060c70aa0b405cacc88803bce577393bff3714d4
+  checksum: 10/41d5fc77a12371dd24cd4fc533aa05cec256f88d9fce0d9fde1431bdc0b54ca52af3e61c34e9c47d7a74e000b7cf5fa5f16f14ed6731fdd03e1122adc7834cb5
   languageName: node
   linkType: hard
 

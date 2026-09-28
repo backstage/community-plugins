@@ -1,5 +1,11 @@
 # @backstage-community/plugin-servicenow
 
+## 1.15.3
+
+### Patch Changes
+
+- 9eec65d: Updated included translations for Japan/日本語.
+
 ## 1.15.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage-community/plugin-nexus-repository-manager
 
+## 1.27.4
+
+### Patch Changes
+
+- 97d1969: Assign the Build Artifacts entity content to the development group.
+
 ## 1.27.3
 
 ### Patch Changes

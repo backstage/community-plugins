@@ -23,6 +23,7 @@ import PipelineRunList from './PipelineRunList';
 import { renderInTestApp } from '@backstage/test-utils';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
+  ...jest.requireActual('@backstage/plugin-catalog-react'),
   useEntity: () => ({
     entity: {
       metadata: {

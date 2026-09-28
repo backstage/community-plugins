@@ -15,17 +15,17 @@
  */
 import { InputError } from '@backstage/errors';
 import { NextFunction, Request, Response } from 'express';
-import { ZodSchema } from 'zod';
+import { ZodType } from 'zod';
 
-export function validateQuery(schema: ZodSchema) {
+export function validateQuery(schema: ZodType) {
   return (req: Request, _res: Response, next: NextFunction) => {
     const { error, data } = schema.safeParse(req.query);
 
     if (error) {
-      return next(new InputError(error.errors[0].message, error));
+      return next(new InputError(error.issues[0].message, error));
     }
 
-    req.query = data;
+    req.query = data as Request['query'];
 
     return next();
   };
