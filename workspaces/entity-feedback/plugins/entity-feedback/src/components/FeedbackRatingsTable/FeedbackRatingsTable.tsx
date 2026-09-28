@@ -94,6 +94,7 @@ export const FeedbackRatingsTable = (props: FeedbackRatingsTableProps) => {
     ...ratingValues.map(ratingVal => ({
       id: ratingVal,
       label: ratingVal,
+      isSortable: true,
       cell: (rating: RatingRow) => (
         <Cell>{rating.ratings[ratingVal] ?? ''}</Cell>
       ),
@@ -121,12 +122,17 @@ export const FeedbackRatingsTable = (props: FeedbackRatingsTableProps) => {
       ),
     sortFn: (data, sort) =>
       [...data].sort((a, b) => {
-        const titleA = a.entityTitle ?? parseEntityRef(a.entityRef).name;
-        const titleB = b.entityTitle ?? parseEntityRef(b.entityRef).name;
-        return (
-          titleA.localeCompare(titleB) *
-          (sort.direction === 'ascending' ? 1 : -1)
-        );
+        let comparison: number;
+        if (sort.column === 'entity') {
+          comparison = (
+            a.entityTitle ?? parseEntityRef(a.entityRef).name
+          ).localeCompare(b.entityTitle ?? parseEntityRef(b.entityRef).name);
+        } else {
+          const ratingA = a.ratings[String(sort.column)] ?? -Infinity;
+          const ratingB = b.ratings[String(sort.column)] ?? -Infinity;
+          comparison = ratingA === ratingB ? 0 : ratingA - ratingB;
+        }
+        return comparison * (sort.direction === 'ascending' ? 1 : -1);
       }),
     paginationOptions: { pageSize: 20, pageSizeOptions: [20, 50, 100] },
   });

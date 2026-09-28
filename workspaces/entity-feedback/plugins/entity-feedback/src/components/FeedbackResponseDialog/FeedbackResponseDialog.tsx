@@ -33,6 +33,7 @@ import {
   DialogBody,
   DialogFooter,
   DialogHeader,
+  DialogTrigger,
   Switch,
   TextAreaField,
 } from '@backstage/ui';
@@ -140,84 +141,85 @@ export const FeedbackResponseDialog = (props: FeedbackResponseDialogProps) => {
   ]);
 
   return (
-    <Dialog
+    <DialogTrigger
       isOpen={open}
-      isDismissable={!saving}
       onOpenChange={isOpen => !isOpen && !saving && onClose()}
     >
-      {saving && <Alert status="info" isPending title="Saving feedback" />}
-      <DialogHeader>{feedbackDialogTitle}</DialogHeader>
-      <DialogBody className={styles.body}>
-        <fieldset className={styles.responses} disabled={saving}>
-          <legend>Select all that apply</legend>
-          {feedbackDialogResponses.map((response: EntityFeedbackResponse) => (
-            <div key={response.id} className={styles.response}>
-              <Checkbox
-                isSelected={responseSelections[response.id]}
-                isDisabled={saving}
-                onChange={selected =>
-                  setResponseSelections(previous => ({
-                    ...previous,
-                    [response.id]: selected,
-                  }))
-                }
-              >
-                {response.label}
-              </Checkbox>
-              {responseSelections[response.id] && (
-                <TextAreaField
-                  data-testid={`feedback-response-dialog-comments-input-${response.id}`}
-                  label={`Comments about ${response.label}`}
+      <Dialog isDismissable={!saving}>
+        {saving && <Alert status="info" isPending title="Saving feedback" />}
+        <DialogHeader>{feedbackDialogTitle}</DialogHeader>
+        <DialogBody className={styles.body}>
+          <fieldset className={styles.responses} disabled={saving}>
+            <legend>Select all that apply</legend>
+            {feedbackDialogResponses.map((response: EntityFeedbackResponse) => (
+              <div key={response.id} className={styles.response}>
+                <Checkbox
+                  isSelected={responseSelections[response.id]}
                   isDisabled={saving}
-                  rows={2}
-                  value={comments.responseComments[response.id] || ''}
-                  onChange={value =>
-                    setComments(previous => ({
+                  onChange={selected =>
+                    setResponseSelections(previous => ({
                       ...previous,
-                      responseComments: {
-                        ...previous.responseComments,
-                        [response.id]: value,
-                      },
+                      [response.id]: selected,
                     }))
                   }
-                />
-              )}
-            </div>
-          ))}
-        </fieldset>
-        <TextAreaField
-          data-testid="feedback-response-dialog-comments-input"
-          label="Additional comments"
-          isDisabled={saving}
-          rows={2}
-          onChange={value =>
-            setComments(previous => ({
-              ...previous,
-              additionalComments: value,
-            }))
-          }
-          value={comments.additionalComments || ''}
-        />
-        <Switch
-          label="May we contact you about your feedback?"
-          isSelected={consent}
-          isDisabled={saving}
-          onChange={setConsent}
-        />
-      </DialogBody>
-      <DialogFooter className={styles.actions}>
-        <Button
-          variant="primary"
-          data-testid="feedback-response-dialog-submit-button"
-          isDisabled={saving}
-          onPress={saveResponse}
-        >
-          Submit
-        </Button>
-        <Button variant="secondary" isDisabled={saving} onPress={onClose}>
-          Close
-        </Button>
-      </DialogFooter>
-    </Dialog>
+                >
+                  {response.label}
+                </Checkbox>
+                {responseSelections[response.id] && (
+                  <TextAreaField
+                    data-testid={`feedback-response-dialog-comments-input-${response.id}`}
+                    label={`Comments about ${response.label}`}
+                    isDisabled={saving}
+                    rows={2}
+                    value={comments.responseComments[response.id] || ''}
+                    onChange={value =>
+                      setComments(previous => ({
+                        ...previous,
+                        responseComments: {
+                          ...previous.responseComments,
+                          [response.id]: value,
+                        },
+                      }))
+                    }
+                  />
+                )}
+              </div>
+            ))}
+          </fieldset>
+          <TextAreaField
+            data-testid="feedback-response-dialog-comments-input"
+            label="Additional comments"
+            isDisabled={saving}
+            rows={2}
+            onChange={value =>
+              setComments(previous => ({
+                ...previous,
+                additionalComments: value,
+              }))
+            }
+            value={comments.additionalComments || ''}
+          />
+          <Switch
+            label="May we contact you about your feedback?"
+            isSelected={consent}
+            isDisabled={saving}
+            onChange={setConsent}
+          />
+        </DialogBody>
+        <DialogFooter className={styles.actions}>
+          <Button
+            variant="primary"
+            data-testid="feedback-response-dialog-submit-button"
+            isDisabled={saving}
+            onPress={saveResponse}
+          >
+            Submit
+          </Button>
+          <Button variant="secondary" isDisabled={saving} onPress={onClose}>
+            Close
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };

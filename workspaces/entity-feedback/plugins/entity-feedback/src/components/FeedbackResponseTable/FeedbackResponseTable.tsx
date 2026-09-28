@@ -79,6 +79,16 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
           .toLowerCase()
           .includes(query.toLowerCase()),
       ),
+    sortFn: (data, sort) =>
+      [...data].sort((a, b) => {
+        const comparison =
+          sort.column === 'consent'
+            ? Number(Boolean(a.consent)) - Number(Boolean(b.consent))
+            : String(a[sort.column as keyof ResponseRow] ?? '').localeCompare(
+                String(b[sort.column as keyof ResponseRow] ?? ''),
+              );
+        return comparison * (sort.direction === 'ascending' ? 1 : -1);
+      }),
     paginationOptions: { pageSize: 20, pageSizeOptions: [20, 50, 100] },
   });
 
@@ -87,6 +97,7 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
       id: 'userRef',
       label: 'User',
       isRowHeader: true,
+      isSortable: true,
       cell: response => (
         <Cell>
           <EntityRefLink entityRef={response.userRef} defaultKind="user" />
@@ -96,6 +107,7 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
     {
       id: 'consent',
       label: 'OK to contact?',
+      isSortable: true,
       cell: response => (
         <Cell>
           {response.consent && (
@@ -107,6 +119,7 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
     {
       id: 'response',
       label: 'Responses',
+      isSortable: true,
       cell: response => (
         <Cell>
           <TagGroup>
@@ -126,6 +139,7 @@ export const FeedbackResponseTable = (props: FeedbackResponseTableProps) => {
     {
       id: 'comments',
       label: 'Comments',
+      isSortable: true,
       cell: response => {
         // Check if comment is a stringified object
         let parsedComment;
