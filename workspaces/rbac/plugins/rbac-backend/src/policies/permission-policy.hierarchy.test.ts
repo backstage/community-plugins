@@ -43,7 +43,6 @@ import {
   csvPermFile,
   mockAuthService,
   mockClientKnex,
-  pluginMetadataCollectorMock,
   roleMetadataStorageMock,
   catalogMock,
   mockUserInfoService,
@@ -54,7 +53,6 @@ import { BackstageRoleManager } from '../role-manager/role-manager';
 import { DefaultPermissionsReader } from '../default-permissions/default-permissions';
 import { EnforcerDelegate } from '../service/enforcer-delegate';
 import { MODEL } from '../service/permission-model';
-import { PluginPermissionMetadataCollector } from '../service/plugin-endpoints';
 import { RBACPermissionPolicy } from './permission-policy';
 import {
   clearAuditorMock,
@@ -1112,7 +1110,6 @@ async function newPermissionPolicy(
     enfDelegate,
     roleMock || roleMetadataStorageMock,
     mockClientKnex,
-    pluginMetadataCollectorMock as PluginPermissionMetadataCollector,
     mockUserInfoService,
     mockAuthService,
   );

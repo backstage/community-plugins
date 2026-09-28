@@ -23,7 +23,10 @@ import { InputError } from '@backstage/errors';
 import {
   PermissionActionValues,
   type PermissionAction,
+  type PermissionInfo,
   type RoleConditionalPolicyDecision,
+  isPermissionInfo,
+  permissionMappingAction,
 } from '@backstage-community/plugin-rbac-common';
 
 import { isPermissionAction } from '../helper';
@@ -91,7 +94,7 @@ function assertPositiveInteger(value: number, fieldName: string): void {
 }
 
 export function validateRoleCondition(
-  condition: RoleConditionalPolicyDecision<PermissionAction>,
+  condition: RoleConditionalPolicyDecision,
   limits?: Partial<ConditionValidationLimits>,
 ): void {
   const resolvedLimits = resolveConditionValidationLimits(limits ?? {});
@@ -120,34 +123,70 @@ export function validateRoleCondition(
       `'permissionMapping' must be non empty array in the role condition`,
     );
   }
+  const firstIsNamed = isPermissionInfo(condition.permissionMapping[0]);
   const maxDistinctPermissionActions = PermissionActionValues.length;
-  if (condition.permissionMapping.length > maxDistinctPermissionActions) {
+  const maxNamedPermissionEntries = 25;
+  const maxEntries = firstIsNamed
+    ? maxNamedPermissionEntries
+    : maxDistinctPermissionActions;
+  if (condition.permissionMapping.length > maxEntries) {
     throw new InputError(
-      `'permissionMapping' can have at most ${maxDistinctPermissionActions} items (one entry per distinct permission action)`,
+      `'permissionMapping' can have at most ${maxEntries} items`,
     );
   }
-  const nonActionValue = condition.permissionMapping.find(
-    action => !isPermissionAction(action),
-  );
-  if (nonActionValue) {
+  for (const entry of condition.permissionMapping) {
+    if (typeof entry !== 'string' && !isPermissionInfo(entry)) {
+      throw new InputError(
+        `'permissionMapping' entry must be an action string or {name: string, action: string}, got: ${JSON.stringify(entry)}`,
+      );
+    }
+    if (isPermissionInfo(entry) !== firstIsNamed) {
+      throw new InputError(
+        `'permissionMapping' must be either all action strings or all {name, action} objects, not a mix`,
+      );
+    }
+    if (isPermissionInfo(entry) && (!entry.name || entry.name.trim() === '')) {
+      throw new InputError(
+        `'permissionMapping' entry has empty permission name`,
+      );
+    }
+  }
+
+  const actions = condition.permissionMapping.map(permissionMappingAction);
+  const nonActionValue = actions.find(action => !isPermissionAction(action));
+  if (nonActionValue !== undefined) {
     throw new InputError(
       `'permissionMapping' array contains non action value: '${nonActionValue}'`,
     );
   }
 
-  const seenActions = new Set<PermissionAction>();
-  for (const action of condition.permissionMapping) {
-    if (seenActions.has(action)) {
-      throw new InputError(
-        `'permissionMapping' must not contain duplicate permission action '${action}'`,
-      );
+  if (firstIsNamed) {
+    const seenNames = new Set<string>();
+    for (const entry of condition.permissionMapping) {
+      const info = entry as PermissionInfo;
+      const key = `${info.name}:${info.action}`;
+      if (seenNames.has(key)) {
+        throw new InputError(
+          `'permissionMapping' must not contain duplicate permission '${info.name}' with action '${info.action}'`,
+        );
+      }
+      seenNames.add(key);
     }
-    seenActions.add(action);
+  } else {
+    const seenActions = new Set<PermissionAction>();
+    for (const action of actions) {
+      if (seenActions.has(action)) {
+        throw new InputError(
+          `'permissionMapping' must not contain duplicate permission action '${action}'`,
+        );
+      }
+      seenActions.add(action);
+    }
   }
 
   if (
     condition.resourceType === 'policy-entity' &&
-    condition.permissionMapping.includes('create')
+    actions.includes('create')
   ) {
     throw new InputError(
       `Conditional policy can not be created for resource type 'policy-entity' with the permission action 'create'`,

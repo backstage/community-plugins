@@ -16,6 +16,7 @@
 import { compatWrapper } from '@backstage/core-compat-api';
 import { PageBlueprint } from '@backstage/frontend-plugin-api';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
+import { rootRouteRef } from '../routes';
 
 /**
  * Page extension that displays the Tech Insights scorecards overview page.
@@ -27,6 +28,7 @@ export const techInsightsScorecardPage = PageBlueprint.make({
     path: '/tech-insights',
     title: 'Tech Insights',
     icon: <EmojiObjectsIcon />,
+    routeRef: rootRouteRef,
     loader: () =>
       import('../components/ScorecardsPage').then(m =>
         compatWrapper(<m.ScorecardsPage />),

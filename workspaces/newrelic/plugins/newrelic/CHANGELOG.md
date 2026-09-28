@@ -1,5 +1,21 @@
 # @backstage-community/plugin-newrelic
 
+## 0.26.0
+
+### Minor Changes
+
+- 4308624: Backstage version bump to v1.55.1
+
+## 0.25.0
+
+### Minor Changes
+
+- 8efefed: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- ccc6c95: No functional changes; re-publish to recover from a [GitHub Actions incident](https://www.githubstatus.com/incidents/y1t7p9fzrlj2)
+
 ## 0.24.0
 
 ### Minor Changes

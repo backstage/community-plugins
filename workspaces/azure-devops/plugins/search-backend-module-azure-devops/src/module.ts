@@ -18,6 +18,10 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { searchIndexRegistryExtensionPoint } from '@backstage/plugin-search-backend-node/alpha';
+import {
+  DefaultAzureDevOpsCredentialsProvider,
+  ScmIntegrations,
+} from '@backstage/integration';
 import { AzureDevOpsWikiArticleCollatorFactory } from './collator';
 import { readScheduleConfigOptions } from './config';
 
@@ -34,12 +38,17 @@ export const searchModuleAzureDevOps = createBackendModule({
         indexRegistry: searchIndexRegistryExtensionPoint,
       },
       async init({ config, scheduler, logger, indexRegistry }) {
+        const integrations = ScmIntegrations.fromConfig(config);
+        const credentialsProvider =
+          DefaultAzureDevOpsCredentialsProvider.fromIntegrations(integrations);
+
         indexRegistry.addCollator({
           schedule: scheduler.createScheduledTaskRunner(
             readScheduleConfigOptions(config),
           ),
           factory: AzureDevOpsWikiArticleCollatorFactory.fromConfig(config, {
             logger,
+            credentialsProvider,
           }),
         });
       },

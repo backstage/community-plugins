@@ -14,24 +14,7 @@
  * limitations under the License.
  */
 
-import { createFrontendPlugin } from '@backstage/frontend-plugin-api';
-import { rbacApi, licensedUsersApi } from './apis';
-import rbacPage from './pages';
-import { rootRouteRef } from './pluginRoutes';
-
-/**
- * RBAC plugin
- * @public
- */
-
-export default createFrontendPlugin({
-  pluginId: 'rbac',
-  info: { packageJson: () => import('../package.json') },
-  extensions: [rbacApi, licensedUsersApi, rbacPage],
-  routes: {
-    root: rootRouteRef,
-  },
-});
+export { rbacPlugin as default } from './plugin';
 
 export { default as rbacTranslationsModule } from './alpha/translations';
 

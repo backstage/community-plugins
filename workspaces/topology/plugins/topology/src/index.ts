@@ -13,4 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { topologyPlugin, TopologyPage } from './plugin';
+
+/**
+ * Topology plugin for Backstage.
+ *
+ * @packageDocumentation
+ */
+
+export { default } from './plugin';
+export { isTopologyAvailable } from './isTopologyAvailable';

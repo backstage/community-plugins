@@ -1,5 +1,17 @@
 # @backstage-community/plugin-scaffolder-backend-module-sonarqube
 
+## 2.17.0
+
+### Minor Changes
+
+- 0afdf36: Backstage version bump to v1.54.5
+
+## 2.16.1
+
+### Patch Changes
+
+- dadc12d: Add module wiring and utility unit tests, a local dev/ harness, and contributor documentation so Backstage dependency bumps are caught by scoped automated tests.
+
 ## 2.16.0
 
 ### Minor Changes

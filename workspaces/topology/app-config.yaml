@@ -138,5 +138,8 @@ kubernetes:
 
 # see https://backstage.io/docs/permissions/getting-started for more on the permission framework
 permission:
-  # setting this to `false` will disable permissions
   enabled: true
+  rbac:
+    admin:
+      users:
+        - name: user:default/guest

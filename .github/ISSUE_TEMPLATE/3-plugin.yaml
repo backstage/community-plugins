@@ -7,6 +7,7 @@ body:
     attributes:
       value: |
         We value your time and efforts to submit this Plugin request form. 🙏
+        Please review the [Contributing a New Plugin](https://github.com/backstage/community-plugins/blob/main/docs/contributing-new-plugin.md) guide before submitting.
   - type: textarea
     id: plugin-summary
     validations:

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { RoleMetadata } from '@backstage-community/plugin-rbac-common';
+import {
+  PermissionAction,
+  RoleMetadata,
+} from '@backstage-community/plugin-rbac-common';
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { clearAuditorMock } from '../__fixtures__/auditor-test-utils';
 import { mockAuditorService } from '../__fixtures__/mock-utils';
@@ -30,7 +33,6 @@ import {
   removeTheDifference,
   syncRolePolicies,
   conditionalActionsOverlap,
-  permissionMappingToActions,
   planConditionalReconcile,
   pendingDeleteIdsFromPlan,
   toError,
@@ -854,9 +856,7 @@ describe('planConditionalReconcile', () => {
     roleEntityRef: 'role:default/test',
     pluginId: 'catalog',
     resourceType: 'catalog-entity',
-    permissionMapping: [
-      { name: 'catalog.entity.read', action: 'read' as const },
-    ],
+    permissionMapping: ['read'] as PermissionAction[],
     conditions: {
       rule: 'IS_ENTITY_OWNER',
       resourceType: 'catalog-entity',
@@ -867,14 +867,13 @@ describe('planConditionalReconcile', () => {
   it('routes overlapping replacements to updates', () => {
     const desired = {
       ...stored,
-      permissionMapping: [
-        { name: 'catalog.entity.read', action: 'read' as const },
-        { name: 'catalog.entity.delete', action: 'delete' as const },
-      ],
+      permissionMapping: ['read', 'delete'] as PermissionAction[],
     };
 
-    const plan = planConditionalReconcile([desired], [stored], item =>
-      permissionMappingToActions(item.permissionMapping),
+    const plan = planConditionalReconcile(
+      [desired],
+      [stored],
+      item => item.permissionMapping,
     );
 
     expect(plan.updates).toHaveLength(1);
@@ -890,26 +889,21 @@ describe('planConditionalReconcile', () => {
       roleEntityRef: stored.roleEntityRef,
       pluginId: stored.pluginId,
       resourceType: stored.resourceType,
-      permissionMapping: [
-        { name: 'catalog.entity.delete', action: 'delete' as const },
-      ],
+      permissionMapping: ['delete'] as PermissionAction[],
       conditions: stored.conditions,
     };
     const desired = {
       roleEntityRef: stored.roleEntityRef,
       pluginId: stored.pluginId,
       resourceType: stored.resourceType,
-      permissionMapping: [
-        { name: 'catalog.entity.read', action: 'read' as const },
-        { name: 'catalog.entity.delete', action: 'delete' as const },
-      ],
+      permissionMapping: ['read', 'delete'] as PermissionAction[],
       conditions: stored.conditions,
     };
 
     const plan = planConditionalReconcile(
       [desired],
       [stored, siblingDelete],
-      item => permissionMappingToActions(item.permissionMapping),
+      item => item.permissionMapping,
     );
 
     expect(plan.updates).toHaveLength(1);
@@ -925,13 +919,13 @@ describe('planConditionalReconcile', () => {
       roleEntityRef: stored.roleEntityRef,
       pluginId: stored.pluginId,
       resourceType: stored.resourceType,
-      permissionMapping: [
-        { name: 'catalog.entity.delete', action: 'delete' as const },
-      ],
+      permissionMapping: ['delete'] as PermissionAction[],
     };
 
-    const plan = planConditionalReconcile([desired], [stored], item =>
-      permissionMappingToActions(item.permissionMapping),
+    const plan = planConditionalReconcile(
+      [desired],
+      [stored],
+      item => item.permissionMapping,
     );
 
     expect(plan.updates).toHaveLength(0);

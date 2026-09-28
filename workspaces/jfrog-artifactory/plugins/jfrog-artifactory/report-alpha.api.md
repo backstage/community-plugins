@@ -27,6 +27,4 @@ export const jfrogArtifactoryTranslationRef: TranslationRef<
 
 // @alpha
 export const jfrogArtifactoryTranslations: TranslationResource<'plugin.jfrog-artifactory'>;
-
-// (No @packageDocumentation comment for this package)
 ```

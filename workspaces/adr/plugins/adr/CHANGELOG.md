@@ -1,5 +1,31 @@
 # @backstage-community/plugin-adr
 
+## 0.31.0
+
+### Minor Changes
+
+- b6c1ab9: Migrate the ADR plugin interface to Backstage UI. This drops support for React 16/17 and React Router versions below 6.30.2 because Backstage UI requires React 18 and React Router 6.30.2 or later. Before upgrading, update your app to React 18 and React Router 6.30.2 or later.
+
+  **Note for consuming apps:** import `@backstage/ui/css/styles.css` in your app entry point if it is not already included.
+
+## 0.30.1
+
+### Patch Changes
+
+- Updated dependencies [41203d6]
+  - @backstage-community/plugin-adr-common@0.25.0
+
+## 0.30.0
+
+### Minor Changes
+
+- 82fdc04: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [82fdc04]
+  - @backstage-community/plugin-adr-common@0.24.0
+
 ## 0.29.0
 
 ### Minor Changes

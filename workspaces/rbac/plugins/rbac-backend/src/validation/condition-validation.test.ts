@@ -16,10 +16,7 @@
 import { AuthorizeResult } from '@backstage/plugin-permission-common';
 import { InputError } from '@backstage/errors';
 
-import type {
-  PermissionAction,
-  RoleConditionalPolicyDecision,
-} from '@backstage-community/plugin-rbac-common';
+import type { RoleConditionalPolicyDecision } from '@backstage-community/plugin-rbac-common';
 
 import {
   DEFAULT_CONDITION_VALIDATION_LIMITS,
@@ -168,6 +165,223 @@ describe('condition-validation', () => {
       };
       expect(() => validateRoleCondition(condition)).toThrow(
         `'permissionMapping' array contains non action value: 'wrong-value'`,
+      );
+    });
+
+    it('should fail validation when permissionMapping mixes action strings and named objects', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          'read',
+          { name: 'catalog.entity.update', action: 'update' },
+        ],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' must be either all action strings or all {name, action} objects, not a mix`,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry is object without name field', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        /permissionMapping' entry must be an action string or \{name: string, action: string\}/,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry is empty object', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{}],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        /permissionMapping' entry must be an action string or \{name: string, action: string\}/,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry has name: null', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ name: null, action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        /permissionMapping' entry must be an action string or \{name: string, action: string\}/,
+      );
+    });
+
+    it('should fail validation when permissionMapping entry has numeric name', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [{ name: 123, action: 'read' }],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        /permissionMapping' entry must be an action string or \{name: string, action: string\}/,
+      );
+    });
+
+    it('should allow named entries with the same action but different names', () => {
+      const condition: any = {
+        resourceType: 'scaffolder-template',
+        pluginId: 'scaffolder',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          { name: 'scaffolder.template.parameter.read', action: 'read' },
+          { name: 'scaffolder.template.step.read', action: 'read' },
+        ],
+        conditions: {
+          rule: 'HAS_TAG',
+          resourceType: 'scaffolder-template',
+          params: { tag: 'test' },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).not.toThrow();
+    });
+
+    it('should fail validation when named entries have duplicate name and action', () => {
+      const condition: any = {
+        resourceType: 'scaffolder-template',
+        pluginId: 'scaffolder',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          { name: 'scaffolder.template.parameter.read', action: 'read' },
+          { name: 'scaffolder.template.parameter.read', action: 'read' },
+        ],
+        conditions: {
+          rule: 'HAS_TAG',
+          resourceType: 'scaffolder-template',
+          params: { tag: 'test' },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' must not contain duplicate permission 'scaffolder.template.parameter.read' with action 'read'`,
+      );
+    });
+
+    it('should fail validation when broad entries have duplicate action', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: ['read', 'read'],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' must not contain duplicate permission action 'read'`,
+      );
+    });
+
+    it('should not limit named entries to max distinct actions count', () => {
+      const condition: any = {
+        resourceType: 'scaffolder-template',
+        pluginId: 'scaffolder',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          { name: 'perm.a.read', action: 'read' },
+          { name: 'perm.b.read', action: 'read' },
+          { name: 'perm.c.read', action: 'read' },
+          { name: 'perm.d.read', action: 'read' },
+          { name: 'perm.e.read', action: 'read' },
+          { name: 'perm.f.read', action: 'read' },
+        ],
+        conditions: {
+          rule: 'HAS_TAG',
+          resourceType: 'scaffolder-template',
+          params: { tag: 'test' },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).not.toThrow();
+    });
+
+    it('should limit broad entries to max distinct actions count', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [
+          'read',
+          'create',
+          'update',
+          'delete',
+          'use',
+          'read',
+        ],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' can have at most 5 items`,
+      );
+    });
+
+    it('should reject empty string as permissionMapping action', () => {
+      const condition: any = {
+        resourceType: 'catalog-entity',
+        pluginId: 'catalog',
+        roleEntityRef: 'role:default/test',
+        result: AuthorizeResult.CONDITIONAL,
+        permissionMapping: [''],
+        conditions: {
+          rule: 'IS_ENTITY_OWNER',
+          resourceType: 'catalog-entity',
+          params: { claims: ['group:default/team-a'] },
+        },
+      };
+      expect(() => validateRoleCondition(condition)).toThrow(
+        `'permissionMapping' array contains non action value: ''`,
       );
     });
 
@@ -573,7 +787,7 @@ describe('condition-validation', () => {
     });
 
     it('should validate role-condition.conditions.anyOf without errors', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -758,7 +972,7 @@ describe('condition-validation', () => {
     });
 
     it('should success validation role-condition.conditions.allOf', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -794,7 +1008,7 @@ describe('condition-validation', () => {
 
   describe('complex conditions', () => {
     it('should fail validation of role-condition.conditions in parallel with condition rule', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -829,7 +1043,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (allOf, not) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -866,7 +1080,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (allOf, anyOf) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -910,7 +1124,7 @@ describe('condition-validation', () => {
     });
 
     it('should fail validation of role-condition.conditions criteria (not, anyOf) in parallel', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -947,7 +1161,7 @@ describe('condition-validation', () => {
     });
 
     it('should validate role-condition.conditions that are nested', () => {
-      const condition: RoleConditionalPolicyDecision<PermissionAction> = {
+      const condition: RoleConditionalPolicyDecision = {
         id: 1,
         pluginId: 'catalog',
         resourceType: 'catalog-entity',
@@ -1028,7 +1242,7 @@ describe('condition-validation', () => {
 
       expect(() => validateRoleCondition(condition)).toThrow(InputError);
       expect(() => validateRoleCondition(condition)).toThrow(
-        `'permissionMapping' can have at most 5 items (one entry per distinct permission action)`,
+        `'permissionMapping' can have at most 5 items`,
       );
     });
 
