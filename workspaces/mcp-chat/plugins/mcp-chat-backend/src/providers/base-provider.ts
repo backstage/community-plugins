@@ -15,7 +15,14 @@
  */
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { ResponseError } from '@backstage/errors';
-import { ChatMessage, Tool, ChatResponse, ProviderConfig } from '../types';
+import {
+  ChatMessage,
+  Tool,
+  ChatResponse,
+  ProviderConfig,
+  OverrideablePaths,
+} from '../types';
+import { constructURL } from '../utils';
 
 /**
  * Abstract base class for all LLM providers.
@@ -31,6 +38,7 @@ export abstract class LLMProvider {
   protected logger?: LoggerService;
   protected maxTokens?: number;
   protected temperature?: number;
+  protected pathOverrides?: Partial<Record<OverrideablePaths, string>>;
 
   constructor(config: ProviderConfig) {
     this.apiKey = config.apiKey;
@@ -40,6 +48,7 @@ export abstract class LLMProvider {
     this.logger = config.logger;
     this.maxTokens = config.maxTokens;
     this.temperature = config.temperature;
+    this.pathOverrides = config.pathOverrides;
   }
 
   abstract sendMessage(
@@ -68,7 +77,7 @@ export abstract class LLMProvider {
   }
 
   protected async makeRequest(endpoint: string, body: any): Promise<any> {
-    const url = `${this.baseUrl}${endpoint}`;
+    const url = constructURL(this.baseUrl, endpoint);
 
     this.logger?.debug(`[${this.type}] Request to ${url}`, {
       body: this.truncateForLogging(JSON.stringify(body)),

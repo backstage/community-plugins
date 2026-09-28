@@ -496,3 +496,9 @@ export function isGuestUser(userEntityRef: string): boolean {
   const guestPattern = /^user:development\/guest$/i;
   return guestPattern.test(userEntityRef);
 }
+
+export function constructURL(baseUrl: string, endpoint: string): string {
+  const sanitizedBaseUrl = `${baseUrl.replace(/\/+$/, '')}/`;
+  const sanitizedEndpoint = `./${endpoint.replace(/^\.?\/+/, '')}`;
+  return new URL(sanitizedEndpoint, sanitizedBaseUrl).toString();
+}
