@@ -414,6 +414,24 @@ describe('EnforcerDelegate', () => {
       expect(policies[0]).toEqual(secondGroupingPolicy);
     });
 
+    it('should return grouping policies matching any of the role filters', async () => {
+      const enfDelegate = await createEnfDelegate(
+        [],
+        [groupingPolicy, secondGroupingPolicy],
+      );
+
+      const policies = await enfDelegate.getFilteredGroupingPolicy(
+        1,
+        [groupingPolicy[1]],
+        [secondGroupingPolicy[1]],
+      );
+
+      expect(policies).toEqual(
+        expect.arrayContaining([groupingPolicy, secondGroupingPolicy]),
+      );
+      expect(policies).toHaveLength(2);
+    });
+
     it('should return filtered grouping policy by role name with index offset', async () => {
       const enfDelegate = await createEnfDelegate(
         [],

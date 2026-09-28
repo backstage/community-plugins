@@ -2,4 +2,4 @@
 '@backstage-community/plugin-rbac-backend': patch
 ---
 
-`getFilteredPolicy` now accepts an array of filters and loads every match in one database query. This improves performance when several roles are checked together, including authorization, permission checks, policy listing, CSV policy cleanup, and applying permissions from an RBAC provider.
+`getFilteredPolicy` and `getFilteredGroupingPolicy` now accept an array of filters and load every match in one database query. This improves performance when several roles or members are checked together, including authorization, permission checks, policy listing, CSV policy cleanup, and applying roles and permissions from an RBAC provider.
