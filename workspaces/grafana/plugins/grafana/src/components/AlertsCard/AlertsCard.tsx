@@ -34,7 +34,7 @@ import {
 import { useApi } from '@backstage/core-plugin-api';
 import { grafanaApiRef, GrafanaApi } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import { Alert } from '@material-ui/lab';
+import { Alert, Text } from '@backstage/ui';
 import { AlertsCardOpts, Alert as GrafanaAlert } from '../../types';
 import {
   GRAFANA_ANNOTATION_ALERT_LABEL_SELECTOR,
@@ -106,7 +106,11 @@ export const AlertsTable = ({
 
   return (
     <Table
-      title={opts.title || 'Alerts'}
+      title={
+        <Text as="h2" variant="title-medium" weight="bold">
+          {opts.title || 'Alerts'}
+        </Text>
+      }
       options={{
         paging: opts.paged ?? false,
         pageSize: opts.pageSize ?? 5,
@@ -153,13 +157,13 @@ const Alerts = ({ entity, opts }: { entity: Entity; opts: AlertsCardOpts }) => {
   }, [grafanaApi, selectorKey, hostId, Boolean(resolveError)]);
 
   if (resolveError) {
-    return <Alert severity="error">{resolveError.message}</Alert>;
+    return <Alert status="danger" title={resolveError.message} />;
   }
 
   if (loading) {
     return <Progress />;
   } else if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert status="danger" title={error.message} />;
   }
 
   return <AlertsTable alerts={value || []} opts={opts} />;
@@ -173,7 +177,7 @@ export const AlertsCard = (opts?: AlertsCardOpts) => {
     resolveUnifiedAlerting(grafanaApi, hostId);
 
   if (resolveError) {
-    return <Alert severity="error">{resolveError.message}</Alert>;
+    return <Alert status="danger" title={resolveError.message} />;
   }
 
   if (!unifiedAlertingEnabled && !isDashboardSelectorAvailable(entity)) {

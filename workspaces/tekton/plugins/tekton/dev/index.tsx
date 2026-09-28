@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,88 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ReactDOM from 'react-dom/client';
 
+/**
+ * New Frontend System dev mode for the Tekton plugin (backend data).
+ */
+
+import '@backstage/cli/asset-types';
 // eslint-disable-next-line @backstage/no-ui-css-imports-in-non-frontend
 import '@backstage/ui/css/styles.css';
 
+import ReactDOM from 'react-dom/client';
 import { createApp } from '@backstage/frontend-defaults';
+import { SignInPage } from '@backstage/core-components';
 import {
   ApiBlueprint,
+  configApiRef,
   createFrontendModule,
-  createFrontendPlugin,
+  discoveryApiRef,
+  identityApiRef,
+  pluginHeaderActionsApiRef,
 } from '@backstage/frontend-plugin-api';
-import { catalogApiRef } from '@backstage/plugin-catalog-react';
-import { catalogApiMock } from '@backstage/plugin-catalog-react/testUtils';
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import kubernetesPlugin from '@backstage/plugin-kubernetes/alpha';
 import {
-  kubernetesApiRef,
-  kubernetesAuthProvidersApiRef,
-  kubernetesProxyApiRef,
-} from '@backstage/plugin-kubernetes-react';
-import { AuthorizeResult } from '@backstage/plugin-permission-common';
-import { permissionApiRef } from '@backstage/plugin-permission-react';
-import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+  IdentityPermissionApi,
+  permissionApiRef,
+} from '@backstage/plugin-permission-react';
 
 import tektonPlugin from '../src';
 import tektonTranslationsModule from '../src/translations';
-import {
-  mockEntity,
-  mockKubernetesAuthProviderApi,
-  mockKubernetesClient,
-  mockKubernetesProxyApi,
-} from './shared';
+import { devSidebarContent } from './shared';
 
-const kubernetesStubPlugin = createFrontendPlugin({
-  pluginId: 'kubernetes',
-  extensions: [],
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          title="Select a sign-in method"
+          align="center"
+          providers={['guest']}
+        />
+      ),
+  },
 });
 
-const kubernetesDevModule = createFrontendModule({
-  pluginId: 'kubernetes',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'kubernetes-mock',
-      params: defineParams =>
-        defineParams({
-          api: kubernetesApiRef,
-          deps: {},
-          factory: () => mockKubernetesClient,
-        }),
-    }),
-    ApiBlueprint.make({
-      name: 'kubernetes-proxy-mock',
-      params: defineParams =>
-        defineParams({
-          api: kubernetesProxyApiRef,
-          deps: {},
-          factory: () => mockKubernetesProxyApi,
-        }),
-    }),
-  ],
-});
-
-const kubernetesAuthStubPlugin = createFrontendPlugin({
-  pluginId: 'kubernetes-auth-providers',
-  extensions: [],
-});
-
-const kubernetesAuthDevModule = createFrontendModule({
-  pluginId: 'kubernetes-auth-providers',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'kubernetes-auth-mock',
-      params: defineParams =>
-        defineParams({
-          api: kubernetesAuthProvidersApiRef,
-          deps: {},
-          factory: () => mockKubernetesAuthProviderApi,
-        }),
-    }),
-  ],
-});
-
-const permissionDevModule = createFrontendModule({
+const appDevModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
     ApiBlueprint.make({
@@ -102,43 +67,49 @@ const permissionDevModule = createFrontendModule({
       params: defineParams =>
         defineParams({
           api: permissionApiRef,
+          deps: {
+            config: configApiRef,
+            discovery: discoveryApiRef,
+            identity: identityApiRef,
+          },
+          factory: ({ config, discovery, identity }) =>
+            IdentityPermissionApi.create({ config, discovery, identity }),
+        }),
+    }),
+    ApiBlueprint.make({
+      name: 'plugin-header-actions',
+      params: defineParams =>
+        defineParams({
+          api: pluginHeaderActionsApiRef,
           deps: {},
           factory: () => ({
-            authorize: async () => ({ result: AuthorizeResult.ALLOW }),
+            getPluginHeaderActions: () => [],
           }),
         }),
     }),
   ],
 });
 
-const catalogDevModule = createFrontendModule({
-  pluginId: 'catalog',
-  extensions: [
-    ApiBlueprint.make({
-      name: 'catalog-mock',
-      params: defineParams =>
-        defineParams({
-          api: catalogApiRef,
-          deps: {},
-          factory: () => catalogApiMock({ entities: [mockEntity] }),
-        }),
-    }),
-  ],
+const devNavModule = createFrontendModule({
+  pluginId: 'app',
+  extensions: [devSidebarContent, signInPage],
 });
 
 const app = createApp({
   features: [
+    devNavModule,
+    appDevModule,
     catalogPlugin,
-    userSettingsPlugin,
+    kubernetesPlugin,
     tektonPlugin,
     tektonTranslationsModule,
-    catalogDevModule,
-    kubernetesStubPlugin,
-    kubernetesDevModule,
-    kubernetesAuthStubPlugin,
-    kubernetesAuthDevModule,
-    permissionDevModule,
   ],
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(app.createRoot());
+if (window.location.pathname === '/') {
+  window.location.replace('/catalog');
+}
+
+const root = app.createRoot();
+
+ReactDOM.createRoot(document.getElementById('root')!).render(root);

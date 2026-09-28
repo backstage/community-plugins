@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,7 @@
  */
 import { expect, Page, test, type BrowserContext } from '@playwright/test';
 
-import {
-  Common,
-  isNfsAppMode,
-  topologyEntityHeaderTabTestId,
-} from './utils/topologyHelper';
+import { Common, isNfsAppMode } from './utils/topologyHelper';
 import { getTranslations, TopologyMessages } from './utils/translations';
 
 const TOPOLOGY_NODES = {
@@ -61,21 +57,22 @@ test.describe('Topology plugin', () => {
 
   test.describe('Missing permissions page', () => {
     test('shows missing permissions error', async ({}, testInfo) => {
-      test.skip(
-        isNfsAppMode(),
-        'Standalone /missing-permissions route exists only in legacy dev app',
-      );
-      await page.goto('/missing-permissions');
-      await page.reload();
+      await common.navigateToMissingPermissions();
+
+      if (isNfsAppMode()) {
+        await expect(
+          page.getByRole('heading', { name: 'permission-denied' }),
+        ).toBeVisible({ timeout: 30000 });
+        return;
+      }
 
       await expect(
         page.getByText(translations.permissions.missingPermission, {
           exact: true,
         }),
       ).toBeVisible({ timeout: 60000 });
-      await expect(page.getByRole('article')).toContainText(
-        'kubernetes.clusters.read, kubernetes.resources.read',
-      );
+      await expect(page.getByText('kubernetes.clusters.read')).toBeVisible();
+      await expect(page.getByText('kubernetes.resources.read')).toBeVisible();
       await expect(
         page.getByRole('button', { name: translations.permissions.goBack }),
       ).toBeVisible();
@@ -89,10 +86,16 @@ test.describe('Topology plugin', () => {
     });
 
     test('displays header and cluster controls', async ({}, testInfo) => {
-      await expect(page.getByRole('heading')).toContainText('backstage');
       await expect(
-        page.getByTestId(topologyEntityHeaderTabTestId()),
+        page.getByRole('heading', { name: 'backstage' }),
       ).toBeVisible();
+      const topology = page.locator('.pf-ri__topology');
+      await expect(topology).toBeVisible();
+      const box = await topology.boundingBox();
+      const viewport = page.viewportSize();
+      expect(box?.height).toBeGreaterThan(200);
+      expect(viewport).toBeTruthy();
+      expect(viewport!.height - (box!.y + box!.height)).toBeLessThan(120);
       const topologyToolbar = page.locator('.pf-topology-view__view-toolbar');
       await expect(
         topologyToolbar.getByRole('button', {
@@ -127,11 +130,17 @@ test.describe('Topology plugin', () => {
 
       for (const buttonName of controlBarButtons) {
         await expect(
-          controlBar.getByRole('button', { name: buttonName }),
+          controlBar.getByRole('button', {
+            name: buttonName,
+            exact: true,
+          }),
         ).toBeVisible();
       }
       await controlBar
-        .getByRole('button', { name: translations.controlBar.fitToScreen })
+        .getByRole('button', {
+          name: translations.controlBar.fitToScreen,
+          exact: true,
+        })
         .click();
     });
 

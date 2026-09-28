@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
+import {
+  createRouteRef,
+  createSubRouteRef,
+} from '@backstage/frontend-plugin-api';
 
-export const rootRouteRef = createRouteRef({
-  id: 'rbac',
-});
+export const rootRouteRef = createRouteRef();
 
 export const roleRouteRef = createSubRouteRef({
-  id: 'rbac-role-overview',
   parent: rootRouteRef,
   path: '/roles/:roleKind/:roleNamespace/:roleName',
 });
 
 export const createRoleRouteRef = createSubRouteRef({
-  id: 'rbac-create-role',
   parent: rootRouteRef,
   path: '/role/new',
 });
 
 export const editRoleRouteRef = createSubRouteRef({
-  id: 'rbac-edit-role',
   parent: rootRouteRef,
   path: '/role/:roleKind/:roleNamespace/:roleName',
 });

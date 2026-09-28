@@ -3528,9 +3528,9 @@ __metadata:
     "@backstage/repo-tools": "backstage:^"
     "@changesets/cli": "npm:^2.29.7"
     "@microsoft/api-extractor-model": "npm:^7.31.2"
-    "@microsoft/tsdoc": "npm:^0.16.0"
+    "@microsoft/tsdoc": "npm:^0.17.0"
     "@microsoft/tsdoc-config": "npm:^0.18.0"
-    "@types/node": "npm:24.9.1"
+    "@types/node": "npm:24.13.6"
     "@useoptic/optic": "npm:^1.0.9"
     knip: "npm:^5.66.2"
     node-gyp: "npm:^11.5.0"
@@ -3982,10 +3982,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc@npm:0.16.0, @microsoft/tsdoc@npm:^0.16.0, @microsoft/tsdoc@npm:~0.16.0":
+"@microsoft/tsdoc@npm:0.16.0, @microsoft/tsdoc@npm:~0.16.0":
   version: 0.16.0
   resolution: "@microsoft/tsdoc@npm:0.16.0"
   checksum: 10/1eaad3605234dc7e44898c15d1ba3c97fb968af1117025400cba572ce268da05afc36634d1fb9e779457af3ff7f13330aee07a962510a4d9c6612c13f71ee41e
+  languageName: node
+  linkType: hard
+
+"@microsoft/tsdoc@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "@microsoft/tsdoc@npm:0.17.0"
+  checksum: 10/fe4b8f93cf7396fe7e448a2b9d4fad7b93e3d7d340b424691f21be0d4ff5bdde28ca435b4ac08c97bb5d6b6608b8bd476b37e550cfd78307d313faff082011fc
   languageName: node
   linkType: hard
 
@@ -7316,12 +7323,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:24.9.1, @types/node@npm:>=13.7.0":
-  version: 24.9.1
-  resolution: "@types/node@npm:24.9.1"
+"@types/node@npm:*, @types/node@npm:24.13.6, @types/node@npm:>=13.7.0":
+  version: 24.13.6
+  resolution: "@types/node@npm:24.13.6"
   dependencies:
-    undici-types: "npm:~7.16.0"
-  checksum: 10/eacbd06621616825042428dd6105d0c2f86d67b5f05f99db9fa89fe1cc173d5e65e604a9a61f1ce52ad915d09f2119e7468816ca1a22bb7a3cf5f3c131413c86
+    undici-types: "npm:~7.18.0"
+  checksum: 10/855324e2042ea683a6cbf23ae24458033188f276560b0aa4e36ccc5953f378552c7c1140386067b2c17ea24f2b430c7246f3bc81d74dd04fcfcfb3c6304c5dcb
   languageName: node
   linkType: hard
 
@@ -21795,10 +21802,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~7.16.0":
-  version: 7.16.0
-  resolution: "undici-types@npm:7.16.0"
-  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 10/e61a5918f624d68420c3ca9d301e9f15b61cba6e97be39fe2ce266dd6151e4afe424d679372638826cb506be33952774e0424141200111a9857e464216c009af
   languageName: node
   linkType: hard
 

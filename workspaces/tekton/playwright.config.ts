@@ -16,18 +16,25 @@
 
 import { defineConfig } from '@playwright/test';
 
+// APP_MODE: 'legacy' (dev/legacy.mock.tsx) or default NFS (dev/index.mock.tsx)
+const appMode = process.env.APP_MODE || 'nfs';
+const startCommand =
+  appMode === 'legacy' ? 'yarn start:legacy:mock' : 'yarn start:mock';
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 120_000,
   webServer: process.env.PLAYWRIGHT_URL
     ? []
     : [
         {
-          command: 'yarn start:legacy',
+          command: startCommand,
           port: 3000,
           reuseExistingServer: true,
           cwd: 'plugins/tekton',
+          timeout: 120_000,
         },
       ],
 
@@ -35,7 +42,9 @@ export default defineConfig({
 
   retries: process.env.CI ? 2 : 0,
 
-  reporter: [['html', { open: 'never', outputFolder: 'e2e-test-report' }]],
+  reporter: [
+    ['html', { open: 'never', outputFolder: `e2e-test-report-${appMode}` }],
+  ],
 
   use: {
     baseURL: process.env.PLAYWRIGHT_URL ?? 'http://localhost:3000',

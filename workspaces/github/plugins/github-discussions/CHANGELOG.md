@@ -1,5 +1,27 @@
 # @backstage-community/plugin-github-discussions
 
+## 1.5.0
+
+### Minor Changes
+
+- 5956bca: Backstage version bump to v1.55.1
+
+### Patch Changes
+
+- Updated dependencies [5956bca]
+  - @backstage-community/plugin-github-discussions-common@0.17.0
+
+## 1.4.0
+
+### Minor Changes
+
+- 00f747c: Backstage version bump to v1.54.5
+
+### Patch Changes
+
+- Updated dependencies [00f747c]
+  - @backstage-community/plugin-github-discussions-common@0.16.0
+
 ## 1.3.0
 
 ### Minor Changes
