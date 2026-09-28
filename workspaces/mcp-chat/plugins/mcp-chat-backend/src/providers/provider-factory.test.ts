@@ -177,6 +177,42 @@ describe('getProviderConfig', () => {
     });
   });
 
+  it('should configure Claude provider with default and custom base URLs', () => {
+    const testCases = [
+      {
+        customBaseUrl: undefined,
+        expectedBaseUrl: 'https://api.anthropic.com/v1',
+      },
+      {
+        customBaseUrl: 'https://custom-anthropic.com/v1',
+        expectedBaseUrl: 'https://custom-anthropic.com/v1',
+      },
+    ];
+
+    testCases.forEach(({ customBaseUrl, expectedBaseUrl }) => {
+      const mockProviderConfig = {
+        getString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'claude';
+          if (key === 'model') return 'test-model';
+          throw new Error(`Unexpected key: ${key}`);
+        }),
+        getOptionalString: jest.fn().mockImplementation((key: string) => {
+          if (key === 'token') return 'first-key';
+          if (key === 'baseUrl') return customBaseUrl;
+          return 'test-key';
+        }),
+        getOptionalNumber: jest.fn().mockReturnValue(undefined),
+      } as any;
+
+      mockConfig.getOptionalConfigArray.mockReturnValue([mockProviderConfig]);
+
+      const result = getProviderConfig(mockConfig);
+      expect(result.baseUrl).toBe(expectedBaseUrl);
+      expect(result.type).toBe('claude');
+      expect(result.apiKey).toBe('first-key');
+    });
+  });
+
   it('should configure Ollama provider with default and custom base URLs', () => {
     const testCases = [
       { customBaseUrl: undefined, expectedBaseUrl: 'http://localhost:11434' },
