@@ -338,6 +338,19 @@ describe('EnforcerDelegate', () => {
       expect(policies[0]).toEqual(policy);
     });
 
+    it('should return policies matching any of the role filters', async () => {
+      const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
+
+      const policies = await enfDelegate.getFilteredPolicy(
+        0,
+        [policy[0]],
+        [secondPolicy[0]],
+      );
+
+      expect(policies).toEqual(expect.arrayContaining([policy, secondPolicy]));
+      expect(policies).toHaveLength(2);
+    });
+
     it('should return filtered policy by policy effect', async () => {
       const enfDelegate = await createEnfDelegate([policy, secondPolicy]);
 

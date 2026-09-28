@@ -115,9 +115,12 @@ export class Connection implements RBACProviderConnection {
 
     await this.enforcer.loadPolicy();
     // Get the roles for this provider coming from rbac plugin
-    for (const providerRole of providerRoles) {
+    if (providerRoles.length > 0) {
       providerPermissions.push(
-        ...(await this.enforcer.getFilteredPolicy(0, providerRole)),
+        ...(await this.enforcer.getFilteredPolicy(
+          0,
+          ...providerRoles.map(role => [role]),
+        )),
       );
     }
 

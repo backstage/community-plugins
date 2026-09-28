@@ -450,10 +450,13 @@ export class CSVFileWatcher extends AbstractFileWatcher<string[][]> {
             groupPolicy[0],
           );
         }
-        this.csvFilePolicies.removedPolicies.push(
-          ...(await this.enforcer.getFilteredPolicy(0, fileRole)),
-        );
       }
+      this.csvFilePolicies.removedPolicies.push(
+        ...(await this.enforcer.getFilteredPolicy(
+          0,
+          ...fileRoles.map(fileRole => [fileRole]),
+        )),
+      );
     }
     await this.removePermissionPolicies();
     await this.removeRoles();
