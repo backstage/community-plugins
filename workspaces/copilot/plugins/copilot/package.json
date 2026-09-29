@@ -63,7 +63,7 @@
     "@mui/x-charts": "^9.3.0",
     "@remixicon/react": "<4.10.0",
     "luxon": "^3.5.0",
-    "react-aria-components": "~1.20.0",
+    "react-aria-components": "~1.21.0",
     "react-use": "^17.3.1",
     "simple-date-range-calendar": "^2.0.6"
   },
