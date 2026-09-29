@@ -1,5 +1,11 @@
 # @backstage-community/plugin-announcements-backend
 
+## 0.29.1
+
+### Patch Changes
+
+- 54daf5a: Fixed the audit log recording category deletion as an update action instead of a delete action.
+
 ## 0.29.0
 
 ### Minor Changes
