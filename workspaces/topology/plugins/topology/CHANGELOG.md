@@ -1,5 +1,11 @@
 # @backstage-community/plugin-topology
 
+## 3.0.6
+
+### Patch Changes
+
+- 6d424f2: Limited `@remixicon/react` dependency to versions below 4.9.0 due to a license change in that release.
+
 ## 3.0.5
 
 ### Patch Changes
