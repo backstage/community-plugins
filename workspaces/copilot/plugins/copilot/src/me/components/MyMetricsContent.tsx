@@ -227,24 +227,36 @@ export function MyMetricsContent() {
               />
 
               <ChartCard title="Requests per Chat Mode">
-                <RequestsByChatModeChart data={byFeature} />
+                <RequestsByChatModeChart data={byFeature} from={from} to={to} />
               </ChartCard>
 
               <Grid.Root columns="12" gap="4">
                 <Grid.Item colSpan={{ initial: '12', md: '6' }}>
                   <ChartCard title="Code Completions">
-                    <CodeCompletionsChart data={byFeature} />
+                    <CodeCompletionsChart
+                      data={byFeature}
+                      from={from}
+                      to={to}
+                    />
                   </ChartCard>
                 </Grid.Item>
                 <Grid.Item colSpan={{ initial: '12', md: '6' }}>
                   <ChartCard title="Code Completion Acceptance Rate">
-                    <CodeCompletionsAcceptanceChart data={byFeature} />
+                    <CodeCompletionsAcceptanceChart
+                      data={byFeature}
+                      from={from}
+                      to={to}
+                    />
                   </ChartCard>
                 </Grid.Item>
               </Grid.Root>
 
               <ChartCard title="Model Usage per Day">
-                <ModelUsagePerDayChart data={byModelFeature} />
+                <ModelUsagePerDayChart
+                  data={byModelFeature}
+                  from={from}
+                  to={to}
+                />
               </ChartCard>
 
               <Grid.Root columns="12" gap="4">
@@ -261,7 +273,11 @@ export function MyMetricsContent() {
               </Grid.Root>
 
               <ChartCard title="Language Usage per Day">
-                <LanguageUsagePerDayChart data={byLanguage} />
+                <LanguageUsagePerDayChart
+                  data={byLanguage}
+                  from={from}
+                  to={to}
+                />
               </ChartCard>
 
               <Grid.Root columns="12" gap="4">
@@ -297,7 +313,7 @@ export function MyMetricsContent() {
                 >
                   Total lines of code you added and deleted across all modes
                 </Text>
-                <DailyLOCChart data={dailyTotals} />
+                <DailyLOCChart data={dailyTotals} from={from} to={to} />
               </ChartCard>
 
               <Grid.Root columns="12" gap="4">
@@ -353,7 +369,11 @@ export function MyMetricsContent() {
               <ConsumptionSummary dailyTotals={dailyTotals} />
 
               <ChartCard title="AI Credits Used per Day">
-                <AiCreditsConsumptionChart data={dailyTotals} />
+                <AiCreditsConsumptionChart
+                  data={dailyTotals}
+                  from={from}
+                  to={to}
+                />
               </ChartCard>
             </Flex>
           </TabPanel>

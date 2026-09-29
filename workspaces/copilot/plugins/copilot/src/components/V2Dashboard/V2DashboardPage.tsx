@@ -206,6 +206,8 @@ export const V2DashboardPage = () => {
                         <IDEActiveUsersChart
                           data={data.daily}
                           variant="daily"
+                          from={from}
+                          to={to}
                         />
                       </ChartCard>
                     </Grid.Item>
@@ -214,6 +216,8 @@ export const V2DashboardPage = () => {
                         <IDEActiveUsersChart
                           data={data.daily}
                           variant="weekly"
+                          from={from}
+                          to={to}
                         />
                       </ChartCard>
                     </Grid.Item>
@@ -221,31 +225,51 @@ export const V2DashboardPage = () => {
 
                   {/* Average Chat Requests per Active User */}
                   <ChartCard title="Average Chat Requests per Active User">
-                    <AvgChatRequestsChart data={data.daily} />
+                    <AvgChatRequestsChart
+                      data={data.daily}
+                      from={from}
+                      to={to}
+                    />
                   </ChartCard>
 
                   {/* Requests per Chat Mode */}
                   <ChartCard title="Requests per Chat Mode">
-                    <RequestsByChatModeChart data={data.byFeature} />
+                    <RequestsByChatModeChart
+                      data={data.byFeature}
+                      from={from}
+                      to={to}
+                    />
                   </ChartCard>
 
                   {/* Code Completions + Acceptance Rate */}
                   <Grid.Root columns="12" gap="4">
                     <Grid.Item colSpan={{ initial: '12', md: '6' }}>
                       <ChartCard title="Code Completions">
-                        <CodeCompletionsChart data={data.byFeature} />
+                        <CodeCompletionsChart
+                          data={data.byFeature}
+                          from={from}
+                          to={to}
+                        />
                       </ChartCard>
                     </Grid.Item>
                     <Grid.Item colSpan={{ initial: '12', md: '6' }}>
                       <ChartCard title="Code Completion Acceptance Rate">
-                        <CodeCompletionsAcceptanceChart data={data.byFeature} />
+                        <CodeCompletionsAcceptanceChart
+                          data={data.byFeature}
+                          from={from}
+                          to={to}
+                        />
                       </ChartCard>
                     </Grid.Item>
                   </Grid.Root>
 
                   {/* Model Usage per Day */}
                   <ChartCard title="Model Usage per Day">
-                    <ModelUsagePerDayChart data={data.byModelFeature} />
+                    <ModelUsagePerDayChart
+                      data={data.byModelFeature}
+                      from={from}
+                      to={to}
+                    />
                   </ChartCard>
 
                   {/* Chat Model Usage Donut + Model Usage per Chat Mode */}
@@ -266,7 +290,11 @@ export const V2DashboardPage = () => {
 
                   {/* Language Usage per Day */}
                   <ChartCard title="Language Usage per Day">
-                    <LanguageUsagePerDayChart data={data.byLanguage} />
+                    <LanguageUsagePerDayChart
+                      data={data.byLanguage}
+                      from={from}
+                      to={to}
+                    />
                   </ChartCard>
 
                   {/* Language Donut + Model Usage per Language */}
@@ -311,7 +339,7 @@ export const V2DashboardPage = () => {
                       Total lines of code added and deleted from the codebase
                       across all modes
                     </Text>
-                    <DailyLOCChart data={data.daily} />
+                    <DailyLOCChart data={data.daily} from={from} to={to} />
                   </ChartCard>
 
                   {/* Row 3: User-initiated vs Agent-initiated by feature */}
@@ -425,7 +453,11 @@ export const V2DashboardPage = () => {
 
                     {/* AI credits used per day */}
                     <ChartCard title="AI Credits Used per Day">
-                      <AiCreditsConsumptionChart data={data.daily} />
+                      <AiCreditsConsumptionChart
+                        data={data.daily}
+                        from={from}
+                        to={to}
+                      />
                     </ChartCard>
                   </Flex>
                 </TabPanel>

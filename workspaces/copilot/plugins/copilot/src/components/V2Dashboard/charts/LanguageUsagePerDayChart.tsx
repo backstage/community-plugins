@@ -16,13 +16,15 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2MetricsByLanguageFeatureRow } from '@backstage-community/plugin-copilot-common';
-import { formatDay, DATE_TICK_LABEL_STYLE } from './chartUtils';
+import { formatDay, DATE_TICK_LABEL_STYLE, fillDateRange } from './chartUtils';
 
 interface Props {
   data: V2MetricsByLanguageFeatureRow[];
+  from: string;
+  to: string;
 }
 
-export function LanguageUsagePerDayChart({ data }: Props) {
+export function LanguageUsagePerDayChart({ data, from, to }: Props) {
   if (data.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', color: '#888' }}>
@@ -31,7 +33,7 @@ export function LanguageUsagePerDayChart({ data }: Props) {
     );
   }
 
-  const days = [...new Set(data.map(d => d.day))].sort();
+  const days = fillDateRange(from, to);
   const allLangs = [...new Set(data.map(d => d.language))];
 
   // Sort languages by overall total descending for a sensible legend order
