@@ -81,7 +81,7 @@
     "@patternfly/react-core": "^6.1.0",
     "@patternfly/react-tokens": "^6.1.0",
     "@patternfly/react-topology": "^6.1.0",
-    "@remixicon/react": "^4.2.0",
+    "@remixicon/react": ">=4.6.0 <4.9.0",
     "@types/react": "^16.13.1 || ^17.0.0 || ^18.0.0",
     "classnames": "2.x",
     "git-url-parse": "^13.1.0",
