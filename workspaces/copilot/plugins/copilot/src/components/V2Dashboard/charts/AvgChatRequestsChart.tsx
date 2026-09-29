@@ -16,15 +16,20 @@
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import { V2DailyTotal } from '@backstage-community/plugin-copilot-common';
-import { aggregateDailyTotals } from './aggregateDailyTotals';
+import {
+  aggregateDailyTotals,
+  fillDailyTotalsGaps,
+} from './aggregateDailyTotals';
 import { formatDay, DATE_TICK_LABEL_STYLE } from './chartUtils';
 
 interface Props {
   data: V2DailyTotal[];
+  from: string;
+  to: string;
 }
 
-export function AvgChatRequestsChart({ data }: Props) {
-  const aggregated = aggregateDailyTotals(data);
+export function AvgChatRequestsChart({ data, from, to }: Props) {
+  const aggregated = fillDailyTotalsGaps(aggregateDailyTotals(data), from, to);
   const days = aggregated.map(d => d.day);
   const values = aggregated.map(d =>
     d.daily_active_users > 0
