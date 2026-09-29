@@ -19,6 +19,12 @@ import { Knex } from 'knex';
 import {
   V2DailyTotal,
   V2IngestionLogRow,
+  V2UserMetricRow,
+  V2UserMetricsByFeatureRow,
+  V2UserMetricsByIdeRow,
+  V2UserMetricsByLanguageFeatureRow,
+  V2UserMetricsByModelFeatureRow,
+  V2UserMetricsByLanguageModelRow,
   V2UserTeamRow,
 } from '@backstage-community/plugin-copilot-common';
 import { migrationsDir } from './DatabaseHandler';
@@ -362,6 +368,116 @@ describe('DatabaseHandlerV2', () => {
       expect(result).toHaveProperty('prMetrics');
       expect(result.daily).toHaveLength(2);
     });
+
+    it('getUserMetrics only returns rows for the requested user login', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'octocat', day: '2026-05-01' }),
+        buildUserMetric({
+          user_login: 'octocat',
+          user_id: 1,
+          day: '2026-05-02',
+        }),
+        buildUserMetric({
+          user_login: 'someone-else',
+          user_id: 2,
+          day: '2026-05-01',
+        }),
+      ]);
+
+      const rows = await handler.getUserMetrics(
+        'organization',
+        'org-1',
+        'octocat',
+        '2026-05-01',
+        '2026-05-03',
+      );
+
+      expect(rows).toHaveLength(2);
+      expect(rows.every(r => r.user_login === 'octocat')).toBe(true);
+    });
+
+    it('getUserMetrics matches user login case-insensitively', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'OctoCat', day: '2026-05-01' }),
+        buildUserMetric({
+          user_login: 'someone-else',
+          user_id: 2,
+          day: '2026-05-01',
+        }),
+      ]);
+
+      const rows = await handler.getUserMetrics(
+        'organization',
+        'org-1',
+        'octocat',
+        '2026-05-01',
+        '2026-05-03',
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].user_login).toBe('OctoCat');
+    });
+
+    it('getUserDashboardData scopes every dimension to a single user login', async () => {
+      await handler.insertUserMetrics([
+        buildUserMetric({ user_login: 'octocat', user_id: 1 }),
+        buildUserMetric({ user_login: 'someone-else', user_id: 2 }),
+      ]);
+      await handler.insertUserMetricsByFeature([
+        buildUserMetricsByFeature({ user_login: 'octocat', user_id: 1 }),
+        buildUserMetricsByFeature({
+          user_login: 'someone-else',
+          user_id: 2,
+          feature: 'agent',
+        }),
+      ]);
+      await handler.insertUserMetricsByIde([
+        buildUserMetricsByIde({ user_login: 'octocat', user_id: 1 }),
+      ]);
+      await handler.insertUserMetricsByLanguageFeature([
+        buildUserMetricsByLanguageFeature({
+          user_login: 'octocat',
+          user_id: 1,
+        }),
+      ]);
+      await handler.insertUserMetricsByModelFeature([
+        buildUserMetricsByModelFeature({ user_login: 'octocat', user_id: 1 }),
+      ]);
+      await handler.insertUserMetricsByLanguageModel([
+        buildUserMetricsByLanguageModel({ user_login: 'octocat', user_id: 1 }),
+      ]);
+
+      const result = await handler.getUserDashboardData(
+        'organization',
+        'org-1',
+        'octocat',
+        '2026-05-01',
+        '2026-05-01',
+      );
+
+      expect(result.userLogin).toBe('octocat');
+      expect(result.daily).toHaveLength(1);
+      expect(result.daily[0].user_login).toBe('octocat');
+      expect(result.byFeature).toHaveLength(1);
+      expect(result.byFeature[0].feature).toBe('chat_panel');
+      expect(result.byIde).toHaveLength(1);
+      expect(result.byLanguage).toHaveLength(1);
+      expect(result.byModelFeature).toHaveLength(1);
+      expect(result.byLanguageModel).toHaveLength(1);
+
+      // Never returns another user's rows, even though they exist in the
+      // same day/entity/metrics_type scope.
+      const otherUser = await handler.getUserDashboardData(
+        'organization',
+        'org-1',
+        'someone-else',
+        '2026-05-01',
+        '2026-05-01',
+      );
+      expect(otherUser.byFeature).toEqual([
+        expect.objectContaining({ feature: 'agent' }),
+      ]);
+    });
   });
 });
 
@@ -411,6 +527,137 @@ function buildUserTeam(overrides: Partial<V2UserTeamRow> = {}): V2UserTeamRow {
     user_login: 'octocat',
     team_id: 100,
     team_slug: 'alpha',
+    ...overrides,
+  };
+}
+
+function buildUserMetric(
+  overrides: Partial<V2UserMetricRow> = {},
+): V2UserMetricRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    used_agent: true,
+    used_chat: true,
+    used_cli: false,
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    user_initiated_interaction_count: 7,
+    ai_credits_used: 5.5,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByFeature(
+  overrides: Partial<V2UserMetricsByFeatureRow> = {},
+): V2UserMetricsByFeatureRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    feature: 'chat_panel',
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    user_initiated_interaction_count: 7,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByIde(
+  overrides: Partial<V2UserMetricsByIdeRow> = {},
+): V2UserMetricsByIdeRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    ide: 'vscode',
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    user_initiated_interaction_count: 7,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByLanguageFeature(
+  overrides: Partial<V2UserMetricsByLanguageFeatureRow> = {},
+): V2UserMetricsByLanguageFeatureRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    language: 'typescript',
+    feature: 'chat_panel',
+    code_acceptance_activity_count: 3,
+    code_generation_activity_count: 4,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByModelFeature(
+  overrides: Partial<V2UserMetricsByModelFeatureRow> = {},
+): V2UserMetricsByModelFeatureRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    model_id: 'gpt-4o',
+    feature: 'chat_panel',
+    user_initiated_interaction_count: 7,
+    code_generation_activity_count: 4,
+    code_acceptance_activity_count: 3,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
+    ...overrides,
+  };
+}
+
+function buildUserMetricsByLanguageModel(
+  overrides: Partial<V2UserMetricsByLanguageModelRow> = {},
+): V2UserMetricsByLanguageModelRow {
+  return {
+    day: '2026-05-01',
+    metrics_type: 'organization',
+    entity_id: 'org-1',
+    user_id: 1,
+    user_login: 'octocat',
+    language: 'typescript',
+    model_id: 'gpt-4o',
+    request_count: 4,
+    code_generation_activity_count: 4,
+    code_acceptance_activity_count: 3,
+    loc_added_sum: 10,
+    loc_deleted_sum: 2,
+    loc_suggested_to_add_sum: 12,
+    loc_suggested_to_delete_sum: 3,
     ...overrides,
   };
 }

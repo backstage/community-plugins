@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { createRouteRef } from '@backstage/frontend-plugin-api';
 
 /**
- * Backend functionalities for the copilot plugin.
+ * Route for the individual ("me") Copilot metrics sub-page, mounted by
+ * default at `/copilot/me` as a sub-page of the main `copilot` page.
  *
- * @packageDocumentation
+ * @public
  */
-
-export * from './service/router';
-export {
-  copilotUserResolverExtensionPoint,
-  DefaultCopilotUserResolver,
-} from './userResolver';
-export type {
-  CopilotUserResolver,
-  CopilotUserResolverContext,
-  CopilotUserResolverExtensionPoint,
-  CopilotUserResolverServices,
-} from './userResolver';
-export { copilotPlugin as default } from './plugin';
+export const copilotMeRouteRef = createRouteRef();

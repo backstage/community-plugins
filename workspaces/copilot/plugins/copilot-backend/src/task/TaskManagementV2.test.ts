@@ -290,6 +290,75 @@ describe('TaskManagementV2', () => {
     );
   });
 
+  it('persists per-user breakdown rows in addition to team aggregates when ingesting teams', async () => {
+    const db = createDbMock();
+    const api = createApiMock();
+    const config = createConfigMock({
+      'copilot.enterprise': 'ent-1',
+      'copilot.backfillFromDate': '2026-05-10',
+      'copilot.backfillDelayMs': 0,
+      'copilot.ingestTeams': true,
+    });
+    const logger = createLoggerMock();
+
+    db.getMissingDays.mockResolvedValue(['2026-05-10']);
+    api.fetchEnterpriseReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/report.json'],
+    });
+    api.fetchEnterpriseUserReportLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/users.json'],
+    });
+    api.fetchEnterpriseUserTeamsLinks.mockResolvedValue({
+      download_links: ['https://downloads.github.com/user-teams.json'],
+    });
+    api.downloadDocument.mockResolvedValueOnce(
+      makeEnterpriseDocument('2026-05-10'),
+    );
+    api.downloadNdjsonDocument.mockImplementation(async (url: string) => {
+      if (url.includes('users.json')) {
+        return makeUserMetricsDocument('2026-05-10');
+      }
+      return makeUserTeamsDocument('2026-05-10');
+    });
+
+    const task = TaskManagementV2.create({
+      db: db as unknown as DatabaseHandlerV2,
+      api: api as unknown as GithubClientV2,
+      config,
+      logger,
+    });
+
+    await task.runAsync();
+
+    // Per-user breakdown rows are persisted, keyed by the resolved user.
+    expect(db.insertUserMetricsByFeature).toHaveBeenCalledWith([
+      expect.objectContaining({
+        day: '2026-05-10',
+        metrics_type: 'enterprise',
+        entity_id: 'ent-1',
+        user_id: 1,
+        user_login: 'octocat',
+        feature: 'chat_panel',
+      }),
+    ]);
+    expect(db.insertUserMetricsByIde).toHaveBeenCalledWith([
+      expect.objectContaining({
+        user_id: 1,
+        user_login: 'octocat',
+        ide: 'vscode',
+      }),
+    ]);
+    // Team aggregation still runs unaffected (unchanged behavior).
+    expect(db.insertDailyTotals).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ team_slug: 'platform' }),
+      ]),
+    );
+    expect(db.upsertIngestionLog).toHaveBeenCalledWith(
+      expect.objectContaining({ day: '2026-05-10', status: 'success' }),
+    );
+  });
+
   it('idempotency: running same backfill twice skips API calls on second run', async () => {
     const db = createDbMock();
     const api = createApiMock();
@@ -390,6 +459,11 @@ function createDbMock() {
     insertByCli: jest.fn().mockResolvedValue(undefined),
     insertUserMetrics: jest.fn().mockResolvedValue(undefined),
     insertUserTeams: jest.fn().mockResolvedValue(undefined),
+    insertUserMetricsByFeature: jest.fn().mockResolvedValue(undefined),
+    insertUserMetricsByIde: jest.fn().mockResolvedValue(undefined),
+    insertUserMetricsByLanguageFeature: jest.fn().mockResolvedValue(undefined),
+    insertUserMetricsByModelFeature: jest.fn().mockResolvedValue(undefined),
+    insertUserMetricsByLanguageModel: jest.fn().mockResolvedValue(undefined),
     upsertIngestionLog: jest.fn().mockResolvedValue(undefined),
   };
 }
@@ -454,6 +528,52 @@ function makeEnterpriseDocument(day: string) {
           loc_suggested_to_add_sum: 12,
           loc_suggested_to_delete_sum: 4,
           user_initiated_interaction_count: 1,
+        },
+      ],
+    },
+  ];
+}
+
+function makeUserMetricsDocument(day: string) {
+  return [
+    {
+      user_id: 1,
+      user_login: 'octocat',
+      day,
+      enterprise_id: 'ent-1',
+      used_agent: true,
+      used_chat: true,
+      used_cli: false,
+      code_acceptance_activity_count: 3,
+      code_generation_activity_count: 4,
+      loc_added_sum: 10,
+      loc_deleted_sum: 2,
+      loc_suggested_to_add_sum: 12,
+      loc_suggested_to_delete_sum: 3,
+      user_initiated_interaction_count: 7,
+      ai_credits_used: 5.5,
+      totals_by_feature: [
+        {
+          feature: 'chat_panel',
+          user_initiated_interaction_count: 7,
+          code_generation_activity_count: 4,
+          code_acceptance_activity_count: 3,
+          loc_added_sum: 10,
+          loc_deleted_sum: 2,
+          loc_suggested_to_add_sum: 12,
+          loc_suggested_to_delete_sum: 3,
+        },
+      ],
+      totals_by_ide: [
+        {
+          ide: 'vscode',
+          user_initiated_interaction_count: 7,
+          code_generation_activity_count: 4,
+          code_acceptance_activity_count: 3,
+          loc_added_sum: 10,
+          loc_deleted_sum: 2,
+          loc_suggested_to_add_sum: 12,
+          loc_suggested_to_delete_sum: 3,
         },
       ],
     },

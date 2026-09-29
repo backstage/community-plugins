@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 The Backstage Authors
+ * Copyright 2026 The Backstage Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,11 @@
  */
 
 /**
- * Backend functionalities for the copilot plugin.
- *
- * @packageDocumentation
+ * Internal implementation of the privacy-scoped, individual ("me") Copilot
+ * metrics view. See the plugin README for the privacy design and pluggable
+ * user-matching mechanism backing this view.
  */
-
-export * from './service/router';
-export {
-  copilotUserResolverExtensionPoint,
-  DefaultCopilotUserResolver,
-} from './userResolver';
-export type {
-  CopilotUserResolver,
-  CopilotUserResolverContext,
-  CopilotUserResolverExtensionPoint,
-  CopilotUserResolverServices,
-} from './userResolver';
-export { copilotPlugin as default } from './plugin';
+export { myMetricsApiRef } from './api';
+export type { MyMetricsApi, MyDashboardParams } from './api';
+export { MyMetricsContent, MyMetricsPage } from './components';
+export { copilotMeRouteRef } from './routes';

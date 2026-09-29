@@ -1038,6 +1038,162 @@ export interface V2UserMetricRow {
   ai_credits_used?: number;
 }
 
+/**
+ * Per-user, per-feature breakdown row (e.g. chat panel, code completion,
+ * agent mode). Mirrors {@link V2MetricsByFeatureRow} but scoped to a single
+ * user instead of a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/**
+ * Per-user, per-IDE breakdown row. Mirrors {@link V2MetricsByIdeRow} but
+ * scoped to a single user instead of a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByIdeRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  ide: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+  user_initiated_interaction_count: number;
+}
+
+/**
+ * Per-user, per-language/feature breakdown row. Mirrors
+ * {@link V2MetricsByLanguageFeatureRow} but scoped to a single user instead
+ * of a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByLanguageFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  language: string;
+  feature: string;
+  code_acceptance_activity_count: number;
+  code_generation_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/**
+ * Per-user, per-model/feature breakdown row. Mirrors
+ * {@link V2MetricsByModelFeatureRow} but scoped to a single user instead of
+ * a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByModelFeatureRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  model_id: string;
+  feature: string;
+  user_initiated_interaction_count: number;
+  code_generation_activity_count: number;
+  code_acceptance_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/**
+ * Per-user, per-language/model breakdown row. Mirrors
+ * {@link V2MetricsByLanguageModelRow} but scoped to a single user instead of
+ * a team.
+ *
+ * @public
+ */
+export interface V2UserMetricsByLanguageModelRow {
+  id?: number;
+  day: string;
+  metrics_type: MetricsScope;
+  entity_id: string;
+  user_id: number;
+  user_login: string;
+  language: string;
+  model_id: string;
+  request_count: number;
+  code_generation_activity_count: number;
+  code_acceptance_activity_count: number;
+  loc_added_sum: number;
+  loc_deleted_sum: number;
+  loc_suggested_to_add_sum: number;
+  loc_suggested_to_delete_sum: number;
+}
+
+/**
+ * Aggregated dashboard data returned by the privacy-scoped `/v2/me/dashboard`
+ * BFF endpoint. Contains all chart data needed to render an individual
+ * user's own Copilot usage, restricted server-side to the caller's own
+ * resolved GitHub login. Structurally mirrors {@link V2DashboardData}, minus
+ * data that GitHub's Copilot Metrics API does not expose per-user (e.g. pull
+ * request metrics).
+ *
+ * @public
+ */
+export interface V2UserDashboardData {
+  /**
+   * The GitHub login the caller was matched to. Always the resolved caller's
+   * own login — never settable or overridable by the client.
+   */
+  userLogin: string;
+  daily: V2UserMetricRow[];
+  byFeature: V2UserMetricsByFeatureRow[];
+  byIde: V2UserMetricsByIdeRow[];
+  byLanguage: V2UserMetricsByLanguageFeatureRow[];
+  byModelFeature: V2UserMetricsByModelFeatureRow[];
+  byLanguageModel: V2UserMetricsByLanguageModelRow[];
+}
+
+/**
+ * Response of the `/v2/me/dashboard` endpoint. If the caller could not be
+ * matched to a GitHub login (e.g. no user resolver match, or no ingested
+ * data for that login), `matched` is `false` and no data is returned.
+ *
+ * @public
+ */
+export type V2MyDashboardResponse =
+  | ({ matched: true } & V2UserDashboardData)
+  | { matched: false };
+
 /** @public */
 export interface V2UserTeamRow {
   id?: number;
