@@ -1,5 +1,12 @@
 # @backstage-community/plugin-copilot
 
+## 1.3.1
+
+### Patch Changes
+
+- af1c9b2: Updated dependency `react-router-dom` to `^6.30.6`.
+- 4e5ab20: Updated dependency `react-aria-components` to `~1.21.0`.
+
 ## 1.3.0
 
 ### Minor Changes
