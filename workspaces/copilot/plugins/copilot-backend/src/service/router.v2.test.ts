@@ -16,9 +16,9 @@
 
 import express from 'express';
 import request from 'supertest';
-import { mockServices } from '@backstage/backend-test-utils';
+import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
 import { DateTime } from 'luxon';
-import { createRouterFromConfig } from './router';
+import { createRouterFromConfig, RouterOptions } from './router';
 
 let mockDbV1: any;
 let mockDbV2: any;
@@ -76,6 +76,7 @@ describe('router v2 endpoints', () => {
       getPeriodRange: jest.fn(),
       getIngestionLog: jest.fn(),
       getDashboardData: jest.fn(),
+      getUserDashboardData: jest.fn(),
     };
 
     mockTaskV2 = {
@@ -106,17 +107,27 @@ describe('router v2 endpoints', () => {
       byLanguageModel: [],
       prMetrics: [],
     });
+    mockDbV2.getUserDashboardData.mockResolvedValue({
+      userLogin: 'octocat',
+      daily: [],
+      byFeature: [],
+      byIde: [],
+      byLanguage: [],
+      byModelFeature: [],
+      byLanguageModel: [],
+    });
     mockTaskV2.runAsync.mockResolvedValue(undefined);
     mockTaskV2.runBackfill.mockResolvedValue(undefined);
     mockScheduler.scheduleTask.mockResolvedValue(undefined);
   });
 
-  async function createTestApp() {
+  async function createTestApp(overrides: Partial<RouterOptions> = {}) {
     const router = await createRouterFromConfig({
       logger: mockServices.logger.mock(),
       database: {} as any,
       scheduler: mockScheduler as any,
       config: mockServices.rootConfig({ data: {} }),
+      ...overrides,
     });
 
     const app = express();
@@ -389,5 +400,111 @@ describe('router v2 endpoints', () => {
       '2026-05-20',
       'my-team',
     );
+  });
+
+  describe('GET /v2/me/dashboard', () => {
+    function createMeTestApp(
+      httpAuthOverrides?: Partial<Parameters<typeof mockServices.httpAuth>[0]>,
+      overrides: Partial<RouterOptions> = {},
+    ) {
+      const catalog = {
+        getEntityByRef: jest.fn(),
+      };
+      return createTestApp({
+        httpAuth: mockServices.httpAuth(httpAuthOverrides),
+        userInfo: mockServices.userInfo(),
+        catalog: catalog as any,
+        ...overrides,
+      });
+    }
+
+    it('returns 501 when the me routes are not configured with auth services', async () => {
+      const app = await createTestApp();
+      const response = await request(app).get(
+        '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+      );
+
+      expect(response.status).toBe(501);
+    });
+
+    it('resolves the caller from their own entity ref and returns their data', async () => {
+      mockDbV2.getUserDashboardData.mockResolvedValue({
+        userLogin: 'mock',
+        daily: [{ day: '2026-05-01' }],
+        byFeature: [],
+        byIde: [],
+        byLanguage: [],
+        byModelFeature: [],
+        byLanguageModel: [],
+      });
+
+      const app = await createMeTestApp();
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        matched: true,
+        userLogin: 'mock',
+        daily: [{ day: '2026-05-01' }],
+        byFeature: [],
+        byIde: [],
+        byLanguage: [],
+        byModelFeature: [],
+        byLanguageModel: [],
+      });
+      expect(mockDbV2.getUserDashboardData).toHaveBeenCalledWith(
+        'organization',
+        'org-1',
+        'mock',
+        '2026-05-01',
+        '2026-05-20',
+      );
+    });
+
+    it('returns matched: false when the configured user resolver finds no login', async () => {
+      const app = await createMeTestApp(undefined, {
+        userResolver: {
+          resolveUserLogin: jest.fn().mockResolvedValue(undefined),
+        },
+      });
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ matched: false });
+      expect(mockDbV2.getUserDashboardData).not.toHaveBeenCalled();
+    });
+
+    it('rejects unauthenticated callers and never reaches the database', async () => {
+      const app = await createMeTestApp({
+        defaultCredentials: mockCredentials.none(),
+      });
+      const response = await request(app).get(
+        '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20',
+      );
+
+      expect(response.status).toBeGreaterThanOrEqual(400);
+      expect(response.status).toBeLessThan(500);
+      expect(mockDbV2.getUserDashboardData).not.toHaveBeenCalled();
+    });
+
+    it('rejects requests carrying a user or team query parameter', async () => {
+      const app = await createMeTestApp();
+      const response = await request(app)
+        .get(
+          '/v2/me/dashboard?type=organization&entityId=org-1&from=2026-05-01&to=2026-05-20&user=someone-else',
+        )
+        .set('Authorization', mockCredentials.user.header());
+
+      expect(response.status).toBe(400);
+      expect(mockDbV2.getUserDashboardData).not.toHaveBeenCalled();
+    });
   });
 });

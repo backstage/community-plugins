@@ -46,6 +46,7 @@ export interface ParsedEnterpriseDocument {
  */
 export interface UserBreakdownData {
   user_id: number;
+  user_login: string;
   byFeature: Array<{
     feature: string;
     user_initiated_interaction_count: number;
@@ -147,11 +148,14 @@ export function parseEnterpriseDocument(
   // Normalize: the GitHub report API (2026-03-10) downloads a single flat
   // V2EnterpriseDayTotal object per file — not a V2EnterpriseDocument with a
   // day_totals wrapper. Accept both shapes for robustness.
-  const rawDocs: unknown[] = Array.isArray(doc)
-    ? doc
-    : isRecord(doc)
-    ? [doc]
-    : [];
+  let rawDocs: unknown[];
+  if (Array.isArray(doc)) {
+    rawDocs = doc;
+  } else if (isRecord(doc)) {
+    rawDocs = [doc];
+  } else {
+    rawDocs = [];
+  }
 
   if (rawDocs.length === 0) {
     logWarn(
@@ -839,6 +843,7 @@ export function parseUserDocument(
 
     const breakdown: UserBreakdownData = {
       user_id: userId,
+      user_login: userLogin,
       byFeature: [],
       byIde: [],
       byLanguageFeature: [],

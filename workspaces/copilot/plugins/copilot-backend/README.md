@@ -161,6 +161,56 @@ Example backfill request:
 
 The backfill request returns `202 Accepted` and starts processing asynchronously.
 
+### Individual ("Me") Metrics
+
+The backend also exposes a privacy-scoped endpoint for an individual, signed-in
+user's own Copilot metrics, consumed by the individual ("me") metrics view
+mounted by the `@backstage-community/plugin-copilot` frontend plugin:
+
+- `GET /api/copilot/v2/me/dashboard`
+
+This endpoint **never accepts a user or team identifier** — the caller's
+GitHub login is always resolved server-side from their own request
+credentials, so it is impossible to request another user's data through this
+route. If the caller cannot be matched to any ingested Copilot data, the
+endpoint returns `{ "matched": false }` (HTTP 200) rather than an error.
+
+Requires `copilot.ingestTeams: true` (per-user breakdown data is only
+ingested when that flag is enabled).
+
+By default, the `name` part of the caller's Backstage user entity ref (e.g.
+`user:default/jdoe` → `jdoe`) is parsed directly and used as their GitHub
+login — no catalog lookup is required, so this works even for callers whose
+catalog entity can't be resolved for some reason. To customize this matching
+(e.g. if your entity names don't match GitHub logins), register a custom
+resolver via the `copilotUserResolverExtensionPoint`:
+
+```typescript
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { copilotUserResolverExtensionPoint } from '@backstage-community/plugin-copilot-backend';
+
+export const copilotCustomUserResolverModule = createBackendModule({
+  pluginId: 'copilot',
+  moduleId: 'custom-user-resolver',
+  register(reg) {
+    reg.registerInit({
+      deps: { userResolver: copilotUserResolverExtensionPoint },
+      async init({ userResolver }) {
+        userResolver.setUserResolver({
+          async resolveUserLogin({ userEntityRef, credentials, services }) {
+            const entity = await services.catalog.getEntityByRef(
+              userEntityRef,
+              { credentials },
+            );
+            return entity?.metadata.annotations?.['github.com/user-login'];
+          },
+        });
+      },
+    });
+  },
+});
+```
+
 ### Legacy Endpoints
 
 Legacy read endpoints remain mounted under `/api/copilot/legacy/*` while users validate V2 coverage and transition off the older dashboard.
