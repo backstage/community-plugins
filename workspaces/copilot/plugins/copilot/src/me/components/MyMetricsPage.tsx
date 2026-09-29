@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FullPage, Header } from '@backstage/ui';
+import { FullPage } from '@backstage/ui';
 import { MyMetricsContent } from './MyMetricsContent';
 
 /**
@@ -26,10 +26,6 @@ import { MyMetricsContent } from './MyMetricsContent';
 export function MyMetricsPage() {
   return (
     <FullPage>
-      <Header
-        title="My Copilot Metrics"
-        description="Your personal GitHub Copilot usage and consumption"
-      />
       <MyMetricsContent />
     </FullPage>
   );
